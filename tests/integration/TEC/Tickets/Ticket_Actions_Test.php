@@ -22,6 +22,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 	protected $controller_class = Ticket_Actions::class;
 
 	protected static $back_up_actions = [];
+	protected static array $back_up_counts = [];
 
 	/**
 	 * @before
@@ -31,6 +32,9 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		self::$back_up_actions = $wp_actions;
 		$wp_actions = [];
+
+		self::$back_up_counts['start'] = count( $this->query_action_scheduler_actions_count() );
+		self::$back_up_counts['end'] = count( $this->query_action_scheduler_actions_count( null, false ) );
 	}
 
 	/**
@@ -461,12 +465,11 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @before
 	 * @after
 	 */
 	public function check_we_are_clearing_up() {
-		$this->assertCount( 0, $this->query_action_scheduler_actions_count() );
-		$this->assertCount( 0, $this->query_action_scheduler_actions_count( null, false ) );
+		$this->assertCount( self::$back_up_counts['start'], $this->query_action_scheduler_actions_count() );
+		$this->assertCount( self::$back_up_counts['end'], $this->query_action_scheduler_actions_count( null, false ) );
 	}
 
 	protected function query_action_scheduler_actions_count( ?array $args = null, bool $start = true, $limit = 100, $offset = 0 ): array {

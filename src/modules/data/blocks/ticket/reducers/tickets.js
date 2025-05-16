@@ -7,7 +7,7 @@ import omit from 'lodash/omit';
 /**
  * Internal dependencies
  */
-import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
+import * as types from '../types';
 import ticket from './tickets/ticket';
 
 export const byClientId = ( state = {}, action ) => {

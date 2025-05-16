@@ -1,4 +1,4 @@
-( function( $, obj ) {
+( function ( $, obj ) {
 	obj.$window = $( window );
 
 	obj.selectors = {
@@ -6,13 +6,13 @@
 		thickbox: 'a.thickbox',
 	};
 
-	obj.onReady = function() {
+	obj.onReady = function () {
 		obj.$window.resize(); // call the resize event at document ready to do this on load as well
 	};
 
-	obj.onResize = function() {
+	obj.onResize = function () {
 		// resize the video embed to keep the right aspect ratio
-		$( obj.selectors.adminVideo ).each( function() {
+		$( obj.selectors.adminVideo ).each( function () {
 			const $video = $( this );
 			const w = $video.width();
 			let newHeight = 0;
@@ -29,7 +29,7 @@
 		const width = parseInt( obj.$window.width() * 0.9, 10 );
 
 		// adjust thickbox links height and width to be 90% of the browser height and width
-		$( obj.selectors.thickbox ).each( function() {
+		$( obj.selectors.thickbox ).each( function () {
 			const $link = $( this );
 			const href = new URL( $link.prop( 'href' ) );
 

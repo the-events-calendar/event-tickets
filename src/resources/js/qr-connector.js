@@ -3,8 +3,8 @@
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
 
-( function( $ ) {
-	const obj = tribe.tickets.admin.qrConnector = {};
+( function ( $ ) {
+	const obj = ( tribe.tickets.admin.qrConnector = {} );
 
 	/**
 	 * Selectors used for configuration and setup.
@@ -45,6 +45,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Trigger Click Event for the QR Connector.
 	 *
+	 * @param  event
 	 * @since 5.7.0
 	 *
 	 * @return {void}
@@ -92,21 +93,17 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 		$input.val( '--------' );
 
 		// Send our request
-		$.post(
-			ajaxurl,
-			request,
-			( results ) => {
-				if ( results.success ) {
-					$message.html( '<p class="optin-success">' + results.data.msg + '</p>' );
-					$input.val( results.data.key );
-					$image.attr( 'src', results.data.qr_src );
-				} else {
-					$message.html( '<p class="optin-fail">' + results.data + '</p>' );
-				}
-				$trigger.prop( 'disabled', false );
-				$image.css( 'opacity', 1 );
-			},
-		);
+		$.post( ajaxurl, request, ( results ) => {
+			if ( results.success ) {
+				$message.html( '<p class="optin-success">' + results.data.msg + '</p>' );
+				$input.val( results.data.key );
+				$image.attr( 'src', results.data.qr_src );
+			} else {
+				$message.html( '<p class="optin-fail">' + results.data + '</p>' );
+			}
+			$trigger.prop( 'disabled', false );
+			$image.css( 'opacity', 1 );
+		} );
 	};
 
 	$( obj.ready );

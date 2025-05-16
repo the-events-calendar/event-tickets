@@ -1,3 +1,4 @@
+import React from 'react';
 import { dispatch, select } from '@wordpress/data';
 import SeatType from '@tec/tickets/seating/blockEditor/header/seat-type';
 import { storeName } from '@tec/tickets/seating/blockEditor/store';

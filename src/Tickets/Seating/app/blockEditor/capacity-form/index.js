@@ -12,212 +12,186 @@ import {
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
 import ServiceError from './service-error';
-import { getLocalizedString } from '@tec/tickets/seating/utils';
-import SeriesNotice from "./series-notice";
+import { getLocalizedString } from '../../utils';
+import SeriesNotice from './series-notice';
 
-const getString = (key) => getLocalizedString(key, 'capacity-form');
+const getString = ( key ) => getLocalizedString( key, 'capacity-form' );
 
-function getCurrentLayoutOption(layoutId, layouts) {
-	return layouts && layoutId
-		? layouts.find((layoutOption) => layoutOption.value === layoutId)
-		: null;
+function getCurrentLayoutOption( layoutId, layouts ) {
+	return layouts && layoutId ? layouts.find( ( layoutOption ) => layoutOption.value === layoutId ) : null;
 }
 
-function getCurrentSeatTypeOption(seatTypeId, seatTypes) {
-	return seatTypes && seatTypeId
-		? seatTypes.find(
-				(seatTypeOption) => seatTypeOption.value === seatTypeId
-		  )
-		: null;
+function getCurrentSeatTypeOption( seatTypeId, seatTypes ) {
+	return seatTypes && seatTypeId ? seatTypes.find( ( seatTypeOption ) => seatTypeOption.value === seatTypeId ) : null;
 }
 
-const MemoizedEventLayoutSelect = React.memo(EventLayoutSelect);
-const MemoizedServiceError = React.memo(ServiceError);
+const MemoizedEventLayoutSelect = React.memo( EventLayoutSelect );
+const MemoizedServiceError = React.memo( ServiceError );
 
-export default function CapacityForm({ renderDefaultForm, clientId }) {
-	const {
-		setUsingAssignedSeating,
-		setLayout,
-		setEventCapacity,
-		setTicketSeatType,
-	} = useDispatch(store);
-	const getLayoutSeats = useSelect((select) => {
-		return select(storeName).getLayoutSeats;
-	}, []);
-	const getSeatTypeSeats = useSelect((select) => {
-		return select(storeName).getSeatTypeSeats;
-	}, []);
-	const isUsingAssignedSeating = useSelect((select) => {
-		return select(storeName).isUsingAssignedSeating();
-	}, []);
-	const layouts = useSelect((select) => {
-		return select(storeName).getLayoutsInOptionFormat();
-	}, []);
-	const layout = useSelect((select) => {
-		return select(storeName).getCurrentLayoutId();
-	}, []);
+export default function CapacityForm( { renderDefaultForm, clientId } ) {
+	const { setUsingAssignedSeating, setLayout, setEventCapacity, setTicketSeatType } = useDispatch( store );
+	const getLayoutSeats = useSelect( ( select ) => {
+		return select( storeName ).getLayoutSeats;
+	}, [] );
+	const getSeatTypeSeats = useSelect( ( select ) => {
+		return select( storeName ).getSeatTypeSeats;
+	}, [] );
+	const isUsingAssignedSeating = useSelect( ( select ) => {
+		return select( storeName ).isUsingAssignedSeating();
+	}, [] );
+	const layouts = useSelect( ( select ) => {
+		return select( storeName ).getLayoutsInOptionFormat();
+	}, [] );
+	const layout = useSelect( ( select ) => {
+		return select( storeName ).getCurrentLayoutId();
+	}, [] );
 	const seatType = useSelect(
-		(select) => {
-			return select(storeName).getTicketSeatType(clientId);
+		( select ) => {
+			return select( storeName ).getTicketSeatType( clientId );
 		},
-		[clientId]
+		[ clientId ]
 	);
 	const seatTypes = useSelect(
-		(select) => {
-			return select(storeName).getSeatTypesForLayout(layout);
+		( select ) => {
+			return select( storeName ).getSeatTypesForLayout( layout );
 		},
-		[layout]
+		[ layout ]
 	);
 
-	const isLayoutLocked = useSelect((select) => {
-		return select(storeName).isLayoutLocked();
-	}, []);
+	const isLayoutLocked = useSelect( ( select ) => {
+		return select( storeName ).isLayoutLocked();
+	}, [] );
 
-	const isServiceStatusOk = useSelect((select) => {
-		return select(storeName).isServiceStatusOk();
-	}, []);
+	const isServiceStatusOk = useSelect( ( select ) => {
+		return select( storeName ).isServiceStatusOk();
+	}, [] );
 
-	const serviceStatus = useSelect((select) => {
-		return select(storeName).getServiceStatus();
-	}, []);
+	const serviceStatus = useSelect( ( select ) => {
+		return select( storeName ).getServiceStatus();
+	}, [] );
 
-	const serviceConnectUrl = useSelect((select) => {
-		return select(storeName).getServiceConnectUrl();
-	}, []);
+	const serviceConnectUrl = useSelect( ( select ) => {
+		return select( storeName ).getServiceConnectUrl();
+	}, [] );
 
-	const postType = useSelect(
-		(select) => select('core/editor').getCurrentPostType(),
-		[]
-	);
-	const postId = useSelect(
-		(select) => select('core/editor').getCurrentPostId(),
-		[]
-	);
+	const postType = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostType(), [] );
+	const postId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId(), [] );
 
-	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
+	const [ meta, setMeta ] = useEntityProp( 'postType', postType, 'meta', postId );
 	const updateEventMeta = useCallback(
-		(layoutId) => {
-			if (true === layoutId) {
+		( layoutId ) => {
+			if ( true === layoutId ) {
 				const newMeta = {
 					...meta,
 					// We leave [META_KEY_LAYOUT_ID] as it was since that hasn't changed yet.
-					[META_KEY_ENABLED]: '1',
+					[ META_KEY_ENABLED ]: '1',
 				};
-				setMeta(newMeta);
+				setMeta( newMeta );
 				return;
 			}
 
-			if (false === layoutId) {
+			if ( false === layoutId ) {
 				const newMeta = {
 					...meta,
-					[META_KEY_ENABLED]: '0',
+					[ META_KEY_ENABLED ]: '0',
 					// We set [META_KEY_LAYOUT_ID] to an empty string since we're disabling assigned seating.
-					[META_KEY_LAYOUT_ID]: '',
+					[ META_KEY_LAYOUT_ID ]: '',
 				};
-				setMeta(newMeta);
+				setMeta( newMeta );
 				return;
 			}
 
 			const newMeta = {
 				...meta,
-				[META_KEY_ENABLED]: '1',
-				[META_KEY_LAYOUT_ID]: layoutId,
+				[ META_KEY_ENABLED ]: '1',
+				[ META_KEY_LAYOUT_ID ]: layoutId,
 			};
-			setMeta(newMeta);
+			setMeta( newMeta );
 		},
-		[meta, setMeta]
+		[ meta, setMeta ]
 	);
 
 	const onToggleChange = useCallback(
-		(value) => {
-			if (isLayoutLocked) {
+		( value ) => {
+			if ( isLayoutLocked ) {
 				return;
 			}
 
-			setUsingAssignedSeating(value === 'seat');
-			updateEventMeta(value === 'seat');
+			setUsingAssignedSeating( value === 'seat' );
+			updateEventMeta( value === 'seat' );
 		},
-		[isLayoutLocked, setUsingAssignedSeating, updateEventMeta]
+		[ isLayoutLocked, setUsingAssignedSeating, updateEventMeta ]
 	);
 
 	const onLayoutChange = useCallback(
-		(choice) => {
-			const layoutSeats = getLayoutSeats(choice.value);
-			updateEventMeta(choice.value);
-			setLayout(choice.value);
-			setEventCapacity(layoutSeats);
-			setTicketSeatType(clientId, null);
-			setCappedTicketCapacityInCommonStore(clientId, 0);
-			setTicketsSharedCapacityInCommonStore(clientId, layoutSeats);
+		( choice ) => {
+			const layoutSeats = getLayoutSeats( choice.value );
+			updateEventMeta( choice.value );
+			setLayout( choice.value );
+			setEventCapacity( layoutSeats );
+			setTicketSeatType( clientId, null );
+			setCappedTicketCapacityInCommonStore( clientId, 0 );
+			setTicketsSharedCapacityInCommonStore( clientId, layoutSeats );
 		},
-		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta, clientId]
+		[ getLayoutSeats, setEventCapacity, setLayout, updateEventMeta, clientId ]
 	);
 
 	const onSeatTypeChange = useCallback(
-		(choice) => {
-			const seatTypeSeats = getSeatTypeSeats(choice.value);
-			setTicketSeatType(clientId, choice.value);
-			setCappedTicketCapacityInCommonStore(clientId, seatTypeSeats);
+		( choice ) => {
+			const seatTypeSeats = getSeatTypeSeats( choice.value );
+			setTicketSeatType( clientId, choice.value );
+			setCappedTicketCapacityInCommonStore( clientId, seatTypeSeats );
 		},
-		[getSeatTypeSeats, setTicketSeatType, clientId]
+		[ getSeatTypeSeats, setTicketSeatType, clientId ]
 	);
 
 	const renderLayoutSelect = () => {
 		const inSeries = window?.TECFtEditorData?.event?.isInSeries || false;
 
 		if ( inSeries ) {
-			return ( <SeriesNotice /> );
+			return <SeriesNotice />;
 		}
 
 		return isServiceStatusOk ? (
 			<MemoizedEventLayoutSelect
-				layoutLocked={isLayoutLocked}
-				layouts={layouts}
-				onLayoutChange={onLayoutChange}
-				currentLayout={getCurrentLayoutOption(layout, layouts)}
-				seatTypes={seatTypes}
-				onSeatTypeChange={onSeatTypeChange}
-				currentSeatType={getCurrentSeatTypeOption(seatType, seatTypes)}
+				layoutLocked={ isLayoutLocked }
+				layouts={ layouts }
+				onLayoutChange={ onLayoutChange }
+				currentLayout={ getCurrentLayoutOption( layout, layouts ) }
+				seatTypes={ seatTypes }
+				onSeatTypeChange={ onSeatTypeChange }
+				currentSeatType={ getCurrentSeatTypeOption( seatType, seatTypes ) }
 			/>
 		) : (
-			<MemoizedServiceError
-				status={serviceStatus}
-				serviceConnectUrl={serviceConnectUrl}
-			/>
+			<MemoizedServiceError status={ serviceStatus } serviceConnectUrl={ serviceConnectUrl } />
 		);
 	};
 
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			{isLayoutLocked ? (
+			{ isLayoutLocked ? (
 				<div className="tec-tickets-seating__capacity-locked-info">
-					{getString(
-						isUsingAssignedSeating
-							? 'seat-option-label'
-							: 'general-admission-label'
-					)}
+					{ getString( isUsingAssignedSeating ? 'seat-option-label' : 'general-admission-label' ) }
 				</div>
 			) : (
 				<RadioControl
 					className="tec-tickets-seating__capacity-radio"
-					onChange={onToggleChange}
-					options={[
+					onChange={ onToggleChange }
+					options={ [
 						{
-							label: getString('general-admission-label'),
+							label: getString( 'general-admission-label' ),
 							value: 'regular',
 						},
 						{
-							label: getString('seat-option-label'),
+							label: getString( 'seat-option-label' ),
 							value: 'seat',
 						},
-					]}
-					selected={isUsingAssignedSeating ? 'seat' : 'regular'}
+					] }
+					selected={ isUsingAssignedSeating ? 'seat' : 'regular' }
 				/>
-			)}
+			) }
 
-			{isUsingAssignedSeating
-				? renderLayoutSelect()
-				: renderDefaultForm()}
+			{ isUsingAssignedSeating ? renderLayoutSelect() : renderDefaultForm() }
 		</div>
 	);
 }

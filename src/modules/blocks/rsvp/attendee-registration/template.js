@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { AttendeesRegistration as ARElement } from '@moderntribe/tickets/elements';
+import { AttendeesRegistration as ARElement } from '../../../elements';
 import './style.pcss';
 
 const linkTextAdd = __( '+ Add', 'event-tickets' );

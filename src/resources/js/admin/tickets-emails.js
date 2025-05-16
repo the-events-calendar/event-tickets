@@ -20,11 +20,11 @@ tribe.tickets.emails = {};
  * Initializes in a Strict env the code that manages the plugin Emails library.
  *
  * @since 5.5.7
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.emails
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.emails
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	const $document = $( document );
 
 	/*
@@ -52,11 +52,11 @@ tribe.tickets.emails = {};
 	 * Handler for when the modal is being "closed".
 	 *
 	 * @since 5.5.7
-	 * @param {Object} event The close event.
+	 * @param {Object} event    The close event.
 	 * @param {Object} dialogEl The dialog element.
 	 * @return {void}
 	 */
-	obj.modalClose = function( event, dialogEl ) {
+	obj.modalClose = function ( event, dialogEl ) {
 		const $modal = $( dialogEl );
 		const $modalContent = $modal.find( obj.selectors.modalContent );
 
@@ -69,23 +69,20 @@ tribe.tickets.emails = {};
 	 * @since 5.5.7
 	 * @return {void}
 	 */
-	obj.bindModalClose = function() {
-		$( tribe.dialogs.events ).on(
-			'tribeDialogCloseEmailsPreviewModal.tribeTickets',
-			obj.modalClose,
-		);
+	obj.bindModalClose = function () {
+		$( tribe.dialogs.events ).on( 'tribeDialogCloseEmailsPreviewModal.tribeTickets', obj.modalClose );
 	};
 
 	/**
 	 * Binds events for the modal content container.
 	 *
 	 * @since 5.6.0
-	 * @param  {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
-	 * @param  {jqXHR}  jqXHR    Request object.
-	 * @param  {Object} settings Settings that this request was made with.
+	 * @param {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
+	 * @param {jqXHR}  jqXHR    Request object.
+	 * @param {Object} settings Settings that this request was made with.
 	 */
-	obj.bindModalEvents = ( event, jqXHR, settings ) => { // eslint-disable-line no-unused-vars
-
+	obj.bindModalEvents = ( event, jqXHR, settings ) => {
+		// eslint-disable-line no-unused-vars
 	};
 
 	/**
@@ -94,7 +91,7 @@ tribe.tickets.emails = {};
 	 * @since 5.5.7
 	 * @param {jQuery} $container jQuery object of the container.
 	 */
-	obj.unbindModalEvents = function( $container ) {
+	obj.unbindModalEvents = function ( $container ) {
 		$container.off( 'afterAjaxSuccess.tribeTicketsAdmin', obj.bindModalEvents );
 		$container.off();
 	};
@@ -103,12 +100,12 @@ tribe.tickets.emails = {};
 	 * Handler for when the modal is opened.
 	 *
 	 * @since 5.5.7
-	 * @param {Object} event The show event.
+	 * @param {Object} event    The show event.
 	 * @param {Object} dialogEl The dialog element.
-	 * @param {Object} trigger The event.
+	 * @param {Object} trigger  The event.
 	 * @return {void}
 	 */
-	obj.modalOpen = function( event, dialogEl, trigger ) {
+	obj.modalOpen = function ( event, dialogEl, trigger ) {
 		const $modal = $( dialogEl );
 		const $trigger = $( trigger.target ).closest( 'button' );
 		const title = $trigger.data( 'modal-title' );
@@ -123,7 +120,7 @@ tribe.tickets.emails = {};
 		const $modalContent = $modal.find( obj.selectors.modalContent );
 		const requestData = {
 			action: 'tribe_tickets_admin_manager',
-			request: request,
+			request,
 		};
 
 		const contextData = obj.getSettingsContext();
@@ -139,7 +136,7 @@ tribe.tickets.emails = {};
 		$modalContent.on(
 			'afterAjaxSuccess.tribeTicketsAdmin',
 			{ container: $modalContent, requestData: data },
-			obj.bindModalEvents,
+			obj.bindModalEvents
 		);
 	};
 
@@ -149,21 +146,22 @@ tribe.tickets.emails = {};
 	 * @since 5.5.7
 	 * @return {Object}
 	 */
-	obj.getSettingsContext = function() {
+	obj.getSettingsContext = function () {
 		const context = {};
 		const tinyMCE = window.tinyMCE || undefined;
 
-		const currentEmail = $document
-			.find( 'input[name=' + obj.selectors.formCurrentEmail + ']' ).val();
+		const currentEmail = $document.find( 'input[name=' + obj.selectors.formCurrentEmail + ']' ).val();
 
 		context.currentEmail = currentEmail;
 
 		if ( currentEmail ) {
 			const fieldReducer = ( ctx, el, fieldPrefix ) => {
 				// eslint-disable-next-line template-curly-spacing
-				const name = el.name.replace( `${fieldPrefix}-`, '' )
+				const name = el.name
+					.replace( `${ fieldPrefix }-`, '' )
 					// From `tec_tickets_emails_current_section-some-field' to `someField`.
-					.replace( /-([a-z])/g, (g) => g[1].toUpperCase() ).replace( /\[]$/, '' ); // eslint-disable-line space-in-parens, computed-property-spacing, max-len
+					.replace( /-([a-z])/g, ( g ) => g[ 1 ].toUpperCase() )
+					.replace( /\[]$/, '' ); // eslint-disable-line space-in-parens, computed-property-spacing, max-len
 				ctx[ name ] = el.type === 'checkbox' ? el.checked : el.value;
 				return ctx;
 			};
@@ -173,46 +171,51 @@ tribe.tickets.emails = {};
 
 			// Include the generic ticket context.
 			const ticketOptionPrefix = 'tec-tickets-emails-ticket';
-			Array.from( $document.find( 'input[name^=' + ticketOptionPrefix + ']' ) )
-				.reduce( ( ctx, el ) => fieldReducer( ctx, el, ticketOptionPrefix ), context );
+			Array.from( $document.find( 'input[name^=' + ticketOptionPrefix + ']' ) ).reduce(
+				( ctx, el ) => fieldReducer( ctx, el, ticketOptionPrefix ),
+				context
+			);
 
 			// Dynamically fetch the specific email type fields from the inputs. Override the context.
 			const currentEmailOptionPrefix = currentEmail.replace( /_/g, '-' );
-			Array.from( $document.find( 'input[name^=' + currentEmailOptionPrefix + ']' ) )
-				.reduce( ( ctx, el ) => fieldReducer( ctx, el, currentEmailOptionPrefix ), context ); // eslint-disable-line max-len
+			Array.from( $document.find( 'input[name^=' + currentEmailOptionPrefix + ']' ) ).reduce(
+				( ctx, el ) => fieldReducer( ctx, el, currentEmailOptionPrefix ),
+				context
+			); // eslint-disable-line max-len
 
 			// Fetch additional content from the editor.
-			context.addContent = tinyMCE !== undefined
-				? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent()
-				: '';
+			context.addContent =
+				tinyMCE !== undefined
+					? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent()
+					: '';
 		} else {
-			const ticketBgColor = $document
-				.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
+			const ticketBgColor = $document.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
 
 			context.ticketBgColor = ticketBgColor;
 
-			const headerBgColor = $document
-				.find( 'input[name=' + obj.selectors.formHeaderBgColorName + ']' ).val();
+			const headerBgColor = $document.find( 'input[name=' + obj.selectors.formHeaderBgColorName + ']' ).val();
 
 			context.headerBgColor = headerBgColor;
 
-			const headerImageUrl = $document
-				.find( 'input[name=' + obj.selectors.formHeaderImageUrl + ']' ).val();
+			const headerImageUrl = $document.find( 'input[name=' + obj.selectors.formHeaderImageUrl + ']' ).val();
 
 			context.headerImageUrl = headerImageUrl;
 
 			const headerImageAlignment = $document
-				.find( 'select[name=' + obj.selectors.formHeaderImageAlignment + ']' ).val();
+				.find( 'select[name=' + obj.selectors.formHeaderImageAlignment + ']' )
+				.val();
 
 			context.headerImageAlignment = headerImageAlignment;
 
 			const footerCredit = $document
-				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' ).is( ':checked' );
+				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' )
+				.is( ':checked' );
 
 			context.footerCredit = footerCredit;
 
 			// fetch footer content from the editor.
-			context.footerContent = tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : ''; // eslint-disable-line max-len
+			context.footerContent =
+				tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : ''; // eslint-disable-line max-len
 
 			// If we're in the main Emails settings, we show the all options.
 			context.eventLinks = true;
@@ -229,11 +232,8 @@ tribe.tickets.emails = {};
 	 * @since 5.5.7
 	 * @return {void}
 	 */
-	obj.bindModalOpen = function() {
-		$( tribe.dialogs.events ).on(
-			'tribeDialogShowEmailsPreviewModal.tribeTickets',
-			obj.modalOpen,
-		);
+	obj.bindModalOpen = function () {
+		$( tribe.dialogs.events ).on( 'tribeDialogShowEmailsPreviewModal.tribeTickets', obj.modalOpen );
 	};
 
 	/**
@@ -242,7 +242,7 @@ tribe.tickets.emails = {};
 	 * @since 5.5.7
 	 * @return {void}
 	 */
-	obj.ready = function() {
+	obj.ready = function () {
 		obj.bindModalOpen();
 		obj.bindModalClose();
 	};

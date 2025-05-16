@@ -41,7 +41,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 */
 	public function do_register(): void {
 		// Add group path for tickets blocks.
-		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'Tickets/Blocks/' );
+		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'tickets/Blocks/' );
 
 		// The general warnings class.
 		$this->container->singleton( 'tickets.editor.warnings', Warnings::class, [ 'hook' ] );

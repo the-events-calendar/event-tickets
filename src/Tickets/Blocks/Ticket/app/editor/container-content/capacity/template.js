@@ -16,28 +16,20 @@ import { Dashicon } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { constants, options } from '@moderntribe/tickets/data/blocks/ticket';
+import { constants, options } from '../../../../../../../modules/data/blocks/ticket';
 import { LabeledItem, NumberInput, Select } from '@moderntribe/common/elements';
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { LabelWithTooltip } from '../../../../../../../modules/elements';
 import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
-import {applyFilters} from '@wordpress/hooks';
+import { applyFilters } from '@wordpress/hooks';
 
 const { INDEPENDENT, SHARED, TICKET_TYPES, TICKET_LABELS } = constants;
 const { CAPACITY_TYPE_OPTIONS } = options;
 
 // Custom input for this type of form
-const LabeledNumberInput = ( {
-	className,
-	id,
-	label,
-	...props
-} ) => (
+const LabeledNumberInput = ( { className, id, label, ...props } ) => (
 	<LabeledItem
-		className={ classNames(
-			'tribe-editor__labeled-number-input',
-			className,
-		) }
+		className={ classNames( 'tribe-editor__labeled-number-input', className ) }
 		forId={ id }
 		label={ label }
 		isLabel={ true }
@@ -56,11 +48,11 @@ class Capacity extends PureComponent {
 	static propTypes = {
 		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
-		sharedCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-		tempCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+		sharedCapacity: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
+		tempCapacity: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
 		tempCapacityType: PropTypes.string,
 		// Default value, when the Ticket has just been created is an empty object: take that into account.
-		tempCapacityTypeOption: PropTypes.oneOfType([ ReactSelectOption, PropTypes.object ]),
+		tempCapacityTypeOption: PropTypes.oneOfType( [ ReactSelectOption, PropTypes.object ] ),
 		tempSharedCapacity: PropTypes.string,
 		onTempCapacityChange: PropTypes.func,
 		onTempCapacityNoPlusChange: PropTypes.func,
@@ -70,8 +62,8 @@ class Capacity extends PureComponent {
 	};
 
 	static defaultProps = {
-		tempCapacityTypeOption: []
-	}
+		tempCapacityTypeOption: [],
+	};
 
 	constructor( props ) {
 		super( props );
@@ -118,7 +110,7 @@ class Capacity extends PureComponent {
 					key="shared-capacity"
 					className={ classNames(
 						'tribe-editor__ticket__capacity-input-row',
-						'tribe-editor__ticket__capacity-input-row--shared-capacity',
+						'tribe-editor__ticket__capacity-input-row--shared-capacity'
 					) }
 					id={ this.ids.sharedCapacity }
 					label={ __( 'Set shared capacity:', 'event-tickets' ) }
@@ -127,22 +119,16 @@ class Capacity extends PureComponent {
 					disabled={ isDisabled }
 					min={ 0 }
 					required={ true }
-				/>,
+				/>
 			);
 		}
 
 		// If capacity type is shared or independent
-		if ( includes(
-			[ TICKET_TYPES[ SHARED ], TICKET_TYPES[ INDEPENDENT ] ],
-			tempCapacityType,
-		) ) {
+		if ( includes( [ TICKET_TYPES[ SHARED ], TICKET_TYPES[ INDEPENDENT ] ], tempCapacityType ) ) {
 			const extraProps = {};
 			const ticketType = tempCapacityType === TICKET_TYPES[ SHARED ] ? SHARED : INDEPENDENT;
 
-			if (
-				tempCapacityType === TICKET_TYPES[ SHARED ] &&
-					( sharedCapacity || tempSharedCapacity )
-			) {
+			if ( tempCapacityType === TICKET_TYPES[ SHARED ] && ( sharedCapacity || tempSharedCapacity ) ) {
 				const max = sharedCapacity ? sharedCapacity : tempSharedCapacity;
 				extraProps.max = parseInt( max, 10 ) || 0;
 			}
@@ -151,17 +137,18 @@ class Capacity extends PureComponent {
 				extraProps.required = true;
 			}
 
-			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
+			extraProps.label =
+				tempCapacityType === TICKET_TYPES[ SHARED ]
 					? // eslint-disable-next-line no-undef
 					  sprintf(
 							/* Translators: %s - the singular, lowercase label for a ticket. */
-							__('Limit sales of this %s to:', 'event-tickets'),
+							__( 'Limit sales of this %s to:', 'event-tickets' ),
 							TICKET_LABELS.ticket.singularLowercase
 					  )
 					: // eslint-disable-next-line no-undef
 					  sprintf(
 							/* Translators: %s - the plural, lowercase label for a ticket. */
-							__('Number of %s available', 'event-tickets'),
+							__( 'Number of %s available', 'event-tickets' ),
 							TICKET_LABELS.ticket.pluralLowercase
 					  );
 
@@ -171,7 +158,7 @@ class Capacity extends PureComponent {
 					className={ classNames(
 						'tribe-editor__ticket__capacity-input-row',
 						'tribe-editor__ticket__capacity-input-row--capacity',
-						`tribe-editor__ticket__capacity-input-row--capacity-${ ticketType }`,
+						`tribe-editor__ticket__capacity-input-row--capacity-${ ticketType }`
 					) }
 					id={ this.ids.capacity }
 					value={ tempCapacity ?? '' }
@@ -179,7 +166,7 @@ class Capacity extends PureComponent {
 					disabled={ isDisabled }
 					min={ 0 }
 					{ ...extraProps }
-				/>,
+				/>
 			);
 		}
 
@@ -187,11 +174,7 @@ class Capacity extends PureComponent {
 	};
 
 	getCapacityForm = () => {
-		const {
-			isDisabled,
-			tempCapacityTypeOption,
-			onTempCapacityTypeChange,
-		} = this.props;
+		const { isDisabled, tempCapacityTypeOption, onTempCapacityTypeChange } = this.props;
 
 		return (
 			<Fragment>
@@ -211,11 +194,7 @@ class Capacity extends PureComponent {
 	};
 
 	getNoPlusCapacityForm = () => {
-		const {
-			isDisabled,
-			tempCapacity,
-			onTempCapacityNoPlusChange,
-		} = this.props;
+		const { isDisabled, tempCapacity, onTempCapacityNoPlusChange } = this.props;
 
 		return (
 			<Fragment>
@@ -249,32 +228,28 @@ class Capacity extends PureComponent {
 		 * @param {Function} renderForm The function used to render the capacity form.
 		 * @param {Object}   props      The props used to render the Capacity component.
 		 */
-		renderForm = applyFilters(
-			'tec.tickets.blocks.Ticket.Capacity.renderForm',
-			renderForm,
-			this.props
-		);
+		renderForm = applyFilters( 'tec.tickets.blocks.Ticket.Capacity.renderForm', renderForm, this.props );
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__capacity',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--capacity',
-			) }>
+			<div
+				className={ classNames(
+					'tribe-editor__ticket__capacity',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--capacity'
+				) }
+			>
 				<LabelWithTooltip
 					className="tribe-editor__ticket__capacity-label-with-tooltip"
 					forId={ hasTicketsPlus ? this.ids.select : this.ids.capacity }
 					isLabel={ true }
 					// eslint-disable-next-line no-undef
-					label={sprintf(
+					label={ sprintf(
 						/* Translators: %s - the singular label for a ticket. */
-						__('%s Capacity', 'event-tickets'),
+						__( '%s Capacity', 'event-tickets' ),
 						TICKET_LABELS.ticket.singular
-					)}
+					) }
 				/>
-				<div className="tribe-editor__ticket__capacity-form">
-					{ renderForm && renderForm() }
-				</div>
+				<div className="tribe-editor__ticket__capacity-form">{ renderForm && renderForm() }</div>
 			</div>
 		);
 	}

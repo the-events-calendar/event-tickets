@@ -2,6 +2,7 @@
  * Event Tickets Admin Settings - Banners
  *
  * @since 5.1.10
+ * @since TBD Adjusted Admin styles.
  */
 
 .tec-tickets__admin-banner {
@@ -21,7 +22,7 @@
 	}
 
 	@media (--viewport-full) {
-		background-image: url("../images/background-tickets-notice.png");
+		background-image: url(../images/background-tickets-notice.png);
 		background-position: top right;
 		background-repeat: no-repeat;
 		background-size: contain;
@@ -53,8 +54,9 @@
 }
 
 .tec-tickets__admin-tc-banner {
+
 	@media (--viewport-full) {
-		background-image: url("../images/background-tc-banner.png");
+		background-image: url(../images/background-tc-banner.png);
 	}
 }
 
@@ -88,6 +90,7 @@
 }
 
 .tec-tickets__admin-tc-banner-content {
+
 	@media (--viewport-full) {
 		max-width: calc(100% - 450px);
 	}
@@ -102,6 +105,7 @@
 }
 
 .tec-tickets__admin-tc-banner-button {
+
 	@mixin button-solid;
 
 	background-color: #405bfb;
@@ -126,5 +130,15 @@ a.tec-tickets__admin-tc-banner-link {
 	&:hover {
 		color: var(--tec-color-accent-primary-hover);
 		text-decoration: none;
+	}
+}
+
+@media (--viewport-xsmall) {
+	.tickets_page_tec-tickets-settings #tec-settings-form {
+		.tec-settings-form__header-block--horizontal {
+			&.tec-tickets__admin-banner {
+				margin-top: calc(var(--tec-spacer-7) * -1);
+			}
+		}
 	}
 }

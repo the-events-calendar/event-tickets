@@ -11,10 +11,7 @@ import { formatDate, parse as parseDate } from 'date-fns';
  * Internal dependencies
  */
 import { DayPickerInput, TimePicker } from '@moderntribe/common/elements';
-import {
-	date,
-	time,
-} from '@moderntribe/common/utils';
+import { date, time } from '@moderntribe/common/utils';
 import './style.pcss';
 
 class DateTimeRangePicker extends Component {
@@ -62,21 +59,14 @@ class DateTimeRangePicker extends Component {
 	}
 
 	getFromDayPickerInputProps = () => {
-		const {
-			fromDate,
-			fromDateInput,
-			fromDateDisabled,
-			fromDateFormat,
-			onFromDateChange,
-			shiftFocus,
-			toDate,
-		} = this.props;
+		const { fromDate, fromDateInput, fromDateDisabled, fromDateFormat, onFromDateChange, shiftFocus, toDate } =
+			this.props;
 
 		const props = {
 			value: fromDateInput,
 			format: fromDateFormat,
-			formatDate: formatDate,
-			parseDate: parseDate,
+			formatDate,
+			parseDate,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
 				disabledDays: { after: toDate },
@@ -97,30 +87,20 @@ class DateTimeRangePicker extends Component {
 		 * automatically focuses on toDayPickerInput
 		 */
 		if ( shiftFocus ) {
-			props.dayPickerProps.onDayClick = () => (
-				this.toDayPickerInput.current.focus()
-			);
+			props.dayPickerProps.onDayClick = () => this.toDayPickerInput.current.focus();
 		}
 
 		return props;
 	};
 
 	getToDayPickerInputProps = () => {
-		const {
-			fromDate,
-			onToDateChange,
-			shiftFocus,
-			toDate,
-			toDateInput,
-			toDateDisabled,
-			toDateFormat,
-		} = this.props;
+		const { fromDate, onToDateChange, shiftFocus, toDate, toDateInput, toDateDisabled, toDateFormat } = this.props;
 
 		const props = {
 			value: toDateInput,
 			format: toDateFormat,
-			formatDate: formatDate,
-			parseDate: parseDate,
+			formatDate,
+			parseDate,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
 				disabledDays: { before: fromDate },
@@ -199,11 +179,7 @@ class DateTimeRangePicker extends Component {
 	};
 
 	render() {
-		const {
-			className,
-			separatorDateTime,
-			separatorTimeRange,
-		} = this.props;
+		const { className, separatorDateTime, separatorTimeRange } = this.props;
 
 		return (
 			<div className={ classNames( 'tribe-editor__date-time-range-picker', className ) }>
@@ -212,7 +188,7 @@ class DateTimeRangePicker extends Component {
 					<span
 						className={ classNames(
 							'tribe-editor__date-time-range-picker__separator',
-							'tribe-editor__date-time-range-picker__separator--date-time',
+							'tribe-editor__date-time-range-picker__separator--date-time'
 						) }
 					>
 						{ separatorDateTime }
@@ -223,7 +199,7 @@ class DateTimeRangePicker extends Component {
 					<span
 						className={ classNames(
 							'tribe-editor__date-time-range-picker__separator',
-							'tribe-editor__date-time-range-picker__separator--time-range',
+							'tribe-editor__date-time-range-picker__separator--time-range'
 						) }
 					>
 						{ separatorTimeRange }
@@ -232,7 +208,7 @@ class DateTimeRangePicker extends Component {
 					<span
 						className={ classNames(
 							'tribe-editor__date-time-range-picker__separator',
-							'tribe-editor__date-time-range-picker__separator--date-time',
+							'tribe-editor__date-time-range-picker__separator--date-time'
 						) }
 					>
 						{ separatorDateTime }

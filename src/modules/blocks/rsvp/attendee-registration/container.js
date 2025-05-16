@@ -13,7 +13,7 @@ import { select } from '@wordpress/data';
  * Internal dependencies
  */
 import RSVPAttendeeRegistration from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import { globals } from '@moderntribe/common/utils';
 
@@ -25,11 +25,10 @@ const getAttendeeRegistrationUrl = ( state ) => {
 	return `${ adminURL }edit.php?post_type=${ postType }&page=attendee-registration&ticket_id=${ rsvpId }&tribe_events_modal=1`; // eslint-disable-line max-len
 };
 
-const getIsDisabled = ( state ) => (
+const getIsDisabled = ( state ) =>
 	selectors.getRSVPIsLoading( state ) ||
-		selectors.getRSVPSettingsOpen( state ) ||
-		! selectors.getRSVPCreated( state )
-);
+	selectors.getRSVPSettingsOpen( state ) ||
+	! selectors.getRSVPCreated( state );
 
 const mapStateToProps = ( state ) => ( {
 	attendeeRegistrationURL: getAttendeeRegistrationUrl( state ),
@@ -54,10 +53,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// show overlay
 			const showOverlay = () => {
-				iframe
-					.nextSibling
-					.classList
-					.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
+				iframe.nextSibling.classList.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
 			};
 
 			// add event listener for form submit
@@ -76,9 +72,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				removeListeners( iframeWindow );
 
 				// check if there are meta fields
-				const metaFields = iframeWindow
-					.document
-					.querySelector( '#tribe-tickets-attendee-sortables' );
+				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
 				const hasFields = Boolean( metaFields.firstElementChild );
 
 				// dispatch actions
@@ -98,7 +92,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( RSVPAttendeeRegistration );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPAttendeeRegistration );

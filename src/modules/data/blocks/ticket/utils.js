@@ -7,10 +7,7 @@ const { settings, priceSettings, tickets: ticketsConfig } = globals;
 /**
  * Internal dependencies
  */
-import {
-	getDefaultTicketProvider,
-	getTicketProviders,
-} from '@moderntribe/tickets/data/blocks/ticket/selectors';
+import { getDefaultTicketProvider, getTicketProviders } from './selectors';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
@@ -27,7 +24,7 @@ export const getProviderCurrency = ( provider ) => {
 		return tickets.default_currency;
 	}
 
-	const [ result ] = providers.filter( el => el.class === provider );
+	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency : tickets.default_currency;
 };
 
@@ -45,7 +42,7 @@ export const getProviderCurrencyDecimalPoint = ( provider ) => {
 		return defaultCurrencyDecimalPoint;
 	}
 
-	const [ result ] = providers.filter( el => el.class === provider );
+	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency_decimal_point : defaultCurrencyDecimalPoint;
 };
 
@@ -63,7 +60,7 @@ export const getProviderCurrencyNumberOfDecimals = ( provider ) => {
 		return defaultCurrencyNumberOfDecimals;
 	}
 
-	const [ result ] = providers.filter( el => el.class === provider );
+	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency_number_of_decimals : defaultCurrencyNumberOfDecimals;
 };
 
@@ -81,7 +78,7 @@ export const getProviderCurrencyThousandsSep = ( provider ) => {
 		return defaultCurrencyThousandsSep;
 	}
 
-	const [ result ] = providers.filter( el => el.class === provider );
+	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency_thousands_sep : defaultCurrencyThousandsSep;
 };
 
@@ -117,9 +114,7 @@ export const getDefaultProviderCurrencyThousandsSep = () => {
  * Get currency position
  */
 export const getDefaultCurrencyPosition = () => {
-	const position = string.isTruthy( settings() && settings().reverseCurrencyPosition )
-		? 'suffix'
-		: 'prefix';
+	const position = string.isTruthy( settings() && settings().reverseCurrencyPosition ) ? 'suffix' : 'prefix';
 
 	return priceSettings() && priceSettings().defaultCurrencyPosition
 		? priceSettings().defaultCurrencyPosition
@@ -129,24 +124,20 @@ export const getDefaultCurrencyPosition = () => {
 /**
  * Returns whether a Ticket is editable in the context of the current post.
  *
- * @param {number} ticketId The ticket ID.
+ * @param {number} ticketId   The ticket ID.
  * @param {string} ticketType The ticket types, e.g. `default`, `series_pass`, etc.
- * @param {Object} post The post object.
+ * @param {Object} post       The post object.
  */
 export const isTicketEditableFromPost = ( ticketId, ticketType, post ) => {
 	/**
 	 * Filters whether a ticket can be edited from a post.
 	 *
 	 * @since 5.8.0
-	 * @param {boolean} isEditable Whether or not the ticket can be edited from the post.
-	 * @param {Object} context The context of the filter.
-	 * @param {number} context.ticketId The ticket ID.
-	 * @param {string} context.ticketType The ticket types, e.g. `default`, `series_pass`, etc.
-	 * @param {Object} context.post The post object.
+	 * @param {boolean} isEditable         Whether or not the ticket can be edited from the post.
+	 * @param {Object}  context            The context of the filter.
+	 * @param {number}  context.ticketId   The ticket ID.
+	 * @param {string}  context.ticketType The ticket types, e.g. `default`, `series_pass`, etc.
+	 * @param {Object}  context.post       The post object.
 	 */
-	return applyFilters(
-		'tec.tickets.blocks.editTicketFromPost',
-		true,
-		{ ticketId, ticketType, post },
-	);
+	return applyFilters( 'tec.tickets.blocks.editTicketFromPost', true, { ticketId, ticketType, post } );
 };

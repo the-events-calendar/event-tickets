@@ -3,9 +3,10 @@
  */
 
 /* Import Mixins */
-@import 'tickets-common.pcss';
+@import "tickets-common.pcss";
 
 body.page-tribe-attendee-registration {
+
 	* {
 		-moz-osx-font-smoothing: grayscale;
 		-webkit-font-smoothing: antialiased;
@@ -31,6 +32,7 @@ body.page-tribe-attendee-registration {
 	}
 
 	.tribe-tickets__registration {
+
 		@media (--viewport-medium) {
 			margin: auto;
 			max-width: 960px;
@@ -41,10 +43,12 @@ body.page-tribe-attendee-registration {
 	 * Hide from screenreaders & browsers
 	 * ----------------------------------------------------------------------------- */
 	.tribe-common-a11y-hidden {
+
 		@mixin hidden;
 	}
 
 	.tribe-common {
+
 		.tribe-events-single {
 			margin: 0 auto;
 			max-width: 1000px;
@@ -83,7 +87,7 @@ body.page-tribe-attendee-registration {
 			box-shadow: initial;
 			color: var(--tec-color-text-primary);
 
-			&:before {
+			&::before {
 				content: svg-inline(arrow);
 				margin-right: var(--tec-spacer-0);
 				vertical-align: baseline;
@@ -397,7 +401,9 @@ body.page-tribe-attendee-registration {
 	 * ------------------------------------------------------------------------- */
 
 	&.tribe-theme-twentyseventeen {
+
 		&.page.page-one-column {
+
 			#primary {
 				max-width: 100%;
 			}
@@ -405,6 +411,7 @@ body.page-tribe-attendee-registration {
 
 		&.page-one-column,
 		&.page-two-column {
+
 			#primary .entry-content {
 				float: initial;
 				margin: auto;
@@ -423,6 +430,7 @@ body.page-tribe-attendee-registration {
 	 * ------------------------------------------------------------------------- */
 
 	&.tribe-theme-twentytwenty {
+
 		.entry-content .tribe-tickets__registration {
 			max-width: 960px !important;
 		}

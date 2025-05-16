@@ -17,19 +17,17 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem, NumberInput } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPCapacity = ( {
-	isDisabled,
-	onTempCapacityChange,
-	tempCapacity,
-} ) => {
+const RSVPCapacity = ( { isDisabled, onTempCapacityChange, tempCapacity } ) => {
 	const capacityId = uniqid();
 
 	return (
-		<div className={ classNames(
-			'tribe-editor__ticket__capacity',
-			'tribe-editor__ticket__content-row',
-			'tribe-editor__ticket__content-row--capacity',
-		) }>
+		<div
+			className={ classNames(
+				'tribe-editor__ticket__capacity',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--capacity'
+			) }
+		>
 			<LabeledItem
 				className="tribe-editor__ticket__capacity-label"
 				forId={ capacityId }

@@ -22,7 +22,7 @@ export function currentProviderSupportsSeating() {
 	 *
 	 * @param {string[]} allowedProviders The allowed ticket providers for seating.
 	 */
-	let allowedProviders = applyFilters( 'tec.tickets.seating.allowedProviders', [
+	const allowedProviders = applyFilters( 'tec.tickets.seating.allowedProviders', [
 		'TEC\\Tickets\\Commerce\\Module',
 	] );
 

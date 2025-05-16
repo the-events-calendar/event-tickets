@@ -32,45 +32,45 @@ import './style.pcss';
 const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
 	let items = [
 		{
-			item: <Title clientId={ clientId }/>,
+			item: <Title clientId={ clientId } />,
 			key: 'title',
 		},
 		{
-			item: <Description clientId={ clientId }/>,
+			item: <Description clientId={ clientId } />,
 			key: 'description',
 		},
 		{
-			item: <Price clientId={ clientId }/>,
+			item: <Price clientId={ clientId } />,
 			key: 'price',
 		},
 		{
-			item: <Type clientId={ clientId }/>,
+			item: <Type clientId={ clientId } />,
 			key: 'type',
 		},
 		{
-			item: <Capacity clientId={ clientId }/>,
+			item: <Capacity clientId={ clientId } />,
 			key: 'capacity',
 		},
 		{
-			item: <Duration clientId={ clientId }/>,
+			item: <Duration clientId={ clientId } />,
 			key: 'duration',
 		},
 		{
-			item: <AdvancedOptions clientId={ clientId }/>,
+			item: <AdvancedOptions clientId={ clientId } />,
 			key: 'advancedOptions',
 		},
 	];
 
 	if ( hasTicketsPlus && hasIacVars ) {
 		items.push( {
-			item: <AttendeeCollection clientId={ clientId }/>,
+			item: <AttendeeCollection clientId={ clientId } />,
 			key: 'attendeeCollection',
 		} );
 	}
 
 	if ( hasTicketsPlus ) {
 		items.push( {
-			item: <AttendeesRegistration clientId={ clientId }/>,
+			item: <AttendeesRegistration clientId={ clientId } />,
 			key: 'attendeesRegistration',
 		} );
 	}
@@ -83,25 +83,20 @@ const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
 	 * @param {object[]} items    The ticket container items.
 	 * @param {string}   clientId The client ID.
 	 */
-	items = applyFilters(
-		'tec.ticket.container.items',
-		items,
-		clientId,
-	);
+	items = applyFilters( 'tec.ticket.container.items', items, clientId );
 
 	return items;
-}
+};
 
 const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => {
 	return (
 		<Fragment>
-			{getTicketContainerItems(clientId, hasTicketsPlus, hasIacVars).map((item) => (
-				<Fragment key={item.key}>
-					{item.item}
-				</Fragment>
-			))}
+			{ getTicketContainerItems( clientId, hasTicketsPlus, hasIacVars ).map( ( item ) => (
+				<Fragment key={ item.key }>{ item.item }</Fragment>
+			) ) }
 		</Fragment>
-	);};
+	);
+};
 
 TicketContainerContent.propTypes = {
 	clientId: PropTypes.string.isRequired,

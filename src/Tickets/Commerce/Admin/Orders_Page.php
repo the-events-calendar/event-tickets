@@ -44,7 +44,7 @@ class Orders_Page {
 			$this->get_position()
 		);
 
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'event-tickets-commerce-admin-orders-css',
 			'tickets-commerce/admin/orders/table.css',
@@ -54,7 +54,7 @@ class Orders_Page {
 		);
 
 		// We only want to load this script if The Events Calendar is not active.
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'event-tickets-commerce-admin-orders',
 			'admin/orders/table.js',
@@ -68,7 +68,7 @@ class Orders_Page {
 			[ 'conditionals' => [ $this, 'is_admin_orders_page_and_no_TEC' ] ]
 		);
 
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'event-tickets-commerce-admin-orders-single-css',
 			'tickets-commerce/admin/orders/single.css',
@@ -77,7 +77,7 @@ class Orders_Page {
 			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
 		);
 
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'event-tickets-commerce-admin-orders-single',
 			'admin/orders/single.js',

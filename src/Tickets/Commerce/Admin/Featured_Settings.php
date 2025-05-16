@@ -45,21 +45,22 @@ class Featured_Settings {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array   $context Context of template.
-	 * @param boolean $echo    Whether or not to output the HTML or just return it.
+	 * @param array   $context      Context of template.
+	 * @param boolean $should_print Whether or not to output the HTML or just return it.
 	 *
 	 * @return Tribe__Template
 	 */
-	public function get_html( $context = [], $echo = false ) {
+	public function get_html( $context = [], $should_print = false ) {
 		$defaults = [
-			'title'            => '',
-			'description'      => '',
-			'links'            => [],
-			'content_template' => '',
-			'classes'          => [],
+			'title'             => '',
+			'description'       => '',
+			'links'             => [],
+			'content_template'  => '',
+			'classes'           => [],
+			'container_classes' => [],
 		];
 		$template = $this->get_template();
 
-		return $template->template( 'container', wp_parse_args( $context, $defaults ), $echo );
+		return $template->template( 'container', wp_parse_args( $context, $defaults ), $should_print );
 	}
 }

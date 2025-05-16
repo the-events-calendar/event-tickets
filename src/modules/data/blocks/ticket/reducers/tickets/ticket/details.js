@@ -6,18 +6,14 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
-import * as constants from '@moderntribe/tickets/data/blocks/ticket/constants';
-import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
+import * as constants from '../../../constants';
+import * as types from '../../../types';
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
-const bufferDuration = globals.tickets().end_sale_buffer_duration
-	? globals.tickets().end_sale_buffer_duration
-	: 2;
-const bufferYears = globals.tickets().end_sale_buffer_years
-	? globals.tickets().end_sale_buffer_years
-	: 1;
+const bufferDuration = globals.tickets().end_sale_buffer_duration ? globals.tickets().end_sale_buffer_duration : 2;
+const bufferYears = globals.tickets().end_sale_buffer_years ? globals.tickets().end_sale_buffer_years : 1;
 const endMoment = currentMoment.clone().add( bufferDuration, 'hours' ).add( bufferYears, 'years' );
 
 const startDateInput = datePickerFormat
@@ -26,9 +22,7 @@ const startDateInput = datePickerFormat
 const endDateInput = datePickerFormat
 	? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
 	: momentUtil.toDate( endMoment );
-const iac = globals.iacVars().iacDefault
-	? globals.iacVars().iacDefault
-	: 'none';
+const iac = globals.iacVars().iacDefault ? globals.iacVars().iacDefault : 'none';
 
 export const DEFAULT_STATE = {
 	attendeeInfoFields: [],
@@ -37,7 +31,7 @@ export const DEFAULT_STATE = {
 	price: '',
 	on_sale: false,
 	sku: '',
-	iac: iac,
+	iac,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
 	startDateInput,
 	startDateMoment: currentMoment,

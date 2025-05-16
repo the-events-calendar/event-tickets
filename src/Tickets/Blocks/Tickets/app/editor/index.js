@@ -13,13 +13,13 @@ const { InnerBlocks, useBlockProps } = wp.blockEditor;
 /**
  * Internal dependencies
  */
-import { Tickets as TicketsIcon } from '@moderntribe/tickets/icons';
+import { Tickets as TicketsIcon } from '../../../../../modules/icons';
 import {
 	KEY_TICKET_HEADER,
 	KEY_TICKET_CAPACITY,
 	KEY_TICKET_DEFAULT_PROVIDER,
 	KEY_TICKETS_LIST,
-} from '@moderntribe/tickets/data/utils';
+} from '../../../../../modules/data/utils';
 import Tickets from './container';
 
 const block = {
@@ -48,11 +48,11 @@ const block = {
 		},
 	},
 
-	edit(editProps) {
+	edit( editProps ) {
 		const blockProps = useBlockProps();
 		return (
-			<div {...blockProps}>
-				<Tickets {...editProps} />
+			<div { ...blockProps }>
+				<Tickets { ...editProps } />
 			</div>
 		);
 	},
@@ -60,11 +60,11 @@ const block = {
 		const blockProps = useBlockProps.save();
 
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<InnerBlocks.Content />
 			</div>
 		);
 	},
 };
 
-registerBlockType(`tribe/tickets`, block);
+registerBlockType( `tribe/tickets`, block );

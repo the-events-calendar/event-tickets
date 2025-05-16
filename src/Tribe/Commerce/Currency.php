@@ -193,7 +193,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.7
 	 *
-	 * @see https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
+	 * @see https://en.wikipedia.org/wiki/Decimal_separator for separators information
 	 */
 	public function generate_default_currency_map() {
 		$default_map = array(

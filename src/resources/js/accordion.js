@@ -1,36 +1,36 @@
-( function() {
+( function () {
 	'use strict';
 
 	// This is our global accordion index to keep unique ids
-	var topIndex = 0;
+	let topIndex = 0;
 
-	window.MTAccordion = function( options, callback ) {
+	window.MTAccordion = function ( options, callback ) {
 		if ( 'undefined' === typeof options.target ) {
 			return false;
 		}
 
-		var accordion = document.querySelector( options.target );
+		const accordion = document.querySelector( options.target );
 
 		if ( ! accordion ) {
 			return;
 		}
 
 		// Simple iterator for reuse
-		var forEach = function( array, callback, scope ) {
-			for ( var i = 0, imax = array.length; i < imax; i++ ) {
-				callback.call( scope, i, array[i] ); // passes back stuff we need
+		const forEach = function ( array, callback, scope ) {
+			for ( let i = 0, imax = array.length; i < imax; i++ ) {
+				callback.call( scope, i, array[ i ] ); // passes back stuff we need
 			}
 		};
 		// set ARIA role
 		accordion.setAttribute( 'role', 'tablist' );
 
-		var accordionContent = accordion.getElementsByClassName( 'accordion-content' );
-		var accordionHeader  = accordion.getElementsByClassName( 'accordion-header' );
+		const accordionContent = accordion.getElementsByClassName( 'accordion-content' );
+		const accordionHeader = accordion.getElementsByClassName( 'accordion-header' );
 
 		topIndex++;
 
-		forEach( accordionHeader, function( index, value ) {
-			var head = value;
+		forEach( accordionHeader, function ( index, value ) {
+			const head = value;
 			index++;
 
 			// Prevent Reconfiguring Accordion
@@ -48,8 +48,8 @@
 			head.addEventListener( 'click', accordionHandle );
 
 			function accordionHandle( event ) {
-				var nextPanel = value.nextElementSibling;
-				var nextPanelLabel = nextPanel.getElementsByClassName( 'accordion-label' )[0];
+				const nextPanel = value.nextElementSibling;
+				const nextPanelLabel = nextPanel.getElementsByClassName( 'accordion-label' )[ 0 ];
 
 				value.classList.toggle( 'is-active' );
 
@@ -70,10 +70,10 @@
 
 				event.preventDefault();
 			}
-		});
+		} );
 
-		forEach( accordionContent, function( index, value ) {
-			var content = value;
+		forEach( accordionContent, function ( index, value ) {
+			const content = value;
 			index++;
 
 			// Prevent Reconfiguring Accordion
@@ -87,13 +87,13 @@
 			content.setAttribute( 'aria-labelledby', 'tab' + topIndex + '-' + index );
 			content.setAttribute( 'role', 'tabpanel' );
 			//content.setAttribute( 'tabindex', '-1' );
-		});
+		} );
 
 		// Execute the callback function
 		if ( typeof callback === 'function' ) {
 			callback.call();
 		}
-	}
+	};
 
 	// IE8 compatible alternative to DOMContentLoaded
 	document.onreadystatechange = function () {
@@ -102,5 +102,5 @@
 				target: '.accordion', // ID (or class) of accordion container
 			} );
 		}
-	}
+	};
 } )();

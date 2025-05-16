@@ -27,7 +27,7 @@ class Tribe__Tickets__Assets {
 		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_stylesheet = tribe_tickets_new_views_is_enabled() ? 'tickets.css' : 'tickets-v1.css';
 
-		tribe_assets(
+		tec_assets(
 			$tickets_main,
 			[
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
@@ -41,7 +41,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-forms-style',
 			'tickets-forms.css',
@@ -59,7 +59,7 @@ class Tribe__Tickets__Assets {
 		);
 
 		// Tickets loader library JS.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-loader',
 			'v2/tickets-loader.js',
@@ -79,7 +79,7 @@ class Tribe__Tickets__Assets {
 		);
 
 		// @todo: Remove this once we solve the common breakpoints vs container based.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-common-responsive',
 			'common-responsive.css',
@@ -97,7 +97,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-orders-style',
 			'my-tickets.css',
@@ -115,7 +115,7 @@ class Tribe__Tickets__Assets {
 
 		if ( tribe_tickets_new_views_is_enabled() ) {
 			// Tribe tickets utils.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-utils',
 				'v2/tickets-utils.js',
@@ -140,7 +140,7 @@ class Tribe__Tickets__Assets {
 			);
 
 			// Tribe tickets page.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-page',
 				'v2/tickets-page.js',
@@ -159,7 +159,7 @@ class Tribe__Tickets__Assets {
 		} else {
 
 			// Tickets registration page scripts.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-registration-page-scripts',
 				'tickets-registration-page.js',
@@ -177,7 +177,7 @@ class Tribe__Tickets__Assets {
 			);
 
 			// Tickets registration page styles.
-			tribe_asset(
+			tec_asset(
 				$tickets_main,
 				'tribe-tickets-registration-page-styles',
 				'tickets-registration-page.css',
@@ -211,7 +211,7 @@ class Tribe__Tickets__Assets {
 			[ 'event-tickets-admin-js', 'tickets.js', $ticket_js_deps ],
 		];
 
-		tribe_assets(
+		tec_assets(
 			$tickets_main,
 			$assets,
 			'admin_enqueue_scripts',
@@ -290,7 +290,7 @@ class Tribe__Tickets__Assets {
 			'ajaxurl'                       => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-admin-manager',
 			'admin/tickets-manager.js',
@@ -326,7 +326,7 @@ class Tribe__Tickets__Assets {
 			],
 		];
 
-		tribe_assets(
+		tec_assets(
 			$tickets_main,
 			$settings_assets,
 			'admin_enqueue_scripts',
@@ -336,7 +336,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-admin-attendees',
 			'tickets-admin-attendees.css',
@@ -349,7 +349,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tickets-report-css',
 			'tickets-report.css',
@@ -362,7 +362,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tickets-report-print-css',
 			'tickets-report-print.css',
@@ -376,7 +376,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tickets-attendees-js',
 			'tickets-attendees.js',
@@ -423,7 +423,7 @@ class Tribe__Tickets__Assets {
 		);
 
 		// WP Admin and admin bar.
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tec-tickets-admin-wp',
 			'tickets-admin-wp.css',

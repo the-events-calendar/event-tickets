@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Add defensive coding to custom_glance_items_attendees() to avoid a fatal. [ET-2404]

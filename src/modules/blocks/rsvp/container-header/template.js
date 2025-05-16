@@ -12,12 +12,9 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPCounters from '@moderntribe/tickets/blocks/rsvp/counters/container';
-import { NumericLabel, SplitContainer } from '@moderntribe/tickets/elements';
-import {
-	SettingsActionButton,
-	AttendeesActionButton,
-} from '@moderntribe/tickets/blocks/rsvp/action-buttons';
+import RSVPCounters from '../counters/container';
+import { NumericLabel, SplitContainer } from '../../../elements';
+import { SettingsActionButton, AttendeesActionButton } from '../action-buttons';
 
 import './style.pcss';
 
@@ -43,14 +40,7 @@ const getCapacityLabel = ( capacity ) => {
 	);
 };
 
-const RSVPContainerHeader = ( {
-	description,
-	isAddEditOpen,
-	isCreated,
-	title,
-	available,
-	setAddEditOpen,
-} ) => {
+const RSVPContainerHeader = ( { description, isAddEditOpen, isCreated, title, available, setAddEditOpen } ) => {
 	if ( isAddEditOpen ) {
 		return null;
 	}
@@ -58,9 +48,7 @@ const RSVPContainerHeader = ( {
 	/* eslint-disable max-len */
 	const leftColumn = (
 		<>
-			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-				{ title }
-			</h3>
+			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">{ title }</h3>
 
 			<div className="tribe-editor__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
 				{ description }
@@ -73,8 +61,12 @@ const RSVPContainerHeader = ( {
 
 	const rightColumn = (
 		<>
-			<button id="edit-rsvp" className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium" onClick={ setAddEditOpen }>
-				{ __( 'Edit RSVP', 'event-tickets' )}
+			<button
+				id="edit-rsvp"
+				className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium"
+				onClick={ setAddEditOpen }
+			>
+				{ __( 'Edit RSVP', 'event-tickets' ) }
 			</button>
 			<SettingsActionButton />
 			<AttendeesActionButton />
@@ -84,10 +76,7 @@ const RSVPContainerHeader = ( {
 	return (
 		<>
 			<div className="tribe-common tribe-editor__inactive-block--rsvp tribe-editor__rsvp-container-header">
-				<SplitContainer
-					leftColumn={ leftColumn }
-					rightColumn={ rightColumn }
-				/>
+				<SplitContainer leftColumn={ leftColumn } rightColumn={ rightColumn } />
 			</div>
 		</>
 	);

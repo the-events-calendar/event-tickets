@@ -8,8 +8,8 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import { Card } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { Card } from '../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../modules/data/blocks/ticket/constants';
 import NotSupportedMessage from './not-supported-message/container';
 import TicketsDashboard from './dashboard/container';
 import TicketsContainer from './container/container';
@@ -31,12 +31,12 @@ class Tickets extends PureComponent {
 	};
 
 	componentDidMount() {
-		this.props.onBlockUpdate(this.props.isSelected);
+		this.props.onBlockUpdate( this.props.isSelected );
 	}
 
-	componentDidUpdate(prevProps) {
-		if (prevProps.isSelected !== this.props.isSelected) {
-			this.props.onBlockUpdate(this.props.isSelected);
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.isSelected !== this.props.isSelected ) {
+			this.props.onBlockUpdate( this.props.isSelected );
 		}
 	}
 
@@ -50,20 +50,15 @@ class Tickets extends PureComponent {
 
 		let tickets = [];
 		try {
-			tickets = JSON.parse(ticketsJSON) || [];
-		} catch (e) {
+			tickets = JSON.parse( ticketsJSON ) || [];
+		} catch ( e ) {
 			// Do nothing.
 		}
 
 		return (
 			<Fragment>
-				<TicketsContainer isSelected={isSelected} tickets={tickets} />
-				{canCreateTickets && (
-					<TicketsDashboard
-						isSelected={isSelected}
-						clientId={clientId}
-					/>
-				)}
+				<TicketsContainer isSelected={ isSelected } tickets={ tickets } />
+				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
 				<TicketControls />
 			</Fragment>
 		);
@@ -79,8 +74,8 @@ class Tickets extends PureComponent {
 
 		let tickets = [];
 		try {
-			tickets = JSON.parse(ticketsJSON) || [];
-		} catch (e) {
+			tickets = JSON.parse( ticketsJSON ) || [];
+		} catch ( e ) {
 			// Do nothing.
 		}
 
@@ -88,31 +83,26 @@ class Tickets extends PureComponent {
 			<>
 				<Card
 					className="tribe-editor__card tribe-editor__not-supported-message"
-					header={TICKET_LABELS.ticket.plural}
+					header={ TICKET_LABELS.ticket.plural }
 				>
-					<div className="tribe-editor__title__help-messages">
-						{showWarning && <Warning />}
-					</div>
-					{showUneditableTickets && (
-						<Uneditable
-							cardClassName="tribe-editor__uneditable__card"
-							tickets={tickets}
-						/>
-					)}
-					{showWarning && (
+					<div className="tribe-editor__title__help-messages">{ showWarning && <Warning /> }</div>
+					{ showUneditableTickets && (
+						<Uneditable cardClassName="tribe-editor__uneditable__card" tickets={ tickets } />
+					) }
+					{ showWarning && (
 						<div className="tickets-description">
 							<div className="tribe-editor__tickets__container__helper__container">
 								<NotSupportedMessage />
 							</div>
 						</div>
-					)}
+					) }
 				</Card>
 			</>
 		);
 	}
 
 	renderContent() {
-		if (this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring) {
+		if ( this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring ) {
 			return this.renderBlockNotSupported();
 		}
 
@@ -124,13 +114,13 @@ class Tickets extends PureComponent {
 
 		return (
 			<div
-				className={classNames(
+				className={ classNames(
 					'tribe-editor__tickets',
 					{ 'tribe-editor__tickets--selected': isSelected },
 					{ 'tribe-editor__tickets--settings-open': isSettingsOpen }
-				)}
+				) }
 			>
-				{this.renderContent()}
+				{ this.renderContent() }
 			</div>
 		);
 	}

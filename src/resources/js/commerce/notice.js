@@ -31,8 +31,8 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
  *
  * @since 5.2.0
  *
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.commerce.notice
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.commerce.notice
  *
  * @return {void}
  */
@@ -97,8 +97,8 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param {jQuery} $item Target container for notice component.
-	 * @param {string} title Notice title data.
+	 * @param {jQuery} $item   Target container for notice component.
+	 * @param {string} title   Notice title data.
 	 * @param {string} content Message that is shown.
 	 */
 	obj.populate = ( $item, title, content ) => {
@@ -129,5 +129,4 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 
 		$item.trigger( 'afterPopulateNotice.tecTicketsCommerce', [ $container ] );
 	};
-
 } )( jQuery, tribe.tickets.commerce.notice );

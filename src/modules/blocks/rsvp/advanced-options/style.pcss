@@ -5,14 +5,14 @@
 
 		&.active {
 
-			&:before {
-				content: '';
+			&::before {
+				background-color: #e1e3e6;
+				content: "";
 				height: 1px;
-				width: calc( 100% + 12px );
-				background-color: #E1E3E6;
+				left: 0;
 				position: absolute;
 				top: 10px;
-				left: 0;
+				width: calc(100% + 12px);
 			}
 		}
 
@@ -26,16 +26,16 @@
 }
 
 .tribe-editor__rsvp__advanced-options-header {
-	border: none;
-	background-color: #f8f9f9 !important;
-	display: flex;
 	align-items: center;
+	background-color: #f8f9f9 !important;
+	border: none;
+	display: flex;
 	padding: 0;
 	position: relative;
 }
 
 svg.tribe-editor__rsvp__advanced-options-header-icon {
-	fill: #8D949B;
+	fill: #8d949b;
 	margin-left: -5px;
 	margin-right: 3px;
 
@@ -44,18 +44,18 @@ svg.tribe-editor__rsvp__advanced-options-header-icon {
 	}
 
 	.tribe-editor__rsvp-container--disabled & {
-		fill: #AEB4BB;
+		fill: #aeb4bb;
 	}
 }
 
 .tribe-editor__rsvp__advanced-options-header-text {
-	color: #000000;
+	color: #000;
 	font-size: 15px;
-	font-weight: bold;
+	font-weight: 700;
 	line-height: 18px;
 	padding-right: 10px;
 
 	.tribe-editor__rsvp-container--disabled & {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }
