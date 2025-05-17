@@ -91,7 +91,6 @@ class Payments extends Abstract_Step {
 	 */
 	public function handle_payment_gateway_connection( $response, $request ): WP_REST_Response {
 		$params = $request->get_params();
-		$success = false;
 
 		if ( ! isset( $params['gateway'] ) ) {
 			return $this->add_message( $response, __( 'Payment gateway connection not requested.', 'event-tickets' ) );

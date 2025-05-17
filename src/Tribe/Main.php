@@ -240,6 +240,13 @@ class Tribe__Tickets__Main {
 		$this->redirect_to_wizard_on_activation();
 	}
 
+	/**
+	 * Redirect to the wizard on activation.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function redirect_to_wizard_on_activation() {
 		if ( is_network_admin() ) {
 			// Never redirect on network admin.
@@ -247,9 +254,9 @@ class Tribe__Tickets__Main {
 		}
 
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
-		$checked = $_POST['checked'] ?? [];
+		$checked = isset( $_POST['checked'] ) ? count( $_POST['checked'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		if ( count( $checked ) > 1 ) {
+		if ( ! empty( $checked ) ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
 			set_transient( '_tec_tickets_wizard_redirect', 1, 30 );
 		} else {
@@ -495,18 +502,18 @@ class Tribe__Tickets__Main {
 		tribe( 'tickets.privacy' );
 
 		/**
-		 * Fires once Event Tickets has completed basic setup.
-		 *
-		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
-		 */
-		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
-
-		/**
 		 * Fires when Event Tickets is fully loaded.
 		 *
 		 * @since 5.22.0
 		 */
 		do_action( 'tec_tickets_fully_loaded' );
+
+		/**
+		 * Fires once Event Tickets has completed basic setup.
+		 *
+		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
+		 */
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
 	}
 
 	/**
@@ -568,6 +575,15 @@ class Tribe__Tickets__Main {
 
 		// Set up IAN Client - In-App Notifications.
 		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
+
+		/**
+		 * Allows other plugins and services to override/change the bound implementations.
+		 *
+		 * DO NOT put anything after this unless you _need to_ and know the implications!
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_bound_implementations' );
 	}
 
 	/**

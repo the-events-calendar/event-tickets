@@ -11,11 +11,6 @@ use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Order_Schema;
-use TEC\Common\Admin\Entities\Div;
-use TEC\Common\Admin\Entities\Field_Wrapper;
-use TEC\Common\Admin\Entities\Heading;
-use Tribe\Utils\Element_Classes as Classes;
-use Tribe__Field;
 
 /**
  * Class Purchase_Receipt
