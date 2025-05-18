@@ -61,10 +61,10 @@ exports[`RSVP block sagas initializeRSVP should initialize state from datetime b
 `;
 
 exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "January 4, 2018",
     ],
     "context": null,
@@ -463,14 +463,14 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 3`] = `
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
+  "ALL": [
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE",
@@ -478,11 +478,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_INPUT",
@@ -490,11 +490,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
@@ -502,11 +502,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME",
@@ -514,11 +514,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME_INPUT",
@@ -526,11 +526,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
@@ -538,11 +538,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_INPUT",
@@ -550,11 +550,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
@@ -562,11 +562,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
@@ -574,11 +574,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME_INPUT",
@@ -586,11 +586,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "hasChanges": true,
           },
           "type": "@@MT/TICKETS/SET_RSVP_HAS_CHANGES",
@@ -598,10 +598,10 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
