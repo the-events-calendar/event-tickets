@@ -114,7 +114,7 @@ class Payments_Tab extends Service_Provider {
 		$this->container->singleton( static::class, $this );
 		$tab_id = self::TAB_ID;
 
-		add_action( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
+		add_filter( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
 		add_action( "tribe_settings_after_save_{$tab_id}", [ $this, 'maybe_generate_pages' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_tab_id' ] );
@@ -193,6 +193,10 @@ class Payments_Tab extends Service_Provider {
 	 * @return array
 	 */
 	public function include_form_class( $form_classes, $admin_page, $tab_object ) {
+		if ( ! $tab_object ) {
+			return $form_classes;
+		}
+
 		if ( $tab_object->id !== static::$slug && $tab_object->get_parent_id() !== static::$slug ) {
 			return $form_classes;
 		}

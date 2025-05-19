@@ -13,7 +13,6 @@ use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
-use Tribe\Utils\Element_Classes as Classes;
 
 /**
  * Class Ticket
@@ -221,7 +220,7 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 	public function get_default_preview_context( $args = [] ): array {
 		$defaults = tribe( Email_Template::class )->get_preview_context( $args );
 
-		$args['order']   = Preview_Data::get_order();
+		$args['order'] = Preview_Data::get_order();
 		$args['tickets'] = Preview_Data::get_tickets();
 		$args['heading'] = $this->get_heading();
 
@@ -236,7 +235,7 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 	 * @return array $args The default arguments
 	 */
 	public function get_default_template_context(): array {
-		return [
+		$defaults = [
 			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
@@ -246,6 +245,8 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 			'additional_content' => $this->get_additional_content(),
 			'json_ld'            => Reservation_Schema::build_from_email( $this ),
 		];
+
+		return $defaults;
 	}
 
 	/**
