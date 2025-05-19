@@ -61,10 +61,10 @@ exports[`RSVP block sagas initializeRSVP should initialize state from datetime b
 `;
 
 exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 3`] = `
-{
+Object {
   "@@redux-saga/IO": true,
-  "CALL": {
-    "args": [
+  "CALL": Object {
+    "args": Array [
       "January 4, 2018",
     ],
     "context": null,
@@ -463,14 +463,14 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 3`] = `
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
-{
+Object {
   "@@redux-saga/IO": true,
-  "ALL": [
-    {
+  "ALL": Array [
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE",
@@ -478,11 +478,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_INPUT",
@@ -490,11 +490,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
@@ -502,11 +502,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME",
@@ -514,11 +514,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME_INPUT",
@@ -526,11 +526,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
@@ -538,11 +538,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_INPUT",
@@ -550,11 +550,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
@@ -562,11 +562,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
@@ -574,11 +574,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME_INPUT",
@@ -586,11 +586,11 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "PUT": {
-        "action": {
-          "payload": {
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "hasChanges": true,
           },
           "type": "@@MT/TICKETS/SET_RSVP_HAS_CHANGES",
@@ -598,10 +598,10 @@ exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
         "channel": null,
       },
     },
-    {
+    Object {
       "@@redux-saga/IO": true,
-      "CALL": {
-        "args": [],
+      "CALL": Object {
+        "args": Array [],
         "context": null,
         "fn": [Function],
       },
