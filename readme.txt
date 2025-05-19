@@ -199,6 +199,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.23.0] 2025-05-19 =
+
+* Feature - Event Tickets Onboarding Wizard [ET-2339]
+* Fix - Add defensive coding to custom_glance_items_attendees() to avoid a fatal. [ET-2404]
+* Language - 58 new strings added, 361 updated, 2 fuzzied, and 6 obsoleted.
+
 = [5.22.0.1] 2025-05-14 =
 
 * Fix - Prevents fatal if QR library in common has not loaded. [TEC-5497]
