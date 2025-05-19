@@ -17,7 +17,7 @@ use Tribe__Tickets__Main;
  * Class Payments_Tab
  *
  * @since 5.2.0
- * @since TBD Added horizontal layout blocks for improved visual organization.
+ * @since 5.23.0 Added horizontal layout blocks for improved visual organization.
  *
  * @package TEC\Tickets\Commerce
  */
@@ -35,7 +35,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Tab ID for the Tickets Commerce settings.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ class Payments_Tab extends Service_Provider {
 	 * Key to use in GET variable for currently selected section.
 	 *
 	 * @since 5.3.0
-	 * @since TBD updated to new tab system.
+	 * @since 5.23.0 updated to new tab system.
 	 *
 	 * @var string
 	 */
@@ -99,7 +99,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Stores the instance of the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var Tribe__Settings_Tab
 	 */
@@ -108,7 +108,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * @inheritdoc
 	 *
-	 * @since TBD switched to using $tab_id const.
+	 * @since 5.23.0 switched to using $tab_id const.
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
@@ -129,7 +129,7 @@ class Payments_Tab extends Service_Provider {
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Updated to use new child tabs.
+	 * @since 5.23.0 Updated to use new child tabs.
 	 *
 	 * @param string $admin_page The admin page to register the tab on.
 	 */
@@ -184,7 +184,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Include the form class for the Payments tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param array               $form_classes The form classes.
 	 * @param string              $admin_page   The admin page.
@@ -213,7 +213,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Gets the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return Tribe__Settings_Tab
 	 */
@@ -401,7 +401,7 @@ class Payments_Tab extends Service_Provider {
 	 * Get selected section top level menu.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Wrapped elements in new HTML.
+	 * @since 5.23.0 Wrapped elements in new HTML.
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
@@ -465,7 +465,7 @@ class Payments_Tab extends Service_Provider {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated classes to display section as a horizontal block.
+	 * @since 5.23.0 Updated classes to display section as a horizontal block.
 	 *
 	 * @return array[]
 	 */
@@ -630,12 +630,12 @@ class Payments_Tab extends Service_Provider {
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
+	 * @deprecated 5.23.0 No longer used as we've moved to WordPress-style parent-child tabs
 	 *
 	 * @return array[]
 	 */
 	public function get_section_menu(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'The section menu has been replaced with WordPress-style parent-child tabs' );
+		_deprecated_function( __METHOD__, '5.23.0', 'The section menu has been replaced with WordPress-style parent-child tabs' );
 		return [];
 	}
 
@@ -643,12 +643,12 @@ class Payments_Tab extends Service_Provider {
 	 * Gets an array of all the sections, based on the active Gateways.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
+	 * @deprecated 5.23.0 No longer used as we've moved to WordPress-style parent-child tabs
 	 *
 	 * @return array[]
 	 */
 	public function get_sections(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
+		_deprecated_function( __METHOD__, '5.23.0', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
 		return [];
 	}
 	// @codeCoverageIgnoreEnd

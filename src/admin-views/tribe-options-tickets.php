@@ -2,10 +2,10 @@
 /**
  * Event Tickets settings tab.
  *
- * @version TBD
+ * @version 5.23.0
  * @since 4.10.2 Update tooltip text for Confirmation email sender address and allow it to be saved as empty.
  * @since 4.10.9 Use function for text.
- * @since TBD Updated to use modern settings UI components.
+ * @since 5.23.0 Updated to use modern settings UI components.
  *
  * @since 4.7
  */

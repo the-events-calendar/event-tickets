@@ -546,7 +546,7 @@ class Settings {
 	 * Handle setting up dependencies for all of the fields.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Return early if Tickets_Settings::$tickets_commerce_enabled is enabled.
+	 * @since 5.23.0 Return early if Tickets_Settings::$tickets_commerce_enabled is enabled.
 	 *
 	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *

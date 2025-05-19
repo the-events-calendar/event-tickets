@@ -11,7 +11,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Class Provider
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Installer
  */

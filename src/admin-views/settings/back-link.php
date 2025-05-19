@@ -3,7 +3,7 @@
  * Settings back link.
  *
  * @since 5.5.9
- * @since TBD Added new classes for settings.
+ * @since 5.23.0 Added new classes for settings.
  *
  * @var bool    $url   Link URL.
  * @var string  $text  Link text.

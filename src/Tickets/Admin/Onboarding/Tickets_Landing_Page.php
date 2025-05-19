@@ -2,7 +2,7 @@
 /**
  * Handles the landing page of the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 /**
  * Class Landing_Page
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -33,7 +33,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The action to dismiss the onboarding page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The option to dismiss the onboarding page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The option to mark the guided setup as visited.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The option to redirect to the guided setup after bulk activation.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The option to redirect to the guided setup after single activation.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The slug for the admin menu.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -87,7 +87,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has been dismissed.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var bool
 	 */
@@ -96,7 +96,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a header.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var bool
 	 */
@@ -105,7 +105,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a sidebar.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var bool
 	 */
@@ -114,7 +114,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a footer.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var bool
 	 */
@@ -123,7 +123,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a logo.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var bool
 	 */
@@ -132,7 +132,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * The position of the submenu in the menu.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var int
 	 */
@@ -141,7 +141,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Register the assets for the landing page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -186,7 +186,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Has the page been dismissed?
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool
 	 */
@@ -197,7 +197,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Handle the dismissal of the onboarding page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -215,7 +215,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Check if the TEC wizard is completed.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool
 	 */
@@ -245,7 +245,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Force the wizard to display.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool
 	 */
@@ -256,7 +256,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Check if the wizard should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool
 	 */
@@ -264,7 +264,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		/**
 		 * Allow users to force-ignore the checks and display the wizard.
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 *
 		 * @param bool $force Whether to force the wizard to display.
 		 *
@@ -295,7 +295,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Get the admin page title.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return string The page title.
 	 */
@@ -306,7 +306,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Get the admin menu title.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return string The menu title.
 	 */
@@ -318,7 +318,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * Render the admin page title.
 	 * In the header.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void Renders the admin page title.
 	 */
@@ -331,7 +331,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Get the initial data for the wizard.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return array<string, mixed> The initial data.
 	 */
@@ -370,7 +370,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		/**
 		 * Filter the initial data.
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 *
 		 * @param array      $initial_data The initial data.
 		 * @param Controller $controller   The controller object.
@@ -396,7 +396,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *     ]
 	 * );
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -417,7 +417,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Add some wrapper classes to the admin page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return array The class(es) array.
 	 */
@@ -432,7 +432,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Render the landing page content.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -451,7 +451,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Render the checklist section.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -643,7 +643,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Render the resources section.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -702,7 +702,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Render the admin page sidebar.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -713,7 +713,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	/**
 	 * Render the admin page footer.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
