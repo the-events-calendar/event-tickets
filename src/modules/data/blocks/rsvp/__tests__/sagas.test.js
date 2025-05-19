@@ -332,17 +332,13 @@ describe( 'RSVP block sagas', () => {
 				endDate: 'January 4, 2018',
 				endTime: '23:32',
 			};
-			window.tec = {
+			global.tribe = {
 				events: {
-					app: {
-						main: {
-							data: {
-								blocks: {
-									datetime: {
-										selectors: {
-											getStart: jest.fn(),
-										},
-									},
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
 								},
 							},
 						},
@@ -352,7 +348,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 
 		afterEach( () => {
-			delete window.tec;
+			delete global.tribe;
 		} );
 
 		it( 'should initialize state from datetime block', () => {
@@ -385,7 +381,7 @@ describe( 'RSVP block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( state.endDate ).value ).toMatchSnapshot();
 			expect( gen.next( {
@@ -419,17 +415,13 @@ describe( 'RSVP block sagas', () => {
 		let prevDate, momentMock;
 		beforeEach( () => {
 			prevDate = '2018-01-01 00:00:00';
-			window.tec = {
+			global.tribe = {
 				events: {
-					app: {
-						main: {
-							data: {
-								blocks: {
-									datetime: {
-										selectors: {
-											getStart: jest.fn(),
-										},
-									},
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
 								},
 							},
 						},
@@ -444,7 +436,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 
 		afterEach( () => {
-			delete window.tec;
+			delete global.tribe;
 		} );
 
 		it( 'should not sync', () => {
@@ -480,7 +472,7 @@ describe( 'RSVP block sagas', () => {
 			expect( gen.next( true ).value ).toMatchSnapshot();
 
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
 				call( createDates, '2018-02-02 02:00:00' ),
@@ -708,21 +700,17 @@ describe( 'RSVP block sagas', () => {
 
 	describe( 'handleEventStartDateChanges', () => {
 		beforeEach( () => {
-			window.tec = {
+			global.tribe = {
 				events: {
-					app: {
-						main: {
-							data: {
-								blocks: {
-									datetime: {
-										selectors: {
-											getStart: jest.fn(),
-										},
-										types: {
-											SET_START_DATE_TIME: 'SET_START_DATE_TIME',
-											SET_START_TIME: 'SET_START_TIME',
-										},
-									},
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
+								},
+								types: {
+									SET_START_DATE_TIME: 'SET_START_DATE_TIME',
+									SET_START_TIME: 'SET_START_TIME',
 								},
 							},
 						},
@@ -732,7 +720,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 
 		afterEach( () => {
-			delete window.tec;
+			delete global.tribe;
 		} );
 
 		it( 'should handle start time changes', () => {
@@ -747,7 +735,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 
 			expect( gen.next( '2018-01-01 12:00:00' ).value ).toEqual(

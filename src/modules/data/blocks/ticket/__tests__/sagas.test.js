@@ -585,17 +585,13 @@ describe( 'Ticket Block sagas', () => {
 			endDate = momentUtil.toDatabaseDate( endMoment );
 			endDateInput = momentUtil.toDate( endMoment );
 			endTime = momentUtil.toDatabaseTime( endMoment );
-			window.tec = {
+			global.tribe = {
 				events: {
-					app: {
-						main: {
-							data: {
-								blocks: {
-									datetime: {
-										selectors: {
-											getStart: jest.fn(),
-										},
-									},
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
 								},
 							},
 						},
@@ -605,7 +601,7 @@ describe( 'Ticket Block sagas', () => {
 		} );
 
 		afterEach( () => {
-			delete window.tec;
+			delete global.tribe;
 		} );
 
 		it( 'should set ticket initial state', () => {
@@ -661,7 +657,7 @@ describe( 'Ticket Block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart ),
@@ -725,15 +721,19 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempCapacity( CLIENT_ID, sharedCapacity ) ),
 				] ),
 			);
-			clone2.next(); // Move past the next step without checking the exact structure
-
-			// Don't check the exact structure, just verify something happens
-			const nextStep = clone2.next().value;
-			expect(nextStep).toBeDefined();
-
-			// Skip checking the exact expectation
-			clone2.next();
-			expect(clone2.next().done).toEqual(true);
+			expect( clone2.next().value ).toEqual(
+				all( [
+					put( actions.setTicketId( CLIENT_ID, TICKET_ID ) ),
+					call( sagas.fetchTicket, { payload: { clientId: CLIENT_ID, ticketId: TICKET_ID } } ),
+				] ),
+			);
+			expect( clone2.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID ),
+			);
+			expect( clone2.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID ),
+			);
+			expect( clone2.next().done ).toEqual( true );
 		} );
 
 		it( 'should set tickets initial state for new ticket', () => {
@@ -752,23 +752,7 @@ describe( 'Ticket Block sagas', () => {
 					clientId: CLIENT_ID,
 				},
 			};
-			window.tec = {
-				events: {
-					app: {
-						main: {
-							data: {
-								blocks: {
-									datetime: {
-										selectors: {
-											getStart: jest.fn(),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			};
+			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
 			expect( gen.next().value ).toMatchSnapshot();
@@ -806,7 +790,7 @@ describe( 'Ticket Block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart ),
@@ -864,15 +848,13 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempCapacity( CLIENT_ID, sharedCapacity ) ),
 				] ),
 			);
-			clone2.next(); // Move past the next step without checking the exact structure
-
-			// Don't check the exact structure, just verify something happens
-			const nextStep = clone2.next().value;
-			expect(nextStep).toBeDefined();
-
-			// Skip checking the exact expectation
-			clone2.next();
-			expect(clone2.next().done).toEqual(true);
+			expect( clone2.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID ),
+			);
+			expect( clone2.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID ),
+			);
+			expect( clone2.next().done ).toEqual( true );
 		} );
 
 		it( 'should set capacity type to shared if tickets plus is active', () => {
@@ -891,23 +873,7 @@ describe( 'Ticket Block sagas', () => {
 					clientId: CLIENT_ID,
 				},
 			};
-			window.tec = {
-				events: {
-					app: {
-						main: {
-							data: {
-								blocks: {
-									datetime: {
-										selectors: {
-											getStart: jest.fn(),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			};
+			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
 			expect( gen.next().value ).toMatchSnapshot();
@@ -945,7 +911,7 @@ describe( 'Ticket Block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart ),
@@ -1085,8 +1051,8 @@ describe( 'Ticket Block sagas', () => {
 	} );
 
 	describe( 'fetchTicket', () => {
-		test.skip( 'should fetch ticket', () => {
-			const TICKET_ID = 99;
+		it( 'should fetch ticket', () => {
+			const TICKET_ID = 13;
 			const CLIENT_ID = 'modern-tribe';
 			const action = {
 				payload: {
@@ -1096,44 +1062,391 @@ describe( 'Ticket Block sagas', () => {
 			};
 
 			const gen = cloneableGenerator( sagas.fetchTicket )( action );
-			// This test is skipped because it needs to be updated to match the current implementation
+
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketIsLoading( CLIENT_ID, true ) )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( wpREST, {
+					path: `tickets/${ TICKET_ID }`,
+					namespace: 'tribe/tickets/v1',
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: true,
+					status: 200,
+				},
+				data: {
+					provider: 'provider',
+					title: 'title',
+					description: 'description',
+					status: 'draft',
+					cost_details: {
+						values: [ 10 ],
+						currency_symbol: 'R',
+						currency_position: 'suffix',
+					},
+					sku: '',
+					iac: 'none',
+					available_from: '2018-11-09 19:48:42',
+					available_until: '2018-11-12 19:48:42',
+					capacity_type: 'unlimited',
+					capacity: 0,
+					supports_attendee_information: true,
+					totals: {
+						sold: 0,
+						stock: 0,
+					},
+					type: 'default',
+					on_sale: true,
+					sale_price_data: {
+						enabled: true,
+						sale_price: '15',
+						start_date: '2018-11-09 19:48:42',
+						end_date: '2018-11-12 19:48:42',
+					},
+					attendee_information_fields: null,
+				},
+			};
+
+			// First convert the dates
+			expect( gen.next( apiResponse ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.available_from )
+			);
+
+			const startMoment = momentUtil.toMoment( apiResponse.data.available_from );
+
+			expect( gen.next( startMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, startMoment )
+			);
+
+			const startDate = momentUtil.toDatabaseDate( startMoment );
+
+			expect( gen.next( startDate ).value ).toEqual(
+				call( momentUtil.toDate, startMoment )
+			);
+
+			const startDateInput = momentUtil.toDate( startMoment );
+
+			expect( gen.next( startDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, startMoment )
+			);
+
+			const startTime = momentUtil.toDatabaseTime( startMoment );
+
+			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+
+			const startTimeInput = momentUtil.toTime( startMoment );
+
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.available_until )
+			);
+
+			const endMoment = momentUtil.toMoment( apiResponse.data.available_until );
+
+			expect( gen.next( endMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, endMoment )
+			);
+
+			const endDate = momentUtil.toDatabaseDate( endMoment );
+
+			expect( gen.next( endDate ).value ).toEqual(
+				call( momentUtil.toDate, endMoment )
+			);
+
+			const endDateInput = momentUtil.toDate( endMoment );
+
+			expect( gen.next( endDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, endMoment )
+			);
+
+			const endTime = momentUtil.toDatabaseTime( endMoment );
+
+			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+
+			const endTimeInput = momentUtil.toTime( endMoment );
+
+			expect( gen.next( endTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.sale_price_data.start_date )
+			);
+
+			const saleStartDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.start_date );
+
+			expect( gen.next( saleStartDateMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, saleStartDateMoment )
+			);
+
+			const saleStartDate = momentUtil.toDatabaseDate( saleStartDateMoment );
+
+			expect( gen.next( saleStartDate ).value ).toEqual(
+				call( momentUtil.toDate, saleStartDateMoment )
+			);
+
+			const saleStartDateInput = momentUtil.toDate( saleStartDateMoment );
+
+			expect( gen.next( saleStartDateInput ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.sale_price_data.end_date )
+			);
+
+			const saleEndDateMoment = momentUtil.toMoment( apiResponse.data.sale_price_data.end_date );
+
+			expect( gen.next( saleEndDateMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, saleEndDateMoment )
+			);
+
+			const saleEndDate = momentUtil.toDatabaseDate( saleEndDateMoment );
+
+			expect( gen.next( saleEndDate ).value ).toEqual(
+				call( momentUtil.toDate, saleEndDateMoment )
+			);
+
+			const saleEndDateInput = momentUtil.toDate( saleEndDateMoment );
+
+			const details = {
+				title: apiResponse.data.title,
+				description: apiResponse.data.description,
+				price: apiResponse.data.cost_details.values[ 0 ],
+				sku: apiResponse.data.sku,
+				iac: apiResponse.data.iac,
+				startDate,
+				startDateInput,
+				startDateMoment: startMoment,
+				endDate,
+				endDateInput,
+				endDateMoment: endMoment,
+				startTime,
+				endTime,
+				startTimeInput,
+				endTimeInput,
+				capacityType: apiResponse.data.capacity_type,
+				capacity: apiResponse.data.capacity,
+				attendeeInfoFields: apiResponse.data.attendee_information_fields,
+				type: apiResponse.data.type,
+				on_sale: apiResponse.data.on_sale,
+				salePriceChecked: apiResponse.data.sale_price_data.enabled,
+				salePrice: apiResponse.data.sale_price_data.sale_price,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
+			};
+
+			expect( gen.next( saleEndDateInput ).value ).toEqual(
+				all( [
+					put( actions.setTicketDetails( CLIENT_ID, details ) ),
+					put( actions.setTicketTempDetails( CLIENT_ID, details ) ),
+					put( actions.setTicketSold( CLIENT_ID, apiResponse.data.totals.sold ) ),
+					put( actions.setTicketAvailable( CLIENT_ID, apiResponse.data.totals.stock ) ),
+					put( actions.setTicketCurrencySymbol( CLIENT_ID, apiResponse.data.cost_details.currency_symbol ) ),
+					put( actions.setTicketCurrencyPosition( CLIENT_ID, apiResponse.data.cost_details.currency_position ) ),
+					put( actions.setTicketProvider( CLIENT_ID, apiResponse.data.provider ) ),
+					put( actions.setTicketHasAttendeeInfoFields( CLIENT_ID, apiResponse.data.supports_attendee_information ) ),
+					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
+				] )
+			);
+
+			expect( gen.next().value ).toEqual(
+				doAction( 'tec.tickets.blocks.fetchTicket', CLIENT_ID, apiResponse.data, details )
+			);
+
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
+			);
+
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not fetch ticket if new ticket', () => {
+			const TICKET_ID = 0;
+			const CLIENT_ID = 'modern-tribe';
+			const action = {
+				payload: {
+					ticketId: TICKET_ID,
+					clientId: CLIENT_ID,
+				},
+			};
+
+			const gen = sagas.fetchTicket( action );
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
 	describe( 'createNewTicket', () => {
-		test.skip( 'should create a new ticket', () => {
-			const title = 'title';
-			const description = 'description';
-			const price = '10';
-			const sku = '12345';
-			const startDate = '2018-11-09';
-			const startDateInput = '2018-11-09';
-			const startDateMoment = moment('2018-11-09');
-			const hasBeenCreated = false;
-			const clientId = 'tribe';
-			const temp = {
-				sharedCapacity: '0',
-			};
-			const datePickerFormat = 'YYYY-MM-DD';
-			const timeFormat = 'HH:mm:ss';
-			const startTime = '16:42:30';
-			const startTimeInput = '16:42';
-			const endDate = '2018-11-10';
-			const endDateInput = '2018-11-10';
-			const endDateMoment = moment('2018-11-10');
-			const endTime = '20:15:00';
-			const endTimeInput = '20:15';
-			const capacityType = 'own';
-			const capacity = '10';
+		it( 'should create a new ticket', () => {
 			const action = {
 				payload: {
-					clientId,
-					temp,
+					clientId: 'tribe',
+					details: {
+						title: 'title',
+						description: 'description',
+						price: 10,
+						sku: 'sku',
+						startDate: '2018-01-01',
+						endDate: '2018-01-02',
+						startTime: '10:00',
+						endTime: '12:00',
+						capacityType: 'unlimited',
+						capacity: 100,
+					},
+				},
+			};
+			const mockFormData = {
+				append: jest.fn(),
+			};
+			const gen = sagas.createNewTicket( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setBodyDetails, action.payload.clientId ),
+			);
+			expect( gen.next( mockFormData ).value ).toEqual(
+				put( actions.setTicketIsLoading( action.payload.clientId, true ) ),
+			);
+			expect( gen.next().value ).toEqual(
+				call( wpREST, {
+					path: 'tickets/',
+					namespace: 'tribe/tickets/v1',
+					initParams: {
+						method: 'POST',
+						body: mockFormData,
+					},
+				} ),
+			);
+
+			const response = {
+				response: {
+					ok: true,
+				},
+				data: {
+					id: 123,
+					capacity_details: {
+						available: 100,
+					},
+					provider_class: WOO_CLASS,
+					sale_price_data: {
+						enabled: true,
+						sale_price: '15',
+					},
 				},
 			};
 
-			const gen = cloneableGenerator( sagas.createNewTicket )( action );
-			// This test is skipped because it needs updating to match the current implementation
+			expect( gen.next( response ).value ).toEqual(
+				select( selectors.getTicketsSharedCapacity ),
+			);
+
+			expect( gen.next( '' ).value ).toEqual(
+				select( selectors.getTicketsTempSharedCapacity ),
+			);
+
+			expect( gen.next( 0 ).value ).toEqual(
+				all( [
+					select( selectors.getTicketTempTitle, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempDescription, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempPrice, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSku, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempIACSetting, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempStartDate, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempStartDateInput, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempStartDateMoment, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempEndDate, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempEndDateInput, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempEndDateMoment, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempStartTime, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempEndTime, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempStartTimeInput, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempEndTimeInput, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempCapacityType, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempCapacity, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSaleStartDate, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSaleStartDateInput, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSaleStartDateMoment, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSaleEndDate, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSaleEndDateInput, { clientId: action.payload.clientId } ),
+					select( selectors.getTicketTempSaleEndDateMoment, { clientId: action.payload.clientId } ),
+				] ),
+			);
+
+			const ticketDetails = {
+				title: 'title',
+				description: 'description',
+				price: 10,
+				sku: 'sku',
+				iac: undefined,
+				startDate: '2018-01-01',
+				startDateInput: undefined,
+				startDateMoment: undefined,
+				endDate: '2018-01-02',
+				endDateInput: undefined,
+				endDateMoment: undefined,
+				startTime: '10:00',
+				endTime: '12:00',
+				startTimeInput: undefined,
+				endTimeInput: undefined,
+				capacityType: 'unlimited',
+				capacity: 100,
+				salePriceChecked: true,
+				salePrice: '15',
+				saleStartDate: undefined,
+				saleStartDateInput: undefined,
+				saleStartDateMoment: undefined,
+				saleEndDate: undefined,
+				saleEndDateInput: undefined,
+				saleEndDateMoment: undefined,
+			};
+
+			expect( gen.next( [
+				'title',
+				'description',
+				10,
+				'sku',
+				undefined,
+				'2018-01-01',
+				undefined,
+				undefined,
+				'2018-01-02',
+				undefined,
+				undefined,
+				'10:00',
+				'12:00',
+				undefined,
+				undefined,
+				'unlimited',
+				100,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+			] ).value ).toEqual(
+				all( [
+					put( actions.setTicketDetails( action.payload.clientId, ticketDetails ) ),
+					put( actions.setTempSalePriceChecked( action.payload.clientId, true ) ),
+					put( actions.setTempSalePrice( action.payload.clientId, '15' ) ),
+					put( actions.setTicketId( action.payload.clientId, 123 ) ),
+					put( actions.setTicketHasBeenCreated( action.payload.clientId, true ) ),
+					put( actions.setTicketAvailable( action.payload.clientId, 100 ) ),
+					put( actions.setTicketProvider( action.payload.clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[WOO_CLASS] ) ),
+					put( actions.setTicketHasChanges( action.payload.clientId, false ) ),
+				] ),
+			);
+
+			expect( gen.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, action.payload.clientId ),
+			);
+
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketIsLoading( action.payload.clientId, false ) ),
+			);
+
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
