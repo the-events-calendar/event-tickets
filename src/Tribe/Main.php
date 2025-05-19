@@ -63,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.11.2.1-dev';
+	protected $min_tec_version = '6.13.0-dev';
 
 	/**
 	 * Name of the provider.
