@@ -515,7 +515,7 @@ class Hooks extends Service_Provider {
 	 * Depending on which page, tab and if an action is present we trigger the processing.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Switched the tab to check the provider instead of `payment`.
+	 * @since 5.23.0 Switched the tab to check the provider instead of `payment`.
 	 */
 	public function maybe_trigger_process_action() {
 		$page = tribe_get_request_var( 'page' );
