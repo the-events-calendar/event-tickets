@@ -2,7 +2,7 @@
 /**
  * Handles the payments step of the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -17,7 +17,7 @@ use TEC\Tickets\Admin\Onboarding\API;
 /**
  * Class Payments
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -25,7 +25,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var int
 	 */
@@ -34,7 +34,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Passes the request and data to the handler.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -53,7 +53,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Process the payments data.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -82,7 +82,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Handle the connection to payment gateways (Stripe and Square).
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -110,7 +110,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Handle the Stripe connection process.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param array            $params   The request parameters.
