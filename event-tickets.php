@@ -16,6 +16,7 @@
  * Elementor Pro tested up to: 3.23.0
  */
 
+
 /*
 Copyright 2010-2022 by The Events Calendar and the contributors
 

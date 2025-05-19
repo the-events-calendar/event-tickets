@@ -227,12 +227,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-block-rsvp-style',
-			'rsvp/frontend.css',
-			[],
-			null,
-			[
-				'group_path' => get_class( $plugin ) . '-packages',
-			]
+			'rsvp/frontend.css'
 		);
 
 		tec_asset(
@@ -271,7 +266,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[
 				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => static function() {
+					'data' => static function () {
 						return [
 							'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 							'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),

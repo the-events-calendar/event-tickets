@@ -17,7 +17,7 @@
 
 $container_classes = [
 	'tec-settings-form__element--full-width' => true,
-	...$container_classes
+	...$container_classes,
 ];
 
 $classes[] = 'tec-tickets__admin-settings-featured';
