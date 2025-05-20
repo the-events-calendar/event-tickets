@@ -118,11 +118,6 @@ class Payments_Tab extends Service_Provider {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
 		add_action( "tribe_settings_after_save_{$tab_id}", [ $this, 'maybe_generate_pages' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_tab_id' ] );
-
-		// Load the tab and save actions if Tickets Commerce is enabled.
-		if ( ! tec_tickets_commerce_is_enabled() ) {
-			return;
-		}
 	}
 
 	/**
