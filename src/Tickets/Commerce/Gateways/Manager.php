@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
-use TEC\Tickets\Settings;
 
 /**
  * Class Gateways Manager.
@@ -21,7 +20,7 @@ class Manager {
 	 * @var string
 	 */
 	public static $option_gateway = '_tickets_commerce_gateway';
-	
+
 	/**
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
@@ -100,12 +99,59 @@ class Manager {
 		if ( empty( $key ) ) {
 			return;
 		}
-		
+
 		$gateways = $this->get_gateways();
 		if ( ! isset( $gateways[ $key ] ) ) {
 			return;
 		}
 
 		return $gateways[ $key ];
+	}
+
+	/**
+	 * Get the available gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context The context in which the gateways are being retrieved.
+	 *
+	 * @return Abstract_Gateway[] The available gateways.
+	 */
+	public function get_available_gateways( string $context = 'checkout' ): array {
+		$available_gateways = array_filter(
+			$this->get_gateways(),
+			fn( Abstract_Gateway $gateway ) => $gateway::is_enabled() && $gateway::is_active()
+		);
+
+		$available_gateways_in_context = [];
+
+		switch ( $context ) {
+			case 'checkout':
+				foreach ( $available_gateways as $gateway ) {
+					if ( $gateway->renders_solo() && ! empty( $available_gateways_in_context ) ) {
+						continue;
+					}
+
+					$available_gateways_in_context[ $gateway->get_key() ] = $gateway;
+				}
+				break;
+			default:
+				$available_gateways_in_context = $available_gateways;
+				break;
+		}
+
+		/**
+		 * Allow filtering the available gateways in the context.
+		 *
+		 * @since TBD
+		 *
+		 * @param Abstract_Gateway[] $available_gateways_in_context The available gateways in the context.
+		 */
+		return apply_filters(
+			'tec_tickets_commerce_active_gateways',
+			$available_gateways_in_context,
+			$available_gateways,
+			$context
+		);
 	}
 }
