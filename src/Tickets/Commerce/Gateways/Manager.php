@@ -153,7 +153,7 @@ class Manager {
 		 * @param string             $context                       The context in which the gateways are being retrieved.
 		 */
 		return (array) apply_filters(
-			'tec_tickets_commerce_active_gateways',
+			'tec_tickets_commerce_available_gateways',
 			$available_gateways_in_context,
 			$available_gateways,
 			$context
