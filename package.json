@@ -69,6 +69,7 @@
     "format:js": "wp-scripts lint-js src/ --fix",
     "build": "wp-scripts build",
     "start": "wp-scripts start --mode=development --devtool=source-map",
+    "dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
     "changelog": "./vendor/bin/changelogger add"
   },
   "engines": {
