@@ -26,7 +26,7 @@
  */
 
 // Bail if the cart is empty or if there's active gateways.
-if ( empty( $items ) || empty( $gateways ) ) {
+if ( empty( $items ) || ! empty( $gateways ) ) {
 	return;
 }
 
