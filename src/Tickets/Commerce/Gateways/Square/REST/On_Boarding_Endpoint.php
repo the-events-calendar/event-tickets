@@ -18,7 +18,7 @@ use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 use WP_REST_Request;
 use WP_REST_Server;
-
+use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page as Landing_Page;
 use Tribe__Date_Utils as Dates;
 
 /**
@@ -179,9 +179,12 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 * @return void Request is handled via redirect.
 	 */
 	public function handle_request( WP_REST_Request $request ) {
-		$params = $request->get_params();
+		$params    = $request->get_params();
+		$is_wizard = $request->get_param( 'is_wizard' );
 
-		$square_tab_url = tribe( Payments_Tab::class )->get_url( [ 'tab' => Gateway::get_key() ] );
+		$square_tab_url = $is_wizard
+			? add_query_arg( [ 'page' => Landing_Page::$slug ], admin_url( 'admin.php' ) )
+			: tribe( Payments_Tab::class )->get_url( [ 'tab' => Gateway::get_key() ] );
 
 		// If there's an error in the request, bail out.
 		if ( ! empty( $params['error'] ) ) {
@@ -349,11 +352,12 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 * @since TBD
 	 *
 	 * @param string|null $hash The hash to append to the URL.
+	 * @param bool        $is_wizard Whether the request is coming from the wizard.
 	 *
 	 * @return string
 	 */
-	public function get_return_url( $hash = null ): string {
-		return rest_url( $this->get_namespace() . $this->get_path() );
+	public function get_return_url( $hash = null, $is_wizard = false ): string {
+		return rest_url( add_query_arg( 'is_wizard', (int) $is_wizard, $this->get_namespace() . $this->get_path() ) );
 	}
 
 	/**

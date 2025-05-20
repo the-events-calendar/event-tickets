@@ -89,6 +89,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 * Returns the settings fields for the email.
 	 *
 	 * @since 5.8.4
+	 * @since 5.23.0 Updated html.
 	 *
 	 * @return array<string,mixed> The settings fields for the email.
 	 */
@@ -112,7 +113,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 		return [
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tec-settings-form__header-block--horizontal">',
 			],
 			[
 				'type' => 'html',
@@ -131,6 +132,22 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			[
 				'type' => 'html',
 				'html' => '<p>' . $email_description . '</p>',
+			],
+			[
+				'type' => 'html',
+				'html' => '</div>',
+			],
+			'tec-settings-email-template-settings-wrapper-start' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
+			'tec-settings-email-template-settings'        => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Settings', 'event-tickets' ) . '</h3>',
+			],
+			'tec-settings-email-template-settings-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 			$this->get_option_key( 'enabled' )            => [
 				'type'            => 'toggle',

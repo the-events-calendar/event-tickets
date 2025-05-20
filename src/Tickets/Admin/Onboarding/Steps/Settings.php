@@ -2,7 +2,7 @@
 /**
  * Handles the settings step of the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -15,12 +15,13 @@ use WP_REST_Request;
 use TEC\Tickets\Settings as Tickets_Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Admin\Onboarding\API;
 
 /**
  * Class Settings
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -28,7 +29,7 @@ class Settings extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var int
 	 */
@@ -37,7 +38,7 @@ class Settings extends Abstract_Step {
 	/**
 	 * Process the settings data.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -55,6 +56,11 @@ class Settings extends Abstract_Step {
 
 		$currency = $settings['currency'] ?? tribe_get_option( Tickets_Commerce_Settings::$option_currency_code, 'USD' );
 		tribe_update_option( Currency::$currency_code_option, $currency );
+
+		// Enable the gateway.
+		$option_key   = Gateway::$option_enabled_prefix . $settings['paymentOption'];
+		$option_value = 'connected' === $settings['connectionStatus'] ? true : false;
+		tribe_update_option( $option_key, $option_value );
 
 		// Update the option.
 		$updated = tribe( API::class )->update_wizard_settings( $settings );

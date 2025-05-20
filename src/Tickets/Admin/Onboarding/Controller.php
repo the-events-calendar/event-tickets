@@ -2,7 +2,7 @@
 /**
  * Controller for interfacing with TEC\Common\Onboarding.
  *
- * @since TBD
+ * @since 5.23.0
  */
 
 namespace TEC\Tickets\Admin\Onboarding;
@@ -21,14 +21,14 @@ use TEC\Common\StellarWP\Assets\Config as Asset_Config;
 /**
  * Class Controller
  *
- * @since TBD
+ * @since 5.23.0
  * @package TEC\Tickets\Admin\Onboarding
  */
 class Controller extends Controller_Contract {
 	/**
 	 * The step instances.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var array
 	 */
@@ -37,7 +37,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the provider.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function do_register(): void {
 		Asset_Config::add_group_path( 'tec-tickets-onboarding', tribe( 'tickets.main' )->plugin_path . 'build/', 'wizard' );
@@ -63,7 +63,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether the controller is active.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool
 	 */
@@ -71,7 +71,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Filters whether the onboarding controller is active.
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 *
 		 * @param bool $is_active Whether the controller is active.
 		 */
@@ -81,7 +81,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unhooks actions and filters.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function unregister(): void {
 		$this->remove_filters();
@@ -91,7 +91,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Add the filter hooks.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function add_filters(): void {
 		// Add the step handlers.
@@ -101,13 +101,12 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['communication'], 'handle' ], 13, 2 );
 		add_filter( 'tec_tickets_onboarding_wizard_handle', [ $this->steps['events'], 'handle' ], 14, 2 );
 		add_filter( 'tec_telemetry_is_et_admin_page', [ $this, 'hide_telemetry_on_onboarding_page' ], 10, 1 );
-		add_filter( 'tec_settings_page_logo_source', [ $this->container->make( Landing_Page::class ), 'logo_source' ] );
 	}
 
 	/**
 	 * Add the action hooks.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function add_actions(): void {
 		add_action( 'admin_menu', [ $this, 'landing_page' ], 20 );
@@ -121,7 +120,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Remove the filter hooks.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function remove_filters(): void {
 		// Remove the step handlers.
@@ -137,7 +136,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Remove the action hooks.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function remove_actions(): void {
 		remove_action( 'admin_menu', [ $this, 'landing_page' ], 20 );
@@ -151,7 +150,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handle the onboarding page dismiss.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -162,7 +161,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Redirects users to the Guided Setup page when accessing any TEC settings or management page for the first time.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -175,7 +174,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Allow users to force-ignore the checks and redirect to the Guided Setup page.
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 *
 		 * @param bool $force_redirect Whether to force the redirect to the Guided Setup page.
 		 *
@@ -220,7 +219,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Check if current page is an ET admin page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool
 	 */
@@ -248,7 +247,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handle the actual redirect
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -270,7 +269,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Remove all admin notices in the onboarding page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function remove_all_admin_notices_in_onboarding_page(): void {
 		if ( ! Landing_Page::is_on_page() ) {
@@ -283,7 +282,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Settings page callback.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function landing_page() {
 		$this->container->make( Landing_Page::class )->admin_page();
@@ -292,7 +291,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Enqueue scripts for the onboarding wizard.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function enqueue_assets(): void {
 		$this->container->make( Landing_Page::class )->register_assets();
@@ -301,7 +300,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the REST endpoints that will be used to return the Views HTML.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 */
 	public function register_rest_endpoints(): void {
 		$this->container->make( API::class )->register();
@@ -310,7 +309,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Hide telemetry on the onboarding page by returning false when the page is detected.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param bool $is_et_admin_page Whether the current page is an ET admin page.
 	 *

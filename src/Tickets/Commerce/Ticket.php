@@ -565,7 +565,7 @@ class Ticket extends Ticket_Data {
 				'post_excerpt'         => $ticket->description,
 				'post_title'           => $ticket->name,
 				$this->type_column_key => $raw_data['ticket_type'] ?? 'default',
-				'menu_order'           => tribe_get_request_var( 'menu_order', - 1 ),
+				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ),
 				'meta_input'           => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]

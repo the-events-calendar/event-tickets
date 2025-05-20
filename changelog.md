@@ -1,10 +1,29 @@
 # Changelog
 
-### [5.22.0] 2025-04-15
+### [5.23.0] 2025-05-20
+
+* Version - Event Tickets 5.23.0 is only compatible with The Events Calendar 6.13.0 or higher.
+* Version - Event Tickets 5.23.0 is only compatible with Event Tickets Plus 6.5.0 or higher.
+* Feature - Event Tickets Onboarding Wizard [ET-2339]
+* Feature - Event Tickets Settings page revamped to match The Events Calendar
+* Fix - Add defensive coding to custom_glance_items_attendees() to avoid a fatal. [ET-2404]
+* Fix - Change the asset loading function from `tribe_asset` to `tec_asset` in various parts of the codebase.
+* Language - 58 new strings added, 361 updated, 2 fuzzied, and 6 obsoleted.
+
+### [5.22.0.1] 2025-05-14
+
+* Fix - Prevents fatal if QR library in common has not loaded. [TEC-5497]
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 5 obsoleted.
+
+### [5.22.0] 2025-05-13
 
 * Feature - Move QR-Related code from ET to Common [TEC-5426]
 * Feature - Move QR code library to Common [TEC-5403]
-* Tweak - Removed filters: `tec_tickets_qr_code_can_use`
+* Fix - Fix an issue when applying 100% off coupons to Seating tickets. [ET-2409]
+* Fix - Prevent instances of the `_load_textdomain_just_in_time` warning by moving all language after the `init` hook
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`, `tribe_tickets_attendees_report_js_config`
+* Tweak - Added actions: `tec_tickets_fully_loaded`, `tec_tickets_promoter_fully_loaded`
+* Tweak - Removed actions: `tribe_tickets_plugin_loaded`
 * Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
 
 ### [5.21.1.1] 2025-04-28

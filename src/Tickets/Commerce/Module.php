@@ -20,7 +20,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Constructor.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Moved to do_init() to avoid issues with translations.
+	 * @since 5.23.0 Moved to do_init() to avoid issues with translations.
 	 */
 	public function __construct() {
 		// This needs to happen before parent construct.
@@ -233,7 +233,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Hooks the module, happens on the `wp` hook.
 	 *
-	 * @since TBD
+	 * @since 5.22.0
 	 *
 	 * @return void
 	 */

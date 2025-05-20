@@ -2,7 +2,7 @@
 /**
  * Handles the payments step of the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -14,10 +14,13 @@ use WP_REST_Response;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Admin\Onboarding\API;
+use TEC\Tickets\Commerce\Gateways\PayPal\Signup as PayPalSignup;
+use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
+
 /**
  * Class Payments
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -25,7 +28,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var int
 	 */
@@ -34,7 +37,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Passes the request and data to the handler.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -53,7 +56,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Process the payments data.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -82,7 +85,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Handle the connection to payment gateways (Stripe and Square).
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -91,7 +94,6 @@ class Payments extends Abstract_Step {
 	 */
 	public function handle_payment_gateway_connection( $response, $request ): WP_REST_Response {
 		$params = $request->get_params();
-		$success = false;
 
 		if ( ! isset( $params['gateway'] ) ) {
 			return $this->add_message( $response, __( 'Payment gateway connection not requested.', 'event-tickets' ) );
@@ -101,8 +103,9 @@ class Payments extends Abstract_Step {
 			case 'stripe':
 				return $this->handle_stripe_connection( $response, $params );
 			case 'square':
-				// TODO: Future implementation for Square.
-				return $this->add_message( $response, __( 'Square integration coming soon.', 'event-tickets' ) );
+				return $this->handle_square_connection( $response, $params );
+			case 'paypal':
+				return $this->handle_paypal_connection( $response, $params );
 			default:
 				return $this->add_fail_message( $response, __( 'Invalid payment gateway specified.', 'event-tickets' ) );
 		}
@@ -111,7 +114,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Handle the Stripe connection process.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param array            $params   The request parameters.
@@ -130,5 +133,51 @@ class Payments extends Abstract_Step {
 
 		// Return the response with the redirect message.
 		return $this->add_message( $response, __( 'Redirecting to Stripe...', 'event-tickets' ) );
+	}
+
+	/**
+	 * Handle the Square connection process.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Response $response The response object.
+	 * @param array            $params   The request parameters.
+	 *
+	 * @return WP_REST_Response
+	 */
+	private function handle_square_connection( $response, $params ): WP_REST_Response {
+		// Use the existing Square signup URL generation.
+		$signup_url = tribe( WhoDat::class )->connect_account( true );
+
+		// Add the signup URL to the response data.
+		$data               = $response->get_data();
+		$data['signup_url'] = $signup_url;
+		$response->set_data( $data );
+
+		// Return the response with the redirect message.
+		return $this->add_message( $response, __( 'Redirecting to Square...', 'event-tickets' ) );
+	}
+
+	/**
+	 * Handle the PayPal connection process.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Response $response The response object.
+	 * @param array            $params   The request parameters.
+	 *
+	 * @return WP_REST_Response
+	 */
+	private function handle_paypal_connection( $response, $params ): WP_REST_Response {
+		// Use the existing PayPal signup URL generation.
+		$signup_url = tribe( PayPalSignup::class )->generate_url( $params['country'], true );
+
+		// Add the signup URL to the response data.
+		$data               = $response->get_data();
+		$data['signup_url'] = $signup_url;
+		$response->set_data( $data );
+
+		// Return the response with the redirect message.
+		return $this->add_message( $response, __( 'Redirecting to PayPal...', 'event-tickets' ) );
 	}
 }

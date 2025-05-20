@@ -131,6 +131,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
+		// Flag the order as on checkout screen hold.
+		$orders->set_on_checkout_screen_hold( $order->ID );
+
 		try {
 			$square_order_id = tribe( Square_Order::class )->upsert_square_from_local_order( $order );
 		} catch ( RuntimeException $e ) {
@@ -141,16 +144,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$order = tribe( Order::class )->get_from_gateway_order_id( $square_order_id );
 
 		// For Square, we create a placeholder payment that will be updated later with the actual payment details.
-		$payment = tribe( Payment_Handler::class )->create_payment_for_order( $data['payment_source_id'], $order );
+		$payment = tribe( Payment_Handler::class )->create_payment_for_order( $data['payment_source_id'], $order, $square_order_id );
 
 		if ( is_wp_error( $payment ) || empty( $payment ) ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
 		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
-
-		// Flag the order as on checkout screen hold.
-		$orders->set_on_checkout_screen_hold( $order->ID );
 
 		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
@@ -170,7 +170,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			)
 			->save();
 
-		// Set order to Created status.
 		$orders->modify_status(
 			$order->ID,
 			tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
@@ -189,7 +188,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $square_order_id ], tribe( Success::class )->get_url() );
+
+		// Remove the checkout screen hold.
+		$orders->remove_on_checkout_screen_hold( $order->ID );
 
 		return new WP_REST_Response( $response );
 	}

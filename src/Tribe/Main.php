@@ -63,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.11.2.1-dev';
+	protected $min_tec_version = '6.13.0-dev';
 
 	/**
 	 * Name of the provider.
@@ -124,7 +124,7 @@ class Tribe__Tickets__Main {
 	protected $move_ticket_types;
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.23.0
 	 *
 	 * @var Tribe__Admin__Activation_Page
 	 */
@@ -240,6 +240,13 @@ class Tribe__Tickets__Main {
 		$this->redirect_to_wizard_on_activation();
 	}
 
+	/**
+	 * Redirect to the wizard on activation.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return void
+	 */
 	public function redirect_to_wizard_on_activation() {
 		if ( is_network_admin() ) {
 			// Never redirect on network admin.
@@ -247,9 +254,9 @@ class Tribe__Tickets__Main {
 		}
 
 		// Get the checked plugins from the request. If there are more than one, we're doing a bulk activation.
-		$checked = $_POST['checked'] ?? [];
+		$checked = isset( $_POST['checked'] ) ? count( $_POST['checked'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		if ( count( $checked ) > 1 ) {
+		if ( ! empty( $checked ) ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
 			set_transient( '_tec_tickets_wizard_redirect', 1, 30 );
 		} else {
@@ -431,9 +438,6 @@ class Tribe__Tickets__Main {
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
-
-		// Admin home.
-		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 	}
 
 	/**
@@ -456,7 +460,7 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
-	 * @since TBD Added Tyson group paths.
+	 * @since 5.23.0 Added Tyson group paths.
 	 */
 	public function bootstrap() {
 		/*
@@ -498,18 +502,18 @@ class Tribe__Tickets__Main {
 		tribe( 'tickets.privacy' );
 
 		/**
-		 * Fires once Event Tickets has completed basic setup.
-		 *
-		 * @deprecated TBD Use `tec_tickets_fully_loaded` instead.
-		 */
-		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], 'TBD', 'Use `tec_tickets_fully_loaded` instead.' );
-
-		/**
 		 * Fires when Event Tickets is fully loaded.
 		 *
-		 * @since TBD
+		 * @since 5.22.0
 		 */
 		do_action( 'tec_tickets_fully_loaded' );
+
+		/**
+		 * Fires once Event Tickets has completed basic setup.
+		 *
+		 * @deprecated 5.22.0 Use `tec_tickets_fully_loaded` instead.
+		 */
+		do_action_deprecated( 'tribe_tickets_plugin_loaded', [], '5.22.0', 'Use `tec_tickets_fully_loaded` instead.' );
 	}
 
 	/**
@@ -554,6 +558,9 @@ class Tribe__Tickets__Main {
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 
+		// Admin home.
+		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
+
 		// Admin settings.
 		tribe_register_provider( Tribe\Tickets\Admin\Settings\Service_Provider::class );
 
@@ -568,6 +575,15 @@ class Tribe__Tickets__Main {
 
 		// Set up IAN Client - In-App Notifications.
 		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
+
+		/**
+		 * Allows other plugins and services to override/change the bound implementations.
+		 *
+		 * DO NOT put anything after this unless you _need to_ and know the implications!
+		 *
+		 * @since 5.23.0
+		 */
+		do_action( 'tec_tickets_bound_implementations' );
 	}
 
 	/**
@@ -899,7 +915,7 @@ class Tribe__Tickets__Main {
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
 		$this->maybe_set_options_for_old_installs();
-		$this->activation_page();
+
 	}
 
 	/**
@@ -992,12 +1008,12 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.23.0
 	 *
 	 * @return Tribe__Admin__Activation_Page
 	 */
 	public function activation_page() {
-		_deprecated_function( __METHOD__, 'TBD', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
+		_deprecated_function( __METHOD__, '5.23.0', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
 
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [

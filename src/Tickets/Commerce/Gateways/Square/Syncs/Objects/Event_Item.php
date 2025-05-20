@@ -71,7 +71,6 @@ class Event_Item extends Item {
 			'product_type'         => 'EVENT',
 			'skip_modifier_screen' => true,
 			// 'categories'           => [],
-			// 'image_ids'            => [],
 		],
 	];
 
@@ -293,7 +292,7 @@ class Event_Item extends Item {
 	 */
 	public function get_wp_controlled_fields( array $square_object ): array {
 		$object = parent::get_wp_controlled_fields( $square_object );
-		// Remote ticket data.
+		// Remove ticket data.
 		unset( $object['item_data']['variations'] );
 
 		return $object;
