@@ -63,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.11.2.1-dev';
+	protected $min_tec_version = '6.13.0-dev';
 
 	/**
 	 * Name of the provider.
@@ -124,7 +124,7 @@ class Tribe__Tickets__Main {
 	protected $move_ticket_types;
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.23.0
 	 *
 	 * @var Tribe__Admin__Activation_Page
 	 */
@@ -243,7 +243,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Redirect to the wizard on activation.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -460,7 +460,7 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
-	 * @since TBD Added Tyson group paths.
+	 * @since 5.23.0 Added Tyson group paths.
 	 */
 	public function bootstrap() {
 		/*
@@ -581,7 +581,7 @@ class Tribe__Tickets__Main {
 		 *
 		 * DO NOT put anything after this unless you _need to_ and know the implications!
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 */
 		do_action( 'tec_tickets_bound_implementations' );
 	}
@@ -1008,12 +1008,12 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.23.0
 	 *
 	 * @return Tribe__Admin__Activation_Page
 	 */
 	public function activation_page() {
-		_deprecated_function( __METHOD__, 'TBD', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
+		_deprecated_function( __METHOD__, '5.23.0', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
 
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [

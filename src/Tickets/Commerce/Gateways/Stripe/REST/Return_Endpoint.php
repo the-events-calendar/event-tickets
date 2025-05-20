@@ -117,7 +117,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle successful account connections.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated redirect URL to the new settings page.
+	 * @since 5.23.0 Updated redirect URL to the new settings page.
 	 *
 	 * @param object $payload data returned from WhoDat.
 	 */
@@ -171,7 +171,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle unsuccessful account connections.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated redirect URL to the new settings page.
+	 * @since 5.23.0 Updated redirect URL to the new settings page.
 	 *
 	 * @param object $payload data returned from WhoDat.
 	 */
@@ -192,7 +192,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle account disconnections.
 	 *
 	 * @since 5.11.0
-	 * @since TBD Updated redirect URL to the new settings page.
+	 * @since 5.23.0 Updated redirect URL to the new settings page.
 	 *
 	 * @param array     $reason Reason of disconnect.
 	 * @param ?stdClass $payload Data returned from WhoDat.

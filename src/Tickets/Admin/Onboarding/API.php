@@ -3,7 +3,7 @@
  * The REST API handler for the Onboarding Wizard.
  * Cleverly named...API.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding
  */
@@ -22,7 +22,7 @@ use WP_REST_Response;
  *
  * @todo Move shared pieces to common.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding
  */
@@ -31,7 +31,7 @@ class API extends Abstract_API {
 	/**
 	 * The action for this nonce.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class API extends Abstract_API {
 	/**
 	 * Rest Endpoint namespace
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ class API extends Abstract_API {
 	/**
 	 * Register the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool If we registered the endpoint.
 	 */
@@ -76,7 +76,7 @@ class API extends Abstract_API {
 	/**
 	 * Check the action nonce.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param string $nonce The nonce.
 	 *
@@ -99,7 +99,7 @@ class API extends Abstract_API {
 	/**
 	 * Check the permissions.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool If the user has the correct permissions.
 	 */
@@ -109,7 +109,7 @@ class API extends Abstract_API {
 		/**
 		 * Filter the required permission for the onboarding wizard.
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 *
 		 * @param string $required_permission The required permission.
 		 * @param API    $api The api object.
@@ -124,7 +124,7 @@ class API extends Abstract_API {
 	/**
 	 * Handle the request.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -134,7 +134,7 @@ class API extends Abstract_API {
 		/**
 		 * Each step hooks in here and potentially modifies the response.
 		 *
-		 * @since TBD
+		 * @since 5.23.0
 		 *
 		 * @param WP_REST_Response $response The response object.
 		 * @param Request          $request  The request object.
@@ -145,7 +145,7 @@ class API extends Abstract_API {
 	/**
 	 * Passes the request and data to the handler.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -167,7 +167,7 @@ class API extends Abstract_API {
 	/**
 	 * Update the wizard settings option.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param array $params The request parameters.
 	 *
@@ -227,7 +227,7 @@ class API extends Abstract_API {
 	/**
 	 * Normalize the tabs. Remove duplicates
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param array<int> $tabs An array of tab indexes (int).
 	 *
