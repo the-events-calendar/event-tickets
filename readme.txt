@@ -199,10 +199,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.23.0] 2025-05-19 =
+= [5.23.0] 2025-05-20 =
 
+* Version - Event Tickets 5.23.0 is only compatible with The Events Calendar 6.13.0 or higher.
+* Version - Event Tickets 5.23.0 is only compatible with Event Tickets Plus 6.5.0 or higher.
 * Feature - Event Tickets Onboarding Wizard [ET-2339]
+* Feature - Event Tickets Settings page revamped to match The Events Calendar
 * Fix - Add defensive coding to custom_glance_items_attendees() to avoid a fatal. [ET-2404]
+* Fix - Change the asset loading function from `tribe_asset` to `tec_asset` in various parts of the codebase.
 * Language - 58 new strings added, 361 updated, 2 fuzzied, and 6 obsoleted.
 
 = [5.22.0.1] 2025-05-14 =
