@@ -257,17 +257,6 @@ $ticket_type = $ticket_type ?? 'default';
 						class="button-primary tribe-dependent tribe-validation-submit"
 						name="ticket_form_save"
 						value="<?php echo esc_attr( $ticket_form_save_text ); ?>"
-						data-depends="#tec_tickets_ticket_provider"
-						data-condition-not="Tribe__Tickets__RSVP"
-				/>
-				<input
-						type="button"
-						id="rsvp_form_save"
-						class="button-primary tribe-dependent tribe-validation-submit"
-						name="ticket_form_save"
-						value="<?php echo esc_attr( $rsvp_form_save_text ); ?>"
-						data-depends="#tec_tickets_ticket_provider"
-						data-condition="Tribe__Tickets__RSVP"
 				/>
 				<input
 						type="button"

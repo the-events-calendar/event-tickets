@@ -47,7 +47,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @return string
 	 */
-	public function connect_account(): string {
+	public function connect_account( bool $is_wizard = false ): string {
 		$merchant = tribe( Merchant::class );
 
 		// Generate and store the code challenge using the Merchant class.
@@ -62,7 +62,7 @@ class WhoDat extends Abstract_WhoDat {
 			'mode'                  => tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live',
 			'code_challenge'        => $code_challenge,
 			'code_challenge_method' => 'S256',
-			'url'                   => tribe( On_Boarding_Endpoint::class )->get_return_url(),
+			'url'                   => tribe( On_Boarding_Endpoint::class )->get_return_url( null, $is_wizard ),
 			'state'                 => $nonce,
 		];
 

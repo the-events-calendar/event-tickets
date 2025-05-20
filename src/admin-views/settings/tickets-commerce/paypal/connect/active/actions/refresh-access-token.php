@@ -8,7 +8,7 @@
  * @since 5.3.0 Added section param to URL.
  * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
  * @since 5.4.0 Using the new tickets settings get_url() method.
- * @since TBD updated the Tab to be the Gateway Key.
+ * @since 5.23.0 updated the Tab to be the Gateway Key.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.

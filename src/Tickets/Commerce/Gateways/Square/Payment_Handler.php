@@ -36,12 +36,13 @@ class Payment_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param string  $source_id The source ID.
-	 * @param WP_Post $order     The order post object.
+	 * @param string  $source_id       The source ID.
+	 * @param WP_Post $order           The order post object.
+	 * @param string  $square_order_id The Square order ID.
 	 *
 	 * @return array
 	 */
-	public function create_payment_for_order( string $source_id, WP_Post $order ): array {
+	public function create_payment_for_order( string $source_id, WP_Post $order, string $square_order_id = '' ): array {
 		// Somehow we already have a payment.
 		if ( $this->get() ) {
 			return $this->get();
@@ -51,7 +52,7 @@ class Payment_Handler {
 		$payment = $this->get_existing_if_valid();
 		if ( ! $payment ) {
 			// If it all fails lets create a new one.
-			$payment = Payment::create_from_order( $source_id, $order );
+			$payment = Payment::create_from_order( $source_id, $order, $square_order_id );
 
 			if ( isset( $payment['id'] ) && empty( $payment['errors'] ) ) {
 				$this->store_payment_cookie( $payment['id'] );

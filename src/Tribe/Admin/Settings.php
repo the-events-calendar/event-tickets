@@ -44,7 +44,7 @@ class Settings {
 	/**
 	 * Stores the instance of the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var Tribe__Settings_Tab
 	 */
@@ -288,7 +288,7 @@ class Settings {
 	/**
 	 * Register the default settings tab sidebar.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return void
 	 */
@@ -319,7 +319,7 @@ class Settings {
 	/**
 	 * Gets the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return Tribe__Settings_Tab
 	 */
@@ -477,7 +477,7 @@ class Settings {
 	/**
 	 * Get the settings page ID.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return string
 	 */

@@ -4,6 +4,7 @@
 import moment from 'moment-timezone';
 import React from 'react';
 import $ from 'jquery';
+import renderer from 'react-test-renderer';
 
 global.jQuery = $;
 global.$ = $;

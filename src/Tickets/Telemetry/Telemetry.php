@@ -212,7 +212,7 @@ class Telemetry {
 	/**
 	 * Determines if the current page is an ET admin page.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return bool Whether the current page is an ET admin page.
 	 */

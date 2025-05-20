@@ -61,7 +61,6 @@ class Ticket_Item extends Item {
 			'inventory_alert_threshold' => 5,
 			'stockable'                 => true,
 			'sellable'                  => true,
-			'image_ids'                 => [],
 		],
 	];
 

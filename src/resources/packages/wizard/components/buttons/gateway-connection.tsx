@@ -10,6 +10,7 @@ interface GatewayConnectionButtonProps {
 	connectText: string;
 	onConnect: () => void;
 	onContinue: () => void;
+	hideStatus?: boolean;
 }
 
 const GatewayConnectionButton: React.FC<GatewayConnectionButtonProps> = ({
@@ -18,13 +19,16 @@ const GatewayConnectionButton: React.FC<GatewayConnectionButtonProps> = ({
 	connectText,
 	onConnect,
 	onContinue,
+	hideStatus = false,
 }) => {
 	if (connectionStatus === 'connected') {
 		return (
 			<>
-				<div className="tec-tickets-onboarding__connection-status tec-tickets-onboarding__connection-status--connected">
-					<CheckIcon /> {__('Connected', 'event-tickets')}
-				</div>
+				{!hideStatus && (
+					<div className="tec-tickets-onboarding__connection-status tec-tickets-onboarding__connection-status--connected">
+						<CheckIcon /> {__('Connected', 'event-tickets')}
+					</div>
+				)}
 				<Button
 					isPrimary
 					className="tec-tickets-onboarding__next-button"
@@ -39,15 +43,17 @@ const GatewayConnectionButton: React.FC<GatewayConnectionButtonProps> = ({
 	if (connectionStatus === 'failed') {
 		return (
 			<>
-				<div className="tec-tickets-onboarding__connection-error">
-					<ErrorIcon />
-					<span className="tec-tickets-onboarding__error-text">
-						{__('Connection failed. ', 'event-tickets')}
-						<a href="/wp-admin/admin.php?page=tec-tickets-help" className="tec-tickets-onboarding__support-link">
-							{__('Contact Support ↗', 'event-tickets')}
-						</a>
-					</span>
-				</div>
+				{!hideStatus && (
+					<div className="tec-tickets-onboarding__connection-error">
+						<ErrorIcon />
+						<span className="tec-tickets-onboarding__error-text">
+							{__('Connection failed. ', 'event-tickets')}
+							<a href="/wp-admin/admin.php?page=tec-tickets-help" className="tec-tickets-onboarding__support-link">
+								{__('Contact Support ↗', 'event-tickets')}
+							</a>
+						</span>
+					</div>
+				)}
 				<Button
 					isPrimary
 					className="tec-tickets-onboarding__try-again"

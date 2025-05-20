@@ -15,6 +15,9 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 use JsonSerializable;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Gateways\Square\Requests;
+use Tribe__Tickets__Main as ET;
 
 /**
  * Abstract Class Item
@@ -178,6 +181,7 @@ abstract class Item implements JsonSerializable {
 			$this->data['version'] = $version;
 		}
 		$this->data['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
+		$this->set_image_ids();
 
 		return $this->set_object_values();
 	}
@@ -337,5 +341,91 @@ abstract class Item implements JsonSerializable {
 		 * @param Item   $item The item object.
 		 */
 		do_action( 'tec_tickets_commerce_square_object_synced', $this->get_id(), $this->get_wp_id(), $square_object, $this );
+	}
+
+	/**
+	 * Set the image IDs for the item.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function set_image_ids(): void {
+		$image_ids = Commerce_Settings::get( 'square_catalog_image_ids_%s', [], [] );
+
+		$product_type = 'ITEM' === static::ITEM_TYPE ? 'event' : 'ticket';
+
+		if ( 'ticket' === $product_type ) {
+			$product_type = is_callable( $this, 'get_ticket' ) && 'tribe_event_series' === $this->get_ticket()->get_event()->post_type ?
+				'series' :
+				'single';
+		}
+
+		$cache     = tribe_cache();
+		$cache_key = 'square_catalog_image_ids_' . $product_type;
+		$image_id  = $cache[ $cache_key ] ?? null;
+
+		$image_id ??= $image_ids[ $product_type ] ?? null;
+
+		if ( $image_id ) {
+			$still_exists = Requests::get_with_cache( "catalog/object/{$image_id}" );
+
+			if ( empty( $still_exists['object'] ) ) {
+				$image_id = null;
+			}
+		}
+
+		if ( null === $image_id ) {
+			$data = [
+				'idempotency_key' => uniqid( 'square-image-' . $this->get_wp_id() . '-' . $product_type . '-', true ),
+				'image'           => [
+					'id'         => '#TEMP_ID',
+					'type'       => 'IMAGE',
+					'image_data' => [
+						'name' => "{$product_type}.png",
+					],
+				],
+			];
+
+			$arguments = [
+				'filepath' => ET::instance()->plugin_path . "src/resources/images/square-sync/{$product_type}.png",
+				'body'     => [
+					'request' => wp_json_encode( $data ),
+				],
+			];
+
+			$response = Requests::post_with_file(
+				'catalog/images',
+				$arguments
+			);
+
+			if ( empty( $response['image'] ) ) {
+				do_action(
+					'tribe_log',
+					'warning',
+					'Square images sync',
+					[
+						'response'     => $response,
+						'product_type' => $product_type,
+						'body'         => $arguments['body'],
+					]
+				);
+			}
+
+			$image_id = $response['image']['id'] ?? '';
+
+			if ( $image_id ) {
+				$image_ids[ $product_type ] = $image_id;
+				Commerce_Settings::set( 'square_catalog_image_ids_%s', $image_ids );
+			}
+		}
+
+		$cache[ $cache_key ] = $image_id;
+
+		if ( ! $image_id ) {
+			return;
+		}
+
+		$this->set_item_data( 'image_ids', [ $image_id ] );
 	}
 }
