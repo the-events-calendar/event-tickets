@@ -25,6 +25,7 @@ class Manager {
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Return an array with the gateway key as the key and the gateway as the value.
 	 *
 	 * @return Abstract_Gateway[] The list of registered Tickets Commerce gateways.
 	 */
@@ -38,7 +39,9 @@ class Manager {
 		 *
 		 * @param Abstract_Gateway[] $gateways The list of registered Tickets Commerce gateways.
 		 */
-		return (array) apply_filters( 'tec_tickets_commerce_gateways', [] );
+		$gateways = (array) apply_filters( 'tec_tickets_commerce_gateways', [] );
+
+		return array_combine( array_map( fn( Abstract_Gateway $gateway ) => $gateway->get_key(), $gateways ), $gateways );
 	}
 
 	/**
@@ -146,8 +149,10 @@ class Manager {
 		 * @since TBD
 		 *
 		 * @param Abstract_Gateway[] $available_gateways_in_context The available gateways in the context.
+		 * @param Abstract_Gateway[] $available_gateways            The available gateways.
+		 * @param string             $context                       The context in which the gateways are being retrieved.
 		 */
-		return apply_filters(
+		return (array) apply_filters(
 			'tec_tickets_commerce_active_gateways',
 			$available_gateways_in_context,
 			$available_gateways,
