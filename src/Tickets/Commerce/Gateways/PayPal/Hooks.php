@@ -86,7 +86,6 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 5.2.0
 	 *
-	 *
 	 * @return false|string
 	 */
 	public function ajax_refresh_connect_url() {

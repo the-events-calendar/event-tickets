@@ -43,9 +43,9 @@ interface Merchant_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_client_secret(): string;
+	public function get_client_secret(): ?string;
 
 	/**
 	 * Save merchant data.
