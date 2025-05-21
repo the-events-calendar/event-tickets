@@ -1,0 +1,178 @@
+/* -----------------------------------------------------------------------------
+ * Form
+ * ----------------------------------------------------------------------------- */
+
+#settingsPanel .tec-tickets-onboarding__form-field label {
+	text-align: left;
+}
+
+/* -----------------------------------------------------------------------------
+ * Checkbox & Radio styling.
+ * ----------------------------------------------------------------------------- */
+.tec-tickets-onboarding__checkbox {
+	align-items: center;
+	display: flex;
+	gap: var(--tec-spacer-0);
+}
+
+.tec-tickets-onboarding__checkbox--optin,
+.tec-tickets-onboarding__checkbox--events {
+    align-items: start;
+	border: 1px solid var(--tec-scales-grey-200);
+	border-radius: var(--tec-admin-border-radius-1);
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	max-width: 363px;
+	padding: var(--tec-spacer-5) var(--tec-spacer-7);
+}
+
+.tec-tickets-onboarding__checkbox--optin {
+	background-color: var(--tec-wp-core-grey-0);
+}
+
+.tec-tickets-onboarding__checkbox--events {
+	align-items: flex-start;
+	background-color: #fff;
+}
+
+.tec-tickets-onboarding__checkbox-description {
+	color: #000;
+	font-size: var(--tec-font-size-2);
+	letter-spacing: -0.28px;
+	line-height: var(--tec-line-height-2);
+	margin-top: calc(-1 * var(--tec-spacer-0));
+	text-align: left;
+}
+
+.tec-tickets-onboarding__form-wrapper {
+	background-color: #fff;
+	border-radius: var(--tec-admin-border-radius-1);
+	display: flex;
+	flex-direction: column;
+	gap: var(--tec-spacer-2);
+	margin: 0 auto;
+	padding: var(--tec-spacer-5) var(--tec-spacer-7) var(--tec-spacer-7);
+	text-align: left;
+	width: 100%;
+	max-width: 100%;
+}
+
+.install-success .tec-tickets-onboarding__form-wrapper {
+	align-items: center;
+	gap: 0;
+	padding: 0;
+}
+
+#settingsPanel .tec-tickets-onboarding__form-wrapper,
+#paymentsPanel .tec-tickets-onboarding__form-wrapper {
+	padding: var(--tec-spacer-3) var(--tec-spacer-4);
+	text-align: center;
+}
+
+.tec-tickets-onboarding__form-wrapper.events-install {
+	background: transparent;
+	padding: 0;
+}
+
+.tec-tickets-onboarding__success-heading {
+	font-size: var(--tec-font-size-5);
+	font-weight: var(--tec-font-weight-bold);
+	margin-bottom: var(--tec-spacer-1);
+}
+
+.tec-tickets-onboarding__success-message {
+	font-size: var(--tec-font-size-3);
+	margin-top: 0;
+	text-align: center;
+}
+
+.tec-tickets-onboarding__success-finish {
+	margin-top: var(--tec-spacer-2);
+}
+
+.tec-tickets-onboarding__form-field-trigger {
+	line-height: var(--tec-line-height-2);
+	max-height: var(--tec-spacer-4);
+	padding: 0;
+}
+
+.tec-tickets-onboarding__form-field-trigger + .tec-tickets-onboarding__form-field {
+	display: none;
+}
+
+/* Stupidly specific or important to override component styles */
+.tec-tickets-onboarding__form-wrapper label {
+	font-size: var(--tec-font-size-2);
+	font-style: normal;
+	font-weight: var(--tec-font-weight-regular);
+	letter-spacing: -0.28px;
+	line-height: var(--tec-line-height-2);
+	text-transform: none;
+}
+
+.tec-tickets-onboarding__form-wrapper input,
+.tec-tickets-onboarding__form-wrapper select {
+	font-size: var(--tec-font-size-2);
+	font-style: normal;
+	font-weight: var(--tec-font-weight-regular);
+	height: auto;
+	line-height: normal;
+	padding: var(--tec-spacer-2) var(--tec-spacer-3);
+	text-transform: none;
+	width: 100%;
+}
+
+.tec-tickets-onboarding__form-wrapper input[type=checkbox] {
+	height: var(--tec-spacer-4);
+	width: var(--tec-spacer-4);
+}
+
+.tec-tickets-onboarding__form-wrapper input[type=radio] {
+	height: var(--tec-spacer-4);
+	margin-right: var(--tec-spacer-2);
+	width: var(--tec-spacer-4)
+}
+
+.tec-tickets-onboarding__form-wrapper input[type=radio]:checked::before {
+	height: 0.625rem;
+	margin: var(--tec-spacer-0);
+	width: 0.625rem;
+}
+
+.tec-tickets-onboarding__form-wrapper svg.components-checkbox-control__checked {
+	left: 0.625rem;
+}
+
+.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:checked,
+.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:indeterminate {
+	background: var(--tec-wp-core-blue-50);
+	border-color: var(--tec-wp-core-blue-50);
+}
+
+.tec-tickets-onboarding__form-wrapper .components-checkbox-control__input[type="checkbox"]:focus {
+	box-shadow: 0 0 0 var(--wp-admin-border-width-focus) #fff, 0 0 0 calc(var(--wp-admin-border-width-focus) * 2) var(--tec-wp-core-blue-50);
+}
+
+
+.tec-onboarding__modal .components-select-control__input:focus ~ .components-input-control__backdrop {
+	border-color: var(--tec-wp-core-blue-50) !important;
+	box-shadow: 0 0 0 0.5px var(--tec-wp-core-blue-50) !important;
+}
+
+.tec-tickets-onboarding__field-description {
+	display: inline-block;
+}
+
+.tec-tickets-onboarding__connection-status--connected,
+.tec-tickets-onboarding__connection-error {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	margin-bottom: var(--tec-spacer-3);
+}
+
+.tec-tickets-onboarding__connection-status--connected svg,
+.tec-tickets-onboarding__connection-error svg {
+	margin-right: var(--tec-spacer-0);
+}

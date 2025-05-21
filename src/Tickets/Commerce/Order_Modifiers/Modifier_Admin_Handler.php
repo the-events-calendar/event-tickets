@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use TEC\Common\Asset;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Tickets\Assets\Vendor_Asset;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
 use TEC\Tickets\Commerce\Utils\Currency;
@@ -137,7 +136,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			'admin/order-modifiers/table.js',
 			Tickets_Plugin::VERSION
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_condition( fn() => $this->is_on_page() )
 			->set_dependencies( 'jquery', 'wp-util' )
 			->enqueue_on( 'admin_enqueue_scripts' )
@@ -152,11 +151,9 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			)
 			->register();
 
-		Assets::init()->add(
-			new Vendor_Asset(
-				'tec-tickets-imask',
-				'https://unpkg.com/imask'
-			)
+		Asset::add(
+			'tec-tickets-imask',
+			'https://unpkg.com/imask@7.6.1/dist/imask.js',
 		)->register();
 
 		Asset::add(
@@ -164,7 +161,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			'admin/order-modifiers/amount-field.js',
 			Tickets_Plugin::VERSION,
 		)
-			->add_to_group_path( 'et-core' )
+			->add_to_group_path( Tickets_Plugin::class )
 			->set_condition( fn() => $this->is_on_edit_page() )
 			->set_dependencies( 'jquery', 'tribe-validation', 'tec-tickets-imask' )
 			->enqueue_on( 'admin_enqueue_scripts' )

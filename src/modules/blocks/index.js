@@ -8,14 +8,11 @@ const { applyFilters, doAction } = wp.hooks;
 /**
  * Internal dependencies
  */
-import { initStore } from '@moderntribe/tickets/data';
-import rsvp from '@moderntribe/tickets/blocks/rsvp';
-import attendees from '@moderntribe/tickets/blocks/attendees';
+import { initStore } from '../data';
+import rsvp from './rsvp';
+import attendees from './attendees';
 
-let blocks = [
-	rsvp,
-	attendees,
-];
+let blocks = [ rsvp, attendees ];
 
 /**
  * Allows filtering the list of blocks registered by Event Tickets.

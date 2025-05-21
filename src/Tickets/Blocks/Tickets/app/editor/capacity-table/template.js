@@ -13,7 +13,7 @@ import { NumberInput } from '@moderntribe/common/elements';
 import Row from './row/template';
 import './style.pcss';
 
-const CapacityTable = ({
+const CapacityTable = ( {
 	independentCapacity,
 	independentTicketItems,
 	isSettingsLoading,
@@ -23,13 +23,13 @@ const CapacityTable = ({
 	totalCapacity,
 	unlimitedTicketItems,
 	rowsAfter,
-}) => {
+} ) => {
 	let sharedCapacityInput = (
 		<NumberInput
-			onChange={onSharedCapacityChange}
-			value={sharedCapacity}
-			disabled={isSettingsLoading}
-			min={0}
+			onChange={ onSharedCapacityChange }
+			value={ sharedCapacity }
+			disabled={ isSettingsLoading }
+			min={ 0 }
 		/>
 	);
 
@@ -44,48 +44,43 @@ const CapacityTable = ({
 	sharedCapacityInput = applyFilters(
 		'tec.tickets.blocks.Tickets.CapacityTable.sharedCapacityInput',
 		sharedCapacityInput,
-		sharedCapacity,
+		sharedCapacity
 	);
 
 	return (
 		<div className="tribe-editor__tickets__capacity-table">
-			<h3 className="tribe-editor__tickets__capacity-table-title">
-				{__('Capacity', 'event-tickets')}
-			</h3>
+			<h3 className="tribe-editor__tickets__capacity-table-title">{ __( 'Capacity', 'event-tickets' ) }</h3>
 			<Row
-				label={__('Shared capacity', 'event-tickets')}
-				items={sharedTicketItems}
-				right={sharedCapacityInput}
+				label={ __( 'Shared capacity', 'event-tickets' ) }
+				items={ sharedTicketItems }
+				right={ sharedCapacityInput }
 			/>
 			<Row
-				label={__('Independent capacity', 'event-tickets')}
-				items={independentTicketItems}
-				right={independentCapacity}
+				label={ __( 'Independent capacity', 'event-tickets' ) }
+				items={ independentTicketItems }
+				right={ independentCapacity }
 			/>
-			{unlimitedTicketItems.length > 0 && (
+			{ unlimitedTicketItems.length > 0 && (
 				<Row
-					label={__('Unlimited capacity', 'event-tickets')}
-					items={unlimitedTicketItems}
-					right={__('Unlimited', 'event-tickets')}
+					label={ __( 'Unlimited capacity', 'event-tickets' ) }
+					items={ unlimitedTicketItems }
+					right={ __( 'Unlimited', 'event-tickets' ) }
 				/>
-			)}
+			) }
 
-			{rowsAfter &&
-				rowsAfter.map((row, index) => {
+			{ rowsAfter &&
+				rowsAfter.map( ( row, index ) => {
 					return (
 						<Row
-							key={index}
-							label={row.label || ''}
-							items={row.items || ''}
-							right={row.right || ''}
+							key={ index }
+							label={ row.label || '' }
+							items={ row.items || '' }
+							right={ row.right || '' }
 						/>
 					);
-				})}
+				} ) }
 
-			<Row
-				label={__('Total Capacity', 'event-tickets')}
-				right={totalCapacity}
-			/>
+			<Row label={ __( 'Total Capacity', 'event-tickets' ) } right={ totalCapacity } />
 		</div>
 	);
 };
@@ -96,15 +91,15 @@ CapacityTable.propTypes = {
 	isSettingsLoading: PropTypes.bool,
 	onSharedCapacityChange: PropTypes.func,
 	rowsAfter: PropTypes.arrayOf(
-		PropTypes.shape({
+		PropTypes.shape( {
 			label: PropTypes.string,
 			items: PropTypes.string,
 			right: PropTypes.node,
-		})
+		} )
 	),
 	sharedCapacity: PropTypes.string,
 	sharedTicketItems: PropTypes.string,
-	totalCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	totalCapacity: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] ),
 	unlimitedTicketItems: PropTypes.string,
 };
 
