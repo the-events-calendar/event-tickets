@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Details reducer should set the available 1`] = `
-Object {
+{
   "available": 20,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -47,7 +47,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -79,15 +79,15 @@ Object {
 `;
 
 exports[`Details reducer should set the currency position 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "postfix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -125,7 +125,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -157,15 +157,15 @@ Object {
 `;
 
 exports[`Details reducer should set the currency symbol 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": "$",
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -203,7 +203,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -235,15 +235,15 @@ Object {
 `;
 
 exports[`Details reducer should set the has attendee info fields 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -281,7 +281,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -313,15 +313,15 @@ Object {
 `;
 
 exports[`Details reducer should set the has been created 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -359,7 +359,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -391,15 +391,15 @@ Object {
 `;
 
 exports[`Details reducer should set the has changes 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -437,7 +437,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -469,15 +469,15 @@ Object {
 `;
 
 exports[`Details reducer should set the has duration error 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -515,7 +515,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -547,15 +547,15 @@ Object {
 `;
 
 exports[`Details reducer should set the is loading 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -593,7 +593,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -625,15 +625,15 @@ Object {
 `;
 
 exports[`Details reducer should set the is modal open 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -671,7 +671,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -703,15 +703,15 @@ Object {
 `;
 
 exports[`Details reducer should set the is selected 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -749,7 +749,7 @@ Object {
   "isSelected": true,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -781,15 +781,15 @@ Object {
 `;
 
 exports[`Details reducer should set the provider 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -827,7 +827,7 @@ Object {
   "isSelected": false,
   "provider": "provider",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -859,15 +859,15 @@ Object {
 `;
 
 exports[`Details reducer should set the sold 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -905,7 +905,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 20,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -937,15 +937,15 @@ Object {
 `;
 
 exports[`Details reducer should set the ticket id 1`] = `
-Object {
+{
   "available": 0,
   "currencyDecimalPoint": ".",
   "currencyNumberOfDecimals": 2,
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "currencyThousandsSep": ",",
-  "details": Object {
-    "attendeeInfoFields": Array [],
+  "details": {
+    "attendeeInfoFields": [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -983,7 +983,7 @@ Object {
   "isSelected": false,
   "provider": "",
   "sold": 0,
-  "tempDetails": Object {
+  "tempDetails": {
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",

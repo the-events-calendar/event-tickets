@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RSVP block declaration register the RSVP block 1`] = `
-Object {
-  "attributes": Object {
-    "goingCount": Object {
+{
+  "attributes": {
+    "goingCount": {
       "meta": "_tribe_ticket_going_count",
       "source": "meta",
       "type": "integer",
     },
-    "headerImageId": Object {
+    "headerImageId": {
       "meta": "_tribe_ticket_header",
       "source": "meta",
       "type": "integer",
     },
-    "notGoingCount": Object {
+    "notGoingCount": {
       "meta": "_tribe_ticket_not_going_count",
       "source": "meta",
       "type": "integer",
@@ -22,15 +22,15 @@ Object {
   "category": "tribe-tickets",
   "description": "Find out who is planning to attend!",
   "edit": [Function],
-  "icon": <<svg>icon mock</svg> />,
+  "icon": <UNDEFINED />,
   "id": "rsvp",
-  "keywords": Array [
+  "keywords": [
     "event",
     "events-gutenberg",
     "tribe",
   ],
   "save": [Function],
-  "supports": Object {
+  "supports": {
     "customClassName": false,
     "html": false,
     "multiple": false,
