@@ -432,7 +432,7 @@ class Payments_Tab extends Service_Provider {
 			}
 		}
 
-		$disabled_message     = esc_html__( 'You can have enabled only Stripe or Square. Not both.', 'event-tickets' );
+		$disabled_message     = esc_html__( 'You can have only Stripe or Square enabled, but not both.', 'event-tickets' );
 		$disabled_explanation = $we_already_use_a_solo_gateway ? '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-currency-message--error">' . $disabled_message . '</p>' : '';
 
 		$attributes = tribe_get_attributes(
