@@ -3,11 +3,11 @@
  *
  * @param {Function} domReadyCallback The callback function to be called when the DOM is ready.
  */
-const onReady = (domReadyCallback) => {
-	if (document.readyState !== 'loading') {
+const onReady = ( domReadyCallback ) => {
+	if ( document.readyState !== 'loading' ) {
 		domReadyCallback();
 	} else {
-		document.addEventListener('DOMContentLoaded', domReadyCallback);
+		document.addEventListener( 'DOMContentLoaded', domReadyCallback );
 	}
 };
 

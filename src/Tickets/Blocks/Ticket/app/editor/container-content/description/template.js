@@ -36,18 +36,16 @@ class Description extends PureComponent {
 	}
 
 	render() {
-		const {
-			isDisabled,
-			onTempDescriptionChange,
-			tempDescription,
-		} = this.props;
+		const { isDisabled, onTempDescriptionChange, tempDescription } = this.props;
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__description',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--description',
-			) }>
+			<div
+				className={ classNames(
+					'tribe-editor__ticket__description',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--description'
+				) }
+			>
 				<LabeledItem
 					className="tribe-editor__ticket__description-label"
 					forId={ this.id }

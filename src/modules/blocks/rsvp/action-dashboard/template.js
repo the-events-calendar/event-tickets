@@ -12,15 +12,12 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import MoveDelete from '@moderntribe/tickets/blocks/rsvp/move-delete/container';
-import { ActionDashboard } from '@moderntribe/tickets/elements';
+import MoveDelete from '../move-delete/container';
+import { ActionDashboard } from '../../../elements';
 import './style.pcss';
 
-const confirmLabel = ( created ) => (
-	created
-		? __( 'Update RSVP', 'event-tickets' )
-		: __( 'Create RSVP', 'event-tickets' )
-);
+const confirmLabel = ( created ) =>
+	created ? __( 'Update RSVP', 'event-tickets' ) : __( 'Create RSVP', 'event-tickets' );
 
 const cancelLabel = __( 'Cancel', 'event-tickets' );
 
@@ -55,16 +52,10 @@ class RSVPActionDashboard extends PureComponent {
 		}
 
 		return actions;
-	}
+	};
 
 	render() {
-		const {
-			created,
-			hasRecurrenceRules,
-			isConfirmDisabled,
-			onCancelClick,
-			onConfirmClick,
-		} = this.props;
+		const { created, hasRecurrenceRules, isConfirmDisabled, onCancelClick, onConfirmClick } = this.props;
 
 		/* eslint-disable max-len */
 		return (
@@ -81,7 +72,10 @@ class RSVPActionDashboard extends PureComponent {
 				/>
 				{ hasRecurrenceRules && (
 					<div className="tribe-editor__rsvp__warning">
-						{ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
+						{ __(
+							'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.',
+							'event-tickets'
+						) }
 					</div>
 				) }
 			</Fragment>

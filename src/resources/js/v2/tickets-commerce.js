@@ -18,12 +18,12 @@ tribe.tickets.commerce = {};
  * Initializes in a Strict env the code that manages the plugin tickets commerce.
  *
  * @since 5.1.9
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.commerce
- * @param  {Object} tecTicketsCommerce The global object for the Tickets Commerce.
+ * @param {Object} $                  jQuery
+ * @param {Object} obj                tribe.tickets.commerce
+ * @param {Object} tecTicketsCommerce The global object for the Tickets Commerce.
  * @return {void}
  */
-( function( $, obj, tecTicketsCommerce ) {
+( function ( $, obj, tecTicketsCommerce ) {
 	const $document = $( document );
 
 	/**
@@ -72,7 +72,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since 5.1.10
 	 */
-	obj.loaderShow = function() {
+	obj.loaderShow = function () {
 		tribe.tickets.loader.show( $( obj.selectors.checkoutContainer ) );
 	};
 
@@ -81,7 +81,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since 5.1.10
 	 */
-	obj.loaderHide = function() {
+	obj.loaderHide = function () {
 		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
 	};
 
@@ -90,7 +90,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since 5.1.10
 	 */
-	obj.bindLoaderEvents = function() {
+	obj.bindLoaderEvents = function () {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );
 		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
 	};
@@ -102,7 +102,7 @@ tribe.tickets.commerce = {};
 	 * @param {event} event The event.
 	 * @return {void}
 	 */
-	obj.checkoutItemDescriptionToggle = function( event ) {
+	obj.checkoutItemDescriptionToggle = function ( event ) {
 		if ( 'keydown' === event.type && 13 !== event.keyCode ) {
 			return;
 		}
@@ -143,8 +143,10 @@ tribe.tickets.commerce = {};
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 * @return {void}
 	 */
-	obj.bindCheckoutItemDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
+	obj.bindCheckoutItemDescriptionToggle = function ( $container ) {
+		const $descriptionToggleButtons = $container.find(
+			obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess
+		); // eslint-disable-line max-len
 
 		$descriptionToggleButtons
 			.on( 'keydown', obj.checkoutItemDescriptionToggle )
@@ -158,8 +160,10 @@ tribe.tickets.commerce = {};
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 * @return {void}
 	 */
-	obj.unbindCheckoutItemDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
+	obj.unbindCheckoutItemDescriptionToggle = function ( $container ) {
+		const $descriptionToggleButtons = $container.find(
+			obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess
+		); // eslint-disable-line max-len
 
 		$descriptionToggleButtons.off();
 	};
@@ -171,7 +175,7 @@ tribe.tickets.commerce = {};
 	 * @param {jQuery} $container jQuery object of object of the tickets container.
 	 * @return {void}
 	 */
-	obj.bindCheckoutEvents = function( $container ) {
+	obj.bindCheckoutEvents = function ( $container ) {
 		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
 
 		// Bind coupon events.
@@ -214,10 +218,10 @@ tribe.tickets.commerce = {};
 	 * @since 5.1.9
 	 * @return {void}
 	 */
-	obj.ready = function() {
+	obj.ready = function () {
 		const $checkoutContainer = $document.find( obj.selectors.checkoutContainer );
 		// Bind events for each tickets commerce checkout block.
-		$checkoutContainer.each( function( index, block ) {
+		$checkoutContainer.each( function ( index, block ) {
 			obj.bindCheckoutEvents( $( block ) );
 		} );
 	};
@@ -228,14 +232,12 @@ tribe.tickets.commerce = {};
 	 * @since 5.21.0
 	 * @param {string} newAmount The new total amount to display.
 	 */
-	obj.updateTotalPrice = function( newAmount ) {
+	obj.updateTotalPrice = function ( newAmount ) {
 		const $totalPriceElement = $( '.tribe-tickets__commerce-checkout-cart-footer-total-wrap' );
 
 		const parser = new DOMParser();
-		const unescapedAmount = parser.parseFromString(
-			`<!doctype html><body>${ newAmount }`,
-			'text/html',
-		).body.textContent;
+		const unescapedAmount = parser.parseFromString( `<!doctype html><body>${ newAmount }`, 'text/html' ).body
+			.textContent;
 
 		$totalPriceElement.text( unescapedAmount );
 	};
@@ -246,15 +248,13 @@ tribe.tickets.commerce = {};
 	 * @since 5.21.0
 	 * @param {string} discount The new discount to display.
 	 */
-	obj.updateCouponDiscount = function( discount ) {
+	obj.updateCouponDiscount = function ( discount ) {
 		const $couponValueElement = $( obj.selectors.couponAppliedDiscount );
 
 		// Use DOMParser to unescape the discount value
 		const parser = new DOMParser();
-		const unescapedDiscount = parser.parseFromString(
-			`<!doctype html><body>${ discount }`,
-			'text/html',
-		).body.textContent;
+		const unescapedDiscount = parser.parseFromString( `<!doctype html><body>${ discount }`, 'text/html' ).body
+			.textContent;
 
 		$couponValueElement.text( unescapedDiscount );
 	};
@@ -265,15 +265,13 @@ tribe.tickets.commerce = {};
 	 * @since 5.21.0
 	 * @param {string} label The new label to display.
 	 */
-	obj.updateCouponLabel = function( label ) {
+	obj.updateCouponLabel = function ( label ) {
 		const $couponLabelElement = $( obj.selectors.couponAppliedLabel );
 
 		// Use DOMParser to unescape the discount value
 		const parser = new DOMParser();
-		const unescapedLabel = parser.parseFromString(
-			`<!doctype html><body>${ label }`,
-			'text/html',
-		).body.textContent;
+		const unescapedLabel = parser.parseFromString( `<!doctype html><body>${ label }`, 'text/html' ).body
+			.textContent;
 
 		$couponLabelElement.text( unescapedLabel );
 	};
@@ -285,7 +283,7 @@ tribe.tickets.commerce = {};
 	 */
 	obj.bindAddCouponLink = function() {
 		const hiddenName = obj.selectors.hiddenElement.className();
-		$document.on( 'click', obj.selectors.couponAddLink, function() {
+		$document.on( 'click', obj.selectors.couponAddLink, function () {
 			$( obj.selectors.couponAddLink ).addClass( hiddenName );
 			$( obj.selectors.couponInputContainer ).removeClass( hiddenName );
 		} );
@@ -297,7 +295,7 @@ tribe.tickets.commerce = {};
 	 * @since 5.21.0
 	 * @return {undefined|string} The Stripe Payment Intent ID if available.
 	 */
-	obj.getStripeIntentId = function() {
+	obj.getStripeIntentId = function () {
 		return window.tecTicketsCommerceGatewayStripeCheckout?.paymentIntentData?.id;
 	};
 
@@ -327,7 +325,7 @@ tribe.tickets.commerce = {};
 		let ajaxInProgress = false;
 
 		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
-		$document.on( 'keydown', obj.selectors.couponInput, function( e ) {
+		$document.on( 'keydown', obj.selectors.couponInput, function ( e ) {
 			if ( e.key === 'Enter' ) {
 				e.preventDefault();
 				applyCoupon();
@@ -372,7 +370,7 @@ tribe.tickets.commerce = {};
 
 			const requestData = {
 				coupon: couponValue,
-				nonce: nonce,
+				nonce,
 				purchaser_data: obj.getPurchaserData( $( obj.selectors.purchaserFormContainer ) ),
 				cart_hash: cartHash[ 1 ],
 			};
@@ -429,8 +427,8 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since 5.21.0
 	 */
-	obj.bindCouponRemove = function() {
-		$document.on( 'click', obj.selectors.couponRemoveButton, function() {
+	obj.bindCouponRemove = function () {
+		$document.on( 'click', obj.selectors.couponRemoveButton, function () {
 			let ajaxInProgress = false;
 
 			// Prevent multiple AJAX requests at once.
@@ -449,9 +447,7 @@ tribe.tickets.commerce = {};
 
 			// Ensure the coupon is not empty.
 			if ( ! couponValue ) {
-				$errorMessage
-					.text( tecTicketsCommerce.i18n.cantDetermineCoupon )
-					.removeClass( hiddenName );
+				$errorMessage.text( tecTicketsCommerce.i18n.cantDetermineCoupon ).removeClass( hiddenName );
 				return;
 			}
 
@@ -461,7 +457,7 @@ tribe.tickets.commerce = {};
 			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
 
 			const requestData = {
-				nonce: nonce,
+				nonce,
 				coupon: couponValue,
 				cart_hash: cartHash[ 1 ],
 			};
@@ -500,9 +496,7 @@ tribe.tickets.commerce = {};
 					}
 				},
 				error() {
-					$errorMessage
-						.text( tecTicketsCommerce.i18n.couponRemoveError )
-						.removeClass( hiddenName );
+					$errorMessage.text( tecTicketsCommerce.i18n.couponRemoveError ).removeClass( hiddenName );
 				},
 				complete() {
 					obj.loaderHide();

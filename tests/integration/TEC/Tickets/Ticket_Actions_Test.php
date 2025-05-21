@@ -23,6 +23,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 	protected $controller_class = Ticket_Actions::class;
 
 	protected static $back_up_actions = [];
+	protected static array $back_up_counts = [];
 
 	protected static array $before_test_counts = [
 		'start' => 0,
@@ -37,6 +38,9 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		self::$back_up_actions = $wp_actions;
 		$wp_actions = [];
+
+		self::$back_up_counts['start'] = count( $this->query_action_scheduler_actions_count() );
+		self::$back_up_counts['end'] = count( $this->query_action_scheduler_actions_count( null, false ) );
 	}
 
 	/**
