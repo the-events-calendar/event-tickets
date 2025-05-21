@@ -1,4 +1,11 @@
 <?php
+/**
+ * Square Gateway
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 

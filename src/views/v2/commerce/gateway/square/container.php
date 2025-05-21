@@ -7,9 +7,9 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  */
@@ -30,3 +30,4 @@
 		<?php esc_html_e( 'Pay Now', 'event-tickets' ); ?>
 	</button>
 </form>
+<?php

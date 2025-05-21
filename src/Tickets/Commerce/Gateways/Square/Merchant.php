@@ -1,4 +1,11 @@
 <?php
+/**
+ * Merchant class for the Square gateway.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
@@ -250,9 +257,9 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		$return = [
-			'connected'       => false,
-			'errors'          => [],
-			'capabilities'    => [],
+			'connected'    => false,
+			'errors'       => [],
+			'capabilities' => [],
 		];
 
 		if ( empty( $client_data['client_id'] ) || empty( $client_data['access_token'] ) ) {
@@ -402,10 +409,8 @@ class Merchant extends Abstract_Merchant {
 			$code_verifier = $this->generate_code_verifier();
 		}
 
-		// Create code_challenge using SHA256 hash of the code_verifier (PKCE)
-		$code_challenge = rtrim( strtr( base64_encode( hash( 'sha256', $code_verifier, true ) ), '+/', '-_' ), '=' );
-
-		return $code_challenge;
+		// Create code_challenge using SHA256 hash of the code_verifier (PKCE).
+		return rtrim( strtr( base64_encode( hash( 'sha256', $code_verifier, true ) ), '+/', '-_' ), '=' );
 	}
 
 	/**

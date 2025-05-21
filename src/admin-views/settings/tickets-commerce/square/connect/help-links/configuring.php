@@ -2,7 +2,7 @@
 /**
  * The Template for displaying the Tickets Commerce Square help links (configuring).
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
-	<!-- @todo: We need to update this link. -->
+	<!-- @todo dimi: We need to update this link. -->
 	<a
 		href="https://evnt.is/1axt"
 		target="_blank"

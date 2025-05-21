@@ -2,7 +2,7 @@
 /**
  * The Template for displaying the Tickets Commerce Square help links (troubleshooting).
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
