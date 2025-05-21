@@ -149,7 +149,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	public function add_pending_webhook( int $order_id, string $new_status, string $old_status, array $metadata = [] ): void {
 		add_post_meta(
 			$order_id,
-			self::PENDING_WEBHOOKS_KEY,
+			static::PENDING_WEBHOOKS_KEY,
 			[
 				'new_status' => $new_status,
 				'metadata'   => $metadata,
