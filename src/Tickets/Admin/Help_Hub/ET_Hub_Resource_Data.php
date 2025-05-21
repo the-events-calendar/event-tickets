@@ -12,12 +12,14 @@
 
 namespace TEC\Tickets\Admin\Help_Hub;
 
+use TEC\Common\Admin\Help_Hub\Hub;
 use TEC\Common\Admin\Help_Hub\Resource_Data\Help_Hub_Data_Interface;
 use TEC\Common\Admin\Help_Hub\Section_Builder\Link_Section_Builder;
 use TEC\Common\Telemetry\Telemetry;
 use Tribe__Main;
 use Tribe__PUE__Checker;
 use Tribe__Tickets__Main;
+use Tribe\Tickets\Admin\Settings;
 
 /**
  * Class ET_Hub_Resource_Data
@@ -34,6 +36,14 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @var string
 	 */
 	const HELP_HUB_PAGE_ID = 'tickets_page_tec-tickets-help-hub';
+
+	/**
+	 * The slug of the help hub page.
+	 *
+	 * @since TBD
+	 * @var string
+	 */
+	const HELP_HUB_SLUG = 'tec-tickets-help-hub';
 
 	/**
 	 * Holds the URLs for the necessary icons.
@@ -68,6 +78,25 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 */
 	public function __construct() {
 		add_action( 'load-' . self::HELP_HUB_PAGE_ID, [ $this, 'initialize' ] );
+		add_action( 'tec_help_hub_before_iframe_render', [ $this, 'register_with_hub' ] );
+	}
+
+	/**
+	 * Registers this data instance with the Help Hub.
+	 *
+	 * @since TBD
+	 *
+	 * @param Hub $help_hub The current Help Hub instance to register with.
+	 *
+	 * @return void
+	 */
+	public function register_with_hub( Hub $help_hub ): void {
+		$page = tec_get_request_var( 'page' );
+		if ( self::HELP_HUB_PAGE_ID !== $page ) {
+			return;
+		}
+		$this->initialize();
+		$help_hub->set_data( $this );
 	}
 
 	/**
@@ -78,6 +107,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @return void
 	 */
 	public function initialize(): void {
+
 		if ( $this->initialized ) {
 			return;
 		}
@@ -392,5 +422,39 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	public function add_help_hub_pages( $help_pages ): array {
 		$help_pages[] = self::HELP_HUB_PAGE_ID;
 		return $help_pages;
+	}
+
+	/**
+	 * Determines if the current admin page is the Help Hub page.
+	 *
+	 * Checks the 'page' request variable against the Help Hub settings slug to confirm
+	 * if the user is currently viewing the Help Hub admin page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool True if the current page is the Help Hub, false otherwise.
+	 */
+	public function is_help_hub_page(): bool {
+		$page = tec_get_request_var( 'page' );
+
+		return $this->get_help_hub_slug() === $page;
+	}
+
+	/**
+	 * Get the Help Hub page ID.
+	 *
+	 * @return string
+	 */
+	public function get_help_hub_id(): string {
+		return self::HELP_HUB_PAGE_ID;
+	}
+
+	/**
+	 * Retrieve the Help Hub slug.
+	 *
+	 * @return string The slug for the Help Hub.
+	 */
+	public function get_help_hub_slug(): string {
+		return Settings::$help_hub_slug;
 	}
 }
