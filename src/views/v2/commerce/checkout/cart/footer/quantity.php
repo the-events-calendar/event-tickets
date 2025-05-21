@@ -19,7 +19,6 @@
  * @var string          $provider_id     [Global] The tickets provider class name.
  * @var array[]         $items           [Global] List of Items on the cart to be checked out.
  * @var array[]         $gateways        [Global] An array with the gateways.
- * @var int             $gateways_active [Global] The number of active gateways.
  */
 
 use TEC\Tickets\Commerce\Module;

@@ -22,7 +22,6 @@
  * @var array[]          $sections              [Global] Which events we have tickets for.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var array[]          $gateways              [Global] An array with the gateways.
- * @var int              $gateways_active       [Global] The number of active gateways.
  * @var bool             $has_error             [Global] Whether there is an error or not.
  * @var array            $error                 [Global] Title and Content of the error.
  */

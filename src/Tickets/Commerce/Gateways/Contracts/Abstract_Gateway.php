@@ -9,7 +9,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Utils__Array as Arr;
 
@@ -369,5 +368,16 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 			return true;
 		}
 		return in_array( $currency_code, $supported_currencies, true );
+	}
+
+	/**
+	 * Whether the gateway renders alone or can be combined with other gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function renders_solo(): bool {
+		return true;
 	}
 }

@@ -37,6 +37,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 *
 	 * @since 5.1.9
 	 * @since 5.21.0 Updated the $items variable to retrieve all item types from the cart.
+	 * @since TBD Updated the $gateways variable to retrieve only the available gateways.
 	 *
 	 * @return void
 	 */
@@ -46,7 +47,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$cart_total    = Value::create( $cart->get_cart_total() ?? 0 );
 		$items         = $cart->get_repository()->get_calculated_items( 'all' );
 		$sections      = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$gateways      = tribe( Manager::class )->get_gateways();
+		$gateways      = tribe( Manager::class )->get_available_gateways();
 
 		// Pass each item through a filter to determine if it should be skipped.
 		$items = array_filter(
@@ -76,8 +77,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'registration_url'   => tribe( Checkout::class )->get_registration_url(),
 			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 			'gateways'           => $gateways,
-			'gateways_active'    => $this->get_gateways_active(),
-			'gateways_connected' => $this->get_gateways_connected(),
+			'gateways_active'    => count( $gateways ),
+			'gateways_connected' => count( $gateways ),
 			'billing_fields'     => $this->get_billing_fields(),
 			'has_error'          => false,
 			'error'              => [
@@ -167,6 +168,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 *
 	 * @since 5.1.10
 	 *
+	 * @deprecated TBD
+	 *
 	 * @return int The number of active gateways.
 	 */
 	public function get_gateways_active() {
@@ -182,6 +185,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 * Get the number of connected gateways.
 	 *
 	 * @since 5.2.0
+	 *
+	 * @deprecated TBD
 	 *
 	 * @return int The number of connected gateways.
 	 */
