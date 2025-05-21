@@ -43,7 +43,9 @@ class WhoDat extends Abstract_WhoDat {
 	 */
 	public function get_seller_signup_data( $hash, $country ) {
 		if ( empty( $hash ) ) {
-			$hash = tribe( Signup::class )->generate_unique_signup_hash();
+			$signup = tribe( Signup::class );
+			$hash   = $signup->generate_unique_signup_hash();
+			$signup->update_transient_hash( $hash );
 		}
 
 		$return_url = tribe( On_Boarding_Endpoint::class )->get_return_url( $hash );
