@@ -437,7 +437,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	public function is_help_hub_page(): bool {
 		$page = tec_get_request_var( 'page' );
 
-		return Settings::$help_hub_slug === $page;
+		return $this->get_help_hub_slug() === $page;
 	}
 
 	/**
