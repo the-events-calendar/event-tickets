@@ -260,6 +260,7 @@ class Order extends Abstract_Order {
 		}
 
 		$square_order = $square_order['order'];
+		$order        = null;
 
 		$ref_id = $square_order['reference_id'] ?? false;
 		if ( $ref_id && is_numeric( $ref_id ) ) {
