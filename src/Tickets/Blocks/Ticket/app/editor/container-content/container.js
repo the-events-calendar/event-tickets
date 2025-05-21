@@ -18,8 +18,4 @@ const mapStateToProps = ( state ) => ( {
 	hasIacVars: ! isEmpty( globals.iacVars() ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( Template );
-
+export default compose( withStore(), connect( mapStateToProps ) )( Template );

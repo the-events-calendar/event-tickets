@@ -8,7 +8,6 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Emails\Dispatcher;
-use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 
 /**
@@ -99,6 +98,7 @@ class RSVP_Not_Going extends Email_Abstract {
 	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
+	 * @since 5.23.0 Added new classes for settings.
 	 *
 	 * @return array
 	 */
@@ -109,35 +109,54 @@ class RSVP_Not_Going extends Email_Abstract {
 		);
 
 		$email_description = sprintf(
-			// Translators: %1$s: RSVP "Not going" Emails knowledgebase article link.
+		// Translators: %1$s: RSVP "Not going" Emails knowledgebase article link.
 			esc_html_x( 'Registrants will receive an email confirming that they will not be attending. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about RSVP Not going email', 'event-tickets' ),
 			$kb_link
 		);
 
-		$settings = [
+		return [
+			'tec-settings-email-template-wrapper_start'   => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__header-block--horizontal">',
+			],
+			'tec-settings-email-template-header'          => [
+				'type' => 'html',
+				'html' => '<h3>' . esc_html__( 'RSVP "Not Going" Email Settings', 'event-tickets' ) . '</h3>',
+			],
+			'info-box-description'                        => [
+				'type' => 'html',
+				'html' => '<p class="tec-settings-form__section-description">'
+						. $email_description
+						. '</p><br/>',
+			],
+
 			[
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '</div>',
 			],
-			[
+			'tec-settings-email-template-settings-wrapper-start' => [
 				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'RSVP "Not Going" Email Settings', 'event-tickets' ) . '</h2>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
-			[
+			'tec-settings-email-template-settings'        => [
 				'type' => 'html',
-				'html' => '<p>' . $email_description . '</p>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Settings', 'event-tickets' ) . '</h3>',
 			],
-			$this->get_option_key( 'enabled' )     => [
+			'tec-settings-email-template-settings-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
+			$this->get_option_key( 'enabled' )            => [
 				'type'            => 'toggle',
-				'label'           => sprintf( 
-					// Translators: %s - Title of email.
+				'label'           => sprintf(
+				// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
-					$this->get_title() 
+					$this->get_title()
 				),
 				'default'         => true,
 				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'subject' )     => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -145,7 +164,7 @@ class RSVP_Not_Going extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' )     => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -178,7 +197,6 @@ class RSVP_Not_Going extends Email_Abstract {
 			],
 		];
 
-		return $settings;
 	}
 
 	/**

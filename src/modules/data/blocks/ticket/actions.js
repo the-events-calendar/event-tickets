@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { types } from '@moderntribe/tickets/data/blocks/ticket';
+import { types } from './index';
 
 //
 // ─── TICKETS ACTIONS ────────────────────────────────────────────────────────────
@@ -284,9 +284,9 @@ export const setTicketTempPrice = ( clientId, price ) => ( {
  * Set the sale price checked status for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
- * @param {boolean} checked Whether the sale price is checked.
- * @returns {{payload: {clientId, checked}, type: string}} The action.
+ * @param {string}  clientId The client ID of the ticket.
+ * @param {boolean} checked  Whether the sale price is checked.
+ * @return {{payload: {clientId, checked}, type: string}} The action.
  */
 export const setSalePriceChecked = ( clientId, checked ) => ( {
 	type: types.SET_TICKET_SALE_PRICE_CHECK,
@@ -300,9 +300,9 @@ export const setSalePriceChecked = ( clientId, checked ) => ( {
  * Set the sale price for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId  The client ID of the ticket.
  * @param {string} salePrice The sale price.
- * @returns {{payload: {clientId, salePrice}, type: string}} The action.
+ * @return {{payload: {clientId, salePrice}, type: string}} The action.
  */
 export const setSalePrice = ( clientId, salePrice ) => ( {
 	type: types.SET_TICKET_SALE_PRICE,
@@ -316,9 +316,9 @@ export const setSalePrice = ( clientId, salePrice ) => ( {
  * Set the sale start date for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId  The client ID of the ticket.
  * @param {string} startDate The start date.
- * @returns {{payload: {clientId, startDate}, type: string}} The action.
+ * @return {{payload: {clientId, startDate}, type: string}} The action.
  */
 export const setTicketSaleStartDate = ( clientId, startDate ) => ( {
 	type: types.SET_TICKET_SALE_START_DATE,
@@ -332,9 +332,9 @@ export const setTicketSaleStartDate = ( clientId, startDate ) => ( {
  * Set the sale start date input for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId       The client ID of the ticket.
  * @param {string} startDateInput The start date input.
- * @returns {{payload: {clientId, startDateInput}, type: string}} The action.
+ * @return {{payload: {clientId, startDateInput}, type: string}} The action.
  */
 export const setTicketSaleStartDateInput = ( clientId, startDateInput ) => ( {
 	type: types.SET_TICKET_SALE_START_DATE_INPUT,
@@ -348,9 +348,9 @@ export const setTicketSaleStartDateInput = ( clientId, startDateInput ) => ( {
  * Set the sale start date moment for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId        The client ID of the ticket.
  * @param {Object} startDateMoment The start date moment.
- * @returns {{payload: {clientId, startDateMoment}, type: string}} The action.
+ * @return {{payload: {clientId, startDateMoment}, type: string}} The action.
  */
 export const setTicketSaleStartDateMoment = ( clientId, startDateMoment ) => ( {
 	type: types.SET_TICKET_SALE_START_DATE_MOMENT,
@@ -365,8 +365,8 @@ export const setTicketSaleStartDateMoment = ( clientId, startDateMoment ) => ( {
  *
  * @since 5.9.0
  * @param {string} clientId The client ID of the ticket.
- * @param {string} endDate The end date.
- * @returns {{payload: {clientId, endDate}, type: string}} The action.
+ * @param {string} endDate  The end date.
+ * @return {{payload: {clientId, endDate}, type: string}} The action.
  */
 export const setTicketSaleEndDate = ( clientId, endDate ) => ( {
 	type: types.SET_TICKET_SALE_END_DATE,
@@ -380,9 +380,9 @@ export const setTicketSaleEndDate = ( clientId, endDate ) => ( {
  * Set the sale end date input for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId     The client ID of the ticket.
  * @param {string} endDateInput The end date input.
- * @returns {{payload: {clientId, endDateInput}, type: string}} The action.
+ * @return {{payload: {clientId, endDateInput}, type: string}} The action.
  */
 export const setTicketSaleEndDateInput = ( clientId, endDateInput ) => ( {
 	type: types.SET_TICKET_SALE_END_DATE_INPUT,
@@ -396,9 +396,9 @@ export const setTicketSaleEndDateInput = ( clientId, endDateInput ) => ( {
  * Set the sale end date moment for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId      The client ID of the ticket.
  * @param {Object} endDateMoment The end date moment.
- * @returns {{payload: {clientId, endDateMoment}, type: string}} The action.
+ * @return {{payload: {clientId, endDateMoment}, type: string}} The action.
  */
 export const setTicketSaleEndDateMoment = ( clientId, endDateMoment ) => ( {
 	type: types.SET_TICKET_SALE_END_DATE_MOMENT,
@@ -412,9 +412,9 @@ export const setTicketSaleEndDateMoment = ( clientId, endDateMoment ) => ( {
  * Set the Temp Sale Price Checked status for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
- * @param {boolean} checked Whether the sale price is checked.
- * @returns {{payload: {clientId, checked}, type: string}} The action.
+ * @param {string}  clientId The client ID of the ticket.
+ * @param {boolean} checked  Whether the sale price is checked.
+ * @return {{payload: {clientId, checked}, type: string}} The action.
  */
 export const setTempSalePriceChecked = ( clientId, checked ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_PRICE_CHECK,
@@ -428,9 +428,9 @@ export const setTempSalePriceChecked = ( clientId, checked ) => ( {
  * Set the Temp Sale Price for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId  The client ID of the ticket.
  * @param {string} salePrice The sale price.
- * @returns {{payload: {clientId, salePrice}, type: string}} The action.
+ * @return {{payload: {clientId, salePrice}, type: string}} The action.
  */
 export const setTempSalePrice = ( clientId, salePrice ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_PRICE,
@@ -444,9 +444,9 @@ export const setTempSalePrice = ( clientId, salePrice ) => ( {
  * Set the Temp Sale Start Date for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId  The client ID of the ticket.
  * @param {string} startDate The start date.
- * @returns {{payload: {clientId, startDate}, type: string}} The action.
+ * @return {{payload: {clientId, startDate}, type: string}} The action.
  */
 export const setTicketTempSaleStartDate = ( clientId, startDate ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_START_DATE,
@@ -460,9 +460,9 @@ export const setTicketTempSaleStartDate = ( clientId, startDate ) => ( {
  * Set the Temp Sale Start Date input for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId       The client ID of the ticket.
  * @param {string} startDateInput The start date input.
- * @returns {{payload: {clientId, startDateInput}, type: string}} The action.
+ * @return {{payload: {clientId, startDateInput}, type: string}} The action.
  */
 export const setTicketTempSaleStartDateInput = ( clientId, startDateInput ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_START_DATE_INPUT,
@@ -476,9 +476,9 @@ export const setTicketTempSaleStartDateInput = ( clientId, startDateInput ) => (
  * Set the Temp Sale Start Date moment for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId        The client ID of the ticket.
  * @param {Object} startDateMoment The start date moment.
- * @returns {{payload: {clientId, startDateMoment}, type: string}} The action.
+ * @return {{payload: {clientId, startDateMoment}, type: string}} The action.
  */
 export const setTicketTempSaleStartDateMoment = ( clientId, startDateMoment ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT,
@@ -493,8 +493,8 @@ export const setTicketTempSaleStartDateMoment = ( clientId, startDateMoment ) =>
  *
  * @since 5.9.0
  * @param {string} clientId The client ID of the ticket.
- * @param {string} endDate The end date.
- * @returns {{payload: {clientId, endDate}, type: string}} The action.
+ * @param {string} endDate  The end date.
+ * @return {{payload: {clientId, endDate}, type: string}} The action.
  */
 export const setTicketTempSaleEndDate = ( clientId, endDate ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_END_DATE,
@@ -508,9 +508,9 @@ export const setTicketTempSaleEndDate = ( clientId, endDate ) => ( {
  * Set the Temp Sale End Date input for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId     The client ID of the ticket.
  * @param {string} endDateInput The end date input.
- * @returns {{payload: {clientId, endDateInput}, type: string}} The action.
+ * @return {{payload: {clientId, endDateInput}, type: string}} The action.
  */
 export const setTicketTempSaleEndDateInput = ( clientId, endDateInput ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_END_DATE_INPUT,
@@ -524,9 +524,9 @@ export const setTicketTempSaleEndDateInput = ( clientId, endDateInput ) => ( {
  * Set the Temp Sale End Date moment for a ticket.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
+ * @param {string} clientId      The client ID of the ticket.
  * @param {Object} endDateMoment The end date moment.
- * @returns {{payload: {clientId, endDateMoment}, type: string}} The action.
+ * @return {{payload: {clientId, endDateMoment}, type: string}} The action.
  */
 export const setTicketTempSaleEndDateMoment = ( clientId, endDateMoment ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT,
@@ -836,10 +836,10 @@ export const handleTicketEndDate = ( clientId, date, dayPickerInput ) => ( {
  * Process the ticket sale start date.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
- * @param {string} date The date.
+ * @param {string} clientId       The client ID of the ticket.
+ * @param {string} date           The date.
  * @param {string} dayPickerInput The day picker input.
- * @returns {{payload: {date, dayPickerInput, clientId}, type: string}} The action.
+ * @return {{payload: {date, dayPickerInput, clientId}, type: string}} The action.
  */
 export const processTicketSaleStartDate = ( clientId, date, dayPickerInput ) => ( {
 	type: types.HANDLE_TICKET_SALE_START_DATE,
@@ -854,10 +854,10 @@ export const processTicketSaleStartDate = ( clientId, date, dayPickerInput ) => 
  * Process the ticket sale end date.
  *
  * @since 5.9.0
- * @param {string} clientId The client ID of the ticket.
- * @param {string} date The date.
+ * @param {string} clientId       The client ID of the ticket.
+ * @param {string} date           The date.
  * @param {string} dayPickerInput The day picker input.
- * @returns {{payload: {date, dayPickerInput, clientId}, type: string}} The action.
+ * @return {{payload: {date, dayPickerInput, clientId}, type: string}} The action.
  */
 export const processTicketSaleEndDate = ( clientId, date, dayPickerInput ) => ( {
 	type: types.HANDLE_TICKET_SALE_END_DATE,

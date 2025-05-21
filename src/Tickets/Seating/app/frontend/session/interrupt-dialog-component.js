@@ -1,4 +1,4 @@
-import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/utils';
+import { createHtmlComponentFromTemplateString } from '../../utils';
 
 /**
  * @typedef {Object} InterruptDialogComponentProps
@@ -18,7 +18,7 @@ import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/util
  * @return {HTMLElement|null} The interrupt dialog component, or `null` if the
  *                             template counld not be found or the element could not be created.
  */
-export function InterruptDialogComponent(props) {
+export function InterruptDialogComponent( props ) {
 	return createHtmlComponentFromTemplateString(
 		`<script
 		id="tec-tickets-seating-interrupt-dialog-template"

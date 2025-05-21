@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import TicketsDashboard from './template';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors } from '../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
@@ -16,7 +16,4 @@ const mapStateToProps = ( state ) => ( {
 	hideDashboard: selectors.hasATicketSelected( state ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( TicketsDashboard );
+export default compose( withStore(), connect( mapStateToProps ) )( TicketsDashboard );

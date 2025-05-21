@@ -64,6 +64,15 @@ class Settings {
 	public static $troubleshooting_page_id = 'tec-tickets-troubleshooting';
 
 	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
+
+	/**
 	 * Settings tabs.
 	 */
 	public $tabs = [];
@@ -246,7 +255,7 @@ class Settings {
 				'position' => 2,
 				'callback' => [
 					tribe( 'settings' ),
-					'generatePage',
+					'generate_page',
 				],
 			]
 		);
@@ -337,6 +346,18 @@ class Settings {
 	}
 
 	/**
+	 * Register the default settings tab sidebar.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return void
+	 */
+	public function register_default_sidebar() {
+		$sidebar = include_once tribe( 'tickets.main' )->plugin_path . 'src/admin-views/settings/sidebars/default-sidebar.php';
+		Tribe__Settings_Tab::set_default_sidebar( $sidebar );
+	}
+
+	/**
 	 * Loads the ticket settings from an admin-view file and returns them as an array.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
@@ -351,7 +372,19 @@ class Settings {
 
 		$settings = $this->get_settings_array();
 
-		$this->tabs['event-tickets'] = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->settings_tab          = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->tabs['event-tickets'] = $this->settings_tab;
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
@@ -388,7 +421,7 @@ class Settings {
 				'capability' => $admin_pages->get_capability( 'manage_network_options' ),
 				'callback'   => [
 					$settings,
-					'generatePage',
+					'generate_page',
 				],
 			]
 		);
@@ -499,5 +532,16 @@ class Settings {
 		}
 
 		return $form_options;
+	}
+
+	/**
+	 * Get the settings page ID.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return string
+	 */
+	public function get_settings_page_id() {
+		return self::$settings_page_id;
 	}
 }

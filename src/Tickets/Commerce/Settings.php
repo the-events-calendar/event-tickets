@@ -265,19 +265,24 @@ class Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
+		// phpcs:disable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow, WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 		$settings = [
-			'tickets-commerce-settings-general-heading'     => [
+			'tickets-commerce-settings-general-group-start'     => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
-			static::$option_sandbox                         => [
+			'tickets-commerce-settings-general-heading'         => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'General', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_sandbox                             => [
 				'type'            => 'toggle',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			static::$option_stock_handling                  => [
+			static::$option_stock_handling                      => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -307,11 +312,19 @@ class Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			'tickets-commerce-settings-currency-heading'    => [
+			'tickets-commerce-settings-general-group-end'       => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+				'html' => '</div>',
 			],
-			static::$option_currency_code                   => [
+			'tickets-commerce-settings-currency-group-start'    => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
+			'tickets-commerce-settings-currency-heading'        => [
+				'type' => 'html',
+				'html' => '<h3 id="tickets-commerce-settings-currency" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Currency', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_currency_code                       => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
@@ -319,32 +332,28 @@ class Settings {
 				'validation_type' => 'options',
 				'options'         => $tc_currency_options,
 			],
-
-			static::$option_currency_decimal_separator      => [
+			static::$option_currency_decimal_separator          => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'This sets the decimal separator of displayed prices.', 'event-tickets' ),
 				'default'         => Currency::$currency_code_decimal_separator,
 				'validation_callback' => 'is_string',
 			],
-
-			static::$option_currency_thousands_separator    => [
+			static::$option_currency_thousands_separator        => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'This sets the thousand separator of displayed prices', 'event-tickets' ),
 				'default'         => Currency::$currency_code_thousands_separator,
 				'validation_callback' => 'is_string',
 			],
-
-			static::$option_currency_number_of_decimals => [
+			static::$option_currency_number_of_decimals         => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Number of Decimals', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'This sets the number of decimal points shown in displayed prices.', 'event-tickets' ),
 				'default'         => Currency::$currency_code_number_of_decimals,
 				'validation_type' => 'int',
 			],
-
-			static::$option_currency_position               => [
+			static::$option_currency_position                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
@@ -355,11 +364,19 @@ class Settings {
 					'postfix' => esc_html__( 'After', 'event-tickets' ),
 				],
 			],
-			'tickets-commerce-settings-page-heading'        => [
+			'tickets-commerce-settings-currency-group-end'      => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
+				'html' => '</div>',
 			],
-			static::$option_checkout_page                   => [
+			'tickets-commerce-settings-page-config-group-start' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__content-section">',
+			],
+			'tickets-commerce-settings-page-heading'            => [
+				'type' => 'html',
+				'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_checkout_page                       => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -374,7 +391,7 @@ class Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			static::$option_success_page                    => [
+			static::$option_success_page                        => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Success page', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -389,13 +406,21 @@ class Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
+			'tickets-commerce-settings-page-config-group-end'   => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
 		];
 
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			$email_settings = [
-				'tickets-commerce-email-settings-heading' => [
+				'tickets-commerce-settings-email-group-start'   => [
 					'type' => 'html',
-					'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
+					'html' => '<div class="tec-settings-form__content-section">',
+				],
+				'tickets-commerce-email-settings-heading'       => [
+					'type' => 'html',
+					'html' => '<h3  class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Emails', 'event-tickets' ) . '</h3>',
 				],
 				static::$option_confirmation_email_sender_email => [
 					'type'            => 'email',
@@ -448,7 +473,12 @@ class Settings {
 					'validation_callback' => 'is_string',
 					'validation_type'     => 'textarea',
 				],
+				'tickets-commerce-settings-email-group-end'     => [
+					'type' => 'html',
+					'html' => '</div>',
+				],
 			];
+			// phpcs:enable WordPress.Arrays.MultipleStatementAlignment.LongIndexSpaceBeforeDoubleArrow, WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned
 
 			$settings = array_merge( $settings, $email_settings );
 		}
@@ -459,14 +489,14 @@ class Settings {
 				'type' => 'html',
 				'html' => tribe( Featured_Settings::class )->get_html(
 					[
-						'title'            => __( 'Payment Gateways', 'event-tickets' ),
-						'description'      => __(
+						'title'             => __( 'Payment Gateways', 'event-tickets' ),
+						'description'       => __(
 							'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
 							'gateways for providing users additional options for users when purchasing tickets.',
 							'event-tickets'
 						),
-						'content_template' => $this->get_featured_gateways_html(),
-						'links'            => [
+						'content_template'  => $this->get_featured_gateways_html(),
+						'links'             => [
 							[
 								'slug'     => 'help-1',
 								'priority' => 10,
@@ -476,7 +506,8 @@ class Settings {
 								'classes'  => [],
 							],
 						],
-						'classes'          => [],
+						'classes'           => [],
+						'container_classes' => [ 'tec-settings-form__content-section' ],
 					]
 				),
 			],
@@ -506,7 +537,6 @@ class Settings {
 	public function get_featured_gateways_html() {
 		$manager  = tribe( Manager::class );
 		$gateways = $manager->get_gateways();
-
 		$template = $this->get_template();
 
 		return $template->template( 'gateways/container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
@@ -516,13 +546,19 @@ class Settings {
 	 * Handle setting up dependencies for all of the fields.
 	 *
 	 * @since 5.1.9
+	 * @since 5.23.0 Return early if Tickets_Settings::$tickets_commerce_enabled is enabled.
 	 *
 	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *
 	 * @return array[]
 	 */
 	public function apply_commerce_enabled_conditional( $settings ) {
-		$validate_if         = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
+		$validate_if = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
+
+		if ( ! tribe_is_truthy( Tickets_Settings::$tickets_commerce_enabled ) ) {
+			return $settings;
+		}
+
 		$fieldset_attributes = [
 			'data-depends'              => '#' . Tickets_Settings::$tickets_commerce_enabled . '-input',
 			'data-condition-is-checked' => '',

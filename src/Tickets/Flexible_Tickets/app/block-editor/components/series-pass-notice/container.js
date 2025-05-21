@@ -1,7 +1,7 @@
 import Template from './template';
 import { withStore } from '../../store/hoc';
 
-const mapStateToProps = (store) => {
+const mapStateToProps = ( store ) => {
 	const { getSeriesInformation } = store;
 	const { title, editLink } = getSeriesInformation();
 
@@ -11,4 +11,4 @@ const mapStateToProps = (store) => {
 	};
 };
 
-export default withStore(mapStateToProps)(Template);
+export default withStore( mapStateToProps )( Template );
