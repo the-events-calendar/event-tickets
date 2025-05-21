@@ -397,6 +397,7 @@ class Payments_Tab extends Service_Provider {
 	 *
 	 * @since 5.3.0
 	 * @since 5.23.0 Wrapped elements in new HTML.
+	 * @since TBD Consider solo render gateways for the disabled status.
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
