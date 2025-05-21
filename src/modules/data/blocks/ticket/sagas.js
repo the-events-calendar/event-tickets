@@ -22,43 +22,30 @@ import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
 import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import { DEFAULT_STATE as TICKET_DEFAULT_STATE } from './reducers/tickets/ticket';
-import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
-import {
-	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
-import * as utils from '@moderntribe/tickets/data/utils';
+import * as rsvpActions from '../../blocks/rsvp/actions';
+import { DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE } from '../rsvp/reducers/header-image';
+import * as utils from '../../utils';
 import { api, globals, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
-import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
+import * as moveSelectors from '../../shared/move/selectors';
 import {
 	createDates,
 	createWPEditorNotSavingChannel,
 	createWPEditorSavingChannel,
 	hasPostTypeChannel,
 	isTribeEventPostType,
-} from '@moderntribe/tickets/data/shared/sagas';
-import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
+} from '../../shared/sagas';
+import { isTicketEditableFromPost } from './utils';
 
-const {
-	UNLIMITED,
-	SHARED,
-	TICKET_TYPES,
-	PROVIDER_CLASS_TO_PROVIDER_MAPPING,
-} = constants;
-const {
-	restNonce,
-	tecDateSettings,
-} = globals;
+const { UNLIMITED, SHARED, TICKET_TYPES, PROVIDER_CLASS_TO_PROVIDER_MAPPING } = constants;
+const { restNonce, tecDateSettings } = globals;
 const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
 	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
 	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/block-editor' );
-	const ticketsBlocks = yield call(
-		[ getBlocks(), 'filter' ],
-		( block ) => block.name === 'tribe/tickets',
-	);
+	const ticketsBlocks = yield call( [ getBlocks(), 'filter' ], ( block ) => block.name === 'tribe/tickets' );
 
 	ticketsBlocks.forEach( ( { clientId } ) => {
 		// Since we're not using the store provided by WordPress, we need to update the block list
@@ -83,23 +70,22 @@ export function formatTicketFromRestToAttributeFormat( ticket ) {
 	const available = ticket?.capacity_details?.available || 0;
 	const capacityType = ticket?.capacity_details?.global_stock_mode || constants.UNLIMITED;
 	const sold = ticket?.capacity_details?.sold || 0;
-	const isShared = capacityType === constants.SHARED ||
-		capacityType === constants.CAPPED ||
-		capacityType === constants.GLOBAL;
+	const isShared =
+		capacityType === constants.SHARED || capacityType === constants.CAPPED || capacityType === constants.GLOBAL;
 
 	return {
 		id: ticket.id,
 		type: ticket.type,
 		title: ticket.title,
 		description: ticket.description,
-		capacityType: capacityType,
+		capacityType,
 		price: ticket?.cost || '0.00',
-		capacity: capacity,
-		available: available,
+		capacity,
+		available,
 		sharedCapacity: capacity,
-		sold: sold,
+		sold,
 		shareSold: sold,
-		isShared: isShared,
+		isShared,
 		currencyDecimalPoint: ticket?.cost_details?.currency_decimal_separator || '.',
 		currencyNumberOfDecimals: ticket?.cost_details?.currency_decimal_numbers || 2,
 		currencyPosition: ticket?.cost_details?.currency_position || 'prefix',
@@ -109,7 +95,7 @@ export function formatTicketFromRestToAttributeFormat( ticket ) {
 }
 
 export function* updateUneditableTickets() {
-	yield ( put( actions.setUneditableTicketsLoading( true ) ) );
+	yield put( actions.setUneditableTicketsLoading( true ) );
 
 	const post = yield call( () => wpSelect( 'core/editor' ).getCurrentPost() );
 
@@ -166,21 +152,27 @@ export function* setTicketsInitialState( action ) {
 	// Shape: [ {id: int, type: string}, ... ].
 	const allTickets = JSON.parse( get( 'tickets', '[]' ) );
 
-	const { editableTickets, uneditableTickets } = allTickets.reduce( ( acc, ticket ) => {
-		if ( isTicketEditableFromPost( ticket.id, ticket.type, currentPost ) ) {
-			acc.editableTickets.push( ticket );
-		} else {
-			acc.uneditableTickets.push( ticket );
-		}
-		return acc;
-	}, { editableTickets: [], uneditableTickets: [] } );
+	const { editableTickets, uneditableTickets } = allTickets.reduce(
+		( acc, ticket ) => {
+			if ( isTicketEditableFromPost( ticket.id, ticket.type, currentPost ) ) {
+				acc.editableTickets.push( ticket );
+			} else {
+				acc.uneditableTickets.push( ticket );
+			}
+			return acc;
+		},
+		{ editableTickets: [], uneditableTickets: [] }
+	);
 
 	// Get only the IDs of the tickets that are not in the block list already.
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
 	const ticketsDiff = editableTickets.filter( ( item ) => ! includes( ticketsInBlock, item.id ) );
 
 	if ( ticketsDiff.length >= 1 ) {
-		yield call( createMissingTicketBlocks, ticketsDiff.map( ( ticket ) => ticket.id ) );
+		yield call(
+			createMissingTicketBlocks,
+			ticketsDiff.map( ( ticket ) => ticket.id )
+		);
 	}
 
 	if ( uneditableTickets.length >= 1 ) {
@@ -209,16 +201,10 @@ export function* setTicketsInitialState( action ) {
 
 export function* resetTicketsBlock() {
 	const hasCreatedTickets = yield select( selectors.hasCreatedTickets );
-	yield all( [
-		put( actions.removeTicketBlocks() ),
-		put( actions.setTicketsIsSettingsOpen( false ) ),
-	] );
+	yield all( [ put( actions.removeTicketBlocks() ), put( actions.setTicketsIsSettingsOpen( false ) ) ] );
 
 	if ( ! hasCreatedTickets ) {
-		const currentMeta = yield call(
-			[ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ],
-			'meta',
-		);
+		const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'meta' );
 		const newMeta = {
 			...currentMeta,
 			[ utils.KEY_TICKET_CAPACITY ]: '',
@@ -263,12 +249,12 @@ export function* setTicketInitialState( action ) {
 	const isEvent = yield call( isTribeEventPostType );
 
 	// Only run this on events post type.
-	if ( isEvent && window.tribe.events ) {
+	if ( isEvent && window.tec.events ) {
 		// This try-catch may be redundant given the above if statement.
 		try {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
 			// Ticket purchase window should end when event starts
-			const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart );
+			const eventStart = yield select( tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const endMoment = yield call( momentUtil.toMoment, eventStart );
 			const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 			const endDateInput = yield datePickerFormat
@@ -295,17 +281,11 @@ export function* setTicketInitialState( action ) {
 		}
 	}
 
-	const hasTicketsPlus = yield select(
-		plugins.selectors.hasPlugin,
-		plugins.constants.TICKETS_PLUS,
-	);
+	const hasTicketsPlus = yield select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS );
 	if ( hasTicketsPlus ) {
 		yield all( [
 			put( actions.setTicketCapacityType( clientId, constants.TICKET_TYPES[ constants.SHARED ] ) ),
-			put( actions.setTicketTempCapacityType(
-				clientId,
-				constants.TICKET_TYPES[ constants.SHARED ],
-			) ),
+			put( actions.setTicketTempCapacityType( clientId, constants.TICKET_TYPES[ constants.SHARED ] ) ),
 		] );
 	}
 
@@ -331,10 +311,7 @@ export function* setTicketInitialState( action ) {
 export function* setBodyDetails( clientId ) {
 	let body = new FormData();
 	const props = { clientId };
-	const rootClientId = yield call(
-		[ wpSelect( 'core/block-editor' ), 'getBlockRootClientId' ],
-		clientId,
-	);
+	const rootClientId = yield call( [ wpSelect( 'core/block-editor' ), 'getBlockRootClientId' ], clientId );
 	const ticketProvider = yield select( selectors.getTicketProvider, props );
 	const ticketsProvider = yield select( selectors.getTicketsProvider );
 
@@ -349,11 +326,10 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'end_time', yield select( selectors.getTicketTempEndTime, props ) );
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
 	body.append( 'iac', yield select( selectors.getTicketTempIACSetting, props ) );
-	body.append( 'menu_order', yield call(
-		[ wpSelect( 'core/block-editor' ), 'getBlockIndex' ],
-		clientId,
-		rootClientId,
-	) );
+	body.append(
+		'menu_order',
+		yield call( [ wpSelect( 'core/block-editor' ), 'getBlockIndex' ], clientId, rootClientId )
+	);
 
 	const capacityType = yield select( selectors.getTicketTempCapacityType, props );
 	const capacity = yield select( selectors.getTicketTempCapacity, props );
@@ -369,22 +345,10 @@ export function* setBodyDetails( clientId ) {
 	const showSalePrice = yield select( selectors.showSalePrice, props );
 
 	if ( showSalePrice ) {
-		body.append(
-			'ticket[sale_price][checked]',
-			yield select( selectors.getTempSalePriceChecked, props ),
-		);
-		body.append(
-			'ticket[sale_price][price]',
-			yield select( selectors.getTempSalePrice, props ),
-		);
-		body.append(
-			'ticket[sale_price][start_date]',
-			yield select( selectors.getTicketTempSaleStartDate, props ),
-		);
-		body.append(
-			'ticket[sale_price][end_date]',
-			yield select( selectors.getTicketTempSaleEndDate, props ),
-		);
+		body.append( 'ticket[sale_price][checked]', yield select( selectors.getTempSalePriceChecked, props ) );
+		body.append( 'ticket[sale_price][price]', yield select( selectors.getTempSalePrice, props ) );
+		body.append( 'ticket[sale_price][start_date]', yield select( selectors.getTicketTempSaleStartDate, props ) );
+		body.append( 'ticket[sale_price][end_date]', yield select( selectors.getTicketTempSaleEndDate, props ) );
 	}
 
 	/**
@@ -392,7 +356,7 @@ export function* setBodyDetails( clientId ) {
 	 * The action will fire both when a ticket is being created and when an existing ticket is being updated.
 	 *
 	 * @since 5.16.0
-	 * @param {Object} body The body of the request.
+	 * @param {Object} body     The body of the request.
 	 * @param {string} clientId The client ID of the ticket block that is being created or updated.
 	 */
 	body = applyFilters( 'tec.tickets.blocks.setBodyDetails', body, clientId );
@@ -403,10 +367,7 @@ export function* setBodyDetails( clientId ) {
 export function* removeTicketBlock( clientId ) {
 	const { removeBlock } = wpDispatch( 'core/editor' );
 
-	yield all( [
-		put( actions.removeTicketBlock( clientId ) ),
-		call( removeBlock, clientId ),
-	] );
+	yield all( [ put( actions.removeTicketBlock( clientId ) ), call( removeBlock, clientId ) ] );
 }
 
 export function* fetchTicket( action ) {
@@ -471,12 +432,15 @@ export function* fetchTicket( action ) {
 			let endTime = yield call( momentUtil.toDatabaseTime, endMoment );
 			let endTimeInput = yield call( momentUtil.toTime, endMoment );
 
-			if ( ! available_until ) {
-				endMoment = yield call( momentUtil.toMoment, '' );
-				endDate = '';
-				endDateInput = '';
-				endTime = '';
-				endTimeInput = '';
+			if ( available_until ) {
+				// eslint-disable-line camelcase
+				endMoment = yield call( momentUtil.toMoment, available_until );
+				endDate = yield call( momentUtil.toDatabaseDate, endMoment );
+				endDateInput = yield datePickerFormat
+					? call( momentUtil.toDate, endMoment, datePickerFormat )
+					: call( momentUtil.toDate, endMoment );
+				endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+				endTimeInput = yield call( momentUtil.toTime, endMoment );
 			}
 
 			const salePriceChecked = sale_price_data?.enabled || false;
@@ -544,8 +508,8 @@ export function* fetchTicket( action ) {
 			 *
 			 * @since 5.18.0
 			 * @param {string} clientId The ticket's client ID.
-			 * @param {Object} ticket The ticket object.
-			 * @param {Object} details The ticket details.
+			 * @param {Object} ticket   The ticket object.
+			 * @param {Object} details  The ticket details.
 			 */
 			yield doAction( 'tec.tickets.blocks.fetchTicket', clientId, ticket, details );
 		}
@@ -581,15 +545,10 @@ export function* createNewTicket( action ) {
 		if ( response.ok ) {
 			const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
 			const tempSharedCapacity = yield select( selectors.getTicketsTempSharedCapacity );
-			if (
-				sharedCapacity === '' &&
-					( ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 )
-			) {
+			if ( sharedCapacity === '' && ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 ) {
 				yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
 			}
-			const available = ticket.capacity_details.available === -1
-				? 0
-				: ticket.capacity_details.available;
+			const available = ticket.capacity_details.available === -1 ? 0 : ticket.capacity_details.available;
 
 			const { sale_price_data } = ticket; // eslint-disable-line camelcase
 			const salePriceChecked = sale_price_data?.enabled || false;
@@ -680,10 +639,9 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketId( clientId, ticket.id ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
-				put( actions.setTicketProvider(
-					clientId,
-					PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ],
-				) ),
+				put(
+					actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] )
+				),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 
@@ -692,8 +650,8 @@ export function* createNewTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId` and `ticketDetails` parameters were added.
-			 * @param {string} clientId The ticket's client ID.
-			 * @param {number} ticketId The ticket's ID.
+			 * @param {string} clientId      The ticket's client ID.
+			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
 			 */
 			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails );
@@ -848,8 +806,8 @@ export function* updateTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId and `ticketDetails` parameters were added
-			 * @param {string} clientId The ticket's client ID.
-			 * @param {number} ticketId The ticket's ID.
+			 * @param {string} clientId      The ticket's client ID.
+			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
 			 */
 			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails );
@@ -873,7 +831,7 @@ export function* deleteTicket( action ) {
 	if ( askForDeletion ) {
 		shouldDelete = yield call(
 			[ window, 'confirm' ],
-			__( 'Are you sure you want to delete this ticket? It cannot be undone.', 'event-tickets' ),
+			__( 'Are you sure you want to delete this ticket? It cannot be undone.', 'event-tickets' )
 		);
 	} else {
 		shouldDelete = true;
@@ -1193,7 +1151,7 @@ export function* setTicketTempDetails( action ) {
  *
  * @param {string} clientId Client ID of ticket block
  * @export
- * @yields
+ * @yield
  */
 export function* saveTicketWithPostSave( clientId ) {
 	let savingChannel, notSavingChannel;
@@ -1234,7 +1192,7 @@ export function* saveTicketWithPostSave( clientId ) {
  *
  * @param {string} prevStartDate Previous start date before latest set date time changes
  * @export
- * @yields
+ * @yield
  */
 export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
 	const ticketIds = yield select( selectors.getTicketsAllClientIds );
@@ -1249,9 +1207,9 @@ export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
  *
  * @borrows TEC - Functionality requires TEC to be enabled
  * @param {string} prevStartDate Previous start date before latest set date time changes
- * @param {string} clientId Client ID of ticket block
+ * @param {string} clientId      Client ID of ticket block
  * @export
- * @yields
+ * @yield
  */
 export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 	try {
@@ -1269,19 +1227,13 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 
 		// If initial end and current end are the same, the RSVP has not been modified
 		const isNotManuallyEdited = yield call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' );
-		const isSyncedToEventStart = yield call(
-			[ tempEndMoment, 'isSame' ],
-			prevEventStartMoment,
-			'minute',
-		);
+		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
 		const isEvent = yield call( isTribeEventPostType );
 
 		// This if statement may be redundant given the try-catch statement above.
 		// Only run this on events post type.
-		if ( isEvent && window.tribe.events && isNotManuallyEdited && isSyncedToEventStart ) {
-			const eventStart = yield select(
-				window.tribe.events.data.blocks.datetime.selectors.getStart,
-			);
+		if ( isEvent && window.tec.events && isNotManuallyEdited && isSyncedToEventStart ) {
+			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const {
 				moment: endDateMoment,
 				date: endDate,
@@ -1322,7 +1274,7 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
  *
  * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
  * @export
- * @yields
+ * @yield
  */
 export function* handleEventStartDateChanges() {
 	try {
@@ -1332,18 +1284,13 @@ export function* handleEventStartDateChanges() {
 		yield call( [ postTypeChannel, 'close' ] );
 
 		const isEvent = yield call( isTribeEventPostType );
-		if ( isEvent && window.tribe.events ) {
-			const {
-				SET_START_DATE_TIME,
-				SET_START_TIME,
-			} = window.tribe.events.data.blocks.datetime.types;
+		if ( isEvent && window.tec.events ) {
+			const { SET_START_DATE_TIME, SET_START_TIME } = window.tec.events.app.main.data.blocks.datetime.types;
 
 			let syncTask;
 			while ( true ) {
 				// Cache current event start date for comparison
-				const eventStart = yield select(
-					window.tribe.events.data.blocks.datetime.selectors.getStart,
-				);
+				const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 
 				// Wait til use changes date or time on TEC datetime block
 				yield take( [ SET_START_DATE_TIME, SET_START_TIME ] );
@@ -1363,44 +1310,23 @@ export function* handleEventStartDateChanges() {
 
 export function* handleTicketDurationError( clientId ) {
 	let hasDurationError = false;
-	const startDateMoment = yield select(
-		selectors.getTicketTempStartDateMoment,
-		{ clientId },
-	);
-	const endDateMoment = yield select(
-		selectors.getTicketTempEndDateMoment,
-		{ clientId },
-	);
+	const startDateMoment = yield select( selectors.getTicketTempStartDateMoment, { clientId } );
+	const endDateMoment = yield select( selectors.getTicketTempEndDateMoment, { clientId } );
 
 	if ( ! startDateMoment || ! endDateMoment ) {
 		hasDurationError = true;
 	} else {
 		const startTime = yield select( selectors.getTicketTempStartTime, { clientId } );
 		const endTime = yield select( selectors.getTicketTempEndTime, { clientId } );
-		const startTimeSeconds = yield call(
-			timeUtil.toSeconds,
-			startTime,
-			timeUtil.TIME_FORMAT_HH_MM_SS,
-		);
-		const endTimeSeconds = yield call(
-			timeUtil.toSeconds,
-			endTime,
-			timeUtil.TIME_FORMAT_HH_MM_SS,
-		);
+		const startTimeSeconds = yield call( timeUtil.toSeconds, startTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const endTimeSeconds = yield call( timeUtil.toSeconds, endTime, timeUtil.TIME_FORMAT_HH_MM_SS );
 		const startDateTimeMoment = yield call(
 			momentUtil.setTimeInSeconds,
 			startDateMoment.clone(),
-			startTimeSeconds,
+			startTimeSeconds
 		);
-		const endDateTimeMoment = yield call(
-			momentUtil.setTimeInSeconds,
-			endDateMoment.clone(),
-			endTimeSeconds,
-		);
-		const durationHasError = yield call(
-			[ startDateTimeMoment, 'isSameOrAfter' ],
-			endDateTimeMoment,
-		);
+		const endDateTimeMoment = yield call( momentUtil.setTimeInSeconds, endDateMoment.clone(), endTimeSeconds );
+		const durationHasError = yield call( [ startDateTimeMoment, 'isSameOrAfter' ], endDateTimeMoment );
 
 		if ( durationHasError ) {
 			hasDurationError = true;
@@ -1455,12 +1381,7 @@ export function* handleTicketStartTime( action ) {
 export function* handleTicketStartTimeInput( action ) {
 	const { clientId, seconds } = action.payload;
 	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
-	const startTimeMoment = yield call(
-		momentUtil.toMoment,
-		startTime,
-		momentUtil.TIME_FORMAT,
-		false,
-	);
+	const startTimeMoment = yield call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false );
 	const startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
 	yield put( actions.setTicketTempStartTimeInput( clientId, startTimeInput ) );
 }
@@ -1589,28 +1510,31 @@ export function* handler( action ) {
 }
 
 export default function* watchers() {
-	yield takeEvery( [
-		types.SET_TICKETS_INITIAL_STATE,
-		types.RESET_TICKETS_BLOCK,
-		types.SET_TICKET_INITIAL_STATE,
-		types.FETCH_TICKET,
-		types.CREATE_NEW_TICKET,
-		types.UPDATE_TICKET,
-		types.DELETE_TICKET,
-		types.FETCH_TICKETS_HEADER_IMAGE,
-		types.UPDATE_TICKETS_HEADER_IMAGE,
-		types.DELETE_TICKETS_HEADER_IMAGE,
-		types.SET_TICKET_DETAILS,
-		types.SET_TICKET_TEMP_DETAILS,
-		types.HANDLE_TICKET_START_DATE,
-		types.HANDLE_TICKET_END_DATE,
-		types.HANDLE_TICKET_START_TIME,
-		types.HANDLE_TICKET_END_TIME,
-		types.HANDLE_TICKET_SALE_START_DATE,
-		types.HANDLE_TICKET_SALE_END_DATE,
-		MOVE_TICKET_SUCCESS,
-		types.UPDATE_UNEDITABLE_TICKETS,
-	], handler );
+	yield takeEvery(
+		[
+			types.SET_TICKETS_INITIAL_STATE,
+			types.RESET_TICKETS_BLOCK,
+			types.SET_TICKET_INITIAL_STATE,
+			types.FETCH_TICKET,
+			types.CREATE_NEW_TICKET,
+			types.UPDATE_TICKET,
+			types.DELETE_TICKET,
+			types.FETCH_TICKETS_HEADER_IMAGE,
+			types.UPDATE_TICKETS_HEADER_IMAGE,
+			types.DELETE_TICKETS_HEADER_IMAGE,
+			types.SET_TICKET_DETAILS,
+			types.SET_TICKET_TEMP_DETAILS,
+			types.HANDLE_TICKET_START_DATE,
+			types.HANDLE_TICKET_END_DATE,
+			types.HANDLE_TICKET_START_TIME,
+			types.HANDLE_TICKET_END_TIME,
+			types.HANDLE_TICKET_SALE_START_DATE,
+			types.HANDLE_TICKET_SALE_END_DATE,
+			MOVE_TICKET_SUCCESS,
+			types.UPDATE_UNEDITABLE_TICKETS,
+		],
+		handler
+	);
 
 	yield fork( handleEventStartDateChanges );
 }

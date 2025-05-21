@@ -1,9 +1,9 @@
-import React from "react";
-import { ActionButton } from "@moderntribe/tickets/elements";
-import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
-import { Seat } from '@moderntribe/tickets/icons';
+import React from 'react';
+import { ActionButton } from '../../../../../modules/elements';
+import { getLink, getLocalizedString } from '../../utils';
+import { Seat } from '../../../../../modules/icons';
 
-const getString = (key) => getLocalizedString( key, 'dashboard' );
+const getString = ( key ) => getLocalizedString( key, 'dashboard' );
 
 const Seats = () => {
 	const link = getLink( 'layout-edit' );
@@ -13,13 +13,8 @@ const Seats = () => {
 	}
 
 	return (
-		<ActionButton
-			asLink={ true }
-			href={ getLink('layout-edit') }
-			icon={ <Seat /> }
-			target="_blank"
-		>
-		{ getString( 'seats-action-label' ) }
+		<ActionButton asLink={ true } href={ getLink( 'layout-edit' ) } icon={ <Seat /> } target="_blank">
+			{ getString( 'seats-action-label' ) }
 		</ActionButton>
 	);
 };

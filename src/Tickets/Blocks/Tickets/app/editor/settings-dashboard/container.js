@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import TicketsSettingsDashboard from './template';
 import { plugins } from '@moderntribe/common/data';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { actions, selectors } from '../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
@@ -21,8 +21,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onCloseClick: () => dispatch( actions.closeSettings() ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( TicketsSettingsDashboard );
-
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( TicketsSettingsDashboard );

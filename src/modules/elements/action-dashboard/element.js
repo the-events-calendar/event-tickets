@@ -24,13 +24,10 @@ const ActionDashboard = ( {
 	showCancel = true,
 	showConfirm = true,
 } ) => {
-	const actionsList = ( actions && !! actions.length ) && (
+	const actionsList = actions && !! actions.length && (
 		<div className="tribe-editor__action-dashboard__group-left">
 			{ actions.map( ( action, index ) => (
-				<span
-					key={ `action-${ index }` }
-					className="tribe-editor__action-dashboard__action-wrapper"
-				>
+				<span key={ `action-${ index }` } className="tribe-editor__action-dashboard__action-wrapper">
 					{ action }
 				</span>
 			) ) }
@@ -71,10 +68,9 @@ const ActionDashboard = ( {
 			className={ classNames(
 				'tribe-editor__action-dashboard',
 				{
-					'tribe-editor__action-dashboard__no-top-bottom-paddings':
-					( ! actionsList && ! groupRight ),
+					'tribe-editor__action-dashboard__no-top-bottom-paddings': ! actionsList && ! groupRight,
 				},
-				className,
+				className
 			) }
 		>
 			{ actionsList }
