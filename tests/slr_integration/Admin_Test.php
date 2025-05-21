@@ -192,13 +192,13 @@ class Admin_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-admin-maps'              => '/build/Seating/admin/maps.js',
-			'tec-tickets-seating-admin-maps-style'        => '/build/Seating/admin/maps.css',
+			'tec-tickets-seating-admin-maps-style'        => '/build/Seating/admin/style-maps.css',
 			'tec-tickets-seating-admin-layouts'           => '/build/Seating/admin/layouts.js',
-			'tec-tickets-seating-admin-layouts-style'     => '/build/Seating/admin/layouts.css',
+			'tec-tickets-seating-admin-layouts-style'     => '/build/Seating/admin/style-layouts.css',
 			'tec-tickets-seating-admin-map-edit'          => '/build/Seating/admin/mapEdit.js',
-			'tec-tickets-seating-admin-map-edit-style'    => '/build/Seating/admin/mapEdit.css',
+			'tec-tickets-seating-admin-map-edit-style'    => '/build/Seating/admin/style-mapEdit.css',
 			'tec-tickets-seating-admin-layout-edit'       => '/build/Seating/admin/layoutEdit.js',
-			'tec-tickets-seating-admin-layout-edit-style' => '/build/Seating/admin/layoutEdit.css',
+			'tec-tickets-seating-admin-layout-edit-style' => '/build/Seating/admin/style-layoutEdit.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {

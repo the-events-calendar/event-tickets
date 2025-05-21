@@ -94,6 +94,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	 * Returns the URL to disconnect the merchant.
 	 *
 	 * @since 5.11.0.5
+	 * @since 5.23.0 Removed `tab` in favor of $current_section.
 	 *
 	 * @return string
 	 */
@@ -102,7 +103,6 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 
 		return (string) tribe( Tickets_Settings::class )->get_url(
 			[
-				'tab'            => Payments_Tab::$slug,
 				$current_section => Gateway::get_key(),
 				'tc-action'      => $this->get_disconnect_action(),
 				'tc-nonce'       => wp_create_nonce( $this->get_disconnect_action() ),

@@ -87,6 +87,7 @@ final class Controller extends Controller_Contract {
 		}
 
 		remove_action( 'init', [ $this, 'set_currency_defaults' ] );
+		remove_action( 'init', [ $this, 'run_deprecated_coupon_filter' ] );
 	}
 
 	/**
@@ -124,8 +125,8 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Coupon::class );
 
 		$this->register_flag_actions();
-		$this->run_deprecated_coupon_filter();
 
+		add_action( 'init', [ $this, 'run_deprecated_coupon_filter' ] );
 		add_action( 'init', [ $this, 'set_currency_defaults' ] );
 	}
 
@@ -205,7 +206,7 @@ final class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	private function run_deprecated_coupon_filter() {
+	public function run_deprecated_coupon_filter() {
 		/**
 		 * Filters whether the coupons are enabled.
 		 *
