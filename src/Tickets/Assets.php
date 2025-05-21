@@ -28,7 +28,7 @@ class Assets extends Service_Provider {
 	public function register() {
 		$plugin = tribe( 'tickets.main' );
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-provider',
 			'tickets-provider.js',

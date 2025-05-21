@@ -30,7 +30,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	public function register() {
 		$plugin = \Tribe__Tickets__Main::instance();
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-stripe-base',
 			'https://js.stripe.com/v3/',
@@ -41,7 +41,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-stripe-checkout',
 			'commerce/gateway/stripe/checkout.js',
@@ -120,7 +120,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		);
 
 		// Tickets Commerce Stripe main frontend styles.
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-commerce-stripe-style',
 			'tickets-commerce/gateway/stripe.css',
@@ -139,7 +139,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		);
 
 		// Administration JS for Webhooks.
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-stripe-admin-webhooks',
 			'admin/gateway/stripe/webhooks.js',
@@ -155,7 +155,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		);
 
 		// Administration JS for Webhooks.
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-stripe-admin-webhooks-styles',
 			'tickets-commerce/admin/gateway/stripe/webhooks.css',
