@@ -12,7 +12,6 @@
 defined( 'ABSPATH' ) || exit;
 $test_mode = TEC\Tickets\Commerce\Gateways\Square\Gateway::is_test_mode();
 
-// Only show this notice in sandbox/test mode
 if ( ! $test_mode ) {
 	return;
 }
@@ -39,3 +38,4 @@ if ( ! $test_mode ) {
 	?>
 	</span>
 </div>
+<?php

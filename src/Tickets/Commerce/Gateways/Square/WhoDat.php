@@ -45,6 +45,8 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @since TBD
 	 *
+	 * @param bool $is_wizard Whether this is in the wizard context.
+	 *
 	 * @return string
 	 */
 	public function connect_account( bool $is_wizard = false ): string {

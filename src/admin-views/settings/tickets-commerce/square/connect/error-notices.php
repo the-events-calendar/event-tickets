@@ -21,7 +21,7 @@ if ( empty( $tc_status ) ) {
 	return;
 }
 
-$error_class = 'error';
+$error_class   = 'error';
 $error_message = '';
 
 switch ( $tc_status ) {

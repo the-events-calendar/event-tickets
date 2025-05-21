@@ -1,4 +1,11 @@
 <?php
+/**
+ * Order Endpoint for the Square gateway.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\REST
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
@@ -23,7 +30,7 @@ use RuntimeException;
 /**
  * Class Order Endpoint.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */

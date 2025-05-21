@@ -1,4 +1,11 @@
 <?php
+/**
+ * Status class for the Square gateway.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
