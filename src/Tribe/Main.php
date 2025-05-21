@@ -541,7 +541,7 @@ class Tribe__Tickets__Main {
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
 
-		// ORM
+		// ORM.
 		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
 
 		// REST API v1
