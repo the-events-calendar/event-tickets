@@ -71,7 +71,7 @@ class Hooks extends Service_Provider {
 	 * @return array The arguments to create the order.
 	 */
 	public function add_free_gateway_id( $args ) {
-		$args['gateway_order_id'] = substr( md5( wp_generate_password() . microtime() ), 0, 12 );
+		$args['gateway_order_id'] = md5( wp_generate_password() . microtime() );
 
 		return $args;
 	}
