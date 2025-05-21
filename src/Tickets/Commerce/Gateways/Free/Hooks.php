@@ -66,6 +66,8 @@ class Hooks extends Service_Provider {
 	/**
 	 * Produce a gateway order ID for the free gateway.
 	 *
+	 * @since TBD
+	 *
 	 * @param array $args The arguments to create the order.
 	 *
 	 * @return array The arguments to create the order.

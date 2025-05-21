@@ -65,7 +65,9 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
-	 * Produce a gateway order ID for the free gateway.
+	 * Produce a gateway order ID for the manual gateway.
+	 *
+	 * @since TBD
 	 *
 	 * @param array $args The arguments to create the order.
 	 *
