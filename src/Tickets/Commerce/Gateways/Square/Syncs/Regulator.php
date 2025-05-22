@@ -200,6 +200,20 @@ class Regulator extends Controller_Contract {
 	}
 
 	/**
+	 * Un-schedules an action.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $hook The hook.
+	 * @param array  $args The arguments.
+	 *
+	 * @return void
+	 */
+	public function unschedule( string $hook, array $args = [] ): void {
+		as_unschedule_action( $hook, $args, Sync_Controller::AS_SYNC_ACTION_GROUP );
+	}
+
+	/**
 	 * Sync the tickets.
 	 *
 	 * @since TBD

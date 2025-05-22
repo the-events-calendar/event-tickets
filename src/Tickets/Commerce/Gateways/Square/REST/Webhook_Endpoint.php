@@ -27,6 +27,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
 
 /**
  * Class Webhook_Endpoint.
@@ -276,6 +277,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				$this->process_refund_event( $event_data );
 				break;
 
+			case Events::PAYMENT_CREATED:
+			case Events::PAYMENT_UPDATED:
+				$this->process_payment_event( $event_data );
+				break;
+
 			default:
 				// Log unsupported event type.
 				do_action(
@@ -355,6 +361,8 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
 	}
 
 	/**
@@ -442,6 +450,24 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+	}
+
+	/**
+	 * Process a payment event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	protected function process_payment_event( array $event_data ) {
+		$order_id = $event_data['data']['object']['payment']['order_id'] ?? false;
+
+		if ( ! $order_id ) {
+			do_action( 'tribe_log', 'warning', 'Square payment webhook - no order id found', [ 'event_data' => $event_data ] );
+			return;
+		}
+
+		tribe( Regulator::class )->schedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ], MINUTE_IN_SECONDS );
 	}
 
 	/**

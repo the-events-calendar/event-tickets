@@ -20,8 +20,6 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * Not used currently.
-	 *
 	 * @since TBD
 	 *
 	 * @var string
@@ -37,7 +35,7 @@ class Events {
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_PAYMENT_CREATED = 'payment.created';
+	const PAYMENT_CREATED = 'payment.created';
 
 	/**
 	 * Square Webhook Event Types
@@ -167,6 +165,8 @@ class Events {
 	 * @var string[]
 	 */
 	protected const TYPES = [
+		self::PAYMENT_CREATED,
+		self::PAYMENT_UPDATED,
 		self::REFUND_CREATED,
 		self::REFUND_UPDATED,
 		self::ORDER_CREATED,
