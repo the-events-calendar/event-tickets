@@ -315,8 +315,6 @@ class Order extends Abstract_Order {
 				return null;
 			}
 
-			// Lets ensure we have the inventory available before creating the order.
-
 			$missed_money = $items['missed_money'] ?? 0;
 
 			unset( $items['missed_money'] );
