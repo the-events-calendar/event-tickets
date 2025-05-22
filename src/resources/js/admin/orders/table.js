@@ -1,4 +1,4 @@
-( function( $ ) {
+( function ( $ ) {
 	/**
 	 * Setup Datepicker
 	 */
@@ -10,7 +10,7 @@
 	 * Returns the number of months to display in
 	 * the datepicker based on the viewport width
 	 *
-	 * @returns {number} The number of months to display
+	 * @return {number} The number of months to display
 	 */
 	function getDatepickerNumMonths() {
 		const windowWidth = $( window ).width();
@@ -33,7 +33,8 @@
 		return Math.floor( ( utc2 - utc1 ) / _MS_PER_DAY );
 	}
 
-	if ( typeof tribe_l10n_datatables.datepicker !== 'undefined' ) { // eslint-disable-line no-undef
+	if ( typeof tribe_l10n_datatables.datepicker !== 'undefined' ) {
+		// eslint-disable-line no-undef
 		let tribeDatepickerOpts = {};
 
 		let dateFormat = 'yy-mm-dd';
@@ -48,32 +49,24 @@
 		const $eventDetails = $( document.getElementById( 'tribe_events_event_details' ) );
 
 		tribeDatepickerOpts = {
-			dateFormat: dateFormat,
+			dateFormat,
 			showAnim: 'fadeIn',
 			changeMonth: true,
 			changeYear: true,
 			numberOfMonths: getDatepickerNumMonths(),
 			showButtonPanel: false,
-			beforeShow: function( element, object ) {
+			beforeShow( element, object ) {
 				object.input.datepicker( 'option', 'numberOfMonths', getDatepickerNumMonths() );
 				object.input.data( 'prevDate', object.input.datepicker( 'getDate' ) );
 
 				// allow single datepicker fields to specify a min or max date
 				// using the `data-datapicker-(min|max)Date` attribute
 				if ( undefined !== object.input.data( 'datepicker-min-date' ) ) {
-					object.input.datepicker(
-						'option',
-						'minDate',
-						object.input.data( 'datepicker-min-date' ),
-					);
+					object.input.datepicker( 'option', 'minDate', object.input.data( 'datepicker-min-date' ) );
 				}
 
 				if ( undefined !== object.input.data( 'datepicker-max-date' ) ) {
-					object.input.datepicker(
-						'option',
-						'maxDate',
-						object.input.data( 'datepicker-max-date' ),
-					);
+					object.input.datepicker( 'option', 'maxDate', object.input.data( 'datepicker-max-date' ) );
 				}
 
 				// Capture the datepicker div here; it's dynamically generated so best to grab here instead
@@ -88,15 +81,13 @@
 
 				$dpDiv.attrchange( {
 					trackValues: true,
-					callback: function( attr ) {
+					callback( attr ) {
 						// This is a non-ideal, but very reliable way to look for the closing of the ui-datepicker box,
 						// since onClose method is often occluded by other plugins, including Events Calender PRO.
 						if (
 							'string' === typeof attr.newValue &&
-							(
-								attr.newValue.indexOf( 'display: none' ) >= 0 ||
-								attr.newValue.indexOf( 'display:none' ) >= 0
-							)
+							( attr.newValue.indexOf( 'display: none' ) >= 0 ||
+								attr.newValue.indexOf( 'display:none' ) >= 0 )
 						) {
 							$dpDiv.removeClass( 'tribe-ui-datepicker' );
 							$eventDetails.trigger( 'tribe.ui-datepicker-div-closed', [ object ] );
@@ -104,25 +95,25 @@
 					},
 				} );
 			},
-			onSelect: function( selectedDate ) {
+			onSelect( selectedDate ) {
 				const instance = $( this ).data( 'datepicker' );
 				const date = $.datepicker.parseDate(
 					instance.settings.dateFormat || $.datepicker._defaults.dateFormat,
 					selectedDate,
-					instance.settings,
+					instance.settings
 				);
 
 				// If the start date was adjusted, then let's modify the minimum acceptable end date
 				if ( this.id === 'EventStartDate' ) {
 					const startDate = $( document.getElementById( 'EventStartDate' ) ).data( 'prevDate' );
 					// eslint-disable-next-line max-len
-					const dateDiff = null == startDate ? 0 : dateDiffInDays( startDate, $endDate.datepicker( 'getDate' ) );
+					const dateDiff =
+						null == startDate ? 0 : dateDiffInDays( startDate, $endDate.datepicker( 'getDate' ) );
 					const endDate = new Date( date.setDate( date.getDate() + dateDiff ) );
 
 					$endDate
 						.datepicker( 'option', 'minDate', $startDate.datepicker( 'getDate' ) )
-						.datepicker( 'setDate', endDate )
-						.datepicker_format;
+						.datepicker( 'setDate', endDate ).datepicker_format;
 				}
 
 				// fire the change and blur handlers on the field

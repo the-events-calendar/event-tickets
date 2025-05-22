@@ -101,4 +101,4 @@ addListener( Codeception\Events::SUITE_BEFORE, static function () {
 	if ( $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 12389" ) === false ) {
 		throw new RuntimeException( 'Failed to set the posts table auto increment value.' );
 	}
-} );
+});
