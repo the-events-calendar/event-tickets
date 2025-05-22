@@ -189,8 +189,8 @@ class Hooks extends Controller_Contract {
 	 * @return int
 	 */
 	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
-		if ( $nothing && is_numeric( $nothing ) ) {
-			return (int) $nothing;
+		if ( $nothing ) {
+			return $nothing;
 		}
 
 		$data = [];

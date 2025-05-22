@@ -87,8 +87,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @return int
 	 */
 	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
-		if ( $nothing && is_numeric( $nothing ) ) {
-			return (int) $nothing;
+		if ( $nothing ) {
+			return $nothing;
 		}
 
 		if ( empty( $refunds['0']['amount_refunded'] ) ) {
@@ -109,8 +109,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @return int
 	 */
 	public function filter_order_get_value_captured( ?int $nothing, array $refunds ): int {
-		if ( $nothing && is_numeric( $nothing ) ) {
-			return (int) $nothing;
+		if ( $nothing ) {
+			return $nothing;
 		}
 
 		if ( empty( $refunds['0']['amount_captured'] ) ) {
