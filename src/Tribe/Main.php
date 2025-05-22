@@ -536,6 +536,8 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
+		tribe_register_provider( TEC\Tickets\Configuration\Provider::class );
+
 		tribe_singleton( Tribe__Tickets__Theme_Compatibility::class, Tribe__Tickets__Theme_Compatibility::class );
 
 		// Event Tickets Provider to manage Events.
