@@ -305,7 +305,7 @@ class Order extends Abstract_Order {
 			try {
 				$items = $this->get_items_from_square_order( $square_order_id );
 			} catch ( NotEnoughStockException $e ) {
-				do_action( 'tribe_log', 'warning', 'Not enough stock for incoming order -  refunding the order.', [ $square_order_id ] );
+				do_action( 'tribe_log', 'warning', 'Not enough stock for incoming order - refunding the order.', [ $square_order_id ] );
 				$this->refund_remote_order( $square_order_id );
 				return null;
 			}
