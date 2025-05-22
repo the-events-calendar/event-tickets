@@ -18,7 +18,6 @@ use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 

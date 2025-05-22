@@ -21,6 +21,23 @@ use WP_Post;
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
 class Payment {
+	/**
+	 * The key used to identify the Square refund ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_REFUND_ID = '_tec_tc_order_gateway:square_refund_id';
+
+	/**
+	 * The key used to identify the time of the Square refund ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_REFUND_ID_TIME = '_tec_tc_order_gateway:square_refund_id_time';
 
 	/**
 	 * The key used to identify the Square payment ID.
