@@ -699,9 +699,9 @@ class Order extends Abstract_Order {
 			 *
 			 * @since TBD
 			 *
-			 * @param bool $prevent_overselling Whether to prevent overselling or not.
-			 * @param Ticket_Object $ticket_obj The ticket object.
-			 * @param int $quantity The quantity of the ticket.
+			 * @param bool          $prevent_overselling Whether to prevent overselling or not.
+			 * @param Ticket_Object $ticket_obj          The ticket object.
+			 * @param int           $quantity            The quantity of the ticket.
 			 */
 			if ( -1 !== $ticket_obj->available() && $quantity > $ticket_obj->available() && apply_filters( 'tec_tickets_commerce_square_prevent_overselling', true, $ticket_obj, $quantity ) ) {
 				throw new NotEnoughStockException( sprintf( 'Not enough stock for ticket %s', $ticket_obj->ID ) );
