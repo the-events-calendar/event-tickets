@@ -46,6 +46,8 @@ class Status {
 			case 'FAILED':
 			case 'CANCELED':
 				return tribe( Denied::class );
+			case 'REFUNDED':
+				return tribe( Refunded::class );
 			default:
 				return tribe( Not_Completed::class );
 		}

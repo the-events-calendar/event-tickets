@@ -72,6 +72,52 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
 		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'modify_checkout_display_billing_info' ] );
 		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'modify_checkout_vars' ] );
+		add_filter( 'tec_tickets_commerce_order_stripe_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_order_stripe_get_value_captured', [ $this, 'filter_order_get_value_captured' ], 10, 2 );
+	}
+
+	/**
+	 * Filter the refunded amount for the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refunds for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		if ( empty( $refunds['0']['amount_refunded'] ) ) {
+			return 0;
+		}
+
+		return (int) max( wp_list_pluck( $refunds, 'amount_refunded' ) );
+	}
+
+	/**
+	 * Filter the captured amount for the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refunds for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_captured( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		if ( empty( $refunds['0']['amount_captured'] ) ) {
+			return 0;
+		}
+
+		return (int) max( wp_list_pluck( $refunds, 'amount_captured' ) );
 	}
 
 	/**

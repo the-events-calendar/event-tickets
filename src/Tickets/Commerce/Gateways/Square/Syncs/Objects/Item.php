@@ -197,6 +197,7 @@ abstract class Item implements JsonSerializable {
 	 */
 	public function get_wp_controlled_fields( array $square_object ): array {
 		unset( $square_object['version'] );
+		unset( $square_object[ strtolower( static::ITEM_TYPE ) . '_data' ]['image_ids'] );
 		$myself = $this->to_array();
 
 		$myself['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
@@ -351,6 +352,11 @@ abstract class Item implements JsonSerializable {
 	 * @return void
 	 */
 	protected function set_image_ids(): void {
+		// If the object has been synced already, we dont want to overwrite its image ever again.
+		if ( self::get_remote_object_id( $this->get_wp_id() ) ) {
+			return;
+		}
+
 		$image_ids = Commerce_Settings::get( 'square_catalog_image_ids_%s', [], [] );
 
 		$product_type = 'ITEM' === static::ITEM_TYPE ? 'event' : 'ticket';

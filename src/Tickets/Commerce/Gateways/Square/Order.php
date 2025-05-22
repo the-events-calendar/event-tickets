@@ -26,6 +26,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Repository;
 use WP_User_Query;
 use WP_User;
+use TEC\Tickets\Exceptions\NotEnoughStockException;
 use stdClass;
 
 /**
@@ -104,6 +105,14 @@ class Order extends Abstract_Order {
 
 		$schema['square_payment_id_not'] = function ( $payment_ids ) use ( $repository ) {
 			$this->filter_by_payment_id_not( $payment_ids, $repository );
+		};
+
+		$schema['square_refund_id'] = function ( $refund_ids ) use ( $repository ) {
+			$this->filter_by_refund_id( $refund_ids, $repository );
+		};
+
+		$schema['square_refund_id_not'] = function ( $refund_ids ) use ( $repository ) {
+			$this->filter_by_refund_id_not( $refund_ids, $repository );
 		};
 
 		return $schema;
@@ -275,7 +284,9 @@ class Order extends Abstract_Order {
 			$is_update = $order instanceof WP_Post;
 		}
 
-		$order     = $order instanceof WP_Post ? $order : tribe( Commerce_Order::class )->get_from_gateway_order_id( $square_order_id );
+		$callable  = empty( $square_order['refunds'] ) ? [ tribe( Commerce_Order::class ), 'get_from_gateway_order_id' ] : [ $this, 'get_by_refund_id' ];
+		$args      = empty( $square_order['refunds'] ) ? [ $square_order_id ] : [ $square_order['refunds']['0']['id'] ];
+		$order     = $order instanceof WP_Post ? $order : call_user_func( $callable, $args );
 		$is_update = $order instanceof WP_Post;
 
 		if ( ! $is_update && ! $this->settings->is_inventory_sync_enabled() ) {
@@ -283,7 +294,7 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
-		if ( $is_update && $order->gateway_order_id !== $square_order_id ) {
+		if ( $is_update && $order->gateway_order_id !== $square_order_id && empty( $square_order['refunds'] ) ) {
 			// The order has been changed in a way that now is being matched with a different Square order.
 			// For example, that's possible when an order has been refunded. The refund is a new Square order,
 			// which we store in `gateway_order_id` property.
@@ -291,12 +302,20 @@ class Order extends Abstract_Order {
 		}
 
 		if ( ! $is_update ) {
-			$items = $this->get_items_from_square_order( $square_order_id );
+			try {
+				$items = $this->get_items_from_square_order( $square_order_id );
+			} catch ( NotEnoughStockException $e ) {
+				do_action( 'tribe_log', 'warning', 'Not enough stock for incoming order -  refunding the order.', [ $square_order_id ] );
+				$this->refund_remote_order( $square_order_id );
+				return null;
+			}
 
 			if ( empty( $items ) ) {
 				// We don't create orders without at least one item we recognize.
 				return null;
 			}
+
+			// Lets ensure we have the inventory available before creating the order.
 
 			$missed_money = $items['missed_money'] ?? 0;
 
@@ -363,6 +382,25 @@ class Order extends Abstract_Order {
 			}
 		}
 
+		$refunds = $square_order['refunds'] ?? [];
+
+		if ( ! empty( $refunds ) ) {
+			$order_refunds = array_flip( $this->get_refund_ids( $order ) );
+			foreach ( $refunds as $refund ) {
+				$refund_id = $refund['id'] ?? false;
+
+				if ( ! $refund_id ) {
+					continue;
+				}
+
+				if ( isset( $order_refunds[ $refund_id ] ) ) {
+					continue;
+				}
+
+				$this->add_refund_id( $order, $refund_id );
+			}
+		}
+
 		$status = $square_order['state'] ?? false;
 
 		if ( ! $status ) {
@@ -378,6 +416,31 @@ class Order extends Abstract_Order {
 				]
 			);
 			return $order;
+		}
+
+		$additional_data = [];
+
+		if ( ! empty( $square_order['refunds'] ) ) {
+			if ( 'COMPLETED' !== $status ) {
+				return $order;
+			}
+
+			$status = 'REFUNDED';
+
+			$payload = [];
+
+			foreach ( $square_order['refunds'] as $refund ) {
+				$payload[]['data']['object']['refund'] = $refund;
+			}
+
+			$additional_data = [
+				'gateway_payload' => $payload,
+			];
+
+			if ( $order->gateway_order_id !== $square_order_id ) {
+				$additional_data['gateway_order_id']          = $square_order_id;
+				$additional_data['original_gateway_order_id'] = $order->gateway_order_id;
+			}
 		}
 
 		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
@@ -414,7 +477,7 @@ class Order extends Abstract_Order {
 			return $order;
 		}
 
-		$this->commerce_order->modify_status( $order->ID, $status_obj->get_slug(), $event_data ? [ 'gateway_payload' => $event_data ] : [] );
+		$this->commerce_order->modify_status( $order->ID, $status_obj->get_slug(), array_merge( $event_data ? [ 'gateway_payload' => $event_data ] : [], $additional_data ) );
 
 		return $order;
 	}
@@ -585,6 +648,8 @@ class Order extends Abstract_Order {
 	 * @param string $square_order_id The Square order ID.
 	 *
 	 * @return array
+	 *
+	 * @throws NotEnoughStockException If the stock is not enough.
 	 */
 	public function get_items_from_square_order( string $square_order_id ): array {
 		$square_order = $this->get_square_order( $square_order_id );
@@ -627,10 +692,25 @@ class Order extends Abstract_Order {
 				continue;
 			}
 
+			$quantity = $ticket['quantity'] ?? 1;
+
+			/**
+			 * Filters whether to prevent overselling or not.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool          $prevent_overselling Whether to prevent overselling or not.
+			 * @param Ticket_Object $ticket_obj          The ticket object.
+			 * @param int           $quantity            The quantity of the ticket.
+			 */
+			if ( -1 !== $ticket_obj->available() && $quantity > $ticket_obj->available() && apply_filters( 'tec_tickets_commerce_square_prevent_overselling', true, $ticket_obj, $quantity ) ) {
+				throw new NotEnoughStockException( sprintf( 'Not enough stock for ticket %s', $ticket_obj->ID ) );
+			}
+
 			$items[] = [
 				'event_id'          => $ticket_obj->get_event_id(),
 				'price'             => ( new Precision_Value( $ticket['base_price_money']['amount'] / 100 ) )->get(),
-				'quantity'          => $ticket['quantity'] ?? 1,
+				'quantity'          => $quantity,
 				'ticket_id'         => $ticket_obj->ID,
 				'regular_price'     => $ticket_obj->regular_price,
 				'regular_sub_total' => ( new Precision_Value( $ticket_obj->regular_price * ( $ticket['quantity'] ?? 1 ) ) )->get(),
@@ -888,6 +968,112 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Add a refund ID to the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order      The order object.
+	 * @param string  $refund_id  The refund ID.
+	 *
+	 * @return bool
+	 */
+	public function add_refund_id( WP_Post $order, string $refund_id ): bool {
+		$added = Commerce_Meta::add( $order->ID, Payment::KEY_ORDER_REFUND_ID, $refund_id, [], 'post', false );
+
+		if ( ! $added ) {
+			return false;
+		}
+
+		Commerce_Meta::set( $order->ID, Payment::KEY_ORDER_REFUND_ID_TIME, tec_get_current_milliseconds(), [ $refund_id ], 'post', false );
+
+		return (bool) $added;
+	}
+
+	/**
+	 * Get the payment IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order object.
+	 *
+	 * @return string[]
+	 */
+	public function get_refund_ids( WP_Post $order ): array {
+		return (array) Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_REFUND_ID, [], 'post', false, false );
+	}
+
+	/**
+	 * Get the order by refund ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $refund_id The refund ID.
+	 * @param array  $status    The status of the order.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_refund_id( string $refund_id, array $status = [ 'any' ] ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'square_refund_id' => $refund_id,
+				'status'           => $status,
+			]
+		)->first();
+	}
+
+	/**
+	 * Filters order by refund ID.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $refund_ids Which refund IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_refund_id( $refund_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$refund_ids = array_filter( (array) $refund_ids );
+
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_in', Payment::KEY_ORDER_REFUND_ID, $refund_ids );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by refund ID not.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $refund_ids Which refund IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_refund_id_not( $refund_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$refund_ids = array_filter( (array) $refund_ids );
+
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_not_in', Payment::KEY_ORDER_REFUND_ID, $refund_ids );
+
+		return null;
+	}
+
+	/**
 	 * Get the Square customer.
 	 *
 	 * @since TBD
@@ -920,5 +1106,82 @@ class Order extends Abstract_Order {
 		$cache->set( $cache_key, $remote_customer, HOUR_IN_SECONDS );
 
 		return $remote_customer;
+	}
+
+	/**
+	 * Refund an order.
+	 *
+	 * To refund a Square order, you have to grab the Square order. Then in the property `tenders` you have to refund every tender.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If the order has no Square order ID or the Square order is not found.
+	 */
+	public function refund_order( WP_Post $order ): void {
+		if ( ! $order->gateway_order_id ) {
+			throw new RuntimeException( __( 'Order has no Square order ID.', 'event-tickets' ) );
+		}
+
+		$this->refund_remote_order( $order->gateway_order_id, $order );
+	}
+
+	/**
+	 * Refund a remote order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string       $square_order_id The Square order ID.
+	 * @param WP_Post|null $order           The order post object.
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If the Square order is not found.
+	 */
+	public function refund_remote_order( string $square_order_id, ?WP_Post $order = null ): void {
+		$square_order = $this->get_square_order( $square_order_id );
+
+		if ( empty( $square_order['order'] ) ) {
+			throw new RuntimeException( __( 'Square order not found.', 'event-tickets' ) );
+		}
+
+		$tenders = $square_order['order']['tenders'] ?? [];
+
+		foreach ( $tenders as $tender ) {
+			$id     = $tender['id'] ?? null;
+			$amount = $tender['amount_money'] ?? null;
+
+			if ( ! ( $id && $amount ) ) {
+				continue;
+			}
+
+			$body = [
+				'idempotency_key' => md5( 'refund-' . $id ),
+				'payment_id'      => $id,
+				'amount_money'    => $amount,
+			];
+
+			$response = Requests::post(
+				'refunds',
+				[],
+				[ 'body' => $body ]
+			);
+
+			if ( empty( $response['refund'] ) ) {
+				do_action( 'tribe_log', 'error', 'Square refund failed', [ $body, $response ] );
+				continue;
+			}
+
+			if ( ! $order instanceof WP_Post ) {
+				continue;
+			}
+
+			$this->add_refund_id( $order, explode( '_', $response['refund']['id'] )[1] );
+
+			tribe( Syncs\Regulator::class )->schedule( self::HOOK_PULL_ORDER_ACTION, [ $response['refund']['order_id'] ], MINUTE_IN_SECONDS / 3 );
+		}
 	}
 }

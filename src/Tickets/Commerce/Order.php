@@ -18,7 +18,6 @@ use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
@@ -1058,9 +1057,55 @@ class Order extends Abstract_Order {
 			return $order->total_value->get_currency();
 		}
 
-		$refunds  = $order->gateway_payload['refunded'];
-		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
-		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
+		$refunds = $order->gateway_payload['refunded'];
+
+		/**
+		 * Filters the refunded amount of an order.
+		 *
+		 * @since TBD
+		 *
+		 * @param ?int    $refunded The refunded amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$refunded = (int) apply_filters( "tec_tickets_commerce_order_{$order->gateway}_get_value_refunded", null, $refunds, $order );
+
+		/**
+		 * Filters the refunded amount of an order.
+		 *
+		 * @since TBD
+		 *
+		 * @param ?int    $refunded The refunded amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$refunded = (int) apply_filters( 'tec_tickets_commerce_order_get_value_refunded', $refunded ? $refunded : null, $refunds, $order );
+
+		/**
+		 * Filters the captured amount of an order.
+		 *
+		 * @since TBD
+		 *
+		 * @param ?int    $captured The captured amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$total = (int) apply_filters( "tec_tickets_commerce_order_{$order->gateway}_get_value_captured", (int) ( 100 * $order->total_value->get_decimal() ), $refunds, $order );
+
+		/**
+		 * Filters the captured amount of an order.
+		 *
+		 * @since TBD
+		 *
+		 * @param int     $captured The captured amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$total = (int) apply_filters( 'tec_tickets_commerce_order_get_value_captured', $total, $refunds, $order );
+
+		if ( ! ( $total && $refunded ) ) {
+			return $order->total_value->get_currency();
+		}
 
 		$total_value = $total - $refunded;
 

@@ -256,6 +256,7 @@ class Remote_Objects {
 		$data = [
 			'location_ids'       => $location_ids,
 			'catalog_object_ids' => [],
+			'states'             => [ 'IN_STOCK' ],
 		];
 
 		$cache_template_key = 'square_sync_object_state_%s_%s';

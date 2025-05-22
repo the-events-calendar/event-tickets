@@ -56,6 +56,7 @@ class Hooks extends Controller_Contract {
 	public function do_register(): void {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		add_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 	}
 
 	/**
@@ -175,5 +176,33 @@ class Hooks extends Controller_Contract {
 				$pending_webhook['metadata']
 			);
 		}
+	}
+
+	/**
+	 * Filter the refunded amount for the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refunds for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		$data = [];
+
+		foreach ( $refunds as $refund ) {
+			if ( empty( $refund['data']['object']['refund']['id'] ) || empty( $refund['data']['object']['refund']['amount_money']['amount'] ) ) {
+				continue;
+			}
+
+			$data[ $refund['data']['object']['refund']['id'] ] = $refund['data']['object']['refund']['amount_money']['amount'];
+		}
+
+		return (int) array_sum( $data );
 	}
 }
