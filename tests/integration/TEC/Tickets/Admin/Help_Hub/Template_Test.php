@@ -52,6 +52,7 @@ class Template_Test extends WPTestCase {
 		// Instantiate the Hub instance with all dependencies
 		$this->hub = new Hub( $this->mock_data, $config, $template );
 		$this->set_fn_return( 'tribe_resource_url', 'https://example.com/' );
+		$this->set_fn_return('wp_create_nonce', '123456789');
 	}
 
 	/**
