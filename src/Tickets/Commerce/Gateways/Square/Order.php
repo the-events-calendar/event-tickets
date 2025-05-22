@@ -26,6 +26,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Repository;
 use WP_User_Query;
 use WP_User;
+use TEC\Tickets\Exceptions\NotEnoughStockException;
 use stdClass;
 
 /**
@@ -301,12 +302,20 @@ class Order extends Abstract_Order {
 		}
 
 		if ( ! $is_update ) {
-			$items = $this->get_items_from_square_order( $square_order_id );
+			try {
+				$items = $this->get_items_from_square_order( $square_order_id );
+			} catch ( NotEnoughStockException $e ) {
+				do_action( 'tribe_log', 'warning', 'Not enough stock for incoming order -  refunding the order.', [ $square_order_id ] );
+				$this->refund_remote_order( $square_order_id );
+				return null;
+			}
 
 			if ( empty( $items ) ) {
 				// We don't create orders without at least one item we recognize.
 				return null;
 			}
+
+			// Lets ensure we have the inventory available before creating the order.
 
 			$missed_money = $items['missed_money'] ?? 0;
 
@@ -639,6 +648,8 @@ class Order extends Abstract_Order {
 	 * @param string $square_order_id The Square order ID.
 	 *
 	 * @return array
+	 *
+	 * @throws NotEnoughStockException If the stock is not enough.
 	 */
 	public function get_items_from_square_order( string $square_order_id ): array {
 		$square_order = $this->get_square_order( $square_order_id );
@@ -681,10 +692,16 @@ class Order extends Abstract_Order {
 				continue;
 			}
 
+			$quantity = $ticket['quantity'] ?? 1;
+
+			if ( -1 !== $ticket_obj->available() && $quantity > $ticket_obj->available() ) {
+				throw new NotEnoughStockException( sprintf( 'Not enough stock for ticket %s', $ticket_obj->ID ) );
+			}
+
 			$items[] = [
 				'event_id'          => $ticket_obj->get_event_id(),
 				'price'             => ( new Precision_Value( $ticket['base_price_money']['amount'] / 100 ) )->get(),
-				'quantity'          => $ticket['quantity'] ?? 1,
+				'quantity'          => $quantity,
 				'ticket_id'         => $ticket_obj->ID,
 				'regular_price'     => $ticket_obj->regular_price,
 				'regular_sub_total' => ( new Precision_Value( $ticket_obj->regular_price * ( $ticket['quantity'] ?? 1 ) ) )->get(),
