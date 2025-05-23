@@ -281,6 +281,9 @@ class Order_Summary {
 
 		// Handle fees.
 		foreach ( $order->fees as $fee ) {
+			if ( ! isset( $this->tickets[ $fee['ticket_id'] ] ) ) {
+				continue;
+			}
 			$this->process_fee_item_data( $order->status_slug, $fee );
 		}
 
