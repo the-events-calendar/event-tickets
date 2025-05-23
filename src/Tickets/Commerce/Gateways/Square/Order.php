@@ -28,6 +28,7 @@ use WP_User_Query;
 use WP_User;
 use TEC\Tickets\Exceptions\NotEnoughStockException;
 use stdClass;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Order.
@@ -289,6 +290,11 @@ class Order extends Abstract_Order {
 		$order     = $order instanceof WP_Post ? $order : call_user_func( $callable, $args );
 		$is_update = $order instanceof WP_Post;
 
+		if ( ! $is_update && empty( $square_order['refunds'] ) ) {
+			$order     = $this->get_by_original_gateway_order_id( $square_order_id );
+			$is_update = $order instanceof WP_Post;
+		}
+
 		if ( ! $is_update && ! $this->settings->is_inventory_sync_enabled() ) {
 			// When the sync is not enabled, we listen ONLY for UPDATES to existing orders to our DB.
 			return null;
@@ -349,7 +355,26 @@ class Order extends Abstract_Order {
 				'gateway_order_object'  => wp_json_encode( $square_order ),
 			];
 
+			DB::beginTransaction();
+
 			$order = $this->commerce_order->create( tribe( Gateway::class ), $order_args );
+
+			$query = DB::prepare(
+				'SELECT post_id FROM %i WHERE meta_key = %s AND meta_value = %s',
+				DB::prefix( 'postmeta' ),
+				Commerce_Order::$gateway_order_id_meta_key,
+				$square_order_id
+			);
+
+			$post_ids = DB::get_col( $query );
+
+			if ( count( $post_ids ) > 1 ) {
+				do_action( 'tribe_log', 'warning', 'Multiple orders found for the same Square order ID - Deleting: ' . $order->ID, [ $post_ids, $square_order_id ] );
+				DB::rollback();
+				return null;
+			}
+
+			DB::commit();
 
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_AMOUNT_UNACCOUNTED, $missed_money );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TAX, ( new Precision_Value( $net_amounts['tax_money']['amount'] / 100 ) )->get() );
@@ -817,11 +842,13 @@ class Order extends Abstract_Order {
 
 		$user_obj = new stdClass();
 
+		$family_name = $remote_customer['customer']['family_name'] ?? '';
+
 		$user_obj->ID           = 0;
 		$user_obj->user_email   = $remote_customer['customer']['email_address'];
-		$user_obj->display_name = $remote_customer['customer']['given_name'] . ' ' . $remote_customer['customer']['family_name'];
+		$user_obj->display_name = $remote_customer['customer']['given_name'] . ( $family_name ? ' ' . $family_name : '' );
 		$user_obj->first_name   = $remote_customer['customer']['given_name'];
-		$user_obj->last_name    = $remote_customer['customer']['family_name'];
+		$user_obj->last_name    = $family_name;
 
 		return new WP_User( $user_obj );
 	}
@@ -1015,6 +1042,25 @@ class Order extends Abstract_Order {
 			[
 				'square_refund_id' => $refund_id,
 				'status'           => $status,
+			]
+		)->first();
+	}
+
+	/**
+	 * Get the order by original gateway order ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $original_gateway_order_id The original gateway order ID.
+	 * @param array  $status                    The status of the order.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_original_gateway_order_id( string $original_gateway_order_id, array $status = [ 'any' ] ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'original_gateway_order_id' => $original_gateway_order_id,
+				'status'                    => $status,
 			]
 		)->first();
 	}

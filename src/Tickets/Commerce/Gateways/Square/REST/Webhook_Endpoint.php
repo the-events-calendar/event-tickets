@@ -450,6 +450,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->gateway_order_id ] );
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->original_gateway_order_id ] );
 	}
 
 	/**

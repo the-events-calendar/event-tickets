@@ -10,7 +10,6 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
-use Tribe__Repository__Usage_Error;
 use WP_Post;
 
 trait Order_Maker {
