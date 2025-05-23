@@ -57,18 +57,23 @@ class Order_Repository extends Tribe__Repository {
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-				'gateway'              => Order::$gateway_meta_key,
-				'gateway_order_id'     => Order::$gateway_order_id_meta_key,
-				'items'                => Order::$items_meta_key,
-				'total_value'          => Order::$total_value_meta_key,
-				'subtotal'             => Order::$subtotal_value_meta_key,
-				'currency'             => Order::$currency_meta_key,
-				'purchaser_user_id'    => Order::$purchaser_user_id_meta_key,
-				'purchaser_full_name'  => Order::$purchaser_full_name_meta_key,
-				'purchaser_first_name' => Order::$purchaser_first_name_meta_key,
-				'purchaser_last_name'  => Order::$purchaser_last_name_meta_key,
-				'purchaser_email'      => Order::$purchaser_email_meta_key,
-				'hash'                 => Order::$hash_meta_key,
+				'gateway'                   => Order::$gateway_meta_key,
+				'gateway_order_id'          => Order::$gateway_order_id_meta_key,
+				'gateway_order_object'      => Order::GATEWAY_ORDER_OBJECT_META_KEY,
+				'original_gateway_order_id' => Order::ORIGINAL_GATEWAY_ORDER_ID_META_KEY,
+				'latest_payload_hash_sent'  => Order::LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY,
+				'gateway_order_version'     => Order::GATEWAY_ORDER_VERSION_META_KEY,
+				'gateway_customer_id'       => Order::GATEWAY_CUSTOMER_ID_META_KEY,
+				'items'                     => Order::$items_meta_key,
+				'total_value'               => Order::$total_value_meta_key,
+				'subtotal'                  => Order::$subtotal_value_meta_key,
+				'currency'                  => Order::$currency_meta_key,
+				'purchaser_user_id'         => Order::$purchaser_user_id_meta_key,
+				'purchaser_full_name'       => Order::$purchaser_full_name_meta_key,
+				'purchaser_first_name'      => Order::$purchaser_first_name_meta_key,
+				'purchaser_last_name'       => Order::$purchaser_last_name_meta_key,
+				'purchaser_email'           => Order::$purchaser_email_meta_key,
+				'hash'                      => Order::$hash_meta_key,
 			]
 		);
 
@@ -84,7 +89,12 @@ class Order_Repository extends Tribe__Repository {
 
 		$this->add_simple_meta_schema_entry( 'gateway', Order::$gateway_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'gateway_order_id', Order::$gateway_order_id_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'original_gateway_order_id', Order::ORIGINAL_GATEWAY_ORDER_ID_META_KEY, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'gateway_order_object', Order::GATEWAY_ORDER_OBJECT_META_KEY, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'latest_payload_hash_sent', Order::LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'gateway_order_version', Order::GATEWAY_ORDER_VERSION_META_KEY, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'gateway_customer_id', Order::GATEWAY_CUSTOMER_ID_META_KEY, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_user_id', Order::$purchaser_user_id_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_full_name__like', Order::$purchaser_full_name_meta_key, 'meta_like' );

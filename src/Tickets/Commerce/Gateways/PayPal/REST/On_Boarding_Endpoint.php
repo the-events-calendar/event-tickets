@@ -35,7 +35,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * @inheritDoc
 	 */
-	protected $path = '/commerce/paypal/on-boarding';
+	protected string $path = '/commerce/paypal/on-boarding';
 
 	/**
 	 * @inheritDoc

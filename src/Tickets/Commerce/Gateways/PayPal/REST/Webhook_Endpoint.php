@@ -26,7 +26,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/paypal/webhook';
+	protected string $path = '/commerce/paypal/webhook';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.

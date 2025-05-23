@@ -4,7 +4,7 @@
  * @since 5.1.9
  * @type   {Object}
  */
-tribe.tickets = tribe.tickets || {};
+window.tribe.tickets = window.tribe.tickets || {};
 
 /**
  * Configures ET Tickets Commerce Object in the Global Tribe variable
@@ -12,7 +12,7 @@ tribe.tickets = tribe.tickets || {};
  * @since 5.1.9
  * @type   {Object}
  */
-tribe.tickets.commerce = {};
+window.tribe.tickets.commerce = {};
 
 /**
  * Initializes in a Strict env the code that manages the plugin tickets commerce.
@@ -507,4 +507,4 @@ tribe.tickets.commerce = {};
 	};
 
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce, window.tecTicketsCommerce || {} );
+} )( jQuery, window.tribe.tickets.commerce, window.tecTicketsCommerce || {} );

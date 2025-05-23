@@ -22,6 +22,8 @@
 use Tribe\Tickets\Admin\Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 
+defined( 'ABSPATH' ) || exit;
+
 if ( empty( $is_merchant_connected ) ) {
 	return;
 }
@@ -45,4 +47,4 @@ $resync_connection_url = tribe( Settings::class )->get_url(
 	</a>
 	</div>
 </div>
-
+<?php

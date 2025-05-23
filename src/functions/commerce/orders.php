@@ -62,11 +62,13 @@ function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $fo
 		$cache_post->post_password,
 		// We must include options on cache key, because options influence the hydrated data on the Order object.
 		wp_json_encode( Tribe__Settings_Manager::get_options() ),
-		wp_json_encode( [
-			get_option( 'start_of_week' ),
-			get_option( 'timezone_string' ),
-			get_option( 'gmt_offset' )
-		] ),
+		wp_json_encode(
+			[
+				get_option( 'start_of_week' ),
+				get_option( 'timezone_string' ),
+				get_option( 'gmt_offset' ),
+			]
+		),
 		$cache_post->post_status,
 		$output,
 		$filter,

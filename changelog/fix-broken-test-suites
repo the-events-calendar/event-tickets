@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+Introduced support for Square as a payment gateway for our TicketsCommerce. That comes with support for selling Tickets through Square's POS! [ET-2383]

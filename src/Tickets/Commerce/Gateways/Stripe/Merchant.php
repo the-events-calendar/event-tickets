@@ -134,7 +134,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_client_secret() {
+	public function get_client_secret(): string {
 		$keys = get_option( $this->get_signup_data_key() );
 
 		if ( empty( $keys[ $this->get_mode() ]->access_token ) ) {

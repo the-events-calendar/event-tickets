@@ -22,6 +22,5 @@
  * @var string           $registration_url [Global] The site's registration URL.
  * @var bool             $is_tec_active    [Global] Whether `The Events Calendar` is active or not.
  * @var array[]          $gateways         [Global] An array with the gateways.
- * @var int              $gateways_active  [Global] The number of active gateways.
  * @var array            $item             Which item this row will be for.
  */

@@ -23,7 +23,6 @@
  * @var bool             $is_tec_active    [Global] Whether `The Events Calendar` is active or not.
  * @var int              $section          Which Section that we are going to render for this table.
  * @var array[]          $gateways         [Global] An array with the gateways.
- * @var int              $gateways_active  [Global] The number of active gateways.
  */
 
 $post = get_post( $section );
