@@ -355,6 +355,12 @@ class Order extends Abstract_Order {
 				'gateway_order_object'  => wp_json_encode( $square_order ),
 			];
 
+			$duplicate_order = $this->get_by_original_gateway_order_id( $square_order_id );
+
+			if ( $duplicate_order instanceof WP_Post ) {
+				return $duplicate_order;
+			}
+
 			DB::beginTransaction();
 
 			$order = $this->commerce_order->create( tribe( Gateway::class ), $order_args );
