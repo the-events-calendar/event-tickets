@@ -359,17 +359,10 @@ class Order extends Abstract_Order {
 
 			$order = $this->commerce_order->create( tribe( Gateway::class ), $order_args );
 
-			$query = DB::prepare(
-				'SELECT post_id FROM %i WHERE meta_key = %s AND meta_value = %s',
-				DB::prefix( 'postmeta' ),
-				Commerce_Order::$gateway_order_id_meta_key,
-				$square_order_id
-			);
+			$order_ids = $this->commerce_order->get_order_ids_from_gateway_order_id( $square_order_id );
 
-			$post_ids = DB::get_col( $query );
-
-			if ( count( $post_ids ) > 1 ) {
-				do_action( 'tribe_log', 'warning', 'Multiple orders found for the same Square order ID - Deleting: ' . $order->ID, [ $post_ids, $square_order_id ] );
+			if ( count( $order_ids ) > 1 ) {
+				do_action( 'tribe_log', 'warning', 'Multiple orders found for the same Square order ID - Deleting: ' . $order->ID, [ $order_ids, $square_order_id ] );
 				DB::rollback();
 				return null;
 			}

@@ -1183,6 +1183,26 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Get the IDs of orders associated with a given gateway order id.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $gateway_order_id The gateway order id.
+	 *
+	 * @return int[]
+	 */
+	public function get_order_ids_from_gateway_order_id( $gateway_order_id ): array {
+		return (array) tec_tc_orders()->by_args(
+			[
+				'order_by'         => 'ID',
+				'order'            => 'DESC',
+				'status'           => 'any',
+				'gateway_order_id' => $gateway_order_id,
+			]
+		)->get_ids( false );
+	}
+
+	/**
 	 * Lock an order to prevent it from being modified.
 	 *
 	 * @since 5.18.1
