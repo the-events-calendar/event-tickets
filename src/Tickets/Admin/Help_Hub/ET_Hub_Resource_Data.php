@@ -146,6 +146,28 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 		add_filter( 'tec_help_hub_header_logo_src', [ $this, 'add_header_logo_src' ] );
 		add_filter( 'tec_help_hub_header_logo_alt', [ $this, 'add_header_logo_alt' ] );
 		add_filter( 'tec_help_hub_pages', [ $this, 'add_help_hub_pages' ] );
+		add_filter( 'tec_help_hub_telemetry_opt_in_link', [ $this, 'add_telemetry_opt_in_link' ] );
+	}
+	/**
+	 * Filters the telemetry opt-in link to use a custom Help Hub-specific URL.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url The original telemetry opt-in link.
+	 *
+	 * @return string The filtered telemetry opt-in link.
+	 */
+	public function add_telemetry_opt_in_link( $url ) {
+		if ( ! $this->is_help_hub_page() ) {
+			return $url;
+		}
+
+		return add_query_arg(
+			[
+				'page' => 'tec-tickets-settings',
+			],
+			admin_url( 'admin.php' )
+		);
 	}
 
 	/**
