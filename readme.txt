@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.23.1] 2025-05-27 =
+
+* Fix - Ensures symbolic links are followed on Assets Group Paths. [TCMN-187]
+* Language - 0 new strings added, 10 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.23.0] 2025-05-20 =
 
 * Version - Event Tickets 5.23.0 is only compatible with The Events Calendar 6.13.0 or higher.
