@@ -37,6 +37,14 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
 class Webhook_Endpoint extends Abstract_REST_Endpoint {
+	/**
+	 * The key for the order webhook IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_WEBHOOK_IDS = 'tec_tc_order_webhook_ids';
 
 	/**
 	 * The REST namespace for this endpoint.
@@ -346,7 +354,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Find the order associated with this payment.
 		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
 
-		if ( empty( $order ) && 'order_updated' === $type ) {
+		if ( empty( $order->ID ) && 'order_updated' === $type ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -360,7 +368,15 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
+		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
+
+		$event_id = $event_data['id'] ?? '';
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
+			return;
+		}
+
+		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
 
 		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
 	}
@@ -408,6 +424,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					'event_data' => $event_data,
 				]
 			);
+			return;
+		}
+
+		$event_ids = (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false );
+
+		$event_id = $event_data['id'] ?? '';
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
 		}
 
