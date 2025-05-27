@@ -181,7 +181,11 @@ abstract class Item implements JsonSerializable {
 			$this->data['version'] = $version;
 		}
 		$this->data['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
-		$this->set_image_ids();
+		/**
+		 * We don't sync any image until Square resolves its issue,
+		 * where not setting the image_ids removes all the images from the catalog object.
+		 */
+		// $this->set_image_ids();
 
 		return $this->set_object_values();
 	}
@@ -393,8 +397,26 @@ abstract class Item implements JsonSerializable {
 				],
 			];
 
+			/**
+			 * Filter the image path for the item.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $image_path   The image path.
+			 * @param string $product_type The product type.
+			 * @param Item   $item         The item object.
+			 *
+			 * @return string The image path.
+			 */
+			$image_path = apply_filters(
+				'tec_tickets_commerce_square_image_path',
+				ET::instance()->plugin_path . "src/resources/images/square-sync/{$product_type}.png",
+				$product_type,
+				$this
+			);
+
 			$arguments = [
-				'filepath' => ET::instance()->plugin_path . "src/resources/images/square-sync/{$product_type}.png",
+				'filepath' => $image_path,
 				'body'     => [
 					'request' => wp_json_encode( $data ),
 				],
