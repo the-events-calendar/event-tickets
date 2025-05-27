@@ -49,7 +49,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-block-editor'       => '/build/Seating/blockEditor.js',
-			'tec-tickets-seating-block-editor-style' => '/build/Seating/blockEditor.css',
+			'tec-tickets-seating-block-editor-style' => '/build/Seating/style-blockEditor.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {

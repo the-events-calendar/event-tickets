@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { actions, selectors } from '../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
@@ -30,7 +30,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onRemove: () => dispatch( actions.deleteTicketsHeaderImage() ),
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

@@ -222,7 +222,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 				'tribe-common-gutenberg-vendor'
 			)
 			->enqueue_on( 'enqueue_block_editor_assets' )
-			->add_localize_script( 'tec.tickets.seating.blockEditor', [ $this, 'get_store_data' ] )
+			->add_localize_script( 'tec.tickets.seating.blockEditorData', [ $this, 'get_store_data' ] )
 			->add_localize_script(
 				'tec.tickets.seating.meta',
 				fn() => [
@@ -237,7 +237,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		Asset::add(
 			'tec-tickets-seating-block-editor-style',
-			'blockEditor.css',
+			'style-blockEditor.css',
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

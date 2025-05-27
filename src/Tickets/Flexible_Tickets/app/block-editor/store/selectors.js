@@ -1,56 +1,56 @@
 export default {
-	hasSeriesPasses(state) {
+	hasSeriesPasses( state ) {
 		return state.series.hasSeriesPasses;
 	},
-	isInSeries(state) {
+	isInSeries( state ) {
 		return state.isInSeries;
 	},
-	getDefaultTicketTypeDescriptionTemplate(state) {
+	getDefaultTicketTypeDescriptionTemplate( state ) {
 		return state.defaultTicketTypeDescriptionTemplate;
 	},
-	getSeriesPassTotalCapacity(state) {
+	getSeriesPassTotalCapacity( state ) {
 		return state.series.seriesPassTotalCapacity;
 	},
-	getSeriesPassTotalAvailable(state) {
+	getSeriesPassTotalAvailable( state ) {
 		return state.series.seriesPassTotalAvailable;
 	},
-	getSeriesHeaderLink(state) {
+	getSeriesHeaderLink( state ) {
 		return state.series.headerLink;
 	},
-	getSeriesHeaderLinkTemplate(state) {
+	getSeriesHeaderLinkTemplate( state ) {
 		return state.series.headerLinkTemplate;
 	},
-	getSeriesHeaderLinkText(state) {
+	getSeriesHeaderLinkText( state ) {
 		return state.series.headerLinkText;
 	},
-	getSeriesInformation(state) {
+	getSeriesInformation( state ) {
 		return {
 			title: state.series.title,
 			editLink: state.series.editLink,
 		};
 	},
-	getMultipleProvidersNoticeTemplate(state) {
+	getMultipleProvidersNoticeTemplate( state ) {
 		return state.multipleProvidersNoticeTemplate;
 	},
-	getSeriesPassSharedCapacity(state) {
+	getSeriesPassSharedCapacity( state ) {
 		return state.series.seriesPassSharedCapacity;
 	},
-	getSeriesPassIndependentCapacity(state) {
+	getSeriesPassIndependentCapacity( state ) {
 		return state.series.seriesPassIndependentCapacity;
 	},
-	getSeriesPassSharedCapacityItems(state) {
+	getSeriesPassSharedCapacityItems( state ) {
 		return state.series.seriesPassSharedCapacityItems;
 	},
-	getSeriesPassIndependentCapacityItems(state) {
+	getSeriesPassIndependentCapacityItems( state ) {
 		return state.series.seriesPassIndependentCapacityItems;
 	},
-	getSeriesPassUnlimitedCapacityItems(state) {
+	getSeriesPassUnlimitedCapacityItems( state ) {
 		return state.series.seriesPassUnlimitedCapacityItems;
 	},
-	hasUnlimitedSeriesPasses(state) {
+	hasUnlimitedSeriesPasses( state ) {
 		return state.series.hasUnlimitedSeriesPasses;
 	},
-	getLabels(state) {
+	getLabels( state ) {
 		return state.labels;
 	},
 };

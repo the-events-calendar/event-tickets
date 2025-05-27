@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { types } from '@moderntribe/tickets/data/blocks/rsvp';
+import { types } from '../index';
 
 /**
  * Full payload from gutenberg media upload is not used,

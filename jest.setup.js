@@ -3,8 +3,8 @@
  */
 import moment from 'moment-timezone';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import $ from 'jquery';
+import renderer from 'react-test-renderer';
 
 global.jQuery = $;
 global.$ = $;

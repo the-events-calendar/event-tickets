@@ -27,11 +27,11 @@ import {
  */
 const defaultActionsMap = {
 	default: defaultMessageHandler,
-	[MAP_CREATED_UPDATED]: onMapCreatedUpdated,
-	[LAYOUT_CREATED_UPDATED]: onLayoutCreatedUpdated,
-	[SEAT_TYPE_CREATED_UPDATED]: onSeatTypeCreatedUpdated,
-	[GO_TO_MAPS_HOME]: onGoToMapsHome,
-	[GO_TO_LAYOUTS_HOME]: onGoToLayoutsHome,
+	[ MAP_CREATED_UPDATED ]: onMapCreatedUpdated,
+	[ LAYOUT_CREATED_UPDATED ]: onLayoutCreatedUpdated,
+	[ SEAT_TYPE_CREATED_UPDATED ]: onSeatTypeCreatedUpdated,
+	[ GO_TO_MAPS_HOME ]: onGoToMapsHome,
+	[ GO_TO_LAYOUTS_HOME ]: onGoToLayoutsHome,
 };
 
 /**
@@ -53,12 +53,8 @@ export const state = {
  *
  * @return {Function|null} The handler for the action, or the default handler if none is found.
  */
-export function getHandlerForAction(action) {
-	return (
-		state.actionsMap[action] ||
-		state.actionsMap.default ||
-		defaultMessageHandler
-	);
+export function getHandlerForAction( action ) {
+	return state.actionsMap[ action ] || state.actionsMap.default || defaultMessageHandler;
 }
 
 /**
@@ -69,8 +65,8 @@ export function getHandlerForAction(action) {
  * @param {string}   action   The action to register the callback for.
  * @param {Function} callback The callback to register for the action.
  */
-export function registerAction(action, callback) {
-	state.actionsMap[action] = callback;
+export function registerAction( action, callback ) {
+	state.actionsMap[ action ] = callback;
 }
 
 /**
@@ -80,8 +76,8 @@ export function registerAction(action, callback) {
  *
  * @param {string} action The action to remove form the actions map.
  */
-export function removeAction(action) {
-	delete state.actionsMap[action];
+export function removeAction( action ) {
+	delete state.actionsMap[ action ];
 }
 
 /**
@@ -102,7 +98,7 @@ export function getRegisteredActions() {
  *
  * @param {boolean} isReady Whether the Service is ready or not.
  */
-export function setIsReady(isReady) {
+export function setIsReady( isReady ) {
 	state.ready = isReady;
 }
 
@@ -124,7 +120,7 @@ export function getIsReady() {
  *
  * @param {boolean} establishingReadiness Whether the Service is establishing or not.
  */
-export function setEstablishingReadiness(establishingReadiness) {
+export function setEstablishingReadiness( establishingReadiness ) {
 	state.establishingReadiness = establishingReadiness;
 }
 
@@ -146,7 +142,7 @@ export function getEstablishingReadiness() {
  *
  * @param {string} token The token to set.
  */
-export function setToken(token) {
+export function setToken( token ) {
 	state.token = token;
 }
 
