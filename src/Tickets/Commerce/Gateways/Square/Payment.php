@@ -89,8 +89,6 @@ class Payment {
 			return null;
 		}
 
-		$fee = Application_Fee::calculate( $value );
-
 		$query_args = [];
 		$body       = [
 			'amount_money'    => [
@@ -107,13 +105,6 @@ class Payment {
 			],
 		];
 
-		if ( $fee->get_integer() > 0 ) {
-			$body['app_fee_money'] = [
-				'amount'   => (int) $fee->get_integer(),
-				'currency' => $value->get_currency_code(),
-			];
-		}
-
 		/**
 		 * Filters the payment body.
 		 *
@@ -125,6 +116,15 @@ class Payment {
 		 * @param string  $source_id The source ID.
 		 */
 		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $value, $order, $source_id );
+
+		$fee = Application_Fee::calculate( $value );
+
+		if ( $fee->get_integer() > 0 ) {
+			$body['app_fee_money'] = [
+				'amount'   => (int) $fee->get_integer(),
+				'currency' => $value->get_currency_code(),
+			];
+		}
 
 		$args = [
 			'body'    => $body,
