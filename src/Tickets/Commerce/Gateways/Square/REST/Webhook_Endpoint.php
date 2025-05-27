@@ -29,6 +29,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Class Webhook_Endpoint.
@@ -371,40 +372,43 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$event_id = $event_data['id'] ?? '';
 
-		$option_name = null;
+		$option_name = 'tec_tc_webhook_' . $event_id;
+		$value       = microtime();
+		// This is a POS order, and we have no other "guard" in our system to prevent double processing.
+		// We will use a DB concat to prevent double processing.
+		$insert_statement = DB::prepare(
+			"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'auto')",
+			DB::prefix( 'options' ),
+			$option_name,
+			$value
+		);
+
+		$select_statement = DB::prepare(
+			'SELECT option_value FROM %i WHERE option_name = %s',
+			DB::prefix( 'options' ),
+			$option_name
+		);
+
+		$delete_statement = DB::prepare(
+			'DELETE FROM %i WHERE option_name = %s AND option_value = %s',
+			DB::prefix( 'options' ),
+			$option_name,
+			$value
+		);
 
 		if ( 'order_created' === $type ) {
-			$option_name = 'tec_tc_webhook_' . $event_id;
-			$value       = microtime();
-			// This is a POS order, and we have no other "guard" in our system to prevent double processing.
-			// We will use a DB concat to prevent double processing.
-			$insert_statement = DB::prepare(
-				"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'auto')",
-				DB::prefix( 'options' ),
-				$option_name,
-				$value
-			);
+			try {
+				DB::query( $insert_statement );
 
-			DB::query( $insert_statement );
+				$values = DB::get_col( $select_statement );
 
-			$select_statement = DB::prepare(
-				'SELECT option_value FROM %i WHERE option_name = %s',
-				DB::prefix( 'options' ),
-				$option_name
-			);
-
-			$values = DB::get_col( $select_statement );
-
-			if ( count( $values ) > 1 ) {
-				// This is a double event, so we skip.
-				$delete_statement = DB::prepare(
-					'DELETE FROM %i WHERE option_name = %s AND option_value = %s',
-					DB::prefix( 'options' ),
-					$option_name,
-					$value
-				);
-
-				DB::query( $delete_statement );
+				if ( count( $values ) > 1 ) {
+					// This is a double event, so we skip.
+					DB::query( $delete_statement );
+					return;
+				}
+			} catch ( DatabaseQueryException $e ) {
+				// Insert query failed, so we skip.
 				return;
 			}
 		}
@@ -418,6 +422,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
 
 		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
+
+		try {
+			DB::query( $delete_statement );
+		} catch ( DatabaseQueryException $e ) {
+			// We don't care if this fails.
+			return;
+		}
 	}
 
 	/**
