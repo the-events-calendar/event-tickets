@@ -6,36 +6,30 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
-import {applyFilters} from '@wordpress/hooks';
+import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
+import { applyFilters } from '@wordpress/hooks';
 
-const RemoveTicketButton = ({ onClick, isDisabled }) => (
+const RemoveTicketButton = ( { onClick, isDisabled } ) => (
 	<Button type="button" onClick={ onClick } disabled={ isDisabled }>
 		{ sprintf(
 			/* Translators: %s - the singular label for a ticket. */
-			__('Remove %s', 'event-tickets'),
+			__( 'Remove %s', 'event-tickets' ),
 			TICKET_LABELS.ticket.singular
 		) }
 	</Button>
 );
 
-const MoveTicketButton = ({ onClick, isDisabled }) => (
+const MoveTicketButton = ( { onClick, isDisabled } ) => (
 	<Button type="button" onClick={ onClick } disabled={ isDisabled }>
 		{ sprintf(
 			/* Translators: %s - the singular label for a ticket. */
-			__('Move %s', 'event-tickets'),
+			__( 'Move %s', 'event-tickets' ),
 			TICKET_LABELS.ticket.singular
 		) }
 	</Button>
 );
 
-const MoveDelete = ( {
-	ticketIsSelected,
-	moveTicket,
-	removeTicket,
-	isDisabled,
-	clientId,
-} ) => {
+const MoveDelete = ( { ticketIsSelected, moveTicket, removeTicket, isDisabled, clientId } ) => {
 	if ( ! ticketIsSelected ) {
 		return null;
 	}
@@ -56,14 +50,16 @@ const MoveDelete = ( {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @param {object[]} actions An array of action objects.
-	 * @param {number} clientId The client ID of the ticket block.
+	 * @param {object[]} actions  An array of action objects.
+	 * @param {number}   clientId The client ID of the ticket block.
 	 */
 	actions = applyFilters( 'tec.tickets.blocks.Ticket.actionItems', actions, clientId );
 
 	return (
 		<div className="tribe-editor__ticket__content-row--move-delete">
-			{ actions.map( (action) => <React.Fragment key={action.key}>{action.item}</React.Fragment> ) }
+			{ actions.map( ( action ) => (
+				<React.Fragment key={ action.key }>{ action.item }</React.Fragment>
+			) ) }
 		</div>
 	);
 };

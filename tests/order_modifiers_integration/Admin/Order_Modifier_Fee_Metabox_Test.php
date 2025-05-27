@@ -26,7 +26,7 @@ class Order_Modifier_Fee_Metabox_Test extends Controller_Test_Case {
 
 	public function asset_data_provider() {
 		$assets = [
-			'order-modifiers-fees-js' => '/src/resources/js/admin/order-modifiers/fees.js',
+			'order-modifiers-fees-js' => '/build/js/admin/order-modifiers/fees.js',
 		];
 
 		foreach ( $assets as $slug => $path ) {

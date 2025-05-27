@@ -22,4 +22,4 @@
 /**
  * @type {AjaxLocalizedData}
  */
-export const localizedData = window?.tec?.tickets?.seating?.ajax;
+export const localizedData = window?.tec?.tickets?.seating?.ajaxData;

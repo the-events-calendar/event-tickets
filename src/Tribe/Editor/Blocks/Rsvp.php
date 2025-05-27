@@ -205,7 +205,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	public function assets() {
 		$plugin = Tribe__Tickets__Main::instance();
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-rsvp',
 			'rsvp-block.js',
@@ -224,15 +224,13 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-block-rsvp-style',
-			'app/rsvp/frontend.css',
-			[],
-			null
+			'rsvp/frontend.css'
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-rsvp-ari',
 			'v2/rsvp-ari.js',
@@ -253,7 +251,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-rsvp-manager',
 			'v2/rsvp-manager.js',
@@ -268,16 +266,18 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[
 				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => fn() => [
-						'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
-					],
+					'data' => static function () {
+						return [
+							'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+							'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
+						];
+					},
 				],
 				'groups'   => 'tribe-tickets-rsvp',
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-rsvp-block',
 			'v2/rsvp-block.js',
@@ -286,7 +286,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[ 'groups' => 'tribe-tickets-rsvp' ]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-rsvp-tooltip',
 			'v2/rsvp-tooltip.js',
@@ -301,7 +301,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-rsvp-style',
 			'rsvp.css',
@@ -309,13 +309,16 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			null
 		);
 
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-rsvp-style-override',
-			Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' ),
-			[],
-			null
-		);
+		$stylesheet = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
+		if ( $stylesheet ) {
+			tec_asset(
+				$plugin,
+				'tribe-tickets-rsvp-style-override',
+				$stylesheet,
+				[],
+				null
+			);
+		}
 	}
 
 	/**

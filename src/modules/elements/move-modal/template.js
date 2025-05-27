@@ -25,11 +25,11 @@ export default class MoveModal extends PureComponent {
 		postValue: PropTypes.string.isRequired,
 		search: PropTypes.string.isRequired,
 		title: PropTypes.string.isRequired,
-	}
+	};
 
 	static defaultProps = {
 		title: __( 'Move Ticket Types', 'event-tickets' ),
-	}
+	};
 
 	componentDidMount() {
 		this.props.initialize();
@@ -40,30 +40,20 @@ export default class MoveModal extends PureComponent {
 			return <Spinner />;
 		}
 
-		return (
-			this.props.postOptions.length
-				? (
-					<MenuGroup>
-						<MenuItemsChoice
-							choices={ this.props.postOptions }
-							value={ this.props.postValue }
-							onSelect={ this.props.onPostSelect }
-						/>
-					</MenuGroup>
-				)
-				: (
-					<Notice
-						isDismissible={ false }
-						status="warning"
-					>
-						{
-							__( 'No posts found', 'event-tickets' )
-						}
-					</Notice>
-				)
-
+		return this.props.postOptions.length ? (
+			<MenuGroup>
+				<MenuItemsChoice
+					choices={ this.props.postOptions }
+					value={ this.props.postValue }
+					onSelect={ this.props.onPostSelect }
+				/>
+			</MenuGroup>
+		) : (
+			<Notice isDismissible={ false } status="warning">
+				{ __( 'No posts found', 'event-tickets' ) }
+			</Notice>
 		);
-	}
+	};
 
 	render() {
 		return (
@@ -85,19 +75,12 @@ export default class MoveModal extends PureComponent {
 				<label htmlFor="search">
 					{ __(
 						'You can also enter keywords to help find the target event by title or description',
-						'event-tickets',
+						'event-tickets'
 					) }
 				</label>
-				<Input
-					id="search"
-					type="text"
-					onChange={ this.props.onSearchChange }
-					value={ this.props.search }
-				/>
+				<Input id="search" type="text" onChange={ this.props.onSearchChange } value={ this.props.search } />
 
-				<label>
-					{ __( 'Select the post you wish to move the ticket type to:', 'event-tickets' ) }
-				</label>
+				<label>{ __( 'Select the post you wish to move the ticket type to:', 'event-tickets' ) }</label>
 				{ this.renderPostTypes() }
 
 				<footer>
