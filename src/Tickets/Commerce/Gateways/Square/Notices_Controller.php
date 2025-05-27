@@ -39,6 +39,15 @@ class Notices_Controller extends Controller_Contract {
 	public const NOT_READY_TO_SELL_NOTICE_SLUG = 'tec-tickets-commerce-square-not-ready-to-sell-notice';
 
 	/**
+	 * Currency mismatch notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CURRENCY_MISMATCH_NOTICE_SLUG = 'tec-tickets-commerce-square-currency-mismatch-notice';
+
+	/**
 	 * Webhooks instance.
 	 *
 	 * @since TBD
@@ -111,6 +120,17 @@ class Notices_Controller extends Controller_Contract {
 			],
 			[ $this, 'should_display_not_ready_to_sell_notice' ]
 		);
+
+		tribe_notice(
+			self::CURRENCY_MISMATCH_NOTICE_SLUG,
+			[ $this, 'render_currency_mismatch_notice' ],
+			[
+				'type'     => 'error',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_currency_mismatch_notice' ]
+		);
 	}
 
 	/**
@@ -178,7 +198,30 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		return ! $this->merchant->is_ready_to_sell();
+		return ! (bool) $this->merchant->get_location_id();
+	}
+
+	/**
+	 * Determines if the not ready to sell notice should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_currency_mismatch_notice() {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_enabled() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_active() ) {
+			return false;
+		}
+
+		return ! $this->merchant->is_currency_matching();
 	}
 
 	/**
