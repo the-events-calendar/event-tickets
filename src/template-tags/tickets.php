@@ -6,6 +6,7 @@
  */
 
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
+use TEC\Tickets\Commerce\Module;
 
 
 // Don't load directly
@@ -827,7 +828,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 		$provider = $data_api->get_ticket_provider( $id );
 		
 		// Skip if the provider is Tickets Commerce but the module is disabled.
-		if ( $provider instanceof TEC\Tickets\Commerce\Module && ! tec_tickets_commerce_is_enabled() ) {
+		if ( $provider instanceof Module && ! tec_tickets_commerce_is_enabled() ) {
 			$provider = false;
 		}
 
