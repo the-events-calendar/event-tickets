@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 /**
  * Class Controller
@@ -37,6 +38,15 @@ class Notices_Controller extends Controller_Contract {
 	 * @var string
 	 */
 	public const NOT_READY_TO_SELL_NOTICE_SLUG = 'tec-tickets-commerce-square-not-ready-to-sell-notice';
+
+	/**
+	 * Currency mismatch notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CURRENCY_MISMATCH_NOTICE_SLUG = 'tec-tickets-commerce-square-currency-mismatch-notice';
 
 	/**
 	 * Webhooks instance.
@@ -111,6 +121,17 @@ class Notices_Controller extends Controller_Contract {
 			],
 			[ $this, 'should_display_not_ready_to_sell_notice' ]
 		);
+
+		tribe_notice(
+			self::CURRENCY_MISMATCH_NOTICE_SLUG,
+			[ $this, 'render_currency_mismatch_notice' ],
+			[
+				'type'     => 'error',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_currency_mismatch_notice' ]
+		);
 	}
 
 	/**
@@ -129,7 +150,7 @@ class Notices_Controller extends Controller_Contract {
 	 *
 	 * @return bool
 	 */
-	public function should_display_webhook_notice() {
+	public function should_display_webhook_notice(): bool {
 		// Only show on admin pages.
 		if ( ! is_admin() ) {
 			return false;
@@ -165,7 +186,7 @@ class Notices_Controller extends Controller_Contract {
 	 *
 	 * @return bool
 	 */
-	public function should_display_not_ready_to_sell_notice() {
+	public function should_display_not_ready_to_sell_notice(): bool {
 		if ( ! is_admin() ) {
 			return false;
 		}
@@ -178,7 +199,30 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		return ! $this->merchant->is_ready_to_sell();
+		return ! (bool) $this->merchant->get_location_id();
+	}
+
+	/**
+	 * Determines if the not ready to sell notice should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_currency_mismatch_notice(): bool {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_enabled() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_active() ) {
+			return false;
+		}
+
+		return ! $this->merchant->is_currency_matching();
 	}
 
 	/**
@@ -188,7 +232,7 @@ class Notices_Controller extends Controller_Contract {
 	 *
 	 * @return string
 	 */
-	public function render_webhook_notice() {
+	public function render_webhook_notice(): string {
 		$webhook_id = $this->webhooks->get_webhook_id();
 
 		$issues = [];
@@ -236,13 +280,38 @@ class Notices_Controller extends Controller_Contract {
 	 *
 	 * @return string
 	 */
-	public function render_not_ready_to_sell_notice() {
+	public function render_not_ready_to_sell_notice(): string {
 		return sprintf(
 			'<p><strong>%1$s</strong></p><p>%2$s</p><p><a href="%3$s" class="button button-primary">%4$s</a></p>',
 			esc_html__( 'Square Location not configured', 'event-tickets' ),
 			esc_html__( 'The Square payment gateway is not ready to sell until you configure a Business Location. .', 'event-tickets' ),
 			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=square' ) ),
 			esc_html__( 'Configure Business Location', 'event-tickets' )
+		);
+	}
+
+	/**
+	 * Render the not ready to sell notice.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function render_currency_mismatch_notice(): string {
+		$square_currency           = $this->merchant->get_merchant_currency();
+		$tickets_commerce_currency = tribe_get_option( Commerce_Settings::$option_currency_code, 'USD' );
+
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p><p><a href="%3$s" class="button button-primary">%4$s</a></p>',
+			esc_html__( 'Square Currency Mismatch', 'event-tickets' ),
+			sprintf(
+				/* translators: %1$s: Square currency. %2$s: TicketsCommerce currency. */
+				esc_html__( 'The Square payment gateway is accepting payments in %1$s but your TicketsCommerce Currency is set to %2$s.', 'event-tickets' ),
+				$square_currency,
+				$tickets_commerce_currency
+			),
+			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=payments' ) ),
+			esc_html__( 'Configure TicketsCommerce Currency', 'event-tickets' )
 		);
 	}
 
@@ -255,7 +324,7 @@ class Notices_Controller extends Controller_Contract {
 	 *
 	 * @return bool Whether this is a Tickets admin page.
 	 */
-	protected function is_tickets_admin_page( $screen_id ) {
+	protected function is_tickets_admin_page( $screen_id ): bool {
 		$valid_screens = [
 			'tickets_page_tec-tickets-settings',
 			'tickets_page_tec-tickets-commerce-orders',

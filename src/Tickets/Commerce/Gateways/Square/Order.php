@@ -385,6 +385,12 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
+		$event_id = $event_data['id'] ?? '';
+
+		if ( $event_id ) {
+			Commerce_Meta::add( $order->ID, REST\Webhook_Endpoint::KEY_ORDER_WEBHOOK_IDS, $event_id, [], 'post', false );
+		}
+
 		$payments = $square_order['tenders'] ?? [];
 
 		if ( ! empty( $payments ) ) {
@@ -772,7 +778,7 @@ class Order extends Abstract_Order {
 		// Our booking fees are supports as service charges.
 		$booking_fees = $square_order['service_charges'] ?? [];
 
-		foreach ( $booking_fees as $offset => $fee ) {
+		foreach ( $booking_fees as $fee ) {
 			$items[] = [
 				'id'           => $fee['metadata']['local_id'] ?? 0,
 				'type'         => 'fee',
@@ -780,6 +786,28 @@ class Order extends Abstract_Order {
 				'sub_total'    => ( new Precision_Value( $fee['applied_money']['amount'] / 100 ) )->get(),
 				'fee_id'       => $fee['metadata']['local_id'] ?? 0,
 				'display_name' => $fee['name'],
+				'ticket_id'    => 0,
+				'event_id'     => 0,
+				'quantity'     => 1,
+			];
+		}
+
+		$taxes = $square_order['taxes'] ?? [];
+
+		// We don's support taxes yet in TC, but ADDITIVE taxes need to be added as a separate item to the
+		// order so that the total is reflecting reality. We add them as prefixed booking fees for now.
+		foreach ( $taxes as $tax ) {
+			if ( $tax['type'] !== 'ADDITIVE' ) {
+				continue;
+			}
+
+			$items[] = [
+				'id'           => 'square-tax-' . $tax['uid'],
+				'type'         => 'fee',
+				'price'        => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
+				'sub_total'    => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
+				'fee_id'       => 'square-tax-' . $tax['uid'],
+				'display_name' => $tax['name'],
 				'ticket_id'    => 0,
 				'event_id'     => 0,
 				'quantity'     => 1,

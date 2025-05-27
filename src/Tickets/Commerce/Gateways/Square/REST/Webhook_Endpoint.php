@@ -28,6 +28,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Webhook_Endpoint.
@@ -37,6 +38,14 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
 class Webhook_Endpoint extends Abstract_REST_Endpoint {
+	/**
+	 * The key for the order webhook IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_WEBHOOK_IDS = 'tec_tc_order_webhook_ids';
 
 	/**
 	 * The REST namespace for this endpoint.
@@ -346,7 +355,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Find the order associated with this payment.
 		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
 
-		if ( empty( $order ) && 'order_updated' === $type ) {
+		if ( empty( $order->ID ) && 'order_updated' === $type ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -360,7 +369,53 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
+		$event_id = $event_data['id'] ?? '';
+
+		$option_name = null;
+
+		if ( 'order_created' === $type ) {
+			$option_name = 'tec_tc_webhook_' . $event_id;
+			$value       = microtime();
+			// This is a POS order, and we have no other "guard" in our system to prevent double processing.
+			// We will use a DB concat to prevent double processing.
+			$insert_statement = DB::prepare(
+				"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'auto')",
+				DB::prefix( 'options' ),
+				$option_name,
+				$value
+			);
+
+			DB::query( $insert_statement );
+
+			$select_statement = DB::prepare(
+				'SELECT option_value FROM %i WHERE option_name = %s',
+				DB::prefix( 'options' ),
+				$option_name
+			);
+
+			$values = DB::get_col( $select_statement );
+
+			if ( count( $values ) > 1 ) {
+				// This is a double event, so we skip.
+				$delete_statement = DB::prepare(
+					'DELETE FROM %i WHERE option_name = %s AND option_value = %s',
+					DB::prefix( 'options' ),
+					$option_name,
+					$value
+				);
+
+				DB::query( $delete_statement );
+				return;
+			}
+		}
+
+		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
+			return;
+		}
+
+		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
 
 		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
 	}
@@ -408,6 +463,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					'event_data' => $event_data,
 				]
 			);
+			return;
+		}
+
+		$event_ids = (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false );
+
+		$event_id = $event_data['id'] ?? '';
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
 		}
 
