@@ -800,11 +800,11 @@ class Order extends Abstract_Order {
 			}
 
 			$items[] = [
-				'id'           => $tax['uid'],
+				'id'           => 'square-tax-' . $tax['uid'],
 				'type'         => 'fee',
 				'price'        => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
 				'sub_total'    => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
-				'fee_id'       => $tax['uid'],
+				'fee_id'       => 'square-tax-' . $tax['uid'],
 				'display_name' => $tax['name'],
 				'ticket_id'    => 0,
 				'event_id'     => 0,
