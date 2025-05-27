@@ -778,7 +778,7 @@ class Order extends Abstract_Order {
 		// Our booking fees are supports as service charges.
 		$booking_fees = $square_order['service_charges'] ?? [];
 
-		foreach ( $booking_fees as $offset => $fee ) {
+		foreach ( $booking_fees as $fee ) {
 			$items[] = [
 				'id'           => $fee['metadata']['local_id'] ?? 0,
 				'type'         => 'fee',
@@ -786,6 +786,26 @@ class Order extends Abstract_Order {
 				'sub_total'    => ( new Precision_Value( $fee['applied_money']['amount'] / 100 ) )->get(),
 				'fee_id'       => $fee['metadata']['local_id'] ?? 0,
 				'display_name' => $fee['name'],
+				'ticket_id'    => 0,
+				'event_id'     => 0,
+				'quantity'     => 1,
+			];
+		}
+
+		$taxes = $square_order['taxes'] ?? [];
+
+		foreach ( $taxes as $tax ) {
+			if ( $tax['type'] !== 'ADDITIVE' ) {
+				continue;
+			}
+
+			$items[] = [
+				'id'           => $tax['uid'],
+				'type'         => 'fee',
+				'price'        => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
+				'sub_total'    => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
+				'fee_id'       => $tax['uid'],
+				'display_name' => $tax['name'],
 				'ticket_id'    => 0,
 				'event_id'     => 0,
 				'quantity'     => 1,
