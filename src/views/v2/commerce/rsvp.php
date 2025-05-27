@@ -20,9 +20,12 @@
  * @var string                           $block_html_id The unique HTML id for the block.
  */
 
+// Enqueue assets.
+tribe_asset_enqueue( 'tec-tickets-commerce-rsvp' );
+
 // We don't display anything if there is no RSVP.
 if ( ! $has_rsvps ) {
-	return false;
+	//return false;
 }
 
 // Bail if there are no active RSVP.
