@@ -89,6 +89,8 @@ class Payment {
 			return null;
 		}
 
+		$fee = Application_Fee::calculate( $value );
+
 		$query_args = [];
 		$body       = [
 			'amount_money'    => [
@@ -104,6 +106,13 @@ class Payment {
 				static::$tc_metadata_identifier => true,
 			],
 		];
+
+		if ( $fee->get_integer() > 0 ) {
+			$body['app_fee_money'] = [
+				'amount'   => (int) $fee->get_integer(),
+				'currency' => $value->get_currency_code(),
+			];
+		}
 
 		/**
 		 * Filters the payment body.
