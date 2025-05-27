@@ -115,7 +115,7 @@ class Attendees_TableTest extends WPTestCase {
 	 * The code should prevent fatal errors by returning false for the provider.
 	 */
 	public function it_should_return_false_when_tickets_commerce_is_disabled() {
-		// First, create an event with a Tickets Commerce ticket.
+		// First, create an event with a Tickets Commerce ticket while TC is enabled.
 		$post = $this->given_a_migrated_single_event();
 		$event_id = $post->ID;
 		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
@@ -123,7 +123,10 @@ class Attendees_TableTest extends WPTestCase {
 		// Verify ticket was created properly.
 		$this->assertNotEmpty( $ticket_id, 'Failed to create TC ticket' );
 		
-		// Handle the ways tec_tickets_commerce_is_enabled() might determine if commerce is enabled:
+		// Create some attendees while TC is still enabled.
+		$this->create_order_for_ticket( $ticket_id, 2 );
+		
+		// Now disable Tickets Commerce.
 		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
 		putenv( 'TEC_TICKETS_COMMERCE=0' );
 		
