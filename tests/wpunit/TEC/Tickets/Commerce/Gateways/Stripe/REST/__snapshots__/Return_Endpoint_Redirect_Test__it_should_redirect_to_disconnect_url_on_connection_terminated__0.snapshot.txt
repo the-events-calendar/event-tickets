@@ -1,0 +1,1 @@
+http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&tab=stripe&stripe_disconnected=1&reason=test_reason

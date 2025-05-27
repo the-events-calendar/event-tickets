@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors, actions } from '../../../../../../../modules/data/blocks/ticket';
 /* eslint-disable-next-line max-len */
 import { htmlEntityDecode } from '../../container-content/title/container';
 
@@ -28,10 +28,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	},
 } );
 
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

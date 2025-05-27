@@ -1,8 +1,9 @@
 .tribe__details__poly {
 
 	.tribe__details__summary {
-		&:before {
-			content: '\25bc';
+
+		&::before {
+			content: "\25bc";
 		}
 	}
 
@@ -11,12 +12,14 @@
 	}
 
 	&.tribe__details--open {
+
 		.tribe__details__content {
 			display: block;
 		}
 	}
 
 	@media (--viewport-medium) {
+
 		.tribe__details__poly.tribe__details--mobile {
 
 			.tribe__details__summary {
