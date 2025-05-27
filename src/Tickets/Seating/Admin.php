@@ -273,7 +273,7 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-maps-style',
-			'admin/maps.css',
+			'admin/style-maps.css',
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
@@ -311,7 +311,7 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-layouts-style',
-			'admin/layouts.css',
+			'admin/style-layouts.css',
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
@@ -345,7 +345,7 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-map-edit-style',
-			'admin/mapEdit.css',
+			'admin/style-mapEdit.css',
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
@@ -379,7 +379,7 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-layout-edit-style',
-			'admin/layoutEdit.css',
+			'admin/style-layoutEdit.css',
 			Tickets::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

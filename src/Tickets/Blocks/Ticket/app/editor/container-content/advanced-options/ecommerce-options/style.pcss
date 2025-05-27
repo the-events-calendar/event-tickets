@@ -18,17 +18,17 @@
 .tribe-editor__ticket__ecommerce-options-link-wrapper {
 	flex: none;
 
-	&:after {
+	&::after {
+		color: #545d66;
 		content: "|";
-		color: #545D66;
 		margin: 0 6px;
 
 		.tribe-editor__ticket--disabled & {
-			color: #AEB4BB;
+			color: #aeb4bb;
 		}
 	}
 
-	&:last-child:after {
+	&:last-child::after {
 		content: "";
 	}
 }
@@ -38,6 +38,6 @@
 	text-decoration: none;
 
 	.tribe-editor__ticket--disabled & {
-		color: #AEB4BB;
+		color: #aeb4bb;
 	}
 }

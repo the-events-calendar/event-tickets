@@ -7,7 +7,6 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
-use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
@@ -118,6 +117,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle successful account connections.
 	 *
 	 * @since 5.3.0
+	 * @since 5.23.0 Updated redirect URL to the new settings page.
 	 *
 	 * @param object $payload data returned from WhoDat.
 	 */
@@ -141,15 +141,15 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 
 			tribe( Merchant::class )->delete_signup_data();
 			wp_redirect( $disconnect_url );
-			exit();
+			tribe_exit();
 		}
 
 		tribe( Merchant::class )->unset_merchant_unauthorized();
 		$url = tribe( Plugin_Settings::class )->get_url(
 			[
-				'tab'        => Payments_Tab::$slug,
-				'tc-section' => Gateway::get_key(),
-				'tc-status'  => 'stripe-signup-complete',
+				'tab'       => Gateway::get_key(),
+				'page'      => Plugin_Settings::$settings_page_id,
+				'tc-status' => 'stripe-signup-complete',
 			]
 		);
 
@@ -157,32 +157,42 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			tribe( Webhooks::class )->add_webhook( $webhook );
 		}
 
+		// Check for unfinished onboarding wizard.
+		$wizard_data = get_option( 'tec_tickets_onboarding_wizard_data', [] );
+		if ( ! empty( $wizard_data ) && ( ! isset( $wizard_data['finished'] ) || ! $wizard_data['finished'] ) ) {
+			$url = admin_url( 'admin.php?page=tickets-setup' );
+		}
+
 		wp_safe_redirect( $url );
-		exit();
+		tribe_exit();
 	}
 
 	/**
 	 * Handle unsuccessful account connections.
 	 *
 	 * @since 5.3.0
+	 * @since 5.23.0 Updated redirect URL to the new settings page.
 	 *
 	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_error( $payload ) {
-		$url = tribe( Plugin_Settings::class )->get_url( [
-			'tab'             => Payments_Tab::$slug,
-			'tc-section'      => Gateway::get_key(),
-			'tc-stripe-error' => $payload->{'tc-stripe-error'},
-		] );
+		$url = tribe( Plugin_Settings::class )->get_url(
+			[
+				'tab'             => Gateway::get_key(),
+				'page'            => Plugin_Settings::$settings_page_id,
+				'tc-stripe-error' => $payload->{'tc-stripe-error'},
+			]
+		);
 
 		wp_safe_redirect( $url );
-		exit();
+		tribe_exit();
 	}
 
 	/**
 	 * Handle account disconnections.
 	 *
 	 * @since 5.11.0
+	 * @since 5.23.0 Updated redirect URL to the new settings page.
 	 *
 	 * @param array     $reason Reason of disconnect.
 	 * @param ?stdClass $payload Data returned from WhoDat.
@@ -194,8 +204,8 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		Gateway::disable();
 
 		$query_args = [
-			'tab'                 => Payments_Tab::$slug,
-			'tc-section'          => Gateway::get_key(),
+			'tab'                 => Gateway::get_key(),
+			'page'                => Plugin_Settings::$settings_page_id,
 			'stripe_disconnected' => 1,
 		];
 
@@ -210,6 +220,6 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		$url = tribe( Plugin_Settings::class )->get_url( $url_args );
 
 		wp_safe_redirect( $url );
-		exit();
+		tribe_exit();
 	}
 }

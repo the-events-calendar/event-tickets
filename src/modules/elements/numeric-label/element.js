@@ -15,15 +15,15 @@ import classNames from 'classnames';
  *
  * Labels need to have a %d on it where the number will be replaced
  *
- * @param {Object} props The props passed to this component
- * @param {string | Array | Object} props.className The class of the element
- * @param {number} props.count The amount to be compared
- * @param {boolean} props.includeZero If true, zero is included in count
- * @param {string} props.singular The label for the singular case
- * @param {string} props.plural The label for the plural case
- * @param {*} props.fallback The value to be returned if count is zero or negative
- * @param {boolean} props.useFallback If true, fallback is used.
- * @returns {*} return fallback if count is zero or negative otherwise singular or plural
+ * @param {Object}                  props             The props passed to this component
+ * @param {string | Array | Object} props.className   The class of the element
+ * @param {number}                  props.count       The amount to be compared
+ * @param {boolean}                 props.includeZero If true, zero is included in count
+ * @param {string}                  props.singular    The label for the singular case
+ * @param {string}                  props.plural      The label for the plural case
+ * @param {*}                       props.fallback    The value to be returned if count is zero or negative
+ * @param {boolean}                 props.useFallback If true, fallback is used.
+ * @return {*} return fallback if count is zero or negative otherwise singular or plural
  */
 const NumericLabel = ( {
 	className = '',
@@ -34,13 +34,7 @@ const NumericLabel = ( {
 	fallback = null,
 	useFallback = true,
 } ) => {
-	if (
-		useFallback &&
-		(
-			( includeZero && ! ( count >= 0 ) ) ||
-			( ! includeZero && ! ( count > 0 ) )
-		)
-	) {
+	if ( useFallback && ( ( includeZero && ! ( count >= 0 ) ) || ( ! includeZero && ! ( count > 0 ) ) ) ) {
 		return fallback;
 	}
 
@@ -56,11 +50,7 @@ const NumericLabel = ( {
 };
 
 NumericLabel.propTypes = {
-	className: PropTypes.oneOfType( [
-		PropTypes.string,
-		PropTypes.arrayOf( PropTypes.string ),
-		PropTypes.object,
-	] ),
+	className: PropTypes.oneOfType( [ PropTypes.string, PropTypes.arrayOf( PropTypes.string ), PropTypes.object ] ),
 	count: PropTypes.number.isRequired,
 	includeZero: PropTypes.bool,
 	singular: PropTypes.string,

@@ -15,10 +15,7 @@ import RSVPDuration from './../duration/container';
 import RSVPAttendeeRegistration from '../attendee-registration/container';
 import './style.pcss';
 
-const RSVPContainerContent = ( {
-	isAddEditOpen,
-	hasTicketsPlus,
-} ) => {
+const RSVPContainerContent = ( { isAddEditOpen, hasTicketsPlus } ) => {
 	if ( ! isAddEditOpen ) {
 		return null;
 	}

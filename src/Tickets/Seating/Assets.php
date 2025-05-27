@@ -131,7 +131,7 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
+			->add_localize_script( 'tec.tickets.seating.utilsData', [ $this, 'get_utils_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}
@@ -154,12 +154,10 @@ class Assets extends Controller_Contract {
 		$maps_layouts_home_page = $this->container->get( Maps_Layouts_Home_Page::class );
 
 		return [
-			'service' => [
-				'baseUrl'             => $this->container->get( Service\Service::class )->get_frontend_url(),
-				'mapsHomeUrl'         => $maps_layouts_home_page->get_maps_home_url(),
-				'layoutsHomeUrl'      => $maps_layouts_home_page->get_layouts_home_url(),
-				'associatedEventsUrl' => add_query_arg( [ 'page' => Associated_Events::SLUG ], admin_url( 'admin.php' ) ),
-			],
+			'baseUrl'             => $this->container->get( Service\Service::class )->get_frontend_url(),
+			'mapsHomeUrl'         => $maps_layouts_home_page->get_maps_home_url(),
+			'layoutsHomeUrl'      => $maps_layouts_home_page->get_layouts_home_url(),
+			'associatedEventsUrl' => add_query_arg( [ 'page' => Associated_Events::SLUG ], admin_url( 'admin.php' ) ),
 		];
 	}
 
@@ -184,7 +182,7 @@ class Assets extends Controller_Contract {
 				'tec-tickets-seating-ajax'
 			)
 			->add_to_group( 'tec-tickets-seating' )
-			->add_localize_script( 'tec.tickets.seating', [ $this, 'get_service_bundle_data' ] )
+			->add_localize_script( 'tec.tickets.seating.serviceData', [ $this, 'get_service_bundle_data' ] )
 			->register();
 	}
 
@@ -202,7 +200,7 @@ class Assets extends Controller_Contract {
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->add_localize_script( 'tec.tickets.seating.currency', [ $this, 'get_currency_data' ] )
+			->add_localize_script( 'tec.tickets.seating.currencyData', [ $this, 'get_currency_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}

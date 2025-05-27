@@ -15,29 +15,19 @@ export const LAYOUT = {
 	ticket: 'ticket',
 };
 
-const InactiveBlock = ( {
-	className,
-	description,
-	icon,
-	layout,
-	title,
-} ) => (
-	<section className={ classNames(
-		'tribe-editor__inactive-block',
-		`tribe-editor__inactive-block--${ layout }`,
-		className,
-	) }>
-		<div className="tribe-editor__inactive-block__icon">
-			{ icon }
-		</div>
+const InactiveBlock = ( { className, description, icon, layout, title } ) => (
+	<section
+		className={ classNames(
+			'tribe-editor__inactive-block',
+			`tribe-editor__inactive-block--${ layout }`,
+			className
+		) }
+	>
+		<div className="tribe-editor__inactive-block__icon">{ icon }</div>
 		{ ( title || description ) && (
 			<div className="tribe-editor__inactive-block__content">
 				{ title && <h2 className="tribe-editor__inactive-block__title">{ title }</h2> }
-				{ description && (
-					<p className="tribe-editor__inactive-block__description">
-						{ description }
-					</p>
-				) }
+				{ description && <p className="tribe-editor__inactive-block__description">{ description }</p> }
 			</div>
 		) }
 	</section>
