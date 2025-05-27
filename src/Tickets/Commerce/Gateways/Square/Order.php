@@ -794,6 +794,8 @@ class Order extends Abstract_Order {
 
 		$taxes = $square_order['taxes'] ?? [];
 
+		// We don's support taxes yet in TC, but ADDITIVE taxes need to be added as a separate item to the
+		// order so that the total is reflecting reality. We add them as prefixed booking fees for now.
 		foreach ( $taxes as $tax ) {
 			if ( $tax['type'] !== 'ADDITIVE' ) {
 				continue;
