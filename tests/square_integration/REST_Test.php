@@ -18,18 +18,12 @@ class REST_Test extends Controller_Test_Case {
 
 		$rest_server = rest_get_server();
 
-		$routes = $rest_server->get_routes();
-		$this->assertArrayNotHasKey( 'tribe/tickets/v1commerce/square/on-boarding', $routes );
-		$this->assertArrayNotHasKey( 'tribe/tickets/v1commerce/square/order', $routes );
-		$this->assertArrayNotHasKey( 'tribe/tickets/v1commerce/square/webhooks', $routes );
-
-		do_action( 'rest_api_init' );
-
 		$this->assertEquals( 1, did_action( 'rest_api_init' ) );
 
 		$routes = $rest_server->get_routes();
-		$this->assertArrayHasKey( 'tribe/tickets/v1commerce/square/on-boarding', $routes );
-		$this->assertArrayHasKey( 'tribe/tickets/v1commerce/square/order', $routes );
-		$this->assertArrayHasKey( 'tribe/tickets/v1commerce/square/webhooks', $routes );
+		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/on-boarding', $routes );
+		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/order', $routes );
+		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/order/(?P<order_id>[0-9a-zA-Z_-]+)', $routes );
+		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/webhooks', $routes );
 	}
 }
