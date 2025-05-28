@@ -140,7 +140,7 @@ class Webhooks extends Table {
 	public static function delete_old_stale_entries(): void {
 		DB::query(
 			DB::prepare(
-				"DELETE FROM %i WHERE processed_at is NULL and created_at < %s",
+				'DELETE FROM %i WHERE processed_at is NULL and created_at < %s',
 				self::table_name( true ),
 				time() - DAY_IN_SECONDS
 			)

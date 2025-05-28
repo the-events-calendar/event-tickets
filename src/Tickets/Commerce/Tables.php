@@ -64,10 +64,24 @@ class Tables extends Controller_Contract {
 		remove_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION, [ $this, 'clean_up_webhook_storage' ] );
 	}
 
+	/**
+	 * Clean up the webhook storage.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function clean_up_webhook_storage(): void {
 		Webhooks_Table::delete_old_stale_entries();
 	}
 
+	/**
+	 * Schedule the webhook storage clean up.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function schedule_webhook_storage_clean_up(): void {
 		if ( as_has_scheduled_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION ) ) {
 			return;
