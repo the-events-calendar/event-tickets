@@ -187,6 +187,10 @@ class Inventory_Change implements JsonSerializable {
 
 		$quantity = $this->ticket_item->get_ticket()->available();
 
+		if ( -1 === $quantity ) {
+			$quantity = 900000000;
+		}
+
 		if ( ! $quantity && 0 !== $quantity ) {
 			throw new InvalidArgumentException( 'Quantity is required for an adjustment. We need to specify the amount of tickets that where adjusted!' );
 		}
