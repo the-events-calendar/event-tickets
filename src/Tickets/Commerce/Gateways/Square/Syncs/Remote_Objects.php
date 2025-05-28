@@ -409,6 +409,7 @@ class Remote_Objects {
 		$updates = [
 			'name'         => $item['display_name'],
 			'type'         => 'FIXED_AMOUNT',
+			'scope'        => 'ORDER',
 			'amount_money' => [
 				'amount'   => absint( 100 * $item['sub_total'] ),
 				'currency' => $order->currency,

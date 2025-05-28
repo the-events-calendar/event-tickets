@@ -228,6 +228,7 @@ class Order extends Abstract_Order {
 				$body['order']['discounts'][] = [
 					'name'         => __( 'Rounding difference discount', 'event-tickets' ),
 					'type'         => 'FIXED_AMOUNT',
+					'scope'        => 'ORDER',
 					'amount_money' => [
 						'amount'   => absint( $diff ),
 						'currency' => $order->currency,
