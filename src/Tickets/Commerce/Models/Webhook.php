@@ -1,4 +1,11 @@
 <?php
+/**
+ * Webhook model.
+ *
+ * @since TBD
+ */
+
+declare( strict_types=1 );
 
 namespace TEC\Tickets\Commerce\Models;
 
@@ -9,18 +16,25 @@ use TEC\Tickets\Exceptions\DuplicateEntryException;
 use Exception;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
+/**
+ * Webhook model.
+ *
+ * @since TBD
+ */
 class Webhook {
 	/**
 	 * The data of the webhook.
 	 *
 	 * @var array
 	 */
-	private $data = [];
+	private array $data = [];
 
 	/**
 	 * The constructor.
 	 *
 	 * @param string $uid The uid of the webhook.
+	 *
+	 * @throws Not_Found_Exception If the webhook is not found.
 	 */
 	public function __construct( string $uid ) {
 		$uid_column = Table::uid_column();
@@ -31,7 +45,7 @@ class Webhook {
 		);
 
 		if ( ! $record ) {
-			throw new Not_Found_Exception( "Webhook not found" );
+			throw new Not_Found_Exception( 'Webhook not found' );
 		}
 
 		$columns = Table::get_columns();
@@ -47,6 +61,8 @@ class Webhook {
 	 * @param string $key The key of the property.
 	 *
 	 * @return mixed The value of the property.
+	 *
+	 * @throws Exception If the property is not a valid webhook property.
 	 */
 	public function __get( string $key ) {
 		if ( ! isset( $this->data[ $key ] ) ) {
@@ -62,12 +78,14 @@ class Webhook {
 	 * @param array $data The data of the webhook.
 	 *
 	 * @return self The webhook.
+	 *
+	 * @throws DuplicateEntryException If the webhook already exists.
 	 */
 	public static function create( array $data ): self {
 		try {
 			Table::insert_many( [ $data ] );
 
-			return new self( DB::last_insert_id() );
+			return new self( $data[ Table::uid_column() ] ?? '' );
 		} catch ( DatabaseQueryException $e ) {
 			throw new DuplicateEntryException();
 		}
@@ -79,17 +97,10 @@ class Webhook {
 	 * @param string $uid The uid of the webhook.
 	 *
 	 * @return self The webhook.
+	 *
+	 * @throws Not_Found_Exception If the webhook is not found.
 	 */
 	public static function get( string $uid ): self {
-		$uid_column = Table::uid_column();
-		$record = Table::fetch_first_where(
-			DB::prepare( "WHERE $uid_column = %s", $uid )
-		);
-
-		if ( ! $record ) {
-			throw new Not_Found_Exception( "Webhook not found" );
-		}
-
 		return new self( $uid );
 	}
 

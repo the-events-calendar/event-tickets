@@ -22,6 +22,24 @@ use TEC\Tickets\Commerce\Tables\Webhooks as Webhooks_Table;
  */
 class Tables extends Controller_Contract {
 	/**
+	 * The action to schedule the webhook storage clean up.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const WEBHOOK_STORAGE_CLEAN_UP_ACTION = 'tec_tickets_commerce_async_webhook_storage_clean_up';
+
+	/**
+	 * The action group for the webhook storage clean up.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TICKETS_COMMERCE_ACTION_GROUP = 'tec-tickets-commerce-actions';
+
+	/**
 	 * Register the controller's hooks.
 	 *
 	 * @since TBD
@@ -30,6 +48,7 @@ class Tables extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		add_action( 'init', [ $this, 'schedule_webhook_storage_clean_up' ] );
+		add_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION, [ $this, 'clean_up_webhook_storage' ] );
 		Register::table( Webhooks_Table::class );
 	}
 
@@ -42,5 +61,24 @@ class Tables extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'init', [ $this, 'schedule_webhook_storage_clean_up' ] );
+		remove_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION, [ $this, 'clean_up_webhook_storage' ] );
+	}
+
+	public function clean_up_webhook_storage(): void {
+		Webhooks_Table::delete_old_stale_entries();
+	}
+
+	public function schedule_webhook_storage_clean_up(): void {
+		if ( as_has_scheduled_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION ) ) {
+			return;
+		}
+
+		as_schedule_single_action(
+			time() + DAY_IN_SECONDS,
+			self::WEBHOOK_STORAGE_CLEAN_UP_ACTION,
+			[],
+			self::TICKETS_COMMERCE_ACTION_GROUP,
+			true
+		);
 	}
 }

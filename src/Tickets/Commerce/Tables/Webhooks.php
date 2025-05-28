@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Tables;
 
 use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Webhooks table schema.
@@ -127,5 +128,22 @@ class Webhooks extends Table {
 		$this->check_and_add_index( $results, 'order_id', 'order_id' );
 
 		return $results;
+	}
+
+	/**
+	 * Delete old stale entries.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function delete_old_stale_entries(): void {
+		DB::query(
+			DB::prepare(
+				"DELETE FROM %i WHERE processed_at is NULL and created_at < %s",
+				self::table_name( true ),
+				time() - DAY_IN_SECONDS
+			)
+		);
 	}
 }
