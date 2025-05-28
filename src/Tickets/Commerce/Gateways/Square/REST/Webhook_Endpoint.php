@@ -28,8 +28,9 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
-use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use WP_Post;
+use TEC\Tickets\Exceptions\DuplicateEntryException;
+use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 
 /**
  * Class Webhook_Endpoint.
@@ -268,6 +269,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
+		try {
+			Webhook_Model::create(
+				[
+					'event_id'   => $event_data['event_id'],
+					'event_type' => $event_type,
+					'event_data' => $event_data,
+				]
+			);
+		} catch ( DuplicateEntryException $e ) {
+			return;
+		}
+
 		switch ( $event_type ) {
 			case Events::ORDER_CREATED:
 			case Events::ORDER_UPDATED:
@@ -372,81 +385,27 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$event_id = $event_data['event_id'] ?? '';
 
-		$option_name = 'tec_tc_webhook_' . $event_id;
-		$value       = microtime();
-
-		// This is a POS order, and we have no other "guard" in our system to prevent double processing.
-		// We depend on counting the options related to this event id and also in the UNIQUE constraint of the option name.
-		$insert_statement = DB::prepare(
-			"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
-			DB::prefix( 'options' ),
-			$option_name,
-			$value
-		);
-
-		$select_statement = DB::prepare(
-			'SELECT option_value FROM %i WHERE option_name = %s',
-			DB::prefix( 'options' ),
-			$option_name
-		);
-
-		$delete_statement = DB::prepare(
-			'DELETE FROM %i WHERE option_name = %s AND option_value = %s',
-			DB::prefix( 'options' ),
-			$option_name,
-			$value
-		);
-
-		if ( 'order_created' === $type ) {
-			if ( ! $event_id ) {
-				// Without event id we can't ensure idempotency.
-				do_action(
-					'tribe_log',
-					'error',
-					'Square order webhook - no event id found',
-					[
-						'source'     => 'tickets-commerce-square',
-						'event_data' => $event_data,
-					]
-				);
-				return;
-			}
-
-			try {
-				DB::beginTransaction();
-				$values = DB::get_col( $select_statement );
-
-				if ( count( $values ) > 0 ) {
-					// This is a double event, so we skip.
-					return;
-				}
-
-				DB::query( $insert_statement );
-			} catch ( DatabaseQueryException $e ) {
-				DB::rollback();
-				// INSERT query failed, so we skip.
-				return;
-			}
-
-			DB::commit();
-		}
-
 		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
 
 		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
 		}
 
-		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
+		$order = $square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
 
-		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
-
-		try {
-			DB::query( $delete_statement );
-		} catch ( DatabaseQueryException $e ) {
-			// We don't care if this fails.
+		if ( ! $order instanceof WP_Post ) {
 			return;
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_id,
+				'order_id'     => $order->ID,
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->ID ] );
 	}
 
 	/**
@@ -539,6 +498,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			);
 			return;
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_id,
+				'order_id'     => $order->ID,
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
