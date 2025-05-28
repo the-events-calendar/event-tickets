@@ -197,9 +197,59 @@ class Order extends Abstract_Order {
 		}
 
 		$body = [
-			'idempotency_key' => uniqid( $square_order_id ? 'tec-square-update-' : 'tec-square-create-', true ),
+			'idempotency_key' => uniqid( 'tec-square-calculate-', true ),
 			'order'           => $square_order,
 		];
+
+		$calculated_order = Requests::post(
+			'orders/calculate',
+			[],
+			[
+				'body' => $body,
+			]
+		);
+
+		if ( empty( $calculated_order['order']['total_money']['amount'] ) ) {
+			do_action( 'tribe_log', 'error', 'Square order calculate failed', [ $calculated_order['errors'] ?? $calculated_order, $square_order, $square_order_id ] );
+			throw new RuntimeException( __( 'Failed to calculate the Square order.', 'event-tickets' ), 1 );
+		}
+
+		$calculated_total = (int) $calculated_order['order']['total_money']['amount'];
+		$local_total      = (int) ( 100 * (float) $order->total );
+
+		$diff = $calculated_total - $local_total;
+
+		if ( 0 !== $diff ) {
+			if ( $diff > 0 ) {
+				if ( ! ( isset( $body['order']['discounts'] ) && is_array( $body['order']['discounts'] ) ) ) {
+					$body['order']['discounts'] = [];
+				}
+
+				$body['order']['discounts'][] = [
+					'name'         => __( 'Rounding difference discount', 'event-tickets' ),
+					'type'         => 'FIXED_AMOUNT',
+					'amount_money' => [
+						'amount'   => absint( $diff ),
+						'currency' => $order->currency,
+					],
+				];
+			} else {
+				if ( ! ( isset( $body['order']['service_charges'] ) && is_array( $body['order']['service_charges'] ) ) ) {
+					$body['order']['service_charges'] = [];
+				}
+
+				$body['order']['service_charges'][] = [
+					'name'              => __( 'Rounding difference service charge', 'event-tickets' ),
+					'calculation_phase' => 'SUBTOTAL_PHASE',
+					'amount_money'      => [
+						'amount'   => absint( $diff ),
+						'currency' => $order->currency,
+					],
+				];
+			}
+		}
+
+		$body['idempotency_key'] = uniqid( $square_order_id ? 'tec-square-update-' : 'tec-square-create-', true );
 
 		/**
 		 * Fires before the Square order is upserted.
