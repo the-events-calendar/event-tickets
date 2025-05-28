@@ -15,6 +15,7 @@ use WP_Post;
 use Tribe__Repository;
 use Exception;
 use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 
 /**
  * Square Hooks class.
@@ -168,6 +169,18 @@ class Hooks extends Controller_Contract {
 			// The order is no longer where it was... that could be dangerous, lets bail?
 			if ( $order->post_status !== $pending_webhook['old_status'] ) {
 				continue;
+			}
+
+			$event_id = $pending_webhook['metadata']['event_id'] ?? '';
+
+			if ( $event_id ) {
+				Webhook_Model::update(
+					[
+						'event_id'     => $event_id,
+						'order_id'     => $order->ID,
+						'processed_at' => current_time( 'mysql' ),
+					]
+				);
 			}
 
 			tribe( Order::class )->modify_status(
