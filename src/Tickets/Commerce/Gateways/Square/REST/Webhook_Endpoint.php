@@ -274,7 +274,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				[
 					'event_id'   => $event_data['event_id'],
 					'event_type' => $event_type,
-					'event_data' => $event_data,
+					'event_data' => wp_json_encode( $event_data ),
 				]
 			);
 		} catch ( DuplicateEntryException $e ) {
