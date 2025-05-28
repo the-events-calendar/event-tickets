@@ -202,7 +202,7 @@ class Order extends Abstract_Order {
 		];
 
 		$calculated_order = Requests::post(
-			'orders/calculate'
+			'orders/calculate',
 			[],
 			[
 				'body' => $body,
