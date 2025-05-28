@@ -103,7 +103,7 @@ class Webhooks extends Table {
 		return "
 			CREATE TABLE `{$table_name}` (
 				`{$uid_column}` varchar(128) NOT NULL,
-				`order_id` bigint(20) NULL,
+				`order_id` bigint(20) UNSIGNED NULL,
 				`event_type` varchar(128) NOT NULL,
 				`event_data` text NOT NULL,
 				`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -126,6 +126,18 @@ class Webhooks extends Table {
 	 */
 	protected function after_update( array $results ) {
 		$this->check_and_add_index( $results, 'order_id', 'order_id' );
+
+		if ( $this->has_foreign_key( 'order_id_fk' ) ) {
+			return $results;
+		}
+
+		DB::query(
+			DB::prepare(
+				'ALTER TABLE %i ADD CONSTRAINT `order_id_fk` FOREIGN KEY (`order_id`) REFERENCES %i (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION',
+				self::table_name( true ),
+				DB::prefix( 'posts' )
+			)
+		);
 
 		return $results;
 	}
