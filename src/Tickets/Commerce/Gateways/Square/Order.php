@@ -385,7 +385,7 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
-		$event_id = $event_data['id'] ?? '';
+		$event_id = $event_data['event_id'] ?? '';
 
 		if ( $event_id ) {
 			Commerce_Meta::add( $order->ID, REST\Webhook_Endpoint::KEY_ORDER_WEBHOOK_IDS, $event_id, [], 'post', false );

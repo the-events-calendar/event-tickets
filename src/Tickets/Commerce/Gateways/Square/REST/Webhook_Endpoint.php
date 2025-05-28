@@ -370,7 +370,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$event_id = $event_data['id'] ?? '';
+		$event_id = $event_data['event_id'] ?? '';
 
 		$option_name = 'tec_tc_webhook_' . $event_id;
 		$value       = microtime();
@@ -397,6 +397,20 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		if ( 'order_created' === $type ) {
+			if ( ! $event_id ) {
+				// Without event id we can't ensure idempotency.
+				do_action(
+					'tribe_log',
+					'error',
+					'Square order webhook - no event id found',
+					[
+						'source'     => 'tickets-commerce-square',
+						'event_data' => $event_data,
+					]
+				);
+				return;
+			}
+
 			try {
 				DB::beginTransaction();
 				$values = DB::get_col( $select_statement );
@@ -482,7 +496,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$event_ids = (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false );
 
-		$event_id = $event_data['id'] ?? '';
+		$event_id = $event_data['event_id'] ?? '';
 
 		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
