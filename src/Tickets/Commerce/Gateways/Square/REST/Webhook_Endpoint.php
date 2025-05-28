@@ -244,7 +244,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	public function process_webhook_event( array $event_data ) {
+	public function process_webhook_event( array $event_data ): void {
 		$event_type = $event_data['type'] ?? '';
 
 		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
@@ -324,7 +324,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_order_event( array $event_data ) {
+	protected function process_order_event( array $event_data ): void {
 		$type = $event_data['data']['type'] ?? null;
 
 		if ( ! $type ) {
@@ -374,10 +374,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$option_name = 'tec_tc_webhook_' . $event_id;
 		$value       = microtime();
+
 		// This is a POS order, and we have no other "guard" in our system to prevent double processing.
-		// We will use a DB concat to prevent double processing.
+		// We depend on counting the options related to this event id and also in the UNIQUE constraint of the option name.
 		$insert_statement = DB::prepare(
-			"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'auto')",
+			"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'no')",
 			DB::prefix( 'options' ),
 			$option_name,
 			$value
@@ -455,7 +456,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_refund_event( array $event_data ) {
+	protected function process_refund_event( array $event_data ): void {
 		$refund_data = $event_data['data']['object']['refund'] ?? [];
 
 		if ( empty( $refund_data ) || empty( $refund_data['order_id'] ) ) {
@@ -553,7 +554,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_payment_event( array $event_data ) {
+	protected function process_payment_event( array $event_data ): void {
 		$order_id = $event_data['data']['object']['payment']['order_id'] ?? false;
 
 		if ( ! $order_id ) {
