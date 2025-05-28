@@ -398,19 +398,22 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( 'order_created' === $type ) {
 			try {
-				DB::query( $insert_statement );
-
+				DB::beginTransaction();
 				$values = DB::get_col( $select_statement );
 
-				if ( count( $values ) > 1 ) {
+				if ( count( $values ) > 0 ) {
 					// This is a double event, so we skip.
-					DB::query( $delete_statement );
 					return;
 				}
+
+				DB::query( $insert_statement );
 			} catch ( DatabaseQueryException $e ) {
-				// Insert query failed, so we skip.
+				DB::rollback();
+				// INSERT query failed, so we skip.
 				return;
 			}
+
+			DB::commit();
 		}
 
 		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
