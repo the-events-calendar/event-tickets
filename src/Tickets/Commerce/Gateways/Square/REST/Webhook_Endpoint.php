@@ -385,6 +385,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$event_id = $event_data['event_id'] ?? '';
 
+		if ( ! $event_id ) {
+			return;
+		}
+
 		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
 
 		if ( in_array( $event_id, $event_ids, true ) ) {
@@ -458,6 +462,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$event_id = $event_data['event_id'] ?? '';
 
+		if ( ! $event_id ) {
+			return;
+		}
+
 		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
 		}
@@ -499,13 +507,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		Webhook_Model::update(
-			[
-				'event_id'     => $event_id,
-				'order_id'     => $order->ID,
-				'processed_at' => current_time( 'mysql' ),
-			]
-		);
+			Webhook_Model::update(
+				[
+					'event_id'     => $event_id,
+					'order_id'     => $order->ID,
+					'processed_at' => current_time( 'mysql' ),
+				]
+			);
 
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
