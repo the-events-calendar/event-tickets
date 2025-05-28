@@ -29,7 +29,7 @@ class Webhooks extends Table {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '0.0.1-dev';
+	const SCHEMA_VERSION = '0.0.2';
 
 	/**
 	 * The base table name, without the table prefix.
@@ -108,7 +108,8 @@ class Webhooks extends Table {
 				`event_data` text NOT NULL,
 				`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				`processed_at` timestamp NULL,
-				PRIMARY KEY (`{$uid_column}`)
+				PRIMARY KEY (`{$uid_column}`),
+				FOREIGN KEY (`order_id`) REFERENCES `{$wpdb->posts}` (`ID`) ON DELETE CASCADE
 			) {$charset_collate};
 		";
 	}
