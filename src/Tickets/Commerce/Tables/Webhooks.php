@@ -108,8 +108,7 @@ class Webhooks extends Table {
 				`event_data` text NOT NULL,
 				`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				`processed_at` timestamp NULL,
-				PRIMARY KEY (`{$uid_column}`),
-				FOREIGN KEY (`order_id`) REFERENCES `{$wpdb->posts}` (`ID`) ON DELETE CASCADE
+				PRIMARY KEY (`{$uid_column}`)
 			) {$charset_collate};
 		";
 	}
