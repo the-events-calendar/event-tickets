@@ -21,7 +21,9 @@
  */
 
 // Enqueue assets.
-tribe_asset_enqueue( 'tec-tickets-commerce-rsvp' );
+wp_enqueue_style( 'event-tickets-rsvp' );
+tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
+tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
 
 // We don't display anything if there is no RSVP.
 if ( ! $has_rsvps ) {

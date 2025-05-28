@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\RSVP;
 
+use TEC\Tickets\Commerce\RSVP\REST\Order_Endpoint;
 use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\REST\Ticket_Endpoint;
 use Tribe__Tickets__Main;
@@ -69,13 +70,15 @@ class Assets extends Service_Provider {
 						'nonces'  => [
 							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
 						],
+						'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+						'nonce'         => wp_create_nonce( 'wp_rest' ),
 					],
 				],
 			] );
 
 		tec_asset( $plugin, 'tribe-tickets-gutenberg-block-rsvp-style', 'rsvp/frontend.css' );
 
-		tec_asset( $plugin, 'tribe-tickets-rsvp-ari', 'commerce/rsvp-ari.js', [ 'jquery', 'wp-util', 'tribe-common' ], null, [
+		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-ari', 'commerce/rsvp-ari.js', [ 'jquery', 'wp-util', 'tribe-common' ], null, [
 				'groups'       => 'tec-tickets-commerce-rsvp',
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
 				'localize'     => [
@@ -89,13 +92,14 @@ class Assets extends Service_Provider {
 				],
 			] );
 
-		tec_asset( $plugin, 'tribe-tickets-rsvp-manager', 'commerce/rsvp-manager.js', [
+		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-manager', 'commerce/rsvp-manager.js', [
 				'jquery',
 				'tribe-common',
-				'tribe-tickets-rsvp-block',
-				'tribe-tickets-rsvp-tooltip',
-				'tribe-tickets-rsvp-ari',
+				'tec-tickets-commerce-rsvp',
+				'tec-tickets-commerce-rsvp-tooltip',
+				'tec-tickets-commerce-rsvp-ari',
 			], null, [
+				'groups'       => 'tec-tickets-commerce-rsvp',
 				'localize' => [
 					'name' => 'TribeRsvp',
 					'data' => static function () {
@@ -105,11 +109,10 @@ class Assets extends Service_Provider {
 						];
 					},
 				],
-				'groups'       => 'tec-tickets-commerce-rsvp',
 			] );
 
 
-		tec_asset( $plugin, 'tribe-tickets-rsvp-tooltip', 'commerce/rsvp-tooltip.js', [
+		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-tooltip', 'commerce/rsvp-tooltip.js', [
 				'jquery',
 				'tribe-common',
 				'tribe-tooltipster',
@@ -117,11 +120,11 @@ class Assets extends Service_Provider {
 			'groups'       => 'tec-tickets-commerce-rsvp',
 			] );
 
-		tec_asset( $plugin, 'tribe-tickets-rsvp-style', 'rsvp.css', [ 'tribe-common-skeleton-style', 'tribe-common-responsive' ], null );
+		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style', 'rsvp.css', [ 'tribe-common-skeleton-style', 'tribe-common-responsive' ], null );
 
 		$stylesheet = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 		if ( $stylesheet ) {
-			tec_asset( $plugin, 'tribe-tickets-rsvp-style-override', $stylesheet, [], null );
+			tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style-override', $stylesheet, [], null );
 		}
 	}
 

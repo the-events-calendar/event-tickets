@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\RSVP;
 
 use TEC\Tickets\Commerce\REST\Ticket_Endpoint;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\RSVP\REST\Order_Endpoint;
 
 /**
  * Class Controller.
@@ -41,6 +42,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Ticket_Endpoint::class );
+		$this->container->singleton( REST\Order_Endpoint::class );
 
 		$this->register_assets();
 		$this->add_actions();
@@ -104,5 +106,6 @@ class Controller extends Controller_Contract {
 	 */
 	public function register_endpoints() {
 		$this->container->make( Ticket_Endpoint::class )->register();
+		$this->container->make( Order_Endpoint::class )->register();
 	}
 }

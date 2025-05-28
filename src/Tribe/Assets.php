@@ -32,7 +32,7 @@ class Tribe__Tickets__Assets {
 			[
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [ 'tec-variables-full' ] ],
-				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
+				//[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
 			],
 			'wp_enqueue_scripts',
