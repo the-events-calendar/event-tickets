@@ -10,7 +10,7 @@ class REST_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_should_register_endpoints_on_api_init() {
+	public function it_should_register_endpoints_on_api_init(): void {
 		remove_all_actions( 'rest_api_init' );
 		$this->make_controller()->register();
 

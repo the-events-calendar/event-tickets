@@ -251,7 +251,6 @@ class Assets extends Controller_Contract {
 			'orderEndpoint'     => $this->order_endpoint->get_route_url(),
 			'applicationId'     => $this->gateway->get_application_id(),
 			'locationId'        => $this->merchant->get_location_id(),
-			'paymentData'       => $this->payment_handler->get_publishable_payment_data(),
 			'squareCardOptions' => $card_style_options,
 		];
 
@@ -275,7 +274,7 @@ class Assets extends Controller_Contract {
 	 * @return bool
 	 */
 	public function is_square_section(): bool {
-		return Gateway::get_key() === tribe_get_request_var( Payments_Tab::$key_current_section_get_var );
+		return tec_tickets_commerce_is_enabled() && is_admin() && Gateway::get_key() === tribe_get_request_var( Payments_Tab::$key_current_section_get_var );
 	}
 
 	/**
