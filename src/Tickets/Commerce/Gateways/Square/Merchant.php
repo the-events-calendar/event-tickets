@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use Exception;
 
 /**
@@ -54,7 +55,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @var string
 	 */
-	public static string $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
+	public static string $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency-%s';
 
 	/**
 	 * Option key to save the PKCE code verifier for OAuth authentication.
@@ -375,7 +376,7 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_merchant_currency(): string {
-		return get_option( static::$merchant_default_currency_option_key, 'USD' );
+		return (string) Commerce_Settings::get_option( static::$merchant_default_currency_option_key, [], 'USD' );
 	}
 
 	/**
@@ -528,7 +529,7 @@ class Merchant extends Abstract_Merchant {
 			if ( isset( $merchant['currency'] ) ) {
 				$update_data['merchant_currency'] = $merchant['currency'];
 				// Also update the option.
-				update_option( static::$merchant_default_currency_option_key, $merchant['currency'] );
+				Commerce_Settings::update_option( static::$merchant_default_currency_option_key, $merchant['currency'] );
 			}
 
 			if ( isset( $merchant['email_address'] ) ) {
@@ -703,6 +704,17 @@ class Merchant extends Abstract_Merchant {
 	 * @return bool
 	 */
 	public function is_ready_to_sell(): bool {
-		return (bool) $this->get_location_id();
+		return (bool) $this->get_location_id() && $this->is_currency_matching();
+	}
+
+	/**
+	 * Whether the merchant's currency matches the gateway's currency.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_currency_matching(): bool {
+		return $this->get_merchant_currency() === tribe_get_option( Commerce_Settings::$option_currency_code, 'USD' );
 	}
 }

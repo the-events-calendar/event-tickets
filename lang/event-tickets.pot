@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.23.0\n"
+"Project-Id-Version: Event Tickets 5.23.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-19T17:35:26+00:00\n"
+"POT-Creation-Date: 2025-05-26T17:11:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -113,7 +113,7 @@ msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:72
 #: src/admin-views/tribe-commerce-settings.php:4
-#: src/Tickets/Commerce/Payments_Tab.php:348
+#: src/Tickets/Commerce/Payments_Tab.php:343
 #: src/Tribe/Admin/Notices.php:209
 #: src/Tribe/Main.php:862
 msgid "Event Tickets Plus"
@@ -207,7 +207,7 @@ msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:164
 #: src/Tickets/Commerce/Module.php:244
-#: src/Tickets/Commerce/Payments_Tab.php:160
+#: src/Tickets/Commerce/Payments_Tab.php:155
 msgid "Tickets Commerce"
 msgstr ""
 
@@ -8615,41 +8615,41 @@ msgctxt "Order modifier status label"
 msgid "Draft"
 msgstr ""
 
-#: src/Tickets/Commerce/Payments_Tab.php:153
+#: src/Tickets/Commerce/Payments_Tab.php:148
 msgid "Payments"
 msgstr ""
 
 #. Translators: %1$s: The Event Tickets Plus link.
-#: src/Tickets/Commerce/Payments_Tab.php:353
+#: src/Tickets/Commerce/Payments_Tab.php:348
 #, php-format
 msgctxt "about Tickets Commerce"
 msgid "Tickets Commerce provides a simple and flexible ecommerce checkout for purchasing tickets. Just choose your payment gateway and configure checkout options and you're all set.  If you need more advanced features like custom attendee information, QR code check in, and stock sharing between tickets, take a look at %1$s for these features and more."
 msgstr ""
 
-#: src/Tickets/Commerce/Payments_Tab.php:363
+#: src/Tickets/Commerce/Payments_Tab.php:358
 msgctxt "Tickets Commerce settings header"
 msgid "Tickets Commerce"
 msgstr ""
 
-#: src/Tickets/Commerce/Payments_Tab.php:380
+#: src/Tickets/Commerce/Payments_Tab.php:375
 msgid "Enable Tickets Commerce"
 msgstr ""
 
-#: src/Tickets/Commerce/Payments_Tab.php:415
+#: src/Tickets/Commerce/Payments_Tab.php:410
 msgid "Enable payment gateway"
 msgstr ""
 
 #. Translators: %s: Name of payment gateway.
-#: src/Tickets/Commerce/Payments_Tab.php:418
+#: src/Tickets/Commerce/Payments_Tab.php:413
 #, php-format
 msgid "Enable %s as a payment gateway"
 msgstr ""
 
-#: src/Tickets/Commerce/Payments_Tab.php:529
+#: src/Tickets/Commerce/Payments_Tab.php:524
 msgid "Tickets Checkout"
 msgstr ""
 
-#: src/Tickets/Commerce/Payments_Tab.php:558
+#: src/Tickets/Commerce/Payments_Tab.php:553
 msgid "Order Completed"
 msgstr ""
 

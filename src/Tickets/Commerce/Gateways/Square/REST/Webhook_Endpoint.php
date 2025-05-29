@@ -28,6 +28,9 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
+use WP_Post;
+use TEC\Tickets\Exceptions\DuplicateEntryException;
+use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 
 /**
  * Class Webhook_Endpoint.
@@ -37,6 +40,14 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
 class Webhook_Endpoint extends Abstract_REST_Endpoint {
+	/**
+	 * The key for the order webhook IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_WEBHOOK_IDS = 'tec_tc_order_webhook_ids';
 
 	/**
 	 * The REST namespace for this endpoint.
@@ -234,7 +245,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	public function process_webhook_event( array $event_data ) {
+	public function process_webhook_event( array $event_data ): void {
 		$event_type = $event_data['type'] ?? '';
 
 		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
@@ -255,6 +266,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$is_sandbox = 'sandbox' === $event_mode;
 
 		if ( $is_sandbox !== tec_tickets_commerce_is_sandbox_mode() ) {
+			return;
+		}
+
+		try {
+			Webhook_Model::create(
+				[
+					'event_id'   => $event_data['event_id'],
+					'event_type' => $event_type,
+					'event_data' => wp_json_encode( $event_data ),
+				]
+			);
+		} catch ( DuplicateEntryException $e ) {
 			return;
 		}
 
@@ -314,7 +337,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_order_event( array $event_data ) {
+	protected function process_order_event( array $event_data ): void {
 		$type = $event_data['data']['type'] ?? null;
 
 		if ( ! $type ) {
@@ -346,7 +369,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Find the order associated with this payment.
 		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
 
-		if ( empty( $order ) && 'order_updated' === $type ) {
+		if ( empty( $order->ID ) && 'order_updated' === $type ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -360,9 +383,33 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
+		$event_id = $event_data['event_id'] ?? '';
 
-		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
+		if ( ! $event_id ) {
+			return;
+		}
+
+		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
+			return;
+		}
+
+		$order = $square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_id,
+				'order_id'     => $order->ID,
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->ID ] );
 	}
 
 	/**
@@ -372,7 +419,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_refund_event( array $event_data ) {
+	protected function process_refund_event( array $event_data ): void {
 		$refund_data = $event_data['data']['object']['refund'] ?? [];
 
 		if ( empty( $refund_data ) || empty( $refund_data['order_id'] ) ) {
@@ -408,6 +455,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 					'event_data' => $event_data,
 				]
 			);
+			return;
+		}
+
+		$event_ids = (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false );
+
+		$event_id = $event_data['event_id'] ?? '';
+
+		if ( ! $event_id ) {
+			return;
+		}
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
 		}
 
@@ -448,6 +507,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
+			Webhook_Model::update(
+				[
+					'event_id'     => $event_id,
+					'order_id'     => $order->ID,
+					'processed_at' => current_time( 'mysql' ),
+				]
+			);
+
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
 
@@ -462,7 +529,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_payment_event( array $event_data ) {
+	protected function process_payment_event( array $event_data ): void {
 		$order_id = $event_data['data']['object']['payment']['order_id'] ?? false;
 
 		if ( ! $order_id ) {

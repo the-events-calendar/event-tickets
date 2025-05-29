@@ -100,6 +100,9 @@ class Provider extends Service_Provider {
 		// Register Order modifiers main controller.
 		$this->container->register( Order_Modifiers\Controller::class );
 
+		// Commerce Tables Controller.
+		$this->container->register( Tables::class );
+
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
 			Custom_Tables\V1\Provider::class
