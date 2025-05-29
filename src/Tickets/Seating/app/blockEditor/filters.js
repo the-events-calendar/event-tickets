@@ -145,5 +145,14 @@ function shouldRenderAssignedSeatingForm( props ) {
 		return false;
 	}
 
+	const { tempCapacity, clientId } = props;
+
+	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
+
+	if ( '' !== tempCapacity && ! hasSeats ) {
+		// If the capacity is set but not from seating, we render the default form.
+		return false;
+	}
+
 	return applyFilters( 'tec.tickets.blocks.Ticket.renderSeatingForm', true, props );
 }
