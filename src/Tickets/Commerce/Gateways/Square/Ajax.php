@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 /**
  * Square AJAX Hooks.
@@ -98,6 +99,7 @@ class Ajax extends Controller_Contract {
 			$connect_url = $this->who_dat->connect_account();
 
 			if ( ! empty( $connect_url ) ) {
+				Commerce_Settings::delete( 'tickets_commerce_gateways_square_remotely_disconnected_%s' );
 				wp_send_json_success( [ 'url' => $connect_url ] );
 				return;
 			}
@@ -129,13 +131,6 @@ class Ajax extends Controller_Contract {
 
 			// Delete local merchant data.
 			$this->merchant->delete_signup_data();
-
-			/**
-			 * Fires when a Square account is disconnected.
-			 *
-			 * @since TBD
-			 */
-			do_action( 'tec_tickets_commerce_square_merchant_disconnected' );
 
 			wp_send_json_success( [ 'message' => __( 'Successfully disconnected from Square.', 'event-tickets' ) ] );
 		} catch ( \Exception $e ) {

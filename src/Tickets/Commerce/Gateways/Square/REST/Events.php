@@ -158,6 +158,15 @@ class Events {
 	const TERMINAL_ACTION_UPDATED = 'terminal.action.updated';
 
 	/**
+	 * Square Webhook Event Types
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const OAUTH_AUTHORIZATION_REVOKED = 'oauth.authorization.revoked';
+
+	/**
 	 * Webhook event types supported.
 	 *
 	 * @since TBD
@@ -173,6 +182,7 @@ class Events {
 		self::ORDER_UPDATED,
 		self::CUSTOMER_DELETED,
 		self::INVENTORY_COUNT_UPDATED,
+		self::OAUTH_AUTHORIZATION_REVOKED,
 	];
 
 	/**

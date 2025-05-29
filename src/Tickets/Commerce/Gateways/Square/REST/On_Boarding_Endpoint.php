@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -278,17 +279,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$merchant_data = $merchant->fetch_merchant_data( true );
 
 		// Log the retrieval attempt.
-		if ( $merchant_data ) {
-			do_action(
-				'tribe_log',
-				'info',
-				'Square Merchant Data Retrieved',
-				[
-					'source'      => 'tickets-commerce',
-					'merchant_id' => $params['merchant_id'],
-				]
-			);
-		} else {
+		if ( ! $merchant_data ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -306,6 +297,8 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		// Enable the gateway.
 		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, true );
 		tribe_update_option( Gateway::get_enabled_option_key(), true );
+
+		Commerce_Settings::set( 'tickets_commerce_gateways_square_just_onboarded_%s', time() );
 
 		wp_safe_redirect( $square_tab_url );
 		tribe_exit();

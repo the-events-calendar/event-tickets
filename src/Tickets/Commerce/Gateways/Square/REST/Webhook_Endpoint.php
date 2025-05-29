@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\Order;
 use WP_REST_Request;
@@ -28,8 +29,9 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
-use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use WP_Post;
+use TEC\Tickets\Exceptions\DuplicateEntryException;
+use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 
 /**
  * Class Webhook_Endpoint.
@@ -244,7 +246,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	public function process_webhook_event( array $event_data ) {
+	public function process_webhook_event( array $event_data ): void {
 		$event_type = $event_data['type'] ?? '';
 
 		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
@@ -265,6 +267,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$is_sandbox = 'sandbox' === $event_mode;
 
 		if ( $is_sandbox !== tec_tickets_commerce_is_sandbox_mode() ) {
+			return;
+		}
+
+		try {
+			Webhook_Model::create(
+				[
+					'event_id'   => $event_data['event_id'],
+					'event_type' => $event_type,
+					'event_data' => wp_json_encode( $event_data ),
+				]
+			);
+		} catch ( DuplicateEntryException $e ) {
 			return;
 		}
 
@@ -290,6 +304,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			case Events::PAYMENT_CREATED:
 			case Events::PAYMENT_UPDATED:
 				$this->process_payment_event( $event_data );
+				break;
+
+			case Events::OAUTH_AUTHORIZATION_REVOKED:
+				$this->process_oauth_authorization_revoked_event( $event_data );
 				break;
 
 			default:
@@ -324,7 +342,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_order_event( array $event_data ) {
+	protected function process_order_event( array $event_data ): void {
 		$type = $event_data['data']['type'] ?? null;
 
 		if ( ! $type ) {
@@ -370,47 +388,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$event_id = $event_data['id'] ?? '';
+		$event_id = $event_data['event_id'] ?? '';
 
-		$option_name = 'tec_tc_webhook_' . $event_id;
-		$value       = microtime();
-		// This is a POS order, and we have no other "guard" in our system to prevent double processing.
-		// We will use a DB concat to prevent double processing.
-		$insert_statement = DB::prepare(
-			"INSERT INTO %i (option_name, option_value, autoload) VALUES (%s, %s, 'auto')",
-			DB::prefix( 'options' ),
-			$option_name,
-			$value
-		);
-
-		$select_statement = DB::prepare(
-			'SELECT option_value FROM %i WHERE option_name = %s',
-			DB::prefix( 'options' ),
-			$option_name
-		);
-
-		$delete_statement = DB::prepare(
-			'DELETE FROM %i WHERE option_name = %s AND option_value = %s',
-			DB::prefix( 'options' ),
-			$option_name,
-			$value
-		);
-
-		if ( 'order_created' === $type ) {
-			try {
-				DB::query( $insert_statement );
-
-				$values = DB::get_col( $select_statement );
-
-				if ( count( $values ) > 1 ) {
-					// This is a double event, so we skip.
-					DB::query( $delete_statement );
-					return;
-				}
-			} catch ( DatabaseQueryException $e ) {
-				// Insert query failed, so we skip.
-				return;
-			}
+		if ( ! $event_id ) {
+			return;
 		}
 
 		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
@@ -419,16 +400,21 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
+		$order = $square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
 
-		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ] );
-
-		try {
-			DB::query( $delete_statement );
-		} catch ( DatabaseQueryException $e ) {
-			// We don't care if this fails.
+		if ( ! $order instanceof WP_Post ) {
 			return;
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_id,
+				'order_id'     => $order->ID,
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->ID ] );
 	}
 
 	/**
@@ -438,7 +424,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_refund_event( array $event_data ) {
+	protected function process_refund_event( array $event_data ): void {
 		$refund_data = $event_data['data']['object']['refund'] ?? [];
 
 		if ( empty( $refund_data ) || empty( $refund_data['order_id'] ) ) {
@@ -479,7 +465,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		$event_ids = (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false );
 
-		$event_id = $event_data['id'] ?? '';
+		$event_id = $event_data['event_id'] ?? '';
+
+		if ( ! $event_id ) {
+			return;
+		}
 
 		if ( in_array( $event_id, $event_ids, true ) ) {
 			return;
@@ -522,6 +512,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
+			Webhook_Model::update(
+				[
+					'event_id'     => $event_id,
+					'order_id'     => $order->ID,
+					'processed_at' => current_time( 'mysql' ),
+				]
+			);
+
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
 
@@ -536,7 +534,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_payment_event( array $event_data ) {
+	protected function process_payment_event( array $event_data ): void {
 		$order_id = $event_data['data']['object']['payment']['order_id'] ?? false;
 
 		if ( ! $order_id ) {
@@ -545,6 +543,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		tribe( Regulator::class )->schedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ], MINUTE_IN_SECONDS );
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
@@ -576,6 +581,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $user_query->get_results() as $user_id ) {
 			Commerce_Meta::delete( $user_id, '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
@@ -662,6 +674,44 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				continue;
 			}
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+	}
+
+	/**
+	 * Process an OAuth authorization revoked event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	public function process_oauth_authorization_revoked_event( array $event_data ): void {
+		$type = $event_data['data']['type'] ?? '';
+
+		if ( 'revocation' !== $type ) {
+			return;
+		}
+
+		$merchant = tribe( Merchant::class );
+
+		if ( $merchant->is_active() ) {
+			// In this case only, the disconnection was initiated remotely.
+			Commerce_Settings::set( 'tickets_commerce_gateways_square_remotely_disconnected_%s', time() );
+		}
+
+		$merchant->delete_signup_data();
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
