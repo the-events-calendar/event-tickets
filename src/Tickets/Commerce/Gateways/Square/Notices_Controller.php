@@ -201,9 +201,7 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		$result = time() - $onboarded_at >= 0 && time() - $onboarded_at <= 20 * MINUTE_IN_SECONDS;
-
-		return $result;
+		return time() - $onboarded_at >= 0 && time() - $onboarded_at <= 20 * MINUTE_IN_SECONDS;
 	}
 
 	/**
