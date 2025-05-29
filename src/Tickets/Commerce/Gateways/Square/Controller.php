@@ -37,7 +37,6 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( On_Boarding_Endpoint::class );
 		$this->container->singleton( Order_Endpoint::class );
 		$this->container->singleton( REST\Webhook_Endpoint::class );
-		$this->container->singleton( Application_Fee::class );
 
 		$this->container->register( REST::class );
 		$this->container->register( Assets::class );
