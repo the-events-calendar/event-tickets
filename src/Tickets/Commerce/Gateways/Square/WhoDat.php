@@ -118,13 +118,12 @@ class WhoDat extends Abstract_WhoDat {
 	 */
 	public function disconnect_account(): ?array {
 		$merchant = tribe( Merchant::class );
-		$account_id = $merchant->get_account_id();
 
 		$query_args = [
 			'access_token' => $merchant->get_access_token(),
 		];
 
-		return $this->get( 'oauth/token/revoke', $query_args );
+		return $this->post( 'oauth/token/revoke', $query_args );
 	}
 
 	/**
