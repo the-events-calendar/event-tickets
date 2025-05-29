@@ -75,7 +75,7 @@ class Ticket_Groups extends Table {
 	protected function after_update( array $results = [] ) {
 		$results = parent::after_update( $results );
 
-		// Run version-specific migrations
+		// Run version-specific migrations.
 		if ( self::SCHEMA_VERSION === '1.1.0' ) {
 			$results = $this->migrate_to_1_1_0( $results );
 		}
@@ -96,7 +96,7 @@ class Ticket_Groups extends Table {
 		global $wpdb;
 		$table_name = self::table_name();
 
-		// Get all rows where name is empty (indicating data hasn't been migrated yet)
+		// Get all rows where name is empty (indicating data hasn't been migrated yet).
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, data FROM %i WHERE name = '' OR name IS NULL",
@@ -116,16 +116,17 @@ class Ticket_Groups extends Table {
 			$data = json_decode( $row->data, true );
 
 			if ( empty( $data ) ) {
-				$failed++;
+				++$failed;
 				continue;
 			}
 
-			// Extract values from data JSON
+			// Extract values from data JSON.
 			$name     = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
 			$capacity = isset( $data['capacity'] ) ? absint( $data['capacity'] ) : 0;
 			$cost     = isset( $data['cost'] ) ? (string) $data['cost'] : '0.000000';
 
-			// Update the row with extracted values
+			// Update the row with extracted values.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
 			$updated = $wpdb->update(
 				$table_name,
 				[
@@ -139,18 +140,27 @@ class Ticket_Groups extends Table {
 			);
 
 			if ( $updated ) {
-				$migrated++;
+				++$migrated;
 			} else {
-				$failed++;
+				++$failed;
 			}
 		}
 
-		$results[ $table_name . '.migration' ] = sprintf(
-			'Migrated %d rows and failed to migrate %d rows in the %s table.',
-			$migrated,
-			$failed,
-			$table_name
-		);
+		// Add a message to the results array.
+		if ( $failed > 0 ) {
+			$results[ $table_name . '.migration' ] = sprintf(
+				'Migrated %d rows and failed to migrate %d rows in the %s table.',
+				$migrated,
+				$failed,
+				$table_name
+			);
+		} else {
+			$results[ $table_name . '.migration' ] = sprintf(
+				'Migrated %d rows in the %s table.',
+				$migrated,
+				$table_name
+			);
+		}
 
 		return $results;
 	}
