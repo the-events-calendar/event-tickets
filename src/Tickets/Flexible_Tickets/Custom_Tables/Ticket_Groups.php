@@ -97,6 +97,7 @@ class Ticket_Groups extends Table {
 		$table_name = self::table_name();
 
 		// Get all rows where name is empty (indicating data hasn't been migrated yet).
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, data FROM %i WHERE name = '' OR name IS NULL",
