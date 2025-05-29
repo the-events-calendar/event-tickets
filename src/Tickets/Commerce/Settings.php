@@ -643,11 +643,6 @@ class Settings {
 			return true;
 		}
 
-		// Now check if the license key format is valid.
-		if ( ! $pue->get_pue()->is_valid_key_format() ) {
-			return false;
-		}
-
 		$cache_key = __METHOD__;
 		$cached    = get_transient( $cache_key );
 
