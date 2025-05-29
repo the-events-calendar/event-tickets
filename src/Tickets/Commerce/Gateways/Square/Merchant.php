@@ -295,7 +295,16 @@ class Merchant extends Abstract_Merchant {
 		// Also delete any stored merchant data.
 		$this->delete_merchant_data();
 
-		return delete_option( $this->get_signup_data_key() );
+		$result = delete_option( $this->get_signup_data_key() );
+
+		/**
+		 * Fires when merchant data is deleted.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_commerce_square_merchant_disconnected' );
+
+		return $result;
 	}
 
 	/**
