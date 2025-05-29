@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\Order;
 use WP_REST_Request;
@@ -305,6 +306,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				$this->process_payment_event( $event_data );
 				break;
 
+			case Events::OAUTH_AUTHORIZATION_REVOKED:
+				$this->process_oauth_authorization_revoked_event( $event_data );
+				break;
+
 			default:
 				// Log unsupported event type.
 				do_action(
@@ -538,6 +543,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		tribe( Regulator::class )->schedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ], MINUTE_IN_SECONDS );
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
@@ -569,6 +581,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $user_query->get_results() as $user_id ) {
 			Commerce_Meta::delete( $user_id, '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
@@ -655,6 +674,44 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				continue;
 			}
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+	}
+
+	/**
+	 * Process an OAuth authorization revoked event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	public function process_oauth_authorization_revoked_event( array $event_data ): void {
+		$type = $event_data['data']['type'] ?? '';
+
+		if ( 'revocation' !== $type ) {
+			return;
+		}
+
+		$merchant = tribe( Merchant::class );
+
+		if ( $merchant->is_active() ) {
+			// In this case only, the disconnection was initiated remotely.
+			Commerce_Settings::set( 'tickets_commerce_gateways_square_remotely_disconnected_%s', time() );
+		}
+
+		$merchant->delete_signup_data();
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**

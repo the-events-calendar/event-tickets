@@ -49,6 +49,24 @@ class Notices_Controller extends Controller_Contract {
 	public const CURRENCY_MISMATCH_NOTICE_SLUG = 'tec-tickets-commerce-square-currency-mismatch-notice';
 
 	/**
+	 * Just onboarded notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const JUST_ONBOARDED_NOTICE_SLUG = 'tec-tickets-commerce-square-just-onboarded-notice';
+
+	/**
+	 * Remotely disconnected notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const REMOTELY_DISCONNECTED_NOTICE_SLUG = 'tec-tickets-commerce-square-remotely-disconnected-notice';
+
+	/**
 	 * Webhooks instance.
 	 *
 	 * @since TBD
@@ -132,6 +150,28 @@ class Notices_Controller extends Controller_Contract {
 			],
 			[ $this, 'should_display_currency_mismatch_notice' ]
 		);
+
+		tribe_notice(
+			self::JUST_ONBOARDED_NOTICE_SLUG,
+			[ $this, 'render_just_onboarded_notice' ],
+			[
+				'type'     => 'success',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_just_onboarded_notice' ]
+		);
+
+		tribe_notice(
+			self::REMOTELY_DISCONNECTED_NOTICE_SLUG,
+			[ $this, 'render_remotely_disconnected_notice' ],
+			[
+				'type'     => 'error',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_remotely_disconnected_notice' ]
+		);
 	}
 
 	/**
@@ -142,6 +182,29 @@ class Notices_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {}
+
+	/**
+	 * Determines if the just onboarded notice should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_just_onboarded_notice(): bool {
+		if ( ! tribe( Assets::class )->is_square_section() ) {
+			return false;
+		}
+
+		$onboarded_at = (int) Commerce_Settings::get( 'tickets_commerce_gateways_square_just_onboarded_%s', [], 0 );
+
+		if ( ! $onboarded_at ) {
+			return false;
+		}
+
+		$result = time() - $onboarded_at >= 0 && time() - $onboarded_at <= 20 * MINUTE_IN_SECONDS;
+
+		return $result;
+	}
 
 	/**
 	 * Determines if the webhook notice should be displayed.
@@ -200,6 +263,34 @@ class Notices_Controller extends Controller_Contract {
 		}
 
 		return ! (bool) $this->merchant->get_location_id();
+	}
+
+	/**
+	 * Determines if the remotely disconnected notice should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_remotely_disconnected_notice(): bool {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$remotely_disconnected_at = (int) Commerce_Settings::get( 'tickets_commerce_gateways_square_remotely_disconnected_%s', [], 0 );
+
+		if ( ! $remotely_disconnected_at ) {
+			return false;
+		}
+
+		$diff = time() - $remotely_disconnected_at;
+
+		if ( $diff > 1 * MONTH_IN_SECONDS ) {
+			// Delete the notice after 1 month.
+			Commerce_Settings::delete( 'tickets_commerce_gateways_square_remotely_disconnected_%s' );
+		}
+
+		return $diff >= 0;
 	}
 
 	/**
@@ -287,6 +378,37 @@ class Notices_Controller extends Controller_Contract {
 			esc_html__( 'The Square payment gateway is not ready to sell until you configure a Business Location. .', 'event-tickets' ),
 			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=square' ) ),
 			esc_html__( 'Configure Business Location', 'event-tickets' )
+		);
+	}
+
+	/**
+	 * Render the just onboarded notice.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function render_just_onboarded_notice(): string {
+		Commerce_Settings::delete( 'tickets_commerce_gateways_square_just_onboarded_%s' );
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			esc_html__( 'Connected to Square!', 'event-tickets' ),
+			esc_html__( 'You\'re all set up to finish configuring your payment settings and start selling tickets through Square.', 'event-tickets' )
+		);
+	}
+
+	/**
+	 * Render the just onboarded notice.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function render_remotely_disconnected_notice(): string {
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			esc_html__( 'Square account disconnected!', 'event-tickets' ),
+			esc_html__( 'Your Square account has been disconnected and it is not possible to sell tickets through Square. Please reconnect to enable Square gateway again.', 'event-tickets' )
 		);
 	}
 
