@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Tables;
 
 use TEC\Common\Integrations\Custom_Table_Abstract as Table;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Webhooks table schema.
@@ -133,11 +134,23 @@ class Webhooks extends Table {
 
 		$db_name = DB::get_var( 'SELECT DATABASE()' );
 
-		$inno_db_has_foreign_key = DB::table( DB::raw( 'information_schema.INNODB_SYS_FOREIGN' ) )
-			->where( 'ID', $db_name . '/order_id_fk' )
-			->where( 'FOR_NAME', $db_name . '/' . self::table_name( true ) )
-			->where( 'REF_NAME', $db_name . '/' . DB::prefix( 'posts' ) )
-			->count() > 0;
+		$errors_hidden = DB::hide_errors();
+		$errors_suppressed = DB::suppress_errors( true );
+		try {
+			$inno_db_has_foreign_key = DB::table( DB::raw( 'information_schema.INNODB_SYS_FOREIGN' ) )
+				->where( 'ID', $db_name . '/order_id_fk' )
+				->where( 'FOR_NAME', $db_name . '/' . self::table_name( true ) )
+				->where( 'REF_NAME', $db_name . '/' . DB::prefix( 'posts' ) )
+				->count() > 0;
+		} catch ( DatabaseQueryException $e ) {
+			$inno_db_has_foreign_key = false;
+		}
+
+		if ( $errors_hidden ) {
+			DB::show_errors();
+		}
+
+		DB::suppress_errors( $errors_suppressed );
 
 		if ( $inno_db_has_foreign_key ) {
 			return $results;
