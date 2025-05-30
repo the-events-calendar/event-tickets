@@ -17,11 +17,7 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPTitle = ( {
-	isDisabled,
-	onTempTitleChange,
-	tempTitle,
-} ) => {
+const RSVPTitle = ( { isDisabled, onTempTitleChange, tempTitle } ) => {
 	const titleId = uniqid();
 	const inputRef = useRef( null );
 
@@ -30,11 +26,13 @@ const RSVPTitle = ( {
 	}, [ inputRef ] );
 
 	return (
-		<div className={ classNames(
-			'tribe-editor__ticket__title',
-			'tribe-editor__ticket__content-row',
-			'tribe-editor__ticket__content-row--title',
-		) }>
+		<div
+			className={ classNames(
+				'tribe-editor__ticket__title',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--title'
+			) }
+		>
 			<LabeledItem
 				className="tribe-editor__ticket__title-label"
 				forId={ titleId }

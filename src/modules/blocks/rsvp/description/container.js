@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '../../../data/blocks/rsvp';
 
 const mapStateToProps = ( state ) => ( {
 	isDisabled: selectors.getRSVPIsLoading( state ) || selectors.getRSVPSettingsOpen( state ),
@@ -23,10 +23,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	},
 } );
 
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

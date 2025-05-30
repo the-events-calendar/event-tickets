@@ -49,8 +49,8 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
  *
  * @since 5.2.0
  *
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.commerce.gateway.paypal.checkout
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.commerce.gateway.paypal.checkout
  *
  * @return {void}
  */
@@ -126,7 +126,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param event {Event}
+	 * @param  event {Event}
 	 *
 	 * @return {void}
 	 */
@@ -136,12 +136,16 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 		$button.addClass( 'disabled' );
 
 		fetch(
-			ajaxurl + '?action=tec_tickets_commerce_gateway_paypal_refresh_connect_url&nonce=' + obj.refreshConnectNonce + '&country_code=' + $field.val(),
+			ajaxurl +
+				'?action=tec_tickets_commerce_gateway_paypal_refresh_connect_url&nonce=' +
+				obj.refreshConnectNonce +
+				'&country_code=' +
+				$field.val(),
 			{
 				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
-				}
+				},
 			}
 		) // eslint-disable-line max-len
 			.then( function ( response ) {
@@ -181,7 +185,6 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	};
 
 	$( obj.ready );
-
 } )( jQuery, tribe.tickets.commerce.gateway.paypal.signup );
 
 /**
