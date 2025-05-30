@@ -37,6 +37,8 @@ $merchant->save_signup_data( [
 	'merchant_id' => 'mi-8PoFNX4o9XOz9vMYOrZ6vA',
 	'access_token' => 'at-8PoFNX4o9XOz9vMYOrZ6vA',
 	'refresh_token' => 'rt-8PoFNX4o9XOz9vMYOrZ6vA',
+	'merchant_country' => 'US',
+	'merchant_currency' => 'USD',
 ] );
 // Set a location ID.
 tribe_update_option( Settings::OPTION_SANDBOX_LOCATION_ID, 'li-8PoFNX4o9XOz9vMYOrZ6vA' );
