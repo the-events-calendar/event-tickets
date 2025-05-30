@@ -12,12 +12,14 @@ namespace TEC\Tickets\Commerce\RSVP\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 
+use Tribe__Tickets__Tickets_View;
 use Tribe__Tickets__Global_Stock;
 use Tribe__Tickets__Ticket_Object;
 use Tribe__Utils__Array;
@@ -47,6 +49,29 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	protected string $path = '/commerce/rsvp/order';
 
+	/**
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Tickets__Tickets_View
+	 */
+	protected $tickets_view;
+
+	/**
+	 *
+	 * @since TBD
+	 *
+	 * @var Module
+	 */
+	protected $module;
+
+	/**
+	 * Class constructor
+	 */
+	public function __construct() {
+		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
+		$this->module = tribe( Module::class );
+	}
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
@@ -99,12 +124,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['html'] = $this->render_rsvp_error( __( 'Something happened here.', 'event-tickets' ) );
 
 		wp_send_json_error( $response );
+		//return new WP_REST_Response( $response );
 	}
 
 	/**
 	 * Handle RSVP error rendering.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
 	 *
 	 * @param string|array $error_message The error message(s).
 	 *
@@ -170,20 +196,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Indicates if we currently require users to be logged in before they can obtain
-	 * tickets.
-	 *
-	 * @return bool
-	 */
-	public function login_required() {
-		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
-		return in_array( 'event-tickets_rsvp', $requirements, true );
-	}
-
-	/**
 	 * Handle processing the RSVP step based on current arguments.
 	 *
-	 * @since 4.12.3
+	 * @since TBD
 	 *
 	 * @param array $args {
 	 *      The list of step template arguments.
@@ -271,8 +286,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			foreach ( $attendee_ids as $attendee_id ) {
-				// @todo change the key to TC
-				//update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (int) $optout );
+				update_post_meta( $attendee_id, $this->module->attendee_optout_key, (int) $optout );
 			}
 
 			$result['success']     = true;
@@ -317,9 +331,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle RSVP processing for the RSVP forms.
 	 *
-	 * @since 4.12.3
-	 * @since 5.5.10 Added `going` to the $args variable.
-	 * @since 5.18.0 Added check for valid post status.
+	 * @since TBD
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -332,8 +344,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return '';
 		}
 
-		// @TODO: Change to TC
-		$post_id = (int) get_post_meta( $ticket_id, '_tec_tickets_commerce_event', true );
+		$post_id = (int) get_post_meta( $ticket_id,  Module::ATTENDEE_EVENT_KEY, true );
 
 		// No post found, something went wrong.
 		if ( 0 === $post_id ) {
@@ -359,12 +370,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
+		//@todo move to constructor
 		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
+		//@todo move to constructor
 		$template = tribe( 'tickets.editor.template' );
 
-		$ticket = $this->get_ticket( $post_id, $ticket_id );
+		$ticket = $this->module->get_ticket( $post_id, $ticket_id );
 
 		// No ticket found.
 		if ( null === $ticket ) {
@@ -377,8 +390,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'post_id'    => $post_id,
 			'rsvp'       => $ticket,
 			'step'       => $step,
-			'must_login' => ! is_user_logged_in() && $this->login_required(),
-			'login_url'  => self::get_login_url( $post_id ),
+			'must_login' => ! is_user_logged_in() && $this->module->login_required(),
+			//'login_url'  => self::get_login_url( $post_id ),
+			'login_url'  => tribe( Checkout::class )->get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 			'going'      => tribe_get_request_var( 'going', 'yes' ),
 			'attendees'  => [],
@@ -387,7 +401,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow filtering of the template arguments used prior to processing.
 		 *
-		 * @since 5.0.0
+		 * @since TBD
 		 *
 		 * @param array $args {
 		 *      The list of step template arguments.
@@ -408,7 +422,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow filtering of the template arguments used.
 		 *
-		 * @since 4.12.3
+		 * @since TBD
 		 *
 		 * @param array $args {
 		 *      The list of step template arguments.
@@ -437,7 +451,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
 			// Refresh ticket.
-			$args['rsvp'] = $this->get_ticket( $post_id, $ticket_id );
+			$args['rsvp'] = $this->module->get_ticket( $post_id, $ticket_id );
 
 			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
@@ -455,7 +469,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Filters whether to hide the attendee list opt-out option.
 		 *
-		 * @since 5.6.3
+		 * @since TBD
 		 *
 		 * @param bool        $hide_attendee_list_optout Whether to hide the attendee list opt-out option.
 		 * @param int|WP_Post $post                      The post object or ID.
@@ -465,8 +479,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
 		 *
-		 * @since 4.5.2
-		 * @since 5.0.0 Added $post_id and $ticket_id parameters.
+		 * @since TBD
 		 *
 		 * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
@@ -487,81 +500,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
 		return $html;
-	}
-
-	/**
-	 * Gets an individual ticket
-	 *
-	 * @param int $event_id The event post ID.
-	 * @param int $ticket_id The ticket ID.
-	 *
-	 * @return null|Tribe__Tickets__Ticket_Object
-	 */
-	public function get_ticket( $event_id, $ticket_id ) {
-		$product = get_post( $ticket_id );
-
-		if ( ! $product ) {
-			return null;
-		}
-
-		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
-		if ( $cached && is_array( $cached ) ) {
-			return new \Tribe__Tickets__Ticket_Object( $cached );
-		}
-
-		$return            = new Tribe__Tickets__Ticket_Object();
-		$qty               = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		$global_stock_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-
-		$return->description      = $product->post_excerpt;
-		$return->ID               = $ticket_id;
-		$return->name             = $product->post_title;
-		$return->menu_order       = $product->menu_order;
-		$return->post_type        = $product->post_type;
-		$return->price            = get_post_meta( $ticket_id, '_price', true );
-		$return->provider_class   = get_class( $this );
-		$return->admin_link       = '';
-		$return->report_link      = '';
-		$return->show_description = $return->show_description();
-
-		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
-
-		if ( ! empty( $start_date ) ) {
-			$start_date_unix    = strtotime( $start_date );
-			$return->start_date = Tribe__Date_Utils::date_only( $start_date_unix, true );
-			$return->start_time = Tribe__Date_Utils::time_only( $start_date_unix );
-		}
-
-		if ( ! empty( $end_date ) ) {
-			$end_date_unix    = strtotime( $end_date );
-			$return->end_date = Tribe__Date_Utils::date_only( $end_date_unix, true );
-			$return->end_time = Tribe__Date_Utils::time_only( $end_date_unix );
-		}
-
-		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
-		$return->global_stock_mode = ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) ? Tribe__Tickets__Global_Stock::OWN_STOCK_MODE : '';
-
-		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) );
-		$return->qty_sold( $qty );
-		$return->capacity = tribe_tickets_get_capacity( $ticket_id );
-
-		/**
-		 * Allow filtering to change ticket data.
-		 *
-		 * @since 5.0.3
-		 *
-		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
-		 * @param int                           $post_id   The ticket parent post ID.
-		 * @param int                           $ticket_id The ticket ID.
-		 */
-		$ticket = apply_filters( 'tribe_tickets_rsvp_get_ticket', $return, $event_id, $ticket_id );
-
-		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
-			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
-		}
-
-		return $ticket;
 	}
 
 	/**
@@ -587,6 +525,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
 
 		// Parse the details submitted for the RSVP.
+		//@todo, change to TC
 		$attendee_details = $this->parse_attendee_details();
 
 		// If there are details missing, we return to the event page with the rsvp_error.
@@ -618,7 +557,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Iterate over each product.
 		foreach ( $product_ids as $product_id ) {
 			// @todo, change to TC
-			//$ticket_qty = $this->parse_ticket_quantity( $product_id );
+			$ticket_qty = $this->parse_ticket_quantity( $product_id );
 
 			if ( 0 === $ticket_qty ) {
 				// If there were no RSVP tickets for the product added to the cart, continue.
@@ -763,11 +702,32 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Generates an Order ID.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @return string
 	 */
 	public static function generate_order_id() {
 		return md5( time() . rand() );
+	}
+
+	/**
+	 * Parses the quantity of tickets requested for a product via the $_POST var.
+	 *
+	 * @since 4.7
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return int Either the requested quantity of tickets or `0` in any other case.
+	 */
+	public function parse_ticket_quantity( $ticket_id ) {
+		$quantity = 0;
+
+		if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
+			$quantity = absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
+		} elseif ( isset( $_POST["quantity_{$ticket_id}"] ) ) {
+			$quantity = absint( $_POST["quantity_{$ticket_id}"] );
+		}
+
+		return $quantity;
 	}
 }
