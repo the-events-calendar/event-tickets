@@ -2,11 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Clock_Mock;
-use Tribe\Tests\Traits\WP_Send_Json_Mocks;
-use Tribe\Tickets\Test\Traits\With_WhoDat_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Date_Utils as Dates;
@@ -15,11 +12,10 @@ use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
+use Tribe\Tests\Traits\With_Uopz;
 
 class Hooks_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
-	use WP_Send_Json_Mocks;
-	use With_WhoDat_Mocks;
+	use With_Uopz;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Clock_Mock;

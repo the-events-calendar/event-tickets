@@ -89,7 +89,6 @@ class Webhooks extends Abstract_Webhooks {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		// Add AJAX handler for webhook registration.
 		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
 		add_action( 'init', [ $this, 'schedule_webhook_registration_refresh' ] );
 		add_action( 'tec_tickets_commerce_square_refresh_webhook', [ $this, 'refresh_webhook' ] );
@@ -101,7 +100,6 @@ class Webhooks extends Abstract_Webhooks {
 	 * @since TBD
 	 */
 	public function unregister(): void {
-		// Add AJAX handler for webhook registration.
 		remove_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
 		remove_action( 'init', [ $this, 'schedule_webhook_registration_refresh' ] );
 		remove_action( 'tec_tickets_commerce_square_refresh_webhook', [ $this, 'refresh_webhook' ] );
@@ -198,9 +196,7 @@ class Webhooks extends Abstract_Webhooks {
 		 *
 		 * @param string $endpoint_url The webhook endpoint URL.
 		 */
-		$endpoint_url = (string) apply_filters( 'tec_tickets_commerce_square_webhook_endpoint_url', $endpoint_url );
-
-		return $endpoint_url;
+		return (string) apply_filters( 'tec_tickets_commerce_square_webhook_endpoint_url', $endpoint_url );
 	}
 
 	/**

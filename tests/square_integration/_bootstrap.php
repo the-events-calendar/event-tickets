@@ -12,7 +12,6 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 // Let's make sure Commerce is enabled.
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
-tribe_register_provider( Commerce_Provider::class );
 
 // Ensure `post` is a ticketable post type.
 $ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
@@ -60,3 +59,5 @@ add_action( 'tribe_log', static function ( $level, $message, $context ) {
 } );
 
 tec_tickets_tests_enable_gateway_id_generation();
+// Register last so that our settings updates are applied.
+tribe_register_provider( Commerce_Provider::class );
