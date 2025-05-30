@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Tables;
 
 use TEC\Common\Integrations\Custom_Table_Abstract as Table;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * Webhooks table schema.
