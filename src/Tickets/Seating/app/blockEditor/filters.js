@@ -148,8 +148,9 @@ function shouldRenderAssignedSeatingForm( props ) {
 	const { tempCapacity, clientId } = props;
 
 	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
+	const isLayoutLocked = select( storeName ).isLayoutLocked( clientId );
 
-	if ( '' !== tempCapacity && ! hasSeats ) {
+	if ( '' !== tempCapacity && ! ( hasSeats && isLayoutLocked ) ) {
 		// If the capacity is set but not from seating, we render the default form.
 		return false;
 	}
