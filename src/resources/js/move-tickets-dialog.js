@@ -246,22 +246,39 @@ var tribe_move_tickets = tribe_move_tickets || {};
 					return;
 				}
 
-				// Clear the existing list
+				// Clear the existing list.
 				$post_choices.html( '' );
 				let total_posts = 0;
+				
+				// Convert the object to a sortable array.
+				let posts_array = [];
+				for ( let key in response.data.posts ) {
+					posts_array.push( {
+						id: key,
+						title: response.data.posts[key]
+					} );
+				}
+				
+				// Sort by title alphabetically.
+				posts_array.sort( function( a, b ) {
+					return a.title.localeCompare( b.title );
+				} );
 
-				for ( const key in response.data.posts ) {
-					const post_id = parseInt( key, 10 );
-					const title = response.data.posts[ key ];
+				// Use the sorted array to build the options.
+				for ( let i = 0; i < posts_array.length; i++ ) {
+					const post_id = parseInt( posts_array[i].id, 10 );
+					const title = posts_array[i].title;
 					total_posts++;
 
 					$post_choices.append(
-						'<label> <input type="radio" value="' + post_id + '" name="post-choice">' + title + '</label>'
+						`<label> <input type="radio" value="${post_id}" name="post-choice">${title}</label>`
 					);
 				}
 
 				if ( ! total_posts ) {
-					$post_choices.append( '<label>' + tribe_move_tickets_data.no_posts_found + '</label>' );
+					$post_choices.append(
+						`<label>${tribe_move_tickets_data.no_posts_found}</label>`
+					);
 				}
 
 				populating = false;
