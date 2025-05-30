@@ -134,7 +134,7 @@ class Webhooks extends Table {
 
 		$db_name = DB::get_var( 'SELECT DATABASE()' );
 
-		$errors_hidden = DB::hide_errors();
+		$errors_hidden     = DB::hide_errors();
 		$errors_suppressed = DB::suppress_errors( true );
 		try {
 			$inno_db_has_foreign_key = DB::table( DB::raw( 'information_schema.INNODB_SYS_FOREIGN' ) )
