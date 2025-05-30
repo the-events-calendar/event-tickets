@@ -84,6 +84,13 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_preview_recurring_event_with_1_rrule_and_commerce_ticket_with_no_attendees(): void {
+		// Set Tickets Commerce to enabled.
+		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+		
+		// Verify Tickets Commerce is enabled.
+		$this->assertTrue( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be enabled.' );
+		
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
 		// Set an Event shared-capacity.
