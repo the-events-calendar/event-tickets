@@ -1,4 +1,15 @@
 <?php
+/**
+ * Handles the application fee calculations for Square transactions.
+ *
+ * This class manages the application fee calculations for Square transactions,
+ * specifically for US-based merchants. The fee is only applied to unlicensed
+ * installations and US-based sales.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
@@ -36,7 +47,7 @@ class Application_Fee {
 		}
 
 		// Check if merchant is in the US - Square application fees only apply to US sales.
-		$merchant = tribe( Merchant::class );
+		$merchant         = tribe( Merchant::class );
 		$merchant_country = $merchant->get_merchant_country();
 
 		if ( 'US' !== $merchant_country ) {
