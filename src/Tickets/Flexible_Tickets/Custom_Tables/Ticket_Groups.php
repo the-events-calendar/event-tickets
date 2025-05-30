@@ -57,6 +57,9 @@ class Ticket_Groups extends Table {
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`slug` varchar(255) DEFAULT '' NOT NULL,
 				`data` text DEFAULT ('') NOT NULL,
+				`capacity` int(11) DEFAULT 0 NOT NULL,
+				`cost` decimal(10,2) DEFAULT 0 NOT NULL,
+				`name` varchar(255) DEFAULT '' NOT NULL,
 				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
