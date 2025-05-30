@@ -229,7 +229,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function hooks() {
 		add_action( 'init', [ $this, 'set_plugin_name' ], 9 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_resources' ], 5 );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_resources' ], 11 );
+		//add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_resources' ], 11 );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
 		add_filter( 'post_updated_messages', [ $this, 'updated_messages' ] );
 		add_action( 'rsvp_checkin', [ $this, 'purge_attendees_transient' ] );
@@ -1562,7 +1562,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', -1 ),
+				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', -1 ),
 			);
 
 			$ticket->ID = wp_insert_post( $args );
