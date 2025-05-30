@@ -305,6 +305,13 @@ class Move_TicketsTest extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_count_tc_ticket_attendees_correctly() {
+		// Set Tickets Commerce to enabled.
+		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+		
+		// Verify Tickets Commerce is enabled.
+		$this->assertTrue( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be enabled.' );
+		
 		// Create an event with 1 commerce ticket and 20 attendees.
 		$event_id   = $this->factory()->event->create();
 		$ticket_id  = $this->create_tc_ticket( $event_id );
