@@ -58,7 +58,16 @@ trait Attendee_Maker {
 	 */
 	protected function create_attendee_for_ticket( int $ticket_id, int $post_id, array $overrides = [] ): int {
 		/** @var Tribe__Tickets__Tickets $provider */
-		$provider            = tribe_tickets_get_ticket_provider( $ticket_id );
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		
+		// Check if provider is false (e.g., when Tickets Commerce is disabled).
+		if ( false === $provider ) {
+			throw new RuntimeException( 
+				"Cannot create attendee for ticket {$ticket_id}: ticket provider is not available. " .
+				"This may happen when the ticket's provider module (e.g., Tickets Commerce) is disabled."
+			);
+		}
+		
 		$provider_reflection = new ReflectionClass( $provider );
 
 		$post_key = $provider_reflection->getConstant( 'ATTENDEE_EVENT_KEY' );
@@ -228,7 +237,7 @@ trait Attendee_Maker {
 		$provider = tribe_tickets_get_ticket_provider( $attendee_id );
 
 		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
-			throw new RuntimeException( "Provider for attendee {$attendee_id} could not be found" );
+			throw new RuntimeException( "Provider for attendee {$attendee_id} could not be found or is not available" );
 		}
 
 		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
