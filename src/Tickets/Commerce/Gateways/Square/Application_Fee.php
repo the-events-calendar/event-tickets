@@ -35,6 +35,14 @@ class Application_Fee {
 			return Value::create();
 		}
 
+		// Check if merchant is in the US - Square application fees only apply to US sales.
+		$merchant = tribe( Merchant::class );
+		$merchant_country = $merchant->get_merchant_country();
+
+		if ( 'US' !== $merchant_country ) {
+			return Value::create();
+		}
+
 		// Otherwise, calculate it over the total value.
 		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
 	}
