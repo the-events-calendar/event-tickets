@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Fixed manual quantity input for tickets to respect shared capacity. [ET-2492]
