@@ -621,6 +621,32 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
+	 * Get merchant country from stored data or from Square API.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
+	 *
+	 * @return string
+	 */
+	public function get_merchant_country( bool $force_refresh = false ): string {
+		$data = get_option( $this->get_signup_data_key() );
+
+		if ( ! empty( $data['merchant_country'] ) ) {
+			return $data['merchant_country'];
+		}
+
+		// Try to fetch from API if we don't have it stored.
+		$merchant_data = $this->fetch_merchant_data( $force_refresh );
+
+		if ( ! empty( $merchant_data['merchant']['country'] ) ) {
+			return $merchant_data['merchant']['country'];
+		}
+
+		return '';
+	}
+
+	/**
 	 * Delete stored merchant data.
 	 *
 	 * @since TBD
