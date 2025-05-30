@@ -1,14 +1,14 @@
 /**
  * Internal dependencies
  */
-import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
+import * as types from '../../types';
 import {
 	getDefaultCurrencyPosition,
 	getDefaultProviderCurrency,
 	getDefaultProviderCurrencyDecimalPoint,
 	getDefaultProviderCurrencyNumberOfDecimals,
 	getDefaultProviderCurrencyThousandsSep,
-} from '@moderntribe/tickets/data/blocks/ticket/utils';
+} from '../../utils';
 import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from './ticket/details';
 import tempDetails, { DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE } from './ticket/temp-details';
 

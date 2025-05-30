@@ -19,6 +19,6 @@ class BlockTest extends WPTestCase {
 		tribe( Block::class )->register_editor_scripts();
 
 		$this->assertEquals( plugins_url( '/build/Tickets/Blocks/Tickets/editor.js', EVENT_TICKETS_MAIN_PLUGIN_FILE ), Assets::init()->get( Block::EDITOR_SCRIPT_SLUG )->get_url( false ) );
-		$this->assertEquals( plugins_url( '/build/Tickets/Blocks/Tickets/editor.css', EVENT_TICKETS_MAIN_PLUGIN_FILE ), Assets::init()->get( Block::EDITOR_STYLE_SLUG )->get_url( false ) );
+		$this->assertEquals( plugins_url( '/build/Tickets/Blocks/Tickets/style-editor.css', EVENT_TICKETS_MAIN_PLUGIN_FILE ), Assets::init()->get( Block::EDITOR_STYLE_SLUG )->get_url( false ) );
 	}
 }

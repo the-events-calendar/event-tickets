@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\QR;
 
+use TEC\Common\QR\QR;
+
 use WP_Error;
 
 /**
@@ -159,7 +161,7 @@ class Connector {
 		}
 
 		$file_name = 'qr_' . md5( $link );
-		$upload    = $qr_code->get_png_as_file( $link, $file_name, '' );
+		$upload    = $qr_code->get_png_as_file( $link, $file_name, 'tec-tickets-qr' );
 
 		if ( ! empty( $upload['error'] ) ) {
 			return null;

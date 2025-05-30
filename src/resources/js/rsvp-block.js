@@ -1,8 +1,8 @@
-var tribe_tickets_rsvp_block = {
+const tribe_tickets_rsvp_block = {
 	events: {},
 };
 
-( function( $, my ) {
+( function ( $, my ) {
 	'use strict';
 
 	my.state = {
@@ -18,13 +18,13 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {obj} $button The dom object of the clicked button
 	 */
-	my.tribe_rsvp_toggle_actions = function( $button ) {
+	my.tribe_rsvp_toggle_actions = function ( $button ) {
 		// Check if is the going or not going button
-		var going      = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
-		var sibling    = going
+		const going = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
+		const sibling = going
 			? '.tribe-block__rsvp__status-button--not-going'
 			: '.tribe-block__rsvp__status-button--going';
-		var $siblingEl = $button.closest( '.tribe-block__rsvp__status' ).find( sibling );
+		const $siblingEl = $button.closest( '.tribe-block__rsvp__status' ).find( sibling );
 
 		// Add active classs to the current button
 		$button.addClass( 'tribe-active' );
@@ -37,8 +37,6 @@ var tribe_tickets_rsvp_block = {
 		$siblingEl.removeAttr( 'disabled' );
 	};
 
-
-
 	/**
 	 * Handle the "Going" and "Not Going" actions.
 	 * Load the RSVP confirmation form via AJAX
@@ -47,45 +45,41 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @return void
 	 */
-	my.events.handle_rsvp_response = function() {
-		var $button   = $( this );
-		var $block    = $button.closest( '.tribe-block__rsvp' );
-		var $ticket   = $block.find( '.tribe-block__rsvp__ticket' );
-		var ticket_id = $ticket.data( 'rsvp-id' );
-		var going     = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
+	my.events.handle_rsvp_response = function () {
+		const $button = $( this );
+		const $block = $button.closest( '.tribe-block__rsvp' );
+		const $ticket = $block.find( '.tribe-block__rsvp__ticket' );
+		const ticket_id = $ticket.data( 'rsvp-id' );
+		const going = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
 
 		// Toggle button styles and disable
 		my.tribe_rsvp_toggle_actions( $button );
 
 		// Set the AJAX params
-		var params = {
+		const params = {
 			action: 'rsvp-form',
-			ticket_id: ticket_id,
+			ticket_id,
 			going: going ? 'yes' : 'no',
 		};
 
 		// Show the loader for this RSVP
 		my.tribe_rsvp_loader_start();
 
-		$.post(
-			TribeRsvp.ajaxurl,
-			params,
-			function( response ) {
-				$block.find( '.tribe-block__rsvp__message__success' ).remove();
-				var $form = $ticket.find( '.tribe-block__rsvp__form' );
-				$form.html( response.data.html );
-				if ( window.tribe_event_tickets_plus ) {
-					var $input = $form.find( 'input.tribe-tickets-quantity' );
-					window.tribe_event_tickets_plus.meta.block_set_quantity( $input, going );
-				}
-				if ( ! my.validate_submission( $form ) ) {
-					var $submit = $form.find( '.tribe-block__rsvp__submit-button' );
-					$submit.prop( 'disabled', true );
-					my.state.submitActive = false;
-				}
-				my.tribe_rsvp_loader_end();
+		$.post( TribeRsvp.ajaxurl, params, function ( response ) {
+			$block.find( '.tribe-block__rsvp__message__success' ).remove();
+			const $form = $ticket.find( '.tribe-block__rsvp__form' );
+			$form.html( response.data.html );
+			if ( window.tribe_event_tickets_plus ) {
+				const $input = $form.find( 'input.tribe-tickets-quantity' );
+				window.tribe_event_tickets_plus.meta.block_set_quantity( $input, going );
 			}
-		);
+			if ( ! my.validate_submission( $form ) ) {
+				const $submit = $form.find( '.tribe-block__rsvp__submit-button' );
+				$submit.prop( 'disabled', true );
+				my.state.submitActive = false;
+			}
+			my.tribe_rsvp_loader_end();
+		} );
 	};
 
 	/**
@@ -95,51 +89,43 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {event} e input event
 	 */
-	my.events.handle_quantity_change = function( e ) {
+	my.events.handle_quantity_change = function ( e ) {
 		e.preventDefault();
-		var $input   = $( this ).parent().find( 'input[type="number"]' );
-		var increase = $( this ).hasClass( 'tribe-block__rsvp__number-input-button--plus' );
-		var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
-		var originalValue = Number( $input[ 0 ].value );
+		const $input = $( this ).parent().find( 'input[type="number"]' );
+		const increase = $( this ).hasClass( 'tribe-block__rsvp__number-input-button--plus' );
+		const step = $input[ 0 ].step ? Number( $input[ 0 ].step ) : 1;
+		const originalValue = Number( $input[ 0 ].value );
 
 		// stepUp or stepDown the input according to the button that was clicked
 		// handle IE/Edge
 		if ( increase ) {
 			// we use 0 here as a shorthand for no maximum
-			var max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
+			const max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
 
 			if ( typeof $input[ 0 ].stepUp === 'function' ) {
 				try {
 					// Bail if we're already in the max, safari has issues with stepUp() here.
-					if ( max < ( originalValue + step ) ) {
+					if ( max < originalValue + step ) {
 						return;
 					}
 					$input[ 0 ].stepUp();
 				} catch ( ex ) {
-					$input[ 0 ].value = ( -1 === max || max >= originalValue + step )
-						? originalValue + step
-						: max;
+					$input[ 0 ].value = -1 === max || max >= originalValue + step ? originalValue + step : max;
 				}
 			} else {
-				$input[ 0 ].value = ( -1 === max || max >= originalValue + step )
-					? originalValue + step
-					: max;
+				$input[ 0 ].value = -1 === max || max >= originalValue + step ? originalValue + step : max;
 			}
 		} else {
-			var min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
+			const min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
 
 			if ( typeof $input[ 0 ].stepDown === 'function' ) {
 				try {
 					$input[ 0 ].stepDown();
 				} catch ( ex ) {
-					$input[ 0 ].value = ( min <= originalValue - step )
-						? originalValue - step
-						: min;
+					$input[ 0 ].value = min <= originalValue - step ? originalValue - step : min;
 				}
 			} else {
-				$input[ 0 ].value = ( min <= originalValue - step )
-					? originalValue - step
-					: min;
+				$input[ 0 ].value = min <= originalValue - step ? originalValue - step : min;
 			}
 		}
 
@@ -156,12 +142,12 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {event} e input event
 	 */
-	my.events.handle_quantity_change_value = function( e ) {
+	my.events.handle_quantity_change_value = function ( e ) {
 		e.preventDefault();
 
 		const $this = $( e.target );
 		const max = $this.attr( 'max' );
-		let maxQty = 0;
+		const maxQty = 0;
 		let newQuantity = parseInt( $this.val(), 10 );
 		newQuantity = isNaN( newQuantity ) ? 0 : newQuantity;
 
@@ -199,9 +185,10 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {obj} $ticket ticket object
 	 */
-	my.tribe_rsvp_loader_start = function( $ticket ) { // eslint-disable-line no-unused-vars
-		var loader_class = '.tribe-block__rsvp__loading';
-		var $loader = $( '.tribe-block__rsvp' ).find( loader_class );
+	my.tribe_rsvp_loader_start = function ( $ticket ) {
+		// eslint-disable-line no-unused-vars
+		const loader_class = '.tribe-block__rsvp__loading';
+		const $loader = $( '.tribe-block__rsvp' ).find( loader_class );
 
 		$loader.removeClass( 'tribe-common-a11y-hidden' );
 	};
@@ -213,32 +200,27 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {obj} $ticket ticket object
 	 */
-	my.tribe_rsvp_loader_end = function( $ticket ) { // eslint-disable-line no-unused-vars
-		var loader_class = '.tribe-block__rsvp__loading';
-		var $loader = $( '.tribe-block__rsvp' ).find( loader_class );
+	my.tribe_rsvp_loader_end = function ( $ticket ) {
+		// eslint-disable-line no-unused-vars
+		const loader_class = '.tribe-block__rsvp__loading';
+		const $loader = $( '.tribe-block__rsvp' ).find( loader_class );
 
 		$loader.addClass( 'tribe-common-a11y-hidden' );
 	};
-
-
 
 	/**
 	 * Validates the RSVP form
 	 *
 	 * @param {obj} $form form object
 	 *
-	 * @returns {bool} is valid
+	 * @return {bool} is valid
 	 */
-	my.validate_submission = function( $form ) {
-		var $qty = $form.find( 'input.tribe-tickets-quantity' );
-		var $name = $form.find( 'input.tribe-tickets-full-name' );
-		var $email = $form.find( 'input.tribe-tickets-email' );
+	my.validate_submission = function ( $form ) {
+		const $qty = $form.find( 'input.tribe-tickets-quantity' );
+		const $name = $form.find( 'input.tribe-tickets-full-name' );
+		const $email = $form.find( 'input.tribe-tickets-email' );
 
-		return (
-			$name.val().trim().length &&
-			$email.val().trim().length &&
-			parseInt( $qty.val(), 10 ) > 0
-		);
+		return $name.val().trim().length && $email.val().trim().length && parseInt( $qty.val(), 10 ) > 0;
 	};
 
 	/**
@@ -248,16 +230,16 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {event} e submission event
 	 */
-	my.events.handle_submission = function( e ) {
+	my.events.handle_submission = function ( e ) {
 		e.preventDefault();
 
-		var $ticket   = $( this ).closest( '.tribe-block__rsvp__ticket' );
-		var ticket_id = $ticket.data( 'rsvp-id' );
-		var $form     = $ticket.find( 'form' );
+		const $ticket = $( this ).closest( '.tribe-block__rsvp__ticket' );
+		const ticket_id = $ticket.data( 'rsvp-id' );
+		const $form = $ticket.find( 'form' );
 
-		var is_rsvp_valid = my.validate_submission( $form );
-		var is_meta_valid = true;
-		var has_tickets_plus = !! window.tribe_event_tickets_plus;
+		const is_rsvp_valid = my.validate_submission( $form );
+		let is_meta_valid = true;
+		const has_tickets_plus = !! window.tribe_event_tickets_plus;
 
 		if ( has_tickets_plus ) {
 			is_meta_valid = window.tribe_event_tickets_plus.meta.validate_meta( $form );
@@ -272,46 +254,45 @@ var tribe_tickets_rsvp_block = {
 				? $form.find( '.tribe-event-tickets-meta-required-message' ).hide()
 				: $form.find( '.tribe-event-tickets-meta-required-message' ).show();
 
-			$( 'html, body' ).animate( {
-				scrollTop: $form.offset().top - 100,
-			}, 300 );
+			$( 'html, body' ).animate(
+				{
+					scrollTop: $form.offset().top - 100,
+				},
+				300
+			);
 		} else {
 			// Form is valid, submit form
-			var params = $form.serializeArray();
+			const params = $form.serializeArray();
 			params.push( { name: 'action', value: 'rsvp-process' } );
 			params.push( { name: 'ticket_id', value: ticket_id } );
 
 			my.tribe_rsvp_loader_start();
 
-			$.post(
-				TribeRsvp.ajaxurl,
-				params,
-				function( response ) {
-					// Get the remaining number
-					var remaining = response.data.remaining;
+			$.post( TribeRsvp.ajaxurl, params, function ( response ) {
+				// Get the remaining number
+				const remaining = response.data.remaining;
 
-					// Update templates
-					$ticket
-						.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' )
-						.replaceWith( response.data.remaining_html );
-					$ticket.find( '.tribe-block__rsvp__form' ).empty()
-					$ticket.closest( '.tribe-block__rsvp' ).append( response.data.html );
+				// Update templates
+				$ticket
+					.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' )
+					.replaceWith( response.data.remaining_html );
+				$ticket.find( '.tribe-block__rsvp__form' ).empty();
+				$ticket.closest( '.tribe-block__rsvp' ).append( response.data.html );
 
-					if ( 0 === remaining ) {
-						// If there are no more RSVPs remaining we update the status section
-						$ticket.find( '.tribe-block__rsvp__status' ).replaceWith( response.data.status_html );
-					}
-
-					my.tribe_rsvp_loader_end();
+				if ( 0 === remaining ) {
+					// If there are no more RSVPs remaining we update the status section
+					$ticket.find( '.tribe-block__rsvp__status' ).replaceWith( response.data.status_html );
 				}
-			);
+
+				my.tribe_rsvp_loader_end();
+			} );
 		}
 	};
 
 	/**
 	 * Bind events to elements
 	 */
-	my.bind_events = function() {
+	my.bind_events = function () {
 		$( '.tribe-block__rsvp__ticket' )
 			.on(
 				'click',
@@ -324,16 +305,8 @@ var tribe_tickets_rsvp_block = {
 				'.tribe-block__rsvp__number-input-button--minus, .tribe-block__rsvp__number-input-button--plus', // eslint-disable-line max-len
 				my.events.handle_quantity_change
 			)
-			.on(
-				'change keyup',
-				'.tribe-tickets-quantity',
-				my.events.handle_quantity_change_value
-			)
-			.on(
-				'focus',
-				'.tribe-tickets-full-name, .tribe-tickets-email',
-				my.events.handle_input_focus
-			);
+			.on( 'change keyup', '.tribe-tickets-quantity', my.events.handle_quantity_change_value )
+			.on( 'focus', '.tribe-tickets-full-name, .tribe-tickets-email', my.events.handle_input_focus );
 	};
 
 	/**
@@ -341,8 +314,8 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.9
 	 */
-	my.init = function() {
-		var tribe_rsvp = $( '.tribe-block__rsvp' );
+	my.init = function () {
+		const tribe_rsvp = $( '.tribe-block__rsvp' );
 
 		if ( ! tribe_rsvp.length ) {
 			return;

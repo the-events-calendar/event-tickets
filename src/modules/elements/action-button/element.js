@@ -31,7 +31,7 @@ const ActionButton = ( {
 	const containerClass = classNames(
 		'tribe-editor__action-button',
 		`tribe-editor__action-button--icon-${ position }`,
-		className,
+		className
 	);
 
 	const getProps = () => {
@@ -51,10 +51,7 @@ const ActionButton = ( {
 
 	if ( asLink && ! disabled ) {
 		return (
-			<Link
-				className={ containerClass }
-				{ ...( { href: '#', ...getProps() } ) }
-			>
+			<Link className={ containerClass } { ...{ href: '#', ...getProps() } }>
 				{ icon }
 				<span className="tribe-editor__action-button__label">{ children }</span>
 			</Link>
@@ -62,10 +59,7 @@ const ActionButton = ( {
 	}
 
 	return (
-		<Button
-			className={ containerClass }
-			{ ...getProps() }
-		>
+		<Button className={ containerClass } { ...getProps() }>
 			{ icon }
 			<span className="tribe-editor__action-button__label">{ children }</span>
 		</Button>

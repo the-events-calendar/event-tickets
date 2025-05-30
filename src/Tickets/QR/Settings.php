@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\QR;
 
+use TEC\Common\QR\Controller as Common_Controller;
+
 /**
  * Class Settings
  *
@@ -70,7 +72,7 @@ class Settings {
 	 * @return bool
 	 */
 	public function is_enabled( $context = null ): bool {
-		$controller = tribe( Controller::class );
+		$controller = tribe( Common_Controller::class );
 		$enabled    = false;
 
 		// Only fetch from DB if the controller can use the QR code.

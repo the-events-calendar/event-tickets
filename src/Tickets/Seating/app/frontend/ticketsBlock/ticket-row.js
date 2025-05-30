@@ -1,4 +1,4 @@
-import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/utils';
+import { createHtmlComponentFromTemplateString } from '../../utils';
 
 /**
  * @typedef {Object} TicketRowProps
@@ -20,7 +20,7 @@ import { createHtmlComponentFromTemplateString } from '@tec/tickets/seating/util
  *
  * @return {HTMLElement} The HTML element for the Ticket Row component.
  */
-export function TicketRow(props) {
+export function TicketRow( props ) {
 	return createHtmlComponentFromTemplateString(
 		`<div class="tec-tickets-seating__ticket-row"
 			data-seat-type-id="{seatTypeId}"

@@ -4,7 +4,6 @@ exports[`NumericLabel Disable fallback rendering 1`] = `
 <span
   className="tribe-editor__numeric-label"
 >
-  
   <span
     className="tribe-editor__numeric-label--count"
   >
