@@ -31,11 +31,16 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @since TBD Add `name`, `capacity`, and `cost` properties.
 	 */
 	protected $properties = [
-		'id'   => 'int',
-		'slug' => 'string',
-		'data' => 'string',
+		'id'       => 'int',
+		'slug'     => 'string',
+		'data'     => 'string',
+		'name'     => 'string',
+		'capacity' => 'int',
+		'cost'     => 'string',
 	];
 
 	/**

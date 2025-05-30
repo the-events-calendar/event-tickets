@@ -22,7 +22,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	public const SCHEMA_VERSION = '1.0.0';
+	public const SCHEMA_VERSION = '1.1.0';
 
 	/**
 	 * {@inheritdoc}
@@ -46,6 +46,8 @@ class Ticket_Groups extends Table {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	protected function get_definition() {
 		global $wpdb;
@@ -63,5 +65,104 @@ class Ticket_Groups extends Table {
 				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @since TBD Handle hydrating new columns from `data` JSON for Ticket Presets use, if needed.
+	 */
+	protected function after_update( array $results = [] ) {
+		$results = parent::after_update( $results );
+
+		// Run version-specific migrations.
+		if ( self::SCHEMA_VERSION === '1.1.0' ) {
+			$results = $this->migrate_to_1_1_0( $results );
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Migrates data from JSON to dedicated columns for schema version 1.1.0.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $results The results array to update.
+	 *
+	 * @return array The updated results array.
+	 */
+	protected function migrate_to_1_1_0( array $results = [] ) {
+		global $wpdb;
+		$table_name = self::table_name();
+
+		// Get all rows where name is empty (indicating data hasn't been migrated yet).
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, data FROM %i WHERE name = '' OR name IS NULL",
+				$table_name
+			)
+		);
+
+		if ( empty( $rows ) ) {
+			$results[ $table_name . '.migration' ] = "No rows needed migration for {$table_name} table.";
+			return $results;
+		}
+
+		$migrated = 0;
+		$failed   = 0;
+
+		foreach ( $rows as $row ) {
+			$data = json_decode( $row->data, true );
+
+			if ( empty( $data ) ) {
+				++$failed;
+				continue;
+			}
+
+			// Extract values from data JSON.
+			$name     = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
+			$capacity = isset( $data['capacity'] ) ? absint( $data['capacity'] ) : 0;
+			$cost     = isset( $data['cost'] ) ? (string) $data['cost'] : '0.000000';
+
+			// Update the row with extracted values.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+			$updated = $wpdb->update(
+				$table_name,
+				[
+					'name'     => $name,
+					'capacity' => $capacity,
+					'cost'     => $cost,
+				],
+				[ 'id' => $row->id ],
+				[ '%s', '%d', '%s' ],
+				[ '%d' ]
+			);
+
+			if ( $updated ) {
+				++$migrated;
+			} else {
+				++$failed;
+			}
+		}
+
+		// Add a message to the results array.
+		if ( $failed > 0 ) {
+			$results[ $table_name . '.migration' ] = sprintf(
+				'Migrated %d rows and failed to migrate %d rows in the %s table.',
+				$migrated,
+				$failed,
+				$table_name
+			);
+		} else {
+			$results[ $table_name . '.migration' ] = sprintf(
+				'Migrated %d rows in the %s table.',
+				$migrated,
+				$table_name
+			);
+		}
+
+		return $results;
 	}
 }
