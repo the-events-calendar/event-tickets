@@ -128,42 +128,6 @@ class Webhooks extends Table {
 	protected function after_update( array $results ) {
 		$this->check_and_add_index( $results, 'order_id', 'order_id' );
 
-		if ( $this->has_foreign_key( 'order_id_fk' ) ) {
-			return $results;
-		}
-
-		$db_name = DB::get_var( 'SELECT DATABASE()' );
-
-		$errors_hidden     = DB::hide_errors();
-		$errors_suppressed = DB::suppress_errors( true );
-		try {
-			$inno_db_has_foreign_key = DB::table( DB::raw( 'information_schema.INNODB_SYS_FOREIGN' ) )
-				->where( 'ID', $db_name . '/order_id_fk' )
-				->where( 'FOR_NAME', $db_name . '/' . self::table_name( true ) )
-				->where( 'REF_NAME', $db_name . '/' . DB::prefix( 'posts' ) )
-				->count() > 0;
-		} catch ( DatabaseQueryException $e ) {
-			$inno_db_has_foreign_key = false;
-		}
-
-		if ( $errors_hidden ) {
-			DB::show_errors();
-		}
-
-		DB::suppress_errors( $errors_suppressed );
-
-		if ( $inno_db_has_foreign_key ) {
-			return $results;
-		}
-
-		DB::query(
-			DB::prepare(
-				'ALTER TABLE %i ADD CONSTRAINT `order_id_fk` FOREIGN KEY (`order_id`) REFERENCES %i (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION',
-				self::table_name( true ),
-				DB::prefix( 'posts' )
-			)
-		);
-
 		return $results;
 	}
 
