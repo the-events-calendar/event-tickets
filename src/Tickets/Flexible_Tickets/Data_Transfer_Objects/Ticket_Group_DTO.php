@@ -48,6 +48,33 @@ class Ticket_Group_DTO extends DataTransferObject {
 	public string $data;
 
 	/**
+	 * The Ticket Group name.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $name;
+
+	/**
+	 * The Ticket Group capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public int $capacity;
+
+	/**
+	 * The Ticket Group cost.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $cost;
+
+	/**
 	 * Builds a new DTO from an object.
 	 *
 	 * @since 5.8.0
@@ -59,9 +86,12 @@ class Ticket_Group_DTO extends DataTransferObject {
 	public static function fromObject( $object ): self {
 		$self = new self();
 
-		$self->id   = $object->id;
-		$self->slug = $object->slug;
-		$self->data = $object->data;
+		$self->id       = $object->id;
+		$self->slug     = $object->slug;
+		$self->data     = $object->data;
+		$self->name     = $object->name;
+		$self->capacity = $object->capacity;
+		$self->cost     = $object->cost;
 
 		return $self;
 	}
