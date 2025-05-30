@@ -550,7 +550,7 @@ class Ticket {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', - 1 ),
+				'menu_order'   => (int) ( tribe_get_request_var( 'menu_order', $raw_data['ticket_menu_order'] ?? - 1 ) ),
 				'meta_input' => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
