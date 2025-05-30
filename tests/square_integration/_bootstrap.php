@@ -13,6 +13,7 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 tribe_register_provider( Commerce_Provider::class );
+
 // Ensure `post` is a ticketable post type.
 $ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
 $ticketable[] = 'post';
@@ -31,15 +32,31 @@ tec_tickets_tests_fake_transactions_enable();
 // Enable sandbox TC mode for testing.
 add_filter( 'tec_tickets_commerce_is_sandbox_mode', '__return_true' );
 
+function tec_tickets_tests_get_fake_merchant_data(): array {
+	return [
+		'merchant_id'       => 'mi-8PoFNX4o9XOz9vMYOrZ6vA',
+		'access_token'      => 'at-8PoFNX4o9XOz9vMYOrZ6vA',
+		'refresh_token'     => 'rt-8PoFNX4o9XOz9vMYOrZ6vA',
+		'merchant_country'  => 'US',
+		'merchant_currency' => 'USD',
+	];
+}
+
 $merchant = tribe( Merchant::class );
 // Set merchant data.
-$merchant->save_signup_data( [
-	'merchant_id' => 'mi-8PoFNX4o9XOz9vMYOrZ6vA',
-	'access_token' => 'at-8PoFNX4o9XOz9vMYOrZ6vA',
-	'refresh_token' => 'rt-8PoFNX4o9XOz9vMYOrZ6vA',
-	'merchant_country' => 'US',
-	'merchant_currency' => 'USD',
-] );
+$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 // Set a location ID.
 tribe_update_option( Settings::OPTION_SANDBOX_LOCATION_ID, 'li-8PoFNX4o9XOz9vMYOrZ6vA' );
+// Set the gateway to enabled.
 tribe_update_option( Gateway::get_enabled_option_key(), true );
+
+// When we have logs of level error, critical, warning, throw an exception.
+add_action( 'tribe_log', static function ( $level, $message, $context ) {
+	if ( ! in_array( $level, [ 'error', 'critical', 'warning' ], true ) ) {
+		return;
+	}
+
+	throw new RuntimeException( 'Triggered log: ' . $message . ' with context: ' . wp_json_encode( $context, JSON_SNAPSHOT_OPTIONS ) );
+} );
+
+tec_tickets_tests_enable_gateway_id_generation();

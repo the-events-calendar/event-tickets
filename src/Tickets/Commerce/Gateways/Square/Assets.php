@@ -274,7 +274,7 @@ class Assets extends Controller_Contract {
 	 * @return bool
 	 */
 	public function is_square_section(): bool {
-		return tec_tickets_commerce_is_enabled() && is_admin() && Gateway::get_key() === tribe_get_request_var( Payments_Tab::$key_current_section_get_var );
+		return is_admin() && Gateway::get_key() === tribe_get_request_var( Payments_Tab::$key_current_section_get_var );
 	}
 
 	/**

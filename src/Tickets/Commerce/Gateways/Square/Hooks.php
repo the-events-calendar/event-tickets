@@ -16,6 +16,7 @@ use Tribe__Repository;
 use Exception;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
+use TEC\Tickets\Commerce\Order as Commerce_Order;
 
 /**
  * Square Hooks class.
@@ -69,7 +70,8 @@ class Hooks extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
-		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10 );
+		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ] );
+		remove_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ] );
 	}
 
 	/**
@@ -112,7 +114,7 @@ class Hooks extends Controller_Contract {
 	 * @throws Exception If the action fails after too many retries.
 	 */
 	public function process_async_webhook( int $order_id, int $retry = 0 ): void {
-		$order = tec_tc_get_order( $order_id );
+		$order = tec_tc_get_order( $order_id, OBJECT, 'raw', true  );
 
 		if ( ! $order ) {
 			return;
@@ -183,7 +185,7 @@ class Hooks extends Controller_Contract {
 				);
 			}
 
-			tribe( Order::class )->modify_status(
+			tribe( Commerce_Order::class )->modify_status(
 				$order->ID,
 				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
 				$pending_webhook['metadata']

@@ -17,7 +17,6 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Status\Denied;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe__Date_Utils as Dates;
-use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 
 class Hooks_Test extends WPTestCase {
 	use Ticket_Maker;

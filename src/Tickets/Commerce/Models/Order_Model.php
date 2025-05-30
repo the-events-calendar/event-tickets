@@ -58,7 +58,7 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
-			$on_checkout_hold_timeout = (int) Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], 0 );
+			$on_checkout_hold_timeout = strtotime( Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], 0 ) );
 			if ( ! is_numeric( $on_checkout_hold_timeout ) ) {
 				$on_checkout_hold_timeout = 0;
 			}
