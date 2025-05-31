@@ -5,6 +5,7 @@ use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Settings;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
@@ -28,8 +29,8 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 
 tec_tickets_tests_fake_transactions_enable();
 
-// Enable sandbox TC mode for testing.
-add_filter( 'tec_tickets_commerce_is_sandbox_mode', '__return_true' );
+// Enable production TC mode for testing.
+add_filter( 'tec_tickets_commerce_is_sandbox_mode', '__return_false' );
 
 function tec_tickets_tests_get_fake_merchant_data(): array {
 	return [
@@ -45,9 +46,14 @@ $merchant = tribe( Merchant::class );
 // Set merchant data.
 $merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 // Set a location ID.
-tribe_update_option( Settings::OPTION_SANDBOX_LOCATION_ID, 'li-8PoFNX4o9XOz9vMYOrZ6vA' );
+tribe_update_option( Settings::OPTION_LOCATION_ID, 'li-8PoFNX4o9XOz9vMYOrZ6vA' );
 // Set the gateway to enabled.
 tribe_update_option( Gateway::get_enabled_option_key(), true );
+// Set the webhook.
+tribe_update_option( Webhooks::OPTION_WEBHOOK, require __DIR__ . '/../_data/square-webhook.php' );
+
+// Enable pretty permalinks.
+update_option( 'permalink_structure', '/%postname%/' );
 
 // When we have logs of level error, critical, warning, throw an exception.
 add_action( 'tribe_log', static function ( $level, $message, $context ) {

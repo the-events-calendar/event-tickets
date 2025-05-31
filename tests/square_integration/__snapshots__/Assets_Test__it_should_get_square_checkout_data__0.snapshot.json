@@ -1,8 +1,8 @@
 {
     "nonce": "9fashjbfa64",
     "currencyCode": "USD",
-    "orderEndpoint": "http://wordpress.test/index.php?rest_route=/tribe/tickets/v1/commerce/square/order",
-    "applicationId": "sandbox-sq0idb-JdEESM9hrZMuw36CFhL0mQ",
+    "orderEndpoint": "https://wordpress.test/wp-json/tribe/tickets/v1/commerce/square/order",
+    "applicationId": "sq0idp-8PoFNX4o9XOz9vMYOrZ6vA",
     "locationId": "li-8PoFNX4o9XOz9vMYOrZ6vA",
     "squareCardOptions": {
         "style": {

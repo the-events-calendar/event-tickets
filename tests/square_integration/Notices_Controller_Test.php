@@ -64,7 +64,6 @@ class Notices_Controller_Test extends Controller_Test_Case {
 		$screen = (object) ['id' => 'tickets_page_tec-tickets-settings'];
 		$this->set_fn_return( 'get_current_screen', $screen );
 
-		$this->set_class_fn_return( Webhooks::class, 'is_webhook_expired', false );
 		$this->set_class_fn_return( Webhooks::class, 'is_webhook_healthy', false );
 
 		$this->assertTrue( $this->make_controller()->should_display_webhook_notice() );
@@ -76,9 +75,6 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	public function it_should_not_show_webhook_notice_when_webhook_healthy(): void {
 		$screen = (object) ['id' => 'tickets_page_tec-tickets-settings'];
 		$this->set_fn_return( 'get_current_screen', $screen );
-
-		$this->set_class_fn_return( Webhooks::class, 'is_webhook_expired', false );
-		$this->set_class_fn_return( Webhooks::class, 'is_webhook_healthy', true );
 
 		$this->assertFalse( $this->make_controller()->should_display_webhook_notice() );
 	}
