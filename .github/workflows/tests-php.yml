@@ -225,6 +225,12 @@ jobs:
         if: steps.skip.outputs.value != 1
         run: ${SLIC_BIN} wp theme install twentytwentyfour
       # ------------------------------------------------------------------------------
+      # Install but NOT activate Kadence
+      # ------------------------------------------------------------------------------
+      - name: Install Kadence
+        if: steps.skip.outputs.value != 1
+        run: ${SLIC_BIN} wp theme install kadence
+      # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------
       - name: Run suite tests
