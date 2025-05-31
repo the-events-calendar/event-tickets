@@ -29,7 +29,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/return';
+	protected string $path = '/commerce/stripe/return';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.

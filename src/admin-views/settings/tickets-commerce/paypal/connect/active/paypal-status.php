@@ -15,11 +15,13 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! empty( $is_merchant_connected ) ) {
 	return;
 }
 
-$errors = $signup->get_errors_from_on_boarded_data();
+$error_messages = $signup->get_errors_from_on_boarded_data();
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1">
@@ -30,13 +32,13 @@ $errors = $signup->get_errors_from_on_boarded_data();
 			<?php esc_html_e( 'Connected' ); ?> <span class="dashicons dashicons-saved"></span>
 		</span>
 
-		<?php if ( is_array( $errors ) ) : ?>
+		<?php if ( is_array( $error_messages ) ) : ?>
 			<ul>
-				<?php foreach ( $errors as $error ) : ?>
-					<li><span class="dashicons dashicons-warning" style="color: red;"></span> <?php echo esc_html( $error ); ?></li>
+				<?php foreach ( $error_messages as $error_message ) : ?>
+					<li><span class="dashicons dashicons-warning" style="color: red;"></span> <?php echo esc_html( $error_message ); ?></li>
 				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>
 	</div>
-
 </div>
+<?php

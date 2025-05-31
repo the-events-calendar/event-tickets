@@ -313,6 +313,9 @@ class OrderReportTest extends WPTestCase {
 		$order_report->render_page();
 		$html = ob_get_clean();
 
+		// Replace the order gateway ID, a random hash, with a placeholder.
+		$html = str_replace( $gateway_order_ids, '{{gateway_order_id}}', $html );
+
 		// Replace the post IDs with placeholders to avoid snapshot mismatches.
 		$html = str_replace( $post_ids, '{{ID}}', $html );
 
@@ -324,9 +327,6 @@ class OrderReportTest extends WPTestCase {
 
 		// Replace the order date with a placeholder.
 		$html = str_replace( $order_date, '{{order_date}}', $html );
-
-		// Replace the order gateway ID, a random hash, with a placeholder.
-		$html = str_replace( $gateway_order_ids, '{{gateway_order_id}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

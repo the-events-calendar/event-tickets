@@ -21,6 +21,8 @@
 use Tribe\Tickets\Admin\Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 
+defined( 'ABSPATH' ) || exit;
+
 $debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
 
 if ( empty( $is_merchant_connected ) || ! $debug ) {
@@ -39,3 +41,4 @@ $url = tribe( Settings::class )->get_url(
 	href="<?php echo esc_url( $url ); ?>"
 	class="tec-tickets__admin-settings-tickets-commerce-gateway-refresh-link"
 ><?php esc_html_e( 'Refresh Access Token', 'event-tickets' ); ?></a>
+<?php

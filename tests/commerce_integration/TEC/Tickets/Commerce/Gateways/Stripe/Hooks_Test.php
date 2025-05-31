@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Status\Denied;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe__Date_Utils as Dates;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 
 class Hooks_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -37,13 +38,13 @@ class Hooks_Test extends WPTestCase {
 
 		$wp_status_slug_from_slug = fn( $slug ) => tribe( Status_Handler::class )->get_by_slug( $slug )->get_wp_slug();
 
-		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
+		$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
 
-		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-webhooks' ) );
 
 		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
 
-		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-webhooks' ) );
 
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Created::SLUG ) );
 
@@ -82,12 +83,12 @@ class Hooks_Test extends WPTestCase {
 
 		$wp_status_slug_from_slug = fn( $slug ) => tribe( Status_Handler::class )->get_by_slug( $slug )->get_wp_slug();
 
-		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
+		$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ], [ 'order_status' => Created::SLUG ] );
 
-		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-webhooks' ) );
 		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
 		$this->freeze_time( Dates::immutable( '2024-06-13 17:51:00' ) );
-		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-webhooks' ) );
 
 		$refreshed_order = tec_tc_get_order( $order->ID );
 
@@ -154,13 +155,13 @@ class Hooks_Test extends WPTestCase {
 
 		$wp_status_slug_from_slug = fn( $slug ) => tribe( Status_Handler::class )->get_by_slug( $slug )->get_wp_slug();
 
-		$order = $this->create_order( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
+		$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1, $ticket_id_2 => 2 ] );
 
-		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		$this->assertFalse( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-webhooks' ) );
 
 		tribe( Order::class )->set_on_checkout_screen_hold( $order->ID );
 
-		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-stripe-webhooks' ) );
+		$this->assertTrue( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', null, 'tec-tickets-commerce-webhooks' ) );
 
 		tribe( Webhooks::class )->add_pending_webhook( $order->ID, $wp_status_slug_from_slug( Completed::SLUG ), $wp_status_slug_from_slug( Pending::SLUG ) );
 
@@ -186,7 +187,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 
 				return [ $order->ID, false ];
 			},
@@ -200,7 +201,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				return [ $order->ID, false ];
@@ -215,7 +216,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -251,7 +252,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -287,7 +288,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -323,7 +324,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -359,7 +360,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
-				$order = $this->create_order( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
