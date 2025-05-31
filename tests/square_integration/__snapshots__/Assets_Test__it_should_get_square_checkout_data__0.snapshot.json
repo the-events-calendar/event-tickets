@@ -1,0 +1,16 @@
+{
+    "nonce": "9fashjbfa64",
+    "currencyCode": "USD",
+    "orderEndpoint": "http://wordpress.test/index.php?rest_route=/tribe/tickets/v1/commerce/square/order",
+    "applicationId": "sandbox-sq0idb-JdEESM9hrZMuw36CFhL0mQ",
+    "locationId": "li-8PoFNX4o9XOz9vMYOrZ6vA",
+    "squareCardOptions": {
+        "style": {
+            "input": {
+                "color": "#23282d",
+                "backgroundColor": "#ffffff",
+                "fontSize": "14px"
+            }
+        }
+    }
+}

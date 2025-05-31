@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
-
 use WP_Post;
 
 /**
@@ -245,35 +244,6 @@ class Payment_Handler {
 		];
 
 		return []; // TODO: Implement update_payment() method.
-	}
-
-	/**
-	 * Get the publishable payment data for frontend use.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_publishable_payment_data(): array {
-		$merchant = tribe( Merchant::class );
-
-		if ( ! $merchant->is_active() ) {
-			return [];
-		}
-
-		$data = [
-			'applicationId' => tribe( Gateway::class )->get_application_id(),
-			'locationId'    => $merchant->get_location_id(),
-		];
-
-		/**
-		 * Filter the publishable payment data.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The payment data.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_square_publishable_payment_data', $data );
 	}
 
 	/**
