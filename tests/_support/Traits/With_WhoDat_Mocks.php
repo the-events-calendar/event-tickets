@@ -34,6 +34,14 @@ trait With_WhoDat_Mocks {
 				return [];
 			}
 
+			if ( $endpoint === 'webhooks/register' ) {
+				$webhook = require __DIR__ . '/../../_data/square-webhook.php';
+				$webhook['fetched_at'] = date( 'Y-m-d H:i:s' );
+				return [
+					'subscription' => $webhook,
+				];
+			}
+
 			throw new RuntimeException( 'Not mocked endpoint: ' . $endpoint );
 		}, true );
 	}

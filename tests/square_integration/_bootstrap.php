@@ -39,6 +39,7 @@ function tec_tickets_tests_get_fake_merchant_data(): array {
 		'refresh_token'     => 'rt-8PoFNX4o9XOz9vMYOrZ6vA',
 		'merchant_country'  => 'US',
 		'merchant_currency' => 'USD',
+		'whodat_signature'  => 'whodat-signature',
 	];
 }
 
@@ -50,7 +51,8 @@ tribe_update_option( Settings::OPTION_LOCATION_ID, 'li-8PoFNX4o9XOz9vMYOrZ6vA' )
 // Set the gateway to enabled.
 tribe_update_option( Gateway::get_enabled_option_key(), true );
 // Set the webhook.
-tribe_update_option( Webhooks::OPTION_WEBHOOK, require __DIR__ . '/../_data/square-webhook.php' );
+$webhook = require __DIR__ . '/../_data/square-webhook.php';
+tribe_update_option( Webhooks::OPTION_WEBHOOK, $webhook );
 
 // Enable pretty permalinks.
 update_option( 'permalink_structure', '/%postname%/' );
@@ -65,5 +67,6 @@ add_action( 'tribe_log', static function ( $level, $message, $context ) {
 } );
 
 tec_tickets_tests_enable_gateway_id_generation();
+
 // Register last so that our settings updates are applied.
 tribe_register_provider( Commerce_Provider::class );
