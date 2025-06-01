@@ -114,7 +114,7 @@ class Hooks extends Controller_Contract {
 	 * @throws Exception If the action fails after too many retries.
 	 */
 	public function process_async_webhook( int $order_id, int $retry = 0 ): void {
-		$order = tec_tc_get_order( $order_id, OBJECT, 'raw', true  );
+		$order = tec_tc_get_order( $order_id, OBJECT, 'raw', true );
 
 		if ( ! $order ) {
 			return;
