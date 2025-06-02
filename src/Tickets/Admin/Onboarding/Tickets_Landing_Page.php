@@ -251,7 +251,16 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return bool
 	 */
 	protected function force_wizard_display(): bool {
-		return apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+		/**
+		 * Filter to force the wizard to display.
+		 *
+		 * @since 5.23.0
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tec_tickets_onboarding_wizard_force_display', false, $this );
 	}
 
 	/**
@@ -276,7 +285,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		if ( $force ) {
 			return true;
 		}
-
 
 		$et_versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
 		// If there is more than one previous version, don't show the wizard.

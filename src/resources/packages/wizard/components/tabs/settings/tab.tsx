@@ -155,6 +155,18 @@ const SettingsContent = ( { moveToNextTab, skipToNextTab, addTab, updateTab, reo
 		});
 	};
 
+	// Wrapper for handleCurrencyChange
+	const onCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		handleCurrencyChange({
+			e,
+			setCurrency,
+			setPaymentGateways,
+			paymentOption,
+			setPaymentOption,
+			countries,
+		});
+	};
+
 	// Wrapper for handleNextTab
 	const onNextTab = () => {
 		handleNextTab({

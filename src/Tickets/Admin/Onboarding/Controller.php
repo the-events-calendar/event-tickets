@@ -195,8 +195,10 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
+		$visited_guided_setup = (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false );
+
 		// Early bail checks for existing setup.
-		if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
+		if ( $visited_guided_setup ) {
 			return;
 		}
 
@@ -209,7 +211,7 @@ class Controller extends Controller_Contract {
 		}
 
 		// For wizard redirect, verify we're on an ET admin page.
-		if ( $wizard_redirect && ! $this->is_et_admin_page() ) {
+		if ( ! $this->is_et_admin_page() ) {
 			return;
 		}
 
