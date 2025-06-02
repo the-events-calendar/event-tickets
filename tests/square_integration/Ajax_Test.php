@@ -7,13 +7,13 @@ use Closure;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
-use Tribe\Tickets\Test\Traits\With_WhoDat_Mocks;
+use Tribe\Tickets\Test\Traits\WhoDat_Mocks;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use WP_Send_Json_Mocks;
-	use With_WhoDat_Mocks;
+	use WhoDat_Mocks;
 
 	protected string $controller_class = Ajax::class;
 
@@ -44,7 +44,7 @@ class Ajax_Test extends Controller_Test_Case {
 					[
 						'message' => current_user_can( 'manage_options' ) ? 'Failed to generate connection URL.' : 'You do not have permission to perform this action.',
 					],
-					current_user_can( 'manage_options' ) ? 400 : 401
+					current_user_can( 'manage_options' ) ? 500 : 401
 				)
 			);
 			$this->assertFalse( $success->was_called() );

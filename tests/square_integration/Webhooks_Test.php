@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Traits\With_WhoDat_Mocks;
+use Tribe\Tickets\Test\Traits\WhoDat_Mocks;
 use Generator;
 use Closure;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
@@ -12,7 +12,7 @@ use WP_Error;
 
 class Webhooks_Test extends Controller_Test_Case {
 	use With_Uopz;
-	use With_WhoDat_Mocks;
+	use WhoDat_Mocks;
 	use WP_Send_Json_Mocks;
 
 	protected string $controller_class = Webhooks::class;
@@ -168,14 +168,14 @@ class Webhooks_Test extends Controller_Test_Case {
 
 	public function ajax_register_webhook_provider(): Generator {
 		yield 'no-nonce' => [
-			fn(): array => [ [ 'message' => 'Security check failed. Please refresh the page and try again.' ], 403 ],
+			fn(): array => [ [ 'message' => 'Security check failed. Please refresh the page and try again.' ], 401 ],
 		];
 
 		yield 'guest user' => [
 			function(): array {
 				wp_set_current_user( 0 );
 				$_REQUEST['nonce'] = wp_create_nonce( 'square-webhook-register' );
-				return [ [ 'message' => 'You do not have permission to perform this action.' ], 403 ];
+				return [ [ 'message' => 'You do not have permission to perform this action.' ], 401 ];
 			},
 		];
 
@@ -183,7 +183,7 @@ class Webhooks_Test extends Controller_Test_Case {
 			function(): array {
 				wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
 				$_REQUEST['nonce'] = wp_create_nonce( 'square-webhook-register' );
-				return [ [ 'message' => 'You do not have permission to perform this action.' ], 403 ];
+				return [ [ 'message' => 'You do not have permission to perform this action.' ], 401 ];
 			},
 		];
 
@@ -193,7 +193,7 @@ class Webhooks_Test extends Controller_Test_Case {
 				$_REQUEST['nonce'] = wp_create_nonce( 'square-webhook-register' );
 				$error = new WP_Error( 'error', 'test' );
 				$this->set_class_fn_return( Webhooks::class, 'register_webhook_endpoint', $error );
-				return [ $error, 400 ];
+				return [ $error, 500 ];
 			},
 		];
 
@@ -208,7 +208,7 @@ class Webhooks_Test extends Controller_Test_Case {
 						'message'  => 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.',
 						'response' => $response,
 					],
-					400
+					500
 				];
 			},
 		];
@@ -224,7 +224,7 @@ class Webhooks_Test extends Controller_Test_Case {
 						'message'  => 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.',
 						'response' => $response,
 					],
-					400
+					500
 				];
 			},
 		];

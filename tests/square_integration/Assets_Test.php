@@ -81,7 +81,7 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_should_correctly_determine_if_fe_assets_should_be_enqueued(): void {
+	public function it_should_correctly_determine_if_frontend_assets_should_be_enqueued(): void {
 		$controller = $this->make_controller();
 		$this->assertFalse( $controller->should_enqueue_assets() );
 

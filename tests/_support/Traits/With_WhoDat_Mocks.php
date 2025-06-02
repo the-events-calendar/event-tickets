@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use RuntimeException;
 
-trait With_WhoDat_Mocks {
+trait WhoDat_Mocks {
 	use With_Uopz;
 
 	/**
@@ -17,7 +17,7 @@ trait With_WhoDat_Mocks {
 	 *
 	 * @return void
 	 */
-	public function mock_methods() {
+	public function mock_whodat_methods() {
 		$auth_url = $this->get_mock_auth_url();
 		$this->set_class_fn_return( Abstract_WhoDat::class, 'get_with_cache', function ( $endpoint, $args = [] ) use ( $auth_url ) {
 			if ( $endpoint === 'oauth/authorize' ) {

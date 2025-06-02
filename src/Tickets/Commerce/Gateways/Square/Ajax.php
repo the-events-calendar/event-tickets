@@ -98,7 +98,7 @@ class Ajax extends Controller_Contract {
 		$connect_url = $this->who_dat->connect_account();
 
 		if ( ! $connect_url ) {
-			wp_send_json_error( [ 'message' => __( 'Failed to generate connection URL.', 'event-tickets' ) ], 400 );
+			wp_send_json_error( [ 'message' => __( 'Failed to generate connection URL.', 'event-tickets' ) ], 500 );
 			return;
 		}
 

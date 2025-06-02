@@ -332,7 +332,7 @@ class Webhooks extends Abstract_Webhooks {
 				[
 					'message' => __( 'Security check failed. Please refresh the page and try again.', 'event-tickets' ),
 				],
-				403
+				401
 			);
 			return;
 		}
@@ -343,7 +343,7 @@ class Webhooks extends Abstract_Webhooks {
 				[
 					'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ),
 				],
-				403
+				401
 			);
 			return;
 		}
@@ -352,7 +352,7 @@ class Webhooks extends Abstract_Webhooks {
 		$response = $this->register_webhook_endpoint();
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( $response, 400 );
+			wp_send_json_error( $response, 500 );
 			return;
 		}
 
@@ -362,7 +362,7 @@ class Webhooks extends Abstract_Webhooks {
 					'message'  => __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ),
 					'response' => $response,
 				],
-				400
+				500
 			);
 			return;
 		}
