@@ -17,10 +17,9 @@ defined( 'ABSPATH' ) || exit;
 $webhooks = tribe( Webhooks::class );
 
 $webhook_id    = $webhooks->get_webhook_id();
-$webhook       = $webhooks->get_webhook();
 $is_healthy    = $webhooks->is_webhook_healthy();
 $is_expired    = $webhooks->is_webhook_expired();
-$fetched_date  = ! empty( $webhook['fetched_at'] ) ? Dates::build_date_object( $webhook['fetched_at'] ) : null;
+$fetched_date  = $webhooks->get_fetched_date();
 $webhook_nonce = wp_create_nonce( 'square-webhook-register' );
 ?>
 <!-- Webhook Status -->

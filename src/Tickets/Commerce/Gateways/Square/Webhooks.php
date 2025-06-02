@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
 use Tribe__Date_Utils as Dates;
 use RuntimeException;
+use DateTimeInterface;
 
 /**
  * Class Webhooks
@@ -263,6 +264,17 @@ class Webhooks extends Abstract_Webhooks {
 	 */
 	public function get_webhook_id(): ?string {
 		return $this->get_webhook()['id'] ?? null;
+	}
+
+	/**
+	 * Get the fetched date.
+	 *
+	 * @since TBD
+	 *
+	 * @return DateTimeInterface|null The fetched date or null if not set.
+	 */
+	public function get_fetched_date(): ?DateTimeInterface {
+		return $this->get_webhook()['fetched_at'] ? Dates::build_date_object( $this->get_webhook()['fetched_at'] ) : null;
 	}
 
 	/**
