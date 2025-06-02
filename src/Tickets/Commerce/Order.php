@@ -64,7 +64,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var string
 	 */
-	protected const ORDER_LOCK_KEY = 'post_content_filtered';
+	public const ORDER_LOCK_KEY = 'post_content_filtered';
 
 	/**
 	 * Keeping track of the lock id generated during a request.
@@ -1225,6 +1225,8 @@ class Order extends Abstract_Order {
 				)
 			);
 
+			wp_cache_delete( $order_id, 'posts' );
+
 			/**
 			 * Fires after an order is attempted to be locked.
 			 *
@@ -1260,6 +1262,8 @@ class Order extends Abstract_Order {
 					DB::prefix( 'posts' )
 				)
 			);
+
+			wp_cache_delete( $order_id, 'posts' );
 
 			/**
 			 * Fires after an order is attempted to be unlocked.
