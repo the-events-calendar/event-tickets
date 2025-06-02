@@ -14,21 +14,19 @@ import { selectors } from './selectors';
 const storeName = 'tec-tickets-fees';
 
 const resolvers = {
-
-	* getAllFees() {
+	*getAllFees() {
 		const { feesAvailable, feesAutomatic } = yield actions.fetchFeesFromAPI();
 		return actions.setAllFees( feesAvailable, feesAutomatic );
 	},
 };
 
-
 // @see: https://developer.wordpress.org/block-editor/reference-guides/packages/packages-data/
 const store = createReduxStore( storeName, {
 	reducer,
-	actions: actions,
-	selectors: selectors,
-	controls: controls,
-	resolvers: resolvers,
+	actions,
+	selectors,
+	controls,
+	resolvers,
 } );
 
 register( store );

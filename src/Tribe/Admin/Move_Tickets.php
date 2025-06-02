@@ -128,7 +128,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'mode'                     => 'move_tickets',
 		) );
 
-		tribe_asset(
+		tec_asset(
 			Tribe__Tickets__Main::instance(),
 			'tribe-move-tickets-dialog',
 			'move-tickets-dialog.js',

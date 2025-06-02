@@ -11,17 +11,9 @@ import trim from 'lodash/trim';
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
-import {
-	constants,
-	actions,
-	selectors,
-} from '@moderntribe/tickets/data/blocks/ticket';
+import { constants, actions, selectors } from '../../../../../../../modules/data/blocks/ticket';
 
-const {
-	UNLIMITED,
-	INDEPENDENT,
-	TICKET_TYPES,
-} = constants;
+const { UNLIMITED, INDEPENDENT, TICKET_TYPES } = constants;
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
@@ -44,9 +36,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 		},
 		onTempCapacityNoPlusChange: ( e ) => {
 			const capacity = e.target.value;
-			const capacityType = trim( capacity ) === ''
-				? TICKET_TYPES[ UNLIMITED ]
-				: TICKET_TYPES[ INDEPENDENT ];
+			const capacityType = trim( capacity ) === '' ? TICKET_TYPES[ UNLIMITED ] : TICKET_TYPES[ INDEPENDENT ];
 			dispatch( actions.setTicketTempCapacityType( clientId, capacityType ) );
 			dispatch( actions.setTicketTempCapacity( clientId, capacity ) );
 			dispatch( actions.setTicketHasChanges( clientId, true ) );
@@ -62,10 +52,4 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );

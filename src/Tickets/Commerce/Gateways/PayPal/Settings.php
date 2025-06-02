@@ -22,7 +22,12 @@ class Settings extends Abstract_Settings {
 	public static $option_sandbox = 'tickets-commerce-paypal-sandbox';
 
 	/**
-	 * @inheritDoc
+	 * Get the list of settings for the gateway.
+	 *
+	 * @since 5.1.6
+	 * @since 5.23.0 Added new div.
+	 *
+	 * @return array The list of settings for the gateway.
 	 */
 	public function get_settings() {
 		$home_url = home_url();
@@ -34,11 +39,25 @@ class Settings extends Abstract_Settings {
 		// Add an initial empty selection to the start.
 		$countries = [ '' => __( '-- Please select a country --', 'event-tickets' ) ] + $countries;
 
+		$container_classes = [
+			'tec-settings-form__element--full-width' => true,
+			'tec-settings-form__element--no-row-gap' => ! tribe( Gateway::class )->is_active(),
+			'tec-settings-form__element--no-spacing' => tribe( Gateway::class )->is_active(),
+		];
+
 		return [
-			'tickets-commerce-paypal-commerce-configure' => [
+			'tickets-commerce-paypal-commerce-wrapper-start' => [
+				'type' => 'html',
+				'html' => '<div ' . tec_get_classes_attr( $container_classes ) . '>',
+			],
+			'tickets-commerce-paypal-commerce-configure'   => [
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
+			],
+			'tickets-commerce-paypal-commerce-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
 			],
 		];
 	}

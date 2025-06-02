@@ -1,9 +1,6 @@
 import './style.pcss';
-import {
-	initServiceIframe,
-	getIframeElement,
-} from '@tec/tickets/seating/service/iframe';
-import { onReady } from '@tec/tickets/seating/utils';
+import { initServiceIframe, getIframeElement } from '../../service/iframe';
+import { onReady } from '../../utils';
 import {
 	INBOUND_APP_READY_FOR_DATA,
 	OUTBOUND_SEAT_TYPE_TICKETS,
@@ -15,14 +12,14 @@ import {
 	removeAction,
 	registerAction,
 	sendPostMessage,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 import {
 	ajaxUrl,
 	ajaxNonce,
 	ACTION_FETCH_ATTENDEES,
 	ACTION_RESERVATION_CREATED,
 	ACTION_RESERVATION_UPDATED,
-} from '@tec/tickets/seating/ajax';
+} from '../../ajax';
 import { localizedData } from './localized-data';
 import { handleReservationsDeleted } from '../action-handlers';
 
@@ -59,24 +56,24 @@ const { seatTypeMap, postId } = localizedData;
  *
  * @return {Promise<EventAttendeesBatch>} A promise that will be resolved with the attendees.
  */
-export async function fetchAttendees(currentBatch) {
+export async function fetchAttendees( currentBatch ) {
 	currentBatch = currentBatch || 1;
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('postId', postId);
-	url.searchParams.set('action', ACTION_FETCH_ATTENDEES);
-	url.searchParams.set('currentBatch', currentBatch);
-	const response = await fetch(url.toString(), {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'postId', postId );
+	url.searchParams.set( 'action', ACTION_FETCH_ATTENDEES );
+	url.searchParams.set( 'currentBatch', currentBatch );
+	const response = await fetch( url.toString(), {
 		headers: {
 			Accept: 'application/json',
 		},
-	});
+	} );
 
 	const json = await response.json();
 
-	if (response.status !== 200) {
+	if ( response.status !== 200 ) {
 		throw new Error(
-			`Failed to fetch attendees for post ID ${postId}. Status: ${response.status} - ${json?.data?.error}`
+			`Failed to fetch attendees for post ID ${ postId }. Status: ${ response.status } - ${ json?.data?.error }`
 		);
 	}
 
@@ -100,13 +97,8 @@ export async function fetchAttendees(currentBatch) {
  *
  * @return {Promise<void>} A promise that will resolve the total number of Attendees sent.
  */
-export async function fetchAndSendAttendeeBatch(
-	iframe,
-	currentBatch,
-	resolve,
-	totalAttendees
-) {
-	return fetchAttendees(currentBatch).then((batch) => {
+export async function fetchAndSendAttendeeBatch( iframe, currentBatch, resolve, totalAttendees ) {
+	return fetchAttendees( currentBatch ).then( ( batch ) => {
 		const nextBatch = batch?.nextBatch || false;
 		const totalBatches = batch?.totalBatches || 1;
 		const attendeeData = {
@@ -114,22 +106,16 @@ export async function fetchAndSendAttendeeBatch(
 			currentBatch,
 			attendees: batch?.attendees || [],
 		};
-		sendPostMessage(iframe, OUTBOUND_EVENT_ATTENDEES, attendeeData);
-		const updatedTotalAttendees =
-			totalAttendees + attendeeData.attendees.length;
+		sendPostMessage( iframe, OUTBOUND_EVENT_ATTENDEES, attendeeData );
+		const updatedTotalAttendees = totalAttendees + attendeeData.attendees.length;
 
-		if (!nextBatch) {
-			resolve(updatedTotalAttendees);
+		if ( ! nextBatch ) {
+			resolve( updatedTotalAttendees );
 			return;
 		}
 
-		return fetchAndSendAttendeeBatch(
-			iframe,
-			nextBatch,
-			resolve,
-			updatedTotalAttendees
-		);
-	});
+		return fetchAndSendAttendeeBatch( iframe, nextBatch, resolve, updatedTotalAttendees );
+	} );
 }
 
 /**
@@ -141,10 +127,10 @@ export async function fetchAndSendAttendeeBatch(
  *
  * @return {Promise<number>} A promise that will be resolved to the total number of Attendees sent.
  */
-export async function sendAttendeesToService(iframe) {
-	return new Promise((resolve) => {
-		fetchAndSendAttendeeBatch(iframe, 1, resolve, 0);
-	});
+export async function sendAttendeesToService( iframe ) {
+	return new Promise( ( resolve ) => {
+		fetchAndSendAttendeeBatch( iframe, 1, resolve, 0 );
+	} );
 }
 
 /**
@@ -169,26 +155,24 @@ export async function sendAttendeesToService(iframe) {
  *
  * @return {SeatReportAttendee} The updated Attendee data.
  */
-export async function updateAttendeeReservation(props) {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	const action = props.ticketId
-		? ACTION_RESERVATION_CREATED
-		: ACTION_RESERVATION_UPDATED;
-	url.searchParams.set('action', action);
-	url.searchParams.set('postId', postId);
-	const response = await fetch(url.toString(), {
+export async function updateAttendeeReservation( props ) {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	const action = props.ticketId ? ACTION_RESERVATION_CREATED : ACTION_RESERVATION_UPDATED;
+	url.searchParams.set( 'action', action );
+	url.searchParams.set( 'postId', postId );
+	const response = await fetch( url.toString(), {
 		method: 'POST',
-		body: JSON.stringify(props),
-	});
+		body: JSON.stringify( props ),
+	} );
 
-	if (!response.ok) {
+	if ( ! response.ok ) {
 		return false;
 	}
 
 	const json = await response.json();
 
-	if (!json.data) {
+	if ( ! json.data ) {
 		return false;
 	}
 
@@ -205,16 +189,16 @@ export async function updateAttendeeReservation(props) {
  *
  * @return {Promise<boolean>} A promise that will resolve to `true` if the Attendee reservation was created, `false` otherwise.
  */
-export async function handleReservationCreated(iframe, props) {
-	const updatedAttendee = await updateAttendeeReservation(props);
+export async function handleReservationCreated( iframe, props ) {
+	const updatedAttendee = await updateAttendeeReservation( props );
 
-	if (!updatedAttendee) {
+	if ( ! updatedAttendee ) {
 		return false;
 	}
 
-	sendPostMessage(iframe, OUTBOUND_ATTENDEE_UPDATE, {
+	sendPostMessage( iframe, OUTBOUND_ATTENDEE_UPDATE, {
 		attendee: updatedAttendee,
-	});
+	} );
 
 	return true;
 }
@@ -229,16 +213,16 @@ export async function handleReservationCreated(iframe, props) {
  *
  * @return {Promise<boolean>} A promise that will resolve to `true` if the Attendee reservation was updated, `false` otherwise.
  */
-export async function handleReservationUpdated(iframe, props) {
-	const updatedAttendee = await updateAttendeeReservation(props);
+export async function handleReservationUpdated( iframe, props ) {
+	const updatedAttendee = await updateAttendeeReservation( props );
 
-	if (!updatedAttendee) {
+	if ( ! updatedAttendee ) {
 		return false;
 	}
 
-	sendPostMessage(iframe, OUTBOUND_ATTENDEE_UPDATE, {
+	sendPostMessage( iframe, OUTBOUND_ATTENDEE_UPDATE, {
 		attendee: updatedAttendee,
-	});
+	} );
 
 	return true;
 }
@@ -250,23 +234,19 @@ export async function handleReservationUpdated(iframe, props) {
  *
  * @param {HTMLElement} iframe The service iframe element to listen to.
  */
-function registerActions(iframe) {
+function registerActions( iframe ) {
 	// When the service is ready for data, send the seat type map to the iframe.
-	registerAction(INBOUND_APP_READY_FOR_DATA, async () => {
-		removeAction(INBOUND_APP_READY_FOR_DATA);
-		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
-		await sendAttendeesToService(iframe);
-	});
+	registerAction( INBOUND_APP_READY_FOR_DATA, async () => {
+		removeAction( INBOUND_APP_READY_FOR_DATA );
+		sendPostMessage( iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap );
+		await sendAttendeesToService( iframe );
+	} );
 
-	registerAction(RESERVATION_CREATED, (props) =>
-		handleReservationCreated(iframe, props)
-	);
+	registerAction( RESERVATION_CREATED, ( props ) => handleReservationCreated( iframe, props ) );
 
-	registerAction(RESERVATION_UPDATED, (props) =>
-		handleReservationUpdated(iframe, props)
-	);
+	registerAction( RESERVATION_UPDATED, ( props ) => handleReservationUpdated( iframe, props ) );
 
-	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted );
+	registerAction( RESERVATIONS_DELETED, handleReservationsDeleted );
 }
 
 /**
@@ -278,20 +258,20 @@ function registerActions(iframe) {
  *
  * @return {Promise<void>} A promise that resolves when the iframe is initialized.
  */
-export async function init(dom) {
+export async function init( dom ) {
 	dom = dom || document;
 
-	const iframe = getIframeElement(dom);
+	const iframe = getIframeElement( dom );
 
-	if (!iframe) {
+	if ( ! iframe ) {
 		return false;
 	}
 
 	// Register the actions before initializing the iframe to avoid race conditions.
-	registerActions(iframe);
-	await initServiceIframe(iframe);
+	registerActions( iframe );
+	await initServiceIframe( iframe );
 }
 
-onReady(() => {
-	init(document);
-});
+onReady( () => {
+	init( document );
+} );

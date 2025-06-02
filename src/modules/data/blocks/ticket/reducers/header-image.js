@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
+import * as types from '../types';
 
 /**
  * Full payload from gutenberg media upload is not used,

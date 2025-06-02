@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { PREFIX_TICKETS_STORE } from '@moderntribe/tickets/data/utils';
+import { PREFIX_TICKETS_STORE } from '../../utils';
 
 //
 // ─── MODAL DATA ─────────────────────────────────────────────────────────────────
@@ -34,4 +34,3 @@ export const FETCH_POST_CHOICES_ERROR = `${ PREFIX_TICKETS_STORE }/FETCH_POST_CH
 export const MOVE_TICKET = `${ PREFIX_TICKETS_STORE }/MOVE_TICKET`;
 export const MOVE_TICKET_SUCCESS = `${ PREFIX_TICKETS_STORE }/MOVE_TICKET_SUCCESS`;
 export const MOVE_TICKET_ERROR = `${ PREFIX_TICKETS_STORE }/MOVE_TICKET_ERROR`;
-

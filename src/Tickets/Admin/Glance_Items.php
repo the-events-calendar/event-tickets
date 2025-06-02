@@ -47,7 +47,7 @@ class Glance_Items {
 			if ( ! wp_next_scheduled( 'tec_tickets_update_glance_item_attendee_counts' ) ) {
 				wp_schedule_single_event( time(), 'tec_tickets_update_glance_item_attendee_counts' );
 			}
-			return $items;
+			return (array) $items;
 		}
 
 		// Translators: %s Is the number of attendees.
