@@ -9,6 +9,8 @@ use Generator;
 use Closure;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
 use WP_Error;
+use DateTimeInterface;
+use Tribe__Date_Utils as Dates;
 
 class Webhooks_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -164,6 +166,19 @@ class Webhooks_Test extends Controller_Test_Case {
 
 		$this->assertFalse( $controller->is_webhook_healthy() );
 		$this->assertTrue( $controller->is_webhook_expired() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_get_fetched_date(): void {
+		$controller = $this->make_controller();
+		$fetched_date = $controller->get_fetched_date();
+		$this->assertInstanceOf( DateTimeInterface::class, $fetched_date );
+		$webhook_fetched_at = require __DIR__ . '/../_data/square-webhook.php';
+		$this->assertEquals( $webhook_fetched_at['fetched_at'], $fetched_date->format( Dates::DBDATETIMEFORMAT ) );
+		tribe_remove_option( Webhooks::OPTION_WEBHOOK );
+		$this->assertNull( $controller->get_fetched_date() );
 	}
 
 	public function ajax_register_webhook_provider(): Generator {
