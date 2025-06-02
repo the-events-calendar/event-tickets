@@ -52,7 +52,7 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 			'%s',
 			'%s',
 			'%d',
-			'%s', // Use %s for cost to avoid float conversion..
+			'%s', // Use %s for cost to avoid float conversion.
 		] );
 
 		$model->id = DB::last_insert_id();
@@ -73,13 +73,27 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 	 * {@inheritDoc}
 	 */
 	public function update( Model $model ): Model {
-		DB::update( Table::table_name(), [
-			'slug' => $model->slug,
-			'data' => $model->data,
-		], [ 'id' => $model->id ], [
-			'%s',
-			'%s',
-		], [ '%d' ] );
+		DB::update(
+			Table::table_name(),
+			[
+				'slug'     => $model->slug,
+				'data'     => $model->data,
+				'name'     => $model->name,
+				'capacity' => $model->capacity,
+				'cost'     => $model->cost, // pass as string.
+			],
+			[
+				'id' => $model->id,
+			],
+			[
+				'%s',
+				'%s',
+				'%s',
+				'%d',
+				'%s',
+			],
+			[ '%d' ]
+		);
 
 		return $model;
 	}
