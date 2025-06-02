@@ -165,6 +165,8 @@ class Syncs_Controller_Test extends Controller_Test_Case {
 
 		$settings = Settings_Manager::get_options();
 
+		$did_action = did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE );
+
 		Controller::reset_sync_status( $settings );
 
 		do_action( 'tec_shutdown' );
@@ -172,7 +174,7 @@ class Syncs_Controller_Test extends Controller_Test_Case {
 
 		$this->assertEquals( $settings, Settings_Manager::get_options() );
 
-		$this->assertEquals( 1, did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE ) );
+		$this->assertEquals( ++$did_action, did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE ) );
 		$this->assertEquals( 0, did_action( 'tec_tickets_commerce_square_sync_post_reset_status' ) );
 
 		$ticket_able_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
@@ -190,7 +192,7 @@ class Syncs_Controller_Test extends Controller_Test_Case {
 		do_action( 'tec_shutdown' );
 		remove_all_actions( 'tec_shutdown' );
 
-		$this->assertEquals( 2, did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE ) );
+		$this->assertEquals( ++$did_action, did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE ) );
 		$this->assertEquals( 1, did_action( 'tec_tickets_commerce_square_sync_post_reset_status' ) );
 
 		$this->assertCount( count( $settings ) - 2, Settings_Manager::get_options() );
@@ -201,7 +203,7 @@ class Syncs_Controller_Test extends Controller_Test_Case {
 		do_action( 'tec_shutdown' );
 		remove_all_actions( 'tec_shutdown' );
 
-		$this->assertEquals( 3, did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE ) );
+		$this->assertEquals( ++$did_action, did_action( Listeners::HOOK_SYNC_RESET_SYNCED_POST_TYPE ) );
 		$this->assertEquals( 2, did_action( 'tec_tickets_commerce_square_sync_post_reset_status' ) );
 
 		$this->assertCount( count( $settings ) - ( 2 * count( $ticket_able_post_types ) ), Settings_Manager::get_options() );
