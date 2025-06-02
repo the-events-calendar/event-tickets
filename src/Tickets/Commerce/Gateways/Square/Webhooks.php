@@ -53,15 +53,6 @@ class Webhooks extends Abstract_Webhooks {
 	public const OPTION_WEBHOOK = 'tickets-commerce-square-webhook';
 
 	/**
-	 * Option key for storing webhook IDs.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const OPTION_WEBHOOK_ID = 'tickets-commerce-square-webhook-id';
-
-	/**
 	 * Gets the gateway for this webhook.
 	 *
 	 * @since TBD
@@ -89,7 +80,6 @@ class Webhooks extends Abstract_Webhooks {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		// Add AJAX handler for webhook registration.
 		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
 		add_action( 'init', [ $this, 'schedule_webhook_registration_refresh' ] );
 		add_action( 'tec_tickets_commerce_square_refresh_webhook', [ $this, 'refresh_webhook' ] );
@@ -101,7 +91,6 @@ class Webhooks extends Abstract_Webhooks {
 	 * @since TBD
 	 */
 	public function unregister(): void {
-		// Add AJAX handler for webhook registration.
 		remove_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
 		remove_action( 'init', [ $this, 'schedule_webhook_registration_refresh' ] );
 		remove_action( 'tec_tickets_commerce_square_refresh_webhook', [ $this, 'refresh_webhook' ] );
@@ -155,6 +144,10 @@ class Webhooks extends Abstract_Webhooks {
 		$webhook_secret = $regenerate ? null : get_transient( self::OPTION_WEBHOOK_SECRET );
 
 		if ( ! ( $webhook_secret && is_string( $webhook_secret ) ) ) {
+			if ( ! $regenerate ) {
+				return '';
+			}
+
 			$webhook_secret = wp_generate_password( 64, true, true );
 
 			// We specifically save the raw secret key, not the hashed version, so that if the salt changes the webhooks fail.
@@ -198,9 +191,7 @@ class Webhooks extends Abstract_Webhooks {
 		 *
 		 * @param string $endpoint_url The webhook endpoint URL.
 		 */
-		$endpoint_url = (string) apply_filters( 'tec_tickets_commerce_square_webhook_endpoint_url', $endpoint_url );
-
-		return $endpoint_url;
+		return (string) apply_filters( 'tec_tickets_commerce_square_webhook_endpoint_url', $endpoint_url );
 	}
 
 	/**
@@ -229,7 +220,6 @@ class Webhooks extends Abstract_Webhooks {
 		$subscription['fetched_at'] = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
 
 		tribe_update_option( self::OPTION_WEBHOOK, $subscription );
-		tribe_update_option( self::OPTION_WEBHOOK_ID, $subscription['id'] );
 
 		return $subscription;
 	}
@@ -239,7 +229,7 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string,mixed>|null {
+	 * @return array<string,mixed> {
 	 *     The webhook data or null if not set.
 	 *     @type string       $id               The webhook subscription ID.
 	 *     @type string       $name             The webhook subscription name.
@@ -254,11 +244,11 @@ class Webhooks extends Abstract_Webhooks {
 	 *     @type string       $fetched_at       The timestamp when the subscription was last fetched.
 	 * }
 	 */
-	public function get_webhook(): ?array {
+	protected function get_webhook(): array {
 		$webhook = tribe_get_option( self::OPTION_WEBHOOK );
 
-		if ( empty( $webhook ) || ! is_array( $webhook ) ) {
-			return null;
+		if ( empty( $webhook['id'] ) || ! is_array( $webhook ) ) {
+			return [];
 		}
 
 		return $webhook;
@@ -272,32 +262,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return string|null The webhook ID or null if not set.
 	 */
 	public function get_webhook_id(): ?string {
-		$webhook_id = tribe_get_option( self::OPTION_WEBHOOK_ID );
-
-		if ( empty( $webhook_id ) ) {
-			return null;
-		}
-
-		return (string) $webhook_id;
-	}
-
-	/**
-	 * Gets the API version to use for webhooks.
-	 * Prioritizes the version from the available types endpoint, falling back to the class property.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $force_refresh Whether to force a refresh from the API.
-	 * @return string|null The API version to use or null if not set.
-	 */
-	public function get_api_version( bool $force_refresh = false ): ?string {
-		if ( $force_refresh ) {
-			$this->register_webhook_endpoint();
-		}
-
-		$webhook = $this->get_webhook();
-
-		return $webhook['api_version'] ?? null;
+		return $this->get_webhook()['id'] ?? null;
 	}
 
 	/**
@@ -309,10 +274,12 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @return bool Whether the signature is valid.
 	 */
-	public function verify_signature( $received_secret_key ) {
-		$webhook = $this->get_webhook();
+	public function verify_signature( string $received_secret_key ): bool {
+		if ( ! $received_secret_key ) {
+			return false;
+		}
 
-		if ( empty( $webhook ) || ! isset( $webhook['signature_key'] ) ) {
+		if ( empty( $this->get_webhook()['id'] ) ) {
 			return false;
 		}
 
@@ -364,44 +331,47 @@ class Webhooks extends Abstract_Webhooks {
 			wp_send_json_error(
 				[
 					'message' => __( 'Security check failed. Please refresh the page and try again.', 'event-tickets' ),
-				]
+				],
+				401
 			);
+			return;
 		}
 
 		// Check user capabilities.
-		if (
-			! current_user_can( 'manage_options' )
-		) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
 				[
 					'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ),
-				]
+				],
+				401
 			);
+			return;
 		}
 
 		// Register new webhook.
 		$response = $this->register_webhook_endpoint();
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( $response );
+			wp_send_json_error( $response, 500 );
+			return;
 		}
 
-		if (
-			empty( $response ) ||
-			isset( $response['errors'] )
-		) {
+		if ( ! $response || isset( $response['errors'] ) ) {
 			wp_send_json_error(
 				[
 					'message'  => __( 'Failed to register webhook endpoint for Square. Please check your connection settings and try again.', 'event-tickets' ),
 					'response' => $response,
-				]
+				],
+				500
 			);
+			return;
 		}
 
 		wp_send_json_success(
 			[
 				'message' => __( 'Webhook endpoint successfully registered with Square.', 'event-tickets' ),
-			]
+			],
+			200
 		);
 	}
 
@@ -413,13 +383,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool Whether the webhook is healthy.
 	 */
 	public function is_webhook_healthy(): bool {
-		$webhook = $this->get_webhook();
-
-		if ( empty( $webhook ) || ! isset( $webhook['id'] ) ) {
-			return false;
-		}
-
-		return true;
+		return (bool) ( $this->get_webhook()['id'] ?? false );
 	}
 
 	/**
@@ -432,8 +396,8 @@ class Webhooks extends Abstract_Webhooks {
 	public function is_webhook_expired(): bool {
 		$webhook = $this->get_webhook();
 
-		if ( empty( $webhook ) || ! isset( $webhook['id'] ) ) {
-			return false;
+		if ( empty( $webhook['id'] ) ) {
+			return true;
 		}
 
 		$expires_at = $webhook['expires_at'] ?? null;
@@ -455,10 +419,10 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @return bool Whether the webhook should be refreshed.
 	 */
-	public function should_refresh_webhook(): bool {
+	protected function should_refresh_webhook(): bool {
 		$webhook = $this->get_webhook();
 
-		if ( empty( $webhook ) || ! isset( $webhook['id'] ) ) {
+		if ( empty( $webhook['id'] ) ) {
 			return false;
 		}
 

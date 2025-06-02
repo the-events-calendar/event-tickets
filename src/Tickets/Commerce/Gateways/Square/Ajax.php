@@ -90,25 +90,20 @@ class Ajax extends Controller_Contract {
 	public function ajax_connect_account(): void {
 		// Check if the current user has permission.
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ) ] );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ) ], 401 );
 			return;
 		}
 
-		try {
-			// Use WhoDat to get the connection URL.
-			$connect_url = $this->who_dat->connect_account();
+		// Use WhoDat to get the connection URL.
+		$connect_url = $this->who_dat->connect_account();
 
-			if ( ! empty( $connect_url ) ) {
-				Commerce_Settings::delete( 'tickets_commerce_gateways_square_remotely_disconnected_%s' );
-				wp_send_json_success( [ 'url' => $connect_url ] );
-				return;
-			}
-		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => $e->getMessage() ] );
+		if ( ! $connect_url ) {
+			wp_send_json_error( [ 'message' => __( 'Failed to generate connection URL.', 'event-tickets' ) ], 500 );
 			return;
 		}
 
-		wp_send_json_error( [ 'message' => __( 'Failed to generate connection URL.', 'event-tickets' ) ] );
+		Commerce_Settings::delete( 'tickets_commerce_gateways_square_remotely_disconnected_%s' );
+		wp_send_json_success( [ 'url' => $connect_url ] );
 	}
 
 	/**
@@ -122,19 +117,16 @@ class Ajax extends Controller_Contract {
 		check_ajax_referer( $this->merchant->get_disconnect_action(), '_wpnonce' );
 		// Check if the current user has permission.
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( [ 'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ) ] );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to perform this action.', 'event-tickets' ) ], 401 );
+			return;
 		}
 
-		try {
-			// Disconnect from Square via WhoDat API.
-			$this->who_dat->disconnect_account();
+		// Disconnect from Square via WhoDat API.
+		$this->who_dat->disconnect_account();
 
-			// Delete local merchant data.
-			$this->merchant->delete_signup_data();
+		// Delete local merchant data.
+		$this->merchant->delete_signup_data();
 
-			wp_send_json_success( [ 'message' => __( 'Successfully disconnected from Square.', 'event-tickets' ) ] );
-		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => $e->getMessage() ] );
-		}
+		wp_send_json_success( [ 'message' => __( 'Successfully disconnected from Square.', 'event-tickets' ) ] );
 	}
 }

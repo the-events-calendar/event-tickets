@@ -181,7 +181,17 @@ class Notices_Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {}
+	public function unregister(): void {
+		foreach ( [
+			self::WEBHOOK_NOTICE_SLUG,
+			self::NOT_READY_TO_SELL_NOTICE_SLUG,
+			self::CURRENCY_MISMATCH_NOTICE_SLUG,
+			self::JUST_ONBOARDED_NOTICE_SLUG,
+			self::REMOTELY_DISCONNECTED_NOTICE_SLUG,
+		] as $slug ) {
+			tec_remove_notice( $slug );
+		}
+	}
 
 	/**
 	 * Determines if the just onboarded notice should be displayed.
