@@ -58,6 +58,7 @@ function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $fo
 	$key_fields = [
 		$cache_post->ID,
 		$cache_post->post_modified,
+		$cache_post->{Order::ORDER_LOCK_KEY},
 		// Use the `post_password` field as we show/hide some information depending on that.
 		$cache_post->post_password,
 		// We must include options on cache key, because options influence the hydrated data on the Order object.
