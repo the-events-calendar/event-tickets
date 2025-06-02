@@ -383,7 +383,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool Whether the webhook is healthy.
 	 */
 	public function is_webhook_healthy(): bool {
-		return $this->get_webhook()['id'] ?? false;
+		return (bool) ( $this->get_webhook()['id'] ?? false );
 	}
 
 	/**
