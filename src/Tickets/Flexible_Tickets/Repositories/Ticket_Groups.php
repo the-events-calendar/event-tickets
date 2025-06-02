@@ -71,6 +71,8 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	public function update( Model $model ): Model {
 		DB::update(
