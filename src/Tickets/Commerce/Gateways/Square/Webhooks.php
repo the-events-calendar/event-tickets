@@ -274,7 +274,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return DateTimeInterface|null The fetched date or null if not set.
 	 */
 	public function get_fetched_date(): ?DateTimeInterface {
-		return $this->get_webhook()['fetched_at'] ? Dates::build_date_object( $this->get_webhook()['fetched_at'] ) : null;
+		return ! empty( $this->get_webhook()['fetched_at'] ) ? Dates::build_date_object( $this->get_webhook()['fetched_at'] ) : null;
 	}
 
 	/**
