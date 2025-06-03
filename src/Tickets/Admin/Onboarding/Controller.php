@@ -195,10 +195,11 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$visited_guided_setup = (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false );
+		delete_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION );
+		delete_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION );
 
-		// Early bail checks for existing setup.
-		if ( $visited_guided_setup ) {
+		// If the wizard is completed, we don't need to redirect.
+		if ( $this->container->get( Landing_Page::class )->is_tec_wizard_completed() ) {
 			return;
 		}
 
@@ -211,7 +212,7 @@ class Controller extends Controller_Contract {
 		}
 
 		// For wizard redirect, verify we're on an ET admin page.
-		if ( ! $this->is_et_admin_page() ) {
+		if ( $wizard_redirect && ! $this->is_et_admin_page() ) {
 			return;
 		}
 
