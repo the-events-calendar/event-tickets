@@ -615,7 +615,7 @@ tribe.tickets.block = {
 			}
 
 			if ( 'true' === $ticket.attr( 'data-has-shared-cap' ) ) {
-				maxQty = obj.checkSharedCapacity( $form, newQuantity, $this );
+				maxQty = obj.checkSharedCapacity( $form, newQuantity, $ticket );
 			}
 
 			if ( 0 > maxQty ) {
