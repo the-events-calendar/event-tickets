@@ -117,6 +117,7 @@ class Template_Test extends WPTestCase {
 	 * @test
 	 */
 	public function overall_template(): void {
+		$_GET['page'] = 'et_help_hub';
 		ob_start();
 		$this->hub->render();
 		$output = ob_get_clean();
