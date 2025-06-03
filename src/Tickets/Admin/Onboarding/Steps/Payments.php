@@ -72,7 +72,7 @@ class Payments extends Abstract_Step {
 			return $this->handle_payment_gateway_connection( $response, $request );
 		}
 
-		if ( isset( $params['stripeConnected'] ) && $params['stripeConnected'] ) {
+		if ( ! empty( $params['stripeConnected'] ) || ! empty( $params['squareConnected'] ) ) {
 			$success = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
 			$success = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page() || $success;
 
