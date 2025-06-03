@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Removed filters: `tec_tickets_commerce_gateway_stripe_webhook_maximum_attempts`

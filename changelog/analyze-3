@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Added actions: `tribe_log`, `tec_tickets_commerce_square_merchant_disconnected`, `tec_tickets_commerce_square_order_before_upsert`, `tec_tickets_commerce_square_order_after_upsert`, `tec_tickets_commerce_square_webhook_event`, `tec_tickets_commerce_square_ticket_out_of_sync`, `tec_tickets_commerce_square_sync_post_reset_status`, `tec_tickets_commerce_square_sync_inventory_changed_`, `tec_tickets_commerce_square_sync_inventory_changed`, `tec_tickets_commerce_square_sync_completed`, `tec_tickets_commerce_square_sync_ticket_id_mapping_`, `tec_tickets_commerce_square_sync_ticket_id_mapping`, `tec_tickets_commerce_square_sync_object_`, `tec_tickets_commerce_square_sync_object`, `tec_tickets_commerce_square_object_synced_`, `tec_tickets_commerce_square_object_synced`, `tec_tickets_commerce_square_sync_request_completed`
