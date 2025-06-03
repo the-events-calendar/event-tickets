@@ -40,7 +40,7 @@ class Regulator extends Controller_Contract {
 	 *
 	 * @var int
 	 */
-	protected const MAX_DELAY = 2 * HOUR_IN_SECONDS;
+	public const MAX_DELAY = 2 * HOUR_IN_SECONDS;
 
 	/**
 	 * The random delay ranges for the sync.
@@ -162,6 +162,17 @@ class Regulator extends Controller_Contract {
 		remove_action( Integrity_Controller::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [ $this, 'integrity_sync_inventory' ] );
 		remove_action( 'tec_tickets_commerce_square_sync_request_completed', [ $this, 'reset_rate_limited_storage' ] );
 		remove_action( Order::HOOK_PULL_ORDER_ACTION, [ $this, 'pull_order' ] );
+	}
+
+	/**
+	 * Resets the random delays.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function reset_random_delays(): void {
+		self::$random_delays = [];
 	}
 
 	/**
@@ -502,7 +513,13 @@ class Regulator extends Controller_Contract {
 
 		if ( count( $this->rate_limited_data ) > 1 ) {
 			$size = count( $this->rate_limited_data );
-			return ( $this->rate_limited_data[ $size - 1 ] - $this->rate_limited_data[ $size - 2 ] ) + $minimum_delay;
+			return min(
+				max(
+					3 * $size * abs( $this->rate_limited_data[ $size - 1 ] - $this->rate_limited_data[ $size - 2 ] ) / 2,
+					MINUTE_IN_SECONDS / 2
+				) + $minimum_delay,
+				self::MAX_DELAY
+			);
 		}
 
 		return ( MINUTE_IN_SECONDS / 2 ) + $minimum_delay;
@@ -523,19 +540,20 @@ class Regulator extends Controller_Contract {
 			return $minimum_delay;
 		}
 
-		if ( $minimum_delay > self::MAX_DELAY ) {
+		if ( $minimum_delay >= self::MAX_DELAY ) {
 			return $minimum_delay;
 		}
 
 		$desired_offset = 10;
 		foreach ( self::RANDOM_DELAY_RANGES as $offset => $delay ) {
-			if ( $minimum_delay >= $delay[0] ) {
-				$desired_offset = $offset;
-				break;
+			if ( $minimum_delay >= $delay[1] ) {
+				continue;
 			}
+			$desired_offset = $offset;
+			break;
 		}
 
-		$delay = max( wp_rand( self::RANDOM_DELAY_RANGES[ $desired_offset ][0], self::RANDOM_DELAY_RANGES[ $desired_offset ][1] ), self::MAX_DELAY );
+		$delay = $minimum_delay + min( wp_rand( self::RANDOM_DELAY_RANGES[ $desired_offset ][0], self::RANDOM_DELAY_RANGES[ $desired_offset ][1] ), self::MAX_DELAY );
 
 		$last_item = end( self::$random_delays );
 		if ( $last_item && $last_item >= $delay ) {
