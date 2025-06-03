@@ -848,9 +848,6 @@ class Ticket {
 		$attendees      = tribe( Module::class )->get_attendees_by_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
 		
-		// Check if we're deleting a ticket type or an attendee.
-		$is_attendee_deletion = ! empty( $post_to_delete ) && 'tec_tc_attendee' === $post_to_delete->post_type;
-
 		foreach ( (array) $attendees as $attendee ) {
 			if ( $attendee['product_id'] == $ticket_id ) {
 				update_post_meta( $attendee['attendee_id'], Attendee::$deleted_ticket_meta_key, esc_html( $post_to_delete->post_title ) );
@@ -861,11 +858,6 @@ class Ticket {
 		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
-		}
-
-		// Only increment deleted attendees count if we're actually deleting an attendee, not a ticket type.
-		if ( $is_attendee_deletion ) {
-			\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 		}
 		
 		do_action( 'tec_tickets_commerce_ticket_deleted', $ticket_id, $event_id, $product_id );
