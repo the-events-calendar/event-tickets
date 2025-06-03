@@ -76,5 +76,4 @@ interface Merchant_Interface {
 	 * @return boolean
 	 */
 	public function from_array( array $data, $needs_save = true );
-
 }

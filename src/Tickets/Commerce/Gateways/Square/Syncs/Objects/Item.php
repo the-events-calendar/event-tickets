@@ -185,7 +185,7 @@ abstract class Item implements JsonSerializable {
 		 * We don't sync any image until Square resolves its issue,
 		 * where not setting the image_ids removes all the images from the catalog object.
 		 */
-		// $this->set_image_ids();
+		// $this->set_image_ids(); // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 
 		return $this->set_object_values();
 	}
