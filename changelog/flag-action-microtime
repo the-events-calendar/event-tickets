@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Tickets Commerce Flag Actions for controlling stock and attendees have increased precision to microtime to avoid concurrency problems

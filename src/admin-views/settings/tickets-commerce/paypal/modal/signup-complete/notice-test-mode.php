@@ -8,6 +8,8 @@
  * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 // Bail if not in sandbox mode.
 if ( empty( tec_tickets_commerce_is_sandbox_mode() ) ) {
 	return;
