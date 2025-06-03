@@ -1,2 +1,5 @@
 # All changes require Lead review
 event-tickets.php src/Tribe/Main.php src/Tribe/Tickets.php @bordoni
+
+# I want to review anything Square related.
+src/Tickets/Commerce/Gateways/Square/ @dpanta94
