@@ -163,7 +163,7 @@ class Requests extends Abstract_Requests {
 	 */
 	public static function get_headers(): array {
 		return [
-			'Square-Version' => '2025-04-16',
+			'Square-Version' => '2025-05-21',
 			'Content-Type'   => 'application/json',
 			'Accept'         => 'application/json',
 		];
