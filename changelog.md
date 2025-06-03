@@ -2,6 +2,7 @@
 
 ### [5.24.0] 2025-06-03
 
+* Version - Event Tickets 5.24.0 is only compatible with The Events Calendar 6.13.2 or higher.
 * Feature - Introduced Help Hub, a centralized support and resource interface for enhanced user guidance and plugin assistance. [ET-2375]
 * Feature - Introduced support for Square as a payment gateway for our TicketsCommerce. That comes with support for selling Tickets through Square's POS! [ET-2383]
 * Fix - Allow seated attendees to be manually deleted even if the event has been deleted already [ET-2440]
