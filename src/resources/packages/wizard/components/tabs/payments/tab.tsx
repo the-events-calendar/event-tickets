@@ -29,7 +29,7 @@ const PaymentsContent = ({ moveToNextTab, skipToNextTab }) => {
 	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
 
 	const tabSettings = {
-		currentTab: 1,
+		currentTab: 2,
 		action_nonce: actionNonce,
 		gateway: paymentOption,
 	};
