@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\RSVP\REST;
 
+use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
@@ -96,14 +97,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 			'html' => '',
 		];
-
-		$data      = $request->get_json_params();
-		$params     = $request->get_params();
-/*		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
-
-		if ( is_wp_error( $purchaser ) ) {
-			return $purchaser;
-		}*/
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 		$step      = tribe_get_request_var( 'step', null );
@@ -223,6 +216,70 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
 			$first_attendee = $this->parse_attendee_details();
+
+/*			$data      = $request->get_json_params();
+			$params     = $request->get_params();*/
+
+			/*
+			 * data for purchaser:
+
+			 array (
+			   'purchaser' =>
+			   array (
+			     'name' => 'Brian',
+			     'email' => 'Brian@theeventscalendar.com',
+			   ),
+			 )
+
+			first attendee
+
+			 */
+			$data = [
+				'purchaser' => [
+					'name'  => $first_attendee['full_name'],
+					'email' => $first_attendee['email'],
+				],
+			];
+
+			$purchaser = tribe( Order::class )->get_purchaser_data( $data );
+
+			if ( is_wp_error( $purchaser ) ) {
+				return $purchaser;
+			}
+
+			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+
+			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+			if ( is_wp_error( $created ) ) {
+				return $created;
+			}
+
+			$updated = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+			if ( is_wp_error( $updated ) ) {
+				return $updated;
+			}
+
+			tribe( Cart::class )->clear_cart();
+
+			$response['success']      = true;
+			$response['id']           = $order->ID;
+			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
+
+
+			$attendee_ids = implode( ',', $attendee_ids );
+
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
+
+			$response['opt_in_args'] = [
+				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
+				'checked'      => false,
+				'attendee_ids' => $attendee_ids,
+				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
+			];
+
+			return $response;
 
 			/**
 			 * These are the inputs we should be seeing:
@@ -392,7 +449,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'step'       => $step,
 			'must_login' => ! is_user_logged_in() && $this->module->login_required(),
 			//'login_url'  => self::get_login_url( $post_id ),
-			'login_url'  => tribe( Checkout::class )->get_login_url( $post_id ),
+			'login_url'  => tribe( Checkout::class )->get_login_url(),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 			'going'      => tribe_get_request_var( 'going', 'yes' ),
 			'attendees'  => [],
