@@ -56,6 +56,15 @@ class Template_Test extends WPTestCase {
 	}
 
 	/**
+	 * @after
+	 *
+	 * @return void
+	 */
+	public function teardown_enviroment(): void{
+		$_GET = [];
+	}
+
+	/**
 	 * Test that the Help Hub initialization works correctly.
 	 *
 	 * @test
@@ -129,6 +138,7 @@ class Template_Test extends WPTestCase {
 	 * @test
 	 */
 	public function section_rendering(): void {
+		$_GET['page'] = 'et_help_hub';
 		// Get the sections from the mock data
 		$sections = $this->mock_data->create_resource_sections();
 
