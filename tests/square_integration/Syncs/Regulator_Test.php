@@ -198,5 +198,5 @@ class Regulator_Test extends Controller_Test_Case {
 		return as_get_scheduled_actions( $args );
 	}
 
-	protected function assert_rescheduled_after_rate_limit()
+	protected function assert_rescheduled_after_rate_limit() {}
 }
