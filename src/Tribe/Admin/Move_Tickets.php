@@ -395,6 +395,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		wp_reset_postdata();
 
+		// Ensure the array is sorted by keys (titles) to maintain consistent ordering.
+		ksort( $posts );
+
 		return $posts;
 	}
 
@@ -630,14 +633,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
 			} else {
 				$c_ticket = new Commerce_Ticket();
-				// Check if the ticket type uses shared capacity.
-				$shared_capacity = $ticket_type->global_stock_mode() === 'global' || $ticket_type->global_stock_mode() === 'capped';
-				// Create separate global stock objects for source and target events.
-				$src_global_stock = new Tribe__Tickets__Global_Stock( $src_event_id );
-				$tgt_global_stock = new Tribe__Tickets__Global_Stock( $tgt_event_id );
-				// Adjust the stock level for the source and target events.
-				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id, 1, $shared_capacity, $src_global_stock );
-				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id, 1, $shared_capacity, $tgt_global_stock );
+				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id );
+				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id );
 			}
 
 			$history_message = sprintf(
