@@ -258,10 +258,10 @@ class Tribe__Tickets__Main {
 
 		if ( ! empty( $checked ) ) {
 			// If multiple plugins are being activated, set the wizard redirect transient, this should only trigger redirection on a ET admin page visit.
-			set_transient( Tickets_Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION, 1, 30 );
+			set_transient( '_tec_tickets_wizard_redirect', 1, 30 );
 		} else {
 			// If a single plugin is being activated, set the activation redirect transient for immediate redirection.
-			set_transient( Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION, 1, 30 );
+			set_transient( '_tec_tickets_activation_redirect', 1, 30 );
 		}
 	}
 	/**
