@@ -385,12 +385,12 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			/*y This filter is documented in wp-includes/post-template.php */
 			$title = apply_filters( 'the_title', $post->post_title, $post->ID );
 
-			// Append the event start date if there is one, ie for events
+			// Append the event start date if there is one, ie for events.
 			if ( $post->_EventStartDate ) {
 				$title .= ' (' . tribe_get_start_date( $post->ID ) . ')';
 			}
 
-			$posts[ $post->ID ] = $title;
+			$posts[ $title ] = $post->ID;
 		}
 
 		wp_reset_postdata();

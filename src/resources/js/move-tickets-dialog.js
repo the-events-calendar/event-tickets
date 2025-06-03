@@ -224,7 +224,7 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		 * post type and search keywords, if set.
 		 */
 		function populate_post_choices() {
-			// Don't bombard the server with queries if an update is already in progress
+			// Don't bombard the server with queries if an update is already in progress.
 			if ( populating ) {
 				return;
 			}
@@ -249,25 +249,10 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				// Clear the existing list.
 				$post_choices.html( '' );
 				let total_posts = 0;
-				
-				// Convert the object to a sortable array.
-				let posts_array = [];
-				for ( let key in response.data.posts ) {
-					posts_array.push( {
-						id: key,
-						title: response.data.posts[key]
-					} );
-				}
-				
-				// Sort by title alphabetically.
-				posts_array.sort( function( a, b ) {
-					return a.title.localeCompare( b.title );
-				} );
 
-				// Use the sorted array to build the options.
-				for ( let i = 0; i < posts_array.length; i++ ) {
-					const post_id = parseInt( posts_array[i].id, 10 );
-					const title = posts_array[i].title;
+				for ( const key in response.data.posts ) {
+					const post_id = parseInt( response.data.posts[ key ] );
+					const title = key;
 					total_posts++;
 
 					$post_choices.append(
@@ -276,9 +261,7 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				}
 
 				if ( ! total_posts ) {
-					$post_choices.append(
-						`<label>${tribe_move_tickets_data.no_posts_found}</label>`
-					);
+					$post_choices.append( `<label>${tribe_move_tickets_data.no_posts_found}</label>` );
 				}
 
 				populating = false;
