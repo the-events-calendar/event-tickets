@@ -2,7 +2,7 @@
 /**
  * Controller for Square syncs.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -24,7 +24,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 /**
  * Class Controller
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -32,7 +32,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The group that the sync action belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The option that marks the sync action as in progress.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The option that marks the sync action as completed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -59,7 +59,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The merchant.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Merchant
 	 */
@@ -68,7 +68,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The settings.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Settings
 	 */
@@ -77,7 +77,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container $container The container.
 	 * @param Merchant  $merchant  The merchant.
@@ -92,7 +92,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether the controller is active or not.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -103,7 +103,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -129,7 +129,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -154,7 +154,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Schedule the batch sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -173,7 +173,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Mark the action as failed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $level   The level of the log.
 	 * @param string $message The message of the log.
@@ -202,7 +202,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Get the sync-able tickets of an event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $event_id The event ID.
 	 *
@@ -251,7 +251,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Get the ticket-able post types to sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The ticket-able post types to sync.
 	 */
@@ -274,7 +274,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether the sync is completed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -285,7 +285,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether the sync is in progress.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -303,7 +303,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Reset the sync status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array  $new_options The new options.
 	 * @param string $post_type   The post type.
@@ -314,7 +314,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Fires before the sync status is reset.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $post_type The post type.
 		 */
@@ -357,7 +357,7 @@ class Controller extends Controller_Contract {
 				/**
 				 * Fires when the sync status is reset.
 				 *
-				 * @since TBD
+				 * @since 5.24.0
 				 *
 				 * @param string $post_type The post type.
 				 */
@@ -369,7 +369,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether the ticket is in sync with the square data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 * @param int           $square_quantity The square quantity.

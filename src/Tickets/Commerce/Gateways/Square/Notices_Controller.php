@@ -2,7 +2,7 @@
 /**
  * Square Notices Controller
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Notices
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 /**
  * Class Controller
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Notices
  */
@@ -24,7 +24,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Webhook notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Not ready to sell notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Currency mismatch notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Just onboarded notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Remotely disconnected notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Webhooks instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Webhooks
 	 */
@@ -78,7 +78,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Gateway instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Gateway
 	 */
@@ -87,7 +87,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Merchant
 	 */
@@ -96,7 +96,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container $container Container instance.
 	 * @param Webhooks  $webhooks  Webhooks instance.
@@ -113,7 +113,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Register the notice providers.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -177,7 +177,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Unregisters the notice providers.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -196,7 +196,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Determines if the just onboarded notice should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -217,7 +217,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Determines if the webhook notice should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -253,7 +253,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Determines if the not ready to sell notice should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -276,7 +276,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Determines if the remotely disconnected notice should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -304,7 +304,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Determines if the not ready to sell notice should be displayed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -327,7 +327,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the webhook notice.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -375,7 +375,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the webhook notice.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -392,7 +392,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the just onboarded notice.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -408,7 +408,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the just onboarded notice.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -423,7 +423,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the not ready to sell notice.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -448,7 +448,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Check if the given screen ID is a Tickets admin page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $screen_id The screen ID to check.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Exception when there is not enough stock
  *
- * @since TBD
+ * @since 5.24.0
  */
 
 declare( strict_types=1 );
@@ -16,6 +16,6 @@ use Exception;
 /**
  * Class NotEnoughStockException
  *
- * @since TBD
+ * @since 5.24.0
  */
 class NotEnoughStockException extends Exception {}

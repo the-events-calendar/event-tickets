@@ -23,14 +23,14 @@ use TEC\Common\Contracts\Service_Provider;
  * Manages the registration and unregistration of configuration services,
  * including the Constants Provider for configuration loading.
  *
- * @since TBD
+ * @since 5.24.0
  */
 class Provider extends Service_Provider {
 
 	/**
 	 * Registers Configuration provider.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function register(): void {
 		tribe( Configuration_Loader::class )->add( new Constants_Provider() );
@@ -39,7 +39,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Removes provider.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function unregister(): void {
 		tribe()->offsetUnset( Configuration_Loader::class );

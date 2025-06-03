@@ -2,7 +2,7 @@
 /**
  * Order class for the Square gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -33,7 +33,7 @@ use TEC\Common\StellarWP\DB\DB;
 /**
  * Class Order.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -41,7 +41,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The hook to pull the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The merchant object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Merchant
 	 */
@@ -59,7 +59,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The commerce order object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Commerce_Order
 	 */
@@ -68,7 +68,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The settings object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Settings
 	 */
@@ -77,7 +77,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Order constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Merchant       $merchant       The merchant object.
 	 * @param Commerce_Order $commerce_order The commerce order object.
@@ -92,7 +92,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Filter the schema for the repository.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array             $schema     The schema.
 	 * @param Tribe__Repository $repository The repository.
@@ -122,7 +122,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Create a Square order from a Commerce order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -142,7 +142,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the customer ID for the Square order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $customer_id The customer ID.
 		 * @param WP_Post $order The order object.
@@ -156,7 +156,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the metadata for the Square order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $metadata The metadata for the Square order.
 		 */
@@ -174,7 +174,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the Square order payload.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array   $payload The payload for the Square order.
 		 * @param WP_Post $order   The order object.
@@ -255,7 +255,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Fires before the Square order is upserted.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $square_order The Square order.
 		 * @param int   $order_id     The order ID.
@@ -297,7 +297,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Fires after the Square order is upserted.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array  $response     The Square order.
 		 * @param int    $order_id     The order ID.
@@ -313,7 +313,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Upsert a local order from a Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 * @param array  $event_data The event data.
@@ -564,7 +564,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the cached remote data for an order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $order_id The order ID.
 	 * @param string $local_id The local ID.
@@ -611,7 +611,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the URL to view the order in Square dashboard.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -636,7 +636,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Check if the order needs to be updated.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_order The Square order.
 	 * @param int   $order_id The order ID.
@@ -647,7 +647,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters if the Square order needs to be updated.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param bool $needs_update Whether the Square order needs to be updated.
 		 */
@@ -662,7 +662,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Add items to the Square payload.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $square_order The Square order.
 	 * @param WP_Post $order        The order object.
@@ -722,7 +722,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the items from the Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
@@ -776,7 +776,7 @@ class Order extends Abstract_Order {
 			/**
 			 * Filters whether to prevent overselling or not.
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param bool          $prevent_overselling Whether to prevent overselling or not.
 			 * @param Ticket_Object $ticket_obj          The ticket object.
@@ -871,7 +871,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the customer from the Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
@@ -934,7 +934,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
@@ -967,7 +967,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Add a payment to the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order      The order object.
 	 * @param string  $payment_id The payment ID.
@@ -989,7 +989,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the payment IDs.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -1002,7 +1002,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order by payment ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $payment_id The payment ID.
 	 * @param array  $status     The status of the order.
@@ -1073,7 +1073,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Add a refund ID to the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order      The order object.
 	 * @param string  $refund_id  The refund ID.
@@ -1095,7 +1095,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the payment IDs.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -1108,7 +1108,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order by refund ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $refund_id The refund ID.
 	 * @param array  $status    The status of the order.
@@ -1127,7 +1127,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order by original gateway order ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $original_gateway_order_id The original gateway order ID.
 	 * @param array  $status                    The status of the order.
@@ -1198,7 +1198,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the Square customer.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $customer_id The Square customer ID.
 	 *
@@ -1235,7 +1235,7 @@ class Order extends Abstract_Order {
 	 *
 	 * To refund a Square order, you have to grab the Square order. Then in the property `tenders` you have to refund every tender.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *
@@ -1254,7 +1254,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Refund a remote order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string       $square_order_id The Square order ID.
 	 * @param WP_Post|null $order           The order post object.

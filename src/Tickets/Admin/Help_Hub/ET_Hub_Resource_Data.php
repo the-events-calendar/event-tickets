@@ -6,7 +6,7 @@
  * the Help_Hub_Data_Interface and provides Event Tickets specific
  * resources, FAQs, and settings for the Help Hub functionality.
  *
- * @since TBD
+ * @since 5.24.0
  * @package TEC\Events\Admin\Help_Hub
  */
 
@@ -26,13 +26,13 @@ use Tribe\Tickets\Admin\Settings;
  *
  * Handles the Help Hub resource data and page registration for Event Tickets.
  *
- * @since TBD
+ * @since 5.24.0
  */
 class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * The ID of the help hub page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 * @var string
 	 */
 	const HELP_HUB_PAGE_ID = 'tickets_page_tec-tickets-help-hub';
@@ -40,7 +40,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * The slug of the help hub page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 * @var string
 	 */
 	const HELP_HUB_SLUG = 'tec-tickets-help-hub';
@@ -48,7 +48,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Holds the URLs for the necessary icons.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 * @var array<string,string>
 	 */
 	protected array $icons = [];
@@ -56,7 +56,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * The body class array that styles the admin page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 * @var array<string>
 	 */
 	protected array $admin_page_body_classes = [ 'tribe_events_page_tec-events-settings' ];
@@ -64,7 +64,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Whether the class has been initialized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 * @var bool
 	 */
 	protected bool $initialized = false;
@@ -74,7 +74,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * Sets up the initialization hooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function __construct() {
 		add_action( 'load-' . self::HELP_HUB_PAGE_ID, [ $this, 'initialize' ] );
@@ -84,7 +84,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Registers this data instance with the Help Hub.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Hub $help_hub The current Help Hub instance to register with.
 	 *
@@ -102,7 +102,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Initializes the Help Hub Resource Data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * This method registers filters and actions required for the Help Hub,
 	 * such as adding custom body classes to the Help Hub page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -151,7 +151,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Filters the telemetry opt-in link to use a custom Help Hub-specific URL.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $url The original telemetry opt-in link.
 	 *
@@ -173,7 +173,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Add resources description
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $description The default resources description.
 	 *
@@ -186,7 +186,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Add support description
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $description The default support description.
 	 *
@@ -198,7 +198,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Add support title
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $title The default support title.
 	 *
@@ -214,7 +214,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * This method allows the addition of `$admin_page_body_classes` to
 	 * the list of body classes for the Help Hub page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array<string> $classes The current array of body classes.
 	 *
@@ -229,7 +229,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 *
 	 * Each section can be filtered independently or as a complete set.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array<string, mixed> The filtered resource sections array.
 	 */
@@ -248,7 +248,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Adds the "Getting Started" section.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -269,7 +269,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Adds the "Tickets & RSVPs" section.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -305,7 +305,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Adds the "Attendee Management" section.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -343,7 +343,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Adds the "Ticket Emails" section.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Link_Section_Builder $builder The section builder instance.
 	 */
@@ -376,7 +376,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Retrieves the URL for a specified icon.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $icon_name The name of the icon to retrieve.
 	 *
@@ -389,7 +389,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Get the license validity and telemetry opt-in status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array Contains 'has_valid_license' and 'is_opted_in' status.
 	 */
@@ -407,7 +407,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Filters the logo source URL for the Help Hub header.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $src The default logo source URL.
 	 *
@@ -422,7 +422,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Filters the logo alt text for the Help Hub header.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $alt The default logo alt text.
 	 *
@@ -435,7 +435,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Adds the help hub page ID to the list of help pages.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array<string> $help_pages The current array of help pages.
 	 *
@@ -452,7 +452,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * Checks the 'page' request variable against the Help Hub settings slug to confirm
 	 * if the user is currently viewing the Help Hub admin page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool True if the current page is the Help Hub, false otherwise.
 	 */

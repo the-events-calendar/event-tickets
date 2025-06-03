@@ -2,7 +2,7 @@
 /**
  * Square Webhooks Controller.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -21,7 +21,7 @@ use DateTimeInterface;
 /**
  * Class Webhooks
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -29,7 +29,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key for storing webhook secret key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Parameter key for storing webhook secret key on the URL.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key for storing webhook data received from the API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Gets the gateway for this webhook.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return Abstract_Gateway
 	 */
@@ -67,7 +67,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Gets the merchant for this webhook.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return Abstract_Merchant
 	 */
@@ -78,7 +78,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Register the service provider.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function do_register(): void {
 		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
@@ -89,7 +89,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Unregister hooks and cleanup.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function unregister(): void {
 		remove_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
@@ -100,7 +100,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Schedule a webhook registration refresh.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function schedule_webhook_registration_refresh(): void {
 		if ( ! $this->is_webhook_healthy() ) {
@@ -117,7 +117,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Refresh the webhook.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function refresh_webhook(): void {
 		if ( ! $this->is_webhook_healthy() ) {
@@ -134,7 +134,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the webhook secret.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $hash       Whether to hash the secret key.
 	 * @param bool $regenerate Whether to regenerate the webhook secret key.
@@ -161,7 +161,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the webhook endpoint URL, with optional filtering.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $regenerate Whether to regenerate the webhook secret key.
 	 *
@@ -188,7 +188,7 @@ class Webhooks extends Abstract_Webhooks {
 		 * with services like ngrok. You can define a constant TEC_TICKETS_COMMERCE_SQUARE_WEBHOOK_URL
 		 * to override this value.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $endpoint_url The webhook endpoint URL.
 		 */
@@ -198,7 +198,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Register a webhook endpoint with WhoDat.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array<string,mixed>|WP_Error The webhook data or WP_Error on failure.
 	 */
@@ -228,7 +228,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the webhook data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array<string,mixed> {
 	 *     The webhook data or null if not set.
@@ -258,7 +258,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the webhook ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string|null The webhook ID or null if not set.
 	 */
@@ -269,7 +269,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the fetched date.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return DateTimeInterface|null The fetched date or null if not set.
 	 */
@@ -280,7 +280,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Verify webhook signature.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $received_secret_key The secret key from the request.
 	 *
@@ -308,7 +308,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Verify whodat signature.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $payload       The payload from the request.
 	 * @param string $received_hash The hash from the request.
@@ -333,7 +333,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * AJAX handler for webhook registration.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -390,7 +390,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Check if the webhook is healthy.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool Whether the webhook is healthy.
 	 */
@@ -401,7 +401,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Check if the webhook is expired.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool Whether the webhook is expired.
 	 */
@@ -427,7 +427,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Check if the webhook should be refreshed, defaults to once every hour.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool Whether the webhook should be refreshed.
 	 */

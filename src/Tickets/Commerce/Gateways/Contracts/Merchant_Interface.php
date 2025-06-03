@@ -41,7 +41,7 @@ interface Merchant_Interface {
 	/**
 	 * Gets the client secret for merchant.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?string
 	 */

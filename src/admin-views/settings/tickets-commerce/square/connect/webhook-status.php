@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Square Webhook Status.
  *
- * @since TBD
+ * @since 5.24.0
  *
- * @version TBD
+ * @version 5.24.0
  *
  * @var Tribe__Tickets__Admin__Views $this [Global] Template object.
  */

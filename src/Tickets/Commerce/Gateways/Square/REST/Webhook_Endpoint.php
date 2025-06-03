@@ -2,7 +2,7 @@
 /**
  * Square Webhook Endpoint
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -36,7 +36,7 @@ use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 /**
  * Class Webhook_Endpoint.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -44,7 +44,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The key for the order webhook IDs.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST namespace for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST endpoint path for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The location ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The webhooks instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Webhooks
 	 */
@@ -89,7 +89,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Gateway  $gateway  The gateway instance.
 	 * @param Webhooks $webhooks The webhooks instance.
@@ -102,7 +102,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Get the namespace for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -113,7 +113,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Get the path for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -126,7 +126,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * For webhooks, we skip permission checks because this is called by Square,
 	 * we validate the request using the webhook signature instead.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -166,7 +166,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function register(): void {
 		$namespace = $this->get_namespace();
@@ -186,7 +186,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles incoming webhook events from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -242,7 +242,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process a webhook event based on its type.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -327,7 +327,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allows other code to process the Square webhook event.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array  $event_data The webhook event data.
 		 * @param string $event_type The event type.
@@ -338,7 +338,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process an order event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -420,7 +420,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process a refund event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -530,7 +530,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process a payment event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -555,7 +555,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Delete the customer ID from the user meta.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -593,7 +593,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process a ticket inventory updated event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -662,7 +662,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				 * Fire an action so we can schedule a background check in a few minutes to see if the quantity
 				 * came back into sync.
 				 *
-				 * @since TBD
+				 * @since 5.24.0
 				 *
 				 * @param int    $ticket_id The ticket ID.
 				 * @param int    $quantity  The quantity of tickets.
@@ -686,7 +686,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process an OAuth authorization revoked event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -717,7 +717,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Returns an array in the format used by Swagger 2.0.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @link http://swagger.io/
 	 *

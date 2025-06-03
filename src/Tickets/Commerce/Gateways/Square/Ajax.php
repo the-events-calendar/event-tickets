@@ -2,7 +2,7 @@
 /**
  * Square AJAX Hooks.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -18,7 +18,7 @@ use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 /**
  * Square AJAX Hooks.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -26,7 +26,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * WhoDat instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var WhoDat
 	 */
@@ -35,7 +35,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Merchant
 	 */
@@ -44,7 +44,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Ajax constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container $container Container instance.
 	 * @param WhoDat    $who_dat WhoDat instance.
@@ -59,7 +59,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -71,7 +71,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * AJAX handler for connecting a Square account.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -109,7 +109,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * AJAX handler for disconnecting a Square account.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

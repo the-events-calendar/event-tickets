@@ -2,7 +2,7 @@
 /**
  * Listens to events that trigger the scheduling of the syncs.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -25,7 +25,7 @@ use Tribe__Settings_Manager as Settings_Manager;
 /**
  * Class Listeners
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -33,7 +33,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * The hook to delete synced post types.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * The settings.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Settings
 	 */
@@ -51,7 +51,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * The regulator.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Regulator
 	 */
@@ -60,7 +60,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container $container The container.
 	 * @param Settings  $settings The settings.
@@ -75,7 +75,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -100,7 +100,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -125,7 +125,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Add the settings listener.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -136,7 +136,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Remove the settings listener.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -147,7 +147,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Remove local sync data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -162,7 +162,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Reset the sync status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $new_options The new options.
 	 * @param array $old_options The old options.
@@ -199,7 +199,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Reset the post type data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -218,7 +218,7 @@ class Listeners extends Controller_Contract {
 		/**
 		 * Whether to delete all events at once.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param bool   $all_at_once Whether to delete all events at once.
 		 * @param array  $post_types  The post types.
@@ -234,7 +234,7 @@ class Listeners extends Controller_Contract {
 		/**
 		 * Filter the number of events to delete at once.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int $number The number of events to delete at once.
 		 */
@@ -244,7 +244,7 @@ class Listeners extends Controller_Contract {
 			/**
 			 * Filter the number of events to delete at once but when all at once is requested.
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param int $number The number of events to delete at once.
 			 */
@@ -293,7 +293,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the sync on save.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int     $post_id The post ID.
 	 * @param WP_Post $post    The post object.
@@ -319,7 +319,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the sync on delete.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -388,7 +388,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the ticket sync on out of sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $ticket_id The ticket ID.
 	 * @param int    $quantity  The quantity of tickets.
@@ -403,7 +403,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the ticket sync on stock changed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -422,7 +422,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the ticket sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int  $ticket_id     The ticket ID.
 	 * @param ?int $parent_id     The parent ID. Null when the event has been deleted...
@@ -446,7 +446,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the ticket sync on date start.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int     $ticket_id     The ticket ID.
 	 * @param bool    $its_happening Whether the ticket is about to go to sale or is already on sale.
@@ -472,7 +472,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the ticket sync on date end.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int     $ticket_id     The ticket ID.
 	 * @param bool    $its_happening Whether the ticket is about to go to sale or is already on sale.
@@ -497,7 +497,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Schedule the deletion of a ticket from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int  $post_id         The post ID.
 	 * @param bool $only_local_data Whether to only remove local data.
@@ -530,7 +530,7 @@ class Listeners extends Controller_Contract {
 	/**
 	 * Whether the object is syncable.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int  $post_id            The post ID.
 	 * @param bool $requires_remote_id Whether the object requires a remote ID.

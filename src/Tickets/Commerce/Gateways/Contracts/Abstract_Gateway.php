@@ -373,7 +373,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Whether the gateway renders alone or can be combined with other gateways.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */

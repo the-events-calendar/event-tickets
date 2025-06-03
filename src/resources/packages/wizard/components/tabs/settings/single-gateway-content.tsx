@@ -7,7 +7,7 @@ import PayPalLogo from '../payments/img/paypal';
 /**
  * Component to display content specific to a single payment gateway.
  *
- * @since TBD
+ * @since 5.24.0
  */
 interface SingleGatewayContentProps {
 	singleGateway: string | null;

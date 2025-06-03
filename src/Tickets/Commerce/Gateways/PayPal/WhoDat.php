@@ -2,7 +2,7 @@
 /**
  * WhoDat Connection for PayPal.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -25,7 +25,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */

@@ -154,7 +154,7 @@ abstract class Abstract_Order {
 	/**
 	 * Refund an order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *

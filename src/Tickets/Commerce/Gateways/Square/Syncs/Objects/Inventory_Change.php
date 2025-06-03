@@ -5,7 +5,7 @@
  * This class represents an inventory change operation to be sent to Square.
  * It handles different types of inventory changes like physical counts and adjustments.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -25,7 +25,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * Handles the formatting and validation of inventory adjustments, physical counts,
  * and transfers according to Square's API requirements.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -33,7 +33,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Valid types of inventory changes for Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -46,7 +46,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Valid inventory states for Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -67,7 +67,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * The data structure for the inventory change.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -76,7 +76,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * The ticket item associated with this inventory change.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Ticket_Item
 	 */
@@ -85,7 +85,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string      $type        The type of inventory change.
 	 * @param Ticket_Item $ticket_item The ticket item to change inventory for.
@@ -122,7 +122,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Process inventory changes from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $state    The inventory state reported by Square.
 	 * @param string $quantity The quantity reported by Square.
@@ -151,7 +151,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Set the data for an adjustment type inventory change.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $data Additional data for the adjustment.
 	 *
@@ -221,7 +221,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Set the data for a physical count type inventory change.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -232,7 +232,7 @@ class Inventory_Change implements JsonSerializable {
 	/**
 	 * Serialize the object to JSON.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array for JSON serialization.
 	 */

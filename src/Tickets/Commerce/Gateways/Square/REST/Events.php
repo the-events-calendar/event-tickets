@@ -2,7 +2,7 @@
 /**
  * The Square webhook events.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 /**
  * The Square webhook events.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -20,7 +20,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -58,7 +58,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -76,7 +76,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -85,7 +85,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -96,7 +96,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -118,7 +118,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -129,7 +129,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -140,7 +140,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -151,7 +151,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -160,7 +160,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -169,7 +169,7 @@ class Events {
 	/**
 	 * Webhook event types supported.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string[]
 	 */
@@ -188,7 +188,7 @@ class Events {
 	/**
 	 * Get the webhook event types supported by the Square gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string[] The webhook event types.
 	 */
@@ -196,7 +196,7 @@ class Events {
 		/**
 		 * Filters the webhook event types supported by the Square gateway.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string[] $event_types The webhook event types.
 		 */

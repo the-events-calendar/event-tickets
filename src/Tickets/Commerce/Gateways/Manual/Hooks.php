@@ -44,7 +44,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Added the filter to add a gateway order ID for the manual gateway.
+	 * @since 5.24.0 Added the filter to add a gateway order ID for the manual gateway.
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
@@ -67,7 +67,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Produce a gateway order ID for the manual gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $args The arguments to create the order.
 	 *

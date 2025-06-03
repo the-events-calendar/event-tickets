@@ -2,7 +2,7 @@
 /**
  * Test for the Square Application_Fee class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -17,7 +17,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Class Application_FeeTest
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */

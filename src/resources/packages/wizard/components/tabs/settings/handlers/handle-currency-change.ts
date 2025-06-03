@@ -21,7 +21,7 @@ interface HandleCurrencyChangeParams {
 /**
  * Handle currency selector changes.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {HandleCurrencyChangeParams} params Parameters.
  */

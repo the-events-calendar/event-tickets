@@ -2,7 +2,7 @@
 /**
  * Square Generic Hooks.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Commerce\Order as Commerce_Order;
 /**
  * Square Hooks class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -29,7 +29,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Gateway instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Gateway
 	 */
@@ -38,7 +38,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Ajax constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container $container Container instance.
 	 * @param Gateway   $gateway Gateway instance.
@@ -51,7 +51,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -64,7 +64,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -77,7 +77,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Filter the Commerce Gateways to add Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array             $schema     The schema.
 	 * @param Tribe__Repository $repository The repository.
@@ -91,7 +91,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Filter the Commerce Gateways to add Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $gateways List of gateways.
 	 *
@@ -106,7 +106,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Process the async square webhook.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry    The number of times this has been tried.
@@ -196,7 +196,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Filter the refunded amount for the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param ?int  $nothing The current value.
 	 * @param array $refunds The refunds for the order.

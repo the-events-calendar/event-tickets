@@ -2,7 +2,7 @@
 /**
  * Webhook model.
  *
- * @since TBD
+ * @since 5.24.0
  */
 
 declare( strict_types=1 );
@@ -19,7 +19,7 @@ use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 /**
  * Webhook model.
  *
- * @since TBD
+ * @since 5.24.0
  */
 class Webhook {
 	/**

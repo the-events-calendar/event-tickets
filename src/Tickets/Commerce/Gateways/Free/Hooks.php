@@ -33,7 +33,7 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Added the filter to add a gateway order ID for the free gateway.
+	 * @since 5.24.0 Added the filter to add a gateway order ID for the free gateway.
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
@@ -66,7 +66,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Produce a gateway order ID for the free gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $args The arguments to create the order.
 	 *

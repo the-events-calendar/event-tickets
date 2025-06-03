@@ -2,7 +2,7 @@
 /**
  * Main file controlling Square integration.
  *
- * @since TBD
+ * @since 5.24.0
  */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
@@ -17,7 +17,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 /**
  * Class Controller
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -25,7 +25,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -54,7 +54,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

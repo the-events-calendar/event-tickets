@@ -54,7 +54,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @since 5.23.0
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.24.0
 	 *
 	 * @var string
 	 */
@@ -219,7 +219,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * Check if the TEC wizard is completed.
 	 *
 	 * @since 5.23.0
-	 * @since TBD Made the visibility public.
+	 * @since 5.24.0 Made the visibility public.
 	 *
 	 * @return bool
 	 */
@@ -254,7 +254,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 * Filter to force the wizard to display.
 		 *
 		 * @since 5.23.0
-		 * @since TBD Passing the page object as the second argument.
+		 * @since 5.24.0 Passing the page object as the second argument.
 		 *
 		 * @param bool $force Whether to force the wizard to display.
 		 * @param self $page  The page object.

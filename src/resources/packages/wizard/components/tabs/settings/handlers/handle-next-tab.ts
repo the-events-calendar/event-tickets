@@ -31,7 +31,7 @@ interface HandleNextTabParams {
 /**
  * Handle moving to the next tab, potentially adding the Payments tab.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {HandleNextTabParams} params Parameters.
  */

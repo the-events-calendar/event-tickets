@@ -6,7 +6,7 @@
  * specifically for US-based merchants. The fee is only applied to unlicensed
  * installations and US-based sales.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -26,7 +26,7 @@ class Application_Fee {
 	/**
 	 * The percentage applied to Square transactions. Currently set at 2%.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var float
 	 */
@@ -35,7 +35,7 @@ class Application_Fee {
 	/**
 	 * Calculate the fee value that needs to be applied to the PaymentIntent.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Value $value the value over which to calculate the fee.
 	 *
@@ -61,7 +61,7 @@ class Application_Fee {
 	/**
 	 * Returns the application fee percentage value.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return float
 	 */

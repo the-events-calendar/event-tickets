@@ -138,7 +138,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Handle the Square connection process.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param array            $params   The request parameters.
@@ -161,7 +161,7 @@ class Payments extends Abstract_Step {
 	/**
 	 * Handle the PayPal connection process.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param array            $params   The request parameters.

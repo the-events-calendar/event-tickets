@@ -2,7 +2,7 @@
 /**
  * Square Gateway Assets.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Assets Controller for the Square Gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -30,7 +30,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * The nonce action to use when requesting the creation of a new order
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Checkout instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Checkout
 	 */
@@ -48,7 +48,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Gateway instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Gateway
 	 */
@@ -57,7 +57,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Order endpoint instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Order_Endpoint
 	 */
@@ -66,7 +66,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Merchant
 	 */
@@ -75,7 +75,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Payment handler instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Payment_Handler
 	 */
@@ -84,7 +84,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Assets constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container       $container Container instance.
 	 * @param Checkout        $checkout  Checkout instance.
@@ -105,7 +105,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -208,7 +208,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -230,7 +230,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Get the Square checkout data for localization.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -257,7 +257,7 @@ class Assets extends Controller_Contract {
 		/**
 		 * Filters the Square checkout data for localization.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $data The data to be localized.
 		 *
@@ -269,7 +269,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Determines if we are currently on the Square section of the settings.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -280,7 +280,7 @@ class Assets extends Controller_Contract {
 	/**
 	 * Define if the assets for `Square` should be enqueued or not.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool If the `Square` assets should be enqueued or not.
 	 */

@@ -98,7 +98,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the gateway order object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the original gateway order id.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -116,7 +116,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the gateway customer id.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -125,7 +125,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the latest payload sent to the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -134,7 +134,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the gateway order version.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -201,7 +201,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the amount unaccounted for in the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -210,7 +210,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the total tax amount in the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -219,7 +219,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the total tip amount in the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -228,7 +228,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the order created by.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -1062,7 +1062,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the refunded amount of an order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param ?int    $refunded The refunded amount.
 		 * @param array   $refunds The refunds.
@@ -1073,7 +1073,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the refunded amount of an order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param ?int    $refunded The refunded amount.
 		 * @param array   $refunds The refunds.
@@ -1084,7 +1084,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the captured amount of an order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param ?int    $captured The captured amount.
 		 * @param array   $refunds The refunds.
@@ -1095,7 +1095,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the captured amount of an order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int     $captured The captured amount.
 		 * @param array   $refunds The refunds.
@@ -1185,7 +1185,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the IDs of orders associated with a given gateway order id.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $gateway_order_id The gateway order id.
 	 *
@@ -1586,7 +1586,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *
@@ -1599,7 +1599,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order total value.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *
@@ -1612,7 +1612,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order created by.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1637,7 +1637,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the order created by.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $created_by The order created by.
 		 */

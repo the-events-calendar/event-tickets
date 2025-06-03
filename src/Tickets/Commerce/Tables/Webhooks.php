@@ -2,7 +2,7 @@
 /**
  * The Webhooks table schema.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Tables;
  */
@@ -17,7 +17,7 @@ use TEC\Common\StellarWP\DB\DB;
  *
  * The table is used to store the webhooks events.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Tables;
  */
@@ -25,7 +25,7 @@ class Webhooks extends Table {
 	/**
 	 * The schema version.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Webhooks extends Table {
 	/**
 	 * The base table name, without the table prefix.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Webhooks extends Table {
 	/**
 	 * The table group.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Webhooks extends Table {
 	/**
 	 * The slug used to identify the custom table.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Webhooks extends Table {
 	/**
 	 * The field that uniquely identifies a row in the table.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ class Webhooks extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string[]
 	 */
@@ -89,7 +89,7 @@ class Webhooks extends Table {
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
@@ -116,7 +116,7 @@ class Webhooks extends Table {
 	/**
 	 * Add indexes after table creation.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array<string,string> $results A map of results in the format
 	 *                                      returned by the `dbDelta` function.
@@ -133,7 +133,7 @@ class Webhooks extends Table {
 	/**
 	 * Delete old stale entries.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

@@ -2,7 +2,7 @@
 /**
  * Exception when a duplicate entry is found
  *
- * @since TBD
+ * @since 5.24.0
  */
 
 declare( strict_types=1 );
@@ -16,6 +16,6 @@ use Exception;
 /**
  * Class DuplicateEntryException
  *
- * @since TBD
+ * @since 5.24.0
  */
 class DuplicateEntryException extends Exception {}

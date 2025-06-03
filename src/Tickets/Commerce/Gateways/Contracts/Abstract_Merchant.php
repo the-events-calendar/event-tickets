@@ -124,7 +124,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	/**
 	 * Whether the merchant is ready to sell.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */

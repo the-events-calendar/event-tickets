@@ -37,7 +37,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 *
 	 * @since 5.1.9
 	 * @since 5.21.0 Updated the $items variable to retrieve all item types from the cart.
-	 * @since TBD Updated the $gateways variable to retrieve only the available gateways.
+	 * @since 5.24.0 Updated the $gateways variable to retrieve only the available gateways.
 	 *
 	 * @return void
 	 */
@@ -168,7 +168,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.24.0
 	 *
 	 * @return int The number of active gateways.
 	 */
@@ -186,7 +186,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.24.0
 	 *
 	 * @return int The number of connected gateways.
 	 */

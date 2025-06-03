@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Square help links (troubleshooting).
  *
- * @since TBD
+ * @since 5.24.0
  *
- * @version TBD
+ * @version 5.24.0
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Square\Signup   $signup          [Global] The Signup class.

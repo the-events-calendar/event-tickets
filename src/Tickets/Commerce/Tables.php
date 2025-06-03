@@ -2,7 +2,7 @@
 /**
  * Commerce Tables controller.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Tables\Webhooks as Webhooks_Table;
 /**
  * Tables class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -24,7 +24,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * The action to schedule the webhook storage clean up.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * The action group for the webhook storage clean up.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * Register the controller's hooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -55,7 +55,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * Unregister the controller's hooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -67,7 +67,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * Clean up the webhook storage.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -78,7 +78,7 @@ class Tables extends Controller_Contract {
 	/**
 	 * Schedule the webhook storage clean up.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

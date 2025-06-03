@@ -2,7 +2,7 @@
 /**
  * Settings for the Square gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Settings as TC_Settings;
 /**
  * Square Commerce Settings.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -25,7 +25,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Client ID option key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Sandbox Client ID option key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Location ID option key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Sandbox Location ID option key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Inventory sync option key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get all the settings for the Square gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The gateway settings.
 	 */
@@ -104,7 +104,7 @@ class Settings extends Abstract_Settings {
 			/**
 			 * Allow filtering the list of Square settings.
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param array $settings     The list of Square Commerce settings.
 			 * @param bool  $is_connected Whether or not gateway is connected.
@@ -194,7 +194,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Allow filtering the list of Square settings.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $settings     The list of Square Commerce settings.
 		 * @param bool  $is_connected Whether or not gateway is connected.
@@ -205,7 +205,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Check if inventory sync is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool Whether inventory sync is enabled.
 	 */
@@ -216,7 +216,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get all available Square locations as an array of options for a dropdown field.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $sandbox Whether to get sandbox locations or production locations.
 	 *
@@ -290,7 +290,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Filter the Square location options.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $options  The location options.
 		 * @param bool  $sandbox  Whether getting sandbox locations.
@@ -301,7 +301,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the connection settings HTML.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -343,7 +343,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get section name for the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -354,7 +354,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Filter the container classes for the settings page when Square is active.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array  $container_classes Container classes.
 	 * @param string $section           Section name.

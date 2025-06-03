@@ -4,7 +4,7 @@
  *
  * This exception is thrown when a sync checks against a ticket that is not syncable.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -20,7 +20,7 @@ use Exception;
  *
  * Exception thrown when a sync checks against a ticket that is not syncable.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */

@@ -17,7 +17,7 @@ interface HandleConnectParams {
 /**
  * Handle gateway connection process.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {HandleConnectParams} params Parameters.
  */

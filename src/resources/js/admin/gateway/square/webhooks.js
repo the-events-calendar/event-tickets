@@ -1,7 +1,7 @@
 /**
  * Tickets Commerce Square Webhooks JavaScript.
  *
- * @since TBD
+ * @since 5.24.0
  */
 
 window.tec = window.tec || {};
@@ -12,14 +12,14 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 /**
  * Tickets Commerce Square Webhooks object.
  *
- * @since TBD
+ * @since 5.24.0
  */
 window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square.webhooks || {};
 
 /**
  * Initializes Tickets Commerce Square Webhooks.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {Document} document The document object.
  * @return {void}
@@ -32,7 +32,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Default strings used in the module.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	const strings = {
 		copied: __( 'Copied!', 'event-tickets' ),
@@ -43,7 +43,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Selectors used for configuration and setup.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	const selectors = {
 		container: '.tec-tickets-commerce-square-webhooks-container',
@@ -62,7 +62,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Toggle the visibility of fields based on test mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */
@@ -81,7 +81,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Initialize copy buttons functionality.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */
@@ -115,7 +115,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Handle webhook registration functionality.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event.
 	 * @return {void}
@@ -159,7 +159,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Handle webhook registration from admin notice.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event.
 	 * @return {void}
@@ -238,7 +238,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Handle click on the Fix Webhook Configuration button in notices.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event.
 	 * @return {void}
@@ -300,7 +300,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Bind events for Webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */
@@ -324,7 +324,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	/**
 	 * Initialize Webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */

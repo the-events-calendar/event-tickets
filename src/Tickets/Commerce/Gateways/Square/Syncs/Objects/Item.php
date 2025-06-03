@@ -5,7 +5,7 @@
  * This abstract class provides the base functionality for representing WordPress objects
  * as Square catalog items. It handles common operations for syncing with Square's API.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -25,7 +25,7 @@ use Tribe__Tickets__Main as ET;
  * Base class for all Square catalog items. Provides common functionality for
  * identifying, serializing, and syncing objects between WordPress and Square.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -33,7 +33,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * The data structure for the Square catalog item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -42,7 +42,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the Square object ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the Square object version.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the last sync timestamp.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the sync history.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ abstract class Item implements JsonSerializable {
 	 * The type of Square catalog item this class represents.
 	 * Should be overridden by child classes.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -88,7 +88,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the WordPress ID of the object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return int The WordPress post ID.
 	 */
@@ -97,7 +97,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set the object values for synchronization with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array prepared for Square synchronization.
 	 */
@@ -106,7 +106,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the Square ID for this object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The Square object ID.
 	 */
@@ -130,7 +130,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the remote object ID for a given WordPress ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $id The WordPress ID.
 	 *
@@ -143,7 +143,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Delete the remote data for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $id The ID.
 	 *
@@ -159,7 +159,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Serialize the object to JSON.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array for JSON serialization.
 	 */
@@ -170,7 +170,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Convert the object to an array for Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array prepared for Square API.
 	 */
@@ -193,7 +193,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the WordPress controlled fields for a given Square object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The Square object.
 	 *
@@ -217,7 +217,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set a value in the data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key   The key to set.
 	 * @param mixed  $value The value to set.
@@ -231,7 +231,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get a value from the data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key The key to get.
 	 *
@@ -244,7 +244,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set a value in the item_data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key   The key to set.
 	 * @param mixed  $value The value to set.
@@ -258,7 +258,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get a value from the item_data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key The key to get.
 	 *
@@ -271,7 +271,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Register hooks for this object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -288,7 +288,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Handle ticket ID mapping from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_object_id The Square object ID.
 	 *
@@ -311,7 +311,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Handle object sync from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The Square object data.
 	 *
@@ -327,7 +327,7 @@ abstract class Item implements JsonSerializable {
 		/**
 		 * Fires when a object is synced from Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int   $wp_id The WordPress ID of the object.
 		 * @param array $square_object The sync object.
@@ -338,7 +338,7 @@ abstract class Item implements JsonSerializable {
 		/**
 		 * Fires when a object is synced from Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $object_id The Square's object ID.
 		 * @param int    $wp_id The WordPress ID of the object.
@@ -351,7 +351,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set the image IDs for the item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -400,7 +400,7 @@ abstract class Item implements JsonSerializable {
 			/**
 			 * Filter the image path for the item.
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param string $image_path   The image path.
 			 * @param string $product_type The product type.

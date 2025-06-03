@@ -58,7 +58,7 @@ class Hooks extends Service_Provider {
 	 * Adds the actions required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Added async webhook process routing action.
+	 * @since 5.24.0 Added async webhook process routing action.
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
@@ -1164,7 +1164,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Routes the async webhook process.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry    The retry count.

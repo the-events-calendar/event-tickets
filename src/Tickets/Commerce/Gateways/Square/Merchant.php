@@ -2,7 +2,7 @@
 /**
  * Merchant class for the Square gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ use Exception;
 /**
  * Class Merchant
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -24,7 +24,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Stores the nonce action for disconnecting Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant authorization.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant default currency.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the PKCE code verifier for OAuth authentication.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if Merchant is active. For Square this is the same as being connected.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -82,7 +82,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if the Merchant is connected.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -112,7 +112,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -127,7 +127,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * Uses normal WP options to be saved, instead of the normal tribe_update_option.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -141,7 +141,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Square access token stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -158,7 +158,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Square refresh token for refreshing access tokens.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -175,7 +175,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Square merchant ID stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -192,7 +192,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Whodat signature stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?string
 	 */
@@ -205,7 +205,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the account ID (same as merchant ID for Square).
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -216,7 +216,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Return array of merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -231,7 +231,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Saves signup data from the redirect into permanent option.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $signup_data The signup data to save.
 	 *
@@ -246,7 +246,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Query the Square API to gather information about the current connected account.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $client_data Connection data from the database.
 	 *
@@ -287,7 +287,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Delete all signup data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -300,7 +300,7 @@ class Merchant extends Abstract_Merchant {
 		/**
 		 * Fires when merchant data is deleted.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 */
 		do_action( 'tec_tickets_commerce_square_merchant_disconnected' );
 
@@ -310,7 +310,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Check if the merchant is unauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -321,7 +321,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Set the merchant as unauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $validation_key A unique key to identify this validation.
 	 *
@@ -334,7 +334,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Remove merchant unauthorized status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -345,7 +345,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Check if the merchant is deauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -356,7 +356,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Set the merchant as deauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $validation_key A unique key to identify this validation.
 	 *
@@ -369,7 +369,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Remove merchant deauthorized status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -380,7 +380,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant's default currency.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -391,7 +391,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Generates and stores a PKCE code verifier for OAuth authentication.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The generated code verifier
 	 */
@@ -408,7 +408,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Creates a PKCE code challenge from the stored code verifier.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The code challenge for OAuth authentication
 	 */
@@ -426,7 +426,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Gets the stored PKCE code verifier.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The stored code verifier or empty string if not found
 	 */
@@ -439,7 +439,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Deletes the stored PKCE code verifier.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool True if successful, false otherwise
 	 */
@@ -450,7 +450,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Update merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $data New merchant data.
 	 *
@@ -470,7 +470,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Fetch merchant data from Square API using stored merchant ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -556,7 +556,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the option key for storing merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -571,7 +571,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant name from stored data or from Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -597,7 +597,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant email from stored data or from Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -623,7 +623,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant country from stored data or from Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -649,7 +649,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Delete stored merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool True if deleted, false otherwise.
 	 */
@@ -660,7 +660,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the client secret for merchant, in this case the access token.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -671,7 +671,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the test mode status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -682,7 +682,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the client ID for the Square SDK.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -699,7 +699,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the location ID for the Square merchant.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -710,7 +710,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Gets all available locations from the merchant's Square account.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array Array of locations.
 	 * @throws Exception On failure.
@@ -734,7 +734,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Whether the merchant is ready to sell.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -745,7 +745,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Whether the merchant's currency matches the gateway's currency.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */

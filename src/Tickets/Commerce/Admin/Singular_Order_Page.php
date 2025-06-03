@@ -314,7 +314,7 @@ STR;
 	 * Get the gateway label for the order.
 	 *
 	 * @since 5.13.3
-	 * @since TBD Added the created by.
+	 * @since 5.24.0 Added the created by.
 	 *
 	 * @param WP_Post|int $order The order post object or ID.
 	 *

@@ -17,7 +17,7 @@ abstract class Abstract_Requests implements Requests_Interface {
 	/**
 	 * Get the headers.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The headers.
 	 */
@@ -56,7 +56,7 @@ abstract class Abstract_Requests implements Requests_Interface {
 	/**
 	 * Perform a POST request with a file.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $endpoint The endpoint to request.
 	 * @param array  $request_arguments The request arguments.

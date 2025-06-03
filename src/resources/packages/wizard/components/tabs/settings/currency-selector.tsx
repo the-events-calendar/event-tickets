@@ -5,7 +5,7 @@ import { BaseControl } from '@wordpress/components';
 /**
  * Interface for CurrencySelector props.
  *
- * @since TBD
+ * @since 5.24.0
  */
 interface CurrencySelectorProps {
 	currencies: Record<string, {
@@ -21,7 +21,7 @@ interface CurrencySelectorProps {
 /**
  * Component that renders a currency selector dropdown.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {CurrencySelectorProps} props Component props.
  *

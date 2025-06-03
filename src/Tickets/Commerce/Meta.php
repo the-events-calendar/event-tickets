@@ -2,7 +2,7 @@
 /**
  * Handles the meta for the Tickets Commerce.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -15,7 +15,7 @@ use WP_Query;
 /**
  * Meta class for the Tickets Commerce.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -29,7 +29,7 @@ class Meta {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $id              The ID of the object.
 	 * @param string $meta_key        The meta key.
@@ -55,7 +55,7 @@ class Meta {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $id              The ID of the object.
 	 * @param string $meta_key        The meta key.
@@ -87,7 +87,7 @@ class Meta {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $id              The ID of the object.
 	 * @param string $meta_key        The meta key.
@@ -118,7 +118,7 @@ class Meta {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $id              The ID of the object.
 	 * @param string $meta_key        The meta key.
@@ -143,7 +143,7 @@ class Meta {
 	/**
 	 * Get the object ID for a given meta key and value.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $meta_key   The meta key.
 	 * @param mixed  $meta_value The meta value.

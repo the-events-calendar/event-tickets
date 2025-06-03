@@ -2,7 +2,7 @@
 /**
  * Payment Handler for the Square gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ use WP_Post;
 /**
  * Class Payment Handler
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -24,7 +24,7 @@ class Payment_Handler {
 	/**
 	 * Store the Payment for the duration of the page load.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array $payment The Square Payment.
 	 */
@@ -33,7 +33,7 @@ class Payment_Handler {
 	/**
 	 * Creates a payment for the current cart.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string  $source_id       The source ID.
 	 * @param WP_Post $order           The order post object.
@@ -66,7 +66,7 @@ class Payment_Handler {
 	/**
 	 * Gets the existing Payment if it is valid.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array|null
 	 */
@@ -95,7 +95,7 @@ class Payment_Handler {
 	/**
 	 * Store the Payment for the duration of the page load.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $payment The Payment.
 	 *
@@ -118,7 +118,7 @@ class Payment_Handler {
 	/**
 	 * Gets the stored Payment.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -129,7 +129,7 @@ class Payment_Handler {
 	/**
 	 * Where we store the payment ID in a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -140,7 +140,7 @@ class Payment_Handler {
 	/**
 	 * Retrieve the payment ID from a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?string
 	 */
@@ -151,7 +151,7 @@ class Payment_Handler {
 	/**
 	 * Store the payment ID in a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param mixed $payment_id The payment ID.
 	 *
@@ -172,7 +172,7 @@ class Payment_Handler {
 		/**
 		 * Filter the cookie options for the payment cookie.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $cookie_options The cookie options.
 		 *
@@ -208,7 +208,7 @@ class Payment_Handler {
 	/**
 	 * Updates an existing payment with order data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $data  The frontend data.
 	 * @param WP_Post $order The order post object.
@@ -249,7 +249,7 @@ class Payment_Handler {
 	/**
 	 * Get updated metadata for a payment.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order    The order post object.
 	 * @param array   $payment  The payment data.

@@ -37,7 +37,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Adds the actions required by each Stripe component.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Moved async webhook process to Commerce Hooks routing action.
+	 * @since 5.24.0 Moved async webhook process to Commerce Hooks routing action.
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -79,7 +79,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Filter the refunded amount for the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param ?int  $nothing The current value.
 	 * @param array $refunds The refunds for the order.
@@ -101,7 +101,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Filter the captured amount for the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param ?int  $nothing The current value.
 	 * @param array $refunds The refunds for the order.

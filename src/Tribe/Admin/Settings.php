@@ -39,7 +39,7 @@ class Settings {
 	/**
 	 * The Help Hub page slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Settings {
 	/**
 	 * The Original Help page slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -290,7 +290,7 @@ class Settings {
 	 *
 	 * Checks the `page` query parameters, and if they match the old help page slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

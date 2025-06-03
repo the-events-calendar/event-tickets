@@ -2,7 +2,7 @@
 /**
  * Test for the Square Merchant class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -15,7 +15,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Class MerchantTest
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */

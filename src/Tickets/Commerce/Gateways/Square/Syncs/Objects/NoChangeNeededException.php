@@ -5,7 +5,7 @@
  * This exception is thrown when a sync operation is attempted but no change
  * is needed because the data is already in the desired state.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -22,7 +22,7 @@ use Exception;
  * Exception thrown when no synchronization change is needed.
  * Used to indicate that the current state already matches the desired state.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
