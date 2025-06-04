@@ -50,7 +50,7 @@ class General_Tab_Test extends WPTestCase {
 	/**
 	 * Data provider for general tab tests.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return Generator<string,array{
 	 *     tab: string,

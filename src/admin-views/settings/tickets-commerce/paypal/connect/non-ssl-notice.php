@@ -14,20 +14,21 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
 if ( is_ssl() ) {
 	return;
 }
 
-$link = sprintf(
+$link_element = sprintf(
 	'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 	esc_url( 'https://evnt.is/1axw' ),
 	esc_html__( 'Learn more', 'event-tickets' )
 );
 
 $notice = sprintf(
-	// Translators: %s: link to knowledgebase article.
+	// Translators: %s: link to Knowledgebase article.
 	esc_html__( 'A valid SSL certificate and secure (https) connection are required to connect with PayPal. %s', 'event-tickets' ),
-	$link
+	$link_element
 );
 
 ?>
@@ -45,3 +46,4 @@ $notice = sprintf(
 		</div>
 	</div>
 </div>
+<?php

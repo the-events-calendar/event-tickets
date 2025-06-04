@@ -15,6 +15,7 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
 $classes = [
 	'tec-tickets__admin-settings-tickets-commerce-gateway',
 	'tec-tickets__admin-settings-tickets-commerce-gateway--connected' => $is_merchant_connected,
@@ -35,3 +36,4 @@ $classes = [
 </div>
 
 <?php $this->template( 'settings/tickets-commerce/paypal/modal/signup-complete' ); ?>
+<?php

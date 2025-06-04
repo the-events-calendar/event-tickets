@@ -33,7 +33,8 @@ use WP_Post;
 use WP_Query;
 use WP_User_Query;
 use TEC\Tickets\Hooks as Tickets_Hooks;
-
+use TEC\Tickets\Commerce\Gateways\Stripe\Hooks as Stripe_Hooks;
+use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
 /**
  * Class Hooks.
  *
@@ -57,6 +58,7 @@ class Hooks extends Service_Provider {
 	 * Adds the actions required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
+	 * @since 5.24.0 Added async webhook process routing action.
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
@@ -101,6 +103,8 @@ class Hooks extends Service_Provider {
 		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table' ] );
 
 		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
+
+		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'route_async_webhook_process' ], 10, 2 );
 	}
 
 	/**
@@ -1155,5 +1159,32 @@ class Hooks extends Service_Provider {
 		$meta_keys[ Ticket::POSTTYPE ] = Module::ATTENDEE_EVENT_KEY;
 
 		return $meta_keys;
+	}
+
+	/**
+	 * Routes the async webhook process.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param int $order_id The order ID.
+	 * @param int $retry    The retry count.
+	 */
+	public function route_async_webhook_process( $order_id, $retry = 0 ): void {
+		$order = tec_tc_get_order( $order_id );
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		switch ( $order->gateway ) {
+			case 'stripe':
+				tribe( Stripe_Hooks::class )->process_async_stripe_webhook( $order_id, $retry );
+				break;
+			case 'square':
+				tribe( Square_Hooks::class )->process_async_webhook( $order_id, $retry );
+				break;
+			default:
+				return;
+		}
 	}
 }
