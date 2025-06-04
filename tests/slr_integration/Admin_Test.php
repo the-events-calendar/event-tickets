@@ -260,6 +260,6 @@ class Admin_Test extends Controller_Test_Case {
 
 		tribe( Move_Tickets::class )->get_post_choices();
 
-		$this->assertEquals( [ $post_id_1, $post_id_3, $post_id_4 ], array_keys( $wp_send_json_success_result['posts'] ) );
+		$this->assertEquals( [ $post_id_1, $post_id_3, $post_id_4 ], array_values( $wp_send_json_success_result['posts'] ) );
 	}
 }
