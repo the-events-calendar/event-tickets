@@ -260,7 +260,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_client_secret() {
+	public function get_client_secret(): ?string {
 		return $this->client_secret;
 	}
 

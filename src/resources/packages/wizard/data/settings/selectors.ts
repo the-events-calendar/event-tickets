@@ -17,3 +17,16 @@ export const getCountryCurrency = ( state ) => {
 
     return countryData && countryData.currency || false;
 };
+
+export const isConnected = ( state ) => {
+	const paymentOption = state.settings['paymentOption'];
+	if ( 'stripe' === paymentOption ) {
+		return state.settings['stripeConnected'];
+	}
+
+	if ( 'square' === paymentOption ) {
+		return state.settings['squareConnected'];
+	}
+
+	return false;
+};

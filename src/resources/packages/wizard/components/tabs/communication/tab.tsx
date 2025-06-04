@@ -7,7 +7,6 @@ import { SETTINGS_STORE_KEY } from "../../../data";
 import NextButton from '../../buttons/next';
 import SkipButton from '../../buttons/skip';
 import EmailIcon from './img/email';
-import { getSetting } from '../../../data/settings/selectors';
 
 const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 	const userEmailFromStore = useSelect(
@@ -72,7 +71,7 @@ const CommunicationContent = ({ moveToNextTab, skipToNextTab }) => {
 	const tabCommunication = {
 		userEmail,
 		userName,
-		currentTab: 2,
+		currentTab: 3,
 	};
 
 	// Compute whether the "Continue" button should be enabled
