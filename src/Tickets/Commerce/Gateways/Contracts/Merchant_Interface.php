@@ -39,6 +39,15 @@ interface Merchant_Interface {
 	public function get_disconnect_url(): string;
 
 	/**
+	 * Gets the client secret for merchant.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return ?string
+	 */
+	public function get_client_secret(): ?string;
+
+	/**
 	 * Save merchant data.
 	 *
 	 * @since 5.3.0
@@ -67,5 +76,4 @@ interface Merchant_Interface {
 	 * @return boolean
 	 */
 	public function from_array( array $data, $needs_save = true );
-
 }

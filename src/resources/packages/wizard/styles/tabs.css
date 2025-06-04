@@ -171,10 +171,21 @@
 	}
 }
 
-.tec-tickets-onboarding__tab--disabled,
-.tec-tickets-onboarding__tab--disabled .tec-tickets-onboarding__tab-button {
-	color: var(--tec-wp-core-grey-50);
+.tec-tickets-onboarding__tab--disabled {
 	cursor: not-allowed;
+
+
+	&:not(.tec-tickets-onboarding__tab--active) {
+		color: var(--tec-wp-core-grey-50);
+
+		.tec-tickets-onboarding__tab-button {
+			color: var(--tec-wp-core-grey-50);
+		}
+	}
+
+	.tec-tickets-onboarding__tab-button {
+		cursor: not-allowed;
+	}
 }
 
 .tec-tickets-onboarding__tab-title:before {

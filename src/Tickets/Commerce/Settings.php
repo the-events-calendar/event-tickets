@@ -9,7 +9,6 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Admin\Featured_Settings;
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -17,7 +16,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \Tribe__Template;
+use Tribe__Template;
 use Tribe__Field_Conditional;
 use Tribe__Tickets__Main;
 use WP_Admin_Bar;
@@ -181,15 +180,37 @@ class Settings {
 	}
 
 	/**
+	 * Gets the URL to the Tickets Commerce settings page.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param array $args Optional. Additional arguments to add to the URL. Default empty array.
+	 *
+	 * @return string The URL to the Tickets Commerce settings page.
+	 */
+	public function get_url( array $args = [] ) {
+		$defaults = [
+			'page' => 'tec-tickets-settings',
+			'tab'  => 'payments',
+		];
+
+		// Allow the link to be "changed" on the fly.
+		$args = wp_parse_args( $args, $defaults );
+
+		return tribe( Plugin_Settings::class )->get_url( $args );
+	}
+
+	/**
 	 * Determine whether Tickets Commerce is in test mode.
 	 *
 	 * @since 5.3.0    moved to Settings class
 	 * @since 5.1.6
+	 * @since 5.24.0 Use tec_tickets_commerce_is_sandbox_mode() instead.
 	 *
 	 * @return bool Whether Tickets Commerce is in test mode.
 	 */
 	public static function is_test_mode() {
-		return tribe_is_truthy( tribe_get_option( static::$option_sandbox ) );
+		return tec_tickets_commerce_is_sandbox_mode();
 	}
 
 	/**
@@ -622,11 +643,6 @@ class Settings {
 			return true;
 		}
 
-		// Now check if the license key format is valid.
-		if ( ! $pue->get_pue()->is_valid_key_format() ) {
-			return false;
-		}
-
 		$cache_key = __METHOD__;
 		$cached    = get_transient( $cache_key );
 
@@ -662,5 +678,133 @@ class Settings {
 		 * @param bool $is_free_ticket_allowed Whether free tickets are allowed in Tickets Commerce.
 		 */
 		return apply_filters( 'tec_tickets_commerce_is_free_ticket_allowed', true );
+	}
+
+	/**
+	 * Wrapper for get_option that allows for environmental options.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option     The option name.
+	 * @param array  $args       Additional arguments.
+	 * @param mixed  $by_default The default value if the option is not set.
+	 *
+	 * @return mixed The environmental option value.
+	 */
+	public static function get_option( string $option, array $args = [], $by_default = false ) {
+		return get_option( self::get_key( $option, $args ), $by_default );
+	}
+
+	/**
+	 * Wrapper for update_option that allows for environmental options.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option   The option name.
+	 * @param mixed  $value    The value to set.
+	 * @param array  $args     Additional arguments.
+	 * @param bool   $autoload Whether to autoload the option.
+	 *
+	 * @return bool Whether the option was updated.
+	 */
+	public static function update_option( string $option, $value, array $args = [], bool $autoload = true ): bool {
+		return update_option( self::get_key( $option, $args ), $value, $autoload );
+	}
+
+	/**
+	 * Wrapper for delete_option that allows for environmental options.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was deleted.
+	 */
+	public static function delete_option( string $option, array $args = [] ): bool {
+		return delete_option( self::get_key( $option, $args ) );
+	}
+
+	/**
+	 * Wrapper for tribe_get_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option     The option name.
+	 * @param array  $args       Additional arguments.
+	 * @param mixed  $by_default The default value if the option is not set.
+	 *
+	 * @return mixed The environmental option value.
+	 */
+	public static function get( string $option, array $args = [], $by_default = false ) {
+		return tribe_get_option( self::get_key( $option, $args ), $by_default );
+	}
+
+	/**
+	 * Wrapper for tribe_update_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option The option name.
+	 * @param mixed  $value  The value to set.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was updated.
+	 */
+	public static function set( string $option, $value, array $args = [] ): bool {
+		return tribe_update_option( self::get_key( $option, $args ), $value );
+	}
+
+	/**
+	 * Wrapper for tribe_remove_option that allows for environmental options.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return bool Whether the option was deleted.
+	 */
+	public static function delete( string $option, array $args = [] ): bool {
+		return tribe_remove_option( self::get_key( $option, $args ) );
+	}
+
+	/**
+	 * Get the environmental key.
+	 *
+	 * Consider WHAT should be environmental and WHAT should not before using any of those methods.
+	 *
+	 * For example, an order's data should NOT be environmental, as it's specific to a single order that it happened in a specific environment.
+	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
+	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $option The option name.
+	 * @param array  $args   Additional arguments.
+	 *
+	 * @return string The environmental key.
+	 */
+	public static function get_key( string $option, array $args = [] ): string {
+		$mode = self::is_test_mode() ? 'sandbox' : 'live';
+		return sprintf( $option, $mode, ...$args );
 	}
 }

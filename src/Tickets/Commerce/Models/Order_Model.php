@@ -58,42 +58,58 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
-			$on_checkout_hold_timeout = (int) Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], 0 );
+			// Default in the past. If it's not set or invalid, there should be no active checkout lock.
+			$default_checkout_timeout = gmdate( 'Y-m-d H:i:s', time() - YEAR_IN_SECONDS );
+			$on_checkout_hold_timeout = Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], $default_checkout_timeout );
+			$on_checkout_hold_timeout = Dates::is_valid_date( $on_checkout_hold_timeout ) ? $on_checkout_hold_timeout : $default_checkout_timeout;
+			$on_checkout_hold_timeout = strtotime( $on_checkout_hold_timeout );
+
 			if ( ! is_numeric( $on_checkout_hold_timeout ) ) {
 				$on_checkout_hold_timeout = 0;
 			}
 
+			$original_gateway_order_id = Arr::get( $post_meta, [ Order::ORIGINAL_GATEWAY_ORDER_ID_META_KEY, 0 ] );
+			$gateway_order_object      = Arr::get( $post_meta, [ Order::GATEWAY_ORDER_OBJECT_META_KEY, '' ] );
+			$latest_payload_hash_sent  = Arr::get( $post_meta, [ Order::LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY, 0 ] );
+			$gateway_customer_id       = Arr::get( $post_meta, [ Order::GATEWAY_CUSTOMER_ID_META_KEY, 0 ] );
+			$gateway_order_version     = Arr::get( $post_meta, [ Order::GATEWAY_ORDER_VERSION_META_KEY, 0 ] );
+
 			$properties = [
-				'order_id'            => $post_id,
-				'provider'            => Module::class,
-				'provider_slug'       => Commerce::ABBR,
-				'status_log'          => $status_log,
-				'status_obj'          => $status,
-				'status'              => $status->get_name(),
-				'status_slug'         => $status->get_slug(),
-				'gateway'             => $gateway_slug,
-				'gateway_order_id'    => $gateway_order_id,
-				'gateway_payload'     => $gateway_payload,
-				'total_value'         => Commerce\Utils\Value::create( $total_value ),
-				'subtotal'            => Commerce\Utils\Value::create( $subtotal ),
-				'total'               => $total_value,
-				'currency'            => $currency,
-				'purchaser'           => [
+				'order_id'                  => $post_id,
+				'provider'                  => Module::class,
+				'provider_slug'             => Commerce::ABBR,
+				'status_log'                => $status_log,
+				'status_obj'                => $status,
+				'status'                    => $status->get_name(),
+				'status_slug'               => $status->get_slug(),
+				'gateway'                   => $gateway_slug,
+				'gateway_order_id'          => $gateway_order_id,
+				'original_gateway_order_id' => $original_gateway_order_id,
+				'gateway_payload'           => $gateway_payload,
+				'gateway_order_object'      => $gateway_order_object ? json_decode( $gateway_order_object, true ) : [],
+				'gateway_order_version'     => $gateway_order_version,
+				'gateway_customer_id'       => $gateway_customer_id,
+				'latest_payload_hash_sent'  => $latest_payload_hash_sent,
+				'total_value'               => Commerce\Utils\Value::create( $total_value ),
+				'subtotal'                  => Commerce\Utils\Value::create( $subtotal ),
+				'total'                     => $total_value,
+				'currency'                  => $currency,
+				'purchaser_name'            => $purchaser_full_name,
+				'purchaser_email'           => $purchaser_email,
+				'purchase_time'             => get_post_time( \Tribe__Date_Utils::DBDATETIMEFORMAT, false, $this->post ),
+				'items'                     => $items,
+				'hash'                      => $hash,
+				'events_in_order'           => $events_in_order,
+				'tickets_in_order'          => $tickets_in_order,
+				'flag_action_markers'       => $flag_action_markers,
+				'on_checkout_hold'          => $on_checkout_hold_timeout,
+				'purchaser'                 => [
 					'user_id'    => (int) $purchaser_user_id,
 					'first_name' => $purchaser_first_name,
 					'last_name'  => $purchaser_last_name,
 					'full_name'  => $purchaser_full_name,
 					'email'      => $purchaser_email,
 				],
-				'purchaser_name'      => $purchaser_full_name,
-				'purchaser_email'     => $purchaser_email,
-				'purchase_time'       => get_post_time( \Tribe__Date_Utils::DBDATETIMEFORMAT, false, $this->post ),
-				'items'               => $items,
-				'hash'                => $hash,
-				'events_in_order'     => $events_in_order,
-				'tickets_in_order'    => $tickets_in_order,
-				'flag_action_markers' => $flag_action_markers,
-				'on_checkout_hold'    => $on_checkout_hold_timeout,
 			];
 		} catch ( \Exception $e ) {
 			return [];

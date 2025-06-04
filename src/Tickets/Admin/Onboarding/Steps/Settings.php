@@ -59,7 +59,7 @@ class Settings extends Abstract_Step {
 
 		// Enable the gateway.
 		$option_key   = Gateway::$option_enabled_prefix . $settings['paymentOption'];
-		$option_value = 'connected' === $settings['connectionStatus'] ? true : false;
+		$option_value = 'connected' === ( $settings['connectionStatus'] ?? '' );
 		tribe_update_option( $option_key, $option_value );
 
 		// Update the option.

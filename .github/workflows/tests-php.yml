@@ -15,6 +15,7 @@ jobs:
           - commerce_integration
           - wpunit
           - slr_integration
+          - square_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -223,6 +224,12 @@ jobs:
       - name: Install and activate TwentyTwentyFour
         if: steps.skip.outputs.value != 1
         run: ${SLIC_BIN} wp theme install twentytwentyfour
+      # ------------------------------------------------------------------------------
+      # Install but NOT activate Kadence
+      # ------------------------------------------------------------------------------
+      - name: Install Kadence
+        if: steps.skip.outputs.value != 1
+        run: ${SLIC_BIN} wp theme install kadence
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------

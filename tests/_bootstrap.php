@@ -58,3 +58,17 @@ function tec_tickets_tests_fake_transactions_disable() {
 	uopz_unset_return( DB::class, 'rollback' );
 	uopz_unset_return( DB::class, 'commit' );
 }
+
+function tec_tickets_tests_add_manual_gateway_id( $args ) {
+	$args['gateway_order_id'] = md5( wp_generate_password() . microtime() );
+
+	return $args;
+}
+
+function tec_tickets_tests_enable_gateway_id_generation() {
+	add_filter( 'tec_tickets_commerce_order_create_args', 'tec_tickets_tests_add_manual_gateway_id' );
+}
+
+function tec_tickets_tests_disable_gateway_id_generation() {
+	remove_filter( 'tec_tickets_commerce_order_create_args', 'tec_tickets_tests_add_manual_gateway_id' );
+}
