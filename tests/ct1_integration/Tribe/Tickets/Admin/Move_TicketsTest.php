@@ -185,6 +185,9 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$move_tickets = Tickets::instance()->move_tickets();
 		$move_tickets->get_post_choices();
 
-		$this->assertEqualSets( $expected, $post_choices );
+		// Sort expected by keys to match the alphabetical sorting in format_post_list.
+		ksort( $expected );
+
+		$this->assertEquals( $expected, $post_choices );
 	}
 }
