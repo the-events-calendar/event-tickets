@@ -54,10 +54,9 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 *
 	 */
 	protected function mark( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
 		foreach ( $this->get_flags( $post ) as $flag ) {
 			$marker_meta_key = Order::get_flag_action_marker_meta_key( $flag, $new_status );
-			add_post_meta( $post->ID, $marker_meta_key, $time );
+			add_post_meta( $post->ID, $marker_meta_key, tec_get_current_milliseconds() );
 		}
 	}
 

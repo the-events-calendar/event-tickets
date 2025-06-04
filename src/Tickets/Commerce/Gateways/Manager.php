@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
-use TEC\Tickets\Settings;
 
 /**
  * Class Gateways Manager.
@@ -21,11 +20,12 @@ class Manager {
 	 * @var string
 	 */
 	public static $option_gateway = '_tickets_commerce_gateway';
-	
+
 	/**
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
 	 * @since 5.1.6
+	 * @since 5.24.0 Return an array with the gateway key as the key and the gateway as the value.
 	 *
 	 * @return Abstract_Gateway[] The list of registered Tickets Commerce gateways.
 	 */
@@ -39,7 +39,9 @@ class Manager {
 		 *
 		 * @param Abstract_Gateway[] $gateways The list of registered Tickets Commerce gateways.
 		 */
-		return (array) apply_filters( 'tec_tickets_commerce_gateways', [] );
+		$gateways = (array) apply_filters( 'tec_tickets_commerce_gateways', [] );
+
+		return array_combine( array_map( fn( Abstract_Gateway $gateway ) => $gateway->get_key(), $gateways ), $gateways );
 	}
 
 	/**
@@ -100,12 +102,61 @@ class Manager {
 		if ( empty( $key ) ) {
 			return;
 		}
-		
+
 		$gateways = $this->get_gateways();
 		if ( ! isset( $gateways[ $key ] ) ) {
 			return;
 		}
 
 		return $gateways[ $key ];
+	}
+
+	/**
+	 * Get the available gateways.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $context The context in which the gateways are being retrieved.
+	 *
+	 * @return Abstract_Gateway[] The available gateways.
+	 */
+	public function get_available_gateways( string $context = 'checkout' ): array {
+		$available_gateways = array_filter(
+			$this->get_gateways(),
+			fn( Abstract_Gateway $gateway ) => $gateway::is_enabled() && $gateway::is_active()
+		);
+
+		$available_gateways_in_context = [];
+
+		switch ( $context ) {
+			case 'checkout':
+				foreach ( $available_gateways as $gateway ) {
+					if ( $gateway->renders_solo() && ! empty( $available_gateways_in_context ) ) {
+						continue;
+					}
+
+					$available_gateways_in_context[ $gateway->get_key() ] = $gateway;
+				}
+				break;
+			default:
+				$available_gateways_in_context = $available_gateways;
+				break;
+		}
+
+		/**
+		 * Allow filtering the available gateways in the context.
+		 *
+		 * @since 5.24.0
+		 *
+		 * @param Abstract_Gateway[] $available_gateways_in_context The available gateways in the context.
+		 * @param Abstract_Gateway[] $available_gateways            The available gateways.
+		 * @param string             $context                       The context in which the gateways are being retrieved.
+		 */
+		return (array) apply_filters(
+			'tec_tickets_commerce_available_gateways',
+			$available_gateways_in_context,
+			$available_gateways,
+			$context
+		);
 	}
 }
