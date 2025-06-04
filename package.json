@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@redux-devtools/extension": "^3.3.0",
-    "@stellarwp/tyson": "^0.0.7",
+    "@stellarwp/tyson": "*",
     "@types/node": "^20.10.6",
     "@wordpress/hooks": "^4.18.0",
     "@wordpress/scripts": "^30.14.1",
