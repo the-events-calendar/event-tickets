@@ -12,15 +12,17 @@ use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Ticket_Data;
 
 /**
  * Class Ticket.
  *
- * @since   5.1.9
+ * @since 5.1.9
+ * @since 5.24.0 extend Ticket_Data
  *
  * @package TEC\Tickets\Commerce
  */
-class Ticket {
+class Ticket extends Ticket_Data {
 	use Is_Ticket;
 
 	/**
@@ -550,7 +552,7 @@ class Ticket {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', - 1 ),
+				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ),
 				'meta_input' => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
@@ -1303,5 +1305,29 @@ class Ticket {
 			'start_date' => get_post_meta( $ticket_id, static::$sale_price_start_date_key, true ),
 			'end_date'   => get_post_meta( $ticket_id, static::$sale_price_end_date_key, true ),
 		];
+	}
+
+	/**
+	 * Get the ticket types.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return array The ticket types.
+	 */
+	protected function get_ticket_types(): array {
+		return [ self::POSTTYPE ];
+	}
+
+	/**
+	 * Load the ticket object.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return Ticket_Object|null The ticket object.
+	 */
+	public function load_ticket_object( int $ticket_id ): ?Ticket_Object {
+		return tribe( Module::class )->get_ticket( 0, $ticket_id );
 	}
 }

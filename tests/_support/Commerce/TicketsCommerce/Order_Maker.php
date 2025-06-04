@@ -4,11 +4,12 @@ namespace Tribe\Tickets\Test\Commerce\TicketsCommerce;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe_Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Gateway as Square_Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
-use Tribe__Repository__Usage_Error;
 use WP_Post;
 
 trait Order_Maker {
@@ -48,6 +49,34 @@ trait Order_Maker {
 		$cart->clear_cart();
 
 		return $order;
+	}
+
+	/**
+	 * Create an order through Stripe.
+	 *
+	 * @param array $items     An array with the item ID as the key, and data as value.
+	 * @param array $overrides An array of overrides for the purchaser.
+	 *
+	 * @return false|WP_Post The order post object or false if the order could not be created.
+	 */
+	protected function create_order_through_stripe( array $items, array $overrides = [] ) {
+		$gateway = tribe( Stripe_Gateway::class );
+
+		return $this->create_order( $items, array_merge( $overrides, [ 'gateway' => $gateway ] ) );
+	}
+
+	/**
+	 * Create an order through Square.
+	 *
+	 * @param array $items     An array with the item ID as the key, and data as value.
+	 * @param array $overrides An array of overrides for the purchaser.
+	 *
+	 * @return false|WP_Post The order post object or false if the order could not be created.
+	 */
+	protected function create_order_through_square( array $items, array $overrides = [] ) {
+		$gateway = tribe( Square_Gateway::class );
+
+		return $this->create_order( $items, array_merge( $overrides, [ 'gateway' => $gateway ] ) );
 	}
 
 	/**

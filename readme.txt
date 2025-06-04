@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.23.1
+Stable tag: 5.24.0
 Requires at least: 6.6
 Tested up to: 6.8.1
 Requires PHP: 7.4
@@ -198,6 +198,20 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.24.0] 2025-06-03 =
+
+* Version - Event Tickets 5.24.0 is only compatible with The Events Calendar 6.13.2 or higher.
+* Feature - Introduced Help Hub, a centralized support and resource interface for enhanced user guidance and plugin assistance. [ET-2375]
+* Feature - Introduced support for Square as a payment gateway for our TicketsCommerce. That comes with support for selling Tickets through Square's POS! [ET-2383]
+* Fix - Allow seated attendees to be manually deleted even if the event has been deleted already [ET-2440]
+* Fix - The purchaser form on TicketsCommerce checkout will only be displayed on logged out users.
+* Tweak - Added actions: `tribe_log`, `tec_tickets_commerce_square_merchant_disconnected`, `tec_tickets_commerce_square_order_before_upsert`, `tec_tickets_commerce_square_order_after_upsert`, `tec_tickets_commerce_square_webhook_event`, `tec_tickets_commerce_square_ticket_out_of_sync`, `tec_tickets_commerce_square_sync_post_reset_status`, `tec_tickets_commerce_square_sync_inventory_changed_`, `tec_tickets_commerce_square_sync_inventory_changed`, `tec_tickets_commerce_square_sync_completed`, `tec_tickets_commerce_square_sync_ticket_id_mapping_`, `tec_tickets_commerce_square_sync_ticket_id_mapping`, `tec_tickets_commerce_square_sync_object_`, `tec_tickets_commerce_square_sync_object`, `tec_tickets_commerce_square_object_synced_`, `tec_tickets_commerce_square_object_synced`, `tec_tickets_commerce_square_sync_request_completed`
+* Tweak - Added filters: `tec_tickets_commerce_gateway_webhook_maximum_attempts`, `tec_tickets_commerce_gateway_{$gateway_key}_webhook_maximum_attempts`, `tec_tickets_commerce_square_checkout_localized_data`, `tec_tickets_commerce_gateway_square_js_url`, `tec_tickets_commerce_square_order_customer_id`, `tec_tickets_commerce_square_order_payload`, `tec_tickets_commerce_square_payment_body`, `tec_tickets_commerce_square_create_from_order`, `tec_tickets_commerce_square_webhook_event_types`, `tec_tickets_commerce_square_order_endpoint_error_messages`, `tec_tickets_commerce_square_requests_chance_of_triggering_rate_limit_exception`, `tec_tickets_commerce_square_settings`, `tec_tickets_commerce_square_location_options`, `tec_tickets_commerce_square_sync_ticket_able_post_type_inventory_posts_per_page`, `tec_tickets_commerce_square_sync_inventory_query_args`, `tec_tickets_commerce_square_sync_post_type_posts_per_page`, `tec_tickets_commerce_square_sync_post_type_query_args`, `tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once`, `tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once_all_at_once`, `tec_tickets_commerce_square_event_item_data`, `the_content`, `tec_tickets_commerce_square_event_item_description_max_words`, `tec_tickets_commerce_square_event_data`, `tec_tickets_commerce_square_webhook_endpoint_url`, `tec_tickets_commerce_order_{$order->gateway}_get_value_refunded`, `tec_tickets_commerce_order_get_value_refunded`, `tec_tickets_commerce_order_{$order->gateway}_get_value_captured`, `tec_tickets_commerce_order_get_value_captured`, `tec_tickets_commerce_order_created_by`, `tec_tickets_ticket_about_to_go_to_sale_seconds`, `tec_tickets_commerce_tickets_currency_code`
+* Tweak - Changed views: `v2/commerce/checkout`, `v2/commerce/checkout/cart`, `v2/commerce/checkout/cart/empty`, `v2/commerce/checkout/cart/empty/description`, `v2/commerce/checkout/cart/empty/title`, `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/quantity`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/cart/header`, `v2/commerce/checkout/cart/item`, `v2/commerce/checkout/cart/item/details`, `v2/commerce/checkout/cart/item/details/description`, `v2/commerce/checkout/cart/item/details/extra`, `v2/commerce/checkout/cart/item/details/title`, `v2/commerce/checkout/cart/item/details/toggle`, `v2/commerce/checkout/cart/item/price`, `v2/commerce/checkout/cart/item/quantity`, `v2/commerce/checkout/cart/item/sub-total`, `v2/commerce/checkout/cart/items`, `v2/commerce/checkout/cart/ticket`, `v2/commerce/checkout/fields`, `v2/commerce/checkout/footer`, `v2/commerce/checkout/footer/gateway-error`, `v2/commerce/checkout/gateways`, `v2/commerce/checkout/header`, `v2/commerce/checkout/header/links`, `v2/commerce/checkout/header/links/back`, `v2/commerce/checkout/header/title`, `v2/commerce/checkout/must-login`, `v2/commerce/checkout/must-login/login`, `v2/commerce/checkout/must-login/registration`, `v2/commerce/gateway/square/container`, `v2/tickets/item/content/sale-label`
+* Tweak - Removed filters: `tec_tickets_commerce_gateway_stripe_webhook_maximum_attempts`
+* Tweak - Tickets Commerce Flag Actions for controlling stock and attendees have increased precision to microtime to avoid concurrency problems
+* Language - 149 new strings added, 287 updated, 0 fuzzied, and 1 obsoleted.
 
 = [5.23.1] 2025-05-27 =
 
