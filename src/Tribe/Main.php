@@ -18,7 +18,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.23.1';
+	const VERSION = '5.24.0';
 
 	/**
 	 * Used to store the version history.
@@ -63,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.13.0-dev';
+	protected $min_tec_version = '6.13.2-dev';
 
 	/**
 	 * Name of the provider.
@@ -536,12 +536,14 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
+		tribe_register_provider( TEC\Tickets\Configuration\Provider::class );
+
 		tribe_singleton( Tribe__Tickets__Theme_Compatibility::class, Tribe__Tickets__Theme_Compatibility::class );
 
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
 
-		// ORM
+		// ORM.
 		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
 
 		// REST API v1

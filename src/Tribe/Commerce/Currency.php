@@ -1,4 +1,13 @@
 <?php
+/**
+ * Currency class.
+ *
+ * @since 4.7
+ *
+ * @package TEC\Tickets\Commerce
+ */
+
+use TEC\Tickets\Commerce\Utils\Currency as Commerce_Currency;
 
 class Tribe__Tickets__Commerce__Currency {
 
@@ -463,7 +472,57 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		return tribe_get_option( 'defaultCurrencySymbol', '$' );
+	}
 
+	/**
+	 * Returns the currency code depending on the provider.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param mixed $provider  The ticket provider class name or object.
+	 * @param int   $ticket_id The ticket ID.
+	 *
+	 * @return string
+	 */
+	public static function get_provider_currency_code( $provider, $ticket_id = null ) {
+		// Convert to class name if object is passed.
+		if ( is_object( $provider ) ) {
+			$provider = get_class( $provider );
+		}
+
+		/**
+		 * Filters the currency code for a ticket.
+		 *
+		 * @since 5.24.0
+		 *
+		 * Any non 3 letter code will be ignored and the default currency code will be used.
+		 *
+		 * @param null $code The currency code.
+		 * @param int  $ticket_id The ticket ID.
+		 */
+		$code = apply_filters( 'tec_tickets_commerce_tickets_currency_code', null, $ticket_id );
+
+		if ( is_string( $code ) && 3 === strlen( $code ) ) {
+			return $code;
+		}
+
+		if ( ! class_exists( $provider ) ) {
+			return Commerce_Currency::get_currency_code();
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider && function_exists( 'get_woocommerce_currency' ) ) {
+			return get_woocommerce_currency();
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_currency_symbol' ) ) {
+			return edd_currency_symbol();
+		}
+
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_code' ) ) {
+			return tec_tickets_commerce_currency_code();
+		}
+
+		return Commerce_Currency::get_currency_code();
 	}
 
 	/**
@@ -612,12 +671,13 @@ class Tribe__Tickets__Commerce__Currency {
 	 * Returns the current Tribe Commerce currency code.
 	 *
 	 * @since 4.8
+	 * @since 5.24.0 Use the Commerce Currency class instead, as a result fixing the typo in the option's name.
 	 *
 	 * @return string The current Tribe Commerce 3-letter currency code,
 	 *                e.g. "USD".
 	 */
 	public function get_currency_code() {
-		return tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
+		return Commerce_Currency::get_currency_code();
 	}
 
 	/**
