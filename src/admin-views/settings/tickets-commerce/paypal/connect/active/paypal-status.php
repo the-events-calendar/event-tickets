@@ -15,7 +15,9 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
-if ( ! empty( $is_merchant_connected ) ) {
+defined( 'ABSPATH' ) || exit;
+
+if ( $is_merchant_active ?? false ) {
 	return;
 }
 
