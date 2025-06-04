@@ -17,6 +17,8 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( empty( $is_merchant_connected ) ) {
 	return;
 }
@@ -41,3 +43,4 @@ $disconnect_url = $merchant->get_disconnect_url();
 		</a>
 	</div>
 </div>
+<?php

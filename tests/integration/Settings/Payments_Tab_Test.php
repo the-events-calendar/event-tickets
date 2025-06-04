@@ -51,7 +51,7 @@ class Payments_Tab_Test extends WPTestCase {
 	/**
 	 * Data provider for payment tab tests.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return Generator<string,array{
 	 *     tab: string,

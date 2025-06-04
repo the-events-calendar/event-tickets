@@ -38,7 +38,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/order';
+	protected string $path = '/commerce/stripe/order';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.

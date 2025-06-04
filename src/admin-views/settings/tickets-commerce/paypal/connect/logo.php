@@ -15,12 +15,10 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
 ?>
-
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-logo">
-
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/logo/image' ); ?>
-
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/logo/features' ); ?>
-
 </div>
+<?php

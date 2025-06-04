@@ -40,7 +40,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/free/order';
+	protected string $path = '/commerce/free/order';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -86,7 +86,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		
+
 		$created = tribe( Order::class )->modify_status(
 			$order->ID,
 			Pending::SLUG,
