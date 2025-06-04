@@ -822,7 +822,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added logic to only increment deleted attendees count if we're actually deleting an attendee, not a ticket.
+	 * @since TBD Removed the increment of deleted attendees count, it is handled in attendee deletion method.
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
