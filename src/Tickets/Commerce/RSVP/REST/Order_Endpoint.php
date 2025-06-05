@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\RSVP\REST;
 
+use TEC\Tickets\Commerce\Cart\RSVP_Cart;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
@@ -92,6 +93,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
+	/**
+	 * Filters the cart repository, to use RSVP_Cart instead of the default Cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param Cart_Interface $cart Instance of the cart repository managing the cart.
+	 */
+	public function setup_cart( $cart ) {
+		return tribe( RSVP_Cart::class );
+	}
+
 	public function handle_steps( WP_REST_Request $request ) {
 		$response = [
 			'success' => false,
@@ -100,6 +112,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 		$step      = tribe_get_request_var( 'step', null );
+
+		add_filter( 'tec_tickets_commerce_cart_repository', [ $this, 'setup_cart' ] );
 
 		$render_response = $this->render_rsvp_step( $ticket_id, $step );
 
@@ -245,6 +259,30 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			if ( is_wp_error( $purchaser ) ) {
 				return $purchaser;
+			}
+
+			// Get the cart instance.
+			$cart = tribe( RSVP_Cart::class );
+			$cart->save();
+
+			// Parse the ticket quantity for this RSVP.
+			$ticket_id = $args['rsvp_id'];
+			$quantity = $this->parse_ticket_quantity( $ticket_id );
+
+			// Add the RSVP ticket to the cart.
+			if ( $quantity > 0 ) {
+				$cart->upsert_item(
+					$ticket_id,
+					$quantity,
+					[
+						'type'         => 'tc-rsvp',
+						'order_status' => $first_attendee['order_status'],
+						'optout'       => $first_attendee['optout'],
+					]
+				);
+
+				// Save the cart to persist the items.
+				$cart->save();
 			}
 
 			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
