@@ -79,7 +79,7 @@ class Events extends Abstract_Step {
 			$install = $plugin->install();
 
 			if ( ! $install ) {
-				return $this->add_fail_message( $response, __( 'Failed to install plugin.', 'event-tickets' ) );
+				return $this->add_message( $response, __( 'Failed to install plugin.', 'event-tickets' ) );
 			}
 		}
 
@@ -87,7 +87,7 @@ class Events extends Abstract_Step {
 			$active = $plugin->activate();
 
 			if ( ! $active ) {
-				return $this->add_fail_message( $response, __( 'Failed to activate plugin.', 'event-tickets' ) );
+				return $this->add_message( $response, __( 'Failed to activate plugin.', 'event-tickets' ) );
 			}
 		}
 
