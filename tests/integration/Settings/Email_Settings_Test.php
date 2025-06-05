@@ -50,7 +50,7 @@ class Email_Settings_Test extends WPTestCase {
 	/**
 	 * Data provider for attendee registration tab tests.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return Generator<string,array{
 	 *     tab: string,
@@ -84,7 +84,7 @@ class Email_Settings_Test extends WPTestCase {
 	/**
 	 * Clean dynamic content from HTML to avoid false mismatches in snapshot tests.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $content The content to clean.
 	 *

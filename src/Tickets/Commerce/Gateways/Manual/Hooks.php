@@ -37,26 +37,18 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 5.2.0
 	 */
 	public function register() {
-		$this->add_actions();
 		$this->add_filters();
-	}
-
-	/**
-	 * Adds the actions required by each Tickets Commerce component.
-	 *
-	 * @since 5.2.0
-	 */
-	protected function add_actions() {
-
 	}
 
 	/**
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.2.0
+	 * @since 5.24.0 Added the filter to add a gateway order ID for the manual gateway.
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_order_' . Gateway::get_key() . '_create_args', [ $this, 'add_manual_gateway_id' ] );
 	}
 
 	/**
@@ -70,5 +62,20 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function filter_add_gateway( array $gateways = [] ) {
 		return $this->container->make( Gateway::class )->register_gateway( $gateways );
+	}
+
+	/**
+	 * Produce a gateway order ID for the manual gateway.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param array $args The arguments to create the order.
+	 *
+	 * @return array The arguments to create the order.
+	 */
+	public function add_manual_gateway_id( $args ) {
+		$args['gateway_order_id'] = md5( wp_generate_password() . microtime() );
+
+		return $args;
 	}
 }
