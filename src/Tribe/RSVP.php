@@ -673,7 +673,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Tickets__Main::VERSION )
 		);
 
-		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
+		$js_url = $main->plugin_url . 'build/js/rsvp.js';
 		$js_url = Tribe__Assets::maybe_get_min_file( $js_url, true );
 		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
 
