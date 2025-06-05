@@ -660,7 +660,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function register_resources() {
 		$main = Tribe__Tickets__Main::instance();
 
-		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
+		$stylesheet_url = $main->plugin_url . 'build/css/rsvp.css';
 		$stylesheet_url = Tribe__Assets::maybe_get_min_file( $stylesheet_url, true );
 
 		// Apply filters.
