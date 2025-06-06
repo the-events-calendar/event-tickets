@@ -199,7 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.24.0.1] 2025-06-06 =
+= [5.24.0.1] 2025-06-05 =
 
 * Fix - Fix some hardcoded asset paths. [TEC-5523]
 * Fix - Harden PayPal authentication. [ET-2244]
