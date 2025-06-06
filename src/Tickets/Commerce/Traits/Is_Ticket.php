@@ -33,6 +33,6 @@ trait Is_Ticket {
 			return true;
 		}
 
-		return 'ticket' === $thing['type'];
+		return 'ticket' === $thing['type'] || 'tc-rsvp' === $thing['type'];
 	}
 }
