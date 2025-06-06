@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.24.0
+Stable tag: 5.24.0.1
 Requires at least: 6.6
 Tested up to: 6.8.1
 Requires PHP: 7.4
@@ -198,6 +198,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.24.0.1] 2025-06-05 =
+
+* Fix - Fix some hardcoded asset paths. [TEC-5523]
+* Fix - Harden PayPal authentication. [ET-2244]
+* Fix - Utilize the newer version of our build process to ensure inline svgs are being handled properly. [TCMN-188]
 
 = [5.24.0] 2025-06-03 =
 

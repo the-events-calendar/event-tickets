@@ -99,8 +99,9 @@ class WhoDat extends Abstract_WhoDat {
 		}
 
 		$query_args = [
-			'mode'        => tribe( Merchant::class )->get_mode(),
-			'merchant_id' => $saved_merchant_id,
+			'mode'         => tribe( Merchant::class )->get_mode(),
+			'merchant_id'  => $saved_merchant_id,
+			'access_token' => tribe( Merchant::class )->get_access_token(),
 		];
 
 		$cache[ $cache_key ] = $this->post( 'seller/status', $query_args );
