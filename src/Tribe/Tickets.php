@@ -393,12 +393,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Set the Query args to fetch all the Tickets.
 		 *
-		 * @since  5.5.0 refactored to use the tickets ORM.
-		 * @since  4.6
+		 * @since 5.5.0 refactored to use the tickets ORM.
+		 * @since 4.6
 		 * @since 5.5.2 Set default query args.
 		 * @since 5.8.0 Added the `$context` parameter.
+		 * @since TBD Correct the docblock to reflect the method's behavior.
 		 *
-		 * @param int|WP_Post $post_id Build the args to query only
+		 * @param int         $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
 		 * @param string|null $context The context of the query.
 		 *
