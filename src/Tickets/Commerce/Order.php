@@ -639,6 +639,7 @@ class Order extends Abstract_Order {
 						'type'              => $item['type'] ?? 'ticket',
 					];
 				},
+				//@todo pass the type to here. 
 				$cart->get_items_in_cart( true, 'tc-rsvp' )
 			)
 		);

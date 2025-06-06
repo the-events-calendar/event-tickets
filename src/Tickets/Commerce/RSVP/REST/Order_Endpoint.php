@@ -482,6 +482,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Set required template globals.
 		$args = [
 			'rsvp_id'    => $ticket_id,
+			'ticket_id'    => $ticket_id,
 			'post_id'    => $post_id,
 			'rsvp'       => $ticket,
 			'step'       => $step,

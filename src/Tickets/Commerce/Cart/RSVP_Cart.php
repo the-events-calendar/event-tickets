@@ -489,6 +489,8 @@ class RSVP_Cart extends Abstract_Cart {
 		$sub_total_value->set_value( $item['obj']->price );
 
 		$item['event_id']  = $item['obj']->get_event_id();
+		//@todo why is the tc-rsvp_id? track the source and make it ticket_id.
+		$item['ticket_id']  = $item['tc-rsvp_id'];
 		$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
 		$item['type']      = 'tc-rsvp';
 
