@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.24.0.1] 2025-06-06
+
+* Fix - Fix some hardcoded asset paths. [TEC-5523]
+* Fix - Harden PayPal authentication. [ET-2244]
+* Fix - Utilize the newer version of our build process to ensure inline svgs are being handled properly. [TCMN-188]
+
 ### [5.24.0] 2025-06-03
 
 * Version - Event Tickets 5.24.0 is only compatible with The Events Calendar 6.13.2 or higher.

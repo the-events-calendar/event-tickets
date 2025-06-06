@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! empty( $is_merchant_connected ) ) {
+if ( $is_merchant_active ?? false ) {
 	return;
 }
 
