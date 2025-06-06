@@ -41,7 +41,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 */
 	public function do_register(): void {
 		// Add group path for tickets blocks.
-		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'tickets/Blocks/' );
+		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'Tickets/Blocks/' );
 
 		// The general warnings class.
 		$this->container->singleton( 'tickets.editor.warnings', Warnings::class, [ 'hook' ] );
@@ -175,8 +175,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	public function render_form_toggle_buttons( $post_id ): void {
 		// By default, any ticket-able post type can have tickets and RSVPs.
 		$enabled = [
-			'default' => true,
-			'rsvp'    => true,
+			'default' => true
 		];
 
 		$post_type = get_post_field( 'post_type', $post_id );
@@ -193,9 +192,6 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		if ( ! empty( $enabled['default'] ) ) {
 			tribe( Meta::class )->render_ticket_form_toggle( $post_id );
-		}
-		if ( ! empty( $enabled['rsvp'] ) ) {
-			tribe( Meta::class )->render_rsvp_form_toggle( $post_id );
 		}
 	}
 

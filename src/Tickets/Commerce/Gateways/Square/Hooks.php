@@ -11,8 +11,10 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
-
+use WP_Post;
 use Tribe__Repository;
+use Exception;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 
 /**
  * Square Hooks class.
@@ -95,5 +97,83 @@ class Hooks extends Controller_Contract {
 		$gateways[ Gateway::get_key() ] = $this->gateway;
 
 		return $gateways;
+	}
+
+	/**
+	 * Process the async square webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 * @param int $retry    The number of times this has been tried.
+	 *
+	 * @throws Exception If the action fails after too many retries.
+	 */
+	public function process_async_webhook( int $order_id, int $retry = 0 ): void {
+		$order = tec_tc_get_order( $order_id );
+
+		if ( ! $order ) {
+			return;
+		}
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		if ( ! $order->ID ) {
+			return;
+		}
+
+		$webhooks = tribe( Webhooks::class );
+
+		if ( time() < $order->on_checkout_hold ) {
+			if ( $retry > $webhooks->get_max_number_of_retries() ) {
+				throw new Exception( __( 'Failed to process the webhook after too many tries.', 'event-tickets' ) );
+			}
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order_id,
+					'try'      => ++$retry,
+				],
+				'tec-tickets-commerce-webhooks'
+			);
+			return;
+		}
+
+		$pending_webhooks = $webhooks->get_pending_webhooks( $order->ID );
+
+		// On multiple checkout completes, make sure we don't process the same webhook twice.
+		$webhooks->delete_pending_webhooks( $order->ID );
+
+		foreach ( $pending_webhooks as $pending_webhook ) {
+			if ( ! ( is_array( $pending_webhook ) ) ) {
+				continue;
+			}
+
+			if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
+				continue;
+			}
+
+			$new_status_wp_slug = $pending_webhook['new_status'];
+
+			// The order is already there!
+			if ( $order->post_status === $new_status_wp_slug ) {
+				continue;
+			}
+
+			// The order is no longer where it was... that could be dangerous, lets bail?
+			if ( $order->post_status !== $pending_webhook['old_status'] ) {
+				continue;
+			}
+
+			tribe( Order::class )->modify_status(
+				$order->ID,
+				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
+				$pending_webhook['metadata']
+			);
+		}
 	}
 }

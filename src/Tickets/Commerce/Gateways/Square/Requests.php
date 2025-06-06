@@ -165,6 +165,7 @@ class Requests extends Abstract_Requests {
 		return [
 			'Square-Version' => '2025-04-16',
 			'Content-Type'   => 'application/json',
+			'Accept'         => 'application/json',
 		];
 	}
 }

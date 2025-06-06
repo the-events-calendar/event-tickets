@@ -2,7 +2,7 @@
 /**
  * Class that holds some data functions for the Wizard.
  *
- * @since TBD
+ * @since 5.23.0
  */
 
 namespace TEC\Tickets\Admin\Onboarding;
@@ -11,7 +11,7 @@ use TEC\Common\Admin\Onboarding\Abstract_Data;
 /**
  * Class Data
  *
- * @since TBD
+ * @since 5.23.0
  * @package TEC\Tickets\Admin\Onboarding
  */
 class Data extends Abstract_Data {
@@ -19,7 +19,7 @@ class Data extends Abstract_Data {
 	/**
 	 * The option name for the wizard settings.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -28,7 +28,7 @@ class Data extends Abstract_Data {
 	/**
 	 * Get the saved wizard settings.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return array
 	 */
@@ -39,7 +39,7 @@ class Data extends Abstract_Data {
 	/**
 	 * Update the wizard settings.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param array $settings The settings to update.
 	 */
@@ -50,7 +50,7 @@ class Data extends Abstract_Data {
 	/**
 	 * Get a specific wizard setting by key.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param string $key           The setting key.
 	 * @param mixed  $default_value The default value.
@@ -66,7 +66,7 @@ class Data extends Abstract_Data {
 	/**
 	 * Update a specific wizard setting.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param string $key   The setting key.
 	 * @param mixed  $value The setting value.

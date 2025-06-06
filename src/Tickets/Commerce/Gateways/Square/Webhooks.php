@@ -9,9 +9,11 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Webhooks;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use WP_Error;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Date_Utils as Dates;
 use RuntimeException;
 
@@ -22,7 +24,7 @@ use RuntimeException;
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
-class Webhooks extends Controller_Contract {
+class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key for storing webhook secret key.
 	 *
@@ -60,6 +62,28 @@ class Webhooks extends Controller_Contract {
 	public const OPTION_WEBHOOK_ID = 'tickets-commerce-square-webhook-id';
 
 	/**
+	 * Gets the gateway for this webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @return Abstract_Gateway
+	 */
+	public function get_gateway(): Abstract_Gateway {
+		return tribe( Gateway::class );
+	}
+
+	/**
+	 * Gets the merchant for this webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @return Abstract_Merchant
+	 */
+	public function get_merchant(): Abstract_Merchant {
+		return tribe( Merchant::class );
+	}
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @since TBD
@@ -67,6 +91,8 @@ class Webhooks extends Controller_Contract {
 	public function do_register(): void {
 		// Add AJAX handler for webhook registration.
 		add_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
+		add_action( 'init', [ $this, 'schedule_webhook_registration_refresh' ] );
+		add_action( 'tec_tickets_commerce_square_refresh_webhook', [ $this, 'refresh_webhook' ] );
 	}
 
 	/**
@@ -77,6 +103,42 @@ class Webhooks extends Controller_Contract {
 	public function unregister(): void {
 		// Add AJAX handler for webhook registration.
 		remove_action( 'wp_ajax_tec_tickets_commerce_square_register_webhook', [ $this, 'ajax_register_webhook' ] );
+		remove_action( 'init', [ $this, 'schedule_webhook_registration_refresh' ] );
+		remove_action( 'tec_tickets_commerce_square_refresh_webhook', [ $this, 'refresh_webhook' ] );
+	}
+
+	/**
+	 * Schedule a webhook registration refresh.
+	 *
+	 * @since TBD
+	 */
+	public function schedule_webhook_registration_refresh(): void {
+		if ( ! $this->is_webhook_healthy() ) {
+			return;
+		}
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_square_refresh_webhook', [], 'tec-tickets-commerce-webhooks' ) ) {
+			return;
+		}
+
+		as_schedule_single_action( time() + 6 * HOUR_IN_SECONDS, 'tec_tickets_commerce_square_refresh_webhook', [], 'tec-tickets-commerce-webhooks' );
+	}
+
+	/**
+	 * Refresh the webhook.
+	 *
+	 * @since TBD
+	 */
+	public function refresh_webhook(): void {
+		if ( ! $this->is_webhook_healthy() ) {
+			return;
+		}
+
+		if ( ! $this->should_refresh_webhook() ) {
+			return;
+		}
+
+		$this->register_webhook_endpoint();
 	}
 
 	/**
@@ -84,18 +146,19 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $hash Whether to hash the secret key.
+	 * @param bool $hash       Whether to hash the secret key.
+	 * @param bool $regenerate Whether to regenerate the webhook secret key.
 	 *
 	 * @return string The webhook secret.
 	 */
-	public function get_webhook_secret( bool $hash = true ): string {
-		$webhook_secret = get_option( self::OPTION_WEBHOOK_SECRET );
+	public function get_webhook_secret( bool $hash = true, bool $regenerate = false ): string {
+		$webhook_secret = $regenerate ? null : get_transient( self::OPTION_WEBHOOK_SECRET );
 
-		if ( empty( $webhook_secret ) ) {
+		if ( ! ( $webhook_secret && is_string( $webhook_secret ) ) ) {
 			$webhook_secret = wp_generate_password( 64, true, true );
 
 			// We specifically save the raw secret key, not the hashed version, so that if the salt changes the webhooks fail.
-			update_option( self::OPTION_WEBHOOK_SECRET, $webhook_secret );
+			set_transient( self::OPTION_WEBHOOK_SECRET, $webhook_secret, 2 * DAY_IN_SECONDS );
 		}
 
 		return $hash ? wp_hash_password( $webhook_secret ) : $webhook_secret;
@@ -106,9 +169,11 @@ class Webhooks extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
+	 * @param bool $regenerate Whether to regenerate the webhook secret key.
+	 *
 	 * @return string The webhook endpoint URL.
 	 */
-	public function get_webhook_endpoint_url(): string {
+	public function get_webhook_endpoint_url( bool $regenerate = false ): string {
 		$endpoint_url = $this->container->get( REST\Webhook_Endpoint::class )->get_route_url();
 
 		// Allow overriding via constant for local development.
@@ -120,7 +185,7 @@ class Webhooks extends Controller_Contract {
 		}
 
 		// Add the webhook secret key to the URL.
-		$endpoint_url = add_query_arg( self::PARAM_WEBHOOK_KEY, $this->get_webhook_secret( true ), $endpoint_url );
+		$endpoint_url = add_query_arg( self::PARAM_WEBHOOK_KEY, $this->get_webhook_secret( true, $regenerate ), $endpoint_url );
 
 		/**
 		 * Filters the Square webhook endpoint URL.
@@ -146,7 +211,7 @@ class Webhooks extends Controller_Contract {
 	 * @return array<string,mixed>|WP_Error The webhook data or WP_Error on failure.
 	 */
 	public function register_webhook_endpoint() {
-		$endpoint_url = $this->get_webhook_endpoint_url();
+		$endpoint_url = $this->get_webhook_endpoint_url( true );
 		$merchant_id  = tribe( Merchant::class )->get_merchant_id();
 
 		try {
@@ -252,6 +317,10 @@ class Webhooks extends Controller_Contract {
 		}
 
 		$unhashed_key = $this->get_webhook_secret( false );
+
+		if ( ! $unhashed_key ) {
+			return false;
+		}
 
 		// Both keys need to be the same.
 		return wp_check_password( $unhashed_key, $received_secret_key );
@@ -375,7 +444,7 @@ class Webhooks extends Controller_Contract {
 		}
 
 		$expires_at_date = Dates::build_date_object( $expires_at );
-		$now = Dates::build_date_object();
+		$now             = Dates::build_date_object();
 
 		return $expires_at_date->getTimestamp() < $now->getTimestamp();
 	}
@@ -396,15 +465,17 @@ class Webhooks extends Controller_Contract {
 		$fetched_at = $webhook['fetched_at'] ?? null;
 
 		// If the webhook has never been fetched, it is expired.
-		if ( empty( $fetched_at ) ) {
+		if ( ! $fetched_at ) {
+			return true;
+		}
+
+		if ( ! $this->get_webhook_secret() ) {
 			return true;
 		}
 
 		$fetched_at_date = Dates::build_date_object( $fetched_at );
-		$now = Dates::build_date_object();
+		$some_time_ago   = Dates::build_date_object()->modify( '-12 hours' );
 
-		$one_hour_ago = $now->modify( '-1 hour' );
-
-		return $fetched_at_date->getTimestamp() < $one_hour_ago->getTimestamp();
+		return $fetched_at_date->getTimestamp() < $some_time_ago->getTimestamp();
 	}
 }

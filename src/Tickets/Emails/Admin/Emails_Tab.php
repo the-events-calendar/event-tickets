@@ -60,7 +60,7 @@ class Emails_Tab {
 	/**
 	 * Stores the instance of the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var Tribe__Settings_Tab
 	 */
@@ -71,7 +71,7 @@ class Emails_Tab {
 	 *
 	 * @since  5.5.6
 	 * @since  5.8.4 Return the registered tab.
-	 * @since TBD Set the return to `$this->settings_tab`.
+	 * @since 5.23.0 Set the return to `$this->settings_tab`.
 	 *
 	 * @param string $admin_page Page ID of current admin page.
 	 *
@@ -98,7 +98,7 @@ class Emails_Tab {
 	/**
 	 * Gets the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return Tribe__Settings_Tab
 	 */
@@ -173,7 +173,7 @@ class Emails_Tab {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6
-	 * @since TBD Updated class names to follow new settings.
+	 * @since 5.23.0 Updated class names to follow new settings.
 	 *
 	 * @return array[]
 	 */
@@ -266,7 +266,7 @@ class Emails_Tab {
 	 * Get email settings.
 	 *
 	 * @since 5.5.9
-	 * @since TBD Added new classes for settings.
+	 * @since 5.23.0 Added new classes for settings.
 	 *
 	 * @return array Settings array
 	 */

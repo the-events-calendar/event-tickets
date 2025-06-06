@@ -13,11 +13,6 @@ use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
-use TEC\Common\Admin\Entities\Div;
-use TEC\Common\Admin\Entities\Field_Wrapper;
-use TEC\Common\Admin\Entities\Heading;
-use Tribe\Utils\Element_Classes as Classes;
-use Tribe__Field;
 
 /**
  * Class Ticket
@@ -114,7 +109,7 @@ class Ticket extends Email_Abstract implements Purchase_Confirmation_Email_Inter
 	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
-	 * @since TBD Added new classes for settings.
+	 * @since 5.23.0 Added new classes for settings.
 	 *
 	 * @return array
 	 */
