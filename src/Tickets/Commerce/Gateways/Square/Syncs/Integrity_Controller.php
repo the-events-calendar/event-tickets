@@ -2,7 +2,7 @@
 /**
  * Ensures the data integrity of the Square sync.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -26,7 +26,7 @@ use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 /**
  * Integrity_Controller class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -34,7 +34,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Hook to check the data integrity.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Hook to delete the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Hook to check the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Hook to sync the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Hook to sync the inventory.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Option to store the items to delete.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -88,7 +88,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Option to store the items to check.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -97,7 +97,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Option to store the items to sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -106,7 +106,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Option to store the item's inventory to sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -115,7 +115,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Items to store.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -124,7 +124,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Whether the mode is production.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var bool
 	 */
@@ -133,7 +133,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Regulator.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Regulator
 	 */
@@ -142,7 +142,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Items sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Items_Sync
 	 */
@@ -151,7 +151,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Inventory sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Inventory_Sync
 	 */
@@ -160,7 +160,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Ticket data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Ticket_Data
 	 */
@@ -169,7 +169,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container      $container      Container.
 	 * @param Regulator      $regulator      Regulator.
@@ -189,7 +189,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Register the controller's hooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -203,7 +203,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller's hooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -216,7 +216,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Schedule the batch sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -227,7 +227,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Store and flush the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -243,7 +243,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Enqueue the objects for storage.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_object_id The Square object ID.
 	 * @param int    $wp_object_id     The WordPress object ID.
@@ -273,7 +273,7 @@ class Integrity_Controller extends Controller_Contract {
 	 *
 	 * This could be an intense process, thats why we do it just 4 times a day.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -339,7 +339,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Delete the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -402,7 +402,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Check the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $to_be_checked The items to check.
 	 *
@@ -547,7 +547,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Sync the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -626,7 +626,7 @@ class Integrity_Controller extends Controller_Contract {
 	/**
 	 * Sync the inventory.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

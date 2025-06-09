@@ -5,7 +5,7 @@
  * This abstract class provides the base functionality for representing WordPress objects
  * as Square catalog items. It handles common operations for syncing with Square's API.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -15,6 +15,9 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 use JsonSerializable;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Gateways\Square\Requests;
+use Tribe__Tickets__Main as ET;
 
 /**
  * Abstract Class Item
@@ -22,7 +25,7 @@ use TEC\Tickets\Commerce\Meta as Commerce_Meta;
  * Base class for all Square catalog items. Provides common functionality for
  * identifying, serializing, and syncing objects between WordPress and Square.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -30,7 +33,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * The data structure for the Square catalog item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -39,7 +42,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the Square object ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +51,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the Square object version.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -57,7 +60,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the last sync timestamp.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -66,7 +69,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Meta key for storing the sync history.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -76,7 +79,7 @@ abstract class Item implements JsonSerializable {
 	 * The type of Square catalog item this class represents.
 	 * Should be overridden by child classes.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -85,7 +88,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the WordPress ID of the object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return int The WordPress post ID.
 	 */
@@ -94,7 +97,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set the object values for synchronization with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array prepared for Square synchronization.
 	 */
@@ -103,7 +106,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the Square ID for this object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The Square object ID.
 	 */
@@ -127,7 +130,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the remote object ID for a given WordPress ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $id The WordPress ID.
 	 *
@@ -140,7 +143,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Delete the remote data for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $id The ID.
 	 *
@@ -156,7 +159,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Serialize the object to JSON.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array for JSON serialization.
 	 */
@@ -167,7 +170,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Convert the object to an array for Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array prepared for Square API.
 	 */
@@ -178,6 +181,12 @@ abstract class Item implements JsonSerializable {
 			$this->data['version'] = $version;
 		}
 		$this->data['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
+		/**
+		 * We don't sync any image until Square resolves its issue,
+		 * where not setting the image_ids removes all the images from the catalog object.
+		 */
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+		// $this->set_image_ids();
 
 		return $this->set_object_values();
 	}
@@ -185,7 +194,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get the WordPress controlled fields for a given Square object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The Square object.
 	 *
@@ -193,6 +202,7 @@ abstract class Item implements JsonSerializable {
 	 */
 	public function get_wp_controlled_fields( array $square_object ): array {
 		unset( $square_object['version'] );
+		unset( $square_object[ strtolower( static::ITEM_TYPE ) . '_data' ]['image_ids'] );
 		$myself = $this->to_array();
 
 		$myself['present_at_location_ids'] = [ tribe( Merchant::class )->get_location_id() ];
@@ -208,7 +218,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set a value in the data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key   The key to set.
 	 * @param mixed  $value The value to set.
@@ -222,7 +232,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get a value from the data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key The key to get.
 	 *
@@ -235,7 +245,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Set a value in the item_data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key   The key to set.
 	 * @param mixed  $value The value to set.
@@ -249,7 +259,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Get a value from the item_data array.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $key The key to get.
 	 *
@@ -262,7 +272,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Register hooks for this object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -279,7 +289,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Handle ticket ID mapping from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_object_id The Square object ID.
 	 *
@@ -302,7 +312,7 @@ abstract class Item implements JsonSerializable {
 	/**
 	 * Handle object sync from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The Square object data.
 	 *
@@ -318,7 +328,7 @@ abstract class Item implements JsonSerializable {
 		/**
 		 * Fires when a object is synced from Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int   $wp_id The WordPress ID of the object.
 		 * @param array $square_object The sync object.
@@ -329,7 +339,7 @@ abstract class Item implements JsonSerializable {
 		/**
 		 * Fires when a object is synced from Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $object_id The Square's object ID.
 		 * @param int    $wp_id The WordPress ID of the object.
@@ -337,5 +347,114 @@ abstract class Item implements JsonSerializable {
 		 * @param Item   $item The item object.
 		 */
 		do_action( 'tec_tickets_commerce_square_object_synced', $this->get_id(), $this->get_wp_id(), $square_object, $this );
+	}
+
+	/**
+	 * Set the image IDs for the item.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return void
+	 */
+	protected function set_image_ids(): void {
+		// If the object has been synced already, we dont want to overwrite its image ever again.
+		if ( self::get_remote_object_id( $this->get_wp_id() ) ) {
+			return;
+		}
+
+		$image_ids = Commerce_Settings::get( 'square_catalog_image_ids_%s', [], [] );
+
+		$product_type = 'ITEM' === static::ITEM_TYPE ? 'event' : 'ticket';
+
+		if ( 'ticket' === $product_type ) {
+			$product_type = is_callable( $this, 'get_ticket' ) && 'tribe_event_series' === $this->get_ticket()->get_event()->post_type ?
+				'series' :
+				'single';
+		}
+
+		$cache     = tribe_cache();
+		$cache_key = 'square_catalog_image_ids_' . $product_type;
+		$image_id  = $cache[ $cache_key ] ?? null;
+
+		$image_id ??= $image_ids[ $product_type ] ?? null;
+
+		if ( $image_id ) {
+			$still_exists = Requests::get_with_cache( "catalog/object/{$image_id}" );
+
+			if ( empty( $still_exists['object'] ) ) {
+				$image_id = null;
+			}
+		}
+
+		if ( null === $image_id ) {
+			$data = [
+				'idempotency_key' => uniqid( 'square-image-' . $this->get_wp_id() . '-' . $product_type . '-', true ),
+				'image'           => [
+					'id'         => '#TEMP_ID',
+					'type'       => 'IMAGE',
+					'image_data' => [
+						'name' => "{$product_type}.png",
+					],
+				],
+			];
+
+			/**
+			 * Filter the image path for the item.
+			 *
+			 * @since 5.24.0
+			 *
+			 * @param string $image_path   The image path.
+			 * @param string $product_type The product type.
+			 * @param Item   $item         The item object.
+			 *
+			 * @return string The image path.
+			 */
+			$image_path = apply_filters(
+				'tec_tickets_commerce_square_image_path',
+				ET::instance()->plugin_path . "src/resources/images/square-sync/{$product_type}.png",
+				$product_type,
+				$this
+			);
+
+			$arguments = [
+				'filepath' => $image_path,
+				'body'     => [
+					'request' => wp_json_encode( $data ),
+				],
+			];
+
+			$response = Requests::post_with_file(
+				'catalog/images',
+				$arguments
+			);
+
+			if ( empty( $response['image'] ) ) {
+				do_action(
+					'tribe_log',
+					'warning',
+					'Square images sync',
+					[
+						'response'     => $response,
+						'product_type' => $product_type,
+						'body'         => $arguments['body'],
+					]
+				);
+			}
+
+			$image_id = $response['image']['id'] ?? '';
+
+			if ( $image_id ) {
+				$image_ids[ $product_type ] = $image_id;
+				Commerce_Settings::set( 'square_catalog_image_ids_%s', $image_ids );
+			}
+		}
+
+		$cache[ $cache_key ] = $image_id;
+
+		if ( ! $image_id ) {
+			return;
+		}
+
+		$this->set_item_data( 'image_ids', [ $image_id ] );
 	}
 }

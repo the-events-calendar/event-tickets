@@ -45,12 +45,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		tec_asset(
 			$et,
 			'tribe-tickets-gutenberg-block-attendees-style',
-			'attendees/frontend.css',
-			[],
-			null,
-			[
-				'group_path' => get_class( $et ) . '-packages',
-			]
+			'attendees/frontend.css'
 		);
 	}
 

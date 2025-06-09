@@ -1,7 +1,7 @@
 /**
  * Checks if a country only supports one payment gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {string} country            The country code to check.
  * @param {Record<string, object>} countries The countries data object to check in.

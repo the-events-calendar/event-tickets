@@ -187,7 +187,7 @@ class Settings extends Abstract_Settings {
 	 * Get the list of settings for the gateway.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Added new div.
+	 * @since 5.23.0 Added new div.
 	 *
 	 * @return array The list of settings for the gateway.
 	 */

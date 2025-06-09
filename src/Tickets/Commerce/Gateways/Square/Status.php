@@ -1,4 +1,11 @@
 <?php
+/**
+ * Status class for the Square gateway.
+ *
+ * @since 5.24.0
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
@@ -12,7 +19,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Status.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -21,7 +28,7 @@ class Status {
 	/**
 	 * Convert the Square payment status to a Tickets Commerce status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $status Square payment status string.
 	 *
@@ -39,6 +46,8 @@ class Status {
 			case 'FAILED':
 			case 'CANCELED':
 				return tribe( Denied::class );
+			case 'REFUNDED':
+				return tribe( Refunded::class );
 			default:
 				return tribe( Not_Completed::class );
 		}
@@ -47,7 +56,7 @@ class Status {
 	/**
 	 * Convert payment data to a Commerce status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $payment The Square payment data.
 	 *
@@ -68,7 +77,7 @@ class Status {
 	/**
 	 * Convert a payment refund to a Commerce status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $refund The Square refund data.
 	 *

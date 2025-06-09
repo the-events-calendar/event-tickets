@@ -9,8 +9,8 @@ import Tab from "./tabs/tab";
 import WelcomeContent from "./tabs/welcome/tab";
 import SettingsContent from "./tabs/settings/tab";
 import CommunicationContent from "./tabs/communication/tab";
-import PaymentsContent from "./tabs/payments/tab";
 import EventsContent from "./tabs/events/tab";
+import PaymentsContent from "./tabs/payments/tab";
 
 const OnboardingTabs = () => {
 	type TabConfig = {
@@ -39,6 +39,14 @@ const OnboardingTabs = () => {
 			content: SettingsContent,
 			ref: useRef<HTMLDivElement>(null),
 			priority: 20,
+			isVisible: true,
+		},
+		{
+			id: 'payments',
+			title: __('Payments', 'event-tickets'),
+			content: PaymentsContent,
+			ref: useRef<HTMLDivElement>(null),
+			priority: 25,
 			isVisible: true,
 		},
 		{

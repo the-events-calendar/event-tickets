@@ -2,9 +2,9 @@
 /**
  * Single order - Extras section
  *
- * @since TBD
+ * @since 5.24.0
  *
- * @version TBD
+ * @version 5.24.0
  *
  * @var WP_Post $order The current post object (with added properties).
  */

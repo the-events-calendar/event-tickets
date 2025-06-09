@@ -44,15 +44,14 @@ const customEntryPoints = compileCustomEntryPoints({
    * Handling this correctly requires adding a PostCSS processor specific to the PostCSS files that
    * will handle the nesting correctly.
    * Note the plugin will need to specify the following development dependencies: postcss-nested, postcss-preset-env,
-   * postcss-mixins, postcss-import, postcss-custom-media.
+   * postcss-mixins, postcss-import, postcss-inline-svg, postcss-custom-media.
    */
-  '/src/resources/postcss': createTECPostCss('tec.tickets'),
-
-  /**
-   * This deals with existing Blocks frontend styles being compiled separately.
-   * The main function of this configuration schema is to ensure they are placed correctly.
-   */
-  '/src/styles': createTECLegacyBlocksFrontendPostCss('tec.tickets'),
+  '/src/resources/postcss': createTECPostCss(
+    'tec.tickets',
+    [
+      'postcss-inline-svg',
+    ],
+  ),
 }, defaultConfig);
 
 /**
@@ -68,8 +67,8 @@ const customEntryPoints = compileCustomEntryPoints({
  */
 customEntryPoints['app/main'] = exposeEntry('tec.tickets.app.main', __dirname + '/src/modules/index.js');
 
-customEntryPoints['tickets/Blocks/Tickets/editor'] = exposeEntry('tec.tickets.blocks.tickets.editor', __dirname + '/src/Tickets/Blocks/Tickets/app/editor/index.js');
-customEntryPoints['tickets/Blocks/Ticket/editor'] = exposeEntry('tec.tickets.blocks.ticket.editor', __dirname + '/src/Tickets/Blocks/Ticket/app/editor/index.js');
+customEntryPoints['Tickets/Blocks/Tickets/editor'] = exposeEntry('tec.tickets.blocks.tickets.editor', __dirname + '/src/Tickets/Blocks/Tickets/app/editor/index.js');
+customEntryPoints['Tickets/Blocks/Ticket/editor'] = exposeEntry('tec.tickets.blocks.ticket.editor', __dirname + '/src/Tickets/Blocks/Ticket/app/editor/index.js');
 customEntryPoints['FlexibleTickets/block-editor'] = exposeEntry('tec.tickets.flexibleTickets.blockEditor', __dirname + '/src/Tickets/Flexible_Tickets/app/block-editor/index.js');
 customEntryPoints['FlexibleTickets/classic-editor'] = exposeEntry('tec.tickets.flexibleTickets.classicEditor', __dirname + '/src/Tickets/Flexible_Tickets/app/classic-editor/index.js');
 customEntryPoints['Seating/utils'] = exposeEntry('tec.tickets.seating.utils', __dirname + '/src/Tickets/Seating/app/utils/index.js');
@@ -87,7 +86,6 @@ customEntryPoints['Seating/frontend/ticketsBlock'] = exposeEntry('tec.tickets.se
 customEntryPoints['OrderModifiers/rest'] = exposeEntry('tec.tickets.orderModifiers.rest', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/rest/index.js');
 customEntryPoints['OrderModifiers/blockEditor'] = exposeEntry('tec.tickets.orderModifiers.blockEditor', __dirname + '/src/Tickets/Commerce/Order_Modifiers/app/blockEditor/index.js');
 customEntryPoints['wizard/wizard'] = exposeEntry('tec.tickets.wizard', __dirname + '/src/resources/packages/wizard/index.tsx');
-
 
 /**
  * Prepends a loader for SVG files that will be applied after the default one. Loaders are applied

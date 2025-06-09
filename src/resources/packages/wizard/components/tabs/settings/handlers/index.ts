@@ -1,7 +1,7 @@
 /**
  * Handler functions for the settings tab.
  *
- * @since TBD
+ * @since 5.24.0
  */
 export { default as getCountriesByCurrency } from './get-countries-by-currency';
 export { default as checkCountrySingleGateway } from './check-country-single-gateway';

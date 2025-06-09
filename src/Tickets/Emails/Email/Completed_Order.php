@@ -8,7 +8,6 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Emails\Dispatcher;
-use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Order_Schema;
@@ -108,7 +107,7 @@ class Completed_Order extends Email_Abstract {
 	 * Get email settings.
 	 *
 	 * @since 5.5.10
-	 * @since TBD Added new classes for settings.
+	 * @since 5.23.0 Added new classes for settings.
 	 *
 	 * @return array
 	 */

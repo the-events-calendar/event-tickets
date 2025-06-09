@@ -5,7 +5,7 @@
  * This class represents an Event as an Item in Square's catalog. It handles
  * the mapping between a WordPress Event post and its representation in Square.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Meta as Commerce_Meta;
  * Handles the representation of a WordPress Event as a Square catalog item.
  * Events in Square contain tickets as variations.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -31,7 +31,7 @@ class Event_Item extends Item {
 	/**
 	 * The type of Square catalog item this class represents.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class Event_Item extends Item {
 	/**
 	 * The meta key for the latest object snapshot.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Event_Item extends Item {
 	/**
 	 * The data structure for the Square catalog item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -71,7 +71,6 @@ class Event_Item extends Item {
 			'product_type'         => 'EVENT',
 			'skip_modifier_screen' => true,
 			// 'categories'           => [],
-			// 'image_ids'            => [],
 		],
 	];
 
@@ -80,7 +79,7 @@ class Event_Item extends Item {
 	/**
 	 * The WordPress event post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var WP_Post|null
 	 */
@@ -89,7 +88,7 @@ class Event_Item extends Item {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int   $post_id The event post ID.
 	 * @param array $tickets The tickets associated with this event.
@@ -109,7 +108,7 @@ class Event_Item extends Item {
 	/**
 	 * Get the WordPress ID of the event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return int The event post ID.
 	 */
@@ -120,7 +119,7 @@ class Event_Item extends Item {
 	/**
 	 * Set the object values for synchronization with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array prepared for Square synchronization.
 	 */
@@ -132,7 +131,7 @@ class Event_Item extends Item {
 		/**
 		 * Filters the event item data before it is sent to Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $data The event item data.
 		 * @param WP_Post $event The event post object.
@@ -149,7 +148,7 @@ class Event_Item extends Item {
 	/**
 	 * Set the tickets as variations of this event item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $tickets An array of Ticket_Object instances to set as variations.
 	 *
@@ -165,7 +164,7 @@ class Event_Item extends Item {
 	/**
 	 * Set the description for the event item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -225,7 +224,7 @@ class Event_Item extends Item {
 		 *
 		 * Lets make it a round number and use 8700.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int $max_words The maximum number of words allowed in the description.
 		 */
@@ -239,7 +238,7 @@ class Event_Item extends Item {
 	/**
 	 * Handle object sync from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The Square object data.
 	 *
@@ -254,7 +253,7 @@ class Event_Item extends Item {
 	/**
 	 * Delete the remote data for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $id The ID.
 	 *
@@ -268,7 +267,7 @@ class Event_Item extends Item {
 	/**
 	 * Whether the object needs to be synced.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool Whether the object needs to be synced.
 	 */
@@ -285,7 +284,7 @@ class Event_Item extends Item {
 	/**
 	 * Get the WordPress controlled fields for a given Square object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The Square object.
 	 *
@@ -293,7 +292,7 @@ class Event_Item extends Item {
 	 */
 	public function get_wp_controlled_fields( array $square_object ): array {
 		$object = parent::get_wp_controlled_fields( $square_object );
-		// Remote ticket data.
+		// Remove ticket data.
 		unset( $object['item_data']['variations'] );
 
 		return $object;

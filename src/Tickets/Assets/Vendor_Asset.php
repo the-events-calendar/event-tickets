@@ -20,7 +20,7 @@ use TEC\Common\Asset;
  *
  * @since 5.21.0
  *
- * @deprecated TBD
+ * @deprecated 5.23.0
  */
 class Vendor_Asset extends Asset {
 }

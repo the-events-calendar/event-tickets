@@ -16,7 +16,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -26,24 +26,24 @@ class WhoDat extends Abstract_WhoDat {
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.24.0
 	 *
 	 * @return void
 	 */
 	public function connect_account(): void {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.24.0' );
 	}
 
 	/**
 	 * De-authorize the current seller account in Stripe oAuth.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.24.0
 	 *
 	 * @return string
 	 */
 	public function disconnect_account() {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.24.0' );
 		return '';
 	}
 
@@ -55,7 +55,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * @param array $account_data array of data returned from Stripe after a successful connection.
 	 */
 	public function onboard_account( $account_data ) {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.24.0' );
 		return [];
 	}
 
@@ -63,12 +63,12 @@ class WhoDat extends Abstract_WhoDat {
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD
+	 * @deprecated 5.24.0
 	 *
 	 * @return string
 	 */
 	public function refresh_token() {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.24.0' );
 		return '';
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * Payment Handler for the Square gateway.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -11,13 +11,12 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
-
 use WP_Post;
 
 /**
  * Class Payment Handler
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -25,7 +24,7 @@ class Payment_Handler {
 	/**
 	 * Store the Payment for the duration of the page load.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array $payment The Square Payment.
 	 */
@@ -34,14 +33,15 @@ class Payment_Handler {
 	/**
 	 * Creates a payment for the current cart.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
-	 * @param string  $source_id The source ID.
-	 * @param WP_Post $order     The order post object.
+	 * @param string  $source_id       The source ID.
+	 * @param WP_Post $order           The order post object.
+	 * @param string  $square_order_id The Square order ID.
 	 *
 	 * @return array
 	 */
-	public function create_payment_for_order( string $source_id, WP_Post $order ): array {
+	public function create_payment_for_order( string $source_id, WP_Post $order, string $square_order_id = '' ): array {
 		// Somehow we already have a payment.
 		if ( $this->get() ) {
 			return $this->get();
@@ -51,7 +51,7 @@ class Payment_Handler {
 		$payment = $this->get_existing_if_valid();
 		if ( ! $payment ) {
 			// If it all fails lets create a new one.
-			$payment = Payment::create_from_order( $source_id, $order );
+			$payment = Payment::create_from_order( $source_id, $order, $square_order_id );
 
 			if ( isset( $payment['id'] ) && empty( $payment['errors'] ) ) {
 				$this->store_payment_cookie( $payment['id'] );
@@ -66,7 +66,7 @@ class Payment_Handler {
 	/**
 	 * Gets the existing Payment if it is valid.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array|null
 	 */
@@ -95,7 +95,7 @@ class Payment_Handler {
 	/**
 	 * Store the Payment for the duration of the page load.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $payment The Payment.
 	 *
@@ -118,7 +118,7 @@ class Payment_Handler {
 	/**
 	 * Gets the stored Payment.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -129,7 +129,7 @@ class Payment_Handler {
 	/**
 	 * Where we store the payment ID in a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -140,7 +140,7 @@ class Payment_Handler {
 	/**
 	 * Retrieve the payment ID from a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?string
 	 */
@@ -151,7 +151,7 @@ class Payment_Handler {
 	/**
 	 * Store the payment ID in a cookie.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param mixed $payment_id The payment ID.
 	 *
@@ -172,7 +172,7 @@ class Payment_Handler {
 		/**
 		 * Filter the cookie options for the payment cookie.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $cookie_options The cookie options.
 		 *
@@ -208,7 +208,7 @@ class Payment_Handler {
 	/**
 	 * Updates an existing payment with order data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $data  The frontend data.
 	 * @param WP_Post $order The order post object.
@@ -247,38 +247,9 @@ class Payment_Handler {
 	}
 
 	/**
-	 * Get the publishable payment data for frontend use.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_publishable_payment_data(): array {
-		$merchant = tribe( Merchant::class );
-
-		if ( ! $merchant->is_active() ) {
-			return [];
-		}
-
-		$data = [
-			'applicationId' => tribe( Gateway::class )->get_application_id(),
-			'locationId'    => $merchant->get_location_id(),
-		];
-
-		/**
-		 * Filter the publishable payment data.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The payment data.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_square_publishable_payment_data', $data );
-	}
-
-	/**
 	 * Get updated metadata for a payment.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order    The order post object.
 	 * @param array   $payment  The payment data.

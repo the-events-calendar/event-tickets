@@ -17,7 +17,7 @@ interface HandleConnectParams {
 /**
  * Handle gateway connection process.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {HandleConnectParams} params Parameters.
  */
@@ -58,7 +58,7 @@ const handleConnect = async ({
 			// Before redirecting, save that we've initiated connection
 			updateSettings({
 				connecting: true,
-				currentTab: 1
+				currentTab: 2
 			});
 			window.location.href = result.signup_url;
 		} else {

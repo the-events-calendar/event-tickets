@@ -7,7 +7,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @type   {Object}
  */
@@ -18,7 +18,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Checkout Selectors.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @type {Object}
 	 */
@@ -29,14 +29,13 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
 		submitButton: '#tec-tc-gateway-square-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		purchaserInfoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper__form',
 		form: '.tribe-tickets__commerce-checkout-square-form',
 	};
 
 	/**
 	 * Square Payment Form.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -45,7 +44,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Square Card instance.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -54,7 +53,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Loader container.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -63,7 +62,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Handle displaying errors to the end user
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @param {Array} errors An array of arrays. Each base array is keyed with the error code and contains a list of error messages.
 	 * @param {Function} afterDisplay Callback to run after displaying errors.
@@ -77,7 +76,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Get the request arguments to setup the calls.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @param {Object} data The data to send in the request.
 	 * @param {Object} headers The headers to send with the request.
@@ -115,7 +114,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @param {Object} error
 	 *
@@ -130,7 +129,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @param {Object} error
 	 *
@@ -145,7 +144,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Handles payment form errors.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @param {Object} error Which error we are dealing with.
 	 */
@@ -163,7 +162,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Get the verification details for the card.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {Object} The verification details.
 	 */
@@ -196,7 +195,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Create a payment and handle the response.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	obj.createPayment = async () => {
 		try {
@@ -222,20 +221,16 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Process the payment with our backend.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {string} sourceId The source ID from Square.
 	 */
 	obj.processPayment = async ( sourceId ) => {
 		// Get form data
-		const formData = {};
-		const formElements = $( obj.selectors.purchaserInfoForm ).serializeArray();
-		$.each( formElements, function( i, element ) {
-			formData[ element.name ] = element.value;
-		} );
-
-		// Add the payment source ID
-		formData.payment_source_id = sourceId;
+		const formData = {
+			payment_source_id: sourceId,
+			purchaser: obj.getPurchaserData(),
+		};
 
 		try {
 			// First create an order via the REST API
@@ -258,7 +253,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Initialize Square Web Payments SDK.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 */
 	obj.initializeSquare = async () => {
 		try {
@@ -295,7 +290,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Show a notice in the notice area.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 *
 	 * @param {Object} args The arguments for the notice.
 	 * @param {string} type The type of notice.
@@ -321,7 +316,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Loader related methods.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 */
 	obj.loader = {
 		// Shows the loading animation.
@@ -344,11 +339,21 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Handles the initialization of the checkout when the page loads.
 	 *
-	 * @since 5.3.0
+	 * @since 5.24.0
 	 */
 	obj.ready = () => {
 		obj.initializeSquare();
 	};
+
+	/**
+	 * Get the purchaser data from the form.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return {Object} The purchaser data.
+	 */
+	obj.getPurchaserData = () =>
+		tribe.tickets.commerce.getPurchaserData( $( obj.selectors.infoForm ) );
 
 	// When the document is ready, initialize the checkout.
 	$( obj.ready );

@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Fix an issue when applying 100% off coupons to Seating tickets. [ET-2409]

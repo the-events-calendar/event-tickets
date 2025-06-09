@@ -18,7 +18,6 @@ use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
@@ -65,7 +64,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var string
 	 */
-	protected const ORDER_LOCK_KEY = 'post_content_filtered';
+	public const ORDER_LOCK_KEY = 'post_content_filtered';
 
 	/**
 	 * Keeping track of the lock id generated during a request.
@@ -99,7 +98,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the gateway order object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -108,7 +107,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the original gateway order id.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -117,7 +116,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the gateway customer id.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -126,7 +125,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the latest payload sent to the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -135,7 +134,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the gateway order version.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -202,7 +201,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the amount unaccounted for in the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -211,7 +210,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the total tax amount in the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -220,7 +219,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the total tip amount in the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -229,7 +228,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Which meta holds the order created by.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -1058,9 +1057,55 @@ class Order extends Abstract_Order {
 			return $order->total_value->get_currency();
 		}
 
-		$refunds  = $order->gateway_payload['refunded'];
-		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
-		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
+		$refunds = $order->gateway_payload['refunded'];
+
+		/**
+		 * Filters the refunded amount of an order.
+		 *
+		 * @since 5.24.0
+		 *
+		 * @param ?int    $refunded The refunded amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$refunded = (int) apply_filters( "tec_tickets_commerce_order_{$order->gateway}_get_value_refunded", null, $refunds, $order );
+
+		/**
+		 * Filters the refunded amount of an order.
+		 *
+		 * @since 5.24.0
+		 *
+		 * @param ?int    $refunded The refunded amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$refunded = (int) apply_filters( 'tec_tickets_commerce_order_get_value_refunded', $refunded ? $refunded : null, $refunds, $order );
+
+		/**
+		 * Filters the captured amount of an order.
+		 *
+		 * @since 5.24.0
+		 *
+		 * @param ?int    $captured The captured amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$total = (int) apply_filters( "tec_tickets_commerce_order_{$order->gateway}_get_value_captured", (int) ( 100 * $order->total_value->get_decimal() ), $refunds, $order );
+
+		/**
+		 * Filters the captured amount of an order.
+		 *
+		 * @since 5.24.0
+		 *
+		 * @param int     $captured The captured amount.
+		 * @param array   $refunds The refunds.
+		 * @param WP_Post $order The order.
+		 */
+		$total = (int) apply_filters( 'tec_tickets_commerce_order_get_value_captured', $total, $refunds, $order );
+
+		if ( ! ( $total && $refunded ) ) {
+			return $order->total_value->get_currency();
+		}
 
 		$total_value = $total - $refunded;
 
@@ -1138,6 +1183,26 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Get the IDs of orders associated with a given gateway order id.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $gateway_order_id The gateway order id.
+	 *
+	 * @return int[]
+	 */
+	public function get_order_ids_from_gateway_order_id( $gateway_order_id ): array {
+		return (array) tec_tc_orders()->by_args(
+			[
+				'order_by'         => 'ID',
+				'order'            => 'DESC',
+				'status'           => 'any',
+				'gateway_order_id' => $gateway_order_id,
+			]
+		)->get_ids( false );
+	}
+
+	/**
 	 * Lock an order to prevent it from being modified.
 	 *
 	 * @since 5.18.1
@@ -1159,6 +1224,8 @@ class Order extends Abstract_Order {
 					$this->get_lock_id()
 				)
 			);
+
+			wp_cache_delete( $order_id, 'posts' );
 
 			/**
 			 * Fires after an order is attempted to be locked.
@@ -1195,6 +1262,8 @@ class Order extends Abstract_Order {
 					DB::prefix( 'posts' )
 				)
 			);
+
+			wp_cache_delete( $order_id, 'posts' );
 
 			/**
 			 * Fires after an order is attempted to be unlocked.
@@ -1351,15 +1420,19 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_checkout_completed', $order_id );
 
-		as_unschedule_action( 'tec_tickets_commerce_async_webhook_process', [ 'order_id' => $order_id ], 'tec-tickets-commerce-stripe-webhooks' );
+		$args = [
+			'order_id' => $order_id,
+			'try'      => 0,
+		];
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-webhooks' ) ) {
+			return true;
+		}
 
 		return (bool) as_enqueue_async_action(
 			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
+			$args,
+			'tec-tickets-commerce-webhooks'
 		);
 	}
 
@@ -1416,7 +1489,7 @@ class Order extends Abstract_Order {
 	 * @return bool
 	 */
 	public function set_on_checkout_screen_hold( int $order_id ): bool {
-		$seconds = $this->get_default_on_checkout_screen_hold_timeout();
+		$seconds        = $this->get_default_on_checkout_screen_hold_timeout();
 		$on_screen_hold = tec_get_current_milliseconds( new \DateInterval( "PT{$seconds}S" ) );
 
 		$updated = (bool) update_post_meta( $order_id, static::ON_CHECKOUT_SCREEN_HOLD_META, $on_screen_hold );
@@ -1434,23 +1507,20 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_set', $order_id, $on_screen_hold );
 
-		as_unschedule_action(
-			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
-		);
+		$args = [
+			'order_id' => $order_id,
+			'try'      => 0,
+		];
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-webhooks' ) ) {
+			return true;
+		}
 
 		return (bool) as_schedule_single_action(
 			tec_from_milliseconds_to_timestamp( $on_screen_hold ) + MINUTE_IN_SECONDS, // We schedule the action to run after the timeout.
 			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
+			$args,
+			'tec-tickets-commerce-webhooks'
 		);
 	}
 	/**
@@ -1478,23 +1548,20 @@ class Order extends Abstract_Order {
 		 */
 		do_action( 'tec_tickets_commerce_order_on_checkout_screen_hold_remove', $order_id );
 
-		as_unschedule_action(
-			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
-		);
+		$args = [
+			'order_id' => $order_id,
+			'try'      => 0,
+		];
+
+		if ( as_has_scheduled_action( 'tec_tickets_commerce_async_webhook_process', $args, 'tec-tickets-commerce-webhooks' ) ) {
+			return true;
+		}
 
 		return (bool) as_schedule_single_action(
 			time(),
 			'tec_tickets_commerce_async_webhook_process',
-			[
-				'order_id' => $order_id,
-				'try'      => 0,
-			],
-			'tec-tickets-commerce-stripe-webhooks'
+			$args,
+			'tec-tickets-commerce-webhooks'
 		);
 	}
 
@@ -1519,7 +1586,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *
@@ -1532,7 +1599,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order total value.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *
@@ -1545,7 +1612,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order created by.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1570,7 +1637,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the order created by.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $created_by The order created by.
 		 */

@@ -17,7 +17,7 @@ use Tribe__Tickets__Main;
  * Class Payments_Tab
  *
  * @since 5.2.0
- * @since TBD Added horizontal layout blocks for improved visual organization.
+ * @since 5.23.0 Added horizontal layout blocks for improved visual organization.
  *
  * @package TEC\Tickets\Commerce
  */
@@ -35,7 +35,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Tab ID for the Tickets Commerce settings.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ class Payments_Tab extends Service_Provider {
 	 * Key to use in GET variable for currently selected section.
 	 *
 	 * @since 5.3.0
-	 * @since TBD updated to new tab system.
+	 * @since 5.23.0 updated to new tab system.
 	 *
 	 * @var string
 	 */
@@ -99,7 +99,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Stores the instance of the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var Tribe__Settings_Tab
 	 */
@@ -108,28 +108,23 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * @inheritdoc
 	 *
-	 * @since TBD switched to using $tab_id const.
+	 * @since 5.23.0 switched to using $tab_id const.
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
 		$tab_id = self::TAB_ID;
 
-		add_action( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
+		add_filter( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
 		add_action( "tribe_settings_after_save_{$tab_id}", [ $this, 'maybe_generate_pages' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_tab_id' ] );
-
-		// Load the tab and save actions if Tickets Commerce is enabled.
-		if ( ! tec_tickets_commerce_is_enabled() ) {
-			return;
-		}
 	}
 
 	/**
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Updated to use new child tabs.
+	 * @since 5.23.0 Updated to use new child tabs.
 	 *
 	 * @param string $admin_page The admin page to register the tab on.
 	 */
@@ -184,7 +179,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Include the form class for the Payments tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param array               $form_classes The form classes.
 	 * @param string              $admin_page   The admin page.
@@ -193,6 +188,10 @@ class Payments_Tab extends Service_Provider {
 	 * @return array
 	 */
 	public function include_form_class( $form_classes, $admin_page, $tab_object ) {
+		if ( ! $tab_object ) {
+			return $form_classes;
+		}
+
 		if ( $tab_object->id !== static::$slug && $tab_object->get_parent_id() !== static::$slug ) {
 			return $form_classes;
 		}
@@ -209,7 +208,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Gets the settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @return Tribe__Settings_Tab
 	 */
@@ -395,7 +394,8 @@ class Payments_Tab extends Service_Provider {
 	 * Get selected section top level menu.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Wrapped elements in new HTML.
+	 * @since 5.23.0 Wrapped elements in new HTML.
+	 * @since 5.24.0 Consider solo render gateways for the disabled status.
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
@@ -413,14 +413,35 @@ class Payments_Tab extends Service_Provider {
 			$section_gateway::get_label()
 		);
 
+		$disabled                      = ! $section_gateway::is_connected();
+		$we_already_use_a_solo_gateway = false;
+
+		if ( ! $disabled && $section_gateway->renders_solo() ) {
+			$available_gateways = tribe( Manager::class )->get_available_gateways();
+			if ( ! isset( $available_gateways[ $section_gateway::get_key() ] ) ) {
+				foreach ( $available_gateways as $gateway ) {
+					if ( ! $gateway->renders_solo() ) {
+						continue;
+					}
+
+					$disabled                      = true;
+					$we_already_use_a_solo_gateway = true;
+					break;
+				}
+			}
+		}
+
+		$disabled_message     = esc_html__( 'You can have only Stripe or Square enabled, but not both.', 'event-tickets' );
+		$disabled_explanation = $we_already_use_a_solo_gateway ? '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-currency-message--error">' . $disabled_message . '</p>' : '';
+
 		$attributes = tribe_get_attributes(
 			[
 				'type'     => 'checkbox',
 				'name'     => $option_key,
 				'id'       => 'tickets-commerce-enable-input-' . $section_gateway::get_key(),
 				'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
-				'disabled' => ! $section_gateway::is_connected(),
-				'checked'  => $section_gateway::is_enabled(),
+				'disabled' => $disabled,
+				'checked'  => ! $disabled && $section_gateway::is_enabled(),
 			]
 		);
 
@@ -438,6 +459,7 @@ class Payments_Tab extends Service_Provider {
 							<input ' . implode( ' ', $attributes ) . ' />
 							<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
 							<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
+							' . $disabled_explanation . '
 						</label>',
 		];
 
@@ -459,7 +481,7 @@ class Payments_Tab extends Service_Provider {
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated classes to display section as a horizontal block.
+	 * @since 5.23.0 Updated classes to display section as a horizontal block.
 	 *
 	 * @return array[]
 	 */
@@ -624,12 +646,12 @@ class Payments_Tab extends Service_Provider {
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
+	 * @deprecated 5.23.0 No longer used as we've moved to WordPress-style parent-child tabs
 	 *
 	 * @return array[]
 	 */
 	public function get_section_menu(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'The section menu has been replaced with WordPress-style parent-child tabs' );
+		_deprecated_function( __METHOD__, '5.23.0', 'The section menu has been replaced with WordPress-style parent-child tabs' );
 		return [];
 	}
 
@@ -637,12 +659,12 @@ class Payments_Tab extends Service_Provider {
 	 * Gets an array of all the sections, based on the active Gateways.
 	 *
 	 * @since 5.3.0
-	 * @deprecated TBD No longer used as we've moved to WordPress-style parent-child tabs
+	 * @deprecated 5.23.0 No longer used as we've moved to WordPress-style parent-child tabs
 	 *
 	 * @return array[]
 	 */
 	public function get_sections(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
+		_deprecated_function( __METHOD__, '5.23.0', 'The section navigation has been replaced with WordPress-style parent-child tabs' );
 		return [];
 	}
 	// @codeCoverageIgnoreEnd

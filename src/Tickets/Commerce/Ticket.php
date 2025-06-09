@@ -18,7 +18,7 @@ use TEC\Tickets\Ticket_Data;
  * Class Ticket.
  *
  * @since 5.1.9
- * @since TBD extend Ticket_Data
+ * @since 5.24.0 extend Ticket_Data
  *
  * @package TEC\Tickets\Commerce
  */
@@ -552,7 +552,7 @@ class Ticket extends Ticket_Data {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', - 1 ),
+				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ),
 				'meta_input' => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
@@ -1310,7 +1310,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Get the ticket types.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The ticket types.
 	 */
@@ -1321,7 +1321,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Load the ticket object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *

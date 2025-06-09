@@ -2,7 +2,7 @@
 /**
  * Remote objects.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -27,7 +27,7 @@ use WP_Post;
 /**
  * Remote objects.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -35,7 +35,7 @@ class Remote_Objects {
 	/**
 	 * The Square date time format.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Remote_Objects {
 	/**
 	 * The order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Square_Order
 	 */
@@ -53,7 +53,7 @@ class Remote_Objects {
 	/**
 	 * The ticket data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Ticket_Data
 	 */
@@ -62,7 +62,7 @@ class Remote_Objects {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Square_Order $square_order The order.
 	 * @param Ticket_Data  $ticket_data  The ticket data.
@@ -75,7 +75,7 @@ class Remote_Objects {
 	/**
 	 * Transform the batch.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $batch The batch.
 	 *
@@ -94,7 +94,7 @@ class Remote_Objects {
 	/**
 	 * Transform the batch.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $batch The batch.
 	 *
@@ -130,7 +130,7 @@ class Remote_Objects {
 	/**
 	 * Transform the inventory batch.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $batch The batch.
 	 *
@@ -177,7 +177,7 @@ class Remote_Objects {
 	/**
 	 * Delete the remote object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $object_id        The object ID.
 	 * @param string $remote_object_id The remote object ID.
@@ -209,7 +209,7 @@ class Remote_Objects {
 	/**
 	 * Delete the remote object data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $object_id The object ID.
 	 *
@@ -236,7 +236,7 @@ class Remote_Objects {
 	/**
 	 * Cache the remote object state.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $batch The batch.
 	 *
@@ -256,6 +256,7 @@ class Remote_Objects {
 		$data = [
 			'location_ids'       => $location_ids,
 			'catalog_object_ids' => [],
+			'states'             => [ 'IN_STOCK' ],
 		];
 
 		$cache_template_key = 'square_sync_object_state_%s_%s';
@@ -319,7 +320,7 @@ class Remote_Objects {
 	/**
 	 * Get the line item.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $item  The item.
 	 * @param WP_Post $order The order post object.
@@ -379,7 +380,7 @@ class Remote_Objects {
 	/**
 	 * Get the discount.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $item  The item.
 	 * @param WP_Post $order The order post object.
@@ -408,6 +409,7 @@ class Remote_Objects {
 		$updates = [
 			'name'         => $item['display_name'],
 			'type'         => 'FIXED_AMOUNT',
+			'scope'        => 'ORDER',
 			'amount_money' => [
 				'amount'   => absint( 100 * $item['sub_total'] ),
 				'currency' => $order->currency,
@@ -423,7 +425,7 @@ class Remote_Objects {
 	/**
 	 * Get the service charge.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $item  The item.
 	 * @param WP_Post $order The order post object.
@@ -469,7 +471,7 @@ class Remote_Objects {
 	/**
 	 * Get the customer ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -572,7 +574,7 @@ class Remote_Objects {
 	/**
 	 * Get the location IDs.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The location IDs.
 	 */

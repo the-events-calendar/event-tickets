@@ -2,7 +2,7 @@
 /**
  * Square Webhook Endpoint
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\Order;
 use WP_REST_Request;
@@ -27,20 +28,32 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Regulator;
+use WP_Post;
+use TEC\Tickets\Exceptions\DuplicateEntryException;
+use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 
 /**
  * Class Webhook_Endpoint.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
 class Webhook_Endpoint extends Abstract_REST_Endpoint {
+	/**
+	 * The key for the order webhook IDs.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_WEBHOOK_IDS = 'tec_tc_order_webhook_ids';
 
 	/**
 	 * The REST namespace for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -49,7 +62,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST endpoint path for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -58,27 +71,38 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The location ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
 	private string $location_id;
 
 	/**
+	 * The webhooks instance.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var Webhooks
+	 */
+	private Webhooks $webhooks;
+
+	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
-	 * @param Gateway $gateway The gateway instance.
+	 * @param Gateway  $gateway  The gateway instance.
+	 * @param Webhooks $webhooks The webhooks instance.
 	 */
-	public function __construct( Gateway $gateway ) {
+	public function __construct( Gateway $gateway, Webhooks $webhooks ) {
 		$this->location_id = $gateway->get_location_id();
+		$this->webhooks    = $webhooks;
 	}
 
 	/**
 	 * Get the namespace for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -89,7 +113,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Get the path for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -102,15 +126,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * For webhooks, we skip permission checks because this is called by Square,
 	 * we validate the request using the webhook signature instead.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return bool|WP_Error Always returns true as we validate using the webhook signature.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		$webhook = tribe( Webhooks::class );
-
 		// Get the webhook secret key from the URL.
 		$secret_key = $request->get_param( Webhooks::PARAM_WEBHOOK_KEY );
 
@@ -118,7 +140,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$whodat_hash = $request->get_header( 'X-WhoDat-Hash' );
 		$payload     = $request->get_body();
 
-		if ( ! ( $webhook->verify_signature( $secret_key ) && $webhook->verify_whodat_signature( $payload, $whodat_hash, $secret_key ) ) ) {
+		if ( ! ( $this->webhooks->verify_signature( $secret_key ) && $this->webhooks->verify_whodat_signature( $payload, $whodat_hash, $secret_key ) ) ) {
 			do_action(
 				'tribe_log',
 				'error',
@@ -144,7 +166,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function register(): void {
 		$namespace = $this->get_namespace();
@@ -164,7 +186,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles incoming webhook events from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -204,13 +226,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
-		$webhook = tribe( Webhooks::class );
-
-		// We attempt to re-register the webhook if it has not been fetched in the last hour.
-		if ( $webhook->should_refresh_webhook() ) {
-			$webhook->register_webhook_endpoint();
-		}
-
 		// Process the webhook based on event type.
 		$this->process_webhook_event( $event_data );
 
@@ -227,11 +242,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process a webhook event based on its type.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_webhook_event( array $event_data ) {
+	public function process_webhook_event( array $event_data ): void {
 		$event_type = $event_data['type'] ?? '';
 
 		if ( ! in_array( $event_type, Events::get_types(), true ) ) {
@@ -255,6 +270,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
+		try {
+			Webhook_Model::create(
+				[
+					'event_id'   => $event_data['event_id'],
+					'event_type' => $event_type,
+					'event_data' => wp_json_encode( $event_data ),
+				]
+			);
+		} catch ( DuplicateEntryException $e ) {
+			return;
+		}
+
 		switch ( $event_type ) {
 			case Events::ORDER_CREATED:
 			case Events::ORDER_UPDATED:
@@ -274,6 +301,15 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				$this->process_refund_event( $event_data );
 				break;
 
+			case Events::PAYMENT_CREATED:
+			case Events::PAYMENT_UPDATED:
+				$this->process_payment_event( $event_data );
+				break;
+
+			case Events::OAUTH_AUTHORIZATION_REVOKED:
+				$this->process_oauth_authorization_revoked_event( $event_data );
+				break;
+
 			default:
 				// Log unsupported event type.
 				do_action(
@@ -291,7 +327,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allows other code to process the Square webhook event.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array  $event_data The webhook event data.
 		 * @param string $event_type The event type.
@@ -302,11 +338,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Process an order event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_order_event( array $event_data ) {
+	protected function process_order_event( array $event_data ): void {
 		$type = $event_data['data']['type'] ?? null;
 
 		if ( ! $type ) {
@@ -338,7 +374,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		// Find the order associated with this payment.
 		$order = tribe( Commerce_Order::class )->get_from_gateway_order_id( $order_id );
 
-		if ( empty( $order ) && 'order_updated' === $type ) {
+		if ( empty( $order->ID ) && 'order_updated' === $type ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -352,17 +388,43 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
-		$square_order_controller->upsert_local_from_square_order( $order_id, $event_data );
+		$event_id = $event_data['event_id'] ?? '';
+
+		if ( ! $event_id ) {
+			return;
+		}
+
+		$event_ids = ! empty( $order->ID ) ? (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false ) : [];
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
+			return;
+		}
+
+		$order = $square_order_controller->upsert_local_from_square_order( $order_id, $event_data, $event_id );
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_id,
+				'order_id'     => $order->ID,
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->ID ] );
 	}
 
 	/**
 	 * Process a refund event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
-	protected function process_refund_event( array $event_data ) {
+	protected function process_refund_event( array $event_data ): void {
 		$refund_data = $event_data['data']['object']['refund'] ?? [];
 
 		if ( empty( $refund_data ) || empty( $refund_data['order_id'] ) ) {
@@ -401,6 +463,18 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return;
 		}
 
+		$event_ids = (array) Commerce_Meta::get( $order->ID, self::KEY_ORDER_WEBHOOK_IDS, [], 'post', false, false );
+
+		$event_id = $event_data['event_id'] ?? '';
+
+		if ( ! $event_id ) {
+			return;
+		}
+
+		if ( in_array( $event_id, $event_ids, true ) ) {
+			return;
+		}
+
 		if ( ! $order->original_gateway_order_id ?? 0 ) {
 			/**
 			 * Store the original and the after the refund gateway order id.
@@ -423,14 +497,65 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				->save();
 		}
 
+		if ( time() < $order->on_checkout_hold ) {
+			$this->webhooks->add_pending_webhook( $order->ID, tribe( Refunded::class )->get_wp_slug(), $order->post_status, [ 'gateway_payload' => $event_data ] );
+
+			as_schedule_single_action(
+				$order->on_checkout_hold + MINUTE_IN_SECONDS,
+				'tec_tickets_commerce_async_webhook_process',
+				[
+					'order_id' => $order->ID,
+					'try'      => 0,
+				],
+				'tec-tickets-commerce-webhooks'
+			);
+			return;
+		}
+
+			Webhook_Model::update(
+				[
+					'event_id'     => $event_id,
+					'order_id'     => $order->ID,
+					'processed_at' => current_time( 'mysql' ),
+				]
+			);
+
 		// Update the order status.
 		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->gateway_order_id ] );
+		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->original_gateway_order_id ] );
+	}
+
+	/**
+	 * Process a payment event.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	protected function process_payment_event( array $event_data ): void {
+		$order_id = $event_data['data']['object']['payment']['order_id'] ?? false;
+
+		if ( ! $order_id ) {
+			do_action( 'tribe_log', 'warning', 'Square payment webhook - no order id found', [ 'event_data' => $event_data ] );
+			return;
+		}
+
+		tribe( Regulator::class )->schedule( Order::HOOK_PULL_ORDER_ACTION, [ $order_id ], MINUTE_IN_SECONDS );
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
 	 * Delete the customer ID from the user meta.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -456,12 +581,19 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $user_query->get_results() as $user_id ) {
 			Commerce_Meta::delete( $user_id, '_tec_tickets_commerce_gateways_square_customer_id_%s', [], 'user' );
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
 	 * Process a ticket inventory updated event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $event_data The webhook event data.
 	 */
@@ -530,7 +662,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				 * Fire an action so we can schedule a background check in a few minutes to see if the quantity
 				 * came back into sync.
 				 *
-				 * @since TBD
+				 * @since 5.24.0
 				 *
 				 * @param int    $ticket_id The ticket ID.
 				 * @param int    $quantity  The quantity of tickets.
@@ -542,12 +674,50 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				continue;
 			}
 		}
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
+	}
+
+	/**
+	 * Process an OAuth authorization revoked event.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param array $event_data The webhook event data.
+	 */
+	public function process_oauth_authorization_revoked_event( array $event_data ): void {
+		$type = $event_data['data']['type'] ?? '';
+
+		if ( 'revocation' !== $type ) {
+			return;
+		}
+
+		$merchant = tribe( Merchant::class );
+
+		if ( $merchant->is_active() ) {
+			// In this case only, the disconnection was initiated remotely.
+			Commerce_Settings::set( 'tickets_commerce_gateways_square_remotely_disconnected_%s', time() );
+		}
+
+		$merchant->delete_signup_data();
+
+		Webhook_Model::update(
+			[
+				'event_id'     => $event_data['event_id'],
+				'processed_at' => current_time( 'mysql' ),
+			]
+		);
 	}
 
 	/**
 	 * Returns an array in the format used by Swagger 2.0.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @link http://swagger.io/
 	 *

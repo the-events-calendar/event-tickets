@@ -1,14 +1,22 @@
 <?php
+/**
+ * Merchant class for the Square gateway.
+ *
+ * @since 5.24.0
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use Exception;
 
 /**
  * Class Merchant
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +24,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Stores the nonce action for disconnecting Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +33,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +42,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant authorization.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -43,16 +51,16 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant default currency.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
-	public static string $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
+	public static string $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency-%s';
 
 	/**
 	 * Option key to save the PKCE code verifier for OAuth authentication.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +69,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if Merchant is active. For Square this is the same as being connected.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -74,7 +82,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if the Merchant is connected.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -104,7 +112,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -119,7 +127,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * Uses normal WP options to be saved, instead of the normal tribe_update_option.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -133,7 +141,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Square access token stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -150,7 +158,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Square refresh token for refreshing access tokens.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -167,7 +175,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Square merchant ID stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -184,7 +192,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the Whodat signature stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?string
 	 */
@@ -197,7 +205,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the account ID (same as merchant ID for Square).
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -208,7 +216,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Return array of merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -223,7 +231,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Saves signup data from the redirect into permanent option.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $signup_data The signup data to save.
 	 *
@@ -238,7 +246,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Query the Square API to gather information about the current connected account.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $client_data Connection data from the database.
 	 *
@@ -250,9 +258,9 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		$return = [
-			'connected'       => false,
-			'errors'          => [],
-			'capabilities'    => [],
+			'connected'    => false,
+			'errors'       => [],
+			'capabilities' => [],
 		];
 
 		if ( empty( $client_data['client_id'] ) || empty( $client_data['access_token'] ) ) {
@@ -279,7 +287,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Delete all signup data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -287,13 +295,22 @@ class Merchant extends Abstract_Merchant {
 		// Also delete any stored merchant data.
 		$this->delete_merchant_data();
 
-		return delete_option( $this->get_signup_data_key() );
+		$result = delete_option( $this->get_signup_data_key() );
+
+		/**
+		 * Fires when merchant data is deleted.
+		 *
+		 * @since 5.24.0
+		 */
+		do_action( 'tec_tickets_commerce_square_merchant_disconnected' );
+
+		return $result;
 	}
 
 	/**
 	 * Check if the merchant is unauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -304,7 +321,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Set the merchant as unauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $validation_key A unique key to identify this validation.
 	 *
@@ -317,7 +334,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Remove merchant unauthorized status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -328,7 +345,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Check if the merchant is deauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -339,7 +356,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Set the merchant as deauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $validation_key A unique key to identify this validation.
 	 *
@@ -352,7 +369,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Remove merchant deauthorized status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -363,18 +380,18 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant's default currency.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
 	public function get_merchant_currency(): string {
-		return get_option( static::$merchant_default_currency_option_key, 'USD' );
+		return (string) Commerce_Settings::get_option( static::$merchant_default_currency_option_key, [], 'USD' );
 	}
 
 	/**
 	 * Generates and stores a PKCE code verifier for OAuth authentication.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The generated code verifier
 	 */
@@ -391,7 +408,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Creates a PKCE code challenge from the stored code verifier.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The code challenge for OAuth authentication
 	 */
@@ -402,16 +419,14 @@ class Merchant extends Abstract_Merchant {
 			$code_verifier = $this->generate_code_verifier();
 		}
 
-		// Create code_challenge using SHA256 hash of the code_verifier (PKCE)
-		$code_challenge = rtrim( strtr( base64_encode( hash( 'sha256', $code_verifier, true ) ), '+/', '-_' ), '=' );
-
-		return $code_challenge;
+		// Create code_challenge using SHA256 hash of the code_verifier (PKCE).
+		return rtrim( strtr( base64_encode( hash( 'sha256', $code_verifier, true ) ), '+/', '-_' ), '=' );
 	}
 
 	/**
 	 * Gets the stored PKCE code verifier.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The stored code verifier or empty string if not found
 	 */
@@ -424,7 +439,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Deletes the stored PKCE code verifier.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool True if successful, false otherwise
 	 */
@@ -435,7 +450,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Update merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $data New merchant data.
 	 *
@@ -455,7 +470,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Fetch merchant data from Square API using stored merchant ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -523,7 +538,7 @@ class Merchant extends Abstract_Merchant {
 			if ( isset( $merchant['currency'] ) ) {
 				$update_data['merchant_currency'] = $merchant['currency'];
 				// Also update the option.
-				update_option( static::$merchant_default_currency_option_key, $merchant['currency'] );
+				Commerce_Settings::update_option( static::$merchant_default_currency_option_key, $merchant['currency'] );
 			}
 
 			if ( isset( $merchant['email_address'] ) ) {
@@ -541,7 +556,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the option key for storing merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -556,7 +571,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant name from stored data or from Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -582,7 +597,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get merchant email from stored data or from Square API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
 	 *
@@ -606,9 +621,35 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
+	 * Get merchant country from stored data or from Square API.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param bool $force_refresh Whether to force a refresh of the data from the API.
+	 *
+	 * @return string
+	 */
+	public function get_merchant_country( bool $force_refresh = false ): string {
+		$data = get_option( $this->get_signup_data_key() );
+
+		if ( ! empty( $data['merchant_country'] ) ) {
+			return $data['merchant_country'];
+		}
+
+		// Try to fetch from API if we don't have it stored.
+		$merchant_data = $this->fetch_merchant_data( $force_refresh );
+
+		if ( ! empty( $merchant_data['merchant']['country'] ) ) {
+			return $merchant_data['merchant']['country'];
+		}
+
+		return '';
+	}
+
+	/**
 	 * Delete stored merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool True if deleted, false otherwise.
 	 */
@@ -619,7 +660,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the client secret for merchant, in this case the access token.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -630,7 +671,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the test mode status.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -641,7 +682,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the client ID for the Square SDK.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -658,7 +699,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the location ID for the Square merchant.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -669,7 +710,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Gets all available locations from the merchant's Square account.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array Array of locations.
 	 * @throws Exception On failure.
@@ -693,11 +734,22 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Whether the merchant is ready to sell.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
 	public function is_ready_to_sell(): bool {
-		return (bool) $this->get_location_id();
+		return (bool) $this->get_location_id() && $this->is_currency_matching();
+	}
+
+	/**
+	 * Whether the merchant's currency matches the gateway's currency.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return bool
+	 */
+	public function is_currency_matching(): bool {
+		return $this->get_merchant_currency() === tribe_get_option( Commerce_Settings::$option_currency_code, 'USD' );
 	}
 }

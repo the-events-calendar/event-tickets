@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Square help links (troubleshooting).
  *
- * @since   TBD
+ * @since 5.24.0
  *
- * @version TBD
+ * @version 5.24.0
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Square\Signup   $signup          [Global] The Signup class.
@@ -15,9 +15,8 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
-	<!-- @todo: We need to update this link. -->
 	<a
-		href="https://evnt.is/1axw"
+		href="https://evnt.is/1bea"
 		target="_blank"
 		rel="noopener noreferrer"
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"

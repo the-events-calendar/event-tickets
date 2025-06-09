@@ -55,7 +55,7 @@ class Service_Provider extends Service_Provider_Contract {
 		/**
 		 * Fires when Promoter is fully loaded.
 		 *
-		 * @since TBD
+		 * @since 5.22.0
 		 */
 		do_action( 'tec_tickets_promoter_fully_loaded' );
 	}

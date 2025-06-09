@@ -2,7 +2,7 @@
 /**
  * Handles the events step of the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Admin\Onboarding\API;
 /**
  * Class Events
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -24,7 +24,7 @@ class Events extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var int
 	 */
@@ -33,7 +33,7 @@ class Events extends Abstract_Step {
 	/**
 	 * Process the events data.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.
@@ -51,7 +51,7 @@ class Events extends Abstract_Step {
 	/**
 	 * Install and activate The Events Calendar plugin from the WordPress.org repo.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.

@@ -2,7 +2,7 @@
 /**
  * Welcome step for the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -18,7 +18,7 @@ use WP_REST_Request;
 /**
  * Welcome step for the onboarding wizard.
  *
- * @since TBD
+ * @since 5.23.0
  *
  * @package TEC\Tickets\Admin\Onboarding\Steps
  */
@@ -26,7 +26,7 @@ class Welcome extends Abstract_Step {
 	/**
 	 * The tab number for this step.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @var int
 	 */
@@ -35,7 +35,7 @@ class Welcome extends Abstract_Step {
 	/**
 	 * Process the welcome step data.
 	 *
-	 * @since TBD
+	 * @since 5.23.0
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_REST_Request  $request  The request object.

@@ -6,7 +6,7 @@ import PaymentRadioOptions from './payment-radio-options';
 /**
  * Interface for PaymentSelector props.
  *
- * @since TBD
+ * @since 5.24.0
  */
 interface PaymentSelectorProps {
 	paymentGateways: {
@@ -21,7 +21,7 @@ interface PaymentSelectorProps {
 /**
  * Component that renders the payment selector section.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {PaymentSelectorProps} props Component props.
  *

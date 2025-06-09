@@ -2,7 +2,7 @@
 /**
  * Syncs tickets with Square controller.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -22,7 +22,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 /**
  * Class Tickets_Sync
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -30,7 +30,7 @@ class Inventory_Sync {
 	/**
 	 * The action that syncs the inventory of a ticket-able post type with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Inventory_Sync {
 	/**
 	 * The action that syncs an individual event's inventory with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Inventory_Sync {
 	/**
 	 * The action that syncs an individual ticket's inventory with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Inventory_Sync {
 	/**
 	 * The remote objects instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Remote_Objects
 	 */
@@ -66,7 +66,7 @@ class Inventory_Sync {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Remote_Objects $remote_objects The remote objects instance.
 	 */
@@ -77,7 +77,7 @@ class Inventory_Sync {
 	/**
 	 * Syncs the inventory of a ticket-able post type with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $ticket_able_post_type The ticket-able post type.
 	 *
@@ -96,7 +96,7 @@ class Inventory_Sync {
 			 *
 			 * We can send up to 1000 items per batch to Square. We can't send less than 1 as well -_- !
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param int $posts_per_page The number of posts to sync.
 			 */
@@ -119,7 +119,7 @@ class Inventory_Sync {
 			/**
 			 * Filters the query arguments for the ticket-able post type tickets sync.
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param array $args The query arguments.
 			 */
@@ -170,7 +170,7 @@ class Inventory_Sync {
 	/**
 	 * Syncs the inventory of an event with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int   $event_id The event ID.
 	 * @param bool  $execute  Whether to execute the sync.
@@ -195,7 +195,7 @@ class Inventory_Sync {
 	/**
 	 * Syncs the inventory of a ticket with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $ticket_id       The ticket ID.
 	 * @param int    $square_quantity The quantity of tickets.
@@ -225,7 +225,7 @@ class Inventory_Sync {
 	/**
 	 * Process the batch.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $batch The batch.
 	 *
@@ -291,7 +291,7 @@ class Inventory_Sync {
 	/**
 	 * Cleans up the synced meta.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int  $object_id The object ID.
 	 * @param bool $force_add_history Whether to force add the history.
@@ -319,7 +319,7 @@ class Inventory_Sync {
 	/**
 	 * Fires the sync completed hook.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -333,7 +333,7 @@ class Inventory_Sync {
 		/**
 		 * Fires when the sync is completed.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 */
 		do_action( 'tec_tickets_commerce_square_sync_completed' );
 	}

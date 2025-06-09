@@ -4,6 +4,7 @@
 /lang/**/*.txt
 /license.txt
 /readme.txt
+/changelog.md
 /src/admin-views/**/*
 /src/deprecated/**/*
 /src/functions/**/*

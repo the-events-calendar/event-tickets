@@ -37,6 +37,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Adds the actions required by each Stripe component.
 	 *
 	 * @since 5.3.0
+	 * @since 5.24.0 Moved async webhook process to Commerce Hooks routing action.
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -54,8 +55,6 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
 
 		add_action( 'wp_ajax_' . Webhooks::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
-
-		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'process_async_stripe_webhook' ], 10, 2 );
 	}
 
 	/**
@@ -73,6 +72,52 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
 		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'modify_checkout_display_billing_info' ] );
 		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'modify_checkout_vars' ] );
+		add_filter( 'tec_tickets_commerce_order_stripe_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_order_stripe_get_value_captured', [ $this, 'filter_order_get_value_captured' ], 10, 2 );
+	}
+
+	/**
+	 * Filter the refunded amount for the order.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refunds for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		if ( empty( $refunds['0']['amount_refunded'] ) ) {
+			return 0;
+		}
+
+		return (int) max( wp_list_pluck( $refunds, 'amount_refunded' ) );
+	}
+
+	/**
+	 * Filter the captured amount for the order.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refunds for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_captured( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		if ( empty( $refunds['0']['amount_captured'] ) ) {
+			return 0;
+		}
+
+		return (int) max( wp_list_pluck( $refunds, 'amount_captured' ) );
 	}
 
 	/**
@@ -115,7 +160,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 					'order_id' => $order_id,
 					'try'      => ++$retry,
 				],
-				'tec-tickets-commerce-stripe-webhooks'
+				'tec-tickets-commerce-webhooks'
 			);
 			return;
 		}

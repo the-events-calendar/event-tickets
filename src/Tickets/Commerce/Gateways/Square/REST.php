@@ -2,7 +2,7 @@
 /**
  * REST API for Square.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -18,7 +18,7 @@ use TEC\Common\Contracts\Container;
 /**
  * Class REST
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -26,7 +26,7 @@ class REST extends Controller_Contract {
 	/**
 	 * The on boarding endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var On_Boarding_Endpoint
 	 */
@@ -35,7 +35,7 @@ class REST extends Controller_Contract {
 	/**
 	 * The order endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Order_Endpoint
 	 */
@@ -44,7 +44,7 @@ class REST extends Controller_Contract {
 	/**
 	 * The webhook endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Webhook_Endpoint
 	 */
@@ -53,7 +53,7 @@ class REST extends Controller_Contract {
 	/**
 	 * REST constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container            $container The container instance.
 	 * @param On_Boarding_Endpoint $on_boarding_endpoint The on boarding endpoint instance.
@@ -76,7 +76,7 @@ class REST extends Controller_Contract {
 	/**
 	 * Register the REST API endpoint classes in the container.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function do_register(): void {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -85,7 +85,7 @@ class REST extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -96,7 +96,7 @@ class REST extends Controller_Contract {
 	/**
 	 * Registers the REST API endpoints for Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function register_endpoints() {
 		$this->on_boarding_endpoint->register();

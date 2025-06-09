@@ -3,7 +3,7 @@
  * Featured settings box.
  *
  * @since 5.3.0
- * @since TBD Added additional div element.
+ * @since 5.23.0 Added additional div element.
  *
  * @var Tribe__Template $this             Template object.
  * @var string          $title            Featured settings title.
@@ -17,7 +17,7 @@
 
 $container_classes = [
 	'tec-settings-form__element--full-width' => true,
-	...$container_classes
+	...$container_classes,
 ];
 
 $classes[] = 'tec-tickets__admin-settings-featured';

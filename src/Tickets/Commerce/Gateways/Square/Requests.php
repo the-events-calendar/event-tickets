@@ -2,7 +2,7 @@
 /**
  * Square Requests.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\SquareRateLimitedExceptio
 /**
  * Square Requests.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square;
  */
@@ -23,7 +23,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * The Merchant class reference to use.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * The Gateway class reference to use.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * The Square API base URLs.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -53,7 +53,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * Get the merchant ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The merchant ID.
 	 */
@@ -64,7 +64,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * Get a response from the Square API with caching.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $endpoint          The endpoint path.
 	 * @param array  $query_args        Query args appended to the URL.
@@ -94,7 +94,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * Get REST API endpoint URL for requests.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $endpoint   The endpoint path.
 	 * @param array  $query_args Query args appended to the URL.
@@ -112,7 +112,7 @@ class Requests extends Abstract_Requests {
 	 * Process Request responses to catch any error code and transform in a WP_Error.
 	 * Returns the request array if no errors are found. Or a WP_Error object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array|\WP_Error $response Array of server data.
 	 *
@@ -125,7 +125,7 @@ class Requests extends Abstract_Requests {
 		/**
 		 * Filter the chance of triggering a rate limit exception.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int $chance The chance of triggering a rate limit exception.
 		 */
@@ -143,7 +143,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * Get environment base URL based on current mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -157,14 +157,15 @@ class Requests extends Abstract_Requests {
 	/**
 	 * Get the headers.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The headers.
 	 */
 	public static function get_headers(): array {
 		return [
-			'Square-Version' => '2025-04-16',
+			'Square-Version' => '2025-05-21',
 			'Content-Type'   => 'application/json',
+			'Accept'         => 'application/json',
 		];
 	}
 }

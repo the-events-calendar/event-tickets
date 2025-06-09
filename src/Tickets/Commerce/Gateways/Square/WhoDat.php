@@ -2,7 +2,7 @@
 /**
  * WhoDat Connection for Square.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,7 +16,7 @@ use RuntimeException;
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -25,7 +25,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The nonce action for the state.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -43,11 +43,13 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
+	 *
+	 * @param bool $is_wizard Whether this is in the wizard context.
 	 *
 	 * @return string
 	 */
-	public function connect_account(): string {
+	public function connect_account( bool $is_wizard = false ): string {
 		$merchant = tribe( Merchant::class );
 
 		// Generate and store the code challenge using the Merchant class.
@@ -62,7 +64,7 @@ class WhoDat extends Abstract_WhoDat {
 			'mode'                  => tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live',
 			'code_challenge'        => $code_challenge,
 			'code_challenge_method' => 'S256',
-			'url'                   => tribe( On_Boarding_Endpoint::class )->get_return_url(),
+			'url'                   => tribe( On_Boarding_Endpoint::class )->get_return_url( null, $is_wizard ),
 			'state'                 => $nonce,
 		];
 
@@ -88,7 +90,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get the state nonce action.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -99,7 +101,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get the return URL for OAuth redirects.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -110,25 +112,24 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * De-authorize the current seller account in Square oAuth.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?array
 	 */
 	public function disconnect_account(): ?array {
-		$account_id = tribe( Merchant::class )->get_account_id();
+		$merchant = tribe( Merchant::class );
 
 		$query_args = [
-			'merchant_id' => $account_id,
-			'return_url'  => esc_url( $this->get_return_url() ),
+			'access_token' => $merchant->get_access_token(),
 		];
 
-		return $this->get( 'oauth/token/revoke', $query_args );
+		return $this->post( 'oauth/token/revoke', $query_args );
 	}
 
 	/**
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return ?array
 	 */
@@ -146,7 +147,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get the token status from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array|null
 	 */
@@ -164,7 +165,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get merchant information from Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $merchant_id The merchant ID.
 	 *
@@ -181,7 +182,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Register a webhook endpoint with WhoDat.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $endpoint_url The webhook endpoint URL.
 	 * @param string $merchant_id  The merchant ID.
@@ -218,7 +219,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get required OAuth scopes for the Square integration.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param bool $include_descriptions Whether to include detailed descriptions for each scope.
 	 *
@@ -251,7 +252,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Verify if the currently connected merchant has all required scopes.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array {
 	 *     Array containing verification results
@@ -306,7 +307,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get a URL to reconnect with specific scopes.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $scopes Array of required scope IDs.
 	 *

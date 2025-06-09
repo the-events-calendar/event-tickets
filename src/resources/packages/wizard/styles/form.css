@@ -56,6 +56,10 @@
 	text-align: left;
 	width: 100%;
 	max-width: 100%;
+
+	.tec-tickets-onboarding__payment-gateway {
+		text-align: center;
+	}
 }
 
 .install-success .tec-tickets-onboarding__form-wrapper {

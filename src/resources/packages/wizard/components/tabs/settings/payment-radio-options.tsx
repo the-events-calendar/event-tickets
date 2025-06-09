@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Interface for PaymentRadioOptions props.
  *
- * @since TBD
+ * @since 5.24.0
  */
 interface PaymentRadioOptionsProps {
 	paymentGateways: {
@@ -19,7 +19,7 @@ interface PaymentRadioOptionsProps {
 /**
  * Component that renders payment gateway radio options.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {PaymentRadioOptionsProps} props Component props.
  *

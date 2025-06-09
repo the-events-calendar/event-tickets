@@ -2,7 +2,7 @@
 /**
  * WhoDat Connection for PayPal.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -25,7 +25,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,9 @@ class WhoDat extends Abstract_WhoDat {
 	 */
 	public function get_seller_signup_data( $hash, $country ) {
 		if ( empty( $hash ) ) {
-			$hash = tribe( Signup::class )->generate_unique_signup_hash();
+			$signup = tribe( Signup::class );
+			$hash   = $signup->generate_unique_signup_hash();
+			$signup->update_transient_hash( $hash );
 		}
 
 		$return_url = tribe( On_Boarding_Endpoint::class )->get_return_url( $hash );
@@ -97,8 +99,9 @@ class WhoDat extends Abstract_WhoDat {
 		}
 
 		$query_args = [
-			'mode'        => tribe( Merchant::class )->get_mode(),
-			'merchant_id' => $saved_merchant_id,
+			'mode'         => tribe( Merchant::class )->get_mode(),
+			'merchant_id'  => $saved_merchant_id,
+			'access_token' => tribe( Merchant::class )->get_access_token(),
 		];
 
 		$cache[ $cache_key ] = $this->post( 'seller/status', $query_args );
