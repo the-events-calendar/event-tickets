@@ -17,7 +17,6 @@ use TEC\Common\StellarWP\Models\Repositories\Contracts\Insertable;
 use TEC\Common\StellarWP\Models\Repositories\Contracts\Updatable;
 use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups as Table;
-use TEC\Tickets\Flexible_Tickets\Models\Capacity;
 use TEC\Tickets\Flexible_Tickets\Models\Ticket_Group;
 
 /**
@@ -38,14 +37,22 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	public function insert( Model $model ): Ticket_Group {
 		DB::insert( Table::table_name(), [
-			'slug' => $model->slug,
-			'data' => $model->data,
+			'slug'     => $model->slug,
+			'data'     => $model->data,
+			'name'     => $model->name,
+			'capacity' => $model->capacity,
+			'cost'     => $model->cost, // pass as string.
 		], [
 			'%s',
 			'%s',
+			'%s',
+			'%d',
+			'%s', // Use %s for cost to avoid float conversion.
 		] );
 
 		$model->id = DB::last_insert_id();
@@ -64,15 +71,31 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	public function update( Model $model ): Model {
-		DB::update( Table::table_name(), [
-			'slug' => $model->slug,
-			'data' => $model->data,
-		], [ 'id' => $model->id ], [
-			'%s',
-			'%s',
-		], [ '%d' ] );
+		DB::update(
+			Table::table_name(),
+			[
+				'slug'     => $model->slug,
+				'data'     => $model->data,
+				'name'     => $model->name,
+				'capacity' => $model->capacity,
+				'cost'     => $model->cost, // pass as string.
+			],
+			[
+				'id' => $model->id,
+			],
+			[
+				'%s',
+				'%s',
+				'%s',
+				'%d',
+				'%s',
+			],
+			[ '%d' ]
+		);
 
 		return $model;
 	}

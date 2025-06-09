@@ -1,4 +1,4 @@
-import { addFilter, addAction } from '@wordpress/hooks';
+import { addAction, addFilter, applyFilters } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { currentProviderSupportsSeating } from './store/compatibility';
@@ -6,44 +6,33 @@ import { select } from '@wordpress/data';
 import Seats from './dashboard-actions/seats';
 import { filterCapacityTableMappedProps } from './capacity-table';
 import {
-	filterSeatedTicketsAvailabilityMappedProps,
-	filterSetBodyDetails,
-	filterHeaderDetails,
-	filterTicketIsAsc,
-	setSeatTypeForTicket,
-	filterSettingsFields,
 	disableConfirmInTicketDashboard,
-	removeAllActionsFromTicket,
 	disableTicketSelection,
 	filterButtonIsDisabled,
+	filterHeaderDetails,
+	filterSeatedTicketsAvailabilityMappedProps,
+	filterSetBodyDetails,
+	filterSettingsFields,
+	filterTicketIsAsc,
+	removeAllActionsFromTicket,
 	replaceSharedCapacityInput,
+	setSeatTypeForTicket,
 } from './hook-callbacks';
-
-const shouldRenderAssignedSeatingForm = true;
 
 /**
  * Filters the render function of the Capacity form to add the seating options.
  *
  * @param {function(): void} renderDefaultForm The render function of the Capacity form.k
- * @param {string }          clientId          The client ID of the ticket block.
- * @param {string}           ticketProvider    The ticket provider.
+ * @param {Object} props The props passed to the Capacity form.
  *
  * @return {Function} The render function of the Capacity form with the seating options.
  */
-function filterRenderCapacityForm( renderDefaultForm, { clientId, ticketProvider } ) {
-	if ( ! shouldRenderAssignedSeatingForm ) {
+function filterRenderCapacityForm( renderDefaultForm, props ) {
+	if ( ! shouldRenderAssignedSeatingForm( props ) ) {
 		return renderDefaultForm;
 	}
 
-	// When the provider does not support seating, we render the default form.
-	if ( ! currentProviderSupportsSeating() ) {
-		return renderDefaultForm;
-	}
-
-	// When no license, we DO NOT render the radios General vs Seating.
-	if ( 'no-license' === select( storeName ).getServiceStatus() ) {
-		return renderDefaultForm;
-	}
+	const { clientId } = props;
 
 	return () => <CapacityForm renderDefaultForm={ renderDefaultForm } clientId={ clientId } />;
 }
@@ -136,3 +125,35 @@ addFilter(
 	'tec.tickets.seating',
 	replaceSharedCapacityInput
 );
+
+/**
+ * Checks if the assigned seating form should be rendered.
+ *
+ * @since TBD
+ *
+ * @param props {Object} The block props.
+ * @return {boolean}
+ */
+function shouldRenderAssignedSeatingForm( props ) {
+	// When the provider does not support seating, we render the default form.
+	if ( ! currentProviderSupportsSeating() ) {
+		return false;
+	}
+
+	// When no license, we DO NOT render the radios General vs Seating.
+	if ( 'no-license' === select( storeName ).getServiceStatus() ) {
+		return false;
+	}
+
+	const { tempCapacity, clientId } = props;
+
+	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
+	const isLayoutLocked = select( storeName ).isLayoutLocked( clientId );
+
+	if ( '' !== tempCapacity && ! ( hasSeats && isLayoutLocked ) ) {
+		// If the capacity is set but not from seating, we render the default form.
+		return false;
+	}
+
+	return applyFilters( 'tec.tickets.blocks.Ticket.renderSeatingForm', true, props );
+}
