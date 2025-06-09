@@ -311,7 +311,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Allow us to Toggle flagging the update of Date Meta
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @param   boolean $toggle  Should activate or not?
 	 *
@@ -1037,7 +1037,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a ticket has unlimited capacity
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @param   int|WP_Post|object $ticket
 	 *
@@ -1066,7 +1066,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a ticket has unlimited capacity
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @param   int|WP_Post|object $ticket
 	 *
@@ -1079,7 +1079,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a ticket uses Shared Capacity
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @param   int|WP_Post|object $ticket
 	 *
@@ -1102,8 +1102,8 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a given object has the correct Provider for a Post or Ticket
 	 *
-	 * @since  4.7
-	 * @since  4.12.3 Account for possibly inactive ticket provider and better checking for default ETP provider.
+	 * @since 4.7
+	 * @since 4.12.3 Account for possibly inactive ticket provider and better checking for default ETP provider.
 	 *
 	 * @param int|WP_Post                    $post
 	 * @param Tribe__Tickets__Tickets|string $provider
@@ -1201,7 +1201,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.12.0
 	 *
-	 * @since     4.6
+	 * @since 4.6
 	 *
 	 * @param int|object $post Post ID or object to which tickets are attached.
 	 *

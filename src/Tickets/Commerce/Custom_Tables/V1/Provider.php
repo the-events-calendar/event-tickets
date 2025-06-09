@@ -2,7 +2,7 @@
 /**
  * Handles registering Providers for the TEC\Events_Community\Custom_Tables\V1 (RBE) namespace.
  *
- * @since  5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Events_Community\Custom_Tables\V1;
  */
@@ -17,7 +17,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Provider.
  *
- * @since  5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1;
  */

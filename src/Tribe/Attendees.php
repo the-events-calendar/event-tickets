@@ -1004,7 +1004,7 @@ class Tribe__Tickets__Attendees {
 	 * For example, if tickets are created for the banana post type, the generic capability
 	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
 	 *
-	 * @since   4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param string $generic_cap
 	 * @param int    $event_id

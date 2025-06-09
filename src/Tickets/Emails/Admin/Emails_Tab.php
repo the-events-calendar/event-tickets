@@ -24,7 +24,7 @@ use Tribe__Field;
 /**
  * Class Emails_Tab
  *
- * @since  5.5.6
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */

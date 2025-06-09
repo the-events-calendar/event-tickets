@@ -812,7 +812,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Gets the Capacity for the Ticket
 		 *
-		 * @since  4.6
+		 * @since 4.6
 		 *
 		 * @return  int
 		 */

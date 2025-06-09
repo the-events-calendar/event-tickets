@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Orders Report.
  *
- * @since  5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */
