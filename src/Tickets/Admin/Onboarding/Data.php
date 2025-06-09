@@ -44,6 +44,11 @@ class Data extends Abstract_Data {
 	 * @param array $settings The settings to update.
 	 */
 	public function update_wizard_settings( $settings ): bool {
+		$option = $this->get_wizard_settings();
+		if ( $settings === $option ) {
+			return true;
+		}
+
 		return update_option( self::OPTION_NAME, $settings );
 	}
 
