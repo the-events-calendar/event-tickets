@@ -2,7 +2,7 @@
 /**
  * ECP provider.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * ECP provider.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -23,7 +23,7 @@ class ECP_Provider extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -34,7 +34,7 @@ class ECP_Provider extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -45,7 +45,7 @@ class ECP_Provider extends Controller_Contract {
 	/**
 	 * Filters the event item data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $data  The event data.
 	 * @param WP_Post $event The event post object.

@@ -2,7 +2,7 @@
 /**
  * WhoDat Interface.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -21,7 +21,7 @@ interface WhoDat_Interface {
 	/**
 	 * Returns the WhoDat URL to use.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -30,7 +30,7 @@ interface WhoDat_Interface {
 	/**
 	 * Returns the gateway-specific endpoint to use.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */

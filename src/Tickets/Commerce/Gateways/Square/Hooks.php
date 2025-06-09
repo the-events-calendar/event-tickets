@@ -2,7 +2,7 @@
 /**
  * Square Generic Hooks.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -15,11 +15,13 @@ use WP_Post;
 use Tribe__Repository;
 use Exception;
 use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
+use TEC\Tickets\Commerce\Order as Commerce_Order;
 
 /**
  * Square Hooks class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -27,7 +29,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Gateway instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Gateway
 	 */
@@ -36,7 +38,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Ajax constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container $container Container instance.
 	 * @param Gateway   $gateway Gateway instance.
@@ -49,31 +51,33 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
 	public function do_register(): void {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		add_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 	}
 
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
-		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10 );
+		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ] );
+		remove_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ] );
 	}
 
 	/**
 	 * Filter the Commerce Gateways to add Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array             $schema     The schema.
 	 * @param Tribe__Repository $repository The repository.
@@ -87,7 +91,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Filter the Commerce Gateways to add Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $gateways List of gateways.
 	 *
@@ -102,7 +106,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Process the async square webhook.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry    The number of times this has been tried.
@@ -110,7 +114,7 @@ class Hooks extends Controller_Contract {
 	 * @throws Exception If the action fails after too many retries.
 	 */
 	public function process_async_webhook( int $order_id, int $retry = 0 ): void {
-		$order = tec_tc_get_order( $order_id );
+		$order = tec_tc_get_order( $order_id, OBJECT, 'raw', true );
 
 		if ( ! $order ) {
 			return;
@@ -169,11 +173,51 @@ class Hooks extends Controller_Contract {
 				continue;
 			}
 
-			tribe( Order::class )->modify_status(
+			$event_id = $pending_webhook['metadata']['event_id'] ?? '';
+
+			if ( $event_id ) {
+				Webhook_Model::update(
+					[
+						'event_id'     => $event_id,
+						'order_id'     => $order->ID,
+						'processed_at' => current_time( 'mysql' ),
+					]
+				);
+			}
+
+			tribe( Commerce_Order::class )->modify_status(
 				$order->ID,
 				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
 				$pending_webhook['metadata']
 			);
 		}
+	}
+
+	/**
+	 * Filter the refunded amount for the order.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refunds for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		$data = [];
+
+		foreach ( $refunds as $refund ) {
+			if ( empty( $refund['data']['object']['refund']['id'] ) || empty( $refund['data']['object']['refund']['amount_money']['amount'] ) ) {
+				continue;
+			}
+
+			$data[ $refund['data']['object']['refund']['id'] ] = $refund['data']['object']['refund']['amount_money']['amount'];
+		}
+
+		return (int) array_sum( $data );
 	}
 }

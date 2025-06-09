@@ -1,4 +1,11 @@
 <?php
+/**
+ * Order Endpoint for the Square gateway.
+ *
+ * @since 5.24.0
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square\REST
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
@@ -23,7 +30,7 @@ use RuntimeException;
 /**
  * Class Order Endpoint.
  *
- * @since   TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -32,7 +39,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +48,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function register(): void {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -75,7 +82,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments used for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -86,7 +93,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Square gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -152,7 +159,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
 
-		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) ) {
+		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) || empty( $payment['status'] ) ) {
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
+		}
+
+		if ( 'COMPLETED' !== $payment['status'] ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
 		}
 
@@ -199,7 +210,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments used for the fail order endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -250,7 +261,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that fails an order with Tickets Commerce and the Square gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -304,7 +315,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Returns an array of error messages that are used by the API responses.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array $messages Array of error messages.
 	 */
@@ -322,7 +333,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Filter the error messages for Square checkout.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $messages Array of error messages.
 		 */

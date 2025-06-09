@@ -5,7 +5,7 @@
  * This class represents a Ticket as an Item Variation in Square's catalog. It handles
  * the mapping between a WordPress Ticket and its representation in Square.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -21,7 +21,7 @@ use Tribe__Tickets__Commerce__Currency as Currency;
  * Handles the representation of a WordPress Ticket as a Square catalog item variation.
  * Tickets in Square are represented as variations of an Event item.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects
  */
@@ -29,7 +29,7 @@ class Ticket_Item extends Item {
 	/**
 	 * The type of Square catalog item this class represents.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Ticket_Item extends Item {
 	/**
 	 * The data structure for the Square catalog item variation.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -67,7 +67,7 @@ class Ticket_Item extends Item {
 	/**
 	 * The WordPress ticket object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Ticket_Object
 	 */
@@ -76,7 +76,7 @@ class Ticket_Item extends Item {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Ticket_Object $ticket The ticket object to represent in Square.
 	 */
@@ -88,7 +88,7 @@ class Ticket_Item extends Item {
 	/**
 	 * Get the WordPress ID of the ticket.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return int The ticket post ID.
 	 */
@@ -99,7 +99,7 @@ class Ticket_Item extends Item {
 	/**
 	 * Get the ticket object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return Ticket_Object The ticket object.
 	 */
@@ -110,7 +110,7 @@ class Ticket_Item extends Item {
 	/**
 	 * Set the object values for synchronization with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The data array prepared for Square synchronization.
 	 */

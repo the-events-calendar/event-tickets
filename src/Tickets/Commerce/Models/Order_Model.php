@@ -58,7 +58,12 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
-			$on_checkout_hold_timeout = (int) Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], 0 );
+			// Default in the past. If it's not set or invalid, there should be no active checkout lock.
+			$default_checkout_timeout = gmdate( 'Y-m-d H:i:s', time() - YEAR_IN_SECONDS );
+			$on_checkout_hold_timeout = Arr::get( $post_meta, [ Order::ON_CHECKOUT_SCREEN_HOLD_META, 0 ], $default_checkout_timeout );
+			$on_checkout_hold_timeout = Dates::is_valid_date( $on_checkout_hold_timeout ) ? $on_checkout_hold_timeout : $default_checkout_timeout;
+			$on_checkout_hold_timeout = strtotime( $on_checkout_hold_timeout );
+
 			if ( ! is_numeric( $on_checkout_hold_timeout ) ) {
 				$on_checkout_hold_timeout = 0;
 			}

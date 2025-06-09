@@ -1,7 +1,7 @@
 /**
  * Tickets Commerce Square integration JavaScript.
  *
- * @since TBD
+ * @since 5.24.0
  */
 
 window.tec = window.tec || {};
@@ -11,14 +11,14 @@ window.tec.tickets.commerce = window.tec.tickets.commerce || {};
 /**
  * Tickets Commerce Square integration object.
  *
- * @since TBD
+ * @since 5.24.0
  */
 window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 
 /**
  * Initializes Tickets Commerce Square integration.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {Document} document The document object.
  * @return {void}
@@ -31,7 +31,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Default strings used in the module.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	const strings = {
 		connect: __( 'Connect with Square', 'event-tickets' ),
@@ -47,7 +47,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Selectors used for configuration and setup.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	const selectors = {
 		connectButton: '#tec-tickets__admin-settings-tickets-commerce-gateway-connect-square',
@@ -62,7 +62,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Get strings from data attributes on the container.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {Object} The strings data object.
 	 */
@@ -91,7 +91,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Handle connect button click.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event.
 	 * @return {void}
@@ -141,7 +141,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Handle reconnect button click.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event.
 	 * @return {void}
@@ -195,7 +195,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Handle disconnect button click.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event.
 	 * @return {void}
@@ -213,7 +213,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Process the disconnect request
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */
@@ -269,7 +269,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Cancel disconnect request
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param {Event} event The click event
 	 * @return {void}
@@ -286,7 +286,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Bind events for Square integration.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */
@@ -331,7 +331,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	/**
 	 * Initialize Square integration.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return {void}
 	 */

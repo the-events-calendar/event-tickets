@@ -2,7 +2,7 @@
 /**
  * The Square webhook events.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 /**
  * The Square webhook events.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -20,9 +20,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * Not used currently.
-	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -33,16 +31,16 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
-	const WEBHOOK_EVENT_PAYMENT_CREATED = 'payment.created';
+	const PAYMENT_CREATED = 'payment.created';
 
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +49,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +58,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +67,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +76,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -87,7 +85,7 @@ class Events {
 	/**
 	 * Square Webhook Event Types
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -98,7 +96,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -109,7 +107,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -120,7 +118,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -131,7 +129,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -142,7 +140,7 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -153,32 +151,44 @@ class Events {
 	 *
 	 * Not used currently.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
 	const TERMINAL_ACTION_UPDATED = 'terminal.action.updated';
 
 	/**
+	 * Square Webhook Event Types
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	const OAUTH_AUTHORIZATION_REVOKED = 'oauth.authorization.revoked';
+
+	/**
 	 * Webhook event types supported.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string[]
 	 */
 	protected const TYPES = [
+		self::PAYMENT_CREATED,
+		self::PAYMENT_UPDATED,
 		self::REFUND_CREATED,
 		self::REFUND_UPDATED,
 		self::ORDER_CREATED,
 		self::ORDER_UPDATED,
 		self::CUSTOMER_DELETED,
 		self::INVENTORY_COUNT_UPDATED,
+		self::OAUTH_AUTHORIZATION_REVOKED,
 	];
 
 	/**
 	 * Get the webhook event types supported by the Square gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string[] The webhook event types.
 	 */
@@ -186,7 +196,7 @@ class Events {
 		/**
 		 * Filters the webhook event types supported by the Square gateway.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string[] $event_types The webhook event types.
 		 */

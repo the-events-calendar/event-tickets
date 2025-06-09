@@ -17,7 +17,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	/**
 	 * Option name for the option to store pending webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -35,7 +35,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void Filters and actions hooks added by the controller are be removed.
 	 */
@@ -137,7 +137,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	 * Add a pending webhook to the order.
 	 *
 	 * @since 5.18.1
-	 * @since TBD Moved to the Abstract_Webhooks class from the Stripe_Webhooks class.
+	 * @since 5.24.0 Moved to the Abstract_Webhooks class from the Stripe_Webhooks class.
 	 *
 	 * @param int    $order_id   Order ID.
 	 * @param string $new_status New status.
@@ -149,7 +149,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	public function add_pending_webhook( int $order_id, string $new_status, string $old_status, array $metadata = [] ): void {
 		add_post_meta(
 			$order_id,
-			self::PENDING_WEBHOOKS_KEY,
+			static::PENDING_WEBHOOKS_KEY,
 			[
 				'new_status' => $new_status,
 				'metadata'   => $metadata,
@@ -162,7 +162,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	 * Get the pending webhooks for an order.
 	 *
 	 * @since 5.18.1
-	 * @since TBD Moved to the Abstract_Webhooks class from the Stripe_Webhooks class.
+	 * @since 5.24.0 Moved to the Abstract_Webhooks class from the Stripe_Webhooks class.
 	 *
 	 * @param int $order_id Order ID.
 	 *
@@ -176,7 +176,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	 * Delete the pending webhooks for an order.
 	 *
 	 * @since 5.18.1
-	 * @since TBD Moved to the Abstract_Webhooks class from the Stripe_Webhooks class.
+	 * @since 5.24.0 Moved to the Abstract_Webhooks class from the Stripe_Webhooks class.
 	 *
 	 * @param int $order_id Order ID.
 	 *
@@ -190,7 +190,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 	 * Get the max number of retries for the webhooks.
 	 *
 	 * @since 5.19.3
-	 * @since TBD Moved to the Abstract_Webhooks class from the Stripe_Webhooks class. and added generic filter.
+	 * @since 5.24.0 Moved to the Abstract_Webhooks class from the Stripe_Webhooks class. and added generic filter.
 	 *
 	 * @return int The number of retries.
 	 */
@@ -198,7 +198,7 @@ abstract class Abstract_Webhooks extends Controller_Contract {
 		/**
 		 * Filter the maximum number of attempts we will try to retry a webhook process.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int $max_attempts How many attempts we will try to retry a webhook process. Defaults to 5.
 		 *

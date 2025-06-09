@@ -2,7 +2,7 @@
 /**
  * Event details provider.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -16,7 +16,7 @@ use Tribe__Events__Timezones as Timezones;
 /**
  * Event details provider.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -24,7 +24,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -37,7 +37,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 	/**
 	 * Removes the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -52,7 +52,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 	/**
 	 * Filters the event item data before it is sent to Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $data  The event data.
 	 * @param WP_Post $event The event post object.
@@ -89,7 +89,7 @@ class Tec_Event_Details_Provider extends Controller_Contract {
 		/**
 		 * Filters the event data before it is sent to Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array   $data  The event data.
 		 * @param WP_Post $event The event post object.

@@ -48,7 +48,7 @@ abstract class Abstract_Settings {
 	 * Check if this gateway is currently in test mode.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Use tec_tickets_commerce_is_sandbox_mode() instead.
+	 * @since 5.24.0 Use tec_tickets_commerce_is_sandbox_mode() instead.
 	 *
 	 * @return bool
 	 */

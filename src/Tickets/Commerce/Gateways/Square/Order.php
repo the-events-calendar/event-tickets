@@ -1,4 +1,11 @@
 <?php
+/**
+ * Order class for the Square gateway.
+ *
+ * @since 5.24.0
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
@@ -19,12 +26,14 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Repository;
 use WP_User_Query;
 use WP_User;
+use TEC\Tickets\Exceptions\NotEnoughStockException;
 use stdClass;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Order.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -32,7 +41,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The hook to pull the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +50,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The merchant object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Merchant
 	 */
@@ -50,7 +59,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The commerce order object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Commerce_Order
 	 */
@@ -59,7 +68,7 @@ class Order extends Abstract_Order {
 	/**
 	 * The settings object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Settings
 	 */
@@ -68,7 +77,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Order constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Merchant       $merchant       The merchant object.
 	 * @param Commerce_Order $commerce_order The commerce order object.
@@ -83,7 +92,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Filter the schema for the repository.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array             $schema     The schema.
 	 * @param Tribe__Repository $repository The repository.
@@ -99,13 +108,21 @@ class Order extends Abstract_Order {
 			$this->filter_by_payment_id_not( $payment_ids, $repository );
 		};
 
+		$schema['square_refund_id'] = function ( $refund_ids ) use ( $repository ) {
+			$this->filter_by_refund_id( $refund_ids, $repository );
+		};
+
+		$schema['square_refund_id_not'] = function ( $refund_ids ) use ( $repository ) {
+			$this->filter_by_refund_id_not( $refund_ids, $repository );
+		};
+
 		return $schema;
 	}
 
 	/**
 	 * Create a Square order from a Commerce order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -125,7 +142,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the customer ID for the Square order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $customer_id The customer ID.
 		 * @param WP_Post $order The order object.
@@ -139,7 +156,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the metadata for the Square order.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $metadata The metadata for the Square order.
 		 */
@@ -157,7 +174,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters the Square order payload.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array   $payload The payload for the Square order.
 		 * @param WP_Post $order   The order object.
@@ -180,14 +197,65 @@ class Order extends Abstract_Order {
 		}
 
 		$body = [
-			'idempotency_key' => uniqid( $square_order_id ? 'tec-square-update-' : 'tec-square-create-', true ),
+			'idempotency_key' => uniqid( 'tec-square-calculate-', true ),
 			'order'           => $square_order,
 		];
+
+		$calculated_order = Requests::post(
+			'orders/calculate',
+			[],
+			[
+				'body' => $body,
+			]
+		);
+
+		if ( empty( $calculated_order['order']['total_money']['amount'] ) ) {
+			do_action( 'tribe_log', 'error', 'Square order calculate failed', [ $calculated_order['errors'] ?? $calculated_order, $square_order, $square_order_id ] );
+			throw new RuntimeException( __( 'Failed to calculate the Square order.', 'event-tickets' ), 1 );
+		}
+
+		$calculated_total = (int) $calculated_order['order']['total_money']['amount'];
+		$local_total      = (int) ( 100 * (float) $order->total );
+
+		$diff = $calculated_total - $local_total;
+
+		if ( 0 !== $diff ) {
+			if ( $diff > 0 ) {
+				if ( ! ( isset( $body['order']['discounts'] ) && is_array( $body['order']['discounts'] ) ) ) {
+					$body['order']['discounts'] = [];
+				}
+
+				$body['order']['discounts'][] = [
+					'name'         => __( 'Rounding difference discount', 'event-tickets' ),
+					'type'         => 'FIXED_AMOUNT',
+					'scope'        => 'ORDER',
+					'amount_money' => [
+						'amount'   => absint( $diff ),
+						'currency' => $order->currency,
+					],
+				];
+			} else {
+				if ( ! ( isset( $body['order']['service_charges'] ) && is_array( $body['order']['service_charges'] ) ) ) {
+					$body['order']['service_charges'] = [];
+				}
+
+				$body['order']['service_charges'][] = [
+					'name'              => __( 'Rounding difference service charge', 'event-tickets' ),
+					'calculation_phase' => 'SUBTOTAL_PHASE',
+					'amount_money'      => [
+						'amount'   => absint( $diff ),
+						'currency' => $order->currency,
+					],
+				];
+			}
+		}
+
+		$body['idempotency_key'] = uniqid( $square_order_id ? 'tec-square-update-' : 'tec-square-create-', true );
 
 		/**
 		 * Fires before the Square order is upserted.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $square_order The Square order.
 		 * @param int   $order_id     The order ID.
@@ -229,7 +297,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Fires after the Square order is upserted.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array  $response     The Square order.
 		 * @param int    $order_id     The order ID.
@@ -245,7 +313,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Upsert a local order from a Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 * @param array  $event_data The event data.
@@ -260,6 +328,7 @@ class Order extends Abstract_Order {
 		}
 
 		$square_order = $square_order['order'];
+		$order        = null;
 
 		$ref_id = $square_order['reference_id'] ?? false;
 		if ( $ref_id && is_numeric( $ref_id ) ) {
@@ -267,15 +336,22 @@ class Order extends Abstract_Order {
 			$is_update = $order instanceof WP_Post;
 		}
 
-		$order     = $order instanceof WP_Post ? $order : tribe( Commerce_Order::class )->get_from_gateway_order_id( $square_order_id );
+		$callable  = empty( $square_order['refunds'] ) ? [ tribe( Commerce_Order::class ), 'get_from_gateway_order_id' ] : [ $this, 'get_by_refund_id' ];
+		$args      = empty( $square_order['refunds'] ) ? [ $square_order_id ] : [ $square_order['refunds']['0']['id'] ];
+		$order     = $order instanceof WP_Post ? $order : call_user_func( $callable, $args );
 		$is_update = $order instanceof WP_Post;
+
+		if ( ! $is_update && empty( $square_order['refunds'] ) ) {
+			$order     = $this->get_by_original_gateway_order_id( $square_order_id );
+			$is_update = $order instanceof WP_Post;
+		}
 
 		if ( ! $is_update && ! $this->settings->is_inventory_sync_enabled() ) {
 			// When the sync is not enabled, we listen ONLY for UPDATES to existing orders to our DB.
 			return null;
 		}
 
-		if ( $is_update && $order->gateway_order_id !== $square_order_id ) {
+		if ( $is_update && $order->gateway_order_id !== $square_order_id && empty( $square_order['refunds'] ) ) {
 			// The order has been changed in a way that now is being matched with a different Square order.
 			// For example, that's possible when an order has been refunded. The refund is a new Square order,
 			// which we store in `gateway_order_id` property.
@@ -283,7 +359,13 @@ class Order extends Abstract_Order {
 		}
 
 		if ( ! $is_update ) {
-			$items = $this->get_items_from_square_order( $square_order_id );
+			try {
+				$items = $this->get_items_from_square_order( $square_order_id );
+			} catch ( NotEnoughStockException $e ) {
+				do_action( 'tribe_log', 'warning', 'Not enough stock for incoming order - refunding the order.', [ $square_order_id ] );
+				$this->refund_remote_order( $square_order_id );
+				return null;
+			}
 
 			if ( empty( $items ) ) {
 				// We don't create orders without at least one item we recognize.
@@ -324,7 +406,25 @@ class Order extends Abstract_Order {
 				'gateway_order_object'  => wp_json_encode( $square_order ),
 			];
 
+			$duplicate_order = $this->get_by_original_gateway_order_id( $square_order_id );
+
+			if ( $duplicate_order instanceof WP_Post ) {
+				return $duplicate_order;
+			}
+
+			DB::beginTransaction();
+
 			$order = $this->commerce_order->create( tribe( Gateway::class ), $order_args );
+
+			$order_ids = $this->commerce_order->get_order_ids_from_gateway_order_id( $square_order_id );
+
+			if ( count( $order_ids ) > 1 ) {
+				do_action( 'tribe_log', 'warning', 'Multiple orders found for the same Square order ID - Deleting: ' . $order->ID, [ $order_ids, $square_order_id ] );
+				DB::rollback();
+				return null;
+			}
+
+			DB::commit();
 
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_AMOUNT_UNACCOUNTED, $missed_money );
 			update_post_meta( $order->ID, Commerce_Order::META_ORDER_TOTAL_TAX, ( new Precision_Value( $net_amounts['tax_money']['amount'] / 100 ) )->get() );
@@ -334,6 +434,12 @@ class Order extends Abstract_Order {
 
 		if ( ! $order instanceof WP_Post ) {
 			return null;
+		}
+
+		$event_id = $event_data['event_id'] ?? '';
+
+		if ( $event_id ) {
+			Commerce_Meta::add( $order->ID, REST\Webhook_Endpoint::KEY_ORDER_WEBHOOK_IDS, $event_id, [], 'post', false );
 		}
 
 		$payments = $square_order['tenders'] ?? [];
@@ -355,6 +461,25 @@ class Order extends Abstract_Order {
 			}
 		}
 
+		$refunds = $square_order['refunds'] ?? [];
+
+		if ( ! empty( $refunds ) ) {
+			$order_refunds = array_flip( $this->get_refund_ids( $order ) );
+			foreach ( $refunds as $refund ) {
+				$refund_id = $refund['id'] ?? false;
+
+				if ( ! $refund_id ) {
+					continue;
+				}
+
+				if ( isset( $order_refunds[ $refund_id ] ) ) {
+					continue;
+				}
+
+				$this->add_refund_id( $order, $refund_id );
+			}
+		}
+
 		$status = $square_order['state'] ?? false;
 
 		if ( ! $status ) {
@@ -370,6 +495,31 @@ class Order extends Abstract_Order {
 				]
 			);
 			return $order;
+		}
+
+		$additional_data = [];
+
+		if ( ! empty( $square_order['refunds'] ) ) {
+			if ( 'COMPLETED' !== $status ) {
+				return $order;
+			}
+
+			$status = 'REFUNDED';
+
+			$payload = [];
+
+			foreach ( $square_order['refunds'] as $refund ) {
+				$payload[]['data']['object']['refund'] = $refund;
+			}
+
+			$additional_data = [
+				'gateway_payload' => $payload,
+			];
+
+			if ( $order->gateway_order_id !== $square_order_id ) {
+				$additional_data['gateway_order_id']          = $square_order_id;
+				$additional_data['original_gateway_order_id'] = $order->gateway_order_id;
+			}
 		}
 
 		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
@@ -406,7 +556,7 @@ class Order extends Abstract_Order {
 			return $order;
 		}
 
-		$this->commerce_order->modify_status( $order->ID, $status_obj->get_slug(), $event_data ? [ 'gateway_payload' => $event_data ] : [] );
+		$this->commerce_order->modify_status( $order->ID, $status_obj->get_slug(), array_merge( $event_data ? [ 'gateway_payload' => $event_data ] : [], $additional_data ) );
 
 		return $order;
 	}
@@ -414,7 +564,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the cached remote data for an order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $order_id The order ID.
 	 * @param string $local_id The local ID.
@@ -461,7 +611,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the URL to view the order in Square dashboard.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -486,7 +636,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Check if the order needs to be updated.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_order The Square order.
 	 * @param int   $order_id The order ID.
@@ -497,7 +647,7 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters if the Square order needs to be updated.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param bool $needs_update Whether the Square order needs to be updated.
 		 */
@@ -512,7 +662,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Add items to the Square payload.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array   $square_order The Square order.
 	 * @param WP_Post $order        The order object.
@@ -572,11 +722,13 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the items from the Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
 	 * @return array
+	 *
+	 * @throws NotEnoughStockException If the stock is not enough.
 	 */
 	public function get_items_from_square_order( string $square_order_id ): array {
 		$square_order = $this->get_square_order( $square_order_id );
@@ -619,10 +771,25 @@ class Order extends Abstract_Order {
 				continue;
 			}
 
+			$quantity = $ticket['quantity'] ?? 1;
+
+			/**
+			 * Filters whether to prevent overselling or not.
+			 *
+			 * @since 5.24.0
+			 *
+			 * @param bool          $prevent_overselling Whether to prevent overselling or not.
+			 * @param Ticket_Object $ticket_obj          The ticket object.
+			 * @param int           $quantity            The quantity of the ticket.
+			 */
+			if ( -1 !== $ticket_obj->available() && $quantity > $ticket_obj->available() && apply_filters( 'tec_tickets_commerce_square_prevent_overselling', true, $ticket_obj, $quantity ) ) {
+				throw new NotEnoughStockException( sprintf( 'Not enough stock for ticket %s', $ticket_obj->ID ) );
+			}
+
 			$items[] = [
 				'event_id'          => $ticket_obj->get_event_id(),
 				'price'             => ( new Precision_Value( $ticket['base_price_money']['amount'] / 100 ) )->get(),
-				'quantity'          => $ticket['quantity'] ?? 1,
+				'quantity'          => $quantity,
 				'ticket_id'         => $ticket_obj->ID,
 				'regular_price'     => $ticket_obj->regular_price,
 				'regular_sub_total' => ( new Precision_Value( $ticket_obj->regular_price * ( $ticket['quantity'] ?? 1 ) ) )->get(),
@@ -662,7 +829,7 @@ class Order extends Abstract_Order {
 		// Our booking fees are supports as service charges.
 		$booking_fees = $square_order['service_charges'] ?? [];
 
-		foreach ( $booking_fees as $offset => $fee ) {
+		foreach ( $booking_fees as $fee ) {
 			$items[] = [
 				'id'           => $fee['metadata']['local_id'] ?? 0,
 				'type'         => 'fee',
@@ -676,13 +843,35 @@ class Order extends Abstract_Order {
 			];
 		}
 
+		$taxes = $square_order['taxes'] ?? [];
+
+		// We don's support taxes yet in TC, but ADDITIVE taxes need to be added as a separate item to the
+		// order so that the total is reflecting reality. We add them as prefixed booking fees for now.
+		foreach ( $taxes as $tax ) {
+			if ( $tax['type'] !== 'ADDITIVE' ) {
+				continue;
+			}
+
+			$items[] = [
+				'id'           => 'square-tax-' . $tax['uid'],
+				'type'         => 'fee',
+				'price'        => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
+				'sub_total'    => ( new Precision_Value( $tax['applied_money']['amount'] / 100 ) )->get(),
+				'fee_id'       => 'square-tax-' . $tax['uid'],
+				'display_name' => $tax['name'],
+				'ticket_id'    => 0,
+				'event_id'     => 0,
+				'quantity'     => 1,
+			];
+		}
+
 		return $items;
 	}
 
 	/**
 	 * Get the customer from the Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
@@ -731,11 +920,13 @@ class Order extends Abstract_Order {
 
 		$user_obj = new stdClass();
 
+		$family_name = $remote_customer['customer']['family_name'] ?? '';
+
 		$user_obj->ID           = 0;
 		$user_obj->user_email   = $remote_customer['customer']['email_address'];
-		$user_obj->display_name = $remote_customer['customer']['given_name'] . ' ' . $remote_customer['customer']['family_name'];
+		$user_obj->display_name = $remote_customer['customer']['given_name'] . ( $family_name ? ' ' . $family_name : '' );
 		$user_obj->first_name   = $remote_customer['customer']['given_name'];
-		$user_obj->last_name    = $remote_customer['customer']['family_name'];
+		$user_obj->last_name    = $family_name;
 
 		return new WP_User( $user_obj );
 	}
@@ -743,7 +934,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the Square order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
@@ -776,7 +967,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Add a payment to the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order      The order object.
 	 * @param string  $payment_id The payment ID.
@@ -798,7 +989,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the payment IDs.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_Post $order The order object.
 	 *
@@ -811,7 +1002,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order by payment ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $payment_id The payment ID.
 	 * @param array  $status     The status of the order.
@@ -880,9 +1071,134 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Add a refund ID to the order.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param WP_Post $order      The order object.
+	 * @param string  $refund_id  The refund ID.
+	 *
+	 * @return bool
+	 */
+	public function add_refund_id( WP_Post $order, string $refund_id ): bool {
+		$added = Commerce_Meta::add( $order->ID, Payment::KEY_ORDER_REFUND_ID, $refund_id, [], 'post', false );
+
+		if ( ! $added ) {
+			return false;
+		}
+
+		Commerce_Meta::set( $order->ID, Payment::KEY_ORDER_REFUND_ID_TIME, tec_get_current_milliseconds(), [ $refund_id ], 'post', false );
+
+		return (bool) $added;
+	}
+
+	/**
+	 * Get the payment IDs.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param WP_Post $order The order object.
+	 *
+	 * @return string[]
+	 */
+	public function get_refund_ids( WP_Post $order ): array {
+		return (array) Commerce_Meta::get( $order->ID, Payment::KEY_ORDER_REFUND_ID, [], 'post', false, false );
+	}
+
+	/**
+	 * Get the order by refund ID.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $refund_id The refund ID.
+	 * @param array  $status    The status of the order.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_refund_id( string $refund_id, array $status = [ 'any' ] ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'square_refund_id' => $refund_id,
+				'status'           => $status,
+			]
+		)->first();
+	}
+
+	/**
+	 * Get the order by original gateway order ID.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $original_gateway_order_id The original gateway order ID.
+	 * @param array  $status                    The status of the order.
+	 *
+	 * @return WP_Post|null
+	 */
+	public function get_by_original_gateway_order_id( string $original_gateway_order_id, array $status = [ 'any' ] ): ?WP_Post {
+		return tec_tc_orders()->by_args(
+			[
+				'original_gateway_order_id' => $original_gateway_order_id,
+				'status'                    => $status,
+			]
+		)->first();
+	}
+
+	/**
+	 * Filters order by refund ID.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $refund_ids Which refund IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_refund_id( $refund_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$refund_ids = array_filter( (array) $refund_ids );
+
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_in', Payment::KEY_ORDER_REFUND_ID, $refund_ids );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by refund ID not.
+	 *
+	 * @since
+	 *
+	 * @param string|string[]   $refund_ids Which refund IDs we are filtering by.
+	 * @param Tribe__Repository $repository  The repository.
+	 *
+	 * @return null
+	 */
+	public function filter_by_refund_id_not( $refund_ids = null, ?Tribe__Repository $repository = null ) {
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$refund_ids = array_filter( (array) $refund_ids );
+
+		if ( empty( $refund_ids ) ) {
+			return null;
+		}
+
+		$repository->by( 'meta_not_in', Payment::KEY_ORDER_REFUND_ID, $refund_ids );
+
+		return null;
+	}
+
+	/**
 	 * Get the Square customer.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $customer_id The Square customer ID.
 	 *
@@ -912,5 +1228,82 @@ class Order extends Abstract_Order {
 		$cache->set( $cache_key, $remote_customer, HOUR_IN_SECONDS );
 
 		return $remote_customer;
+	}
+
+	/**
+	 * Refund an order.
+	 *
+	 * To refund a Square order, you have to grab the Square order. Then in the property `tenders` you have to refund every tender.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If the order has no Square order ID or the Square order is not found.
+	 */
+	public function refund_order( WP_Post $order ): void {
+		if ( ! $order->gateway_order_id ) {
+			throw new RuntimeException( __( 'Order has no Square order ID.', 'event-tickets' ) );
+		}
+
+		$this->refund_remote_order( $order->gateway_order_id, $order );
+	}
+
+	/**
+	 * Refund a remote order.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string       $square_order_id The Square order ID.
+	 * @param WP_Post|null $order           The order post object.
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If the Square order is not found.
+	 */
+	public function refund_remote_order( string $square_order_id, ?WP_Post $order = null ): void {
+		$square_order = $this->get_square_order( $square_order_id );
+
+		if ( empty( $square_order['order'] ) ) {
+			throw new RuntimeException( __( 'Square order not found.', 'event-tickets' ) );
+		}
+
+		$tenders = $square_order['order']['tenders'] ?? [];
+
+		foreach ( $tenders as $tender ) {
+			$id     = $tender['id'] ?? null;
+			$amount = $tender['amount_money'] ?? null;
+
+			if ( ! ( $id && $amount ) ) {
+				continue;
+			}
+
+			$body = [
+				'idempotency_key' => md5( 'refund-' . $id ),
+				'payment_id'      => $id,
+				'amount_money'    => $amount,
+			];
+
+			$response = Requests::post(
+				'refunds',
+				[],
+				[ 'body' => $body ]
+			);
+
+			if ( empty( $response['refund'] ) ) {
+				do_action( 'tribe_log', 'error', 'Square refund failed', [ $body, $response ] );
+				continue;
+			}
+
+			if ( ! $order instanceof WP_Post ) {
+				continue;
+			}
+
+			$this->add_refund_id( $order, explode( '_', $response['refund']['id'] )[1] );
+
+			tribe( Syncs\Regulator::class )->schedule( self::HOOK_PULL_ORDER_ACTION, [ $response['refund']['order_id'] ], MINUTE_IN_SECONDS / 3 );
+		}
 	}
 }

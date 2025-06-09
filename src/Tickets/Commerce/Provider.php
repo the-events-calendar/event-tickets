@@ -102,6 +102,9 @@ class Provider extends Service_Provider {
 		// Register Order modifiers main controller.
 		$this->container->register( Order_Modifiers\Controller::class );
 
+		// Commerce Tables Controller.
+		$this->container->register( Tables::class );
+
 		// RSVP controller.
 		$this->container->register( RSVP_Controller::class );
 

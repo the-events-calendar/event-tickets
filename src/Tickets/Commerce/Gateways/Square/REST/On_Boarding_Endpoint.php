@@ -2,7 +2,7 @@
 /**
  * Square On-Boarding Endpoint
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -24,7 +25,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class On_Boarding_Endpoint.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -33,7 +34,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST namespace for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +43,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST endpoint path for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +52,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Get the namespace for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -62,7 +63,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Get the path for this endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -73,7 +74,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Checks if the current user has permissions to the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -92,7 +93,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 */
 	public function register(): void {
 		$namespace = $this->get_namespace();
@@ -172,7 +173,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates or finalizes the signup of a new merchant with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -278,17 +279,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$merchant_data = $merchant->fetch_merchant_data( true );
 
 		// Log the retrieval attempt.
-		if ( $merchant_data ) {
-			do_action(
-				'tribe_log',
-				'info',
-				'Square Merchant Data Retrieved',
-				[
-					'source'      => 'tickets-commerce',
-					'merchant_id' => $params['merchant_id'],
-				]
-			);
-		} else {
+		if ( ! $merchant_data ) {
 			do_action(
 				'tribe_log',
 				'warning',
@@ -307,6 +298,8 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		tribe_update_option( Tickets_Commerce_Settings::$tickets_commerce_enabled, true );
 		tribe_update_option( Gateway::get_enabled_option_key(), true );
 
+		Commerce_Settings::set( 'tickets_commerce_gateways_square_just_onboarded_%s', time() );
+
 		wp_safe_redirect( $square_tab_url );
 		tribe_exit();
 	}
@@ -314,7 +307,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register webhooks for the newly connected merchant.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -349,7 +342,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Returns the URL for redirecting users after an oAuth flow.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string|null $hash The hash to append to the URL.
 	 * @param bool        $is_wizard Whether the request is coming from the wizard.
@@ -363,7 +356,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Returns an array in the format used by Swagger 2.0.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @link http://swagger.io/
 	 *

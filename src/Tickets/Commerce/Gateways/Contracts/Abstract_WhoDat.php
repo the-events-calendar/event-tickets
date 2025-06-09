@@ -2,7 +2,7 @@
 /**
  * WhoDat Connection Contract.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -22,7 +22,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * The API endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * WhoDat URL, used to authenticate accounts with gateway payment providers
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -85,7 +85,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * Get a response from the WhoDat API with caching.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $endpoint          The endpoint path.
 	 * @param array  $query_args        Query args appended to the URL.

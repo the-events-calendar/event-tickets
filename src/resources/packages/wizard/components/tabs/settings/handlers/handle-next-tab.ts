@@ -31,7 +31,7 @@ interface HandleNextTabParams {
 /**
  * Handle moving to the next tab, potentially adding the Payments tab.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @param {HandleNextTabParams} params Parameters.
  */
@@ -53,35 +53,7 @@ const handleNextTab = ({
 		currency: currencyCode,
 	});
 
-	// If we should skip the payments tab or no payment gateway is selected
-	if (skipPaymentsTab || !['stripe', 'square', 'paypal'].includes(paymentOption)) {
-		moveToNextTab();
-		return;
-	}
-
-	// If the payment tab already exists or was already added
-	if (paymentsTabExists || paymentsTabAdded) {
-		moveToNextTab();
-		return;
-	}
-
-	// Dynamic import and add the payments tab
-	import('../../payments/tab').then((module) => {
-		const PaymentsContent = module.default;
-
-		addTab({
-			id: 'payments',
-			title: __('Payments', 'event-tickets'),
-			content: PaymentsContent,
-			ref: React.createRef(),
-			priority: 25, // Between Settings (20) and Communication (30)
-			isVisible: true,
-		});
-
-		setPaymentsTabAdded(true);
-		reorderTabs();
-		moveToNextTab();
-	});
+	moveToNextTab();
 };
 
 export default handleNextTab;

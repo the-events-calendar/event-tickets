@@ -2,9 +2,9 @@
 /**
  * The Template for displaying Square connection error notices.
  *
- * @since TBD
+ * @since 5.24.0
  *
- * @version TBD
+ * @version 5.24.0
  *
  * @var Tribe__Tickets__Admin__Views                  $this              [Global] Template object.
  * @var TEC\Tickets\Commerce\Gateways\Square\Merchant $merchant          [Global] The merchant class.
@@ -21,7 +21,7 @@ if ( empty( $tc_status ) ) {
 	return;
 }
 
-$error_class = 'error';
+$error_class   = 'error';
 $error_message = '';
 
 switch ( $tc_status ) {

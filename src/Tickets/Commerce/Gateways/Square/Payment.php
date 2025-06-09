@@ -2,7 +2,7 @@
 /**
  * Square Payment Processing Class
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -16,18 +16,35 @@ use WP_Post;
 /**
  * Square payment processing class.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
 class Payment {
+	/**
+	 * The key used to identify the Square refund ID.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_REFUND_ID = '_tec_tc_order_gateway:square_refund_id';
+
+	/**
+	 * The key used to identify the time of the Square refund ID.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public const KEY_ORDER_REFUND_ID_TIME = '_tec_tc_order_gateway:square_refund_id_time';
 
 	/**
 	 * The key used to identify the Square payment ID.
 	 *
 	 * Need to be passed by a sprintf, with mode being the first variable.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +55,7 @@ class Payment {
 	 *
 	 * Need to be passed by a sprintf, with mode being the first variable and the payment ID being the second variable.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +64,7 @@ class Payment {
 	/**
 	 * The key used to identify Square payments created in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +73,7 @@ class Payment {
 	/**
 	 * Create a payment from the provided Value object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string  $source_id       The source ID.
 	 * @param Value   $value           The value object to create a payment for.
@@ -91,7 +108,7 @@ class Payment {
 		/**
 		 * Filters the payment body.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array   $body The payment body.
 		 * @param Value   $value The value object.
@@ -99,6 +116,15 @@ class Payment {
 		 * @param string  $source_id The source ID.
 		 */
 		$body = apply_filters( 'tec_tickets_commerce_square_payment_body', $body, $value, $order, $source_id );
+
+		$fee = Application_Fee::calculate( $value );
+
+		if ( $fee->get_integer() > 0 ) {
+			$body['app_fee_money'] = [
+				'amount'   => (int) $fee->get_integer(),
+				'currency' => $value->get_currency_code(),
+			];
+		}
 
 		$args = [
 			'body'    => $body,
@@ -113,7 +139,7 @@ class Payment {
 	/**
 	 * Creates a payment from order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string  $source_id       The source ID.
 	 * @param WP_Post $order           The order post object.
@@ -129,7 +155,7 @@ class Payment {
 		/**
 		 * Filters the value and items before creating a Square payment.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param Value   $value     The total value of the cart.
 		 * @param WP_Post $order     The order post object.
@@ -154,7 +180,7 @@ class Payment {
 	/**
 	 * Get a payment by ID.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $payment_id The payment ID.
 	 *
@@ -179,7 +205,7 @@ class Payment {
 	/**
 	 * Update a payment.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $payment_id The payment ID.
 	 * @param array  $data       The payment data to update.
@@ -205,7 +231,7 @@ class Payment {
 	/**
 	 * Cancel a payment.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $payment_id The payment ID.
 	 *
@@ -232,7 +258,7 @@ class Payment {
 	/**
 	 * Format error message for display.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $errors The errors array from Square API.
 	 *

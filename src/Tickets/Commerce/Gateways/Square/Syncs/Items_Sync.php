@@ -2,7 +2,7 @@
 /**
  * Syncs tickets with Square controller.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 /**
  * Class Tickets_Sync
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -27,7 +27,7 @@ class Items_Sync {
 	/**
 	 * The action that syncs an individual event and its tickets with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Items_Sync {
 	/**
 	 * The action that syncs the deletion of an event or ticket with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Items_Sync {
 	/**
 	 * The action that syncs the tickets of a ticket-able post type with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Items_Sync {
 	/**
 	 * The remote objects instance.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Remote_Objects
 	 */
@@ -63,7 +63,7 @@ class Items_Sync {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Remote_Objects $remote_objects The remote objects instance.
 	 */
@@ -74,7 +74,7 @@ class Items_Sync {
 	/**
 	 * Sync the deletion of an event or ticket with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $object_id        The object ID.
 	 * @param string $remote_object_id The remote object ID.
@@ -88,7 +88,7 @@ class Items_Sync {
 	/**
 	 * Sync the tickets for a ticket type.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $ticket_able_post_type The ticket-able post type.
 	 *
@@ -107,7 +107,7 @@ class Items_Sync {
 			 *
 			 * We can send up to 1000 items per batch to Square. We can't send less than 1 as well -_- !
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param int $posts_per_page The number of posts to sync.
 			 */
@@ -130,7 +130,7 @@ class Items_Sync {
 			/**
 			 * Filters the query arguments for the ticket-able post type tickets sync.
 			 *
-			 * @since TBD
+			 * @since 5.24.0
 			 *
 			 * @param array $args The query arguments.
 			 */
@@ -183,7 +183,7 @@ class Items_Sync {
 	/**
 	 * Sync the event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int  $event_id The event ID.
 	 * @param bool $execute  Whether to execute the sync.
@@ -207,7 +207,7 @@ class Items_Sync {
 		/**
 		 * Sync the events inventory.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int $event_id  The event ID.
 		 * @param bool $execute  Whether to execute the sync.
@@ -221,7 +221,7 @@ class Items_Sync {
 	/**
 	 * Process the batch.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $batch The batch.
 	 *
@@ -262,7 +262,7 @@ class Items_Sync {
 				/**
 				 * Fires when a ticket ID mapping is received from Square.
 				 *
-				 * @since TBD
+				 * @since 5.24.0
 				 *
 				 * @param string $object_id The object ID.
 				 * @param array  $id_mapping The ID mapping.
@@ -272,7 +272,7 @@ class Items_Sync {
 				/**
 				 * Fires when a ticket ID mapping is received from Square.
 				 *
-				 * @since TBD
+				 * @since 5.24.0
 				 *
 				 * @param array $id_mapping The ID mapping.
 				 */
@@ -301,7 +301,7 @@ class Items_Sync {
 	/**
 	 * Fires the sync object hooks.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $square_object The object.
 	 *
@@ -311,7 +311,7 @@ class Items_Sync {
 		/**
 		 * Fires when a object is received from Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $square_object The sync object.
 		 */
@@ -320,7 +320,7 @@ class Items_Sync {
 		/**
 		 * Fires when a object is received from Square.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param array $square_object The sync object.
 		 */

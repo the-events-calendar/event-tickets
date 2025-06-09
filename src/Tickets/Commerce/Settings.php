@@ -182,7 +182,7 @@ class Settings {
 	/**
 	 * Gets the URL to the Tickets Commerce settings page.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $args Optional. Additional arguments to add to the URL. Default empty array.
 	 *
@@ -205,7 +205,7 @@ class Settings {
 	 *
 	 * @since 5.3.0    moved to Settings class
 	 * @since 5.1.6
-	 * @since TBD Use tec_tickets_commerce_is_sandbox_mode() instead.
+	 * @since 5.24.0 Use tec_tickets_commerce_is_sandbox_mode() instead.
 	 *
 	 * @return bool Whether Tickets Commerce is in test mode.
 	 */
@@ -643,11 +643,6 @@ class Settings {
 			return true;
 		}
 
-		// Now check if the license key format is valid.
-		if ( ! $pue->get_pue()->is_valid_key_format() ) {
-			return false;
-		}
-
 		$cache_key = __METHOD__;
 		$cached    = get_transient( $cache_key );
 
@@ -688,7 +683,7 @@ class Settings {
 	/**
 	 * Wrapper for get_option that allows for environmental options.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option     The option name.
 	 * @param array  $args       Additional arguments.
@@ -703,7 +698,7 @@ class Settings {
 	/**
 	 * Wrapper for update_option that allows for environmental options.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option   The option name.
 	 * @param mixed  $value    The value to set.
@@ -719,7 +714,7 @@ class Settings {
 	/**
 	 * Wrapper for delete_option that allows for environmental options.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option The option name.
 	 * @param array  $args   Additional arguments.
@@ -739,7 +734,7 @@ class Settings {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option     The option name.
 	 * @param array  $args       Additional arguments.
@@ -760,7 +755,7 @@ class Settings {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option The option name.
 	 * @param mixed  $value  The value to set.
@@ -781,7 +776,7 @@ class Settings {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option The option name.
 	 * @param array  $args   Additional arguments.
@@ -801,7 +796,7 @@ class Settings {
 	 * BUT an event's or a ticket's data should be environmental since those can be used BOTH in sandbox and live environments.
 	 * A customer's data should be environmental, since the same customer instance can buy in both environments!
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $option The option name.
 	 * @param array  $args   Additional arguments.

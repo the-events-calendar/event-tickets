@@ -54,6 +54,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 *
 	 * @since 5.23.0
 	 *
+	 * @deprecated 5.24.0
+	 *
 	 * @var string
 	 */
 	const VISITED_GUIDED_SETUP_OPTION = 'tec_tickets_onboarding_wizard_visited_guided_setup';
@@ -154,7 +156,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			->add_to_group_path( 'tec-tickets-onboarding' )
 			->add_to_group( 'tec-tickets-onboarding' )
 			->enqueue_on( 'admin_enqueue_scripts' )
-			->set_condition( [ __CLASS__, 'is_on_page' ] )
+			->set_condition( fn() => $this->should_show_wizard() )
 			->use_asset_file( true )
 			->in_footer()
 			->register();
@@ -166,7 +168,7 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			->add_to_group_path( 'tec-tickets-onboarding' )
 			->add_to_group( 'tec-tickets-onboarding' )
 			->enqueue_on( 'admin_enqueue_scripts' )
-			->set_condition( [ __CLASS__, 'is_on_page' ] )
+			->set_condition( fn() => $this->should_show_wizard() )
 			->use_asset_file( false )
 			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
 			->register();
@@ -217,10 +219,11 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * Check if the TEC wizard is completed.
 	 *
 	 * @since 5.23.0
+	 * @since 5.24.0 Made the visibility public.
 	 *
 	 * @return bool
 	 */
-	protected function is_tec_wizard_completed(): bool {
+	public function is_tec_wizard_completed(): bool {
 		if ( ! did_action( 'tribe_common_loaded' ) ) {
 			return false;
 		}
@@ -236,10 +239,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			return true;
 		}
 
-		if ( tribe_get_option( self::VISITED_GUIDED_SETUP_OPTION ) ) {
-			return true;
-		}
-
 		return false;
 	}
 
@@ -251,7 +250,18 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 * @return bool
 	 */
 	protected function force_wizard_display(): bool {
-		return apply_filters( 'tec_tickets_onboarding_wizard_force_display', false );
+		/**
+		 * Filter to force the wizard to display.
+		 *
+		 * @since 5.23.0
+		 * @since 5.24.0 Passing the page object as the second argument.
+		 *
+		 * @param bool $force Whether to force the wizard to display.
+		 * @param self $page  The page object.
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tec_tickets_onboarding_wizard_force_display', false, $this );
 	}
 
 	/**
@@ -276,7 +286,6 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		if ( $force ) {
 			return true;
 		}
-
 
 		$et_versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
@@ -374,8 +383,8 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		 *
 		 * @since 5.23.0
 		 *
-		 * @param array      $initial_data The initial data.
-		 * @param Controller $controller   The controller object.
+		 * @param array $initial_data The initial data.
+		 * @param self  $page         The page object.
 		 *
 		 * @return array
 		 */
@@ -445,9 +454,9 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 
 		$this->tec_onboarding_wizard_target();
 
-		// Stop redirecting if the user has visited the Guided Setup page.
-		tribe_update_option( self::VISITED_GUIDED_SETUP_OPTION, true );
+		// Remove the transients.
 		delete_transient( self::ACTIVATION_REDIRECT_OPTION );
+		delete_transient( self::BULK_ACTIVATION_REDIRECT_OPTION );
 	}
 
 	/**

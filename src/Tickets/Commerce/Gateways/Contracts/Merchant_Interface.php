@@ -41,11 +41,11 @@ interface Merchant_Interface {
 	/**
 	 * Gets the client secret for merchant.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_client_secret(): string;
+	public function get_client_secret(): ?string;
 
 	/**
 	 * Save merchant data.
@@ -76,5 +76,4 @@ interface Merchant_Interface {
 	 * @return boolean
 	 */
 	public function from_array( array $data, $needs_save = true );
-
 }

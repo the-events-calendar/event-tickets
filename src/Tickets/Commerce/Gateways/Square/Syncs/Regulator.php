@@ -2,7 +2,7 @@
 /**
  * Regulator for Square syncs.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 /**
  * Regulator for Square syncs.
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Syncs
  */
@@ -27,7 +27,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * The action that initializes the sync of events and tickets with Square.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -36,16 +36,16 @@ class Regulator extends Controller_Contract {
 	/**
 	 * The maximum delay for the sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var int
 	 */
-	protected const MAX_DELAY = 2 * HOUR_IN_SECONDS;
+	public const MAX_DELAY = 2 * HOUR_IN_SECONDS;
 
 	/**
 	 * The random delay ranges for the sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -66,7 +66,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * The rate limited data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -75,7 +75,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * The random delays.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -84,7 +84,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * The inventory sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Inventory_Sync
 	 */
@@ -93,7 +93,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * The items sync.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var Items_Sync
 	 */
@@ -102,7 +102,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Container      $container The container.
 	 * @param Inventory_Sync $inventory_sync The inventory sync.
@@ -117,7 +117,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Registers the actions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -142,7 +142,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Un-registers the actions.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -165,9 +165,20 @@ class Regulator extends Controller_Contract {
 	}
 
 	/**
+	 * Resets the random delays.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return void
+	 */
+	public static function reset_random_delays(): void {
+		self::$random_delays = [];
+	}
+
+	/**
 	 * Resets the rate limited storage.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -178,7 +189,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Schedules the action.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $hook The hook.
 	 * @param array  $args The arguments.
@@ -200,9 +211,23 @@ class Regulator extends Controller_Contract {
 	}
 
 	/**
+	 * Un-schedules an action.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param string $hook The hook.
+	 * @param array  $args The arguments.
+	 *
+	 * @return void
+	 */
+	public function unschedule( string $hook, array $args = [] ): void {
+		as_unschedule_action( $hook, $args, Sync_Controller::AS_SYNC_ACTION_GROUP );
+	}
+
+	/**
 	 * Sync the tickets.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -225,7 +250,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Pulls the order.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $square_order_id The Square order ID.
 	 *
@@ -242,7 +267,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Checks the data integrity.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -258,7 +283,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Deletes the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -274,7 +299,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Checks the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -290,7 +315,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the items.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -306,7 +331,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the inventory.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -322,7 +347,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Resets the post type data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -340,7 +365,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the delete event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $object_id        The object ID.
 	 * @param string $remote_object_id The remote object ID.
@@ -359,7 +384,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the post type.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -377,7 +402,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int  $event_id The event ID.
 	 * @param bool $execute The execute.
@@ -396,7 +421,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the post type.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -414,7 +439,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the event.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int   $event_id The event ID.
 	 * @param bool  $execute  The execute.
@@ -434,7 +459,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Syncs the ticket.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int    $ticket_id The ticket ID.
 	 * @param int    $quantity  The quantity of tickets.
@@ -454,7 +479,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Fires the square request completed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */
@@ -462,7 +487,7 @@ class Regulator extends Controller_Contract {
 		/**
 		 * Fires when a Square request is completed.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 */
 		do_action( 'tec_tickets_commerce_square_sync_request_completed' );
 	}
@@ -470,7 +495,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Gets the rate limited minimum delay.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $minimum_delay The minimum delay.
 	 *
@@ -488,7 +513,13 @@ class Regulator extends Controller_Contract {
 
 		if ( count( $this->rate_limited_data ) > 1 ) {
 			$size = count( $this->rate_limited_data );
-			return ( $this->rate_limited_data[ $size - 1 ] - $this->rate_limited_data[ $size - 2 ] ) + $minimum_delay;
+			return min(
+				max(
+					3 * $size * abs( $this->rate_limited_data[ $size - 1 ] - $this->rate_limited_data[ $size - 2 ] ) / 2,
+					MINUTE_IN_SECONDS / 2
+				) + $minimum_delay,
+				self::MAX_DELAY
+			);
 		}
 
 		return ( MINUTE_IN_SECONDS / 2 ) + $minimum_delay;
@@ -497,7 +528,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Gets the random delay.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $minimum_delay The minimum delay.
 	 *
@@ -509,19 +540,20 @@ class Regulator extends Controller_Contract {
 			return $minimum_delay;
 		}
 
-		if ( $minimum_delay > self::MAX_DELAY ) {
+		if ( $minimum_delay >= self::MAX_DELAY ) {
 			return $minimum_delay;
 		}
 
 		$desired_offset = 10;
 		foreach ( self::RANDOM_DELAY_RANGES as $offset => $delay ) {
-			if ( $minimum_delay >= $delay[0] ) {
-				$desired_offset = $offset;
-				break;
+			if ( $minimum_delay >= $delay[1] ) {
+				continue;
 			}
+			$desired_offset = $offset;
+			break;
 		}
 
-		$delay = max( wp_rand( self::RANDOM_DELAY_RANGES[ $desired_offset ][0], self::RANDOM_DELAY_RANGES[ $desired_offset ][1] ), self::MAX_DELAY );
+		$delay = $minimum_delay + min( wp_rand( self::RANDOM_DELAY_RANGES[ $desired_offset ][0], self::RANDOM_DELAY_RANGES[ $desired_offset ][1] ), self::MAX_DELAY );
 
 		$last_item = end( self::$random_delays );
 		if ( $last_item && $last_item >= $delay ) {
@@ -537,7 +569,7 @@ class Regulator extends Controller_Contract {
 	/**
 	 * Sets the rate limited data.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return void
 	 */

@@ -2,7 +2,7 @@
 /**
  * Ticket Data methods.
  *
- * @since TBD
+ * @since 5.24.0
  * @package TEC\Tickets
  */
 
@@ -17,14 +17,14 @@ use Generator;
 /**
  * Class Ticket_Data.
  *
- * @since TBD
+ * @since 5.24.0
  * @package TEC\Tickets
  */
 class Ticket_Data {
 	/**
 	 * The excluded ticket types.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var array
 	 */
@@ -33,7 +33,7 @@ class Ticket_Data {
 	/**
 	 * Set the excluded ticket types.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $excluded_ticket_types The excluded ticket types.
 	 */
@@ -44,7 +44,7 @@ class Ticket_Data {
 	/**
 	 * Get the ticket types.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array The ticket types.
 	 */
@@ -61,7 +61,7 @@ class Ticket_Data {
 	/**
 	 * Load the ticket object.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -74,7 +74,7 @@ class Ticket_Data {
 	/**
 	 * Get the tickets for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -112,7 +112,7 @@ class Ticket_Data {
 	/**
 	 * Get the RSVP for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -137,7 +137,7 @@ class Ticket_Data {
 	/**
 	 * Get the ticket data for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -170,7 +170,7 @@ class Ticket_Data {
 	/**
 	 * Get the RSVP data for a post.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -211,7 +211,7 @@ class Ticket_Data {
 	/**
 	 * Count the ticket stats.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Ticket_Object $ticket                         The ticket object.
 	 * @param array         $availability                   The availability array.
@@ -258,7 +258,7 @@ class Ticket_Data {
 	/**
 	 * Get the ticket about to go to sale seconds.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -268,7 +268,7 @@ class Ticket_Data {
 		/**
 		 * Filter the seconds before a ticket goes on sale that we consider it about to go on sale.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param int $seconds The seconds before a ticket goes on sale that we consider it about to go on sale.
 		 * @return int The seconds before a ticket goes on sale that we consider it about to go on sale.

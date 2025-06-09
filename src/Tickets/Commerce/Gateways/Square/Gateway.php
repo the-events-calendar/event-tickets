@@ -1,4 +1,11 @@
 <?php
+/**
+ * Square Gateway
+ *
+ * @since 5.24.0
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Square
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
@@ -13,7 +20,7 @@ use Tribe__Template as Template;
 /**
  * Square Gateway
  *
- * @since TBD
+ * @since 5.24.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -23,7 +30,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * The Gateway key.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -32,7 +39,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * The Gateway settings class
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +48,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * The Gateway merchant class
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +57,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Class used to manage the Orders for this Gateway
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -59,7 +66,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Supported currencies.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string[]
 	 */
@@ -75,7 +82,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Square tracking ID version.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -84,7 +91,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Application ID for live mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -93,7 +100,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Application ID for sandbox mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @var string
 	 */
@@ -102,7 +109,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the label for the Square Gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -113,7 +120,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the admin notices for the Square Gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return array
 	 */
@@ -156,7 +163,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get URL for the display logo.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -167,7 +174,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get text to use a subtitle when listing the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -181,7 +188,7 @@ class Gateway extends Abstract_Gateway {
 	 * The Tracking ID is a site-specific identifier that links the client and platform accounts in the Payment Gateway
 	 * without exposing sensitive data. By default, the identifier generated is a URL in the format:
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -192,7 +199,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Renders the template for the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param Template $template Template used to render the checkout.
 	 *
@@ -209,7 +216,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Filter to add any admin notices that might be needed.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @param array $notices Array of admin notices.
 	 *
@@ -235,7 +242,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * HTML for notice for unsupported currencies
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string
 	 */
@@ -273,7 +280,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the Square.js URL based on test mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The Square.js URL.
 	 */
@@ -286,7 +293,7 @@ class Gateway extends Abstract_Gateway {
 		/**
 		 * Filters the Square.js URL.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $square_js_url The Square.js URL.
 		 * @param bool   $is_test_mode  Whether test mode is active.
@@ -297,7 +304,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the Application ID for Square, with support for constant override and mode awareness.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The Square Application ID.
 	 */
@@ -323,7 +330,7 @@ class Gateway extends Abstract_Gateway {
 		/**
 		 * Filter the Square Application ID.
 		 *
-		 * @since TBD
+		 * @since 5.24.0
 		 *
 		 * @param string $application_id The Application ID.
 		 * @param string $mode           The current mode ('SANDBOX' or 'LIVE').
@@ -338,7 +345,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Determines if test mode is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return bool
 	 */
@@ -349,7 +356,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the location ID to use for transactions based on the current mode.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
 	 * @return string The location ID or empty string if not set.
 	 */
