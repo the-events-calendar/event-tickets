@@ -117,7 +117,7 @@ class Ticket extends PureComponent {
 
 		return showTicket ?
 			<Fragment>
-				{ticketForm}
+				{ticketForm()}
 			</Fragment>
 			: null;
 	}
