@@ -113,7 +113,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * @param       $post_id
+	 * @param      $post_id
 	 * @param array $record
 	 */
 	public function update_post( $post_id, array $record ) {
@@ -278,7 +278,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * @param $row
+	 * @param string|int $row The row number.
 	 *
 	 * @return string
 	 */

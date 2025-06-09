@@ -6,6 +6,7 @@
  */
 
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
+use Tribe__Context;
 
 
 // Don't load directly
@@ -59,7 +60,7 @@ if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 	 * Determines if any tickets exist for the current event (a specific event
 	 * may be specified, though, by passing the post ID or post object).
 	 *
-	 * @param $event
+	 * @param int|WP_Post $event The event.
 	 *
 	 * @return bool
 	 */
@@ -82,7 +83,7 @@ if ( ! function_exists( 'tribe_events_has_soldout' ) ) {
 	 * whatsoever, and so it may be best to test with tribe_events_has_tickets()
 	 * before using this to avoid ambiguity.
 	 *
-	 * @param null $event
+	 * @param int|WP_Post $event The event.
 	 *
 	 * @return bool
 	 */
@@ -104,7 +105,7 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 	 * This is useful to indicate if for example 2 out of three ticket types
 	 * have soldout but one still has stock remaining.
 	 *
-	 * @param null $event
+	 * @param int|WP_Post $event The event.
 	 *
 	 * @return bool
 	 */
@@ -139,7 +140,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	/**
 	 * Counts the total number of tickets still available for sale for a specific event.
 	 *
-	 * @param null $event
+	 * @param int|WP_Post $event The event.
 	 *
 	 * @return int `0` if no tickets available, `-1` if Unlimited, else integer value.
 	 */
@@ -326,7 +327,7 @@ if ( ! function_exists( 'tribe_tickets_has_unlimited_stock_tickets' ) ) {
 	 * Returns true if the event contains one or more tickets which are not
 	 * subject to any inventory limitations.
 	 *
-	 * @param null $event
+	 * @param int|WP_Post $event The event.
 	 *
 	 * @return bool
 	 */
@@ -356,7 +357,7 @@ if ( ! function_exists( 'tribe_events_product_is_ticket' ) ) {
 	 * Determines if the product object (or product ID) represents a ticket for
 	 * an event.
 	 *
-	 * @param $product
+	 * @param int|WP_Post $product The product.
 	 *
 	 * @return bool
 	 */
@@ -374,7 +375,7 @@ if ( ! function_exists( 'tribe_events_get_ticket_event' ) ) {
 	 *
 	 * If this cannot be determined boolean false will be returned instead.
 	 *
-	 * @param $possible_ticket
+	 * @param int|WP_Post $possible_ticket The possible ticket.
 	 *
 	 * @return bool|WP_Post
 	 */
@@ -388,7 +389,7 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 	/**
 	 * Checks if the ticket is on sale (in relation to it's start/end sale dates).
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 * @param Tribe__Tickets__Ticket_Object $ticket The ticket.
 	 *
 	 * @return bool
 	 */
@@ -457,7 +458,7 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 	/**
 	 * Checks if the event has any tickets on sale
 	 *
-	 * @param int $event_id
+	 * @param int|WP_Post $event_id The event.
 	 *
 	 * @return bool
 	 */
@@ -490,7 +491,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @since 4.11.5 Correct the sprintf placeholders that were forcing the readable amount to an integer.
 	 * @since 5.6.5    Added `$sold_label_override` parameter.
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
+	 * @param Tribe__Tickets__Ticket_Object $ticket The ticket to analyze.
 	 *
 	 * @return string
 	 */
@@ -507,27 +508,18 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		 *
 		 * @since 4.7
 		 *
-		 * @param int                           $available
-		 * @param Tribe__Tickets__Ticket_Object $ticket
-		 * @param int                           $sold
-		 * @param int                           $stock
+		 * @param int                           $available The available quantity.
+		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket.
+		 * @param int                           $sold      The sold quantity.
+		 * @param int                           $stock     The stock quantity.
 		 */
 		$available = apply_filters( 'tribe_tickets_stock_message_available_quantity', $available, $ticket, $sold, $stock );
 
-		$cancelled     = (int) $ticket->qty_cancelled();
-		$pending       = (int) $ticket->qty_pending();
-		$refunded      = (int) $ticket->qty_refunded();
 		$status        = '';
 		$status_counts = [];
+		$is_global     = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
+		$sold_label    = __( 'issued', 'event-tickets' );
 
-		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
-		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
-		$stock_cap = $ticket->global_stock_cap();
-
-		$event_cap  = tribe_tickets_get_capacity( $event->ID );
-		$ticket_cap = tribe_tickets_get_capacity( $ticket->ID );
-
-		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
@@ -588,9 +580,9 @@ if ( ! function_exists( 'tribe_tickets_resource_url' ) ) {
 	/**
 	 * Returns or echoes a url to a file in the Event Tickets plugin resources directory
 	 *
-	 * @param string $resource the filename of the resource
-	 * @param bool   $echo     whether or not to echo the url
-	 * @param string $root_dir directory to hunt for resource files (src or common)
+	 * @param string $resource The filename of the resource.
+	 * @param bool   $echo     Whether or not to echo the url.
+	 * @param string $root_dir Directory to hunt for resource files (src or common).
 	 *
 	 * @return string
 	 * @category Tickets
@@ -833,7 +825,7 @@ if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
 	 * Get attendee(s) by an id
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
-	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 * @param Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
 	 * @return array List of all attendee(s) data including custom attendee meta for a given ID.
 	 */
@@ -848,7 +840,7 @@ if ( ! function_exists( 'tribe_tickets_has_meta_data' ) ) {
 	 * Return true or false if a given id has meta data
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
-	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 * @param Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
 	 * @return bool
 	 */
@@ -863,7 +855,7 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 	 * Return true or false if a given id has meta fields
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
-	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 * @param Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
 	 * @return bool
 	 */
@@ -930,8 +922,8 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object  Post We are trying to save capacity
-	 * @param int                                       $capacty What we are trying to update the capacity to.
+	 * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object   Post We are trying to save capacity
+	 * @param int                                       $capacity What we are trying to update the capacity to.
 	 *
 	 * @return int|false
 	 */

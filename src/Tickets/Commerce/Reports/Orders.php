@@ -204,7 +204,7 @@ class Orders extends Report_Abstract {
 	 * @since 5.2.0
 	 *
 	 * @param array $actions
-	 * @param       $post
+	 * @param      $post
 	 *
 	 * @return array
 	 */
@@ -291,7 +291,7 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param $slugs
+	 * @param array $slugs The slugs.
 	 *
 	 * @return array
 	 */

@@ -39,7 +39,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  string $post_type Which post type we are trying to configure
+	 * @param string $post_type Which post type we are trying to configure
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
+	 * @param int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
 	 *
 	 * @return string|bool
 	 */
@@ -880,8 +880,8 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @see    tribe( 'tickets.attendees' )->user_can
 	 *
-	 * @param  string $generic_cap
-	 * @param  int    $attendee_id
+	 * @param string $generic_cap
+	 * @param int    $attendee_id
 	 *
 	 * @return boolean
 	 */
@@ -906,7 +906,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  string  $module  class name of module
+	 * @param string  $module  class name of module
 	 *
 	 * @return bool
 	 */
@@ -919,7 +919,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  string $msg Text for the notice
+	 * @param string $msg Text for the notice
 	 *
 	 * @return string Notice with markup
 	 */
@@ -983,7 +983,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $post_type
+	 * @param string $post_type The post type.
 	 */
 	public static function maybe_add_meta_box( $post_type ) {
 		tribe( 'tickets.metabox' )->configure( $post_type );
@@ -995,7 +995,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $post_id
+	 * @param int $post_id The Post ID of the event.
 	 */
 	public static function do_modules_metaboxes( $post_id ) {
 		tribe( 'tickets.metabox' )->render( $post_id );
@@ -1006,7 +1006,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated 4.6
 	 *
-	 * @param $unused_hook
+	 * @param string $unused_hook The hook of the current screen.
 	 */
 	public static function add_admin_scripts( $unused_hook ) {
 		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );

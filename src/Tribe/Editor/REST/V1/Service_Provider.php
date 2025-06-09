@@ -118,8 +118,9 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends \TEC\Common\Con
 	 *
 	 * @since 4.9
 	 *
-	 * @param $data
-	 * @param $request
+	 * @param array $data   The data.
+	 * @param array $request The request.
+	 *
 	 * @return mixed
 	 */
 	public function filter_single_ticket_data( $data, $request ) {

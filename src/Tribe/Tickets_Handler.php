@@ -249,10 +249,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int    $meta_id         MID
-	 * @param  int    $object_id       Which Post we are dealing with
-	 * @param  string $meta_key        Which meta key we are fetching
-	 * @param  int    $event_capacity  To which value the event Capacity was update to
+	 * @param int    $meta_id         MID
+	 * @param int    $object_id       Which Post we are dealing with
+	 * @param string $meta_key        Which meta key we are fetching
+	 * @param int    $event_capacity  To which value the event Capacity was update to
 	 *
 	 * @return int
 	 */
@@ -285,8 +285,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post $ticket  Which ticket/post we are dealing with here
-	 * @param  string|null $for     If we are looking for one specific key or any
+	 * @param int|WP_Post $ticket  Which ticket/post we are dealing with here
+	 * @param string|null $for     If we are looking for one specific key or any
 	 *
 	 * @return boolean
 	 */
@@ -313,7 +313,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param   boolean $toggle  Should activate or not?
+	 * @param  boolean $toggle  Should activate or not?
 	 *
 	 * @return  void
 	 */
@@ -331,10 +331,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int    $meta_id    MID
-	 * @param  int    $object_id  Which Post we are dealing with
-	 * @param  string $meta_key   Which meta key we are fetching
-	 * @param  string $date       Value save on the DB
+	 * @param int    $meta_id    MID
+	 * @param int    $object_id  Which Post we are dealing with
+	 * @param string $meta_key   Which meta key we are fetching
+	 * @param string $date       Value save on the DB
 	 *
 	 * @return boolean
 	 */
@@ -376,9 +376,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int     $post_id  Which post we are updating here
-	 * @param  WP_Post $post     Object of the current post updating
-	 * @param  boolean $update   If we are updating or creating a post
+	 * @param int     $post_id  Which post we are updating here
+	 * @param WP_Post $post     Object of the current post updating
+	 * @param boolean $update   If we are updating or creating a post
 	 *
 	 * @return boolean
 	 */
@@ -592,7 +592,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @since TBD Ensure that if we are querying for more than one ticket provider, the meta query relation is set to OR.
 	 * @since TBD Correct the docblock to reflect the method's behavior.
 	 *
-	 * @param  int $post Which post we are getting the tickets from.
+	 * @param int $post Which post we are getting the tickets from.
 	 * @return array
 	 */
 	public function get_tickets_ids( $post = null ) {
@@ -636,10 +636,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int    $meta_id         MID
-	 * @param  int    $object_id       Which Post we are dealing with
-	 * @param  string $meta_key        Which meta key we are fetching
-	 * @param  int    $event_capacity  To which value the event Capacity was update to
+	 * @param int    $meta_id         MID
+	 * @param int    $object_id       Which Post we are dealing with
+	 * @param string $meta_key        Which meta key we are fetching
+	 * @param int    $event_capacity  To which value the event Capacity was update to
 	 *
 	 * @return boolean
 	 */
@@ -757,9 +757,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 5.20.0
 	 *
-	 * @param $post_id  int                     Target post/Event ID.
-	 * @param $ticket   Tribe__Tickets__Tickets Ticket Object.
-	 * @param $raw_data array                   Raw data from Ticket update.
+	 * @param int                     $post_id  Target post/Event ID.
+	 * @param Tribe__Tickets__Tickets $ticket   Ticket Object.
+	 * @param array                   $raw_data Raw data from Ticket update.
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -776,9 +776,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  mixed  $value      Previous value set
-	 * @param  int    $object_id  Which Post we are dealing with
-	 * @param  string $meta_key   Which meta key we are fetching
+	 * @param mixed  $value      Previous value set
+	 * @param int    $object_id  Which Post we are dealing with
+	 * @param string $meta_key   Which meta key we are fetching
 	 *
 	 * @return int
 	 */
@@ -830,7 +830,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post $object  Which Post ID
+	 * @param int|WP_Post $object  Which Post ID
 	 *
 	 * @return bool|int
 	 */
@@ -935,7 +935,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  int|WP_Post $ticket  Which ticket
+	 * @param int|WP_Post $ticket  Which ticket
 	 *
 	 * @return array
 	 */
@@ -980,7 +980,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  int|WP_Post $post Which ticket
+	 * @param int|WP_Post $post Which ticket
 	 *
 	 * @return array
 	 */
@@ -1039,7 +1039,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param   int|WP_Post|object $ticket
+	 * @param  int|WP_Post|object $ticket
 	 *
 	 * @return  bool
 	 */
@@ -1068,7 +1068,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param   int|WP_Post|object $ticket
+	 * @param  int|WP_Post|object $ticket
 	 *
 	 * @return  bool
 	 */
@@ -1081,7 +1081,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param   int|WP_Post|object $ticket
+	 * @param  int|WP_Post|object $ticket
 	 *
 	 * @return  bool
 	 */
@@ -1559,7 +1559,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  int $post  Post that will be saved
+	 * @param int $post  Post that will be saved
 	 *
 	 * @return string
 	 */
@@ -1588,7 +1588,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since 4.6.2
 		 *
-		 * @param  WP_Post $post Which post we are saving
+		 * @param WP_Post $post Which post we are saving
 		 */
 		do_action( 'tribe_tickets_save_post', $post );
 	}
@@ -1598,8 +1598,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param  int   $post  Post that will be saved
-	 * @param  array $data  Params that will be used to save
+	 * @param int   $post  Post that will be saved
+	 * @param array $data  Params that will be used to save
 	 *
 	 * @return string
 	 */
@@ -1725,8 +1725,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param  object $a  First  Compare item
-	 * @param  object $b  Second Compare item
+	 * @param object $a  First  Compare item
+	 * @param object $b  Second Compare item
 	 *
 	 * @return array
 	 */
@@ -1961,7 +1961,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param  WP_Post $post
+	 * @param WP_Post $post
 	 *
 	 * @return string
 	 */
@@ -1975,7 +1975,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $event_id
+	 * @param int $event_id The event ID.
 	 *
 	 * @return mixed
 	 */
@@ -1991,7 +1991,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param Ticket_Object $ticket
+	 * @param Ticket_Object $ticket The ticket object.
 	 */
 	public function render_ticket_row( $ticket ) {
 		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ) )" );
@@ -2003,7 +2003,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param  int    $ticket_id
+	 * @param int           $post_id The post ID.
+	 * @param Ticket_Object $ticket  The ticket object.
 	 *
 	 * @return string
 	 */
@@ -2017,7 +2018,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param  int    $post_id
+	 * @param int    $post_id
 	 *
 	 * @return string
 	 */
@@ -2109,7 +2110,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $actions
+	 * @param array $actions The actions.
 	 *
 	 * @return array
 	 */
@@ -2131,7 +2132,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $hook
+	 * @param string $hook The hook of the current screen.
 	 */
 	public function attendees_page_load_css_js( $hook ) {
 		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::enqueue_assets' );
@@ -2143,7 +2144,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $hook
+	 * @param string $hook The hook of the current screen.
 	 */
 	public function attendees_page_load_pointers( $hook ) {
 		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::load_pointers' );
@@ -2175,8 +2176,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $admin_title
-	 * @param $unused_title
+	 * @param string $admin_title The admin title.
+	 * @param string $unused_title The unused title.
 	 *
 	 * @return string
 	 */
@@ -2201,7 +2202,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $event_id
+	 * @param int $event_id The event ID.
 	 *
 	 * @return array
 	 */
@@ -2258,7 +2259,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $content_type
+	 * @param string $content_type The content type.
 	 *
 	 * @return string
 	 */
@@ -2277,8 +2278,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @internal for internal plugin use only (in spite of having public visibility)
 	 *
-	 * @param  string $generic_cap
-	 * @param  int    $event_id
+	 * @param string $generic_cap The generic capability.
+	 * @param int    $event_id    The event ID.
 	 * @return boolean
 	 */
 	public function user_can( $generic_cap, $event_id ) {

@@ -387,7 +387,7 @@
 							 *
 							 * @since 4.7.4
 							 *
-							 * @param  array $ticket Current ticket information
+							 * @param array $ticket Current ticket information
 							 */
 							do_action( 'tribe_tickets_ticket_email_ticket_top', $ticket );
 							?>

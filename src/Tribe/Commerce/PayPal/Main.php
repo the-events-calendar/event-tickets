@@ -659,7 +659,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $event_id
+	 * @param int $event_id The event ID.
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
 		$transaction_ids = array();
@@ -1437,8 +1437,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Deletes a ticket
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|null $event_id The event ID.
+	 * @param int      $ticket_id The ticket ID.
 	 *
 	 * @return bool
 	 */
@@ -1490,11 +1490,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $content
+	 * @param string $unused_content The content.
 	 *
 	 * @return void
 	 */
-	public function front_end_tickets_form( $content ) {
+	public function front_end_tickets_form( $unused_content ) {
 
 		$post = $GLOBALS['post'];
 		$tickets = $this->get_tickets( $post->ID );
@@ -1531,8 +1531,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|WP_Post|null $event_id The event ID.
+	 * @param int              $ticket_id The ticket ID.
 	 *
 	 * @return null|Tribe__Tickets__Ticket_Object
 	 */
@@ -1622,7 +1622,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param      $post_id
+	 * @param     $post_id
 	 * @param null $post_type
 	 *
 	 * @return array|mixed
@@ -1795,8 +1795,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int $event_id The event ID.
+	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return string
 	 */
@@ -1821,7 +1821,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param     $post_id   int id of the event post
+	 * @param    $post_id   int id of the event post
 	 * @param int $ticket_id (null) id of the ticket
 	 *
 	 * @return void
@@ -1900,7 +1900,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
+	 * @param       $message
 	 * @param string $type
 	 */
 	public function add_message( $message, $type = 'update' ) {
@@ -2186,7 +2186,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $transaction
+	 * @param string $transaction The transaction.
 	 *
 	 * @return string
 	 */

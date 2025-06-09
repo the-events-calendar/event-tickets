@@ -1621,7 +1621,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 * @param string|null $order order type value either 'ASC' or 'DESC'.
 	 *
 	 * @return string
 	 */

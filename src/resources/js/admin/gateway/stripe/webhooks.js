@@ -86,9 +86,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Initiate the process of validating a signing key
 	 *
 	 * @since 5.5.6
-	 * @param  $field the key element
-	 * @param  $icon  the icon element
-	 * @param  $label the label element
+	 * @param $field the key element
+	 * @param $icon  the icon element
+	 * @param $label the label element
 	 * @return {Promise<*>} result of the validation request
 	 */
 	obj.initiateValidation = async ( $field, $icon, $label ) => {
@@ -117,9 +117,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Check if current key has been verified
 	 *
 	 * @since 5.5.6
-	 * @param  $field the key element
-	 * @param  $icon  the icon element
-	 * @param  $label the label element
+	 * @param $field the key element
+	 * @param $icon  the icon element
+	 * @param $label the label element
 	 * @return {Promise<*>} result of the verification request
 	 */
 	obj.checkValidationSuccess = async ( $field, $icon, $label ) => {
@@ -148,7 +148,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * When the signing field changes.
 	 *
 	 * @since 5.3.0
-	 * @param  event {Event}
+	 * @param event {Event}
 	 * @return {Promise<*>}
 	 */
 	// eslint-disable-next-line

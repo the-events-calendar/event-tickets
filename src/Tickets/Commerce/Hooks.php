@@ -727,7 +727,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param $classes
+	 * @param array $classes The classes.
 	 *
 	 * @return array
 	 */

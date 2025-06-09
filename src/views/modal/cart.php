@@ -53,7 +53,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param  string $value     The value that will be filtered.
+	 * @param string $value     The value that will be filtered.
 	 */
 	$text    = apply_filters( 'tribe_tickets_loader_text', __( 'One Moment...', 'event-tickets' ) );
 	/**
@@ -61,7 +61,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param  array $classes The array of classes that will be filtered.
+	 * @param array $classes The array of classes that will be filtered.
 	 */
 	$loader_classes = apply_filters( 'tribe_tickets_modal_loader_classes', [ 'tribe-tickets-loader__modal' ] );
 	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );

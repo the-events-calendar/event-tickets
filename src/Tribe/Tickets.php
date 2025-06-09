@@ -657,7 +657,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * This stub method should be treated as if it were an abstract method - ie, the
 		 * concrete class ought to provide the implementation.
 		 *
-		 * @param $ticket_product
+		 * @param object $ticket_product The ticket product.
 		 *
 		 * @return bool|WP_Post
 		 */
@@ -1194,8 +1194,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Renders the front end form for selling tickets in the event single page
 		 *
-		 * @param $content
-		 * @return mixed
+		 * @param string $content The content.
+		 *
+		 * @return string|null
 		 */
 		public function front_end_tickets_form( $content ) {}
 
@@ -1317,7 +1318,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.7.4
 		 *
-		 * @param  int $attendee_id
+		 * @param int $attendee_id
 		 * @return void
 		 */
 		public function purge_attendees_transient( $attendee_id ) {
@@ -2937,8 +2938,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Formats the cost based on the provider of a ticket of an event.
 		 *
-		 * @param  float|string $cost
-		 * @param  int   		$post_id
+		 * @param float|string $cost
+		 * @param int   		$post_id
 		 *
 		 * @return string
 		 */
@@ -2957,8 +2958,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Queries ticketing providers to establish the range of tickets/pricepoints for the specified
 		 * event and ensures those costs are included in the $costs array.
 		 *
-		 * @param  array $prices
-		 * @param  int   $post_id
+		 * @param array $prices
+		 * @param int   $post_id
 		 * @return array
 		 */
 		public function get_ticket_prices( array $prices, $post_id ) {
@@ -3052,7 +3053,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Given a valid attendee ID, returns the event ID it relates to or else boolean false
 		 * if it cannot be determined.
 		 *
-		 * @param  int   $attendee_id
+		 * @param int   $attendee_id
 		 * @return mixed int|bool
 		 */
 		public function get_event_id_from_attendee_id( $attendee_id ) {
@@ -3078,7 +3079,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @see Use tribe_tickets_get_event_ids() to return an array of all event ids for an order
 		 *
-		 * @param  int   $order_id
+		 * @param int   $order_id
 		 * @return mixed int|bool
 		 */
 		public function get_event_id_from_order_id( $order_id ) {
@@ -3112,7 +3113,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * that do not define the expected class constants. Once a decent period has
 		 * elapsed we can kill this method and access the class constants directly.
 		 *
-		 * @param  ReflectionClass $provider_class representing the concrete ticket provider
+		 * @param ReflectionClass $provider_class representing the concrete ticket provider
 		 * @return string
 		 */
 		protected function get_attendee_order_key( $provider_class ) {
@@ -3143,7 +3144,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * that do not define the expected class constants. Once a decent period has
 		 * elapsed we can kill this method and access the class constants directly.
 		 *
-		 * @param  ReflectionClass $provider_class representing the concrete ticket provider
+		 * @param ReflectionClass $provider_class representing the concrete ticket provider
 		 * @return string
 		 */
 		protected function get_attendee_object( $provider_class ) {
@@ -3215,7 +3216,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * If the meta key cannot be determined the returned string will be empty.
 		 *
-		 * @param  ReflectionClass $provider_class representing the concrete ticket provider
+		 * @param ReflectionClass $provider_class representing the concrete ticket provider
 		 * @return string
 		 */
 		protected function get_attendee_event_key( $provider_class ) {
@@ -3381,7 +3382,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 *
 				 * @since 4.7.6
 				 *
-				 * @param  bool	$display_date
+				 * @param bool	$display_date
 				 */
 				$display_date = apply_filters( 'tribe_tickets_unvailable_message_date', $display_date = true );
 
@@ -3390,7 +3391,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 *
 				 * @since 4.7.6
 				 *
-				 * @param  bool	$display_time
+				 * @param bool	$display_time
 				 */
 				$display_time = apply_filters( 'tribe_tickets_unvailable_message_time', $display_time = false );
 
@@ -4720,8 +4721,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @see    tribe( 'tickets.attendees' )->user_can
 		 *
-		 * @param  string $generic_cap
-		 * @param  int    $attendee_id
+		 * @param string $generic_cap
+		 * @param int    $attendee_id
 		 *
 		 * @return boolean
 		 */

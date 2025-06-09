@@ -31,7 +31,7 @@ class Tickets_Form {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
+	 * @param       $message
 	 * @param string $type
 	 */
 	public function add_message( $message, $type = 'update' ) {

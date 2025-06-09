@@ -18,7 +18,7 @@ class Tribe__Tickets__Theme_Compatibility extends Compat {
 	 *
 	 * @deprecated  5.3.1
 	 *
-	 * @param  array $classes List of body classes.
+	 * @param array $classes List of body classes.
 	 *
 	 * @return array $classes List of body classes, modified if compatibility is required.
 	 */

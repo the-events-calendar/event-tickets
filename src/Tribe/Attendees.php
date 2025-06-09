@@ -118,7 +118,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $event_id
+	 * @param int|WP_Post $event_id The Post ID of the event.
 	 */
 	public function event_action_links( $event_id ) {
 
@@ -127,8 +127,8 @@ class Tribe__Tickets__Attendees {
 		 *
 		 * @since 4.6.2
 		 *
-		 * @param string $link     The default "edit post" URL.
-		 * @param int    $event_id The Post ID of the event.
+		 * @param string      $link     The default "edit post" URL.
+		 * @param int|WP_Post $event_id The Post ID of the event.
 		 */
 		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
@@ -146,8 +146,8 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Provides an opportunity to add and remove action links from the attendee screen summary box.
 		 *
-		 * @param array $action_links
-		 * @param int   $event_id
+		 * @param array       $action_links The action links to be displayed.
+		 * @param int|WP_Post $event_id     The Post ID of the event.
 		 */
 		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links, $event_id );
 
@@ -263,7 +263,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Adds the "attendees" link in the admin list row actions for each event.
 	 *
-	 * @param $actions
+	 * @param array $actions The actions to be displayed.
 	 *
 	 * @return array
 	 */
@@ -379,7 +379,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $hook
+	 * @param string $hook The hook of the current screen.
 	 *
 	 */
 	public function enqueue_assets( $hook ) {
@@ -402,7 +402,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $hook
+	 * @param string $hook The hook of the current screen.
 	 */
 	public function load_pointers( $hook ) {
 		if ( $hook != $this->page_id ) {
@@ -500,8 +500,8 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $admin_title
-	 * @param $unused_title
+	 * @param string $admin_title The admin title.
+	 * @param string $unused_title An unused title.
 	 *
 	 * @return string
 	 */
@@ -918,7 +918,7 @@ class Tribe__Tickets__Attendees {
 	 *                                 Accepts 'user' or 'email'.
 	 * @param ?string|?int $send_to    The recipient's ID or email.
 	 *                                 If $type is 'user', this should be the user ID.
-	 * @paramm ?WP_Error   $error    The error object.
+	 * @param ?WP_Error   $error       The error object.
 	 *                                 If null, a new WP_Error object will be created.
 	 *
 	 * @return string|WP_Error
@@ -989,11 +989,11 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $content_type
+	 * @param string $unused_content_type The content type.
 	 *
 	 * @return string
 	 */
-	public function set_contenttype( $content_type ) {
+	public function set_contenttype( $unused_content_type ) {
 		return 'text/html';
 	}
 

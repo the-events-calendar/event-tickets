@@ -150,7 +150,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $order_id
+	 * @param string $order_id The order ID.
 	 *
 	 * @return bool|Tribe__Tickets__Commerce__PayPal__Order The Order object if found or
 	 *                                                       `false` if the Order could not be
