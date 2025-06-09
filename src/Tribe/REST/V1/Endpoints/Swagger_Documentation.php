@@ -86,8 +86,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		 *
 		 * @since 4.7.5
 		 *
-		 * @param array                                                     $documentation An associative PHP array in the format supported by Swagger.
-		 * @param Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation $this          This documentation endpoint instance.
+		 * @param array                                                      $documentation An associative PHP array in the format supported by Swagger.
+		 * @param Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation $instance      This documentation endpoint instance.
 		 *
 		 * @link http://swagger.io/
 		 */

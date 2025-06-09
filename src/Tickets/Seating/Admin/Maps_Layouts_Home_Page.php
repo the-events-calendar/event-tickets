@@ -116,7 +116,7 @@ class Maps_Layouts_Home_Page {
 		 *
 		 * @since 5.16.0
 		 *
-		 * @param Maps_Layouts_Home_Page $this    The Maps and Layouts page object.
+		 * @param Maps_Layouts_Home_Page $page    The Maps and Layouts page object.
 		 * @param Tab                    $current The current tab.
 		 * @param Tab[]                  $tabs    The set of tabs to render.
 		 */

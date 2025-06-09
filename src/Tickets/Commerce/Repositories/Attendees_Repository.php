@@ -111,9 +111,9 @@ class Attendees_Repository extends Tribe__Repository {
 		 *
 		 * @since 5.1.9
 		 *
-		 * @param mixed|\WP_Post                $formatted The formatted event result, usually a post object.
-		 * @param int                           $id        The formatted post ID.
-		 * @param \Tribe__Repository__Interface $this      The current repository object.
+		 * @param mixed|\WP_Post                $formatted  The formatted event result, usually a post object.
+		 * @param int                           $id         The formatted post ID.
+		 * @param \Tribe__Repository__Interface $repository The current repository object.
 		 */
 		$formatted = apply_filters( 'tec_tickets_commerce_repository_attendee_format', $formatted, $id, $this );
 

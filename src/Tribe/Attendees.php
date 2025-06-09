@@ -386,7 +386,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Filter the Page Slugs the Attendees Page CSS and JS Loads
 		 *
-		 * @param array array( $this->page_id ) an array of admin slugs
+		 * @param array $slugs an array of admin slugs
 		 */
 		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', [ $this->page_id ] ) ) ) {
 			return;
@@ -524,7 +524,7 @@ class Tribe__Tickets__Attendees {
 		 * Fires immediately before the content of the attendees screen
 		 * is rendered.
 		 *
-		 * @param $this Tribe__Tickets__Tickets_Handler The current ticket handler instance.
+		 * @param Tribe__Tickets__Tickets_Handler $handler The current ticket handler instance.
 		 */
 		do_action( 'tribe_tickets_attendees_page_inside', $this );
 

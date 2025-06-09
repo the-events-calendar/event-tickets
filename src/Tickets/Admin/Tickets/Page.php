@@ -250,10 +250,10 @@ class Page extends Abstract_Admin_Page {
 
 		$classes[] = 'tec-admin-page--header';
 		$classes[] = 'tec-admin-page--simple';
-		
+
 		// remove 'tec-admin-page' from the classes array.
 		$flipped_classes = array_flip( $classes );
-		
+
 		if ( isset( $flipped_classes['tec-admin-page'] ) ) {
 			unset( $classes[ $flipped_classes['tec-admin-page'] ] );
 		}
@@ -394,7 +394,7 @@ class Page extends Abstract_Admin_Page {
 		 *
 		 * @since TBD
 		 *
-		 * @param Page $this The current page instance.
+		 * @param Page $page The current page instance.
 		 */
 		do_action( 'tec_tickets_admin_tickets_page_before_register_tabs', $this );
 
@@ -414,7 +414,7 @@ class Page extends Abstract_Admin_Page {
 		 *
 		 * @since TBD
 		 *
-		 * @param Page $this The current page instance.
+		 * @param Page $page The current page instance.
 		 */
 		do_action( 'tec_tickets_admin_tickets_page_after_register_tabs', $this );
 	}

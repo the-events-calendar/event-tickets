@@ -3827,7 +3827,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning an empty value here will prevent the ticket form from printing on the page.
 				 *
 				 * @param string                  $ticket_form_hook The set action tag to print front-end RSVP tickets form.
-				 * @param Tribe__Tickets__Tickets $this             The current instance of the class that's hooking its front-end ticket form.
+				 * @param Tribe__Tickets__Tickets $tickets_obj      The current instance of the class that's hooking its front-end ticket form.
 				 */
 				$ticket_form_hook = apply_filters( 'tribe_tickets_rsvp_tickets_form_hook', $ticket_form_hook, $this );
 			} else {
@@ -3842,7 +3842,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning an empty value here will prevent the ticket form from printing on the page.
 				 *
 				 * @param string                  $ticket_form_hook The set action tag to print front-end commerce tickets form.
-				 * @param Tribe__Tickets__Tickets $this             The current instance of the class that's hooking its front-end ticket form.
+				 * @param Tribe__Tickets__Tickets $tickets_obj      The current instance of the class that's hooking its front-end ticket form.
 				 */
 				$ticket_form_hook = apply_filters( 'tribe_tickets_commerce_tickets_form_hook', $ticket_form_hook, $this );
 			}
