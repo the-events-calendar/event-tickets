@@ -441,7 +441,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should add the Admin Assets into a Page
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @since 5.2.1 Always enqueue scripts for Ticket settings page.
 	 *
@@ -592,7 +592,7 @@ class Tribe__Tickets__Assets {
 	 * styles we need for our tickets blocks, AR, etc.
 	 * If V2 are active, we respect the style option.
 	 *
-	 * @since  4.11.4
+	 * @since 4.11.4
 	 *
 	 * @return bool
 	 */
