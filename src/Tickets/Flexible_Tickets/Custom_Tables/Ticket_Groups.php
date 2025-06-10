@@ -47,7 +47,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
+	 * @since 5.24.1 Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	protected function get_definition() {
 		global $wpdb;
@@ -70,7 +70,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @since TBD Handle hydrating new columns from `data` JSON for Ticket Presets use, if needed.
+	 * @since 5.24.1 Handle hydrating new columns from `data` JSON for Ticket Presets use, if needed.
 	 */
 	protected function after_update( array $results = [] ) {
 		$results = parent::after_update( $results );
@@ -86,7 +86,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * Migrates data from JSON to dedicated columns for schema version 1.1.0.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @param array $results The results array to update.
 	 *

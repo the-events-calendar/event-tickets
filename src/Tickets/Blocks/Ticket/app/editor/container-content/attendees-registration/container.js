@@ -40,7 +40,7 @@ const mapStateToProps = ( state, ownProps ) => {
 	/**
 	 * Filters the properties mapped from the state for the component.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @type {Object} mappedProps The properties mapped from the state for the component.
 	 * @type {Object} context.state The current state.

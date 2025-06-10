@@ -38,7 +38,7 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
+	 * @since 5.24.1 Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	public function insert( Model $model ): Ticket_Group {
 		DB::insert( Table::table_name(), [
@@ -72,7 +72,7 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
+	 * @since 5.24.1 Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
 	public function update( Model $model ): Model {
 		DB::update(

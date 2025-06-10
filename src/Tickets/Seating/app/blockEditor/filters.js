@@ -129,7 +129,7 @@ addFilter(
 /**
  * Checks if the assigned seating form should be rendered.
  *
- * @since TBD
+ * @since 5.24.1
  *
  * @param props {Object} The block props.
  * @return {boolean}

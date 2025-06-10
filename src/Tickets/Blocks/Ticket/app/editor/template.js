@@ -59,7 +59,7 @@ class Ticket extends PureComponent {
 		/**
 		 * Renders the default ticket form.
 		 *
-		 * @since TBD
+		 * @since 5.24.1
 		 *
 		 * @return {JSX.Element}
 		 */
@@ -105,7 +105,7 @@ class Ticket extends PureComponent {
 		/**
 		 * Renders the default ticket form.
 		 *
-		 * @since TBD
+		 * @since 5.24.1
 		 *
 		 * @return {JSX.Element} The default ticket form JSX element.
 		 */
