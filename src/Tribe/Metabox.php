@@ -165,7 +165,7 @@ class Tribe__Tickets__Metabox {
 	 * Get the Panels for a given post.
 	 *
 	 * @since 4.6.2
-	 * @since TBD Make the ticket type optional for PHP 8+ compatibility.
+	 * @since 5.24.1 Make the ticket type optional for PHP 8+ compatibility.
 	 *
 	 * @param int|WP_Post $post        The post object or ID the tickets are for.
 	 * @param int|null    $ticket_id   The ID of the ticket to render the panels for, or `null` if rendering for a new

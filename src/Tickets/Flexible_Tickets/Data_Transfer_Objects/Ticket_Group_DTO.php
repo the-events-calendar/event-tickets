@@ -50,7 +50,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group name.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @var string
 	 */
@@ -59,7 +59,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group capacity.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @var int
 	 */
@@ -68,7 +68,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group cost.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @var string
 	 */

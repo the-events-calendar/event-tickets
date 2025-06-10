@@ -34,7 +34,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 	 * Allows for the insertion of additional content into the ticket edit form below the form
 	 * section
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @param int Post ID
 	 * @param int Ticket ID

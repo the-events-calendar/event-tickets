@@ -396,7 +396,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.6
 		 * @since 5.5.2 Set default query args.
 		 * @since 5.8.0 Added the `$context` parameter.
-		 * @since TBD Correct the docblock to reflect the method's behavior.
+		 * @since 5.24.1 Correct the docblock to reflect the method's behavior.
 		 *
 		 * @param int         $post_id Build the args to query only
 		 *                             for tickets related to this post ID.

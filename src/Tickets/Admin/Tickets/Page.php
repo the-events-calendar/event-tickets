@@ -49,7 +49,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a header.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @var bool
 	 */
@@ -58,7 +58,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a footer.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @var bool
 	 */
@@ -67,7 +67,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Whether the page has a sidebar.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @var bool
 	 */
@@ -237,7 +237,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Add the admin page wrapper classes.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @param array $classes The classes to add to the admin page wrapper.
 	 *
@@ -264,7 +264,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Add the admin page header classes.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @param array $classes The classes to add to the admin page wrapper.
 	 *
@@ -311,7 +311,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Get the page title.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 */
 	public function get_the_page_title(): string {
 		return __( 'All Tickets', 'event-tickets' );
@@ -320,7 +320,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Get the menu title.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 */
 	public function get_the_menu_title(): string {
 		return __( 'All Tickets', 'event-tickets' );
@@ -329,7 +329,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Get the parent page slug.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 */
 	public function get_parent_page_slug(): string {
 		return static::$parent_slug;
@@ -338,7 +338,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Get the menu position.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @return float The menu position.
 	 */
@@ -349,7 +349,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Maybe register the tabs if we're on our page.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @return void
 	 */
@@ -365,7 +365,7 @@ class Page extends Abstract_Admin_Page {
 	 * Register a tab for the page.
 	 * This method is public to allow external plugins to register their own tabs.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @param string $slug  The tab's slug (used in URL and as key).
 	 * @param string $label The tab's label.
@@ -384,7 +384,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Register the tabs for the page.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @return void
 	 */
@@ -392,7 +392,7 @@ class Page extends Abstract_Admin_Page {
 		/**
 		 * Action that fires before registering the admin tabs.
 		 *
-		 * @since TBD
+		 * @since 5.24.1
 		 *
 		 * @param Page $page The current page instance.
 		 */
@@ -412,7 +412,7 @@ class Page extends Abstract_Admin_Page {
 		 * Action that fires after registering the admin tabs.
 		 * Use this hook to register additional tabs.
 		 *
-		 * @since TBD
+		 * @since 5.24.1
 		 *
 		 * @param Page $page The current page instance.
 		 */
@@ -422,7 +422,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Render the "Event Tickets" tab content.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 *
 	 * @return void
 	 */
@@ -445,7 +445,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Render the main content of the page.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 */
 	public function admin_page_main_content(): void {
 		if ( empty( $this->tabs ) ) {
@@ -460,7 +460,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Render the sidebar content.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 */
 	public function admin_page_sidebar_content(): void {
 		// No sidebar content for now.
@@ -469,7 +469,7 @@ class Page extends Abstract_Admin_Page {
 	/**
 	 * Render the footer content.
 	 *
-	 * @since TBD
+	 * @since 5.24.1
 	 */
 	public function admin_page_footer_content(): void {
 		// No footer content for now.

@@ -589,8 +589,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Gets the Tickets from a Post
 	 *
 	 * @since 4.6
-	 * @since TBD Ensure that if we are querying for more than one ticket provider, the meta query relation is set to OR.
-	 * @since TBD Correct the docblock to reflect the method's behavior.
+	 * @since 5.24.1 Ensure that if we are querying for more than one ticket provider, the meta query relation is set to OR.
+	 * @since 5.24.1 Correct the docblock to reflect the method's behavior.
 	 *
 	 * @param int $post Which post we are getting the tickets from.
 	 * @return array
