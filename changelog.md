@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.24.1] 2025-06-11
+
+* Fix - Change the create table syntax to be compatible with MySQL.
+* Fix - Fix incorrect ticket counts when using multiple providers on one ticketed post.
+* Language - 0 new strings added, 218 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.24.0.1] 2025-06-06
 
 * Fix - Fix some hardcoded asset paths. [TEC-5523]
