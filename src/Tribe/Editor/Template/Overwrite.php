@@ -106,7 +106,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 		/** @var Tribe__Editor $editor */
 		$editor = tribe( 'editor' );
 
-		return $editor->is_classic_editor();
+		return ! $editor->should_load_blocks();
 	}
 
 	/**
