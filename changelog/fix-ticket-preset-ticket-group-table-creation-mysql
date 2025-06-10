@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Change the create table syntax to be compatible with MySQL.

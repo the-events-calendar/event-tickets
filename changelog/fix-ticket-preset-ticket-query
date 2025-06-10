@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Fix incorrect ticket counts when using multiple providers on one ticketed post.
