@@ -1652,7 +1652,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$editor = tribe( 'editor' );
 
 			// Only update this meta if not using blocks.
-			if ( ! $editor->is_events_using_blocks() ) {
+			if ( ! $editor->should_load_blocks() ) {
 				// Enforce meta value when saving after checking for block/shortcode later.
 				if ( ! empty( $data['show_attendees'] ) ) {
 					add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_true' );

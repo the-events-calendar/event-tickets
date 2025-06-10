@@ -6,7 +6,6 @@
  */
 
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
-use Tribe__Context;
 
 
 // Don't load directly
@@ -824,8 +823,8 @@ if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
 	/**
 	 * Get attendee(s) by an id
 	 *
-	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
-	 * @param Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 * @param integer|string  $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param \Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
 	 * @return array List of all attendee(s) data including custom attendee meta for a given ID.
 	 */
@@ -839,8 +838,8 @@ if ( ! function_exists( 'tribe_tickets_has_meta_data' ) ) {
 	/**
 	 * Return true or false if a given id has meta data
 	 *
-	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
-	 * @param Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 * @param integer|string  $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param \Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
 	 * @return bool
 	 */
@@ -854,8 +853,8 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 	/**
 	 * Return true or false if a given id has meta fields
 	 *
-	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
-	 * @param Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 * @param integer|string  $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param \Tribe__Context $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
 	 * @return bool
 	 */
@@ -1564,7 +1563,7 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 	 * @return bool True if creating/editing (back-end) or viewing single or archive (front-end) of enabled post type.
 	 */
 	function tribe_tickets_is_enabled_post_context( $post = null ) {
-		/** @var Tribe__Context $context */
+		/** @var \Tribe__Context $context */
 		$context = tribe( 'context' );
 
 		/** @var Tribe__Tickets__Main $main */
@@ -1597,9 +1596,9 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		 *
 		 * @since 4.11.1
 		 *
-		 * @param bool           $result
-		 * @param array          $post_types The post types with tickets enabled.
-		 * @param Tribe__Context $context
+		 * @param bool            $result Whether we are in tickets-enabled context.
+		 * @param array           $post_types The post types with tickets enabled.
+		 * @param \Tribe__Context $context The context.
 		 *
 		 * @return bool
 		 */

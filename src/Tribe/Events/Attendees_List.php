@@ -153,7 +153,7 @@ class Attendees_List {
 		/** @var \Tribe__Editor $editor */
 		$editor = tribe( 'editor' );
 
-		if ( ! $editor->is_events_using_blocks() ) {
+		if ( ! $editor->should_load_blocks() ) {
 			return;
 		}
 
