@@ -159,50 +159,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Handles the request that creates an order with Tickets Commerce and the Free gateway.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 *
-	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
-	 */
-	public function handle_create_order( WP_REST_Request $request ) {
-		$response = [
-			'success' => false,
-		];
-
-		$data      = $request->get_json_params();
-		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
-
-		if ( is_wp_error( $purchaser ) ) {
-			return $purchaser;
-		}
-
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-
-		$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-
-		if ( is_wp_error( $created ) ) {
-			return $created;
-		}
-
-		$updated = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
-		}
-
-		tribe( Cart::class )->clear_cart();
-
-		$response['success']      = true;
-		$response['id']           = $order->ID;
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
-
-		return new WP_REST_Response( $response );
-	}
-
-	/**
 	 * Handle processing the RSVP step based on current arguments.
 	 *
 	 * @since TBD
@@ -230,24 +186,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
 			$first_attendee = $this->parse_attendee_details();
-
-/*			$data      = $request->get_json_params();
-			$params     = $request->get_params();*/
-
-			/*
-			 * data for purchaser:
-
-			 array (
-			   'purchaser' =>
-			   array (
-			     'name' => 'Brian',
-			     'email' => 'Brian@theeventscalendar.com',
-			   ),
-			 )
-
-			first attendee
-
-			 */
 			$data = [
 				'purchaser' => [
 					'name'  => $first_attendee['full_name'],
@@ -285,7 +223,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$cart->save();
 			}
 
-			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser, 'tc-rsvp' );
 
 			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
@@ -319,41 +257,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			return $response;
 
-			/**
-			 * These are the inputs we should be seeing:
-			 *
-			 * tribe_tickets[{$ticket_id}][ticket_id] (previously product_id[])
-			 * tribe_tickets[{$ticket_id}][quantity] (previously quantity_{$ticket_id})
-			 * tribe_tickets[{$ticket_id}][attendees][0][order_status] (previously attendee[order_status])
-			 * tribe_tickets[{$ticket_id}][attendees][0][full_name] (previously attendee[full_name])
-			 * tribe_tickets[{$ticket_id}][attendees][0][email] (previously attendee[email])
-			 * tribe_tickets[{$ticket_id}][attendees][0][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][0][{$field_slug}])
-			 * tribe_tickets[{$ticket_id}][attendees][1][full_name] (new for IAC)
-			 * tribe_tickets[{$ticket_id}][attendees][1][email] (new for IAC)
-			 * tribe_tickets[{$ticket_id}][attendees][1][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][1][{$field_slug}])
-			 */
-			$attendee_ids = $this->generate_tickets( $args['post_id'], false );
-
-			if ( is_wp_error( $attendee_ids ) ) {
-				$result['success']  = false;
-				$result['errors'][] = $attendee_ids->get_error_message();
-
-				return $result;
-			}
-
-			$result['attendees'] = $attendee_ids;
-
-			$attendee_ids = implode( ',', $attendee_ids );
-
-			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
-
-			$result['success']     = true;
-			$result['opt_in_args'] = [
-				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
-				'checked'      => false,
-				'attendee_ids' => $attendee_ids,
-				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
-			];
 		} elseif ( 'opt-in' === $args['step'] ) {
 			/**
 			 * These are the inputs we should be seeing:
