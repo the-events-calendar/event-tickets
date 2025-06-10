@@ -203,7 +203,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Change the create table syntax to be compatible with MySQL.
 * Fix - Fix incorrect ticket counts when using multiple providers on one ticketed post.
-* Language - 0 new strings added, 218 updated, 0 fuzzied, and 0 obsoleted.
+* Fix - Ensure the Tickets_Handler class can properly handle multiple ticket providers in connection queries.
+* Tweak - Add new columns to `tec_ticket_groups` custom table and corresponding model properties for use by Ticket Presets.
 
 = [5.24.0.1] 2025-06-05 =
 
