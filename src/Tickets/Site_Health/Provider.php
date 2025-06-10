@@ -14,12 +14,12 @@ use TEC\Tickets\Site_Health\Subsections\Features\Tickets_Commerce_Subsection;
 use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
 
 /**
-  * Class Provider
-  *
-  * @since 5.6.0.1
+ * Class Provider
+ *
+ * @since 5.6.0.1
 
-  * @package TEC\Tickets\Site_Health
-  */
+ * @package TEC\Tickets\Site_Health
+ */
 class Provider extends Service_Provider {
 
 	/**

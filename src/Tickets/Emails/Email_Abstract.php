@@ -356,7 +356,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get WordPress blog name.
 	 *
-	 * @todo  This doesn't belong on the abstracts, it's more like a template helper.
+	 * @todo This doesn't belong on the abstracts, it's more like a template helper.
 	 *
 	 * @since 5.5.9
 	 *

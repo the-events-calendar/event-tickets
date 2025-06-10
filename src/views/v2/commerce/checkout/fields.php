@@ -26,5 +26,5 @@
  */
 
 use TEC\Tickets\Commerce\Module;
-?>
-<?php wp_nonce_field( 'wp_rest', 'tec-tc-checkout-nonce' ); ?>
+
+wp_nonce_field( 'wp_rest', 'tec-tc-checkout-nonce' );

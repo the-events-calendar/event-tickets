@@ -5,7 +5,6 @@ namespace TEC\Tickets\Commerce\Status;
 /**
  * Class Refunded.
  *
- *
  * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status

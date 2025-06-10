@@ -165,5 +165,4 @@ abstract class Report_Abstract {
 		 */
 		return apply_filters( "tec_tickets_report_{$page_slug}_page_role_access", $has_access, $post_id, $post );
 	}
-
 }

@@ -62,5 +62,4 @@ class Compatibility {
 
 		return true;
 	}
-
 }

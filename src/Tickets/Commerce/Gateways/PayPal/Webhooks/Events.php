@@ -161,5 +161,4 @@ class Events {
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $events_map[ $event_name ] );
 	}
-
 }

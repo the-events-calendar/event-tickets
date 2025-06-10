@@ -96,5 +96,4 @@ abstract class Abstract_Signup implements Signup_Interface {
 
 		return $this->get_template()->template( 'signup-link', $template_vars, false );
 	}
-
 }

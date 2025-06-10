@@ -401,7 +401,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $key
+	 * @param string $key The key.
 	 *
 	 * @return string The key value or an empty string if not defined.
 	 */
@@ -453,8 +453,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|object    $product
-	 * @param array|boolean $attendee
+	 * @param int|object    $product  The product.
+	 * @param array|boolean $attendee The attendee.
 	 *
 	 * @return string
 	 */
@@ -467,7 +467,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|WP_post $product
+	 * @param int|WP_post $product The product.
 	 *
 	 * @return string
 	 */
@@ -485,7 +485,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $attendee
+	 * @param array $attendee The attendee.
 	 *
 	 * @return bool
 	 */
@@ -521,8 +521,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $post_id
-	 * @param int $ticket_id
+	 * @param int $post_id   The post ID.
+	 * @param int $ticket_id The ticket ID.
 	 */
 	public function do_metabox_capacity_options( $post_id, $ticket_id ) {
 		tribe( Editor\Metabox::class )->do_metabox_capacity_options( $post_id, $ticket_id );
@@ -533,7 +533,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string
+	 * @return string The cart URL.
 	 */
 	public function get_cart_url() {
 		return tribe( Cart::class )->get_url();
@@ -544,7 +544,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string
+	 * @return string The checkout URL.
 	 */
 	public function get_checkout_url() {
 		return tribe( Checkout::class )->get_url();
@@ -669,10 +669,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int  $event_id
-	 * @param bool $url_only
+	 * @param int  $event_id  The event ID.
+	 * @param bool $url_only  Whether to return the URL only.
 	 *
-	 * @return string
+	 * @return string The event reports link.
 	 */
 	public function get_event_reports_link( $event_id, $url_only = false ) {
 		return tribe( Commerce\Reports\Orders::class )->get_event_link( $event_id, $url_only );
@@ -683,10 +683,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|WP_Post|null $event_id   The event ID.
-	 * @param int|WP_Post|null $ticket_id  The ticket ID.
+	 * @param int|WP_Post|null $event_id  The event ID.
+	 * @param int|WP_Post|null $ticket_id The ticket ID.
 	 *
-	 * @return string
+	 * @return string The ticket reports link.
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
 		return tribe( Commerce\Reports\Orders::class )->get_ticket_link( $event_id, $ticket_id );

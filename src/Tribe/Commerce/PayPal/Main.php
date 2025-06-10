@@ -1821,8 +1821,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param    $post_id   int id of the event post
-	 * @param int $ticket_id (null) id of the ticket
+	 * @param int $post_id   ID of the event post.
+	 * @param int $ticket_id (null) ID of the ticket.
 	 *
 	 * @return void
 	 */
@@ -1900,8 +1900,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param       $message
-	 * @param string $type
+	 * @param string $message The message.
+	 * @param string $type    The message type.
 	 */
 	public function add_message( $message, $type = 'update' ) {
 		$message = apply_filters( 'tribe_tpp_submission_message', $message, $type );
@@ -2762,7 +2762,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param int|WP_Post $product
+	 * @param int|WP_Post $product The product.
 	 *
 	 * @return string
 	 */
