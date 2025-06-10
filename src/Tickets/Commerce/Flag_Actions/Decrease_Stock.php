@@ -121,8 +121,8 @@ class Decrease_Stock extends Flag_Action_Abstract {
 
 			// Only manage stock for tickets that have stock management enabled.
 			if ( $ticket->manage_stock() ) {
-				$original_stock = $ticket->stock();
-				$stock = $ticket->stock();
+				$original_stock  = $ticket->stock();
+				$stock           = $ticket->stock();
 				$stock_should_be = max( $original_stock - $quantity, 0 );
 
 				if ( $stock_should_be !== $stock ) {
