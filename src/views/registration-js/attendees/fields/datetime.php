@@ -36,7 +36,7 @@ $classes    = [
 		value="<?php echo esc_attr( $value ); ?>"
 		min="1900-01-01"
 		max="<?php echo esc_attr( (int) date_i18n( 'Y' ) + 100 ); ?>-12-31"
-		<?php tribe_required( $required ); ?>
+		<?php echo $required ? 'required' : ''; ?>
 		<?php tribe_disabled( $disabled ); ?>
 	/>
 </div>
