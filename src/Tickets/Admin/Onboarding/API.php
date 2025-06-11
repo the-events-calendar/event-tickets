@@ -171,7 +171,7 @@ class API extends Abstract_API {
 	 *
 	 * @param array $params The request parameters.
 	 *
-	 * @return bool True if the settings were updated, false otherwise.
+	 * @return bool True if the settings were updated, or update was unneeded, false otherwise.
 	 */
 	public function update_wizard_settings( $params ): bool {
 		$begun    = $params['begun'] ?? false;
@@ -219,6 +219,12 @@ class API extends Abstract_API {
 
 		// Merge the new params with existing last_send data instead of overwriting.
 		$settings['last_send'] = array_merge( $settings['last_send'] ?? [], $params );
+
+		$current_settings = tribe( Data::class )->get_wizard_settings();
+		if ( $settings === $current_settings ) {
+			// If the settings are the same as the current settings, return true.
+			return true;
+		}
 
 		// Update the option and return true if successful.
 		return tribe( Data::class )->update_wizard_settings( $settings );

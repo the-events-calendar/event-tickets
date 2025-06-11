@@ -8,7 +8,7 @@ namespace TEC\Tickets\Commerce\Status;
  * Normally when an Order is Voided means the the Authorization for payment failed. Which means this order needs to be
  * ignored and refunded, since it's a status that cannot be reversed into complete or anything else.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -65,4 +65,3 @@ class Voided extends Status_Abstract {
 		];
 	}
 }
-

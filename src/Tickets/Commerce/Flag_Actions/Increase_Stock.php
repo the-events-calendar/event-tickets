@@ -12,7 +12,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Increase_Stock, normally triggered when refunding on orders get set to not-completed.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

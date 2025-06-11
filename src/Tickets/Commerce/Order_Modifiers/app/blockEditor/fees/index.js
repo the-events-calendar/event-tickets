@@ -35,7 +35,7 @@ const { storeName } = require( '../store' );
  * reloaded.
  *
  * @since 5.18.0
- * @param          props
+ * @param         props
  *
  * @param {string} props.clientId The client ID of the ticket.
  * @return {JSX.Element}

@@ -155,7 +155,7 @@ class Attendees_List {
 		/** @var Editor|Back_Compatible_Editor $editor */
 		$editor = tribe( 'editor' );
 
-		if ( ! $editor->is_events_using_blocks() ) {
+		if ( ! $editor->should_load_blocks() ) {
 			return;
 		}
 
@@ -189,7 +189,7 @@ class Attendees_List {
 	 * @since 4.12.0
 	 *
 	 * @param WP_Post|int $post_id Post object or ID.
-	 * @param  int        $limit   Limit of attendees to be retrieved from database.
+	 * @param int        $limit   Limit of attendees to be retrieved from database.
 	 *
 	 * @return array List of public attendees for display.
 	 */

@@ -45,7 +45,7 @@ class Communication extends Abstract_Step {
 		$settings = $request->get_json_params();
 
 		if ( empty( $settings['currentTab'] ) ) {
-			return $this->add_fail_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
+			return $this->add_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
 		}
 
 		$email = $settings['userEmail'] ?? '';

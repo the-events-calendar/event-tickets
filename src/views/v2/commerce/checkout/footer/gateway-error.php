@@ -9,8 +9,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
- * @since   5.3.0 Improve check for active gateways now that we can enable or disable gateways.
+ * @since 5.1.10
+ * @since 5.3.0 Improve check for active gateways now that we can enable or disable gateways.
  *
  * @version 5.3.0
  *
@@ -23,12 +23,10 @@
  * @var string           $registration_url   [Global] The site's registration URL.
  * @var bool             $is_tec_active      [Global] Whether `The Events Calendar` is active or not.
  * @var array[]          $gateways           [Global] An array with the gateways.
- * @var int              $gateways_active    [Global] The number of active gateways.
- * @var int              $gateways_connected [Global] The number of connected gateways.
  */
 
 // Bail if the cart is empty or if there's active gateways.
-if ( empty( $items ) || tribe_is_truthy( $gateways_active ) ) {
+if ( empty( $items ) || ! empty( $gateways ) ) {
 	return;
 }
 

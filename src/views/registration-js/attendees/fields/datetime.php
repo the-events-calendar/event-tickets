@@ -6,7 +6,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/datetime.php
  *
- * @since  4.12.1
+ * @since 4.12.1
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Datetime
  */
@@ -36,7 +36,7 @@ $classes    = [
 		value="<?php echo esc_attr( $value ); ?>"
 		min="1900-01-01"
 		max="<?php echo esc_attr( (int) date_i18n( 'Y' ) + 100 ); ?>-12-31"
-		<?php tribe_required( $required ); ?>
+		<?php echo $required ? 'required' : ''; ?>
 		<?php tribe_disabled( $disabled ); ?>
 	/>
 </div>

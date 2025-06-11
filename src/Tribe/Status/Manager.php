@@ -157,7 +157,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $commerce string a string of the Commerce System to get statuses from
+	 * @param string $commerce a string of the Commerce System to get statuses from
 	 *
 	 * @return array an array of the commerce's statuses and name matching the provide action
 	 */
@@ -190,10 +190,10 @@ class Tribe__Tickets__Status__Manager {
 	 * @since 4.10
 	 * @since 4.10.5 - add nicename parameter
 	 *
-	 * @param $action   string a string of the action to filter
-	 * @param $commerce string a string of the Commerce System to get statuses from
-	 * @param $operator string a string of the default 'AND', 'OR', 'NOT' to change the criteria
-	 * @param $nicename bool a boolean of whether to return the name of the status
+	 * @param string $action   a string of the action to filter
+	 * @param string $commerce a string of the Commerce System to get statuses from
+	 * @param string $operator a string of the default 'AND', 'OR', 'NOT' to change the criteria
+	 * @param bool   $nicename a boolean of whether to return the name of the status
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
 	 */
@@ -246,7 +246,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $commerce string a string of the Commerce System to get statuses from
+	 * @param string $commerce a string of the Commerce System to get statuses from
 	 *
 	 * @return array an array of the commerce's statuses
 	 */
@@ -269,7 +269,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $commerce string a string of the Commerce System to get statuses from
+	 * @param string $commerce a string of the Commerce System to get statuses from
 	 *
 	 * @return array an array of statues with label and stock attributes
 	 */
@@ -305,7 +305,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $commerce string a string of the Commerce System to get statuses from
+	 * @param string $commerce a string of the Commerce System to get statuses from
 	 *
 	 * @return
 	 */

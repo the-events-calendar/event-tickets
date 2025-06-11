@@ -23,3 +23,6 @@ tribe( Commerce_Module::class );
 
 tec_tickets_tests_fake_transactions_enable();
 tec_tickets_tests_disable_and_unregister_classy_editor();
+
+// Populate the gateway order ID for the gateways during tests.
+tec_tickets_tests_enable_gateway_id_generation();

@@ -66,7 +66,7 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $string
+	 * @param string $string The slug postfix.
 	 *
 	 * @return string
 	 */

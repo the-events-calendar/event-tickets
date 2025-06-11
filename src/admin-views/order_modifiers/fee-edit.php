@@ -7,7 +7,7 @@
  * It also includes a nonce field for security.
  *
  * @since 5.18.0
- * @since  5.21.0 Updated the form to change how the raw amount field is handled.
+ * @since 5.21.0 Updated the form to change how the raw amount field is handled.
  *
  * @version 5.21.0
  *

@@ -2,7 +2,7 @@
 /**
  * Renders and manages the state of the Maps and Layouts Home page.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Seating\Service\Service;
 /**
  * Class Maps_Layouts_Home_Page.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -116,7 +116,7 @@ class Maps_Layouts_Home_Page {
 		 *
 		 * @since 5.16.0
 		 *
-		 * @param Maps_Layouts_Home_Page $this    The Maps and Layouts page object.
+		 * @param Maps_Layouts_Home_Page $page    The Maps and Layouts page object.
 		 * @param Tab                    $current The current tab.
 		 * @param Tab[]                  $tabs    The set of tabs to render.
 		 */

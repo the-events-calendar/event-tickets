@@ -26,7 +26,7 @@ use WP_REST_Server;
 /**
  * Class On_Boarding_Endpoint
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -35,7 +35,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * @inheritDoc
 	 */
-	protected $path = '/commerce/paypal/on-boarding';
+	protected string $path = '/commerce/paypal/on-boarding';
 
 	/**
 	 * @inheritDoc

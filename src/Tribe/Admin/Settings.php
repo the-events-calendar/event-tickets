@@ -3,6 +3,10 @@ namespace Tribe\Tickets\Admin;
 
 use Tribe\Admin\Troubleshooting as Troubleshooting;
 use Tribe__Settings_Tab;
+use Tribe__Template;
+use TEC\Common\Configuration\Configuration;
+use TEC\Tickets\Admin\Help_Hub\ET_Hub_Resource_Data;
+use TEC\Common\Admin\Help_Hub\Hub;
 
 /**
  * Manages the admin settings UI in relation to ticket configuration.
@@ -31,6 +35,24 @@ class Settings {
 	 * @var string
 	 */
 	public static $help_page_id = 'tec-tickets-help';
+
+	/**
+	 * The Help Hub page slug.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public static string $help_hub_slug = 'tec-tickets-help-hub';
+
+	/**
+	 * The Original Help page slug.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public static string $old_help_slug = 'tec-tickets-help';
 
 	/**
 	 * Event Tickets Help page slug.
@@ -238,21 +260,59 @@ class Settings {
 			]
 		);
 
+		// Redirects users from the outdated Help page to the new Help Hub page if accessed.
+		$this->redirect_to_help_hub();
+
+		// Instantiate necessary dependencies for the Help Hub.
+		$template      = tribe( Tribe__Template::class );
+		$config        = tribe( Configuration::class );
+		$resource_data = tribe( ET_Hub_Resource_Data::class );
+
+		// Instantiate the Hub instance with all dependencies.
+		$hub_instance = new Hub( $resource_data, $config, $template );
+
 		$admin_pages->register_page(
 			[
 				'id'       => static::$help_page_id,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
-				'path'     => static::$help_page_id,
+				'path'     => self::$help_hub_slug,
 				'position' => 3,
-				'callback' => [
-					tribe( 'settings.manager' ),
-					'do_help_tab',
-				],
+				'callback' => [ $hub_instance, 'render' ],
 			]
 		);
 
 		$this->maybe_add_troubleshooting();
+	}
+
+	/**
+	 * Redirects users from an outdated help page to the updated Help Hub page in the WordPress admin.
+	 *
+	 * Checks the `page` query parameters, and if they match the old help page slug.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return void
+	 */
+	public function redirect_to_help_hub(): void {
+		$page = tribe_get_request_var( 'page' );
+
+		// Exit if the request is not for the old help page.
+		if ( self::$old_help_slug !== $page ) {
+			return;
+		}
+
+		// Build the new URL for redirection.
+		$new_url = add_query_arg(
+			[
+				'page' => self::$help_hub_slug,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		//phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+		wp_safe_redirect( $new_url );
+		tribe_exit();
 	}
 
 	/**

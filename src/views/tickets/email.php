@@ -38,16 +38,16 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.0
- * @since   4.5.11 Ability to remove display of event date.
- * @since   4.7.4  Change event date to display by default.
+ * @since 4.0
+ * @since 4.5.11 Ability to remove display of event date.
+ * @since 4.7.4  Change event date to display by default.
  *               Display WooCommerce featured image.
  *               Current ticket action hook before output.
- * @since   4.7.6  Ability to filter ticket image.
- * @since   4.10.9 Use function for text.
- * @since   5.0.3 Update comments for single ticket array.
- * @since   5.1.7 Changed the word `Purchaser` to `Attendee` in the ticket details.
- * @since   5.9.1 Corrected template override filepath
+ * @since 4.7.6  Ability to filter ticket image.
+ * @since 4.10.9 Use function for text.
+ * @since 5.0.3 Update comments for single ticket array.
+ * @since 5.1.7 Changed the word `Purchaser` to `Attendee` in the ticket details.
+ * @since 5.9.1 Corrected template override filepath
  *
  * @version 5.9.1
  *
@@ -385,9 +385,9 @@
 							/**
 							 * Gives an opportunity to manipulate the current ticket before output
 							 *
-							 * @since  4.7.4
+							 * @since 4.7.4
 							 *
-							 * @param  array $ticket Current ticket information
+							 * @param array $ticket Current ticket information
 							 */
 							do_action( 'tribe_tickets_ticket_email_ticket_top', $ticket );
 							?>

@@ -42,7 +42,7 @@ $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id 
 		id="<?php echo esc_attr( $option_id ); ?>"
 		class="ticket-meta ticket-metatribe-common-form-control-select__input"
 		name="<?php echo esc_attr( $field_name ); ?>"
-		<?php tribe_required( $required ); ?>
+		<?php echo $required ? 'required' : ''; ?>
 	>
 		<option><?php esc_html_e( 'Select an option', 'event-tickets' ); ?></option>
 		<?php foreach ( $options as $option ) : ?>

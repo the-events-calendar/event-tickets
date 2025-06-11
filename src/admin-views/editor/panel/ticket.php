@@ -48,7 +48,7 @@ $ticket_type = $ticket_type ?? 'default';
 	 * @param int Post ID
 	 * @param int Ticket ID
 	 */
-	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id );
+	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id, $ticket_type );
 	?>
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
@@ -244,39 +244,52 @@ $ticket_type = $ticket_type ?? 'default';
 			do_action( 'tribe_events_tickets_post_accordion', $post_id, $ticket_id );
 			?>
 			<div class="ticket_bottom">
-				<input
-						type="hidden"
-						name="ticket_id"
-						id="ticket_id"
-						class="ticket_field"
-						value="<?php echo esc_attr( $ticket_id ); ?>"
-				/>
-				<input
-						type="button"
-						id="ticket_form_save"
-						class="button-primary tribe-dependent tribe-validation-submit"
-						name="ticket_form_save"
-						value="<?php echo esc_attr( $ticket_form_save_text ); ?>"
-						data-depends="#tec_tickets_ticket_provider"
-						data-condition-not="Tribe__Tickets__RSVP"
-				/>
-				<input
-						type="button"
-						id="rsvp_form_save"
-						class="button-primary tribe-dependent tribe-validation-submit"
-						name="ticket_form_save"
-						value="<?php echo esc_attr( $rsvp_form_save_text ); ?>"
-						data-depends="#tec_tickets_ticket_provider"
-						data-condition="Tribe__Tickets__RSVP"
-				/>
-				<input
-						type="button"
-						id="ticket_form_cancel"
-						class="button-secondary"
-						name="ticket_form_cancel"
-						value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>"
-				/>
 
+				<?php
+				/**
+				 * Allows for the insertion of additional content into the beginning of the ticket edit form bottom (buttons) section
+				 *
+				 * @since 5.24.1
+				 *
+				 * @param int Post ID
+				 * @param int Ticket ID
+				 */
+				do_action( 'tribe_events_tickets_bottom_start', $post_id, $ticket_id );
+				?>
+				<div class="ticket_bottom_buttons">
+					<input
+							type="hidden"
+							name="ticket_id"
+							id="ticket_id"
+							class="ticket_field"
+							value="<?php echo esc_attr( $ticket_id ); ?>"
+					/>
+					<input
+							type="button"
+							id="ticket_form_save"
+							class="button-primary tribe-dependent tribe-validation-submit"
+							name="ticket_form_save"
+							value="<?php echo esc_attr( $ticket_form_save_text ); ?>"
+							data-depends="#tec_tickets_ticket_provider"
+							data-condition-not="Tribe__Tickets__RSVP"
+					/>
+					<input
+							type="button"
+							id="rsvp_form_save"
+							class="button-primary tribe-dependent tribe-validation-submit"
+							name="ticket_form_save"
+							value="<?php echo esc_attr( $rsvp_form_save_text ); ?>"
+							data-depends="#tec_tickets_ticket_provider"
+							data-condition="Tribe__Tickets__RSVP"
+					/>
+					<input
+							type="button"
+							id="ticket_form_cancel"
+							class="button-secondary"
+							name="ticket_form_cancel"
+							value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>"
+					/>
+				</div>
 				<?php
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form bottom (buttons) section

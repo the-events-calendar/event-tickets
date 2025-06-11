@@ -397,6 +397,7 @@ class Payments_Tab extends Service_Provider {
 	 *
 	 * @since 5.3.0
 	 * @since 5.23.0 Wrapped elements in new HTML.
+	 * @since 5.24.0 Consider solo render gateways for the disabled status.
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
@@ -414,14 +415,35 @@ class Payments_Tab extends Service_Provider {
 			$section_gateway::get_label()
 		);
 
+		$disabled                      = ! $section_gateway::is_connected();
+		$we_already_use_a_solo_gateway = false;
+
+		if ( ! $disabled && $section_gateway->renders_solo() ) {
+			$available_gateways = tribe( Manager::class )->get_available_gateways();
+			if ( ! isset( $available_gateways[ $section_gateway::get_key() ] ) ) {
+				foreach ( $available_gateways as $gateway ) {
+					if ( ! $gateway->renders_solo() ) {
+						continue;
+					}
+
+					$disabled                      = true;
+					$we_already_use_a_solo_gateway = true;
+					break;
+				}
+			}
+		}
+
+		$disabled_message     = esc_html__( 'You can have only Stripe or Square enabled, but not both.', 'event-tickets' );
+		$disabled_explanation = $we_already_use_a_solo_gateway ? '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-currency-message--error">' . $disabled_message . '</p>' : '';
+
 		$attributes = tribe_get_attributes(
 			[
 				'type'     => 'checkbox',
 				'name'     => $option_key,
 				'id'       => 'tickets-commerce-enable-input-' . $section_gateway::get_key(),
 				'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
-				'disabled' => ! $section_gateway::is_connected(),
-				'checked'  => $section_gateway::is_enabled(),
+				'disabled' => $disabled,
+				'checked'  => ! $disabled && $section_gateway::is_enabled(),
 			]
 		);
 
@@ -439,6 +461,7 @@ class Payments_Tab extends Service_Provider {
 							<input ' . implode( ' ', $attributes ) . ' />
 							<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
 							<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
+							' . $disabled_explanation . '
 						</label>',
 		];
 
