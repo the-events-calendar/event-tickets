@@ -84,3 +84,17 @@ function tec_tickets_tests_disable_and_unregister_classy_editor() {
 	// Register the old editor.
 	$container->register( Tribe__Editor__Provider::class );
 }
+
+function tec_tickets_tests_add_manual_gateway_id( $args ) {
+	$args['gateway_order_id'] = md5( wp_generate_password() . microtime() );
+
+	return $args;
+}
+
+function tec_tickets_tests_enable_gateway_id_generation() {
+	add_filter( 'tec_tickets_commerce_order_create_args', 'tec_tickets_tests_add_manual_gateway_id' );
+}
+
+function tec_tickets_tests_disable_gateway_id_generation() {
+	remove_filter( 'tec_tickets_commerce_order_create_args', 'tec_tickets_tests_add_manual_gateway_id' );
+}

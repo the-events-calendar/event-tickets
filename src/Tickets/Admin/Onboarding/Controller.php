@@ -195,8 +195,11 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		// Early bail checks for existing setup.
-		if ( (bool) tribe_get_option( Landing_Page::VISITED_GUIDED_SETUP_OPTION, false ) ) {
+		delete_transient( Landing_Page::ACTIVATION_REDIRECT_OPTION );
+		delete_transient( Landing_Page::BULK_ACTIVATION_REDIRECT_OPTION );
+
+		// If the wizard is completed, we don't need to redirect.
+		if ( $this->container->get( Landing_Page::class )->is_tec_wizard_completed() ) {
 			return;
 		}
 

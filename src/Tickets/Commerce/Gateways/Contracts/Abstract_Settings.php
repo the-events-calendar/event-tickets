@@ -48,10 +48,11 @@ abstract class Abstract_Settings {
 	 * Check if this gateway is currently in test mode.
 	 *
 	 * @since 5.3.0
+	 * @since 5.24.0 Use tec_tickets_commerce_is_sandbox_mode() instead.
 	 *
 	 * @return bool
 	 */
 	public function is_gateway_test_mode() {
-		return tribe_is_truthy( tribe_get_option( static::$option_sandbox ) );
+		return tec_tickets_commerce_is_sandbox_mode();
 	}
 }
