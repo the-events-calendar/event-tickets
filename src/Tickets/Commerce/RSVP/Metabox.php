@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Commerce\RSVP;
 
-use TEC\Tickets\Admin\Panel_Data;
 use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Main;
@@ -50,14 +49,21 @@ class Metabox {
 				'__back_compat_meta_box' => true,
 			]
 		);
-
-		// If we get here means that we will need Thickbox
-		//add_thickbox();
 	}
 
+
+	/**
+	 * Renders the RSVP metabox for the event editor in the admin area.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post|int $post_id The post ID or WP_Post object for the event.
+	 *
+	 * @return string The rendered HTML template for the RSVP metabox.
+	 */
 	public function render( $post_id ) {
 		$original_id = $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id;
-		$post_id = Event::filter_event_id( $original_id, 'tickets-metabox-render' );
+		$post_id     = Event::filter_event_id( $original_id, 'tickets-metabox-render' );
 
 		$post = get_post( $post_id );
 

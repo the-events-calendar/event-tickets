@@ -22,10 +22,8 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 
 use Tribe__Tickets__Tickets_View;
-use Tribe__Tickets__Global_Stock;
 use Tribe__Tickets__Ticket_Object;
 use Tribe__Utils__Array;
-use Tribe__Date_Utils;
 
 use WP_Error;
 use WP_REST_Request;
@@ -83,12 +81,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
-		register_rest_route( $namespace, $this->get_endpoint_path(), [
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path(),
+			[
 				'methods'             => WP_REST_Server::CREATABLE,
-				//'callback'            => [ $this, 'handle_create_order' ],
 				'callback'            => [ $this, 'handle_steps' ],
 				'permission_callback' => '__return_true',
-			] );
+			]
+		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
@@ -244,15 +245,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
 
 
-			$attendee_ids = implode( ',', $attendee_ids );
+			//$attendee_ids = implode( ',', $attendee_ids );
 
-			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
+			//$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
 
 			$response['opt_in_args'] = [
 				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
 				'checked'      => false,
-				'attendee_ids' => $attendee_ids,
-				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
+				//'attendee_ids' => $attendee_ids,
+				//'opt_in_nonce' => wp_create_nonce( $nonce_action ),
 			];
 
 			return $response;
@@ -297,33 +298,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Provides a URL that can be used to direct users to the login form.
-	 *
-	 * @param int $post_id - the ID of the post to redirect to
-	 *
-	 * @return string
-	 */
-	public static function get_login_url( $post_id = null ) {
-		if ( is_null( $post_id ) ) {
-			$post_id   = get_the_ID();
-		}
-
-		$login_url = get_site_url( null, 'wp-login.php' );
-
-		if ( $post_id ) {
-			$login_url = add_query_arg( 'redirect_to', get_permalink( $post_id ), $login_url );
-		}
-
-		/**
-		 * Provides an opportunity to modify the login URL used within frontend
-		 * ticket forms (typically when they need to login before they can proceed).
-		 *
-		 * @param string $login_url
-		 */
-		return apply_filters( 'tribe_tickets_ticket_login_url', $login_url );
 	}
 
 	/**
@@ -454,8 +428,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
-			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
-			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
+			//$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
+			//['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
 		if ( ! empty( $args['process_result']['attendees'] ) ) {
@@ -502,157 +476,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Generate and store all the attendees information for a new order.
-	 *
-	 * @param int|null $post_id  Post ID for ticket, null to use current post ID.
-	 * @param boolean  $redirect Whether to redirect on error.
-	 *
-	 * @return array|WP_Error List of attendee ID(s) generated, or \WP_Error if there was a problem.
-	 */
-	public function generate_tickets( $post_id = null, $redirect = true ) {
-		$has_tickets = false;
-
-		if ( null === $post_id ) {
-			$post_id = get_the_ID();
-		}
-
-		/**
-		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
-		 *
-		 * @param $data $_POST Parameters comes from RSVP Form
-		 */
-		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
-
-		// Parse the details submitted for the RSVP.
-		//@todo, change to TC
-		$attendee_details = $this->parse_attendee_details();
-
-		// If there are details missing, we return to the event page with the rsvp_error.
-		if ( false === $attendee_details ) {
-			if ( $redirect ) {
-				$url = get_permalink();
-				$url = add_query_arg( 'rsvp_error', 1, $url );
-
-				wp_redirect( esc_url_raw( $url ) );
-				tribe_exit();
-			}
-
-			return new WP_Error( 'rsvp-error', __( 'Invalid data! Missing required attendee details!', 'event-tickets' ) );
-		}
-
-		$product_ids = [];
-
-		if ( isset( $_POST['tribe_tickets'] ) ) {
-			$product_ids = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
-		} elseif ( isset( $_POST['product_id'] ) ) {
-			$product_ids = (array) $_POST['product_id'];
-		}
-
-		$product_ids = array_map( 'absint', $product_ids );
-		$product_ids = array_filter( $product_ids );
-
-		$attendee_ids = [];
-
-		// Iterate over each product.
-		foreach ( $product_ids as $product_id ) {
-			// @todo, change to TC
-			$ticket_qty = $this->parse_ticket_quantity( $product_id );
-
-			if ( 0 === $ticket_qty ) {
-				// If there were no RSVP tickets for the product added to the cart, continue.
-				continue;
-			}
-			// @todo, change to TC
-			//$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
-
-			if ( is_wp_error( $tickets_generated ) ) {
-				return $tickets_generated;
-			}
-
-			if ( $tickets_generated ) {
-				if ( is_array( $tickets_generated ) ) {
-					$attendee_ids[] = $tickets_generated;
-				}
-
-				$has_tickets = true;
-			}
-		}
-
-		if ( ! empty( $attendee_ids ) ) {
-			$attendee_ids = array_merge( ...$attendee_ids );
-		}
-
-		$order_id              = $attendee_details['order_id'];
-		$attendee_order_status = $attendee_details['order_status'];
-
-		/**
-		 * Fires when an RSVP attendee tickets have been generated.
-		 *
-		 * @param int    $order_id              ID of the RSVP order
-		 * @param int    $post_id               ID of the post the order was placed for
-		 * @param string $attendee_order_status status if the user indicated they will attend
-		 */
-		do_action( 'event_tickets_rsvp_tickets_generated', $order_id, $post_id, $attendee_order_status );
-
-		/** @var Tribe__Tickets__Status__Manager $status_mgr */
-		$status_mgr = tribe( 'tickets.status' );
-
-		$send_mail_stati = $status_mgr->get_statuses_by_action( 'attendee_dispatch', 'rsvp' );
-
-		/**
-		 * Filters whether a confirmation email should be sent or not for RSVP tickets.
-		 *
-		 * This applies to attendance and non attendance emails.
-		 *
-		 * @param bool $send_mail Defaults to `true`.
-		 */
-		$send_mail = apply_filters( 'tribe_tickets_rsvp_send_mail', true );
-
-		if ( $send_mail ) {
-			/**
-			 * Filters the attendee order stati that should trigger an attendance confirmation.
-			 *
-			 * Any attendee order status not listed here will trigger a non attendance email.
-			 *
-			 * @param array  $send_mail_stati       An array of default stati triggering an attendance email.
-			 * @param int    $order_id              ID of the RSVP order
-			 * @param int    $post_id               ID of the post the order was placed for
-			 * @param string $attendee_order_status status if the user indicated they will attend
-			 */
-			$send_mail_stati = apply_filters(
-				'tribe_tickets_rsvp_send_mail_stati', $send_mail_stati, $order_id, $post_id, $attendee_order_status
-			);
-
-			// No point sending tickets if their current intention is not to attend.
-			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati, true ) ) {
-				// @todo, change to TC
-				//$this->send_tickets_email( $order_id, $post_id );
-			} elseif ( $has_tickets ) {
-				// @todo, change to TC
-				//$this->send_non_attendance_confirmation( $order_id, $post_id );
-			}
-		}
-
-		// Redirect to the same page to prevent double purchase on refresh.
-		if ( $redirect && ! empty( $post_id ) ) {
-			$url = get_permalink( $post_id );
-			$url = add_query_arg( 'rsvp_sent', 1, $url );
-
-			wp_redirect( esc_url_raw( $url ) );
-			tribe_exit();
-		}
-
-		return $attendee_ids;
-	}
-
-	/**
 	 * @param $post_id
 	 *
 	 * @return array|false
 	 */
 	public function parse_attendee_details() {
-		$order_id = self::generate_order_id();
-
 		$first_attendee = [];
 
 		if ( ! empty( $_POST['tribe_tickets'] ) ) {
@@ -692,27 +520,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'email'        => $attendee_email,
 			'order_status' => $attendee_order_status,
 			'optout'       => $attendee_optout,
-			'order_id'     => $order_id,
 		];
 
 		return $attendee_details;
 	}
 
 	/**
-	 * Generates an Order ID.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function generate_order_id() {
-		return md5( time() . rand() );
-	}
-
-	/**
 	 * Parses the quantity of tickets requested for a product via the $_POST var.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *

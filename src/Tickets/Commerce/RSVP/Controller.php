@@ -60,7 +60,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider
 	 *
-	 * @since 5.10.0
+	 * @since TBD
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );

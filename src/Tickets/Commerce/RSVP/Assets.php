@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Commerce\RSVP;
 
 use TEC\Tickets\Commerce\RSVP\REST\Order_Endpoint;
-use \TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\REST\Ticket_Endpoint;
 use Tribe__Tickets__Main;
 use Tribe__Templates;
@@ -33,9 +33,13 @@ class Assets extends Service_Provider {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		tribe_asset( $tickets_main, 'tribe-tickets-admin-tickets', 'commerce/tickets.js', [
-				'jquery',
-			], 'admin_enqueue_scripts', [
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-tickets',
+			'commerce/tickets.js',
+			[ 'jquery', ],
+			'admin_enqueue_scripts',
+			[
 				'localize' => [
 					'name' => 'tecTicketsCommerceTickets',
 					'data' => static function () {
@@ -45,7 +49,8 @@ class Assets extends Service_Provider {
 						];
 					}
 				]
-			] );
+			]
+		);
 
 
 		$this->assets();
@@ -55,14 +60,18 @@ class Assets extends Service_Provider {
 	 * Register Front End Assets.
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
 	public function assets() {
 		$plugin = Tribe__Tickets__Main::instance();
 
-		tec_asset( $plugin, 'tec-tickets-commerce-rsvp', 'commerce/rsvp-block.js', [ 'jquery' ], null, [
-			'groups'       => 'tec-tickets-commerce-rsvp',
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp',
+			'commerce/rsvp-block.js',
+			[ 'jquery' ],
+			null,
+			[
+				'groups'       => 'tec-tickets-commerce-rsvp',
 				'localize' => [
 					'name' => 'TribeRsvp',
 					'data' => fn() => [
@@ -74,11 +83,18 @@ class Assets extends Service_Provider {
 						'nonce'         => wp_create_nonce( 'wp_rest' ),
 					],
 				],
-			] );
+			]
+		);
 
 		tec_asset( $plugin, 'tribe-tickets-gutenberg-block-rsvp-style', 'rsvp/frontend.css' );
 
-		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-ari', 'commerce/rsvp-ari.js', [ 'jquery', 'wp-util', 'tribe-common' ], null, [
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-ari',
+			'commerce/rsvp-ari.js',
+			[ 'jquery', 'wp-util', 'tribe-common' ],
+			null,
+			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
 				'localize'     => [
@@ -90,15 +106,22 @@ class Assets extends Service_Provider {
 						],
 					],
 				],
-			] );
+			]
+		);
 
-		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-manager', 'commerce/rsvp-manager.js', [
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-manager',
+			'commerce/rsvp-manager.js',
+			[
 				'jquery',
 				'tribe-common',
 				'tec-tickets-commerce-rsvp',
 				'tec-tickets-commerce-rsvp-tooltip',
 				'tec-tickets-commerce-rsvp-ari',
-			], null, [
+			],
+			null,
+			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
 				'localize' => [
 					'name' => 'TribeRsvp',
@@ -109,16 +132,24 @@ class Assets extends Service_Provider {
 						];
 					},
 				],
-			] );
+			]
+		);
 
 
-		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-tooltip', 'commerce/rsvp-tooltip.js', [
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-tooltip',
+			'commerce/rsvp-tooltip.js',
+			[
 				'jquery',
 				'tribe-common',
 				'tribe-tooltipster',
-			], null, [
+			],
+			null,
+			[
 			'groups'       => 'tec-tickets-commerce-rsvp',
-			] );
+			]
+		);
 
 		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style', 'rsvp.css', [ 'tribe-common-skeleton-style', 'tribe-common-responsive' ], null );
 
@@ -131,7 +162,7 @@ class Assets extends Service_Provider {
 	/**
 	 * Determine whether we should enqueue the ARI assets.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
 	 *
 	 * @return bool Whether we should enqueue the ARI assets.
 	 */
