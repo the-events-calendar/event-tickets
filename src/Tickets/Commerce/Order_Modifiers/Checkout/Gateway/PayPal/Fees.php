@@ -12,7 +12,9 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Abstract_Fees;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use WP_Post;
 
 /**
@@ -35,20 +37,20 @@ class Fees extends Abstract_Fees {
 	 * @since 5.18.0
 	 */
 	public function do_register(): void {
-		// Hook for appending fees to the cart for PayPal processing.
-		add_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-			10,
-			2
-		);
-
 		// Hook for adding fee unit data to PayPal order.
 		add_action(
 			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
 			[ $this, 'add_fee_unit_data_to_paypal' ],
 			10,
 			2
+		);
+
+		// Trigger the fees to be added to the other items.
+		add_filter(
+			'tec_tickets_commerce_paypal_order_unit',
+			[ $this, 'inclue_fees_with_items' ],
+			10,
+			3
 		);
 	}
 
@@ -60,15 +62,38 @@ class Fees extends Abstract_Fees {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_filter(
-			'tec_tickets_commerce_create_order_from_cart_items',
-			[ $this, 'append_fees_to_cart' ],
-		);
-
 		remove_action(
 			'tec_tickets_commerce_paypal_order_get_unit_data_fee',
 			[ $this, 'add_fee_unit_data_to_paypal' ],
 		);
+
+		remove_filter(
+			'tec_tickets_commerce_paypal_order_unit',
+			[ $this, 'inclue_fees_with_items' ],
+		);
+	}
+
+	/**
+	 * Includes fees with the items in the PayPal order.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array          $unit     The current unit data.
+	 * @param WP_Post        $order    The current order object.
+	 * @param Order_Endpoint $endpoint The order endpoint object.
+	 *
+	 * @return array
+	 */
+	public function inclue_fees_with_items( array $unit, WP_Post $order, Order_Endpoint $endpoint ) {
+		if ( empty( $order->fees ) ) {
+			return $unit;
+		}
+
+		foreach ( $order->fees as $fee ) {
+			$unit['items'][] = $endpoint->get_unit_data( $fee, $order );
+		}
+
+		return $unit;
 	}
 
 	/**
@@ -89,13 +114,13 @@ class Fees extends Abstract_Fees {
 		return [
 			'name'        => $item['display_name'],
 			'unit_amount' => [
-				'value'         => (string) $item['price'],
+				'value'         => (string) ( new Precision_Value( $item['price'] ) ),
 				'currency_code' => $order->currency,
 			],
 			// Fees should be added as many times as the items.
 			'quantity'    => $item['quantity'] ?? 1,
 			'item_total'  => [
-				'value'         => (string) $item['sub_total'],
+				'value'         => (string) ( new Precision_Value( $item['sub_total'] ) ),
 				'currency_code' => $order->currency,
 			],
 			'sku'         => "fee-{$item['fee_id']}",

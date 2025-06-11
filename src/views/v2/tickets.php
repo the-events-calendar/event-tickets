@@ -9,7 +9,7 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.0.3
+ * @since 5.0.3
  * @since 5.20.0 Added waitlist entry point.
  *
  * @version 5.20.0

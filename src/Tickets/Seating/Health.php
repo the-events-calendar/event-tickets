@@ -2,7 +2,7 @@
 /**
  * Controller for registering and serving Site Health tests for the Seating functionality.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -18,7 +18,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Class Controller.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */

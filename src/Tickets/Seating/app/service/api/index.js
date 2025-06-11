@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import {associatedEventsUrl, getBaseUrl} from './localized-data.js';
+import { associatedEventsUrl, getBaseUrl } from './localized-data.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -46,11 +46,11 @@ let handlerQueue = [];
  *
  * @return {void}
  */
-export function sendPostMessage(iframe, action, data) {
-	const token = iframe.closest('[data-token]').dataset.token;
+export function sendPostMessage( iframe, action, data ) {
+	const token = iframe.closest( '[data-token]' ).dataset.token;
 
-	if (!token) {
-		console.error('No token found in iframe element');
+	if ( ! token ) {
+		console.error( 'No token found in iframe element' );
 		return;
 	}
 
@@ -75,14 +75,14 @@ export function sendPostMessage(iframe, action, data) {
  * @return {void}
  */
 function callNextHandler() {
-	if (handlerQueue.length === 0) {
+	if ( handlerQueue.length === 0 ) {
 		return;
 	}
 
-	const [action, handler, event] = handlerQueue[0];
-	const wrappedHandler = wrapHandlerForQueue(handler);
+	const [ action, handler, event ] = handlerQueue[ 0 ];
+	const wrappedHandler = wrapHandlerForQueue( handler );
 
-	wrappedHandler(event.data.data);
+	wrappedHandler( event.data.data );
 }
 
 /**
@@ -96,9 +96,9 @@ function callNextHandler() {
  *
  * @return {Function} The wrapped handler.
  */
-function wrapHandlerForQueue(handler) {
-	return async (data) => {
-		await handler(data);
+function wrapHandlerForQueue( handler ) {
+	return async ( data ) => {
+		await handler( data );
 		// Remove the first handler, this, from the queue.
 		handlerQueue.shift();
 		callNextHandler();
@@ -117,28 +117,22 @@ function wrapHandlerForQueue(handler) {
  *
  * @param {MessageEvent} event The message event received from the service.
  */
-export function catchMessage(event) {
-	if (
-		!(
-			event.origin === getBaseUrl() &&
-			event.data.token &&
-			event.data.token === getToken()
-		)
-	) {
+export function catchMessage( event ) {
+	if ( ! ( event.origin === getBaseUrl() && event.data.token && event.data.token === getToken() ) ) {
 		return;
 	}
 
 	const action = event.data.action;
 
-	if (!action) {
-		console.error('No action found in message');
+	if ( ! action ) {
+		console.error( 'No action found in message' );
 		return;
 	}
 
-	const handler = getHandlerForAction(action);
-	handlerQueue.push([action, handler, event]);
+	const handler = getHandlerForAction( action );
+	handlerQueue.push( [ action, handler, event ] );
 
-	if (handlerQueue.length > 1) {
+	if ( handlerQueue.length > 1 ) {
 		// The handler will have to wait for the previous ones to finish.
 		return;
 	}
@@ -156,24 +150,24 @@ export function catchMessage(event) {
  *
  * @return {void}
  */
-export function startListeningForServiceMessages(iframe) {
-	const tokenProvider = iframe.closest('[data-token]');
+export function startListeningForServiceMessages( iframe ) {
+	const tokenProvider = iframe.closest( '[data-token]' );
 
-	if (!tokenProvider) {
-		console.error('No token provider found in iframe element');
+	if ( ! tokenProvider ) {
+		console.error( 'No token provider found in iframe element' );
 		return;
 	}
 
 	const token = tokenProvider.dataset.token;
 
-	if (!token) {
-		console.error('No token found in token provider element');
+	if ( ! token ) {
+		console.error( 'No token found in token provider element' );
 		return;
 	}
 
-	setToken(token);
+	setToken( token );
 
-	window.addEventListener('message', catchMessage);
+	window.addEventListener( 'message', catchMessage );
 }
 
 /**
@@ -188,41 +182,41 @@ export function startListeningForServiceMessages(iframe) {
  *
  * @return {Promise<void>} A promise that will be resolved when the connection is established.
  */
-export async function establishReadiness(iframe) {
+export async function establishReadiness( iframe ) {
 	// Before setting the iframe source, start listening for messages from the service.
-	startListeningForServiceMessages(iframe);
+	startListeningForServiceMessages( iframe );
 
 	let promiseReject;
 
 	// Build a promise that will resolve when the Service sends the ready message.
-	const promise = new Promise((resolve, reject) => {
+	const promise = new Promise( ( resolve, reject ) => {
 		promiseReject = reject;
 
 		const acknowledge = () => {
-			removeAction(INBOUND_APP_READY);
+			removeAction( INBOUND_APP_READY );
 
-			setIsReady(true);
-			setEstablishingReadiness(false);
+			setIsReady( true );
+			setEstablishingReadiness( false );
 
 			// Acknowledge the readiness, do not wait for a reply.
-			sendPostMessage(iframe, OUTBOUND_HOST_READY);
+			sendPostMessage( iframe, OUTBOUND_HOST_READY );
 
 			// Readiness is established, clear the timeout.
-			clearTimeout(timeoutId);
+			clearTimeout( timeoutId );
 
-			console.debug('Readiness established.');
+			console.debug( 'Readiness established.' );
 
 			resolve();
 		};
 
 		// When the ready message from the service is received, acknowledge the readiness, resolve the promise.
-		registerAction(INBOUND_APP_READY, acknowledge);
-	});
+		registerAction( INBOUND_APP_READY, acknowledge );
+	} );
 
 	// Seat a 3s timeout to reject the promise if the connection is not established.
-	const timeoutId = setTimeout(() => {
-		promiseReject(new Error('Connection to service timed out'));
-	}, 3000);
+	const timeoutId = setTimeout( () => {
+		promiseReject( new Error( 'Connection to service timed out' ) );
+	}, 3000 );
 
 	// Finally start loading the service in the iframe and wait for its ready message.
 	iframe.src = iframe.dataset.src;
@@ -262,7 +256,7 @@ export function emptyHandlerQueue() {
  * @return {string} The associated events URL for the given layout ID.
  */
 export function getAssociatedEventsUrl( layoutId ) {
-	return layoutId ? `${associatedEventsUrl}&layout=${layoutId}` : associatedEventsUrl;
+	return layoutId ? `${ associatedEventsUrl }&layout=${ layoutId }` : associatedEventsUrl;
 }
 
 // Re-export some functions from the state module.
@@ -281,45 +275,12 @@ export {
 	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 	SEAT_TYPES_UPDATED,
 	SEAT_TYPE_DELETED,
-	RESERVATION_UPDATED,
-	RESERVATION_CREATED,
-	getHandlerForAction,
-	getRegisteredActions,
-	getToken,
-	registerAction,
-	removeAction,
-};
-
-window.tec = window.tec || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
-window.tec.tickets.seating.service.api = {
-	...(window.tec.tickets.seating.service.api || {}),
-	INBOUND_APP_READY,
-	INBOUND_APP_READY_FOR_DATA,
-	INBOUND_SEATS_SELECTED,
-	INBOUND_SET_ELEMENT_HEIGHT,
-	OUTBOUND_EVENT_ATTENDEES,
-	OUTBOUND_HOST_READY,
-	OUTBOUND_REMOVE_RESERVATIONS,
-	OUTBOUND_SEAT_TYPE_TICKETS,
-	OUTBOUND_ATTENDEE_UPDATE,
-	RESERVATIONS_DELETED,
-	RESERVATIONS_UPDATED,
-	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
-	SEAT_TYPES_UPDATED,
-	SEAT_TYPE_DELETED,
 	GO_TO_ASSOCIATED_EVENTS,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
-	establishReadiness,
 	getHandlerForAction,
-	getHandlerQueue,
 	getRegisteredActions,
 	getToken,
 	registerAction,
 	removeAction,
-	sendPostMessage,
-	startListeningForServiceMessages,
-	getAssociatedEventsUrl,
 };

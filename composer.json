@@ -34,11 +34,11 @@
     "codeception/util-universalframework": "^1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
     "fakerphp/faker": "^1.23",
-    "lucatume/wp-browser": "^3.1.4",
+    "lucatume/wp-browser": "3.7.12",
     "lucatume/wp-snaphot-assertions": "^1.1.0",
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
-    "stellarwp/coding-standards": "dev-main",
+    "stellarwp/coding-standards": "^2.1",
     "the-events-calendar/tec-testing-facilities": "dev-master",
     "lucatume/codeception-snapshot-assertions": "^0.4.0",
     "automattic/jetpack-changelogger": "^4.2",
@@ -53,7 +53,8 @@
   "autoload-dev": {
     "psr-4": {
       "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets",
-      "TEC\\Tickets\\Tests\\Unit\\Order_Modifiers\\": "tests/wpunit/TEC/Tickets/Order_Modifiers",
+      "TEC\\Tickets\\Tests\\Unit\\": "tests/wpunit/TEC/Tickets",
+      "TEC\\Tickets\\Tests\\Order_Modifiers_Integration\\": "tests/order_modifiers_integration",
       "Tribe\\Tests\\Modules\\Tickets\\": "tests/_support/Modules",
       "Tribe\\Tests\\Tickets\\": "tests/_support",
       "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views"
@@ -70,16 +71,16 @@
     "changelogger": {
       "changelog": "changelog.md",
       "types": {
-        "version" : "Version",
-        "feat" : "Feature",
-        "tweak" : "Tweak",
-        "fix" : "Fix",
-        "performance" : "Performance",
-        "security" : "Security",
-        "accessibility" : "Accessibility",
-        "compatibility" : "Compatibility",
-        "deprecated" : "Deprecated",
-        "language" : "Language"
+        "version": "Version",
+        "feat": "Feature",
+        "fix": "Fix",
+        "tweak": "Tweak",
+        "performance": "Performance",
+        "security": "Security",
+        "accessibility": "Accessibility",
+        "compatibility": "Compatibility",
+        "deprecated": "Deprecated",
+        "language": "Language"
       },
       "formatter": {
         "filename": "bin/class-tec-changelog-formatter.php"

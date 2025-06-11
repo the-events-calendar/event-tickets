@@ -1,8 +1,5 @@
 import './style.pcss';
-import {
-	getIframeElement,
-	initServiceIframe,
-} from '@tec/tickets/seating/service/iframe';
+import { getIframeElement, initServiceIframe } from '../../service/iframe';
 import {
 	INBOUND_APP_READY_FOR_DATA,
 	INBOUND_SEATS_SELECTED,
@@ -12,15 +9,12 @@ import {
 	registerAction,
 	sendPostMessage,
 	getToken,
-} from '@tec/tickets/seating/service/api';
+} from '../../service/api';
 import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
-import { formatWithCurrency } from '@tec/tickets/seating/currency';
+import { formatWithCurrency } from '../../currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
-import {
-	start as startTimer,
-	reset as resetTimer,
-} from '@tec/tickets/seating/frontend/session';
+import { start as startTimer, reset as resetTimer } from '../../frontend/session';
 import './filters';
 
 const {
@@ -33,7 +27,7 @@ const {
 	ajaxNonce,
 	ACTION_POST_RESERVATIONS,
 	ACTION_CLEAR_RESERVATIONS,
-	sessionTimeout
+	sessionTimeout,
 } = localizedData;
 
 /**
@@ -70,15 +64,14 @@ let emptyTicketMessageElement = null;
  *
  * @type {string}
  */
-const confirmSelector =
-	'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm';
+const confirmSelector = '.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm';
 
 /**
  * @typedef {Object} SeatMapTicketEntry
  * @property {string} ticketId    The ticket ID.
  * @property {string} name        The ticket name.
  * @property {string} price       The ticket price localized and including the currency symbol.
- * @property {number} priceValue       The ticket price as a float value.
+ * @property {number} priceValue  The ticket price as a float value.
  * @property {string} description The ticket description.
  * @property {number} maxLimit    The maximum number of tickets that can be selected.
  */
@@ -95,12 +88,12 @@ const confirmSelector =
  *
  * @type {Object<string, SeatMapTicketEntry>}
  */
-const tickets = Object.values(seatTypeMap).reduce((map, seatType) => {
-	seatType.tickets.forEach((ticket) => {
-		map[ticket.ticketId] = ticket;
-	});
+const tickets = Object.values( seatTypeMap ).reduce( ( map, seatType ) => {
+	seatType.tickets.forEach( ( ticket ) => {
+		map[ ticket.ticketId ] = ticket;
+	} );
 	return map;
-}, {});
+}, {} );
 
 /**
  * The current fetch signal handler.
@@ -130,10 +123,8 @@ let shouldCancelReservations = true;
  *
  * @return {string} The formatted value.
  */
-function formatTicketNumber(value) {
-	return value === 1
-		? labels.oneTicket
-		: labels.multipleTickets.replace('{count}', value);
+function formatTicketNumber( value ) {
+	return value === 1 ? labels.oneTicket : labels.multipleTickets.replace( '{count}', value );
 }
 
 /**
@@ -145,13 +136,11 @@ function formatTicketNumber(value) {
  *
  * @return {void}
  */
-function enableCheckout(parentElement) {
+function enableCheckout( parentElement ) {
 	parentElement = parentElement || document;
-	Array.from(parentElement.querySelectorAll(confirmSelector)).forEach(
-		(confirm) => {
-			confirm.disabled = false;
-		}
-	);
+	Array.from( parentElement.querySelectorAll( confirmSelector ) ).forEach( ( confirm ) => {
+		confirm.disabled = false;
+	} );
 }
 
 /**
@@ -163,13 +152,11 @@ function enableCheckout(parentElement) {
  *
  * @return {void}
  */
-function disableCheckout(parentElement) {
+function disableCheckout( parentElement ) {
 	parentElement = parentElement || document;
-	Array.from(parentElement.querySelectorAll(confirmSelector)).forEach(
-		(confirm) => {
-			confirm.disabled = true;
-		}
-	);
+	Array.from( parentElement.querySelectorAll( confirmSelector ) ).forEach( ( confirm ) => {
+		confirm.disabled = true;
+	} );
 }
 
 /**
@@ -181,32 +168,28 @@ function disableCheckout(parentElement) {
  *
  * @return {void} The total prices and number of tickets are updated.
  */
-function updateTotals(parentElement) {
+function updateTotals( parentElement ) {
 	parentElement = parentElement || document;
-	const rows = Array.from(
-		parentElement.querySelectorAll('.tec-tickets-seating__ticket-row')
-	);
+	const rows = Array.from( parentElement.querySelectorAll( '.tec-tickets-seating__ticket-row' ) );
 
-	if (rows.length) {
-		enableCheckout(parentElement);
+	if ( rows.length ) {
+		enableCheckout( parentElement );
 	} else {
-		disableCheckout(parentElement);
+		disableCheckout( parentElement );
 	}
 
 	totalPriceElement.innerText = formatWithCurrency(
-		rows.reduce(function (acc, row) {
-			return acc + Number(row.dataset.price);
-		}, 0)
+		rows.reduce( function ( acc, row ) {
+			return acc + Number( row.dataset.price );
+		}, 0 )
 	);
-	totalTicketsElement.innerText = formatTicketNumber(rows.length);
+	totalTicketsElement.innerText = formatTicketNumber( rows.length );
 
-	const totalsWrapper = parentElement.querySelector(
-		'.tec-tickets-seating__total'
-	);
-	if (rows.length === 0) {
-		totalsWrapper.classList.add('tec-tickets-seating__total-hidden');
+	const totalsWrapper = parentElement.querySelector( '.tec-tickets-seating__total' );
+	if ( rows.length === 0 ) {
+		totalsWrapper.classList.add( 'tec-tickets-seating__total-hidden' );
 	} else {
-		totalsWrapper.classList.remove('tec-tickets-seating__total-hidden');
+		totalsWrapper.classList.remove( 'tec-tickets-seating__total-hidden' );
 	}
 }
 
@@ -229,13 +212,13 @@ function updateTotals(parentElement) {
  *
  * @return {void} The ticket row is added to the DOM.
  */
-function addTicketToSelection(parentElement, props) {
+function addTicketToSelection( parentElement, props ) {
 	parentElement = parentElement || document;
-	const priceValue = tickets?.[props.ticketId]?.priceValue || null;
-	const formattedPrice = tickets?.[props.ticketId]?.price || null;
-	const ticketName = tickets?.[props.ticketId].name || null;
+	const priceValue = tickets?.[ props.ticketId ]?.priceValue ?? null;
+	const formattedPrice = tickets?.[ props.ticketId ]?.price ?? null;
+	const ticketName = tickets?.[ props.ticketId ]?.name ?? null;
 
-	if (!(priceValue && ticketName)) {
+	if ( priceValue === null || ticketName === null ) {
 		return;
 	}
 
@@ -249,9 +232,7 @@ function addTicketToSelection(parentElement, props) {
 		formattedPrice,
 	};
 
-	parentElement
-		.querySelector('.tec-tickets-seating__ticket-rows')
-		.appendChild(TicketRow(ticketRowProps));
+	parentElement.querySelector( '.tec-tickets-seating__ticket-rows' ).appendChild( TicketRow( ticketRowProps ) );
 }
 
 /**
@@ -261,30 +242,30 @@ function addTicketToSelection(parentElement, props) {
  *
  * @param {Object} reservations The reservation IDs to post to the backend.
  */
-async function postReservationsToBackend(reservations) {
+async function postReservationsToBackend( reservations ) {
 	// First of all, cancel any similar requests that might be in progress.
-	await currentController.abort('New reservations data');
+	await currentController.abort( 'New reservations data' );
 	const newController = new AbortController();
 
-	const requestUrl = new URL(ajaxUrl);
-	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
-	requestUrl.searchParams.set('action', ACTION_POST_RESERVATIONS);
-	requestUrl.searchParams.set('postId', postId);
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', ACTION_POST_RESERVATIONS );
+	requestUrl.searchParams.set( 'postId', postId );
 	let response = null;
 
-	response = await fetch(requestUrl.toString(), {
+	response = await fetch( requestUrl.toString(), {
 		method: 'POST',
 		signal: newController.signal,
-		body: JSON.stringify({
+		body: JSON.stringify( {
 			token: getToken(),
 			reservations,
-		}),
-	});
+		} ),
+	} );
 
 	currentController = newController;
 
-	if (!response.ok) {
-		console.error('Failed to post reservations to backend');
+	if ( ! response.ok ) {
+		console.error( 'Failed to post reservations to backend' );
 		return false;
 	}
 
@@ -299,28 +280,27 @@ async function postReservationsToBackend(reservations) {
  * @param {HTMLElement|null}       parentElement The parent element to add the tickets to.
  * @param {TicketSelectionProps[]} items         The items to add to the selection.
  */
-function updateTicketsSelection(parentElement, items) {
+function updateTicketsSelection( parentElement, items ) {
 	parentElement = parentElement || document;
-	parentElement.querySelector('.tec-tickets-seating__ticket-rows').innerHTML =
-		'';
+	parentElement.querySelector( '.tec-tickets-seating__ticket-rows' ).innerHTML = '';
 
-	items.forEach((item) => {
-		addTicketToSelection(parentElement, item);
-	});
+	items.forEach( ( item ) => {
+		addTicketToSelection( parentElement, item );
+	} );
 
-	const reservations = items.reduce((acc, item) => {
-		acc[item.ticketId] = acc[item.ticketId] || [];
-		acc[item.ticketId].push({
+	const reservations = items.reduce( ( acc, item ) => {
+		acc[ item.ticketId ] = acc[ item.ticketId ] || [];
+		acc[ item.ticketId ].push( {
 			reservationId: item.reservationId,
 			seatTypeId: item.seatTypeId,
 			seatLabel: item.seatLabel,
-		});
+		} );
 		return acc;
-	}, {});
+	}, {} );
 
-	postReservationsToBackend(reservations);
+	postReservationsToBackend( reservations );
 
-	updateTotals(parentElement);
+	updateTotals( parentElement );
 }
 
 /**
@@ -330,15 +310,11 @@ function updateTicketsSelection(parentElement, items) {
  *
  * @param {number|null} ticketCount The number of selected tickets.
  */
-function updateEmptyTicketsMessage(ticketCount) {
-	if (!ticketCount) {
-		emptyTicketMessageElement.classList.remove(
-			'tec-tickets-seating__empty-tickets-message-hidden'
-		);
+function updateEmptyTicketsMessage( ticketCount ) {
+	if ( ! ticketCount ) {
+		emptyTicketMessageElement.classList.remove( 'tec-tickets-seating__empty-tickets-message-hidden' );
 	} else {
-		emptyTicketMessageElement.classList.add(
-			'tec-tickets-seating__empty-tickets-message-hidden'
-		);
+		emptyTicketMessageElement.classList.add( 'tec-tickets-seating__empty-tickets-message-hidden' );
 	}
 }
 
@@ -351,14 +327,8 @@ function updateEmptyTicketsMessage(ticketCount) {
  *
  * @return {boolean} True if the item is valid, false otherwise.
  */
-function validateSelectionItemFromService(item) {
-	return (
-		item.seatTypeId &&
-		item.ticketId &&
-		item.seatColor &&
-		item.seatLabel &&
-		item.reservationId
-	);
+function validateSelectionItemFromService( item ) {
+	return item.seatTypeId && item.ticketId && item.seatColor && item.seatLabel && item.reservationId;
 }
 
 /**
@@ -369,22 +339,22 @@ function validateSelectionItemFromService(item) {
  *
  * @param {HTMLElement} iframe The service iframe element to listen to.
  */
-function registerActions(iframe) {
+function registerActions( iframe ) {
 	// When the service is ready for data, send the seat type map to the iframe.
-	registerAction(INBOUND_APP_READY_FOR_DATA, () => {
-		removeAction(INBOUND_APP_READY_FOR_DATA);
-		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
-	});
+	registerAction( INBOUND_APP_READY_FOR_DATA, () => {
+		removeAction( INBOUND_APP_READY_FOR_DATA );
+		sendPostMessage( iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap );
+	} );
 
 	// When a seat is selected, add it to the selection.
-	registerAction(INBOUND_SEATS_SELECTED, (items) => {
+	registerAction( INBOUND_SEATS_SELECTED, ( items ) => {
 		updateTicketsSelection(
-			iframe.closest('.event-tickets'),
-			items.filter((item) => validateSelectionItemFromService(item))
+			iframe.closest( '.event-tickets' ),
+			items.filter( ( item ) => validateSelectionItemFromService( item ) )
 		);
 
-		updateEmptyTicketsMessage(items.length);
-	});
+		updateEmptyTicketsMessage( items.length );
+	} );
 }
 
 /**
@@ -395,22 +365,15 @@ function registerActions(iframe) {
  *
  * @param {HTMLElement} dom The dom or document
  */
-function toggleMobileSidebarOpen(dom) {
+function toggleMobileSidebarOpen( dom ) {
 	dom = dom || document;
 
-	dom.querySelector('.tec-tickets-seating__sidebar-arrow').addEventListener(
-		'click',
-		() => {
-			const sidebar = dom.querySelector(
-				'.tec-tickets-seating__modal-sidebar'
-			);
-			if (sidebar) {
-				sidebar.classList.toggle(
-					'tec-tickets-seating__modal-sidebar-open'
-				);
-			}
+	dom.querySelector( '.tec-tickets-seating__sidebar-arrow' ).addEventListener( 'click', () => {
+		const sidebar = dom.querySelector( '.tec-tickets-seating__modal-sidebar' );
+		if ( sidebar ) {
+			sidebar.classList.toggle( 'tec-tickets-seating__modal-sidebar-open' );
 		}
-	);
+	} );
 }
 
 /**
@@ -421,27 +384,21 @@ function toggleMobileSidebarOpen(dom) {
  *
  * @param {HTMLElement} dom The dom or document
  */
-function setupMobileTicketsDrawer(dom) {
+function setupMobileTicketsDrawer( dom ) {
 	dom = dom || document;
 
-	if (window && window.innerWidth <= 960) {
-		const iframeContainer = dom.querySelector(
-			'.tec-tickets-seating__iframe-container'
-		);
+	if ( window && window.innerWidth <= 960 ) {
+		const iframeContainer = dom.querySelector( '.tec-tickets-seating__iframe-container' );
 		iframeContainer.style.height = iframeContainer.clientHeight + 'px';
 		iframeContainer.style.maxHeight = iframeContainer.clientHeight + 'px';
 
-		const sidebarContainer = dom.querySelector(
-			'.tec-tickets-seating__modal-sidebar_container'
-		);
+		const sidebarContainer = dom.querySelector( '.tec-tickets-seating__modal-sidebar_container' );
 		sidebarContainer.style.height = sidebarContainer.clientHeight + 'px';
 		sidebarContainer.style.minHeight = sidebarContainer.clientHeight + 'px';
 		sidebarContainer.style.maxHeight = sidebarContainer.clientHeight + 'px';
 
-		const sidebar = sidebarContainer.querySelector(
-			'.tec-tickets-seating__modal-sidebar'
-		);
-		if (sidebar) {
+		const sidebar = sidebarContainer.querySelector( '.tec-tickets-seating__modal-sidebar' );
+		if ( sidebar ) {
 			sidebar.style.position = 'absolute';
 		}
 	}
@@ -456,36 +413,34 @@ function setupMobileTicketsDrawer(dom) {
  *
  * @return {Promise<boolean>} A promise that resolves to true if the iframe is ready to communicate with the service.
  */
-export async function bootstrapIframe(dom) {
+export async function bootstrapIframe( dom ) {
 	dom = dom || document;
-	const iframe = getIframeElement(dom);
+	const iframe = getIframeElement( dom );
 
-	if (!iframe) {
-		console.error('Iframe element not found.');
+	if ( ! iframe ) {
+		console.error( 'Iframe element not found.' );
 		return false;
 	}
 
 	// Register the actions before initializing the iframe to avoid race conditions.
-	registerActions(iframe);
+	registerActions( iframe );
 
 	try {
-		await initServiceIframe(iframe);
-	} catch (err) {
+		await initServiceIframe( iframe );
+	} catch ( err ) {
 		// Reload the page: the server will render a tickets block explaining what is happening.
 		window.location.reload();
 		return false;
 	}
 
-	toggleMobileSidebarOpen(dom);
-	setupMobileTicketsDrawer(dom);
+	toggleMobileSidebarOpen( dom );
+	setupMobileTicketsDrawer( dom );
 
-	totalPriceElement = dom.querySelector('.tec-tickets-seating__total-price');
+	totalPriceElement = dom.querySelector( '.tec-tickets-seating__total-price' );
 
-	totalTicketsElement = dom.querySelector('.tec-tickets-seating__total-text');
+	totalTicketsElement = dom.querySelector( '.tec-tickets-seating__total-text' );
 
-	emptyTicketMessageElement = dom.querySelector(
-		'.tec-tickets-seating__empty-tickets-message'
-	);
+	emptyTicketMessageElement = dom.querySelector( '.tec-tickets-seating__empty-tickets-message' );
 }
 
 /**
@@ -498,24 +453,24 @@ export async function bootstrapIframe(dom) {
  */
 async function cancelReservationsOnBackend() {
 	// First of all, cancel any similar requests that might be in progress.
-	await currentController.abort('New reservations data');
+	await currentController.abort( 'New reservations data' );
 	const newController = new AbortController();
 
-	const requestUrl = new URL(ajaxUrl);
-	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
-	requestUrl.searchParams.set('action', ACTION_CLEAR_RESERVATIONS);
-	requestUrl.searchParams.set('token', getToken());
-	requestUrl.searchParams.set('postId', postId);
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', ACTION_CLEAR_RESERVATIONS );
+	requestUrl.searchParams.set( 'token', getToken() );
+	requestUrl.searchParams.set( 'postId', postId );
 
-	const response = await fetch(requestUrl.toString(), {
+	const response = await fetch( requestUrl.toString(), {
 		signal: newController.signal,
 		method: 'POST',
-	});
+	} );
 
 	currentController = newController;
 
-	if (!response.ok) {
-		console.error('Failed to remove reservations from backend');
+	if ( ! response.ok ) {
+		console.error( 'Failed to remove reservations from backend' );
 		return false;
 	}
 
@@ -531,12 +486,10 @@ async function cancelReservationsOnBackend() {
  */
 function clearTicketSelection() {
 	Array.from(
-		document.querySelectorAll(
-			'.tec-tickets-seating__ticket-rows .tec-tickets-seating__ticket-row'
-		)
-	).forEach((row) => {
+		document.querySelectorAll( '.tec-tickets-seating__ticket-rows .tec-tickets-seating__ticket-row' )
+	).forEach( ( row ) => {
 		row.remove();
-	});
+	} );
 }
 
 /**
@@ -546,19 +499,17 @@ function clearTicketSelection() {
  *
  * @param {HTMLElement|null} dialogElement The dialog element the iframe element that should be used to communicate with the service.
  */
-export async function cancelReservations(dialogElement) {
-	if (!shouldCancelReservations) {
+export async function cancelReservations( dialogElement ) {
+	if ( ! shouldCancelReservations ) {
 		return;
 	}
 
 	const iframe = dialogElement
-		? dialogElement.querySelector(
-				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
-		  )
+		? dialogElement.querySelector( '.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe' )
 		: null;
 
-	if (iframe) {
-		sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
+	if ( iframe ) {
+		sendPostMessage( iframe, OUTBOUND_REMOVE_RESERVATIONS );
 	}
 
 	await cancelReservationsOnBackend();
@@ -574,9 +525,9 @@ export async function cancelReservations(dialogElement) {
  * @return {void} The modal is closed.
  */
 export function closeModal() {
-	const modal = window?.[objectName];
+	const modal = window?.[ objectName ];
 
-	if (!modal) {
+	if ( ! modal ) {
 		return;
 	}
 
@@ -599,31 +550,26 @@ export function closeModal() {
  */
 function readTicketsFromSelection() {
 	const ticketsFromSelection = Array.from(
-		document.querySelectorAll(
-			'.tec-tickets-seating__ticket-rows .tec-tickets-seating__ticket-row'
-		)
-	).reduce((acc, row) => {
+		document.querySelectorAll( '.tec-tickets-seating__ticket-rows .tec-tickets-seating__ticket-row' )
+	).reduce( ( acc, row ) => {
 		const ticketId = row.dataset.ticketId;
 
-		if (!acc?.[ticketId]) {
-			acc[ticketId] = {
+		if ( ! acc?.[ ticketId ] ) {
+			acc[ ticketId ] = {
 				ticket_id: ticketId,
 				quantity: 1,
 				optout: '1', // @todo: actually pull this from the Attendee data collection.
-				seat_labels: [row.dataset.seatLabel],
+				seat_labels: [ row.dataset.seatLabel ],
 			};
 		} else {
-			acc[ticketId].quantity++;
-			acc[ticketId].seat_labels = [
-				...acc[ticketId].seat_labels,
-				row.dataset.seatLabel,
-			];
+			acc[ ticketId ].quantity++;
+			acc[ ticketId ].seat_labels = [ ...acc[ ticketId ].seat_labels, row.dataset.seatLabel ];
 		}
 
 		return acc;
-	}, {});
+	}, {} );
 
-	return Object.values(ticketsFromSelection);
+	return Object.values( ticketsFromSelection );
 }
 
 /**
@@ -637,36 +583,34 @@ function readTicketsFromSelection() {
 async function proceedToCheckout() {
 	// The seat selection modal will be hidden or destroyed, so we should not cancel the reservations.
 	shouldCancelReservations = false;
-	const checkoutHandler = getCheckoutHandlerForProvider(providerClass);
+	const checkoutHandler = getCheckoutHandlerForProvider( providerClass );
 
-	if (!checkoutHandler) {
-		console.error(
-			`No checkout handler found for provider ${providerClass}`
-		);
+	if ( ! checkoutHandler ) {
+		console.error( `No checkout handler found for provider ${ providerClass }` );
 		return;
 	}
 
 	const data = new FormData();
-	data.append('provider', providerClass);
-	data.append('attendee[optout]', '1');
-	data.append('tickets_tickets_ar', '1');
+	data.append( 'provider', providerClass );
+	data.append( 'attendee[optout]', '1' );
+	data.append( 'tickets_tickets_ar', '1' );
 
 	const selectedTickets = readTicketsFromSelection();
 
-	data.append('tribe_tickets_saving_attendees', '1');
+	data.append( 'tribe_tickets_saving_attendees', '1' );
 	data.append(
 		'tribe_tickets_ar_data',
-		JSON.stringify({
+		JSON.stringify( {
 			tribe_tickets_tickets: selectedTickets,
 			tribe_tickets_meta: [],
 			tribe_tickets_post_id: postId,
-		})
+		} )
 	);
 
-	const ok = await checkoutHandler(data);
+	const ok = await checkoutHandler( data );
 
-	if (!ok) {
-		console.error('Failed to proceed to checkout.');
+	if ( ! ok ) {
+		console.error( 'Failed to proceed to checkout.' );
 	}
 
 	shouldCancelReservations = true;
@@ -679,21 +623,21 @@ async function proceedToCheckout() {
  *
  * @param {A11yDialog} dialogElement The A11y dialog element.
  */
-export function setExpireDate(dialogElement) {
+export function setExpireDate( dialogElement ) {
 	const iframe = dialogElement
 		? dialogElement?.node?.querySelector(
 				'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
 		  )
 		: null;
 
-	if (!iframe) {
+	if ( ! iframe ) {
 		return;
 	}
 
 	// If the session timeout is not set then use the default value of 15 minutes.
-	const sessionTimeoutInSeconds = sessionTimeout ? Number(sessionTimeout) : 15 * 60;
+	const sessionTimeoutInSeconds = sessionTimeout ? Number( sessionTimeout ) : 15 * 60;
 
-	iframe.src = iframe.src + '&expireDate=' + (Date.now() + sessionTimeoutInSeconds * 1000);
+	iframe.src = iframe.src + '&expireDate=' + ( Date.now() + sessionTimeoutInSeconds * 1000 );
 }
 
 /**
@@ -705,24 +649,20 @@ export function setExpireDate(dialogElement) {
  */
 export function addModalEventListeners() {
 	document
-		.querySelector(
-			'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--cancel'
-		)
-		?.addEventListener('click', closeModal);
-	document
-		.querySelector(confirmSelector)
-		?.addEventListener('click', proceedToCheckout);
+		.querySelector( '.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--cancel' )
+		?.addEventListener( 'click', closeModal );
+	document.querySelector( confirmSelector )?.addEventListener( 'click', proceedToCheckout );
 
 	startTimer();
 
-	const modal = window[objectName];
+	const modal = window[ objectName ];
 
-	if (!modal) {
+	if ( ! modal ) {
 		return;
 	}
 
-	modal.on('hide', cancelReservations);
-	modal.on('destroy', cancelReservations);
+	modal.on( 'hide', cancelReservations );
+	modal.on( 'destroy', cancelReservations );
 }
 
 /**
@@ -731,32 +671,24 @@ export function addModalEventListeners() {
  * @return {Promise<Element>} A promise that resolves to the modal element.
  */
 async function waitForModalElement() {
-	return new Promise((resolve) => {
+	return new Promise( ( resolve ) => {
 		const check = () => {
-			if (window[objectName]) {
-				resolve(window[objectName]);
+			if ( window[ objectName ] ) {
+				resolve( window[ objectName ] );
+				return;
 			}
-			setTimeout(check, 50);
+			setTimeout( check, 50 );
 		};
 
 		check();
-	});
+	} );
 }
 
-waitForModalElement().then((modalElement) => {
-	modalElement.on('show', () => {
+waitForModalElement().then( ( modalElement ) => {
+	modalElement.on( 'show', () => {
 		disableCheckout();
-		bootstrapIframe(document);
+		bootstrapIframe( document );
 		addModalEventListeners();
-		setExpireDate(modalElement);
-	});
-});
-
-window.tec = window.tec || {};
-window.tec.tickets = window.tec.tickets || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
-window.tec.tickets.seating.frontend.ticketsBlock = {
-	...(window.tec.tickets.seating.frontend.ticketsBlock || {}),
-	cancelReservations,
-};
+		setExpireDate( modalElement );
+	} );
+} );

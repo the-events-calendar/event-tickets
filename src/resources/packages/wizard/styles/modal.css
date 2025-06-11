@@ -1,0 +1,38 @@
+/* -----------------------------------------------------------------------------
+ * Modal Styles
+ * ----------------------------------------------------------------------------- */
+.components-modal__frame.tec-onboarding__modal {
+	background: none;
+	background-color: var(--tec-wp-core-grey-2);
+}
+
+/* -----------------------------------------------------------------------------
+ * Make full-screen modals FULL SCREEN
+ * ----------------------------------------------------------------------------- */
+.is-full-screen.components-modal__frame.tec-onboarding__modal {
+	border-radius: 0;
+	height: 100vh;
+	margin: 0;
+	max-width: 100vw;
+	min-height: 100%;
+	min-width: 100%;
+	width: 100vw;
+}
+
+/* -----------------------------------------------------------------------------
+ * Modal Content
+ * ----------------------------------------------------------------------------- */
+.tec-onboarding__modal .components-modal__content {
+	margin: 0;
+	padding: var(--tec-spacer-7);
+}
+
+@media (min-width: 500px) {
+	.tec-onboarding__modal .components-modal__content {
+		padding: 0 var(--tec-spacer-3) var(--tec-spacer-7);
+	}
+}
+
+.tec-onboarding__modal .components-modal__header {
+	display: none;
+}

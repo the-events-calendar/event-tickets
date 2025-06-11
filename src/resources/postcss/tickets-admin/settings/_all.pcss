@@ -42,12 +42,12 @@
 	vertical-align: middle;
 	width: 36px;
 
-	&:before,
-	&:after {
+	&::before,
+	&::after {
 		content: "";
 	}
 
-	&:before {
+	&::before {
 		background: linear-gradient(to bottom, #fff 0%, #eee 100%);
 		border-radius: 50%;
 		display: block;
@@ -59,14 +59,14 @@
 		width: 12px;
 	}
 
-	.tec-tickets__admin-settings-toggle-large:hover &:before {
+	.tec-tickets__admin-settings-toggle-large:hover &::before {
 		background: linear-gradient(to bottom, #fff 0%, #fff 100%);
 	}
 
 	.tec-tickets__admin-settings-toggle-large-checkbox:checked + & {
 		background-color: #2271b1;
 
-		&:before {
+		&::before {
 			left: 20px;
 		}
 	}

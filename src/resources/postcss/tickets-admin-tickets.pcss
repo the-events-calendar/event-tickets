@@ -3,7 +3,32 @@
  *
  * @since 5.14.0
  */
+.tec-admin-page--simple {
+	.tec-admin-page__header {
+		position: inherit;
+	}
+	
+	.tec-admin-page__content {
+		margin: 0;
+	}
+
+	.tec-tickets__admin-tickets {
+		margin: 0;
+	}
+
+	.nav-tab-wrapper {
+		a:first-child {
+			margin-left: 0;
+		}
+	}
+}
+
 .tickets_page_tec-tickets-admin-tickets {
+
+	#wpcontent {
+		padding-left: 20px;
+	}
+
 	th,
 	td {
 		padding: var(--tec-spacer-1) var(--tec-spacer-3);
@@ -26,6 +51,7 @@
 	}
 
 	table.wp-list-table {
+
 		.column-price,
 		.column-sold,
 		.column-remaining,
@@ -33,10 +59,7 @@
 		.column-sales,
 		.column-end,
 		.column-start {
-			text-align: center;
 			white-space: nowrap;
-			width: 1%;
-
 			@media (max-width: 782px) {
 				text-align: left;
 				width: auto;
@@ -46,18 +69,10 @@
 		.column-id {
 			text-align: left;
 			white-space: nowrap;
-			width: 1%;
 
 			@media (max-width: 782px) {
 				width: auto;
 			}
-		}
-
-		th.sortable > a,
-		th.sorted > a {
-			align-items: center;
-			display: flex;
-			justify-content: flex-end;
 		}
 
 		th.column-id.sortable > a,
@@ -89,6 +104,7 @@
 	}
 
 	@media (max-width: 782px) {
+
 		.tablenav.top {
 			margin-top: var(--tec-spacer-1);
 

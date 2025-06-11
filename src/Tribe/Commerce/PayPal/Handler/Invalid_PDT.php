@@ -30,7 +30,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__T
 	 *
 	 * @since 4.7
 	 *
-	 * @param $transaction
+	 * @param mixed $transaction The transaction.
 	 *
 	 * @return array|bool
 	 */

@@ -3,7 +3,7 @@ import './style.pcss';
 import { doAction, applyFilters } from '@wordpress/hooks';
 import { InterruptDialogComponent } from './interrupt-dialog-component';
 import { _x } from '@wordpress/i18n';
-import { onReady } from '@tec/tickets/seating/utils';
+import { onReady } from '../../utils';
 
 const {
 	ajaxUrl,
@@ -121,10 +121,12 @@ let watchedCheckoutControls = [];
  *
  * @since 5.16.0
  *
- * @type {string}
+ * @type {string[]}
  */
-export const checkoutControlsSelectors =
-	'.tribe-tickets__commerce-checkout-form-submit-button, .tribe-tickets__commerce-checkout-paypal-buttons button';
+export const checkoutControlsSelectors = [
+	'.tribe-tickets__commerce-checkout-form-submit-button',
+	'.tribe-tickets__commerce-checkout-paypal-buttons button',
+];
 
 /**
  * Sets the interruptable flag.
@@ -133,7 +135,7 @@ export const checkoutControlsSelectors =
  *
  * @param {boolean} interruptableFlag The interruptable flag.
  */
-export function setIsInterruptable(interruptableFlag) {
+export function setIsInterruptable( interruptableFlag ) {
 	interruptable = interruptableFlag;
 }
 
@@ -155,7 +157,7 @@ export function isInterruptable() {
  *
  * @param {boolean} expiredFlag The expired flag.
  */
-function setIsExpired(expiredFlag) {
+function setIsExpired( expiredFlag ) {
 	expired = expiredFlag;
 }
 
@@ -177,7 +179,7 @@ export function isExpired() {
  *
  * @param {boolean} startedFlag The started flag.
  */
-function setIsStarted(startedFlag) {
+function setIsStarted( startedFlag ) {
 	started = startedFlag;
 }
 
@@ -207,7 +209,7 @@ export function isStarted() {
  * @return {NodeList<HTMLElement>} All the timer elements on the page.
  */
 function getTimerElements() {
-	return targetDom.querySelectorAll(selector);
+	return targetDom.querySelectorAll( selector );
 }
 
 /**
@@ -222,28 +224,24 @@ function getTimerElements() {
 export function findTimerData() {
 	const sourceTimerElements = getTimerElements();
 
-	if (sourceTimerElements.length === 0) {
+	if ( sourceTimerElements.length === 0 ) {
 		return null;
 	}
 
 	let token = null;
 	let postId = null;
 	let redirectUrl = null;
-	Array.from(sourceTimerElements).find((timerElement) => {
-		if (
-			timerElement.dataset.token &&
-			timerElement.dataset.postId &&
-			timerElement.dataset.redirectUrl
-		) {
+	Array.from( sourceTimerElements ).find( ( timerElement ) => {
+		if ( timerElement.dataset.token && timerElement.dataset.postId && timerElement.dataset.redirectUrl ) {
 			token = timerElement.dataset.token;
 			postId = timerElement.dataset.postId;
 			redirectUrl = timerElement.dataset.redirectUrl;
 			return true;
 		}
 		return false;
-	});
+	} );
 
-	if (!(token && postId && redirectUrl)) {
+	if ( ! ( token && postId && redirectUrl ) ) {
 		return null;
 	}
 
@@ -265,21 +263,17 @@ export function findTimerData() {
  * @param {number}      minutes
  * @param {number}      seconds
  */
-function setTimerTimeLeft(timerElement, minutes, seconds) {
-	timerElement.classList.remove(hiddenClassName);
-	const minutesElement = timerElement.querySelector(
-		'.tec-tickets-seating__time-minutes'
-	);
-	const secondsElement = timerElement.querySelector(
-		'.tec-tickets-seating__time-seconds'
-	);
+function setTimerTimeLeft( timerElement, minutes, seconds ) {
+	timerElement.classList.remove( hiddenClassName );
+	const minutesElement = timerElement.querySelector( '.tec-tickets-seating__time-minutes' );
+	const secondsElement = timerElement.querySelector( '.tec-tickets-seating__time-seconds' );
 
-	if (!minutesElement || !secondsElement) {
+	if ( ! minutesElement || ! secondsElement ) {
 		return;
 	}
 
 	minutesElement.innerText = minutes;
-	secondsElement.innerText = String(seconds).padStart(2, '0');
+	secondsElement.innerText = String( seconds ).padStart( 2, '0' );
 }
 
 /**
@@ -298,44 +292,36 @@ function setTimerTimeLeft(timerElement, minutes, seconds) {
  */
 async function fetchInterruptModalData() {
 	const { postId, token } = findTimerData();
-	const requestUrl = new URL(ajaxUrl);
-	requestUrl.searchParams.set('_ajaxNonce', ajaxNonce);
-	requestUrl.searchParams.set('action', ACTION_INTERRUPT_GET_DATA);
-	requestUrl.searchParams.set('postId', postId);
-	requestUrl.searchParams.set('token', token);
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajaxNonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', ACTION_INTERRUPT_GET_DATA );
+	requestUrl.searchParams.set( 'postId', postId );
+	requestUrl.searchParams.set( 'token', token );
 
-	const response = await fetch(requestUrl.toString(), {
+	const response = await fetch( requestUrl.toString(), {
 		method: 'GET',
-	});
+	} );
 
 	const defaultData = {
-		title: _x(
-			'Time limit expired',
-			'Seat selection expired timer title',
-			'event-tickets'
-		),
+		title: _x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
 		content: _x(
 			'Your seat selections are no longer reserved, but tickets are still available.',
 			'Seat selection expired timer content',
 			'event-tickets'
 		),
-		buttonLabel: _x(
-			'Find Seats',
-			'Seat selection expired timer button label',
-			'event-tickets'
-		),
+		buttonLabel: _x( 'Find Seats', 'Seat selection expired timer button label', 'event-tickets' ),
 		redirectUrl: window.location.href,
 	};
 
-	if (!response.ok) {
-		console.error('Failed to fetch interrupt modal data');
+	if ( ! response.ok ) {
+		console.error( 'Failed to fetch interrupt modal data' );
 		return defaultData;
 	}
 
 	const responseJson = await response.json();
 
-	if (!(responseJson.success && responseJson.data)) {
-		console.error('Failed to fetch interrupt modal data');
+	if ( ! ( responseJson.success && responseJson.data ) ) {
+		console.error( 'Failed to fetch interrupt modal data' );
 		return defaultData;
 	}
 
@@ -355,18 +341,16 @@ async function fetchInterruptModalData() {
  * @return {A11yDialog|null} Either the interrupt dialog element or `null` if it could not be found.
  */
 async function getInterruptDialogElement() {
-	const firstTimerElement = getTimerElements()?.[0];
+	const firstTimerElement = getTimerElements()?.[ 0 ];
 
-	if (!firstTimerElement) {
-		console.warn('No timer element found');
+	if ( ! firstTimerElement ) {
+		console.warn( 'No timer element found' );
 		return null;
 	}
 
-	const dialogDataJSAttribute =
-		'dialog-content-tec-tickets-seating-timer-interrupt';
+	const dialogDataJSAttribute = 'dialog-content-tec-tickets-seating-timer-interrupt';
 
-	const { title, content, buttonLabel, redirectUrl } =
-		await fetchInterruptModalData();
+	const { title, content, buttonLabel, redirectUrl } = await fetchInterruptModalData();
 
 	// The `A11yDialog` library will read this data attribute to find the dialog element..
 	firstTimerElement.dataset.content = dialogDataJSAttribute;
@@ -375,38 +359,34 @@ async function getInterruptDialogElement() {
 	let appendTarget = '.tec-tickets-seating__timer';
 
 	// Are we rendering inside another dialog?
-	const dialogParent = firstTimerElement.closest('.tribe-dialog');
+	const dialogParent = firstTimerElement.closest( '.tribe-dialog' );
 
-	if (dialogParent) {
+	if ( dialogParent ) {
 		// If the timer element is being rendered in the context of a dialog, then attach the dialog to that dialog parent.
-		appendTarget =
-			'.tribe-tickets__tickets-form, .tec-tickets-seating__tickets-block';
+		appendTarget = '.tribe-tickets__tickets-form, .tec-tickets-seating__tickets-block';
 	}
 
-	if (!interruptDialogElement) {
-		interruptDialogElement = InterruptDialogComponent({
+	if ( ! interruptDialogElement ) {
+		interruptDialogElement = InterruptDialogComponent( {
 			dataJs: dialogDataJSAttribute,
 			title,
 			content,
 			buttonLabel,
 			redirectUrl,
-		});
+		} );
 
-		targetDom
-			.querySelector(appendTarget)
-			?.appendChild(interruptDialogElement);
+		targetDom.querySelector( appendTarget )?.appendChild( interruptDialogElement );
 	}
 
 	// @see tec-a11y-dialog.js in Common.
-	return new A11yDialog({
+	return new window.tec.common.tecA11yDialog( {
 		trigger: '.tec-tickets-seating__timer',
 		appendTarget,
 		wrapperClasses: 'tribe-dialog',
 		overlayClasses: 'tribe-dialog__overlay tribe-modal__overlay',
-		contentClasses:
-			'tribe-dialog__wrapper tribe-tickets-seating__interrupt-wrapper',
+		contentClasses: 'tribe-dialog__wrapper tribe-tickets-seating__interrupt-wrapper',
 		overlayClickCloses: false,
-	});
+	} );
 }
 
 /**
@@ -416,21 +396,21 @@ async function getInterruptDialogElement() {
  *
  * @return {void} The timer is interrupted.
  */
-async function interrupt() {
-	if (!isInterruptable()) {
-		return;
+export async function interrupt() {
+	if ( ! isInterruptable() ) {
+		return true;
 	}
 
-	setIsInterruptable(true);
+	setIsInterruptable( true );
 
-	getTimerElements().forEach((timerElement) => {
-		setTimerTimeLeft(timerElement, 0, 0);
-	});
+	getTimerElements().forEach( ( timerElement ) => {
+		setTimerTimeLeft( timerElement, 0, 0 );
+	} );
 
-	setIsExpired(true);
-	clearTimeout(countdownTimeoutId);
+	setIsExpired( true );
+	clearTimeout( countdownTimeoutId );
 	countdownTimeoutId = null;
-	clearTimeout(healthCheckTimeoutId);
+	clearTimeout( healthCheckTimeoutId );
 	healthCheckTimeoutId = null;
 	const interruptDialog = await getInterruptDialogElement();
 
@@ -439,15 +419,15 @@ async function interrupt() {
 	 *
 	 * @since 5.16.0
 	 */
-	doAction('tec.tickets.seating.timer_interrupt');
+	doAction( 'tec.tickets.seating.timer_interrupt' );
 
-	if (interruptDialog) {
+	if ( interruptDialog ) {
 		interruptDialog.show();
 		// This is a  hack to prevent the user from being able to dismiss or close the dialog.
 		interruptDialog.shown = false;
 	}
 
-	setIsInterruptable(false);
+	setIsInterruptable( false );
 }
 
 /**
@@ -458,18 +438,18 @@ async function interrupt() {
  * @return {void} The timer is interrupted.
  */
 export function beaconInterrupt() {
-	if (!isInterruptable()) {
+	if ( ! isInterruptable() ) {
 		return;
 	}
 
 	const { postId, token } = findTimerData();
-	const requestUrl = new URL(ajaxUrl);
-	requestUrl.searchParams.set('_ajaxNonce', ajaxNonce);
-	requestUrl.searchParams.set('action', ACTION_INTERRUPT_GET_DATA);
-	requestUrl.searchParams.set('postId', postId);
-	requestUrl.searchParams.set('token', token);
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajaxNonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', ACTION_INTERRUPT_GET_DATA );
+	requestUrl.searchParams.set( 'postId', postId );
+	requestUrl.searchParams.set( 'token', token );
 
-	window.navigator.sendBeacon(requestUrl.toString());
+	window.navigator.sendBeacon( requestUrl.toString() );
 }
 
 /**
@@ -481,33 +461,25 @@ export function beaconInterrupt() {
  *
  * @return {void}
  */
-function startCountdownLoop(secondsLeft) {
-	if (!isInterruptable()) {
-		return;
-	}
-
-	if (secondsLeft <= 0) {
+function startCountdownLoop( secondsLeft ) {
+	if ( secondsLeft <= 0 ) {
 		interrupt();
 
 		return;
 	}
 
-	setIsStarted(true);
+	setIsStarted( true );
 
-	countdownTimeoutId = setTimeout(() => {
+	countdownTimeoutId = setTimeout( () => {
 		secondsLeft -= 1;
-		getTimerElements().forEach((timerElement) => {
-			setTimerTimeLeft(
-				timerElement,
-				Math.floor(secondsLeft / 60),
-				secondsLeft % 60
-			);
-		});
+		getTimerElements().forEach( ( timerElement ) => {
+			setTimerTimeLeft( timerElement, Math.floor( secondsLeft / 60 ), secondsLeft % 60 );
+		} );
 
-		if (!isExpired()) {
-			startCountdownLoop(secondsLeft);
+		if ( ! isExpired() ) {
+			startCountdownLoop( secondsLeft );
 		}
-	}, 1000);
+	}, 1000 );
 }
 
 /**
@@ -518,14 +490,14 @@ function startCountdownLoop(secondsLeft) {
  * @return {void}
  */
 function startHealthCheckLoop() {
-	if (isExpired() || !isInterruptable()) {
+	if ( isExpired() ) {
 		return;
 	}
 
-	healthCheckTimeoutId = setTimeout(async () => {
+	healthCheckTimeoutId = setTimeout( async () => {
 		await syncWithBackend();
 		startHealthCheckLoop();
-	}, 3 * 1000);
+	}, 3 * 1000 );
 }
 
 /**
@@ -538,24 +510,24 @@ function startHealthCheckLoop() {
  * @return {Promise<void>} A promise that will resolve when the request is completed.
  */
 export async function syncWithBackend() {
-	if (isExpired() || getTimerElements().length === 0 || !isInterruptable()) {
+	if ( isExpired() || getTimerElements().length === 0 ) {
 		return;
 	}
 
-	const secondsLeft = await requestToBackend(ACTION_SYNC);
+	const secondsLeft = await requestToBackend( ACTION_SYNC );
 
-	if (secondsLeft <= 0) {
+	if ( secondsLeft <= 0 ) {
 		interrupt();
 		return;
 	}
 
-	if (countdownTimeoutId) {
-		clearTimeout(countdownTimeoutId);
+	if ( countdownTimeoutId ) {
+		clearTimeout( countdownTimeoutId );
 		countdownTimeoutId = null;
 	}
 
-	startCountdownLoop(secondsLeft);
-	if (!healthCheckTimeoutId) {
+	startCountdownLoop( secondsLeft );
+	if ( ! healthCheckTimeoutId ) {
 		startHealthCheckLoop();
 	}
 }
@@ -570,44 +542,34 @@ export async function syncWithBackend() {
   @return {Promise<number|boolean>} A promise that will resolve to the number of seconds left
  *                                  in the timer or `false` if the request failed.
  */
-async function requestToBackend(action) {
+async function requestToBackend( action ) {
 	const timerData = findTimerData();
 
-	if (timerData === null) {
+	if ( timerData === null ) {
 		return false;
 	}
 
-	if (
-		[ACTION_START, ACTION_SYNC, ACTION_PAUSE_TO_CHECKOUT].indexOf(
-			action
-		) === -1
-	) {
+	if ( [ ACTION_START, ACTION_SYNC, ACTION_PAUSE_TO_CHECKOUT ].indexOf( action ) === -1 ) {
 		return false;
 	}
 
-	const requestUrl = new URL(ajaxUrl);
-	requestUrl.searchParams.set('_ajaxNonce', ajaxNonce);
-	requestUrl.searchParams.set('action', action);
-	requestUrl.searchParams.set('token', timerData.token);
-	requestUrl.searchParams.set('postId', timerData.postId);
-	const response = await fetch(requestUrl.toString(), {
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajaxNonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', action );
+	requestUrl.searchParams.set( 'token', timerData.token );
+	requestUrl.searchParams.set( 'postId', timerData.postId );
+	const response = await fetch( requestUrl.toString(), {
 		method: 'POST',
-	});
+	} );
 
-	if (!response.ok) {
+	if ( ! response.ok ) {
 		return false;
 	}
 
 	const responseJson = await response.json();
 
-	if (
-		!(
-			responseJson.success &&
-			responseJson.data.secondsLeft &&
-			responseJson.data.timestamp
-		)
-	) {
-		console.error('Failed to communicate with the backend');
+	if ( ! ( responseJson.success && responseJson.data.secondsLeft && responseJson.data.timestamp ) ) {
+		console.error( 'Failed to communicate with the backend' );
 
 		return false;
 	}
@@ -629,11 +591,7 @@ async function requestToBackend(action) {
 	 * Do not allow the time to increase due to the browser's inaccuracy.
 	 */
 	return (
-		startTimerResponse.secondsLeft -
-		Math.max(
-			0,
-			Math.floor(startTimerResponse.timestamp - Date.now() / 1000)
-		)
+		startTimerResponse.secondsLeft - Math.max( 0, Math.floor( startTimerResponse.timestamp - Date.now() / 1000 ) )
 	);
 }
 
@@ -645,28 +603,28 @@ async function requestToBackend(action) {
  * @return {Promise<void>} A Promise that resolves when the timer is started.
  */
 export async function start() {
-	if (setIsStarted() || getTimerElements().length === 0) {
+	if ( setIsStarted() || getTimerElements().length === 0 ) {
 		return;
 	}
 
-	const secondsLeft = await requestToBackend(ACTION_START);
+	const secondsLeft = await requestToBackend( ACTION_START );
 	const { postId, token } = findTimerData();
 
-	if (!(secondsLeft && postId && token)) {
+	if ( ! ( secondsLeft && postId && token ) ) {
 		// The timer could not be started, communication with the backend failed. Restart the flow.
 		interrupt();
 		return;
 	}
 
-	const minutes = Math.floor(secondsLeft / 60);
+	const minutes = Math.floor( secondsLeft / 60 );
 	const seconds = secondsLeft % 60;
 
-	getTimerElements().forEach((timerElement) => {
-		setTimerTimeLeft(timerElement, minutes, seconds);
-	});
+	getTimerElements().forEach( ( timerElement ) => {
+		setTimerTimeLeft( timerElement, minutes, seconds );
+	} );
 
-	setIsStarted(true);
-	startCountdownLoop(secondsLeft);
+	setIsStarted( true );
+	startCountdownLoop( secondsLeft );
 	startHealthCheckLoop();
 }
 
@@ -678,16 +636,16 @@ export async function start() {
  * @return {void} The timer is reset.
  */
 export function reset() {
-	if (countdownTimeoutId) {
-		clearTimeout(countdownTimeoutId);
+	if ( countdownTimeoutId ) {
+		clearTimeout( countdownTimeoutId );
 	}
 
-	if (healthCheckTimeoutId) {
-		clearTimeout(healthCheckTimeoutId);
+	if ( healthCheckTimeoutId ) {
+		clearTimeout( healthCheckTimeoutId );
 	}
 
-	if (resumeTimeoutId) {
-		clearTimeout(resumeTimeoutId);
+	if ( resumeTimeoutId ) {
+		clearTimeout( resumeTimeoutId );
 	}
 
 	started = false;
@@ -709,30 +667,30 @@ export function reset() {
  *
  * @return {void}
  */
-export function pause(resumeInSeconds) {
+export function pause( resumeInSeconds ) {
 	// By default, do not resume.
 	resumeInSeconds = resumeInSeconds || 0;
 
-	setIsInterruptable(false);
+	setIsInterruptable( false );
 
-	if (healthCheckTimeoutId) {
+	if ( healthCheckTimeoutId ) {
 		// Pause the healthcheck loop.
-		clearTimeout(healthCheckTimeoutId);
+		clearTimeout( healthCheckTimeoutId );
 		healthCheckTimeoutId = null;
 	}
 
-	if (countdownTimeoutId) {
+	if ( countdownTimeoutId ) {
 		// Pause the countdown loop.
-		clearTimeout(countdownTimeoutId);
+		clearTimeout( countdownTimeoutId );
 		countdownTimeoutId = null;
 	}
 
-	if (!resumeInSeconds) {
+	if ( ! resumeInSeconds ) {
 		return;
 	}
 
 	// Postpone the healthcheck for 60 seconds.
-	resumeTimeoutId = setTimeout(resume, resumeInSeconds * 1000);
+	resumeTimeoutId = setTimeout( resume, resumeInSeconds * 1000 );
 }
 
 /**
@@ -744,14 +702,14 @@ export function pause(resumeInSeconds) {
  * @return {Promise<void>} A promise that will resolve when the backend received the signal and the timer paused.
  */
 export async function pauseToCheckout() {
-	const secondsLeft = await requestToBackend(ACTION_PAUSE_TO_CHECKOUT);
+	const secondsLeft = await requestToBackend( ACTION_PAUSE_TO_CHECKOUT );
 
-	if (secondsLeft <= 0) {
+	if ( secondsLeft <= 0 ) {
 		interrupt();
 		return;
 	}
 
-	pause(checkoutGraceTime);
+	pause( checkoutGraceTime );
 }
 
 /**
@@ -762,12 +720,12 @@ export async function pauseToCheckout() {
  * @return {void} The timer is resumed.
  */
 export async function resume() {
-	if (resumeTimeoutId) {
-		clearTimeout(resumeTimeoutId);
+	if ( resumeTimeoutId ) {
+		clearTimeout( resumeTimeoutId );
 		resumeTimeoutId = null;
 	}
 
-	setIsInterruptable(true);
+	setIsInterruptable( true );
 	await syncWithBackend();
 }
 
@@ -780,7 +738,7 @@ export async function resume() {
  *
  * @param {HTMLElement} targetDocument The DOM to initialize the timer(s) in.
  */
-export function setTargetDom(targetDocument) {
+export function setTargetDom( targetDocument ) {
 	targetDom = targetDocument || document;
 }
 
@@ -792,20 +750,18 @@ export function setTargetDom(targetDocument) {
  * @return {void} The timer is synced.
  */
 export async function syncOnLoad() {
-	const syncTimerElements = Array.from(getTimerElements()).filter(
-		(syncTimerElement) => {
-			return 'syncOnLoad' in syncTimerElement.dataset;
-		}
-	);
+	const syncTimerElements = Array.from( getTimerElements() ).filter( ( syncTimerElement ) => {
+		return 'syncOnLoad' in syncTimerElement.dataset;
+	} );
 
-	if (syncTimerElements.length === 0) {
+	if ( syncTimerElements.length === 0 ) {
 		return;
 	}
 
-	setIsInterruptable(true);
+	setIsInterruptable( true );
 
 	// On page/tab close (or app close in some instances) interrupt the timer, clear the sessions and cancel the reservations.
-	window.addEventListener('beforeunload', beaconInterrupt);
+	window.addEventListener( 'beforeunload', beaconInterrupt );
 
 	await syncWithBackend();
 }
@@ -823,22 +779,20 @@ export function watchCheckoutControls() {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @type {string} The `querySeelctorAll` selectors used to find the checkout controls on the page.
+	 * @type {string[]} The `querySelectorAll` selectors used to find the checkout controls on the page.
 	 */
 	const filteredCheckoutControls = applyFilters(
 		'tec.tickets.seating.frontend.session.checkoutControls',
 		checkoutControlsSelectors
 	);
 
-	const checkoutControlElements = targetDom.querySelectorAll(
-		filteredCheckoutControls
-	);
+	const checkoutControlElements = targetDom.querySelectorAll( filteredCheckoutControls.join( ', ' ) );
 
-	checkoutControlElements.forEach((checkoutControlElement) => {
-		watchedCheckoutControls.push(checkoutControlElement);
-		checkoutControlElement.addEventListener('click', pauseToCheckout);
-		checkoutControlElement.addEventListener('submit', pauseToCheckout);
-	});
+	checkoutControlElements.forEach( ( checkoutControlElement ) => {
+		watchedCheckoutControls.push( checkoutControlElement );
+		checkoutControlElement.addEventListener( 'click', pauseToCheckout );
+		checkoutControlElement.addEventListener( 'submit', pauseToCheckout );
+	} );
 }
 
 /**
@@ -849,10 +803,10 @@ export function watchCheckoutControls() {
  * @return {void} The event listeners are removed from the watched checkout controls.
  */
 function stopWatchingCheckoutControls() {
-	watchedCheckoutControls.forEach((checkoutControlElement) => {
-		checkoutControlElement.removeEventListener('click', pauseToCheckout);
-		checkoutControlElement.removeEventListener('submit', pauseToCheckout);
-	});
+	watchedCheckoutControls.forEach( ( checkoutControlElement ) => {
+		checkoutControlElement.removeEventListener( 'click', pauseToCheckout );
+		checkoutControlElement.removeEventListener( 'submit', pauseToCheckout );
+	} );
 
 	watchedCheckoutControls = [];
 }
@@ -877,7 +831,7 @@ export function getWatchedCheckoutControls() {
  *
  * @return {number} The updated healthcheck loop ID.
  */
-export function setHealthcheckLoopId(id) {
+export function setHealthcheckLoopId( id ) {
 	healthCheckTimeoutId = id;
 
 	return healthCheckTimeoutId;
@@ -917,18 +871,5 @@ export function getResumeTimeoutId() {
 }
 
 // On DOM ready check if any timer needs to be synced.
-onReady(() => syncOnLoad());
-onReady(() => watchCheckoutControls());
-
-window.tec = window.tec || {};
-window.tec.tickets = window.tec.tickets || {};
-window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
-window.tec.tickets.seating.frontend.session = {
-	...(window.tec.tickets.seating.frontend.session || {}),
-	start,
-	reset,
-	syncOnLoad,
-	interrupt,
-	setIsInterruptable,
-};
+onReady( () => syncOnLoad() );
+onReady( () => watchCheckoutControls() );

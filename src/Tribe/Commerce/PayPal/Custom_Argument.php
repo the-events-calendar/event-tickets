@@ -63,7 +63,7 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	 *
 	 * @since 4.7
 	 *
-	 * @param      string $encoded
+	 * @param     string $encoded
 	 * @param bool        $assoc_array Same as `json_decode` argument; whether the returned value
 	 *                                 should be an object (`false`) or an associative array (`true`).
 	 *

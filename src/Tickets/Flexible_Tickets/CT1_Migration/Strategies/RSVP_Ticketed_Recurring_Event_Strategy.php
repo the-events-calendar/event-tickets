@@ -2,7 +2,7 @@
 /**
  * Handles the migration of Recurring Events, with one or more recurrence rules, that have RSVP tickets applied.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -20,7 +20,7 @@ use Tribe__Events__Main as TEC;
 /**
  * Class RSVP_Ticketed_Recurring_Event_Strategy.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */

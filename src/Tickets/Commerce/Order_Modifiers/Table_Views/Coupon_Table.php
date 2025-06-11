@@ -12,10 +12,13 @@
  */
 namespace TEC\Tickets\Commerce\Order_Modifiers\Table_Views;
 
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
-use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon as Coupon_Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Coupon;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship;
+use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Traits\Coupons as Coupon_Trait;
 
 /**
  * Class for displaying Coupon data in the table.
@@ -23,6 +26,8 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons;
  * @since 5.18.0
  */
 class Coupon_Table extends Order_Modifier_Table {
+
+	use Coupon_Trait;
 
 	/**
 	 * Coupon_Table constructor.
@@ -62,85 +67,34 @@ class Coupon_Table extends Order_Modifier_Table {
 	}
 
 	/**
-	 * Renders the "display_name" column with "Edit" and "Delete" actions, including nonces for security.
-	 *
-	 * This method generates the display content for the "Name" column, including an "Edit" link
-	 * and the "Delete" link. The edit link directs the user to the admin page where
-	 * they can edit the specific modifier, passing the necessary parameters for the page,
-	 * modifier type, modifier ID, and a nonce for security.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param object $item The current item from the table, typically an Order_Modifier object.
-	 *
-	 * @return string The HTML output for the "display_name" column, including row actions.
-	 */
-	protected function render_display_name_column( $item ) {
-		$edit_link = add_query_arg(
-			[
-				'page'        => $this->modifier->get_page_slug(),
-				'modifier'    => $this->modifier->get_modifier_type(),
-				'edit'        => 1,
-				'modifier_id' => $item->id,
-			],
-			admin_url( 'admin.php' )
-		);
-
-		// Replace with actual delete URL and include nonce.
-		$delete_link = add_query_arg(
-			[
-				'action'      => 'delete_modifier',
-				'modifier_id' => $item->id,
-				'_wpnonce'    => wp_create_nonce( 'delete_modifier_' . $item->id ),
-				'modifier'    => $this->modifier->get_modifier_type(),
-			],
-			admin_url( 'admin.php' )
-		);
-
-		$actions = [
-			'edit'   => [
-				'label' => __( 'Edit', 'event-tickets' ),
-				'url'   => $edit_link,
-			],
-			'delete' => [
-				'label' => __( 'Delete', 'event-tickets' ),
-				'url'   => $delete_link,
-			],
-		];
-
-		return $this->render_actions( $item->display_name, $actions );
-	}
-
-	/**
 	 * Render the "status" column.
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param object $item The current item.
+	 * @param Coupon_Model $item The current item.
 	 *
 	 * @return string
 	 */
-	protected function render_status_column( $item ) {
+	protected function render_status_column( Coupon_Model $item ) {
 		return $this->modifier->get_status_display( $item->status );
 	}
 
 	/**
-	 * Retrieves the number of coupons available for a given order modifier.
+	 * Get the modifier items.
 	 *
-	 * @since 5.18.0
+	 * @since 5.21.0
 	 *
-	 * @param int $order_modifier_id The ID of the order modifier.
+	 * @param array $params The query parameters.
 	 *
-	 * @return int Returns the number of coupons available or 0 if none are set.
+	 * @return array The items that were retrieved.
 	 */
-	protected function get_coupons_available( int $order_modifier_id ): int {
-		$coupons_available_key = 'coupons_available';
-
-		// Fetch the available coupons for the given order modifier.
-		$number_available = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_available_key );
-
-		// Return the available number, or 0 if it's not set or is empty.
-		return ! empty( $number_available->meta_value ) ? (int) $number_available->meta_value : 0;
+	protected function get_items( array $params ): array {
+		return array_map(
+			function ( $item ) {
+				return Order_Modifier_DTO::fromObject( $item )->toModel();
+			},
+			$this->modifier->get_modifiers( $params, false )
+		);
 	}
 
 	/**
@@ -151,27 +105,20 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param object $item The order modifier item.
+	 * @param Coupon_Model $item The order modifier item.
 	 *
 	 * @return string The number of remaining coupons, or '-' if unlimited.
 	 */
-	protected function render_remaining_column( $item ): string {
-		$order_modifier_id = $item->id;
-
-		// Fetch available and used coupons.
-		$coupons_available = $this->get_coupons_available( $order_modifier_id );
-		$coupons_uses_key  = 'coupons_uses';
-		$number_used       = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_uses_key );
-
-		// If no available coupons are set, return '-'.
-		if ( 0 === $coupons_available ) {
+	protected function render_remaining_column( Coupon_Model $item ): string {
+		$usage_limit = $this->get_coupon_usage_limit( $item->id );
+		if ( -1 === $usage_limit ) {
 			return '-';
 		}
 
-		// Calculate remaining coupons.
-		$remaining = $coupons_available - (int) ( $number_used->meta_value ?? 0 );
+		$number_used = $this->get_coupon_uses( $item->id );
 
-		return (string) max( $remaining, 0 ); // Ensures no negative values are returned.
+		// Use max() to ensure we don't return a negative number.
+		return (string) max( $usage_limit - $number_used, 0 );
 	}
 
 	/**
@@ -181,26 +128,12 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param object $item The order modifier item.
+	 * @param Coupon_Model $item The order modifier item.
 	 *
 	 * @return string The number of used coupons, or '-' if unlimited.
 	 */
-	protected function render_used_column( $item ): string {
-		$order_modifier_id = $item->id;
-
-		// Fetch available coupons.
-		$coupons_available = $this->get_coupons_available( $order_modifier_id );
-
-		// If no available coupons are set, return '-'.
-		if ( 0 === $coupons_available ) {
-			return '-';
-		}
-
-		// Fetch and return the number of used coupons.
-		$coupons_uses_key = 'coupons_uses';
-		$number_used      = $this->order_modifier_meta_repository->find_by_order_modifier_id_and_meta_key( $order_modifier_id, $coupons_uses_key );
-
-		return (string) (int) ( $number_used->meta_value ?? 0 );
+	protected function render_used_column( Coupon_Model $item ): string {
+		return (string) $this->get_coupon_uses( (int) $item->id );
 	}
 
 	/**
@@ -212,12 +145,12 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @param object $item The current item being rendered. This should contain `raw_amount` and `sub_type`
+	 * @param Coupon_Model $item The current item being rendered. This should contain `raw_amount` and `sub_type`
 	 *     fields.
 	 *
 	 * @return string The formatted fee amount to be displayed in the table.
 	 */
-	protected function render_raw_amount_column( $item ) {
+	protected function render_raw_amount_column( Coupon_Model $item ) {
 		return $this->modifier->display_amount_field( $item->raw_amount, $item->sub_type );
 	}
 
@@ -228,13 +161,11 @@ class Coupon_Table extends Order_Modifier_Table {
 	 *
 	 * @return array An array of sortable columns.
 	 */
-	protected function get_sortable_columns() {
+	public function get_sortable_columns() {
 		return [
 			'display_name' => [ 'display_name', true ],
 			'slug'         => [ 'slug', false ],
 			'raw_amount'   => [ 'raw_amount', false ],
-			'used'         => [ 'used', false ],
-			'remaining'    => [ 'remaining', false ],
 			'status'       => [ 'status', false ],
 		];
 	}
@@ -257,7 +188,8 @@ class Coupon_Table extends Order_Modifier_Table {
 		);
 
 		return sprintf(
-			'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions. %s',
+			'<span class="tec-tickets__modifier-explain-text">%s %s</span>',
+			esc_html__( 'Create a coupon for a discount to be applied at checkout. Coupons can only be used with Tickets Commerce transactions.', 'event-tickets' ),
 			$learn_more_link
 		);
 	}

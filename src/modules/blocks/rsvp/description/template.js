@@ -17,19 +17,17 @@ import { __ } from '@wordpress/i18n';
 import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPDescription = ( {
-	isDisabled,
-	onTempDescriptionChange,
-	tempDescription,
-} ) => {
+const RSVPDescription = ( { isDisabled, onTempDescriptionChange, tempDescription } ) => {
 	const descriptionId = uniqid();
 
 	return (
-		<div className={ classNames(
-			'tribe-editor__ticket__description',
-			'tribe-editor__ticket__content-row',
-			'tribe-editor__ticket__content-row--description',
-		) }>
+		<div
+			className={ classNames(
+				'tribe-editor__ticket__description',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--description'
+			) }
+		>
 			<LabeledItem
 				className="tribe-editor__ticket__description-label"
 				forId={ descriptionId }

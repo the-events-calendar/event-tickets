@@ -7,7 +7,7 @@
  * It interacts with the custom `Order_Modifier_Relationships` table and uses WordPress database functions
  * for CRUD operations.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories
  */
 

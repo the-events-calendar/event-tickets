@@ -1,3 +1,4 @@
+import React from 'react';
 import { dispatch, select } from '@wordpress/data';
 import SeatType from '@tec/tickets/seating/blockEditor/header/seat-type';
 import { storeName } from '@tec/tickets/seating/blockEditor/store';
@@ -751,6 +752,7 @@ describe('hook-callbacks', () => {
 			const seatType = null;
 			const layoutId = null;
 			const isUsingAssignedSeating = false;
+			const isLayoutLocked = false;
 
 			const ownProps = { clientId: 'client-id-1' };
 
@@ -760,15 +762,17 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => layoutId,
 				getTicketSeatType: () => seatType,
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
+				isLayoutLocked: () => isLayoutLocked,
 			});
 
 			expect(filterButtonIsDisabled(true, state, ownProps)).toEqual(true);
 		});
 
-		it('if ASC and no layout id or seat type it should return disabled', () => {
+		it('if ASC and no layout id or seat type it should return same value', () => {
 			const seatType = null;
 			const layoutId = '';
 			const isUsingAssignedSeating = true;
+			const isLayoutLocked = false;
 
 			const ownProps = { clientId: 'client-id-1' };
 
@@ -778,10 +782,11 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => layoutId,
 				getTicketSeatType: () => seatType,
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
+				isLayoutLocked: () => isLayoutLocked,
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
-				true
+				false
 			);
 		});
 
@@ -789,6 +794,7 @@ describe('hook-callbacks', () => {
 			const seatType = '';
 			const layoutId = false;
 			const isUsingAssignedSeating = true;
+			const isLayoutLocked = true;
 
 			const ownProps = { clientId: 'client-id-1' };
 
@@ -798,6 +804,7 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => layoutId,
 				getTicketSeatType: () => seatType,
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
+				isLayoutLocked: () => isLayoutLocked,
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
@@ -809,6 +816,7 @@ describe('hook-callbacks', () => {
 			const seatType = '';
 			const layoutId = 'layout-uuid-1';
 			const isUsingAssignedSeating = true;
+			const isLayoutLocked = true;
 
 			const ownProps = { clientId: 'client-id-1' };
 
@@ -818,6 +826,7 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => layoutId,
 				getTicketSeatType: () => seatType,
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
+				isLayoutLocked: () => isLayoutLocked,
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
@@ -829,6 +838,7 @@ describe('hook-callbacks', () => {
 			const seatType = 'seat-type-uuid-1';
 			const layoutId = '';
 			const isUsingAssignedSeating = true;
+			const isLayoutLocked = true;
 
 			const ownProps = { clientId: 'client-id-1' };
 
@@ -838,6 +848,7 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => layoutId,
 				getTicketSeatType: () => seatType,
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
+				isLayoutLocked: () => isLayoutLocked,
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
@@ -849,6 +860,7 @@ describe('hook-callbacks', () => {
 			const seatType = 'seat-type-uuid-1';
 			const layoutId = 'layout-uuid-1';
 			const isUsingAssignedSeating = true;
+			const isLayoutLocked = true;
 
 			const ownProps = { clientId: 'client-id-1' };
 
@@ -858,6 +870,7 @@ describe('hook-callbacks', () => {
 				getCurrentLayoutId: () => layoutId,
 				getTicketSeatType: () => seatType,
 				isUsingAssignedSeating: () => isUsingAssignedSeating,
+				isLayoutLocked: () => isLayoutLocked,
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(

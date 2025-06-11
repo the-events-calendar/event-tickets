@@ -314,6 +314,7 @@ STR;
 	 * Get the gateway label for the order.
 	 *
 	 * @since 5.13.3
+	 * @since 5.24.0 Added the created by.
 	 *
 	 * @param WP_Post|int $order The order post object or ID.
 	 *
@@ -328,12 +329,15 @@ STR;
 
 		$gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
 
+		$created_by = Order::get_created_by( $order->ID );
+		$created_by = $created_by ? '<br/>' . esc_html__( 'Created by', 'event-tickets' ) . ' ' . $created_by : '';
+
 		if ( $gateway instanceof Free_Gateway ) {
-			return esc_html__( 'Free', 'event-tickets' );
+			return esc_html__( 'Free', 'event-tickets' ) . $created_by;
 		}
 
 		if ( ! $gateway ) {
-			return esc_html( $order->gateway );
+			return esc_html( $order->gateway ) . $created_by;
 		}
 
 		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $order );
@@ -351,7 +355,7 @@ STR;
 			'<a class="tribe-dashicons" href="' . esc_url( $order_url ) . '" target="_blank" rel="noopener noreferrer">',
 			esc_html( $gateway::get_label() ),
 			'<span class="dashicons dashicons-external"></span>',
-			'</a>',
+			'</a>' . $created_by,
 			$copy_button
 		);
 	}

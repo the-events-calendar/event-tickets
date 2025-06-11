@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPHeaderImage from './template';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
@@ -33,10 +33,6 @@ const mapDispatchToProps = ( dispatch ) => ( {
 
 	onSelect: ( image ) => dispatch( actions.updateRSVPHeaderImage( image ) ),
 	onRemove: () => dispatch( actions.deleteRSVPHeaderImage() ),
-
 } );
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
-)( RSVPHeaderImage );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPHeaderImage );

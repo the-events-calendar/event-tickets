@@ -22,7 +22,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  WP_Rewrite $wp_rewrite WordPress rewrite that will be modified.
+	 * @param WP_Rewrite $wp_rewrite WordPress rewrite that will be modified.
 	 */
 	public function filter_generate( WP_Rewrite $wp_rewrite ) {
 		$this->setup( $wp_rewrite );
@@ -95,7 +95,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  string $method Use "regex" to return a Regular Expression with the possible Base Slugs using l10n
+	 * @param string $method Use "regex" to return a Regular Expression with the possible Base Slugs using l10n
 	 * @return object         Return Base Slugs with l10n variations
 	 */
 	public function get_bases( $method = 'regex' ) {

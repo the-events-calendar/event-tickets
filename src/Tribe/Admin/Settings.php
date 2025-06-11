@@ -3,6 +3,10 @@ namespace Tribe\Tickets\Admin;
 
 use Tribe\Admin\Troubleshooting as Troubleshooting;
 use Tribe__Settings_Tab;
+use Tribe__Template;
+use TEC\Common\Configuration\Configuration;
+use TEC\Tickets\Admin\Help_Hub\ET_Hub_Resource_Data;
+use TEC\Common\Admin\Help_Hub\Hub;
 
 /**
  * Manages the admin settings UI in relation to ticket configuration.
@@ -33,6 +37,24 @@ class Settings {
 	public static $help_page_id = 'tec-tickets-help';
 
 	/**
+	 * The Help Hub page slug.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public static string $help_hub_slug = 'tec-tickets-help-hub';
+
+	/**
+	 * The Original Help page slug.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @var string
+	 */
+	public static string $old_help_slug = 'tec-tickets-help';
+
+	/**
 	 * Event Tickets Help page slug.
 	 *
 	 * @since 5.6.3
@@ -40,6 +62,15 @@ class Settings {
 	 * @var string
 	 */
 	public static $troubleshooting_page_id = 'tec-tickets-troubleshooting';
+
+	/**
+	 * Stores the instance of the settings tab.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @var Tribe__Settings_Tab
+	 */
+	protected $settings_tab;
 
 	/**
 	 * Settings tabs.
@@ -224,26 +255,64 @@ class Settings {
 				'position' => 2,
 				'callback' => [
 					tribe( 'settings' ),
-					'generatePage',
+					'generate_page',
 				],
 			]
 		);
+
+		// Redirects users from the outdated Help page to the new Help Hub page if accessed.
+		$this->redirect_to_help_hub();
+
+		// Instantiate necessary dependencies for the Help Hub.
+		$template      = tribe( Tribe__Template::class );
+		$config        = tribe( Configuration::class );
+		$resource_data = tribe( ET_Hub_Resource_Data::class );
+
+		// Instantiate the Hub instance with all dependencies.
+		$hub_instance = new Hub( $resource_data, $config, $template );
 
 		$admin_pages->register_page(
 			[
 				'id'       => static::$help_page_id,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
-				'path'     => static::$help_page_id,
+				'path'     => self::$help_hub_slug,
 				'position' => 3,
-				'callback' => [
-					tribe( 'settings.manager' ),
-					'do_help_tab',
-				],
+				'callback' => [ $hub_instance, 'render' ],
 			]
 		);
 
 		$this->maybe_add_troubleshooting();
+	}
+
+	/**
+	 * Redirects users from an outdated help page to the updated Help Hub page in the WordPress admin.
+	 *
+	 * Checks the `page` query parameters, and if they match the old help page slug.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return void
+	 */
+	public function redirect_to_help_hub(): void {
+		$page = tribe_get_request_var( 'page' );
+
+		// Exit if the request is not for the old help page.
+		if ( self::$old_help_slug !== $page ) {
+			return;
+		}
+
+		// Build the new URL for redirection.
+		$new_url = add_query_arg(
+			[
+				'page' => self::$help_hub_slug,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		//phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+		wp_safe_redirect( $new_url );
+		tribe_exit();
 	}
 
 	/**
@@ -277,6 +346,18 @@ class Settings {
 	}
 
 	/**
+	 * Register the default settings tab sidebar.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return void
+	 */
+	public function register_default_sidebar() {
+		$sidebar = include_once tribe( 'tickets.main' )->plugin_path . 'src/admin-views/settings/sidebars/default-sidebar.php';
+		Tribe__Settings_Tab::set_default_sidebar( $sidebar );
+	}
+
+	/**
 	 * Loads the ticket settings from an admin-view file and returns them as an array.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
@@ -291,7 +372,19 @@ class Settings {
 
 		$settings = $this->get_settings_array();
 
-		$this->tabs['event-tickets'] = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->settings_tab          = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->tabs['event-tickets'] = $this->settings_tab;
+	}
+
+	/**
+	 * Gets the settings tab.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return Tribe__Settings_Tab
+	 */
+	public function get_settings_tab() {
+		return $this->settings_tab;
 	}
 
 	/**
@@ -328,7 +421,7 @@ class Settings {
 				'capability' => $admin_pages->get_capability( 'manage_network_options' ),
 				'callback'   => [
 					$settings,
-					'generatePage',
+					'generate_page',
 				],
 			]
 		);
@@ -439,5 +532,16 @@ class Settings {
 		}
 
 		return $form_options;
+	}
+
+	/**
+	 * Get the settings page ID.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return string
+	 */
+	public function get_settings_page_id() {
+		return self::$settings_page_id;
 	}
 }

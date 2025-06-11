@@ -14,6 +14,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-notice {
+
 		&.tribe-tickets__commerce-checkout-notice--visible {
 			display: block;
 		}
@@ -83,7 +84,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name {
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields {
@@ -98,15 +99,17 @@
 		position: relative;
 		white-space: nowrap;
 
-		&:after {
+		&::after {
 			border: var(--tec-spacer-0) solid var(--tec-color-background-transparent);
-			content: '';
+			content: "";
 			display: inline-block;
 			margin-bottom: 1px;
 		}
 
 		@media (--viewport-medium) {
+
 			.tribe-tickets& {
+
 				@mixin hidden;
 			}
 		}
@@ -117,7 +120,8 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details-button--more {
-		&:after {
+
+		&::after {
 			border-bottom: 0 none;
 			border-top: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 		}
@@ -126,14 +130,16 @@
 	.tribe-tickets__commerce-checkout-cart-item-details-button--less {
 		display: none;
 
-		&:after {
+		&::after {
 			border-bottom: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 			border-top: 0 none;
 		}
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details--open {
+
 		.tribe-tickets__commerce-checkout-cart-item-details-button--more {
+
 			@mixin hidden;
 		}
 
@@ -156,6 +162,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-price {
+
 		.tec-tickets-price {
 			display: flex;
 			gap: var(--tec-spacer-1);
@@ -163,7 +170,7 @@
 			.tec-tickets-price__regular-price {
 				color: var(--tec-color-text-secondary);
 				font-size: var(--tec-font-size-2);
-				font-weight: var(--tec-font-weight-normal);
+				font-weight: var(--tec-font-weight-regular);
 				text-decoration: line-through;
 			}
 
@@ -187,7 +194,7 @@
 
 	.tribe-tickets__commerce-checkout-cart-item-quantity {
 		flex: 0 0 60px;
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-subtotal {
@@ -203,13 +210,14 @@
 		flex-wrap: wrap;
 		justify-content: flex-end;
 		padding: var(--tec-spacer-4) 0;
+
+		& > div:not(:nth-last-child(-n + 2)) {
+			flex: 0 1 100%;
+		}
 	}
 
-	.tribe-tickets__commerce-checkout-cart-footer > div:first-child {
-		flex: 0 1 100%;
-	}
-
-	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
+	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees,
+	.tec-tickets-commerce-checkout-cart__coupons-input-container {
 		text-align: right;
 	}
 
@@ -224,6 +232,10 @@
 	.tribe-tickets__commerce-checkout-cart-footer-quantity,
 	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
 		color: var(--tec-color-text-primary-light);
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-order-modifier-fees {
+		text-align: right;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer-total {
@@ -291,10 +303,11 @@
 	.tribe-tickets__commerce-checkout-must-login-registration-link {
 		color: var(--tec-color-accent-primary);
 		font-size: var(--tec-font-size-2);
-		font-weight: normal;
+		font-weight: 400;
 	}
 
 	&.tribe-common {
+
 		.tribe-tickets__commerce-checkout-footer-notice-error--no-gateway {
 			display: block;
 		}
@@ -321,7 +334,7 @@
 		font-family: var(--tec-font-family-sans-serif);
 		font-size: var(--tec-font-size-3);
 
-		&:after {
+		&::after {
 			border: 7px solid var(--tec-color-background-transparent);
 			border-bottom-width: 0;
 			border-top-color: var(--tec-color-text-primary-light);
@@ -333,10 +346,11 @@
 	}
 
 	.tribe-tickets__commerce-checkout-gateway-toggle--open {
+
 		.tribe-tickets__commerce-checkout-gateway-toggle-button {
 			color: #23282d;
 
-			&:after {
+			&::after {
 				border: 7px solid var(--tec-color-background-transparent);
 				border-bottom-color: #23282d;
 				border-bottom-width: 10px;
@@ -388,6 +402,69 @@
 			color: var(--tec-color-border-tertiary);
 			font-size: var(--tec-font-size-2);
 			opacity: 1;
+		}
+	}
+
+	.tec-tickets-commerce-checkout-cart__coupons {
+		padding-bottom: var(--tec-spacer-0);
+		padding-top: var(--tec-spacer-3);
+		text-align: right;
+
+		.tec-tickets-commerce-checkout-cart__coupons-input-error {
+			color: red;
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-add-link {
+			color: var(--tec-color-accent-primary);
+			font-size: var(--tec-font-size-2);
+			padding-bottom: var(--tec-spacer-1);
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-input-field {
+			border: 1px solid var(--tec-color-border-default);
+			border-radius: var(--tec-border-radius-default);
+			padding: var(--tec-spacer-1) var(--tec-spacer-3);
+			width: auto;
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-apply-button {
+			border: 0;
+			border-radius: var(--tec-border-radius-default);
+			font-weight: var(--tec-font-weight-regular);
+			padding: 6px 0 6px var(--tec-spacer-2);
+			width: auto;
+
+			&:focus,
+			&:hover {
+				background-color: var(--tec-color-background);
+				color: var(--tec-color-button-primary);
+			}
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-applied-container {
+			font-size: var(--tec-font-size-3);
+
+			.tec-tickets-commerce-checkout-cart__coupons-applied-text {
+				background-color: #eaecff;
+				border-radius: var(--tec-border-radius-default);
+				letter-spacing: 0.2px;
+				line-height: var(--tec-line-height-3);
+				padding: var(--tec-spacer-1) var(--tec-spacer-2);
+			}
+
+			&:not(.tribe-common-a11y-hidden) {
+				display: inline-block;
+			}
+		}
+
+		.tec-tickets-commerce-checkout-cart__coupons-remove-button {
+			margin-left: var(--tec-spacer-2);
+
+			& img {
+				height: 14px;
+				vertical-align: middle;
+				width: 14px;
+			}
 		}
 	}
 

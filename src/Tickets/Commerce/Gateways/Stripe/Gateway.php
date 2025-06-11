@@ -15,7 +15,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Gateway
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -25,17 +25,17 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	protected static $key = 'stripe';
+	protected static string $key = 'stripe';
 
 	/**
 	 * @inheritDoc
 	 */
-	protected static $settings = Settings::class;
+	protected static string $settings = Settings::class;
 
 	/**
 	 * @inheritDoc
 	 */
-	protected static $merchant = Merchant::class;
+	protected static string $merchant = Merchant::class;
 
 	/**
 	 * @inheritDoc
@@ -45,7 +45,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	protected static $supported_currencies = [
+	protected static array $supported_currencies = [
 		'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD',
 		'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF',
 		'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB',

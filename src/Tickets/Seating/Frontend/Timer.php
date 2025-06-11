@@ -2,7 +2,7 @@
 /**
  * The Seating feature frontend timer handler.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Main as ET;
 /**
  * Class Cookie.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
  */
@@ -210,7 +210,7 @@ class Timer extends Controller_Contract {
 				'wp-i18n',
 				'tec-tickets-seating-utils'
 			)
-			->add_localize_script( 'tec.tickets.seating.frontend.session', fn() => $this->get_localized_data() )
+			->add_localize_script( 'tec.tickets.seating.frontend.sessionData', fn() => $this->get_localized_data() )
 			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -218,7 +218,7 @@ class Timer extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-session-style',
-			'frontend/session.css',
+			'frontend/style-session.css',
 			ET::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

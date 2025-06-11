@@ -105,7 +105,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	 *
 	 * @since 4.7.5
 	 *
-	 * @param        string|array $attendees
+	 * @param       string|array $attendees
 	 * @param string              $sep
 	 *
 	 * @return bool

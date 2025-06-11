@@ -113,8 +113,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since 4.7
 	 *
-	 * @param array $item
-	 * @param $column
+	 * @param array $item  The item.
+	 * @param string $column The column.
 	 *
 	 * @return string
 	 */

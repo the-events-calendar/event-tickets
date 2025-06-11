@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
  *
  * @link    https://stripe.com/docs/api/webhook_endpoints/create#create_webhook_endpoint-enabled_events
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */

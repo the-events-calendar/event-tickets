@@ -178,6 +178,8 @@ class EditorTest extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
+		tribe_cache()->reset();
+
 		$configuration = apply_filters( 'tribe_editor_config', [] );
 
         $this->assertMatchesStringSnapshot(

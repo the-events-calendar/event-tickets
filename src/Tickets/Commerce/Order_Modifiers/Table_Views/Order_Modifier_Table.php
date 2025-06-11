@@ -155,7 +155,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return int The total number of items.
 	 */
 	protected function setup_items( array $params, int $per_page ): int {
-		$this->items = $this->modifier->get_modifiers( $params );
+		$this->items = $this->get_items( $params );
 
 		// Get the total number of items.
 		if ( count( $this->items ) < $per_page && $this->current_page === 1 ) {
@@ -164,7 +164,20 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		unset( $params['limit'], $params['page'] );
 
-		return count( $this->modifier->get_modifiers( $params ) );
+		return count( $this->get_items( $params ) );
+	}
+
+	/**
+	 * Get the modifier items.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array $params The query parameters.
+	 *
+	 * @return array The items that were retrieved.
+	 */
+	protected function get_items( array $params ): array {
+		return $this->modifier->get_modifiers( $params );
 	}
 
 	/**
@@ -182,7 +195,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 */
 	protected function column_default( $item, $column_name ) {
 		// Build the method name dynamically based on the column name.
-		$method = 'render_' . $column_name . '_column';
+		$method = "render_{$column_name}_column";
 
 		// If a specific method exists for the column, call it.
 		if ( method_exists( $this, $method ) && is_callable( [ $this, $method ] ) ) {
@@ -208,6 +221,56 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Renders the "display_name" column with "Edit" and "Delete" actions, including nonces for security.
+	 *
+	 * This method generates the display content for the "Name" column, including an "Edit" link
+	 * and the "Delete" link. The edit link directs the user to the admin page where
+	 * they can edit the specific modifier, passing the necessary parameters for the page,
+	 * modifier type, modifier ID, and a nonce for security.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @param object $item The current item from the table, typically an Order_Modifier object.
+	 *
+	 * @return string The HTML output for the "display_name" column, including row actions.
+	 */
+	protected function render_display_name_column( $item ): string {
+		$edit_link = add_query_arg(
+			[
+				'page'        => $this->modifier->get_page_slug(),
+				'modifier'    => $this->modifier->get_modifier_type(),
+				'edit'        => 1,
+				'modifier_id' => $item->id,
+			],
+			admin_url( 'admin.php' )
+		);
+
+		// Replace with actual delete URL and include nonce.
+		$delete_link = add_query_arg(
+			[
+				'action'      => 'delete_modifier',
+				'modifier_id' => $item->id,
+				'_wpnonce'    => wp_create_nonce( "delete_modifier_{$item->id}" ),
+				'modifier'    => $this->modifier->get_modifier_type(),
+			],
+			admin_url( 'admin.php' )
+		);
+
+		$actions = [
+			'edit'   => [
+				'label' => __( 'Edit', 'event-tickets' ),
+				'url'   => $edit_link,
+			],
+			'delete' => [
+				'label' => __( 'Delete', 'event-tickets' ),
+				'url'   => $delete_link,
+			],
+		];
+
+		return $this->render_actions( $item->display_name, $actions );
+	}
+
+	/**
 	 * Helper to render actions for a column. The `edit` action is used for the label link as well.
 	 *
 	 * @since 5.18.0
@@ -219,12 +282,13 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 	 * @return string Rendered HTML for actions.
 	 */
 	protected function render_actions( string $label, array $actions ): string {
-		$action_links = [];
-
 		// Loop through the actions and build both the label and action links.
-		foreach ( $actions as $action_label => $data ) {
-			$action_links[ $action_label ] = sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
-		}
+		$action_links = array_map(
+			function ( $data ) {
+				return sprintf( '<a href="%s">%s</a>', esc_url( $data['url'] ), esc_html( $data['label'] ) );
+			},
+			$actions
+		);
 
 		$url = isset( $actions['edit'] ) ? $actions['edit']['url'] : ( array_values( $actions )[0]['url'] ?? '#' );
 
@@ -331,7 +395,7 @@ abstract class Order_Modifier_Table extends WP_List_Table {
 
 		// Output the title and the "Add New" button.
 		printf(
-			'<h3>%s <a href="%s" class="page-title-action button">%s</a></h3>',
+			'<h3 class="tec-tickets__modifier-page-title">%s <a href="%s" class="page-title-action">%s</a></h3>',
 			esc_html( $modifier ),
 			esc_url( $add_new_url ),
 			esc_html_x( 'Add New', 'Add New Order modifier link text', 'event-tickets' )

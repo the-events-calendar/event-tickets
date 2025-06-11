@@ -5,7 +5,7 @@
  * This class serves as a base for specific subsections within the Site Health
  * info page, allowing for organized and modular representation of different data sets.
  *
- * @since   5.8.1
+ * @since 5.8.1
  * @package TEC\Tickets\Site_Health
  */
 
@@ -17,7 +17,7 @@ namespace TEC\Tickets\Site_Health;
  * It provides a standard way to add and manage fields specific to different subsections
  * in the Site Health info panel.
  *
- * @since   5.8.1
+ * @since 5.8.1
  */
 abstract class Abstract_Info_Subsection {
 

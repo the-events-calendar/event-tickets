@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Flag Action Interface.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

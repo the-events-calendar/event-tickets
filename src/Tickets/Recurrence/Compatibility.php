@@ -2,7 +2,7 @@
 /**
  * Manages the compatibility of Event Tickets with the new Recurrence Back-end Engine in Events Calendar Pro.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Recurrence
  */
@@ -15,7 +15,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 /**
  * Custom Tables Compatibility for Tickets
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Events_Pro\Custom_Tables\V1\Tickets
  */
@@ -62,5 +62,4 @@ class Compatibility {
 
 		return true;
 	}
-
 }

@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
+use TEC\Common\Admin\Abstract_Admin_Page;
+use TEC\Common\Admin\Traits\Tabbed_View;
 use Tribe__Events__Main;
 use Tribe__Repository;
 use Tribe__Tickets__Main;
@@ -20,28 +22,56 @@ use Tribe__Tickets__Main;
  *
  * @package TEC\Tickets\Admin
  */
-class Page {
+class Page extends Abstract_Admin_Page {
+	use Tabbed_View;
 
 	/**
 	 * Event Tickets menu page slug.
 	 *
 	 * @var string
 	 */
-	public static $parent_slug = 'tec-tickets';
+	public static string $parent_slug = 'tec-tickets';
 
 	/**
 	 * Event Tickets All Tickets page slug.
 	 *
 	 * @var string
 	 */
-	public static $slug = 'tec-tickets-admin-tickets';
+	public static string $page_slug = 'tec-tickets-admin-tickets';
 
 	/**
 	 * Event Tickets All Tickets page hook suffix.
 	 *
 	 * @var string
 	 */
-	public static $hook_suffix = 'tickets_page_tec-tickets-admin-tickets';
+	public static string $hook_suffix = 'tickets_page_tec-tickets-admin-tickets';
+
+	/**
+	 * Whether the page has a header.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @var bool
+	 */
+	public static bool $has_header = false;
+
+	/**
+	 * Whether the page has a footer.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @var bool
+	 */
+	public static bool $has_footer = false;
+
+	/**
+	 * Whether the page has a sidebar.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @var bool
+	 */
+	public static bool $has_sidebar = false;
 
 	/**
 	 * The provider filter query key.
@@ -191,17 +221,63 @@ class Page {
 	}
 
 	/**
-	 * Defines wether the current page is the Event Tickets All Tickets page.
+	 * Defines whether the current page is the Event Tickets "All Tickets page.
 	 *
 	 * @since 5.14.0
 	 *
 	 * @return boolean
 	 */
-	public function is_on_page(): bool {
+	public static function is_on_page(): bool {
 		$admin_pages = tribe( 'admin.pages' );
 		$admin_page  = $admin_pages->get_current_page();
 
-		return ! empty( $admin_page ) && static::$slug === $admin_page;
+		return ! empty( $admin_page ) && static::$page_slug === $admin_page;
+	}
+
+	/**
+	 * Add the admin page wrapper classes.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @param array $classes The classes to add to the admin page wrapper.
+	 *
+	 * @return string[]
+	 */
+	public static function add_admin_page_wrapper_classes( array $classes ): array {
+		if ( ! static::is_on_page() ) {
+			return $classes;
+		}
+
+		$classes[] = 'tec-admin-page--header';
+		$classes[] = 'tec-admin-page--simple';
+
+		// remove 'tec-admin-page' from the classes array.
+		$flipped_classes = array_flip( $classes );
+
+		if ( isset( $flipped_classes['tec-admin-page'] ) ) {
+			unset( $classes[ $flipped_classes['tec-admin-page'] ] );
+		}
+
+		return $classes;
+	}
+
+	/**
+	 * Add the admin page header classes.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @param array $classes The classes to add to the admin page wrapper.
+	 *
+	 * @return string[]
+	 */
+	public static function add_admin_page_header_classes( array $classes ): array {
+		if ( ! static::is_on_page() ) {
+			return $classes;
+		}
+
+		$classes[] = 'tec-admin-page__header--simple';
+
+		return $classes;
 	}
 
 	/**
@@ -213,7 +289,7 @@ class Page {
 	 */
 	public function get_url( array $args = [] ): string {
 		$defaults = [
-			'page' => static::$slug,
+			'page' => static::$page_slug,
 		];
 
 		// Allow the link to be "changed" on the fly.
@@ -233,26 +309,170 @@ class Page {
 	}
 
 	/**
-	 * Adds the Event Tickets All Tickets page.
+	 * Get the page title.
 	 *
-	 * @since 5.14.0
+	 * @since 5.24.1
 	 */
-	public function add_tec_tickets_admin_tickets_page() {
-		$admin_pages = tribe( 'admin.pages' );
+	public function get_the_page_title(): string {
+		return __( 'All Tickets', 'event-tickets' );
+	}
 
-		$admin_pages->register_page(
+	/**
+	 * Get the menu title.
+	 *
+	 * @since 5.24.1
+	 */
+	public function get_the_menu_title(): string {
+		return __( 'All Tickets', 'event-tickets' );
+	}
+
+	/**
+	 * Get the parent page slug.
+	 *
+	 * @since 5.24.1
+	 */
+	public function get_parent_page_slug(): string {
+		return static::$parent_slug;
+	}
+
+	/**
+	 * Get the menu position.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @return float The menu position.
+	 */
+	public function get_position(): float {
+		return 1.2;
+	}
+
+	/**
+	 * Maybe register the tabs if we're on our page.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @return void
+	 */
+	public function maybe_register_tabs(): void {
+		if ( ! static::is_on_page() ) {
+			return;
+		}
+
+		$this->register_tabs();
+	}
+
+	/**
+	 * Register a tab for the page.
+	 * This method is public to allow external plugins to register their own tabs.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @param string $slug  The tab's slug (used in URL and as key).
+	 * @param string $label The tab's label.
+	 * @param array  $args  {
+	 *     Optional. Array of tab arguments.
+	 *
+	 *     @type bool   $visible    Whether the tab should be visible. Default true.
+	 *     @type string $capability The capability required to see this tab. Default 'manage_options'.
+	 *     @type bool   $active     Whether this is the active tab. Default false.
+	 * }
+	 */
+	public function add_tab( string $slug, string $label, array $args = [] ): void {
+		$this->register_tab( $slug, $label, $args );
+	}
+
+	/**
+	 * Register the tabs for the page.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @return void
+	 */
+	protected function register_tabs(): void {
+		/**
+		 * Action that fires before registering the admin tabs.
+		 *
+		 * @since 5.24.1
+		 *
+		 * @param Page $page The current page instance.
+		 */
+		do_action( 'tec_tickets_admin_tickets_page_before_register_tabs', $this );
+
+		$this->register_tab(
+			'ticket-table',
+			__( 'Event Tickets', 'event-tickets' ),
 			[
-				'id'       => static::$slug,
-				'path'     => static::$slug,
-				'parent'   => static::$parent_slug,
-				'title'    => esc_html__( 'All Tickets', 'event-tickets' ),
-				'position' => 1.2,
-				'callback' => [
-					$this,
-					'render_tec_tickets_admin_tickets_page',
-				],
+				'visible'    => true,
+				'capability' => $this->required_capability(),
+				'active'     => true,
 			]
 		);
+
+		/**
+		 * Action that fires after registering the admin tabs.
+		 * Use this hook to register additional tabs.
+		 *
+		 * @since 5.24.1
+		 *
+		 * @param Page $page The current page instance.
+		 */
+		do_action( 'tec_tickets_admin_tickets_page_after_register_tabs', $this );
+	}
+
+	/**
+	 * Render the "Event Tickets" tab content.
+	 *
+	 * @since 5.24.1
+	 *
+	 * @return void
+	 */
+	protected function render_ticket_table_tab_content(): void {
+		tribe_asset_enqueue_group( 'event-tickets-admin-tickets' );
+
+		$context = [
+			'tickets_table'  => tribe( List_Table::class ),
+			'page_slug'      => self::$page_slug,
+			'tickets_exist'  => self::tickets_exist(),
+			'edit_posts_url' => $this->get_link_to_edit_posts(),
+		];
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template( 'admin-tickets', $context );
+	}
+
+	/**
+	 * Render the main content of the page.
+	 *
+	 * @since 5.24.1
+	 */
+	public function admin_page_main_content(): void {
+		if ( empty( $this->tabs ) ) {
+			$this->register_tabs();
+		}
+
+		$this->render_tabs();
+
+		$this->render_tab_content();
+	}
+
+	/**
+	 * Render the sidebar content.
+	 *
+	 * @since 5.24.1
+	 */
+	public function admin_page_sidebar_content(): void {
+		// No sidebar content for now.
+	}
+
+	/**
+	 * Render the footer content.
+	 *
+	 * @since 5.24.1
+	 */
+	public function admin_page_footer_content(): void {
+		// No footer content for now.
 	}
 
 	/**
@@ -281,28 +501,5 @@ class Page {
 
 		// Create link to edit posts page.
 		return add_query_arg( [ 'post_type' => $post_type ], admin_url( 'edit.php' ) );
-	}
-
-	/**
-	 * Render the `All Tickets` page.
-	 *
-	 * @since 5.14.0
-	 *
-	 * @return void
-	 */
-	public function render_tec_tickets_admin_tickets_page() {
-		tribe_asset_enqueue_group( 'event-tickets-admin-tickets' );
-
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
-		$admin_views = tribe( 'tickets.admin.views' );
-
-		$context = [
-			'tickets_table'  => tribe( List_Table::class ),
-			'page_slug'      => static::$slug,
-			'tickets_exist'  => static::tickets_exist(),
-			'edit_posts_url' => $this->get_link_to_edit_posts(),
-		];
-
-		$admin_views->template( 'admin-tickets', $context );
 	}
 }

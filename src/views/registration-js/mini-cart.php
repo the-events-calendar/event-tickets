@@ -7,11 +7,11 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.11.0
- * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.
- * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
+ * @since 4.11.0
+ * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
+ * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
  *              the more accurately named $cart_provider.
- * @since   5.0.4  Pass must_login variable to blocks/tickets/item template
+ * @since 5.0.4  Pass must_login variable to blocks/tickets/item template
  *
  * @version 5.0.4
  */

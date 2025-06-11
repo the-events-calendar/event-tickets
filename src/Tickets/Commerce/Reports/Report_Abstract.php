@@ -7,7 +7,7 @@ use Tribe__Template;
 /**
  * Class Report_Abstract
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -165,5 +165,4 @@ abstract class Report_Abstract {
 		 */
 		return apply_filters( "tec_tickets_report_{$page_slug}_page_role_access", $has_access, $post_id, $post );
 	}
-
 }

@@ -24,7 +24,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{TICKET_ID} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{TICKET_ID}" data-ticket-quantity="2" data-ticket-price="50.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -74,7 +74,7 @@
 	&#x24;100.00</div>
 
 </article>
-	</div>
+</div>
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
@@ -88,6 +88,50 @@
 					$20.00				</span>
 			</li>
 			</ul>
+</div>
+<div class="tribe-common-b2 tribe-tickets__form tec-tickets-commerce-checkout-cart__coupons">
+	<button  class="tec-tickets-commerce-checkout-cart__coupons-add-link" >
+		Add coupon code	</button>
+	<div  class="tec-tickets-commerce-checkout-cart__coupons-input-container tribe-common-a11y-hidden" >
+		<input
+			class="tec-tickets-commerce-checkout-cart__coupons-input-field"
+			type="text"
+			id="tec-tickets-commerce-checkout-cart__coupon-input-field"
+			name="coupons"
+			aria-describedby="tec-tickets-commerce-checkout-cart__coupons-error-text"
+			aria-label="Enter coupon code"
+			placeholder="Enter coupon code"
+			value=""
+		/>
+		<button  class="tribe-common-c-btn-border tec-tickets-commerce-checkout-cart__coupons-apply-button" >
+			Apply		</button>
+	</div>
+	<p
+		id="tec-tickets-commerce-checkout-cart__coupons-error-text"
+		class="tec-tickets-commerce-checkout-cart__coupons-input-error tribe-common-a11y-hidden"
+		aria-live="polite"
+		role="alert"
+	>
+		Invalid coupon code	</p>
+	<div  class="tec-tickets-commerce-checkout-cart__coupons-applied-container tribe-common-a11y-hidden" >
+		<ul>
+			<li>
+				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label tec-tickets-commerce-checkout-cart__coupons-applied-text">
+					<span class="tec-tickets-commerce-checkout-cart__coupons-applied-label">
+											</span>
+					<button class="tec-tickets-commerce-checkout-cart__coupons-remove-button" type="button">
+						<img
+							src="https://example.com/images/icons/close.svg"
+							alt="Icon to remove coupon"
+							title="Remove coupon"
+						>
+					</button>
+				</span>
+				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number tec-tickets-commerce-checkout-cart__coupons-discount-amount">
+									</span>
+			</li>
+		</ul>
+	</div>
 </div>
 <div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">2</span></div>

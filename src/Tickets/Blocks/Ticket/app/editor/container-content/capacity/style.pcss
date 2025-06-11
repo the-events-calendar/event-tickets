@@ -7,35 +7,35 @@
 }
 
 .tribe-editor__ticket--is-asc .tribe-editor__quantity-bar {
-	display:none;
+	display: none;
 }
 
 .tribe-editor__ticket__capacity-form {
-	flex: auto;
 	display: flex;
-	justify-content: flex-end;
+	flex: auto;
 	flex-wrap: wrap;
+	justify-content: flex-end;
 
 	.tribe-editor__ticket--has-tickets-plus & {
 		display: block;
 	}
 
 	.tribe-editor__ticket__capacity-input-row {
+		align-items: center;
 		display: flex;
 		justify-content: flex-end;
-		align-items: center;
-		position: relative;
-		padding-top: 12px;
 		margin-left: 8px;
+		padding-top: 12px;
+		position: relative;
 
 		.tribe-editor__labeled-item__label {
+			color: #000;
 			flex: none;
-			margin-right: 20px;
 			font-size: 15px;
-			font-weight: normal;
-			line-height: 18px;
+			font-weight: 400;
 			letter-spacing: 0;
-			color: #000000;
+			line-height: 18px;
+			margin-right: 20px;
 		}
 
 		.tribe-editor__input--number {
@@ -43,23 +43,23 @@
 			width: 85px;
 		}
 
-		&:last-child:after {
-			top: 0;
+		&:last-child::after {
 			height: calc(50% + 6px);
+			top: 0;
 		}
 
-		&:nth-child(2):last-child:after {
-			top: 10px;
+		&:nth-child(2):last-child::after {
 			height: calc(50% - 4px);
+			top: 10px;
 		}
 	}
 
 	.tribe-editor__ticket__capacity-input-row--capacity-independent,
 	.tribe-editor__ticket__capacity-input-row--shared-capacity {
 
-		.tribe-editor__labeled-item__label:after {
+		.tribe-editor__labeled-item__label::after {
 			color: red;
-			content: '*';
+			content: "*";
 			margin-left: 3px;
 		}
 	}
@@ -70,12 +70,12 @@
 	}
 
 	.tribe-editor__ticket__capacity-input-helper-text {
+		color: #8d949b;
 		flex: none;
-		width: 100%;
 		font-size: 12px;
 		line-height: 14px;
-		color: #8D949B;
-		text-align: right;
 		margin-top: 10px;
+		text-align: right;
+		width: 100%;
 	}
 }

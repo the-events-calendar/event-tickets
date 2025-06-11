@@ -82,7 +82,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $status
+	 * @param string $status The status.
 	 */
 	public function set_status( $status ) {
 		$this->status = $status;

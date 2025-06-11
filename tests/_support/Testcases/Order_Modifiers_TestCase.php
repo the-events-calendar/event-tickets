@@ -285,7 +285,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "Flat {$modifier_type_uc}" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 5.00, // $5.00 in cents.
+				'order_modifier_amount'       => 5.00,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => "test_flat_{$this->modifier_type}",
 				'order_modifier_display_name' => "Flat {$modifier_type_uc}",
@@ -299,7 +299,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "Percent {$modifier_type_uc}" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 10.00, // 10% as a percentage.
+				'order_modifier_amount'       => 10.00,
 				'order_modifier_sub_type'     => 'percent',
 				'order_modifier_slug'         => "test_percent_{$this->modifier_type}",
 				'order_modifier_display_name' => "Percent {$modifier_type_uc}",
@@ -310,11 +310,11 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 			],
 		];
 
-		// Edge case: Long decimal value
+		// Edge case: Long decimal value that should be rounded.
 		yield "{$modifier_type_uc} - Long Decimal Value" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 100.595, // Amount with long decimal (will be rounded).
+				'order_modifier_amount'       => 1.00595,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'long_decimal',
 				'order_modifier_display_name' => 'Long Decimal',
@@ -329,7 +329,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "{$modifier_type_uc} - Excessively Large Amount" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 123456790, // Large amount.
+				'order_modifier_amount'       => 1234567.90,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'large_amount',
 				'order_modifier_display_name' => 'Large Amount',
@@ -344,7 +344,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "{$modifier_type_uc} - Special Characters" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 500, // $5.00 in cents.
+				'order_modifier_amount'       => 5.00,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'special_!@#$%^&*',
 				'order_modifier_display_name' => 'Special !@#$%^&*',
@@ -359,7 +359,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "{$modifier_type_uc} - Emojis in Name and Slug" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 1500, // $15.00 in cents.
+				'order_modifier_amount'       => 15.00,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'emoji_😊🔥',
 				'order_modifier_display_name' => "Emoji 😊🔥 {$modifier_type_uc}",

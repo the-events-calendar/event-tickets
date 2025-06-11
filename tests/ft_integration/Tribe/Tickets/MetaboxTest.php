@@ -586,6 +586,7 @@ class MetaboxTest extends WPTestCase {
 		// Make sure that `now` (string) will be resolved to the fake date object.
 		uopz_set_return( Date_Utils::class, 'build_date_object', $date );
 
+		tribe_cache()->reset();
 		$metabox = tribe( Metabox::class );
 		// Rend for a new ticket.
 		$panels = $metabox->get_panels( $post_id );

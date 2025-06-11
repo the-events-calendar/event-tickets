@@ -9,7 +9,7 @@ use TEC\Common\Contracts\Service_Provider as Service_Provider_Contract;
  *
  * @package Tribe\Tickets\Admin\Manager
  *
- * @since   5.1.0
+ * @since 5.1.0
  */
 class Service_Provider extends Service_Provider_Contract {
 	/**

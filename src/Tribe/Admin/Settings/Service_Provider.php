@@ -10,7 +10,7 @@ use Tribe\Tickets\Admin\Settings;
  *
  * @package Tribe\Tickets\Admin\Settings
  *
- * @since   5.1.2
+ * @since 5.1.2
  */
 class Service_Provider extends Service_Provider_Contract {
 	/**
@@ -33,8 +33,6 @@ class Service_Provider extends Service_Provider_Contract {
 		if ( ! is_admin() ) {
 			return;
 		}
-
-		add_action( 'tribe_settings_before_content_tab_event-tickets', [ $this, 'render_settings_banner' ] );
 
 		add_filter( 'tec_tickets_commerce_settings', [ $this, 'maybe_render_tickets_commerce_upgrade_banner' ] );
 		add_filter( 'tec_tickets_commerce_settings', [ $this, 'maybe_render_tickets_commerce_notice_banner' ] );

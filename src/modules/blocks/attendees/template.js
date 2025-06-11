@@ -4,29 +4,26 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import AutosizeInput from 'react-input-autosize'; // eslint-disable-line import/no-unresolved
+import { reactInputAutosize as AutosizeInput } from '@moderntribe/common/modules';
 
 /**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	ToggleControl,
-	PanelBody,
-} from '@wordpress/components';
+import { ToggleControl, PanelBody } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/editor';
 
 /**
  * Internal dependencies
  */
-import { AttendeesGravatar } from '@moderntribe/tickets/icons';
+import { AttendeesGravatar } from '../../icons';
 import './style.pcss';
 
 /**
  * Module Code
  */
 
-const placeholder = __( 'Who\'s Attending?', 'event-tickets' );
+const placeholder = __( "Who's Attending?", 'event-tickets' );
 const subtitle = __( '(X) people are attending this event', 'event-tickets' );
 
 const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
@@ -41,10 +38,7 @@ const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 	} );
 
 	return (
-		<div
-			key="tribe-events-attendees-label"
-			className={ containerClassNames }
-		>
+		<div key="tribe-events-attendees-label" className={ containerClassNames }>
 			<AutosizeInput
 				id="tribe-events-attendees-link"
 				className={ inputClassNames }
@@ -57,16 +51,9 @@ const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 };
 
 const renderPlaceholder = () => {
-	const classes = [
-		'tribe-editor__event-attendees__title',
-		'tribe-editor__event-attendees__title--placeholder',
-	];
+	const classes = [ 'tribe-editor__event-attendees__title', 'tribe-editor__event-attendees__title--placeholder' ];
 
-	return (
-		<span className={ classNames( classes ) }>
-			{ placeholder }
-		</span>
-	);
+	return <span className={ classNames( classes ) }>{ placeholder }</span>;
 };
 
 const RenderGravatars = () => (
@@ -87,9 +74,7 @@ const RenderSubtitle = () => (
 
 const UI = ( props ) => {
 	const { isSelected, title, displayTitle, displaySubtitle } = props;
-	const blockTitle = ! ( isSelected || title )
-		? renderPlaceholder()
-		: renderLabelInput( props );
+	const blockTitle = ! ( isSelected || title ) ? renderPlaceholder() : renderLabelInput( props );
 
 	return (
 		<div className="tribe-editor__block tribe-editor__event-attendees">
@@ -113,7 +98,7 @@ const Controls = ( {
 	displaySubtitle,
 	onSetDisplayTitleChange,
 	onSetDisplaySubtitleChange,
-} ) => (
+} ) =>
 	isSelected && (
 		<InspectorControls key="inspector">
 			<PanelBody title={ __( 'Attendees Settings', 'event-tickets' ) }>
@@ -131,8 +116,7 @@ const Controls = ( {
 				/>
 			</PanelBody>
 		</InspectorControls>
-	)
-);
+	);
 
 Controls.propTypes = {
 	displaySubtitle: PropTypes.bool,

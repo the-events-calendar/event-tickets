@@ -2,8 +2,8 @@
 /**
  * Event Attendees Summary template.
  *
- * @since  5.5.9
- * @since  5.6.5    Moved Attendance and Ticket Overview section to their own templates.
+ * @since 5.5.9
+ * @since 5.6.5    Moved Attendance and Ticket Overview section to their own templates.
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.

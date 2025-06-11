@@ -2,9 +2,9 @@
 /**
  * The custom tables controller.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
- * @package TEC\Tickets\Recurring_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets;
  */
 
 namespace TEC\Tickets\Flexible_Tickets;
@@ -20,7 +20,7 @@ use TEC\Common\StellarWP\Models\Config as Model_Config;
 /**
  * Class Custom_Tables.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -103,9 +103,15 @@ class Custom_Tables extends Controller {
 			[
 				Ticket_Groups::table_name(),
 				Posts_And_Ticket_Groups::table_name()
-			] as $table
+			] as $table_name
 		) {
-			$truncated += DB::query( "TRUNCATE TABLE $table" );
+			// Check if the table exists before attempting to truncate it.
+			$table_exists = DB::query( "SHOW TABLES LIKE '$table_name'" );
+			if ( ! $table_exists ) {
+				continue;
+			}
+
+			$truncated += DB::query( "TRUNCATE TABLE $table_name" );
 		}
 		DB::query( 'SET FOREIGN_KEY_CHECKS = 1' );
 

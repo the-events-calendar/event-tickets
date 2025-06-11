@@ -2,7 +2,7 @@
 /**
  * The Order Modifier model.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  */
@@ -17,15 +17,15 @@ use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Value_Interface;
+use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 
 /**
  * Class Order_Modifier.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  *
@@ -69,6 +69,33 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @var string
 	 */
 	protected static string $order_modifier_type;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string,mixed> $attributes Attributes.
+	 */
+	public function __construct( array $attributes = [] ) {
+		parent::__construct( $attributes );
+
+		// If we have a percent sub_type, we need to ensure the raw_amount is a Percent_Value.
+		if ( 'flat' === $this->sub_type ) {
+			return;
+		}
+
+		// If we don't have the raw amount set, nothing else to do.
+		if ( ! array_key_exists( 'raw_amount', $this->attributes ) ) {
+			return;
+		}
+
+		if ( $this->attributes['raw_amount'] instanceof Percent_Value ) {
+			return;
+		}
+
+		$this->setAttribute( 'raw_amount', new Percent_Value( $this->raw_amount ) );
+	}
 
 	/**
 	 * Finds a model by its ID.

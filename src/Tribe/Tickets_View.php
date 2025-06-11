@@ -57,7 +57,7 @@ class Tribe__Tickets__Tickets_View {
 	 * By default WordPress has a nasty if query_var['p'] is a page then redirect to the page,
 	 * so we will change the variables accordingly.
 	 *
-	 * @param  WP_Query $query The current Query.
+	 * @param WP_Query $query The current Query.
 	 * @return void
 	 */
 	public function prevent_page_redirect( $query ) {
@@ -161,8 +161,8 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param $a array An array of ticket id and status.
-	 * @param $b array An array of ticket id and status.
+	 * @param array $a An array of ticket id and status.
+	 * @param array $b An array of ticket id and status.
 	 *
 	 * @return int
 	 */
@@ -314,7 +314,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * To allow `tickets` to be translatable we need to add it as a base.
 	 *
-	 * @param  array $bases The translatable bases.
+	 * @param array $bases The translatable bases.
 	 * @return array
 	 */
 	public function add_rewrite_base_slug( $bases = [] ) {
@@ -433,7 +433,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.7.3
 	 *
-	 * @param $query WP_Query Query object.
+	 * @param WP_Query $query Query object.
 	 *
 	 */
 	public function modify_ticket_display_query( $query ) {
@@ -603,9 +603,9 @@ class Tribe__Tickets__Tickets_View {
 	 * Fetches from the Cached attendees list the ones that are relevant for this user and event.
 	 * Important to note that this method will return the attendees organized by order id.
 	 *
-	 * @param  int       $event_id      The Event ID we're checking.
-	 * @param  int|null  $user_id       An Optional User ID.
-	 * @param  boolean   $include_rsvp  If this should include RSVP, default is false.
+	 * @param int       $event_id      The Event ID we're checking.
+	 * @param int|null  $user_id       An Optional User ID.
+	 * @param boolean   $include_rsvp  If this should include RSVP, default is false.
 	 * @return array                    List of Attendees grouped by order id.
 	 */
 	public function get_event_attendees_by_order( $event_id, $user_id = null, $include_rsvp = false ) {
@@ -642,8 +642,8 @@ class Tribe__Tickets__Tickets_View {
 	 * Fetches from the Cached attendees list the ones that are relevant for this user and event.
 	 * Important to note that this method will return the attendees from RSVP.
 	 *
-	 * @param  int       $event_id     The Event ID we're checking.
-	 * @param  int|null  $user_id      An Optional User ID.
+	 * @param int       $event_id     The Event ID we're checking.
+	 * @param int|null  $user_id      An Optional User ID.
 	 * @return array                   Array with the RSVP attendees.
 	 */
 	public function get_event_rsvp_attendees( $event_id, $user_id = null ) {
@@ -737,7 +737,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Check if the RSVP option is a valid one.
 	 *
-	 * @param  string  $option Which rsvp option to check.
+	 * @param string  $option Which rsvp option to check.
 	 * @return boolean
 	 */
 	public function is_valid_rsvp_option( $option ) {
@@ -773,8 +773,8 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Counts the Amount of Tickets attendees.
 	 *
-	 * @param  int       $event_id     The Event ID we're checking.
-	 * @param  int|null  $user_id      An Optional User ID.
+	 * @param int       $event_id     The Event ID we're checking.
+	 * @param int|null  $user_id      An Optional User ID.
 	 * @return int
 	 */
 	public function count_ticket_attendees( $event_id, $user_id = null ) {
@@ -801,8 +801,8 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Verifies if we have RSVP attendees for this user and event.
 	 *
-	 * @param  int       $event_id     The Event ID we're checking.
-	 * @param  int|null  $user_id      An Optional User ID.
+	 * @param int       $event_id     The Event ID we're checking.
+	 * @param int|null  $user_id      An Optional User ID.
 	 * @return int
 	 */
 	public function has_rsvp_attendees( $event_id, $user_id = null ) {
@@ -813,8 +813,8 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Verifies if we have Tickets attendees for this user and event
 	 *
-	 * @param  int       $event_id     The Event ID we're checking.
-	 * @param  int|null  $user_id      An Optional User ID.
+	 * @param int       $event_id     The Event ID we're checking.
+	 * @param int|null  $user_id      An Optional User ID.
 	 * @return int
 	 */
 	public function has_ticket_attendees( $event_id, $user_id = null ) {
@@ -864,10 +864,10 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Creates the HTML for the Select Element for RSVP options.
 	 *
-	 * @param  string $name     The Name of the Field.
-	 * @param  string $selected The Current selected option.
-	 * @param  int  $event_id   The Event/Post ID (optional).
-	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional).
+	 * @param string $name     The Name of the Field.
+	 * @param string $selected The Current selected option.
+	 * @param int  $event_id   The Event/Post ID (optional).
+	 * @param int  $ticket_id  The Ticket/RSVP ID (optional).
 	 * @return void
 	 */
 	public function render_rsvp_selector( $name, $selected, $event_id = null, $ticket_id = null ) {
@@ -885,9 +885,9 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Verifies if the Given Event has RSVP restricted.
 	 *
-	 * @param  int  $event_id   The Event/Post ID (optional).
-	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional).
-	 * @param  int  $user_id    A User ID (optional).
+	 * @param int  $event_id   The Event/Post ID (optional).
+	 * @param int  $ticket_id  The Ticket/RSVP ID (optional).
+	 * @param int  $user_id    A User ID (optional).
 	 * @return boolean
 	 */
 	public function is_rsvp_restricted( $event_id = null, $ticket_id = null, $user_id = null ) {
@@ -899,10 +899,10 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Allow users to filter if this Event or Ticket has Restricted RSVP
 		 *
-		 * @param  boolean  $restricted Is this Event or Ticket Restricted?
-		 * @param  int      $event_id   The Event/Post ID (optional)
-		 * @param  int      $ticket_id  The Ticket/RSVP ID (optional)
-		 * @param  int      $user_id    An User ID (optional)
+		 * @param boolean  $restricted Is this Event or Ticket Restricted?
+		 * @param int      $event_id   The Event/Post ID (optional)
+		 * @param int      $ticket_id  The Ticket/RSVP ID (optional)
+		 * @param int      $user_id    An User ID (optional)
 		 */
 		return apply_filters( 'event_tickets_is_rsvp_restricted', false, $event_id, $ticket_id, $user_id );
 	}
@@ -910,8 +910,8 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets a HTML Attribute for input/select/textarea to be disabled.
 	 *
-	 * @param  int  $event_id   The Event/Post ID (optional).
-	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional).
+	 * @param int  $event_id   The Event/Post ID (optional).
+	 * @param int  $ticket_id  The Ticket/RSVP ID (optional).
 	 * @return boolean
 	 */
 	public function get_restriction_attr( $event_id = null, $ticket_id = null ) {
@@ -927,10 +927,10 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Creates the HTML for the status of the  RSVP choice.
 	 *
-	 * @param  string $name     The Name of the Field.
-	 * @param  string $selected The Current selected option.
-	 * @param  int  $event_id   The Event/Post ID (optional).
-	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional).
+	 * @param string $name     The Name of the Field.
+	 * @param string $selected The Current selected option.
+	 * @param int  $event_id   The Event/Post ID (optional).
+	 * @param int  $ticket_id  The Ticket/RSVP ID (optional).
 	 * @return void
 	 */
 	public function render_rsvp_status( $name, $selected, $event_id = null, $ticket_id = null ) {

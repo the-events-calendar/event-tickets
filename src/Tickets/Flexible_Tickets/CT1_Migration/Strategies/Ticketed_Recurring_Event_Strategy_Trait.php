@@ -2,7 +2,7 @@
 /**
  * Provides common methods for the migration strategies dealing with Ticketed Recurring Events (excluding RSVP).
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Trait Ticketed_Recurring_Event_Strategy_Trait.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */

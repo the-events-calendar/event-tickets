@@ -2,7 +2,7 @@
 /**
  * Posts and Ticket Groups relationships Repository.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -21,7 +21,7 @@ use TEC\Tickets\Flexible_Tickets\Models\Post_And_Ticket_Group;
 /**
  * Class Posts_And_Ticket_Groups.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */

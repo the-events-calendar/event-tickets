@@ -32,21 +32,16 @@ class AttendeeCollection extends PureComponent {
 
 	getHeader = () => (
 		<Fragment>
-			<Dashicon
-				className="tribe-editor__ticket__attendee-collection-header-icon"
-				icon="arrow-down"
-			/>
+			<Dashicon className="tribe-editor__ticket__attendee-collection-header-icon" icon="arrow-down" />
 			<span className="tribe-editor__ticket__attendee-collection-header-text">
 				{ __( 'Attendee Collection', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	);
 
-	getContent = () => (
-		<IACSetting clientId={ this.props.clientId } />
-	);
+	getContent = () => <IACSetting clientId={ this.props.clientId } />;
 
-	getRows = () => ( [
+	getRows = () => [
 		{
 			accordionId: this.accordionId,
 			content: this.getContent(),
@@ -55,15 +50,10 @@ class AttendeeCollection extends PureComponent {
 			headerAttrs: { disabled: this.props.isDisabled },
 			headerClassName: 'tribe-editor__ticket__attendee-collection-header',
 		},
-	] );
+	];
 
 	render() {
-		return (
-			<Accordion
-				className="tribe-editor__ticket__attendee-collection"
-				rows={ this.getRows() }
-			/>
-		);
+		return <Accordion className="tribe-editor__ticket__attendee-collection" rows={ this.getRows() } />;
 	}
 }
 

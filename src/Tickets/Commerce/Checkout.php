@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Class Checkout
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -78,20 +78,24 @@ class Checkout {
 	 * Determines if the current page is the Checkout page.
 	 *
 	 * @since 5.1.9
-	 *
+	 * @since 5.21.1 Ensure it method returns false if tickets commerce is disabled.
 	 *
 	 * @return bool
 	 */
 	public function is_current_page() {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
 		if ( is_admin() ) {
 			return false;
 		}
 
-		$current_page = get_queried_object_id();
+		$current_page    = get_queried_object_id();
 		$is_current_page = $this->get_page_id() === $current_page;
 
 		/**
-		 * @todo determine hte usage of tribe_ticket_redirect_to
+		 * @todo determine the usage of tribe_ticket_redirect_to
 		 * 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		 */
 

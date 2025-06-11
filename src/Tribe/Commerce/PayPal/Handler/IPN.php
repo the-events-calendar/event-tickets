@@ -121,12 +121,12 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 		/**
 		 * Filters whether the IPN handler is correctly configured or not.
 		 *
-		 * Returning a non `null` value here will short-circuit the check
+		 * Returning a non `null` value here will short-circuit the check.
 		 *
 		 * @since 4.7
 		 *
-		 * @param string                                            $config_status
-		 * @param    Tribe__Tickets__Commerce__PayPal__Handler__IPN $this
+		 * @param string                                         $config_status The configuration status.
+		 * @param Tribe__Tickets__Commerce__PayPal__Handler__IPN $handler       The IPN handler object.
 		 */
 		$config_status = apply_filters( 'tribe_tickets_commerce_paypal_ipn_config_status', null, $this );
 

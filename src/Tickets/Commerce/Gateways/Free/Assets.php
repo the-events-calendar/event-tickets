@@ -30,7 +30,7 @@ class Assets extends Service_Provider {
 	public function register(): void {
 		$plugin = \Tribe__Tickets__Main::instance();
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-free-checkout',
 			'commerce/gateway/free/checkout.js',
@@ -62,7 +62,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-commerce-free-style',
 			'tickets-commerce/gateway/free.css',

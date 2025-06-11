@@ -5,7 +5,6 @@ namespace TEC\Tickets\Seating\Orders;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -15,7 +14,6 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
-use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Commerce\Cart as TicketsCommerce_Cart;
 
 class Cart_Test extends WPTestCase {

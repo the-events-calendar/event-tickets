@@ -8,7 +8,7 @@
  * To remove an action:
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Admin\Tickets\Hooks::class ), 'some_method' ] );
  *
- * @since   5.14.0
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -20,7 +20,7 @@ use TEC\Common\Contracts\Service_Provider;
 /**
  * Class Hooks.
  *
- * @since   5.14.0
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -41,8 +41,11 @@ class Hooks extends Service_Provider {
 	 * @since 5.14.0
 	 */
 	protected function add_actions() {
-		add_action( 'admin_menu', tribe_callback( Page::class, 'add_tec_tickets_admin_tickets_page' ), 15 );
+		add_action( 'admin_menu', tribe_callback( Page::class, 'admin_page' ), 15 );
 		add_action( 'current_screen', tribe_callback( Screen_Options::class, 'init' ) );
+		add_action( 'admin_menu', tribe_callback( Page::class, 'maybe_register_tabs' ), 20 );
+		add_action( 'tec_admin_page_wrapper_classes', tribe_callback( Page::class, 'add_admin_page_wrapper_classes' ) );
+		add_action( 'tec_admin_page_header_classes', tribe_callback( Page::class, 'add_admin_page_header_classes' ) );
 	}
 
 	/**

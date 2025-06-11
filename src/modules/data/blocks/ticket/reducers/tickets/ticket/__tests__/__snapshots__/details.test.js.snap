@@ -12,7 +12,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -20,6 +29,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -35,7 +45,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -43,6 +62,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -58,7 +78,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -66,6 +95,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -81,7 +111,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -89,6 +128,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -106,7 +146,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -114,6 +163,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -129,7 +179,16 @@ Object {
   "endTime": "13:45",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -137,6 +196,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -152,7 +212,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "13:45",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -160,6 +229,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -175,7 +245,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -183,6 +262,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -198,7 +278,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": 99,
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -206,6 +295,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -221,7 +311,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "12345678",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -229,6 +328,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -244,7 +344,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "January 1, 2018",
   "startDateInput": "July 19, 2018",
@@ -252,6 +361,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -267,7 +377,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -277,6 +396,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -292,7 +412,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -300,6 +429,7 @@ Object {
   "startTime": "13:45",
   "startTimeInput": "7:30 pm",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -315,7 +445,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -323,6 +462,7 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "13:45",
   "title": "",
+  "type": "default",
 }
 `;
 
@@ -338,7 +478,16 @@ Object {
   "endTime": "21:30:00",
   "endTimeInput": "9:30 pm",
   "iac": "none",
+  "on_sale": false,
   "price": "",
+  "saleEndDate": "",
+  "saleEndDateInput": "",
+  "saleEndDateMoment": "",
+  "salePrice": "",
+  "salePriceChecked": false,
+  "saleStartDate": "",
+  "saleStartDateInput": "",
+  "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
@@ -346,5 +495,6 @@ Object {
   "startTime": "19:30:00",
   "startTimeInput": "7:30 pm",
   "title": "new title",
+  "type": "default",
 }
 `;

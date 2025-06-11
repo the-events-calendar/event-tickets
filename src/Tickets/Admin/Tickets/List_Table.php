@@ -2,7 +2,7 @@
 /**
  * The list table for the Admin Tickets screen.
  *
- * @since  5.14.0
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -24,7 +24,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Links\Provider as Custom_Tables_Links_Provid
 /**
  * Class List_Table.
  *
- * @since  5.14.0
+ * @since 5.14.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -166,7 +166,7 @@ class List_Table extends WP_List_Table {
 	/**
 	 * The constructor.
 	 *
-	 * @since  5.14.0
+	 * @since 5.14.0
 	 */
 	public function __construct() {
 		$screen = get_current_screen();
@@ -196,7 +196,7 @@ class List_Table extends WP_List_Table {
 	/**
 	 * Returns the columns for the list table.
 	 *
-	 * @since  5.14.0
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -230,7 +230,7 @@ class List_Table extends WP_List_Table {
 	 * Get a list of columns. The format is:
 	 * 'internal-name' => 'Title'
 	 *
-	 * @since  5.14.0
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -269,7 +269,7 @@ class List_Table extends WP_List_Table {
 	/**
 	 * Returns the columns for the list table.
 	 *
-	 * @since  5.14.0
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */
@@ -296,7 +296,7 @@ class List_Table extends WP_List_Table {
 	/**
 	 * Returns the sortable columns for the list table.
 	 *
-	 * @since  5.14.0
+	 * @since 5.14.0
 	 *
 	 * @return array
 	 */

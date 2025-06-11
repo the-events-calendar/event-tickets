@@ -1,12 +1,12 @@
-<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/common-responsive.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/free.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/paypal.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/stripe.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/variables-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/common-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/variables-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/common-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/stripe.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/paypal.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/free.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/common-responsive.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
 <div class="tribe-common event-tickets">
 	<section
 		class="tribe-tickets__commerce-checkout"
@@ -33,7 +33,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
+	<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-{{ticket_id2}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ticket_id2}}" data-ticket-quantity="1" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -94,11 +94,55 @@
 	&#x24;0.00</div>
 
 </article>
-	</div>
+</div>
 
 	
 <footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
-	<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
+	<div class="tribe-common-b2 tribe-tickets__form tec-tickets-commerce-checkout-cart__coupons">
+	<button  class="tec-tickets-commerce-checkout-cart__coupons-add-link" >
+		Add coupon code	</button>
+	<div  class="tec-tickets-commerce-checkout-cart__coupons-input-container tribe-common-a11y-hidden" >
+		<input
+			class="tec-tickets-commerce-checkout-cart__coupons-input-field"
+			type="text"
+			id="tec-tickets-commerce-checkout-cart__coupon-input-field"
+			name="coupons"
+			aria-describedby="tec-tickets-commerce-checkout-cart__coupons-error-text"
+			aria-label="Enter coupon code"
+			placeholder="Enter coupon code"
+			value=""
+		/>
+		<button  class="tribe-common-c-btn-border tec-tickets-commerce-checkout-cart__coupons-apply-button" >
+			Apply		</button>
+	</div>
+	<p
+		id="tec-tickets-commerce-checkout-cart__coupons-error-text"
+		class="tec-tickets-commerce-checkout-cart__coupons-input-error tribe-common-a11y-hidden"
+		aria-live="polite"
+		role="alert"
+	>
+		Invalid coupon code	</p>
+	<div  class="tec-tickets-commerce-checkout-cart__coupons-applied-container tribe-common-a11y-hidden" >
+		<ul>
+			<li>
+				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label tec-tickets-commerce-checkout-cart__coupons-applied-text">
+					<span class="tec-tickets-commerce-checkout-cart__coupons-applied-label">
+											</span>
+					<button class="tec-tickets-commerce-checkout-cart__coupons-remove-button" type="button">
+						<img
+							src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/close.svg"
+							alt="Icon to remove coupon"
+							title="Remove coupon"
+						>
+					</button>
+				</span>
+				<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number tec-tickets-commerce-checkout-cart__coupons-discount-amount">
+									</span>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">1</span></div>
 <div class="tribe-tickets__commerce-checkout-cart-footer-total">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;0.00</span></div>

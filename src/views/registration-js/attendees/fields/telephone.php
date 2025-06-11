@@ -34,7 +34,7 @@ $classes    = [
 		class="tribe-common-form-control-telephone__input ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
 		value="<?php echo esc_attr( $value ); ?>"
-		<?php tribe_required( $required ); ?>
+		<?php echo $required ? 'required' : ''; ?>
 		<?php tribe_disabled( $disabled ); ?>
 	/>
 </div>

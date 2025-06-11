@@ -12,7 +12,7 @@ import './style.pcss';
 
 const getHeaderElement = ( header, description ) => {
 	if ( ! description ) {
-		return ( <div className="tickets-heading tickets-row-line">{ header }</div> );
+		return <div className="tickets-heading tickets-row-line">{ header }</div>;
 	}
 
 	return (

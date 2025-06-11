@@ -31,10 +31,10 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  int    $meta_id
-	 * @param  int    $object_id
-	 * @param  string $meta_key
-	 * @param  mixed  $capacity
+	 * @param int    $meta_id
+	 * @param int    $object_id
+	 * @param string $meta_key
+	 * @param mixed  $capacity
 	 *
 	 * @return null
 	 */

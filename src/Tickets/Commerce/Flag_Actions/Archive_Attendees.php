@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Traits\Is_Ticket;
 /**
  * Class Archive_Attendees normally triggers when handling refunds and stuff like that.
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

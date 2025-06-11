@@ -51,5 +51,12 @@ class Service_Provider extends Service_Provider_Contract {
 		tribe( Dispatcher::class );
 		tribe( RSVP::class );
 		tribe( Commerce::class );
+
+		/**
+		 * Fires when Promoter is fully loaded.
+		 *
+		 * @since 5.22.0
+		 */
+		do_action( 'tec_tickets_promoter_fully_loaded' );
 	}
 }

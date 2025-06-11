@@ -15,7 +15,7 @@ class Tribe__Tickets__Admin__Views extends Tribe__Template {
 	/**
 	 * Building of the Class template configuration
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 */
 	public function __construct() {
 		$this->set_template_origin( Tribe__Tickets__Main::instance() );
@@ -28,7 +28,7 @@ class Tribe__Tickets__Admin__Views extends Tribe__Template {
 	/**
 	 * Hook the necessary Filters and Actions
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @return void
 	 */

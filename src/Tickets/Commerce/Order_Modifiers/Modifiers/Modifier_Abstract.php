@@ -26,7 +26,7 @@ use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier;
-use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Meta as Meta;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Order_Modifier_Relationships;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Relationship_Repo;
@@ -35,12 +35,13 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta as Me
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Meta_Keys;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Status;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Currency_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Float_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Positive_Integer_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Float_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Values\Value_Interface;
 use TEC\Tickets\Exceptions\Not_Found_Exception;
 
 /**
@@ -49,6 +50,8 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
  * Provides a base class for order modifier strategies like Coupon and Fee.
  *
  * @since 5.18.0
+ *
+ * @method string convert_from_raw_amount( int $amount ) [Deprecated] Converts a raw amount from cents to a decimal.
  */
 abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
@@ -279,24 +282,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Converts an amount in cents to a formatted decimal string.
-	 *
-	 * This method is used to convert an integer amount in cents (e.g., 2300) into a string with two decimal points (e.g., 23.00).
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param int $raw_amount The amount in cents.
-	 *
-	 * @return string The formatted decimal string representing the amount.
-	 */
-	public function convert_from_raw_amount( int $raw_amount ): string {
-		$amount       = $raw_amount / 100;
-		$amount_value = Value::create( $amount );
-
-		return number_format( $amount_value->get_decimal(), 2, '.', '' );
-	}
-
-	/**
 	 * Displays the formatted amount based on the type.
 	 *
 	 * Depending on whether the modifier is a percentage, flat fee, or any future type,
@@ -318,8 +303,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 			case 'flat':
 			default:
-				$precision_value  = ( new Precision_Value( $value ) );
-				$formatted_amount = ( new Currency_Value( $precision_value ) )->get();
+				$formatted_amount = Currency_Value::create_from_float( $value )->get();
 				break;
 		}
 
@@ -451,11 +435,9 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 */
 	protected function handle_meta_data( int $modifier_id, array $args = [] ): Model {
 		// Default structure for the metadata.
-
 		$defaults = [
 			'order_modifier_id' => $modifier_id,
 			'meta_key'          => '',
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'meta_value'        => '',
 			'priority'          => 0,
 		];
@@ -465,11 +447,11 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 
 		// Ensure that a 'meta_key' is provided.
 		if ( empty( $meta_data['meta_key'] ) ) {
-			throw new \InvalidArgumentException( __( 'Meta key is required to insert or update meta data.', 'event-tickets' ) );
+			throw new InvalidArgumentException( __( 'Meta key is required to insert or update meta data.', 'event-tickets' ) );
 		}
 
 		// Upsert the metadata using the repository.
-		return $this->meta_repository->upsert_meta( new Order_Modifier_Meta( $meta_data ) );
+		return $this->meta_repository->upsert_meta( new Meta( $meta_data ) );
 	}
 
 
@@ -549,30 +531,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	}
 
 	/**
-	 * Retrieves the singular name of the modifier.
-	 *
-	 * This method should be implemented by concrete classes to provide the singular name
-	 * of the modifier (e.g., 'Coupon', 'Fee').
-	 *
-	 * @since 5.18.0
-	 *
-	 * @return string The singular name of the modifier.
-	 */
-	abstract protected function get_singular_name(): string;
-
-	/**
-	 * Retrieves the plural name of the modifier.
-	 *
-	 * This method should be implemented by concrete classes to provide the plural name
-	 * of the modifier (e.g., 'Coupons', 'Fees').
-	 *
-	 * @since 5.18.0
-	 *
-	 * @return string The plural name of the modifier.
-	 */
-	abstract protected function get_plural_name(): string;
-
-	/**
 	 * Clears relationships if the apply_type has changed.
 	 *
 	 * This method compares the current apply_type stored in the database with the newly provided
@@ -612,7 +570,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function delete_modifier( int $modifier_id ): bool {
 		// Check if the modifier exists before attempting to delete it.
 		try {
-			$modifier = $this->repository->find_by_id( $modifier_id );
+			$this->repository->find_by_id( $modifier_id );
 		} catch ( Exception $e ) {
 			// Return false if the modifier does not exist.
 			return false;
@@ -622,10 +580,10 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 		$this->delete_relationship_by_modifier( $modifier_id );
 
 		// Delete associated meta data.
-		$this->meta_repository->delete( new Order_Modifier_Meta( [ 'id' => $modifier_id ] ) );
+		$this->meta_repository->delete( new Meta( [ 'id' => $modifier_id ] ) );
 
 		// Delete the modifier itself (mandatory).
-		$delete_modifier = $this->repository->delete(
+		return $this->repository->delete(
 			new Order_Modifier(
 				[
 					'id'            => $modifier_id,
@@ -633,13 +591,6 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 				]
 			)
 		);
-
-		// Check if the modifier deletion was successful.
-		if ( $delete_modifier ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -679,6 +630,82 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 			'status'        => sanitize_text_field( $raw_data['order_modifier_status'] ?? '' ),
 		];
 	}
+
+	/**
+	 * Handle dynamic method calls.
+	 *
+	 * This should be used for deprecated methods that are no longer in use.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $name      The method name.
+	 * @param array  $arguments The method arguments.
+	 *
+	 * @return mixed The results of the method call.
+	 * @throws InvalidArgumentException If the method does not exist.
+	 */
+	public function __call( $name, $arguments ) {
+		$method = __CLASS__ . "::{$name}";
+		switch ( $name ) {
+			case 'convert_from_raw_amount':
+				_deprecated_function( esc_html( $method ), '5.21.0', 'No replacement available.' );
+
+				$amount       = ( $arguments[0] ?? 0 ) / 100;
+				$amount_value = Value::create( $amount );
+
+				return number_format( $amount_value->get_decimal(), 2, '.', '' );
+
+			default:
+				throw new InvalidArgumentException( sprintf( 'Method %s does not exist.', esc_html( $method ) ) );
+		}
+	}
+
+	/**
+	 * Get the amount for the given subtype.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $sub_type   The subtype of the amount.
+	 * @param float  $raw_amount The raw amount.
+	 *
+	 * @return Value_Interface The amount value.
+	 */
+	protected function get_amount_for_subtype( string $sub_type, float $raw_amount ) {
+		switch ( $sub_type ) {
+			case 'percent':
+				return new Percent_Value( $raw_amount );
+
+			case 'flat':
+				return Currency_Value::create_from_float( $raw_amount );
+
+			default:
+				return new Precision_Value( $raw_amount );
+		}
+	}
+
+	/**
+	 * Retrieves the singular name of the modifier.
+	 *
+	 * This method should be implemented by concrete classes to provide the singular name
+	 * of the modifier (e.g., 'Coupon', 'Fee').
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return string The singular name of the modifier.
+	 */
+	abstract protected function get_singular_name(): string;
+
+	/**
+	 * Retrieves the plural name of the modifier.
+	 *
+	 * This method should be implemented by concrete classes to provide the plural name
+	 * of the modifier (e.g., 'Coupons', 'Fees').
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return string The plural name of the modifier.
+	 */
+	abstract protected function get_plural_name(): string;
 
 	/**
 	 * Maps context data to the template context.

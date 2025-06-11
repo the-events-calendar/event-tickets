@@ -3,8 +3,8 @@
  */
 import moment from 'moment-timezone';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import $ from 'jquery';
+import renderer from 'react-test-renderer';
 
 global.jQuery = $;
 global.$ = $;
@@ -12,7 +12,6 @@ global.wp = {
 	element: React,
 	api: {},
 	apiRequest: {},
-	editor: {},
 	components: {},
 	data: {},
 	blockEditor: {},
@@ -22,6 +21,8 @@ global.wp = {
 		_x: (input) => input,
 	},
 };
+
+global.renderer = renderer;
 
 moment.tz.setDefault( 'UTC' );
 

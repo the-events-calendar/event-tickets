@@ -1,27 +1,28 @@
 <?php return '{
-    "tribe-form-content-start": {
-        "type": "html",
-        "html": "<div class=\\"tribe-settings-form-wrap\\">"
-    },
-    "tribe-tickets-emails-header": {
-        "type": "html",
-        "html": "<h2 class=\\"tec-tickets__admin-settings-tab-heading\\">Tickets Emails<\\/h2>"
-    },
-    "tribe-tickets-emails-description": {
-        "type": "html",
-        "html": "<p>Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn more about Event Tickets and Tickets Commerce communications in our <a href=\\"https:\\/\\/evnt.is\\/event-tickets-emails\\" target=\\"_blank\\" rel=\\"nofollow\\">Knowledgebase<\\/a>.<\\/p>"
-    },
+    "tec-settings-email-template-header": {},
     "0": {
         "type": "html",
-        "html": "<div class=\\"tec-tickets__admin-settings-emails-template-list\\">\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_ticket\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tTicket Email\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Attendee(s)<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_ticket\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tRSVP Email\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Attendee(s)<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp_not_going\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tRSVP &quot;Not Going&quot; Email\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Attendee(s)<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp_not_going\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_purchase_receipt\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tPurchase Receipt\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Purchaser<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_purchase_receipt\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_completed_order\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tCompleted Order\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Admin<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_completed_order\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t<\\/div>\\n"
+        "html": "<div class=\\"tec-settings-form__content-section\\"><h3 class=\\"tec-settings-form__section-header tec-settings-form__section-header--sub\\">Email Templates<\\/h3>"
     },
     "1": {
         "type": "html",
-        "html": "<h3>Sender Information<\\/h3>"
+        "html": "<div class=\\"tec-tickets__admin-settings-emails-template-list\\">\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_ticket\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tTicket Email\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Attendee(s)<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_ticket\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tRSVP Email\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Attendee(s)<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp_not_going\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tRSVP &quot;Not Going&quot; Email\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Attendee(s)<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_rsvp_not_going\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_purchase_receipt\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tPurchase Receipt\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Purchaser<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_purchase_receipt\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t\\t\\t<div  class=\\"tec-tickets__admin-settings-emails-template-list-item tec-tickets__admin-settings-emails-template-list-item--enabled\\"  >\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-icon\\">\\n\\t<span  class=\\"dashicons dashicons-yes\\"  ><\\/span>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-title\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_completed_order\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-title-link\\">\\n\\t\\tCompleted Order\\t<\\/a>\\n<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-recipient\\">\\n\\tTo: Admin<\\/div>\\n\\t<div class=\\"tec-tickets__admin-settings-emails-template-list-item-action\\">\\n\\t<a href=\\"http:\\/\\/wordpress.test\\/wp-admin\\/admin.php?page=tec-tickets-settings&#038;tab=emails&#038;section=tec_tickets_emails_completed_order\\" class=\\"tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit\\"><\\/a>\\n<\\/div>\\n<\\/div>\\n\\t<\\/div>\\n"
     },
     "2": {
         "type": "html",
-        "html": "<p>If fields are empty, sender information will be from the site owner set in WordPress general settings.<\\/p>"
+        "html": "<\\/div>"
+    },
+    "3": {
+        "type": "html",
+        "html": "<div class=\\"tec-settings-form__content-section\\">"
+    },
+    "4": {
+        "type": "html",
+        "html": "<h3 class=\\"tec-settings-form__section-header tec-settings-form__section-header--sub\\">Sender Information<\\/h3>"
+    },
+    "5": {
+        "type": "html",
+        "html": "<p class=\\"tec-settings-form__description-text\\">If fields are empty, sender information will be from the site owner set in WordPress general settings.<\\/p>"
     },
     "tec-tickets-emails-sender-name": {
         "type": "text",
@@ -43,13 +44,21 @@
         "validation_type": "email",
         "can_be_empty": true
     },
-    "3": {
+    "6": {
         "type": "html",
-        "html": "<h3>Email Styling<\\/h3>"
+        "html": "<\\/div>"
     },
-    "4": {
+    "tec-settings-email-email-styling-wrapper-start": {
         "type": "html",
-        "html": "<p>Add a logo and customize link colors and footer information to personalize your communications.  If you&#039;d like more granular control over email styling, you can override the email templates in your theme.  Learn More<\\/p>"
+        "html": "<div class=\\"tec-settings-form__content-section\\">"
+    },
+    "7": {
+        "type": "html",
+        "html": "<h3 class=\\"tec-settings-form__section-header tec-settings-form__section-header--sub\\">Email Styling<\\/h3>"
+    },
+    "8": {
+        "type": "html",
+        "html": "<p class=\\"tec-settings-form__description-text\\">Add a logo and customize link colors and footer information to personalize your communications.  If you&#039;d like more granular control over email styling, you can override the email templates in your theme.  Learn More<\\/p>"
     },
     "tec-tickets-emails-header-image-url": {
         "type": "image",
@@ -107,5 +116,9 @@
                 "link"
             ]
         }
+    },
+    "tec-settings-email-email-styling-wrapper-end": {
+        "type": "html",
+        "html": "<\\/div>"
     }
 }';

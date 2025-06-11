@@ -4,8 +4,8 @@
  *
  * @version 5.3.0
  *
- * @since   5.1.10
- * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since 5.1.10
+ * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -15,6 +15,7 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
 $classes = [
 	'tec-tickets__admin-settings-tickets-commerce-gateway',
 	'tec-tickets__admin-settings-tickets-commerce-gateway--connected' => $is_merchant_connected,
@@ -35,3 +36,4 @@ $classes = [
 </div>
 
 <?php $this->template( 'settings/tickets-commerce/paypal/modal/signup-complete' ); ?>
+<?php

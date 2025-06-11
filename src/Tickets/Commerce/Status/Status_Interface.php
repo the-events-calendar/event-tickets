@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Status;
 /**
  * Class Status_Interface
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
