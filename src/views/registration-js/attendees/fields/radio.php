@@ -65,7 +65,7 @@ $field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' .
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( true, in_array( $slug, $value ) ); ?>
 					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
+					<?php echo $required ? 'required' : ''; ?>
 				/>
 				<?php echo wp_kses_post( $option ); ?>
 			</label>

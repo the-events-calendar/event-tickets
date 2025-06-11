@@ -461,7 +461,7 @@ class Order_Summary {
 		 * @since 5.6.7
 		 *
 		 * @param Ticket_Object[] $tickets A list of tickets associated with the post.
-		 * @param Order_Summary $this The order summary object.
+		 * @param Order_Summary $instance  The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_tickets', $this->tickets, $this );
 	}
@@ -483,7 +483,7 @@ class Order_Summary {
 		 * @since 5.6.7
 		 *
 		 * @param array<string, array{ ticket: Ticket_Object, label: string, type: string, qty_data: array, qty_by_status: string }> $tickets_by_type The tickets by type.
-		 * @param Order_Summary $this The order summary object.
+		 * @param Order_Summary $instance  The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_tickets_by_type', $this->tickets_by_type, $this );
 	}
@@ -507,8 +507,8 @@ class Order_Summary {
 		 *
 		 * @since 5.6.7
 		 *
-		 * @param string $type The ticket type.
-		 * @param Order_Summary $this The post ID.
+		 * @param string $type             The ticket type.
+		 * @param Order_Summary $instance  The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_label_for_type', $type, $this );
 	}
@@ -529,7 +529,7 @@ class Order_Summary {
 		 * @since 5.6.7
 		 *
 		 * @param array<string, array> $event_sales_data The event sales data.
-		 * @param Order_Summary $this The order summary object.
+		 * @param Order_Summary        $instance         The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $this->event_sales_data, $this );
 	}
@@ -550,10 +550,10 @@ class Order_Summary {
 		 *
 		 * @since 5.8.0
 		 *
-		 * @param bool $should_include Whether to include the sales data into event sales data.
-		 * @param Ticket_Object $ticket The ticket object.
+		 * @param bool              $should_include     Whether to include the sales data into event sales data.
+		 * @param Ticket_Object     $ticket             The ticket object.
 		 * @param array<string,int> $quantity_by_status The quantity by status.
-		 * @param Order_Summary $this The order summary object.
+		 * @param Order_Summary     $instance           The order summary object.
 		 */
 		return apply_filters(
 			'tec_tickets_commerce_order_report_summary_should_include_event_sales_data',

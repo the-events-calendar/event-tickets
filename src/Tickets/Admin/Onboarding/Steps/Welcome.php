@@ -57,7 +57,7 @@ class Welcome extends Abstract_Step {
 		$commerce_optin = tribe_update_option( Settings::$tickets_commerce_enabled, $optin );
 
 		if ( ! $option ) {
-			return $this->add_fail_message( $response, __( 'Failed to save opt-in status.', 'event-tickets' ) );
+			return $this->add_message( $response, __( 'Failed to save opt-in status.', 'event-tickets' ) );
 		}
 
 		// Tell Telemetry to update.

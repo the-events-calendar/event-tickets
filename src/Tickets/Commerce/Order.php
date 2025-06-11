@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce Order
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -24,7 +24,7 @@ use WP_Post;
 /**
  * Class Order
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -743,7 +743,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Filters the values and creates a new Order with Tickets Commerce.
 	 *
-	 * @since    5.2.0
+	 * @since 5.2.0
 	 *
 	 * @param Gateway_Interface $gateway
 	 * @param array             $args

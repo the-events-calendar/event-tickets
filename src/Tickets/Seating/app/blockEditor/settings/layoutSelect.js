@@ -12,8 +12,8 @@ import RemoveLayout from './removeLayout';
  * The layout select component.
  *
  * @since 5.16.0
- * @param          props.layouts
- * @param          props.currentLayout
+ * @param         props.layouts
+ * @param         props.currentLayout
  *
  * @param {Object} props               The component props.
  */

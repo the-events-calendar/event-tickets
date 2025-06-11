@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * A status that is not supported, but avoids fatals.
  *
- * @since   5.13.0
+ * @since 5.13.0
  *
  * @package TEC\Tickets\Commerce\Status
  */

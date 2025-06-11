@@ -2,7 +2,7 @@
 /**
  * A Controller to register basic functionalities common to all the ticket types handled by the feature.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -28,7 +28,7 @@ use WP_Post;
 /**
  * Class Base.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */

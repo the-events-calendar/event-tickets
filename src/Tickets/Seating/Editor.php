@@ -2,7 +2,7 @@
 /**
  * The main Editor controller, for both Classic and Blocks.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -21,7 +21,7 @@ use WP_REST_Request;
 /**
  * Class Editor.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */

@@ -266,7 +266,7 @@ export const filterButtonIsDisabled = ( isDisabled, state, ownProps ) => {
 
 	const store = select( storeName );
 
-	if ( ! store.isUsingAssignedSeating() ) {
+	if ( ! store.isUsingAssignedSeating() || ! store.isLayoutLocked() ) {
 		return isDisabled;
 	}
 

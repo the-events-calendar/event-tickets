@@ -10,7 +10,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Flag Action Abstract.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

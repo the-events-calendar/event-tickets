@@ -74,7 +74,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * Given a set of parameters, ensure that the expected keys are present
 	 * and set to reasonable defaults where necessary.
 	 *
-	 * @param $params
+	 * @param array $params The parameters.
 	 */
 	protected function set_params( $params ) {
 		/**

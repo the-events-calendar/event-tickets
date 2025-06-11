@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 /**
  * Class Gateways Manager.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways
  */

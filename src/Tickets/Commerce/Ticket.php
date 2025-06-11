@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use WP_Post;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
@@ -262,7 +263,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
-	 * @param \WP_Post              $post       Post object.
+	 * @param WP_Post               $post       Post object.
 	 */
 	public function modify_counters_by_status( $new_status, $old_status, $post ) {
 		$order = tec_tc_get_order( $post );
@@ -533,9 +534,9 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param       $post_id
-	 * @param       $ticket
-	 * @param array $raw_data
+	 * @param int|WP_Post|null $post_id   The post ID.
+	 * @param Ticket_Object    $ticket    The ticket object.
+	 * @param array            $raw_data  The raw data.
 	 *
 	 * @return false|int|\WP_Error
 	 */
@@ -552,7 +553,7 @@ class Ticket extends Ticket_Data {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ),
+				'menu_order'   => (int) ( $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ) ),
 				'meta_input' => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
@@ -825,8 +826,8 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|WP_Post|null $event_id   The event ID.
+	 * @param int|WP_Post|null $ticket_id  The ticket ID.
 	 *
 	 * @return bool
 	 */
@@ -991,14 +992,14 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Gets the product price value object
 	 *
-	 * @since   5.1.9
-	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
-	 * @since   5.13.0   added new param to force regular price value return.
+	 * @since 5.1.9
+	 * @since 5.2.3 method signature changed to return an instance of Value instead of a string.
+	 * @since 5.13.0   added new param to force regular price value return.
 	 *
-	 * @param int|\WP_Post $product       The ticket post ID or object.
-	 * @param bool         $force_regular Whether to force the regular price.
+	 * @param int|WP_Post|null $product       The ticket post ID or object.
+	 * @param bool             $force_regular Whether to force the regular price.
 	 *
-	 * @return Commerce\Utils\Value;
+	 * @return \TEC\Tickets\Commerce\Utils\Value|null;
 	 * @version 5.2.3
 	 *
 	 */
@@ -1099,8 +1100,8 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @param $ticket_id int The ticket post ID.
-	 * @param $quantity  int The quantity to increase the ticket stock by.
+	 * @param int|WP_Post|null $ticket_id  The ticket post ID.
+	 * @param int              $quantity   The quantity to increase the ticket stock by.
 	 *
 	 * @return bool|int
 	 */

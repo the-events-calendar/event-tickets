@@ -125,7 +125,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	 * ticketing provider. Defaults to RSVP if something fails
 	 *
 	 * @since 4.6
-	 * @param           force_rsvp
+	 * @param          force_rsvp
 	 * @since 5.19.1 Updated default provider handling.
 	 * @param {boolean} forceRsvp  Whether to force the default provider to RSVP.
 	 * @return void

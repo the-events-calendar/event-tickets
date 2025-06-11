@@ -41,6 +41,7 @@
 		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
 				Test ticket for {{POST_TICKET_ID}}	</div>
 </div>
+
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
@@ -102,6 +103,7 @@
 		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
 				Test ticket for {{POST_TICKET_ID}}	</div>
 </div>
+
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"

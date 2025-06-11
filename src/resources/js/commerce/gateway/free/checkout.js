@@ -86,8 +86,8 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @since 5.10.0
 	 *
-	 * @param  data
-	 * @param  headers
+	 * @param data
+	 * @param headers
 	 *
 	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
 	 */

@@ -5,7 +5,7 @@
  * This class is responsible for managing fees, calculating them, and appending them
  * to the cart. It integrates with various filters and hooks during the checkout process.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  */
 

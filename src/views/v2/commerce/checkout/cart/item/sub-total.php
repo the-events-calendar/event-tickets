@@ -9,8 +9,8 @@
  *
  * @link     https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since    5.2.3   enforcing proper currency formatting
- * @since    5.1.9
+ * @since 5.2.3   enforcing proper currency formatting
+ * @since 5.1.9
  *
  * @version  5.2.3
  *
