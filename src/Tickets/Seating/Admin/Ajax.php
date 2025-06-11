@@ -2,7 +2,7 @@
 /**
  * Handles the AJAX requests for the Seating feature.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -33,7 +33,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 /**
  * Class Ajax.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin;
  */

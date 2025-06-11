@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Events
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */
@@ -161,5 +161,4 @@ class Events {
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $events_map[ $event_name ] );
 	}
-
 }

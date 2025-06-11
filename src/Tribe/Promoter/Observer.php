@@ -67,7 +67,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.1.2
 	 *
-	 * @param $attendee_id
+	 * @param int|null $attendee_id The attendee ID.
 	 *
 	 * @deprecated 4.11.5
 	 *
@@ -83,7 +83,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.11.5
 	 *
-	 * @param $ticket_id int|null The Ticket ID where to look for the Event.
+	 * @param int|null $ticket_id The Ticket ID where to look for the Event.
 	 */
 	public function notify_ticket_event( $ticket_id ) {
 		/** @var Tribe__Tickets__Tickets $provider */
@@ -132,8 +132,8 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.1.1
 	 *
-	 * @param $ticket_id int The ID of the ticket.
-	 * @param $event_id  int The ID of the post/event.
+	 * @param int|null $unused_ticket_id The ID of the ticket.
+	 * @param int|null $event_id  The ID of the post/event.
 	 */
 	public function notify_event_id( $ticket_id, $event_id ) {
 		$this->notify( $event_id );
@@ -216,7 +216,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.9
 	 *
-	 * @param $post_id
+	 * @param int|null $post_id The ID of the post.
 	 *
 	 * @deprecated 4.11.5
 	 *
@@ -232,7 +232,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.11.5
 	 *
-	 * @param $post_id
+	 * @param int|null $post_id The ID of the post.
 	 */
 	public function on_event_deleted( $post_id ) {
 		if ( $this->event_type === get_post_type( $post_id ) ) {
@@ -245,7 +245,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.1.1
 	 *
-	 * @param $post_id int The ID of the post.
+	 * @param int|null $post_id The ID of the post.
 	 */
 	public function notify( $post_id ) {
 

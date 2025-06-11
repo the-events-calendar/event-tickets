@@ -11,7 +11,7 @@ use WP_Post;
 /**
  * Class Tickets Repository.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Repositories
  */
@@ -74,9 +74,9 @@ class Tickets_Repository extends Tribe__Repository {
 		 *
 		 * @since 5.1.9
 		 *
-		 * @param mixed|WP_Post                $formatted The formatted event result, usually a post object.
-		 * @param int                          $id        The formatted post ID.
-		 * @param Tribe__Repository__Interface $this      The current repository object.
+		 * @param mixed|WP_Post                $formatted  The formatted event result, usually a post object.
+		 * @param int                          $id         The formatted post ID.
+		 * @param Tribe__Repository__Interface $repository The current repository object.
 		 */
 		$formatted = apply_filters( 'tec_tickets_commerce_repository_ticket_format', $formatted, $id, $this );
 
@@ -99,20 +99,20 @@ class Tickets_Repository extends Tribe__Repository {
 		 *
 		 * @since 5.8.0
 		 *
-		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
-		 * @param Tickets_Repository $this     The current repository object.
+		 * @param int|array          $event_id   The event ID or array of event IDs to filter by.
+		 * @param Tickets_Repository $repository The current repository object.
 		 */
 		$event_id = apply_filters( 'tec_tickets_repository_filter_by_event_id', $event_id, $this );
-		
+
 		if ( is_array( $event_id ) && empty( $event_id ) ) {
 			// Bail early if the array is empty.
 			return;
 		}
-		
+
 		if ( is_numeric( $event_id ) ) {
 			$event_id = [ $event_id ];
 		}
-		
+
 		$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
 	}
 }

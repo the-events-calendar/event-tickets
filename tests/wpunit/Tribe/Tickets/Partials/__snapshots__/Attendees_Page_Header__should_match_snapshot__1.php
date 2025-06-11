@@ -54,7 +54,8 @@
 		</div>
 	</div>
 
-	</div>			<div class="welcome-panel-column welcome-panel-last alternate">
+	</div>
+			<div class="welcome-panel-column welcome-panel-last alternate">
 	<h3>Attendance Overview</h3>
 		<div class="tec-tickets__admin-attendees-attendance-type-list">
 		<div class="tec-tickets__admin-attendees-attendance-type">
@@ -93,7 +94,9 @@
 	<div class="tec-tickets__admin-attendees-attendance-totals-amount">
 		Checked in <span id="total_checkedin">0</span> (<span id="percent_checkedin" data-total-attendees="10">0%</span>)
 	</div>
-</div></div>					</div>
+</div>
+</div>
+					</div>
 	</div>
 </div>
 ';

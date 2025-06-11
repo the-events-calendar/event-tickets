@@ -180,7 +180,7 @@ class Order_Repository extends Tribe__Repository {
 		 *
 		 * @param mixed|WP_Post                 $formatted The formatted event result, usually a post object.
 		 * @param int                           $id        The formatted post ID.
-		 * @param Tribe__Repository__Interface $this      The current repository object.
+		 * @param Tribe__Repository__Interface $repository The current repository object.
 		 */
 		$formatted = apply_filters( 'tec_tickets_commerce_repository_order_format', $formatted, $id, $this );
 
@@ -818,7 +818,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 * @param string|null $order Order type value either 'ASC' or 'DESC'.
 	 *
 	 * @return string
 	 */

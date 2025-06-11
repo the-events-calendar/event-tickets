@@ -7,7 +7,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Observer
  *
- * @since   5.7.0
+ * @since 5.7.0
  *
  * @package TEC\Tickets\QR
  */

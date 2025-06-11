@@ -441,7 +441,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Enqueue the plugin admin stylesheet(s) and JS.
 	 *
-	 * @since  4.7
+	 * @since 4.7
 	 */
 	public function enqueue_resources() {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
@@ -659,7 +659,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $event_id
+	 * @param int $event_id The event ID.
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
 		$transaction_ids = array();
@@ -1437,8 +1437,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Deletes a ticket
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|null $event_id The event ID.
+	 * @param int      $ticket_id The ticket ID.
 	 *
 	 * @return bool
 	 */
@@ -1490,11 +1490,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $content
+	 * @param string $unused_content The content.
 	 *
 	 * @return void
 	 */
-	public function front_end_tickets_form( $content ) {
+	public function front_end_tickets_form( $unused_content ) {
 
 		$post = $GLOBALS['post'];
 		$tickets = $this->get_tickets( $post->ID );
@@ -1531,8 +1531,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|WP_Post|null $event_id The event ID.
+	 * @param int              $ticket_id The ticket ID.
 	 *
 	 * @return null|Tribe__Tickets__Ticket_Object
 	 */
@@ -1622,7 +1622,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param      $post_id
+	 * @param     $post_id
 	 * @param null $post_type
 	 *
 	 * @return array|mixed
@@ -1795,8 +1795,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int $event_id The event ID.
+	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return string
 	 */
@@ -1821,8 +1821,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param     $post_id   int id of the event post
-	 * @param int $ticket_id (null) id of the ticket
+	 * @param int $post_id   ID of the event post.
+	 * @param int $ticket_id (null) ID of the ticket.
 	 *
 	 * @return void
 	 */
@@ -1900,8 +1900,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
-	 * @param string $type
+	 * @param string $message The message.
+	 * @param string $type    The message type.
 	 */
 	public function add_message( $message, $type = 'update' ) {
 		$message = apply_filters( 'tribe_tpp_submission_message', $message, $type );
@@ -1995,7 +1995,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Set the tickets view
 	 *
-	 * @since    4.7
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Tickets_View $tickets_view
 	 *
@@ -2186,7 +2186,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $transaction
+	 * @param string $transaction The transaction.
 	 *
 	 * @return string
 	 */
@@ -2350,7 +2350,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 0
 	 *
-	 * @since  4.9
+	 * @since 4.9
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
@@ -2390,7 +2390,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 1
 	 *
-	 * @since  4.9
+	 * @since 4.9
 	 *
 	 * @param string   $redirect URL to redirect to.
 	 * @param null|int $post_id  Post ID for cart.
@@ -2760,9 +2760,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets the product price value
 	 *
-	 * @since  4.7
+	 * @since 4.7
 	 *
-	 * @param int|WP_Post $product
+	 * @param int|WP_Post $product The product.
 	 *
 	 * @return string
 	 */

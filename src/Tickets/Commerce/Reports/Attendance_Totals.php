@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Reports;
  * or if PayPal Tickets are added/deleted later in the request, it would be necessary
  * to obtain a new object of this type to get accurate results.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -190,7 +190,7 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * The total number of tickets sold and paid for, for this event.
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @return int
 	 */
@@ -210,7 +210,7 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * The total number of tickets sold then cancelled, for this event.
 	 *
-	 * @since  4.10.5
+	 * @since 4.10.5
 	 *
 	 * @return int
 	 */

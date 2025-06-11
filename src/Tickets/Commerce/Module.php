@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce;
 
+use WP_Post;
+use WP_Error;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
@@ -10,7 +12,7 @@ use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
 /**
  * Class Tickets Provider class for Tickets Commerce
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -297,11 +299,11 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param $content
+	 * @param string $unused_content Unused content.
 	 *
 	 * @return void
 	 */
-	public function front_end_tickets_form( $content ) {
+	public function front_end_tickets_form( $unused_content ) {
 
 		$post    = $GLOBALS['post'];
 		$tickets = $this->get_tickets( $post->ID );
@@ -339,8 +341,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param      $post_id
-	 * @param null $post_type
+	 * @param int|string  $post_id   The post ID.
+	 * @param string|null $post_type The post type.
 	 *
 	 * @return array|mixed
 	 */
@@ -352,20 +354,12 @@ class Module extends \Tribe__Tickets__Tickets {
 		switch ( $post_type ) {
 			case $this->attendee_object:
 				return $this->get_attendees_by_attendee_id( $post_id );
-
-				break;
 			case 'tpp_order_hash':
 				return $this->get_attendees_by_order_id( $post_id );
-
-				break;
 			case $this->ticket_object:
 				return tribe( Attendee::class )->get_attendees_by_ticket_id( $post_id, $this->orm_provider );
-
-				break;
 			default:
 				return $this->get_attendees_by_post_id( $post_id );
-
-				break;
 		}
 
 	}
@@ -407,7 +401,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $key
+	 * @param string $key The key.
 	 *
 	 * @return string The key value or an empty string if not defined.
 	 */
@@ -459,8 +453,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|object    $product
-	 * @param array|boolean $attendee
+	 * @param int|object    $product  The product.
+	 * @param array|boolean $attendee The attendee.
 	 *
 	 * @return string
 	 */
@@ -473,7 +467,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post $product
+	 * @param int|WP_post $product The product.
 	 *
 	 * @return string
 	 */
@@ -491,7 +485,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $attendee
+	 * @param array $attendee The attendee.
 	 *
 	 * @return bool
 	 */
@@ -527,8 +521,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $post_id
-	 * @param int $ticket_id
+	 * @param int $post_id   The post ID.
+	 * @param int $ticket_id The ticket ID.
 	 */
 	public function do_metabox_capacity_options( $post_id, $ticket_id ) {
 		tribe( Editor\Metabox::class )->do_metabox_capacity_options( $post_id, $ticket_id );
@@ -539,7 +533,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string
+	 * @return string The cart URL.
 	 */
 	public function get_cart_url() {
 		return tribe( Cart::class )->get_url();
@@ -550,7 +544,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string
+	 * @return string The checkout URL.
 	 */
 	public function get_checkout_url() {
 		return tribe( Checkout::class )->get_url();
@@ -559,7 +553,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since      5.1.9
+	 * @since 5.1.9
 	 * @deprecated 5.2.0
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
@@ -575,8 +569,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since 5.1.9
 	 * @since 5.6.7 Set some provider-invariant ticket properties.
 	 *
-	 * @param int|\WP_Post $post_id
-	 * @param int|\WP_Post $ticket_id
+	 * @param int|WP_post $post_id
+	 * @param int|WP_post $ticket_id
 	 *
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
@@ -623,8 +617,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.5.10 Adjust the method to handle both Ticket and Attendee post type deletion separately.
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|WP_Post|null $event_id  The event ID.
+	 * @param int|WP_Post|null $ticket_id The ticket ID.
 	 *
 	 * @return bool
 	 */
@@ -636,7 +630,7 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		$ticket_post = get_post( $ticket_id );
 
-		if ( ! $ticket_post instanceof \WP_Post ) {
+		if ( ! $ticket_post instanceof WP_Post ) {
 			return false;
 		}
 
@@ -675,10 +669,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int  $event_id
-	 * @param bool $url_only
+	 * @param int  $event_id  The event ID.
+	 * @param bool $url_only  Whether to return the URL only.
 	 *
-	 * @return string
+	 * @return string The event reports link.
 	 */
 	public function get_event_reports_link( $event_id, $url_only = false ) {
 		return tribe( Commerce\Reports\Orders::class )->get_event_link( $event_id, $url_only );
@@ -689,10 +683,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|WP_Post|null $event_id  The event ID.
+	 * @param int|WP_Post|null $ticket_id The ticket ID.
 	 *
-	 * @return string
+	 * @return string The ticket reports link.
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
 		return tribe( Commerce\Reports\Orders::class )->get_ticket_link( $event_id, $ticket_id );
@@ -706,7 +700,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @param \Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
 	 * @param array                              $attendee_data Attendee data to create from.
 	 *
-	 * @return \WP_Post|\WP_Error|false The new post object or false if we can't resolve to a Ticket object. WP_Error if modifying status fails
+	 * @return WP_post|WP_Error|false The new post object or false if we can't resolve to a Ticket object. WP_Error if modifying status fails.
 	 */
 	public function create_attendee( $ticket, $attendee_data ) {
 		// Get the ticket object from the ID.
@@ -778,7 +772,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
 	 * @param array     $attendee_data The attendee data to update to.
 	 *
-	 * @return \WP_Post|false The updated post object or false if unsuccessful.
+	 * @return WP_post|false The updated post object or false if unsuccessful.
 	 */
 	public function update_attendee( $attendee, $attendee_data ) {
 		if ( is_numeric( $attendee ) ) {

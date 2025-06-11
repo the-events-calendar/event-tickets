@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Orders Report.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -295,7 +295,7 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param $slugs
+	 * @param array $slugs The slugs.
 	 *
 	 * @return array
 	 */

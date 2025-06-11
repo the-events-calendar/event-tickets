@@ -2,7 +2,7 @@
 /**
  * Modifies REST API responses as required by the Seating feature.
  *
- * @since   5.18.1
+ * @since 5.18.1
  *
  * @package TEC\Tickets\Seating;
  */
@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class REST.
  *
- * @since   5.18.1
+ * @since 5.18.1
  *
  * @package TEC\Tickets\Seating;
  */

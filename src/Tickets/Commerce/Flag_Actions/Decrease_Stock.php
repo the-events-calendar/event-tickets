@@ -18,7 +18,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Decrease_Stock
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -115,7 +115,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			}
 
 			$original_stock = $ticket->stock();
-			$global_stock = new Global_Stock( $ticket->get_event_id() );
+			$global_stock   = new Global_Stock( $ticket->get_event_id() );
 
 			// Is ticket shared capacity?
 			$global_stock_mode  = $ticket->global_stock_mode();
@@ -123,7 +123,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 
 			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
 
-			$stock = $ticket->stock();
+			$stock           = $ticket->stock();
 			$stock_should_be = max( $original_stock - $quantity, 0 );
 
 			if ( $stock_should_be !== $stock ) {

@@ -10,11 +10,11 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.10.8 Tweaked logic for unlimited maximum quantity allowed.
- * @since   4.11.5 The input's "max" is now always set.
- * @since   5.0.3 Removed duplicative vars.
- * @since   5.1.5 Add label to the quantity input to improve accessibility.
+ * @since 4.9
+ * @since 4.10.8 Tweaked logic for unlimited maximum quantity allowed.
+ * @since 4.11.5 The input's "max" is now always set.
+ * @since 5.0.3 Removed duplicative vars.
+ * @since 5.1.5 Add label to the quantity input to improve accessibility.
  *
  * @version 5.1.5
  *

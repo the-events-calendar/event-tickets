@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * REST Endpoint Interface.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */

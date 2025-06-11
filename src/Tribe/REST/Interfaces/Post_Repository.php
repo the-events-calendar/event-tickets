@@ -25,7 +25,7 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	 * Mind that this method will take user capabilities into account when providing
 	 * the data.
 	 *
-	 * @since  4.8
+	 * @since 4.8
 	 *
 	 * @param int|WP_Post $attendee_id An attendee post or post ID.
 	 * @param string      $context     The context in which the data will be shown;

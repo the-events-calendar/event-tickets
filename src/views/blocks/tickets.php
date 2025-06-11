@@ -9,11 +9,11 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.10.8  Updated loading logic for including a renamed template.
- * @since   4.10.10 Removed initial check for tickets.
- * @since   4.12.1  Use tribe_get_ticket_label_plural() for "Tickets" string.
- * @since   5.0.3 Use wrapper with `tribe-common` and `event-tickets`. Receive variables from the backend.
+ * @since 4.9
+ * @since 4.10.8  Updated loading logic for including a renamed template.
+ * @since 4.10.10 Removed initial check for tickets.
+ * @since 4.12.1  Use tribe_get_ticket_label_plural() for "Tickets" string.
+ * @since 5.0.3 Use wrapper with `tribe-common` and `event-tickets`. Receive variables from the backend.
  *
  * @version 5.0.3
  *
@@ -137,9 +137,9 @@ if ( ! $already_rendered ) {
 	/**
 	 * Allows filtering of extra classes used on the tickets-block loader
 	 *
-	 * @since  4.11.0
+	 * @since 4.11.0
 	 *
-	 * @param  array $classes The array of classes that will be filtered.
+	 * @param array $classes The array of classes that will be filtered.
 	 */
 	$loader_classes = apply_filters( 'tribe_tickets_block_loader_classes', [ 'tribe-tickets-loader__tickets-block' ] );
 	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );

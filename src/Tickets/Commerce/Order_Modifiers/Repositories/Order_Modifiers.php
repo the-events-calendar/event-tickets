@@ -2,7 +2,7 @@
 /**
  * Order Modifiers repository.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories;
  */
@@ -30,7 +30,7 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
 /**
  * Class Order_Modifiers.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Repositories;
  */

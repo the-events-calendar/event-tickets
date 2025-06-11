@@ -5,7 +5,7 @@ namespace TEC\Tickets\Emails\Admin;
 /**
  * Class Notice_Extension
  *
- * @since   5.6.0
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails\Admin
  */
