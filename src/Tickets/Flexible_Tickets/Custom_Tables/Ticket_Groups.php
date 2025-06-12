@@ -49,7 +49,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * Internal way to track prior versions.
 	 *
-	 * @since TBD
+	 * @since 5.24.1.1
 	 *
 	 * @var array<string>
 	 */
@@ -86,7 +86,7 @@ class Ticket_Groups extends Table {
 	 * {@inheritdoc}
 	 *
 	 * @since 5.24.1 Handle hydrating new columns from `data` JSON for Ticket Presets use, if needed.
-	 * @since TBD    Handle MySQL compatibility fix for TEXT column DEFAULT value removal.
+	 * @since 5.24.1.1    Handle MySQL compatibility fix for TEXT column DEFAULT value removal.
 	 */
 	protected function after_update( array $results = [] ) {
 		$results          = parent::after_update( $results );
@@ -263,7 +263,7 @@ class Ticket_Groups extends Table {
 	 * Ensures all `data` column values are properly set since we removed
 	 * the DEFAULT ('') clause for compatibility with older MySQL versions.
 	 *
-	 * @since TBD
+	 * @since 5.24.1.1
 	 *
 	 * @param array $results The results array to update. Passed by reference.
 	 *
