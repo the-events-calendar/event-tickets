@@ -1463,11 +1463,10 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $redirect_url  The URL to redirect to.
-	 * @param string $requested_url The URL that was requested.
+	 * @param string $redirect_url The URL to redirect to.
 	 * @return string|false The URL to redirect to, or false to prevent redirect.
 	 */
-	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url, $requested_url ) {
+	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url ) {
 		// If we have the tribe-edit-orders parameter, preserve it in the redirect.
 		if ( get_query_var( 'tribe-edit-orders' ) && ! empty( $redirect_url ) ) {
 			$redirect_url = add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
