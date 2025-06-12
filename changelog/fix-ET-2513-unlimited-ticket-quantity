@@ -1,4 +1,4 @@
 Significance: minor
 Type: fix
 
-Allow unlimited capacity tickets to have the number of sales tracked. [ET-2513]
+Make sure that the sales of tickets with unlimited capacity are tracked. [ET-2513]
