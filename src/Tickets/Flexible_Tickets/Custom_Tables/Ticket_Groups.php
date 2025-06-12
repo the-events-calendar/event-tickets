@@ -77,13 +77,13 @@ class Ticket_Groups extends Table {
 		$results = parent::after_update( $results );
 
 		// Run version-specific migrations.
-		if ( self::SCHEMA_VERSION === '1.1.0' ) {
-			$results = $this->migrate_to_1_1_0( $results );
-		}
-
-		if ( self::SCHEMA_VERSION === '1.2.0' ) {
-			$results = $this->migrate_to_1_2_0( $results );
-		}
+		switch ( self::SCHEMA_VERSION ) {
+			case '1.1.0':
+				$results = $this->migrate_to_1_1_0( $results );
+				break;
+			case '1.2.0':
+				$results = $this->migrate_to_1_2_0( $results );
+				break;
 
 		return $results;
 	}
