@@ -76,11 +76,11 @@ class Ticket_Groups extends Table {
 	protected function after_update( array $results = [] ) {
 		$results = parent::after_update( $results );
 
-		// Run version-specific migrations.
+		// Run version-specific migrations. Add new migrations at the end of the switch statement so they run in the correct order.
 		switch ( true ) {
 			case version_compare( self::SCHEMA_VERSION, '1.1.0', '>=' ):
 				$results = $this->migrate_to_1_1_0( $results );
-				// Fall through to next version
+				// Fall through to next version.
 			case version_compare( self::SCHEMA_VERSION, '1.2.0', '>=' ):
 				$results = $this->migrate_to_1_2_0( $results );
 				break;
