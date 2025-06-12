@@ -6,13 +6,14 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 const {
-	createTECLegacyJs,
-	createTECPostCss,
-	createTECLegacyBlocksFrontendPostCss,
-	createTECPackage,
 	compileCustomEntryPoints,
-	exposeEntry,
+	createTECLegacyBlocksFrontendPostCss,
+	createTECLegacyJs,
+	createTECPackage,
+	createTECPostCss,
 	doNotPrefixSVGIdsClasses,
+	exposeEntry,
+	resolveExternalToGlobal,
 	WindowAssignPropertiesPlugin,
 } = require( '@stellarwp/tyson' );
 
@@ -158,6 +159,10 @@ module.exports = {
 		plugins: [
 			...defaultConfig.plugins,
 			new WindowAssignPropertiesPlugin(),
+		],
+		externals: [
+			...( defaultConfig.externals || [] ),
+			resolveExternalToGlobal( '@tec/common', 'window.tec.common' )
 		],
 	},
 };
