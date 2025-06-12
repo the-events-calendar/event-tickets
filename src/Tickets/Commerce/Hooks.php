@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.commerce.hooks' ), 'some_method' ] );
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -38,7 +38,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
 /**
  * Class Hooks.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -727,7 +727,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param $classes
+	 * @param array $classes The classes.
 	 *
 	 * @return array
 	 */

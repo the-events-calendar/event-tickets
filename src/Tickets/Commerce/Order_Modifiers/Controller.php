@@ -2,7 +2,7 @@
 /**
  * Event Tickets Order Modifiers Controller.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers
  */
 
@@ -212,7 +212,7 @@ final class Controller extends Controller_Contract {
 		 *
 		 * This filter will be removed when the Coupon functionality is ready for production.
 		 *
-		 * @since      5.18.0
+		 * @since 5.18.0
 		 * @deprecated 5.21.0
 		 *
 		 * @param bool $enabled Whether the coupons are enabled.

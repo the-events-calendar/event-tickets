@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
  *
  * @todo    Create a Contract between this and PayPal.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */

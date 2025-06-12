@@ -10,11 +10,11 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.11.0 Updated the optout markup and classes used.
- * @since   4.11.3 Ensure we always show the optout by default.
- * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
- * @since   5.0.3 Add vars to docblock and removed duplicative vars.
+ * @since 4.9
+ * @since 4.11.0 Updated the optout markup and classes used.
+ * @since 4.11.3 Ensure we always show the optout by default.
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since 5.0.3 Add vars to docblock and removed duplicative vars.
  *
  * @version 5.0.3
  *

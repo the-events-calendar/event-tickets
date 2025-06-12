@@ -72,9 +72,9 @@ if ( ! $already_rendered ) {
 		/**
 		 * Allows filtering of extra classes used on the rsvp-block loader.
 		 *
-		 * @since  4.11.1
+		 * @since 4.11.1
 		 *
-		 * @param  array $classes The array of classes that will be filtered.
+		 * @param array $classes The array of classes that will be filtered.
 		 */
 		$loader_classes = apply_filters( 'tribe_rsvp_block_loader_classes', [ 'tribe-block__rsvp__loading' ] );
 

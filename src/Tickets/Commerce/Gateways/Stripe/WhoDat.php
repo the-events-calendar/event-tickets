@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 /**
  * Class WhoDat. Handles connection to Stripe when the platform keys are needed.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */

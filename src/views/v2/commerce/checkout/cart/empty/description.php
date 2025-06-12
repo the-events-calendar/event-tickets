@@ -9,7 +9,7 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @version 5.1.10
  *
@@ -51,4 +51,3 @@ if ( $is_tec_active ) {
 <div class="tribe-common-b1 tribe-tickets__commerce-checkout-cart-empty-description">
 	<?php echo wp_kses_post( $description ); ?>
 </div>
-

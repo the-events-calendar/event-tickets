@@ -9,7 +9,7 @@ use WP_Error;
 /**
  * Class Proxy
  *
- * @since   5.7.0
+ * @since 5.7.0
  *
  * @package TEC\Tickets\QR
  */
@@ -73,7 +73,7 @@ class Connector {
 		 * Allows filtering the base URL which QR code query args are appended to. Defaults to
 		 * the site's home_url() with a trailing slash.
 		 *
-		 * @since      4.7.3
+		 * @since 4.7.3
 		 * @deprecated 5.7.0 Use `tec_tickets_qr_code_base_url` instead.
 		 *
 		 * @param string     $base_url

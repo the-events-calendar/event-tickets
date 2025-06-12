@@ -25,7 +25,7 @@ use WP_Post;
 /**
  * Class Order Endpoint.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */

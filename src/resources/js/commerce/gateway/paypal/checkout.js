@@ -318,8 +318,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param          actions
-	 * @param          $container
+	 * @param         actions
+	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
 	 *
 	 * @return {void}
@@ -335,8 +335,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param          actions
-	 * @param          $container
+	 * @param         actions
+	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
 	 *
 	 * @return {void}
@@ -453,8 +453,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @param  $container
-	 * @param  data
+	 * @param $container
+	 * @param data
 	 * @since 5.2.0
 	 *
 	 * @return {void}
@@ -467,8 +467,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @param  $container
-	 * @param  data
+	 * @param $container
+	 * @param data
 	 * @since 5.2.0
 	 *
 	 * @return {void}
@@ -480,7 +480,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @param  $container
+	 * @param $container
 	 * @since 5.2.0
 	 *
 	 * @return {void}
@@ -880,8 +880,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param          actions
-	 * @param          $container
+	 * @param         actions
+	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
 	 *
 	 * @return {void}
@@ -898,8 +898,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param          actions
-	 * @param          $container
+	 * @param         actions
+	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
 	 *
 	 * @return {void}
@@ -927,7 +927,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param          $container
+	 * @param         $container
 	 * @param {...any} rest
 	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
 	 *

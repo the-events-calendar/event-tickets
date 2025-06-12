@@ -14,7 +14,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Hook of the admin page for attendees
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * WP_Post_List children for Attendees
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @var Tribe__Tickets__Attendees_Table
 	 */
@@ -118,7 +118,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $event_id
+	 * @param int|WP_Post $event_id The Post ID of the event.
 	 */
 	public function event_action_links( $event_id ) {
 
@@ -127,8 +127,8 @@ class Tribe__Tickets__Attendees {
 		 *
 		 * @since 4.6.2
 		 *
-		 * @param string $link     The default "edit post" URL.
-		 * @param int    $event_id The Post ID of the event.
+		 * @param string      $link     The default "edit post" URL.
+		 * @param int|WP_Post $event_id The Post ID of the event.
 		 */
 		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
@@ -146,8 +146,8 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Provides an opportunity to add and remove action links from the attendee screen summary box.
 		 *
-		 * @param array $action_links
-		 * @param int   $event_id
+		 * @param array       $action_links The action links to be displayed.
+		 * @param int|WP_Post $event_id     The Post ID of the event.
 		 */
 		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links, $event_id );
 
@@ -263,7 +263,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Adds the "attendees" link in the admin list row actions for each event.
 	 *
-	 * @param $actions
+	 * @param array $actions The actions to be displayed.
 	 *
 	 * @return array
 	 */
@@ -379,14 +379,14 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $hook
+	 * @param string $hook The hook of the current screen.
 	 *
 	 */
 	public function enqueue_assets( $hook ) {
 		/**
 		 * Filter the Page Slugs the Attendees Page CSS and JS Loads
 		 *
-		 * @param array array( $this->page_id ) an array of admin slugs
+		 * @param array $slugs an array of admin slugs
 		 */
 		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', [ $this->page_id ] ) ) ) {
 			return;
@@ -402,7 +402,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $hook
+	 * @param string $hook The hook of the current screen.
 	 */
 	public function load_pointers( $hook ) {
 		if ( $hook != $this->page_id ) {
@@ -500,8 +500,8 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $admin_title
-	 * @param $unused_title
+	 * @param string $admin_title The admin title.
+	 * @param string $unused_title An unused title.
 	 *
 	 * @return string
 	 */
@@ -524,7 +524,7 @@ class Tribe__Tickets__Attendees {
 		 * Fires immediately before the content of the attendees screen
 		 * is rendered.
 		 *
-		 * @param $this Tribe__Tickets__Tickets_Handler The current ticket handler instance.
+		 * @param Tribe__Tickets__Tickets_Handler $handler The current ticket handler instance.
 		 */
 		do_action( 'tribe_tickets_attendees_page_inside', $this );
 
@@ -910,15 +910,15 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Handles the "send to email" action for the attendees list.
 	 *
-	 * @since  4.6.2
-	 * @since  5.8.2 Included params $event_id, $type, $send_to and $error to allow for testing.
+	 * @since 4.6.2
+	 * @since 5.8.2 Included params $event_id, $type, $send_to and $error to allow for testing.
 	 *
 	 * @param ?int|?string $event_id   The event ID.
 	 * @param ?string      $type       The type of recipient.
 	 *                                 Accepts 'user' or 'email'.
 	 * @param ?string|?int $send_to    The recipient's ID or email.
 	 *                                 If $type is 'user', this should be the user ID.
-	 * @paramm ?WP_Error   $error    The error object.
+	 * @param ?WP_Error   $error       The error object.
 	 *                                 If null, a new WP_Error object will be created.
 	 *
 	 * @return string|WP_Error
@@ -989,11 +989,11 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $content_type
+	 * @param string $unused_content_type The content type.
 	 *
 	 * @return string
 	 */
-	public function set_contenttype( $content_type ) {
+	public function set_contenttype( $unused_content_type ) {
 		return 'text/html';
 	}
 
@@ -1004,7 +1004,7 @@ class Tribe__Tickets__Attendees {
 	 * For example, if tickets are created for the banana post type, the generic capability
 	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
 	 *
-	 * @since    4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param string $generic_cap
 	 * @param int    $event_id

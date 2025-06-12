@@ -2,7 +2,7 @@
 /**
  * Models an Tickets Commerce Orders.
  *
- * @since    5.1.9
+ * @since 5.1.9
  *
  * @package  TEC\Tickets\Commerce\Models
  */
@@ -20,7 +20,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Order.
  *
- * @since    5.1.9
+ * @since 5.1.9
  *
  * @package  TEC\Tickets\Commerce\Models
  */

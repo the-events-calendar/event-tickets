@@ -19,7 +19,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	 *
 	 * @since 4.8
 	 *
-	 * @param        string|array $tickets
+	 * @param       string|array $tickets
 	 * @param string              $sep
 	 *
 	 * @return bool
@@ -42,7 +42,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	 *
 	 * @since 4.8
 	 *
-	 * @param        string|array $attendees
+	 * @param       string|array $attendees
 	 * @param string              $sep
 	 *
 	 * @return bool
@@ -76,7 +76,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	 *
 	 * @since 4.8
 	 *
-	 * @param        string|array $posts
+	 * @param       string|array $posts
 	 * @param string              $sep
 	 *
 	 * @return bool

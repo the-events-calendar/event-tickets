@@ -12,7 +12,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Webhook for Charge operations.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
