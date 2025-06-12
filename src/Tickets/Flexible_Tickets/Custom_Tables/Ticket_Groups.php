@@ -206,7 +206,7 @@ class Ticket_Groups extends Table {
 				// Extract values from data JSON.
 				$name     = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
 				$capacity = isset( $data['capacity'] ) ? absint( $data['capacity'] ) : 0;
-				$cost     = isset( $data['cost'] ) ? sanitize_text_field( (string) $data['cost'] ): '0.000000';
+				$cost     = isset( $data['cost'] ) ? sanitize_text_field( (string) $data['cost'] ) : '0.000000';
 
 				// Update the row with extracted values.
 				$updated = $wpdb->update(
