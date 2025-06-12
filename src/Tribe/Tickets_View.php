@@ -36,6 +36,9 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'parse_request', [ $myself, 'maybe_regenerate_rewrite_rules' ] );
 		add_filter( 'tribe_events_views_v2_bootstrap_should_display_single', [ $myself, 'intercept_views_v2_single_display' ], 15, 4 );
 
+		// Prevent canonical redirect from stripping tribe-edit-orders parameter.
+		add_filter( 'redirect_canonical', [ $myself, 'preserve_tickets_parameter_in_canonical_redirect' ], 10, 2 );
+
 		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
 			add_action( 'tribe_events_pre_rewrite', [ $myself, 'add_permalink' ] );
@@ -405,7 +408,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// Prevents firing more than it needs to outside of the loop.
 		if (
-			! is_single()
+			! is_singular()
 			|| ! in_the_loop()
 			|| ! is_main_query()
 			|| (
@@ -1449,5 +1452,27 @@ class Tribe__Tickets__Tickets_View {
 			'link_label'  => $link_label,
 			'link'        => $this->get_tickets_page_url( $event_id ),
 		];
+	}
+
+	/**
+	 * Prevent canonical redirect from stripping tribe-edit-orders parameter.
+	 *
+	 * When WordPress performs canonical redirects for pages accessed via ?p=ID,
+	 * it strips custom query parameters like tribe-edit-orders. This method
+	 * preserves the tribe-edit-orders parameter during such redirects.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $redirect_url  The URL to redirect to.
+	 * @param string $requested_url The URL that was requested.
+	 * @return string|false The URL to redirect to, or false to prevent redirect.
+	 */
+	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url, $requested_url ) {
+		// If we have the tribe-edit-orders parameter, preserve it in the redirect.
+		if ( get_query_var( 'tribe-edit-orders' ) && ! empty( $redirect_url ) ) {
+			$redirect_url = add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		}
+
+		return $redirect_url;
 	}
 }
