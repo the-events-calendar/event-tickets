@@ -9,9 +9,9 @@
  *
  * @link  https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 4.12.3
+ * @since TBD
  *
- * @version 5.0.0
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  * @var WP_Post|int                      $post_id       The post object or ID.
@@ -42,7 +42,7 @@ if ( empty( $tickets ) ) {
 			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 		>
 			<?php $this->template( 'v2/components/loader/loader' ); ?>
-			<?php $this->template( 'v2/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
+			<?php $this->template( 'v2/commerce/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
 
 		</div>
 	<?php endforeach; ?>

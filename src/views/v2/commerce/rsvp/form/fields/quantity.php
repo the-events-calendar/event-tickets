@@ -3,12 +3,11 @@
  * This template renders the RSVP ticket form quantity input.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/form/fields/quantity.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/form/fields/quantity.php
  *
- * @since 4.12.3
- * @since 5.0.0 Updated the input name used for submitting.
+ * @since TBD
  *
- * @version 5.0.0
+ * @version TBD
  */
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */

@@ -83,8 +83,8 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	public function check_permission( WP_REST_Request $request ): bool {
 		$nonce = $request->get_param( '_wpnonce' );
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			//return false;
+		if ( ! wp_verify_nonce( $nonce['_wpnonce'], 'wp_rest' ) ) {
+			return false;
 		}
 
 		// phpcs:disable WordPress.WP.Capabilities.Unknown
@@ -107,16 +107,20 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		];
 
 		$request_params                            = $request->get_params();
+		if ( empty( $request_params['rsvp_limit'] ) ) {
+			unset( $request_params['rsvp_limit'] );
+		}
+
 		$args                                      = [];
 		$post_id                                   = Arr::get( $request_params, 'post_ID' );
 		$args['post_id']                           = Event::filter_event_id( $post_id );
 		$args['rsvp_id']                           = Arr::get( $request_params, 'rsvp_id', '' );
 		$args['ticket_id']                         = Arr::get( $request_params, 'rsvp_id', '' );
-		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', '' );
-		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', '' );
-		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', '' );
-		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', '' );
-		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', '' );
+		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', -1 );
+		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', -1 );
+		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', -1 );
+		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', -1 );
+		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', -1 );
 		$args['ticket_end_date']                   = Arr::get( $request_params, 'rsvp_end_date', '' );
 		$args['ticket_end_time']                   = Arr::get( $request_params, 'rsvp_end_time', '' );
 		$args['ticket_start_date']                 = Arr::get( $request_params, 'rsvp_start_date', '' );
@@ -129,35 +133,6 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$rsvp_id = $module->ticket_add( $post_id, $args );
 		//$ticket_module = tribe( Module::class );
 		//$ticket_module->save_ticket( $post_id, $ticket, $raw_data = [] );
-
-		return new WP_REST_Response( $response );
-
-		$data      = $request->get_json_params();
-		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
-
-		if ( is_wp_error( $purchaser ) ) {
-			return $purchaser;
-		}
-
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-
-		$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-
-		if ( is_wp_error( $created ) ) {
-			return $created;
-		}
-
-		$updated = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
-		}
-
-		tribe( Cart::class )->clear_cart();
-
-		$response['success']      = true;
-		$response['id']           = $order->ID;
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}

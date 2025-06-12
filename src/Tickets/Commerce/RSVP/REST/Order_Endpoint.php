@@ -156,7 +156,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		return $template->template( 'v2/rsvp/messages/error', $args, false );
+		return $template->template( 'v2/commerce/rsvp/messages/error', $args, false );
 	}
 
 	/**
@@ -359,12 +359,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Set required template globals.
 		$args = [
 			'rsvp_id'    => $ticket_id,
-			'ticket_id'    => $ticket_id,
+			'ticket_id'  => $ticket_id,
 			'post_id'    => $post_id,
 			'rsvp'       => $ticket,
 			'step'       => $step,
 			'must_login' => ! is_user_logged_in() && $this->module->login_required(),
-			//'login_url'  => self::get_login_url( $post_id ),
 			'login_url'  => tribe( Checkout::class )->get_login_url(),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 			'going'      => tribe_get_request_var( 'going', 'yes' ),
@@ -470,7 +469,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$template->add_template_globals( $args );
 
 		$html  = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
-		$html .= $template->template( 'v2/rsvp/content', $args, false );
+		$html .= $template->template( 'v2/commerce/rsvp/content', $args, false );
 
 		return $html;
 	}

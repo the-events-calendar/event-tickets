@@ -31,8 +31,6 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			[
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
-				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [ 'tec-variables-full' ] ],
-				//[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
 			],
 			'wp_enqueue_scripts',
@@ -50,7 +48,6 @@ class Tribe__Tickets__Assets {
 			[
 				'groups' => [
 					'tribe-tickets-block-assets',
-					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
 					'tribe-tickets-admin',
 					'tribe-tickets-forms',
@@ -72,7 +69,6 @@ class Tribe__Tickets__Assets {
 				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
 				'groups'       => [
 					'tribe-tickets-block-assets',
-					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
 				],
 			]
@@ -89,7 +85,6 @@ class Tribe__Tickets__Assets {
 				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
 				'groups'       => [
 					'tribe-tickets-block-assets',
-					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
 					'tribe-tickets-commerce',
 					'tribe-tickets-commerce-checkout',
@@ -127,7 +122,6 @@ class Tribe__Tickets__Assets {
 				[
 					'groups'   => [
 						'tribe-tickets-block-assets',
-						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
 					],
 					'localize' => [
@@ -530,8 +524,7 @@ class Tribe__Tickets__Assets {
 	 * @return bool
 	 */
 	public function should_enqueue_tickets_loader() {
-		$are_new_views_enabled = tribe_tickets_new_views_is_enabled()
-			|| tribe_tickets_rsvp_new_views_is_enabled();
+		$are_new_views_enabled = tribe_tickets_new_views_is_enabled();
 
 		/**
 		 * Allow filtering whether the Tickets Loader script should be enqueued.

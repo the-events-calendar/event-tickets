@@ -4,7 +4,7 @@
  * Actions - Success - Toggle
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/actions/success/toggle.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/actions/success/toggle.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -16,8 +16,8 @@
  * @var string                        $opt_in_nonce         The nonce for opt-in AJAX requests.
  * @var boolean                       $opt_in_checked       Whether the opt-in field should be checked.
  *
- * @since 5.0.0
- * @version 5.0.0
+ * @since TBD
+ * @version TBD
  */
 
 if ( $opt_in_toggle_hidden ) {
@@ -64,5 +64,5 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 			?>
 		</span>
 	</label>
-	<?php $this->template( 'v2/rsvp/actions/success/tooltip', [ 'rsvp' => $rsvp ] ); ?>
+	<?php $this->template( 'v2/commerce/rsvp/actions/success/tooltip', [ 'rsvp' => $rsvp ] ); ?>
 </div>

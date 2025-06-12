@@ -4,7 +4,7 @@
  * Details Availability - Remaining
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/details/availability/remaining.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/details/availability/remaining.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -13,9 +13,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var int $threshold The threshold.
  *
- * @since 4.12.3
+ * @since TBD
  *
- * @version 4.12.3
+ * @version TBD
  */
 
 $remaining_tickets = $rsvp->remaining();

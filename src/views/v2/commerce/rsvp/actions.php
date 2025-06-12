@@ -4,7 +4,7 @@
  * Actions
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/actions.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/actions.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -13,8 +13,8 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
  *
- * @since 4.12.3
- * @version 4.12.3
+ * @since TBD
+ * @version TBD
  */
 
 ?>
@@ -23,15 +23,15 @@
 
 		<?php if ( in_array( $step, [ 'success', 'opt-in' ], true ) ) : ?>
 
-			<?php $this->template( 'v2/rsvp/actions/success', [ 'rsvp' => $rsvp ] ); ?>
+			<?php $this->template( 'v2/commerce/rsvp/actions/success', [ 'rsvp' => $rsvp ] ); ?>
 
 		<?php elseif ( ! $rsvp->is_in_stock() ) : ?>
 
-			<?php $this->template( 'v2/rsvp/actions/full', [ 'rsvp' => $rsvp ] ); ?>
+			<?php $this->template( 'v2/commerce/rsvp/actions/full', [ 'rsvp' => $rsvp ] ); ?>
 
 		<?php else : ?>
 
-			<?php $this->template( 'v2/rsvp/actions/rsvp', [ 'rsvp' => $rsvp ] ); ?>
+			<?php $this->template( 'v2/commerce/rsvp/actions/rsvp', [ 'rsvp' => $rsvp ] ); ?>
 
 		<?php endif; ?>
 	</div>

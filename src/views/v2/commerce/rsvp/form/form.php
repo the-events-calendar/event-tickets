@@ -4,16 +4,15 @@
  * Form base
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/form/form.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/form/form.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 4.12.3
- * @since 5.0.0 Updated the input name used for submitting.
+ * @since TBD
  *
- * @version 5.0.0
+ * @version TBD
  */
 
 $going = $this->get( 'going' );
@@ -29,13 +28,13 @@ $going = $this->get( 'going' );
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 
-		<?php $this->template( 'v2/rsvp/form/title', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/form/title', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
 		<div class="tribe-tickets__rsvp-form-content tribe-tickets__form">
 
-			<?php $this->template( 'v2/rsvp/form/fields', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+			<?php $this->template( 'v2/commerce/rsvp/form/fields', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
-			<?php $this->template( 'v2/rsvp/form/buttons', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+			<?php $this->template( 'v2/commerce/rsvp/form/buttons', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
 		</div>
 

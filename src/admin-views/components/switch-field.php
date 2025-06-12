@@ -38,7 +38,8 @@
 		</legend>
 		<div class="tribe-field-wrap">
 			<?php
-			$this->template( 'components/switch',
+			$this->template(
+				'components/switch',
 				[
 					'id'            => $id,
 					'label'         => $label,

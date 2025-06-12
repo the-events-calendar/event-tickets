@@ -39,7 +39,6 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 <div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"
 	 data-default-provider="<?php echo esc_attr( $default_module_class ); ?>"
 	 data-current-provider="<?php echo esc_attr( $provider_class ); ?>"
-
 	 class="tribe-dependent"
 	 data-depends="#tec_tickets_rsvp_enable"
 	 data-condition-is-checked
@@ -59,7 +58,7 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<section id="ticket_form_main" class="main"
-					 data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
+				data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 
 				<?php
 				/**
@@ -127,13 +126,16 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 					?>
 				</h4>
 				<?php
-				$this->template( [ 'components', 'switch-field' ], [
+				$this->template(
+					[ 'components', 'switch-field' ],
+					[
 						'id'      => 'tec_tickets_rsvp_enable_cannot_go',
 						'name'    => 'tec_tickets_rsvp_enable_cannot_go',
 						'label'   => 'Enable "Can\'t go" responses',
 						'tooltip' => '',
 						'value'   => '',
-					] );
+					]
+				);
 
 				/**
 				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
@@ -193,7 +195,7 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 					 * @param int Post ID
 					 * @param int Ticket ID
 					 */
-					do_action( 'tribe_events_tickets_bottom_right', $post_id, $rsvp_id );
+					//do_action( 'tribe_events_tickets_bottom_right', $post_id, $rsvp_id );
 					?>
 				</div>
 			</div>

@@ -143,7 +143,7 @@ class Ticket extends Ticket_Data {
 	public static $type_meta_key = '_type';
 
 	/**
-	 * The clumn key that holds the ticket type.
+	 * The column key that holds the ticket type.
 	 *
 	 * @since TBD
 	 *
