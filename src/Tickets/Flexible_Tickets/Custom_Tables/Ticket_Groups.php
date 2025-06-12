@@ -139,7 +139,11 @@ class Ticket_Groups extends Table {
 		$start_transaction = $wpdb->query( 'START TRANSACTION' );
 
 		if ( false === $start_transaction ) {
-			$results[ $table_name . '.migration' ] = "Failed to start transaction for {$table_name} table.";
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'Failed to start 1.1.0 migration transaction for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
 			return false;
 		}
 
@@ -151,7 +155,11 @@ class Ticket_Groups extends Table {
 		);
 
 		if ( null === $remaining ) {
-			$results[ $table_name . '.migration' ] = "Failed to get remaining rows for migration for {$table_name} table.";
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'Failed to get remaining rows for 1.1.0 migration for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
 			return false;
 		}
 
@@ -170,12 +178,20 @@ class Ticket_Groups extends Table {
 			);
 
 			if ( ! is_array( $rows ) ) {
-				$results[ $table_name . '.migration' ] = "Failed to get rows for migration for {$table_name} table.";
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'Failed to get rows for 1.1.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
 				return false;
 			}
 
 			if ( empty( $rows ) ) {
-				$results[ $table_name . '.migration' ] = "No rows needed migration for {$table_name} table.";
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'No rows needed 1.1.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
 				return $wpdb->query( 'COMMIT' ) !== false;
 			}
 
@@ -220,7 +236,9 @@ class Ticket_Groups extends Table {
 		// Add a message to the results array.
 		if ( $failed > 0 ) {
 			$results[ $table_name . '.migration' ] = sprintf(
-				__( 'Migration failed, refresh the page to re-run.', 'event-tickets' ),
+				// Translators: %1$s: table name.
+				__( '1.1.0 migration failed, refresh the page to re-run.', 'event-tickets' ),
+				$table_name
 			);
 
 			// Rollback data transaction.
@@ -231,7 +249,7 @@ class Ticket_Groups extends Table {
 
 		$results[ $table_name . '.migration' ] = sprintf(
 			// Translators: %1$d: number of rows migrated, %2$s: table name.
-			__( 'Migrated %1$d rows in the %2$s table.', 'event-tickets' ),
+			__( '1.1.0 migrated %1$d rows in the %2$s table.', 'event-tickets' ),
 			$migrated,
 			$table_name
 		);
@@ -258,7 +276,11 @@ class Ticket_Groups extends Table {
 		$start_transaction = $wpdb->query( 'START TRANSACTION' );
 
 		if ( false === $start_transaction ) {
-			$results[ $table_name . '.migration' ] = "Failed to start transaction for {$table_name} table.";
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'Failed to start transaction for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
 			return false;
 		}
 
@@ -271,7 +293,11 @@ class Ticket_Groups extends Table {
 		);
 
 		if ( ! $rows_with_null_data ) {
-			$results[ $table_name . '.compatibility_migration' ] = "No rows needed MySQL compatibility migration for {$table_name} table.";
+			$results[ $table_name . '.compatibility_migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'No rows needed MySQL compatibility migration for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
 			return $wpdb->query( 'COMMIT' ) !== false;
 		}
 
@@ -289,13 +315,21 @@ class Ticket_Groups extends Table {
 			);
 
 			if ( ! is_array( $rows ) ) {
-				$results[ $table_name . '.migration' ] = "Failed to get rows for migration for {$table_name} table.";
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'Failed to get rows for 1.2.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
 				$wpdb->query( 'ROLLBACK' );
 				return false;
 			}
 
 			if ( empty( $rows ) ) {
-				$results[ $table_name . '.migration' ] = "No rows needed migration for {$table_name} table.";
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'No rows needed 1.2.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
 				return $wpdb->query( 'COMMIT' ) !== false;
 			}
 
@@ -324,7 +358,9 @@ class Ticket_Groups extends Table {
 		// Add a message to the results array.
 		if ( $failed > 0 ) {
 			$results[ $table_name . '.migration' ] = sprintf(
-				__( 'Migration failed, refresh the page to re-run.', 'event-tickets' )
+				// Translators: %1$s: table name.
+				__( '1.2.0 migration failed, refresh the page to re-run.', 'event-tickets' ),
+				$table_name
 			);
 
 			// Rollback data transaction.
@@ -334,7 +370,7 @@ class Ticket_Groups extends Table {
 
 		$results[ $table_name . '.migration' ] = sprintf(
 			// Translators: %1$d: number of rows migrated, %2$s: table name.
-			__( 'Migrated %1$d rows in the %2$s table.', 'event-tickets' ),
+			__( '1.2.0 migrated %1$d rows in the %2$s table.', 'event-tickets' ),
 			$migrated,
 			$table_name
 		);
