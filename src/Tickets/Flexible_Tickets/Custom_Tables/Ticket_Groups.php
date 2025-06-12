@@ -158,7 +158,7 @@ class Ticket_Groups extends Table {
 		$migrated = 0;
 		$failed   = 0;
 
-		while( $remaining > 0 ) {
+		while ( $remaining > 0 ) {
 			// Get all rows where name is empty (indicating data hasn't been migrated yet).
 
 			$rows = $wpdb->get_results(
@@ -230,8 +230,8 @@ class Ticket_Groups extends Table {
 		}
 
 		$results[ $table_name . '.migration' ] = sprintf(
-			// Translators: %d: number of rows migrated, %s: table name.
-			__( 'Migrated %d rows in the %s table.', 'event-tickets' ),
+			// Translators: %1$d: number of rows migrated, %2$s: table name.
+			__( 'Migrated %1$d rows in the %2$s table.', 'event-tickets' ),
 			$migrated,
 			$table_name
 		);
@@ -276,7 +276,7 @@ class Ticket_Groups extends Table {
 		}
 
 		$migrated = 0;
-		$failed = 0;
+		$failed   = 0;
 
 		while ( $rows_with_null_data > 0 ) {
 			// Get all rows where data is empty or NULL.
@@ -333,8 +333,8 @@ class Ticket_Groups extends Table {
 		}
 
 		$results[ $table_name . '.migration' ] = sprintf(
-			// Translators: %d: number of rows migrated, %s: table name.
-			__( 'Migrated %d rows in the %s table.', 'event-tickets' ),
+			// Translators: %1$d: number of rows migrated, %2$s: table name.
+			__( 'Migrated %1$d rows in the %2$s table.', 'event-tickets' ),
 			$migrated,
 			$table_name
 		);
