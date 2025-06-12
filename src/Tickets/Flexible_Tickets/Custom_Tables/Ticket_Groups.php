@@ -58,7 +58,7 @@ class Ticket_Groups extends Table {
 			CREATE TABLE `$table_name` (
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`slug` varchar(255) DEFAULT '' NOT NULL,
-				`data` text DEFAULT ('') NOT NULL,
+				`data` text NOT NULL,
 				`capacity` int(11) DEFAULT 0 NOT NULL,
 				`cost` decimal(10,2) DEFAULT 0 NOT NULL,
 				`name` varchar(255) DEFAULT '' NOT NULL,
