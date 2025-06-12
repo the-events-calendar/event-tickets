@@ -3,12 +3,13 @@
  * Main plugin class.
  */
 
-use Tribe\Tickets\Admin\Provider as Admin_Provider;
-use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
-use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
-use Tribe\Tickets\Admin\Settings;
 use TEC\Common\StellarWP\Assets\Config as Assets_Config;
 use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page;
+use TEC\Tickets\Classy\Controller as Classy_Controller;
+use Tribe\Tickets\Admin\Provider as Admin_Provider;
+use Tribe\Tickets\Admin\Settings;
+use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
+use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 
 /**
  * Class Tribe__Tickets__Main.
@@ -588,6 +589,11 @@ class Tribe__Tickets__Main {
 
 		// Set up IAN Client - In-App Notifications.
 		tribe_register_provider( TEC\Tickets\Notifications\Provider::class );
+
+		// Register the Classy controller if the feature is enabled.
+		if ( tec_using_classy_editor() ) {
+			tribe_register_provider( Classy_Controller::class );
+		}
 
 		/**
 		 * Allows other plugins and services to override/change the bound implementations.
