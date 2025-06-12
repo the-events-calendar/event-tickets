@@ -33,6 +33,10 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 				<p>Hello from Event Tickets!</p>
 			</Fill>
 
+			<Fill name="tec.classy.fields.tickets">
+				<p>Hello from Ticket Fields!</p>
+			</Fill>
+
 		</Fragment>
 	);
 };
