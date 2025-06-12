@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.24.1.1] 2025-06-12
+
+* Version - Event Tickets 5.24.1.1 is only compatible with Event Tickets Plus 6.6.0 or higher.
+* Fix - Prevent issues with NULL or empty TEXT column values. Improve database schema migration robustness and compatibility. Bump schema version from 1.1.0 to 1.2.0. [ET-2515]
+* Language - 12 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.24.1] 2025-06-11
 
 * Fix - Change the create table syntax to be compatible with MySQL.
