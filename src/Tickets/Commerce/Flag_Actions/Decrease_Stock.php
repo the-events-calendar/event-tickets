@@ -89,58 +89,70 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
+		// Bail if the order is empty.
 		if ( empty( $post->items ) ) {
 			return;
 		}
 
+		// Loop through the order items.
 		foreach ( $post->items as $item ) {
+			// Skip if the item is not a ticket.
 			if ( ! $this->is_ticket( $item ) ) {
 				continue;
 			}
 
+			// Load the ticket object.
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			
+			// Skip if the ticket is not found.
 			if ( null === $ticket ) {
 				continue;
 			}
 
+			// Get the quantity of the ticket.
 			$quantity = (int) Arr::get( $item, 'quantity', 1 );
 
-			// Skip generating for zero-ed items.
+			// Skip generating if the order has less than 0 tickets.
 			if ( 0 >= $quantity ) {
 				continue;
 			}
 
-			$global_stock = new Global_Stock( $ticket->get_event_id() );
+			// Get the original stock of the ticket.
+			$original_stock = $ticket->stock();
+			$global_stock   = new Global_Stock( $ticket->get_event_id() );
 
 			// Is ticket shared capacity?
 			$global_stock_mode  = $ticket->global_stock_mode();
 			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
 
-			// Always update sales tracking, regardless of stock management.
+			// Increase the ticket sales by the quantity in the order..
 			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
 
-			// Only manage stock for tickets that have stock management enabled.
-			if ( $ticket->manage_stock() ) {
-				$original_stock  = $ticket->stock();
-				$stock           = $ticket->stock();
-				$stock_should_be = max( $original_stock - $quantity, 0 );
-
-				if ( $stock_should_be !== $stock ) {
-					$stock = $stock_should_be;
-				}
-
-				/**
-				 * Fires after the calculations of a ticket stock decrease are done but before are saved.
-				 *
-				 * @since 5.20.0
-				 *
-				 * @param Ticket_Object $ticket   The ticket post object.
-				 * @param int           $quantity The quantity to decrease.
-				 */
-				do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $quantity );
-
-				update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
+			// Skip if the ticket does not manage stock.
+			if ( ! $ticket->manage_stock() ) {
+				continue;
 			}
+
+			// Get the current stock of the ticket.
+			$stock           = $ticket->stock();
+			$stock_should_be = max( $original_stock - $quantity, 0 );
+
+			// Update the stock if it is different from the original stock.
+			if ( $stock_should_be !== $stock ) {
+				$stock = $stock_should_be;
+			}
+
+			/**
+			 * Fires after the calculations of a ticket stock decrease are done but before are saved.
+			 *
+			 * @since 5.20.0
+			 *
+			 * @param Ticket_Object $ticket   The ticket post object.
+			 * @param int           $quantity The quantity to decrease.
+			 */
+			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $quantity );
+
+			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
 		}
 	}
 }
