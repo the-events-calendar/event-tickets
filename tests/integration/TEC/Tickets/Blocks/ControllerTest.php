@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Blocks;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Events\Classy\Back_Compatibility\Editor;
+use TEC\Common\Classy\Back_Compatibility\Editor;
 
 class ControllerTest extends Controller_Test_Case {
 
