@@ -92,7 +92,7 @@ class Ticket_Groups extends Table {
 		$results          = parent::after_update( $results );
 		$previous_version = $this->get_stored_previous_version();
 
-		// Run version-specific migrations. Add new migrations at the end of the switch statement so they run in the correct order.
+		// Run version-specific migrations.
 		if ( version_compare( $previous_version, '1.1.0', '<' ) ) {
 			$success = $this->migrate_to_1_1_0( $results );
 
@@ -176,7 +176,7 @@ class Ticket_Groups extends Table {
 
 			if ( empty( $rows ) ) {
 				$results[ $table_name . '.migration' ] = "No rows needed migration for {$table_name} table.";
-				return $wpdb->query( 'COMMIT' ) === false ? false : true;
+				return $wpdb->query( 'COMMIT' ) !== false;
 			}
 
 			foreach ( $rows as $row ) {
@@ -190,7 +190,7 @@ class Ticket_Groups extends Table {
 				// Extract values from data JSON.
 				$name     = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
 				$capacity = isset( $data['capacity'] ) ? absint( $data['capacity'] ) : 0;
-				$cost     = isset( $data['cost'] ) ? (string) $data['cost'] : '0.000000';
+				$cost     = isset( $data['cost'] ) ? sanitize_text_field( (string) $data['cost'] ): '0.000000';
 
 				// Update the row with extracted values.
 				$updated = $wpdb->update(
@@ -215,7 +215,7 @@ class Ticket_Groups extends Table {
 			}
 
 			$remaining -= count( $rows );
-		} // end while
+		}
 
 		// Add a message to the results array.
 		if ( $failed > 0 ) {
@@ -236,7 +236,7 @@ class Ticket_Groups extends Table {
 			$table_name
 		);
 
-		return $wpdb->query( 'COMMIT' ) === false ? false : true;
+		return $wpdb->query( 'COMMIT' ) !== false;
 	}
 
 	/**
@@ -272,7 +272,7 @@ class Ticket_Groups extends Table {
 
 		if ( ! $rows_with_null_data ) {
 			$results[ $table_name . '.compatibility_migration' ] = "No rows needed MySQL compatibility migration for {$table_name} table.";
-			return $wpdb->query( 'COMMIT' ) === false ? false : true;
+			return $wpdb->query( 'COMMIT' ) !== false;
 		}
 
 		$migrated = 0;
@@ -296,7 +296,7 @@ class Ticket_Groups extends Table {
 
 			if ( empty( $rows ) ) {
 				$results[ $table_name . '.migration' ] = "No rows needed migration for {$table_name} table.";
-				return $wpdb->query( 'COMMIT' ) === false ? false : true;
+				return $wpdb->query( 'COMMIT' ) !== false;
 			}
 
 			foreach ( $rows as $row ) {
@@ -319,7 +319,7 @@ class Ticket_Groups extends Table {
 			}
 
 			$rows_with_null_data -= count( $rows );
-		} // end while
+		}
 
 		// Add a message to the results array.
 		if ( $failed > 0 ) {
@@ -339,7 +339,7 @@ class Ticket_Groups extends Table {
 			$table_name
 		);
 
-		return $wpdb->query( 'COMMIT' ) === false ? false : true;
+		return $wpdb->query( 'COMMIT' ) !== false;
 	}
 }
 
