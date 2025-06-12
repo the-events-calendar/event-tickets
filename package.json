@@ -80,6 +80,8 @@
     "@redux-devtools/extension": "^3.3.0",
     "@stellarwp/tyson": "*",
     "@types/node": "^20.10.6",
+    "@wordpress/components": "^29.11.0",
+    "@wordpress/data": "^10.25.0",
     "@wordpress/hooks": "^4.18.0",
     "@wordpress/scripts": "^30.14.1",
     "cross-env": "^5.2.0",
