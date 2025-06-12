@@ -107,6 +107,8 @@ class Ticket extends PureComponent {
 		 *
 		 * @since 5.24.1
 		 *
+		 * @param {Function} defaultForm The function used to render the default form.
+		 *
 		 * @return {JSX.Element} The default ticket form JSX element.
 		 */
 		const ticketForm = applyFilters(
@@ -117,7 +119,7 @@ class Ticket extends PureComponent {
 
 		return showTicket ?
 			<Fragment>
-				{ticketForm}
+				{ ticketForm && ticketForm() }
 			</Fragment>
 			: null;
 	}
