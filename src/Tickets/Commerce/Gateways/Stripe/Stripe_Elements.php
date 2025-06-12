@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 /**
  * Class Payment_Element
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -65,7 +65,7 @@ class Stripe_Elements {
 		 * @since 5.13.4
 		 *
 		 * @param bool $include_payment_element Whether to include the Payment Element.
-		 * @param Stripe_Elements $this The instance of the Stripe_Elements class.
+		 * @param Stripe_Elements $instance     The instance of the Stripe_Elements class.
 		 */
 		return (bool) apply_filters( 'tec_tickets_commerce_stripe_include_payment_element', false, $this );
 	}

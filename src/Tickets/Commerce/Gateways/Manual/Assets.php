@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on Ticket Commerce Manual Gateway.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
@@ -13,7 +13,7 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
 /**
  * Class Assets.
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */

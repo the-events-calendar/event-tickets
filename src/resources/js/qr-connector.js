@@ -45,7 +45,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Trigger Click Event for the QR Connector.
 	 *
-	 * @param  event
+	 * @param event
 	 * @since 5.7.0
 	 *
 	 * @return {void}

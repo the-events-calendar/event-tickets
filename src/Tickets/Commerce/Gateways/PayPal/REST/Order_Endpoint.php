@@ -27,7 +27,7 @@ use WP_REST_Server;
 /**
  * Class Order Endpoint.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -40,7 +40,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/paypal/order';
+	protected string $path = '/commerce/paypal/order';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.

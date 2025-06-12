@@ -1358,7 +1358,7 @@ window.tribe.tickets.block = {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param  $input
+	 * @param $input
 	 * @return {boolean}
 	 */
 	obj.validateHorizontalDatePickerValue = function ( $input ) {

@@ -2,7 +2,7 @@
 /**
  * A tab used in the context of a page render
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Seating\Admin\Template;
 /**
  * Class Tab.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Admin;
  */

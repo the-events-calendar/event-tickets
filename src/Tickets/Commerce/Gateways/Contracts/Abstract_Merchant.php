@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 /**
  * Abstract Merchant Contract.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -119,5 +119,16 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	 */
 	public function get_disconnect_action(): string {
 		return $this->disconnect_action;
+	}
+
+	/**
+	 * Whether the merchant is ready to sell.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return bool
+	 */
+	public function is_ready_to_sell(): bool {
+		return true;
 	}
 }

@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Authorization;
 /**
  * Class Refresh_Token
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Refresh_Token {
