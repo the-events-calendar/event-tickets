@@ -78,11 +78,11 @@ class Ticket_Groups extends Table {
 
 		// Run version-specific migrations.
 		switch ( true ) {
-			case version_compare( self::SCHEMA_VERSION, '1.2.0', '>=' ):
-				$results = $this->migrate_to_1_2_0( $results );
-				// Fall through to next version
 			case version_compare( self::SCHEMA_VERSION, '1.1.0', '>=' ):
 				$results = $this->migrate_to_1_1_0( $results );
+				// Fall through to next version
+			case version_compare( self::SCHEMA_VERSION, '1.2.0', '>=' ):
+				$results = $this->migrate_to_1_2_0( $results );
 				break;
 		}
 
