@@ -11,6 +11,8 @@ namespace TEC\Tickets\Flexible_Tickets\Custom_Tables;
 
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+
 /**
  * Class Ticket_Groups.
  *
@@ -158,7 +160,7 @@ class Ticket_Groups extends Table {
 
 		while( $remaining > 0 ) {
 			// Get all rows where name is empty (indicating data hasn't been migrated yet).
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT id, data FROM %i WHERE name = '' OR name IS NULL LIMIT %d,1000",
@@ -262,7 +264,6 @@ class Ticket_Groups extends Table {
 		}
 
 		// Check if any rows have NULL or problematic data values.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
 		$rows_with_null_data = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM %i WHERE data IS NULL OR data = '' LIMIT 1000",
@@ -302,7 +303,6 @@ class Ticket_Groups extends Table {
 
 			foreach ( $rows as $row ) {
 				// Update the row with empty string for data
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
 				$updated = $wpdb->update(
 					$table_name,
 					[ 'data' => '{}' ],
@@ -344,3 +344,5 @@ class Ticket_Groups extends Table {
 		return $wpdb->query( 'COMMIT' ) === false ? false : true;
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
