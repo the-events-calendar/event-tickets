@@ -111,8 +111,8 @@ class Ticket_Groups extends Table {
 			if ( ! $success ) {
 				// Roll back the schema versions here - because we failed.
 				update_option( $this->get_schema_version_option(), $previous_version );
-				// Roll back to the previous version. This ensures  that the update will run again.
-				// This assumes that if we got here the 1.1.0 migration has run.
+				// Roll back to the previous version. This ensures  that the update will run again,
+				// this assumes that if we got here the 1.1.0 migration has run.
 				update_option( $this->get_schema_previous_version_option(), '1.1.0' );
 
 				return $results;
@@ -193,7 +193,6 @@ class Ticket_Groups extends Table {
 				$cost     = isset( $data['cost'] ) ? (string) $data['cost'] : '0.000000';
 
 				// Update the row with extracted values.
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
 				$updated = $wpdb->update(
 					$table_name,
 					[
@@ -280,8 +279,7 @@ class Ticket_Groups extends Table {
 		$failed = 0;
 
 		while ( $rows_with_null_data > 0 ) {
-			// Get all rows where data is empty or NULL
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+			// Get all rows where data is empty or NULL.
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT id FROM %i WHERE data IS NULL OR data = '' LIMIT %d,1000",
@@ -302,7 +300,7 @@ class Ticket_Groups extends Table {
 			}
 
 			foreach ( $rows as $row ) {
-				// Update the row with empty string for data
+				// Update the row with empty string for data.
 				$updated = $wpdb->update(
 					$table_name,
 					[ 'data' => '{}' ],
@@ -315,7 +313,7 @@ class Ticket_Groups extends Table {
 					++$migrated;
 				} else {
 					++$failed;
-					// Break on first failure
+					// Break on first failure.
 					break;
 				}
 			}
@@ -323,19 +321,19 @@ class Ticket_Groups extends Table {
 			$rows_with_null_data -= count( $rows );
 		} // end while
 
-		// Add a message to the results array
+		// Add a message to the results array.
 		if ( $failed > 0 ) {
 			$results[ $table_name . '.migration' ] = sprintf(
 				__( 'Migration failed, refresh the page to re-run.', 'event-tickets' )
 			);
 
-			// Rollback data transaction
+			// Rollback data transaction.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 
 		$results[ $table_name . '.migration' ] = sprintf(
-			// Translators: %d: number of rows migrated, %s: table name
+			// Translators: %d: number of rows migrated, %s: table name.
 			__( 'Migrated %d rows in the %s table.', 'event-tickets' ),
 			$migrated,
 			$table_name
