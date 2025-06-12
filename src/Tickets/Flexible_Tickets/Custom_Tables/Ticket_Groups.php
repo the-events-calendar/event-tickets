@@ -84,6 +84,9 @@ class Ticket_Groups extends Table {
 			case '1.2.0':
 				$results = $this->migrate_to_1_2_0( $results );
 				break;
+			default:
+				break;
+		}
 
 		return $results;
 	}
