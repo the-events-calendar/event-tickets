@@ -4,7 +4,7 @@
  *
  * @version 5.2.1
  *
- * @since   5.2.1
+ * @since 5.2.1
  */
 
 defined( 'ABSPATH' ) || exit;

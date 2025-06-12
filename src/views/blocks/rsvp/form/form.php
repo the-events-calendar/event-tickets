@@ -10,10 +10,10 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
- * @since   4.12.3 Add comments to help IDE auto-completion. Array short syntax.
- * @since   5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
+ * @since 4.9
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since 4.12.3 Add comments to help IDE auto-completion. Array short syntax.
+ * @since 5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
  *
  * @version 5.0.3
  *

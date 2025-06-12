@@ -36,7 +36,7 @@ $option_id = "tribe-tickets-meta_{$slug}_{$ticket->ID}{{data.attendee_id}}";
 		id="<?php echo esc_attr( $option_id ); ?>"
 		class="tribe-common-form-control-select__input ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
-		<?php tribe_required( $required ); ?>
+		<?php echo $required ? 'required' : ''; ?>
 		>
 		<option value=""><?php esc_html_e( 'Select an option', 'event-tickets' ); ?></option>
 		<?php foreach ( $options as $option => $label ) : ?>

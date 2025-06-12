@@ -4,7 +4,7 @@
  *
  * @version 5.2.0
  *
- * @since   5.2.0
+ * @since 5.2.0
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.

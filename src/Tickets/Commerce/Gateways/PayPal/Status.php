@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Status
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
