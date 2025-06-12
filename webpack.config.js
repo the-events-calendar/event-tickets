@@ -1,58 +1,56 @@
-const {dirname, basename, extname} = require('path');
-const {readdirSync, statSync, existsSync} = require('fs');
-
 /**
  * The default configuration coming from the @wordpress/scripts package.
  * Customized following the "Advanced Usage" section of the documentation:
  * See: https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#advanced-usage
  */
-const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 const {
-  createTECLegacyJs,
-  createTECPostCss,
-  createTECLegacyBlocksFrontendPostCss,
-  createTECPackage,
-  compileCustomEntryPoints,
-  exposeEntry,
-  doNotPrefixSVGIdsClasses,
-  WindowAssignPropertiesPlugin,
-} = require('@stellarwp/tyson');
+	createTECLegacyJs,
+	createTECPostCss,
+	createTECLegacyBlocksFrontendPostCss,
+	createTECPackage,
+	compileCustomEntryPoints,
+	exposeEntry,
+	doNotPrefixSVGIdsClasses,
+	WindowAssignPropertiesPlugin,
+} = require( '@stellarwp/tyson' );
 
 /**
  * Compile a list of entry points to be compiled to the format used by WebPack to define multiple entry points.
  * This is akin to the compilation system used for multi-page applications.
  * See: https://webpack.js.org/concepts/entry-points/#multi-page-application
  */
-const customEntryPoints = compileCustomEntryPoints({
-  /**
-   * All existing Javascript files will be compiled to ES6, most will not be changed at all,
-   * minified and cleaned up.
-   * This is mostly a pass-thru with the additional benefit that the compiled packages will be
-   * exposed on the `window.tec.tickets` object.
-   * E.g. the `src/resources/js/admin-ignored-events.js` file will be compiled to
-   * `/build/js/admin-ignored-events.js` and exposed on `window.tec.tickets.adminIgnoredEvents`.
-   */
-  '/src/resources/js': createTECLegacyJs('tec.tickets'),
+const customEntryPoints = compileCustomEntryPoints( {
+	/**
+	 * All existing Javascript files will be compiled to ES6, most will not be changed at all,
+	 * minified and cleaned up.
+	 * This is mostly a pass-thru with the additional benefit that the compiled packages will be
+	 * exposed on the `window.tec.tickets` object.
+	 * E.g. the `src/resources/js/admin-ignored-events.js` file will be compiled to
+	 * `/build/js/admin-ignored-events.js` and exposed on `window.tec.tickets.adminIgnoredEvents`.
+	 */
+	'/src/resources/js': createTECLegacyJs( 'tec.tickets' ),
 
-  /**
-   * Compile, recursively, the PostCSS file using PostCSS nesting rules.
-   * By default, the `@wordpress/scripts` configuration would compile files using the CSS
-   * nesting syntax (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting) where
-   * the `&` symbol indicates the parent element.
-   * The PostCSS syntax followed in TEC files will instead use the `&` symbol to mean "this element".
-   * Handling this correctly requires adding a PostCSS processor specific to the PostCSS files that
-   * will handle the nesting correctly.
-   * Note the plugin will need to specify the following development dependencies: postcss-nested, postcss-preset-env,
-   * postcss-mixins, postcss-import, postcss-inline-svg, postcss-custom-media.
-   */
-  '/src/resources/postcss': createTECPostCss(
-    'tec.tickets',
-    [
-      'postcss-inline-svg',
-    ],
-  ),
-}, defaultConfig);
+	/**
+	 * Compile, recursively, the PostCSS file using PostCSS nesting rules.
+	 * By default, the `@wordpress/scripts` configuration would compile files using the CSS
+	 * nesting syntax (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting) where
+	 * the `&` symbol indicates the parent element.
+	 * The PostCSS syntax followed in TEC files will instead use the `&` symbol to mean "this element".
+	 * Handling this correctly requires adding a PostCSS processor specific to the PostCSS files that
+	 * will handle the nesting correctly.
+	 * Note the plugin will need to specify the following development dependencies: postcss-nested, postcss-preset-env,
+	 * postcss-mixins, postcss-import, postcss-inline-svg, postcss-custom-media.
+	 */
+	'/src/resources/postcss': createTECPostCss(
+		'tec.tickets',
+		[
+			'postcss-inline-svg',
+		],
+	),
+
+}, defaultConfig );
 
 /**
  * Following are static entry points, to be included in the build non-recursively.
@@ -97,26 +95,26 @@ customEntryPoints['wizard/wizard'] = exposeEntry('tec.tickets.wizard', __dirname
  * namespaced) so here we prepend a rule to handle SVG files in the `src/modules` directory by
  * disabling the `prefixIds` plugin.
  */
-doNotPrefixSVGIdsClasses(defaultConfig);
+doNotPrefixSVGIdsClasses( defaultConfig );
 
 /**
  * Finally the customizations are merged with the default WebPack configuration.
  */
 module.exports = {
-  ...defaultConfig,
-  ...{
-    entry: (buildType) => {
-      const defaultEntryPoints = defaultConfig.entry(buildType);
-      return {
-        ...defaultEntryPoints, ...customEntryPoints,
-      };
-    },
-    optimization: {
-      ...defaultConfig.optimization,
-      ...{
+	...defaultConfig,
+	...{
+		entry: ( buildType ) => {
+			const defaultEntryPoints = defaultConfig.entry( buildType );
+			return {
+				...defaultEntryPoints, ...customEntryPoints,
+			};
+		},
+		optimization: {
+			...defaultConfig.optimization,
+			...{
 				moduleIds: 'hashed',
-        splitChunks: {
-          ...defaultConfig.optimization.splitChunks,
+				splitChunks: {
+					...defaultConfig.optimization.splitChunks,
 					minSize: 50,
 					cacheGroups: {
 						...defaultConfig.optimization.splitChunks.cacheGroups,
@@ -133,33 +131,33 @@ module.exports = {
 							priority: 20,
 						},
 					},
-        },
-      },
-    },
-    output: {
-      ...defaultConfig.output,
-      ...{
-        enabledLibraryTypes: ['window'],
-        publicPath: '/wp-content/plugins/event-tickets/build/',
-      },
-    },
-    module: {
-      ...defaultConfig.module,
-      rules: [
-        ...defaultConfig.module.rules,
-        {
-          test: /\.(png|jpg|jpeg|gif|svg)$/i,
-          include: /src\/resources\/packages/,
-          type: 'asset/resource',
-          generator: {
-            filename: 'images/[name].[contenthash][ext]'
-          }
-        }
-      ]
-    },
-    plugins: [
-      ...defaultConfig.plugins,
-      new WindowAssignPropertiesPlugin(),
-    ],
-  },
+				},
+			},
+		},
+		output: {
+			...defaultConfig.output,
+			...{
+				enabledLibraryTypes: [ 'window' ],
+				publicPath: '/wp-content/plugins/event-tickets/build/',
+			},
+		},
+		module: {
+			...defaultConfig.module,
+			rules: [
+				...defaultConfig.module.rules,
+				{
+					test: /\.(png|jpg|jpeg|gif|svg)$/i,
+					include: /src\/resources\/packages/,
+					type: 'asset/resource',
+					generator: {
+						filename: 'images/[name].[contenthash][ext]'
+					}
+				}
+			]
+		},
+		plugins: [
+			...defaultConfig.plugins,
+			new WindowAssignPropertiesPlugin(),
+		],
+	},
 };
