@@ -22,7 +22,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	public const SCHEMA_VERSION = '1.1.0';
+	public const SCHEMA_VERSION = '1.2.0';
 
 	/**
 	 * {@inheritdoc}
@@ -71,6 +71,7 @@ class Ticket_Groups extends Table {
 	 * {@inheritdoc}
 	 *
 	 * @since 5.24.1 Handle hydrating new columns from `data` JSON for Ticket Presets use, if needed.
+	 * @since TBD    Handle MySQL compatibility fix for TEXT column DEFAULT value removal.
 	 */
 	protected function after_update( array $results = [] ) {
 		$results = parent::after_update( $results );
@@ -78,6 +79,10 @@ class Ticket_Groups extends Table {
 		// Run version-specific migrations.
 		if ( self::SCHEMA_VERSION === '1.1.0' ) {
 			$results = $this->migrate_to_1_1_0( $results );
+		}
+
+		if ( self::SCHEMA_VERSION === '1.2.0' ) {
+			$results = $this->migrate_to_1_2_0( $results );
 		}
 
 		return $results;
@@ -159,6 +164,58 @@ class Ticket_Groups extends Table {
 			$results[ $table_name . '.migration' ] = sprintf(
 				'Migrated %d rows in the %s table.',
 				$migrated,
+				$table_name
+			);
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Handles MySQL compatibility migration for schema version 1.2.0.
+	 *
+	 * Ensures all `data` column values are properly set since we removed
+	 * the DEFAULT ('') clause for compatibility with older MySQL versions.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $results The results array to update.
+	 *
+	 * @return array The updated results array.
+	 */
+	protected function migrate_to_1_2_0( array $results = [] ) {
+		global $wpdb;
+		$table_name = self::table_name();
+
+		// Check if any rows have NULL or problematic data values.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+		$rows_with_null_data = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM %i WHERE data IS NULL OR data = ''",
+				$table_name
+			)
+		);
+
+		if ( ! $rows_with_null_data ) {
+			$results[ $table_name . '.compatibility_migration' ] = "No rows needed MySQL compatibility migration for {$table_name} table.";
+			return $results;
+		}
+
+		// Update any NULL or empty data values with a proper JSON structure.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+		$updated = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE %i SET data = '{}' WHERE data IS NULL OR data = ''",
+				$table_name
+			)
+		);
+
+		if ( false === $updated ) {
+			$results[ $table_name . '.compatibility_migration' ] = "Failed to update rows for MySQL compatibility in the {$table_name} table.";
+		} else {
+			$results[ $table_name . '.compatibility_migration' ] = sprintf(
+				'Updated %d rows for MySQL compatibility in the %s table (removed dependency on TEXT DEFAULT value).',
+				$updated,
 				$table_name
 			);
 		}
