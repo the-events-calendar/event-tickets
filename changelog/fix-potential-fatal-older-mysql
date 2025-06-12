@@ -1,6 +1,0 @@
-Significance: patch
-Type: fix
-
-Prevent issues with NULL or empty TEXT column values. Ensure data column has a valid JSON structure for older MySQL versions Improve database schema migration robustness and compatibility. Bump schema version from 1.1.0 to 1.2.0.
-
-[ET-2515]
