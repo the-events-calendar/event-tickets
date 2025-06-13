@@ -25,8 +25,8 @@ export const getPostTypeOptions = createSelector( getPostTypes, ( types ) =>
 );
 export const getPostOptions = createSelector( getPosts, ( posts ) =>
 	Object.keys( posts ).map( ( post ) => ( {
-		value: post,
-		label: posts[ post ],
+		value: posts[ post ],
+		label: post,
 	} ) )
 );
 
