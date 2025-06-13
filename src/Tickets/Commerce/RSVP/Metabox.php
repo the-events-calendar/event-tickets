@@ -82,9 +82,11 @@ class Metabox {
 		// Add the data required by each panel to render correctly.
 		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID, $tc_rsvp->ID ) )->to_array() );
 
-		$context['rsvp_id'] = $tc_rsvp->ID ?? null;
-		$context['rsvp_limit'] = $tc_rsvp->capacity() ?? '';
-		$context['rsvp_limit'] = $tc_rsvp->capacity() ?? '';
+		$context['rsvp_id']        = $tc_rsvp->ID ?? null;
+		$context['show_not_going'] = $tc_rsvp->show_not_going ?? '';
+
+		//@todo need to change -1 to empty string
+		$context['rsvp_limit']     = $tc_rsvp->capacity() ?? '';
 
 		return $admin_views->template(
 			[ 'editor', 'rsvp', 'metabox' ],

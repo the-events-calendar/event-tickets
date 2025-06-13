@@ -19,6 +19,7 @@
  * @var string                        $provider_class                   The provider class.
  * @var string                        $rsvp_form_save_text              The RSVP form save text.
  * @var string                        $rsvp_required_type_error_message Error message for required RSVP type.
+ * @var string                        $show_not_going                   Whether to show the "Can't go" option.
  * @var string                        $ticket_start_date                The ticket start date.
  * @var string                        $ticket_description               The ticket description.
  * @var string                        $ticket_end_date_aria_label       The ticket end date ARIA attribute.
@@ -58,7 +59,7 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<section id="ticket_form_main" class="main"
-				data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
+					 data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 
 				<?php
 				/**
@@ -126,16 +127,13 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 					?>
 				</h4>
 				<?php
-				$this->template(
-					[ 'components', 'switch-field' ],
-					[
+				$this->template( [ 'components', 'switch-field' ], [
 						'id'      => 'tec_tickets_rsvp_enable_cannot_go',
 						'name'    => 'tec_tickets_rsvp_enable_cannot_go',
 						'label'   => 'Enable "Can\'t go" responses',
 						'tooltip' => '',
-						'value'   => '',
-					]
-				);
+						'value'   => esc_attr( $show_not_going ),
+					] );
 
 				/**
 				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
