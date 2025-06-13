@@ -147,7 +147,7 @@ export function setIsInterruptable( interruptableFlag ) {
  * @return {boolean} Whether the timer is currently interruptable or not.
  */
 export function isInterruptable() {
-	return interruptable;
+	return applyFilters( 'tec.tickets.seating.frontend.session.isInterruptable', interruptable );
 }
 
 /**
