@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Details reducer should set the capacity 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": 20,
   "capacityType": "unlimited",
   "description": "",
@@ -34,8 +34,8 @@ Object {
 `;
 
 exports[`Details reducer should set the capacity type 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -67,8 +67,8 @@ Object {
 `;
 
 exports[`Details reducer should set the description 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "new description",
@@ -100,8 +100,8 @@ Object {
 `;
 
 exports[`Details reducer should set the end date 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -133,14 +133,14 @@ Object {
 `;
 
 exports[`Details reducer should set the end date moment 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
   "endDate": "2019-07-19",
   "endDateInput": "July 19, 2019",
-  "endDateMoment": Object {
+  "endDateMoment": {
     "type": "moment",
   },
   "endTime": "21:30:00",
@@ -168,8 +168,8 @@ Object {
 `;
 
 exports[`Details reducer should set the end time 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -201,8 +201,8 @@ Object {
 `;
 
 exports[`Details reducer should set the end time input 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -234,8 +234,8 @@ Object {
 `;
 
 exports[`Details reducer should set the iac setting 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -267,8 +267,8 @@ Object {
 `;
 
 exports[`Details reducer should set the price 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -300,8 +300,8 @@ Object {
 `;
 
 exports[`Details reducer should set the sku 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -333,8 +333,8 @@ Object {
 `;
 
 exports[`Details reducer should set the start date 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -366,8 +366,8 @@ Object {
 `;
 
 exports[`Details reducer should set the start date moment 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -390,7 +390,7 @@ Object {
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
-  "startDateMoment": Object {
+  "startDateMoment": {
     "type": "moment",
   },
   "startTime": "19:30:00",
@@ -401,8 +401,8 @@ Object {
 `;
 
 exports[`Details reducer should set the start time 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -434,8 +434,8 @@ Object {
 `;
 
 exports[`Details reducer should set the start time input 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -467,8 +467,8 @@ Object {
 `;
 
 exports[`Details reducer should set the title 1`] = `
-Object {
-  "attendeeInfoFields": Array [],
+{
+  "attendeeInfoFields": [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
