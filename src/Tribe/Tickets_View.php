@@ -37,7 +37,7 @@ class Tribe__Tickets__Tickets_View {
 		add_filter( 'tribe_events_views_v2_bootstrap_should_display_single', [ $myself, 'intercept_views_v2_single_display' ], 15, 4 );
 
 		// Prevent canonical redirect from stripping tribe-edit-orders parameter.
-		add_filter( 'redirect_canonical', [ $myself, 'preserve_tickets_parameter_in_canonical_redirect' ], 10, 2 );
+		add_filter( 'redirect_canonical', [ $myself, 'preserve_tickets_parameter_in_canonical_redirect' ] );
 
 		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
@@ -1464,11 +1464,11 @@ class Tribe__Tickets__Tickets_View {
 	 * @since TBD
 	 *
 	 * @param string $redirect_url The URL to redirect to.
-	 * @return string|false The URL to redirect to, or false to prevent redirect.
+	 * @return string The URL to redirect to.
 	 */
 	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url ) {
 		// If we have the tribe-edit-orders parameter, preserve it in the redirect.
-		if ( get_query_var( 'tribe-edit-orders' ) && ! empty( $redirect_url ) ) {
+		if ( ! empty( $redirect_url ) && get_query_var( 'tribe-edit-orders' ) ) {
 			$redirect_url = add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
 		}
 
