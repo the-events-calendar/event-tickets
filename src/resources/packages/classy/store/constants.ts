@@ -1,1 +1,1 @@
-export const STORE_NAME = 'tribe/tickets/classy'; 
+export const STORE_NAME = 'tec/classy/tickets';

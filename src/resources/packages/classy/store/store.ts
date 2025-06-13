@@ -20,5 +20,3 @@ export const storeConfig = {
 		},
 	} as StoreState,
 };
-
-export { STORE_NAME }; 
