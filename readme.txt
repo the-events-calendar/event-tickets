@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.24.1
+Stable tag: 5.24.1.1
 Requires at least: 6.6
 Tested up to: 6.8.1
 Requires PHP: 7.4
@@ -198,6 +198,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.24.1.1] 2025-06-12 =
+
+* Version - Event Tickets 5.24.1.1 is only compatible with Event Tickets Plus 6.6.0 or higher.
+* Fix - Prevent issues with NULL or empty TEXT column values. Improve database schema migration robustness and compatibility. Bump schema version from 1.1.0 to 1.2.0. [ET-2515]
+* Language - 12 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.24.1] 2025-06-11 =
 
