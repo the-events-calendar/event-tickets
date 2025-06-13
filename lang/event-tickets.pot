@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.24.1\n"
+"Project-Id-Version: Event Tickets 5.24.1.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-10T20:55:28+00:00\n"
+"POT-Creation-Date: 2025-06-12T19:45:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -10669,6 +10669,76 @@ msgstr ""
 #: src/Tickets/Emails/Email/Ticket.php:190
 #: src/Tickets/Flexible_Tickets/Series_Passes/Emails/Series_Pass.php:183
 msgid "Additional content will be displayed below the tickets in your email."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:144
+#, php-format
+msgid "Failed to start 1.1.0 migration transaction for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:160
+#, php-format
+msgid "Failed to get remaining rows for 1.1.0 migration for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:183
+#, php-format
+msgid "Failed to get rows for 1.1.0 migration for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:192
+#, php-format
+msgid "No rows needed 1.1.0 migration for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:240
+msgid "1.1.0 migration failed, refresh the page to re-run."
+msgstr ""
+
+#. Translators: %1$d: number of rows migrated, %2$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:252
+#, php-format
+msgid "1.1.0 migrated %1$d rows in the %2$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:281
+#, php-format
+msgid "Failed to start transaction for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:298
+#, php-format
+msgid "No rows needed MySQL compatibility migration for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:320
+#, php-format
+msgid "Failed to get rows for 1.2.0 migration for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:330
+#, php-format
+msgid "No rows needed 1.2.0 migration for %1$s table."
+msgstr ""
+
+#. Translators: %1$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:362
+msgid "1.2.0 migration failed, refresh the page to re-run."
+msgstr ""
+
+#. Translators: %1$d: number of rows migrated, %2$s: table name.
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:373
+#, php-format
+msgid "1.2.0 migrated %1$d rows in the %2$s table."
 msgstr ""
 
 #: src/Tickets/Flexible_Tickets/Metabox.php:96
