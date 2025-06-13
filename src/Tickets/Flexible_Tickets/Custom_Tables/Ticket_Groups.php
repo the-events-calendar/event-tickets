@@ -11,6 +11,8 @@ namespace TEC\Tickets\Flexible_Tickets\Custom_Tables;
 
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
+
 /**
  * Class Ticket_Groups.
  *
@@ -22,7 +24,7 @@ class Ticket_Groups extends Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	public const SCHEMA_VERSION = '1.1.0';
+	public const SCHEMA_VERSION = '1.2.0';
 
 	/**
 	 * {@inheritdoc}
@@ -45,6 +47,19 @@ class Ticket_Groups extends Table {
 	protected static $uid_column = 'id';
 
 	/**
+	 * Internal way to track prior versions.
+	 *
+	 * @since 5.24.1.1
+	 *
+	 * @var array<string>
+	 */
+	protected static $versions = [
+		'1.0.0',
+		'1.1.0',
+		'1.2.0',
+	];
+
+	/**
 	 * {@inheritdoc}
 	 *
 	 * @since 5.24.1 Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
@@ -58,7 +73,7 @@ class Ticket_Groups extends Table {
 			CREATE TABLE `$table_name` (
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`slug` varchar(255) DEFAULT '' NOT NULL,
-				`data` text DEFAULT ('') NOT NULL,
+				`data` text NOT NULL,
 				`capacity` int(11) DEFAULT 0 NOT NULL,
 				`cost` decimal(10,2) DEFAULT 0 NOT NULL,
 				`name` varchar(255) DEFAULT '' NOT NULL,
@@ -71,15 +86,40 @@ class Ticket_Groups extends Table {
 	 * {@inheritdoc}
 	 *
 	 * @since 5.24.1 Handle hydrating new columns from `data` JSON for Ticket Presets use, if needed.
+	 * @since 5.24.1.1    Handle MySQL compatibility fix for TEXT column DEFAULT value removal.
 	 */
 	protected function after_update( array $results = [] ) {
-		$results = parent::after_update( $results );
+		$results          = parent::after_update( $results );
+		$previous_version = $this->get_stored_previous_version();
 
 		// Run version-specific migrations.
-		if ( self::SCHEMA_VERSION === '1.1.0' ) {
-			$results = $this->migrate_to_1_1_0( $results );
+		if ( version_compare( $previous_version, '1.1.0', '<' ) ) {
+			$success = $this->migrate_to_1_1_0( $results );
+
+			if ( ! $success ) {
+				// Roll back the schema versions here - because we failed.
+				update_option( $this->get_schema_version_option(), $previous_version );
+				// We can hardcode this version here. We know that 1.0.0 is the first version.
+				update_option( $this->get_schema_previous_version_option(), '1.0.0' );
+				return $results;
+			}
 		}
 
+		if ( version_compare( $previous_version, '1.2.0', '<' ) ) {
+			$success = $this->migrate_to_1_2_0( $results );
+
+			if ( ! $success ) {
+				// Roll back the schema versions here - because we failed.
+				update_option( $this->get_schema_version_option(), $previous_version );
+				// Roll back to the previous version. This ensures  that the update will run again,
+				// this assumes that if we got here the 1.1.0 migration has run.
+				update_option( $this->get_schema_previous_version_option(), '1.1.0' );
+
+				return $results;
+			}
+		}
+
+		// Fallback.
 		return $results;
 	}
 
@@ -88,81 +128,255 @@ class Ticket_Groups extends Table {
 	 *
 	 * @since 5.24.1
 	 *
-	 * @param array $results The results array to update.
+	 * @param array $results The results array to update. Passed by reference.
 	 *
-	 * @return array The updated results array.
+	 * @return bool Whether the migration was successful.
 	 */
-	protected function migrate_to_1_1_0( array $results = [] ) {
+	protected function migrate_to_1_1_0( array &$results = [] ): bool {
 		global $wpdb;
 		$table_name = self::table_name();
 
-		// Get all rows where name is empty (indicating data hasn't been migrated yet).
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
-		$rows = $wpdb->get_results(
+		$start_transaction = $wpdb->query( 'START TRANSACTION' );
+
+		if ( false === $start_transaction ) {
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'Failed to start 1.1.0 migration transaction for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
+			return false;
+		}
+
+		$remaining = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id, data FROM %i WHERE name = '' OR name IS NULL",
+				"SELECT count(id) FROM %i WHERE name = '' OR name IS NULL",
 				$table_name
 			)
 		);
 
-		if ( empty( $rows ) ) {
-			$results[ $table_name . '.migration' ] = "No rows needed migration for {$table_name} table.";
-			return $results;
+		if ( null === $remaining ) {
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'Failed to get remaining rows for 1.1.0 migration for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
+			return false;
 		}
 
 		$migrated = 0;
 		$failed   = 0;
 
-		foreach ( $rows as $row ) {
-			$data = json_decode( $row->data, true );
+		while ( $remaining > 0 ) {
+			// Get all rows where name is empty (indicating data hasn't been migrated yet).
 
-			if ( empty( $data ) ) {
-				++$failed;
-				continue;
-			}
-
-			// Extract values from data JSON.
-			$name     = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
-			$capacity = isset( $data['capacity'] ) ? absint( $data['capacity'] ) : 0;
-			$cost     = isset( $data['cost'] ) ? (string) $data['cost'] : '0.000000';
-
-			// Update the row with extracted values.
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
-			$updated = $wpdb->update(
-				$table_name,
-				[
-					'name'     => $name,
-					'capacity' => $capacity,
-					'cost'     => $cost,
-				],
-				[ 'id' => $row->id ],
-				[ '%s', '%d', '%s' ],
-				[ '%d' ]
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT id, data FROM %i WHERE name = '' OR name IS NULL LIMIT %d,1000",
+					$table_name,
+					$migrated
+				)
 			);
 
-			if ( $updated ) {
-				++$migrated;
-			} else {
-				++$failed;
+			if ( ! is_array( $rows ) ) {
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'Failed to get rows for 1.1.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
+				return false;
 			}
+
+			if ( empty( $rows ) ) {
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'No rows needed 1.1.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
+				return $wpdb->query( 'COMMIT' ) !== false;
+			}
+
+			foreach ( $rows as $row ) {
+				$data = json_decode( $row->data, true );
+
+				if ( empty( $data ) ) {
+					++$failed;
+					break;
+				}
+
+				// Extract values from data JSON.
+				$name     = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
+				$capacity = isset( $data['capacity'] ) ? absint( $data['capacity'] ) : 0;
+				$cost     = isset( $data['cost'] ) ? sanitize_text_field( (string) $data['cost'] ) : '0.000000';
+
+				// Update the row with extracted values.
+				$updated = $wpdb->update(
+					$table_name,
+					[
+						'name'     => $name,
+						'capacity' => $capacity,
+						'cost'     => $cost,
+					],
+					[ 'id' => $row->id ],
+					[ '%s', '%d', '%s' ],
+					[ '%d' ]
+				);
+
+				if ( $updated !== false ) {
+					++$migrated;
+				} else {
+					++$failed;
+					// Break on first failure.
+					break;
+				}
+			}
+
+			$remaining -= count( $rows );
 		}
 
 		// Add a message to the results array.
 		if ( $failed > 0 ) {
 			$results[ $table_name . '.migration' ] = sprintf(
-				'Migrated %d rows and failed to migrate %d rows in the %s table.',
-				$migrated,
-				$failed,
+				// Translators: %1$s: table name.
+				__( '1.1.0 migration failed, refresh the page to re-run.', 'event-tickets' ),
 				$table_name
 			);
-		} else {
-			$results[ $table_name . '.migration' ] = sprintf(
-				'Migrated %d rows in the %s table.',
-				$migrated,
-				$table_name
-			);
+
+			// Rollback data transaction.
+			$wpdb->query( 'ROLLBACK' );
+
+			return false;
 		}
 
-		return $results;
+		$results[ $table_name . '.migration' ] = sprintf(
+			// Translators: %1$d: number of rows migrated, %2$s: table name.
+			__( '1.1.0 migrated %1$d rows in the %2$s table.', 'event-tickets' ),
+			$migrated,
+			$table_name
+		);
+
+		return $wpdb->query( 'COMMIT' ) !== false;
+	}
+
+	/**
+	 * Handles MySQL compatibility migration for schema version 1.2.0.
+	 *
+	 * Ensures all `data` column values are properly set since we removed
+	 * the DEFAULT ('') clause for compatibility with older MySQL versions.
+	 *
+	 * @since 5.24.1.1
+	 *
+	 * @param array $results The results array to update. Passed by reference.
+	 *
+	 * @return bool Whether the migration was successful.
+	 */
+	protected function migrate_to_1_2_0( array &$results = [] ): bool {
+		global $wpdb;
+		$table_name = self::table_name();
+
+		$start_transaction = $wpdb->query( 'START TRANSACTION' );
+
+		if ( false === $start_transaction ) {
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'Failed to start transaction for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
+			return false;
+		}
+
+		// Check if any rows have NULL or problematic data values.
+		$rows_with_null_data = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM %i WHERE data IS NULL OR data = '' LIMIT 1000",
+				$table_name
+			)
+		);
+
+		if ( ! $rows_with_null_data ) {
+			$results[ $table_name . '.compatibility_migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( 'No rows needed MySQL compatibility migration for %1$s table.', 'event-tickets' ),
+				$table_name
+			);
+			return $wpdb->query( 'COMMIT' ) !== false;
+		}
+
+		$migrated = 0;
+		$failed   = 0;
+
+		while ( $rows_with_null_data > 0 ) {
+			// Get all rows where data is empty or NULL.
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT id FROM %i WHERE data IS NULL OR data = '' LIMIT %d,1000",
+					$table_name,
+					$migrated
+				)
+			);
+
+			if ( ! is_array( $rows ) ) {
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'Failed to get rows for 1.2.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
+				$wpdb->query( 'ROLLBACK' );
+				return false;
+			}
+
+			if ( empty( $rows ) ) {
+				$results[ $table_name . '.migration' ] = sprintf(
+					// Translators: %1$s: table name.
+					__( 'No rows needed 1.2.0 migration for %1$s table.', 'event-tickets' ),
+					$table_name
+				);
+				return $wpdb->query( 'COMMIT' ) !== false;
+			}
+
+			foreach ( $rows as $row ) {
+				// Update the row with empty string for data.
+				$updated = $wpdb->update(
+					$table_name,
+					[ 'data' => '{}' ],
+					[ 'id' => $row->id ],
+					[ '%s' ],
+					[ '%d' ]
+				);
+
+				if ( $updated !== false ) {
+					++$migrated;
+				} else {
+					++$failed;
+					// Break on first failure.
+					break;
+				}
+			}
+
+			$rows_with_null_data -= count( $rows );
+		}
+
+		// Add a message to the results array.
+		if ( $failed > 0 ) {
+			$results[ $table_name . '.migration' ] = sprintf(
+				// Translators: %1$s: table name.
+				__( '1.2.0 migration failed, refresh the page to re-run.', 'event-tickets' ),
+				$table_name
+			);
+
+			// Rollback data transaction.
+			$wpdb->query( 'ROLLBACK' );
+			return false;
+		}
+
+		$results[ $table_name . '.migration' ] = sprintf(
+			// Translators: %1$d: number of rows migrated, %2$s: table name.
+			__( '1.2.0 migrated %1$d rows in the %2$s table.', 'event-tickets' ),
+			$migrated,
+			$table_name
+		);
+
+		return $wpdb->query( 'COMMIT' ) !== false;
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
