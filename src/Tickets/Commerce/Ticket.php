@@ -132,6 +132,7 @@ class Ticket extends Ticket_Data {
 	 * @var string
 	 */
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+
 	/**
 	 * The meta key that holds the ticket type.
 	 *
@@ -140,6 +141,15 @@ class Ticket extends Ticket_Data {
 	 * @var string
 	 */
 	public static $type_meta_key = '_type';
+
+	/**
+	 * The column key that holds the ticket type.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $type_column_key = 'pinged';
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
@@ -185,6 +195,15 @@ class Ticket extends Ticket_Data {
 	 * @var string
 	 */
 	public static $sale_price_end_date_key = '_sale_price_end_date';
+
+	/**
+	 * Meta key that holds the "not going" option visibility status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $show_not_going = '_tribe_ticket_show_not_going';
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -383,6 +402,12 @@ class Ticket extends Ticket_Data {
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
+		//@todo use hooks for this"
+		$not_going = get_post_meta( $ticket_id, $this->show_not_going, true );
+		$return->show_not_going              = get_post_meta( $ticket_id, $this->show_not_going, true );
+
+		$return->setType( get_post_meta( $ticket_id, '_type', true ) );
+
 		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
 
 		// If the quantity sold wasn't set, default to zero
@@ -546,17 +571,18 @@ class Ticket extends Ticket_Data {
 			$save_type = 'create';
 
 			/* Create main product post */
-			$args = array(
-				'post_status'  => 'publish',
-				'post_type'    => static::POSTTYPE,
-				'post_author'  => get_current_user_id(),
-				'post_excerpt' => $ticket->description,
-				'post_title'   => $ticket->name,
+			$args = [
+				'post_status'          => 'publish',
+				'post_type'            => static::POSTTYPE,
+				'post_author'          => get_current_user_id(),
+				'post_excerpt'         => $ticket->description,
+				'post_title'           => $ticket->name,
+				$this->type_column_key => $raw_data['ticket_type'] ?? 'default',
 				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ),
-				'meta_input' => [
+				'meta_input'           => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
-			);
+			];
 
 			$ticket->ID = wp_insert_post( $args );
 
@@ -564,15 +590,16 @@ class Ticket extends Ticket_Data {
 			add_post_meta( $ticket->ID, static::$event_relation_meta_key, $post_id );
 
 		} else {
-			$args = array(
-				'ID'           => $ticket->ID,
-				'post_excerpt' => $ticket->description,
-				'post_title'   => $ticket->name,
-				'menu_order'   => $ticket->menu_order,
-				'meta_input' => [
+			$args = [
+				'ID'                   => $ticket->ID,
+				'post_excerpt'         => $ticket->description,
+				'post_title'           => $ticket->name,
+				'menu_order'           => $ticket->menu_order,
+				$this->type_column_key => $raw_data['ticket_type'] ?? 'default',
+				'meta_input'           => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
-			);
+			];
 
 			$ticket->ID = wp_update_post( $args );
 		}
@@ -814,6 +841,20 @@ class Ticket extends Ticket_Data {
 		 * @param string        $class    Commerce engine class
 		 */
 		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
+
+		//@todo - use the hooks to add this
+		//if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			$show_not_going = 'no';
+
+			if ( isset( $raw_data['tec_tickets_rsvp_enable_cannot_go'] ) ) {
+				$show_not_going = $raw_data['tec_tickets_rsvp_enable_cannot_go'];
+			}
+
+			$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
+			update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
+		//}
+
+
 
 		return $ticket->ID;
 	}
