@@ -17,8 +17,6 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\Commerce\Ticket;
 
-use Tribe__Date_Utils as Dates;
-
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -237,7 +235,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool|WP_Error True if stock is valid, WP_Error if invalid.
 	 */
 	protected function validate_cart_stock() {
-		$cart = tribe( Cart::class );
+		$cart       = tribe( Cart::class );
 		$cart_items = $cart->get_items_in_cart();
 
 		if ( empty( $cart_items ) ) {
@@ -250,13 +248,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			$ticket_id = $item['ticket_id'];
-			$quantity = (int) $item['quantity'];
+			$quantity  = (int) $item['quantity'];
 
 			// Get fresh ticket data to avoid stale cache.
 			$ticket = tribe( Ticket::class )->get_ticket( $ticket_id );
 			if ( ! $ticket ) {
 				return new WP_Error(
 					'tec-tc-ticket-not-found',
+							/* translators: %d: Ticket ID */
 					sprintf( __( 'Ticket not found: %d', 'event-tickets' ), $ticket_id ),
 					[ 'ticket_id' => $ticket_id ]
 				);
@@ -274,14 +273,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				return new WP_Error(
 					'tec-tc-insufficient-stock',
 					sprintf( 
-						__( 'Insufficient stock for "%s". Only %d remaining.', 'event-tickets' ), 
+						/* translators: %1$s: ticket name, %2$d: available stock count */
+						__( 'Insufficient stock for "%1$s". Only %2$d remaining.', 'event-tickets' ), 
 						$ticket->name, 
 						max( 0, $current_inventory )
 					),
 					[ 
 						'ticket_id' => $ticket_id, 
 						'requested' => $quantity, 
-						'available' => max( 0, $current_inventory ) 
+						'available' => max( 0, $current_inventory ),
 					]
 				);
 			}
@@ -310,7 +310,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return 0;
 		}
 
-		// Get stock directly from database to avoid cache.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// Direct query required for atomic stock operations to prevent race conditions.
 		global $wpdb;
 		$stock = $wpdb->get_var( 
 			$wpdb->prepare( 
@@ -319,6 +320,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				Ticket::$stock_meta_key
 			)
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return max( 0, (int) $stock );
 	}
@@ -345,7 +347,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			$ticket_id = $item['ticket_id'];
-			$quantity = (int) $item['quantity'];
+			$quantity  = (int) $item['quantity'];
 
 			// Get ticket and check if it manages stock.
 			$ticket = tribe( Ticket::class )->get_ticket( $ticket_id );
@@ -364,7 +366,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			$reserved_items[] = [
 				'ticket_id' => $ticket_id,
-				'quantity' => $quantity,
+				'quantity'  => $quantity,
 			];
 		}
 
@@ -389,6 +391,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool|WP_Error True on success, WP_Error on failure.
 	 */
 	protected function reserve_ticket_stock( $ticket_id, $quantity, $order_id ) {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// Direct database queries required for atomic stock operations with transactions.
 		global $wpdb;
 
 		// Use database transaction for atomic stock update.
@@ -413,25 +417,26 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				return new WP_Error(
 					'tec-tc-insufficient-stock-atomic',
 					sprintf( 
+						/* translators: %d: available stock count */
 						__( 'Insufficient stock for ticket. Only %d remaining.', 'event-tickets' ), 
 						max( 0, $current_stock )
 					),
 					[ 
 						'ticket_id' => $ticket_id, 
 						'requested' => $quantity, 
-						'available' => max( 0, $current_stock ) 
+						'available' => max( 0, $current_stock ),
 					]
 				);
 			}
 
 			// Update stock immediately to reserve it.
 			$new_stock = $current_stock - $quantity;
-			$updated = $wpdb->update(
+			$updated   = $wpdb->update(
 				$wpdb->postmeta,
 				[ 'meta_value' => $new_stock ],
 				[ 
-					'post_id' => $ticket_id, 
-					'meta_key' => Ticket::$stock_meta_key 
+					'post_id'  => $ticket_id, 
+					'meta_key' => Ticket::$stock_meta_key,
 				],
 				[ '%d' ],
 				[ '%d', '%s' ]
@@ -462,6 +467,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				[ 'error' => $e->getMessage() ]
 			);
 		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -486,6 +492,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @param int $quantity The quantity to restore.
 	 */
 	protected function restore_ticket_stock( $ticket_id, $quantity ) {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// Direct database queries required for atomic stock operations.
 		global $wpdb;
 
 		$current_stock = $wpdb->get_var( 
@@ -502,8 +510,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$wpdb->postmeta,
 			[ 'meta_value' => $new_stock ],
 			[ 
-				'post_id' => $ticket_id, 
-				'meta_key' => Ticket::$stock_meta_key 
+				'post_id'  => $ticket_id, 
+				'meta_key' => Ticket::$stock_meta_key,
 			],
 			[ '%d' ],
 			[ '%d', '%s' ]
@@ -512,6 +520,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Clear cache.
 		wp_cache_delete( $ticket_id, 'posts' );
 		wp_cache_delete( $ticket_id, 'post_meta' );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
