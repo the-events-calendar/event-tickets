@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Fixed My Tickets link not working on Pages due to canonical redirect. [ET-2517]
