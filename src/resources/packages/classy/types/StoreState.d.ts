@@ -1,5 +1,5 @@
-import { TicketState } from "./TicketState";
+import { Ticket } from './Ticket';
 
 export type StoreState = {
-	ticket: TicketState;
+	tickets: Ticket[];
 }
