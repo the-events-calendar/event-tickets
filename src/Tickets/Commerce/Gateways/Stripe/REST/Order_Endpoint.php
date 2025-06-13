@@ -15,6 +15,9 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Commerce\Ticket;
+
+use Tribe__Date_Utils as Dates;
 
 use WP_Error;
 use WP_REST_Request;
@@ -130,6 +133,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
+		// Critical: Validate stock BEFORE creating order and payment intent.
+		$stock_validation = $this->validate_cart_stock();
+		if ( is_wp_error( $stock_validation ) ) {
+			return $stock_validation;
+		}
+
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.
 		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
 		if ( ! $order instanceof WP_Post ) {
@@ -142,6 +151,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					'purchaser'  => $purchaser,
 				]
 			);
+		}
+
+		// CRITICAL: Reserve stock immediately after order creation to prevent race conditions.
+		$stock_reservation = $this->reserve_order_stock( $order );
+		if ( is_wp_error( $stock_reservation ) ) {
+			// Order creation succeeded but stock reservation failed - clean up and return error.
+			wp_delete_post( $order->ID, true );
+			return $stock_reservation;
 		}
 
 		// Flag the order as on checkout screen hold.
@@ -210,6 +227,291 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Validates cart stock for current items.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool|WP_Error True if stock is valid, WP_Error if invalid.
+	 */
+	protected function validate_cart_stock() {
+		$cart = tribe( Cart::class );
+		$cart_items = $cart->get_items_in_cart();
+
+		if ( empty( $cart_items ) ) {
+			return true;
+		}
+
+		foreach ( $cart_items as $item ) {
+			if ( empty( $item['ticket_id'] ) || empty( $item['quantity'] ) ) {
+				continue;
+			}
+
+			$ticket_id = $item['ticket_id'];
+			$quantity = (int) $item['quantity'];
+
+			// Get fresh ticket data to avoid stale cache.
+			$ticket = tribe( Ticket::class )->get_ticket( $ticket_id );
+			if ( ! $ticket ) {
+				return new WP_Error(
+					'tec-tc-ticket-not-found',
+					sprintf( __( 'Ticket not found: %d', 'event-tickets' ), $ticket_id ),
+					[ 'ticket_id' => $ticket_id ]
+				);
+			}
+
+			// Only check stock for tickets that manage stock.
+			if ( ! $ticket->manage_stock() ) {
+				continue;
+			}
+
+			// Get current inventory with atomic read to prevent race conditions.
+			$current_inventory = $this->get_atomic_ticket_inventory( $ticket_id );
+			
+			if ( $current_inventory < $quantity ) {
+				return new WP_Error(
+					'tec-tc-insufficient-stock',
+					sprintf( 
+						__( 'Insufficient stock for "%s". Only %d remaining.', 'event-tickets' ), 
+						$ticket->name, 
+						max( 0, $current_inventory )
+					),
+					[ 
+						'ticket_id' => $ticket_id, 
+						'requested' => $quantity, 
+						'available' => max( 0, $current_inventory ) 
+					]
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get atomic ticket inventory to prevent race conditions.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return int Current inventory count.
+	 */
+	protected function get_atomic_ticket_inventory( $ticket_id ) {
+		// Clear any object cache for this ticket to get fresh data.
+		wp_cache_delete( $ticket_id, 'posts' );
+		wp_cache_delete( $ticket_id, 'post_meta' );
+		
+		// Get fresh ticket data directly from database.
+		$ticket = get_post( $ticket_id );
+		if ( ! $ticket ) {
+			return 0;
+		}
+
+		// Get stock directly from database to avoid cache.
+		global $wpdb;
+		$stock = $wpdb->get_var( 
+			$wpdb->prepare( 
+				"SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s",
+				$ticket_id,
+				Ticket::$stock_meta_key
+			)
+		);
+
+		return max( 0, (int) $stock );
+	}
+
+	/**
+	 * Reserve stock for an order to prevent race conditions.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The order post object.
+	 *
+	 * @return bool|WP_Error True on success, WP_Error on failure.
+	 */
+	protected function reserve_order_stock( $order ) {
+		if ( empty( $order->items ) ) {
+			return true;
+		}
+
+		$reserved_items = [];
+
+		foreach ( $order->items as $item ) {
+			if ( empty( $item['ticket_id'] ) || empty( $item['quantity'] ) ) {
+				continue;
+			}
+
+			$ticket_id = $item['ticket_id'];
+			$quantity = (int) $item['quantity'];
+
+			// Get ticket and check if it manages stock.
+			$ticket = tribe( Ticket::class )->get_ticket( $ticket_id );
+			if ( ! $ticket || ! $ticket->manage_stock() ) {
+				continue;
+			}
+
+			// Attempt to reserve stock atomically.
+			$reserved = $this->reserve_ticket_stock( $ticket_id, $quantity, $order->ID );
+			
+			if ( is_wp_error( $reserved ) ) {
+				// Rollback any previously reserved items.
+				$this->rollback_stock_reservations( $reserved_items );
+				return $reserved;
+			}
+
+			$reserved_items[] = [
+				'ticket_id' => $ticket_id,
+				'quantity' => $quantity,
+			];
+		}
+
+		// Mark order as having reserved stock.
+		if ( ! empty( $reserved_items ) ) {
+			update_post_meta( $order->ID, '_tec_tc_stock_reserved', true );
+			update_post_meta( $order->ID, '_tec_tc_reserved_items', $reserved_items );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Atomically reserve stock for a specific ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param int $quantity The quantity to reserve.
+	 * @param int $order_id The order ID reserving the stock.
+	 *
+	 * @return bool|WP_Error True on success, WP_Error on failure.
+	 */
+	protected function reserve_ticket_stock( $ticket_id, $quantity, $order_id ) {
+		global $wpdb;
+
+		// Use database transaction for atomic stock update.
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			// Get current stock with row lock.
+			$current_stock = $wpdb->get_var( 
+				$wpdb->prepare( 
+					"SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s FOR UPDATE",
+					$ticket_id,
+					Ticket::$stock_meta_key
+				)
+			);
+
+			$current_stock = (int) $current_stock;
+
+			// Check if we have enough stock.
+			if ( $current_stock < $quantity ) {
+				$wpdb->query( 'ROLLBACK' );
+				
+				return new WP_Error(
+					'tec-tc-insufficient-stock-atomic',
+					sprintf( 
+						__( 'Insufficient stock for ticket. Only %d remaining.', 'event-tickets' ), 
+						max( 0, $current_stock )
+					),
+					[ 
+						'ticket_id' => $ticket_id, 
+						'requested' => $quantity, 
+						'available' => max( 0, $current_stock ) 
+					]
+				);
+			}
+
+			// Update stock immediately to reserve it.
+			$new_stock = $current_stock - $quantity;
+			$updated = $wpdb->update(
+				$wpdb->postmeta,
+				[ 'meta_value' => $new_stock ],
+				[ 
+					'post_id' => $ticket_id, 
+					'meta_key' => Ticket::$stock_meta_key 
+				],
+				[ '%d' ],
+				[ '%d', '%s' ]
+			);
+
+			if ( false === $updated ) {
+				$wpdb->query( 'ROLLBACK' );
+				return new WP_Error(
+					'tec-tc-stock-update-failed',
+					__( 'Failed to update ticket stock.', 'event-tickets' ),
+					[ 'ticket_id' => $ticket_id ]
+				);
+			}
+
+			$wpdb->query( 'COMMIT' );
+
+			// Clear cache for this ticket.
+			wp_cache_delete( $ticket_id, 'posts' );
+			wp_cache_delete( $ticket_id, 'post_meta' );
+
+			return true;
+
+		} catch ( Exception $e ) {
+			$wpdb->query( 'ROLLBACK' );
+			return new WP_Error(
+				'tec-tc-stock-reservation-error',
+				__( 'Error during stock reservation.', 'event-tickets' ),
+				[ 'error' => $e->getMessage() ]
+			);
+		}
+	}
+
+	/**
+	 * Rollback stock reservations if order creation fails.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $reserved_items Array of reserved items to rollback.
+	 */
+	protected function rollback_stock_reservations( $reserved_items ) {
+		foreach ( $reserved_items as $item ) {
+			$this->restore_ticket_stock( $item['ticket_id'], $item['quantity'] );
+		}
+	}
+
+	/**
+	 * Restore stock for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param int $quantity The quantity to restore.
+	 */
+	protected function restore_ticket_stock( $ticket_id, $quantity ) {
+		global $wpdb;
+
+		$current_stock = $wpdb->get_var( 
+			$wpdb->prepare( 
+				"SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s",
+				$ticket_id,
+				Ticket::$stock_meta_key
+			)
+		);
+
+		$new_stock = (int) $current_stock + $quantity;
+		
+		$wpdb->update(
+			$wpdb->postmeta,
+			[ 'meta_value' => $new_stock ],
+			[ 
+				'post_id' => $ticket_id, 
+				'meta_key' => Ticket::$stock_meta_key 
+			],
+			[ '%d' ],
+			[ '%d', '%s' ]
+		);
+
+		// Clear cache.
+		wp_cache_delete( $ticket_id, 'posts' );
+		wp_cache_delete( $ticket_id, 'post_meta' );
 	}
 
 	/**
@@ -307,6 +609,25 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
 
+		// Critical: Re-validate stock before completing successful payment.
+		// This prevents race conditions where stock was sold between order creation and payment completion.
+		if ( in_array( $status->get_slug(), [ Completed::SLUG, Pending::SLUG ], true ) ) {
+			$stock_validation = $this->validate_order_stock( $order );
+			if ( is_wp_error( $stock_validation ) ) {
+				// Payment succeeded but we're out of stock - this is the race condition case.
+				// We need to fail the order gracefully.
+				return new WP_Error(
+					'tec-tc-gateway-stripe-stock-unavailable',
+					$messages['stock-unavailable-after-payment'],
+					[
+						'order_id'        => $order->ID,
+						'gateway_order_id' => $gateway_order_id,
+						'stock_error'     => $stock_validation->get_error_message(),
+					]
+				);
+			}
+		}
+
 		$orders->modify_status(
 			$order->ID,
 			$status->get_slug(),
@@ -340,6 +661,57 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $gateway_order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Validates stock for items in an existing order.
+	 * 
+	 * This catches race conditions where stock becomes unavailable between
+	 * order creation and payment completion.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order to validate.
+	 *
+	 * @return true|WP_Error True if stock is available, WP_Error if insufficient stock.
+	 */
+	private function validate_order_stock( $order ) {
+		if ( empty( $order->items ) || ! is_array( $order->items ) ) {
+			return true;
+		}
+
+		foreach ( $order->items as $item ) {
+			if ( empty( $item['ticket_id'] ) || empty( $item['quantity'] ) ) {
+				continue;
+			}
+
+			/** @var \Tribe__Tickets__Ticket_Object $ticket */
+			$ticket = tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
+
+			if ( null === $ticket ) {
+				return new WP_Error(
+					'tec-tc-invalid-ticket-id',
+					sprintf( __( 'Invalid ticket in order (ID: %1$d)', 'event-tickets' ), $item['ticket_id'] )
+				);
+			}
+
+			$qty = max( (int) $item['quantity'], 0 );
+
+			// Critical stock validation.
+			if ( $ticket->managing_stock() ) {
+				$inventory = (int) $ticket->inventory();
+				$inventory_is_not_unlimited = -1 !== $inventory;
+
+				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
+					return new WP_Error(
+						'tec-tc-ticket-insufficient-stock',
+						sprintf( __( 'Stock no longer available for "%1$s". Requested: %2$d, Available: %3$d', 'event-tickets' ), $ticket->name, $qty, $inventory )
+					);
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -425,6 +797,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'failed-payment'                   => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
 			'invalid-payment-intent-status'    => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
 			'empty-cart'                       => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
+			'stock-unavailable-after-payment'  => __( 'Stock is no longer available for this order. Please try again later.', 'event-tickets' ),
 		];
 		/**
 		 * Filter the error messages for Stripe checkout.

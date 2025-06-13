@@ -252,7 +252,34 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			const response = await obj.handleUpdateOrder( data.error.payment_intent );
 		}
 
+		// Check for specific stock-related errors that need special handling.
+		const isStockError = data.error.code && (
+			data.error.code.includes( 'insufficient-stock' ) ||
+			data.error.code.includes( 'stock-unavailable' ) ||
+			data.error.code.includes( 'ticket-unavailable' )
+		);
+
+		if ( isStockError ) {
+			// Stock error - provide specific messaging and suggest refresh.
+			return obj.handleStockError( data.error.message );
+		}
+
 		return obj.handleErrorDisplay( [ [ data.error.code, data.error.message ] ], () => {
+			tribe.tickets.loader.hide( obj.checkoutContainer );
+		} );
+	};
+
+	/**
+	 * Handle stock-specific errors with enhanced user feedback.
+	 *
+	 * @since TBD
+	 *
+	 * @param {string} message The error message to display.
+	 *
+	 * @return {boolean}
+	 */
+	obj.handleStockError = ( message ) => {
+		return obj.handleErrorDisplay( [ [ 'stock-error', message ] ], () => {
 			tribe.tickets.loader.hide( obj.checkoutContainer );
 		} );
 	};
@@ -479,8 +506,23 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				obj.submitCardPayment();
 			}
 		} else {
+			// Enhanced error handling for stock validation errors.
 			tribe.tickets.loader.hide( obj.checkoutContainer );
-			obj.showNotice( {}, order.message, '' );
+			
+			// Check if this is a stock-related error from the REST API.
+			const errorCode = order.code || '';
+			const isStockError = errorCode.includes( 'insufficient-stock' ) || 
+				errorCode.includes( 'stock-unavailable' ) || 
+				errorCode.includes( 'ticket-unavailable' ) ||
+				(order.message && order.message.toLowerCase().includes('stock'));
+			
+			if ( isStockError ) {
+				// Handle stock errors with special messaging.
+				obj.handleStockError( order.message || 'Stock is no longer available for this ticket.' );
+			} else {
+				// Handle other errors normally.
+				obj.showNotice( {}, order.message, '' );
+			}
 		}
 
 		obj.submitButton( true );
