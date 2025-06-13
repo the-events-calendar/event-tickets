@@ -255,7 +255,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			if ( ! $ticket ) {
 				return new WP_Error(
 					'tec-tc-ticket-not-found',
-							/* translators: %d: Ticket ID */
+					/* translators: %d: Ticket ID */
 					sprintf( __( 'Ticket not found: %d', 'event-tickets' ), $ticket_id ),
 					[ 'ticket_id' => $ticket_id ]
 				);
@@ -391,8 +391,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool|WP_Error True on success, WP_Error on failure.
 	 */
 	protected function reserve_ticket_stock( $ticket_id, $quantity, $order_id ) {
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 		// Direct database queries required for atomic stock operations with transactions.
+		// meta_value usage is necessary for atomic stock updates to prevent race conditions.
 		global $wpdb;
 
 		// Use database transaction for atomic stock update.
@@ -467,7 +468,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				[ 'error' => $e->getMessage() ]
 			);
 		}
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 	}
 
 	/**
@@ -492,8 +493,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @param int $quantity The quantity to restore.
 	 */
 	protected function restore_ticket_stock( $ticket_id, $quantity ) {
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 		// Direct database queries required for atomic stock operations.
+		// meta_value usage is necessary for atomic stock updates to prevent race conditions.
 		global $wpdb;
 
 		$current_stock = $wpdb->get_var( 
@@ -520,7 +522,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Clear cache.
 		wp_cache_delete( $ticket_id, 'posts' );
 		wp_cache_delete( $ticket_id, 'post_meta' );
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 	}
 
 	/**
@@ -629,9 +631,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					'tec-tc-gateway-stripe-stock-unavailable',
 					$messages['stock-unavailable-after-payment'],
 					[
-						'order_id'        => $order->ID,
+						'order_id'         => $order->ID,
 						'gateway_order_id' => $gateway_order_id,
-						'stock_error'     => $stock_validation->get_error_message(),
+						'stock_error'      => $stock_validation->get_error_message(),
 					]
 				);
 			}
@@ -700,6 +702,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			if ( null === $ticket ) {
 				return new WP_Error(
 					'tec-tc-invalid-ticket-id',
+					/* translators: %1$d: ticket ID */
 					sprintf( __( 'Invalid ticket in order (ID: %1$d)', 'event-tickets' ), $item['ticket_id'] )
 				);
 			}
@@ -708,12 +711,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			// Critical stock validation.
 			if ( $ticket->managing_stock() ) {
-				$inventory = (int) $ticket->inventory();
+				$inventory                  = (int) $ticket->inventory();
 				$inventory_is_not_unlimited = -1 !== $inventory;
 
 				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
 					return new WP_Error(
 						'tec-tc-ticket-insufficient-stock',
+						/* translators: %1$s: ticket name, %2$d: requested quantity, %3$d: available quantity */
 						sprintf( __( 'Stock no longer available for "%1$s". Requested: %2$d, Available: %3$d', 'event-tickets' ), $ticket->name, $qty, $inventory )
 					);
 				}
