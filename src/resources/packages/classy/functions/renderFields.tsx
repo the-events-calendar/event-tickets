@@ -4,13 +4,6 @@ import { useSelect } from '@wordpress/data';
 import { STORE_NAME } from '../store/constants';
 import { StoreSelectors } from '../types/store';
 
-interface TicketProps {
-	ticketPrice: number;
-	ticketStock: number;
-	ticketStartDate: string;
-	ticketEndDate: string;
-}
-
 /**
  * Renders the ticket fields in the Classy editor.
  *
