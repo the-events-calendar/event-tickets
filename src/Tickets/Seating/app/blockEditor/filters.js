@@ -145,15 +145,22 @@ function shouldRenderAssignedSeatingForm( props ) {
 		return false;
 	}
 
-	const { tempCapacity, clientId } = props;
+	const { clientId } = props;
 
 	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
 	const isLayoutLocked = select( storeName ).isLayoutLocked( clientId );
+	const currentLayoutId = select( storeName ).getCurrentLayoutId();
 
-	if ( '' !== tempCapacity && ! ( hasSeats && isLayoutLocked ) ) {
-		// If the capacity is set but not from seating, we render the default form.
+	// If not using assigned seating, don't show seating form
+	if ( ! hasSeats ) {
 		return false;
 	}
 
+	// If we have tickets but no seating layout, don't show seating form
+	if ( isLayoutLocked && ! currentLayoutId ) {
+		return false;
+	}
+
+	// In all other seating scenarios, show the seating form
 	return applyFilters( 'tec.tickets.blocks.Ticket.renderSeatingForm', true, props );
 }
