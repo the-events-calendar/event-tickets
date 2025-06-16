@@ -397,7 +397,8 @@ class Tribe__Tickets__Tickets_View {
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
 	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
-	 *
+	 * @since TBD Added filter to preserve tribe-edit-orders parameter in canonical redirect.
+	 * 
 	 * @param string $content Normally the_content of a post.
 	 *
 	 * @return string
@@ -408,7 +409,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// Prevents firing more than it needs to outside of the loop.
 		if (
-			! is_singular()
+			! is_singular( Tribe__Tickets__Main::instance()->post_types() )
 			|| ! in_the_loop()
 			|| ! is_main_query()
 			|| (
