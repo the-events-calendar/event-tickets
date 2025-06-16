@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Formats the query for cleaning up stale webhook entries properly. [ET-2206]
