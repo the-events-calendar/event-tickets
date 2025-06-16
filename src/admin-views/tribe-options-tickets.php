@@ -362,15 +362,27 @@ $maintenance_fields = [
 	'maintenance-rsvp'         => [
 		'type'            => 'html',
 		'html'            => '<p class="tec-settings-form__description-text">' .
-		                     'You have XYZ orphaned RSVPs.<br>' .
-                              '<a href="">Clear orphaned RSVPs</a>' .
+		                     sprintf(
+		                        // Translators: %1$s: the number or orphaned RSVPs, %2$s: Singular RSVP label.
+								 _x( 'You have %1$s orphaned %2$s products.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
+								 Tribe__Tickets__Tickets::get_orphaned_products_number( 'Tribe__Tickets__RSVP', true ),
+			                     tribe_get_rsvp_label_singular( 'maintenance_description' )
+		                     ) .
+		                     '<br>' .
+		                     sprintf(
+								 // Translators: %1$s: Opening anchor tag, %2$s: Plural RSVP label, %3$s: closing anchor tag.
+			                     _x('%1$sTrash orphaned %2$s%3$s', 'Orphaned RSVP maintenance button','event-tickets'),
+			                     '<a href="" class="button">',
+			                     tribe_get_rsvp_label_plural( 'maintenance_description' ),
+			                     '</a>'
+		                     ) .
 		                     '</p>',
 	],
 	'maintenance-ticket'         => [
 		'type'            => 'html',
 		'html'            => '<p class="tec-settings-form__description-text">' .
 		                     'You have XYZ orphaned tickets.<br>' .
-                              '<a href="">Clear orphened tickets</a>' .
+                              '<a href="" class="button">Clear orphened tickets</a>' .
 		                     '</p>',
 	],
 	'tec-settings-general-maintenance-fields-div-end'   => [

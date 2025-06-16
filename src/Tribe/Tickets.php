@@ -4640,6 +4640,43 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns the number of orphaned tickets based on the provider.
+		 *
+		 * @param sting|bool|null $provider The provider slug or false if no provider, leave as null to detect from page. Tribe__Tickets__RSVP, Tribe__Tickets__Tickets
+		 * @param bool            $count    Whether we should return the post IDs (default, false) or the number of posts found (true).
+		 *
+		 * @return int
+		 */
+		public function get_orphaned_products_number( $provider = null, $count = false ) {
+			global $wpdb;
+
+			if ( $provider === 'Tribe__Tickets__RSVP' ) {
+				$meta_key = '_tribe_rsvp_for_event';
+				$post_type = 'tribe_rsvp_tickets';
+			}
+
+			$query = $wpdb->prepare(
+				"SELECT pm.post_id
+		FROM {$wpdb->postmeta} AS pm
+		LEFT JOIN {$wpdb->posts} AS p1 ON p1.ID = pm.post_id
+		LEFT JOIN {$wpdb->posts} AS p2 ON pm.meta_value = p2.ID
+		WHERE pm.meta_key = %s
+	  	AND p1.post_type = %s
+		AND p2.ID IS NULL;",
+				$meta_key,
+				$post_type
+			);
+
+			$results = $wpdb->get_col( $query );
+
+			if ( $count ) {
+				return count( $results );
+			}
+
+			return $results;
+		}
+
+		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
 		 * Set up this way to amke it easier to add messages as needed.
 		 *
