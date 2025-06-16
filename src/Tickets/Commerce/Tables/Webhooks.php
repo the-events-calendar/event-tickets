@@ -142,7 +142,7 @@ class Webhooks extends Table {
 			DB::prepare(
 				'DELETE FROM %i WHERE processed_at is NULL and created_at < %s',
 				self::table_name( true ),
-				time() - DAY_IN_SECONDS
+				gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS )
 			)
 		);
 	}
