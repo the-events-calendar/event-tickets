@@ -330,6 +330,10 @@ $auth_fields = [
 	],
 ];
 
+$tickets                 = new Tribe__Tickets__Tickets();
+$rsvp_orphaned_numbers   = $tickets->get_orphaned_products_number( 'Tribe__Tickets__RSVP', true );
+$ticket_orphaned_numbers = $tickets->get_orphaned_products_number( 'Tribe__Tickets__Tickets', true );
+
 // Maintenance fields.
 $maintenance_fields = [
 	'tec-settings-general-maintenance-fields-div-start' => [
@@ -364,9 +368,10 @@ $maintenance_fields = [
 		'html'            => '<p class="tec-settings-form__description-text">' .
 		                     sprintf(
 		                        // Translators: %1$s: the number or orphaned RSVPs, %2$s: Singular RSVP label.
-								 _x( 'You have %1$s orphaned %2$s products.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
-								 Tribe__Tickets__Tickets::get_orphaned_products_number( 'Tribe__Tickets__RSVP', true ),
-			                     tribe_get_rsvp_label_singular( 'maintenance_description' )
+								 _x( 'You have %1$s orphaned %2$s products with %3$s attendees.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
+			                     $rsvp_orphaned_numbers['products'],
+			                     tribe_get_rsvp_label_singular( 'maintenance_description' ),
+			                     $rsvp_orphaned_numbers['attendees']
 		                     ) .
 		                     '<br>' .
 		                     sprintf(
@@ -381,8 +386,21 @@ $maintenance_fields = [
 	'maintenance-ticket'         => [
 		'type'            => 'html',
 		'html'            => '<p class="tec-settings-form__description-text">' .
-		                     'You have XYZ orphaned tickets.<br>' .
-                              '<a href="" class="button">Clear orphened tickets</a>' .
+		                     sprintf(
+		                     // Translators: %1$s: the number or orphaned tickets, %2$s: Singular ticket label.
+			                     _x( 'You have %1$s orphaned %2$s products with %3$s attendees.', 'Orphaned ticket maintenance description', 'event-tickets' ),
+			                     $ticket_orphaned_numbers['products'],
+			                     tribe_get_ticket_label_singular( 'maintenance_description' ),
+			                     $ticket_orphaned_numbers['attendees']
+		                     ) .
+		                     '<br>' .
+		                     sprintf(
+		                     // Translators: %1$s: Opening anchor tag, %2$s: Plural ticket label, %3$s: closing anchor tag.
+			                     _x('%1$sTrash orphaned %2$s%3$s', 'Orphaned ticket maintenance button','event-tickets'),
+			                     '<a href="" class="button">',
+			                     tribe_get_ticket_label_plural( 'maintenance_description' ),
+			                     '</a>'
+		                     ) .
 		                     '</p>',
 	],
 	'tec-settings-general-maintenance-fields-div-end'   => [

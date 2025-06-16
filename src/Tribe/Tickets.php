@@ -4645,16 +4645,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param sting|bool|null $provider The provider slug or false if no provider, leave as null to detect from page. Tribe__Tickets__RSVP, Tribe__Tickets__Tickets
 		 * @param bool            $count    Whether we should return the post IDs (default, false) or the number of posts found (true).
 		 *
-		 * @return int
+		 * @return array Either the post IDs of the abandoned posts (default, $count = false) or the number of products and attendees ($count = true).
 		 */
 		public function get_orphaned_products_number( $provider = null, $count = false ) {
 			global $wpdb;
 
-			if ( $provider === 'Tribe__Tickets__RSVP' ) {
-				$meta_key = '_tribe_rsvp_for_event';
-				$post_type = 'tribe_rsvp_tickets';
+			if ( $provider === 'Tribe__Tickets__Tickets' ) {
+				$event_meta_key = '_tec_tickets_commerce_event';
+				$product_post_type = 'tec_tc_ticket';
+				$product_meta_key = '_tec_tickets_commerce_ticket';
+			}
+			else { // ( $provider === 'Tribe__Tickets__RSVP' ) {
+				$event_meta_key = '_tribe_rsvp_for_event';
+				$product_post_type = 'tribe_rsvp_tickets';
+				$product_meta_key = '_tribe_rsvp_product';
 			}
 
+			// Get the abandoned products.
 			$query = $wpdb->prepare(
 				"SELECT pm.post_id
 		FROM {$wpdb->postmeta} AS pm
@@ -4663,17 +4670,53 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		WHERE pm.meta_key = %s
 	  	AND p1.post_type = %s
 		AND p2.ID IS NULL;",
-				$meta_key,
-				$post_type
+				$event_meta_key,
+				$product_post_type
 			);
 
-			$results = $wpdb->get_col( $query );
+			$abandoned_products = $wpdb->get_col( $query );
 
-			if ( $count ) {
-				return count( $results );
+			// Return 0 if there are no abandoned products.
+			if ( empty( $abandoned_products ) ) {
+				return [
+					'products'  => 0,
+					'attendees' => 0,
+				];
 			}
 
-			return $results;
+			$number_of_abandoned_products = count( $abandoned_products );
+
+			$related_attendees = [];
+			$number_of_related_attendees = 0;
+
+			// Get the attendees for each abandoned product.
+			foreach ( $abandoned_products as $post_id ) {
+				$attendees = $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT post_id FROM {$wpdb->postmeta}
+                		WHERE meta_value = %d AND meta_key = %s",
+						$post_id,
+						$product_meta_key
+					)
+				);
+
+				// Merge the found attendees.
+				if ( ! empty( $attendees ) ) {
+					$related_attendees = array_merge( $related_attendees, $attendees );
+					$number_of_related_attendees += count( $attendees );
+				}
+			}
+
+			// If counting, return the numbers.
+			if ( $count ) {
+				return [
+					'products'  => $number_of_abandoned_products,
+					'attendees' => $number_of_related_attendees,
+				];
+			}
+
+			// Return the post IDs to be deleted.
+			return array_merge( $abandoned_products, $related_attendees );
 		}
 
 		/**
