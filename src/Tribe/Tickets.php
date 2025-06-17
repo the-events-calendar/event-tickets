@@ -4642,20 +4642,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the number of orphaned tickets based on the provider.
 		 *
-		 * @param sting|bool|null $provider The provider slug or false if no provider, leave as null to detect from page. Tribe__Tickets__RSVP, Tribe__Tickets__Tickets
-		 * @param bool            $count    Whether we should return the post IDs (default, false) or the number of posts found (true).
+		 * @param bool $count Whether we should return the post IDs (default, false) or the number of posts found (true).
 		 *
 		 * @return array Either the post IDs of the abandoned posts (default, $count = false) or the number of products and attendees ($count = true).
 		 */
-		public function get_orphaned_products_number( $provider = null, $count = false ) {
+		public function get_orphaned_products( bool $count = false ): array {
 			global $wpdb;
+
+			$provider = static::class;
 
 			if ( $provider === 'Tribe__Tickets__Tickets' ) {
 				$event_meta_key = '_tec_tickets_commerce_event';
 				$product_post_type = 'tec_tc_ticket';
 				$product_meta_key = '_tec_tickets_commerce_ticket';
 			}
-			else { // ( $provider === 'Tribe__Tickets__RSVP' ) {
+			else { // ( $provider === 'rsvp' ) {
 				$event_meta_key = '_tribe_rsvp_for_event';
 				$product_post_type = 'tribe_rsvp_tickets';
 				$product_meta_key = '_tribe_rsvp_product';

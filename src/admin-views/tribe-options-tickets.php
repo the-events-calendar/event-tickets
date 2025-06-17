@@ -330,9 +330,13 @@ $auth_fields = [
 	],
 ];
 
-$tickets                 = new Tribe__Tickets__Tickets();
-$rsvp_orphaned_numbers   = $tickets->get_orphaned_products_number( 'Tribe__Tickets__RSVP', true );
-$ticket_orphaned_numbers = $tickets->get_orphaned_products_number( 'Tribe__Tickets__Tickets', true );
+$tickets                 = tribe( Tribe__Tickets__Tickets::class );
+$rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_products( 'rsvp', true );
+$ticket_orphaned_numbers = tribe( Tribe__Tickets__Tickets::class )->get_orphaned_products( 'tc_ticket', true );
+$url = add_query_arg( [
+	'action' => 'tec_tickets_remove_orphans',
+	'nonce' => wp_create_nonce( 'tec_tickets_remove_orphans' ),
+], admin_url( 'admin-post.php' ) );
 
 // Maintenance fields.
 $maintenance_fields = [
@@ -377,9 +381,9 @@ $maintenance_fields = [
 		                     sprintf(
 								 // Translators: %1$s: Opening anchor tag, %2$s: Plural RSVP label, %3$s: closing anchor tag.
 			                     _x('%1$sTrash orphaned %2$s%3$s', 'Orphaned RSVP maintenance button','event-tickets'),
-			                     '<a href="" class="button">',
+			                     '<a href="' . esc_url( add_query_arg( [ 'provider' => 'rsvp' ], $url ) ) . '" class="button">',
 			                     tribe_get_rsvp_label_plural( 'maintenance_description' ),
-			                     '</a>'
+			                     '</a>',
 		                     ) .
 		                     '</p>',
 	],
@@ -397,7 +401,7 @@ $maintenance_fields = [
 		                     sprintf(
 		                     // Translators: %1$s: Opening anchor tag, %2$s: Plural ticket label, %3$s: closing anchor tag.
 			                     _x('%1$sTrash orphaned %2$s%3$s', 'Orphaned ticket maintenance button','event-tickets'),
-			                     '<a href="" class="button">',
+			                     '<a href="' . esc_url( add_query_arg( [ 'provider' => 'tc_ticket' ], $url ) ) . '" class="button">',
 			                     tribe_get_ticket_label_plural( 'maintenance_description' ),
 			                     '</a>'
 		                     ) .
