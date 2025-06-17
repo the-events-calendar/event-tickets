@@ -151,24 +151,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$paypal_order['debug_id'] = $debug_header;
 		}
 
-		try {
-			$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
-				'gateway_payload'  => $paypal_order,
-				'gateway_order_id' => $paypal_order['id'],
-			] );
+		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
+			'gateway_payload'  => $paypal_order,
+			'gateway_order_id' => $paypal_order['id'],
+		] );
 
-			if ( is_wp_error( $updated ) ) {
-				return $updated;
-			}
-		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
-			return new WP_Error(
-				'tec-tc-insufficient-stock',
-				$e->get_user_friendly_message(),
-				[
-					'stock_errors' => $e->get_stock_errors(),
-					'order_id'     => $order->ID,
-				]
-			);
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
 		}
 
 		// Respond with the ID for Paypal Usage.
