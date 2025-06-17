@@ -60,8 +60,8 @@ class Hooks extends Service_Provider {
 	 * @return void
 	 */
 	public function remove_orphans() {
-		// Bail is not admin.
-		if ( !current_user_can('manage_options')) {
+		// Bail if not admin.
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( 'Not allowed.' );
 		}
 
@@ -94,6 +94,7 @@ class Hooks extends Service_Provider {
 			wp_delete_post( $id );
 		}
 
+		// Return.
 		$url = add_query_arg( 'page', 'tec-tickets-settings', admin_url( 'admin.php' ) );
 
 		wp_redirect( esc_url_raw( $url ) );
