@@ -188,14 +188,25 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// We will attempt to update the order status to the one returned by Stripe.
-		$orders->modify_status(
-			$order->ID,
-			$status->get_slug(),
-			[
-				'gateway_payload'  => $payment_intent,
-				'gateway_order_id' => $payment_intent['id'],
-			]
-		);
+		try {
+			$orders->modify_status(
+				$order->ID,
+				$status->get_slug(),
+				[
+					'gateway_payload'  => $payment_intent,
+					'gateway_order_id' => $payment_intent['id'],
+				]
+			);
+		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+			return new WP_Error(
+				'tec-tc-insufficient-stock',
+				$e->get_user_friendly_message(),
+				[
+					'stock_errors' => $e->get_stock_errors(),
+					'order_id'     => $order->ID,
+				]
+			);
+		}
 
 		$orders->unlock_order( $order->ID );
 
@@ -307,14 +318,25 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], [ 'status' => $status ] );
 		}
 
-		$orders->modify_status(
-			$order->ID,
-			$status->get_slug(),
-			[
-				'gateway_payload'  => $payment_intent,
-				'gateway_order_id' => $payment_intent['id'],
-			]
-		);
+		try {
+			$orders->modify_status(
+				$order->ID,
+				$status->get_slug(),
+				[
+					'gateway_payload'  => $payment_intent,
+					'gateway_order_id' => $payment_intent['id'],
+				]
+			);
+		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+			return new WP_Error(
+				'tec-tc-insufficient-stock',
+				$e->get_user_friendly_message(),
+				[
+					'stock_errors' => $e->get_stock_errors(),
+					'order_id'     => $order->ID,
+				]
+			);
+		}
 
 		if ( ! in_array( $status->get_slug(), [ Completed::SLUG, Pending::SLUG ], true ) ) {
 			return new WP_Error(

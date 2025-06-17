@@ -321,6 +321,24 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		tribe.tickets.debug.log( 'stripe', 'updateOrder', response );
 
+		// Check if the response contains an error (WP_Error format).
+		if ( response && response.code && response.message ) {
+			// Handle insufficient stock errors specifically.
+			if ( response.code === 'tec-tc-insufficient-stock' ) {
+				// Use the existing error display pattern like handlePaymentError does.
+				return obj.handleErrorDisplay( [[ response.code, response.message ]], () => {
+					tribe.tickets.loader.hide( obj.checkoutContainer );
+					obj.submitButton( true );
+				} );
+			}
+			
+			// Handle other API errors using the same pattern
+			return obj.handleErrorDisplay( [[ response.code, response.message ]], () => {
+				tribe.tickets.loader.hide( obj.checkoutContainer );
+				obj.submitButton( true );
+			} );
+		}
+
 		return response;
 	};
 

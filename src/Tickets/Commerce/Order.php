@@ -564,8 +564,11 @@ class Order extends Abstract_Order {
 
 		// Add stock validation based on configured status.
 		if ( $this->should_validate_stock_for_transition( $new_status, $order_id ) ) {
-			if ( ! $this->validate_stock_availability( $order_id ) ) {
-				return false;
+			try {
+				$this->validate_stock_availability( $order_id );
+			} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+				// Throw the exception to be handled by the calling code.
+				throw $e;
 			}
 		}
 
@@ -654,7 +657,8 @@ class Order extends Abstract_Order {
 			 */
 			do_action( 'tec_tickets_commerce_stock_validation_failed', $validation_errors, $order_id );
 			
-			return false;
+			// Throw an exception.
+			throw new \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception( $validation_errors );
 		}
 		
 		return true;
