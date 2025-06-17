@@ -266,12 +266,12 @@ export const filterButtonIsDisabled = ( isDisabled, state, ownProps ) => {
 
 	const store = select( storeName );
 
-	if ( ! store.isUsingAssignedSeating() || ! store.isLayoutLocked() ) {
+	if ( ! store.isUsingAssignedSeating( ownProps.clientId ) || ! store.isLayoutLocked() ) {
 		return isDisabled;
 	}
 
 	if ( ! store.getCurrentLayoutId() ) {
-		return true;
+		return isDisabled;
 	}
 
 	if ( ! store.getTicketSeatType( ownProps.clientId ) ) {
