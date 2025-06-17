@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix an issue where seating timer was getting interrupted during checkout. [ET-2519]
