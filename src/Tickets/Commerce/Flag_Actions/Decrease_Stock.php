@@ -105,6 +105,10 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+			if ( $this->is_rsvp( $item ) && $item['extra']['order_status'] === 'no' ) {
+				continue;
+			}
+
 			if ( ! $ticket->manage_stock() ) {
 				continue;
 			}

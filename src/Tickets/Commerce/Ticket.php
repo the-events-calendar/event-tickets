@@ -197,15 +197,6 @@ class Ticket extends Ticket_Data {
 	public static $sale_price_end_date_key = '_sale_price_end_date';
 
 	/**
-	 * Meta key that holds the "not going" option visibility status.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public $show_not_going = '_tribe_ticket_show_not_going';
-
-	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
 	 * @since 5.2.3
@@ -401,10 +392,6 @@ class Ticket extends Ticket_Data {
 		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
-
-		//@todo use hooks for this"
-		$not_going = get_post_meta( $ticket_id, $this->show_not_going, true );
-		$return->show_not_going              = get_post_meta( $ticket_id, $this->show_not_going, true );
 
 		$return->setType( get_post_meta( $ticket_id, '_type', true ) );
 
@@ -841,20 +828,6 @@ class Ticket extends Ticket_Data {
 		 * @param string        $class    Commerce engine class
 		 */
 		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
-
-		//@todo - use the hooks to add this
-		//if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
-			$show_not_going = 'no';
-
-			if ( isset( $raw_data['tec_tickets_rsvp_enable_cannot_go'] ) ) {
-				$show_not_going = $raw_data['tec_tickets_rsvp_enable_cannot_go'];
-			}
-
-			$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
-			update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
-		//}
-
-
 
 		return $ticket->ID;
 	}
