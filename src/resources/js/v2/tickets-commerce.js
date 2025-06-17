@@ -310,10 +310,11 @@ window.tribe.tickets.commerce = {};
 	 * @since 5.22.0
 	 */
 	obj.disableInterruption = () => {
-		const setInterruptable = window.tec.tickets?.seating?.frontend?.session?.setIsInterruptable;
-		if ( 'function' === typeof setInterruptable ) {
-			setInterruptable( false );
-		}
+		window.wp.hooks.addFilter(
+			'tec.tickets.seating.frontend.session.isInterruptable',
+			'tec.ticketsCommerce.coupons',
+			() => false
+		);
 	};
 
 	/**
