@@ -562,7 +562,102 @@ class Order extends Abstract_Order {
 
 		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
 
+		// Add stock validation based on configured status.
+		if ( $this->should_validate_stock_for_transition( $new_status, $order_id ) ) {
+			if ( ! $this->validate_stock_availability( $order_id ) ) {
+				return false;
+			}
+		}
+
 		return $current_status->can_change_to( $new_status );
+	}
+
+	/**
+	 * Determines if stock validation should occur for this status transition.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface $new_status The status being transitioned to.
+	 * @param int              $order_id   The order ID.
+	 *
+	 * @return bool
+	 */
+	private function should_validate_stock_for_transition( Status_Interface $new_status, int $order_id ): bool {
+		// Get the configured stock handling status.
+		$stock_handling_status = tribe( Status\Status_Handler::class )->get_inventory_decrease_status();
+		
+		// Check if the new status is the one configured for stock decrease.
+		if ( $new_status->get_slug() !== $stock_handling_status->get_slug() ) {
+			return false;
+		}
+		
+		// Additional check: ensure this status actually has the decrease_stock flag.
+		return $new_status->has_flags( ['decrease_stock'], 'AND' );
+	}
+
+	/**
+	 * Validates that sufficient stock is available for all items in an order.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID to validate.
+	 *
+	 * @return bool True if stock is available, false if not.
+	 */
+	private function validate_stock_availability( int $order_id ): bool {
+		$order = tec_tc_get_order( $order_id );
+		
+		if ( empty( $order->items ) ) {
+			return true;
+		}
+		
+		$validation_errors = [];
+		
+		foreach ( $order->items as $item ) {
+			// Skip if the item is not a ticket.
+			if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
+				continue;
+			}
+			
+			// Skip if the ticket is not found.
+			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			if ( null === $ticket ) {
+				continue;
+			}
+			
+			// Skip if the ticket is unlimited.
+			if ( ! $ticket->manage_stock() ) {
+				continue;
+			}
+			
+			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
+			$available_stock = $ticket->stock();
+			
+			if ( $available_stock < $requested_quantity ) {
+				$validation_errors[] = [
+					'ticket_id' => $ticket->ID,
+					'ticket_name' => $ticket->name,
+					'requested' => $requested_quantity,
+					'available' => $available_stock,
+				];
+			}
+		}
+		
+		if ( ! empty( $validation_errors ) ) {
+			/**
+			 * Fires when stock validation fails during order status transition.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $validation_errors Array of stock validation errors.
+			 * @param int   $order_id         The order ID.
+			 */
+			do_action( 'tec_tickets_commerce_stock_validation_failed', $validation_errors, $order_id );
+			
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
