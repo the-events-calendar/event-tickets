@@ -24,10 +24,10 @@ use TEC\Tickets\Commerce\Success;
 use Tribe__Tickets__Tickets_View;
 use Tribe__Tickets__Ticket_Object;
 use Tribe__Utils__Array;
+use Tribe__Tickets__Editor__Blocks__Rsvp as RSVP_Block;
+use Tribe__Tickets__Editor__Template as Template;
 
-use WP_Error;
 use WP_REST_Request;
-use WP_REST_Response;
 use WP_REST_Server;
 
 
@@ -66,11 +66,31 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	protected $module;
 
 	/**
+	 * RSVP blocks editor instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var RSVP_Block
+	 */
+	protected $blocks_rsvp;
+
+	/**
+	 * Tickets template renderer instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template
+	 */
+	protected $template;
+
+	/**
 	 * Class constructor
 	 */
-	public function __construct() {
+	public function __construct( RSVP_Block $block, Template $template ) {
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
-		$this->module = tribe( Module::class );
+		$this->module       = tribe( Module::class );
+		$this->blocks_rsvp  = $block;
+		$this->template     = $template;
 	}
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -341,13 +361,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return '';
 		}
 
-		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
-		//@todo move to constructor
-		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
-
-		/** @var \Tribe__Tickets__Editor__Template $template */
-		//@todo move to constructor
-		$template = tribe( 'tickets.editor.template' );
 
 		$ticket = $this->module->get_ticket( $post_id, $ticket_id );
 
@@ -365,7 +378,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'step'       => $step,
 			'must_login' => ! is_user_logged_in() && $this->module->login_required(),
 			'login_url'  => tribe( Checkout::class )->get_login_url(),
-			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
+			'threshold'  => $this->blocks_rsvp->get_threshold( $post_id ),
 			'going'      => tribe_get_request_var( 'going', 'yes' ),
 			'attendees'  => [],
 		];
@@ -466,10 +479,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$args['opt_in_toggle_hidden'] = $hide_attendee_list_optout;
 
 		// Add the rendering attributes into global context.
-		$template->add_template_globals( $args );
+		$this->template->add_template_globals( $args );
 
-		$html  = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
-		$html .= $template->template( 'v2/commerce/rsvp/content', $args, false );
+		$html  = $this->template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
+		$html .= $this->template->template( 'v2/commerce/rsvp/content', $args, false );
 
 		return $html;
 	}
