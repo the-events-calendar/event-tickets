@@ -1,4 +1,15 @@
 <?php
+/**
+ * Flag Action for validating stock availability before order completion.
+ *
+ * This file contains the flag action that validates ticket stock availability
+ * before any stock decrease operations, preventing overselling by running with
+ * higher priority than the Decrease_Stock action.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Flag_Actions
+ */
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
@@ -24,21 +35,33 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 	use Is_Ticket;
 
 	/**
-	 * {@inheritDoc}
+	 * Which flags this action should be triggered on.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
 	 */
 	protected $flags = [
 		'decrease_stock',
 	];
 
 	/**
-	 * {@inheritDoc}
+	 * Which post types this action should be triggered on.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
 	 */
 	protected $post_types = [
 		Order::POSTTYPE,
 	];
 
 	/**
-	 * {@inheritDoc}
+	 * Priority for this action. Higher priority runs first.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
 	 */
 	protected $priority = 5; // Higher priority than Decrease_Stock (10) to prevent overselling.
 
@@ -67,12 +90,12 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 			}
 			
 			$requested_quantity = (int) Arr::get( $item, 'quantity', 1 );
-			$available_stock = $ticket->stock();
+			$available_stock    = $ticket->stock();
 			
 			if ( $available_stock < $requested_quantity ) {
 				$insufficient_stock_items[] = [
-					'item' => $item,
-					'ticket' => $ticket,
+					'item'      => $item,
+					'ticket'    => $ticket, 
 					'requested' => $requested_quantity,
 					'available' => $available_stock,
 				];
@@ -140,11 +163,11 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 			'error',
 			'Overselling attempt detected',
 			[
-				'source'      => 'tickets-commerce-stock-validation',
-				'order_id'    => $order->ID,
-				'order_hash'  => $order->hash ?? '',
-				'gateway'     => $order->gateway ?? '',
-				'tickets'     => $ticket_details,
+				'source'     => 'tickets-commerce-stock-validation',
+				'order_id'   => $order->ID,
+				'order_hash' => $order->hash ?? '',
+				'gateway'    => $order->gateway ?? '',
+				'tickets'    => $ticket_details,
 			]
 		);
 	}
@@ -217,9 +240,13 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 		$current_status = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 		
 		if ( $current_status->can_change_to( $refund_status ) ) {
-			( new Order() )->modify_status( $order->ID, $refund_status->get_slug(), [
-				'refund_reason' => __( 'Automatic refund due to insufficient stock', 'event-tickets' ),
-			] );
+			( new Order() )->modify_status( 
+				$order->ID, 
+				$refund_status->get_slug(), 
+				[
+					'refund_reason' => __( 'Automatic refund due to insufficient stock', 'event-tickets' ),
+				] 
+			);
 		}
 	}
 } 

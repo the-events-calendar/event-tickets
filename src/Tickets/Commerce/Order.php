@@ -595,7 +595,7 @@ class Order extends Abstract_Order {
 		}
 		
 		// Additional check: ensure this status actually has the decrease_stock flag.
-		return $new_status->has_flags( ['decrease_stock'], 'AND' );
+		return $new_status->has_flags( [ 'decrease_stock' ], 'AND' );
 	}
 
 	/**
@@ -605,7 +605,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @param int $order_id The order ID to validate.
 	 *
-	 * @return bool True if stock is available, false if not.
+	 * @return bool True if stock is available, throws an exception if not.
+	 * @throws \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception When insufficient stock is available.
 	 */
 	private function validate_stock_availability( int $order_id ): bool {
 		$order = tec_tc_get_order( $order_id );
@@ -632,16 +633,15 @@ class Order extends Abstract_Order {
 			if ( ! $ticket->manage_stock() ) {
 				continue;
 			}
-			
 			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
-			$available_stock = $ticket->stock();
+			$available_stock    = $ticket->stock();
 			
 			if ( $available_stock < $requested_quantity ) {
 				$validation_errors[] = [
-					'ticket_id' => $ticket->ID,
-					'ticket_name' => $ticket->name,
-					'requested' => $requested_quantity,
-					'available' => $available_stock,
+					'ticket_id'   => $ticket->ID,
+					'ticket_name' => $ticket->name, 
+					'requested'   => $requested_quantity,
+					'available'   => $available_stock,
 				];
 			}
 		}

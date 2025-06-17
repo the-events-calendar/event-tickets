@@ -1,4 +1,14 @@
 <?php
+/**
+ * Exception for handling insufficient stock scenarios during ticket purchases.
+ *
+ * This file defines the custom exception thrown when users attempt to purchase
+ * more tickets than are available, preventing overselling situations.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Exceptions
+ */
 
 namespace TEC\Tickets\Commerce\Exceptions;
 
@@ -68,7 +78,7 @@ class Insufficient_Stock_Exception extends \Exception {
 		foreach ( $this->stock_errors as $error ) {
 			$error_message .= sprintf(
 				/* translators: %1$s: ticket name, %2$d: available quantity, %3$d: requested quantity */
-				__( '• %1$s: Only %2$d available (you requested %3$d)', 'event-tickets' ),
+				__( 'For %1$s: Only %2$d available (you requested %3$d)', 'event-tickets' ),
 				$error['ticket_name'],
 				$error['available'],
 				$error['requested']

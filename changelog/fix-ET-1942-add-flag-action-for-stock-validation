@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Add stock validation checks before order is finalized to avoid overselling edge cases. [ET-1942]

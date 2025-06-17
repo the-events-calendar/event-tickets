@@ -377,9 +377,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		try {
-			$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
-				'gateway_payload' => $paypal_order_response,
-			] );
+			$updated = tribe( Order::class )->modify_status(
+				$order->ID,
+				$status->get_slug(),
+				[
+					'gateway_payload' => $paypal_order_response,
+				]
+			);
 
 			if ( is_wp_error( $updated ) ) {
 				return $updated;
