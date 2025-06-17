@@ -1,8 +1,13 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Fill } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
-import { STORE_NAME } from '../store/constants';
-import { StoreSelectors } from '../types/store';
+import { useDispatch, useSelect } from '@wordpress/data';
+import {
+	TicketName,
+} from '../fields';
+
+type Ticket = {
+	name: string;
+}
 
 /**
  * Renders the ticket fields in the Classy editor.
@@ -14,20 +19,35 @@ import { StoreSelectors } from '../types/store';
  */
 export default function renderFields( fields: React.ReactNode | null ): React.ReactNode {
 
-	// todo: Add post type check if needed.
+	// todo: Add post type check?
 
+	const meta = useSelect( ( select ) => {
+		// @ts-ignore
+		return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+	}, [] );
+
+	// todo: Use the correct format/meta for ticket data.
+	const ticketMeta: Ticket = meta?.ticket || { name: '' };
+
+	const { editPost } = useDispatch( 'core/editor' );
+
+	const [ ticketName, setTicketName ] = useState( ticketMeta.name );
+
+	// todo: the ticket fields need to be rendered per ticket, in a modal.
+	// todo: Display of the tickets has a different format when not editing.
 	return (
 		<Fragment>
 			{ /* Render the fields passed to this function first. */ }
 			{ fields }
 
 			{ /* Portal-render the fields into the Classy form. */ }
-			<Fill name="tec.classy.fields.before">
-				<p>Hello from Event Tickets!</p>
-			</Fill>
-
 			<Fill name="tec.classy.fields.tickets">
-				<p>Hello from Ticket Fields!</p>
+
+				<TicketName
+					onChange={ ( value ) => { setTicketName( value ); } }
+					value={ ticketName }
+				/>
+
 			</Fill>
 
 		</Fragment>
