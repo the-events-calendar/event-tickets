@@ -4,6 +4,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	TicketName,
 	TicketDescription,
+	TicketPrice,
 } from '../fields';
 
 type Ticket = {
@@ -35,6 +36,7 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 
 	const [ ticketName, setTicketName ] = useState( ticketMeta.name );
 	const [ ticketDescription, setTicketDescription ] = useState( ticketMeta.description || '' );
+	const [ ticketPrice, setTicketPrice ] = useState( '' );
 
 	// todo: the ticket fields need to be rendered per ticket, in a modal.
 	// todo: Display of the tickets has a different format when not editing.
@@ -54,6 +56,11 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 				<TicketDescription
 					onChange={ ( value ) => { setTicketDescription( value ); } }
 					value={ ticketDescription }
+				/>
+
+				<TicketPrice
+					onChange={ (value ) => { setTicketPrice( value ); } }
+					value={ ticketPrice }
 				/>
 
 			</Fill>
