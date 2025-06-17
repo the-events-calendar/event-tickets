@@ -14,7 +14,7 @@ import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
 import { formatWithCurrency } from '../../currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
-import { start as startTimer, reset as resetTimer } from '../../frontend/session';
+import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session';
 import './filters';
 
 const {

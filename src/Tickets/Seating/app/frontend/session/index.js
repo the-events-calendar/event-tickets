@@ -750,6 +750,7 @@ export function setTargetDom( targetDocument ) {
  * @return {void} The timer is synced.
  */
 export async function syncOnLoad() {
+	console.log('syncOnLoad called');
 	const syncTimerElements = Array.from( getTimerElements() ).filter( ( syncTimerElement ) => {
 		return 'syncOnLoad' in syncTimerElement.dataset;
 	} );
