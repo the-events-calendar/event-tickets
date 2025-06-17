@@ -81,7 +81,7 @@ class Hooks extends Service_Provider {
 		if ( $provider === 'rsvp' ) {
 			$ids = Tribe__Tickets__RSVP::get_orphaned_products( false );
 		} elseif ( $provider === 'tc_ticket' ) {
-			$ids = Tribe__Tickets__Tickets::get_orphaned_products( false );
+			$ids = \TEC\Tickets\Commerce\Module::get_orphaned_products( false );
 		}
 
 		// Bail if no post IDs.

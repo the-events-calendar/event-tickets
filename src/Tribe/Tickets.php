@@ -4651,15 +4651,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$provider = static::class;
 
-			if ( $provider === 'Tribe__Tickets__Tickets' ) {
-				$event_meta_key = '_tec_tickets_commerce_event';
-				$product_post_type = 'tec_tc_ticket';
-				$product_meta_key = '_tec_tickets_commerce_ticket';
-			}
-			else { // ( $provider === 'rsvp' ) {
-				$event_meta_key = '_tribe_rsvp_for_event';
-				$product_post_type = 'tribe_rsvp_tickets';
-				$product_meta_key = '_tribe_rsvp_product';
+			if ( $provider === 'TEC\Tickets\Commerce\Module' ) {
+				$event_meta_key    = static::ATTENDEE_EVENT_KEY; //'_tec_tickets_commerce_event';
+				$product_post_type = \TEC\Tickets\Commerce\Ticket::POSTTYPE; // $this->ticket_object; //'tec_tc_ticket'
+				$product_meta_key  = static::ATTENDEE_PRODUCT_KEY; // '_tec_tickets_commerce_ticket'
+			} else { // ( $provider === 'rsvp' ) {
+				$event_meta_key    = '_tribe_rsvp_for_event'; //$this->get_event_key();
+				$product_post_type = 'tribe_rsvp_tickets'; //$this->ticket_object;
+				$product_meta_key  = static::ATTENDEE_PRODUCT_KEY; // '_tribe_rsvp_product'
 			}
 
 			// Get the abandoned products.
