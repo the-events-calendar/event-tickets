@@ -12,14 +12,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { AttendeesRegistration as ARElement } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { AttendeesRegistration as ARElement } from '../../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 
 const linkTextAdd = __( '+ Add', 'event-tickets' );
 const linkTextEdit = __( 'Edit', 'event-tickets' );
 
-const noop = ()=>{};
+const noop = () => {};
 
 const AttendeesRegistration = ( {
 	attendeeRegistrationURL,
@@ -30,20 +30,18 @@ const AttendeesRegistration = ( {
 	onClick = noop,
 	onClose = noop,
 	onIframeLoad = noop,
+	fieldInfo
 } ) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
 	return (
 		<ARElement
 			// eslint-disable-next-line no-undef
-			helperText={sprintf(
+			helperText={ sprintf(
 				/* Translators: %s - the singular, lowercase label for a ticket. */
-				__(
-					'Save your %s to enable attendee information fields',
-					'event-tickets'
-				),
+				__( 'Save your %s to enable attendee information fields', 'event-tickets' ),
 				TICKET_LABELS.ticket.singularLowercase
-			)}
+			) }
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }
 			isModalOpen={ isModalOpen }
@@ -56,6 +54,7 @@ const AttendeesRegistration = ( {
 			showHelperText={ ! isCreated }
 			// @todo: @paulmskim shouldCloseOnClickOutside is a fix until we can figure out modal closing issue in WP 5.5.
 			shouldCloseOnClickOutside={ false }
+			fieldInfo = { fieldInfo }
 		/>
 	);
 };

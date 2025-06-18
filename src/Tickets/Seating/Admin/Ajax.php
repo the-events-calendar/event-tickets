@@ -2,7 +2,7 @@
 /**
  * Handles the AJAX requests for the Seating feature.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -33,7 +33,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 /**
  * Class Ajax.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -398,7 +398,7 @@ class Ajax extends Controller_Contract {
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )
-			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
+			->add_localize_script( 'tec.tickets.seating.ajaxData', [ $this, 'get_ajax_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}

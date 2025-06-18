@@ -3,7 +3,7 @@
  * Filters the labels used by the Tickets plugin in  the admin and frontend of the site to suite the Series Passes
  * wording.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -13,7 +13,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 /**
  * Class Labels.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */

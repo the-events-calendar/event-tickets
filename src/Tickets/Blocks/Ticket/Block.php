@@ -2,7 +2,7 @@
 /**
  * Provides the information required to register the Ticket (singular) block server-side.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
@@ -11,11 +11,12 @@ namespace TEC\Tickets\Blocks\Ticket;
 
 use Tribe__Editor__Blocks__Abstract as Abstract_Block;
 use Tribe__Tickets__Main as Tickets_Main;
+use TEC\Common\Asset;
 
 /**
  * Class Block.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks\Ticket;
  */
@@ -86,22 +87,36 @@ class Block extends Abstract_Block {
 	 * @return void
 	 */
 	public function register_editor_scripts() {
-		$plugin = Tickets_Main::instance();
-		$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		// Using WordPress functions to register since we just need to register them.
-		wp_register_script(
+		Asset::add(
 			'tec-tickets-ticket-item-block-editor-script',
-			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor.js",
-			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor', 'tec-common-php-date-formatter' ],
+			'Ticket/editor.js',
 			Tickets_Main::VERSION
-		);
+		)
+			->add_to_group_path( 'et-tickets-blocks' )
+			->set_dependencies(
+				'tribe-tickets-gutenberg-vendor',
+				'tec-common-php-date-formatter',
+				'tribe-common-gutenberg-vendor'
+			)
+			->in_footer()
+			->register();
 
-		wp_register_style(
-			'tec-tickets-ticket-item-block-editor-style',
-			$plugin->plugin_url . "build/Tickets/Blocks/Ticket/editor{$min}.css",
-			[ 'tribe-tickets-gutenberg-main-styles' ],
+		Asset::add(
+			'tec-tickets-ticket-item-block-secondary-editor-style',
+			'Ticket/editor.css',
 			Tickets_Main::VERSION
-		);
+		)
+			->add_to_group_path( 'et-tickets-blocks' )
+			->set_dependencies( 'tribe-tickets-gutenberg-main-styles' )
+			->register();
+
+		Asset::add(
+			'tec-tickets-ticket-item-block-editor-style',
+			'Ticket/style-editor.css',
+			Tickets_Main::VERSION
+		)
+			->add_to_group_path( 'et-tickets-blocks' )
+			->set_dependencies( 'tec-tickets-ticket-item-block-secondary-editor-style' )
+			->register();
 	}
 }

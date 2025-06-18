@@ -2,7 +2,7 @@
 /**
  * Handles the CRUD operations of Series Passes meta.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Meta.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -77,7 +77,7 @@ class Meta {
 	 *
 	 * @param int    $ticket_id The post ID of the Series Pass.
 	 * @param string $meta_key The meta key to update.
-	 * @param        $meta_value The meta value to update.
+	 * @param       $meta_value The meta value to update.
 	 *
 	 * @return void The Series Pass end meta is updated.
 	 */

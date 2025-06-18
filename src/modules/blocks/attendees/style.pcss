@@ -1,7 +1,7 @@
 .tribe-editor__event-attendees__title {
 	align-items: center;
 	display: flex;
-	font-family: 'Helvetica', 'sans-serif';
+	font-family: Helvetica, sans-serif;
 	justify-content: center;
 	max-width: 100%;
 
@@ -10,13 +10,13 @@
 	}
 
 	&--placeholder {
-		color: #333;
-		cursor: text;
 		background-color: transparent;
 		border: 0;
+		color: #333;
+		cursor: text;
 		display: block;
 		font-size: 1.3125rem;
-		font-weight: bold;
+		font-weight: 700;
 		min-height: 50px;
 		min-width: 200px;
 		padding: 5px 0;
@@ -24,14 +24,14 @@
 }
 
 .tribe-editor__event-attendees__title-text {
-	border: 0;
-	padding: 0;
-	margin: 0;
-	color: #fff;
 	background-color: transparent;
+	border: 0;
+	color: #fff;
 	flex: 1;
 	font-size: 1.3125rem;
-	font-weight: normal;
+	font-weight: 400;
+	margin: 0;
+	padding: 0;
 	table-layout: fixed;
 	width: 100%;
 
@@ -39,38 +39,40 @@
 
 		/* extra class to override WP 5.0 styles */
 		.tribe-editor__event-attendees & {
-			font-size: 1.3125rem;
-			min-height: 50px;
 			background-color: #fff;
 			border: 0;
 			color: #333;
-			font-family: 'Helvetica', 'sans-serif';
-			font-weight: bold;
+			font-family: Helvetica, sans-serif;
+			font-size: 1.3125rem;
+			font-weight: 700;
+			max-width: calc(100% - 20px);
+			min-height: 50px;
+			min-width: 200px;
 			overflow: hidden;
 			padding: 5px 0;
-			max-width: calc(100% - 20px);
-			min-width: 200px;
 
 			&:focus {
-				outline: 0;
 				box-shadow: none;
+				outline: 0;
 			}
 		}
 	}
 
 	&--empty {
+
 		input {
-			background-color: #FFF;
-			color: #8D949B;
+			background-color: #fff;
+			color: #8d949b;
 
 			&::placeholder {
-				color: #8D949B;
+				color: #8d949b;
 			}
 		}
 	}
 
 	.tribe-editor__event-attendees__title &,
 	.tribe-editor__event-attendees__title &:focus {
+
 		[data-mce-selected="inline-boundary"] {
 			background: transparent;
 		}
@@ -81,9 +83,9 @@
 	padding-bottom: 20px;
 
 	svg {
-		width: 60px;
-		height: 60px;
 		border-radius: 100%;
+		height: 60px;
 		margin-right: 8px;
+		width: 60px;
 	}
 }

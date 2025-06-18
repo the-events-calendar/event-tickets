@@ -4,8 +4,8 @@
  *
  * @version 5.3.0
  *
- * @since   5.1.10
- * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since 5.1.10
+ * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -14,6 +14,8 @@
  * @var bool                                          $is_merchant_active    [Global] Whether the merchant is active or not.
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
+
+defined( 'ABSPATH' ) || exit;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
@@ -55,3 +57,4 @@ if ( ! empty( $webhook_data['event_types'] ) ) {
 		<?php endforeach; ?>
 	</div>
 </div>
+<?php

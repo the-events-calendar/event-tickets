@@ -9,8 +9,8 @@
  *
  * @link     https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since    5.2.3  enforcing proper currency formatting
- * @since    5.1.9
+ * @since 5.2.3  enforcing proper currency formatting
+ * @since 5.1.9
  *
  * @version  5.2.3
  *
@@ -19,7 +19,6 @@
  * @var string          $provider_id     [Global] The tickets provider class name.
  * @var array[]         $items           [Global] List of Items on the cart to be checked out.
  * @var array[]         $gateways        [Global] An array with the gateways.
- * @var int             $gateways_active [Global] The number of active gateways.
  * @var Value           $total_value     The total value of the cart.
  */
 

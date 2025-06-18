@@ -1,5 +1,5 @@
 .tribe-editor__tickets__container {
-	background-color: #ffffff;
+	background-color: #fff;
 	position: relative;
 
 	&__helper__container {
@@ -10,7 +10,8 @@
 
 		.tribe-editor__notice,
 		.tribe-editor__not-supported {
-			a.helper-link{
+
+			a.helper-link {
 				font-size: var(--tec-font-size-2);
 			}
 		}
@@ -18,33 +19,35 @@
 }
 
 .tribe-editor__tickets--settings-open {
+
 	.tribe-editor__tickets__container {
 		display: none;
 	}
 }
 
 .tribe-editor__tickets__overlay {
-	position: absolute;
+	bottom: 0;
 	left: 0;
+	margin: -14px;
+	position: absolute;
 	right: 0;
 	top: 0;
-	bottom: 0;
-	margin: -14px;
 	z-index: 10;
 }
 
 .tribe-editor__tickets__inner-blocks {
-	visibility: hidden;
 	height: 0;
+	visibility: hidden;
 
 	&--show {
-		visibility: visible;
 		height: auto;
+		visibility: visible;
 	}
 }
 
 .tribe-editor__tickets .editor-inner-blocks .editor-block-list__block {
-	& > .editor-block-list__block-edit:before {
+
+	& > .editor-block-list__block-edit::before {
 		outline: none;
 		transition: none;
 	}
@@ -52,13 +55,14 @@
 	&.is-hovered,
 	&.is-selected {
 
-		& > .editor-block-list__block-edit:before {
+		& > .editor-block-list__block-edit::before {
 			outline: none;
 		}
 	}
 }
 
-.tribe-editor__tickets{
+.tribe-editor__tickets {
+
 	.tickets-heading {
 		font-family: var(--tec-font-family-sans-serif);
 		font-size: var(--tec-font-size-7);
@@ -77,7 +81,7 @@
 		font-weight: var(--tec-font-weight-regular);
 		line-height: var(--tec-line-height-3);
 
-		.helper-link{
+		.helper-link {
 			color: var(--tec-color-link-accent);
 			font-family: var(--tec-font-family-sans-serif);
 			font-size: var(--tec-font-size-3);
@@ -92,17 +96,17 @@
 .tribe-editor__action-dashboard.tribe-editor__tickets__action-dashboard.tribe-common {
 	background: var(--tec-color-background);
 	border-bottom: 1px solid var(--tec-color-border-secondary);
-	border-left: 1px solid var(--tec-color-border-secondary);
-	border-right: 1px solid var(--tec-color-border-secondary);
 	border-bottom-left-radius: var(--tec-border-radius-default);
 	border-bottom-right-radius: var(--tec-border-radius-default);
+	border-left: 1px solid var(--tec-color-border-secondary);
+	border-right: 1px solid var(--tec-color-border-secondary);
 	padding: var(--tec-spacer-5);
 }
 
 .tribe-editor__action-dashboard.tribe-editor__tickets__action-dashboard.tribe-common.tribe-editor__tickets__action-dashboard__no-border-bottom {
+	border-bottom: 0;
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
-	border-bottom: 0;
 
 	&.tribe-editor__action-dashboard__no-top-bottom-paddings {
 		padding-bottom: 0;
@@ -115,6 +119,7 @@
 }
 
 .tribe-editor__title__help-messages {
+
 	.tickets-row-line {
 		padding: var(--tec-spacer-3) 0;
 	}

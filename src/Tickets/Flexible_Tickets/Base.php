@@ -2,7 +2,7 @@
 /**
  * Controls the basic, common, features of the Flexible Tickets project.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -17,7 +17,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
 /**
  * Class Base.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -40,7 +40,7 @@ class Base extends Controller {
 		$this->container->singleton( Repositories\Ticket_Groups::class, Repositories\Ticket_Groups::class );
 		$this->container->singleton( Repositories\Posts_And_Ticket_Groups::class, Repositories\Posts_And_Ticket_Groups::class );
 
-		tribe_asset(
+		tec_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-style',
 			'flexible-tickets.css',

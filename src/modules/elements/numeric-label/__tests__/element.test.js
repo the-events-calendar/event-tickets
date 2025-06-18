@@ -42,7 +42,7 @@ describe( 'NumericLabel', () => {
 		const component = renderer.create(
 			<NumericLabel count={ 0 } singular="Just %d item" fallback={ '' } />,
 		);
-		expect( component.toJSON() ).toBe( '' );
+		expect( component.toJSON() ).toBe( null );
 	} );
 
 	test( 'render with negative number', () => {

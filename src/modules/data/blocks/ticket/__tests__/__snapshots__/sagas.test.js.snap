@@ -95,6 +95,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -115,6 +116,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -135,43 +137,11 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
       "getEditedPostAttribute": [Function],
-    },
-    "fn": [Function],
-  },
-}
-`;
-
-exports[`Ticket Block sagas handleEventStartDateChanges should handle start time changes 1`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "TAKE": Object {
-    "channel": Object {
-      "close": [MockFunction],
-      "name": "",
-      "take": [MockFunction],
-    },
-  },
-}
-`;
-
-exports[`Ticket Block sagas handleTicketMove should handle ticket move 1`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Array [
-        42,
-      ],
-    ],
-    "context": Object {
-      "clearSelectedBlock": [Function],
-      "editPost": [Function],
-      "insertBlocks": [Function],
-      "removeBlocks": [Function],
     },
     "fn": [Function],
   },
@@ -190,6 +160,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -254,6 +225,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -299,6 +271,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -321,6 +294,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -343,6 +317,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -350,343 +325,6 @@ Object {
     },
     "fn": [Function],
   },
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should not sync 1`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
-          "format": [MockFunction],
-          "isSame": [MockFunction],
-          "local": [MockFunction],
-        },
-        "fn": [MockFunction],
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
-          "format": [MockFunction],
-          "isSame": [MockFunction],
-          "local": [MockFunction],
-        },
-        "fn": [MockFunction],
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
-          "format": [MockFunction],
-          "isSame": [MockFunction],
-          "local": [MockFunction],
-        },
-        "fn": [MockFunction],
-      },
-    },
-  ],
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should not sync 2`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
-        "format": [MockFunction],
-        "isSame": [MockFunction],
-        "local": [MockFunction],
-      },
-      "minute",
-    ],
-    "context": Object {
-      "format": [MockFunction],
-      "isSame": [MockFunction],
-      "local": [MockFunction],
-    },
-    "fn": [MockFunction],
-  },
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should not sync 3`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
-        "format": [MockFunction],
-        "isSame": [MockFunction],
-        "local": [MockFunction],
-      },
-      "minute",
-    ],
-    "context": Object {
-      "format": [MockFunction],
-      "isSame": [MockFunction],
-      "local": [MockFunction],
-    },
-    "fn": [MockFunction],
-  },
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 1`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
-          "format": [MockFunction],
-          "isSame": [MockFunction],
-          "local": [MockFunction],
-        },
-        "fn": [MockFunction],
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
-          "format": [MockFunction],
-          "isSame": [MockFunction],
-          "local": [MockFunction],
-        },
-        "fn": [MockFunction],
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
-          "format": [MockFunction],
-          "isSame": [MockFunction],
-          "local": [MockFunction],
-        },
-        "fn": [MockFunction],
-      },
-    },
-  ],
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 2`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
-        "format": [MockFunction],
-        "isSame": [MockFunction],
-        "local": [MockFunction],
-      },
-      "minute",
-    ],
-    "context": Object {
-      "format": [MockFunction],
-      "isSame": [MockFunction],
-      "local": [MockFunction],
-    },
-    "fn": [MockFunction],
-  },
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 3`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
-        "format": [MockFunction],
-        "isSame": [MockFunction],
-        "local": [MockFunction],
-      },
-      "minute",
-    ],
-    "context": Object {
-      "format": [MockFunction],
-      "isSame": [MockFunction],
-      "local": [MockFunction],
-    },
-    "fn": [MockFunction],
-  },
-}
-`;
-
-exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 4`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endDate": "2018-02-02",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endDateInput": "2018-02-02",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_INPUT",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endDateMoment": "2018-02-02",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_MOMENT",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endTime": "02:00:00",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endTimeInput": "02:00:00",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endDate": "2018-02-02",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_END_DATE",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endDateInput": "2018-02-02",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_END_DATE_INPUT",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endDateMoment": "2018-02-02",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endTime": "02:00:00",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_END_TIME",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "endTimeInput": "02:00:00",
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_END_TIME_INPUT",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
-            "clientId": "clientId",
-            "hasChanges": true,
-          },
-          "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
-        },
-        "channel": null,
-      },
-    },
-    Object {
-      "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [
-          "clientId",
-        ],
-        "context": null,
-        "fn": [Function],
-      },
-    },
-  ],
 }
 `;
 
@@ -700,6 +338,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
@@ -720,6 +359,7 @@ Object {
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
       "getBlocks": [Function],
+      "getCurrentPost": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],

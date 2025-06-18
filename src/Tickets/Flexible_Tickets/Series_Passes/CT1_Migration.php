@@ -2,7 +2,7 @@
 /**
  * Handles the integration between Flexible Tickets and the The Events Calendar Custom Tables v1 migration.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_E
 /**
  * Class CT1_Migration.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */

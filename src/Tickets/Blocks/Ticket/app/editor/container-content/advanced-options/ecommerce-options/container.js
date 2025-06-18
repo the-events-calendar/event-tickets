@@ -9,7 +9,7 @@ import includes from 'lodash/includes';
  * Internal dependencies
  */
 import EcommerceOptions from './template';
-import { constants, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { constants, selectors } from '../../../../../../../../modules/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 import { globals } from '@moderntribe/common/utils';
 
@@ -61,7 +61,4 @@ const mapStateToProps = ( state, ownProps ) => {
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps ),
-)( EcommerceOptions );
+export default compose( withStore(), connect( mapStateToProps ) )( EcommerceOptions );

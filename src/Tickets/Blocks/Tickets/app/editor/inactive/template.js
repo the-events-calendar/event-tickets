@@ -13,37 +13,32 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { Card } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { Card } from '../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 
-const getCreateSingleTicketMessage = (postTypeLabel) => (
+const getCreateSingleTicketMessage = ( postTypeLabel ) => (
 	<div className="tickets-row-line">
-		{sprintf(
+		{ sprintf(
 			// Translators: %1$s the plural, lowercase label for a ticket; %2$s is the post type name in human readable form.
 			_x(
-				'Create standard %1$s for this %2$s. ',
+				'Create standard %1$s for this %2$s.',
 				'The message displayed when there are no tickets.',
 				'event-tickets'
 			),
 			TICKET_LABELS.ticket.pluralLowercase,
 			postTypeLabel ? postTypeLabel : ''
-		)}
-		<a
-			className="helper-link"
-			href="https://evnt.is/manage-tickets"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			{sprintf(
+		) }
+		<a className="helper-link" href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">
+			{ sprintf(
 				/* Translators: %s - the singular, lowercase label for a ticket. */
-				__('Learn more about %s management', 'event-tickets'),
+				__( 'Learn more about %s management', 'event-tickets' ),
 				TICKET_LABELS.ticket.singularLowercase
-			)}
+			) }
 		</a>
 	</div>
 );
 
-const getInactiveTicketsMessage = ({
+const getInactiveTicketsMessage = ( {
 	Warning = null,
 	allTicketsFuture = false,
 	allTicketsPast = false,
@@ -52,53 +47,46 @@ const getInactiveTicketsMessage = ({
 	hasRecurrenceRules = false,
 	postTypeLabel = 'post',
 	showWarning = false,
-}) => {
-	if (!canCreateTickets) {
+} ) => {
+	if ( ! canCreateTickets ) {
 		return (
 			<div className="tribe-editor__title__help-messages">
 				<div className="tickets-row-line">
-					{sprintf(
+					{ sprintf(
 						/* Translators: %s - the plural label for a ticket. */
 						__(
 							"There is no ecommerce available. To create %s, you'll need to enable an ecommerce solution.",
 							'event-tickets'
 						),
 						TICKET_LABELS.ticket.pluralLowercase
-					)}
+					) }
 				</div>
 			</div>
 		);
 	}
 
-	if (!hasCreatedTickets) {
-		if (!hasRecurrenceRules) {
+	if ( ! hasCreatedTickets ) {
+		if ( ! hasRecurrenceRules ) {
 			return (
 				<div className="tribe-editor__title__help-messages">
-					{getCreateSingleTicketMessage(postTypeLabel)}
+					{ getCreateSingleTicketMessage( postTypeLabel ) }
 				</div>
 			);
 		}
 
-		return (
-			<div className="tribe-editor__title__help-messages">
-				{showWarning ? <Warning /> : null}
-			</div>
-		);
+		return <div className="tribe-editor__title__help-messages">{ showWarning ? <Warning /> : null }</div>;
 	}
 
-	if (allTicketsPast || allTicketsFuture) {
+	if ( allTicketsPast || allTicketsFuture ) {
 		return (
 			<div className="tribe-editor__title__help-messages">
 				<div className="tickets-row-line">
-					{sprintf(
+					{ sprintf(
 						/* Translators: %1$s - the plural label for a ticket; %2$s - the plural label for a ticket. */
-						__(
-							'There are no active %1$s. Adjust sale duration to make %2$s available',
-							'event-tickets'
-						),
+						__( 'There are no active %1$s. Adjust sale duration to make %2$s available', 'event-tickets' ),
 						TICKET_LABELS.ticket.pluralLowercase,
 						TICKET_LABELS.ticket.pluralLowercase
-					)}
+					) }
 				</div>
 			</div>
 		); // eslint-disable-line max-len
@@ -107,17 +95,17 @@ const getInactiveTicketsMessage = ({
 	return (
 		<div className="tribe-editor__title__help-messages">
 			<div className="tickets-row-line">
-				{sprintf(
+				{ sprintf(
 					/* Translators: %s - the plural label for a ticket. */
-					__('%s are not yet available', 'event-tickets'),
+					__( '%s are not yet available', 'event-tickets' ),
 					TICKET_LABELS.ticket.plural
-				)}
+				) }
 			</div>
 		</div>
 	);
 };
 
-const Inactive = ({
+const Inactive = ( {
 	Warning = null,
 	allTicketsFuture = false,
 	allTicketsPast = false,
@@ -126,7 +114,7 @@ const Inactive = ({
 	hasRecurrenceRules = false,
 	postTypeLabel = 'post',
 	showWarning = false,
-}) => {
+} ) => {
 	/**
 	 * Filters the components injected before the inactive header of the Tickets block.
 	 *
@@ -140,13 +128,10 @@ const Inactive = ({
 	);
 
 	return (
-		<Card
-			className="tribe-editor__card-no-bottom-border"
-			header={TICKET_LABELS.ticket.plural}
-		>
+		<Card className="tribe-editor__card-no-bottom-border" header={ TICKET_LABELS.ticket.plural }>
 			{ injectedComponentsTicketsBeforeHeader }
 			<div className="tickets-description">
-				{getInactiveTicketsMessage({
+				{ getInactiveTicketsMessage( {
 					Warning,
 					allTicketsFuture,
 					allTicketsPast,
@@ -155,7 +140,7 @@ const Inactive = ({
 					hasRecurrenceRules,
 					postTypeLabel,
 					showWarning,
-				})}
+				} ) }
 			</div>
 		</Card>
 	);

@@ -7,7 +7,7 @@
 		background: none;
 		overflow: visible;
 
-		&:before {
+		&::before {
 			content: none;
 		}
 	}
@@ -28,22 +28,22 @@
 	.welcome-panel-column-container {
 		display: grid;
 		gap: unset;
-		grid-template-columns: 25% 50% 25%;
 		grid-template-areas:
 			"first middle last"
 			"extra extra last";
-		margin-top: 0px;
-		padding: 0px;
+		grid-template-columns: 25% 50% 25%;
+		margin-top: 0;
+		padding: 0;
 		position: initial;
 		*zoom: 1;
 
 		@media screen and (max-width: 768px) {
-			grid-template-columns: 1fr;
 			grid-template-areas:
 				"first"
 				"middle"
 				"last"
 				"extra";
+			grid-template-columns: 1fr;
 		}
 	}
 
@@ -62,6 +62,7 @@
 		}
 
 		h3 {
+
 			@media screen and (max-width: 768px) {
 				display: inline-block;
 				padding-left: 15px;
@@ -69,6 +70,7 @@
 		}
 
 		ul {
+
 			@media screen and (max-width: 768px) {
 				padding: 0 15px;
 			}
@@ -85,6 +87,7 @@
 		}
 
 		.tribe-event-meta-note {
+
 			div {
 				padding: 0 0 0 15px;
 
@@ -107,6 +110,7 @@
 		grid-area: middle;
 
 		> div {
+
 			@media screen and (max-width: 768px) {
 				padding: 0 15px;
 			}
@@ -117,6 +121,7 @@
 		display: inline-block;
 		grid-area: last;
 		width: auto;
+
 		@media screen and (max-width: 768px) {
 			width: 100%;
 		}
@@ -124,6 +129,7 @@
 }
 
 .tribe-report-page {
+
 	.welcome-panel-content h3 {
 		margin-top: 0;
 	}
@@ -143,6 +149,7 @@
 	}
 
 	.tickets_checked {
+
 		td {
 			opacity: 0.6;
 		}
@@ -170,6 +177,7 @@
 	}
 
 	.cancelled {
+
 		.check_in {
 			font-style: normal;
 		}
@@ -180,7 +188,7 @@
 		width: 70px;
 	}
 
-	td[class*='column'] {
+	td[class*="column"] {
 		word-break: break-word;
 	}
 
@@ -199,6 +207,7 @@
 	}
 
 	.attendees-actions {
+
 		input.print,
 		a.email,
 		a.export {
@@ -209,6 +218,7 @@
 }
 
 .tribe-attendees-email {
+
 	.tribe-attendees-email-message {
 		float: left;
 		margin: 0;
@@ -220,6 +230,7 @@
 }
 
 .tribe-attendees-email-message {
+
 	ul {
 		font-size: 13px;
 		line-height: 1.5;
@@ -232,6 +243,7 @@
 	}
 
 	@media screen and (max-width: 782px) {
+
 		.notice-dismiss {
 			padding: 9px;
 		}
@@ -253,7 +265,7 @@
 	}
 
 	select,
-	input[type='text'] {
+	input[type="text"] {
 		width: 285px;
 	}
 
@@ -269,6 +281,7 @@
 	font-size: 14px;
 
 	td.check_in {
+
 		.delete {
 			text-align: center;
 		}
@@ -276,6 +289,7 @@
 }
 
 .welcome-panel {
+
 	.welcome-panel-content {
 		margin: 0;
 		*zoom: 1;
@@ -293,6 +307,7 @@
  * are unfortunately needed to override Thickbox's inline styles.
  */
 @media screen and (max-width: 782px) {
+
 	#TB_window {
 		height: auto !important;
 	}
@@ -312,6 +327,7 @@
  * are unfortunately needed to override Thickbox's inline styles.
  */
 @media screen and (max-width: 440px) {
+
 	#TB_window {
 		left: 0 !important;
 		margin-left: 0 !important;
@@ -324,7 +340,9 @@
 }
 
 table.orders {
+
 	tr {
+
 		&.refunded,
 		&.denied,
 		&.pending {
@@ -334,27 +352,35 @@ table.orders {
 }
 
 .tec-admin__upsell-tec-tickets-manual-attendees {
+
 	.tec-admin__upsell-content {
-		padding: 0px;
+		padding: 0;
 	}
+
 	.tec-admin__upsell-text {
 		color: #1d2327;
 	}
 }
 
 .tec-tc-report-page {
+
 	p.search-box {
 		display: flex;
 	}
-	select, input {
+
+	select,
+ input {
 		margin: 0 5px;
 	}
 
 	@media screen and (max-width: 768px) {
+
 		p.search-box {
 			flex-direction: column;
 		}
-		select, input {
+
+		select,
+ input {
 			margin: 5px 0;
 		}
 	}
@@ -377,7 +403,7 @@ table.orders {
 }
 
 .tec-tickets__admin-orders-report-type-heading-border {
-	border-bottom: 1px solid #DCDCDE;
+	border-bottom: 1px solid #dcdcde;
 	flex: 1;
 	height: 1px;
 }
@@ -469,7 +495,7 @@ h3.tec-tickets__admin-orders-report-overview-title {
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-label {
-	color: #000000;
+	color: #000;
 	font-size: var(--tec-font-size-2);
 	font-weight: var(--tec-font-weight-bold);
 	padding-right: var(--tec-spacer-1);
@@ -484,19 +510,19 @@ h3.tec-tickets__admin-orders-report-overview-title {
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-icon--default {
-	background-image: url( '../icons/icon-ticket-left.svg' );
+	background-image: url(../icons/icon-ticket-left.svg);
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-icon--rsvp {
-	background-image: url( '../icons/icon-rsvp-left.svg' );
+	background-image: url(../icons/icon-rsvp-left.svg);
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-icon--series_pass {
-	background-image: url( '../icons/icon-pass-left.svg' );
+	background-image: url(../icons/icon-pass-left.svg);
 }
 
 .tec-tickets__admin-orders-report-overview--border {
-	border-bottom: 1px solid #DCDCDE;
+	border-bottom: 1px solid #dcdcde;
 	flex: 1;
 	height: 1px;
 }
@@ -518,7 +544,7 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name {
-	color: #000000;
+	color: #000;
 	width: 50%;
 }
 
@@ -531,11 +557,11 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-totals {
-	border-top: 1px solid #DCDCDE;
+	border-top: 1px solid #dcdcde;
 	display: flex;
 	justify-content: space-between;
-	padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5) !important;
 	margin: var(--tec-spacer-0) var(--tec-spacer-3) 0;
+	padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5) !important;
 
 	@media (--viewport-medium) {
 		margin: var(--tec-spacer-0) 0 0;
@@ -543,7 +569,7 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-totals-title {
-	color: #1D2327;
+	color: #1d2327;
 	font-size: var(--tec-font-size-2);
 	font-weight: var(--tec-font-weight-bold);
 	margin-right: var(--tec-spacer-0);
@@ -565,16 +591,17 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 .tec-tickets__admin-orders-report__sales-overview__list__item {
 	align-items: center;
 	display: flex;
+	font-size: var(--tec-font-size-2);
 	justify-content: space-between;
 	margin-bottom: var(--tec-spacer-1);
-	font-size: var(--tec-font-size-2);
 }
 
 .tec-tickets__admin-orders-report__sales-overview__total {
 	margin-top: var(--tec-spacer-1);
+
 	.tec-tickets__admin-orders-report__sales-overview__list__item-label {
-		font-weight: var(--tec-font-weight-bold);
 		font-size: var(--tec-font-size-2);
+		font-weight: var(--tec-font-weight-bold);
 		line-height: var(--tec-line-height-2);
 	}
 }

@@ -17,10 +17,4 @@ describe( 'WarningButton', () => {
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
-
-	test( 'component has class', () => {
-		const component = mount( <WarningButton icon="no">Warning</WarningButton> );
-		const button = component.find( Button );
-		expect( button.hasClass( 'tribe-editor__warning-button' ) ).toBe( true );
-	} );
 } );
