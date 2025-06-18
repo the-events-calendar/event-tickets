@@ -197,7 +197,6 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * redirect them back to the actual page that we are using to setup the plugins integration.
 	 *
 	 * @depreacated 5.6.0
-	 * @link        https://moderntribe.atlassian.net/browse/TEC-3218
 	 *
 	 * @since 4.11.5
 	 *
