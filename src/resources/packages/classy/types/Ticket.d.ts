@@ -4,11 +4,11 @@ import { Fee } from './Fee';
 export type Ticket = {
 	name: string;
 	description: string;
-	price: number;
+	price: string;
 	hasSalePrice: boolean;
-	salePrice: number;
+	salePrice: string;
 	capacityType: Capacity;
-	capacity: number;
+	capacity?: number;
 	selectedFees: Fee[];
 	displayedFees: Fee[];
 };
