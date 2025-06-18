@@ -4652,6 +4652,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$provider = static::class;
 			$provider_obj = tribe( $provider );
 
+			$number_of_orphaned_orders = 0;
+			$orphaned_posts = [];
+
+			// If it's Tickets Commerce, get orphaned orders.
+			if ( $provider === 'TEC\Tickets\Commerce\Module' ) {
+				$orphaned_orders = $this->query_for_orphaned_posts( '_tec_tc_order_events_in_order', 'tec_tc_order' );
+				$number_of_orphaned_orders = count( $orphaned_orders );
+
+				$orphaned_posts = array_merge( $orphaned_posts, $orphaned_orders );
+			}
+
+			// Get the orphaned products.
 			// Meta key connecting the ticket/attendee to the event. '_tribe_rsvp_for_event', '_tec_tickets_commerce_event'
 			$event_meta_key    = $provider_obj->get_event_key();
 			// Post type of the ticket product. 'tribe_rsvp_tickets', 'tec_tc_ticket'
@@ -4659,7 +4671,44 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Meta key connecting the attendee to the RSVP/ticket product. '_tribe_rsvp_product', '_tec_tickets_commerce_ticket'
 			$product_meta_key  = static::ATTENDEE_PRODUCT_KEY;
 
-			// Get the abandoned products.
+			$orphaned_products = $this->query_for_orphaned_posts( $event_meta_key, $product_post_type );
+
+			// Prepare the results for use in the next query.
+			$ids = "'" . implode( "', '", $orphaned_products ) . "'";
+
+			// Get the attendees for each abandoned product.
+			$orphaned_attendees = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT post_id FROM {$wpdb->postmeta}
+                    WHERE meta_value IN ({$ids}) AND meta_key = %s",
+					$product_meta_key
+				)
+			);
+
+			// If counting, return the numbers.
+			if ( $count ) {
+				return [
+					'orders'    => $number_of_orphaned_orders,
+					'products'  => count( $orphaned_products ),
+					'attendees' => count( $orphaned_attendees ),
+				];
+			}
+
+			// Return the post IDs to be deleted.
+			return array_merge( $orphaned_posts, $orphaned_products, $orphaned_attendees );
+		}
+
+		/**
+		 * The query to get the orphaned entries of the given post type.
+		 *
+		 * @param string $meta_key  The meta key linking the post type to the event.
+		 * @param string $post_type The post type.
+		 *
+		 * @return array
+		 */
+		public function query_for_orphaned_posts( $meta_key, $post_type ) {
+			global $wpdb;
+
 			$query = $wpdb->prepare(
 				"SELECT pm.post_id
 		FROM {$wpdb->postmeta} AS pm
@@ -4668,53 +4717,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		WHERE pm.meta_key = %s
 	  	AND p1.post_type = %s
 		AND p2.ID IS NULL;",
-				$event_meta_key,
-				$product_post_type
+				$meta_key,
+				$post_type
 			);
 
-			$abandoned_products = $wpdb->get_col( $query );
-
-			// Return 0 if there are no abandoned products.
-			if ( empty( $abandoned_products ) ) {
-				return [
-					'products'  => 0,
-					'attendees' => 0,
-				];
-			}
-
-			$number_of_abandoned_products = count( $abandoned_products );
-
-			$related_attendees = [];
-			$number_of_related_attendees = 0;
-
-			// Get the attendees for each abandoned product.
-			foreach ( $abandoned_products as $post_id ) {
-				$attendees = $wpdb->get_col(
-					$wpdb->prepare(
-						"SELECT post_id FROM {$wpdb->postmeta}
-                		WHERE meta_value = %d AND meta_key = %s",
-						$post_id,
-						$product_meta_key
-					)
-				);
-
-				// Merge the found attendees.
-				if ( ! empty( $attendees ) ) {
-					$related_attendees = array_merge( $related_attendees, $attendees );
-					$number_of_related_attendees += count( $attendees );
-				}
-			}
-
-			// If counting, return the numbers.
-			if ( $count ) {
-				return [
-					'products'  => $number_of_abandoned_products,
-					'attendees' => $number_of_related_attendees,
-				];
-			}
-
-			// Return the post IDs to be deleted.
-			return array_merge( $abandoned_products, $related_attendees );
+			return $wpdb->get_col( $query );
 		}
 
 		/**

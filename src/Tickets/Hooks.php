@@ -89,6 +89,7 @@ class Hooks extends Service_Provider {
 			return;
 		}
 
+		//wp_die( print_r( $ids, true ) );
 		// Delete posts.
 		foreach ( $ids as $id ) {
 			wp_delete_post( $id );
