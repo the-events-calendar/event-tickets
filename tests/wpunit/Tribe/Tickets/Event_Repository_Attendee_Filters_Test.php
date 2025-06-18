@@ -4,6 +4,7 @@ namespace Tribe\Tickets;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Settings;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Tickets_Commerce_Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
@@ -11,6 +12,8 @@ use Tribe__Tickets__Data_API as Data_API;
 class Event_Repository_Attendee_Filters_Test extends WPTestCase {
 	use Tickets_Commerce_Ticket_Maker;
 	use Attendee_Maker;
+
+	protected $original_env_var;
 
 	private function given_an_event_without_attendees(): int {
 		static $hash = 1;
@@ -40,24 +43,15 @@ class Event_Repository_Attendee_Filters_Test extends WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		// Ensure the PayPal module is active.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
-
-			return $modules;
-		} );
-
 		// Ensure the Tickets Commerce module is active.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+		$this->original_env_var = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+	}
 
-			return $modules;
-		} );
+	public function tearDown(): void {
+		parent::tearDown();
 
-		// Reset Data_API object, so it sees PayPal.
-		tribe_singleton( 'tickets.data_api', new Data_API );
+		putenv( 'TEC_TICKETS_COMMERCE=' . $this->original_env_var );
 	}
 
 	public function test_filter_events_by_has_attendees(): void {

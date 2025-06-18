@@ -224,7 +224,7 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		 * post type and search keywords, if set.
 		 */
 		function populate_post_choices() {
-			// Don't bombard the server with queries if an update is already in progress
+			// Don't bombard the server with queries if an update is already in progress.
 			if ( populating ) {
 				return;
 			}
@@ -246,22 +246,22 @@ var tribe_move_tickets = tribe_move_tickets || {};
 					return;
 				}
 
-				// Clear the existing list
+				// Clear the existing list.
 				$post_choices.html( '' );
 				let total_posts = 0;
 
 				for ( const key in response.data.posts ) {
-					const post_id = parseInt( key, 10 );
-					const title = response.data.posts[ key ];
+					const post_id = parseInt( response.data.posts[ key ] );
+					const title = key;
 					total_posts++;
 
 					$post_choices.append(
-						'<label> <input type="radio" value="' + post_id + '" name="post-choice">' + title + '</label>'
+						`<label> <input type="radio" value="${post_id}" name="post-choice">${title}</label>`
 					);
 				}
 
 				if ( ! total_posts ) {
-					$post_choices.append( '<label>' + tribe_move_tickets_data.no_posts_found + '</label>' );
+					$post_choices.append( `<label>${tribe_move_tickets_data.no_posts_found}</label>` );
 				}
 
 				populating = false;
