@@ -98,7 +98,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		 *
 		 * @since 4.7
 		 *
-		 * @param  array $revenue_generating_order_statuses
+		 * @param array $revenue_generating_order_statuses
 		 */
 		return apply_filters( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', $revenue_generating_order_statuses );
 	}
@@ -389,9 +389,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $ID int an ID for a tpp product
+	 * @param int $ID An ID for a tpp product
 	 *
-	 * @return array an array of order objects
+	 * @return array An array of order objects
 	 */
 	public function get_all_orders_by_product_id( $ID ) {
 		/** @var Tribe__Tickets__Status__Manager $status_mgr */

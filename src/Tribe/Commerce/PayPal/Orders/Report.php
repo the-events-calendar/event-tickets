@@ -78,7 +78,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since 4.7
 	 *
 	 * @param array $actions
-	 * @param       $post
+	 * @param      $post
 	 *
 	 * @return array
 	 */
@@ -183,7 +183,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $slugs
+	 * @param array $slugs The slugs.
 	 *
 	 * @return array
 	 */
@@ -210,7 +210,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $admin_title
+	 * @param string $admin_title The admin title.
 	 *
 	 *
 	 * @return string

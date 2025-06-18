@@ -59,6 +59,7 @@ class Notifications extends Integration_Abstract {
 	 */
 	public function add_allowed_pages( $allowed ) {
 		$allowed[] = 'tickets_page_tec-tickets-settings';
+		$allowed[] = 'tickets_page_tickets-setup';
 		return $allowed;
 	}
 

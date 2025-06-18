@@ -19,8 +19,8 @@
 /**
  * Set the default Full Name for the RSVP form
  *
- * @param string
- * @param Tribe__Tickets__Editor__Template $this
+ * @param string                            $name    The name value.
+ * @param Tribe__Tickets__Editor__Template $template The template object.
  *
  * @since 4.9
  */

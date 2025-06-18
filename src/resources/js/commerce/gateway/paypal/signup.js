@@ -6,7 +6,7 @@
  *
  * @type   {Object}
  */
-tribe.tickets = tribe.tickets || {};
+window.tribe.tickets = window.tribe.tickets || {};
 
 /**
  * Path to this script in the global tribe Object.
@@ -15,7 +15,7 @@ tribe.tickets = tribe.tickets || {};
  *
  * @type   {Object}
  */
-tribe.tickets.commerce = tribe.tickets.commerce || {};
+window.tribe.tickets.commerce = window.tribe.tickets.commerce || {};
 
 /**
  * Path to this script in the global tribe Object.
@@ -24,7 +24,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
+window.tribe.tickets.commerce.gateway = window.tribe.tickets.commerce.gateway || {};
 
 /**
  * Path to this script in the global tribe Object.
@@ -33,7 +33,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.paypal = tribe.tickets.commerce.gateway.paypal || {};
+window.tribe.tickets.commerce.gateway.paypal = window.tribe.tickets.commerce.gateway.paypal || {};
 
 /**
  * This script Object for public usage of the methods.
@@ -42,22 +42,20 @@ tribe.tickets.commerce.gateway.paypal = tribe.tickets.commerce.gateway.paypal ||
  *
  * @type   {Object}
  */
-tribe.tickets.commerce.gateway.paypal.signup = {};
+window.tribe.tickets.commerce.gateway.paypal.signup = {};
 
 /**
  * Initializes in a Strict env the code that manages the checkout for PayPal.
  *
  * @since 5.2.0
  *
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.commerce.gateway.paypal.checkout
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.commerce.gateway.paypal.checkout
  *
  * @return {void}
  */
 ( function ( $, obj ) {
 	'use strict';
-	const $document = $( document );
-
 	/**
 	 * PayPal Signup nonce.
 	 *
@@ -136,12 +134,16 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 		$button.addClass( 'disabled' );
 
 		fetch(
-			ajaxurl + '?action=tec_tickets_commerce_gateway_paypal_refresh_connect_url&nonce=' + obj.refreshConnectNonce + '&country_code=' + $field.val(),
+			ajaxurl +
+				'?action=tec_tickets_commerce_gateway_paypal_refresh_connect_url&nonce=' +
+				obj.refreshConnectNonce +
+				'&country_code=' +
+				$field.val(),
 			{
 				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
-				}
+				},
 			}
 		) // eslint-disable-line max-len
 			.then( function ( response ) {
@@ -181,8 +183,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	};
 
 	$( obj.ready );
-
-} )( jQuery, tribe.tickets.commerce.gateway.paypal.signup );
+} )( jQuery, window.tribe.tickets.commerce.gateway.paypal.signup );
 
 /**
  * Do not remove this, since PayPal codebase doesn't support a direct reference to how our objects are structured.
@@ -191,4 +192,4 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
  *
  * @since 5.2.0
  */
-tecTicketsCommerceGatewayPayPalSignupCallback = tribe.tickets.commerce.gateway.paypal.signup.onboardedCallback;
+window.tecTicketsCommerceGatewayPayPalSignupCallback = window.tribe.tickets.commerce.gateway.paypal.signup.onboardedCallback;

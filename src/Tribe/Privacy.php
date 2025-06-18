@@ -77,7 +77,7 @@ class Tribe__Tickets__Privacy {
 		 *
 		 * @since 4.7.5
 		 *
-		 * @param $content string The default policy content.
+		 * @param string $content The default policy content.
 		 */
 		return apply_filters( 'tribe_tickets_default_privacy_policy_content', $content );
 
@@ -87,7 +87,8 @@ class Tribe__Tickets__Privacy {
 	 * Register exporter for Tickets attendees saved data.
 	 *
 	 * @since 4.7.5
-	 * @param $exporters
+	 *
+	 * @param array $exporters The exporters to register.
 	 *
 	 * @return array
 	 */
@@ -114,7 +115,8 @@ class Tribe__Tickets__Privacy {
 	 * Register erasers for Tickets attendees saved data.
 	 *
 	 * @since 4.7.6
-	 * @param $erasers
+	 *
+	 * @param array $erasers The erasers to register.
 	 *
 	 * @return array
 	 */
@@ -138,11 +140,12 @@ class Tribe__Tickets__Privacy {
 	}
 
 	/**
-	 * Exporter for Events Ticket RSVP Attendee
+	 * Exporter for Events Ticket RSVP Attendee.
 	 *
-	 * @param     $email_address
-	 * @param int $page
-	 * @since     4.7.5
+	 * @since 4.7.5
+	 *
+	 * @param string $email_address The email address of the attendee.
+	 * @param int    $page          The page number.
 	 *
 	 * @return array
 	 */
@@ -222,11 +225,12 @@ class Tribe__Tickets__Privacy {
 	}
 
 	/**
-	 * Eraser for Events Ticket RSVP Attendee
+	 * Eraser for Events Ticket RSVP Attendee.
 	 *
-	 * @param     $email_address
-	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
+	 *
+	 * @param string $email_address The email address of the attendee.
+	 * @param int    $page          The page number.
 	 *
 	 * @return array
 	 */
@@ -286,11 +290,12 @@ class Tribe__Tickets__Privacy {
 	}
 
 	/**
-	 * Eraser for Events Ticket Tribe Commerce Attendees
+	 * Eraser for Events Ticket Tribe Commerce Attendees.
 	 *
-	 * @param     $email_address
-	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
+	 *
+	 * @param string $email_address The email address of the attendee.
+	 * @param int    $page          The page number.
 	 *
 	 * @return array
 	 */
@@ -350,11 +355,12 @@ class Tribe__Tickets__Privacy {
 	}
 
 	/**
-	 * Eraser for Events Ticket Tribe Commerce Order
+	 * Eraser for Events Ticket Tribe Commerce Order.
 	 *
-	 * @param     $email_address
-	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
+	 *
+	 * @param string $email_address The email address of the attendee.
+	 * @param int    $page          The page number.
 	 *
 	 * @return array
 	 */
@@ -419,11 +425,12 @@ class Tribe__Tickets__Privacy {
 	}
 
 	/**
-	 * Exporter for Events Ticket Tribe Commerce Attendee
+	 * Exporter for Events Ticket Tribe Commerce Attendee.
 	 *
-	 * @param     $email_address
-	 * @param int $page
-	 * @since     4.7.5
+	 * @since 4.7.5
+	 *
+	 * @param string $email_address The email address of the attendee.
+	 * @param int    $page          The page number.
 	 *
 	 * @return array
 	 */
@@ -503,11 +510,12 @@ class Tribe__Tickets__Privacy {
 	}
 
 	/**
-	 * Exporter for Events Ticket Tribe Commerce Attendee
+	 * Exporter for Events Ticket Tribe Commerce Attendee.
 	 *
-	 * @param     $email_address
-	 * @param int $page
-	 * @since     4.7.6
+	 * @since 4.7.6
+	 *
+	 * @param string $email_address The email address of the attendee.
+	 * @param int    $page          The page number.
 	 *
 	 * @return array
 	 */
@@ -600,7 +608,8 @@ class Tribe__Tickets__Privacy {
 
 	/**
 	 * Get and filter the opt-out text.
-	 * @TODO: deprecate when we convert to opt-in and convert all uses to $this->get_opt_in_text()
+	 *
+	 * @todo: deprecate when we convert to opt-in and convert all uses to $this->get_opt_in_text()
 	 *
 	 * @since 4.11.3
 	 *
@@ -612,7 +621,7 @@ class Tribe__Tickets__Privacy {
 		 *
 		 * @since 4.11.3
 		 *
-		 * @param $content string The default text.
+		 * @param string $content The default text.
 		 */
 		 return apply_filters( 'tribe_tickets_default_opt_out_text', $this->opt_out_text );
 	}
@@ -630,7 +639,7 @@ class Tribe__Tickets__Privacy {
 		 *
 		 * @since 4.11.3
 		 *
-		 * @param $content string The default text.
+		 * @param string $content The default text.
 		 */
 		 return apply_filters( 'tribe_tickets_default_opt_in_text', $this->opt_in_text );
 	}

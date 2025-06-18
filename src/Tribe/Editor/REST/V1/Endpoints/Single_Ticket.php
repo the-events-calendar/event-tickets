@@ -93,9 +93,9 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @todo Validate permissions independent from this one in order to provide a more meaningful
 	 * message
 	 *
-	 * @param $post_id
-	 * @param $nonce
-	 * @param $nonce_action
+	 * @param int|WP_Post|null $post_id The post ID.
+	 * @param string           $nonce The nonce.
+	 * @param string           $nonce_action The nonce action.
 	 * @return bool
 	 */
 	private function has_permission( $post_id, $nonce, $nonce_action ) {
@@ -104,11 +104,11 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		if ( ! $post instanceof WP_Post ) {
 			return false;
 		}
-		
+
 		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 			return false;
 		}
-		
+
 		return current_user_can( 'edit_event_tickets' )
 				|| current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
 				|| current_user_can( 'edit_post', $post->ID );
@@ -213,8 +213,9 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
 	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
 	 *
-	 * @param  WP_REST_Request $request
-	 * @param  $nonce_action
+	 * @param WP_REST_Request $request      The request object.
+	 * @param string          $nonce_action The nonce action.
+	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function add_ticket( WP_REST_Request $request, $nonce_action ) {

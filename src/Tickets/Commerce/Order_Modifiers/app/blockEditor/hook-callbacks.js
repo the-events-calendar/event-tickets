@@ -6,7 +6,7 @@ import { select, dispatch } from '@wordpress/data';
 /**
  * Internal dependencies.
  */
-import Fees from "./fees";
+import Fees from './fees';
 import { storeName } from './store';
 import { currentProviderSupportsFees } from './store/compatibility';
 
@@ -33,8 +33,8 @@ export const filterSetBodyDetails = ( body, clientId ) => {
  *
  * @since 5.18.0
  *
- * @param {object[]}  items    The ticket container items.
- * @param {string} clientId The client ID.
+ * @param {object[]} items    The ticket container items.
+ * @param {string}   clientId The client ID.
  * @return {object[]} The filtered ticket container items.
  */
 export const filterTicketContainerItems = ( items, clientId ) => {
@@ -54,7 +54,7 @@ export const filterTicketContainerItems = ( items, clientId ) => {
 	items.splice( durationIndex + 1, 0, feeObject );
 
 	return items;
-}
+};
 
 /**
  * Sets the fees for the ticket.
@@ -62,7 +62,7 @@ export const filterTicketContainerItems = ( items, clientId ) => {
  * @since 5.18.0
  *
  * @param {string} clientId The client ID of the ticket block.
- * @param {object} ticket   The ticket object.
+ * @param {Object} ticket   The ticket object.
  */
 export const setFeesForTicket = ( clientId, ticket ) => {
 	// Get the fees from the ticket object.
@@ -74,7 +74,7 @@ export const setFeesForTicket = ( clientId, ticket ) => {
 	const feesSelected = fees?.selected_fees || [];
 
 	dispatch( storeName ).setTicketFees( clientId, feesSelected );
-}
+};
 
 /**
  * Updates the fees for the ticket.
@@ -85,4 +85,4 @@ export const setFeesForTicket = ( clientId, ticket ) => {
  */
 export const updateFeesForTicket = ( clientId ) => {
 	dispatch( storeName ).setFeesByPostId( clientId );
-}
+};

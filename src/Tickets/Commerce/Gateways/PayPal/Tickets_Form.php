@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Tickets_Form
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -31,8 +31,8 @@ class Tickets_Form {
 	 *
 	 * @since 4.7
 	 *
-	 * @param        $message
-	 * @param string $type
+	 * @param string $message The message.
+	 * @param string $type    The message type.
 	 */
 	public function add_message( $message, $type = 'update' ) {
 		$message          = apply_filters( 'tribe_tpp_submission_message', $message, $type );

@@ -70,7 +70,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 */
 	obj.setupCopyUrl = () => {
 		obj.clipboardButton = new ClipboardJS( obj.selectors.button );
-		$( obj.selectors.button ).on( 'click', event => event.preventDefault() );
+		$( obj.selectors.button ).on( 'click', ( event ) => event.preventDefault() );
 	};
 
 	/**
@@ -89,7 +89,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * @param $field the key element
 	 * @param $icon  the icon element
 	 * @param $label the label element
-	 * @returns {Promise<*>} result of the validation request
+	 * @return {Promise<*>} result of the validation request
 	 */
 	obj.initiateValidation = async ( $field, $icon, $label ) => {
 		const params = new URLSearchParams();
@@ -104,8 +104,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 				beforeRequest: [
 					() => {
 						$label.text( $field.data( 'loadingText' ) );
-						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
-							.addClass( 'dashicons-update' );
+						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] ).addClass( 'dashicons-update' );
 					},
 				],
 			},
@@ -121,7 +120,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * @param $field the key element
 	 * @param $icon  the icon element
 	 * @param $label the label element
-	 * @returns {Promise<*>} result of the verification request
+	 * @return {Promise<*>} result of the verification request
 	 */
 	obj.checkValidationSuccess = async ( $field, $icon, $label ) => {
 		const params = new URLSearchParams();
@@ -136,8 +135,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 				beforeRequest: [
 					() => {
 						$label.text( $field.data( 'loadingText' ) );
-						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
-							.addClass( 'dashicons-update' );
+						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] ).addClass( 'dashicons-update' );
 					},
 				],
 			},

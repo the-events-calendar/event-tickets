@@ -8,7 +8,6 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Emails\Dispatcher;
-use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Order_Schema;
@@ -108,6 +107,7 @@ class Completed_Order extends Email_Abstract {
 	 * Get email settings.
 	 *
 	 * @since 5.5.10
+	 * @since 5.23.0 Added new classes for settings.
 	 *
 	 * @return array
 	 */
@@ -124,37 +124,55 @@ class Completed_Order extends Email_Abstract {
 		);
 
 		return [
-			[
+			'tec-settings-email-template-wrapper_start'   => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tec-settings-form__header-block--horizontal">',
+			],
+			'tec-settings-email-template-header'          => [
+				'type' => 'html',
+				'html' => '<h3>' . esc_html_x( 'Completed Order Email Settings', 'Email Title', 'event-tickets' ) . '</h3>',
+			],
+			'info-box-description'                        => [
+				'type' => 'html',
+				'html' => '<p class="tec-settings-form__section-description">'
+						. $email_description
+						. '</p><br/>',
 			],
 			[
 				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'Completed Order Email Settings', 'event-tickets' ) . '</h2>',
+				'html' => '</div>',
 			],
-			[
+			'tec-settings-email-template-settings-wrapper-start' => [
 				'type' => 'html',
-				'html' => '<p>' . $email_description . '</p>',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
-			$this->get_option_key( 'enabled' ) => [
-				'type'                => 'toggle',
-				'label'               => sprintf(
-					// Translators: %s - Title of email.
+			'tec-settings-email-template-settings'        => [
+				'type' => 'html',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Settings', 'event-tickets' ) . '</h3>',
+			],
+			'tec-settings-email-template-settings-wrapper-end' => [
+				'type' => 'html',
+				'html' => '</div>',
+			],
+			$this->get_option_key( 'enabled' )            => [
+				'type'            => 'toggle',
+				'label'           => sprintf(
+				// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
 					$this->get_title()
 				),
-				'default'             => true,
-				'validation_type'     => 'boolean',
+				'default'         => true,
+				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'recipient' ) => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Recipient(s)', 'event-tickets' ),
-				'default'             => $this->get_default_recipient(),
-				'tooltip'             => esc_html__( 'Add additional recipient emails separated by commas.', 'event-tickets' ),
-				'size'                => 'large',
+			$this->get_option_key( 'recipient' )          => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Recipient(s)', 'event-tickets' ),
+				'default'         => $this->get_default_recipient(),
+				'tooltip'         => esc_html__( 'Add additional recipient emails separated by commas.', 'event-tickets' ),
+				'size'            => 'large',
 				'validation_type' => 'email_list',
 			],
-			$this->get_option_key( 'subject' ) => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -162,7 +180,7 @@ class Completed_Order extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' ) => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -171,12 +189,12 @@ class Completed_Order extends Email_Abstract {
 				'validation_callback' => 'is_string',
 			],
 			$this->get_option_key( 'additional-content' ) => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
-				'default'             => $this->get_default_additional_content(),
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
-				'size'                => 'large',
-				'validation_type'     => 'html',
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
+				'default'         => $this->get_default_additional_content(),
+				'tooltip'         => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
+				'size'            => 'large',
+				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,

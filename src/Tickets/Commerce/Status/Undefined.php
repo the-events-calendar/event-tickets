@@ -7,7 +7,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * Orders that landed on Undefined are just broken in some way that we cannot define.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */

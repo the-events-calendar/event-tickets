@@ -11,13 +11,9 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { RSVP as RSVPIcon } from '@moderntribe/tickets/icons';
+import { RSVP as RSVPIcon } from '../../icons';
 import RSVP from './container';
-import {
-	KEY_TICKET_GOING_COUNT,
-	KEY_TICKET_NOT_GOING_COUNT,
-	KEY_TICKET_HEADER,
-} from '@moderntribe/tickets/data/utils';
+import { KEY_TICKET_GOING_COUNT, KEY_TICKET_NOT_GOING_COUNT, KEY_TICKET_HEADER } from '../../data/utils';
 
 /**
  * Module Code
@@ -25,10 +21,7 @@ import {
 export default {
 	id: 'rsvp',
 	title: __( 'RSVP', 'event-tickets' ),
-	description: __(
-		'Find out who is planning to attend!',
-		'event-tickets',
-	),
+	description: __( 'Find out who is planning to attend!', 'event-tickets' ),
 	icon: <RSVPIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],

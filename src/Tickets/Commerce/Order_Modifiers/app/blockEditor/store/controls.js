@@ -1,7 +1,4 @@
-import {
-	nonce,
-	baseUrl
-} from '@tec/tickets/order-modifiers/rest';
+import { nonce, baseUrl } from '../../rest';
 
 /**
  * Fetches fees from the API.
@@ -22,9 +19,7 @@ export async function fetchFeesFromAPI() {
 	} );
 
 	if ( response.status !== 200 ) {
-		throw new Error(
-			`Failed to fetch fees from API. Status: ${ response.status }`
-		);
+		throw new Error( `Failed to fetch fees from API. Status: ${ response.status }` );
 	}
 
 	const json = await response.json();
@@ -33,12 +28,12 @@ export async function fetchFeesFromAPI() {
 	const feesAvailable = 'object' === typeof json?.selectable_fees ? Object.values( json.selectable_fees ) : [];
 
 	// Ensure the ids are integers.
-	feesAutomatic.forEach( ( fee ) => fee.id = parseInt( fee.id ) );
-	feesAvailable.forEach( ( fee ) => fee.id = parseInt( fee.id ) );
+	feesAutomatic.forEach( ( fee ) => ( fee.id = parseInt( fee.id ) ) );
+	feesAvailable.forEach( ( fee ) => ( fee.id = parseInt( fee.id ) ) );
 
 	return {
-		feesAutomatic: feesAutomatic,
-		feesAvailable: feesAvailable,
+		feesAutomatic,
+		feesAvailable,
 	};
 }
 
@@ -46,4 +41,4 @@ export const controls = {
 	FETCH_FEES_FROM_API() {
 		return fetchFeesFromAPI();
 	},
-}
+};

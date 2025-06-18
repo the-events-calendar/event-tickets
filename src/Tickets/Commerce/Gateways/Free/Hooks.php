@@ -33,10 +33,12 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.10.0
+	 * @since 5.24.0 Added the filter to add a gateway order ID for the free gateway.
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+		add_filter( 'tec_tickets_commerce_order_' . Gateway::get_key() . '_create_args', [ $this, 'add_free_gateway_id' ] );
 	}
 
 	/**
@@ -59,5 +61,20 @@ class Hooks extends Service_Provider {
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST\Order_Endpoint::class )->register();
+	}
+
+	/**
+	 * Produce a gateway order ID for the free gateway.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param array $args The arguments to create the order.
+	 *
+	 * @return array The arguments to create the order.
+	 */
+	public function add_free_gateway_id( $args ) {
+		$args['gateway_order_id'] = md5( wp_generate_password() . microtime() );
+
+		return $args;
 	}
 }

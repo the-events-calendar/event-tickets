@@ -292,7 +292,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since 4.10.5
 	 *
-	 * @param $ticket_sold object an object of the ticket to get counts
+	 * @param object $ticket_sold an object of the ticket to get counts
 	 *
 	 * @return string a string of html for the tooltip
 	 */
@@ -321,7 +321,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since 4.10.5
 	 *
-	 * @param $ticket_sold object an object of the ticket to get counts
+	 * @param object $ticket_sold an object of the ticket to get counts
 	 *
 	 * @return string a string of html for the tooltip
 	 */

@@ -38,7 +38,7 @@ class Assets extends Service_Provider {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$plugin = tribe( 'tickets.main' );
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			static::$group_key . '-modal-scripts',
 			'admin/tickets-emails.js',

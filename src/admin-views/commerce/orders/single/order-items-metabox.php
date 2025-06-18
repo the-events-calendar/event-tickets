@@ -4,8 +4,9 @@
  *
  * @since 5.13.3
  * @since 5.21.0 Added the coupons and fees sections.
+ * @since 5.24.0 Added the extras section.
  *
- * @version 5.21.0
+ * @version 5.24.0
  *
  * @var WP_Post             $order       The current post object.
  * @var Singular_Order_Page $single_page The orders table output.
@@ -94,6 +95,8 @@ use TEC\Tickets\Commerce\Order;
 					'order' => $order,
 				]
 			);
+
+			$this->template( 'order-items-extras' );
 			?>
 		</tbody>
 		<tfoot>

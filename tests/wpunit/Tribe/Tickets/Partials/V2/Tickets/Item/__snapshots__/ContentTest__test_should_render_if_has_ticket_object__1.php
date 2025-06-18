@@ -1,10 +1,11 @@
-<?php return '<div class="tribe-tickets__tickets-item-content-title-container">
-		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+<?php return '<div  class="tribe-tickets__tickets-item-content-title-container" >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title" >
 				Test ticket for 8	</div>
 </div>
 
+
 <div
-	id="tribe__details__content--5247"
+	id="tribe__details__content--12953"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
@@ -14,7 +15,7 @@
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">8.00</span>
+					<span class="tribe-amount">5.00</span>
 				</span>
 						</span>
 </div>

@@ -11,7 +11,7 @@
  *
  * @version 5.8.4
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @var bool           $show_events_in_email Whether to show the events in the email or not.
  * @var string         $title                The upcoming Events list title.

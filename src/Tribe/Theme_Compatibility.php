@@ -2,7 +2,7 @@
 /**
  * Add theme compatibility things here.
  *
- * @since   4.11.4
+ * @since 4.11.4
  *
  * @since 5.3.1 Make use of Common Theme_Compatibility class.
  */
@@ -18,7 +18,7 @@ class Tribe__Tickets__Theme_Compatibility extends Compat {
 	 *
 	 * @deprecated  5.3.1
 	 *
-	 * @param  array $classes List of body classes.
+	 * @param array $classes List of body classes.
 	 *
 	 * @return array $classes List of body classes, modified if compatibility is required.
 	 */

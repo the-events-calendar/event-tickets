@@ -17,19 +17,17 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem, Checkbox } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPNotGoingResponses = ( {
-	isDisabled,
-	onTempNotGoingResponsesChange,
-	tempNotGoingResponses,
-} ) => {
+const RSVPNotGoingResponses = ( { isDisabled, onTempNotGoingResponsesChange, tempNotGoingResponses } ) => {
 	const notGoingId = uniqid();
 
 	return (
-		<div className={ classNames(
-			'tribe-editor__ticket__not-going-responses',
-			'tribe-editor__ticket__content-row',
-			'tribe-editor__ticket__content-row--not-going-responses',
-		) }>
+		<div
+			className={ classNames(
+				'tribe-editor__ticket__not-going-responses',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--not-going-responses'
+			) }
+		>
 			<LabeledItem
 				className="tribe-editor__ticket__not-going-responses-label"
 				forId={ notGoingId }

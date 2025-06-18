@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on Ticket Commerce.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 /**
  * Class Assets.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -29,7 +29,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function register() {
 		$plugin = \Tribe__Tickets__Main::instance();
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-admin-commerce-paypal-commerce-partner-js',
 			$this->get_partner_js_url(),
@@ -74,7 +74,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		/**
 		 * This file is intentionally enqueued on every page of the administration.
 		 */
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-paypal-global-admin-styles',
 			'tickets-commerce/gateway/paypal/admin-global.css',
@@ -83,7 +83,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			[]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-paypal-checkout',
 			'commerce/gateway/paypal/checkout.js',
@@ -120,7 +120,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 			]
 		);
 
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-paypal-signup',
 			'commerce/gateway/paypal/signup.js',
@@ -146,7 +146,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 		);
 
 		// Tickets Commerce PayPal main frontend styles.
-		tribe_asset(
+		tec_asset(
 			$plugin,
 			'tribe-tickets-commerce-paypal-style',
 			'tickets-commerce/gateway/paypal.css',
@@ -201,6 +201,6 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	 * @return bool If the `PayPal` assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets_payments_tab() {
-		return 'paypal' === tribe_get_request_var( 'tc-section' ) && 'payments' === tribe_get_request_var( 'tab' ) && \Tribe\Tickets\Admin\Settings::$settings_page_id === tribe_get_request_var( 'page' );
+		return 'paypal' === tribe_get_request_var( 'tab' ) && \Tribe\Tickets\Admin\Settings::$settings_page_id === tribe_get_request_var( 'page' );
 	}
 }

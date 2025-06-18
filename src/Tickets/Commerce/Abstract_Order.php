@@ -2,10 +2,10 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Utils__Array as Arr;
 use WP_Error;
+use RuntimeException;
+use WP_Post;
 
 /**
  * @todo backend move common methods from Commerce/Order, Manual/Order and PayPal/Order here.
@@ -136,16 +136,34 @@ abstract class Abstract_Order {
 		return apply_filters( 'tec_tickets_commerce_order_purchaser_data', $purchaser, $data );
 	}
 
+	// phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.Found
+
 	/**
 	 * Get the order Gateway Admin URL link by order ID
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param \WP_Post $order The order post object.
+	 * @param WP_Post $order The order post object.
 	 *
 	 * @return ?string
 	 */
-	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): ?string {
+	public function get_gateway_dashboard_url_by_order( WP_Post $order ): ?string {
 		return null;
 	}
+
+	/**
+	 * Refund an order.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If refunds are not supported for the gateway.
+	 */
+	public function refund_order( WP_Post $order ): void {
+		throw new RuntimeException( __( 'Refunds are not supported for this gateway.', 'event-tickets' ) );
+	}
+	// phpcs:enable Generic.CodeAnalysis.UnusedFunctionParameter.Found
 }

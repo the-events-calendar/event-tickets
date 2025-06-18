@@ -10,8 +10,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.0.3
- * @since   5.9.0   Updated class for original price element.
+ * @since 5.0.3
+ * @since 5.9.0   Updated class for original price element.
  *
  * @version 5.9.0
  *

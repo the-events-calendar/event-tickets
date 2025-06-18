@@ -17,8 +17,8 @@
 /**
  * Set the default Full Name for the RSVP form
  *
- * @param string
- * @param Tribe__Events_Gutenberg__Template $this
+ * @param string                            $name
+ * @param Tribe__Events_Gutenberg__Template $template The template object.
  *
  * @since 4.9
  */

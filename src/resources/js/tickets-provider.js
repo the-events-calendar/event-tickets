@@ -13,12 +13,12 @@ tribe.tickets = tribe.tickets || {};
  *
  * @since 5.1.9
  *
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.commerce
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.commerce
  *
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	'use strict';
 
 	/**
@@ -58,5 +58,4 @@ tribe.tickets = tribe.tickets || {};
 			console.trace( args );
 		},
 	};
-
 } )( jQuery, tribe.tickets );

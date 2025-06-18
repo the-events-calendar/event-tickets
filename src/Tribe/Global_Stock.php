@@ -2,7 +2,7 @@
 /**
  * Management for Global Stock on events and tickets
  *
- * @since  4.1
+ * @since 4.1
  */
 class Tribe__Tickets__Global_Stock {
 	/**
@@ -95,7 +95,7 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Creates an instance for a given Event
 	 *
-	 * @since  4.1
+	 * @since 4.1
 	 *
 	 * @param int $post_id
 	 */
@@ -109,10 +109,10 @@ class Tribe__Tickets__Global_Stock {
 	 * As a convenience, false can be passed to this method to disable rather
 	 * than enable global stock.
 	 *
-	 * @since  4.1
-	 * @since  4.6 Added a return so we can check if it was enabled correctly
+	 * @since 4.1
+	 * @since 4.6 Added a return so we can check if it was enabled correctly
 	 *
-	 * @param  bool $yes
+	 * @param bool $yes
 	 *
 	 * @return bool|int
 	 */
@@ -126,10 +126,10 @@ class Tribe__Tickets__Global_Stock {
 	 * As a convenience, false can be passed to this method to enable rather
 	 * than disable global stock.
 	 *
-	 * @since  4.1
-	 * @since  4.6 Added a return so we can check if it was enabled correctly
+	 * @since 4.1
+	 * @since 4.6 Added a return so we can check if it was enabled correctly
 	 *
-	 * @param  bool $yes
+	 * @param bool $yes
 	 *
 	 * @return bool|int
 	 */
@@ -140,7 +140,7 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Indicates if global stock is enabled for this post.
 	 *
-	 * @since  4.1
+	 * @since 4.1
 	 *
 	 * @return bool
 	 */
@@ -151,9 +151,9 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Sets the global stock level for the current post.
 	 *
-	 * @since  4.1
-	 * @since  4.6  Added a Return
-	 * @since  4.11.4 Added new $force parameter.
+	 * @since 4.1
+	 * @since 4.6  Added a Return
+	 * @since 4.11.4 Added new $force parameter.
 	 *
 	 * @param int     $quantity Quantity to set for stock.
 	 * @param boolean $force    Whether to force setting stock, even if capacity is less.
@@ -179,12 +179,12 @@ class Tribe__Tickets__Global_Stock {
 		/**
 		 * Fires when the global stock level is set/changed.
 		 *
-		 * @since  4.1
-		 * @since  4.6 Added $status param
+		 * @since 4.1
+		 * @since 4.6 Added $status param
 		 *
-		 * @param  int  $post_id
-		 * @param  int  $quantity
-		 * @param  bool $status
+		 * @param int  $post_id
+		 * @param int  $quantity
+		 * @param bool $status
 		 */
 		do_action( 'tribe_tickets_global_stock_level_changed', $this->post_id, $quantity, $status );
 
@@ -194,7 +194,7 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Returns the post's global stock--the shared maximum available, not the remaining available.
 	 *
-	 * @since  4.1
+	 * @since 4.1
 	 *
 	 * @return int
 	 */
@@ -205,10 +205,10 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Returns a count of the number of global ticket sales for this event.
 	 *
-	 * @since  4.1
-	 * @since  4.6  Introduced $pending Param
+	 * @since 4.1
+	 * @since 4.6  Introduced $pending Param
 	 *
-	 * @param  bool  $pending  Includes Pending Tickets on the Sales total
+	 * @param bool  $pending  Includes Pending Tickets on the Sales total
 	 *
 	 * @return int
 	 */
@@ -241,7 +241,7 @@ class Tribe__Tickets__Global_Stock {
 	 * @see Tribe__Tickets__Admin__Move_Tickets::move_tickets()
 	 * @see Tribe__Tickets__Admin__Move_Ticket_Types::move_ticket_type()
 	 *
-	 * @since  5.16.0
+	 * @since 5.16.0
 	 *
 	 * @param int $source_id The ID of the source event/post.
 	 * @param int $target_id The ID of the destination event/post.

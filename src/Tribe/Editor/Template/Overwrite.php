@@ -87,7 +87,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 *
 	 * @since 4.9.2
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post|null $post_id
 	 *
 	 * @return bool
 	 */
@@ -106,7 +106,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 		/** @var Tribe__Editor $editor */
 		$editor = tribe( 'editor' );
 
-		return $editor->is_classic_editor();
+		return ! $editor->should_load_blocks();
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post|null $post_id
 	 *
 	 * @return bool
 	 */
@@ -153,7 +153,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post|null $post_id
 	 *
 	 * @return bool
 	 */
@@ -170,7 +170,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post|null $post_id
 	 *
 	 * @return bool
 	 */
@@ -197,7 +197,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post|null $post_id
 	 */
 	public function setup_template( $post_id ) {
 		/** @var Tribe__Tickets__Editor__Template $template */

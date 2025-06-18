@@ -8,7 +8,7 @@
  * This decorator will overwrite the schema entries added by the Event Tickets or Event Tickets Plus
  * decorators, so that the Tickets and Attendees queries include Series posts.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -26,7 +26,7 @@ use Tribe__Tickets_Plus__Event_Repository as Tickets_Plus_Event_Repository;
 /**
  * Class Event_Repository.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */

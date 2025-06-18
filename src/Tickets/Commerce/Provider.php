@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Commerce.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce
  */
 
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Service provider for the Tickets Commerce.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce
  */
 class Provider extends Service_Provider {
@@ -35,6 +35,8 @@ class Provider extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	public function register() {
+		$this->container->register( Payments_Tab::class );
+
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return;
@@ -80,10 +82,11 @@ class Provider extends Service_Provider {
 		$this->container->register( Status\Status_Handler::class );
 		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
 
-		// Register Compatibility Classes
+		// Register Compatibility Classes.
 		$this->container->singleton( Compatibility\Events::class );
 
 		// Load any external SPs we might need.
+		$this->container->register( Gateways\Square\Controller::class );
 		$this->container->register( Gateways\Stripe\Provider::class );
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );
@@ -96,6 +99,9 @@ class Provider extends Service_Provider {
 
 		// Register Order modifiers main controller.
 		$this->container->register( Order_Modifiers\Controller::class );
+
+		// Commerce Tables Controller.
+		$this->container->register( Tables::class );
 
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
@@ -142,7 +148,7 @@ class Provider extends Service_Provider {
 		$this->hooks = $hooks;
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container
+		// Allow Hooks to be removed, by having the them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.commerce.hooks', $hooks );
 	}

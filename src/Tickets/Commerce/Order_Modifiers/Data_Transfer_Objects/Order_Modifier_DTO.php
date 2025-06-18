@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Order Modifier model.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Values\Value_Interface;
 /**
  * Class Order_Modifier_DTO.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects;
  */

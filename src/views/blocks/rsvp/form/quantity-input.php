@@ -10,12 +10,12 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
- * @since   4.11.5 The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
+ * @since 4.9
+ * @since 4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
+ * @since 4.11.5 The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
  *                 in the previous change, above, so it got removed in this version.
- * @since   5.0.3 Add vars to docblock and removed duplicative vars.
- * @since   5.1.5 Add label to the quantity input to improve accessibility.
+ * @since 5.0.3 Add vars to docblock and removed duplicative vars.
+ * @since 5.1.5 Add label to the quantity input to improve accessibility.
  *
  * @version 5.1.5
  *

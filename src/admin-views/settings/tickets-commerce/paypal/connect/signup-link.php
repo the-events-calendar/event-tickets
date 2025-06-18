@@ -14,6 +14,8 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! is_ssl() ) {
 	return;
 }
@@ -22,3 +24,4 @@ if ( ! is_ssl() ) {
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
 	<?php echo $signup->get_link_html(); // phpcs:ignore ?>
 </div>
+<?php

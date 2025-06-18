@@ -89,38 +89,42 @@ class Telemetry {
 	 */
 	public function filter_tribe_tickets_settings_tab_fields(  $fields ): array {
 		$status = Config::get_container()->get( Status::class );
-		$opted = $status->get();
 
-		switch( $opted ) {
-			case $status::STATUS_ACTIVE :
-				$label = esc_html_x( 'Opt out of Telemetry', 'Settings label for opting out of Telemetry.', 'the-events-calendar' );
-			default :
-				$label = esc_html_x( 'Opt in to Telemetry', 'the-events-calendar' );
-		}
-
-		$opt_in_status['ticket-telemetry-optin-heading'] =  [
+		$opt_in_status['ticket-telemetry-optin-heading-div-start'] = [
 			'type' => 'html',
-			'html' => '<h3 id="event-tickets-telemetry-settings">' . __( 'Telemetry', 'event-tickets' ) . '</h3>',
+			'html' => '<div class="tec-settings-form__content-section">',
+		];
+
+		$opt_in_status['ticket-telemetry-optin-heading'] = [
+			'type' => 'html',
+			'html' => '<h3 id="event-tickets-telemetry-settings" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . __( 'Data sharing consent', 'event-tickets' ) . '</h3>',
 		];
 
 		$opt_in_status['opt-in-status'] = [
 			'type'            => 'checkbox_bool',
-			'label'           => $label,
 			'tooltip'         => sprintf(
-				/* Translators: Description of the Telemetry optin setting.
-				%1$s: opening anchor tag for permissions link.
-				%2$s: opening anchor tag for terms of service link.
-				%3$s: opening anchor tag for privacy policy link.
-				%4$s: closing anchor tags.
-				*/
-				_x( 'Enable this option to share usage data with Event Tickets and StellarWP. %1$sWhat permissions are being granted?%4$s %2$sRead our Terms of Service%4$s %3$sRead our Privacy Policy%4$s', 'Description of optin setting.', 'the-events-calendar' ),
-				'<a href=" ' . Common_Telemetry::get_permissions_url() . ' ">',
-				'<a href=" ' . Common_Telemetry::get_terms_url() . ' ">',
-				'<a href=" ' . Common_Telemetry::get_privacy_url() . ' ">',
+			// Translators: 1: opening anchor tag, 2: opening anchor tag, 3: opening anchor tag, 4: closing anchor tag.
+				_x(
+					'Enable this option to share usage data with Event Tickets and StellarWP.
+			This also activates access to TEC AI chatbot and in-app priority support for premium users.
+			%1$sWhat permissions are being granted?%4$s
+			%2$sRead our terms of service%4$s.
+			%3$sRead our privacy policy%4$s.',
+					'Description of opt-in setting.',
+					'event-tickets'
+				),
+				'<br/><a href="' . Common_Telemetry::get_permissions_url() . '" rel="noopener noreferrer" target="_blank">', // URL is escaped in method.
+				'<br/><a href="' . Common_Telemetry::get_terms_url() . '" rel="noopener noreferrer" target="_blank">',     // URL is escaped in method.
+				'<br/><a href="' . Common_Telemetry::get_privacy_url() . '" rel="noopener noreferrer" target="_blank">',   // URL is escaped in method.
 				'</a>'
 			),
 			'default'         => false,
 			'validation_type' => 'boolean',
+		];
+
+		$opt_in_status['ticket-telemetry-optin-heading-div-end'] = [
+			'type' => 'html',
+			'html' => '</div>',
 		];
 
 		$fields = Tribe__Main::array_insert_before_key( 'tribe-form-content-end', $fields, $opt_in_status );
@@ -184,13 +188,42 @@ class Telemetry {
 			return;
 		}
 
+		if ( ! static::is_et_admin_page() ) {
+			return;
+		}
+
+		$show = Common_Telemetry::calculate_modal_status();
+
+		if ( ! $show ) {
+			return;
+		}
+
+		// 'event-tickets'
+		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
+
+		/**
+		 * Fires to trigger the modal content on admin pages.
+		 *
+		 * @since 5.6.0.1
+		 */
+		do_action( 'tec_telemetry_modal', $telemetry_slug );
+	}
+
+	/**
+	 * Determines if the current page is an ET admin page.
+	 *
+	 * @since 5.23.0
+	 *
+	 * @return bool Whether the current page is an ET admin page.
+	 */
+	public static function is_et_admin_page(): bool {
 		$current_screen = get_current_screen();
 		$admin_helpers = Tribe__Admin__Helpers::instance();
 		$admin_pages   = tribe( 'admin.pages' );
 		$admin_page    = $admin_pages->get_current_page();
 
 		if ( ! $admin_helpers->is_screen() ) {
-			return;
+			return false;
 		}
 
 		if (
@@ -221,21 +254,7 @@ class Telemetry {
 			return false;
 		}
 
-		$show = Common_Telemetry::calculate_modal_status();
-
-		if ( ! $show ) {
-			return;
-		}
-
-		// 'event-tickets'
-		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
-
-		/**
-		 * Fires to trigger the modal content on admin pages.
-		 *
-		 * @since 5.6.0.1
-		 */
-		do_action( 'tec_telemetry_modal', $telemetry_slug );
+		return (bool) apply_filters( 'tec_telemetry_is_et_admin_page', true );
 	}
 
 	/**

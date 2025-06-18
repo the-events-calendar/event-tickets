@@ -8,7 +8,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Signup.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */

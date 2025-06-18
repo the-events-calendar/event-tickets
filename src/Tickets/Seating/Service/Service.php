@@ -2,7 +2,7 @@
 /**
  * A facade for the Service interaction hiding the details of the service.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -16,7 +16,7 @@ use WP_Error;
 /**
  * Class Service.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */

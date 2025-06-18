@@ -42,7 +42,7 @@ if ( $multiline ) {
 			id="<?php echo esc_attr( $option_id ); ?>"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			class="ticket-metatribe-common-form-control-text__input"
-			<?php tribe_required( $required ); ?>
+			<?php echo $required ? 'required' : ''; ?>
 			<?php disabled( $is_restricted ); ?>
 		><?php echo esc_textarea( $value ); ?></textarea>
 	<?php else : ?>
@@ -51,7 +51,7 @@ if ( $multiline ) {
 			id="<?php echo esc_attr( $option_id ); ?>"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
-			<?php tribe_required( $required ); ?>
+			<?php echo $required ? 'required' : ''; ?>
 			<?php disabled( $is_restricted ); ?>
 		>
 	<?php endif; ?>

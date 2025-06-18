@@ -81,7 +81,7 @@ class Legacy_Compat extends Service_Provider {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param $name string Name of the provider.
+	 * @param string $name Name of the provider.
 	 *
 	 * @return string
 	 */

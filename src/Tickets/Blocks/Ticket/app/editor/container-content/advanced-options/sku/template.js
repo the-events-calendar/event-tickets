@@ -16,8 +16,8 @@ import uniqid from 'uniqid';
  * Internal dependencies
  */
 import { Input } from '@moderntribe/common/elements';
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { LabelWithTooltip } from '../../../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../../../modules/data/blocks/ticket/constants';
 
 class SKU extends PureComponent {
 	static propTypes = {
@@ -35,36 +35,30 @@ class SKU extends PureComponent {
 		const { sku, isDisabled, onChange } = this.props;
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__sku',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--sku',
-			) }>
+			<div
+				className={ classNames(
+					'tribe-editor__ticket__sku',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--sku'
+				) }
+			>
 				<LabelWithTooltip
 					className="tribe-editor__ticket__sku-label-with-tooltip"
 					forId={ this.id }
 					isLabel={ true }
 					// eslint-disable-next-line no-undef
-					label={sprintf(
+					label={ sprintf(
 						/* Translators: %s - the singular label for a ticket. */
-						__('%s SKU', 'event-tickets'),
+						__( '%s SKU', 'event-tickets' ),
 						TICKET_LABELS.ticket.singular
-					)}
+					) }
 					// eslint-disable-next-line no-undef
-					tooltipText={sprintf(
+					tooltipText={ sprintf(
 						/* Translators: %s - the singular, lowercase label for a ticket. */
-						__(
-							"A unique identifying code for each %s type you're selling",
-							'event-tickets'
-						),
+						__( "A unique identifying code for each %s type you're selling", 'event-tickets' ),
 						TICKET_LABELS.ticket.singularLowercase
-					)}
-					tooltipLabel={
-						<Dashicon
-							className="tribe-editor__ticket__tooltip-label"
-							icon="info-outline"
-						/>
-					}
+					) }
+					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 				/>
 				<Input
 					className="tribe-editor__ticket__sku-input"

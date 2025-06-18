@@ -4,7 +4,7 @@
  *
  * This class manages the addition and calculation of coupons within the PayPal gateway workflow.
  *
- * @since   5.21.0
+ * @since 5.21.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\PayPal
  */
 

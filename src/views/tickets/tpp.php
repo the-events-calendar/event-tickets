@@ -7,19 +7,19 @@
  *
  * @deprecated 4.11.0
  *
- * @since      4.5
- * @since      4.7 Make the ticket form more readable.
- * @since      4.7.6 Add support for showing description option.
- * @since      4.8.2 Add date_in_range() logic so past tickets do not show.
- * @since      4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
- * @since      4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
- * @since      4.10.10 Use customizable ticket name functions.
- * @since      4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
- * @since      4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
- * @since      4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
- * @since      4.11.5 Display total available separately from setting max allowed to purchase at once and avoid the
+ * @since 4.5
+ * @since 4.7 Make the ticket form more readable.
+ * @since 4.7.6 Add support for showing description option.
+ * @since 4.8.2 Add date_in_range() logic so past tickets do not show.
+ * @since 4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
+ * @since 4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
+ * @since 4.10.10 Use customizable ticket name functions.
+ * @since 4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since 4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
+ * @since 4.11.5 Display total available separately from setting max allowed to purchase at once and avoid the
  *                    potential of `$readable_amount` being a undefined variable.
- * @since      5.9.1 Corrected template override filepath
+ * @since 5.9.1 Corrected template override filepath
  *
  * @version    5.9.1
  *

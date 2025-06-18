@@ -660,7 +660,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function register_resources() {
 		$main = Tribe__Tickets__Main::instance();
 
-		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
+		$stylesheet_url = $main->plugin_url . 'build/css/rsvp.css';
 		$stylesheet_url = Tribe__Assets::maybe_get_min_file( $stylesheet_url, true );
 
 		// Apply filters.
@@ -673,7 +673,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Tickets__Main::VERSION )
 		);
 
-		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
+		$js_url = $main->plugin_url . 'build/js/rsvp.js';
 		$js_url = Tribe__Assets::maybe_get_min_file( $js_url, true );
 		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
 
@@ -698,7 +698,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Enqueue the plugin stylesheet(s).
 	 *
 	 * @author caseypicker
-	 * @since  3.9
+	 * @since 3.9
 	 * @return void
 	 */
 	public function enqueue_resources() {
@@ -819,7 +819,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $action string|array a string or array of actions that a status includes
+	 * @param string $action The action to get the statuses for.
 	 *
 	 * @return array an array of statuses
 	 */
@@ -1130,7 +1130,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
 		 *
-		 * @param $data $_POST Parameters comes from RSVP Form
+		 * @param array $data $_POST Parameters comes from RSVP Form
 		 */
 		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
 
@@ -1562,7 +1562,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', -1 ),
+				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', -1 ),
 			);
 
 			$ticket->ID = wp_insert_post( $args );
@@ -1783,9 +1783,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Shows the tickets form in the front end
 	 *
-	 * @param $content
+	 * @param string $content The content.
 	 *
-	 * @return void
+	 * @return string|null
 	 */
 	public function front_end_tickets_form( $content ) {
 
@@ -2269,7 +2269,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Remove the Post Transients when a Shop Ticket is bought
 	 *
-	 * @param  int $attendee_id The attendee ID.
+	 * @param int $attendee_id The attendee ID.
 	 * @return void
 	 */
 	public function purge_attendees_transient( $attendee_id ) {
@@ -2538,7 +2538,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.7.4
 	 *
 	 * @param int $order_id The order ID.
-	 * @param $attendee_order_status
+	 * @param string $attendee_order_status The order status.
 	 *
 	 * @return array|bool array of stock size values, false if no difference.
 	 */
@@ -2568,10 +2568,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Get updated value for stock or sales, based on order status
 	 * @since 4.7.4
 	 *
-	 * @param $order_id
-	 * @param $attendee_order_status
-	 * @param $ticket_id
-	 * @param $meta
+	 * @param int    $order_id The order ID.
+	 * @param string $attendee_order_status The order status.
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $meta The meta key.
 	 *
 	 * @return bool|int|mixed get updated value, return false if no need to update
 	 */
@@ -2814,7 +2814,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * @param $post_id
+	 * Parses the attendee details from the $_POST data.
 	 *
 	 * @return array|false
 	 */
@@ -2891,7 +2891,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Ensure we update the stock when deleting attendees from the admin side
 	 * @since 4.7.4
 	 *
-	 * @param $attendee_id
+	 * @param int|WP_Post $attendee_id The attendee ID.
 	 *
 	 * @return bool|void
 	 */
@@ -2924,9 +2924,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.8.2
 	 *
-	 * @param $event_id
+	 * @param int $event_id The event ID.
 	 *
-	 * @return int
+	 * @return int The total number of not going RSVPs.
 	 */
 	public function get_total_not_going( $event_id ) {
 		return $this->get_attendees_count_not_going( $event_id );
@@ -3005,7 +3005,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.6.7
 	 *
-	 * @param array $post_types
+	 * @param array $post_types The post types.
 	 *
 	 * @return array
 	 */

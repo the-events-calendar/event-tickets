@@ -2,7 +2,7 @@
 /**
  * The ticket group model.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
 /**
  * Class Ticket_Group.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  *
@@ -31,11 +31,16 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @since 5.24.1 Add `name`, `capacity`, and `cost` properties.
 	 */
 	protected $properties = [
-		'id'   => 'int',
-		'slug' => 'string',
-		'data' => 'string',
+		'id'       => 'int',
+		'slug'     => 'string',
+		'data'     => 'string',
+		'name'     => 'string',
+		'capacity' => 'int',
+		'cost'     => 'string',
 	];
 
 	/**

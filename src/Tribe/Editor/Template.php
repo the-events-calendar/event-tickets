@@ -43,7 +43,7 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  mixed $default
+	 * @param mixed $default
 	 * @return mixed
 	 */
 	public function attr( $index, $default = null ) {
@@ -52,4 +52,3 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 		return $attribute;
 	}
 }
-

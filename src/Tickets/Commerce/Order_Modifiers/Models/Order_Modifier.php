@@ -2,7 +2,7 @@
 /**
  * The Order Modifier model.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  */
@@ -25,7 +25,7 @@ use TEC\Tickets\Commerce\Values\Value_Interface;
 /**
  * Class Order_Modifier.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Models;
  *

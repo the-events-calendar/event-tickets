@@ -150,7 +150,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $order_id
+	 * @param string $order_id The order ID.
 	 *
 	 * @return bool|Tribe__Tickets__Commerce__PayPal__Order The Order object if found or
 	 *                                                       `false` if the Order could not be
@@ -267,7 +267,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		 *
 		 * @since 4.7
 		 *
-		 * @param Tribe__Tickets__Commerce__PayPal__Order $this
+		 * @param Tribe__Tickets__Commerce__PayPal__Order $order The order object.
 		 */
 		do_action( 'tribe_tickets_tpp_order_from_post', $this );
 
@@ -299,8 +299,8 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		 *
 		 * @since 4.7
 		 *
-		 * @param Tribe__Tickets__Commerce__PayPal__Order $this
-		 * @param array                                   $transaction_data
+		 * @param Tribe__Tickets__Commerce__PayPal__Order $order            The order object.
+		 * @param array                                   $transaction_data The transaction data.
 		 */
 		do_action( 'tribe_tickets_tpp_order_from_transaction', $this, $transaction_data );
 
@@ -744,8 +744,8 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		 *
 		 * @since 4.7
 		 *
-		 * @param array                                   $statuses
-		 * @param Tribe__Tickets__Commerce__PayPal__Order $this
+		 * @param array                                   $statuses The statuses.
+		 * @param Tribe__Tickets__Commerce__PayPal__Order $order    The order object.
 		 */
 		$statuses = apply_filters( 'tribe_tickets_tpp_order_line_total_statuses', $statuses, $this );
 

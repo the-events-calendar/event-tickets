@@ -2,7 +2,7 @@
 /**
  * Event Tickets Order Modifiers Controller.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers
  */
 
@@ -87,6 +87,7 @@ final class Controller extends Controller_Contract {
 		}
 
 		remove_action( 'init', [ $this, 'set_currency_defaults' ] );
+		remove_action( 'init', [ $this, 'run_deprecated_coupon_filter' ] );
 	}
 
 	/**
@@ -124,8 +125,8 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Coupon::class );
 
 		$this->register_flag_actions();
-		$this->run_deprecated_coupon_filter();
 
+		add_action( 'init', [ $this, 'run_deprecated_coupon_filter' ] );
 		add_action( 'init', [ $this, 'set_currency_defaults' ] );
 	}
 
@@ -205,13 +206,13 @@ final class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	private function run_deprecated_coupon_filter() {
+	public function run_deprecated_coupon_filter() {
 		/**
 		 * Filters whether the coupons are enabled.
 		 *
 		 * This filter will be removed when the Coupon functionality is ready for production.
 		 *
-		 * @since      5.18.0
+		 * @since 5.18.0
 		 * @deprecated 5.21.0
 		 *
 		 * @param bool $enabled Whether the coupons are enabled.
@@ -221,7 +222,7 @@ final class Controller extends Controller_Contract {
 			[ false ],
 			'5.21.0',
 			'',
-			__( 'The coupon functionality is now included for all sites.', 'event-tickets' )
+			'The coupon functionality is now included for all sites.'
 		);
 	}
 

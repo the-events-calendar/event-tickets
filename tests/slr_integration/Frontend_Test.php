@@ -762,7 +762,7 @@ class Frontend_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-frontend'       => '/build/Seating/frontend/ticketsBlock.js',
-			'tec-tickets-seating-frontend-style' => '/build/Seating/frontend/ticketsBlock.css',
+			'tec-tickets-seating-frontend-style' => '/build/Seating/frontend/style-ticketsBlock.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {

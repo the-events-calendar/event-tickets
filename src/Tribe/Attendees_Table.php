@@ -177,8 +177,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Handler for the columns that don't have a specific column_{name} handler function.
 	 *
-	 * @param $item
-	 * @param $column
+	 * @param array  $item   The item being rendered.
+	 * @param string $column The column being rendered.
 	 *
 	 * @return string
 	 */
@@ -198,7 +198,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Handler for the checkbox column
 	 *
-	 * @param $item
+	 * @param array $item The item being rendered.
 	 *
 	 * @return string
 	 */
@@ -211,7 +211,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Populates the purchaser column.
 	 *
-	 * @param array $item
+	 * @param array $item The item being rendered.
 	 *
 	 * @return string
 	 */
@@ -324,7 +324,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Populates the status column.
 	 *
-	 * @param array $item
+	 * @param array $item The item being rendered.
 	 *
 	 * @return string
 	 */
@@ -397,7 +397,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * In some cases, such as when the current item belongs to the RSVP provider, an
 	 * empty string may be returned as there is no order screen that can be linked to.
 	 *
-	 * @param array $item
+	 * @param array $item The item being rendered.
 	 *
 	 * @return string
 	 */
@@ -413,8 +413,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Handler for the ticket column.
 	 *
-	 * @since  4.1
-	 * @since  4.12.1 Include the raw attendee Post ID in the ticket's ID.
+	 * @since 4.1
+	 * @since 4.12.1 Include the raw attendee Post ID in the ticket's ID.
 	 *
 	 * @param array $item Item whose ticket data should be output.
 	 *
@@ -444,7 +444,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Generates and returns the attendee table row actions.
 	 *
-	 * @param array $item
+	 * @param array $item The item being rendered.
 	 *
 	 * @return string
 	 */
@@ -483,8 +483,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Adds a set of default row actions to each item in the attendee list table.
 	 *
-	 * @param array $row_actions
-	 * @param array $item
+	 * @param array $row_actions The row actions to be displayed.
+	 * @param array $item        The item being rendered.
 	 *
 	 * @return array
 	 */
@@ -582,7 +582,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Handler for the check in column
 	 *
-	 * @param $item
+	 * @param array $item The item being rendered.
 	 *
 	 * @return string
 	 */
@@ -654,7 +654,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Generates content for a single row of the table
 	 *
-	 * @param object $item The current item
+	 * @param array $item The current item.
 	 */
 	public function single_row( $item ) {
 		$checked = '';
@@ -675,7 +675,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Hook to allow for the insertion of data after an attendee table row.
 		 *
-		 * @var $item array of an Attendee's data
+		 * @var array $item array of an Attendee's data
 		 */
 		do_action( 'event_tickets_attendees_table_after_row', $item );
 	}
@@ -687,7 +687,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @see WP_List_Table::display()
 	 *
-	 * @param string $which (top|bottom)
+	 * @param string $which Either 'top' or 'bottom'; the location of the current nav items being filtered.
 	 */
 	public function extra_tablenav( $which ) {
 		$event_id = $this->get_post_id();
@@ -816,7 +816,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				/**
 				 * Allow for customizing the generic/default action to perform on selected Attendees.
 				 *
-				 * @param $current_action The action currently being done on the selection of Attendees.
+				 * @param string $current_action The action currently being done on the selection of Attendees.
 				 */
 				do_action( 'tribe_events_tickets_attendees_table_process_bulk_action', $this->current_action() );
 				break;
@@ -991,7 +991,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * If this cannot be determined, both array elements will be set to false.
 	 *
-	 * @param $reference
+	 * @param string $reference The reference to the attendee.
 	 *
 	 * @return array
 	 */

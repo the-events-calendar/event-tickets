@@ -431,7 +431,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		 * @since 5.21.0
 		 *
 		 * @param array          $data The data to be processed by the cart.
-		 * @param Cart_Interface $this The cart object.
+		 * @param Cart_Interface $cart The cart object.
 		 */
 		return (array) apply_filters( 'tec_tickets_commerce_cart_repo_prepare_data', $data, $this );
 	}

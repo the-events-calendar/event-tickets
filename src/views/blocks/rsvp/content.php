@@ -10,8 +10,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since 4.9
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
  *
  * @version 4.12.0
  *

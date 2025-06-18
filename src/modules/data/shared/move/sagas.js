@@ -15,8 +15,8 @@ import { select as wpSelect } from '@wordpress/data';
  */
 import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
-import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
-import * as actions from '@moderntribe/tickets/data/shared/move/actions';
+import * as selectors from './selectors';
+import * as actions from './actions';
 
 export function createBody( params ) {
 	return Object.entries( params )
@@ -49,7 +49,7 @@ export function* _fetch( params ) {
 /**
  * Fetches usable oost types
  *
- * @yields
+ * @yield
  */
 export function* fetchPostTypes() {
 	try {
@@ -76,18 +76,14 @@ export function* fetchPostTypes() {
  * Fetches filtered posts based on criteria
  *
  * @export
- * @yields
+ * @yield
  * @param {*} {
- * 	ignore,
- * 	post_type,
- * 	search_terms = '',
- * }
+ *              ignore,
+ *              post_type,
+ *              search_terms = '',
+ *              }
  */
-export function* fetchPostChoices( {
-	ignore,
-	post_type,
-	search_terms = '',
-} ) {
+export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 	try {
 		yield put( {
 			type: types.FETCH_POST_CHOICES,
@@ -115,18 +111,14 @@ export function* fetchPostChoices( {
  * Moves ticket/RSVP from one post to another
  *
  * @export
- * @yields
+ * @yield
  * @param {*} {
- * 	src_post_id,
- * 	ticket_type_id,
- * 	target_post_id,
- * }
+ *              src_post_id,
+ *              ticket_type_id,
+ *              target_post_id,
+ *              }
  */
-export function* moveTicket( {
-	src_post_id,
-	ticket_type_id,
-	target_post_id,
-} ) {
+export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
 	try {
 		yield put( {
 			type: types.MOVE_TICKET,
@@ -164,10 +156,7 @@ export function* getPostChoices() {
 }
 
 export function* onModalChange( action ) {
-	if (
-		! action.payload.hasOwnProperty( 'target_post_id' ) &&
-		! action.payload.hasOwnProperty( 'ticketId' )
-	) {
+	if ( ! action.payload.hasOwnProperty( 'target_post_id' ) && ! action.payload.hasOwnProperty( 'ticketId' ) ) {
 		yield call( delay, 500 );
 		yield call( getPostChoices );
 	}
@@ -197,10 +186,7 @@ export function* onModalHide() {
 }
 
 export function* initialize() {
-	yield all( [
-		call( fetchPostTypes ),
-		call( getPostChoices ),
-	] );
+	yield all( [ call( fetchPostTypes ), call( getPostChoices ) ] );
 }
 
 export default function* watchers() {

@@ -1,2 +1,8 @@
+* @the-events-calendar/engineers
+
+src/Tickets/Commerce/Gateways/Square/ @dpanta94
+
 # All changes require Lead review
-event-tickets.php src/Tribe/Main.php src/Tribe/Tickets.php @bordoni
+event-tickets.php @bordoni
+src/Tribe/Main.php @bordoni
+src/Tribe/Tickets.php @bordoni

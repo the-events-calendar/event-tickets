@@ -20,11 +20,11 @@ tribe.tickets.attendees = {};
  * Initializes in a Strict env the code that manages the plugin Attendees library.
  *
  * @since 5.10.0
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.attendees
+ * @param {Object} $   jQuery
+ * @param {Object} obj tribe.tickets.attendees
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	const $document = $( document );
 
 	/*
@@ -43,11 +43,11 @@ tribe.tickets.attendees = {};
 	 * Handler for when the modal is being "closed".
 	 *
 	 * @since 5.10.0
-	 * @param {Object} event The close event.
+	 * @param {Object} event    The close event.
 	 * @param {Object} dialogEl The dialog element.
 	 * @return {void}
 	 */
-	obj.modalClose = function( event, dialogEl ) {
+	obj.modalClose = function ( event, dialogEl ) {
 		const $modal = $( dialogEl );
 		const $modalContent = $modal.find( obj.selectors.modalContent );
 
@@ -60,11 +60,8 @@ tribe.tickets.attendees = {};
 	 * @since 5.10.0
 	 * @return {void}
 	 */
-	obj.bindModalClose = function() {
-		$( tribe.dialogs.events ).on(
-			'tribeDialogCloseAttendeeDetailsModal.tribeTickets',
-			obj.modalClose,
-		);
+	obj.bindModalClose = function () {
+		$( tribe.dialogs.events ).on( 'tribeDialogCloseAttendeeDetailsModal.tribeTickets', obj.modalClose );
 	};
 
 	/**
@@ -73,7 +70,7 @@ tribe.tickets.attendees = {};
 	 * @since 5.10.0
 	 * @param {jQuery} $container jQuery object of the container.
 	 */
-	obj.unbindModalEvents = function( $container ) {
+	obj.unbindModalEvents = function ( $container ) {
 		$container.off( 'afterAjaxSuccess.tribeTicketsAdmin', obj.bindModalEvents );
 		$container.off();
 	};
@@ -82,12 +79,12 @@ tribe.tickets.attendees = {};
 	 * Handler for when the modal is opened.
 	 *
 	 * @since 5.10.0
-	 * @param {Object} event The show event.
+	 * @param {Object} event    The show event.
 	 * @param {Object} dialogEl The dialog element.
-	 * @param {Object} trigger The event.
+	 * @param {Object} trigger  The event.
 	 * @return {void}
 	 */
-	obj.modalOpen = function( event, dialogEl, trigger ) {
+	obj.modalOpen = function ( event, dialogEl, trigger ) {
 		const $modal = $( dialogEl );
 		const $trigger = $( trigger.target ).closest( 'button' );
 		const title = $trigger.data( 'modal-title' );
@@ -108,13 +105,13 @@ tribe.tickets.attendees = {};
 		const $modalContent = $modal.find( obj.selectors.modalContent );
 		const data = {
 			action: 'tribe_tickets_admin_manager',
-			request: request,
-			attendeeId: attendeeId,
-			eventId: eventId,
-			ticketId: ticketId,
-			provider: provider,
-			attendeeName: attendeeName,
-			attendeeEmail: attendeeEmail,
+			request,
+			attendeeId,
+			eventId,
+			ticketId,
+			provider,
+			attendeeName,
+			attendeeEmail,
 		};
 
 		tribe.tickets.admin.manager.request( data, $modalContent );
@@ -123,7 +120,7 @@ tribe.tickets.attendees = {};
 		$modalContent.on(
 			'afterAjaxSuccess.tribeTicketsAdmin',
 			{ container: $modalContent, requestData: data },
-			obj.bindModalEvents,
+			obj.bindModalEvents
 		);
 	};
 
@@ -133,7 +130,7 @@ tribe.tickets.attendees = {};
 	 * @since 5.10.0
 	 * @return {Object}
 	 */
-	obj.getContext = function() {
+	obj.getContext = function () {
 		const context = {};
 
 		return context;
@@ -145,11 +142,8 @@ tribe.tickets.attendees = {};
 	 * @since 5.10.0
 	 * @return {void}
 	 */
-	obj.bindModalOpen = function() {
-		$( tribe.dialogs.events ).on(
-			'tribeDialogShowAttendeeDetailsModal.tribeTickets',
-			obj.modalOpen,
-		);
+	obj.bindModalOpen = function () {
+		$( tribe.dialogs.events ).on( 'tribeDialogShowAttendeeDetailsModal.tribeTickets', obj.modalOpen );
 	};
 
 	/**
@@ -158,7 +152,7 @@ tribe.tickets.attendees = {};
 	 * @since 5.10.0
 	 * @return {void}
 	 */
-	obj.ready = function() {
+	obj.ready = function () {
 		obj.bindModalOpen();
 		obj.bindModalClose();
 	};

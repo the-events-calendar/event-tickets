@@ -7,8 +7,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.11.0
- * @since   4.11.3 Updated code comments.
+ * @since 4.11.0
+ * @since 4.11.3 Updated code comments.
  *
  * @version 4.11.3
  */

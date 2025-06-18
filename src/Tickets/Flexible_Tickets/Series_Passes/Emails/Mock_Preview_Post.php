@@ -2,7 +2,7 @@
 /**
  * Methods common to mock post generators.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Trait Mock_Preview_Post.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */

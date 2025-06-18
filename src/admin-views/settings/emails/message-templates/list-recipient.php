@@ -2,7 +2,7 @@
 /**
  * Tickets Emails List Recipient
  *
- * @since  5.5.6   Recipient for list item of email templates for Emails settings tab.
+ * @since 5.5.6   Recipient for list item of email templates for Emails settings tab.
  *
  * @var array<Email_Abstract> $emails Array of email info.
  * @var Email_Abstract        $email  Email info.

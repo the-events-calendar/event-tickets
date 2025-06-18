@@ -49,7 +49,7 @@ $classes     = [
 				<select
 					id="<?php echo esc_attr( $option_id . '-month' ); ?>"
 					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
+					<?php echo $required ? 'required' : ''; ?>
 					class="tribe_horizontal_datepicker__month"
 				>
 					<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
@@ -69,7 +69,7 @@ $classes     = [
 				<select
 					id="<?php echo esc_attr( $option_id . '-day' ); ?>"
 					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
+					<?php echo $required ? 'required' : ''; ?>
 					class="tribe_horizontal_datepicker__day"
 				>
 					<option value="" disabled selected><?php esc_html_e( 'Day', 'tribe-event-plus' ); ?></option>
@@ -89,7 +89,7 @@ $classes     = [
 				<select
 					id="<?php echo esc_attr( $option_id . '-year' ); ?>"
 					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
+					<?php echo $required ? 'required' : ''; ?>
 					class="tribe_horizontal_datepicker__year"
 				>
 					<option value="" disabled selected><?php esc_html_e( 'Year', 'tribe-event-plus' ); ?></option>
@@ -107,7 +107,7 @@ $classes     = [
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php tribe_disabled( $disabled ); ?>
-			<?php tribe_required( $required ); ?>
+			<?php echo $required ? 'required' : ''; ?>
 		/>
 	</div>
 </div>

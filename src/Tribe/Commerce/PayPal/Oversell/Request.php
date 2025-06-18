@@ -90,14 +90,14 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 	 *
 	 * @since 4.7
 	 *
-	 * @param $policy
-	 * @param $post_id
-	 * @param $ticket_id
-	 * @param $order_id
+	 * @param string $policy The policy.
+	 * @param int    $unused_post_id The post ID.
+	 * @param int    $unused_ticket_id The ticket ID.
+	 * @param int    $order_id The order ID.
 	 *
 	 * @return string
 	 */
-	public function filter_policy( $policy, $post_id, $ticket_id, $order_id ) {
+	public function filter_policy( $policy, $unused_post_id, $unused_ticket_id, $order_id ) {
 		if ( $order_id == $this->order_id ) {
 			return $this->policy;
 		}

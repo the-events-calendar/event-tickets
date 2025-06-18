@@ -2,7 +2,7 @@
 /**
  * Handles the rendering of the service error content.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin\Template;
 /**
  * Class Error_Content.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Service;
  */
@@ -98,13 +98,13 @@ class Error_Content {
 					'<a href="https://evnt.is/1bdu" target="_blank" rel="noreferrer noopener">%s</a>',
 					_x( 'Check your license key settings', 'License settings link label', 'event-tickets' )
 				);
-				
+
 				$login_link = sprintf(
 				// translators: %s is the login link label.
 					'<a href="https://evnt.is/1be1 " target="_blank" rel="noreferrer noopener">%s</a>',
 					_x( 'log into your account', 'Login link label', 'event-tickets' )
 				);
-				
+
 				$message = sprintf(
 				// translators: %1$s is the settings link, %2$s is the login link.
 					__(

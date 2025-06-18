@@ -120,7 +120,7 @@ class Attendees extends WP_List_Table {
 		/**
 		 * Filter the Page Slugs the Attendees Page CSS and JS Loads
 		 *
-		 * @param array array( $this->page_id ) an array of admin slugs
+		 * @param array $slugs An array of admin slugs.
 		 */
 		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', [ $this->page_id ] ) ) ) {
 			return;

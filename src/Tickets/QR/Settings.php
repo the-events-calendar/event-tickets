@@ -2,10 +2,12 @@
 
 namespace TEC\Tickets\QR;
 
+use TEC\Common\QR\Controller as Common_Controller;
+
 /**
  * Class Settings
  *
- * @since   5.7.0
+ * @since 5.7.0
  *
  * @package TEC\Tickets\QR
  */
@@ -70,7 +72,7 @@ class Settings {
 	 * @return bool
 	 */
 	public function is_enabled( $context = null ): bool {
-		$controller = tribe( Controller::class );
+		$controller = tribe( Common_Controller::class );
 		$enabled    = false;
 
 		// Only fetch from DB if the controller can use the QR code.
@@ -114,7 +116,7 @@ class Settings {
 		/**
 		 * Filters the generated hash key for QR API.
 		 *
-		 * @since      4.7.5
+		 * @since 4.7.5
 		 *
 		 * @deprecated 5.7.0 Use tec_tickets_qr_settings_generated_api_hash instead.
 		 *

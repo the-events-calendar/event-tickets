@@ -29,4 +29,16 @@ $admin_views = tribe( 'tickets.admin.views' );
 
 	<?php $admin_views->template( [ 'editor', 'panel', 'settings' ], get_defined_vars() ); ?>
 
+	<?php
+	/**
+	 * Allows for the insertion of additional content into the ticket edit form below the form
+	 * section
+	 *
+	 * @since 5.24.1
+	 *
+	 * @param int Post ID
+	 * @param int Ticket ID
+	 */
+	do_action( 'tribe_tickets_metabox_end', $post_id, $ticket_id );
+	?>
 </div>

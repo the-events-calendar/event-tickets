@@ -2,7 +2,7 @@
 /**
  * Email Dispatcher class.
  *
- * @since   5.6.0
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Emails;
 /**
  * Class Dispatcher.
  *
- * @since   5.6.0
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails
  */
@@ -227,8 +227,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param array      $headers The headers.
-		 * @param Dispatcher $this    The Dispatcher object for this specific email.
+		 * @param array      $headers    The headers.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$headers = apply_filters( 'tec_tickets_emails_dispatcher_headers', $this->headers, $this );
 
@@ -244,8 +244,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param array      $headers The headers.
-		 * @param Dispatcher $this    The Dispatcher object for this specific email.
+		 * @param array      $headers    The headers.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$headers = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_headers", $headers, $this );
 
@@ -290,7 +290,7 @@ class Dispatcher {
 		 * @since 5.6.0
 		 *
 		 * @param array      $attachments The attachments.
-		 * @param Dispatcher $this        The Dispatcher object for this specific email.
+		 * @param Dispatcher $dispatcher  The Dispatcher object for this specific email.
 		 */
 		$attachments = apply_filters( 'tec_tickets_emails_dispatcher_attachments', $this->attachments, $this );
 
@@ -307,7 +307,7 @@ class Dispatcher {
 		 * @since 5.6.0
 		 *
 		 * @param array      $attachments The attachments.
-		 * @param Dispatcher $this        The Dispatcher object for this specific email.
+		 * @param Dispatcher $dispatcher  The Dispatcher object for this specific email.
 		 */
 		$attachments = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_attachments", $attachments, $this );
 
@@ -332,8 +332,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string     $to   The email recipient.
-		 * @param Dispatcher $this The Dispatcher object for this specific email.
+		 * @param string     $to         The email recipient.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$to = apply_filters( 'tec_tickets_emails_dispatcher_to', $this->to, $this );
 
@@ -349,8 +349,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string     $to   The email recipient.
-		 * @param Dispatcher $this The Dispatcher object for this specific email.
+		 * @param string     $to         The email recipient.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$to = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_to", $to, $this );
 
@@ -386,8 +386,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string     $subject The email subject.
-		 * @param Dispatcher $this    The Dispatcher object for this specific email.
+		 * @param string     $subject    The email subject.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$subject = apply_filters( 'tec_tickets_emails_dispatcher_subject', $this->subject, $this );
 
@@ -403,8 +403,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string     $subject The email subject.
-		 * @param Dispatcher $this    The Dispatcher object for this specific email.
+		 * @param string     $subject    The email subject.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$subject = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_subject", $subject, $this );
 
@@ -440,8 +440,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string     $content The email subject.
-		 * @param Dispatcher $this    The Dispatcher object for this specific email.
+		 * @param string     $content    The email subject.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$content = apply_filters( 'tec_tickets_emails_dispatcher_content', $this->content, $this );
 
@@ -457,8 +457,8 @@ class Dispatcher {
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string     $content The email subject.
-		 * @param Dispatcher $this    The Dispatcher object for this specific email.
+		 * @param string     $content    The email subject.
+		 * @param Dispatcher $dispatcher The Dispatcher object for this specific email.
 		 */
 		$content = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_content", $content, $this );
 

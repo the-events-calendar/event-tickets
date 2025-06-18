@@ -2,7 +2,7 @@
 /**
  * Internal dependencies
  */
-import * as types from '@moderntribe/tickets/data/shared/move/types';
+import * as types from '../types';
 
 export const DEFAULT_STATE = {
 	post_type: 'all',
@@ -40,4 +40,3 @@ export default function modal( state = DEFAULT_STATE, action ) {
 			return state;
 	}
 }
-

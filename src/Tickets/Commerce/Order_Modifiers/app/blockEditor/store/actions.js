@@ -1,5 +1,4 @@
 export const actions = {
-
 	/**
 	 * Set all the fees.
 	 *
@@ -19,14 +18,14 @@ export const actions = {
 	 * Set the selected fees for a ticket.
 	 *
 	 * @param {string} clientId
-	 * @param {int[]} feesSelected
+	 * @param {int[]}  feesSelected
 	 * @return {{feesSelected, clientId, type: string}}
 	 */
 	setTicketFees( clientId, feesSelected ) {
 		return {
 			type: 'SET_SELECTED_FEES',
 			clientId,
-			feesSelected
+			feesSelected,
 		};
 	},
 
@@ -34,7 +33,7 @@ export const actions = {
 	 * Add a fee to a ticket.
 	 *
 	 * @param {string} clientId
-	 * @param {int} feeId
+	 * @param {int}    feeId
 	 * @return {{clientId, type: string, feeId}}
 	 */
 	addFeeToTicket( clientId, feeId ) {
@@ -49,7 +48,7 @@ export const actions = {
 	 * Remove a fee from a ticket.
 	 *
 	 * @param {string} clientId
-	 * @param {int} feeId
+	 * @param {int}    feeId
 	 * @return {{clientId, type: string, feeId}}
 	 */
 	removeFeeFromTicket( clientId, feeId ) {
@@ -107,14 +106,14 @@ export const actions = {
 		return {
 			type: 'SET_SELECTED_FEES_BY_POST_ID',
 			clientId,
-		}
+		};
 	},
 
 	/**
 	 * Set the fees to be displayed.
 	 *
 	 * @param {string} clientId
-	 * @param {Fee[]} fees
+	 * @param {Fee[]}  fees
 	 * @return {{fees, clientId, type: string}}
 	 */
 	setDisplayedFees( clientId, fees ) {
@@ -122,14 +121,14 @@ export const actions = {
 			type: 'SET_DISPLAYED_FEES',
 			clientId,
 			fees,
-		}
+		};
 	},
 
 	/**
 	 * Add a fee to the displayed fees.
 	 *
 	 * @param {string} clientId
-	 * @param {int} feeId
+	 * @param {int}    feeId
 	 * @return {{clientId, feeId, type: string}}
 	 */
 	addDisplayedFee( clientId, feeId ) {
@@ -137,6 +136,6 @@ export const actions = {
 			type: 'ADD_DISPLAYED_FEE',
 			clientId,
 			feeId,
-		}
-	}
+		};
+	},
 };

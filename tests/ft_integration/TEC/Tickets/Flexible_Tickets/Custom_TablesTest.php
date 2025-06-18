@@ -47,6 +47,14 @@ class Custom_TablesTest extends Controller_Test_Case {
 		$table = $this->test_services->get( $table_class );
 		$this->assertInstanceOf( $table_class, $table );
 		$this->assertTrue( $table->exists() );
+
+		// Verify new columns exist
+		global $wpdb;
+		$table_name = $table->table_name( true );
+		$columns = $wpdb->get_col( "SHOW COLUMNS FROM {$table_name}" );
+		$this->assertContains( 'name', $columns );
+		$this->assertContains( 'capacity', $columns );
+		$this->assertContains( 'cost', $columns );
 	}
 
 	/*
