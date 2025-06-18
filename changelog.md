@@ -7,6 +7,7 @@
 * Fix - Fix an issue where seating timer was getting interrupted during checkout. [ET-2519]
 * Fix - Fixed Tickets can not be added uto Posts using Block Editor. [ET-2516]
 * Fix - Formats the query for cleaning up stale webhook entries properly. [ET-2206]
+* Language - 1 new strings added, 4 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.24.1.1] 2025-06-12
 
