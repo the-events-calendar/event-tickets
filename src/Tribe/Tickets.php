@@ -4650,16 +4650,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			global $wpdb;
 
 			$provider = static::class;
+			$provider_obj = tribe( $provider );
 
-			if ( $provider === 'TEC\Tickets\Commerce\Module' ) {
-				$event_meta_key    = static::ATTENDEE_EVENT_KEY; //'_tec_tickets_commerce_event';
-				$product_post_type = \TEC\Tickets\Commerce\Ticket::POSTTYPE; // $this->ticket_object; //'tec_tc_ticket'
-				$product_meta_key  = static::ATTENDEE_PRODUCT_KEY; // '_tec_tickets_commerce_ticket'
-			} else { // ( $provider === 'rsvp' ) {
-				$event_meta_key    = '_tribe_rsvp_for_event'; //$this->get_event_key();
-				$product_post_type = 'tribe_rsvp_tickets'; //$this->ticket_object;
-				$product_meta_key  = static::ATTENDEE_PRODUCT_KEY; // '_tribe_rsvp_product'
-			}
+			// Meta key connecting the ticket/attendee to the event. '_tribe_rsvp_for_event', '_tec_tickets_commerce_event'
+			$event_meta_key    = $provider_obj->get_event_key();
+			// Post type of the ticket product. 'tribe_rsvp_tickets', 'tec_tc_ticket'
+			$product_post_type = $provider_obj->ticket_object;
+			// Meta key connecting the attendee to the RSVP/ticket product. '_tribe_rsvp_product', '_tec_tickets_commerce_ticket'
+			$product_meta_key  = static::ATTENDEE_PRODUCT_KEY;
 
 			// Get the abandoned products.
 			$query = $wpdb->prepare(
