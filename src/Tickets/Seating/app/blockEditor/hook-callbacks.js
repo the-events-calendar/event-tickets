@@ -251,6 +251,7 @@ export const disableTicketSelection = ( isSelected ) => {
  * Filters whether the confirm save button is disabled.
  *
  * @since 5.16.0
+ * @since TBD Updated logic for returning the same value when layout ID is not set.
  *
  * @param {boolean} isDisabled Whether the button is disabled.
  * @param {Object}  state      The state of the store.
@@ -266,12 +267,12 @@ export const filterButtonIsDisabled = ( isDisabled, state, ownProps ) => {
 
 	const store = select( storeName );
 
-	if ( ! store.isUsingAssignedSeating() || ! store.isLayoutLocked() ) {
+	if ( ! store.isUsingAssignedSeating( ownProps.clientId ) || ! store.isLayoutLocked() ) {
 		return isDisabled;
 	}
 
 	if ( ! store.getCurrentLayoutId() ) {
-		return true;
+		return isDisabled;
 	}
 
 	if ( ! store.getTicketSeatType( ownProps.clientId ) ) {
