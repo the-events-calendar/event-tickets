@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Ensure wizard does not install The Events Calendar unless requested. [ET-2524]
