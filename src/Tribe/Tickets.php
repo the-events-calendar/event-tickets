@@ -4680,11 +4680,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Get the orphaned products.
-			// Meta key connecting the ticket/attendee to the event. '_tribe_rsvp_for_event', '_tec_tickets_commerce_event'
+			// Meta key connecting the ticket/attendee to the event: '_tribe_rsvp_for_event' or '_tec_tickets_commerce_event'.
 			$event_meta_key = $provider_obj->get_event_key();
-			// Post type of the ticket product. 'tribe_rsvp_tickets', 'tec_tc_ticket'
+			// Post type of the ticket product: 'tribe_rsvp_tickets' or 'tec_tc_ticket'.
 			$product_post_type = $provider_obj->ticket_object;
-			// Meta key connecting the attendee to the RSVP/ticket product. '_tribe_rsvp_product', '_tec_tickets_commerce_ticket'
+			// Meta key connecting the attendee to the RSVP/ticket product: '_tribe_rsvp_product' or '_tec_tickets_commerce_ticket'.
 			$product_meta_key = static::ATTENDEE_PRODUCT_KEY;
 
 			$orphaned_products = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );

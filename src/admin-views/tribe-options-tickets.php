@@ -354,15 +354,15 @@ $maintenance_fields = [
 			esc_html__( 'Maintenance', 'event-tickets' ) . '</h3>',
 	],
 	// Maintenance description.
-	'maintenance-description' => [
+	'maintenance-description'                           => [
 		'type' => 'html',
 		'html' => '<p class="tec-settings-form__description-text">' .
 			sprintf(
 			// Translators: %1$s: Plural RSVP label, %2$s: Plural tickets label in lowercase.
 				_x(
-				  'If you have orphaned %1$s or %2$s that don\'t have a parent post, you can move them to the trash, from where they will be cleaned up by the WordPress maintenance process.',
-				  'Maintenance description',
-				  'event-tickets'
+					'If you have orphaned %1$s or %2$s that don\'t have a parent post, you can move them to the trash, from where they will be cleaned up by the WordPress maintenance process.',
+					'Maintenance description',
+					'event-tickets'
 				),
 				tribe_get_rsvp_label_plural( 'maintenance_description' ),
 				tribe_get_ticket_label_plural_lowercase( 'maintenance_description' ),
