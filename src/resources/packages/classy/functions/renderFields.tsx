@@ -2,14 +2,13 @@ import React, { Fragment, useState } from 'react';
 import { Fill } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import {
-	TicketName,
-	TicketDescription,
-	TicketPrice,
+	Tickets,
 } from '../fields';
 
 type Ticket = {
 	name: string;
 	description?: string;
+	price?: string;
 }
 
 /**
@@ -25,8 +24,11 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 	// todo: Add post type check?
 
 	const meta = useSelect( ( select ) => {
-		// @ts-ignore
-		return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		const { getEditedPostAttribute }: {
+			getEditedPostAttribute: ( attribute: string ) => any;
+		} = select( 'core/editor' );
+
+		return getEditedPostAttribute( 'meta' ) || null;
 	}, [] );
 
 	// todo: Use the correct format/meta for ticket data.
@@ -34,9 +36,6 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 
 	const { editPost } = useDispatch( 'core/editor' );
 
-	const [ ticketName, setTicketName ] = useState( ticketMeta.name );
-	const [ ticketDescription, setTicketDescription ] = useState( ticketMeta.description || '' );
-	const [ ticketPrice, setTicketPrice ] = useState( '' );
 
 	// todo: the ticket fields need to be rendered per ticket, in a modal.
 	// todo: Display of the tickets has a different format when not editing.
@@ -48,19 +47,8 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 			{ /* Portal-render the fields into the Classy form. */ }
 			<Fill name="tec.classy.fields.tickets">
 
-				<TicketName
-					onChange={ ( value ) => { setTicketName( value ); } }
-					value={ ticketName }
-				/>
-
-				<TicketDescription
-					onChange={ ( value ) => { setTicketDescription( value ); } }
-					value={ ticketDescription }
-				/>
-
-				<TicketPrice
-					onChange={ (value ) => { setTicketPrice( value ); } }
-					value={ ticketPrice }
+				<Tickets
+					tickets={ [] }
 				/>
 
 			</Fill>
