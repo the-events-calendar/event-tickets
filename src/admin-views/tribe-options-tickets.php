@@ -382,7 +382,7 @@ $maintenance_fields = [
 				tribe_get_rsvp_label_plural( 'maintenance_description' ),
 				'</a>',
 			) .
-		    '<br>' .
+			'<br>' .
 			sprintf(
 				// Translators: %1$s: The number or orphaned RSVPs, %2$s: Singular RSVP label.
 				_x( 'There are %1$s orphaned %2$s products with %3$s attendees.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
@@ -390,12 +390,12 @@ $maintenance_fields = [
 				tribe_get_rsvp_label_singular( 'maintenance_description' ),
 				$rsvp_orphaned_numbers['attendees']
 			) .
-		          '</p>',
+		    '</p>',
 	],
 	'maintenance-ticket'                                => [
 		'type' => 'html',
 		'html' => '<p class="tec-settings-form__description-text">' .
-		    '<strong>' . tribe_get_ticket_label_plural( 'maintenance_description' ) . ' (Tickets Commerce)</strong>' .
+			'<strong>' . tribe_get_ticket_label_plural( 'maintenance_description' ) . ' (Tickets Commerce)</strong>' .
 			'<br>' .
 			sprintf(
 				// Translators: %1$s: Opening anchor tag, %2$s: Plural ticket label, %3$s: Closing anchor tag.
