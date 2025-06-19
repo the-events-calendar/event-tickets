@@ -4640,11 +4640,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns the number of orphaned tickets based on the provider.
+		 * Returns either the post IDs or the number of orphaned posts based on the provider.
+		 *
+		 * @since TBD
 		 *
 		 * @param bool $count Whether we should return the post IDs (default, false) or the number of posts found (true).
 		 *
-		 * @return array Either the post IDs of the abandoned posts (default, $count = false) or the number of products and attendees ($count = true).
+		 * @return array Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned products and attendees ($count = true).
 		 */
 		public function get_orphaned_products( bool $count = false ): array {
 			global $wpdb;
@@ -4736,7 +4738,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * The query to get the orphaned entries of the given post type.
+		 * Query to get the orphaned entries of the given post type.
+		 *
+		 * @since TBD
 		 *
 		 * @param string $meta_key  The meta key linking the post type to the event.
 		 * @param string $post_type The post type.

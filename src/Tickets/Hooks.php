@@ -57,6 +57,8 @@ class Hooks extends Service_Provider {
 	/**
 	 * Trash orphaned entries.
 	 *
+	 * @since TBD
+	 *
 	 * @return void
 	 */
 	public function remove_orphans() {
