@@ -20,7 +20,6 @@ namespace TEC\Tickets;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Tickets__RSVP;
-use Tribe__Tickets__Tickets;
 use WP_Query;
 use WP_Post;
 
@@ -51,7 +50,7 @@ class Hooks extends Service_Provider {
 	protected function add_actions() {
 		$this->container->register( Ticket_Cache_Controller::class );
 
-		add_action( 'admin_post_tec_tickets_remove_orphans', [ $this, 'remove_orphans'] );
+		add_action( 'admin_post_tec_tickets_remove_orphans', [ $this, 'remove_orphans' ] );
 	}
 
 	/**
@@ -91,7 +90,6 @@ class Hooks extends Service_Provider {
 			return;
 		}
 
-		//wp_die( print_r( $ids, true ) );
 		// Delete posts.
 		foreach ( $ids as $id ) {
 			wp_delete_post( $id );
@@ -100,7 +98,7 @@ class Hooks extends Service_Provider {
 		// Return.
 		$url = add_query_arg( 'page', 'tec-tickets-settings', admin_url( 'admin.php' ) );
 
-		wp_redirect( esc_url_raw( $url ) );
+		wp_safe_redirect( esc_url_raw( $url ) );
 		tribe_exit();
 	}
 

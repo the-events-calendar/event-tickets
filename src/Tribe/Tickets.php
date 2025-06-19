@@ -4651,17 +4651,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_orphaned_products( bool $count = false ): array {
 			global $wpdb;
 
-			$provider = static::class;
+			$provider     = static::class;
 			$provider_obj = tribe( $provider );
 
 			$number_of_orphaned_orders = 0;
-			$orphaned_posts = [];
+			$orphaned_posts            = [];
 
 			// If it's Tickets Commerce, get orphaned orders.
 			if ( $provider === 'TEC\Tickets\Commerce\Module' ) {
-				$event_meta_key = \TEC\Tickets\Commerce\Order::$events_in_order_meta_key;
+				$event_meta_key    = \TEC\Tickets\Commerce\Order::$events_in_order_meta_key;
 				$product_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
-				$orphaned_orders = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
+				$orphaned_orders   = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
 
 				/**
 				 * Filter orphaned orders for Tickets Commerce. You can use this to exclude orphaned orders you want to keep.
@@ -4681,11 +4681,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Get the orphaned products.
 			// Meta key connecting the ticket/attendee to the event. '_tribe_rsvp_for_event', '_tec_tickets_commerce_event'
-			$event_meta_key    = $provider_obj->get_event_key();
+			$event_meta_key = $provider_obj->get_event_key();
 			// Post type of the ticket product. 'tribe_rsvp_tickets', 'tec_tc_ticket'
 			$product_post_type = $provider_obj->ticket_object;
 			// Meta key connecting the attendee to the RSVP/ticket product. '_tribe_rsvp_product', '_tec_tickets_commerce_ticket'
-			$product_meta_key  = static::ATTENDEE_PRODUCT_KEY;
+			$product_meta_key = static::ATTENDEE_PRODUCT_KEY;
 
 			$orphaned_products = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
 
