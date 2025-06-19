@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Add more checks for stock availablity to avoid race condition issues. [ET-1942]
