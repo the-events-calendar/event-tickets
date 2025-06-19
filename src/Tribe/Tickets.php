@@ -4640,6 +4640,145 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns either the post IDs or the number of orphaned posts based on the provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $count Whether we should return the post IDs (default, false) or the number of posts found (true).
+		 *
+		 * @return array Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned products and attendees ($count = true).
+		 */
+		public function get_orphaned_products( bool $count = false ): array {
+			global $wpdb;
+
+			$provider     = static::class;
+			$provider_obj = tribe( $provider );
+
+			$number_of_orphaned_orders = 0;
+			$orphaned_posts            = [];
+
+			// If it's Tickets Commerce, get orphaned orders.
+			if ( $provider === 'TEC\Tickets\Commerce\Module' ) {
+				$event_meta_key    = \TEC\Tickets\Commerce\Order::$events_in_order_meta_key;
+				$product_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
+				$orphaned_orders   = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
+
+				/**
+				 * Filter orphaned orders for Tickets Commerce. You can use this to exclude orphaned orders you want to keep.
+				 *
+				 * @since TBD
+				 *
+				 * @param array  $orphaned_orders   Array of order IDs that are orphaned.
+				 * @param string $event_meta_key    Meta key connecting order to the event.
+				 * @param string $product_post_type Post type of the order.
+				 */
+				$orphaned_orders = apply_filters( 'tribe_tickets_tc_orphaned_orders', $orphaned_orders, $event_meta_key, $product_post_type );
+
+				$number_of_orphaned_orders = count( $orphaned_orders );
+
+				$orphaned_posts = array_merge( $orphaned_posts, $orphaned_orders );
+			}
+
+			// Get the orphaned products.
+			// Meta key connecting the ticket/attendee to the event: '_tribe_rsvp_for_event' or '_tec_tickets_commerce_event'.
+			$event_meta_key = $provider_obj->get_event_key();
+			// Post type of the ticket product: 'tribe_rsvp_tickets' or 'tec_tc_ticket'.
+			$product_post_type = $provider_obj->ticket_object;
+			// Meta key connecting the attendee to the RSVP/ticket product: '_tribe_rsvp_product' or '_tec_tickets_commerce_ticket'.
+			$product_meta_key = static::ATTENDEE_PRODUCT_KEY;
+
+			$orphaned_products = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
+
+			/**
+			 * Filter orphaned products. You can use this to exclude orphaned products you want to keep.
+			 *
+			 * @since TBD
+			 *
+			 * @param array  $orphaned_orders   Array of product post IDs that are orphaned.
+			 * @param string $event_meta_key    Meta key connecting the product to the event.
+			 * @param string $product_post_type Post type of the product.
+			 */
+			$orphaned_products = apply_filters( 'tribe_tickets_orphaned_products', $orphaned_products, $event_meta_key, $product_post_type );
+
+
+			// Prepare the results for use in the next query.
+			$ids = "'" . implode( "', '", $orphaned_products ) . "'";
+
+			// Get the attendees for each abandoned product.
+			$orphaned_attendees = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT post_id FROM {$wpdb->postmeta}
+                    WHERE meta_value IN ({$ids}) AND meta_key = %s",
+					$product_meta_key
+				)
+			);
+
+			/**
+			 * Filter orphaned attendees. You can use this to exclude orphaned attendees you want to keep.
+			 *
+			 * @since TBD
+			 *
+			 * @param array  $orphaned_orders   Array of attendee post IDs that are orphaned.
+			 * @param string $event_meta_key    Meta key connecting attendee to the event.
+			 * @param string $product_post_type Post type of the attendee.
+			 */
+			$orphaned_attendees = apply_filters( 'tribe_tickets_orphaned_attendees', $orphaned_attendees, $event_meta_key, $product_post_type );
+
+			// If counting, return the numbers.
+			if ( $count ) {
+				return [
+					'orders'    => $number_of_orphaned_orders,
+					'products'  => count( $orphaned_products ),
+					'attendees' => count( $orphaned_attendees ),
+				];
+			}
+
+			// Return the post IDs to be deleted.
+			return array_merge( $orphaned_posts, $orphaned_products, $orphaned_attendees );
+		}
+
+		/**
+		 * Query to get the orphaned entries of the given post type.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $meta_key  The meta key linking the post type to the event.
+		 * @param string $post_type The post type.
+		 *
+		 * @return array
+		 */
+		public function get_orphaned_post_ids( $meta_key, $post_type ) {
+			global $wpdb;
+
+			$query = $wpdb->prepare(
+				"SELECT pm.post_id
+		FROM {$wpdb->postmeta} AS pm
+		LEFT JOIN {$wpdb->posts} AS p1 ON p1.ID = pm.post_id
+		LEFT JOIN {$wpdb->posts} AS p2 ON pm.meta_value = p2.ID
+		WHERE pm.meta_key = %s
+	  	AND p1.post_type = %s
+		AND p2.ID IS NULL;",
+				$meta_key,
+				$post_type
+			);
+
+			$post_ids = $wpdb->get_col( $query );
+
+			/**
+			 * Filter the list of orphaned post IDs for a specific provider.
+			 *
+			 * @since TBD
+			 *
+			 * @param array  $post_ids  Array of orphaned post IDs.
+			 * @param string $meta_key  Meta key linking post to the event.
+			 * @param string $post_type Post type being checked.
+			 */
+			$post_ids = apply_filters( 'tribe_tickets_orphaned_post_ids', $post_ids, $meta_key, $post_type );
+
+			return $post_ids;
+		}
+
+		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
 		 * Set up this way to amke it easier to add messages as needed.
 		 *
