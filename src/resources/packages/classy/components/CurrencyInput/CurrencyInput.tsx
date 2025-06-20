@@ -17,6 +17,10 @@ const decimalPrecision = 2;
 const decimalSeparator = '.';
 const thousandSeparator = ',';
 
+type CurrencyInputProps = {
+	required?: boolean;
+} & TicketComponentProps;
+
 /**
  * Renders a currency input field in the Classy editor.
  *
@@ -25,9 +29,9 @@ const thousandSeparator = ',';
  * @param {TicketComponentProps} props
  * @return {JSX.Element} The rendered ticket price field.
  */
-export default function CurrencyInput( props: TicketComponentProps ): JSX.Element{
+export default function CurrencyInput( props: CurrencyInputProps ): JSX.Element{
 
-	const { label, onChange, value } = props;
+	const { label, onChange, value, required } = props;
 	const defaultLabel = __( 'Price', 'event-tickets' );
 
 	const [ hasFocus, setHasFocus ] = useState< boolean >( false );
@@ -71,7 +75,7 @@ export default function CurrencyInput( props: TicketComponentProps ): JSX.Elemen
 				hideLabelFromVision={ true }
 				value={ renderValue( value ) }
 				onChange={ onChange }
-				required={ true }
+				required={ required || false }
 				onFocus={ (): void => setHasFocus( true ) }
 				onBlur={ (): void => setHasFocus( false ) }
 			/>
