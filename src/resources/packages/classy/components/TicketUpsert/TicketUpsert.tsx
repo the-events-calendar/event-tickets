@@ -12,6 +12,7 @@ import {
 	TicketName,
 	TicketDescription,
 } from '../../fields';
+import { CurrencyInput } from '../CurrencyInput';
 
 type TicketUpsertProps = {
 	isUpdate: boolean;
@@ -31,7 +32,13 @@ const defaultValues: Ticket = {
 	displayedFees: [],
 };
 
-export default function TicketUpsert( props: TicketUpsertProps ) {
+/**
+ * TicketUpsert component for creating or updating tickets.
+ *
+ * @param {TicketUpsertProps} props
+ * @return {JSX.Element} The rendered ticket upsert component.
+ */
+export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 	const {
 		isUpdate,
@@ -79,21 +86,57 @@ export default function TicketUpsert( props: TicketUpsertProps ) {
 				</h4>
 			</header>
 
-			<TicketName
-				value={ decodeEntities( currentValues.name ) }
-				onChange={ ( value: string ) => {
-					const newValue = value || '';
-					setCurrentValues( { ...currentValues, name: newValue } );
-					setConfirmEnabled( newValue !== '' );
-				} }
-			/>
+			<span className="classy-section-separator"></span>
 
-			<TicketDescription
-				value={ decodeEntities( currentValues.description ) }
-				onChange={ ( value: string ) => {
-					setCurrentValues( { ...currentValues, description: value || '' } );
-				} }
-			/>
+			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
+				<TicketName
+					value={ decodeEntities( currentValues.name ) }
+					onChange={ ( value: string ) => {
+						const newValue = value || '';
+						setCurrentValues( { ...currentValues, name: newValue } );
+						setConfirmEnabled( newValue !== '' );
+					} }
+				/>
+
+				<TicketDescription
+					value={ decodeEntities( currentValues.description ) }
+					onChange={ ( value: string ) => {
+						setCurrentValues( { ...currentValues, description: value || '' } );
+					} }
+				/>
+
+				<CurrencyInput
+					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
+					value={ decodeEntities( currentValues.price ) }
+					onChange={ ( value: string ) => {
+						setCurrentValues( { ...currentValues, price: value || '' } );
+					} }
+				/>
+			</section>
+
+			<footer className="classy-modal__footer classy-modal__footer--ticket">
+				<div className="classy-modal__actions classy-modal__actions--ticket">
+					<Button
+						aria-disabled={ ! confirmEnabled }
+						className="classy-button"
+						onClick={ invokeSaveWithData }
+						variant="primary"
+					>
+						{
+							isUpdate
+								? _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' )
+								: _x( 'Create Ticket', 'Create ticket button label', 'event-tickets' )
+						}
+					</Button>
+					<Button
+						className="classy-button"
+						onClick={ onCancel }
+						variant="link"
+					>
+						{ _x( 'Cancel', 'Cancel button label', 'event-tickets' ) }
+					</Button>
+				</div>
+			</footer>
 		</div>
 	);
 }
