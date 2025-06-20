@@ -9,6 +9,7 @@ import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
 import { Ticket } from '../../types/Ticket';
 import {
+	SalePrice,
 	TicketName,
 	TicketDescription,
 } from '../../fields';
@@ -111,6 +112,10 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					onChange={ ( value: string ) => {
 						setCurrentValues( { ...currentValues, price: value || '' } );
 					} }
+				/>
+
+				<SalePrice
+
 				/>
 			</section>
 
