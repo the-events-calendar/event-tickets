@@ -64,6 +64,7 @@ class Controller extends Controller_Contract {
 			->get( Common_Controller::class )
 			->post_uses_classy( get_post_type() );
 
+		// Register the main Classy script.
 		Asset::add(
 			'tec-classy-tickets',
 			'classy.js'
@@ -72,6 +73,18 @@ class Controller extends Controller_Contract {
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->set_condition( $post_uses_classy )
 			->add_dependency( 'tec-classy' )
+			->add_to_group( 'tec-classy' )
+			->register();
+
+		// Register the main Classy styles.
+		Asset::add(
+			'tec-classy-tickets-styles',
+			'style-classy.css'
+		)->add_to_group_path( "{$this->get_et_class()}-packages" )
+			// @todo this should be dynamic depending on the loading context.
+			->enqueue_on( 'enqueue_block_editor_assets' )
+			->set_condition( $post_uses_classy )
+			->add_dependency( 'tec-classy-style' )
 			->add_to_group( 'tec-classy' )
 			->register();
 	}

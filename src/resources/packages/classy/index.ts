@@ -3,6 +3,7 @@ import renderFields from './functions/renderFields';
 import { STORE_NAME, storeConfig } from './store';
 import { WPDataRegistry } from '@wordpress/data/build-types/registry';
 import { getRegistry } from '@tec/common/classy/store';
+import './style.pcss';
 
 /**
  * Hook on the Classy application initialization to add Tickets store to the Classy registry.
