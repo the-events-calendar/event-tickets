@@ -1,14 +1,21 @@
 import * as React from 'react';
 import { useCallback, useState } from 'react';
 import { _x } from '@wordpress/i18n';
-import { __experimentalInputControl as InputControl, Button, CustomSelectControl } from '@wordpress/components';
+import {
+	__experimentalInputControl as InputControl,
+	Button,
+	CustomSelectControl,
+	ToggleControl
+} from '@wordpress/components';
 import { CenteredSpinner, IconNew, LabeledInput } from '@tec/common/classy/components';
 import { CustomSelectOption } from '@wordpress/components/build-types/custom-select-control/types';
 import { useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
+import { Capacity as CapacityType } from '../../types/Capacity';
 import { Ticket } from '../../types/Ticket';
 import {
+	Capacity,
 	SalePrice,
 	TicketName,
 	TicketDescription,
@@ -29,6 +36,8 @@ const defaultValues: Ticket = {
 	hasSalePrice: false,
 	salePrice: '',
 	capacityType: 'general-admission',
+	capacity: '',
+	capacityShared: false,
 	selectedFees: [],
 	displayedFees: [],
 };
@@ -68,6 +77,8 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			hasSalePrice: currentValues.hasSalePrice,
 			salePrice: currentValues.salePrice,
 			capacityType: currentValues.capacityType,
+			capacity: currentValues.capacity,
+			capacityShared: currentValues.capacityShared,
 			selectedFees: currentValues.selectedFees,
 			displayedFees: currentValues.displayedFees,
 		};
@@ -117,6 +128,52 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				<SalePrice
 
 				/>
+			</section>
+
+			<hr className="classy-modal__section-separator" />
+
+			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
+				<div className="classy-field__input-title">
+					{ _x( 'Capacity', 'Title for the capacity field in the Classy editor', 'event-tickets' ) }
+				</div>
+
+				<div className="classy-field__capacity">
+					<Capacity
+						value={ currentValues.capacityType }
+						onChange={ ( value: string ) => {
+							setCurrentValues( { ...currentValues, capacityType: value as CapacityType } );
+						} }
+					/>
+
+					<LabeledInput
+						label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
+					>
+						<InputControl
+							className="classy-field__control classy-field__control--input classy-field__control--input-narrow"
+							label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
+							hideLabelFromVision={ true }
+							value={ String( currentValues.capacity || '' ) }
+							onChange={ ( value: string ) => {
+								const capacityValue = value ? parseInt( value, 10 ) : undefined;
+								setCurrentValues( { ...currentValues, capacity: capacityValue } );
+							} }
+							size="small"
+							__next40pxDefaultSize={ true }
+						/>
+						<div className="classy-field__input-note">
+							{ _x( 'Leave blank for unlimited', 'Ticket capacity input note', 'event-tickets' ) }
+						</div>
+					</LabeledInput>
+
+					<ToggleControl
+						label={ _x( 'Share capacity with other tickets', 'Label for sharing capacity toggle', 'event-tickets' ) }
+						__nextHasNoMarginBottom={ true }
+						checked={ currentValues.capacityShared }
+						onChange={ ( value: boolean ) => {
+							setCurrentValues( { ...currentValues, capacityShared: value } );
+						} }
+					/>
+				</div>
 			</section>
 
 			<footer className="classy-modal__footer classy-modal__footer--ticket">

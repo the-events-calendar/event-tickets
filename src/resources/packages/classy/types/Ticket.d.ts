@@ -8,7 +8,8 @@ export type Ticket = {
 	hasSalePrice: boolean;
 	salePrice: string;
 	capacityType: Capacity;
-	capacity?: number;
+	capacity: string | number;
+	capacityShared: boolean;
 	selectedFees: Fee[];
 	displayedFees: Fee[];
 };

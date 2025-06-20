@@ -1,11 +1,37 @@
 :root {
 	/* This is a place to define CSS variables for the Classy component. */
+	--classy-padding-vertical: var(--tec-spacer-7);
 }
 
 .classy-root {
 	/* This is a place to define styles for the Classy component. */
+
+	.classy-field {
+		&__capacity {
+			.classy-component__labeled-input {
+				padding: var(--classy-padding-vertical) 0;
+			}
+
+			.components-radio-control__group-wrapper {
+				flex-direction: row;
+				gap: var(--classy-padding-vertical);
+				justify-content: flex-start;
+			}
+		}
+
+		&__control--input-narrow {
+			.components-input-control__container {
+				width: 30%;
+			}
+		}
+	}
 }
 
 .classy-modal {
+	/* This is a place to define styles for the Classy modal. */
 
+	&__section-separator {
+		margin: 0;
+		padding: 0;
+	}
 }
