@@ -11,7 +11,6 @@ import { Ticket } from '../../types/Ticket';
 import {
 	TicketName,
 	TicketDescription,
-	TicketPrice,
 } from '../../fields';
 
 type TicketUpsertProps = {
@@ -93,13 +92,6 @@ export default function TicketUpsert( props: TicketUpsertProps ) {
 				value={ decodeEntities( currentValues.description ) }
 				onChange={ ( value: string ) => {
 					setCurrentValues( { ...currentValues, description: value || '' } );
-				} }
-			/>
-
-			<TicketPrice
-				value={ decodeEntities( currentValues.price ) }
-				onChange={ ( value: string ) => {
-					setCurrentValues( { ...currentValues, price: value || '' } );
 				} }
 			/>
 		</div>

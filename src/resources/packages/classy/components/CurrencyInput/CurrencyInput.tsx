@@ -18,17 +18,17 @@ const decimalSeparator = '.';
 const thousandSeparator = ',';
 
 /**
- * Renders the ticket price field in the Classy editor.
+ * Renders a currency input field in the Classy editor.
  *
  * @since TBD
  *
  * @param {TicketComponentProps} props
  * @return {JSX.Element} The rendered ticket price field.
  */
-export default function TicketPrice( props: TicketComponentProps ): JSX.Element{
+export default function CurrencyInput( props: TicketComponentProps ): JSX.Element{
 
 	const { label, onChange, value } = props;
-	const defaultLabel = __( 'Ticket price', 'event-tickets' );
+	const defaultLabel = __( 'Price', 'event-tickets' );
 
 	const [ hasFocus, setHasFocus ] = useState< boolean >( false );
 
