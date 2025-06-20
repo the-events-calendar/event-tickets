@@ -1,0 +1,4 @@
+{
+    "js": "http://wordpress.test/wp-content/plugins/event-tickets/build/js/admin/gateway/stripe/webhooks.js",
+    "css": "http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/admin/gateway/stripe/webhooks.css"
+}
