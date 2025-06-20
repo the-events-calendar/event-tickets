@@ -23,19 +23,27 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 
 	// todo: Add post type check?
 
-	const meta = useSelect( ( select ) => {
-		const { getEditedPostAttribute }: {
-			getEditedPostAttribute: ( attribute: string ) => any;
-		} = select( 'core/editor' );
+	// const meta = useSelect( ( select ) => {
+	// 	const { getEditedPostAttribute }: {
+	// 		getEditedPostAttribute: ( attribute: string ) => any;
+	// 	} = select( 'core/editor' );
+	//
+	// 	return getEditedPostAttribute( 'meta' ) || null;
+	// }, [] );
 
-		return getEditedPostAttribute( 'meta' ) || null;
-	}, [] );
+	const meta = {
+		ticket: {
+			name: 'Cool ticket',
+			description: 'This is a sample ticket description.',
+		},
+	};
 
 	// todo: Use the correct format/meta for ticket data.
 	const ticketMeta: Ticket = meta?.ticket || { name: '' };
 
 	const { editPost } = useDispatch( 'core/editor' );
 
+	console.log( 'rendering ticket fields' );
 
 	// todo: the ticket fields need to be rendered per ticket, in a modal.
 	// todo: Display of the tickets has a different format when not editing.
