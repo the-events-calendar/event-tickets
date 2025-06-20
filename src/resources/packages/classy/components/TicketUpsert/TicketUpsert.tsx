@@ -134,7 +134,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<div className="classy-field__input-title">
-					{ _x( 'Capacity', 'Title for the capacity field in the Classy editor', 'event-tickets' ) }
+					{ _x( 'Capacity', 'Title for the capacity section in the Classy editor', 'event-tickets' ) }
 				</div>
 
 				<div className="classy-field__capacity">
