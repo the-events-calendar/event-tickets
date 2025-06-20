@@ -121,7 +121,7 @@ module.exports = {
 		optimization: {
 			...defaultConfig.optimization,
 			...{
-				moduleIds: 'hashed',
+				moduleIds: 'deterministic',
 				splitChunks: {
 					...defaultConfig.optimization.splitChunks,
 					minSize: 50,
