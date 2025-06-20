@@ -98,7 +98,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				</h4>
 			</header>
 
-			<span className="classy-section-separator"></span>
+			<hr className="classy-modal__section-separator"></hr>
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<TicketName
