@@ -89,6 +89,7 @@ class Service_Provider extends Service_Provider_Contract {
 		$html = ob_get_clean();
 
 		do_action( 'tribe_settings_top' );
+		do_action( 'tec_conditional_content_header_notice', $this );
 
 		echo "
 			<div class='tribe_settings tribe_{$context}_page wrap'>

@@ -78,6 +78,15 @@ class Settings {
 	public $tabs = [];
 
 	/**
+	 * Whether the Page has a sidebar.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $has_sidebar = true;
+
+	/**
 	 * Returns the main admin tickets settings URL.
 	 *
 	 * @param array $args Arguments to pass to the URL.
