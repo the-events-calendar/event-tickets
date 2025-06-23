@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Add "Orders" link in the admin page row actions menu for pages with Tickets Commerce tickets. [ET-2450]

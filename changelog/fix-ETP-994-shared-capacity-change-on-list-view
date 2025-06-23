@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix the calculations when tickets are moved between events, so the correct number of available tickets is shown on list-based views. [ETP-994]
