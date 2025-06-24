@@ -63,19 +63,17 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_get_config_status_with_complete_option() {
 		// Mock tribe_get_option to return complete configuration values using the global filter
-		add_filter( 'tribe_get_option', function( $value, $option_name, $default ) {
-			$map = [
-				'ticket-paypal-email'           => 'foo@bar.baz',
-				'ticket-paypal-ipn-enabled'     => 'yes',
-				'ticket-paypal-ipn-address-set' => 'yes',
-			];
+		add_filter( "tribe_get_option_ticket-paypal-email", function( $value ) {
+			return 'foo@bar.baz';
+		}, 10, 1 );
 
-			if ( isset( $map[ $option_name ] ) ) {
-				return $map[ $option_name ];
-			}
+		add_filter( "tribe_get_option_ticket-paypal-ipn-enabled", function( $value ) {
+			return 'yes';
+		}, 10, 1 );
 
-			return $value;
-		}, 10, 3 );
+		add_filter( "tribe_get_option_ticket-paypal-ipn-address-set", function( $value ) {
+			return 'yes';
+		}, 10, 1 );
 
 		$ipn = $this->make_instance();
 
