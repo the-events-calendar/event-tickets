@@ -30,7 +30,8 @@ export default function Tickets( props: TicketsProps ): JSX.Element {
 
 	const [ hasTickets, setHasTickets ] = useState( false );
 
-	const [ isUpserting, setIsUpserting ] = useState( false );
+	// todo: default state is false.
+	const [ isUpserting, setIsUpserting ] = useState( true );
 
 	const onTicketAddedClicked = () => {
 		console.log( 'Ticket added clicked' );
