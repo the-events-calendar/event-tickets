@@ -2,6 +2,7 @@
 	/* This is a place to define CSS variables for the Classy component. */
 	--classy-date-picker-width: 320px;
 	--classy-padding-vertical: var(--tec-spacer-7);
+	--classy-color-required-asterisk: var(--tec-color-icon-error);
 }
 
 .classy-root {
@@ -50,5 +51,12 @@
 	&__section-separator {
 		margin: 0;
 		padding: 0;
+	}
+
+	/* Add asterisk to label when input is required */
+	.classy-component__labeled-input:has(input[required]) .classy-component__input-label::after {
+		content: " *";
+		color: var(--classy-color-required-asterisk);
+		font-weight: bold;
 	}
 }
