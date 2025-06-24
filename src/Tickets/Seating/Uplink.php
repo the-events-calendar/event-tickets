@@ -2,7 +2,7 @@
 /**
  * The Controller to set up the Uplink library.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Main as Main;
 /**
  * Controller for setting up the stellarwp/uplink library.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating
  */

@@ -2,7 +2,7 @@
 /**
  * Provides the information required to register the Ticket (singular) block server-side.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
@@ -16,7 +16,7 @@ use TEC\Common\Asset;
 /**
  * Class Block.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks\Ticket;
  */

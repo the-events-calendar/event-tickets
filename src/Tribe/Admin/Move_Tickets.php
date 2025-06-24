@@ -550,7 +550,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 * on a ticket-able post to another Ticket on another ticketable post 2. the term Event is used to refer to any
 		 * ticket-able post, not just Events.
 		 *
-		 * @since  5.8.3
+		 * @since 5.8.3
 		 *
 		 * @parram int[] $ticket_ids The set of Attendee IDs that will be moved.
 		 *
@@ -633,8 +633,17 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
 			} else {
 				$c_ticket = new Commerce_Ticket();
-				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id );
-				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id );
+				
+				// Check if the ticket type uses shared capacity.
+				$shared_capacity = $ticket_type->global_stock_mode() === 'global' || $ticket_type->global_stock_mode() === 'capped';
+				
+				// Create separate global stock objects for source and target events.
+				$src_global_stock = new Tribe__Tickets__Global_Stock( $src_event_id );
+				$tgt_global_stock = new Tribe__Tickets__Global_Stock( $tgt_event_id );
+				
+				// Adjust the stock level for the source and target events.
+				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id, 1, $shared_capacity, $src_global_stock );
+				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id, 1, $shared_capacity, $tgt_global_stock );
 			}
 
 			$history_message = sprintf(

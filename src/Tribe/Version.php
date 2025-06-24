@@ -2,14 +2,14 @@
 /**
  * Handling of Ticket Versioning
  *
- * @since  4.6
+ * @since 4.6
  */
 class Tribe__Tickets__Version {
 
 	/**
 	 * Prior to this version we didn't have Versions for Tickets
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @var    string
 	 */
@@ -18,7 +18,7 @@ class Tribe__Tickets__Version {
 	/**
 	 * Post meta key for the ticket version
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
 	 * @var    string
 	 */
@@ -27,9 +27,9 @@ class Tribe__Tickets__Version {
 	/**
 	 * Checks if the Post meta exists
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -49,10 +49,10 @@ class Tribe__Tickets__Version {
 	 * Updates ticket version to a given string
 	 * Will default to current version
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket   Which ticket
-	 * @param  null|string  $version  Version to update to (optional)
+	 * @param int|WP_Post  $ticket   Which ticket
+	 * @param null|string  $version  Version to update to (optional)
 	 *
 	 * @return bool
 	 */
@@ -78,9 +78,9 @@ class Tribe__Tickets__Version {
 	 * Assumes legacy version when Non Existent meta
 	 * Assumes current version when Meta is Empty
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -111,11 +111,11 @@ class Tribe__Tickets__Version {
 	/**
 	 * Version compare a ticket version to a given string
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket   Which ticket
-	 * @param  null|string  $version  Version to compare to
-	 * @param  string       $compare  What operator is passed to `version_compare()` (optional)
+	 * @param int|WP_Post  $ticket   Which ticket
+	 * @param null|string  $version  Version to compare to
+	 * @param string       $compare  What operator is passed to `version_compare()` (optional)
 	 *
 	 * @return bool
 	 */
@@ -128,9 +128,9 @@ class Tribe__Tickets__Version {
 	/**
 	 * Checks if a given ticket is from a legacy version
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -141,9 +141,9 @@ class Tribe__Tickets__Version {
 	/**
 	 * Checks if a given ticket was not updated on the latest version
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  int|WP_Post  $ticket  Which ticket
+	 * @param int|WP_Post  $ticket  Which ticket
 	 *
 	 * @return bool
 	 */
@@ -154,9 +154,9 @@ class Tribe__Tickets__Version {
 	/**
 	 * Will remove or add actions for Version Control
 	 *
-	 * @since  4.6
+	 * @since 4.6
 	 *
-	 * @param  boolean  $add  Should add the Actions when false will remove actions
+	 * @param boolean  $add  Should add the Actions when false will remove actions
 	 *
 	 * @return void
 	 */

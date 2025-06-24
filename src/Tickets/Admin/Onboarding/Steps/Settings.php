@@ -48,8 +48,8 @@ class Settings extends Abstract_Step {
 	public function process( $response, $request ): WP_REST_Response {
 		$settings = $request->get_json_params();
 
-		if ( empty( $settings['currentTab'] ) ) {
-			return $this->add_fail_message( $response, __( 'No settings provided.', 'event-tickets' ) );
+		if ( empty( $settings['currentTab'] ) || $settings['currentTab'] < self::TAB_NUMBER ) {
+			return $this->add_message( $response, __( 'No settings provided.', 'event-tickets' ) );
 		}
 
 		tribe_update_option( Tickets_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );
@@ -59,7 +59,7 @@ class Settings extends Abstract_Step {
 
 		// Enable the gateway.
 		$option_key   = Gateway::$option_enabled_prefix . $settings['paymentOption'];
-		$option_value = 'connected' === $settings['connectionStatus'] ? true : false;
+		$option_value = 'connected' === ( $settings['connectionStatus'] ?? '' );
 		tribe_update_option( $option_key, $option_value );
 
 		// Update the option.

@@ -44,9 +44,14 @@ const customEntryPoints = compileCustomEntryPoints({
    * Handling this correctly requires adding a PostCSS processor specific to the PostCSS files that
    * will handle the nesting correctly.
    * Note the plugin will need to specify the following development dependencies: postcss-nested, postcss-preset-env,
-   * postcss-mixins, postcss-import, postcss-custom-media.
+   * postcss-mixins, postcss-import, postcss-inline-svg, postcss-custom-media.
    */
-  '/src/resources/postcss': createTECPostCss('tec.tickets'),
+  '/src/resources/postcss': createTECPostCss(
+    'tec.tickets',
+    [
+      'postcss-inline-svg',
+    ],
+  ),
 }, defaultConfig);
 
 /**
@@ -93,6 +98,18 @@ customEntryPoints['wizard/wizard'] = exposeEntry('tec.tickets.wizard', __dirname
  * disabling the `prefixIds` plugin.
  */
 doNotPrefixSVGIdsClasses(defaultConfig);
+
+defaultConfig.externals = [
+	// TEC modern
+	( { context, request }, callback ) => {
+		if ( /^@tec\//.test( request ) ) {
+			const path = request.replace( /\//g, '.' ).replace( '@tec', 'tec' ).replace( /-/g, '_' );
+			return callback( null, `var ${ path }` );
+		}
+
+		return callback();
+	},
+];
 
 /**
  * Finally the customizations are merged with the default WebPack configuration.

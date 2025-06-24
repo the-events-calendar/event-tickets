@@ -167,7 +167,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Returns a string indicating current availability of the ticket.
 	 *
-	 * @param  object  $ticket
+	 * @param object  $ticket
 	 * @return string
 	 */
 	public function get_ticket_availability( $ticket ) {
@@ -187,7 +187,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param $ticket
+	 * @param object  $ticket
 	 *
 	 * @return mixed
 	 */

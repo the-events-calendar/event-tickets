@@ -42,6 +42,7 @@
 				Test PayPal ticket for [EVENT_ID]	</div>
 </div>
 
+
 <div
 	id="tribe__details__content--[TICKET_ID]"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >

@@ -8,7 +8,7 @@ use Tribe\Shortcode\Shortcode_Abstract as Common_Shortcode_Abstract;
 /**
  * Class Shortcode_Abstract
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Shortcodes
  */

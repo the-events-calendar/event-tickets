@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use WP_Post;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
@@ -12,15 +13,17 @@ use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Ticket_Data;
 
 /**
  * Class Ticket.
  *
- * @since   5.1.9
+ * @since 5.1.9
+ * @since 5.24.0 extend Ticket_Data
  *
  * @package TEC\Tickets\Commerce
  */
-class Ticket {
+class Ticket extends Ticket_Data {
 	use Is_Ticket;
 
 	/**
@@ -260,7 +263,7 @@ class Ticket {
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
-	 * @param \WP_Post              $post       Post object.
+	 * @param WP_Post               $post       Post object.
 	 */
 	public function modify_counters_by_status( $new_status, $old_status, $post ) {
 		$order = tec_tc_get_order( $post );
@@ -531,9 +534,9 @@ class Ticket {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param       $post_id
-	 * @param       $ticket
-	 * @param array $raw_data
+	 * @param int|WP_Post|null $post_id   The post ID.
+	 * @param Ticket_Object    $ticket    The ticket object.
+	 * @param array            $raw_data  The raw data.
 	 *
 	 * @return false|int|\WP_Error
 	 */
@@ -550,7 +553,7 @@ class Ticket {
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
-				'menu_order'   => tribe_get_request_var( 'menu_order', - 1 ),
+				'menu_order'   => (int) ( $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ) ),
 				'meta_input' => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
 				]
@@ -822,19 +825,20 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Removed the increment of deleted attendees count, it is handled in attendee deletion method.
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|WP_Post|null $event_id   The event ID.
+	 * @param int|WP_Post|null $ticket_id  The ticket ID.
 	 *
 	 * @return bool
 	 */
 	public function delete( $event_id, $ticket_id ) {
-		// Ensure we know the event and product IDs (the event ID may not have been passed in)
+		// Ensure we know the event and product IDs (the event ID may not have been passed in).
 		if ( empty( $event_id ) ) {
 			$event_id = get_post_meta( $ticket_id, Attendee::$event_relation_meta_key, true );
 		}
 
-		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event)
+		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event).
 		if ( empty( $event_id ) ) {
 			return false;
 		}
@@ -843,23 +847,22 @@ class Ticket {
 
 		// @todo: should deleting an attendee replenish a ticket stock?
 
-		// Store name so we can still show it in the attendee list
+		// Store name so we can still show it in the attendee list.
 		$attendees      = tribe( Module::class )->get_attendees_by_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
-
+		
 		foreach ( (array) $attendees as $attendee ) {
 			if ( $attendee['product_id'] == $ticket_id ) {
 				update_post_meta( $attendee['attendee_id'], Attendee::$deleted_ticket_meta_key, esc_html( $post_to_delete->post_title ) );
 			}
 		}
 
-		// Try to kill the actual ticket/attendee post
+		// Delete the ticket/attendee post.
 		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
-
-		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+		
 		do_action( 'tec_tickets_commerce_ticket_deleted', $ticket_id, $event_id, $product_id );
 		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
@@ -989,14 +992,14 @@ class Ticket {
 	/**
 	 * Gets the product price value object
 	 *
-	 * @since   5.1.9
-	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
-	 * @since   5.13.0   added new param to force regular price value return.
+	 * @since 5.1.9
+	 * @since 5.2.3 method signature changed to return an instance of Value instead of a string.
+	 * @since 5.13.0   added new param to force regular price value return.
 	 *
-	 * @param int|\WP_Post $product       The ticket post ID or object.
-	 * @param bool         $force_regular Whether to force the regular price.
+	 * @param int|WP_Post|null $product       The ticket post ID or object.
+	 * @param bool             $force_regular Whether to force the regular price.
 	 *
-	 * @return Commerce\Utils\Value;
+	 * @return \TEC\Tickets\Commerce\Utils\Value|null;
 	 * @version 5.2.3
 	 *
 	 */
@@ -1097,8 +1100,8 @@ class Ticket {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @param $ticket_id int The ticket post ID.
-	 * @param $quantity  int The quantity to increase the ticket stock by.
+	 * @param int|WP_Post|null $ticket_id  The ticket post ID.
+	 * @param int              $quantity   The quantity to increase the ticket stock by.
 	 *
 	 * @return bool|int
 	 */
@@ -1303,5 +1306,29 @@ class Ticket {
 			'start_date' => get_post_meta( $ticket_id, static::$sale_price_start_date_key, true ),
 			'end_date'   => get_post_meta( $ticket_id, static::$sale_price_end_date_key, true ),
 		];
+	}
+
+	/**
+	 * Get the ticket types.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return array The ticket types.
+	 */
+	protected function get_ticket_types(): array {
+		return [ self::POSTTYPE ];
+	}
+
+	/**
+	 * Load the ticket object.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return Ticket_Object|null The ticket object.
+	 */
+	public function load_ticket_object( int $ticket_id ): ?Ticket_Object {
+		return tribe( Module::class )->get_ticket( 0, $ticket_id );
 	}
 }

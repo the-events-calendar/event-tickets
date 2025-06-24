@@ -3,7 +3,7 @@
  * Handles the maintenance mode template overrides during migration to prevent WRITE operations on event
  * related information.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */
@@ -13,7 +13,7 @@ namespace TEC\Tickets\Commerce\Custom_Tables\V1\Migration\Maintenance_Mode;
 /**
  * Class Maintenance_Mode.
  *
- * @since   5.5.0
+ * @since 5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */

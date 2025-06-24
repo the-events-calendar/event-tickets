@@ -100,8 +100,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param  data
-	 * @param  headers
+	 * @param data
+	 * @param headers
 	 *
 	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
 	 */
@@ -192,7 +192,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param          error.error
+	 * @param         error.error
 	 * @param {Object} error       Which error we are dealing with.
 	 */
 	obj.onCardChange = ( { error } ) => {
@@ -281,7 +281,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle payments in cases other than an automatic confirmation
 	 *
-	 * @param  data
+	 * @param data
 	 *
 	 * @return {Promise<boolean>}
 	 */

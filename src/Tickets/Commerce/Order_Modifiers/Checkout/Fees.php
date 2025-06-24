@@ -6,7 +6,7 @@
  * independent of the payment gateway in use. It integrates with various filters and hooks during
  * the checkout process to ensure consistent fee handling.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout
  */
 
@@ -96,6 +96,7 @@ class Fees extends Abstract_Fees {
 	 * Add fees to the order object properties.
 	 *
 	 * @since 5.21.0
+	 * @since TBD Added check that the items are an array.
 	 *
 	 * @param array $properties The properties of the order object.
 	 *
@@ -104,7 +105,7 @@ class Fees extends Abstract_Fees {
 	public function attach_fees_to_order_object( array $properties ): array {
 		// There shouldn't be an order with no items, but let's just be safe.
 		$items = $properties['items'] ?? [];
-		if ( empty( $items ) ) {
+		if ( empty( $items ) || ! is_array( $items ) ) {
 			return $properties;
 		}
 

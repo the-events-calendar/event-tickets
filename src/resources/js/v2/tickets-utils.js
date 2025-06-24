@@ -220,10 +220,10 @@ tribe.tickets.utils = {};
 
 	/**
 	 *
-	 * @param  targetQty       {integer}
-	 * @param  targetAvailable {integer}
-	 * @param  maxAvailable    {integer}
-	 * @param  addedToCart     {integer}
+	 * @param targetQty       {integer}
+	 * @param targetAvailable {integer}
+	 * @param maxAvailable    {integer}
+	 * @param addedToCart     {integer}
 	 * @return {number} The shared cap
 	 */
 	obj.calculateSharedCap = function ( targetQty, targetAvailable, maxAvailable, addedToCart ) {

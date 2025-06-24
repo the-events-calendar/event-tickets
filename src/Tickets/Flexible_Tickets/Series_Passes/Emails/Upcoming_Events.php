@@ -2,7 +2,7 @@
 /**
  * Handles all of the event querying in the context of Series Pass Emails.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -14,7 +14,7 @@ use WP_Post;
 /**
  * Class Upcoming_Events.
  *
- * @since   5.8.4
+ * @since 5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */

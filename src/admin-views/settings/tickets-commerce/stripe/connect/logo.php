@@ -2,7 +2,7 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe logo and features.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @version 5.3.0
  *
