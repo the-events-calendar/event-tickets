@@ -15,8 +15,8 @@
  * @version TBD
  *
  * @var Checkout_Shortcode $shortcode [Global] The checkout shortcode instance.
- * @var bool $must_login      [Global] Whether login is required to buy tickets or not.
- * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
+ * @var bool               $must_login [Global] Whether login is required to buy tickets or not.
+ * @var bool               $payment_element [Global] Whether to load the Stripe Payment Element.
  */
 
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
