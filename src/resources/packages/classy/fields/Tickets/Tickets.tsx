@@ -12,7 +12,7 @@ type TicketsProps = {
 };
 
 const defaultTicket: TicketData = {
-	name: 'Default Ticket',
+	name: '',
 	description: '',
 	price: '',
 	hasSalePrice: false,
