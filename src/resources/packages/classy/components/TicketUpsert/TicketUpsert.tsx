@@ -16,6 +16,7 @@ import { Capacity as CapacityType } from '../../types/Capacity';
 import { Ticket } from '../../types/Ticket';
 import {
 	Capacity,
+	SaleDuration,
 	SalePrice,
 	TicketName,
 	TicketDescription,
@@ -174,6 +175,17 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						} }
 					/>
 				</div>
+			</section>
+
+			<hr className="classy-modal__section-separator" />
+
+			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
+				<div className="classy-field__input-title">
+					{ _x( 'Sale Duration', 'Title for the sale duration section in the Classy editor', 'event-tickets' ) }
+				</div>
+				<SaleDuration
+
+				/>
 			</section>
 
 			<footer className="classy-modal__footer classy-modal__footer--ticket">

@@ -1,5 +1,6 @@
 :root {
 	/* This is a place to define CSS variables for the Classy component. */
+	--classy-date-picker-width: 320px;
 	--classy-padding-vertical: var(--tec-spacer-7);
 }
 
@@ -33,6 +34,16 @@
 	&__overlay--ticket {
 		.components-modal__content {
 			padding: 0;
+
+			.classy-field__separator {
+				border: none;
+				height: auto;
+				transform: translateY(-15px);
+			}
+
+			.classy-field__input--sale-duration {
+				--classy-input-width: var(--classy-date-picker-width);
+			}
 		}
 	}
 
