@@ -1,6 +1,9 @@
 // Post types.
 export const POST_TYPE_TICKET = 'tribe_tpp_ticket';
 
+// Namespace for our hooks.
+export const HOOKS_NAMESPACE = 'tec.classy.tickets';
+
 /**
  * Metadata keys for the Classy editor.
  *
@@ -21,4 +24,4 @@ export const METADATA_TICKET_IS_FREE = '_ticket_is_free';
 export const METADATA_TICKET_QUANTITY = '_ticket_quantity';
 export const METADATA_TICKET_SALE_PRICE = '_ticket_sale_price';
 export const METADATA_TICKET_SALE_START_DATE = '_ticket_sale_start_date';
-export const METADATA_TICKET_SALE_END_DATE = '_ticket_sale_end_date'; 
+export const METADATA_TICKET_SALE_END_DATE = '_ticket_sale_end_date';
