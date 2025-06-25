@@ -114,7 +114,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param $provider The main service provider.
+	 * @param string $provider The main service provider.
 	 *
 	 * @return void
 	 */

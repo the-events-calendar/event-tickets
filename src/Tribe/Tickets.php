@@ -4661,7 +4661,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$product_post_type = $provider_obj->ticket_object;
 			// Meta key connecting the attendee to the RSVP/ticket product: '_tribe_rsvp_product' or '_tec_tickets_commerce_ticket'.
 			$product_meta_key = static::ATTENDEE_PRODUCT_KEY;
-			//
 
 			$orphaned_ticket_ids = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
 
@@ -4681,10 +4680,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Get the attendees for each abandoned product.
 			$args = [
-				'post_type'      => static::ATTENDEE_OBJECT, // or specific post type, if known
+				'post_type'      => static::ATTENDEE_OBJECT, // The attendee post type.
 				'post_status'    => 'publish',
 				'posts_per_page' => 100,
-				'fields'         => 'ids', // return only post IDs
+				'fields'         => 'ids', // We only need the post IDs.
 				'meta_query'     => [
 					[
 						'key'     => $product_meta_key,
@@ -4694,7 +4693,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				],
 			];
 
-			$query = new WP_Query( $args );
+			$query                 = new WP_Query( $args );
 			$orphaned_attendee_ids = $query->posts;
 
 			/**

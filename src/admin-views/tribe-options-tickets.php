@@ -411,7 +411,7 @@ $maintenance_fields = [
 				tribe_get_rsvp_label_singular( 'maintenance_description' ),
 				$rsvp_orphaned_numbers['attendees']
 			) .
-		    '</p>',
+			'</p>',
 	],
 	'maintenance-ticket'                                => [
 		'type' => 'html',
