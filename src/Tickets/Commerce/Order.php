@@ -629,10 +629,16 @@ class Order extends Abstract_Order {
 				continue;
 			}
 			
-			// Skip if the ticket is unlimited.
+			// Skip if the ticket has unlimited capacity.
+			if ( -1 === tribe_tickets_get_capacity( $ticket->ID ) ) {
+				continue;
+			}
+			
+			// Skip if the ticket doesn't manage stock.
 			if ( ! $ticket->manage_stock() ) {
 				continue;
 			}
+			
 			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
 			$available_stock    = $ticket->stock();
 			
