@@ -4661,6 +4661,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$product_post_type = $provider_obj->ticket_object;
 			// Meta key connecting the attendee to the RSVP/ticket product: '_tribe_rsvp_product' or '_tec_tickets_commerce_ticket'.
 			$product_meta_key = static::ATTENDEE_PRODUCT_KEY;
+			//
 
 			$orphaned_ticket_ids = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
 
@@ -4679,14 +4680,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ids = "'" . implode( "', '", $orphaned_ticket_ids ) . "'";
 
 			// Get the attendees for each abandoned product.
-			$orphaned_attendee_ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"SELECT post_id FROM {$wpdb->postmeta}
-                    WHERE meta_value IN ({$ids}) AND meta_key = %s
-                    LIMIT 100",
-					$product_meta_key
-				)
-			);
+			$args = [
+				'post_type'      => static::ATTENDEE_OBJECT, // or specific post type, if known
+				'post_status'    => 'publish',
+				'posts_per_page' => 100,
+				'fields'         => 'ids', // return only post IDs
+				'meta_query'     => [
+					[
+						'key'     => $product_meta_key,
+						'value'   => $orphaned_ticket_ids, // $ids must be an array of values
+						'compare' => 'IN',
+					],
+				],
+			];
+
+			$query = new WP_Query( $args );
+			$orphaned_attendee_ids = $query->posts;
 
 			/**
 			 * Filter orphaned attendees. You can use this to exclude orphaned attendees you want to keep.
