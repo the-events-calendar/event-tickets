@@ -332,8 +332,29 @@ $auth_fields = [
 ];
 
 $rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( 'rsvp', true );
+$rsvp_orphaned_numbers   = array_map(
+	function ( $value ) {
+		if ( $value == 100 ) {
+			return '100+';
+		}
+
+		return $value;
+	},
+	$rsvp_orphaned_numbers
+);
 $ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( 'tc_ticket', true );
-$url                     = add_query_arg(
+$ticket_orphaned_numbers = array_map(
+	function ( $value ) {
+		if ( $value == 100 ) {
+			return '100+';
+		}
+
+		return $value;
+	},
+	$ticket_orphaned_numbers
+);
+
+$url = add_query_arg(
 	[
 		'action' => 'tec_tickets_remove_orphans',
 		'nonce'  => wp_create_nonce( 'tec_tickets_remove_orphans' ),
