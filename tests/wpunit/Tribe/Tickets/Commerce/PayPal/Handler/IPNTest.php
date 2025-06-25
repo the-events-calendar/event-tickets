@@ -27,20 +27,17 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 	 * Test get_config_status with empty option
 	 */
 	public function test_get_config_status_with_empty_option() {
-		// Mock tribe_get_option to return empty values using the global filter
-		add_filter( 'tribe_get_option', function( $value, $option_name, $default ) {
-			$map = [
-				'ticket-paypal-email'           => '',
-				'ticket-paypal-ipn-enabled'     => '',
-				'ticket-paypal-ipn-address-set' => '',
-			];
+		add_filter( "tribe_get_option_ticket-paypal-email", function( $value ) {
+			return '';
+		}, 10, 1 );
 
-			if ( isset( $map[ $option_name ] ) ) {
-				return $map[ $option_name ];
-			}
+		add_filter( "tribe_get_option_ticket-paypal-ipn-enabled", function( $value ) {
+			return '';
+		}, 10, 1 );
 
-			return $value;
-		}, 10, 3 );
+		add_filter( "tribe_get_option_ticket-paypal-ipn-address-set", function( $value ) {
+			return '';
+		}, 10, 1 );
 
 		$ipn = $this->make_instance();
 
@@ -62,7 +59,6 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 	 * Test get_config_status with complete option
 	 */
 	public function test_get_config_status_with_complete_option() {
-		// Mock tribe_get_option to return complete configuration values using the global filter
 		add_filter( "tribe_get_option_ticket-paypal-email", function( $value ) {
 			return 'foo@bar.baz';
 		}, 10, 1 );
