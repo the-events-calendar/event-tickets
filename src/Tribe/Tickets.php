@@ -4725,13 +4725,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			global $wpdb;
 
 			$query = $wpdb->prepare(
-				"SELECT pm.post_id
-		FROM {$wpdb->postmeta} AS pm
-		LEFT JOIN {$wpdb->posts} AS p1 ON p1.ID = pm.post_id
+				"SELECT p1.ID
+		FROM {$wpdb->posts} AS p1
+		JOIN {$wpdb->postmeta} AS pm ON pm.post_id = p1.ID AND pm.meta_key = %s
 		LEFT JOIN {$wpdb->posts} AS p2 ON pm.meta_value = p2.ID
-		WHERE pm.meta_key = %s
-	  	AND p1.post_type = %s
-		AND p2.ID IS NULL
+		WHERE p1.post_type = %s
+		  AND p2.ID IS NULL
 		ORDER BY pm.post_id ASC
 		LIMIT 100;",
 				$meta_key,
