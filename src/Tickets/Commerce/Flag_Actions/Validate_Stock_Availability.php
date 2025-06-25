@@ -172,7 +172,13 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 				'Overselling attempt detected for Order #%d. Tickets: %s',
 				$order->ID,
 				implode( '; ', $ticket_details )
-			)
+			),
+			[
+				'source'     => 'tickets-commerce-stock-validation',
+				'order_id'   => $order->ID,
+				'order_hash' => get_post_meta( $order->ID, Order::$hash_meta_key, true ),
+				'gateway'    => get_post_meta( $order->ID, Order::$gateway_meta_key, true ),
+			]
 		);
 	}
 
