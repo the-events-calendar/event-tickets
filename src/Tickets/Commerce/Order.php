@@ -616,6 +616,7 @@ class Order extends Abstract_Order {
 		}
 		
 		$validation_errors = [];
+		$global_stock_usage = []; // Track usage per event for shared capacity
 		
 		foreach ( $order->items as $item ) {
 			// Skip if the item is not a ticket.
@@ -634,13 +635,44 @@ class Order extends Abstract_Order {
 				continue;
 			}
 			
-			// Skip if the ticket doesn't manage stock.
+			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
+			$global_stock_mode = $ticket->global_stock_mode();
+			
+			// Handle shared capacity tickets (global and capped)
+			if ( 
+				\Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ||
+				\Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode
+			) {
+				$event_id = $ticket->get_event()->ID;
+				
+				// Track cumulative usage for this event's shared capacity
+				if ( ! isset( $global_stock_usage[ $event_id ] ) ) {
+					$global_stock_usage[ $event_id ] = 0;
+				}
+				$global_stock_usage[ $event_id ] += $requested_quantity;
+				
+				// For capped tickets, also check individual ticket capacity
+				if ( \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
+					$ticket_capacity = $ticket->capacity();
+					if ( $ticket_capacity > 0 && $requested_quantity > $ticket_capacity ) {
+						$validation_errors[] = [
+							'ticket_id'   => $ticket->ID,
+							'ticket_name' => $ticket->name, 
+							'requested'   => $requested_quantity,
+							'available'   => $ticket_capacity,
+						];
+					}
+				}
+				
+				continue; // We'll validate global stock after processing all items
+			}
+			
+			// Handle individual stock mode tickets
 			if ( ! $ticket->manage_stock() ) {
 				continue;
 			}
 			
-			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
-			$available_stock    = $ticket->stock();
+			$available_stock = $ticket->stock();
 			
 			if ( $available_stock < $requested_quantity ) {
 				$validation_errors[] = [
@@ -649,6 +681,39 @@ class Order extends Abstract_Order {
 					'requested'   => $requested_quantity,
 					'available'   => $available_stock,
 				];
+			}
+		}
+		
+		// Validate global stock usage for each event.
+		foreach ( $global_stock_usage as $event_id => $total_requested ) {
+			$global_stock = new \Tribe__Tickets__Global_Stock( $event_id );
+			if ( $global_stock->is_enabled() ) {
+				$available_global_stock = $global_stock->get_stock_level();
+				
+				// Skip validation if global stock is enabled but level is 0 (incomplete setup).
+				if ( 0 === $available_global_stock ) {
+					continue;
+				}
+				
+				if ( $available_global_stock < $total_requested ) {
+					// Find a ticket from this event to report the error.
+					foreach ( $order->items as $item ) {
+						if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
+							continue;
+						}
+						
+						$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+						if ( $ticket && $ticket->get_event()->ID === $event_id ) {
+							$validation_errors[] = [
+								'ticket_id'   => $ticket->ID,
+								'ticket_name' => sprintf( 'Shared capacity for %s', get_the_title( $event_id ) ),
+								'requested'   => $total_requested,
+								'available'   => $available_global_stock,
+							];
+							break; // Only report once per event.
+						}
+					}
+				}
 			}
 		}
 		
