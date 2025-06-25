@@ -87,7 +87,7 @@ class Hooks extends Service_Provider {
 		}
 
 		// Return URL.
-		$url = add_query_arg( 'page', 'tec-tickets-settings', admin_url( 'admin.php' ) );
+		$url = add_query_arg( 'page', 'tec-tickets-settings', wp_get_referer() );
 
 		// Bail if no post IDs.
 		if ( empty( $ids ) ) {
