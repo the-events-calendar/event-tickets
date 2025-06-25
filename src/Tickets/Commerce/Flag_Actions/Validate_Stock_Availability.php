@@ -69,13 +69,15 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		if ( empty( $post->items ) ) {
+		// Get order items from post meta.
+		$items = maybe_unserialize( get_post_meta( $post->ID, Order::$items_meta_key, true ) );
+		if ( ! is_array( $items ) || empty( $items ) ) {
 			return;
 		}
 		
 		$insufficient_stock_items = [];
 		
-		foreach ( $post->items as $item ) {
+		foreach ( $items as $item ) {
 			if ( ! $this->is_ticket( $item ) ) {
 				continue;
 			}
@@ -86,6 +88,11 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 			}
 			
 			if ( ! $ticket->manage_stock() ) {
+				continue;
+			}
+
+			// Skip seated tickets - they have their own stock management system.
+			if ( get_post_meta( $ticket->ID, \TEC\Tickets\Seating\Meta::META_KEY_SEAT_TYPE, true ) ) {
 				continue;
 			}
 			
@@ -161,14 +168,11 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 		do_action(
 			'tribe_log',
 			'error',
-			'Overselling attempt detected',
-			[
-				'source'     => 'tickets-commerce-stock-validation',
-				'order_id'   => $order->ID,
-				'order_hash' => $order->hash ?? '',
-				'gateway'    => $order->gateway ?? '',
-				'tickets'    => $ticket_details,
-			]
+			sprintf(
+				'Overselling attempt detected for Order #%d. Tickets: %s',
+				$order->ID,
+				implode( '; ', $ticket_details )
+			)
 		);
 	}
 

@@ -638,6 +638,11 @@ class Order extends Abstract_Order {
 				continue;
 			}
 
+			// Skip seated tickets - they have their own stock management system.
+			if ( get_post_meta( $ticket->ID, '_tec_slr_seat_type', true ) ) {
+				continue;
+			}
+
 			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
 			$global_stock_mode  = $ticket->global_stock_mode();
 
