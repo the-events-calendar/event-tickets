@@ -86,9 +86,13 @@ class Hooks extends Service_Provider {
 			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_products( false );
 		}
 
+		// Return URL.
+		$url = add_query_arg( 'page', 'tec-tickets-settings', admin_url( 'admin.php' ) );
+
 		// Bail if no post IDs.
 		if ( empty( $ids ) ) {
-			return;
+			wp_safe_redirect( esc_url_raw( $url ) );
+			tribe_exit();
 		}
 
 		// Count IDs. If less than 25, don't offload. If more, schedule action.
@@ -100,9 +104,6 @@ class Hooks extends Service_Provider {
 		} else {
 			as_schedule_single_action( time(), 'tec_tickets_remove_orphans_action', [ $provider ], 'tec_tickets_cleanup_actions' );
 		}
-
-		// Return.
-		$url = add_query_arg( 'page', 'tec-tickets-settings', admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( esc_url_raw( $url ) );
 		tribe_exit();
