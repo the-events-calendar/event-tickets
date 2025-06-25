@@ -632,11 +632,11 @@ class Order extends Abstract_Order {
 				continue;
 			}
 
-			$requested_quantity  = (int) ( $item['quantity'] ?? 1 );
-			$global_stock_mode   = $ticket->global_stock_mode();
+			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
+			$global_stock_mode  = $ticket->global_stock_mode();
 
 			// Handle shared capacity tickets (global and capped).
-			if ( 
+			if (
 				\Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode
 				|| \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode
 			) {
