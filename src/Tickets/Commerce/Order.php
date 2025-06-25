@@ -599,7 +599,7 @@ class Order extends Abstract_Order {
 	}
 
 	/**
-	 * Validates that sufficient stock is available for all items in an order.
+	 * Validates stock availability for all items in an order.
 	 *
 	 * @since TBD
 	 *
@@ -614,10 +614,16 @@ class Order extends Abstract_Order {
 			return true;
 		}
 
+		// Get order items from post meta.
+		$items = maybe_unserialize( get_post_meta( $order_id, self::$items_meta_key, true ) );
+		if ( ! is_array( $items ) ) {
+			return true; // No items to validate.
+		}
+
 		$validation_errors  = [];
 		$global_stock_usage = []; // Track usage per event for shared capacity.
 		
-		foreach ( $order->items as $item ) {
+		foreach ( $items as $item ) {
 			if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
 				continue;
 			}
@@ -689,7 +695,7 @@ class Order extends Abstract_Order {
 				
 				if ( $available_global_stock < $total_requested ) {
 					// Find a ticket from this event to report the error.
-					foreach ( $order->items as $item ) {
+					foreach ( $items as $item ) {
 						if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
 							continue;
 						}
