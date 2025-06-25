@@ -27,54 +27,64 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 	 * Test get_config_status with empty option
 	 */
 	public function test_get_config_status_with_empty_option() {
-		$this->markTestSkipped( 'This came from UNIT tests we need to remove define_function usage and make sure it works.' );
-//		define_function( 'tribe_get_option', function () {
-//			return '';
-//		} );
+		add_filter( "tribe_get_option_ticket-paypal-email", function( $value ) {
+			return '';
+		}, 10, 1 );
+
+		add_filter( "tribe_get_option_ticket-paypal-ipn-enabled", function( $value ) {
+			return '';
+		}, 10, 1 );
+
+		add_filter( "tribe_get_option_ticket-paypal-ipn-address-set", function( $value ) {
+			return '';
+		}, 10, 1 );
 
 		$ipn = $this->make_instance();
 
 		$this->assertEquals( 'incomplete', $ipn->get_config_status() );
 		$this->assertEquals( 'incomplete', $ipn->get_config_status( 'slug' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label' ) );
 		$this->assertEquals( 'complete', $ipn->get_config_status( 'slug', 'complete' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label', 'complete' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label', 'complete' ) );
 		$this->assertEquals( 'incomplete', $ipn->get_config_status( 'slug', 'incomplete' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label', 'incomplete' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label', 'incomplete' ) );
 		$this->assertFalse( $ipn->get_config_status( 'slug', 'foo' ) );
 		$this->assertFalse( $ipn->get_config_status( 'label', 'foo' ) );
 
+		// Clean up filter
+		remove_all_filters( 'tribe_get_option' );
 	}
 
 	/**
 	 * Test get_config_status with complete option
 	 */
 	public function test_get_config_status_with_complete_option() {
-		$this->markTestSkipped( 'This came from UNIT tests we need to remove define_function usage and make sure it works.' );
-//		define_function( 'tribe_get_option', function ( $name ) {
-//			$map = [
-//				'ticket-paypal-email'           => 'foo@bar.baz',
-//				'ticket-paypal-ipn-enabled'     => 'yes',
-//				'ticket-paypal-ipn-address-set' => 'yes',
-//			];
-//			if ( ! isset( $map[ $name ] ) ) {
-//				throw new \RuntimeException( "No call was expected for option {$name}" );
-//			}
-//
-//			return $map[ $name ];
-//		} );
+		add_filter( "tribe_get_option_ticket-paypal-email", function( $value ) {
+			return 'foo@bar.baz';
+		}, 10, 1 );
+
+		add_filter( "tribe_get_option_ticket-paypal-ipn-enabled", function( $value ) {
+			return 'yes';
+		}, 10, 1 );
+
+		add_filter( "tribe_get_option_ticket-paypal-ipn-address-set", function( $value ) {
+			return 'yes';
+		}, 10, 1 );
 
 		$ipn = $this->make_instance();
 
 		$this->assertEquals( 'complete', $ipn->get_config_status() );
 		$this->assertEquals( 'complete', $ipn->get_config_status( 'slug' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label' ) );
 		$this->assertEquals( 'complete', $ipn->get_config_status( 'slug', 'complete' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label', 'complete' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label', 'complete' ) );
 		$this->assertEquals( 'incomplete', $ipn->get_config_status( 'slug', 'incomplete' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label', 'incomplete' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label', 'incomplete' ) );
 		$this->assertFalse( $ipn->get_config_status( 'slug', 'foo' ) );
 		$this->assertFalse( $ipn->get_config_status( 'label', 'foo' ) );
+
+		// Clean up filter
+		remove_all_filters( 'tribe_get_option' );
 	}
 
 	public function incomplete_option_map() {
@@ -128,26 +138,28 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 	 * @dataProvider incomplete_option_map
 	 */
 	public function test_get_config_status_with_incomplete_option( $map ) {
-		$this->markTestSkipped( 'This came from UNIT tests we need to remove define_function usage and make sure it works.' );
+		// Mock tribe_get_option to return the incomplete configuration values from data provider
+		add_filter( 'tribe_get_option', function( $value, $option_name, $default ) use ( $map ) {
+			if ( isset( $map[ $option_name ] ) ) {
+				return $map[ $option_name ];
+			}
 
-//		define_function( 'tribe_get_option', function ( $name ) use ( $map ) {
-//			if ( ! isset( $map[ $name ] ) ) {
-//				throw new \RuntimeException( "No call was expected for option {$name}" );
-//			}
-//
-//			return $map[ $name ];
-//		} );
+			return $value;
+		}, 10, 3 );
 
 		$ipn = $this->make_instance();
 
 		$this->assertEquals( 'incomplete', $ipn->get_config_status() );
 		$this->assertEquals( 'incomplete', $ipn->get_config_status( 'slug' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label' ) );
 		$this->assertEquals( 'complete', $ipn->get_config_status( 'slug', 'complete' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label', 'complete' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label', 'complete' ) );
 		$this->assertEquals( 'incomplete', $ipn->get_config_status( 'slug', 'incomplete' ) );
-		$this->assertInternalType( 'string', $ipn->get_config_status( 'label', 'incomplete' ) );
+		$this->assertIsString( $ipn->get_config_status( 'label', 'incomplete' ) );
 		$this->assertFalse( $ipn->get_config_status( 'slug', 'foo' ) );
 		$this->assertFalse( $ipn->get_config_status( 'label', 'foo' ) );
+
+		// Clean up filter
+		remove_all_filters( 'tribe_get_option' );
 	}
 }

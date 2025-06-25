@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Fix PayPal IPN Handler Tests. [ET-2527]
