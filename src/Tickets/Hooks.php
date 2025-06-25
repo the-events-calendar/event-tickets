@@ -81,9 +81,9 @@ class Hooks extends Service_Provider {
 
 		// Get IDs.
 		if ( $provider === 'rsvp' ) {
-			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_products( false );
+			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
 		} elseif ( $provider === 'tc_ticket' ) {
-			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_products( false );
+			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
 		}
 
 		// Return URL.
@@ -112,9 +112,9 @@ class Hooks extends Service_Provider {
 	public function remove_orphans_action( $provider ) {
 		// Get IDs.
 		if ( $provider === 'rsvp' ) {
-			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_products( false );
+			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
 		} elseif ( $provider === 'tc_ticket' ) {
-			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_products( false );
+			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
 		}
 
 		if ( empty( $ids ) ) {

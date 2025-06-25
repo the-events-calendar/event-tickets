@@ -331,8 +331,8 @@ $auth_fields = [
 	],
 ];
 
-$rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_products( 'rsvp', true );
-$ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_products( 'tc_ticket', true );
+$rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( 'rsvp', true );
+$ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( 'tc_ticket', true );
 $url                     = add_query_arg(
 	[
 		'action' => 'tec_tickets_remove_orphans',
