@@ -407,8 +407,7 @@ $maintenance_fields = [
 			'<br>' .
 			sprintf(
 				// Translators: %1$s: The number of orders, %2$s: The number of products, %3$s: Singular ticket label, %4$s: The number of attendees.
-				_x( 'You have %1$s orphaned orders, %2$s %3$s products with %4$s attendees.', 'Orphaned ticket maintenance description', 'event-tickets' ),
-				$ticket_orphaned_numbers['orders'],
+				_x( 'You have %1$s orphaned %2$s products with %3$s attendees.', 'Orphaned ticket maintenance description', 'event-tickets' ),
 				$ticket_orphaned_numbers['products'],
 				tribe_get_ticket_label_singular( 'maintenance_description' ),
 				$ticket_orphaned_numbers['attendees']

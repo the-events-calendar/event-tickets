@@ -4654,31 +4654,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$provider     = static::class;
 			$provider_obj = tribe( $provider );
 
-			$number_of_orphaned_orders = 0;
-			$orphaned_posts            = [];
-
-			// If it's Tickets Commerce, get orphaned orders.
-			if ( $provider === 'TEC\Tickets\Commerce\Module' ) {
-				$event_meta_key    = \TEC\Tickets\Commerce\Order::$events_in_order_meta_key;
-				$product_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
-				$orphaned_orders   = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
-
-				/**
-				 * Filter orphaned orders for Tickets Commerce. You can use this to exclude orphaned orders you want to keep.
-				 *
-				 * @since TBD
-				 *
-				 * @param array  $orphaned_orders   Array of order IDs that are orphaned.
-				 * @param string $event_meta_key    Meta key connecting order to the event.
-				 * @param string $product_post_type Post type of the order.
-				 */
-				$orphaned_orders = apply_filters( 'tribe_tickets_tc_orphaned_orders', $orphaned_orders, $event_meta_key, $product_post_type );
-
-				$number_of_orphaned_orders = count( $orphaned_orders );
-
-				$orphaned_posts = array_merge( $orphaned_posts, $orphaned_orders );
-			}
-
 			// Get the orphaned products.
 			// Meta key connecting the ticket/attendee to the event: '_tribe_rsvp_for_event' or '_tec_tickets_commerce_event'.
 			$event_meta_key = $provider_obj->get_event_key();
@@ -4694,12 +4669,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @since TBD
 			 *
-			 * @param array  $orphaned_orders   Array of product post IDs that are orphaned.
+			 * @param array  $orphaned_products Array of product post IDs that are orphaned.
 			 * @param string $event_meta_key    Meta key connecting the product to the event.
 			 * @param string $product_post_type Post type of the product.
 			 */
 			$orphaned_products = apply_filters( 'tribe_tickets_orphaned_products', $orphaned_products, $event_meta_key, $product_post_type );
-
 
 			// Prepare the results for use in the next query.
 			$ids = "'" . implode( "', '", $orphaned_products ) . "'";
@@ -4719,23 +4693,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @since TBD
 			 *
-			 * @param array  $orphaned_orders   Array of attendee post IDs that are orphaned.
-			 * @param string $event_meta_key    Meta key connecting attendee to the event.
-			 * @param string $product_post_type Post type of the attendee.
+			 * @param array  $orphaned_attendees Array of attendee post IDs that are orphaned.
+			 * @param string $event_meta_key     Meta key connecting attendee to the event.
+			 * @param string $product_post_type  Post type of the attendee.
 			 */
 			$orphaned_attendees = apply_filters( 'tribe_tickets_orphaned_attendees', $orphaned_attendees, $event_meta_key, $product_post_type );
 
 			// If counting, return the numbers.
 			if ( $count ) {
 				return [
-					'orders'    => $number_of_orphaned_orders,
 					'products'  => count( $orphaned_products ),
 					'attendees' => count( $orphaned_attendees ),
 				];
 			}
 
 			// Return the post IDs to be deleted.
-			return array_merge( $orphaned_posts, $orphaned_products, $orphaned_attendees );
+			return array_merge( $orphaned_products, $orphaned_attendees );
 		}
 
 		/**
