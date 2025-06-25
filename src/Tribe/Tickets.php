@@ -4708,7 +4708,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$orphaned_attendees = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT post_id FROM {$wpdb->postmeta}
-                    WHERE meta_value IN ({$ids}) AND meta_key = %s",
+                    WHERE meta_value IN ({$ids}) AND meta_key = %s
+                    LIMIT 100",
 					$product_meta_key
 				)
 			);
@@ -4757,7 +4758,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		LEFT JOIN {$wpdb->posts} AS p2 ON pm.meta_value = p2.ID
 		WHERE pm.meta_key = %s
 	  	AND p1.post_type = %s
-		AND p2.ID IS NULL;",
+		AND p2.ID IS NULL
+		ORDER BY pm.post_id ASC
+		LIMIT 100;",
 				$meta_key,
 				$post_type
 			);

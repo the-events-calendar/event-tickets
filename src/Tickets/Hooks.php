@@ -51,6 +51,7 @@ class Hooks extends Service_Provider {
 		$this->container->register( Ticket_Cache_Controller::class );
 
 		add_action( 'admin_post_tec_tickets_remove_orphans', [ $this, 'remove_orphans' ] );
+		add_action( 'tec_tickets_remove_orphans_action', [ $this, 'remove_orphans_action' ], 10, 1 );
 	}
 
 	/**
@@ -90,9 +91,14 @@ class Hooks extends Service_Provider {
 			return;
 		}
 
-		// Delete posts.
-		foreach ( $ids as $id ) {
-			wp_delete_post( $id );
+		// Count IDs. If less than 25, don't offload. If more, schedule action.
+		if ( count( $ids ) < 25 ) {
+			// Delete posts.
+			foreach ( $ids as $id ) {
+				wp_delete_post( $id );
+			}
+		} else {
+			as_schedule_single_action( time(), 'tec_tickets_remove_orphans_action', [ $provider ], 'tec_tickets_cleanup_actions' );
 		}
 
 		// Return.
@@ -100,6 +106,25 @@ class Hooks extends Service_Provider {
 
 		wp_safe_redirect( esc_url_raw( $url ) );
 		tribe_exit();
+	}
+
+	public function remove_orphans_action( $provider ) {
+		// Get IDs.
+		if ( $provider === 'rsvp' ) {
+			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_products( false );
+		} elseif ( $provider === 'tc_ticket' ) {
+			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_products( false );
+		}
+
+		if ( empty( $ids ) ) {
+			return;
+		}
+
+		as_schedule_single_action( time(), 'tec_tickets_remove_orphans_action', [ $provider ], 'tec_tickets_cleanup_actions' );
+
+		foreach ( $ids as $id ) {
+			wp_delete_post( $id );
+		}
 	}
 
 	/**
