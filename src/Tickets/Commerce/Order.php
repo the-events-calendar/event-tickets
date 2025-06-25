@@ -609,71 +609,63 @@ class Order extends Abstract_Order {
 	 * @throws \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception When insufficient stock is available.
 	 */
 	private function validate_stock_availability( int $order_id ): bool {
-		$order = tec_tc_get_order( $order_id );
-		
-		if ( empty( $order->items ) ) {
+		$order = get_post( $order_id );
+		if ( ! $order ) {
 			return true;
 		}
-		
-		$validation_errors = [];
-		$global_stock_usage = []; // Track usage per event for shared capacity
+
+		$validation_errors  = [];
+		$global_stock_usage = []; // Track usage per event for shared capacity.
 		
 		foreach ( $order->items as $item ) {
-			// Skip if the item is not a ticket.
 			if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
 				continue;
 			}
-			
-			// Skip if the ticket is not found.
+
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			if ( null === $ticket ) {
+			if ( ! $ticket ) {
 				continue;
 			}
-			
-			// Skip if the ticket has unlimited capacity.
+
+			// Skip unlimited capacity tickets.
 			if ( -1 === tribe_tickets_get_capacity( $ticket->ID ) ) {
 				continue;
 			}
-			
-			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
-			$global_stock_mode = $ticket->global_stock_mode();
-			
-			// Handle shared capacity tickets (global and capped)
+
+			$requested_quantity  = (int) ( $item['quantity'] ?? 1 );
+			$global_stock_mode   = $ticket->global_stock_mode();
+
+			// Handle shared capacity tickets (global and capped).
 			if ( 
-				\Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ||
-				\Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode
+				\Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode
+				|| \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode
 			) {
 				$event_id = $ticket->get_event()->ID;
-				
-				// Track cumulative usage for this event's shared capacity
+
+				// Track cumulative usage for this event's shared capacity.
 				if ( ! isset( $global_stock_usage[ $event_id ] ) ) {
 					$global_stock_usage[ $event_id ] = 0;
 				}
 				$global_stock_usage[ $event_id ] += $requested_quantity;
-				
-				// For capped tickets, also check individual ticket capacity
+
+				// For capped tickets, also check individual ticket capacity.
 				if ( \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-					$ticket_capacity = $ticket->capacity();
-					if ( $ticket_capacity > 0 && $requested_quantity > $ticket_capacity ) {
+					$available_stock = $ticket->stock();
+					if ( $available_stock < $requested_quantity ) {
 						$validation_errors[] = [
 							'ticket_id'   => $ticket->ID,
 							'ticket_name' => $ticket->name, 
 							'requested'   => $requested_quantity,
-							'available'   => $ticket_capacity,
+							'available'   => $available_stock,
 						];
 					}
 				}
-				
-				continue; // We'll validate global stock after processing all items
+
+				continue; // We'll validate global stock after processing all items.
 			}
-			
-			// Handle individual stock mode tickets
-			if ( ! $ticket->manage_stock() ) {
-				continue;
-			}
-			
+
+			// Handle individual stock mode tickets.
 			$available_stock = $ticket->stock();
-			
 			if ( $available_stock < $requested_quantity ) {
 				$validation_errors[] = [
 					'ticket_id'   => $ticket->ID,
