@@ -109,6 +109,15 @@ class Hooks extends Service_Provider {
 		tribe_exit();
 	}
 
+	/**
+	 * Schedule the action to delete orphaned posts.
+	 *
+	 * @since TBD
+	 *
+	 * @param $provider The main service provider.
+	 *
+	 * @return void
+	 */
 	public function remove_orphans_action( $provider ) {
 		// Get IDs.
 		if ( $provider === 'rsvp' ) {
