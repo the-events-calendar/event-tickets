@@ -91,6 +91,11 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 				continue;
 			}
 
+			// Skip unlimited capacity tickets.
+			if ( -1 === tribe_tickets_get_capacity( $ticket->ID ) ) {
+				continue;
+			}
+
 			// Skip seated tickets - they have their own stock management system.
 			if ( get_post_meta( $ticket->ID, \TEC\Tickets\Seating\Meta::META_KEY_SEAT_TYPE, true ) ) {
 				continue;
@@ -178,6 +183,7 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 				'order_id'   => $order->ID,
 				'order_hash' => get_post_meta( $order->ID, Order::$hash_meta_key, true ),
 				'gateway'    => get_post_meta( $order->ID, Order::$gateway_meta_key, true ),
+				'tickets'    => $ticket_details,
 			]
 		);
 	}

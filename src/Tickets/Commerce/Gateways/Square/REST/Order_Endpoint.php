@@ -182,14 +182,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			->save();
 
 		try {
-			$orders->modify_status(
-				$order->ID,
-				tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
-				[
-					'gateway_payload'  => $payment,
-					'gateway_order_id' => $square_order_id,
-				]
-			);
+		$orders->modify_status(
+			$order->ID,
+			tribe( Status::class )->convert_to_commerce_status( $payment['status'] )->get_slug(),
+			[
+				'gateway_payload'  => $payment,
+				'gateway_order_id' => $square_order_id,
+			]
+		);
 		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
 			return new WP_Error(
 				'tec-tc-insufficient-stock',

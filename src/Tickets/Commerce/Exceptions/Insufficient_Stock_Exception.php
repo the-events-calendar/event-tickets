@@ -88,3 +88,4 @@ class Insufficient_Stock_Exception extends \Exception {
 		return $error_message;
 	}
 } 
+ 

@@ -381,12 +381,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$order->ID,
 				$status->get_slug(),
 				[
-					'gateway_payload' => $paypal_order_response,
+			'gateway_payload' => $paypal_order_response,
 				]
 			);
 
-			if ( is_wp_error( $updated ) ) {
-				return $updated;
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
 			}
 		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
 			return new WP_Error(

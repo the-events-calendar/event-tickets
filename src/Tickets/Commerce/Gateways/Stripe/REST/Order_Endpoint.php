@@ -189,14 +189,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// We will attempt to update the order status to the one returned by Stripe.
 		try {
-			$orders->modify_status(
-				$order->ID,
-				$status->get_slug(),
-				[
-					'gateway_payload'  => $payment_intent,
-					'gateway_order_id' => $payment_intent['id'],
-				]
-			);
+		$orders->modify_status(
+			$order->ID,
+			$status->get_slug(),
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
 		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
 			return new WP_Error(
 				'tec-tc-insufficient-stock',
@@ -319,14 +319,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		try {
-			$orders->modify_status(
-				$order->ID,
-				$status->get_slug(),
-				[
-					'gateway_payload'  => $payment_intent,
-					'gateway_order_id' => $payment_intent['id'],
-				]
-			);
+		$orders->modify_status(
+			$order->ID,
+			$status->get_slug(),
+			[
+				'gateway_payload'  => $payment_intent,
+				'gateway_order_id' => $payment_intent['id'],
+			]
+		);
 		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
 			return new WP_Error(
 				'tec-tc-insufficient-stock',
