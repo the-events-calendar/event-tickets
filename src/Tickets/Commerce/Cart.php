@@ -294,6 +294,9 @@ class Cart {
 	 * @return bool
 	 */
 	public function clear_cart() {
+		// Release any stock reservations before clearing cart
+		$this->release_cart_stock_reservations();
+
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
@@ -573,6 +576,49 @@ class Cart {
 
 		$processed = $this->process( $data );
 
+		// Cart-level stock reservation system.
+		if ( $processed && $this->has_items() ) {
+			try {
+				$this->reserve_cart_stock();
+			} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+				// Handle insufficient stock at cart level.
+				$this->clear_cart();
+				
+				/**
+				 * Fires when cart-level stock validation fails.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $cart_hash The cart hash.
+				 * @param array  $data      The cart data that failed validation.
+				 * @param string $error     The error message.
+				 */
+				do_action( 'tec_tickets_commerce_cart_stock_validation_failed', $this->get_cart_hash(), $data, $e->getMessage() );
+				
+				// If we're in redirect mode, redirect back with error
+				if ( static::REDIRECT_MODE === $this->get_mode() ) {
+					$redirect_url = add_query_arg(
+						[
+							'tec-tc-cart-error' => 'insufficient_stock',
+							'tec-tc-cart-msg'   => urlencode( $e->get_user_friendly_message() ),
+							'tec-tc-has-reservations' => $this->has_reserved_items( $e->get_stock_errors() ) ? '1' : '0',
+						],
+						wp_get_referer() ?: home_url()
+					);
+					
+					// Debug: Log the redirect URL and error message.
+					error_log( 'TEC Cart Stock Error - Redirect URL: ' . $redirect_url );
+					error_log( 'TEC Cart Stock Error - User Message: ' . $e->get_user_friendly_message() );
+					error_log( 'TEC Cart Stock Error - Stock Errors: ' . print_r( $e->get_stock_errors(), true ) );
+					
+					wp_safe_redirect( $redirect_url );
+					tribe_exit();
+				}
+				
+				return false;
+			}
+		}
+
 		/**
 		 * Hook to inject behavior after cart is processed.
 		 *
@@ -756,5 +802,547 @@ class Cart {
 	public static function get_transient_name( $id ) {
 		_deprecated_function( __METHOD__, '5.21.0', 'TEC\Tickets\Commerce\Traits\Cart::get_transient_key' );
 		return Commerce::ABBR . '-cart-' . md5( $id ?? '' );
+	}
+
+	/**
+	 * Reserves stock for items in the cart to prevent overselling.
+	 *
+	 * This creates temporary stock reservations using database locks and transients.
+	 *
+	 * @since TBD
+	 *
+	 * @throws \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception If stock cannot be reserved.
+	 */
+	private function reserve_cart_stock(): void {
+		global $wpdb;
+
+		$cart_items = $this->get_items_in_cart( true );
+		if ( empty( $cart_items ) ) {
+			return;
+		}
+
+		$cart_hash = $this->get_cart_hash();
+		if ( empty( $cart_hash ) ) {
+			return;
+		}
+
+		$reservation_minutes = $this->get_stock_reservation_minutes();
+		$insufficient_stock_items = [];
+		$reservations_to_create = [];
+
+		// Start database transaction for atomic operations.
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			foreach ( $cart_items as $ticket_id => $item ) {
+				$ticket = $item['obj'] ?? null;
+				if ( ! $ticket || ! $ticket->manage_stock() ) {
+					continue;
+				}
+
+				// Skip unlimited capacity tickets.
+				if ( -1 === tribe_tickets_get_capacity( $ticket->ID ) ) {
+					continue;
+				}
+
+				// Skip seated tickets - they have their own reservation system.
+				if ( get_post_meta( $ticket->ID, \TEC\Tickets\Seating\Meta::META_KEY_SEAT_TYPE, true ) ) {
+					continue;
+				}
+
+				$requested_quantity = (int) $item['quantity'];
+				
+				// Get current stock with database lock to prevent race conditions.
+				$current_stock = $this->get_locked_ticket_stock( $ticket->ID );
+				$reserved_stock = $this->get_existing_reservations_for_ticket( $ticket->ID, $cart_hash );
+				$available_stock = $current_stock - $reserved_stock;
+
+				if ( $available_stock < $requested_quantity ) {
+					// Determine if this is due to reservations or actual stock shortage
+					$is_reserved_stock = $reserved_stock > 0 && $current_stock >= $requested_quantity;
+					
+					$insufficient_stock_items[] = [
+						'ticket_id' => $ticket->ID,
+						'ticket_name' => $ticket->name,
+						'requested' => $requested_quantity,
+						'available' => max( 0, $available_stock ),
+						'current_stock' => $current_stock,
+						'reserved_stock' => $reserved_stock,
+						'is_reserved' => $is_reserved_stock,
+					];
+				} else {
+					// Stock is available, prepare reservation.
+					$reservations_to_create[] = [
+						'ticket_id' => $ticket->ID,
+						'quantity' => $requested_quantity,
+						'cart_hash' => $cart_hash,
+						'expires_at' => time() + ( $reservation_minutes * MINUTE_IN_SECONDS ),
+					];
+				}
+			}
+
+			// If any items have insufficient stock, roll back and throw exception.
+			if ( ! empty( $insufficient_stock_items ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				throw new \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception( 
+					$insufficient_stock_items,
+					$this->build_reservation_aware_error_message( $insufficient_stock_items, $reservation_minutes )
+				);
+			}
+
+			// Create all reservations atomically.
+			foreach ( $reservations_to_create as $reservation ) {
+				$this->create_stock_reservation( $reservation );
+			}
+
+			// Commit the transaction.
+			$wpdb->query( 'COMMIT' );
+
+			// Store cart reservation metadata.
+			$this->store_cart_reservation_metadata( $cart_hash, $reservations_to_create, $reservation_minutes );
+
+		} catch ( \Exception $e ) {
+			// Roll back on any error.
+			$wpdb->query( 'ROLLBACK' );
+			throw $e;
+		}
+	}
+
+	/**
+	 * Gets the current stock for a ticket with database row locking.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return int The current stock quantity.
+	 */
+	private function get_locked_ticket_stock( int $ticket_id ): int {
+		global $wpdb;
+
+		// Use FOR UPDATE to lock the row and prevent race conditions.
+		$stock = $wpdb->get_var( $wpdb->prepare(
+			"SELECT meta_value FROM {$wpdb->postmeta} 
+			 WHERE post_id = %d AND meta_key = '_stock' 
+			 FOR UPDATE",
+			$ticket_id
+		) );
+
+		return (int) ( $stock ?? 0 );
+	}
+
+	/**
+	 * Gets existing reservations for a ticket, excluding current cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $exclude_cart_hash Cart hash to exclude from results.
+	 *
+	 * @return int Total reserved quantity.
+	 */
+	private function get_existing_reservations_for_ticket( int $ticket_id, string $exclude_cart_hash = '' ): int {
+		$reservation_pattern = $this->get_reservation_transient_pattern( $ticket_id );
+		$total_reserved = 0;
+
+		// Get all reservation transients for this ticket.
+		$transients = get_transient( $reservation_pattern . '_index' ) ?: [];
+
+		foreach ( $transients as $cart_hash => $transient_key ) {
+			if ( $cart_hash === $exclude_cart_hash ) {
+				continue;
+			}
+
+			$reservation = get_transient( $transient_key );
+			if ( $reservation && $reservation['expires_at'] > time() ) {
+				$total_reserved += (int) $reservation['quantity'];
+			} else {
+				// Clean up expired reservation
+				delete_transient( $transient_key );
+				unset( $transients[ $cart_hash ] );
+			}
+		}
+
+		// Update the index after cleanup.
+		set_transient( $reservation_pattern . '_index', $transients, DAY_IN_SECONDS );
+
+		return $total_reserved;
+	}
+
+	/**
+	 * Creates a stock reservation using transients.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $reservation Reservation data.
+	 */
+	private function create_stock_reservation( array $reservation ): void {
+		$transient_key = $this->get_reservation_transient_key( 
+			$reservation['ticket_id'], 
+			$reservation['cart_hash'] 
+		);
+
+		$reservation_data = [
+			'ticket_id' => $reservation['ticket_id'],
+			'quantity' => $reservation['quantity'],
+			'cart_hash' => $reservation['cart_hash'],
+			'created_at' => time(),
+			'expires_at' => $reservation['expires_at'],
+		];
+
+		// Store the reservation.
+		set_transient( $transient_key, $reservation_data, $this->get_stock_reservation_minutes() * MINUTE_IN_SECONDS );
+
+		// Update the reservation index for this ticket.
+		$this->update_reservation_index( $reservation['ticket_id'], $reservation['cart_hash'], $transient_key );
+	}
+
+	/**
+	 * Stores cart reservation metadata for cleanup and tracking.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cart_hash Cart hash.
+	 * @param array  $reservations Array of reservations created.
+	 * @param int    $minutes Reservation duration in minutes.
+	 */
+	private function store_cart_reservation_metadata( string $cart_hash, array $reservations, int $minutes ): void {
+		$cart_transient_key = $this->get_transient_key( $cart_hash );
+		$metadata = [
+			'reserved_at' => time(),
+			'expires_at' => time() + ( $minutes * MINUTE_IN_SECONDS ),
+			'reservations' => array_map( function( $res ) {
+				return [
+					'ticket_id' => $res['ticket_id'],
+					'quantity' => $res['quantity'],
+				];
+			}, $reservations ),
+		];
+
+		set_transient( $cart_transient_key . '_reservations', $metadata, $minutes * MINUTE_IN_SECONDS );
+	}
+
+	/**
+	 * Gets the stock reservation duration in minutes.
+	 *
+	 * @since TBD
+	 *
+	 * @return int Duration in minutes.
+	 */
+	private function get_stock_reservation_minutes(): int {
+		/**
+		 * Filters the stock reservation duration for cart items.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $minutes Duration in minutes. Default 10.
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_cart_stock_reservation_minutes', 10 );
+	}
+
+	/**
+	 * Gets the transient key for a stock reservation.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id Ticket ID.
+	 * @param string $cart_hash Cart hash.
+	 *
+	 * @return string Transient key.
+	 */
+	private function get_reservation_transient_key( int $ticket_id, string $cart_hash ): string {
+		return Commerce::ABBR . '_stock_res_' . $ticket_id . '_' . substr( md5( $cart_hash ), 0, 8 );
+	}
+
+	/**
+	 * Gets the transient pattern for stock reservations by ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id Ticket ID.
+	 *
+	 * @return string Transient pattern.
+	 */
+	private function get_reservation_transient_pattern( int $ticket_id ): string {
+		return Commerce::ABBR . '_stock_res_' . $ticket_id;
+	}
+
+	/**
+	 * Updates the reservation index for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id Ticket ID.
+	 * @param string $cart_hash Cart hash.
+	 * @param string $transient_key Transient key.
+	 */
+	private function update_reservation_index( int $ticket_id, string $cart_hash, string $transient_key ): void {
+		$index_key = $this->get_reservation_transient_pattern( $ticket_id ) . '_index';
+		$index = get_transient( $index_key ) ?: [];
+		$index[ $cart_hash ] = $transient_key;
+		set_transient( $index_key, $index, DAY_IN_SECONDS );
+	}
+
+	/**
+	 * Releases stock reservations for the current cart.
+	 *
+	 * Called when cart is cleared, order is completed, or reservation expires.
+	 *
+	 * @since TBD
+	 */
+	public function release_cart_stock_reservations(): void {
+		$cart_hash = $this->get_cart_hash();
+		if ( empty( $cart_hash ) ) {
+			return;
+		}
+
+		$cart_transient_key = $this->get_transient_key( $cart_hash );
+		$metadata = get_transient( $cart_transient_key . '_reservations' );
+
+		if ( ! $metadata || ! isset( $metadata['reservations'] ) ) {
+			return;
+		}
+
+		foreach ( $metadata['reservations'] as $reservation ) {
+			$transient_key = $this->get_reservation_transient_key( 
+				$reservation['ticket_id'], 
+				$cart_hash 
+			);
+			
+			// Remove the reservation.
+			delete_transient( $transient_key );
+
+			// Update the index.
+			$index_key = $this->get_reservation_transient_pattern( $reservation['ticket_id'] ) . '_index';
+			$index = get_transient( $index_key ) ?: [];
+			unset( $index[ $cart_hash ] );
+			set_transient( $index_key, $index, DAY_IN_SECONDS );
+		}
+
+		// Remove the cart reservation metadata.
+		delete_transient( $cart_transient_key . '_reservations' );
+
+		/**
+		 * Fires when cart stock reservations are released.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $cart_hash The cart hash.
+		 * @param array  $metadata  The reservation metadata.
+		 */
+		do_action( 'tec_tickets_commerce_cart_stock_reservations_released', $cart_hash, $metadata );
+	}
+
+	/**
+	 * Cleans up expired stock reservations.
+	 *
+	 * This method can be called manually or via WordPress cron to remove expired reservations
+	 * and free up reserved stock for other customers.
+	 *
+	 * @since TBD
+	 *
+	 * @return int Number of expired reservations cleaned up.
+	 */
+	public static function cleanup_expired_stock_reservations(): int {
+		$cleanup_count = 0;
+		$pattern = Commerce::ABBR . '_stock_res_*';
+
+		// Get all transients that match our reservation pattern.
+		global $wpdb;
+
+		$transients = $wpdb->get_results( $wpdb->prepare(
+			"SELECT option_name FROM {$wpdb->options} 
+			 WHERE option_name LIKE %s 
+			 AND option_name NOT LIKE %s",
+			'_transient_' . str_replace( '*', '%', $pattern ),
+			'%_index'
+		) );
+
+		foreach ( $transients as $transient_row ) {
+			$transient_key = str_replace( '_transient_', '', $transient_row->option_name );
+			$reservation = get_transient( $transient_key );
+
+			if ( ! $reservation || ! isset( $reservation['expires_at'] ) ) {
+				continue;
+			}
+
+			// Check if reservation has expired.
+			if ( $reservation['expires_at'] <= time() ) {
+				delete_transient( $transient_key );
+				$cleanup_count++;
+
+				// Also clean up from the ticket index.
+				$ticket_id = $reservation['ticket_id'] ?? 0;
+				$cart_hash = $reservation['cart_hash'] ?? '';
+
+				if ( $ticket_id && $cart_hash ) {
+					$index_key = Commerce::ABBR . '_stock_res_' . $ticket_id . '_index';
+					$index = get_transient( $index_key ) ?: [];
+					unset( $index[ $cart_hash ] );
+					set_transient( $index_key, $index, DAY_IN_SECONDS );
+				}
+
+				/**
+				 * Fires when an expired stock reservation is cleaned up.
+				 *
+				 * @since TBD
+				 *
+				 * @param array $reservation The expired reservation data.
+				 */
+				do_action( 'tec_tickets_commerce_expired_stock_reservation_cleaned', $reservation );
+			}
+		}
+
+		/**
+		 * Fires after expired stock reservations cleanup completes.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $cleanup_count Number of expired reservations cleaned up.
+		 */
+		do_action( 'tec_tickets_commerce_stock_reservations_cleanup_completed', $cleanup_count );
+
+		return $cleanup_count;
+	}
+
+	/**
+	 * Registers the WordPress cron job for cleaning up expired stock reservations.
+	 *
+	 * This should be called during plugin activation or initialization.
+	 *
+	 * @since TBD
+	 */
+	public static function register_cleanup_cron(): void {
+		if ( ! wp_next_scheduled( 'tec_tickets_commerce_cleanup_expired_stock_reservations' ) ) {
+			// Schedule cleanup to run every 5 minutes.
+			wp_schedule_event( time(), 'tec_5_minutes', 'tec_tickets_commerce_cleanup_expired_stock_reservations' );
+		}
+
+		// Add custom cron interval if it doesn't exist.
+		add_filter( 'cron_schedules', function( $schedules ) {
+			if ( ! isset( $schedules['tec_5_minutes'] ) ) {
+				$schedules['tec_5_minutes'] = [
+					'interval' => 5 * MINUTE_IN_SECONDS,
+					'display'  => __( 'Every 5 Minutes', 'event-tickets' ),
+				];
+			}
+			return $schedules;
+		} );
+
+		// Hook the cleanup function to the cron event.
+		add_action( 'tec_tickets_commerce_cleanup_expired_stock_reservations', [ __CLASS__, 'cleanup_expired_stock_reservations' ] );
+	}
+
+	/**
+	 * Unregisters the WordPress cron job for cleaning up expired stock reservations.
+	 *
+	 * This should be called during plugin deactivation.
+	 *
+	 * @since TBD
+	 */
+	public static function unregister_cleanup_cron(): void {
+		wp_clear_scheduled_hook( 'tec_tickets_commerce_cleanup_expired_stock_reservations' );
+	}
+
+	/**
+	 * Builds a user-friendly error message that explains reservation vs sold-out scenarios.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $insufficient_stock_items Array of items with insufficient stock.
+	 * @param int   $reservation_minutes      Reservation duration in minutes.
+	 *
+	 * @return string User-friendly error message.
+	 */
+	private function build_reservation_aware_error_message( array $insufficient_stock_items, int $reservation_minutes ): string {
+		$reserved_items = [];
+		$sold_out_items = [];
+
+		// Categorize items by whether they're reserved or actually sold out.
+		foreach ( $insufficient_stock_items as $item ) {
+			if ( $item['is_reserved'] ) {
+				$reserved_items[] = $item;
+			} else {
+				$sold_out_items[] = $item;
+			}
+		}
+
+		$messages = [];
+
+		// Handle reserved items with encouraging message.
+		if ( ! empty( $reserved_items ) ) {
+			if ( count( $reserved_items ) === 1 ) {
+				$item = $reserved_items[0];
+				$messages[] = sprintf(
+					/* translators: %1$s: ticket name, %2$d: requested quantity, %3$d: reservation minutes */
+					__( 'The %1$s tickets you want (quantity: %2$d) are currently being held by another customer completing their purchase. Please try again in a few minutes, as these reservations expire after %3$d minutes.', 'event-tickets' ),
+					$item['ticket_name'],
+					$item['requested'],
+					$reservation_minutes
+				);
+			} else {
+				$ticket_list = array_map( function( $item ) {
+					return sprintf(
+						/* translators: %1$s: ticket name, %2$d: requested quantity */
+						__( '%1$s (quantity: %2$d)', 'event-tickets' ),
+						$item['ticket_name'],
+						$item['requested']
+					);
+				}, $reserved_items );
+
+				$messages[] = sprintf(
+					/* translators: %1$s: comma-separated list of tickets, %2$d: reservation minutes */
+					__( 'These tickets are currently being held by other customers completing their purchases: %1$s. Please try again in a few minutes, as these reservations expire after %2$d minutes.', 'event-tickets' ),
+					implode( ', ', $ticket_list ),
+					$reservation_minutes
+				);
+			}
+		}
+
+		// Handle truly sold out items.
+		if ( ! empty( $sold_out_items ) ) {
+			foreach ( $sold_out_items as $item ) {
+				if ( $item['available'] <= 0 ) {
+					$messages[] = sprintf(
+						/* translators: %s: ticket name */
+						__( '%s is completely sold out.', 'event-tickets' ),
+						$item['ticket_name']
+					);
+				} else {
+					$messages[] = sprintf(
+						/* translators: %1$s: ticket name, %2$d: available quantity, %3$d: requested quantity */
+						__( '%1$s: Only %2$d available (you requested %3$d).', 'event-tickets' ),
+						$item['ticket_name'],
+						$item['available'],
+						$item['requested']
+					);
+				}
+			}
+		}
+
+		// Add helpful suggestion if there are reservations.
+		if ( ! empty( $reserved_items ) ) {
+			$messages[] = __( '💡 Tip: Try refreshing this page in a few minutes if the other customer doesn\'t complete their purchase.', 'event-tickets' );
+		}
+
+		return implode( ' ', $messages );
+	}
+
+	/**
+	 * Checks if any of the stock errors are due to reservations.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $stock_errors Array of stock error items.
+	 *
+	 * @return bool True if any items are reserved.
+	 */
+	private function has_reserved_items( array $stock_errors ): bool {
+		foreach ( $stock_errors as $error ) {
+			if ( isset( $error['is_reserved'] ) && $error['is_reserved'] ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

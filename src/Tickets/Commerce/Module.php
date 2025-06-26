@@ -214,6 +214,15 @@ class Module extends \Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * Stores messages for display on frontend forms.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	public static $messages = [];
+
+	/**
 	 * A variable holder if PayPal is loaded
 	 *
 	 * @since 5.1.9
@@ -295,9 +304,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Shows the tickets form in the front end
+	 * Renders the advanced fields metabox.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added cart error message handling.
 	 *
 	 * @param string $unused_content Unused content.
 	 *
@@ -318,7 +328,114 @@ class Module extends \Tribe__Tickets__Tickets {
 			return;
 		}
 
+		// Handle cart error messages from URL parameters.
+		$this->handle_cart_error_messages();
+
+		// Hook to inject messages before the tickets form
+		add_action( 'tribe_tickets_before_front_end_ticket_form', [ $this, 'render_commerce_messages' ], 5 );
+
 		tribe( Tickets_View::class )->get_tickets_block( $post->ID );
+	}
+
+	/**
+	 * Renders Tickets Commerce messages before the tickets form.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 */
+	public function render_commerce_messages( $post_id ) {
+		$messages = $this->get_messages();
+		
+		if ( empty( $messages ) ) {
+			return;
+		}
+
+		echo '<div class="tribe-tickets-commerce-messages" style="margin-bottom: 20px;">';
+		
+		foreach ( $messages as $message ) {
+			$css_class = 'tribe-tickets-commerce-message';
+			$style = 'padding: 12px; margin: 10px 0; border-left: 4px solid; border-radius: 4px;';
+			
+			// Style based on message type
+			switch ( $message->type ) {
+				case 'error':
+					$css_class .= ' tribe-tickets-commerce-message--error';
+					$style .= ' background-color: #fef2f2; border-color: #ef4444; color: #991b1b;';
+					break;
+				case 'warning':
+					$css_class .= ' tribe-tickets-commerce-message--warning';
+					$style .= ' background-color: #fefbeb; border-color: #f59e0b; color: #92400e;';
+					break;
+				case 'success':
+					$css_class .= ' tribe-tickets-commerce-message--success';
+					$style .= ' background-color: #f0fdf4; border-color: #10b981; color: #065f46;';
+					break;
+				default:
+					$css_class .= ' tribe-tickets-commerce-message--info';
+					$style .= ' background-color: #eff6ff; border-color: #3b82f6; color: #1e40af;';
+					break;
+			}
+			
+			printf(
+				'<div class="%s" style="%s"><strong>%s</strong></div>',
+				esc_attr( $css_class ),
+				esc_attr( $style ),
+				esc_html( $message->message )
+			);
+		}
+		
+		echo '</div>';
+		
+		// Clear messages after displaying them
+		self::$messages = [];
+	}
+
+	/**
+	 * Handles cart error messages from URL parameters.
+	 *
+	 * This processes error messages from failed cart operations (like stock reservation failures)
+	 * and displays them to the user using the WordPress notice system.
+	 *
+	 * @since TBD
+	 */
+	private function handle_cart_error_messages(): void {
+		// Check for cart error parameter.
+		$cart_error = tribe_get_request_var( 'tec-tc-cart-error', false );
+		
+		if ( ! $cart_error ) {
+			return;
+		}
+
+		// Get the error message.
+		$error_message = tribe_get_request_var( 'tec-tc-cart-msg', '' );
+		$error_message = urldecode( $error_message );
+
+		// Check if this error involves reservations.
+		$has_reservations = tribe_get_request_var( 'tec-tc-has-reservations', '0' ) === '1';
+
+		if ( empty( $error_message ) ) {
+			// Fallback error message.
+			$error_message = __( 'Sorry, the tickets you requested are not available.', 'event-tickets' );
+		}
+
+		// Display the error message.
+		if ( $has_reservations ) {
+			// Use a different notice type for reservation-related errors (they're temporary).
+			$this->add_message( $error_message, 'warning' );
+		} else {
+			// Standard error for sold-out tickets.
+			$this->add_message( $error_message, 'error' );
+		}
+
+		// Fallback: Also add as WordPress admin notice for immediate visibility
+		add_action( 'wp_header', function() use ( $error_message, $has_reservations ) {
+			$notice_class = $has_reservations ? 'notice-warning' : 'notice-error';
+			echo '<div class="notice ' . esc_attr( $notice_class ) . ' is-dismissible" style="margin: 20px 0; padding: 12px; border-left: 4px solid;">';
+			echo '<p><strong>' . esc_html( $error_message ) . '</strong></p>';
+			echo '<button type="button" class="notice-dismiss" onclick="this.parentElement.style.display=\'none\'"><span class="screen-reader-text">Dismiss this notice.</span></button>';
+			echo '</div>';
+		} );
 	}
 
 	/**
@@ -842,5 +959,29 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public function update_ticket_sent_counter( $attendee_id ) {
 		tribe( Email_Communication::class )->update_ticket_sent_counter( $attendee_id );
+	}
+
+	/**
+	 * Gets messages for display.
+	 *
+	 * @since TBD
+	 *
+	 * @return array Array of message objects.
+	 */
+	public function get_messages() {
+		return self::$messages;
+	}
+
+	/**
+	 * Adds a message for display.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message The message to add.
+	 * @param string $type    The message type (error, warning, success, update).
+	 */
+	public function add_message( $message, $type = 'update' ) {
+		$message = apply_filters( 'tec_tickets_commerce_submission_message', $message, $type );
+		self::$messages[] = (object) [ 'message' => $message, 'type' => $type ];
 	}
 }

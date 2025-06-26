@@ -31,6 +31,15 @@ class Insufficient_Stock_Exception extends \Exception {
 	protected $stock_errors = [];
 	
 	/**
+	 * Custom user-friendly message.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $custom_user_message = '';
+	
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
@@ -43,11 +52,15 @@ class Insufficient_Stock_Exception extends \Exception {
 	public function __construct( array $stock_errors = [], $message = '', $code = 0, \Throwable $previous = null ) {
 		$this->stock_errors = $stock_errors;
 		
-		if ( empty( $message ) ) {
-			$message = __( 'Insufficient stock available for requested tickets.', 'event-tickets' );
+		// If message is a detailed user-friendly message, store it separately.
+		if ( ! empty( $message ) && ( strpos( $message, 'currently being held' ) !== false || strpos( $message, 'sold out' ) !== false ) ) {
+			$this->custom_user_message = $message;
+			$exception_message = __( 'Insufficient stock available for requested tickets.', 'event-tickets' );
+		} else {
+			$exception_message = empty( $message ) ? __( 'Insufficient stock available for requested tickets.', 'event-tickets' ) : $message;
 		}
 		
-		parent::__construct( $message, $code, $previous );
+		parent::__construct( $exception_message, $code, $previous );
 	}
 	
 	/**
@@ -69,6 +82,12 @@ class Insufficient_Stock_Exception extends \Exception {
 	 * @return string User-friendly error message.
 	 */
 	public function get_user_friendly_message(): string {
+		// If we have a custom reservation-aware message, use it.
+		if ( ! empty( $this->custom_user_message ) ) {
+			return $this->custom_user_message;
+		}
+
+		// Fall back to the generic stock error message.
 		if ( empty( $this->stock_errors ) ) {
 			return $this->getMessage();
 		}
