@@ -32,7 +32,7 @@
 	<div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
 	Test TC ticket for {{page_id}}</div>
 
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
+			<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
@@ -55,10 +55,10 @@
 	</button>
 </div>
 
-	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id1}}"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
+		<div id="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id1}}"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
 	Test TC ticket description for {{page_id}}
 	</div>
-
+		
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
