@@ -55,7 +55,7 @@ class Insufficient_Stock_Exception extends \Exception {
 		// If message is a detailed user-friendly message, store it separately.
 		if ( ! empty( $message ) && ( strpos( $message, 'currently being held' ) !== false || strpos( $message, 'sold out' ) !== false ) ) {
 			$this->custom_user_message = $message;
-			$exception_message = __( 'Insufficient stock available for requested tickets.', 'event-tickets' );
+			$exception_message         = __( 'Insufficient stock available for requested tickets.', 'event-tickets' );
 		} else {
 			$exception_message = empty( $message ) ? __( 'Insufficient stock available for requested tickets.', 'event-tickets' ) : $message;
 		}

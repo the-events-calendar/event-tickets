@@ -331,7 +331,7 @@ class Module extends \Tribe__Tickets__Tickets {
 		// Handle cart error messages from URL parameters.
 		$this->handle_cart_error_messages();
 
-		// Hook to inject messages before the tickets form
+		// Hook to inject messages before the tickets form.
 		add_action( 'tribe_tickets_before_front_end_ticket_form', [ $this, 'render_commerce_messages' ], 5 );
 
 		tribe( Tickets_View::class )->get_tickets_block( $post->ID );
@@ -355,25 +355,25 @@ class Module extends \Tribe__Tickets__Tickets {
 		
 		foreach ( $messages as $message ) {
 			$css_class = 'tribe-tickets-commerce-message';
-			$style = 'padding: 12px; margin: 10px 0; border-left: 4px solid; border-radius: 4px;';
+			$style     = 'padding: 12px; margin: 10px 0; border-left: 4px solid; border-radius: 4px;';
 			
-			// Style based on message type
+			// Style based on message type.
 			switch ( $message->type ) {
 				case 'error':
 					$css_class .= ' tribe-tickets-commerce-message--error';
-					$style .= ' background-color: #fef2f2; border-color: #ef4444; color: #991b1b;';
+					$style     .= ' background-color: #fef2f2; border-color: #ef4444; color: #991b1b;';
 					break;
 				case 'warning':
 					$css_class .= ' tribe-tickets-commerce-message--warning';
-					$style .= ' background-color: #fefbeb; border-color: #f59e0b; color: #92400e;';
+					$style     .= ' background-color: #fefbeb; border-color: #f59e0b; color: #92400e;';
 					break;
 				case 'success':
 					$css_class .= ' tribe-tickets-commerce-message--success';
-					$style .= ' background-color: #f0fdf4; border-color: #10b981; color: #065f46;';
+					$style     .= ' background-color: #f0fdf4; border-color: #10b981; color: #065f46;';
 					break;
 				default:
 					$css_class .= ' tribe-tickets-commerce-message--info';
-					$style .= ' background-color: #eff6ff; border-color: #3b82f6; color: #1e40af;';
+					$style     .= ' background-color: #eff6ff; border-color: #3b82f6; color: #1e40af;';
 					break;
 			}
 			
@@ -387,7 +387,7 @@ class Module extends \Tribe__Tickets__Tickets {
 		
 		echo '</div>';
 		
-		// Clear messages after displaying them
+		// Clear messages after displaying them.
 		self::$messages = [];
 	}
 
@@ -428,14 +428,17 @@ class Module extends \Tribe__Tickets__Tickets {
 			$this->add_message( $error_message, 'error' );
 		}
 
-		// Fallback: Also add as WordPress admin notice for immediate visibility
-		add_action( 'wp_header', function() use ( $error_message, $has_reservations ) {
-			$notice_class = $has_reservations ? 'notice-warning' : 'notice-error';
-			echo '<div class="notice ' . esc_attr( $notice_class ) . ' is-dismissible" style="margin: 20px 0; padding: 12px; border-left: 4px solid;">';
-			echo '<p><strong>' . esc_html( $error_message ) . '</strong></p>';
-			echo '<button type="button" class="notice-dismiss" onclick="this.parentElement.style.display=\'none\'"><span class="screen-reader-text">Dismiss this notice.</span></button>';
-			echo '</div>';
-		} );
+		// Fallback: Also add as WordPress admin notice for immediate visibility.
+		add_action(
+			'wp_header',
+			function () use ( $error_message, $has_reservations ) {
+				$notice_class = $has_reservations ? 'notice-warning' : 'notice-error';
+				echo '<div class="notice ' . esc_attr( $notice_class ) . ' is-dismissible" style="margin: 20px 0; padding: 12px; border-left: 4px solid;">';
+				echo '<p><strong>' . esc_html( $error_message ) . '</strong></p>';
+				echo '<button type="button" class="notice-dismiss" onclick="this.parentElement.style.display=\'none\'"><span class="screen-reader-text">Dismiss this notice.</span></button>';
+				echo '</div>';
+			}
+		);
 	}
 
 	/**
@@ -981,7 +984,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @param string $type    The message type (error, warning, success, update).
 	 */
 	public function add_message( $message, $type = 'update' ) {
-		$message = apply_filters( 'tec_tickets_commerce_submission_message', $message, $type );
-		self::$messages[] = (object) [ 'message' => $message, 'type' => $type ];
+		$message          = apply_filters( 'tec_tickets_commerce_submission_message', $message, $type );
+		self::$messages[] = (object) [
+			'message' => $message,
+			'type'    => $type,
+		];
 	}
 }

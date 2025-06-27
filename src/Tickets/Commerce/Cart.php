@@ -1008,14 +1008,15 @@ class Cart {
 		$metadata = [
 			'reserved_at'  => time(),
 			'expires_at'   => time() + ( $minutes * MINUTE_IN_SECONDS ),
-			'reservations' => array_map( function ( $res ) {
-				return [
-					'ticket_id' => $res[ 'ticket_id' ], 
-					'quantity'  => $res[ 'quantity' ],
-				];
-			},
-			$reservations 
-		),
+			'reservations' => array_map(
+				function ( $res ) {
+					return [
+						'ticket_id' => $res['ticket_id'],
+						'quantity'  => $res['quantity'],
+					];
+				},
+				$reservations
+			),
 		];
 
 		set_transient( $cart_transient_key . '_reservations', $metadata, $minutes * MINUTE_IN_SECONDS );
@@ -1076,9 +1077,9 @@ class Cart {
 	 * @param string $transient_key Transient key.
 	 */
 	private function update_reservation_index( int $ticket_id, string $cart_hash, string $transient_key ): void {
-		$index_key         = $this->get_reservation_transient_pattern( $ticket_id ) . '_index';
-		$index             = get_transient( $index_key ) ?: [];
-		$index[$cart_hash] = $transient_key;
+		$index_key           = $this->get_reservation_transient_pattern( $ticket_id ) . '_index';
+		$index               = get_transient( $index_key ) ?: [];
+		$index[ $cart_hash ] = $transient_key;
 		set_transient( $index_key, $index, DAY_IN_SECONDS );
 	}
 
