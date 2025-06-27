@@ -5,7 +5,8 @@
  * @version 5.23.0
  * @since 4.10.2 Update tooltip text for Confirmation email sender address and allow it to be saved as empty.
  * @since 4.10.9 Use function for text.
- * @since 5.23.0 Updated to use modern settings UI components.
+ * @since 5.23.0 Update to use modern settings UI components.
+ * @since TBD Add a maintenance option to remove orphaned entries.
  *
  * @since 4.7
  */
@@ -330,6 +331,96 @@ $auth_fields = [
 	],
 ];
 
+$rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( true );
+$rsvp_orphaned_numbers   = $rsvp_orphaned_numbers == 100 ? '100+' : $rsvp_orphaned_numbers;
+$ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( true );
+$ticket_orphaned_numbers = $ticket_orphaned_numbers == 100 ? '100+' : $ticket_orphaned_numbers;
+
+$url = add_query_arg(
+	[
+		'action' => 'tec_tickets_remove_orphans',
+		'nonce'  => wp_create_nonce( 'tec_tickets_remove_orphans' ),
+	],
+	admin_url( 'admin-post.php' )
+);
+
+// Maintenance fields.
+$maintenance_fields = [
+	'tec-settings-general-maintenance-fields-div-start' => [
+		'type' => 'html',
+		'html' => '<div class="tec-settings-form__content-section">',
+	],
+	// Maintenance header.
+	'maintenance-header'                                => [
+		'type' => 'html',
+		'html' => '<h3 id="tec-tickets-settings-maintenance" class="tec-settings-form__section-header tec-settings-form__section-header--sub">' .
+			esc_html__( 'Maintenance', 'event-tickets' ) . '</h3>',
+	],
+	// Maintenance description.
+	'maintenance-description'                           => [
+		'type' => 'html',
+		'html' => '<p class="tec-settings-form__description-text">' .
+			sprintf(
+			// Translators: %1$s: Plural RSVP label, %2$s: Plural tickets label in lowercase.
+				_x(
+					'If you have orphaned %1$s or %2$s that don\'t have a parent post, you can move them to the trash, from where they will be cleaned up by the WordPress maintenance process.',
+					'Maintenance description',
+					'event-tickets'
+				),
+				tribe_get_rsvp_label_plural( 'maintenance_description' ),
+				tribe_get_ticket_label_plural_lowercase( 'maintenance_description' ),
+			) .
+			'</p>',
+	],
+	// Maintenance field.
+	'maintenance-rsvp'                                  => [
+		'type' => 'html',
+		'html' => '<p class="tec-settings-form__description-text">' .
+			'<strong>' . tribe_get_rsvp_label_plural( 'maintenance_description' ) . '</strong>' .
+			'<br>' .
+			sprintf(
+				// Translators: %1$s: Opening anchor tag, %2$s: Plural RSVP label, %3$s: Closing anchor tag.
+				_x( '%1$sTrash orphaned %2$s%3$s', 'Orphaned RSVP maintenance button', 'event-tickets' ),
+				'<a href="' . esc_url( add_query_arg( [ 'provider' => 'rsvp' ], $url ) ) . '" class="button">',
+				tribe_get_rsvp_label_plural( 'maintenance_description' ),
+				'</a>',
+			) .
+			'<br>' .
+			sprintf(
+				// Translators: %1$s: The number or orphaned RSVPs, %2$s: Plural RSVP label.
+				_x( 'There are %1$s orphaned %2$s products and attendees.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
+				$rsvp_orphaned_numbers,
+				tribe_get_rsvp_label_plural( 'maintenance_description' )
+			) .
+			'</p>',
+	],
+	'maintenance-ticket'                                => [
+		'type' => 'html',
+		'html' => '<p class="tec-settings-form__description-text">' .
+			'<strong>' . tribe_get_ticket_label_plural( 'maintenance_description' ) . ' (Tickets Commerce)</strong>' .
+			'<br>' .
+			sprintf(
+				// Translators: %1$s: Opening anchor tag, %2$s: Plural ticket label, %3$s: Closing anchor tag.
+				_x( '%1$sTrash orphaned %2$s%3$s', 'Orphaned ticket maintenance button', 'event-tickets' ),
+				'<a href="' . esc_url( add_query_arg( [ 'provider' => 'tc_ticket' ], $url ) ) . '" class="button">',
+				tribe_get_ticket_label_plural( 'maintenance_description' ),
+				'</a>'
+			) .
+			'<br>' .
+			sprintf(
+				// Translators: %1$s: The number of orders, %2$s: The number of products, %3$s: Singular ticket label, %4$s: The number of attendees.
+				_x( 'You have %1$s orphaned %2$s products and attendees.', 'Orphaned ticket maintenance description', 'event-tickets' ),
+				$ticket_orphaned_numbers,
+				tribe_get_ticket_label_singular( 'maintenance_description' )
+			) .
+			'</p>',
+	],
+	'tec-settings-general-maintenance-fields-div-end'   => [
+		'type' => 'html',
+		'html' => '</div>',
+	],
+];
+
 $commerce_fields = [];
 
 /**
@@ -366,6 +457,7 @@ $tickets_fields = array_merge(
 	$tickets_fields,
 	$tec_fields,
 	$auth_fields,
+	$maintenance_fields,
 	$commerce_fields,
 	$misc_fields,
 );

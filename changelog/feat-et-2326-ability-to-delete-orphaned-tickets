@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+Add maintenance option to delete orphaned RSVPs, Tickets Commerce Tickets, and Attendees. [ET-2326]

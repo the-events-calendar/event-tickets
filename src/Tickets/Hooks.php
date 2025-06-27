@@ -19,6 +19,7 @@ namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Payments_Tab;
+use Tribe__Tickets__RSVP;
 use WP_Query;
 use WP_Post;
 
@@ -48,6 +49,97 @@ class Hooks extends Service_Provider {
 	 */
 	protected function add_actions() {
 		$this->container->register( Ticket_Cache_Controller::class );
+
+		add_action( 'admin_post_tec_tickets_remove_orphans', [ $this, 'remove_orphans' ] );
+		add_action( 'tec_tickets_remove_orphans_action', [ $this, 'remove_orphans_action' ], 10, 1 );
+
+		// Cache invalidation hooks for orphaned posts.
+		add_action( 'deleted_post', [ $this, 'clear_orphaned_posts_cache' ] );
+		add_action( 'wp_trash_post', [ $this, 'clear_orphaned_posts_cache' ] );
+		add_action( 'untrashed_post', [ $this, 'clear_orphaned_posts_cache' ] );
+	}
+
+	/**
+	 * Trash orphaned entries.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function remove_orphans() {
+		// Bail if not admin.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Not allowed.' );
+		}
+
+		// Bail if nonce verification fails.
+		$nonce = tec_get_request_var( 'nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'tec_tickets_remove_orphans' ) ) {
+			wp_die( 'Nonce verification failed.' );
+		}
+
+		// Bail if no provider specified.
+		$provider = tec_get_request_var( 'provider', false );
+		if ( ! $provider ) {
+			wp_die( 'No provider specified.' );
+		}
+
+		// Get IDs.
+		if ( $provider === 'rsvp' ) {
+			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
+		} elseif ( $provider === 'tc_ticket' ) {
+			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
+		}
+
+		// Return URL.
+		$url = add_query_arg( 'page', 'tec-tickets-settings', wp_get_referer() );
+
+		// Bail if no post IDs.
+		if ( empty( $ids ) ) {
+			wp_safe_redirect( esc_url_raw( $url ) );
+			tribe_exit();
+		}
+
+		// Count IDs. If less than 25, don't offload. If more, schedule action.
+		if ( count( $ids ) < 25 ) {
+			// Delete posts.
+			foreach ( $ids as $id ) {
+				wp_delete_post( $id );
+			}
+		} else {
+			as_schedule_single_action( time(), 'tec_tickets_remove_orphans_action', [ $provider ], 'tec_tickets_cleanup_actions' );
+		}
+
+		wp_safe_redirect( esc_url_raw( $url ) );
+		tribe_exit();
+	}
+
+	/**
+	 * Schedule the action to delete orphaned posts.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider The main service provider.
+	 *
+	 * @return void
+	 */
+	public function remove_orphans_action( $provider ) {
+		// Get IDs.
+		if ( $provider === 'rsvp' ) {
+			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
+		} elseif ( $provider === 'tc_ticket' ) {
+			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
+		}
+
+		if ( empty( $ids ) ) {
+			return;
+		}
+
+		as_schedule_single_action( time(), 'tec_tickets_remove_orphans_action', [ $provider ], 'tec_tickets_cleanup_actions' );
+
+		foreach ( $ids as $id ) {
+			wp_delete_post( $id );
+		}
 	}
 
 	/**
@@ -116,4 +208,15 @@ class Hooks extends Service_Provider {
 	protected function add_filters() {
 		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 	}
+
+	/**
+	 * Clear the cache for orphaned post IDs.
+	 *
+	 * @since TBD
+	 */
+	public function clear_orphaned_posts_cache() {
+		delete_transient( 'tec_tickets_orphaned_posts_tribe__tickets__rsvp' );
+		delete_transient( 'tec_tickets_orphaned_posts_tecticketscommercemodule' );
+	}
+
 }
