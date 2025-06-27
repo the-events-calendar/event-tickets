@@ -4697,7 +4697,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return apply_filters( 'tec_tickets_orphaned_post_ids', $cached_post_ids, $provider, true, null );
 			}
 
-			// Define meta keys based on provider.
+			// Define meta keys based on the provider.
 			$meta_keys = [];
 
 			switch ( $provider ) {
@@ -4708,7 +4708,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$meta_keys = [ '_tec_tickets_commerce_event' ];
 					break;
 				default:
-					// Return empty array for unsupported providers.
+					// Return an empty array for unsupported providers.
 					return [];
 			}
 
