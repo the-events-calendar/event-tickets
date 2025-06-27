@@ -10,6 +10,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets_Plus__Meta__Storage as Meta_Storage;
 use Tribe__Utils__Array as Arr;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Cart
@@ -294,7 +295,7 @@ class Cart {
 	 * @return bool
 	 */
 	public function clear_cart() {
-		// Release any stock reservations before clearing cart
+		// Release any stock reservations before clearing cart.
 		$this->release_cart_stock_reservations();
 
 		$this->set_cart_hash_cookie( null );
@@ -595,22 +596,17 @@ class Cart {
 				 */
 				do_action( 'tec_tickets_commerce_cart_stock_validation_failed', $this->get_cart_hash(), $data, $e->getMessage() );
 				
-				// If we're in redirect mode, redirect back with error
+				// If we're in redirect mode, redirect back with error.
 				if ( static::REDIRECT_MODE === $this->get_mode() ) {
 					$redirect_url = add_query_arg(
 						[
-							'tec-tc-cart-error' => 'insufficient_stock',
-							'tec-tc-cart-msg'   => urlencode( $e->get_user_friendly_message() ),
+							'tec-tc-cart-error'       => 'insufficient_stock',
+							'tec-tc-cart-msg'         => urlencode( $e->get_user_friendly_message() ),
 							'tec-tc-has-reservations' => $this->has_reserved_items( $e->get_stock_errors() ) ? '1' : '0',
 						],
 						wp_get_referer() ?: home_url()
 					);
-					
-					// Debug: Log the redirect URL and error message.
-					error_log( 'TEC Cart Stock Error - Redirect URL: ' . $redirect_url );
-					error_log( 'TEC Cart Stock Error - User Message: ' . $e->get_user_friendly_message() );
-					error_log( 'TEC Cart Stock Error - Stock Errors: ' . print_r( $e->get_stock_errors(), true ) );
-					
+
 					wp_safe_redirect( $redirect_url );
 					tribe_exit();
 				}
@@ -812,6 +808,7 @@ class Cart {
 	 * @since TBD
 	 *
 	 * @throws \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception If stock cannot be reserved.
+	 * @throws \Exception If database operations fail.
 	 */
 	private function reserve_cart_stock(): void {
 		global $wpdb;
@@ -826,12 +823,12 @@ class Cart {
 			return;
 		}
 
-		$reservation_minutes = $this->get_stock_reservation_minutes();
+		$reservation_minutes      = $this->get_stock_reservation_minutes();
 		$insufficient_stock_items = [];
-		$reservations_to_create = [];
+		$reservations_to_create   = [];
 
 		// Start database transaction for atomic operations.
-		$wpdb->query( 'START TRANSACTION' );
+		DB::beginTransaction();
 
 		try {
 			foreach ( $cart_items as $ticket_id => $item ) {
@@ -853,29 +850,29 @@ class Cart {
 				$requested_quantity = (int) $item['quantity'];
 				
 				// Get current stock with database lock to prevent race conditions.
-				$current_stock = $this->get_locked_ticket_stock( $ticket->ID );
-				$reserved_stock = $this->get_existing_reservations_for_ticket( $ticket->ID, $cart_hash );
+				$current_stock   = $this->get_locked_ticket_stock( $ticket->ID );
+				$reserved_stock  = $this->get_existing_reservations_for_ticket( $ticket->ID, $cart_hash );
 				$available_stock = $current_stock - $reserved_stock;
 
 				if ( $available_stock < $requested_quantity ) {
-					// Determine if this is due to reservations or actual stock shortage
+					// Determine if this is due to reservations or actual stock shortage.
 					$is_reserved_stock = $reserved_stock > 0 && $current_stock >= $requested_quantity;
 					
 					$insufficient_stock_items[] = [
-						'ticket_id' => $ticket->ID,
-						'ticket_name' => $ticket->name,
-						'requested' => $requested_quantity,
-						'available' => max( 0, $available_stock ),
-						'current_stock' => $current_stock,
+						'ticket_id'      => $ticket->ID,
+						'ticket_name'    => $ticket->name,
+						'requested'      => $requested_quantity,
+						'available'      => max( 0, $available_stock ),
+						'current_stock'  => $current_stock,
 						'reserved_stock' => $reserved_stock,
-						'is_reserved' => $is_reserved_stock,
+						'is_reserved'    => $is_reserved_stock,
 					];
 				} else {
 					// Stock is available, prepare reservation.
 					$reservations_to_create[] = [
-						'ticket_id' => $ticket->ID,
-						'quantity' => $requested_quantity,
-						'cart_hash' => $cart_hash,
+						'ticket_id'  => $ticket->ID,
+						'quantity'   => $requested_quantity,
+						'cart_hash'  => $cart_hash,
 						'expires_at' => time() + ( $reservation_minutes * MINUTE_IN_SECONDS ),
 					];
 				}
@@ -883,7 +880,7 @@ class Cart {
 
 			// If any items have insufficient stock, roll back and throw exception.
 			if ( ! empty( $insufficient_stock_items ) ) {
-				$wpdb->query( 'ROLLBACK' );
+				DB::rollback();
 				throw new \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception( 
 					$insufficient_stock_items,
 					$this->build_reservation_aware_error_message( $insufficient_stock_items, $reservation_minutes )
@@ -896,14 +893,14 @@ class Cart {
 			}
 
 			// Commit the transaction.
-			$wpdb->query( 'COMMIT' );
+			DB::commit();
 
 			// Store cart reservation metadata.
 			$this->store_cart_reservation_metadata( $cart_hash, $reservations_to_create, $reservation_minutes );
 
 		} catch ( \Exception $e ) {
 			// Roll back on any error.
-			$wpdb->query( 'ROLLBACK' );
+			DB::rollback();
 			throw $e;
 		}
 	}
@@ -918,15 +915,15 @@ class Cart {
 	 * @return int The current stock quantity.
 	 */
 	private function get_locked_ticket_stock( int $ticket_id ): int {
-		global $wpdb;
-
 		// Use FOR UPDATE to lock the row and prevent race conditions.
-		$stock = $wpdb->get_var( $wpdb->prepare(
-			"SELECT meta_value FROM {$wpdb->postmeta} 
-			 WHERE post_id = %d AND meta_key = '_stock' 
-			 FOR UPDATE",
-			$ticket_id
-		) );
+		$stock = DB::get_var( 
+			DB::prepare(
+				"SELECT meta_value FROM " . DB::prefix( 'postmeta' ) . " 
+				 WHERE post_id = %d AND meta_key = '_stock' 
+				 FOR UPDATE",
+				$ticket_id
+			)
+		);
 
 		return (int) ( $stock ?? 0 );
 	}
@@ -1148,15 +1145,15 @@ class Cart {
 		$pattern = Commerce::ABBR . '_stock_res_*';
 
 		// Get all transients that match our reservation pattern.
-		global $wpdb;
-
-		$transients = $wpdb->get_results( $wpdb->prepare(
-			"SELECT option_name FROM {$wpdb->options} 
-			 WHERE option_name LIKE %s 
-			 AND option_name NOT LIKE %s",
-			'_transient_' . str_replace( '*', '%', $pattern ),
-			'%_index'
-		) );
+		$transients = DB::get_results( 
+			DB::prepare(
+				"SELECT option_name FROM " . DB::prefix( 'options' ) . " 
+				 WHERE option_name LIKE %s 
+				 AND option_name NOT LIKE %s",
+				'_transient_' . str_replace( '*', '%', $pattern ),
+				'%_index'
+			)
+		);
 
 		foreach ( $transients as $transient_row ) {
 			$transient_key = str_replace( '_transient_', '', $transient_row->option_name );
