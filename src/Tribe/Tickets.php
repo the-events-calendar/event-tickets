@@ -4654,11 +4654,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array|int Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned posts ($count = true).
 		 */
-		public function get_orphaned_posts( bool $count = false ): array|int {
-			global $wpdb;
-
-			$provider     = static::class;
-
+		public function get_orphaned_posts( bool $count = false ) {
+			$provider          = static::class;
 			$orphaned_post_ids = $this->get_orphaned_post_ids( $provider );
 
 			// If counting, return the numbers.
@@ -4683,9 +4680,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			global $wpdb;
 
 			// Check for cached results first.
-			$cache_key = 'tribe_tickets_orphaned_posts_' . sanitize_key( $provider );
+			$cache_key = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
 			$cached_post_ids = get_transient( $cache_key );
-			
+
 			if ( false !== $cached_post_ids ) {
 				/**
 				 * Filter the list of orphaned post IDs for a specific provider.
@@ -4702,7 +4699,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Define meta keys based on provider.
 			$meta_keys = [];
-			
+
 			switch ( $provider ) {
 				case 'Tribe__Tickets__RSVP':
 					$meta_keys = [ '_tribe_rsvp_event', '_tribe_rsvp_for_event' ];
@@ -4717,14 +4714,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Build the query to find orphaned posts.
 			$meta_keys_placeholders = implode( ',', array_fill( 0, count( $meta_keys ), '%s' ) );
-			
+
 			$query = $wpdb->prepare(
-				"SELECT DISTINCT pm.post_id 
-				FROM {$wpdb->postmeta} pm 
-				WHERE pm.meta_key IN ({$meta_keys_placeholders}) 
-				AND pm.meta_value != '' 
-				AND pm.meta_value NOT IN (SELECT ID FROM {$wpdb->posts}) 
-				ORDER BY pm.post_id ASC 
+				"SELECT DISTINCT pm.post_id
+				FROM {$wpdb->postmeta} pm
+				WHERE pm.meta_key IN ({$meta_keys_placeholders})
+				AND pm.meta_value != ''
+				AND pm.meta_value NOT IN (SELECT ID FROM {$wpdb->posts})
+				ORDER BY pm.post_id ASC
 				LIMIT 100",
 				...$meta_keys
 			);

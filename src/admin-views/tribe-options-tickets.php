@@ -331,28 +331,10 @@ $auth_fields = [
 	],
 ];
 
-$rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( 'rsvp', true );
-$rsvp_orphaned_numbers   = array_map(
-	function ( $value ) {
-		if ( $value == 100 ) {
-			return '100+';
-		}
-
-		return $value;
-	},
-	$rsvp_orphaned_numbers
-);
-$ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( 'tc_ticket', true );
-$ticket_orphaned_numbers = array_map(
-	function ( $value ) {
-		if ( $value == 100 ) {
-			return '100+';
-		}
-
-		return $value;
-	},
-	$ticket_orphaned_numbers
-);
+$rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( true );
+$rsvp_orphaned_numbers   = $rsvp_orphaned_numbers == 100 ? '100+' : $rsvp_orphaned_numbers;
+$ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( true );
+$ticket_orphaned_numbers = $ticket_orphaned_numbers == 100 ? '100+' : $ticket_orphaned_numbers;
 
 $url = add_query_arg(
 	[
@@ -405,11 +387,10 @@ $maintenance_fields = [
 			) .
 			'<br>' .
 			sprintf(
-				// Translators: %1$s: The number or orphaned RSVPs, %2$s: Singular RSVP label.
-				_x( 'There are %1$s orphaned %2$s products with %3$s attendees.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
-				$rsvp_orphaned_numbers['products'],
-				tribe_get_rsvp_label_singular( 'maintenance_description' ),
-				$rsvp_orphaned_numbers['attendees']
+				// Translators: %1$s: The number or orphaned RSVPs, %2$s: Plural RSVP label.
+				_x( 'There are %1$s orphaned %2$s products and attendees.', 'Orphaned RSVP maintenance description', 'event-tickets' ),
+				$rsvp_orphaned_numbers,
+				tribe_get_rsvp_label_plural( 'maintenance_description' )
 			) .
 			'</p>',
 	],
@@ -428,10 +409,9 @@ $maintenance_fields = [
 			'<br>' .
 			sprintf(
 				// Translators: %1$s: The number of orders, %2$s: The number of products, %3$s: Singular ticket label, %4$s: The number of attendees.
-				_x( 'You have %1$s orphaned %2$s products with %3$s attendees.', 'Orphaned ticket maintenance description', 'event-tickets' ),
-				$ticket_orphaned_numbers['products'],
-				tribe_get_ticket_label_singular( 'maintenance_description' ),
-				$ticket_orphaned_numbers['attendees']
+				_x( 'You have %1$s orphaned %2$s products and attendees.', 'Orphaned ticket maintenance description', 'event-tickets' ),
+				$ticket_orphaned_numbers,
+				tribe_get_ticket_label_singular( 'maintenance_description' )
 			) .
 			'</p>',
 	],
