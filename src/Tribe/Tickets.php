@@ -1291,6 +1291,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_filter( 'the_content', [ $this, 'front_end_tickets_form_in_content' ], 11 );
 			add_filter( 'the_content', [ $this, 'show_tickets_unavailable_message_in_content' ], 12 );
+
+			// Cache invalidation hooks for orphaned posts.
+			add_action( 'deleted_post', [ $this, 'clear_orphaned_posts_cache' ] );
+			add_action( 'wp_trash_post', [ $this, 'clear_orphaned_posts_cache' ] );
+			add_action( 'untrashed_post', [ $this, 'clear_orphaned_posts_cache' ] );
+
 			/**
 			 * Trigger an action every time a new ticket instance has been created
 			 *
@@ -4646,77 +4652,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param bool $count Whether we should return the post IDs (default, false) or the number of posts found (true).
 		 *
-		 * @return array Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned products and attendees ($count = true).
+		 * @return array|int Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned posts ($count = true).
 		 */
-		public function get_orphaned_posts( bool $count = false ): array {
+		public function get_orphaned_posts( bool $count = false ): array|int {
 			global $wpdb;
 
 			$provider     = static::class;
-			$provider_obj = tribe( $provider );
 
-			// Get the orphaned products.
-			// Meta key connecting the ticket/attendee to the event: '_tribe_rsvp_for_event' or '_tec_tickets_commerce_event'.
-			$event_meta_key = $provider_obj->get_event_key();
-			// Post type of the ticket product: 'tribe_rsvp_tickets' or 'tec_tc_ticket'.
-			$product_post_type = $provider_obj->ticket_object;
-			// Meta key connecting the attendee to the RSVP/ticket product: '_tribe_rsvp_product' or '_tec_tickets_commerce_ticket'.
-			$product_meta_key = static::ATTENDEE_PRODUCT_KEY;
-
-			$orphaned_ticket_ids = $this->get_orphaned_post_ids( $event_meta_key, $product_post_type );
-
-			/**
-			 * Filter orphaned tickets/RSVPs. You can use this to exclude orphaned products you want to keep.
-			 *
-			 * @since TBD
-			 *
-			 * @param array  $orphaned_ticket_ids Array of product post IDs that are orphaned.
-			 * @param string $event_meta_key      Meta key connecting the product to the event.
-			 * @param string $product_post_type   Post type of the product.
-			 */
-			$orphaned_ticket_ids = apply_filters( 'tribe_tickets_orphaned_ticket_ids', $orphaned_ticket_ids, $event_meta_key, $product_post_type );
-
-			// Prepare the results for use in the next query.
-			$ids = "'" . implode( "', '", $orphaned_ticket_ids ) . "'";
-
-			// Get the attendees for each abandoned product.
-			$args = [
-				'post_type'      => static::ATTENDEE_OBJECT, // The attendee post type.
-				'post_status'    => 'publish',
-				'posts_per_page' => 100,
-				'fields'         => 'ids', // We only need the post IDs.
-				'meta_query'     => [
-					[
-						'key'     => $product_meta_key,
-						'value'   => $orphaned_ticket_ids, // $ids must be an array of values
-						'compare' => 'IN',
-					],
-				],
-			];
-
-			$query                 = new WP_Query( $args );
-			$orphaned_attendee_ids = $query->posts;
-
-			/**
-			 * Filter orphaned attendees. You can use this to exclude orphaned attendees you want to keep.
-			 *
-			 * @since TBD
-			 *
-			 * @param array  $orphaned_attendee_ids Array of attendee post IDs that are orphaned.
-			 * @param string $event_meta_key        Meta key connecting attendee to the event.
-			 * @param string $product_post_type     Post type of the attendee.
-			 */
-			$orphaned_attendee_ids = apply_filters( 'tribe_tickets_orphaned_attendee_ids', $orphaned_attendee_ids, $event_meta_key, $product_post_type );
+			$orphaned_post_ids = $this->get_orphaned_post_ids( $provider );
 
 			// If counting, return the numbers.
 			if ( $count ) {
-				return [
-					'products'  => count( $orphaned_ticket_ids ),
-					'attendees' => count( $orphaned_attendee_ids ),
-				];
+				return count( $orphaned_post_ids );
 			}
 
 			// Return the post IDs to be deleted.
-			return array_merge( $orphaned_ticket_ids, $orphaned_attendee_ids );
+			return $orphaned_post_ids;
 		}
 
 		/**
@@ -4724,25 +4675,58 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $meta_key  The meta key linking the post type to the event.
-		 * @param string $post_type The post type.
+		 * @param string $provider The provider to check for orphaned posts ('rsvp' or 'tc_ticket').
 		 *
-		 * @return array
+		 * @return array Array of orphaned post IDs.
 		 */
-		public function get_orphaned_post_ids( $meta_key, $post_type ) {
+		public function get_orphaned_post_ids( $provider ): array {
 			global $wpdb;
 
+			// Check for cached results first.
+			$cache_key = 'tribe_tickets_orphaned_posts_' . sanitize_key( $provider );
+			$cached_post_ids = get_transient( $cache_key );
+			
+			if ( false !== $cached_post_ids ) {
+				/**
+				 * Filter the list of orphaned post IDs for a specific provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param array      $cached_post_ids Array of orphaned post IDs from cache.
+				 * @param string     $provider        The provider being checked.
+				 * @param bool       $cached          Whether the results are from cache (true) or fresh query (false).
+				 * @param array|null $meta_keys       Meta keys used in the query (null for cached results).
+				 */
+				return apply_filters( 'tec_tickets_orphaned_post_ids', $cached_post_ids, $provider, true, null );
+			}
+
+			// Define meta keys based on provider.
+			$meta_keys = [];
+			
+			switch ( $provider ) {
+				case 'Tribe__Tickets__RSVP':
+					$meta_keys = [ '_tribe_rsvp_event', '_tribe_rsvp_for_event' ];
+					break;
+				case 'TEC\Tickets\Commerce\Module':
+					$meta_keys = [ '_tec_tickets_commerce_event' ];
+					break;
+				default:
+					// Return empty array for unsupported providers.
+					return [];
+			}
+
+			// Build the query to find orphaned posts.
+			$meta_keys_placeholders = implode( ',', array_fill( 0, count( $meta_keys ), '%s' ) );
+			
 			$query = $wpdb->prepare(
-				"SELECT p1.ID
-		FROM {$wpdb->posts} AS p1
-		JOIN {$wpdb->postmeta} AS pm ON pm.post_id = p1.ID AND pm.meta_key = %s
-		LEFT JOIN {$wpdb->posts} AS p2 ON pm.meta_value = p2.ID
-		WHERE p1.post_type = %s
-		  AND p2.ID IS NULL
-		ORDER BY pm.post_id ASC
-		LIMIT 100;",
-				$meta_key,
-				$post_type
+				"SELECT DISTINCT pm.post_id 
+				FROM {$wpdb->postmeta} pm 
+				WHERE pm.meta_key IN ({$meta_keys_placeholders}) 
+				AND pm.meta_value != '' 
+				AND pm.meta_value NOT IN (SELECT ID FROM {$wpdb->posts}) 
+				ORDER BY pm.post_id ASC 
+				LIMIT 100",
+				...$meta_keys
 			);
 
 			$post_ids = $wpdb->get_col( $query );
@@ -4753,10 +4737,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since TBD
 			 *
 			 * @param array  $post_ids  Array of orphaned post IDs.
-			 * @param string $meta_key  Meta key linking post to the event.
-			 * @param string $post_type Post type being checked.
+			 * @param string $provider  The provider being checked.
+			 * @param bool   $cached    Whether the results are from cache (true) or fresh query (false).
+			 * @param array  $meta_keys Meta keys used in the query.
 			 */
-			$post_ids = apply_filters( 'tribe_tickets_orphaned_post_ids', $post_ids, $meta_key, $post_type );
+			$post_ids = apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
+
+			// Cache the results for 1 hour (3600 seconds).
+			set_transient( $cache_key, $post_ids, HOUR_IN_SECONDS );
 
 			return $post_ids;
 		}
@@ -4886,6 +4874,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final protected function ajax_ok( $data ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
+		}
+
+		/**
+		 * Clear the cache for orphaned post IDs.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $provider Optional. The specific provider to clear cache for. If empty, clears all providers.
+		 */
+		public function clear_orphaned_posts_cache( $provider = '' ) {
+			if ( empty( $provider ) ) {
+				// Clear cache for all supported providers.
+				delete_transient( 'tec_tickets_orphaned_posts_rsvp' );
+				delete_transient( 'tec_tickets_orphaned_posts_tc_ticket' );
+			} else {
+				// Clear cache for specific provider.
+				$cache_key = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+				delete_transient( $cache_key );
+			}
 		}
 
 		// @codingStandardsIgnoreEnd
