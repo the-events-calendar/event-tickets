@@ -918,9 +918,9 @@ class Cart {
 		// Use FOR UPDATE to lock the row and prevent race conditions.
 		$stock = DB::get_var( 
 			DB::prepare(
-				"SELECT meta_value FROM " . DB::prefix( 'postmeta' ) . " 
-				 WHERE post_id = %d AND meta_key = '_stock' 
-				 FOR UPDATE",
+				'SELECT meta_value FROM ' . DB::prefix( 'postmeta' ) . ' 
+				 WHERE post_id = %d AND meta_key = \'_stock\' 
+				 FOR UPDATE',
 				$ticket_id
 			)
 		);
@@ -940,7 +940,7 @@ class Cart {
 	 */
 	private function get_existing_reservations_for_ticket( int $ticket_id, string $exclude_cart_hash = '' ): int {
 		$reservation_pattern = $this->get_reservation_transient_pattern( $ticket_id );
-		$total_reserved = 0;
+		$total_reserved      = 0;
 
 		// Get all reservation transients for this ticket.
 		$transients = get_transient( $reservation_pattern . '_index' ) ?: [];
@@ -954,7 +954,7 @@ class Cart {
 			if ( $reservation && $reservation['expires_at'] > time() ) {
 				$total_reserved += (int) $reservation['quantity'];
 			} else {
-				// Clean up expired reservation
+				// Clean up expired reservation.
 				delete_transient( $transient_key );
 				unset( $transients[ $cart_hash ] );
 			}
@@ -980,9 +980,9 @@ class Cart {
 		);
 
 		$reservation_data = [
-			'ticket_id' => $reservation['ticket_id'],
-			'quantity' => $reservation['quantity'],
-			'cart_hash' => $reservation['cart_hash'],
+			'ticket_id'  => $reservation['ticket_id'],
+			'quantity'   => $reservation['quantity'], 
+			'cart_hash'  => $reservation['cart_hash'],
 			'created_at' => time(),
 			'expires_at' => $reservation['expires_at'],
 		];
@@ -1006,14 +1006,16 @@ class Cart {
 	private function store_cart_reservation_metadata( string $cart_hash, array $reservations, int $minutes ): void {
 		$cart_transient_key = $this->get_transient_key( $cart_hash );
 		$metadata = [
-			'reserved_at' => time(),
-			'expires_at' => time() + ( $minutes * MINUTE_IN_SECONDS ),
-			'reservations' => array_map( function( $res ) {
+			'reserved_at'  => time(),
+			'expires_at'   => time() + ( $minutes * MINUTE_IN_SECONDS ),
+			'reservations' => array_map( function ( $res ) {
 				return [
-					'ticket_id' => $res['ticket_id'],
-					'quantity' => $res['quantity'],
+					'ticket_id' => $res[ 'ticket_id' ], 
+					'quantity'  => $res[ 'quantity' ],
 				];
-			}, $reservations ),
+			},
+			$reservations 
+		),
 		];
 
 		set_transient( $cart_transient_key . '_reservations', $metadata, $minutes * MINUTE_IN_SECONDS );
@@ -1074,9 +1076,9 @@ class Cart {
 	 * @param string $transient_key Transient key.
 	 */
 	private function update_reservation_index( int $ticket_id, string $cart_hash, string $transient_key ): void {
-		$index_key = $this->get_reservation_transient_pattern( $ticket_id ) . '_index';
-		$index = get_transient( $index_key ) ?: [];
-		$index[ $cart_hash ] = $transient_key;
+		$index_key         = $this->get_reservation_transient_pattern( $ticket_id ) . '_index';
+		$index             = get_transient( $index_key ) ?: [];
+		$index[$cart_hash] = $transient_key;
 		set_transient( $index_key, $index, DAY_IN_SECONDS );
 	}
 
@@ -1094,7 +1096,7 @@ class Cart {
 		}
 
 		$cart_transient_key = $this->get_transient_key( $cart_hash );
-		$metadata = get_transient( $cart_transient_key . '_reservations' );
+		$metadata           = get_transient( $cart_transient_key . '_reservations' );
 
 		if ( ! $metadata || ! isset( $metadata['reservations'] ) ) {
 			return;
@@ -1111,7 +1113,7 @@ class Cart {
 
 			// Update the index.
 			$index_key = $this->get_reservation_transient_pattern( $reservation['ticket_id'] ) . '_index';
-			$index = get_transient( $index_key ) ?: [];
+			$index     = get_transient( $index_key ) ?: [];
 			unset( $index[ $cart_hash ] );
 			set_transient( $index_key, $index, DAY_IN_SECONDS );
 		}
@@ -1142,14 +1144,14 @@ class Cart {
 	 */
 	public static function cleanup_expired_stock_reservations(): int {
 		$cleanup_count = 0;
-		$pattern = Commerce::ABBR . '_stock_res_*';
+		$pattern       = Commerce::ABBR . '_stock_res_*';
 
 		// Get all transients that match our reservation pattern.
 		$transients = DB::get_results( 
 			DB::prepare(
-				"SELECT option_name FROM " . DB::prefix( 'options' ) . " 
+				'SELECT option_name FROM ' . DB::prefix( 'options' ) . ' 
 				 WHERE option_name LIKE %s 
-				 AND option_name NOT LIKE %s",
+				 AND option_name NOT LIKE %s',
 				'_transient_' . str_replace( '*', '%', $pattern ),
 				'%_index'
 			)
@@ -1157,7 +1159,7 @@ class Cart {
 
 		foreach ( $transients as $transient_row ) {
 			$transient_key = str_replace( '_transient_', '', $transient_row->option_name );
-			$reservation = get_transient( $transient_key );
+			$reservation   = get_transient( $transient_key );
 
 			if ( ! $reservation || ! isset( $reservation['expires_at'] ) ) {
 				continue;
@@ -1166,7 +1168,7 @@ class Cart {
 			// Check if reservation has expired.
 			if ( $reservation['expires_at'] <= time() ) {
 				delete_transient( $transient_key );
-				$cleanup_count++;
+				++$cleanup_count;
 
 				// Also clean up from the ticket index.
 				$ticket_id = $reservation['ticket_id'] ?? 0;
@@ -1174,7 +1176,7 @@ class Cart {
 
 				if ( $ticket_id && $cart_hash ) {
 					$index_key = Commerce::ABBR . '_stock_res_' . $ticket_id . '_index';
-					$index = get_transient( $index_key ) ?: [];
+					$index     = get_transient( $index_key ) ?: [];
 					unset( $index[ $cart_hash ] );
 					set_transient( $index_key, $index, DAY_IN_SECONDS );
 				}
@@ -1211,20 +1213,23 @@ class Cart {
 	 */
 	public static function register_cleanup_cron(): void {
 		if ( ! wp_next_scheduled( 'tec_tickets_commerce_cleanup_expired_stock_reservations' ) ) {
-			// Schedule cleanup to run every 5 minutes.
-			wp_schedule_event( time(), 'tec_5_minutes', 'tec_tickets_commerce_cleanup_expired_stock_reservations' );
+			// Schedule cleanup to run every 15 minutes.
+			wp_schedule_event( time(), 'tec_15_minutes', 'tec_tickets_commerce_cleanup_expired_stock_reservations' );
 		}
 
 		// Add custom cron interval if it doesn't exist.
-		add_filter( 'cron_schedules', function( $schedules ) {
-			if ( ! isset( $schedules['tec_5_minutes'] ) ) {
-				$schedules['tec_5_minutes'] = [
-					'interval' => 5 * MINUTE_IN_SECONDS,
-					'display'  => __( 'Every 5 Minutes', 'event-tickets' ),
-				];
+		add_filter(
+			'cron_schedules',
+			function ( $schedules ) {
+				if ( ! isset( $schedules['tec_15_minutes'] ) ) {
+					$schedules['tec_15_minutes'] = [
+						'interval' => 15 * MINUTE_IN_SECONDS,
+						'display'  => __( 'Every 15 Minutes', 'event-tickets' ),
+					];
+				}
+				return $schedules;
 			}
-			return $schedules;
-		} );
+		);
 
 		// Hook the cleanup function to the cron event.
 		add_action( 'tec_tickets_commerce_cleanup_expired_stock_reservations', [ __CLASS__, 'cleanup_expired_stock_reservations' ] );
@@ -1269,7 +1274,7 @@ class Cart {
 		// Handle reserved items with encouraging message.
 		if ( ! empty( $reserved_items ) ) {
 			if ( count( $reserved_items ) === 1 ) {
-				$item = $reserved_items[0];
+				$item       = $reserved_items[0];
 				$messages[] = sprintf(
 					/* translators: %1$s: ticket name, %2$d: requested quantity, %3$d: reservation minutes */
 					__( 'The %1$s tickets you want (quantity: %2$d) are currently being held by another customer completing their purchase. Please try again in a few minutes, as these reservations expire after %3$d minutes.', 'event-tickets' ),
@@ -1278,14 +1283,17 @@ class Cart {
 					$reservation_minutes
 				);
 			} else {
-				$ticket_list = array_map( function( $item ) {
-					return sprintf(
-						/* translators: %1$s: ticket name, %2$d: requested quantity */
-						__( '%1$s (quantity: %2$d)', 'event-tickets' ),
-						$item['ticket_name'],
-						$item['requested']
-					);
-				}, $reserved_items );
+				$ticket_list = array_map( 
+					function ( $item ) {
+						return sprintf(
+							/* translators: %1$s: ticket name, %2$d: requested quantity */
+							__( '%1$s (quantity: %2$d)', 'event-tickets' ),
+							$item['ticket_name'],
+							$item['requested']
+						);
+					}, 
+					$reserved_items 
+				);
 
 				$messages[] = sprintf(
 					/* translators: %1$s: comma-separated list of tickets, %2$d: reservation minutes */
