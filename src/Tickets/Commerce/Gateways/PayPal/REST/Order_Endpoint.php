@@ -376,12 +376,27 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_order_response );
 		}
 
-		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
+		try {
+			$updated = tribe( Order::class )->modify_status(
+				$order->ID,
+				$status->get_slug(),
+				[
 			'gateway_payload' => $paypal_order_response,
-		] );
+				]
+			);
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
+			}
+		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+			return new WP_Error(
+				'tec-tc-insufficient-stock',
+				$e->get_user_friendly_message(),
+				[
+					'stock_errors' => $e->get_stock_errors(),
+					'order_id'     => $order->ID,
+				]
+			);
 		}
 
 		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {

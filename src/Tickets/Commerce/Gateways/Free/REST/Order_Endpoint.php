@@ -87,6 +87,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
+		try {
 		$created = tribe( Order::class )->modify_status(
 			$order->ID,
 			Pending::SLUG,
@@ -103,6 +104,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
+			}
+		} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+			return new WP_Error(
+				'tec-tc-insufficient-stock',
+				$e->get_user_friendly_message(),
+				[
+					'stock_errors' => $e->get_stock_errors(),
+					'order_id'     => $order->ID,
+				]
+			);
 		}
 
 		tribe( Cart::class )->clear_cart();

@@ -562,7 +562,180 @@ class Order extends Abstract_Order {
 
 		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
 
+		// Add stock validation based on configured status.
+		if ( $this->should_validate_stock_for_transition( $new_status, $order_id ) ) {
+			try {
+				$this->validate_stock_availability( $order_id );
+			} catch ( \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception $e ) {
+				// Throw the exception to be handled by the calling code.
+				throw $e;
+			}
+		}
+
 		return $current_status->can_change_to( $new_status );
+	}
+
+	/**
+	 * Determines if stock validation should occur for this status transition.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface $new_status The status being transitioned to.
+	 * @param int              $order_id   The order ID.
+	 *
+	 * @return bool
+	 */
+	private function should_validate_stock_for_transition( Status_Interface $new_status, int $order_id ): bool {
+		// Get the configured stock handling status.
+		$stock_handling_status = tribe( Status\Status_Handler::class )->get_inventory_decrease_status();
+		
+		// Check if the new status is the one configured for stock decrease.
+		if ( $new_status->get_slug() !== $stock_handling_status->get_slug() ) {
+			return false;
+		}
+		
+		// Additional check: ensure this status actually has the decrease_stock flag.
+		return $new_status->has_flags( [ 'decrease_stock' ], 'AND' );
+	}
+
+	/**
+	 * Validates stock availability for all items in an order.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID to validate.
+	 *
+	 * @return bool True if stock is available, throws an exception if not.
+	 * @throws \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception When insufficient stock is available.
+	 */
+	private function validate_stock_availability( int $order_id ): bool {
+		$order = get_post( $order_id );
+		if ( ! $order ) {
+			return true;
+		}
+
+		// Get order items from post meta.
+		$items = maybe_unserialize( get_post_meta( $order_id, self::$items_meta_key, true ) );
+		if ( ! is_array( $items ) ) {
+			return true; // No items to validate.
+		}
+
+		$validation_errors  = [];
+		$global_stock_usage = []; // Track usage per event for shared capacity.
+		
+		foreach ( $items as $item ) {
+			if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
+				continue;
+			}
+
+			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			if ( ! $ticket ) {
+				continue;
+			}
+
+			// Skip unlimited capacity tickets.
+			if ( -1 === tribe_tickets_get_capacity( $ticket->ID ) ) {
+				continue;
+			}
+
+			// Skip seated tickets - they have their own stock management system.
+			if ( get_post_meta( $ticket->ID, '_tec_slr_seat_type', true ) ) {
+				continue;
+			}
+
+			$requested_quantity = (int) ( $item['quantity'] ?? 1 );
+			$global_stock_mode  = $ticket->global_stock_mode();
+
+			// Handle shared capacity tickets (global and capped).
+			if (
+				\Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode
+				|| \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode
+			) {
+				$event_id = $ticket->get_event()->ID;
+
+				// Track cumulative usage for this event's shared capacity.
+				if ( ! isset( $global_stock_usage[ $event_id ] ) ) {
+					$global_stock_usage[ $event_id ] = 0;
+				}
+				$global_stock_usage[ $event_id ] += $requested_quantity;
+
+				// For capped tickets, also check individual ticket capacity.
+				if ( \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
+					$available_stock = $ticket->stock();
+					if ( $available_stock < $requested_quantity ) {
+						$validation_errors[] = [
+							'ticket_id'   => $ticket->ID,
+							'ticket_name' => $ticket->name, 
+							'requested'   => $requested_quantity,
+							'available'   => $available_stock,
+						];
+					}
+				}
+
+				continue; // We'll validate global stock after processing all items.
+			}
+
+			// Handle individual stock mode tickets.
+			$available_stock = $ticket->stock();
+			if ( $available_stock < $requested_quantity ) {
+				$validation_errors[] = [
+					'ticket_id'   => $ticket->ID,
+					'ticket_name' => $ticket->name, 
+					'requested'   => $requested_quantity,
+					'available'   => $available_stock,
+				];
+			}
+		}
+		
+		// Validate global stock usage for each event.
+		foreach ( $global_stock_usage as $event_id => $total_requested ) {
+			$global_stock = new \Tribe__Tickets__Global_Stock( $event_id );
+			if ( $global_stock->is_enabled() ) {
+				$available_global_stock = $global_stock->get_stock_level();
+				
+				// Skip validation if global stock is enabled but level is 0 (incomplete setup).
+				if ( 0 === $available_global_stock ) {
+					continue;
+				}
+				
+				if ( $available_global_stock < $total_requested ) {
+					// Find a ticket from this event to report the error.
+					foreach ( $items as $item ) {
+						if ( ! array_key_exists( 'type', $item ) || 'ticket' !== $item['type'] ) {
+							continue;
+						}
+						
+						$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+						if ( $ticket && $ticket->get_event()->ID === $event_id ) {
+							$validation_errors[] = [
+								'ticket_id'   => $ticket->ID,
+								'ticket_name' => sprintf( 'Shared capacity for %s', get_the_title( $event_id ) ),
+								'requested'   => $total_requested,
+								'available'   => $available_global_stock,
+							];
+							break; // Only report once per event.
+						}
+					}
+				}
+			}
+		}
+		
+		if ( ! empty( $validation_errors ) ) {
+			/**
+			 * Fires when stock validation fails during order status transition.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $validation_errors Array of stock validation errors.
+			 * @param int   $order_id         The order ID.
+			 */
+			do_action( 'tec_tickets_commerce_stock_validation_failed', $validation_errors, $order_id );
+			
+			// Throw an exception.
+			throw new \TEC\Tickets\Commerce\Exceptions\Insufficient_Stock_Exception( $validation_errors );
+		}
+		
+		return true;
 	}
 
 	/**
