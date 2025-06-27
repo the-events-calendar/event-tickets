@@ -1292,11 +1292,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'the_content', [ $this, 'front_end_tickets_form_in_content' ], 11 );
 			add_filter( 'the_content', [ $this, 'show_tickets_unavailable_message_in_content' ], 12 );
 
-			// Cache invalidation hooks for orphaned posts.
-			add_action( 'deleted_post', [ $this, 'clear_orphaned_posts_cache' ] );
-			add_action( 'wp_trash_post', [ $this, 'clear_orphaned_posts_cache' ] );
-			add_action( 'untrashed_post', [ $this, 'clear_orphaned_posts_cache' ] );
-
 			/**
 			 * Trigger an action every time a new ticket instance has been created
 			 *
@@ -4680,7 +4675,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			global $wpdb;
 
 			// Check for cached results first.
-			$cache_key = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+			$cache_key       = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
 			$cached_post_ids = get_transient( $cache_key );
 
 			if ( false !== $cached_post_ids ) {
@@ -4871,25 +4866,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final protected function ajax_ok( $data ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
-		}
-
-		/**
-		 * Clear the cache for orphaned post IDs.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $provider Optional. The specific provider to clear cache for. If empty, clears all providers.
-		 */
-		public function clear_orphaned_posts_cache( $provider = '' ) {
-			if ( empty( $provider ) ) {
-				// Clear cache for all supported providers.
-				delete_transient( 'tec_tickets_orphaned_posts_rsvp' );
-				delete_transient( 'tec_tickets_orphaned_posts_tc_ticket' );
-			} else {
-				// Clear cache for specific provider.
-				$cache_key = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
-				delete_transient( $cache_key );
-			}
 		}
 
 		// @codingStandardsIgnoreEnd

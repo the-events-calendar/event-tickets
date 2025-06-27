@@ -52,6 +52,11 @@ class Hooks extends Service_Provider {
 
 		add_action( 'admin_post_tec_tickets_remove_orphans', [ $this, 'remove_orphans' ] );
 		add_action( 'tec_tickets_remove_orphans_action', [ $this, 'remove_orphans_action' ], 10, 1 );
+
+		// Cache invalidation hooks for orphaned posts.
+		add_action( 'deleted_post', [ $this, 'clear_orphaned_posts_cache' ] );
+		add_action( 'wp_trash_post', [ $this, 'clear_orphaned_posts_cache' ] );
+		add_action( 'untrashed_post', [ $this, 'clear_orphaned_posts_cache' ] );
 	}
 
 	/**
@@ -203,4 +208,15 @@ class Hooks extends Service_Provider {
 	protected function add_filters() {
 		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 	}
+
+	/**
+	 * Clear the cache for orphaned post IDs.
+	 *
+	 * @since TBD
+	 */
+	public function clear_orphaned_posts_cache() {
+		delete_transient( 'tec_tickets_orphaned_posts_tribe__tickets__rsvp' );
+		delete_transient( 'tec_tickets_orphaned_posts_tecticketscommercemodule' );
+	}
+
 }
