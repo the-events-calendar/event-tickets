@@ -28,10 +28,10 @@ class Events extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 3;
+	public const TAB_NUMBER = 4;
 
 	/**
-	 * Process the events data.
+	 * Process the tec installation data.
 	 *
 	 * @since 5.23.0
 	 *
@@ -41,9 +41,13 @@ class Events extends Abstract_Step {
 	 * @return WP_REST_Response
 	 */
 	public function process( $response, $request ): WP_REST_Response {
-		$params = $request->get_params();
+		$settings = $request->get_json_params();
 
-		$updated = tribe( API::class )->update_wizard_settings( $params );
+		if ( empty( $settings['currentTab'] ) || $settings['currentTab'] < self::TAB_NUMBER ) {
+			return $response;
+		}
+
+		$updated = tribe( API::class )->update_wizard_settings( $settings );
 
 		return $this->install_events_calendar_plugin( $response, $request );
 	}
@@ -63,6 +67,11 @@ class Events extends Abstract_Step {
 
 		$installed = $params['tecInstalled'] ?? false;
 		$activated = $params['tecActive'] ?? false;
+		$install_requested = $params['eventsCalendar'] ?? false;
+
+		if ( ! $install_requested ) {
+			return $this->add_message( $response, __( 'The Events Calendar plugin was not requested to be installed.', 'event-tickets' ) );
+		}
 
 		// Check if the plugin is already installed and active.
 		if ( $installed && $activated ) {

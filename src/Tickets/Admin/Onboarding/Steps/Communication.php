@@ -29,7 +29,7 @@ class Communication extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 2;
+	public const TAB_NUMBER = 3;
 
 	/**
 	 * Process the communication data.
@@ -44,7 +44,7 @@ class Communication extends Abstract_Step {
 	public function process( $response, $request ): WP_REST_Response {
 		$settings = $request->get_json_params();
 
-		if ( empty( $settings['currentTab'] ) ) {
+		if ( empty( $settings['currentTab'] ) || $settings['currentTab'] < self::TAB_NUMBER ) {
 			return $this->add_message( $response, __( 'No communication settings provided.', 'event-tickets' ) );
 		}
 

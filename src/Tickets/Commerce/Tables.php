@@ -83,7 +83,7 @@ class Tables extends Controller_Contract {
 	 * @return void
 	 */
 	public function schedule_webhook_storage_clean_up(): void {
-		if ( as_has_scheduled_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION ) ) {
+		if ( as_has_scheduled_action( self::WEBHOOK_STORAGE_CLEAN_UP_ACTION, [], self::TICKETS_COMMERCE_ACTION_GROUP ) ) {
 			return;
 		}
 
