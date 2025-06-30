@@ -1,15 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import { Fill } from '@wordpress/components';
-import { useDispatch, useSelect } from '@wordpress/data';
-import {
-	Tickets,
-} from '../fields';
+import { useSelect } from '@wordpress/data';
+import { Tickets } from '../fields';
 
-type Ticket = {
-	name: string;
-	description?: string;
-	price?: string;
-}
+// Hard-code the post type for now.
+const POST_TYPES: string[] = [ 'tec_tc_ticket' ];
 
 /**
  * Renders the ticket fields in the Classy editor.
@@ -21,27 +16,28 @@ type Ticket = {
  */
 export default function renderFields( fields: React.ReactNode | null ): React.ReactNode {
 
-	// todo: Add post type check?
-
-	// const meta = useSelect( ( select ) => {
-	// 	const { getEditedPostAttribute }: {
+	// const { postType, postId } = useSelect( ( select ) => {
+	// 	const {
+	// 		getCurrentPostId,
+	// 		getEditedPostAttribute,
+	// 	}: {
+	// 		getCurrentPostId: () => number | null;
 	// 		getEditedPostAttribute: ( attribute: string ) => any;
 	// 	} = select( 'core/editor' );
 	//
-	// 	return getEditedPostAttribute( 'meta' ) || null;
+	// 	return {
+	// 		postType: getEditedPostAttribute( 'type' ),
+	// 		postId: getCurrentPostId(),
+	// 	};
 	// }, [] );
 
-	const meta = {
-		ticket: {
-			name: 'Cool ticket',
-			description: 'This is a sample ticket description.',
-		},
-	};
+	const postType = 'tec_tc_ticket';
+	const postId = 0;
 
-	// todo: Use the correct format/meta for ticket data.
-	const ticketMeta: Ticket = meta?.ticket || { name: '' };
-
-	const { editPost } = useDispatch( 'core/editor' );
+	// Ensure we are only adding fields to the correct post type(s).
+	if ( ! POST_TYPES.includes( postType ) ) {
+		return fields;
+	}
 
 	console.log( 'rendering ticket fields' );
 
@@ -56,7 +52,7 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 			<Fill name="tec.classy.fields.tickets">
 
 				<Tickets
-					tickets={ [] }
+					eventId={ postId }
 				/>
 
 			</Fill>

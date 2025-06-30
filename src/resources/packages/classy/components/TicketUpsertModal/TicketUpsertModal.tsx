@@ -15,8 +15,8 @@ export default function TicketUpsertModal( props: {
 	isUpdate: boolean;
 	onCancel: () => void;
 	onClose: () => void;
-	onSave: ( ticketData : TicketData ) => void;
-	values: TicketData;
+	onSave: ( ticketData : Partial<TicketData> ) => void;
+	values: Partial<TicketData>;
 } ): JSX.Element {
 
 	const { isUpdate, onCancel, onClose, onSave, values } = props;

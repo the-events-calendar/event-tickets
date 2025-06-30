@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { Fragment, useEffect, useState } from 'react';
+import { useSelect } from '@wordpress/data';
+import { SelectFunction } from '@wordpress/data/build-types/types';
 import { _x } from '@wordpress/i18n';
 import {
 	AddTicket,
 	TicketUpsertModal,
 } from '../../components';
 import { Ticket as TicketData } from '../../types/Ticket';
+import { STORE_NAME } from '../../constants';
 
 type TicketsProps = {
-	tickets: []
+	eventId: number
 };
 
-const defaultTicket: TicketData = {
-	name: '',
+const defaultTicket: Partial<TicketData> = {
+	title: '',
 	description: '',
 	price: '',
 	hasSalePrice: false,
@@ -20,13 +23,20 @@ const defaultTicket: TicketData = {
 	capacityType: 'general-admission',
 	selectedFees: [],
 	displayedFees: [],
-	capacity: '',
 	capacityShared: false
 };
 
 export default function Tickets( props: TicketsProps ): JSX.Element {
 
-	const { tickets } = props;
+	const { eventId } = props;
+
+	const { tickets } = useSelect( ( select: SelectFunction ) => {
+		const {
+			getTicketsByEventId,
+		}: {
+			getTicketsByEventId: ( eventId: number ) => TicketData[];
+		} = select( STORE_NAME );
+	}, [] )
 
 	const [ hasTickets, setHasTickets ] = useState( false );
 

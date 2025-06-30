@@ -4,13 +4,11 @@ import { _x } from '@wordpress/i18n';
 import {
 	__experimentalInputControl as InputControl,
 	Button,
-	CustomSelectControl,
 	ToggleControl
 } from '@wordpress/components';
 import { CenteredSpinner, IconNew, LabeledInput } from '@tec/common/classy/components';
 import { CustomSelectOption } from '@wordpress/components/build-types/custom-select-control/types';
 import { useSelect } from '@wordpress/data';
-import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
 import { Capacity as CapacityType } from '../../types/Capacity';
 import { Ticket } from '../../types/Ticket';
@@ -26,18 +24,17 @@ import { CurrencyInput } from '../CurrencyInput';
 type TicketUpsertProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
-	onSave: ( data: Ticket ) => void;
-	values: Ticket;
+	onSave: ( data: Partial<Ticket> ) => void;
+	values: Partial<Ticket>;
 }
 
-const defaultValues: Ticket = {
-	name: '',
+const defaultValues: Partial<Ticket> = {
+	title: '',
 	description: '',
 	price: '',
 	hasSalePrice: false,
 	salePrice: '',
 	capacityType: 'general-admission',
-	capacity: '',
 	capacityShared: false,
 	selectedFees: [],
 	displayedFees: [],
@@ -58,21 +55,21 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		values,
 	} = props;
 
-	const [ currentValues, setCurrentValues ] = useState<Ticket>( {
+	const [ currentValues, setCurrentValues ] = useState<Partial<Ticket>>( {
 		...defaultValues,
 		...values,
 	} );
 
 	// Tickets must have a name at a minimum.
-	const [ confirmEnabled, setConfirmEnabled ] = useState<boolean>( currentValues.name !== '' );
+	const [ confirmEnabled, setConfirmEnabled ] = useState<boolean>( currentValues.title !== '' );
 
 	const invokeSaveWithData: () => void = useCallback( (): void => {
 		if ( ! confirmEnabled ) {
 			return;
 		}
 
-		const dataToSave: Ticket = {
-			name: currentValues.name,
+		const dataToSave: Partial<Ticket> = {
+			title: currentValues.title,
 			description: currentValues.description,
 			price: currentValues.price,
 			hasSalePrice: currentValues.hasSalePrice,
@@ -103,18 +100,18 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<TicketName
-					value={ decodeEntities( currentValues.name ) }
+					value={ decodeEntities( currentValues.title ) }
 					onChange={ ( value: string ) => {
 						const newValue = value || '';
-						setCurrentValues( { ...currentValues, name: newValue } );
 						setConfirmEnabled( newValue !== '' );
+						return setCurrentValues( { ...currentValues, title: newValue } );
 					} }
 				/>
 
 				<TicketDescription
 					value={ decodeEntities( currentValues.description ) }
 					onChange={ ( value: string ) => {
-						setCurrentValues( { ...currentValues, description: value || '' } );
+						return setCurrentValues( { ...currentValues, description: value || '' } );
 					} }
 				/>
 
@@ -122,7 +119,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
 					value={ decodeEntities( currentValues.price ) }
 					onChange={ ( value: string ) => {
-						setCurrentValues( { ...currentValues, price: value || '' } );
+						return setCurrentValues( { ...currentValues, price: value || '' } );
 					} }
 				/>
 
