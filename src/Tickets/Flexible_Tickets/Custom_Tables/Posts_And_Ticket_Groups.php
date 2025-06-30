@@ -1,6 +1,6 @@
 <?php
 /**
- * ${CARET}
+ * This class is used to store the relationship between posts and ticket groups.
  *
  * @since 5.8.0
  *
@@ -88,6 +88,4 @@ class Posts_And_Ticket_Groups extends Table {
 
 		return $results;
 	}
-
-
 }
