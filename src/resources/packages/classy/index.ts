@@ -3,7 +3,8 @@ import { WPDataRegistry } from '@wordpress/data/build-types/registry';
 import { addFilter, addAction, didAction, doAction } from '@wordpress/hooks';
 import { HOOKS_NAMESPACE } from './constants.tsx';
 import renderFields from './functions/renderFields';
-import { STORE_NAME, storeConfig } from './store';
+import { storeConfig } from './store';
+import { STORE_NAME } from './constants';
 import './style.pcss';
 
 /**
