@@ -88,6 +88,4 @@ class Posts_And_Ticket_Groups extends Table {
 
 		return $results;
 	}
-
-
 }
