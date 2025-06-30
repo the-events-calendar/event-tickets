@@ -1,6 +1,6 @@
 <?php
 /**
- * ${CARET}
+ * This class is used to fetch an ephemeral token from the service.
  *
  * @since 5.16.0
  *
