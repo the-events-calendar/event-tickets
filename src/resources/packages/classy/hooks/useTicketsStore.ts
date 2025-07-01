@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { registerStore } from '@wordpress/data';
 import { STORE_NAME } from '../store/constants';
-import { storeConfig } from '../store/store';
+import { storeConfig } from '../store';
 
 // Register the store if it hasn't been registered yet
 if ( !window.wp?.data?.select( STORE_NAME ) ) {

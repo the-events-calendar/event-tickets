@@ -9,6 +9,7 @@ import {
 } from '../../components';
 import { Ticket as TicketData } from '../../types/Ticket';
 import { STORE_NAME } from '../../constants';
+import { StoreSelectors } from '../../types/StoreSelectors';
 
 type TicketsProps = {
 	eventId: number
@@ -23,18 +24,25 @@ export default function Tickets( props: TicketsProps ): JSX.Element {
 
 	const { eventId } = props;
 
-	const { tickets } = useSelect( ( select: SelectFunction ) => {
+	const { tickets, allTickets } = useSelect( ( select: SelectFunction ) => {
 		const {
 			getTicketsByEventId,
+			getTickets,
 		}: {
 			getTicketsByEventId: ( eventId: number ) => TicketData[];
+			getTickets: () => TicketData[] | null;
 		} = select( STORE_NAME );
+
+		return {
+			tickets: getTicketsByEventId( eventId ),
+			allTickets: getTickets(),
+		};
 	}, [] )
 
-	const [ hasTickets, setHasTickets ] = useState( false );
+	const [ hasTickets, setHasTickets ] = useState( allTickets.length > 0 );
 
 	// todo: default state is false.
-	const [ isUpserting, setIsUpserting ] = useState( true );
+	const [ isUpserting, setIsUpserting ] = useState( false );
 
 	const onTicketAddedClicked = () => {
 		console.log( 'Ticket added clicked' );
@@ -58,6 +66,16 @@ export default function Tickets( props: TicketsProps ): JSX.Element {
 					onSave={ () => {} }
 					values={ defaultTicket }
 				/>
+			) }
+
+			{ hasTickets && (
+				<Fragment>
+					{ allTickets.map( ( ticket: TicketData ) => (
+						<div>
+							<code>{ JSON.stringify( ticket ) }</code>
+						</div>
+					) ) }
+				</Fragment>
 			) }
 		</div>
 	);
