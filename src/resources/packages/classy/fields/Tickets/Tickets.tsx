@@ -17,13 +17,6 @@ type TicketsProps = {
 const defaultTicket: Partial<TicketData> = {
 	title: '',
 	description: '',
-	price: '',
-	hasSalePrice: false,
-	salePrice: '',
-	capacityType: 'general-admission',
-	selectedFees: [],
-	displayedFees: [],
-	capacityShared: false
 };
 
 export default function Tickets( props: TicketsProps ): JSX.Element {
