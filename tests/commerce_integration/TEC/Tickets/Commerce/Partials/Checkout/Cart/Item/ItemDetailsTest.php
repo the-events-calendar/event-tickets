@@ -19,9 +19,9 @@ class ItemDetailsTest extends TicketsCommerceSnapshotTestCase {
 		$ticket['obj']       = tribe( Ticket::class )->get_ticket( $ticket_id );
 		$ticket['ticket_id'] = $ticket_id;
 
-		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
-			'item' => $ticket,
-		] ) );
+		$html = $this->get_partial_html( [ 'item' => $ticket ] );
+		$this->assertMatchesHtmlSnapshot( $html );
+		$this->assertContains( "tribe-tickets__commerce-checkout-cart-item-details-toggle", $html );
 	}
 
 	/**
@@ -39,9 +39,9 @@ class ItemDetailsTest extends TicketsCommerceSnapshotTestCase {
 		$ticket['obj']       = $ticket_obj;
 		$ticket['ticket_id'] = $ticket_id;
 
-		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
-			'item' => $ticket,
-		] ) );
+		$html = $this->get_partial_html( [ 'item' => $ticket ] );
+		$this->assertMatchesHtmlSnapshot( $html );
+		$this->assertNotContains( "tribe-tickets__commerce-checkout-cart-item-details-toggle", $html );
 	}
 
 	/**
@@ -63,8 +63,8 @@ class ItemDetailsTest extends TicketsCommerceSnapshotTestCase {
 		$ticket['obj']       = $mock_ticket;
 		$ticket['ticket_id'] = $ticket_id;
 
-		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
-			'item' => $ticket,
-		] ) );
+		$html = $this->get_partial_html( [ 'item' => $ticket ] );
+		$this->assertMatchesHtmlSnapshot( $html );
+		$this->assertNotContains( "tribe-tickets__commerce-checkout-cart-item-details-toggle", $html );
 	}
 }
