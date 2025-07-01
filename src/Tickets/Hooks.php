@@ -69,19 +69,19 @@ class Hooks extends Service_Provider {
 	public function remove_orphans() {
 		// Bail if not admin.
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'Not allowed.' );
+			wp_die( esc_html_x( 'Not allowed.', 'Orphaned posts', 'event-tickets' ) );
 		}
 
 		// Bail if nonce verification fails.
 		$nonce = tec_get_request_var( 'nonce' );
 		if ( ! wp_verify_nonce( $nonce, 'tec_tickets_remove_orphans' ) ) {
-			wp_die( 'Nonce verification failed.' );
+			wp_die( esc_html_x( 'Nonce verification failed.', 'Orphaned posts', 'event-tickets' ) );
 		}
 
 		// Bail if no provider specified.
 		$provider = tec_get_request_var( 'provider', false );
 		if ( ! $provider ) {
-			wp_die( 'No provider specified.' );
+			wp_die( esc_html_x( 'No provider specified.', 'Orphaned posts', 'event-tickets' ) );
 		}
 
 		// Get IDs.
@@ -98,6 +98,8 @@ class Hooks extends Service_Provider {
 
 		// Bail if no post IDs.
 		if ( empty( $ids ) ) {
+			$this->render_orphan_notice( 'no_posts' );
+
 			wp_safe_redirect( esc_url_raw( $url ) );
 			tribe_exit();
 		}
@@ -108,8 +110,10 @@ class Hooks extends Service_Provider {
 			foreach ( $ids as $id ) {
 				wp_delete_post( $id );
 			}
+			$this->render_orphan_notice( 'done' );
 		} else {
 			as_schedule_single_action( time(), 'tec_tickets_remove_orphans_action', [ $provider ], 'tec_tickets_cleanup_actions' );
+			$this->render_orphan_notice( 'scheduled' );
 		}
 
 		wp_safe_redirect( esc_url_raw( $url ) );
@@ -221,4 +225,43 @@ class Hooks extends Service_Provider {
 		delete_transient( 'tec_tickets_orphaned_posts_tecticketscommercemodule' );
 	}
 
+	/**
+	 * Renders a notice about orphaned posts cleanup status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The type of notice to render. Possible values: 'scheduled', 'done', 'no_posts'.
+	 *
+	 * @return void
+	 */
+	public function render_orphan_notice( $type ) {
+		switch ( $type ) {
+			case 'scheduled':
+				$message = esc_html__( 'Orphaned posts cleanup scheduled.', 'event-tickets' );
+				break;
+			case 'done':
+				$message = esc_html__( 'Orphaned posts cleaned up.', 'event-tickets' );
+				break;
+			case 'no_posts':
+				$message = esc_html__( 'No orphaned posts found.', 'event-tickets' );
+				break;
+			default:
+				$message = esc_html__( 'Orphaned posts cleanup scheduled.', 'event-tickets' );
+		}
+		
+
+		if ( $type === 'scheduled' ) {	
+			tribe_transient_notice(
+				'tec-tickets-orphan-cleanup-done',
+				$message,
+				[
+					'type'    => 'warning',
+					'dismiss' => 1,
+					'wrap'    => 'p',
+				],
+				MINUTE_IN_SECONDS,
+			);
+		}
+	}
+	
 }
