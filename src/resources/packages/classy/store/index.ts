@@ -12,7 +12,7 @@ export const storeConfig = {
 	resolvers: resolvers,
 	initialState: {
 		tickets: [],
-		currentPostId: null,
+		currentEventId: null,
 		isLoading: false,
 		error: null,
 	} as StoreState,

@@ -1,9 +1,6 @@
-import { STORE_NAME } from './constants';
 import { StoreState } from '../types/StoreState';
 import { StoreSelectors } from '../types/StoreSelectors';
 import { Ticket } from '../types/Ticket';
-
-// Base selectors
 
 
 const getTickets = ( state: StoreState ) => {
@@ -16,13 +13,8 @@ const getTicketsByEventId = ( state: StoreState, eventId: number ): Ticket[] => 
 	return [];
 };
 
-// Derived selectors
-
-
-
 
 export const selectors = {
-	// New selectors for tickets management
 	getTicketsByEventId,
 	getTickets,
 } as StoreSelectors;

@@ -1,8 +1,9 @@
 import { Ticket } from './Ticket';
 
 export type StoreState = {
+	allTickets: Ticket[] | null;
 	tickets: Ticket[];
-	currentPostId: number | null;
+	currentEventId: number | null;
 	isLoading: boolean;
 	error: string | null;
 }
