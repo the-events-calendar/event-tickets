@@ -1,15 +1,8 @@
 import { Ticket } from './Ticket';
 
 export type StoreSelectors = {
-	// Legacy selectors for backward compatibility
-	getTicketPrice: (state: any) => number;
-	getTicketStock: (state: any) => number;
-	getTicketStartDate: (state: any) => string;
-	getTicketEndDate: (state: any) => string;
-	getTicketIsFree: (state: any) => boolean;
-	getTicketQuantity: (state: any) => number;
-	
 	// New selectors for tickets management
+	getTicketsByEventId: (state: any, eventId: number) => Ticket[];
 	getTickets: (state: any) => Ticket[];
 	getTicketsForPost: (state: any) => Ticket[];
 	getCurrentPostId: (state: any) => number | null;

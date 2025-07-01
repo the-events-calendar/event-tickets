@@ -1,13 +1,16 @@
 import { Ticket } from '../types/Ticket';
-// import {
-// 	SetTicketsForPostAction
-// } from '../types/StoreActions.d.ts';
 
-export const SET_TICKETS_FOR_POST = 'SET_TICKETS_FOR_POST';
+export const SET_TICKETS = 'SET_TICKETS';
+export const SET_TICKETS_FOR_EVENT = 'SET_TICKETS_FOR_EVENT';
 
-type SetTicketsForPostAction = {
-	type: typeof SET_TICKETS_FOR_POST;
+type SetTicketsForEventAction = {
+	type: typeof SET_TICKETS_FOR_EVENT;
 	postId: number;
+	tickets: Ticket[];
+}
+
+type SetTicketsAction = {
+	type: typeof SET_TICKETS;
 	tickets: Ticket[];
 }
 
@@ -25,5 +28,6 @@ type SetTicketsForPostAction = {
 // }
 
 export default {
-	setTicketsForPost: ( options ): SetTicketsForPostAction => ( { type: SET_TICKETS_FOR_POST, options } ),
+	setTicketsForPost: ( postId: number, tickets: Ticket[] ): SetTicketsForEventAction => ( { type: SET_TICKETS_FOR_EVENT, postId, tickets } ),
+	setTickets: ( tickets: Ticket[] ): SetTicketsAction => ( { type: SET_TICKETS, tickets } ),
 };
