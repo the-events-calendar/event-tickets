@@ -889,7 +889,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					: $this->stock;
 			}
 
-			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			// If we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if (
 				! $this->managing_stock()
 				|| -1 === $this->capacity()
@@ -905,7 +905,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$this->stock = $value;
 			}
 
-			// if stock is negative, force it to 0
+			// If stock is negative, force it to 0
 			$this->stock = 0 >= $this->stock ? 0 : $this->stock;
 
 			$stock[] = $this->stock;

@@ -28,10 +28,12 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Which classes we will load for order flag actions by default.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added Validate_Stock_Availability to avoid overselling.
 	 *
 	 * @var string[]
 	 */
 	protected $default_flag_actions = [
+		Validate_Stock_Availability::class,
 		Generate_Attendees::class,
 		Increase_Stock::class,
 		Decrease_Stock::class,
