@@ -89,6 +89,8 @@ class Hooks extends Service_Provider {
 			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
 		} elseif ( $provider === 'tc_ticket' ) {
 			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
+		} else {
+			wp_die( esc_html_x( 'Unsupported provider.', 'Orphaned posts', 'event-tickets' ) );
 		}
 
 		// Return URL.

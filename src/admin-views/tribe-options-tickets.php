@@ -332,9 +332,9 @@ $auth_fields = [
 ];
 
 $rsvp_orphaned_numbers   = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( true );
-$rsvp_orphaned_numbers   = $rsvp_orphaned_numbers == 100 ? '100+' : $rsvp_orphaned_numbers;
+$rsvp_orphaned_numbers   = $rsvp_orphaned_numbers === 100 ? '100+' : $rsvp_orphaned_numbers;
 $ticket_orphaned_numbers = tribe( TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( true );
-$ticket_orphaned_numbers = $ticket_orphaned_numbers == 100 ? '100+' : $ticket_orphaned_numbers;
+$ticket_orphaned_numbers = $ticket_orphaned_numbers === 100 ? '100+' : $ticket_orphaned_numbers;
 
 $url = add_query_arg(
 	[

@@ -4678,7 +4678,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$cache_key       = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
 			$cached_post_ids = get_transient( $cache_key );
 
-			if ( false !== $cached_post_ids ) {
+			if ( is_array( $cached_post_ids ) ) {
 				/**
 				 * Filter the list of orphaned post IDs for a specific provider.
 				 *
@@ -4689,7 +4689,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * @param bool       $cached          Whether the results are from cache (true) or fresh query (false).
 				 * @param array|null $meta_keys       Meta keys used in the query (null for cached results).
 				 */
-				return apply_filters( 'tec_tickets_orphaned_post_ids', $cached_post_ids, $provider, true, null );
+				return (array) apply_filters( 'tec_tickets_orphaned_post_ids', $cached_post_ids, $provider, true, null );
 			}
 
 			// Define meta keys based on the provider.
@@ -4712,16 +4712,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$query = $wpdb->prepare(
 				"SELECT DISTINCT pm.post_id
-				FROM {$wpdb->postmeta} pm
-				WHERE pm.meta_key IN ({$meta_keys_placeholders})
+				FROM %i pm
+				WHERE pm.meta_key IN ({$meta_keys_placeholders})  /* phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
 				AND pm.meta_value != ''
 				AND pm.meta_value NOT IN (SELECT ID FROM {$wpdb->posts})
 				ORDER BY pm.post_id ASC
 				LIMIT 100",
+				$wpdb->postmeta,
 				...$meta_keys
 			);
 
-			$post_ids = $wpdb->get_col( $query );
+			$post_ids = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 			/**
 			 * Filter the list of orphaned post IDs for a specific provider.
@@ -4736,7 +4737,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_ids = apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
 
 			// Cache the results for 1 hour (3600 seconds).
-			set_transient( $cache_key, $post_ids, HOUR_IN_SECONDS );
+			set_transient( $cache_key, $post_ids, DAY_IN_SECONDS );
 
 			return $post_ids;
 		}
