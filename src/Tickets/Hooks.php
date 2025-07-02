@@ -243,25 +243,20 @@ class Hooks extends Service_Provider {
 				$message = esc_html__( 'Orphaned posts cleaned up.', 'event-tickets' );
 				break;
 			case 'no_posts':
-				$message = esc_html__( 'No orphaned posts found.', 'event-tickets' );
-				break;
 			default:
-				$message = esc_html__( 'Orphaned posts cleanup scheduled.', 'event-tickets' );
+				$message = esc_html__( 'No orphaned posts found.', 'event-tickets' );
 		}
 		
-
-		if ( $type === 'scheduled' ) {	
-			tribe_transient_notice(
-				'tec-tickets-orphan-cleanup-done',
-				$message,
-				[
-					'type'    => 'warning',
-					'dismiss' => 1,
-					'wrap'    => 'p',
-				],
-				MINUTE_IN_SECONDS,
-			);
-		}
+		tribe_transient_notice(
+			'tec-tickets-orphan-cleanup-done',
+			$message,
+			[
+				'type'    => 'warning',
+				'dismiss' => 1,
+				'wrap'    => 'p',
+			],
+			MINUTE_IN_SECONDS,
+		);
 	}
 	
 }

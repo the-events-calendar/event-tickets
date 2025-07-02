@@ -5,7 +5,9 @@ namespace Tribe\Tickets;
 use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as TC_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker as TC_Order_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
@@ -17,23 +19,18 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 
 	use RSVP_Ticket_Maker;
 	use TC_Ticket_Maker;
+	use TC_Order_Maker;
 	use Attendee_Maker;
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function setUp(): void {
 		parent::setUp();
 
-		// Enable post as ticket type.
-		add_filter( 'tribe_tickets_post_types', function () {
-			return [ 'post' ];
-		} );
-
-		// Enable Tickets Commerce.
-		add_filter( 'tribe_tickets_commerce_tc_is_active', '__return_true' );
+		\tribe_singleton(
+			\TEC\Tickets\Commerce\Cart\Cart_Interface::class,
+			\TEC\Tickets\Commerce\Cart\Cart::class
+		);
 	}
-
+	
 	/**
 	 * Test get_orphaned_post_ids with RSVP provider.
 	 *
@@ -89,10 +86,17 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		$tc_ticket_id = $this->create_tc_ticket( $event_id );
 
 		// Create attendees for the TC ticket.
-		$attendee_ids = $this->create_many_attendees_for_ticket( 3, $tc_ticket_id, $event_id );
+		// $attendee_ids = $this->create_many_attendees_for_ticket( 3, $tc_ticket_id, $event_id );
+		$order_id = $this->create_order( [ $tc_ticket_id => 3 ] );
 
 		// Verify tickets and attendees exist before deletion.
-		$this->assertNotEmpty( $tc_ticket_id );
+		// $this->assertNotEmpty( $tc_ticket_id );
+		$this->assertNotEmpty( $order_id );
+
+		// Get attendees from the order.
+		$attendee_ids = tribe( Module::class )->get_attendees_by_order_id( $order_id );
+		$attendee_ids = wp_list_pluck( $attendee_ids, 'ID' );
+
 		$this->assertNotEmpty( $attendee_ids );
 
 		// Delete the event to create orphaned tickets/attendees.
@@ -279,9 +283,14 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
 		$tc_ticket_id = $this->create_tc_ticket( $event_id );
 
-		// Create attendees for both ticket types.
+		// Create orders and attendees for both ticket types.
+		$tc_order_id = $this->create_order( [ $tc_ticket_id => 3 ] );
 		$rsvp_attendee_ids = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $event_id );
-		$tc_attendee_ids = $this->create_many_attendees_for_ticket( 2, $tc_ticket_id, $event_id );
+		//$tc_attendee_ids = $this->create_many_attendees_for_ticket( 2, $tc_ticket_id, $event_id );
+
+		// Get attendees from the order.
+		$tc_attendee_ids = tribe( Module::class )->get_attendees_by_order_id( $tc_order_id );
+		$tc_attendee_ids = wp_list_pluck( $tc_attendee_ids, 'ID' );
 
 		// Delete the event.
 		wp_delete_post( $event_id, true );
