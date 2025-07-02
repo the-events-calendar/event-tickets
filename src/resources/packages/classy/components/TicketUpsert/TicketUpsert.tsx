@@ -30,13 +30,7 @@ type TicketUpsertProps = {
 const defaultValues: Partial<Ticket> = {
 	title: '',
 	description: '',
-	price: '',
-	hasSalePrice: false,
-	salePrice: '',
-	capacityType: 'general-admission',
-	capacityShared: false,
-	selectedFees: [],
-	displayedFees: [],
+	cost: '',
 };
 
 /**
@@ -46,7 +40,6 @@ const defaultValues: Partial<Ticket> = {
  * @return {JSX.Element} The rendered ticket upsert component.
  */
 export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
-
 	const {
 		isUpdate,
 		onCancel,
@@ -70,19 +63,11 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		const dataToSave: Partial<Ticket> = {
 			title: currentValues.title,
 			description: currentValues.description,
-			price: currentValues.price,
-			hasSalePrice: currentValues.hasSalePrice,
-			salePrice: currentValues.salePrice,
-			capacityType: currentValues.capacityType,
-			capacity: currentValues.capacity,
-			capacityShared: currentValues.capacityShared,
-			selectedFees: currentValues.selectedFees,
-			displayedFees: currentValues.displayedFees,
+			cost: currentValues.cost,
 		};
 
 		onSave( dataToSave );
 	}, [ currentValues ] );
-
 
 	return (
 		<div className="classy-root">
@@ -116,9 +101,9 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 				<CurrencyInput
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
-					value={ decodeEntities( currentValues.price ) }
+					value={ decodeEntities( currentValues.cost ) }
 					onChange={ ( value: string ) => {
-						return setCurrentValues( { ...currentValues, price: value || '' } );
+						return setCurrentValues( { ...currentValues, cost: value || '' } );
 					} }
 				/>
 
