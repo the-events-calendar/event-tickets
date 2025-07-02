@@ -29,6 +29,11 @@ type CurrencyInputProps = {
 	 * The current value of the input field.
 	 */
 	value?: string;
+
+	/**
+	 * Whether the input field is required.
+	 */
+	required?: boolean;
 }
 
 const defaultLabel = _x( 'Price', 'Label for the price input field', 'event-tickets' );
@@ -46,6 +51,7 @@ export default function CurrencyInput( props: CurrencyInputProps ): JSX.Element 
 		label,
 		onChange,
 		value,
+		required = false,
 	} = props;
 
 	return (
@@ -53,6 +59,7 @@ export default function CurrencyInput( props: CurrencyInputProps ): JSX.Element 
 			label={ label || defaultLabel }
 			onChange={ onChange }
 			value={ value }
+			required={ required }
 			decimalPrecision={ decimalPrecision }
 			decimalSeparator={ decimalSeparator }
 			thousandSeparator={ thousandSeparator }
