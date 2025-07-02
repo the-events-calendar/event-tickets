@@ -4710,12 +4710,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Build the query to find orphaned posts.
 			$meta_keys_placeholders = implode( ',', array_fill( 0, count( $meta_keys ), '%s' ) );
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
 			$query = $wpdb->prepare(
 				"SELECT DISTINCT pm.post_id
 				FROM %i pm
 				WHERE pm.meta_value != ''
 				  AND pm.meta_value NOT IN (SELECT ID FROM %i)
-				  AND pm.meta_key IN ({$meta_keys_placeholders})  /* phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+				  AND pm.meta_key IN ({$meta_keys_placeholders}) 
 				ORDER BY pm.post_id ASC
 				LIMIT 100",
 				$wpdb->postmeta,
