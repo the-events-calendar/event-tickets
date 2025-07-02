@@ -7,6 +7,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as TC_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker as TC_Order_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Tests\Traits\With_Uopz;
 
 /**
  * Test class for orphaned posts functionality.
@@ -19,6 +20,7 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 	use TC_Ticket_Maker;
 	use TC_Order_Maker;
 	use Attendee_Maker;
+	use With_Uopz;
 	
 	/**
 	 * Test get_orphaned_post_ids with RSVP provider.
