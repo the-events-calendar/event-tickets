@@ -10,8 +10,7 @@ import { CenteredSpinner, IconNew, LabeledInput } from '@tec/common/classy/compo
 import { CustomSelectOption } from '@wordpress/components/build-types/custom-select-control/types';
 import { useSelect } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
-import { Capacity as CapacityType } from '../../types/Capacity';
-import { Ticket } from '../../types/Ticket';
+import { Capacity as CapacityType, Ticket } from '../../types/Ticket';
 import {
 	Capacity,
 	SaleDuration,

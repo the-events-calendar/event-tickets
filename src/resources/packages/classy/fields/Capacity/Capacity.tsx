@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { RadioControl } from '@wordpress/components';
 import { _x } from '@wordpress/i18n';
-import { Capacity as CapacityType } from '../../types/Capacity';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
+import { Capacity as CapacityType } from '../../types/Ticket';
 
 type CapacityProps = {
 	value: CapacityType;
