@@ -7,8 +7,6 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as TC_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker as TC_Order_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use TEC\Tickets\Commerce\Cart\Cart_Interface;
-use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Test class for orphaned posts functionality.
@@ -21,15 +19,6 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 	use TC_Ticket_Maker;
 	use TC_Order_Maker;
 	use Attendee_Maker;
-
-	public function setUp(): void {
-		parent::setUp();
-
-		\tribe_singleton(
-			\TEC\Tickets\Commerce\Cart\Cart_Interface::class,
-			\TEC\Tickets\Commerce\Cart\Cart::class
-		);
-	}
 	
 	/**
 	 * Test get_orphaned_post_ids with RSVP provider.
@@ -85,12 +74,11 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		// Create Tickets Commerce tickets for the event.
 		$tc_ticket_id = $this->create_tc_ticket( $event_id );
 
-		// Create attendees for the TC ticket.
-		// $attendee_ids = $this->create_many_attendees_for_ticket( 3, $tc_ticket_id, $event_id );
+		// Create an order and attendees for the TC ticket.
 		$order_id = $this->create_order( [ $tc_ticket_id => 3 ] );
 
 		// Verify tickets and attendees exist before deletion.
-		// $this->assertNotEmpty( $tc_ticket_id );
+		$this->assertNotEmpty( $tc_ticket_id );
 		$this->assertNotEmpty( $order_id );
 
 		// Get attendees from the order.
@@ -284,9 +272,8 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		$tc_ticket_id = $this->create_tc_ticket( $event_id );
 
 		// Create orders and attendees for both ticket types.
-		$tc_order_id = $this->create_order( [ $tc_ticket_id => 3 ] );
 		$rsvp_attendee_ids = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $event_id );
-		//$tc_attendee_ids = $this->create_many_attendees_for_ticket( 2, $tc_ticket_id, $event_id );
+		$tc_order_id = $this->create_order( [ $tc_ticket_id => 3 ] );
 
 		// Get attendees from the order.
 		$tc_attendee_ids = tribe( Module::class )->get_attendees_by_order_id( $tc_order_id );
