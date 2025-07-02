@@ -21,7 +21,7 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 	use TC_Order_Maker;
 	use Attendee_Maker;
 	use With_Uopz;
-	
+
 	/**
 	 * Test get_orphaned_post_ids with RSVP provider.
 	 *
@@ -52,11 +52,10 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		// Get orphaned post IDs for RSVP provider.
 		$orphaned_post_ids = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
 
-		// Should find the orphaned RSVP ticket and attendees.
-		$this->assertContains( $rsvp_ticket_id, $orphaned_post_ids );
-		foreach ( $attendee_ids as $attendee_id ) {
-			$this->assertContains( $attendee_id, $orphaned_post_ids );
-		}
+		$post_ids = [ $rsvp_ticket_id, ...$attendee_ids ];
+
+		// The created post IDs should be identical to the orphaned post IDs.
+		$this->assertEquals( $post_ids, $orphaned_post_ids );
 	}
 
 	/**
@@ -95,11 +94,10 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		// Get orphaned post IDs for Tickets Commerce provider.
 		$orphaned_post_ids = tribe( Module::class )->get_orphaned_post_ids( 'TEC\Tickets\Commerce\Module' );
 
-		// Should find the orphaned TC ticket and attendees.
-		$this->assertContains( $tc_ticket_id, $orphaned_post_ids );
-		foreach ( $attendee_ids as $attendee_id ) {
-			$this->assertContains( $attendee_id, $orphaned_post_ids );
-		}
+		$post_ids = [ $tc_ticket_id, ...$attendee_ids ];
+
+		// The created post IDs should be identical to the orphaned post IDs.
+		$this->assertEquals( $post_ids, $orphaned_post_ids );
 	}
 
 	/**
@@ -136,12 +134,11 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Get orphaned posts (should return array of IDs).
 		$orphaned_posts = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_posts( false );
-
-		$this->assertIsArray( $orphaned_posts );
-		$this->assertContains( $rsvp_ticket_id, $orphaned_posts );
-		foreach ( $rsvp_attendee_ids as $attendee_id ) {
-			$this->assertContains( $attendee_id, $orphaned_posts );
-		}
+	
+		$post_ids = [ $rsvp_ticket_id, ...$rsvp_attendee_ids ];
+	
+		// The created post IDs should be identical to the orphaned post IDs.
+		$this->assertEquals( $post_ids, $orphaned_posts );
 	}
 
 	/**
@@ -178,6 +175,8 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_cache_orphaned_post_ids() {
+		$provider = 'Tribe__Tickets__RSVP';
+
 		// Create an event that will be deleted.
 		$event_id = tribe_events()->set_args( [
 			'title'      => 'Test Event for Caching',
@@ -194,17 +193,19 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $event_id, true );
 
 		// First call should query database and cache results.
-		$orphaned_posts_1 = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		$orphaned_posts_1 = tribe( $provider )->get_orphaned_post_ids( $provider );
 
-		// Second call should return cached results.
-		$orphaned_posts_2 = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		// Get cached results.
+		$cache_key = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+		$cached_post_ids = get_transient( $cache_key );
 
 		// Results should be identical (cached).
-		$this->assertEquals( $orphaned_posts_1, $orphaned_posts_2 );
-		$this->assertContains( $rsvp_ticket_id, $orphaned_posts_1 );
-		foreach ( $rsvp_attendee_ids as $attendee_id ) {
-			$this->assertContains( $attendee_id, $orphaned_posts_1 );
-		}
+		$this->assertEquals( $orphaned_posts_1, $cached_post_ids );
+
+		$post_ids = [ $rsvp_ticket_id, ...$rsvp_attendee_ids ];
+
+		// The created post IDs should be identical to the orphaned post IDs.
+		$this->assertEquals( $post_ids, $cached_post_ids );
 	}
 
 	/**
@@ -213,6 +214,8 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_invalidate_cache_when_posts_are_deleted() {
+		$provider = 'Tribe__Tickets__RSVP';
+
 		// Create an event that will be deleted.
 		$event_id = tribe_events()->set_args( [
 			'title'      => 'Test Event for Cache Invalidation',
@@ -222,24 +225,39 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		] )->create()->ID;
 
 		// Create RSVP tickets and attendees.
-		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
+		$rsvp_ticket_id    = $this->create_rsvp_ticket( $event_id );
 		$rsvp_attendee_ids = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $event_id );
 
 		// Delete the event.
 		wp_delete_post( $event_id, true );
 
 		// First call to populate cache.
-		$orphaned_posts_1 = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		$orphaned_posts_1 = tribe( $provider )->get_orphaned_post_ids( $provider );
+
+		// Get cached results.
+		$cache_key         = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+		$cached_post_ids_1 = get_transient( $cache_key );
+
+		// Results should be identical (cached).
+		$this->assertEquals( $orphaned_posts_1, $cached_post_ids_1 );
 
 		// Delete one of the orphaned posts to trigger cache invalidation.
 		wp_delete_post( $rsvp_ticket_id, true );
 
-		// Second call should return updated results (cache should be invalidated).
-		$orphaned_posts_2 = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		// Cache should be invalid (false).
+		$cached_post_ids_2 = get_transient( $cache_key );
+		$this->assertFalse( $cached_post_ids_2 );
 
-		// The deleted ticket should not be in the second result.
-		$this->assertNotContains( $rsvp_ticket_id, $orphaned_posts_2 );
-		$this->assertContains( $rsvp_ticket_id, $orphaned_posts_1 );
+		// Get the updated orphaned posts.
+		$orphaned_posts_2 = tribe( $provider )->get_orphaned_post_ids( $provider );
+
+		$post_ids = [ $rsvp_ticket_id, ...$rsvp_attendee_ids ];
+
+		// The deleted ticket should be in the first result (before deletion).
+		$this->assertEquals( $post_ids, $orphaned_posts_1 );
+
+		// The deleted ticket should not be in the second result, only the attendees should be.
+		$this->assertEquals( $rsvp_attendee_ids, $orphaned_posts_2 );
 	}
 
 	/**
@@ -290,18 +308,13 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		// Get orphaned posts for TC provider.
 		$tc_orphaned = tribe( Module::class )->get_orphaned_post_ids( 'TEC\Tickets\Commerce\Module' );
 
+		$rsvp_post_ids = [ $rsvp_ticket_id, ...$rsvp_attendee_ids ];
+		$tc_post_ids = [ $tc_ticket_id, ...$tc_attendee_ids ];
+
 		// RSVP should only contain RSVP-related posts.
-		$this->assertContains( $rsvp_ticket_id, $rsvp_orphaned );
-		foreach ( $rsvp_attendee_ids as $attendee_id ) {
-			$this->assertContains( $attendee_id, $rsvp_orphaned );
-		}
-		$this->assertNotContains( $tc_ticket_id, $rsvp_orphaned );
+		$this->assertEquals( $rsvp_post_ids, $rsvp_orphaned );
 
 		// TC should only contain TC-related posts.
-		$this->assertContains( $tc_ticket_id, $tc_orphaned );
-		foreach ( $tc_attendee_ids as $attendee_id ) {
-			$this->assertContains( $attendee_id, $tc_orphaned );
-		}
-		$this->assertNotContains( $rsvp_ticket_id, $tc_orphaned );
+		$this->assertEquals( $tc_post_ids, $tc_orphaned );
 	}
-} 
+}
