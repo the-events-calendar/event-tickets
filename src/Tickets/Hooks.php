@@ -237,7 +237,7 @@ class Hooks extends Service_Provider {
 	public function render_orphan_notice( $type ) {
 		switch ( $type ) {
 			case 'scheduled':
-				$message = esc_html__( 'Orphaned posts cleanup scheduled.', 'event-tickets' );
+				$message = esc_html__( 'Orphaned posts have been scheduled for deletion. Check back shortly!', 'event-tickets' );
 				break;
 			case 'done':
 				$message = esc_html__( 'Orphaned posts cleaned up.', 'event-tickets' );
