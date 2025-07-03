@@ -4726,6 +4726,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$post_ids = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
+			// Cache the results for 1 hour (3600 seconds).
+			set_transient( $cache_key, $post_ids, DAY_IN_SECONDS );
+
 			/**
 			 * Filter the list of orphaned post IDs for a specific provider.
 			 *
@@ -4736,12 +4739,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param bool   $cached    Whether the results are from cache (true) or fresh query (false).
 			 * @param array  $meta_keys Meta keys used in the query.
 			 */
-			$post_ids = apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
-
-			// Cache the results for 1 hour (3600 seconds).
-			set_transient( $cache_key, $post_ids, DAY_IN_SECONDS );
-
-			return $post_ids;
+			return (array)apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
 		}
 
 		/**
