@@ -18,6 +18,15 @@ class General_Tab_Test extends WPTestCase {
 	use With_Uopz;
 
 	/**
+	 * Setup test preconditions.
+	 * 
+	 * @before
+	 */
+	public function setup_preconditions(): void {
+		$this->set_fn_return( 'wp_create_nonce', '771120' );
+	}
+
+	/**
 	 * Original option values.
 	 *
 	 * @var array<string,mixed>
