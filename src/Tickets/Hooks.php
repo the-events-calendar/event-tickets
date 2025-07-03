@@ -251,7 +251,7 @@ class Hooks extends Service_Provider {
 			'tec-tickets-orphan-cleanup-done',
 			$message,
 			[
-				'type'    => 'warning',
+				'type'    => 'success',
 				'dismiss' => 1,
 				'wrap'    => 'p',
 			],
