@@ -4667,6 +4667,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since TBD
 		 *
 		 * @return array Array of orphaned post IDs.
+		 * 
+		 * @throws Exception
 		 */
 		public function get_orphaned_post_ids(): array {
 			if ( static::class === TEC\Tickets\Commerce\Module::class ) {
