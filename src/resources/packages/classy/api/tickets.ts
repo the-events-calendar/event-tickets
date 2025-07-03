@@ -1,8 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { Ticket } from '../types/Ticket';
-import { TicketsApiResponse } from '../types/TicketsApiResponse';
-import { TicketsApiParams } from '../types/TicketsApiParams';
+import { TicketsApiParams, TicketsApiResponse } from "../types/Api";
 
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
 
