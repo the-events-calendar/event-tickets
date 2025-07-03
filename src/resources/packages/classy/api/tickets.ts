@@ -1,6 +1,10 @@
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { Ticket } from '../types/Ticket';
 import { TicketsApiResponse } from '../types/TicketsApiResponse';
 import { TicketsApiParams } from '../types/TicketsApiParams';
+
+const apiBaseUrl = '/tribe/tickets/v1/tickets';
 
 /**
  * Fetch tickets from the API
@@ -22,20 +26,29 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Tic
 		searchParams.set( 'page', params.page.toString() );
 	}
 
-	const url = `/tribe/tickets/v1/tickets/${ searchParams.toString() ? `?${ searchParams.toString() }` : '' }`;
+	const path = addQueryArgs( apiBaseUrl, searchParams );
+	console.log( `Fetching tickets from: ${ path }` );
 
-	const response = await fetch( url, {
-		method: 'GET',
+	const response: TicketsApiResponse = await apiFetch( {
+		path: path,
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	} );
 
-	if ( ! response.ok ) {
-		throw new Error( `Failed to fetch tickets: ${ response.statusText }` );
+	console.log( 'Tickets fetched:', response );
+
+	// Check that the response is an object.
+	if ( ! ( response && typeof response === 'object' ) ) {
+		throw new Error( 'Failed to fetch tickets: response did not return an object.' );
 	}
 
-	return response.json();
+	// Check that the response has a 'tickets' property.
+	if ( ! ( response.hasOwnProperty( 'tickets' ) && response.hasOwnProperty( 'total' ) ) ) {
+		throw new Error( 'Tickets fetch request did not return an object with tickets and total properties.' );
+	}
+
+	return response as TicketsApiResponse;
 };
 
 /**
@@ -50,19 +63,21 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
  * Create a new ticket
  */
 export const createTicket = async ( ticketData: Partial<Ticket> ): Promise<Ticket> => {
-	const response = await fetch( '/tribe/tickets/v1/tickets/', {
+	const response: Ticket = await apiFetch( {
+		url: apiBaseUrl,
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify( ticketData ),
+		data: ticketData,
 	} );
 
-	if ( ! response.ok ) {
-		throw new Error( `Failed to create ticket: ${ response.statusText }` );
+	// Check that the response is an object.
+	if ( ! ( response && typeof response === 'object' ) ) {
+		throw new Error( 'Failed to create ticket: response did not return an object.' );
 	}
 
-	return response.json();
+	return response as Ticket;
 };
 
 /**
