@@ -1,7 +1,6 @@
 import { getRegistry } from '@tec/common/classy/store';
 import { WPDataRegistry } from '@wordpress/data/build-types/registry';
 import { addFilter, addAction, didAction, doAction } from '@wordpress/hooks';
-import { HOOKS_NAMESPACE } from './constants.tsx';
 import renderFields from './functions/renderFields';
 import { storeConfig } from './store';
 import { STORE_NAME } from './constants';
@@ -30,8 +29,8 @@ const registerTicketsStore = (): void => {
 if ( didAction( 'tec.classy.initialized' ) ) {
 	registerTicketsStore();
 } else {
-	addAction( 'tec.classy.initialized', HOOKS_NAMESPACE, registerTicketsStore );
+	addAction( 'tec.classy.initialized', 'tickets.classy.registerStore', registerTicketsStore );
 }
 
 // Hook on the Classy fields rendering logic to render the fields.
-addFilter( 'tec.classy.render', HOOKS_NAMESPACE, renderFields );
+addFilter( 'tec.classy.render', 'tickets.classy.renderFields', renderFields );
