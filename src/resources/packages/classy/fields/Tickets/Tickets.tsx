@@ -9,10 +9,9 @@ import {
 } from '../../components';
 import { Ticket as TicketData } from '../../types/Ticket';
 import { STORE_NAME } from '../../constants';
-import { StoreSelectors } from '../../types/StoreSelectors';
 
 type TicketsProps = {
-	eventId: number
+	eventId: number | null;
 };
 
 const defaultTicket: Partial<TicketData> = {
@@ -24,22 +23,19 @@ export default function Tickets( props: TicketsProps ): JSX.Element {
 
 	const { eventId } = props;
 
-	const { tickets, allTickets } = useSelect( ( select: SelectFunction ) => {
+	const { tickets } = useSelect( ( select: SelectFunction ) => {
 		const {
-			getTicketsByEventId,
 			getTickets,
 		}: {
-			getTicketsByEventId: ( eventId: number ) => TicketData[];
-			getTickets: () => TicketData[] | null;
+			getTickets: ( eventId: number ) => TicketData[];
 		} = select( STORE_NAME );
 
 		return {
-			tickets: getTicketsByEventId( eventId ),
-			allTickets: getTickets(),
+			tickets: getTickets( eventId ),
 		};
 	}, [] )
 
-	const [ hasTickets, setHasTickets ] = useState( allTickets.length > 0 );
+	const [ hasTickets, setHasTickets ] = useState( tickets.length > 0 );
 
 	// todo: default state is false.
 	const [ isUpserting, setIsUpserting ] = useState( false );
