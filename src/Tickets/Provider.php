@@ -91,6 +91,9 @@ class Provider extends Service_Provider {
 		// Loads the Batch Query controller for performance optimization.
 		$this->container->register( Batch_Query\Controller::class );
 
+		// Loads the Performance monitoring controller.
+		$this->container->register( Performance\Controller::class );
+
 		// CT1 only Providers here.
 		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 

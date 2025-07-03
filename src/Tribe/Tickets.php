@@ -2070,12 +2070,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return [];
 			}
 
+			/**
+			 * Fires before getting ticket counts.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $post_id The event post ID.
+			 */
+			do_action( 'tec_tickets_before_get_ticket_counts', $post_id );
+
 			// Check cache first
 			$cache_key = 'tribe_tickets_counts_' . $post_id;
 			$cache = tribe_cache();
 			$cached = $cache->get_transient( $cache_key );
 			
 			if ( false !== $cached ) {
+				/**
+				 * Fires after getting ticket counts.
+				 *
+				 * @since TBD
+				 *
+				 * @param array $cached  The ticket counts.
+				 * @param int   $post_id The event post ID.
+				 */
+				do_action( 'tec_tickets_after_get_ticket_counts', $cached, $post_id );
+				
 				return $cached;
 			}
 
@@ -2198,6 +2217,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			
 			// Cache the result for 5 minutes
 			$cache->set_transient( $cache_key, $types, 5 * MINUTE_IN_SECONDS );
+			
+			/**
+			 * Fires after getting ticket counts.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $types   The ticket counts.
+			 * @param int   $post_id The event post ID.
+			 */
+			do_action( 'tec_tickets_after_get_ticket_counts', $types, $post_id );
 			
 			return $types;
 		}
