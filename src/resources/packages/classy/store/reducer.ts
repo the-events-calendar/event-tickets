@@ -2,22 +2,20 @@ import { Reducer, UnknownAction } from 'redux';
 import { StoreState } from '../types/Store';
 
 import {
-	SET_CURRENT_POST_ID,
 	SET_TICKETS,
 	SET_TICKETS_FOR_EVENT,
-	SetCurrentPostIdAction,
 	SetTicketsAction,
 	SetTicketsForEventAction,
 } from '../types/Actions';
 
 const initialState: StoreState = {
+	allTickets: [], // Todo: remove this when not needed.
 	tickets: [],
-	currentEventId: null,
 	isLoading: false,
 	error: null,
 };
 
-export const reducer: Reducer<StoreState, ActionTypes> = ( state = initialState, action ) => {
+export const reducer: Reducer<StoreState, UnknownAction> = ( state: StoreState = initialState, action ) => {
 	switch ( action.type ) {
 		case SET_TICKETS:
 			return {
@@ -29,11 +27,6 @@ export const reducer: Reducer<StoreState, ActionTypes> = ( state = initialState,
 				...state,
 				tickets: ( action as SetTicketsForEventAction ).tickets,
 				currentEventId: ( action as SetTicketsForEventAction ).postId,
-			};
-		case SET_CURRENT_POST_ID:
-			return {
-				...state,
-				currentEventId: ( action as SetCurrentPostIdAction ).postId,
 			};
 
 		default:
