@@ -85,6 +85,9 @@ class Provider extends Service_Provider {
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class );
 
+		// Loads the Cache controller.
+		$this->container->register( Cache\Controller::class );
+
 		// CT1 only Providers here.
 		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 

@@ -2070,6 +2070,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return [];
 			}
 
+			// Check cache first
+			$cache_key = 'tribe_tickets_counts_' . $post_id;
+			$cache = tribe_cache();
+			$cached = $cache->get_transient( $cache_key );
+			
+			if ( false !== $cached ) {
+				return $cached;
+			}
+
 			$tickets = self::get_all_event_tickets( $post_id );
 
 			// if no tickets or rsvp return empty array
@@ -2185,7 +2194,29 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param array $types   An array of ticket types.
 			 * @param int   $post_id The event post ID.
 			 */
-			return apply_filters( 'tec_tickets_get_ticket_counts', $types, $post_id );
+			$types = apply_filters( 'tec_tickets_get_ticket_counts', $types, $post_id );
+			
+			// Cache the result for 5 minutes
+			$cache->set_transient( $cache_key, $types, 5 * MINUTE_IN_SECONDS );
+			
+			return $types;
+		}
+
+		/**
+		 * Clear the ticket counts cache for a specific event.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id The event post ID.
+		 */
+		public static function clear_ticket_counts_cache( $post_id ) {
+			if ( empty( $post_id ) ) {
+				return;
+			}
+
+			$cache_key = 'tribe_tickets_counts_' . $post_id;
+			$cache = tribe_cache();
+			$cache->delete_transient( $cache_key );
 		}
 
 		/**

@@ -110,6 +110,16 @@ class Tickets implements \ArrayAccess, \Serializable {
 			return $this->data;
 		}
 
+		// Check cache first
+		$cache_key = 'tribe_tickets_v2_data_' . $this->post_id;
+		$cache = tribe_cache();
+		$cached = $cache->get_transient( $cache_key );
+		
+		if ( false !== $cached ) {
+			$this->data = $cached;
+			return $this->data;
+		}
+
 		$num_ticket_types_available = 0;
 		foreach ( $this->all_tickets as $ticket ) {
 			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
@@ -223,6 +233,9 @@ class Tickets implements \ArrayAccess, \Serializable {
 			'available' => $stock_html,
 			'sold_out'  => $sold_out,
 		];
+
+		// Cache the result for 5 minutes
+		$cache->set_transient( $cache_key, $this->data, 5 * MINUTE_IN_SECONDS );
 
 		return $this->data;
 	}
