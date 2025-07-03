@@ -1,4 +1,4 @@
-import { FeeSubType } from "./FeeSubType";
+export type FeeSubType = 'flat' | 'percentage';
 
 export type Fee = {
 	amount: number;
