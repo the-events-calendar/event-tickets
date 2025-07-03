@@ -2,14 +2,13 @@ import { Reducer, UnknownAction } from 'redux';
 import { StoreState } from '../types/Store';
 
 import {
+	SET_LOADING,
 	SET_TICKETS,
-	SET_TICKETS_FOR_EVENT,
+	SetLoadingAction,
 	SetTicketsAction,
-	SetTicketsForEventAction,
 } from '../types/Actions';
 
 const initialState: StoreState = {
-	allTickets: [], // Todo: remove this when not needed.
 	tickets: [],
 	isLoading: false,
 	error: null,
@@ -20,13 +19,12 @@ export const reducer: Reducer<StoreState, UnknownAction> = ( state: StoreState =
 		case SET_TICKETS:
 			return {
 				...state,
-				allTickets: ( action as SetTicketsAction ).tickets,
+				tickets: ( action as SetTicketsAction ).tickets,
 			};
-		case SET_TICKETS_FOR_EVENT:
+		case SET_LOADING:
 			return {
 				...state,
-				tickets: ( action as SetTicketsForEventAction ).tickets,
-				currentEventId: ( action as SetTicketsForEventAction ).postId,
+				isLoading: ( action as SetLoadingAction ).isLoading,
 			};
 
 		default:

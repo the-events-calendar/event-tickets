@@ -1,8 +1,13 @@
 import { Action } from 'redux';
 import { Ticket } from './Ticket';
 
+export const SET_LOADING = 'SET_LOADING';
 export const SET_TICKETS = 'SET_TICKETS';
 export const SET_TICKETS_FOR_EVENT = 'SET_TICKETS_FOR_EVENT';
+
+export type SetLoadingAction = {
+	isLoading: boolean;
+} & Action<typeof SET_LOADING>;
 
 export type SetTicketsForEventAction = {
 	postId: number;
