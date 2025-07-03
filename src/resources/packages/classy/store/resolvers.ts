@@ -1,8 +1,9 @@
 import { fetchTickets, fetchTicketsForPost, mapApiTicketToTicket } from '../api';
 import { Ticket } from '../types/Ticket';
-import { TicketsApiResponse } from '../types/TicketsApiResponse';
 
-export const resolver = {
+import { TicketsApiResponse } from "../types/Api";
+
+export default {
 	getTickets: ( eventId: number ) =>
 		async ( { dispatch } ): Promise<void> => {
 			if ( ! eventId ) {

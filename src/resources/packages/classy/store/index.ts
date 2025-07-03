@@ -1,7 +1,7 @@
 import { reducer } from './reducer';
 import { selectors } from './selectors';
-import * as actions from './actions';
-import { resolver as resolvers } from './resolver';
+import { default as actions } from './actions';
+import { default as resolvers } from './resolvers.ts';
 import { StoreState, StoreSelectors } from '../types/Store';
 
 const initialState: StoreState = {
@@ -12,8 +12,8 @@ const initialState: StoreState = {
 
 export const storeConfig = {
 	reducer,
-	selectors: selectors,
-	actions: actions,
+	selectors,
+	actions,
 	resolvers: resolvers,
 	initialState: initialState,
 };
