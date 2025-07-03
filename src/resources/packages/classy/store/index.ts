@@ -2,8 +2,7 @@ import { reducer } from './reducer';
 import { selectors } from './selectors';
 import * as actions from './actions';
 import * as resolvers from './resolver';
-import { StoreState } from '../types/StoreState';
-import { StoreSelectors } from '../types/StoreSelectors';
+import { StoreState, StoreSelectors } from '../types/Store';
 
 export const storeConfig = {
 	reducer,

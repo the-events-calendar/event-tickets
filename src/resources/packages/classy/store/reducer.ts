@@ -1,5 +1,5 @@
-import { Reducer } from 'redux';
-import { StoreState } from '../types/StoreState';
+import { Reducer, UnknownAction } from 'redux';
+import { StoreState } from '../types/Store';
 
 import {
 	SET_CURRENT_POST_ID,

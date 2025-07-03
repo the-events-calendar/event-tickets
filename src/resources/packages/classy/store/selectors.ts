@@ -1,5 +1,4 @@
-import { StoreState } from '../types/StoreState';
-import { StoreSelectors } from '../types/StoreSelectors';
+import { StoreState, StoreSelectors } from '../types/Store';
 import { Ticket } from '../types/Ticket';
 
 
