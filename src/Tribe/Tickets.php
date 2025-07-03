@@ -1291,6 +1291,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_filter( 'the_content', [ $this, 'front_end_tickets_form_in_content' ], 11 );
 			add_filter( 'the_content', [ $this, 'show_tickets_unavailable_message_in_content' ], 12 );
+
 			/**
 			 * Trigger an action every time a new ticket instance has been created
 			 *
@@ -4637,6 +4638,119 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $created;
+		}
+
+		/**
+		 * Returns either the post IDs or the number of orphaned posts based on the provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $count Whether we should return the post IDs (default, false) or the number of posts found (true).
+		 *
+		 * @return array|int Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned posts ($count = true).
+		 */
+		public function get_orphaned_posts( bool $count = false ) {
+			$orphaned_post_ids = $this->get_orphaned_post_ids();
+
+			// If counting, return the numbers.
+			if ( $count ) {
+				return count( $orphaned_post_ids );
+			}
+
+			// Return the post IDs to be deleted.
+			return $orphaned_post_ids;
+		}
+
+		/**
+		 * Query to get the orphaned entries of the given post type.
+		 *
+		 * @since TBD
+		 *
+		 * @return array Array of orphaned post IDs.
+		 * 
+		 * @throws Exception When an unsupported provider calls this method.
+		 */
+		public function get_orphaned_post_ids(): array {
+			if ( static::class === TEC\Tickets\Commerce\Module::class ) {
+				$provider = 'tc-ticket';
+			} elseif ( static::class === Tribe__Tickets__RSVP::class ) {
+				$provider = 'rsvp';
+			} else { 
+				throw new Exception( 
+					esc_html_x( 'Provider not implemented.', 'Orphaned posts provider error', 'event-tickets' ) 
+				);
+			}
+
+			global $wpdb;
+
+			// Check for cached results first.
+			$cache_key       = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+			$cached_post_ids = get_transient( $cache_key );
+
+			if ( is_array( $cached_post_ids ) ) {
+				/**
+				 * Filter the list of orphaned post IDs for a specific provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param array      $cached_post_ids Array of orphaned post IDs from cache.
+				 * @param string     $provider        The provider being checked.
+				 * @param bool       $cached          Whether the results are from cache (true) or fresh query (false).
+				 * @param array|null $meta_keys       Meta keys used in the query (null for cached results).
+				 */
+				return (array) apply_filters( 'tec_tickets_orphaned_post_ids', $cached_post_ids, $provider, true, null );
+			}
+
+			// Define meta keys based on the provider.
+			$meta_keys = [];
+
+			switch ( $provider ) {
+				case 'rsvp':
+					$meta_keys = [ '_tribe_rsvp_event', '_tribe_rsvp_for_event' ];
+					break;
+				case 'tc-ticket':
+					$meta_keys = [ '_tec_tickets_commerce_event' ];
+					break;
+				default:
+					// Return an empty array for unsupported providers.
+					return [];
+			}
+
+			// Build the query to find orphaned posts.
+			$meta_keys_placeholders = implode( ',', array_fill( 0, count( $meta_keys ), '%s' ) );
+
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			$query = $wpdb->prepare(
+				"SELECT DISTINCT pm.post_id
+				FROM %i pm
+				WHERE pm.meta_value != ''
+				  AND pm.meta_value NOT IN (SELECT ID FROM %i)
+				  AND pm.meta_key IN ({$meta_keys_placeholders}) 
+				ORDER BY pm.post_id ASC
+				LIMIT 100",
+				$wpdb->postmeta,
+				$wpdb->posts,
+				...$meta_keys
+			);
+
+			$post_ids = $wpdb->get_col( $query );
+			
+			// // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+			// Cache the results for 1 hour (3600 seconds).
+			set_transient( $cache_key, $post_ids, DAY_IN_SECONDS );
+
+			/**
+			 * Filter the list of orphaned post IDs for a specific provider.
+			 *
+			 * @since TBD
+			 *
+			 * @param array  $post_ids  Array of orphaned post IDs.
+			 * @param string $provider  The provider being checked.
+			 * @param bool   $cached    Whether the results are from cache (true) or fresh query (false).
+			 * @param array  $meta_keys Meta keys used in the query.
+			 */
+			return (array) apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
 		}
 
 		/**
