@@ -6,13 +6,19 @@ import { TicketsApiParams, TicketsApiResponse } from "../types/Api";
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
 
 /**
- * Fetch tickets from the API
+ * Fetch tickets from the API.
+ *
+ * @since TBD
+ *
+ * @param {TicketsApiParams} params Optional parameters for the API request.
+ * @return {Promise<TicketsApiResponse>} A promise that resolves to the tickets response.
+ * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<TicketsApiResponse> => {
 	const searchParams = new URLSearchParams();
 
 	if ( params.include_post ) {
-		params.include_post.forEach( postId => {
+		params.include_post.forEach( ( postId ) => {
 			searchParams.append( 'include_post', postId.toString() );
 		} );
 	}
@@ -35,8 +41,6 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Tic
 		},
 	} );
 
-	console.log( 'Tickets fetched:', response );
-
 	// Check that the response is an object.
 	if ( ! ( response && typeof response === 'object' ) ) {
 		throw new Error( 'Failed to fetch tickets: response did not return an object.' );
@@ -51,7 +55,13 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Tic
 };
 
 /**
- * Fetch tickets for a specific post ID
+ * Fetch tickets for a specific post ID.
+ *
+ * @since TBD
+ *
+ * @param {number} postId The ID of the post to fetch tickets for.
+ * @return {Promise<Ticket[]>} A promise that resolves to an array of tickets.
+ * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> => {
 	const response = await fetchTickets( { include_post: [ postId ] } );
@@ -59,7 +69,13 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
 };
 
 /**
- * Create a new ticket
+ * Create a new ticket.
+ *
+ * @since TBD
+ *
+ * @param {Partial<Ticket>} ticketData The data for the new ticket.
+ * @return {Promise<Ticket>} The created ticket.
+ * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const createTicket = async ( ticketData: Partial<Ticket> ): Promise<Ticket> => {
 	const response: Ticket = await apiFetch( {
@@ -80,48 +96,47 @@ export const createTicket = async ( ticketData: Partial<Ticket> ): Promise<Ticke
 };
 
 /**
- * Update an existing ticket
+ * Update an existing ticket.
+ *
+ * @since TBD
+ *
+ * @param {number} ticketId The ID of the ticket to update.
+ * @param {Partial<Ticket>} ticketData The data to update the ticket with.
+ * @return {Promise<Ticket>} The updated ticket.
+ * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const updateTicket = async ( ticketId: number, ticketData: Partial<Ticket> ): Promise<Ticket> => {
-	const response = await fetch( `/tribe/tickets/v1/tickets/${ ticketId }`, {
+	const response: Ticket = await apiFetch( {
+		path: `${ apiBaseUrl }/${ ticketId }`,
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify( ticketData ),
+		data: ticketData,
 	} );
 
-	if ( ! response.ok ) {
-		throw new Error( `Failed to update ticket: ${ response.statusText }` );
+	// Check that the response is an object.
+	if ( ! ( response && typeof response === 'object' ) ) {
+		throw new Error( 'Failed to update ticket: response did not return an object.' );
 	}
 
-	return response.json();
+	return response as Ticket;
 };
 
 /**
- * Delete a ticket
+ * Delete a ticket.
+ *
+ * @since TBD
+ *
+ * @param {number} ticketId The ID of the ticket to delete.
+ * @return {Promise<void>} A promise that resolves when the ticket is deleted.
  */
 export const deleteTicket = async ( ticketId: number ): Promise<void> => {
-	const response = await fetch( `/tribe/tickets/v1/tickets/${ ticketId }`, {
+	return apiFetch( {
+		path: `${ apiBaseUrl }/${ ticketId }`,
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	} );
-
-	if ( ! response.ok ) {
-		throw new Error( `Failed to delete ticket: ${ response.statusText }` );
-	}
 };
-
-export const mapApiTicketToTicket = ( apiTicket: any ): Partial<Ticket> => {
-	return {
-		id: Number( apiTicket.id ),
-		eventId: Number( apiTicket.post_id ),
-		title: apiTicket.title,
-		description: apiTicket.description,
-		provider: apiTicket.provider,
-		type: apiTicket.type,
-		status: apiTicket.status,
-	}
-}
