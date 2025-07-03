@@ -240,7 +240,7 @@ class Hooks extends Service_Provider {
 				$message = esc_html__( 'Orphaned posts have been scheduled for deletion. Check back shortly!', 'event-tickets' );
 				break;
 			case 'done':
-				$message = esc_html__( 'Orphaned posts cleaned up.', 'event-tickets' );
+				$message = esc_html__( 'Orphaned posts have been cleaned up.', 'event-tickets' );
 				break;
 			case 'no_posts':
 			default:
