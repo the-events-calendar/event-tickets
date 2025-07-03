@@ -87,7 +87,7 @@ class Hooks extends Service_Provider {
 		// Get IDs.
 		if ( $provider === 'rsvp' ) {
 			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
-		} elseif ( $provider === 'tc_ticket' ) {
+		} elseif ( $provider === 'tc-ticket' ) {
 			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
 		} else {
 			wp_die( esc_html_x( 'Unsupported provider.', 'Orphaned posts', 'event-tickets' ) );
@@ -133,7 +133,7 @@ class Hooks extends Service_Provider {
 		// Get IDs.
 		if ( $provider === 'rsvp' ) {
 			$ids = tribe( Tribe__Tickets__RSVP::class )->get_orphaned_posts( false );
-		} elseif ( $provider === 'tc_ticket' ) {
+		} elseif ( $provider === 'tc-ticket' ) {
 			$ids = tribe( \TEC\Tickets\Commerce\Module::class )->get_orphaned_posts( false );
 		}
 
@@ -221,8 +221,8 @@ class Hooks extends Service_Provider {
 	 * @since TBD
 	 */
 	public function clear_orphaned_posts_cache() {
-		delete_transient( 'tec_tickets_orphaned_posts_tribe__tickets__rsvp' );
-		delete_transient( 'tec_tickets_orphaned_posts_tecticketscommercemodule' );
+		delete_transient( 'tec_tickets_orphaned_posts_rsvp' );
+		delete_transient( 'tec_tickets_orphaned_posts_tc-ticket' );
 	}
 
 	/**

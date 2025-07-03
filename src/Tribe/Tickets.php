@@ -4650,8 +4650,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array|int Either the post IDs of the orphaned posts (default, $count = false) or the number of orphaned posts ($count = true).
 		 */
 		public function get_orphaned_posts( bool $count = false ) {
-			$provider          = static::class;
-			$orphaned_post_ids = $this->get_orphaned_post_ids( $provider );
+			$orphaned_post_ids = $this->get_orphaned_post_ids();
 
 			// If counting, return the numbers.
 			if ( $count ) {
@@ -4667,11 +4666,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $provider The provider to check for orphaned posts ('rsvp' or 'tc_ticket').
-		 *
 		 * @return array Array of orphaned post IDs.
 		 */
-		public function get_orphaned_post_ids( $provider ): array {
+		public function get_orphaned_post_ids(): array {
+			if ( static::class === TEC\Tickets\Commerce\Module::class ) {
+				$provider = 'tc-ticket';
+			} elseif ( static::class === Tribe__Tickets__RSVP::class ) {
+				$provider = 'rsvp';
+			} else { 
+				throw new Exception( 
+					esc_html_x( 'Provider not implemented.', 'Orphaned posts provider error', 'event-tickets' ) 
+				);
+			}
+
 			global $wpdb;
 
 			// Check for cached results first.
@@ -4696,10 +4703,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$meta_keys = [];
 
 			switch ( $provider ) {
-				case 'Tribe__Tickets__RSVP':
+				case 'rsvp':
 					$meta_keys = [ '_tribe_rsvp_event', '_tribe_rsvp_for_event' ];
 					break;
-				case 'TEC\Tickets\Commerce\Module':
+				case 'tc-ticket':
 					$meta_keys = [ '_tec_tickets_commerce_event' ];
 					break;
 				default:
@@ -4739,7 +4746,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param bool   $cached    Whether the results are from cache (true) or fresh query (false).
 			 * @param array  $meta_keys Meta keys used in the query.
 			 */
-			return (array)apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
+			return (array) apply_filters( 'tec_tickets_orphaned_post_ids', $post_ids, $provider, false, $meta_keys );
 		}
 
 		/**

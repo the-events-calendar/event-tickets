@@ -402,7 +402,7 @@ $maintenance_fields = [
 			sprintf(
 				// Translators: %1$s: Opening anchor tag, %2$s: Plural ticket label, %3$s: Closing anchor tag.
 				_x( '%1$sTrash orphaned %2$s%3$s', 'Orphaned ticket maintenance button', 'event-tickets' ),
-				'<a href="' . esc_url( add_query_arg( [ 'provider' => 'tc_ticket' ], $url ) ) . '" class="button">',
+				'<a href="' . esc_url( add_query_arg( [ 'provider' => 'tc-ticket' ], $url ) ) . '" class="button">',
 				tribe_get_ticket_label_plural( 'maintenance_description' ),
 				'</a>'
 			) .

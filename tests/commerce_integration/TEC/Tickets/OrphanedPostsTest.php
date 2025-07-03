@@ -50,7 +50,7 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $event_id, true );
 
 		// Get orphaned post IDs for RSVP provider.
-		$orphaned_post_ids = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		$orphaned_post_ids = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids();
 
 		$post_ids = [ $rsvp_ticket_id, ...$attendee_ids ];
 
@@ -92,23 +92,12 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $event_id, true );
 
 		// Get orphaned post IDs for Tickets Commerce provider.
-		$orphaned_post_ids = tribe( Module::class )->get_orphaned_post_ids( 'TEC\Tickets\Commerce\Module' );
+		$orphaned_post_ids = tribe( Module::class )->get_orphaned_post_ids();
 
 		$post_ids = [ $tc_ticket_id, ...$attendee_ids ];
 
 		// The created post IDs should be identical to the orphaned post IDs.
 		$this->assertEquals( $post_ids, $orphaned_post_ids );
-	}
-
-	/**
-	 * Test get_orphaned_post_ids with invalid provider.
-	 *
-	 * @test
-	 */
-	public function should_return_empty_array_for_invalid_provider() {
-		$orphaned_post_ids = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Invalid_Provider' );
-
-		$this->assertEmpty( $orphaned_post_ids );
 	}
 
 	/**
@@ -193,10 +182,10 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $event_id, true );
 
 		// First call should query database and cache results.
-		$orphaned_posts_1 = tribe( $provider )->get_orphaned_post_ids( $provider );
+		$orphaned_posts_1 = tribe( $provider )->get_orphaned_post_ids();
 
 		// Get cached results.
-		$cache_key = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+		$cache_key = 'tec_tickets_orphaned_posts_rsvp';
 		$cached_post_ids = get_transient( $cache_key );
 
 		// Results should be identical (cached).
@@ -232,10 +221,10 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $event_id, true );
 
 		// First call to populate cache.
-		$orphaned_posts_1 = tribe( $provider )->get_orphaned_post_ids( $provider );
+		$orphaned_posts_1 = tribe( $provider )->get_orphaned_post_ids();
 
 		// Get cached results.
-		$cache_key         = 'tec_tickets_orphaned_posts_' . sanitize_key( $provider );
+		$cache_key         = 'tec_tickets_orphaned_posts_rsvp';
 		$cached_post_ids_1 = get_transient( $cache_key );
 
 		// Results should be identical (cached).
@@ -249,7 +238,7 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( $cached_post_ids_2 );
 
 		// Get the updated orphaned posts.
-		$orphaned_posts_2 = tribe( $provider )->get_orphaned_post_ids( $provider );
+		$orphaned_posts_2 = tribe( $provider )->get_orphaned_post_ids();
 
 		$post_ids = [ $rsvp_ticket_id, ...$rsvp_attendee_ids ];
 
@@ -267,7 +256,7 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function should_return_empty_array_when_no_orphaned_posts() {
 		// Get orphaned post IDs when there are no orphaned posts.
-		$orphaned_posts = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		$orphaned_posts = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids();
 
 		$this->assertEmpty( $orphaned_posts );
 		$this->assertIsArray( $orphaned_posts );
@@ -303,10 +292,10 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $event_id, true );
 
 		// Get orphaned posts for RSVP provider.
-		$rsvp_orphaned = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids( 'Tribe__Tickets__RSVP' );
+		$rsvp_orphaned = tribe( 'Tribe__Tickets__RSVP' )->get_orphaned_post_ids();
 
 		// Get orphaned posts for TC provider.
-		$tc_orphaned = tribe( Module::class )->get_orphaned_post_ids( 'TEC\Tickets\Commerce\Module' );
+		$tc_orphaned = tribe( Module::class )->get_orphaned_post_ids();
 
 		$rsvp_post_ids = [ $rsvp_ticket_id, ...$rsvp_attendee_ids ];
 		$tc_post_ids = [ $tc_ticket_id, ...$tc_attendee_ids ];
@@ -317,4 +306,20 @@ class OrphanedPostsTest extends \Codeception\TestCase\WPTestCase {
 		// TC should only contain TC-related posts.
 		$this->assertEquals( $tc_post_ids, $tc_orphaned );
 	}
+
+	/**
+	 * Test get_orphaned_post_ids throws for invalid provider.
+	 *
+	 * @test
+	 */
+	public function should_throw_exception_for_invalid_provider() {
+		// Create a dummy provider class that is not supported
+		$invalid_provider = new class extends \Tribe__Tickets__Tickets {};
+
+		$this->expectException(\Exception::class);
+		$this->expectExceptionMessage('Provider not implemented.');
+
+		$invalid_provider->get_orphaned_post_ids();
+	}
+
 }
