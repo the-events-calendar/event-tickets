@@ -1,7 +1,5 @@
-import { fetchTickets, fetchTicketsForPost, mapApiTicketToTicket } from '../api';
+import { fetchTicketsForPost } from '../api';
 import { Ticket } from '../types/Ticket';
-
-import { TicketsApiResponse } from "../types/Api";
 
 export default {
 	getTickets: ( eventId: number ) =>
@@ -12,7 +10,6 @@ export default {
 			}
 
 			console.log( `Fetching tickets for event ID: ${ eventId }` );
-
 
 			await fetchTicketsForPost( eventId )
 				.then( ( tickets: Ticket[] ) => {
