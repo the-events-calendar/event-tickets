@@ -4733,7 +4733,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				...$meta_keys
 			);
 
-			$post_ids = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			$post_ids = $wpdb->get_col( $query );
+			
+			// // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 			// Cache the results for 1 hour (3600 seconds).
 			set_transient( $cache_key, $post_ids, DAY_IN_SECONDS );
