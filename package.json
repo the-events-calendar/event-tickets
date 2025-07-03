@@ -108,6 +108,7 @@
     "@nfen/redux-reducer-injector": "0.0.3",
     "@redux-devtools/extension": "^3.3.0",
     "@wordpress/a11y": "^4.11.0",
+    "@wordpress/api-fetch": "^7.26.0",
     "@wordpress/date": "^5.13.0",
     "@wordpress/i18n": "^5.11.0",
     "@wordpress/is-shallow-equal": "^5.11.0",
