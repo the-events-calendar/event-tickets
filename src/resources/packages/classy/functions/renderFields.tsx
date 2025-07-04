@@ -37,10 +37,6 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 		return fields;
 	}
 
-	console.log( 'rendering ticket fields' );
-
-	// todo: the ticket fields need to be rendered per ticket, in a modal.
-	// todo: Display of the tickets has a different format when not editing.
 	return (
 		<Fragment>
 			{ /* Render the fields passed to this function first. */ }
@@ -49,12 +45,9 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 			{ /* Portal-render the fields into the Classy form. */ }
 			<Fill name="tec.classy.fields.tickets">
 
-				<Tickets
-					eventId={ postId }
-				/>
+				<Tickets />
 
 			</Fill>
-
 		</Fragment>
 	);
 };
