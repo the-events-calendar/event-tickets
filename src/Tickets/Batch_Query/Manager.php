@@ -76,7 +76,7 @@ class Manager {
 	 */
 	public function add_event( $event_id ) {
 		if ( ! in_array( $event_id, $this->event_ids, true ) ) {
-			$this->event_ids[] = (int) $event_id;
+			$this->event_ids[]  = (int) $event_id;
 			$this->is_preloaded = false;
 		}
 	}
@@ -178,23 +178,23 @@ class Manager {
 			return;
 		}
 
-		// Use the ticket repository to fetch tickets for all events
-		/** @var \Tribe__Tickets__Ticket_Repository $ticket_repository */
+		// Use the ticket repository to fetch tickets for all events.
+		/** @var \Tribe__Tickets__Ticket_Repository $ticket_repository Ticket repository instance. */
 		$ticket_repository = tribe( 'tickets.ticket-repository' );
-		
-		// Get all tickets for the events in the batch
+
+		// Get all tickets for the events in the batch.
 		$tickets = $ticket_repository
 			->where( 'event__in', $this->event_ids )
 			->order_by( 'event' )
 			->order_by( 'menu_order', 'ASC' )
 			->all();
 
-		// Group tickets by event
+		// Group tickets by event.
 		foreach ( $tickets as $ticket ) {
 			if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
 				continue;
 			}
-			
+
 			$event_id = $ticket->get_event_id();
 			if ( ! isset( $this->preloaded_tickets[ $event_id ] ) ) {
 				$this->preloaded_tickets[ $event_id ] = [];
@@ -202,7 +202,7 @@ class Manager {
 			$this->preloaded_tickets[ $event_id ][] = $ticket;
 		}
 
-		// Ensure all events have an entry
+		// Ensure all events have an entry.
 		foreach ( $this->event_ids as $event_id ) {
 			if ( ! isset( $this->preloaded_tickets[ $event_id ] ) ) {
 				$this->preloaded_tickets[ $event_id ] = [];
@@ -219,8 +219,8 @@ class Manager {
 	 */
 	private function preload_ticket_counts() {
 		foreach ( $this->event_ids as $event_id ) {
-			// Check cache first
-			$counts = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+			// Check cache first.
+			$counts                              = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 			$this->preloaded_counts[ $event_id ] = $counts;
 		}
 	}
@@ -237,18 +237,18 @@ class Manager {
 			return;
 		}
 
-		// Use the attendee repository to get counts for each event
-		/** @var \Tribe__Tickets__Attendee_Repository $attendee_repository */
+		// Use the attendee repository to get counts for each event.
+		/** @var \Tribe__Tickets__Attendee_Repository $attendee_repository Attendee repository instance. */
 		$attendee_repository = tribe( 'tickets.attendee-repository' );
 
-		// Get attendee counts for each event
+		// Get attendee counts for each event.
 		foreach ( $this->event_ids as $event_id ) {
-			// Use the repository's count method which is optimized
+			// Use the repository's count method which is optimized.
 			$count = $attendee_repository
 				->where( 'event', $event_id )
 				->where( 'order_status', [ 'completed', 'processing', 'publish' ] )
 				->count();
-			
+
 			$this->preloaded_attendee_counts[ $event_id ] = $count;
 		}
 	}
@@ -261,10 +261,10 @@ class Manager {
 	 * @return void
 	 */
 	public function clear() {
-		$this->event_ids = [];
-		$this->preloaded_tickets = [];
-		$this->preloaded_counts = [];
+		$this->event_ids                 = [];
+		$this->preloaded_tickets         = [];
+		$this->preloaded_counts          = [];
 		$this->preloaded_attendee_counts = [];
-		$this->is_preloaded = false;
+		$this->is_preloaded              = false;
 	}
 }

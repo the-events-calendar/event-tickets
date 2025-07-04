@@ -58,14 +58,14 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function add_hooks() {
-		// Hook into Views V2 queries to collect event IDs
+		// Hook into Views V2 queries to collect event IDs.
 		add_action( 'tribe_events_views_v2_view_before_template', [ $this, 'collect_event_ids' ], 5 );
 		add_action( 'tribe_events_views_v2_view_after_template', [ $this, 'clear_batch' ], 15 );
 
-		// Hook into event queries
+		// Hook into event queries.
 		add_action( 'pre_get_posts', [ $this, 'maybe_collect_from_query' ], 20 );
-		
-		// Filter ticket counts to use batch data
+
+		// Filter ticket counts to use batch data.
 		add_filter( 'tec_tickets_get_ticket_counts', [ $this, 'filter_ticket_counts' ], 10, 2 );
 	}
 
@@ -115,7 +115,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		// Hook to collect IDs after query runs
+		// Hook to collect IDs after query runs.
 		add_action( 'loop_start', [ $this, 'collect_from_loop' ] );
 	}
 
@@ -131,7 +131,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		// Remove this hook so it doesn't run multiple times
+		// Remove this hook so it doesn't run multiple times.
 		remove_action( 'loop_start', [ $this, 'collect_from_loop' ] );
 
 		if ( ! empty( $query->posts ) ) {
@@ -162,7 +162,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function filter_ticket_counts( $types, $post_id ) {
 		$batch_counts = $this->manager->get_ticket_counts( $post_id );
-		
+
 		if ( null !== $batch_counts ) {
 			return $batch_counts;
 		}

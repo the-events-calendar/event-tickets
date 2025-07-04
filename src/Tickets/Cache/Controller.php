@@ -67,22 +67,22 @@ class Controller extends Controller_Contract {
 		// Clear cache when tickets are saved or deleted.
 		add_action( 'event_tickets_after_save_ticket', [ $this, 'clear_cache_for_ticket' ], 10, 3 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'clear_cache_for_ticket' ], 10, 2 );
-		
+
 		// Clear cache when attendees are created, updated, or deleted.
 		add_action( 'tec_tickets_commerce_attendee_after_create', [ $this, 'clear_cache_for_attendee' ] );
 		add_action( 'tec_tickets_commerce_attendee_after_update', [ $this, 'clear_cache_for_attendee' ] );
 		add_action( 'tec_tickets_commerce_attendee_after_delete', [ $this, 'clear_cache_for_attendee' ] );
-		
+
 		// Clear cache for RSVP operations.
 		add_action( 'event_tickets_rsvp_tickets_generated', [ $this, 'clear_cache_for_ticket' ], 10, 2 );
-		
+
 		// Clear cache when check-in status changes.
 		add_action( 'event_tickets_checkin', [ $this, 'clear_cache_for_attendee' ] );
 		add_action( 'event_tickets_uncheckin', [ $this, 'clear_cache_for_attendee' ] );
-		
+
 		// Clear cache when stock changes.
 		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'clear_cache_for_ticket' ], 10, 2 );
-		
+
 		// Clear Views V2 tickets cache when counts are cleared.
 		add_action( 'tec_tickets_cache_clear_ticket_counts', [ $this, 'clear_views_v2_cache' ] );
 	}
@@ -100,7 +100,7 @@ class Controller extends Controller_Contract {
 		if ( ! $event_id && $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 			$event_id = $ticket->get_event_id();
 		}
-		
+
 		if ( $event_id ) {
 			Tribe__Tickets__Tickets::clear_ticket_counts_cache( $event_id );
 			$this->clear_views_v2_cache( $event_id );
@@ -116,7 +116,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function clear_cache_for_attendee( $attendee ) {
 		$event_id = null;
-		
+
 		if ( is_object( $attendee ) && isset( $attendee->event_id ) ) {
 			$event_id = $attendee->event_id;
 		} elseif ( is_numeric( $attendee ) ) {
@@ -126,7 +126,7 @@ class Controller extends Controller_Contract {
 				$event_id = $attendee_event;
 			}
 		}
-		
+
 		if ( $event_id ) {
 			Tribe__Tickets__Tickets::clear_ticket_counts_cache( $event_id );
 			$this->clear_views_v2_cache( $event_id );
@@ -145,8 +145,8 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$cache_key   = 'tribe_tickets_v2_data_' . $event_id;
-		$cache = tribe_cache();
+		$cache_key = 'tribe_tickets_v2_data_' . $event_id;
+		$cache     = tribe_cache();
 		$cache->delete_transient( $cache_key );
 	}
 }

@@ -162,7 +162,7 @@ class Monitor {
 	 */
 	private function get_cache_hits() {
 		$cache = tribe_cache();
-		
+
 		// This would need to be implemented in Tribe__Cache.
 		if ( method_exists( $cache, 'get_hits' ) ) {
 			return $cache->get_hits();
@@ -187,7 +187,7 @@ class Monitor {
 
 		$units = [ 'B', 'KB', 'MB', 'GB' ];
 		$i     = floor( log( $bytes, 1024 ) );
-		
+
 		return round( $bytes / pow( 1024, $i ), 2 ) . ' ' . $units[ $i ];
 	}
 

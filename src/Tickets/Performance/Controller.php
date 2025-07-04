@@ -208,7 +208,7 @@ class Controller extends Controller_Contract {
 			]
 		);
 
-		// Add detailed metrics as sub-items
+		// Add detailed metrics as sub-items.
 		if ( isset( $metrics['memory_used'] ) ) {
 			$admin_bar->add_node(
 				[
@@ -240,7 +240,7 @@ class Controller extends Controller_Contract {
 	private function store_metrics( $metrics ) {
 		static $stored_metrics = [];
 		$stored_metrics[]      = $metrics;
-		
+
 		// Store in a way that persists for the admin bar.
 		set_transient( 'tec_tickets_last_performance_metrics', $metrics, 60 );
 	}
@@ -253,6 +253,7 @@ class Controller extends Controller_Contract {
 	 * @return array
 	 */
 	private function get_stored_metrics() {
-		return get_transient( 'tec_tickets_last_performance_metrics' ) ?: [];
+		$metrics = get_transient( 'tec_tickets_last_performance_metrics' );
+		return $metrics ? $metrics : [];
 	}
 }
