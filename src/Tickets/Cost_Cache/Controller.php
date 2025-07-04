@@ -484,7 +484,7 @@ class Controller extends Controller_Contract {
 	protected function add_template_hooks() {
 		// Hook into template rendering.
 		add_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 10, 5 );
-		add_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 10, 5 );
+		add_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 10, 4 );
 	}
 
 	/**
@@ -502,29 +502,29 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null                          $pre_html      The pre-rendered HTML.
-	 * @param string                               $template_path The template path.
-	 * @param array                                $variables     The template variables.
-	 * @param bool                                 $echo          Whether to echo.
-	 * @param \Tribe__Template_Part_Implementation $template The template object.
+	 * @param string|null      $pre_html The pre-rendered HTML.
+	 * @param string           $file     The template file path.
+	 * @param string           $name     The template name.
+	 * @param \Tribe__Template $template The template object.
+	 * @param array            $context  The context data.
 	 *
 	 * @return string|null The cached HTML or null.
 	 */
-	public function filter_template_pre_html( $pre_html, $template_path, $variables, $echo, $template ) {
+	public function filter_template_pre_html( $pre_html, $file, $name, $template, $context ) {
 		// If another filter already set HTML, respect it.
 		if ( null !== $pre_html ) {
 			return $pre_html;
 		}
 
 		// Get the event ID from context.
-		$event_id = $this->get_event_id_from_template_context( $variables, $template );
+		$event_id = $this->get_event_id_from_template_context( $context, $template );
 		
 		if ( ! $event_id ) {
 			return null;
 		}
 
 		// Try to get cached version.
-		$cached_html = $this->template_cache->get( $template_path, $variables, $event_id );
+		$cached_html = $this->template_cache->get( $name, $context, $event_id );
 
 		if ( false !== $cached_html ) {
 			return $cached_html;
@@ -538,17 +538,24 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                               $html          The rendered HTML.
-	 * @param string                               $template_path The template path.
-	 * @param array                                $variables     The template variables.
-	 * @param bool                                 $echo          Whether to echo.
-	 * @param \Tribe__Template_Part_Implementation $template The template object.
+	 * @param string           $html     The rendered HTML.
+	 * @param string           $file     The template file path.
+	 * @param string           $name     The template name.
+	 * @param \Tribe__Template $template The template object.
 	 *
 	 * @return string The HTML (unchanged).
 	 */
-	public function filter_template_html( $html, $template_path, $variables, $echo, $template ) {
+	public function filter_template_html( $html, $file, $name, $template ) {
+		// Get context from template.
+		$context = [];
+		if ( method_exists( $template, 'get_values' ) ) {
+			$context = $template->get_values();
+		} elseif ( method_exists( $template, 'get_global_values' ) ) {
+			$context = $template->get_global_values();
+		}
+
 		// Get the event ID from context.
-		$event_id = $this->get_event_id_from_template_context( $variables, $template );
+		$event_id = $this->get_event_id_from_template_context( $context, $template );
 		
 		if ( ! $event_id ) {
 			return $html;
@@ -556,7 +563,7 @@ class Controller extends Controller_Contract {
 
 		// Cache the rendered HTML.
 		if ( ! empty( $html ) ) {
-			$this->template_cache->set( $template_path, $variables, $event_id, $html );
+			$this->template_cache->set( $name, $context, $event_id, $html );
 		}
 
 		return $html;
@@ -567,8 +574,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array                                $variables The template variables.
-	 * @param \Tribe__Template_Part_Implementation $template The template object.
+	 * @param array            $variables The template variables/context.
+	 * @param \Tribe__Template $template  The template object.
 	 *
 	 * @return int|false The event ID or false.
 	 */
