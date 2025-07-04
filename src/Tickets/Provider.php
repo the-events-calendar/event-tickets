@@ -106,6 +106,9 @@ class Provider extends Service_Provider {
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
 
+		// Cost caching functionality.
+		$this->container->register( Cost_Cache\Controller::class );
+
 		$this->has_registered = true;
 
 		return true;
