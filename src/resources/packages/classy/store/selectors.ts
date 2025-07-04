@@ -2,7 +2,14 @@ import { StoreState, StoreSelectors } from '../types/Store';
 import { Ticket } from '../types/Ticket';
 
 
-
+/**
+ * Returns the tickets from the store state.
+ *
+ * @since TBD
+ *
+ * @param {StoreState} state The current store state.
+ * @return {Ticket[]} The list of tickets.
+ */
 const getTickets = ( state: StoreState ) => {
 	return state?.tickets || [];
 }
