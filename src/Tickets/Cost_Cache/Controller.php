@@ -31,13 +31,25 @@ class Controller extends Controller_Contract {
 	private $cache;
 
 	/**
+	 * The template cache instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template_Cache
+	 */
+	private $template_cache;
+
+	/**
 	 * Register the controller.
 	 *
 	 * @since TBD
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Cache::class );
+		$this->container->singleton( Template_Cache::class );
+		
 		$this->cache = $this->container->make( Cache::class );
+		$this->template_cache = $this->container->make( Template_Cache::class );
 
 		if ( $this->cache->is_enabled() ) {
 			$this->add_hooks();
@@ -65,6 +77,9 @@ class Controller extends Controller_Contract {
 		// Filter to cache the calculated cost.
 		add_filter( 'tec_events_get_cost', [ $this, 'filter_get_cost' ], 10, 3 );
 
+		// Template caching hooks.
+		$this->add_template_cache_hooks();
+
 		// Cache invalidation hooks.
 		$this->add_invalidation_hooks();
 	}
@@ -77,7 +92,33 @@ class Controller extends Controller_Contract {
 	protected function remove_hooks() {
 		remove_filter( 'tec_events_pre_get_cost', [ $this, 'filter_pre_get_cost' ], 10 );
 		remove_filter( 'tec_events_get_cost', [ $this, 'filter_get_cost' ], 10 );
+		$this->remove_template_cache_hooks();
 		$this->remove_invalidation_hooks();
+	}
+
+	/**
+	 * Remove template cache hooks.
+	 *
+	 * @since TBD
+	 */
+	protected function remove_template_cache_hooks() {
+		// List of cost templates to uncache.
+		$cost_templates = [
+			'v2/day/event/cost',
+			'v2/list/event/cost',
+			'v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost',
+			'v2/month/mobile-events/mobile-day/mobile-event/cost',
+			'v2/photo/event/cost',
+			'v2/week/grid-body/events-day/event/tooltip/cost',
+			'v2/week/mobile-events/day/event/cost',
+		];
+
+		// Remove hooks for each template.
+		foreach ( $cost_templates as $template ) {
+			$hook_name = 'tickets/' . $template;
+			remove_filter( 'tribe_template_pre_html:' . $hook_name, [ $this, 'filter_template_pre_html' ], 10 );
+			remove_filter( 'tribe_template_html:' . $hook_name, [ $this, 'filter_template_html' ], 10 );
+		}
 	}
 
 	/**
@@ -106,6 +147,125 @@ class Controller extends Controller_Contract {
 
 		// Return null to allow normal cost calculation.
 		return null;
+	}
+
+	/**
+	 * Add template cache hooks.
+	 *
+	 * @since TBD
+	 */
+	protected function add_template_cache_hooks() {
+		// List of cost templates to cache.
+		$cost_templates = [
+			'v2/day/event/cost',
+			'v2/list/event/cost',
+			'v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost',
+			'v2/month/mobile-events/mobile-day/mobile-event/cost',
+			'v2/photo/event/cost',
+			'v2/week/grid-body/events-day/event/tooltip/cost',
+			'v2/week/mobile-events/day/event/cost',
+		];
+
+		// Add hooks for each template.
+		foreach ( $cost_templates as $template ) {
+			$hook_name = 'tickets/' . $template;
+			add_filter( 'tribe_template_pre_html:' . $hook_name, [ $this, 'filter_template_pre_html' ], 10, 5 );
+			add_filter( 'tribe_template_html:' . $hook_name, [ $this, 'filter_template_html' ], 10, 5 );
+		}
+	}
+
+	/**
+	 * Filter template pre_html to return cached version.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $pre_html The pre-rendered HTML (null by default).
+	 * @param string      $file     The template file path.
+	 * @param array       $name     The template name parts.
+	 * @param object      $template The template object.
+	 * @param array       $context  The template context.
+	 *
+	 * @return string|null The cached HTML or null.
+	 */
+	public function filter_template_pre_html( $pre_html, $file, $name, $template, $context ) {
+		// If already has content, don't override.
+		if ( null !== $pre_html ) {
+			return $pre_html;
+		}
+
+		// Get event ID from context.
+		$event_id = $this->get_event_id_from_context( $context );
+		if ( ! $event_id ) {
+			return null;
+		}
+
+		// Get hook name from current filter.
+		$hook_name = str_replace( 'tribe_template_pre_html:', '', current_filter() );
+
+		// Check cache.
+		$cached_html = $this->template_cache->get( $event_id, $hook_name );
+		if ( false !== $cached_html ) {
+			return $cached_html;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Filter template html to cache the rendered output.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $html     The rendered HTML.
+	 * @param string $file     The template file path.
+	 * @param array  $name     The template name parts.
+	 * @param object $template The template object.
+	 * @param array  $context  The template context.
+	 *
+	 * @return string The HTML (unchanged).
+	 */
+	public function filter_template_html( $html, $file, $name, $template, $context ) {
+		// Get event ID from context.
+		$event_id = $this->get_event_id_from_context( $context );
+		if ( ! $event_id ) {
+			return $html;
+		}
+
+		// Get hook name from current filter.
+		$hook_name = str_replace( 'tribe_template_html:', '', current_filter() );
+
+		// Cache the HTML.
+		$this->template_cache->set( $event_id, $hook_name, $html );
+
+		return $html;
+	}
+
+	/**
+	 * Get event ID from template context.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $context The template context.
+	 *
+	 * @return int|false The event ID or false.
+	 */
+	protected function get_event_id_from_context( $context ) {
+		// Check for event object.
+		if ( ! empty( $context['event'] ) && is_object( $context['event'] ) && ! empty( $context['event']->ID ) ) {
+			return $context['event']->ID;
+		}
+
+		// Check for post_id.
+		if ( ! empty( $context['post_id'] ) && is_numeric( $context['post_id'] ) ) {
+			return $context['post_id'];
+		}
+
+		// Check for event_id.
+		if ( ! empty( $context['event_id'] ) && is_numeric( $context['event_id'] ) ) {
+			return $context['event_id'];
+		}
+
+		return false;
 	}
 
 	/**
@@ -206,6 +366,7 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->cache->clear( $post_id );
+		$this->template_cache->clear( $post_id );
 	}
 
 	/**
@@ -221,6 +382,7 @@ class Controller extends Controller_Contract {
 		// Handle different parameter scenarios.
 		if ( ! empty( $event_id ) && is_numeric( $event_id ) ) {
 			$this->cache->clear( $event_id );
+			$this->template_cache->clear( $event_id );
 			return;
 		}
 
@@ -229,6 +391,7 @@ class Controller extends Controller_Contract {
 			$event_id = $ticket->get_event_id();
 			if ( $event_id ) {
 				$this->cache->clear( $event_id );
+				$this->template_cache->clear( $event_id );
 				return;
 			}
 		}
@@ -248,6 +411,7 @@ class Controller extends Controller_Contract {
 
 			if ( $event_id ) {
 				$this->cache->clear( $event_id );
+				$this->template_cache->clear( $event_id );
 			}
 		}
 	}
@@ -267,6 +431,7 @@ class Controller extends Controller_Contract {
 		
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
+			$this->template_cache->clear( $event_id );
 		}
 	}
 
@@ -282,6 +447,7 @@ class Controller extends Controller_Contract {
 		
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
+			$this->template_cache->clear( $event_id );
 		}
 	}
 
@@ -297,6 +463,7 @@ class Controller extends Controller_Contract {
 		
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
+			$this->template_cache->clear( $event_id );
 		}
 	}
 
@@ -326,6 +493,7 @@ class Controller extends Controller_Contract {
 	public function clear_cache_for_rsvp( $order_id, $post_id ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( is_numeric( $post_id ) ) {
 			$this->cache->clear( $post_id );
+			$this->template_cache->clear( $post_id );
 		}
 	}
 
@@ -354,6 +522,36 @@ class Controller extends Controller_Contract {
 
 		if ( in_array( $meta_key, $cost_meta_keys, true ) ) {
 			$this->clear_event_cache( $object_id );
+		}
+
+		// Also clear template cache for any ticket meta updates.
+		$ticket_meta_prefixes = [
+			'_tribe_rsvp_',
+			'_tribe_wooticket_',
+			'_tribe_eddticket_',
+			'_tec_tickets_commerce_',
+			'_ticket_',
+		];
+
+		foreach ( $ticket_meta_prefixes as $prefix ) {
+			if ( 0 === strpos( $meta_key, $prefix ) ) {
+				// Try to find the associated event.
+				$event_id = get_post_meta( $object_id, '_tribe_rsvp_for_event', true );
+				if ( ! $event_id ) {
+					$event_id = get_post_meta( $object_id, '_tribe_wooticket_for_event', true );
+				}
+				if ( ! $event_id ) {
+					$event_id = get_post_meta( $object_id, '_tribe_eddticket_for_event', true );
+				}
+				if ( ! $event_id ) {
+					$event_id = get_post_meta( $object_id, '_tec_tickets_commerce_event', true );
+				}
+
+				if ( $event_id ) {
+					$this->template_cache->clear( $event_id );
+				}
+				break;
+			}
 		}
 	}
 
