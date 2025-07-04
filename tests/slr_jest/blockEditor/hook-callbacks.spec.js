@@ -790,9 +790,9 @@ describe('hook-callbacks', () => {
 			);
 		});
 
-		it('if ASC and no layout id or seat type it should return disabled', () => {
+		it('if ASC and no layout id or seat type it should return same value', () => {
 			const seatType = '';
-			const layoutId = false;
+			const layoutId = null;
 			const isUsingAssignedSeating = true;
 			const isLayoutLocked = true;
 
@@ -808,7 +808,7 @@ describe('hook-callbacks', () => {
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
-				true
+				false
 			);
 		});
 
@@ -834,7 +834,7 @@ describe('hook-callbacks', () => {
 			);
 		});
 
-		it('if ASC and seat type but no layout id it should return disabled', () => {
+		it('if ASC and seat type but no layout id it should return same value', () => {
 			const seatType = 'seat-type-uuid-1';
 			const layoutId = '';
 			const isUsingAssignedSeating = true;
@@ -852,7 +852,7 @@ describe('hook-callbacks', () => {
 			});
 
 			expect(filterButtonIsDisabled(false, state, ownProps)).toEqual(
-				true
+				false
 			);
 		});
 
