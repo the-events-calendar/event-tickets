@@ -31,16 +31,32 @@ class Controller extends Controller_Contract {
 	private $cache;
 
 	/**
+	 * The template cache instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template_Cache
+	 */
+	private $template_cache;
+
+	/**
 	 * Register the controller.
 	 *
 	 * @since TBD
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Cache::class );
-		$this->cache = $this->container->make( Cache::class );
+		$this->container->singleton( Template_Cache::class );
+		
+		$this->cache          = $this->container->make( Cache::class );
+		$this->template_cache = $this->container->make( Template_Cache::class );
 
 		if ( $this->cache->is_enabled() ) {
 			$this->add_hooks();
+		}
+
+		if ( $this->template_cache->is_enabled() ) {
+			$this->add_template_hooks();
 		}
 	}
 
@@ -51,6 +67,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		$this->remove_hooks();
+		$this->remove_template_hooks();
 	}
 
 	/**
@@ -206,6 +223,7 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->cache->clear( $post_id );
+		$this->clear_template_cache_for_event( $post_id );
 	}
 
 	/**
@@ -221,6 +239,7 @@ class Controller extends Controller_Contract {
 		// Handle different parameter scenarios.
 		if ( ! empty( $event_id ) && is_numeric( $event_id ) ) {
 			$this->cache->clear( $event_id );
+			$this->clear_template_cache_for_event( $event_id );
 			return;
 		}
 
@@ -229,6 +248,7 @@ class Controller extends Controller_Contract {
 			$event_id = $ticket->get_event_id();
 			if ( $event_id ) {
 				$this->cache->clear( $event_id );
+				$this->clear_template_cache_for_event( $event_id );
 				return;
 			}
 		}
@@ -248,6 +268,7 @@ class Controller extends Controller_Contract {
 
 			if ( $event_id ) {
 				$this->cache->clear( $event_id );
+				$this->clear_template_cache_for_event( $event_id );
 			}
 		}
 	}
@@ -267,6 +288,7 @@ class Controller extends Controller_Contract {
 		
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
+			$this->clear_template_cache_for_event( $event_id );
 		}
 	}
 
@@ -282,6 +304,7 @@ class Controller extends Controller_Contract {
 		
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
+			$this->clear_template_cache_for_event( $event_id );
 		}
 	}
 
@@ -297,6 +320,7 @@ class Controller extends Controller_Contract {
 		
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
+			$this->clear_template_cache_for_event( $event_id );
 		}
 	}
 
@@ -326,6 +350,7 @@ class Controller extends Controller_Contract {
 	public function clear_cache_for_rsvp( $order_id, $post_id ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( is_numeric( $post_id ) ) {
 			$this->cache->clear( $post_id );
+			$this->clear_template_cache_for_event( $post_id );
 		}
 	}
 
@@ -449,5 +474,153 @@ class Controller extends Controller_Contract {
 		}
 		
 		return array_unique( array_filter( $event_ids ) );
+	}
+
+	/**
+	 * Add template caching hooks.
+	 *
+	 * @since TBD
+	 */
+	protected function add_template_hooks() {
+		// Hook into template rendering.
+		add_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 10, 5 );
+		add_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 10, 5 );
+	}
+
+	/**
+	 * Remove template caching hooks.
+	 *
+	 * @since TBD
+	 */
+	protected function remove_template_hooks() {
+		remove_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 10 );
+		remove_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 10 );
+	}
+
+	/**
+	 * Filter template before rendering to return cached version.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null                          $pre_html      The pre-rendered HTML.
+	 * @param string                               $template_path The template path.
+	 * @param array                                $variables     The template variables.
+	 * @param bool                                 $echo          Whether to echo.
+	 * @param \Tribe__Template_Part_Implementation $template The template object.
+	 *
+	 * @return string|null The cached HTML or null.
+	 */
+	public function filter_template_pre_html( $pre_html, $template_path, $variables, $echo, $template ) {
+		// If another filter already set HTML, respect it.
+		if ( null !== $pre_html ) {
+			return $pre_html;
+		}
+
+		// Get the event ID from context.
+		$event_id = $this->get_event_id_from_template_context( $variables, $template );
+		
+		if ( ! $event_id ) {
+			return null;
+		}
+
+		// Try to get cached version.
+		$cached_html = $this->template_cache->get( $template_path, $variables, $event_id );
+
+		if ( false !== $cached_html ) {
+			return $cached_html;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Filter template after rendering to cache the output.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                               $html          The rendered HTML.
+	 * @param string                               $template_path The template path.
+	 * @param array                                $variables     The template variables.
+	 * @param bool                                 $echo          Whether to echo.
+	 * @param \Tribe__Template_Part_Implementation $template The template object.
+	 *
+	 * @return string The HTML (unchanged).
+	 */
+	public function filter_template_html( $html, $template_path, $variables, $echo, $template ) {
+		// Get the event ID from context.
+		$event_id = $this->get_event_id_from_template_context( $variables, $template );
+		
+		if ( ! $event_id ) {
+			return $html;
+		}
+
+		// Cache the rendered HTML.
+		if ( ! empty( $html ) ) {
+			$this->template_cache->set( $template_path, $variables, $event_id, $html );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Get event ID from template context.
+	 *
+	 * @since TBD
+	 *
+	 * @param array                                $variables The template variables.
+	 * @param \Tribe__Template_Part_Implementation $template The template object.
+	 *
+	 * @return int|false The event ID or false.
+	 */
+	protected function get_event_id_from_template_context( $variables, $template ) {
+		// First check variables.
+		if ( ! empty( $variables['post_id'] ) ) {
+			return (int) $variables['post_id'];
+		}
+
+		// Check for event in variables.
+		if ( ! empty( $variables['event'] ) && is_object( $variables['event'] ) && ! empty( $variables['event']->ID ) ) {
+			return (int) $variables['event']->ID;
+		}
+
+		// Check ticket object.
+		if ( ! empty( $variables['ticket'] ) && is_object( $variables['ticket'] ) ) {
+			$ticket = $variables['ticket'];
+			if ( method_exists( $ticket, 'get_event_id' ) ) {
+				return (int) $ticket->get_event_id();
+			}
+			if ( ! empty( $ticket->event_id ) ) {
+				return (int) $ticket->event_id;
+			}
+		}
+
+		// Try global post.
+		global $post;
+		if ( $post && tribe_is_event( $post->ID ) ) {
+			return $post->ID;
+		}
+
+		// Try from template context.
+		if ( method_exists( $template, 'get' ) ) {
+			$context_post_id = $template->get( 'post_id' );
+			if ( $context_post_id ) {
+				return (int) $context_post_id;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Clear template cache for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event ID.
+	 */
+	protected function clear_template_cache_for_event( $event_id ) {
+		if ( $this->template_cache && $this->template_cache->is_enabled() ) {
+			$this->template_cache->clear( $event_id );
+		}
 	}
 }
