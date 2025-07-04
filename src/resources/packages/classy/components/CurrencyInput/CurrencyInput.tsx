@@ -1,4 +1,4 @@
-import { CurrencyInput as CommonCurrencyInput } from '@tec/common/classy/components/CurrencyInput';
+import { CurrencyInput as CommonCurrencyInput } from '@tec/common/classy/components';
 import { Currency } from '@tec/common/classy/types/Currency';
 import { _x } from '@wordpress/i18n';
 
