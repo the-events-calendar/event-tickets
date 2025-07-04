@@ -32,7 +32,7 @@ class Payments extends Abstract_Step {
 	 *
 	 * @var int
 	 */
-	public const TAB_NUMBER = 1;
+	public const TAB_NUMBER = 2;
 
 	/**
 	 * Passes the request and data to the handler.
