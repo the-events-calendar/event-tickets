@@ -37,13 +37,13 @@ class Template_Cache {
 	 * @var array
 	 */
 	protected $cacheable_templates = [
-		'blocks/tickets/extra-price',
-		'blocks/tickets/footer-total',
-		'v2/commerce/ticket/price',
-		'v2/commerce/ticket/regular-price',
-		'v2/commerce/ticket/sale-price',
-		'v2/commerce/checkout/cart/item/price',
-		'registration/summary/ticket/price',
+		'v2/day/event/cost',
+		'v2/list/event/cost',
+		'v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost',
+		'v2/month/mobile-events/mobile-day/mobile-event/cost',
+		'v2/photo/event/cost',
+		'v2/week/grid-body/events-day/event/tooltip/cost',
+		'v2/week/mobile-events/day/event/cost',
 	];
 
 	/**
@@ -120,9 +120,9 @@ class Template_Cache {
 
 		// Get all meta keys for this event that match our prefix.
 		$meta_keys = get_post_meta( $event_id );
-		
+
 		if ( ! empty( $meta_keys ) ) {
-			foreach ( $meta_keys as $key => $value ) {
+			foreach ( $meta_keys as $key => $value ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 				if ( 0 === strpos( $key, self::META_KEY_PREFIX ) ) {
 					delete_post_meta( $event_id, $key );
 				}
@@ -148,6 +148,11 @@ class Template_Cache {
 			$this->clear( $event_id );
 		}
 
+		/**
+		 * Fires after all template caches have been cleared.
+		 *
+		 * @since TBD
+		 */
 		do_action( 'tec_tickets_template_cache_cleared_all' );
 	}
 
@@ -253,51 +258,43 @@ class Template_Cache {
 		$key_vars = [];
 
 		// Common variables that affect most templates.
-		$common_keys = [ 'ticket_id', 'post_id', 'provider_class' ];
+		$common_keys = [ 'event_id', 'post_id', 'provider_class' ];
 
-		// Template-specific variable extraction.
-		switch ( $template_path ) {
-			case 'blocks/tickets/extra-price':
-			case 'v2/commerce/ticket/price':
-				if ( isset( $variables['ticket'] ) && is_object( $variables['ticket'] ) ) {
-					$ticket                    = $variables['ticket'];
-					$key_vars['ticket_id']     = $ticket->ID;
-					$key_vars['price']         = $ticket->price;
-					$key_vars['regular_price'] = $ticket->regular_price ?? null;
-					$key_vars['on_sale']       = ! empty( $ticket->on_sale );
-					$key_vars['price_suffix']  = $ticket->price_suffix ?? '';
-				}
-				break;
+		// All view cost templates use similar variables.
+		if ( isset( $variables['event'] ) && is_object( $variables['event'] ) ) {
+			$event = $variables['event'];
 
-			case 'v2/commerce/checkout/cart/item/price':
-				if ( isset( $variables['item'] ) ) {
-					$item = $variables['item'];
-					if ( isset( $item['ticket_id'] ) ) {
-						$key_vars['ticket_id'] = $item['ticket_id'];
-					}
-					if ( isset( $item['quantity'] ) ) {
-						$key_vars['quantity'] = $item['quantity'];
-					}
-					if ( isset( $item['price'] ) ) {
-						$key_vars['price'] = $item['price'];
-					}
-				}
-				break;
+			// Event-specific data that affects cost display.
+			if ( isset( $event->ID ) ) {
+				$key_vars['event_id'] = $event->ID;
+			}
 
-			case 'blocks/tickets/footer-total':
-				if ( isset( $variables['tickets'] ) && is_array( $variables['tickets'] ) ) {
-					// For footer total, we need all ticket IDs and quantities.
-					$key_vars['tickets'] = [];
-					foreach ( $variables['tickets'] as $ticket ) {
+			// Ticket-related data.
+			if ( isset( $event->tickets ) && is_object( $event->tickets ) ) {
+				$tickets = $event->tickets;
+
+				// Key ticket states that affect cost display.
+				$key_vars['tickets_exist'] = $tickets->exist();
+				$key_vars['in_date_range'] = $tickets->in_date_range();
+				$key_vars['sold_out'] = $tickets->sold_out();
+
+				// Ticket pricing data.
+				if ( method_exists( $tickets, 'get_all' ) ) {
+					$all_tickets = $tickets->get_all();
+					$key_vars['tickets_data'] = [];
+
+					foreach ( $all_tickets as $ticket ) {
 						if ( is_object( $ticket ) && isset( $ticket->ID ) ) {
-							$key_vars['tickets'][] = [
+							$key_vars['tickets_data'][] = [
 								'id'    => $ticket->ID,
-								'price' => $ticket->price,
+								'price' => $ticket->price ?? null,
+								'cost'  => $ticket->cost ?? null,
+								'on_sale' => ! empty( $ticket->on_sale ),
 							];
 						}
 					}
 				}
-				break;
+			}
 		}
 
 		// Add common variables if they exist.
