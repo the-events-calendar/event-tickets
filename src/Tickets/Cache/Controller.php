@@ -4,10 +4,10 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Cost_Cache
+ * @package TEC\Tickets\Cache
  */
 
-namespace TEC\Tickets\Cost_Cache;
+namespace TEC\Tickets\Cache;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Ticket_Object;
@@ -17,25 +17,25 @@ use Tribe__Tickets__Ticket_Object;
  *
  * @since TBD
  *
- * @package TEC\Tickets\Cost_Cache
+ * @package TEC\Tickets\Cache
  */
 class Controller extends Controller_Contract {
 
 	/**
-	 * The cache instance.
+	 * The cost cache instance.
 	 *
 	 * @since TBD
 	 *
-	 * @var Cache
+	 * @var Cost
 	 */
 	private $cache;
 
 	/**
-	 * The template cache instance.
+	 * The cost template cache instance.
 	 *
 	 * @since TBD
 	 *
-	 * @var Template_Cache
+	 * @var Cost_Template
 	 */
 	private $template_cache;
 
@@ -45,13 +45,13 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		$this->container->singleton( Cache::class );
-		$this->container->singleton( Template_Cache::class );
+		$this->container->singleton( Cost::class );
+		$this->container->singleton( Cost_Template::class );
 		
-		$this->cache = $this->container->make( Cache::class );
-		$this->template_cache = $this->container->make( Template_Cache::class );
+		$this->cache = $this->container->make( Cost::class );
+		$this->template_cache = $this->container->make( Cost_Template::class );
 
-		if ( $this->cache->is_enabled() ) {
+		if ( $this->is_enabled() ) {
 			$this->add_hooks();
 		}
 	}
@@ -192,6 +192,11 @@ class Controller extends Controller_Contract {
 			return $pre_html;
 		}
 
+		// Check if template caching is enabled.
+		if ( ! $this->is_template_cache_enabled() ) {
+			return null;
+		}
+
 		// Get context from template.
 		$context = $template->get_values();
 
@@ -226,6 +231,11 @@ class Controller extends Controller_Contract {
 	 * @return string The HTML (unchanged).
 	 */
 	public function filter_template_html( $html, $file, $name, $template ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		// Check if template caching is enabled.
+		if ( ! $this->is_template_cache_enabled() ) {
+			return $html;
+		}
+
 		// Get context from template.
 		$context = $template->get_values();
 
@@ -513,7 +523,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function maybe_clear_cache_for_meta( $meta_id, $object_id, $meta_key, $meta_value ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		// Skip our own cache meta keys to prevent loops.
-		if ( in_array( $meta_key, [ Cache::META_KEY_COST, Cache::META_KEY_COST_WITH_SYMBOL ], true ) ) {
+		if ( in_array( $meta_key, [ Cost::META_KEY_COST, Cost::META_KEY_COST_WITH_SYMBOL ], true ) ) {
 			return;
 		}
 
@@ -651,5 +661,41 @@ class Controller extends Controller_Contract {
 		}
 		
 		return array_unique( array_filter( $event_ids ) );
+	}
+
+	/**
+	 * Check if caching is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether caching is enabled.
+	 */
+	public function is_enabled() {
+		/**
+		 * Filter whether event cost caching is enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether caching is enabled. Default true.
+		 */
+		return apply_filters( 'tec_tickets_enable_cost_cache', true );
+	}
+
+	/**
+	 * Check if template caching is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether template caching is enabled.
+	 */
+	public function is_template_cache_enabled() {
+		/**
+		 * Filter whether template caching is enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether template caching is enabled. Default true.
+		 */
+		return apply_filters( 'tec_tickets_enable_template_cache', true );
 	}
 }

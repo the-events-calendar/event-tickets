@@ -5,20 +5,20 @@
  * @since TBD
  */
 
-namespace TEC\Tickets;
+namespace TEC\Cache;
 
-use TEC\Tickets\Cost_Cache\Cache;
-use TEC\Tickets\Cost_Cache\Controller;
+use TEC\Tickets\Cache\Cost;
+use TEC\Tickets\Cache\Controller;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Events__Main as TEC;
 
-class Cost_Cache_Test extends \Codeception\TestCase\WPTestCase {
+class Cost_Test extends \Codeception\TestCase\WPTestCase {
 	use With_Uopz;
 
 	/**
 	 * The cache instance.
 	 *
-	 * @var Cache
+	 * @var Cost
 	 */
 	protected $cache;
 
@@ -40,7 +40,7 @@ class Cost_Cache_Test extends \Codeception\TestCase\WPTestCase {
 			$this->markTestSkipped( 'The Events Calendar is not active.' );
 		}
 		
-		$this->cache      = tribe( Cache::class );
+		$this->cache      = tribe( Cost::class );
 		$this->controller = tribe( Controller::class );
 	}
 

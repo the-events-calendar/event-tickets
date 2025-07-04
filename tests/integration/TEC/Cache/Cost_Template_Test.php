@@ -5,17 +5,17 @@
  * @since TBD
  */
 
-namespace TEC\Tickets;
+namespace TEC\Cache;
 
-use TEC\Tickets\Cost_Cache\Template_Cache;
+use TEC\Tickets\Cache\Cost_Template;
 use Tribe__Events__Main as TEC;
 
-class Template_Cache_Test extends \Codeception\TestCase\WPTestCase {
+class Cost_Template_Test extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * The template cache instance.
 	 *
-	 * @var Template_Cache
+	 * @var Cost_Template
 	 */
 	protected $cache;
 
@@ -30,7 +30,7 @@ class Template_Cache_Test extends \Codeception\TestCase\WPTestCase {
 			$this->markTestSkipped( 'The Events Calendar is not active.' );
 		}
 		
-		$this->cache = tribe( Template_Cache::class );
+		$this->cache = tribe( Cost_Template::class );
 	}
 
 	/**

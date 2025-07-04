@@ -4,19 +4,19 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Cost_Cache
+ * @package TEC\Tickets\Cache
  */
 
-namespace TEC\Tickets\Cost_Cache;
+namespace TEC\Tickets\Cache;
 
 /**
- * Class Template_Cache
+ * Class Cost_Template
  *
  * @since TBD
  *
- * @package TEC\Tickets\Cost_Cache
+ * @package TEC\Tickets\Cache
  */
-class Template_Cache {
+class Cost_Template {
 
 	/**
 	 * Meta key prefix for cached templates.
@@ -114,23 +114,5 @@ class Template_Cache {
 		foreach ( $events as $event_id ) {
 			$this->clear( $event_id );
 		}
-	}
-
-	/**
-	 * Check if template caching is enabled.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether template caching is enabled.
-	 */
-	public function is_enabled() {
-		/**
-		 * Filter whether template caching is enabled.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $enabled Whether template caching is enabled. Default true.
-		 */
-		return apply_filters( 'tec_tickets_enable_template_cache', true );
 	}
 }

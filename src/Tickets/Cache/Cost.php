@@ -4,21 +4,21 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Cost_Cache
+ * @package TEC\Tickets\Cache
  */
 
-namespace TEC\Tickets\Cost_Cache;
+namespace TEC\Tickets\Cache;
 
 /**
- * Class Cache
+ * Class Cost
  *
  * Handles caching of event cost calculations.
  *
  * @since TBD
  *
- * @package TEC\Tickets\Cost_Cache
+ * @package TEC\Tickets\Cache
  */
-class Cache {
+class Cost {
 
 	/**
 	 * Meta key for cached cost without currency symbol.
@@ -131,23 +131,5 @@ class Cache {
 		}
 
 		do_action( 'tec_tickets_cost_cache_cleared_all' );
-	}
-
-	/**
-	 * Check if caching is enabled.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether caching is enabled.
-	 */
-	public function is_enabled() {
-		/**
-		 * Filter whether event cost caching is enabled.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $enabled Whether caching is enabled. Default true.
-		 */
-		return apply_filters( 'tec_tickets_enable_cost_cache', true );
 	}
 }
