@@ -51,9 +51,9 @@ class Template_Cache {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $template_path The template path.
-	 * @param array  $variables     The template variables.
-	 * @param int    $event_id      The event ID.
+	 * @param string|array $template_path The template path or name array.
+	 * @param array        $variables     The template variables.
+	 * @param int          $event_id      The event ID.
 	 *
 	 * @return string|false The cached output or false if not cached.
 	 */
@@ -84,10 +84,10 @@ class Template_Cache {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $template_path The template path.
-	 * @param array  $variables     The template variables.
-	 * @param int    $event_id      The event ID.
-	 * @param string $output        The rendered output to cache.
+	 * @param string|array $template_path The template path or name array.
+	 * @param array        $variables     The template variables.
+	 * @param int          $event_id      The event ID.
+	 * @param string       $output        The rendered output to cache.
 	 *
 	 * @return bool Whether the cache was set.
 	 */
@@ -156,7 +156,7 @@ class Template_Cache {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $template_path The template path.
+	 * @param string|array $template_path The template path or name array.
 	 *
 	 * @return bool Whether the template should be cached.
 	 */
@@ -182,11 +182,20 @@ class Template_Cache {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $template_path The template path.
+	 * @param string|array $template_path The template path.
 	 *
 	 * @return string The normalized path.
 	 */
 	protected function normalize_template_path( $template_path ) {
+		// Handle array input (template name might be an array).
+		if ( is_array( $template_path ) ) {
+			// Join array elements with slash.
+			$template_path = implode( '/', array_filter( $template_path ) );
+		}
+
+		// Ensure we have a string.
+		$template_path = (string) $template_path;
+
 		// Remove .php extension if present.
 		$template_path = str_replace( '.php', '', $template_path );
 
@@ -210,8 +219,8 @@ class Template_Cache {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $template_path The template path.
-	 * @param array  $variables     The template variables.
+	 * @param string|array $template_path The template path or name array.
+	 * @param array        $variables     The template variables.
 	 *
 	 * @return string The cache key.
 	 */
