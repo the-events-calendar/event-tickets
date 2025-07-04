@@ -1,6 +1,6 @@
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
-import { Ticket } from '../types/Ticket';
+import { Ticket, PartialTicket } from '../types/Ticket';
 import { TicketsApiParams, TicketsApiResponse } from "../types/Api";
 
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
@@ -73,11 +73,11 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
  *
  * @since TBD
  *
- * @param {Partial<Ticket>} ticketData The data for the new ticket.
+ * @param {PartialTicket} ticketData The data for the new ticket.
  * @return {Promise<Ticket>} The created ticket.
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
-export const createTicket = async ( ticketData: Partial<Ticket> ): Promise<Ticket> => {
+export const createTicket = async ( ticketData: PartialTicket ): Promise<Ticket> => {
 	const response: Ticket = await apiFetch( {
 		url: apiBaseUrl,
 		method: 'POST',
@@ -101,11 +101,11 @@ export const createTicket = async ( ticketData: Partial<Ticket> ): Promise<Ticke
  * @since TBD
  *
  * @param {number} ticketId The ID of the ticket to update.
- * @param {Partial<Ticket>} ticketData The data to update the ticket with.
+ * @param {PartialTicket} ticketData The data to update the ticket with.
  * @return {Promise<Ticket>} The updated ticket.
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
-export const updateTicket = async ( ticketId: number, ticketData: Partial<Ticket> ): Promise<Ticket> => {
+export const updateTicket = async ( ticketId: number, ticketData: PartialTicket ): Promise<Ticket> => {
 	const response: Ticket = await apiFetch( {
 		path: `${ apiBaseUrl }/${ ticketId }`,
 		method: 'PUT',

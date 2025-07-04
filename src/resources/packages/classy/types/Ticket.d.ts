@@ -102,3 +102,5 @@ export type Ticket = {
 	// URLs
 	restUrl: string;
 };
+
+export type PartialTicket = Partial<Ticket>;
