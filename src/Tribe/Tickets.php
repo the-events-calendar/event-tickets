@@ -2236,10 +2236,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $post_id The event post ID.
+		 * @param int|Tribe__Tickets__Ticket_Object $post_id The event post ID or ticket object.
 		 */
 		public static function clear_ticket_counts_cache( $post_id ) {
-			if ( empty( $post_id ) ) {
+			// Handle ticket object case.
+			if ( $post_id instanceof Tribe__Tickets__Ticket_Object ) {
+				$post_id = $post_id->get_event_id();
+			}
+
+			if ( empty( $post_id ) || ! is_numeric( $post_id ) ) {
 				return;
 			}
 

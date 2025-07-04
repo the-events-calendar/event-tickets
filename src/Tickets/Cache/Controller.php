@@ -97,8 +97,32 @@ class Controller extends Controller_Contract {
 	 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object (optional).
 	 */
 	public function clear_cache_for_ticket( $ticket_id, $event_id = null, $ticket = null ) {
+		// Handle RSVP case where first param might be order_id and second is event_id.
+		if ( ! empty( $event_id ) && is_numeric( $event_id ) ) {
+			// Direct event ID provided.
+			Tribe__Tickets__Tickets::clear_ticket_counts_cache( $event_id );
+			$this->clear_views_v2_cache( $event_id );
+			return;
+		}
+
+		// Try to get event ID from ticket object.
 		if ( ! $event_id && $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 			$event_id = $ticket->get_event_id();
+		}
+
+		// Try to get event ID from ticket ID.
+		if ( ! $event_id && is_numeric( $ticket_id ) ) {
+			$ticket_post = get_post( $ticket_id );
+			if ( $ticket_post ) {
+				// For RSVP and other ticket types, get the parent event.
+				$event_id = get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
+				if ( ! $event_id ) {
+					$event_id = get_post_meta( $ticket_id, '_tribe_wooticket_for_event', true );
+				}
+				if ( ! $event_id ) {
+					$event_id = get_post_meta( $ticket_id, '_tribe_eddticket_for_event', true );
+				}
+			}
 		}
 
 		if ( $event_id ) {
