@@ -162,10 +162,15 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $event_id The event ID.
+	 * @param int|Tribe__Tickets__Ticket_Object $event_id The event ID or ticket object.
 	 */
 	public function clear_views_v2_cache( $event_id ) {
-		if ( empty( $event_id ) ) {
+		// Handle ticket object case.
+		if ( $event_id instanceof Tribe__Tickets__Ticket_Object ) {
+			$event_id = $event_id->get_event_id();
+		}
+
+		if ( empty( $event_id ) || ! is_numeric( $event_id ) ) {
 			return;
 		}
 
