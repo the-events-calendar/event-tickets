@@ -1,30 +1,51 @@
 import React, { Fragment, useState } from 'react';
 import { ToggleControl } from '@wordpress/components';
 import { RefObject, useCallback, useRef } from '@wordpress/element';
-import { __, _x } from '@wordpress/i18n';
-import { DatePicker } from '@tec/common/classy/components';
-import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { CurrencyInput} from '../../components';
+import { _x } from '@wordpress/i18n';
+import { StartSelector, EndSelector } from '@tec/common/classy/components';
 import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
+import { TicketComponentProps } from '../../types/TicketComponentProps';
+import { SalePriceDetails } from "../../types/Ticket";
+import { CurrencyInput} from '../../components';
 
 // todo: These should be based on site settings.
 const currentDate = new Date();
 const dateWithYearFormat = 'Y-m-d';
 const startOfWeek: StartOfWeek = 0;
 
+type SalePriceProps = {
+	value: SalePriceDetails;
+} & Omit<TicketComponentProps, 'label'>;
 
-export default function SalePrice( props: TicketComponentProps ) : JSX.Element {
+const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', 'event-tickets' );
 
-	const [ hasSalePrice, setHasSalePrice ] = useState<boolean>( false );
-	const [ salePrice, setSalePrice ] = useState<string>( '' );
+/**
+ * SalePrice component for managing the sale price and sale duration of a ticket.
+ *
+ * @since TBD
+ *
+ * @param {SalePriceProps} props
+ * @return {JSX.Element} The rendered SalePrice component.
+ */
+export default function SalePrice( props: SalePriceProps ) : JSX.Element {
+	const {
+		onChange,
+		value,
+	} = props;
 
-	const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', 'event-tickets' );
+	const [ currentValue, setCurrentValue ] = useState<SalePriceDetails>( value );
+
+	const {
+		enabled: hasSalePrice,
+		salePrice,
+		startDate,
+		endDate,
+	} = currentValue;
+
+	const [ isSelectingDate, setIsSelectingDate ] = useState< 'start' | 'end' | false >( false );
 
 	const ref: RefObject< HTMLDivElement > = useRef( null );
 
-	const [ startDate, setStartDate ] = useState<Date | null>( null );
-	const [ endDate, setEndDate ] = useState<Date | null>( null );
-	const [ isSelectingDate, setIsSelectingDate ] = useState< 'start' | 'end' | false >( false );
 
 	const onDateInputClick = useCallback(
 		( selecting: 'start' | 'end' ) => {
@@ -47,13 +68,23 @@ export default function SalePrice( props: TicketComponentProps ) : JSX.Element {
 		}
 	};
 
+	const onFieldChange = useCallback( ( field: keyof SalePriceDetails, value: any ) => {
+		const newValue: SalePriceDetails = {
+			...currentValue,
+			[field]: value,
+		};
+
+		setCurrentValue( newValue );
+		onChange( newValue );
+	}, [ onChange, currentValue ] );
+
 	return (
 		<Fragment>
 			<ToggleControl
 				label={ salePriceLabel }
 				__nextHasNoMarginBottom={ true }
 				checked={ hasSalePrice }
-				onChange={ ( value: boolean ) => setHasSalePrice( value ) }
+				onChange={ ( value: boolean ) => onFieldChange( 'enabled', value ) }
 			/>
 
 			{ hasSalePrice && (
@@ -61,33 +92,30 @@ export default function SalePrice( props: TicketComponentProps ) : JSX.Element {
 					<CurrencyInput
 						label={ _x( 'Sale price', 'Label for the sale price field', 'event-tickets' ) }
 						value={ salePrice }
-						onChange={ ( value: string ) => setSalePrice( value ) }
+						onChange={ ( value: string ) => onFieldChange( 'salePrice', value ) }
 						required={ true }
 					/>
 
 					<div className="classy-field__input classy-field__input--sale-date" ref={ ref }>
-						<div className="classy-field__input-title">
-							<h4>{ _x( 'On sale from', 'Event date selection input title', 'the-events-calendar' ) }</h4>
-						</div>
-						<DatePicker
-							anchor={ ref.current }
+						<StartSelector
 							dateWithYearFormat={ dateWithYearFormat }
 							endDate={ endDate }
-							showPopover={ isSelectingDate === 'start' }
-							onClick={ () => onDateInputClick( 'start' ) }
-							onClose={ () => setIsSelectingDate( false ) }
-							onChange={ onDateChange }
-							startDate={ startDate }
-							startOfWeek={ startOfWeek }
-							currentDate={ currentDate }
+							highightTime={ false }
+							isAllDay={ true }
 							isMultiday={ true }
 							isSelectingDate={ isSelectingDate }
+							onChange={ onDateChange }
+							onClick={ () => onDateInputClick( 'start' ) }
+							onClose={ () => setIsSelectingDate( false ) }
+							startDate={ startDate }
+							startOfWeek={ startOfWeek }
+							timeFormat={ '' }
+							title={ _x( 'On sale from', 'Event date selection input title', 'the-events-calendar' ) }
 						/>
 						<span className="classy-field__input--date-separator">
 							{ _x( 'to', 'Separator between start and end date inputs', 'the-events-calendar' ) }
 						</span>
-						<DatePicker
-							anchor={ref.current}
+						<EndSelector
 							currentDate={ currentDate }
 							dateWithYearFormat={ dateWithYearFormat }
 							endDate={ endDate }
