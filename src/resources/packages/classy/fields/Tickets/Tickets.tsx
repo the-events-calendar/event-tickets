@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Fragment, useEffect, useState } from 'react';
-import { useSelect } from '@wordpress/data';
+import { Fragment, useCallback, useState } from 'react';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
+import { CenteredSpinner } from '@tec/common/classy/components';
 import { _x } from '@wordpress/i18n';
 import {
 	AddTicket,
@@ -10,19 +11,26 @@ import {
 import { Ticket as TicketData } from '../../types/Ticket';
 import { STORE_NAME } from '../../constants';
 
-type TicketsProps = {
-	eventId: number | null;
-};
-
 const defaultTicket: Partial<TicketData> = {
 	title: '',
 	description: '',
+	cost: '',
+	salePriceData: {
+		enabled: false,
+		salePrice: '',
+		startDate: null,
+		endDate: null,
+	}
 };
 
-export default function Tickets( props: TicketsProps ): JSX.Element {
-
-	const { eventId } = props;
-
+/**
+ * Tickets component to display and manage tickets for an event.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The rendered component.
+ */
+export default function Tickets(): JSX.Element {
 	const { tickets } = useSelect( ( select: SelectFunction ) => {
 		const {
 			getTickets,
@@ -30,36 +38,52 @@ export default function Tickets( props: TicketsProps ): JSX.Element {
 			getTickets: ( eventId: number ) => TicketData[];
 		} = select( STORE_NAME );
 
+		const { getCurrentPostId }: {
+			getCurrentPostId: () => number | null
+		} = select( 'core/editor' );
+
 		return {
-			tickets: getTickets( eventId ),
+			tickets: getTickets( getCurrentPostId() ) || null,
 		};
 	}, [] )
 
-	const [ hasTickets, setHasTickets ] = useState( tickets.length > 0 );
+	// If the tickets are not yet loaded, show a spinner.
+	if ( ! tickets ) {
+		return <CenteredSpinner />;
+	}
 
-	// todo: default state is false.
+	const { setTickets } = useDispatch( STORE_NAME );
+
+	const [ hasTickets, setHasTickets ] = useState( tickets.length > 0 );
 	const [ isUpserting, setIsUpserting ] = useState( false );
 
-	const onTicketAddedClicked = () => {
-		console.log( 'Ticket added clicked' );
+	const onTicketAddedClicked = useCallback( () => {
 		setIsUpserting( true );
-	}
+	}, [ isUpserting ] );
+
+	const onTicketUpsertSaved = useCallback( ( ticket: TicketData ) => {
+		setIsUpserting( false );
+
+		// If the ticket is new, add it to the list of tickets.
+		if ( ! hasTickets ) {
+			setHasTickets( true );
+		}
+
+		tickets.push( ticket );
+		setTickets( tickets );
+	}, [
+		hasTickets,
+		tickets,
+	] );
 
 	return (
 		<div className="classy-field classy-field--tickets">
-			{ ! hasTickets && (
-				<AddTicket
-					buttonText={ _x( 'Add Tickets', 'Button text to add a new ticket', 'event-tickets' ) }
-					onClick={ onTicketAddedClicked }
-				/>
-			) }
-
 			{ isUpserting && (
 				<TicketUpsertModal
 					isUpdate={ ! hasTickets }
 					onCancel={ () => setIsUpserting( false ) }
 					onClose={ () => setIsUpserting( false ) }
-					onSave={ () => {} }
+					onSave={ onTicketUpsertSaved }
 					values={ defaultTicket }
 				/>
 			) }
@@ -72,6 +96,13 @@ export default function Tickets( props: TicketsProps ): JSX.Element {
 						</div>
 					) ) }
 				</Fragment>
+			) }
+
+			{ ! hasTickets && (
+				<AddTicket
+					buttonText={ _x( 'Add Tickets', 'Button text to add a new ticket', 'event-tickets' ) }
+					onClick={ onTicketAddedClicked }
+				/>
 			) }
 		</div>
 	);
