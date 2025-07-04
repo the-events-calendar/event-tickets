@@ -482,9 +482,13 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function add_template_hooks() {
-		// Hook into template rendering.
-		add_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 10, 5 );
-		add_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 10, 4 );
+		// Hook into template rendering with high priority to intercept early.
+		add_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 5, 5 );
+		add_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 100, 4 );
+		
+		// Hook into specific template part rendering.
+		add_filter( 'tribe_template_part_pre_html', [ $this, 'filter_template_part_pre_html' ], 5, 4 );
+		add_filter( 'tribe_template_part_html', [ $this, 'filter_template_part_html' ], 100, 4 );
 	}
 
 	/**
@@ -493,8 +497,10 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function remove_template_hooks() {
-		remove_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 10 );
-		remove_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 10 );
+		remove_filter( 'tribe_template_pre_html', [ $this, 'filter_template_pre_html' ], 5 );
+		remove_filter( 'tribe_template_html', [ $this, 'filter_template_html' ], 100 );
+		remove_filter( 'tribe_template_part_pre_html', [ $this, 'filter_template_part_pre_html' ], 5 );
+		remove_filter( 'tribe_template_part_html', [ $this, 'filter_template_part_html' ], 100 );
 	}
 
 	/**
@@ -527,6 +533,17 @@ class Controller extends Controller_Contract {
 		$cached_html = $this->template_cache->get( $name, $context, $event_id );
 
 		if ( false !== $cached_html ) {
+			/**
+			 * Fires when a template is served from cache.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $name       The template name.
+			 * @param int    $event_id   The event ID.
+			 * @param string $cached_html The cached HTML.
+			 */
+			do_action( 'tec_tickets_template_served_from_cache', $name, $event_id, $cached_html );
+			
 			return $cached_html;
 		}
 
@@ -629,5 +646,80 @@ class Controller extends Controller_Contract {
 		if ( $this->template_cache && $this->template_cache->is_enabled() ) {
 			$this->template_cache->clear( $event_id );
 		}
+	}
+
+	/**
+	 * Filter template part before rendering to return cached version.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $pre_html The pre-rendered HTML.
+	 * @param string      $template The template name.
+	 * @param array       $context  The context data.
+	 * @param bool        $echo     Whether to echo.
+	 *
+	 * @return string|null The cached HTML or null.
+	 */
+	public function filter_template_part_pre_html( $pre_html, $template, $context, $echo ) {
+		// If another filter already set HTML, respect it.
+		if ( null !== $pre_html ) {
+			return $pre_html;
+		}
+
+		// Get the event ID from context.
+		$event_id = $this->get_event_id_from_template_context( $context, null );
+		
+		if ( ! $event_id ) {
+			return null;
+		}
+
+		// Try to get cached version.
+		$cached_html = $this->template_cache->get( $template, $context, $event_id );
+
+		if ( false !== $cached_html ) {
+			/**
+			 * Fires when a template part is served from cache.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $template   The template name.
+			 * @param int    $event_id   The event ID.
+			 * @param string $cached_html The cached HTML.
+			 */
+			do_action( 'tec_tickets_template_part_served_from_cache', $template, $event_id, $cached_html );
+			
+			// Return the cached HTML to prevent template execution.
+			return $cached_html;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Filter template part after rendering to cache the output.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $html     The rendered HTML.
+	 * @param string $template The template name.
+	 * @param array  $context  The context data.
+	 * @param bool   $echo     Whether to echo.
+	 *
+	 * @return string The HTML (unchanged).
+	 */
+	public function filter_template_part_html( $html, $template, $context, $echo ) {
+		// Get the event ID from context.
+		$event_id = $this->get_event_id_from_template_context( $context, null );
+		
+		if ( ! $event_id ) {
+			return $html;
+		}
+
+		// Cache the rendered HTML.
+		if ( ! empty( $html ) ) {
+			$this->template_cache->set( $template, $context, $event_id, $html );
+		}
+
+		return $html;
 	}
 }

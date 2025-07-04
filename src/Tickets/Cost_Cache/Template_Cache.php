@@ -37,6 +37,7 @@ class Template_Cache {
 	 * @var array
 	 */
 	protected $cacheable_templates = [
+		// View cost templates.
 		'v2/day/event/cost',
 		'v2/list/event/cost',
 		'v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost',
@@ -44,6 +45,20 @@ class Template_Cache {
 		'v2/photo/event/cost',
 		'v2/week/grid-body/events-day/event/tooltip/cost',
 		'v2/week/mobile-events/day/event/cost',
+		
+		// Ticket price templates.
+		'blocks/tickets/extra-price',
+		'blocks/tickets/footer-total',
+		'v2/commerce/ticket/price',
+		'v2/commerce/ticket/regular-price',
+		'v2/commerce/ticket/sale-price',
+		'v2/commerce/checkout/cart/item/price',
+		'registration/summary/ticket/price',
+		
+		// WooCommerce ticket templates.
+		'tickets/woocommerce',
+		'wootickets/tickets',
+		'tickets/price',
 	];
 
 	/**
