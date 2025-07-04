@@ -110,24 +110,20 @@ class Cache {
 	 */
 	public function clear_all() {
 		// Get all events that might have cached costs.
-		$events = get_posts(
-			[
-				'post_type'      => 'tribe_events',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => [
-					'relation' => 'OR',
-					[
-						'key'     => self::META_KEY_COST,
-						'compare' => 'EXISTS',
-					],
-					[
-						'key'     => self::META_KEY_COST_WITH_SYMBOL,
-						'compare' => 'EXISTS',
-					],
-				],
-			] 
-		);
+		$events = tribe_events()
+			->where_or(
+				[
+					function ( $repository ) {
+						$repository->where( 'meta_exists', self::META_KEY_COST );
+					},
+					function ( $repository ) {
+						$repository->where( 'meta_exists', self::META_KEY_COST_WITH_SYMBOL );
+					},
+				] 
+			)
+			->fields( 'ids' )
+			->per_page( -1 )
+			->found();
 
 		// Clear cache for each event.
 		foreach ( $events as $event_id ) {
