@@ -28,7 +28,7 @@ class Controller extends Controller_Contract {
 	public function do_register(): void {
 		$this->container->singleton( Monitor::class );
 
-		// Only add hooks if monitoring is enabled
+		// Only add hooks if monitoring is enabled.
 		$monitor = $this->container->make( Monitor::class );
 		if ( $monitor->is_enabled() ) {
 			$this->add_hooks();
@@ -50,22 +50,22 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function add_hooks() {
-		// Monitor ticket count operations
+		// Monitor ticket count operations.
 		add_action( 'tec_tickets_before_get_ticket_counts', [ $this, 'start_ticket_counts_monitoring' ] );
 		add_action( 'tec_tickets_after_get_ticket_counts', [ $this, 'stop_ticket_counts_monitoring' ] );
 
-		// Monitor Views V2 rendering
+		// Monitor Views V2 rendering.
 		add_action( 'tribe_events_views_v2_view_before_template', [ $this, 'start_view_monitoring' ], 1 );
 		add_action( 'tribe_events_views_v2_view_after_template', [ $this, 'stop_view_monitoring' ], 20 );
 
-		// Monitor attendee operations
+		// Monitor attendee operations.
 		add_action( 'tribe_tickets_before_get_attendees', [ $this, 'start_attendee_monitoring' ] );
 		add_action( 'tribe_tickets_after_get_attendees', [ $this, 'stop_attendee_monitoring' ] );
 
-		// Add performance data to admin bar
+		// Add performance data to admin bar.
 		add_action( 'admin_bar_menu', [ $this, 'add_admin_bar_menu' ], 100 );
 
-		// Add performance tracking filter
+		// Add performance tracking filter.
 		add_filter( 'tribe_tickets_performance_tracking', [ $this, 'add_performance_data' ] );
 	}
 
@@ -128,7 +128,7 @@ class Controller extends Controller_Contract {
 		$monitor = $this->container->make( Monitor::class );
 		$metrics = $monitor->stop( 'view_render_' . $view->get_slug() );
 
-		// Store metrics for admin bar display
+		// Store metrics for admin bar display.
 		if ( ! empty( $metrics ) ) {
 			$this->store_metrics( $metrics );
 		}
@@ -166,11 +166,11 @@ class Controller extends Controller_Contract {
 	public function add_performance_data( $data ) {
 		global $wpdb;
 
-		$data['query_count'] = $wpdb->num_queries;
-		$data['cache_hits'] = tribe_cache()->get_hits();
-		$data['load_time'] = timer_stop( 0, 3 );
+		$data['query_count']  = $wpdb->num_queries;
+		$data['cache_hits']   = tribe_cache()->get_hits();
+		$data['load_time']    = timer_stop( 0, 3 );
 		$data['memory_usage'] = size_format( memory_get_usage() );
-		$data['peak_memory'] = size_format( memory_get_peak_usage() );
+		$data['peak_memory']  = size_format( memory_get_peak_usage() );
 
 		return $data;
 	}
@@ -198,29 +198,35 @@ class Controller extends Controller_Contract {
 			$metrics['duration'] ?? 0
 		);
 
-		$admin_bar->add_node( [
-			'id' => 'tribe-tickets-performance',
-			'title' => $title,
-			'meta' => [
-				'title' => 'Event Tickets Performance Metrics',
-			],
-		] );
+		$admin_bar->add_node(
+			[
+				'id'    => 'tribe-tickets-performance',
+				'title' => $title,
+				'meta'  => [
+					'title' => 'Event Tickets Performance Metrics',
+				],
+			]
+		);
 
 		// Add detailed metrics as sub-items
 		if ( isset( $metrics['memory_used'] ) ) {
-			$admin_bar->add_node( [
-				'id' => 'tribe-tickets-performance-memory',
-				'parent' => 'tribe-tickets-performance',
-				'title' => 'Memory: ' . $metrics['memory_used'],
-			] );
+			$admin_bar->add_node(
+				[
+					'id'     => 'tribe-tickets-performance-memory',
+					'parent' => 'tribe-tickets-performance',
+					'title'  => 'Memory: ' . $metrics['memory_used'],
+				]
+			);
 		}
 
 		if ( isset( $metrics['cache_hits'] ) ) {
-			$admin_bar->add_node( [
-				'id' => 'tribe-tickets-performance-cache',
-				'parent' => 'tribe-tickets-performance',
-				'title' => 'Cache Hits: ' . $metrics['cache_hits'],
-			] );
+			$admin_bar->add_node(
+				[
+					'id'     => 'tribe-tickets-performance-cache',
+					'parent' => 'tribe-tickets-performance',
+					'title'  => 'Cache Hits: ' . $metrics['cache_hits'],
+				]
+			);
 		}
 	}
 
@@ -233,9 +239,9 @@ class Controller extends Controller_Contract {
 	 */
 	private function store_metrics( $metrics ) {
 		static $stored_metrics = [];
-		$stored_metrics[] = $metrics;
+		$stored_metrics[]      = $metrics;
 		
-		// Store in a way that persists for the admin bar
+		// Store in a way that persists for the admin bar.
 		set_transient( 'tec_tickets_last_performance_metrics', $metrics, 60 );
 	}
 

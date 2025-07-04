@@ -110,10 +110,10 @@ class Tickets implements \ArrayAccess, \Serializable {
 			return $this->data;
 		}
 
-		// Check cache first
+		// Check cache first.
 		$cache_key = 'tribe_tickets_v2_data_' . $this->post_id;
-		$cache = tribe_cache();
-		$cached = $cache->get_transient( $cache_key );
+		$cache     = tribe_cache();
+		$cached    = $cache->get_transient( $cache_key );
 		
 		if ( false !== $cached ) {
 			$this->data = $cached;
@@ -234,7 +234,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 			'sold_out'  => $sold_out,
 		];
 
-		// Cache the result for 5 minutes
+		// Cache the result for 5 minutes.
 		$cache->set_transient( $cache_key, $this->data, 5 * MINUTE_IN_SECONDS );
 
 		return $this->data;

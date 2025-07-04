@@ -64,26 +64,26 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function register_cache_invalidation_hooks() {
-		// Clear cache when tickets are saved or deleted
+		// Clear cache when tickets are saved or deleted.
 		add_action( 'event_tickets_after_save_ticket', [ $this, 'clear_cache_for_ticket' ], 10, 3 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'clear_cache_for_ticket' ], 10, 2 );
 		
-		// Clear cache when attendees are created, updated, or deleted
+		// Clear cache when attendees are created, updated, or deleted.
 		add_action( 'tec_tickets_commerce_attendee_after_create', [ $this, 'clear_cache_for_attendee' ] );
 		add_action( 'tec_tickets_commerce_attendee_after_update', [ $this, 'clear_cache_for_attendee' ] );
 		add_action( 'tec_tickets_commerce_attendee_after_delete', [ $this, 'clear_cache_for_attendee' ] );
 		
-		// Clear cache for RSVP operations
+		// Clear cache for RSVP operations.
 		add_action( 'event_tickets_rsvp_tickets_generated', [ $this, 'clear_cache_for_ticket' ], 10, 2 );
 		
-		// Clear cache when check-in status changes
+		// Clear cache when check-in status changes.
 		add_action( 'event_tickets_checkin', [ $this, 'clear_cache_for_attendee' ] );
 		add_action( 'event_tickets_uncheckin', [ $this, 'clear_cache_for_attendee' ] );
 		
-		// Clear cache when stock changes
+		// Clear cache when stock changes.
 		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'clear_cache_for_ticket' ], 10, 2 );
 		
-		// Clear Views V2 tickets cache when counts are cleared
+		// Clear Views V2 tickets cache when counts are cleared.
 		add_action( 'tec_tickets_cache_clear_ticket_counts', [ $this, 'clear_views_v2_cache' ] );
 	}
 
@@ -120,7 +120,7 @@ class Controller extends Controller_Contract {
 		if ( is_object( $attendee ) && isset( $attendee->event_id ) ) {
 			$event_id = $attendee->event_id;
 		} elseif ( is_numeric( $attendee ) ) {
-			// Get event ID from attendee
+			// Get event ID from attendee.
 			$attendee_event = get_post_meta( $attendee, '_tribe_tickets_event_id', true );
 			if ( $attendee_event ) {
 				$event_id = $attendee_event;
@@ -145,7 +145,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$cache_key = 'tribe_tickets_v2_data_' . $event_id;
+		$cache_key   = 'tribe_tickets_v2_data_' . $event_id;
 		$cache = tribe_cache();
 		$cache->delete_transient( $cache_key );
 	}

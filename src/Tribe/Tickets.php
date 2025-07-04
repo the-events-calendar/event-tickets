@@ -2079,10 +2079,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 */
 			do_action( 'tec_tickets_before_get_ticket_counts', $post_id );
 
-			// Check cache first
+			// Check cache first.
 			$cache_key = 'tribe_tickets_counts_' . $post_id;
-			$cache = tribe_cache();
-			$cached = $cache->get_transient( $cache_key );
+			$cache     = tribe_cache();
+			$cached    = $cache->get_transient( $cache_key );
 			
 			if ( false !== $cached ) {
 				/**
@@ -2215,7 +2215,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 */
 			$types = apply_filters( 'tec_tickets_get_ticket_counts', $types, $post_id );
 			
-			// Cache the result for 5 minutes
+			// Cache the result for 5 minutes.
 			$cache->set_transient( $cache_key, $types, 5 * MINUTE_IN_SECONDS );
 			
 			/**
@@ -2244,7 +2244,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$cache_key = 'tribe_tickets_counts_' . $post_id;
-			$cache = tribe_cache();
+			$cache     = tribe_cache();
 			$cache->delete_transient( $cache_key );
 		}
 

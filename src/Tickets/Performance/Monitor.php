@@ -75,13 +75,13 @@ class Monitor {
 			return;
 		}
 
-		$this->start_time = microtime( true );
+		$this->start_time    = microtime( true );
 		$this->start_queries = $this->get_query_count();
 
 		$this->data[ $operation ] = [
-			'start_time' => $this->start_time,
+			'start_time'    => $this->start_time,
 			'start_queries' => $this->start_queries,
-			'start_memory' => memory_get_usage(),
+			'start_memory'  => memory_get_usage(),
 		];
 	}
 
@@ -99,29 +99,31 @@ class Monitor {
 			return [];
 		}
 
-		$end_time = microtime( true );
+		$end_time    = microtime( true );
 		$end_queries = $this->get_query_count();
-		$end_memory = memory_get_usage();
+		$end_memory  = memory_get_usage();
 
 		$metrics = [
-			'operation' => $operation,
-			'duration' => round( ( $end_time - $this->data[ $operation ]['start_time'] ) * 1000, 2 ), // milliseconds
-			'queries' => $end_queries - $this->data[ $operation ]['start_queries'],
+			'operation'   => $operation,
+			'duration'    => round( ( $end_time - $this->data[ $operation ]['start_time'] ) * 1000, 2 ), // Milliseconds.
+			'queries'     => $end_queries - $this->data[ $operation ]['start_queries'],
 			'memory_used' => $this->format_bytes( $end_memory - $this->data[ $operation ]['start_memory'] ),
 			'peak_memory' => $this->format_bytes( memory_get_peak_usage() ),
-			'cache_hits' => $this->get_cache_hits(),
-			'timestamp' => current_time( 'mysql' ),
+			'cache_hits'  => $this->get_cache_hits(),
+			'timestamp'   => current_time( 'mysql' ),
 		];
 
-		// Log to error_log if debug is enabled
+		// Log to error_log if debug is enabled.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf(
-				'[Event Tickets Performance] %s: %sms, %d queries, %s memory',
-				$metrics['operation'],
-				$metrics['duration'],
-				$metrics['queries'],
-				$metrics['memory_used']
-			) );
+			error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				sprintf(
+					'[Event Tickets Performance] %s: %sms, %d queries, %s memory',
+					$metrics['operation'],
+					$metrics['duration'],
+					$metrics['queries'],
+					$metrics['memory_used']
+				)
+			);
 		}
 
 		/**
@@ -161,7 +163,7 @@ class Monitor {
 	private function get_cache_hits() {
 		$cache = tribe_cache();
 		
-		// This would need to be implemented in Tribe__Cache
+		// This would need to be implemented in Tribe__Cache.
 		if ( method_exists( $cache, 'get_hits' ) ) {
 			return $cache->get_hits();
 		}
@@ -184,7 +186,7 @@ class Monitor {
 		}
 
 		$units = [ 'B', 'KB', 'MB', 'GB' ];
-		$i = floor( log( $bytes, 1024 ) );
+		$i     = floor( log( $bytes, 1024 ) );
 		
 		return round( $bytes / pow( 1024, $i ), 2 ) . ' ' . $units[ $i ];
 	}
