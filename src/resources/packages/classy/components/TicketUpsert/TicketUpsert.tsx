@@ -6,11 +6,13 @@ import {
 	Button,
 	ToggleControl
 } from '@wordpress/components';
-import { CenteredSpinner, IconNew, LabeledInput } from '@tec/common/classy/components';
-import { CustomSelectOption } from '@wordpress/components/build-types/custom-select-control/types';
-import { useSelect } from '@wordpress/data';
+import { IconNew, LabeledInput } from '@tec/common/classy/components';
 import { decodeEntities } from '@wordpress/html-entities';
-import { Capacity as CapacityType, Ticket } from '../../types/Ticket';
+import {
+	Capacity as CapacityType,
+	SalePriceDetails,
+	PartialTicket
+} from '../../types/Ticket';
 import {
 	Capacity,
 	SaleDuration,
@@ -23,14 +25,20 @@ import { CurrencyInput } from '../CurrencyInput';
 type TicketUpsertProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
-	onSave: ( data: Partial<Ticket> ) => void;
-	values: Partial<Ticket>;
+	onSave: ( data: PartialTicket ) => void;
+	values: PartialTicket;
 }
 
-const defaultValues: Partial<Ticket> = {
+const defaultValues: PartialTicket = {
 	title: '',
 	description: '',
 	cost: '',
+	salePriceData: {
+		enabled: false,
+		salePrice: '',
+		startDate: null,
+		endDate: null,
+	}
 };
 
 /**
@@ -47,7 +55,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		values,
 	} = props;
 
-	const [ currentValues, setCurrentValues ] = useState<Partial<Ticket>>( {
+	const [ currentValues, setCurrentValues ] = useState<PartialTicket>( {
 		...defaultValues,
 		...values,
 	} );
@@ -60,14 +68,15 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			return;
 		}
 
-		const dataToSave: Partial<Ticket> = {
+		const dataToSave: PartialTicket = {
 			title: currentValues.title,
 			description: currentValues.description,
 			cost: currentValues.cost,
+			salePriceData: currentValues.salePriceData,
 		};
 
 		onSave( dataToSave );
-	}, [ currentValues ] );
+	}, [ confirmEnabled, currentValues ] );
 
 	return (
 		<div className="classy-root">
@@ -108,7 +117,10 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				/>
 
 				<SalePrice
-
+					value={ currentValues.salePriceData as SalePriceDetails }
+					onChange={ ( value: SalePriceDetails ) => {
+						return setCurrentValues( { ...currentValues, salePriceData: value } );
+					} }
 				/>
 			</section>
 
