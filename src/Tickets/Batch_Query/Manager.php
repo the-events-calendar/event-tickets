@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Batch_Query;
 
 use Tribe__Tickets__Tickets;
-use WP_Query;
 
 /**
  * Class Manager
@@ -175,40 +174,28 @@ class Manager {
 	 * @return void
 	 */
 	private function preload_tickets() {
-		global $wpdb;
-
 		if ( empty( $this->event_ids ) ) {
 			return;
 		}
 
-		// Get all tickets for all events in one query
-		$placeholders = implode( ',', array_fill( 0, count( $this->event_ids ), '%d' ) );
+		// Use the ticket repository to fetch tickets for all events
+		/** @var \Tribe__Tickets__Ticket_Repository $ticket_repository */
+		$ticket_repository = tribe( 'tickets.ticket-repository' );
 		
-		$query = $wpdb->prepare(
-			"SELECT p.ID, p.post_parent, p.post_title, p.post_status, p.menu_order,
-				pm1.meta_value as _price,
-				pm2.meta_value as _capacity,
-				pm3.meta_value as _ticket_start_date,
-				pm4.meta_value as _ticket_end_date,
-				pm5.meta_value as _tribe_ticket_provider
-			FROM {$wpdb->posts} p
-			LEFT JOIN {$wpdb->postmeta} pm1 ON (p.ID = pm1.post_id AND pm1.meta_key = '_price')
-			LEFT JOIN {$wpdb->postmeta} pm2 ON (p.ID = pm2.post_id AND pm2.meta_key = '_capacity')
-			LEFT JOIN {$wpdb->postmeta} pm3 ON (p.ID = pm3.post_id AND pm3.meta_key = '_ticket_start_date')
-			LEFT JOIN {$wpdb->postmeta} pm4 ON (p.ID = pm4.post_id AND pm4.meta_key = '_ticket_end_date')
-			LEFT JOIN {$wpdb->postmeta} pm5 ON (p.ID = pm5.post_id AND pm5.meta_key = '_tribe_ticket_provider')
-			WHERE p.post_parent IN ({$placeholders})
-			AND p.post_type IN ('tribe_tpp_tickets', 'tribe_rsvp_tickets', 'product', 'download')
-			AND p.post_status IN ('publish', 'draft', 'private')
-			ORDER BY p.post_parent, p.menu_order ASC",
-			...$this->event_ids
-		);
-
-		$results = $wpdb->get_results( $query );
+		// Get all tickets for the events in the batch
+		$tickets = $ticket_repository
+			->where( 'event__in', $this->event_ids )
+			->order_by( 'event' )
+			->order_by( 'menu_order', 'ASC' )
+			->all();
 
 		// Group tickets by event
-		foreach ( $results as $ticket ) {
-			$event_id = $ticket->post_parent;
+		foreach ( $tickets as $ticket ) {
+			if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+				continue;
+			}
+			
+			$event_id = $ticket->get_event_id();
 			if ( ! isset( $this->preloaded_tickets[ $event_id ] ) ) {
 				$this->preloaded_tickets[ $event_id ] = [];
 			}
@@ -246,39 +233,23 @@ class Manager {
 	 * @return void
 	 */
 	private function preload_attendee_counts() {
-		global $wpdb;
-
 		if ( empty( $this->event_ids ) ) {
 			return;
 		}
 
-		$placeholders = implode( ',', array_fill( 0, count( $this->event_ids ), '%d' ) );
-		
-		// Count attendees for all events in one query
-		$query = $wpdb->prepare(
-			"SELECT pm.meta_value as event_id, COUNT(DISTINCT p.ID) as attendee_count
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-			WHERE pm.meta_key = '_tribe_tickets_event_id'
-			AND pm.meta_value IN ({$placeholders})
-			AND p.post_type IN ('tribe_rsvp_attendees', 'tribe_tpp_attendees', 'shop_order', 'tribe_attendee')
-			AND p.post_status NOT IN ('trash', 'auto-draft')
-			GROUP BY pm.meta_value",
-			...$this->event_ids
-		);
+		// Use the attendee repository to get counts for each event
+		/** @var \Tribe__Tickets__Attendee_Repository $attendee_repository */
+		$attendee_repository = tribe( 'tickets.attendee-repository' );
 
-		$results = $wpdb->get_results( $query );
-
-		// Store counts
-		foreach ( $results as $result ) {
-			$this->preloaded_attendee_counts[ (int) $result->event_id ] = (int) $result->attendee_count;
-		}
-
-		// Ensure all events have an entry
+		// Get attendee counts for each event
 		foreach ( $this->event_ids as $event_id ) {
-			if ( ! isset( $this->preloaded_attendee_counts[ $event_id ] ) ) {
-				$this->preloaded_attendee_counts[ $event_id ] = 0;
-			}
+			// Use the repository's count method which is optimized
+			$count = $attendee_repository
+				->where( 'event', $event_id )
+				->where( 'order_status', [ 'completed', 'processing', 'publish' ] )
+				->count();
+			
+			$this->preloaded_attendee_counts[ $event_id ] = $count;
 		}
 	}
 
