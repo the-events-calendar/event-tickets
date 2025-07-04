@@ -59,8 +59,11 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function add_hooks() {
-		// Filter tribe_get_cost to use cached values.
-		add_filter( 'tribe_get_cost', [ $this, 'filter_tribe_get_cost' ], 5, 3 );
+		// Filter to pre-empt cost calculation with cached value.
+		add_filter( 'tec_events_pre_get_cost', [ $this, 'filter_pre_get_cost' ], 10, 3 );
+
+		// Filter to cache the calculated cost.
+		add_filter( 'tec_events_get_cost', [ $this, 'filter_get_cost' ], 10, 3 );
 
 		// Cache invalidation hooks.
 		$this->add_invalidation_hooks();
@@ -72,22 +75,28 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function remove_hooks() {
-		remove_filter( 'tribe_get_cost', [ $this, 'filter_tribe_get_cost' ], 5 );
+		remove_filter( 'tec_events_pre_get_cost', [ $this, 'filter_pre_get_cost' ], 10 );
+		remove_filter( 'tec_events_get_cost', [ $this, 'filter_get_cost' ], 10 );
 		$this->remove_invalidation_hooks();
 	}
 
 	/**
-	 * Filter tribe_get_cost to use cached values.
+	 * Filter tec_events_pre_get_cost to return cached value and prevent queries.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $cost                  The formatted cost.
-	 * @param int    $post_id              The event ID.
-	 * @param bool   $with_currency_symbol Whether to include currency symbol.
+	 * @param string|null $cost                 The pre-filtered cost (null by default).
+	 * @param int|null    $post_id              The event ID.
+	 * @param bool        $with_currency_symbol Whether to include currency symbol.
 	 *
-	 * @return string The cost (cached or original).
+	 * @return string|null The cached cost or null if not cached.
 	 */
-	public function filter_tribe_get_cost( $cost, $post_id, $with_currency_symbol ) {
+	public function filter_pre_get_cost( $cost, $post_id, $with_currency_symbol ) {
+		// If another filter already set a value, respect it.
+		if ( null !== $cost ) {
+			return $cost;
+		}
+
 		// Check if we have a cached value.
 		$cached_cost = $this->cache->get( $post_id, $with_currency_symbol );
 
@@ -95,8 +104,26 @@ class Controller extends Controller_Contract {
 			return $cached_cost;
 		}
 
-		// Cache the cost for next time.
-		$this->cache->set( $post_id, $with_currency_symbol, $cost );
+		// Return null to allow normal cost calculation.
+		return null;
+	}
+
+	/**
+	 * Filter tec_events_get_cost to cache the calculated cost.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $cost                 The calculated cost.
+	 * @param int|null    $post_id              The event ID.
+	 * @param bool        $with_currency_symbol Whether to include currency symbol.
+	 *
+	 * @return string The cost (unchanged).
+	 */
+	public function filter_get_cost( $cost, $post_id, $with_currency_symbol ) {
+		// Only cache if we have a valid cost and post ID.
+		if ( ! empty( $cost ) && ! empty( $post_id ) ) {
+			$this->cache->set( $post_id, $with_currency_symbol, $cost );
+		}
 
 		return $cost;
 	}
@@ -282,7 +309,7 @@ class Controller extends Controller_Contract {
 	 * @param string $new_status The new status.
 	 * @param string $old_status The old status.
 	 */
-	public function clear_cache_for_edd_payment( $payment_id, $new_status, $old_status ) {
+	public function clear_cache_for_edd_payment( $payment_id, $new_status, $old_status ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( in_array( $new_status, [ 'complete', 'publish' ], true ) ) {
 			$this->clear_cache_for_edd_order( $payment_id );
 		}
@@ -296,7 +323,7 @@ class Controller extends Controller_Contract {
 	 * @param int $order_id The order ID.
 	 * @param int $post_id  The event ID.
 	 */
-	public function clear_cache_for_rsvp( $order_id, $post_id ) {
+	public function clear_cache_for_rsvp( $order_id, $post_id ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		if ( is_numeric( $post_id ) ) {
 			$this->cache->clear( $post_id );
 		}
@@ -312,7 +339,7 @@ class Controller extends Controller_Contract {
 	 * @param string $meta_key   The meta key.
 	 * @param mixed  $meta_value The meta value.
 	 */
-	public function maybe_clear_cache_for_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
+	public function maybe_clear_cache_for_meta( $meta_id, $object_id, $meta_key, $meta_value ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		// Check if this is a cost-related meta key.
 		$cost_meta_keys = [
 			'_EventCost',

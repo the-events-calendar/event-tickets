@@ -106,8 +106,6 @@ class Cache {
 	 * @since TBD
 	 */
 	public function clear_all() {
-		$cache = tribe_cache();
-		
 		// This would need to be implemented in Tribe__Cache if we want to clear by prefix.
 		// For now, we'll rely on individual cache clearing.
 		do_action( 'tec_tickets_cost_cache_cleared_all' );

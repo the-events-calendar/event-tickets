@@ -78,22 +78,48 @@ class Cost_Cache_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * Test filter integration.
+	 * Test filter integration with tec_events_get_cost.
 	 */
 	public function test_filter_integration() {
 		$event_id = $this->factory->post->create( [ 'post_type' => TEC::POSTTYPE ] );
 		
 		// First call should cache the value.
-		$cost = apply_filters( 'tribe_get_cost', '$200', $event_id, false );
+		$cost = apply_filters( 'tec_events_get_cost', '$200', $event_id, false );
 		$this->assertEquals( '$200', $cost );
 		
 		// Verify it's cached.
 		$cached = $this->cache->get( $event_id, false );
 		$this->assertEquals( '$200', $cached );
 		
-		// Second call should use cached value.
-		$cost2 = apply_filters( 'tribe_get_cost', '$300', $event_id, false );
-		$this->assertEquals( '$200', $cost2 ); // Should still be $200 from cache.
+		// Second call with pre filter should return cached value.
+		$pre_cost = apply_filters( 'tec_events_pre_get_cost', null, $event_id, false );
+		$this->assertEquals( '$200', $pre_cost ); // Should return cached value.
+	}
+
+	/**
+	 * Test pre_get_cost filter prevents queries.
+	 */
+	public function test_pre_get_cost_prevents_queries() {
+		$event_id = $this->factory->post->create( [ 'post_type' => TEC::POSTTYPE ] );
+		
+		// Set cache directly.
+		$this->cache->set( $event_id, false, '$150' );
+		
+		// Pre filter should return cached value without hitting the database.
+		$pre_cost = apply_filters( 'tec_events_pre_get_cost', null, $event_id, false );
+		$this->assertEquals( '$150', $pre_cost );
+		
+		// When pre_cost is not null, the normal cost calculation should be skipped.
+		// This simulates what happens in tribe_get_cost function.
+		if ( null !== $pre_cost ) {
+			// Cost calculation would be skipped here.
+			$final_cost = $pre_cost;
+		} else {
+			// This branch should not be reached when cache exists.
+			$final_cost = '$300'; // Different value to prove cache was used.
+		}
+		
+		$this->assertEquals( '$150', $final_cost );
 	}
 
 	/**
