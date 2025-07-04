@@ -45,7 +45,7 @@ class Cost_Cache_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * Test cache storage and retrieval.
+	 * Test cache storage and retrieval using post meta.
 	 */
 	public function test_cache_storage_and_retrieval() {
 		$event_id = $this->factory->post->create( [ 'post_type' => TEC::POSTTYPE ] );
@@ -57,6 +57,25 @@ class Cost_Cache_Test extends \Codeception\TestCase\WPTestCase {
 		// Get cache.
 		$this->assertEquals( '$100', $this->cache->get( $event_id, false ) );
 		$this->assertEquals( '$100 USD', $this->cache->get( $event_id, true ) );
+		
+		// Verify it's stored as post meta.
+		$this->assertEquals( '$100', get_post_meta( $event_id, Cache::META_KEY_COST, true ) );
+		$this->assertEquals( '$100 USD', get_post_meta( $event_id, Cache::META_KEY_COST_WITH_SYMBOL, true ) );
+	}
+
+	/**
+	 * Test cache storage for free events.
+	 */
+	public function test_cache_storage_for_free_events() {
+		$event_id = $this->factory->post->create( [ 'post_type' => TEC::POSTTYPE ] );
+		
+		// Set cache for free event.
+		$this->cache->set( $event_id, false, '' );
+		$this->cache->set( $event_id, true, 'Free' );
+		
+		// Get cache - should return empty string, not false.
+		$this->assertSame( '', $this->cache->get( $event_id, false ) );
+		$this->assertEquals( 'Free', $this->cache->get( $event_id, true ) );
 	}
 
 	/**

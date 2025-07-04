@@ -21,22 +21,22 @@ namespace TEC\Tickets\Cost_Cache;
 class Cache {
 
 	/**
-	 * Cache expiration time in seconds.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	const CACHE_EXPIRATION = 300; // 5 minutes.
-
-	/**
-	 * Cache key prefix.
+	 * Meta key for cached cost without currency symbol.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	const CACHE_PREFIX = 'tec_event_cost_';
+	const META_KEY_COST = '_tec_cached_cost';
+
+	/**
+	 * Meta key for cached cost with currency symbol.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const META_KEY_COST_WITH_SYMBOL = '_tec_cached_cost_with_symbol';
 
 	/**
 	 * Get cached cost for an event.
@@ -53,10 +53,16 @@ class Cache {
 			return false;
 		}
 
-		$cache_key = $this->get_cache_key( $event_id, $with_currency_symbol );
-		$cache     = tribe_cache();
+		$meta_key = $with_currency_symbol ? self::META_KEY_COST_WITH_SYMBOL : self::META_KEY_COST;
+		
+		// Check if the meta exists (even if empty string for free events).
+		$meta_exists = metadata_exists( 'post', $event_id, $meta_key );
+		
+		if ( ! $meta_exists ) {
+			return false;
+		}
 
-		return $cache->get_transient( $cache_key );
+		return get_post_meta( $event_id, $meta_key, true );
 	}
 
 	/**
@@ -75,10 +81,9 @@ class Cache {
 			return false;
 		}
 
-		$cache_key = $this->get_cache_key( $event_id, $with_currency_symbol );
-		$cache     = tribe_cache();
+		$meta_key = $with_currency_symbol ? self::META_KEY_COST_WITH_SYMBOL : self::META_KEY_COST;
 
-		return $cache->set_transient( $cache_key, $cost, self::CACHE_EXPIRATION );
+		return (bool) update_post_meta( $event_id, $meta_key, $cost );
 	}
 
 	/**
@@ -93,11 +98,9 @@ class Cache {
 			return;
 		}
 
-		$cache = tribe_cache();
-
 		// Clear both versions (with and without currency symbol).
-		$cache->delete_transient( $this->get_cache_key( $event_id, true ) );
-		$cache->delete_transient( $this->get_cache_key( $event_id, false ) );
+		delete_post_meta( $event_id, self::META_KEY_COST );
+		delete_post_meta( $event_id, self::META_KEY_COST_WITH_SYMBOL );
 	}
 
 	/**
@@ -106,25 +109,32 @@ class Cache {
 	 * @since TBD
 	 */
 	public function clear_all() {
-		// This would need to be implemented in Tribe__Cache if we want to clear by prefix.
-		// For now, we'll rely on individual cache clearing.
-		do_action( 'tec_tickets_cost_cache_cleared_all' );
-	}
+		// Get all events that might have cached costs.
+		$events = get_posts(
+			[
+				'post_type'      => 'tribe_events',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => [
+					'relation' => 'OR',
+					[
+						'key'     => self::META_KEY_COST,
+						'compare' => 'EXISTS',
+					],
+					[
+						'key'     => self::META_KEY_COST_WITH_SYMBOL,
+						'compare' => 'EXISTS',
+					],
+				],
+			] 
+		);
 
-	/**
-	 * Get the cache key for an event cost.
-	 *
-	 * @since TBD
-	 *
-	 * @param int  $event_id              The event ID.
-	 * @param bool $with_currency_symbol Whether currency symbol is included.
-	 *
-	 * @return string The cache key.
-	 */
-	private function get_cache_key( $event_id, $with_currency_symbol ) {
-		$suffix = $with_currency_symbol ? '_with_symbol' : '_no_symbol';
-		
-		return self::CACHE_PREFIX . $event_id . $suffix;
+		// Clear cache for each event.
+		foreach ( $events as $event_id ) {
+			$this->clear( $event_id );
+		}
+
+		do_action( 'tec_tickets_cost_cache_cleared_all' );
 	}
 
 	/**

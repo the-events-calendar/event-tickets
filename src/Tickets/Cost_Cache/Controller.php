@@ -120,8 +120,8 @@ class Controller extends Controller_Contract {
 	 * @return string The cost (unchanged).
 	 */
 	public function filter_get_cost( $cost, $post_id, $with_currency_symbol ) {
-		// Only cache if we have a valid cost and post ID.
-		if ( ! empty( $cost ) && ! empty( $post_id ) ) {
+		// Cache if we have a valid post ID (even if cost is empty string for free events).
+		if ( ! empty( $post_id ) && null !== $cost ) {
 			$this->cache->set( $post_id, $with_currency_symbol, $cost );
 		}
 
@@ -340,6 +340,11 @@ class Controller extends Controller_Contract {
 	 * @param mixed  $meta_value The meta value.
 	 */
 	public function maybe_clear_cache_for_meta( $meta_id, $object_id, $meta_key, $meta_value ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		// Skip our own cache meta keys to prevent loops.
+		if ( in_array( $meta_key, [ Cache::META_KEY_COST, Cache::META_KEY_COST_WITH_SYMBOL ], true ) ) {
+			return;
+		}
+
 		// Check if this is a cost-related meta key.
 		$cost_meta_keys = [
 			'_EventCost',
