@@ -169,8 +169,8 @@ class Controller extends Controller_Contract {
 		// Add hooks for each template.
 		foreach ( $cost_templates as $template ) {
 			$hook_name = 'tickets/' . $template;
-			add_filter( 'tribe_template_pre_html:' . $hook_name, [ $this, 'filter_template_pre_html' ], 10, 5 );
-			add_filter( 'tribe_template_html:' . $hook_name, [ $this, 'filter_template_html' ], 10, 5 );
+			add_filter( 'tribe_template_pre_html:' . $hook_name, [ $this, 'filter_template_pre_html' ], 10, 4 );
+			add_filter( 'tribe_template_html:' . $hook_name, [ $this, 'filter_template_html' ], 10, 4 );
 		}
 	}
 
@@ -183,15 +183,17 @@ class Controller extends Controller_Contract {
 	 * @param string      $file     The template file path.
 	 * @param array       $name     The template name parts.
 	 * @param object      $template The template object.
-	 * @param array       $context  The template context.
 	 *
 	 * @return string|null The cached HTML or null.
 	 */
-	public function filter_template_pre_html( $pre_html, $file, $name, $template, $context ) {
+	public function filter_template_pre_html( $pre_html, $file, $name, $template ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		// If already has content, don't override.
 		if ( null !== $pre_html ) {
 			return $pre_html;
 		}
+
+		// Get context from template.
+		$context = $template->get_values();
 
 		// Get event ID from context.
 		$event_id = $this->get_event_id_from_context( $context );
@@ -220,11 +222,13 @@ class Controller extends Controller_Contract {
 	 * @param string $file     The template file path.
 	 * @param array  $name     The template name parts.
 	 * @param object $template The template object.
-	 * @param array  $context  The template context.
 	 *
 	 * @return string The HTML (unchanged).
 	 */
-	public function filter_template_html( $html, $file, $name, $template, $context ) {
+	public function filter_template_html( $html, $file, $name, $template ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		// Get context from template.
+		$context = $template->get_values();
+
 		// Get event ID from context.
 		$event_id = $this->get_event_id_from_context( $context );
 		if ( ! $event_id ) {
