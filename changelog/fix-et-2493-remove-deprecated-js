@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Remove unused JS for TicketsCommerce settings and resolve stripe checkout template warning. [ET-2493]
