@@ -67,6 +67,11 @@ let emptyTicketMessageElement = null;
 const confirmSelector = '.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm';
 
 /**
+ * Whether the unload event has been registered or not.
+ */
+let unloadEventRegistered = false;
+
+/**
  * @typedef {Object} SeatMapTicketEntry
  * @property {string} ticketId    The ticket ID.
  * @property {string} name        The ticket name.
@@ -490,6 +495,60 @@ async function cancelReservationsOnBackend() {
 }
 
 /**
+ * Sends a request to the backend to cancel the reservations using the Beacon API.
+ *
+ * This function is called when the page is unloaded, and it sends a request to the backend to cancel
+ * the reservations made by the user. It uses the Beacon API to ensure that the request is sent even
+ * if the page is being unloaded (closed or navigated away from).
+ *
+ * @since TBD
+ *
+ * @return {void} The request is sent to the backend using the Beacon API.
+ */
+export function cancelReservationsViaBeacon() {
+	if ( ! shouldCancelReservations ) {
+		return;
+	}
+
+	const requestUrl = getReservationCancelRequest();
+	window.navigator.sendBeacon( requestUrl.toString() );
+}
+
+/**
+ * Registers the unload event listener to send a request to cancel reservations
+ * when the page is unloaded.
+ *
+ * @since TBD
+ *
+ * @return {void} The unload event listener is registered.
+ */
+function registerUnloadEvent() {
+	if ( unloadEventRegistered ) {
+		return;
+	}
+
+	window.addEventListener( 'beforeunload', cancelReservationsViaBeacon );
+	unloadEventRegistered = true;
+}
+
+/**
+ * Unregisters the unload event listener to prevent sending a request to cancel
+ * reservations when the page is unloaded.
+ *
+ * @since TBD
+ *
+ * @return {void} The unload event listener is unregistered.
+ */
+function unregisterUnloadEvent() {
+	if ( ! unloadEventRegistered ) {
+		return;
+	}
+
+	window.removeEventListener( 'beforeunload', cancelReservationsViaBeacon );
+	unloadEventRegistered = false;
+}
+
+/**
  * Clears the ticket selection from the DOM.
  *
  * @since 5.16.0
@@ -527,6 +586,7 @@ export async function cancelReservations( dialogElement ) {
 	await cancelReservationsOnBackend();
 	resetTimer();
 	clearTicketSelection();
+	unregisterUnloadEvent();
 }
 
 /**
@@ -602,6 +662,9 @@ async function proceedToCheckout() {
 		return;
 	}
 
+	// Ensure the unload event is unregistered to avoid sending a request to cancel reservations.
+	unregisterUnloadEvent();
+
 	const data = new FormData();
 	data.append( 'provider', providerClass );
 	data.append( 'attendee[optout]', '1' );
@@ -675,6 +738,7 @@ export function addModalEventListeners() {
 
 	modal.on( 'hide', cancelReservations );
 	modal.on( 'destroy', cancelReservations );
+	registerUnloadEvent();
 }
 
 /**
