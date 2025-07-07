@@ -14,7 +14,7 @@ import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
 import { formatWithCurrency } from '../../currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
-import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session';
+import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session'; // eslint-disable-line
 import './filters';
 
 const {
@@ -270,7 +270,7 @@ async function postReservationsToBackend( reservations ) {
 	currentController = newController;
 
 	if ( ! response.ok ) {
-		console.error( 'Failed to post reservations to backend' );
+		console.error( 'Failed to post reservations to backend' ); // eslint-disable-line no-console
 		return false;
 	}
 
@@ -423,7 +423,7 @@ export async function bootstrapIframe( dom ) {
 	const iframe = getIframeElement( dom );
 
 	if ( ! iframe ) {
-		console.error( 'Iframe element not found.' );
+		console.error( 'Iframe element not found.' ); // eslint-disable-line no-console
 		return false;
 	}
 
@@ -453,7 +453,7 @@ export async function bootstrapIframe( dom ) {
  *
  * @since TBD
  *
- * @return {module:url.URL}
+ * @return {module:url.URL} The URL for the reservation cancel request.
  */
 export function getReservationCancelRequest() {
 	const requestUrl = new URL( ajaxUrl );
@@ -487,7 +487,7 @@ async function cancelReservationsOnBackend() {
 	currentController = newController;
 
 	if ( ! response.ok ) {
-		console.error( 'Failed to remove reservations from backend' );
+		console.error( 'Failed to remove reservations from backend' ); // eslint-disable-line no-console
 		return false;
 	}
 
@@ -658,7 +658,7 @@ async function proceedToCheckout() {
 	const checkoutHandler = getCheckoutHandlerForProvider( providerClass );
 
 	if ( ! checkoutHandler ) {
-		console.error( `No checkout handler found for provider ${ providerClass }` );
+		console.error( `No checkout handler found for provider ${ providerClass }` ); // eslint-disable-line no-console
 		return;
 	}
 
@@ -685,7 +685,7 @@ async function proceedToCheckout() {
 	const ok = await checkoutHandler( data );
 
 	if ( ! ok ) {
-		console.error( 'Failed to proceed to checkout.' );
+		console.error( 'Failed to proceed to checkout.' ); // eslint-disable-line no-console
 	}
 
 	shouldCancelReservations = true;
