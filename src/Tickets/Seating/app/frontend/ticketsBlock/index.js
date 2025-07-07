@@ -444,6 +444,23 @@ export async function bootstrapIframe( dom ) {
 }
 
 /**
+ * Creates a URL for the reservation cancel request.
+ *
+ * @since TBD
+ *
+ * @return {module:url.URL}
+ */
+function getReservationCancelRequest() {
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', ACTION_CLEAR_RESERVATIONS );
+	requestUrl.searchParams.set( 'token', getToken() );
+	requestUrl.searchParams.set( 'postId', postId );
+
+	return requestUrl;
+}
+
+/**
  * Prompts the backend to cancel the reservations.
  *
  * @since 5.16.0
@@ -456,12 +473,7 @@ async function cancelReservationsOnBackend() {
 	await currentController.abort( 'New reservations data' );
 	const newController = new AbortController();
 
-	const requestUrl = new URL( ajaxUrl );
-	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
-	requestUrl.searchParams.set( 'action', ACTION_CLEAR_RESERVATIONS );
-	requestUrl.searchParams.set( 'token', getToken() );
-	requestUrl.searchParams.set( 'postId', postId );
-
+	const requestUrl = getReservationCancelRequest();
 	const response = await fetch( requestUrl.toString(), {
 		signal: newController.signal,
 		method: 'POST',
