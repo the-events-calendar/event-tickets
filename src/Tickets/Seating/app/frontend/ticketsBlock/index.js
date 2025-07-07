@@ -455,7 +455,7 @@ export async function bootstrapIframe( dom ) {
  *
  * @return {module:url.URL}
  */
-function getReservationCancelRequest() {
+export function getReservationCancelRequest() {
 	const requestUrl = new URL( ajaxUrl );
 	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
 	requestUrl.searchParams.set( 'action', ACTION_CLEAR_RESERVATIONS );
