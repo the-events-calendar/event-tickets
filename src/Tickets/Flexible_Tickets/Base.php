@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Base.
@@ -281,8 +282,8 @@ class Base extends Controller {
 
 		$attendee_ids_imploded = implode( ',', $attendee_ids );
 
-		$updated = $wpdb->query(
-			$wpdb->prepare(
+		$updated = DB::query(
+			DB::prepare(
 				"UPDATE {$wpdb->postmeta} new_value
 				SET new_value.meta_value = (new_value.meta_value + %d)
 				WHERE new_value.meta_value > %d
