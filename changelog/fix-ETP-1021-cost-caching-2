@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Implement simple template caching for event cost display templates [ETP-1021]
