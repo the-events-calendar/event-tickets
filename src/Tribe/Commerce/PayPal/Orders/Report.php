@@ -161,7 +161,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$page_title        = __( 'PayPal Orders', 'event-tickets' );
 		$this->orders_page = add_submenu_page(
-			null,
+			'',
 			$page_title,
 			$page_title,
 			$cap,
