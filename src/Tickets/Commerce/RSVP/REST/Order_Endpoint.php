@@ -264,16 +264,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$response['id']           = $order->ID;
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
 
-
-			//$attendee_ids = implode( ',', $attendee_ids );
-
-			//$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
-
 			$response['opt_in_args'] = [
 				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
 				'checked'      => false,
-				//'attendee_ids' => $attendee_ids,
-				//'opt_in_nonce' => wp_create_nonce( $nonce_action ),
 			];
 
 			return $response;

@@ -55,7 +55,10 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
-		register_rest_route( $namespace, $this->get_endpoint_path(), [
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path(),
+			[
 				[
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'handle_create_ticket' ],
@@ -65,8 +68,9 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'handle_create_ticket' ],
 					'permission_callback' => [ $this, 'check_permission' ],
-				]
-			] );
+				],
+			]
+		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
@@ -131,8 +135,6 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 
 		$module  = tribe( Module::class );
 		$rsvp_id = $module->ticket_add( $post_id, $args );
-		//$ticket_module = tribe( Module::class );
-		//$ticket_module->save_ticket( $post_id, $ticket, $raw_data = [] );
 
 		return new WP_REST_Response( $response );
 	}
