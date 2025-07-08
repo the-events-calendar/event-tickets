@@ -2,9 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Status;
 
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\Event;
 use Tribe__Date_Utils as Dates;
 
 use WP_Error;
@@ -67,7 +65,7 @@ class Pending extends Status_Abstract {
 			return $status;
 		}
 
-		// If the parent status or abstract has an error already we dont even run.
+		// If the parent status or abstract has an error already we don't even run.
 		if ( is_wp_error( $status ) ) {
 			return $status;
 		}
@@ -85,7 +83,7 @@ class Pending extends Status_Abstract {
 				continue;
 			}
 
-			// If item quantity is empty, continue
+			// If item quantity is empty, continue.
 			if ( empty( $item['quantity'] ) ) {
 				continue;
 			}
@@ -100,7 +98,7 @@ class Pending extends Status_Abstract {
 					[
 						'ticket'     => $item['ticket_id'],
 						'order'      => $order,
-						'new_status' => $this
+						'new_status' => $this,
 					]
 				);
 			}
@@ -115,7 +113,7 @@ class Pending extends Status_Abstract {
 					[
 						'ticket'     => $item['ticket_id'],
 						'order'      => $order,
-						'new_status' => $this
+						'new_status' => $this,
 					]
 				);
 			}
@@ -129,7 +127,7 @@ class Pending extends Status_Abstract {
 					[
 						'ticket'     => $item['ticket_id'],
 						'order'      => $order,
-						'new_status' => $this
+						'new_status' => $this,
 					]
 				);
 			}
@@ -146,7 +144,7 @@ class Pending extends Status_Abstract {
 						[
 							'ticket'     => $item['ticket_id'],
 							'order'      => $order,
-							'new_status' => $this
+							'new_status' => $this,
 						]
 					);
 				}
@@ -158,7 +156,7 @@ class Pending extends Status_Abstract {
 				$start_sale_time = Dates::reformat( $ticket->start_time, tribe_get_time_format() );
 
 				if ( $ticket->date_is_earlier( $now ) ) {
-					$message = sprintf( __( '%s will be available on %s at %s', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ), $start_sale_date, $start_sale_time );
+					$message = sprintf( __( '%1$s will be available on %2$s at %3$s', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ), $start_sale_date, $start_sale_time );
 				} elseif ( $ticket->date_is_later( $now ) ) {
 					$message = sprintf( __( '%s are no longer available.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_past' ) );
 				} else {
@@ -170,7 +168,7 @@ class Pending extends Status_Abstract {
 					[
 						'ticket'     => $item['ticket_id'],
 						'order'      => $order,
-						'new_status' => $this
+						'new_status' => $this,
 					]
 				);
 			}

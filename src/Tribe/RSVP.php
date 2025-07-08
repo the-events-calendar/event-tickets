@@ -1,8 +1,22 @@
 <?php
+/**
+ * RSVP Tickets Provider.
+ *
+ * @since 4.12.3
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase,PEAR.NamingConventions.ValidClassName.Invalid
+
+/**
+ * RSVP Tickets Provider.
+ *
+ * @since 4.12.3
+ */
 class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var string
 	 */
 	public $orm_provider = 'rsvp';
 
@@ -22,6 +36,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Name of the CPT that holds Orders
+	 *
+	 * @var string
 	 */
 	const ORDER_OBJECT = 'tribe_rsvp_attendees';
 
@@ -69,24 +85,28 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Meta key that relates Products and Events
+	 *
 	 * @var string
 	 */
 	public $event_key = '_tribe_rsvp_for_event';
 
 	/**
 	 * Meta key that stores if an attendee has checked in to an event
+	 *
 	 * @var string
 	 */
 	public $checkin_key = '_tribe_rsvp_checkedin';
 
 	/**
 	 * Meta key that ties attendees together by order
+	 *
 	 * @var string
 	 */
 	public $order_key = '_tribe_rsvp_order';
 
 	/**
 	 * Meta key that holds the security code that's printed in the tickets
+	 *
 	 * @var string
 	 */
 	public $security_code = '_tribe_rsvp_security_code';
@@ -134,6 +154,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $show_not_going = '_tribe_ticket_show_not_going';
 
 	/**
+	 * Attendance totals.
+	 *
 	 * @var Tribe__Tickets__RSVP__Attendance_Totals
 	 */
 	protected $attendance_totals;
@@ -146,6 +168,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	protected static $messages = [];
 
 	/**
+	 * Tickets view.
+	 *
 	 * @var Tribe__Tickets__Tickets_View
 	 */
 	protected $tickets_view;
@@ -175,15 +199,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Instance of this class for use as singleton
+	 *
+	 * @var Tribe__Tickets__RSVP
 	 */
 	private static $instance;
-
-	/**
-	 * Creates the instance of the class
-	 *
-	 * @static
-	 * @return void
-	 */
 
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
@@ -199,11 +218,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Class constructor
 	 */
 	public function __construct() {
-		$main = Tribe__Tickets__Main::instance();
+		$main               = Tribe__Tickets__Main::instance();
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
-		/* Set up parent vars */
-		$this->plugin_path = $this->pluginPath = $main->plugin_path;
-		$this->plugin_url  = $this->pluginUrl  = $main->plugin_url;
+		$this->plugin_path  = $main->plugin_path;
+		$this->plugin_url   = $main->plugin_url;
+		// Kept for backwards compatibility.
+		$this->pluginPath = $this->plugin_path; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$this->pluginUrl  = $this->plugin_url; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		parent::__construct();
 
@@ -246,8 +267,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			add_filter( 'tribe_tickets_rsvp_form_email', [ $this, 'rsvp_form_add_email' ] );
 		}
 
-		// Has to be run on before_delete_post to be sure the meta is still available (and we don't want it to run again after the post is deleted)
-		// See https://codex.wordpress.org/Plugin_API/Action_Reference/delete_post
+		// Has to be run on before_delete_post to be sure the meta is still available (and we don't want it to run again after the post is deleted).
+		// See https://codex.wordpress.org/Plugin_API/Action_Reference/delete_post.
 		add_action( 'before_delete_post', [ $this, 'update_stock_from_attendees_page' ] );
 
 		// Handle RSVP AJAX.
@@ -264,8 +285,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 5.19.1
 	 */
 	public function set_plugin_name() {
-		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, Squiz.PHP.DisallowMultipleAssignments.Found
-		$this->plugin_name = $this->pluginName = esc_html( tribe_get_rsvp_label_plural( 'provider_plugin_name' ) );
+
+		$this->plugin_name = esc_html( tribe_get_rsvp_label_plural( 'provider_plugin_name' ) );
+		// Kept for backwards compatibility.
+		$this->pluginName = $this->plugin_name; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
 	/**
@@ -530,15 +553,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			/**
 			 * These are the inputs we should be seeing:
 			 *
-			 * tribe_tickets[{$ticket_id}][ticket_id] (previously product_id[])
-			 * tribe_tickets[{$ticket_id}][quantity] (previously quantity_{$ticket_id})
-			 * tribe_tickets[{$ticket_id}][attendees][0][order_status] (previously attendee[order_status])
-			 * tribe_tickets[{$ticket_id}][attendees][0][full_name] (previously attendee[full_name])
-			 * tribe_tickets[{$ticket_id}][attendees][0][email] (previously attendee[email])
-			 * tribe_tickets[{$ticket_id}][attendees][0][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][0][{$field_slug}])
-			 * tribe_tickets[{$ticket_id}][attendees][1][full_name] (new for IAC)
-			 * tribe_tickets[{$ticket_id}][attendees][1][email] (new for IAC)
-			 * tribe_tickets[{$ticket_id}][attendees][1][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][1][{$field_slug}])
+			 * [
+			 *     tribe_tickets[{$ticket_id}][ticket_id] (previously product_id[])
+			 *     tribe_tickets[{$ticket_id}][quantity] (previously quantity_{$ticket_id})
+			 *     tribe_tickets[{$ticket_id}][attendees][0][order_status] (previously attendee[order_status])
+			 *     tribe_tickets[{$ticket_id}][attendees][0][full_name] (previously attendee[full_name])
+			 *     tribe_tickets[{$ticket_id}][attendees][0][email] (previously attendee[email])
+			 *     tribe_tickets[{$ticket_id}][attendees][0][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][0][{$field_slug}])
+			 *     tribe_tickets[{$ticket_id}][attendees][1][full_name] (new for IAC)
+			 *     tribe_tickets[{$ticket_id}][attendees][1][email] (new for IAC)
+			 *     tribe_tickets[{$ticket_id}][attendees][1][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][1][{$field_slug}])
+			 * ]
 			 */
 			$attendee_ids = $this->generate_tickets( $args['post_id'], false );
 
@@ -565,10 +590,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		} elseif ( 'opt-in' === $args['step'] ) {
 			/**
 			 * These are the inputs we should be seeing:
-			 *
-			 * opt_in
-			 * attendee_ids
-			 * opt_in_nonce
+			 * [
+			 *     opt_in
+			 *     attendee_ids
+			 *     opt_in_nonce
+			 * ]
 			 */
 			// @todo Handle opt-in setting for each attendee in order.
 			$optout = ! tribe_is_truthy( tribe_get_request_var( 'opt_in', true ) );
@@ -608,7 +634,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Hooks into the filter `tribe_tickets_rsvp_form_full_name` to add the user full name if user is logged in
 	 *
-	 * @param string $name
+	 * @param string $name The name to add.
 	 *
 	 * @return string
 	 */
@@ -627,8 +653,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7.1
 	 *
-	 * @param string $default_email
-	 *
 	 * @return string
 	 */
 	public function rsvp_form_add_email() {
@@ -644,7 +668,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public static function generate_order_id() {
-		return md5( time() . rand() );
+		return md5( time() . wp_rand() );
 	}
 
 	/**
@@ -655,7 +679,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * registers resources
+	 * Registers resources.
 	 */
 	public function register_resources() {
 		$main = Tribe__Tickets__Main::instance();
@@ -689,6 +713,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'event-tickets-rsvp',
 			'tribe_tickets_rsvp_strings',
 			[
+				/* translators: %1$s is the attendee number. */
 				'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'event-tickets' ),
 			]
 		);
@@ -697,7 +722,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Enqueue the plugin stylesheet(s).
 	 *
-	 * @author caseypicker
 	 * @since 3.9
 	 * @return void
 	 */
@@ -711,17 +735,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		wp_enqueue_style( 'event-tickets-rsvp' );
 		wp_enqueue_script( 'event-tickets-rsvp' );
 
-		// Check for override stylesheet
+		// Check for override stylesheet.
 		$user_stylesheet_url = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 
 		// If override stylesheet exists, then enqueue it.
 		if ( $user_stylesheet_url ) {
-			wp_enqueue_style( 'tribe-events-tickets-rsvp-override-style', $user_stylesheet_url );
+			wp_enqueue_style( 'tribe-events-tickets-rsvp-override-style', $user_stylesheet_url, [], Tribe__Tickets__Main::VERSION );
 		}
 	}
 
 	/**
-	 * Register our custom post type
+	 * Register our custom post type.
 	 */
 	public function register_types() {
 
@@ -789,6 +813,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.2.4
 	 * @since 5.8.2 Add the `$event_id` parameter
+	 *
+	 * @param int|null $event_id The event ID to set for the attendance totals.
+	 *
+	 * @return void
 	 */
 	public function setup_attendance_totals( $event_id = null ) {
 		$this->attendance_totals( $event_id )->integrate_with_attendee_screen();
@@ -798,7 +826,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Returns the RSVP attendance totals object.
 	 *
 	 * @since 4.2.4
-	 * @since 5.8.2 Add the `$event_id` paramter.
+	 * @since 5.8.2 Add the `$event_id` parameter.
 	 *
 	 * @param int|null $event_id The event ID to set for the attendance totals.
 	 *
@@ -806,7 +834,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function attendance_totals( $event_id = null ) {
 		if ( empty( $this->attendance_totals ) ) {
-			$this->attendance_totals = new Tribe__Tickets__RSVP__Attendance_Totals;
+			$this->attendance_totals = new Tribe__Tickets__RSVP__Attendance_Totals();
 		}
 
 		$this->attendance_totals->set_event_id( $event_id );
@@ -854,13 +882,25 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Detail is not set.
 			if ( ! isset( $attendee_data[ $required_detail ] ) ) {
 				/* translators: %s is the attendee field name. */
-				throw new Exception( sprintf( __( 'Attendee field "%s" is not set.', 'event-tickets' ), $required_detail ) );
+				throw new Exception(
+					sprintf(
+						/* translators: %s is the attendee field name. */
+						__( 'Attendee field "%s" is not set.', 'event-tickets' ),
+						$required_detail
+					)
+				);
 			}
 
 			// Detail is empty.
 			if ( empty( $attendee_data[ $required_detail ] ) ) {
 				/* translators: %s is the attendee field name. */
-				throw new Exception( sprintf( __( 'Attendee field "%s" is empty.', 'event-tickets' ), $required_detail ) );
+				throw new Exception(
+					sprintf(
+						/* translators: %s is the attendee field name. */
+						__( 'Attendee field "%s" is empty.', 'event-tickets' ),
+						$required_detail
+					)
+				);
 			}
 		}
 
@@ -878,7 +918,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$user_id           = isset( $attendee_data['user_id'] ) ? (int) $attendee_data['user_id'] : 0;
 		$order_id          = ! empty( $attendee_data['order_id'] ) ? $attendee_data['order_id'] : $this->generate_order_id();
 		$product_id        = $ticket->ID;
-		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
+		$order_attendee_id = $attendee_data['order_attendee_id'] ?? null;
 
 		if ( isset( $attendee_data['optout'] ) && '' !== $attendee_data['optout'] ) {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
@@ -1093,18 +1133,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 */
 	public function maybe_generate_tickets() {
-		$has_ticket_attendees = ! empty( $_POST['tribe_tickets'] );
+		$has_ticket_attendees = ! empty( tribe_get_request_var( 'tribe_tickets' ) );
+
+		if ( empty( tribe_get_request_var( 'tickets_process' ) ) ) {
+			return;
+		}
 
 		if (
-			empty( $_POST['tickets_process'] )
-			|| (
-				! $has_ticket_attendees
-				&& empty( $_POST['attendee'] )
-			)
-			|| (
-				! $has_ticket_attendees
-				&& empty( $_POST['product_id'] )
-			)
+			! $has_ticket_attendees
+			&& empty( tribe_get_request_var( 'attendee' ) )
+		) {
+			return;
+		}
+
+		if (
+			! $has_ticket_attendees
+			&& empty( tribe_get_request_var( 'product_id' ) )
 		) {
 			return;
 		}
@@ -1152,10 +1196,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$product_ids = [];
 
-		if ( isset( $_POST['tribe_tickets'] ) ) {
-			$product_ids = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
-		} elseif ( isset( $_POST['product_id'] ) ) {
-			$product_ids = (array) $_POST['product_id'];
+		if ( tribe_get_request_var( 'tribe_tickets' ) ) {
+			$product_ids = wp_list_pluck( tribe_get_request_var( 'tribe_tickets' ), 'ticket_id' );
+		} elseif ( tribe_get_request_var( 'product_id' ) ) {
+			$product_ids = (array) tribe_get_request_var( 'product_id' );
 		}
 
 		$product_ids = array_map( 'absint', $product_ids );
@@ -1229,7 +1273,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * @param string $attendee_order_status status if the user indicated they will attend
 			 */
 			$send_mail_stati = apply_filters(
-				'tribe_tickets_rsvp_send_mail_stati', $send_mail_stati, $order_id, $post_id, $attendee_order_status
+				'tribe_tickets_rsvp_send_mail_stati',
+				$send_mail_stati,
+				$order_id,
+				$post_id,
+				$attendee_order_status
 			);
 
 			// No point sending tickets if their current intention is not to attend.
@@ -1368,7 +1416,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
-		$subject = apply_filters( 'tribe_rsvp_email_subject',
+		$subject = apply_filters(
+			'tribe_rsvp_email_subject',
 			esc_html(
 				sprintf(
 					// Translators: %1$s: The plural ticket label, %2$s: The site name.
@@ -1392,7 +1441,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$content = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ), $event_id, $order_id );
 
-		$sent = wp_mail( $to, $subject, $content, $headers, $attachments );
+		$sent = wp_mail( $to, $subject, $content, $headers, $attachments ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
 
 		if ( $sent ) {
 			foreach ( $all_attendees as $attendee ) {
@@ -1525,15 +1574,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int     $event_id The event ID.
 		 * @param int     $order_id The order ID.
 		 */
-		$content = apply_filters( 'tribe_rsvp_non_attendance_email_content',
+		$content = apply_filters(
+			'tribe_rsvp_non_attendance_email_content',
 			tribe_tickets_get_template_part( 'tickets/email-non-attendance', null, $template_data, false ),
 			$event_id,
 			$order_id
 		);
 
-		$sent = wp_mail( $to, $subject, $content, $headers, $attachments );
-
-		return $sent;
+		return wp_mail( $to, $subject, $content, $headers, $attachments ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
 	}
 
 	/**
@@ -1556,14 +1604,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$save_type = 'create';
 
 			/* Create main product post */
-			$args = array(
+			$args = [
 				'post_status'  => 'publish',
 				'post_type'    => $this->ticket_object,
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => $ticket->menu_order ?? tribe_get_request_var( 'menu_order', -1 ),
-			);
+			];
 
 			$ticket->ID = wp_insert_post( $args );
 
@@ -1612,7 +1660,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$start_date .= ' ' . $raw_data['ticket_start_time'];
 			}
 
-			$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_date ) );
+			$ticket->start_date  = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_date ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 			$previous_start_date = get_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, true );
 
 			// Only update when we are modifying.
@@ -1632,7 +1680,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$end_date = strtotime( $end_date );
 
-			$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $end_date );
+			$ticket->end_date  = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $end_date ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 			$previous_end_date = get_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, true );
 
 			// Only update when we are modifying.
@@ -1733,11 +1781,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.10.2
 	 *
-	 * @param string $cost
-	 * @param int $post_id
-	 * @param boolean $unused_with_currency_symbol
+	 * @param string  $cost The cost.
+	 * @param int     $post_id The post ID.
+	 * @param boolean $unused_with_currency_symbol The unused with currency symbol.
 	 *
-	 * @return string $cost
+	 * @return string The cost.
 	 */
 	public function trigger_get_cost( $cost, $post_id, $unused_with_currency_symbol ) {
 		if (
@@ -1756,8 +1804,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 * @since 5.8.0 Added the $context parameter.
+	 *
+	 * @param int         $post_id The post ID.
+	 * @param string|null $context The context.
+	 *
+	 * @return array The tickets.
 	 */
-	public function get_tickets( $post_id, string $context = null ) {
+	public function get_tickets( $post_id, ?string $context = null ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 		if ( ! $ticket_ids ) {
 			return [];
@@ -1825,7 +1878,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $tickets as $ticket ) {
 			if ( ! $ticket->date_in_range() ) {
-				$expired_tickets++;
+				++$expired_tickets;
 			}
 		}
 
@@ -1861,26 +1914,50 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$rsvp_sent  = empty( $_GET['rsvp_sent'] ) ? false : true;
-		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : intval( $_GET['rsvp_error'] );
+		$rsvp_sent  = empty( tribe_get_request_var( 'rsvp_sent' ) ) ? false : true;
+		$rsvp_error = empty( tribe_get_request_var( 'rsvp_error' ) ) ? false : intval( tribe_get_request_var( 'rsvp_error' ) );
 
 		if ( $rsvp_sent ) {
-			$this->add_message( esc_html( sprintf( __( 'Your %1$s has been received! Check your email for your %1$s confirmation.', 'event-tickets' ), tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ) ), 'success' );
+			$this->add_message(
+				esc_html(
+					sprintf(
+						/* translators: %1$s is the RSVP label singular. */
+						__( 'Your %1$s has been received! Check your email for your %1$s confirmation.', 'event-tickets' ),
+						tribe_get_rsvp_label_singular( basename( __FILE__ ) )
+					)
+				),
+				'success'
+			);
 		}
 
 		if ( $rsvp_error ) {
 			switch ( $rsvp_error ) {
 				case 2:
-					$this->add_message( esc_html( sprintf(
-						__( 'You can\'t %1$s more than the total remaining %2$s.', 'event-tickets' ),
-						tribe_get_rsvp_label_singular( 'verb' ),
-						tribe_get_ticket_label_plural_lowercase( 'rsvp_error_attempt_too_many' )
-					) ), 'error' );
+					$this->add_message(
+						esc_html(
+							sprintf(
+								/* translators: %1$s is the RSVP label singular. %2$s is the RSVP label plural. */
+								__( 'You can\'t %1$s more than the total remaining %2$s.', 'event-tickets' ),
+								tribe_get_rsvp_label_singular( 'verb' ),
+								tribe_get_ticket_label_plural_lowercase( 'rsvp_error_attempt_too_many' )
+							)
+						),
+						'error'
+					);
 					break;
 
 				case 1:
 				default:
-					$this->add_message( esc_html( sprintf( __( 'In order to %s, you must enter your name and a valid email address.', 'event-tickets' ), tribe_get_rsvp_label_singular( 'verb' ) ) ), 'error' );
+					$this->add_message(
+						esc_html(
+							sprintf(
+								/* translators: %s is the RSVP label singular. */
+								__( 'In order to %s, you must enter your name and a valid email address.', 'event-tickets' ),
+								tribe_get_rsvp_label_singular( 'verb' )
+							)
+						),
+						'error'
+					);
 					break;
 			}
 		}
@@ -1944,8 +2021,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->report_link      = '';
 		$return->show_description = $return->show_description();
 
-		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$start_date = get_post_meta( $ticket_id, '_ticket_start_date', true );
+		$end_date   = get_post_meta( $ticket_id, '_ticket_end_date', true );
 
 		if ( ! empty( $start_date ) ) {
 			$start_date_unix    = strtotime( $start_date );
@@ -1989,7 +2066,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * tests to see if it functions as a ticket: if so, the corresponding event
 	 * object is returned. If not, boolean false is returned.
 	 *
-	 * @param WP_Post|int $ticket_product
+	 * @param WP_Post|int $ticket_product The ticket product.
 	 *
 	 * @return bool|WP_Post
 	 */
@@ -2023,8 +2100,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Get attendees by id and associated post type
 	 * or default to using $post_id
 	 *
-	 * @param int  $post_id   The post ID.
-	 * @param null $post_type The post type.
+	 * @param int         $post_id   The post ID.
+	 * @param string|null $post_type The post type.
 	 *
 	 * @return array|mixed
 	 */
@@ -2042,22 +2119,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		switch ( $post_type ) {
 			case $this->ticket_object:
 				return $this->get_attendees_by_product_id( $post_id );
-
-				break;
 			case self::ATTENDEE_OBJECT:
 				return $this->get_attendees_by_attendee_id( $post_id );
-
-				break;
 			case 'rsvp_order_hash':
 				return $this->get_attendees_by_order_id( $post_id );
-
-				break;
 			default:
 				return $this->get_attendees_by_post_id( $post_id );
-
-				break;
 		}
-
 	}
 
 	/**
@@ -2098,6 +2166,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.11.3
 	 *
 	 * @param int $post_id Post or Event ID.
+	 * @param int $user_id The user ID.
 	 *
 	 * @return int Total count of attendees marked as going.
 	 */
@@ -2114,6 +2183,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.11.3
 	 *
 	 * @param int $post_id Post or Event ID.
+	 * @param int $user_id The user ID.
 	 *
 	 * @return int Total count of attendees marked as going.
 	 */
@@ -2232,13 +2302,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Retrieve only order related information
 	 * Important: On RSVP the order is the Attendee Object
 	 *
+	 *  [
 	 *     order_id
 	 *     purchaser_name
 	 *     purchaser_email
 	 *     provider
 	 *     provider_slug
+	 * ]
 	 *
 	 * @param int $order_id The order ID.
+	 *
 	 * @return array
 	 */
 	public function get_order_data( $order_id ) {
@@ -2301,27 +2374,42 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function checkin( $attendee_id, $qr = null, $event_id = null, $details = [] ) {
-		$qr = (bool) $qr;
+		$qr_bool = (bool) $qr;
 
-		if ( $qr ) {
+		if ( $qr_bool ) {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
 		$event_id = $event_id ?: get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
-		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
+		if ( ! $qr_bool && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
+			return false;
+		}
+
+		// Check if the attendee is authorized for check-in based on order status.
+		$attendee = $this->get_attendees_by_id( $attendee_id );
+		$attendee = reset( $attendee );
+		if ( ! is_array( $attendee ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status            = tribe( 'tickets.status' );
+		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $this );
+
+		if ( ! in_array( $attendee['order_status'], $complete_statuses, true ) ) {
 			return false;
 		}
 
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
-		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
+		if ( $qr_bool ) {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
 		$checkin_details = [
 			'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
-			'source'    => ! empty( $qr ) ? 'app' : 'site',
+			'source'    => $qr_bool ? 'app' : 'site',
 			'author'    => get_current_user_id(),
 			'device_id' => $details['device_id'] ?? null,
 		];
@@ -2331,9 +2419,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.8
 		 *
-		 * @param array $checkin_details
-		 * @param int   $attendee_id
-		 * @param mixed $qr
+		 * @param array $checkin_details The checkin details.
+		 * @param int   $attendee_id The attendee ID.
+		 * @param mixed $qr The QR code.
 		 */
 		$checkin_details = apply_filters( 'rsvp_checkin_details', $checkin_details, $attendee_id, $qr );
 
@@ -2390,8 +2478,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Links to the sales report for this product.
 	 * As of 4.6 we reversed the params and deprecated $event_id as it was never used
 	 *
-	 * @param deprecated $event_id
-	 * @param int $unused_ticket_id
+	 * @param int        $unused_ticket_id The unused ticket ID.
+	 * @param deprecated $event_id_deprecated The deprecated event ID.
 	 *
 	 * @return string
 	 */
@@ -2449,13 +2537,27 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 	}
 
+	/**
+	 * Get the messages.
+	 *
+	 * @return array The messages.
+	 */
 	public function get_messages() {
 		return self::$messages;
 	}
 
+	/**
+	 * Add a message.
+	 *
+	 * @param string $message The message to add.
+	 * @param string $type The type of message.
+	 */
 	public function add_message( $message, $type = 'update' ) {
-		$message = apply_filters( 'tribe_rsvp_submission_message', $message, $type );
-		self::$messages[] = (object) [ 'message' => $message, 'type' => $type ];
+		$message          = apply_filters( 'tribe_rsvp_submission_message', $message, $type );
+		self::$messages[] = (object) [
+			'message' => $message,
+			'type'    => $type,
+		];
 	}
 
 	/**
@@ -2521,7 +2623,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'</a>'
 		);
 
-		$messages[ self::ATTENDEE_OBJECT ] = $messages['post'];
+		$messages[ self::ATTENDEE_OBJECT ]    = $messages['post'];
 		$messages[ self::ATTENDEE_OBJECT ][1] = sprintf(
 			// Translators: %1$s: The return link.
 			esc_html__( 'Post updated. %1$s', 'event-tickets' ),
@@ -2544,7 +2646,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7.4
 	 *
-	 * @param int $order_id The order ID.
+	 * @param int    $order_id The order ID.
 	 * @param string $attendee_order_status The order status.
 	 *
 	 * @return array|bool array of stock size values, false if no difference.
@@ -2573,6 +2675,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Get updated value for stock or sales, based on order status
+	 *
 	 * @since 4.7.4
 	 *
 	 * @param int    $order_id The order ID.
@@ -2638,7 +2741,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$sales_diff = max( $sales_diff, 0 );
 		$stock_diff = max( $stock_diff, 0 );
 
-		// these should NEVER be updated separately - if one goes up the other must go down and vice versa
+		// These should NEVER be updated separately - if one goes up the other must go down and vice versa.
 		return update_post_meta( $ticket_id, 'total_sales', $sales_diff ) && update_post_meta( $ticket_id, '_stock', $stock_diff );
 	}
 
@@ -2647,7 +2750,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @deprecated 4.7.4
 	 *
-	 * @return void
+	 * @param int    $order_id The order ID.
+	 * @param string $attendee_order_status The order status.
+	 * @param int    $ticket_id The ticket ID.
+	 *
+	 * @return bool
 	 */
 	public function update_sales_by_order_status( $order_id, $attendee_order_status, $ticket_id ) {
 		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__RSVP::update_sales_and_stock_by_order_status' );
@@ -2655,7 +2762,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * @param Tribe__Tickets__Tickets_View $tickets_view
+	 * Set the tickets view.
+	 *
+	 * @param Tribe__Tickets__Tickets_View $tickets_view The tickets view.
 	 *
 	 * @internal Used for dependency injection.
 	 */
@@ -2666,8 +2775,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Filters the array of stati that will mark an RSVP attendee as eligible for check-in.
 	 *
-	 * @param array $stati An array of stati that should mark an RSVP attendee as
-	 *                     available for check-in.
+	 * @param array $stati An array of stati that should mark an RSVP attendee as available for check-in.
 	 *
 	 * @return array The original array plus the 'yes' status.
 	 */
@@ -2689,8 +2797,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
-	 * @param array   $attendee_details An array containing the details for the attendees
-	 *                                  that should be generated.
+	 * @param array   $attendee_details An array containing the details for the attendees that should be generated.
 	 * @param boolean $redirect         Whether to redirect on error.
 	 *
 	 * @return array|WP_Error `true` if the attendees were successfully generated, `false` otherwise. If $redirect is set to false, upon success this method will return an array of attendee IDs generated.
@@ -2722,13 +2829,21 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $required_details as $required_detail ) {
 			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
-				$message = sprintf( __( "Missing required RSVP field: %s", 'event-tickets' ), $required_detail );
+				$message = sprintf(
+					/* translators: %s is the attendee field name. */
+					__( 'Missing required RSVP field: %s', 'event-tickets' ),
+					$required_detail
+				);
 				return new WP_Error( 'rsvp-missing-required-data', $message );
 			}
 
 			// Some details should not be empty.
 			if ( 'optout' !== $required_detail && empty( $attendee_details[ $required_detail ] ) ) {
-				$message = sprintf( __( "Missing required RSVP field: %s", 'event-tickets' ), $required_detail );
+				$message = sprintf(
+					/* translators: %s is the attendee field name. */
+					__( 'Missing required RSVP field: %s', 'event-tickets' ),
+					$required_detail
+				);
 				return new WP_Error( 'rsvp-missing-required-data', $message );
 			}
 		}
@@ -2749,16 +2864,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_optout = (int) $attendee_optout;
 
 		// Get the RSVP status `decrease_stock_by` value.
-		$status_stock_size     = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
+		$status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
 
-		// to avoid tickets from not being created on a status stock size of 0
+		// To avoid tickets from not being created on a status stock size of 0,
 		// let's take the status stock size into account and create a number of tickets
 		// at least equal to the number of tickets the user requested.
 		$ticket_qty = $status_stock_size < 1 ? $ticket_qty : $status_stock_size * $ticket_qty;
 
 		$qty = max( $ticket_qty, 0 );
 
-		// Throw an error if Qty is bigger then Remaining
+		// Throw an error if Qty is bigger then Remaining.
 		if ( $ticket_type->managing_stock() && $ticket_type->inventory() < $qty ) {
 			if ( $redirect ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
@@ -2772,7 +2887,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee ticket for an event is generated.
 		 *
-		 * @param int $post_id ID of event
+		 * @param int                           $post_id ID of event.
 		 * @param Tribe__Tickets__Ticket_Object $ticket_type Ticket Type object for the product
 		 * @param array $_POST Parameters coming from the RSVP Form
 		 */
@@ -2830,14 +2945,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$first_attendee = [];
 
-		if ( ! empty( $_POST['tribe_tickets'] ) ) {
-			$first_ticket = current( $_POST['tribe_tickets'] );
+		if ( ! empty( tribe_get_request_var( 'tribe_tickets' ) ) ) {
+			$first_ticket = current( tribe_get_request_var( 'tribe_tickets' ) );
 
 			if ( ! empty( $first_ticket['attendees'] ) ) {
 				$first_attendee = current( $first_ticket['attendees'] );
 			}
-		} elseif ( isset( $_POST['attendee'] ) ) {
-			$first_attendee = $_POST['attendee'];
+		} elseif ( tribe_get_request_var( 'attendee' ) ) {
+			$first_attendee = tribe_get_request_var( 'attendee' );
 		}
 
 		$attendee_email        = empty( $first_attendee['email'] ) ? null : htmlentities( sanitize_email( html_entity_decode( $first_attendee['email'] ) ) );
@@ -2862,15 +2977,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$attendee_details = [
+		return [
 			'full_name'    => $attendee_full_name,
 			'email'        => $attendee_email,
 			'order_status' => $attendee_order_status,
 			'optout'       => $attendee_optout,
 			'order_id'     => $order_id,
 		];
-
-		return $attendee_details;
 	}
 
 	/**
@@ -2885,10 +2998,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function parse_ticket_quantity( $ticket_id ) {
 		$quantity = 0;
 
-		if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
-			$quantity = absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
-		} elseif ( isset( $_POST["quantity_{$ticket_id}"] ) ) {
-			$quantity = absint( $_POST["quantity_{$ticket_id}"] );
+		if ( tribe_get_request_var( "tribe_tickets[{$ticket_id}][quantity]" ) ) {
+			$quantity = absint( tribe_get_request_var( "tribe_tickets[{$ticket_id}][quantity]" ) );
+		} elseif ( tribe_get_request_var( "quantity_{$ticket_id}" ) ) {
+			$quantity = absint( tribe_get_request_var( "quantity_{$ticket_id}" ) );
 		}
 
 		return $quantity;
@@ -2896,6 +3009,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Ensure we update the stock when deleting attendees from the admin side
+	 *
 	 * @since 4.7.4
 	 *
 	 * @param int|WP_Post $attendee_id The attendee ID.
@@ -2905,12 +3019,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function update_stock_from_attendees_page( $attendee_id ) {
 		$attendee = get_post( $attendee_id );
 
-		// Can't find the attendee post
+		// Can't find the attendee post.
 		if ( empty( $attendee ) ) {
 			return false;
 		}
 
-		// It's not an attendee post
+		// It's not an attendee post.
 		if ( self::ATTENDEE_OBJECT !== $attendee->post_type ) {
 			return false;
 		}
@@ -2926,8 +3040,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Return the "Not Going" RSVPs number
-	 * on an event basis.
+	 * Return the "Not Going" RSVPs number on an event basis.
 	 *
 	 * @since 4.8.2
 	 *
@@ -2945,7 +3058,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 5.1.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
-	 * @param int $quantity  The quanitity to increase the ticket sales by.
+	 * @param int $quantity  The quantity to increase the ticket sales by.
 	 *
 	 * @return int The new sales amount.
 	 */
@@ -2972,7 +3085,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 5.1.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
-	 * @param int $quantity  The quanitity to decrease the ticket sales by.
+	 * @param int $quantity  The quantity to decrease the ticket sales by.
 	 *
 	 * @return int The new sales amount.
 	 */
@@ -3030,3 +3143,5 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// We do not want to add RSVPs to the Admin Tickets page.
 	}
 }
+
+// phpcs:enable StellarWP.Classes.ValidClassName.NotSnakeCase,PEAR.NamingConventions.ValidClassName.Invalid

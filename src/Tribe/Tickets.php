@@ -1,4 +1,12 @@
 <?php
+/**
+ * Class Tribe__Tickets__Tickets
+ *
+ * @since 4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
+ *                 we changed this from an Abstract to a normal parent class.
+ */
+
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase, PEAR.NamingConventions.ValidClassName.Invalid
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
@@ -404,7 +412,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Repository__Interface
 		 */
-		public function set_tickets_query_args( $post_id = null, string $context = null ) {
+		public function set_tickets_query_args( $post_id = null, ?string $context = null ) {
 			$repository = tribe_tickets( $this->orm_provider );
 			$repository->set_request_context( $context );
 			$repository->by( 'event', $post_id );
@@ -442,7 +450,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array|false
 		 */
-		public function get_tickets_ids( $post = 0, string $context = null ) {
+		public function get_tickets_ids( $post = 0, ?string $context = null ) {
 			$post_id = 0;
 			if ( is_numeric( $post ) ) {
 				$post_id = (int) $post;
@@ -686,8 +694,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Deletes a ticket
 		 *
-		 * @abstract
-		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
@@ -710,8 +716,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Saves a ticket.
-		 *
-		 * @abstract
 		 *
 		 * @param int                           $post_id  Post ID.
 		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket object.
@@ -795,7 +799,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		public function get_tickets( $post_id, string $context = null ) {
+		public function get_tickets( $post_id, ?string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -1048,7 +1052,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 3.1.2
 		 * @since 5.8.2 Add the `tec_tickets_attendee_checkin` filter to override the checkin process. Update the method
-		 *        signature to include the `$qr` and `$eveent_id` parameters.
+		 *        signature to include the `$qr` and `$event_id` parameters.
 		 * @since - Add the optional `$details` parameter to be able to set the checkin time and device_id.
 		 *
 		 * @param int                 $attendee_id The ID of the attendee that's being checked in.
@@ -1072,6 +1076,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$checkin = apply_filters( 'tec_tickets_attendee_checkin', null, (int) $attendee_id, (int) $event_id, (bool) $qr );
 			if ( $checkin !== null ) {
 				return (bool) $checkin;
+			}
+
+			// Check if the attendee is authorized for check-in based on order status.
+			$attendee = $this->get_attendees_by_id( $attendee_id );
+			$attendee = reset( $attendee );
+			if ( ! is_array( $attendee ) ) {
+				return false;
+			}
+
+			/** @var Tribe__Tickets__Status__Manager $status */
+			$status = tribe( 'tickets.status' );
+			$complete_statuses = (array) $status->get_completed_status_by_provider_name( $this );
+
+			if ( ! in_array( $attendee['order_status'], $complete_statuses, true ) ) {
+				return false;
 			}
 
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
@@ -1106,7 +1125,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param int                 $attendee_id The ID of the attendee that's being checked-in.
 		 * @param mixed               $qr          True if the check-in is from a QR code.
-		 * @param array<string|mixed> $details     Check-out details including timestamp and device_id information.
+		 * @param array<string|mixed> $details     Check-in details including timestamp and device_id information.
 		 */
 		public function save_checkin_details( $attendee_id, $qr, $details = [] ) {
 			$checkin_details = [
@@ -1224,7 +1243,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Indicates if the module/ticket provider supports a concept of global stock.
 		 *
 		 * For backward compatibility reasons this method has not been declared abstract but
-		 * implementaions are still expected to override it.
+		 * implementations are still expected to override it.
 		 *
 		 * @return bool
 		 */
@@ -1248,10 +1267,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function __construct() {
 			// As this is an abstract class, we want to know which child instantiated it
-			$this->class_name = $this->className = get_class( $this );
-
-			$this->parent_path = $this->parentPath = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
-			$this->parent_url  = $this->parentUrl  = trailingslashit( plugins_url( '', $this->parent_path ) );
+			$this->class_name  = get_class( $this );
+			$this->parent_path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
+			$this->parent_url  = trailingslashit( plugins_url( '', $this->parent_path ) );
+			// Kept for backwards compatibility.
+			$this->className   = $this->class_name; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$this->parentPath  = $this->parent_path; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$this->parentUrl   = $this->parent_url; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 			// Register all Tribe__Tickets__Tickets api consumers
 			self::$active_modules[ $this->class_name ] = $this->plugin_name;
@@ -1676,7 +1698,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
 				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
 
-				// Set the ticket type from the ticket oject, if possible.
+				// Set the ticket type from the ticket object, if possible.
 				$attendee_data['ticket_type'] = 'default';
 				if ( isset( $attendee_data['event_id'], $attendee_data['product_id'] )
 				     && $ticket = $provider->get_ticket( $attendee_data['event_id'], $attendee_data['product_id'] ) ) {
@@ -1838,7 +1860,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		public static function get_all_event_tickets( $post_id, string $context = null ) {
+		public static function get_all_event_tickets( $post_id, ?string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -3261,7 +3283,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $meta_values;
 			}
 
-			$meta_field_objects = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $product_id );
+			$meta_field_objects = tribe( 'tickets-plus.meta' )->get_meta_fields_by_ticket( $product_id );
 
 			foreach ( $meta_field_objects as $field ) {
 				$value = null;
@@ -3665,13 +3687,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Provides a URL that can be used to direct users to the login form.
 		 *
-		 * @param int $post_id - the ID of the post to redirect to
+		 * @param int $post_id The ID of the post to redirect to.
 		 *
 		 * @return string
 		 */
 		public static function get_login_url( $post_id = null ) {
 			if ( is_null( $post_id ) ) {
-				$post_id   = get_the_ID();
+				$post_id = get_the_ID();
 			}
 
 			$login_url = get_site_url( null, 'wp-login.php' );
@@ -3694,40 +3716,40 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.7
 		 *
-		 * @param WP_Post|int $ticket
-		 * @param array       $raw_data
-		 * @param string      $save_type
+		 * @param WP_Post|int $ticket The ticket.
+		 * @param array       $data The raw data.
+		 * @param string      $save_type The save type.
 		 */
 		public function update_capacity( $ticket, $data, $save_type ) {
 			if ( empty( $data ) ) {
 				return;
 			}
 
-			// set the default capacity to that of the event, if set, or to unlimited
+			// Set the default capacity to that of the event, if set, or to unlimited.
 			$default_capacity = (int) Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
 
-			// Fetch capacity field, if we don't have it use default (defined above)
+			// Fetch capacity field, if we don't have it use default (defined above).
 			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
 
-			// If empty we need to modify to the default
+			// If empty we need to modify to the default.
 			if ( '' === $data['capacity'] ) {
 				$data['capacity'] = $default_capacity;
 			}
 
-			// The only available value lower than zero is -1 which is unlimited
+			// The only available value lower than zero is -1 which is unlimited.
 			if ( 0 > $data['capacity'] ) {
 				$data['capacity'] = -1;
 			}
 
-			// Fetch the stock if defined, otherwise use Capacity field
+			// Fetch the stock if defined, otherwise use Capacity field.
 			$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
 
-			// If empty we need to modify to what every capacity was
+			// If empty we need to modify to what every capacity was.
 			if ( '' === $data['stock'] ) {
 				$data['stock'] = $data['capacity'];
 			}
 
-			// The only available value lower than zero is -1 which is unlimited
+			// The only available value lower than zero is -1 which is unlimited.
 			if ( 0 > $data['stock'] ) {
 				$data['stock'] = -1;
 			}
@@ -3745,7 +3767,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
 				update_post_meta( $ticket->ID, '_stock', $data['stock'] );
 			} else {
-				// unlimited stock
+				// Unlimited stock.
 				delete_post_meta( $ticket->ID, '_stock_status' );
 				update_post_meta( $ticket->ID, '_manage_stock', 'no' );
 				delete_post_meta( $ticket->ID, '_stock' );
@@ -3839,8 +3861,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 */
 				$ticket_form_hook = apply_filters( 'tribe_tickets_rsvp_tickets_form_hook', $ticket_form_hook, $this );
 			} else {
-				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-commerce-form-location',
-					'tribe_events_single_event_after_the_meta' );
+				$ticket_form_hook = Tribe__Settings_Manager::get_option(
+					'ticket-commerce-form-location',
+					'tribe_events_single_event_after_the_meta'
+				);
 
 				/**
 				 * Filters the position of the commerce-provided tickets form.
@@ -4649,7 +4673,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
-		 * Set up this way to amke it easier to add messages as needed.
+		 * Set up this way to make it easier to add messages as needed.
 		 *
 		 * @since 4.11.0
 		 *

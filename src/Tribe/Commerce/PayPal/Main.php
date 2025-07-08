@@ -2052,7 +2052,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param array $statuses An array of statuses that should mark an ticket attendee as
 	 *                        available for check-in.
 	 *
-	 * @return array The original array plus the 'yes' status.
+	 * @return array The original array plus the 'completed' status.
 	 */
 	public function filter_event_tickets_attendees_tpp_checkin_stati( array $statuses = array() ) {
 		$statuses[] = 'completed';
