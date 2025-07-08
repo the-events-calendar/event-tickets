@@ -15,7 +15,7 @@
  *
  * @var Tribe__Tickets__Editor__Template $this
  * @var WP_Post|int                      $post_id       The post object or ID.
- * @var boolean                          $has_rsvps     True if there are RSVPs.
+ * @var boolean                          $rsvp     True if there are RSVPs.
  * @var array                            $active_rsvps  An array containing the active RSVPs.
  * @var string                           $block_html_id The unique HTML id for the block.
  */
@@ -26,7 +26,7 @@ tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
 
 // Bail if there are no active RSVP.
-if ( empty( $tickets ) ) {
+if ( empty( $rsvp ) ) {
 	return;
 }
 
@@ -36,14 +36,12 @@ if ( empty( $tickets ) ) {
 	id="<?php echo esc_attr( $block_html_id ); ?>"
 	class="tribe-common event-tickets"
 >
-	<?php foreach ( $tickets as $rsvp ) : ?>
-		<div
-			class="tribe-tickets__rsvp-wrapper"
-			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
-		>
-			<?php $this->template( 'v2/components/loader/loader' ); ?>
-			<?php $this->template( 'v2/commerce/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
+	<div
+		class="tribe-tickets__rsvp-wrapper"
+		data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+	>
+		<?php $this->template( 'v2/components/loader/loader' ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
 
-		</div>
-	<?php endforeach; ?>
+	</div>
 </div>
