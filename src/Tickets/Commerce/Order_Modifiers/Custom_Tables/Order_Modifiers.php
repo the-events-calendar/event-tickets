@@ -100,7 +100,7 @@ class Order_Modifiers extends Table {
 				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				`start_time` TIMESTAMP NULL DEFAULT NULL,
 				`end_time` TIMESTAMP NULL DEFAULT NULL,
-				`updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+				`updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";

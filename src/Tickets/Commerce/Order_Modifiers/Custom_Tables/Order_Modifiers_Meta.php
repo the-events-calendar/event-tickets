@@ -96,7 +96,7 @@ class Order_Modifiers_Meta extends Table {
 				`meta_value` TEXT NOT NULL,
 				`priority` INT NOT NULL DEFAULT 0,
 				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				`updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+				`updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
