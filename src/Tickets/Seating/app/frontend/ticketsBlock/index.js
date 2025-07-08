@@ -14,7 +14,7 @@ import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
 import { formatWithCurrency } from '../../currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
-import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session'; // eslint-disable-line
+import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session'; // eslint-disable-line import/no-unresolved
 import './filters';
 
 const {
@@ -453,7 +453,7 @@ export async function bootstrapIframe( dom ) {
  *
  * @since TBD
  *
- * @return {module:url.URL} The URL for the reservation cancel request.
+ * @return {URL} The URL for the reservation cancel request.
  */
 export function getReservationCancelRequest() {
 	const requestUrl = new URL( ajaxUrl );
