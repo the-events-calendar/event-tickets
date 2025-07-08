@@ -12,6 +12,8 @@ putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 tribe_register_provider( Commerce_Provider::class );
 
+define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+
 // Let's make sure to set rewrite rules.
 global $wp_rewrite;
 $wp_rewrite->permalink_structure = '/%postname%/';
