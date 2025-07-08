@@ -47,8 +47,8 @@ class Controller extends Controller_Contract {
 	public function do_register(): void {
 		$this->container->singleton( Cost::class );
 		$this->container->singleton( Cost_Template::class );
-		
-		$this->cache = $this->container->make( Cost::class );
+
+		$this->cache          = $this->container->make( Cost::class );
 		$this->template_cache = $this->container->make( Cost_Template::class );
 
 		if ( $this->is_enabled() ) {
@@ -71,7 +71,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function add_hooks() {
-		// Filter to pre-empt cost calculation with cached value.
+		// Filter to preempt cost calculation with cached value.
 		add_filter( 'tec_events_pre_get_cost', [ $this, 'filter_pre_get_cost' ], 10, 3 );
 
 		// Filter to cache the calculated cost.
@@ -439,10 +439,10 @@ class Controller extends Controller_Contract {
 	 */
 	public function clear_cache_for_order( $order ) {
 		$order_id = is_object( $order ) ? $order->ID : $order;
-		
+
 		// Get event IDs from order items.
 		$event_ids = $this->get_event_ids_from_tc_order( $order_id );
-		
+
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
 			$this->template_cache->clear( $event_id );
@@ -458,7 +458,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function clear_cache_for_woo_order( $order_id ) {
 		$event_ids = $this->get_event_ids_from_woo_order( $order_id );
-		
+
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
 			$this->template_cache->clear( $event_id );
@@ -474,7 +474,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function clear_cache_for_edd_order( $payment_id ) {
 		$event_ids = $this->get_event_ids_from_edd_order( $payment_id );
-		
+
 		foreach ( $event_ids as $event_id ) {
 			$this->cache->clear( $event_id );
 			$this->template_cache->clear( $event_id );
@@ -580,10 +580,10 @@ class Controller extends Controller_Contract {
 	 */
 	private function get_event_ids_from_tc_order( $order_id ) {
 		$event_ids = [];
-		
+
 		// Get order items.
 		$items = get_post_meta( $order_id, '_tec_tickets_commerce_order_items', true );
-		
+
 		if ( ! empty( $items ) && is_array( $items ) ) {
 			foreach ( $items as $item ) {
 				if ( ! empty( $item['event_id'] ) ) {
@@ -591,7 +591,7 @@ class Controller extends Controller_Contract {
 				}
 			}
 		}
-		
+
 		return array_unique( array_filter( $event_ids ) );
 	}
 
@@ -606,25 +606,25 @@ class Controller extends Controller_Contract {
 	 */
 	private function get_event_ids_from_woo_order( $order_id ) {
 		$event_ids = [];
-		
+
 		if ( ! function_exists( 'wc_get_order' ) ) {
 			return $event_ids;
 		}
-		
+
 		$order = wc_get_order( $order_id );
 		if ( ! $order ) {
 			return $event_ids;
 		}
-		
+
 		foreach ( $order->get_items() as $item ) {
 			$product_id = $item->get_product_id();
 			$event_id   = get_post_meta( $product_id, '_tribe_wooticket_for_event', true );
-			
+
 			if ( $event_id ) {
 				$event_ids[] = $event_id;
 			}
 		}
-		
+
 		return array_unique( array_filter( $event_ids ) );
 	}
 
@@ -639,27 +639,27 @@ class Controller extends Controller_Contract {
 	 */
 	private function get_event_ids_from_edd_order( $payment_id ) {
 		$event_ids = [];
-		
+
 		if ( ! function_exists( 'edd_get_payment' ) ) {
 			return $event_ids;
 		}
-		
+
 		$payment = edd_get_payment( $payment_id );
 		if ( ! $payment ) {
 			return $event_ids;
 		}
-		
+
 		$downloads = $payment->downloads;
 		if ( ! empty( $downloads ) ) {
 			foreach ( $downloads as $download ) {
 				$event_id = get_post_meta( $download['id'], '_tribe_eddticket_for_event', true );
-				
+
 				if ( $event_id ) {
 					$event_ids[] = $event_id;
 				}
 			}
 		}
-		
+
 		return array_unique( array_filter( $event_ids ) );
 	}
 

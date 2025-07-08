@@ -43,7 +43,7 @@ class Cost_Template {
 		}
 
 		$meta_key = self::META_KEY_PREFIX . md5( $hook_name );
-		
+
 		$meta_exists = metadata_exists( 'post', $event_id, $meta_key );
 		if ( ! $meta_exists ) {
 			return false;

@@ -54,10 +54,10 @@ class Cost {
 		}
 
 		$meta_key = $with_currency_symbol ? self::META_KEY_COST_WITH_SYMBOL : self::META_KEY_COST;
-		
+
 		// Check if the meta exists (even if empty string for free events).
 		$meta_exists = metadata_exists( 'post', $event_id, $meta_key );
-		
+
 		if ( ! $meta_exists ) {
 			return false;
 		}
@@ -119,7 +119,7 @@ class Cost {
 					function ( $repository ) {
 						$repository->where( 'meta_exists', self::META_KEY_COST_WITH_SYMBOL );
 					},
-				] 
+				]
 			)
 			->fields( 'ids' )
 			->per_page( -1 )
