@@ -64,6 +64,7 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Tic
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> => {
+	// todo: Handle the potential for multiple pages of results.
 	const response = await fetchTickets( { include_post: [ postId ] } );
 	return response.tickets;
 };
