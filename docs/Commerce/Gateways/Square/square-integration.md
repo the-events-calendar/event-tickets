@@ -37,7 +37,8 @@ WhoDat (`https://whodat.theeventscalendar.com/`) is The Events Calendar's hosted
 #### Customer Onboarding Flow
 
 ```mermaid
-WordPress Site → WhoDat → Square OAuth → WhoDat → WordPress Site
+flowchart LR
+    site[WordPress Site] --> WhoDat --> square[Square OAuth] --> WhoDat --> site2[WordPress Site]
 ```
 
 1. WhoDat constructs Square OAuth URL with proper scopes
@@ -49,7 +50,8 @@ WordPress Site → WhoDat → Square OAuth → WhoDat → WordPress Site
 #### Webhook Forwarding Flow
 
 ```mermaid
-Square → WhoDat → Customer WordPress Site
+flowchart LR
+    Square --> WhoDat --> site[Customer WordPress Site]
 ```
 
 1. Square sends webhooks to WhoDat's stable endpoint
@@ -218,7 +220,8 @@ Square changes only flow to WordPress for:
 2. **POS Sale Flow**
 
     ```mermaid
-    Square POS Sale → Webhook → WordPress Order → Inventory Adjustment
+        flowchart LR
+        pos[Square POS Sale] → Webhook → order[WordPress Order] → inventory[Inventory Adjustment]
     ```
 
    - Customer purchases ticket via Square POS terminal
