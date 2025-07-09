@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce as TicketsCommerce;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Admin\Pages;
 
 class PageTest extends \Codeception\TestCase\WPTestCase {
 	use SnapshotAssertions;
@@ -151,6 +152,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 
 	// test
 	public function test_is_on_page() {
+		tribe_singleton( 'admin.pages', new Pages() );
 		// Not on page.
 		$this->assertFalse( $this->page->is_on_page(), 'Should return false when not on page.' );
 
