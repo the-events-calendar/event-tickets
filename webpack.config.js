@@ -106,6 +106,18 @@ customEntryPoints['wizard/wizard'] = exposeEntry('tec.tickets.wizard', __dirname
  */
 doNotPrefixSVGIdsClasses( defaultConfig );
 
+defaultConfig.externals = [
+	// TEC modern
+	( { context, request }, callback ) => {
+		if ( /^@tec\//.test( request ) ) {
+			const path = request.replace( /\//g, '.' ).replace( '@tec', 'tec' ).replace( /-/g, '_' );
+			return callback( null, `var ${ path }` );
+		}
+
+		return callback();
+	},
+];
+
 /**
  * Finally the customizations are merged with the default WebPack configuration.
  */

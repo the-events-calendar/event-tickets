@@ -1,5 +1,20 @@
 # Changelog
 
+### [5.24.2] 2025-06-18
+
+* Version - Event Tickets 5.24.2 is only compatible with Event Tickets Plus 6.6.1 or higher.
+* Fix - Ensure wizard does not install The Events Calendar unless requested. [ET-2524]
+* Fix - Correct an issue where seating timer was getting interrupted during checkout. [ET-2519]
+* Fix - Ensure Tickets can be added to Posts using Block Editor. [ET-2516]
+* Fix - Correctly formats the query for cleaning up stale webhook entries properly. [ET-2206]
+* Language - 1 new strings added, 4 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.24.1.1] 2025-06-12
+
+* Version - Event Tickets 5.24.1.1 is only compatible with Event Tickets Plus 6.6.0 or higher.
+* Fix - Prevent issues with NULL or empty TEXT column values. Improve database schema migration robustness and compatibility. Bump schema version from 1.1.0 to 1.2.0. [ET-2515]
+* Language - 12 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.24.1] 2025-06-11
 
 * Fix - Change the create table syntax to be compatible with MySQL.
