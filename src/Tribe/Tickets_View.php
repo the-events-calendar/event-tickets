@@ -277,9 +277,9 @@ class Tribe__Tickets__Tickets_View {
 				$link = add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) );
 			} else {
 				// Use WordPress rewrite API to generate proper URL with correct base slug.
-				$bases = $this->add_rewrite_base_slug();
+				$bases        = $this->add_rewrite_base_slug();
 				$tickets_slug = $bases['tickets'][0] ?? 'tickets';
-				$link = home_url( user_trailingslashit( $tickets_slug . '/' . $event_id ) );
+				$link         = home_url( user_trailingslashit( $tickets_slug . '/' . $event_id ) );
 			}
 		}
 
