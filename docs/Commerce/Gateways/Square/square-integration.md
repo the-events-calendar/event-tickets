@@ -220,7 +220,7 @@ Square changes only flow to WordPress for:
 2. **POS Sale Flow**
 
     ```mermaid
-   flowchart LR
+    flowchart LR
         pos[Square POS Sale] → Webhook → order[WordPress Order] → inventory[Inventory Adjustment]
     ```
 
