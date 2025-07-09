@@ -1514,5 +1514,4 @@ class Tribe__Tickets__Tickets_View {
 		
 		return $query_vars;
 	}
-
 }
