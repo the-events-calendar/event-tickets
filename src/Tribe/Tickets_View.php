@@ -1467,25 +1467,29 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string The URL to redirect to.
 	 */
 	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url ) {
-		// If we have the tribe-edit-orders parameter, redirect to pretty URL format.
-		if ( ! empty( $redirect_url ) && get_query_var( 'tribe-edit-orders' ) ) {
-			$post_id = get_query_var( 'p' );
-			
-			if ( $post_id ) {
-				// Check if we have pretty permalinks enabled.
-				$has_plain_permalink = '' === get_option( 'permalink_structure' );
-				
-				if ( ! $has_plain_permalink ) {
-					// Redirect to the pretty URL format.
-					return home_url( '/tickets/' . $post_id );
-				}
-			}
-			
-			// Fallback: preserve the parameter in query string format.
-			$redirect_url = add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		// Bail early if no redirect URL or no tribe-edit-orders parameter.
+		if ( empty( $redirect_url ) || ! get_query_var( 'tribe-edit-orders' ) ) {
+			return $redirect_url;
 		}
 
-		return $redirect_url;
+		$post_id = get_query_var( 'p' );
+
+		// Bail early if no post ID.
+		if ( ! $post_id ) {
+			// Fallback: preserve the parameter in query string format.
+			return add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		}
+
+		// Check if we have pretty permalinks enabled.
+		$has_plain_permalink = '' === get_option( 'permalink_structure' );
+
+		// Bail early if using plain permalinks - use query string format.
+		if ( $has_plain_permalink ) {
+			return add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		}
+
+		// Redirect to the pretty URL format.
+		return home_url( '/tickets/' . $post_id );
 	}
 
 	/**
