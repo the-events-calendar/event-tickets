@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Admin Attendees page.
  *
- * @since   5.9.1
+ * @since 5.9.1
  * @package TEC\Tickets\Admin
  */
 
@@ -11,7 +11,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Service provider for the Tickets Admin Attendees
  *
- * @since   5.9.1
+ * @since 5.9.1
  * @package TEC\Tickets\Admin
  */
 class Provider extends \tad_DI52_ServiceProvider {

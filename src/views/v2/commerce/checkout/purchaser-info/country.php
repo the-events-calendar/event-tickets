@@ -9,7 +9,7 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.13.1
+ * @since 5.13.1
  *
  * @version 5.13.1
  *
@@ -31,14 +31,14 @@ $field_classes = [
 
 $options   = '<option value="">' . esc_html__( 'Select a country', 'event-tickets' ) . '</option>';
 $countries = tribe( 'languages.locations' )->get_countries();
-foreach ( $countries as $k => $v ) {
-	$options .= '<option value="' . esc_attr( $k ) . '">' . esc_html( $v ) . '</option>';
+foreach ( $countries as $key => $value ) {
+	$options .= '<option ' . selected( $key, $field['value'], false ) . ' value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 }
 
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--country">
 	<label for="tec-tc-purchaser-country" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Country or region', 'event-tickets' ); ?>
+		<?php echo esc_html( $field['label'] ); ?>
 	</label>
 
 	<div class="tribe-tickets__form-field-input-wrapper">

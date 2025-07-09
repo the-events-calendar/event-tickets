@@ -1,7 +1,7 @@
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-checked
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition="Tribe__Tickets__RSVP"
 >
 	<label
 		for="Tribe__Tickets__RSVP_capacity"

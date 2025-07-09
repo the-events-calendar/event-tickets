@@ -5,8 +5,7 @@ namespace TEC\Tickets\Commerce\Status;
 /**
  * Class Refunded.
  *
- *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -27,6 +26,8 @@ class Refunded extends Status_Abstract {
 		'warning',
 		'backfill_purchaser',
 		'count_refunded',
+		'increase_stock',
+		'archive_attendees',
 	];
 
 	/**
@@ -50,6 +51,28 @@ class Refunded extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	public function is_final() {
+		return true;
+	}
+
+	/**
+	 * Whether a Status Interface can be changed to another Status Interface.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param self $new_status The new status.
+	 *
+	 * @return bool Whether the new status can be applied to the current status.
+	 */
+	public function can_change_to( $new_status ): bool {
+		if ( $this->get_wp_slug() === $new_status->get_wp_slug() ) {
+			// Refunded can be changed to Refunded to manage multiple refunds.
+			return true;
+		}
+
+		if ( $this->is_final() ) {
+			return false;
+		}
+
 		return true;
 	}
 

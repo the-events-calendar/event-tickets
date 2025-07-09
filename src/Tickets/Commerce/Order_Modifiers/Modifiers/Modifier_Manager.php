@@ -5,18 +5,21 @@
  * This class serves as a context that interacts with different modifier strategies (such as Coupons or Booking Fees).
  * It handles the saving (insert/update) of modifiers and delegates rendering tasks to the appropriate strategy.
  *
- * @since   5.18.0
+ * @since 5.18.0
  *
  * @package TEC\Tickets\Commerce\Order_Modifiers\Modifiers
  */
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Modifiers;
 
+use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Coupon_Table;
+use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Fee_Table;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Legacy_Value_Factory;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Precision_Value;
-use TEC\Tickets\Commerce\Order_Modifiers\Values\Percent_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Commerce\Values\Precision_Value;
+use TEC\Tickets\Commerce\Values\Percent_Value;
 
 /**
  * Context class that interacts with the strategy.
@@ -163,14 +166,25 @@ class Modifier_Manager {
 	 * @return Value The total amount after fees are applied.
 	 */
 	public function calculate_total_fees( array $items ): Value {
-		$total_fees = new Precision_Value( 0.0 );
+		return Legacy_Value_Factory::to_legacy_value(
+			( new Precision_Value( 0.0 ) )->sum( ...$this->combine_total_fees( $items ) )
+		);
+	}
 
-		$all_fees = [];
-		foreach ( $items as $item ) {
-			$all_fees[] = $item['fee_amount'];
-		}
-
-		return Legacy_Value_Factory::to_legacy_value( $total_fees->sum( ...$all_fees ) );
+	/**
+	 * Get the combined fees for an array of items.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param array $items The items in the cart.
+	 *
+	 * @return Precision_Value[] The combined fees for the items.
+	 */
+	public function combine_total_fees( array $items ): array {
+		return array_map(
+			static fn( $item ) => $item['fee_amount'],
+			$items
+		);
 	}
 
 	/**
@@ -211,5 +225,29 @@ class Modifier_Manager {
 			default:
 				return $zero_value;
 		}
+	}
+
+	/**
+	 * Get the table class for the current strategy.
+	 *
+	 * This method returns the appropriate table class based on the current strategy.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return Fee_Table|Coupon_Table The table class for the current strategy.
+	 *
+	 * @throws RuntimeException If the modifier type is invalid.
+	 */
+	public function get_table_class() {
+		$type = $this->strategy->get_modifier_type();
+		switch ( $type ) {
+			case 'fee':
+				return tribe( Fee_Table::class );
+
+			case 'coupon':
+				return tribe( Coupon_Table::class );
+		}
+
+		throw new RuntimeException( 'Invalid modifier type.' );
 	}
 }

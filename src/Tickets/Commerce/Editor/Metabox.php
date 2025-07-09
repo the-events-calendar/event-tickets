@@ -11,7 +11,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Metabox.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Editor
  */
@@ -23,7 +23,7 @@ class Metabox {
 	 *
 	 * @since 4.7
 	 *
-	 * @param     $post_id   int id of the event post
+	 * @param int $post_id   ID of the event post.
 	 * @param int $ticket_id (null) id of the ticket
 	 *
 	 * @return void
@@ -68,9 +68,9 @@ class Metabox {
 	 * @param int $ticket_id
 	 */
 	public function include_metabox_advanced_options( $post_id, $ticket_id ) {
-		$provider = __CLASS__;
+		$provider = Module::class;
 
-		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>';
+		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#tec_tickets_ticket_provider" data-condition="' . esc_attr( $provider ) . '">';
 
 		$this->do_metabox_sku_options( $post_id, $ticket_id );
 

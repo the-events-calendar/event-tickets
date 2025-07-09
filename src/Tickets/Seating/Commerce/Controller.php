@@ -2,7 +2,7 @@
 /**
  * Handles the integration with the Tickets Commerce module.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */
@@ -28,7 +28,7 @@ use Tribe__Cache_Listener as Triggers;
 /**
  * Class Controller.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Commerce;
  */

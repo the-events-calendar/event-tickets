@@ -51,7 +51,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Ticket Capacity
 		 *
-		 * @since  4.6
+		 * @since 4.6
 		 *
 		 * @var    int
 		 */
@@ -439,9 +439,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				&& is_null( $this->event_timezone )
 			) {
 				try {
-					$this->event_timezone = new DateTimeZone( Tribe__Events__Timezones::get_event_timezone_string( $this->get_event_id() ) );
+					$timezone_string = Tribe__Events__Timezones::get_event_timezone_string( $this->get_event_id() );
+
+					$this->event_timezone = new DateTimeZone( $timezone_string );
 				} catch ( Exception $exception ) {
-					$this->event_timezone = null;
+					$this->event_timezone = 'UTC+0' === $timezone_string ? new DateTimeZone( 'UTC' ) : null;
 				}
 			}
 
@@ -601,8 +603,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the Inventory of the Ticket which should match the Commerce Stock
 		 *
-		 * @since  4.6
-		 * @since  4.12.3 Account for possibly inactive ticket provider.
+		 * @since 4.6
+		 * @since 4.12.3 Account for possibly inactive ticket provider.
 		 *
 		 * @return int
 		 */
@@ -763,7 +765,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
 		 *
-		 * @since  4.6
+		 * @since 4.6
 		 *
 		 * @return int
 		 */
@@ -811,7 +813,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Gets the Capacity for the Ticket
 		 *
-		 * @since   4.6
+		 * @since 4.6
 		 *
 		 * @return  int
 		 */

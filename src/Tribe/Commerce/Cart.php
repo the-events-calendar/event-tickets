@@ -20,9 +20,16 @@ class Tribe__Tickets__Commerce__Cart {
 	 * @since 4.11.0
 	 */
 	public function process_cart() {
-		if ( empty( $_POST['tribe_tickets_ar'] ) || is_admin() ) {
+		$has_tickets = tec_get_request_var( 'tribe_tickets_ar' );
+		
+		if ( empty( $has_tickets ) ) {
 			return;
 		}
+		
+		if ( ! wp_doing_ajax() && is_admin() ) {
+			return;
+		}
+		
 
 		$data = $_POST;
 

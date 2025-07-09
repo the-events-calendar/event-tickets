@@ -17,10 +17,10 @@ const LabelWithTooltip = ( {
 	className,
 	forId,
 	isLabel,
-	label,
+	label = '',
 	tooltipDisabled,
 	tooltipLabel,
-	tooltipPosition,
+	tooltipPosition = 'top right',
 	tooltipText,
 	delay,
 } ) => (
@@ -33,7 +33,10 @@ const LabelWithTooltip = ( {
 		<Tooltip text={ tooltipText } placement={ tooltipPosition } delay={ delay }>
 			<button
 				aria-label={ tooltipText }
-				className={ classNames( 'tribe-editor__tooltip-label', 'tribe-editor__label-with-tooltip__tooltip-label' ) }
+				className={ classNames(
+					'tribe-editor__tooltip-label',
+					'tribe-editor__label-with-tooltip__tooltip-label'
+				) }
 				disabled={ tooltipDisabled }
 			>
 				{ tooltipLabel }
@@ -42,12 +45,6 @@ const LabelWithTooltip = ( {
 	</LabeledItem>
 );
 /* eslint-enable max-len */
-
-LabelWithTooltip.defaultProps = {
-	label: '',
-	tooltipPosition: 'top right',
-	delay: 200,
-};
 
 LabelWithTooltip.propTypes = {
 	className: PropTypes.string,

@@ -2,7 +2,7 @@
 /**
  * The Seat Selection reservations table schema.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
@@ -11,18 +11,17 @@ namespace TEC\Tickets\Seating\Tables;
 
 use Exception;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\Integrations\Custom_Table_Abstract as Table;
 use TEC\Tickets\Seating\Logging;
 
 /**
  * Class Sessions.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Tables;
  */
 class Sessions extends Table {
-	use Truncate_Methods;
 	use Logging;
 
 	/**
@@ -98,6 +97,23 @@ class Sessions extends Table {
 
 			return 0;
 		}
+	}
+
+	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since 5.20.0
+	 *
+	 * @var string[]
+	 */
+	public static function get_columns(): array {
+		return [
+			'token',
+			'object_id',
+			'expiration',
+			'reservations',
+			'expiration_lock',
+		];
 	}
 
 	/**

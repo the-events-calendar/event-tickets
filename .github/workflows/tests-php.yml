@@ -15,6 +15,7 @@ jobs:
           - commerce_integration
           - wpunit
           - slr_integration
+          - square_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -62,7 +63,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)-${{ secrets.COMPOSER_CACHE_KEY }}"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: composer-cache
         if: steps.skip.outputs.value != 1
         with:
@@ -209,7 +210,7 @@ jobs:
         run: |
           ${SLIC_BIN} up wordpress
           ${SLIC_BIN} wp core version
-          ${SLIC_BIN} wp core update --force --version=6.5
+          ${SLIC_BIN} wp core update --force --version=6.6
           ${SLIC_BIN} wp core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
@@ -223,6 +224,12 @@ jobs:
       - name: Install and activate TwentyTwentyFour
         if: steps.skip.outputs.value != 1
         run: ${SLIC_BIN} wp theme install twentytwentyfour
+      # ------------------------------------------------------------------------------
+      # Install but NOT activate Kadence
+      # ------------------------------------------------------------------------------
+      - name: Install Kadence
+        if: steps.skip.outputs.value != 1
+        run: ${SLIC_BIN} wp theme install kadence
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------

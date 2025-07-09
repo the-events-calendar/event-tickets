@@ -40,7 +40,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/free/order';
+	protected string $path = '/commerce/free/order';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -86,14 +86,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$meta  = [
-			'gateway_order_id' => $order->ID,
-		];
 
 		$created = tribe( Order::class )->modify_status(
 			$order->ID,
 			Pending::SLUG,
-			$meta
 		);
 
 		if ( is_wp_error( $created ) ) {
@@ -113,7 +109,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$response['success']      = true;
 		$response['id']           = $order->ID;
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->ID ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}

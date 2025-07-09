@@ -17,7 +17,7 @@ if ( ! isset( $ticket_id ) ) {
 	}
 }
 ?>
-<div class="tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
+<div class="tribe-dependent" data-depends="#tec_tickets_ticket_provider" data-condition-not="Tribe__Tickets__RSVP">
 	<button class="accordion-header tribe_advanced_meta">
 		<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
 	</button>

@@ -12,14 +12,8 @@ import { __ } from '@wordpress/i18n';
 import Template from './template';
 
 import { withStore } from '@moderntribe/common/hoc';
-import {
-	actions,
-	selectors,
-	thunks,
-} from '@moderntribe/tickets/data/blocks/rsvp';
-import {
-	showModal,
-} from '@moderntribe/tickets/data/shared/move/actions';
+import { actions, selectors, thunks } from '../../../data/blocks/rsvp';
+import { showModal } from '../../../data/shared/move/actions';
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
@@ -40,21 +34,21 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		...stateProps,
 		...restDispatchProps,
 		removeRSVP: () => {
-			if ( window.confirm( // eslint-disable-line no-alert
-				__( 'Are you sure you want to delete this RSVP? It cannot be undone.', 'event-tickets' ),
-			) ) {
+			if (
+				window.confirm(
+					// eslint-disable-line no-alert
+					__( 'Are you sure you want to delete this RSVP? It cannot be undone.', 'event-tickets' )
+				)
+			) {
 				dispatch( actions.deleteRSVP() );
 				if ( stateProps.created && stateProps.rsvpId ) {
 					dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
 				}
-				wpDispatch( 'core/editor' ).removeBlocks( [ ownProps.clientId ] );
+				wpDispatch( 'core/block-editor' ).removeBlocks( [ ownProps.clientId ] );
 			}
 		},
 		moveRSVP: () => dispatchProps.moveRSVP( stateProps.rsvpId ),
 	};
 };
 
-export default compose(
-	withStore(),
-	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
-)( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps, mergeProps ) )( Template );

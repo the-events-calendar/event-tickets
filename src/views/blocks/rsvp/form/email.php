@@ -17,8 +17,8 @@
 /**
  * Set the default value for the email on the RSVP form.
  *
- * @param string
- * @param Tribe__Events_Gutenberg__Template $this
+ * @param string                            $email
+ * @param Tribe__Events_Gutenberg__Template $template The template object.
  *
  * @since 4.9
  *

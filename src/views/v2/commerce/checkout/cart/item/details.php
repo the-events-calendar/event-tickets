@@ -9,7 +9,7 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @version 5.1.9
  *
@@ -22,7 +22,6 @@
  * @var string           $registration_url      [Global] The site's registration URL.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var array[]          $gateways              [Global] An array with the gateways.
- * @var int              $gateways_active       [Global] The number of active gateways.
  * @var array            $item                  Which item this row will be for.
  */
 
@@ -31,8 +30,15 @@
 
 	<?php $this->template( 'checkout/cart/item/details/title', [ 'item' => $item ] ); ?>
 
-	<?php $this->template( 'checkout/cart/item/details/toggle', [ 'item' => $item ] ); ?>
+	<?php
+	// Only show the toggle and description if the ticket has a description and should show description.
+	if ( ! empty( $item['obj'] ) && $item['obj']->show_description() && ! empty( $item['obj']->description ) ) :
+		?>
+		<?php $this->template( 'checkout/cart/item/details/toggle', [ 'item' => $item ] ); ?>
 
-	<?php $this->template( 'checkout/cart/item/details/description', [ 'item' => $item ] ); ?>
+		<?php $this->template( 'checkout/cart/item/details/description', [ 'item' => $item ] ); ?>
+		<?php
+	endif;
+	?>
 
 </div>

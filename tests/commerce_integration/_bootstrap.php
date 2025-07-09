@@ -11,6 +11,8 @@ putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 tribe_register_provider( Commerce_Provider::class );
 
+define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+
 // Let's make sure to set rewrite rules.
 global $wp_rewrite;
 $wp_rewrite->permalink_structure = '/%postname%/';
@@ -22,3 +24,8 @@ update_option( 'stylesheet', 'twentytwenty' );
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
 $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
+
+tec_tickets_tests_fake_transactions_enable();
+
+// Disconnect Promoter to avoid license-related notices.
+remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );

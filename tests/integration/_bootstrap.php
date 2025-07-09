@@ -20,3 +20,8 @@ if ( ! tec_tickets_commerce_is_enabled() ) {
 	$commerce_provider->run_init_hooks();
 }
 tribe( Commerce_Module::class );
+
+tec_tickets_tests_fake_transactions_enable();
+
+// Populate the gateway order ID for the gateways during tests.
+tec_tickets_tests_enable_gateway_id_generation();

@@ -23,7 +23,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 *
 	 * @since 4.9
 	 *
-	 * @param $editor_config
+	 * @param array $editor_config The editor configuration.
 	 *
 	 * @return array
 	 */
@@ -125,6 +125,14 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 					'singularLowercase' => tribe_get_ticket_label_singular_lowercase( 'editor-configuration' ),
 					'pluralLowercase'   => tribe_get_ticket_label_plural_lowercase( 'editor-configuration' ),
 				],
+			],
+			'salePrice'                 => [
+				'add_sale_price'   => esc_html_x( 'Add Sale Price', 'Label for adding a sale price in the Ticket Block', 'event-tickets' ),
+				'sale_price_label' => esc_html_x( 'Sale Price:', 'The label for the value of the sale price in the Ticket Block', 'event-tickets' ),
+				'invalid_price'    => esc_html_x( 'Invalid price', 'Warning when sale price is invalid in the Ticket Block', 'event-tickets' ),
+				'on_sale_from'     => esc_html_x( 'On sale from:', 'Label to select the start date of sale in the Ticket Block', 'event-tickets' ),
+				'to'               => esc_html_x( 'to', 'Label to select the end date of sale in the Ticket Block', 'event-tickets' ),
+				'on_sale'          => esc_html_x( 'On Sale', 'Label that is used for tickets that are on sale in the Ticket Block', 'event-tickets' ),
 			],
 		];
 

@@ -21,9 +21,6 @@ putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
 
-// Load Coupons for the tests.
-add_filter( 'tec_tickets_commerce_order_modifiers_coupons_enabled', '__return_true' );
-
 // Activate CT1
 tribe()->register( TEC_CT1_Provider::class );
 TEC_CT1_Activation::init();

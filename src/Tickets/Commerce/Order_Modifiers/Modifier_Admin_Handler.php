@@ -9,15 +9,15 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers;
 
-use InvalidArgumentException;
 use Exception;
-use TEC\Tickets\Commerce\Order_Modifiers\Controller;
+use InvalidArgumentException;
+use TEC\Common\Asset;
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Manager;
 use TEC\Tickets\Commerce\Order_Modifiers\Traits\Valid_Types;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as Tickets_Plugin;
-use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Common\Asset;
 
 /**
  * Class Modifier_Settings.
@@ -81,6 +81,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		remove_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 		remove_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
 		remove_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+		remove_action( 'current_screen', [ $this, 'prepare_items_for_table_view' ] );
 
 		remove_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
@@ -100,6 +101,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		add_action( 'admin_menu', [ $this, 'add_tec_tickets_order_modifiers_page' ], 15 );
 		add_action( 'admin_init', [ $this, 'handle_delete_modifier' ] );
 		add_action( 'admin_init', [ $this, 'handle_form_submission' ] );
+		add_action( 'current_screen', [ $this, 'prepare_items_for_table_view' ] );
 
 		add_action( 'admin_notices', [ $this, 'handle_notices' ] );
 
@@ -118,7 +120,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 * @return bool
 	 */
 	public function enqueue_tec_tickets_settings_css( bool $should_enqueue ): bool {
-		return $should_enqueue ? $should_enqueue : $this->is_on_page();
+		return $should_enqueue ?: $this->is_on_page();
 	}
 
 	/**
@@ -134,12 +136,55 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			'admin/order-modifiers/table.js',
 			Tickets_Plugin::VERSION
 		)
-		->add_to_group_path( 'et-core' )
-		->set_condition( fn () => $this->is_on_page() )
-		->set_dependencies( 'jquery', 'wp-util' )
-		->enqueue_on( 'admin_enqueue_scripts' )
-		->add_to_group( 'tec-tickets-order-modifiers' )
-		->register();
+			->add_to_group_path( Tickets_Plugin::class )
+			->set_condition( fn() => $this->is_on_page() )
+			->set_dependencies( 'jquery', 'wp-util' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-order-modifiers' )
+			->add_localize_script(
+				'etOrderModifiersTable',
+				function () {
+					return [
+						'modifier' => $this->get_modifier_type_from_request(),
+					];
+				}
+			)
+			->register();
+
+		Asset::add(
+			'tec-tickets-imask',
+			'https://unpkg.com/imask@7.6.1/dist/imask.js',
+		)->register();
+
+		Asset::add(
+			'tec-tickets-order-modifiers-amount-field-edit-js',
+			'admin/order-modifiers/amount-field.js',
+			Tickets_Plugin::VERSION,
+		)
+			->add_to_group_path( Tickets_Plugin::class )
+			->set_condition( fn() => $this->is_on_edit_page() )
+			->set_dependencies( 'jquery', 'tribe-validation', 'tec-tickets-imask' )
+			->enqueue_on( 'admin_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-order-modifiers' )
+			->add_localize_script(
+				'etOrderModifiersAmountField',
+				function () {
+					$code        = Currency::get_currency_code();
+					$percent_max = 'coupon' === $this->get_modifier_type_from_request()
+						? 100
+						: 999999999;
+
+					return [
+						'currencySymbol'     => Currency::get_currency_symbol( $code ),
+						'decimalSeparator'   => Currency::get_currency_separator_decimal( $code ),
+						'thousandsSeparator' => Currency::get_currency_separator_thousands( $code ),
+						'percentMax'         => $percent_max,
+						'placement'          => Currency::get_currency_symbol_position( $code ),
+						'precision'          => Currency::get_currency_precision( $code ),
+					];
+				}
+			)
+			->register();
 	}
 
 	/**
@@ -154,6 +199,19 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		$admin_page  = $admin_pages->get_current_page();
 
 		return ! empty( $admin_page ) && static::$slug === $admin_page;
+	}
+
+	/**
+	 * Defines whether the current page is the Event Tickets Order Modifiers edit page.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return bool True if on the Order Modifiers edit page, false otherwise.
+	 */
+	protected function is_on_edit_page(): bool {
+		$is_edit = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
+
+		return $is_edit && $this->is_on_page();
 	}
 
 	/**
@@ -199,7 +257,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 				'id'       => static::$slug,
 				'path'     => static::$slug,
 				'parent'   => static::$parent_slug,
-				'title'    => esc_html__( 'Booking Fees', 'event-tickets' ),
+				'title'    => esc_html__( 'Coupons &amp; Fees', 'event-tickets' ),
 				'position' => 1.5,
 				'callback' => [ $this, 'render_tec_order_modifiers_page' ],
 			]
@@ -215,7 +273,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	public function render_tec_order_modifiers_page(): void {
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_type = $this->get_modifier_type_from_request();
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
 		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
 
@@ -228,22 +286,42 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		];
 
 		// Get the appropriate strategy for the selected modifier.
+		$manager = $this->get_manager_for_type( $modifier_type );
+
+		// If the strategy doesn't exist, show an error message.
+		if ( false === $manager ) {
+			return;
+		}
+
+		// Render the appropriate view based on the context.
+		if ( $is_edit ) {
+			$this->render_edit_view( $manager, $context );
+		} else {
+			$this->render_table_view( $manager, $context );
+		}
+	}
+
+	/**
+	 * Get the modifier manager instance.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @param string $modifier_type The type of modifier to get the manager for.
+	 * @param bool   $render_error  Whether to render an error message if the manager is not found.
+	 *
+	 * @return false|Modifier_Manager
+	 */
+	protected function get_manager_for_type( string $modifier_type, bool $render_error = true ) {
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
 		// If the strategy doesn't exist, show an error message.
-		if ( ! $modifier_strategy ) {
+		if ( ! $modifier_strategy && $render_error ) {
 			$this->render_error_message( __( 'Invalid modifier.', 'event-tickets' ) );
-			return;
+
+			return false;
 		}
 
-		// Create a Modifier Manager with the selected strategy.
-		$manager = new Modifier_Manager( $modifier_strategy );
-
-		if ( ! $is_edit ) {
-			$this->render_table_view( $manager, $context );
-			return;
-		}
-		$this->render_edit_view( $manager, $context );
+		return new Modifier_Manager( $modifier_strategy );
 	}
 
 	/**
@@ -257,7 +335,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	protected function get_modifier_data_by_id( int $modifier_id ): ?array {
 		// Get the modifier type from the request or use the default.
-		$modifier_type = tribe_get_request_var( 'modifier', $this->get_default_type() );
+		$modifier_type = $this->get_modifier_type_from_request();
 
 		// Get the appropriate strategy for the selected modifier type.
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
@@ -266,7 +344,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Use the strategy to retrieve the modifier data by ID.
-		return $modifier_strategy->get_modifier_by_id( $modifier_id, $modifier_type );
+		return $modifier_strategy->get_modifier_by_id( $modifier_id );
 	}
 
 	/**
@@ -332,20 +410,11 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Get and sanitize request vars for modifier and modifier_id.
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+		$modifier_type = $this->get_modifier_type_from_request();
 		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '0' ) );
-		$is_edit       = tribe_is_truthy( tec_get_request_var( 'edit', '0' ) );
-
-		// Prepare the context for the page.
-		$context = [
-			'event_id'    => 0,
-			'modifier'    => $modifier_type,
-			'modifier_id' => $modifier_id,
-			'is_edit'     => $is_edit,
-		];
 
 		// Get the appropriate strategy for the selected modifier.
-		$modifier_strategy = tribe( Controller::class )->get_modifier( $context['modifier'] );
+		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
 		// Early bail if the strategy doesn't exist.
 		if ( ! $modifier_strategy ) {
@@ -354,7 +423,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		$raw_data                      = tribe_get_request_vars( true );
-		$raw_data['order_modifier_id'] = $context['modifier_id'];
+		$raw_data['order_modifier_id'] = $modifier_id;
 
 		try {
 			// Use the Modifier Manager to sanitize and save the data.
@@ -365,8 +434,9 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		} catch ( InvalidArgumentException $exception ) {
 			$this->render_error_message(
 				sprintf(
-					/* translators: %s: error message */
-					__( 'Error saving modifier: %s', 'event-tickets' ),
+					/* translators: 1: the modifier name 2:error message */
+					__( 'Error saving %1$s: %2$s', 'event-tickets' ),
+					$modifier_strategy->get_modifier_display_name(),
 					$exception->getMessage()
 				)
 			);
@@ -404,8 +474,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		$modifier_type = sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
-
+		$modifier_type     = $this->get_modifier_type_from_request();
 		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
 		if ( ! $modifier_strategy ) {
@@ -416,7 +485,7 @@ class Modifier_Admin_Handler extends Controller_Contract {
 			return;
 		}
 
-		$this->render_success_message( __( 'Modifier saved successfully!', 'event-tickets' ) );
+		$this->render_success_message( $this->get_successful_save_message( $modifier_type ) );
 	}
 
 	/**
@@ -464,10 +533,10 @@ class Modifier_Admin_Handler extends Controller_Contract {
 	 */
 	public function handle_delete_modifier(): void {
 		// Check if the action is 'delete_modifier' and nonce is set.
-		$action        = tribe_get_request_var( 'action', '' );
-		$modifier_id   = absint( tribe_get_request_var( 'modifier_id', '' ) );
-		$nonce         = tribe_get_request_var( '_wpnonce', '' );
-		$modifier_type = sanitize_key( tribe_get_request_var( 'modifier', '' ) );
+		$action        = tec_get_request_var( 'action', '' );
+		$modifier_id   = absint( tec_get_request_var( 'modifier_id', '' ) );
+		$nonce         = tec_get_request_var( '_wpnonce', '' );
+		$modifier_type = $this->get_modifier_type_from_request();
 
 		// Early bail if the action is not 'delete_modifier'.
 		if ( 'delete_modifier' !== $action ) {
@@ -480,27 +549,93 @@ class Modifier_Admin_Handler extends Controller_Contract {
 		}
 
 		// Verify nonce.
-		if ( ! wp_verify_nonce( $nonce, 'delete_modifier_' . $modifier_id ) ) {
+		if ( ! wp_verify_nonce( $nonce, "delete_modifier_{$modifier_id}" ) ) {
 			wp_die( esc_html__( 'Nonce verification failed.', 'event-tickets' ) );
 		}
 
-		// Get the appropriate strategy for the selected modifier type.
-		$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
+		try {
+			// Get the appropriate strategy for the selected modifier type.
+			$modifier_strategy = tribe( Controller::class )->get_modifier( $modifier_type );
 
-		// Handle invalid modifier strategy.
-		if ( ! $modifier_strategy ) {
-			wp_die( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
+			// Perform the deletion logic.
+			$success = $modifier_strategy->delete_modifier( $modifier_id );
+
+			// Construct the redirect URL with a success or failure flag.
+			$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
+			$redirect_url = add_query_arg( 'deleted', $success ? 'success' : 'fail', $redirect_url );
+
+			// Redirect to the original page to avoid resubmitting the form upon refresh.
+			wp_safe_redirect( $redirect_url ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect,StellarWP.CodeAnalysis.RedirectAndDie
+			tribe_exit();
+		} catch ( Exception $e ) {
+			// Handle invalid modifier strategy.
+			tribe_exit( esc_html__( 'Invalid modifier type.', 'event-tickets' ) );
+		}
+	}
+
+	/**
+	 * When we're on the table view page, prepare the items for the table view.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return void
+	 */
+	public function prepare_items_for_table_view(): void {
+		if ( ! $this->is_on_page() ) {
+			return;
 		}
 
-		// Perform the deletion logic.
-		$deletion_success = $modifier_strategy->delete_modifier( $modifier_id );
+		$singular_id = tec_get_request_var( 'modifier_id', false );
+		if ( $singular_id && is_numeric( $singular_id ) ) {
+			return;
+		}
 
-		// Construct the redirect URL with a success or failure flag.
-		$redirect_url = remove_query_arg( [ 'action', 'modifier_id', '_wpnonce' ], wp_get_referer() );
-		$redirect_url = add_query_arg( 'deleted', $deletion_success ? 'success' : 'fail', $redirect_url );
+		// Prepare the items based on the modifier type.
+		$modifier_type = $this->get_modifier_type_from_request();
+		$manager       = $this->get_manager_for_type( $modifier_type );
+		$manager->get_table_class()->prepare_items();
+	}
 
-		// Redirect to the original page to avoid resubmitting the form upon refresh.
-		wp_safe_redirect( $redirect_url );
-		tribe_exit();
+	/**
+	 * Get the modifier type from the request variables.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @return string The modifier type.
+	 */
+	protected function get_modifier_type_from_request(): string {
+		return sanitize_key( tec_get_request_var( 'modifier', $this->get_default_type() ) );
+	}
+
+	/**
+	 * Get the successful save message for the modifier type.
+	 *
+	 * @since 5.21.0
+	 *
+	 * @param string $modifier_type The type of modifier that was saved.
+	 *
+	 * @return string The success message to display.
+	 */
+	protected function get_successful_save_message( string $modifier_type ): string {
+		switch ( $modifier_type ) {
+			case 'coupon':
+				return __( 'Coupon saved successfully!', 'event-tickets' );
+
+			case 'fee':
+				return __( 'Fee saved successfully!', 'event-tickets' );
+
+			default:
+				$message = __( 'Modifier saved successfully!', 'event-tickets' );
+
+				/**
+				 * Filters the successful save message for order modifiers.
+				 *
+				 * @since 5.21.0
+				 *
+				 * @param string $message       The success message to display.
+				 * @param string $modifier_type The type of modifier that was saved.
+				 */
+				return (string) apply_filters( 'tec_tickets_commerce_order_modifiers_successful_save_message', $message, $modifier_type );
+		}
 	}
 }

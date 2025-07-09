@@ -4,8 +4,8 @@
  *
  * @version 5.3.0
  *
- * @since   5.2.0
- * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since 5.2.0
+ * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
@@ -14,6 +14,8 @@
  * @var bool                                          $is_merchant_active    [Global] Whether the merchant is active or not.
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
+
+defined( 'ABSPATH' ) || exit;
 
 if ( empty( $is_merchant_connected ) ) {
 	return;
@@ -31,3 +33,4 @@ if ( empty( $is_merchant_connected ) ) {
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-webhook' ); ?>
 	</div>
 </div>
+<?php

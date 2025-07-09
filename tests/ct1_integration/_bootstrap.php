@@ -40,3 +40,5 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
 tribe()->register( Commerce_Provider::class );
 tribe( Commerce_Module::class );
+
+tec_tickets_tests_fake_transactions_enable();

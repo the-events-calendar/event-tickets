@@ -10,11 +10,12 @@ use Tribe__Utils__Array as Arr;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 /**
  * Class Handler
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -129,6 +130,19 @@ class Handler {
 	 * @return bool|WP_Error|null
 	 */
 	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
+		if ( tribe( Order::class )->has_on_checkout_screen_hold( $order->ID ) ) {
+
+			tribe( Webhooks::class )->add_pending_webhook( $order->ID, $status->get_wp_slug(), $order->post_status, $metadata );
+
+			/**
+			 * We can't return WP_Error because that will make Stripe think that
+			 * we failed to process the Webhook and as a result will resend it.
+			 *
+			 * Returning bool is the best option here. False since we didn't update, but we will!
+			 */
+			return false;
+		}
+
 		return tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
 	}
 }

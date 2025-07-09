@@ -2,22 +2,23 @@
 /**
  * Edit Event Tickets.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/orders.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link  https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.7.4
- * @since   4.10.2 Only show Update button if ticket has meta.
- * @since   4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
- * @since   4.10.9 Use function for text.
- * @since   4.11.3 Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template. `$event_id` now relies on the `WP_Query` queried object ID instead of the global `$post` object.
- * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
- * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
- * @since   4.12.3 Account for inactive ticket providers.
- * @since   5.0.3 Add filter to control the re-sending emails option on email alteration.
- * @since   5.9.1 Corrected template override filepath
+ * @since 4.7.4
+ * @since 4.10.2 Only show Update button if ticket has meta.
+ * @since 4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
+ * @since 4.10.9 Use function for text.
+ * @since 4.11.3 Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template. `$event_id` now relies on the `WP_Query` queried object ID instead of the global `$post` object.
+ * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
+ * @since 4.12.1 Account for empty post type object, such as if post type got disabled.
+ * @since 4.12.3 Account for inactive ticket providers.
+ * @since 5.0.3 Add filter to control the re-sending emails option on email alteration.
+ * @since 5.9.1 Corrected template override filepath.
+ * @since 5.19.3 Reverted template override filepath.
  *
- * @version 5.9.1
+ * @version 5.19.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -35,19 +35,17 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param array $attributes
 	 *
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = Tribe__Tickets__Main::instance();
+		$et = Tribe__Tickets__Main::instance();
 
-		tribe_asset(
-			$gutenberg,
+		tec_asset(
+			$et,
 			'tribe-tickets-gutenberg-block-attendees-style',
-			'app/attendees/frontend.css',
-			[],
-			null
+			'attendees/frontend.css'
 		);
 	}
 
@@ -56,7 +54,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param array $attributes
 	 *
 	 * @return string
 	 */

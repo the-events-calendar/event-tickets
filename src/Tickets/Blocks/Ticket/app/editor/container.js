@@ -10,21 +10,14 @@ import { compose } from 'redux';
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
-import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
-import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import {
-	isModalShowing,
-	getModalTicketId,
-} from '@moderntribe/tickets/data/shared/move/selectors';
-import { initHook } from './hooks';
+import withSaveData from '../../../../../modules/blocks/hoc/with-save-data';
+import { actions, selectors } from '../../../../../modules/data/blocks/ticket';
+import { isModalShowing, getModalTicketId } from '../../../../../modules/data/shared/move/selectors';
 
-initHook();
-
-const getShowTicket = ( state, ownProps ) => (
+const getShowTicket = ( state, ownProps ) =>
 	selectors.getTicketsIsSelected( state ) ||
-		selectors.hasATicketSelected( state ) ||
-		selectors.isTicketOnSale( state, ownProps )
-);
+	selectors.hasATicketSelected( state ) ||
+	selectors.isTicketOnSale( state, ownProps );
 
 const mapStateToProps = ( state, ownProps ) => {
 	return {
@@ -43,9 +36,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 	const { clientId } = ownProps;
 
 	return {
-		onBlockUpdate: ( isSelected ) => (
-			dispatch( actions.setTicketIsSelected( clientId, isSelected ) )
-		),
+		onBlockUpdate: ( isSelected ) => dispatch( actions.setTicketIsSelected( clientId, isSelected ) ),
 		setInitialState: ( props ) => {
 			dispatch( actions.registerTicketBlock( clientId ) );
 			dispatch( actions.setTicketInitialState( props ) );
@@ -62,11 +53,6 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => ( {
 
 export default compose(
 	withStore( { isolated: true } ),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-		mergeProps,
-	),
-	withSaveData(),
+	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
+	withSaveData()
 )( Template );
-

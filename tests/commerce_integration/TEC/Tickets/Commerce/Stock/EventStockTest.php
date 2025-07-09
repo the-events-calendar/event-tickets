@@ -3,11 +3,6 @@
 namespace TEC\Tickets\Commerce\Stock;
 
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Provider;
-use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
-use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Events\Test\Factories\Event;
@@ -30,7 +25,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_stock_count_after_single_ticket_creation() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		// create ticket with default capacity of 100.
@@ -40,7 +35,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		$expected = [];
 
-		$expected['rsvp'] = [
+		$expected['rsvp']    = [
 			'count'     => 0,
 			'stock'     => 0,
 			'unlimited' => 0,
@@ -63,14 +58,14 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_stock_count_after_multiple_ticket_creation() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		// create ticket with default capacity of 100.
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
 		$ticket_b_id = $this->create_tc_ticket( $event_id, 20 );
 
-		$expected['rsvp'] = [
+		$expected['rsvp']    = [
 			'count'     => 0,
 			'stock'     => 0,
 			'unlimited' => 0,
@@ -93,7 +88,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_stock_count_after_purchase() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		// create ticket with default capacity of 100.
@@ -101,7 +96,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		$order = $this->create_order( [ $ticket_a_id => 5 ] );
 
-		$expected['rsvp'] = [
+		$expected['rsvp']    = [
 			'count'     => 0,
 			'stock'     => 0,
 			'unlimited' => 0,
@@ -131,10 +126,12 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
 		$ticket_b_id = $this->create_tc_ticket( $event_id, 20 );
 
-		$order = $this->create_order( [
-			$ticket_a_id => 5,
-			$ticket_b_id => 10,
-		] );
+		$order = $this->create_order(
+			[
+				$ticket_a_id => 5,
+				$ticket_b_id => 10,
+			] 
+		);
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -163,26 +160,26 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_attendance_count_with_shared_capacity() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
 				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
 				'event_capacity' => 50,
 				'capacity'       => 30,
 			],
 		];
-		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10, $overrides );
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
 				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
 				'event_capacity' => 50,
 				'capacity'       => 50,
 			],
 		];
-		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
+		$ticket_b_id = $this->create_tc_ticket( $event_id, 20, $overrides );
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -208,7 +205,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$order = $this->create_order( [ $ticket_a_id => 10 ] );
 
 		// Make sure that the stock count is correct.
-		$expected['tickets']['stock'] = 40;
+		$expected['tickets']['stock']     = 40;
 		$expected['tickets']['available'] = 40;
 
 		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
@@ -219,7 +216,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$order = $this->create_order( [ $ticket_b_id => 10 ] );
 
 		// Make sure that the stock count is correct.
-		$expected['tickets']['stock'] = 30;
+		$expected['tickets']['stock']     = 30;
 		$expected['tickets']['available'] = 30;
 
 		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
@@ -234,34 +231,34 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_attendance_count_with_shared_capacity_and_individual_capacity() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
 				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
 				'event_capacity' => 50,
 				'capacity'       => 30,
 			],
 		];
-		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10, $overrides );
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
 				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
 				'event_capacity' => 50,
 				'capacity'       => 50,
 			],
 		];
-		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
+		$ticket_b_id = $this->create_tc_ticket( $event_id, 20, $overrides );
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
-				'mode'           => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
-				'capacity'       => 20,
+				'mode'     => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
+				'capacity' => 20,
 			],
 		];
-		$ticket_c_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
+		$ticket_c_id = $this->create_tc_ticket( $event_id, 20, $overrides );
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -289,16 +286,16 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_attendance_count_with_unlimited_capacity() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
-				'mode'           => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
-				'capacity'       => -1,
+				'mode'     => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
+				'capacity' => -1,
 			],
 		];
-		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10, $overrides );
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -326,16 +323,16 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_attendance_count_with_unlimited_capacity_without_shared_cap() {
 
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
-				'mode'      => '',
-				'capacity'  => -1,
+				'mode'     => '',
+				'capacity' => -1,
 			],
 		];
-		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10, $overrides );
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -362,7 +359,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 * @test Test attendance count with RSVP tickets.
 	 */
 	public function test_attendance_for_rsvp_ticket() {
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		$rsvp = $this->create_rsvp_ticket( $event_id );
@@ -392,12 +389,12 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 * @test Test attendance count with unlimited tickets.
 	 */
 	public function test_with_unlimited_rsvp_and_tickets() {
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		$overrides = [
 			'meta_input' => [
-				'_capacity'       => -1,
+				'_capacity' => -1,
 			],
 		];
 
@@ -430,15 +427,17 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	 * @todo @rafsuntaskin Maybe shift this test to Attendee related test class when available.
 	 */
 	public function test_created_attendee_has_post_title() {
-		$maker = new Event();
+		$maker    = new Event();
 		$event_id = $maker->create();
 
 		// create ticket with default capacity of 100.
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
 
-		$order = $this->create_order( [
-			$ticket_a_id => 1,
-		] );
+		$order = $this->create_order(
+			[
+				$ticket_a_id => 1,
+			] 
+		);
 
 		$attendee = tec_tc_attendees()->by( 'event_id', $event_id )->first();
 

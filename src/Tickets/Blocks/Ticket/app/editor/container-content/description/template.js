@@ -18,6 +18,12 @@ import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
 class Description extends PureComponent {
+	static defaultProps = {
+		isDisabled: false,
+		onTempDescriptionChange: () => {},
+		tempDescription: '',
+	};
+
 	static propTypes = {
 		isDisabled: PropTypes.bool,
 		onTempDescriptionChange: PropTypes.func.isRequired,
@@ -30,18 +36,16 @@ class Description extends PureComponent {
 	}
 
 	render() {
-		const {
-			isDisabled,
-			onTempDescriptionChange,
-			tempDescription,
-		} = this.props;
+		const { isDisabled, onTempDescriptionChange, tempDescription } = this.props;
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__description',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--description',
-			) }>
+			<div
+				className={ classNames(
+					'tribe-editor__ticket__description',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--description'
+				) }
+			>
 				<LabeledItem
 					className="tribe-editor__ticket__description-label"
 					forId={ this.id }

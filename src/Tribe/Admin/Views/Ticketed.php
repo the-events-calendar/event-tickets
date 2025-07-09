@@ -47,7 +47,7 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 		$ticketed_count = $query->get_ticketed_count( $this->post_type );
 		$ticketed_class = '1' === $ticketed_query_var_value ? 'class="current"' : '';
 
-		$views['tickets-ticketed'] = sprintf( '<a href="%s" %s>%s</a> (%d)', $ticketed_url, $ticketed_class, $ticketed_label, $ticketed_count );
+		$views['tickets-ticketed'] = sprintf( '<a href="%s" %s>%s</a> (%d)', esc_url( $ticketed_url ), $ticketed_class, $ticketed_label, $ticketed_count );
 
 		$unticketed_args  = [
 			'post_type'         => $this->post_type,
@@ -60,8 +60,13 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 		$unticketed_count = $query->get_unticketed_count( $this->post_type );
 		$unticketed_class = '0' === $ticketed_query_var_value ? 'class="current"' : '';
 
-		$views['tickets-unticketed'] = sprintf( '<a href="%s" %s>%s</a> (%d)', $unticketed_url, $unticketed_class, $unticketed_label,
-			$unticketed_count );
+		$views['tickets-unticketed'] = sprintf(
+			'<a href="%s" %s>%s</a> (%d)',
+			esc_url( $unticketed_url ),
+			$unticketed_class,
+			$unticketed_label,
+			$unticketed_count 
+		);
 
 		return $views;
 	}

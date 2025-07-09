@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * An order that has been trashed.
  *
- * @since   5.13.0
+ * @since 5.13.0
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -27,6 +27,19 @@ class Trashed extends Status_Abstract {
 	 * @var string
 	 */
 	const SLUG = 'trash';
+
+	/**
+	 * Gets the slug of this status in WordPress.
+	 *
+	 * Since this is a core status, we do need to match.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @return string
+	 */
+	public function get_wp_slug() {
+		return static::SLUG;
+	}
 
 	/**
 	 * {@inheritdoc}

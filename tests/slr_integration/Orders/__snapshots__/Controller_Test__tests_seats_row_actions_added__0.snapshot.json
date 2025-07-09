@@ -1,4 +1,5 @@
 {
+    "tec_qr_code_modal": "<a href=\"http://wordpress.test/wp-admin/admin-ajax.php?action=tec_qr_code_modal&#038;post_id={{EVENT_ID}}&#038;width=542&#038;height=308&#038;_wpnonce=test-nonce-745631543\" class=\"thickbox\" title=\"QR Code\">Generate QR Code</a>",
     "tickets_attendees": "<a title=\"See who purchased tickets to this event\" href=\"http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{EVENT_ID}}\">Attendees</a>",
     "tickets_orders": "<a title=\"See Tickets Commerce purchases for this event\" href=\"http://wordpress.test/wp-admin/admin.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;post_id={{EVENT_ID}}\">Orders</a>",
     "tickets_seats": "<a title=\"See seats purchased for this event\" href=\"http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tec-tickets-seats&#038;post_id={{EVENT_ID}}\">Seats</a>"

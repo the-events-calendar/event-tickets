@@ -88,7 +88,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $template
+	 * @param array $template
 	 *
 	 * @return array
 	 */
@@ -105,7 +105,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @since 4.9
 	 * @since 5.5.0 renamed from `current_type_support_tickets`
 	 *
-	 * @param  mixed $post_type
+	 * @param mixed $post_type
 	 *
 	 * @return bool
 	 */
@@ -149,9 +149,9 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  string  $content Content that will be updated
-	 * @param  WP_Post $post    Which post we will migrate
-	 * @param  array   $blocks  Which blocks we are updating with
+	 * @param string  $content Content that will be updated
+	 * @param WP_Post $post    Which post we will migrate
+	 * @param array   $blocks  Which blocks we are updating with
 	 *
 	 * @return bool
 	 */
@@ -176,7 +176,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9.2
 	 *
-	 * @param $post_id
+	 * @param int $post_id The Post ID of the event.
 	 *
 	 * @return array
 	 */
@@ -212,8 +212,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $categories
-	 * @param $post
+	 * @param array   $categories The categories to be displayed.
+	 * @param WP_Post $post       The post object.
 	 * @return array
 	 */
 	public function block_categories( $categories ) {
@@ -238,8 +238,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  int  $post_id    Post ID
-	 * @param  int  $ticket_id  Ticket ID
+	 * @param int  $post_id    Post ID
+	 * @param int  $ticket_id  Ticket ID
 	 *
 	 * @return string
 	 */
@@ -260,8 +260,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  Tribe__Tickets__Ticket_Object $ticket        Ticket object
-	 * @param  mixed                         $provider_obj  The ticket provider object
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket object
+	 * @param mixed                         $provider_obj  The ticket provider object
 	 *
 	 * @return string
 	 */
@@ -352,7 +352,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9.2
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post $post_id The Post ID of the event.
 	 *
 	 * @return bool
 	 */

@@ -102,6 +102,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		tribe_cache()->delete( 'tec_tickets_attendees_by_ticket_id' );
 
+		wp_cache_delete( $ticket_a_id, 'tec_tickets' );
+		wp_cache_delete( $ticket_b_id, 'tec_tickets' );
+
 		// Refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );

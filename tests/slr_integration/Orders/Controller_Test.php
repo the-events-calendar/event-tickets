@@ -40,6 +40,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Commerce\Reports\Attendance_Totals;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -95,7 +96,7 @@ class Controller_Test extends Controller_Test_Case {
 	public function asset_data_provider() {
 		$assets = [
 			'tec-tickets-seating-admin-seats-report'       => '/build/Seating/admin/seatsReport.js',
-			'tec-tickets-seating-admin-seats-report-style' => '/build/Seating/admin/seatsReport.css',
+			'tec-tickets-seating-admin-seats-report-style' => '/build/Seating/admin/style-seatsReport.css',
 		];
 
 		foreach ( $assets as $slug => $path ) {
@@ -279,6 +280,14 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * @before
+	 * @after
+	 */
+	public function before_and_after() {
+		$this->test_services->get( Attendance_Totals::class )->reset_counts();
 	}
 
 	/**
@@ -1487,6 +1496,8 @@ class Controller_Test extends Controller_Test_Case {
 		global $post;
 		$post = get_post( $event_id );
 
+		$this->set_fn_return( 'wp_create_nonce', 'test-nonce-745631543' );
+
 		$row_actions = apply_filters( 'post_row_actions', [], $post );
 
 		$this->assertContains( 'tickets_seats', array_keys( $row_actions ) );
@@ -1779,5 +1790,68 @@ class Controller_Test extends Controller_Test_Case {
 				)
 			)
 		);
+	}
+
+	public function test_get_localized_data():void{
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$post_id = static::factory()->post->create();
+		$_GET['post_id'] = $post_id;
+		$ticket_1_id = $this->create_tc_ticket( $post_id, 10 );
+		update_post_meta( $ticket_1_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_1_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		$ticket_2_id = $this->create_tc_ticket( $post_id, 23 );
+		update_post_meta( $ticket_2_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_2_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		$ticket_3_id = $this->create_tc_ticket( $post_id, 89 );
+		update_post_meta( $ticket_3_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_3_id, meta::META_KEY_SEAT_TYPE, 'some-seat-type-uuid' );
+		// Sort the tickets by menu_order to stabilize the snapshot.
+		wp_update_post(['ID' => $ticket_1_id, 'menu_order' => 1]);
+		wp_update_post(['ID' => $ticket_2_id, 'menu_order' => 2]);
+		wp_update_post(['ID' => $ticket_3_id, 'menu_order' => 3]);
+
+		$expected = [
+			'postId'      => $post_id,
+			'seatTypeMap' =>
+				[
+					'some-seat-type-uuid' =>
+						[
+							'id'      => 'some-seat-type-uuid',
+							'tickets' =>
+								[
+									[
+										'ticketId'    => $ticket_1_id,
+										'name'        => "Test TC ticket for $post_id",
+										'price'       => '&#x24;10.00',
+										'priceValue'  => '10',
+										'description' => "Test TC ticket description for $post_id",
+										'dateInRange' => true,
+										'maxLimit'    => 100,
+									],
+									[
+										'ticketId'    => $ticket_2_id,
+										'name'        => "Test TC ticket for $post_id",
+										'price'       => '&#x24;23.00',
+										'priceValue'  => '23',
+										'description' => "Test TC ticket description for $post_id",
+										'dateInRange' => true,
+										'maxLimit'    => 100,
+									],
+									[
+										'ticketId'    => $ticket_3_id,
+										'name'        => "Test TC ticket for $post_id",
+										'price'       => '&#x24;89.00',
+										'priceValue'  => '89',
+										'description' => "Test TC ticket description for $post_id",
+										'dateInRange' => true,
+										'maxLimit'    => 100,
+									],
+								],
+						],
+				],
+		];
+		$this->assertEquals($expected,$controller->get_localized_data());
 	}
 }

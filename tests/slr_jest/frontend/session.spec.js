@@ -159,7 +159,7 @@ describe('Seat Selection Session', () => {
 		addFilter(
 			'tec.tickets.seating.frontend.session.checkoutControls',
 			'test',
-			(selector) => selector + ', #my-custom-checkout-form'
+			(selector) => [...selector, '#my-custom-checkout-form']
 		);
 
 		await syncOnLoad();
@@ -213,7 +213,7 @@ describe('Seat Selection Session', () => {
 		addFilter(
 			'tec.tickets.seating.frontend.session.checkoutControls',
 			'test',
-			(selector) => selector + ', #my-custom-checkout-form'
+			(selector) => [...selector, '#my-custom-checkout-form']
 		);
 
 		await syncOnLoad();

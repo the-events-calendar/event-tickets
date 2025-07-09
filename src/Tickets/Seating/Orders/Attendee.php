@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use TEC\Tickets\Commerce\Module;
 use Tribe__Main as Common;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
@@ -20,6 +19,7 @@ use TEC\Tickets\Seating\Meta;
 use WP_Query;
 use WP_Post;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__RSVP as RSVP_Provider;
 
 /**
  * Class Attendee
@@ -69,11 +69,11 @@ class Attendee {
 			return $value;
 		}
 
-		if ( ! isset( $item['ID'] ) ) {
+		if ( ! isset( $item['attendee_id'] ) ) {
 			return '-';
 		}
 
-		$seat_label = get_post_meta( $item['ID'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
+		$seat_label = get_post_meta( $item['attendee_id'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
 
 		if ( ! empty( $seat_label ) ) {
 			return $seat_label;
@@ -177,10 +177,20 @@ class Attendee {
 	 * @return int The attendee ID.
 	 */
 	public function handle_attendee_delete( int $attendee_id, Reservations $reservations ): int {
-		$event_id       = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
+		$event_id = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
+		if ( ! $event_id ) {
+			return $attendee_id;
+		}
+
+		$event = get_post( $event_id );
+		if ( ! $event instanceof WP_Post ) {
+			// The event has been deleted, so we don't need to cancel the reservation.
+			return $attendee_id;
+		}
+
 		$reservation_id = get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true );
 
-		if ( ! $event_id || ! $reservation_id ) {
+		if ( ! $reservation_id ) {
 			return $attendee_id;
 		}
 
@@ -302,11 +312,11 @@ class Attendee {
 	public function format_many( array $attendees ): array {
 		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
 
-		// Filter out attendees that are not from the Commerce module.
+		// Filter out attendees that are from the RSVP provider.
 		$attendees = array_filter(
 			$attendees,
 			static function ( array $attendee ): bool {
-				return Module::class === $attendee['provider'];
+				return RSVP_Provider::class !== $attendee['provider'];
 			}
 		);
 

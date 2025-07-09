@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Provider extends \TEC\Common\Contracts\Service_Provider {
@@ -42,7 +42,13 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
-		$assets->register();
+
+		// Register assets only after `init` hook has fired.
+		if ( did_action( 'init' ) || doing_action( 'init' ) ) {
+			$assets->register();
+		} else {
+			add_action( 'init', [ $assets, 'register' ] );
+		}
 
 		$this->container->singleton( Assets::class, $assets );
 	}

@@ -15,29 +15,35 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Button } from '@moderntribe/common/elements';
-import { Card } from '@moderntribe/tickets/elements';
-import {
-	Close as CloseIcon,
-	Settings as SettingsIcon,
-} from '@moderntribe/tickets/icons';
+import { Card } from '../index';
+import { Close as CloseIcon, Settings as SettingsIcon } from '../../icons';
 import './style.pcss';
 
 const SettingsDashboard = ( {
 	className,
 	closeButtonDisabled,
-	closeButtonLabel,
-	content,
-	headerLeft,
-	onCloseClick,
-} ) => (
-	<Card className={ classNames(
-		'tribe-editor__settings-dashboard',
-		className,
-	) }>
-		<header className="tribe-editor__settings-dashboard__header">
-			<span className="tribe-editor__settings-dashboard__header-left">
-				{ headerLeft }
+	closeButtonLabel = (
+		<Fragment>
+			<CloseIcon />
+			<span className="tribe-editor__settings-dashboard__close-button-text">
+				{ __( 'close', 'event-tickets' ) }
 			</span>
+		</Fragment>
+	),
+	content,
+	headerLeft = (
+		<Fragment>
+			<SettingsIcon />
+			<span className="tribe-editor__settings-dashboard__header-left-text">
+				{ __( 'Ticket Settings', 'event-tickets' ) }
+			</span>
+		</Fragment>
+	),
+	onCloseClick = noop,
+} ) => (
+	<Card className={ classNames( 'tribe-editor__settings-dashboard', className ) }>
+		<header className="tribe-editor__settings-dashboard__header">
+			<span className="tribe-editor__settings-dashboard__header-left">{ headerLeft }</span>
 			<Button
 				className="tribe-editor__settings-dashboard__close-button"
 				onClick={ onCloseClick }
@@ -46,31 +52,9 @@ const SettingsDashboard = ( {
 				{ closeButtonLabel }
 			</Button>
 		</header>
-		<div className="tribe-editor__settings-dashboard__content">
-			{ content }
-		</div>
+		<div className="tribe-editor__settings-dashboard__content">{ content }</div>
 	</Card>
 );
-
-SettingsDashboard.defaultProps = {
-	closeButtonLabel: (
-		<Fragment>
-			<CloseIcon />
-			<span className="tribe-editor__settings-dashboard__close-button-text">
-				{ __( 'close', 'event-tickets' ) }
-			</span>
-		</Fragment>
-	),
-	headerLeft: (
-		<Fragment>
-			<SettingsIcon />
-			<span className="tribe-editor__settings-dashboard__header-left-text">
-				{ __( 'Ticket Settings', 'event-tickets' ) }
-			</span>
-		</Fragment>
-	),
-	onCloseClick: noop,
-};
 
 SettingsDashboard.propTypes = {
 	className: PropTypes.string,

@@ -82,7 +82,7 @@ class Controller_Test extends Controller_Test_Case {
 			},
 		];
 
-		yield 'Events with attached layout: some-layout-1' => [
+		yield 'Events with attached layout some-layout-1' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
 					[

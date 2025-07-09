@@ -2,7 +2,7 @@
 /**
  * Controller for registering and serving Site Health tests for the Seating functionality.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -18,7 +18,7 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
 /**
  * Class Controller.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -57,8 +57,6 @@ class Health extends Controller_Contract {
 	 */
 	public function __construct( Container $container ) {
 		parent::__construct( $container );
-
-		$this->define_tests();
 	}
 
 	/**
@@ -68,7 +66,7 @@ class Health extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	protected function define_tests() {
+	public function define_tests() {
 		$set_license_url = tribe( Settings::class )->get_url( [ 'tab' => 'licenses' ] );
 
 		$this->tests = [
@@ -174,6 +172,7 @@ class Health extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'init', [ $this, 'define_tests' ] );
 		remove_filter( 'site_status_tests', [ $this, 'add_site_status_tests' ] );
 
 		foreach ( $this->get_tests() as $callback => $test ) {
@@ -189,6 +188,7 @@ class Health extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		add_action( 'init', [ $this, 'define_tests' ] );
 		add_filter( 'site_status_tests', [ $this, 'add_site_status_tests' ] );
 
 		foreach ( $this->get_tests() as $callback => $test ) {

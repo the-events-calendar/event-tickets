@@ -285,7 +285,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "Flat {$modifier_type_uc}" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 5.00, // $5.00 in cents.
+				'order_modifier_amount'       => 5.00,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => "test_flat_{$this->modifier_type}",
 				'order_modifier_display_name' => "Flat {$modifier_type_uc}",
@@ -299,7 +299,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "Percent {$modifier_type_uc}" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 10.00, // 10% as a percentage.
+				'order_modifier_amount'       => 10.00,
 				'order_modifier_sub_type'     => 'percent',
 				'order_modifier_slug'         => "test_percent_{$this->modifier_type}",
 				'order_modifier_display_name' => "Percent {$modifier_type_uc}",
@@ -310,11 +310,11 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 			],
 		];
 
-		// Edge case: Long decimal value
+		// Edge case: Long decimal value that should be rounded.
 		yield "{$modifier_type_uc} - Long Decimal Value" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 100.595, // Amount with long decimal (will be rounded).
+				'order_modifier_amount'       => 1.00595,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'long_decimal',
 				'order_modifier_display_name' => 'Long Decimal',
@@ -329,7 +329,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "{$modifier_type_uc} - Excessively Large Amount" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 123456790, // Large amount.
+				'order_modifier_amount'       => 1234567.90,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'large_amount',
 				'order_modifier_display_name' => 'Large Amount',
@@ -344,7 +344,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "{$modifier_type_uc} - Special Characters" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 500, // $5.00 in cents.
+				'order_modifier_amount'       => 5.00,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'special_!@#$%^&*',
 				'order_modifier_display_name' => 'Special !@#$%^&*',
@@ -359,7 +359,7 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 		yield "{$modifier_type_uc} - Emojis in Name and Slug" => [
 			'insert_data' => [
 				'modifier'                    => $this->modifier_type,
-				'order_modifier_amount'       => 1500, // $15.00 in cents.
+				'order_modifier_amount'       => 15.00,
 				'order_modifier_sub_type'     => 'flat',
 				'order_modifier_slug'         => 'emoji_😊🔥',
 				'order_modifier_display_name' => "Emoji 😊🔥 {$modifier_type_uc}",
@@ -375,7 +375,6 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 	protected function get_table_display() {
 		$modifier_ids = [];
 		for ( $i = 0; $i < 20; $i++ ) {
-			// Step 1: Insert a new modifier.
 			$insert_data = [
 				'modifier'                    => $this->modifier_type,
 				'order_modifier_amount'       => (float) $i,
@@ -383,21 +382,30 @@ abstract class Order_Modifiers_TestCase extends WPTestCase {
 				'order_modifier_slug'         => sprintf( 'test_%1$s_%2$02d', $this->modifier_type, $i ),
 				'order_modifier_display_name' => "Test {$this->modifier_type} Insert",
 			];
-			$modifier_ids[] = $this->upsert_order_modifier_for_test( $insert_data )->id;
+
+			// Set up the applied_to value.
+			$applied_to = $i % 2 ? 'all' : 'per';
+
+			// Insert the modifier and store the ID.
+			$modifier_ids[] = $this->upsert_order_modifier_for_test( $insert_data, $applied_to )->id;
 		}
 
-		unset( $_REQUEST['modifier_id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
+		// Clear the request data to avoid conflicts with other tests.
+		unset( $_REQUEST['id'], $_REQUEST['edit'], $_POST['modifier_id'], $_POST['edit'] );
 
 		$modifier_admin_handler = tribe( Modifier_Admin_Handler::class );
 		$_REQUEST               = [
 			'modifier' => $this->modifier_type,
-			'orderby'  => 'modifier_id',
-			'order'    => 'desc',
+			'orderby'  => 'id',
+			'order'    => 'asc',
 		]; // phpcs:ignore WordPress.Security.NonceVerification
 
 		ob_start();
+		$this->get_table_class_instance()->prepare_items();
 		$modifier_admin_handler->render_tec_order_modifiers_page();
 
 		return ob_get_clean();
 	}
+
+	abstract protected function get_table_class_instance(): Order_Modifier_Table;
 }

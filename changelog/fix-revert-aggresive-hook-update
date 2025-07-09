@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Reverts aggressive hook update, causing fatals on installtion with themes overwritting the template `Single Ticket Item`. [ET-2276]

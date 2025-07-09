@@ -8,12 +8,10 @@ use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
 
-use Tribe__Utils__Array as Arr;
-
 /**
  * Class Webhook Endpoint.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
@@ -26,7 +24,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/webhook';
+	protected string $path = '/commerce/stripe/webhook';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -89,13 +87,20 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Given a WP Rest request we determine if it has the correct Stripe signature.
 	 *
 	 * @since 5.3.0
+	 * @since 5.18.1 - Protect from fatal when header is missing.
 	 *
 	 * @param WP_REST_Request $request Which request we are validating.
 	 *
 	 * @return bool
 	 */
 	public function verify_incoming_request_permission( WP_REST_Request $request ): bool {
-		return $this->signature_is_valid( $request->get_header( 'Stripe-Signature' ), $request->get_body() );
+		$header = $request->get_header( 'Stripe-Signature' );
+
+		if ( ! $header || ! is_string( $header ) ) {
+			return false;
+		}
+
+		return $this->signature_is_valid( $header, $request->get_body() );
 	}
 
 	/**

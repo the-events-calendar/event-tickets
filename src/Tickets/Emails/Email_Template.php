@@ -17,7 +17,7 @@ use TEC\Tickets\Emails\Admin\Preview_Data;
 /**
  * Class Email_Template
  *
- * @since   5.5.7
+ * @since 5.5.7
  *
  * @package TEC\Tickets\Emails
  */

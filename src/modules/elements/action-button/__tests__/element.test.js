@@ -22,7 +22,7 @@ describe( 'ActionButton', () => {
 
 	test( 'component rendered with the correct class when icon is on the right', () => {
 		const component = renderer.create(
-			<ActionButton icon={ <Icon /> } position={ positions.right }>Custom Action</ActionButton>,
+			<ActionButton icon={ <Icon /> } placement={ positions.right }>Custom Action</ActionButton>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -30,12 +30,6 @@ describe( 'ActionButton', () => {
 	test( 'component positions', () => {
 		expect( positions.right ).toBe( 'right' );
 		expect( positions.left ).toBe( 'left' );
-	} );
-
-	test( 'component has class', () => {
-		const component = mount( <ActionButton icon={ <Icon /> }>Custom Action</ActionButton> );
-		const button = component.find( Button );
-		expect( button.hasClass( 'tribe-editor__action-button' ) ).toBe( true );
 	} );
 
 	test( 'component rendered as link', () => {

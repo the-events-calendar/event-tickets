@@ -13,8 +13,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { IconWithTooltip, NumericLabel } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { IconWithTooltip, NumericLabel } from '../../../../../../modules/elements';
+import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/constants';
 import './style.pcss';
 
 /**
@@ -27,7 +27,7 @@ const Availability = ( { available, total } ) => {
 			className={ classNames(
 				'tribe-editor__tickets__availability-label',
 				'tribe-editor__tickets__availability-label--available',
-				'tribe-tooltip',
+				'tribe-tooltip'
 			) }
 			count={ available }
 			singular={
@@ -35,7 +35,7 @@ const Availability = ( { available, total } ) => {
 				// eslint-disable-next-line no-undef
 				sprintf(
 					/* Translators: %s - ticket singular label, lowercase */
-					__('%s available', 'event-tickets'),
+					__( '%s available', 'event-tickets' ),
 					TICKET_LABELS.ticket.singularLowercase
 				)
 			}
@@ -44,7 +44,7 @@ const Availability = ( { available, total } ) => {
 				// eslint-disable-next-line no-undef
 				sprintf(
 					/* Translators: %s - ticket plural label, lowercase */
-					__('%s available', 'event-tickets'),
+					__( '%s available', 'event-tickets' ),
 					TICKET_LABELS.ticket.pluralLowercase
 				)
 			}
@@ -55,10 +55,10 @@ const Availability = ( { available, total } ) => {
 		<NumericLabel
 			className={ classNames(
 				'tribe-editor__tickets__availability-label',
-				'tribe-editor__tickets__availability-label--total',
+				'tribe-editor__tickets__availability-label--total'
 			) }
 			count={ total }
-			singular={ '%d ' + __( 'total capacity', 'event-tickets' ) } 
+			singular={ '%d ' + __( 'total capacity', 'event-tickets' ) }
 			plural={ '%d ' + __( 'total capacity', 'event-tickets' ) }
 		/>
 	);
@@ -67,22 +67,20 @@ const Availability = ( { available, total } ) => {
 		<div className="tribe-editor__tickets__availability">
 			<>
 				{ Available }
-				{available ? (
+				{ available ? (
 					<IconWithTooltip
 						// eslint-disable-next-line no-undef
-						propertyName={sprintf(
+						propertyName={ sprintf(
 							/* Translators: %s - the singular label for a ticket. */
 							__(
 								'%s availability is based on the lowest number of inventory, stock, and capacity.',
 								'event-tickets'
 							),
 							TICKET_LABELS.ticket.singular
-						)}
-						icon={
-							<span className="dashicons dashicons-info-outline" />
-						}
+						) }
+						icon={ <span className="dashicons dashicons-info-outline" /> }
 					/>
-				) : null}
+				) : null }
 			</>
 			{ Total }
 		</div>

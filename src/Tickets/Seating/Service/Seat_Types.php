@@ -2,7 +2,7 @@
 /**
  * The service component used to fetch the Seat Types from the service.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -23,7 +23,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 /**
  * Class Seat_Types.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller\Service;
  */
@@ -155,7 +155,7 @@ class Seat_Types {
 		);
 
 		$updated = $updater->check_last_update( $force )
-							->update_from_service( fn() => Seat_Types_Table::truncate() )
+							->update_from_service( fn() => tribe( Seat_Types_Table::class )->empty_table() )
 							->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 
 		return $updated;

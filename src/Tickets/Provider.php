@@ -3,7 +3,7 @@
 /**
  * The main service provider for the Tickets updated and new code.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets
  */
 
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Provider for all the Tickets loading.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets
  */
 class Provider extends Service_Provider {
@@ -59,7 +59,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( 'tickets.provider', $this );
 
 		// Loads the QR code controller.
-		$this->container->register( QR\Controller::class );
+		$this->container->register_on_action( 'tec_qr_code_loaded', QR\Controller::class );
 
 		// Loads all of tickets commerce.
 		$this->container->register( Commerce\Provider::class );
@@ -70,14 +70,17 @@ class Provider extends Service_Provider {
 		// Loads all of tickets emails.
 		$this->container->register( Emails\Provider::class );
 
-		// Loads admin area.
+		// Loads admin area provider.
 		$this->container->register( Admin\Provider::class );
 
-		// Loads admin area.
+		// Loads the Site Health provider.
 		$this->container->register( Site_Health\Provider::class );
 
-		// Loads admin area.
+		// Loads the Telemetry provider.
 		$this->container->register( Telemetry\Provider::class );
+
+		// Loads the Installer provider.
+		$this->container->register( Installer\Provider::class );
 
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class );
@@ -99,6 +102,9 @@ class Provider extends Service_Provider {
 
 		// Seating.
 		$this->container->register( Seating\Controller::class );
+
+		// Ticket Action hooks.
+		$this->container->register( Ticket_Actions::class );
 
 		$this->has_registered = true;
 

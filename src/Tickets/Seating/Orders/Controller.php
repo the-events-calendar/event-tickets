@@ -2,7 +2,7 @@
 /**
  * The controller for the Seating Orders.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -35,7 +35,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Controller
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -538,7 +538,7 @@ class Controller extends Controller_Contract {
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
-				'tec.tickets.seating.admin.seatsReport',
+				'tec.tickets.seating.admin.seatsReportData',
 				fn() => $this->get_localized_data( get_the_ID() )
 			)
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -547,7 +547,7 @@ class Controller extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
-			'admin/seatsReport.css',
+			'admin/style-seatsReport.css',
 			Tickets_Main::VERSION
 		)
 			->add_to_group_path( 'tec-seating' )

@@ -38,7 +38,7 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		// create order.
 		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
+		$cart->get_repository()->upsert_item( $ticket_a_id, 5 );
 
 		$purchaser = [
 			'purchaser_user_id'    => 0,
@@ -77,7 +77,7 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		// Create order.
 		$cart = new Cart();
-		$cart->get_repository()->add_item($ticket_a_id, 5);
+		$cart->get_repository()->upsert_item($ticket_a_id, 5);
 
 		$purchaser = [
 			'purchaser_user_id' => 0,

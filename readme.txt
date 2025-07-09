@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.18.0
-Requires at least: 6.5
-Tested up to: 6.7.1
+Stable tag: 5.24.2
+Requires at least: 6.6
+Tested up to: 6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,206 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.24.2] 2025-06-18 =
+
+* Version - Event Tickets 5.24.2 is only compatible with Event Tickets Plus 6.6.1 or higher.
+* Fix - Ensure wizard does not install The Events Calendar unless requested. [ET-2524]
+* Fix - Correct an issue where seating timer was getting interrupted during checkout. [ET-2519]
+* Fix - Ensure Tickets can be added to Posts using Block Editor. [ET-2516]
+* Fix - Correctly formats the query for cleaning up stale webhook entries properly. [ET-2206]
+* Language - 1 new strings added, 4 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.24.1.1] 2025-06-12 =
+
+* Version - Event Tickets 5.24.1.1 is only compatible with Event Tickets Plus 6.6.0 or higher.
+* Fix - Prevent issues with NULL or empty TEXT column values. Improve database schema migration robustness and compatibility. Bump schema version from 1.1.0 to 1.2.0. [ET-2515]
+* Language - 12 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.24.1] 2025-06-11 =
+
+* Fix - Change the create table syntax to be compatible with MySQL.
+* Fix - Fix incorrect ticket counts when using multiple providers on one ticketed post.
+* Fix - Ensure the Tickets_Handler class can properly handle multiple ticket providers in connection queries.
+* Tweak - Add new columns to `tec_ticket_groups` custom table and corresponding model properties for use by Ticket Presets.
+* Tweak - Added actions: `tec_tickets_admin_tickets_page_before_register_tabs`, `tec_tickets_admin_tickets_page_after_register_tabs`, `tribe_tickets_metabox_end`, `tribe_events_tickets_bottom_start`
+* Tweak - Changed views: `blocks/attendees/title`, `blocks/rsvp`, `blocks/rsvp/content`, `blocks/rsvp/details`, `blocks/rsvp/form`, `blocks/rsvp/form/details`, `blocks/rsvp/form/email`, `blocks/rsvp/form/form`, `blocks/rsvp/form/name`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity`, `blocks/rsvp/form/submit-login`, `blocks/rsvp/loader`, `blocks/rsvp/status`, `blocks/rsvp/status/going`, `blocks/tickets`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/item`, `blocks/tickets/quantity-number`, `blocks/tickets/registration/attendee/fields/select`, `blocks/tickets/registration/attendee/fields/text`, `blocks/tickets/registration/summary/ticket-price`, `components/attendees-list/attendees`, `components/attendees-list/attendees/attendee`, `components/attendees-list/title`, `emails/template-parts/body/order/ticket-totals/ticket-price`, `emails/template-parts/body/order/ticket-totals/ticket-quantity`, `emails/template-parts/body/series-events-list`, `emails/template-parts/header/head/series-pass-styles`, `modal/cart`, `modal/item-total`, `modal/registration-js`, `modal/registration`, `registration-js/attendees/fields/birth`, `registration-js/attendees/fields/checkbox`, `registration-js/attendees/fields/datetime`, `registration-js/attendees/fields/email`, `registration-js/attendees/fields/number`, `registration-js/attendees/fields/radio`, `registration-js/attendees/fields/select`, `registration-js/attendees/fields/telephone`, `registration-js/attendees/fields/text`, `registration-js/attendees/fields/url`, `registration-js/content`, `registration-js/mini-cart`, `registration/attendees/fields/checkbox`, `registration/attendees/fields/radio`, `registration/attendees/fields/select`, `registration/attendees/fields/text`, `seating/iframe-view`, `seating/tickets-block`, `shortcodes/my-attendance-list`, `tickets/email`, `tickets/orders-rsvp`, `tickets/rsvp`, `tickets/tpp`, `tickets/view-link`, `v2/commerce/checkout/cart`, `v2/commerce/checkout/cart/empty`, `v2/commerce/checkout/cart/empty/description`, `v2/commerce/checkout/cart/empty/title`, `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/cart/header`, `v2/commerce/checkout/cart/item`, `v2/commerce/checkout/cart/item/details`, `v2/commerce/checkout/cart/item/details/description`, `v2/commerce/checkout/cart/item/details/extra`, `v2/commerce/checkout/cart/item/details/title`, `v2/commerce/checkout/cart/item/details/toggle`, `v2/commerce/checkout/cart/item/price`, `v2/commerce/checkout/cart/item/quantity`, `v2/commerce/checkout/cart/item/sub-total`, `v2/commerce/checkout/cart/items`, `v2/commerce/checkout/cart/ticket`, `v2/commerce/checkout/fields`, `v2/commerce/checkout/footer`, `v2/commerce/checkout/footer/gateway-error`, `v2/commerce/checkout/gateways`, `v2/commerce/checkout/header`, `v2/commerce/checkout/header/links`, `v2/commerce/checkout/header/links/back`, `v2/commerce/checkout/header/title`, `v2/commerce/checkout/must-login`, `v2/commerce/checkout/must-login/login`, `v2/commerce/checkout/must-login/registration`, `v2/commerce/checkout/order-modifiers/coupons`, `v2/commerce/checkout/order-modifiers/fees`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/paypal/advanced-payments`, `v2/commerce/gateway/paypal/advanced-payments/fields/card-name`, `v2/commerce/gateway/paypal/advanced-payments/fields/card-number`, `v2/commerce/gateway/paypal/advanced-payments/fields/cvv`, `v2/commerce/gateway/paypal/advanced-payments/fields/expiration-date`, `v2/commerce/gateway/paypal/advanced-payments/fields/submit`, `v2/commerce/gateway/paypal/advanced-payments/form`, `v2/commerce/gateway/paypal/advanced-payments/separator`, `v2/commerce/gateway/paypal/buttons`, `v2/commerce/gateway/paypal/checkout-script`, `v2/commerce/gateway/paypal/container`, `v2/commerce/gateway/paypal/order/details/capture-id`, `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/payment-element`, `v2/commerce/order/description`, `v2/commerce/order/description/order-empty`, `v2/commerce/order/description/order`, `v2/commerce/order/details/date`, `v2/commerce/order/details/email`, `v2/commerce/order/details/order-number`, `v2/commerce/order/details/total`, `v2/commerce/order/footer`, `v2/commerce/order/footer/links`, `v2/commerce/order/footer/links/back-home`, `v2/commerce/order/footer/links/browse-events`, `v2/commerce/order/header`, `v2/commerce/order/header/title-empty`, `v2/commerce/order/header/title`, `v2/commerce/success`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/rsvp/ari/form/fields/email`, `v2/rsvp/ari/form/fields/name`, `v2/rsvp/ari/sidebar/quantity/input`, `v2/rsvp/form/fields/email`, `v2/rsvp/form/fields/name`, `v2/tickets`, `v2/tickets/commerce/fields`, `v2/tickets/footer`, `v2/tickets/footer/quantity`, `v2/tickets/footer/return-to-cart`, `v2/tickets/footer/total`, `v2/tickets/item/content`, `v2/tickets/item/content/description-toggle`, `v2/tickets/item/content/inactive`, `v2/tickets/item/content/sale-label`, `v2/tickets/item/content/title`, `v2/tickets/item/extra`, `v2/tickets/item/extra/available`, `v2/tickets/item/extra/available/quantity`, `v2/tickets/item/extra/available/unlimited`, `v2/tickets/item/extra/price`, `v2/tickets/item/inactive`, `v2/tickets/item/opt-out`, `v2/tickets/item/quantity-mini`, `v2/tickets/item/quantity`, `v2/tickets/item/quantity/add`, `v2/tickets/item/quantity/number`, `v2/tickets/item/quantity/remove`, `v2/tickets/item/quantity/unavailable`, `v2/tickets/items`, `v2/tickets/notice`, `v2/tickets/opt-out/hidden`, `v2/tickets/submit`, `v2/tickets/submit/button`, `v2/tickets/title`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
+* Language - 0 new strings added, 218 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.24.0.1] 2025-06-05 =
+
+* Fix - Fix some hardcoded asset paths. [TEC-5523]
+* Fix - Harden PayPal authentication. [ET-2244]
+* Fix - Utilize the newer version of our build process to ensure inline svgs are being handled properly. [TCMN-188]
+
+= [5.24.0] 2025-06-03 =
+
+* Version - Event Tickets 5.24.0 is only compatible with The Events Calendar 6.13.2 or higher.
+* Feature - Introduced Help Hub, a centralized support and resource interface for enhanced user guidance and plugin assistance. [ET-2375]
+* Feature - Introduced support for Square as a payment gateway for our TicketsCommerce. That comes with support for selling Tickets through Square's POS! [ET-2383]
+* Fix - Allow seated attendees to be manually deleted even if the event has been deleted already [ET-2440]
+* Fix - The purchaser form on TicketsCommerce checkout will only be displayed on logged out users.
+* Tweak - Added actions: `tribe_log`, `tec_tickets_commerce_square_merchant_disconnected`, `tec_tickets_commerce_square_order_before_upsert`, `tec_tickets_commerce_square_order_after_upsert`, `tec_tickets_commerce_square_webhook_event`, `tec_tickets_commerce_square_ticket_out_of_sync`, `tec_tickets_commerce_square_sync_post_reset_status`, `tec_tickets_commerce_square_sync_inventory_changed_`, `tec_tickets_commerce_square_sync_inventory_changed`, `tec_tickets_commerce_square_sync_completed`, `tec_tickets_commerce_square_sync_ticket_id_mapping_`, `tec_tickets_commerce_square_sync_ticket_id_mapping`, `tec_tickets_commerce_square_sync_object_`, `tec_tickets_commerce_square_sync_object`, `tec_tickets_commerce_square_object_synced_`, `tec_tickets_commerce_square_object_synced`, `tec_tickets_commerce_square_sync_request_completed`
+* Tweak - Added filters: `tec_tickets_commerce_gateway_webhook_maximum_attempts`, `tec_tickets_commerce_gateway_{$gateway_key}_webhook_maximum_attempts`, `tec_tickets_commerce_square_checkout_localized_data`, `tec_tickets_commerce_gateway_square_js_url`, `tec_tickets_commerce_square_order_customer_id`, `tec_tickets_commerce_square_order_payload`, `tec_tickets_commerce_square_payment_body`, `tec_tickets_commerce_square_create_from_order`, `tec_tickets_commerce_square_webhook_event_types`, `tec_tickets_commerce_square_order_endpoint_error_messages`, `tec_tickets_commerce_square_requests_chance_of_triggering_rate_limit_exception`, `tec_tickets_commerce_square_settings`, `tec_tickets_commerce_square_location_options`, `tec_tickets_commerce_square_sync_ticket_able_post_type_inventory_posts_per_page`, `tec_tickets_commerce_square_sync_inventory_query_args`, `tec_tickets_commerce_square_sync_post_type_posts_per_page`, `tec_tickets_commerce_square_sync_post_type_query_args`, `tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once`, `tec_tickets_commerce_square_sync_reset_post_type_data_schedule_events_to_delete_at_once_all_at_once`, `tec_tickets_commerce_square_event_item_data`, `the_content`, `tec_tickets_commerce_square_event_item_description_max_words`, `tec_tickets_commerce_square_event_data`, `tec_tickets_commerce_square_webhook_endpoint_url`, `tec_tickets_commerce_order_{$order->gateway}_get_value_refunded`, `tec_tickets_commerce_order_get_value_refunded`, `tec_tickets_commerce_order_{$order->gateway}_get_value_captured`, `tec_tickets_commerce_order_get_value_captured`, `tec_tickets_commerce_order_created_by`, `tec_tickets_ticket_about_to_go_to_sale_seconds`, `tec_tickets_commerce_tickets_currency_code`
+* Tweak - Changed views: `v2/commerce/checkout`, `v2/commerce/checkout/cart`, `v2/commerce/checkout/cart/empty`, `v2/commerce/checkout/cart/empty/description`, `v2/commerce/checkout/cart/empty/title`, `v2/commerce/checkout/cart/footer`, `v2/commerce/checkout/cart/footer/quantity`, `v2/commerce/checkout/cart/footer/total`, `v2/commerce/checkout/cart/header`, `v2/commerce/checkout/cart/item`, `v2/commerce/checkout/cart/item/details`, `v2/commerce/checkout/cart/item/details/description`, `v2/commerce/checkout/cart/item/details/extra`, `v2/commerce/checkout/cart/item/details/title`, `v2/commerce/checkout/cart/item/details/toggle`, `v2/commerce/checkout/cart/item/price`, `v2/commerce/checkout/cart/item/quantity`, `v2/commerce/checkout/cart/item/sub-total`, `v2/commerce/checkout/cart/items`, `v2/commerce/checkout/cart/ticket`, `v2/commerce/checkout/fields`, `v2/commerce/checkout/footer`, `v2/commerce/checkout/footer/gateway-error`, `v2/commerce/checkout/gateways`, `v2/commerce/checkout/header`, `v2/commerce/checkout/header/links`, `v2/commerce/checkout/header/links/back`, `v2/commerce/checkout/header/title`, `v2/commerce/checkout/must-login`, `v2/commerce/checkout/must-login/login`, `v2/commerce/checkout/must-login/registration`, `v2/commerce/gateway/square/container`, `v2/tickets/item/content/sale-label`
+* Tweak - Removed filters: `tec_tickets_commerce_gateway_stripe_webhook_maximum_attempts`
+* Tweak - Tickets Commerce Flag Actions for controlling stock and attendees have increased precision to microtime to avoid concurrency problems
+* Language - 149 new strings added, 287 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.23.1] 2025-05-27 =
+
+* Fix - Ensures symbolic links are followed on Assets Group Paths. [TCMN-187]
+* Language - 0 new strings added, 10 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.23.0] 2025-05-20 =
+
+* Version - Event Tickets 5.23.0 is only compatible with The Events Calendar 6.13.0 or higher.
+* Version - Event Tickets 5.23.0 is only compatible with Event Tickets Plus 6.5.0 or higher.
+* Feature - Event Tickets Onboarding Wizard [ET-2339]
+* Feature - Event Tickets Settings page revamped to match The Events Calendar
+* Fix - Add defensive coding to custom_glance_items_attendees() to avoid a fatal. [ET-2404]
+* Fix - Change the asset loading function from `tribe_asset` to `tec_asset` in various parts of the codebase.
+* Language - 58 new strings added, 361 updated, 2 fuzzied, and 6 obsoleted.
+
+= [5.22.0.1] 2025-05-14 =
+
+* Fix - Prevents fatal if QR library in common has not loaded. [TEC-5497]
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 5 obsoleted.
+
+= [5.22.0] 2025-05-13 =
+
+* Feature - Move QR-Related code from ET to Common [TEC-5426]
+* Feature - Move QR code library to Common [TEC-5403]
+* Fix - Fix an issue when applying 100% off coupons to Seating tickets. [ET-2409]
+* Fix - Prevent instances of the `_load_textdomain_just_in_time` warning by moving all language after the `init` hook
+* Tweak - Removed filters: `tec_tickets_qr_code_can_use`, `tribe_tickets_attendees_report_js_config`
+* Tweak - Added actions: `tec_tickets_fully_loaded`, `tec_tickets_promoter_fully_loaded`
+* Tweak - Removed actions: `tribe_tickets_plugin_loaded`
+* Language - 0 new strings added, 5 updated, 0 fuzzied, and 4 obsoleted.
+
+= [5.21.1.1] 2025-04-28 =
+
+* Version - Event Tickets 5.21.1.1 is only compatible with The Events Calendar 6.11.2.1 or higher.
+* Security - Added more safety checks to telemetry opt-ins/opt-outs. [TCMN-186]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.21.1] 2025-04-07 =
+
+* Fix - Ensures when TicketsCommerce is disabled, we don't identify pages as Checkout or Cart page for TicketsCommerce. [ET-2349]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.21.0] 2025-03-25 =
+
+* Feature - Add the ability to create Coupons that can be applied to ticket checkouts sold through TicketsCommerce. [ET-2189]
+* Tweak - Added filters: `tec_tickets_commerce_cart_cookie_expiration`, `tec_tickets_commerce_cart_repo_prepare_data`, `tec_tickets_commerce_cart_add_full_item_params`, `tec_tickets_commerce_paypal_order_unit`, `tec_tickets_commerce_order_modifiers_successful_save_message`, `tec_tickets_checkout_should_skip_item`, `tec_tickets_commerce_cart_transient_expiration`
+* Tweak - Removed filters: `tec_tickets_commerce_cart_expiration`, `tec_tickets_commerce_order_modifiers_coupons_enabled`
+* Tweak - Added actions: `tec_tickets_commerce_cart_process`
+* Fix - Fix the input field for Fees (and Coupons) when the type is Percent and the thousands/decimal separators are set to "." and ","
+* Language - 21 new strings added, 106 updated, 5 fuzzied, and 9 obsoleted.
+
+= [5.20.1] 2025-03-13 =
+
+* Feature - Added Ticket editor support for creating seating ticket with WooCommerce. [SL-209]
+* Security - Ensure proper URL encoding for Admin URLS
+* Tweak - Added filters: `tec_tickets_seating_frontend_ticket_block_data`
+* Tweak - Changed views: `seating/seat-selection-timer`
+* Language - 0 new strings added, 11 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.20.0] 2025-03-06 =
+
+* Feature - Adds Ticket actions for ticket goes on sale, ticket sale ended and ticket stock changed. [ETP-975]
+* Feature - Introduced Waitlist entry points in Ticket and RSVP templates. [ETP-944]
+* Tweak - Added actions: `tec_tickets_commerce_decrease_ticket_stock`, `tec_tickets_commerce_increase_ticket_stock`, `tec_tickets_ticket_dates_updated`, `tec_tickets_ticket_stock_added`, `tec_tickets_ticket_stock_changed`, `tec_tickets_ticket_{$prefix}_date_trigger`, `tec_tickets_ticket_upserted`
+* Tweak - Added filters: `tec_tickets_rsvp_ids_to_sync`
+* Tweak - Adding filters to Tickets and RSVP block for the ability to render components on top of those blocks. [ETP-954]
+* Tweak - Changed views: `emails/confirmation`, `emails/spot-available`, `emails/template-parts/body/unsubscribe`, `tickets/my-tickets/user-details`, `v2/rsvp/content`, `v2/tickets`
+* Tweak - Enrich ticket management JS hooks.
+* Tweak - Firing a hook `tec.tickets.seating.setUsingAssignedSeating` whenever the `isUsingAssignedSeating` property is set. [ETP-973]
+* Tweak - Init TicketsCommerce Module as soon as possible. [ETP-972]
+* Tweak - Introduced hooks that fire during RSVP creation/update/deletion while in the block editor.
+* Tweak - Introduce Waitlist email templates. [ETP-957]
+* Tweak - Moved abstract class for custom tables into TCMN.
+* Tweak - Move method `provide_events_results_to_ajax` one level higher so that it loads regardless of Tickets Commerce. [ETP-976]
+* Fix - Ensure that Capacity and Stock handling now are handled in one single Action by Tickets Commerce and it respects Global Capacity.
+* Fix - Restore Ticket's API capability checks to take place in controller and not in internal API. [ET-2313]
+* Language - 2 new strings added, 55 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.19.3] 2025-03-04 =
+
+* Feature - Add In-App Notifications for Event Tickets [ET-2294]
+* Tweak - Added actions: `tec_ian_icon`
+* Tweak - Changed views: `tickets/my-tickets/user-details`, `tickets/orders`
+* Fix - Replace form element wrapping the Checkout with section to avoid invalid HTML of form into form resulting to broken checkout with PayPal. [ET-2327]
+* Fix - Corrected template override path for My Tickets page. [ET-2296]
+* Fix - Ensure the Attendee Model for Tickets Commerce doesn't throw fatal errors when Order ID is invalid.
+* Language - 14 new strings added, 121 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.19.2] 2025-02-27 =
+
+* Feature - Properly support `return_url` on the checkout page, so that payments like Klarna, AliPay and a couple others properly handle failed orders.
+* Tweak - Improve how we handle webhooks with Stripe to avoid Orders to be left behind in status due to order of operations on Checkout page.
+* Fix - Ensure refunds would put the stock back when handled by either Webhook or directly on checkout page
+* Fix - Prevent problems related to Stripe checkout experience causing users to duplicate charges.
+* Fix - Template conditional appearance, ensuring the SKU field appears when editting a Ticket created through WooCommerce. [ETP-996]
+
+= [5.19.1.2] 2025-02-20 =
+
+* Security - Hardened the API around ticket and attendee creation, editing, and deletion. Props to "the sneaky squirrel" for the report! [SVUL-14]
+* Language - 0 new strings added, 7 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.19.1.1] 2025-02-12 =
+
+* Fix - Updated common library to correct issues with notifications around licensing.
+* Fix - Add a callback to remove the `tribe_pue_key_notices` once on upgrade to version 6.5.1.1 [TEC-5384]
+* Fix - Adjustments were made to prevent a fatal error when tec_pue_checker_init was triggered too early, attempting to call tribe_is_truthy() before it was available. The license check and active plugin monitoring now run on admin_init to ensure proper loading. [TEC-5384]
+* Fix - Update the license checker to ignore empty licenses. [TEC-5385]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.19.1] 2025-02-10 =
+
+* Fix - Added version number to the `editor.js` script to stop caching. [ET-2293]
+* Fix - Correct row and total calculation in the seat selection modal. [SL-266]
+* Fix - When updating a Ticket's price on block editor, while the ticket is on sale, won't overwrite the sale price in  WooCommerce. [ET-2100]
+* Fix - Changed the way translations are loaded to work with the latest WordPress language changes.
+* Tweak - Modify price field in seat report information to include formatted price, not just value. [SL-266]
+* Tweak - Refactored a hidden ticket provider field within the classic editor for RSVPs and tickets. [ET-2287]
+* Tweak - Removed filters: `tribe_events_tickets_module_name`
+* Language - 7 new strings added, 133 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.19.0] 2025-01-30 =
+
+* Fix - Update asset, dependencies, customizations to align with WordPress 6.7 and React 18. [TEC-5322]
+* Language - 0 new strings added, 12 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.18.1.1] 2025-01-27 =
+
+* Security - Prevent bug where order ID spoofing for Tickets Commerce would potentially display order data publicly [SVUL-11]
+
+= [5.18.1] 2025-01-22 =
+
+* Feature - Include Seating information in Attendee archive REST API response. [SL-264]
+* Tweak - Add filter to customize the cart hash cookie name for Tickets Commerce. [ET-2269]
+* Tweak - Introduced methods `can_change_to` for Statuses and `can_transition_to` for Orders. [ET-2281]
+* Tweak - Introduced various hooks for the order lock system and order completed checkout actions. [ET-2281]
+* Tweak - Lazy load attendees report page asset filter to properly localize asset data [ET-2274]
+* Tweak - Added filters: `tec_tickets_commerce_attendee_update_args`, `tec_tickets_commerce_attendee_update`, `tec_tickets_commerce_cart_hash_cookie_name`, `tec_tickets_commerce_order_{$gateway_key}_upsert_args`, `tec_tickets_commerce_order_upsert_args`, `tec_tickets_commerce_order_upsert_existing_order_id`, `tec_tickets_commerce_order_{$gateway_key}_update_args`, `tec_tickets_commerce_order_update_args`, `tec_tickets_commerce_order_modifier_valid_statuses`, `tec_tickets_rest_attendee_archive_data`
+* Tweak - Removed filters: `tec_tickets_commerce_order_modifier_status_flags`
+* Tweak - Added actions: `tec_tickets_commerce_attendee_before_update`, `tec_tickets_commerce_attendee_after_update`, `tec_tickets_commerce_order_locked`, `tec_tickets_commerce_order_unlocked`, `tec_tickets_commerce_order_checkout_completed`
+* Tweak - Changed views: `v2/tickets/item`
+* Fix - Added a default empty array to `maybe_disable_foreign_key_checks`. [ET-2275]
+* Fix - Attendee generation during order status transition becomes aware if attendees have been already generated. [ET-2282]
+* Fix - Introduce Order lock mechanism to ensure 2 or more action that could update the order, they dont so at the same time. [ET-2279]
+* Fix - Prevent duplicate orders and as a result duplicated attendees when a payment would initially fail at least once. [ET-2280]
+* Fix - Reverts aggressive hook update, causing fatals on installation with themes overwriting the template `Single Ticket Item`. [ET-2276]
+* Fix - Screen options will no longer be disabled when Event Tickets is active. [ET-2273]
+* Fix - Ticket sales will be counted correctly during status transitions of the orders they belong to. [ET-2286]
+* Performance - Enhance the performance of order modifier database queries [ET-2268]
+* Deprecated - Method `should_payment_intent_be_updated` since its no longer needed. [ET-2281]
+* Language - 3 new strings added, 111 updated, 2 fuzzied, and 2 obsoleted.
+
+= [5.18.0.1] 2025-01-07 =
+
+* Fix - Resolves problem related to duplication of attendees while using Stripe webhooks with Tickets Commerce. [ET-2279]
 
 = [5.18.0] 2024-12-17 =
 

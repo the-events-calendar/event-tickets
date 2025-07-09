@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 /**
  * Abstract Merchant Contract.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -94,6 +94,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	 * Returns the URL to disconnect the merchant.
 	 *
 	 * @since 5.11.0.5
+	 * @since 5.23.0 Removed `tab` in favor of $current_section.
 	 *
 	 * @return string
 	 */
@@ -102,7 +103,6 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 
 		return (string) tribe( Tickets_Settings::class )->get_url(
 			[
-				'tab'            => Payments_Tab::$slug,
 				$current_section => Gateway::get_key(),
 				'tc-action'      => $this->get_disconnect_action(),
 				'tc-nonce'       => wp_create_nonce( $this->get_disconnect_action() ),
@@ -119,5 +119,16 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	 */
 	public function get_disconnect_action(): string {
 		return $this->disconnect_action;
+	}
+
+	/**
+	 * Whether the merchant is ready to sell.
+	 *
+	 * @since 5.24.0
+	 *
+	 * @return bool
+	 */
+	public function is_ready_to_sell(): bool {
+		return true;
 	}
 }

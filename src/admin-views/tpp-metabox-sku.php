@@ -14,8 +14,8 @@ if ( ! $display_sku ) {
 ?>
 
 <div class="<?php $this->tr_class(); ?> input_block tribe-dependent"
-     data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio"
-     data-condition-is-checked
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition="Tribe__Tickets__Commerce__PayPal__Main"
 >
 	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'SKU:', 'event-tickets' ); ?></label>
 	<input

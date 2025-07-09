@@ -9,7 +9,7 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.10.9
+ * @since 4.10.9
  * @version 4.12.0
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
@@ -39,4 +39,3 @@ if ( empty( $event->cost ) ) {
 		<?php echo esc_html( $event->cost ); ?>
 	</span>
 </div>
-

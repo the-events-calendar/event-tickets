@@ -10,31 +10,35 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.commerce.hooks' ), 'some_method' ] );
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
 
 namespace TEC\Tickets\Commerce;
 
-use \TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Commerce\Gateways\Manager;
+use Tribe\Tickets\Admin\Settings as Ticket_Settings;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Status\Status_Handler;
-use WP_Admin_Bar;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe__Date_Utils;
-use WP_Query;
+use WP_Admin_Bar;
 use WP_Post;
+use WP_Query;
 use WP_User_Query;
-
+use TEC\Tickets\Hooks as Tickets_Hooks;
+use TEC\Tickets\Commerce\Gateways\Stripe\Hooks as Stripe_Hooks;
+use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
 /**
  * Class Hooks.
  *
- * @since   5.1.6
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -54,6 +58,7 @@ class Hooks extends Service_Provider {
 	 * Adds the actions required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
+	 * @since 5.24.0 Added async webhook process routing action.
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
@@ -64,8 +69,6 @@ class Hooks extends Service_Provider {
 
 		// Compatibility Hooks
 		add_action( 'init', [ $this, 'register_event_compatibility_hooks' ] );
-
-		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
 		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
 		add_action( 'template_redirect', [ $this, 'do_checkout_parse_request' ] );
@@ -100,6 +103,8 @@ class Hooks extends Service_Provider {
 		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table' ] );
 
 		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
+
+		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'route_async_webhook_process' ], 10, 2 );
 	}
 
 	/**
@@ -141,19 +146,17 @@ class Hooks extends Service_Provider {
 		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
-		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
 		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
 
 		add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
 		add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
-		
-		add_filter( 'tec_tickets_attendee_decreases_inventory', [ $this, 'filter_attendee_decreases_inventory' ], 10, 2 );
 	}
 
 	/**
 	 * Provides the results for the events dropdown in the Orders table.
 	 *
 	 * @since 5.13.0
+	 * @deprecated 5.20.0
 	 *
 	 * @param array<string,mixed>  $results The results.
 	 * @param array<string,string> $search The search.
@@ -161,42 +164,9 @@ class Hooks extends Service_Provider {
 	 * @return array<string,mixed>
 	 */
 	public function provide_events_results_to_ajax( $results, $search ) {
-		if ( empty( $search['term'] ) ) {
-			return $results;
-		}
-
-		$term = $search['term'];
-
-		$args = [
-			'no_found_rows'          => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-			'post_type'              => (array) tribe_get_option( 'ticket-enabled-post-types', [] ),
-			'post_status'            => 'any',
-			'posts_per_page'         => 10,
-			's'                      => $term,
-			// Default to show most recent first.
-			'orderby'                => 'ID',
-			'order'                  => 'DESC',
-		];
-
-		$query = new WP_Query( $args );
-
-		if ( empty( $query->posts ) ) {
-			return $results;
-		}
-
-		$results = array_map(
-			function ( WP_Post $result ) {
-				return [
-					'id'   => $result->ID,
-					'text' => get_the_title( $result->ID ),
-				];
-			},
-			$query->posts
-		);
-
-		return [ 'results' => $results ];
+		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
+		_deprecated_function( __METHOD__, '5.20.0', Tickets_Hooks::class . '::provide_events_results_to_ajax' );
+		return tribe( Tickets_Hooks::class )->provide_events_results_to_ajax( $results, $search );
 	}
 
 	/**
@@ -484,9 +454,11 @@ class Hooks extends Service_Provider {
 	 * Initializes the Module Class.
 	 *
 	 * @since 5.1.9
+	 *
+	 * @deprecated 5.20.0
 	 */
 	public function load_commerce_module() {
-		$this->container->make( Module::class );
+		_deprecated_function( __METHOD__, '5.20.0' );
 	}
 
 	/**
@@ -547,15 +519,24 @@ class Hooks extends Service_Provider {
 	 * Depending on which page, tab and if an action is present we trigger the processing.
 	 *
 	 * @since 5.1.9
+	 * @since 5.23.0 Switched the tab to check the provider instead of `payment`.
 	 */
 	public function maybe_trigger_process_action() {
 		$page = tribe_get_request_var( 'page' );
-		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page ) {
+		if ( Ticket_Settings::$settings_page_id !== $page ) {
 			return;
 		}
 
-		$tab = tribe_get_request_var( 'tab' );
-		if ( 'payments' !== $tab ) {
+		$tab         = tribe_get_request_var( 'tab' );
+		$gateway_key = Payments_Tab::TAB_ID;
+
+		$gateway = tribe( Manager::class )->get_gateway_by_key( $tab );
+		// Lookup our Gateway, if we have one overwrite our $gateway_key.
+		if ( $gateway ) {
+			$gateway_key = $gateway::get_key();
+		}
+
+		if ( $gateway_key !== $tab ) {
 			return;
 		}
 
@@ -746,7 +727,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param $classes
+	 * @param array $classes The classes.
 	 *
 	 * @return array
 	 */
@@ -956,7 +937,7 @@ class Hooks extends Service_Provider {
 	 * @return array
 	 */
 	public function filter_tickets_in_cart( $tickets, $provider ) {
-		if ( \TEC\Tickets\Commerce::PROVIDER !== $provider ) {
+		if ( Base_Commerce::PROVIDER !== $provider ) {
 			return $tickets;
 		}
 
@@ -972,7 +953,7 @@ class Hooks extends Service_Provider {
 
 
 	/**
-	 * Modify the cart contents for the Rest call around TTickets Commerce cart.
+	 * Modify the cart contents for the Rest call around Tickets Commerce cart.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1001,7 +982,7 @@ class Hooks extends Service_Provider {
 				'post_id'   => $data['event_id'],
 				'optout'    => $data['extra']['optout'],
 				'iac'       => $data['extra']['iac'],
-				'provider'  => \TEC\Tickets\Commerce::PROVIDER,
+				'provider'  => Base_Commerce::PROVIDER,
 			];
 		}
 
@@ -1179,18 +1160,31 @@ class Hooks extends Service_Provider {
 
 		return $meta_keys;
 	}
-	
+
 	/**
-	 * Filters if the attendee decreases inventory.
+	 * Routes the async webhook process.
 	 *
-	 * @since TBD
+	 * @since 5.24.0
 	 *
-	 * @param bool  $decreases_inventory Whether the attendee decreases inventory.
-	 * @param array $attendee The attendee data.
-	 *
-	 * @return bool Whether the attendee decreases inventory.
+	 * @param int $order_id The order ID.
+	 * @param int $retry    The retry count.
 	 */
-	public function filter_attendee_decreases_inventory( $decreases_inventory, $attendee ): bool {
-		return tribe( Attendee::class )->decreases_inventory( $decreases_inventory, $attendee );
+	public function route_async_webhook_process( $order_id, $retry = 0 ): void {
+		$order = tec_tc_get_order( $order_id );
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		switch ( $order->gateway ) {
+			case 'stripe':
+				tribe( Stripe_Hooks::class )->process_async_stripe_webhook( $order_id, $retry );
+				break;
+			case 'square':
+				tribe( Square_Hooks::class )->process_async_webhook( $order_id, $retry );
+				break;
+			default:
+				return;
+		}
 	}
 }

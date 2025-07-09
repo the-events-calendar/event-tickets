@@ -83,14 +83,13 @@ class Fee extends Modifier_Abstract {
 		$modifier = parent::insert_modifier( $data );
 
 		// Handle metadata (e.g., order_modifier_apply_to).
-		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
+		$apply_fee_to = tec_get_request_var( 'order_modifier_apply_to', '' );
 
 		// Handle metadata (e.g., order_modifier_apply_to).
 		$this->handle_meta_data(
 			$modifier->id,
 			[
-				'meta_key'   => 'fee_applied_to',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
 				'meta_value' => $apply_fee_to,
 			]
 		);
@@ -100,10 +99,10 @@ class Fee extends Modifier_Abstract {
 
 		switch ( $apply_fee_to ) {
 			case 'venue':
-				$apply_to_post_id = tribe_get_request_var( 'venue_list', null );
+				$apply_to_post_id = tec_get_request_var( 'venue_list', null );
 				break;
 			case 'organizer':
-				$apply_to_post_id = tribe_get_request_var( 'organizer_list', null );
+				$apply_to_post_id = tec_get_request_var( 'organizer_list', null );
 				break;
 		}
 
@@ -132,15 +131,14 @@ class Fee extends Modifier_Abstract {
 		}
 
 		// Handle metadata (e.g., order_modifier_apply_to).
-		$apply_fee_to = tribe_get_request_var( 'order_modifier_apply_to', '' );
+		$apply_fee_to = tec_get_request_var( 'order_modifier_apply_to', '' );
 
 		$this->maybe_clear_relationships( $modifier->id, $apply_fee_to );
 
 		$this->handle_meta_data(
 			$modifier->id,
 			[
-				'meta_key'   => 'fee_applied_to',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_key'   => $this->get_applied_to_key( $this->modifier_type ),
 				'meta_value' => $apply_fee_to,
 			]
 		);
@@ -150,10 +148,10 @@ class Fee extends Modifier_Abstract {
 
 		switch ( $apply_fee_to ) {
 			case 'venue':
-				$apply_to_post_ids = tribe_get_request_var( 'venue_list', [] );
+				$apply_to_post_ids = tec_get_request_var( 'venue_list', [] );
 				break;
 			case 'organizer':
-				$apply_to_post_ids = tribe_get_request_var( 'organizer_list', [] );
+				$apply_to_post_ids = tec_get_request_var( 'organizer_list', [] );
 				break;
 		}
 
@@ -269,15 +267,24 @@ class Fee extends Modifier_Abstract {
 	 * @return array The context data ready for rendering the form.
 	 */
 	public function map_context_to_template( array $context ): array {
-		$order_modifier_fee_applied_to = $this->order_modifiers_meta_repository->find_by_order_modifier_id_and_meta_key( $context['modifier_id'], 'fee_applied_to' )->meta_value ?? '';
+		$applied_to = $this->meta_repository->find_by_order_modifier_id_and_meta_key(
+			$context['modifier_id'],
+			'fee_applied_to'
+		)->meta_value ?? '';
+
+		$sub_type = $context['sub_type'] ?? '';
+		$amount   = array_key_exists( 'raw_amount', $context )
+			? $this->get_amount_for_subtype( $sub_type, (float) $context['raw_amount'] )
+			: '';
+
 		return [
-			'order_modifier_display_name'     => $context['display_name'] ?? '',
-			'order_modifier_slug'             => $context['slug'] ?? $this->generate_unique_slug(),
-			'order_modifier_sub_type'         => $context['sub_type'] ?? '',
-			'order_modifier_fee_amount_cents' => $context['raw_amount'] ?? 0,
-			'order_modifier_status'           => $context['status'] ?? '',
-			'order_modifier_fee_limit'        => $context['fee_limit'] ?? '',
-			'order_modifier_apply_to'         => $order_modifier_fee_applied_to,
+			'order_modifier_display_name' => $context['display_name'] ?? '',
+			'order_modifier_slug'         => $context['slug'] ?? $this->generate_unique_slug(),
+			'order_modifier_sub_type'     => $sub_type,
+			'order_modifier_amount'       => $amount,
+			'order_modifier_status'       => $context['status'] ?? '',
+			'order_modifier_fee_limit'    => $context['fee_limit'] ?? '',
+			'order_modifier_apply_to'     => $applied_to,
 		];
 	}
 
@@ -295,6 +302,6 @@ class Fee extends Modifier_Abstract {
 	 * @return array The list of posts related to the modifier.
 	 */
 	public function get_active_on( $modifier_id ) {
-		return $this->order_modifiers_relationship_repository->find_by_modifier_id( $modifier_id );
+		return $this->relationship_repository->find_by_modifier_id( $modifier_id );
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * Handles the registration of all the Blocks managed by the plugin.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -23,11 +23,13 @@ use Tribe__Tickets__Editor__REST__Compatibility as REST_Compatibility;
 use Tribe__Tickets__Editor__Template as Template;
 use Tribe__Tickets__Editor__Template__Overwrite as Template_Overwrite;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Common\StellarWP\Assets\Config;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Controller.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -38,6 +40,9 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since 4.9
 	 */
 	public function do_register(): void {
+		// Add group path for tickets blocks.
+		Config::add_group_path( 'et-tickets-blocks', Tickets_Plugin::instance()->plugin_path . 'build/', 'Tickets/Blocks/' );
+
 		// The general warnings class.
 		$this->container->singleton( 'tickets.editor.warnings', Warnings::class, [ 'hook' ] );
 

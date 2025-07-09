@@ -1,5 +1,5 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
-import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
+import { ajaxUrl, ajaxNonce } from '../../ajax';
+import { onReady, getLocalizedString } from '../../utils';
 
 /**
  * Get localized string for the given key.
@@ -8,8 +8,8 @@ import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
  *
  * @return {string} - The localized string.
  */
-export function getString(key) {
-	return getLocalizedString(key, 'maps');
+export function getString( key ) {
+	return getLocalizedString( key, 'maps' );
 }
 
 /**
@@ -17,11 +17,11 @@ export function getString(key) {
  *
  * @param {HTMLDocument|null} dom The document to use to search for the delete buttons.
  */
-export function registerDeleteAction(dom) {
+export function registerDeleteAction( dom ) {
 	// Add click listener to all links with class 'delete'.
-	dom.querySelectorAll('.delete-map').forEach(function (link) {
-		link.addEventListener('click', deleteListener);
-	});
+	dom.querySelectorAll( '.delete-map' ).forEach( function ( link ) {
+		link.addEventListener( 'click', deleteListener );
+	} );
 }
 
 /**
@@ -31,9 +31,9 @@ export function registerDeleteAction(dom) {
  *
  * @param {Event} event The click event.
  */
-async function deleteListener(event) {
+async function deleteListener( event ) {
 	event.preventDefault();
-	await handleDelete(event.target);
+	await handleDelete( event.target );
 }
 
 /**
@@ -45,19 +45,19 @@ async function deleteListener(event) {
  *
  * @return {Promise<void>}
  */
-async function handleDelete(element) {
-	const mapId = element.getAttribute('data-map-id');
-	const card = element.closest('.tec-tickets__seating-tab__card');
+async function handleDelete( element ) {
+	const mapId = element.getAttribute( 'data-map-id' );
+	const card = element.closest( '.tec-tickets__seating-tab__card' );
 
 	card.style.opacity = 0.5;
 
-	if (confirm(getString('delete-confirmation'))) {
-		const result = await deleteMap(mapId);
-		if (result) {
+	if ( confirm( getString( 'delete-confirmation' ) ) ) {
+		const result = await deleteMap( mapId );
+		if ( result ) {
 			window.location.reload();
 		} else {
 			card.style.opacity = 1;
-			alert(getString('delete-failed'));
+			alert( getString( 'delete-failed' ) );
 		}
 	} else {
 		card.style.opacity = 1;
@@ -73,16 +73,16 @@ async function handleDelete(element) {
  *
  * @return {Promise<boolean>} - Promise resolving to true if delete was successful, false otherwise.
  */
-async function deleteMap(mapId) {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('mapId', mapId);
-	url.searchParams.set('action', 'tec_tickets_seating_service_delete_map');
-	const response = await fetch(url.toString(), { method: 'POST' });
+async function deleteMap( mapId ) {
+	const url = new URL( ajaxUrl );
+	url.searchParams.set( '_ajax_nonce', ajaxNonce );
+	url.searchParams.set( 'mapId', mapId );
+	url.searchParams.set( 'action', 'tec_tickets_seating_service_delete_map' );
+	const response = await fetch( url.toString(), { method: 'POST' } );
 
 	return response.status === 200;
 }
 
 export { handleDelete, deleteListener };
 
-onReady(() => registerDeleteAction(document));
+onReady( () => registerDeleteAction( document ) );

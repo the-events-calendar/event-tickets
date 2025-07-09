@@ -3,13 +3,11 @@
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Status_Handler;
-use \Tribe__Utils__Array as Arr;
-
-use \WP_List_Table;
-use \WP_Post;
+use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use Tribe__Tickets__Tickets as Tickets;
+use WP_List_Table;
+use WP_Post;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/screen.php' );
@@ -24,6 +22,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class Orders extends WP_List_Table {
 
+	use Is_Ticket;
+
 	/**
 	 * The user option that will be used to store the number of orders per page to show.
 	 *
@@ -32,7 +32,7 @@ class Orders extends WP_List_Table {
 	public $per_page_option = 20;
 
 	/**
-	 * The current post ID
+	 * The current post ID.
 	 *
 	 * @var int
 	 */
@@ -93,7 +93,7 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Checks the current user's permissions
+	 * Checks the current user's permissions.
 	 *
 	 * @since 5.2.0
 	 */
@@ -131,7 +131,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item The current item
+	 * @param WP_Post $item The current item.
 	 */
 	public function single_row( $item ) {
 		echo '<tr class="' . esc_attr( $item->post_status ) . '">';
@@ -237,7 +237,7 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Message to be displayed when there are no items
+	 * Message to be displayed when there are no items.
 	 *
 	 * @since 5.2.0
 	 */
@@ -250,8 +250,8 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
-	 * @param         $column
+	 * @param WP_Post $item   The current item.
+	 * @param string  $column The column name.
 	 *
 	 * @return string
 	 */
@@ -290,7 +290,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -301,11 +301,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the date column
+	 * Handler for the date column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -314,11 +314,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the purchased column
+	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -333,7 +333,11 @@ class Orders extends WP_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
-			$ticket   = \Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
+			if ( ! $this->is_ticket( $cart_item ) ) {
+				continue;
+			}
+
+			$ticket   = Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 			$output   .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
@@ -343,11 +347,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the order column
+	 * Handler for the order column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -367,11 +371,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the total column
+	 * Handler for the total column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -385,7 +389,7 @@ class Orders extends WP_List_Table {
 	 * @since 5.2.0
 	 * @since 5.9.1 Handle when the $order_url is empty.
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -409,11 +413,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for gateway column
+	 * Handler for gateway column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -514,7 +518,7 @@ class Orders extends WP_List_Table {
 		];
 
 		$custom_search = tribe( \TEC\Tickets\Commerce\Reports\Orders::class )->get_template()->template( 'orders/search-options', $template_vars, false );
-		// Add our search type dropdown before the search box input
+		// Add our search type dropdown before the search box input.
 		$search_box = str_replace( '<input type="submit"', $custom_search . '<input type="submit"', $search_box );
 
 		echo $search_box;
@@ -694,7 +698,7 @@ class Orders extends WP_List_Table {
 						$header
 					);
 				}
-				
+
 				$csv_row[] = empty( $value ) ? $value : $this->sanitize_and_format_csv_value( $value );
 			}
 			$csv_data[] = $csv_row;

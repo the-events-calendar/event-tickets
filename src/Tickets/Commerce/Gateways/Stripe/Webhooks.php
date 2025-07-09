@@ -15,7 +15,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Webhooks
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -65,6 +65,15 @@ class Webhooks extends Abstract_Webhooks {
 	 * @var string
 	 */
 	public const OPTION_KNOWN_WEBHOOKS = 'tickets-commerce-stripe-known-webhooks';
+
+	/**
+	 * Option name for the option to store pending webhooks.
+	 *
+	 * @since 5.18.1
+	 *
+	 * @var string
+	 */
+	public const PENDING_WEBHOOKS_KEY = '_tec_tickets_commerce_stripe_webhook_pending';
 
 	/**
 	 * Nonce key for webhook on-demand set up.
@@ -231,6 +240,7 @@ class Webhooks extends Abstract_Webhooks {
 		 */
 		$max_attempts = (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts', 20 );
 		$valid_key    = $this->pool_to_get_valid_key( $max_attempts );
+		$updated      = false;
 
 		if ( false === $valid_key ) {
 			$status   = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
@@ -512,11 +522,11 @@ class Webhooks extends Abstract_Webhooks {
 		return [
 			'tickets-commerce-gateway-settings-group-start-webhook'       => [
 				'type' => 'html',
-				'html' => '<div class="tribe-settings-form-wrap">',
+				'html' => '<div class="tec-settings-form__content-section">',
 			],
 			'tickets-commerce-gateway-settings-group-header-webhook'      => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h3 class="tec-settings-form__section-header tec-settings-form__section-header--sub">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h3>',
 			],
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
@@ -526,7 +536,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
 				'tooltip'    => '',
-				'size'       => 'large',
+				'size'       => 'medium',
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
 				'attributes' => [
 					'readonly' => 'readonly',
@@ -537,7 +547,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
 				'tooltip'             => $signing_key_tooltip,
-				'size'                => 'large',
+				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
@@ -550,7 +560,7 @@ class Webhooks extends Abstract_Webhooks {
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook' => [
 				'type' => 'html',
-				'html' => '<div class="clear"></div></div>',
+				'html' => '</div>',
 			],
 		];
 	}

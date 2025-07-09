@@ -120,7 +120,7 @@ class Attendees_ListTest extends \Codeception\TestCase\WPTestCase{
 		$tickets_commerce_ticket_id = $this->create_tc_ticket( $post_id );
 
 		$cart = new Cart();
-		$cart->get_repository()->add_item( $tickets_commerce_ticket_id, 5 );
+		$cart->get_repository()->upsert_item( $tickets_commerce_ticket_id, 5 );
 
 		$purchaser = [
 			'purchaser_user_id'    => 0,
@@ -149,7 +149,7 @@ class Attendees_ListTest extends \Codeception\TestCase\WPTestCase{
 
 		// create 5 attendees with pending order status.
 		$cart = new Cart();
-		$cart->get_repository()->add_item( $tickets_commerce_ticket_id, 5 );
+		$cart->get_repository()->upsert_item( $tickets_commerce_ticket_id, 5 );
 		$purchaser = [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => 'Test Purchaser',
@@ -168,7 +168,7 @@ class Attendees_ListTest extends \Codeception\TestCase\WPTestCase{
 
 		// create 5 attendees with completed order status.
 		$cart = new Cart();
-		$cart->get_repository()->add_item( $tickets_commerce_ticket_id, 5 );
+		$cart->get_repository()->upsert_item( $tickets_commerce_ticket_id, 5 );
 		$purchaser = [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => 'Test Purchaser',

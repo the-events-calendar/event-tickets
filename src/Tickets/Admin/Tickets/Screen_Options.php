@@ -46,7 +46,7 @@ class Screen_Options {
 	 * Filters the screen options show screen.
 	 *
 	 * @since 5.14.0
-	 * @since TBD Fixed show screen options logic.
+	 * @since 5.18.1 Fixed show screen options logic.
 	 *
 	 * @param boolean   $show   Whether to show the screen options.
 	 * @param WP_Screen $screen The current screen.

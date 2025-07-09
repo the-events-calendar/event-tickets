@@ -3,7 +3,7 @@
  * The main Event Assigned Controller plugin controllers, it bootstraps the ancillary controllers and binds the main
  * definitions.
  *
- * @since   1.0.0
+ * @since 1.0.0
  *
  * @package TEC/Controller
  */
@@ -159,6 +159,7 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->container->register( QR::class );
+		$this->container->register( REST::class );
 
 		$this->container->register( Health::class );
 	}

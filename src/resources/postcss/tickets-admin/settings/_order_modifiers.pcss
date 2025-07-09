@@ -2,7 +2,7 @@
 	width: 100%;
 
 	label {
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	input[type="number"],
@@ -24,5 +24,26 @@
 	/* Phone view (less than 768px) */
 	@media (min-width: 1024px) {
 		width: 30%;
+	}
+}
+
+.tickets_page_tec-tickets-order-modifiers {
+
+	.event-tickets__order-modifiers-admin-form {
+
+		.tec-tickets__modifier-page-title {
+			font-weight: var(--tec-font-weight-regular);
+
+			& > a {
+				margin-left: var(--tec-spacer-1);
+				vertical-align: middle;
+			}
+		}
+
+		.tec-tickets__modifier-explain-text {
+			float: left;
+			font-size: var(--tec-font-size-2);
+			padding: var(--tec-spacer-3) 0;
+		}
 	}
 }
