@@ -120,7 +120,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected static $posts_with_available_tickets = [];
 
 		// start API Definitions
-		// Child classes must implement all these functions / properties
+		// Child classes must implement all these functions / properties.
 
 		/**
 		 * Name of the provider
@@ -169,7 +169,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		public $className;
+		public $className; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase
 
 		/**
 		 * Path of the parent class
@@ -179,7 +179,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		private $parentPath;
+		private $parentPath; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase
 
 		/**
 		 * URL of the parent class
@@ -189,7 +189,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		private $parentUrl;
+		private $parentUrl; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase
 
 		/**
 		 * Name of the provider
@@ -199,7 +199,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		public $pluginName;
+		public $pluginName; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase
 
 		/**
 		 * Path of the child class
