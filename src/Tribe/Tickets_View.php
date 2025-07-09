@@ -1497,19 +1497,29 @@ class Tribe__Tickets__Tickets_View {
 	 * @return array The modified query variables.
 	 */
 	public function handle_tickets_request( $query_vars ) {
-		// If this is already a tickets page request, ensure consistency.
-		if ( isset( $query_vars['tribe-edit-orders'] ) && $query_vars['tribe-edit-orders'] ) {
-			// Force the query to be treated as a single post.
-			if ( isset( $query_vars['p'] ) && $query_vars['p'] ) {
-				$post = get_post( $query_vars['p'] );
-				if ( $post ) {
-					$query_vars['post_type'] = $post->post_type;
-					if ( 'page' === $post->post_type ) {
-						$query_vars['page_id'] = $post->ID;
-						unset( $query_vars['p'] );
-					}
-				}
-			}
+		// Bail early if this is not a tickets page request.
+		if ( ! isset( $query_vars['tribe-edit-orders'] ) || ! $query_vars['tribe-edit-orders'] ) {
+			return $query_vars;
+		}
+
+		// Bail early if there's no post ID.
+		if ( ! isset( $query_vars['p'] ) || ! $query_vars['p'] ) {
+			return $query_vars;
+		}
+
+		$post = get_post( $query_vars['p'] );
+
+		// Bail early if no post is found.
+		if ( ! $post ) {
+			return $query_vars;
+		}
+
+		// Force the query to be treated as a single post.
+		$query_vars['post_type'] = $post->post_type;
+
+		if ( 'page' === $post->post_type ) {
+			$query_vars['page_id'] = $post->ID;
+			unset( $query_vars['p'] );
 		}
 		
 		return $query_vars;
