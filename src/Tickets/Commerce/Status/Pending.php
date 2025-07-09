@@ -1,4 +1,9 @@
 <?php
+/**
+ * Pending status class.
+ *
+ * @since   5.1.9
+ */
 
 namespace TEC\Tickets\Commerce\Status;
 
@@ -36,6 +41,8 @@ class Pending extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var array
 	 */
 	protected $flags = [
 		'backfill_purchaser',
@@ -46,6 +53,8 @@ class Pending extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var array
 	 */
 	protected $wp_arguments = [
 		'public'                    => true,
@@ -78,7 +87,7 @@ class Pending extends Status_Abstract {
 		}
 
 		foreach ( $order->items as $item ) {
-			// Skip if we dont have a ticket id.
+			// Skip if we don't have a ticket id.
 			if ( empty( $item['ticket_id'] ) ) {
 				continue;
 			}
@@ -156,11 +165,23 @@ class Pending extends Status_Abstract {
 				$start_sale_time = Dates::reformat( $ticket->start_time, tribe_get_time_format() );
 
 				if ( $ticket->date_is_earlier( $now ) ) {
-					$message = sprintf( __( '%1$s will be available on %2$s at %3$s', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ), $start_sale_date, $start_sale_time );
+					$message = sprintf(
+						/* translators: 1: ticket label, 2: start sale date, 3: start sale time */
+						__( '%1$s will be available on %2$s at %3$s', 'event-tickets' ),
+						tribe_get_ticket_label_plural( 'unavailable_future_display_date' ), $start_sale_date, $start_sale_time
+					);
 				} elseif ( $ticket->date_is_later( $now ) ) {
-					$message = sprintf( __( '%s are no longer available.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_past' ) );
+					$message = sprintf(
+						/* translators: 1: ticket label */
+						__( '%s are no longer available.', 'event-tickets' ),
+						tribe_get_ticket_label_plural( 'unavailable_past' )
+					);
 				} else {
-					$message = sprintf( __( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' ) );
+					$message = sprintf(
+						/* translators: 1: ticket label */
+						__( 'There are no %s available at this time.', 'event-tickets' ),
+						tribe_get_ticket_label_plural( 'unavailable_mixed' )
+					);
 				}
 				return new WP_Error(
 					'tec-tc-ticket-unavailable',
