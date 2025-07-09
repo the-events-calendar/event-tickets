@@ -1467,52 +1467,52 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string The URL to redirect to.
 	 */
 	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url ) {
-    // If we have the tribe-edit-orders parameter, redirect to pretty URL format.
-    if ( ! empty( $redirect_url ) && get_query_var( 'tribe-edit-orders' ) ) {
-        $post_id = get_query_var( 'p' );
-        
-        if ( $post_id ) {
-            // Check if we have pretty permalinks enabled.
-            $has_plain_permalink = '' === get_option( 'permalink_structure' );
-            
-            if ( ! $has_plain_permalink ) {
-                // Redirect to the pretty URL format.
-                return home_url( '/tickets/' . $post_id );
-            }
-        }
-        
-        // Fallback: preserve the parameter in query string format.
-        $redirect_url = add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
-    }
+		// If we have the tribe-edit-orders parameter, redirect to pretty URL format.
+		if ( ! empty( $redirect_url ) && get_query_var( 'tribe-edit-orders' ) ) {
+			$post_id = get_query_var( 'p' );
+			
+			if ( $post_id ) {
+				// Check if we have pretty permalinks enabled.
+				$has_plain_permalink = '' === get_option( 'permalink_structure' );
+				
+				if ( ! $has_plain_permalink ) {
+					// Redirect to the pretty URL format.
+					return home_url( '/tickets/' . $post_id );
+				}
+			}
+			
+			// Fallback: preserve the parameter in query string format.
+			$redirect_url = add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		}
 
-    return $redirect_url;
-}
+		return $redirect_url;
+	}
 
-/**
- * Handle tickets page requests to prevent canonical redirect issues.
- *
- * @since TBD
- *
- * @param array $query_vars The query variables.
- * @return array The modified query variables.
- */
-public function handle_tickets_request( $query_vars ) {
-    // If this is already a tickets page request, ensure consistency.
-    if ( isset( $query_vars['tribe-edit-orders'] ) && $query_vars['tribe-edit-orders'] ) {
-        // Force the query to be treated as a single post.
-        if ( isset( $query_vars['p'] ) && $query_vars['p'] ) {
-            $post = get_post( $query_vars['p'] );
-            if ( $post ) {
-                $query_vars['post_type'] = $post->post_type;
-                if ( 'page' === $post->post_type ) {
-                    $query_vars['page_id'] = $post->ID;
-                    unset( $query_vars['p'] );
-                }
-            }
-        }
-    }
-    
-    return $query_vars;
-}
+	/**
+	 * Handle tickets page requests to prevent canonical redirect issues.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $query_vars The query variables.
+	 * @return array The modified query variables.
+	 */
+	public function handle_tickets_request( $query_vars ) {
+		// If this is already a tickets page request, ensure consistency.
+		if ( isset( $query_vars['tribe-edit-orders'] ) && $query_vars['tribe-edit-orders'] ) {
+			// Force the query to be treated as a single post.
+			if ( isset( $query_vars['p'] ) && $query_vars['p'] ) {
+				$post = get_post( $query_vars['p'] );
+				if ( $post ) {
+					$query_vars['post_type'] = $post->post_type;
+					if ( 'page' === $post->post_type ) {
+						$query_vars['page_id'] = $post->ID;
+						unset( $query_vars['p'] );
+					}
+				}
+			}
+		}
+		
+		return $query_vars;
+	}
 
 }
