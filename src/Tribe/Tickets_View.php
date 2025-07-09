@@ -251,39 +251,41 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.7.1
 	 * @since 5.8.2 Removed the $is_event_page param.
+	 * @since TBD Added support for pretty permalinks.
 	 *
 	 * @param int $event_id event_id The Event ID we're checking.
 	 *
 	 * @return string      The URL to the tickets page.
 	 */
 	public function get_tickets_page_url( int $event_id ): string {
-		$has_plain_permalink = '' === get_option( 'permalink_structure' );
-		$event_url           = get_permalink( $event_id );
+		$event_url = get_permalink( $event_id );
 
+		// Bail early if there is no event URL.
 		if ( empty( $event_url ) ) {
 			return '';
 		}
 
-		$post_type     = get_post_type( $event_id );
-		$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
+		$has_plain_permalink = '' === get_option( 'permalink_structure' );
+		$post_type           = get_post_type( $event_id );
+		$is_event_page       = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
 
-		// Is on the Event post type.
+		// Handle event post types first and return early.
 		if ( $is_event_page ) {
-			$link = $has_plain_permalink
+			return $has_plain_permalink
 				? add_query_arg( 'eventDisplay', 'tickets', untrailingslashit( $event_url ) )
 				: trailingslashit( $event_url ) . 'tickets';
-		} else {
-			if ( $has_plain_permalink ) {
-				$link = add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) );
-			} else {
-				// Use WordPress rewrite API to generate proper URL with correct base slug.
-				$bases        = $this->add_rewrite_base_slug();
-				$tickets_slug = $bases['tickets'][0] ?? 'tickets';
-				$link         = home_url( user_trailingslashit( $tickets_slug . '/' . $event_id ) );
-			}
 		}
 
-		return $link;
+		// Handle plain permalinks for non-event posts.
+		if ( $has_plain_permalink ) {
+			return add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) );
+		}
+
+		// Handle pretty permalinks for non-event posts.
+		$bases        = $this->add_rewrite_base_slug();
+		$tickets_slug = $bases['tickets'][0] ?? 'tickets';
+		
+		return home_url( user_trailingslashit( $tickets_slug . '/' . $event_id ) );
 	}
 
 	/**
