@@ -30,8 +30,15 @@
 
 	<?php $this->template( 'checkout/cart/item/details/title', [ 'item' => $item ] ); ?>
 
-	<?php $this->template( 'checkout/cart/item/details/toggle', [ 'item' => $item ] ); ?>
+	<?php
+	// Only show the toggle and description if the ticket has a description and should show description.
+	if ( ! empty( $item['obj'] ) && $item['obj']->show_description() && ! empty( $item['obj']->description ) ) :
+		?>
+		<?php $this->template( 'checkout/cart/item/details/toggle', [ 'item' => $item ] ); ?>
 
-	<?php $this->template( 'checkout/cart/item/details/description', [ 'item' => $item ] ); ?>
+		<?php $this->template( 'checkout/cart/item/details/description', [ 'item' => $item ] ); ?>
+		<?php
+	endif;
+	?>
 
 </div>
