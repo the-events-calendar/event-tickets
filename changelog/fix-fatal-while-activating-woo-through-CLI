@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevents fatal error when activating WooCommerce through WP-CLI when Event Tickets plugin was already active. [ET-2532]

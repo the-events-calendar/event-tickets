@@ -1,7 +1,25 @@
 <?php return '<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+	<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first" 	aria-hidden="true"
+	viewBox="0 0 15 15"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<circle cx="7.5" cy="7.5" r="7.5"/>
+</svg>
+	<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second" 	aria-hidden="true"
+	viewBox="0 0 15 15"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<circle cx="7.5" cy="7.5" r="7.5"/>
+</svg>
+	<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third" 	aria-hidden="true"
+	viewBox="0 0 15 15"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<circle cx="7.5" cy="7.5" r="7.5"/>
+</svg>
 </div>
 
 
@@ -70,8 +88,8 @@
 		data-guest-number="1"
 		role="tab"
 		aria-selected="true"
-		aria-controls="tribe-tickets-rsvp-277-guest-1-tab"
-		id="tribe-tickets-rsvp-277-guest-1"
+		aria-controls="tribe-tickets-rsvp-13704-guest-1-tab"
+		id="tribe-tickets-rsvp-13704-guest-1"
 			>
 		<svg  class="tribe-tickets-svgicon tribe-tickets__rsvp-ar-guest-icon"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 11 14"><defs/><path fill="#141827" stroke="#141827" stroke-width="1.1" d="M8.24995 3.575c0 1.32005-1.18823 2.475-2.75 2.475s-2.75-1.15495-2.75-2.475v-.55c0-1.32005 1.18823-2.475 2.75-2.475s2.75 1.15495 2.75 2.475v.55zM.55 11.5868c0-2.12633 1.7237-3.85003 3.85-3.85003h2.2c2.1263 0 3.85 1.7237 3.85 3.85003v1.7435H.55v-1.7435z"/></svg>		<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 			Main Guest		</span>
@@ -79,7 +97,7 @@
 </li>
 	<script
 	class="tribe-tickets__rsvp-ar-guest-list-item-template"
-	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-277"
+	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-13704"
 	type="text/template"
 >
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
@@ -89,8 +107,8 @@
 			data-guest-number="{{data.attendee_id + 1}}"
 			role="tab"
 			aria-selected="false"
-			aria-controls="tribe-tickets-rsvp-277-guest-{{data.attendee_id + 1}}-tab"
-			id="tribe-tickets-rsvp-277-guest-{{data.attendee_id + 1}}"
+			aria-controls="tribe-tickets-rsvp-13704-guest-{{data.attendee_id + 1}}-tab"
+			id="tribe-tickets-rsvp-13704-guest-{{data.attendee_id + 1}}"
 					>
 			<svg  class="tribe-tickets-svgicon tribe-tickets__rsvp-ar-guest-icon"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 11 14"><defs/><path fill="#141827" stroke="#141827" stroke-width="1.1" d="M8.24995 3.575c0 1.32005-1.18823 2.475-2.75 2.475s-2.75-1.15495-2.75-2.475v-.55c0-1.32005 1.18823-2.475 2.75-2.475s2.75 1.15495 2.75 2.475v.55zM.55 11.5868c0-2.12633 1.7237-3.85003 3.85-3.85003h2.2c2.1263 0 3.85 1.7237 3.85 3.85003v1.7435H.55v-1.7435z"/></svg>			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 								Guest {{data.attendee_id + 1}}			</span>
@@ -117,8 +135,8 @@
 	data-guest-number="1"
 	tabindex="0"
 	role="tabpanel"
-	id="tribe-tickets-rsvp-277-guest-1-tab"
-	aria-labelledby="tribe-tickets-rsvp-277-guest-1"
+	id="tribe-tickets-rsvp-13704-guest-1-tab"
+	aria-labelledby="tribe-tickets-rsvp-13704-guest-1"
 >
 	<header>
 	<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
@@ -136,7 +154,7 @@
 	<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-tickets__form-field-label"
-		for="tribe-tickets-rsvp-name-277"
+		for="tribe-tickets-rsvp-name-13704"
 	>
 		Name<span class="screen-reader-text">required</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
@@ -145,7 +163,7 @@
 		type="text"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
 		name="tribe_tickets[TICKET_ID][attendees][0][full_name]"
-		id="tribe-tickets-rsvp-name-277"
+		id="tribe-tickets-rsvp-name-13704"
 		value=""
 		required
 		placeholder="Your Name"
@@ -155,7 +173,7 @@
 	<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-tickets__form-field-label"
-		for="tribe-tickets-rsvp-email-277"
+		for="tribe-tickets-rsvp-email-13704"
 	>
 		Email<span class="screen-reader-text">required</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
@@ -164,7 +182,7 @@
 		type="email"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
 		name="tribe_tickets[TICKET_ID][attendees][0][email]"
-		id="tribe-tickets-rsvp-email-277"
+		id="tribe-tickets-rsvp-email-13704"
 		value=""
 		required
 		placeholder="your@email.com"
@@ -198,7 +216,7 @@
 
 	<script
 	class="tribe-tickets__rsvp-ar-form-guest-template"
-	id="tmpl-tribe-tickets__rsvp-ar-form-guest-template-277"
+	id="tmpl-tribe-tickets__rsvp-ar-form-guest-template-13704"
 	type="text/template"
 >
 	<div
@@ -206,8 +224,8 @@
 		data-guest-number="{{data.attendee_id + 1}}"
 		tabindex="0"
 		role="tabpanel"
-		id="tribe-tickets-rsvp-277-guest-{{data.attendee_id + 1}}-tab"
-		aria-labelledby="tribe-tickets-rsvp-277-guest-{{data.attendee_id + 1}}"
+		id="tribe-tickets-rsvp-13704-guest-{{data.attendee_id + 1}}-tab"
+		aria-labelledby="tribe-tickets-rsvp-13704-guest-{{data.attendee_id + 1}}"
 		hidden
 	>
 
