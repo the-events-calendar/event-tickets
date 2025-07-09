@@ -273,9 +273,14 @@ class Tribe__Tickets__Tickets_View {
 				? add_query_arg( 'eventDisplay', 'tickets', untrailingslashit( $event_url ) )
 				: trailingslashit( $event_url ) . 'tickets';
 		} else {
-			$link = $has_plain_permalink
-				? add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) )
-				: home_url( '/tickets/' . $event_id );
+			if ( $has_plain_permalink ) {
+				$link = add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) );
+			} else {
+				// Use WordPress rewrite API to generate proper URL with correct base slug.
+				$bases = $this->add_rewrite_base_slug();
+				$tickets_slug = $bases['tickets'][0] ?? 'tickets';
+				$link = home_url( user_trailingslashit( $tickets_slug . '/' . $event_id ) );
+			}
 		}
 
 		return $link;
@@ -1488,8 +1493,8 @@ class Tribe__Tickets__Tickets_View {
 			return add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
 		}
 
-		// Redirect to the pretty URL format.
-		return home_url( '/tickets/' . $post_id );
+		// Use WordPress rewrite API to generate the proper URL.
+		return $this->get_tickets_page_url( $post_id );
 	}
 
 	/**
@@ -1502,7 +1507,7 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function handle_tickets_request( $query_vars ) {
 		// Bail early if this is not a tickets page request.
-		if ( ! isset( $query_vars['tribe-edit-orders'] ) || ! $query_vars['tribe-edit-orders'] ) {
+		if ( empty( $query_vars['tribe-edit-orders'] ) ) {
 			return $query_vars;
 		}
 
