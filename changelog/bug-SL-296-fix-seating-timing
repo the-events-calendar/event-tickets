@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Ensure pending reservations are properly canceled when the Seat Selection page is closed. [SL-296]
