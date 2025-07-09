@@ -1,0 +1,62 @@
+:root {
+	/* This is a place to define CSS variables for the Classy component. */
+	--classy-date-picker-width: 320px;
+	--classy-padding-vertical: var(--tec-spacer-7);
+	--classy-color-required-asterisk: var(--tec-color-icon-error);
+}
+
+.classy-root {
+	/* This is a place to define styles for the Classy component. */
+
+	.classy-field {
+		&__capacity {
+			.classy-component__labeled-input {
+				padding: var(--classy-padding-vertical) 0;
+			}
+
+			.components-radio-control__group-wrapper {
+				flex-direction: row;
+				gap: var(--classy-padding-vertical);
+				justify-content: flex-start;
+			}
+		}
+
+		&__control--input-narrow {
+			.components-input-control__container {
+				width: 30%;
+			}
+		}
+	}
+}
+
+.classy-modal {
+	/* This is a place to define styles for the Classy modal. */
+
+	&__overlay--ticket {
+		.components-modal__content {
+			padding: 0;
+
+			.classy-field__separator {
+				border: none;
+				height: auto;
+				transform: translateY(-15px);
+			}
+
+			.classy-field__input--sale-duration {
+				--classy-input-width: var(--classy-date-picker-width);
+			}
+		}
+	}
+
+	&__section-separator {
+		margin: 0;
+		padding: 0;
+	}
+
+	/* Add asterisk to label when input is required */
+	.classy-component__labeled-input:has(input[required]) .classy-component__input-label::after {
+		content: " *";
+		color: var(--classy-color-required-asterisk);
+		font-weight: bold;
+	}
+}
