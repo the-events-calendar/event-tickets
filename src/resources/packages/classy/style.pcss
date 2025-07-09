@@ -1,8 +1,6 @@
 :root {
 	/* This is a place to define CSS variables for the Classy component. */
 	--classy-date-picker-width: 320px;
-	--classy-padding-vertical: var(--tec-spacer-7);
-	--classy-color-required-asterisk: var(--tec-color-icon-error);
 }
 
 .classy-root {
@@ -18,12 +16,6 @@
 				flex-direction: row;
 				gap: var(--classy-padding-vertical);
 				justify-content: flex-start;
-			}
-		}
-
-		&__control--input-narrow {
-			.components-input-control__container {
-				width: 30%;
 			}
 		}
 	}
@@ -46,17 +38,5 @@
 				--classy-input-width: var(--classy-date-picker-width);
 			}
 		}
-	}
-
-	&__section-separator {
-		margin: 0;
-		padding: 0;
-	}
-
-	/* Add asterisk to label when input is required */
-	.classy-component__labeled-input:has(input[required]) .classy-component__input-label::after {
-		content: " *";
-		color: var(--classy-color-required-asterisk);
-		font-weight: bold;
 	}
 }
