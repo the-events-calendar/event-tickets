@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+For Offline checkin support added the optional `$details` parameter to be able to set the checkin time and device_id. [ETP-1003]
