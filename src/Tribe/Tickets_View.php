@@ -272,13 +272,13 @@ class Tribe__Tickets__Tickets_View {
 		// Handle event post types first and return early.
 		if ( $is_event_page ) {
 			return $has_plain_permalink
-				? add_query_arg( 'eventDisplay', 'tickets', untrailingslashit( $event_url ) )
+				? add_query_arg( 'eventDisplay', 'tickets', $event_url )
 				: trailingslashit( $event_url ) . 'tickets';
 		}
 
 		// Handle plain permalinks for non-event posts.
 		if ( $has_plain_permalink ) {
-			return add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) );
+			return add_query_arg( 'tribe-edit-orders', 1, ( $event_url ) );
 		}
 
 		// Handle pretty permalinks for non-event posts.
