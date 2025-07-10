@@ -285,7 +285,7 @@ class Tribe__Tickets__Tickets_View {
 		$bases        = $this->add_rewrite_base_slug();
 		$tickets_slug = $bases['tickets'][0] ?? 'tickets';
 		
-		return home_url( user_trailingslashit( $tickets_slug . '/' . $event_id ) );
+		return home_url( untrailingslashit( $tickets_slug . '/' . $event_id ) );
 	}
 
 	/**
