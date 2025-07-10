@@ -40,7 +40,7 @@ class Tribe__Tickets__Tickets_View {
 		add_filter( 'redirect_canonical', [ $myself, 'preserve_tickets_parameter_in_canonical_redirect' ] );
 
 		// Handle tickets URLs consistently.
-		add_filter( 'request', [ $myself, 'handle_tickets_request' ], 10, 1 );
+		add_filter( 'request', [ $myself, 'handle_tickets_request' ] );
 
 		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
@@ -258,7 +258,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string      The URL to the tickets page.
 	 */
 	public function get_tickets_page_url( int $event_id ): string {
-		$event_url = get_permalink( $event_id );
+		$event_url = untrailingslashit( get_permalink( $event_id ) );
 
 		// Bail early if there is no event URL.
 		if ( empty( $event_url ) ) {
@@ -285,7 +285,7 @@ class Tribe__Tickets__Tickets_View {
 		$bases        = $this->add_rewrite_base_slug();
 		$tickets_slug = $bases['tickets'][0] ?? 'tickets';
 		
-		return home_url( untrailingslashit( $tickets_slug . '/' . $event_id ) );
+		return home_url( untrailingslashit( "{$tickets_slug}/{$event_id}" ) );
 	}
 
 	/**
