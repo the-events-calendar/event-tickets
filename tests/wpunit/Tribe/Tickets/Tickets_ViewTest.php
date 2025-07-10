@@ -335,4 +335,322 @@ class Tickets_ViewTest extends WPTestCase {
 		// reset to default.
 		update_option( 'permalink_structure', false );
 	}
+
+	/**
+	 * Data provider for canonical redirect tests.
+	 */
+	public function provide_canonical_redirect_data(): Generator {
+		yield 'no redirect URL' => [
+			function (): array {
+				$post_id = wp_insert_post( [
+					'post_type'   => 'post',
+					'post_title'  => 'Test Post',
+					'post_status' => 'publish',
+				] );
+
+				return [
+					'redirect_url' => '',
+					'post_id'      => $post_id,
+					'query_vars'   => [],
+					'expected'     => '',
+				];
+			},
+		];
+
+		yield 'no tribe-edit-orders parameter' => [
+			function (): array {
+				$post_id = wp_insert_post( [
+					'post_type'   => 'post',
+					'post_title'  => 'Test Post',
+					'post_status' => 'publish',
+				] );
+
+				return [
+					'redirect_url' => 'http://example.com/test',
+					'post_id'      => $post_id,
+					'query_vars'   => [],
+					'expected'     => 'http://example.com/test',
+				];
+			},
+		];
+
+		yield 'with tribe-edit-orders but no post ID' => [
+			function (): array {
+				return [
+					'redirect_url' => 'http://example.com/test',
+					'post_id'      => 0,
+					'query_vars'   => [ 'tribe-edit-orders' => 1 ],
+					'expected'     => 'http://example.com/test?tribe-edit-orders=1',
+				];
+			},
+		];
+
+		yield 'with tribe-edit-orders and post ID, plain permalinks' => [
+			function (): array {
+				$post_id = wp_insert_post( [
+					'post_type'   => 'post',
+					'post_title'  => 'Test Post',
+					'post_status' => 'publish',
+				] );
+
+				return [
+					'redirect_url'       => 'http://example.com/test',
+					'post_id'            => $post_id,
+					'query_vars'         => [ 'tribe-edit-orders' => 1, 'p' => $post_id ],
+					'expected'           => 'http://example.com/test?tribe-edit-orders=1',
+					'permalink_structure' => '',
+				];
+			},
+		];
+
+		yield 'with tribe-edit-orders and post ID, pretty permalinks' => [
+			function (): array {
+				$post_id = wp_insert_post( [
+					'post_type'   => 'post',
+					'post_title'  => 'Test Post',
+					'post_status' => 'publish',
+				] );
+
+				return [
+					'redirect_url'       => 'http://example.com/test',
+					'post_id'            => $post_id,
+					'query_vars'         => [ 'tribe-edit-orders' => 1, 'p' => $post_id ],
+					'expected'           => true, // Will be generated URL
+					'permalink_structure' => '/%postname%/',
+				];
+			},
+		];
+
+		yield 'with tribe-edit-orders and event ID, pretty permalinks' => [
+			function (): array {
+				$event_id = tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				return [
+					'redirect_url'       => 'http://example.com/test',
+					'post_id'            => $event_id,
+					'query_vars'         => [ 'tribe-edit-orders' => 1, 'p' => $event_id ],
+					'expected'           => true, // Will be generated URL.
+					'permalink_structure' => '/%postname%/',
+				];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider provide_canonical_redirect_data
+	 *
+	 * @test
+	 *
+	 * it should preserve tickets parameter in canonical redirect correctly.
+	 */
+	public function should_preserve_tickets_parameter_in_canonical_redirect( Closure $fixture ): void {
+		[ 'redirect_url' => $redirect_url, 'post_id' => $post_id, 'query_vars' => $query_vars, 'expected' => $expected ] = $fixture();
+
+		// Set permalink structure if specified.
+		if ( isset( $fixture()['permalink_structure'] ) ) {
+			update_option( 'permalink_structure', $fixture()['permalink_structure'] );
+		}
+
+		// Mock query vars.
+		foreach ( $query_vars as $var => $value ) {
+			set_query_var( $var, $value );
+		}
+
+		$sut = $this->make_instance();
+		$result = $sut->preserve_tickets_parameter_in_canonical_redirect( $redirect_url );
+
+		if ( $expected === true ) {
+			// For generated URLs, ensure they're not empty and contain tickets.
+			$this->assertNotEmpty( $result );
+			$this->assertStringContainsString( 'tickets', $result );
+			
+			// For events, URL contains event slug; for posts, URL contains post ID.
+			$post_type = get_post_type( $post_id );
+			if ( 'tribe_events' === $post_type || 'tribe_event_series' === $post_type ) {
+				// Events use slug-based URLs.
+				$this->assertStringContainsString( 'tribe_events', $result );
+			} else {
+				// Posts use ID-based URLs.
+				$this->assertStringContainsString( (string) $post_id, $result );
+			}
+		} else {
+			// For specific expected values, check exact match.
+			$this->assertEquals( $expected, $result );
+		}
+
+		// Reset query vars.
+		foreach ( $query_vars as $var => $value ) {
+			set_query_var( $var, null );
+		}
+
+		// Reset permalink structure.
+		update_option( 'permalink_structure', false );
+	}
+
+	/**
+	 * Data provider for handle_tickets_request tests.
+	 */
+	public function provide_handle_tickets_request_data(): Generator {
+		yield 'no tribe-edit-orders parameter' => [
+			function (): array {
+				return [
+					'input_vars' => [ 'some_var' => 'value' ],
+					'expected'   => [ 'some_var' => 'value' ],
+				];
+			},
+		];
+
+		yield 'empty tribe-edit-orders parameter' => [
+			function (): array {
+				return [
+					'input_vars' => [ 'tribe-edit-orders' => 0, 'some_var' => 'value' ],
+					'expected'   => [ 'tribe-edit-orders' => 0, 'some_var' => 'value' ],
+				];
+			},
+		];
+
+		yield 'tribe-edit-orders but no post ID' => [
+			function (): array {
+				return [
+					'input_vars' => [ 'tribe-edit-orders' => 1 ],
+					'expected'   => [ 'tribe-edit-orders' => 1 ],
+				];
+			},
+		];
+
+		yield 'tribe-edit-orders with invalid post ID' => [
+			function (): array {
+				return [
+					'input_vars' => [ 'tribe-edit-orders' => 1, 'p' => 99999 ],
+					'expected'   => [ 'tribe-edit-orders' => 1, 'p' => 99999 ],
+				];
+			},
+		];
+
+		yield 'tribe-edit-orders with valid post' => [
+			function (): array {
+				$post_id = wp_insert_post( [
+					'post_type'   => 'post',
+					'post_title'  => 'Test Post',
+					'post_status' => 'publish',
+				] );
+
+				return [
+					'input_vars' => [ 'tribe-edit-orders' => 1, 'p' => $post_id ],
+					'expected'   => [ 'tribe-edit-orders' => 1, 'p' => $post_id, 'post_type' => 'post' ],
+					'post_id'    => $post_id,
+				];
+			},
+		];
+
+		yield 'tribe-edit-orders with valid page' => [
+			function (): array {
+				$page_id = wp_insert_post( [
+					'post_type'   => 'page',
+					'post_title'  => 'Test Page',
+					'post_status' => 'publish',
+				] );
+
+				return [
+					'input_vars' => [ 'tribe-edit-orders' => 1, 'p' => $page_id ],
+					'expected'   => [ 'tribe-edit-orders' => 1, 'post_type' => 'page', 'page_id' => $page_id ],
+					'post_id'    => $page_id,
+				];
+			},
+		];
+
+		yield 'tribe-edit-orders with valid event' => [
+			function (): array {
+				$event_id = tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				return [
+					'input_vars' => [ 'tribe-edit-orders' => 1, 'p' => $event_id ],
+					'expected'   => [ 'tribe-edit-orders' => 1, 'p' => $event_id, 'post_type' => 'tribe_events' ],
+					'post_id'    => $event_id,
+				];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider provide_handle_tickets_request_data
+	 *
+	 * @test
+	 *
+	 * it should handle tickets request correctly.
+	 */
+	public function should_handle_tickets_request( Closure $fixture ): void {
+		[ 'input_vars' => $input_vars, 'expected' => $expected ] = $fixture();
+
+		$sut = $this->make_instance();
+		$result = $sut->handle_tickets_request( $input_vars );
+
+		$this->assertEquals( $expected, $result );
+
+		// Clean up post if created.
+		if ( isset( $fixture()['post_id'] ) ) {
+			wp_delete_post( $fixture()['post_id'], true );
+		}
+	}
+
+	/**
+	 * @test
+	 * it should integrate canonical redirect with URL generation.
+	 */
+	public function should_integrate_canonical_redirect_with_url_generation(): void {
+		// Create a test post.
+		$post_id = wp_insert_post( [
+			'post_type'   => 'post',
+			'post_title'  => 'Test Post',
+			'post_status' => 'publish',
+		] );
+
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
+
+		// Mock query vars as if coming from canonical redirect.
+		set_query_var( 'tribe-edit-orders', 1 );
+		set_query_var( 'p', $post_id );
+
+		$sut = $this->make_instance();
+		
+		// Test that get_tickets_page_url generates the expected URL.
+		$tickets_url = $sut->get_tickets_page_url( $post_id );
+		$this->assertNotEmpty( $tickets_url );
+		$this->assertStringContainsString( 'tickets', $tickets_url );
+		
+		// For regular posts, URL should contain the post ID.
+		$post_type = get_post_type( $post_id );
+		if ( 'tribe_events' === $post_type || 'tribe_event_series' === $post_type ) {
+			$this->assertStringContainsString( 'tribe_events', $tickets_url );
+		} else {
+			$this->assertStringContainsString( (string) $post_id, $tickets_url );
+		}
+
+		// Test that preserve_tickets_parameter_in_canonical_redirect uses the same URL.
+		$canonical_url = $sut->preserve_tickets_parameter_in_canonical_redirect( 'http://example.com/redirect' );
+		$this->assertEquals( $tickets_url, $canonical_url );
+
+		// Test that handle_tickets_request processes the query vars correctly.
+		$query_vars = [ 'tribe-edit-orders' => 1, 'p' => $post_id ];
+		$processed_vars = $sut->handle_tickets_request( $query_vars );
+		$this->assertEquals( 'post', $processed_vars['post_type'] );
+		$this->assertEquals( $post_id, $processed_vars['p'] );
+
+		// Clean up.
+		wp_delete_post( $post_id, true );
+		update_option( 'permalink_structure', false );
+		set_query_var( 'tribe-edit-orders', null );
+		set_query_var( 'p', null );
+	}
 }
