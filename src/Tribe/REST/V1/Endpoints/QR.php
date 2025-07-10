@@ -346,6 +346,11 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 
 		// Check if the attendee is checked in.
 		$checked_status = get_post_meta( $attendee_id, '_tribe_qr_status', true );
+
+		if ( ! $checked_status ) {
+			$checked_status = get_post_meta( $attendee_id, $ticket_provider->checkin_key, true );
+		}
+
 		if ( $checked_status ) {
 			$response = new WP_REST_Response(
 				[
