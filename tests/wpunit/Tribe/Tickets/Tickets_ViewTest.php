@@ -337,6 +337,145 @@ class Tickets_ViewTest extends WPTestCase {
 	}
 
 	/**
+	 * Data provider for different permalink structures.
+	 */
+	public function provide_permalink_structures_data(): Generator {
+		yield 'numeric permalinks' => [
+			'structure' => '/archives/%post_id%',
+			'description' => 'numeric',
+		];
+
+		yield 'day and name permalinks' => [
+			'structure' => '/%year%/%monthnum%/%day%/%postname%/',
+			'description' => 'day and name',
+		];
+
+		yield 'month and name permalinks' => [
+			'structure' => '/%year%/%monthnum%/%postname%/',
+			'description' => 'month and name',
+		];
+
+		yield 'post name permalinks' => [
+			'structure' => '/%postname%/',
+			'description' => 'post name',
+		];
+
+		yield 'custom category and name permalinks' => [
+			'structure' => '/%category%/%postname%/',
+			'description' => 'custom category and name',
+		];
+
+		yield 'custom with date permalinks' => [
+			'structure' => '/blog/%year%/%monthnum%/%postname%/',
+			'description' => 'custom with date',
+		];
+	}
+
+	/**
+	 * @dataProvider provide_permalink_structures_data
+	 *
+	 * @test
+	 *
+	 * it should return the valid tickets page url for different permalink structures.
+	 */
+	public function should_get_tickets_page_url_for_different_permalink_structures( string $structure, string $description ): void {
+		// Set the permalink structure.
+		update_option( 'permalink_structure', $structure );
+
+		// Test with a regular post.
+		$post_id = wp_insert_post( [
+			'post_type'   => 'post',
+			'post_title'  => 'Test Post',
+			'post_status' => 'publish',
+		] );
+
+		$sut = $this->make_instance();
+		$url = $sut->get_tickets_page_url( $post_id );
+		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
+
+		// Verify the URL is not empty and contains expected elements.
+		$this->assertNotEmpty( $url, "URL should not be empty for {$description} permalink structure" );
+		$this->assertStringContainsString( 'tickets', $url, "URL should contain 'tickets' for {$description} permalink structure" );
+		$this->assertStringContainsString( '{{ post_id }}', $url, "URL should contain post ID placeholder for {$description} permalink structure" );
+
+		// Test with an event.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'end_date'   => '2020-01-01 11:30:00',
+		] )->create()->ID;
+
+		$event_url = $sut->get_tickets_page_url( $event_id );
+		$event_url = $this->placehold_post_ids( $event_url, [ 'post_id' => $event_id ] );
+
+		// Verify the event URL is not empty and contains expected elements.
+		$this->assertNotEmpty( $event_url, "Event URL should not be empty for {$description} permalink structure" );
+		$this->assertStringContainsString( 'tickets', $event_url, "Event URL should contain 'tickets' for {$description} permalink structure" );
+
+		// Snapshot test for reproducibility.
+		$this->assertMatchesHtmlSnapshot( $url );
+
+		// Reset permalink structure.
+		update_option( 'permalink_structure', false );
+	}
+
+	/**
+	 * @dataProvider provide_permalink_structures_data
+	 *
+	 * @test
+	 *
+	 * it should preserve tickets parameter in canonical redirect for different permalink structures.
+	 */
+	public function should_preserve_tickets_parameter_in_canonical_redirect_for_different_permalink_structures( string $structure, string $description ): void {
+		// Set the permalink structure.
+		update_option( 'permalink_structure', $structure );
+
+		// Test with a regular post.
+		$post_id = wp_insert_post( [
+			'post_type'   => 'post',
+			'post_title'  => 'Test Post',
+			'post_status' => 'publish',
+		] );
+
+		// Mock query vars.
+		set_query_var( 'tribe-edit-orders', 1 );
+		set_query_var( 'p', $post_id );
+
+		$sut = $this->make_instance();
+		$result = $sut->preserve_tickets_parameter_in_canonical_redirect( 'http://example.com/test' );
+
+		// Verify the result is not empty and contains expected elements.
+		$this->assertNotEmpty( $result, "Result should not be empty for {$description} permalink structure" );
+		$this->assertStringContainsString( 'tickets', $result, "Result should contain 'tickets' for {$description} permalink structure" );
+		$this->assertStringContainsString( (string) $post_id, $result, "Result should contain post ID for {$description} permalink structure" );
+
+		// Test with an event.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'end_date'   => '2020-01-01 11:30:00',
+		] )->create()->ID;
+
+		// Mock query vars for event.
+		set_query_var( 'p', $event_id );
+
+		$event_result = $sut->preserve_tickets_parameter_in_canonical_redirect( 'http://example.com/test' );
+
+		// Verify the event result is not empty and contains expected elements.
+		$this->assertNotEmpty( $event_result, "Event result should not be empty for {$description} permalink structure" );
+		$this->assertStringContainsString( 'tickets', $event_result, "Event result should contain 'tickets' for {$description} permalink structure" );
+
+		// Reset query vars.
+		set_query_var( 'tribe-edit-orders', null );
+		set_query_var( 'p', null );
+
+		// Reset permalink structure.
+		update_option( 'permalink_structure', false );
+	}
+
+	/**
 	 * Data provider for canonical redirect tests.
 	 */
 	public function provide_canonical_redirect_data(): Generator {
