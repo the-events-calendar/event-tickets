@@ -28,8 +28,8 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['post_type'] = 'post';
 
 				return array_combine(
-					$post_ids,
-					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids )
+					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids ),
+					$post_ids
 				);
 			}
 		];
@@ -47,8 +47,8 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['search_terms'] = 'Bob';
 
 				return array_combine(
-					$post_ids_2,
-					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids_2 )
+					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids_2 ),
+					$post_ids_2
 				);
 			}
 		];
@@ -71,10 +71,10 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['post_type'] = TEC::POSTTYPE;
 
 				return array_combine(
-					$event_ids,
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, $event_ids )
+					}, $event_ids ),
+					$event_ids
 				);
 			}
 		];
@@ -106,10 +106,10 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['search_terms'] = 'Bob';
 
 				return array_combine(
-					$event_ids_2,
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, $event_ids_2 )
+					}, $event_ids_2 ),
+					$event_ids_2
 				);
 			}
 		];
@@ -158,10 +158,10 @@ class Move_TicketsTest extends WPTestCase {
 				                                 ->first()->provisional_id;
 
 				return array_combine(
-					[ $single_event_1, $single_event_2, $weekly_event, $weekly_occurrence_2, $weekly_occurrence_3 ],
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, [ $single_event_1, $single_event_2, $weekly_event, $weekly_occurrence_2, $weekly_occurrence_3 ] )
+					}, [ $single_event_1, $single_event_2, $weekly_event, $weekly_occurrence_2, $weekly_occurrence_3 ] ),
+					[ $single_event_1, $single_event_2, $weekly_event, $weekly_occurrence_2, $weekly_occurrence_3 ]
 				);
 			}
 		];
@@ -182,6 +182,9 @@ class Move_TicketsTest extends WPTestCase {
 		}, true );
 		$move->get_post_choices();
 
-		$this->assertEqualSets( $expected, $posts );
+		// Sort expected by keys to match the alphabetical sorting in format_post_list.
+		ksort( $expected );
+
+		$this->assertEquals( $expected, $posts );
 	}
 }

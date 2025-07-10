@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-define( 'EVENT_TICKETS_DIR', dirname( __FILE__ ) );
+define( 'EVENT_TICKETS_DIR', __DIR__ );
 define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 
 // Load the required PHP min version functions.

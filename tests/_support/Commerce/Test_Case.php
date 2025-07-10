@@ -25,7 +25,7 @@ class Test_Case extends WPTestCase {
 	 *
 	 * In the context of normal test cases and methods this should be not needed as any query done
 	 * via the global `$wpdb` object is rolled back in the `Codeception\TestCase\WPTestCase::tearDown` method.
-	 * Some factories we're using, like the EDD and WOO ones are creating some posts in another PHP thread (due
+	 * Some factories we're using, like the WOO one are creating some posts in another PHP thread (due
 	 * to plugin internals) and those posts would not be rolled back.
 	 */
 	protected function remove_all_posts() {
