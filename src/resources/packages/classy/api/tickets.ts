@@ -1,7 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { Ticket, PartialTicket } from '../types/Ticket';
-import { TicketsApiParams, TicketsApiResponse } from "../types/Api";
+import { TicketsApiParams, GetTicketsApiResponse } from "../types/Api";
 
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
 
@@ -11,10 +11,10 @@ const apiBaseUrl = '/tribe/tickets/v1/tickets';
  * @since TBD
  *
  * @param {TicketsApiParams} params Optional parameters for the API request.
- * @return {Promise<TicketsApiResponse>} A promise that resolves to the tickets response.
+ * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
-export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<TicketsApiResponse> => {
+export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<GetTicketsApiResponse> => {
 	const searchParams = new URLSearchParams();
 
 	if ( params.include_post ) {
@@ -34,7 +34,7 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Tic
 	const path = addQueryArgs( apiBaseUrl, searchParams );
 	console.log( `Fetching tickets from: ${ path }` );
 
-	const response: TicketsApiResponse = await apiFetch( {
+	const response: GetTicketsApiResponse = await apiFetch( {
 		path: path,
 		headers: {
 			'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Tic
 		throw new Error( 'Tickets fetch request did not return an object with tickets and total properties.' );
 	}
 
-	return response as TicketsApiResponse;
+	return response as GetTicketsApiResponse;
 };
 
 /**

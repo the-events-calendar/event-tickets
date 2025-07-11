@@ -6,7 +6,7 @@ export type TicketsApiParams = {
 	page?: number;
 }
 
-export type TicketsApiResponse = {
+export type GetTicketsApiResponse = {
 	rest_url: string;
 	total: number;
 	total_pages: number;
