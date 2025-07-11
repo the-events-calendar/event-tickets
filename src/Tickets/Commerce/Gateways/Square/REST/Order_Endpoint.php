@@ -157,11 +157,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
-		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
-
 		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) || empty( $payment['status'] ) ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
 		}
+
+		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
 
 		if ( 'COMPLETED' !== $payment['status'] ) {
 			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );

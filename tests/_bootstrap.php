@@ -72,3 +72,26 @@ function tec_tickets_tests_enable_gateway_id_generation() {
 function tec_tickets_tests_disable_gateway_id_generation() {
 	remove_filter( 'tec_tickets_commerce_order_create_args', 'tec_tickets_tests_add_manual_gateway_id' );
 }
+
+function tec_tickets_tests_global_rest_route_registration_listener() {
+	uopz_set_return( 'register_rest_route', function( $route_namespace, $route, $args = array(), $override = false ) {
+		if ( isset( $args['schema'] ) && ! is_callable( $args['schema'] ) ) {
+			throw new \Exception( 'Schema must be a callable! Fix your route registration: ' . $route_namespace . ' ' . $route );
+		}
+
+		if ( ! isset( $args['args'] ) ) {
+			foreach ( $args as $arg ) {
+				if ( ! is_array( $arg ) ) {
+					continue;
+				}
+
+				if ( isset( $arg['schema'] ) && ! is_callable( $arg['schema'] ) ) {
+					throw new \Exception( 'Schema must be a callable! Fix your route registration: ' . $route_namespace . ' ' . $route );
+				}
+			}
+		}
+		return register_rest_route( $route_namespace, $route, $args, $override );
+	}, true );
+}
+
+tec_tickets_tests_global_rest_route_registration_listener();

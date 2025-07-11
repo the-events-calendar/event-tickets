@@ -174,6 +174,8 @@ class Payment {
 
 		$payment = static::create( $source_id, $value, $order, $square_order_id );
 
+		do_action( 'tribe_log', 'debug', 'Square Payment', [ $payment, $source_id, $value, $order, $square_order_id ] );
+
 		return $payment['payment'] ?? [];
 	}
 
