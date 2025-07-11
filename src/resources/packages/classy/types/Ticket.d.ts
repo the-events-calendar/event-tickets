@@ -58,12 +58,6 @@ export type Ticket = {
 	type: TicketType;
 	globalId: string;
 	globalIdLineage: string[];
-	author: string;
-	status: string;
-	date: string;
-	dateUtc: string;
-	modified: string;
-	modifiedUtc: string;
 	title: string;
 	description: string;
 	image: boolean | string;
@@ -98,9 +92,7 @@ export type Ticket = {
 
 	// Fees
 	fees: FeesData;
-
-	// URLs
-	restUrl: string;
 };
+
 
 export type PartialTicket = Partial<Ticket>;
