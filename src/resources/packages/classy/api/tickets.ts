@@ -1,7 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
-import { Ticket, PartialTicket } from '../types/Ticket';
-import { TicketsApiParams, GetTicketsApiResponse } from "../types/Api";
+import { PartialTicket, Ticket } from '../types/Ticket';
+import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams } from '../types/Api';
 
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
 
@@ -34,24 +34,26 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
 	const path = addQueryArgs( apiBaseUrl, searchParams );
 	console.log( `Fetching tickets from: ${ path }` );
 
-	const response: GetTicketsApiResponse = await apiFetch( {
-		path: path,
-		headers: {
-			'Content-Type': 'application/json',
-		},
+	return new Promise<GetTicketsApiResponse>( async ( resolve, reject ) => {
+		await apiFetch( {
+			path: path,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		} )
+			.then( ( data ) => {
+				if ( ! ( data && typeof data === 'object' ) ) {
+					reject( new Error( 'Failed to fetch tickets: response did not return an object.' ) );
+				} else if ( ! ( data.hasOwnProperty( 'tickets' ) && data.hasOwnProperty( 'total' ) ) ) {
+					reject( new Error( 'Tickets fetch request did not return an object with tickets and total properties.' ) );
+				} else {
+					resolve( data as GetTicketsApiResponse );
+				}
+			} )
+			.catch( ( error ) => {
+				reject( new Error( `Failed to fetch tickets: ${ error.message }` ) );
+			} );
 	} );
-
-	// Check that the response is an object.
-	if ( ! ( response && typeof response === 'object' ) ) {
-		throw new Error( 'Failed to fetch tickets: response did not return an object.' );
-	}
-
-	// Check that the response has a 'tickets' property.
-	if ( ! ( response.hasOwnProperty( 'tickets' ) && response.hasOwnProperty( 'total' ) ) ) {
-		throw new Error( 'Tickets fetch request did not return an object with tickets and total properties.' );
-	}
-
-	return response as GetTicketsApiResponse;
 };
 
 /**
@@ -64,9 +66,16 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> => {
-	// todo: Handle the potential for multiple pages of results.
-	const response = await fetchTickets( { include_post: [ postId ] } );
-	return response.tickets;
+	return new Promise<Ticket[]>( async ( resolve, reject ) => {
+		// todo: Handle the potential for multiple pages of results.
+		await fetchTickets( { include_post: [ postId ] } )
+			.then( ( response: GetTicketsApiResponse ) => {
+				resolve( response.tickets );
+			} )
+			.catch( ( error ) => {
+				reject( new Error( `Failed to fetch tickets for post ID ${ postId }: ${ error.message }` ) );
+			} );
+	} );
 };
 
 /**
@@ -75,25 +84,31 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
  * @since TBD
  *
  * @param {PartialTicket} ticketData The data for the new ticket.
- * @return {Promise<Ticket>} The created ticket.
+ * @return {Promise<GetTicketApiResponse>} A promise that resolves to the created ticket.
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
-export const createTicket = async ( ticketData: PartialTicket ): Promise<Ticket> => {
-	const response: Ticket = await apiFetch( {
-		url: apiBaseUrl,
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		data: ticketData,
+export const createTicket = async ( ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
+	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
+		// todo: use proper form body structure for the request.
+		await apiFetch( {
+			url: apiBaseUrl,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: ticketData,
+		} )
+			.then( ( data ) => {
+				if ( ! ( data && typeof data === 'object' ) ) {
+					reject( new Error( 'Failed to create ticket: response did not return an object.' ) );
+				} else {
+					resolve( data as GetTicketApiResponse );
+				}
+			} )
+			.catch( ( error ) => {
+				reject( new Error( `Failed to create ticket: ${ error.message }` ) );
+			} );
 	} );
-
-	// Check that the response is an object.
-	if ( ! ( response && typeof response === 'object' ) ) {
-		throw new Error( 'Failed to create ticket: response did not return an object.' );
-	}
-
-	return response as Ticket;
 };
 
 /**
@@ -103,25 +118,30 @@ export const createTicket = async ( ticketData: PartialTicket ): Promise<Ticket>
  *
  * @param {number} ticketId The ID of the ticket to update.
  * @param {PartialTicket} ticketData The data to update the ticket with.
- * @return {Promise<Ticket>} The updated ticket.
+ * @return {Promise<GetTicketApiResponse>} A promise that resolves to the updated ticket.
  * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
-export const updateTicket = async ( ticketId: number, ticketData: PartialTicket ): Promise<Ticket> => {
-	const response: Ticket = await apiFetch( {
-		path: `${ apiBaseUrl }/${ ticketId }`,
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		data: ticketData,
+export const updateTicket = async ( ticketId: number, ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
+	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
+		await apiFetch( {
+			path: `${ apiBaseUrl }/${ ticketId }`,
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: ticketData,
+		} )
+			.then( ( data ) => {
+				if ( ! ( data && typeof data === 'object' ) ) {
+					reject( new Error( 'Failed to update ticket: response did not return an object.' ) );
+				} else {
+					resolve( data as GetTicketApiResponse );
+				}
+			} )
+			.catch( ( error ) => {
+				reject( new Error( `Failed to update ticket: ${ error.message }` ) );
+			} );
 	} );
-
-	// Check that the response is an object.
-	if ( ! ( response && typeof response === 'object' ) ) {
-		throw new Error( 'Failed to update ticket: response did not return an object.' );
-	}
-
-	return response as Ticket;
 };
 
 /**
@@ -131,13 +151,22 @@ export const updateTicket = async ( ticketId: number, ticketData: PartialTicket 
  *
  * @param {number} ticketId The ID of the ticket to delete.
  * @return {Promise<void>} A promise that resolves when the ticket is deleted.
+ * @throws {Error} If the deletion fails.
  */
 export const deleteTicket = async ( ticketId: number ): Promise<void> => {
-	return apiFetch( {
-		path: `${ apiBaseUrl }/${ ticketId }`,
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+	return new Promise<void>( async ( resolve, reject ) => {
+		await apiFetch( {
+			path: `${ apiBaseUrl }/${ ticketId }`,
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		} )
+			.then( () => {
+				resolve();
+			} )
+			.catch( ( error ) => {
+				reject( new Error( `Failed to delete ticket: ${ error.message }` ) );
+			} );
 	} );
 };
