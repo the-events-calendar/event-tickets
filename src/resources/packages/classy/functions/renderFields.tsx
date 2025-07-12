@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Fill } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { Tickets } from '../fields';
+import { CoreEditorSelect } from '../types/Store';
 
 // Hard-code the post type for now.
 const POST_TYPES: string[] = [ 'tec_tc_ticket', 'tribe_events' ];
@@ -15,19 +16,11 @@ const POST_TYPES: string[] = [ 'tec_tc_ticket', 'tribe_events' ];
  * @param fields
  */
 export default function renderFields( fields: React.ReactNode | null ): React.ReactNode {
-
-	const { postType, postId } = useSelect( ( select ) => {
-		const {
-			getCurrentPostId,
-			getEditedPostAttribute,
-		}: {
-			getCurrentPostId: () => number | null;
-			getEditedPostAttribute: ( attribute: string ) => any;
-		} = select( 'core/editor' );
+	const { postType } = useSelect( ( select ) => {
+		const { getEditedPostAttribute }: CoreEditorSelect = select( 'core/editor' );
 
 		return {
 			postType: getEditedPostAttribute( 'type' ),
-			postId: getCurrentPostId(),
 		};
 	}, [] );
 
