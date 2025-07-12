@@ -1,13 +1,12 @@
 import { reducer } from './reducer';
-import { selectors } from './selectors';
-import { default as actions } from './actions';
+import * as selectors from './selectors';
+import { actions } from './actions';
 import { default as resolvers } from './resolvers.ts';
-import { StoreState, StoreSelectors } from '../types/Store';
+import { StoreState } from '../types/Store';
 
 const initialState: StoreState = {
 	tickets: null,
-	isLoading: false,
-	error: null,
+	loading: true,
 }
 
 export const storeConfig = {
