@@ -9,11 +9,14 @@ const apiBaseUrl = '/tribe/tickets/v1/tickets';
 /**
  * Fetch tickets from the API.
  *
+ * This function retrieves tickets based on the provided parameters. It  will return a promise that resolves to
+ * the tickets response. If there are errors with the request, it will reject with an error message. The calling code
+ * should handle the promise appropriately to manage the response or errors.
+ *
  * @since TBD
  *
  * @param {TicketsApiParams} params Optional parameters for the API request.
  * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
- * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<GetTicketsApiResponse> => {
 	const searchParams = new URLSearchParams();
@@ -60,11 +63,14 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
 /**
  * Fetch tickets for a specific post ID.
  *
+ * This function retrieves tickets associated with a specific post ID. It will return a promise that resolves to
+ * an array of tickets. If there are errors with the request, it will reject with an error message. The calling code
+ * should handle the promise appropriately to manage the response or errors.
+ *
  * @since TBD
  *
  * @param {number} postId The ID of the post to fetch tickets for.
  * @return {Promise<Ticket[]>} A promise that resolves to an array of tickets.
- * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> => {
 	return new Promise<Ticket[]>( async ( resolve, reject ) => {
@@ -82,11 +88,14 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
 /**
  * Create a new ticket.
  *
+ * This function will create a new ticket using the provided ticket data. It returns a promise that
+ * resolves to the created ticket. If there are errors with the request, it will reject with an error
+ * message. The calling code should handle the promise appropriately to manage the response or errors.
+ *
  * @since TBD
  *
  * @param {PartialTicket} ticketData The data for the new ticket.
  * @return {Promise<GetTicketApiResponse>} A promise that resolves to the created ticket.
- * @throws {Error} If the response is not an object or does not contain the expected properties.
  */
 export const createTicket = async ( ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
 	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
