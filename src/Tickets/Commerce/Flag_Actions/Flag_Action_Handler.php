@@ -8,7 +8,7 @@ use WP_Post;
 /**
  * Class Flag_Action_Handler
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

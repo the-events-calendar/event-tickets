@@ -2,7 +2,7 @@
 /**
  * Handles the modifications to the Tickets metabox required to support Series Passes.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -20,7 +20,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Metabox.
  *
- * @since   5.8.0
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */

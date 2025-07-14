@@ -7,10 +7,10 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   4.9
- * @since   4.10.9 Uses new functions to get singular and plural texts.
- * @since   4.11.5 Added template override instructions in template comments.
- * @since   5.0.3 Add vars to docblock and removed duplicative vars.
+ * @since 4.9
+ * @since 4.10.9 Uses new functions to get singular and plural texts.
+ * @since 4.11.5 Added template override instructions in template comments.
+ * @since 5.0.3 Add vars to docblock and removed duplicative vars.
  *
  * @version 5.0.3
  *

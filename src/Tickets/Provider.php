@@ -3,7 +3,7 @@
 /**
  * The main service provider for the Tickets updated and new code.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets
  */
 
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Provider for all the Tickets loading.
  *
- * @since   5.1.6
+ * @since 5.1.6
  * @package TEC\Tickets
  */
 class Provider extends Service_Provider {

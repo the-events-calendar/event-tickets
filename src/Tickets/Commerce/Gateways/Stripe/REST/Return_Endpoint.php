@@ -16,7 +16,7 @@ use WP_REST_Request;
 /**
  * Class Return Endpoint.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */

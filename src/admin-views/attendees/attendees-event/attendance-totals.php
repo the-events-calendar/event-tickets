@@ -2,7 +2,7 @@
 /**
  * Event Attendance Totals template.
  *
- * @since  5.6.5
+ * @since 5.6.5
  *
  * @var \Tribe__Template          $this               Current template object.
  * @var int                       $event_id           The event/post/page id.

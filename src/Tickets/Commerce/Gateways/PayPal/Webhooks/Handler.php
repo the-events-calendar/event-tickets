@@ -9,7 +9,7 @@ use WP_Error;
 /**
  * Class Handler
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */
@@ -141,5 +141,4 @@ class Handler {
 
 		return $updated;
 	}
-
 }

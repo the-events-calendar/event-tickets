@@ -72,8 +72,8 @@ class RSVP {
 	/**
 	 * @since 4.12.3
 	 *
-	 * @param $type
-	 * @param $attendee_id
+	 * @param string $type The type of trigger fired.
+	 * @param int    $attendee_id The attendee ID.
 	 */
 	private function trigger( $type, $attendee_id ) {
 		/** @var Tribe__Tickets__RSVP $ticket */

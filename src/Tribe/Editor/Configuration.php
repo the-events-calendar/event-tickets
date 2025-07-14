@@ -23,7 +23,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 *
 	 * @since 4.9
 	 *
-	 * @param $editor_config
+	 * @param array $editor_config The editor configuration.
 	 *
 	 * @return array
 	 */

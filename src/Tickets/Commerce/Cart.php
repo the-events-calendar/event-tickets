@@ -14,7 +14,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Cart
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -440,7 +440,7 @@ class Cart {
 	 *
 	 * @filter wp_loaded 0
 	 *
-	 * @since  5.1.9
+	 * @since 5.1.9
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );

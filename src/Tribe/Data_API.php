@@ -106,7 +106,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return Array of Event IDs when passed an Order, Ticket, or Attendee ID
 	 *
-	 * @param $post_id
+	 * @param int|WP_Post $post_id The Post ID of the event.
 	 *
 	 * @return array
 	 */
@@ -230,8 +230,8 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Get attendee(s) by id
 	 *
-	 * @param      $post_id
-	 * @param null $context
+	 * @param int|WP_Post $post_id The Post ID of the event.
+	 * @param null        $context The context of the current screen.
 	 *
 	 * @return mixed
 	 */
@@ -242,7 +242,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return if attendee(s) have meta fields with data
 	 *
-	 * @param      $post_id
+	 * @param     $post_id
 	 * @param null $context
 	 *
 	 * @return bool
@@ -259,7 +259,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return if tickets have meta fields
 	 *
-	 * @param      $post_id
+	 * @param     $post_id
 	 * @param null $context
 	 *
 	 * @return bool
@@ -310,7 +310,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return an array of product ids from an array of ticket objects
 	 *
-	 * @param $tickets array an array of ticket objects
+	 * @param array $tickets an array of ticket objects
 	 *
 	 * @return array
 	 */
@@ -328,7 +328,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return an array of product ids from an array of attendee(s)
 	 *
-	 * @param $attendees array an array of attendee(s)
+	 * @param array $attendees an array of attendee(s)
 	 *
 	 * @return array
 	 */
@@ -368,8 +368,8 @@ class Tribe__Tickets__Data_API {
 	 * @since 4.5
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 *
-	 * @param $post_id
-	 * @param $context
+	 * @param int|WP_Post $post_id The Post ID of the event.
+	 * @param null        $context The context of the current screen.
 	 *
 	 * @return mixed
 	 */
@@ -407,9 +407,8 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Check if attendee(s) have meta data
 	 *
-	 * @param $has_meta
-	 * @param $attendees
-	 * @param $has_meta_fields
+	 * @param bool   $has_meta  Whether the attendee has meta data.
+	 * @param array  $attendees The attendees.
 	 *
 	 * @return bool
 	 */
@@ -426,7 +425,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Check if a order key passed exists and return attendee object name
 	 *
-	 * @param $order_key
+	 * @param string $order_key The order key.
 	 *
 	 * @return string
 	 */
@@ -443,7 +442,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Get the rsvp order key from a post id
 	 *
-	 * @param $post_id
+	 * @param int $post_id The Post ID of the event.
 	 *
 	 * @return mixed
 	 */
@@ -461,7 +460,7 @@ class Tribe__Tickets__Data_API {
 	 * Since all rsvp orders will be from one post,
 	 * we only need to return the first match
 	 *
-	 * @param $order_key
+	 * @param string $order_key The order key.
 	 *
 	 * @return false|int|string
 	 */
@@ -487,7 +486,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Query RSVP Orders by the Order Key
 	 *
-	 * @param        $order_key
+	 * @param string $order_key The order key.
 	 * @param string $post_per_page
 	 *
 	 * @return WP_Query

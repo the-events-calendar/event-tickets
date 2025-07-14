@@ -37,9 +37,9 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Configures the Tickets Editor into a Post Type
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
-	 * @param  string $post_type Which post type we are trying to configure
+	 * @param string $post_type Which post type we are trying to configure
 	 *
 	 * @return void
 	 */
@@ -72,9 +72,9 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Render the actual Metabox
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
-	 * @param  int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
+	 * @param int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
 	 *
 	 * @return string|bool
 	 */
@@ -114,7 +114,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Refreshes panels after ajax calls that change data
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @return string html content of the panels
 	 */
@@ -164,7 +164,8 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Get the Panels for a given post.
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
+	 * @since 5.24.1 Make the ticket type optional for PHP 8+ compatibility.
 	 *
 	 * @param int|WP_Post $post        The post object or ID the tickets are for.
 	 * @param int|null    $ticket_id   The ID of the ticket to render the panels for, or `null` if rendering for a new
@@ -173,7 +174,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @return array<string,string> A map from panel name to panel HTML content.
 	 */
-	public function get_panels( $post, $ticket_id = null, string $ticket_type = null ) {
+	public function get_panels( $post, $ticket_id = null, ?string $ticket_type = null ) {
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
 		}
@@ -389,10 +390,10 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Returns the data from a single ticket to populate the edit form.
 	 *
-	 * @since   4.6.2
-	 * @since   4.10.9 Use customizable ticket name functions.
-	 * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
-	 * @since   5.5.7 Added optional parameter to return values instead of echoing directly.
+	 * @since 4.6.2
+	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
+	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -480,8 +481,8 @@ class Tribe__Tickets__Metabox {
 	 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
 	 * function.
 	 *
-	 * @since   4.6.2
-	 * @since   5.5.7 Added optional parameter to return values instead of echoing directly.
+	 * @since 4.6.2
+	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -575,8 +576,8 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Sanitizes the data for the duplicate ticket ajax call, then duplicates the ticket and meta.
 	 *
-	 * @since   5.2.3.
-	 * @since   5.5.7 Added optional parameter to return values instead of echoing directly.
+	 * @since 5.2.3.
+	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -694,8 +695,8 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Handles the check-in ajax call, and calls the checkin method.
 	 *
-	 * @since  4.6.2
-	 * @since  4.12.3 Use new helper method to account for possibly inactive ticket provider.
+	 * @since 4.6.2
+	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 */
 	public function ajax_attendee_checkin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -744,8 +745,8 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Handles the check-in ajax call, and calls the uncheckin method.
 	 *
-	 * @since  4.6.2
-	 * @since  4.12.3 Use new helper method to account for possibly inactive ticket provider.
+	 * @since 4.6.2
+	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 */
 	public function ajax_attendee_uncheckin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -794,7 +795,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Get the controls (move, delete) as a string.
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param int     $post_id
 	 * @param int     $ticket_id
@@ -838,7 +839,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * test if the nonce is correct and the current user has the correct permissions
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @param WP_Post|int $post
 	 * @param array       $data
@@ -875,12 +876,12 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @internal for internal plugin use only (in spite of having public visibility)
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
 	 * @see    tribe( 'tickets.attendees' )->user_can
 	 *
-	 * @param  string $generic_cap
-	 * @param  int    $attendee_id
+	 * @param string $generic_cap
+	 * @param int    $attendee_id
 	 *
 	 * @return boolean
 	 */
@@ -903,9 +904,9 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Returns whether a class name is a valid active module/provider.
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
-	 * @param  string  $module  class name of module
+	 * @param string  $module  class name of module
 	 *
 	 * @return bool
 	 */
@@ -916,9 +917,9 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Returns the markup for a notice in the admin
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
 	 *
-	 * @param  string $msg Text for the notice
+	 * @param string $msg Text for the notice
 	 *
 	 * @return string Notice with markup
 	 */
@@ -982,7 +983,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $post_type
+	 * @param string $post_type The post type.
 	 */
 	public static function maybe_add_meta_box( $post_type ) {
 		tribe( 'tickets.metabox' )->configure( $post_type );
@@ -994,7 +995,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated 4.6.2
 	 *
-	 * @param $post_id
+	 * @param int $post_id The Post ID of the event.
 	 */
 	public static function do_modules_metaboxes( $post_id ) {
 		tribe( 'tickets.metabox' )->render( $post_id );
@@ -1005,7 +1006,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated 4.6
 	 *
-	 * @param $unused_hook
+	 * @param string $unused_hook The hook of the current screen.
 	 */
 	public static function add_admin_scripts( $unused_hook ) {
 		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );

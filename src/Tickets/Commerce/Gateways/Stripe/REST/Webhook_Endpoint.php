@@ -11,7 +11,7 @@ use WP_REST_Response;
 /**
  * Class Webhook Endpoint.
  *
- * @since   5.3.0
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
