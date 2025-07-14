@@ -86,6 +86,10 @@ export default function Tickets(): JSX.Element {
 		return <CenteredSpinner />;
 	}
 
+	const addTicketText = tickets.length > 0
+		? _x( 'Add Ticket', 'Button text to add a new ticket when tickets already exist', 'event-tickets' )
+		: _x( 'Add Tickets', 'Button text to add a new ticket when no tickets exist', 'event-tickets' );
+
 	return (
 		<div className="classy-field classy-field--tickets">
 			{ isUpserting && (
@@ -105,7 +109,7 @@ export default function Tickets(): JSX.Element {
 			) ) }
 
 			<AddTicket
-				buttonText={ _x( 'Add Tickets', 'Button text to add a new ticket', 'event-tickets' ) }
+				buttonText={ addTicketText }
 				onClick={ onTicketAddedClicked }
 			/>
 		</div>
