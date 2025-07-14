@@ -2,11 +2,10 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
-use TEC\Tickets\Commerce\Communication\Email;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\Ticket;
-use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\BackgroundJobs\SendTicketEmail;
+use function TEC\Common\StellarWP\Shepherd\shepherd;
 
 /**
  * Class Send_Email, normally triggered when an order is complete.
@@ -56,23 +55,7 @@ class Send_Email extends Flag_Action_Abstract {
 				continue;
 			}
 
-			/**
-			 * If this request is being generated via ajax in the Attendees View admin page, we need to
-			 * make sure the email only goes out after all the work to register the order and attendees is
-			 * finished, so we hook it to the same hook used to process everything, but make sure it's the last
-			 * function to run.
-			 *
-			 * @todo TribeLegacyCommerce
-			 */
-			if ( doing_action( 'wp_ajax_tribe_tickets_admin_manager' ) ) {
-				add_filter( 'tribe_tickets_admin_manager_request', static function( $response ) use ( $order, $event ) {
-					tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
-					return $response;
-				}, 9999 );
-				return;
-			}
-
-			tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
+			shepherd()->dispatch( new SendTicketEmail( $order->ID, $event->ID ) );
 		}
 	}
 }
