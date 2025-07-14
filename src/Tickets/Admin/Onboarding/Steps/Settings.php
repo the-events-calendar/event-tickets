@@ -48,8 +48,8 @@ class Settings extends Abstract_Step {
 	public function process( $response, $request ): WP_REST_Response {
 		$settings = $request->get_json_params();
 
-		if ( empty( $settings['currentTab'] ) ) {
-			return $this->add_fail_message( $response, __( 'No settings provided.', 'event-tickets' ) );
+		if ( empty( $settings['currentTab'] ) || $settings['currentTab'] < self::TAB_NUMBER ) {
+			return $this->add_message( $response, __( 'No settings provided.', 'event-tickets' ) );
 		}
 
 		tribe_update_option( Tickets_Settings::$tickets_commerce_enabled, (bool) $settings['paymentOption'] );

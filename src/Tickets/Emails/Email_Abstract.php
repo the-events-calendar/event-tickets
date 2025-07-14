@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email abstract class.
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -20,7 +20,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Email_Abstract.
  *
- * @since   5.5.9
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -225,7 +225,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $from_email The "from" email.
 		 * @param string         $id         The email ID.
-		 * @param Email_Abstract $this       The email object.
+		 * @param Email_Abstract $instance   The email object.
 		 */
 		$from_email = apply_filters( 'tec_tickets_emails_from_email', $from_email, $this->id, $this );
 
@@ -236,7 +236,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $from_email The "from" email.
 		 * @param string         $id         The email ID.
-		 * @param Email_Abstract $this       The email object.
+		 * @param Email_Abstract $instance   The email object.
 		 */
 		$from_email = apply_filters( "tec_tickets_emails_{$this->slug}_from_email", $from_email, $this->id, $this );
 
@@ -260,7 +260,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $from_email The "from" name.
 		 * @param string         $id         The email ID.
-		 * @param Email_Abstract $this       The email object.
+		 * @param Email_Abstract $instance   The email object.
 		 */
 		$from_name = apply_filters( 'tec_tickets_emails_from_name', $from_name, $this->id, $this );
 
@@ -271,7 +271,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $from_email The "from" name.
 		 * @param string         $id         The email ID.
-		 * @param Email_Abstract $this       The email object.
+		 * @param Email_Abstract $instance   The email object.
 		 */
 		$from_name = apply_filters( "tec_tickets_emails_{$this->slug}_from_name", $from_name, $this->id, $this );
 
@@ -311,7 +311,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $placeholders The placeholders.
 		 * @param string         $id           The email ID.
-		 * @param Email_Abstract $this         The email object.
+		 * @param Email_Abstract $instance     The email object.
 		 */
 		$placeholders = apply_filters( 'tec_tickets_emails_placeholders', $this->placeholders, $this->id, $this );
 
@@ -322,7 +322,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $placeholders The placeholders.
 		 * @param string         $id           The email ID.
-		 * @param Email_Abstract $this         The email object.
+		 * @param Email_Abstract $instance     The email object.
 		 */
 		$placeholders = apply_filters( "tec_tickets_emails_{$this->slug}_placeholders", $placeholders, $this->id, $this );
 
@@ -346,9 +346,9 @@ abstract class Email_Abstract {
 		 *
 		 * @since 5.5.9
 		 *
-		 * @param string         $string The formatted string.
-		 * @param string         $id     The email id.
-		 * @param Email_Abstract $this   The email object.
+		 * @param string         $string   The formatted string.
+		 * @param string         $id       The email id.
+		 * @param Email_Abstract $instance The email object.
 		 */
 		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), $this->id, $this );
 	}
@@ -356,7 +356,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get WordPress blog name.
 	 *
-	 * @todo  This doesnt belong on the abstracts, it's more like a template helper.
+	 * @todo This doesn't belong on the abstracts, it's more like a template helper.
 	 *
 	 * @since 5.5.9
 	 *
@@ -455,7 +455,7 @@ abstract class Email_Abstract {
 		 * @param string         $recipient The email recipient.
 		 * @param string         $id        The email id.
 		 * @param string         $template  Template name.
-		 * @param Email_Abstract $this      The email object.
+		 * @param Email_Abstract $instance  The email object.
 		 */
 		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, $this->id, $this->template, $this );
 
@@ -467,7 +467,7 @@ abstract class Email_Abstract {
 		 * @param string         $recipient The email recipient.
 		 * @param string         $id        The email id.
 		 * @param string         $template  Template name.
-		 * @param Email_Abstract $this      The email object.
+		 * @param Email_Abstract $instance  The email object.
 		 */
 		$recipient = apply_filters( "tec_tickets_emails_{$this->slug}_recipient", $recipient, $this->id, $this->template, $this );
 
@@ -495,7 +495,7 @@ abstract class Email_Abstract {
 		 * @param string         $subject  The email subject.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $instance The email object.
 		 */
 		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, $this->id, $this->template, $this );
 
@@ -507,7 +507,7 @@ abstract class Email_Abstract {
 		 * @param string         $subject  The email subject.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $instance The email object.
 		 */
 		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject", $subject, $this->id, $this->template, $this );
 
@@ -546,7 +546,7 @@ abstract class Email_Abstract {
 		 * @param string         $heading  The email heading.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $instance The email object.
 		 */
 		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, $this->id, $this->template, $this );
 
@@ -558,7 +558,7 @@ abstract class Email_Abstract {
 		 * @param string         $heading  The email heading.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $instance The email object.
 		 */
 		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading", $heading, $this->id, $this->template, $this );
 
@@ -589,7 +589,7 @@ abstract class Email_Abstract {
 		 * @param string         $content  The email heading.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$content = apply_filters( 'tec_tickets_emails_additional_content', $content, $this->id, $this->template, $this );
 
@@ -601,7 +601,7 @@ abstract class Email_Abstract {
 		 * @param string         $content  The email heading.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$content = apply_filters( "tec_tickets_emails_{$this->slug}_additional_content", $content, $this->id, $this->template, $this );
 
@@ -628,7 +628,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $settings The settings array.
 		 * @param string         $id       Email ID.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$settings = apply_filters( 'tec_tickets_emails_settings', $settings, $this->id, $this );
 
@@ -639,7 +639,7 @@ abstract class Email_Abstract {
 		 *
 		 * @param array          $settings The settings array.
 		 * @param string         $id       Email ID.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$settings = apply_filters( "tec_tickets_emails_{$this->slug}_settings", $settings, $this->id, $this );
 
@@ -668,7 +668,7 @@ abstract class Email_Abstract {
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$args = apply_filters( 'tec_tickets_emails_template_args', $args, $this->id, $this->template, $this );
 
@@ -680,7 +680,7 @@ abstract class Email_Abstract {
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$args = apply_filters( "tec_tickets_emails_{$this->slug}_template_args", $args, $this->id, $this->template, $this );
 
@@ -709,7 +709,7 @@ abstract class Email_Abstract {
 		 * @param array          $args     The email preview arguments.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$args = apply_filters( 'tec_tickets_emails_preview_args', $args, $this->id, $this->template, $this );
 
@@ -721,7 +721,7 @@ abstract class Email_Abstract {
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param Email_Abstract $ins     The email object.
 		 */
 		$args = apply_filters( "tec_tickets_emails_{$this->slug}_preview_args", $args, $this->id, $this->template, $this );
 

@@ -6,7 +6,7 @@
  * during the Stripe checkout process. It integrates with various filters
  * and hooks specific to Stripe's order and payment flow.
  *
- * @since   5.18.0
+ * @since 5.18.0
  * @package TEC\Tickets\Commerce\Order_Modifiers\Checkout\Gateway\Stripe
  */
 

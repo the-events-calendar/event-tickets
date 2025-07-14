@@ -3,7 +3,7 @@
  * The main front-end controller. This controller will directly, or by delegation, subscribe to
  * front-end related hooks.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */
@@ -31,7 +31,7 @@ use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 /**
  * Class Controller.
  *
- * @since   5.16.0
+ * @since 5.16.0
  *
  * @package TEC\Controller;
  */

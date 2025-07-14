@@ -124,7 +124,7 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param  event {Event}
+	 * @param event {Event}
 	 *
 	 * @return {void}
 	 */

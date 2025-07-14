@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Admin\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.admin.hooks' ), 'some_method' ] );
  *
- * @since   5.3.4
+ * @since 5.3.4
  *
  * @package TEC\Tickets\Admin
  */
@@ -20,7 +20,7 @@ namespace TEC\Tickets\Admin;
 /**
  * Class Hooks.
  *
- * @since   5.3.4
+ * @since 5.3.4
  *
  * @package TEC\Tickets\Admin
  */

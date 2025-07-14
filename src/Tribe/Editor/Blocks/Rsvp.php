@@ -405,7 +405,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
 		 *
-		 * @param $data $_POST Parameters comes from RSVP Form
+		 * @param array $data $_POST Parameters comes from RSVP Form
 		 */
 		do_action( 'tribe_tickets_rsvp_before_order_processing' );
 

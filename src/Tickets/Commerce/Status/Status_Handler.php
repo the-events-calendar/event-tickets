@@ -9,7 +9,7 @@ use WP_Post;
 /**
  * Class Status_Handler
  *
- * @since   5.1.9
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -452,7 +452,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * A transaction might be completed because it successfully completed, because it
 	 * was refunded or denied.
 	 *
-	 * @since  5.1.9
+	 * @since 5.1.9
 	 *
 	 * @param string $payment_status
 	 *

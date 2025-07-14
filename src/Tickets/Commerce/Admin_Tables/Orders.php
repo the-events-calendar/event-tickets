@@ -32,7 +32,7 @@ class Orders extends WP_List_Table {
 	public $per_page_option = 20;
 
 	/**
-	 * The current post ID
+	 * The current post ID.
 	 *
 	 * @var int
 	 */
@@ -93,7 +93,7 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Checks the current user's permissions
+	 * Checks the current user's permissions.
 	 *
 	 * @since 5.2.0
 	 */
@@ -131,7 +131,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item The current item
+	 * @param WP_Post $item The current item.
 	 */
 	public function single_row( $item ) {
 		echo '<tr class="' . esc_attr( $item->post_status ) . '">';
@@ -237,7 +237,7 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Message to be displayed when there are no items
+	 * Message to be displayed when there are no items.
 	 *
 	 * @since 5.2.0
 	 */
@@ -250,8 +250,8 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
-	 * @param         $column
+	 * @param WP_Post $item   The current item.
+	 * @param string  $column The column name.
 	 *
 	 * @return string
 	 */
@@ -290,7 +290,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -301,11 +301,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the date column
+	 * Handler for the date column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -314,11 +314,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the purchased column
+	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -347,11 +347,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the order column
+	 * Handler for the order column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -371,11 +371,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the total column
+	 * Handler for the total column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -389,7 +389,7 @@ class Orders extends WP_List_Table {
 	 * @since 5.2.0
 	 * @since 5.9.1 Handle when the $order_url is empty.
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -413,11 +413,11 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for gateway column
+	 * Handler for gateway column.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -518,7 +518,7 @@ class Orders extends WP_List_Table {
 		];
 
 		$custom_search = tribe( \TEC\Tickets\Commerce\Reports\Orders::class )->get_template()->template( 'orders/search-options', $template_vars, false );
-		// Add our search type dropdown before the search box input
+		// Add our search type dropdown before the search box input.
 		$search_box = str_replace( '<input type="submit"', $custom_search . '<input type="submit"', $search_box );
 
 		echo $search_box;

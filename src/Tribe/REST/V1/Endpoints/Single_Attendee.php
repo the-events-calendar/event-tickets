@@ -385,8 +385,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 *
 	 * @since 5.6.5 Validate check-in data before allowing check-in.
 	 *
-	 * @param $attendee array Attendee data.
-	 * @param $check_in bool Check in value.
+	 * @param array $attendee Attendee data.
+	 * @param bool  $check_in Check in value.
 	 *
 	 * @return bool|WP_Error
 	 */
