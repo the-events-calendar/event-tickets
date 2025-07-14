@@ -25,10 +25,9 @@ if ( $must_login || ! $payment_element ) {
 	return;
 }
 
-$hidden = $shortcode->should_display_billing_info() ? 'tribe-common-a11y-hidden' : '';
 ?>
 <div id="tec-tc-gateway-stripe-payment-element" class="tribe-tickets__commerce-checkout-stripe-payment-element"></div>
-<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button <?php echo esc_attr( $hidden ); ?>">
+<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
 	<div class="spinner hidden" id="spinner"></div>
 	<span id="button-text">
 		<?php
