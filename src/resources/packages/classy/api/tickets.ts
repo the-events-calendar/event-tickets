@@ -1,4 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
+import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { PartialTicket, Ticket } from '../types/Ticket';
 import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams } from '../types/Api';
@@ -89,14 +90,111 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
  */
 export const createTicket = async ( ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
 	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
-		// todo: use proper form body structure for the request.
+		const body = new FormData();
+
+		// Required fields
+		if ( ticketData.eventId ) {
+			body.append( 'post_id', ticketData.eventId.toString() );
+		}
+		if ( ticketData.provider ) {
+			body.append( 'provider', ticketData.provider );
+		}
+		if ( ticketData.title ) {
+			body.append( 'name', ticketData.title );
+		}
+		if ( ticketData.description ) {
+			body.append( 'description', ticketData.description );
+		}
+		if ( ticketData.cost ) {
+			body.append( 'price', ticketData.cost );
+		}
+
+		// Date and time fields
+		if ( ticketData.availableFrom ) {
+			// Extract date and time from availableFrom
+			const availableFromDate = new Date( ticketData.availableFrom );
+			const startDate = availableFromDate.toISOString().split( 'T' )[ 0 ];
+			const startTime = availableFromDate.toTimeString().split( ' ' )[ 0 ];
+			body.append( 'start_date', startDate );
+			body.append( 'start_time', startTime );
+		}
+
+		if ( ticketData.availableUntil ) {
+			// Extract date and time from availableUntil
+			const availableUntilDate = new Date( ticketData.availableUntil );
+			const endDate = availableUntilDate.toISOString().split( 'T' )[ 0 ];
+			const endTime = availableUntilDate.toTimeString().split( ' ' )[ 0 ];
+			body.append( 'end_date', endDate );
+			body.append( 'end_time', endTime );
+		}
+
+		// Additional fields
+		if ( ticketData.iac ) {
+			body.append( 'iac', ticketData.iac );
+		}
+
+		// Capacity fields
+		if ( ticketData.capacityDetails ) {
+			const capacityType = ticketData.capacityDetails.globalStockMode;
+			const capacity = ticketData.capacityDetails.max;
+
+			// Map capacity type to ticket mode
+			const isUnlimited = capacityType === 'own' || capacity === 0;
+			body.append( 'ticket[mode]', isUnlimited ? '' : capacityType || '' );
+			body.append( 'ticket[capacity]', isUnlimited ? '' : capacity?.toString() || '' );
+		}
+
+		// Sale price fields
+		if ( ticketData.salePriceData ) {
+			const salePriceData = ticketData.salePriceData;
+			body.append( 'ticket[sale_price][checked]', salePriceData.enabled ? '1' : '0' );
+			if ( salePriceData.salePrice ) {
+				body.append( 'ticket[sale_price][price]', salePriceData.salePrice );
+			}
+			if ( salePriceData.startDate ) {
+				body.append( 'ticket[sale_price][start_date]', salePriceData.startDate );
+			}
+			if ( salePriceData.endDate ) {
+				body.append( 'ticket[sale_price][end_date]', salePriceData.endDate );
+			}
+		}
+
+		// Menu order
+		// todo: Replace this placeholder with actual logic.
+		body.append( 'menu_order', '0' );
+
+		/**
+		 * Filter the body of the request before sending it to the API.
+		 *
+		 * @since TBD
+		 *
+		 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
+		 * @param {PartialTicket} ticketData The ticket data being sent.
+		 */
+		const additionalValues: Record<string, any> = applyFilters(
+			'tec.tickets.classy.createTicket.body',
+			{},
+			ticketData
+		);
+
+		// Append/update additional values in the body.
+		Object.entries( additionalValues ).forEach( ( [ key, value ] ) => {
+			if ( value !== undefined && value !== null ) {
+				if ( Array.isArray( value ) ) {
+					value.forEach( ( item ) => body.append( key, item ) );
+				} else {
+					body.append( key, value );
+				}
+			}
+		} );
+
 		await apiFetch( {
 			url: apiBaseUrl,
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			data: ticketData,
+			body: body,
 		} )
 			.then( ( data ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
