@@ -1064,11 +1064,24 @@ class Tribe__Tickets__Tickets_View {
 
 		$tickets = $provider->get_tickets( $post_id );
 
+		$rsvp = null;
+
+		foreach ( $tickets as $index => $ticket ) {
+			if ( 'tc-rsvp' === $ticket->type ) {
+				$rsvp = $ticket;
+				unset( $tickets[ $index ] );
+			}
+		}
+
+		// Reindex $tickets array to avoid gaps in keys
+		$tickets = array_values( $tickets );
+
 		$args = [
 			'post_id'                     => $post_id,
 			'provider'                    => $provider,
 			'provider_id'                 => $provider->class_name,
 			'tickets'                     => $tickets,
+			'rsvp'                        => $rsvp,
 			'cart_classes'                => [ 'tribe-block', 'tribe-tickets' ], // @todo: deprecate with V1.
 			'tickets_on_sale'             => $blocks_tickets->get_tickets_on_sale( $tickets ),
 			'has_tickets_on_sale'         => tribe_events_has_tickets_on_sale( $post_id ),
@@ -1191,6 +1204,7 @@ class Tribe__Tickets__Tickets_View {
 			}
 
 			$rendered_content  = $before_content;
+			$rendered_content .= $template->template( 'v2/commerce/rsvp', [ 'block_html_id' => 'tc-rsvp-' . uniqid(), 'step' => '' ], $echo );
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
