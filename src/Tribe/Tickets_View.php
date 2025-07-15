@@ -251,7 +251,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.7.1
 	 * @since 5.8.2 Removed the $is_event_page param.
-	 * @since TBD Added support for pretty permalinks.
+	 * @since 5.25.0 Added support for pretty permalinks.
 	 *
 	 * @param int $event_id event_id The Event ID we're checking.
 	 *
@@ -407,7 +407,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
 	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
-	 * @since TBD Added filter to preserve tribe-edit-orders parameter in canonical redirect.
+	 * @since 5.25.0 Added filter to preserve tribe-edit-orders parameter in canonical redirect.
 	 * 
 	 * @param string $content Normally the_content of a post.
 	 *
@@ -1468,7 +1468,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Preserve pretty URL format in canonical redirect for tickets pages.
 	 *
-	 * @since TBD
+	 * @since 5.25.0
 	 *
 	 * @param string $redirect_url The URL to redirect to.
 	 * @return string The URL to redirect to.
@@ -1502,7 +1502,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Handle tickets page requests to prevent canonical redirect issues.
 	 *
-	 * @since TBD
+	 * @since 5.25.0
 	 *
 	 * @param array $query_vars The query variables.
 	 * @return array The modified query variables.

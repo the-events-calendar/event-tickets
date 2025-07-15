@@ -797,7 +797,7 @@ class Attendee {
 	 * Get attendees by ticket ID.
 	 *
 	 * @since 5.14.0
-	 * @since TBD Added check to return empty array if Tickets Commerce is disabled.
+	 * @since 5.25.0 Added check to return empty array if Tickets Commerce is disabled.
 	 *
 	 * @param int    $ticket_id    Ticket ID.
 	 * @param string $orm_provider ORM provider string.

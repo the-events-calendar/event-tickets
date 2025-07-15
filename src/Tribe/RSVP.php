@@ -2353,7 +2353,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Marks an attendee as not checked in for an event
 	 *
-	 * @since TBD - Add optional $app parameter to allow for bulk checkin process.
+	 * @since 5.25.0 - Add optional $app parameter to allow for bulk checkin process.
 	 *
 	 * @param int  $attendee_id The ID of the attendee that's being uncheckedin.
 	 * @param bool $app         True if from bulk checkin process.
