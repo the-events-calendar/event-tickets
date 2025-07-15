@@ -1,17 +1,4 @@
-import { LocalizedData, Settings } from './types/LocalizedData';
-
-declare global {
-	interface Window {
-		// @ts-ignore
-		tec: {
-			tickets: {
-				classy: {
-					data: LocalizedData;
-				};
-			};
-		};
-	}
-}
+import { LocalizedData, Settings, ETClassyGlobal } from './types/LocalizedData';
 
 /**
  * Returns the default localized data.
@@ -31,7 +18,7 @@ export function getDefault(): LocalizedData {
 	};
 }
 
-export const localizedData: LocalizedData = window?.tec?.tickets?.classy?.data ?? getDefault();
+export const localizedData: LocalizedData = ( window.tec as ETClassyGlobal ).tickets?.classy?.data ?? getDefault();
 
 /**
  * Gets the localized data.

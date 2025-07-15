@@ -1,3 +1,5 @@
+import { TecGlobal } from '@tec/common/classy/types/LocalizedData';
+
 /**
  * The types of nonces used in the Classy Tickets application.
  *
@@ -50,4 +52,17 @@ export type Settings = {
 export type LocalizedData = {
 	settings: Settings;
 	nonces: Record<NonceTypes, string>;
+};
+
+/**
+ * The global type for the Classy Tickets application.
+ *
+ * @since TBD
+ */
+export type ETClassyGlobal = TecGlobal & {
+	tickets: {
+		classy: {
+			data: LocalizedData;
+		}
+	}
 };
