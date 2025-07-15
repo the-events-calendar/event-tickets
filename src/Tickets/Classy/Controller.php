@@ -14,6 +14,7 @@ namespace TEC\Tickets\Classy;
 use TEC\Common\Classy\Controller as Common_Controller;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as ET;
 
 /**
@@ -107,8 +108,19 @@ class Controller extends Controller_Contract {
 	 * @return array The data to be localized in the Classy script.
 	 */
 	private function get_data(): array {
+		$code = Currency::get_currency_code();
+
 		return [
-			'settings' => [],
+			'settings' => [
+				'currency' => [
+					'code'               => $code,
+					'symbol'             => Currency::get_currency_symbol( $code ),
+					'decimalSeparator'   => Currency::get_currency_separator_decimal( $code ),
+					'thousandsSeparator' => Currency::get_currency_separator_thousands( $code ),
+					'placement'          => Currency::get_currency_symbol_position( $code ),
+					'precision'          => Currency::get_currency_precision( $code ),
+				],
+			],
 			'nonces'   => [
 				'deleteTicket' => wp_create_nonce( 'remove_ticket_nonce' ),
 				'updateTicket' => wp_create_nonce( 'edit_ticket_nonce' ),

@@ -3,7 +3,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { PartialTicket, Ticket } from '../types/Ticket';
 import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams, } from '../types/Api';
-import { NonceTypes } from '../types/LocalizedData';
+import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
@@ -218,7 +218,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 			}
 		} );
 
-		const nonceKey = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
+		const nonceKey: NonceAction = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
 		await apiFetch( {
 			path: `${ apiBaseUrl }${ isUpdate ? `/${ ticketData.id }` : '' }`,
 			method: isUpdate ? 'PUT' : 'POST',

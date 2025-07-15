@@ -1,4 +1,9 @@
-import { LocalizedData, Settings, ETClassyGlobal } from './types/LocalizedData';
+import {
+	LocalizedData,
+	Settings,
+	ETClassyGlobal,
+	CurrencySettings,
+} from './types/LocalizedData';
 
 /**
  * Returns the default localized data.
@@ -9,7 +14,16 @@ import { LocalizedData, Settings, ETClassyGlobal } from './types/LocalizedData';
  */
 export function getDefault(): LocalizedData {
 	return {
-		settings: {},
+		settings: {
+			currency: {
+				code: 'USD',
+				symbol: '$',
+				decimalSeparator: '.',
+				thousandSeparator: ',',
+				position: 'prefix',
+				precision: 2,
+			},
+		},
 		nonces: {
 			deleteTicket: '',
 			createTicket: '',
@@ -43,4 +57,15 @@ export function getLocalizedData(): LocalizedData {
  */
 export function getSettings(): Settings {
 	return localizedData.settings;
+}
+
+/**
+ * Gets the currency settings from the localized data.
+ *
+ * @since TBD
+ *
+ * @returns {CurrencySettings} The currency settings.
+ */
+export function getCurrencySettings(): CurrencySettings {
+	return getSettings().currency;
 }

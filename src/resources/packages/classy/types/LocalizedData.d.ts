@@ -1,3 +1,4 @@
+import { CurrencyPosition } from '@tec/common/classy/types/CurrencyPosition';
 import { TecGlobal } from '@tec/common/classy/types/LocalizedData';
 
 /**
@@ -8,38 +9,71 @@ import { TecGlobal } from '@tec/common/classy/types/LocalizedData';
 export type NonceTypes = 'deleteTicket' | 'createTicket' | 'updateTicket';
 
 /**
+ * The actions that can be performed with nonces in the Classy Tickets application.
+ *
+ * @since TBD
+ */
+export type NonceAction = 'add_ticket_nonce' | 'edit_ticket_nonce' | 'remove_ticket_nonce';
+
+/**
+ * The settings for the currency used in the Classy Tickets application.
+ *
+ * This type defines the structure of the currency settings, including the symbol,
+ * decimal separator, thousand separator, position of the currency symbol, and precision.
+ *
+ * @since TBD
+ */
+export type CurrencySettings = {
+	/**
+	 * The currency code, e.g., 'USD', 'EUR'.
+	 *
+	 * @since TBD
+	 */
+	code: string;
+
+	/**
+	 * The currency symbol, e.g., '$', '€'.
+	 *
+	 * @since TBD
+	 */
+	symbol: string;
+
+	/**
+	 * The character used to separate decimal values, e.g., '.', ','.
+	 *
+	 * @since TBD
+	 */
+	decimalSeparator: string;
+
+	/**
+	 * The character used to separate thousands, e.g., ',', '.'.
+	 *
+	 * @since TBD
+	 */
+	thousandSeparator: string;
+
+	/**
+	 * The position of the currency symbol, e.g., 'prefix', 'suffix'.
+	 *
+	 * @since TBD
+	 */
+	position: CurrencyPosition;
+
+	/**
+	 * The number of decimal places to display.
+	 *
+	 * @since TBD
+	 */
+	precision: number;
+};
+
+/**
  * The settings for the Classy Tickets application.
  *
  * @since TBD
  */
 export type Settings = {
-	/**
-	 * The currency symbol used for tickets.
-	 *
-	 * @since TBD
-	 */
-	currencySymbol?: string;
-
-	/**
-	 * The currency code used for tickets.
-	 *
-	 * @since TBD
-	 */
-	currencyCode?: string;
-
-	/**
-	 * The currency format used for tickets.
-	 *
-	 * @since TBD
-	 */
-	currencyFormat?: string;
-
-	/**
-	 * The number of decimal places used for tickets.
-	 *
-	 * @since TBD
-	 */
-	numberOfDecimals?: number;
+	currency: CurrencySettings;
 };
 
 /**
