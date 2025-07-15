@@ -219,6 +219,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Make sure that the sales of tickets with unlimited capacity are tracked. [ET-2513]
 * Fix - Prevents fatal error when activating WooCommerce through WP-CLI when Event Tickets plugin was already active. [ET-2532]
 * Fix - Remove unused JS for TicketsCommerce settings and resolve stripe checkout template warning. [ET-2493]
+* Tweak - Added actions: `tribe_log`
+* Tweak - Changed views: `v2/commerce/checkout/cart/item/details`, `v2/commerce/checkout/cart/item/details/toggle`, `v2/commerce/gateway/stripe/payment-element`
 * Language - 1 new strings added, 93 updated, 1 fuzzied, and 1 obsoleted.
 
 = [5.24.2] 2025-06-18 =
