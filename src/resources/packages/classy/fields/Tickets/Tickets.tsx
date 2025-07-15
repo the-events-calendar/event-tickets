@@ -33,13 +33,15 @@ const defaultTicket: Partial<TicketData> = {
  * @return {JSX.Element} The rendered component.
  */
 export default function Tickets(): JSX.Element {
-	const { tickets, isLoading } = useSelect( ( select: SelectFunction ) => {
+	const { tickets, isLoading, eventId } = useSelect( ( select: SelectFunction ) => {
 		const { getTickets, isLoading }: StoreSelect = select( STORE_NAME );
 		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
+		const eventId = getCurrentPostId();
 
 		return {
-			tickets: getTickets( getCurrentPostId() ) || null,
+			tickets: getTickets( eventId ) || null,
 			isLoading: isLoading(),
+			eventId: eventId,
 		};
 	}, [] );
 
@@ -49,7 +51,6 @@ export default function Tickets(): JSX.Element {
 		updateTicket,
 	}: StoreDispatch = useDispatch( STORE_NAME );
 
-	const [ hasTickets, setHasTickets ] = useState( tickets.length > 0 );
 	const [ isUpserting, setIsUpserting ] = useState( false );
 	const [ isNewTicket, setIsNewTicket ] = useState( false );
 
@@ -59,23 +60,20 @@ export default function Tickets(): JSX.Element {
 	}, [] );
 
 	const onTicketUpsertSaved = useCallback( ( ticket: TicketData ) => {
-		if ( isNewTicket ) {
-			TicketApi.createTicket( ticket )
-				.then( () => {
+		// Ensure we have an eventId for the ticket.
+		ticket.eventId = ticket.eventId || eventId;
+
+		TicketApi.upsertTicket( ticket )
+			.then( () => {
+				if ( isNewTicket ) {
 					addTicket( ticket );
-				} )
-				.catch( ( error: Error ) => {
-					console.error( 'Error creating ticket:', error );
-				} );
-		} else {
-			TicketApi.updateTicket( ticket.id, ticket )
-				.then( () => {
+				} else {
 					updateTicket( ticket.id, ticket );
-				} )
-				.catch( ( error: Error ) => {
-					console.error( 'Error updating ticket:', error );
-				} );
-		}
+				}
+			} )
+			.catch( ( error: Error ) => {
+				console.error( 'Error upserting ticket:', error );
+			} );
 
 		setIsUpserting( false );
 		setIsNewTicket( false );
