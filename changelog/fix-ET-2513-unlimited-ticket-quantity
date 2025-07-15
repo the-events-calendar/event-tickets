@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Make sure that the sales of tickets with unlimited capacity are tracked. [ET-2513]

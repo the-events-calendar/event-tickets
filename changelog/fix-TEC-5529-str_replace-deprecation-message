@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Make sure add_submenu_page is called correctly to avoid deprecation messages. [TEC-5529]
