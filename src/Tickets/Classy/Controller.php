@@ -74,6 +74,7 @@ class Controller extends Controller_Contract {
 			->set_condition( $post_uses_classy )
 			->add_dependency( 'tec-classy' )
 			->add_to_group( 'tec-classy' )
+			->add_localize_script( 'tec.tickets.classy.data', fn() => $this->get_data() )
 			->register();
 
 		// Register the main Classy styles.
@@ -96,5 +97,23 @@ class Controller extends Controller_Contract {
 	 */
 	private function get_et_class(): string {
 		return ET::class;
+	}
+
+	/**
+	 * Get the data to be localized in the Classy script.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The data to be localized in the Classy script.
+	 */
+	private function get_data(): array {
+		return [
+			'settings' => [],
+			'nonces'   => [
+				'deleteTicket' => wp_create_nonce( 'remove_ticket_nonce' ),
+				'updateTicket' => wp_create_nonce( 'edit_ticket_nonce' ),
+				'createTicket' => wp_create_nonce( 'add_ticket_nonce' ),
+			],
+		];
 	}
 }
