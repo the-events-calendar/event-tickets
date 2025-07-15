@@ -23,7 +23,7 @@ class Order_Modifiers_Meta extends Table {
 	/**
 	 * @since 5.18.0
 	 *
-	 * @since TBD Removed the `updated_at` column.
+	 * @since 5.25.0 Removed the `updated_at` column.
 	 *
 	 * @var string|null The version number for this schema definition.
 	 */
@@ -61,7 +61,7 @@ class Order_Modifiers_Meta extends Table {
 	 * An array of all the columns in the table.
 	 *
 	 * @since 5.20.0
-	 * @since TBD Removed the `updated_at` column.
+	 * @since 5.25.0 Removed the `updated_at` column.
 	 *
 	 * @var string[]
 	 */
@@ -81,7 +81,7 @@ class Order_Modifiers_Meta extends Table {
 	 * by the `dbDelta` function.
 	 *
 	 * @since 5.18.0
-	 * @since TBD Removed the `updated_at` column.
+	 * @since 5.25.0 Removed the `updated_at` column.
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.

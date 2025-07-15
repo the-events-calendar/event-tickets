@@ -451,7 +451,7 @@ export async function bootstrapIframe( dom ) {
 /**
  * Creates a URL for the reservation cancel request.
  *
- * @since TBD
+ * @since 5.25.0
  *
  * @return {URL} The URL for the reservation cancel request.
  */
@@ -501,7 +501,7 @@ async function cancelReservationsOnBackend() {
  * the reservations made by the user. It uses the Beacon API to ensure that the request is sent even
  * if the page is being unloaded (closed or navigated away from).
  *
- * @since TBD
+ * @since 5.25.0
  *
  * @return {void} The request is sent to the backend using the Beacon API.
  */
@@ -518,7 +518,7 @@ export function cancelReservationsViaBeacon() {
  * Registers the unload event listener to send a request to cancel reservations
  * when the page is unloaded.
  *
- * @since TBD
+ * @since 5.25.0
  *
  * @return {void} The unload event listener is registered.
  */
@@ -535,7 +535,7 @@ function registerUnloadEvent() {
  * Unregisters the unload event listener to prevent sending a request to cancel
  * reservations when the page is unloaded.
  *
- * @since TBD
+ * @since 5.25.0
  *
  * @return {void} The unload event listener is unregistered.
  */

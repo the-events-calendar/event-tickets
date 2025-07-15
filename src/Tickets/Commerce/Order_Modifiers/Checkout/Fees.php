@@ -96,7 +96,7 @@ class Fees extends Abstract_Fees {
 	 * Add fees to the order object properties.
 	 *
 	 * @since 5.21.0
-	 * @since TBD Added check that the items are an array.
+	 * @since 5.25.0 Added check that the items are an array.
 	 *
 	 * @param array $properties The properties of the order object.
 	 *

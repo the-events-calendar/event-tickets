@@ -825,7 +825,7 @@ class Ticket extends Ticket_Data {
 	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Removed the increment of deleted attendees count, it is handled in attendee deletion method.
+	 * @since 5.25.0 Removed the increment of deleted attendees count, it is handled in attendee deletion method.
 	 *
 	 * @param int|WP_Post|null $event_id   The event ID.
 	 * @param int|WP_Post|null $ticket_id  The ticket ID.

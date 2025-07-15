@@ -10,7 +10,7 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.1.9
- * @since TBD Add condition to check if ticket description should be shown.
+ * @since 5.25.0 Add condition to check if ticket description should be shown.
  *
  * @version 5.1.9
  *
