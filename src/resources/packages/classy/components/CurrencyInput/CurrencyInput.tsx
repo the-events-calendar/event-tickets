@@ -1,18 +1,19 @@
 import { CurrencyInput as CommonCurrencyInput } from '@tec/common/classy/components';
 import { Currency } from '@tec/common/classy/types/Currency';
 import { _x } from '@wordpress/i18n';
+import { getCurrencySettings } from '../../localizedData';
 
-// todo: Use the site settings for currency and position.
 const defaultCurrency: Currency = {
-	symbol: '$',
-	position: 'prefix',
-	code: 'USD',
+	symbol: getCurrencySettings().symbol,
+	position: getCurrencySettings().position,
+	code: getCurrencySettings().code,
 };
 
-// todo: Use the site settings for these.
-const decimalPrecision = 2;
-const decimalSeparator = '.';
-const thousandSeparator = ',';
+const {
+	decimalSeparator,
+	thousandSeparator,
+	precision: decimalPrecision,
+} = getCurrencySettings();
 
 type CurrencyInputProps = {
 	/**
