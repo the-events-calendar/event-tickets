@@ -1,5 +1,27 @@
 # Changelog
 
+### [5.25.0] 2025-07-16
+
+* Version - Event Tickets 5.24.3 is only compatible with Event Tickets Plus 6.7.0 or higher.
+* Feature - Add in support for uncheckin through the REST API. [ETP-1000]
+* Feature - For Offline checkin support added the optional `$details` parameter to be able to set the checkin time and device_id. [ETP-1003]
+* Fix - Add "Orders" link in the admin page row actions menu for pages with Tickets Commerce tickets. [ET-2450]
+* Fix - Add bail checks if Tickets Commerce is disabled to avoid a fatal on an event's Attendee page. [ET-2310]
+* Fix - Add conditional to only show ticket description toggle if there is a description. [ET-2530]
+* Fix - Added logic so deleted attendees will not count deleted tickets. [ET-1002]
+* Fix - Add extra check that items added to an order should be an array. Props to @TomGroot! [ET-2510]
+* Fix - Ensure pending reservations are properly canceled when the Seat Selection page is closed. [SL-296]
+* Fix - Fixed manual quantity input for tickets to respect shared capacity. [ET-2492]
+* Fix - Fixed My Tickets link not working on Pages due to canonical redirect. [ET-2517]
+* Fix - Fixed sort order in the move attendees dialog to display posts alphabetically by title instead of by post ID. [ET-2305]
+* Fix - Fix PayPal Inventory Tests (Multiple Timezones). [ET-2528]
+* Fix - Fix the calculations when tickets are moved between events, so the correct number of available tickets is shown on list-based views. [ETP-994]
+* Fix - Make sure add_submenu_page is called correctly to avoid deprecation messages. [TEC-5529]
+* Fix - Make sure that the sales of tickets with unlimited capacity are tracked. [ET-2513]
+* Fix - Prevents fatal error when activating WooCommerce through WP-CLI when Event Tickets plugin was already active. [ET-2532]
+* Fix - Remove unused JS for TicketsCommerce settings and resolve stripe checkout template warning. [ET-2493]
+* Language - 1 new strings added, 93 updated, 1 fuzzied, and 1 obsoleted.
+
 ### [5.24.2] 2025-06-18
 
 * Version - Event Tickets 5.24.2 is only compatible with Event Tickets Plus 6.6.1 or higher.

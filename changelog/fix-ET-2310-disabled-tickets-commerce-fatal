@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Add bail checks if Tickets Commerce is disabled to avoid a fatal on an event's Attendee page. [ET-2310]
