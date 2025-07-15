@@ -2,9 +2,26 @@ import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { PartialTicket, Ticket } from '../types/Ticket';
-import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams } from '../types/Api';
+import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams, } from '../types/Api';
+import { NonceTypes } from '../types/LocalizedData';
+import { getLocalizedData } from '../localizedData.ts';
 
 const apiBaseUrl = '/tribe/tickets/v1/tickets';
+
+/**
+ * Get a nonce for the specified type.
+ *
+ * This function retrieves the nonce for a specific type from the localized data.
+ * It is used to ensure secure API requests by including the appropriate nonce.
+ *
+ * @since TBD
+ *
+ * @param {NonceTypes} type The type of nonce to retrieve.
+ * @return {string} The nonce value for the specified type.
+ */
+const getNonce = ( type: NonceTypes ): string => {
+	return getLocalizedData().nonces[ type ];
+};
 
 /**
  * Fetch tickets from the API.
@@ -39,12 +56,7 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
 	console.log( `Fetching tickets from: ${ path }` );
 
 	return new Promise<GetTicketsApiResponse>( async ( resolve, reject ) => {
-		await apiFetch( {
-			path: path,
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		} )
+		await apiFetch( { path: path } )
 			.then( ( data ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( 'Failed to fetch tickets: response did not return an object.' ) );
@@ -86,46 +98,51 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> =
 };
 
 /**
- * Create a new ticket.
+ * Create or update a ticket.
  *
- * This function will create a new ticket using the provided ticket data. It returns a promise that
- * resolves to the created ticket. If there are errors with the request, it will reject with an error
- * message. The calling code should handle the promise appropriately to manage the response or errors.
+ * This function will create a new ticket or update an existing one based on whether the ticket data
+ * contains an ID greater than 0. It returns a promise that resolves to the created or updated ticket.
+ * If there are errors with the request, it will reject with an error message. The calling code should
+ * handle the promise appropriately to manage the response or errors.
  *
  * @since TBD
  *
- * @param {PartialTicket} ticketData The data for the new ticket.
- * @return {Promise<GetTicketApiResponse>} A promise that resolves to the created ticket.
+ * @param {PartialTicket} ticketData The data for the ticket to create or update.
+ * @return {Promise<GetTicketApiResponse>} A promise that resolves to the created or updated ticket.
  */
-export const createTicket = async ( ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
+export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
 	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
-		const body = new FormData();
+		const isUpdate = ticketData.id && ticketData.id > 0;
+		const body: Record<string, any> = {
+			ticket: {},
+		};
 
 		// Required fields
 		if ( ticketData.eventId ) {
-			body.append( 'post_id', ticketData.eventId.toString() );
-		}
-		if ( ticketData.provider ) {
-			body.append( 'provider', ticketData.provider );
+			body.post_id = ticketData.eventId.toString();
 		}
 		if ( ticketData.title ) {
-			body.append( 'name', ticketData.title );
+			body.name = ticketData.title;
 		}
 		if ( ticketData.description ) {
-			body.append( 'description', ticketData.description );
-		}
-		if ( ticketData.cost ) {
-			body.append( 'price', ticketData.cost );
+			body.description = ticketData.description;
 		}
 
+		body.post_id = ticketData.eventId.toString();
+		body.price = ticketData.cost || '';
+
+		// todo: handle provider properly.
+		body.provider = ticketData.provider || 'tc';
+
 		// Date and time fields
+		// todo: refine date and time handling to ensure proper format.
 		if ( ticketData.availableFrom ) {
 			// Extract date and time from availableFrom
 			const availableFromDate = new Date( ticketData.availableFrom );
 			const startDate = availableFromDate.toISOString().split( 'T' )[ 0 ];
 			const startTime = availableFromDate.toTimeString().split( ' ' )[ 0 ];
-			body.append( 'start_date', startDate );
-			body.append( 'start_time', startTime );
+			body.start_date = startDate;
+			body.start_time = startTime;
 		}
 
 		if ( ticketData.availableUntil ) {
@@ -133,13 +150,13 @@ export const createTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 			const availableUntilDate = new Date( ticketData.availableUntil );
 			const endDate = availableUntilDate.toISOString().split( 'T' )[ 0 ];
 			const endTime = availableUntilDate.toTimeString().split( ' ' )[ 0 ];
-			body.append( 'end_date', endDate );
-			body.append( 'end_time', endTime );
+			body.end_date = endDate;
+			body.end_time = endTime;
 		}
 
 		// Additional fields
 		if ( ticketData.iac ) {
-			body.append( 'iac', ticketData.iac );
+			body.iac = ticketData.iac;
 		}
 
 		// Capacity fields
@@ -149,104 +166,76 @@ export const createTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 
 			// Map capacity type to ticket mode
 			const isUnlimited = capacityType === 'own' || capacity === 0;
-			body.append( 'ticket[mode]', isUnlimited ? '' : capacityType || '' );
-			body.append( 'ticket[capacity]', isUnlimited ? '' : capacity?.toString() || '' );
+
+			body.ticket.mode = isUnlimited ? '' : capacityType || '';
+			body.ticket.capacity = isUnlimited ? '' : capacity?.toString() || '';
 		}
 
 		// Sale price fields
 		if ( ticketData.salePriceData ) {
 			const salePriceData = ticketData.salePriceData;
-			body.append( 'ticket[sale_price][checked]', salePriceData.enabled ? '1' : '0' );
+
+			// Initialize sale_price object if it doesn't exist
+			if ( ! body.ticket.sale_price ) {
+				body.ticket.sale_price = {};
+			}
+
+			body.ticket.sale_price.checked = salePriceData.enabled ? '1' : '0';
 			if ( salePriceData.salePrice ) {
-				body.append( 'ticket[sale_price][price]', salePriceData.salePrice );
+				body.ticket.sale_price.price = salePriceData.salePrice;
 			}
 			if ( salePriceData.startDate ) {
-				body.append( 'ticket[sale_price][start_date]', salePriceData.startDate );
+				body.ticket.sale_price.start_date = salePriceData.startDate;
 			}
 			if ( salePriceData.endDate ) {
-				body.append( 'ticket[sale_price][end_date]', salePriceData.endDate );
+				body.ticket.sale_price.end_date = salePriceData.endDate;
 			}
 		}
 
 		// Menu order
 		// todo: Replace this placeholder with actual logic.
-		body.append( 'menu_order', '0' );
+		body.menu_order = '0';
+
+		// Set the filter as its own full string, to allow for easier discoverability when searching for it.
+		const filterName = isUpdate
+			? 'tec.classy.tickets.updateTicket'
+			: 'tec.classy.tickets.createTicket';
 
 		/**
-		 * Filter the body of the request before sending it to the API.
+		 * Filter the body of the upsert request before sending it to the API.
 		 *
 		 * @since TBD
 		 *
 		 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
 		 * @param {PartialTicket} ticketData The ticket data being sent.
 		 */
-		const additionalValues: Record<string, any> = applyFilters(
-			'tec.tickets.classy.createTicket.body',
-			{},
-			ticketData
-		);
+		const additionalValues: Record<string, any> = applyFilters( filterName, {}, ticketData );
 
 		// Append/update additional values in the body.
 		Object.entries( additionalValues ).forEach( ( [ key, value ] ) => {
 			if ( value !== undefined && value !== null ) {
-				if ( Array.isArray( value ) ) {
-					value.forEach( ( item ) => body.append( key, item ) );
-				} else {
-					body.append( key, value );
-				}
+				body[ key ] = value;
 			}
 		} );
 
+		const nonceKey = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
 		await apiFetch( {
-			url: apiBaseUrl,
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
+			path: `${ apiBaseUrl }${ isUpdate ? `/${ ticketData.id }` : '' }`,
+			method: isUpdate ? 'PUT' : 'POST',
+			data: {
+				...body,
+				[nonceKey]: getNonce( isUpdate ? 'updateTicket' : 'createTicket' ),
 			},
-			body: body,
 		} )
 			.then( ( data ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
-					reject( new Error( 'Failed to create ticket: response did not return an object.' ) );
+					reject( new Error( `Failed to ${ isUpdate ? 'update' : 'create' } ticket: response did not return an object.` ) );
 				} else {
 					resolve( data as GetTicketApiResponse );
 				}
 			} )
 			.catch( ( error ) => {
-				reject( new Error( `Failed to create ticket: ${ error.message }` ) );
-			} );
-	} );
-};
-
-/**
- * Update an existing ticket.
- *
- * @since TBD
- *
- * @param {number} ticketId The ID of the ticket to update.
- * @param {PartialTicket} ticketData The data to update the ticket with.
- * @return {Promise<GetTicketApiResponse>} A promise that resolves to the updated ticket.
- * @throws {Error} If the response is not an object or does not contain the expected properties.
- */
-export const updateTicket = async ( ticketId: number, ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
-	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
-		await apiFetch( {
-			path: `${ apiBaseUrl }/${ ticketId }`,
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			data: ticketData,
-		} )
-			.then( ( data ) => {
-				if ( ! ( data && typeof data === 'object' ) ) {
-					reject( new Error( 'Failed to update ticket: response did not return an object.' ) );
-				} else {
-					resolve( data as GetTicketApiResponse );
-				}
-			} )
-			.catch( ( error ) => {
-				reject( new Error( `Failed to update ticket: ${ error.message }` ) );
+				reject( new Error( `Failed to ${ isUpdate ? 'update' : 'create' } ticket: ${ error.message }` ) );
 			} );
 	} );
 };
@@ -265,9 +254,9 @@ export const deleteTicket = async ( ticketId: number ): Promise<void> => {
 		await apiFetch( {
 			path: `${ apiBaseUrl }/${ ticketId }`,
 			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			data: {
+				remove_ticket_nonce: getNonce( 'deleteTicket' ),
+			}
 		} )
 			.then( () => {
 				resolve();
