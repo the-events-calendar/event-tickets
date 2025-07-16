@@ -13,13 +13,12 @@
 * Fix - Ensure pending reservations are properly canceled when the Seat Selection page is closed. [SL-296]
 * Fix - Fixed manual quantity input for tickets to respect shared capacity. [ET-2492]
 * Fix - Fixed My Tickets link not working on Pages due to canonical redirect. [ET-2517]
-* Fix - Fixed sort order in the move attendees dialog to display posts alphabetically by title instead of by post ID. [ET-2305]
-* Fix - Fix PayPal Inventory Tests (Multiple Timezones). [ET-2528]
 * Fix - Fix the calculations when tickets are moved between events, so the correct number of available tickets is shown on list-based views. [ETP-994]
 * Fix - Make sure add_submenu_page is called correctly to avoid deprecation messages. [TEC-5529]
 * Fix - Make sure that the sales of tickets with unlimited capacity are tracked. [ET-2513]
 * Fix - Prevents fatal error when activating WooCommerce through WP-CLI when Event Tickets plugin was already active. [ET-2532]
 * Fix - Remove unused JS for TicketsCommerce settings and resolve stripe checkout template warning. [ET-2493]
+* Tweak - Fixed sort order in the move attendees dialog to display posts alphabetically by title instead of by post ID. [ET-2305]
 * Tweak - Added actions: `tribe_log`
 * Tweak - Changed views: `v2/commerce/checkout/cart/item/details`, `v2/commerce/checkout/cart/item/details/toggle`, `v2/commerce/gateway/stripe/payment-element`
 * Language - 1 new strings added, 93 updated, 1 fuzzied, and 1 obsoleted.
