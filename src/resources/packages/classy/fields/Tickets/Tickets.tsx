@@ -9,12 +9,12 @@ import {
 	TicketUpsertModal,
 	TicketTable,
 } from '../../components';
-import { Ticket as TicketData } from '../../types/Ticket';
+import { PartialTicket, Ticket as TicketData } from '../../types/Ticket';
 import { STORE_NAME } from '../../constants';
 import { StoreSelect, StoreDispatch, CoreEditorSelect } from '../../types/Store';
 import * as TicketApi from '../../api/tickets';
 
-const defaultTicket: Partial<TicketData> = {
+const defaultTicket: PartialTicket = {
 	title: '',
 	description: '',
 	cost: '',
@@ -54,6 +54,8 @@ export default function Tickets(): JSX.Element {
 
 	const [ isUpserting, setIsUpserting ] = useState( false );
 	const [ isNewTicket, setIsNewTicket ] = useState( false );
+	const [ ticketToEdit, setTicketToEdit ] = useState< PartialTicket >( defaultTicket );
+	const hasTickets = tickets && tickets.length > 0;
 
 	const onTicketAddedClicked = useCallback( () => {
 		setIsUpserting( true );
@@ -71,14 +73,26 @@ export default function Tickets(): JSX.Element {
 				} else {
 					updateTicket( ticket.id, ticket );
 				}
+
+				setIsUpserting( false );
+				setIsNewTicket( false );
 			} )
 			.catch( ( error: Error ) => {
 				console.error( 'Error upserting ticket:', error );
+				setTicketToEdit( ticket );
 			} );
-
-		setIsUpserting( false );
-		setIsNewTicket( false );
 	}, [ isNewTicket ] );
+
+	const onEditTicket = useCallback( ( ticket: PartialTicket ) => {
+		setTicketToEdit( ticket );
+		setIsUpserting( true );
+		setIsNewTicket( false );
+	}, [] );
+
+	const onTicketEditCancelled = useCallback( () => {
+		setIsUpserting( false );
+		setTicketToEdit( defaultTicket );
+	}, [ defaultTicket ] );
 
 	// If the tickets are not yet loaded, show a spinner.
 	if ( isLoading ) {
@@ -98,16 +112,16 @@ export default function Tickets(): JSX.Element {
 			{ isUpserting && (
 				<TicketUpsertModal
 					isUpdate={ ! isNewTicket }
-					onCancel={ () => setIsUpserting( false ) }
-					onClose={ () => setIsUpserting( false ) }
+					onCancel={ onTicketEditCancelled }
+					onClose={ onTicketEditCancelled }
 					onSave={ onTicketUpsertSaved }
-					values={ defaultTicket }
+					value={ ticketToEdit }
 				/>
 			) }
 
 			<TicketTable
 				tickets={ tickets }
-				onEditTicket={ () => {} }
+				onEditTicket={ onEditTicket }
 			/>
 
 			<AddTicket

@@ -26,7 +26,7 @@ type TicketUpsertProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
 	onSave: ( data: PartialTicket ) => void;
-	values: PartialTicket;
+	value: PartialTicket;
 }
 
 const defaultValues: PartialTicket = {
@@ -52,12 +52,12 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		isUpdate,
 		onCancel,
 		onSave,
-		values,
+		value,
 	} = props;
 
 	const [ currentValues, setCurrentValues ] = useState<PartialTicket>( {
 		...defaultValues,
-		...values,
+		...value,
 	} );
 
 	// Tickets must have a name at a minimum.

@@ -1,7 +1,16 @@
 import * as React from 'react';
 import { Modal } from '@wordpress/components';
 import { TicketUpsert } from '../TicketUpsert';
-import { Ticket as TicketData } from '../../types/Ticket';
+import { PartialTicket } from '../../types/Ticket';
+import { TicketComponentProps } from '../../types/TicketComponentProps';
+
+type TicketUpsertModalProps = {
+	isUpdate: boolean;
+	onCancel: () => void;
+	onClose: () => void;
+	onSave: ( ticket: PartialTicket ) => void;
+	value: PartialTicket;
+} & TicketComponentProps;
 
 /**
  * TicketUpsertModal component for rendering a modal to create or update a ticket.
@@ -11,15 +20,14 @@ import { Ticket as TicketData } from '../../types/Ticket';
  * @param {TicketData} props
  * @return {JSX.Element} The rendered modal component.
  */
-export default function TicketUpsertModal( props: {
-	isUpdate: boolean;
-	onCancel: () => void;
-	onClose: () => void;
-	onSave: ( ticketData : Partial<TicketData> ) => void;
-	values: Partial<TicketData>;
-} ): JSX.Element {
-
-	const { isUpdate, onCancel, onClose, onSave, values } = props;
+export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.Element {
+	const {
+		isUpdate,
+		onCancel,
+		onClose,
+		onSave,
+		value
+	} = props;
 
 	return (
 		<Modal
@@ -32,7 +40,7 @@ export default function TicketUpsertModal( props: {
 				isUpdate={ isUpdate }
 				onCancel={ onCancel }
 				onSave={ onSave }
-				values={ values }
+				value={ value }
 			/>
 		</Modal>
 	);

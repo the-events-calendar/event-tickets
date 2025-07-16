@@ -15,6 +15,7 @@ const startOfWeek: StartOfWeek = 0;
 
 type SalePriceProps = {
 	value: SalePriceDetails;
+	onChange: ( value: SalePriceDetails ) => void;
 } & Omit<TicketComponentProps, 'label'>;
 
 const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', 'event-tickets' );
