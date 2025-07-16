@@ -7,6 +7,7 @@ import { _x } from '@wordpress/i18n';
 import {
 	AddTicket,
 	TicketUpsertModal,
+	TicketTable,
 } from '../../components';
 import { Ticket as TicketData } from '../../types/Ticket';
 import { STORE_NAME } from '../../constants';
@@ -90,6 +91,10 @@ export default function Tickets(): JSX.Element {
 
 	return (
 		<div className="classy-field classy-field--tickets">
+			<div className="classy-field__input-title">
+				<h3>{ _x( 'Tickets', 'Title for Tickets section', 'event-tickets' ) }</h3>
+			</div>
+
 			{ isUpserting && (
 				<TicketUpsertModal
 					isUpdate={ ! isNewTicket }
@@ -100,11 +105,10 @@ export default function Tickets(): JSX.Element {
 				/>
 			) }
 
-			{ tickets.map( ( ticket: TicketData ) => (
-				<div key={ ticket.id }>
-					<pre><code style={ { display: "block" } }>{ JSON.stringify( ticket, null, "\t" ) }</code></pre>
-				</div>
-			) ) }
+			<TicketTable
+				tickets={ tickets }
+				onEditTicket={ () => {} }
+			/>
 
 			<AddTicket
 				buttonText={ addTicketText }
