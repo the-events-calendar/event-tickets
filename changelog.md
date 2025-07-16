@@ -2,13 +2,13 @@
 
 ### [5.25.0] 2025-07-16
 
-* Version - Event Tickets 5.24.3 is only compatible with Event Tickets Plus 6.7.0 or higher.
+* Version - Event Tickets 5.25.0 is only compatible with Event Tickets Plus 6.7.0 or higher.
 * Feature - Add in support for uncheckin through the REST API. [ETP-1000]
 * Feature - For Offline checkin support added the optional `$details` parameter to be able to set the checkin time and device_id. [ETP-1003]
 * Fix - Add "Orders" link in the admin page row actions menu for pages with Tickets Commerce tickets. [ET-2450]
 * Fix - Add bail checks if Tickets Commerce is disabled to avoid a fatal on an event's Attendee page. [ET-2310]
 * Fix - Add conditional to only show ticket description toggle if there is a description. [ET-2530]
-* Fix - Added logic so deleted attendees will not count deleted tickets. [ET-1002]
+* Fix - Added logic so deleted attendees will not count as deleted tickets. [ET-1002]
 * Fix - Add extra check that items added to an order should be an array. Props to @TomGroot! [ET-2510]
 * Fix - Ensure pending reservations are properly canceled when the Seat Selection page is closed. [SL-296]
 * Fix - Fixed manual quantity input for tickets to respect shared capacity. [ET-2492]
