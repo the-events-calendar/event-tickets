@@ -535,6 +535,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
+		tribe_singleton( self::class, $this );
 
 		// Initialize the Service Provider for Tickets.
 		tribe_register_provider( Tribe__Tickets__Service_Provider::class );
