@@ -27,6 +27,14 @@ export const getTicketById = ( state: StoreState ) => {
 	};
 }
 
+/**
+ * Checks if the store is currently loading.
+ *
+ * @since TBD
+ *
+ * @param {StoreState} state The current store state.
+ * @return {boolean} True if loading, false otherwise.
+ */
 export const isLoading = ( state: StoreState ): boolean => {
 	return state?.loading || false;
 }
