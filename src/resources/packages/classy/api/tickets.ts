@@ -53,7 +53,6 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
 	}
 
 	const path = addQueryArgs( apiBaseUrl, searchParams );
-	console.log( `Fetching tickets from: ${ path }` );
 
 	return new Promise<GetTicketsApiResponse>( async ( resolve, reject ) => {
 		await apiFetch( { path: path } )

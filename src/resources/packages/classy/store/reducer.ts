@@ -40,7 +40,6 @@ export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, 
 				loading: isLoading,
 			};
 		case SET_TICKETS:
-			console.log( 'Setting tickets in the store', ( action as SetTicketsAction ).tickets );
 			return {
 				...state,
 				tickets: ( action as SetTicketsAction ).tickets,
