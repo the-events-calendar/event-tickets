@@ -3,9 +3,14 @@ import { Fill } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { Tickets } from '../fields';
 import { CoreEditorSelect } from '../types/Store';
+import { getSettings } from '../localizedData';
 
-// Hard-code the post type for now.
-const POST_TYPES: string[] = [ 'tec_tc_ticket', 'tribe_events' ];
+/**
+ * The post types that should render the ticket fields.
+ *
+ * @since TBD
+ */
+const { ticketPostTypes } = getSettings();
 
 /**
  * Renders the ticket fields in the Classy editor.
@@ -25,7 +30,7 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 	}, [] );
 
 	// Ensure we are only adding fields to the correct post type(s).
-	if ( ! POST_TYPES.includes( postType ) ) {
+	if ( ! ticketPostTypes.includes( postType ) ) {
 		console.log( 'not rendering ticket fields for post type:', postType );
 		return fields;
 	}

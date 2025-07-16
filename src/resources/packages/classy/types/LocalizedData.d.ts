@@ -74,6 +74,7 @@ export type CurrencySettings = {
  */
 export type Settings = {
 	currency: CurrencySettings;
+	ticketPostTypes: string[];
 };
 
 /**

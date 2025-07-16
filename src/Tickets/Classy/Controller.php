@@ -110,9 +110,12 @@ class Controller extends Controller_Contract {
 	private function get_data(): array {
 		$code = Currency::get_currency_code();
 
+		/** @var ET $et_main */
+		$et_main = $this->container->get( ET::class );
+
 		return [
 			'settings' => [
-				'currency' => [
+				'currency'        => [
 					'code'               => $code,
 					'symbol'             => Currency::get_currency_symbol( $code ),
 					'decimalSeparator'   => Currency::get_currency_separator_decimal( $code ),
@@ -120,6 +123,7 @@ class Controller extends Controller_Contract {
 					'placement'          => Currency::get_currency_symbol_position( $code ),
 					'precision'          => Currency::get_currency_precision( $code ),
 				],
+				'ticketPostTypes' => $et_main->post_types(),
 			],
 			'nonces'   => [
 				'deleteTicket' => wp_create_nonce( 'remove_ticket_nonce' ),

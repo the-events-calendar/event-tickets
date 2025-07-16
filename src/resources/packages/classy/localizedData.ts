@@ -23,6 +23,7 @@ export function getDefault(): LocalizedData {
 				position: 'prefix',
 				precision: 2,
 			},
+			ticketPostTypes: [ 'tec_tc_ticket', 'tribe_events' ],
 		},
 		nonces: {
 			deleteTicket: '',
