@@ -11,6 +11,18 @@ type TicketTableProps = {
 	onEditTicket: ( ticket: Ticket ) => void;
 } & Omit<TicketComponentProps, 'value'>;
 
+const sortTickets = ( tickets: Ticket[] ): Ticket[] => {
+	return tickets.toSorted( ( a: Ticket, b: Ticket ) => {
+		if ( a.menuOrder < b.menuOrder ) {
+			return -1;
+		} else if ( a.menuOrder > b.menuOrder ) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} );
+}
+
 /**
  * TicketTable component for displaying a list of tickets in a table format.
  *
