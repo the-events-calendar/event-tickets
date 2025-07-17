@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correct background color on "Get Tickets" button when dealing with series passes. [ET-2534]
