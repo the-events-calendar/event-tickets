@@ -12,7 +12,6 @@ import {
 import { PartialTicket, Ticket as TicketData } from '../../types/Ticket';
 import { STORE_NAME } from '../../constants';
 import { StoreSelect, StoreDispatch, CoreEditorSelect } from '../../types/Store';
-import * as TicketApi from '../../api/tickets';
 
 const defaultTicket: PartialTicket = {
 	title: '',
@@ -34,15 +33,13 @@ const defaultTicket: PartialTicket = {
  * @return {JSX.Element} The rendered component.
  */
 export default function Tickets(): JSX.Element {
-	const { tickets, isLoading, eventId } = useSelect( ( select: SelectFunction ) => {
+	const { tickets, isLoading } = useSelect( ( select: SelectFunction ) => {
 		const { getTickets, isLoading }: StoreSelect = select( STORE_NAME );
 		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
-		const eventId = getCurrentPostId();
 
 		return {
-			tickets: getTickets( eventId ) || null,
+			tickets: getTickets( getCurrentPostId() ),
 			isLoading: isLoading(),
-			eventId: eventId,
 		};
 	}, [] );
 
@@ -54,7 +51,8 @@ export default function Tickets(): JSX.Element {
 
 	const [ isUpserting, setIsUpserting ] = useState( false );
 	const [ isNewTicket, setIsNewTicket ] = useState( false );
-	const [ ticketToEdit, setTicketToEdit ] = useState< PartialTicket >( defaultTicket );
+	const [ ticketToEdit, setTicketToEdit ] = useState<PartialTicket>( defaultTicket );
+
 	const hasTickets = tickets && tickets.length > 0;
 
 	const onTicketAddedClicked = useCallback( () => {
@@ -63,24 +61,11 @@ export default function Tickets(): JSX.Element {
 	}, [] );
 
 	const onTicketUpsertSaved = useCallback( ( ticket: TicketData ) => {
-		// Ensure we have an eventId for the ticket.
-		ticket.eventId = ticket.eventId || eventId;
-
-		TicketApi.upsertTicket( ticket )
-			.then( () => {
-				if ( isNewTicket ) {
-					addTicket( ticket );
-				} else {
-					updateTicket( ticket.id, ticket );
-				}
-
-				setIsUpserting( false );
-				setIsNewTicket( false );
-			} )
-			.catch( ( error: Error ) => {
-				console.error( 'Error upserting ticket:', error );
-				setTicketToEdit( ticket );
-			} );
+		if ( isNewTicket ) {
+			addTicket( ticket );
+		} else {
+			updateTicket( ticket.id, ticket );
+		}
 	}, [ isNewTicket ] );
 
 	const onEditTicket = useCallback( ( ticket: PartialTicket ) => {
@@ -96,7 +81,7 @@ export default function Tickets(): JSX.Element {
 
 	// If the tickets are not yet loaded, show a spinner.
 	if ( isLoading ) {
-		return <CenteredSpinner />;
+		return <CenteredSpinner/>;
 	}
 
 	const addTicketText = tickets.length > 0

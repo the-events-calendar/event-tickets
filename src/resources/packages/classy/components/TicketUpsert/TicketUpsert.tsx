@@ -1,26 +1,16 @@
-import * as React from 'react';
-import { useCallback, useState } from 'react';
-import { _x } from '@wordpress/i18n';
-import {
-	__experimentalInputControl as InputControl,
-	Button,
-	ToggleControl
-} from '@wordpress/components';
-import { IconNew, LabeledInput } from '@tec/common/classy/components';
+import { CenteredSpinner, IconNew, LabeledInput } from '@tec/common/classy/components';
+import { __experimentalInputControl as InputControl, Button, ToggleControl } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
+import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
-import {
-	Capacity as CapacityType,
-	SalePriceDetails,
-	PartialTicket
-} from '../../types/Ticket';
-import {
-	Capacity,
-	SaleDuration,
-	SalePrice,
-	TicketName,
-	TicketDescription,
-} from '../../fields';
+import { _x } from '@wordpress/i18n';
+import * as React from 'react';
+import { Fragment, useCallback, useState } from 'react';
+import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, } from '../../fields';
+import { CoreEditorSelect } from '../../types/Store';
+import { Capacity as CapacityType, PartialTicket, SalePriceDetails } from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
+import * as TicketApi from '../../api/tickets';
 
 type TicketUpsertProps = {
 	isUpdate: boolean;
@@ -55,19 +45,37 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		value,
 	} = props;
 
+	const { eventId } = useSelect( ( select: SelectFunction ) => {
+		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
+		return {
+			eventId: getCurrentPostId(),
+		};
+	}, [] );
+
 	const [ currentValues, setCurrentValues ] = useState<PartialTicket>( {
+		eventId: eventId,
 		...defaultValues,
 		...value,
 	} );
 
 	// Tickets must have a name at a minimum.
 	const [ confirmEnabled, setConfirmEnabled ] = useState<boolean>( currentValues.title !== '' );
+	const [ ticketUpsertError, setTicketUpsertError ] = useState<Error | null>( null );
+	const [ saveInProgress, setSaveInProgress ] = useState<boolean>( false );
 
 	const invokeSaveWithData: () => void = useCallback( (): void => {
+		// Clear any previous error.
+		setTicketUpsertError( null );
+
+		// If the ticket name is empty, we cannot save.
 		if ( ! confirmEnabled ) {
+			setTicketUpsertError( new Error( _x( 'Please enter a ticket name.', 'Error message for missing ticket name', 'event-tickets' ) ) );
 			return;
 		}
 
+		setSaveInProgress( true );
+
+		// todo: better data mapping for the ticket data.
 		const dataToSave: PartialTicket = {
 			title: currentValues.title,
 			description: currentValues.description,
@@ -75,13 +83,22 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			salePriceData: currentValues.salePriceData,
 		};
 
-		onSave( dataToSave );
+		TicketApi.upsertTicket( currentValues )
+			.then( ( ticket: PartialTicket ) => {
+				setSaveInProgress( false );
+				setTicketUpsertError( null );
+				onSave( ticket );
+			} )
+			.catch( ( error: Error ) => {
+				setSaveInProgress( false );
+				setTicketUpsertError( error );
+			} );
 	}, [ confirmEnabled, currentValues ] );
 
 	return (
 		<div className="classy-root">
 			<header className="classy-modal__header classy-modal__header--ticket">
-				<IconNew />
+				<IconNew/>
 				<h4 className="classy-modal__header-title">
 					{ isUpdate
 						? _x( 'Edit Ticket', 'Update ticket modal header title', 'event-tickets' )
@@ -90,6 +107,16 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			</header>
 
 			<hr className="classy-modal__section-separator"></hr>
+
+			{ /* todo: this should highlight any errors in the form, maybe instead of a message */}
+			{ ticketUpsertError && (
+				<Fragment>
+					<div className="classy-modal__error">
+						<p>{ ticketUpsertError.message }</p>
+					</div>
+					<hr className="classy-modal__section-separator"></hr>
+				</Fragment>
+			) }
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<TicketName
@@ -124,7 +151,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				/>
 			</section>
 
-			<hr className="classy-modal__section-separator" />
+			<hr className="classy-modal__section-separator"/>
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<div className="classy-field__input-title">
@@ -160,7 +187,11 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					</LabeledInput>
 
 					<ToggleControl
-						label={ _x( 'Share capacity with other tickets', 'Label for sharing capacity toggle', 'event-tickets' ) }
+						label={ _x(
+							'Share capacity with other tickets',
+							'Label for sharing capacity toggle',
+							'event-tickets'
+						) }
 						__nextHasNoMarginBottom={ true }
 						checked={ currentValues.capacityShared }
 						onChange={ ( value: boolean ) => {
@@ -170,11 +201,15 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				</div>
 			</section>
 
-			<hr className="classy-modal__section-separator" />
+			<hr className="classy-modal__section-separator"/>
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<div className="classy-field__input-title">
-					{ _x( 'Sale Duration', 'Title for the sale duration section in the Classy editor', 'event-tickets' ) }
+					{ _x(
+						'Sale Duration',
+						'Title for the sale duration section in the Classy editor',
+						'event-tickets'
+					) }
 				</div>
 				<SaleDuration
 
@@ -184,11 +219,15 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			<footer className="classy-modal__footer classy-modal__footer--ticket">
 				<div className="classy-modal__actions classy-modal__actions--ticket">
 					<Button
-						aria-disabled={ ! confirmEnabled }
+						aria-disabled={ ! confirmEnabled || saveInProgress }
 						className="classy-button"
 						onClick={ invokeSaveWithData }
 						variant="primary"
 					>
+						{ saveInProgress && (
+							<CenteredSpinner />
+						) }
+
 						{
 							isUpdate
 								? _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' )
@@ -196,6 +235,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						}
 					</Button>
 					<Button
+						aria-disabled={ saveInProgress }
 						className="classy-button"
 						onClick={ onCancel }
 						variant="link"
