@@ -1,31 +1,46 @@
 import * as React from 'react';
 import { Fragment } from 'react';
+import { Button } from '@wordpress/components';
+import { _x } from '@wordpress/i18n';
 import { Ticket } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { Button } from '@wordpress/components';
+import { TicketRow } from '../TicketRow';
 
 type TicketTableProps = {
 	tickets: Ticket[];
 	onEditTicket: ( ticket: Ticket ) => void;
 } & Omit<TicketComponentProps, 'value'>;
 
+/**
+ * TicketTable component for displaying a list of tickets in a table format.
+ *
+ * @since TBD
+ *
+ * @param {TicketTableProps} props
+ */
 export default function TicketTable( props: TicketTableProps ): JSX.Element {
 	const {
 		tickets,
 		onEditTicket,
 	} = props;
 
+	const [ orderedTickets, setOrderedTickets ] = React.useState<Ticket[]>( sortTickets( tickets ) );
+
+
+	if ( ! tickets || tickets.length === 0 ) {
+		return <p>{ _x( 'No tickets available.', 'Message when no tickets are present', 'event-tickets' ) }</p>;
+	}
+
 	return (
-		<Fragment>
-			{ tickets.map( ( ticket: Ticket ) => (
-				<div key={ ticket.id }>
-					<pre><code style={ { display: 'block' } }>{ JSON.stringify( ticket, null, '\t' ) }</code></pre>
-					<Button
-						onClick={ () => onEditTicket( ticket ) }
-						variant="link"
-					>Edit Ticket</Button>
-				</div>
+		<div className="classy-field classy-field__ticket-table">
+			{ orderedTickets.map( ( ticket: Ticket ) => (
+				<TicketRow
+					key={ ticket.id }
+					value={ ticket }
+					onEdit={ onEditTicket }
+					showMovers={ tickets.length > 1 }
+				/>
 			) ) }
-		</Fragment>
+		</div>
 	);
 }
