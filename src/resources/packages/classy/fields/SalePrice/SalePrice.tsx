@@ -13,10 +13,10 @@ const currentDate = new Date();
 const dateWithYearFormat = 'Y-m-d';
 const startOfWeek: StartOfWeek = 0;
 
-type SalePriceProps = {
+type SalePriceProps = Omit<TicketComponentProps, 'label'> & {
 	value: SalePriceDetails;
 	onChange: ( value: SalePriceDetails ) => void;
-} & Omit<TicketComponentProps, 'label'>;
+};
 
 const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', 'event-tickets' );
 
