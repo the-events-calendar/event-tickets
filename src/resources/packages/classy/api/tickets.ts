@@ -117,16 +117,8 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		};
 
 		// Required fields
-		if ( ticketData.eventId ) {
-			body.post_id = ticketData.eventId.toString();
-		}
-		if ( ticketData.title ) {
-			body.name = ticketData.title;
-		}
-		if ( ticketData.description ) {
-			body.description = ticketData.description;
-		}
-
+		body.name = ticketData?.title || '';
+		body.description = ticketData?.description || '';
 		body.post_id = ticketData.eventId.toString();
 		body.price = ticketData.cost || '';
 
