@@ -61,6 +61,7 @@ export type Ticket = {
 	title: string;
 	description: string;
 	image: boolean | string;
+	menuOrder?: number;
 
 	// Availability
 	availableFrom: string;
