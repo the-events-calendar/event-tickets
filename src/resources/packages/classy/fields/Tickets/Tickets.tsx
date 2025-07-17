@@ -1,17 +1,13 @@
-import * as React from 'react';
-import { Fragment, useCallback, useState } from 'react';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { SelectFunction } from '@wordpress/data/build-types/types';
 import { CenteredSpinner } from '@tec/common/classy/components';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { SelectFunction } from '@wordpress/data/build-types/types';
 import { _x } from '@wordpress/i18n';
-import {
-	AddTicket,
-	TicketUpsertModal,
-	TicketTable,
-} from '../../components';
-import { PartialTicket, Ticket as TicketData } from '../../types/Ticket';
+import * as React from 'react';
+import { useCallback, useState } from 'react';
+import { AddTicket, TicketTable, TicketUpsertModal, } from '../../components';
 import { STORE_NAME } from '../../constants';
-import { StoreSelect, StoreDispatch, CoreEditorSelect } from '../../types/Store';
+import { CoreEditorSelect, StoreDispatch, StoreSelect } from '../../types/Store';
+import { PartialTicket, Ticket as TicketData } from '../../types/Ticket';
 
 const defaultTicket: PartialTicket = {
 	title: '',
@@ -102,6 +98,16 @@ export default function Tickets(): JSX.Element {
 					onSave={ onTicketUpsertSaved }
 					value={ ticketToEdit }
 				/>
+			) }
+
+			{ ! hasTickets && (
+				<p className="classy-field__input-description">
+					{ _x(
+						'No tickets have been added yet. Click the button below to add your first ticket.',
+						'Description for empty tickets section',
+						'event-tickets'
+					) }
+				</p>
 			) }
 
 			<TicketTable
