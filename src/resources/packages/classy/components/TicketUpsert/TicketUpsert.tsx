@@ -87,6 +87,9 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			.then( ( ticket: PartialTicket ) => {
 				setSaveInProgress( false );
 				setTicketUpsertError( null );
+
+				// Use the returned ticket data to update the current values.
+				setCurrentValues( ticket );
 				onSave( ticket );
 			} )
 			.catch( ( error: Error ) => {
@@ -219,14 +222,13 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			<footer className="classy-modal__footer classy-modal__footer--ticket">
 				<div className="classy-modal__actions classy-modal__actions--ticket">
 					<Button
-						aria-disabled={ ! confirmEnabled || saveInProgress }
+						aria-disabled={ ! confirmEnabled }
+						isBusy={ saveInProgress }
 						className="classy-button"
 						onClick={ invokeSaveWithData }
 						variant="primary"
 					>
-						{ saveInProgress && (
-							<CenteredSpinner />
-						) }
+
 
 						{
 							isUpdate
@@ -236,6 +238,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					</Button>
 					<Button
 						aria-disabled={ saveInProgress }
+						isBusy={ saveInProgress }
 						className="classy-button"
 						onClick={ onCancel }
 						variant="link"
