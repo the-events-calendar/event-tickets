@@ -1,7 +1,5 @@
-import * as React from 'react';
-import { Fragment } from 'react';
-import { Button } from '@wordpress/components';
 import { _x } from '@wordpress/i18n';
+import * as React from 'react';
 import { Ticket } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
@@ -21,7 +19,7 @@ const sortTickets = ( tickets: Ticket[] ): Ticket[] => {
 			return 0;
 		}
 	} );
-}
+};
 
 /**
  * TicketTable component for displaying a list of tickets in a table format.
@@ -44,15 +42,18 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 	}
 
 	return (
-		<div className="classy-field classy-field__ticket-table">
-			{ orderedTickets.map( ( ticket: Ticket ) => (
-				<TicketRow
-					key={ ticket.id }
-					value={ ticket }
-					onEdit={ onEditTicket }
-					showMovers={ tickets.length > 1 }
-				/>
-			) ) }
-		</div>
+		<table className="classy-field classy-field__ticket-table">
+			<tbody>
+				{ orderedTickets.map( ( ticket: Ticket, index: number ) => (
+					<TicketRow
+						key={ ticket.id }
+						value={ ticket }
+						onEdit={ onEditTicket }
+						showMovers={ tickets.length > 1 }
+						tabIndex={ index + 1 }
+					/>
+				) ) }
+			</tbody>
+		</table>
 	);
 }

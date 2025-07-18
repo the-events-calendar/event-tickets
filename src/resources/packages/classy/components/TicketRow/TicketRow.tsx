@@ -3,11 +3,12 @@ import { _x } from '@wordpress/i18n';
 import * as React from 'react';
 import { PartialTicket } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { ClockIcon } from '../Icons';
+import { ClipboardIcon, ClockIcon } from '../Icons';
 
 type TicketRowProps = {
 	onEdit: ( ticket: PartialTicket ) => void;
 	showMovers?: boolean;
+	tabIndex?: number;
 	value: PartialTicket;
 } & TicketComponentProps;
 
@@ -23,6 +24,7 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 	const {
 		onEdit,
 		showMovers = false,
+		tabIndex,
 		value: ticket
 	} = props;
 
@@ -34,13 +36,19 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 	const capacityNumber = -1 !== capacity ? capacity : _x( 'Unlimited', 'Label for unlimited capacity', 'event-tickets' );
 
 	return (
-		<div className="classy-field classy-field__ticket-row" onClick={ () => onEdit( ticket ) }>
-			<div className="classy-field__ticket-row__label classy-field__ticket-row__section">
+		<tr
+			aria-label={ ticket.title }
+			className="classy-field classy-field__ticket-row"
+			onClick={ () => onEdit( ticket ) }
+			tabIndex={ tabIndex }
+		>
+			<td className="classy-field__ticket-row__label classy-field__ticket-row__section">
 				<h4>
-					{ ticket.title || _x( 'Untitled Ticket', 'Default title for a ticket', 'event-tickets' ) }
+					{ ticket.title }
 					{ hasIcons && (
 						<span className="classy-field__ticket-row__icons">
 							{ /* todo: fill in icons properly */ }
+							<ClipboardIcon/>
 							<ClockIcon/>
 						</span>
 					) }
@@ -48,18 +56,26 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 				{ ticket.description && (
 					<span className="classy-field__ticket-row__description">{ decodeEntities( ticket.description ) }</span>
 				) }
-			</div>
+			</td>
 
-			<div className="classy-field__ticket-row__price classy-field__ticket-row__section">
+			<td className="classy-field__ticket-row__price classy-field__ticket-row__section">
 				{ ticket.cost || _x( 'Free', 'Label for a free ticket', 'event-tickets' ) }
-			</div>
+			</td>
 
-			<div className="classy-field__ticket-row__capacity classy-field__ticket-row__section">
+			<td className="classy-field__ticket-row__capacity classy-field__ticket-row__section">
 				{ capacityNumber }
 				<span className="classy-field__ticket-row__capacity__label">
 					{ _x( 'tickets', 'Label for the number of tickets available', 'event-tickets' ) }
 				</span>
-			</div>
-		</div>
+			</td>
+
+			{ showMovers && (
+				<td className="classy-field__ticket-row__movers classy-field__ticket-row__section">
+					{ /* todo: implement component */}
+					<span className="classy-field__ticket-row__movers__up" aria-label={ _x( 'Move up', 'Label for moving a ticket up in the list', 'event-tickets' ) } />
+					<span className="classy-field__ticket-row__movers__down" aria-label={ _x( 'Move down', 'Label for moving a ticket down in the list', 'event-tickets' ) } />
+				</td>
+			) }
+		</tr>
 	);
 }

@@ -2,6 +2,7 @@
 	/* This is a place to define CSS variables for the Classy component. */
 	--classy-color-border: #e4e4e4;
 	--classy-date-picker-width: 320px;
+	--classy-icon-padding: var(--tec-spacer-0);
 }
 
 .classy-root {
@@ -21,15 +22,21 @@
 		}
 
 		&__ticket-table {
-			display: flex;
-			flex-direction: column;
-			gap: 0;
 			margin: var(--classy-padding-vertical) 0;
+
+			tbody {
+				display: flex;
+				flex-direction: column;
+				gap: 0;
+				width: 100%;
+			}
 		}
 
 		&__ticket-row {
+			/* Custom variable values for the Classy ticket row. */
 			--classy-padding-horizontal: var(--tec-spacer-5);
 			--classy-padding-vertical: var(--tec-spacer-2);
+
 			align-items: center;
 			align-self: stretch;
 			border: 1px solid var(--classy-color-border);
@@ -39,6 +46,10 @@
 			font-size: var(--classy-font-size-16);
 			padding: var(--classy-padding-vertical) 0;
 
+			&:hover {
+				cursor: pointer;
+			}
+
 			h4 {
 				display: flex;
 				flex-direction: row;
@@ -46,7 +57,7 @@
 				margin: 0;
 			}
 
-			.classy-field__ticket-row__section {
+			&__section {
 				flex-grow: 1;
 
 				&:first-child {
@@ -62,23 +73,40 @@
 				}
 			}
 
-			.classy-field__ticket-row__label {
+			&__label {
 				flex-grow: 2;
 				max-width: 250px;
 			}
 
-			&:last-child {
-				border-bottom: 1px solid var(--classy-color-border);
+			&__price {
+				max-width: 150px;
 			}
 
-			.classy-field__ticket-row__description,
-			.classy-field__ticket-row__capacity__label {
+			&__movers {
+				flex-grow: 0;
+				max-width: 50px;
+			}
+
+			&__description,
+			&__capacity__label {
 				color: var(--tec-color-gutenberg-grey-900);
 				font-size: var(--classy-font-size-13);
 			}
 
-			.classy-field__ticket-row__capacity__label {
-				padding-left: 10px;
+			&__capacity {
+				max-width: 175px;
+
+				&__label {
+					padding-left: 10px;
+				}
+			}
+
+			&__icons svg {
+				padding: 0 var(--classy-icon-padding);
+			}
+
+			&:last-child {
+				border-bottom: 1px solid var(--classy-color-border);
 			}
 		}
 	}
