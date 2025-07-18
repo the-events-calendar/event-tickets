@@ -120,7 +120,7 @@ class Controller extends Controller_Contract {
 					'symbol'             => Currency::get_currency_symbol( $code ),
 					'decimalSeparator'   => Currency::get_currency_separator_decimal( $code ),
 					'thousandsSeparator' => Currency::get_currency_separator_thousands( $code ),
-					'placement'          => Currency::get_currency_symbol_position( $code ),
+					'position'           => Currency::get_currency_symbol_position( $code ),
 					'precision'          => Currency::get_currency_precision( $code ),
 				],
 				'ticketPostTypes' => $et_main->post_types(),
