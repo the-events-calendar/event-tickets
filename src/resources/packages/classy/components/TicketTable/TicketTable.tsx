@@ -8,7 +8,6 @@ import { STORE_NAME } from '../../constants';
 import { StoreDispatch } from "../../types/Store";
 
 type TicketTableProps = {
-	tickets: Ticket[];
 	onEditTicket: ( ticket: Ticket ) => void;
 } & Omit<TicketComponentProps, 'value'>;
 
@@ -38,11 +37,17 @@ const moveTicket = ( tickets: Ticket[], direction: MoveDirection, index: number 
  */
 export default function TicketTable( props: TicketTableProps ): JSX.Element {
 	const {
-		tickets,
 		onEditTicket,
 	} = props;
 
+	const { tickets } = useSelect( ( select ) => {
+		const { getTickets }: StoreSelect = select( STORE_NAME );
+		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
 
+		return {
+			tickets: getTickets( getCurrentPostId() ),
+		};
+	}, [] );
 
 	const { setTickets }: StoreDispatch = useDispatch( STORE_NAME );
 

@@ -105,7 +105,6 @@ export default function Tickets(): JSX.Element {
 				) }
 
 				<TicketTable
-					tickets={ tickets }
 					onEditTicket={ onEditTicket }
 				/>
 
