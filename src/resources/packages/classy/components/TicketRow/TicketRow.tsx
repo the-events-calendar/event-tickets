@@ -4,9 +4,14 @@ import * as React from 'react';
 import { PartialTicket } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { ClipboardIcon, ClockIcon } from '../Icons';
+import { TicketRowMover } from "../TicketRowMover";
 
 type TicketRowProps = {
+	canMoveDown?: boolean;
+	canMoveUp?: boolean;
 	onEdit: ( ticket: PartialTicket ) => void;
+	onMoveDown?: () => void;
+	onMoveUp?: () => void;
 	showMovers?: boolean;
 	tabIndex?: number;
 	value: PartialTicket;
@@ -22,9 +27,14 @@ type TicketRowProps = {
  */
 export default function TicketRow( props: TicketRowProps ): JSX.Element {
 	const {
+		canMoveDown = false,
+		canMoveUp = false,
 		onEdit,
+		onMoveDown = () => {},
+		onMoveUp = () => {},
 		showMovers = false,
 		tabIndex,
+		ticketPosition = 0,
 		value: ticket
 	} = props;
 
@@ -72,8 +82,14 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 			{ showMovers && (
 				<td className="classy-field__ticket-row__movers classy-field__ticket-row__section">
 					{ /* todo: implement component */}
-					<span className="classy-field__ticket-row__movers__up" aria-label={ _x( 'Move up', 'Label for moving a ticket up in the list', 'event-tickets' ) } />
-					<span className="classy-field__ticket-row__movers__down" aria-label={ _x( 'Move down', 'Label for moving a ticket down in the list', 'event-tickets' ) } />
+					<TicketRowMover
+						canMoveUp={ canMoveUp }
+						canMoveDown={ canMoveDown }
+						onMoveUp={ onMoveUp }
+						onMoveDown={ onMoveDown }
+						rowLabel={ ticket.title }
+						ticketPosition={ ticketPosition }
+					/>
 				</td>
 			) }
 		</tr>

@@ -1,25 +1,33 @@
-import { _x } from '@wordpress/i18n';
 import * as React from 'react';
+import { useCallback } from 'react';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { Ticket } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
+import { STORE_NAME } from '../../constants';
+import { StoreDispatch } from "../../types/Store";
 
 type TicketTableProps = {
 	tickets: Ticket[];
 	onEditTicket: ( ticket: Ticket ) => void;
 } & Omit<TicketComponentProps, 'value'>;
 
-const sortTickets = ( tickets: Ticket[] ): Ticket[] => {
-	return tickets.toSorted( ( a: Ticket, b: Ticket ) => {
-		if ( a.menuOrder < b.menuOrder ) {
-			return -1;
-		} else if ( a.menuOrder > b.menuOrder ) {
-			return 1;
-		} else {
-			return 0;
-		}
-	} );
-};
+type MoveDirection = 'up' | 'down';
+
+const moveTicket = ( tickets: Ticket[], direction: MoveDirection, index: number ): Ticket[] => {
+	const newTickets = [ ...tickets ];
+	const ticketToMove = newTickets[ index ];
+
+	if ( direction === 'up' && index > 0 ) {
+		newTickets.splice( index, 1 );
+		newTickets.splice( index - 1, 0, ticketToMove );
+	} else if ( direction === 'down' && index < newTickets.length - 1 ) {
+		newTickets.splice( index, 1 );
+		newTickets.splice( index + 1, 0, ticketToMove );
+	}
+
+	return newTickets;
+}
 
 /**
  * TicketTable component for displaying a list of tickets in a table format.
@@ -34,22 +42,34 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 		onEditTicket,
 	} = props;
 
-	const [ orderedTickets, setOrderedTickets ] = React.useState<Ticket[]>( sortTickets( tickets ) );
 
 
-	if ( ! tickets || tickets.length === 0 ) {
-		return <p>{ _x( 'No tickets available.', 'Message when no tickets are present', 'event-tickets' ) }</p>;
-	}
+	const { setTickets }: StoreDispatch = useDispatch( STORE_NAME );
+
+	const showMovers = tickets.length > 1;
+	const ticketLength = tickets.length;
+
+	// todo: update the menu order of the tickets when moving them.
+
+	const handleMoveTicket = useCallback( ( direction: MoveDirection, index: number ) => {
+		console.log( `Moving ticket ${index} ${direction}` );
+		const updatedTickets = moveTicket( tickets, direction, index );
+		setTickets( updatedTickets );
+	}, [ tickets, setTickets ] );
 
 	return (
 		<table className="classy-field classy-field__ticket-table">
 			<tbody>
-				{ orderedTickets.map( ( ticket: Ticket, index: number ) => (
+				{ tickets.map( ( ticket: Ticket, index: number ) => (
 					<TicketRow
 						key={ ticket.id }
 						value={ ticket }
 						onEdit={ onEditTicket }
-						showMovers={ tickets.length > 1 }
+						onMoveDown={ () => handleMoveTicket( 'down', index ) }
+						onMoveUp={ () => handleMoveTicket( 'up', index ) }
+						showMovers={ showMovers }
+						canMoveUp={ index > 0 }
+						canMoveDown={ index < ticketLength - 1 }
 						tabIndex={ index + 1 }
 					/>
 				) ) }
