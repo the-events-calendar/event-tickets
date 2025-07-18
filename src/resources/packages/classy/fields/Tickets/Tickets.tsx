@@ -1,4 +1,4 @@
-import { CenteredSpinner } from '@tec/common/classy/components';
+import { CenteredSpinner, ErrorBoundary } from '@tec/common/classy/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { _x } from '@wordpress/i18n';
@@ -49,8 +49,6 @@ export default function Tickets(): JSX.Element {
 	const [ isNewTicket, setIsNewTicket ] = useState( false );
 	const [ ticketToEdit, setTicketToEdit ] = useState<PartialTicket>( defaultTicket );
 
-	const hasTickets = tickets && tickets.length > 0;
-
 	const onTicketAddedClicked = useCallback( () => {
 		setIsUpserting( true );
 		setIsNewTicket( true );
@@ -62,7 +60,10 @@ export default function Tickets(): JSX.Element {
 		} else {
 			updateTicket( ticket.id, ticket );
 		}
-	}, [ isNewTicket ] );
+
+		setIsUpserting( false );
+		setTicketToEdit( defaultTicket );
+	}, [ isNewTicket, defaultTicket ] );
 
 	const onEditTicket = useCallback( ( ticket: PartialTicket ) => {
 		setTicketToEdit( ticket );
@@ -85,40 +86,34 @@ export default function Tickets(): JSX.Element {
 		: _x( 'Add Tickets', 'Button text to add a new ticket when no tickets exist', 'event-tickets' );
 
 	return (
-		<div className="classy-field classy-field--tickets">
-			<div className="classy-field__input-title">
-				<h3>{ _x( 'Tickets', 'Title for Tickets section', 'event-tickets' ) }</h3>
-			</div>
+		<ErrorBoundary
+			errorMessage={ _x( 'There was an error in the tickets component:', 'Error message for loading tickets', 'event-tickets' ) }
+		>
+			<div className="classy-field classy-field--tickets">
+				<div className="classy-field__input-title">
+					<h3>{ _x( 'Tickets', 'Title for Tickets section', 'event-tickets' ) }</h3>
+				</div>
 
-			{ isUpserting && (
-				<TicketUpsertModal
-					isUpdate={ ! isNewTicket }
-					onCancel={ onTicketEditCancelled }
-					onClose={ onTicketEditCancelled }
-					onSave={ onTicketUpsertSaved }
-					value={ ticketToEdit }
+				{ isUpserting && (
+					<TicketUpsertModal
+						isUpdate={ ! isNewTicket }
+						onCancel={ onTicketEditCancelled }
+						onClose={ onTicketEditCancelled }
+						onSave={ onTicketUpsertSaved }
+						value={ ticketToEdit }
+					/>
+				) }
+
+				<TicketTable
+					tickets={ tickets }
+					onEditTicket={ onEditTicket }
 				/>
-			) }
 
-			{ ! hasTickets && (
-				<p className="classy-field__input-description">
-					{ _x(
-						'No tickets have been added yet. Click the button below to add your first ticket.',
-						'Description for empty tickets section',
-						'event-tickets'
-					) }
-				</p>
-			) }
-
-			<TicketTable
-				tickets={ tickets }
-				onEditTicket={ onEditTicket }
-			/>
-
-			<AddTicket
-				buttonText={ addTicketText }
-				onClick={ onTicketAddedClicked }
-			/>
-		</div>
+				<AddTicket
+					buttonText={ addTicketText }
+					onClick={ onTicketAddedClicked }
+				/>
+			</div>
+		</ErrorBoundary>
 	);
 }
