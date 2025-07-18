@@ -71,5 +71,72 @@ class Ticket {
 
 		$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
 		update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
+
+		// Handle IAC (Individual Attendee Collection) settings
+		if ( isset( $raw_data['ticket_iac'] ) && ! empty( $raw_data['ticket_iac'] ) ) {
+			$this->save_iac_settings( $ticket->ID, $raw_data['ticket_iac'] );
+		}
+
+		// Handle meta fields
+		if ( isset( $raw_data['meta_fields'] ) && is_array( $raw_data['meta_fields'] ) ) {
+			$this->save_meta_fields( $ticket->ID, $raw_data['meta_fields'] );
+		}
+	}
+
+	/**
+	 * Saves IAC (Individual Attendee Collection) settings for RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id The ID of the RSVP ticket.
+	 * @param string $iac_setting The IAC setting (none, allowed, required).
+	 */
+	protected function save_iac_settings( $ticket_id, $iac_setting ) {
+		// Validate IAC setting
+		$valid_settings = [ 'none', 'allowed', 'required' ];
+		if ( ! in_array( $iac_setting, $valid_settings, true ) ) {
+			return;
+		}
+
+		// Get IAC service from tickets-plus plugin
+		if ( ! class_exists( 'Tribe\Tickets\Plus\Attendee_Registration\IAC' ) ) {
+			return;
+		}
+
+		$iac_service = tribe( 'tickets-plus.attendee-registration.iac' );
+		if ( $iac_service ) {
+			// Get the meta key and save directly to post meta
+			$meta_key = $iac_service->get_iac_setting_ticket_meta_key();
+			update_post_meta( $ticket_id, $meta_key, sanitize_text_field( $iac_setting ) );
+		}
+	}
+
+	/**
+	 * Saves meta fields for RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $ticket_id The ID of the RSVP ticket.
+	 * @param array $meta_fields Array of meta field definitions.
+	 */
+	protected function save_meta_fields( $ticket_id, $meta_fields ) {
+		// TODO: Implement meta field saving for RSVP tickets
+
+		// Get meta service from tickets-plus plugin
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+			return;
+		}
+
+		$meta_service = tribe( 'tickets-plus.meta' );
+		if ( ! $meta_service ) {
+			return;
+		}
+
+		// Enable meta for the ticket if we have fields
+		if ( ! empty( $meta_fields ) ) {
+			update_post_meta( $ticket_id, \Tribe__Tickets_Plus__Meta::ENABLE_META_KEY, 'yes' );
+		}
+
+		// TODO: Process and save individual meta fields
 	}
 }
