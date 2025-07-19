@@ -1,10 +1,11 @@
 import { CurrencyInput as CommonCurrencyInput } from '@tec/common/classy/components';
 import { Currency } from '@tec/common/classy/types/Currency';
 import { _x } from '@wordpress/i18n';
+import { decodeEntities } from '@wordpress/html-entities';
 import { getCurrencySettings } from '../../localizedData';
 
 const defaultCurrency: Currency = {
-	symbol: getCurrencySettings().symbol,
+	symbol: decodeEntities( getCurrencySettings().symbol ),
 	position: getCurrencySettings().position,
 	code: getCurrencySettings().code,
 };
