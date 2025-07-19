@@ -120,7 +120,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		body.name = ticketData?.title || '';
 		body.description = ticketData?.description || '';
 		body.post_id = ticketData.eventId.toString();
-		body.price = ticketData.cost || '';
+		body.price = ticketData.price || '';
 
 		// todo: handle provider properly.
 		body.provider = ticketData.provider || 'tc';

@@ -1,4 +1,4 @@
-import { CenteredSpinner, IconNew, LabeledInput } from '@tec/common/classy/components';
+import { IconNew, LabeledInput } from '@tec/common/classy/components';
 import { __experimentalInputControl as InputControl, Button, ToggleControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
@@ -22,7 +22,7 @@ type TicketUpsertProps = {
 const defaultValues: PartialTicket = {
 	title: '',
 	description: '',
-	cost: '',
+	price: '',
 	salePriceData: {
 		enabled: false,
 		salePrice: '',
@@ -63,6 +63,13 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const [ ticketUpsertError, setTicketUpsertError ] = useState<Error | null>( null );
 	const [ saveInProgress, setSaveInProgress ] = useState<boolean>( false );
 
+	const onValueChange = ( key: string, newValue: any ): void => {
+		return setCurrentValues( {
+			...currentValues,
+			[ key ]: newValue,
+		} );
+	};
+
 	const invokeSaveWithData: () => void = useCallback( (): void => {
 		// Clear any previous error.
 		setTicketUpsertError( null );
@@ -79,7 +86,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		const dataToSave: PartialTicket = {
 			title: currentValues.title,
 			description: currentValues.description,
-			cost: currentValues.cost,
+			price: currentValues.price,
 			salePriceData: currentValues.salePriceData,
 		};
 
@@ -111,7 +118,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 			<hr className="classy-modal__section-separator"></hr>
 
-			{ /* todo: this should highlight any errors in the form, maybe instead of a message */}
+			{ /* todo: this should highlight any errors in the form, instead of showing a message */}
 			{ ticketUpsertError && (
 				<Fragment>
 					<div className="classy-modal__error">
@@ -127,30 +134,24 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					onChange={ ( value: string ) => {
 						const newValue = value || '';
 						setConfirmEnabled( newValue !== '' );
-						return setCurrentValues( { ...currentValues, title: newValue } );
+						return onValueChange( 'title', newValue );
 					} }
 				/>
 
 				<TicketDescription
 					value={ decodeEntities( currentValues.description ) }
-					onChange={ ( value: string ) => {
-						return setCurrentValues( { ...currentValues, description: value || '' } );
-					} }
+					onChange={ ( value: string ) => onValueChange( 'description', value || '' ) }
 				/>
 
 				<CurrencyInput
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
-					value={ decodeEntities( currentValues.cost ) }
-					onChange={ ( value: string ) => {
-						return setCurrentValues( { ...currentValues, cost: value || '' } );
-					} }
+					value={ decodeEntities( currentValues.price ) }
+					onChange={ ( value: string ) => onValueChange( 'price', value || '' ) }
 				/>
 
 				<SalePrice
 					value={ currentValues.salePriceData as SalePriceDetails }
-					onChange={ ( value: SalePriceDetails ) => {
-						return setCurrentValues( { ...currentValues, salePriceData: value } );
-					} }
+					onChange={ ( value: SalePriceDetails ) => onValueChange( 'salePriceData', value ) }
 				/>
 			</section>
 
@@ -164,9 +165,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				<div className="classy-field__capacity">
 					<Capacity
 						value={ currentValues.capacityType }
-						onChange={ ( value: string ) => {
-							setCurrentValues( { ...currentValues, capacityType: value as CapacityType } );
-						} }
+						onChange={ ( value: string ) => onValueChange( 'capacityType', value as CapacityType ) }
 					/>
 
 					<LabeledInput
@@ -179,7 +178,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 							value={ String( currentValues.capacity || '' ) }
 							onChange={ ( value: string ) => {
 								const capacityValue = value ? parseInt( value, 10 ) : undefined;
-								setCurrentValues( { ...currentValues, capacity: capacityValue } );
+								return onValueChange( 'capacity', capacityValue );
 							} }
 							size="small"
 							__next40pxDefaultSize={ true }
@@ -197,9 +196,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						) }
 						__nextHasNoMarginBottom={ true }
 						checked={ currentValues.capacityShared }
-						onChange={ ( value: boolean ) => {
-							setCurrentValues( { ...currentValues, capacityShared: value } );
-						} }
+						onChange={ ( value: boolean ) => onValueChange( 'capacityShared', value ) }
 					/>
 				</div>
 			</section>
@@ -228,8 +225,6 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						onClick={ invokeSaveWithData }
 						variant="primary"
 					>
-
-
 						{
 							isUpdate
 								? _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' )

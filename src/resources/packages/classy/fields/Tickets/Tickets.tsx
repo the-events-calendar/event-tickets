@@ -12,7 +12,7 @@ import { PartialTicket, Ticket as TicketData } from '../../types/Ticket';
 const defaultTicket: PartialTicket = {
 	title: '',
 	description: '',
-	cost: '',
+	price: '',
 	salePriceData: {
 		enabled: false,
 		salePrice: '',

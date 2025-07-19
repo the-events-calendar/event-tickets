@@ -78,6 +78,7 @@ export type Ticket = {
 	// Pricing
 	cost: string;
 	costDetails: CostDetails;
+	price: number;
 	priceSuffix: string | null;
 
 	// Sale price
