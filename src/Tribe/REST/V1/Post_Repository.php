@@ -915,7 +915,6 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'ID',
 			'name',
 			'show_description',
-			'price',
 			'regular_price',
 			'admin_link',
 			'report_link',
