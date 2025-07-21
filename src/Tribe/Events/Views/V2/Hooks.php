@@ -20,6 +20,7 @@ namespace Tribe\Tickets\Events\Views\V2;
 use Tribe\Tickets\Events\Views\V2\Models\Tickets;
 use Tribe__Tickets__Main as Plugin;
 use Tribe__Template;
+use Tribe__Events__Main as TEC;
 
 /**
  * Class Hooks.
@@ -113,7 +114,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 4.10.9
 	 */
 	protected function add_actions() {
-		// silence is golden
+		add_action( 'wp_insert_post', [ $this, 'regenerate_post_kv_caches' ], 100 );
+		add_action( 'clean_post_cache', [ $this, 'regenerate_post_kv_caches' ], 100 );
 	}
 
 	/**
@@ -125,5 +127,23 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ], 15, 2 );
 		add_filter( 'tribe_template_origin_namespace_map', [ $this, 'filter_add_template_origin_namespace' ], 15, 3 );
 		add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
+	}
+
+	/**
+	 * Hooked on the clean post cache action, this will regenerate model caches for the given post
+	 * or Event post connected to the post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID. It could be any post type, not just events.
+	 *
+	 * @return void
+	 */
+	public function regenerate_post_kv_caches( $post_id ): void {
+		if ( ! is_int( $post_id ) ) {
+			return;
+		}
+
+		Tickets::regenerate_caches( $post_id );
 	}
 }

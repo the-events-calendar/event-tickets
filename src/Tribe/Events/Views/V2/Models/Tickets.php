@@ -12,6 +12,7 @@ namespace Tribe\Tickets\Events\Views\V2\Models;
 
 use Tribe\Utils\Lazy_Events;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Events__Main as TEC;
 
 /**
  * Class Tickets
@@ -77,6 +78,58 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->post_id = $post_id;
 
 		$this->restore_from_cache();
+	}
+
+	/**
+	 * Regenerates the caches for the models associated with the post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID. It could be any post type, not just events.
+	 *
+	 * @return void
+	 */
+	public static function regenerate_caches( int $post_id ): void {
+		$model_cache_key = self::get_cache_key( $post_id );
+
+		// First, clean the kv-cache entries for this post.
+		tec_kv_cache()->delete( $model_cache_key );
+
+		$post = get_post( $post_id );
+
+		if ( ! $post instanceof \WP_Post ) {
+			// The clean of the cache happened in the context of the post deletion, we're done.
+			return;
+		}
+
+		if ( $post->post_type === TEC::POSTTYPE ) {
+			// It's an Event: refresh its cache.
+			$model = new self( $post->ID );
+			$model->exist();
+		} else {
+			// This is not an event post, but it might be a Ticket or Attendee linked to an Event.
+			$attendee_to_event_keys  = tribe_attendees()->attendee_to_event_keys();
+			$ticket_to_event_keys    = tribe_tickets()->ticket_to_event_keys();
+			$all_connected_meta_keys = array_merge( $attendee_to_event_keys, $ticket_to_event_keys );
+
+			/** @var array<array<int>> $connected_event_ids */
+			$connected_event_ids = [];
+			foreach ( get_post_meta( $post_id ) as $meta_key => $meta_values ) {
+				if ( ! in_array( $meta_key, $all_connected_meta_keys ) ) {
+					continue;
+				}
+
+				$connected_event_ids[] = array_map( 'absint', $meta_values );
+			}
+			/** @var array<int> $connected_event_ids */
+			$connected_event_ids = array_merge( ...$connected_event_ids );
+
+			foreach ( $connected_event_ids as $connected_event_id ) {
+				$model = new self( $connected_event_id );
+				// The call will trigger a priming of the model cache.
+				$model->exist();
+			}
+		}
 	}
 
 	/**
@@ -361,23 +414,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->exists = ! empty( $this->all_tickets );
 
 		if ( ! $this->is_cached ) {
-			/*
-			 * Unset the `provider` property of each Ticket to avoid storing a singleton object.
-			 * The ticket will recover the module instance using the `provider_class` property.
-			 */
-			foreach ( $this->all_tickets as $ticket ) {
-				\Closure::bind( fn() => $ticket->provider = null, $ticket, Ticket_Object::class )();
-			}
-
-			$packed = tec_json_pack(
-				[
-					'all_tickets' => $this->all_tickets,
-					'data'        => $this->fetch_data(),
-				],
-				[ Ticket_Object::class ]
-			);
-
-			tec_kv_cache()->set( $this->get_cache_key(), $packed, DAY_IN_SECONDS );
+			$this->prime_cache();
 		}
 
 		return $this->exists;
@@ -419,7 +456,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 * @return void
 	 */
 	private function restore_from_cache(): void {
-		$cached = tec_kv_cache()->get( $this->get_cache_key() );
+		$cached = tec_kv_cache()->get( self::get_cache_key( $this->post_id ) );
 
 		if ( $cached === '' ) {
 			return;
@@ -441,9 +478,39 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 *
 	 * @since TBD
 	 *
+	 * @param int $post_id The post ID to provide the cache key for.
+	 *
 	 * @return string The model cache key used to store it in the key-value cache.
 	 */
-	public function get_cache_key(): string {
-		return 'tec_tickets_views_v2_model_ticket_' . $this->post_id;
+	public static function get_cache_key( int $post_id ): string {
+		return 'tec_tickets_views_v2_model_ticket_' . $post_id;
+	}
+
+	/**
+	 * Primes the key-value cache for the model.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function prime_cache(): void {
+		/*
+		* Unset the `provider` property of each Ticket to avoid storing a singleton object.
+		* The ticket will recover the module instance using the `provider_class` property.
+		*/
+		foreach ( $this->all_tickets as $ticket ) {
+			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found -- Faster than Reflection.
+			\Closure::bind( fn() => $ticket->provider = null, $ticket, Ticket_Object::class )();
+		}
+
+		$packed = tec_json_pack(
+			[
+				'all_tickets' => $this->all_tickets,
+				'data'        => $this->fetch_data(),
+			],
+			[ Ticket_Object::class ]
+		);
+
+		tec_kv_cache()->set( self::get_cache_key( $this->post_id ), $packed, DAY_IN_SECONDS );
 	}
 }
