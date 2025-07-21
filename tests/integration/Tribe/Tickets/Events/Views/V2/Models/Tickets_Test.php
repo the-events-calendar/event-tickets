@@ -105,27 +105,30 @@ class Tickets_Test extends WPTestCase {
 		[ $ticket_1_id, $ticket_2_id, $ticket_3_id ] = $this->create_many_tc_tickets( 3, $event_id );
 		// For each ticket create an Order for 3 Attendees.
 		$this->create_order( [ $ticket_1_id => 3, $ticket_2_id => 3, $ticket_3_id => 3 ] );
+		$event_cache_key = Tickets::get_cache_key( $event_id );
+		$cleanup = function() use ( $event_cache_key ) {
+			tec_kv_cache()->delete( $event_cache_key );
+			$this->assertFalse( tec_kv_cache()->has( $event_cache_key ) );
+		};
 
 		// Post
 		Tickets::regenerate_caches( $post_id );
 		$this->assertFalse( tec_kv_cache()->has( Tickets::get_cache_key( $post_id ) ) );
-
-		$event_cache_key = Tickets::get_cache_key( $event_id );
 
 		// Event.
 		$this->assertFalse( tec_kv_cache()->has( $event_cache_key ) );
 		Tickets::regenerate_caches( $event_id );
 		$this->assertTrue( tec_kv_cache()->has( $event_cache_key ) );
 
-		// Clean up.
-		tec_kv_cache()->delete( $event_cache_key );
-		$this->assertFalse( tec_kv_cache()->has( $event_cache_key ) );
+		$cleanup();
 
 		// Attendee.
 		$attendee_id = tribe_attendees()->where( 'event', $event_id )->fields( 'ids' )->first();
 		Tickets::regenerate_caches( $attendee_id );
 		$this->assertFalse( tec_kv_cache()->has( Tickets::get_cache_key( $attendee_id ) ) );
 		$this->assertTrue( tec_kv_cache()->has( $event_cache_key ) );
+
+		$cleanup();
 
 		// Ticket.
 		$ticket_id = tribe_tickets()->where( 'event', $event_id )->fields( 'ids' )->first();
