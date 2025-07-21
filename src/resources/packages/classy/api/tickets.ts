@@ -263,3 +263,72 @@ export const deleteTicket = async ( ticketId: number ): Promise<void> => {
 			} );
 	} );
 };
+
+/**
+ * Map API response to Ticket type.
+ *
+ * @since TBD
+ *
+ * @param {GetTicketApiResponse} apiResponse The API response.
+ * @return {Ticket} The mapped ticket data.
+ */
+function mapApiResponseToTicket( apiResponse: GetTicketApiResponse ): Ticket {
+	return {
+		id: apiResponse.id,
+		title: apiResponse.title,
+		description: apiResponse.description,
+		eventId: apiResponse.eventId,
+		price: apiResponse.price,
+		provider: apiResponse.provider,
+		type: apiResponse.type || 'default',
+		globalId: apiResponse.globalId || `ticket_${ apiResponse.id }`,
+		globalIdLineage: apiResponse.globalIdLineage || [ `ticket_${ apiResponse.id }` ],
+		image: apiResponse.image || false,
+		menuOrder: apiResponse.menuOrder || 0,
+		availableFrom: apiResponse.availableFrom || null,
+		availableFromDetails: apiResponse.availableFromDetails || null,
+		availableUntil: apiResponse.availableUntil || null,
+		availableUntilDetails: apiResponse.availableUntilDetails || null,
+		isAvailable: apiResponse.isAvailable || false,
+		onSale: apiResponse.onSale || false,
+		capacity: apiResponse.capacity || 0,
+		capacityDetails: apiResponse.capacityDetails || {
+			available: 0,
+			availablePercentage: 0,
+			max: 0,
+			sold: 0,
+			pending: 0,
+			globalStockMode: 'own',
+		},
+		cost: apiResponse.cost || '$0.00',
+		costDetails: apiResponse.costDetails || {
+			currencySymbol: '$',
+			currencyPosition: 'prefix',
+			currencyDecimalSeparator: '.',
+			currencyThousandSeparator: ',',
+			suffix: null,
+			values: [ 0 ],
+		},
+		priceSuffix: apiResponse.priceSuffix || null,
+		salePriceData: apiResponse.salePriceData || {
+			enabled: false,
+			endDate: null,
+			salePrice: '',
+			startDate: null,
+		},
+		supportsAttendeeInformation: apiResponse.supportsAttendeeInformation || false,
+		iac: apiResponse.iac || '',
+		attendees: apiResponse.attendees || [],
+		checkin: apiResponse.checkin || {
+			checkedIn: 0,
+			uncheckedIn: 0,
+			checkedInPercentage: 0,
+			uncheckedInPercentage: 100,
+		},
+		fees: apiResponse.fees || {
+			availableFees: [],
+			automaticFees: [],
+			selectedFees: [],
+		},
+	};
+}
