@@ -14,6 +14,7 @@ namespace TEC\Tickets\Classy;
 use TEC\Common\Classy\Controller as Common_Controller;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Classy\REST\Controller as RESTController;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as ET;
 
@@ -37,6 +38,8 @@ class Controller extends Controller_Contract {
 		} else {
 			add_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
 		}
+
+		$this->container->register( RESTController::class );
 	}
 
 	/**
@@ -50,6 +53,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
+		$this->container->get( RESTController::class )->unregister();
 	}
 
 	/**
