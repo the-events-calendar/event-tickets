@@ -76,7 +76,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	public function __construct( $post_id ) {
 		$this->post_id = $post_id;
 
-		$this->prime_from_cache();
+		$this->restore_from_cache();
 	}
 
 	/**
@@ -340,6 +340,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
 		$data = unserialize( $serialized );
 		$this->__unserialize( $data );
+
 		unset( $data['post_id'] );
 	}
 
@@ -360,6 +361,14 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->exists = ! empty( $this->all_tickets );
 
 		if ( ! $this->is_cached ) {
+			/*
+			 * Unset the `provider` property of each Ticket to avoid storing a singleton object.
+			 * The ticket will recover the module instance using the `provider_class` property.
+			 */
+			foreach ( $this->all_tickets as $ticket ) {
+				\Closure::bind( fn() => $ticket->provider = null, $ticket, Ticket_Object::class )();
+			}
+
 			$packed = tec_json_pack(
 				[
 					'all_tickets' => $this->all_tickets,
@@ -367,7 +376,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 				],
 				[ Ticket_Object::class ]
 			);
-			tec_kv_cache()->set( 'tec_tickets_views_v2_model_ticket_' . $this->post_id, $packed, DAY_IN_SECONDS );
+
+			tec_kv_cache()->set( $this->get_cache_key(), $packed, DAY_IN_SECONDS );
 		}
 
 		return $this->exists;
@@ -408,8 +418,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 *
 	 * @return void
 	 */
-	private function prime_from_cache(): void {
-		$cached = tec_kv_cache()->get( 'tec_tickets_views_v2_model_ticket_' . $this->post_id );
+	private function restore_from_cache(): void {
+		$cached = tec_kv_cache()->get( $this->get_cache_key() );
 
 		if ( $cached === '' ) {
 			return;
@@ -424,5 +434,16 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->all_tickets = $unpacked['all_tickets'];
 		$this->data        = $unpacked['data'];
 		$this->is_cached   = true;
+	}
+
+	/**
+	 * Returns the model cache key used to store it in the key-value cache.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The model cache key used to store it in the key-value cache.
+	 */
+	public function get_cache_key(): string {
+		return 'tec_tickets_views_v2_model_ticket_' . $this->post_id;
 	}
 }
