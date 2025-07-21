@@ -20,7 +20,6 @@ namespace Tribe\Tickets\Events\Views\V2;
 use Tribe\Tickets\Events\Views\V2\Models\Tickets;
 use Tribe__Tickets__Main as Plugin;
 use Tribe__Template;
-use Tribe__Events__Main as TEC;
 
 /**
  * Class Hooks.
