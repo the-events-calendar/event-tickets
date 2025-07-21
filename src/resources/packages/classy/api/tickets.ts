@@ -2,7 +2,14 @@ import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { PartialTicket, Ticket } from '../types/Ticket';
-import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams, } from '../types/Api';
+import {
+	GetTicketApiResponse,
+	GetTicketsApiResponse,
+	TicketsApiParams,
+	CreateTicketApiRequest,
+	UpdateTicketApiRequest,
+	DeleteTicketApiRequest
+} from '../types/Api';
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
@@ -122,11 +129,11 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		body.post_id = ticketData.eventId.toString();
 		body.price = ticketData.price || '';
 
-		// todo: handle provider properly.
+		// Provider and type
 		body.provider = ticketData.provider || 'tc';
+		body.type = ticketData.type || 'default';
 
 		// Date and time fields
-		// todo: refine date and time handling to ensure proper format.
 		if ( ticketData.availableFrom ) {
 			// Extract date and time from availableFrom
 			const availableFromDate = new Date( ticketData.availableFrom );
@@ -184,8 +191,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		}
 
 		// Menu order
-		// todo: Replace this placeholder with actual logic.
-		body.menu_order = '0';
+		body.menu_order = ticketData.menuOrder?.toString() || '0';
 
 		// Set the filter as its own full string, to allow for easier discoverability when searching for it.
 		const filterName = isUpdate
@@ -215,7 +221,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 			method: isUpdate ? 'PUT' : 'POST',
 			data: {
 				...body,
-				[nonceKey]: getNonce( isUpdate ? 'updateTicket' : 'createTicket' ),
+				[ nonceKey ]: getNonce( isUpdate ? 'updateTicket' : 'createTicket' ),
 			},
 		} )
 			.then( ( data ) => {

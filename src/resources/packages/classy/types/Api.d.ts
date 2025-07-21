@@ -39,13 +39,18 @@ export type GetTicketApiResponse = {
 	rest_url: string;
 } & Ticket;
 
-
+/**
+ * Request structure for creating or updating a ticket.
+ *
+ * @since TBD
+ */
 export type UpsertTicketApiRequest = {
 	post_id?: string;
 	name?: string;
 	description?: string;
 	price?: string;
 	provider: string;
+	type?: string;
 	start_date?: string;
 	start_time?: string;
 	end_date?: string;
@@ -65,4 +70,32 @@ export type UpsertTicketApiRequest = {
 
 	// Additional values from filters
 	[key: string]: any;
+};
+
+/**
+ * Request structure for creating a ticket.
+ *
+ * @since TBD
+ */
+export type CreateTicketApiRequest = UpsertTicketApiRequest & {
+	add_ticket_nonce: string;
+};
+
+/**
+ * Request structure for updating a ticket.
+ *
+ * @since TBD
+ */
+export type UpdateTicketApiRequest = UpsertTicketApiRequest & {
+	id: number;
+	edit_ticket_nonce: string;
+};
+
+/**
+ * Request structure for deleting a ticket.
+ *
+ * @since TBD
+ */
+export type DeleteTicketApiRequest = {
+	remove_ticket_nonce: string;
 };
