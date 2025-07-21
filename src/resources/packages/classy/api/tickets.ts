@@ -6,7 +6,7 @@ import { GetTicketApiResponse, GetTicketsApiResponse, TicketsApiParams, } from '
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
-const apiBaseUrl = '/tribe/tickets/v1/tickets';
+const apiBaseUrl = '/tec/classy/v1/tickets';
 
 /**
  * Get a nonce for the specified type.
