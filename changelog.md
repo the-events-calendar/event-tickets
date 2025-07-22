@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.25.1] 2025-07-22
+
+* Fix - Correct background color on "Get Tickets" button when dealing with series passes. [ET-2534]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.25.0] 2025-07-16
 
 * Version - Event Tickets 5.25.0 is only compatible with Event Tickets Plus 6.7.0 or higher.
