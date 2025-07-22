@@ -13,7 +13,7 @@ const currentDate = new Date();
 const dateWithYearFormat = 'Y-m-d';
 const startOfWeek: StartOfWeek = 0;
 
-type SalePriceProps = Omit<TicketComponentProps, 'label'> & {
+type SalePriceProps = Omit<TicketComponentProps, 'label' | 'onChange'> & {
 	value: SalePriceDetails;
 	onChange: ( value: SalePriceDetails ) => void;
 };
