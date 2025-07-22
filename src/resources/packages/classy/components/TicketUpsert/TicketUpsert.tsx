@@ -29,7 +29,8 @@ const defaultValues: PartialTicket = {
 		salePrice: '',
 		startDate: null,
 		endDate: null,
-	}
+	},
+	capacity: '',
 };
 
 /**
@@ -160,7 +161,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 				<CurrencyInput
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
-					value={ decodeEntities( currentValues.price ) }
+					value={ decodeEntities( currentValues.price.toString() ) }
 					onChange={ ( value: string ) => onValueChange( 'price', value || '' ) }
 				/>
 
@@ -210,7 +211,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 							'event-tickets'
 						) }
 						__nextHasNoMarginBottom={ true }
-						checked={ currentValues.capacityShared }
+						checked={ currentValues.capacityDetails.globalStockMode === 'global' }
 						onChange={ ( value: boolean ) => onValueChange( 'capacityShared', value ) }
 					/>
 				</div>

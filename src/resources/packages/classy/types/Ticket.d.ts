@@ -74,7 +74,7 @@ export type Ticket = {
 	onSale: boolean;
 
 	// Capacity
-	capacity: number;
+	capacity: number | '';
 	capacityDetails: CapacityDetails;
 
 	// Pricing

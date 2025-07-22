@@ -183,8 +183,7 @@ class Controller extends BaseController {
 						'type' => 'string',
 					],
 					'capacity'       => [
-						'type'    => 'integer',
-						'default' => 0,
+						'type' => 'string',
 					],
 					'event_capacity' => [
 						'type'    => 'integer',

@@ -89,14 +89,14 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
  * @since TBD
  *
  * @param {number} postId The ID of the post to fetch tickets for.
- * @return {Promise<Ticket[]>} A promise that resolves to an array of tickets.
+ * @return {Awaited<Ticket[]>} A promise that resolves to an array of tickets.
  */
 export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> => {
 	return new Promise<Ticket[]>( async ( resolve, reject ) => {
 		// todo: Handle the potential for multiple pages of results.
 		await fetchTickets( { include_post: [ postId ] } )
 			.then( ( response: GetTicketsApiResponse ) => {
-				resolve( response.tickets );
+				resolve( response.tickets.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicket( ticket ) ) );
 			} )
 			.catch( ( error ) => {
 				reject( new Error( `Failed to fetch tickets for post ID ${ postId }: ${ error.message }` ) );
@@ -159,6 +159,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		}
 
 		// Capacity fields
+		body.ticket.capacity = ticketData.capacity?.toString() || '';
 		if ( ticketData.capacityDetails ) {
 			const capacityType = ticketData.capacityDetails.globalStockMode;
 			const capacity = ticketData.capacityDetails.max;
@@ -274,25 +275,31 @@ export const deleteTicket = async ( ticketId: number ): Promise<void> => {
  * @return {Ticket} The mapped ticket data.
  */
 function mapApiResponseToTicket( apiResponse: GetTicketApiResponse ): Ticket {
+	let capacity: number | '' = apiResponse?.capacity || 0;
+
+	// If capacity is 0 or -1, we treat it as unlimited and set it to an empty string.
+	if ( capacity === 0 || capacity === -1 ) {
+		capacity = '';
+	}
+
 	return {
 		id: apiResponse.id,
 		title: apiResponse.title,
 		description: apiResponse.description,
-		eventId: apiResponse.eventId,
+		eventId: apiResponse.post_id,
 		price: apiResponse.price,
 		provider: apiResponse.provider,
 		type: apiResponse.type || 'default',
 		globalId: apiResponse.globalId || `ticket_${ apiResponse.id }`,
 		globalIdLineage: apiResponse.globalIdLineage || [ `ticket_${ apiResponse.id }` ],
 		image: apiResponse.image || false,
-		menuOrder: apiResponse.menuOrder || 0,
 		availableFrom: apiResponse.availableFrom || null,
 		availableFromDetails: apiResponse.availableFromDetails || null,
 		availableUntil: apiResponse.availableUntil || null,
 		availableUntilDetails: apiResponse.availableUntilDetails || null,
 		isAvailable: apiResponse.isAvailable || false,
 		onSale: apiResponse.onSale || false,
-		capacity: apiResponse.capacity || 0,
+		capacity: capacity,
 		capacityDetails: apiResponse.capacityDetails || {
 			available: 0,
 			availablePercentage: 0,

@@ -37,6 +37,7 @@ export type GetTicketApiResponse = {
 	modified_utc: string;
 	title: string;
 	rest_url: string;
+	post_id: number;
 } & Ticket;
 
 /**

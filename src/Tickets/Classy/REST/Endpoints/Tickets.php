@@ -16,7 +16,9 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Exceptions\RESTException;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Ticket_Object as TicketObject;
 use Tribe__Tickets__Tickets as Ticket_Provider;
+use Tribe__Tickets__Tickets_Handler;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request as Request;
@@ -257,6 +259,15 @@ class Tickets {
 				406
 			);
 		}
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		// Update meta details for the ticket.
+
+		// todo: do capacity properly.
+		$capacity = $body['ticket']['capacity'] ?? '';
+		update_post_meta( $ticket, $tickets_handler->key_capacity, $capacity );
 
 		/**
 		 * Fires after a ticket has been added.
@@ -594,12 +605,12 @@ class Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param object $ticket The ticket object.
+	 * @param TicketObject $ticket The ticket object.
 	 *
 	 * @return array
 	 */
 	protected function get_capacity_details( $ticket ) {
-		$capacity             = $ticket->capacity();
+		$capacity             = (int) $ticket->capacity();
 		$sold                 = $ticket->qty_sold();
 		$pending              = $ticket->qty_pending();
 		$available            = $capacity === -1 ? 999999 : max( 0, $capacity - $sold - $pending );
