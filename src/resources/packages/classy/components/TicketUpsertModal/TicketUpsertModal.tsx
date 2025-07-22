@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Modal } from '@wordpress/components';
 import { TicketUpsert } from '../TicketUpsert';
-import { PartialTicket } from '../../types/Ticket';
+import { PartialTicket, TicketId } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 
 type TicketUpsertModalProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
 	onClose: () => void;
+	onDelete: ( ticketId: TicketId ) => void;
 	onSave: ( ticket: PartialTicket ) => void;
 	value: PartialTicket;
 } & TicketComponentProps;
@@ -25,6 +26,7 @@ export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.
 		isUpdate,
 		onCancel,
 		onClose,
+		onDelete,
 		onSave,
 		value
 	} = props;
@@ -39,6 +41,7 @@ export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.
 			<TicketUpsert
 				isUpdate={ isUpdate }
 				onCancel={ onCancel }
+				onDelete={ onDelete }
 				onSave={ onSave }
 				value={ value }
 			/>

@@ -8,13 +8,14 @@ import * as React from 'react';
 import { Fragment, useCallback, useState } from 'react';
 import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, } from '../../fields';
 import { CoreEditorSelect } from '../../types/Store';
-import { Capacity as CapacityType, PartialTicket, SalePriceDetails } from '../../types/Ticket';
+import { Capacity as CapacityType, PartialTicket, SalePriceDetails, TicketId } from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
 
 type TicketUpsertProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
+	onDelete?: ( ticketId: TicketId ) => void;
 	onSave: ( data: PartialTicket ) => void;
 	value: PartialTicket;
 }
@@ -41,6 +42,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const {
 		isUpdate,
 		onCancel,
+		onDelete = () => {},
 		onSave,
 		value,
 	} = props;
@@ -104,6 +106,19 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				setTicketUpsertError( error );
 			} );
 	}, [ confirmEnabled, currentValues ] );
+
+	const onDeleteClicked = useCallback( (): void => {
+		TicketApi.deleteTicket( currentValues.id )
+			.then( () => {
+				setSaveInProgress( false );
+				setTicketUpsertError( null );
+				onDelete( currentValues.id );
+			} )
+			.catch( ( error: Error ) => {
+				setSaveInProgress( false );
+				setTicketUpsertError( error );
+			} );
+	}, [ currentValues ] );
 
 	return (
 		<div className="classy-root">
@@ -240,6 +255,18 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					>
 						{ _x( 'Cancel', 'Cancel button label', 'event-tickets' ) }
 					</Button>
+
+					{ isUpdate && (
+						<Button
+							aria-disabled={ saveInProgress }
+							isBusy={ saveInProgress }
+							className="classy-button classy-button__destructive"
+							onClick={ onDeleteClicked }
+							variant="link"
+						>
+							{ _x( 'Delete', 'Delete ticket button label', 'event-tickets' ) }
+						</Button>
+					) }
 				</div>
 			</footer>
 		</div>

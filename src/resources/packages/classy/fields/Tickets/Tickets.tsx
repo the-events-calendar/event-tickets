@@ -7,7 +7,7 @@ import { useCallback, useState } from 'react';
 import { AddTicket, TicketTable, TicketUpsertModal, } from '../../components';
 import { STORE_NAME } from '../../constants';
 import { CoreEditorSelect, StoreDispatch, StoreSelect } from '../../types/Store';
-import { PartialTicket, Ticket as TicketData } from '../../types/Ticket';
+import { PartialTicket, Ticket as TicketData, TicketId } from '../../types/Ticket';
 
 const defaultTicket: PartialTicket = {
 	title: '',
@@ -58,6 +58,7 @@ export default function Tickets(): JSX.Element {
 		if ( isNewTicket ) {
 			addTicket( ticket );
 		} else {
+			console.log( 'Updating ticket:', ticket );
 			updateTicket( ticket.id, ticket );
 		}
 
@@ -75,6 +76,12 @@ export default function Tickets(): JSX.Element {
 		setIsUpserting( false );
 		setTicketToEdit( defaultTicket );
 	}, [ defaultTicket ] );
+
+	const onTicketDeleted = useCallback( ( ticketId: TicketId ) => {
+		deleteTicket( ticketId );
+		setIsUpserting( false );
+		setTicketToEdit( defaultTicket );
+	}, [] );
 
 	// If the tickets are not yet loaded, show a spinner.
 	if ( isLoading ) {
@@ -99,6 +106,7 @@ export default function Tickets(): JSX.Element {
 						isUpdate={ ! isNewTicket }
 						onCancel={ onTicketEditCancelled }
 						onClose={ onTicketEditCancelled }
+						onDelete={ onTicketDeleted }
 						onSave={ onTicketUpsertSaved }
 						value={ ticketToEdit }
 					/>
