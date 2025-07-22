@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The main service provider for the Tickets updated and new code.
  *
@@ -106,6 +105,9 @@ class Provider extends Service_Provider {
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
 
+		// Cost caching functionality.
+		$this->container->register( Cache\Controller::class );
+
 		$this->has_registered = true;
 
 		return true;
@@ -132,7 +134,7 @@ class Provider extends Service_Provider {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container
+		// Allow Hooks to be removed, by having the them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.hooks', $hooks );
 	}

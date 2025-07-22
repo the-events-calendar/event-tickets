@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Add caching for `tribe_get_cost` function. [ETP-1021]
