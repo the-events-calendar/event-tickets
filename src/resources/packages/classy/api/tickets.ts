@@ -14,6 +14,7 @@ import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
 const apiBaseUrl = '/tec/classy/v1/tickets';
+const legacyApiBaseUrl = '/tribe/tickets/v1/tickets';
 
 /**
  * Get a nonce for the specified type.
@@ -59,7 +60,7 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
 		searchParams.set( 'page', params.page.toString() );
 	}
 
-	const path = addQueryArgs( apiBaseUrl, searchParams );
+	const path = addQueryArgs( legacyApiBaseUrl, searchParams );
 
 	return new Promise<GetTicketsApiResponse>( async ( resolve, reject ) => {
 		await apiFetch( { path: path } )
