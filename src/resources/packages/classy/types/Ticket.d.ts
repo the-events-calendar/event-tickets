@@ -50,9 +50,11 @@ export type TicketDate = {
 	second?: Seconds;
 }
 
+export type TicketId = number;
+
 export type Ticket = {
 	// API response fields
-	id: number;
+	id: TicketId;
 	eventId: number;
 	provider: string;
 	type: TicketType;
@@ -78,7 +80,7 @@ export type Ticket = {
 	// Pricing
 	cost: string;
 	costDetails: CostDetails;
-	price: number;
+	price: number | string;
 	priceSuffix: string | null;
 
 	// Sale price
