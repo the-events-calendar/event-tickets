@@ -5,7 +5,7 @@ import { Ticket } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
 import { STORE_NAME } from '../../constants';
-import { StoreDispatch } from "../../types/Store";
+import { StoreDispatch, StoreSelect, CoreEditorSelect } from "../../types/Store";
 
 type TicketTableProps = {
 	onEditTicket: ( ticket: Ticket ) => void;
@@ -57,7 +57,6 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 	// todo: update the menu order of the tickets when moving them.
 
 	const handleMoveTicket = useCallback( ( direction: MoveDirection, index: number ) => {
-		console.log( `Moving ticket ${index} ${direction}` );
 		const updatedTickets = moveTicket( tickets, direction, index );
 		setTickets( updatedTickets );
 	}, [ tickets, setTickets ] );
