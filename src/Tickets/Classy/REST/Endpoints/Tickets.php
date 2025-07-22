@@ -95,7 +95,7 @@ class Tickets {
 	 */
 	public function create( Request $request ) {
 		try {
-			return $this->upsert_ticket( $request, 'add_ticket_nonce' );
+			return $this->upsert_ticket( $request );
 		} catch ( RESTException $e ) {
 			return $e->to_wp_error();
 		} catch ( Exception $e ) {
