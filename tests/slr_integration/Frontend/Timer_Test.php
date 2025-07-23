@@ -105,7 +105,7 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		$token   = 'test-token';
@@ -134,7 +134,7 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		ob_start();
@@ -173,7 +173,7 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		$token = 'test-token';
@@ -202,7 +202,7 @@ class Timer_Test extends Controller_Test_Case {
 
 		// Mock a previous session where the token and post ID were stored.
 		$session->add_entry( $post_id, 'previous-token' );
-		$sessions->upsert( 'previous-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'previous-token', $post_id, time() + 100 );
 
 		$controller = $this->make_controller();
 
@@ -307,7 +307,7 @@ class Timer_Test extends Controller_Test_Case {
 		$reservations = tribe( Reservations::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		// Set up the request context.
@@ -446,7 +446,7 @@ class Timer_Test extends Controller_Test_Case {
 
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		// Set up the request context.
@@ -495,7 +495,7 @@ class Timer_Test extends Controller_Test_Case {
 
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		// Set up the request context.
@@ -654,7 +654,7 @@ class Timer_Test extends Controller_Test_Case {
 		$reservations = tribe( Reservations::class );
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
 		$sessions->update_reservations( 'test-token', $mock_reservations );
 
@@ -746,7 +746,7 @@ class Timer_Test extends Controller_Test_Case {
 		$reservations = tribe( Reservations::class );
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
 		$sessions->update_reservations( 'test-token', $mock_reservations );
 
@@ -819,7 +819,7 @@ class Timer_Test extends Controller_Test_Case {
 		$reservations = tribe( Reservations::class );
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
 		$mock_reservations = $this->create_mock_reservations_data( [ $post_id ], 3 );
 		$sessions->update_reservations( 'test-token', $mock_reservations );
 
@@ -956,7 +956,7 @@ class Timer_Test extends Controller_Test_Case {
 		update_post_meta( $post_with_assigned_seating, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 		$session  = tribe( Session::class );
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', $post_with_assigned_seating, time() + 100 );
+		$sessions->insert_or_update( 'test-token', $post_with_assigned_seating, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 		$session->add_entry( $post_with_assigned_seating, 'test-token' );
 
@@ -994,7 +994,7 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions     = tribe( Sessions::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		// Set up the request context.
@@ -1029,7 +1029,7 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions     = tribe( Sessions::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		// Set up the request context.
@@ -1067,7 +1067,7 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions     = tribe( Sessions::class );
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		// Set up the request context.
