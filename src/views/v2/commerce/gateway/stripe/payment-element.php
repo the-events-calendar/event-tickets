@@ -10,9 +10,9 @@
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.3.0
- * @since TBD Add hidden class var to avoid undefined warnings.
+ * @since 5.25.0 Add hidden class var to avoid undefined warnings.
  *
- * @version TBD
+ * @version 5.25.0
  *
  * @var Checkout_Shortcode $shortcode [Global] The checkout shortcode instance.
  * @var bool               $must_login [Global] Whether login is required to buy tickets or not.

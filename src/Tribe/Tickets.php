@@ -1143,7 +1143,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Mark an attendee as not checked in
 		 *
 		 * @abstract
-		 * @since TBD - Add optional $app parameter to allow for bulk checkin process when using RSVP.
+		 * @since 5.25.0 - Add optional $app parameter to allow for bulk checkin process when using RSVP.
 		 *
 		 * @param int  $attendee_id The ID of the attendee that's being checkedin.
 		 * @param bool $app True if from bulk checkin process.
