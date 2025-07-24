@@ -72,6 +72,12 @@ class Ticket {
 		$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
 		update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
 
+		// Ensure rsvp_id is available for IAC and meta processing
+		// Use the ticket ID from the ticket object if rsvp_id is not in raw_data
+		if ( ! isset( $raw_data['rsvp_id'] ) || empty( $raw_data['rsvp_id'] ) ) {
+			$raw_data['rsvp_id'] = $ticket->ID;
+		}
+
 		// Handle IAC (Individual Attendee Collection) settings
 		if ( isset( $raw_data['ticket_iac'] ) && ! empty( $raw_data['ticket_iac'] ) ) {
 			$this->save_iac_settings( $ticket->ID, $raw_data['ticket_iac'] );
@@ -120,7 +126,9 @@ class Ticket {
 	 * @param array $meta_fields Array of meta field definitions.
 	 */
 	protected function save_meta_fields( $ticket_id, $meta_fields ) {
-		// TODO: Implement meta field saving for RSVP tickets
+		if ( empty( $meta_fields ) ) {
+			return;
+		}
 
 		// Get meta service from tickets-plus plugin
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
@@ -137,6 +145,15 @@ class Ticket {
 			update_post_meta( $ticket_id, \Tribe__Tickets_Plus__Meta::ENABLE_META_KEY, 'yes' );
 		}
 
-		// TODO: Process and save individual meta fields
+		// Create ticket object with ID
+		$ticket = (object) ['ID' => $ticket_id];
+
+		// Format meta fields for save_meta method - it expects 'tribe-tickets-input' key
+		$formatted_data = [
+			'tribe-tickets-input' => $meta_fields
+		];
+
+		// Call save_meta with correct parameters
+		$meta_service->save_meta( 0, $ticket, $formatted_data );
 	}
 }
