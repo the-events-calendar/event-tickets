@@ -154,6 +154,7 @@ class Ticket {
 		];
 
 		// Call save_meta with correct parameters
+
 		$meta_service->save_meta( 0, $ticket, $formatted_data );
 	}
 }
