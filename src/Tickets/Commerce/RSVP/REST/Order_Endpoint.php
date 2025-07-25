@@ -230,14 +230,30 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			// Add the RSVP ticket to the cart.
 			if ( $quantity > 0 ) {
+				$extra_args = [
+					'type'         => 'tc-rsvp',
+					'order_status' => $first_attendee['order_status'],
+					'optout'       => $first_attendee['optout'],
+				];
+
+				/**
+				 * Filter the extra arguments passed to cart upsert for RSVP tickets.
+				 *
+				 * This allows Event Tickets Plus to inject attendee meta into the cart item.
+				 *
+				 * @since TBD
+				 *
+				 * @param array $extra_args The extra arguments for the cart item.
+				 * @param int   $ticket_id  The ticket ID.
+				 * @param int   $quantity   The quantity of tickets.
+				 * @param array $first_attendee The parsed attendee details.
+				 */
+				$extra_args = apply_filters( 'tec_tickets_commerce_rsvp_cart_upsert_item_args', $extra_args, $ticket_id, $quantity, $first_attendee );
+
 				$cart->upsert_item(
 					$ticket_id,
 					$quantity,
-					[
-						'type'         => 'tc-rsvp',
-						'order_status' => $first_attendee['order_status'],
-						'optout'       => $first_attendee['optout'],
-					]
+					$extra_args
 				);
 
 				// Save the cart to persist the items.
