@@ -84,7 +84,7 @@ class Metabox {
 
 		$context['rsvp_id']        = $tc_rsvp->ID ?? null;
 		$context['show_not_going'] = $tc_rsvp->show_not_going ?? '';
-		$capacity                  = $tc_rsvp->capacity() ?? '';
+		$capacity                  = empty( $tc_rsvp ) ? '' : $tc_rsvp->capacity();
 		$context['rsvp_limit']     = $capacity === - 1 ? '' : $capacity;
 
 		return $admin_views->template(
