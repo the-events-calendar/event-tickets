@@ -10,9 +10,9 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 5.0.0
+ * @since TBD
  *
- * @version 5.0.0
+ * @version TBD
  */
 
 /**
@@ -21,7 +21,7 @@
  * @param string                            $name    The name value.
  * @param Tribe__Tickets__Editor__Template $template The template object.
  *
- * @since 4.9
+ * @since TBD
  */
 $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 ?>

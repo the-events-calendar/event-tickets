@@ -72,18 +72,18 @@ class Ticket {
 		$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
 		update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
 
-		// Ensure rsvp_id is available for IAC and meta processing
-		// Use the ticket ID from the ticket object if rsvp_id is not in raw_data
+		// Ensure rsvp_id is available for IAC and meta processing.
+		// Use the ticket ID from the ticket object if rsvp_id is not in raw_data.
 		if ( ! isset( $raw_data['rsvp_id'] ) || empty( $raw_data['rsvp_id'] ) ) {
 			$raw_data['rsvp_id'] = $ticket->ID;
 		}
 
-		// Handle IAC (Individual Attendee Collection) settings
+		// Handle IAC (Individual Attendee Collection) settings.
 		if ( isset( $raw_data['ticket_iac'] ) && ! empty( $raw_data['ticket_iac'] ) ) {
 			$this->save_iac_settings( $ticket->ID, $raw_data['ticket_iac'] );
 		}
 
-		// Handle meta fields
+		// Handle meta fields.
 		if ( isset( $raw_data['meta_fields'] ) && is_array( $raw_data['meta_fields'] ) ) {
 			$this->save_meta_fields( $ticket->ID, $raw_data['meta_fields'] );
 		}
@@ -98,20 +98,20 @@ class Ticket {
 	 * @param string $iac_setting The IAC setting (none, allowed, required).
 	 */
 	protected function save_iac_settings( $ticket_id, $iac_setting ) {
-		// Validate IAC setting
+		// Validate IAC setting.
 		$valid_settings = [ 'none', 'allowed', 'required' ];
 		if ( ! in_array( $iac_setting, $valid_settings, true ) ) {
 			return;
 		}
 
-		// Get IAC service from tickets-plus plugin
+		// Get IAC service from tickets-plus plugin.
 		if ( ! class_exists( 'Tribe\Tickets\Plus\Attendee_Registration\IAC' ) ) {
 			return;
 		}
 
 		$iac_service = tribe( 'tickets-plus.attendee-registration.iac' );
 		if ( $iac_service ) {
-			// Get the meta key and save directly to post meta
+			// Get the meta key and save directly to post meta.
 			$meta_key = $iac_service->get_iac_setting_ticket_meta_key();
 			update_post_meta( $ticket_id, $meta_key, sanitize_text_field( $iac_setting ) );
 		}
@@ -130,7 +130,7 @@ class Ticket {
 			return;
 		}
 
-		// Get meta service from tickets-plus plugin
+		// Get meta service from tickets-plus plugin.
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
 			return;
 		}
@@ -140,21 +140,20 @@ class Ticket {
 			return;
 		}
 
-		// Enable meta for the ticket if we have fields
+		// Enable meta for the ticket if we have fields.
 		if ( ! empty( $meta_fields ) ) {
 			update_post_meta( $ticket_id, \Tribe__Tickets_Plus__Meta::ENABLE_META_KEY, 'yes' );
 		}
 
-		// Create ticket object with ID
+		// Create ticket object with ID.
 		$ticket = (object) ['ID' => $ticket_id];
 
-		// Format meta fields for save_meta method - it expects 'tribe-tickets-input' key
+		// Format meta fields for save_meta method - it expects 'tribe-tickets-input' key.
 		$formatted_data = [
 			'tribe-tickets-input' => $meta_fields
 		];
 
-		// Call save_meta with correct parameters
-
+		// Call save_meta with correct parameters.
 		$meta_service->save_meta( 0, $ticket, $formatted_data );
 	}
 }

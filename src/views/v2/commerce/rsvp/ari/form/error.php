@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 5.0.0
+ * @since TBD
  *
- * @version 5.0.0
+ * @version TBD
  */
 
 ?>

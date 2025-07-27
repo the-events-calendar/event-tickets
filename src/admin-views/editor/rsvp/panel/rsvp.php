@@ -138,13 +138,16 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 				 */
 				do_action( 'tec_event_tickets_rsvp_post_options', $post_id, $rsvp_id );
 
-				$this->template( [ 'components', 'switch-field' ], [
+				$this->template(
+					[ 'components', 'switch-field' ],
+					[
 						'id'      => 'tec_tickets_rsvp_enable_cannot_go',
 						'name'    => 'tec_tickets_rsvp_enable_cannot_go',
 						'label'   => 'Enable "Can\'t go" responses',
 						'tooltip' => '',
 						'value'   => esc_attr( $show_not_going ),
-					] );
+					]
+				);
 				?>
 			</div>
 			<div class="ticket_bottom">

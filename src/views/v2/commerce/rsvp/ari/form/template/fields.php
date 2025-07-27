@@ -7,10 +7,9 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 5.0.0
- * @since 5.0.3 Updated to use the has_meta_enabled logic check and removed the old filter.
+ * @since TBD
  *
- * @version 5.0.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var int $post_id The post ID the RSVP is linked to.
@@ -28,7 +27,7 @@ if ( ! $rsvp->has_meta_enabled() ) {
 		/**
 		 * Allows injection of meta fields in the RSVP ARI form template.
 		 *
-		 * @since 5.0.0
+		 * @since TBD
 		 *
 		 * @see  Tribe__Template\do_entry_point()
 		 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/

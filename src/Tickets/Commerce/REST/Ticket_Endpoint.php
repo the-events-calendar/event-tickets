@@ -87,14 +87,14 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	public function check_permission( WP_REST_Request $request ): bool {
 		$nonce = $request->get_param( '_wpnonce' );
 
-		// Handle nonce from wp.apiFetch or direct parameter
+		// Handle nonce from wp.apiFetch or direct parameter.
 		$nonce_value = '';
 		if ( is_array( $nonce ) && isset( $nonce['_wpnonce'] ) ) {
 			$nonce_value = $nonce['_wpnonce'];
 		} elseif ( is_string( $nonce ) ) {
 			$nonce_value = $nonce;
 		} else {
-			// Check if nonce is in headers (wp.apiFetch sends it there)
+			// Check if nonce is in headers (wp.apiFetch sends it there).
 			$nonce_value = $request->get_header( 'X-WP-Nonce' );
 		}
 
@@ -131,11 +131,11 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['post_id']                           = Event::filter_event_id( $post_id );
 		$args['rsvp_id']                           = Arr::get( $request_params, 'rsvp_id', '' );
 		$args['ticket_id']                         = Arr::get( $request_params, 'rsvp_id', '' );
-		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', -1 );
+		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', - 1 );
 		$args['ticket_end_date']                   = Arr::get( $request_params, 'rsvp_end_date', '' );
 		$args['ticket_end_time']                   = Arr::get( $request_params, 'rsvp_end_time', '' );
 		$args['ticket_start_date']                 = Arr::get( $request_params, 'rsvp_start_date', '' );
@@ -143,16 +143,16 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['tec_tickets_rsvp_enable_cannot_go'] = Arr::get( $request_params, 'tec_tickets_rsvp_enable_cannot_go', '' );
 		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
 		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', 'tc-rsvp' );
-		
-		// Handle IAC (Individual Attendee Collection) settings
-		$args['ticket_iac']                        = Arr::get( $request_params, 'ticket_iac', '' );
-		$args['meta_fields']                       = Arr::get( $request_params, 'meta_fields', [] );
+
+		// Handle IAC (Individual Attendee Collection) settings.
+		$args['ticket_iac']  = Arr::get( $request_params, 'ticket_iac', '' );
+		$args['meta_fields'] = Arr::get( $request_params, 'meta_fields', [] );
 
 		$module  = tribe( Module::class );
 		$rsvp_id = $module->ticket_add( $post_id, $args );
 
 		if ( $rsvp_id ) {
-			$response['success'] = true;
+			$response['success']   = true;
 			$response['ticket_id'] = $rsvp_id;
 		}
 
