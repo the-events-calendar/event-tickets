@@ -21,7 +21,7 @@ use WP_Post;
  */
 class Orders extends Report_Abstract {
 	/**
-	 * Slug of the admin page for orders
+	 * Slug of the admin page for orders.
 	 *
 	 * @since 5.2.0
 	 *
@@ -39,7 +39,7 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @var string The menu slug of the orders page
+	 * @var string The menu slug of the Orders page.
 	 */
 	public $orders_page;
 
@@ -62,21 +62,21 @@ class Orders extends Report_Abstract {
 		);
 
 		/**
-		 * Filters the title on Order list page for Tickets Commerce.
+		 * Filters the title on the Order list page for Tickets Commerce.
 		 *
 		 * @since 5.6.2
 		 *
-		 * @param string 	$title The title.
-		 * @param int 		$post_id The post ID.
+		 * @param string $title   The title.
+		 * @param int    $post_id The post ID.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_page_title', $title, $post_id );
 	}
 
 	/**
-	 * Links to sales report for all tickets in Tickets Commerce for this event.
+	 * Links to the sales report for all tickets in Tickets Commerce for this event.
 	 *
-	 * @since 5.6.4 - tec_tickets_filter_event_id filter to normalize the $post_id.
 	 * @since 5.2.0
+	 * @since 5.6.4 `tec_tickets_filter_event_id` filter to normalize the $post_id.
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
@@ -106,9 +106,9 @@ class Orders extends Report_Abstract {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @var string $report_url Report URL
-		 * @var int    $event_id   The post ID
-		 * @var array  $ticket_ids An array of ticket IDs
+		 * @param string $report_url The Report URL.
+		 * @param int    $event_id   The post ID.
+		 * @param array  $ticket_ids An array of ticket IDs.
 		 *
 		 * @return string
 		 */
@@ -124,8 +124,8 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|string $event_id
-	 * @param int|string $ticket_id
+	 * @param int|string $event_id  The post ID of the event.
+	 * @param int|string $ticket_id The post ID of the ticket.
 	 *
 	 * @return string
 	 */
@@ -149,9 +149,9 @@ class Orders extends Report_Abstract {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @var string $report_url Report URL
-		 * @var int    $event_id   The post ID
-		 * @var array  $ticket_ids An array of ticket IDs
+		 * @param string $report_url The Report URL.
+		 * @param int    $event_id   The post ID.
+		 * @param array  $ticket_ids An array of ticket IDs.
 		 *
 		 * @return string
 		 */
@@ -186,9 +186,13 @@ class Orders extends Report_Abstract {
 	 * Hooks the actions and filter required by the class.
 	 *
 	 * @since 5.2.0
+	 * @since 5.25.0 Add hook for `page_row_actions`.
+	 *
+	 * @return void
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
+		add_filter( 'page_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		// Register before the default priority of 10 to avoid submenu hook issues.
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ], 5 );
 
@@ -199,12 +203,12 @@ class Orders extends Report_Abstract {
 	}
 
 	/**
-	 * Adds order related actions to the available row actions for the post.
+	 * Adds order-related actions to the available row actions for the post.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $actions
-	 * @param      $post
+	 * @param array   $actions The array of quick actions.
+	 * @param WP_Post $post    The post object.
 	 *
 	 * @return array
 	 */
@@ -212,7 +216,7 @@ class Orders extends Report_Abstract {
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$post    = get_post( $post_id );
 
-		// only if tickets are active on this post type
+		// Only if tickets are active on this post type.
 		if ( ! in_array( $post->post_type, Plugin::instance()->post_types(), true ) ) {
 			return $actions;
 		}
@@ -242,7 +246,7 @@ class Orders extends Report_Abstract {
 	}
 
 	/**
-	 * Registers the Tickets Commerce orders page as a plugin options page.
+	 * Registers the Tickets Commerce Orders page as a plugin options page.
 	 *
 	 * @since 5.2.0
 	 */
@@ -287,7 +291,7 @@ class Orders extends Report_Abstract {
 	}
 
 	/**
-	 * Filter the page slugs that the attendee resources will load to add the order page
+	 * Filter the page slugs that the attendee resources will load to add the Orders page.
 	 *
 	 * @since 5.2.0
 	 *
@@ -302,7 +306,7 @@ class Orders extends Report_Abstract {
 	}
 
 	/**
-	 * Sets up the attendees page screen.
+	 * Sets up the Attendees page screen.
 	 *
 	 * @since 5.2.0
 	 */
@@ -338,7 +342,7 @@ class Orders extends Report_Abstract {
 	}
 
 	/**
-	 * Renders the order page
+	 * Renders the Orders page.
 	 *
 	 * @since 5.2.0
 	 */
@@ -351,10 +355,10 @@ class Orders extends Report_Abstract {
 	}
 
 	/**
-	 * Sets up the template variables used to render the Orders Report Page.
+	 * Sets up the template variables used to render the Orders Report page.
 	 *
 	 * @since 5.2.0
-	 * @since 5.6.8 Removed title from template vars, title will be rendered by the Tabbed_View
+	 * @since 5.6.8 Removed title from template vars, title will be rendered by the Tabbed_View.
 	 *
 	 * @return array
 	 */
@@ -386,7 +390,7 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $url     Url for the order page for ticketed event/post.
+	 * @param string $url     URL for the Orders page for ticketed event/post.
 	 * @param int    $post_id The post ID for the current event/post.
 	 *
 	 * @return string

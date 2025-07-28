@@ -14,7 +14,7 @@ import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
 import { formatWithCurrency } from '../../currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
-import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session';
+import { start as startTimer, reset as resetTimer } from '@tec/tickets/seating/frontend/session'; // eslint-disable-line import/no-unresolved
 import './filters';
 
 const {
@@ -65,6 +65,11 @@ let emptyTicketMessageElement = null;
  * @type {string}
  */
 const confirmSelector = '.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm';
+
+/**
+ * Whether the unload event has been registered or not.
+ */
+let unloadEventRegistered = false;
 
 /**
  * @typedef {Object} SeatMapTicketEntry
@@ -265,7 +270,7 @@ async function postReservationsToBackend( reservations ) {
 	currentController = newController;
 
 	if ( ! response.ok ) {
-		console.error( 'Failed to post reservations to backend' );
+		console.error( 'Failed to post reservations to backend' ); // eslint-disable-line no-console
 		return false;
 	}
 
@@ -418,7 +423,7 @@ export async function bootstrapIframe( dom ) {
 	const iframe = getIframeElement( dom );
 
 	if ( ! iframe ) {
-		console.error( 'Iframe element not found.' );
+		console.error( 'Iframe element not found.' ); // eslint-disable-line no-console
 		return false;
 	}
 
@@ -444,6 +449,23 @@ export async function bootstrapIframe( dom ) {
 }
 
 /**
+ * Creates a URL for the reservation cancel request.
+ *
+ * @since 5.25.0
+ *
+ * @return {URL} The URL for the reservation cancel request.
+ */
+export function getReservationCancelRequest() {
+	const requestUrl = new URL( ajaxUrl );
+	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
+	requestUrl.searchParams.set( 'action', ACTION_CLEAR_RESERVATIONS );
+	requestUrl.searchParams.set( 'token', getToken() );
+	requestUrl.searchParams.set( 'postId', postId );
+
+	return requestUrl;
+}
+
+/**
  * Prompts the backend to cancel the reservations.
  *
  * @since 5.16.0
@@ -456,12 +478,7 @@ async function cancelReservationsOnBackend() {
 	await currentController.abort( 'New reservations data' );
 	const newController = new AbortController();
 
-	const requestUrl = new URL( ajaxUrl );
-	requestUrl.searchParams.set( '_ajax_nonce', ajaxNonce );
-	requestUrl.searchParams.set( 'action', ACTION_CLEAR_RESERVATIONS );
-	requestUrl.searchParams.set( 'token', getToken() );
-	requestUrl.searchParams.set( 'postId', postId );
-
+	const requestUrl = getReservationCancelRequest();
 	const response = await fetch( requestUrl.toString(), {
 		signal: newController.signal,
 		method: 'POST',
@@ -470,11 +487,65 @@ async function cancelReservationsOnBackend() {
 	currentController = newController;
 
 	if ( ! response.ok ) {
-		console.error( 'Failed to remove reservations from backend' );
+		console.error( 'Failed to remove reservations from backend' ); // eslint-disable-line no-console
 		return false;
 	}
 
 	return true;
+}
+
+/**
+ * Sends a request to the backend to cancel the reservations using the Beacon API.
+ *
+ * This function is called when the page is unloaded, and it sends a request to the backend to cancel
+ * the reservations made by the user. It uses the Beacon API to ensure that the request is sent even
+ * if the page is being unloaded (closed or navigated away from).
+ *
+ * @since 5.25.0
+ *
+ * @return {void} The request is sent to the backend using the Beacon API.
+ */
+export function cancelReservationsViaBeacon() {
+	if ( ! shouldCancelReservations ) {
+		return;
+	}
+
+	const requestUrl = getReservationCancelRequest();
+	window.navigator.sendBeacon( requestUrl.toString() );
+}
+
+/**
+ * Registers the unload event listener to send a request to cancel reservations
+ * when the page is unloaded.
+ *
+ * @since 5.25.0
+ *
+ * @return {void} The unload event listener is registered.
+ */
+function registerUnloadEvent() {
+	if ( unloadEventRegistered ) {
+		return;
+	}
+
+	window.addEventListener( 'beforeunload', cancelReservationsViaBeacon );
+	unloadEventRegistered = true;
+}
+
+/**
+ * Unregisters the unload event listener to prevent sending a request to cancel
+ * reservations when the page is unloaded.
+ *
+ * @since 5.25.0
+ *
+ * @return {void} The unload event listener is unregistered.
+ */
+function unregisterUnloadEvent() {
+	if ( ! unloadEventRegistered ) {
+		return;
+	}
+
+	window.removeEventListener( 'beforeunload', cancelReservationsViaBeacon );
+	unloadEventRegistered = false;
 }
 
 /**
@@ -515,6 +586,7 @@ export async function cancelReservations( dialogElement ) {
 	await cancelReservationsOnBackend();
 	resetTimer();
 	clearTicketSelection();
+	unregisterUnloadEvent();
 }
 
 /**
@@ -586,9 +658,12 @@ async function proceedToCheckout() {
 	const checkoutHandler = getCheckoutHandlerForProvider( providerClass );
 
 	if ( ! checkoutHandler ) {
-		console.error( `No checkout handler found for provider ${ providerClass }` );
+		console.error( `No checkout handler found for provider ${ providerClass }` ); // eslint-disable-line no-console
 		return;
 	}
+
+	// Ensure the unload event is unregistered to avoid sending a request to cancel reservations.
+	unregisterUnloadEvent();
 
 	const data = new FormData();
 	data.append( 'provider', providerClass );
@@ -610,7 +685,7 @@ async function proceedToCheckout() {
 	const ok = await checkoutHandler( data );
 
 	if ( ! ok ) {
-		console.error( 'Failed to proceed to checkout.' );
+		console.error( 'Failed to proceed to checkout.' ); // eslint-disable-line no-console
 	}
 
 	shouldCancelReservations = true;
@@ -663,6 +738,7 @@ export function addModalEventListeners() {
 
 	modal.on( 'hide', cancelReservations );
 	modal.on( 'destroy', cancelReservations );
+	registerUnloadEvent();
 }
 
 /**

@@ -96,6 +96,7 @@ class Fees extends Abstract_Fees {
 	 * Add fees to the order object properties.
 	 *
 	 * @since 5.21.0
+	 * @since 5.25.0 Added check that the items are an array.
 	 *
 	 * @param array $properties The properties of the order object.
 	 *
@@ -104,7 +105,7 @@ class Fees extends Abstract_Fees {
 	public function attach_fees_to_order_object( array $properties ): array {
 		// There shouldn't be an order with no items, but let's just be safe.
 		$items = $properties['items'] ?? [];
-		if ( empty( $items ) ) {
+		if ( empty( $items ) || ! is_array( $items ) ) {
 			return $properties;
 		}
 

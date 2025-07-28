@@ -75,4 +75,58 @@ class Move_Tickets_TemplateTest extends WPTestCase {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
+	/**
+	 * Test that the posts returned by get_possible_matches() are sorted alphabetically by title.
+	 *
+	 * @covers Tribe__Tickets__Admin__Move_Tickets::get_possible_matches
+	 */
+	public function test_posts_are_sorted_alphabetically_by_title(): void {
+		// Create posts with deliberately out-of-order titles.
+		$post_z = $this->factory->post->create([
+			'post_type' => 'post',
+			'post_title' => 'Zebra Event',
+		]);
+
+		$post_a = $this->factory->post->create([
+			'post_type' => 'post',
+			'post_title' => 'Aardvark Event',
+		]);
+
+		$post_m = $this->factory->post->create([
+			'post_type' => 'post',
+			'post_title' => 'Moose Event',
+		]);
+
+		// The post IDs should be in ascending order (post_z, post_a, post_m)
+		// But the titles should sort as: Aardvark, Moose, Zebra
+
+		// Use reflection to access the protected method.
+		$move_tickets = new Tribe__Tickets__Admin__Move_Tickets();
+		$reflection = new \ReflectionClass($move_tickets);
+		$method = $reflection->getMethod('get_possible_matches');
+		$method->setAccessible(true);
+		
+		$posts = $method->invoke($move_tickets, [
+			'post_type' => 'post',
+			'search_terms' => 'Event',
+		]);
+
+		// Get the keys (titles) in the order they appear in the returned array.
+		$titles_in_order = array_keys($posts);
+
+		// The first title should be "Aardvark Event".
+		$this->assertStringContainsString('Aardvark', $titles_in_order[0], 'First title should contain "Aardvark"');
+
+		// The second title should be "Moose Event".
+		$this->assertStringContainsString('Moose', $titles_in_order[1], 'Second title should contain "Moose"');
+
+		// The third title should be "Zebra Event".
+		$this->assertStringContainsString('Zebra', $titles_in_order[2], 'Third title should contain "Zebra"');
+
+		// Also check that the values (post IDs) correspond to the correct titles.
+		$post_ids_in_order = array_values($posts);
+		$this->assertEquals($post_a, $post_ids_in_order[0], 'First post ID should be "Aardvark Event" post');
+		$this->assertEquals($post_m, $post_ids_in_order[1], 'Second post ID should be "Moose Event" post');
+		$this->assertEquals($post_z, $post_ids_in_order[2], 'Third post ID should be "Zebra Event" post');
+	}
 }

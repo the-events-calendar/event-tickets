@@ -1049,14 +1049,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 3.1.2
 		 * @since 5.8.2 Add the `tec_tickets_attendee_checkin` filter to override the checkin process. Update the method
 		 *        signature to include the `$qr` and `$eveent_id` parameters.
+		 * @since - Add the optional `$details` parameter to be able to set the checkin time and device_id.
 		 *
-		 * @param int       $attendee_id The ID of the attendee that's being checked in.
-		 * @param bool|null $qr          Whether the check-in comes from a QR code scan or not.
-		 * @param int|null  $event_id    The ID of the ticket-able post the Attendee is being checked into.
+		 * @param int                 $attendee_id The ID of the attendee that's being checked in.
+		 * @param bool|null           $qr          Whether the check-in comes from a QR code scan or not.
+		 * @param int|null            $event_id    The ID of the ticket-able post the Attendee is being checked into.
+		 * @param array<string|mixed> $details     Check-out details including timestamp and device_id information.
 		 *
 		 * @return bool Whether the Attendee was checked in or not.
 		 */
-		public function checkin( $attendee_id, $qr = null, $event_id = null ) {
+		public function checkin( $attendee_id, $qr = null, $event_id = null, $details = [] ) {
 			/**
 			 * Allows filtering the Attendee check-in action before the default logic does it.
 			 * Returning a non-null value from this filter will prevent the default logic from running.
@@ -1078,7 +1080,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 			}
 
-			$this->save_checkin_details( $attendee_id, $qr );
+			$this->save_checkin_details( $attendee_id, $qr, $details );
 
 			/**
 			 * Fires a checkin action
@@ -1100,15 +1102,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 5.5.2
 		 * @since 5.5.11 Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
+		 * @since - Add the optional `$details` parameter to be able to set the checkin time and device_id.
 		 *
-		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
-		 * @param mixed $qr              True if the check-in is from a QR code.
+		 * @param int                 $attendee_id The ID of the attendee that's being checked-in.
+		 * @param mixed               $qr          True if the check-in is from a QR code.
+		 * @param array<string|mixed> $details     Check-out details including timestamp and device_id information.
 		 */
-		public function save_checkin_details( $attendee_id, $qr ) {
+		public function save_checkin_details( $attendee_id, $qr, $details = [] ) {
 			$checkin_details = [
-				'date'   => current_time( 'mysql' ),
-				'source' => ! empty( $qr ) ? 'app' : 'site',
-				'author' => get_current_user_id(),
+				'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
+				'source'    => ! empty( $qr ) ? 'app' : 'site',
+				'author'    => get_current_user_id(),
+				'device_id' => $details['device_id'] ?? null,
 			];
 
 			if ( ! empty( $qr ) ) {
@@ -1138,11 +1143,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Mark an attendee as not checked in
 		 *
 		 * @abstract
+		 * @since 5.25.0 - Add optional $app parameter to allow for bulk checkin process when using RSVP.
 		 *
-		 * @param int $attendee_id
+		 * @param int  $attendee_id The ID of the attendee that's being checkedin.
+		 * @param bool $app True if from bulk checkin process.
+		 *
 		 * @return mixed
 		 */
-		public function uncheckin( $attendee_id ) {
+		public function uncheckin( $attendee_id, $app = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 			$context_id = tribe_get_request_var( 'event_ID', null );
 
 			/**

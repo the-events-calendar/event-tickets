@@ -7,21 +7,27 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.3.0
+ * @since 5.25.0 Add hidden class var to avoid undefined warnings.
  *
- * @version 5.3.0
- * @var bool $must_login      [Global] Whether login is required to buy tickets or not.
- * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
+ * @version 5.25.0
+ *
+ * @var Checkout_Shortcode $shortcode [Global] The checkout shortcode instance.
+ * @var bool               $must_login [Global] Whether login is required to buy tickets or not.
+ * @var bool               $payment_element [Global] Whether to load the Stripe Payment Element.
  */
+
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 
 if ( $must_login || ! $payment_element ) {
 	return;
 }
+
 ?>
 <div id="tec-tc-gateway-stripe-payment-element" class="tribe-tickets__commerce-checkout-stripe-payment-element"></div>
-<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button <?php echo $show_address ? 'tribe-common-a11y-hidden' : ''; ?>">
+<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
 	<div class="spinner hidden" id="spinner"></div>
 	<span id="button-text">
 		<?php
