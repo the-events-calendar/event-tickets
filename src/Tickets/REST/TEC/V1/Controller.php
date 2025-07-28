@@ -27,6 +27,10 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return;
+		}
+
 		$this->container->register( Endpoints::class );
 	}
 
@@ -36,6 +40,8 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function unregister(): void {
-		$this->container->get( Endpoints::class )->unregister();
+		if ( $this->container->isBound( Endpoints::class ) ) {
+			$this->container->get( Endpoints::class )->unregister();
+		}
 	}
 }

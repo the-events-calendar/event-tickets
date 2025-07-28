@@ -9,12 +9,9 @@
 
 namespace TEC\Tickets\Commerce\Models;
 
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Ticket;
-use Tribe__Utils__Array as Arr;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Attendee.
@@ -33,24 +30,26 @@ class Ticket_Model extends Base {
 			$ticket_data   = tribe( Ticket::class );
 			$ticket_object = $ticket_data->get_ticket( $this->post->ID );
 
+			$sale_start_date = get_post_meta( $ticket_object->ID, Ticket::$sale_price_start_date_key, true );
+			$sale_end_date   = get_post_meta( $ticket_object->ID, Ticket::$sale_price_end_date_key, true );
+			$sale_price      = get_post_meta( $ticket_object->ID, Ticket::$sale_price_key, true );
+
 			$properties = [
-				'description'      => $ticket_object->description,
-				'name'             => $ticket_object->name,
-				'on_sale'          => $ticket_object->on_sale,
-				'sale_price'       => (float) $ticket_data->get_sale_price( $ticket_object->ID ),
-				'price'            => (float) $ticket_object->price,
-				'regular_price'    => (float) $ticket_data->get_regular_price( $ticket_object->ID ),
-				'value'            => $ticket_object->value,
-				'provider_class'   => $ticket_object->provider_class,
-				'admin_link'       => $ticket_object->admin_link,
-				'show_description' => $ticket_object->show_description,
-				'start_date'       => $ticket_object->start_date,
-				'end_date'         => $ticket_object->end_date,
-				'start_time'       => $ticket_object->start_time,
-				'end_time'         => $ticket_object->end_time,
-				'manage_stock'     => $ticket_object->managing_stock(),
-				'event_id'         => (int) $ticket_object->get_event_id(),
-				'stock'            => $ticket_object->stock(),
+				'description'           => $ticket_object->description,
+				'on_sale'               => $ticket_object->on_sale,
+				'sale_price'            => $sale_price ? (float) $sale_price : null,
+				'price'                 => (float) $ticket_object->price,
+				'regular_price'         => (float) $ticket_data->get_regular_price( $ticket_object->ID ),
+				'show_description'      => $ticket_object->show_description,
+				'start_date'            => $ticket_object->start_date . ' ' . $ticket_object->start_time,
+				'end_date'              => $ticket_object->end_date . ' ' . $ticket_object->end_time,
+				'sale_price_start_date' => $ticket_object->get_date( $sale_start_date ),
+				'sale_price_end_date'   => $ticket_object->get_date( $sale_end_date ),
+				'event_id'              => (int) $ticket_object->get_event_id(),
+				'manage_stock'          => $ticket_object->managing_stock(),
+				'stock'                 => $ticket_object->stock(),
+				'sold'                  => $ticket_object->qty_sold(),
+				'sku'                   => $ticket_object->sku,
 			];
 		} catch ( \Exception $e ) {
 			return [];
@@ -68,23 +67,21 @@ class Ticket_Model extends Base {
 	 */
 	public static function get_properties_to_add(): array {
 		$properties = [
-			'description'      => true,
-			'name'             => true,
-			'on_sale'          => true,
-			'sale_price'       => true,
-			'price'            => true,
-			'regular_price'    => true,
-			'value'            => true,
-			'provider_class'   => true,
-			'admin_link'       => true,
-			'show_description' => true,
-			'start_date'       => true,
-			'end_date'         => true,
-			'start_time'       => true,
-			'end_time'         => true,
-			'manage_stock'     => true,
-			'event_id'         => true,
-			'stock'            => true,
+			'description'           => true,
+			'on_sale'               => true,
+			'sale_price'            => true,
+			'price'                 => true,
+			'regular_price'         => true,
+			'show_description'      => true,
+			'start_date'            => true,
+			'end_date'              => true,
+			'sale_price_start_date' => true,
+			'sale_price_end_date'   => true,
+			'event_id'              => true,
+			'manage_stock'          => true,
+			'stock'                 => true,
+			'sold'                  => true,
+			'sku'                   => true,
 		];
 
 		/**

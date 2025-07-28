@@ -60,11 +60,25 @@ class Ticket_Definition extends Definition {
 		$properties = new PropertiesCollection();
 
 		$properties[] = (
-			new Positive_Integer(
-				'event_id',
-				fn() => __( 'The ID of the event this ticket is associated with', 'event-tickets' ),
+			new Text(
+				'description',
+				fn() => __( 'The description of the ticket', 'event-tickets' ),
 			)
-		)->set_example( 123 );
+		)->set_example( 'This is a description of the ticket' );
+
+		$properties[] = (
+			new Boolean(
+				'on_sale',
+				fn() => __( 'Whether the ticket is on sale', 'event-tickets' ),
+			)
+		)->set_example( true )->set_nullable( true );
+
+		$properties[] = (
+			new Number(
+				'sale_price',
+				fn() => __( 'The sale price of the ticket', 'event-tickets' ),
+			)
+		)->set_example( 20.00 )->set_nullable( true );
 
 		$properties[] = (
 			new Number(
@@ -75,10 +89,31 @@ class Ticket_Definition extends Definition {
 
 		$properties[] = (
 			new Number(
-				'sale_price',
-				fn() => __( 'The sale price of the ticket', 'event-tickets' ),
+				'regular_price',
+				fn() => __( 'The regular price of the ticket', 'event-tickets' ),
 			)
-		)->set_example( 20.00 )->set_nullable( true );
+		)->set_example( 25.00 );
+
+		$properties[] = (
+			new Boolean(
+				'show_description',
+				fn() => __( 'Whether to show the ticket description', 'event-tickets' ),
+			)
+		)->set_example( true );
+
+		$properties[] = (
+			new Date_Time(
+				'start_date',
+				fn() => __( 'The start sale date of the ticket', 'event-tickets' ),
+			)
+		)->set_example( '2025-05-01 00:00:00' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' )->set_nullable( true );
+
+		$properties[] = (
+			new Date_Time(
+				'end_date',
+				fn() => __( 'The end sale date of the ticket', 'event-tickets' ),
+			)
+		)->set_example( '2025-06-04 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' )->set_nullable( true );
 
 		$properties[] = (
 			new Date_Time(
@@ -95,13 +130,11 @@ class Ticket_Definition extends Definition {
 		)->set_example( '2025-06-30 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' )->set_nullable( true );
 
 		$properties[] = (
-			new Text(
-				'stock_status',
-				fn() => __( 'The stock status of the ticket', 'event-tickets' ),
-				null,
-				[ 'instock', 'outofstock' ]
+			new Positive_Integer(
+				'event_id',
+				fn() => __( 'The ID of the event this ticket is associated with', 'event-tickets' ),
 			)
-		)->set_example( 'instock' );
+		)->set_example( 123 );
 
 		$properties[] = (
 			new Boolean(
@@ -118,33 +151,11 @@ class Ticket_Definition extends Definition {
 		)->set_example( 100 )->set_nullable( true );
 
 		$properties[] = (
-			new Boolean(
-				'show_description',
-				fn() => __( 'Whether to show the ticket description', 'event-tickets' ),
-			)
-		)->set_example( true );
-
-		$properties[] = (
 			new Text(
 				'type',
 				fn() => __( 'The type of ticket', 'event-tickets' ),
 			)
 		)->set_example( 'default' );
-
-		$properties[] = (
-			new Date_Time(
-				'start_date',
-				fn() => __( 'The start sale date of the ticket', 'event-tickets' ),
-			)
-		)->set_example( '2025-05-01 00:00:00' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' )->set_nullable( true );
-
-		$properties[] = (
-			new Date_Time(
-				'end_date',
-				fn() => __( 'The end sale date of the ticket', 'event-tickets' ),
-			)
-		)->set_example( '2025-06-04 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' )->set_nullable( true );
-
 
 		$properties[] = (
 			new Positive_Integer(
@@ -154,32 +165,11 @@ class Ticket_Definition extends Definition {
 		)->set_example( 42 );
 
 		$properties[] = (
-			new Positive_Integer(
-				'available',
-				fn() => __( 'The number of tickets available', 'event-tickets' ),
-			)
-		)->set_example( 58 );
-
-		$properties[] = (
 			new Text(
 				'sku',
 				fn() => __( 'The SKU of the ticket', 'event-tickets' ),
 			)
 		)->set_example( 'TICKET-123' )->set_nullable( true );
-
-		$properties[] = (
-			new Text(
-				'provider',
-				fn() => __( 'The ticket provider', 'event-tickets' ),
-			)
-		)->set_example( 'Tribe__Tickets__Commerce__Tickets_Commerce' );
-
-		$properties[] = (
-			new Text(
-				'provider_class',
-				fn() => __( 'The ticket provider class', 'event-tickets' ),
-			)
-		)->set_example( 'TEC\Tickets\Commerce' );
 
 		$documentation = [
 			'allOf' => [
