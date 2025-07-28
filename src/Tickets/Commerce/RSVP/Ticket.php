@@ -146,11 +146,11 @@ class Ticket {
 		}
 
 		// Create ticket object with ID.
-		$ticket = (object) ['ID' => $ticket_id];
+		$ticket = (object) [ 'ID' => $ticket_id ];
 
 		// Format meta fields for save_meta method - it expects 'tribe-tickets-input' key.
 		$formatted_data = [
-			'tribe-tickets-input' => $meta_fields
+			'tribe-tickets-input' => $meta_fields,
 		];
 
 		// Call save_meta with correct parameters.
