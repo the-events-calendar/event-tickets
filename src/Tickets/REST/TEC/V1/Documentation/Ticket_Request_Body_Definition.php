@@ -93,15 +93,6 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( '2025-06-30 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' );
 
 		$properties[] = (
-			new Text(
-				'stock_status',
-				fn() => __( 'The stock status of the ticket', 'event-tickets' ),
-				null,
-				[ 'instock', 'outofstock' ]
-			)
-		)->set_example( 'instock' );
-
-		$properties[] = (
 			new Boolean(
 				'manage_stock',
 				fn() => __( 'Whether stock is being managed for this ticket', 'event-tickets' ),

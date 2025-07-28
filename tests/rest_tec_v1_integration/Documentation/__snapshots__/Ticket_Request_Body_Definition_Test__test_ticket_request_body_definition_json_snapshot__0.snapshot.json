@@ -37,15 +37,6 @@
                     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$",
                     "example": "2025-06-30 23:59:59"
                 },
-                "stock_status": {
-                    "description": "The stock status of the ticket",
-                    "type": "string",
-                    "enum": [
-                        "instock",
-                        "outofstock"
-                    ],
-                    "example": "instock"
-                },
                 "manage_stock": {
                     "description": "Whether stock is being managed for this ticket",
                     "type": "boolean",
