@@ -159,6 +159,7 @@ class Coupons extends Controller_Contract {
 	 * Filter the properties of the order object to add coupons.
 	 *
 	 * @since 5.21.0
+	 * @since 5.25.0 Added check that the items are an array.
 	 *
 	 * @param array $properties The properties of the order object.
 	 *
@@ -167,7 +168,7 @@ class Coupons extends Controller_Contract {
 	public function attach_coupons_to_order_object( array $properties ): array {
 		// We shouldn't have an order with no items, but let's just be safe.
 		$items = $properties['items'] ?? [];
-		if ( empty( $items ) ) {
+		if ( empty( $items ) || ! is_array( $items ) ) {
 			return $properties;
 		}
 

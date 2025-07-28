@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce;
 
 use \TEC\Common\Contracts\Service_Provider;
+use Tribe__Tickets__Main;
 
 /**
  * Class Assets.
@@ -24,22 +25,11 @@ class Assets extends Service_Provider {
 	 * Binds and sets up implementations.
 	 *
 	 * @since 5.1.6
+	 * @since 5.25.0 Removed unused tickets-commerce-settings js.
 	 */
 	public function register() {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
-
-		tec_asset(
-			$tickets_main,
-			'tribe-tickets-admin-commerce-settings',
-			'admin/tickets-commerce-settings.js',
-			[
-				'jquery',
-				'tribe-dropdowns',
-				'tribe-select2',
-			],
-			'admin_enqueue_scripts'
-		);
 
 		// Tickets Commerce main styles.
 		tec_asset(

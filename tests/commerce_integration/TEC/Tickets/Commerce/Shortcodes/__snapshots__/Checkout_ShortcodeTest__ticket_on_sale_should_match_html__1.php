@@ -41,7 +41,7 @@
 	<div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
 	Test TC ticket for {{page_id}}</div>
 
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
+			<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
@@ -64,10 +64,10 @@
 	</button>
 </div>
 
-	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id2}}"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
+		<div id="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id2}}"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
 	Test TC ticket description for {{page_id}}
 	</div>
-
+		
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
@@ -150,9 +150,27 @@
 
 </div>
 				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tec-tickets__admin-settings-tickets-commerce-gateway-connected-resync-button-icon" >
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+	<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first" 	aria-hidden="true"
+	viewBox="0 0 15 15"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<circle cx="7.5" cy="7.5" r="7.5"/>
+</svg>
+	<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second" 	aria-hidden="true"
+	viewBox="0 0 15 15"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<circle cx="7.5" cy="7.5" r="7.5"/>
+</svg>
+	<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third" 	aria-hidden="true"
+	viewBox="0 0 15 15"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<circle cx="7.5" cy="7.5" r="7.5"/>
+</svg>
 </div>
 		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>

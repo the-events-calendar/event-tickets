@@ -825,6 +825,7 @@ class Ticket extends Ticket_Data {
 	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
+	 * @since 5.25.0 Removed the increment of deleted attendees count, it is handled in attendee deletion method.
 	 *
 	 * @param int|WP_Post|null $event_id   The event ID.
 	 * @param int|WP_Post|null $ticket_id  The ticket ID.
@@ -832,12 +833,12 @@ class Ticket extends Ticket_Data {
 	 * @return bool
 	 */
 	public function delete( $event_id, $ticket_id ) {
-		// Ensure we know the event and product IDs (the event ID may not have been passed in)
+		// Ensure we know the event and product IDs (the event ID may not have been passed in).
 		if ( empty( $event_id ) ) {
 			$event_id = get_post_meta( $ticket_id, Attendee::$event_relation_meta_key, true );
 		}
 
-		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event)
+		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event).
 		if ( empty( $event_id ) ) {
 			return false;
 		}
@@ -846,23 +847,22 @@ class Ticket extends Ticket_Data {
 
 		// @todo: should deleting an attendee replenish a ticket stock?
 
-		// Store name so we can still show it in the attendee list
+		// Store name so we can still show it in the attendee list.
 		$attendees      = tribe( Module::class )->get_attendees_by_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
-
+		
 		foreach ( (array) $attendees as $attendee ) {
 			if ( $attendee['product_id'] == $ticket_id ) {
 				update_post_meta( $attendee['attendee_id'], Attendee::$deleted_ticket_meta_key, esc_html( $post_to_delete->post_title ) );
 			}
 		}
 
-		// Try to kill the actual ticket/attendee post
+		// Delete the ticket/attendee post.
 		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
-
-		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+		
 		do_action( 'tec_tickets_commerce_ticket_deleted', $ticket_id, $event_id, $product_id );
 		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 

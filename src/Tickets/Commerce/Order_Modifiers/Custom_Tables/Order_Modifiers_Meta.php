@@ -23,9 +23,11 @@ class Order_Modifiers_Meta extends Table {
 	/**
 	 * @since 5.18.0
 	 *
+	 * @since 5.25.0 Removed the `updated_at` column.
+	 *
 	 * @var string|null The version number for this schema definition.
 	 */
-	public const SCHEMA_VERSION = '1.0.0';
+	public const SCHEMA_VERSION = '1.1.0';
 
 	/**
 	 * @since 5.18.0
@@ -59,6 +61,7 @@ class Order_Modifiers_Meta extends Table {
 	 * An array of all the columns in the table.
 	 *
 	 * @since 5.20.0
+	 * @since 5.25.0 Removed the `updated_at` column.
 	 *
 	 * @var string[]
 	 */
@@ -70,7 +73,6 @@ class Order_Modifiers_Meta extends Table {
 			'meta_value',
 			'priority',
 			'created_at',
-			'updated_at',
 		];
 	}
 
@@ -79,6 +81,7 @@ class Order_Modifiers_Meta extends Table {
 	 * by the `dbDelta` function.
 	 *
 	 * @since 5.18.0
+	 * @since 5.25.0 Removed the `updated_at` column.
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
@@ -96,7 +99,6 @@ class Order_Modifiers_Meta extends Table {
 				`meta_value` TEXT NOT NULL,
 				`priority` INT NOT NULL DEFAULT 0,
 				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				`updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";

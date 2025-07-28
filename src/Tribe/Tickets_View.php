@@ -36,6 +36,12 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'parse_request', [ $myself, 'maybe_regenerate_rewrite_rules' ] );
 		add_filter( 'tribe_events_views_v2_bootstrap_should_display_single', [ $myself, 'intercept_views_v2_single_display' ], 15, 4 );
 
+		// Prevent canonical redirect from stripping tribe-edit-orders parameter.
+		add_filter( 'redirect_canonical', [ $myself, 'preserve_tickets_parameter_in_canonical_redirect' ] );
+
+		// Handle tickets URLs consistently.
+		add_filter( 'request', [ $myself, 'handle_tickets_request' ] );
+
 		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
 			add_action( 'tribe_events_pre_rewrite', [ $myself, 'add_permalink' ] );
@@ -245,34 +251,41 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.7.1
 	 * @since 5.8.2 Removed the $is_event_page param.
+	 * @since 5.25.0 Added support for pretty permalinks.
 	 *
 	 * @param int $event_id event_id The Event ID we're checking.
 	 *
 	 * @return string      The URL to the tickets page.
 	 */
 	public function get_tickets_page_url( int $event_id ): string {
-		$has_plain_permalink = '' === get_option( 'permalink_structure' );
-		$event_url           = get_permalink( $event_id );
+		$event_url = untrailingslashit( get_permalink( $event_id ) );
 
+		// Bail early if there is no event URL.
 		if ( empty( $event_url ) ) {
 			return '';
 		}
 
-		$post_type     = get_post_type( $event_id );
-		$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
+		$has_plain_permalink = '' === get_option( 'permalink_structure' );
+		$post_type           = get_post_type( $event_id );
+		$is_event_page       = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
 
-		// Is on the Event post type.
+		// Handle event post types first and return early.
 		if ( $is_event_page ) {
-			$link = $has_plain_permalink
-				? add_query_arg( 'eventDisplay', 'tickets', untrailingslashit( $event_url ) )
+			return $has_plain_permalink
+				? add_query_arg( 'eventDisplay', 'tickets', $event_url )
 				: trailingslashit( $event_url ) . 'tickets';
-		} else {
-			$link = $has_plain_permalink
-				? add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) )
-				: home_url( '/tickets/' . $event_id );
 		}
 
-		return $link;
+		// Handle plain permalinks for non-event posts.
+		if ( $has_plain_permalink ) {
+			return add_query_arg( 'tribe-edit-orders', 1, ( $event_url ) );
+		}
+
+		// Handle pretty permalinks for non-event posts.
+		$bases        = $this->add_rewrite_base_slug();
+		$tickets_slug = $bases['tickets'][0] ?? 'tickets';
+		
+		return home_url( untrailingslashit( "{$tickets_slug}/{$event_id}" ) );
 	}
 
 	/**
@@ -394,7 +407,8 @@ class Tribe__Tickets__Tickets_View {
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
 	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
-	 *
+	 * @since 5.25.0 Added filter to preserve tribe-edit-orders parameter in canonical redirect.
+	 * 
 	 * @param string $content Normally the_content of a post.
 	 *
 	 * @return string
@@ -405,7 +419,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// Prevents firing more than it needs to outside of the loop.
 		if (
-			! is_single()
+			! is_singular( Tribe__Tickets__Main::instance()->post_types() )
 			|| ! in_the_loop()
 			|| ! is_main_query()
 			|| (
@@ -1449,5 +1463,76 @@ class Tribe__Tickets__Tickets_View {
 			'link_label'  => $link_label,
 			'link'        => $this->get_tickets_page_url( $event_id ),
 		];
+	}
+
+	/**
+	 * Preserve pretty URL format in canonical redirect for tickets pages.
+	 *
+	 * @since 5.25.0
+	 *
+	 * @param string $redirect_url The URL to redirect to.
+	 * @return string The URL to redirect to.
+	 */
+	public function preserve_tickets_parameter_in_canonical_redirect( $redirect_url ) {
+		// Bail early if no redirect URL or no tribe-edit-orders parameter.
+		if ( empty( $redirect_url ) || ! get_query_var( 'tribe-edit-orders' ) ) {
+			return $redirect_url;
+		}
+
+		$post_id = get_query_var( 'p' );
+
+		// Bail early if no post ID.
+		if ( ! $post_id ) {
+			// Fallback: preserve the parameter in query string format.
+			return add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		}
+
+		// Check if we have pretty permalinks enabled.
+		$has_plain_permalink = '' === get_option( 'permalink_structure' );
+
+		// Bail early if using plain permalinks - use query string format.
+		if ( $has_plain_permalink ) {
+			return add_query_arg( 'tribe-edit-orders', 1, $redirect_url );
+		}
+
+		// Use WordPress rewrite API to generate the proper URL.
+		return $this->get_tickets_page_url( $post_id );
+	}
+
+	/**
+	 * Handle tickets page requests to prevent canonical redirect issues.
+	 *
+	 * @since 5.25.0
+	 *
+	 * @param array $query_vars The query variables.
+	 * @return array The modified query variables.
+	 */
+	public function handle_tickets_request( $query_vars ) {
+		// Bail early if this is not a tickets page request.
+		if ( empty( $query_vars['tribe-edit-orders'] ) ) {
+			return $query_vars;
+		}
+
+		// Bail early if there's no post ID.
+		if ( ! isset( $query_vars['p'] ) || ! $query_vars['p'] ) {
+			return $query_vars;
+		}
+
+		$post = get_post( $query_vars['p'] );
+
+		// Bail early if no post is found.
+		if ( ! $post ) {
+			return $query_vars;
+		}
+
+		// Force the query to be treated as a single post.
+		$query_vars['post_type'] = $post->post_type;
+
+		if ( 'page' === $post->post_type ) {
+			$query_vars['page_id'] = $post->ID;
+			unset( $query_vars['p'] );
+		}
+		
+		return $query_vars;
 	}
 }

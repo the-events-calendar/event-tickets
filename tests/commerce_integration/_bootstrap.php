@@ -8,6 +8,8 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 
 putenv( 'TEC_DISABLE_LOGGING=1' );
 
+define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+
 // Let's make sure to set rewrite rules.
 global $wp_rewrite;
 $wp_rewrite->permalink_structure = '/%postname%/';

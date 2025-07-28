@@ -111,7 +111,6 @@ let targetDom = document;
  *
  * @since 5.16.0
  *
- *
  * @type {HTMLElement[]} the list of checkout controls that are being watched.
  */
 let watchedCheckoutControls = [];

@@ -41,6 +41,13 @@ class Attendee_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_filtering_attendees_by_post(): void {
+		// Set Tickets Commerce to enabled.
+		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+		
+		// Verify Tickets Commerce is enabled.
+		$this->assertTrue( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be enabled.' );
+		
 		$post_1   = static::factory()->post->create();
 		$post_2   = static::factory()->post->create();
 		$post_3   = static::factory()->post->create();
