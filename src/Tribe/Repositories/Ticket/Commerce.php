@@ -1,4 +1,5 @@
 <?php
+use TEC\Tickets\Commerce\Ticket;
 
 /**
  * The ORM/Repository class for Tribe Commerce (PayPal) tickets.
@@ -6,7 +7,6 @@
  * @since 4.10.6
  */
 class Tribe__Tickets__Repositories__Ticket__Commerce extends Tribe__Tickets__Ticket_Repository {
-
 	/**
 	 * {@inheritdoc}
 	 */
