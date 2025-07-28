@@ -6,6 +6,7 @@
  */
 
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
+use TEC\Tickets\Commerce\Module;
 
 
 // Don't load directly
@@ -806,6 +807,8 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 
 	/**
 	 * Gets the ticket provider class when passed an id.
+	 * 
+	 * @since 5.25.0 Added check to return false if the provider is Tickets Commerce but the module is disabled.
 	 *
 	 * @param int|string $id An RSVP order key, order id, attendee id, ticket id, or product id.
 	 *
@@ -814,8 +817,14 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	function tribe_tickets_get_ticket_provider( $id ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
+		$provider = $data_api->get_ticket_provider( $id );
+		
+		// Skip if the provider is Tickets Commerce but the module is disabled.
+		if ( $provider instanceof Module && ! tec_tickets_commerce_is_enabled() ) {
+			$provider = false;
+		}
 
-		return $data_api->get_ticket_provider( $id );
+		return $provider;
 	}
 }
 

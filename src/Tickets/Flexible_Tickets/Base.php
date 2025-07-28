@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Base.
@@ -279,26 +280,19 @@ class Base extends Controller {
 			)
 		);
 
-		// Why not use the `$attendee_ids` in this query? To avoid overflowing the `max_packet_size` limit.
-		$updated = $wpdb->query(
-			$wpdb->prepare(
+		$attendee_ids_imploded = implode( ',', $attendee_ids );
+
+		$updated = DB::query(
+			DB::prepare(
 				"UPDATE {$wpdb->postmeta} new_value
-				JOIN {$wpdb->posts} p
-					ON p.ID = new_value.post_id
-					AND p.post_type in ({$post_types})
-				JOIN {$wpdb->postmeta} old_value
-					ON old_value.post_id = new_value.post_id
-					AND new_value.meta_key IN ({$meta_keys})
-					AND old_value.meta_key = new_value.meta_key
-				SET new_value.meta_value = (old_value.meta_value + %d)
-				WHERE old_value.meta_value > %d
-				AND old_value.meta_value < %d
-				ORDER BY old_value.post_id DESC
-				LIMIT %d",
+				SET new_value.meta_value = (new_value.meta_value + %d)
+				WHERE new_value.meta_value > %d
+				AND new_value.meta_value < %d
+				AND new_value.meta_key IN ({$meta_keys})
+				AND new_value.post_id IN ({$attendee_ids_imploded})",
 				$new_value - $old_value,
 				$old_value,
 				$new_value,
-				$batch_size
 			)
 		);
 
