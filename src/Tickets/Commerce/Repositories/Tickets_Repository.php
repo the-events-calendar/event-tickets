@@ -72,9 +72,12 @@ class Tickets_Repository extends Tribe__Repository {
 			]
 		);
 
-		$this->schema = array_merge( $this->schema, [
-			'event' => [ $this, 'filter_by_event' ],
-		] );
+		$this->schema = array_merge(
+			$this->schema,
+			[
+				'event' => [ $this, 'filter_by_event' ],
+			],
+		);
 
 		$this->add_simple_meta_schema_entry( 'start_date', Ticket::START_DATE_META_KEY );
 		$this->add_simple_meta_schema_entry( 'end_date', Ticket::END_DATE_META_KEY );

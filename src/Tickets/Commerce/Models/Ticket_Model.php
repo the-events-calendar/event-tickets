@@ -27,6 +27,19 @@ class Ticket_Model extends Base {
 	 */
 	protected function build_properties( $filter ) {
 		try {
+			/**
+			 * Filters the properties to add to a ticket model in the REST API.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<string,mixed> $properties Properties to add to the model.
+			 */
+			$properties = apply_filters( 'tec_tickets_pre_build_ticket_properties', [], $this->post, $filter );
+
+			if ( ! empty( $properties ) ) {
+				return $properties;
+			}
+
 			$ticket_data   = tribe( Ticket::class );
 			$ticket_object = $ticket_data->get_ticket( $this->post->ID );
 
