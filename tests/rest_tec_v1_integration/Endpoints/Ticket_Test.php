@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Ticket as Ticket_Model;
 use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use WP_Post;
 
 class Ticket_Test extends Post_Entity_REST_Test_Case {
 	use Ticket_Maker;
@@ -54,8 +55,8 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		[ $ticketable_posts, $tickets ] = $this->create_test_data();
 
 		// Get the ticket post object directly
-		$ticket_post = get_post( tec_tc_get_ticket( $tickets[0] ) );
-		$this->assertInstanceOf( \WP_Post::class, $ticket_post, 'Ticket post should exist' );
+		$ticket_post = tec_tc_get_ticket( $tickets[0] );
+		$this->assertInstanceOf( WP_Post::class, $ticket_post, 'Ticket post should exist' );
 		$this->assertEquals( Ticket_Model::POSTTYPE, $ticket_post->post_type, 'Post should be of ticket type' );
 
 		$data = $this->endpoint->get_formatted_entity( $ticket_post );

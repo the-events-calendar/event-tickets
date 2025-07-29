@@ -29,6 +29,6 @@ trait With_Tickets_ORM {
 	 * @return Tribe__Repository__Interface The repository instance.
 	 */
 	public function get_orm(): Tribe__Repository__Interface {
-		return tribe_tickets( 'tickets-commerce' );
+		return tec_tc_tickets();
 	}
 }

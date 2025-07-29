@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Tests\REST\TEC\V1\Endpoints;
 
 use TEC\Tickets\REST\TEC\V1\Endpoints\Tickets;
-use Closure;
 
 class Tickets_Test extends Ticket_Test {
 	protected $endpoint_class = Tickets::class;
