@@ -127,17 +127,6 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 					?>
 				</h4>
 				<?php
-				/**
-				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
-				 * section
-				 *
-				 * @since TBD
-				 *
-				 * @param int Post ID
-				 * @param int Ticket ID
-				 */
-				do_action( 'tec_event_tickets_rsvp_post_options', $post_id, $rsvp_id );
-
 				$this->template(
 					[ 'components', 'switch-field' ],
 					[
@@ -148,6 +137,17 @@ $ticket_type = $ticket_type ?? 'tc-rsvp';
 						'value'   => esc_attr( $show_not_going ),
 					]
 				);
+
+				/**
+				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
+				 * section
+				 *
+				 * @since TBD
+				 *
+				 * @param int Post ID
+				 * @param int Ticket ID
+				 */
+				do_action( 'tec_event_tickets_rsvp_post_options', $post_id, $rsvp_id );
 				?>
 			</div>
 			<div class="ticket_bottom">

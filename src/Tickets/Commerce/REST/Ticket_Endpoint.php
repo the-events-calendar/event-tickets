@@ -144,12 +144,31 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
 		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', 'tc-rsvp' );
 
-		// Handle IAC (Individual Attendee Collection) settings.
-		$args['ticket_iac']  = Arr::get( $request_params, 'ticket_iac', '' );
-		$args['meta_fields'] = Arr::get( $request_params, 'meta_fields', [] );
+		/**
+		 * Allow for processing additional RSVP fields before saving.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args           The arguments array being prepared for ticket creation.
+		 * @param array $request_params The original request parameters.
+		 * @param int   $post_id        The post ID.
+		 */
+		$args = apply_filters( 'tec_tickets_rsvp_process_additional_fields', $args, $request_params, $post_id );
 
 		$module  = tribe( Module::class );
 		$rsvp_id = $module->ticket_add( $post_id, $args );
+
+		/**
+		 * Allow for additional processing after RSVP ticket is created.
+		 *
+		 * @since TBD
+		 *
+		 * @param int   $rsvp_id        The created RSVP ID.
+		 * @param int   $post_id        The post ID.
+		 * @param array $args           The arguments used to create the ticket.
+		 * @param array $request_params The original request parameters.
+		 */
+		do_action( 'tec_tickets_rsvp_after_save', $rsvp_id, $post_id, $args, $request_params );
 
 		if ( $rsvp_id ) {
 			$response['success']   = true;
