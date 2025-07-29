@@ -33,29 +33,29 @@ class Ticket extends Base {
 		try {
 			$cache_this = $this->get_caching_callback( $filter );
 
-			$post_id = $this->post->ID;
+			$post_id   = $this->post->ID;
 			$post_meta = get_post_meta( $post_id );
 
-			// Get ticket-specific meta data
-			$price = Arr::get( $post_meta, [ Ticket_CPT::$price_meta_key, 0 ], 0 );
-			$sale_price = Arr::get( $post_meta, [ '_sale_price', 0 ], null );
-			$stock = Arr::get( $post_meta, [ Ticket_CPT::$stock_meta_key, 0 ], null );
-			$stock_mode = Arr::get( $post_meta, [ Ticket_CPT::$stock_mode_meta_key, 0 ], null );
-			$capacity = Arr::get( $post_meta, [ '_capacity', 0 ], null );
-			$sales = Arr::get( $post_meta, [ Ticket_CPT::$sales_meta_key, 0 ], 0 );
-			$sku = Arr::get( $post_meta, [ Ticket_CPT::$sku_meta_key, 0 ], '' );
+			// Get ticket-specific meta data.
+			$price            = Arr::get( $post_meta, [ Ticket_CPT::$price_meta_key, 0 ], 0 );
+			$sale_price       = Arr::get( $post_meta, [ '_sale_price', 0 ], null );
+			$stock            = Arr::get( $post_meta, [ Ticket_CPT::$stock_meta_key, 0 ], null );
+			$stock_mode       = Arr::get( $post_meta, [ Ticket_CPT::$stock_mode_meta_key, 0 ], null );
+			$capacity         = Arr::get( $post_meta, [ '_capacity', 0 ], null );
+			$sales            = Arr::get( $post_meta, [ Ticket_CPT::$sales_meta_key, 0 ], 0 );
+			$sku              = Arr::get( $post_meta, [ Ticket_CPT::$sku_meta_key, 0 ], '' );
 			$show_description = Arr::get( $post_meta, [ Ticket_CPT::$show_description_meta_key, 0 ], 'yes' );
-			$event_id = Arr::get( $post_meta, [ Ticket_CPT::$event_relation_meta_key, 0 ], null );
+			$event_id         = Arr::get( $post_meta, [ Ticket_CPT::$event_relation_meta_key, 0 ], null );
 			
-			// Get sale dates
+			// Get sale dates.
 			$start_date = Arr::get( $post_meta, [ '_ticket_start_date', 0 ], null );
 			$start_time = Arr::get( $post_meta, [ '_ticket_start_time', 0 ], null );
-			$end_date = Arr::get( $post_meta, [ '_ticket_end_date', 0 ], null );
-			$end_time = Arr::get( $post_meta, [ '_ticket_end_time', 0 ], null );
+			$end_date   = Arr::get( $post_meta, [ '_ticket_end_date', 0 ], null );
+			$end_time   = Arr::get( $post_meta, [ '_ticket_end_time', 0 ], null );
 
-			// Combine date and time for sale start/end
+			// Combine date and time for sale start/end.
 			$sale_start = null;
-			$sale_end = null;
+			$sale_end   = null;
 			
 			if ( $start_date ) {
 				$sale_start = $start_time ? $start_date . ' ' . $start_time : $start_date . ' 00:00:00';
@@ -65,23 +65,23 @@ class Ticket extends Base {
 				$sale_end = $end_time ? $end_date . ' ' . $end_time : $end_date . ' 23:59:59';
 			}
 
-			// Calculate availability
-			$now = Dates::build_date_object( 'now' );
-			$is_available = true;
+			// Calculate availability.
+			$now                  = Dates::build_date_object( 'now' );
+			$is_available         = true;
 			$availability_message = '';
 			
 			if ( $sale_start && Dates::build_date_object( $sale_start ) > $now ) {
-				$is_available = false;
+				$is_available         = false;
 				$availability_message = __( 'Ticket sales have not started yet', 'event-tickets' );
 			} elseif ( $sale_end && Dates::build_date_object( $sale_end ) < $now ) {
-				$is_available = false;
+				$is_available         = false;
 				$availability_message = __( 'Ticket sales have ended', 'event-tickets' );
 			} elseif ( $stock !== null && $stock <= 0 ) {
-				$is_available = false;
+				$is_available         = false;
 				$availability_message = __( 'Sold out', 'event-tickets' );
 			}
 
-			// Build properties array
+			// Build properties array.
 			$properties = [
 				'price'                => $price,
 				'sale_price'           => $sale_price,

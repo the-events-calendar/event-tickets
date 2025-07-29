@@ -1,5 +1,11 @@
 <?php
-use TEC\Tickets\Commerce\Ticket;
+/**
+ * The ORM/Repository class for Tribe Commerce (PayPal) tickets.
+ *
+ * @since 4.10.6
+ *
+ * @package Tribe\Repositories\Ticket
+ */
 
 /**
  * The ORM/Repository class for Tribe Commerce (PayPal) tickets.
