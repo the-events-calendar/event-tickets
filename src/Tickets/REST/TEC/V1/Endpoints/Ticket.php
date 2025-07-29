@@ -29,6 +29,7 @@ use TEC\Tickets\REST\TEC\V1\Traits\With_Tickets_ORM;
 use TEC\Common\REST\TEC\V1\Traits\Update_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Delete_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Read_Entity_Response;
+use InvalidArgumentException;
 
 /**
  * Single ticket endpoint for the TEC REST API V1.
@@ -158,8 +159,8 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Retrieve a Ticket', 'event-tickets' ),
 			fn() => __( 'Retrieve a ticket by ID', 'event-tickets' ),
-			'getTicket',
-			[ tribe( Tickets_Tag::class ) ],
+			$this->get_operation_id( 'read' ),
+			$this->get_tags(),
 			$this->read_path_args(),
 			$this->read_args()
 		);
@@ -217,8 +218,8 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Update a Ticket', 'event-tickets' ),
 			fn() => __( 'Update a ticket by ID', 'event-tickets' ),
-			'updateTicket',
-			[ tribe( Tickets_Tag::class ) ],
+			$this->get_operation_id( 'update' ),
+			$this->get_tags(),
 			$path_collection,
 			null,
 			$collection->set_description_provider( fn() => __( 'The ticket data to update.', 'event-tickets' ) )->set_required( true )->set_example( $definition->get_example() ),
@@ -256,6 +257,9 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		return $schema;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function delete_args(): QueryArgumentCollection {
 		return new QueryArgumentCollection();
 	}
@@ -278,8 +282,8 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Delete a Ticket', 'event-tickets' ),
 			fn() => __( 'Move a ticket to the trash', 'event-tickets' ),
-			'deleteTicket',
-			[ tribe( Tickets_Tag::class ) ],
+			$this->get_operation_id( 'delete' ),
+			$this->get_tags(),
 			$collection,
 			null,
 			null,
@@ -315,5 +319,40 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		);
 
 		return $schema;
+	}
+
+	/**
+	 * Returns the tags for the endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_tags(): array {
+		return [ tribe( Tickets_Tag::class ) ];
+	}
+
+	/**
+	 * Returns the operation ID for the endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $operation The operation to get the operation ID for.
+	 *
+	 * @return string
+	 *
+	 * @throws InvalidArgumentException If the operation is invalid.
+	 */
+	public function get_operation_id( string $operation ): string {
+		switch ( $operation ) {
+			case 'read':
+				return 'getTicket';
+			case 'update':
+				return 'updateTicket';
+			case 'delete':
+				return 'deleteTicket';
+		}
+
+		throw new InvalidArgumentException( sprintf( 'Invalid operation: %s', $operation ) );
 	}
 }

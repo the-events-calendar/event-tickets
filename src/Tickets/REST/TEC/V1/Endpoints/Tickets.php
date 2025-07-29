@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\REST\TEC\V1\Endpoints;
 
+use InvalidArgumentException;
 use TEC\Common\REST\TEC\V1\Abstracts\Post_Entity_Endpoint;
 use TEC\Common\REST\TEC\V1\Contracts\Readable_Endpoint;
 use TEC\Common\REST\TEC\V1\Contracts\Creatable_Endpoint;
@@ -115,8 +116,8 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Retrieve Tickets', 'event-tickets' ),
 			fn() => __( 'Returns a list of tickets', 'event-tickets' ),
-			'getTickets',
-			[ tribe( Tickets_Tag::class ) ],
+			$this->get_operation_id( 'read' ),
+			$this->get_tags(),
 			null,
 			$this->read_args()
 		);
@@ -281,14 +282,14 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	public function create_schema(): OpenAPI_Schema {
 		$collection = new RequestBodyCollection();
 
-		$definition = new Ticket_Request_Body_Definition();
+		$definition   = new Ticket_Request_Body_Definition();
 		$collection[] = new Definition_Parameter( $definition );
 
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Create a Ticket', 'event-tickets' ),
 			fn() => __( 'Create a new ticket', 'event-tickets' ),
-			'createTicket',
-			[ tribe( Tickets_Tag::class ) ],
+			$this->get_operation_id( 'create' ),
+			$this->get_tags(),
 			null,
 			null,
 			$collection->set_description_provider( fn() => __( 'The ticket data to create.', 'event-tickets' ) )->set_required( true )->set_example( $definition->get_example() ),
@@ -319,5 +320,38 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 		);
 
 		return $schema;
+	}
+
+	/**
+	 * Returns the tags for the endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_tags(): array {
+		return [ tribe( Tickets_Tag::class ) ];
+	}
+
+	/**
+	 * Returns the operation ID for the endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $operation The operation to get the operation ID for.
+	 *
+	 * @return string
+	 *
+	 * @throws InvalidArgumentException If the operation is invalid.
+	 */
+	public function get_operation_id( string $operation ): string {
+		switch ( $operation ) {
+			case 'read':
+				return 'getTickets';
+			case 'create':
+				return 'createTicket';
+		}
+
+		throw new InvalidArgumentException( sprintf( 'Invalid operation: %s', $operation ) );
 	}
 }
