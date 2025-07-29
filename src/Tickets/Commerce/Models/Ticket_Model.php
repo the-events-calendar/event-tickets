@@ -47,6 +47,9 @@ class Ticket_Model extends Base {
 			$sale_end_date   = get_post_meta( $ticket_object->ID, Ticket::$sale_price_end_date_key, true );
 			$sale_price      = get_post_meta( $ticket_object->ID, Ticket::$sale_price_key, true );
 
+			$sale_price = $sale_price && $sale_price instanceof Value ? $sale_price->get_string() : $sale_price;
+			$sale_price = $sale_price ? (float) $sale_price : null;
+
 			$properties = [
 				'description'           => $ticket_object->description,
 				'on_sale'               => $ticket_object->on_sale,
