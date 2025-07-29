@@ -60,14 +60,17 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return PathArgumentCollection
 	 */
-	public function get_path_parameters(): array {
-		return [
-			'id' => [
-				'type' => 'integer',
-			],
-		];
+	public function get_path_parameters(): PathArgumentCollection {
+		$collection = new PathArgumentCollection();
+
+		$collection[] = new Positive_Integer(
+			'id',
+			fn() => __( 'The ID of the ticket', 'event-tickets' ),
+		);
+
+		return $collection;
 	}
 
 	/**
@@ -131,28 +134,6 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	}
 
 	/**
-	 * Returns the path arguments for the read request.
-	 *
-	 * @since TBD
-	 *
-	 * @return PathArgumentCollection
-	 */
-	public function read_path_args(): PathArgumentCollection {
-		$collection = new PathArgumentCollection();
-
-		$collection[] = new Positive_Integer(
-			'id',
-			fn() => __( 'The ID of the ticket', 'event-tickets' ),
-			null,
-			null,
-			null,
-			true
-		);
-
-		return $collection;
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	public function read_schema(): OpenAPI_Schema {
@@ -161,7 +142,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			fn() => __( 'Retrieve a ticket by ID', 'event-tickets' ),
 			$this->get_operation_id( 'read' ),
 			$this->get_tags(),
-			$this->read_path_args(),
+			$this->get_path_parameters(),
 			$this->read_args()
 		);
 
@@ -202,13 +183,6 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	 * @inheritDoc
 	 */
 	public function update_schema(): OpenAPI_Schema {
-		$path_collection = new PathArgumentCollection();
-
-		$path_collection[] = new Positive_Integer(
-			'id',
-			fn() => __( 'Unique identifier for the ticket.', 'event-tickets' ),
-		);
-
 		$definition = new Ticket_Request_Body_Definition();
 
 		$collection = new RequestBodyCollection();
@@ -220,7 +194,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			fn() => __( 'Update a ticket by ID', 'event-tickets' ),
 			$this->get_operation_id( 'update' ),
 			$this->get_tags(),
-			$path_collection,
+			$this->get_path_parameters(),
 			null,
 			$collection->set_description_provider( fn() => __( 'The ticket data to update.', 'event-tickets' ) )->set_required( true )->set_example( $definition->get_example() ),
 			true
@@ -268,23 +242,12 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	 * @inheritDoc
 	 */
 	public function delete_schema(): OpenAPI_Schema {
-		$collection = new PathArgumentCollection();
-
-		$collection[] = new Positive_Integer(
-			'id',
-			fn() => __( 'The ID of the ticket', 'event-tickets' ),
-			null,
-			null,
-			null,
-			true
-		);
-
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Delete a Ticket', 'event-tickets' ),
 			fn() => __( 'Move a ticket to the trash', 'event-tickets' ),
 			$this->get_operation_id( 'delete' ),
 			$this->get_tags(),
-			$collection,
+			$this->get_path_parameters(),
 			null,
 			null,
 			true
