@@ -45,4 +45,15 @@ class Tickets_Tag extends Tag {
 			'description' => __( 'These operations are introduced by Event Tickets.', 'event-tickets' ),
 		];
 	}
+
+	/**
+	 * Returns the priority of the tag.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_priority(): int {
+		return 10;
+	}
 }
