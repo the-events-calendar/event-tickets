@@ -389,9 +389,9 @@ class Timer_Test extends Controller_Test_Case {
 				$wp_send_json_error_code = $code;
 			},
 			true );
-		// Mock the Sessions table dependency of the service to return `false` on the `upsert` method.
+		// Mock the Sessions table dependency of the service to return `false` on the `insert_or_update` method.
 		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'upsert' => false
+			'insert_or_update' => false
 		] ) );
 
 		$timer = $this->make_controller();
