@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\REST\TEC\V1\Traits;
 
-use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use Tribe__Repository__Interface;
 
 /**
