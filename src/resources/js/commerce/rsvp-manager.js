@@ -124,9 +124,9 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {Object} ajaxSettings
 	 */
 	obj.getAjaxSettings = function ( $container ) {
-		console.log('TribeRsvp', TribeRsvp);
+		console.log('TecRsvp', TecRsvp);
 		const ajaxSettings = {
-			url: TribeRsvp.orderEndpoint,
+			url: TecRsvp.orderEndpoint,
 			method: 'POST',
 			beforeSend: obj.ajaxBeforeSend,
 			complete: obj.ajaxComplete,
