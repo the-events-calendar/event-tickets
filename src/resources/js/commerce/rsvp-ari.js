@@ -354,7 +354,7 @@ tribe.tickets.rsvp.ari = {};
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			step: 'success',
-			nonce: TribeRsvp.nonces.rsvpHandle,
+			nonce: TecRsvp.nonces.rsvpHandle,
 		};
 
 		$( params ).each( function ( index, object ) {

@@ -73,14 +73,14 @@ class Assets extends Service_Provider {
 			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
 				'localize' => [
-					'name' => 'TribeRsvp',
+					'name' => 'TecRsvp',
 					'data' => fn() => [
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'nonces'  => [
 							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
 						],
 						'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
 						'nonce'         => wp_create_nonce( 'wp_rest' ),
+						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],
 				],
 			]
@@ -97,15 +97,14 @@ class Assets extends Service_Provider {
 			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
-				'localize'     => [
-					'name' => 'TribeRsvp',
+/*				'localize'     => [
+					'name' => 'TecRsvp',
 					'data' => fn() => [
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'nonces'  => [
 							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
 						],
 					],
-				],
+				],*/
 			]
 		);
 
@@ -123,15 +122,14 @@ class Assets extends Service_Provider {
 			null,
 			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
-				'localize' => [
-					'name' => 'TribeRsvp',
+/*				'localize' => [
+					'name' => 'TecRsvp',
 					'data' => static function () {
 						return [
-							'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 							'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 						];
 					},
-				],
+				],*/
 			]
 		);
 
