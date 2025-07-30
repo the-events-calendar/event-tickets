@@ -64,7 +64,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Whether the checkout has been initialized.
 	 *
-	 * @since TBD
+	 * @since 5.25.1.1
 	 *
 	 * @type {boolean}
 	 */
@@ -268,7 +268,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 * Initialize Square Web Payments SDK.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Add force parameter to initialize Square.
+	 * @since 5.25.1.1 Add force parameter to initialize Square.
 	 */
 	obj.initializeSquare = async ( force = false ) => {
 		try {
@@ -372,7 +372,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	/**
 	 * Initialize Square when the data is provided.
 	 *
-	 * @since TBD
+	 * @since 5.25.1.1
 	 */
 	obj.initializeSquareOnDataProvided = () => {
 		if ( obj.data.userLoggedIn ) {

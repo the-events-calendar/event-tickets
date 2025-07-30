@@ -232,7 +232,7 @@ class Assets extends Controller_Contract {
 	 * Get the Square checkout data for localization.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Add amount and user data to the checkout data.
+	 * @since 5.25.1.1 Add amount and user data to the checkout data.
 	 *
 	 * @return array
 	 */

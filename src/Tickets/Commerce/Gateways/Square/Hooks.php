@@ -93,7 +93,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Filter the display of the billing fields.
 	 *
-	 * @since TBD
+	 * @since 5.25.1.1
 	 *
 	 * @param bool $value Whether the billing fields should be displayed.
 	 *
