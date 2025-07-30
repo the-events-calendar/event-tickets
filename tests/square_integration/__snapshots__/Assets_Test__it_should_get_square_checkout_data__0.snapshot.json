@@ -1,6 +1,7 @@
 {
     "nonce": "9fashjbfa64",
     "currencyCode": "USD",
+    "amount": "0",
     "orderEndpoint": "https://wordpress.test/wp-json/tribe/tickets/v1/commerce/square/order",
     "applicationId": "sq0idp-8PoFNX4o9XOz9vMYOrZ6vA",
     "locationId": "li-8PoFNX4o9XOz9vMYOrZ6vA",
@@ -12,5 +13,7 @@
                 "fontSize": "14px"
             }
         }
-    }
+    },
+    "userLoggedIn": false,
+    "userData": []
 }

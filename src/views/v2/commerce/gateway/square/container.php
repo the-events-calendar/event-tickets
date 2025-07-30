@@ -15,7 +15,7 @@
  */
 
 ?>
-<form id="tec-tc-gateway-square-form" class="tribe-tickets__commerce-checkout-square-form">
+<form id="tec-tc-gateway-square-form" class="tribe-tickets__commerce-checkout-square-form" style="display: none;">
 	<div class="tribe-tickets__commerce-checkout-square-card-wrapper">
 		<div class="tribe-tickets__commerce-checkout-square-card-container">
 			<div id="tec-tc-gateway-square-card-element">

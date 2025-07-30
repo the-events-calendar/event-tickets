@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Add's support for SCA (Strong Customer Auhtnetication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
