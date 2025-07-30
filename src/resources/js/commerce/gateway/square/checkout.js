@@ -303,6 +303,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 			await obj.card.attach(obj.selectors.cardElement);
 
 			$( obj.selectors.squareCardForm ).show();
+			$( obj.selectors.submitButton ).show();
 
 			// When the form is submitted
 			$(obj.selectors.form).on('submit', (e) => {
