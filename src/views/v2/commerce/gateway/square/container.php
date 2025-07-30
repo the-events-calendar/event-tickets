@@ -26,7 +26,7 @@
 		<div id="tec-tc-gateway-square-payment-message" role="alert"></div>
 	</div>
 
-	<button id="tec-tc-gateway-square-checkout-button" type="submit" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
+	<button style="display: none;" id="tec-tc-gateway-square-checkout-button" type="submit" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
 		<?php esc_html_e( 'Pay Now', 'event-tickets' ); ?>
 	</button>
 </form>

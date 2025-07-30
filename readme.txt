@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.25.1
+Stable tag: 5.25.1.1
 Requires at least: 6.6
 Tested up to: 6.8.2
 Requires PHP: 7.4
@@ -198,6 +198,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.25.1.1] 2025-07-30 =
+
+* Fix - Adds support for SCA (Strong Customer Authentication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
+* Language - 0 new strings added, 3 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.25.1] 2025-07-22 =
 
