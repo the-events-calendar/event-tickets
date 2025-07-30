@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.25.1.1] 2025-07-30
+
+* Fix - Adds support for SCA (Strong Customer Authentication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
+* Language - 0 new strings added, 3 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.25.1] 2025-07-22
 
 * Fix - Correct background color on "Get Tickets" button when dealing with series passes. [ET-2534]
