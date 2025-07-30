@@ -387,7 +387,8 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		editLink.on( 'click', ( e ) => {
 			e.preventDefault();
 
-			formContainer.find( 'input, select' ).prop( 'readonly', false );
+			formContainer.find( 'input' ).prop( 'readonly', false );
+			formContainer.find( 'select' ).prop( 'disabled', false );
 			formContainer.find( '#tec-tc-gateway-stripe-render-payment' ).show();
 
 			formContainer.find( obj.selectors.editLink ).hide();
@@ -400,7 +401,8 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		formContainer.on( 'submit', ( e ) => {
 			e.preventDefault();
 
-			formContainer.find( 'input, select' ).prop( 'readonly', true );
+			formContainer.find( 'input' ).prop( 'readonly', true );
+			formContainer.find( 'select' ).prop( 'disabled', true );
 			formContainer.find( '#tec-tc-gateway-stripe-render-payment' ).hide();
 
 			formContainer.find( obj.selectors.editLink ).css( 'display', 'inline-block' );
