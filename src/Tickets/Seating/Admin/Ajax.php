@@ -1225,7 +1225,8 @@ class Ajax extends Controller_Contract {
 
 		foreach ( $attendees as $attendee_id ) {
 			update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $new_seat_type_id );
-			update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
+			delete_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL );
+			delete_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID );
 
 			++$updated_attendees;
 		}
