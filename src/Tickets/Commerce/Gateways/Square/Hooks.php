@@ -59,7 +59,7 @@ class Hooks extends Controller_Contract {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		add_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
-		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ] );
+		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Hooks extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ] );
 		remove_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ] );
-		remove_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ] );
+		remove_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
 	}
 
 	/**
