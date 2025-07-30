@@ -2,7 +2,7 @@
 
 ### [5.25.1.1] 2025-07-30
 
-* Fix - Add's support for SCA (Strong Customer Auhtnetication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
+* Fix - Adds support for SCA (Strong Customer Auhtnetication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
 * Language - 0 new strings added, 3 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.25.1] 2025-07-22
