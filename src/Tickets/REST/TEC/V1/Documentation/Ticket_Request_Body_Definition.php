@@ -141,18 +141,44 @@ class Ticket_Request_Body_Definition extends Definition {
 			)
 		)->set_example( 'TICKET-123' );
 
-		return [
-			'allOf' => [
-				[
-					'$ref' => '#/components/schemas/TEC_Post_Entity_Request_Body',
-				],
-				[
-					'title'       => 'Ticket Request Body',
-					'description' => __( 'The request body for the ticket endpoint', 'event-tickets' ),
-					'type'        => 'object',
-					'properties'  => $properties,
+		/**
+		 * Filters the Swagger documentation generated for a ticket request body in the TEC REST API.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                          $documentation An associative PHP array in the format supported by Swagger.
+		 * @param Ticket_Request_Body_Definition $this          The Ticket_Request_Body_Definition instance.
+		 *
+		 * @return array
+		 */
+		$documentation = (array) apply_filters(
+			'tec_rest_swagger_' . strtolower( $this->get_type() ) . '_definition',
+			[
+				'allOf' => [
+					[
+						'$ref' => '#/components/schemas/TEC_Post_Entity_Request_Body',
+					],
+					[
+						'title'       => 'Ticket Request Body',
+						'description' => __( 'The request body for the ticket endpoint', 'event-tickets' ),
+						'type'        => 'object',
+						'properties'  => $properties,
+					],
 				],
 			],
-		];
+			$this
+		);
+
+		/**
+		 * Filters the Swagger documentation generated for a definition in the TEC REST API.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                          $documentation An associative PHP array in the format supported by Swagger.
+		 * @param Ticket_Request_Body_Definition $this          The Ticket_Request_Body_Definition instance.
+		 *
+		 * @return array
+		 */
+		return (array) apply_filters( 'tec_rest_swagger_definition', $documentation, $this );
 	}
 }
