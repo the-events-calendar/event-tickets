@@ -4,10 +4,10 @@
  *
  * @since TBD
  *
- * @package Tribe\Tickets\Models\Post_Types
+ * @package TEC\Tickets\Models\Post_Types
  */
 
-namespace Tribe\Tickets\Models\Post_Types;
+namespace TEC\Tickets\Models\Post_Types;
 
 use TEC\Tickets\Commerce\Ticket as Ticket_CPT;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -22,7 +22,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since TBD
  *
- * @package Tribe\Tickets\Models\Post_Types
+ * @package TEC\Tickets\Models\Post_Types
  */
 class Ticket extends Base {
 
@@ -46,7 +46,7 @@ class Ticket extends Base {
 			$sku              = Arr::get( $post_meta, [ Ticket_CPT::$sku_meta_key, 0 ], '' );
 			$show_description = Arr::get( $post_meta, [ Ticket_CPT::$show_description_meta_key, 0 ], 'yes' );
 			$event_id         = Arr::get( $post_meta, [ Ticket_CPT::$event_relation_meta_key, 0 ], null );
-			
+
 			// Get sale dates.
 			$start_date = Arr::get( $post_meta, [ '_ticket_start_date', 0 ], null );
 			$start_time = Arr::get( $post_meta, [ '_ticket_start_time', 0 ], null );
@@ -56,11 +56,11 @@ class Ticket extends Base {
 			// Combine date and time for sale start/end.
 			$sale_start = null;
 			$sale_end   = null;
-			
+
 			if ( $start_date ) {
 				$sale_start = $start_time ? $start_date . ' ' . $start_time : $start_date . ' 00:00:00';
 			}
-			
+
 			if ( $end_date ) {
 				$sale_end = $end_time ? $end_date . ' ' . $end_time : $end_date . ' 23:59:59';
 			}
@@ -69,7 +69,7 @@ class Ticket extends Base {
 			$now                  = Dates::build_date_object( 'now' );
 			$is_available         = true;
 			$availability_message = '';
-			
+
 			if ( $sale_start && Dates::build_date_object( $sale_start ) > $now ) {
 				$is_available         = false;
 				$availability_message = __( 'Ticket sales have not started yet', 'event-tickets' );
