@@ -41,7 +41,7 @@ class Cart_Test extends WPTestCase {
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
-		$sessions_table->upsert( 'test-token', $post, time() + 100 );
+		$sessions_table->insert_or_update( 'test-token', $post, time() + 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket ], 1 ) );
 		$attendee        = $this->create_attendee_for_ticket( $ticket, $post );
 		$attendee_object = get_post( $attendee );
@@ -68,7 +68,7 @@ class Cart_Test extends WPTestCase {
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
-		$sessions_table->upsert( 'test-token', $post, time() + 100 );
+		$sessions_table->insert_or_update( 'test-token', $post, time() + 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket ], 2 ) );
 		$attendee_1        = $this->create_attendee_for_ticket( $ticket, $post );
 		$attendee_1_object = get_post( $attendee_1 );
@@ -108,7 +108,7 @@ class Cart_Test extends WPTestCase {
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
-		$sessions_table->upsert( 'test-token', $post, time() + 100 );
+		$sessions_table->insert_or_update( 'test-token', $post, time() + 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 ) );
 		// Create the Attendees for the first ticket.
 		$attendee_1        = $this->create_attendee_for_ticket( $ticket_1, $post );
@@ -177,7 +177,7 @@ class Cart_Test extends WPTestCase {
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
-		$sessions_table->upsert( 'test-token', $post, time() + 100 );
+		$sessions_table->insert_or_update( 'test-token', $post, time() + 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 ) );
 
 		$tc_cart = tribe( TicketsCommerce_Cart::class );
@@ -215,7 +215,7 @@ class Cart_Test extends WPTestCase {
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
-		$sessions_table->upsert( 'test-token', $post, time() - 100 );
+		$sessions_table->insert_or_update( 'test-token', $post, time() - 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket_1, $ticket_2 ], 2 ) );
 
 		$tc_cart = tribe( TicketsCommerce_Cart::class );
@@ -312,7 +312,7 @@ class Cart_Test extends WPTestCase {
 		$session = tribe( Session::class );
 		$session->add_entry( $post, 'test-token' );
 		$sessions_table = tribe( Sessions_Table::class );
-		$sessions_table->upsert( 'test-token', $post, time() + 100 );
+		$sessions_table->insert_or_update( 'test-token', $post, time() + 100 );
 		$sessions_table->update_reservations( 'test-token', $this->create_mock_reservations_data( [ $ticket ], 1 ) );
 		$attendee                    = $this->create_attendee_for_ticket( $ticket, $post );
 		$attendee_object             = get_post( $attendee );
