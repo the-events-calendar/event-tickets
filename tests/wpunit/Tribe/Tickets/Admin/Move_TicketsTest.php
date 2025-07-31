@@ -70,8 +70,8 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['post_type'] = 'post';
 
 				return array_combine(
-					$post_ids,
-					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids )
+					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids ),
+					$post_ids
 				);
 			}
 		];
@@ -89,8 +89,8 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['search_terms'] = 'Bob';
 
 				return array_combine(
-					$post_ids_2,
-					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids_2 )
+					array_map( fn( int $id ) => get_post_field( 'post_title', $id ), $post_ids_2 ),
+					$post_ids_2
 				);
 			}
 		];
@@ -113,10 +113,10 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['post_type'] = TEC::POSTTYPE;
 
 				return array_combine(
-					$event_ids,
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, $event_ids )
+					}, $event_ids ),
+					$event_ids
 				);
 			}
 		];
@@ -148,10 +148,10 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['search_terms'] = 'Bob';
 
 				return array_combine(
-					$event_ids_2,
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, $event_ids_2 )
+					}, $event_ids_2 ),
+					$event_ids_2
 				);
 			}
 		];
@@ -186,10 +186,10 @@ class Move_TicketsTest extends WPTestCase {
 				$_POST['post_type'] = TEC::POSTTYPE;
 
 				return array_combine(
-					[ $daily_event_occurrence_2, $daily_event_occurrence_3 ],
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, [ $daily_event_occurrence_2, $daily_event_occurrence_3 ] )
+					}, [ $daily_event_occurrence_2, $daily_event_occurrence_3 ] ),
+					[ $daily_event_occurrence_2, $daily_event_occurrence_3 ]
 				);
 			}
 		];
@@ -210,7 +210,10 @@ class Move_TicketsTest extends WPTestCase {
 		}, true );
 		$move->get_post_choices();
 
-		$this->assertEqualSets( $expected, $posts );
+		// Sort expected by keys to match the alphabetical sorting in format_post_list.
+		ksort( $expected );
+
+		$this->assertEquals( $expected, $posts );
 	}
 
 	/**
@@ -305,6 +308,13 @@ class Move_TicketsTest extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_count_tc_ticket_attendees_correctly() {
+		// Set Tickets Commerce to enabled.
+		$original_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+		
+		// Verify Tickets Commerce is enabled.
+		$this->assertTrue( tec_tickets_commerce_is_enabled(), 'Tickets Commerce should be enabled.' );
+		
 		// Create an event with 1 commerce ticket and 20 attendees.
 		$event_id   = $this->factory()->event->create();
 		$ticket_id  = $this->create_tc_ticket( $event_id );

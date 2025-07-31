@@ -54,6 +54,42 @@ class Ticket extends Ticket_Data {
 	public static $show_description_meta_key = '_tribe_ticket_show_description';
 
 	/**
+	 * Which meta holds the data for the ticket start date.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const START_DATE_META_KEY = '_ticket_start_date';
+
+	/**
+	 * Which meta holds the data for the ticket end date.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const END_DATE_META_KEY = '_ticket_end_date';
+
+	/**
+	 * Which meta holds the data for the ticket start time.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const START_TIME_META_KEY = '_ticket_start_time';
+
+	/**
+	 * Which meta holds the data for the ticket end time.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @var string
+	 */
+	public const END_TIME_META_KEY = '_ticket_end_time';
+
+	/**
 	 * Which meta holds the data for the ticket sku.
 	 *
 	 * @since 5.1.9
@@ -227,6 +263,7 @@ class Ticket extends Ticket_Data {
 			'capability_type' => 'post',
 			'has_archive'     => false,
 			'hierarchical'    => false,
+			'show_in_rest'    => true,
 		];
 
 		/**
@@ -378,11 +415,11 @@ class Ticket extends Ticket_Data {
 		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
-		$return->start_date       = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
-		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
-		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
+		$return->start_date       = get_post_meta( $ticket_id, static::START_DATE_META_KEY, true );
+		$return->end_date         = get_post_meta( $ticket_id, static::END_DATE_META_KEY, true );
+		$return->start_time       = get_post_meta( $ticket_id, static::START_TIME_META_KEY, true );
+		$return->end_time         = get_post_meta( $ticket_id, static::END_TIME_META_KEY, true );
+		$return->sku              = get_post_meta( $ticket_id, static::$sku_meta_key, true );
 
 		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
 
@@ -397,7 +434,7 @@ class Ticket extends Ticket_Data {
 			$stock = - 1;
 		}
 
-		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
+		$return->manage_stock( tribe_is_truthy( get_post_meta( $ticket_id, '_manage_stock', true ) ) );
 		$return->stock( $stock );
 		$return->global_stock_mode( get_post_meta( $ticket_id, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true ) );
 		$capped = get_post_meta( $ticket_id, \Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true );
@@ -825,6 +862,7 @@ class Ticket extends Ticket_Data {
 	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
+	 * @since 5.25.0 Removed the increment of deleted attendees count, it is handled in attendee deletion method.
 	 *
 	 * @param int|WP_Post|null $event_id   The event ID.
 	 * @param int|WP_Post|null $ticket_id  The ticket ID.
@@ -832,12 +870,12 @@ class Ticket extends Ticket_Data {
 	 * @return bool
 	 */
 	public function delete( $event_id, $ticket_id ) {
-		// Ensure we know the event and product IDs (the event ID may not have been passed in)
+		// Ensure we know the event and product IDs (the event ID may not have been passed in).
 		if ( empty( $event_id ) ) {
 			$event_id = get_post_meta( $ticket_id, Attendee::$event_relation_meta_key, true );
 		}
 
-		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event)
+		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event).
 		if ( empty( $event_id ) ) {
 			return false;
 		}
@@ -846,7 +884,7 @@ class Ticket extends Ticket_Data {
 
 		// @todo: should deleting an attendee replenish a ticket stock?
 
-		// Store name so we can still show it in the attendee list
+		// Store name so we can still show it in the attendee list.
 		$attendees      = tribe( Module::class )->get_attendees_by_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
 
@@ -856,13 +894,12 @@ class Ticket extends Ticket_Data {
 			}
 		}
 
-		// Try to kill the actual ticket/attendee post
+		// Delete the ticket/attendee post.
 		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
 
-		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 		do_action( 'tec_tickets_commerce_ticket_deleted', $ticket_id, $event_id, $product_id );
 		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
@@ -1274,7 +1311,15 @@ class Ticket extends Ticket_Data {
 	 */
 	public function get_sale_price( int $ticket_id ): string {
 		$sale_price = get_post_meta( $ticket_id, static::$sale_price_key, true );
-		return $sale_price instanceof Value ? $sale_price->get_string() : '';
+		if ( ! $sale_price ) {
+			return '';
+		}
+
+		if ( $sale_price instanceof Value ) {
+			return $sale_price->get_string();
+		}
+
+		return ( new Value( $sale_price ) )->get_string();
 	}
 
 	/**

@@ -797,6 +797,7 @@ class Attendee {
 	 * Get attendees by ticket ID.
 	 *
 	 * @since 5.14.0
+	 * @since 5.25.0 Added check to return empty array if Tickets Commerce is disabled.
 	 *
 	 * @param int    $ticket_id    Ticket ID.
 	 * @param string $orm_provider ORM provider string.
@@ -804,6 +805,11 @@ class Attendee {
 	 * @return array List of attendees.
 	 */
 	public function get_attendees_by_ticket_id( $ticket_id, $orm_provider ) {
+		// Check if Tickets Commerce is enabled.
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return [];
+		}
+		
 		// Check cache.
 		$cache                  = tribe_cache();
 		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );

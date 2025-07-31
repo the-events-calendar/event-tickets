@@ -2,6 +2,8 @@ import {
 	addModalEventListeners,
 	bootstrapIframe,
 	cancelReservations,
+	cancelReservationsViaBeacon,
+	getReservationCancelRequest,
 	setExpireDate,
 } from '@tec/tickets/seating/frontend/ticketsBlock';
 import {
@@ -40,6 +42,7 @@ function ticketSelectionModalExtractor(html) {
 
 describe('Seat Selection Modal', () => {
 	let originalLocation;
+	let originalWindowTec;
 
 	beforeEach(() => {
 		fetch.resetMocks();
@@ -47,8 +50,11 @@ describe('Seat Selection Modal', () => {
 		jest.resetAllMocks();
 
 		originalLocation = window.location;
+		originalWindowTec = window.tec || {};
 		delete window.location;
+		delete window.tec;
 		window.location = { reload: jest.fn() };
+		window.tec = {};
 	});
 
 	afterEach(() => {
@@ -56,6 +62,7 @@ describe('Seat Selection Modal', () => {
 		jest.resetModules();
 		jest.resetAllMocks();
 		window.location = originalLocation;
+		window.tec = originalWindowTec;
 	});
 
 	it('should reload the page on failure to establish readiness', async () => {
@@ -84,6 +91,8 @@ describe('Seat Selection Modal', () => {
 				on: jest.fn(),
 			};
 
+			window.addEventListener = jest.fn();
+
 			addModalEventListeners();
 
 			expect(
@@ -95,6 +104,9 @@ describe('Seat Selection Modal', () => {
 			expect(
 				window['tribe-tickets-seating-modal'].on
 			).toHaveBeenCalledWith('destroy', cancelReservations);
+			expect(
+				window.addEventListener
+			).toHaveBeenCalledWith('beforeunload', cancelReservationsViaBeacon);
 		});
 
 		it('should not sendMessage to remove reservations if iframe not found', async () => {
@@ -136,6 +148,46 @@ describe('Seat Selection Modal', () => {
 				OUTBOUND_REMOVE_RESERVATIONS
 			);
 			expect(fetch).toBeCalled();
+		});
+
+		it('should cancel reservations via beacon', () => {
+			window.navigator.sendBeacon = jest.fn();
+			window['tribe-tickets-seating-modal'] = {
+				on: jest.fn(),
+			};
+			window.addEventListener = jest.fn();
+
+			const blockData = {
+				ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
+				ajaxNonce: 'abc123',
+				'ACTION_CLEAR_RESERVATIONS': 'clear_reservations',
+				postId: 23,
+			};
+
+			// Set fake token.
+			setToken('test-ephemeral-token');
+
+			// Mock the localized data.
+			window.tec = {
+				tickets: {
+					seating: {
+						frontend: {
+							ticketsBlockData: blockData,
+						}
+					}
+				}
+			};
+
+			addModalEventListeners();
+			expect( window.addEventListener ).toHaveBeenCalledWith(
+				'beforeunload',
+				cancelReservationsViaBeacon
+			);
+
+			cancelReservationsViaBeacon();
+			expect(
+				window.navigator.sendBeacon
+			).toHaveBeenCalledWith(getReservationCancelRequest().toString());
 		});
 	});
 
