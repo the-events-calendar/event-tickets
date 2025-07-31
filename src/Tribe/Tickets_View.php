@@ -284,7 +284,7 @@ class Tribe__Tickets__Tickets_View {
 		// Handle pretty permalinks for non-event posts.
 		$bases        = $this->add_rewrite_base_slug();
 		$tickets_slug = $bases['tickets'][0] ?? 'tickets';
-		
+
 		return home_url( untrailingslashit( "{$tickets_slug}/{$event_id}" ) );
 	}
 
@@ -408,7 +408,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
 	 * @since 5.25.0 Added filter to preserve tribe-edit-orders parameter in canonical redirect.
-	 * 
+	 *
 	 * @param string $content Normally the_content of a post.
 	 *
 	 * @return string
@@ -1218,7 +1218,12 @@ class Tribe__Tickets__Tickets_View {
 			}
 
 			$rendered_content  = $before_content;
-			$rendered_content .= $template->template( 'v2/commerce/rsvp', [ 'block_html_id' => 'tc-rsvp-' . uniqid(), 'step' => '' ], $echo );
+			$rendered_content .= $template->template( 'v2/commerce/rsvp', [
+				'post_id' => $post_id,
+				'block_html_id' => 'tc-rsvp-' . uniqid(),
+				'step' => '',
+				'active_rsvps' => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : []
+			], $echo );
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
@@ -1546,7 +1551,7 @@ class Tribe__Tickets__Tickets_View {
 			$query_vars['page_id'] = $post->ID;
 			unset( $query_vars['p'] );
 		}
-		
+
 		return $query_vars;
 	}
 }
