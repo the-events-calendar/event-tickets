@@ -578,6 +578,7 @@ class Dispatcher {
 
 			$sent = true;
 		} else {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
 			$sent = (bool) wp_mail(
 				$this->get_to(),
 				$subject,
