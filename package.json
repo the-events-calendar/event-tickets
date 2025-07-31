@@ -70,6 +70,7 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start --mode=development --devtool=source-map",
     "dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
+    "spectral": "spectral lint",
     "changelog": "./vendor/bin/changelogger add"
   },
   "engines": {
@@ -79,6 +80,7 @@
   "devDependencies": {
     "@redux-devtools/extension": "^3.3.0",
     "@stellarwp/tyson": "*",
+    "@stoplight/spectral-cli": "^6.15.0",
     "@types/node": "^20.10.6",
     "@wordpress/hooks": "^4.18.0",
     "@wordpress/scripts": "^30.14.1",
