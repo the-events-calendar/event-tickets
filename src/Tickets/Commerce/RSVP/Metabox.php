@@ -104,7 +104,7 @@ class Metabox {
 	 */
 	public function get_tc_rsvp_ticket( array $tickets ) {
 		foreach ( $tickets as $ticket ) {
-			if ( $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->type() === 'tc-rsvp' ) {
+			if ( $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->type() === Constants::TC_RSVP_TYPE ) {
 				return $ticket;
 			}
 		}

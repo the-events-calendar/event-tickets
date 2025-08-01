@@ -34,7 +34,9 @@
  * @var Tribe__Tickets__Admin__Views  $this                             The admin views instance.
  */
 
-$ticket_type = $ticket_type ?? 'tc-rsvp';
+use TEC\Tickets\Commerce\RSVP\Constants;
+
+$ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 ?>
 
 <div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"

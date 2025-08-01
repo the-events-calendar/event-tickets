@@ -18,6 +18,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Commerce\RSVP\Constants;
 use TEC\Tickets\Event;
 
 use Tribe__Utils__Array as Arr;
@@ -131,7 +132,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['ticket_start_time']                 = Arr::get( $request_params, 'rsvp_start_time', '' );
 		$args['tec_tickets_rsvp_enable_cannot_go'] = Arr::get( $request_params, 'tec_tickets_rsvp_enable_cannot_go', '' );
 		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
-		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', 'tc-rsvp' );
+		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', Constants::TC_RSVP_TYPE );
 
 		$module  = tribe( Module::class );
 		$rsvp_id = $module->ticket_add( $post_id, $args );

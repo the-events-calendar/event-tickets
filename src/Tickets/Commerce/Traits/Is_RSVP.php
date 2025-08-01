@@ -7,6 +7,8 @@
 
 namespace TEC\Tickets\Commerce\Traits;
 
+use TEC\Tickets\Commerce\RSVP\Constants;
+
 /**
  * Trait Is_RSVP
  *
@@ -33,6 +35,6 @@ trait Is_RSVP {
 			return true;
 		}
 
-		return 'tc-rsvp' === $thing['type'];
+		return Constants::TC_RSVP_TYPE === $thing['type'];
 	}
 }

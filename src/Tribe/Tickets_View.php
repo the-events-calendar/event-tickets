@@ -4,6 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use TEC\Tickets\Commerce\RSVP\Constants;
+
 class Tribe__Tickets__Tickets_View {
 
 	/**
@@ -1081,7 +1083,7 @@ class Tribe__Tickets__Tickets_View {
 		$rsvp = null;
 
 		foreach ( $tickets as $index => $ticket ) {
-			if ( 'tc-rsvp' === $ticket->type ) {
+			if ( Constants::TC_RSVP_TYPE === $ticket->type ) {
 				$rsvp = $ticket;
 				unset( $tickets[ $index ] );
 			}
@@ -1218,7 +1220,7 @@ class Tribe__Tickets__Tickets_View {
 			}
 
 			$rendered_content  = $before_content;
-			$rendered_content .= $template->template( 'v2/commerce/rsvp', [ 'block_html_id' => 'tc-rsvp-' . uniqid(), 'step' => '' ], $echo );
+			$rendered_content .= $template->template( 'v2/commerce/rsvp', [ 'block_html_id' => Constants::TC_RSVP_TYPE . '-' . uniqid(), 'step' => '' ], $echo );
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
