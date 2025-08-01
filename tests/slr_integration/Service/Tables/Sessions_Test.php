@@ -15,7 +15,7 @@ class Sessions_Test extends WPTestCase {
 
 		$initial_expiration = time() + 600;
 
-		$sessions->upsert( 'test-token', 23, $initial_expiration );
+		$sessions->insert_or_update( 'test-token', 23, $initial_expiration );
 
 		$this->assertEqualsWithDelta( 600, $sessions->get_seconds_left( 'test-token' ), 3 );
 		$this->assertFalse(  $sessions->is_locked( 'test-token' ), 3 );
@@ -36,7 +36,7 @@ class Sessions_Test extends WPTestCase {
 
 		$initial_expiration = time() + 600;
 
-		$sessions->upsert( 'test-token', 23, $initial_expiration );
+		$sessions->insert_or_update( 'test-token', 23, $initial_expiration );
 
 		$this->assertEqualsWithDelta( 600, $sessions->get_seconds_left( 'test-token' ), 3 );
 		$this->assertFalse(  $sessions->is_locked( 'test-token' ), 3 );

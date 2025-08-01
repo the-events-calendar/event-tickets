@@ -12,6 +12,7 @@ namespace TEC\Tickets;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use Tribe__Tickets__Main as Tickets_Plugin;
+use TEC\Tickets\REST\Controller as REST_Controller;
 
 /**
  * Class Provider for all the Tickets loading.
@@ -84,6 +85,9 @@ class Provider extends Service_Provider {
 
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class );
+
+		// REST API V1 Controller.
+		$this->container->register( REST_Controller::class );
 
 		// CT1 only Providers here.
 		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );

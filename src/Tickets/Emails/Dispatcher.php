@@ -9,6 +9,9 @@
 
 namespace TEC\Tickets\Emails;
 
+use TEC\Common\StellarWP\Shepherd\Tasks\Email;
+use function TEC\Common\StellarWP\Shepherd\shepherd;
+
 /**
  * Class Dispatcher.
  *
@@ -557,13 +560,33 @@ class Dispatcher {
 		// Handle any encoded characters or slashes in the subject.
 		$subject = wp_unslash( wp_specialchars_decode( $this->get_subject() ) );
 
-		$sent = (bool) wp_mail(
-			$this->get_to(),
-			$subject,
-			$this->get_content(),
-			$this->get_headers_formatted(),
-			$this->get_attachments()
-		);
+		$actions_to_offload_to_shepherd = [
+			'tec_tickets_commerce_order_status_flag_send_email_purchase_receipt',
+			'tec_tickets_commerce_order_status_flag_send_email_completed_order',
+		];
+
+		if ( in_array( current_action(), $actions_to_offload_to_shepherd, true ) ) {
+			shepherd()->dispatch(
+				new Email(
+					$this->get_to(),
+					$subject,
+					$this->get_content(),
+					$this->get_headers_formatted(),
+					$this->get_attachments()
+				)
+			);
+
+			$sent = true;
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
+			$sent = (bool) wp_mail(
+				$this->get_to(),
+				$subject,
+				$this->get_content(),
+				$this->get_headers_formatted(),
+				$this->get_attachments()
+			);
+		}
 
 		$this->used = true;
 

@@ -452,7 +452,7 @@ class Timer extends Controller_Contract {
 		$expiration = (int) $now + $timeout;
 		$this->session->add_entry( $post_id, $token );
 
-		if ( ! $this->sessions->upsert( $token, $post_id, $expiration ) ) {
+		if ( ! $this->sessions->insert_or_update( $token, $post_id, $expiration ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Failed to start timer',

@@ -50,15 +50,52 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-				'event'            => Ticket::$event_relation_meta_key,
-				'show_description' => Ticket::$show_description_meta_key,
-				'price'            => Ticket::$price_meta_key,
+				'event_id'              => Ticket::$event_relation_meta_key,
+				'event'                 => Ticket::$event_relation_meta_key,
+				'show_description'      => Ticket::$show_description_meta_key,
+				'start_date'            => Ticket::START_DATE_META_KEY,
+				'end_date'              => Ticket::END_DATE_META_KEY,
+				'start_time'            => Ticket::START_TIME_META_KEY,
+				'end_time'              => Ticket::END_TIME_META_KEY,
+				'sku'                   => Ticket::$sku_meta_key,
+				'stock'                 => Ticket::$stock_meta_key,
+				'price'                 => Ticket::$price_meta_key,
+				'sales'                 => Ticket::$sales_meta_key,
+				'stock_mode'            => Ticket::$stock_mode_meta_key,
+				'stock_status'          => Ticket::$stock_status_meta_key,
+				'allow_backorders'      => Ticket::$allow_backorders_meta_key,
+				'manage_stock'          => Ticket::$should_manage_stock_meta_key,
+				'type'                  => Ticket::$type_meta_key,
+				'sale_price'            => Ticket::$sale_price_key,
+				'sale_price_start_date' => Ticket::$sale_price_start_date_key,
+				'sale_price_end_date'   => Ticket::$sale_price_end_date_key,
 			]
 		);
 
-		$this->schema = array_merge( $this->schema, [
-			'event' => [ $this, 'filter_by_event' ],
-		] );
+		$this->schema = array_merge(
+			$this->schema,
+			[
+				'event' => [ $this, 'filter_by_event' ],
+			],
+		);
+
+		$this->add_simple_meta_schema_entry( 'start_date', Ticket::START_DATE_META_KEY );
+		$this->add_simple_meta_schema_entry( 'end_date', Ticket::END_DATE_META_KEY );
+		$this->add_simple_meta_schema_entry( 'start_time', Ticket::START_TIME_META_KEY );
+		$this->add_simple_meta_schema_entry( 'end_time', Ticket::END_TIME_META_KEY );
+		$this->add_simple_meta_schema_entry( 'sku', Ticket::$sku_meta_key );
+		$this->add_simple_meta_schema_entry( 'stock', Ticket::$stock_meta_key );
+		$this->add_simple_meta_schema_entry( 'show_description', Ticket::$show_description_meta_key );
+		$this->add_simple_meta_schema_entry( 'price', Ticket::$price_meta_key );
+		$this->add_simple_meta_schema_entry( 'sales', Ticket::$sales_meta_key );
+		$this->add_simple_meta_schema_entry( 'stock_mode', Ticket::$stock_mode_meta_key );
+		$this->add_simple_meta_schema_entry( 'stock_status', Ticket::$stock_status_meta_key );
+		$this->add_simple_meta_schema_entry( 'allow_backorders', Ticket::$allow_backorders_meta_key );
+		$this->add_simple_meta_schema_entry( 'manage_stock', Ticket::$should_manage_stock_meta_key );
+		$this->add_simple_meta_schema_entry( 'type', Ticket::$type_meta_key );
+		$this->add_simple_meta_schema_entry( 'sale_price', Ticket::$sale_price_key );
+		$this->add_simple_meta_schema_entry( 'sale_price_start_date', Ticket::$sale_price_start_date_key );
+		$this->add_simple_meta_schema_entry( 'sale_price_end_date', Ticket::$sale_price_end_date_key );
 	}
 
 	/**

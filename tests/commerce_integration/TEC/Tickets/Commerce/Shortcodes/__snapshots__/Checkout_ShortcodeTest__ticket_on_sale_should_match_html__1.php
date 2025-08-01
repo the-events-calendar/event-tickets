@@ -34,7 +34,7 @@
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
 	<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-{{ticket_id2}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ticket_id2}}" data-ticket-quantity="1" data-ticket-price="10.00" >
+	 class="tribe-tickets__commerce-checkout-cart-item post-{{ticket_id2}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ticket_id2}}" data-ticket-quantity="1" data-ticket-price="8.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
@@ -76,7 +76,7 @@
 	<ins>
 	<span class="tec-tickets-price__sale-price amount">
 		<bdi>
-			&#x24;10.00		</bdi>
+			&#x24;8.00		</bdi>
 	</span>
 </ins>
 <del aria-hidden="true">
@@ -91,7 +91,7 @@
 	1</div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-subtotal">
-	&#x24;0.00</div>
+	&#x24;8.00</div>
 
 </article>
 </div>
@@ -145,7 +145,7 @@
 <div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">1</span></div>
 <div class="tribe-tickets__commerce-checkout-cart-footer-total">
-	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;0.00</span></div>
+	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;8.00</span></div>
 </footer>
 
 </div>

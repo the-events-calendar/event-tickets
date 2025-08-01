@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Improving TicketsCommerce Checkout by offloading tasks to Shepherd. [TCMN-185]
