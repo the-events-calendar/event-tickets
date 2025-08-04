@@ -72,20 +72,27 @@ class Metabox {
 		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
 		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
 
-		$tc_rsvp = $this->get_tc_rsvp_ticket(  Tribe__Tickets__Tickets::get_event_tickets( $post->ID ) );
+		$tc_rsvp = $this->get_tc_rsvp_ticket( Tribe__Tickets__Tickets::get_event_tickets( $post->ID ) );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = get_defined_vars();
 
-		// Add the data required by each panel to render correctly.
-		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID, $tc_rsvp->ID ) )->to_array() );
+		$rsvp_id = $tc_rsvp instanceof Tribe__Tickets__Ticket_Object ? $tc_rsvp->ID : null;
+		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID, $rsvp_id ) )->to_array() );
 
-		$context['rsvp_id']        = $tc_rsvp->ID ?? null;
-		$context['show_not_going'] = $tc_rsvp->show_not_going ?? '';
-		$capacity                  = $tc_rsvp->capacity() ?? '';
-		$context['rsvp_limit']     = $capacity === - 1 ? '' : $capacity;
+		// Add the data required by each panel to render correctly.
+		$context['rsvp_id']        = 0;
+		$context['show_not_going'] = '';
+		$context['rsvp_limit']     = '';
+
+		if ( $tc_rsvp instanceof Tribe__Tickets__Ticket_Object ) {
+			$context['rsvp_id']        = $tc_rsvp->ID;
+			$context['show_not_going'] = $tc_rsvp->show_not_going;
+			$capacity                  = $tc_rsvp->capacity();
+			$context['rsvp_limit']     = $capacity === - 1 ? '' : $capacity;
+		}
 
 		return $admin_views->template(
 			[ 'editor', 'rsvp', 'metabox' ],

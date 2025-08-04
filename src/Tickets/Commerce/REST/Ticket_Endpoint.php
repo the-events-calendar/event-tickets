@@ -134,8 +134,8 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
 		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', Constants::TC_RSVP_TYPE );
 
-		$module  = tribe( Module::class );
-		$rsvp_id = $module->ticket_add( $post_id, $args );
+		$module = tribe( Module::class );
+		$module->ticket_add( $post_id, $args );
 
 		return new WP_REST_Response( $response );
 	}
