@@ -29,7 +29,9 @@ if ( ! $shortcode->should_display_purchaser_info() ) {
 
 ?>
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
-	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php echo esc_html( $shortcode->get_purchaser_info_title() ); ?></h4>
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title">
+		<?php echo esc_html( $shortcode->get_purchaser_info_title() ); ?>
+	</h4>
 	<form class="tribe-tickets__commerce-checkout-purchaser-info-wrapper__form">
 		<?php
 		$this->template(
@@ -54,4 +56,7 @@ if ( ! $shortcode->should_display_purchaser_info() ) {
 			</button>
 		<?php endif; ?>
 	</form>
+	<a href="#" class="tec-tickets__commerce-checkout-purchaser-info-edit-link">
+		<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
+	</a>
 </div>

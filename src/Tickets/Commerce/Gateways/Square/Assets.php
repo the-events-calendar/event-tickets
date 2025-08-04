@@ -17,6 +17,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Asset;
 use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
+use TEC\Tickets\Commerce\Cart;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -231,6 +232,7 @@ class Assets extends Controller_Contract {
 	 * Get the Square checkout data for localization.
 	 *
 	 * @since 5.24.0
+	 * @since 5.25.1.1 Add amount and user data to the checkout data.
 	 *
 	 * @return array
 	 */
@@ -245,13 +247,46 @@ class Assets extends Controller_Contract {
 			],
 		];
 
+		$user_logged_in = is_user_logged_in();
+		$user_data      = [];
+
+		if ( $user_logged_in ) {
+			$user       = wp_get_current_user();
+			$name       = $user->nice_name ?? $user->display_name;
+			$name_parts = explode( ' ', $name );
+			$first_name = $user->first_name ? $user->first_name : '';
+			$first_name = $first_name ? $first_name : $name_parts[0] ?? '';
+			$last_name  = $user->last_name ? $user->last_name : '';
+			$last_name  = $last_name ? $last_name : $name_parts[1] ?? '';
+
+			$user_country = $user->user_country ?? '';
+			$user_country = $user_country && strlen( $user_country ) !== 2 ? $user_country : '';
+
+			$user_data = array_filter(
+				[
+					'givenName'    => $first_name,
+					'familyName'   => $last_name,
+					'email'        => $user->user_email ?? '',
+					'phone'        => $user->user_phone ?? '',
+					'countryCode'  => $user_country,
+					'addressLines' => [ $user->user_address ?? '' ],
+					'state'        => $user->user_state ?? '',
+					'city'         => $user->user_city ?? '',
+					'postalCode'   => $user->user_postcode ?? '',
+				]
+			);
+		}
+
 		$data = [
 			'nonce'             => wp_create_nonce( 'wp_rest' ),
 			'currencyCode'      => $this->merchant->get_merchant_currency(),
+			'amount'            => (string) ( tribe( Cart::class )->get_cart_total() ),
 			'orderEndpoint'     => $this->order_endpoint->get_route_url(),
 			'applicationId'     => $this->gateway->get_application_id(),
 			'locationId'        => $this->merchant->get_location_id(),
 			'squareCardOptions' => $card_style_options,
+			'userLoggedIn'      => is_user_logged_in(),
+			'userData'          => $user_data,
 		];
 
 		/**

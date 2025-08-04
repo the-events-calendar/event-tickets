@@ -7,6 +7,7 @@ use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Codeception\TestCase\WPTestCase;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe__Tickets__Main as Tickets_Main;
 use Generator;
 
 /**
@@ -137,8 +138,8 @@ class Payments_Tab_Test extends WPTestCase {
 		$content = ob_get_clean();
 
 		// Normalize version numbers in the content
-		$content = preg_replace(
-			'/version=\d+\.\d+\.\d+/',
+		$content = str_replace(
+			'version=' . Tickets_Main::VERSION,
 			'version={version}',
 			$content
 		);
