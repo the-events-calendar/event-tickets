@@ -10,24 +10,41 @@ import { Months } from '@tec/common/classy/types/Months';
 type Seconds = Minutes;
 type Percentage = NumericRange<0, 100>;
 
-export type Capacity = 'general-admission' | 'assigned-seating';
+export type Seating = 'general-admission' | 'assigned-seating';
 export type GlobalStockMode = 'own' | 'capped' | 'global';
 export type TicketType = 'default' | 'rsvp';
 
 export type CapacityDetails = {
-	available: number;
-	availablePercentage: Percentage;
-	max: number;
-	sold: number;
-	pending: number;
+	available?: number;
+	availablePercentage?: Percentage;
 	globalStockMode: GlobalStockMode;
+	max: number;
+	sold?: number;
+	pending?: number;
+}
+
+/**
+ * Represents the capacity settings for a ticket.
+ *
+ * @typedef {Object} CapacitySettings
+ * @property {Seating} [admissionType] - The type of admission (general admission or assigned seating).
+ * @property {number | ''} enteredCapacity - The capacity entered by the user, can be a number or an empty string.
+ * @property {number | ''} [displayedCapacity] - The capacity displayed to the user, can be a number or an empty string.
+ * @property {boolean} isShared - Indicates if the capacity is shared across multiple tickets.
+ */
+export type CapacitySettings = {
+	admissionType?: Seating;
+	displayedCapacity?: number | '';
+	enteredCapacity: number | '';
+	isShared: boolean;
+	sharedCapacity?: number;
 }
 
 export type CheckinDetails = {
 	checkedIn: number;
 	uncheckedIn: number;
-	checkedInPercentage: Percentage;
-	uncheckedInPercentage: Percentage;
+	checkedInPercentage?: Percentage;
+	uncheckedInPercentage?: Percentage;
 }
 
 type FeeDataKeys = 'availableFees' | 'automaticFees' | 'selectedFees';
@@ -50,7 +67,20 @@ export type TicketDate = {
 	second?: Seconds;
 }
 
+// todo: Some kind of positive number type for TicketId.
 export type TicketId = number;
+
+export type TicketSettings = {
+	id: TicketId;
+	eventId: number;
+	name: string;
+	description: string;
+	cost: string;
+	costDetails: CostDetails;
+	salePriceData: SalePriceDetails;
+	capacitySettings: CapacitySettings;
+	fees: FeesData;
+}
 
 export type Ticket = {
 	// API response fields

@@ -1,7 +1,7 @@
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
 import * as React from 'react';
-import { PartialTicket } from '../../types/Ticket';
+import { CapacitySettings, PartialTicket, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { ClipboardIcon, ClockIcon } from '../Icons';
 import { TicketRowMover } from "../TicketRowMover";
@@ -14,8 +14,57 @@ type TicketRowProps = {
 	onMoveUp?: () => void;
 	showMovers?: boolean;
 	tabIndex?: number;
-	value: PartialTicket;
+	ticketPosition?: number;
+	value: TicketSettings;
 } & TicketComponentProps;
+
+const unlimitedLowercase = _x( 'unlimited', 'Label for unlimited capacity', 'event-tickets' );
+
+/**
+ * Calculates and returns the appropriate capacity number based on the settings provided.
+ *
+ * The function evaluates the entered capacity, whether it is marked as unlimited
+ * or shared, and compares it with a shared capacity if applicable. The final
+ * capacity value is determined based on the logic described below:
+ *
+ * - If the entered capacity is unlimited (`''`), the result is `unlimitedLowercase`.
+ * - If the capacity is not shared, the entered capacity is returned as-is.
+ * - If the capacity is shared but a shared capacity is not provided, the entered capacity is returned.
+ * - If the entered capacity is less than or equal to the shared capacity, the entered capacity is returned.
+ * - If the entered capacity exceeds the shared capacity, the shared capacity is returned.
+ *
+ * @since TBD
+ *
+ * @param {CapacitySettings} settings - The settings object containing capacity details.
+ * @returns {string|number} The calculated capacity based on the input settings. Returns `unlimitedLowercase` for unlimited capacity.
+ */
+const getCapacityNumber = ( settings: CapacitySettings ): string | number => {
+	const {
+		enteredCapacity,
+		isShared,
+		sharedCapacity = 0
+	} = settings;
+	const enteredIsUnlimited = '' === enteredCapacity || -1 === enteredCapacity;
+	const enteredAsNumber = enteredIsUnlimited ? -1 : Number( enteredCapacity );
+
+	// If it's not shared, just return the entered capacity.
+	if ( ! isShared ) {
+		return enteredIsUnlimited ? unlimitedLowercase : enteredCapacity;
+	}
+
+	// If it is shared, but we don't have a shared capacity, return the entered capacity.
+	if ( ! sharedCapacity ) {
+		return enteredIsUnlimited ? unlimitedLowercase : enteredCapacity;
+	}
+
+	// If the entered capacity is less than or equal to the shared capacity, return the entered capacity.
+	// Otherwise, return the shared capacity.
+	if ( enteredAsNumber <= sharedCapacity ) {
+		return enteredIsUnlimited ? unlimitedLowercase : enteredCapacity;
+	} else {
+		return sharedCapacity;
+	}
+}
 
 /**
  * TicketRow component for rendering a single ticket row.
@@ -42,8 +91,7 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 	const [ hasIcons, setHasIcons ] = React.useState( true );
 
 	// todo: Calculations based on different capacity types.
-	const capacity = ticket.capacity || 0;
-	const capacityNumber = -1 !== capacity ? capacity : _x( 'Unlimited', 'Label for unlimited capacity', 'event-tickets' );
+	console.log( 'TicketRow: ticket', ticket );
 
 	return (
 		<tr
@@ -73,15 +121,15 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 			</td>
 
 			<td className="classy-field__ticket-row__capacity classy-field__ticket-row__section">
-				{ capacityNumber }
 				<span className="classy-field__ticket-row__capacity__label">
+					{ getCapacityNumber( ticket.capacitySettings ) }
+					&nbsp;
 					{ _x( 'tickets', 'Label for the number of tickets available', 'event-tickets' ) }
 				</span>
 			</td>
 
 			{ showMovers && (
 				<td className="classy-field__ticket-row__movers classy-field__ticket-row__section">
-					{ /* todo: implement component */}
 					<TicketRowMover
 						canMoveUp={ canMoveUp }
 						canMoveDown={ canMoveDown }

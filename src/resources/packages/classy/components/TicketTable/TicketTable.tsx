@@ -75,6 +75,7 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 						canMoveUp={ index > 0 }
 						canMoveDown={ index < ticketLength - 1 }
 						tabIndex={ index + 1 }
+						ticketPosition={ index }
 					/>
 				) ) }
 			</tbody>

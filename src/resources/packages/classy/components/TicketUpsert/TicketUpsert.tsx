@@ -1,5 +1,5 @@
-import { IconNew, LabeledInput } from '@tec/common/classy/components';
-import { __experimentalInputControl as InputControl, Button, ToggleControl } from '@wordpress/components';
+import { IconNew } from '@tec/common/classy/components';
+import { Button } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -8,7 +8,13 @@ import * as React from 'react';
 import { Fragment, useCallback, useState } from 'react';
 import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, } from '../../fields';
 import { CoreEditorSelect } from '../../types/Store';
-import { Capacity as CapacityType, PartialTicket, SalePriceDetails, TicketId } from '../../types/Ticket';
+import {
+	CapacitySettings,
+	PartialTicket,
+	SalePriceDetails,
+	TicketId,
+	TicketSettings
+} from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
 
@@ -16,22 +22,46 @@ type TicketUpsertProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
 	onDelete?: ( ticketId: TicketId ) => void;
-	onSave: ( data: PartialTicket ) => void;
-	value: PartialTicket;
+	onSave: ( data: TicketSettings ) => void;
+	value: TicketSettings;
 }
 
-const defaultValues: PartialTicket = {
-	title: '',
+const defaultValues: TicketSettings = {
+	id: 0,
+	eventId: 0,
+	name: '',
 	description: '',
-	price: '',
+	cost: '',
 	salePriceData: {
 		enabled: false,
 		salePrice: '',
 		startDate: null,
 		endDate: null,
 	},
-	capacity: '',
+	capacitySettings: {
+		enteredCapacity: '',
+		isShared: false,
+	},
+	costDetails: {
+		currencySymbol: '$',
+		currencyPosition: 'prefix',
+		currencyDecimalSeparator: '.',
+		currencyThousandSeparator: ',',
+		suffix: '',
+		values: []
+	},
+	fees: {
+		availableFees: [],
+		automaticFees: [],
+		selectedFees: [],
+	},
 };
+
+const createButtonLabel = _x( 'Create Ticket', 'Create ticket button label', 'event-tickets' );
+const updateButtonLabel = _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' );
+const deleteButtonLabel = _x( 'Delete Ticket', 'Delete ticket button label', 'event-tickets' );
+const cancelButtonLabel = _x( 'Cancel', 'Cancel button label', 'event-tickets' );
+const noop = () => {};
 
 /**
  * TicketUpsert component for creating or updating tickets.
@@ -43,7 +73,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const {
 		isUpdate,
 		onCancel,
-		onDelete = () => {},
+		onDelete = noop,
 		onSave,
 		value,
 	} = props;
@@ -55,14 +85,20 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		};
 	}, [] );
 
-	const [ currentValues, setCurrentValues ] = useState<PartialTicket>( {
+	const [ currentValues, setCurrentValues ] = useState<TicketSettings>( {
 		eventId: eventId,
 		...defaultValues,
 		...value,
 	} );
 
+	const [ costValue, setCostValue ] = useState<number>(
+		currentValues.costDetails.values.length > 0
+			? currentValues.costDetails.values[ 0 ]
+			: 0
+	);
+
 	// Tickets must have a name at a minimum.
-	const [ confirmEnabled, setConfirmEnabled ] = useState<boolean>( currentValues.title !== '' );
+	const [ confirmEnabled, setConfirmEnabled ] = useState<boolean>( currentValues.name !== '' );
 	const [ ticketUpsertError, setTicketUpsertError ] = useState<Error | null>( null );
 	const [ saveInProgress, setSaveInProgress ] = useState<boolean>( false );
 
@@ -146,11 +182,11 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<TicketName
-					value={ decodeEntities( currentValues.title ) }
+					value={ decodeEntities( currentValues.name ) }
 					onChange={ ( value: string ) => {
 						const newValue = value || '';
 						setConfirmEnabled( newValue !== '' );
-						return onValueChange( 'title', newValue );
+						return onValueChange( 'name', newValue );
 					} }
 				/>
 
@@ -161,8 +197,23 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 				<CurrencyInput
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
-					value={ decodeEntities( currentValues.price.toString() ) }
-					onChange={ ( value: string ) => onValueChange( 'price', value || '' ) }
+					value={ costValue > 0 ? costValue.toString() : '' }
+					onChange={ ( value: string ) => {
+						const numericValue = parseFloat( value );
+						if ( isNaN( numericValue ) ) {
+							setCostValue( 0 );
+							return onValueChange( 'costDetails', {
+								values: [],
+								...currentValues.costDetails,
+							} );
+						}
+
+						setCostValue( numericValue );
+						return onValueChange( 'costDetails', {
+							values: [ numericValue ],
+							...currentValues.costDetails,
+						} );
+					} }
 				/>
 
 				<SalePrice
@@ -180,39 +231,8 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 				<div className="classy-field__capacity">
 					<Capacity
-						value={ currentValues.capacityType }
-						onChange={ ( value: string ) => onValueChange( 'capacityType', value as CapacityType ) }
-					/>
-
-					<LabeledInput
-						label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
-					>
-						<InputControl
-							className="classy-field__control classy-field__control--input classy-field__control--input-narrow"
-							label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
-							hideLabelFromVision={ true }
-							value={ String( currentValues.capacity || '' ) }
-							onChange={ ( value: string ) => {
-								const capacityValue = value ? parseInt( value, 10 ) : undefined;
-								return onValueChange( 'capacity', capacityValue );
-							} }
-							size="small"
-							__next40pxDefaultSize={ true }
-						/>
-						<div className="classy-field__input-note">
-							{ _x( 'Leave blank for unlimited', 'Ticket capacity input note', 'event-tickets' ) }
-						</div>
-					</LabeledInput>
-
-					<ToggleControl
-						label={ _x(
-							'Share capacity with other tickets',
-							'Label for sharing capacity toggle',
-							'event-tickets'
-						) }
-						__nextHasNoMarginBottom={ true }
-						checked={ currentValues.capacityDetails.globalStockMode === 'global' }
-						onChange={ ( value: boolean ) => onValueChange( 'capacityShared', value ) }
+						value={ currentValues.capacitySettings }
+						onChange={ ( value: CapacitySettings ) => onValueChange( 'capacitySettings', value as CapacitySettings ) }
 					/>
 				</div>
 			</section>
@@ -241,12 +261,9 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						onClick={ invokeSaveWithData }
 						variant="primary"
 					>
-						{
-							isUpdate
-								? _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' )
-								: _x( 'Create Ticket', 'Create ticket button label', 'event-tickets' )
-						}
+						{ isUpdate ? updateButtonLabel : createButtonLabel }
 					</Button>
+
 					<Button
 						aria-disabled={ saveInProgress }
 						isBusy={ saveInProgress }
@@ -254,7 +271,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						onClick={ onCancel }
 						variant="link"
 					>
-						{ _x( 'Cancel', 'Cancel button label', 'event-tickets' ) }
+						{ cancelButtonLabel }
 					</Button>
 
 					{ isUpdate && (
@@ -265,7 +282,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 							onClick={ onDeleteClicked }
 							variant="link"
 						>
-							{ _x( 'Delete', 'Delete ticket button label', 'event-tickets' ) }
+							{ deleteButtonLabel }
 						</Button>
 					) }
 				</div>

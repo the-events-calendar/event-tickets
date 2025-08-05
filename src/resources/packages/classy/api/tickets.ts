@@ -1,14 +1,12 @@
 import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
-import { PartialTicket, Ticket } from '../types/Ticket';
+import { CostDetails } from '../types/CostDetails';
+import { CapacitySettings, PartialTicket, SalePriceDetails, TicketSettings } from '../types/Ticket';
 import {
 	GetTicketApiResponse,
 	GetTicketsApiResponse,
 	TicketsApiParams,
-	CreateTicketApiRequest,
-	UpdateTicketApiRequest,
-	DeleteTicketApiRequest
 } from '../types/Api';
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
@@ -89,14 +87,14 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
  * @since TBD
  *
  * @param {number} postId The ID of the post to fetch tickets for.
- * @return {Awaited<Ticket[]>} A promise that resolves to an array of tickets.
+ * @return {Awaited<TicketSettings[]>} A promise that resolves to an array of tickets.
  */
-export const fetchTicketsForPost = async ( postId: number ): Promise<Ticket[]> => {
-	return new Promise<Ticket[]>( async ( resolve, reject ) => {
+export const fetchTicketsForPost = async ( postId: number ): Promise<TicketSettings[]> => {
+	return new Promise<TicketSettings[]>( async ( resolve, reject ) => {
 		// todo: Handle the potential for multiple pages of results.
 		await fetchTickets( { include_post: [ postId ] } )
 			.then( ( response: GetTicketsApiResponse ) => {
-				resolve( response.tickets.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicket( ticket ) ) );
+				resolve( response.tickets.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicketSettings( ticket ) ) );
 			} )
 			.catch( ( error ) => {
 				reject( new Error( `Failed to fetch tickets for post ID ${ postId }: ${ error.message }` ) );
@@ -267,76 +265,50 @@ export const deleteTicket = async ( ticketId: number ): Promise<void> => {
 };
 
 /**
- * Map API response to Ticket type.
+ * Map API response to TicketSettings type.
  *
  * @since TBD
  *
- * @param {GetTicketApiResponse} apiResponse The API response.
- * @return {Ticket} The mapped ticket data.
+ * @param {GetTicketApiResponse} apiResponse The API response for a ticket.
+ * @return {TicketSettings} The mapped ticket settings.
  */
-function mapApiResponseToTicket( apiResponse: GetTicketApiResponse ): Ticket {
-	let capacity: number | '' = apiResponse?.capacity || 0;
+const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): TicketSettings => {
+	const stockMode = apiResponse.capacity_details?.global_stock_mode || 'own';
+	const capacitySettings: CapacitySettings = {
+		enteredCapacity: apiResponse.capacity_details?.max || -1,
+		isShared: stockMode === 'capped' || stockMode === 'global',
+	};
 
-	// If capacity is 0 or -1, we treat it as unlimited and set it to an empty string.
-	if ( capacity === 0 || capacity === -1 ) {
-		capacity = '';
-	}
+	const salePriceData: SalePriceDetails = {
+		enabled: Boolean( apiResponse.sale_price_data?.enabled || false ),
+		salePrice: apiResponse.sale_price_data?.sale_price || '',
+		startDate: apiResponse.sale_price_data?.start_date
+			? new Date( apiResponse.sale_price_data.start_date ).toISOString()
+			: '',
+		endDate: apiResponse.sale_price_data?.end_date
+			? new Date( apiResponse.sale_price_data.end_date ).toISOString()
+			: '',
+	};
+
+	// todo: use site settings for default values.
+	const costDetails: CostDetails = {
+		currencySymbol: apiResponse.cost_details?.currency_symbol || '$',
+		currencyPosition: apiResponse.cost_details?.currency_position || 'prefix',
+		currencyDecimalSeparator: apiResponse.cost_details?.currency_decimal_separator || '.',
+		currencyThousandSeparator: apiResponse.cost_details?.currency_thousand_separator || ',',
+		suffix: apiResponse.cost_details?.suffix || '',
+		values: apiResponse.cost_details?.values.map( ( value: string ): number => parseFloat( value ) ) || [],
+	};
 
 	return {
 		id: apiResponse.id,
-		title: apiResponse.title,
-		description: apiResponse.description,
 		eventId: apiResponse.post_id,
-		price: apiResponse.price,
-		provider: apiResponse.provider,
-		type: apiResponse.type || 'default',
-		globalId: apiResponse.globalId || `ticket_${ apiResponse.id }`,
-		globalIdLineage: apiResponse.globalIdLineage || [ `ticket_${ apiResponse.id }` ],
-		image: apiResponse.image || false,
-		availableFrom: apiResponse.availableFrom || null,
-		availableFromDetails: apiResponse.availableFromDetails || null,
-		availableUntil: apiResponse.availableUntil || null,
-		availableUntilDetails: apiResponse.availableUntilDetails || null,
-		isAvailable: apiResponse.isAvailable || false,
-		onSale: apiResponse.onSale || false,
-		capacity: capacity,
-		capacityDetails: apiResponse.capacityDetails || {
-			available: 0,
-			availablePercentage: 0,
-			max: 0,
-			sold: 0,
-			pending: 0,
-			globalStockMode: 'own',
-		},
-		cost: apiResponse.cost || '$0.00',
-		costDetails: apiResponse.costDetails || {
-			currencySymbol: '$',
-			currencyPosition: 'prefix',
-			currencyDecimalSeparator: '.',
-			currencyThousandSeparator: ',',
-			suffix: null,
-			values: [ 0 ],
-		},
-		priceSuffix: apiResponse.priceSuffix || null,
-		salePriceData: apiResponse.salePriceData || {
-			enabled: false,
-			endDate: null,
-			salePrice: '',
-			startDate: null,
-		},
-		supportsAttendeeInformation: apiResponse.supportsAttendeeInformation || false,
-		iac: apiResponse.iac || '',
-		attendees: apiResponse.attendees || [],
-		checkin: apiResponse.checkin || {
-			checkedIn: 0,
-			uncheckedIn: 0,
-			checkedInPercentage: 0,
-			uncheckedInPercentage: 100,
-		},
-		fees: apiResponse.fees || {
-			availableFees: [],
-			automaticFees: [],
-			selectedFees: [],
-		},
+		name: apiResponse.title,
+		description: apiResponse.description,
+		cost: apiResponse.cost,
+		costDetails: costDetails,
+		salePriceData: salePriceData,
+		capacitySettings: capacitySettings,
+		fees: apiResponse.fees,
 	};
 }
