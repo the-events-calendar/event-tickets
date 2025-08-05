@@ -1,5 +1,5 @@
 import { StoreState } from '../types/Store';
-import { Ticket } from '../types/Ticket';
+import { TicketSettings } from '../types/Ticket';
 
 
 /**
@@ -8,9 +8,9 @@ import { Ticket } from '../types/Ticket';
  * @since TBD
  *
  * @param {StoreState} state The current store state.
- * @return {Ticket[]} The list of tickets.
+ * @return {TicketSettings[]} The list of tickets.
  */
-export const getTickets = ( state: StoreState ): Ticket[] => {
+export const getTickets = ( state: StoreState ): TicketSettings[] => {
 	return state?.tickets || [];
 }
 
@@ -22,7 +22,7 @@ export const getTickets = ( state: StoreState ): Ticket[] => {
  * @param {StoreState} state The current store state.
  */
 export const getTicketById = ( state: StoreState ) => {
-	return ( ticketId: number ): Ticket | undefined => {
+	return ( ticketId: number ): TicketSettings | undefined => {
 		return state?.tickets?.find( ticket => ticket.id === ticketId );
 	};
 }

@@ -1,7 +1,7 @@
-import { PartialTicket, Ticket } from './Ticket';
+import { TicketSettings } from './Ticket';
 
 export type StoreState = {
-	tickets: Ticket[] | null;
+	tickets: TicketSettings[] | null;
 	loading?: boolean;
 };
 
@@ -11,8 +11,8 @@ export type StoreState = {
  * @since TBD
  */
 export type StoreSelect = {
-	getTickets: ( eventId: number ) => Ticket[];
-	getTicketById: ( ticketId: number ) => Ticket | undefined;
+	getTickets: ( eventId: number ) => TicketSettings[];
+	getTicketById: ( ticketId: number ) => TicketSettings | undefined;
 	isLoading: () => boolean;
 };
 
@@ -22,11 +22,11 @@ export type StoreSelect = {
  * @since TBD
  */
 export type StoreDispatch = {
-	addTicket: ( ticket: Ticket ) => void;
+	addTicket: ( ticket: TicketSettings ) => void;
 	deleteTicket: ( ticketId: number ) => void;
 	setIsLoading: ( isLoading: boolean ) => void;
-	setTickets: ( tickets: Ticket[] ) => void;
-	updateTicket: ( ticketId: number, ticketData: PartialTicket ) => void;
+	setTickets: ( tickets: TicketSettings[] ) => void;
+	updateTicket: ( ticketId: number, ticketData: TicketSettings ) => void;
 };
 
 /**

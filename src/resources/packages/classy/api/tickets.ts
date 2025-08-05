@@ -2,7 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { CostDetails } from '../types/CostDetails';
-import { CapacitySettings, PartialTicket, SalePriceDetails, TicketSettings } from '../types/Ticket';
+import { CapacitySettings, SalePriceDetails, TicketSettings } from '../types/Ticket';
 import {
 	GetTicketApiResponse,
 	GetTicketsApiResponse,
@@ -112,25 +112,27 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<TicketSetti
  *
  * @since TBD
  *
- * @param {PartialTicket} ticketData The data for the ticket to create or update.
- * @return {Promise<GetTicketApiResponse>} A promise that resolves to the created or updated ticket.
+ * @param {TicketSettings} ticketData The data for the ticket to create or update.
+ * @return {Promise<TicketSettings>} A promise that resolves to the created or updated ticket.
  */
-export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTicketApiResponse> => {
-	return new Promise<GetTicketApiResponse>( async ( resolve, reject ) => {
+export const upsertTicket = async ( ticketData: TicketSettings ): Promise<TicketSettings> => {
+	return new Promise<TicketSettings>( async ( resolve, reject ) => {
 		const isUpdate = ticketData.id && ticketData.id > 0;
 		const body: Record<string, any> = {
 			ticket: {},
 		};
 
 		// Required fields
-		body.name = ticketData?.title || '';
+		body.name = ticketData.name || '';
 		body.description = ticketData?.description || '';
 		body.post_id = ticketData.eventId.toString();
-		body.price = ticketData.price || '';
+
+		const hasPrice = ticketData?.costDetails?.values.length > 0;
+		body.price = hasPrice ? ticketData.costDetails.values[ 0 ].toString() : '';
 
 		// Provider and type
-		body.provider = ticketData.provider || 'tc';
-		body.type = ticketData.type || 'default';
+		body.provider = ticketData?.provider || 'tc';
+		body.type = ticketData?.type || 'default';
 
 		// Date and time fields
 		if ( ticketData.availableFrom ) {
@@ -157,10 +159,10 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		}
 
 		// Capacity fields
-		body.ticket.capacity = ticketData.capacity?.toString() || '';
-		if ( ticketData.capacityDetails ) {
-			const capacityType = ticketData.capacityDetails.globalStockMode;
-			const capacity = ticketData.capacityDetails.max;
+		body.ticket.capacity = ticketData.capacitySettings?.enteredCapacity.toString() || '';
+		if ( ticketData.capacitySettings ) {
+			const capacityType = ticketData.capacitySettings.globalStockMode;
+			const capacity = ticketData.capacitySettings.enteredCapacity;
 
 			// Map capacity type to ticket mode
 			const isUnlimited = capacityType === 'own' || capacity === 0;
@@ -191,7 +193,8 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		}
 
 		// Menu order
-		body.menu_order = ticketData.menuOrder?.toString() || '0';
+		// todo: Uncomment when menu order is supported.
+		// body.menu_order = ticketData.menuOrder?.toString() || '0';
 
 		// Set the filter as its own full string, to allow for easier discoverability when searching for it.
 		const filterName = isUpdate
@@ -204,7 +207,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 		 * @since TBD
 		 *
 		 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
-		 * @param {PartialTicket} ticketData The ticket data being sent.
+		 * @param {TicketSettings} ticketData The ticket data being sent.
 		 */
 		const additionalValues: Record<string, any> = applyFilters( filterName, {}, ticketData );
 
@@ -228,7 +231,7 @@ export const upsertTicket = async ( ticketData: PartialTicket ): Promise<GetTick
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( `Failed to ${ isUpdate ? 'update' : 'create' } ticket: response did not return an object.` ) );
 				} else {
-					resolve( data as GetTicketApiResponse );
+					resolve( mapApiResponseToTicketSettings( data as GetTicketApiResponse ) );
 				}
 			} )
 			.catch( ( error ) => {
@@ -289,6 +292,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 			? new Date( apiResponse.sale_price_data.end_date ).toISOString()
 			: '',
 	};
+	console.log( 'apiResponse', apiResponse );
 
 	// todo: use site settings for default values.
 	const costDetails: CostDetails = {
@@ -310,5 +314,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		salePriceData: salePriceData,
 		capacitySettings: capacitySettings,
 		fees: apiResponse.fees,
+		provider: apiResponse.provider || 'tc',
+		type: apiResponse.type || 'default',
 	};
 }

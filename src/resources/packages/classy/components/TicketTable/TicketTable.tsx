@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Ticket } from '../../types/Ticket';
+import { Ticket, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
 import { STORE_NAME } from '../../constants';
 import { StoreDispatch, StoreSelect, CoreEditorSelect } from "../../types/Store";
 
 type TicketTableProps = {
-	onEditTicket: ( ticket: Ticket ) => void;
+	onEditTicket: ( ticket: TicketSettings ) => void;
 } & Omit<TicketComponentProps, 'value'>;
 
 type MoveDirection = 'up' | 'down';
 
-const moveTicket = ( tickets: Ticket[], direction: MoveDirection, index: number ): Ticket[] => {
+const moveTicket = ( tickets: TicketSettings[], direction: MoveDirection, index: number ): TicketSettings[] => {
 	const newTickets = [ ...tickets ];
 	const ticketToMove = newTickets[ index ];
 
@@ -64,7 +64,7 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 	return (
 		<table className="classy-field classy-field__ticket-table">
 			<tbody>
-				{ tickets.map( ( ticket: Ticket, index: number ) => (
+				{ tickets.map( ( ticket: TicketSettings, index: number ) => (
 					<TicketRow
 						key={ ticket.id }
 						value={ ticket }

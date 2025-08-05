@@ -25,7 +25,7 @@ export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, 
 			const newTicket = ( action as CreateTicketAction ).ticket;
 			return {
 				...state,
-				tickets: [ ...state.tickets, hydrateTicket( newTicket ) ],
+				tickets: [ ...state.tickets, newTicket ],
 			};
 		case DELETE_TICKET:
 			const ticketIdToDelete = ( action as DeleteTicketAction ).ticketId;

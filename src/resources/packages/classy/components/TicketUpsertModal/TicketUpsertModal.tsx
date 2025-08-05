@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Modal } from '@wordpress/components';
 import { TicketUpsert } from '../TicketUpsert';
-import { PartialTicket, TicketId } from '../../types/Ticket';
+import { TicketId, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 
 type TicketUpsertModalProps = {
@@ -9,8 +9,8 @@ type TicketUpsertModalProps = {
 	onCancel: () => void;
 	onClose: () => void;
 	onDelete: ( ticketId: TicketId ) => void;
-	onSave: ( ticket: PartialTicket ) => void;
-	value: PartialTicket;
+	onSave: ( ticket: TicketSettings ) => void;
+	value: TicketSettings;
 } & TicketComponentProps;
 
 /**

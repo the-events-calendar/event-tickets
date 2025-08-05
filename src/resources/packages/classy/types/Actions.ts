@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { PartialTicket, Ticket } from './Ticket';
+import { TicketSettings } from './Ticket';
 
 export const CREATE_TICKET = 'CREATE_TICKET';
 export const DELETE_TICKET = 'DELETE_TICKET';
@@ -8,7 +8,7 @@ export const SET_TICKETS = 'SET_TICKETS';
 export const UPDATE_TICKET = 'UPDATE_TICKET';
 
 export type CreateTicketAction = {
-	ticket: PartialTicket;
+	ticket: TicketSettings;
 } & Action<typeof CREATE_TICKET>;
 
 export type DeleteTicketAction = {
@@ -20,10 +20,10 @@ export type SetIsLoadingAction = {
 } & Action<typeof SET_IS_LOADING>;
 
 export type SetTicketsAction = {
-	tickets: Ticket[];
+	tickets: TicketSettings[];
 } & Action<typeof SET_TICKETS>;
 
 export type UpdateTicketAction = {
 	ticketId: number;
-	ticketData: PartialTicket;
+	ticketData: TicketSettings;
 } & Action<typeof UPDATE_TICKET>;

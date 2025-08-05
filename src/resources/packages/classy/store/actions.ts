@@ -1,4 +1,4 @@
-import { Ticket, PartialTicket } from '../types/Ticket';
+import { TicketSettings } from '../types/Ticket';
 import {
 	CREATE_TICKET,
 	DELETE_TICKET,
@@ -18,9 +18,9 @@ import { StoreDispatch } from '../types/Store';
  *
  * @since TBD
  *
- * @param {Ticket} ticket The ticket to add to the store.
+ * @param {TicketSettings} ticket The ticket to add to the store.
  */
-const addTicket = ( ticket: Ticket ): CreateTicketAction => ( {
+const addTicket = ( ticket: TicketSettings ): CreateTicketAction => ( {
 	type: CREATE_TICKET,
 	ticket
 } );
@@ -54,9 +54,9 @@ const setIsLoading = ( isLoading: boolean ): SetIsLoadingAction => ( {
  *
  * @since TBD
  *
- * @param {Ticket[]} tickets The list of tickets to set in the store.
+ * @param {TicketSettings[]} tickets The list of tickets to set in the store.
  */
-const setTickets = ( tickets: Ticket[] ): SetTicketsAction => ( {
+const setTickets = ( tickets: TicketSettings[] ): SetTicketsAction => ( {
 	type: SET_TICKETS,
 	tickets
 } );
@@ -67,9 +67,9 @@ const setTickets = ( tickets: Ticket[] ): SetTicketsAction => ( {
  * @since TBD
  *
  * @param {number} ticketId The ID of the ticket to update.
- * @param {PartialTicket} ticketData The data to update the ticket with.
+ * @param {TicketSettings} ticketData The data to update the ticket with.
  */
-const updateTicket = ( ticketId: number, ticketData: PartialTicket ): UpdateTicketAction => ( {
+const updateTicket = ( ticketId: number, ticketData: TicketSettings ): UpdateTicketAction => ( {
 	type: UPDATE_TICKET,
 	ticketId,
 	ticketData,

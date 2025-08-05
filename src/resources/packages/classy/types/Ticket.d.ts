@@ -38,6 +38,7 @@ export type CapacitySettings = {
 	enteredCapacity: number | '';
 	isShared: boolean;
 	sharedCapacity?: number;
+	globalStockMode?: GlobalStockMode;
 }
 
 export type CheckinDetails = {
@@ -71,15 +72,27 @@ export type TicketDate = {
 export type TicketId = number;
 
 export type TicketSettings = {
-	id: TicketId;
-	eventId: number;
+	id?: TicketId;
+	eventId?: number;
 	name: string;
-	description: string;
-	cost: string;
-	costDetails: CostDetails;
-	salePriceData: SalePriceDetails;
-	capacitySettings: CapacitySettings;
-	fees: FeesData;
+	description?: string;
+	cost?: string;
+	costDetails?: CostDetails;
+	salePriceData?: SalePriceDetails;
+	capacitySettings?: CapacitySettings;
+	fees?: FeesData;
+	provider?: string;
+	type?: TicketType;
+
+	// Ticket sale dates.
+	availableFrom?: string;
+	availableFromDetails?: TicketDate;
+	availableUntil?: string;
+	availableUntilDetails?: TicketDate;
+
+	// Features.
+	supportsAttendeeInformation?: boolean;
+	iac?: string;
 }
 
 export type Ticket = {

@@ -10,7 +10,6 @@ import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, } fro
 import { CoreEditorSelect } from '../../types/Store';
 import {
 	CapacitySettings,
-	PartialTicket,
 	SalePriceDetails,
 	TicketId,
 	TicketSettings
@@ -122,15 +121,9 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		setSaveInProgress( true );
 
 		// todo: better data mapping for the ticket data.
-		const dataToSave: PartialTicket = {
-			title: currentValues.title,
-			description: currentValues.description,
-			price: currentValues.price,
-			salePriceData: currentValues.salePriceData,
-		};
 
 		TicketApi.upsertTicket( currentValues )
-			.then( ( ticket: PartialTicket ) => {
+			.then( ( ticket: TicketSettings ) => {
 				setSaveInProgress( false );
 				setTicketUpsertError( null );
 

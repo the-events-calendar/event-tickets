@@ -1,5 +1,5 @@
 import { fetchTicketsForPost } from '../api';
-import { Ticket } from '../types/Ticket';
+import { TicketSettings } from '../types/Ticket';
 import { StoreDispatch } from '../types/Store';
 
 export default {
@@ -11,7 +11,7 @@ export default {
 			}
 
 			await fetchTicketsForPost( eventId )
-				.then( ( response: Ticket[] ) => {
+				.then( ( response: TicketSettings[] ) => {
 					dispatch.setTickets( response );
 				} )
 				.catch( ( error ) => {

@@ -7,18 +7,21 @@ import { useCallback, useState } from 'react';
 import { AddTicket, TicketTable, TicketUpsertModal, } from '../../components';
 import { STORE_NAME } from '../../constants';
 import { CoreEditorSelect, StoreDispatch, StoreSelect } from '../../types/Store';
-import { PartialTicket, Ticket as TicketData, TicketId } from '../../types/Ticket';
+import { TicketId, TicketSettings } from '../../types/Ticket';
 
-const defaultTicket: PartialTicket = {
-	title: '',
+const defaultTicket: TicketSettings = {
+	name: '',
 	description: '',
-	price: '',
 	salePriceData: {
 		enabled: false,
 		salePrice: '',
 		startDate: null,
 		endDate: null,
-	}
+	},
+	capacitySettings: {
+		enteredCapacity: '',
+		isShared: false,
+	},
 };
 
 /**
@@ -47,14 +50,14 @@ export default function Tickets(): JSX.Element {
 
 	const [ isUpserting, setIsUpserting ] = useState( false );
 	const [ isNewTicket, setIsNewTicket ] = useState( false );
-	const [ ticketToEdit, setTicketToEdit ] = useState<PartialTicket>( defaultTicket );
+	const [ ticketToEdit, setTicketToEdit ] = useState<TicketSettings>( defaultTicket );
 
 	const onTicketAddedClicked = useCallback( () => {
 		setIsUpserting( true );
 		setIsNewTicket( true );
 	}, [] );
 
-	const onTicketUpsertSaved = useCallback( ( ticket: TicketData ) => {
+	const onTicketUpsertSaved = useCallback( ( ticket: TicketSettings ) => {
 		if ( isNewTicket ) {
 			addTicket( ticket );
 		} else {
@@ -66,7 +69,7 @@ export default function Tickets(): JSX.Element {
 		setTicketToEdit( defaultTicket );
 	}, [ isNewTicket, defaultTicket ] );
 
-	const onEditTicket = useCallback( ( ticket: PartialTicket ) => {
+	const onEditTicket = useCallback( ( ticket: TicketSettings ) => {
 		setTicketToEdit( ticket );
 		setIsUpserting( true );
 		setIsNewTicket( false );

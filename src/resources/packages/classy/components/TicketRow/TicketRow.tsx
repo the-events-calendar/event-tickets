@@ -1,7 +1,7 @@
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
 import * as React from 'react';
-import { CapacitySettings, PartialTicket, TicketSettings } from '../../types/Ticket';
+import { CapacitySettings, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { ClipboardIcon, ClockIcon } from '../Icons';
 import { TicketRowMover } from "../TicketRowMover";
@@ -9,7 +9,7 @@ import { TicketRowMover } from "../TicketRowMover";
 type TicketRowProps = {
 	canMoveDown?: boolean;
 	canMoveUp?: boolean;
-	onEdit: ( ticket: PartialTicket ) => void;
+	onEdit: ( ticket: TicketSettings ) => void;
 	onMoveDown?: () => void;
 	onMoveUp?: () => void;
 	showMovers?: boolean;
@@ -66,6 +66,8 @@ const getCapacityNumber = ( settings: CapacitySettings ): string | number => {
 	}
 }
 
+const noop = () => {};
+
 /**
  * TicketRow component for rendering a single ticket row.
  *
@@ -79,8 +81,8 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 		canMoveDown = false,
 		canMoveUp = false,
 		onEdit,
-		onMoveDown = () => {},
-		onMoveUp = () => {},
+		onMoveDown = noop,
+		onMoveUp = noop,
 		showMovers = false,
 		tabIndex,
 		ticketPosition = 0,
@@ -90,19 +92,16 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 	// todo: This should be based on whether any icons should be shown.
 	const [ hasIcons, setHasIcons ] = React.useState( true );
 
-	// todo: Calculations based on different capacity types.
-	console.log( 'TicketRow: ticket', ticket );
-
 	return (
 		<tr
-			aria-label={ ticket.title }
+			aria-label={ ticket.name }
 			className="classy-field classy-field__ticket-row"
 			onClick={ () => onEdit( ticket ) }
 			tabIndex={ tabIndex }
 		>
 			<td className="classy-field__ticket-row__label classy-field__ticket-row__section">
 				<h4>
-					{ ticket.title }
+					{ ticket.name }
 					{ hasIcons && (
 						<span className="classy-field__ticket-row__icons">
 							{ /* todo: fill in icons properly */ }
@@ -135,7 +134,7 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 						canMoveDown={ canMoveDown }
 						onMoveUp={ onMoveUp }
 						onMoveDown={ onMoveDown }
-						rowLabel={ ticket.title }
+						rowLabel={ ticket.name }
 						ticketPosition={ ticketPosition }
 					/>
 				</td>
