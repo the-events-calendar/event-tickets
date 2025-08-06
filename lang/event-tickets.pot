@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.25.1\n"
+"Project-Id-Version: Event Tickets 5.25.1.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-21T21:55:58+00:00\n"
+"POT-Creation-Date: 2025-07-30T17:31:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -605,6 +605,7 @@ msgstr ""
 #: src/admin-views/seating/components/layouts/card.php:59
 #: src/admin-views/seating/components/maps/card.php:38
 #: src/Tickets/Commerce/Order_Modifiers/Table_Views/Order_Modifier_Table.php:261
+#: src/views/v2/commerce/checkout/purchaser-info.php:60
 #: src/modules/blocks/rsvp/attendee-registration/template.js:19
 #: src/Tickets/Blocks/Ticket/app/editor/container-content/attendees-registration/template.js:20
 msgid "Edit"
@@ -8270,7 +8271,7 @@ msgstr ""
 msgid "Unfortunately, Square doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/Hooks.php:135
+#: src/Tickets/Commerce/Gateways/Square/Hooks.php:154
 #: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:153
 msgid "Failed to process the webhook after too many tries."
 msgstr ""
@@ -14604,7 +14605,7 @@ msgctxt "Quantity of a fee with \"x\" after it, eg. \"2x\""
 msgid "(%sx)"
 msgstr ""
 
-#: src/views/v2/commerce/checkout/purchaser-info.php:53
+#: src/views/v2/commerce/checkout/purchaser-info.php:55
 msgid "Proceed to payment"
 msgstr ""
 
