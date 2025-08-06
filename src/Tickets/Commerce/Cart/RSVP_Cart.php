@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Cart\Cart_Item;
 use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\RSVP\Constants;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
@@ -438,9 +439,9 @@ class RSVP_Cart extends Abstract_Cart {
 
 		$this->full_param_items = array_map(
 			function ( $item ) {
-				$type = $item['type'] ?? 'tc-rsvp';
+				$type = $item['type'] ?? Constants::TC_RSVP_TYPE;
 				switch ( $type ) {
-					case 'tc-rsvp':
+					case Constants::TC_RSVP_TYPE:
 						return $this->add_params( $item );
 
 					default:
@@ -492,7 +493,7 @@ class RSVP_Cart extends Abstract_Cart {
 		//@todo why is the tc-rsvp_id? track the source and make it ticket_id.
 		$item['ticket_id']  = $item['tc-rsvp_id'];
 		$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-		$item['type']      = 'tc-rsvp';
+		$item['type']      = Constants::TC_RSVP_TYPE;
 
 		return $item;
 	}
@@ -522,7 +523,7 @@ class RSVP_Cart extends Abstract_Cart {
 		return array_filter(
 			$items,
 			static function ( $item ) use ( $type ) {
-				return $type === ( $item['type'] ?? 'tc-rsvp' );
+				return $type === ( $item['type'] ?? Constants::TC_RSVP_TYPE );
 			}
 		);
 	}

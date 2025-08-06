@@ -4,6 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use TEC\Tickets\Commerce\RSVP\Constants;
+
 class Tribe__Tickets__Tickets_View {
 
 	/**
@@ -1081,7 +1083,7 @@ class Tribe__Tickets__Tickets_View {
 		$rsvp = null;
 
 		foreach ( $tickets as $index => $ticket ) {
-			if ( 'tc-rsvp' === $ticket->type ) {
+			if ( Constants::TC_RSVP_TYPE === $ticket->type ) {
 				$rsvp = $ticket;
 				unset( $tickets[ $index ] );
 			}
@@ -1217,13 +1219,18 @@ class Tribe__Tickets__Tickets_View {
 				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 			}
 
-			$rendered_content  = $before_content;
-			$rendered_content .= $template->template( 'v2/commerce/rsvp', [
-				'post_id' => $post_id,
-				'block_html_id' => 'tc-rsvp-' . uniqid(),
-				'step' => '',
-				'active_rsvps' => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : []
-			], $echo );
+			/**
+			 * Filters the content for ticket templates within the tickets block.
+			 *
+			 * @since TBD
+			 *
+			 * @param string                           $content  The template content to be rendered.
+			 * @param Tribe__Tickets__Editor__Template $template The template object.
+			 * @param WP_Post                          $post     The post object.
+			 * @param bool                             $echo     Whether to echo the output.
+			 */
+			$rendered_content = apply_filters( 'tec_tickets_front_end_ticket_form_template_content', $before_content, $template, $post, $echo );
+
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.

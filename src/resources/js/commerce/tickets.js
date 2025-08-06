@@ -1,4 +1,4 @@
-/* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout */
+/* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers */
 
 /**
  * Path to this script in the global tribe Object.
@@ -42,6 +42,8 @@ tribe.tickets.commerce.tickets = {};
 		ticketForm: '.tec-event-tickets-from__wrap',
 		submitButton: '#tc_ticket_form_save',
 		hiddenElement: '.tribe-common-a11y-hidden',
+		rsvpMetabox: '#tec-tickets-commerce-rsvp',
+		timepicker: '.tribe-timepicker:not(.ui-timepicker-input)',
 	};
 
 	/**
@@ -229,6 +231,19 @@ tribe.tickets.commerce.tickets = {};
 	};
 
 	/**
+	 * Setup timepickers for RSVP metabox.
+	 *
+	 * @since TBD
+	 */
+	obj.setupTimepickers = () => {
+		const $rsvpMetabox = $( obj.selectors.rsvpMetabox );
+		if ( $rsvpMetabox.length && typeof tribe_timepickers !== 'undefined' ) {
+			const $timepickers = $rsvpMetabox.find( obj.selectors.timepicker );
+			tribe_timepickers.setup_timepickers( $timepickers );
+		}
+	};
+
+	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
 	 * @since TBD
@@ -244,6 +259,7 @@ tribe.tickets.commerce.tickets = {};
 	 */
 	obj.ready = () => {
 		obj.bindEvents();
+		obj.setupTimepickers();
 	};
 
 	$( obj.ready );

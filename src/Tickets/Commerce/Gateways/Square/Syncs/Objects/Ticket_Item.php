@@ -122,7 +122,7 @@ class Ticket_Item extends Item {
 		$this->set_item_data(
 			'price_money',
 			[
-				'amount'   => $this->ticket->price * 100,
+				'amount'   => (int) ( ( (float) $this->ticket->price ) * 100 ),
 				'currency' => Currency::get_provider_currency_code( $this->ticket->provider_class, $this->ticket->ID ),
 			]
 		);

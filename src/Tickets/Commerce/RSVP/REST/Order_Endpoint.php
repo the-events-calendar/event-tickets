@@ -20,6 +20,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Commerce\RSVP\Constants;
 
 use Tribe__Tickets__Tickets_View;
 use Tribe__Tickets__Ticket_Object;
@@ -231,7 +232,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			// Add the RSVP ticket to the cart.
 			if ( $quantity > 0 ) {
 				$extra_args = [
-					'type'         => 'tc-rsvp',
+					'type'         => Constants::TC_RSVP_TYPE,
 					'order_status' => $first_attendee['order_status'],
 					'optout'       => $first_attendee['optout'],
 				];
@@ -260,7 +261,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$cart->save();
 			}
 
-			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser, 'tc-rsvp' );
+			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser, Constants::TC_RSVP_TYPE );
 
 			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
@@ -447,10 +448,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			// Refresh ticket.
 			$args['rsvp'] = $this->module->get_ticket( $post_id, $ticket_id );
 
-			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
-			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
-			//$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
-			//['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
+			$args['is_going']       = $args['process_result']['opt_in_args']['is_going'];
+			$args['opt_in_checked'] = $args['process_result']['opt_in_args']['checked'];
+			$args['opt_in_nonce']   = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
 		if ( ! empty( $args['process_result']['attendees'] ) ) {

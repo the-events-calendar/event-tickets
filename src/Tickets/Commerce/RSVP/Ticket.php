@@ -39,7 +39,7 @@ class Ticket {
 	 * @return object The modified RSVP ticket object.
 	 */
 	public function filter_rsvp( $return, $event_id, $ticket_id ) {
-		if ( $return->type !== 'tc-rsvp' ) {
+		if ( $return->type !== Constants::TC_RSVP_TYPE ) {
 			return $return;
 		}
 
@@ -59,7 +59,7 @@ class Ticket {
 	 * @param string $ticket_class The class type of the ticket.
 	 */
 	public function save_rsvp( $post_id, $ticket, $raw_data, $ticket_class ) {
-		if ( $ticket->type !== 'tc-rsvp' ) {
+		if ( $ticket->type !== Constants::TC_RSVP_TYPE ) {
 			return;
 		}
 
