@@ -15,21 +15,21 @@
 
 ?>
 
-<div class="tec-tickets-rsvp-responses-info" style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
-	<div style="display: flex; align-items: center; gap: 15px;">
-		<div style="display: flex; align-items: center; gap: 5px;">
+<div class="tec-tickets-rsvp-responses-info">
+	<div>
+		<div>
 			<strong><?php echo esc_html_x( 'Responses:', 'Label for RSVP response count in admin panel.', 'event-tickets' ); ?></strong>
 			<?php if ( $cant_go_enabled ) : ?>
-				<span class="dashicons dashicons-info" 
-					  title="<?php echo esc_attr_x( 'Responses count includes "not going"', 'Tooltip explaining RSVP count includes negative responses.', 'event-tickets' ); ?>" 
-					  style="font-size: 16px; color: #666; cursor: help;">
+				<span class="dashicons dashicons-info"
+					  title="<?php echo esc_attr_x( 'Responses count includes "not going"', 'Tooltip explaining RSVP count includes negative responses.', 'event-tickets' ); ?>"
+				>
 				</span>
 			<?php endif; ?>
 		</div>
-		<span class="tec-tickets-rsvp-total-count" style="font-weight: bold; color: #0073aa;">
+		<span class="tec-tickets-rsvp-total-count">
 			<?php echo esc_html( $total_responses ); ?>
 		</span>
-		<a href="<?php echo esc_url( $attendees_url ); ?>" class="button button-secondary" style="margin-left: auto;">
+		<a href="<?php echo esc_url( $attendees_url ); ?>" class="button button-secondary">
 			<?php echo esc_html_x( 'View Attendees', 'Link text to view attendees admin page from RSVP panel.', 'event-tickets' ); ?>
 		</a>
 	</div>
