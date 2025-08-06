@@ -434,7 +434,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
-			//$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
 			//['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 

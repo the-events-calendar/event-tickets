@@ -62,6 +62,7 @@ class Attendee_Model extends Base {
 			$price_paid           = Arr::get( $post_meta, [ Attendee::$price_paid_meta_key, 0 ] );
 			$currency             = Arr::get( $post_meta, [ Attendee::$currency_meta_key, 0 ] );
 			$is_subscribed        = tribe_is_truthy( Arr::get( $post_meta, [ Attendee::$subscribed_meta_key, 0 ] ) );
+			$rsvp_status          = Arr::get( $post_meta, [ Attendee::$rsvp_status, 0 ] );
 
 			// Tries to determine an Attendee Unique ID.
 			$ticket_unique_id = Arr::get( $post_meta, [ '_unique_id', 0 ] );
@@ -81,6 +82,7 @@ class Attendee_Model extends Base {
 				'ticket_sent'     => $ticket_sent,
 				'price_paid'      => $price_paid,
 				'currency'        => $currency,
+				'rsvp_status'     => $rsvp_status,
 
 				// Provider.
 				'provider'        => null,

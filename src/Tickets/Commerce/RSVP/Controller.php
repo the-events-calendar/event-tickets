@@ -124,6 +124,9 @@ class Controller extends Controller_Contract {
 	protected function add_filters() {
 		add_action( 'tec_tickets_commerce_get_ticket_legacy', [ $this, 'filter_rsvp' ], 10, 3 );
 		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 4 );
+		add_filter( 'tribe_tickets_attendees_table_order_status', [ $this, 'modify_tc_rsvp_status_display' ], 10, 2 );
+		add_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'modify_tc_rsvp_checkin_display' ], 10, 2 );
+		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10, 2 );
 	}
 
 	public function filter_rsvp( $return, $event_id, $ticket_id ) {
@@ -150,5 +153,103 @@ class Controller extends Controller_Contract {
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
 
 		return $content;
+	}
+
+	/**
+	 * Modifies the status display for TC RSVP attendees to show "Going" or "Not Going".
+	 *
+	 * @since TBD
+	 *
+	 * @param string $label The current status label.
+	 * @param array  $item  The attendee item data.
+	 *
+	 * @return string The modified status label.
+	 */
+	public function modify_tc_rsvp_status_display( $label, $item ) {
+		// Only modify for TC RSVP attendees.
+		if ( empty( $item['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $item['ticket_type'] ) {
+			return $label;
+		}
+
+		// Check for RSVP status in the item data.
+		if ( ! isset( $item['rsvp_status'] ) ) {
+			return $label;
+		}
+
+		// Determine the display text based on RSVP status.
+		$status_text = 'yes' === $item['rsvp_status'] ? __( 'Going', 'event-tickets' ) : __( 'Not Going', 'event-tickets' );
+
+		// Extract the icon from the existing label if present.
+		$icon = '';
+		if ( preg_match( '/<span class="dashicons[^>]*><\/span>/', $label, $matches ) ) {
+			$icon = $matches[0];
+		}
+
+		// Build the new label with appropriate CSS classes.
+		$classes = [
+			'tec-tickets__admin-table-attendees-order-status',
+			'tec-tickets__admin-table-attendees-order-status--tc-rsvp',
+			'tec-tickets__admin-table-attendees-order-status--' . ( 'yes' === $item['rsvp_status'] ? 'going' : 'not-going' ),
+		];
+
+		$new_label = sprintf(
+			'<div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="%1$s">%2$s%3$s</span></div>',
+			implode( ' ', $classes ),
+			$icon,
+			esc_html( $status_text )
+		);
+
+		return $new_label;
+	}
+
+	/**
+	 * Modifies the check-in display for TC RSVP attendees.
+	 * Hides the check-in column content when RSVP status is 'no'.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $content The current check-in column content.
+	 * @param array  $item    The attendee item data.
+	 *
+	 * @return string The modified check-in column content.
+	 */
+	public function modify_tc_rsvp_checkin_display( $content, $item ) {
+		// Only modify for TC RSVP attendees.
+		if ( empty( $item['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $item['ticket_type'] ) {
+			return $content;
+		}
+
+		// Hide check-in content if RSVP status is 'no' (Not Going).
+		if ( isset( $item['rsvp_status'] ) && 'no' === $item['rsvp_status'] ) {
+			return '';
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Modifies the row actions for TC RSVP attendees.
+	 * Removes check-in actions when RSVP status is 'no' (Not Going).
+	 *
+	 * @since TBD
+	 *
+	 * @param array $actions The current row actions.
+	 * @param array $item    The attendee item data.
+	 *
+	 * @return array The modified row actions.
+	 */
+	public function modify_tc_rsvp_row_actions( $actions, $item ) {
+		// Only modify for TC RSVP attendees.
+		if ( empty( $item['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $item['ticket_type'] ) {
+			return $actions;
+		}
+
+		// Remove check-in actions if RSVP status is 'no' (Not Going).
+		if ( isset( $item['rsvp_status'] ) && 'no' === $item['rsvp_status'] ) {
+			// Remove the check-in action (key 0 contains check-in/undo check-in links).
+			unset( $actions[0] );
+		}
+
+		return $actions;
 	}
 }

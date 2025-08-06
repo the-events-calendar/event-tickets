@@ -121,11 +121,11 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['post_id']                           = Event::filter_event_id( $post_id );
 		$args['rsvp_id']                           = Arr::get( $request_params, 'rsvp_id', '' );
 		$args['ticket_id']                         = Arr::get( $request_params, 'rsvp_id', '' );
-		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', -1 );
-		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', -1 );
+		$args['rsvp_limit']                        = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['event_capacity']                    = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['tribe-ticket']['event_capacity']    = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['tribe-ticket']['capacity']          = Arr::get( $request_params, 'rsvp_limit', - 1 );
+		$args['tribe-ticket']['stock']             = Arr::get( $request_params, 'rsvp_limit', - 1 );
 		$args['ticket_end_date']                   = Arr::get( $request_params, 'rsvp_end_date', '' );
 		$args['ticket_end_time']                   = Arr::get( $request_params, 'rsvp_end_time', '' );
 		$args['ticket_start_date']                 = Arr::get( $request_params, 'rsvp_start_date', '' );
@@ -133,6 +133,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['tec_tickets_rsvp_enable_cannot_go'] = Arr::get( $request_params, 'tec_tickets_rsvp_enable_cannot_go', '' );
 		$args['ticket_provider']                   = Arr::get( $request_params, 'ticket_provider', '' );
 		$args['ticket_type']                       = Arr::get( $request_params, 'ticket_type', Constants::TC_RSVP_TYPE );
+		$args['ticket_name']                       = tribe_get_rsvp_label_singular();
 
 		$module = tribe( Module::class );
 		$module->ticket_add( $post_id, $args );

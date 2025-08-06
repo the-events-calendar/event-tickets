@@ -141,6 +141,18 @@ class Generate_Attendees extends Flag_Action_Abstract {
 					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i ),
 				];
 
+				// Add RSVP status for RSVP tickets.
+				if ( $this->is_rsvp( $item ) ) {
+					$order_status = Arr::get( $item, [ 'extra', 'order_status' ] );
+					
+					// Only allow 'no' status if the ticket has show_not_going enabled.
+					if ( 'no' === $order_status && ! empty( $ticket->show_not_going ) ) {
+						$args['rsvp_status'] = 'no';
+					} elseif ( 'yes' === $order_status ) {
+						$args['rsvp_status'] = 'yes';
+					}
+				}
+
 				/**
 				 * Filters the attendee data before it is saved.
 				 *
