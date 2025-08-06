@@ -23,6 +23,15 @@ use TEC\Tickets\Commerce\RSVP\REST\Order_Endpoint;
 class Controller extends Controller_Contract {
 
 	/**
+	 * The TC RSVP attendance totals instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Attendance_Totals
+	 */
+	protected $attendance_totals;
+
+	/**
 	 * Determines if this controller will register.
 	 * This is present due to how UOPZ works, it will fail if method belongs to the parent/abstract class.
 	 *
@@ -80,6 +89,8 @@ class Controller extends Controller_Contract {
 		add_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_rsvp' ], 10, 4 );
+		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
+		add_action( 'tec_event_tickets_rsvp_form__start', [ $this, 'display_rsvp_responses_info' ], 10, 3 );
 	}
 
 	/**
@@ -251,5 +262,96 @@ class Controller extends Controller_Contract {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Adds TC RSVP attendance totals to the summary box of the attendance
+	 * screen.
+	 *
+	 * Expects to fire during 'tribe_events_tickets_attendees_event_details_top'.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $event_id The event ID.
+	 */
+	public function setup_attendance_totals( $event_id = null ) {
+		$this->attendance_totals( $event_id )->integrate_with_attendee_screen();
+	}
+
+	/**
+	 * Returns the TC RSVP attendance totals object.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $event_id The event ID to set for the attendance totals.
+	 *
+	 * @return Attendance_Totals The TC RSVP attendance totals object.
+	 */
+	public function attendance_totals( $event_id = null ) {
+		if ( empty( $this->attendance_totals ) ) {
+			$this->attendance_totals = new Attendance_Totals();
+		}
+
+		$this->attendance_totals->set_event_id( $event_id );
+
+		return $this->attendance_totals;
+	}
+
+	/**
+	 * Displays RSVP responses information in the admin edit panel.
+	 * Only shows if RSVP is saved and has responses.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $post_id     The post ID of the post the ticket is attached to.
+	 * @param string   $ticket_type The type of ticket the form is being rendered for.
+	 * @param int|null $rsvp_id     The post ID of the ticket that is being edited, null if new.
+	 */
+	public function display_rsvp_responses_info( $post_id, $ticket_type, $rsvp_id = null ) {
+		// Only display for TC RSVP tickets that are saved
+		if ( Constants::TC_RSVP_TYPE !== $ticket_type || empty( $rsvp_id ) ) {
+			return;
+		}
+
+		// Get the attendance totals for this event
+		$attendance_totals = $this->attendance_totals( $post_id );
+		$total_responses = $attendance_totals->get_total_rsvps();
+
+		// Don't display if there are no responses yet
+		if ( 0 === $total_responses ) {
+			return;
+		}
+
+		// Get the tickets for this event to check if "Can't go" is enabled
+		$tickets = \Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$cant_go_enabled = false;
+
+		foreach ( $tickets as $ticket ) {
+			if ( Constants::TC_RSVP_TYPE === $ticket->type() && (int) $ticket->ID === (int) $rsvp_id ) {
+				$cant_go_enabled = ! empty( get_post_meta( $ticket->ID, '_tribe_ticket_show_not_going', true ) );
+				break;
+			}
+		}
+
+		// Build the attendees admin URL
+		$attendees_url = add_query_arg(
+			[
+				'page'     => 'tickets-attendees',
+				'event_id' => $post_id,
+			],
+			admin_url( 'edit.php?post_type=tribe_events' )
+		);
+
+		// Render the template
+		tribe( 'tickets.admin.views' )->template(
+			[ 'editor', 'rsvp', 'panel', 'responses-info' ],
+			[
+				'post_id'         => $post_id,
+				'rsvp_id'         => $rsvp_id,
+				'total_responses' => $total_responses,
+				'cant_go_enabled' => $cant_go_enabled,
+				'attendees_url'   => $attendees_url,
+			]
+		);
 	}
 }

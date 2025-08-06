@@ -130,12 +130,13 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 				</h4>
 				<?php
 				$this->template( [ 'components', 'switch-field' ], [
-						'id'      => 'tec_tickets_rsvp_enable_cannot_go',
-						'name'    => 'tec_tickets_rsvp_enable_cannot_go',
-						'label'   => 'Enable "Can\'t go" responses',
-						'tooltip' => '',
-						'value'   => esc_attr( $show_not_going ),
-					] );
+					'id'          => 'tec_tickets_rsvp_enable_cannot_go',
+					'name'        => 'tec_tickets_rsvp_enable_cannot_go',
+					'label'       => esc_html_x( 'Enable "Can\'t go" responses', 'Label for toggle switch to enable negative RSVP responses in admin panel.', 'event-tickets' ),
+					'description' => '',
+					'tooltip'     => '',
+					'value'       => esc_attr( $show_not_going ),
+				] );
 
 				/**
 				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
@@ -162,14 +163,7 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 					id="tc_ticket_form_save"
 					class="button-primary tribe-validation-submit"
 					name="tc_ticket_form_save"
-					value="<?php esc_attr_e( 'Save', 'event-tickets' ); ?>"
-				/>
-				<input
-					type="button"
-					id="tc_ticket_form_cancel"
-					class="button-secondary"
-					name="tc_ticket_form_cancel"
-					value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>"
+					value="<?php echo esc_attr_x( 'Save', 'Button text to save RSVP settings in admin panel.', 'event-tickets' ); ?>"
 				/>
 
 				<?php
