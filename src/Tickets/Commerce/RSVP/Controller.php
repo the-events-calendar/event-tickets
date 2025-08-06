@@ -157,8 +157,13 @@ class Controller extends Controller_Contract {
 	 * @return string The rendered template content.
 	 */
 	public function render_rsvp_template( $content, $template, $post, $echo ) {
-		// Create the RSVP template args
-		$rsvp_template_args = [ 'block_html_id' => Constants::TC_RSVP_TYPE . '-' . uniqid(), 'step' => '' ];
+		// Create the RSVP template args.
+		$rsvp_template_args = [
+			'post_id'       => $post->ID,
+			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid(),
+			'step'          => '',
+			'active_rsvps'  => $post && $post->date_in_range() ? [ $post ] : []
+		];
 
 		// Render the RSVP template and append to existing content
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
