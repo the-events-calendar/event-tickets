@@ -2,7 +2,7 @@
 /**
  * The main controller class for the REST API Classy integration.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Classy\REST;
  */

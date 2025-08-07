@@ -2,7 +2,7 @@
 /**
  * Tickets REST API Endpoints
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Classy\REST\Endpoints
  */
