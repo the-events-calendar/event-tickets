@@ -9,8 +9,10 @@
 
 ?>
 
-<div id="tec_tickets_rsvp_metabox" class="eventtable tec-event-tickets-from__wrap" aria-live="polite">
+<div id="tec_tickets_rsvp_metabox" class="eventtable tec-event-tickets-from__wrap tribe-common" aria-live="polite">
 	<?php
+		$admin_views->template( 'components/loader' );
+
 		$admin_views->template(
 			[ 'components', 'switch-field' ],
 			[
@@ -25,4 +27,5 @@
 	?>
 
 	<?php $admin_views->template( [ 'editor', 'rsvp', 'panel', 'rsvp' ], get_defined_vars() ); ?>
+
 </div>

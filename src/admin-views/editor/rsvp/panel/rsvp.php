@@ -150,7 +150,7 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 				do_action( 'tec_event_tickets_rsvp_post_options', $post_id, $rsvp_id );
 				?>
 			</div>
-			<div class="ticket_bottom">
+			<div class="tec-tickets-rsvp-bottom">
 				<input
 					type="hidden"
 					name="rsvp_id"
