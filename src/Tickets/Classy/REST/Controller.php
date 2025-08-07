@@ -41,7 +41,7 @@ class Controller extends BaseController {
 				'callback'            => $this->container->callback( Tickets::class, 'get' ),
 				'permission_callback' => $this->get_permission_callback(),
 				'args'                => $this->get_tickets_args(),
-				'description'         => __( 'Retrieve tickets.', 'event-tickets-classy' ),
+				'description'         => __( 'Retrieve tickets.', 'event-tickets' ),
 			]
 		);
 
@@ -53,7 +53,7 @@ class Controller extends BaseController {
 				'callback'            => $this->container->callback( Tickets::class, 'create' ),
 				'permission_callback' => $this->get_permission_callback(),
 				'args'                => $this->get_ticket_args(),
-				'description'         => __( 'Create a new ticket.', 'event-tickets-classy' ),
+				'description'         => __( 'Create a new ticket.', 'event-tickets' ),
 			]
 		);
 
@@ -65,7 +65,7 @@ class Controller extends BaseController {
 				'callback'            => $this->container->callback( Tickets::class, 'update' ),
 				'permission_callback' => $this->get_permission_callback(),
 				'args'                => $this->get_ticket_args(),
-				'description'         => __( 'Update an existing ticket.', 'event-tickets-classy' ),
+				'description'         => __( 'Update an existing ticket.', 'event-tickets' ),
 			]
 		);
 
@@ -77,7 +77,7 @@ class Controller extends BaseController {
 				'callback'            => $this->container->callback( Tickets::class, 'delete' ),
 				'permission_callback' => $this->get_permission_callback(),
 				'args'                => [],
-				'description'         => __( 'Delete a ticket.', 'event-tickets-classy' ),
+				'description'         => __( 'Delete a ticket.', 'event-tickets' ),
 			]
 		);
 	}

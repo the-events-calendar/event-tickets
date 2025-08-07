@@ -1,7 +1,7 @@
 import { PartialTicket, Ticket } from '../types/Ticket';
 
 let defaultTicket: Ticket = {
-	// API response fields
+	// API response fields.
 	id: 0,
 	eventId: 0,
 	provider: '',
@@ -12,7 +12,7 @@ let defaultTicket: Ticket = {
 	description: '',
 	image: false,
 
-	// Availability
+	// Availability.
 	availableFrom: '',
 	availableFromDetails: {
 		year: 0,
@@ -28,7 +28,7 @@ let defaultTicket: Ticket = {
 	isAvailable: false,
 	onSale: false,
 
-	// Capacity
+	// Capacity.
 	capacity: 0,
 	capacityDetails: {
 		available: 0,
@@ -39,7 +39,7 @@ let defaultTicket: Ticket = {
 		globalStockMode: 'own',
 	},
 
-	// Pricing
+	// Pricing.
 	cost: '',
 	costDetails: {
 		currencySymbol: '',
@@ -50,7 +50,7 @@ let defaultTicket: Ticket = {
 	},
 	priceSuffix: null,
 
-	// Sale price
+	// Sale price.
 	salePriceData: {
 		enabled: false,
 		endDate: '',
@@ -58,7 +58,7 @@ let defaultTicket: Ticket = {
 		startDate: '',
 	},
 
-	// Features
+	// Features.
 	supportsAttendeeInformation: false,
 	iac: '',
 
@@ -71,7 +71,7 @@ let defaultTicket: Ticket = {
 		uncheckedInPercentage: 0,
 	},
 
-	// Fees
+	// Fees.
 	fees: {
 		availableFees: [],
 		automaticFees: [],

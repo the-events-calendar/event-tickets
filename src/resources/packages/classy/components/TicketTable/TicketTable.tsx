@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Ticket, TicketSettings } from '../../types/Ticket';
+import { TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
 import { STORE_NAME } from '../../constants';

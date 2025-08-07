@@ -97,7 +97,7 @@ export type TicketSettings = {
 }
 
 export type Ticket = {
-	// API response fields
+	// API response fields.
 	id: TicketId;
 	eventId: number;
 	provider: string;
@@ -109,7 +109,7 @@ export type Ticket = {
 	image: boolean | string;
 	menuOrder?: number;
 
-	// Availability
+	// Availability.
 	availableFrom: string;
 	availableFromDetails: TicketDate;
 	availableUntil: string;
@@ -117,28 +117,28 @@ export type Ticket = {
 	isAvailable: boolean;
 	onSale: boolean;
 
-	// Capacity
+	// Capacity.
 	capacity: number | '';
 	capacityDetails: CapacityDetails;
 
-	// Pricing
+	// Pricing.
 	cost: string;
 	costDetails: CostDetails;
 	price: number | string;
 	priceSuffix: string | null;
 
-	// Sale price
+	// Sale price.
 	salePriceData: SalePriceDetails;
 
-	// Features
+	// Features.
 	supportsAttendeeInformation: boolean;
 	iac: string;
 
-	// Attendees and checkin
+	// Attendees and checkin.
 	attendees: any[];
 	checkin: CheckinDetails;
 
-	// Fees
+	// Fees.
 	fees: FeesData;
 };
 

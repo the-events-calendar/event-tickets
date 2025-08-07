@@ -125,7 +125,7 @@ export type UpsertTicketApiRequest = {
 	};
 	menu_order: string;
 
-	// Additional values from filters
+	// Additional values from filters.
 	[key: string]: any;
 };
 

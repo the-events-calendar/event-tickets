@@ -181,7 +181,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	const hasPrice = ticketData?.costDetails?.values.length > 0;
 	const ticket: Record<string, any> = {};
 
-	// Capacity fields
+	// Capacity fields.
 	// todo: this needs work.
 	console.log( 'Ticket data settings:', ticketData );
 	if ( ticketData.capacitySettings ) {
@@ -196,7 +196,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		const capacityType = globalStockMode;
 		const capacity = enteredCapacity;
 
-		// Map capacity type to ticket mode
+		// Map capacity type to ticket mode.
 		const isUnlimited = capacityType === 'own' && capacity === 0;
 
 		ticket.mode = isUnlimited ? '' : capacityType || '';
@@ -217,9 +217,9 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		ticket: ticket,
 	};
 
-	// Date and time fields
+	// Date and time fields.
 	if ( ticketData.availableFrom ) {
-		// Extract date and time from availableFrom
+		// Extract date and time from availableFrom.
 		const availableFromDate = new Date( ticketData.availableFrom );
 		const startDate = availableFromDate.toISOString().split( 'T' )[ 0 ];
 		const startTime = availableFromDate.toTimeString().split( ' ' )[ 0 ];
@@ -228,7 +228,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	}
 
 	if ( ticketData.availableUntil ) {
-		// Extract date and time from availableUntil
+		// Extract date and time from availableUntil.
 		const availableUntilDate = new Date( ticketData.availableUntil );
 		const endDate = availableUntilDate.toISOString().split( 'T' )[ 0 ];
 		const endTime = availableUntilDate.toTimeString().split( ' ' )[ 0 ];
@@ -236,16 +236,16 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		body.end_time = endTime;
 	}
 
-	// Additional fields
+	// Additional fields.
 	if ( ticketData.iac ) {
 		body.iac = ticketData.iac;
 	}
 
-	// Sale price fields
+	// Sale price fields.
 	if ( ticketData.salePriceData ) {
 		const salePriceData = ticketData.salePriceData;
 
-		// Initialize sale_price object if it doesn't exist
+		// Initialize sale_price object if it doesn't exist.
 		if ( ! body.ticket.sale_price ) {
 			body.ticket.sale_price = {};
 		}
@@ -262,7 +262,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		}
 	}
 
-	// Menu order
+	// Menu order.
 	body.menu_order = ticketData.menuOrder?.toString() || '0';
 
 	// Set the filter as its own full string, to allow for easier discoverability when searching for it.
