@@ -53,11 +53,9 @@
 			</legend>
 		</div>
 		<?php if ( $description ) : ?>
-			<div class="description">
-				<p>
-					<?php echo wp_kses( $description, [ 'a' => [ 'href' => [] ] ] ); ?>
-				</p>
-			</div>
+			<p class="description ticket_form_right">
+				<?php echo wp_kses( $description, [ 'a' => [ 'href' => [] ] ] ); ?>
+			</p>
 		<?php endif; ?>
 	</span>
 </fieldset>
