@@ -6,13 +6,13 @@ import { CapacitySettings, SalePriceDetails, TicketSettings } from '../types/Tic
 import {
 	GetTicketApiResponse,
 	GetTicketsApiResponse,
-	TicketsApiParams,
+	GetTicketsApiParams,
+	UpsertTicketApiRequest,
 } from '../types/Api';
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
 const apiBaseUrl = '/tec/classy/v1/tickets';
-const legacyApiBaseUrl = '/tribe/tickets/v1/tickets';
 
 /**
  * Get a nonce for the specified type.
@@ -38,10 +38,10 @@ const getNonce = ( type: NonceTypes ): string => {
  *
  * @since TBD
  *
- * @param {TicketsApiParams} params Optional parameters for the API request.
+ * @param {GetTicketsApiParams} params Optional parameters for the API request.
  * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
  */
-export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<GetTicketsApiResponse> => {
+export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<GetTicketsApiResponse> => {
 	const searchParams = new URLSearchParams();
 
 	if ( params.include_post ) {
@@ -58,7 +58,7 @@ export const fetchTickets = async ( params: TicketsApiParams = {} ): Promise<Get
 		searchParams.set( 'page', params.page.toString() );
 	}
 
-	const path = addQueryArgs( legacyApiBaseUrl, searchParams );
+	const path = addQueryArgs( apiBaseUrl, searchParams );
 
 	return new Promise<GetTicketsApiResponse>( async ( resolve, reject ) => {
 		await apiFetch( { path: path } )
@@ -116,122 +116,23 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<TicketSetti
  * @return {Promise<TicketSettings>} A promise that resolves to the created or updated ticket.
  */
 export const upsertTicket = async ( ticketData: TicketSettings ): Promise<TicketSettings> => {
+	const isUpdate = ticketData.id && ticketData.id > 0;
+
 	return new Promise<TicketSettings>( async ( resolve, reject ) => {
-		const isUpdate = ticketData.id && ticketData.id > 0;
-		const body: Record<string, any> = {
-			ticket: {},
-		};
-
-		// Required fields
-		body.name = ticketData.name || '';
-		body.description = ticketData?.description || '';
-		body.post_id = ticketData.eventId.toString();
-
-		const hasPrice = ticketData?.costDetails?.values.length > 0;
-		body.price = hasPrice ? ticketData.costDetails.values[ 0 ].toString() : '';
-
-		// Provider and type
-		body.provider = ticketData?.provider || 'tc';
-		body.type = ticketData?.type || 'default';
-
-		// Date and time fields
-		if ( ticketData.availableFrom ) {
-			// Extract date and time from availableFrom
-			const availableFromDate = new Date( ticketData.availableFrom );
-			const startDate = availableFromDate.toISOString().split( 'T' )[ 0 ];
-			const startTime = availableFromDate.toTimeString().split( ' ' )[ 0 ];
-			body.start_date = startDate;
-			body.start_time = startTime;
-		}
-
-		if ( ticketData.availableUntil ) {
-			// Extract date and time from availableUntil
-			const availableUntilDate = new Date( ticketData.availableUntil );
-			const endDate = availableUntilDate.toISOString().split( 'T' )[ 0 ];
-			const endTime = availableUntilDate.toTimeString().split( ' ' )[ 0 ];
-			body.end_date = endDate;
-			body.end_time = endTime;
-		}
-
-		// Additional fields
-		if ( ticketData.iac ) {
-			body.iac = ticketData.iac;
-		}
-
-		// Capacity fields
-		body.ticket.capacity = ticketData.capacitySettings?.enteredCapacity.toString() || '';
-		if ( ticketData.capacitySettings ) {
-			const capacityType = ticketData.capacitySettings.globalStockMode;
-			const capacity = ticketData.capacitySettings.enteredCapacity;
-
-			// Map capacity type to ticket mode
-			const isUnlimited = capacityType === 'own' || capacity === 0;
-
-			body.ticket.mode = isUnlimited ? '' : capacityType || '';
-			body.ticket.capacity = isUnlimited ? '' : capacity?.toString() || '';
-		}
-
-		// Sale price fields
-		if ( ticketData.salePriceData ) {
-			const salePriceData = ticketData.salePriceData;
-
-			// Initialize sale_price object if it doesn't exist
-			if ( ! body.ticket.sale_price ) {
-				body.ticket.sale_price = {};
-			}
-
-			body.ticket.sale_price.checked = salePriceData.enabled ? '1' : '0';
-			if ( salePriceData.salePrice ) {
-				body.ticket.sale_price.price = salePriceData.salePrice;
-			}
-			if ( salePriceData.startDate ) {
-				body.ticket.sale_price.start_date = salePriceData.startDate;
-			}
-			if ( salePriceData.endDate ) {
-				body.ticket.sale_price.end_date = salePriceData.endDate;
-			}
-		}
-
-		// Menu order
-		// todo: Uncomment when menu order is supported.
-		// body.menu_order = ticketData.menuOrder?.toString() || '0';
-
-		// Set the filter as its own full string, to allow for easier discoverability when searching for it.
-		const filterName = isUpdate
-			? 'tec.classy.tickets.updateTicket'
-			: 'tec.classy.tickets.createTicket';
-
-		/**
-		 * Filter the body of the upsert request before sending it to the API.
-		 *
-		 * @since TBD
-		 *
-		 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
-		 * @param {TicketSettings} ticketData The ticket data being sent.
-		 */
-		const additionalValues: Record<string, any> = applyFilters( filterName, {}, ticketData );
-
-		// Append/update additional values in the body.
-		Object.entries( additionalValues ).forEach( ( [ key, value ] ) => {
-			if ( value !== undefined && value !== null ) {
-				body[ key ] = value;
-			}
-		} );
-
 		const nonceKey: NonceAction = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
 		await apiFetch( {
 			path: `${ apiBaseUrl }${ isUpdate ? `/${ ticketData.id }` : '' }`,
 			method: isUpdate ? 'PUT' : 'POST',
 			data: {
-				...body,
+				...mapTicketSettingsToApiRequest( ticketData, isUpdate ),
 				[ nonceKey ]: getNonce( isUpdate ? 'updateTicket' : 'createTicket' ),
 			},
 		} )
-			.then( ( data ) => {
+			.then( ( data: GetTicketApiResponse ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( `Failed to ${ isUpdate ? 'update' : 'create' } ticket: response did not return an object.` ) );
 				} else {
-					resolve( mapApiResponseToTicketSettings( data as GetTicketApiResponse ) );
+					resolve( mapApiResponseToTicketSettings( data ) );
 				}
 			} )
 			.catch( ( error ) => {
@@ -268,6 +169,128 @@ export const deleteTicket = async ( ticketId: number ): Promise<void> => {
 };
 
 /**
+ * Maps ticket settings data to the structure required for an API request.
+ *
+ * @since TBD
+ *
+ * @param {TicketSettings} ticketData The ticket settings data object containing ticket details such as name, price, capacity, and sale price information.
+ * @param {boolean} isUpdate Indicates whether the operation is an update (`true`) or create (`false`) request.
+ * @returns {UpsertTicketApiRequest} The formatted API request object based on the provided ticket settings.
+ */
+const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: boolean ): UpsertTicketApiRequest => {
+	const hasPrice = ticketData?.costDetails?.values.length > 0;
+	const ticket: Record<string, any> = {};
+
+	// Capacity fields
+	// todo: this needs work.
+	console.log( 'Ticket data settings:', ticketData );
+	if ( ticketData.capacitySettings ) {
+		const {
+			globalStockMode = 'own',
+			enteredCapacity
+		} = ticketData.capacitySettings;
+
+		ticket.capacity = enteredCapacity.toString();
+
+		console.log( 'Capacity settings:', ticketData.capacitySettings );
+		const capacityType = globalStockMode;
+		const capacity = enteredCapacity;
+
+		// Map capacity type to ticket mode
+		const isUnlimited = capacityType === 'own' && capacity === 0;
+
+		ticket.mode = isUnlimited ? '' : capacityType || '';
+		ticket.capacity = isUnlimited ? '' : capacity?.toString() || '';
+	} else {
+		ticket.capacity = '';
+		ticket.mode = '';
+	}
+
+	const body: UpsertTicketApiRequest = {
+		name: ticketData.name || '',
+		description: ticketData?.description || '',
+		post_id: ticketData.eventId.toString(),
+		price: hasPrice ? ticketData.costDetails.values[ 0 ].toString() : '',
+		provider: ticketData?.provider || 'tc',
+		type: ticketData?.type || 'default',
+		menu_order: ticketData.menuOrder?.toString() || '0',
+		ticket: ticket,
+	};
+
+	// Date and time fields
+	if ( ticketData.availableFrom ) {
+		// Extract date and time from availableFrom
+		const availableFromDate = new Date( ticketData.availableFrom );
+		const startDate = availableFromDate.toISOString().split( 'T' )[ 0 ];
+		const startTime = availableFromDate.toTimeString().split( ' ' )[ 0 ];
+		body.start_date = startDate;
+		body.start_time = startTime;
+	}
+
+	if ( ticketData.availableUntil ) {
+		// Extract date and time from availableUntil
+		const availableUntilDate = new Date( ticketData.availableUntil );
+		const endDate = availableUntilDate.toISOString().split( 'T' )[ 0 ];
+		const endTime = availableUntilDate.toTimeString().split( ' ' )[ 0 ];
+		body.end_date = endDate;
+		body.end_time = endTime;
+	}
+
+	// Additional fields
+	if ( ticketData.iac ) {
+		body.iac = ticketData.iac;
+	}
+
+	// Sale price fields
+	if ( ticketData.salePriceData ) {
+		const salePriceData = ticketData.salePriceData;
+
+		// Initialize sale_price object if it doesn't exist
+		if ( ! body.ticket.sale_price ) {
+			body.ticket.sale_price = {};
+		}
+
+		body.ticket.sale_price.checked = salePriceData.enabled ? '1' : '0';
+		if ( salePriceData.salePrice ) {
+			body.ticket.sale_price.price = salePriceData.salePrice;
+		}
+		if ( salePriceData.startDate ) {
+			body.ticket.sale_price.start_date = salePriceData.startDate;
+		}
+		if ( salePriceData.endDate ) {
+			body.ticket.sale_price.end_date = salePriceData.endDate;
+		}
+	}
+
+	// Menu order
+	body.menu_order = ticketData.menuOrder?.toString() || '0';
+
+	// Set the filter as its own full string, to allow for easier discoverability when searching for it.
+	const filterName = isUpdate
+		? 'tec.classy.tickets.updateTicket'
+		: 'tec.classy.tickets.createTicket';
+
+	/**
+	 * Filter the body of the upsert request before sending it to the API.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
+	 * @param {TicketSettings} ticketData The ticket data being sent.
+	 */
+	const additionalValues: Record<string, any> = applyFilters( filterName, {}, ticketData );
+
+	// Append/update additional values in the body.
+	Object.entries( additionalValues ).forEach( ( [ key, value ] ) => {
+		if ( value !== undefined && value !== null ) {
+			body[ key ] = value;
+		}
+	} );
+
+	return body;
+}
+
+/**
  * Map API response to TicketSettings type.
  *
  * @since TBD
@@ -292,7 +315,6 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 			? new Date( apiResponse.sale_price_data.end_date ).toISOString()
 			: '',
 	};
-	console.log( 'apiResponse', apiResponse );
 
 	// todo: use site settings for default values.
 	const costDetails: CostDetails = {

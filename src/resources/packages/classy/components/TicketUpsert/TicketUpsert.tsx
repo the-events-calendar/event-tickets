@@ -27,7 +27,6 @@ type TicketUpsertProps = {
 
 const defaultValues: TicketSettings = {
 	id: 0,
-	eventId: 0,
 	name: '',
 	description: '',
 	cost: '',

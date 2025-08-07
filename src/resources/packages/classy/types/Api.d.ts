@@ -1,12 +1,12 @@
 import { CurrencyPosition } from '@tec/common/classy/types/CurrencyPosition';
-import { FeesData, Ticket, TicketId, TicketType } from './Ticket';
+import { FeesData, TicketId, TicketType } from './Ticket';
 
 /**
  * Parameters to be used when fetching tickets from the API.
  *
  * @since TBD
  */
-export type TicketsApiParams = {
+export type GetTicketsApiParams = {
 	include_post?: number[];
 	per_page?: number;
 	page?: number;
@@ -102,10 +102,10 @@ export type GetTicketApiResponse = {
  * @since TBD
  */
 export type UpsertTicketApiRequest = {
-	post_id?: string;
-	name?: string;
-	description?: string;
-	price?: string;
+	post_id: string;
+	name: string;
+	description: string;
+	price: string;
 	provider: string;
 	type?: string;
 	start_date?: string;

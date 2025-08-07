@@ -42,6 +42,12 @@ class Tickets {
 	 */
 	public function get( Request $request ) {
 		try {
+			// Short-circuit to use the old API.
+			$new_request = clone $request;
+			$new_request->set_route( '/tribe/tickets/v1/tickets' );
+			return rest_get_server()->dispatch( $new_request );
+
+
 			$include_post = $request->get_param( 'include_post' );
 			$per_page     = $request->get_param( 'per_page' ) ?? 10;
 			$page         = $request->get_param( 'page' ) ?? 1;
@@ -225,19 +231,27 @@ class Tickets {
 			$body['price'] = '0';
 		}
 
+		$tribe_ticket_data = $body['ticket'] ?? [];
+		if ( '' === $tribe_ticket_data['mode'] ?? '' ) {
+			unset( $tribe_ticket_data['mode'] );
+		}
+
 		$ticket_data = [
 			'ticket_name'             => $body['name'],
 			'ticket_description'      => $body['description'],
 			'ticket_price'            => $body['price'],
 			'ticket_show_description' => 'yes',
-			'ticket_start_date'       => $body['start_date'],
-			'ticket_start_time'       => $body['start_time'],
-			'ticket_end_date'         => $body['end_date'],
-			'ticket_end_time'         => $body['end_time'],
+			'ticket_menu_order'       => (int) ( $body['menu_order'] ?? 0 ),
+			'ticket_start_date'       => $body['start_date'] ?? '',
+			'ticket_start_time'       => $body['start_time'] ?? '',
+			'ticket_end_date'         => $body['end_date'] ?? '',
+			'ticket_end_time'         => $body['end_time'] ?? '',
 			'ticket_sku'              => $body['sku'] ?? '',
 			'ticket_iac'              => $body['iac'],
-			'ticket_menu_order'       => $body['menu_order'],
-			'tribe-ticket'            => $body['ticket'],
+			'tribe-ticket'            => [
+				'capacity' => (int) ( $body['ticket']['capacity'] ?? 0 ),
+				'mode'     => $body['ticket']['mode'] ?? 'own',
+			],
 		];
 
 		if ( null !== $ticket_id ) {
@@ -252,6 +266,7 @@ class Tickets {
 				'not_acceptable',
 				esc_html(
 					sprintf(
+						/* translators: %s is the singular label for tickets */
 						__( '%s was not able to be updated', 'event-tickets' ),
 						tribe_get_ticket_label_singular( 'rest_add_ticket_error' )
 					)
@@ -264,10 +279,6 @@ class Tickets {
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Update meta details for the ticket.
-
-		// todo: do capacity properly.
-		$capacity = $body['ticket']['capacity'] ?? '';
-		update_post_meta( $ticket, $tickets_handler->key_capacity, $capacity );
 
 		/**
 		 * Fires after a ticket has been added.

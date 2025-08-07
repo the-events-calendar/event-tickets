@@ -83,6 +83,7 @@ export type TicketSettings = {
 	fees?: FeesData;
 	provider?: string;
 	type?: TicketType;
+	menuOrder?: number;
 
 	// Ticket sale dates.
 	availableFrom?: string;

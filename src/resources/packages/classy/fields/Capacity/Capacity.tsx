@@ -19,6 +19,7 @@ type CapacityProps = {
 const defaultValue: CapacitySettings = {
 	enteredCapacity: '',
 	isShared: false,
+	globalStockMode: 'own',
 };
 
 const capacityOptions: { label: string, value: Seating }[] = [
