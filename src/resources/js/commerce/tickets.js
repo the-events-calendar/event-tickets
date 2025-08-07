@@ -34,14 +34,14 @@ tribe.tickets.commerce.tickets = {};
 	 * Checkout Selectors.
 	 *
 	 * @since TBD
-	 * @since 5.19.3 Changed form selector to target form surrounding TicketsCommerce fields.
 	 *
 	 * @type {Object}
 	 */
 	obj.selectors = {
 		ticketForm: '.tec-event-tickets-from__wrap',
 		submitButton: '#tc_ticket_form_save',
-		hiddenElement: '.tribe-common-a11y-hidden',
+		loader: '.tribe-common-c-loader',
+		hiddenElement: 'tribe-common-a11y-hidden',
 		rsvpMetabox: '#tec-tickets-commerce-rsvp',
 		timepicker: '.tribe-timepicker:not(.ui-timepicker-input)',
 	};
@@ -117,25 +117,14 @@ tribe.tickets.commerce.tickets = {};
 	obj.handleSave = async ( event ) => {
 		event.preventDefault();
 
-		//@todo show error messages if missing required fields
-		//@todo Ticket Name... RSVP for Event or Post Name
-
-		console.log('button clicked');
-		console.log(obj.tickets);
-
 		// Get all form input values
 		const formValues = obj.getFormInputValues();
 		const nonce = { '_wpnonce' : obj.getEmbedNonce() };
 		const ticketUrl = obj.getUpdatedTicketUrl( [] );
 
-		// Log the form values (for debugging)
-		console.log('Form values:', { ...formValues, ...nonce });
-		console.log('nonce:', nonce);
-		console.log('ticketUrl:', ticketUrl);
-
 		obj.submitButton( false );
 
-		//@todo submit details to rest endpoint and handle success and error
+		obj.loaderShow();
 
 		const body = {
 			'_wpnonce': nonce,
@@ -155,11 +144,7 @@ tribe.tickets.commerce.tickets = {};
 		)
 			.then( response => response.json() )
 			.then( data => {
-				if ( data.success ) {
-					//return obj.handleApproveSuccess( data, actions, $container );
-				} else {
-					//return obj.handleApproveFail( data, actions, $container );
-				}
+				obj.loaderHide();
 			} )
 			.catch( obj.handleApproveError );
 
@@ -241,6 +226,28 @@ tribe.tickets.commerce.tickets = {};
 			const $timepickers = $rsvpMetabox.find( obj.selectors.timepicker );
 			tribe_timepickers.setup_timepickers( $timepickers );
 		}
+	};
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderShow = function (){
+		const $loader = $( obj.selectors.rsvpMetabox ).find( obj.selectors.loader );
+
+		$loader.removeClass( obj.selectors.hiddenElement );
+	};
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderHide = function () {
+		const $loader = $( obj.selectors.rsvpMetabox ).find( obj.selectors.loader );
+
+		$loader.addClass( obj.selectors.hiddenElement );
 	};
 
 	/**
