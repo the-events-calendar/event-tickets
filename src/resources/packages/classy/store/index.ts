@@ -5,8 +5,10 @@ import { default as resolvers } from './resolvers.ts';
 import { StoreState } from '../types/Store';
 
 const initialState: StoreState = {
-	tickets: null,
+	eventCapacity: undefined,
+	eventHasSharedCapacity: false,
 	loading: true,
+	tickets: null,
 }
 
 export const storeConfig = {

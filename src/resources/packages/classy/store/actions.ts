@@ -2,11 +2,15 @@ import { TicketSettings } from '../types/Ticket';
 import {
 	CREATE_TICKET,
 	DELETE_TICKET,
+	SET_EVENT_CAPACITY,
+	SET_EVENT_HAS_SHARED_CAPACITY,
 	SET_IS_LOADING,
 	SET_TICKETS,
 	UPDATE_TICKET,
 	CreateTicketAction,
 	DeleteTicketAction,
+	SetEventCapacityAction,
+	SetEventHasSharedCapacityAction,
 	SetIsLoadingAction,
 	SetTicketsAction,
 	UpdateTicketAction,
@@ -35,6 +39,31 @@ const addTicket = ( ticket: TicketSettings ): CreateTicketAction => ( {
 const deleteTicket = ( ticketId: number ): DeleteTicketAction => ( {
 	type: DELETE_TICKET,
 	ticketId,
+} );
+
+/**
+ * Action creator function to set the capacity for an event.
+ *
+ * @since TBD
+ *
+ * @param {number} capacity The maximum capacity allowed for the event.
+ * @returns {SetEventCapacityAction} An action object containing the type and updated capacity.
+ */
+const setEventCapacity = ( capacity: number ): SetEventCapacityAction => ( {
+	type: SET_EVENT_CAPACITY,
+	capacity
+} );
+
+/**
+ * Sets whether the event has shared capacity in the store.
+ *
+ * @since TBD
+ *
+ * @param {boolean} hasSharedCapacity Indicates if the event has shared capacity.
+ */
+const setEventHasSharedCapacity = ( hasSharedCapacity: boolean ): SetEventHasSharedCapacityAction => ( {
+	type: SET_EVENT_HAS_SHARED_CAPACITY,
+	hasSharedCapacity
 } );
 
 /**
@@ -78,6 +107,8 @@ const updateTicket = ( ticketId: number, ticketData: TicketSettings ): UpdateTic
 export const actions: StoreDispatch = {
 	addTicket,
 	deleteTicket,
+	setEventCapacity,
+	setEventHasSharedCapacity,
 	setIsLoading,
 	setTickets,
 	updateTicket,

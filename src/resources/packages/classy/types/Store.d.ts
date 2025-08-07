@@ -1,8 +1,10 @@
 import { TicketSettings } from './Ticket';
 
 export type StoreState = {
-	tickets: TicketSettings[] | null;
+	eventCapacity?: number;
+	eventHasSharedCapacity: boolean;
 	loading?: boolean;
+	tickets: TicketSettings[] | null;
 };
 
 /**
@@ -11,6 +13,8 @@ export type StoreState = {
  * @since TBD
  */
 export type StoreSelect = {
+	getEventCapacity: () => number | undefined;
+	getEventHasSharedCapacity: () => boolean;
 	getTickets: ( eventId: number ) => TicketSettings[];
 	getTicketById: ( ticketId: number ) => TicketSettings | undefined;
 	isLoading: () => boolean;
@@ -24,6 +28,8 @@ export type StoreSelect = {
 export type StoreDispatch = {
 	addTicket: ( ticket: TicketSettings ) => void;
 	deleteTicket: ( ticketId: number ) => void;
+	setEventCapacity: ( capacity: number ) => void;
+	setEventHasSharedCapacity: ( hasSharedCapacity: boolean ) => void;
 	setIsLoading: ( isLoading: boolean ) => void;
 	setTickets: ( tickets: TicketSettings[] ) => void;
 	updateTicket: ( ticketId: number, ticketData: TicketSettings ) => void;

@@ -3,6 +3,8 @@ import { TicketSettings } from './Ticket';
 
 export const CREATE_TICKET = 'CREATE_TICKET';
 export const DELETE_TICKET = 'DELETE_TICKET';
+export const SET_EVENT_CAPACITY = 'SET_EVENT_CAPACITY';
+export const SET_EVENT_HAS_SHARED_CAPACITY = 'SET_EVENT_HAS_SHARED_CAPACITY';
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_TICKETS = 'SET_TICKETS';
 export const UPDATE_TICKET = 'UPDATE_TICKET';
@@ -14,6 +16,14 @@ export type CreateTicketAction = {
 export type DeleteTicketAction = {
 	ticketId: number;
 } & Action<typeof DELETE_TICKET>;
+
+export type SetEventCapacityAction = {
+	capacity: number;
+} & Action<typeof SET_EVENT_CAPACITY>;
+
+export type SetEventHasSharedCapacityAction = {
+	hasSharedCapacity: boolean;
+} & Action<typeof SET_EVENT_HAS_SHARED_CAPACITY>;
 
 export type SetIsLoadingAction = {
 	isLoading: boolean;

@@ -1,6 +1,29 @@
 import { StoreState } from '../types/Store';
 import { TicketSettings } from '../types/Ticket';
 
+/**
+ * Determines whether the event has shared capacity from the application's state.
+ *
+ * @since TBD
+ *
+ * @param {StoreState} state The current state of the application.
+ * @returns {boolean} Returns true if the event has shared capacity, otherwise false.
+ */
+export const getEventHasSharedCapacity = ( state: StoreState ): boolean => {
+	return state?.eventHasSharedCapacity || false;
+}
+
+/**
+ * Retrieves the event capacity from the given application state.
+ *
+ * @since TBD
+ *
+ * @param {StoreState} state The state object representing the application's store state.
+ * @returns {number|undefined} The event capacity if available, otherwise undefined.
+ */
+export const getEventCapacity = ( state: StoreState ): number | undefined => {
+	return state?.eventCapacity;
+}
 
 /**
  * Returns the tickets from the store state.

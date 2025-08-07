@@ -4,19 +4,25 @@ import { hydrateTicket } from '../functions/tickets';
 import {
 	CREATE_TICKET,
 	DELETE_TICKET,
+	SET_EVENT_CAPACITY,
+	SET_EVENT_HAS_SHARED_CAPACITY,
 	SET_IS_LOADING,
 	SET_TICKETS,
 	UPDATE_TICKET,
 	CreateTicketAction,
 	DeleteTicketAction,
+	SetEventCapacityAction,
+	SetEventHasSharedCapacityAction,
 	SetIsLoadingAction,
 	SetTicketsAction,
 	UpdateTicketAction,
 } from '../types/Actions';
 
 const initialState: StoreState = {
-	tickets: null,
+	eventCapacity: undefined,
+	eventHasSharedCapacity: false,
 	loading: true,
+	tickets: null,
 };
 
 export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, action ) => {
@@ -32,6 +38,18 @@ export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, 
 			return {
 				...state,
 				tickets: state.tickets.filter( ticket => ticket.id !== ticketIdToDelete ),
+			};
+		case SET_EVENT_CAPACITY:
+			const capacity = ( action as SetEventCapacityAction ).capacity;
+			return {
+				...state,
+				eventCapacity: capacity,
+			};
+		case SET_EVENT_HAS_SHARED_CAPACITY:
+			const hasSharedCapacity = ( action as SetEventHasSharedCapacityAction ).hasSharedCapacity;
+			return {
+				...state,
+				eventHasSharedCapacity: hasSharedCapacity,
 			};
 		case SET_IS_LOADING:
 			const isLoading = ( action as SetIsLoadingAction ).isLoading;
