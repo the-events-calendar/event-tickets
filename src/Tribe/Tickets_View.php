@@ -1224,12 +1224,13 @@ class Tribe__Tickets__Tickets_View {
 			 *
 			 * @since TBD
 			 *
-			 * @param string                           $content  The template content to be rendered.
-			 * @param Tribe__Tickets__Editor__Template $template The template object.
-			 * @param WP_Post                          $post     The post object.
-			 * @param bool                             $echo     Whether to echo the output.
+			 * @param string                             $content  The template content to be rendered.
+			 * @param Tribe__Tickets__Ticket_Object|null $rsvp     The rsvp object or null.
+			 * @param Tribe__Tickets__Editor__Template   $template The template object.
+			 * @param WP_Post                            $post     The post object.
+			 * @param bool                               $echo     Whether to echo the output.
 			 */
-			$rendered_content = apply_filters( 'tec_tickets_front_end_ticket_form_template_content', $before_content, $template, $post, $echo );
+			$rendered_content = apply_filters( 'tec_tickets_front_end_ticket_form_template_content', $before_content, $rsvp, $template, $post, $echo );
 
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 

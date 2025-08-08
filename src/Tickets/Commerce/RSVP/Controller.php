@@ -134,7 +134,7 @@ class Controller extends Controller_Contract {
 	 */
 	protected function add_filters() {
 		add_action( 'tec_tickets_commerce_get_ticket_legacy', [ $this, 'filter_rsvp' ], 10, 3 );
-		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 4 );
+		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
 		add_filter( 'tribe_tickets_attendees_table_order_status', [ $this, 'modify_tc_rsvp_status_display' ], 10, 2 );
 		add_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'modify_tc_rsvp_checkin_display' ], 10, 2 );
 		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10, 2 );
@@ -149,16 +149,27 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                           $content  The template content to be rendered.
-	 * @param Tribe__Tickets__Editor__Template $template The template object.
-	 * @param WP_Post                          $post     The post object.
-	 * @param bool                             $echo     Whether to echo the output.
+	 * @param string                             $content  The template content to be rendered.
+	 * @param Tribe__Tickets__Ticket_Object|null $rsvp     The rsvp object or null.
+	 * @param Tribe__Tickets__Editor__Template   $template The template object.
+	 * @param WP_Post                            $post     The post object.
+	 * @param bool                               $echo     Whether to echo the output.
 	 *
 	 * @return string The rendered template content.
 	 */
-	public function render_rsvp_template( $content, $template, $post, $echo ) {
-		// Create the RSVP template args
-		$rsvp_template_args = [ 'block_html_id' => Constants::TC_RSVP_TYPE . '-' . uniqid(), 'step' => '' ];
+	public function render_rsvp_template( $content, $rsvp, $template, $post, $echo ) {
+		if ( empty( $rsvp ) || ! $rsvp instanceof \Tribe__Tickets__Ticket_Object ) {
+			return $content;
+		}
+
+		// Create the RSVP template args.
+		$rsvp_template_args = [
+			'rsvp'          => $rsvp,
+			'post_id'       => $post->ID,
+			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid(),
+			'step'          => '',
+			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : []
+		];
 
 		// Render the RSVP template and append to existing content
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
