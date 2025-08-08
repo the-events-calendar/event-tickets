@@ -121,6 +121,7 @@ class Controller extends Controller_Contract {
 		/** @var ET $et_main */
 		$et_main = $this->container->get( ET::class );
 
+		// todo: Ensure we can allow for Woo currency settings to be used here if needed.
 		return [
 			'settings' => [
 				'currency'        => [
