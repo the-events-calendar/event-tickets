@@ -1,0 +1,159 @@
+:root {
+	/* This is a place to define CSS variables for the Classy component. */
+	--classy-color-border: #e4e4e4;
+	--classy-color-destructive: var(--tec-color-gutenberg-alert-red);
+	--classy-date-picker-width: 320px;
+	--classy-icon-padding: var(--tec-spacer-0);
+}
+
+.classy-root {
+	/* This is a place to define styles for the Classy component. */
+
+	.classy-field {
+		&__capacity {
+			.classy-component__labeled-input {
+				padding: var(--classy-padding-vertical) 0;
+			}
+
+			.components-radio-control__group-wrapper {
+				flex-direction: row;
+				gap: var(--classy-padding-vertical);
+				justify-content: flex-start;
+			}
+		}
+
+		&__ticket-table {
+			margin: var(--classy-padding-vertical) 0;
+
+			tbody {
+				display: flex;
+				flex-direction: column;
+				gap: 0;
+				width: 100%;
+			}
+		}
+
+		&__ticket-row {
+			/* Custom variable values for the Classy ticket row. */
+			--classy-padding-horizontal: var(--tec-spacer-5);
+			--classy-padding-vertical: var(--tec-spacer-2);
+
+			align-items: center;
+			align-self: stretch;
+			border: 1px solid var(--classy-color-border);
+			border-bottom: none;
+			display: flex;
+			flex-direction: row;
+			font-size: var(--classy-font-size-16);
+			padding: var(--classy-padding-vertical) 0;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			h4 {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				margin: 0;
+			}
+
+			&__section {
+				flex-grow: 1;
+
+				&:first-child {
+					margin-left: var(--classy-padding-horizontal);
+				}
+
+				&:last-child {
+					margin-right: 8px;
+				}
+
+				.classy-field__ticket-row__icons {
+					padding-left: 10px;
+				}
+			}
+
+			&__label {
+				flex-grow: 2;
+				max-width: 250px;
+			}
+
+			&__price {
+				max-width: 150px;
+			}
+
+			&__movers {
+				flex-grow: 0;
+				max-width: 50px;
+			}
+
+			&__description,
+			&__capacity__label {
+				color: var(--tec-color-gutenberg-grey-900);
+				font-size: var(--classy-font-size-13);
+			}
+
+			&__capacity {
+				max-width: 175px;
+
+				&__label {
+					padding-left: 10px;
+				}
+			}
+
+			&__icons svg {
+				padding: 0 var(--classy-icon-padding);
+			}
+
+			&:last-child {
+				border-bottom: 1px solid var(--classy-color-border);
+			}
+		}
+	}
+}
+
+.classy-modal {
+	/* This is a place to define styles for the Classy modal. */
+
+	&__overlay--ticket {
+		.components-modal__content {
+			padding: 0;
+
+			.classy-field__separator {
+				border: none;
+				height: auto;
+				transform: translateY(-15px);
+			}
+
+			.classy-field__input--sale-duration {
+				--classy-input-width: var(--classy-date-picker-width);
+			}
+		}
+	}
+
+	&__error {
+		/* todo: Styles should be for an error elements instead of message */
+		color: var(--classy-color-required-asterisk);
+		font-size: var(--classy-font-size-16);
+		padding: 0 var(--classy-padding-horizontal);
+	}
+
+	.components-button.is-link {
+		text-decoration: none;
+
+		&:hover {
+			border: 1px solid var(--classy-color-border);
+			border-radius: var(--tec-spacer-0);
+		}
+	}
+
+	.classy-button__destructive {
+		color: var(--classy-color-destructive);
+
+		&:hover {
+			border-color: var(--classy-color-destructive);
+			color: var(--classy-color-destructive);
+		}
+	}
+}

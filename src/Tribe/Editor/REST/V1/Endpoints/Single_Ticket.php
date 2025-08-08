@@ -45,10 +45,10 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return $ticket_data;
 		}
 
-		$body = $request->get_body_params();
-		$post_id = $body['post_id'];
+		$body         = $request->get_params();
+		$post_id      = $body['post_id'];
 		$nonce_action = 'remove_ticket_nonce';
-		$nonce = $body[ $nonce_action ];
+		$nonce        = $body[ $nonce_action ];
 
 		if ( ! $this->has_permission( $post_id, $nonce, $nonce_action ) ) {
 			return new WP_Error(
@@ -229,7 +229,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 				'iac'          => 'none',
 			],
 			$request->get_default_params(),
-			$request->get_body_params()
+			$request->get_params()
 		);
 
 		$nonce   = $body[ $nonce_action ];
