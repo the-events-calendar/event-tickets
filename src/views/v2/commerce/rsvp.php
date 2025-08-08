@@ -13,11 +13,10 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this
- * @var WP_Post|int                      $post_id       The post object or ID.
- * @var boolean                          $rsvp     True if there are RSVPs.
- * @var array                            $active_rsvps  An array containing the active RSVPs.
- * @var string                           $block_html_id The unique HTML id for the block.
+ * @var Tribe__Tickets__Editor__Template   $this
+ * @var Tribe__Tickets__Ticket_Object|null $rsvp          The rsvp object or null.
+ * @var array                              $active_rsvps  An array containing the active RSVPs.
+ * @var string                             $block_html_id The unique HTML id for the block.
  */
 
 // Enqueue assets.
@@ -25,8 +24,13 @@ wp_enqueue_style( 'event-tickets-rsvp' );
 tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
 
-// Bail if there are no active RSVP.
+// Bail if there are no RSVP.
 if ( empty( $rsvp ) ) {
+	return;
+}
+
+// Bail if there are no active RSVP.
+if ( empty( $active_rsvps ) ) {
 	return;
 }
 

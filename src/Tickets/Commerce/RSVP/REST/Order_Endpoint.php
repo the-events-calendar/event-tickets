@@ -323,7 +323,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'is_going'     => true,
 				'checked'      => ! $optout,
 				'attendee_ids' => $attendee_ids_flat,
-				'opt_in_nonce' => $nonce_value,
+				//'opt_in_nonce' => $nonce_value,
 			];
 		}
 
@@ -450,7 +450,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			$args['is_going']       = $args['process_result']['opt_in_args']['is_going'];
 			$args['opt_in_checked'] = $args['process_result']['opt_in_args']['checked'];
-			$args['opt_in_nonce']   = $args['process_result']['opt_in_args']['opt_in_nonce'];
+			//$args['opt_in_nonce']   = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
 		if ( ! empty( $args['process_result']['attendees'] ) ) {
