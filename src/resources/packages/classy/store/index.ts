@@ -9,7 +9,7 @@ const initialState: StoreState = {
 	eventHasSharedCapacity: false,
 	loading: true,
 	tickets: null,
-}
+};
 
 export const storeConfig = {
 	reducer,

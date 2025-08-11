@@ -4,7 +4,6 @@ import { TextareaControl } from '@wordpress/components';
 import { LabeledInput } from '@tec/common/classy/components';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 
-
 /**
  * Renders the ticket description field in the Classy editor.
  *
@@ -27,4 +26,4 @@ export default function TicketDescription( props: TicketComponentProps ): JSX.El
 			/>
 		</LabeledInput>
 	);
-};
+}

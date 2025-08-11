@@ -6,14 +6,9 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
 import * as React from 'react';
 import { Fragment, useCallback, useState } from 'react';
-import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, } from '../../fields';
+import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName } from '../../fields';
 import { CoreEditorSelect } from '../../types/Store';
-import {
-	CapacitySettings,
-	SalePriceDetails,
-	TicketId,
-	TicketSettings
-} from '../../types/Ticket';
+import { CapacitySettings, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
 
@@ -23,7 +18,7 @@ type TicketUpsertProps = {
 	onDelete?: ( ticketId: TicketId ) => void;
 	onSave: ( data: TicketSettings ) => void;
 	value: TicketSettings;
-}
+};
 
 const defaultValues: TicketSettings = {
 	id: 0,
@@ -46,7 +41,7 @@ const defaultValues: TicketSettings = {
 		currencyDecimalSeparator: '.',
 		currencyThousandSeparator: ',',
 		suffix: '',
-		values: []
+		values: [],
 	},
 	fees: {
 		availableFees: [],
@@ -68,13 +63,7 @@ const noop = () => {};
  * @return {JSX.Element} The rendered ticket upsert component.
  */
 export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
-	const {
-		isUpdate,
-		onCancel,
-		onDelete = noop,
-		onSave,
-		value,
-	} = props;
+	const { isUpdate, onCancel, onDelete = noop, onSave, value } = props;
 
 	const { eventId } = useSelect( ( select: SelectFunction ) => {
 		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
@@ -83,22 +72,20 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		};
 	}, [] );
 
-	const [ currentValues, setCurrentValues ] = useState<TicketSettings>( {
+	const [ currentValues, setCurrentValues ] = useState< TicketSettings >( {
 		eventId: eventId,
 		...defaultValues,
 		...value,
 	} );
 
-	const [ costValue, setCostValue ] = useState<number>(
-		currentValues.costDetails.values.length > 0
-			? currentValues.costDetails.values[ 0 ]
-			: 0
+	const [ costValue, setCostValue ] = useState< number >(
+		currentValues.costDetails.values.length > 0 ? currentValues.costDetails.values[ 0 ] : 0
 	);
 
 	// Tickets must have a name at a minimum.
-	const [ confirmEnabled, setConfirmEnabled ] = useState<boolean>( currentValues.name !== '' );
-	const [ ticketUpsertError, setTicketUpsertError ] = useState<Error | null>( null );
-	const [ saveInProgress, setSaveInProgress ] = useState<boolean>( false );
+	const [ confirmEnabled, setConfirmEnabled ] = useState< boolean >( currentValues.name !== '' );
+	const [ ticketUpsertError, setTicketUpsertError ] = useState< Error | null >( null );
+	const [ saveInProgress, setSaveInProgress ] = useState< boolean >( false );
 
 	const onValueChange = ( key: string, newValue: any ): void => {
 		return setCurrentValues( {
@@ -113,7 +100,11 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 		// If the ticket name is empty, we cannot save.
 		if ( ! confirmEnabled ) {
-			setTicketUpsertError( new Error( _x( 'Please enter a ticket name.', 'Error message for missing ticket name', 'event-tickets' ) ) );
+			setTicketUpsertError(
+				new Error(
+					_x( 'Please enter a ticket name.', 'Error message for missing ticket name', 'event-tickets' )
+				)
+			);
 			return;
 		}
 
@@ -152,7 +143,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	return (
 		<div className="classy-root">
 			<header className="classy-modal__header classy-modal__header--ticket">
-				<IconNew/>
+				<IconNew />
 				<h4 className="classy-modal__header-title">
 					{ isUpdate
 						? _x( 'Edit Ticket', 'Update ticket modal header title', 'event-tickets' )
@@ -162,7 +153,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 			<hr className="classy-modal__section-separator"></hr>
 
-			{ /* todo: this should highlight any errors in the form, instead of showing a message */}
+			{ /* todo: this should highlight any errors in the form, instead of showing a message */ }
 			{ ticketUpsertError && (
 				<Fragment>
 					<div className="classy-modal__error">
@@ -214,7 +205,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				/>
 			</section>
 
-			<hr className="classy-modal__section-separator"/>
+			<hr className="classy-modal__section-separator" />
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<div className="classy-field__input-title">
@@ -224,12 +215,14 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				<div className="classy-field__capacity">
 					<Capacity
 						value={ currentValues.capacitySettings }
-						onChange={ ( value: CapacitySettings ) => onValueChange( 'capacitySettings', value as CapacitySettings ) }
+						onChange={ ( value: CapacitySettings ) =>
+							onValueChange( 'capacitySettings', value as CapacitySettings )
+						}
 					/>
 				</div>
 			</section>
 
-			<hr className="classy-modal__section-separator"/>
+			<hr className="classy-modal__section-separator" />
 
 			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
 				<div className="classy-field__input-title">
@@ -239,9 +232,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 						'event-tickets'
 					) }
 				</div>
-				<SaleDuration
-
-				/>
+				<SaleDuration />
 			</section>
 
 			<footer className="classy-modal__footer classy-modal__footer--ticket">

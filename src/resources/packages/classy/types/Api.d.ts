@@ -31,7 +31,7 @@ type ApiDate = {
 	hour: string;
 	minutes: string;
 	seconds: string;
-}
+};
 
 /**
  * Response structure for retrieving a single ticket from the API.
@@ -59,7 +59,7 @@ export type GetTicketApiResponse = {
 	capacity_details: {
 		max: number;
 		global_stock_mode: string;
-	}
+	};
 
 	// Price/cost details.
 	cost: string;
@@ -83,9 +83,7 @@ export type GetTicketApiResponse = {
 	available_from_details: ApiDate;
 	available_until_details: ApiDate;
 
-
 	// Detail objects.
-
 
 	// Additional fields from the WordPress post object.
 	author: string | number;
@@ -126,7 +124,7 @@ export type UpsertTicketApiRequest = {
 	menu_order: string;
 
 	// Additional values from filters.
-	[key: string]: any;
+	[ key: string ]: any;
 };
 
 /**

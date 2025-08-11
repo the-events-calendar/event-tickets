@@ -22,14 +22,7 @@ type TicketUpsertModalProps = {
  * @return {JSX.Element} The rendered modal component.
  */
 export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.Element {
-	const {
-		isUpdate,
-		onCancel,
-		onClose,
-		onDelete,
-		onSave,
-		value
-	} = props;
+	const { isUpdate, onCancel, onClose, onDelete, onSave, value } = props;
 
 	return (
 		<Modal

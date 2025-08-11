@@ -3,8 +3,9 @@ import { TicketSettings } from '../types/Ticket';
 import { StoreDispatch } from '../types/Store';
 
 export default {
-	getTickets: ( eventId: number ) =>
-		async ( { dispatch }: { dispatch: StoreDispatch } ): Promise<void> => {
+	getTickets:
+		( eventId: number ) =>
+		async ( { dispatch }: { dispatch: StoreDispatch } ): Promise< void > => {
 			if ( ! eventId ) {
 				console.warn( 'Event ID is required to fetch tickets.' );
 				return;

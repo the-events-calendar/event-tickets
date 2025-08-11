@@ -7,4 +7,4 @@ export type CostDetails = {
 	currencyThousandSeparator: string;
 	suffix?: string;
 	values: number[];
-}
+};

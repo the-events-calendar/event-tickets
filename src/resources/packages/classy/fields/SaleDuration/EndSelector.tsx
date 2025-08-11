@@ -46,10 +46,7 @@ export default function EndSelector( props: {
 
 	return (
 		<div className="classy-field__group">
-			<div
-				className="classy-field__input classy-field__input--end-date"
-				ref={ ref }
-			>
+			<div className="classy-field__input classy-field__input--end-date" ref={ ref }>
 				<DatePicker
 					anchor={ ref.current }
 					dateWithYearFormat={ dateWithYearFormat }

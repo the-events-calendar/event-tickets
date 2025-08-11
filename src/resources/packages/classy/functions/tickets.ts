@@ -94,31 +94,31 @@ const combineTicketWithPartial = ( ticket1: Ticket, ticket2: PartialTicket ): Ti
 		...ticket2,
 		availableFromDetails: {
 			...ticket1.availableFromDetails,
-			...ticket2?.availableFromDetails || {},
+			...( ticket2?.availableFromDetails || {} ),
 		},
 		availableUntilDetails: {
 			...ticket1.availableUntilDetails,
-			...ticket2?.availableUntilDetails || {},
+			...( ticket2?.availableUntilDetails || {} ),
 		},
 		capacityDetails: {
 			...ticket1.capacityDetails,
-			...ticket2?.capacityDetails || {},
+			...( ticket2?.capacityDetails || {} ),
 		},
 		costDetails: {
 			...ticket1.costDetails,
-			...ticket2?.costDetails || {},
+			...( ticket2?.costDetails || {} ),
 		},
 		salePriceData: {
 			...ticket1.salePriceData,
-			...ticket2?.salePriceData || {},
+			...( ticket2?.salePriceData || {} ),
 		},
 		checkin: {
 			...ticket1.checkin,
-			...ticket2?.checkin || {},
+			...( ticket2?.checkin || {} ),
 		},
 		fees: {
 			...ticket1.fees,
-			...ticket2?.fees || {},
+			...( ticket2?.fees || {} ),
 		},
 	};
 };

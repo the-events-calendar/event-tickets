@@ -86,7 +86,7 @@ export type Settings = {
  */
 export type LocalizedData = {
 	settings: Settings;
-	nonces: Record<NonceTypes, string>;
+	nonces: Record< NonceTypes, string >;
 };
 
 /**
@@ -98,6 +98,6 @@ export type ETClassyGlobal = TecGlobal & {
 	tickets: {
 		classy: {
 			data: LocalizedData;
-		}
-	}
+		};
+	};
 };

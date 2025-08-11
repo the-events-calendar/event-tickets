@@ -5,11 +5,11 @@ import { TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
 import { STORE_NAME } from '../../constants';
-import { StoreDispatch, StoreSelect, CoreEditorSelect } from "../../types/Store";
+import { StoreDispatch, StoreSelect, CoreEditorSelect } from '../../types/Store';
 
 type TicketTableProps = {
 	onEditTicket: ( ticket: TicketSettings ) => void;
-} & Omit<TicketComponentProps, 'value'>;
+} & Omit< TicketComponentProps, 'value' >;
 
 type MoveDirection = 'up' | 'down';
 
@@ -26,7 +26,7 @@ const moveTicket = ( tickets: TicketSettings[], direction: MoveDirection, index:
 	}
 
 	return newTickets;
-}
+};
 
 /**
  * TicketTable component for displaying a list of tickets in a table format.
@@ -36,9 +36,7 @@ const moveTicket = ( tickets: TicketSettings[], direction: MoveDirection, index:
  * @param {TicketTableProps} props
  */
 export default function TicketTable( props: TicketTableProps ): JSX.Element {
-	const {
-		onEditTicket,
-	} = props;
+	const { onEditTicket } = props;
 
 	const { tickets } = useSelect( ( select ) => {
 		const { getTickets }: StoreSelect = select( STORE_NAME );
@@ -56,10 +54,13 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 
 	// todo: update the menu order of the tickets when moving them.
 
-	const handleMoveTicket = useCallback( ( direction: MoveDirection, index: number ) => {
-		const updatedTickets = moveTicket( tickets, direction, index );
-		setTickets( updatedTickets );
-	}, [ tickets, setTickets ] );
+	const handleMoveTicket = useCallback(
+		( direction: MoveDirection, index: number ) => {
+			const updatedTickets = moveTicket( tickets, direction, index );
+			setTickets( updatedTickets );
+		},
+		[ tickets, setTickets ]
+	);
 
 	return (
 		<table className="classy-field classy-field__ticket-table">

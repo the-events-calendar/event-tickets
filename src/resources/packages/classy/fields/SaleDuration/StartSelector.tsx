@@ -7,7 +7,6 @@ import { DatePicker, TimePicker } from '@tec/common/classy/components';
 import type { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
 import { _x } from '@wordpress/i18n';
 
-
 export default function StartSelector( props: {
 	dateWithYearFormat: string;
 	endDate: Date;

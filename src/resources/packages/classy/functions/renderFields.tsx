@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Fill } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { Tickets } from '../fields';
+import { Tickets, VirtualLocationViewingPermissions, VirtualLocationAdditionalSettings } from '../fields';
 import { CoreEditorSelect } from '../types/Store';
 import { getSettings } from '../localizedData';
 
@@ -42,10 +42,18 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 
 			{ /* Portal-render the fields into the Classy form. */ }
 			<Fill name="tec.classy.fields.tickets">
-
 				<Tickets />
+			</Fill>
 
+			{ /* Portal-render the fields into the Virtual Event settings form. */ }
+			<Fill name="tec.classy.virtual-location.settings.viewing-permissions.after">
+				<VirtualLocationViewingPermissions />
+			</Fill>
+
+			{ /* Portal-render the fields into the Virtual Event settings form. */ }
+			<Fill name="tec.classy.virtual-location.settings.after">
+				<VirtualLocationAdditionalSettings />
 			</Fill>
 		</Fragment>
 	);
-};
+}

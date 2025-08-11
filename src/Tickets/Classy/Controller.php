@@ -13,6 +13,7 @@ namespace TEC\Tickets\Classy;
 
 use TEC\Common\Classy\Controller as Common_Controller;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\lucatume\DI52\ContainerException;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Classy\REST\Controller as REST_Controller;
 use TEC\Tickets\Commerce\Utils\Currency;
@@ -39,6 +40,8 @@ class Controller extends Controller_Contract {
 			add_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
 		}
 
+		$this->register_ecp_integrations();
+
 		$this->container->register( REST_Controller::class );
 	}
 
@@ -53,6 +56,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
+		remove_action( 'tec_events_pro_classy_registered', [ $this, 'register_ecp_editor_meta' ] );
 		$this->container->get( REST_Controller::class )->unregister();
 	}
 
@@ -135,5 +139,37 @@ class Controller extends Controller_Contract {
 				'createTicket' => wp_create_nonce( 'add_ticket_nonce' ),
 			],
 		];
+	}
+
+	/**
+	 * Registers the meta fields supported by Event Tickets when Events Pro is active.
+	 *
+	 * @internal
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_ecp_editor_meta(): void {
+		$this->container->make( ECP_Editor_Meta::class )->register();
+	}
+
+	/**
+	 * Registers Events Pro integrations, if the plugin is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function register_ecp_integrations(): void {
+		$this->container->singleton( ECP_Editor_Meta::class );
+
+		if (
+			did_action( 'tec_events_pro_classy_registered' )
+			|| doing_action( 'tec_events_pro_classy_registered' )
+		) {
+			$this->register_ecp_editor_meta();
+		} else {
+			add_action( 'tec_events_pro_classy_registered', [ $this, 'register_ecp_editor_meta' ] );
+		}
 	}
 }
