@@ -8,15 +8,14 @@ import {
 	METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK,
 } from '../../constants.tsx';
 import useMetaFiltering from './useMetaFiltering.ts';
+import { CoreEditorSelect } from '../../types/Store';
 
 export default function AdditionalSettings(): JSX.Element {
 	const meta: {
 		includeVideoLinkInRsvpEmails: boolean;
 		includeVideoLinkInTicketEmails: boolean;
 	} = useSelect( ( select ) => {
-		const store: {
-			getEditedPostAttribute: ( key: string ) => any;
-		} = select( 'core/editor' );
+		const store: CoreEditorSelect = select( 'core/editor' );
 
 		const meta = store.getEditedPostAttribute( 'meta' );
 
