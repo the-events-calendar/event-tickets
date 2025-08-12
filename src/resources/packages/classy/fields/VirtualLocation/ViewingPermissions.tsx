@@ -23,11 +23,12 @@ export default function ViewingPermissions(): JSX.Element {
 		};
 	}, [] );
 
-	const [ showAtTicketAttendees, setShowAtTicketAttendees ] = useState< boolean >( meta.showAtTicketAttendees );
 	const [ showAtRsvpAttendees, setShowAtRsvpAttendees ] = useState< boolean >( meta.showAtRsvpAttendees );
+	const [ showAtTicketAttendees, setShowAtTicketAttendees ] = useState< boolean >( meta.showAtTicketAttendees );
 	const [ showOptions, setShowOptions ] = useState< boolean >( showAtRsvpAttendees || showAtTicketAttendees );
 
 	useMetaFiltering(
+		'viewing-permissions',
 		( meta: Object ): Object => {
 			let metaValue = meta[ METADATA_EVENT_VIRTUAL_SHOW_EMBED_TO ] ?? [];
 

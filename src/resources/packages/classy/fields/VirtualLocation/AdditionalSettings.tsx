@@ -34,6 +34,7 @@ export default function AdditionalSettings(): JSX.Element {
 	);
 
 	useMetaFiltering(
+		'additional-settings',
 		( meta: Object ): Object => {
 			meta[ METADATA_EVENTS_VIRTUAL_RSVP_EMAIL_LINK ] = includeVideoLinkInRsvpEmails ? 'yes' : '';
 			meta[ METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK ] = includeVideoLinkInTicketEmails ? 'yes' : '';
