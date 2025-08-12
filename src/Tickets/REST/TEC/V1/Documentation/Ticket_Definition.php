@@ -132,8 +132,8 @@ class Ticket_Definition extends Definition {
 
 		$properties[] = (
 			new Positive_Integer(
-				'event_id',
-				fn() => __( 'The ID of the event this ticket is associated with', 'event-tickets' ),
+				'event',
+				fn() => __( 'The ID of the post this ticket is associated with. Normally an event-like post.', 'event-tickets' ),
 			)
 		)->set_example( 123 );
 
