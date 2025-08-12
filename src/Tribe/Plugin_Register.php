@@ -25,7 +25,7 @@ class Tribe__Tickets__Plugin_Register extends Tribe__Abstract_Plugin_Register {
 		'addon-dependencies' => [
 			'Tribe__Tickets_Plus__Main'               => '6.7.0-dev',
 			'Tribe__Events__Community__Tickets__Main' => '4.9.3-dev',
-			'Tribe__Events__Main'                     => '6.13.2-dev',
+			'Tribe__Events__Main'                     => '6.15.0-dev',
 		],
 	];
 
