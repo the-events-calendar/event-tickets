@@ -243,7 +243,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	 * @return array The filtered parameters.
 	 */
 	protected function filter_create_params( array $params ): array {
-		// Normalize natural-language date strings (e.g., "now", "next friday 6pm")
+		// Normalize natural-language date strings (e.g., "now", "next friday 6pm").
 		foreach ( [ 'start_date', 'end_date', 'sale_price_start_date', 'sale_price_end_date' ] as $date_key ) {
 			if ( isset( $params[ $date_key ] ) && is_string( $params[ $date_key ] ) ) {
 				$parsed = $this->normalize_date_text_to_mysql( $params[ $date_key ] );
@@ -257,21 +257,21 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		$capacity = $params['capacity'] ?? null;
 		$mode     = $params['mode'] ?? null;
 
-        // If stock or capacity is passed and the other is not, they should be the same.
-        if ( ! is_null( $stock ) && is_null( $capacity ) ) {
-            $params['capacity'] = $stock;
-        } elseif ( ! is_null( $capacity ) && is_null( $stock ) ) {
-            $params['stock'] = $capacity;
-        }
+		// If stock or capacity is passed and the other is not, they should be the same.
+		if ( ! is_null( $stock ) && is_null( $capacity ) ) {
+			$params['capacity'] = $stock;
+		} elseif ( ! is_null( $capacity ) && is_null( $stock ) ) {
+			$params['stock'] = $capacity;
+		}
 
-        // Auto-expand capacity to be at least stock when both provided and stock is greater.
-        if ( ! is_null( $stock ) && ! is_null( $capacity ) && is_numeric( $stock ) && is_numeric( $capacity ) ) {
-            $stock_num    = intval( $stock );
-            $capacity_num = intval( $capacity );
-            if ( $stock_num > $capacity_num ) {
-                $params['capacity'] = $stock_num;
-            }
-        }
+		// Auto-expand capacity to be at least stock when both provided and stock is greater.
+		if ( ! is_null( $stock ) && ! is_null( $capacity ) && is_numeric( $stock ) && is_numeric( $capacity ) ) {
+			$stock_num    = intval( $stock );
+			$capacity_num = intval( $capacity );
+			if ( $stock_num > $capacity_num ) {
+				$params['capacity'] = $stock_num;
+			}
+		}
 
 		// If stock or capacity is passed, mode should default to "own".
 		if ( ( ! is_null( $stock ) || ! is_null( $capacity ) ) && is_null( $mode ) ) {
