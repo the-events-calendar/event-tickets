@@ -88,7 +88,14 @@ export default function ViewingPermissions(): JSX.Element {
 				selected={ showOptions ? 'attendees' : null }
 				onChange={ (): void => {} }
 				onClick={ (): void => {
-					setShowOptions( ! showOptions );
+					const newValue = ! showOptions;
+
+					if ( ! newValue ) {
+						setShowAtRsvpAttendees( false );
+						setShowAtTicketAttendees( false );
+					}
+
+					setShowOptions( newValue );
 				} }
 			/>
 
