@@ -2,7 +2,7 @@
 /**
  * Handles Event Tickets integration with Classy and Events Pro.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Classy;
  */
@@ -15,7 +15,7 @@ use Tribe__Editor__Meta as Editor_Meta_Contract;
 /**
  * Class ECP_Editor_Meta.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Classy;
  */

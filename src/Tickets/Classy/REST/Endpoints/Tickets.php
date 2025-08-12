@@ -87,7 +87,10 @@ class Tickets {
 			return new WP_Error(
 				'server_error',
 				__( 'An error occurred while fetching tickets', 'event-tickets' ),
-				[ 'status' => 500, 'message' => $e->getMessage() ]
+				[
+					'status'  => 500,
+					'message' => $e->getMessage(),
+				]
 			);
 		}
 	}
@@ -110,7 +113,10 @@ class Tickets {
 			return new WP_Error(
 				'server_error',
 				__( 'An error occurred while creating the ticket', 'event-tickets' ),
-				[ 'status' => 500, 'message' => $e->getMessage() ]
+				[
+					'status'  => 500,
+					'message' => $e->getMessage(),
+				]
 			);
 		}
 	}
@@ -133,7 +139,10 @@ class Tickets {
 			return new WP_Error(
 				'server_error',
 				__( 'An error occurred while updating the ticket', 'event-tickets' ),
-				[ 'status' => 500, 'message' => $e->getMessage() ]
+				[
+					'status'  => 500,
+					'message' => $e->getMessage(),
+				]
 			);
 		}
 	}
@@ -180,7 +189,10 @@ class Tickets {
 			return new WP_Error(
 				'server_error',
 				__( 'An error occurred while deleting the ticket', 'event-tickets' ),
-				[ 'status' => 500, 'message' => $e->getMessage() ]
+				[
+					'status'  => 500,
+					'message' => $e->getMessage(),
+				]
 			);
 		}
 	}
@@ -473,8 +485,8 @@ class Tickets {
 		}
 
 		return current_user_can( 'edit_event_tickets' )
-		       || current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
-		       || current_user_can( 'edit_post', $post->ID );
+				|| current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
+				|| current_user_can( 'edit_post', $post->ID );
 	}
 
 	/**
