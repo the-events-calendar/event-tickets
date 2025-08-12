@@ -9,21 +9,14 @@
 
 namespace TEC\Tickets\Commerce\REST;
 
-use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
-use TEC\Tickets\Commerce\Gateways\Free\Gateway;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Order;
-
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\Commerce\RSVP\Constants;
 use TEC\Tickets\Event;
-
 use Tribe__Utils__Array as Arr;
 
 use WP_Error;
+use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -68,6 +61,19 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 				[
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'handle_create_ticket' ],
+					'permission_callback' => [ $this, 'check_permission' ],
+				],
+			]
+		);
+
+		// Register IAC and attendee meta update endpoint.
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path() . '/meta',
+			[
+				[
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => [ $this, 'handle_update_ticket_meta' ],
 					'permission_callback' => [ $this, 'check_permission' ],
 				],
 			]
@@ -147,7 +153,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$args['ticket_name']                       = tribe_get_rsvp_label_singular();
 
 		/**
-		 * Allow for processing additional RSVP fields before saving.
+		 * Allow for processing additional RSVP fields before saving ticket creation.
 		 *
 		 * @since TBD
 		 *
@@ -155,7 +161,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		 * @param array $request_params The original request parameters.
 		 * @param int   $post_id        The post ID.
 		 */
-		$args = apply_filters( 'tec_tickets_rsvp_process_additional_fields', $args, $request_params, $post_id );
+		$args = apply_filters( 'tec_tickets_rsvp_process_ticket_fields', $args, $request_params, $post_id );
 
 		$module  = tribe( Module::class );
 		$rsvp_id = $module->ticket_add( $post_id, $args );
@@ -176,6 +182,71 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			$response['success']   = true;
 			$response['ticket_id'] = $rsvp_id;
 		}
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Handles the request to update IAC and attendee meta fields for existing tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_update_ticket_meta( WP_REST_Request $request ): WP_REST_Response {
+		$response = [
+			'success' => false,
+		];
+
+		$request_params = $request->get_params();
+		$post_id        = Arr::get( $request_params, 'post_ID' );
+		$ticket_id      = Arr::get( $request_params, 'rsvp_id', '' );
+
+		if ( empty( $post_id ) || empty( $ticket_id ) ) {
+			return new WP_REST_Response( [
+				'success' => false,
+				'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
+			], 400 );
+		}
+
+		$post_id   = Event::filter_event_id( $post_id );
+		$ticket_id = absint( $ticket_id );
+
+		// Verify the ticket exists and belongs to this event.
+		$ticket_post = get_post( $ticket_id );
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_REST_Response( [
+				'success' => false,
+				'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+			], 404 );
+		}
+
+		/**
+		 * Allow for processing additional IAC and attendee meta fields before updating.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $request_params The original request parameters.
+		 * @param int   $ticket_id      The ticket ID being updated.
+		 * @param int   $post_id        The post ID.
+		 */
+		$request_params = apply_filters( 'tec_tickets_rsvp_process_additional_fields', $request_params, $ticket_id, $post_id );
+
+		/**
+		 * Allow for additional processing after IAC and attendee meta updates.
+		 *
+		 * @since TBD
+		 *
+		 * @param int   $ticket_id      The ticket ID being updated.
+		 * @param int   $post_id        The post ID.
+		 * @param array $request_params The original request parameters.
+		 */
+		do_action( 'tec_tickets_rsvp_after_meta_update', $ticket_id, $post_id, $request_params );
+
+		$response['success']   = true;
+		$response['ticket_id'] = $ticket_id;
 
 		return new WP_REST_Response( $response );
 	}
