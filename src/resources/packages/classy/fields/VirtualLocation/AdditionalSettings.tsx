@@ -2,53 +2,51 @@ import * as React from 'react';
 import { _x } from '@wordpress/i18n';
 import { ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { Settings } from '../../types/VirtualLocation';
 import { useSelect } from '@wordpress/data';
 import {
 	METADATA_EVENTS_VIRTUAL_RSVP_EMAIL_LINK,
 	METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK,
 } from '../../constants.tsx';
-
-const includeVideoLinkOptions: {
-	label: string;
-	value: 'rsvp' | 'ticket';
-}[] = [
-	{
-		label: _x( 'In RSVP emails', 'Include videe link option label', 'event-tickets' ),
-		value: 'rsvp',
-	},
-	{
-		label: _x( 'In Ticket emails', 'Show when option label', 'tribe-events-calendar-pro' ),
-		value: 'ticket',
-	},
-];
-
-const defaultSettings: Settings = {
-	includeVideoLinkInRsvpEmails: true,
-	includeVideoLinkInTicketEmails: true,
-};
+import useMetaFiltering from './useMetaFiltering.ts';
+import { CoreEditorSelect } from '../../types/Store';
 
 export default function AdditionalSettings(): JSX.Element {
-	const postSettings: Settings = useSelect( ( select ) => {
-		const store: {
-			getEditedPostAttribute: ( key: string ) => any;
-		} = select( 'core/editor' );
+	const meta: {
+		includeVideoLinkInRsvpEmails: boolean;
+		includeVideoLinkInTicketEmails: boolean;
+	} = useSelect( ( select ) => {
+		const store: CoreEditorSelect = select( 'core/editor' );
 
 		const meta = store.getEditedPostAttribute( 'meta' );
-		const settingsFromMeta = { ...defaultSettings };
 
-		[ METADATA_EVENTS_VIRTUAL_RSVP_EMAIL_LINK, METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK ].map(
-			( metaKey: string ) => {
-				settingsFromMeta[ metaKey ] = meta.hasOwnProperty( metaKey )
-					? meta[ metaKey ] === 'yes'
-					: defaultSettings[ metaKey ];
-			}
-		);
-
-		return settingsFromMeta;
+		return {
+			includeVideoLinkInRsvpEmails: ( meta[ METADATA_EVENTS_VIRTUAL_RSVP_EMAIL_LINK ] ?? '' ) === 'yes',
+			includeVideoLinkInTicketEmails: ( meta[ METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK ] ?? '' ) === 'yes',
+		};
 	}, [] );
 
-	const [ settings, setSettings ] = useState< Settings >( postSettings );
+	const [ includeVideoLinkInRsvpEmails, setIncludeVideoLinkInRsvpEmails ] = useState< boolean >(
+		meta.includeVideoLinkInRsvpEmails
+	);
+	const [ includeVideoLinkInTicketEmails, setIncludeVideoLinkInTicketEmails ] = useState< boolean >(
+		meta.includeVideoLinkInTicketEmails
+	);
+
+	useMetaFiltering(
+		'additional-settings',
+		( meta: Object ): Object => {
+			meta[ METADATA_EVENTS_VIRTUAL_RSVP_EMAIL_LINK ] = includeVideoLinkInRsvpEmails ? 'yes' : '';
+			meta[ METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK ] = includeVideoLinkInTicketEmails ? 'yes' : '';
+			return meta;
+		},
+		( meta: Object ): Object => {
+			meta[ METADATA_EVENTS_VIRTUAL_RSVP_EMAIL_LINK ] = null;
+			meta[ METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK ] = null;
+
+			return meta;
+		},
+		[ includeVideoLinkInRsvpEmails, includeVideoLinkInTicketEmails ]
+	);
 
 	return (
 		<section className="classy-modal__section">
@@ -60,23 +58,16 @@ export default function AdditionalSettings(): JSX.Element {
 				className="classy-modal__section-text"
 				__nextHasNoMarginBottom
 				label={ _x( 'In RSVP emails', 'Setting label', 'event-tickets' ) }
-				onChange={ ( newValue: boolean ): void =>
-					setSettings( {
-						...settings,
-						includeVideoLinkInRsvpEmails: newValue,
-					} )
-				}
-				checked={ settings.includeVideoLinkInRsvpEmails }
+				onChange={ ( newValue: boolean ): void => setIncludeVideoLinkInRsvpEmails( newValue ) }
+				checked={ includeVideoLinkInRsvpEmails }
 			/>
 
 			<ToggleControl
 				className="classy-modal__section-text"
 				__nextHasNoMarginBottom
 				label={ _x( 'In Ticket emails', 'Setting label', 'event-tickets' ) }
-				onChange={ ( newValue: boolean ): void =>
-					setSettings( { ...settings, includeVideoLinkInTicketEmails: newValue } )
-				}
-				checked={ settings.includeVideoLinkInTicketEmails }
+				onChange={ ( newValue: boolean ): void => setIncludeVideoLinkInTicketEmails( newValue ) }
+				checked={ includeVideoLinkInTicketEmails }
 			/>
 		</section>
 	);
