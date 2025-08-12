@@ -30,6 +30,7 @@ use TEC\Common\REST\TEC\V1\Traits\Update_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Delete_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Read_Entity_Response;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe\Utils\Date_I18n;
 use InvalidArgumentException;
 
 /**
@@ -242,16 +243,35 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	 * @return array The filtered parameters.
 	 */
 	protected function filter_create_params( array $params ): array {
+		// Normalize natural-language date strings (e.g., "now", "next friday 6pm")
+		foreach ( [ 'start_date', 'end_date', 'sale_price_start_date', 'sale_price_end_date' ] as $date_key ) {
+			if ( isset( $params[ $date_key ] ) && is_string( $params[ $date_key ] ) ) {
+				$parsed = $this->normalize_date_text_to_mysql( $params[ $date_key ] );
+				if ( null !== $parsed ) {
+					$params[ $date_key ] = $parsed;
+				}
+			}
+		}
+
 		$stock    = $params['stock'] ?? null;
 		$capacity = $params['capacity'] ?? null;
 		$mode     = $params['mode'] ?? null;
 
-		// If stock or capacity is passed and the other is not, they should be the same.
-		if ( ! is_null( $stock ) && is_null( $capacity ) ) {
-			$params['capacity'] = $stock;
-		} elseif ( ! is_null( $capacity ) && is_null( $stock ) ) {
-			$params['stock'] = $capacity;
-		}
+        // If stock or capacity is passed and the other is not, they should be the same.
+        if ( ! is_null( $stock ) && is_null( $capacity ) ) {
+            $params['capacity'] = $stock;
+        } elseif ( ! is_null( $capacity ) && is_null( $stock ) ) {
+            $params['stock'] = $capacity;
+        }
+
+        // Auto-expand capacity to be at least stock when both provided and stock is greater.
+        if ( ! is_null( $stock ) && ! is_null( $capacity ) && is_numeric( $stock ) && is_numeric( $capacity ) ) {
+            $stock_num    = intval( $stock );
+            $capacity_num = intval( $capacity );
+            if ( $stock_num > $capacity_num ) {
+                $params['capacity'] = $stock_num;
+            }
+        }
 
 		// If stock or capacity is passed, mode should default to "own".
 		if ( ( ! is_null( $stock ) || ! is_null( $capacity ) ) && is_null( $mode ) ) {
@@ -264,6 +284,31 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 		}
 
 		return $params;
+	}
+
+	/**
+	 * Convert a natural-language date string into MySQL datetime (local WP timezone).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $value Date value that PHP's strtotime/DateTime can parse (e.g., "now", "next friday 6pm").
+	 *
+	 * @return string|null Formatted date in 'Y-m-d H:i:s' or null if parsing failed.
+	 */
+	protected function normalize_date_text_to_mysql( string $value ): ?string {
+		$value = trim( $value );
+		// If already looks like MySQL datetime, keep as-is.
+		if ( preg_match( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value ) ) {
+			return $value;
+		}
+
+		$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new \DateTimeZone( wp_timezone_string() );
+		try {
+			$dt = new Date_I18n( $value, $tz );
+			return $dt->format( 'Y-m-d H:i:s' );
+		} catch ( \Exception $e ) {
+			return null;
+		}
 	}
 
 	/**
