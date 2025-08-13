@@ -281,9 +281,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$response['id']           = $order->ID;
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->gateway_order_id ], tribe( Success::class )->get_url() );
 
+			$attendees             = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+			$attendee_ids          = array_column( $attendees, 'attendee_id' );
+			$response['attendees'] = $attendee_ids;
+
+			$attendee_ids_flat = implode( ',', $attendee_ids );
+
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids_flat );
+
 			$response['opt_in_args'] = [
 				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
 				'checked'      => false,
+				'attendee_ids' => $attendee_ids_flat,
+				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
 			];
 
 			return $response;
@@ -323,7 +333,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'is_going'     => true,
 				'checked'      => ! $optout,
 				'attendee_ids' => $attendee_ids_flat,
-				//'opt_in_nonce' => $nonce_value,
+				'opt_in_nonce' => $nonce_value,
 			];
 		}
 
@@ -410,7 +420,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 *      @type int                           $threshold  The RSVP ticket threshold.
 		 * }
 		 */
-		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args_pre_process', $args );
+		$args = apply_filters( 'tec_tickets_commerce_rsvp_render_step_template_args_pre_process', $args );
 
 		$args['process_result'] = $this->process_rsvp_step( $args );
 
@@ -432,7 +442,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 *      @type array                         $process_result The processing result.
 		 * }
 		 */
-		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args', $args );
+		$args = apply_filters( 'tec_tickets_commerce_rsvp_render_step_template_args', $args );
 
 		// Return the process result for opt-in.
 		if ( false === $args['process_result']['success'] ) {
@@ -446,11 +456,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
 			// Refresh ticket.
-			$args['rsvp'] = $this->module->get_ticket( $post_id, $ticket_id );
-
-			$args['is_going']       = $args['process_result']['opt_in_args']['is_going'];
-			$args['opt_in_checked'] = $args['process_result']['opt_in_args']['checked'];
-			//$args['opt_in_nonce']   = $args['process_result']['opt_in_args']['opt_in_nonce'];
+			$args['rsvp']                = $this->module->get_ticket( $post_id, $ticket_id );
+			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
+			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
+			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
+			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
 		if ( ! empty( $args['process_result']['attendees'] ) ) {
@@ -458,17 +468,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// Handle Event Tickets logic.
-		$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
-
-		/**
-		 * Filters whether to hide the attendee list opt-out option.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool        $hide_attendee_list_optout Whether to hide the attendee list opt-out option.
-		 * @param int|WP_Post $post                      The post object or ID.
-		 */
-		$hide_attendee_list_optout = apply_filters( 'tec_tickets_hide_attendee_list_optout', $hide_attendee_list_optout, $post_id );
+		$hide_attendee_list_optout = false;
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
@@ -479,7 +479,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
 		 * @param int  $ticket_id                 The ticket ID.
 		 */
-		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', $hide_attendee_list_optout, $post_id, $ticket_id );
+		$hide_attendee_list_optout = apply_filters( 'tec_tickets_commerce_rsvp_hide_attendees_list_optout', $hide_attendee_list_optout, $post_id, $ticket_id );
 
 		if ( false === $args['is_going'] ) {
 			$hide_attendee_list_optout = true;
