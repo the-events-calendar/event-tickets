@@ -878,18 +878,15 @@ class Ticket extends Ticket_Data {
 	 */
 	public static function normalize_date_text_to_mysql( string $value ): ?string {
 		$value = trim( $value );
-		// If already looks like MySQL datetime, keep as-is.
-		if ( preg_match( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value ) ) {
-			return $value;
-		}
 
-		$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new \DateTimeZone( wp_timezone_string() );
-		try {
-			$dt = new Date_I18n( $value, $tz );
-			return $dt->format( 'Y-m-d H:i:s' );
-		} catch ( \Exception $e ) {
+		// Use Tribe__Date_Utils to build date object with proper timezone handling.
+		$date_obj = \Tribe__Date_Utils::build_date_object( $value, null, false );
+
+		if ( false === $date_obj ) {
 			return null;
 		}
+
+		return $date_obj->format( \Tribe__Date_Utils::DBDATETIMEFORMAT );
 	}
 
 	/**

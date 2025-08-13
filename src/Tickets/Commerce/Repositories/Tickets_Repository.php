@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Repository.
+ *
+ * @since 5.1.9
+ *
+ * @package TEC\Tickets\Commerce\Repositories
+ */
 
 namespace TEC\Tickets\Commerce\Repositories;
 
@@ -109,15 +116,15 @@ class Tickets_Repository extends Tribe__Repository {
 	 * @return mixed The normalized value or original value if no normalization needed.
 	 */
 	protected function normalize_date_field( string $key, $value ) {
-		// Only normalize string date fields
+		// Only normalize string date fields.
 		if ( ! is_string( $value ) || empty( $value ) ) {
 			return $value;
 		}
 
-		// Normalize date fields using the centralized method from Ticket class
+		// Normalize date fields using the centralized method from Ticket class.
 		if ( in_array( $key, [ 'start_date', 'end_date', 'sale_price_start_date', 'sale_price_end_date' ], true ) ) {
 			$normalized = Ticket::normalize_date_text_to_mysql( $value );
-			return $normalized !== null ? $normalized : $value;
+			return $normalized ?? $value;
 		}
 
 		return $value;
@@ -127,7 +134,7 @@ class Tickets_Repository extends Tribe__Repository {
 	 * {@inheritDoc}
 	 */
 	public function set( $key, $value ) {
-		// Normalize date fields before setting them
+		// Normalize date fields before setting them.
 		$value = $this->normalize_date_field( $key, $value );
 
 		return parent::set( $key, $value );
