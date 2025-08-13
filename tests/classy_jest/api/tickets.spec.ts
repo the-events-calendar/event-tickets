@@ -38,7 +38,7 @@ describe( 'Ticket API', () => {
 	afterEach( resetMocks );
 
 	const restEndpoint = '/tec/classy/v1/tickets';
-	const restUrl = `https://example.com/wp-json${restEndpoint}`;
+	const restUrl = `https://example.com/wp-json${ restEndpoint }`;
 
 	describe( 'fetchTickets', () => {
 		const mockApiTickets: GetTicketApiResponse[] = [
@@ -46,7 +46,7 @@ describe( 'Ticket API', () => {
 				id: 1,
 				title: 'Sample Ticket',
 				description: 'This is a sample ticket description.',
-				rest_url: `${restUrl}/1`,
+				rest_url: `${ restUrl }/1`,
 				post_id: 123,
 				sale_price_data: {
 					enabled: '1',
@@ -181,6 +181,120 @@ describe( 'Ticket API', () => {
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: createExpectedPath( restEndpoint, { include_post: [ 123 ] } ),
 			} );
-		});
+		} );
+
+		test( 'rejects when apiFetch throws an error', async () => {
+			const apiError = new Error( 'Network error' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: Network error' );
+		} );
+
+		test( 'rejects when response is not an object', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( 'not an object' );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: response did not return an object.' );
+		} );
+
+		test( 'rejects when response is null', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( null );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: response did not return an object.' );
+		} );
+
+		test( 'rejects when response is undefined', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: response did not return an object.' );
+		} );
+
+		test( 'rejects when response object is missing tickets property', async () => {
+			const invalidResponse = {
+				rest_url: restUrl,
+				total: 1,
+				total_pages: 1,
+				// missing tickets property
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Tickets fetch request did not return an object with tickets and total properties.' );
+		} );
+
+		test( 'rejects when response object is missing total property', async () => {
+			const invalidResponse = {
+				rest_url: restUrl,
+				tickets: mockApiTickets,
+				total_pages: 1,
+				// missing total property
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Tickets fetch request did not return an object with tickets and total properties.' );
+		} );
+
+		test( 'rejects when response object is missing both tickets and total properties', async () => {
+			const invalidResponse = {
+				rest_url: restUrl,
+				total_pages: 1,
+				// missing both tickets and total properties
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
+
+			await expect( fetchTickets() ).rejects.toThrow( 'Tickets fetch request did not return an object with tickets and total properties.' );
+		} );
+
+		test( 'handles query parameters correctly', async () => {
+			const mockTicketsData: GetTicketsApiResponse = {
+				rest_url: restUrl,
+				total: 1,
+				total_pages: 1,
+				tickets: mockApiTickets,
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+
+			const params = {
+				include_post: [ 123, 456 ],
+				per_page: 10,
+				page: 2,
+			};
+
+			const result = await fetchTickets( params );
+
+			expect( result ).toEqual( mockTicketsData );
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: createExpectedPath( restEndpoint, params ),
+			} );
+		} );
+
+		test( 'handles empty query parameters', async () => {
+			const mockTicketsData: GetTicketsApiResponse = {
+				rest_url: restUrl,
+				total: 1,
+				total_pages: 1,
+				tickets: mockApiTickets,
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+
+			const result = await fetchTickets( {} );
+
+			expect( result ).toEqual( mockTicketsData );
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: restEndpoint,
+			} );
+		} );
 	} );
 } );
