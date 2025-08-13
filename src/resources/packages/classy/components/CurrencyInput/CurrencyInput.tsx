@@ -10,11 +10,7 @@ const defaultCurrency: Currency = {
 	code: getCurrencySettings().code,
 };
 
-const {
-	decimalSeparator,
-	thousandSeparator,
-	precision: decimalPrecision,
-} = getCurrencySettings();
+const { decimalSeparator, thousandSeparator, precision: decimalPrecision } = getCurrencySettings();
 
 type CurrencyInputProps = {
 	/**
@@ -36,7 +32,7 @@ type CurrencyInputProps = {
 	 * Whether the input field is required.
 	 */
 	required?: boolean;
-}
+};
 
 const defaultLabel = _x( 'Price', 'Label for the price input field', 'event-tickets' );
 
@@ -49,12 +45,7 @@ const defaultLabel = _x( 'Price', 'Label for the price input field', 'event-tick
  * @return {JSX.Element} The rendered currency input field.
  */
 export default function CurrencyInput( props: CurrencyInputProps ): JSX.Element {
-	const {
-		label,
-		onChange,
-		value,
-		required = false,
-	} = props;
+	const { label, onChange, value, required = false } = props;
 
 	return (
 		<CommonCurrencyInput

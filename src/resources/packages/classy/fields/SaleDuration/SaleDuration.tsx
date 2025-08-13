@@ -1,5 +1,5 @@
 import * as React from 'react';
-import  { Fragment } from 'react';
+import { Fragment } from 'react';
 import { ToggleControl } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { RefObject, useCallback, useMemo, useRef, useState } from '@wordpress/element';
@@ -19,7 +19,6 @@ const timeFormat = 'g:i a';
 const saleStart = '2025-06-23 08:00:00';
 const saleEnd = '2025-07-23 17:00:00';
 const isMultiday = true;
-
 
 type DateTimeRefs = {
 	endTimeHours: number;
@@ -221,5 +220,5 @@ export default function SaleDuration() {
 			</div>
 			{ endSelector }
 		</div>
-	)
-};
+	);
+}

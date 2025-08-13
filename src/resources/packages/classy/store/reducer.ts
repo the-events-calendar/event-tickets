@@ -25,7 +25,7 @@ const initialState: StoreState = {
 	tickets: null,
 };
 
-export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, action ) => {
+export const reducer: Reducer< StoreState > = ( state: StoreState = initialState, action ) => {
 	switch ( action.type ) {
 		case CREATE_TICKET:
 			const newTicket = ( action as CreateTicketAction ).ticket;
@@ -37,7 +37,7 @@ export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, 
 			const ticketIdToDelete = ( action as DeleteTicketAction ).ticketId;
 			return {
 				...state,
-				tickets: state.tickets.filter( ticket => ticket.id !== ticketIdToDelete ),
+				tickets: state.tickets.filter( ( ticket ) => ticket.id !== ticketIdToDelete ),
 			};
 		case SET_EVENT_CAPACITY:
 			const capacity = ( action as SetEventCapacityAction ).capacity;
@@ -66,7 +66,7 @@ export const reducer: Reducer<StoreState> = ( state: StoreState = initialState, 
 			const { ticketId, ticketData } = action as UpdateTicketAction;
 			return {
 				...state,
-				tickets: state.tickets.map( ticket =>
+				tickets: state.tickets.map( ( ticket ) =>
 					ticket.id === ticketId ? { ...ticket, ...hydrateTicket( ticketData ) } : ticket
 				),
 			};

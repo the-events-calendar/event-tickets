@@ -32,21 +32,27 @@ export default function TicketRowMover( props: TicketRowMoverProps ): JSX.Elemen
 		ticketPosition = 0,
 	} = props;
 
-	const handleMoveUp = useCallback( ( event: MouseEvent<HTMLButtonElement> ) => {
-		event.preventDefault();
-		event.stopPropagation();
-		if ( canMoveUp && onMoveUp ) {
-			onMoveUp();
-		}
-	}, [ canMoveUp, onMoveUp ] );
+	const handleMoveUp = useCallback(
+		( event: MouseEvent< HTMLButtonElement > ) => {
+			event.preventDefault();
+			event.stopPropagation();
+			if ( canMoveUp && onMoveUp ) {
+				onMoveUp();
+			}
+		},
+		[ canMoveUp, onMoveUp ]
+	);
 
-	const handleMoveDown = useCallback( ( event: MouseEvent<HTMLButtonElement> ) => {
-		event.preventDefault();
-		event.stopPropagation();
-		if ( canMoveDown && onMoveDown ) {
-			onMoveDown();
-		}
-	}, [ canMoveDown, onMoveDown ] );
+	const handleMoveDown = useCallback(
+		( event: MouseEvent< HTMLButtonElement > ) => {
+			event.preventDefault();
+			event.stopPropagation();
+			if ( canMoveDown && onMoveDown ) {
+				onMoveDown();
+			}
+		},
+		[ canMoveDown, onMoveDown ]
+	);
 
 	const getMoveUpLabel = () => {
 		if ( ! canMoveUp ) {
@@ -74,7 +80,7 @@ export default function TicketRowMover( props: TicketRowMoverProps ): JSX.Elemen
 			<Button
 				__next40pxDefaultSize
 				className="classy-field__ticket-row__movers__up"
-				icon={ <ChevronUpIcon/> }
+				icon={ <ChevronUpIcon /> }
 				label={ getMoveUpLabel() }
 				disabled={ ! canMoveUp }
 				accessibleWhenDisabled
@@ -85,7 +91,7 @@ export default function TicketRowMover( props: TicketRowMoverProps ): JSX.Elemen
 			<Button
 				__next40pxDefaultSize
 				className="classy-field__ticket-row__movers__down"
-				icon={ <ChevronDownIcon/> }
+				icon={ <ChevronDownIcon /> }
 				label={ getMoveDownLabel() }
 				disabled={ ! canMoveDown }
 				accessibleWhenDisabled

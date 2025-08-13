@@ -5,15 +5,15 @@ import { _x } from '@wordpress/i18n';
 import { StartSelector, EndSelector } from '@tec/common/classy/components';
 import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { SalePriceDetails } from "../../types/Ticket";
-import { CurrencyInput} from '../../components';
+import { SalePriceDetails } from '../../types/Ticket';
+import { CurrencyInput } from '../../components';
 
 // todo: These should be based on site settings.
 const currentDate = new Date();
 const dateWithYearFormat = 'Y-m-d';
 const startOfWeek: StartOfWeek = 0;
 
-type SalePriceProps = Omit<TicketComponentProps, 'label' | 'onChange'> & {
+type SalePriceProps = Omit< TicketComponentProps, 'label' | 'onChange' > & {
 	value: SalePriceDetails;
 	onChange: ( value: SalePriceDetails ) => void;
 };
@@ -28,25 +28,16 @@ const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', '
  * @param {SalePriceProps} props
  * @return {JSX.Element} The rendered SalePrice component.
  */
-export default function SalePrice( props: SalePriceProps ) : JSX.Element {
-	const {
-		onChange,
-		value,
-	} = props;
+export default function SalePrice( props: SalePriceProps ): JSX.Element {
+	const { onChange, value } = props;
 
-	const [ currentValue, setCurrentValue ] = useState<SalePriceDetails>( value );
+	const [ currentValue, setCurrentValue ] = useState< SalePriceDetails >( value );
 
-	const {
-		enabled: hasSalePrice,
-		salePrice,
-		startDate,
-		endDate,
-	} = currentValue;
+	const { enabled: hasSalePrice, salePrice, startDate, endDate } = currentValue;
 
 	const [ isSelectingDate, setIsSelectingDate ] = useState< 'start' | 'end' | false >( false );
 
 	const ref: RefObject< HTMLDivElement > = useRef( null );
-
 
 	const onDateInputClick = useCallback(
 		( selecting: 'start' | 'end' ) => {
@@ -69,15 +60,18 @@ export default function SalePrice( props: SalePriceProps ) : JSX.Element {
 		}
 	};
 
-	const onFieldChange = useCallback( ( field: keyof SalePriceDetails, value: any ) => {
-		const newValue: SalePriceDetails = {
-			...currentValue,
-			[field]: value,
-		};
+	const onFieldChange = useCallback(
+		( field: keyof SalePriceDetails, value: any ) => {
+			const newValue: SalePriceDetails = {
+				...currentValue,
+				[ field ]: value,
+			};
 
-		setCurrentValue( newValue );
-		onChange( newValue );
-	}, [ onChange, currentValue ] );
+			setCurrentValue( newValue );
+			onChange( newValue );
+		},
+		[ onChange, currentValue ]
+	);
 
 	return (
 		<Fragment>
@@ -121,7 +115,7 @@ export default function SalePrice( props: SalePriceProps ) : JSX.Element {
 							dateWithYearFormat={ dateWithYearFormat }
 							endDate={ endDate }
 							isMultiday={ true }
-							isSelectingDate={isSelectingDate }
+							isSelectingDate={ isSelectingDate }
 							onChange={ onDateChange }
 							onClick={ () => onDateInputClick( 'end' ) }
 							onClose={ () => setIsSelectingDate( false ) }

@@ -1,9 +1,4 @@
-import {
-	LocalizedData,
-	Settings,
-	ETClassyGlobal,
-	CurrencySettings,
-} from './types/LocalizedData';
+import { LocalizedData, Settings, ETClassyGlobal, CurrencySettings } from './types/LocalizedData';
 
 /**
  * Returns the default localized data.

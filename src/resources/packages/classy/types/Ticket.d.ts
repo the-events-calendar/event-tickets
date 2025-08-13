@@ -8,7 +8,7 @@ import { Months } from '@tec/common/classy/types/Months';
 
 // These types are simple aliases and do not require export statements.
 type Seconds = Minutes;
-type Percentage = NumericRange<0, 100>;
+type Percentage = NumericRange< 0, 100 >;
 
 export type Seating = 'general-admission' | 'assigned-seating';
 export type GlobalStockMode = 'own' | 'capped' | 'global';
@@ -21,7 +21,7 @@ export type CapacityDetails = {
 	max: number;
 	sold?: number;
 	pending?: number;
-}
+};
 
 /**
  * Represents the capacity settings for a ticket.
@@ -39,25 +39,25 @@ export type CapacitySettings = {
 	isShared: boolean;
 	sharedCapacity?: number;
 	globalStockMode?: GlobalStockMode;
-}
+};
 
 export type CheckinDetails = {
 	checkedIn: number;
 	uncheckedIn: number;
 	checkedInPercentage?: Percentage;
 	uncheckedInPercentage?: Percentage;
-}
+};
 
 type FeeDataKeys = 'availableFees' | 'automaticFees' | 'selectedFees';
 
-export type FeesData = Record<FeeDataKeys, Fee[]>;
+export type FeesData = Record< FeeDataKeys, Fee[] >;
 
 export type SalePriceDetails = {
 	enabled: boolean;
 	endDate: string;
 	salePrice: string;
 	startDate: string;
-}
+};
 
 export type TicketDate = {
 	year: number;
@@ -66,7 +66,7 @@ export type TicketDate = {
 	hour?: Hours;
 	minute?: Minutes;
 	second?: Seconds;
-}
+};
 
 // todo: Some kind of positive number type for TicketId.
 export type TicketId = number;
@@ -94,7 +94,7 @@ export type TicketSettings = {
 	// Features.
 	supportsAttendeeInformation?: boolean;
 	iac?: string;
-}
+};
 
 export type Ticket = {
 	// API response fields.
@@ -142,5 +142,4 @@ export type Ticket = {
 	fees: FeesData;
 };
 
-
-export type PartialTicket = Partial<Ticket>;
+export type PartialTicket = Partial< Ticket >;

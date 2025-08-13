@@ -3,12 +3,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { CostDetails } from '../types/CostDetails';
 import { CapacitySettings, SalePriceDetails, TicketSettings } from '../types/Ticket';
-import {
-	GetTicketApiResponse,
-	GetTicketsApiResponse,
-	GetTicketsApiParams,
-	UpsertTicketApiRequest,
-} from '../types/Api';
+import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
@@ -41,7 +36,7 @@ const getNonce = ( type: NonceTypes ): string => {
  * @param {GetTicketsApiParams} params Optional parameters for the API request.
  * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
  */
-export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<GetTicketsApiResponse> => {
+export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise< GetTicketsApiResponse > => {
 	const searchParams = new URLSearchParams();
 
 	if ( params.include_post ) {
@@ -60,13 +55,15 @@ export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<
 
 	const path = addQueryArgs( apiBaseUrl, searchParams );
 
-	return new Promise<GetTicketsApiResponse>( async ( resolve, reject ) => {
+	return new Promise< GetTicketsApiResponse >( async ( resolve, reject ) => {
 		await apiFetch( { path: path } )
 			.then( ( data ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( 'Failed to fetch tickets: response did not return an object.' ) );
 				} else if ( ! ( data.hasOwnProperty( 'tickets' ) && data.hasOwnProperty( 'total' ) ) ) {
-					reject( new Error( 'Tickets fetch request did not return an object with tickets and total properties.' ) );
+					reject(
+						new Error( 'Tickets fetch request did not return an object with tickets and total properties.' )
+					);
 				} else {
 					resolve( data as GetTicketsApiResponse );
 				}
@@ -89,12 +86,14 @@ export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<
  * @param {number} postId The ID of the post to fetch tickets for.
  * @return {Awaited<TicketSettings[]>} A promise that resolves to an array of tickets.
  */
-export const fetchTicketsForPost = async ( postId: number ): Promise<TicketSettings[]> => {
-	return new Promise<TicketSettings[]>( async ( resolve, reject ) => {
+export const fetchTicketsForPost = async ( postId: number ): Promise< TicketSettings[] > => {
+	return new Promise< TicketSettings[] >( async ( resolve, reject ) => {
 		// todo: Handle the potential for multiple pages of results.
 		await fetchTickets( { include_post: [ postId ] } )
 			.then( ( response: GetTicketsApiResponse ) => {
-				resolve( response.tickets.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicketSettings( ticket ) ) );
+				resolve(
+					response.tickets.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicketSettings( ticket ) )
+				);
 			} )
 			.catch( ( error ) => {
 				reject( new Error( `Failed to fetch tickets for post ID ${ postId }: ${ error.message }` ) );
@@ -115,10 +114,10 @@ export const fetchTicketsForPost = async ( postId: number ): Promise<TicketSetti
  * @param {TicketSettings} ticketData The data for the ticket to create or update.
  * @return {Promise<TicketSettings>} A promise that resolves to the created or updated ticket.
  */
-export const upsertTicket = async ( ticketData: TicketSettings ): Promise<TicketSettings> => {
+export const upsertTicket = async ( ticketData: TicketSettings ): Promise< TicketSettings > => {
 	const isUpdate = ticketData.id && ticketData.id > 0;
 
-	return new Promise<TicketSettings>( async ( resolve, reject ) => {
+	return new Promise< TicketSettings >( async ( resolve, reject ) => {
 		const nonceKey: NonceAction = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
 		await apiFetch( {
 			path: `${ apiBaseUrl }${ isUpdate ? `/${ ticketData.id }` : '' }`,
@@ -130,7 +129,11 @@ export const upsertTicket = async ( ticketData: TicketSettings ): Promise<Ticket
 		} )
 			.then( ( data: GetTicketApiResponse ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
-					reject( new Error( `Failed to ${ isUpdate ? 'update' : 'create' } ticket: response did not return an object.` ) );
+					reject(
+						new Error(
+							`Failed to ${ isUpdate ? 'update' : 'create' } ticket: response did not return an object.`
+						)
+					);
 				} else {
 					resolve( mapApiResponseToTicketSettings( data ) );
 				}
@@ -150,14 +153,14 @@ export const upsertTicket = async ( ticketData: TicketSettings ): Promise<Ticket
  * @return {Promise<void>} A promise that resolves when the ticket is deleted.
  * @throws {Error} If the deletion fails.
  */
-export const deleteTicket = async ( ticketId: number ): Promise<void> => {
-	return new Promise<void>( async ( resolve, reject ) => {
+export const deleteTicket = async ( ticketId: number ): Promise< void > => {
+	return new Promise< void >( async ( resolve, reject ) => {
 		await apiFetch( {
 			path: `${ apiBaseUrl }/${ ticketId }`,
 			method: 'DELETE',
 			data: {
 				remove_ticket_nonce: getNonce( 'deleteTicket' ),
-			}
+			},
 		} )
 			.then( () => {
 				resolve();
@@ -179,16 +182,13 @@ export const deleteTicket = async ( ticketId: number ): Promise<void> => {
  */
 const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: boolean ): UpsertTicketApiRequest => {
 	const hasPrice = ticketData?.costDetails?.values.length > 0;
-	const ticket: Record<string, any> = {};
+	const ticket: Record< string, any > = {};
 
 	// Capacity fields.
 	// todo: this needs work.
 	console.log( 'Ticket data settings:', ticketData );
 	if ( ticketData.capacitySettings ) {
-		const {
-			globalStockMode = 'own',
-			enteredCapacity
-		} = ticketData.capacitySettings;
+		const { globalStockMode = 'own', enteredCapacity } = ticketData.capacitySettings;
 
 		ticket.capacity = enteredCapacity.toString();
 
@@ -266,9 +266,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	body.menu_order = ticketData.menuOrder?.toString() || '0';
 
 	// Set the filter as its own full string, to allow for easier discoverability when searching for it.
-	const filterName = isUpdate
-		? 'tec.classy.tickets.updateTicket'
-		: 'tec.classy.tickets.createTicket';
+	const filterName = isUpdate ? 'tec.classy.tickets.updateTicket' : 'tec.classy.tickets.createTicket';
 
 	/**
 	 * Filter the body of the upsert request before sending it to the API.
@@ -278,7 +276,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
 	 * @param {TicketSettings} ticketData The ticket data being sent.
 	 */
-	const additionalValues: Record<string, any> = applyFilters( filterName, {}, ticketData );
+	const additionalValues: Record< string, any > = applyFilters( filterName, {}, ticketData );
 
 	// Append/update additional values in the body.
 	Object.entries( additionalValues ).forEach( ( [ key, value ] ) => {
@@ -288,7 +286,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	} );
 
 	return body;
-}
+};
 
 /**
  * Map API response to TicketSettings type.
@@ -339,4 +337,4 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		provider: apiResponse.provider || 'tc',
 		type: apiResponse.type || 'default',
 	};
-}
+};

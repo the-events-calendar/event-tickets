@@ -4,7 +4,7 @@ import * as React from 'react';
 import { CapacitySettings, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { ClipboardIcon, ClockIcon } from '../Icons';
-import { TicketRowMover } from "../TicketRowMover";
+import { TicketRowMover } from '../TicketRowMover';
 
 type TicketRowProps = {
 	canMoveDown?: boolean;
@@ -39,11 +39,7 @@ const unlimitedLowercase = _x( 'unlimited', 'Label for unlimited capacity', 'eve
  * @returns {string|number} The calculated capacity based on the input settings. Returns `unlimitedLowercase` for unlimited capacity.
  */
 const getCapacityNumber = ( settings: CapacitySettings ): string | number => {
-	const {
-		enteredCapacity,
-		isShared,
-		sharedCapacity = 0
-	} = settings;
+	const { enteredCapacity, isShared, sharedCapacity = 0 } = settings;
 	const enteredIsUnlimited = '' === enteredCapacity || -1 === enteredCapacity;
 	const enteredAsNumber = enteredIsUnlimited ? -1 : Number( enteredCapacity );
 
@@ -64,7 +60,7 @@ const getCapacityNumber = ( settings: CapacitySettings ): string | number => {
 	} else {
 		return sharedCapacity;
 	}
-}
+};
 
 const noop = () => {};
 
@@ -86,7 +82,7 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 		showMovers = false,
 		tabIndex,
 		ticketPosition = 0,
-		value: ticket
+		value: ticket,
 	} = props;
 
 	// todo: This should be based on whether any icons should be shown.
@@ -105,13 +101,15 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 					{ hasIcons && (
 						<span className="classy-field__ticket-row__icons">
 							{ /* todo: fill in icons properly */ }
-							<ClipboardIcon/>
-							<ClockIcon/>
+							<ClipboardIcon />
+							<ClockIcon />
 						</span>
 					) }
 				</h4>
 				{ ticket.description && (
-					<span className="classy-field__ticket-row__description">{ decodeEntities( ticket.description ) }</span>
+					<span className="classy-field__ticket-row__description">
+						{ decodeEntities( ticket.description ) }
+					</span>
 				) }
 			</td>
 

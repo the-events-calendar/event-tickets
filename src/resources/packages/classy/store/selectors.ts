@@ -11,7 +11,7 @@ import { TicketSettings } from '../types/Ticket';
  */
 export const getEventHasSharedCapacity = ( state: StoreState ): boolean => {
 	return state?.eventHasSharedCapacity || false;
-}
+};
 
 /**
  * Retrieves the event capacity from the given application state.
@@ -23,7 +23,7 @@ export const getEventHasSharedCapacity = ( state: StoreState ): boolean => {
  */
 export const getEventCapacity = ( state: StoreState ): number | undefined => {
 	return state?.eventCapacity;
-}
+};
 
 /**
  * Returns the tickets from the store state.
@@ -35,7 +35,7 @@ export const getEventCapacity = ( state: StoreState ): number | undefined => {
  */
 export const getTickets = ( state: StoreState ): TicketSettings[] => {
 	return state?.tickets || [];
-}
+};
 
 /**
  * Returns a specific ticket by its ID from the store state.
@@ -46,9 +46,9 @@ export const getTickets = ( state: StoreState ): TicketSettings[] => {
  */
 export const getTicketById = ( state: StoreState ) => {
 	return ( ticketId: number ): TicketSettings | undefined => {
-		return state?.tickets?.find( ticket => ticket.id === ticketId );
+		return state?.tickets?.find( ( ticket ) => ticket.id === ticketId );
 	};
-}
+};
 
 /**
  * Checks if the store is currently loading.
@@ -60,4 +60,4 @@ export const getTicketById = ( state: StoreState ) => {
  */
 export const isLoading = ( state: StoreState ): boolean => {
 	return state?.loading || false;
-}
+};

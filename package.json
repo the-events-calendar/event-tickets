@@ -70,7 +70,11 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start --mode=development --devtool=source-map",
     "dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
-    "changelog": "./vendor/bin/changelogger add"
+    "changelog": "./vendor/bin/changelogger add",
+    "classy:format": "wp-scripts format src/resources/packages/classy tests/classy_jest && composer run classy:format",
+    "classy:jest": "jest --config tests/classy_jest/jest.config.js tests/classy_jest",
+    "classy:test": "npm run classy:jest && slic run classy_integration",
+    "classy:pre-commit": "npm run classy:format && npm run classy:test"
   },
   "engines": {
     "node": "18.17.0",
@@ -110,6 +114,7 @@
     "@wordpress/a11y": "^4.11.0",
     "@wordpress/api-fetch": "^7.26.0",
     "@wordpress/date": "^5.13.0",
+    "@wordpress/element": "^6.28.0",
     "@wordpress/i18n": "^5.11.0",
     "@wordpress/is-shallow-equal": "^5.11.0",
     "@wordpress/url": "^4.11.0",

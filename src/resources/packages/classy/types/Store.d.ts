@@ -55,5 +55,5 @@ export type CoreEditorSelect = {
  * @since TBD
  */
 export type CoreEditorDispatch = {
-	editPost: ( attributes: Record<string, any> ) => void;
-}
+	editPost: ( attributes: Record< string, any > ) => void;
+};

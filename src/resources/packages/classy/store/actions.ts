@@ -26,7 +26,7 @@ import { StoreDispatch } from '../types/Store';
  */
 const addTicket = ( ticket: TicketSettings ): CreateTicketAction => ( {
 	type: CREATE_TICKET,
-	ticket
+	ticket,
 } );
 
 /**
@@ -51,7 +51,7 @@ const deleteTicket = ( ticketId: number ): DeleteTicketAction => ( {
  */
 const setEventCapacity = ( capacity: number ): SetEventCapacityAction => ( {
 	type: SET_EVENT_CAPACITY,
-	capacity
+	capacity,
 } );
 
 /**
@@ -63,7 +63,7 @@ const setEventCapacity = ( capacity: number ): SetEventCapacityAction => ( {
  */
 const setEventHasSharedCapacity = ( hasSharedCapacity: boolean ): SetEventHasSharedCapacityAction => ( {
 	type: SET_EVENT_HAS_SHARED_CAPACITY,
-	hasSharedCapacity
+	hasSharedCapacity,
 } );
 
 /**
@@ -75,7 +75,7 @@ const setEventHasSharedCapacity = ( hasSharedCapacity: boolean ): SetEventHasSha
  */
 const setIsLoading = ( isLoading: boolean ): SetIsLoadingAction => ( {
 	type: SET_IS_LOADING,
-	isLoading
+	isLoading,
 } );
 
 /**
@@ -87,7 +87,7 @@ const setIsLoading = ( isLoading: boolean ): SetIsLoadingAction => ( {
  */
 const setTickets = ( tickets: TicketSettings[] ): SetTicketsAction => ( {
 	type: SET_TICKETS,
-	tickets
+	tickets,
 } );
 
 /**
@@ -112,4 +112,4 @@ export const actions: StoreDispatch = {
 	setIsLoading,
 	setTickets,
 	updateTicket,
-}
+};

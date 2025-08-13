@@ -11,29 +11,29 @@ export const UPDATE_TICKET = 'UPDATE_TICKET';
 
 export type CreateTicketAction = {
 	ticket: TicketSettings;
-} & Action<typeof CREATE_TICKET>;
+} & Action< typeof CREATE_TICKET >;
 
 export type DeleteTicketAction = {
 	ticketId: number;
-} & Action<typeof DELETE_TICKET>;
+} & Action< typeof DELETE_TICKET >;
 
 export type SetEventCapacityAction = {
 	capacity: number;
-} & Action<typeof SET_EVENT_CAPACITY>;
+} & Action< typeof SET_EVENT_CAPACITY >;
 
 export type SetEventHasSharedCapacityAction = {
 	hasSharedCapacity: boolean;
-} & Action<typeof SET_EVENT_HAS_SHARED_CAPACITY>;
+} & Action< typeof SET_EVENT_HAS_SHARED_CAPACITY >;
 
 export type SetIsLoadingAction = {
 	isLoading: boolean;
-} & Action<typeof SET_IS_LOADING>;
+} & Action< typeof SET_IS_LOADING >;
 
 export type SetTicketsAction = {
 	tickets: TicketSettings[];
-} & Action<typeof SET_TICKETS>;
+} & Action< typeof SET_TICKETS >;
 
 export type UpdateTicketAction = {
 	ticketId: number;
 	ticketData: TicketSettings;
-} & Action<typeof UPDATE_TICKET>;
+} & Action< typeof UPDATE_TICKET >;

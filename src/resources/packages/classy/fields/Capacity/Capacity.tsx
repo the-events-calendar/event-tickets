@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { LabeledInput } from '@tec/common/classy/components';
-import {
-	__experimentalInputControl as InputControl,
-	RadioControl,
-	Slot,
-	ToggleControl
-} from '@wordpress/components';
+import { __experimentalInputControl as InputControl, RadioControl, Slot, ToggleControl } from '@wordpress/components';
 import { _x } from '@wordpress/i18n';
 import { CapacitySettings, Seating } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
@@ -22,7 +17,7 @@ const defaultValue: CapacitySettings = {
 	globalStockMode: 'own',
 };
 
-const capacityOptions: { label: string, value: Seating }[] = [
+const capacityOptions: { label: string; value: Seating }[] = [
 	{
 		label: _x( 'General Admission', 'Label for general admission capacity type', 'event-tickets' ),
 		value: 'general-admission',
@@ -42,7 +37,7 @@ const capacityOptions: { label: string, value: Seating }[] = [
 export default function Capacity( props: CapacityProps ): JSX.Element {
 	const { value, onChange } = props;
 
-	const [ currentValue, setCurrentValue ] = useState<CapacitySettings>( {
+	const [ currentValue, setCurrentValue ] = useState< CapacitySettings >( {
 		...defaultValue,
 		...value,
 	} );
@@ -124,9 +119,7 @@ export default function Capacity( props: CapacityProps ): JSX.Element {
 				options={ capacityOptions }
 			/>
 
-			<LabeledInput
-				label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
-			>
+			<LabeledInput label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }>
 				<InputControl
 					__next40pxDefaultSize={ true }
 					className="classy-field__control classy-field__control--input classy-field__control--input-narrow"
@@ -192,7 +185,7 @@ export default function Capacity( props: CapacityProps ): JSX.Element {
 				/>
 			}
 
-			{ /* todo: this should be part of ET+ */}
+			{ /* todo: this should be part of ET+ */ }
 			<ToggleControl
 				label={ _x(
 					'Share capacity with other tickets',
