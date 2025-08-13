@@ -37,23 +37,21 @@ const getNonce = ( type: NonceTypes ): string => {
  * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
  */
 export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise< GetTicketsApiResponse > => {
-	const searchParams = new URLSearchParams();
+	const queryArgs: Record<string, any> = {};
 
 	if ( params.include_post ) {
-		params.include_post.forEach( ( postId ) => {
-			searchParams.append( 'include_post', postId.toString() );
-		} );
+		queryArgs.include_post = params.include_post;
 	}
 
 	if ( params.per_page ) {
-		searchParams.set( 'per_page', params.per_page.toString() );
+		queryArgs.per_page = params.per_page;
 	}
 
 	if ( params.page ) {
-		searchParams.set( 'page', params.page.toString() );
+		queryArgs.page = params.page;
 	}
 
-	const path = addQueryArgs( apiBaseUrl, searchParams );
+	const path = addQueryArgs( apiBaseUrl, queryArgs );
 
 	return new Promise< GetTicketsApiResponse >( async ( resolve, reject ) => {
 		await apiFetch( { path: path } )

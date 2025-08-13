@@ -1,12 +1,27 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { GetTicketApiResponse, GetTicketsApiResponse } from '../../../src/resources/packages/classy/types/Api';
 import { fetchTickets, fetchTicketsForPost, upsertTicket } from '../../../src/resources/packages/classy/api';
-import apiFetch from '@wordpress/api-fetch';
+import { TicketSettings } from '../../../src/resources/packages/classy/types/Ticket';
+
+/**
+ * Helper function to create the expected API path with query parameters.
+ * This makes the test more readable and maintainable.
+ *
+ * @param {string} basePath - The base API endpoint path.
+ * @param {Record<string, any>} queryArgs - Query arguments to append.
+ * @return {string} The complete path with query parameters.
+ */
+const createExpectedPath = ( basePath: string, queryArgs: Record<string, any> = {} ): string => {
+	return addQueryArgs( basePath, queryArgs );
+};
 
 jest.mock( '@wordpress/api-fetch', () => ( {
 	__esModule: true,
 	default: jest.fn(),
 } ) );
+
 
 describe( 'Ticket API', () => {
 	const resetModules = () => {
@@ -95,8 +110,42 @@ describe( 'Ticket API', () => {
 				status: 'publish',
 			}
 		];
+		const mockApiMappedTickets: TicketSettings[] = [
+			{
+				id: 1,
+				eventId: 123,
+				name: 'Sample Ticket',
+				description: 'This is a sample ticket description.',
+				cost: '50.00',
+				costDetails: {
+					currencySymbol: '$',
+					currencyPosition: 'prefix',
+					currencyDecimalSeparator: '.',
+					currencyThousandSeparator: ',',
+					suffix: '',
+					values: [ 50 ],
+				},
+				salePriceData: {
+					enabled: true,
+					salePrice: '20.00',
+					startDate: new Date( '2024-01-01 00:00:00' ).toISOString(),
+					endDate: new Date( '2024-12-31 23:59:59' ).toISOString(),
+				},
+				capacitySettings: {
+					enteredCapacity: 100,
+					isShared: false,
+				},
+				fees: {
+					availableFees: [],
+					automaticFees: [],
+					selectedFees: [],
+				},
+				provider: 'tc',
+				type: 'default',
+			},
+		];
 
-		test( 'calls api-fetch with correct parameters', async () => {
+		test( 'calls fetchTickets with correct parameters', async () => {
 			const mockTicketsData: GetTicketsApiResponse = {
 				rest_url: restUrl,
 				total: 1,
@@ -114,5 +163,24 @@ describe( 'Ticket API', () => {
 				path: restEndpoint,
 			} );
 		} );
+
+		test( 'calls fetchTicketsForPost with correct parameters', async () => {
+			const mockTicketsData: GetTicketsApiResponse = {
+				rest_url: restUrl,
+				total: 1,
+				total_pages: 1,
+				tickets: mockApiTickets,
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+
+			const result = await fetchTicketsForPost( 123 );
+
+			expect( result ).toEqual( mockApiMappedTickets );
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: createExpectedPath( restEndpoint, { include_post: [ 123 ] } ),
+			} );
+		});
 	} );
 } );
