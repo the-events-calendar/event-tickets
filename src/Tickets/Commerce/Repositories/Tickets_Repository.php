@@ -99,6 +99,41 @@ class Tickets_Repository extends Tribe__Repository {
 	}
 
 	/**
+	 * Normalizes date fields before setting them.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key   The field key.
+	 * @param mixed  $value The field value.
+	 *
+	 * @return mixed The normalized value or original value if no normalization needed.
+	 */
+	protected function normalize_date_field( string $key, $value ) {
+		// Only normalize string date fields
+		if ( ! is_string( $value ) || empty( $value ) ) {
+			return $value;
+		}
+
+		// Normalize date fields using the centralized method from Ticket class
+		if ( in_array( $key, [ 'start_date', 'end_date', 'sale_price_start_date', 'sale_price_end_date' ], true ) ) {
+			$normalized = Ticket::normalize_date_text_to_mysql( $value );
+			return $normalized !== null ? $normalized : $value;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function set( $key, $value ) {
+		// Normalize date fields before setting them
+		$value = $this->normalize_date_field( $key, $value );
+
+		return parent::set( $key, $value );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	protected function format_item( $id ) {

@@ -14,6 +14,7 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Ticket_Data;
+use Tribe\Utils\Date_I18n;
 
 /**
  * Class Ticket.
@@ -641,7 +642,17 @@ class Ticket extends Ticket_Data {
 
 		foreach ( [ 'start_date', 'start_time', 'end_date', 'end_time' ] as $time_key ) {
 			if ( isset( $ticket->{$time_key} ) ) {
-				update_post_meta( $ticket->ID, "_ticket_{$time_key}", $ticket->{$time_key} );
+				$value = $ticket->{$time_key};
+
+				// Normalize date fields (start_date and end_date) using natural language parsing
+				if ( in_array( $time_key, [ 'start_date', 'end_date' ] ) && is_string( $value ) && ! empty( $value ) ) {
+					$normalized = static::normalize_date_text_to_mysql( $value );
+					if ( $normalized !== null ) {
+						$value = $normalized;
+					}
+				}
+
+				update_post_meta( $ticket->ID, "_ticket_{$time_key}", $value );
 			} else {
 				delete_post_meta( $ticket->ID, "_ticket_{$time_key}" );
 			}
@@ -854,6 +865,31 @@ class Ticket extends Ticket_Data {
 		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
 
 		return $ticket->ID;
+	}
+
+	/**
+	 * Convert a natural-language date string into MySQL datetime (local WP timezone).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $value Date value that PHP's strtotime/DateTime can parse (e.g., "now", "next friday 6pm").
+	 *
+	 * @return string|null Formatted date in 'Y-m-d H:i:s' or null if parsing failed.
+	 */
+	public static function normalize_date_text_to_mysql( string $value ): ?string {
+		$value = trim( $value );
+		// If already looks like MySQL datetime, keep as-is.
+		if ( preg_match( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value ) ) {
+			return $value;
+		}
+
+		$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new \DateTimeZone( wp_timezone_string() );
+		try {
+			$dt = new Date_I18n( $value, $tz );
+			return $dt->format( 'Y-m-d H:i:s' );
+		} catch ( \Exception $e ) {
+			return null;
+		}
 	}
 
 	/**
@@ -1209,13 +1245,23 @@ class Ticket extends Ticket_Data {
 	public function process_sale_price_dates( Ticket_Object $ticket, array $raw_data ): void {
 		if ( isset( $raw_data['ticket_sale_start_date'] ) ) {
 			$start_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
-			$start_date = empty( $start_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+			if ( ! empty( $start_date ) ) {
+				$normalized = static::normalize_date_text_to_mysql( $start_date );
+				$start_date = $normalized !== null ? $normalized : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+			} else {
+				$start_date = '';
+			}
 			update_post_meta( $ticket->ID, static::$sale_price_start_date_key, $start_date );
 		}
 
 		if ( isset( $raw_data['ticket_sale_end_date'] ) ) {
 			$end_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
-			$end_date = empty( $end_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+			if ( ! empty( $end_date ) ) {
+				$normalized = static::normalize_date_text_to_mysql( $end_date );
+				$end_date = $normalized !== null ? $normalized : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+			} else {
+				$end_date = '';
+			}
 			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
 		}
 	}
