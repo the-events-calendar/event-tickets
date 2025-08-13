@@ -95,7 +95,7 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 					type='hidden'
 					id='rsvp_id'
 					name='rsvp_id'
-					value="<?php echo absint( $rsvp_id ); ?>"
+					value="<?php echo absint( $rsvp_id ) === 0 ? '' : absint( $rsvp_id ); ?>"
 				/>
 
 				<?php $this->template( 'editor/panel/fields/limit', get_defined_vars() ); ?>
@@ -151,13 +151,6 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 				?>
 			</div>
 			<div class="tec-tickets-rsvp-bottom">
-				<input
-					type="hidden"
-					name="rsvp_id"
-					id="rsvp_id"
-					class="ticket_field"
-					value="<?php echo esc_attr( $rsvp_id ); ?>"
-				/>
 				<input
 					type="button"
 					id="tc_ticket_form_save"

@@ -299,14 +299,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $response;
 
 		} elseif ( 'opt-in' === $args['step'] ) {
-			/**
-			 * These are the inputs we should be seeing:
-			 *
-			 * opt_in
-			 * attendee_ids
-			 * opt_in_nonce
-			 */
-			// @todo Handle opt-in setting for each attendee in order.
 			$optout = ! tribe_is_truthy( tribe_get_request_var( 'opt_in', true ) );
 
 			$attendee_ids = Tribe__Utils__Array::list_to_array( tribe_get_request_var( 'attendee_ids', [] ) );

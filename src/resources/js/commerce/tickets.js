@@ -79,7 +79,7 @@ tribe.tickets.commerce.tickets = {};
 		ticketsURL = obj.getUpdatedTicketUrl( ticketsURL );
 
 		if ( !ticketsURL ) {
-			throw new Error( _x( 'Tickets Endpoint URL is not available.', 'Tickets REST Endpoint message when url for REST endpoint is not available.', 'event-tickets' ) );
+			throw new Error( 'Tickets Endpoint URL is not available.' );
 		}
 
 		const url = new URL( ticketsURL );
@@ -120,7 +120,6 @@ tribe.tickets.commerce.tickets = {};
 		// Get all form input values
 		const formValues = obj.getFormInputValues();
 		const nonce = { '_wpnonce' : obj.getEmbedNonce() };
-		const ticketUrl = obj.getUpdatedTicketUrl( [] );
 
 		obj.submitButton( false );
 
@@ -145,6 +144,7 @@ tribe.tickets.commerce.tickets = {};
 			.then( response => response.json() )
 			.then( data => {
 				obj.loaderHide();
+				obj.handleTicketResponse( data );
 			} )
 			.catch( obj.handleApproveError );
 
@@ -248,6 +248,41 @@ tribe.tickets.commerce.tickets = {};
 		const $loader = $( obj.selectors.rsvpMetabox ).find( obj.selectors.loader );
 
 		$loader.addClass( obj.selectors.hiddenElement );
+	};
+
+	/**
+	 * Handles the response from the ticket endpoint after RSVP creation.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data The response data from the server.
+	 */
+	obj.handleTicketResponse = function( data ) {
+		if ( data.success && data.ticket_id ) {
+			// Update the hidden RSVP ID field with the new ticket ID.
+			const $rsvpMetabox = $( '#tec_tickets_rsvp_metabox' );
+			const $rsvpIdInput = $rsvpMetabox.find( '#rsvp_id' );
+			if ( $rsvpIdInput.length ) {
+				$rsvpIdInput.val( data.ticket_id );
+				
+				// Trigger change event on the hidden input to notify dependency system.
+				$rsvpIdInput.trigger( 'change' );
+				
+				// Verify dependencies on the wrapper after updating the RSVP ID.
+				$rsvpMetabox.trigger( 'verify.dependency' );
+			}
+		}
+	};
+
+	/**
+	 * Handles errors during the ticket save process.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Error} error The error that occurred.
+	 */
+	obj.handleApproveError = function( error ) {
+		// Error handling can be added here if needed.
 	};
 
 	/**
