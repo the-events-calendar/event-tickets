@@ -297,4 +297,369 @@ describe( 'Ticket API', () => {
 			} );
 		} );
 	} );
+
+	describe( 'upsertTicket', () => {
+		const mockTicketData: TicketSettings = {
+			// 0 indicates create operation
+			id: 0,
+			eventId: 123,
+			name: 'Test Ticket',
+			description: 'Test ticket description',
+			cost: '25.00',
+			costDetails: {
+				currencySymbol: '$',
+				currencyPosition: 'prefix',
+				currencyDecimalSeparator: '.',
+				currencyThousandSeparator: ',',
+				suffix: '',
+				values: [ 25 ],
+			},
+			salePriceData: {
+				enabled: false,
+				salePrice: '',
+				startDate: '',
+				endDate: '',
+			},
+			capacitySettings: {
+				enteredCapacity: 100,
+				isShared: false,
+			},
+			fees: {
+				availableFees: [],
+				automaticFees: [],
+				selectedFees: [],
+			},
+			provider: 'tc',
+			type: 'default',
+		};
+
+		const mockUpdatedTicketData: TicketSettings = {
+			...mockTicketData,
+			// Non-zero indicates update operation
+			id: 1,
+		};
+
+		const mockApiResponse: GetTicketApiResponse = {
+			id: 1,
+			title: 'Test Ticket',
+			description: 'Test ticket description',
+			rest_url: `${ restUrl }/1`,
+			post_id: 123,
+			sale_price_data: {
+				enabled: '',
+				sale_price: '',
+				start_date: '',
+				end_date: '',
+			},
+			provider: 'tc',
+			type: 'default',
+			iac: '',
+			capacity: 100,
+			capacity_details: {
+				max: 100,
+				global_stock_mode: 'own',
+			},
+			cost: '25.00',
+			cost_details: {
+				currency_symbol: '$',
+				currency_position: 'prefix',
+				currency_decimal_separator: '.',
+				currency_decimal_numbers: 2,
+				currency_thousand_separator: ',',
+				suffix: '',
+				values: [ '25.00' ],
+			},
+			fees: {
+				availableFees: [],
+				automaticFees: [],
+				selectedFees: [],
+			},
+			available_from: '',
+			available_until: '',
+			available_from_details: {
+				year: '',
+				month: '',
+				day: '',
+				hour: '',
+				minutes: '',
+				seconds: '',
+			},
+			available_until_details: {
+				year: '',
+				month: '',
+				day: '',
+				hour: '',
+				minutes: '',
+				seconds: '',
+			},
+			author: 1,
+			date: '2024-01-01 12:00:00',
+			date_utc: '2024-01-01 12:00:00',
+			modified: '2024-01-01 12:00:00',
+			modified_utc: '2024-01-01 12:00:00',
+			status: 'publish',
+		};
+
+		test( 'creates a new ticket successfully', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
+
+			const result = await upsertTicket( mockTicketData );
+
+			expect( result ).toEqual( {
+				id: 1,
+				eventId: 123,
+				name: 'Test Ticket',
+				description: 'Test ticket description',
+				cost: '25.00',
+				costDetails: {
+					currencySymbol: '$',
+					currencyPosition: 'prefix',
+					currencyDecimalSeparator: '.',
+					currencyThousandSeparator: ',',
+					suffix: '',
+					values: [ 25 ],
+				},
+				salePriceData: {
+					enabled: false,
+					salePrice: '',
+					startDate: '',
+					endDate: '',
+				},
+				capacitySettings: {
+					enteredCapacity: 100,
+					isShared: false,
+				},
+				fees: {
+					availableFees: [],
+					automaticFees: [],
+					selectedFees: [],
+				},
+				provider: 'tc',
+				type: 'default',
+			} );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: restEndpoint,
+				method: 'POST',
+				data: expect.objectContaining( {
+					name: 'Test Ticket',
+					description: 'Test ticket description',
+					post_id: '123',
+					price: '25',
+					provider: 'tc',
+					type: 'default',
+					menu_order: '0',
+					add_ticket_nonce: expect.any( String ),
+				} ),
+			} );
+		} );
+
+		test( 'updates an existing ticket successfully', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
+
+			const result = await upsertTicket( mockUpdatedTicketData );
+
+			expect( result ).toEqual( {
+				id: 1,
+				eventId: 123,
+				name: 'Test Ticket',
+				description: 'Test ticket description',
+				cost: '25.00',
+				costDetails: {
+					currencySymbol: '$',
+					currencyPosition: 'prefix',
+					currencyDecimalSeparator: '.',
+					currencyThousandSeparator: ',',
+					suffix: '',
+					values: [ 25 ],
+				},
+				salePriceData: {
+					enabled: false,
+					salePrice: '',
+					startDate: '',
+					endDate: '',
+				},
+				capacitySettings: {
+					enteredCapacity: 100,
+					isShared: false,
+				},
+				fees: {
+					availableFees: [],
+					automaticFees: [],
+					selectedFees: [],
+				},
+				provider: 'tc',
+				type: 'default',
+			} );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: `${ restEndpoint }/1`,
+				method: 'PUT',
+				data: expect.objectContaining( {
+					name: 'Test Ticket',
+					description: 'Test ticket description',
+					post_id: '123',
+					price: '25',
+					provider: 'tc',
+					type: 'default',
+					menu_order: '0',
+					edit_ticket_nonce: expect.any( String ),
+				} ),
+			} );
+		} );
+
+		test( 'rejects when apiFetch throws an error during create', async () => {
+			const apiError = new Error( 'Network error' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: Network error' );
+		} );
+
+		test( 'rejects when apiFetch throws an error during update', async () => {
+			const apiError = new Error( 'Network error' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: Network error' );
+		} );
+
+		test( 'rejects when create response is not an object', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( 'not an object' );
+
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: response did not return an object.' );
+		} );
+
+		test( 'rejects when update response is not an object', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( 'not an object' );
+
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: response did not return an object.' );
+		} );
+
+		test( 'rejects when create response is null', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( null );
+
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: response did not return an object.' );
+		} );
+
+		test( 'rejects when update response is null', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( null );
+
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: response did not return an object.' );
+		} );
+
+		test( 'rejects when create response is undefined', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
+
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: response did not return an object.' );
+		} );
+
+		test( 'rejects when update response is undefined', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
+
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: response did not return an object.' );
+		} );
+
+		test( 'handles ticket with sale price data', async () => {
+			const ticketWithSalePrice: TicketSettings = {
+				...mockTicketData,
+				salePriceData: {
+					enabled: true,
+					salePrice: '15.00',
+					startDate: '2024-01-01T00:00:00.000Z',
+					endDate: '2024-12-31T23:59:59.000Z',
+				},
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
+
+			await upsertTicket( ticketWithSalePrice );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: restEndpoint,
+				method: 'POST',
+				data: expect.objectContaining( {
+					ticket: expect.objectContaining( {
+						sale_price: {
+							checked: '1',
+							price: '15.00',
+							start_date: '2024-01-01T00:00:00.000Z',
+							end_date: '2024-12-31T23:59:59.000Z',
+						},
+					} ),
+				} ),
+			} );
+		} );
+
+		test( 'handles ticket with available dates', async () => {
+			const ticketWithDates: TicketSettings = {
+				...mockTicketData,
+				availableFrom: '2024-06-01T10:00:00.000Z',
+				availableUntil: '2024-06-01T18:00:00.000Z',
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
+
+			await upsertTicket( ticketWithDates );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: restEndpoint,
+				method: 'POST',
+				data: expect.objectContaining( {
+					start_date: '2024-06-01',
+					end_date: '2024-06-01',
+				} ),
+			} );
+		} );
+
+		test( 'handles ticket with IAC', async () => {
+			const ticketWithIAC: TicketSettings = {
+				...mockTicketData,
+				iac: 'ABC123',
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
+
+			await upsertTicket( ticketWithIAC );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: restEndpoint,
+				method: 'POST',
+				data: expect.objectContaining( {
+					iac: 'ABC123',
+				} ),
+			} );
+		} );
+
+		test( 'handles ticket with menu order', async () => {
+			const ticketWithMenuOrder: TicketSettings = {
+				...mockTicketData,
+				menuOrder: 5,
+			};
+
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
+
+			await upsertTicket( ticketWithMenuOrder );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: restEndpoint,
+				method: 'POST',
+				data: expect.objectContaining( {
+					menu_order: '5',
+				} ),
+			} );
+		} );
+	} );
 } );
