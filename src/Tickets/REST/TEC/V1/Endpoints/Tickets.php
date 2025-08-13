@@ -319,6 +319,11 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			fn() => __( 'The request was not authorized', 'event-tickets' ),
 		);
 
+		$schema->add_response(
+			500,
+			fn() => __( 'Failed to create the ticket', 'event-tickets' ),
+		);
+
 		return $schema;
 	}
 

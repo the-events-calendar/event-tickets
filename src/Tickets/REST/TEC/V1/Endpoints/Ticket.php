@@ -228,14 +228,12 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			fn() => __( 'The ticket does not exist', 'event-tickets' ),
 		);
 
-		return $schema;
-	}
+		$schema->add_response(
+			500,
+			fn() => __( 'Failed to update the ticket', 'event-tickets' ),
+		);
 
-	/**
-	 * @inheritDoc
-	 */
-	public function delete_args(): QueryArgumentCollection {
-		return new QueryArgumentCollection();
+		return $schema;
 	}
 
 	/**
@@ -248,7 +246,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			$this->get_operation_id( 'delete' ),
 			$this->get_tags(),
 			$this->get_path_parameters(),
-			null,
+			$this->delete_args(),
 			null,
 			true
 		);
@@ -278,7 +276,17 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 
 		$schema->add_response(
 			410,
-			fn() => __( 'The ticket has already been deleted', 'event-tickets' ),
+			fn() => __( 'The ticket has already been trashed', 'event-tickets' ),
+		);
+
+		$schema->add_response(
+			500,
+			fn() => __( 'Failed to delete the ticket', 'event-tickets' ),
+		);
+
+		$schema->add_response(
+			501,
+			fn() => __( 'The ticket does not support trashing. Set force=true to delete', 'event-tickets' ),
 		);
 
 		return $schema;
