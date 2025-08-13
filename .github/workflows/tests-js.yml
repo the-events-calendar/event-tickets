@@ -66,4 +66,4 @@ jobs:
       - name: Install node modules
         run: npm ci
       - name: Run jest task
-        run: npm run ${{ matrix.suite }}/
+        run: npm run ${{ matrix.suite }}
