@@ -74,6 +74,7 @@ interface TinyMCEMock {
 	};
 }
 
+// @ts-ignore
 global.window.tinymce = {
 	get: () => ( {
 		initialized: true,
@@ -89,7 +90,9 @@ global.window.tinymce = {
 	},
 } as TinyMCEMock;
 
+// @ts-ignore
 global.window.wp = {
+	// @ts-ignore
 	...( global.window.wp || {} ),
 	oldEditor: {
 		remove: jest.fn(),
