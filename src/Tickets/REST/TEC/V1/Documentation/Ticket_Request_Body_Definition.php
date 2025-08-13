@@ -68,6 +68,8 @@ class Ticket_Request_Body_Definition extends Definition {
 			new Number(
 				'price',
 				fn() => __( 'The price of the ticket', 'event-tickets' ),
+				null,
+				0
 			)
 		)->set_example( 25.05 );
 
@@ -75,6 +77,8 @@ class Ticket_Request_Body_Definition extends Definition {
 			new Number(
 				'sale_price',
 				fn() => __( 'The sale price of the ticket', 'event-tickets' ),
+				null,
+				0
 			)
 		)->set_example( 20.05 );
 
@@ -105,6 +109,20 @@ class Ticket_Request_Body_Definition extends Definition {
 				fn() => __( 'The stock quantity available', 'event-tickets' ),
 			)
 		)->set_example( 100 );
+
+		$properties[] = (
+			new Positive_Integer(
+				'capacity',
+				fn() => __( 'The capacity for this ticket', 'event-tickets' ),
+			)
+		)->set_example( 100 );
+
+		$properties[] = (
+			new Text(
+				'mode',
+				fn() => __( 'The stock mode for this ticket', 'event-tickets' ),
+			)
+		)->set_example( 'own' );
 
 		$properties[] = (
 			new Boolean(

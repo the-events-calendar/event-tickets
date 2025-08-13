@@ -29,6 +29,7 @@ use TEC\Tickets\REST\TEC\V1\Traits\With_Tickets_ORM;
 use TEC\Common\REST\TEC\V1\Traits\Update_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Delete_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Read_Entity_Response;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use InvalidArgumentException;
 
 /**
@@ -230,6 +231,51 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 
 		return $schema;
 	}
+
+	/**
+	 * Filters ticket stock, capacity, and mode parameters according to business logic.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $params The request parameters.
+	 *
+	 * @return array The filtered parameters.
+	 */
+	protected function filter_create_params( array $params ): array {
+		$stock    = $params['stock'] ?? null;
+		$capacity = $params['capacity'] ?? null;
+		$mode     = $params['mode'] ?? null;
+
+		// If stock or capacity is passed and the other is not, they should be the same.
+		if ( ! is_null( $stock ) && is_null( $capacity ) ) {
+			$params['capacity'] = $stock;
+		} elseif ( ! is_null( $capacity ) && is_null( $stock ) ) {
+			$params['stock'] = $capacity;
+		}
+
+		// Auto-expand capacity to be at least stock when both provided and stock is greater.
+		if ( ! is_null( $stock ) && ! is_null( $capacity ) && is_numeric( $stock ) && is_numeric( $capacity ) ) {
+			$stock_num    = intval( $stock );
+			$capacity_num = intval( $capacity );
+			if ( $stock_num > $capacity_num ) {
+				$params['capacity'] = $stock_num;
+			}
+		}
+
+		// If stock or capacity is passed, mode should default to "own".
+		if ( ( ! is_null( $stock ) || ! is_null( $capacity ) ) && is_null( $mode ) ) {
+			$params['mode'] = Global_Stock::OWN_STOCK_MODE;
+		}
+
+		// If nothing is passed, mode should default to unlimited (this is the existing behavior).
+		if ( is_null( $stock ) && is_null( $capacity ) && is_null( $mode ) ) {
+			$params['mode'] = Global_Stock::UNLIMITED_STOCK_MODE;
+		}
+
+		return $params;
+	}
+
+
 
 	/**
 	 * @inheritDoc
