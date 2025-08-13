@@ -8,8 +8,8 @@
             "description": "The request body for the ticket endpoint",
             "type": "object",
             "properties": {
-                "event_id": {
-                    "description": "The ID of the event this ticket is associated with",
+                "event": {
+                    "description": "The ID of the post this ticket is associated with. Normally an event-like post.",
                     "type": "integer",
                     "example": 123
                 },
