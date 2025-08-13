@@ -13,6 +13,7 @@ use TEC\Common\REST\TEC\V1\Abstracts\Definition;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Boolean;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date_Time;
+use TEC\Common\REST\TEC\V1\Parameter_Types\Date;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Number;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
@@ -79,18 +80,18 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( 20.05 );
 
 		$properties[] = (
-			new Date_Time(
+			new Date(
 				'sale_price_start_date',
 				fn() => __( 'The start date for the sale price', 'event-tickets' ),
 			)
-		)->set_example( '2025-06-01 00:00:00' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' );
+		)->set_example( '2025-06-01' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' );
 
 		$properties[] = (
-			new Date_Time(
+			new Date(
 				'sale_price_end_date',
 				fn() => __( 'The end date for the sale price', 'event-tickets' ),
 			)
-		)->set_example( '2025-06-30 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' );
+		)->set_example( '2025-06-30' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' );
 
 		$properties[] = (
 			new Boolean(
@@ -98,6 +99,22 @@ class Ticket_Request_Body_Definition extends Definition {
 				fn() => __( 'Whether stock is being managed for this ticket', 'event-tickets' ),
 			)
 		)->set_example( true );
+
+		$properties[] = (
+			new Text(
+				'attendee_collection',
+				fn() => __( 'The attendee collection setting for the ticket', 'event-tickets' ),
+				'none',
+				[ 'none', 'allowed', 'required' ]
+			)
+		)->set_example( 'allowed' );
+
+		$properties[] = (
+			new Positive_Integer(
+				'capacity',
+				fn() => __( 'The capacity of the ticket', 'event-tickets' ),
+			)
+		)->set_example( 100 );
 
 		$properties[] = (
 			new Positive_Integer(
@@ -112,6 +129,15 @@ class Ticket_Request_Body_Definition extends Definition {
 				fn() => __( 'Whether to show the ticket description', 'event-tickets' ),
 			)
 		)->set_example( true );
+
+		$properties[] = (
+			new Text(
+				'stock_mode',
+				fn() => __( 'The stock mode of the ticket', 'event-tickets' ),
+				'own',
+				[ 'own', 'capped', 'unlimited' ]
+			)
+		)->set_example( 'own' );
 
 		$properties[] = (
 			new Text(

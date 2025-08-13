@@ -66,9 +66,11 @@ class Tickets_Repository extends Tribe__Repository {
 				'allow_backorders'      => Ticket::$allow_backorders_meta_key,
 				'manage_stock'          => Ticket::$should_manage_stock_meta_key,
 				'type'                  => Ticket::$type_meta_key,
+				'sale_price_enabled'    => Ticket::$sale_price_checked_key,
 				'sale_price'            => Ticket::$sale_price_key,
 				'sale_price_start_date' => Ticket::$sale_price_start_date_key,
 				'sale_price_end_date'   => Ticket::$sale_price_end_date_key,
+				'capacity'              => '_tribe_ticket_capacity',
 			]
 		);
 
@@ -79,11 +81,13 @@ class Tickets_Repository extends Tribe__Repository {
 			],
 		);
 
+		$this->add_simple_meta_schema_entry( 'event_id', Ticket::$event_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'start_date', Ticket::START_DATE_META_KEY );
 		$this->add_simple_meta_schema_entry( 'end_date', Ticket::END_DATE_META_KEY );
 		$this->add_simple_meta_schema_entry( 'start_time', Ticket::START_TIME_META_KEY );
 		$this->add_simple_meta_schema_entry( 'end_time', Ticket::END_TIME_META_KEY );
 		$this->add_simple_meta_schema_entry( 'sku', Ticket::$sku_meta_key );
+		$this->add_simple_meta_schema_entry( 'sale_price_enabled', Ticket::$sale_price_checked_key );
 		$this->add_simple_meta_schema_entry( 'stock', Ticket::$stock_meta_key );
 		$this->add_simple_meta_schema_entry( 'show_description', Ticket::$show_description_meta_key );
 		$this->add_simple_meta_schema_entry( 'price', Ticket::$price_meta_key );
@@ -96,6 +100,8 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'sale_price', Ticket::$sale_price_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_start_date', Ticket::$sale_price_start_date_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_end_date', Ticket::$sale_price_end_date_key );
+		$this->add_simple_meta_schema_entry( 'capacity', '_tribe_ticket_capacity' );
+		$this->add_simple_meta_schema_entry( 'attendee_collection', '_tribe_tickets_ar_iac' );
 	}
 
 	/**
