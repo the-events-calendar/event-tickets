@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Ticket.
+ *
+ * @since 5.1.9
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -14,7 +21,6 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Ticket_Data;
-use Tribe\Utils\Date_I18n;
 
 /**
  * Class Ticket.
@@ -270,7 +276,7 @@ class Ticket extends Ticket_Data {
 		/**
 		 * Filter the arguments that craft the ticket post type.
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 * @since 5.1.9
 		 *
@@ -286,7 +292,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param Status_Interface $status
+	 * @param Status_Interface $status The status to get the meta key for.
 	 *
 	 * @return string
 	 */
@@ -370,11 +376,11 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Gets an individual ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
+	 * @todo TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post $ticket_id
+	 * @param int|\WP_Post $ticket_id The ticket ID or post object.
 	 *
 	 * @return null|Ticket_Object
 	 */
@@ -422,15 +428,15 @@ class Ticket extends Ticket_Data {
 		$return->end_time         = get_post_meta( $ticket_id, static::END_TIME_META_KEY, true );
 		$return->sku              = get_post_meta( $ticket_id, static::$sku_meta_key, true );
 
-		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
+		$qty_sold = get_post_meta( $ticket_id, static::$sales_meta_key, true );
 
-		// If the quantity sold wasn't set, default to zero
+		// If the quantity sold wasn't set, default to zero.
 		$qty_sold = $qty_sold ? $qty_sold : 0;
 
 		// Ticket stock is a simple reflection of remaining inventory for this item...
 		$stock = (int) get_post_meta( $ticket_id, '_stock', true );
 
-		// If we don't have a stock value, then stock should be considered 'unlimited'
+		// If we don't have a stock value, then stock should be considered 'unlimited'.
 		if ( null === $stock ) {
 			$stock = - 1;
 		}
@@ -476,7 +482,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Returns the total number of cancelled tickets.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 * @todo TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
 	 * @since 5.14.0 Added the $refresh parameter and use stored status counts and utilize new memoization class.
@@ -521,12 +527,12 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Returns the number of pending attendees by ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 * @todo TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
 	 * @since 5.14.0 Utilize new memoization class.
 	 *
-	 * @param int  $ticket_id The ticket post ID
+	 * @param int  $ticket_id The ticket post ID.
 	 * @param bool $refresh   Whether to try and use the cached value or not.
 	 *
 	 * @return int
@@ -540,22 +546,24 @@ class Ticket extends Ticket_Data {
 		}
 
 		if ( $refresh || ! isset( $quantities[ Pending::SLUG ] ) ) {
-			$pending_query = new \WP_Query( [
-				'fields'     => 'ids',
-				'per_page'   => 1,
-				'post_type'  => Attendee::POSTTYPE,
-				'meta_query' => [
-					[
-						'key'   => Attendee::$ticket_relation_meta_key,
-						'value' => $ticket_id,
+			$pending_query = new \WP_Query(
+				[
+					'fields'     => 'ids',
+					'per_page'   => 1,
+					'post_type'  => Attendee::POSTTYPE,
+					'meta_query' => [
+						[
+							'key'   => Attendee::$ticket_relation_meta_key,
+							'value' => $ticket_id,
+						],
+						'relation' => 'AND',
+						[
+							'key'   => Attendee::$status_meta_key,
+							'value' => tribe( Pending::class )->get_wp_slug(),
+						],
 					],
-					'relation' => 'AND',
-					[
-						'key'   => Attendee::$status_meta_key,
-						'value' => tribe( Pending::class )->get_wp_slug(),
-					],
-				],
-			] );
+				]
+			);
 
 			$quantities[ Pending::SLUG ] = $pending_query->found_posts;
 			$cache->set( 'tec_tickets_quantities_by_status_' . $ticket_id, $quantities );
@@ -568,7 +576,7 @@ class Ticket extends Ticket_Data {
 	 * Legacy method ported from Tribe Commerce (TPP), we are specifically avoiding refactoring anything on the first
 	 * stage of Tickets Commerce
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to be split into `create` and `update`
+	 * @todo TribeCommerceLegacy: This method needs to be split into `create` and `update`.
 	 *
 	 * @since 5.1.9
 	 *
@@ -585,7 +593,7 @@ class Ticket extends Ticket_Data {
 			$save_type = 'create';
 
 			/* Create main product post */
-			$args = array(
+			$args = [
 				'post_status'  => 'publish',
 				'post_type'    => static::POSTTYPE,
 				'post_author'  => get_current_user_id(),
@@ -594,24 +602,24 @@ class Ticket extends Ticket_Data {
 				'menu_order'   => (int) ( $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ) ),
 				'meta_input' => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
-				]
-			);
+				],
+			];
 
 			$ticket->ID = wp_insert_post( $args );
 
-			// Relate event <---> ticket
+			// Relate event <---> ticket.
 			add_post_meta( $ticket->ID, static::$event_relation_meta_key, $post_id );
 
 		} else {
-			$args = array(
+			$args = [
 				'ID'           => $ticket->ID,
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => $ticket->menu_order,
-				'meta_input' => [
+				'meta_input'   => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
-				]
-			);
+				],
+			];
 
 			$ticket->ID = wp_update_post( $args );
 		}
@@ -627,7 +635,7 @@ class Ticket extends Ticket_Data {
 		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
 		update_post_meta( $ticket->ID, $tickets_handler->key_show_description, $ticket->show_description );
 
-		// let's make sure float price values are formatted to "0.xyz"
+		// Let's make sure float price values are formatted to "0.xyz".
 		if ( is_numeric( $ticket->price ) ) {
 			$ticket->price = (string) (int) $ticket->price === $ticket->price
 				? (int) $ticket->price
@@ -637,14 +645,14 @@ class Ticket extends Ticket_Data {
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 		update_post_meta( $ticket->ID, '_type', $ticket->type() ?? 'default' );
 
-		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
 		tribe( Module::class )->update_capacity( $ticket, $ticket_data, $save_type );
 
 		foreach ( [ 'start_date', 'start_time', 'end_date', 'end_time' ] as $time_key ) {
 			if ( isset( $ticket->{$time_key} ) ) {
 				$value = $ticket->{$time_key};
 
-				// Normalize date fields (start_date and end_date) using natural language parsing
+				// Normalize date fields (start_date and end_date) using natural language parsing.
 				if ( in_array( $time_key, [ 'start_date', 'end_date' ] ) && is_string( $value ) && ! empty( $value ) ) {
 					$normalized = static::normalize_date_text_to_mysql( $value );
 					if ( $normalized !== null ) {
@@ -665,7 +673,7 @@ class Ticket extends Ticket_Data {
 		 */
 		$should_default_ticket_sku = apply_filters( 'tribe_tickets_should_default_ticket_sku', true );
 		if ( $should_default_ticket_sku ) {
-			// make sure the SKU is set to the correct value
+			// Make sure the SKU is set to the correct value.
 			if ( ! empty( $raw_data['ticket_sku'] ) ) {
 				$sku = $raw_data['ticket_sku'];
 			} else {
@@ -678,39 +686,39 @@ class Ticket extends Ticket_Data {
 			update_post_meta( $ticket->ID, '_sku', $sku );
 		}
 
-		// Fetches all Ticket Form data
-		$data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+		// Fetches all Ticket Form data.
+		$data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
 
-		// Fetch the Global stock Instance for this Event
+		// Fetch the Global stock Instance for this Event.
 		$event_stock = new \Tribe__Tickets__Global_Stock( $post_id );
 
-		// Only need to do this if we haven't already set one - they shouldn't be able to edit it from here otherwise
+		// Only need to do this if we haven't already set one - they shouldn't be able to edit it from here otherwise.
 		if ( ! $event_stock->is_enabled() ) {
 			if ( isset( $data['event_capacity'] ) ) {
 				$data['event_capacity'] = trim( tec_sanitize_string( $data['event_capacity'] ) );
 
-				// If empty we need to modify to -1
+				// If empty we need to modify to -1.
 				if ( '' === $data['event_capacity'] ) {
 					$data['event_capacity'] = - 1;
 				}
 
-				// Makes sure it's an Int after this point
+				// Makes sure it's an Int after this point.
 				$data['event_capacity'] = (int) $data['event_capacity'];
 
 				$tickets_handler->remove_hooks();
 
-				// We need to update event post meta - if we've set a global stock
+				// We need to update event post meta - if we've set a global stock.
 				$event_stock->enable();
 				$event_stock->set_stock_level( $data['event_capacity'], true );
 
-				// Update Event capacity
+				// Update Event capacity.
 				update_post_meta( $post_id, $tickets_handler->key_capacity, $data['event_capacity'] );
 				update_post_meta( $post_id, $event_stock::GLOBAL_STOCK_ENABLED, 1 );
 
 				$tickets_handler->add_hooks();
 			}
 		} else {
-			// If the Global Stock is configured we pull it from the Event
+			// If the Global Stock is configured we pull it from the Event.
 			$global_capacity        = (int) tribe_tickets_get_capacity( $post_id );
 			$data['event_capacity'] = (int) \Tribe__Utils__Array::get( $data, 'event_capacity', 0 );
 
@@ -723,24 +731,24 @@ class Ticket extends Ticket_Data {
 			}
 		}
 
-		// Default Capacity will be 0
+		// Default Capacity will be 0.
 		$default_capacity   = 0;
 		$is_capacity_passed = true;
 
-		// If we have Event Global stock we fetch that Stock
+		// If we have Event Global stock we fetch that Stock.
 		if ( $event_stock->is_enabled() ) {
 			$default_capacity = $data['event_capacity'];
 		}
 
-		// Fetch capacity field, if we don't have it use default (defined above)
+		// Fetch capacity field, if we don't have it use default (defined above).
 		$data['capacity'] = trim( \Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
 
-		// If empty we need to modify to the default
+		// If empty we need to modify to the default.
 		if ( '' !== $data['capacity'] ) {
-			// Makes sure it's an Int after this point
+			// Makes sure it's an Int after this point.
 			$data['capacity'] = (int) $data['capacity'];
 
-			// The only available value lower than zero is -1 which is unlimited
+			// The only available value lower than zero is -1 which is unlimited.
 			if ( 0 > $data['capacity'] ) {
 				$data['capacity'] = - 1;
 			}
@@ -748,15 +756,15 @@ class Ticket extends Ticket_Data {
 			$default_capacity = $data['capacity'];
 		}
 
-		// Fetch the stock if defined, otherwise use Capacity field
+		// Fetch the stock if defined, otherwise use Capacity field.
 		$data['stock'] = trim( \Tribe__Utils__Array::get( $data, 'stock', $default_capacity ) );
 
-		// If empty we need to modify to what every capacity was
+		// If empty we need to modify to what every capacity was.
 		if ( '' === $data['stock'] ) {
 			$data['stock'] = $default_capacity;
 		}
 
-		// Makes sure it's an Int after this point
+		// Makes sure it's an Int after this point.
 		$data['stock'] = (int) $data['stock'];
 
 		// The only available value lower than zero is -1 which is unlimited.
@@ -764,15 +772,15 @@ class Ticket extends Ticket_Data {
 			$data['stock'] = - 1;
 		}
 
-		$mode = isset( $data['mode'] ) ? $data['mode'] : 'own';
+		$mode = $data['mode'] ?? 'own';
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
-				$totals        = $tickets_handler->get_ticket_totals( $ticket->ID );
+				$totals         = $tickets_handler->get_ticket_totals( $ticket->ID );
 				$data['stock'] -= $totals['pending'] + $totals['sold'];
 			}
 
-			// In here is safe to check because we don't have unlimited = -1
+			// In here is safe to check because we don't have unlimited = -1.
 			$status = ( 0 < $data['stock'] ) ? 'instock' : 'outofstock';
 
 			update_post_meta( $ticket->ID, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, $mode );
@@ -781,7 +789,7 @@ class Ticket extends Ticket_Data {
 			update_post_meta( $ticket->ID, '_backorders', 'no' );
 			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
 
-			// Prevent Ticket Capacity from going higher then Event Capacity
+			// Prevent Ticket Capacity from going higher then Event Capacity.
 			if (
 				$event_stock->is_enabled()
 				&& \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $mode
@@ -793,27 +801,27 @@ class Ticket extends Ticket_Data {
 				$data['capacity'] = $data['event_capacity'];
 			}
 		} else {
-			// Unlimited Tickets
-			// Besides setting _manage_stock to "no" we should remove the associated stock fields if set previously
+			// Unlimited Tickets.
+			// Besides setting _manage_stock to "no" we should remove the associated stock fields if set previously.
 			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
 			delete_post_meta( $ticket->ID, '_stock_status' );
 			delete_post_meta( $ticket->ID, '_stock' );
 			delete_post_meta( $ticket->ID, \Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
 			delete_post_meta( $ticket->ID, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
 
-			// Set Capacity -1 when we don't have a stock mode, which means unlimited
+			// Set Capacity -1 when we don't have a stock mode, which means unlimited.
 			$data['capacity'] = - 1;
 		}
 
 		if ( '' !== $data['capacity'] ) {
-			// Update Ticket capacity
+			// Update Ticket capacity.
 			update_post_meta( $ticket->ID, $tickets_handler->key_capacity, $data['capacity'] );
 		}
 
 		$this->process_sale_price_data( $ticket, $raw_data );
 
 		/**
-		 * Generic action fired after saving a ticket (by type)
+		 * Generic action fired after saving a ticket (by type).
 		 *
 		 * @since 5.2.0
 		 *
@@ -839,7 +847,7 @@ class Ticket extends Ticket_Data {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @todo  TribeCommerceLegacy
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since 5.2.0
 		 *
@@ -853,7 +861,7 @@ class Ticket extends Ticket_Data {
 		/**
 		 * Generic action fired after saving a ticket.
 		 *
-		 * @todo  TribeCommerceLegacy
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since 5.2.0
 		 *
@@ -892,7 +900,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Deletes a given ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
+	 * @todo TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
 	 * @since 5.25.0 Removed the increment of deleted attendees count, it is handled in attendee deletion method.
@@ -948,7 +956,7 @@ class Ticket extends Ticket_Data {
 	 * @param int $attendee_id Attendee ID.
 	 */
 	public function update_stock_after_attendee_deletion( $attendee_id ) {
-		$event_id    = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
+		$event_id   = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
 		$product_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
 
 		$global_stock    = new \Tribe__Tickets__Global_Stock( $event_id );
@@ -970,8 +978,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Update Global Stock.
 	 *
-	 * @todo  TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
-	 *        create/update methods and delete this.
+	 * @todo TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the create/update methods and delete this.
 	 *
 	 * @since 5.1.9
 	 *
@@ -994,7 +1001,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Increase the sales for a ticket by a specific quantity.
 	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
 	 * @since 5.13.3 Modified logic when updating global stock.
@@ -1032,7 +1039,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Decrease the sales for a ticket by a specific quantity.
 	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
 	 *
@@ -1045,12 +1052,12 @@ class Ticket extends Ticket_Data {
 	 */
 	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
 		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) - $quantity;
+		$sales = (int) get_post_meta( $ticket_id, static::$sales_meta_key, true ) - $quantity;
 
 		// Prevent negatives.
 		$sales = max( $sales, 0 );
 
-		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
+		update_post_meta( $ticket_id, static::$sales_meta_key, $sales );
 
 		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity, true );
@@ -1060,7 +1067,7 @@ class Ticket extends Ticket_Data {
 	}
 
 	/**
-	 * Gets the product price value object
+	 * Gets the product price value object.
 	 *
 	 * @since 5.1.9
 	 * @since 5.2.3 method signature changed to return an instance of Value instead of a string.
@@ -1070,8 +1077,6 @@ class Ticket extends Ticket_Data {
 	 * @param bool             $force_regular Whether to force the regular price.
 	 *
 	 * @return \TEC\Tickets\Commerce\Utils\Value|null;
-	 * @version 5.2.3
-	 *
 	 */
 	public function get_price_value( $product, $force_regular = false ) {
 		$ticket = Models\Ticket_Model::from_post( $product );
@@ -1090,7 +1095,7 @@ class Ticket extends Ticket_Data {
 	}
 
 	/**
-	 * Returns the ticket price html template
+	 * Returns the ticket price html template.
 	 *
 	 * @since 5.1.9
 	 * @since 5.9.0 Updated sale price template arguments.
@@ -1134,7 +1139,7 @@ class Ticket extends Ticket_Data {
 	 * @since 5.6.7 removed the use of `$this->decrease_ticket_sales_by` as the move method already takes care of stock.
 	 * @since 5.5.9
 	 *
-	 * @param int $ticket_id                The ticket which has been moved.
+	 * @param int $attendee_id              The ticket which has been moved.
 	 * @param int $src_ticket_type_id       The ticket type it belonged to originally.
 	 * @param int $tgt_ticket_type_id       The ticket type it now belongs to.
 	 * @param int $src_event_id             The event/post which the ticket originally belonged to.
@@ -1176,8 +1181,8 @@ class Ticket extends Ticket_Data {
 	 * @return bool|int
 	 */
 	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
-		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
-		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
+		$stock = (int) get_post_meta( $ticket_id, static::$stock_meta_key, true ) + $quantity;
+		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
 
 	/**
@@ -1244,7 +1249,7 @@ class Ticket extends Ticket_Data {
 			$start_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
 			if ( ! empty( $start_date ) ) {
 				$normalized = static::normalize_date_text_to_mysql( $start_date );
-				$start_date = $normalized !== null ? $normalized : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+				$start_date = $normalized ?? gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
 			} else {
 				$start_date = '';
 			}
@@ -1255,7 +1260,7 @@ class Ticket extends Ticket_Data {
 			$end_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
 			if ( ! empty( $end_date ) ) {
 				$normalized = static::normalize_date_text_to_mysql( $end_date );
-				$end_date = $normalized !== null ? $normalized : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+				$end_date   = $normalized ?? gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
 			} else {
 				$end_date = '';
 			}
