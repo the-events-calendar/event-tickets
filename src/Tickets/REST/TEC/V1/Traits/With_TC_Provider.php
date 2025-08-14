@@ -13,6 +13,7 @@ namespace TEC\Tickets\REST\TEC\V1\Traits;
 
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Tickets as Ticket_Provider;
+use TEC\Tickets\Commerce\Ticket;
 
 /**
  * Trait With_TC_Provider.
@@ -31,5 +32,16 @@ trait With_TC_Provider {
 	 */
 	protected function get_provider(): Ticket_Provider {
 		return tribe( Module::class );
+	}
+
+	/**
+	 * Returns the event key for the ticket provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_provider_event_key(): string {
+		return Ticket::$event_relation_meta_key;
 	}
 }

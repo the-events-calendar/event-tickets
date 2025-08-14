@@ -44,7 +44,7 @@ trait With_Filtered_Ticket_Params {
 
 		if ( isset( $params['id'] ) ) {
 			// We don't allow moving tickets to a different event.
-			$params['event'] = (int) ( $ticket_data[ Ticket::$event_relation_meta_key ]['0'] ?? null );
+			$params['event'] = (int) ( $ticket_data[ $this->get_provider_event_key() ]['0'] ?? null );
 		}
 
 		$event_id = (int) ( $params['event'] ?? null );

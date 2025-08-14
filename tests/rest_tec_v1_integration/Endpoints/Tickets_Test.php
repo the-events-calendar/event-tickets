@@ -43,9 +43,12 @@ class Tickets_Test extends Ticket_Test {
 			$parent_post_id = $ticket_object->get_event_id();
 			$parent_post = $ticket_object->get_event();
 
-			if ( $parent_post && 'publish' === $parent_post->post_status && empty( $parent_post->post_password ) ) {
-				// Public ticket - should be accessible to all
-				$responses[] = $this->assert_endpoint( '/tickets/' . $ticket_id );
+			if ( $parent_post && 'publish' === $parent_post->post_status ) {
+				if ( empty( $parent_post->post_password ) ) {
+					$responses[] = $this->assert_endpoint( '/tickets/' . $ticket_id );
+				} else {
+					$responses[] = $this->assert_endpoint( '/tickets/' . $ticket_id, 'GET', ( is_user_logged_in() ? 403 : 401 ) );
+				}
 			} else {
 				// Private/draft/password-protected parent - check permissions
 				$should_pass = is_user_logged_in() && current_user_can( 'read_post', $parent_post_id );
