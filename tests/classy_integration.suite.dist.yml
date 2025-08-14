@@ -1,6 +1,6 @@
 actor: Classy_Integration_Tester
 modules:
-    enabled: [WPLoader, \Helper\Classy_integration]
+    enabled: [WPLoader]
     config:
       WPLoader:
         wpRootFolder: %WP_ROOT_FOLDER%
