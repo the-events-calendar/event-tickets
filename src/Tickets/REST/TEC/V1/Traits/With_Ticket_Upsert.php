@@ -87,7 +87,7 @@ trait With_Ticket_Upsert {
 		$post_params   = $params['post_params'] ?? [];
 		$ticket_params = $params['ticket_params'];
 
-		$tickets = tribe( Module::class );
+		$tickets = $this->get_provider();
 
 		$event = $ticket_params['event'];
 		unset( $ticket_params['event'] );
