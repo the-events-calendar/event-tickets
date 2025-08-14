@@ -13,7 +13,6 @@ namespace TEC\Tickets\REST\TEC\V1\Traits;
 
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Tickets as Ticket_Provider;
-use TEC\Tickets\Commerce\Ticket;
 
 /**
  * Trait With_TC_Provider.
