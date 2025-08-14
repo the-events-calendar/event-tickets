@@ -16,7 +16,8 @@ use TEC\Common\REST\TEC\V1\Parameter_Types\Date_Time;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Number;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
-use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
+use TEC\Common\REST\TEC\V1\Parameter_Types\Text;\
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Ticket request body definition provider for the TEC REST API.
@@ -125,8 +126,8 @@ class Ticket_Request_Body_Definition extends Definition {
 			new Text(
 				'stock_mode',
 				fn() => __( 'The stock mode of the ticket', 'event-tickets' ),
-				'own',
-				[ 'own', 'capped', 'unlimited' ]
+				Global_Stock::OWN_STOCK_MODE,
+				[ Global_Stock::OWN_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE, Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::UNLIMITED_STOCK_MODE ]
 			)
 		)->set_example( 'own' );
 
