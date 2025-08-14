@@ -202,7 +202,7 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 			$parent_post_id = $ticket_object->get_event_id();
 			$parent_post = $ticket_object->get_event();
 
-			if ( $parent_post && 'publish' === $parent_post->post_status ) {
+			if ( $parent_post && 'publish' === $parent_post->post_status && empty( $parent_post->post_password ) ) {
 				// Public ticket - should be accessible to all
 				$responses[] = $this->assert_endpoint( '/tickets/' . $ticket_id );
 			} else {
