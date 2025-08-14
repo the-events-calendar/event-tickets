@@ -2,11 +2,11 @@
 
 import { jest } from '@jest/globals';
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util';
-import { Currency } from '../../common/src/resources/packages/classy/types/Currency';
-import { LocalizedData } from '../../common/src/resources/packages/classy/types/LocalizedData';
-import { StartOfWeek } from '../../common/src/resources/packages/classy/types/StartOfWeek';
-import { Hours } from '../../common/src/resources/packages/classy/types/Hours';
-import { Minutes } from '../../common/src/resources/packages/classy/types/Minutes';
+import { Currency } from '@tec/common/classy/types/Currency';
+import { LocalizedData } from '@tec/common/classy/types/LocalizedData';
+import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
+import { Hours } from '@tec/common/classy/types/Hours';
+import { Minutes } from '@tec/common/classy/types/Minutes';
 
 
 // Add TextDecoder and TextEncoder to global scope
