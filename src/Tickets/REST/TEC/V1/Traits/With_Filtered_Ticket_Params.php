@@ -47,7 +47,7 @@ trait With_Filtered_Ticket_Params {
 			$params['event'] = (int) ( $ticket_data[ Ticket::$event_relation_meta_key ]['0'] ?? null );
 		}
 
-		$event_id = (int) ( $params['event'] ?? $ticket_data[ Ticket::$event_relation_meta_key ]['0'] ?? null );
+		$event_id = (int) ( $params['event'] ?? null );
 
 		if ( ! $event_id ) {
 			$exception = new InvalidRestArgumentException( __( 'Event ID is required', 'event-tickets' ) );
