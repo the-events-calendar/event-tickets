@@ -33,15 +33,4 @@ trait With_TC_Provider {
 	protected function get_provider(): Ticket_Provider {
 		return tribe( Module::class );
 	}
-
-	/**
-	 * Returns the event key for the ticket provider.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	protected function get_provider_event_key(): string {
-		return Ticket::$event_relation_meta_key;
-	}
 }
