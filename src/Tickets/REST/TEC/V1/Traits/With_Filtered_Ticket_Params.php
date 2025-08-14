@@ -55,7 +55,7 @@ trait With_Filtered_Ticket_Params {
 			$exception->set_internal_error_code( 'tec_rest_invalid_event_parameter' );
 
 			// translators: 1) is the name of the parameter.
-			$exception->set_details( sprintf( __( 'The parameter `{`%1$s}` is missing.', 'event-tickets' ), 'event' ) );
+			$exception->set_details( sprintf( __( 'The parameter `{%1$s}` is missing.', 'event-tickets' ), 'event' ) );
 			throw $exception;
 		}
 
@@ -65,7 +65,7 @@ trait With_Filtered_Ticket_Params {
 			$exception->set_internal_error_code( 'tec_rest_invalid_event_parameter' );
 
 			// translators: 1) is the name of the parameter.
-			$exception->set_details( sprintf( __( 'The parameter `{`%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' ) );
+			$exception->set_details( sprintf( __( 'The parameter `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' ) );
 			throw $exception;
 		}
 
