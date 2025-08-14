@@ -26,9 +26,11 @@ use TEC\Common\REST\TEC\V1\Documentation\OpenAPI_Schema;
 use TEC\Common\REST\TEC\V1\Endpoints\OpenApiDocs;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Definition_Parameter;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Tickets_ORM;
-use TEC\Common\REST\TEC\V1\Traits\Update_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Delete_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Read_Entity_Response;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Ticket_Upsert;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Filtered_Ticket_Params;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Parent_Post_Read_Check;
 use InvalidArgumentException;
 
 /**
@@ -41,8 +43,10 @@ use InvalidArgumentException;
 class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	use With_Tickets_ORM;
 	use Read_Entity_Response;
-	use Update_Entity_Response;
 	use Delete_Entity_Response;
+	use With_Filtered_Ticket_Params;
+	use With_Ticket_Upsert;
+	use With_Parent_Post_Read_Check;
 
 	/**
 	 * Returns the base path for the endpoint.

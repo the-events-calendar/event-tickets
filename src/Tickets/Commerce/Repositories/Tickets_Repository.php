@@ -46,6 +46,9 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->create_args['post_status']  = 'publish';
 		$this->create_args['post_type']    = Ticket::POSTTYPE;
 
+		/** @var \Tribe__Tickets__Tickets_Handler $ticket_handler */
+		$ticket_handler = tribe( 'tickets.handler' );
+
 		// Add event specific aliases.
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
@@ -66,9 +69,11 @@ class Tickets_Repository extends Tribe__Repository {
 				'allow_backorders'      => Ticket::$allow_backorders_meta_key,
 				'manage_stock'          => Ticket::$should_manage_stock_meta_key,
 				'type'                  => Ticket::$type_meta_key,
+				'sale_price_enabled'    => Ticket::$sale_price_checked_key,
 				'sale_price'            => Ticket::$sale_price_key,
 				'sale_price_start_date' => Ticket::$sale_price_start_date_key,
 				'sale_price_end_date'   => Ticket::$sale_price_end_date_key,
+				'capacity'              => $ticket_handler->key_capacity,
 			]
 		);
 
@@ -79,11 +84,13 @@ class Tickets_Repository extends Tribe__Repository {
 			],
 		);
 
+		$this->add_simple_meta_schema_entry( 'event_id', Ticket::$event_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'start_date', Ticket::START_DATE_META_KEY );
 		$this->add_simple_meta_schema_entry( 'end_date', Ticket::END_DATE_META_KEY );
 		$this->add_simple_meta_schema_entry( 'start_time', Ticket::START_TIME_META_KEY );
 		$this->add_simple_meta_schema_entry( 'end_time', Ticket::END_TIME_META_KEY );
 		$this->add_simple_meta_schema_entry( 'sku', Ticket::$sku_meta_key );
+		$this->add_simple_meta_schema_entry( 'sale_price_enabled', Ticket::$sale_price_checked_key );
 		$this->add_simple_meta_schema_entry( 'stock', Ticket::$stock_meta_key );
 		$this->add_simple_meta_schema_entry( 'show_description', Ticket::$show_description_meta_key );
 		$this->add_simple_meta_schema_entry( 'price', Ticket::$price_meta_key );
@@ -96,6 +103,16 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'sale_price', Ticket::$sale_price_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_start_date', Ticket::$sale_price_start_date_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_end_date', Ticket::$sale_price_end_date_key );
+		$this->add_simple_meta_schema_entry( 'capacity', $ticket_handler->key_capacity );
+
+		/**
+		 * Filters the schema for the tickets repository.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Repository $this The repository object.
+		 */
+		do_action( 'tec_tickets_commerce_repository_ticket_schema', $this );
 	}
 
 	/**
