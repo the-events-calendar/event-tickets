@@ -16,6 +16,7 @@ jobs:
           - wpunit
           - slr_integration
           - square_integration
+          - classy_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
