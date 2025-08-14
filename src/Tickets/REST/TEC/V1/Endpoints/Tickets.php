@@ -19,7 +19,6 @@ use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Models\Ticket_Model;
 use TEC\Tickets\REST\TEC\V1\Tags\Tickets_Tag;
 use TEC\Common\REST\TEC\V1\Traits\Read_Archive_Response;
-use TEC\Common\REST\TEC\V1\Traits\Create_Entity_Response;
 use TEC\Common\REST\TEC\V1\Collections\HeadersCollection;
 use TEC\Common\REST\TEC\V1\Collections\QueryArgumentCollection;
 use TEC\Common\REST\TEC\V1\Collections\RequestBodyCollection;
@@ -34,7 +33,8 @@ use TEC\Tickets\REST\TEC\V1\Documentation\Ticket_Request_Body_Definition;
 use TEC\Common\REST\TEC\V1\Documentation\OpenAPI_Schema;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Definition_Parameter;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Tickets_ORM;
-use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Filtered_Ticket_Params;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Ticket_Upsert;
 
 /**
  * Archive tickets endpoint for the TEC REST API V1.
@@ -45,8 +45,9 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  */
 class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatable_Endpoint {
 	use Read_Archive_Response;
-	use Create_Entity_Response;
 	use With_Tickets_ORM;
+	use With_Filtered_Ticket_Params;
+	use With_Ticket_Upsert;
 
 	/**
 	 * Returns the model class.
@@ -359,69 +360,5 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 		}
 
 		throw new InvalidArgumentException( sprintf( 'Invalid operation: %s', $operation ) );
-	}
-
-	/**
-	 * Filters the create params.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $params The params to filter.
-	 *
-	 * @return array
-	 */
-	public function filter_create_params( array $params ): array {
-		if ( ! empty( $params['start_date'] ) ) {
-			$start_date = explode( ' ', $params['start_date'] );
-
-			$params['start_date'] = $start_date[0];
-			$params['start_time'] = $start_date[1] ?? '00:00:00';
-		}
-
-		if ( ! empty( $params['end_date'] ) ) {
-			$end_date = explode( ' ', $params['end_date'] );
-
-			$params['end_date'] = $end_date[0];
-			$params['end_time'] = $end_date[1] ?? '23:59:59';
-		}
-
-		if ( isset( $params['capacity'] ) && ! isset( $params['stock'] ) ) {
-			$params['stock'] = $params['capacity'];
-		}
-
-		if ( isset( $params['stock'] ) && ! isset( $params['capacity'] ) ) {
-			$params['capacity'] = $params['stock'];
-		}
-
-		if ( 'unlimited' === $params['stock_mode'] ) {
-			$params['stock'] = null;
-			$params['capacity'] = -1;
-			$params['manage_stock'] = 'no';
-			$params['stock_status'] = null;
-		} else {
-			$params['manage_stock'] = 'yes';
-			$params['stock_status'] = $params['stock'] > 0 ? 'instock' : 'outofstock';
-			$params['allow_backorders'] = 'no';
-		}
-
-		if ( isset( $params['sale_price'] ) ) {
-			$params['sale_price_enabled'] = true;
-		}
-
-		if ( 'capped' === $params['stock_mode'] ) {
-			$event_id        = $params['event'];
-			$global_capacity = (int) tribe_tickets_get_capacity( $event_id );
-
-			$event_stock = new Global_Stock( $event_id );
-			/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
-			$tickets_handler = tribe( 'tickets.handler' );
-
-			$event_stock->enable();
-			$event_stock->set_stock_level( $global_capacity, true );
-			update_post_meta( $params['event'], $tickets_handler->key_capacity, $global_capacity );
-			update_post_meta( $params['event'], $event_stock::GLOBAL_STOCK_ENABLED, 1 );
-		}
-
-		return $params;
 	}
 }

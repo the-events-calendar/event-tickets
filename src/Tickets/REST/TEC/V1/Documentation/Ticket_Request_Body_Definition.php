@@ -94,13 +94,6 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( '2025-06-30' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' );
 
 		$properties[] = (
-			new Boolean(
-				'manage_stock',
-				fn() => __( 'Whether stock is being managed for this ticket', 'event-tickets' ),
-			)
-		)->set_example( true );
-
-		$properties[] = (
 			new Text(
 				'attendee_collection',
 				fn() => __( 'The attendee collection setting for the ticket', 'event-tickets' ),
@@ -115,6 +108,13 @@ class Ticket_Request_Body_Definition extends Definition {
 				fn() => __( 'The capacity of the ticket', 'event-tickets' ),
 			)
 		)->set_example( 100 );
+
+		$properties[] = (
+			new Positive_Integer(
+				'event_capacity',
+				fn() => __( 'The capacity of the event', 'event-tickets' ),
+			)
+		)->set_example( 140 );
 
 		$properties[] = (
 			new Positive_Integer(

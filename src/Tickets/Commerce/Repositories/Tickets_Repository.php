@@ -46,6 +46,9 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->create_args['post_status']  = 'publish';
 		$this->create_args['post_type']    = Ticket::POSTTYPE;
 
+		/** @var \Tribe__Tickets__Tickets_Handler $ticket_handler */
+		$ticket_handler = tribe( 'tickets.handler' );
+
 		// Add event specific aliases.
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
@@ -70,7 +73,7 @@ class Tickets_Repository extends Tribe__Repository {
 				'sale_price'            => Ticket::$sale_price_key,
 				'sale_price_start_date' => Ticket::$sale_price_start_date_key,
 				'sale_price_end_date'   => Ticket::$sale_price_end_date_key,
-				'capacity'              => '_tribe_ticket_capacity',
+				'capacity'              => $ticket_handler->key_capacity,
 			]
 		);
 
@@ -100,7 +103,7 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'sale_price', Ticket::$sale_price_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_start_date', Ticket::$sale_price_start_date_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_end_date', Ticket::$sale_price_end_date_key );
-		$this->add_simple_meta_schema_entry( 'capacity', '_tribe_ticket_capacity' );
+		$this->add_simple_meta_schema_entry( 'capacity', $ticket_handler->key_capacity );
 		$this->add_simple_meta_schema_entry( 'attendee_collection', '_tribe_tickets_ar_iac' );
 	}
 
