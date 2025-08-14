@@ -64,6 +64,7 @@
                     "enum": [
                         "own",
                         "capped",
+                        "global",
                         "unlimited"
                     ],
                     "example": "own"
