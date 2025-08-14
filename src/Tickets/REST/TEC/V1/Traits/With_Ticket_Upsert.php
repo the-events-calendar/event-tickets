@@ -45,9 +45,10 @@ trait With_Ticket_Upsert {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function update( array $params = [] ): WP_REST_Response {
-		$id = $params['id'] ?? null;
+		$post_params   = $params['post_params'] ?? [];
+		$ticket_params = $params['ticket_params'];
 
-		unset( $params['id'] );
+		$id = $ticket_params['id'] ?? null;
 
 		if ( ! $id ) {
 			return new WP_REST_Response(
@@ -67,7 +68,7 @@ trait With_Ticket_Upsert {
 			);
 		}
 
-		return $this->upsert( $params, 'update' );
+		return $this->upsert( compact( 'post_params', 'ticket_params' ), 'update' );
 	}
 
 	/**
@@ -83,12 +84,15 @@ trait With_Ticket_Upsert {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function upsert( array $params = [], string $operation = 'create' ): WP_REST_Response {
+		$post_params   = $params['post_params'] ?? [];
+		$ticket_params = $params['ticket_params'];
+
 		$tickets = tribe( Module::class );
 
-		$event = $params['event'];
-		unset( $params['event'] );
+		$event = $ticket_params['event'];
+		unset( $ticket_params['event'] );
 
-		$ticket_id = $tickets->ticket_add( $event, $params );
+		$ticket_id = $tickets->ticket_add( $event, $ticket_params );
 
 		if ( ! $ticket_id ) {
 			return new WP_REST_Response(
@@ -98,6 +102,25 @@ trait With_Ticket_Upsert {
 				],
 				500
 			);
+		}
+
+		if ( ! empty( $post_params ) ) {
+			$ticket_update_result = $this->get_orm()->by_args(
+				[
+					'id'     => $ticket_id,
+					'status' => 'any',
+				]
+			)->set_args( $post_params )->save();
+
+			if ( ! $ticket_update_result ) {
+				return new WP_REST_Response(
+					[
+						// translators: 1) is the operation: create or update.
+						'error' => sprintf( __( 'Failed to %s partial data of the ticket.', 'event-tickets' ), $operation ),
+					],
+					500
+				);
+			}
 		}
 
 		$ticket_entity = $this->get_orm()->by_args(

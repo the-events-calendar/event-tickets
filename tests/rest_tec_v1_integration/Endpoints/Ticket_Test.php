@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Ticket as Ticket_Model;
 use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
 class Ticket_Test extends Post_Entity_REST_Test_Case {
@@ -83,5 +84,34 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 	public function test_get_model_class() {
 		$model_class = $this->endpoint->get_model_class();
 		$this->assertEquals( Model::class, $model_class );
+	}
+
+	protected function get_example_create_data(): array {
+		$example = parent::get_example_create_data();
+
+		$post_id = self::factory()->post->create();
+
+		$example['event'] = $post_id;
+		$example['manage_stock'] = true;
+		$example['sale_price_enabled'] = true;
+
+		return $example;
+	}
+
+	public function test_update_handles_save_failure() {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		$this->set_class_fn_return( Tickets::class, 'ticket_add', false );
+
+		$example = $this->get_example_create_data();
+		unset( $example['id'] );
+
+		$orm = $this->endpoint->get_orm();
+
+		wp_set_current_user( 1 );
+		$entity_id = $orm->set_args( $example )->create()->ID;
+		$this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $entity_id ), 'PUT', 500, [ 'title' => 'Updated Title' ] );
 	}
 }

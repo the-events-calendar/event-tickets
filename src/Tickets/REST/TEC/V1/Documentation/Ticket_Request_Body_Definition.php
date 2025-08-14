@@ -149,7 +149,7 @@ class Ticket_Request_Body_Definition extends Definition {
 				'end_date',
 				fn() => __( 'The end sale date of the ticket', 'event-tickets' ),
 			)
-		)->set_example( '2025-06-04 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' );
+		)->set_example( '2025-09-04 23:59:59' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' );
 
 		$properties[] = (
 			new Text(
