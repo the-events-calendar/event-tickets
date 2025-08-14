@@ -13,7 +13,7 @@ import { TicketSettings } from '../../../src/resources/packages/classy/types/Tic
  * @param {Record<string, any>} queryArgs - Query arguments to append.
  * @return {string} The complete path with query parameters.
  */
-const createExpectedPath = ( basePath: string, queryArgs: Record<string, any> = {} ): string => {
+const createExpectedPath = ( basePath: string, queryArgs: Record< string, any > = {} ): string => {
 	return addQueryArgs( basePath, queryArgs );
 };
 
@@ -21,7 +21,6 @@ jest.mock( '@wordpress/api-fetch', () => ( {
 	__esModule: true,
 	default: jest.fn(),
 } ) );
-
 
 describe( 'Ticket API', () => {
 	const resetModules = () => {
@@ -108,7 +107,7 @@ describe( 'Ticket API', () => {
 				modified: '2024-05-15 12:00:00',
 				modified_utc: '2024-05-15 12:00:00',
 				status: 'publish',
-			}
+			},
 		];
 		const mockApiMappedTickets: TicketSettings[] = [
 			{
@@ -195,21 +194,27 @@ describe( 'Ticket API', () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( 'not an object' );
 
-			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: response did not return an object.' );
+			await expect( fetchTickets() ).rejects.toThrow(
+				'Failed to fetch tickets: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when response is null', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( null );
 
-			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: response did not return an object.' );
+			await expect( fetchTickets() ).rejects.toThrow(
+				'Failed to fetch tickets: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when response is undefined', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
 
-			await expect( fetchTickets() ).rejects.toThrow( 'Failed to fetch tickets: response did not return an object.' );
+			await expect( fetchTickets() ).rejects.toThrow(
+				'Failed to fetch tickets: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when response object is missing tickets property', async () => {
@@ -223,7 +228,9 @@ describe( 'Ticket API', () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
 
-			await expect( fetchTickets() ).rejects.toThrow( 'Tickets fetch request did not return an object with tickets and total properties.' );
+			await expect( fetchTickets() ).rejects.toThrow(
+				'Tickets fetch request did not return an object with tickets and total properties.'
+			);
 		} );
 
 		test( 'rejects when response object is missing total property', async () => {
@@ -237,7 +244,9 @@ describe( 'Ticket API', () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
 
-			await expect( fetchTickets() ).rejects.toThrow( 'Tickets fetch request did not return an object with tickets and total properties.' );
+			await expect( fetchTickets() ).rejects.toThrow(
+				'Tickets fetch request did not return an object with tickets and total properties.'
+			);
 		} );
 
 		test( 'rejects when response object is missing both tickets and total properties', async () => {
@@ -250,7 +259,9 @@ describe( 'Ticket API', () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
 
-			await expect( fetchTickets() ).rejects.toThrow( 'Tickets fetch request did not return an object with tickets and total properties.' );
+			await expect( fetchTickets() ).rejects.toThrow(
+				'Tickets fetch request did not return an object with tickets and total properties.'
+			);
 		} );
 
 		test( 'handles query parameters correctly', async () => {
@@ -523,49 +534,63 @@ describe( 'Ticket API', () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
 
-			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: Network error' );
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow(
+				'Failed to update ticket: Network error'
+			);
 		} );
 
 		test( 'rejects when create response is not an object', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( 'not an object' );
 
-			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: response did not return an object.' );
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow(
+				'Failed to create ticket: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when update response is not an object', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( 'not an object' );
 
-			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: response did not return an object.' );
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow(
+				'Failed to update ticket: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when create response is null', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( null );
 
-			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: response did not return an object.' );
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow(
+				'Failed to create ticket: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when update response is null', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( null );
 
-			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: response did not return an object.' );
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow(
+				'Failed to update ticket: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when create response is undefined', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
 
-			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow( 'Failed to create ticket: response did not return an object.' );
+			await expect( upsertTicket( mockTicketData ) ).rejects.toThrow(
+				'Failed to create ticket: response did not return an object.'
+			);
 		} );
 
 		test( 'rejects when update response is undefined', async () => {
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
 
-			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow( 'Failed to update ticket: response did not return an object.' );
+			await expect( upsertTicket( mockUpdatedTicketData ) ).rejects.toThrow(
+				'Failed to update ticket: response did not return an object.'
+			);
 		} );
 
 		test( 'handles ticket with sale price data', async () => {

@@ -8,7 +8,6 @@ import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
 import { Hours } from '@tec/common/classy/types/Hours';
 import { Minutes } from '@tec/common/classy/types/Minutes';
 
-
 // Add TextDecoder and TextEncoder to global scope
 global.TextDecoder = NodeTextDecoder as unknown as typeof TextDecoder;
 global.TextEncoder = NodeTextEncoder as unknown as typeof TextEncoder;

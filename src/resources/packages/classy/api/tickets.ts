@@ -37,7 +37,7 @@ const getNonce = ( type: NonceTypes ): string => {
  * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
  */
 export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise< GetTicketsApiResponse > => {
-	const queryArgs: Record<string, any> = {};
+	const queryArgs: Record< string, any > = {};
 
 	if ( params.include_post ) {
 		queryArgs.include_post = params.include_post;
