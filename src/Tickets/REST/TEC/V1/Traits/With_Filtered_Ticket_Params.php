@@ -92,7 +92,7 @@ trait With_Filtered_Ticket_Params {
 		}
 
 		if ( ! isset( $params['stock_mode'] ) && ( ! empty( $params['stock'] ) || ! empty( $params['capacity'] ) ) ) {
-			$params['stock_mode'] = -1 === $params['stock'] || -1 === $params['capacity'] ? 'unlimited' : Global_Stock::OWN_STOCK_MODE;
+			$params['stock_mode'] = -1 === $params['stock'] || -1 === $params['capacity'] ? Global_Stock::UNLIMITED_STOCK_MODE : Global_Stock::OWN_STOCK_MODE;
 		}
 
 		if ( isset( $params['stock_mode'] ) && 'unlimited' === $params['stock_mode'] ) {
