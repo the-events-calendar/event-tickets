@@ -3,7 +3,7 @@
  * This template renders the RSVP ARI sidebar title.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari/sidebar/title.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/ari/sidebar/title.php
  *
  * @since TBD
  *

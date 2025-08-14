@@ -107,9 +107,6 @@ tribe.tickets.rsvp.manager = {};
 	obj.request = function ( data, $container ) {
 		const settings = obj.getAjaxSettings( $container );
 
-		console.log( 'data', data );
-		console.log( 'settings', settings );
-
 		// Pass the data received to the $.ajax settings
 		settings.data = data;
 
@@ -124,7 +121,6 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {Object} ajaxSettings
 	 */
 	obj.getAjaxSettings = function ( $container ) {
-		console.log('TecRsvp', TecRsvp);
 		const ajaxSettings = {
 			url: TecRsvp.orderEndpoint,
 			method: 'POST',

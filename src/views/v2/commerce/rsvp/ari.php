@@ -4,7 +4,7 @@
  * ARI
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/ari.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -23,10 +23,10 @@
 	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 >
 	<div class="tribe-tickets__rsvp-ar-sidebar-wrapper tribe-common-g-col">
-		<?php $this->template( 'v2/rsvp/ari/sidebar', [ 'rsvp' => $rsvp ] ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/ari/sidebar', [ 'rsvp' => $rsvp ] ); ?>
 	</div>
 
 	<div class="tribe-tickets__rsvp-ar-form-wrapper tribe-common-g-col">
-		<?php $this->template( 'v2/rsvp/ari/form', [ 'rsvp' => $rsvp ] ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/ari/form', [ 'rsvp' => $rsvp ] ); ?>
 	</div>
 </form>

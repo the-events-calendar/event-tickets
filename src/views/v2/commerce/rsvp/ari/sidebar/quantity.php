@@ -3,7 +3,7 @@
  * This template renders the RSVP ticket form quantity input.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari/sidebar/quantity.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/ari/sidebar/quantity.php
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
@@ -27,11 +27,11 @@
 	</span>
 
 	<div class="tribe-tickets__rsvp-ar-quantity-input">
-		<?php $this->template( 'v2/rsvp/ari/sidebar/quantity/minus' ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/ari/sidebar/quantity/minus' ); ?>
 
-		<?php $this->template( 'v2/rsvp/ari/sidebar/quantity/input', [ 'rsvp' => $rsvp ] ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/ari/sidebar/quantity/input', [ 'rsvp' => $rsvp ] ); ?>
 
-		<?php $this->template( 'v2/rsvp/ari/sidebar/quantity/plus' ); ?>
+		<?php $this->template( 'v2/commerce/rsvp/ari/sidebar/quantity/plus' ); ?>
 	</div>
 
 </div>

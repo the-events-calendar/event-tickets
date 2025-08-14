@@ -4,7 +4,7 @@
  * ARI Form
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari/form.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/ari/form.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -25,8 +25,8 @@
 	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][order_status]" value="<?php echo esc_attr( $going ); ?>">
 	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][optout]" value="1">
 
-	<?php $this->template( 'v2/rsvp/ari/form/guest', [ 'rsvp' => $rsvp ] ); ?>
+	<?php $this->template( 'v2/commerce/rsvp/ari/form/guest', [ 'rsvp' => $rsvp ] ); ?>
 
-	<?php $this->template( 'v2/rsvp/ari/form/guest-template', [ 'rsvp' => $rsvp ] ); ?>
+	<?php $this->template( 'v2/commerce/rsvp/ari/form/guest-template', [ 'rsvp' => $rsvp ] ); ?>
 
 </div>

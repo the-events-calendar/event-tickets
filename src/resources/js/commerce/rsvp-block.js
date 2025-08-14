@@ -272,7 +272,6 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-		console.log( 'RSVP Block: Initializing.' );
 		$document.on( 'afterSetup.tribeTicketsRsvp', tribe.tickets.rsvp.manager.selectors.container, obj.init );
 	};
 

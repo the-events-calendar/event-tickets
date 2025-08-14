@@ -3,7 +3,7 @@
  * This template renders the RSVP Attendee Registration form fields.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari/form/fields/meta.php
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/ari/form/fields/meta.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
