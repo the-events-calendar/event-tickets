@@ -30,6 +30,7 @@ use TEC\Common\REST\TEC\V1\Traits\Delete_Entity_Response;
 use TEC\Common\REST\TEC\V1\Traits\Read_Entity_Response;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Ticket_Upsert;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Filtered_Ticket_Params;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Parent_Post_Read_Check;
 use InvalidArgumentException;
 
 /**
@@ -45,6 +46,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	use Delete_Entity_Response;
 	use With_Filtered_Ticket_Params;
 	use With_Ticket_Upsert;
+	use With_Parent_Post_Read_Check;
 
 	/**
 	 * Returns the base path for the endpoint.

@@ -35,6 +35,7 @@ use TEC\Common\REST\TEC\V1\Parameter_Types\Definition_Parameter;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Tickets_ORM;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Filtered_Ticket_Params;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Ticket_Upsert;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Parent_Post_Read_Check;
 
 /**
  * Archive tickets endpoint for the TEC REST API V1.
@@ -48,6 +49,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	use With_Tickets_ORM;
 	use With_Filtered_Ticket_Params;
 	use With_Ticket_Upsert;
+	use With_Parent_Post_Read_Check;
 
 	/**
 	 * Returns the model class.
