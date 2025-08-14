@@ -32,7 +32,7 @@ trait With_Ticket_Upsert {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function create( array $params = [] ): WP_REST_Response {
-		return $this->upsert( $params, 'create' );
+		return $this->upsert( $params, _x( 'create', 'This is being used as a verb.', 'event-tickets' ) );
 	}
 
 	/**
@@ -68,7 +68,7 @@ trait With_Ticket_Upsert {
 			);
 		}
 
-		return $this->upsert( compact( 'post_params', 'ticket_params' ), 'update' );
+		return $this->upsert( compact( 'post_params', 'ticket_params' ), _x( 'update', 'This is being used as a verb.', 'event-tickets' ) );
 	}
 
 	/**
