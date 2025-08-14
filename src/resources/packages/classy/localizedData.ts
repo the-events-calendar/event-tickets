@@ -1,4 +1,11 @@
 import { LocalizedData, Settings, ETClassyGlobal, CurrencySettings } from './types/LocalizedData';
+import { TecGlobal } from '@tec/common/classy/types/LocalizedData';
+
+declare global {
+	interface Window {
+		tec: TecGlobal;
+	}
+}
 
 /**
  * Returns the default localized data.

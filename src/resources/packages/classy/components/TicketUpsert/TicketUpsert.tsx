@@ -125,7 +125,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				setSaveInProgress( false );
 				setTicketUpsertError( error );
 			} );
-	}, [ confirmEnabled, currentValues ] );
+	}, [ confirmEnabled, currentValues, onSave ] );
 
 	const onDeleteClicked = useCallback( (): void => {
 		TicketApi.deleteTicket( currentValues.id )
@@ -138,7 +138,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				setSaveInProgress( false );
 				setTicketUpsertError( error );
 			} );
-	}, [ currentValues ] );
+	}, [ currentValues, onDelete ] );
 
 	return (
 		<div className="classy-root">
