@@ -16,7 +16,7 @@ use TEC\Common\REST\TEC\V1\Parameter_Types\Date_Time;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Number;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
-use TEC\Common\REST\TEC\V1\Parameter_Types\Text;\
+use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
