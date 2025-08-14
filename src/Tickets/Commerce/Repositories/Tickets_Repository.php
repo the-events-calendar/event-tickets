@@ -104,7 +104,15 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'sale_price_start_date', Ticket::$sale_price_start_date_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_end_date', Ticket::$sale_price_end_date_key );
 		$this->add_simple_meta_schema_entry( 'capacity', $ticket_handler->key_capacity );
-		$this->add_simple_meta_schema_entry( 'attendee_collection', '_tribe_tickets_ar_iac' );
+
+		/**
+		 * Filters the schema for the tickets repository.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Repository $this The repository object.
+		 */
+		do_action( 'tec_tickets_commerce_repository_ticket_schema', $this );
 	}
 
 	/**

@@ -94,15 +94,6 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( '2025-06-30' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' );
 
 		$properties[] = (
-			new Text(
-				'attendee_collection',
-				fn() => __( 'The attendee collection setting for the ticket', 'event-tickets' ),
-				'none',
-				[ 'none', 'allowed', 'required' ]
-			)
-		)->set_example( 'allowed' );
-
-		$properties[] = (
 			new Positive_Integer(
 				'capacity',
 				fn() => __( 'The capacity of the ticket', 'event-tickets' ),
