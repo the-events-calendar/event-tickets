@@ -149,7 +149,9 @@ trait With_Filtered_Ticket_Params {
 			'ticket_sale_end_date'    => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
 		];
 
-		$new_params['ticket_sale_price'] = maybe_unserialize( $new_params['ticket_sale_price'] );
+		$new_params['ticket_sale_price']      = maybe_unserialize( $new_params['ticket_sale_price'] );
+		$new_params['ticket_sale_start_date'] = is_numeric( $new_params['ticket_sale_start_date'] ) ? gmdate( 'Y-m-d', (int) $new_params['ticket_sale_start_date'] ) : $new_params['ticket_sale_start_date'];
+		$new_params['ticket_sale_end_date']   = is_numeric( $new_params['ticket_sale_end_date'] ) ? gmdate( 'Y-m-d', (int) $new_params['ticket_sale_end_date'] ) : $new_params['ticket_sale_end_date'];
 
 		if ( $new_params['ticket_sale_price'] instanceof Value ) {
 			$new_params['ticket_sale_price'] = $new_params['ticket_sale_price']->get_decimal();
