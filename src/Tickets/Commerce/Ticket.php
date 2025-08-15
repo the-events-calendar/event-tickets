@@ -263,7 +263,7 @@ class Ticket extends Ticket_Data {
 			'capability_type' => 'post',
 			'has_archive'     => false,
 			'hierarchical'    => false,
-			'show_in_rest'    => true,
+			'show_in_rest'    => false,
 		];
 
 		/**
