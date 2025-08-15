@@ -111,41 +111,11 @@
         "sku": "TEST-TKT-{POST_ID}"
     },
     {
-        "id": {TICKET_ID},
-        "date": "2025-06-13T17:25:00",
-        "date_gmt": "2025-06-13T17:25:00",
-        "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
-        },
-        "modified": "2025-06-13T17:25:00",
-        "modified_gmt": "2025-06-13T17:25:00",
-        "slug": "test-tc-ticket-for-{POST_ID}",
-        "status": "publish",
-        "type": "tec_tc_ticket",
-        "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
-        "title": {
-            "rendered": "Test TC ticket for {POST_ID}"
-        },
-        "content": {
-            "rendered": "",
-            "protected": false
-        },
-        "template": "",
-        "description": "Test TC ticket description for {POST_ID}",
-        "on_sale": false,
-        "sale_price": null,
-        "price": 40,
-        "regular_price": 40,
-        "show_description": true,
-        "start_date": "2020-01-02 08:00:00",
-        "end_date": "2050-03-01 20:00:00",
-        "sale_price_start_date": null,
-        "sale_price_end_date": null,
-        "event_id": {POST_ID},
-        "manage_stock": true,
-        "stock": 100,
-        "sold": 0,
-        "sku": "TEST-TKT-{POST_ID}"
+        "code": "rest_forbidden",
+        "message": "Sorry, you are not allowed to do that.",
+        "data": {
+            "status": 401
+        }
     },
     {
         "id": {TICKET_ID},

@@ -51,7 +51,15 @@ trait With_Parent_Post_Read_Check {
 				return false;
 			}
 
-			return $this->is_post_readable_by_request( get_post( $parent_post_id ), $request );
+			$parent_post = get_post( $parent_post_id );
+
+			$rest_controller = new WP_REST_Posts_Controller( $parent_post->post_type );
+
+			if ( empty( $parent_post->post_password ) ) {
+				return $rest_controller->check_read_permission( $parent_post );
+			}
+
+			return $rest_controller->can_access_password_content( $parent_post, $request ) && $rest_controller->check_read_permission( $parent_post );
 		}
 
 		// Collection/list requests: allow if endpoint is publicly readable or user has capability.
@@ -72,8 +80,14 @@ trait With_Parent_Post_Read_Check {
 		foreach ( $posts as $post ) {
 			$ticket_object   = Tickets::load_ticket_object( (int) $post->ID );
 			$parent_post_id  = $ticket_object->get_event_id();
-			$rest_controller = new WP_REST_Posts_Controller( get_post_type( $parent_post_id ) );
-			if ( ! $rest_controller->check_read_permission( get_post( $parent_post_id ) ) ) {
+			$parent_post     = get_post( $parent_post_id );
+			$rest_controller = new WP_REST_Posts_Controller( $parent_post->post_type );
+
+			if ( ! $rest_controller->check_read_permission( $parent_post ) ) {
+				continue;
+			}
+
+			if ( ! empty( $parent_post->post_password ) && ! $rest_controller->can_access_password_content( $parent_post, $this->get_request() ) ) {
 				continue;
 			}
 
