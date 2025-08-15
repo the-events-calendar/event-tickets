@@ -12,7 +12,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\REST\TEC\V1\Traits;
 
 use WP_REST_Response;
-use TEC\Tickets\Commerce\Module;
 
 /**
  * Trait With_Ticket_Upsert.
