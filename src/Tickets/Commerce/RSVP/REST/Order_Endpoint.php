@@ -460,7 +460,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// Handle Event Tickets logic.
-		$hide_attendee_list_optout = false;
+		$hide_attendee_list_optout = true;
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
