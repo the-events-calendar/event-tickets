@@ -59,6 +59,7 @@ class Hooks extends Controller_Contract {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		add_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
 	}
 
 	/**
@@ -72,6 +73,7 @@ class Hooks extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ] );
 		remove_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ] );
+		remove_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
 	}
 
 	/**
@@ -86,6 +88,23 @@ class Hooks extends Controller_Contract {
 	 */
 	public function filter_orders_repository_schema( array $schema = [], ?Tribe__Repository $repository = null ) {
 		return tribe( Order::class )->filter_schema( $schema, $repository );
+	}
+
+	/**
+	 * Filter the display of the billing fields.
+	 *
+	 * @since 5.25.1.1
+	 *
+	 * @param bool $value Whether the billing fields should be displayed.
+	 *
+	 * @return bool
+	 */
+	public function filter_display_billing_fields( bool $value ): bool {
+		if ( $value ) {
+			return $value;
+		}
+
+		return $this->gateway->is_enabled();
 	}
 
 	/**
