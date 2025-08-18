@@ -217,10 +217,9 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			fn() => __( 'Limit results to those matching a string.', 'event-tickets' ),
 		);
 
-		$collection[] = new Array_Of_Type(
-			'events',
+		$collection[] = new Positive_Integer(
+			'event',
 			fn() => __( 'Limit result set to tickets assigned to specific events.', 'event-tickets' ),
-			Positive_Integer::class,
 		);
 
 		$collection[] = new Text(
