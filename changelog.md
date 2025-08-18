@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.26.0] 2025-08-19
+
+* Performance - Improving TicketsCommerce Checkout by offloading tasks to Shepherd. [TCMN-185]
+* Feature - Introducing new REST endpoints for managing your Tickets.
+* Language - 74 new strings added, 4 updated, 3 fuzzied, and 0 obsoleted.
+
 ### [5.25.1.1] 2025-07-30
 
 * Fix - Adds support for SCA (Strong Customer Authentication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
