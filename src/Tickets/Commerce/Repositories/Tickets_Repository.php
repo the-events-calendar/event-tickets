@@ -108,7 +108,7 @@ class Tickets_Repository extends Tribe__Repository {
 		/**
 		 * Filters the schema for the tickets repository.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param Tribe__Repository $this The repository object.
 		 */

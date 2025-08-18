@@ -56,7 +56,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Which meta holds the data for the ticket start date.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Which meta holds the data for the ticket end date.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Which meta holds the data for the ticket start time.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @var string
 	 */

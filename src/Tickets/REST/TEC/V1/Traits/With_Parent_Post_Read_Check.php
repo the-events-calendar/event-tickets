@@ -2,7 +2,7 @@
 /**
  * Trait With_Parent_Post_Read_Check
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -18,7 +18,7 @@ use WP_REST_Posts_Controller;
 /**
  * Trait With_Parent_Post_Read_Check
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -26,7 +26,7 @@ trait With_Parent_Post_Read_Check {
 	/**
 	 * Returns whether the user can read the ticket.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -69,7 +69,7 @@ trait With_Parent_Post_Read_Check {
 	/**
 	 * Formats a collection of posts into a collection of post entities.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array $posts The posts to format.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Trait to provide ticket upsert.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -16,7 +16,7 @@ use WP_REST_Response;
 /**
  * Trait With_Ticket_Upsert.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -24,7 +24,7 @@ trait With_Ticket_Upsert {
 	/**
 	 * Creates a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array $params The parameters for the ticket.
 	 *
@@ -37,7 +37,7 @@ trait With_Ticket_Upsert {
 	/**
 	 * Updates a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array $params The parameters for the ticket.
 	 *
@@ -75,7 +75,7 @@ trait With_Ticket_Upsert {
 	 *
 	 * This method will create a ticket if it doesn't exist, or update it if it does.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array  $params    The parameters for the ticket.
 	 * @param string $operation The operation to perform: create or update.

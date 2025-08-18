@@ -2,7 +2,7 @@
 /**
  * Controller for the Tickets REST API.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST
  */
@@ -18,7 +18,7 @@ use TEC\Tickets\REST\TEC\V1\Controller as V1_Controller;
 /**
  * Controller for the Tickets REST API.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST
  */
@@ -26,7 +26,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return void
 	 */
@@ -37,7 +37,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the filters and actions hooks added by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return void
 	 */

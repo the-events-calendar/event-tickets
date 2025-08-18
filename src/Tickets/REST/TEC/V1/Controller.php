@@ -2,7 +2,7 @@
 /**
  * REST TEC V1 Controller for Event Tickets.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1
  */
@@ -16,7 +16,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * REST TEC V1 Controller for Event Tickets.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1
  */
@@ -24,7 +24,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the controller.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 */
 	public function do_register(): void {
 		if ( ! tec_tickets_commerce_is_enabled() ) {
@@ -37,7 +37,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the controller.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 */
 	public function unregister(): void {
 		if ( $this->container->isBound( Endpoints::class ) ) {

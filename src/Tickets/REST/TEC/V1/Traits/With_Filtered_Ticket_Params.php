@@ -2,7 +2,7 @@
 /**
  * Trait to provide filtered ticket params.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 /**
  * Trait With_Filtered_Ticket_Params.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -27,7 +27,7 @@ trait With_Filtered_Ticket_Params {
 	/**
 	 * Filters the upsert params.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -189,7 +189,7 @@ trait With_Filtered_Ticket_Params {
 	/**
 	 * Filters the update params.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -202,7 +202,7 @@ trait With_Filtered_Ticket_Params {
 	/**
 	 * Filters the create params.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param array $params The params to filter.
 	 *

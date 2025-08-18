@@ -2,7 +2,7 @@
 /**
  * Ticket definition provider for the TEC REST API.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Documentation
  */
@@ -23,7 +23,7 @@ use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
 /**
  * Ticket definition provider for the TEC REST API.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Documentation
  */
@@ -31,7 +31,7 @@ class Ticket_Definition extends Definition {
 	/**
 	 * Returns the type of the definition.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -42,7 +42,7 @@ class Ticket_Definition extends Definition {
 	/**
 	 * Returns the priority of the definition.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return int
 	 */
@@ -53,7 +53,7 @@ class Ticket_Definition extends Definition {
 	/**
 	 * Returns an array in the format used by Swagger.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array An array description of a Swagger supported component.
 	 */
@@ -191,7 +191,7 @@ class Ticket_Definition extends Definition {
 		/**
 		 * Filters the Swagger documentation generated for a ticket in the TEC REST API.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param array             $documentation An associative PHP array in the format supported by Swagger.
 		 * @param Ticket_Definition $this          The Ticket_Definition instance.
@@ -203,7 +203,7 @@ class Ticket_Definition extends Definition {
 		/**
 		 * Filters the Swagger documentation generated for a definition in the TEC REST API.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param array             $documentation An associative PHP array in the format supported by Swagger.
 		 * @param Ticket_Definition $this          The Ticket_Definition instance.

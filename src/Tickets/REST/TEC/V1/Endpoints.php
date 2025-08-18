@@ -2,7 +2,7 @@
 /**
  * Endpoints Controller class.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1
  */
@@ -24,7 +24,7 @@ use TEC\Tickets\REST\TEC\V1\Documentation\Ticket_Request_Body_Definition;
 /**
  * Endpoints Controller class.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1
  */
@@ -32,7 +32,7 @@ class Endpoints extends Endpoints_Controller {
 	/**
 	 * Returns the endpoints to register.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return Endpoint_Interface[]
 	 */
@@ -46,7 +46,7 @@ class Endpoints extends Endpoints_Controller {
 	/**
 	 * Returns the tags to register.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return Tag_Interface[]
 	 */
@@ -59,7 +59,7 @@ class Endpoints extends Endpoints_Controller {
 	/**
 	 * Returns the definitions to register.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return Definition_Interface[]
 	 */

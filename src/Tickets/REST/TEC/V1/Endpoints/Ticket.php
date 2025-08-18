@@ -2,7 +2,7 @@
 /**
  * Single ticket endpoint for the TEC REST API V1.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Endpoints
  */
@@ -37,7 +37,7 @@ use InvalidArgumentException;
 /**
  * Single ticket endpoint for the TEC REST API V1.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Endpoints
  */
@@ -53,7 +53,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the base path for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -64,7 +64,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the path parameters for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return PathArgumentCollection
 	 */
@@ -82,7 +82,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the model class.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns whether the guest can read the object.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return bool
 	 */
@@ -104,7 +104,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the post type of the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -115,7 +115,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the schema for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array
 	 */
@@ -131,7 +131,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the arguments for the read request.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return QueryArgumentCollection
 	 */
@@ -301,7 +301,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the tags for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array
 	 */
@@ -312,7 +312,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * Returns the operation ID for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param string $operation The operation to get the operation ID for.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Archive tickets endpoint for the TEC REST API V1.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Endpoints
  */
@@ -41,7 +41,7 @@ use TEC\Tickets\REST\TEC\V1\Traits\With_TC_Provider;
 /**
  * Archive tickets endpoint for the TEC REST API V1.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Endpoints
  */
@@ -56,7 +56,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the model class.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -67,7 +67,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the base path of the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -78,7 +78,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns whether the guest can read the object.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return bool
 	 */
@@ -89,7 +89,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the post type of the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -100,7 +100,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the schema for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array
 	 */
@@ -190,7 +190,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the arguments for the read request.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return QueryArgumentCollection
 	 */
@@ -335,7 +335,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the tags for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array
 	 */
@@ -346,7 +346,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * Returns the operation ID for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param string $operation The operation to get the operation ID for.
 	 *

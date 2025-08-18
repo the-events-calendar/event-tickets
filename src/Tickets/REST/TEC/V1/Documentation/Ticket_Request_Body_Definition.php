@@ -2,7 +2,7 @@
 /**
  * Ticket request body definition provider for the TEC REST API.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Documentation
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 /**
  * Ticket request body definition provider for the TEC REST API.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Documentation
  */
@@ -30,7 +30,7 @@ class Ticket_Request_Body_Definition extends Definition {
 	/**
 	 * Returns the type of the definition.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -41,7 +41,7 @@ class Ticket_Request_Body_Definition extends Definition {
 	/**
 	 * Returns the priority of the definition.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return int
 	 */
@@ -52,7 +52,7 @@ class Ticket_Request_Body_Definition extends Definition {
 	/**
 	 * Returns the documentation for the definition.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array
 	 */
@@ -164,7 +164,7 @@ class Ticket_Request_Body_Definition extends Definition {
 		/**
 		 * Filters the Swagger documentation generated for a ticket request body in the TEC REST API.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param array                          $documentation An associative PHP array in the format supported by Swagger.
 		 * @param Ticket_Request_Body_Definition $this          The Ticket_Request_Body_Definition instance.
@@ -192,7 +192,7 @@ class Ticket_Request_Body_Definition extends Definition {
 		/**
 		 * Filters the Swagger documentation generated for a definition in the TEC REST API.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param array                          $documentation An associative PHP array in the format supported by Swagger.
 		 * @param Ticket_Request_Body_Definition $this          The Ticket_Request_Body_Definition instance.

@@ -209,7 +209,7 @@ define( 'WP_DEBUG_DISPLAY', false );
 
 ## Version History
 
-- **TBD** - Initial Event Tickets REST API implementation
+- **5.26.0** - Initial Event Tickets REST API implementation
   - Ticket endpoints (collection and single)
   - Stock management support
   - Sale price functionality

@@ -2,7 +2,7 @@
 /**
  * Models a Ticket.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\Models\Post_Types
  */
@@ -20,7 +20,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Ticket
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\Models\Post_Types
  */
@@ -155,7 +155,7 @@ class Ticket extends Base {
 	/**
 	 * Returns the properties to add to the ticket.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array<string,bool>
 	 */
@@ -163,7 +163,7 @@ class Ticket extends Base {
 		/**
 		 * Filters the properties to add to the ticket.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param array<string,bool> $properties The properties to add to the ticket.
 		 *

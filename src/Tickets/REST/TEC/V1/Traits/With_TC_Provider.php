@@ -2,7 +2,7 @@
 /**
  * Trait to provide ticket provider.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -17,7 +17,7 @@ use Tribe__Tickets__Tickets as Ticket_Provider;
 /**
  * Trait With_TC_Provider.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -25,7 +25,7 @@ trait With_TC_Provider {
 	/**
 	 * Returns the ticket provider.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return Ticket_Provider
 	 */

@@ -2,7 +2,7 @@
 /**
  * Tickets tag for the TEC REST API V1.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Tags
  */
@@ -16,7 +16,7 @@ use TEC\Common\REST\TEC\V1\Abstracts\Tag;
 /**
  * Tickets tag for the TEC REST API V1.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Tags
  */
@@ -24,7 +24,7 @@ class Tickets_Tag extends Tag {
 	/**
 	 * Returns the tag name.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string
 	 */
@@ -35,7 +35,7 @@ class Tickets_Tag extends Tag {
 	/**
 	 * Returns the tag.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array
 	 */
@@ -49,7 +49,7 @@ class Tickets_Tag extends Tag {
 	/**
 	 * Returns the priority of the tag.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return int
 	 */

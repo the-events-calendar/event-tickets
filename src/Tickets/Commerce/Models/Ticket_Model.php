@@ -30,7 +30,7 @@ class Ticket_Model extends Base {
 			/**
 			 * Filters the properties to add to a ticket model in the REST API.
 			 *
-			 * @since TBD
+			 * @since 5.26.0
 			 *
 			 * @param array<string,mixed> $properties Properties to add to the model.
 			 */
@@ -77,7 +77,7 @@ class Ticket_Model extends Base {
 	/**
 	 * Get properties to add to the model.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return array<string,mixed> Properties to add to the model.
 	 */
@@ -103,7 +103,7 @@ class Ticket_Model extends Base {
 		/**
 		 * Filters the properties to add to a ticket model in the REST API.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param array<string,mixed> $properties Properties to add to the model.
 		 */

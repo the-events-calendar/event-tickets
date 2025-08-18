@@ -2,7 +2,7 @@
 /**
  * SendTicketEmail class.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package TEC\Tickets\Commerce\BackgroundJobs;
  */
@@ -18,7 +18,7 @@ use InvalidArgumentException;
 /**
  * Pigeon's email task.
  *
- * @since TBD
+ * @since 5.26.0
  *
  * @package StellarWP\Pigeon\Tasks;
  */
@@ -26,7 +26,7 @@ class SendTicketEmail extends Task_Abstract {
 	/**
 	 * The email task's constructor.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -40,7 +40,7 @@ class SendTicketEmail extends Task_Abstract {
 	/**
 	 * Processes the email task.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 */
 	public function process(): void {
 		tribe( Email::class )->send_tickets_email( ...$this->get_args() );
@@ -48,7 +48,7 @@ class SendTicketEmail extends Task_Abstract {
 		/**
 		 * Fires when the email task is processed.
 		 *
-		 * @since TBD
+		 * @since 5.26.0
 		 *
 		 * @param SendTicketEmail $task The email task that was processed.
 		 */
@@ -58,7 +58,7 @@ class SendTicketEmail extends Task_Abstract {
 	/**
 	 * Validates the email task's arguments.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @throws InvalidArgumentException If the email task's arguments are invalid.
 	 */
@@ -73,7 +73,7 @@ class SendTicketEmail extends Task_Abstract {
 	/**
 	 * Gets the email task's hook prefix.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return string The email task's hook prefix.
 	 */
@@ -84,7 +84,7 @@ class SendTicketEmail extends Task_Abstract {
 	/**
 	 * Gets the maximum number of retries.
 	 *
-	 * @since TBD
+	 * @since 5.26.0
 	 *
 	 * @return int The maximum number of retries.
 	 */
