@@ -77,15 +77,15 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 4.11.2
 	 *
-	 * @param array            $namespace_map Indexed array containing the namespace as the key and path to `strpos`.
-	 * @param string           $path          Path we will do the `strpos` to validate a given namespace.
-	 * @param Tribe__Template  $template      Current instance of the template class.
+	 * @param array           $namespace_map Indexed array containing the namespace as the key and path to `strpos`.
+	 * @param string          $path          Path we will do the `strpos` to validate a given namespace.
+	 * @param Tribe__Template $template      Current instance of the template class.
 	 *
 	 * @return array  Namespace map after adding Pro to the list.
 	 */
 	public function filter_add_template_origin_namespace( $namespace_map, $path, $template ) {
 		/** @var Plugin $main */
-		$main = tribe( 'tickets.main' );
+		$main                                       = tribe( 'tickets.main' );
 		$namespace_map[ $main->template_namespace ] = $main->plugin_path;
 		return $namespace_map;
 	}
@@ -97,7 +97,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @param array    $props An associative array of all the properties that will be set on the "decorated" post
 	 *                        object.
-	 * @param \WP_Post $post  The post object handled by the class.
+	 * @param \WP_Post $event The post object handled by the class.
 	 *
 	 * @return array The model properties. This value might be cached.
 	 */
@@ -143,6 +143,12 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			return;
 		}
 
-		Tickets::regenerate_caches( $post_id );
+		$post_id = (int) $post_id;
+
+		if ( $post_id <= 0 ) {
+			return;
+		}
+
+		Tickets::regenerate_caches( (int) $post_id );
 	}
 }
