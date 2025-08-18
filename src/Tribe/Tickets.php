@@ -4684,7 +4684,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return void This module is removed from the list of active modules, if it was active.
 		 */
 		public function deactivate(): void {
-			unset( self::$active_modules[ get_class( $this ) ] );
+			$class_name = get_class( $this );
+			unset( self::$active_modules[ $class_name ] );
 		}
 
 		/**
