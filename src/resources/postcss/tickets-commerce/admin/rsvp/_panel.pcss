@@ -213,4 +213,25 @@
 	input[type="checkbox"].tribe-common-switch__input:hover:not(:checked):not(:disabled) + .tribe-common-switch__label {
 		border-color: #2e709d;
 	}
+
+	.tec-tickets-rsvp-bottom {
+		display: grid;
+		gap: var(--tec-spacer-1);
+		grid-template-columns:1fr 1fr;
+		grid-template-rows:1fr 1fr
+	}
+
+	.tec-tickets-rsvp-buttons-left {
+		display: flex;
+		grid-column: 1;
+		grid-row: 1;
+		justify-content: flex-start;
+	}
+
+	.tec-tickets-rsvp-buttons-right {
+		display: flex;
+		grid-column: 2;
+		grid-row: 1;
+		justify-content: flex-end
+	}
 }

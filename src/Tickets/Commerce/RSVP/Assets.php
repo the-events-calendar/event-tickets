@@ -33,11 +33,11 @@ class Assets extends Service_Provider {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		tribe_asset(
+		tec_asset(
 			$tickets_main,
 			'tribe-tickets-admin-tickets',
 			'commerce/tickets.js',
-			[ 'jquery', ],
+			[ 'jquery' ],
 			'admin_enqueue_scripts',
 			[
 				'localize' => [

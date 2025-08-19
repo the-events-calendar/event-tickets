@@ -123,6 +123,16 @@ class Controller extends Controller_Contract {
 		$this->container->make( Order_Endpoint::class )->register();
 	}
 
+	/**
+	 * Saves RSVP data when a ticket is saved.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id      The post ID of the event.
+	 * @param object $ticket       The ticket object.
+	 * @param array  $raw_data     The raw ticket data.
+	 * @param string $ticket_class The ticket class name.
+	 */
 	public function save_rsvp( $post_id, $ticket, $raw_data, $ticket_class ) {
 		$this->container->make( Ticket::class )->save_rsvp( $post_id, $ticket, $raw_data, $ticket_class );
 	}
@@ -140,6 +150,17 @@ class Controller extends Controller_Contract {
 		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10, 2 );
 	}
 
+	/**
+	 * Filters RSVP tickets for legacy compatibility.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $return    The return value to filter.
+	 * @param int   $event_id  The event ID.
+	 * @param int   $ticket_id The ticket ID.
+	 *
+	 * @return mixed The filtered return value.
+	 */
 	public function filter_rsvp( $return, $event_id, $ticket_id ) {
 		return $this->container->make( Ticket::class )->filter_rsvp( $return, $event_id, $ticket_id );
 	}
@@ -162,13 +183,16 @@ class Controller extends Controller_Contract {
 			return $content;
 		}
 
+		$must_login = ! is_user_logged_in() && $this->login_required();
+
 		// Create the RSVP template args.
 		$rsvp_template_args = [
 			'rsvp'          => $rsvp,
 			'post_id'       => $post->ID,
 			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid(),
 			'step'          => '',
-			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : []
+			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : [],
+			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
 		// Render the RSVP template and append to existing content
@@ -364,5 +388,18 @@ class Controller extends Controller_Contract {
 				'attendees_url'   => $attendees_url,
 			]
 		);
+	}
+
+	/**
+	 * Indicates if we currently require users to be logged in before they can obtain tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether login is required for RSVP tickets.
+	 */
+	protected function login_required() {
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
+
+		return in_array( 'event-tickets_rsvp', $requirements, true );
 	}
 }

@@ -520,7 +520,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$status_counts = [];
 		$is_global     = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
 		$sold_label    = __( 'issued', 'event-tickets' );
-		$ticket_type = $ticket->type();
+		$ticket_type   = $ticket->type();
 
 		if ( ! empty( $sold_label_override ) ) {
 			$sold_label = $sold_label_override;

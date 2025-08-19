@@ -151,27 +151,31 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 				?>
 			</div>
 			<div class="tec-tickets-rsvp-bottom">
-				<input
-					type="button"
-					id="tc_ticket_form_save"
-					class="button-primary tribe-validation-submit"
-					name="tc_ticket_form_save"
-					value="<?php echo esc_attr_x( 'Save', 'Button text to save RSVP settings in admin panel.', 'event-tickets' ); ?>"
-				/>
 
-				<?php
-				/**
-				 * Allows for the insertion of additional content into the ticket edit form bottom (buttons) section
-				 *
-				 * @since TBD
-				 *
-				 * @param int Post ID
-				 * @param int Ticket ID
-				 */
-				do_action( 'tec_event_tickets_rsvp_bottom', $post_id, $rsvp_id );
-				?>
+				<div class="tec-tickets-rsvp-buttons-left">
+					<div class="tribe-common tribe-dependent" data-depends="#rsvp_id" data-condition-not-empty>
+						<input
+							type="button"
+							id="tc_ticket_form_remove"
+							class="button-primary tribe-validation-submit"
+							name="tc_ticket_form_remove"
+							value="<?php echo esc_attr_x( 'Remove RSVP', 'Button text to remove RSVP settings in admin panel.', 'event-tickets' ); ?>"
+						/>
+					</div>
+					<?php
+					/**
+					 * Allows for the insertion of additional content into the ticket edit form bottom (buttons) section
+					 *
+					 * @since TBD
+					 *
+					 * @param int Post ID
+					 * @param int Ticket ID
+					 */
+					do_action( 'tec_event_tickets_rsvp_bottom', $post_id, $rsvp_id );
+					?>
+				</div>
 
-				<div id="ticket_bottom_right">
+				<div class="tec-tickets-rsvp-buttons-right">
 					<?php
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form bottom (links on right)
@@ -184,6 +188,14 @@ $ticket_type = $ticket_type ?? Constants::TC_RSVP_TYPE;
 					 */
 					do_action( 'tec_event_tickets_rsvp_bottom_right', $post_id, $rsvp_id );
 					?>
+
+					<input
+						type="button"
+						id="tc_ticket_form_save"
+						class="button-primary tribe-validation-submit"
+						name="tc_ticket_form_save"
+						value="<?php echo esc_attr_x( 'Save', 'Button text to save RSVP settings in admin panel.', 'event-tickets' ); ?>"
+					/>
 				</div>
 			</div>
 		</div>
