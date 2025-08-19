@@ -88,7 +88,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Insert a previous session in the database for the token and object ID.
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Assign an UUID to the post.
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
@@ -146,7 +146,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 23, 'test-token' );
 		// Create a previous session for object ID 23 in the database.
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Assign an UUID to the post.
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
@@ -211,7 +211,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		// Insert a previous session in the database for the token and object ID.
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Mock the remote request to cancel the reservations.
 		$this->mock_wp_remote(
@@ -290,7 +290,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 23, 'test-token-1' );
 		$sessions = tribe( Sessions::class );
 		// The session for object 23 will expire in 100 seconds.
-		$sessions->upsert( 'test-token-1', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token-1', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		$this->assertEquals(
@@ -302,10 +302,10 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 89, 'test-token-2' );
 		$session->add_entry( 66, 'test-token-2' );
 		// The session for object 89 will expire in 30 seconds.
-		$sessions->upsert( 'test-token-2', 89, time() + 30 );
+		$sessions->insert_or_update( 'test-token-2', 89, time() + 30 );
 		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		// The session for object 66 will expire in 300 seconds.
-		$sessions->upsert( 'test-token-3', 66, time() + 300 );
+		$sessions->insert_or_update( 'test-token-3', 66, time() + 300 );
 		$sessions->update_reservations( 'test-token-3', $this->create_mock_reservations_data( [ 66 ], 2 ) );
 
 		$this->assertEquals(
@@ -323,21 +323,21 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$session->add_entry( 23, 'test-token-1' );
 		// The session for object 23 will expire in 100 seconds.
-		$sessions->upsert( 'test-token-1', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token-1', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token-1', [ '1234567890', '0987654321' ] );
 
 		$this->assertEquals( [ 'test-token-1', 23 ], $session->get_session_token_object_id() );
 
 		// The session for object 89 will expire in 30 seconds.
 		$session->add_entry( 89, 'test-token-2' );
-		$sessions->upsert( 'test-token-2', 89, time() + 30 );
+		$sessions->insert_or_update( 'test-token-2', 89, time() + 30 );
 		$sessions->update_reservations( 'test-token-2', [ '1234567890', '0987654321' ] );
 
 		$this->assertEquals( [ 'test-token-2', 89 ], $session->get_session_token_object_id() );
 
 		// The session for object 66 will expire in 300 seconds.
 		$session->add_entry( 66, 'test-token-3' );
-		$sessions->upsert( 'test-token-3', 66, time() + 300 );
+		$sessions->insert_or_update( 'test-token-3', 66, time() + 300 );
 		$sessions->update_reservations( 'test-token-3', [ '1234567890', '0987654321' ] );
 
 		$this->assertEquals( [ 'test-token-2', 89 ], $session->get_session_token_object_id() );
@@ -356,12 +356,12 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session = tribe( Session::class );
 
 		$session->add_entry( 23, 'test-token-1' );
-		$sessions->upsert( 'test-token-1', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token-1', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 
 		$session->add_entry( 89, 'test-token-2' );
-		$sessions->upsert( 'test-token-2', 89, time() + 30 );
+		$sessions->insert_or_update( 'test-token-2', 89, time() + 30 );
 		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		update_post_meta( 89, Meta::META_KEY_UUID, 'test-post-uuid-2' );
 
@@ -408,12 +408,12 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session = tribe( Session::class );
 
 		$session->add_entry( 23, 'test-token-1' );
-		$sessions->upsert( 'test-token-1', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token-1', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 
 		$session->add_entry( 89, 'test-token-2' );
-		$sessions->upsert( 'test-token-2', 89, time() + 30 );
+		$sessions->insert_or_update( 'test-token-2', 89, time() + 30 );
 		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		update_post_meta( 89, Meta::META_KEY_UUID, 'test-post-uuid-2' );
 
@@ -484,7 +484,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session = tribe( Session::class );
 
 		$session->add_entry( $post_id, 'test-token-1' );
-		$sessions->upsert( 'test-token-1', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token-1', $post_id, time() + 100 );
 
 		$mock_reservations_data = $this->create_mock_reservations_data( [ $ticket_1 ], 2 );
 		$sessions->update_reservations( 'test-token-1', $mock_reservations_data );

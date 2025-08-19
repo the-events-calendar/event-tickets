@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.25.1.1\n"
+"Project-Id-Version: Event Tickets 5.26.0\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-30T17:31:25+00:00\n"
+"POT-Creation-Date: 2025-08-18T16:57:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -3834,6 +3834,10 @@ msgstr ""
 
 #: src/Tickets/Commerce/Attendee.php:1092
 msgid "Email not available"
+msgstr ""
+
+#: src/Tickets/Commerce/BackgroundJobs/SendTicketEmail.php:69
+msgid "SendTicketEmail task requires at least 2 unsigned integer arguments."
 msgstr ""
 
 #. translators: %s: property name
@@ -9707,17 +9711,17 @@ msgstr ""
 msgid "Tickets Commerce Success Page"
 msgstr ""
 
-#: src/Tickets/Commerce/Ticket.php:217
+#: src/Tickets/Commerce/Ticket.php:253
 #: src/Tribe/Commerce/PayPal/Main.php:472
 #: src/views/seating/iframe-view.php:41
 msgid "Tickets"
 msgstr ""
 
-#: src/Tickets/Commerce/Ticket.php:219
+#: src/Tickets/Commerce/Ticket.php:255
 msgid "Tickets Commerce Tickets"
 msgstr ""
 
-#: src/Tickets/Commerce/Ticket.php:220
+#: src/Tickets/Commerce/Ticket.php:256
 msgid "Tickets Commerce Ticket"
 msgstr ""
 
@@ -11028,6 +11032,18 @@ msgstr ""
 msgid "Commerce Module invalid"
 msgstr ""
 
+#: src/Tickets/Models/Post_Types/Ticket.php:75
+msgid "Ticket sales have not started yet"
+msgstr ""
+
+#: src/Tickets/Models/Post_Types/Ticket.php:78
+msgid "Ticket sales have ended"
+msgstr ""
+
+#: src/Tickets/Models/Post_Types/Ticket.php:81
+msgid "Sold out"
+msgstr ""
+
 #: src/Tickets/QR/Connector.php:266
 msgid "Permission Error"
 msgstr ""
@@ -11070,6 +11086,337 @@ msgstr ""
 #: src/Tickets/QR/Observer.php:250
 #, php-format
 msgid "The ticket with ID %s was checked in."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:66
+msgid "The description of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:73
+msgid "Whether the ticket is on sale"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:80
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:79
+msgid "The sale price of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:87
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:72
+msgid "The price of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:94
+msgid "The regular price of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:101
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:121
+msgid "Whether to show the ticket description"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:108
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:144
+msgid "The start sale date of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:115
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:151
+msgid "The end sale date of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:122
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:86
+msgid "The start date for the sale price"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:129
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:93
+msgid "The end date for the sale price"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:136
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:65
+msgid "The ID of the post this ticket is associated with. Normally an event-like post."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:143
+msgid "Whether stock is being managed for this ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:150
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:114
+msgid "The stock quantity available"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:157
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:137
+msgid "The type of ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:164
+msgid "The number of tickets sold"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:171
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:158
+msgid "The SKU of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Definition.php:182
+msgid "A ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:100
+msgid "The capacity of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:107
+msgid "The capacity of the event"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:128
+msgid "The stock mode of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Documentation/Ticket_Request_Body_Definition.php:183
+msgid "The request body for the ticket endpoint"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:76
+msgid "The ID of the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:147
+msgid "Retrieve a Ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:148
+msgid "Retrieve a ticket by ID"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:162
+msgid "Returns the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:170
+msgid "The ticket ID is invalid"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:175
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:234
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:280
+msgid "The ticket does not exist"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:199
+msgid "Update a Ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:200
+msgid "Update a ticket by ID"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:205
+msgid "The ticket data to update."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:216
+msgid "Returns the updated ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:224
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:179
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:319
+#: src/Tribe/REST/V1/Endpoints/QR.php:125
+msgid "A required parameter is missing or an input parameter is in the wrong format"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:229
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:275
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:324
+msgid "The request was not authorized"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:239
+msgid "Failed to update the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:250
+msgid "Delete a Ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:251
+msgid "Move a ticket to the trash"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:267
+msgid "Returns the trashed ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:285
+msgid "The ticket has already been trashed"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:290
+msgid "Failed to delete the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:295
+msgid "The ticket does not support trashing. Set force=true to delete"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:123
+msgid "Retrieve Tickets"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:124
+msgid "Returns a list of tickets"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:135
+msgid "The total number of tickets matching the request."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:144
+msgid "The total number of pages for the request."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:153
+msgid ""
+"RFC 5988 Link header for pagination. Contains navigation links with relationships:\n"
+"\t\t\t\t`rel=\"next\"` for the next page (if not on last page),\n"
+"\t\t\t\t`rel=\"prev\"` for the previous page (if not on first page).\n"
+"\t\t\t\tHeader is omitted entirely if there's only one page"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:171
+msgid "Returns the list of tickets"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:184
+msgid "The requested page was not found"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:202
+msgid "The collection page number."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:209
+msgid "Maximum number of items to be returned in result set."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:217
+msgid "Limit results to those matching a string."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:222
+msgid "Limit result set to tickets assigned to specific events."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:227
+msgid "Sort collection by attribute."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:242
+msgid "Order sort attribute ascending or descending."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:252
+msgid "Limit result set to tickets assigned one or more statuses."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:258
+msgid "Limit result set to specific IDs."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:264
+msgid "Ensure result set excludes specific IDs."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:270
+msgid "Include tickets marked as hidden from view."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:294
+msgid "Create a Ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:295
+msgid "Create a new ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:300
+msgid "The ticket data to create."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:311
+msgid "Returns the created ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:329
+msgid "Failed to create the ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Tags/Tickets_Tag.php:45
+msgid "These operations are introduced by Event Tickets."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:54
+msgid "Event ID is required"
+msgstr ""
+
+#. translators: 1) is the name of the parameter.
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:59
+#, php-format
+msgid "The parameter `{%1$s}` is missing."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:64
+msgid "The specified Event ID does not support ticket creation"
+msgstr ""
+
+#. translators: 1) is the name of the parameter.
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:69
+#, php-format
+msgid "The parameter `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:161
+msgid "The ticket price must be a number."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:34
+msgctxt "This is being used as a verb."
+msgid "create"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:55
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:64
+msgid "The ticket could not be updated."
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:70
+msgctxt "This is being used as a verb."
+msgid "update"
+msgstr ""
+
+#. translators: 1) is the operation: create or update.
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:100
+#, php-format
+msgid "Failed to %s ticket."
+msgstr ""
+
+#. translators: 1) is the operation: create or update.
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:118
+#, php-format
+msgid "Failed to %s partial data of the ticket."
+msgstr ""
+
+#. translators: 1) is the operation: create or update.
+#: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:136
+#, php-format
+msgid "Ticket not found after %s."
 msgstr ""
 
 #: src/Tickets/Seating/Admin/Ajax.php:494
@@ -13273,10 +13620,6 @@ msgstr ""
 
 #: src/Tribe/REST/V1/Endpoints/QR.php:119
 msgid "Returns successful check in"
-msgstr ""
-
-#: src/Tribe/REST/V1/Endpoints/QR.php:125
-msgid "A required parameter is missing or an input parameter is in the wrong format"
 msgstr ""
 
 #. Translators: %s is the 'ticket' label (singular, lowercase).

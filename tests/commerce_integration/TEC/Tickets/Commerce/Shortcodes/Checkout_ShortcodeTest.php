@@ -84,7 +84,7 @@ class Checkout_ShortcodeTest extends WPTestCase {
 		$this->ticket_id1 = $this->create_tc_ticket( $this->page_id, 10 );
 		$this->ticket_id2 = $this->create_tc_ticket( $this->page_id, 20 );
 		update_post_meta( $this->ticket_id2, Ticket::$sale_price_checked_key, '1');
-		update_post_meta( $this->ticket_id2, Ticket::$sale_price_key, '10');
+		update_post_meta( $this->ticket_id2, Ticket::$sale_price_key, '8');
 	}
 
 	/**
