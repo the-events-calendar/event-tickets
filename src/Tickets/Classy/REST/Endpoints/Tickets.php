@@ -43,6 +43,7 @@ class Tickets {
 	public function get( Request $request ) {
 		try {
 			// Short-circuit to use the old API.
+			// todo: update this to use the new API when ready.
 			$new_request = clone $request;
 			$new_request->set_route( '/tribe/tickets/v1/tickets' );
 			return rest_get_server()->dispatch( $new_request );
