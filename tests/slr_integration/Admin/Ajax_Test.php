@@ -662,7 +662,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$post_id   = self::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
 		$sessions  = tribe( Sessions::class );
-		$sessions->upsert( 'some-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'some-token', $post_id, time() + 100 );
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -873,7 +873,7 @@ class Ajax_Test extends Controller_Test_Case {
 
 		// Update of reservations succeeds.
 		// Re-insert the token entry in the sessions table, making the update possible.
-		$sessions->upsert( 'some-token', $post_id, time() + 100 );
+		$sessions->insert_or_update( 'some-token', $post_id, time() + 100 );
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		$request_body         = wp_json_encode(
 			[
@@ -911,7 +911,7 @@ class Ajax_Test extends Controller_Test_Case {
 	public function test_clear_reservations(): void {
 		$this->set_up_ajax_request_context( 0 );
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'some-token', self::factory()->post->create(), time() + 100 );
+		$sessions->insert_or_update( 'some-token', self::factory()->post->create(), time() + 100 );
 		$reservations_data = $this->create_mock_reservations_data( [ 23 ], 2 );
 		$sessions->update_reservations( 'some-token', $reservations_data );
 		$post_id = self::factory()->post->create();

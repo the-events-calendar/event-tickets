@@ -18,7 +18,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.25.1.1';
+	const VERSION = '5.26.0';
 
 	/**
 	 * Used to store the version history.
@@ -63,7 +63,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.13.2-dev';
+	protected $min_tec_version = '6.15.0-dev';
 
 	/**
 	 * Name of the provider.
@@ -212,8 +212,8 @@ class Tribe__Tickets__Main {
 
 		$this->maybe_set_common_lib_info();
 
-		add_action( 'plugins_loaded', [ $this, 'should_autoload' ], -1 );
-		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 0 );
+		add_action( 'plugins_loaded', [ $this, 'should_autoload' ], -3 );
+		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], -2 );
 
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_activation' ] );
 		register_deactivation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_deactivation' ] );

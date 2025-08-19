@@ -173,7 +173,7 @@ class Controller_Test extends Controller_Test_Case {
 				$session->add_entry( $event_id, 'test-token' );
 				// Create a session in the database for user on the event.
 				$sessions = tribe( Sessions::class );
-				$sessions->upsert( 'test-token', $event_id, time() + DAY_IN_SECONDS );
+				$sessions->insert_or_update( 'test-token', $event_id, time() + DAY_IN_SECONDS );
 				$sessions->update_reservations(
 					'test-token',
 					$this->create_mock_reservations_data( [ $ticket_id ], 3 )
@@ -387,7 +387,7 @@ class Controller_Test extends Controller_Test_Case {
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->insert_or_update( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23, 89 ], 2 ) );
 		$this->set_oauth_token( 'auth-token' );
 

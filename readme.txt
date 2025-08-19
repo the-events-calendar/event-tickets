@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.25.1.1
+Stable tag: 5.26.0
 Requires at least: 6.6
 Tested up to: 6.8.2
 Requires PHP: 7.4
@@ -198,6 +198,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.26.0] 2025-08-19 =
+
+* Version - Event Tickets 5.26.0 is only compatible with The Events Calendar 6.15.0 and higher.
+* Performance - Improving TicketsCommerce Checkout by offloading tasks to Shepherd. [TCMN-185]
+* [EXPERIMENTAL] Feature - Introduced new REST endpoints for managing your Tickets. Note: This API is for experimental use only and requires the X-TEC-EEA header. It may be subject to breaking changes in upcoming releases.
+* Language - 74 new strings added, 4 updated, 3 fuzzied, and 0 obsoleted.
 
 = [5.25.1.1] 2025-07-30 =
 
