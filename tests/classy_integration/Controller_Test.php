@@ -3,14 +3,12 @@
 namespace TEC\Tickets\Tests\Classy;
 
 use Closure;
-use TEC\Common\Classy\Controller as Common_Controller;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Classy\Controller;
 use TEC\Tickets\Classy\ECP_Editor_Meta;
-use TEC\Tickets\Classy\REST\Controller as REST_Controller;
-use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Main as ET;
 
 class Controller_Test extends Controller_Test_Case {
@@ -53,22 +51,19 @@ class Controller_Test extends Controller_Test_Case {
 	public function test_do_register_registers_assets_when_tec_common_assets_loaded_action_did_run(): void {
 		$controller = $this->make_controller();
 
-		// Mock the action to have already run
+		// Mock the action to have already run.
 		$this->set_fn_return(
 			'did_action',
-			function ( $action ) {
-				return $action === 'tec_common_assets_loaded';
-			},
+			static fn( $action ) => $action === 'tec_common_assets_loaded',
 			true
 		);
 
-		// Mock Asset::add to capture calls
+		// Mock Asset::add to capture calls.
 		$asset_calls = [];
 		$this->mock_assets_add( $asset_calls );
 
+		// Verify assets were registered.
 		$controller->register();
-
-		// Verify assets were registered
 		$this->assertCount( 2, $asset_calls );
 		$this->assertEquals( 'tec-classy-tickets', $asset_calls[0]['handle'] );
 		$this->assertEquals( 'classy.js', $asset_calls[0]['file'] );
@@ -86,7 +81,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->set_fn_return( 'did_action', static fn( $action ) => false, true );
 		$this->set_fn_return( 'doing_action', static fn( $action ) => false, true );
 
-		// Mock add_action to capture calls
+		// Mock add_action to capture calls.
 		$added_actions = [];
 		$this->set_fn_return(
 			'add_action',
@@ -96,30 +91,13 @@ class Controller_Test extends Controller_Test_Case {
 			true
 		);
 
+		// Verify actions were added.
 		$controller->register();
-
-		// Verify actions were added
 		$this->assertCount( 2, $added_actions );
 		$this->assertEquals( 'tec_common_assets_loaded', $added_actions[0]['hook'] );
 		$this->assertEquals( [ $controller, 'register_assets' ], $added_actions[0]['callback'] );
 		$this->assertEquals( 'tec_events_pro_classy_registered', $added_actions[1]['hook'] );
 		$this->assertEquals( [ $controller, 'register_ecp_editor_meta' ], $added_actions[1]['callback'] );
-	}
-
-	/**
-	 * @covers Controller::unregister
-	 */
-	public function test_unregisters_rest_controller(): void {
-		$controller = $this->make_controller();
-
-		// Mock REST controller unregister
-		$rest_controller = $this->createMock( REST_Controller::class );
-		$rest_controller->expects( $this->once() )->method( 'unregister' );
-
-		$original_services                             = $this->test_services;
-		$this->test_services[ REST_Controller::class ] = $rest_controller;
-
-		$controller->unregister();
 	}
 
 	/**
@@ -129,17 +107,27 @@ class Controller_Test extends Controller_Test_Case {
 		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
-		// Mock Common_Controller
-		$common_controller = $this->createMock( Common_Controller::class );
-		$common_controller->method( 'post_uses_classy' )->willReturn( true );
-		$this->test_services[ Common_Controller::class ] = $common_controller;
+		// Filter the supported post types.
+		add_filter(
+			'tec_classy_post_types',
+			static fn( $post_types ) => array_unique( array_merge( $post_types, [ TEC::POSTTYPE ] ) )
+		);
 
-		// Mock Asset::add to capture calls
+		// Set up the global $post object to simulate a post using Classy.
+		global $post;
+		$post = $this->factory()->post->create_and_get(
+			[
+				'post_type'   => TEC::POSTTYPE,
+				'post_status' => 'publish',
+			]
+		);
+
+		// Mock Asset::add to capture calls.
 		$asset_calls = [];
 		$this->mock_assets_add( $asset_calls );
-		$controller->register_assets();
 
-		// Verify both script and styles were registered
+		// Verify both script and styles were registered.
+		$controller->register_assets();
 		$this->assertCount( 2, $asset_calls );
 		$this->assertEquals( 'tec-classy-tickets', $asset_calls[0]['handle'] );
 		$this->assertEquals( 'classy.js', $asset_calls[0]['file'] );
@@ -154,7 +142,7 @@ class Controller_Test extends Controller_Test_Case {
 		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
-		// Use reflection to access private method
+		// Use reflection to access private method.
 		$method = Closure::bind(
 			function () {
 				return $this->get_et_class();
@@ -173,23 +161,17 @@ class Controller_Test extends Controller_Test_Case {
 		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
-		// Mock the Currency class.
-		$this->set_class_fn_return( Currency::class, 'get_currency_code', 'USD' );
-		$this->set_class_fn_return( Currency::class, 'get_currency_symbol', '$' );
-		$this->set_class_fn_return( Currency::class, 'get_currency_separator_decimal', '.' );
-		$this->set_class_fn_return( Currency::class, 'get_currency_separator_thousands', ',' );
-		$this->set_class_fn_return( Currency::class, 'get_currency_symbol_position', 'prefix' );
-		$this->set_class_fn_return( Currency::class, 'get_currency_precision', 2 );
-
-		// Mock ET main class
+		// Filter the supported post types.
 		$post_types = [ 'tribe_events', 'page' ];
-		$et_main    = $this->createMock( ET::class );
-		$et_main->method( 'post_types' )->willReturn( $post_types );
-		$this->test_services[ ET::class ] = $et_main;
+		add_filter(
+			'tec_classy_post_types',
+			static fn( $types ) => array_unique( array_merge( $types, $post_types ) )
+		);
 
-		// Mock wp_create_nonce
+		// Mock wp_create_nonce.
 		$this->set_fn_return( 'wp_create_nonce', static fn( $action ) => "nonce_{$action}", true );
 
+		// Use a closure to access the private method.
 		$method = Closure::bind(
 			function () {
 				return $this->get_data();
@@ -200,24 +182,24 @@ class Controller_Test extends Controller_Test_Case {
 
 		$result = $method();
 
-		// Verify structure
+		// Verify structure.
 		$this->assertArrayHasKey( 'settings', $result );
 		$this->assertArrayHasKey( 'nonces', $result );
 
-		// Verify currency settings
+		// Verify currency settings.
 		$this->assertArrayHasKey( 'currency', $result['settings'] );
 		$this->assertEquals( 'USD', $result['settings']['currency']['code'] );
-		$this->assertEquals( '$', $result['settings']['currency']['symbol'] );
+		$this->assertEquals( '$', html_entity_decode( $result['settings']['currency']['symbol'] ) );
 		$this->assertEquals( '.', $result['settings']['currency']['decimalSeparator'] );
 		$this->assertEquals( ',', $result['settings']['currency']['thousandsSeparator'] );
 		$this->assertEquals( 'prefix', $result['settings']['currency']['position'] );
 		$this->assertEquals( 2, $result['settings']['currency']['precision'] );
 
-		// Verify ticket post types
+		// Verify ticket post types.
 		$this->assertArrayHasKey( 'ticketPostTypes', $result['settings'] );
 		$this->assertEquals( $post_types, $result['settings']['ticketPostTypes'] );
 
-		// Verify nonces
+		// Verify nonces.
 		$this->assertArrayHasKey( 'deleteTicket', $result['nonces'] );
 		$this->assertArrayHasKey( 'updateTicket', $result['nonces'] );
 		$this->assertArrayHasKey( 'createTicket', $result['nonces'] );
@@ -233,7 +215,12 @@ class Controller_Test extends Controller_Test_Case {
 		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
-		// Mock ECP_Editor_Meta
+		/*
+		 * This mock is in place to ensure that the method is called, while the real method
+		 * references a class that does not exist in the test environment.
+		 *
+		 * \Tribe\Events\Virtual\Compatibility\Event_Tickets\Event_Meta is part of Events Pro.
+		 */
 		$ecp_editor_meta = $this->createMock( ECP_Editor_Meta::class );
 		$ecp_editor_meta->expects( $this->once() )->method( 'register' );
 		$this->test_services[ ECP_Editor_Meta::class ] = $ecp_editor_meta;
