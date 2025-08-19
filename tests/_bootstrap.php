@@ -5,7 +5,7 @@
 
 use Codeception\Util\Autoload;
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Events\Classy\Controller as Classy;
+use TEC\Common\Classy\Controller as Classy;
 use TEC\Tickets\Commerce\Order;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
