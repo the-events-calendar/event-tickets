@@ -153,7 +153,7 @@ class Sessions extends Table {
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
-	public function upsert( string $token, int $object_id, int $expiration_timestamp ) {
+	public function insert_or_update( string $token, int $object_id, int $expiration_timestamp ) {
 
 		try {
 			$query = DB::prepare(
