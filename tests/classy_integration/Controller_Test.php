@@ -9,16 +9,16 @@ use TEC\Tickets\Classy\Controller;
 use TEC\Tickets\Classy\ECP_Editor_Meta;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Events__Main as TEC;
-use Tribe__Tickets__Main as ET;
 
 class Controller_Test extends Controller_Test_Case {
 	use With_Uopz;
 
 	protected $controller_class = Controller::class;
 
-	private function mock_assets_add( array &$asset_calls ): void {
+	private function mock_assets_add( array &$asset_calls ) {
 		$anon_class = new class {
-			public function add_to_group_path( $path ) { return $this; }
+			public ?string $script_key = null;
+			public ?Closure $script_callback = null;
 
 			public function enqueue_on( $hook ) { return $this; }
 
@@ -28,7 +28,12 @@ class Controller_Test extends Controller_Test_Case {
 
 			public function add_to_group( $group ) { return $this; }
 
-			public function add_localize_script( $key, $callback ) { return $this; }
+			public function add_localize_script( $key, $callback ) {
+				$this->script_key      = $key;
+				$this->script_callback = $callback;
+
+				return $this;
+			}
 
 			public function register() { return $this; }
 		};
@@ -43,20 +48,20 @@ class Controller_Test extends Controller_Test_Case {
 			},
 			true
 		);
+
+		return $anon_class;
 	}
 
 	/**
 	 * @covers Controller::do_register
 	 */
 	public function test_do_register_registers_assets_when_tec_common_assets_loaded_action_did_run(): void {
+		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
-		// Mock the action to have already run.
-		$this->set_fn_return(
-			'did_action',
-			static fn( $action ) => $action === 'tec_common_assets_loaded',
-			true
-		);
+		// Run the action to simulate it having run.
+		remove_all_actions( 'tec_common_assets_loaded' );
+		do_action( 'tec_common_assets_loaded' );
 
 		// Mock Asset::add to capture calls.
 		$asset_calls = [];
@@ -75,29 +80,19 @@ class Controller_Test extends Controller_Test_Case {
 	 * @covers Controller::do_register
 	 */
 	public function test_do_register_adds_action_when_tec_common_assets_loaded_action_has_not_run(): void {
+		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
-		// Mock the action to have not run, and are not running.
-		$this->set_fn_return( 'did_action', static fn( $action ) => false, true );
-		$this->set_fn_return( 'doing_action', static fn( $action ) => false, true );
-
-		// Mock add_action to capture calls.
-		$added_actions = [];
-		$this->set_fn_return(
-			'add_action',
-			function ( $hook, $callback, $priority = 10 ) use ( &$added_actions ) {
-				$added_actions[] = [ 'hook' => $hook, 'callback' => $callback, 'priority' => $priority ];
-			},
-			true
-		);
+		// Ensure the action has not run.
+		global $wp_actions;
+		unset( $wp_actions['tec_common_assets_loaded'] );
 
 		// Verify actions were added.
 		$controller->register();
-		$this->assertCount( 2, $added_actions );
-		$this->assertEquals( 'tec_common_assets_loaded', $added_actions[0]['hook'] );
-		$this->assertEquals( [ $controller, 'register_assets' ], $added_actions[0]['callback'] );
-		$this->assertEquals( 'tec_events_pro_classy_registered', $added_actions[1]['hook'] );
-		$this->assertEquals( [ $controller, 'register_ecp_editor_meta' ], $added_actions[1]['callback'] );
+		$this->assertTrue( has_action( 'tec_common_assets_loaded' ) );
+		$this->assertTrue( has_action( 'tec_events_pro_classy_registered' ) );
+		$this->assertEquals( 10, has_action( 'tec_common_assets_loaded', [ $controller, 'register_assets' ] ) );
+		$this->assertEquals( 10, has_action( 'tec_events_pro_classy_registered', [ $controller, 'register_ecp_editor_meta' ] ) );
 	}
 
 	/**
@@ -136,25 +131,6 @@ class Controller_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @covers Controller::get_et_class
-	 */
-	public function test_get_et_class_returns_et_class_name(): void {
-		/** @var Controller $controller */
-		$controller = $this->make_controller();
-
-		// Use reflection to access private method.
-		$method = Closure::bind(
-			function () {
-				return $this->get_et_class();
-			},
-			$controller,
-			$controller
-		);
-
-		$this->assertEquals( ET::class, $method() );
-	}
-
-	/**
 	 * @covers Controller::get_data
 	 */
 	public function test_get_data_returns_expected_structure(): void {
@@ -171,18 +147,21 @@ class Controller_Test extends Controller_Test_Case {
 		// Mock wp_create_nonce.
 		$this->set_fn_return( 'wp_create_nonce', static fn( $action ) => "nonce_{$action}", true );
 
-		// Use a closure to access the private method.
-		$method = Closure::bind(
-			function () {
-				return $this->get_data();
-			},
-			$controller,
-			$controller
-		);
+		// Mock Asset::add to capture calls.
+		$asset_calls = [];
+		$assets      = $this->mock_assets_add( $asset_calls );
 
-		$result = $method();
+		// Ensure nothing is registered yet.
+		$this->assertNull( $assets->script_key );
+		$this->assertNull( $assets->script_callback );
+
+		// Register the assets and then check the script key and callback.
+		$controller->register_assets();
+		$this->assertEquals( 'tec.tickets.classy.data', $assets->script_key );
+		$this->assertIsCallable( $assets->script_callback );
 
 		// Verify structure.
+		$result = call_user_func( $assets->script_callback );
 		$this->assertArrayHasKey( 'settings', $result );
 		$this->assertArrayHasKey( 'nonces', $result );
 
