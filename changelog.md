@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.26.0.1] 2025-08-20
+
+* Fix - Ensures the Actions Scheduler Logs table is present before attempting to use it. [TCMN-190]
+
 ### [5.26.0] 2025-08-19
 
 * Version - Event Tickets 5.26.0 is only compatible with The Events Calendar 6.15.0 and higher.
