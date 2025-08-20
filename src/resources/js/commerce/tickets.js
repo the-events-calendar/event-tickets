@@ -1,6 +1,16 @@
 /* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers */
 
 /**
+ * Makes sure we have all the required levels on the Tribe Object.
+ *
+ * @since TBD
+ *
+ * @type   {Object}
+ */
+window.tribe = window.tribe || {};
+window.tribe.tickets = window.tribe.tickets || {};
+
+/**
  * Path to this script in the global tribe Object.
  *
  * @since TBD
@@ -264,10 +274,10 @@ tribe.tickets.commerce.tickets = {};
 			const $rsvpIdInput = $rsvpMetabox.find( '#rsvp_id' );
 			if ( $rsvpIdInput.length ) {
 				$rsvpIdInput.val( data.ticket_id );
-				
+
 				// Trigger change event on the hidden input to notify dependency system.
 				$rsvpIdInput.trigger( 'change' );
-				
+
 				// Verify dependencies on the wrapper after updating the RSVP ID.
 				$rsvpMetabox.trigger( 'verify.dependency' );
 			}

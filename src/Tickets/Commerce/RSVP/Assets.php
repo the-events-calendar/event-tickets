@@ -44,14 +44,13 @@ class Assets extends Service_Provider {
 					'name' => 'tecTicketsCommerceTickets',
 					'data' => static function () {
 						return [
-							'ticketEndpoint' => tribe( Ticket_Endpoint::class )->get_route_url(),
+							'ticketEndpoint' => tribe_callback( Ticket_Endpoint::class, 'get_route_url' )(),
 							'nonce'          => wp_create_nonce( 'wp_rest' ),
 						];
 					},
 				],
 			]
 		);
-
 
 		$this->assets();
 	}
@@ -78,7 +77,7 @@ class Assets extends Service_Provider {
 						'nonces'  => [
 							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
 						],
-						'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+						'orderEndpoint' => tribe_callback( Order_Endpoint::class, 'get_route_url' )(),
 						'nonce'         => wp_create_nonce( 'wp_rest' ),
 						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],

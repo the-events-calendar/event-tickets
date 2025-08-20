@@ -86,6 +86,7 @@ class Metabox {
 		$context['rsvp_id']        = 0;
 		$context['show_not_going'] = '';
 		$context['rsvp_limit']     = '';
+		$context['ticket_type']    = Constants::TC_RSVP_TYPE;
 
 		if ( $tc_rsvp instanceof Tribe__Tickets__Ticket_Object ) {
 			$context['rsvp_id']        = $tc_rsvp->ID;
