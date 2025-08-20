@@ -913,7 +913,7 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertNull( $session->get_session_token_object_id() );
 
 		$session->add_entry( $event_id, 'test-token-1' );
-		$sessions->upsert( 'test-token-1', $event_id, time() + 100 );
+		$sessions->insert_or_update( 'test-token-1', $event_id, time() + 100 );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ $ticket_id ], 2 ) );
 
 		$this->assertEquals( [ 'test-token-1', $event_id ], $session->get_session_token_object_id() );
