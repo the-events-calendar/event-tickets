@@ -54,6 +54,42 @@ class Ticket extends Ticket_Data {
 	public static $show_description_meta_key = '_tribe_ticket_show_description';
 
 	/**
+	 * Which meta holds the data for the ticket start date.
+	 *
+	 * @since 5.26.0
+	 *
+	 * @var string
+	 */
+	public const START_DATE_META_KEY = '_ticket_start_date';
+
+	/**
+	 * Which meta holds the data for the ticket end date.
+	 *
+	 * @since 5.26.0
+	 *
+	 * @var string
+	 */
+	public const END_DATE_META_KEY = '_ticket_end_date';
+
+	/**
+	 * Which meta holds the data for the ticket start time.
+	 *
+	 * @since 5.26.0
+	 *
+	 * @var string
+	 */
+	public const START_TIME_META_KEY = '_ticket_start_time';
+
+	/**
+	 * Which meta holds the data for the ticket end time.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @var string
+	 */
+	public const END_TIME_META_KEY = '_ticket_end_time';
+
+	/**
 	 * Which meta holds the data for the ticket sku.
 	 *
 	 * @since 5.1.9
@@ -227,6 +263,7 @@ class Ticket extends Ticket_Data {
 			'capability_type' => 'post',
 			'has_archive'     => false,
 			'hierarchical'    => false,
+			'show_in_rest'    => false,
 		];
 
 		/**
@@ -378,11 +415,11 @@ class Ticket extends Ticket_Data {
 		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
-		$return->start_date       = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
-		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
-		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
+		$return->start_date       = get_post_meta( $ticket_id, static::START_DATE_META_KEY, true );
+		$return->end_date         = get_post_meta( $ticket_id, static::END_DATE_META_KEY, true );
+		$return->start_time       = get_post_meta( $ticket_id, static::START_TIME_META_KEY, true );
+		$return->end_time         = get_post_meta( $ticket_id, static::END_TIME_META_KEY, true );
+		$return->sku              = get_post_meta( $ticket_id, static::$sku_meta_key, true );
 
 		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
 
@@ -397,7 +434,7 @@ class Ticket extends Ticket_Data {
 			$stock = - 1;
 		}
 
-		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
+		$return->manage_stock( tribe_is_truthy( get_post_meta( $ticket_id, '_manage_stock', true ) ) );
 		$return->stock( $stock );
 		$return->global_stock_mode( get_post_meta( $ticket_id, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true ) );
 		$capped = get_post_meta( $ticket_id, \Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true );
@@ -850,7 +887,7 @@ class Ticket extends Ticket_Data {
 		// Store name so we can still show it in the attendee list.
 		$attendees      = tribe( Module::class )->get_attendees_by_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
-		
+
 		foreach ( (array) $attendees as $attendee ) {
 			if ( $attendee['product_id'] == $ticket_id ) {
 				update_post_meta( $attendee['attendee_id'], Attendee::$deleted_ticket_meta_key, esc_html( $post_to_delete->post_title ) );
@@ -862,7 +899,7 @@ class Ticket extends Ticket_Data {
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
-		
+
 		do_action( 'tec_tickets_commerce_ticket_deleted', $ticket_id, $event_id, $product_id );
 		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
@@ -1274,7 +1311,15 @@ class Ticket extends Ticket_Data {
 	 */
 	public function get_sale_price( int $ticket_id ): string {
 		$sale_price = get_post_meta( $ticket_id, static::$sale_price_key, true );
-		return $sale_price instanceof Value ? $sale_price->get_string() : '';
+		if ( ! $sale_price ) {
+			return '';
+		}
+
+		if ( $sale_price instanceof Value ) {
+			return $sale_price->get_string();
+		}
+
+		return ( new Value( $sale_price ) )->get_string();
 	}
 
 	/**
