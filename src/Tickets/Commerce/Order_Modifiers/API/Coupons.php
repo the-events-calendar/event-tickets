@@ -91,7 +91,7 @@ class Coupons extends Base_API {
 					'permission_callback' => $this->get_permission_callback(),
 					'args'                => $this->get_endpoint_args( 'create' ),
 				],
-				'schema' => $this->get_schema(),
+				'schema' => fn(): array => $this->get_schema(),
 			]
 		);
 
@@ -116,7 +116,7 @@ class Coupons extends Base_API {
 					'permission_callback' => '__return_true',
 					'args'                => $this->get_endpoint_args( 'apply' ),
 				],
-				'schema' => $this->get_schema(),
+				'schema' => fn(): array => $this->get_schema(),
 			]
 		);
 
@@ -130,7 +130,7 @@ class Coupons extends Base_API {
 					'permission_callback' => '__return_true',
 					'args'                => $this->get_endpoint_args( 'remove' ),
 				],
-				'schema' => $this->get_schema(),
+				'schema' => fn(): array => $this->get_schema(),
 			]
 		);
 	}
@@ -402,7 +402,7 @@ class Coupons extends Base_API {
 	 *
 	 * @return array The schema.
 	 */
-	protected function get_schema() {
+	protected function get_schema(): array {
 		return [
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'coupon',

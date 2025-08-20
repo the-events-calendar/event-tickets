@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Add extra check that items added to an order should be an array. Props to @TomGroot! [ET-2510]

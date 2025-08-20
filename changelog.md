@@ -1,5 +1,49 @@
 # Changelog
 
+### [5.26.0.1] 2025-08-20
+
+* Fix - Ensures the Actions Scheduler Logs table is present before attempting to use it. [TCMN-190]
+
+### [5.26.0] 2025-08-19
+
+* Version - Event Tickets 5.26.0 is only compatible with The Events Calendar 6.15.0 and higher.
+* Performance - Improving TicketsCommerce Checkout by offloading tasks to Shepherd. [TCMN-185]
+* [EXPERIMENTAL] Feature - Introduced new REST endpoints for managing your Tickets. Note: This API is for experimental use only and requires the X-TEC-EEA header. It may be subject to breaking changes in upcoming releases.
+* Language - 74 new strings added, 4 updated, 3 fuzzied, and 0 obsoleted.
+
+### [5.25.1.1] 2025-07-30
+
+* Fix - Adds support for SCA (Strong Customer Authentication) for the Square Payment Gateway in TicketsCommerce. [ET-2542]
+* Language - 0 new strings added, 3 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.25.1] 2025-07-22
+
+* Fix - Correct background color on "Get Tickets" button when dealing with series passes. [ET-2534]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.25.0] 2025-07-16
+
+* Version - Event Tickets 5.25.0 is only compatible with Event Tickets Plus 6.7.0 or higher.
+* Feature - Add in support for uncheckin through the REST API. [ETP-1000]
+* Feature - For Offline checkin support added the optional `$details` parameter to be able to set the checkin time and device_id. [ETP-1003]
+* Fix - Add "Orders" link in the admin page row actions menu for pages with Tickets Commerce tickets. [ET-2450]
+* Fix - Add bail checks if Tickets Commerce is disabled to avoid a fatal on an event's Attendee page. [ET-2310]
+* Fix - Add conditional to only show ticket description toggle if there is a description. [ET-2530]
+* Fix - Added logic so deleted attendees will not count as deleted tickets. [ET-1002]
+* Fix - Add extra check that items added to an order should be an array. Props to @TomGroot! [ET-2510]
+* Fix - Ensure pending reservations are properly canceled when the Seat Selection page is closed. [SL-296]
+* Fix - Fixed manual quantity input for tickets to respect shared capacity. [ET-2492]
+* Fix - Fixed My Tickets link not working on Pages due to canonical redirect. [ET-2517]
+* Fix - Fix the calculations when tickets are moved between events, so the correct number of available tickets is shown on list-based views. [ETP-994]
+* Fix - Make sure add_submenu_page is called correctly to avoid deprecation messages. [TEC-5529]
+* Fix - Make sure that the sales of tickets with unlimited capacity are tracked. [ET-2513]
+* Fix - Prevents fatal error when activating WooCommerce through WP-CLI when Event Tickets plugin was already active. [ET-2532]
+* Fix - Remove unused JS for TicketsCommerce settings and resolve stripe checkout template warning. [ET-2493]
+* Tweak - Fixed sort order in the move attendees dialog to display posts alphabetically by title instead of by post ID. [ET-2305]
+* Tweak - Added actions: `tribe_log`
+* Tweak - Changed views: `v2/commerce/checkout/cart/item/details`, `v2/commerce/checkout/cart/item/details/toggle`, `v2/commerce/gateway/stripe/payment-element`
+* Language - 1 new strings added, 93 updated, 1 fuzzied, and 1 obsoleted.
+
 ### [5.24.2] 2025-06-18
 
 * Version - Event Tickets 5.24.2 is only compatible with Event Tickets Plus 6.6.1 or higher.
@@ -1286,7 +1330,7 @@
 * Tweak - Improved on meta data handling of for Blocks editor.
 * Tweak - Deprecate Select2 3.5.4 in favor of SelectWoo
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
-* Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
+* Tweak - Modify new views implementation for The Events Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 * Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
 * Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
 * Tweak - When using Event Tickets Plus, the checkbox "Hide my attendee data from public view" will no longer show up when purchasing a ticket if an "Attendees List" is not being displayed in the event. [ETP-624]

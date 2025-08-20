@@ -25,7 +25,7 @@ class Assets extends Service_Provider {
 	 * Binds and sets up implementations.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Removed unused tickets-commerce-settings js.
+	 * @since 5.25.0 Removed unused tickets-commerce-settings js.
 	 */
 	public function register() {
 		/** @var Tribe__Tickets__Main $tickets_main */

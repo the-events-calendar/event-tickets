@@ -9,17 +9,9 @@
 
 namespace TEC\Tickets\Commerce\Models;
 
-use DateInterval;
-use DatePeriod;
-use DateTimeZone;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Ticket;
-use Tribe\Utils\Lazy_Collection;
-use Tribe\Utils\Lazy_String;
-use Tribe\Utils\Post_Thumbnail;
-use Tribe__Date_Utils as Dates;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class Attendee.
@@ -35,23 +27,87 @@ class Ticket_Model extends Base {
 	 */
 	protected function build_properties( $filter ) {
 		try {
-			$cache_this = $this->get_caching_callback( $filter );
+			/**
+			 * Filters the properties to add to a ticket model in the REST API.
+			 *
+			 * @since 5.26.0
+			 *
+			 * @param array<string,mixed> $properties Properties to add to the model.
+			 */
+			$properties = apply_filters( 'tec_tickets_pre_build_ticket_properties', [], $this->post, $filter );
 
-			$post_id = $this->post->ID;
+			if ( ! empty( $properties ) ) {
+				return $properties;
+			}
 
-			$post_meta = get_post_meta( $post_id );
+			$ticket_data   = tribe( Ticket::class );
+			$ticket_object = $ticket_data->get_ticket( $this->post->ID );
 
-//			$total_value = isset( $post_meta[ Ticket::$total_value_meta_key ][0] ) ? $post_meta[ Ticket::$total_value_meta_key ][0] : null;
+			$sale_start_date = get_post_meta( $ticket_object->ID, Ticket::$sale_price_start_date_key, true );
+			$sale_end_date   = get_post_meta( $ticket_object->ID, Ticket::$sale_price_end_date_key, true );
+			$sale_price      = get_post_meta( $ticket_object->ID, Ticket::$sale_price_key, true );
+
+			$sale_price = $sale_price && $sale_price instanceof Value ? $sale_price->get_string() : $sale_price;
+			$sale_price = $sale_price ? (float) $sale_price : null;
 
 			$properties = [
-				'price'      => Arr::get( $post_meta, [ Ticket::$price_meta_key, 0 ] ),
-				'sale_price' => get_post_meta( $post_id, Ticket::$sale_price_key, true ),
+				'description'           => $ticket_object->description,
+				'on_sale'               => $ticket_object->on_sale,
+				'sale_price'            => $sale_price ? (float) $sale_price : null,
+				'price'                 => (float) $ticket_object->price,
+				'regular_price'         => (float) $ticket_data->get_regular_price( $ticket_object->ID ),
+				'show_description'      => $ticket_object->show_description,
+				'start_date'            => trim( $ticket_object->start_date . ' ' . $ticket_object->start_time ),
+				'end_date'              => trim( $ticket_object->end_date . ' ' . $ticket_object->end_time ),
+				'sale_price_start_date' => $sale_start_date ? $sale_start_date : null,
+				'sale_price_end_date'   => $sale_end_date ? $sale_end_date : null,
+				'event_id'              => (int) $ticket_object->get_event_id(),
+				'manage_stock'          => $ticket_object->managing_stock(),
+				'stock'                 => $ticket_object->stock(),
+				'sold'                  => $ticket_object->qty_sold(),
+				'sku'                   => $ticket_object->sku,
 			];
 		} catch ( \Exception $e ) {
 			return [];
 		}
 
 		return $properties;
+	}
+
+	/**
+	 * Get properties to add to the model.
+	 *
+	 * @since 5.26.0
+	 *
+	 * @return array<string,mixed> Properties to add to the model.
+	 */
+	public static function get_properties_to_add(): array {
+		$properties = [
+			'description'           => true,
+			'on_sale'               => true,
+			'sale_price'            => true,
+			'price'                 => true,
+			'regular_price'         => true,
+			'show_description'      => true,
+			'start_date'            => true,
+			'end_date'              => true,
+			'sale_price_start_date' => true,
+			'sale_price_end_date'   => true,
+			'event_id'              => true,
+			'manage_stock'          => true,
+			'stock'                 => true,
+			'sold'                  => true,
+			'sku'                   => true,
+		];
+
+		/**
+		 * Filters the properties to add to a ticket model in the REST API.
+		 *
+		 * @since 5.26.0
+		 *
+		 * @param array<string,mixed> $properties Properties to add to the model.
+		 */
+		return apply_filters( 'tec_rest_ticket_properties_to_add', $properties );
 	}
 
 	/**
