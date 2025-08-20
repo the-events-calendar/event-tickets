@@ -30,6 +30,8 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		submitButton: '#tec-tc-gateway-square-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden',
 		form: '.tribe-tickets__commerce-checkout-square-form',
+		squareCardForm: '#tec-tc-gateway-square-form',
+		editLink: '.tec-tickets__commerce-checkout-purchaser-info-edit-link',
 	};
 
 	/**
@@ -58,6 +60,15 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 * @type {Object|null}
 	 */
 	obj.checkoutContainer = null;
+
+	/**
+	 * Whether the checkout has been initialized.
+	 *
+	 * @since 5.25.1.1
+	 *
+	 * @type {boolean}
+	 */
+	obj.initialized = false;
 
 	/**
 	 * Handle displaying errors to the end user
@@ -166,30 +177,33 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @return {Object} The verification details.
 	 */
-	obj.getVerificationDetails = ( formData ) => {
-		// Split the purchaser name into given name and family name at the first space
-		const fullName = formData['purchaser-name'] || '';
-		const spaceIndex = fullName.indexOf(' ');
-		const givenName = spaceIndex > 0 ? fullName.substring(0, spaceIndex) : fullName;
-		const familyName = spaceIndex > 0 ? fullName.substring(spaceIndex + 1) : '';
-
-		return {
+	obj.getVerificationDetails = () => {
+		const verificationDetails = {
+			amount: obj.data.amount,
 			intent: 'CHARGE',
 			currencyCode: obj.data.currencyCode,
-			billingContact: {
-				givenName: givenName,
-				familyName: familyName,
-				email: formData['purchaser-email'],
-				phone: formData['purchaser-phone'] || null,
-				countryCode: formData['purchaser-country'] || null,
-				addressLines: formData['purchaser-address'] || null,
-				state: formData['purchaser-state'] || null,
-				city: formData['purchaser-city'] || null,
-				postalCode: formData['purchaser-postal-code'] || null,
-			},
 			customerInitiated: true,
 			sellerKeyedIn: false,
 		};
+
+		if ( obj.data.userLoggedIn ) {
+			verificationDetails.billingContact = obj.data.userData;
+			return verificationDetails;
+		}
+
+		const { name, ...formData } = obj.getPurchaserData();
+
+		const spaceIndex = name.indexOf( ' ' );
+		const givenName = spaceIndex > 0 ? name.substring( 0, spaceIndex ) : name;
+		const familyName = spaceIndex > 0 ? name.substring( spaceIndex + 1 ) : '';
+
+		verificationDetails.billingContact = {
+			givenName,
+			familyName,
+			...formData,
+		};
+
+		return verificationDetails;
 	};
 
 	/**
@@ -200,7 +214,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	obj.createPayment = async () => {
 		try {
 			// Create a payment request with the payment data from the form
-			const response = await obj.card.tokenize();
+			const response = await obj.card.tokenize( obj.getVerificationDetails() );
 			if ( response.status === 'OK' ) {
 				// Send the payment token to your server for processing
 				await obj.processPayment( response.token );
@@ -254,13 +268,30 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 * Initialize Square Web Payments SDK.
 	 *
 	 * @since 5.24.0
+	 * @since 5.25.1.1 Add force parameter to initialize Square.
 	 */
-	obj.initializeSquare = async () => {
+	obj.initializeSquare = async ( force = false ) => {
 		try {
 			if ( ! window.Square ) {
 				console.error( 'Square SDK not loaded' );
 				return;
 			}
+
+			force = force || obj.data.userLoggedIn;
+
+			if ( obj.initialized ) {
+				if ( force ) {
+					$( obj.selectors.squareCardForm ).show();
+				}
+
+				return;
+			}
+
+			if ( ! force ) {
+				return;
+			}
+
+			obj.initialized = true;
 
 			// Initialize Square.js
 			const payments = window.Square.payments(obj.data.applicationId, obj.data.locationId);
@@ -270,6 +301,9 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 
 			// Mount the card element to the DOM
 			await obj.card.attach(obj.selectors.cardElement);
+
+			$( obj.selectors.squareCardForm ).show();
+			$( obj.selectors.submitButton ).show();
 
 			// When the form is submitted
 			$(obj.selectors.form).on('submit', (e) => {
@@ -337,11 +371,55 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	};
 
 	/**
+	 * Initialize Square when the data is provided.
+	 *
+	 * @since 5.25.1.1
+	 */
+	obj.initializeSquareOnDataProvided = () => {
+		if ( obj.data.userLoggedIn ) {
+			return;
+		}
+
+		const editLink = $( obj.selectors.editLink );
+
+		const formContainer = $( obj.selectors.infoForm );
+
+		editLink.on( 'click', ( e ) => {
+			e.preventDefault();
+
+			formContainer.find( 'input' ).prop( 'readonly', false );
+			formContainer.find( 'select' ).prop( 'disabled', false );
+			formContainer.find( '#tec-tc-gateway-stripe-render-payment' ).show();
+
+			formContainer.find( obj.selectors.editLink ).hide();
+
+			$( obj.selectors.squareCardForm ).hide();
+
+			formContainer.find( '[name="purchaser-name"]' ).focus();
+		} );
+
+		formContainer.on( 'submit', ( e ) => {
+			e.preventDefault();
+
+			formContainer.find( 'input' ).prop( 'readonly', true );
+			formContainer.find( 'select' ).prop( 'disabled', true );
+			formContainer.find( '#tec-tc-gateway-stripe-render-payment' ).hide();
+
+			formContainer.find( obj.selectors.editLink ).css( 'display', 'inline-block' );
+
+			obj.initializeSquare( true );
+
+			$( obj.selectors.squareCardForm ).show();
+		} );
+	};
+
+	/**
 	 * Handles the initialization of the checkout when the page loads.
 	 *
 	 * @since 5.24.0
 	 */
 	obj.ready = () => {
+		obj.initializeSquareOnDataProvided();
 		obj.initializeSquare();
 	};
 
@@ -352,8 +430,22 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @return {Object} The purchaser data.
 	 */
-	obj.getPurchaserData = () =>
-		tribe.tickets.commerce.getPurchaserData( $( obj.selectors.infoForm ) );
+	obj.getPurchaserData = () => {
+		const formContainer = $( obj.selectors.infoForm );
+
+		return {
+			name: formContainer.find( '[name="purchaser-name"]' ).val(),
+			email: formContainer.find( '[name="purchaser-email"]' ).val(),
+			countryCode: formContainer.find( '[name="purchaser-country"]' ).val(),
+			addressLines: [
+				formContainer.find( '[name="purchaser-address1"]' ).val(),
+				formContainer.find( '[name="purchaser-address2"]' ).val(),
+			],
+			state: formContainer.find( '[name="purchaser-state"]' ).val(),
+			city: formContainer.find( '[name="purchaser-city"]' ).val(),
+			postalCode: formContainer.find( '[name="purchaser-zip"]' ).val(),
+		};
+	};
 
 	// When the document is ready, initialize the checkout.
 	$( obj.ready );

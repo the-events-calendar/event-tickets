@@ -2291,13 +2291,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * It is hacky, but we'll aim to resolve this issue when we end-of-life our legacy ticket plugins
 	 * OR write around it in a future major release
 	 *
-	 * @param int  $attendee_id The Attendee ID.
-	 * @param bool|null $qr          True if from QR checkin process.
-	 * @param int|null  $event_id    The ID of the ticket-able post the Attendee is being checked into.
+	 * @since - Add the optional `$details` parameter to be able to set the checkin time and device_id.
+	 *
+	 * @param int                 $attendee_id The Attendee ID.
+	 * @param bool|null           $qr          True if from QR checkin process.
+	 * @param int|null            $event_id    The ID of the ticket-able post the Attendee is being checked into.
+	 * @param array<string|mixed> $details     Check-out details including timestamp and device_id information.
 	 *
 	 * @return bool
 	 */
-	public function checkin( $attendee_id, $qr = null, $event_id = null ) {
+	public function checkin( $attendee_id, $qr = null, $event_id = null, $details = [] ) {
 		$qr = (bool) $qr;
 
 		if ( $qr ) {
@@ -2317,9 +2320,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$checkin_details = [
-			'date'   => current_time( 'mysql' ),
-			'source' => ! empty( $qr ) ? 'app' : 'site',
-			'author' => get_current_user_id(),
+			'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
+			'source'    => ! empty( $qr ) ? 'app' : 'site',
+			'author'    => get_current_user_id(),
+			'device_id' => $details['device_id'] ?? null,
 		];
 
 		/**
@@ -2349,14 +2353,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Marks an attendee as not checked in for an event
 	 *
-	 * @param int $attendee_id The attendee ID.
+	 * @since 5.25.0 - Add optional $app parameter to allow for bulk checkin process.
+	 *
+	 * @param int  $attendee_id The ID of the attendee that's being uncheckedin.
+	 * @param bool $app         True if from bulk checkin process.
 	 *
 	 * @return bool
 	 */
-	public function uncheckin( $attendee_id ) {
+	public function uncheckin( $attendee_id, $app = false ) {
 		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
+		if ( ! $app && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
 

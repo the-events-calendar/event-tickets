@@ -163,16 +163,27 @@ class Gateway extends Abstract_Gateway {
 	 * @return array
 	 */
 	public function filter_admin_notices( $notices ) {
+		if ( ! $this->is_enabled() ) {
+			return $notices;
+		}
 
 		// Check for unsupported currency.
 		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
-		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
-			$notices[] = [
-				'tc-stripe-currency-not-supported',
-				[ $this, 'render_unsupported_currency_notice' ],
-				[ 'dismiss' => false, 'type' => 'error' ],
-			];
+
+		// If we don't have a currency selected yet, don't show the notice.
+		if ( empty( $selected_currency ) ) {
+			return $notices;
 		}
+
+		if ( $this->is_currency_supported( $selected_currency ) ) {
+			return $notices;
+		}
+
+		$notices[] = [
+			'tc-stripe-currency-not-supported',
+			[ $this, 'render_unsupported_currency_notice' ],
+			[ 'dismiss' => false, 'type' => 'error' ],
+		];
 
 		return $notices;
 	}
@@ -191,6 +202,7 @@ class Gateway extends Abstract_Gateway {
 		if ( empty( $currency_name ) ) {
 			$currency_name = $selected_currency;
 		}
+
 		$notice_link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 			esc_url( 'https://stripe.com/docs/currencies' ),

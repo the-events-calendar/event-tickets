@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Fix PayPal Inventory Tests (Multiple Timezones). [ET-2528]

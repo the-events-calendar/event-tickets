@@ -808,7 +808,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	/**
 	 * Gets the ticket provider class when passed an id.
 	 * 
-	 * @since TBD Added check to return false if the provider is Tickets Commerce but the module is disabled.
+	 * @since 5.25.0 Added check to return false if the provider is Tickets Commerce but the module is disabled.
 	 *
 	 * @param int|string $id An RSVP order key, order id, attendee id, ticket id, or product id.
 	 *
