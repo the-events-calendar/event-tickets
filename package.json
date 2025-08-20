@@ -1,10 +1,6 @@
 {
   "name": "event-tickets",
-<<<<<<< HEAD
   "version": "5.26.1",
-=======
-  "version": "5.26.1",
->>>>>>> master
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
