@@ -1,6 +1,8 @@
 actor: Classy_Integration_Tester
+bootstrap: _bootstrap.php
 modules:
-    enabled: [WPLoader, \Helper\Classy_integration]
+    enabled:
+      - WPLoader
     config:
       WPLoader:
         wpRootFolder: %WP_ROOT_FOLDER%
@@ -15,6 +17,4 @@ modules:
         plugins:
           - the-events-calendar/the-events-calendar.php
           - event-tickets/event-tickets.php
-        activatePlugins:
-          - the-events-calendar/the-events-calendar.php
-          - event-tickets/event-tickets.php
+        theme: kadence
