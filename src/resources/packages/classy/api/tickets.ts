@@ -1,13 +1,36 @@
 import apiFetch from '@wordpress/api-fetch';
+import { APIFetchOptions } from '@wordpress/api-fetch/build-types/types';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { CostDetails } from '../types/CostDetails';
-import { CapacitySettings, SalePriceDetails, TicketSettings } from '../types/Ticket';
+import { CapacitySettings, FeesData, SalePriceDetails, TicketSettings, TicketType } from '../types/Ticket';
 import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
 import { getLocalizedData } from '../localizedData.ts';
 
-const apiBaseUrl = '/tec/classy/v1/tickets';
+const apiBaseUrl = '/tec/v1/tickets';
+
+/**
+ * Fetch data from the API.
+ *
+ * Wraps the `apiFetch` function to include a custom header indicating that this endpoint is experimental.
+ *
+ * @since TBD
+ * @param {APIFetchOptions} params The parameters for the API fetch request, including headers, path, method, and data.
+ */
+const fetch = ( params: APIFetchOptions ) => {
+	const { headers = {} } = params;
+	const requestParams = {
+		headers: {
+			'X-TEC-EEA':
+				'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
+			...headers,
+		},
+		...params,
+	};
+
+	return apiFetch( requestParams );
+};
 
 /**
  * Get a nonce for the specified type.
@@ -37,10 +60,10 @@ const getNonce = ( type: NonceTypes ): string => {
  * @return {Promise<GetTicketsApiResponse>} A promise that resolves to the tickets response.
  */
 export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise< GetTicketsApiResponse > => {
-	const queryArgs: Record< string, any > = {};
+	const queryArgs: GetTicketsApiParams = {};
 
-	if ( params.include_post ) {
-		queryArgs.include_post = params.include_post;
+	if ( params.event ) {
+		queryArgs.event = params.event;
 	}
 
 	if ( params.per_page ) {
@@ -54,14 +77,11 @@ export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<
 	const path = addQueryArgs( apiBaseUrl, queryArgs );
 
 	return new Promise< GetTicketsApiResponse >( async ( resolve, reject ) => {
-		await apiFetch( { path: path } )
+		await fetch( { path: path } )
 			.then( ( data ) => {
+				console.log( 'Fetched tickets data:', data );
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( 'Failed to fetch tickets: response did not return an object.' ) );
-				} else if ( ! ( data.hasOwnProperty( 'tickets' ) && data.hasOwnProperty( 'total' ) ) ) {
-					reject(
-						new Error( 'Tickets fetch request did not return an object with tickets and total properties.' )
-					);
 				} else {
 					resolve( data as GetTicketsApiResponse );
 				}
@@ -87,11 +107,9 @@ export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<
 export const fetchTicketsForPost = async ( postId: number ): Promise< TicketSettings[] > => {
 	return new Promise< TicketSettings[] >( async ( resolve, reject ) => {
 		// todo: Handle the potential for multiple pages of results.
-		await fetchTickets( { include_post: [ postId ] } )
+		await fetchTickets( { event: postId } )
 			.then( ( response: GetTicketsApiResponse ) => {
-				resolve(
-					response.tickets.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicketSettings( ticket ) )
-				);
+				resolve( response.map( ( ticket: GetTicketApiResponse ) => mapApiResponseToTicketSettings( ticket ) ) );
 			} )
 			.catch( ( error ) => {
 				reject( new Error( `Failed to fetch tickets for post ID ${ postId }: ${ error.message }` ) );
@@ -117,7 +135,7 @@ export const upsertTicket = async ( ticketData: TicketSettings ): Promise< Ticke
 
 	return new Promise< TicketSettings >( async ( resolve, reject ) => {
 		const nonceKey: NonceAction = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
-		await apiFetch( {
+		await fetch( {
 			path: `${ apiBaseUrl }${ isUpdate ? `/${ ticketData.id }` : '' }`,
 			method: isUpdate ? 'PUT' : 'POST',
 			data: {
@@ -180,88 +198,72 @@ export const deleteTicket = async ( ticketId: number ): Promise< void > => {
  */
 const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: boolean ): UpsertTicketApiRequest => {
 	const hasPrice = ticketData?.costDetails?.values.length > 0;
-	const ticket: Record< string, any > = {};
 
-	// Capacity fields.
-	// todo: this needs work.
-	console.log( 'Ticket data settings:', ticketData );
+	// Map basic ticket information.
+	const body: UpsertTicketApiRequest = {
+		title: ticketData.name || '',
+		content: ticketData?.description || '',
+		event: ticketData.eventId,
+		price: hasPrice ? ticketData.costDetails.values[ 0 ] : 0,
+		type: ticketData?.type || 'default',
+		show_description: true,
+	};
+
+	// Map capacity and stock settings.
 	if ( ticketData.capacitySettings ) {
 		const { globalStockMode = 'own', enteredCapacity } = ticketData.capacitySettings;
 
-		ticket.capacity = enteredCapacity.toString();
-
-		console.log( 'Capacity settings:', ticketData.capacitySettings );
-		const capacityType = globalStockMode;
-		const capacity = enteredCapacity;
-
-		// Map capacity type to ticket mode.
-		const isUnlimited = capacityType === 'own' && capacity === 0;
-
-		ticket.mode = isUnlimited ? '' : capacityType || '';
-		ticket.capacity = isUnlimited ? '' : capacity?.toString() || '';
+		body.capacity = enteredCapacity || 0;
+		body.stock = enteredCapacity || 0;
+		body.stock_mode = globalStockMode;
 	} else {
-		ticket.capacity = '';
-		ticket.mode = '';
+		body.capacity = 0;
+		body.stock = 0;
+		body.stock_mode = 'own';
 	}
 
-	const body: UpsertTicketApiRequest = {
-		name: ticketData.name || '',
-		description: ticketData?.description || '',
-		post_id: ticketData.eventId.toString(),
-		price: hasPrice ? ticketData.costDetails.values[ 0 ].toString() : '',
-		provider: ticketData?.provider || 'tc',
-		type: ticketData?.type || 'default',
-		menu_order: ticketData.menuOrder?.toString() || '0',
-		ticket: ticket,
-	};
-
-	// Date and time fields.
+	// Map sale dates
 	if ( ticketData.availableFrom ) {
-		// Extract date and time from availableFrom.
+		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS"
 		const availableFromDate = new Date( ticketData.availableFrom );
-		const startDate = availableFromDate.toISOString().split( 'T' )[ 0 ];
-		const startTime = availableFromDate.toTimeString().split( ' ' )[ 0 ];
-		body.start_date = startDate;
-		body.start_time = startTime;
+		body.start_date = availableFromDate.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
 	}
 
 	if ( ticketData.availableUntil ) {
-		// Extract date and time from availableUntil.
+		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS"
 		const availableUntilDate = new Date( ticketData.availableUntil );
-		const endDate = availableUntilDate.toISOString().split( 'T' )[ 0 ];
-		const endTime = availableUntilDate.toTimeString().split( ' ' )[ 0 ];
-		body.end_date = endDate;
-		body.end_time = endTime;
+		body.end_date = availableUntilDate.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
 	}
 
-	// Additional fields.
-	if ( ticketData.iac ) {
-		body.iac = ticketData.iac;
-	}
-
-	// Sale price fields.
+	// Map sale price data
 	if ( ticketData.salePriceData ) {
 		const salePriceData = ticketData.salePriceData;
 
-		// Initialize sale_price object if it doesn't exist.
-		if ( ! body.ticket.sale_price ) {
-			body.ticket.sale_price = {};
+		if ( salePriceData.enabled && salePriceData.salePrice ) {
+			body.sale_price = parseFloat( salePriceData.salePrice );
 		}
 
-		body.ticket.sale_price.checked = salePriceData.enabled ? '1' : '0';
-		if ( salePriceData.salePrice ) {
-			body.ticket.sale_price.price = salePriceData.salePrice;
-		}
 		if ( salePriceData.startDate ) {
-			body.ticket.sale_price.start_date = salePriceData.startDate;
+			body.sale_price_start_date = salePriceData.startDate;
 		}
+
 		if ( salePriceData.endDate ) {
-			body.ticket.sale_price.end_date = salePriceData.endDate;
+			body.sale_price_end_date = salePriceData.endDate;
 		}
 	}
 
-	// Menu order.
-	body.menu_order = ticketData.menuOrder?.toString() || '0';
+	// Map additional fields
+	if ( ticketData.iac ) {
+		// todo: add iac to the API.
+	}
+
+	if ( ticketData.menuOrder ) {
+		// todo: add menuOrder to the API.
+	}
+
+	if ( ticketData.fees ) {
+		// todo: add fees to the API.
+	}
 
 	// Set the filter as its own full string, to allow for easier discoverability when searching for it.
 	const filterName = isUpdate ? 'tec.classy.tickets.updateTicket' : 'tec.classy.tickets.createTicket';
@@ -295,44 +297,61 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
  * @return {TicketSettings} The mapped ticket settings.
  */
 const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): TicketSettings => {
-	const stockMode = apiResponse.capacity_details?.global_stock_mode || 'own';
+	// Map capacity settings based on stock management
 	const capacitySettings: CapacitySettings = {
-		enteredCapacity: apiResponse.capacity_details?.max || -1,
-		isShared: stockMode === 'capped' || stockMode === 'global',
+		enteredCapacity: apiResponse.stock || 0,
+		isShared: apiResponse.manage_stock && apiResponse.stock !== null,
+		globalStockMode: apiResponse.manage_stock ? 'own' : 'global',
 	};
 
+	// Map sale price data
 	const salePriceData: SalePriceDetails = {
-		enabled: Boolean( apiResponse.sale_price_data?.enabled || false ),
-		salePrice: apiResponse.sale_price_data?.sale_price || '',
-		startDate: apiResponse.sale_price_data?.start_date
-			? new Date( apiResponse.sale_price_data.start_date ).toISOString()
-			: '',
-		endDate: apiResponse.sale_price_data?.end_date
-			? new Date( apiResponse.sale_price_data.end_date ).toISOString()
-			: '',
+		enabled: apiResponse.on_sale || false,
+		salePrice: apiResponse.sale_price?.toString() || '',
+		startDate: apiResponse.sale_price_start_date || '',
+		endDate: apiResponse.sale_price_end_date || '',
 	};
 
-	// todo: use site settings for default values.
+	// Create basic cost details (API doesn't provide detailed cost structure)
 	const costDetails: CostDetails = {
-		currencySymbol: apiResponse.cost_details?.currency_symbol || '$',
-		currencyPosition: apiResponse.cost_details?.currency_position || 'prefix',
-		currencyDecimalSeparator: apiResponse.cost_details?.currency_decimal_separator || '.',
-		currencyThousandSeparator: apiResponse.cost_details?.currency_thousand_separator || ',',
-		suffix: apiResponse.cost_details?.suffix || '',
-		values: apiResponse.cost_details?.values.map( ( value: string ): number => parseFloat( value ) ) || [],
+		currencySymbol: '$', // Default, should come from site settings
+		currencyPosition: 'prefix', // Default, should come from site settings
+		currencyDecimalSeparator: '.', // Default, should come from site settings
+		currencyThousandSeparator: ',', // Default, should come from site settings
+		suffix: '',
+		values: [ apiResponse.price ], // API returns price as number
+	};
+
+	// Map available dates
+	const availableFrom = apiResponse.start_date || '';
+	const availableUntil = apiResponse.end_date || '';
+
+	// @todo: Handle fees, iac, menuOrder, and other fields if needed
+	// These are not provided by the API, so we use defaults for now.
+	const provider = 'tc';
+	const iac = '';
+	const menuOrder = 0;
+	const fees: FeesData = {
+		automaticFees: [],
+		availableFees: [],
+		selectedFees: [],
 	};
 
 	return {
 		id: apiResponse.id,
-		eventId: apiResponse.post_id,
-		name: apiResponse.title,
+		eventId: apiResponse.event,
+		name: apiResponse.title.rendered,
 		description: apiResponse.description,
-		cost: apiResponse.cost,
+		cost: apiResponse.price.toString(),
 		costDetails: costDetails,
 		salePriceData: salePriceData,
 		capacitySettings: capacitySettings,
-		fees: apiResponse.fees,
-		provider: apiResponse.provider || 'tc',
-		type: apiResponse.type || 'default',
+		provider: provider,
+		type: apiResponse.type as TicketType,
+		availableFrom: availableFrom,
+		availableUntil: availableUntil,
+		iac: iac,
+		menuOrder: menuOrder,
+		fees: fees,
 	};
 };
