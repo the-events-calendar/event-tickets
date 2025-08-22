@@ -17,6 +17,7 @@ const apiBaseUrl = '/tec/v1/tickets';
  *
  * @since TBD
  * @param {APIFetchOptions} params The parameters for the API fetch request, including headers, path, method, and data.
+ * @return {Promise<any>} A promise that resolves to the response data from the API.
  */
 const fetch = ( params: APIFetchOptions ) => {
 	const { headers = {} } = params;
