@@ -156,7 +156,7 @@ use TEC\Tickets\Commerce\RSVP\Constants;
 						<input
 							type="button"
 							id="tc_ticket_form_remove"
-							class="button-primary tribe-validation-submit"
+							class="tribe-validation-submit tec-tickets-rsvp-buttons__remove-rsvp"
 							name="tc_ticket_form_remove"
 							value="<?php echo esc_attr_x( 'Remove RSVP', 'Button text to remove RSVP settings in admin panel.', 'event-tickets' ); ?>"
 						/>

@@ -63,6 +63,11 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 					'callback'            => [ $this, 'handle_create_ticket' ],
 					'permission_callback' => [ $this, 'check_permission' ],
 				],
+				[
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'handle_delete_ticket' ],
+					'permission_callback' => [ $this, 'check_permission' ],
+				],
 			]
 		);
 
@@ -247,6 +252,78 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 
 		$response['success']   = true;
 		$response['ticket_id'] = $ticket_id;
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Handles the request to delete an RSVP ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_delete_ticket( WP_REST_Request $request ): WP_REST_Response {
+		$response = [
+			'success' => false,
+		];
+
+		$request_params = $request->get_params();
+		$post_id        = Arr::get( $request_params, 'post_ID' );
+		$ticket_id      = Arr::get( $request_params, 'rsvp_id', '' );
+
+		if ( empty( $post_id ) || empty( $ticket_id ) ) {
+			return new WP_REST_Response( [
+				'success' => false,
+				'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
+			], 400 );
+		}
+
+		$post_id   = Event::filter_event_id( $post_id );
+		$ticket_id = absint( $ticket_id );
+
+		// Verify the ticket exists and belongs to this event.
+		$ticket_post = get_post( $ticket_id );
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_REST_Response( [
+				'success' => false,
+				'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+			], 404 );
+		}
+
+		/**
+		 * Allow for processing before RSVP ticket deletion.
+		 *
+		 * @since TBD
+		 *
+		 * @param int   $ticket_id      The ticket ID being deleted.
+		 * @param int   $post_id        The post ID.
+		 * @param array $request_params The original request parameters.
+		 */
+		do_action( 'tec_tickets_rsvp_before_delete', $ticket_id, $post_id, $request_params );
+
+		$module  = tribe( Module::class );
+		$deleted = $module->delete_ticket( $post_id, $ticket_id );
+
+		if ( $deleted ) {
+			/**
+			 * Allow for additional processing after RSVP ticket deletion.
+			 *
+			 * @since TBD
+			 *
+			 * @param int   $ticket_id      The deleted ticket ID.
+			 * @param int   $post_id        The post ID.
+			 * @param array $request_params The original request parameters.
+			 */
+			do_action( 'tec_tickets_rsvp_after_delete', $ticket_id, $post_id, $request_params );
+
+			$response['success']   = true;
+			$response['ticket_id'] = $ticket_id;
+		} else {
+			$response['message'] = __( 'Failed to delete RSVP ticket.', 'event-tickets' );
+		}
 
 		return new WP_REST_Response( $response );
 	}

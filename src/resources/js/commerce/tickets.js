@@ -50,6 +50,8 @@ tribe.tickets.commerce.tickets = {};
 	obj.selectors = {
 		ticketForm: '.tec-event-tickets-from__wrap',
 		submitButton: '#tc_ticket_form_save',
+		removeButton: '#tc_ticket_form_remove',
+		rsvpEnableCheckbox: '#tec_tickets_rsvp_enable',
 		loader: '.tribe-common-c-loader',
 		hiddenElement: 'tribe-common-a11y-hidden',
 		rsvpMetabox: '#tec-tickets-commerce-rsvp',
@@ -159,6 +161,58 @@ tribe.tickets.commerce.tickets = {};
 			.catch( obj.handleApproveError );
 
 		obj.submitButton( true );
+	};
+
+	/**
+	 * Starts the process to delete an RSVP ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Event} event The Click event from the remove button.
+	 */
+	obj.handleRemove = async ( event ) => {
+		event.preventDefault();
+
+		// Show confirmation dialog.
+		if ( ! confirm( 'Are you sure you want to remove this RSVP? This action cannot be undone.' ) ) {
+			return;
+		}
+
+		// Get the RSVP ID and post ID from the form
+		const $rsvpIdInput = $( '#rsvp_id' );
+		const $postIdInput = $( '#post_ID' );
+		
+		const rsvpId = $rsvpIdInput.val();
+		const postId = $postIdInput.val();
+
+		if ( ! rsvpId || ! postId ) {
+			return;
+		}
+
+		const nonce = obj.getEmbedNonce();
+		const params = {
+			'post_ID': postId,
+			'rsvp_id': rsvpId,
+			'_wpnonce': nonce
+		};
+
+		obj.loaderShow();
+
+		fetch(
+			obj.buildTicketsUrl( params ),
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				obj.loaderHide();
+				obj.handleRemoveResponse( data );
+			} )
+			.catch( obj.handleApproveError );
 	};
 
 	/**
@@ -285,6 +339,35 @@ tribe.tickets.commerce.tickets = {};
 	};
 
 	/**
+	 * Handles the response from the ticket endpoint after RSVP deletion.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data The response data from the server.
+	 */
+	obj.handleRemoveResponse = function( data ) {
+		if ( data.success ) {
+			// Clear the RSVP ID field.
+			const $rsvpIdInput = $( '#rsvp_id' );
+			if ( $rsvpIdInput.length ) {
+				$rsvpIdInput.val( '' );
+
+				// Trigger change event to notify dependency system.
+				$rsvpIdInput.trigger( 'change' );
+			}
+
+			// Uncheck the RSVP enable checkbox.
+			const $rsvpEnableCheckbox = $( obj.selectors.rsvpEnableCheckbox );
+			if ( $rsvpEnableCheckbox.length ) {
+				$rsvpEnableCheckbox.prop( 'checked', false );
+
+				// Trigger change event to update dependent elements.
+				$rsvpEnableCheckbox.trigger( 'change' );
+			}
+		}
+	};
+
+	/**
 	 * Handles errors during the ticket save process.
 	 *
 	 * @since TBD
@@ -302,6 +385,7 @@ tribe.tickets.commerce.tickets = {};
 	 */
 	obj.bindEvents = () => {
 		$( document ).on( 'click', obj.selectors.submitButton, obj.handleSave );
+		$( document ).on( 'click', obj.selectors.removeButton, obj.handleRemove );
 	};
 
 	/**
