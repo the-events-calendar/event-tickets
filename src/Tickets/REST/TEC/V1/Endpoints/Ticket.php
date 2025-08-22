@@ -181,20 +181,23 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * @inheritDoc
 	 */
-	public function update_args(): QueryArgumentCollection {
-		return new QueryArgumentCollection();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function update_schema(): OpenAPI_Schema {
+	public function update_args(): RequestBodyCollection {
 		$definition = new Ticket_Request_Body_Definition();
 
 		$collection = new RequestBodyCollection();
 
 		$collection[] = new Definition_Parameter( $definition );
 
+		return $collection
+			->set_description_provider( fn() => __( 'The ticket data to update.', 'event-tickets' ) )
+			->set_required( true )
+			->set_example( $definition->get_example() );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function update_schema(): OpenAPI_Schema {
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Update a Ticket', 'event-tickets' ),
 			fn() => __( 'Update a ticket by ID', 'event-tickets' ),
@@ -202,7 +205,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			$this->get_tags(),
 			$this->get_path_parameters(),
 			null,
-			$collection->set_description_provider( fn() => __( 'The ticket data to update.', 'event-tickets' ) )->set_required( true )->set_example( $definition->get_example() ),
+			$this->update_args(),
 			true
 		);
 
