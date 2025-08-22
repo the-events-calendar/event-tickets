@@ -4,25 +4,54 @@ import { FeesData, TicketId, TicketType } from './Ticket';
 /**
  * Parameters to be used when fetching tickets from the API.
  *
+ * These parameters correspond to the query parameters supported by the GET /tickets endpoint.
+ *
  * @since TBD
  */
 export type GetTicketsApiParams = {
-	include_post?: number[];
-	per_page?: number;
+	/** The collection page number. Default: 1, Minimum: 1 */
 	page?: number;
+
+	/** Maximum number of items to be returned in result set. Default: 10, Maximum: 100, Minimum: 1 */
+	per_page?: number;
+
+	/** Limit results to those matching a string. */
+	search?: string;
+
+	/** Limit result set to tickets assigned to specific events. */
+	event?: number;
+
+	/** Sort collection by attribute. Default: "date" */
+	orderby?: 'date' | 'id' | 'include' | 'relevance' | 'slug' | 'include_slugs' | 'title';
+
+	/** Order sort attribute ascending or descending. Default: "desc" */
+	order?: 'asc' | 'desc';
+
+	/** Limit result set to tickets assigned one or more statuses. Default: "publish" */
+	status?: string;
+
+	/** Limit result set to specific IDs. */
+	include?: number[];
+
+	/** Ensure result set excludes specific IDs. */
+	exclude?: number[];
+
+	/** Include tickets marked as hidden from view. */
+	show_hidden?: boolean;
 };
 
 /**
  * Response structure for retrieving multiple tickets from the API.
  *
+ * The /tickets endpoint returns an array of Ticket objects directly.
+ * Pagination information is available in the response headers:
+ * - X-WP-Total: Total number of tickets matching the request
+ * - X-WP-TotalPages: Total number of pages for the request
+ * - Link: RFC 5988 Link header for pagination
+ *
  * @since TBD
  */
-export type GetTicketsApiResponse = {
-	rest_url: string;
-	total: number;
-	total_pages: number;
-	tickets: GetTicketApiResponse[];
-};
+export type GetTicketsApiResponse = GetTicketApiResponse[];
 
 type ApiDate = {
 	year: string;
@@ -34,97 +63,143 @@ type ApiDate = {
 };
 
 /**
- * Response structure for retrieving a single ticket from the API.
- *
- * This structure may be extended in the future to include more detailed information.
+ * Base TEC Post Entity structure as returned by the REST API.
  *
  * @since TBD
  */
-export type GetTicketApiResponse = {
-	id: TicketId;
-	title: string;
-	description: string;
-	rest_url: string;
-	post_id: number;
-	sale_price_data: {
-		enabled: string;
-		sale_price: string;
-		start_date: string;
-		end_date: string;
+type TECPostEntity = {
+	date?: string;
+	date_gmt?: string;
+	guid?: {
+		rendered: string;
 	};
-	provider: string;
-	type: TicketType;
-	iac: string;
-	capacity: number | '';
-	capacity_details: {
-		max: number;
-		global_stock_mode: string;
-	};
-
-	// Price/cost details.
-	cost: string;
-	cost_details: {
-		currency_symbol: string;
-		currency_position: CurrencyPosition;
-		currency_decimal_separator: string;
-		currency_decimal_numbers: number;
-		currency_thousand_separator: string;
-		suffix?: string | null;
-
-		// There should be only one value in this array, but it is an array to match the normal Event price structure.
-		values: string[];
-	};
-	price?: string | number;
-	fees: FeesData;
-
-	// For sale dates.
-	available_from: string;
-	available_until: string;
-	available_from_details: ApiDate;
-	available_until_details: ApiDate;
-
-	// Detail objects.
-
-	// Additional fields from the WordPress post object.
-	author: string | number;
-	date: string;
-	date_utc: string;
+	id: number;
+	link: string;
 	modified: string;
-	modified_utc: string;
+	modified_gmt: string;
+	slug: string;
 	status: string;
+	permalink_template: string;
+	generated_slug: string;
+	title: {
+		rendered: string;
+	};
+	content: {
+		rendered: string;
+		protected: boolean;
+	};
+	excerpt: {
+		rendered: string;
+		protected: boolean;
+	};
+	author: number;
+	featured_media: number;
+	comment_status: string;
+	ping_status: string;
+	format: string;
+	sticky: boolean;
+	template: string;
+	tags: number[];
+};
+
+/**
+ * Response structure for retrieving a single ticket from the API.
+ *
+ * This structure matches the actual API response from the /tickets/{id} endpoint.
+ *
+ * @since TBD
+ */
+export type GetTicketApiResponse = TECPostEntity & {
+	description: string;
+	on_sale?: boolean;
+	sale_price?: number;
+	price: number;
+	regular_price: number;
+	show_description: boolean;
+	start_date?: string;
+	end_date?: string;
+	sale_price_start_date?: string;
+	sale_price_end_date?: string;
+	event: number;
+	manage_stock: boolean;
+	stock?: number;
+	type: string;
+	sold: number;
+	sku?: string;
+};
+
+/**
+ * Base TEC Post Entity Request Body structure as expected by the REST API.
+ *
+ * @since TBD
+ */
+type TECPostEntityRequestBody = {
+	date?: string;
+	date_gmt?: string;
+	slug?: string;
+	status?: 'publish' | 'pending' | 'draft' | 'future' | 'private';
+	title?: string;
+	content?: string;
+	excerpt?: string;
+	author?: number;
+	featured_media?: number;
+	comment_status?: 'open' | 'closed';
+	ping_status?: 'open' | 'closed';
+	format?: 'standard' | 'aside' | 'chat' | 'gallery' | 'link' | 'image' | 'quote' | 'status' | 'video' | 'audio';
+	sticky?: boolean;
+	template?: string;
+	tags?: number[];
 };
 
 /**
  * Request structure for creating or updating a ticket.
  *
+ * This structure matches the actual API request body for the POST /tickets and PUT /tickets/{id} endpoints.
+ *
  * @since TBD
  */
-export type UpsertTicketApiRequest = {
-	post_id: string;
-	name: string;
-	description: string;
-	price: string;
-	provider: string;
-	type?: string;
-	start_date?: string;
-	start_time?: string;
-	end_date?: string;
-	end_time?: string;
-	iac?: string;
-	ticket?: {
-		mode?: string;
-		capacity?: string;
-		sale_price?: {
-			checked?: string;
-			price?: string;
-			start_date?: string;
-			end_date?: string;
-		};
-	};
-	menu_order: string;
+export type UpsertTicketApiRequest = TECPostEntityRequestBody & {
+	/** The ID of the post this ticket is associated with. Normally an event-like post. */
+	event?: number;
 
-	// Additional values from filters.
-	[ key: string ]: any;
+	/** The price of the ticket */
+	price?: number;
+
+	/** The sale price of the ticket */
+	sale_price?: number;
+
+	/** The start date for the sale price */
+	sale_price_start_date?: string;
+
+	/** The end date for the sale price */
+	sale_price_end_date?: string;
+
+	/** The capacity of the ticket */
+	capacity?: number;
+
+	/** The capacity of the event */
+	event_capacity?: number;
+
+	/** The stock quantity available */
+	stock?: number;
+
+	/** Whether to show the ticket description */
+	show_description?: boolean;
+
+	/** The stock mode of the ticket */
+	stock_mode?: 'own' | 'capped' | 'global' | 'unlimited';
+
+	/** The type of ticket */
+	type?: string;
+
+	/** The start sale date of the ticket */
+	start_date?: string;
+
+	/** The end sale date of the ticket */
+	end_date?: string;
+
+	/** The SKU of the ticket */
+	sku?: string;
 };
 
 /**
