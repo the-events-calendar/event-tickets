@@ -1,21 +1,18 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
-import { GetTicketApiResponse, GetTicketsApiResponse } from '../../../src/resources/packages/classy/types/Api';
-import { fetchTickets, fetchTicketsForPost, upsertTicket } from '../../../src/resources/packages/classy/api';
-import { TicketSettings } from '../../../src/resources/packages/classy/types/Ticket';
-
-/**
- * Helper function to create the expected API path with query parameters.
- * This makes the test more readable and maintainable.
- *
- * @param {string} basePath - The base API endpoint path.
- * @param {Record<string, any>} queryArgs - Query arguments to append.
- * @return {string} The complete path with query parameters.
- */
-const createExpectedPath = ( basePath: string, queryArgs: Record< string, any > = {} ): string => {
-	return addQueryArgs( basePath, queryArgs );
-};
+import { fetchTickets, fetchTicketsForPost, upsertTicket } from '@tec/tickets/classy/api';
+import { makeMockApiTickets } from '../_support/mockApiTickets';
+import { makeMockMappedTickets } from '../_support/mockMappedTickets';
+import {
+	makeMockTicketDataForCreate,
+	makeMockTicketDataForUpdate,
+	makeMockTicketDataWithSalePrice,
+	makeMockTicketDataWithDates,
+	makeMockTicketDataWithIAC,
+	makeMockTicketDataWithMenuOrder,
+} from '../_support/mockTicketData';
+import { makeMockApiResponse, makeMockExpectedResult } from '../_support/mockApiResponse';
+import { createExpectedPath, TEST_CONSTANTS } from '../_support/testHelpers';
 
 jest.mock( '@wordpress/api-fetch', () => ( {
 	__esModule: true,
@@ -36,149 +33,39 @@ describe( 'Ticket API', () => {
 	beforeEach( resetMocks );
 	afterEach( resetMocks );
 
-	const restEndpoint = '/tec/classy/v1/tickets';
-	const restUrl = `https://example.com/wp-json${ restEndpoint }`;
+	const { tecExperimentalHeader, restEndpoint, restUrl } = TEST_CONSTANTS;
 
 	describe( 'fetchTickets', () => {
-		const mockApiTickets: GetTicketApiResponse[] = [
-			{
-				id: 1,
-				title: 'Sample Ticket',
-				description: 'This is a sample ticket description.',
-				rest_url: `${ restUrl }/1`,
-				post_id: 123,
-				sale_price_data: {
-					enabled: '1',
-					sale_price: '20.00',
-					start_date: '2024-01-01 00:00:00',
-					end_date: '2024-12-31 23:59:59',
-				},
-				provider: 'tc',
-				type: 'default',
-				iac: 'ABC123',
-				capacity: 100,
-				capacity_details: {
-					max: 100,
-					global_stock_mode: 'own',
-				},
-
-				// Price/cost details.
-				cost: '50.00',
-				cost_details: {
-					currency_symbol: '$',
-					currency_position: 'prefix',
-					currency_decimal_separator: '.',
-					currency_decimal_numbers: 2,
-					currency_thousand_separator: ',',
-					suffix: '',
-					values: [ '50.00' ],
-				},
-
-				fees: {
-					availableFees: [],
-					automaticFees: [],
-					selectedFees: [],
-				},
-
-				// For sale dates.
-				available_from: '2024-06-01 10:00:00',
-				available_until: '2024-06-01 18:00:00',
-				available_from_details: {
-					year: '2024',
-					month: '06',
-					day: '01',
-					hour: '10',
-					minutes: '00',
-					seconds: '00',
-				},
-				available_until_details: {
-					year: '2024',
-					month: '06',
-					day: '01',
-					hour: '18',
-					minutes: '00',
-					seconds: '00',
-				},
-
-				// Additional fields from the WordPress post object.
-				author: 1,
-				date: '2024-05-01 12:00:00',
-				date_utc: '2024-05-01 12:00:00',
-				modified: '2024-05-15 12:00:00',
-				modified_utc: '2024-05-15 12:00:00',
-				status: 'publish',
-			},
-		];
-		const mockApiMappedTickets: TicketSettings[] = [
-			{
-				id: 1,
-				eventId: 123,
-				name: 'Sample Ticket',
-				description: 'This is a sample ticket description.',
-				cost: '50.00',
-				costDetails: {
-					currencySymbol: '$',
-					currencyPosition: 'prefix',
-					currencyDecimalSeparator: '.',
-					currencyThousandSeparator: ',',
-					suffix: '',
-					values: [ 50 ],
-				},
-				salePriceData: {
-					enabled: true,
-					salePrice: '20.00',
-					startDate: new Date( '2024-01-01 00:00:00' ).toISOString(),
-					endDate: new Date( '2024-12-31 23:59:59' ).toISOString(),
-				},
-				capacitySettings: {
-					enteredCapacity: 100,
-					isShared: false,
-				},
-				fees: {
-					availableFees: [],
-					automaticFees: [],
-					selectedFees: [],
-				},
-				provider: 'tc',
-				type: 'default',
-			},
-		];
+		const mockApiTickets = makeMockApiTickets();
+		const mockApiMappedTickets = makeMockMappedTickets();
 
 		test( 'calls fetchTickets with correct parameters', async () => {
-			const mockTicketsData: GetTicketsApiResponse = {
-				rest_url: restUrl,
-				total: 1,
-				total_pages: 1,
-				tickets: mockApiTickets,
-			};
-
 			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiTickets );
 
 			const result = await fetchTickets();
 
-			expect( result ).toEqual( mockTicketsData );
+			expect( result ).toEqual( mockApiTickets );
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': tecExperimentalHeader,
+				} ),
 			} );
 		} );
 
 		test( 'calls fetchTicketsForPost with correct parameters', async () => {
-			const mockTicketsData: GetTicketsApiResponse = {
-				rest_url: restUrl,
-				total: 1,
-				total_pages: 1,
-				tickets: mockApiTickets,
-			};
-
 			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiTickets );
 
 			const result = await fetchTicketsForPost( 123 );
 
 			expect( result ).toEqual( mockApiMappedTickets );
 			expect( apiFetch ).toHaveBeenCalledWith( {
-				path: createExpectedPath( restEndpoint, { include_post: [ 123 ] } ),
+				path: createExpectedPath( restEndpoint, { event: 123 } ),
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 			} );
 		} );
 
@@ -217,199 +104,61 @@ describe( 'Ticket API', () => {
 			);
 		} );
 
-		test( 'rejects when response object is missing tickets property', async () => {
+		test( 'accepts response that is an object but not an array', async () => {
 			const invalidResponse = {
 				rest_url: restUrl,
 				total: 1,
 				total_pages: 1,
-				// missing tickets property
 			};
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
 
-			await expect( fetchTickets() ).rejects.toThrow(
-				'Tickets fetch request did not return an object with tickets and total properties.'
-			);
-		} );
-
-		test( 'rejects when response object is missing total property', async () => {
-			const invalidResponse = {
-				rest_url: restUrl,
-				tickets: mockApiTickets,
-				total_pages: 1,
-				// missing total property
-			};
-
-			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
-
-			await expect( fetchTickets() ).rejects.toThrow(
-				'Tickets fetch request did not return an object with tickets and total properties.'
-			);
-		} );
-
-		test( 'rejects when response object is missing both tickets and total properties', async () => {
-			const invalidResponse = {
-				rest_url: restUrl,
-				total_pages: 1,
-				// missing both tickets and total properties
-			};
-
-			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( invalidResponse );
-
-			await expect( fetchTickets() ).rejects.toThrow(
-				'Tickets fetch request did not return an object with tickets and total properties.'
-			);
+			const result = await fetchTickets();
+			expect( result ).toEqual( invalidResponse );
 		} );
 
 		test( 'handles query parameters correctly', async () => {
-			const mockTicketsData: GetTicketsApiResponse = {
-				rest_url: restUrl,
-				total: 1,
-				total_pages: 1,
-				tickets: mockApiTickets,
-			};
-
 			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiTickets );
 
 			const params = {
-				include_post: [ 123, 456 ],
+				event: 123,
 				per_page: 10,
 				page: 2,
 			};
 
 			const result = await fetchTickets( params );
 
-			expect( result ).toEqual( mockTicketsData );
+			expect( result ).toEqual( mockApiTickets );
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: createExpectedPath( restEndpoint, params ),
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 			} );
 		} );
 
 		test( 'handles empty query parameters', async () => {
-			const mockTicketsData: GetTicketsApiResponse = {
-				rest_url: restUrl,
-				total: 1,
-				total_pages: 1,
-				tickets: mockApiTickets,
-			};
-
 			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockTicketsData );
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiTickets );
 
 			const result = await fetchTickets( {} );
 
-			expect( result ).toEqual( mockTicketsData );
+			expect( result ).toEqual( mockApiTickets );
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 			} );
 		} );
 	} );
 
 	describe( 'upsertTicket', () => {
-		const mockTicketData: TicketSettings = {
-			// 0 indicates create operation
-			id: 0,
-			eventId: 123,
-			name: 'Test Ticket',
-			description: 'Test ticket description',
-			cost: '25.00',
-			costDetails: {
-				currencySymbol: '$',
-				currencyPosition: 'prefix',
-				currencyDecimalSeparator: '.',
-				currencyThousandSeparator: ',',
-				suffix: '',
-				values: [ 25 ],
-			},
-			salePriceData: {
-				enabled: false,
-				salePrice: '',
-				startDate: '',
-				endDate: '',
-			},
-			capacitySettings: {
-				enteredCapacity: 100,
-				isShared: false,
-			},
-			fees: {
-				availableFees: [],
-				automaticFees: [],
-				selectedFees: [],
-			},
-			provider: 'tc',
-			type: 'default',
-		};
-
-		const mockUpdatedTicketData: TicketSettings = {
-			...mockTicketData,
-			// Non-zero indicates update operation
-			id: 1,
-		};
-
-		const mockApiResponse: GetTicketApiResponse = {
-			id: 1,
-			title: 'Test Ticket',
-			description: 'Test ticket description',
-			rest_url: `${ restUrl }/1`,
-			post_id: 123,
-			sale_price_data: {
-				enabled: '',
-				sale_price: '',
-				start_date: '',
-				end_date: '',
-			},
-			provider: 'tc',
-			type: 'default',
-			iac: '',
-			capacity: 100,
-			capacity_details: {
-				max: 100,
-				global_stock_mode: 'own',
-			},
-			cost: '25.00',
-			cost_details: {
-				currency_symbol: '$',
-				currency_position: 'prefix',
-				currency_decimal_separator: '.',
-				currency_decimal_numbers: 2,
-				currency_thousand_separator: ',',
-				suffix: '',
-				values: [ '25.00' ],
-			},
-			fees: {
-				availableFees: [],
-				automaticFees: [],
-				selectedFees: [],
-			},
-			available_from: '',
-			available_until: '',
-			available_from_details: {
-				year: '',
-				month: '',
-				day: '',
-				hour: '',
-				minutes: '',
-				seconds: '',
-			},
-			available_until_details: {
-				year: '',
-				month: '',
-				day: '',
-				hour: '',
-				minutes: '',
-				seconds: '',
-			},
-			author: 1,
-			date: '2024-01-01 12:00:00',
-			date_utc: '2024-01-01 12:00:00',
-			modified: '2024-01-01 12:00:00',
-			modified_utc: '2024-01-01 12:00:00',
-			status: 'publish',
-		};
+		const mockTicketData = makeMockTicketDataForCreate();
+		const mockUpdatedTicketData = makeMockTicketDataForUpdate();
+		const mockApiResponse = makeMockApiResponse();
 
 		test( 'creates a new ticket successfully', async () => {
 			// @ts-ignore
@@ -417,50 +166,24 @@ describe( 'Ticket API', () => {
 
 			const result = await upsertTicket( mockTicketData );
 
-			expect( result ).toEqual( {
-				id: 1,
-				eventId: 123,
-				name: 'Test Ticket',
-				description: 'Test ticket description',
-				cost: '25.00',
-				costDetails: {
-					currencySymbol: '$',
-					currencyPosition: 'prefix',
-					currencyDecimalSeparator: '.',
-					currencyThousandSeparator: ',',
-					suffix: '',
-					values: [ 25 ],
-				},
-				salePriceData: {
-					enabled: false,
-					salePrice: '',
-					startDate: '',
-					endDate: '',
-				},
-				capacitySettings: {
-					enteredCapacity: 100,
-					isShared: false,
-				},
-				fees: {
-					availableFees: [],
-					automaticFees: [],
-					selectedFees: [],
-				},
-				provider: 'tc',
-				type: 'default',
-			} );
+			expect( result ).toEqual( makeMockExpectedResult() );
 
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
 				method: 'POST',
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 				data: expect.objectContaining( {
-					name: 'Test Ticket',
-					description: 'Test ticket description',
-					post_id: '123',
-					price: '25',
-					provider: 'tc',
+					title: 'Test Ticket',
+					content: 'Test ticket description',
+					event: 123,
+					price: 25,
 					type: 'default',
-					menu_order: '0',
+					show_description: true,
+					capacity: 100,
+					stock: 100,
+					stock_mode: 'own',
 					add_ticket_nonce: expect.any( String ),
 				} ),
 			} );
@@ -472,50 +195,24 @@ describe( 'Ticket API', () => {
 
 			const result = await upsertTicket( mockUpdatedTicketData );
 
-			expect( result ).toEqual( {
-				id: 1,
-				eventId: 123,
-				name: 'Test Ticket',
-				description: 'Test ticket description',
-				cost: '25.00',
-				costDetails: {
-					currencySymbol: '$',
-					currencyPosition: 'prefix',
-					currencyDecimalSeparator: '.',
-					currencyThousandSeparator: ',',
-					suffix: '',
-					values: [ 25 ],
-				},
-				salePriceData: {
-					enabled: false,
-					salePrice: '',
-					startDate: '',
-					endDate: '',
-				},
-				capacitySettings: {
-					enteredCapacity: 100,
-					isShared: false,
-				},
-				fees: {
-					availableFees: [],
-					automaticFees: [],
-					selectedFees: [],
-				},
-				provider: 'tc',
-				type: 'default',
-			} );
+			expect( result ).toEqual( makeMockExpectedResult() );
 
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: `${ restEndpoint }/1`,
 				method: 'PUT',
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 				data: expect.objectContaining( {
-					name: 'Test Ticket',
-					description: 'Test ticket description',
-					post_id: '123',
-					price: '25',
-					provider: 'tc',
+					title: 'Test Ticket',
+					content: 'Test ticket description',
+					event: 123,
+					price: 25,
 					type: 'default',
-					menu_order: '0',
+					show_description: true,
+					capacity: 100,
+					stock: 100,
+					stock_mode: 'own',
 					edit_ticket_nonce: expect.any( String ),
 				} ),
 			} );
@@ -594,15 +291,7 @@ describe( 'Ticket API', () => {
 		} );
 
 		test( 'handles ticket with sale price data', async () => {
-			const ticketWithSalePrice: TicketSettings = {
-				...mockTicketData,
-				salePriceData: {
-					enabled: true,
-					salePrice: '15.00',
-					startDate: '2024-01-01T00:00:00.000Z',
-					endDate: '2024-12-31T23:59:59.000Z',
-				},
-			};
+			const ticketWithSalePrice = makeMockTicketDataWithSalePrice();
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
@@ -612,25 +301,19 @@ describe( 'Ticket API', () => {
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
 				method: 'POST',
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 				data: expect.objectContaining( {
-					ticket: expect.objectContaining( {
-						sale_price: {
-							checked: '1',
-							price: '15.00',
-							start_date: '2024-01-01T00:00:00.000Z',
-							end_date: '2024-12-31T23:59:59.000Z',
-						},
-					} ),
+					sale_price: 15,
+					sale_price_start_date: '2024-01-01',
+					sale_price_end_date: '2024-12-31',
 				} ),
 			} );
 		} );
 
 		test( 'handles ticket with available dates', async () => {
-			const ticketWithDates: TicketSettings = {
-				...mockTicketData,
-				availableFrom: '2024-06-01T10:00:00.000Z',
-				availableUntil: '2024-06-01T18:00:00.000Z',
-			};
+			const ticketWithDates = makeMockTicketDataWithDates();
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
@@ -640,48 +323,53 @@ describe( 'Ticket API', () => {
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
 				method: 'POST',
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
 				data: expect.objectContaining( {
-					start_date: '2024-06-01',
-					end_date: '2024-06-01',
+					start_date: '2024-06-01 10:00:00',
+					end_date: '2024-06-01 18:00:00',
 				} ),
 			} );
 		} );
 
 		test( 'handles ticket with IAC', async () => {
-			const ticketWithIAC: TicketSettings = {
-				...mockTicketData,
-				iac: 'ABC123',
-			};
+			const ticketWithIAC = makeMockTicketDataWithIAC();
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
 
 			await upsertTicket( ticketWithIAC );
 
+			// IAC is not directly supported in the API, so it should not be in the request
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
 				method: 'POST',
-				data: expect.objectContaining( {
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
+				data: expect.not.objectContaining( {
 					iac: 'ABC123',
 				} ),
 			} );
 		} );
 
 		test( 'handles ticket with menu order', async () => {
-			const ticketWithMenuOrder: TicketSettings = {
-				...mockTicketData,
-				menuOrder: 5,
-			};
+			const ticketWithMenuOrder = makeMockTicketDataWithMenuOrder();
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
 
 			await upsertTicket( ticketWithMenuOrder );
 
+			// Menu order is not directly supported in the API, so it should not be in the request
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
 				method: 'POST',
-				data: expect.objectContaining( {
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': expect.any( String ),
+				} ),
+				data: expect.not.objectContaining( {
 					menu_order: '5',
 				} ),
 			} );
