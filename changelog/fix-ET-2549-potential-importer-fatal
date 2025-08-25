@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correct some logic for loading the RSVP importer. Ensure the class it extends is available.
