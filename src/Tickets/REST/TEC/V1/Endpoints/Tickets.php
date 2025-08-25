@@ -277,19 +277,22 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * @inheritDoc
 	 */
-	public function create_args(): QueryArgumentCollection {
-		return new QueryArgumentCollection();
+	public function create_args(): RequestBodyCollection {
+		$collection = new RequestBodyCollection();
+
+		$definition   = new Ticket_Request_Body_Definition();
+		$collection[] = new Definition_Parameter( $definition );
+
+		return $collection
+			->set_description_provider( fn() => __( 'The ticket data to create.', 'event-tickets' ) )
+			->set_required( true )
+			->set_example( $definition->get_example() );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function create_schema(): OpenAPI_Schema {
-		$collection = new RequestBodyCollection();
-
-		$definition   = new Ticket_Request_Body_Definition();
-		$collection[] = new Definition_Parameter( $definition );
-
 		$schema = new OpenAPI_Schema(
 			fn() => __( 'Create a Ticket', 'event-tickets' ),
 			fn() => __( 'Create a new ticket', 'event-tickets' ),
@@ -297,7 +300,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			$this->get_tags(),
 			null,
 			null,
-			$collection->set_description_provider( fn() => __( 'The ticket data to create.', 'event-tickets' ) )->set_required( true )->set_example( $definition->get_example() ),
+			$this->create_args(),
 			true
 		);
 
