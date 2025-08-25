@@ -7,14 +7,13 @@ module.exports = {
 	testMatch: [ '**/*.spec.ts', '**/*.spec.tsx' ],
 	resolver: __dirname + '/jest-resolver.js',
 	transform: {
-		'^.+.tsx?$': [
+		'^.+\\.tsx?$': [
 			'ts-jest',
 			{
 				tsconfig: {
 					allowImportingTsExtensions: true,
 					allowJs: true,
 					allowSyntheticDefaultImports: true,
-					allowUmdGlobalAccess: true,
 					alwaysStrict: true,
 					exactOptionalPropertyTypes: true,
 					baseUrl: '.',
@@ -26,9 +25,6 @@ module.exports = {
 					noImplicitReturns: true,
 					sourceMap: true,
 					target: 'esnext',
-					paths: {
-						'@tec/common/*': [ '../../common/src/resources/packages/*' ],
-					},
 				},
 			},
 		],
@@ -39,7 +35,10 @@ module.exports = {
 	moduleFileExtensions: [ 'ts', 'tsx', 'js', 'jsx' ],
 	snapshotSerializers: [ '@emotion/jest/serializer' ],
 	moduleNameMapper: {
+		// Map @tec/common to the common directory.
 		'@tec/common/(.*)$': '<rootDir>/../../common/src/resources/packages/$1',
-		'@tec/common/classy/(.*)$': '<rootDir>/../../common/src/resources/packages/classy/$1',
+
+		// Set up @tec/tickets to shorten imports in tests.
+		'@tec/tickets/(.*)$': '<rootDir>/../../src/resources/packages/$1',
 	},
 };
