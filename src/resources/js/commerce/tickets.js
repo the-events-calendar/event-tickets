@@ -1,4 +1,4 @@
-/* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers */
+/* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers, wp */
 
 /**
  * Makes sure we have all the required levels on the Tribe Object.
@@ -174,7 +174,7 @@ tribe.tickets.commerce.tickets = {};
 		event.preventDefault();
 
 		// Show confirmation dialog.
-		if ( ! confirm( 'Are you sure you want to remove this RSVP? This action cannot be undone.' ) ) {
+		if ( ! confirm( wp.i18n._x( 'Are you sure you want to remove this RSVP? This action cannot be undone.', 'Confirmation message for deleting RSVP in admin panel.', 'event-tickets' ) ) ) {
 			return;
 		}
 
@@ -335,6 +335,12 @@ tribe.tickets.commerce.tickets = {};
 				// Verify dependencies on the wrapper after updating the RSVP ID.
 				$rsvpMetabox.trigger( 'verify.dependency' );
 			}
+
+			// Hide the RSVP switch wrapper when RSVP is saved.
+			const $rsvpSwitch = $( '.tec-tickets-rsvp-switch__wrap' );
+			if ( $rsvpSwitch.length ) {
+				$rsvpSwitch.addClass( obj.selectors.hiddenElement );
+			}
 		}
 	};
 
@@ -363,6 +369,12 @@ tribe.tickets.commerce.tickets = {};
 
 				// Trigger change event to update dependent elements.
 				$rsvpEnableCheckbox.trigger( 'change' );
+			}
+
+			// Show the RSVP switch wrapper when RSVP is removed.
+			const $rsvpSwitch = $( '.tec-tickets-rsvp-switch__wrap' );
+			if ( $rsvpSwitch.length ) {
+				$rsvpSwitch.removeClass( obj.selectors.hiddenElement );
 			}
 		}
 	};
