@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Reports;
 
+use TEC\Tickets\Commerce\RSVP\Constants as RSVP_Constants;
+
 /**
  * Calculates Ticket Commerce attendance totals for a specified event (ie, how many
  * are going, not going, etc).
@@ -67,14 +69,16 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	 * @return bool
 	 */
 	protected function should_count( \Tribe__Tickets__Ticket_Object $ticket ) {
-		$should_count = 'Tribe__Tickets__RSVP' !== $ticket->provider_class;
+		// Exclude legacy RSVP provider and TC RSVP tickets from sales counts
+		$should_count = 'Tribe__Tickets__RSVP' !== $ticket->provider_class
+		                && RSVP_Constants::TC_RSVP_TYPE !== $ticket->type();
 
 		/**
 		 * Determine if the provided ticket object should be used when building
 		 * sales counts.
 		 *
 		 * By default, tickets belonging to the Tribe__Tickets__RSVP provider
-		 * are not to be counted.
+		 * and TC RSVP tickets are not to be counted.
 		 *
 		 * @since 4.7
 		 *

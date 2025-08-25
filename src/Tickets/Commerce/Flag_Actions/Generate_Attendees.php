@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Traits\Is_RSVP;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Utils__Array as Arr;
 
@@ -22,6 +23,7 @@ use Tribe__Utils__Array as Arr;
 class Generate_Attendees extends Flag_Action_Abstract {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * {@inheritDoc}
@@ -96,7 +98,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
 		foreach ( $order->items as $item ) {
-			if ( ! $this->is_ticket( $item ) ) {
+			if ( ! $this->is_ticket( $item ) && ! $this->is_rsvp( $item ) ) {
 				continue;
 			}
 
@@ -138,6 +140,18 @@ class Generate_Attendees extends Flag_Action_Abstract {
 					'currency'      => Arr::get( $item, 'currency', $default_currency ),
 					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i ),
 				];
+
+				// Add RSVP status for RSVP tickets.
+				if ( $this->is_rsvp( $item ) ) {
+					$order_status = Arr::get( $item, [ 'extra', 'order_status' ] );
+					
+					// Only allow 'no' status if the ticket has show_not_going enabled.
+					if ( 'no' === $order_status && ! empty( $ticket->show_not_going ) ) {
+						$args['rsvp_status'] = 'no';
+					} elseif ( 'yes' === $order_status ) {
+						$args['rsvp_status'] = 'yes';
+					}
+				}
 
 				/**
 				 * Filters the attendee data before it is saved.
