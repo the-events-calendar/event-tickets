@@ -763,14 +763,18 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ], 20 );
 
 		// CSV Import options.
-		if ( class_exists( 'Tribe__Events__Aggregator__Record__CSV', false ) ) {
+		if ( class_exists( 'Tribe__Events__Main', false ) ) {
 			add_filter( 'tribe_events_import_options_rows', [ Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ] );
 			add_filter( 'tribe_aggregator_csv_post_types', [ Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_csv_post_types' ] );
 			add_filter( 'tribe_aggregator_csv_column_mapping', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_mapping' ] );
 			add_filter( 'tribe_event_import_rsvp_tickets_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
-			add_filter( 'tribe_events_import_rsvp_tickets_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
 
 			add_action( 'tribe_tickets_ticket_deleted', [ 'Tribe__Tickets__Attendance', 'delete_attendees_caches' ] );
+		}
+
+		// Add the RSVP importer if the File_Importer class is present.
+		if ( class_exists( 'Tribe__Events__Importer__File_Importer' ) ) {
+			add_filter( 'tribe_events_import_rsvp_tickets_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
 		}
 
 		/**
