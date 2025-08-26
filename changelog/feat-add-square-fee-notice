@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Adds a notice about the 2% fee when using the free Square payment gateway integration. [ET-2548]
