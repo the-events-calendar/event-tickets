@@ -1,4 +1,0 @@
-Significance: patch
-Type: performance
-
-Cache Views v2 ticket models preferably during updates to speed up frontend. [ETP-1021]
