@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import apiFetch from '@wordpress/api-fetch';
-import { fetchTickets, fetchTicketsForPost, upsertTicket } from '@tec/tickets/classy/api';
+import { fetchTickets, fetchTicketsForPost, upsertTicket, deleteTicket } from '@tec/tickets/classy/api';
 import { makeMockApiTickets } from '../_support/mockApiTickets';
 import { makeMockMappedTickets } from '../_support/mockMappedTickets';
 import {
@@ -373,6 +373,108 @@ describe( 'Ticket API', () => {
 					menu_order: '5',
 				} ),
 			} );
+		} );
+	} );
+
+	describe( 'deleteTicket', () => {
+		test( 'deletes a ticket successfully', async () => {
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockResolvedValueOnce( undefined );
+
+			await deleteTicket( 123 );
+
+			expect( apiFetch ).toHaveBeenCalledWith( {
+				path: `${ restEndpoint }/123`,
+				method: 'DELETE',
+				headers: expect.objectContaining( {
+					'X-TEC-EEA': tecExperimentalHeader,
+				} ),
+				data: {
+					remove_ticket_nonce: expect.any( String ),
+				},
+			} );
+		} );
+
+		test( 'rejects when apiFetch throws an error', async () => {
+			const apiError = new Error( 'Network error' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Network error' );
+		} );
+
+		test( 'rejects when ticket ID is invalid', async () => {
+			const apiError = new Error( 'Ticket not found' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 999 ) ).rejects.toThrow( 'Failed to delete ticket: Ticket not found' );
+		} );
+
+		test( 'rejects when server returns 500 error', async () => {
+			const apiError = new Error( 'Internal Server Error' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Internal Server Error' );
+		} );
+
+		test( 'rejects when server returns 403 error', async () => {
+			const apiError = new Error( 'Forbidden' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Forbidden' );
+		} );
+
+		test( 'rejects when server returns 401 error', async () => {
+			const apiError = new Error( 'Unauthorized' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Unauthorized' );
+		} );
+
+		test( 'rejects when server returns 400 error', async () => {
+			const apiError = new Error( 'Bad Request' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Bad Request' );
+		} );
+
+		test( 'rejects when server returns 404 error', async () => {
+			const apiError = new Error( 'Not Found' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Not Found' );
+		} );
+
+		test( 'rejects when server returns timeout error', async () => {
+			const apiError = new Error( 'Request timeout' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Request timeout' );
+		} );
+
+		test( 'rejects when server returns connection error', async () => {
+			const apiError = new Error( 'Connection refused' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow( 'Failed to delete ticket: Connection refused' );
+		} );
+
+		test( 'rejects when server returns JSON parse error', async () => {
+			const apiError = new Error( 'Unexpected token < in JSON at position 0' );
+			// @ts-ignore
+			( apiFetch as jest.Mock ).mockRejectedValueOnce( apiError );
+
+			await expect( deleteTicket( 123 ) ).rejects.toThrow(
+				'Failed to delete ticket: Unexpected token < in JSON at position 0'
+			);
 		} );
 	} );
 } );
