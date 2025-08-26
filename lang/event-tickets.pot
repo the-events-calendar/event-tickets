@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.26.0\n"
+"Project-Id-Version: Event Tickets 5.26.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-18T16:57:13+00:00\n"
+"POT-Creation-Date: 2025-08-26T18:40:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: src/Tickets/Admin/Tickets/Page.php:403
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:87
-#: src/Tribe/Main.php:889
+#: src/Tribe/Main.php:881
 #: src/Tribe/Privacy.php:59
 #: src/views/emails/template-parts/body/footer/credit.php:41
 msgid "Event Tickets"
@@ -117,7 +117,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:343
 #: src/Tribe/Admin/Notices.php:209
-#: src/Tribe/Main.php:864
+#: src/Tribe/Main.php:856
 msgid "Event Tickets Plus"
 msgstr ""
 
@@ -12133,7 +12133,7 @@ msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
 #: src/Tribe/Admin/Home/Service_Provider.php:80
-#: src/Tribe/Main.php:1029
+#: src/Tribe/Main.php:1021
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -12883,18 +12883,18 @@ msgstr ""
 msgid "Standard tickets are not yet supported on recurring events. %1$s"
 msgstr ""
 
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:150
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:217
 msgctxt "events rsvp full (v2)"
 msgid "Currently full"
 msgstr ""
 
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:152
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:219
 msgctxt "events stock sold out (v2)"
 msgid "Sold Out"
 msgstr ""
 
 #. translators: %1$s: Number of stock
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:193
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:260
 #, php-format
 msgid "%1$s spot left"
 msgid_plural "%1$s spots left"
@@ -12902,7 +12902,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:196
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:264
 #, php-format
 msgid "%1$s %2$s left"
 msgid_plural "%1$s %3$s left"
@@ -12910,14 +12910,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: RSVP singular label.
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:207
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:277
 #, php-format
 msgctxt "list view rsvp now ticket button"
 msgid "%s Now"
 msgstr ""
 
 #. Translators: Tickets plural label.
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:211
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:281
 #, php-format
 msgctxt "list view buy now ticket button"
 msgid "Get %s"
@@ -12944,70 +12944,70 @@ msgstr ""
 msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:819
+#: src/Tribe/Main.php:811
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:821
+#: src/Tribe/Main.php:813
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:822
+#: src/Tribe/Main.php:814
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:823
+#: src/Tribe/Main.php:815
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:824
+#: src/Tribe/Main.php:816
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:841
+#: src/Tribe/Main.php:833
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:843
+#: src/Tribe/Main.php:835
 #, php-format
 msgctxt "help feature box section"
 msgid "We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:860
+#: src/Tribe/Main.php:852
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:861
+#: src/Tribe/Main.php:853
 #, php-format
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:863
+#: src/Tribe/Main.php:855
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:865
+#: src/Tribe/Main.php:857
 #, php-format
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:867
-#: src/Tribe/Main.php:872
+#: src/Tribe/Main.php:859
+#: src/Tribe/Main.php:864
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:868
+#: src/Tribe/Main.php:860
 #, php-format
 msgid "Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:873
+#: src/Tribe/Main.php:865
 #, php-format
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:1205
+#: src/Tribe/Main.php:1197
 msgid "Buy"
 msgstr ""
 
