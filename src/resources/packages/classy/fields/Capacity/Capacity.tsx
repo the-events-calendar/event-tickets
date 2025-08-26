@@ -109,16 +109,6 @@ export default function Capacity( props: CapacityProps ): JSX.Element {
 				/>
 			}
 
-			{ /* todo: This control should be part of Seating component */ }
-			<RadioControl
-				className="classy-field__control classy-field__control--radio"
-				onChange={ ( value: string ) => onValueChange( 'admissionType', value ) }
-				selected={ currentValue?.admissionType || 'general-admission' }
-				label={ _x( 'Select a capacity type', 'Label for the capacity type selection', 'event-tickets' ) }
-				hideLabelFromVision={ true }
-				options={ capacityOptions }
-			/>
-
 			<LabeledInput label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }>
 				<InputControl
 					__next40pxDefaultSize={ true }
@@ -184,18 +174,6 @@ export default function Capacity( props: CapacityProps ): JSX.Element {
 					} }
 				/>
 			}
-
-			{ /* todo: this should be part of ET+ */ }
-			<ToggleControl
-				label={ _x(
-					'Share capacity with other tickets',
-					'Label for sharing capacity toggle',
-					'event-tickets'
-				) }
-				__nextHasNoMarginBottom={ true }
-				checked={ currentValue.isShared }
-				onChange={ ( value: boolean ) => onValueChange( 'isShared', value ) }
-			/>
 		</div>
 	);
 }
