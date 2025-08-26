@@ -64,7 +64,7 @@ describe( 'Ticket API', () => {
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: createExpectedPath( restEndpoint, { event: 123 } ),
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 			} );
 		} );
@@ -134,7 +134,7 @@ describe( 'Ticket API', () => {
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: createExpectedPath( restEndpoint, params ),
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 			} );
 		} );
@@ -149,7 +149,7 @@ describe( 'Ticket API', () => {
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 			} );
 		} );
@@ -172,7 +172,7 @@ describe( 'Ticket API', () => {
 				path: restEndpoint,
 				method: 'POST',
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.objectContaining( {
 					title: 'Test Ticket',
@@ -201,7 +201,7 @@ describe( 'Ticket API', () => {
 				path: `${ restEndpoint }/1`,
 				method: 'PUT',
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.objectContaining( {
 					title: 'Test Ticket',
@@ -302,7 +302,7 @@ describe( 'Ticket API', () => {
 				path: restEndpoint,
 				method: 'POST',
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.objectContaining( {
 					sale_price: 15,
@@ -324,7 +324,7 @@ describe( 'Ticket API', () => {
 				path: restEndpoint,
 				method: 'POST',
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.objectContaining( {
 					start_date: '2024-06-01 10:00:00',
@@ -346,7 +346,7 @@ describe( 'Ticket API', () => {
 				path: restEndpoint,
 				method: 'POST',
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.not.objectContaining( {
 					iac: 'ABC123',
@@ -367,7 +367,7 @@ describe( 'Ticket API', () => {
 				path: restEndpoint,
 				method: 'POST',
 				headers: expect.objectContaining( {
-					'X-TEC-EEA': expect.any( String ),
+					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.not.objectContaining( {
 					menu_order: '5',

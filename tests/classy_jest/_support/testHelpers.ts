@@ -16,7 +16,8 @@ export const createExpectedPath = ( basePath: string, queryArgs: Record< string,
  * Test constants for API endpoints.
  */
 export const TEST_CONSTANTS = {
-	tecExperimentalHeader: 'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
+	tecExperimentalHeader:
+		'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
 	restEndpoint: '/tec/v1/tickets',
 	restUrl: 'https://example.com/wp-json/tec/v1/tickets',
 } as const;
