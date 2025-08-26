@@ -84,7 +84,7 @@ class Settings extends Abstract_Settings {
 		);
 
 		$square_message = sprintf(
-			// Translators: %1$s: The Event Tickets Plus link.
+			// Translators: %1$s: The Event Tickets Plus link - reads "Learn More".
 			esc_html__( 'You are using the free Square payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link_faq
 		);
