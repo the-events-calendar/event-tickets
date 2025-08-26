@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.26.1] 2025-08-26
+
+* Fix - Correct some logic for loading the RSVP importer. Ensure the class it extends is available.
+* Performance - Cache Views v2 ticket models preferably during updates to speed up frontend. [ETP-1021]
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.26.0.1] 2025-08-20
 
 * Fix - Ensures the Actions Scheduler Logs table is present before attempting to use it. [TCMN-190]
