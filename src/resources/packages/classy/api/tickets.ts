@@ -171,7 +171,7 @@ export const upsertTicket = async ( ticketData: TicketSettings ): Promise< Ticke
  */
 export const deleteTicket = async ( ticketId: number ): Promise< void > => {
 	return new Promise< void >( async ( resolve, reject ) => {
-		await apiFetch( {
+		await fetch( {
 			path: `${ apiBaseUrl }/${ ticketId }`,
 			method: 'DELETE',
 			data: {
