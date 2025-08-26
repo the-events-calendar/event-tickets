@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tec/calendar-embed",
+  "version": "0.1.0",
+  "title": "RSVP Title",
+  "category": "tec-tickets",
+  "supports": {
+    "html": true
+  },
+  "editorStyle": "file:./index.css",
+  "attributes": {
+    "message": {
+      "type": "string",
+      "default": "Hello from a dynamic block!"
+    }
+  },
+  "example": {
+    "attributes": {
+      "message": "Example Dynamic Block"
+    }
+  },
+  "textdomain": "events-tickets",
+  "editorScript": "file:./index.js",
+  "keywords": [
+    "tickets",
+    "rsvp",
+    "dates"
+  ],
+  "render": "file:./render.php"
+}
