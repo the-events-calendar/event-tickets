@@ -80,7 +80,6 @@ export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<
 	return new Promise< GetTicketsApiResponse >( async ( resolve, reject ) => {
 		await fetch( { path: path } )
 			.then( ( data ) => {
-				console.log( 'Fetched tickets data:', data );
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( 'Failed to fetch tickets: response did not return an object.' ) );
 				} else {
