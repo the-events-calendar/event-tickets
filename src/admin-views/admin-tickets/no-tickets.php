@@ -3,6 +3,7 @@
  * No Tickets screen.
  *
  * @since 5.14.0
+ * @since TBD Removed the page title to avoid duplication.
  *
  * @version 5.14.0
  *
