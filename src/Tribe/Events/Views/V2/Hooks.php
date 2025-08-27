@@ -132,7 +132,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Hooked on the clean post cache action, this will regenerate model caches for the given post
 	 * or Event post connected to the post.
 	 *
-	 * @since TBD
+	 * @since 5.26.1
 	 *
 	 * @param int $post_id The post ID. It could be any post type, not just events.
 	 *

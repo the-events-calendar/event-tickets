@@ -63,7 +63,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * A flag indicating whether the data for the model is cached or not.
 	 *
-	 * @since TBD
+	 * @since 5.26.1
 	 *
 	 * @var true
 	 */
@@ -83,7 +83,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * Regenerates the caches for the models associated with the post ID.
 	 *
-	 * @since TBD
+	 * @since 5.26.1
 	 *
 	 * @param int $post_id The post ID. It could be any post type, not just events.
 	 *
@@ -451,7 +451,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * Primes the model cache from the key-value cache, if possible.
 	 *
-	 * @since TBD
+	 * @since 5.26.1
 	 *
 	 * @return void
 	 */
@@ -476,7 +476,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * Returns the model cache key used to store it in the key-value cache.
 	 *
-	 * @since TBD
+	 * @since 5.26.1
 	 *
 	 * @param int $post_id The post ID to provide the cache key for.
 	 *
@@ -489,7 +489,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * Primes the key-value cache for the model.
 	 *
-	 * @since TBD
+	 * @since 5.26.1
 	 *
 	 * @return void
 	 */
