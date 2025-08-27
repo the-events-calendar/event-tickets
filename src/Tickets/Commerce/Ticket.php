@@ -648,7 +648,7 @@ class Ticket extends Ticket_Data {
 		}
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
-		update_post_meta( $ticket->ID, '_type', $ticket->type() ?? 'default' );
+		update_post_meta( $ticket->ID, '_type', $raw_data['ticket_type'] ?? 'default' );
 
 		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		tribe( Module::class )->update_capacity( $ticket, $ticket_data, $save_type );

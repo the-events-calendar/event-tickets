@@ -150,6 +150,7 @@ class Hooks extends Service_Provider {
 
 		add_filter( 'tec_tickets_all_tickets_table_provider_options', [ $this, 'filter_all_tickets_table_provider_options' ] );
 		add_filter( 'tec_tickets_all_tickets_table_event_meta_keys', [ $this, 'filter_all_tickets_table_event_meta_keys' ] );
+		add_filter( 'tec_tc_order_report_args', [ $this, 'filter_order_report_args_for_rsvp' ] );
 	}
 
 	/**
@@ -329,6 +330,25 @@ class Hooks extends Service_Provider {
 				'key'     => Order::$purchaser_user_id_meta_key,
 				'value'   => $customer_filter,
 				'compare' => '=',
+			];
+		}
+
+		/**
+		 * Filters whether to show RSVP orders by default.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_rsvp_by_default Whether to show RSVP orders by default. Default true.
+		 */
+		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
+
+		$rsvp_filter = tribe_get_request_var( 'tec_tc_show_rsvp', $show_rsvp_by_default ? 'yes' : 'no' );
+
+		if ( 'no' === $rsvp_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$items_meta_key,
+				'value'   => 'tc-rsvp',
+				'compare' => 'NOT LIKE',
 			];
 		}
 
@@ -1186,5 +1206,46 @@ class Hooks extends Service_Provider {
 			default:
 				return;
 		}
+	}
+
+	/**
+	 * Filters the order report arguments to exclude RSVP orders when configured to hide them.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $arguments The arguments used to fetch the orders.
+	 *
+	 * @return array The filtered arguments.
+	 */
+	public function filter_order_report_args_for_rsvp( $arguments ) {
+		/**
+		 * Filters whether to show RSVP orders by default.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_rsvp_by_default Whether to show RSVP orders by default. Default false.
+		 */
+		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
+
+		// Only apply the filter if we're hiding RSVPs (default behavior)
+		if ( ! $show_rsvp_by_default ) {
+			// Add a meta query to exclude orders containing RSVP items
+			if ( ! isset( $arguments['meta_query'] ) ) {
+				$arguments['meta_query'] = [];
+			}
+
+			$arguments['meta_query'][] = [
+				'key'     => Order::$items_meta_key,
+				'value'   => 'tc-rsvp',
+				'compare' => 'NOT LIKE',
+			];
+
+			// Ensure proper relation if multiple meta queries exist
+			if ( count( $arguments['meta_query'] ) > 1 && ! isset( $arguments['meta_query']['relation'] ) ) {
+				$arguments['meta_query']['relation'] = 'AND';
+			}
+		}
+
+		return $arguments;
 	}
 }
