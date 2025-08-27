@@ -135,7 +135,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	 *
 	 * @return QueryArgumentCollection
 	 */
-	public function read_args(): QueryArgumentCollection {
+	public function read_params(): QueryArgumentCollection {
 		return new QueryArgumentCollection();
 	}
 
@@ -149,7 +149,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			$this->get_operation_id( 'read' ),
 			$this->get_tags(),
 			$this->get_path_parameters(),
-			$this->read_args()
+			$this->read_params()
 		);
 
 		$response = new Definition_Parameter(
@@ -181,7 +181,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 	/**
 	 * @inheritDoc
 	 */
-	public function update_args(): RequestBodyCollection {
+	public function update_params(): RequestBodyCollection {
 		$definition = new Ticket_Request_Body_Definition();
 
 		$collection = new RequestBodyCollection();
@@ -205,7 +205,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			$this->get_tags(),
 			$this->get_path_parameters(),
 			null,
-			$this->update_args(),
+			$this->update_params(),
 			true
 		);
 
@@ -255,7 +255,7 @@ class Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 			$this->get_operation_id( 'delete' ),
 			$this->get_tags(),
 			$this->get_path_parameters(),
-			$this->delete_args(),
+			$this->delete_params(),
 			null,
 			true
 		);

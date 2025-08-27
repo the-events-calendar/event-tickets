@@ -125,7 +125,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			$this->get_operation_id( 'read' ),
 			$this->get_tags(),
 			null,
-			$this->read_args()
+			$this->read_params()
 		);
 
 		$headers_collection = new HeadersCollection();
@@ -194,7 +194,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	 *
 	 * @return QueryArgumentCollection
 	 */
-	public function read_args(): QueryArgumentCollection {
+	public function read_params(): QueryArgumentCollection {
 		$collection = new QueryArgumentCollection();
 
 		$collection[] = new Positive_Integer(
@@ -277,7 +277,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	/**
 	 * @inheritDoc
 	 */
-	public function create_args(): RequestBodyCollection {
+	public function create_params(): RequestBodyCollection {
 		$collection = new RequestBodyCollection();
 
 		$definition   = new Ticket_Request_Body_Definition();
@@ -300,7 +300,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			$this->get_tags(),
 			null,
 			null,
-			$this->create_args(),
+			$this->create_params(),
 			true
 		);
 

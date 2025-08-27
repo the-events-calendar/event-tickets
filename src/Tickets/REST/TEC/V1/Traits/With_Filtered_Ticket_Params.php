@@ -53,22 +53,22 @@ trait With_Filtered_Ticket_Params {
 		if ( ! $event_id ) {
 			throw InvalidRestArgumentException::create(
 				// translators: 1) is the name of the parameter.
-				sprintf( __( 'The parameter `{%1$s}` is missing.', 'event-tickets' ), 'event' ),
+				sprintf( __( 'The argument `{%1$s}` is missing.', 'event-tickets' ), 'event' ),
 				'event',
-				'tec_rest_invalid_event_parameter',
+				'tec_rest_invalid_event_argument',
 				// translators: 1) is the name of the parameter.
-				sprintf( __( 'The parameter `{%1$s}` is missing.', 'event-tickets' ), 'event' )
+				sprintf( __( 'The argument `{%1$s}` is missing.', 'event-tickets' ), 'event' )
 			);
 		}
 
 		if ( ! in_array( get_post_type( $event_id ), (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
 			throw InvalidRestArgumentException::create(
 				// translators: 1) is the name of the parameter.
-				sprintf( __( 'The parameter `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' ),
+				sprintf( __( 'The argument `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' ),
 				'event',
-				'tec_rest_invalid_event_parameter',
+				'tec_rest_invalid_event_argument',
 				// translators: 1) is the name of the parameter.
-				sprintf( __( 'The parameter `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' )
+				sprintf( __( 'The argument `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' )
 			);
 		}
 
@@ -162,11 +162,11 @@ trait With_Filtered_Ticket_Params {
 		if ( is_object( $new_params['ticket_sale_price'] ) ) {
 			throw InvalidRestArgumentException::create(
 				// translators: 1) is the name of the parameter.
-				sprintf( __( 'The parameter `{%1$s}` must be a number.', 'event-tickets' ), 'sale_price' ),
+				sprintf( __( 'The argument `{%1$s}` must be a number.', 'event-tickets' ), 'sale_price' ),
 				'sale_price',
-				'tec_rest_invalid_sale_price_parameter',
+				'tec_rest_invalid_sale_price_argument',
 				// translators: 1) is the name of the parameter.
-				sprintf( __( 'The parameter `{%1$s}` must be a number.', 'event-tickets' ), 'sale_price' )
+				sprintf( __( 'The argument `{%1$s}` must be a number.', 'event-tickets' ), 'sale_price' )
 			);
 		}
 
