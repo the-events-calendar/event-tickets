@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\Commerce\Traits\Is_RSVP;
 use Tribe__Date_Utils;
 use WP_Post;
 use WP_User;
@@ -34,6 +35,7 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
 class Orders_Table extends WP_Posts_List_Table {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * The current post ID
@@ -228,6 +230,23 @@ class Orders_Table extends WP_Posts_List_Table {
 
 		$status_links = [];
 		$num_posts    = wp_count_posts( $post_type, 'readable' );
+
+		// Check if RSVP orders should be excluded from counts
+		/**
+		 * Filters whether to show RSVP orders by default in the admin order list.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_rsvp_by_default Whether to show RSVP orders by default. Default false.
+		 */
+		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
+		$rsvp_filter = tribe_get_request_var( 'tec_tc_show_rsvp', $show_rsvp_by_default ? 'yes' : 'no' );
+
+		// Adjust counts if hiding RSVP orders.
+		if ( 'no' === $rsvp_filter ) {
+			$num_posts = $this->adjust_counts_excluding_rsvp_orders( $num_posts );
+		}
+
 		$total_posts  = array_sum( (array) $num_posts );
 		$class        = '';
 		$all_args     = [ 'post_type' => $post_type ];
@@ -450,8 +469,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
-			// Check if 'type' exists and proceed only if it's empty or equals 'ticket'.
-			if ( ! $this->is_ticket( $cart_item ) ) {
+			if ( ! $this->is_ticket( $cart_item ) && ! $this->is_rsvp( $cart_item ) ) {
 				continue;
 			}
 
@@ -752,7 +770,7 @@ class Orders_Table extends WP_Posts_List_Table {
 					]
 				);
 				?>
-				<a href="<?php echo esc_url( remove_query_arg( [ 'tec_tc_date_range_from', 'tec_tc_date_range_to', 'tec_tc_gateway', 'tec_tc_events', 'tec_tc_customers' ] ) ); ?>">
+				<a href="<?php echo esc_url( remove_query_arg( [ 'tec_tc_date_range_from', 'tec_tc_date_range_to', 'tec_tc_gateway', 'tec_tc_events', 'tec_tc_customers', 'tec_tc_show_rsvp' ] ) ); ?>">
 					<?php esc_html_e( 'Clear All', 'event-tickets' ); ?>
 				</a>
 				<?php
@@ -1035,5 +1053,47 @@ class Orders_Table extends WP_Posts_List_Table {
 			<?php endforeach; ?>
 		</select>
 		<?php
+	}
+
+	/**
+	 * Adjusts the post counts to exclude RSVP orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $num_posts The post counts object.
+	 *
+	 * @return object The adjusted post counts.
+	 */
+	protected function adjust_counts_excluding_rsvp_orders( $num_posts ) {
+		global $wpdb;
+
+		// Get counts of RSVP orders by status
+		$rsvp_counts = $wpdb->get_results( $wpdb->prepare(
+			"SELECT p.post_status, COUNT(*) as count
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+			WHERE p.post_type = %s
+			AND pm.meta_key = %s
+			AND pm.meta_value LIKE %s
+			GROUP BY p.post_status",
+			Order::POSTTYPE,
+			Order::$items_meta_key,
+			'%tc-rsvp%'
+		) );
+
+		// Convert results to an associative array
+		$rsvp_counts_by_status = [];
+		foreach ( $rsvp_counts as $count_data ) {
+			$rsvp_counts_by_status[ $count_data->post_status ] = (int) $count_data->count;
+		}
+
+		// Subtract RSVP counts from each status
+		foreach ( get_object_vars( $num_posts ) as $status => $count ) {
+			if ( isset( $rsvp_counts_by_status[ $status ] ) ) {
+				$num_posts->$status = max( 0, $count - $rsvp_counts_by_status[ $status ] );
+			}
+		}
+
+		return $num_posts;
 	}
 }

@@ -301,14 +301,16 @@ class RSVP_Cart extends Abstract_Cart {
 		unset( $extra_data['type'] );
 
 		// Add the item to the array of items.
-		$this->items[ $item_id ] = new Cart_Item(
-			[
-				"{$type}_id" => $item_id,
-				'quantity'   => $quantity,
-				'type'       => $type,
-				'extra'      => $extra_data ?? [],
-			]
-		);
+		$item_data = [
+			'ticket_id'  => $item_id,
+			'quantity'   => $quantity,
+			'type'       => $type,
+			'extra'      => $extra_data ?? [],
+			'tc-rsvp_id' => $item_id,
+		];
+		
+
+		$this->items[ $item_id ] = new Cart_Item( $item_data );
 
 		$this->reset_calculations();
 	}
@@ -480,8 +482,15 @@ class RSVP_Cart extends Abstract_Cart {
 	 * @return ?array The item in the cart with the full set of parameters.
 	 */
 	protected function add_params( $item ) {
+		// Extract the ticket ID from the appropriate field.
+		$ticket_id = $item['tc-rsvp_id'] ?? $item['ticket_id'] ?? null;
+		
+		if ( ! $ticket_id ) {
+			return null;
+		}
+
 		// Try to get the ticket object, and if it's not valid, remove it from the cart.
-		$item['obj'] = Tickets::load_ticket_object( $item['tc-rsvp_id'] );
+		$item['obj'] = Tickets::load_ticket_object( $ticket_id );
 		if ( ! $item['obj'] instanceof Ticket_Object ) {
 			return null;
 		}
@@ -489,11 +498,10 @@ class RSVP_Cart extends Abstract_Cart {
 		$sub_total_value = Value::create();
 		$sub_total_value->set_value( $item['obj']->price );
 
-		$item['event_id']  = $item['obj']->get_event_id();
-		//@todo why is the tc-rsvp_id? track the source and make it ticket_id.
-		$item['ticket_id']  = $item['tc-rsvp_id'];
-		$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-		$item['type']      = Constants::TC_RSVP_TYPE;
+		$item['event_id']   = $item['obj']->get_event_id();
+		$item['ticket_id']  = $ticket_id;
+		$item['sub_total']  = $sub_total_value->sub_total( $item['quantity'] );
+		$item['type']       = Constants::TC_RSVP_TYPE;
 
 		return $item;
 	}
