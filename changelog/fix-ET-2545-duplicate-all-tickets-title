@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Remove duplicate page title from the All Tickets page. [ET-2545]
