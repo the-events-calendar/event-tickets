@@ -5,7 +5,7 @@
  * @since 5.14.0
  * @since TBD Removed the page title to avoid duplication.
  *
- * @version 5.14.0
+ * @version TBD
  *
  * @var \Tribe__Template  $this           Current template object.
  * @var bool              $tickets_exist  Whether tickets exist.
