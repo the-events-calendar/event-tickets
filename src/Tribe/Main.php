@@ -18,7 +18,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.26.0.1';
+	const VERSION = '5.26.1';
 
 	/**
 	 * Used to store the version history.
@@ -733,14 +733,14 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * set up hooks for this class
+	 * Set up hooks for this class.
 	 */
 	public function hooks() {
 		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domain' ] );
 
 		add_action( 'init', [ $this, 'init' ] );
 
-		// connect upgrade script
+		// Connect upgrade script.
 		add_action( 'init', [ $this, 'run_updates' ], 0, 0 );
 
 		add_filter( 'tribe_post_types', [ $this, 'inject_post_types' ] );
@@ -752,36 +752,29 @@ class Tribe__Tickets__Main {
 		add_filter( 'tribe_support_registered_template_systems', [ $this, 'add_template_updates_check' ] );
 		add_action( 'tec_tickets_fully_loaded', [ 'Tribe__Support', 'getInstance' ] );
 
-		// Setup Front End Display
+		// Setup Front End Display.
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
 
-		// Hook to oEmbeds
+		// Hook to oEmbeds.
 		add_action( 'tribe_events_embed_after_the_cost_value', [ $this, 'inject_buy_button_into_oembed' ] );
 		add_action( 'embed_head', [ $this, 'embed_head' ] );
 
-		// Attendee screen enhancements
+		// Attendee screen enhancements.
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ], 20 );
 
-		// CSV Import options
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
+		// CSV Import options.
+		if ( class_exists( 'Tribe__Events__Main', false ) ) {
 			add_filter( 'tribe_events_import_options_rows', [ Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ] );
 			add_filter( 'tribe_aggregator_csv_post_types', [ Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_csv_post_types' ] );
 			add_filter( 'tribe_aggregator_csv_column_mapping', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_mapping' ] );
 			add_filter( 'tribe_event_import_rsvp_tickets_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
-			add_filter( 'tribe_events_import_rsvp_tickets_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
-			add_action( 'tribe_tickets_ticket_deleted', [ 'Tribe__Tickets__Attendance', 'delete_attendees_caches' ] );
 
-			/**
-			 * Hooking to "rsvp" to fetch an importer to fetch Column names is deprecated
-			 *
-			 * These are kept in place during the transition from the old CSV importer to the new importer
-			 * driven by Event Aggregator. We should remove these hooks when the old CSV interface gets
-			 * retired completely.
-			 *
-			 * @todo remove these two hooks when the old CSV interface is retired, maybe 5.0?
-			 */
-			add_filter( 'tribe_events_import_rsvp_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
-			add_filter( 'tribe_event_import_rsvp_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
+			add_action( 'tribe_tickets_ticket_deleted', [ 'Tribe__Tickets__Attendance', 'delete_attendees_caches' ] );
+		}
+
+		// Add the RSVP importer if the File_Importer class is present.
+		if ( class_exists( 'Tribe__Events__Importer__File_Importer' ) ) {
+			add_filter( 'tribe_events_import_rsvp_tickets_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
 		}
 
 		/**
@@ -792,7 +785,6 @@ class Tribe__Tickets__Main {
 		 * @see \Tribe__Tickets__Assets::enqueue_editor_scripts()
 		 * @see \Tribe__Tickets__Assets::add_data_strings()
 		 */
-
 		add_action( 'init', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'init', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
