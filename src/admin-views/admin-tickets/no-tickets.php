@@ -32,9 +32,6 @@ $content         = sprintf(
 );
 
 ?>
-<h1>
-	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
-</h1>
 <div class="tec-tickets-admin-tickets-no-tickets-wrap">
 	<div class="tec-tickets-admin-tickets-no-tickets-inner-wrap">
 		<div>
