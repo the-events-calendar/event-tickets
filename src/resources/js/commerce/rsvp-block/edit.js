@@ -1,18 +1,17 @@
 /**
- * useBlockProps is a React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
- *
- * RichText is a component that allows developers to render a contenteditable input,
- * providing users with the option to format block content to make it bold, italics,
- * linked, or use other formatting.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/richtext/
+ * External dependencies
  */
-import { useBlockProps, RichText } from '@wordpress/block-editor';
-import { useSelect } from '@wordpress/data';
+import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
+import { useState, useEffect } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
+import SetupCard from './components/setup-card';
+import RSVPForm from './components/rsvp-form';
+import './edit.pcss';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -20,28 +19,91 @@ import { __ } from '@wordpress/i18n';
  *
  * @param {Object}   param0
  * @param {Object}   param0.attributes
- * @param {string}   param0.attributes.message
  * @param {Function} param0.setAttributes
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes: { message }, setAttributes } ) {
-	const { title } = useSelect(
-		( select ) => select( 'core' ).getSite() ?? {}
+export default function Edit( { attributes, setAttributes } ) {
+	const [ isSettingUp, setIsSettingUp ] = useState( false );
+	const { rsvpId, limit } = attributes;
+	
+	// Check if RSVP already exists (has an ID)
+	useEffect( () => {
+		if ( rsvpId ) {
+			setIsSettingUp( true );
+		}
+	}, [ rsvpId ] );
+
+	const handleLimitChange = ( newLimit ) => {
+		setAttributes( { limit: newLimit } );
+	};
+
+	const handleCancel = () => {
+		// Only allow cancel if no RSVP ID exists yet
+		if ( ! rsvpId ) {
+			setIsSettingUp( false );
+		}
+	};
+
+	const leftColumnContent = (
+		<div className="tec-rsvp-block__setup-info">
+			<h2 className="tec-rsvp-block__setup-title">
+				{ __( 'Add an RSVP', 'event-tickets' ) }
+			</h2>
+			<p className="tec-rsvp-block__setup-description">
+				{ __( 'Allow users to confirm their attendance.', 'event-tickets' ) }
+			</p>
+		</div>
+	);
+
+	const rightColumnContent = (
+		<div className="tec-rsvp-block__setup-actions">
+			<Button
+				variant="primary"
+				size="large"
+				onClick={ () => setIsSettingUp( true ) }
+			>
+				{ __( 'Add RSVP', 'event-tickets' ) }
+			</Button>
+		</div>
 	);
 
 	return (
-		<p { ...useBlockProps() }>
-			<RichText
-				tagName="span"
-				value={ message }
-				onChange={ ( newMessage ) =>
-					setAttributes( { message: newMessage } )
-				}
-			/>
-			<span>
-				{ ' ' }
-				| { title ?? __( 'loading…', 'block-development-examples' ) }
-			</span>
-		</p>
+		<div { ...useBlockProps() }>
+			{ ! isSettingUp && ! rsvpId ? (
+				<SetupCard
+					leftColumn={ leftColumnContent }
+					rightColumn={ rightColumnContent }
+					className="tec-rsvp-block__initial-setup"
+				/>
+			) : (
+				<>
+					<RSVPForm
+						rsvpId={ rsvpId }
+						limit={ limit }
+						onLimitChange={ handleLimitChange }
+						attributes={ attributes }
+					/>
+					{ ! rsvpId && (
+						<div className="tec-rsvp-block__form-actions">
+							<Button
+								variant="primary"
+								onClick={ () => {
+									// Here we'll add the save functionality later
+									console.log( 'Saving RSVP with limit:', limit );
+								} }
+							>
+								{ __( 'Create RSVP', 'event-tickets' ) }
+							</Button>
+							<Button
+								variant="secondary"
+								onClick={ handleCancel }
+							>
+								{ __( 'Cancel', 'event-tickets' ) }
+							</Button>
+						</div>
+					) }
+				</>
+			) }
+		</div>
 	);
 }

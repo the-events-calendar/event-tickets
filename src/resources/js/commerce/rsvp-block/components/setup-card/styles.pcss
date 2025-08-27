@@ -1,0 +1,36 @@
+.tec-rsvp-block__setup-card {
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #ffffff;
+	margin: 1.5rem 0;
+}
+
+.tec-rsvp-block__setup-card-content {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+	padding: 2rem;
+	
+	@media (max-width: 768px) {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 1.5rem;
+		padding: 1.5rem;
+	}
+}
+
+.tec-rsvp-block__setup-card-left {
+	flex: 1 1 60%;
+	min-width: 0;
+}
+
+.tec-rsvp-block__setup-card-right {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	
+	@media (max-width: 768px) {
+		justify-content: center;
+	}
+}

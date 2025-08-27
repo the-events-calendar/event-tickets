@@ -1,18 +1,26 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "tec/calendar-embed",
+  "name": "tec/rsvp",
   "version": "0.1.0",
   "title": "RSVP Title",
-  "category": "tec-tickets",
+  "category": "tribe-tickets",
   "supports": {
     "html": true
   },
   "editorStyle": "file:./index.css",
   "attributes": {
+    "rsvpId": {
+      "type": "string",
+      "default": ""
+    },
+    "limit": {
+      "type": "string",
+      "default": ""
+    },
     "message": {
       "type": "string",
-      "default": "Hello from a dynamic block!"
+      "default": ""
     }
   },
   "example": {
