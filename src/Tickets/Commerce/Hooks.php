@@ -332,6 +332,25 @@ class Hooks extends Service_Provider {
 			];
 		}
 
+		/**
+		 * Filters whether to show RSVP orders by default.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_rsvp_by_default Whether to show RSVP orders by default. Default true.
+		 */
+		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
+
+		$rsvp_filter = tribe_get_request_var( 'tec_tc_show_rsvp', $show_rsvp_by_default ? 'yes' : 'no' );
+
+		if ( 'no' === $rsvp_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$items_meta_key,
+				'value'   => 'tc-rsvp',
+				'compare' => 'NOT LIKE',
+			];
+		}
+
 		$search = sanitize_text_field( tribe_get_request_var( 'search', '' ) );
 
 		if ( ! empty( $search ) ) {
