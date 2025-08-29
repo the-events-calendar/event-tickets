@@ -3,10 +3,18 @@
   "apiVersion": 3,
   "name": "tec/rsvp",
   "version": "0.1.0",
-  "title": "RSVP Title",
+  "title": "RSVP",
+  "description": "Allow users to confirm their attendance for an event with a free RSVP.",
+  "icon": "tickets-alt",
   "category": "tribe-tickets",
   "supports": {
-    "html": true
+    "html": false,
+    "align": ["wide", "full"],
+    "customClassName": true,
+    "className": true,
+    "inserter": true,
+    "multiple": false,
+    "reusable": false
   },
   "editorStyle": "file:./index.css",
   "attributes": {
@@ -18,6 +26,38 @@
       "type": "string",
       "default": ""
     },
+    "openRsvpDate": {
+      "type": "string",
+      "default": ""
+    },
+    "openRsvpTime": {
+      "type": "string",
+      "default": "00:00:00"
+    },
+    "closeRsvpDate": {
+      "type": "string",
+      "default": ""
+    },
+    "closeRsvpTime": {
+      "type": "string",
+      "default": "00:00:00"
+    },
+    "attendeeInfoCollectionEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "showNotGoingOption": {
+      "type": "boolean",
+      "default": false
+    },
+    "goingCount": {
+      "type": "number",
+      "default": 0
+    },
+    "notGoingCount": {
+      "type": "number",
+      "default": 0
+    },
     "message": {
       "type": "string",
       "default": ""
@@ -25,15 +65,21 @@
   },
   "example": {
     "attributes": {
-      "message": "Example Dynamic Block"
+      "limit": "100",
+      "goingCount": 25
     }
   },
-  "textdomain": "events-tickets",
+  "textdomain": "event-tickets",
   "editorScript": "file:./index.js",
   "keywords": [
     "tickets",
     "rsvp",
-    "dates"
+    "attendance",
+    "event",
+    "registration",
+    "free",
+    "booking",
+    "reservation"
   ],
   "render": "file:./render.php"
 }

@@ -1,9 +1,9 @@
 /**
- * Registers a new block provided a unique name and an object defining its behavior.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ * External dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
 /**
  * Internal dependencies
@@ -11,14 +11,35 @@ import { registerBlockType } from '@wordpress/blocks';
 import Edit from './edit';
 import metadata from './block.json';
 
+// Create a QueryClient instance for React Query
+const queryClient = new QueryClient( {
+	defaultOptions: {
+		queries: {
+			staleTime: 5 * 60 * 1000, // 5 minutes
+			cacheTime: 10 * 60 * 1000, // 10 minutes
+			retry: 2,
+			refetchOnWindowFocus: false,
+		},
+		mutations: {
+			retry: 1,
+		},
+	},
+} );
+
+// Wrap Edit component with QueryClientProvider
+const EditWithProvider = ( props ) => (
+	<QueryClientProvider client={ queryClient }>
+		<Edit { ...props } />
+	</QueryClientProvider>
+);
+
 /**
  * Every block starts by registering a new block type definition.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
 registerBlockType( metadata.name, {
-	/**
-	 * @see ./edit.js
-	 */
-	edit: Edit,
+	...metadata,
+	edit: EditWithProvider,
+	save: () => null,
 } );
