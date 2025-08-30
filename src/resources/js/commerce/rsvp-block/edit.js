@@ -14,7 +14,7 @@ import SetupCard from './components/setup-card';
 import RSVPForm from './components/rsvp-form';
 import { RSVPInspectorControls } from './inspector-controls';
 import { SettingsPanel, AdvancedPanel } from './inspector-controls/panels';
-import { useCreateRSVP, useUpdateRSVP, useRSVP } from './api/hooks';
+import { useCreateRSVP, useUpdateRSVP, useRSVP, usePostRSVPs } from './api/hooks';
 import './edit.pcss';
 
 /**
@@ -44,7 +44,8 @@ export default function Edit( { attributes, setAttributes } ) {
 	} = attributes;
 
 	// React Query hooks
-	const { data: rsvpData, isLoading: isLoadingRsvp, error: loadError } = useRSVP( rsvpId );
+	const { data: rsvpData, isLoading: isLoadingRsvp, error: loadError, refetch: refetchRsvp } = useRSVP( rsvpId );
+	const { data: existingRSVPs = [], isLoading: isLoadingExisting, refetch: refetchExisting } = usePostRSVPs();
 	const createMutation = useCreateRSVP();
 	const updateMutation = useUpdateRSVP();
 
@@ -53,13 +54,24 @@ export default function Edit( { attributes, setAttributes } ) {
 	const saveError = createMutation.error || updateMutation.error;
 	const saveSuccess = createMutation.isSuccess || updateMutation.isSuccess;
 	
-	// Check if RSVP already exists (has an ID)
+	// Check if RSVP already exists (has an ID or exists on the post)
 	useEffect( () => {
 		if ( rsvpId ) {
 			setIsSettingUp( true );
 			setIsActive( true );
+		} else if ( existingRSVPs && existingRSVPs.length > 0 ) {
+			// If there's an existing RSVP but no rsvpId in attributes, set it
+			const existingRsvp = existingRSVPs[0];
+			if ( existingRsvp?.id ) {
+				setAttributes( { 
+					rsvpId: String( existingRsvp.id ),
+					limit: existingRsvp.capacity || '',
+				} );
+				setIsSettingUp( true );
+				setIsActive( true );
+			}
 		}
-	}, [ rsvpId ] );
+	}, [ rsvpId, existingRSVPs, setAttributes ] );
 
 	// Set default dates when setting up
 	useEffect( () => {
@@ -99,6 +111,17 @@ export default function Edit( { attributes, setAttributes } ) {
 	}, [ rsvpId, setAttributes ] );
 
 	const handleSave = useCallback( async () => {
+		// Check if there's already an RSVP
+		if ( existingRSVPs && existingRSVPs.length > 0 ) {
+			// Already has an RSVP, should update instead
+			const existingRsvp = existingRSVPs[0];
+			if ( existingRsvp?.id ) {
+				setAttributes( { rsvpId: String( existingRsvp.id ) } );
+				setIsActive( true );
+				return;
+			}
+		}
+		
 		const data = {
 			postId,
 			limit,
@@ -116,11 +139,13 @@ export default function Edit( { attributes, setAttributes } ) {
 					rsvpId: String( result.ticket_id ),
 				} );
 				setIsActive( true );
+				// Refetch existing RSVPs to update the list
+				refetchExisting();
 			}
 		} catch ( error ) {
 			console.error( 'Error creating RSVP:', error );
 		}
-	}, [ postId, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, setAttributes, createMutation ] );
+	}, [ postId, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, setAttributes, createMutation, existingRSVPs, refetchExisting ] );
 
 	const handleUpdate = useCallback( async () => {
 		if ( ! rsvpId ) return;
@@ -138,10 +163,13 @@ export default function Edit( { attributes, setAttributes } ) {
 
 		try {
 			await updateMutation.mutateAsync( data );
+			// Refetch RSVP data after update
+			refetchRsvp();
+			refetchExisting();
 		} catch ( error ) {
 			console.error( 'Error updating RSVP:', error );
 		}
-	}, [ postId, rsvpId, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, updateMutation ] );
+	}, [ postId, rsvpId, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, updateMutation, refetchRsvp, refetchExisting ] );
 
 	const leftColumnContent = (
 		<div className="tec-rsvp-block__setup-info">

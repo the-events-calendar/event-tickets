@@ -151,10 +151,18 @@ export const usePostRSVPs = () => {
 	return useQuery( {
 		queryKey: [ 'rsvp', 'post', postId ],
 		queryFn: async () => {
-			// This endpoint would need to be implemented on the backend
-			// For now, returning empty array
-			return [];
+			if ( ! postId ) return [];
+			
+			// Get all tickets for this post
+			const tickets = window?.tribe_tickets_editor_blocks?.tickets || [];
+			
+			// Filter for tc_rsvp type tickets
+			const rsvps = tickets.filter( ticket => ticket.type === 'tc_rsvp' );
+			
+			return rsvps;
 		},
 		enabled: !! postId,
+		staleTime: 5 * 60 * 1000, // 5 minutes
+		cacheTime: 10 * 60 * 1000, // 10 minutes
 	} );
 };
