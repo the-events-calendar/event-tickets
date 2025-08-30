@@ -43,6 +43,7 @@ trait With_Filtered_Ticket_Params {
 
 		$orm = $this->get_orm();
 
+		// todo: investigate deleting this logic to allow moving between events.
 		if ( isset( $params['id'] ) ) {
 			// We don't allow moving tickets to a different event.
 			$params['event'] = (int) ( $ticket_data[ $orm->get_update_fields_aliases()['event'] ]['0'] ?? null );
