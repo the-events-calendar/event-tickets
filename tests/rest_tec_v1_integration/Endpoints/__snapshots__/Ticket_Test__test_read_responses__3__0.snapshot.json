@@ -4,7 +4,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
@@ -42,7 +42,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
@@ -80,7 +80,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
@@ -118,7 +118,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
@@ -156,7 +156,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
@@ -201,7 +201,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
@@ -239,7 +239,7 @@
         "date": "2025-06-13T17:25:00",
         "date_gmt": "2025-06-13T17:25:00",
         "guid": {
-            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&#038;p={TICKET_ID}"
         },
         "modified": "2025-06-13T17:25:00",
         "modified_gmt": "2025-06-13T17:25:00",
