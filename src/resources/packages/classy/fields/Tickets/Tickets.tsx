@@ -1,13 +1,16 @@
-import { CenteredSpinner, ErrorBoundary } from '@tec/common/classy/components';
+import { CenteredSpinner, ErrorBoundary, IconTicket } from '@tec/common/classy/components';
+import { Button, Fill } from "@wordpress/components";
 import { useDispatch, useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { _x } from '@wordpress/i18n';
 import * as React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AddTicket, TicketTable, TicketUpsertModal } from '../../components';
 import { STORE_NAME } from '../../constants';
 import { CoreEditorSelect, StoreDispatch, StoreSelect } from '../../types/Store';
 import { TicketId, TicketSettings } from '../../types/Ticket';
+import { STORE_NAME as TEC_STORE_NAME } from '@tec/events/classy/constants';
+import { StoreDispatch as TECStoreDispatch } from '@tec/events/classy/types/Store';
 
 const defaultTicket: TicketSettings = {
 	name: '',
@@ -85,6 +88,18 @@ export default function Tickets(): JSX.Element {
 		setTicketToEdit( defaultTicket );
 	}, [] );
 
+	const { setIsUsingTickets }: TECStoreDispatch = useDispatch( TEC_STORE_NAME );
+	useEffect(
+		() => {
+			if ( isLoading ) {
+				return;
+			}
+
+			setIsUsingTickets( tickets.length > 0 );
+		},
+		[ tickets, isLoading, setIsUsingTickets ]
+	);
+
 	// If the tickets are not yet loaded, show a spinner.
 	if ( isLoading ) {
 		return <CenteredSpinner />;
@@ -103,6 +118,19 @@ export default function Tickets(): JSX.Element {
 				'event-tickets'
 			) }
 		>
+			{ /* Portal-render the Sell Tickets button */ }
+			<Fill name="tec.classy.fields.event-admission.buttons">
+				<Button
+					className="classy-button"
+					__next40pxDefaultSize
+					variant="primary"
+					onClick={ (): void => {} }
+				>
+					<IconTicket className="classy-icon--prefix" />
+					{ _x( 'Sell Tickets', 'Event admission button label', 'event-tickets' ) }
+				</Button>
+			</Fill>
+
 			<div className="classy-field classy-field--tickets">
 				<div className="classy-field__input-title">
 					<h3>{ _x( 'Tickets', 'Title for Tickets section', 'event-tickets' ) }</h3>
