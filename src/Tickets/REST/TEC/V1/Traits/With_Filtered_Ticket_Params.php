@@ -12,9 +12,9 @@ declare( strict_types=1 );
 namespace TEC\Tickets\REST\TEC\V1\Traits;
 
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use stdClass;
-use TEC\Tickets\Commerce\Utils\Value;
 
 /**
  * Trait With_Filtered_Ticket_Params.
@@ -159,6 +159,11 @@ trait With_Filtered_Ticket_Params {
 
 		if ( is_object( $new_params['ticket_sale_price'] ) ) {
 			throw new InvalidRestArgumentException( __( 'The ticket price must be a number.', 'event-tickets' ) );
+		}
+
+		// Ensure menu_order value is an integer.
+		if ( isset( $params['menu_order'] ) ) {
+			$params['menu_order'] = (int) $params['menu_order'];
 		}
 
 		unset(
