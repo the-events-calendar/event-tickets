@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.26.2] 2025-09-02 =
 
 * Fix - Remove duplicate page title from the All Tickets page. [ET-2545]
+* Fix - Completed Order email can handle again multiple recipients separated by comma. [ET-2551]
 * Tweak - Adds a notice about the 2% fee when using the free Square payment gateway integration. [ET-2548]
 * Language - 1 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted.
 
