@@ -3,9 +3,9 @@
  * No Tickets screen.
  *
  * @since 5.14.0
- * @since TBD Removed the page title to avoid duplication.
+ * @since 5.26.2 Removed the page title to avoid duplication.
  *
- * @version TBD
+ * @version 5.26.2
  *
  * @var \Tribe__Template  $this           Current template object.
  * @var bool              $tickets_exist  Whether tickets exist.
