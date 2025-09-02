@@ -177,8 +177,7 @@
 			padding-top: 0;
 		}
 	}
-</style>
-<style type="text/css">
+</style><style type="text/css">
 	body {
 		color: #3C434A;
 		margin: 0;
