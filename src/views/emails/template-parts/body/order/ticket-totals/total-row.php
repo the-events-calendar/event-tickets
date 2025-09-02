@@ -23,8 +23,21 @@
  * @var \WP_Post                           $order              The order object.
  */
 
+declare( strict_types=1 );
+
+use TEC\Tickets\Commerce\Values\Currency_Value;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Emails\Email_Abstract;
+
 if ( empty( $order ) || empty( $order->total_value ) ) {
 	return;
+}
+
+// Convert total_value to Currency_Value for consistent formatting.
+if ( $order->total_value instanceof Currency_Value ) {
+	$total_value = $order->total_value;
+} else {
+	$total_value = Legacy_Value_Factory::to_currency_value( $order->total_value );
 }
 
 ?>
@@ -36,6 +49,6 @@ if ( empty( $order ) || empty( $order->total_value ) ) {
 		<strong><?php echo esc_html__( 'Order Total', 'event-tickets' ); ?></strong>
 	</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-ticket-totals-total-cell tec-tickets__email-table-content-order-align-right" align="right">
-		<strong><?php echo esc_html( $order->total_value->get() ); ?></strong>
+		<strong><?php echo esc_html( $total_value->get() ); ?></strong>
 	</td>
 </tr>
