@@ -36,6 +36,6 @@ if ( empty( $order ) || empty( $order->total_value ) ) {
 		<strong><?php echo esc_html__( 'Order Total', 'event-tickets' ); ?></strong>
 	</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-ticket-totals-total-cell tec-tickets__email-table-content-order-align-right" align="right">
-		<strong><?php echo esc_html( $order->total_value->get_currency() ); ?></strong>
+		<strong><?php echo esc_html( $order->total_value->get() ); ?></strong>
 	</td>
 </tr>
