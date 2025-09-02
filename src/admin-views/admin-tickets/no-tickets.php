@@ -3,8 +3,9 @@
  * No Tickets screen.
  *
  * @since 5.14.0
+ * @since 5.26.2 Removed the page title to avoid duplication.
  *
- * @version 5.14.0
+ * @version 5.26.2
  *
  * @var \Tribe__Template  $this           Current template object.
  * @var bool              $tickets_exist  Whether tickets exist.
@@ -32,9 +33,6 @@ $content         = sprintf(
 );
 
 ?>
-<h1>
-	<?php esc_html_e( 'All Tickets', 'event-tickets' ); ?>
-</h1>
 <div class="tec-tickets-admin-tickets-no-tickets-wrap">
 	<div class="tec-tickets-admin-tickets-no-tickets-inner-wrap">
 		<div>

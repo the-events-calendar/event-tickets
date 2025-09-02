@@ -2315,10 +2315,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
-		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
-			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
-		}
-
 		$checkin_details = [
 			'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
 			'source'    => ! empty( $qr ) ? 'app' : 'site',
