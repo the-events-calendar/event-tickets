@@ -15,8 +15,10 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 	 * @return string
 	 **/
 	public static function get_template_hierarchy( $template, $args = array() ) {
+		// Get all arguments at the very beginning to avoid PHP 8.3 compatibility issues.
+		$passed = func_get_args();
+
 		if ( ! is_array( $args ) ) {
-			$passed        = func_get_args();
 			$args          = array();
 			$backwards_map = array( 'namespace', 'plugin_path', 'disable_view_check' );
 			$count = count( $passed );

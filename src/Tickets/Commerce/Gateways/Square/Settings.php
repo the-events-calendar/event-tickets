@@ -77,6 +77,18 @@ class Settings extends Abstract_Settings {
 	public function get_settings(): array {
 		$is_connected = tribe( Merchant::class )->is_connected();
 
+		// Add the fee message similar to Stripe.
+		$plus_link_faq = sprintf(
+			'<a href="https://evnt.is/1b3u" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$square_message = sprintf(
+			// Translators: %1$s: The Event Tickets Plus link - reads "Learn More".
+			esc_html__( 'You are using the free Square payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
+			$plus_link_faq
+		);
+
 		$container_class = [
 			'tec-settings-form__element--full-width',
 			'tec-settings-form__element--no-spacing' => $is_connected,
@@ -84,6 +96,10 @@ class Settings extends Abstract_Settings {
 		];
 
 		$main_settings = [
+			'tickets-commerce-square-commerce-description' => [
+				'type' => 'html',
+				'html' => '<div class="tec-settings-form__element--full-width tec-settings-form__content-section"><div class="tec-tickets__admin-settings-tickets-commerce-description">' . $square_message . '</div></div>',
+			],
 			'square-connection-start' => [
 				'type' => 'html',
 				'html' => '<div ' . tec_get_classes_attr( $container_class ) . '>',
