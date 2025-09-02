@@ -9,9 +9,10 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.11
+ * @version TBD
  *
  * @since 5.5.11
+ * @since TBD Moved the order totals to the template-parts/body/order/ticket-totals.php file.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.

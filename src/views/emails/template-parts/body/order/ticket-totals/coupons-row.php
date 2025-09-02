@@ -14,7 +14,7 @@
  * @since TBD
  *
  * @var Tribe__Template                    $this               Current template object.
- * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
+ * @var Email_Abstract $email              The email object.
  * @var string                             $heading            The email heading.
  * @var string                             $title              The email title.
  * @var bool                               $preview            Whether the email is in preview mode or not.
@@ -28,6 +28,7 @@ declare( strict_types=1 );
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Values\Currency_Value;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
+use TEC\Tickets\Emails\Email_Abstract;
 
 // If there are no coupons, we don't need to display anything.
 if ( empty( $order ) || empty( $order->coupons ) ) {
