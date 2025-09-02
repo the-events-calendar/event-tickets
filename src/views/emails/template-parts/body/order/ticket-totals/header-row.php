@@ -25,13 +25,13 @@
 
 ?>
 <tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
-	<th style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+	<th style="width: 60%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
 		<?php echo esc_html__( 'Ticket', 'event-tickets' ); ?>
 	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
+	<th style="width: 25%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
 		<?php echo esc_html__( 'Qty', 'event-tickets' ); ?>
 	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
+	<th style="width: 15%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
 		<?php echo esc_html__( 'Price', 'event-tickets' ); ?>
 	</th>
 </tr>

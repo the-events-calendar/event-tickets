@@ -1,18 +1,17 @@
 <?php
 /**
- * Event Tickets Emails: Order Total
+ * Event Tickets Emails: Order Ticket Totals - Total Row
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/template-parts/body/order/order-total.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/order/ticket-totals/total-row.php
  *
  * See more documentation about our views templating system.
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.11
+ * @version TBD
  *
- * @since 5.5.11
- * @since 5.10.0 Allow for zero value total.
+ * @since   TBD
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -29,17 +28,14 @@ if ( empty( $order ) || empty( $order->total_value ) ) {
 }
 
 ?>
-<tr>
-	<td class="tec-tickets__email-table-content-order-total-container" align="right">
-		<table class="tec-tickets__email-table-content-order-total-table">
-			<tr>
-				<td class="tec-tickets__email-table-content-order-total-left-cell">
-					<?php echo esc_html__( 'Order Total', 'event-tickets' ); ?>
-				</td>
-				<td class="tec-tickets__email-table-content-order-total-right-cell">
-					<?php echo esc_html( $order->total_value->get_currency() ); ?>
-				</td>
-			</tr>
-		</table>
+<tr class="tec-tickets__email-table-content-order-ticket-totals-total-row">
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+		&nbsp;
+	</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-ticket-totals-total-cell tec-tickets__email-table-content-order-align-center" align="center">
+		<strong><?php echo esc_html__( 'Order Total', 'event-tickets' ); ?></strong>
+	</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-ticket-totals-total-cell tec-tickets__email-table-content-order-align-right" align="right">
+		<strong><?php echo esc_html( $order->total_value->get_currency() ); ?></strong>
 	</td>
 </tr>

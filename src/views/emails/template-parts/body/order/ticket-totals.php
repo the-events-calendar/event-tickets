@@ -35,6 +35,9 @@ if ( empty( $order->items ) ) {
 			<?php foreach ( $order->items as $cart_item ) : ?>
 				<?php $this->template( 'template-parts/body/order/ticket-totals/ticket-row', [ 'cart_item' => $cart_item ] ); ?>
 			<?php endforeach; ?>
+			<?php $this->template( 'template-parts/body/order/ticket-totals/fees-row' ); ?>
+			<?php $this->template( 'template-parts/body/order/ticket-totals/coupons-row' ); ?>
+			<?php $this->template( 'template-parts/body/order/ticket-totals/total-row' ); ?>
 		</table>
 	</td>
 </tr>

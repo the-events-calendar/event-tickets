@@ -33,8 +33,6 @@ $this->template( 'template-parts/body/order/post-title' );
 
 $this->template( 'template-parts/body/order/ticket-totals' );
 
-$this->template( 'template-parts/body/order/order-total' );
-
 $this->template( 'template-parts/body/order/payment-info' );
 
 $this->template( 'template-parts/body/order/attendees-table' );
