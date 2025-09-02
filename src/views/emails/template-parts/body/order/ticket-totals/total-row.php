@@ -27,7 +27,6 @@ declare( strict_types=1 );
 
 use TEC\Tickets\Commerce\Values\Currency_Value;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
-use TEC\Tickets\Emails\Email_Abstract;
 
 if ( empty( $order ) || empty( $order->total_value ) ) {
 	return;
