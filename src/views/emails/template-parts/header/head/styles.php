@@ -9,9 +9,10 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.9
+ * @version TBD
  *
  * @since 5.5.9
+ * @since TBD Added styles for the fees and coupons rows.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var string                             $header_bg_color    Hex value for the header background color.
