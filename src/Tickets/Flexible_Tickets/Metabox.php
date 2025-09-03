@@ -12,6 +12,7 @@ namespace TEC\Tickets\Flexible_Tickets;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
@@ -315,13 +316,13 @@ class Metabox {
 	 * @return string The warning message when there is no commerce provider configured.
 	 */
 	public function get_no_commerce_provider_warning_message(): string {
-		$kb_url = 'https://evnt.is/1ao5';
+		$kb_url = tribe( Plugin_Settings::class )->get_url( [ 'tab' => 'payments' ] );
 
 		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 			esc_url( $kb_url ),
-			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
+			esc_html_x( 'Set up Tickets Commerce.', 'Link to payment settings in Ticket Editor', 'event-tickets' )
 		);
 
 		return sprintf(
