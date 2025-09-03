@@ -153,13 +153,29 @@ export const usePostRSVPs = () => {
 		queryFn: async () => {
 			if ( ! postId ) return [];
 			
-			// Get all tickets for this post
-			const tickets = window?.tribe_tickets_editor_blocks?.tickets || [];
-			
-			// Filter for tc_rsvp type tickets
-			const rsvps = tickets.filter( ticket => ticket.type === 'tc_rsvp' );
-			
-			return rsvps;
+			try {
+				// Fetch all tickets for this post via REST API
+				const response = await fetch( `/wp-json/tribe/tickets/v1/tickets?include_post=${postId}` );
+				
+				if ( ! response.ok ) {
+					console.error( 'Failed to fetch tickets:', response.statusText );
+					return [];
+				}
+				
+				const data = await response.json();
+				const tickets = data?.tickets || [];
+				
+				// Filter for tc_rsvp type tickets
+				const rsvps = tickets.filter( ticket => 
+					ticket.type === 'tc_rsvp' || 
+					ticket.provider_class === 'TEC\\Tickets\\Commerce\\Module'
+				);
+				
+				return rsvps;
+			} catch ( error ) {
+				console.error( 'Error fetching RSVPs:', error );
+				return [];
+			}
 		},
 		enabled: !! postId,
 		staleTime: 5 * 60 * 1000, // 5 minutes

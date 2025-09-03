@@ -111,7 +111,7 @@ const RSVPForm = ( {
 	return (
 		<div className="tec-rsvp-block__form-wrapper">
 			<div className="tec-rsvp-block__form-header">
-				<h3>{ isActive ? __( 'RSVP', 'event-tickets' ) : __( 'RSVP Settings', 'event-tickets' ) }</h3>
+				<h3>{ isActive ? __( 'RSVP', 'event-tickets' ) : __( 'Add RSVP', 'event-tickets' ) }</h3>
 
 				{ isActive && (
 					<div className="tec-rsvp-block__stats">
@@ -141,22 +141,63 @@ const RSVPForm = ( {
 				/>
 
 				{/* Limit field */}
-				<BaseControl
-					id="tec-rsvp-limit"
-					label={ __( 'Capacity', 'event-tickets' ) }
-					help={ __( 'Leave blank for unlimited', 'event-tickets' ) }
-					className="tec-rsvp-block__field"
-				>
+				<div className="tec-rsvp-block__field">
+					<label htmlFor="tec-rsvp-limit">{ __( 'Limit:', 'event-tickets' ) }</label>
 					<TextControl
+						id="tec-rsvp-limit"
 						type="text"
 						value={ limit }
 						onChange={ handleLimitChange }
-						placeholder=""
+						placeholder={ __( 'Leave blank for unlimited', 'event-tickets' ) }
 						min="0"
 						step="1"
 						disabled={ isSaving }
 					/>
-				</BaseControl>
+				</div>
+
+				{/* Open RSVP Date/Time */}
+				<div className="tec-rsvp-block__datetime-row">
+					<label>{ __( 'Open RSVP:', 'event-tickets' ) }</label>
+					<div className="tec-rsvp-block__datetime-inputs">
+						<input
+							type="date"
+							value={ openRsvpDate || '' }
+							onChange={ ( e ) => onAttributeChange( { openRsvpDate: e.target.value } ) }
+							className="tec-rsvp-block__date-input"
+							disabled={ isSaving }
+						/>
+						<span className="tec-rsvp-block__datetime-at">{ __( 'at', 'event-tickets' ) }</span>
+						<input
+							type="time"
+							value={ openRsvpTime ? openRsvpTime.substring(0, 5) : '12:00' }
+							onChange={ ( e ) => onAttributeChange( { openRsvpTime: e.target.value + ':00' } ) }
+							className="tec-rsvp-block__time-input"
+							disabled={ isSaving }
+						/>
+					</div>
+				</div>
+
+				{/* Close RSVP Date/Time */}
+				<div className="tec-rsvp-block__datetime-row">
+					<label>{ __( 'Close RSVP:', 'event-tickets' ) }</label>
+					<div className="tec-rsvp-block__datetime-inputs">
+						<input
+							type="date"
+							value={ closeRsvpDate || '' }
+							onChange={ ( e ) => onAttributeChange( { closeRsvpDate: e.target.value } ) }
+							className="tec-rsvp-block__date-input"
+							disabled={ isSaving }
+						/>
+						<span className="tec-rsvp-block__datetime-at">{ __( 'at', 'event-tickets' ) }</span>
+						<input
+							type="time"
+							value={ closeRsvpTime ? closeRsvpTime.substring(0, 5) : '12:00' }
+							onChange={ ( e ) => onAttributeChange( { closeRsvpTime: e.target.value + ':00' } ) }
+							className="tec-rsvp-block__time-input"
+							disabled={ isSaving }
+						/>
+					</div>
+				</div>
 				
 				{ rsvpId && (
 					<div className="tec-rsvp-block__form-actions">

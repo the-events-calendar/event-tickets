@@ -4,7 +4,8 @@
  * @since TBD
  */
 import { RSVPSettingsFill } from '../slots';
-import { CapacityField } from '../fields/CapacityField';
+import { ToggleControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Settings panel component
@@ -25,17 +26,19 @@ export function SettingsPanel() {
 	return (
 		<RSVPSettingsFill>
 			{ ( { attributes, setAttributes, isLoading } ) => {
-				const { limit } = attributes || {};
+				const { showNotGoingOption } = attributes || {};
 
-				const handleCapacityChange = ( newLimit ) => {
-					setAttributes( { limit: newLimit } );
+				const handleShowNotGoingChange = ( value ) => {
+					setAttributes( { showNotGoingOption: value } );
 				};
 
 				return (
 					<>
-						<CapacityField
-							value={ limit }
-							onChange={ handleCapacityChange }
+						<ToggleControl
+							label={ __( 'Enable "Can\'t Go" responses', 'event-tickets' ) }
+							checked={ showNotGoingOption }
+							onChange={ handleShowNotGoingChange }
+							help={ __( 'Allow users to indicate they cannot attend', 'event-tickets' ) }
 							disabled={ isLoading }
 						/>
 						{ /* Date fields will be added here later */ }

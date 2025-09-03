@@ -12,9 +12,10 @@ import { useSelect } from '@wordpress/data';
  */
 import SetupCard from './components/setup-card';
 import RSVPForm from './components/rsvp-form';
+import ActiveRSVP from './components/active-rsvp';
 import { RSVPInspectorControls } from './inspector-controls';
 import { SettingsPanel, AdvancedPanel } from './inspector-controls/panels';
-import { useCreateRSVP, useUpdateRSVP, useRSVP, usePostRSVPs } from './api/hooks';
+import { useCreateRSVP, useUpdateRSVP, useRSVP, usePostRSVPs, useDeleteRSVP } from './api/hooks';
 import './edit.pcss';
 
 /**
@@ -48,6 +49,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const { data: existingRSVPs = [], isLoading: isLoadingExisting, refetch: refetchExisting } = usePostRSVPs();
 	const createMutation = useCreateRSVP();
 	const updateMutation = useUpdateRSVP();
+	const deleteMutation = useDeleteRSVP();
 
 	// Derive saving and error states from mutations
 	const isSaving = createMutation.isPending || updateMutation.isPending;
@@ -171,6 +173,30 @@ export default function Edit( { attributes, setAttributes } ) {
 		}
 	}, [ postId, rsvpId, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, updateMutation, refetchRsvp, refetchExisting ] );
 
+	const handleDelete = useCallback( async () => {
+		if ( ! rsvpId ) return;
+
+		try {
+			await deleteMutation.mutateAsync( { rsvpId, postId } );
+			// Reset attributes after deletion
+			setAttributes( {
+				rsvpId: '',
+				limit: '',
+				openRsvpDate: '',
+				openRsvpTime: '00:00:00',
+				closeRsvpDate: '',
+				closeRsvpTime: '00:00:00',
+				goingCount: 0,
+				notGoingCount: 0
+			} );
+			setIsActive( false );
+			setIsSettingUp( false );
+			refetchExisting();
+		} catch ( error ) {
+			console.error( 'Error deleting RSVP:', error );
+		}
+	}, [ rsvpId, postId, deleteMutation, setAttributes, refetchExisting ] );
+
 	const leftColumnContent = (
 		<div className="tec-rsvp-block__setup-info">
 			<h2 className="tec-rsvp-block__setup-title">
@@ -242,6 +268,15 @@ export default function Edit( { attributes, setAttributes } ) {
 						leftColumn={ leftColumnContent }
 						rightColumn={ rightColumnContent }
 						className="tec-rsvp-block__initial-setup"
+					/>
+				) : rsvpId && isActive ? (
+					<ActiveRSVP
+						rsvpId={ rsvpId }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						onUpdate={ handleUpdate }
+						onDelete={ handleDelete }
+						isSaving={ isSaving }
 					/>
 				) : (
 					<>

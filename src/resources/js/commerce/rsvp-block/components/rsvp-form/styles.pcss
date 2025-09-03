@@ -9,12 +9,27 @@
 	padding: 1rem 1.5rem;
 	border-bottom: 1px solid #dcdcde;
 	background: #f6f7f7;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	
 	h3 {
 		margin: 0;
 		font-size: 1.1rem;
 		font-weight: 600;
 		color: #1d2327;
+	}
+	
+	.tec-rsvp-block__stats {
+		display: flex;
+		gap: 20px;
+		font-size: 14px;
+		color: #666;
+
+		.tec-rsvp-block__stat {
+			display: flex;
+			gap: 5px;
+		}
 	}
 }
 
@@ -23,26 +38,88 @@
 }
 
 .tec-rsvp-block__field {
-	margin-bottom: 1.5rem;
-	
-	&:last-child {
-		margin-bottom: 0;
-	}
+	margin-bottom: 1rem;
+	display: flex;
+	align-items: center;
 	
 	label {
+		min-width: 120px;
 		font-weight: 600;
-		margin-bottom: 0.5rem;
-		display: block;
+		font-size: 14px;
+		color: #1d2327;
 	}
 	
+	.components-text-control__input {
+		width: 250px;
+		margin: 0;
+	}
+	
+	input[type="text"],
 	input[type="number"] {
-		width: 100%;
-		max-width: 200px;
+		padding: 6px 8px;
+		border: 1px solid #8c8f94;
+		border-radius: 2px;
+		font-size: 13px;
+		width: 250px;
 	}
 	
 	.components-base-control__help {
 		font-size: 0.875rem;
 		color: #757575;
 		margin-top: 0.25rem;
+	}
+}
+
+.tec-rsvp-block__datetime-row {
+	margin-bottom: 1rem;
+	display: flex;
+	align-items: center;
+
+	> label {
+		min-width: 120px;
+		font-weight: 600;
+		font-size: 14px;
+		color: #1d2327;
+	}
+
+	.tec-rsvp-block__datetime-inputs {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		.tec-rsvp-block__date-input,
+		.tec-rsvp-block__time-input {
+			padding: 6px 8px;
+			border: 1px solid #8c8f94;
+			border-radius: 2px;
+			font-size: 13px;
+		}
+
+		.tec-rsvp-block__date-input {
+			width: 140px;
+		}
+
+		.tec-rsvp-block__time-input {
+			width: 100px;
+		}
+
+		.tec-rsvp-block__datetime-at {
+			color: #1d2327;
+			font-size: 14px;
+		}
+	}
+}
+
+.tec-rsvp-block__form-actions {
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #dcdcde;
+	
+	.components-button {
+		margin-right: 10px;
+		
+		.components-spinner {
+			margin-right: 5px;
+		}
 	}
 }
