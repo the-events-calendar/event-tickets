@@ -11,6 +11,8 @@
 namespace Tribe\Tickets\Events\Views\V2\Models;
 
 use Tribe\Utils\Lazy_Events;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Events__Main as TEC;
 
 /**
  * Class Tickets
@@ -59,12 +61,75 @@ class Tickets implements \ArrayAccess, \Serializable {
 	protected $all_tickets;
 
 	/**
+	 * A flag indicating whether the data for the model is cached or not.
+	 *
+	 * @since 5.26.1
+	 *
+	 * @var true
+	 */
+	private bool $is_cached = false;
+
+	/**
 	 * Tickets constructor.
 	 *
 	 * @param int $post_id The post ID.
 	 */
 	public function __construct( $post_id ) {
 		$this->post_id = $post_id;
+
+		$this->restore_from_cache();
+	}
+
+	/**
+	 * Regenerates the caches for the models associated with the post ID.
+	 *
+	 * @since 5.26.1
+	 *
+	 * @param int $post_id The post ID. It could be any post type, not just events.
+	 *
+	 * @return void
+	 */
+	public static function regenerate_caches( int $post_id ): void {
+		$model_cache_key = self::get_cache_key( $post_id );
+
+		// First, clean the kv-cache entries for this post.
+		tec_kv_cache()->delete( $model_cache_key );
+
+		$post = get_post( $post_id );
+
+		if ( ! $post instanceof \WP_Post ) {
+			// The clean of the cache happened in the context of the post deletion, we're done.
+			return;
+		}
+
+		if ( $post->post_type === TEC::POSTTYPE ) {
+			// It's an Event: refresh its cache.
+			$model = new self( $post->ID );
+			$model->exist();
+		} else {
+			// This is not an event post, but it might be a Ticket or Attendee linked to an Event.
+			$attendee_to_event_keys  = tribe_attendees()->attendee_to_event_keys();
+			$ticket_to_event_keys    = tribe_tickets()->ticket_to_event_keys();
+			$all_connected_meta_keys = array_merge( $attendee_to_event_keys, $ticket_to_event_keys );
+
+			/** @var array<array<int>> $connected_event_ids */
+			$connected_event_ids = [];
+			foreach ( get_post_meta( $post_id ) as $meta_key => $meta_values ) {
+				if ( ! in_array( $meta_key, $all_connected_meta_keys ) ) {
+					continue;
+				}
+
+				$connected_event_ids[] = array_map( 'absint', $meta_values );
+			}
+			/** @var array<int> $connected_event_ids */
+			$connected_event_ids = array_merge( ...$connected_event_ids );
+
+			foreach ( $connected_event_ids as $connected_event_id ) {
+				$model = new self( $connected_event_id );
+				// The call will trigger a priming of the model cache.
+				$model->exist();
+			}
+		}
 	}
 
 	/**
@@ -80,6 +145,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws \InvalidArgumentException When trying to set a property.
 	 */
 	public function __set( $property, $value ) {
 		throw new \InvalidArgumentException( "The `Tickets::{$property}` property cannot be set." );
@@ -116,7 +183,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 				continue;
 			}
 
-			$num_ticket_types_available++;
+			++$num_ticket_types_available;
 		}
 
 		if ( ! $num_ticket_types_available ) {
@@ -192,15 +259,18 @@ class Tickets implements \ArrayAccess, \Serializable {
 							/* translators: %1$s: Number of stock */
 							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 						} else {
+							// phpcs:disable -- to suppress WordPress.WP.I18n.MismatchedPlaceholders incorrect warning.
 							/* translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label */
 							$text = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' );
+							// phpcs:enable
 						}
 
 						$stock_html = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
 					}
 				}
 
-				$parts[ $type . '_stock' ] = $html['stock'] = $stock_html;
+				$html['stock']             = $stock_html;
+				$parts[ $type . '_stock' ] = $stock_html;
 
 				if ( 'rsvp' === $type ) {
 					/* Translators: RSVP singular label. */
@@ -274,7 +344,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	public function to_array() {
 		$this->data = $this->fetch_data();
 
-		return json_decode( json_encode( $this->data ), true );
+		return json_decode( wp_json_encode( $this->data ), true );
 	}
 
 	/**
@@ -284,6 +354,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$data            = $this->fetch_data();
 		$data['post_id'] = $this->post_id;
 
+		// Kept for back-compatibility reasons.
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		return serialize( $this->__serialize() );
 	}
 
@@ -294,7 +366,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 *
 	 * @return array The data to serialize.
 	 */
-	public function __serialize(): array {
+	public function __serialize(): array { // phpcs:ignore StellarWP.NamingConventions.ValidFunctionName.MethodDoubleUnderscore
 		$data            = $this->fetch_data();
 		$data['post_id'] = $this->post_id;
 
@@ -308,7 +380,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 *
 	 * @param array $data The data to unserialize.
 	 */
-	public function __unserialize( array $data ): void {
+	public function __unserialize( array $data ): void { // phpcs:ignore StellarWP.NamingConventions.ValidFunctionName.MethodDoubleUnderscore
 		$this->post_id = $data['post_id'] ?? null;
 		$this->data    = $data;
 	}
@@ -317,8 +389,11 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 * {@inheritDoc}
 	 */
 	public function unserialize( $serialized ) {
-		$data          = unserialize( $serialized );
+		// Kept for back-compatibility reasons.
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
+		$data = unserialize( $serialized );
 		$this->__unserialize( $data );
+
 		unset( $data['post_id'] );
 	}
 
@@ -337,6 +412,10 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->all_tickets = \Tribe__Tickets__Tickets::get_all_event_tickets( $this->post_id );
 
 		$this->exists = ! empty( $this->all_tickets );
+
+		if ( ! $this->is_cached ) {
+			$this->prime_cache();
+		}
 
 		return $this->exists;
 	}
@@ -367,5 +446,71 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$data = $this->fetch_data();
 
 		return ! empty( $data['stock']->sold_out );
+	}
+
+	/**
+	 * Primes the model cache from the key-value cache, if possible.
+	 *
+	 * @since 5.26.1
+	 *
+	 * @return void
+	 */
+	private function restore_from_cache(): void {
+		$cached = tec_kv_cache()->get( self::get_cache_key( $this->post_id ) );
+
+		if ( $cached === '' ) {
+			return;
+		}
+
+		$unpacked = tec_json_unpack( $cached, true, [ Ticket_Object::class ] );
+
+		if ( ! ( is_array( $unpacked ) && isset( $unpacked['all_tickets'], $unpacked['data'] ) ) ) {
+			return;
+		}
+
+		$this->all_tickets = $unpacked['all_tickets'];
+		$this->data        = $unpacked['data'];
+		$this->is_cached   = true;
+	}
+
+	/**
+	 * Returns the model cache key used to store it in the key-value cache.
+	 *
+	 * @since 5.26.1
+	 *
+	 * @param int $post_id The post ID to provide the cache key for.
+	 *
+	 * @return string The model cache key used to store it in the key-value cache.
+	 */
+	public static function get_cache_key( int $post_id ): string {
+		return 'tec_tickets_views_v2_model_ticket_' . $post_id;
+	}
+
+	/**
+	 * Primes the key-value cache for the model.
+	 *
+	 * @since 5.26.1
+	 *
+	 * @return void
+	 */
+	private function prime_cache(): void {
+		/*
+		* Unset the `provider` property of each Ticket to avoid storing a singleton object.
+		* The ticket will recover the module instance using the `provider_class` property.
+		*/
+		foreach ( $this->all_tickets as $ticket ) {
+			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found -- Faster than Reflection.
+			\Closure::bind( fn() => $ticket->provider = null, $ticket, Ticket_Object::class )();
+		}
+
+		$packed = tec_json_pack(
+			[
+				'all_tickets' => $this->all_tickets,
+				'data'        => $this->fetch_data(),
+			],
+			[ Ticket_Object::class ]
+		);
+
+		tec_kv_cache()->set( self::get_cache_key( $this->post_id ), $packed, DAY_IN_SECONDS );
 	}
 }
