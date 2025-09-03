@@ -1,0 +1,247 @@
+.tec-rsvp-block__active-wrapper {
+	background: #ffffff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	margin: 1.5rem 0;
+}
+
+.tec-rsvp-block__active-header {
+	padding: 1rem 1.5rem;
+	border-bottom: 1px solid #dcdcde;
+	background: #f6f7f7;
+	
+	h3 {
+		margin: 0;
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #1d2327;
+	}
+}
+
+.tec-rsvp-block__active-content {
+	padding: 1.5rem;
+}
+
+/* Statistics Section */
+.tec-rsvp-block__stats-section {
+	margin-bottom: 1.5rem;
+	
+	.tec-rsvp-block__main-stat {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+		
+		.tec-rsvp-block__stat-number {
+			font-size: 3rem;
+			font-weight: 300;
+			line-height: 1;
+			color: #1d2327;
+		}
+		
+		.tec-rsvp-block__stat-label {
+			font-size: 1rem;
+			color: #757575;
+		}
+	}
+	
+	.tec-rsvp-block__view-attendees {
+		color: #2271b1;
+		text-decoration: underline;
+		font-size: 0.875rem;
+		
+		&:hover {
+			color: #135e96;
+			text-decoration: none;
+		}
+	}
+}
+
+/* Action Buttons */
+.tec-rsvp-block__action-buttons {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+	
+	.tec-rsvp-block__going-btn {
+		padding: 0.5rem 2rem;
+	}
+	
+	.tec-rsvp-block__cant-go-btn {
+		padding: 0.5rem 1.5rem;
+	}
+}
+
+/* Additional Stats */
+.tec-rsvp-block__additional-stats {
+	margin-bottom: 1.5rem;
+	
+	.tec-rsvp-block__stat-with-edit {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		
+		.tec-rsvp-block__edit-btn {
+			padding: 0;
+			min-width: auto;
+			height: auto;
+			color: #757575;
+			font-size: 14px;
+			
+			&:hover {
+				color: #2271b1;
+			}
+		}
+	}
+	
+	.tec-rsvp-block__stat-line {
+		display: flex;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+		font-size: 0.9rem;
+		color: #757575;
+		
+		.tec-rsvp-block__stat-value {
+			font-weight: 600;
+			color: #1d2327;
+		}
+	}
+}
+
+/* RSVP Window Section */
+.tec-rsvp-block__window-section {
+	padding-top: 1rem;
+	border-top: 1px solid #e0e0e0;
+	margin-bottom: 1rem;
+	
+	.tec-rsvp-block__window-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.5rem;
+		
+		.tec-rsvp-block__window-label {
+			font-weight: 600;
+			font-size: 0.9rem;
+			color: #1d2327;
+		}
+		
+		.tec-rsvp-block__edit-btn {
+			padding: 0;
+			min-width: auto;
+			height: auto;
+			color: #757575;
+			
+			&:hover {
+				color: #2271b1;
+			}
+			
+			svg {
+				width: 16px;
+				height: 16px;
+			}
+		}
+	}
+	
+	.tec-rsvp-block__window-dates {
+		font-size: 0.9rem;
+		color: #757575;
+	}
+}
+
+/* Remove Section */
+.tec-rsvp-block__remove-section {
+	padding-top: 1rem;
+	
+	.tec-rsvp-block__remove-btn {
+		padding: 0;
+		font-size: 0.875rem;
+		text-decoration: underline;
+		
+		&:hover {
+			text-decoration: none;
+		}
+	}
+}
+
+/* Modals */
+.tec-rsvp-block__limit-modal,
+.tec-rsvp-block__window-modal {
+	.components-modal__content {
+		padding: 1.5rem;
+		min-width: 400px;
+	}
+	
+	.tec-rsvp-block__modal-content {
+		margin-bottom: 1.5rem;
+		
+		.components-text-control__input {
+			width: 100%;
+			max-width: 300px;
+			margin: 0;
+		}
+		
+		input[type="text"] {
+			width: 100%;
+			max-width: 300px;
+			padding: 6px 8px;
+			border: 1px solid #8c8f94;
+			border-radius: 2px;
+			font-size: 13px;
+		}
+	}
+	
+	.tec-rsvp-block__modal-help {
+		margin-top: 0.5rem;
+		font-size: 0.875rem;
+		color: #757575;
+	}
+	
+	.tec-rsvp-block__modal-field {
+		margin-bottom: 1.5rem;
+		
+		label {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-weight: 600;
+			font-size: 0.875rem;
+			color: #1d2327;
+		}
+	}
+	
+	.tec-rsvp-block__datetime-inputs {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		
+		.tec-rsvp-block__date-input,
+		.tec-rsvp-block__time-input {
+			padding: 6px 8px;
+			border: 1px solid #8c8f94;
+			border-radius: 2px;
+			font-size: 13px;
+		}
+		
+		.tec-rsvp-block__date-input {
+			width: 140px;
+		}
+		
+		.tec-rsvp-block__time-input {
+			width: 100px;
+		}
+		
+		.tec-rsvp-block__datetime-at {
+			color: #1d2327;
+			font-size: 14px;
+		}
+	}
+	
+	.tec-rsvp-block__modal-footer {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.75rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid #dcdcde;
+	}
+}
