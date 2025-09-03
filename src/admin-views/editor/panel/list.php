@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Commerce\RSVP\Constants;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -64,18 +65,18 @@ $admin_views = tribe( 'tickets.admin.views' );
 
 		<?php if ( ! empty( $tickets ) ) {
 			// Split tickets by type to render a list for each type of ticket, implicitly set the order of display.
-			$ticket_types = [ 'rsvp' => [], 'default' => [] ];
+			$ticket_types = [ 'default' => [] ];
 
 			foreach ( $tickets as $ticket ) {
 				$provider_class = $ticket->provider_class ?? null;
 
-				if ( $provider_class === 'Tribe__Tickets__RSVP' ) {
-					// RSVP is its own type.
-					$ticket_types['rsvp'][] = $ticket;
+				$ticket_type = $ticket->type ?? 'default';
+				
+				// Skip tc-rsvp tickets from the list.
+				if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
 					continue;
 				}
-
-				$ticket_type                    = $ticket->type ?? 'default';
+				
 				$ticket_types[ $ticket_type ][] = $ticket;
 			}
 
@@ -92,9 +93,6 @@ $admin_views = tribe( 'tickets.admin.views' );
 				$table_data = [ 'ticket_type' => $ticket_type, 'tickets' => $tickets_of_type ];
 
 				switch ( $ticket_type ) {
-					case 'rsvp':
-						$table_data ['table_title'] = tribe_get_rsvp_label_plural( 'list-table' );
-						break;
 					case 'default':
 					default:
 						$table_data['table_title'] = tribe_get_ticket_label_plural( 'list-table' );
