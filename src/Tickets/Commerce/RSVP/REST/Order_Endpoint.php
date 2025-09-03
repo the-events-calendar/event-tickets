@@ -223,6 +223,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			// Get the cart instance.
 			$cart = tribe( RSVP_Cart::class );
+			// Clear the cart to prevent accidental inclusion from failed orders.
+			$cart->clear();
 			$cart->save();
 
 			// Parse the ticket quantity for this RSVP.
