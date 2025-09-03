@@ -19,7 +19,7 @@
  * @var string                             $header_text_color  Hex value for the header text color
  * @var string                             $ticket_bg_color    Hex value for the ticket background color.
  * @var string                             $ticket_text_color  Hex value for the ticket text color.
- * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
+ * @var Email_Abstract                     $email              The email object.
  * @var string                             $heading            The email heading.
  * @var string                             $title              The email title.
  * @var bool                               $preview            Whether the email is in preview mode or not.
@@ -29,6 +29,8 @@
  *
  * @see tribe_get_event() For the format of the event object.
  */
+
+use TEC\Tickets\Emails\Email_Abstract;
 
 ?>
 <style type="text/css">

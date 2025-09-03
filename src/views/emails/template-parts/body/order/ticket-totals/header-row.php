@@ -15,7 +15,7 @@
  * @since TBD Tweaked the spacing of the columns to allow more space for fees and coupons.
  *
  * @var Tribe__Template                    $this               Current template object.
- * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
+ * @var Email_Abstract                     $email              The email object.
  * @var string                             $heading            The email heading.
  * @var string                             $title              The email title.
  * @var bool                               $preview            Whether the email is in preview mode or not.
@@ -23,6 +23,8 @@
  * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
  * @var \WP_Post                           $order              The order object.
  */
+
+use TEC\Tickets\Emails\Email_Abstract;
 
 ?>
 <tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">

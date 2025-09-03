@@ -5,7 +5,6 @@ namespace TEC\Tickets\Emails\Template_Parts;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Values\Currency_Value;
-use TEC\Tickets\Emails\Admin\Preview_Data;
 use Tribe__Template as Template;
 use WP_Post;
 
