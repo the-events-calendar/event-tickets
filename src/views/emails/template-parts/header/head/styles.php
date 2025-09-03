@@ -14,18 +14,18 @@
  * @since 5.5.9
  * @since TBD Added styles for the fees and coupons rows.
  *
- * @var Tribe__Template                    $this               Current template object.
- * @var string                             $header_bg_color    Hex value for the header background color.
- * @var string                             $header_text_color  Hex value for the header text color
- * @var string                             $ticket_bg_color    Hex value for the ticket background color.
- * @var string                             $ticket_text_color  Hex value for the ticket text color.
- * @var Email_Abstract                     $email              The email object.
- * @var string                             $heading            The email heading.
- * @var string                             $title              The email title.
- * @var bool                               $preview            Whether the email is in preview mode or not.
- * @var string                             $additional_content The email additional content.
- * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
- * @var WP_Post|null                       $event              The event post object with properties added by the `tribe_get_event` function.
+ * @var Tribe__Template $this               Current template object.
+ * @var string          $header_bg_color    Hex value for the header background color.
+ * @var string          $header_text_color  Hex value for the header text color
+ * @var string          $ticket_bg_color    Hex value for the ticket background color.
+ * @var string          $ticket_text_color  Hex value for the ticket text color.
+ * @var Email_Abstract  $email              The email object.
+ * @var string          $heading            The email heading.
+ * @var string          $title              The email title.
+ * @var bool            $preview            Whether the email is in preview mode or not.
+ * @var string          $additional_content The email additional content.
+ * @var bool            $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var WP_Post|null    $event              The event post object with properties added by the `tribe_get_event` function.
  *
  * @see tribe_get_event() For the format of the event object.
  */
