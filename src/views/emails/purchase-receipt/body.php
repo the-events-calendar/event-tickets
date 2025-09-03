@@ -24,7 +24,7 @@
  * @var \WP_Post        $order              The order object.
  */
 
- use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\Email_Abstract;
 
 $this->template( 'template-parts/body/title' );
 
