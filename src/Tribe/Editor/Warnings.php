@@ -71,9 +71,9 @@ class Warnings {
 
 		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			'<a href="%1$s" rel="noopener noreferrer">%2$s</a>.',
 			esc_url( $kb_url ),
-			esc_html_x( 'Set up Tickets Commerce.', 'Link to payment settings in Ticket Editor', 'event-tickets' )
+			esc_html_x( 'Set up Tickets Commerce', 'Link to payment settings in Ticket Editor', 'event-tickets' )
 		);
 
 		$message = sprintf(
