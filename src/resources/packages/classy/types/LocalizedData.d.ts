@@ -1,4 +1,4 @@
-import { CurrencyPosition } from '@tec/common/classy/types/CurrencyPosition';
+import { Currency } from '@tec/common/classy/types/Currency';
 import { TecGlobal } from '@tec/common/classy/types/LocalizedData';
 
 /**
@@ -23,21 +23,7 @@ export type NonceAction = 'add_ticket_nonce' | 'edit_ticket_nonce' | 'remove_tic
  *
  * @since TBD
  */
-export type CurrencySettings = {
-	/**
-	 * The currency code, e.g., 'USD', 'EUR'.
-	 *
-	 * @since TBD
-	 */
-	code: string;
-
-	/**
-	 * The currency symbol, e.g., '$', '€'.
-	 *
-	 * @since TBD
-	 */
-	symbol: string;
-
+export type CurrencySettings = Currency & {
 	/**
 	 * The character used to separate decimal values, e.g., '.', ','.
 	 *
@@ -51,13 +37,6 @@ export type CurrencySettings = {
 	 * @since TBD
 	 */
 	thousandSeparator: string;
-
-	/**
-	 * The position of the currency symbol, e.g., 'prefix', 'suffix'.
-	 *
-	 * @since TBD
-	 */
-	position: CurrencyPosition;
 
 	/**
 	 * The number of decimal places to display.
