@@ -399,8 +399,7 @@
 			padding: 15px 0 30px 0 !important;
 		}
 	}
-</style>
-<div class="tec-tickets__email-body">
+</style><div class="tec-tickets__email-body">
 
 		
 		<table role="presentation" class="tec-tickets__email-table-main">

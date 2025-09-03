@@ -177,7 +177,8 @@
 			padding-top: 0;
 		}
 	}
-</style><style type="text/css">
+</style>
+<style type="text/css">
 	body {
 		color: #3C434A;
 		margin: 0;
@@ -578,8 +579,7 @@
 			padding: 15px 0 30px 0 !important;
 		}
 	}
-</style>
-<div class="tec-tickets__email-body">
+</style><div class="tec-tickets__email-body">
 
 		
 		<table role="presentation" class="tec-tickets__email-table-main">
