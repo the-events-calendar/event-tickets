@@ -77,15 +77,15 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 4.11.2
 	 *
-	 * @param array            $namespace_map Indexed array containing the namespace as the key and path to `strpos`.
-	 * @param string           $path          Path we will do the `strpos` to validate a given namespace.
-	 * @param Tribe__Template  $template      Current instance of the template class.
+	 * @param array           $namespace_map Indexed array containing the namespace as the key and path to `strpos`.
+	 * @param string          $path          Path we will do the `strpos` to validate a given namespace.
+	 * @param Tribe__Template $template      Current instance of the template class.
 	 *
 	 * @return array  Namespace map after adding Pro to the list.
 	 */
 	public function filter_add_template_origin_namespace( $namespace_map, $path, $template ) {
 		/** @var Plugin $main */
-		$main = tribe( 'tickets.main' );
+		$main                                       = tribe( 'tickets.main' );
 		$namespace_map[ $main->template_namespace ] = $main->plugin_path;
 		return $namespace_map;
 	}
@@ -97,7 +97,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @param array    $props An associative array of all the properties that will be set on the "decorated" post
 	 *                        object.
-	 * @param \WP_Post $post  The post object handled by the class.
+	 * @param \WP_Post $event The post object handled by the class.
 	 *
 	 * @return array The model properties. This value might be cached.
 	 */
@@ -113,7 +113,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 4.10.9
 	 */
 	protected function add_actions() {
-		// silence is golden
+		add_action( 'wp_insert_post', [ $this, 'regenerate_post_kv_caches' ], 100 );
+		add_action( 'clean_post_cache', [ $this, 'regenerate_post_kv_caches' ], 100 );
 	}
 
 	/**
@@ -125,5 +126,29 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ], 15, 2 );
 		add_filter( 'tribe_template_origin_namespace_map', [ $this, 'filter_add_template_origin_namespace' ], 15, 3 );
 		add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
+	}
+
+	/**
+	 * Hooked on the clean post cache action, this will regenerate model caches for the given post
+	 * or Event post connected to the post.
+	 *
+	 * @since 5.26.1
+	 *
+	 * @param int $post_id The post ID. It could be any post type, not just events.
+	 *
+	 * @return void
+	 */
+	public function regenerate_post_kv_caches( $post_id ): void {
+		if ( ! is_int( $post_id ) ) {
+			return;
+		}
+
+		$post_id = (int) $post_id;
+
+		if ( $post_id <= 0 ) {
+			return;
+		}
+
+		Tickets::regenerate_caches( (int) $post_id );
 	}
 }
