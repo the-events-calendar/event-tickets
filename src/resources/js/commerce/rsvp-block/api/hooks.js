@@ -165,9 +165,9 @@ export const usePostRSVPs = () => {
 				const data = await response.json();
 				const tickets = data?.tickets || [];
 				
-				// Filter for tc_rsvp type tickets
+				// Filter for tc-rsvp type tickets
 				const rsvps = tickets.filter( ticket => 
-					ticket.type === 'tc_rsvp' || 
+					ticket.type === 'tc-rsvp' || 
 					ticket.provider_class === 'TEC\\Tickets\\Commerce\\Module'
 				);
 				

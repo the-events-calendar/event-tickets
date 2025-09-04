@@ -21,7 +21,7 @@ export const createRSVP = async ( data ) => {
 		data: {
 			post_ID: data.postId,
 			rsvp_limit: data.limit === '' ? -1 : data.limit,
-			ticket_type: 'tc_rsvp',
+			ticket_type: 'tc-rsvp',
 			ticket_provider: 'TEC\\Tickets\\Commerce\\Module',
 			rsvp_start_date: data.openRsvpDate || '',
 			rsvp_start_time: data.openRsvpTime || '00:00:00',
@@ -56,7 +56,7 @@ export const updateRSVP = async ( data ) => {
 			post_ID: data.postId,
 			rsvp_id: data.rsvpId,
 			rsvp_limit: data.limit === '' ? -1 : data.limit,
-			ticket_type: 'tc_rsvp',
+			ticket_type: 'tc-rsvp',
 			ticket_provider: 'TEC\\Tickets\\Commerce\\Module',
 			rsvp_start_date: data.openRsvpDate || '',
 			rsvp_start_time: data.openRsvpTime || '00:00:00',

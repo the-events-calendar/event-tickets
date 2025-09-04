@@ -41,5 +41,9 @@ const EditWithProvider = ( props ) => (
 registerBlockType( metadata.name, {
 	...metadata,
 	edit: EditWithProvider,
-	save: () => null,
+	save: ( { attributes } ) => {
+		// For dynamic blocks, we return null but WordPress will still save attributes
+		// in the block comment. This ensures attributes persist.
+		return null;
+	},
 } );

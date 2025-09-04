@@ -152,8 +152,8 @@ export function* setTicketsInitialState( action ) {
 	// Shape: [ {id: int, type: string}, ... ].
 	const allTickets = JSON.parse( get( 'tickets', '[]' ) );
 
-	// Filter out tc_rsvp tickets from the tickets block
-	const nonRsvpTickets = allTickets.filter( ticket => ticket.type !== 'tc_rsvp' );
+	// Filter out tc-rsvp tickets from the tickets block
+	const nonRsvpTickets = allTickets.filter( ticket => ticket.type !== 'tc-rsvp' );
 
 	const { editableTickets, uneditableTickets } = nonRsvpTickets.reduce(
 		( acc, ticket ) => {

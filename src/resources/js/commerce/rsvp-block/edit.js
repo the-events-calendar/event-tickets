@@ -68,12 +68,65 @@ export default function Edit( { attributes, setAttributes } ) {
 				setAttributes( { 
 					rsvpId: String( existingRsvp.id ),
 					limit: existingRsvp.capacity || '',
+					openRsvpDate: existingRsvp.start_date || '',
+					openRsvpTime: existingRsvp.start_time || '00:00:00',
+					closeRsvpDate: existingRsvp.end_date || '',
+					closeRsvpTime: existingRsvp.end_time || '00:00:00',
+					showNotGoingOption: existingRsvp.show_not_going || false,
+					goingCount: existingRsvp.going_count || 0,
+					notGoingCount: existingRsvp.not_going_count || 0,
 				} );
 				setIsSettingUp( true );
 				setIsActive( true );
 			}
 		}
 	}, [ rsvpId, existingRSVPs, setAttributes ] );
+
+	// Sync fetched RSVP data back to block attributes
+	useEffect( () => {
+		if ( rsvpData && rsvpId ) {
+			// Sync all the RSVP data from API to block attributes
+			const updates = {};
+			
+			// Only update if values are different to avoid infinite loops
+			if ( rsvpData.capacity !== undefined && rsvpData.capacity !== limit ) {
+				updates.limit = rsvpData.capacity || '';
+			}
+			
+			if ( rsvpData.start_date && rsvpData.start_date !== openRsvpDate ) {
+				updates.openRsvpDate = rsvpData.start_date;
+			}
+			
+			if ( rsvpData.start_time && rsvpData.start_time !== openRsvpTime ) {
+				updates.openRsvpTime = rsvpData.start_time;
+			}
+			
+			if ( rsvpData.end_date && rsvpData.end_date !== closeRsvpDate ) {
+				updates.closeRsvpDate = rsvpData.end_date;
+			}
+			
+			if ( rsvpData.end_time && rsvpData.end_time !== closeRsvpTime ) {
+				updates.closeRsvpTime = rsvpData.end_time;
+			}
+			
+			if ( rsvpData.show_not_going !== undefined && rsvpData.show_not_going !== showNotGoingOption ) {
+				updates.showNotGoingOption = rsvpData.show_not_going;
+			}
+			
+			if ( rsvpData.going_count !== undefined && rsvpData.going_count !== goingCount ) {
+				updates.goingCount = rsvpData.going_count || 0;
+			}
+			
+			if ( rsvpData.not_going_count !== undefined && rsvpData.not_going_count !== notGoingCount ) {
+				updates.notGoingCount = rsvpData.not_going_count || 0;
+			}
+			
+			// Only call setAttributes if there are updates
+			if ( Object.keys( updates ).length > 0 ) {
+				setAttributes( updates );
+			}
+		}
+	}, [ rsvpData, rsvpId, setAttributes, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, goingCount, notGoingCount ] );
 
 	// Set default dates when setting up
 	useEffect( () => {
@@ -137,8 +190,15 @@ export default function Edit( { attributes, setAttributes } ) {
 		try {
 			const result = await createMutation.mutateAsync( data );
 			if ( result.ticket_id ) {
+				// Save all attributes to the block
 				setAttributes( { 
 					rsvpId: String( result.ticket_id ),
+					limit: limit || '',
+					openRsvpDate: openRsvpDate || '',
+					openRsvpTime: openRsvpTime || '00:00:00',
+					closeRsvpDate: closeRsvpDate || '',
+					closeRsvpTime: closeRsvpTime || '00:00:00',
+					showNotGoingOption: showNotGoingOption || false,
 				} );
 				setIsActive( true );
 				// Refetch existing RSVPs to update the list
