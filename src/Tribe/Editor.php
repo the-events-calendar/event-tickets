@@ -77,7 +77,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 				: array();
 
 			$template[] = array( 'tribe/tickets' );
-			$template[] = array( 'tribe/rsvp' );
+			// Use new TC RSVP block instead of old RSVP block.
+			$template[] = array( 'tec/rsvp' );
 
 			$post_type_object->template = $template;
 		}
@@ -94,7 +95,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 */
 	public function filter_default_template_classic_blocks( $template = array() ) {
 		$template[] = array( 'tribe/tickets' );
-		$template[] = array( 'tribe/rsvp' );
+		// Use new TC RSVP block instead of old RSVP block.
+		$template[] = array( 'tec/rsvp' );
 		$template[] = array( 'tribe/attendees' );
 		return $template;
 	}
