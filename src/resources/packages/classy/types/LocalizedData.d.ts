@@ -53,6 +53,7 @@ export type CurrencySettings = Currency & {
  */
 export type Settings = {
 	currency: CurrencySettings;
+	startOfWeek: number;
 	ticketPostTypes: string[];
 };
 
