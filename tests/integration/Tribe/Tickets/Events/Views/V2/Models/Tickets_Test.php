@@ -136,4 +136,37 @@ class Tickets_Test extends WPTestCase {
 		$this->assertFalse( tec_kv_cache()->has( Tickets::get_cache_key( $ticket_id ) ) );
 		$this->assertTrue( tec_kv_cache()->has( $event_cache_key ) );
 	}
+
+	/**
+	 * @test
+	 * @covers \Tribe\Tickets\Events\Views\V2\Models\Tickets::regenerate_caches
+	 */
+	public function should_regenerate_post_caches_invalidating_ticket_caches(): void {
+		// Create an Event.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2023-01-01 09:00:00',
+			'duration'   => 4 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+		// Create 3 Tickets Commerce tickets for the Event.
+		$ticket_ids = $this->create_many_tc_tickets( 3, $event_id );
+		[ $ticket_1_id, $ticket_2_id, $ticket_3_id ] = $ticket_ids;
+		// For each ticket create an Order for 3 Attendees.
+		$this->create_order( [ $ticket_1_id => 3, $ticket_2_id => 3, $ticket_3_id => 3 ] );
+		$event_cache_key = Tickets::get_cache_key( $event_id );
+		// Poison the get_tickets cache with a value that would retur no tickets.
+		$tickets_class              = Tickets_Tickets::class;
+		$cache_key                  = "{$tickets_class}::get_tickets-tickets-commerce-{$event_id}";
+		tribe_cache()[ $cache_key ] = [];
+		// Poison each ticket cache with an object that would not return the correct ticket values.
+		foreach ( $ticket_ids as $ticket_id ) {
+			wp_cache_set( $ticket_id, 'not-a-ticket-value', 'tec_tickets' );
+		}
+
+		// Event.
+		$this->assertFalse( tec_kv_cache()->has( $event_cache_key ) );
+		Tickets::regenerate_caches( $event_id );
+		$this->assertTrue( tec_kv_cache()->has( $event_cache_key ) );
+	}
 }
