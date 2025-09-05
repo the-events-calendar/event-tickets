@@ -127,7 +127,7 @@ class Controller extends Controller_Contract {
 					'position'           => Currency::get_currency_symbol_position( $code ),
 					'precision'          => Currency::get_currency_precision( $code ),
 				],
-				'startOfWeek'    => (int) get_option( 'start_of_week', 0 ),
+				'startOfWeek'     => (int) get_option( 'start_of_week', 0 ),
 				'ticketPostTypes' => $et_main->post_types(),
 			],
 			'nonces'   => [

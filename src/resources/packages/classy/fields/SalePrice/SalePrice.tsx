@@ -29,7 +29,7 @@ const formatSaleDate = ( date: Date ): string => {
 	return `${ year }-${ month }-${ day }`;
 };
 
-type SalePriceProps = Omit<TicketComponentProps, 'label' | 'onChange'> & {
+type SalePriceProps = Omit< TicketComponentProps, 'label' | 'onChange' > & {
 	value: SalePriceDetails;
 	onChange: ( value: SalePriceDetails ) => void;
 };
@@ -49,15 +49,15 @@ const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', '
 export default function SalePrice( props: SalePriceProps ): JSX.Element {
 	const { onChange, value } = props;
 
-	const [ currentValue, setCurrentValue ] = useState<SalePriceDetails>( value );
+	const [ currentValue, setCurrentValue ] = useState< SalePriceDetails >( value );
 
 	const { enabled: hasSalePrice, salePrice } = currentValue;
 	const startDate = new Date( currentValue.startDate || currentDate.toISOString() );
 	const endDate = new Date( currentValue.endDate || currentDate.toISOString() );
 
-	const [ isSelectingDate, setIsSelectingDate ] = useState<SelectingDateType>( false );
+	const [ isSelectingDate, setIsSelectingDate ] = useState< SelectingDateType >( false );
 
-	const ref: RefObject<HTMLDivElement> = useRef( null );
+	const ref: RefObject< HTMLDivElement > = useRef( null );
 
 	const onDateInputClick = useCallback(
 		( selecting: SelectingDateType ) => {

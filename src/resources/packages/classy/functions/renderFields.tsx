@@ -42,15 +42,11 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 	const { setTicketsSupported }: TECStoreDispatch = useDispatch( TEC_STORE_NAME );
 
 	// Ensure tickets are marked as supported in the store.
-	useEffect(
-		() => {
-			if ( ! areTicketsSupported ) {
-				setTicketsSupported( true );
-			}
-		},
-		[ areTicketsSupported, setTicketsSupported ]
-	);
-
+	useEffect( () => {
+		if ( ! areTicketsSupported ) {
+			setTicketsSupported( true );
+		}
+	}, [ areTicketsSupported, setTicketsSupported ] );
 
 	return (
 		<Fragment>

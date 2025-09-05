@@ -1,5 +1,5 @@
 import { CenteredSpinner, ErrorBoundary, IconTicket } from '@tec/common/classy/components';
-import { Button, Fill } from "@wordpress/components";
+import { Button, Fill } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { _x } from '@wordpress/i18n';
@@ -89,16 +89,13 @@ export default function Tickets(): JSX.Element {
 	}, [] );
 
 	const { setIsUsingTickets }: TECStoreDispatch = useDispatch( TEC_STORE_NAME );
-	useEffect(
-		() => {
-			if ( isLoading ) {
-				return;
-			}
+	useEffect( () => {
+		if ( isLoading ) {
+			return;
+		}
 
-			setIsUsingTickets( tickets.length > 0 );
-		},
-		[ tickets, isLoading, setIsUsingTickets ]
-	);
+		setIsUsingTickets( tickets.length > 0 );
+	}, [ tickets, isLoading, setIsUsingTickets ] );
 
 	// If the tickets are not yet loaded, show a spinner.
 	if ( isLoading ) {
@@ -120,12 +117,7 @@ export default function Tickets(): JSX.Element {
 		>
 			{ /* Portal-render the Sell Tickets button */ }
 			<Fill name="tec.classy.fields.event-admission.buttons">
-				<Button
-					className="classy-button"
-					__next40pxDefaultSize
-					variant="primary"
-					onClick={ (): void => {} }
-				>
+				<Button className="classy-button" __next40pxDefaultSize variant="primary" onClick={ (): void => {} }>
 					<IconTicket className="classy-icon--prefix" />
 					{ _x( 'Sell Tickets', 'Event admission button label', 'event-tickets' ) }
 				</Button>
