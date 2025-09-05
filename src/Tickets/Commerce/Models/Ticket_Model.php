@@ -98,6 +98,7 @@ class Ticket_Model extends Base {
 			'stock'                 => true,
 			'sold'                  => true,
 			'sku'                   => true,
+			'menu_order'            => true,
 		];
 
 		/**

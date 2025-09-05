@@ -1,9 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Fill } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { Tickets, VirtualLocationViewingPermissions, VirtualLocationAdditionalSettings } from '../fields';
 import { CoreEditorSelect } from '../types/Store';
 import { getSettings } from '../localizedData';
+import { StoreDispatch as TECStoreDispatch, StoreSelect as TECStoreSelect } from '@tec/events/classy/types/Store';
+import { STORE_NAME as TEC_STORE_NAME } from '@tec/events/classy/constants';
 
 /**
  * The post types that should render the ticket fields.
@@ -21,11 +23,13 @@ const { ticketPostTypes } = getSettings();
  * @param fields
  */
 export default function renderFields( fields: React.ReactNode | null ): React.ReactNode {
-	const { postType } = useSelect( ( select ) => {
+	const { postType, areTicketsSupported } = useSelect( ( select ) => {
 		const { getEditedPostAttribute }: CoreEditorSelect = select( 'core/editor' );
+		const { areTicketsSupported }: TECStoreSelect = select( TEC_STORE_NAME );
 
 		return {
 			postType: getEditedPostAttribute( 'type' ),
+			areTicketsSupported: areTicketsSupported(),
 		};
 	}, [] );
 
@@ -34,6 +38,15 @@ export default function renderFields( fields: React.ReactNode | null ): React.Re
 		console.log( 'not rendering ticket fields for post type:', postType );
 		return fields;
 	}
+
+	const { setTicketsSupported }: TECStoreDispatch = useDispatch( TEC_STORE_NAME );
+
+	// Ensure tickets are marked as supported in the store.
+	useEffect( () => {
+		if ( ! areTicketsSupported ) {
+			setTicketsSupported( true );
+		}
+	}, [ areTicketsSupported, setTicketsSupported ] );
 
 	return (
 		<Fragment>

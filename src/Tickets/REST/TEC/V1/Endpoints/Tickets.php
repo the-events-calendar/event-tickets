@@ -230,6 +230,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 				'date',
 				'id',
 				'include',
+				'menu_order',
 				'relevance',
 				'slug',
 				'include_slugs',

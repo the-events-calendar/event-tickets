@@ -1,22 +1,40 @@
-import React, { Fragment, useState } from 'react';
+import { EndSelector, StartSelector } from '@tec/common/classy/components';
+import { getSettings as getCommonSettings } from '@tec/common/classy/localizedData';
+import { DateUpdateType } from '@tec/common/classy/types/FieldProps';
 import { ToggleControl } from '@wordpress/components';
 import { RefObject, useCallback, useRef } from '@wordpress/element';
 import { _x } from '@wordpress/i18n';
-import { StartSelector, EndSelector } from '@tec/common/classy/components';
-import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
-import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { SalePriceDetails } from '../../types/Ticket';
+import React, { Fragment, useState } from 'react';
 import { CurrencyInput } from '../../components';
+import { SalePriceDetails } from '../../types/Ticket';
+import { TicketComponentProps } from '../../types/TicketComponentProps';
 
-// todo: These should be based on site settings.
+// Set up current date and common settings.
 const currentDate = new Date();
-const dateWithYearFormat = 'Y-m-d';
-const startOfWeek: StartOfWeek = 0;
+const { dateWithYearFormat, startOfWeek } = getCommonSettings();
+
+/**
+ * Format a date as YYYY-MM-DD for sale date fields.
+ *
+ * @since TBD
+ *
+ * @param {Date} date The date to format.
+ * @returns {string} Formatted date string.
+ */
+const formatSaleDate = ( date: Date ): string => {
+	const month = ( date.getMonth() + 1 ).toString().padStart( 2, '0' );
+	const day = date.getDate().toString().padStart( 2, '0' );
+	const year = date.getFullYear();
+
+	return `${ year }-${ month }-${ day }`;
+};
 
 type SalePriceProps = Omit< TicketComponentProps, 'label' | 'onChange' > & {
 	value: SalePriceDetails;
 	onChange: ( value: SalePriceDetails ) => void;
 };
+
+type SelectingDateType = DateUpdateType | false;
 
 const salePriceLabel = _x( 'Add sale price', 'Label for the sale price field', 'event-tickets' );
 
@@ -33,14 +51,16 @@ export default function SalePrice( props: SalePriceProps ): JSX.Element {
 
 	const [ currentValue, setCurrentValue ] = useState< SalePriceDetails >( value );
 
-	const { enabled: hasSalePrice, salePrice, startDate, endDate } = currentValue;
+	const { enabled: hasSalePrice, salePrice } = currentValue;
+	const startDate = new Date( currentValue.startDate || currentDate.toISOString() );
+	const endDate = new Date( currentValue.endDate || currentDate.toISOString() );
 
-	const [ isSelectingDate, setIsSelectingDate ] = useState< 'start' | 'end' | false >( false );
+	const [ isSelectingDate, setIsSelectingDate ] = useState< SelectingDateType >( false );
 
 	const ref: RefObject< HTMLDivElement > = useRef( null );
 
 	const onDateInputClick = useCallback(
-		( selecting: 'start' | 'end' ) => {
+		( selecting: SelectingDateType ) => {
 			if ( selecting === isSelectingDate ) {
 				// Do nothing.
 				return;
@@ -51,9 +71,45 @@ export default function SalePrice( props: SalePriceProps ): JSX.Element {
 		[ isSelectingDate ]
 	);
 
-	const onDateChange = ( selecting: 'start' | 'end', date: string ) => {
+	const setEndDate = useCallback(
+		( date: Date ) => {
+			const newValue: SalePriceDetails = {
+				...currentValue,
+				endDate: formatSaleDate( date ),
+			};
+
+			// If the new end date is before the current start date, update the start date to match.
+			if ( date < new Date( currentValue.startDate ) ) {
+				newValue.startDate = formatSaleDate( date );
+			}
+
+			setCurrentValue( newValue );
+			onChange( newValue );
+		},
+		[ endDate, startDate, onChange ]
+	);
+
+	const setStartDate = useCallback(
+		( date: Date ) => {
+			const newValue: SalePriceDetails = {
+				...currentValue,
+				startDate: formatSaleDate( date ),
+			};
+
+			// If the new start date is after the current end date, update the end date to match.
+			if ( date > new Date( currentValue.endDate ) ) {
+				newValue.endDate = formatSaleDate( date );
+			}
+
+			setCurrentValue( newValue );
+			onChange( newValue );
+		},
+		[ endDate, startDate, onChange ]
+	);
+
+	const onDateChange = ( selecting: DateUpdateType, date: string ) => {
 		const newDate = new Date( date );
-		if ( selecting === 'start' ) {
+		if ( selecting === 'startDate' ) {
 			setStartDate( newDate );
 		} else {
 			setEndDate( newDate );
@@ -95,33 +151,35 @@ export default function SalePrice( props: SalePriceProps ): JSX.Element {
 						<StartSelector
 							dateWithYearFormat={ dateWithYearFormat }
 							endDate={ endDate }
-							highightTime={ false }
+							highlightTime={ false }
 							isAllDay={ true }
 							isMultiday={ true }
 							isSelectingDate={ isSelectingDate }
 							onChange={ onDateChange }
-							onClick={ () => onDateInputClick( 'start' ) }
+							onClick={ () => onDateInputClick( 'startDate' ) }
 							onClose={ () => setIsSelectingDate( false ) }
+							showTitle={ false }
 							startDate={ startDate }
 							startOfWeek={ startOfWeek }
 							timeFormat={ '' }
-							title={ _x( 'On sale from', 'Event date selection input title', 'the-events-calendar' ) }
+							title={ _x( 'Start sales', 'Event date selection input title', 'event-tickets' ) }
 						/>
-						<span className="classy-field__input--date-separator">
-							{ _x( 'to', 'Separator between start and end date inputs', 'the-events-calendar' ) }
-						</span>
 						<EndSelector
-							currentDate={ currentDate }
 							dateWithYearFormat={ dateWithYearFormat }
 							endDate={ endDate }
+							isAllDay={ true }
 							isMultiday={ true }
+							highlightTime={ false }
 							isSelectingDate={ isSelectingDate }
 							onChange={ onDateChange }
-							onClick={ () => onDateInputClick( 'end' ) }
+							onClick={ () => onDateInputClick( 'endDate' ) }
 							onClose={ () => setIsSelectingDate( false ) }
-							showPopover={ isSelectingDate === 'end' }
+							showAllDayLabel={ false }
+							showTitle={ false }
 							startDate={ startDate }
 							startOfWeek={ startOfWeek }
+							timeFormat={ '' }
+							title={ _x( 'End sales', 'Event date selection input title', 'event-tickets' ) }
 						/>
 					</div>
 				</Fragment>

@@ -25,6 +25,7 @@ export function getDefault(): LocalizedData {
 				position: 'prefix',
 				precision: 2,
 			},
+			startOfWeek: 0,
 			ticketPostTypes: [ 'tribe_events' ],
 		},
 		nonces: {

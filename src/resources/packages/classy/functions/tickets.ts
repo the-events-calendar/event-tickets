@@ -42,12 +42,14 @@ let defaultTicket: Ticket = {
 	// Pricing.
 	cost: '',
 	costDetails: {
-		currencySymbol: '',
-		currencyPosition: 'prefix',
-		currencyDecimalSeparator: '',
-		currencyThousandSeparator: '',
-		values: [],
+		symbol: '',
+		position: 'prefix',
+		decimalSeparator: '',
+		thousandSeparator: '',
+		value: 0,
+		precision: 2,
 	},
+	price: '',
 	priceSuffix: null,
 
 	// Sale price.
