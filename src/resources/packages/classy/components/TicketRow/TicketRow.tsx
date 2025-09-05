@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
-import * as React from 'react';
+import { formatCurrency } from '@tec/common/classy/functions';
 import { CapacitySettings, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { ClipboardIcon, ClockIcon } from '../Icons';
@@ -114,7 +115,11 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 			</td>
 
 			<td className="classy-field__ticket-row__price classy-field__ticket-row__section">
-				{ ticket.cost || _x( 'Free', 'Label for a free ticket', 'event-tickets' ) }
+				{ ticket.cost ? (
+					formatCurrency( { value: ticket.cost } )
+				) : (
+					_x( 'Free', 'Label for a free ticket', 'event-tickets' )
+				) }
 			</td>
 
 			<td className="classy-field__ticket-row__capacity classy-field__ticket-row__section">
