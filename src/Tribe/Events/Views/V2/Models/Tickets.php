@@ -109,15 +109,16 @@ class Tickets implements ArrayAccess, Serializable {
 			return;
 		}
 
-		/*
-		 * Flush the cached post queries.
-		 * Repositories will build `WP_Query` objects that will benefit from the built-in caching of post queries.
-		 * The `post-queries` cache group is a persistent group, but some results cached during the rebuild of this
-		 * cache will need to be refetched.
-		 * Since we cannot guess or map the exact keys to invalidate, the best we can do is invalidate all the
-		 * currently cached results.
-		 */
-		wp_cache_flush_group( 'post-queries' );
+		// Avoid caching the query results while we refresh the cache.
+		$do_not_cache_results = static function ( $wp_query ): void {
+			if ( ! $wp_query instanceof \WP_Query ) {
+				return;
+			}
+
+			$wp_query->query_vars['cache_results'] = false;
+		};
+
+		add_action( 'parse_query', $do_not_cache_results );
 
 		if ( $post->post_type === TEC::POSTTYPE ) {
 			// It's an Event: refresh its cache.
@@ -132,6 +133,8 @@ class Tickets implements ArrayAccess, Serializable {
 			$ancillary_post_types = array_merge( $attendee_post_types, $ticket_types );
 
 			if ( ! in_array( $post->post_type, $ancillary_post_types, true ) ) {
+				remove_action( 'parse_query', $do_not_cache_results );
+
 				// Not a post type we're interested in.
 				return;
 			}
@@ -178,6 +181,8 @@ class Tickets implements ArrayAccess, Serializable {
 				$model->prime_cache();
 			}
 		}
+
+		remove_action( 'parse_query', $do_not_cache_results );
 	}
 
 	/**
