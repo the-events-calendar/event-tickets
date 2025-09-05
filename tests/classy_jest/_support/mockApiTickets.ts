@@ -56,6 +56,7 @@ export function makeMockApiTickets(): GetTicketApiResponse[] {
 			type: 'default',
 			sold: 42,
 			sku: 'TICKET-123',
+			menu_order: 0,
 		},
 	];
 }

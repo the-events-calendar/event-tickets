@@ -55,6 +55,7 @@ export function makeMockApiResponse(): GetTicketApiResponse {
 		type: 'default',
 		sold: 0,
 		sku: undefined,
+		menu_order: 0,
 	};
 }
 
@@ -71,12 +72,13 @@ export function makeMockExpectedResult() {
 		description: 'Test ticket description',
 		cost: '25',
 		costDetails: {
-			currencySymbol: '$',
-			currencyPosition: 'prefix',
-			currencyDecimalSeparator: '.',
-			currencyThousandSeparator: ',',
-			suffix: '',
-			values: [ 25 ],
+			code: 'USD',
+			symbol: '$',
+			position: 'prefix',
+			decimalSeparator: '.',
+			thousandSeparator: ',',
+			precision: 2,
+			value: 25,
 		},
 		salePriceData: {
 			enabled: false,

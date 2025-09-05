@@ -14,11 +14,11 @@ export function makeMockTicketDataForCreate(): TicketSettings {
 		description: 'Test ticket description',
 		cost: '25.00',
 		costDetails: {
+			code: 'USD',
 			symbol: '$',
 			position: 'prefix',
 			decimalSeparator: '.',
 			thousandSeparator: ',',
-			suffix: '',
 			precision: 2,
 			value: 25,
 		},

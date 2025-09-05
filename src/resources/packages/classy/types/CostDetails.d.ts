@@ -1,11 +1,5 @@
-import { CurrencyPosition } from '@tec/common/classy/types/CurrencyPosition';
+import { CurrencySettings } from './LocalizedData';
 
-export type CostDetails = {
-	symbol: string;
-	position: CurrencyPosition;
-	decimalSeparator: string;
-	thousandSeparator: string;
-	suffix?: string;
+export type CostDetails = CurrencySettings & {
 	value?: number;
-	precision: number;
 };
