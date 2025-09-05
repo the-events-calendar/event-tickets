@@ -168,5 +168,22 @@ class Tickets_Test extends WPTestCase {
 		$this->assertFalse( tec_kv_cache()->has( $event_cache_key ) );
 		Tickets::regenerate_caches( $event_id );
 		$this->assertTrue( tec_kv_cache()->has( $event_cache_key ) );
+
+		$array_model = ( new Tickets( $event_id ) )->to_array();
+
+		$this->assertEquals( [
+			'link'  =>
+				[
+					'anchor'             => 'http://wordpress.test/?tribe_events=test-event#tribe-tickets__tickets-form',
+					'label'              => 'Get Tickets',
+					'__original_class__' => 'stdClass',
+				],
+			'stock' =>
+				[
+					'available'          => '291 tickets left',
+					'sold_out'           => '',
+					'__original_class__' => 'stdClass',
+				],
+		], $array_model );
 	}
 }
