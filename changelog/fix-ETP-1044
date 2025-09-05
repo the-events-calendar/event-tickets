@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correctly invalidate ticket caches to deal with ETP order-of-operation issue. [ETP-1044]

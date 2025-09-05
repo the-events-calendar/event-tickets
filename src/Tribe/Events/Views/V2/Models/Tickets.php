@@ -10,9 +10,16 @@
 
 namespace Tribe\Tickets\Events\Views\V2\Models;
 
+use ArrayAccess;
+use Closure;
+use InvalidArgumentException;
+use ReturnTypeWillChange;
+use Serializable;
 use Tribe\Utils\Lazy_Events;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Tickets as Tickets_Tickets;
+use WP_Post;
 
 /**
  * Class Tickets
@@ -21,7 +28,7 @@ use Tribe__Events__Main as TEC;
  *
  * @package Tribe\Tickets\Events\Views\V2\Models
  */
-class Tickets implements \ArrayAccess, \Serializable {
+class Tickets implements ArrayAccess, Serializable {
 	use Lazy_Events;
 
 	/**
@@ -97,19 +104,46 @@ class Tickets implements \ArrayAccess, \Serializable {
 
 		$post = get_post( $post_id );
 
-		if ( ! $post instanceof \WP_Post ) {
+		if ( ! $post instanceof WP_Post ) {
 			// The clean of the cache happened in the context of the post deletion, we're done.
 			return;
 		}
+
+		// Avoid caching the query results while we refresh the cache.
+		$do_not_cache_results = static function ( $wp_query ): void {
+			if ( ! $wp_query instanceof \WP_Query ) {
+				return;
+			}
+
+			$wp_query->query_vars['cache_results'] = false;
+		};
+
+		add_action( 'parse_query', $do_not_cache_results );
 
 		if ( $post->post_type === TEC::POSTTYPE ) {
 			// It's an Event: refresh its cache.
 			$model = new self( $post->ID );
 			$model->exist();
 		} else {
+			// These are maps from the service slug to the post type, so we keep only the post type.
+			$attendee_post_types = array_values( tribe_attendees()->attendee_types() );
+			$ticket_types        = array_values( tribe_tickets()->ticket_types() );
+
 			// This is not an event post, but it might be a Ticket or Attendee linked to an Event.
-			$attendee_to_event_keys  = tribe_attendees()->attendee_to_event_keys();
-			$ticket_to_event_keys    = tribe_tickets()->ticket_to_event_keys();
+			$ancillary_post_types = array_merge( $attendee_post_types, $ticket_types );
+
+			if ( ! in_array( $post->post_type, $ancillary_post_types, true ) ) {
+				remove_action( 'parse_query', $do_not_cache_results );
+
+				// Not a post type we're interested in.
+				return;
+			}
+
+			$is_ticket = in_array( $post->post_type, $ticket_types, true );
+
+			// These are maps from the service slug to the meta key, so we keep only the meta key.
+			$attendee_to_event_keys  = array_values( tribe_attendees()->attendee_to_event_keys() );
+			$ticket_to_event_keys    = array_values( tribe_tickets()->ticket_to_event_keys() );
 			$all_connected_meta_keys = array_merge( $attendee_to_event_keys, $ticket_to_event_keys );
 
 			/** @var array<array<int>> $connected_event_ids */
@@ -120,16 +154,35 @@ class Tickets implements \ArrayAccess, \Serializable {
 				}
 
 				$connected_event_ids[] = array_map( 'absint', $meta_values );
+
+				if ( $is_ticket ) {
+					// Invalidate some ticket-specific caches.
+					wp_cache_delete( $post_id, 'tec_tickets' );
+				}
 			}
 			/** @var array<int> $connected_event_ids */
 			$connected_event_ids = array_merge( ...$connected_event_ids );
+			$tribe_cache         = tribe_cache();
+			$tickets_class       = Tickets_Tickets::class;
 
 			foreach ( $connected_event_ids as $connected_event_id ) {
+				// Reset the `Tribe__Tickets__Tickets::get_tickets` method cache to get the last version of them.
+				$provider = Tickets_Tickets::get_event_ticket_provider_object( $connected_event_id );
+
+				if ( $provider ) {
+					$orm_provider                      = $provider->orm_provider;
+					$tickets_cache_key                 = "{$tickets_class}::get_tickets-{$orm_provider}-{$connected_event_id}";
+					$tribe_cache[ $tickets_cache_key ] = null;
+				}
+
 				$model = new self( $connected_event_id );
 				// The call will trigger a priming of the model cache.
 				$model->exist();
+				$model->prime_cache();
 			}
 		}
+
+		remove_action( 'parse_query', $do_not_cache_results );
 	}
 
 	/**
@@ -146,10 +199,10 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws \InvalidArgumentException When trying to set a property.
+	 * @throws InvalidArgumentException When trying to set a property.
 	 */
 	public function __set( $property, $value ) {
-		throw new \InvalidArgumentException( "The `Tickets::{$property}` property cannot be set." );
+		throw new InvalidArgumentException( "The `Tickets::{$property}` property cannot be set." );
 	}
 
 	/**
@@ -191,7 +244,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		}
 
 		// Get an array for ticket and rsvp counts.
-		$types = \Tribe__Tickets__Tickets::get_ticket_counts( $this->post_id );
+		$types = Tickets_Tickets::get_ticket_counts( $this->post_id );
 
 		// If no rsvp or tickets return.
 		if ( ! $types ) {
@@ -309,7 +362,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	#[\ReturnTypeWillChange]
+	#[ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		$this->data = $this->fetch_data();
 
@@ -409,7 +462,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 			return $this->exists;
 		}
 
-		$this->all_tickets = \Tribe__Tickets__Tickets::get_all_event_tickets( $this->post_id );
+		$this->all_tickets = Tickets_Tickets::get_all_event_tickets( $this->post_id );
 
 		$this->exists = ! empty( $this->all_tickets );
 
@@ -500,7 +553,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		*/
 		foreach ( $this->all_tickets as $ticket ) {
 			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found -- Faster than Reflection.
-			\Closure::bind( fn() => $ticket->provider = null, $ticket, Ticket_Object::class )();
+			Closure::bind( fn() => $ticket->provider = null, $ticket, Ticket_Object::class )();
 		}
 
 		$packed = tec_json_pack(
