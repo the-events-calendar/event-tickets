@@ -256,7 +256,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	}
 
 	if ( ticketData.menuOrder ) {
-		// todo: add menuOrder to the API.
+		body.menu_order = ticketData.menuOrder;
 	}
 
 	if ( ticketData.fees ) {
@@ -319,11 +319,13 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 	const availableFrom = apiResponse.start_date || '';
 	const availableUntil = apiResponse.end_date || '';
 
-	// @todo: Handle fees, iac, menuOrder, and other fields if needed
+	// @todo: Handle fees, iac, and other fields if needed
 	// These are not provided by the API, so we use defaults for now.
 	const provider = 'tc';
 	const iac = '';
-	const menuOrder = 0;
+	const menuOrder = apiResponse.menu_order || 0;
+
+	// Default empty fees structure
 	const fees: FeesData = {
 		automaticFees: [],
 		availableFees: [],

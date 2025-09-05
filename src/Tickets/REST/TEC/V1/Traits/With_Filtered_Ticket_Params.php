@@ -148,6 +148,7 @@ trait With_Filtered_Ticket_Params {
 			'ticket_sale_price'       => $params['sale_price'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price'] ]['0'] ?? null,
 			'ticket_sale_start_date'  => $params['sale_price_start_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_start_date'] ]['0'] ?? null,
 			'ticket_sale_end_date'    => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
+			'ticket_menu_order'       => $params['menu_order'] ?? $ticket_post->menu_order ?? 0,
 		];
 
 		$new_params['ticket_sale_price']      = maybe_unserialize( $new_params['ticket_sale_price'] );
@@ -160,11 +161,6 @@ trait With_Filtered_Ticket_Params {
 
 		if ( is_object( $new_params['ticket_sale_price'] ) ) {
 			throw new InvalidRestArgumentException( __( 'The ticket price must be a number.', 'event-tickets' ) );
-		}
-
-		// Ensure menu_order value is an integer.
-		if ( isset( $params['menu_order'] ) ) {
-			$params['menu_order'] = (int) $params['menu_order'];
 		}
 
 		unset(
@@ -183,6 +179,7 @@ trait With_Filtered_Ticket_Params {
 			$params['price'],
 			$params['event'],
 			$params['title'],
+			$params['menu_order'],
 		);
 
 		$post_params = $params;

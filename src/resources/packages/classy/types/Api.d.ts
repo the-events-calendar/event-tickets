@@ -1,6 +1,3 @@
-import { CurrencyPosition } from '@tec/common/classy/types/CurrencyPosition';
-import { FeesData, TicketId, TicketType } from './Ticket';
-
 /**
  * Parameters to be used when fetching tickets from the API.
  *
@@ -126,6 +123,7 @@ export type GetTicketApiResponse = TECPostEntity & {
 	type: string;
 	sold: number;
 	sku?: string;
+	menu_order: number;
 };
 
 /**
@@ -200,6 +198,9 @@ export type UpsertTicketApiRequest = TECPostEntityRequestBody & {
 
 	/** The SKU of the ticket */
 	sku?: string;
+
+	/** The menu order of the ticket */
+	menu_order?: number;
 };
 
 /**
