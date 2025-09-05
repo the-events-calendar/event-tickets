@@ -304,6 +304,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 
 	// Map sale price data
 	const salePriceData: SalePriceDetails = {
+		// todo: fix the API to return the 'on_sale' value.
 		enabled: apiResponse.on_sale || false,
 		salePrice: apiResponse.sale_price?.toString() || '',
 		startDate: apiResponse.sale_price_start_date || '',
