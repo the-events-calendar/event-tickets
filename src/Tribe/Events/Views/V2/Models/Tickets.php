@@ -109,6 +109,16 @@ class Tickets implements ArrayAccess, Serializable {
 			return;
 		}
 
+		/*
+		 * Flush the cached post queries.
+		 * Repositories will build `WP_Query` objects that will benefit from the built-in caching of post queries.
+		 * The `post-queries` cache group is a persistent group, but some results cached during the rebuild of this
+		 * cache will need to be refetched.
+		 * Since we cannot guess or map the exact keys to invalidate, the best we can do is invalidate all the
+		 * currently cached results.
+		 */
+		wp_cache_flush_group( 'post-queries' );
+
 		if ( $post->post_type === TEC::POSTTYPE ) {
 			// It's an Event: refresh its cache.
 			$model = new self( $post->ID );
