@@ -61,7 +61,6 @@ export default function Tickets(): JSX.Element {
 			if ( isNewTicket ) {
 				addTicket( ticket );
 			} else {
-				console.log( 'Updating ticket:', ticket );
 				updateTicket( ticket.id, ticket );
 			}
 
