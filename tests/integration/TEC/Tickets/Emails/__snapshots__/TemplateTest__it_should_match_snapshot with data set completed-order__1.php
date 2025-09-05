@@ -119,7 +119,7 @@
 		margin: 0;
 		padding: 0;
 	}
-	
+
 	div.tec-tickets__email-table-content-ticket-seat-label {
 		color: #ffffff;
 		display: inline-block;
@@ -127,7 +127,7 @@
 		font-weight: 400;
 		margin-top: 8px;
 	}
-	
+
 	div.tec-tickets__email-table-content-ticket-seat-label-separator {
 		color: #ffffff;
 		display: inline-block;
@@ -260,27 +260,26 @@
 		padding-top:43px;
 	}
 
-	td.tec-tickets__email-table-content-order-total-container {
-		padding-top: 20px;
-		text-align: right;
-	}
-
-	.tec-tickets__email-table-content-order-total-table {
-		display: inline-block;
-		width: auto;
-	}
-
-	td.tec-tickets__email-table-content-order-total-left-cell {
+	.tec-tickets__email-table-content-order-ticket-totals-fees-row,
+	.tec-tickets__email-table-content-order-ticket-totals-coupons-row {
+		border: none;
 		font-size: 14px;
 		font-weight: 400;
 		line-height: 24px;
-		padding-right: 10px;
 	}
 
-	.tec-tickets__email-table-content-order-total-right-cell {
-		font-size: 16px;
+	.tec-tickets__email-table-content-order-ticket-totals-total-row {
+		border: none;
+		border-top: 2px solid #333;
+		font-size: 14px;
 		font-weight: 700;
 		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-ticket-totals-total-cell {
+		font-weight: bold;
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 
 	td.tec-tickets__email-table-content-order-payment-info-container {
@@ -445,11 +444,11 @@
 	<td>
 		<table style="border-collapse:collapse;margin-top:10px">
 			<tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
-	<th style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+	<th style="width: 60%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
 		Ticket	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
+	<th style="width: 25%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
 		Qty	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
+	<th style="width: 15%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
 		Price	</th>
 </tr>
 							<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
@@ -460,21 +459,21 @@
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
 	&#x24;50.00</td>
 </tr>
-					</table>
+												<tr class="tec-tickets__email-table-content-order-ticket-totals-total-row">
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+		&nbsp;
+	</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-ticket-totals-total-cell tec-tickets__email-table-content-order-align-center" align="center">
+		<strong>Order Total</strong>
+	</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-ticket-totals-total-cell tec-tickets__email-table-content-order-align-right" align="right">
+		<strong>&#x24;100.00</strong>
+	</td>
+</tr>
+		</table>
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-order-total-container" align="right">
-		<table class="tec-tickets__email-table-content-order-total-table">
-			<tr>
-				<td class="tec-tickets__email-table-content-order-total-left-cell">
-					Order Total				</td>
-				<td class="tec-tickets__email-table-content-order-total-right-cell">
-					&#x24;100.00				</td>
-			</tr>
-		</table>
-	</td>
-</tr><tr>
 	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
 		Gateway Order #<a href="" target="_blank" rel="noopener noreferrer">test_cd7d068a5ef24c02</a>	</td>
 </tr><tr>
