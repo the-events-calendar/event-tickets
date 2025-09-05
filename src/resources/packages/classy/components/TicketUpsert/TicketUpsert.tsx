@@ -11,6 +11,7 @@ import { CoreEditorSelect } from '../../types/Store';
 import { CapacitySettings, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
+import { getCurrencySettings } from '../../localizedData';
 
 type TicketUpsertProps = {
 	isUpdate: boolean;
@@ -36,12 +37,8 @@ const defaultValues: TicketSettings = {
 		isShared: false,
 	},
 	costDetails: {
-		currencySymbol: '$',
-		currencyPosition: 'prefix',
-		currencyDecimalSeparator: '.',
-		currencyThousandSeparator: ',',
-		suffix: '',
-		values: [],
+		...getCurrencySettings(),
+		value: 0,
 	},
 	fees: {
 		availableFees: [],
@@ -78,10 +75,6 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		...value,
 	} );
 
-	const [ costValue, setCostValue ] = useState< number >(
-		currentValues.costDetails.values.length > 0 ? currentValues.costDetails.values[ 0 ] : 0
-	);
-
 	// Tickets must have a name at a minimum.
 	const [ confirmEnabled, setConfirmEnabled ] = useState< boolean >( currentValues.name !== '' );
 	const [ ticketUpsertError, setTicketUpsertError ] = useState< Error | null >( null );
@@ -109,8 +102,6 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		}
 
 		setSaveInProgress( true );
-
-		// todo: better data mapping for the ticket data.
 
 		TicketApi.upsertTicket( currentValues )
 			.then( ( ticket: TicketSettings ) => {
@@ -180,21 +171,19 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 				<CurrencyInput
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
-					value={ costValue > 0 ? costValue.toString() : '' }
+					value={ currentValues.costDetails.value > 0 ? currentValues.costDetails.value.toString() : '' }
 					onChange={ ( value: string ) => {
 						const numericValue = parseFloat( value );
+						const newValues = currentValues;
+
 						if ( isNaN( numericValue ) ) {
-							setCostValue( 0 );
-							return onValueChange( 'costDetails', {
-								values: [],
-								...currentValues.costDetails,
-							} );
+							delete newValues.costDetails.value;
+							return onValueChange( 'costDetails', newValues.costDetails );
 						}
 
-						setCostValue( numericValue );
 						return onValueChange( 'costDetails', {
-							values: [ numericValue ],
 							...currentValues.costDetails,
+							value: numericValue,
 						} );
 					} }
 				/>

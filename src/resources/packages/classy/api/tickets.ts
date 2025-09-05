@@ -6,7 +6,7 @@ import { CostDetails } from '../types/CostDetails';
 import { CapacitySettings, FeesData, SalePriceDetails, TicketSettings, TicketType } from '../types/Ticket';
 import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { NonceAction, NonceTypes } from '../types/LocalizedData';
-import { getLocalizedData } from '../localizedData.ts';
+import { getLocalizedData, getCurrencySettings } from '../localizedData.ts';
 
 const apiBaseUrl = '/tec/v1/tickets';
 
@@ -197,14 +197,12 @@ export const deleteTicket = async ( ticketId: number ): Promise< void > => {
  * @returns {UpsertTicketApiRequest} The formatted API request object based on the provided ticket settings.
  */
 const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: boolean ): UpsertTicketApiRequest => {
-	const hasPrice = ticketData?.costDetails?.values.length > 0;
-
 	// Map basic ticket information.
 	const body: UpsertTicketApiRequest = {
 		title: ticketData.name || '',
 		content: ticketData?.description || '',
 		event: ticketData.eventId,
-		price: hasPrice ? ticketData.costDetails.values[ 0 ] : 0,
+		price: ticketData.costDetails.value || 0,
 		type: ticketData?.type || 'default',
 		show_description: true,
 	};
@@ -312,14 +310,9 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		endDate: apiResponse.sale_price_end_date || '',
 	};
 
-	// Create basic cost details (API doesn't provide detailed cost structure)
 	const costDetails: CostDetails = {
-		currencySymbol: '$', // Default, should come from site settings
-		currencyPosition: 'prefix', // Default, should come from site settings
-		currencyDecimalSeparator: '.', // Default, should come from site settings
-		currencyThousandSeparator: ',', // Default, should come from site settings
-		suffix: '',
-		values: [ apiResponse.price ], // API returns price as number
+		...getCurrencySettings(),
+		value: apiResponse.price,
 	};
 
 	// Map available dates

@@ -14,12 +14,13 @@ export function makeMockTicketDataForCreate(): TicketSettings {
 		description: 'Test ticket description',
 		cost: '25.00',
 		costDetails: {
-			currencySymbol: '$',
-			currencyPosition: 'prefix',
-			currencyDecimalSeparator: '.',
-			currencyThousandSeparator: ',',
+			symbol: '$',
+			position: 'prefix',
+			decimalSeparator: '.',
+			thousandSeparator: ',',
 			suffix: '',
-			values: [ 25 ],
+			precision: 2,
+			value: 25,
 		},
 		salePriceData: {
 			enabled: false,

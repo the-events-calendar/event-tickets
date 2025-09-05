@@ -1,10 +1,11 @@
 import { CurrencyPosition } from '@tec/common/classy/types/CurrencyPosition';
 
 export type CostDetails = {
-	currencySymbol: string;
-	currencyPosition: CurrencyPosition;
-	currencyDecimalSeparator: string;
-	currencyThousandSeparator: string;
+	symbol: string;
+	position: CurrencyPosition;
+	decimalSeparator: string;
+	thousandSeparator: string;
 	suffix?: string;
-	values: number[];
+	value?: number;
+	precision: number;
 };
