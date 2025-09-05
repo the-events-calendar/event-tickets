@@ -154,10 +154,13 @@ class Tickets implements ArrayAccess, Serializable {
 
 			foreach ( $connected_event_ids as $connected_event_id ) {
 				// Reset the `Tribe__Tickets__Tickets::get_tickets` method cache to get the last version of them.
-				$provider                          = Tickets_Tickets::get_event_ticket_provider_object( $connected_event_id );
-				$orm_provider                      = $provider->orm_provider;
-				$tickets_cache_key                 = "{$tickets_class}::get_tickets-{$orm_provider}-{$connected_event_id}";
-				$tribe_cache[ $tickets_cache_key ] = null;
+				$provider = Tickets_Tickets::get_event_ticket_provider_object( $connected_event_id );
+
+				if ( $provider ) {
+					$orm_provider                      = $provider->orm_provider;
+					$tickets_cache_key                 = "{$tickets_class}::get_tickets-{$orm_provider}-{$connected_event_id}";
+					$tribe_cache[ $tickets_cache_key ] = null;
+				}
 
 				$model = new self( $connected_event_id );
 				// The call will trigger a priming of the model cache.
