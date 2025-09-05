@@ -6,6 +6,7 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { RSVPSettingsSlot, RSVPAdvancedSlot, RSVPExtensionsSlot } from './slots';
 
 /**
@@ -18,6 +19,25 @@ import { RSVPSettingsSlot, RSVPAdvancedSlot, RSVPExtensionsSlot } from './slots'
  * @return {JSX.Element} The inspector controls component.
  */
 export function RSVPInspectorControls( props ) {
+	/**
+	 * Filters the inspector control panels for the RSVP block.
+	 *
+	 * Allows Event Tickets Plus and other extensions to add custom panels
+	 * to the RSVP block inspector controls.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array}  panels Array of panel configurations.
+	 * @param {Object} props  Component props including attributes and setAttributes.
+	 *
+	 * @return {Array} Modified array of panel configurations.
+	 */
+	const additionalPanels = applyFilters(
+		'tec.tickets.commerce.rsvp.inspectorPanels',
+		[],
+		props
+	);
+
 	return (
 		<InspectorControls>
 			<PanelBody
@@ -27,12 +47,16 @@ export function RSVPInspectorControls( props ) {
 				<RSVPSettingsSlot fillProps={ props } />
 			</PanelBody>
 
-			<PanelBody
-				title={ __( 'Advanced Options', 'event-tickets' ) }
-				initialOpen={ false }
-			>
-				<RSVPAdvancedSlot fillProps={ props } />
-			</PanelBody>
+			{ /* Render additional panels from filter */ }
+			{ additionalPanels.map( ( panel, index ) => (
+				<PanelBody
+					key={ `additional-panel-${index}` }
+					title={ panel.title }
+					initialOpen={ panel.initialOpen || false }
+				>
+					{ panel.content }
+				</PanelBody>
+			) ) }
 
 			{ /* Extensions panel only shows if there are registered fills */ }
 			<RSVPExtensionsSlot>

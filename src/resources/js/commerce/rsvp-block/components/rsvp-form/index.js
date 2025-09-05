@@ -13,14 +13,35 @@ import {
 	PanelBody,
 	PanelRow,
 	ToggleControl,
-	Spinner
+	Spinner,
+	Slot,
+	Fill
 } from '@wordpress/components';
 import { format } from '@wordpress/date';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
  */
 import './styles.pcss';
+
+/**
+ * Slot for Event Tickets Plus to add attendee meta fields.
+ *
+ * @since TBD
+ */
+export const RSVPAttendeeMetaSlot = ( { fillProps } ) => (
+	<Slot name="RSVPAttendeeMetaSlot" fillProps={ fillProps } />
+);
+
+/**
+ * Fill for Event Tickets Plus to add attendee meta fields.
+ *
+ * @since TBD
+ */
+export const RSVPAttendeeMetaFill = ( { children } ) => (
+	<Fill name="RSVPAttendeeMetaSlot">{ children }</Fill>
+);
 
 const RSVPForm = ( {
 	rsvpId,
@@ -198,6 +219,40 @@ const RSVPForm = ( {
 						/>
 					</div>
 				</div>
+
+				{/* 
+				 * Slot for Event Tickets Plus to add attendee meta fields
+				 * This allows ET+ to inject custom fields for collecting attendee information
+				 * 
+				 * @since TBD
+				 */}
+				<RSVPAttendeeMetaSlot
+					fillProps={ {
+						rsvpId,
+						attributes,
+						setAttributes,
+						onAttributeChange,
+						isSaving
+					} }
+				/>
+				
+				{/* 
+				 * Filter to allow additional fields to be added to the RSVP form
+				 * This provides an alternative hook point for extensions
+				 * 
+				 * @since TBD
+				 */}
+				{ applyFilters(
+					'tec.tickets.commerce.rsvp.formFields',
+					null,
+					{
+						rsvpId,
+						attributes,
+						setAttributes,
+						onAttributeChange,
+						isSaving
+					}
+				) }
 				
 				{ rsvpId && (
 					<div className="tec-rsvp-block__form-actions">
@@ -217,78 +272,6 @@ const RSVPForm = ( {
 						</Button>
 					</div>
 				) }
-
-				{/* RSVP Window */}
-{/*				<PanelBody title={ __( 'RSVP Window', 'event-tickets' ) } initialOpen={ true }>
-					 Open RSVP Date/Time
-					<PanelRow>
-						<BaseControl
-							label={ __( 'Open RSVP', 'event-tickets' ) }
-							className="tec-rsvp-block__field tec-rsvp-block__field--datetime"
-						>
-							<Dropdown
-								position="bottom left"
-								renderToggle={ ( { isOpen, onToggle } ) => (
-									<Button
-										variant="tertiary"
-										onClick={ onToggle }
-										aria-expanded={ isOpen }
-										className="tec-rsvp-block__datetime-button"
-									>
-										{ formatDateTime( openDateTime ) }
-									</Button>
-								) }
-								renderContent={ () => (
-									<DateTimePicker
-										currentDate={ openDateTime }
-										onChange={ handleOpenDateTimeChange }
-										is12Hour={ true }
-									/>
-								) }
-							/>
-						</BaseControl>
-					</PanelRow>
-
-					 Close RSVP Date/Time
-					<PanelRow>
-						<BaseControl
-							label={ __( 'Close RSVP', 'event-tickets' ) }
-							className="tec-rsvp-block__field tec-rsvp-block__field--datetime"
-						>
-							<Dropdown
-								position="bottom left"
-								renderToggle={ ( { isOpen, onToggle } ) => (
-									<Button
-										variant="tertiary"
-										onClick={ onToggle }
-										aria-expanded={ isOpen }
-										className="tec-rsvp-block__datetime-button"
-									>
-										{ formatDateTime( closeDateTime ) }
-									</Button>
-								) }
-								renderContent={ () => (
-									<DateTimePicker
-										currentDate={ closeDateTime }
-										onChange={ handleCloseDateTimeChange }
-										is12Hour={ true }
-										minDate={ openDateTime }
-									/>
-								) }
-							/>
-						</BaseControl>
-					</PanelRow>
-				</PanelBody>*/}
-
-				{/* Additional Options */}
-{/*				<PanelBody title={ __( 'Additional Options', 'event-tickets' ) } initialOpen={ false }>
-					<ToggleControl
-						label={ __( 'Enable "Can\'t Go" responses', 'event-tickets' ) }
-						checked={ showNotGoingOption }
-						onChange={ ( value ) => onAttributeChange( { showNotGoingOption: value } ) }
-						help={ __( 'Allow users to indicate they cannot attend', 'event-tickets' ) }
-					/>
-				</PanelBody>*/}
 			</div>
 		</div>
 	);
