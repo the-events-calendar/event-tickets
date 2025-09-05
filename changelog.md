@@ -1,5 +1,18 @@
 # Changelog
 
+### [5.26.2] 2025-09-02
+
+* Fix - Remove duplicate page title from the All Tickets page. [ET-2545]
+* Fix - Completed Order email can handle again multiple recipients separated by comma. [ET-2551]
+* Tweak - Adds a notice about the 2% fee when using the free Square payment gateway integration. [ET-2548]
+* Language - 1 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.26.1] 2025-08-26
+
+* Fix - Correct some logic for loading the RSVP importer. Ensure the class it extends is available.
+* Performance - Cache Views v2 ticket models preferably during updates to speed up frontend. [ETP-1021]
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.26.0.1] 2025-08-20
 
 * Fix - Ensures the Actions Scheduler Logs table is present before attempting to use it. [TCMN-190]
