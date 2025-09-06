@@ -67,7 +67,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			if ( existingRsvp?.id ) {
 				setAttributes( { 
 					rsvpId: String( existingRsvp.id ),
-					limit: existingRsvp.capacity || '',
+					limit: String( existingRsvp.capacity || '' ),
 					openRsvpDate: existingRsvp.start_date || '',
 					openRsvpTime: existingRsvp.start_time || '00:00:00',
 					closeRsvpDate: existingRsvp.end_date || '',
@@ -89,8 +89,8 @@ export default function Edit( { attributes, setAttributes } ) {
 			const updates = {};
 			
 			// Only update if values are different to avoid infinite loops
-			if ( rsvpData.capacity !== undefined && rsvpData.capacity !== limit ) {
-				updates.limit = rsvpData.capacity || '';
+			if ( rsvpData.capacity !== undefined && String( rsvpData.capacity || '' ) !== limit ) {
+				updates.limit = String( rsvpData.capacity || '' );
 			}
 			
 			if ( rsvpData.start_date && rsvpData.start_date !== openRsvpDate ) {

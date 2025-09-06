@@ -54,6 +54,14 @@
       "type": "boolean",
       "default": false
     },
+    "waitlistBeforeSale": {
+      "type": "boolean",
+      "default": false
+    },
+    "waitlistSoldOut": {
+      "type": "boolean",
+      "default": false
+    },
     "goingCount": {
       "type": "number",
       "default": 0

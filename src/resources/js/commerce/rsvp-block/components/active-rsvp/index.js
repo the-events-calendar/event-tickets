@@ -18,9 +18,9 @@ const ActiveRSVP = ( {
 	rsvpId,
 	attributes,
 	setAttributes,
-	onUpdate,
-	onDelete,
-	isSaving
+	onUpdate = null,
+	onDelete = null,
+	isSaving = false
 } ) => {
 	const [ isLimitModalOpen, setIsLimitModalOpen ] = useState( false );
 	const [ isWindowModalOpen, setIsWindowModalOpen ] = useState( false );
@@ -345,12 +345,6 @@ ActiveRSVP.propTypes = {
 	onUpdate: PropTypes.func,
 	onDelete: PropTypes.func,
 	isSaving: PropTypes.bool
-};
-
-ActiveRSVP.defaultProps = {
-	onUpdate: null,
-	onDelete: null,
-	isSaving: false
 };
 
 export default ActiveRSVP;

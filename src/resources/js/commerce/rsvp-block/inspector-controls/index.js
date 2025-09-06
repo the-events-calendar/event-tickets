@@ -41,7 +41,12 @@ export function RSVPInspectorControls( props ) {
 	return (
 		<InspectorControls>
 			<PanelBody
-				title={ __( 'RSVP Settings', 'event-tickets' ) }
+				title={ (
+					<>
+						<span className="dashicons dashicons-email" style={{ marginRight: '6px' }}></span>
+						{ __( 'RSVP', 'event-tickets' ) }
+					</>
+				) }
 				initialOpen={ true }
 			>
 				<RSVPSettingsSlot fillProps={ props } />

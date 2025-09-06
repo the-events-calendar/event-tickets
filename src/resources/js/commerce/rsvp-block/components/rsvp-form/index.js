@@ -44,15 +44,15 @@ export const RSVPAttendeeMetaFill = ( { children } ) => (
 );
 
 const RSVPForm = ( {
-	rsvpId,
-	limit,
+	rsvpId = null,
+	limit = '',
 	onLimitChange,
-	attributes,
-	setAttributes,
-	onAttributeChange,
-	isActive,
-	onSave,
-	isSaving
+	attributes = {},
+	setAttributes = () => {},
+	onAttributeChange = () => {},
+	isActive = false,
+	onSave = () => {},
+	isSaving = false
 } ) => {
 	const {
 		openRsvpDate,
@@ -290,17 +290,6 @@ RSVPForm.propTypes = {
 	isActive: PropTypes.bool,
 	onSave: PropTypes.func,
 	isSaving: PropTypes.bool,
-};
-
-RSVPForm.defaultProps = {
-	rsvpId: null,
-	limit: '',
-	attributes: {},
-	setAttributes: () => {},
-	onAttributeChange: () => {},
-	isActive: false,
-	onSave: () => {},
-	isSaving: false,
 };
 
 export default RSVPForm;
