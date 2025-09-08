@@ -115,6 +115,7 @@ class Tribe__Tickets__Metabox {
 	 * Refreshes panels after ajax calls that change data
 	 *
 	 * @since 4.6.2
+	 * @since TBD Add user permission check.
 	 *
 	 * @return string html content of the panels
 	 */
@@ -124,6 +125,11 @@ class Tribe__Tickets__Metabox {
 		// Didn't get a post id to work with - bail
 		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
+		}
+
+		// Check user permissions for this post - bail if not authorized.
+		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
 		}
 
 		// Overwrites for a few templates that use get_the_ID() and get_post()
