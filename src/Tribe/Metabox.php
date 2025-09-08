@@ -133,14 +133,13 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// Get the post object and set global $post for templates
+		global $post;
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
 		}
 
 		// Overwrites for a few templates that use get_the_ID() and get_post()
-		global $post;
-		$post = get_post( $post_id );
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 		$ticket_type = $data['ticket_type'] ?? 'default';
 		$notice = tribe_get_request_var( 'tribe-notice', false );
