@@ -128,14 +128,19 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// Check user permissions for this post - bail if not authorized.
-		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
+		}
+
+		if ( ! current_user_can( 'edit_event_tickets' )
+			&& ! current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
+			&& ! current_user_can( 'edit_post', $post->ID ) ) {
 			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
 		}
 
 		// Overwrites for a few templates that use get_the_ID() and get_post()
 		global $post;
-
-		$post = get_post( $post_id );
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 		$ticket_type = $data['ticket_type'] ?? 'default';
 		$notice = tribe_get_request_var( 'tribe-notice', false );
