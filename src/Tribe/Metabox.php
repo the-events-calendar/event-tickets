@@ -122,7 +122,7 @@ class Tribe__Tickets__Metabox {
 	public function ajax_panels() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 
-		// Didn't get a post id to work with - bail
+		// Didn't get a post id to work with - bail. 
 		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
 		}
