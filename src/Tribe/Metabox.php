@@ -122,25 +122,25 @@ class Tribe__Tickets__Metabox {
 	public function ajax_panels() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 
-		// Didn't get a post id to work with - bail. 
+		// Didn't get a post id to work with - bail.
 		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
 		}
 
 		// Check user permissions for this post - bail if not authorized.
+		if ( ! user_can( get_current_user_id(), 'edit_post', $post_id ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
+		}
+
+		// Get the post object and set global $post for templates
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
 		}
 
-		if ( ! current_user_can( 'edit_event_tickets' )
-			&& ! current_user_can( get_post_type_object( $post->post_type )->cap->edit_others_posts )
-			&& ! current_user_can( 'edit_post', $post->ID ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
-		}
-
 		// Overwrites for a few templates that use get_the_ID() and get_post()
 		global $post;
+		$post = get_post( $post_id );
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 		$ticket_type = $data['ticket_type'] ?? 'default';
 		$notice = tribe_get_request_var( 'tribe-notice', false );
@@ -156,7 +156,16 @@ class Tribe__Tickets__Metabox {
 			$tickets_handler->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
+		// Debug: Check what we're passing to get_panels
+		error_log( 'DEBUG: Post ID: ' . $post->ID );
+		error_log( 'DEBUG: Post type: ' . $post->post_type );
+		error_log( 'DEBUG: Ticket type: ' . $ticket_type );
+
 		$return = $this->get_panels( $post, null, $ticket_type );
+
+		// Debug: Check what get_panels returned
+		error_log( 'DEBUG: get_panels returned: ' . print_r( $return, true ) );
+
 		$return['notice'] = $this->notice( $notice );
 
 		/**
