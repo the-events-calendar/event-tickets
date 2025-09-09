@@ -50,15 +50,6 @@ export type GetTicketsApiParams = {
  */
 export type GetTicketsApiResponse = GetTicketApiResponse[];
 
-type ApiDate = {
-	year: string;
-	month: string;
-	day: string;
-	hour: string;
-	minutes: string;
-	seconds: string;
-};
-
 /**
  * Base TEC Post Entity structure as returned by the REST API.
  *

@@ -29,8 +29,8 @@ const defaultValues: TicketSettings = {
 	salePriceData: {
 		enabled: false,
 		salePrice: '',
-		startDate: null,
-		endDate: null,
+		startDate: '',
+		endDate: '',
 	},
 	capacitySettings: {
 		enteredCapacity: '',
@@ -65,7 +65,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const { eventId } = useSelect( ( select: SelectFunction ) => {
 		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
 		return {
-			eventId: getCurrentPostId(),
+			eventId: getCurrentPostId() as number,
 		};
 	}, [] );
 

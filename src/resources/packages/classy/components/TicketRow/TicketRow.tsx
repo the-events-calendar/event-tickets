@@ -115,11 +115,9 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 			</td>
 
 			<td className="classy-field__ticket-row__price classy-field__ticket-row__section">
-				{ ticket.cost ? (
-					formatCurrency( { value: ticket.cost } )
-				) : (
-					_x( 'Free', 'Label for a free ticket', 'event-tickets' )
-				) }
+				{ ticket.cost
+					? formatCurrency( { value: ticket.cost } )
+					: _x( 'Free', 'Label for a free ticket', 'event-tickets' ) }
 			</td>
 
 			<td className="classy-field__ticket-row__capacity classy-field__ticket-row__section">

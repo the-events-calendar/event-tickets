@@ -19,7 +19,7 @@ const apiBaseUrl = '/tec/v1/tickets';
  * @param {APIFetchOptions} params The parameters for the API fetch request, including headers, path, method, and data.
  * @return {Promise<any>} A promise that resolves to the response data from the API.
  */
-const fetch = ( params: APIFetchOptions ) => {
+const fetch = ( params: APIFetchOptions ): Promise< any > => {
 	const { headers = {} } = params;
 	const requestParams = {
 		headers: {
@@ -131,7 +131,7 @@ export const fetchTicketsForPost = async ( postId: number ): Promise< TicketSett
  * @return {Promise<TicketSettings>} A promise that resolves to the created or updated ticket.
  */
 export const upsertTicket = async ( ticketData: TicketSettings ): Promise< TicketSettings > => {
-	const isUpdate = ticketData.id && ticketData.id > 0;
+	const isUpdate: boolean = Boolean( ticketData.id && ticketData.id > 0 );
 
 	return new Promise< TicketSettings >( async ( resolve, reject ) => {
 		const nonceKey: NonceAction = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
@@ -202,7 +202,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		title: ticketData.name || '',
 		content: ticketData?.description || '',
 		event: ticketData.eventId,
-		price: ticketData.costDetails.value || 0,
+		price: ticketData.costDetails?.value || 0,
 		type: ticketData?.type || 'default',
 		show_description: true,
 	};
@@ -248,11 +248,6 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		if ( salePriceData.endDate ) {
 			body.sale_price_end_date = salePriceData.endDate;
 		}
-	}
-
-	// Map additional fields
-	if ( ticketData.iac ) {
-		// todo: add iac to the API.
 	}
 
 	if ( ticketData.menuOrder ) {
@@ -320,10 +315,9 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 	const availableFrom = apiResponse.start_date || '';
 	const availableUntil = apiResponse.end_date || '';
 
-	// @todo: Handle fees, iac, and other fields if needed
+	// @todo: Handle fees and other fields.
 	// These are not provided by the API, so we use defaults for now.
 	const provider = 'tc';
-	const iac = '';
 	const menuOrder = apiResponse.menu_order || 0;
 
 	// Default empty fees structure
@@ -346,7 +340,6 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		type: apiResponse.type as TicketType,
 		availableFrom: availableFrom,
 		availableUntil: availableUntil,
-		iac: iac,
 		menuOrder: menuOrder,
 		fees: fees,
 	};

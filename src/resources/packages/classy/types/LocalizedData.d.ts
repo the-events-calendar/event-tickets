@@ -1,5 +1,6 @@
 import { Currency } from '@tec/common/classy/types/Currency';
 import { TecGlobal } from '@tec/common/classy/types/LocalizedData';
+import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
 
 /**
  * The types of nonces used in the Classy Tickets application.
@@ -53,7 +54,7 @@ export type CurrencySettings = Currency & {
  */
 export type Settings = {
 	currency: CurrencySettings;
-	startOfWeek: number;
+	startOfWeek: StartOfWeek;
 	ticketPostTypes: string[];
 };
 

@@ -15,7 +15,6 @@ module.exports = {
 					allowJs: true,
 					allowSyntheticDefaultImports: true,
 					alwaysStrict: true,
-					exactOptionalPropertyTypes: true,
 					baseUrl: '.',
 					checkJs: false,
 					esModuleInterop: true,

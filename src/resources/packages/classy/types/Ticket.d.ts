@@ -93,7 +93,6 @@ export type TicketSettings = {
 
 	// Features.
 	supportsAttendeeInformation?: boolean;
-	iac?: string;
 };
 
 export type Ticket = {
