@@ -312,7 +312,7 @@ class Metabox {
 	 * Returns the warning message when there is no commerce provider configured.
 	 *
 	 * @since 5.8.2
-	 * @since TBD Changed the URL to point to the Tickets Commerce settings page.
+	 * @since 5.26.3 Changed the URL to point to the Tickets Commerce settings page.
 	 *
 	 * @return string The warning message when there is no commerce provider configured.
 	 */

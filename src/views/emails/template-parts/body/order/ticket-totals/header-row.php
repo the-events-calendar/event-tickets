@@ -9,10 +9,10 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.26.3
  *
  * @since 5.5.11
- * @since TBD Tweaked the spacing of the columns to allow more space for fees and coupons.
+ * @since 5.26.3 Tweaked the spacing of the columns to allow more space for fees and coupons.
  *
  * @var Tribe__Template $this               Current template object.
  * @var Email_Abstract  $email              The email object.
