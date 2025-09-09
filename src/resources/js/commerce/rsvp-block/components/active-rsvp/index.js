@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { Button, Modal, TextControl, Spinner } from '@wordpress/components';
 import { format } from '@wordpress/date';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -210,6 +211,18 @@ const ActiveRSVP = ( {
 						{ __( 'Remove RSVP', 'event-tickets' ) }
 					</Button>
 				</div>
+
+				{/* Event Tickets Plus Integration Point */}
+				{ applyFilters(
+					'tec.tickets.commerce.rsvp.formFields',
+					null,
+					{
+						rsvpId,
+						attributes,
+						setAttributes,
+						isSaving
+					}
+				) }
 			</div>
 
 			{/* RSVP Limit Modal */}

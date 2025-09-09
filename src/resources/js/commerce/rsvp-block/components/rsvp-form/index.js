@@ -129,6 +129,7 @@ const RSVPForm = ( {
 	// Calculate remaining capacity
 	const remaining = limit ? Math.max( 0, parseInt( limit, 10 ) - goingCount ) : null;
 
+
 	return (
 		<div className="tec-rsvp-block__form-wrapper">
 			<div className="tec-rsvp-block__form-header">
@@ -220,10 +221,10 @@ const RSVPForm = ( {
 					</div>
 				</div>
 
-				{/* 
+				{/*
 				 * Slot for Event Tickets Plus to add attendee meta fields
 				 * This allows ET+ to inject custom fields for collecting attendee information
-				 * 
+				 *
 				 * @since TBD
 				 */}
 				<RSVPAttendeeMetaSlot
@@ -235,25 +236,8 @@ const RSVPForm = ( {
 						isSaving
 					} }
 				/>
-				
-				{/* 
-				 * Filter to allow additional fields to be added to the RSVP form
-				 * This provides an alternative hook point for extensions
-				 * 
-				 * @since TBD
-				 */}
-				{ applyFilters(
-					'tec.tickets.commerce.rsvp.formFields',
-					null,
-					{
-						rsvpId,
-						attributes,
-						setAttributes,
-						onAttributeChange,
-						isSaving
-					}
-				) }
-				
+
+
 				{ rsvpId && (
 					<div className="tec-rsvp-block__form-actions">
 						<Button
