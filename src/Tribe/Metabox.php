@@ -155,15 +155,7 @@ class Tribe__Tickets__Metabox {
 			$tickets_handler->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
-		// Debug: Check what we're passing to get_panels
-		error_log( 'DEBUG: Post ID: ' . $post->ID );
-		error_log( 'DEBUG: Post type: ' . $post->post_type );
-		error_log( 'DEBUG: Ticket type: ' . $ticket_type );
-
 		$return = $this->get_panels( $post, null, $ticket_type );
-
-		// Debug: Check what get_panels returned
-		error_log( 'DEBUG: get_panels returned: ' . print_r( $return, true ) );
 
 		$return['notice'] = $this->notice( $notice );
 
