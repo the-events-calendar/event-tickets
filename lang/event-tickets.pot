@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.26.2\n"
+"Project-Id-Version: Event Tickets 5.26.3\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-01T17:34:52+00:00\n"
+"POT-Creation-Date: 2025-09-09T12:44:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -690,7 +690,7 @@ msgstr ""
 #: src/admin-views/commerce/orders/single/order-items-metabox.php:27
 #: src/admin-views/editor/column-head-price.php:11
 #: src/Tickets/Admin/Tickets/List_Table.php:211
-#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:35
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:38
 #: src/views/registration/summary/tickets-header.php:19
 msgid "Price"
 msgstr ""
@@ -3579,7 +3579,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:174
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:462
-#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:29
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:32
 #: src/views/tickets/my-tickets/user-details.php:31
 msgid "Ticket"
 msgid_plural "Tickets"
@@ -10756,41 +10756,41 @@ msgstr ""
 msgid "1.2.0 migrated %1$d rows in the %2$s table."
 msgstr ""
 
-#: src/Tickets/Flexible_Tickets/Metabox.php:96
+#: src/Tickets/Flexible_Tickets/Metabox.php:97
 msgctxt "Help text for the end date field in the Series Passes meta box."
 msgid "If you do not set an end sale date, passes will be available until the last event in the Series."
 msgstr ""
 
 #. Translators: %s is the label for the link.
 #. Translators: %s is the pluralized name of the series pass.
-#: src/Tickets/Flexible_Tickets/Metabox.php:137
-#: src/Tickets/Flexible_Tickets/Metabox.php:252
-#: src/Tickets/Flexible_Tickets/Metabox.php:290
+#: src/Tickets/Flexible_Tickets/Metabox.php:138
+#: src/Tickets/Flexible_Tickets/Metabox.php:253
+#: src/Tickets/Flexible_Tickets/Metabox.php:291
 #, php-format
 msgid "Learn more about %s"
 msgstr ""
 
 #. Translators: %1$s is the pluralized name of the series pass, %2$s is the singular name of the event, %3$s is a link to the series edit screen, %4$s is a link to the documentation.
-#: src/Tickets/Flexible_Tickets/Metabox.php:272
+#: src/Tickets/Flexible_Tickets/Metabox.php:273
 #, php-format
 msgid "This recurring %2$s is part of a Series. Create and manage %1$s for this %2$s from the %3$s Series admin. %4$s"
 msgstr ""
 
 #. Translators: %1$s is the singular name of the event, %2$s is the pluralized name of the series pass, %3$s is a link to the documentation.
-#: src/Tickets/Flexible_Tickets/Metabox.php:303
+#: src/Tickets/Flexible_Tickets/Metabox.php:304
 #, php-format
 msgid "Once you save this %1$s, you can add %2$s to its parent Series. %3$s."
 msgstr ""
 
-#: src/Tickets/Flexible_Tickets/Metabox.php:324
-#: src/Tribe/Editor/Warnings.php:74
-msgctxt "Helper link in Ticket Editor"
-msgid "Learn More"
+#: src/Tickets/Flexible_Tickets/Metabox.php:326
+#: src/Tribe/Editor/Warnings.php:76
+msgctxt "Link to payment settings in Ticket Editor"
+msgid "Set up Tickets Commerce"
 msgstr ""
 
 #. Translators: %1$s: link to help article.
-#: src/Tickets/Flexible_Tickets/Metabox.php:329
-#: src/Tribe/Editor/Warnings.php:79
+#: src/Tickets/Flexible_Tickets/Metabox.php:331
+#: src/Tribe/Editor/Warnings.php:81
 #, php-format
 msgid "There is no payment gateway configured. To create %1$s, you'll need to enable and configure an ecommerce solution. %2$s"
 msgstr ""
@@ -12879,12 +12879,12 @@ msgstr ""
 msgid "%s was not able to be updated"
 msgstr ""
 
-#: src/Tribe/Editor/Warnings.php:120
+#: src/Tribe/Editor/Warnings.php:122
 msgid "See our future planned features."
 msgstr ""
 
 #. translators: %1$s: link to help article.
-#: src/Tribe/Editor/Warnings.php:125
+#: src/Tribe/Editor/Warnings.php:127
 #, php-format
 msgid "Standard tickets are not yet supported on recurring events. %1$s"
 msgstr ""
@@ -13154,7 +13154,7 @@ msgid "Order Number"
 msgstr ""
 
 #: src/Tribe/Privacy.php:557
-#: src/views/emails/template-parts/body/order/order-total.php:37
+#: src/views/emails/template-parts/body/order/ticket-totals/total-row.php:49
 #: src/views/tickets/tpp-success.php:137
 msgid "Order Total"
 msgstr ""
@@ -14446,7 +14446,17 @@ msgstr ""
 msgid "Order #%s"
 msgstr ""
 
-#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:32
+#: src/views/emails/template-parts/body/order/ticket-totals/coupons-row.php:51
+#: src/views/v2/commerce/order/details/coupons.php:37
+msgid "Discount:"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/ticket-totals/fees-row.php:47
+#: src/views/v2/commerce/order/details/fees.php:35
+msgid "Fees:"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:35
 msgid "Qty"
 msgstr ""
 
@@ -15067,20 +15077,12 @@ msgstr ""
 msgid "Thank you. Your order has been received. A receipt for purchase and any digital %1$s ordered will be emailed to you shortly."
 msgstr ""
 
-#: src/views/v2/commerce/order/details/coupons.php:37
-msgid "Discount:"
-msgstr ""
-
 #: src/views/v2/commerce/order/details/date.php:27
 msgid "Date:"
 msgstr ""
 
 #: src/views/v2/commerce/order/details/email.php:31
 msgid "Email:"
-msgstr ""
-
-#: src/views/v2/commerce/order/details/fees.php:35
-msgid "Fees:"
 msgstr ""
 
 #: src/views/v2/commerce/order/details/order-number.php:31
