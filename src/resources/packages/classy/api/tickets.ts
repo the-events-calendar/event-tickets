@@ -269,7 +269,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	 * @param {Record<string, any>} body The object containing additional values to be sent in the request.
 	 * @param {TicketSettings} ticketData The ticket data being sent.
 	 */
-	const additionalValues: Record< string, any > = applyFilters( filterName, {}, ticketData );
+	const additionalValues: Record< string, any > = applyFilters( filterName, {}, ticketData ) as Record< string, any >;
 
 	// Append/update additional values in the body.
 	Object.entries( additionalValues ).forEach( ( [ key, value ] ) => {
@@ -327,7 +327,22 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		selectedFees: [],
 	};
 
+	/**
+	 * Filter the mapped ticket settings before returning.
+	 *
+	 * @version TBD
+	 *
+	 * @param {Record<string, any>} ticketSettings The ticket settings object being returned.
+	 * @param {GetTicketApiResponse} apiResponse The original API response for the ticket.
+	 */
+	const additionalValues: Record< string, any > = applyFilters(
+		'tec.classy.tickets.mapApiResponseToTicketSettings',
+		{},
+		apiResponse
+	) as Record< string, any >;
+
 	return {
+		...additionalValues,
 		id: apiResponse.id,
 		eventId: apiResponse.event,
 		name: apiResponse.title.rendered,
