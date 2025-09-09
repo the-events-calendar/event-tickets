@@ -1,23 +1,201 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import apiFetch from '@wordpress/api-fetch';
 import { fetchTickets, fetchTicketsForPost, upsertTicket, deleteTicket } from '@tec/tickets/classy/api';
-import { makeMockApiTickets } from '../_support/mockApiTickets';
-import { makeMockMappedTickets } from '../_support/mockMappedTickets';
-import {
-	makeMockTicketDataForCreate,
-	makeMockTicketDataForUpdate,
-	makeMockTicketDataWithSalePrice,
-	makeMockTicketDataWithDates,
-	makeMockTicketDataWithIAC,
-	makeMockTicketDataWithMenuOrder,
-} from '../_support/mockTicketData';
-import { makeMockApiResponse, makeMockExpectedResult } from '../_support/mockApiResponse';
+import { makeMockApiResponse, makeMockApiTickets } from '../_support/mockApiResponse';
 import { createExpectedPath, TEST_CONSTANTS } from '../_support/testHelpers';
+import { CurrencyPosition } from '@tec/common/classy/types/Currency';
+import { TicketType } from '@tec/tickets/classy/types/Ticket';
 
 jest.mock( '@wordpress/api-fetch', () => ( {
 	__esModule: true,
 	default: jest.fn(),
 } ) );
+
+// Mock data structures for expected results
+const mockMappedTickets = [
+	{
+		id: 1,
+		eventId: 123,
+		name: 'Sample Ticket 1',
+		description: 'This is a sample ticket description for ticket 1.',
+		cost: '25',
+		costDetails: {
+			code: 'USD',
+			symbol: '$',
+			position: 'prefix' as CurrencyPosition,
+			decimalSeparator: '.',
+			thousandSeparator: ',',
+			precision: 2,
+			value: 25,
+		},
+		salePriceData: {
+			enabled: false,
+			salePrice: '',
+			startDate: '',
+			endDate: '',
+		},
+		capacitySettings: {
+			enteredCapacity: 100,
+			isShared: true,
+			globalStockMode: 'own',
+		},
+		fees: {
+			availableFees: [],
+			automaticFees: [],
+			selectedFees: [],
+		},
+		provider: 'tc',
+		type: 'default' as TicketType,
+		availableFrom: '',
+		availableUntil: '',
+		iac: '',
+		menuOrder: 0,
+	},
+	{
+		id: 2,
+		eventId: 123,
+		name: 'Sample Ticket 2',
+		description: 'This is a sample ticket description for ticket 2.',
+		cost: '25',
+		costDetails: {
+			code: 'USD',
+			symbol: '$',
+			position: 'prefix' as CurrencyPosition,
+			decimalSeparator: '.',
+			thousandSeparator: ',',
+			precision: 2,
+			value: 25,
+		},
+		salePriceData: {
+			enabled: false,
+			salePrice: '',
+			startDate: '',
+			endDate: '',
+		},
+		capacitySettings: {
+			enteredCapacity: 100,
+			isShared: true,
+			globalStockMode: 'own',
+		},
+		fees: {
+			availableFees: [],
+			automaticFees: [],
+			selectedFees: [],
+		},
+		provider: 'tc',
+		type: 'default' as TicketType,
+		availableFrom: '',
+		availableUntil: '',
+		iac: '',
+		menuOrder: 0,
+	},
+];
+
+const mockTicketDataForCreate = {
+	// 0 indicates create operation
+	id: 0,
+	eventId: 123,
+	name: 'Sample Ticket 1',
+	description: 'This is a sample ticket description for ticket 1.',
+	cost: '25.00',
+	costDetails: {
+		code: 'USD',
+		symbol: '$',
+		position: 'prefix' as CurrencyPosition,
+		decimalSeparator: '.',
+		thousandSeparator: ',',
+		precision: 2,
+		value: 25,
+	},
+	salePriceData: {
+		enabled: false,
+		salePrice: '',
+		startDate: '',
+		endDate: '',
+	},
+	capacitySettings: {
+		enteredCapacity: 100,
+		isShared: false,
+	},
+	fees: {
+		availableFees: [],
+		automaticFees: [],
+		selectedFees: [],
+	},
+	provider: 'tc',
+	type: 'default' as TicketType,
+};
+
+const mockTicketDataForUpdate = {
+	...mockTicketDataForCreate,
+	// Non-zero indicates update operation
+	id: 1,
+};
+
+const mockTicketDataWithSalePrice = {
+	...mockTicketDataForCreate,
+	salePriceData: {
+		enabled: true,
+		salePrice: '15.00',
+		startDate: '2024-01-01',
+		endDate: '2024-12-31',
+	},
+};
+
+const mockTicketDataWithDates = {
+	...mockTicketDataForCreate,
+	availableFrom: '2024-06-01T10:00:00.000Z',
+	availableUntil: '2024-06-01T18:00:00.000Z',
+};
+
+const mockTicketDataWithIAC = {
+	...mockTicketDataForCreate,
+	iac: 'ABC123',
+};
+
+const mockTicketDataWithMenuOrder = {
+	...mockTicketDataForCreate,
+	menuOrder: 5,
+};
+
+const mockExpectedResult = {
+	id: 1,
+	eventId: 123,
+	name: 'Sample Ticket 1',
+	description: 'This is a sample ticket description for ticket 1.',
+	cost: '25',
+	costDetails: {
+		code: 'USD',
+		symbol: '$',
+		position: 'prefix',
+		decimalSeparator: '.',
+		thousandSeparator: ',',
+		precision: 2,
+		value: 25,
+	},
+	salePriceData: {
+		enabled: false,
+		salePrice: '',
+		startDate: '',
+		endDate: '',
+	},
+	capacitySettings: {
+		enteredCapacity: 100,
+		isShared: true,
+		globalStockMode: 'own',
+	},
+	fees: {
+		availableFees: [],
+		automaticFees: [],
+		selectedFees: [],
+	},
+	provider: 'tc',
+	type: 'default' as TicketType,
+	availableFrom: '',
+	availableUntil: '',
+	iac: '',
+	menuOrder: 0,
+};
 
 describe( 'Ticket API', () => {
 	const resetModules = () => {
@@ -36,8 +214,8 @@ describe( 'Ticket API', () => {
 	const { tecExperimentalHeader, restEndpoint, restUrl } = TEST_CONSTANTS;
 
 	describe( 'fetchTickets', () => {
-		const mockApiTickets = makeMockApiTickets();
-		const mockApiMappedTickets = makeMockMappedTickets();
+		const mockApiTickets = makeMockApiTickets( 2 );
+		const mockApiMappedTickets = mockMappedTickets;
 
 		test( 'calls fetchTickets with correct parameters', async () => {
 			// @ts-ignore
@@ -59,6 +237,7 @@ describe( 'Ticket API', () => {
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiTickets );
 
 			const result = await fetchTicketsForPost( 123 );
+			const expectedResult = [];
 
 			expect( result ).toEqual( mockApiMappedTickets );
 			expect( apiFetch ).toHaveBeenCalledWith( {
@@ -156,8 +335,8 @@ describe( 'Ticket API', () => {
 	} );
 
 	describe( 'upsertTicket', () => {
-		const mockTicketData = makeMockTicketDataForCreate();
-		const mockUpdatedTicketData = makeMockTicketDataForUpdate();
+		const mockTicketData = mockTicketDataForCreate;
+		const mockUpdatedTicketData = mockTicketDataForUpdate;
 		const mockApiResponse = makeMockApiResponse();
 
 		test( 'creates a new ticket successfully', async () => {
@@ -166,7 +345,7 @@ describe( 'Ticket API', () => {
 
 			const result = await upsertTicket( mockTicketData );
 
-			expect( result ).toEqual( makeMockExpectedResult() );
+			expect( result ).toEqual( mockExpectedResult );
 
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: restEndpoint,
@@ -175,11 +354,11 @@ describe( 'Ticket API', () => {
 					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.objectContaining( {
-					title: 'Test Ticket',
-					content: 'Test ticket description',
+					title: 'Sample Ticket 1',
+					content: 'This is a sample ticket description for ticket 1.',
 					event: 123,
 					price: 25,
-					type: 'default',
+					type: 'default' as TicketType,
 					show_description: true,
 					capacity: 100,
 					stock: 100,
@@ -195,7 +374,7 @@ describe( 'Ticket API', () => {
 
 			const result = await upsertTicket( mockUpdatedTicketData );
 
-			expect( result ).toEqual( makeMockExpectedResult() );
+			expect( result ).toEqual( mockExpectedResult );
 
 			expect( apiFetch ).toHaveBeenCalledWith( {
 				path: `${ restEndpoint }/1`,
@@ -204,11 +383,11 @@ describe( 'Ticket API', () => {
 					'X-TEC-EEA': tecExperimentalHeader,
 				} ),
 				data: expect.objectContaining( {
-					title: 'Test Ticket',
-					content: 'Test ticket description',
+					title: 'Sample Ticket 1',
+					content: 'This is a sample ticket description for ticket 1.',
 					event: 123,
 					price: 25,
-					type: 'default',
+					type: 'default' as TicketType,
 					show_description: true,
 					capacity: 100,
 					stock: 100,
@@ -291,7 +470,7 @@ describe( 'Ticket API', () => {
 		} );
 
 		test( 'handles ticket with sale price data', async () => {
-			const ticketWithSalePrice = makeMockTicketDataWithSalePrice();
+			const ticketWithSalePrice = mockTicketDataWithSalePrice;
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
@@ -313,7 +492,7 @@ describe( 'Ticket API', () => {
 		} );
 
 		test( 'handles ticket with available dates', async () => {
-			const ticketWithDates = makeMockTicketDataWithDates();
+			const ticketWithDates = mockTicketDataWithDates;
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
@@ -334,7 +513,7 @@ describe( 'Ticket API', () => {
 		} );
 
 		test( 'handles ticket with IAC', async () => {
-			const ticketWithIAC = makeMockTicketDataWithIAC();
+			const ticketWithIAC = mockTicketDataWithIAC;
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
@@ -355,7 +534,7 @@ describe( 'Ticket API', () => {
 		} );
 
 		test( 'handles ticket with menu order', async () => {
-			const ticketWithMenuOrder = makeMockTicketDataWithMenuOrder();
+			const ticketWithMenuOrder = mockTicketDataWithMenuOrder;
 
 			// @ts-ignore
 			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );

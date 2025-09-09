@@ -1,36 +1,15 @@
 import { GetTicketApiResponse } from '@tec/tickets/classy/types/Api';
 
-/**
- * Mock API response for ticket operations.
- *
- * @return {GetTicketApiResponse} The mock API response.
- */
-export function makeMockApiResponse(): GetTicketApiResponse {
+const defaultEventId = 123;
+
+const getBaseTicket = (): Partial< GetTicketApiResponse > => {
 	return {
-		id: 1,
 		date: '2024-01-01T12:00:00+00:00',
 		date_gmt: '2024-01-01T12:00:00Z',
-		guid: {
-			rendered: 'https://example.com/?p=1',
-		},
-		link: 'https://example.com/ticket-1',
+		link: 'https://example.com/tickets/test-ticket/',
 		modified: '2024-01-01T12:00:00+00:00',
 		modified_gmt: '2024-01-01T12:00:00Z',
-		slug: 'test-ticket',
 		status: 'publish',
-		permalink_template: 'https://example.com/test-ticket/',
-		generated_slug: 'test-ticket',
-		title: {
-			rendered: 'Test Ticket',
-		},
-		content: {
-			rendered: 'Test ticket description',
-			protected: false,
-		},
-		excerpt: {
-			rendered: 'Test ticket excerpt',
-			protected: false,
-		},
 		author: 1,
 		featured_media: 0,
 		comment_status: 'open',
@@ -39,7 +18,6 @@ export function makeMockApiResponse(): GetTicketApiResponse {
 		sticky: false,
 		template: '',
 		tags: [],
-		description: 'Test ticket description',
 		on_sale: false,
 		sale_price: undefined,
 		price: 25,
@@ -49,7 +27,6 @@ export function makeMockApiResponse(): GetTicketApiResponse {
 		end_date: undefined,
 		sale_price_start_date: undefined,
 		sale_price_end_date: undefined,
-		event: 123,
 		manage_stock: true,
 		stock: 100,
 		type: 'default',
@@ -57,50 +34,73 @@ export function makeMockApiResponse(): GetTicketApiResponse {
 		sku: undefined,
 		menu_order: 0,
 	};
+};
+
+/**
+ * Generate a mock ticket with a specific ID.
+ *
+ * @param {number} id The ticket ID.
+ * @param eventId
+ * @return {GetTicketApiResponse} The generated mock ticket.
+ */
+const generateApiTicket = ( id: number, eventId: number ): GetTicketApiResponse => {
+	const slug = `test-ticket-${ id }`;
+	const baseTicket = getBaseTicket();
+
+	return {
+		...baseTicket,
+		id,
+		slug: slug,
+		generated_slug: slug,
+		title: {
+			rendered: `Sample Ticket ${ id }`,
+		},
+		content: {
+			rendered: `This is a sample ticket description for ticket ${ id }.`,
+			protected: false,
+		},
+		excerpt: {
+			rendered: `Sample ticket excerpt for ticket ${ id }.`,
+			protected: false,
+		},
+		description: `This is a sample ticket description for ticket ${ id }.`,
+		link: `https://example.com/tickets/${ slug }`,
+		sold: id * 10,
+		event: eventId,
+	} as GetTicketApiResponse;
+};
+
+/**
+ * Mock API tickets data for testing.
+ *
+ * @return {GetTicketApiResponse[]} The mock API tickets array.
+ */
+export function makeMockApiTickets(
+	numberOfTickets: number,
+	eventId: number = defaultEventId
+): GetTicketApiResponse[] {
+	const tickets: GetTicketApiResponse[] = [];
+	for ( let i = 1; i <= numberOfTickets; i++ ) {
+		tickets.push( generateApiTicket( i, eventId ) );
+	}
+
+	return tickets;
 }
 
 /**
- * Mock expected result for ticket operations.
+ * Mock API tickets data with 3 tickets for testing.
  *
- * @return {object} The mock expected result.
+ * @return {GetTicketApiResponse[]} The mock API tickets array with 3 tickets.
  */
-export function makeMockExpectedResult() {
-	return {
-		id: 1,
-		eventId: 123,
-		name: 'Test Ticket',
-		description: 'Test ticket description',
-		cost: '25',
-		costDetails: {
-			code: 'USD',
-			symbol: '$',
-			position: 'prefix',
-			decimalSeparator: '.',
-			thousandSeparator: ',',
-			precision: 2,
-			value: 25,
-		},
-		salePriceData: {
-			enabled: false,
-			salePrice: '',
-			startDate: '',
-			endDate: '',
-		},
-		capacitySettings: {
-			enteredCapacity: 100,
-			isShared: true,
-			globalStockMode: 'own',
-		},
-		fees: {
-			availableFees: [],
-			automaticFees: [],
-			selectedFees: [],
-		},
-		provider: 'tc',
-		type: 'default',
-		availableFrom: '',
-		availableUntil: '',
-		iac: '',
-		menuOrder: 0,
-	};
+export function makeMockApiTicketsThree( eventId: number = defaultEventId ): GetTicketApiResponse[] {
+	return [ 1, 2, 3 ].map( ( id ) => generateApiTicket( id, eventId ) );
+}
+
+/**
+ * Mock API response for ticket operations.
+ *
+ * @return {GetTicketApiResponse} The mock API response.
+ */
+export function makeMockApiResponse(): GetTicketApiResponse {
+	return generateApiTicket( 1, defaultEventId );
 }

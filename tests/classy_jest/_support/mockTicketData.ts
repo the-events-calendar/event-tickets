@@ -10,8 +10,8 @@ export function makeMockTicketDataForCreate(): TicketSettings {
 		// 0 indicates create operation
 		id: 0,
 		eventId: 123,
-		name: 'Test Ticket',
-		description: 'Test ticket description',
+		name: 'Sample Ticket 1',
+		description: 'This is a sample ticket description for ticket 1.',
 		cost: '25.00',
 		costDetails: {
 			code: 'USD',
