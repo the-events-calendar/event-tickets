@@ -88,15 +88,6 @@ export function makeMockApiTickets(
 }
 
 /**
- * Mock API tickets data with 3 tickets for testing.
- *
- * @return {GetTicketApiResponse[]} The mock API tickets array with 3 tickets.
- */
-export function makeMockApiTicketsThree( eventId: number = defaultEventId ): GetTicketApiResponse[] {
-	return [ 1, 2, 3 ].map( ( id ) => generateApiTicket( id, eventId ) );
-}
-
-/**
  * Mock API response for ticket operations.
  *
  * @return {GetTicketApiResponse} The mock API response.
