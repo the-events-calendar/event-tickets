@@ -1,0 +1,4 @@
+Significance: patch
+Type: security
+
+Added user permission check when refreshing panels after ajax calls. [SVUL-20]
