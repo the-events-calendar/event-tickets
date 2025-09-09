@@ -75,12 +75,12 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$ticket_1 = $this->create_tc_ticket( $post_1, '25.00' );
 		update_post_meta( $ticket_1, '_name', 'General Admission' );
 		update_post_meta( $ticket_1, '_description', 'Standard ticket for general admission' );
-		wp_update_post( [ 'ID' => $ticket_1, 'menu_order' => 1 ] );
+		wp_update_post( [ 'ID' => $ticket_1, 'menu_order' => 0 ] );
 
 		$ticket_2 = $this->create_tc_ticket( $post_1, '75.00' );
 		update_post_meta( $ticket_2, '_name', 'VIP Ticket' );
 		update_post_meta( $ticket_2, '_description', 'VIP access with special perks' );
-		wp_update_post( [ 'ID' => $ticket_2, 'menu_order' => 2 ] );
+		wp_update_post( [ 'ID' => $ticket_2, 'menu_order' => 7 ] );
 
 		$ticket_3 = $this->create_tc_ticket( $page_1, '15.00' );
 		update_post_meta( $ticket_3, '_name', 'Workshop Registration' );
@@ -90,30 +90,30 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		// Create ticket for private post
 		$private_ticket = $this->create_tc_ticket( $private_post, '50.00' );
 		update_post_meta( $private_ticket, '_name', 'Private Event Ticket' );
-		wp_update_post( [ 'ID' => $private_ticket, 'menu_order' => 4 ] );
+		wp_update_post( [ 'ID' => $private_ticket, 'menu_order' => 1 ] );
 
 		// Create ticket for draft post
 		$draft_ticket = $this->create_tc_ticket( $draft_post, '30.00' );
 		update_post_meta( $draft_ticket, '_name', 'Draft Event Ticket' );
-		wp_update_post( [ 'ID' => $draft_ticket, 'menu_order' => 5 ] );
+		wp_update_post( [ 'ID' => $draft_ticket, 'menu_order' => 6 ] );
 
 		// Create ticket for password protected post
 		$password_ticket = $this->create_tc_ticket( $password_post, '40.00' );
 		update_post_meta( $password_ticket, '_name', 'Password Event Ticket' );
-		wp_update_post( [ 'ID' => $password_ticket, 'menu_order' => 6 ] );
+		wp_update_post( [ 'ID' => $password_ticket, 'menu_order' => 2 ] );
 
 		// Create free ticket
 		$free_ticket = $this->create_tc_ticket( $post_1, '0.00' );
 		update_post_meta( $free_ticket, '_name', 'Free Entry' );
 		update_post_meta( $free_ticket, '_description', 'Free admission ticket' );
-		wp_update_post( [ 'ID' => $free_ticket, 'menu_order' => 7 ] );
+		wp_update_post( [ 'ID' => $free_ticket, 'menu_order' => 4 ] );
 
 		// Create ticket with stock management
 		$stock_ticket = $this->create_tc_ticket( $page_1, '35.00' );
 		update_post_meta( $stock_ticket, '_name', 'Limited Edition' );
 		update_post_meta( $stock_ticket, '_manage_stock', 'yes' );
 		update_post_meta( $stock_ticket, '_stock', '100' );
-		wp_update_post( [ 'ID' => $stock_ticket, 'menu_order' => 8 ] );
+		wp_update_post( [ 'ID' => $stock_ticket, 'menu_order' => 5 ] );
 
 		wp_set_current_user( 0 );
 
