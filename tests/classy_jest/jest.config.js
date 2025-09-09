@@ -22,6 +22,10 @@ module.exports = {
 					noImplicitReturns: true,
 					sourceMap: true,
 					target: 'esnext',
+					paths: {
+						'@tec/common/*': [ '../../common/src/resources/packages/*' ],
+						'@tec/tickets/*': [ '../../src/resources/packages/*' ],
+					},
 				},
 			},
 		],
