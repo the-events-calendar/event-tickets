@@ -48,7 +48,6 @@ const mockMappedTickets = [
 		type: 'default' as TicketType,
 		availableFrom: '',
 		availableUntil: '',
-		iac: '',
 		menuOrder: 0,
 	},
 	{
@@ -86,7 +85,6 @@ const mockMappedTickets = [
 		type: 'default' as TicketType,
 		availableFrom: '',
 		availableUntil: '',
-		iac: '',
 		menuOrder: 0,
 	},
 ];
@@ -148,11 +146,6 @@ const mockTicketDataWithDates = {
 	availableUntil: '2024-06-01T18:00:00.000Z',
 };
 
-const mockTicketDataWithIAC = {
-	...mockTicketDataForCreate,
-	iac: 'ABC123',
-};
-
 const mockTicketDataWithMenuOrder = {
 	...mockTicketDataForCreate,
 	menuOrder: 5,
@@ -193,7 +186,6 @@ const mockExpectedResult = {
 	type: 'default' as TicketType,
 	availableFrom: '',
 	availableUntil: '',
-	iac: '',
 	menuOrder: 0,
 };
 
@@ -508,27 +500,6 @@ describe( 'Ticket API', () => {
 				data: expect.objectContaining( {
 					start_date: '2024-06-01 10:00:00',
 					end_date: '2024-06-01 18:00:00',
-				} ),
-			} );
-		} );
-
-		test( 'handles ticket with IAC', async () => {
-			const ticketWithIAC = mockTicketDataWithIAC;
-
-			// @ts-ignore
-			( apiFetch as jest.Mock ).mockResolvedValueOnce( mockApiResponse );
-
-			await upsertTicket( ticketWithIAC );
-
-			// IAC is not directly supported in the API, so it should not be in the request
-			expect( apiFetch ).toHaveBeenCalledWith( {
-				path: restEndpoint,
-				method: 'POST',
-				headers: expect.objectContaining( {
-					'X-TEC-EEA': tecExperimentalHeader,
-				} ),
-				data: expect.not.objectContaining( {
-					iac: 'ABC123',
 				} ),
 			} );
 		} );
