@@ -1,10 +1,10 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import apiFetch from '@wordpress/api-fetch';
-import { fetchTickets, fetchTicketsForPost, upsertTicket, deleteTicket } from '../../../src/resources/packages/classy/api';
+import { fetchTickets, fetchTicketsForPost, upsertTicket, deleteTicket } from '@tec/tickets/classy/api';
 import { makeMockApiResponse, makeMockApiTickets } from '../_support/mockApiResponse';
 import { createExpectedPath, TEST_CONSTANTS } from '../_support/testHelpers';
-import { CurrencyPosition } from '../../../common/src/resources/packages/classy/types/Currency';
-import { TicketType } from '../../../src/resources/packages/classy/types/Ticket';
+import { CurrencyPosition } from '@tec/common/classy/types/Currency';
+import { TicketType } from '@tec/tickets/classy/types/Ticket';
 
 jest.mock( '@wordpress/api-fetch', () => ( {
 	__esModule: true,
