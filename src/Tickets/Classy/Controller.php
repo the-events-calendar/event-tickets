@@ -14,7 +14,6 @@ namespace TEC\Tickets\Classy;
 use TEC\Common\Classy\Controller as Common_Controller;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Tickets\Classy\REST\Controller as REST_Controller;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main as ET;
 
@@ -40,8 +39,6 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->register_ecp_integrations();
-
-		$this->container->register( REST_Controller::class );
 	}
 
 	/**
@@ -56,7 +53,6 @@ class Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
 		remove_action( 'tec_events_pro_classy_registered', [ $this, 'register_ecp_editor_meta' ] );
-		$this->container->get( REST_Controller::class )->unregister();
 	}
 
 	/**
@@ -131,6 +127,7 @@ class Controller extends Controller_Contract {
 					'position'           => Currency::get_currency_symbol_position( $code ),
 					'precision'          => Currency::get_currency_precision( $code ),
 				],
+				'startOfWeek'     => (int) get_option( 'start_of_week', 0 ),
 				'ticketPostTypes' => $et_main->post_types(),
 			],
 			'nonces'   => [

@@ -16,6 +16,7 @@ use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Boolean;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date_Time;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date;
+use TEC\Common\REST\TEC\V1\Parameter_Types\Integer;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Number;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
@@ -171,6 +172,14 @@ class Ticket_Definition extends Definition {
 				fn() => __( 'The SKU of the ticket', 'event-tickets' ),
 			)
 		)->set_example( 'TICKET-123' )->set_nullable( true );
+
+		$properties[] = (
+			new Integer(
+				'menu_order',
+				fn() => __( 'The order in which the ticket should be displayed', 'event-tickets' ),
+				0,
+			)
+		)->set_example( 5 );
 
 		$documentation = [
 			'allOf' => [

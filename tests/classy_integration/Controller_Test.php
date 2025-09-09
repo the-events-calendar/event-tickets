@@ -9,6 +9,7 @@ use TEC\Tickets\Classy\Controller;
 use TEC\Tickets\Classy\ECP_Editor_Meta;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Main as ET;
 
 class Controller_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -20,22 +21,17 @@ class Controller_Test extends Controller_Test_Case {
 			public ?string $script_key = null;
 			public ?Closure $script_callback = null;
 
-			public function enqueue_on( $hook ) { return $this; }
-
-			public function set_condition( $condition ) { return $this; }
-
-			public function add_dependency( $dependency ) { return $this; }
-
-			public function add_to_group( $group ) { return $this; }
-
-			public function add_localize_script( $key, $callback ) {
-				$this->script_key      = $key;
-				$this->script_callback = $callback;
+			/**
+			 * Handle dynamic, undefined calls into the class.
+			 */
+			public function __call( $name, $arguments ) {
+				if ( 'add_localize_script' === $name ) {
+					$this->script_key      = $arguments[0];
+					$this->script_callback = $arguments[1];
+				}
 
 				return $this;
 			}
-
-			public function register() { return $this; }
 		};
 
 		$this->set_class_fn_return(
@@ -134,6 +130,9 @@ class Controller_Test extends Controller_Test_Case {
 	 * @covers Controller::get_data
 	 */
 	public function test_get_data_returns_expected_structure(): void {
+		// Register the ET Main class, because it isn't for some reason?
+		$this->test_services->singleton( ET::class, ET::instance() );
+
 		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
