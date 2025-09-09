@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Changed views: `emails/purchase-receipt/body`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/ticket-totals`, `emails/template-parts/body/order/ticket-totals/coupons-row`, `emails/template-parts/body/order/ticket-totals/fees-row`, `emails/template-parts/body/order/ticket-totals/header-row`, `emails/template-parts/body/order/ticket-totals/total-row`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`.
