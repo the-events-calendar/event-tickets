@@ -134,6 +134,9 @@ class Controller_Test extends Controller_Test_Case {
 	 * @covers Controller::get_data
 	 */
 	public function test_get_data_returns_expected_structure(): void {
+		// Register the ET Main class, because it isn't for some reason?
+		$this->test_services->singleton( ET::class, ET::instance() );
+
 		/** @var Controller $controller */
 		$controller = $this->make_controller();
 
