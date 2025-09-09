@@ -1,5 +1,3 @@
-const { defaults: tsjPreset } = require( 'ts-jest/presets' );
-
 module.exports = {
 	verbose: true,
 	setupFiles: [ __dirname + '/jest.setup.ts' ],
