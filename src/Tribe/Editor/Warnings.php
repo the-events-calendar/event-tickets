@@ -62,7 +62,7 @@ class Warnings {
 	 * Get the Commerce Provider missing warning message.
 	 *
 	 * @since 5.0.4
-	 * @since TBD Changed the URL to point to the Tickets Commerce settings page.
+	 * @since 5.26.3 Changed the URL to point to the Tickets Commerce settings page.
 	 *
 	 * @return string The Commerce Provider missing message.
 	 */
