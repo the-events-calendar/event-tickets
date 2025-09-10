@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.26.4] 2025-09-10
+
+* Security - Added user permission check when refreshing panels after ajax calls. [SVUL-20]
+* Language - 1 new strings added, 14 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.26.3] 2025-09-09
 
 * Tweak - Added fees and coupons to emails. [ET-2547]
