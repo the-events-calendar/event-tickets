@@ -115,7 +115,7 @@ class Tribe__Tickets__Metabox {
 	 * Refreshes panels after ajax calls that change data
 	 *
 	 * @since 4.6.2
-	 * @since TBD Add user permission check.
+	 * @since 5.26.4 Add user permission check.
 	 *
 	 * @return string html content of the panels
 	 */
