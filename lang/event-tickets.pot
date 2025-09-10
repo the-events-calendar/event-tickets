@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.26.3\n"
+"Project-Id-Version: Event Tickets 5.26.4\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-09T12:44:53+00:00\n"
+"POT-Creation-Date: 2025-09-10T18:15:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -11029,12 +11029,12 @@ msgstr ""
 #: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:260
-#: src/Tribe/Metabox.php:325
-#: src/Tribe/Metabox.php:450
-#: src/Tribe/Metabox.php:542
-#: src/Tribe/Metabox.php:642
-#: src/Tribe/Metabox.php:714
-#: src/Tribe/Metabox.php:764
+#: src/Tribe/Metabox.php:336
+#: src/Tribe/Metabox.php:461
+#: src/Tribe/Metabox.php:553
+#: src/Tribe/Metabox.php:653
+#: src/Tribe/Metabox.php:725
+#: src/Tribe/Metabox.php:775
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -12405,7 +12405,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:280
-#: src/Tribe/Metabox.php:948
+#: src/Tribe/Metabox.php:959
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -13017,73 +13017,78 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Metabox.php:126
+#: src/Tribe/Metabox.php:127
+#: src/Tribe/Metabox.php:139
 msgid "Invalid Post ID"
 msgstr ""
 
-#: src/Tribe/Metabox.php:265
-#: src/Tribe/Metabox.php:408
-#: src/Tribe/Metabox.php:497
-#: src/Tribe/Metabox.php:592
+#: src/Tribe/Metabox.php:132
+msgid "You do not have permission to access this content."
+msgstr ""
+
+#: src/Tribe/Metabox.php:276
+#: src/Tribe/Metabox.php:419
+#: src/Tribe/Metabox.php:508
+#: src/Tribe/Metabox.php:603
 msgid "Invalid parent Post"
 msgstr ""
 
 #. Translators:  %1$s - singular ticket term.
-#: src/Tribe/Metabox.php:294
+#: src/Tribe/Metabox.php:305
 #, php-format
 msgid "Failed to add the %1$s. Refresh the page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:308
+#: src/Tribe/Metabox.php:319
 msgid "Commerce Provider invalid"
 msgstr ""
 
 #. Translators: %1$s - Singular ticket term.
-#: src/Tribe/Metabox.php:338
+#: src/Tribe/Metabox.php:349
 #, php-format
 msgid "Failed to add the %1$s"
 msgstr ""
 
 #. Translators: %1$s - singular ticket term.
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:423
-#: src/Tribe/Metabox.php:513
+#: src/Tribe/Metabox.php:434
+#: src/Tribe/Metabox.php:524
 #, php-format
 msgid "Invalid %1$s"
 msgstr ""
 
 #. Translators: %1$s - singular ticket term.
-#: src/Tribe/Metabox.php:436
+#: src/Tribe/Metabox.php:447
 #, php-format
 msgid "Failed to edit the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:527
+#: src/Tribe/Metabox.php:538
 #, php-format
 msgid "Failed to delete the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:608
+#: src/Tribe/Metabox.php:619
 #, php-format
 msgid "Invalid %s"
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:624
+#: src/Tribe/Metabox.php:635
 #, php-format
 msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:664
+#: src/Tribe/Metabox.php:675
 #, php-format
 msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:706
-#: src/Tribe/Metabox.php:756
+#: src/Tribe/Metabox.php:717
+#: src/Tribe/Metabox.php:767
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
