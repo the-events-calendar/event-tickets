@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\Commerce\Traits\Is_RSVP;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_List_Table;
 use WP_Post;
@@ -23,6 +24,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class Orders extends WP_List_Table {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * The user option that will be used to store the number of orders per page to show.
@@ -333,7 +335,7 @@ class Orders extends WP_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
-			if ( ! $this->is_ticket( $cart_item ) ) {
+			if ( ! $this->is_ticket( $cart_item ) && ! $this->is_rsvp( $cart_item ) ) {
 				continue;
 			}
 

@@ -191,7 +191,21 @@ class Order_Summary {
 	 * @since 5.6.7
 	 */
 	protected function build_data(): void {
+		/**
+		 * Filters whether to show RSVP orders by default.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_rsvp_by_default Whether to show RSVP orders by default. Default false.
+		 */
+		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
+
 		foreach ( $this->get_tickets() as $ticket ) {
+			// Skip RSVP tickets if the filter is set to hide them
+			if ( ! $show_rsvp_by_default && 'tc-rsvp' === $ticket->type ) {
+				continue;
+			}
+
 			$quantities = array_filter( tribe( Ticket::class )->get_status_quantity( $ticket->ID ) );
 			// We need to show the total available for each ticket type.
 			$quantities = $this->add_available_data( $quantities, $ticket );
@@ -500,6 +514,8 @@ class Order_Summary {
 	public function get_label_for_type( string $type ): string {
 		if ( 'default' === $type ) {
 			$type = tec_tickets_get_default_ticket_type_label_plural( 'order report summary' );
+		} elseif ( 'tc-rsvp' === $type ) {
+			$type = tribe_get_rsvp_label_plural( 'order overview' );
 		}
 
 		/**
