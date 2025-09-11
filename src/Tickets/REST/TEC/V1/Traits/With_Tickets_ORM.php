@@ -25,8 +25,8 @@ trait With_Tickets_ORM {
 	 * Returns a repository instance.
 	 *
 	 * @since 5.26.0
-	*
-	* @return Repository_Interface The repository instance.
+	 *
+	 * @return Repository_Interface The repository instance.
 	 */
 	public function get_orm(): Repository_Interface {
 		return tec_tc_tickets();
