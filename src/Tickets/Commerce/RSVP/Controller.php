@@ -148,6 +148,8 @@ class Controller extends Controller_Contract {
 		add_filter( 'tribe_tickets_attendees_table_order_status', [ $this, 'modify_tc_rsvp_status_display' ], 10, 2 );
 		add_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'modify_tc_rsvp_checkin_display' ], 10, 2 );
 		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10, 2 );
+		// This is the correct filter for REST API ticket data
+		add_filter( 'tribe_tickets_rest_api_ticket_data', [ $this, 'add_rsvp_counts_to_rest_api_data' ], 10, 3 );
 	}
 
 	/**
@@ -246,6 +248,74 @@ class Controller extends Controller_Contract {
 		);
 
 		return $new_label;
+	}
+
+	/**
+	 * Adds RSVP attendee counts to REST API ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $data    The ticket data.
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $context The request context.
+	 *
+	 * @return array The modified ticket data.
+	 */
+	public function add_rsvp_counts_to_rest_api_data( $data, $ticket_id, $context ) {
+		// Only process TC RSVP tickets.
+		if ( empty( $data['type'] ) || Constants::TC_RSVP_TYPE !== $data['type'] ) {
+			return $data;
+		}
+
+		// Get the event ID from ticket data.
+		$event_id = $data['event_id'] ?? get_post_meta( $ticket_id, '_tribe_tickets_event_id', true );
+		
+		// Get attendees using the proper Commerce method.
+		global $wpdb;
+		$attendee_post_type = 'tec_tc_attendee';
+		
+		// Query for attendees with RSVP status.
+		$going_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} p
+			 JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id
+			 LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = 'rsvp_status'
+			 WHERE p.post_type = %s
+			 AND pm1.meta_key = '_tec_tickets_commerce_ticket_id'
+			 AND pm1.meta_value = %s
+			 AND (pm2.meta_value = 'yes' OR pm2.meta_value IS NULL)",
+			$attendee_post_type,
+			$ticket_id
+		) );
+		
+		// Query for not going count.
+		$not_going_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} p
+			 JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id
+			 JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id
+			 WHERE p.post_type = %s
+			 AND pm1.meta_key = '_tec_tickets_commerce_ticket_id'
+			 AND pm1.meta_value = %s
+			 AND pm2.meta_key = 'rsvp_status'
+			 AND pm2.meta_value = 'no'",
+			$attendee_post_type,
+			$ticket_id
+		) );
+
+		// Ensure we have numbers.
+		$going_count = intval( $going_count );
+		$not_going_count = intval( $not_going_count );
+
+		// Add the counts to the response data.
+		$data['going_count'] = $going_count;
+		$data['not_going_count'] = $not_going_count;
+		$data['qty_sold'] = $going_count; // Override qty_sold with actual going count.
+
+		// Add debug info for testing.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'RSVP Counts Debug - Ticket ID: ' . $ticket_id . ', Going: ' . $going_count . ', Not Going: ' . $not_going_count );
+		}
+
+		return $data;
 	}
 
 	/**

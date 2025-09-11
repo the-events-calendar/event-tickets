@@ -23,7 +23,7 @@ export const useCreateRSVP = () => {
 		onSuccess: ( data ) => {
 			// Invalidate queries to refresh data
 			queryClient.invalidateQueries( { queryKey: [ 'rsvp', postId ] } );
-			
+
 			// Set the new RSVP data in cache
 			if ( data.ticket_id ) {
 				queryClient.setQueryData( [ 'rsvp', String( data.ticket_id ) ], data );
@@ -53,7 +53,7 @@ export const useUpdateRSVP = () => {
 			if ( variables.rsvpId ) {
 				queryClient.setQueryData( [ 'rsvp', variables.rsvpId ], data );
 			}
-			
+
 			// Invalidate related queries
 			queryClient.invalidateQueries( { queryKey: [ 'rsvp' ] } );
 		},
@@ -109,7 +109,7 @@ export const useDeleteRSVP = () => {
 			if ( variables.rsvpId ) {
 				queryClient.removeQueries( { queryKey: [ 'rsvp', variables.rsvpId ] } );
 			}
-			
+
 			// Invalidate post RSVPs
 			queryClient.invalidateQueries( { queryKey: [ 'rsvp', postId ] } );
 		},
@@ -152,25 +152,25 @@ export const usePostRSVPs = () => {
 		queryKey: [ 'rsvp', 'post', postId ],
 		queryFn: async () => {
 			if ( ! postId ) return [];
-			
+
 			try {
 				// Fetch all tickets for this post via REST API
 				const response = await fetch( `/wp-json/tribe/tickets/v1/tickets?include_post=${postId}` );
-				
+
 				if ( ! response.ok ) {
 					console.error( 'Failed to fetch tickets:', response.statusText );
 					return [];
 				}
-				
+
 				const data = await response.json();
 				const tickets = data?.tickets || [];
-				
+
 				// Filter for tc-rsvp type tickets
-				const rsvps = tickets.filter( ticket => 
-					ticket.type === 'tc-rsvp' || 
+				const rsvps = tickets.filter( ticket =>
+					ticket.type === 'tc-rsvp' ||
 					ticket.provider_class === 'TEC\\Tickets\\Commerce\\Module'
 				);
-				
+
 				return rsvps;
 			} catch ( error ) {
 				console.error( 'Error fetching RSVPs:', error );

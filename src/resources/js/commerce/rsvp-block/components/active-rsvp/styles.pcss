@@ -5,26 +5,40 @@
 	margin: 1.5rem 0;
 }
 
-.tec-rsvp-block__active-header {
-	padding: 1rem 1.5rem;
-	border-bottom: 1px solid #dcdcde;
-	background: #f6f7f7;
-	
-	h3 {
-		margin: 0;
-		font-size: 1.1rem;
-		font-weight: 600;
-		color: #1d2327;
-	}
-}
-
 .tec-rsvp-block__active-content {
 	padding: 1.5rem;
 }
 
+/* Main Layout */
+.tec-rsvp-block__main-layout {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 2rem;
+}
+
+.tec-rsvp-block__left-content {
+	flex: 1;
+	max-width: 60%;
+}
+
+.tec-rsvp-block__right-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	min-width: 120px;
+}
+
+.tec-rsvp-block__title {
+	margin: 0 0 1rem 0;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #1d2327;
+}
+
 /* Statistics Section */
 .tec-rsvp-block__stats-section {
-	margin-bottom: 1.5rem;
+	margin-bottom: 0.75rem;
 	
 	.tec-rsvp-block__main-stat {
 		display: flex;
@@ -33,8 +47,8 @@
 		margin-bottom: 0.5rem;
 		
 		.tec-rsvp-block__stat-number {
-			font-size: 3rem;
-			font-weight: 300;
+			font-size: 2.5rem;
+			font-weight: 700;
 			line-height: 1;
 			color: #1d2327;
 		}
@@ -57,102 +71,123 @@
 	}
 }
 
-/* Action Buttons */
-.tec-rsvp-block__action-buttons {
-	display: flex;
-	gap: 1rem;
-	margin-bottom: 1.5rem;
-	
-	.tec-rsvp-block__going-btn {
-		padding: 0.5rem 2rem;
-	}
-	
-	.tec-rsvp-block__cant-go-btn {
-		padding: 0.5rem 1.5rem;
-	}
-}
-
-/* Additional Stats */
-.tec-rsvp-block__additional-stats {
-	margin-bottom: 1.5rem;
-	
-	.tec-rsvp-block__stat-with-edit {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 0.5rem;
-		
-		.tec-rsvp-block__edit-btn {
-			padding: 0;
-			min-width: auto;
-			height: auto;
-			color: #757575;
-			font-size: 14px;
-			
-			&:hover {
-				color: #2271b1;
-			}
-		}
-	}
-	
-	.tec-rsvp-block__stat-line {
-		display: flex;
-		gap: 0.5rem;
-		margin-bottom: 0.5rem;
-		font-size: 0.9rem;
-		color: #757575;
-		
-		.tec-rsvp-block__stat-value {
-			font-weight: 600;
-			color: #1d2327;
-		}
-	}
-}
-
-/* RSVP Window Section */
-.tec-rsvp-block__window-section {
-	padding-top: 1rem;
-	border-top: 1px solid #e0e0e0;
+/* Combined Stats */
+.tec-rsvp-block__combined-stats {
 	margin-bottom: 1rem;
+	font-size: 0.9rem;
+	color: #757575;
 	
-	.tec-rsvp-block__window-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 0.5rem;
-		
-		.tec-rsvp-block__window-label {
-			font-weight: 600;
-			font-size: 0.9rem;
-			color: #1d2327;
-		}
-		
-		.tec-rsvp-block__edit-btn {
-			padding: 0;
-			min-width: auto;
-			height: auto;
-			color: #757575;
-			
-			&:hover {
-				color: #2271b1;
-			}
-			
-			svg {
-				width: 16px;
-				height: 16px;
-			}
-		}
+	.tec-rsvp-block__stat-value {
+		font-weight: 600;
+		color: #1d2327;
 	}
 	
-	.tec-rsvp-block__window-dates {
-		font-size: 0.9rem;
+	.tec-rsvp-block__stat-separator {
 		color: #757575;
 	}
 }
+
+/* Action Buttons - now in right column */
+.tec-rsvp-block__going-btn {
+	padding: 0.75rem 2rem;
+	min-height: 40px;
+}
+
+.tec-rsvp-block__cant-go-btn {
+	padding: 0.75rem 1.5rem;
+	min-height: 40px;
+}
+
+/* Section Styles with Selected Effects */
+.tec-rsvp-block__section-hover {
+	padding: 1rem;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	margin-bottom: 1rem;
+	transition: all 0.2s ease;
+	position: relative;
+	
+	&.is-selected {
+		background: #f8f9fa;
+		border-color: #2271b1;
+		box-shadow: 0 2px 8px rgba(34, 113, 177, 0.1);
+		
+		.tec-rsvp-block__edit-icon {
+			opacity: 1;
+			color: #2271b1;
+		}
+	}
+}
+
+.tec-rsvp-block__section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.tec-rsvp-block__section-label {
+	font-weight: 600;
+	font-size: 0.95rem;
+	color: #1d2327;
+}
+
+.tec-rsvp-block__section-content {
+	font-size: 0.9rem;
+	color: #757575;
+	line-height: 1.4;
+}
+
+.tec-rsvp-block__edit-icon {
+	padding: 0.25rem;
+	min-width: auto;
+	height: auto;
+	color: #2271b1;
+	font-size: 14px;
+	opacity: 1;
+	transition: all 0.2s ease;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	
+	&:hover {
+		background: rgba(34, 113, 177, 0.1);
+		border-radius: 2px;
+	}
+}
+
+/* Inline edit icon for Remaining field */
+.tec-rsvp-block__inline-edit-icon {
+	display: inline-block;
+	margin-left: 0.5rem;
+	padding: 0.125rem 0.25rem;
+	min-width: auto;
+	height: auto;
+	color: #2271b1;
+	font-size: 12px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	vertical-align: middle;
+	transition: all 0.2s ease;
+	
+	&:hover {
+		background: rgba(34, 113, 177, 0.1);
+		border-radius: 2px;
+	}
+}
+
+/* Attendee Section - specific styles if needed */
+.tec-rsvp-block__attendee-section {
+	/* Inherits from .tec-rsvp-block__section-hover */
+}
+
 
 /* Remove Section */
 .tec-rsvp-block__remove-section {
 	padding-top: 1rem;
+	border-top: 1px solid #e0e0e0;
+	margin-top: 2rem;
 	
 	.tec-rsvp-block__remove-btn {
 		padding: 0;
@@ -162,6 +197,28 @@
 		&:hover {
 			text-decoration: none;
 		}
+	}
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.tec-rsvp-block__main-layout {
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	
+	.tec-rsvp-block__left-content {
+		max-width: 100%;
+	}
+	
+	.tec-rsvp-block__right-actions {
+		flex-direction: row;
+		justify-content: flex-start;
+		min-width: auto;
+	}
+	
+	.tec-rsvp-block__section-hover {
+		padding: 0.75rem;
 	}
 }
 

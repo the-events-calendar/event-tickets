@@ -3,7 +3,7 @@
  *
  * @since TBD
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { Button, Modal, TextControl, Spinner } from '@wordpress/components';
@@ -21,7 +21,8 @@ const ActiveRSVP = ( {
 	setAttributes,
 	onUpdate = null,
 	onDelete = null,
-	isSaving = false
+	isSaving = false,
+	isSelected = false
 } ) => {
 	const [ isLimitModalOpen, setIsLimitModalOpen ] = useState( false );
 	const [ isWindowModalOpen, setIsWindowModalOpen ] = useState( false );
@@ -30,6 +31,7 @@ const ActiveRSVP = ( {
 	const [ editOpenTime, setEditOpenTime ] = useState( attributes.openRsvpTime || '12:00:00' );
 	const [ editCloseDate, setEditCloseDate ] = useState( attributes.closeRsvpDate || '' );
 	const [ editCloseTime, setEditCloseTime ] = useState( attributes.closeRsvpTime || '12:00:00' );
+	const [ attendeeInfo, setAttendeeInfo ] = useState( { content: __( 'Name, Email', 'event-tickets' ), onClick: null } );
 
 	const {
 		limit,
@@ -42,8 +44,26 @@ const ActiveRSVP = ( {
 		notGoingCount = 0
 	} = attributes;
 
-	// Calculate remaining capacity
-	const remaining = limit ? Math.max( 0, parseInt( limit, 10 ) - goingCount ) : null;
+	// Calculate remaining capacity based on actual going count
+	const remaining = limit ? Math.max( 0, parseInt( limit, 10 ) - (goingCount || 0) ) : null;
+
+	// Listen for attendee information updates from ET+
+	useEffect( () => {
+		const handleAttendeeInfoUpdate = ( event ) => {
+			if ( event.detail && event.detail.rsvpId === rsvpId ) {
+				setAttendeeInfo( {
+					content: event.detail.content || __( 'Name, Email', 'event-tickets' ),
+					onClick: event.detail.onClick || null
+				} );
+			}
+		};
+
+		document.addEventListener( 'rsvpAttendeeInfoUpdate', handleAttendeeInfoUpdate );
+		
+		return () => {
+			document.removeEventListener( 'rsvpAttendeeInfoUpdate', handleAttendeeInfoUpdate );
+		};
+	}, [ rsvpId ] );
 
 	// Format dates for display
 	const formatDateRange = () => {
@@ -118,99 +138,111 @@ const ActiveRSVP = ( {
 
 	return (
 		<div className="tec-rsvp-block__active-wrapper">
-			<div className="tec-rsvp-block__active-header">
-				<h3>{ __( 'RSVP', 'event-tickets' ) }</h3>
-			</div>
-
 			<div className="tec-rsvp-block__active-content">
-				{/* Attendance Statistics */}
-				<div className="tec-rsvp-block__stats-section">
-					<div className="tec-rsvp-block__main-stat">
-						<span className="tec-rsvp-block__stat-number">{ goingCount }</span>
-						<span className="tec-rsvp-block__stat-label">{ __( 'Going', 'event-tickets' ) }</span>
-					</div>
-					
-					<a href="#" className="tec-rsvp-block__view-attendees">
-						{ __( 'View Attendees', 'event-tickets' ) }
-					</a>
-				</div>
+				{/* Main Layout: Left side content, Right side actions */}
+				<div className="tec-rsvp-block__main-layout">
+					<div className="tec-rsvp-block__left-content">
+						{/* RSVP Title */}
+						<h3 className="tec-rsvp-block__title">{ __( 'RSVP', 'event-tickets' ) }</h3>
+						
+						{/* Attendance Statistics */}
+						<div className="tec-rsvp-block__stats-section">
+							<div className="tec-rsvp-block__main-stat">
+								<span className="tec-rsvp-block__stat-number">{ goingCount }</span>
+								<span className="tec-rsvp-block__stat-label">{ __( 'Going', 'event-tickets' ) }</span>
+							</div>
+							
+							<a href="#" className="tec-rsvp-block__view-attendees">
+								{ __( 'View Attendees', 'event-tickets' ) }
+							</a>
+						</div>
 
-				{/* Action Buttons */}
-				<div className="tec-rsvp-block__action-buttons">
-					<Button variant="primary" className="tec-rsvp-block__going-btn">
-						{ __( 'Going', 'event-tickets' ) }
-					</Button>
-					{ showNotGoingOption && (
-						<Button variant="secondary" className="tec-rsvp-block__cant-go-btn">
-							{ __( "Can't go", 'event-tickets' ) }
-						</Button>
-					) }
-				</div>
-
-				{/* Additional Stats with Edit */}
-				<div className="tec-rsvp-block__additional-stats">
-					<div className="tec-rsvp-block__stat-with-edit">
-						<div>
-							{ remaining !== null ? (
-								<div className="tec-rsvp-block__stat-line">
+						{/* Combined Remaining and Not Going Stats */}
+						<div className="tec-rsvp-block__combined-stats">
+							{ remaining !== null && (
+								<span className="tec-rsvp-block__stat-text">
 									<span className="tec-rsvp-block__stat-value">{ remaining }</span>
-									<span className="tec-rsvp-block__stat-text">{ __( 'Remaining', 'event-tickets' ) }</span>
-								</div>
-							) : (
-								<div className="tec-rsvp-block__stat-line">
-									<span className="tec-rsvp-block__stat-text">{ __( 'Unlimited capacity', 'event-tickets' ) }</span>
-								</div>
+									{ __( ' Remaining', 'event-tickets' ) }
+									{ isSelected && (
+										<Button
+											variant="link"
+											className="tec-rsvp-block__inline-edit-icon"
+											onClick={ handleOpenLimitModal }
+											aria-label={ __( 'Edit RSVP limit', 'event-tickets' ) }
+										>
+											✏️
+										</Button>
+									) }
+								</span>
+							) }
+							{ showNotGoingOption && remaining !== null && (
+								<span className="tec-rsvp-block__stat-separator">, </span>
+							) }
+							{ showNotGoingOption && (
+								<span className="tec-rsvp-block__stat-text">
+									<span className="tec-rsvp-block__stat-value">{ notGoingCount }</span>
+									{ __( ' Not going', 'event-tickets' ) }
+								</span>
 							) }
 						</div>
-						<Button
-							variant="link"
-							className="tec-rsvp-block__edit-btn"
-							onClick={ handleOpenLimitModal }
-							aria-label={ __( 'Edit RSVP limit', 'event-tickets' ) }
-						>
-							✏️
-						</Button>
 					</div>
-					{ showNotGoingOption && (
-						<div className="tec-rsvp-block__stat-line">
-							<span className="tec-rsvp-block__stat-value">{ notGoingCount }</span>
-							<span className="tec-rsvp-block__stat-text">{ __( 'Not going', 'event-tickets' ) }</span>
+
+					{/* Right side: Action Buttons */}
+					<div className="tec-rsvp-block__right-actions">
+						<Button variant="primary" className="tec-rsvp-block__going-btn">
+							{ __( 'Going', 'event-tickets' ) }
+						</Button>
+						{ showNotGoingOption && (
+							<Button variant="secondary" className="tec-rsvp-block__cant-go-btn">
+								{ __( "Can't go", 'event-tickets' ) }
+							</Button>
+						) }
+					</div>
+				</div>
+
+				{/* RSVP Window Section with Edit Icon - only show when selected */}
+				{ isSelected && (
+					<div className="tec-rsvp-block__window-section tec-rsvp-block__section-hover is-selected">
+						<div className="tec-rsvp-block__section-header">
+							<span className="tec-rsvp-block__section-label">
+								{ __( 'RSVP Window', 'event-tickets' ) }
+							</span>
+							<Button
+								variant="link"
+								className="tec-rsvp-block__edit-icon"
+								onClick={ handleOpenWindowModal }
+								aria-label={ __( 'Edit RSVP window', 'event-tickets' ) }
+							>
+								✏️
+							</Button>
 						</div>
-					) }
-				</div>
-
-				{/* RSVP Window */}
-				<div className="tec-rsvp-block__window-section">
-					<div className="tec-rsvp-block__window-header">
-						<span className="tec-rsvp-block__window-label">
-							{ __( 'RSVP Window', 'event-tickets' ) }
-						</span>
-						<Button
-							variant="link"
-							className="tec-rsvp-block__edit-btn"
-							onClick={ handleOpenWindowModal }
-							aria-label={ __( 'Edit RSVP window', 'event-tickets' ) }
-						>
-							✏️
-						</Button>
+						<div className="tec-rsvp-block__section-content">
+							{ formatDateRange() }
+						</div>
 					</div>
-					<div className="tec-rsvp-block__window-dates">
-						{ formatDateRange() }
-					</div>
-				</div>
+				) }
 
-				{/* Remove RSVP */}
-				<div className="tec-rsvp-block__remove-section">
-					<Button
-						variant="link"
-						isDestructive
-						className="tec-rsvp-block__remove-btn"
-						onClick={ handleRemoveRSVP }
-						disabled={ isSaving }
-					>
-						{ __( 'Remove RSVP', 'event-tickets' ) }
-					</Button>
-				</div>
+				{/* Attendee Information Section - only show when selected */}
+				{ isSelected && (
+					<div className="tec-rsvp-block__attendee-section tec-rsvp-block__section-hover is-selected">
+						<div className="tec-rsvp-block__section-header">
+							<span className="tec-rsvp-block__section-label">
+								{ __( 'Attendee Information', 'event-tickets' ) }
+							</span>
+							<Button
+								variant="link"
+								className="tec-rsvp-block__edit-icon"
+								onClick={ attendeeInfo.onClick }
+								aria-label={ __( 'Edit attendee information', 'event-tickets' ) }
+							>
+								✏️
+							</Button>
+						</div>
+						<div className="tec-rsvp-block__section-content">
+							{ attendeeInfo.content }
+						</div>
+					</div>
+				) }
 
 				{/* Event Tickets Plus Integration Point */}
 				{ applyFilters(
@@ -222,6 +254,21 @@ const ActiveRSVP = ( {
 						setAttributes,
 						isSaving
 					}
+				) }
+
+				{/* Remove RSVP - only show when selected */}
+				{ isSelected && (
+					<div className="tec-rsvp-block__remove-section">
+						<Button
+							variant="link"
+							isDestructive
+							className="tec-rsvp-block__remove-btn"
+							onClick={ handleRemoveRSVP }
+							disabled={ isSaving }
+						>
+							{ __( 'Remove RSVP', 'event-tickets' ) }
+						</Button>
+					</div>
 				) }
 			</div>
 
@@ -357,7 +404,8 @@ ActiveRSVP.propTypes = {
 	setAttributes: PropTypes.func.isRequired,
 	onUpdate: PropTypes.func,
 	onDelete: PropTypes.func,
-	isSaving: PropTypes.bool
+	isSaving: PropTypes.bool,
+	isSelected: PropTypes.bool
 };
 
 export default ActiveRSVP;

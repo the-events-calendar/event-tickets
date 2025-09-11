@@ -27,7 +27,7 @@ import './edit.pcss';
  * @param {Function} param0.setAttributes
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const [ isSettingUp, setIsSettingUp ] = useState( false );
 	const [ isActive, setIsActive ] = useState( false );
 	const postId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId() );
@@ -73,7 +73,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					closeRsvpDate: existingRsvp.end_date || '',
 					closeRsvpTime: existingRsvp.end_time || '00:00:00',
 					showNotGoingOption: existingRsvp.show_not_going || false,
-					goingCount: existingRsvp.going_count || 0,
+					goingCount: existingRsvp.going_count || existingRsvp.qty_sold || 0,
 					notGoingCount: existingRsvp.not_going_count || 0,
 				} );
 				setIsSettingUp( true );
@@ -113,8 +113,12 @@ export default function Edit( { attributes, setAttributes } ) {
 				updates.showNotGoingOption = rsvpData.show_not_going;
 			}
 			
+			// Use the actual going_count from the ticket data (which includes real attendees)
 			if ( rsvpData.going_count !== undefined && rsvpData.going_count !== goingCount ) {
 				updates.goingCount = rsvpData.going_count || 0;
+			} else if ( rsvpData.qty_sold !== undefined && rsvpData.qty_sold !== goingCount ) {
+				// Fallback to qty_sold if going_count not available
+				updates.goingCount = rsvpData.qty_sold || 0;
 			}
 			
 			if ( rsvpData.not_going_count !== undefined && rsvpData.not_going_count !== notGoingCount ) {
@@ -337,6 +341,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						onUpdate={ handleUpdate }
 						onDelete={ handleDelete }
 						isSaving={ isSaving }
+						isSelected={ isSelected }
 					/>
 				) : (
 					<>
