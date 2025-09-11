@@ -14,7 +14,6 @@
  * @since 5.8.4
  */
 ?>
-
 <style type="text/css">
 	td.tec-tickets__email-table-content-upcoming-events-list__title-container {
 		padding-top: 30px;
