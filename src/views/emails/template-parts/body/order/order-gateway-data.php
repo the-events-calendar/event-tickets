@@ -37,11 +37,15 @@ if ( is_numeric( $order->gateway_order_id ) && intval( $order->ID ) === intval( 
 $gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
 $link_or_id = $order->gateway_order_id;
 if ( $gateway ) {
-	$link_or_id = sprintf(
-		'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-		esc_url( $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $order ) ),
-		$order->gateway_order_id
-	);
+	$dashboard_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $order );
+	// Only create a link if we have a valid URL.
+	if ( ! empty( $dashboard_url ) ) {
+		$link_or_id = sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_url( $dashboard_url ),
+			$order->gateway_order_id
+		);
+	}
 }
 
 // In this case we specifically escape before sprintf, because we want the link in the translation.
