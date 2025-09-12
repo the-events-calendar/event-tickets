@@ -239,7 +239,7 @@ class Payment_Intent_Handler {
 			 *
 			 * @param Value $value The total value of the cart.
 			 */
-			$value = apply_filters( 'tec_tickets_commerce_stripe_update_payment_intent', $value );
+			$value = apply_filters( 'tec_tickets_commerce_stripe_update_payment_intent_value', $value );
 
 			if ( ! $value instanceof Value && is_numeric( $value ) ) {
 				$value = Value::create( $value );
