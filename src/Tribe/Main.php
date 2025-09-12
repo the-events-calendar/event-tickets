@@ -297,8 +297,8 @@ class Tribe__Tickets__Main {
 	 */
 	public function maybe_set_common_lib_info() {
 		// Load the common loader if not already available.
-		if ( ! class_exists( 'Tribe__Common_Loader' ) ) {
-			$loader_path = $this->plugin_path . 'common/src/Tribe/Common_Loader.php';
+		if ( ! class_exists( 'TEC\Common\Common_Loader' ) ) {
+			$loader_path = $this->plugin_path . 'common/src/Common/Common_Loader.php';
 			if ( file_exists( $loader_path ) ) {
 				require_once $loader_path;
 			} else {
@@ -309,14 +309,14 @@ class Tribe__Tickets__Main {
 		}
 
 		// Register this plugin's common library.
-		$success = Tribe__Common_Loader::register_common_path(
+		$success = \TEC\Common\Common_Loader::register_common_path(
 			$this->plugin_path,
 			'Event Tickets',
 			'common/src/Tribe'
 		);
 
 		if ( ! $success ) {
-			Tribe__Common_Loader::handle_missing_common(
+			\TEC\Common\Common_Loader::handle_missing_common(
 				'Event Tickets',
 				$this->plugin_path . 'common/src/Tribe/Main.php'
 			);
@@ -365,10 +365,10 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		if ( class_exists( 'Tribe__Common_Loader' ) ) {
+		if ( class_exists( 'TEC\Common\Common_Loader' ) ) {
 			$tec = Tribe__Events__Main::instance();
 			// Use the new loader to force TEC's common.
-			Tribe__Common_Loader::force_common(
+			\TEC\Common\Common_Loader::force_common(
 				$tec->plugin_path . 'common/src/Tribe',
 				'Unknown', // Version will be detected automatically.
 				'The Events Calendar (forced)'
