@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
-use TEC\Tickets\Commerce\Utils\Value;
 
 /**
  * Class Payment Intent Handler
@@ -221,36 +220,6 @@ class Payment_Intent_Handler {
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
 		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
-
-		// Calculate the current cart total and update the payment intent amount.
-		$cart = tribe( Cart::class );
-
-		// Use the cart total directly instead of trying to recalculate from items.
-		// This ensures we get the correct total, including any applied coupons.
-		$cart_total = $cart->get_cart_total();
-
-		if ( $cart_total > 0 ) {
-			$value = Value::create( $cart_total );
-
-			/**
-			 * Filters the value before updating a Payment Intent.
-			 *
-			 * @since TBD
-			 *
-			 * @param Value $value The total value of the cart.
-			 */
-			$value = apply_filters( 'tec_tickets_commerce_stripe_update_payment_intent_value', $value );
-
-			if ( ! $value instanceof Value && is_numeric( $value ) ) {
-				$value = Value::create( $value );
-			}
-
-			// Ensure we have a Value object returned from the filters.
-			if ( $value instanceof Value ) {
-				$body['amount'] = (string) $value->get_integer();
-
-			}
-		}
 
 		if ( $stripe_receipt_emails ) {
 			if ( is_user_logged_in() ) {
