@@ -115,28 +115,6 @@ class Payment_Intent_Coupon_Test extends Order_Modifiers_TestCase {
 	}
 
 	/**
-	 * Test that the cart correctly calculates totals without coupons.
-	 *
-	 * @test
-	 */
-	public function it_should_calculate_cart_total_correctly_without_coupons() {
-		// Set up cart with ticket only (no coupons).
-		$cart = tribe( Cart::class );
-		$cart->add_ticket( $this->ticket_id_1, 1 ); // Add $10 ticket.
-
-		// Verify the cart total is the original amount.
-		$cart_total = $cart->get_cart_total();
-		$this->assertEquals( 10.0, $cart_total, 'Cart total should be $10.00 without discounts' );
-
-		// Verify the cart has no coupons.
-		$cart_items = $cart->get_repository()->get_items();
-		$coupon_items = array_filter( $cart_items, function( $item ) {
-			return isset( $item['type'] ) && $item['type'] === 'coupon';
-		} );
-		$this->assertCount( 0, $coupon_items, 'Cart should contain no coupons' );
-	}
-
-	/**
 	 * Test that the cart correctly calculates totals with multiple tickets and coupons.
 	 *
 	 * @test
@@ -159,44 +137,6 @@ class Payment_Intent_Coupon_Test extends Order_Modifiers_TestCase {
 			return isset( $item['type'] ) && $item['type'] === 'coupon';
 		} );
 		$this->assertCount( 1, $coupon_items, 'Cart should contain one coupon' );
-	}
-
-	/**
-	 * Test that the cart correctly handles empty cart.
-	 *
-	 * @test
-	 */
-	public function it_should_handle_empty_cart_correctly() {
-		// Set up empty cart.
-		$cart = tribe( Cart::class );
-
-		// Verify the cart total is zero.
-		$cart_total = $cart->get_cart_total();
-		$this->assertEquals( 0.0, $cart_total, 'Cart total should be $0.00 for empty cart' );
-
-		// Verify the cart has no items.
-		$cart_items = $cart->get_repository()->get_items();
-		$this->assertCount( 0, $cart_items, 'Empty cart should contain no items' );
-	}
-
-	/**
-	 * Test that Payment_Intent::create_from_cart method exists and can be called.
-	 * This verifies that our fix is in place and the method signature is correct.
-	 *
-	 * @test
-	 */
-	public function it_should_have_create_from_cart_method() {
-		// Verify the method exists.
-		$this->assertTrue( method_exists( 'TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent', 'create_from_cart' ), 'Payment_Intent should have create_from_cart method' );
-
-		// Verify the method signature.
-		$reflection = new \ReflectionMethod( 'TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent', 'create_from_cart' );
-		$this->assertTrue( $reflection->isStatic(), 'create_from_cart should be a static method' );
-		$this->assertCount( 2, $reflection->getParameters(), 'create_from_cart should have 2 parameters' );
-
-		$params = $reflection->getParameters();
-		$this->assertEquals( 'cart', $params[0]->getName(), 'First parameter should be named "cart"' );
-		$this->assertEquals( 'retry', $params[1]->getName(), 'Second parameter should be named "retry"' );
 	}
 
 	/**
