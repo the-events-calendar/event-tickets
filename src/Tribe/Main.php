@@ -292,15 +292,49 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Setup of Common Library
+	 *
+	 * @since 4.6
 	 */
 	public function maybe_set_common_lib_info() {
+		// Load the common loader if not already available.
+		if ( ! class_exists( 'Tribe__Common_Loader' ) ) {
+			$loader_path = $this->plugin_path . 'common/src/Tribe/Common_Loader.php';
+			if ( file_exists( $loader_path ) ) {
+				require_once $loader_path;
+			} else {
+				// Fallback to old method if Common_Loader doesn't exist yet.
+				$this->maybe_set_common_lib_info_legacy();
+				return;
+			}
+		}
 
+		// Register this plugin's common library.
+		$success = Tribe__Common_Loader::register_common_path(
+			$this->plugin_path,
+			'Event Tickets',
+			'common/src/Tribe'
+		);
+
+		if ( ! $success ) {
+			Tribe__Common_Loader::handle_missing_common(
+				'Event Tickets',
+				$this->plugin_path . 'common/src/Tribe/Main.php'
+			);
+		}
+	}
+
+	/**
+	 * Legacy common lib detection for backwards compatibility.
+	 *
+	 * @since TBD
+	 * @deprecated Will be removed when all plugins use Common_Loader.
+	 */
+	private function maybe_set_common_lib_info_legacy() {
 		$common_version = file_get_contents( $this->plugin_path . 'common/src/Tribe/Main.php' );
 
 		// if there isn't a tribe-common version, bail.
 		if ( ! preg_match( $this->common_version_regex, $common_version, $matches ) ) {
 			add_action( 'admin_head', [ $this, 'missing_common_libs' ] );
-
 			return;
 		}
 
@@ -327,6 +361,31 @@ class Tribe__Tickets__Main {
 	 * @since 4.10.6.2
 	 */
 	private function reset_common_lib_info_back_to_tec() {
+		if ( ! class_exists( 'Tribe__Events__Main', false ) ) {
+			return;
+		}
+
+		if ( class_exists( 'Tribe__Common_Loader' ) ) {
+			$tec = Tribe__Events__Main::instance();
+			// Use the new loader to force TEC's common.
+			Tribe__Common_Loader::force_common(
+				$tec->plugin_path . 'common/src/Tribe',
+				'Unknown', // Version will be detected automatically.
+				'The Events Calendar (forced)'
+			);
+		} else {
+			// Fallback to legacy method.
+			$this->reset_common_lib_info_back_to_tec_legacy();
+		}
+	}
+
+	/**
+	 * Legacy reset method for backwards compatibility.
+	 *
+	 * @since TBD
+	 * @deprecated Will be removed when all plugins use Common_Loader.
+	 */
+	private function reset_common_lib_info_back_to_tec_legacy() {
 		if ( ! class_exists( 'Tribe__Events__Main', false ) ) {
 			return;
 		}
@@ -1279,5 +1338,25 @@ class Tribe__Tickets__Main {
 		];
 
 		$this->get_autoloader_instance()->register_prefixes( $prefixes );
+	}
+
+	/**
+	 * Display a missing-tribe-common library error
+	 *
+	 * @since TBD
+	 */
+	public function missing_common_libs() {
+		?>
+		<div class="error">
+			<p>
+				<?php
+				echo esc_html__(
+					'It appears as if the tribe-common libraries cannot be found! The directory should be in the "common/" directory in the event tickets plugin.',
+					'event-tickets'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 }
