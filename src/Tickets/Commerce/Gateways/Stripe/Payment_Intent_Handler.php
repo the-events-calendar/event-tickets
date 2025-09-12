@@ -201,7 +201,6 @@ class Payment_Intent_Handler {
 	 *
 	 * @since 5.3.0
 	 * @since 5.8.1   Added customer's name / event name to the payment intent description
-	 * @since TBD  Added amount calculation to ensure correct total is charged.
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
