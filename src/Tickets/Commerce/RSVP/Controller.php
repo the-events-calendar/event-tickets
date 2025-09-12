@@ -251,74 +251,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Adds RSVP attendee counts to REST API ticket data.
-	 *
-	 * @since TBD
-	 *
-	 * @param array  $data    The ticket data.
-	 * @param int    $ticket_id The ticket ID.
-	 * @param string $context The request context.
-	 *
-	 * @return array The modified ticket data.
-	 */
-	public function add_rsvp_counts_to_rest_api_data( $data, $ticket_id, $context ) {
-		// Only process TC RSVP tickets.
-		if ( empty( $data['type'] ) || Constants::TC_RSVP_TYPE !== $data['type'] ) {
-			return $data;
-		}
-
-		// Get the event ID from ticket data.
-		$event_id = $data['event_id'] ?? get_post_meta( $ticket_id, '_tribe_tickets_event_id', true );
-		
-		// Get attendees using the proper Commerce method.
-		global $wpdb;
-		$attendee_post_type = 'tec_tc_attendee';
-		
-		// Query for attendees with RSVP status.
-		$going_count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->posts} p
-			 JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id
-			 LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = 'rsvp_status'
-			 WHERE p.post_type = %s
-			 AND pm1.meta_key = '_tec_tickets_commerce_ticket_id'
-			 AND pm1.meta_value = %s
-			 AND (pm2.meta_value = 'yes' OR pm2.meta_value IS NULL)",
-			$attendee_post_type,
-			$ticket_id
-		) );
-		
-		// Query for not going count.
-		$not_going_count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->posts} p
-			 JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id
-			 JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id
-			 WHERE p.post_type = %s
-			 AND pm1.meta_key = '_tec_tickets_commerce_ticket_id'
-			 AND pm1.meta_value = %s
-			 AND pm2.meta_key = 'rsvp_status'
-			 AND pm2.meta_value = 'no'",
-			$attendee_post_type,
-			$ticket_id
-		) );
-
-		// Ensure we have numbers.
-		$going_count = intval( $going_count );
-		$not_going_count = intval( $not_going_count );
-
-		// Add the counts to the response data.
-		$data['going_count'] = $going_count;
-		$data['not_going_count'] = $not_going_count;
-		$data['qty_sold'] = $going_count; // Override qty_sold with actual going count.
-
-		// Add debug info for testing.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'RSVP Counts Debug - Ticket ID: ' . $ticket_id . ', Going: ' . $going_count . ', Not Going: ' . $not_going_count );
-		}
-
-		return $data;
-	}
-
-	/**
 	 * Modifies the check-in display for TC RSVP attendees.
 	 * Hides the check-in column content when RSVP status is 'no'.
 	 *
@@ -471,5 +403,55 @@ class Controller extends Controller_Contract {
 		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 		return in_array( 'event-tickets_rsvp', $requirements, true );
+	}
+
+	/**
+	 * Add RSVP-specific counts to the REST API ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $data       The ticket data.
+	 * @param int    $ticket_id  The ticket ID.
+	 * @param string $context    The context.
+	 *
+	 * @return array The modified ticket data.
+	 */
+	public function add_rsvp_counts_to_rest_api_data( $data, $ticket_id, $context ) {
+		// Only add counts for TC RSVP tickets
+		if ( empty( $data['type'] ) || Constants::TC_RSVP_TYPE !== $data['type'] ) {
+			return $data;
+		}
+
+		// Get the event ID for this ticket
+		$event_id = ! empty( $data['post_id'] ) ? $data['post_id'] : get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
+		
+		if ( ! $event_id ) {
+			// Try to get event from ticket provider
+			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+			if ( $provider ) {
+				$event = $provider->get_event_for_ticket( $ticket_id );
+				$event_id = $event ? $event->ID : 0;
+			}
+		}
+		
+		// Calculate the actual RSVP counts using the Attendance_Totals class
+		if ( $event_id ) {
+			$attendance_totals = new Attendance_Totals( $event_id );
+			$data['going_count'] = $attendance_totals->get_total_going();
+			$data['not_going_count'] = $attendance_totals->get_total_not_going();
+		} else {
+			// Fallback to zero if we can't find the event
+			$data['going_count'] = 0;
+			$data['not_going_count'] = 0;
+		}
+		
+		// Also add the show_not_going option
+		$show_not_going = get_post_meta( $ticket_id, '_tribe_ticket_show_not_going', true );
+		$data['show_not_going'] = tribe_is_truthy( $show_not_going );
+		
+		// Debug logging
+		error_log( 'TC RSVP ticket ' . $ticket_id . ' for event ' . $event_id . ' - Going: ' . $data['going_count'] . ', Not Going: ' . $data['not_going_count'] );
+		
+		return $data;
 	}
 }

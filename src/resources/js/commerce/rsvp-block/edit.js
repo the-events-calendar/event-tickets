@@ -64,6 +64,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		} else if ( existingRSVPs && existingRSVPs.length > 0 ) {
 			// If there's an existing RSVP but no rsvpId in attributes, set it
 			const existingRsvp = existingRSVPs[0];
+			console.log( 'Existing RSVP found:', existingRsvp );
 			if ( existingRsvp?.id ) {
 				setAttributes( { 
 					rsvpId: String( existingRsvp.id ),
@@ -85,6 +86,9 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	// Sync fetched RSVP data back to block attributes
 	useEffect( () => {
 		if ( rsvpData && rsvpId ) {
+			console.log( 'RSVP Data from API:', rsvpData );
+			console.log( 'Current goingCount:', goingCount, 'notGoingCount:', notGoingCount );
+			
 			// Sync all the RSVP data from API to block attributes
 			const updates = {};
 			
@@ -113,17 +117,32 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				updates.showNotGoingOption = rsvpData.show_not_going;
 			}
 			
-			// Use the actual going_count from the ticket data (which includes real attendees)
-			if ( rsvpData.going_count !== undefined && rsvpData.going_count !== goingCount ) {
+			// Log what we're checking for counts
+			console.log( 'Checking counts - capacity_details:', rsvpData.capacity_details, 'going_count:', rsvpData.going_count, 'qty_sold:', rsvpData.qty_sold );
+			
+			// Use capacity_details.sold which has the actual count of RSVPs
+			if ( rsvpData.capacity_details && rsvpData.capacity_details.sold !== undefined ) {
+				const soldCount = rsvpData.capacity_details.sold || 0;
+				if ( soldCount !== goingCount ) {
+					updates.goingCount = soldCount;
+					console.log( 'Setting goingCount from capacity_details.sold:', soldCount );
+				}
+			} else if ( rsvpData.going_count !== undefined && rsvpData.going_count !== goingCount ) {
+				// Fallback to going_count if available
 				updates.goingCount = rsvpData.going_count || 0;
+				console.log( 'Setting goingCount from going_count:', rsvpData.going_count );
 			} else if ( rsvpData.qty_sold !== undefined && rsvpData.qty_sold !== goingCount ) {
-				// Fallback to qty_sold if going_count not available
+				// Final fallback to qty_sold
 				updates.goingCount = rsvpData.qty_sold || 0;
+				console.log( 'Setting goingCount from qty_sold:', rsvpData.qty_sold );
 			}
 			
 			if ( rsvpData.not_going_count !== undefined && rsvpData.not_going_count !== notGoingCount ) {
 				updates.notGoingCount = rsvpData.not_going_count || 0;
+				console.log( 'Setting notGoingCount:', rsvpData.not_going_count );
 			}
+			
+			console.log( 'Updates to apply:', updates );
 			
 			// Only call setAttributes if there are updates
 			if ( Object.keys( updates ).length > 0 ) {
