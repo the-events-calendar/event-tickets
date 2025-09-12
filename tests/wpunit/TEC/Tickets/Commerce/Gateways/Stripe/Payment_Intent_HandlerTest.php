@@ -2,7 +2,14 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\OrderModifiers\Coupon_Creator;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use WP_Post;
 
 /**
  * Class Payment_Intent_HandlerTest
@@ -11,37 +18,202 @@ use TEC\Tickets\Commerce\Utils\Value;
  */
 class Payment_Intent_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
+	use Coupon_Creator;
+	use Ticket_Maker;
+	use With_Tickets_Commerce;
+	use With_Uopz;
+
 	/**
-	 * Test that Value objects are created correctly from cart totals.
-	 *
-	 * @test
+	 * @var WP_Post
 	 */
-	public function it_should_create_value_objects_correctly_from_cart_totals() {
-		// Test various cart total scenarios.
-		$test_cases = [
-			[ 'cart_total' => 8.0, 'expected_decimal' => 8.0, 'expected_integer' => 800 ],
-			[ 'cart_total' => 10.0, 'expected_decimal' => 10.0, 'expected_integer' => 1000 ],
-			[ 'cart_total' => 24.0, 'expected_decimal' => 24.0, 'expected_integer' => 2400 ],
-			[ 'cart_total' => 0.0, 'expected_decimal' => 0.0, 'expected_integer' => 0 ],
-			[ 'cart_total' => 12.34, 'expected_decimal' => 12.34, 'expected_integer' => 1234 ],
-		];
+	protected $event;
 
-		foreach ( $test_cases as $case ) {
-			$value = Value::create( $case['cart_total'] );
+	/**
+	 * @var int
+	 */
+	protected $ticket_id_1;
 
-			$this->assertInstanceOf( Value::class, $value, 'Value object should be created' );
-			$this->assertEquals( $case['expected_decimal'], $value->get_decimal(), 'Decimal value should match cart total' );
-			$this->assertEquals( $case['expected_integer'], $value->get_integer(), 'Integer value should be cart total * 100' );
-		}
+	/**
+	 * @var int
+	 */
+	protected $ticket_id_2;
+
+	/**
+	 * @var Coupon
+	 */
+	protected $coupon;
+
+	/**
+	 * Set up the test.
+	 */
+	public function setUp(): void {
+		parent::setUp();
+
+		// Create a test event and tickets.
+		$this->event = static::factory()->post->create( [ 'post_title' => 'Test Event' ] );
+		$this->ticket_id_1 = $this->create_tc_ticket( $this->event, 10 ); // $10 ticket.
+		$this->ticket_id_2 = $this->create_tc_ticket( $this->event, 15 ); // $15 ticket.
+
+		// Create a 20% discount coupon.
+		$this->coupon = $this->create_coupon(
+			[
+				'raw_amount' => 20,
+				'sub_type'   => 'percent',
+				'slug'       => 'test-coupon',
+				'display_name' => 'Test Coupon',
+			]
+		);
 	}
 
 	/**
-	 * Test that the filter `tec_tickets_commerce_stripe_create_from_cart` works correctly.
+	 * Clean up after each test.
+	 */
+	public function tearDown(): void {
+		// Clear the cart after each test to ensure isolation.
+		$cart = tribe( Cart::class );
+		$cart->get_repository()->clear();
+
+		parent::tearDown();
+	}
+
+	/**
+	 * Test that Payment_Intent::create_from_cart correctly calculates amount with coupons applied.
+	 * This tests the core fix - ensuring the cart total (with coupons) is used instead of recalculating from individual items.
 	 *
 	 * @test
 	 */
-	public function it_should_apply_create_from_cart_filter_correctly() {
-		$original_value = Value::create( 10.0 );
+	public function it_should_create_payment_intent_with_correct_amount_and_coupons() {
+		// Set up cart with ticket and coupon.
+		$cart = tribe( Cart::class );
+		$cart->add_ticket( $this->ticket_id_1, 1 ); // Add $10 ticket.
+		$this->coupon->add_to_cart( $cart->get_repository() ); // Add 20% discount.
+
+		// Verify the cart total includes the discount.
+		$cart_total = $cart->get_cart_total();
+		$this->assertEquals( 8.0, $cart_total, 'Cart total should be $8.00 with 20% discount' );
+
+		// Mock Requests::post to capture the arguments passed to Stripe.
+		$captured_args = null;
+		$this->set_fn_return( 'TEC\Tickets\Commerce\Gateways\Stripe\Requests::post', function( $url, $query_args, $args ) use ( &$captured_args ) {
+			$captured_args = $args;
+			return [ 'id' => 'pi_test_123', 'amount' => $args['amount'] ];
+		} );
+
+		// Call create_from_cart.
+		$result = Payment_Intent::create_from_cart( $cart );
+
+		// Assert that the result was created.
+		$this->assertNotEmpty( $result, 'Payment Intent should be created' );
+
+		// Assert that the correct amount was passed to Stripe.
+		$this->assertNotNull( $captured_args, 'Requests::post should have been called' );
+		$this->assertEquals( '800', $captured_args['amount'], 'Stripe should receive 800 cents ($8.00) for discounted cart' );
+	}
+
+	/**
+	 * Test that Payment_Intent::create_from_cart correctly calculates amount without coupons.
+	 *
+	 * @test
+	 */
+	public function it_should_create_payment_intent_with_correct_amount_without_coupons() {
+		// Set up cart with ticket only (no coupons).
+		$cart = tribe( Cart::class );
+		$cart->add_ticket( $this->ticket_id_1, 1 ); // Add $10 ticket.
+
+		// Verify the cart total is the original amount.
+		$cart_total = $cart->get_cart_total();
+		$this->assertEquals( 10.0, $cart_total, 'Cart total should be $10.00 without discounts' );
+
+		// Mock Requests::post to capture the arguments passed to Stripe.
+		$captured_args = null;
+		$this->set_fn_return( 'TEC\Tickets\Commerce\Gateways\Stripe\Requests::post', function( $url, $query_args, $args ) use ( &$captured_args ) {
+			$captured_args = $args;
+			return [ 'id' => 'pi_test_123', 'amount' => $args['amount'] ];
+		} );
+
+		// Call create_from_cart.
+		$result = Payment_Intent::create_from_cart( $cart );
+
+		// Assert that the result was created.
+		$this->assertNotEmpty( $result, 'Payment Intent should be created' );
+
+		// Assert that the correct amount was passed to Stripe.
+		$this->assertNotNull( $captured_args, 'Requests::post should have been called' );
+		$this->assertEquals( '1000', $captured_args['amount'], 'Stripe should receive 1000 cents ($10.00) for non-discounted cart' );
+	}
+
+	/**
+	 * Test that Payment_Intent::create_from_cart works with multiple tickets and coupons.
+	 *
+	 * @test
+	 */
+	public function it_should_create_payment_intent_with_correct_amount_multiple_tickets_and_coupons() {
+		// Set up cart with multiple tickets and coupon.
+		$cart = tribe( Cart::class );
+		$cart->add_ticket( $this->ticket_id_1, 2 ); // Add 2x $10 tickets = $20.
+		$cart->add_ticket( $this->ticket_id_2, 1 ); // Add 1x $15 ticket = $15.
+		// Total: $35, with 20% discount = $28.
+		$this->coupon->add_to_cart( $cart->get_repository() );
+
+		// Verify the cart total includes the discount.
+		$cart_total = $cart->get_cart_total();
+		$this->assertEquals( 28.0, $cart_total, 'Cart total should be $28.00 with 20% discount on $35' );
+
+		// Mock Requests::post to capture the arguments passed to Stripe.
+		$captured_args = null;
+		$this->set_fn_return( 'TEC\Tickets\Commerce\Gateways\Stripe\Requests::post', function( $url, $query_args, $args ) use ( &$captured_args ) {
+			$captured_args = $args;
+			return [ 'id' => 'pi_test_123', 'amount' => $args['amount'] ];
+		} );
+
+		// Call create_from_cart.
+		$result = Payment_Intent::create_from_cart( $cart );
+
+		// Assert that the result was created.
+		$this->assertNotEmpty( $result, 'Payment Intent should be created' );
+
+		// Assert that the correct amount was passed to Stripe.
+		$this->assertNotNull( $captured_args, 'Requests::post should have been called' );
+		$this->assertEquals( '2800', $captured_args['amount'], 'Stripe should receive 2800 cents ($28.00) for discounted multi-ticket cart' );
+	}
+
+	/**
+	 * Test that Payment_Intent::create_from_cart handles empty cart correctly.
+	 *
+	 * @test
+	 */
+	public function it_should_handle_empty_cart_correctly() {
+		// Set up empty cart.
+		$cart = tribe( Cart::class );
+
+		// Verify the cart total is zero.
+		$cart_total = $cart->get_cart_total();
+		$this->assertEquals( 0.0, $cart_total, 'Cart total should be $0.00 for empty cart' );
+
+		// Mock Requests::post to ensure it's not called.
+		$requests_called = false;
+		$this->set_fn_return( 'TEC\Tickets\Commerce\Gateways\Stripe\Requests::post', function() use ( &$requests_called ) {
+			$requests_called = true;
+			return [ 'id' => 'pi_test_123' ];
+		} );
+
+		// Call create_from_cart.
+		$result = Payment_Intent::create_from_cart( $cart );
+
+		// Assert that no Payment Intent was created and Requests::post was not called.
+		$this->assertEmpty( $result, 'No Payment Intent should be created for empty cart' );
+		$this->assertFalse( $requests_called, 'Requests::post should not be called for empty cart' );
+	}
+
+	/**
+	 * Test that Payment_Intent::create_from_cart applies filters correctly.
+	 *
+	 * @test
+	 */
+	public function it_should_apply_filter_correctly() {
+		// Set up cart with ticket.
+		$cart = tribe( Cart::class );
+		$cart->add_ticket( $this->ticket_id_1, 1 ); // Add $10 ticket.
 
 		// Add a filter to modify the value.
 		add_filter( 'tec_tickets_commerce_stripe_create_from_cart', function( $value ) {
@@ -49,37 +221,24 @@ class Payment_Intent_HandlerTest extends \Codeception\TestCase\WPTestCase {
 			return Value::create( $value->get_decimal() + 1.0 ); // Add $1.00.
 		} );
 
-		$filtered_value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $original_value, [] );
+		// Mock Requests::post to capture the arguments passed to Stripe.
+		$captured_args = null;
+		$this->set_fn_return( 'TEC\Tickets\Commerce\Gateways\Stripe\Requests::post', function( $url, $query_args, $args ) use ( &$captured_args ) {
+			$captured_args = $args;
+			return [ 'id' => 'pi_test_123', 'amount' => $args['amount'] ];
+		} );
 
-		$this->assertInstanceOf( Value::class, $filtered_value, 'Filtered value should be a Value object' );
-		$this->assertEquals( 11.0, $filtered_value->get_decimal(), 'Filtered value should be $11.00 (original $10.00 + $1.00)' );
-		$this->assertEquals( 1100, $filtered_value->get_integer(), 'Filtered value should be 1100 cents' );
+		// Call create_from_cart.
+		$result = Payment_Intent::create_from_cart( $cart );
+
+		// Assert that the result was created.
+		$this->assertNotEmpty( $result, 'Payment Intent should be created' );
+
+		// Assert that the correct amount was passed to Stripe (original $10.00 + $1.00 filter = $11.00).
+		$this->assertNotNull( $captured_args, 'Requests::post should have been called' );
+		$this->assertEquals( '1100', $captured_args['amount'], 'Stripe should receive 1100 cents ($11.00) after filter applied' );
 
 		// Clean up the filter.
 		remove_all_filters( 'tec_tickets_commerce_stripe_create_from_cart' );
-	}
-
-	/**
-	 * Test that the cart total logic works as expected.
-	 * This simulates what happens in our fix: cart_total -> Value::create() -> get_integer().
-	 *
-	 * @test
-	 */
-	public function it_should_convert_cart_total_to_stripe_amount_correctly() {
-		// Simulate cart totals with coupons applied.
-		$cart_scenarios = [
-			'original_total' => 10.0,
-			'with_20_percent_discount' => 8.0,
-			'with_50_percent_discount' => 5.0,
-			'with_fixed_discount' => 7.0,
-		];
-
-		foreach ( $cart_scenarios as $scenario => $cart_total ) {
-			// This is exactly what our fix does: cart_total -> Value::create() -> get_integer().
-			$value = Value::create( $cart_total );
-			$stripe_amount = $value->get_integer();
-
-			$this->assertEquals( $cart_total * 100, $stripe_amount, "Stripe amount for {$scenario} should be cart total * 100" );
-		}
 	}
 }
