@@ -16,7 +16,7 @@ modules:
       adminEmail: admin@%WP_DOMAIN%
       title: 'Event Tickets SLR & ECP Tests'
       plugins:
-        - events-pro/events-calendar-pro.php
         - the-events-calendar/the-events-calendar.php
+        - events-pro/events-calendar-pro.php
         - event-tickets/event-tickets.php
       theme: twentytwenty
