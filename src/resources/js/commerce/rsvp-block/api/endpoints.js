@@ -6,6 +6,18 @@
 import apiFetch from '@wordpress/api-fetch';
 
 /**
+ * Get the RSVP REST URL from localized data.
+ *
+ * @since TBD
+ *
+ * @return {string} The RSVP REST URL.
+ */
+const getRsvpRestUrl = () => {
+	const { rsvp_rest_url } = window.tec_tickets_commerce_rsvp_block_data || {};
+	return rsvp_rest_url || '/tribe/tickets/v1/commerce/ticket';
+};
+
+/**
  * Create a new RSVP ticket
  *
  * @since TBD
@@ -16,7 +28,7 @@ import apiFetch from '@wordpress/api-fetch';
  */
 export const createRSVP = async ( data ) => {
 	const response = await apiFetch( {
-		path: '/tribe/tickets/v1/commerce/ticket',
+		path: getRsvpRestUrl(),
 		method: 'POST',
 		data: {
 			post_ID: data.postId,
@@ -27,7 +39,7 @@ export const createRSVP = async ( data ) => {
 			rsvp_start_time: data.openRsvpTime || '00:00:00',
 			rsvp_end_date: data.closeRsvpDate || '',
 			rsvp_end_time: data.closeRsvpTime || '23:59:59',
-			tec_tickets_rsvp_enable_cannot_go: data.showNotGoingOption ? '1' : '',
+			tec_tickets_rsvp_enable_cannot_go: data.showNotGoingOption ? 'yes' : 'no',
 			...data.additionalData,
 		},
 	} );
@@ -50,7 +62,7 @@ export const createRSVP = async ( data ) => {
  */
 export const updateRSVP = async ( data ) => {
 	const response = await apiFetch( {
-		path: '/tribe/tickets/v1/commerce/ticket',
+		path: getRsvpRestUrl(),
 		method: 'POST',
 		data: {
 			post_ID: data.postId,
@@ -62,7 +74,7 @@ export const updateRSVP = async ( data ) => {
 			rsvp_start_time: data.openRsvpTime || '00:00:00',
 			rsvp_end_date: data.closeRsvpDate || '',
 			rsvp_end_time: data.closeRsvpTime || '23:59:59',
-			tec_tickets_rsvp_enable_cannot_go: data.showNotGoingOption ? '1' : '',
+			tec_tickets_rsvp_enable_cannot_go: data.showNotGoingOption ? 'yes' : 'no',
 			...data.additionalData,
 		},
 	} );
@@ -85,7 +97,7 @@ export const updateRSVP = async ( data ) => {
  */
 export const deleteRSVP = async ( data ) => {
 	const response = await apiFetch( {
-		path: '/tribe/tickets/v1/commerce/ticket',
+		path: getRsvpRestUrl(),
 		method: 'DELETE',
 		data: {
 			post_ID: data.postId,

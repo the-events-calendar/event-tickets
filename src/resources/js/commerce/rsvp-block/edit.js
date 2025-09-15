@@ -14,7 +14,7 @@ import SetupCard from './components/setup-card';
 import RSVPForm from './components/rsvp-form';
 import ActiveRSVP from './components/active-rsvp';
 import { RSVPInspectorControls } from './inspector-controls';
-import { SettingsPanel, AdvancedPanel } from './inspector-controls/panels';
+import { SettingsPanel } from './inspector-controls/panels';
 import { useCreateRSVP, useUpdateRSVP, useRSVP, usePostRSVPs, useDeleteRSVP } from './api/hooks';
 import './edit.pcss';
 
@@ -31,8 +31,8 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const [ isSettingUp, setIsSettingUp ] = useState( false );
 	const [ isActive, setIsActive ] = useState( false );
 	const postId = useSelect( ( select ) => select( 'core/editor' ).getCurrentPostId() );
-	const { 
-		rsvpId, 
+	const {
+		rsvpId,
 		limit,
 		openRsvpDate,
 		openRsvpTime,
@@ -55,7 +55,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const isSaving = createMutation.isPending || updateMutation.isPending;
 	const saveError = createMutation.error || updateMutation.error;
 	const saveSuccess = createMutation.isSuccess || updateMutation.isSuccess;
-	
+
 	// Check if RSVP already exists (has an ID or exists on the post)
 	useEffect( () => {
 		if ( rsvpId ) {
@@ -64,9 +64,8 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		} else if ( existingRSVPs && existingRSVPs.length > 0 ) {
 			// If there's an existing RSVP but no rsvpId in attributes, set it
 			const existingRsvp = existingRSVPs[0];
-			console.log( 'Existing RSVP found:', existingRsvp );
 			if ( existingRsvp?.id ) {
-				setAttributes( { 
+				setAttributes( {
 					rsvpId: String( existingRsvp.id ),
 					limit: String( existingRsvp.capacity || '' ),
 					openRsvpDate: existingRsvp.start_date || '',
@@ -86,64 +85,52 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	// Sync fetched RSVP data back to block attributes
 	useEffect( () => {
 		if ( rsvpData && rsvpId ) {
-			console.log( 'RSVP Data from API:', rsvpData );
-			console.log( 'Current goingCount:', goingCount, 'notGoingCount:', notGoingCount );
-			
 			// Sync all the RSVP data from API to block attributes
 			const updates = {};
-			
+
 			// Only update if values are different to avoid infinite loops
 			if ( rsvpData.capacity !== undefined && String( rsvpData.capacity || '' ) !== limit ) {
 				updates.limit = String( rsvpData.capacity || '' );
 			}
-			
+
 			if ( rsvpData.start_date && rsvpData.start_date !== openRsvpDate ) {
 				updates.openRsvpDate = rsvpData.start_date;
 			}
-			
+
 			if ( rsvpData.start_time && rsvpData.start_time !== openRsvpTime ) {
 				updates.openRsvpTime = rsvpData.start_time;
 			}
-			
+
 			if ( rsvpData.end_date && rsvpData.end_date !== closeRsvpDate ) {
 				updates.closeRsvpDate = rsvpData.end_date;
 			}
-			
+
 			if ( rsvpData.end_time && rsvpData.end_time !== closeRsvpTime ) {
 				updates.closeRsvpTime = rsvpData.end_time;
 			}
-			
+
 			if ( rsvpData.show_not_going !== undefined && rsvpData.show_not_going !== showNotGoingOption ) {
 				updates.showNotGoingOption = rsvpData.show_not_going;
 			}
-			
-			// Log what we're checking for counts
-			console.log( 'Checking counts - capacity_details:', rsvpData.capacity_details, 'going_count:', rsvpData.going_count, 'qty_sold:', rsvpData.qty_sold );
-			
+
 			// Use capacity_details.sold which has the actual count of RSVPs
 			if ( rsvpData.capacity_details && rsvpData.capacity_details.sold !== undefined ) {
 				const soldCount = rsvpData.capacity_details.sold || 0;
 				if ( soldCount !== goingCount ) {
 					updates.goingCount = soldCount;
-					console.log( 'Setting goingCount from capacity_details.sold:', soldCount );
 				}
 			} else if ( rsvpData.going_count !== undefined && rsvpData.going_count !== goingCount ) {
 				// Fallback to going_count if available
 				updates.goingCount = rsvpData.going_count || 0;
-				console.log( 'Setting goingCount from going_count:', rsvpData.going_count );
 			} else if ( rsvpData.qty_sold !== undefined && rsvpData.qty_sold !== goingCount ) {
 				// Final fallback to qty_sold
 				updates.goingCount = rsvpData.qty_sold || 0;
-				console.log( 'Setting goingCount from qty_sold:', rsvpData.qty_sold );
 			}
-			
+
 			if ( rsvpData.not_going_count !== undefined && rsvpData.not_going_count !== notGoingCount ) {
 				updates.notGoingCount = rsvpData.not_going_count || 0;
-				console.log( 'Setting notGoingCount:', rsvpData.not_going_count );
 			}
-			
-			console.log( 'Updates to apply:', updates );
-			
+
 			// Only call setAttributes if there are updates
 			if ( Object.keys( updates ).length > 0 ) {
 				setAttributes( updates );
@@ -157,7 +144,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			const today = new Date();
 			const tomorrow = new Date( today );
 			tomorrow.setDate( tomorrow.getDate() + 1 );
-			
+
 			setAttributes( {
 				openRsvpDate: today.toISOString().split( 'T' )[ 0 ],
 				closeRsvpDate: tomorrow.toISOString().split( 'T' )[ 0 ]
@@ -199,7 +186,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				return;
 			}
 		}
-		
+
 		const data = {
 			postId,
 			limit,
@@ -214,7 +201,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			const result = await createMutation.mutateAsync( data );
 			if ( result.ticket_id ) {
 				// Save all attributes to the block
-				setAttributes( { 
+				setAttributes( {
 					rsvpId: String( result.ticket_id ),
 					limit: limit || '',
 					openRsvpDate: openRsvpDate || '',
@@ -321,26 +308,25 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		<>
 			{ /* Register the panel fills */ }
 			<SettingsPanel />
-			<AdvancedPanel />
-			
+
 			{ /* Render inspector controls in sidebar */ }
 			{ ( isSettingUp || rsvpId ) && (
 				<RSVPInspectorControls { ...inspectorProps } />
 			) }
-			
+
 			<div { ...blockProps }>
 				{ saveError && (
-					<Notice 
-						status="error" 
-						isDismissible 
+					<Notice
+						status="error"
+						isDismissible
 						onRemove={ () => createMutation.reset() }
 					>
 						{ saveError?.message || __( 'Failed to save RSVP. Please try again.', 'event-tickets' ) }
 					</Notice>
 				) }
 				{ saveSuccess && (
-					<Notice 
-						status="success" 
+					<Notice
+						status="success"
 						isDismissible
 					>
 						{ __( 'RSVP saved successfully!', 'event-tickets' ) }

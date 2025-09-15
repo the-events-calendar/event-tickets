@@ -4,9 +4,8 @@
  * @since TBD
  */
 import { RSVPSettingsFill } from '../slots';
-import { ToggleControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import CantGoControl from '../../components/cant-go-control';
 
 /**
  * Settings panel component
@@ -27,12 +26,6 @@ export function SettingsPanel() {
 	return (
 		<RSVPSettingsFill>
 			{ ( { attributes, setAttributes, isLoading } ) => {
-				const { showNotGoingOption } = attributes || {};
-
-				const handleShowNotGoingChange = ( value ) => {
-					setAttributes( { showNotGoingOption: value } );
-				};
-
 				/**
 				 * Filters the additional settings for the RSVP settings panel.
 				 *
@@ -51,15 +44,11 @@ export function SettingsPanel() {
 
 				return (
 					<>
-						<ToggleControl
-							label={ __( 'Enable "Can\'t Go" responses', 'event-tickets' ) }
-							checked={ showNotGoingOption }
-							onChange={ handleShowNotGoingChange }
-							help={ __( 'Allow users to indicate they cannot attend', 'event-tickets' ) }
-							disabled={ isLoading }
+						<CantGoControl
+							attributes={ attributes }
+							setAttributes={ setAttributes }
+							isLoading={ isLoading }
 						/>
-						{ /* Date fields will be added here later */ }
-						{ /* Attendee info collection field will be added here later */ }
 						{ additionalSettings }
 					</>
 				);

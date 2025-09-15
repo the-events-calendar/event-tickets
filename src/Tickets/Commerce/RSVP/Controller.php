@@ -424,7 +424,6 @@ class Controller extends Controller_Contract {
 
 		// Get the event ID for this ticket
 		$event_id = ! empty( $data['post_id'] ) ? $data['post_id'] : get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
-		
 		if ( ! $event_id ) {
 			// Try to get event from ticket provider
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -433,7 +432,7 @@ class Controller extends Controller_Contract {
 				$event_id = $event ? $event->ID : 0;
 			}
 		}
-		
+
 		// Calculate the actual RSVP counts using the Attendance_Totals class
 		if ( $event_id ) {
 			$attendance_totals = new Attendance_Totals( $event_id );
@@ -444,14 +443,12 @@ class Controller extends Controller_Contract {
 			$data['going_count'] = 0;
 			$data['not_going_count'] = 0;
 		}
-		
+
 		// Also add the show_not_going option
 		$show_not_going = get_post_meta( $ticket_id, '_tribe_ticket_show_not_going', true );
-		$data['show_not_going'] = tribe_is_truthy( $show_not_going );
-		
-		// Debug logging
-		error_log( 'TC RSVP ticket ' . $ticket_id . ' for event ' . $event_id . ' - Going: ' . $data['going_count'] . ', Not Going: ' . $data['not_going_count'] );
-		
+		// The meta value is stored as 'yes' or 'no', check for 'yes'
+		$data['show_not_going'] = ( $show_not_going === 'yes' );
+
 		return $data;
 	}
 }
