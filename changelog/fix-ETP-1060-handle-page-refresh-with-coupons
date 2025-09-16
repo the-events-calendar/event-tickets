@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
