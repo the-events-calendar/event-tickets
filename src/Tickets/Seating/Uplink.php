@@ -197,13 +197,13 @@ class Uplink extends Controller_Contract {
 		$upsell_tooltip = sprintf(
 			/* Translators: %1$s and %2$s are opening and closing <a> tags, respectively. */
 			esc_html__( '%1$sBuy a license%2$s for the Seating service to access seating management features.', 'event-tickets' ),
-			'<a href="https://theeventscalendar.com/products/seating/" target="_blank">',
+			'<a href="https://evnt.is/1bed" target="_blank">',
 			'</a>'
 		);
 
-		// Replace the default tooltip text with our upsell version.
+		// Replace the default tooltip text with the upsell version.
 		$default_tooltip = esc_html__( 'A valid license key is required for support and updates', 'event-tickets' );
-		$field_html = str_replace( $default_tooltip, $upsell_tooltip, $field_html );
+		$field_html      = str_replace( $default_tooltip, $upsell_tooltip, $field_html );
 
 		return $field_html;
 	}
