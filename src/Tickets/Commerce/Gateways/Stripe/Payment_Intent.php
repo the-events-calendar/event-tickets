@@ -145,7 +145,7 @@ class Payment_Intent {
 	 * Creates a Payment Intent from cart.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Adjusted cart total calculations to ensure correct total is charged.
+	 * @since 5.26.4 Adjusted cart total calculations to ensure correct total is charged.
 	 *
 	 * @param Cart $cart
 	 * @param bool $retry
