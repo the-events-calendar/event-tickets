@@ -165,6 +165,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 * @since 4.10.9
 	 *
 	 * @since 5.6.3 Add support for the updated anchor link from new ticket templates.
+	 * @since TBD Fixed issue where empty arrays were being returned instead of data.
 	 *
 	 * @return array An array of objects containing the post thumbnail data.
 	 */
@@ -173,8 +174,12 @@ class Tickets implements \ArrayAccess, \Serializable {
 			return [];
 		}
 
+		$this->data = [];
+
 		if ( null !== $this->data ) {
-			return $this->data;
+			if ( ! empty( $this->data ) ) {
+				return $this->data;
+			}
 		}
 
 		$num_ticket_types_available = 0;
