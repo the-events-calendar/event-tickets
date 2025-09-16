@@ -174,12 +174,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 			return [];
 		}
 
-		$this->data = [];
-
-		if ( null !== $this->data ) {
-			if ( ! empty( $this->data ) ) {
-				return $this->data;
-			}
+		if ( null !== $this->data && ! empty( $this->data ) ) {
+			return $this->data;
 		}
 
 		$num_ticket_types_available = 0;
