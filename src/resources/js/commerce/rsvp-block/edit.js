@@ -65,7 +65,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			// If there's an existing RSVP but no rsvpId in attributes, set it
 			const existingRsvp = existingRSVPs[0];
 			if ( existingRsvp?.id ) {
-				setAttributes( {
+				const attributesToSet = {
 					rsvpId: String( existingRsvp.id ),
 					limit: String( existingRsvp.capacity || '' ),
 					openRsvpDate: existingRsvp.start_date || '',
@@ -75,7 +75,22 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					showNotGoingOption: existingRsvp.show_not_going || false,
 					goingCount: existingRsvp.going_count || existingRsvp.qty_sold || 0,
 					notGoingCount: existingRsvp.not_going_count || 0,
-				} );
+				};
+
+				// Sync Event Tickets Plus fields if they exist
+				if ( existingRsvp.show_attendees !== undefined ) {
+					attributesToSet.showAttendees = existingRsvp.show_attendees === 'yes' || existingRsvp.show_attendees === true;
+				}
+
+				if ( existingRsvp.waitlist_before_sale !== undefined ) {
+					attributesToSet.waitlistBeforeSale = existingRsvp.waitlist_before_sale === 'yes' || existingRsvp.waitlist_before_sale === true;
+				}
+
+				if ( existingRsvp.waitlist_sold_out !== undefined ) {
+					attributesToSet.waitlistSoldOut = existingRsvp.waitlist_sold_out === 'yes' || existingRsvp.waitlist_sold_out === true;
+				}
+
+				setAttributes( attributesToSet );
 				setIsSettingUp( true );
 				setIsActive( true );
 			}
@@ -131,12 +146,34 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				updates.notGoingCount = rsvpData.not_going_count || 0;
 			}
 
+			// Sync Event Tickets Plus fields if they exist
+			if ( rsvpData.show_attendees !== undefined ) {
+				const showAttendeesValue = rsvpData.show_attendees === 'yes' || rsvpData.show_attendees === true;
+				if ( showAttendeesValue !== attributes.showAttendees ) {
+					updates.showAttendees = showAttendeesValue;
+				}
+			}
+
+			if ( rsvpData.waitlist_before_sale !== undefined ) {
+				const waitlistBeforeSaleValue = rsvpData.waitlist_before_sale === 'yes' || rsvpData.waitlist_before_sale === true;
+				if ( waitlistBeforeSaleValue !== attributes.waitlistBeforeSale ) {
+					updates.waitlistBeforeSale = waitlistBeforeSaleValue;
+				}
+			}
+
+			if ( rsvpData.waitlist_sold_out !== undefined ) {
+				const waitlistSoldOutValue = rsvpData.waitlist_sold_out === 'yes' || rsvpData.waitlist_sold_out === true;
+				if ( waitlistSoldOutValue !== attributes.waitlistSoldOut ) {
+					updates.waitlistSoldOut = waitlistSoldOutValue;
+				}
+			}
+
 			// Only call setAttributes if there are updates
 			if ( Object.keys( updates ).length > 0 ) {
 				setAttributes( updates );
 			}
 		}
-	}, [ rsvpData, rsvpId, setAttributes, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, goingCount, notGoingCount ] );
+	}, [ rsvpData, rsvpId, setAttributes, attributes, limit, openRsvpDate, openRsvpTime, closeRsvpDate, closeRsvpTime, showNotGoingOption, goingCount, notGoingCount ] );
 
 	// Set default dates when setting up
 	useEffect( () => {
@@ -302,7 +339,8 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		error: loadError,
 		rsvpData,
 		updateMutation,
-	} ), [ attributes, setAttributes, isLoadingRsvp, loadError, rsvpData, updateMutation ] );
+		refetchRsvp,
+	} ), [ attributes, setAttributes, isLoadingRsvp, loadError, rsvpData, updateMutation, refetchRsvp ] );
 
 	return (
 		<>

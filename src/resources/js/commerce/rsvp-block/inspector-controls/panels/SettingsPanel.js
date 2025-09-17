@@ -25,7 +25,9 @@ import CantGoControl from '../../components/cant-go-control';
 export function SettingsPanel() {
 	return (
 		<RSVPSettingsFill>
-			{ ( { attributes, setAttributes, isLoading } ) => {
+			{ ( props ) => {
+				const { attributes, setAttributes, isLoading, refetchRsvp } = props;
+
 				/**
 				 * Filters the additional settings for the RSVP settings panel.
 				 *
@@ -39,7 +41,7 @@ export function SettingsPanel() {
 				const additionalSettings = applyFilters(
 					'tec.tickets.commerce.rsvp.settingsPanel',
 					null,
-					{ attributes, setAttributes, isLoading }
+					{ attributes, setAttributes, isLoading, refetchRsvp }
 				);
 
 				return (
@@ -48,6 +50,7 @@ export function SettingsPanel() {
 							attributes={ attributes }
 							setAttributes={ setAttributes }
 							isLoading={ isLoading }
+							refetchRsvp={ refetchRsvp }
 						/>
 						{ additionalSettings }
 					</>
