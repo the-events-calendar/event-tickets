@@ -185,6 +185,12 @@ class Controller extends Controller_Contract {
 			return $content;
 		}
 
+		// Check if the post uses the block editor and has the new Commerce RSVP block.
+		// If it does, don't render the template here as the block will handle it.
+		if ( has_blocks( $post ) && has_block( 'tec/rsvp', $post ) ) {
+			return $content;
+		}
+
 		$must_login = ! is_user_logged_in() && $this->login_required();
 
 		// Create the RSVP template args.

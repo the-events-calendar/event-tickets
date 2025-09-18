@@ -13,6 +13,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
+import { CalendarIcon as PencilIcon } from '../../assets/pencil';
 import './styles.pcss';
 
 const ActiveRSVP = ( {
@@ -170,7 +171,7 @@ const ActiveRSVP = ( {
 											onClick={ handleOpenLimitModal }
 											aria-label={ __( 'Edit RSVP limit', 'event-tickets' ) }
 										>
-											✏️
+											{ PencilIcon }
 										</Button>
 									) }
 								</span>
@@ -213,7 +214,7 @@ const ActiveRSVP = ( {
 								onClick={ handleOpenWindowModal }
 								aria-label={ __( 'Edit RSVP window', 'event-tickets' ) }
 							>
-								✏️
+								{ PencilIcon }
 							</Button>
 						</div>
 						<div className="tec-rsvp-block__section-content">
@@ -235,7 +236,7 @@ const ActiveRSVP = ( {
 								onClick={ attendeeInfo.onClick }
 								aria-label={ __( 'Edit attendee information', 'event-tickets' ) }
 							>
-								✏️
+								{ PencilIcon }
 							</Button>
 						</div>
 						<div className="tec-rsvp-block__section-content">

@@ -33,9 +33,42 @@ class Block {
 			return;
 		}
 
-		register_block_type( $block_root );
+		// Register block with render callback to ensure render.php is used.
+		register_block_type(
+			$block_root,
+			[
+				'render_callback' => [ $this, 'render_block' ],
+			]
+		);
 
 		$this->setup_assets();
+	}
+
+	/**
+	 * Render the RSVP block on the frontend.
+	 *
+	 * @since TBD
+	 *
+	 * @param array    $attributes Block attributes.
+	 * @param string   $content    Block content.
+	 * @param WP_Block $block      Block instance.
+	 *
+	 * @return string Rendered block output.
+	 */
+	public function render_block( $attributes, $content, $block ) {
+		// Use the render.php file to render the block.
+		$build_path = Tribe__Tickets__Main::instance()->plugin_path . 'build';
+		$render_file = "{$build_path}/resources/js/commerce/rsvp-block/render.php";
+
+		// If render.php exists, include it.
+		if ( file_exists( $render_file ) ) {
+			ob_start();
+			include $render_file;
+			return ob_get_clean();
+		}
+
+		// Fallback to empty string if render.php doesn't exist.
+		return '';
 	}
 
 	/**
