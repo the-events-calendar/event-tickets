@@ -188,22 +188,28 @@ class Uplink extends Controller_Contract {
 	 * @return string The customized field HTML.
 	 */
 	public function customize_field_html( string $field_html, $plugin ): string {
-		// Only customize for the seating service.
+		// Bail for non-seating services/plugins.
 		if ( 'tec-seating' !== $plugin->get_slug() ) {
 			return $field_html;
 		}
 
-		// Create the upsell tooltip text.
+		// Build the new tooltip with translation and placeholders for links.
 		$upsell_tooltip = sprintf(
 			/* Translators: %1$s and %2$s are opening and closing <a> tags, respectively. */
-			esc_html__( '%1$sBuy a license%2$s for the Seating service to access seating management features.', 'event-tickets' ),
+			esc_html__(
+				'%1$sBuy a license%2$s for the Seating service to access seating management features.',
+				'event-tickets'
+			),
 			'<a href="https://evnt.is/1bed" target="_blank">',
 			'</a>'
 		);
 
-		// Replace the default tooltip text with the upsell version.
-		$default_tooltip = esc_html__( 'A valid license key is required for support and updates', 'event-tickets' );
-		$field_html      = str_replace( $default_tooltip, $upsell_tooltip, $field_html );
+		// Use regex to replace only the tooltip paragraph, not touching other HTML.
+		$field_html = preg_replace(
+			'/<p class="tooltip description">\s*.*?\s*<\/p>/s',
+			'<p class="tooltip description">' . $upsell_tooltip . '</p>',
+			$field_html
+		);
 
 		return $field_html;
 	}

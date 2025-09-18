@@ -164,7 +164,7 @@ class Uplink_Test extends Controller_Test_Case {
 	}
 
 	public function test_with_valid_license_key(): void {
-		$this->set_valid_license( 'valid-license-key', true );
+		$this->set_valid_license();
 		$controller = $this->make_controller();
 		$controller->register();
 
@@ -179,7 +179,7 @@ class Uplink_Test extends Controller_Test_Case {
 	}
 
 	public function test_with_invalid_license_key(): void {
-		$this->set_invalid_license( 'invalid-license-key', false );
+		$this->set_invalid_license();
 		$controller = $this->make_controller();
 		$controller->register();
 
@@ -207,7 +207,7 @@ class Uplink_Test extends Controller_Test_Case {
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
 		$this->assertMatchesHtmlSnapshot( $connect_html );
 	}
-	
+
 	public function test_reset_data_on_new_connection() {
 		Maps_Service::insert_rows_from_service(
 			[
@@ -226,7 +226,7 @@ class Uplink_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Maps_Service::update_transient_name(), time() );
-		
+
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
@@ -248,7 +248,7 @@ class Uplink_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Layouts_Service::update_transient_name(), time() );
-		
+
 		Seat_Types::insert_many(
 			[
 				[
@@ -268,21 +268,82 @@ class Uplink_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Service\Seat_Types::update_transient_name(), time() );
-		
+
 		$this->assertCount( 2, iterator_to_array( Tables\Maps::fetch_all() ) );
 		$this->assertCount( 2, iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertCount( 2, iterator_to_array( Seat_Types::fetch_all() ) );
-		
+
 		$this->make_controller()->register();
-		
+
 		do_action( 'stellarwp/uplink/tec/tec-seating/connected' );
-		
+
 		$this->assertEmpty( get_transient( Maps_Service::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Layouts_Service::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Service\Seat_Types::update_transient_name() ) );
-		
+
 		$this->assertEmpty( iterator_to_array( Tables\Maps::fetch_all() ) );
 		$this->assertEmpty( iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertEmpty( iterator_to_array( Seat_Types::fetch_all() ) );
+	}
+
+	/**
+	 * Test customize_field_html method with seating service plugin and invalid license.
+	 *
+	 * @since TBD
+	 */
+	public function test_customize_field_html_with_seating_service_invalid_license(): void {
+		/** @var Uplink $controller */
+		$controller = $this->make_controller();
+
+		// Set up an invalid license state.
+		$this->set_invalid_license();
+
+		// Create sample field HTML with the tooltip paragraph structure that the regex expects.
+		$original_field_html = '<div class="license-field">
+			<label for="license-key">License Key</label>
+			<input type="text" id="license-key" name="license-key" />
+			<p class="tooltip description">A valid license key is required for support and updates</p>
+		</div>';
+
+		// Call the method with the actual resource.
+		$customized_html = $controller->customize_field_html( $original_field_html, $this->resource );
+
+		// Assert that the HTML was customized with the upsell tooltip.
+		$this->assertStringContainsString( 'Buy a license', $customized_html );
+		$this->assertStringContainsString( 'https://evnt.is/1bed', $customized_html );
+		$this->assertStringContainsString( 'target="_blank"', $customized_html );
+		$this->assertStringNotContainsString( 'A valid license key is required for support and updates', $customized_html );
+
+		// Test the snapshot to ensure consistent output.
+		$this->assertMatchesHtmlSnapshot( $customized_html );
+	}
+
+	/**
+	 * Test customize_field_html method with non-seating service plugin.
+	 *
+	 * @since TBD
+	 */
+	public function test_customize_field_html_with_other_plugin(): void {
+		/** @var Uplink $controller */
+		$controller = $this->make_controller();
+
+		// Create a mock plugin object with a different slug.
+		$plugin = $this->createMock( \TEC\Common\StellarWP\Uplink\Resources\Resource::class );
+		$plugin->method( 'get_slug' )->willReturn( 'tec-events-pro' );
+
+		// Create sample field HTML with the tooltip paragraph structure.
+		$original_field_html = '<div class="license-field">
+			<label for="license-key">License Key</label>
+			<input type="text" id="license-key" name="license-key" />
+			<p class="tooltip description">A valid license key is required for support and updates</p>
+		</div>';
+
+		// Call the method.
+		$customized_html = $controller->customize_field_html( $original_field_html, $plugin );
+
+		// Assert that the HTML was not modified since it's not the seating service.
+		$this->assertEquals( $original_field_html, $customized_html );
+		$this->assertStringNotContainsString( 'Buy a license', $customized_html );
+		$this->assertStringNotContainsString( 'https://evnt.is/1bed', $customized_html );
 	}
 }
