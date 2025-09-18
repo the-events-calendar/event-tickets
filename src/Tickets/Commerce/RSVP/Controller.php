@@ -446,8 +446,8 @@ class Controller extends Controller_Contract {
 
 		// Also add the show_not_going option
 		$show_not_going = get_post_meta( $ticket_id, '_tribe_ticket_show_not_going', true );
-		// The meta value is stored as 'yes' or 'no', check for 'yes'
-		$data['show_not_going'] = ( $show_not_going === 'yes' );
+		// The meta value might be stored as 'yes', '1', or true - use tribe_is_truthy to check
+		$data['show_not_going'] = tribe_is_truthy( $show_not_going );
 
 		return $data;
 	}
