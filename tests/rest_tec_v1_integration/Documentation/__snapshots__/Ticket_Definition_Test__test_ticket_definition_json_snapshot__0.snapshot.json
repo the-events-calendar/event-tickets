@@ -103,6 +103,12 @@
                     "nullable": true,
                     "type": "string",
                     "example": "TICKET-123"
+                },
+                "menu_order": {
+                    "description": "The order in which the ticket should be displayed",
+                    "type": "integer",
+                    "default": 0,
+                    "example": 5
                 }
             }
         }

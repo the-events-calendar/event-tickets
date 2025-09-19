@@ -62,6 +62,11 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 		[ tickets, setTickets ]
 	);
 
+	// If there are no tickets, return null to avoid rendering an empty table.
+	if ( tickets.length === 0 ) {
+		return null;
+	}
+
 	return (
 		<table className="classy-field classy-field__ticket-table">
 			<tbody>

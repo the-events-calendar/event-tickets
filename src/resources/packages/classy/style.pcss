@@ -129,6 +129,19 @@
 			.classy-field__input--sale-duration {
 				--classy-input-width: var(--classy-date-picker-width);
 			}
+
+			.classy-field__input--sale-date {
+				column-count: 3;
+				flex-direction: row;
+
+				.classy-field__input {
+					width: calc( var(--classy-date-picker-width) / 2 - 10px);
+				}
+
+				.classy-field__separator--dates {
+					transform: translateY(8px);
+				}
+			}
 		}
 	}
 

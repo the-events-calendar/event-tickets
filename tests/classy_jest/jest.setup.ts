@@ -16,13 +16,6 @@ global.TextEncoder = NodeTextEncoder as unknown as typeof TextEncoder;
  * @see: https://github.com/WordPress/gutenberg/blob/trunk/test/unit/config/global-mocks.js
  */
 
-// Mock client-zip package
-// jest.mock( 'client-zip', () => ( {
-// 	downloadZip: jest.fn(),
-// 	makeZip: jest.fn(),
-// 	predictLength: jest.fn(),
-// } ) );
-
 /**
  * @see: https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
  * @see: https://github.com/WordPress/gutenberg/blob/trunk/packages/jest-preset-default/scripts/setup-globals.js

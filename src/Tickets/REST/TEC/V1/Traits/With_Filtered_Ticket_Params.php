@@ -12,9 +12,9 @@ declare( strict_types=1 );
 namespace TEC\Tickets\REST\TEC\V1\Traits;
 
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use stdClass;
-use TEC\Tickets\Commerce\Utils\Value;
 
 /**
  * Trait With_Filtered_Ticket_Params.
@@ -43,6 +43,7 @@ trait With_Filtered_Ticket_Params {
 
 		$orm = $this->get_orm();
 
+		// todo: investigate deleting this logic to allow moving between events.
 		if ( isset( $params['id'] ) ) {
 			// We don't allow moving tickets to a different event.
 			$params['event'] = (int) ( $ticket_data[ $orm->get_update_fields_aliases()['event'] ]['0'] ?? null );
@@ -147,6 +148,7 @@ trait With_Filtered_Ticket_Params {
 			'ticket_sale_price'       => $params['sale_price'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price'] ]['0'] ?? null,
 			'ticket_sale_start_date'  => $params['sale_price_start_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_start_date'] ]['0'] ?? null,
 			'ticket_sale_end_date'    => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
+			'ticket_menu_order'       => $params['menu_order'] ?? $ticket_post->menu_order ?? 0,
 		];
 
 		$new_params['ticket_sale_price']      = maybe_unserialize( $new_params['ticket_sale_price'] );
@@ -177,6 +179,7 @@ trait With_Filtered_Ticket_Params {
 			$params['price'],
 			$params['event'],
 			$params['title'],
+			$params['menu_order'],
 		);
 
 		$post_params = $params;
