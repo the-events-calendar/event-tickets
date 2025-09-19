@@ -70,7 +70,7 @@ class Controller extends Controller_Contract {
 		$post_uses_classy = fn() => $this
 			->container
 			->get( Common_Controller::class )
-			->post_uses_classy( get_post_type() );
+			->is_post_type_supported( get_post_type() );
 
 		// Register the main Classy script.
 		Asset::add(
