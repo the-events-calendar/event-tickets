@@ -38,6 +38,8 @@ class Controller extends Controller_Contract {
 			add_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
 		}
 
+		add_filter( 'tec_tickets_onboarding_wizard_show', [ $this, 'control_onboarding_wizard_show' ] );
+
 		$this->register_ecp_integrations();
 	}
 
@@ -53,6 +55,7 @@ class Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_action( 'tec_common_assets_loaded', [ $this, 'register_assets' ] );
 		remove_action( 'tec_events_pro_classy_registered', [ $this, 'register_ecp_editor_meta' ] );
+		remove_filter( 'tec_tickets_onboarding_wizard_show', [ $this, 'control_onboarding_wizard_show' ] );
 	}
 
 	/**
@@ -168,5 +171,25 @@ class Controller extends Controller_Contract {
 		} else {
 			add_action( 'tec_events_pro_classy_registered', [ $this, 'register_ecp_editor_meta' ] );
 		}
+	}
+
+	/**
+	 * Filters the showing of the onboarding wizard.
+	 *
+	 * By default, the onboarding wizard should not show when using classy in the context of a post.
+	 *
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $should_show_wizard Whether to show the onboarding wizard, initial value.
+	 *
+	 * @return bool Whether to show the onboarding wizard, filtered value.
+	 */
+	public function control_onboarding_wizard_show( bool $should_show_wizard ): bool {
+		$supported_post_types = $this->container->get( Common_Controller::class )->get_supported_post_types();
+		$editing_post_type    = tribe_context()->is_editing_post( $supported_post_types );
+
+		// If we're editing a post type supported by Classy, then do not show the wizard.
+		return ! $editing_post_type;
 	}
 }
