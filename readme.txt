@@ -199,6 +199,23 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.26.5] 2025-09-16 =
+
+* Fix - Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
+* Fix - Correctly invalidate ticket caches to deal with ETP order-of-operation issue. [ETP-1044]
+* Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.4] 2025-09-10 =
+
+* Security - Added user permission check when refreshing panels after ajax calls. [SVUL-20]
+* Language - 1 new strings added, 14 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.3] 2025-09-09 =
+
+* Tweak - Added fees and coupons to emails. [ET-2547]
+* Tweak - Changed views: `emails/purchase-receipt/body`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/ticket-totals`, `emails/template-parts/body/order/ticket-totals/coupons-row`, `emails/template-parts/body/order/ticket-totals/fees-row`, `emails/template-parts/body/order/ticket-totals/header-row`, `emails/template-parts/body/order/ticket-totals/total-row`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`.
+* Language - 1 new strings added, 13 updated, 0 fuzzied, and 1 obsoleted.
+
 = [5.26.2] 2025-09-02 =
 
 * Fix - Remove duplicate page title from the All Tickets page. [ET-2545]

@@ -115,21 +115,31 @@ class Tribe__Tickets__Metabox {
 	 * Refreshes panels after ajax calls that change data
 	 *
 	 * @since 4.6.2
+	 * @since 5.26.4 Add user permission check.
 	 *
 	 * @return string html content of the panels
 	 */
 	public function ajax_panels() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 
-		// Didn't get a post id to work with - bail
+		// Didn't get a post id to work with - bail.
 		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
 		}
 
-		// Overwrites for a few templates that use get_the_ID() and get_post()
-		global $post;
+		// Check user permissions for this post - bail if not authorized.
+		if ( ! user_can( get_current_user_id(), 'edit_post', $post_id ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
+		}
 
+		// Get the post object and set global $post for templates
+		global $post;
 		$post = get_post( $post_id );
+		if ( ! $post ) {
+			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
+		}
+
+		// Overwrites for a few templates that use get_the_ID() and get_post()
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 		$ticket_type = $data['ticket_type'] ?? 'default';
 		$notice = tribe_get_request_var( 'tribe-notice', false );
@@ -146,6 +156,7 @@ class Tribe__Tickets__Metabox {
 		}
 
 		$return = $this->get_panels( $post, null, $ticket_type );
+
 		$return['notice'] = $this->notice( $notice );
 
 		/**
