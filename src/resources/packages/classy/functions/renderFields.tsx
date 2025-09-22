@@ -5,7 +5,12 @@ import { Tickets, VirtualLocationViewingPermissions, VirtualLocationAdditionalSe
 import { CoreEditorSelect } from '../types/Store';
 import { getSettings } from '../localizedData';
 import { StoreDispatch as TECStoreDispatch, StoreSelect as TECStoreSelect } from '@tec/events/classy/types/Store';
-import { STORE_NAME as TEC_STORE_NAME } from '@tec/events/classy/constants';
+
+/*
+ * Hard-code the TEC store name to avoid trying to load it from the window object at module-load time,
+ * when TEC might have not been loaded yet.
+ */
+const TEC_STORE_NAME = 'tec/classy/events';
 
 /**
  * The post types that should render the ticket fields.
