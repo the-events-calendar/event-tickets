@@ -290,16 +290,16 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 		$et_versions = (array) tribe_get_option( 'previous_event_tickets_versions', [] );
 		// If there is more than one previous version, don't show the wizard.
 		if ( count( $et_versions ) > 1 ) {
-			return false;
+			return $this->apply_should_show_filters( false );
 		}
 
 		$data = tribe( Data::class );
 		// Don't display if we've finished the wizard.
 		if ( $data->get_wizard_setting( 'finished', false ) ) {
-			return false;
+			return $this->apply_should_show_filters( false );
 		}
 
-		return true;
+		return $this->apply_should_show_filters( true );
 	}
 
 	/**
@@ -730,5 +730,18 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 	 */
 	public function admin_page_footer_content(): void {
 		// no op.
+	}
+
+	/**
+	 * Applies filters to control whether the onboarding wizard should show.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $should_show_wizard Whether the onboarding wizard should show, the initial value.
+	 *
+	 * @return bool Whether the onboarding wizard should show, the filtered value.
+	 */
+	private function apply_should_show_filters( bool $should_show_wizard ): bool {
+		return (bool) apply_filters( 'tec_tickets_onboarding_wizard_show', $should_show_wizard );
 	}
 }
