@@ -29,7 +29,8 @@ const registerTicketsStore = (): void => {
 if ( didAction( 'tec.classy.initialized' ) ) {
 	registerTicketsStore();
 } else {
-	addAction( 'tec.classy.initialized', 'tickets.classy.registerStore', registerTicketsStore );
+	// TEC might not be loaded, but if it's loaded, we want to hook after it.
+	addAction( 'tec.classy.initialized', 'tickets.classy.registerStore', registerTicketsStore, 20 );
 }
 
 // Hook on the Classy fields rendering logic to render the fields.
