@@ -77,7 +77,7 @@ class Service_Provider extends Service_Provider_Contract {
 		$activation_page = tribe( 'admin.activation.page' );
 		$plugin          = \Tribe__Tickets__Main::instance();
 		$context         = 'welcome';
-		$title           = esc_html( esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ) );
+		$title           = esc_html__( 'Welcome to Event Tickets!', 'event-tickets' );
 		$template        = $plugin->plugin_path . 'src/admin-views/admin-welcome-message.php';
 
 		if ( ! file_exists( $template ) || ! $this->is_home_page() ) {
