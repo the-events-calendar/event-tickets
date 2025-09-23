@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Emails;
 
+use TEC\Tickets\Commerce\RSVP\Constants as RSVP_Constants;
 use Tribe__Tickets__Tickets as Tickets_Module;
 
 /**
@@ -69,20 +70,44 @@ class Legacy_Hijack {
 		$provider = $args['provider'];
 		$post_id  = $args['post_id'];
 		$order_id = $args['order_id'];
-		$is_rsvp  = 'rsvp' === $provider || ( is_object( $provider ) && 'Tribe__Tickets__RSVP' === get_class( $provider ) );
 
-		if ( $is_rsvp ) {
-			if ( 'no' !== strtolower( $args['order_status'] ) ) {
-				$email_class      = tribe( Email\RSVP::class );
-				$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), false );
-				if ( ! empty( $use_ticket_email ) ) {
+		// Check if this is a tc-rsvp by checking the actual ticket type.
+		$is_tc_rsvp = false;
+		if ( ! empty( $attendees ) ) {
+			foreach ( $attendees as $attendee ) {
+				// Get the ticket using the product_id to check its type.
+				if ( isset( $attendee['product_id'] ) && isset( $attendee['event_id'] ) ) {
+					$provider = \Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] ?? null );
+					if ( $provider ) {
+						$ticket = $provider->get_ticket( $attendee['event_id'], $attendee['product_id'] );
+						$has_type1 = empty( $ticket->type );
+						$has_type2 = RSVP_Constants::TC_RSVP_TYPE === $ticket->type;
+						if ( $ticket && RSVP_Constants::TC_RSVP_TYPE === $ticket->type ) {
+							$is_tc_rsvp = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		// For tc-rsvp, always use RSVP email (or Ticket if configured).
+		if ( $is_tc_rsvp ) {
+			// Check if this is a "not going" RSVP.
+			if ( isset( $args['order_status'] ) && 'no' === strtolower( $args['order_status'] ) ) {
+				$email_class = tribe( Email\RSVP_Not_Going::class );
+			} else {
+				// Regular RSVP confirmation.
+				$email_class = tribe( Email\RSVP::class );
+
+				// Check if we should use ticket email instead.
+				$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), true );
+				if ( tribe_is_truthy( $use_ticket_email ) ) {
 					$email_class = tribe( Email\Ticket::class );
 				}
-			} else {
-				$email_class = tribe( Email\RSVP_Not_Going::class );
 			}
-
 		} else {
+			// Regular tickets.
 			$email_class = tribe( Email\Ticket::class );
 		}
 

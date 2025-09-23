@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Commerce\RSVP\Constants as RSVP_Constants;
 use TEC\Tickets\Commerce\Settings as Settings;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Dispatcher;
@@ -378,5 +379,29 @@ class RSVP extends Email_Abstract {
 		$this->set_placeholders( $placeholders );
 
 		return Dispatcher::from_email( $this )->send();
+	}
+
+	/**
+	 * Check if the tickets are RSVPs (including tc-rsvp).
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets The tickets array.
+	 *
+	 * @return bool Whether these are RSVP tickets.
+	 */
+	protected function is_rsvp_tickets( array $tickets ): bool {
+		if ( empty( $tickets ) ) {
+			return false;
+		}
+
+		foreach ( $tickets as $ticket ) {
+			// Check for tc-rsvp type only.
+			if ( isset( $ticket['ticket_type'] ) && RSVP_Constants::TC_RSVP_TYPE === $ticket['ticket_type'] ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
