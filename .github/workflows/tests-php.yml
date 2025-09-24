@@ -21,7 +21,7 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Check for PHP file changes
         id: php_check
-        uses: ./.github/actions/check-php-changes@main
+        uses: ./.github/actions/check-php-changes
       # ------------------------------------------------------------------------------
   test:
     needs: check
