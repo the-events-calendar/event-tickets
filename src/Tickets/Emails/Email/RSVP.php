@@ -380,28 +380,4 @@ class RSVP extends Email_Abstract {
 
 		return Dispatcher::from_email( $this )->send();
 	}
-
-	/**
-	 * Check if the tickets are RSVPs (including tc-rsvp).
-	 *
-	 * @since TBD
-	 *
-	 * @param array $tickets The tickets array.
-	 *
-	 * @return bool Whether these are RSVP tickets.
-	 */
-	protected function is_rsvp_tickets( array $tickets ): bool {
-		if ( empty( $tickets ) ) {
-			return false;
-		}
-
-		foreach ( $tickets as $ticket ) {
-			// Check for tc-rsvp type only.
-			if ( isset( $ticket['ticket_type'] ) && RSVP_Constants::TC_RSVP_TYPE === $ticket['ticket_type'] ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }
