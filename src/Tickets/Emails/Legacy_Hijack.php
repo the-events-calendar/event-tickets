@@ -80,8 +80,6 @@ class Legacy_Hijack {
 					$provider = \Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] ?? null );
 					if ( $provider ) {
 						$ticket = $provider->get_ticket( $attendee['event_id'], $attendee['product_id'] );
-						$has_type1 = empty( $ticket->type );
-						$has_type2 = RSVP_Constants::TC_RSVP_TYPE === $ticket->type;
 						if ( $ticket && RSVP_Constants::TC_RSVP_TYPE === $ticket->type ) {
 							$is_tc_rsvp = true;
 							break;
@@ -93,8 +91,16 @@ class Legacy_Hijack {
 
 		// For tc-rsvp, always use RSVP email (or Ticket if configured).
 		if ( $is_tc_rsvp ) {
-			// Check if this is a "not going" RSVP.
-			if ( isset( $args['order_status'] ) && 'no' === strtolower( $args['order_status'] ) ) {
+			// Check if any attendee has "not going" RSVP status.
+			$is_not_going = false;
+			foreach ( $attendees as $attendee ) {
+				if ( isset( $attendee['rsvp_status'] ) && 'no' === strtolower( $attendee['rsvp_status'] ) ) {
+					$is_not_going = true;
+					break;
+				}
+			}
+
+			if ( $is_not_going ) {
 				$email_class = tribe( Email\RSVP_Not_Going::class );
 			} else {
 				// Regular RSVP confirmation.
