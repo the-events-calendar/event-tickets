@@ -177,7 +177,8 @@
 			padding-top: 0;
 		}
 	}
-</style><style type="text/css">
+</style>
+<style type="text/css">
 	body {
 		color: #3C434A;
 		margin: 0;
@@ -298,7 +299,7 @@
 		margin: 0;
 		padding: 0;
 	}
-	
+
 	div.tec-tickets__email-table-content-ticket-seat-label {
 		color: #ffffff;
 		display: inline-block;
@@ -306,7 +307,7 @@
 		font-weight: 400;
 		margin-top: 8px;
 	}
-	
+
 	div.tec-tickets__email-table-content-ticket-seat-label-separator {
 		color: #ffffff;
 		display: inline-block;
@@ -439,27 +440,26 @@
 		padding-top:43px;
 	}
 
-	td.tec-tickets__email-table-content-order-total-container {
-		padding-top: 20px;
-		text-align: right;
-	}
-
-	.tec-tickets__email-table-content-order-total-table {
-		display: inline-block;
-		width: auto;
-	}
-
-	td.tec-tickets__email-table-content-order-total-left-cell {
+	.tec-tickets__email-table-content-order-ticket-totals-fees-row,
+	.tec-tickets__email-table-content-order-ticket-totals-coupons-row {
+		border: none;
 		font-size: 14px;
 		font-weight: 400;
 		line-height: 24px;
-		padding-right: 10px;
 	}
 
-	.tec-tickets__email-table-content-order-total-right-cell {
-		font-size: 16px;
+	.tec-tickets__email-table-content-order-ticket-totals-total-row {
+		border: none;
+		border-top: 2px solid #333;
+		font-size: 14px;
 		font-weight: 700;
 		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-ticket-totals-total-cell {
+		font-weight: bold;
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 
 	td.tec-tickets__email-table-content-order-payment-info-container {

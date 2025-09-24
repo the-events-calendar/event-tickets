@@ -9,25 +9,28 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.9
+ * @version 5.26.3
  *
  * @since 5.5.9
+ * @since 5.26.3 Added styles for the fees and coupons rows.
  *
- * @var Tribe__Template                    $this               Current template object.
- * @var string                             $header_bg_color    Hex value for the header background color.
- * @var string                             $header_text_color  Hex value for the header text color
- * @var string                             $ticket_bg_color    Hex value for the ticket background color.
- * @var string                             $ticket_text_color  Hex value for the ticket text color.
- * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
- * @var string                             $heading            The email heading.
- * @var string                             $title              The email title.
- * @var bool                               $preview            Whether the email is in preview mode or not.
- * @var string                             $additional_content The email additional content.
- * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
- * @var WP_Post|null                       $event              The event post object with properties added by the `tribe_get_event` function.
+ * @var Tribe__Template $this               Current template object.
+ * @var string          $header_bg_color    Hex value for the header background color.
+ * @var string          $header_text_color  Hex value for the header text color
+ * @var string          $ticket_bg_color    Hex value for the ticket background color.
+ * @var string          $ticket_text_color  Hex value for the ticket text color.
+ * @var Email_Abstract  $email              The email object.
+ * @var string          $heading            The email heading.
+ * @var string          $title              The email title.
+ * @var bool            $preview            Whether the email is in preview mode or not.
+ * @var string          $additional_content The email additional content.
+ * @var bool            $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var WP_Post|null    $event              The event post object with properties added by the `tribe_get_event` function.
  *
  * @see tribe_get_event() For the format of the event object.
  */
+
+use TEC\Tickets\Emails\Email_Abstract;
 
 ?>
 <style type="text/css">
@@ -151,7 +154,7 @@
 		margin: 0;
 		padding: 0;
 	}
-	
+
 	div.tec-tickets__email-table-content-ticket-seat-label {
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		display: inline-block;
@@ -159,7 +162,7 @@
 		font-weight: 400;
 		margin-top: 8px;
 	}
-	
+
 	div.tec-tickets__email-table-content-ticket-seat-label-separator {
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		display: inline-block;
@@ -292,27 +295,26 @@
 		padding-top:43px;
 	}
 
-	td.tec-tickets__email-table-content-order-total-container {
-		padding-top: 20px;
-		text-align: right;
-	}
-
-	.tec-tickets__email-table-content-order-total-table {
-		display: inline-block;
-		width: auto;
-	}
-
-	td.tec-tickets__email-table-content-order-total-left-cell {
+	.tec-tickets__email-table-content-order-ticket-totals-fees-row,
+	.tec-tickets__email-table-content-order-ticket-totals-coupons-row {
+		border: none;
 		font-size: 14px;
 		font-weight: 400;
 		line-height: 24px;
-		padding-right: 10px;
 	}
 
-	.tec-tickets__email-table-content-order-total-right-cell {
-		font-size: 16px;
+	.tec-tickets__email-table-content-order-ticket-totals-total-row {
+		border: none;
+		border-top: 2px solid #333;
+		font-size: 14px;
 		font-weight: 700;
 		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-ticket-totals-total-cell {
+		font-weight: bold;
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 
 	td.tec-tickets__email-table-content-order-payment-info-container {

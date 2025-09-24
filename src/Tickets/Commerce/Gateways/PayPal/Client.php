@@ -167,6 +167,9 @@ class Client {
 	 * @return array|\WP_Error
 	 */
 	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false, $retries = 0 ) {
+		// Capture original arguments before any modifications for potential recursive calls.
+		$original_arguments = func_get_args();
+
 		$method = strtoupper( $method );
 
 		// If the endpoint passed is a full URL don't try to append anything.
@@ -251,7 +254,7 @@ class Client {
 
 			// If we properly saved, just re-try the request.
 			if ( $saved ) {
-				$arguments = func_get_args();
+				$arguments = $original_arguments;
 				array_pop( $arguments );
 				$arguments[] = $retries + 1;
 

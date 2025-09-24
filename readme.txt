@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.26.0
+Stable tag: 5.26.5
 Requires at least: 6.6
 Tested up to: 6.8.2
 Requires PHP: 7.4
@@ -198,6 +198,40 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.26.5] 2025-09-16 =
+
+* Fix - Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
+* Fix - Correctly invalidate ticket caches to deal with ETP order-of-operation issue. [ETP-1044]
+* Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.4] 2025-09-10 =
+
+* Security - Added user permission check when refreshing panels after ajax calls. [SVUL-20]
+* Language - 1 new strings added, 14 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.3] 2025-09-09 =
+
+* Tweak - Added fees and coupons to emails. [ET-2547]
+* Tweak - Changed views: `emails/purchase-receipt/body`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/ticket-totals`, `emails/template-parts/body/order/ticket-totals/coupons-row`, `emails/template-parts/body/order/ticket-totals/fees-row`, `emails/template-parts/body/order/ticket-totals/header-row`, `emails/template-parts/body/order/ticket-totals/total-row`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`.
+* Language - 1 new strings added, 13 updated, 0 fuzzied, and 1 obsoleted.
+
+= [5.26.2] 2025-09-02 =
+
+* Fix - Remove duplicate page title from the All Tickets page. [ET-2545]
+* Fix - Completed Order email can handle again multiple recipients separated by comma. [ET-2551]
+* Tweak - Adds a notice about the 2% fee when using the free Square payment gateway integration. [ET-2548]
+* Language - 1 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.1] 2025-08-26 =
+
+* Fix - Correct some logic for loading the RSVP importer. Ensure the class it extends is available.
+* Performance - Cache Views v2 ticket models preferably during updates to speed up frontend. [ETP-1021]
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.0.1] 2025-08-20 =
+
+* Fix - Ensures the Actions Scheduler Logs table is present before attempting to use it. [TCMN-190]
 
 = [5.26.0] 2025-08-19 =
 
