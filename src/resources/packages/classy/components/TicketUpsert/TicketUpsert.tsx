@@ -7,11 +7,11 @@ import { _x } from '@wordpress/i18n';
 import * as React from 'react';
 import { Fragment, useCallback, useState } from 'react';
 import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName } from '../../fields';
-import { CoreEditorSelect } from '../../types/Store';
 import { CapacitySettings, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
 import { getCurrencySettings } from '../../localizedData';
+import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 
 type TicketUpsertProps = {
 	isUpdate: boolean;

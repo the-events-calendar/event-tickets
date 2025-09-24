@@ -5,7 +5,8 @@ import { TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 import { TicketRow } from '../TicketRow';
 import { STORE_NAME } from '../../constants';
-import { StoreDispatch, StoreSelect, CoreEditorSelect } from '../../types/Store';
+import { StoreDispatch, StoreSelect } from '../../types/Store';
+import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 
 type TicketTableProps = {
 	onEditTicket: ( ticket: TicketSettings ) => void;

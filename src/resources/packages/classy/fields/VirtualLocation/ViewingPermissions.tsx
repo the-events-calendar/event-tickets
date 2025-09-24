@@ -6,7 +6,7 @@ import { CheckboxControl, RadioControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { METADATA_EVENT_VIRTUAL_SHOW_EMBED_TO } from '../../constants.tsx';
 import useMetaFiltering from './useMetaFiltering.ts';
-import { CoreEditorSelect } from '../../types/Store';
+import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 
 export default function ViewingPermissions(): JSX.Element {
 	const meta: {

@@ -8,7 +8,7 @@ import {
 	METADATA_EVENTS_VIRTUAL_TICKET_EMAIL_LINK,
 } from '../../constants.tsx';
 import useMetaFiltering from './useMetaFiltering.ts';
-import { CoreEditorSelect } from '../../types/Store';
+import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 
 export default function AdditionalSettings(): JSX.Element {
 	const meta: {

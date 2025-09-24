@@ -7,9 +7,10 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { AddTicket, TicketTable, TicketUpsertModal } from '../../components';
 import { STORE_NAME } from '../../constants';
-import { CoreEditorSelect, StoreDispatch, StoreSelect } from '../../types/Store';
+import { StoreDispatch, StoreSelect } from '../../types/Store';
 import { TicketId, TicketSettings } from '../../types/Ticket';
 import { StoreDispatch as TECStoreDispatch } from '@tec/events/classy/types/Store';
+import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 
 /*
  * Hard-code the TEC store name to avoid trying to load it from the window object at module-load time,

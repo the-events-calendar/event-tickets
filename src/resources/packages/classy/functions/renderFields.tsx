@@ -2,9 +2,9 @@ import React, { Fragment, useEffect } from 'react';
 import { Fill } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { Tickets, VirtualLocationViewingPermissions, VirtualLocationAdditionalSettings } from '../fields';
-import { CoreEditorSelect } from '../types/Store';
 import { getSettings } from '../localizedData';
 import { StoreDispatch as TECStoreDispatch, StoreSelect as TECStoreSelect } from '@tec/events/classy/types/Store';
+import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 
 /*
  * Hard-code the TEC store name to avoid trying to load it from the window object at module-load time,
