@@ -105,69 +105,15 @@ jobs:
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: ${SLIC_BIN} up chrome
       # ------------------------------------------------------------------------------
-      # Fetch branches for dependent repos
-      # ------------------------------------------------------------------------------
-      - name: Fetch head branch from TEC
-        uses: octokit/request-action@v2.x
-        if: steps.skip.outputs.value != 1
-        id: fetch-tec-head-branch
-        with:
-          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.head_ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
-        continue-on-error: true
-      - name: Fetch base branch from TEC
-        uses: octokit/request-action@v2.x
-        id: fetch-tec-base-branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success'
-        with:
-          route: GET /repos/the-events-calendar/the-events-calendar/branches/${{ github.base_ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
-        continue-on-error: true
-      - name: Fetch head branch from ECP
-        uses: octokit/request-action@v2.x
-        if: steps.skip.outputs.value != 1
-        id: fetch-ecp-head-branch
-        with:
-          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.head_ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
-        continue-on-error: true
-      - name: Fetch base branch from ECP
-        uses: octokit/request-action@v2.x
-        id: fetch-ecp-base-branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success'
-        with:
-          route: GET /repos/the-events-calendar/events-pro/branches/${{ github.base_ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
-        continue-on-error: true
-      # ------------------------------------------------------------------------------
-      # Set TEC branch
-      # ------------------------------------------------------------------------------
-      - name: Set TEC with head branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome == 'success'
-        run: echo "TEC_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set TEC with base branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome == 'success'
-        run: echo "TEC_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
-      - name: Set TEC with master branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome != 'success'
-        run: echo "TEC_BRANCH=master" >> $GITHUB_ENV
-      # ------------------------------------------------------------------------------
-      # Clone and init TEC
+      # Clone dependencies using smart checkout
       # ------------------------------------------------------------------------------
       - name: Clone TEC
-        uses: actions/checkout@v4
+        uses: ./.github/actions/smart-checkout
         if: steps.skip.outputs.value != 1
         with:
-          fetch-depth: 1
-          repository: the-events-calendar/the-events-calendar
-          ref: ${{ env.TEC_BRANCH }}
-          token: ${{ secrets.GH_BOT_TOKEN }}
+          other_repo: the-events-calendar/the-events-calendar
           path: the-events-calendar
-          submodules: recursive
+          token: ${{ secrets.GH_BOT_TOKEN }}
       - name: Init TEC
         if: steps.skip.outputs.value != 1
         run: |
@@ -179,31 +125,13 @@ jobs:
         run: |
           ${SLIC_BIN} use the-events-calendar/common
           ${SLIC_BIN} composer install --no-dev
-      # ------------------------------------------------------------------------------
-      # Set ECP branch
-      # ------------------------------------------------------------------------------
-      - name: Set ECP with head branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome == 'success'
-        run: echo "ECP_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
-      - name: Set ECP with base branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success' && steps.fetch-ecp-base-branch.outcome == 'success'
-        run: echo "ECP_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
-      - name: Set ECP with master branch
-        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success' && steps.fetch-ecp-base-branch.outcome != 'success'
-        run: echo "ECP_BRANCH=master" >> $GITHUB_ENV
-      # ------------------------------------------------------------------------------
-      # Clone and init ECP
-      # ------------------------------------------------------------------------------
       - name: Clone ECP
-        uses: actions/checkout@v4
+        uses: ./.github/actions/smart-checkout
         if: steps.skip.outputs.value != 1
         with:
-          fetch-depth: 1
-          repository: the-events-calendar/events-pro
-          ref: ${{ env.ECP_BRANCH }}
-          token: ${{ secrets.GH_BOT_TOKEN }}
+          other_repo: the-events-calendar/events-pro
           path: events-pro
-          submodules: recursive
+          token: ${{ secrets.GH_BOT_TOKEN }}
       - name: Init ECP
         if: steps.skip.outputs.value != 1
         run: |
