@@ -20,7 +20,7 @@
  * @version TBD
  */
 
-if ( $opt_in_toggle_hidden ) {
+if ( ! $opt_in_toggle_hidden ) {
 	return;
 }
 
