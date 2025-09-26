@@ -30,7 +30,7 @@ use TEC\Tickets\Commerce\Order;
 		</thead>
 		<tbody>
 			<?php
-			foreach ( $order->items as $item ) {
+			foreach ( $order->items as $index => $item ) {
 				/**
 				 * Filters whether the item should be displayed in the single order items metabox.
 				 *
@@ -40,13 +40,19 @@ use TEC\Tickets\Commerce\Order;
 				 * @param array   $item           The item data.
 				 * @param WP_Post $order          The order object.
 				 */
-				if ( ! apply_filters( 'tec_tickets_commerce_single_orders_items_item_should_be_displayed', true, $item, $order ) ) {
+				$should_display = apply_filters( 'tec_tickets_commerce_single_orders_items_item_should_be_displayed', true, $item, $order );
+				
+				if ( ! $should_display ) {
 					continue;
 				}
 
 				$ticket_id = $item['ticket_id'];
 
 				$ticket = tribe( Module::class )->get_ticket( 0, $ticket_id );
+
+				if ( ! $ticket ) {
+					$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+				}
 
 				if ( ! $ticket ) {
 					continue;

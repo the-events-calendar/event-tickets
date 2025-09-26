@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Commerce\RSVP\Constants as RSVP_Constants;
 use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
@@ -289,6 +290,11 @@ class Completed_Order extends Email_Abstract {
 			return false;
 		}
 
+		// Check if this is a tc-rsvp order and skip if it is.
+		if ( $this->is_tc_rsvp_order( $order ) ) {
+			return false;
+		}
+
 		$placeholders = [
 			'{order_number}' => $order->ID,
 			'{order_id}'     => $order->ID,
@@ -297,5 +303,44 @@ class Completed_Order extends Email_Abstract {
 		$this->set_placeholders( $placeholders );
 
 		return Dispatcher::from_email( $this )->send();
+	}
+
+	/**
+	 * Check if the order contains tc-rsvp tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $order The order object.
+	 *
+	 * @return bool Whether this is a tc-rsvp order.
+	 */
+	protected function is_tc_rsvp_order( $order ): bool {
+		// Check if order has items with tc-rsvp type.
+		if ( ! empty( $order->items ) ) {
+			foreach ( $order->items as $item ) {
+				if ( isset( $item['type'] ) && RSVP_Constants::TC_RSVP_TYPE === $item['type'] ) {
+					return true;
+				}
+			}
+		}
+
+		// Also check attendees if available.
+		$attendees = $this->get( 'attendees' );
+		if ( ! empty( $attendees ) ) {
+			foreach ( $attendees as $attendee ) {
+				// Get the ticket using the product_id.
+				if ( isset( $attendee['product_id'] ) && isset( $attendee['event_id'] ) ) {
+					$provider = \Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] ?? null );
+					if ( $provider ) {
+						$ticket = $provider->get_ticket( $attendee['event_id'], $attendee['product_id'] );
+						if ( $ticket && isset( $ticket->type ) && RSVP_Constants::TC_RSVP_TYPE === $ticket->type ) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 }

@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\Commerce\Traits\Is_RSVP;
 use Tribe__Tickets__Main;
 use WP_Post;
 
@@ -29,6 +30,7 @@ use WP_Post;
 class Singular_Order_Page extends Service_Provider {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the metaboxes.
@@ -67,7 +69,7 @@ class Singular_Order_Page extends Service_Provider {
 	}
 
 	/**
-	 * Checks if the item is a ticket and so it should be displayed.
+	 * Checks if the item is a ticket or RSVP and so it should be displayed.
 	 *
 	 * @since 5.18.0
 	 *
@@ -81,7 +83,7 @@ class Singular_Order_Page extends Service_Provider {
 			return $should_display;
 		}
 
-		return $this->is_ticket( $item );
+		return $this->is_ticket( $item ) || $this->is_rsvp( $item );
 	}
 
 	/**

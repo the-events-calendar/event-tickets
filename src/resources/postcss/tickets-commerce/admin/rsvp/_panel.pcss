@@ -1,0 +1,253 @@
+/**
+ * Event Tickets - Tickets Commerce - RSVP
+ *
+ * @since TBD
+ */
+
+#tec-tickets-commerce-rsvp {
+	position: relative;
+
+	.tribe-common {
+
+		.tribe-field-switch {
+			margin-bottom: var(--tec-spacer-3);
+
+			.tribe-field-switch-inner-wrap {
+				.tribe-field-wrap {
+					display: flex;
+				}
+			}
+
+			.tribe-common-control--switch {
+				margin-right: var(--tec-spacer-5);
+				width: var(--tec-spacer-7);
+			}
+
+			.description {
+				margin-left: 132px;
+			}
+		}
+
+		#tec-field-tec_tickets_rsvp_enable {
+			.tribe-field-label {
+				font-weight: var(--tec-font-weight-bold);
+			}
+
+			.tribe-common-control--switch {
+				margin-right: 100px;
+				width: var(--tec-spacer-7);
+			}
+		}
+
+		.tec-tickets-rsvp-responses-info__wrap {
+			display: flex;
+			margin-bottom: var(--tec-spacer-3);
+
+			.tec-tickets-rsvp-responses-info__label {
+				font-weight: var(--tec-font-weight-bold);
+				width: 132px;
+			}
+
+			.tec-tickets-rsvp-responses-info__count-link {
+				span {
+					font-weight: var(--tec-font-weight-bold);
+					margin-right: var(--tec-spacer-3);
+				}
+
+				.tec-tickets-rsvp-responses-info__link {
+					text-decoration: underline;
+				}
+			}
+		}
+
+		.input_block {
+			margin-bottom: var(--tec-spacer-3);
+
+			#rsvp_limit,
+			#rsvp_end_date,
+			#rsvp_start_date {
+				width: var(--tec-spacer-13);
+			}
+		}
+
+		.tec-tickets__admin-iac-settings {
+			background: none;
+			border: none;
+			color: rgb(0, 149.5, 221);
+			margin: 0 0 var(--tec-spacer-3) 0;
+			padding: 0;
+			text-decoration: underline;
+
+			.dashicons-plus {
+				color: rgb(38.4090909091, 42.25, 46.0909090909);
+				font-size: 11px;
+				line-height: var(--tec-spacer-4);
+				text-decoration: none;
+				vertical-align: bottom;
+			}
+		}
+
+		.tec-tickets-rsvp-form__options {
+			background-color: var(--tec-color-accent-secondary-background);
+			border-radius: var(--tec-spacer-1);
+			margin-bottom: var(--tec-spacer-3);
+			padding: var(--tec-spacer-2);
+
+			#rsvp_title_edit {
+				margin-bottom: var(--tec-spacer-3);
+			}
+		}
+
+		.tec-tickets-rsvp-bottom {
+			justify-content: end;
+
+			.tribe-validation-submit {
+
+			}
+		}
+	}
+
+	.tribe-common-c-loader {
+		align-items: center;
+		background: rgba(255, 255, 255, 0.8);
+		bottom: 0;
+		height: 100%;
+		justify-content: center;
+		left: 0;
+		padding: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 100%;
+		z-index: 10;
+	}
+
+	.tribe-common-c-loader__dot circle {
+		animation-direction: normal;
+		animation-duration: 2.24s;
+		animation-iteration-count: infinite;
+		animation-name: tec-eva-c-loader-bounce;
+		fill: var(--tec-color-accent-primary);
+		opacity: var(--tec-opacity-select-highlighted);
+	}
+
+	.tribe-common-c-loader__dot--first circle {
+		animation-delay: 0.45s;
+	}
+
+	.tribe-common-c-loader__dot--second circle {
+		animation-delay: 1.05s;
+	}
+
+	.tribe-common-c-loader__dot--third circle {
+		animation-delay: 1.35s;
+	}
+
+	@keyframes tec-eva-c-loader-bounce {
+
+		50% {
+			opacity: var(--tec-opacity-default);
+		}
+	}
+
+	h4 {
+		font-size: var(--tec-font-size-4);
+		margin: var(--tec-spacer-3) 0;
+
+		.tribe-common-c-svgicon--mail {
+			display: inline-block;
+			vertical-align: middle;
+			width: 30px;
+		}
+	}
+
+	/* Track */
+	input[type="checkbox"].tribe-common-switch__input + .tribe-common-switch__label {
+		display: inline-block;
+		vertical-align: top;
+		position: relative;
+		height: 21px;
+		width: 38px;
+		margin: 0;
+		cursor: pointer;
+		border: 1px solid var( --tec-color-button-secondary );
+		background: var( --tec-color-background );
+		border-radius: 11px;
+		transition: background .3s, border-color .3s, box-shadow .2s;
+	}
+
+	/* Knob */
+	input[type="checkbox"].tribe-common-switch__input + .tribe-common-switch__label::after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: 2px;
+		top: 2px;
+		width: 15px;
+		height: 15px;
+		border-radius: 50%;
+		background: var( --tec-color-button-secondary );
+		transform: translateX(0);
+		transition: transform .3s ease, opacity .2s;
+	}
+
+	/* Checked state */
+	input[type="checkbox"].tribe-common-switch__input:checked + .tribe-common-switch__label {
+		background: #2e709d;
+		border-color: #2e709d;
+		transition: background .6s cubic-bezier(.2, .85, .32, 1.2), border-color .6s cubic-bezier(.2, .85, .32, 1.2);
+	}
+
+	input[type="checkbox"].tribe-common-switch__input:checked + .tribe-common-switch__label::after {
+		background: var( --tec-color-background );
+		transform: translateX(17px);
+	}
+
+	/* Disabled states */
+	input[type="checkbox"].tribe-common-switch__input:disabled + .tribe-common-switch__label {
+		background: #F6F8FF;
+		cursor: not-allowed;
+		opacity: .9;
+	}
+
+	input[type="checkbox"].tribe-common-switch__input:disabled:checked + .tribe-common-switch__label {
+		background: #E1E6F9;
+		border-color: var( --tec-color-button-secondary );
+	}
+
+	input[type="checkbox"].tribe-common-switch__input:disabled:not(:checked) + .tribe-common-switch__label::after {
+		opacity: .6;
+	}
+
+	/* Hover & focus */
+	input[type="checkbox"].tribe-common-switch__input:hover:not(:checked):not(:disabled) + .tribe-common-switch__label {
+		border-color: #2e709d;
+	}
+
+	.tec-tickets-rsvp-bottom {
+		display: grid;
+		gap: var(--tec-spacer-1);
+		grid-template-columns:1fr 1fr;
+		grid-template-rows:1fr 1fr
+	}
+
+	.tec-tickets-rsvp-buttons-left {
+		display: flex;
+		grid-column: 1;
+		grid-row: 1;
+		justify-content: flex-start;
+	}
+
+	.tec-tickets-rsvp-buttons-right {
+		display: flex;
+		grid-column: 2;
+		grid-row: 1;
+		justify-content: flex-end
+	}
+
+	.tec-tickets-rsvp-buttons__remove-rsvp {
+		border: none;
+		background: none;
+		color: var(--tec-color-icon-error);
+	}
+}
