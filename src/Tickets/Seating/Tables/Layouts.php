@@ -9,7 +9,15 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
-use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Columns\DateTime_Column;
+use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
+use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
+use TEC\Common\StellarWP\Schema\Columns\Column_Types;
+use TEC\Common\StellarWP\Schema\Indexes\Primary_Key;
 
 /**
  * Class Layouts.
@@ -67,18 +75,28 @@ class Layouts extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since 5.20.0
+	 * @since TBD
 	 *
 	 * @var string[]
 	 */
-	public static function get_columns(): array {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name( true );
+
 		return [
-			'id',
-			'name',
-			'created_date',
-			'map',
-			'seats',
-			'screenshot_url',
+			self::SCHEMA_VERSION => function() use ( $table_name ) {
+				$columns = new Column_Collection();
+				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
+				$columns[] = ( new DateTime_Column( 'created_date' ) )->set_type( Column_Types::DATETIME );
+				$columns[] = ( new String_Column( 'map' ) )->set_length( 36 );
+				$columns[] = ( new Integer_Column( 'seats' ) )->set_length( 11 )->set_default( 0 );
+				$columns[] = ( new String_Column( 'screenshot_url' ) )->set_length( 255 )->set_default( '' );
+
+				$indexes = new Index_Collection();
+				$indexes[] = ( new Primary_Key( 'id' ) )->set_columns( 'id' );
+
+				return new Table_Schema( $table_name, $columns, $indexes );
+			},
 		];
 	}
 
