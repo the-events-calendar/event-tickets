@@ -13,7 +13,7 @@ use TEC\Common\StellarWP\Schema\Columns\ID;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Columns\Float_Column;
 use TEC\Common\StellarWP\Schema\Columns\Created_At;
-use TEC\Common\StellarWP\Schema\Columns\DateTime_Column;
+use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
 use TEC\Common\StellarWP\Schema\Indexes\Classic_Index;
@@ -83,8 +83,8 @@ class Order_Modifiers extends Table {
 				$columns[] = ( new String_Column( 'display_name' ) )->set_length( 255 );
 				$columns[] = ( new String_Column( 'status' ) )->set_length( 20 )->set_default( 'draft' );
 				$columns[] = new Created_At( 'created_at' );
-				$columns[] = ( new DateTime_Column( 'start_time' ) )->set_nullable( true );
-				$columns[] = ( new DateTime_Column( 'end_time' ) )->set_nullable( true );
+				$columns[] = ( new Datetime_Column( 'start_time' ) )->set_nullable( true );
+				$columns[] = ( new Datetime_Column( 'end_time' ) )->set_nullable( true );
 
 				$indexes = new Index_Collection();
 				$indexes[] = ( new Classic_Index( 'tec_order_modifier_index_status_modifier_type' ) )->set_columns( 'status', 'modifier_type' );
@@ -104,7 +104,7 @@ class Order_Modifiers extends Table {
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
-	protected function get_definition() {
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();

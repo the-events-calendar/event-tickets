@@ -10,10 +10,8 @@
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects\Ticket_Group_DTO;
 use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
 
 /**
@@ -27,14 +25,14 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
  * @property string $slug          The Ticket Group slug.
  * @property string $data          The Ticket Group data in JSON format.
  */
-class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObject {
+class Ticket_Group extends Model implements ModelCrud {
 
 	/**
 	 * @inheritDoc
 	 *
 	 * @since 5.24.1 Add `name`, `capacity`, and `cost` properties.
 	 */
-	protected $properties = [
+	protected static array $properties = [
 		'id'       => 'int',
 		'slug'     => 'string',
 		'data'     => 'string',
@@ -109,18 +107,5 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	 */
 	public static function query(): ModelQueryBuilder {
 		return tribe( Ticket_Groups::class )->query();
-	}
-
-	/**
-	 * Builds a new model from a query builder object.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param object $object The object to build the model from.
-	 *
-	 * @return Ticket_Group The model instance.
-	 */
-	public static function fromQueryBuilderObject( $object ): self {
-		return Ticket_Group_DTO::fromObject( $object )->toModel();
 	}
 }

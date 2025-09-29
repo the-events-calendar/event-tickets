@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Columns\Text_Column;
-use TEC\Common\StellarWP\Schema\Columns\DateTime_Column;
+use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Columns\Created_At;
@@ -94,7 +94,7 @@ class Webhooks extends Table {
 				$columns[] = ( new String_Column( 'event_type' ) )->set_length( 128 )->set_is_index( true );
 				$columns[] = ( new Text_Column( 'event_data' ) );
 				$columns[] = ( new Created_At( 'created_at' ) )->set_nullable( true );
-				$columns[] = ( new DateTime_Column( 'processed_at' ) )->set_nullable( true );
+				$columns[] = ( new Datetime_Column( 'processed_at' ) )->set_nullable( true );
 
 				$indexes = new Index_Collection();
 				$indexes[] = ( new Primary_Key( 'event_id' ) )->set_columns( 'event_id' );

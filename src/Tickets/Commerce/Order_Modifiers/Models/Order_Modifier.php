@@ -15,7 +15,6 @@ use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
 use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Values\Percent_Value;
@@ -40,14 +39,14 @@ use TEC\Tickets\Commerce\Values\Value_Interface;
  * @property string $start_time      When the modifier becomes active.
  * @property string $end_time        When the modifier expires.
  */
-class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderObject {
+class Order_Modifier extends Model implements ModelCrud {
 
 	/**
 	 * The model properties assigned to their types.
 	 *
 	 * @var array<string,string>
 	 */
-	protected $properties = [
+	protected static array $properties = [
 		'id'            => 'int',
 		'modifier_type' => 'string',
 		'sub_type'      => 'string',
@@ -178,19 +177,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	}
 
 	/**
-	 * Builds a new model from a query builder object.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param object $object The object to build the model from.
-	 *
-	 * @return static
-	 */
-	public static function fromQueryBuilderObject( $object ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
-		return Order_Modifier_DTO::fromObject( $object )->toModel();
-	}
-
-	/**
 	 * Converts the Order_Modifier object to an array.
 	 *
 	 * @since 5.18.0
@@ -209,29 +195,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	}
 
 	/**
-	 * Validates an attribute to a PHP type.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param string $key   Property name.
-	 * @param mixed  $value Property value.
-	 *
-	 * @return bool
-	 */
-	public function isPropertyTypeValid( string $key, $value ): bool {
-		switch ( $key ) {
-			case 'raw_amount':
-				return is_float( $value ) || $value instanceof Float_Value || $value instanceof Percent_Value;
-
-			case 'id':
-				return is_int( $value ) || $value instanceof Positive_Integer_Value;
-
-			default:
-				return parent::isPropertyTypeValid( $key, $value );
-		}
-	}
-
-	/**
 	 * Sets an attribute on the model.
 	 *
 	 * @since 5.18.0
@@ -242,8 +205,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return ModelInterface
 	 */
 	public function setAttribute( string $key, $value ): ModelInterface {
-		$this->validatePropertyExists( $key );
-		$this->validatePropertyType( $key, $value );
 		$this->run_validation_method( $key, $value );
 
 		// Ensure specific attributes are stored as value objects.
@@ -282,7 +243,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @throws RuntimeException When the attribute does not exist.
 	 */
 	public function getAttribute( string $key, $default = null ) { // phpcs:ignore Universal.NamingConventions
-		$this->validatePropertyExists( $key );
 		if ( ! $this->hasAttribute( $key ) ) {
 			return $default;
 		}

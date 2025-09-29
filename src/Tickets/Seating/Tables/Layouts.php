@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating\Tables;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
-use TEC\Common\StellarWP\Schema\Columns\DateTime_Column;
+use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
 use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
@@ -87,7 +87,7 @@ class Layouts extends Table {
 				$columns = new Column_Collection();
 				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 );
 				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
-				$columns[] = ( new DateTime_Column( 'created_date' ) )->set_type( Column_Types::DATETIME );
+				$columns[] = ( new Datetime_Column( 'created_date' ) )->set_type( Column_Types::DATETIME );
 				$columns[] = ( new String_Column( 'map' ) )->set_length( 36 );
 				$columns[] = ( new Integer_Column( 'seats' ) )->set_length( 11 )->set_default( 0 );
 				$columns[] = ( new String_Column( 'screenshot_url' ) )->set_length( 255 )->set_default( '' );
