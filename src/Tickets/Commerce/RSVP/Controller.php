@@ -148,6 +148,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'tribe_tickets_attendees_table_order_status', [ $this, 'modify_tc_rsvp_status_display' ], 10, 2 );
 		add_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'modify_tc_rsvp_checkin_display' ], 10, 2 );
 		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10, 2 );
+		add_filter( 'tec_tickets_plus_my_tickets_order_list_ticket_type_titles', [ $this, 'add_tc_rsvp_label_for_my_tickets' ], 10, 2 );
 	}
 
 	/**
@@ -401,5 +402,21 @@ class Controller extends Controller_Contract {
 		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 		return in_array( 'event-tickets_rsvp', $requirements, true );
+	}
+
+	/**
+	 * Adds the TC-RSVP label to the My Tickets page ticket type titles.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $titles  The list of ticket type titles.
+	 * @param int   $post_id The post ID.
+	 *
+	 * @return array The updated list of ticket type titles.
+	 */
+	public function add_tc_rsvp_label_for_my_tickets( $titles, $post_id ) {
+		$titles[ Constants::TC_RSVP_TYPE ] = tribe_get_rsvp_label_plural( 'order list view' );
+
+		return $titles;
 	}
 }

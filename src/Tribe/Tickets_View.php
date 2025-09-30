@@ -643,8 +643,17 @@ class Tribe__Tickets__Tickets_View {
 		$orders = [];
 
 		foreach ( $attendees as $key => $attendee ) {
-			// Ignore RSVP if we don't tell it specifically
-			if ( 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
+			// Check if this is a TC-RSVP type attendee.
+			$is_tc_rsvp = false;
+			if ( isset( $attendee['product_id'] ) ) {
+				$ticket = Tribe__Tickets__Tickets::load_ticket_object( $attendee['product_id'] );
+				if ( $ticket && isset( $ticket->type ) && Constants::TC_RSVP_TYPE === $ticket->type ) {
+					$is_tc_rsvp = true;
+				}
+			}
+
+			// Include TC-RSVP attendees with regular tickets, but exclude legacy RSVP if not specified.
+			if ( ! $is_tc_rsvp && 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
 				continue;
 			}
 
@@ -801,8 +810,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$args = [
 			'by' => [
-				'provider__not_in' => 'rsvp',
-				'status'           => 'publish',
+				'status' => 'publish',
 			],
 		];
 
