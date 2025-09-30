@@ -9,9 +9,10 @@
 
 namespace TEC\Tickets\Commerce\Models;
 
+use Exception;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Models\Post_Types\Base;
-use TEC\Tickets\Commerce\Ticket;
 
 /**
  * Class Attendee.
@@ -66,8 +67,9 @@ class Ticket_Model extends Base {
 				'stock'                 => $ticket_object->stock(),
 				'sold'                  => $ticket_object->qty_sold(),
 				'sku'                   => $ticket_object->sku,
+				'capacity'              => (int) tribe_tickets_get_capacity( $ticket_object->ID ) ?? -1,
 			];
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			return [];
 		}
 
@@ -99,6 +101,7 @@ class Ticket_Model extends Base {
 			'sold'                  => true,
 			'sku'                   => true,
 			'menu_order'            => true,
+			'capacity'              => true,
 		];
 
 		/**
