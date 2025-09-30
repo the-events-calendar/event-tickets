@@ -172,7 +172,6 @@ trait With_Filtered_Ticket_Params {
 			$params['show_description'],
 			$params['stock'],
 			$params['event_capacity'],
-			$params['capacity'],
 			$params['sale_price_end_date'],
 			$params['sale_price_start_date'],
 			$params['sale_price'],

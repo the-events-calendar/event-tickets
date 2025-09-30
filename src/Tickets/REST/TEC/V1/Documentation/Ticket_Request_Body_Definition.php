@@ -12,6 +12,7 @@ namespace TEC\Tickets\REST\TEC\V1\Documentation;
 use TEC\Common\REST\TEC\V1\Abstracts\Definition;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Boolean;
+use TEC\Tickets\REST\TEC\V1\Parameter_Types\Capacity_Integer;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date_Time;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Date;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Integer;
@@ -96,9 +97,9 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( '2025-06-30' )->set_pattern( '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' );
 
 		$properties[] = (
-			new Positive_Integer(
+			new Capacity_Integer(
 				'capacity',
-				fn() => __( 'The capacity of the ticket', 'event-tickets' ),
+				fn() => __( 'The capacity of the ticket. Use a positive integer for limited capacity or "unlimited" for unlimited capacity.', 'event-tickets' ),
 			)
 		)->set_example( 100 );
 

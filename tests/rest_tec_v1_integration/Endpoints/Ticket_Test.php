@@ -2,21 +2,20 @@
 
 namespace TEC\Tickets\Tests\REST\TEC\V1\Endpoints;
 
+use Closure;
 use TEC\Common\Tests\Testcases\REST\TEC\V1\Post_Entity_REST_Test_Case;
+use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Commerce\Ticket as Ticket_Model;
-use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
-use Closure;
 
 class Ticket_Test extends Post_Entity_REST_Test_Case {
 	use Ticket_Maker;
 
 	protected $endpoint_class = Ticket::class;
-
 
 	protected function create_test_data(): array {
 		wp_set_current_user( 1 );
@@ -75,16 +74,19 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$ticket_1 = $this->create_tc_ticket( $post_1, '25.00' );
 		update_post_meta( $ticket_1, '_name', 'General Admission' );
 		update_post_meta( $ticket_1, '_description', 'Standard ticket for general admission' );
+		update_post_meta( $ticket_1, '_tribe_ticket_capacity', 100 );
 		wp_update_post( [ 'ID' => $ticket_1, 'menu_order' => 0 ] );
 
 		$ticket_2 = $this->create_tc_ticket( $post_1, '75.00' );
 		update_post_meta( $ticket_2, '_name', 'VIP Ticket' );
 		update_post_meta( $ticket_2, '_description', 'VIP access with special perks' );
+		update_post_meta( $ticket_2, '_tribe_ticket_capacity', -1 );
 		wp_update_post( [ 'ID' => $ticket_2, 'menu_order' => 7 ] );
 
 		$ticket_3 = $this->create_tc_ticket( $page_1, '15.00' );
 		update_post_meta( $ticket_3, '_name', 'Workshop Registration' );
 		update_post_meta( $ticket_3, '_description', 'Basic workshop registration' );
+		update_post_meta( $ticket_3, '_tribe_ticket_capacity', 50 );
 		wp_update_post( [ 'ID' => $ticket_3, 'menu_order' => 3 ] );
 
 		// Create ticket for private post
@@ -171,6 +173,7 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$example['manage_stock'] = true;
 		$example['sale_price_enabled'] = true;
 		$example['menu_order'] = 5;
+		$example['capacity'] = 100;
 
 		return $example;
 	}
