@@ -1,52 +1,12 @@
 import apiFetch from '@wordpress/api-fetch';
-import { APIFetchOptions } from '@wordpress/api-fetch/build-types/types';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
+import { getCurrencySettings } from '../localizedData.ts';
+import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { CostDetails } from '../types/CostDetails';
 import { CapacitySettings, FeesData, SalePriceDetails, TicketSettings, TicketType } from '../types/Ticket';
-import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
-import { NonceAction, NonceTypes } from '../types/LocalizedData';
-import { getLocalizedData, getCurrencySettings } from '../localizedData.ts';
 
 const apiBaseUrl = '/tec/v1/tickets';
-
-/**
- * Fetch data from the API.
- *
- * Wraps the `apiFetch` function to include a custom header indicating that this endpoint is experimental.
- *
- * @since TBD
- * @param {APIFetchOptions} params The parameters for the API fetch request, including headers, path, method, and data.
- * @return {Promise<any>} A promise that resolves to the response data from the API.
- */
-const fetch = ( params: APIFetchOptions ): Promise< any > => {
-	const { headers = {} } = params;
-	const requestParams = {
-		headers: {
-			'X-TEC-EEA':
-				'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
-			...headers,
-		},
-		...params,
-	};
-
-	return apiFetch( requestParams );
-};
-
-/**
- * Get a nonce for the specified type.
- *
- * This function retrieves the nonce for a specific type from the localized data.
- * It is used to ensure secure API requests by including the appropriate nonce.
- *
- * @since TBD
- *
- * @param {NonceTypes} type The type of nonce to retrieve.
- * @return {string} The nonce value for the specified type.
- */
-const getNonce = ( type: NonceTypes ): string => {
-	return getLocalizedData().nonces[ type ];
-};
 
 /**
  * Fetch tickets from the API.
@@ -78,7 +38,7 @@ export const fetchTickets = async ( params: GetTicketsApiParams = {} ): Promise<
 	const path = addQueryArgs( apiBaseUrl, queryArgs );
 
 	return new Promise< GetTicketsApiResponse >( async ( resolve, reject ) => {
-		await fetch( { path: path } )
+		await apiFetch( { path: path } )
 			.then( ( data ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
 					reject( new Error( 'Failed to fetch tickets: response did not return an object.' ) );
@@ -134,14 +94,10 @@ export const upsertTicket = async ( ticketData: TicketSettings ): Promise< Ticke
 	const isUpdate: boolean = Boolean( ticketData.id && ticketData.id > 0 );
 
 	return new Promise< TicketSettings >( async ( resolve, reject ) => {
-		const nonceKey: NonceAction = isUpdate ? 'edit_ticket_nonce' : 'add_ticket_nonce';
-		await fetch( {
+		await apiFetch( {
 			path: `${ apiBaseUrl }${ isUpdate ? `/${ ticketData.id }` : '' }`,
 			method: isUpdate ? 'PUT' : 'POST',
-			data: {
-				...mapTicketSettingsToApiRequest( ticketData, isUpdate ),
-				[ nonceKey ]: getNonce( isUpdate ? 'updateTicket' : 'createTicket' ),
-			},
+			data: mapTicketSettingsToApiRequest( ticketData, isUpdate ),
 		} )
 			.then( ( data: GetTicketApiResponse ) => {
 				if ( ! ( data && typeof data === 'object' ) ) {
@@ -171,12 +127,9 @@ export const upsertTicket = async ( ticketData: TicketSettings ): Promise< Ticke
  */
 export const deleteTicket = async ( ticketId: number ): Promise< void > => {
 	return new Promise< void >( async ( resolve, reject ) => {
-		await fetch( {
+		await apiFetch( {
 			path: `${ apiBaseUrl }/${ ticketId }`,
 			method: 'DELETE',
-			data: {
-				remove_ticket_nonce: getNonce( 'deleteTicket' ),
-			},
 		} )
 			.then( () => {
 				resolve();
@@ -209,15 +162,14 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 
 	// Map capacity and stock settings.
 	if ( ticketData.capacitySettings ) {
-		const { globalStockMode = 'own', enteredCapacity } = ticketData.capacitySettings;
+		const { enteredCapacity = '' } = ticketData.capacitySettings;
 
-		body.capacity = enteredCapacity || 0;
-		body.stock = enteredCapacity || 0;
-		body.stock_mode = globalStockMode;
-	} else {
-		body.capacity = 0;
-		body.stock = 0;
-		body.stock_mode = 'own';
+		// If the Capacity is set, convert it to number. Otherwise, don't add it to the API request.
+		if ( '' !== enteredCapacity ) {
+			const capacityNumber = Number( enteredCapacity );
+			body.capacity = capacityNumber;
+			body.stock = capacityNumber;
+		}
 	}
 
 	// Map sale dates
@@ -293,8 +245,6 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 	// Map capacity settings based on stock management
 	const capacitySettings: CapacitySettings = {
 		enteredCapacity: apiResponse.stock || 0,
-		isShared: apiResponse.manage_stock && apiResponse.stock !== null,
-		globalStockMode: apiResponse.manage_stock ? 'own' : 'global',
 	};
 
 	// Map sale price data

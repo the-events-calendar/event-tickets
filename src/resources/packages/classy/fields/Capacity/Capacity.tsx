@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { LabeledInput } from '@tec/common/classy/components';
-import { __experimentalInputControl as InputControl, RadioControl, Slot, ToggleControl } from '@wordpress/components';
+import { __experimentalInputControl as InputControl, Slot } from '@wordpress/components';
 import { _x } from '@wordpress/i18n';
-import { CapacitySettings, Seating } from '../../types/Ticket';
+import { CapacitySettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 
 type CapacityProps = {
@@ -13,20 +13,7 @@ type CapacityProps = {
 
 const defaultValue: CapacitySettings = {
 	enteredCapacity: '',
-	isShared: false,
-	globalStockMode: 'own',
 };
-
-const capacityOptions: { label: string; value: Seating }[] = [
-	{
-		label: _x( 'General Admission', 'Label for general admission capacity type', 'event-tickets' ),
-		value: 'general-admission',
-	},
-	{
-		label: _x( 'Assigned Seating', 'Label for reserved seating capacity type', 'event-tickets' ),
-		value: 'assigned-seating',
-	},
-];
 
 /**
  * Renders the capacity fields in the Classy editor.

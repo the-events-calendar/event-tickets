@@ -23,22 +23,10 @@ export type CapacityDetails = {
 	pending?: number;
 };
 
-/**
- * Represents the capacity settings for a ticket.
- *
- * @typedef {Object} CapacitySettings
- * @property {Seating} [admissionType] - The type of admission (general admission or assigned seating).
- * @property {number | ''} enteredCapacity - The capacity entered by the user, can be a number or an empty string.
- * @property {number | ''} [displayedCapacity] - The capacity displayed to the user, can be a number or an empty string.
- * @property {boolean} isShared - Indicates if the capacity is shared across multiple tickets.
- */
 export type CapacitySettings = {
 	admissionType?: Seating;
 	displayedCapacity?: number | '';
 	enteredCapacity: number | '';
-	isShared: boolean;
-	sharedCapacity?: number;
-	globalStockMode?: GlobalStockMode;
 };
 
 export type CheckinDetails = {
@@ -71,14 +59,48 @@ export type TicketDate = {
 // todo: Some kind of positive number type for TicketId.
 export type TicketId = number;
 
+/**
+ * The structure of a single ticket within the Classy editor.
+ */
 export type TicketSettings = {
+	/**
+	 * The unique identifier for the ticket.
+	 */
 	id?: TicketId;
+
+	/**
+	 * The event ID this ticket is associated with.
+	 */
 	eventId?: number;
+
+	/**
+	 * The ticket's name. Used for the "Title" field in the editor.
+	 */
 	name: string;
+
+	/**
+	 * A description of the ticket.
+	 */
 	description?: string;
+
+	/**
+	 * The cost of the ticket, as a formatted string (e.g. "20.00").
+	 */
 	cost?: string;
+
+	/**
+	 * The cost details of the ticket, including currency and value.
+	 */
 	costDetails?: CostDetails;
+
+	/**
+	 * The details for an on-sale price for the ticket.
+	 */
 	salePriceData?: SalePriceDetails;
+
+	/**
+	 * The capacity settings for the ticket.
+	 */
 	capacitySettings?: CapacitySettings;
 	fees?: FeesData;
 	provider?: string;
@@ -94,51 +116,3 @@ export type TicketSettings = {
 	// Features.
 	supportsAttendeeInformation?: boolean;
 };
-
-export type Ticket = {
-	// API response fields.
-	id: TicketId;
-	eventId: number;
-	provider: string;
-	type: TicketType;
-	globalId: string;
-	globalIdLineage: string[];
-	title: string;
-	description: string;
-	image: boolean | string;
-	menuOrder?: number;
-
-	// Availability.
-	availableFrom: string;
-	availableFromDetails: TicketDate;
-	availableUntil: string;
-	availableUntilDetails: TicketDate;
-	isAvailable: boolean;
-	onSale: boolean;
-
-	// Capacity.
-	capacity: number | '';
-	capacityDetails: CapacityDetails;
-
-	// Pricing.
-	cost: string;
-	costDetails: CostDetails;
-	price: number | string;
-	priceSuffix: string | null;
-
-	// Sale price.
-	salePriceData: SalePriceDetails;
-
-	// Features.
-	supportsAttendeeInformation: boolean;
-	iac: string;
-
-	// Attendees and checkin.
-	attendees: any[];
-	checkin: CheckinDetails;
-
-	// Fees.
-	fees: FeesData;
-};
-
-export type PartialTicket = Partial< Ticket >;
