@@ -38,8 +38,12 @@
                     "example": "2025-06-30"
                 },
                 "capacity": {
-                    "description": "The capacity of the ticket",
+                    "description": "The capacity of the ticket. Use a positive integer for limited capacity or \"unlimited\" for unlimited capacity.",
                     "type": "integer",
+                    "examples": {
+                        "limited": 100,
+                        "unlimited": -1
+                    },
                     "example": 100
                 },
                 "event_capacity": {
