@@ -163,13 +163,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	// Map capacity and stock settings.
 	if ( ticketData.capacitySettings ) {
 		const { enteredCapacity = '' } = ticketData.capacitySettings;
-
-		// If the Capacity is set, convert it to number. Otherwise, don't add it to the API request.
-		if ( '' !== enteredCapacity ) {
-			const capacityNumber = Number( enteredCapacity );
-			body.capacity = capacityNumber;
-			body.stock = capacityNumber;
-		}
+		body.capacity = enteredCapacity === '' ? -1 : enteredCapacity;
 	}
 
 	// Map sale dates
@@ -242,9 +236,11 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
  * @return {TicketSettings} The mapped ticket settings.
  */
 const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): TicketSettings => {
+	const { capacity =  '' } = apiResponse;
+
 	// Map capacity settings based on stock management
 	const capacitySettings: CapacitySettings = {
-		enteredCapacity: apiResponse.stock || 0,
+		enteredCapacity: capacity === -1 ? '' : capacity,
 	};
 
 	// Map sale price data
