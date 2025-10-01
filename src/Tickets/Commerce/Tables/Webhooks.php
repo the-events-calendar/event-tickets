@@ -87,19 +87,16 @@ class Webhooks extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
-				$columns[] = ( new String_Column( 'event_id' ) )->set_length( 128 );
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = ( new String_Column( 'event_id' ) )->set_length( 128 )->set_is_primary_key( true );
 				$columns[] = ( new Referenced_ID( 'order_id' ) )->set_nullable( true );
 				$columns[] = ( new String_Column( 'event_type' ) )->set_length( 128 )->set_is_index( true );
 				$columns[] = ( new Text_Column( 'event_data' ) );
 				$columns[] = ( new Created_At( 'created_at' ) )->set_nullable( true );
 				$columns[] = ( new Datetime_Column( 'processed_at' ) )->set_nullable( true );
 
-				$indexes = new Index_Collection();
-				$indexes[] = ( new Primary_Key( 'event_id' ) )->set_columns( 'event_id' );
-
-				return new Table_Schema( $table_name, $columns, $indexes );
+				return new Table_Schema( $table_name, $columns );
 			},
 		];
 	}

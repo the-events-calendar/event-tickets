@@ -82,18 +82,15 @@ class Seat_Types extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
-				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 );
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 )->set_is_primary_key( true );
 				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
 				$columns[] = ( new String_Column( 'map' ) )->set_length( 36 );
 				$columns[] = ( new String_Column( 'layout' ) )->set_length( 36 );
 				$columns[] = ( new Integer_Column( 'seats' ) )->set_length( 11 )->set_default( 0 );
 
-				$indexes = new Index_Collection();
-				$indexes[] = ( new Primary_Key( 'id' ) )->set_columns( 'id' );
-
-				return new Table_Schema( $table_name, $columns, $indexes );
+				return new Table_Schema( $table_name, $columns );
 			},
 		];
 	}

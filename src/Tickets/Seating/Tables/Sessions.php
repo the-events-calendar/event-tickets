@@ -120,18 +120,15 @@ class Sessions extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
-				$columns[] = ( new String_Column( 'token' ) )->set_length( 150 );
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = ( new String_Column( 'token' ) )->set_length( 150 )->set_is_primary_key( true );
 				$columns[] = new Referenced_ID( 'object_id' );
 				$columns[] = ( new Integer_Column( 'expiration' ) )->set_length( 11 )->set_signed( false );
 				$columns[] = ( new Blob_Column( 'reservations' ) )->set_type( Column_Types::LONGBLOB );
 				$columns[] = ( new Boolean_Column( 'expiration_lock' ) )->set_default( false );
 
-				$indexes = new Index_Collection();
-				$indexes[] = ( new Primary_Key( 'token' ) )->set_columns( 'token' );
-
-				return new Table_Schema( $table_name, $columns, $indexes );
+				return new Table_Schema( $table_name, $columns );
 			},
 		];
 	}

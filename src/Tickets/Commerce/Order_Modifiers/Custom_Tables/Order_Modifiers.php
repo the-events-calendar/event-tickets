@@ -73,8 +73,8 @@ class Order_Modifiers extends Table {
 	public static function get_schema_history(): array {
 		$table_name = self::table_name( true );
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
 				$columns[] = new ID( 'id' );
 				$columns[] = ( new String_Column( 'modifier_type' ) )->set_length( 150 )->set_is_index( true );
 				$columns[] = ( new String_Column( 'sub_type' ) )->set_length( 255 );
@@ -86,7 +86,7 @@ class Order_Modifiers extends Table {
 				$columns[] = ( new Datetime_Column( 'start_time' ) )->set_nullable( true );
 				$columns[] = ( new Datetime_Column( 'end_time' ) )->set_nullable( true );
 
-				$indexes = new Index_Collection();
+				$indexes   = new Index_Collection();
 				$indexes[] = ( new Classic_Index( 'tec_order_modifier_index_status_modifier_type' ) )->set_columns( 'status', 'modifier_type' );
 
 				return new Table_Schema( $table_name, $columns, $indexes );

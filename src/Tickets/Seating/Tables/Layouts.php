@@ -83,19 +83,16 @@ class Layouts extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
-				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 );
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 )->set_is_primary_key( true );
 				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
 				$columns[] = ( new Datetime_Column( 'created_date' ) )->set_type( Column_Types::DATETIME );
 				$columns[] = ( new String_Column( 'map' ) )->set_length( 36 );
 				$columns[] = ( new Integer_Column( 'seats' ) )->set_length( 11 )->set_default( 0 );
 				$columns[] = ( new String_Column( 'screenshot_url' ) )->set_length( 255 )->set_default( '' );
 
-				$indexes = new Index_Collection();
-				$indexes[] = ( new Primary_Key( 'id' ) )->set_columns( 'id' );
-
-				return new Table_Schema( $table_name, $columns, $indexes );
+				return new Table_Schema( $table_name, $columns );
 			},
 		];
 	}
