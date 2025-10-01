@@ -17,6 +17,8 @@
  * @var array   $titles    List of ticket type titles.
  */
 
+use TEC\Tickets\Commerce\RSVP\Constants;
+
 $attendees_by_ticket_type = [];
 
 foreach ( $attendees as $attendee ) {
@@ -49,10 +51,22 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 						);
 					?>
 					<?php
+					// Check if this is a TC-RSVP ticket to determine which template to use.
+					$is_tc_rsvp = false;
+					if ( ! empty( $attendee['product_id'] ) ) {
+						$ticket = Tribe__Tickets__Tickets::load_ticket_object( $attendee['product_id'] );
+						if ( $ticket && Constants::TC_RSVP_TYPE === $ticket->type() ) {
+							$is_tc_rsvp = true;
+						}
+					}
+
+					// Use RSVP template for TC-RSVP tickets, regular template for others.
+					$template_path = $is_tc_rsvp ? 'tickets/my-tickets/rsvp-information' : 'tickets/my-tickets/ticket-information';
 					$this->template(
-						'tickets/my-tickets/ticket-information',
+						$template_path,
 						[
 							'attendee' => $attendee,
+							'order_id' => $order_id,
 						]
 					);
 					?>

@@ -218,15 +218,55 @@ class Tribe__Tickets__Tickets_View {
 		// Sort list to handle all not attending first.
 		$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 
-		foreach ( $attendees as $attendee_id => $attendee_data ) {
-			/**
-			 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
-			 *
-			 * @param array $attendee_data Information that we are trying to save.
-			 * @param int   $attendee_id   The attendee ID.
-			 * @param int   $post_id       The event/post ID.
-			 */
-			do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
+		foreach ( $attendees as $order_id => $order_data ) {
+			// Extract RSVP statuses if present.
+			$rsvp_statuses = [];
+			if ( isset( $order_data['rsvp_status'] ) && is_array( $order_data['rsvp_status'] ) ) {
+				$rsvp_statuses = $order_data['rsvp_status'];
+			}
+
+			// Process each attendee in this order.
+			if ( isset( $order_data['attendees'] ) && is_array( $order_data['attendees'] ) ) {
+				foreach ( $order_data['attendees'] as $attendee_id ) {
+					$attendee_data = $order_data;
+
+					// Remove the nested arrays that aren't needed for individual attendee.
+					unset( $attendee_data['attendees'] );
+					unset( $attendee_data['rsvp_status'] );
+
+					// Add RSVP status if present for this specific attendee.
+					if ( isset( $rsvp_statuses[ $attendee_id ] ) ) {
+						$attendee_data['rsvp_status'] = $rsvp_statuses[ $attendee_id ];
+					}
+
+					/**
+					 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
+					 *
+					 * @param array $attendee_data Information that we are trying to save.
+					 * @param int   $attendee_id   The attendee ID.
+					 * @param int   $post_id       The event/post ID.
+					 */
+					do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
+				}
+			} else {
+				// Legacy format: order_id is actually attendee_id.
+				$attendee_data = $order_data;
+				unset( $attendee_data['rsvp_status'] );
+
+				// Check if RSVP status is set for this attendee (legacy format).
+				if ( isset( $rsvp_statuses[ $order_id ] ) ) {
+					$attendee_data['rsvp_status'] = $rsvp_statuses[ $order_id ];
+				}
+
+				/**
+				 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
+				 *
+				 * @param array $attendee_data Information that we are trying to save.
+				 * @param int   $attendee_id   The attendee ID.
+				 * @param int   $post_id       The event/post ID.
+				 */
+				do_action( 'event_tickets_attendee_update', $attendee_data, (int) $order_id, $post_id );
+			}
 		}
 
 		/**
