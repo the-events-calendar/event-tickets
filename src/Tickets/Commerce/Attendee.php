@@ -191,6 +191,15 @@ class Attendee {
 	public static $unique_id_meta_key = '_unique_id';
 
 	/**
+	 * Meta key for rsvp status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $rsvp_status = '_tec_tickets_commerce_rsvp_status';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -355,6 +364,7 @@ class Attendee {
 			'opt_out'       => Arr::get( $args, 'opt_out' ),
 			'price_paid'    => Arr::get( $args, 'price_paid' ),
 			'currency'      => Arr::get( $args, 'currency' ),
+			'rsvp_status'   => Arr::get( $args, 'rsvp_status' ),
 		];
 
 		if ( ! empty( $order->purchaser['user_id'] ) ) {
@@ -466,6 +476,7 @@ class Attendee {
 			'opt_out'       => Arr::get( $args, 'opt_out' ),
 			'price_paid'    => Arr::get( $args, 'price_paid' ),
 			'currency'      => Arr::get( $args, 'currency' ),
+			'rsvp_status'   => Arr::get( $args, 'rsvp_status' ),
 		];
 
 		if ( ! empty( $order->purchaser['user_id'] ) ) {
@@ -655,12 +666,67 @@ class Attendee {
 			$attendee_data_to_save['optout'] = (int) tribe_is_truthy( $attendee_data['optout'] );
 		}
 
+		// Handle RSVP status updates for TC-RSVP tickets.
+		if ( isset( $attendee_data['rsvp_status'] ) ) {
+			$this->update_rsvp_status( $attendee_id, $attendee_data['rsvp_status'], $attendee_data_to_save );
+		}
+
 		// Only update if there's data to set.
 		if ( empty( $attendee_data_to_save ) ) {
 			return;
 		}
 
 		tribe( Module::class )->update_attendee( $attendee_id, $attendee_data_to_save );
+	}
+
+	/**
+	 * Updates the RSVP status for a TC-RSVP attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $attendee_id           The attendee ID.
+	 * @param string $new_status            The new RSVP status ('yes' or 'no').
+	 * @param array  $attendee_data_to_save Reference to the attendee data array being saved.
+	 *
+	 * @return void
+	 */
+	protected function update_rsvp_status( $attendee_id, $new_status, &$attendee_data_to_save ) {
+		// Validate status value.
+		if ( ! in_array( $new_status, [ 'yes', 'no' ], true ) ) {
+			return;
+		}
+
+		// Get current status.
+		$current_status = get_post_meta( $attendee_id, static::$rsvp_status, true );
+
+		// No change needed.
+		if ( $current_status === $new_status ) {
+			return;
+		}
+
+		// Get the ticket to check type and capacity.
+		$product_id = get_post_meta( $attendee_id, static::$ticket_relation_meta_key, true );
+		if ( ! $product_id ) {
+			return;
+		}
+
+		$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $product_id );
+		if ( ! $ticket || \TEC\Tickets\Commerce\RSVP\Constants::TC_RSVP_TYPE !== $ticket->type() ) {
+			return;
+		}
+
+		// If changing from "no" to "yes", check capacity.
+		if ( $current_status === 'no' && $new_status === 'yes' ) {
+			$remaining_capacity = $ticket->available();
+			// -1 means unlimited capacity, so only block if capacity is 0 or less (but not -1).
+			if ( $remaining_capacity !== -1 && $remaining_capacity <= 0 ) {
+				// Capacity reached, cannot change to going.
+				return;
+			}
+		}
+
+		// Update the RSVP status.
+		$attendee_data_to_save['rsvp_status'] = $new_status;
 	}
 
 	/**
@@ -809,7 +875,7 @@ class Attendee {
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return [];
 		}
-		
+
 		// Check cache.
 		$cache                  = tribe_cache();
 		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
@@ -859,6 +925,7 @@ class Attendee {
 		$attendee->provider_slug      = Commerce::ABBR;
 		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
 		$attendee->qr_ticket_id       = null;
+		$attendee->rsvp_status        = $this->get_rsvp_status( $attendee );
 		$attendee->security           = $this->get_security_code( $attendee );
 		$attendee->security_code      = $this->get_security_code( $attendee );
 		$attendee->ticket             = $this->get_product_title( $attendee );
@@ -1090,6 +1157,19 @@ class Attendee {
 		}
 
 		return esc_html__( 'Email not available', 'event-tickets' );
+	}
+
+	/**
+	 * Returns the RSVP status for an attendee
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_rsvp_status( \WP_Post $attendee ) {
+		return get_post_meta( $attendee->ID, static::$rsvp_status, true );
 	}
 
 	/**
