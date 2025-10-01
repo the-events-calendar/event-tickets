@@ -168,20 +168,22 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 
 	// Map sale dates
 	if ( ticketData.availableFrom ) {
-		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS"
+		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS".
 		const availableFromDate = new Date( ticketData.availableFrom );
 		body.start_date = availableFromDate.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
 	}
 
 	if ( ticketData.availableUntil ) {
-		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS"
+		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS".
 		const availableUntilDate = new Date( ticketData.availableUntil );
 		body.end_date = availableUntilDate.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
 	}
 
-	// Map sale price data
+	// Map sale price data.
 	if ( ticketData.salePriceData ) {
-		const salePriceData = ticketData.salePriceData;
+		const { salePriceData } = ticketData;
+
+		body.sale_price_enabled = salePriceData.enabled || false;
 
 		if ( salePriceData.enabled && salePriceData.salePrice ) {
 			body.sale_price = parseFloat( salePriceData.salePrice );
@@ -236,20 +238,18 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
  * @return {TicketSettings} The mapped ticket settings.
  */
 const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): TicketSettings => {
+	// Map capacity settings based on stock management.
 	const { capacity =  '' } = apiResponse;
-
-	// Map capacity settings based on stock management
 	const capacitySettings: CapacitySettings = {
 		enteredCapacity: capacity === -1 ? '' : capacity,
 	};
 
-	// Map sale price data
+	// Map sale price data.
 	const salePriceData: SalePriceDetails = {
-		// todo: fix the API to return the 'on_sale' value.
-		enabled: apiResponse.on_sale || false,
-		salePrice: apiResponse.sale_price?.toString() || '',
-		startDate: apiResponse.sale_price_start_date || '',
-		endDate: apiResponse.sale_price_end_date || '',
+		enabled: apiResponse?.sale_price_enabled || false,
+		salePrice: apiResponse?.sale_price?.toString() || '',
+		startDate: apiResponse?.sale_price_start_date || '',
+		endDate: apiResponse?.sale_price_end_date || '',
 	};
 
 	const costDetails: CostDetails = {
@@ -257,7 +257,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		value: apiResponse.price,
 	};
 
-	// Map available dates
+	// Map available dates.
 	const availableFrom = apiResponse.start_date || '';
 	const availableUntil = apiResponse.end_date || '';
 
@@ -266,7 +266,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 	const provider = 'tc';
 	const menuOrder = apiResponse.menu_order || 0;
 
-	// Default empty fees structure
+	// Default empty fees structure.
 	const fees: FeesData = {
 		automaticFees: [],
 		availableFees: [],

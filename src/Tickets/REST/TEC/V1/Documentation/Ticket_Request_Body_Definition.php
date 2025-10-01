@@ -111,6 +111,13 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( 140 );
 
 		$properties[] = (
+			new Boolean(
+				'sale_price_enabled',
+				fn() => __( 'Whether the ticket has a sale price enabled', 'event-tickets' ),
+			)
+		)->set_example( true );
+
+		$properties[] = (
 			new Positive_Integer(
 				'stock',
 				fn() => __( 'The stock quantity available', 'event-tickets' ),

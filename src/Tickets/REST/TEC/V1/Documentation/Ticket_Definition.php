@@ -71,7 +71,7 @@ class Ticket_Definition extends Definition {
 		$properties[] = (
 			new Boolean(
 				'on_sale',
-				fn() => __( 'Whether the ticket is on sale', 'event-tickets' ),
+				fn() => __( 'Whether the ticket is currently on sale', 'event-tickets' ),
 			)
 		)->set_example( true )->set_nullable( true );
 
@@ -180,6 +180,13 @@ class Ticket_Definition extends Definition {
 				0,
 			)
 		)->set_example( 5 );
+
+		$properties[] = (
+			new Boolean(
+				'sale_price_enabled',
+				fn() => __( 'Whether the ticket has a sale price enabled', 'event-tickets' ),
+			)
+		)->set_example( true );
 
 		$documentation = [
 			'allOf' => [

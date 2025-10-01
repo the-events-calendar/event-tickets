@@ -144,7 +144,7 @@ trait With_Filtered_Ticket_Params {
 			'ticket_end_date'         => $params['ticket_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['end_date'] ] ?? null,
 			'ticket_end_time'         => $params['ticket_end_time'] ?? $ticket_data[ $orm->get_update_fields_aliases()['end_time'] ] ?? null,
 			'tribe-ticket'            => array_filter( $tribe_ticket, fn( $value ) => null !== $value ),
-			'ticket_add_sale_price'   => isset( $params['sale_price'] ) || ! empty( $ticket_data[ $orm->get_update_fields_aliases()['sale_price_enabled'] ]['0'] ),
+			'ticket_add_sale_price'   => $params['sale_price_enabled'] ?? ( isset( $params['sale_price'] ) || ! empty( $ticket_data[ $orm->get_update_fields_aliases()['sale_price_enabled'] ]['0'] ) ),
 			'ticket_sale_price'       => $params['sale_price'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price'] ]['0'] ?? null,
 			'ticket_sale_start_date'  => $params['sale_price_start_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_start_date'] ]['0'] ?? null,
 			'ticket_sale_end_date'    => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
@@ -179,6 +179,7 @@ trait With_Filtered_Ticket_Params {
 			$params['event'],
 			$params['title'],
 			$params['menu_order'],
+			$params['sale_price_enabled'],
 		);
 
 		$post_params = $params;

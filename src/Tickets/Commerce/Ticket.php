@@ -1191,7 +1191,7 @@ class Ticket extends Ticket_Data {
 			return;
 		}
 
-		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
+		update_post_meta( $ticket->ID, static::$sale_price_key, ( new Value( $sale_price ) )->get_string() );
 
 		$this->process_sale_price_dates( $ticket, $raw_data );
 	}

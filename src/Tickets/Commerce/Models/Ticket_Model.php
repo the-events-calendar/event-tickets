@@ -44,24 +44,26 @@ class Ticket_Model extends Base {
 			$ticket_data   = tribe( Ticket::class );
 			$ticket_object = $ticket_data->get_ticket( $this->post->ID );
 
-			$sale_start_date = get_post_meta( $ticket_object->ID, Ticket::$sale_price_start_date_key, true );
-			$sale_end_date   = get_post_meta( $ticket_object->ID, Ticket::$sale_price_end_date_key, true );
-			$sale_price      = get_post_meta( $ticket_object->ID, Ticket::$sale_price_key, true );
+			$sale_price_enabled = get_post_meta( $ticket_object->ID, Ticket::$sale_price_checked_key, true );
+			$sale_price         = get_post_meta( $ticket_object->ID, Ticket::$sale_price_key, true );
+			$sale_start_date    = get_post_meta( $ticket_object->ID, Ticket::$sale_price_start_date_key, true );
+			$sale_end_date      = get_post_meta( $ticket_object->ID, Ticket::$sale_price_end_date_key, true );
 
-			$sale_price = $sale_price && $sale_price instanceof Value ? $sale_price->get_string() : $sale_price;
+			$sale_price = $sale_price instanceof Value ? $sale_price->get_string() : $sale_price;
 			$sale_price = $sale_price ? (float) $sale_price : null;
 
 			$properties = [
 				'description'           => $ticket_object->description,
 				'on_sale'               => $ticket_object->on_sale,
-				'sale_price'            => $sale_price ? (float) $sale_price : null,
 				'price'                 => (float) $ticket_object->price,
 				'regular_price'         => (float) $ticket_data->get_regular_price( $ticket_object->ID ),
 				'show_description'      => $ticket_object->show_description,
-				'start_date'            => trim( $ticket_object->start_date . ' ' . $ticket_object->start_time ),
-				'end_date'              => trim( $ticket_object->end_date . ' ' . $ticket_object->end_time ),
-				'sale_price_start_date' => $sale_start_date ? $sale_start_date : null,
-				'sale_price_end_date'   => $sale_end_date ? $sale_end_date : null,
+				'start_date'            => trim( "{$ticket_object->start_date} {$ticket_object->start_time}" ),
+				'end_date'              => trim( "{$ticket_object->end_date} {$ticket_object->end_time}" ),
+				'sale_price_enabled'    => (bool) $sale_price_enabled,
+				'sale_price'            => $sale_price ?: null,
+				'sale_price_start_date' => $sale_start_date ?: null,
+				'sale_price_end_date'   => $sale_end_date ?: null,
 				'event_id'              => (int) $ticket_object->get_event_id(),
 				'manage_stock'          => $ticket_object->managing_stock(),
 				'stock'                 => $ticket_object->stock(),
@@ -102,6 +104,7 @@ class Ticket_Model extends Base {
 			'sku'                   => true,
 			'menu_order'            => true,
 			'capacity'              => true,
+			'sale_price_enabled'    => true,
 		];
 
 		/**

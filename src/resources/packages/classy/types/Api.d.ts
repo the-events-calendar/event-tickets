@@ -100,15 +100,16 @@ type TECPostEntity = {
 export type GetTicketApiResponse = TECPostEntity & {
 	capacity?: number;
 	description: string;
-	on_sale?: boolean;
-	sale_price?: number;
 	price: number;
 	regular_price: number;
 	show_description: boolean;
 	start_date?: string;
 	end_date?: string;
+	on_sale?: boolean;
+	sale_price?: number;
 	sale_price_start_date?: string;
 	sale_price_end_date?: string;
+	sale_price_enabled?: boolean;
 	event: number;
 	manage_stock: boolean;
 	stock?: number;
@@ -163,6 +164,9 @@ export type UpsertTicketApiRequest = TECPostEntityRequestBody & {
 
 	/** The end date for the sale price */
 	sale_price_end_date?: string;
+
+	/** Whether the ticket has a sale price enabled. */
+	sale_price_enabled?: boolean;
 
 	/** The capacity of the ticket */
 	capacity?: number | '';
