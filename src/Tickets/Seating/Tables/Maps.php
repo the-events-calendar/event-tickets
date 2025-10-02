@@ -14,8 +14,6 @@ use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
-use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
-use TEC\Common\StellarWP\Schema\Indexes\Primary_Key;
 
 
 /**

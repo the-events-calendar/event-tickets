@@ -15,9 +15,7 @@ use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
 use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
-use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
 use TEC\Common\StellarWP\Schema\Columns\Column_Types;
-use TEC\Common\StellarWP\Schema\Indexes\Primary_Key;
 
 /**
  * Class Layouts.
@@ -106,7 +104,7 @@ class Layouts extends Table {
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
-	protected function get_definition() {
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
