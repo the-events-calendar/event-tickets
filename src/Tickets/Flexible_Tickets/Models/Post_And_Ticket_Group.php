@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
@@ -26,7 +26,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
  * @property int    $group_id  The Ticket Group ID part of the relationship.
  * @property string $type      The type of the relationship.
  */
-class Post_And_Ticket_Group extends Model implements ModelCrud {
+class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	/**
 	 * @inheritDoc
 	 */

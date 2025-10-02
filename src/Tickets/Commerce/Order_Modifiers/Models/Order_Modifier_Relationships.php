@@ -11,8 +11,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationships_Repository;
@@ -29,7 +28,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationshi
  * @property int    $post_id       The related post ID.
  * @property string $post_type     The post type.
  */
-class Order_Modifier_Relationships extends Model implements ModelCrud {
+class Order_Modifier_Relationships extends Model implements ModelPersistable {
 
 	/**
 	 * Properties of the Order Modifier Relationships model.

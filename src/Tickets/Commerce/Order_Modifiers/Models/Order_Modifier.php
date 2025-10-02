@@ -11,8 +11,6 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model as ModelInterface;
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
@@ -39,7 +37,7 @@ use TEC\Tickets\Commerce\Values\Value_Interface;
  * @property string $start_time      When the modifier becomes active.
  * @property string $end_time        When the modifier expires.
  */
-class Order_Modifier extends Model implements ModelCrud {
+class Order_Modifier extends Model implements ModelPersistable {
 
 	/**
 	 * The model properties assigned to their types.

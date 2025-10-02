@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
@@ -25,7 +25,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
  * @property string $slug          The Ticket Group slug.
  * @property string $data          The Ticket Group data in JSON format.
  */
-class Ticket_Group extends Model implements ModelCrud {
+class Ticket_Group extends Model implements ModelPersistable {
 
 	/**
 	 * @inheritDoc

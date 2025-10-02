@@ -9,11 +9,9 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_Meta_DTO;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
 
 /**
@@ -30,7 +28,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
  * @property int    $priority          The priority of the meta entry.
  * @property string $created_at        Creation timestamp.
  */
-class Order_Modifier_Meta extends Model implements ModelCrud {
+class Order_Modifier_Meta extends Model implements ModelPersistable {
 
 	/**
 	 * @inheritDoc
