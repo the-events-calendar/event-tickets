@@ -13,7 +13,6 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Columns\ID;
 use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
-use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
@@ -57,8 +56,8 @@ class Posts_And_Ticket_Groups extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
 				$columns[] = new ID( 'id' );
 				$columns[] = new Referenced_ID( 'post_id' );
 				$columns[] = new Referenced_ID( 'group_id' );
@@ -113,6 +112,4 @@ class Posts_And_Ticket_Groups extends Table {
 
 		return $results;
 	}
-
-
 }

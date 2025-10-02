@@ -69,8 +69,8 @@ class Order_Modifier_Relationships extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
 				$columns[] = new ID( 'id' );
 				$columns[] = new Referenced_ID( 'modifier_id' );
 				$columns[] = new Referenced_ID( 'post_id' );

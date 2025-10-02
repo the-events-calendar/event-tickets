@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Columns\ID;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Columns\Boolean_Column;
-use TEC\Common\StellarWP\Schema\Columns\Last_Changed;
+use TEC\Common\StellarWP\Schema\Columns\Created_At;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 /**
@@ -75,14 +75,14 @@ class Integrity_Table extends Table {
 	public static function get_schema_history(): array {
 		$table_name = self::table_name( true );
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
 				$columns[] = new ID( 'id' );
 				$columns[] = ( new String_Column( 'square_object_id' ) )->set_length( 128 )->set_is_index( true );
 				$columns[] = ( new String_Column( 'wp_object_id' ) )->set_length( 20 )->set_is_index( true );
 				$columns[] = ( new String_Column( 'square_object_hash' ) )->set_length( 128 )->set_is_index( true );
 				$columns[] = ( new Boolean_Column( 'mode' ) )->set_default( false );
-				$columns[] = new Last_Changed( 'last_checked' );
+				$columns[] = new Created_At( 'last_checked' );
 
 				return new Table_Schema( $table_name, $columns );
 			},

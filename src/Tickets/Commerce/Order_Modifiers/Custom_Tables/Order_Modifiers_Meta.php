@@ -76,8 +76,8 @@ class Order_Modifiers_Meta extends Table {
 		$table_name = self::table_name( true );
 
 		return [
-			self::SCHEMA_VERSION => function() use ( $table_name ) {
-				$columns = new Column_Collection();
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
 				$columns[] = new ID( 'id' );
 				$columns[] = new Referenced_ID( 'order_modifier_id' );
 				$columns[] = ( new String_Column( 'meta_key' ) )->set_length( 100 )->set_is_index( true );
