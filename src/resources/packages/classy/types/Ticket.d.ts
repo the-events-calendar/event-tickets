@@ -11,29 +11,12 @@ type Seconds = Minutes;
 type Percentage = NumericRange< 0, 100 >;
 
 export type Seating = 'general-admission' | 'assigned-seating';
-export type GlobalStockMode = 'own' | 'capped' | 'global';
 export type TicketType = 'default' | 'rsvp';
-
-export type CapacityDetails = {
-	available?: number;
-	availablePercentage?: Percentage;
-	globalStockMode: GlobalStockMode;
-	max: number;
-	sold?: number;
-	pending?: number;
-};
 
 export type CapacitySettings = {
 	admissionType?: Seating;
 	displayedCapacity?: number | '';
 	enteredCapacity: number | '';
-};
-
-export type CheckinDetails = {
-	checkedIn: number;
-	uncheckedIn: number;
-	checkedInPercentage?: Percentage;
-	uncheckedInPercentage?: Percentage;
 };
 
 type FeeDataKeys = 'availableFees' | 'automaticFees' | 'selectedFees';
