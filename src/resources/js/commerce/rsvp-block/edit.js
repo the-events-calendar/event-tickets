@@ -3,7 +3,7 @@
  */
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import { Button, Placeholder, Spinner, Notice } from '@wordpress/components';
+import { Button, Spinner, Notice } from '@wordpress/components';
 import { useState, useEffect, useCallback, useMemo } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 
@@ -304,29 +304,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 	}, [ rsvpId, postId, deleteMutation, setAttributes, refetchExisting ] );
 
-	const leftColumnContent = (
-		<div className="tec-rsvp-block__setup-info">
-			<h2 className="tec-rsvp-block__setup-title">
-				{ __( 'Add an RSVP', 'event-tickets' ) }
-			</h2>
-			<p className="tec-rsvp-block__setup-description">
-				{ __( 'Allow users to confirm their attendance.', 'event-tickets' ) }
-			</p>
-		</div>
-	);
-
-	const rightColumnContent = (
-		<div className="tec-rsvp-block__setup-actions">
-			<Button
-				variant="primary"
-				size="large"
-				onClick={ () => setIsSettingUp( true ) }
-			>
-				{ __( 'Add RSVP', 'event-tickets' ) }
-			</Button>
-		</div>
-	);
-
 	const blockProps = useBlockProps( {
 		className: 'tec-rsvp-block'
 	} );
@@ -372,8 +349,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				) }
 				{ ! isSettingUp && ! rsvpId ? (
 					<SetupCard
-						leftColumn={ leftColumnContent }
-						rightColumn={ rightColumnContent }
+						setIsSettingUp={setIsSettingUp}
 						className="tec-rsvp-block__initial-setup"
 					/>
 				) : rsvpId && isActive ? (

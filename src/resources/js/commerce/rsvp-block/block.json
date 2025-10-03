@@ -4,8 +4,6 @@
   "name": "tec/rsvp",
   "version": "0.1.0",
   "title": "RSVP",
-  "description": "Allow users to confirm their attendance for an event with a free RSVP.",
-  "icon": "tickets-alt",
   "category": "tribe-tickets",
   "supports": {
     "html": false,

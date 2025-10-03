@@ -24,6 +24,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import './styles.pcss';
+import { NumberInput } from "@moderntribe/common/elements";
 
 /**
  * Slot for Event Tickets Plus to add attendee meta fields.
@@ -165,16 +166,20 @@ const RSVPForm = ( {
 				{/* Limit field */}
 				<div className="tec-rsvp-block__field">
 					<label htmlFor="tec-rsvp-limit">{ __( 'Limit:', 'event-tickets' ) }</label>
-					<TextControl
-						id="tec-rsvp-limit"
-						type="text"
-						value={ limit }
-						onChange={ handleLimitChange }
-						placeholder={ __( 'Leave blank for unlimited', 'event-tickets' ) }
-						min="0"
-						step="1"
-						disabled={ isSaving }
-					/>
+					<div className="tec-rsvp-block__rsvp-container-content__capacity">
+						<TextControl
+							id="tec-rsvp-limit"
+							type="text"
+							value={ limit }
+							onChange={ handleLimitChange }
+							min="0"
+							step="1"
+							disabled={ isSaving }
+						/>
+						<span className="tec-editor__rsvp-container-content__capacity-label-help">
+							{ __( 'Leave blank for unlimited', 'event-tickets' ) }
+						</span>
+					</div>
 				</div>
 
 				{/* Open RSVP Date/Time */}
