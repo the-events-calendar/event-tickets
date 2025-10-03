@@ -37,7 +37,7 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 		'type'     => 'string',
 	];
 
-	public static function find( $id ) {
+	public static function find( $id ): ?self {
 		return tribe( Posts_And_Ticket_Groups::class )->find_by_id( $id );
 	}
 
