@@ -25,9 +25,9 @@ export type FeesData = Record< FeeDataKeys, Fee[] >;
 
 export type SalePriceDetails = {
 	enabled: boolean;
-	endDate: string;
+	endDate: Date | '';
 	salePrice: string;
-	startDate: string;
+	startDate: Date | '';
 };
 
 export type TicketDate = {

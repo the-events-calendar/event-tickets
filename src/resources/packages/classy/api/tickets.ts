@@ -2,6 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { getCurrencySettings } from '../localizedData.ts';
+import { formatSaleDate } from '../functions/tickets';
 import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { CostDetails } from '../types/CostDetails';
 import { CapacitySettings, FeesData, SalePriceDetails, TicketSettings, TicketType } from '../types/Ticket';
@@ -141,6 +142,25 @@ export const deleteTicket = async ( ticketId: number ): Promise< void > => {
 };
 
 /**
+ * Map a date string to a Date object or an empty string if invalid.
+ *
+ * The date string is expected to be in the format "YYYY-MM-DD", and the time is set to noon (12:00)
+ * to avoid timezone issues. We only care about the date portion for sale price start/end dates.
+ *
+ * @since TBD
+ * @param {string} dateString The date string to map.
+ * @returns {Date | ''} The mapped Date object or an empty string if invalid.
+ */
+function mapDateStringToDate( dateString: string ): Date | '' {
+	if ( ! dateString ) {
+		return '';
+	}
+
+	const date = new Date( `${dateString}T12:00` );
+	return isNaN( date.valueOf() ) ? '' : date;
+}
+
+/**
  * Maps ticket settings data to the structure required for an API request.
  *
  * @since TBD
@@ -190,11 +210,11 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		}
 
 		if ( salePriceData.startDate ) {
-			body.sale_price_start_date = salePriceData.startDate;
+			body.sale_price_start_date = formatSaleDate( salePriceData.startDate );
 		}
 
 		if ( salePriceData.endDate ) {
-			body.sale_price_end_date = salePriceData.endDate;
+			body.sale_price_end_date = formatSaleDate( salePriceData.endDate );
 		}
 	}
 
@@ -248,8 +268,8 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 	const salePriceData: SalePriceDetails = {
 		enabled: apiResponse?.sale_price_enabled || false,
 		salePrice: apiResponse?.sale_price?.toString() || '',
-		startDate: apiResponse?.sale_price_start_date || '',
-		endDate: apiResponse?.sale_price_end_date || '',
+		startDate: mapDateStringToDate( apiResponse?.sale_price_start_date || '' ),
+		endDate: mapDateStringToDate( apiResponse?.sale_price_end_date || '' ),
 	};
 
 	const costDetails: CostDetails = {

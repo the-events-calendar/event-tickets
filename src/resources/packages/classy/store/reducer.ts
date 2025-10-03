@@ -1,6 +1,6 @@
+import { TicketSettings } from '@tec/tickets/classy/types/Ticket';
 import { Reducer } from 'redux';
 import { StoreState } from '../types/Store';
-import { hydrateTicket } from '../functions/tickets';
 import {
 	CREATE_TICKET,
 	DELETE_TICKET,
@@ -26,18 +26,21 @@ const initialState: StoreState = {
 };
 
 export const reducer: Reducer< StoreState > = ( state: StoreState = initialState, action ) => {
+	let tickets: TicketSettings[];
 	switch ( action.type ) {
 		case CREATE_TICKET:
 			const newTicket = ( action as CreateTicketAction ).ticket;
+			tickets = state.tickets || [];
 			return {
 				...state,
-				tickets: [ ...state.tickets, newTicket ],
+				tickets: [ ...tickets, newTicket ],
 			};
 		case DELETE_TICKET:
 			const ticketIdToDelete = ( action as DeleteTicketAction ).ticketId;
+			tickets = state.tickets || [];
 			return {
 				...state,
-				tickets: state.tickets.filter( ( ticket ) => ticket.id !== ticketIdToDelete ),
+				tickets: tickets.filter( ( ticket: TicketSettings ) => ticket.id !== ticketIdToDelete ),
 			};
 		case SET_EVENT_CAPACITY:
 			const capacity = ( action as SetEventCapacityAction ).capacity;
@@ -64,10 +67,11 @@ export const reducer: Reducer< StoreState > = ( state: StoreState = initialState
 			};
 		case UPDATE_TICKET:
 			const { ticketId, ticketData } = action as UpdateTicketAction;
+			tickets = state.tickets || [];
 			return {
 				...state,
-				tickets: state.tickets.map( ( ticket ) =>
-					ticket.id === ticketId ? { ...ticket, ...hydrateTicket( ticketData ) } : ticket
+				tickets: tickets.map( ( ticket: TicketSettings ) =>
+					ticket.id === ticketId ? { ...ticket, ticketData } : ticket
 				),
 			};
 
