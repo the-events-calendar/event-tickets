@@ -75,7 +75,7 @@ trait With_Parent_Post_Read_Check {
 	 *
 	 * @return array
 	 */
-	protected function format_post_entity_collection( array $posts ): array {
+	protected function format_entity_collection( array $posts ): array {
 		$formatted_posts = [];
 		foreach ( $posts as $post ) {
 			$ticket_object   = Tickets::load_ticket_object( (int) $post->ID );
