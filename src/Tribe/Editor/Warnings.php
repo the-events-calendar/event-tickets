@@ -6,6 +6,7 @@
 namespace Tribe\Tickets\Editor;
 
 use Tribe__Tickets__Admin__Views;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 
 /**
  * Warnings handling class.
@@ -61,17 +62,18 @@ class Warnings {
 	 * Get the Commerce Provider missing warning message.
 	 *
 	 * @since 5.0.4
+	 * @since 5.26.3 Changed the URL to point to the Tickets Commerce settings page.
 	 *
 	 * @return string The Commerce Provider missing message.
 	 */
 	public function get_commerce_provider_missing_warning_message() {
-		$kb_url = 'https://evnt.is/1ao5';
+		$kb_url = tribe( Plugin_Settings::class )->get_url( [ 'tab' => 'payments' ] );
 
 		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			'<a href="%1$s" rel="noopener noreferrer">%2$s</a>.',
 			esc_url( $kb_url ),
-			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
+			esc_html_x( 'Set up Tickets Commerce', 'Link to payment settings in Ticket Editor', 'event-tickets' )
 		);
 
 		$message = sprintf(

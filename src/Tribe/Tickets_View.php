@@ -218,15 +218,55 @@ class Tribe__Tickets__Tickets_View {
 		// Sort list to handle all not attending first.
 		$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 
-		foreach ( $attendees as $attendee_id => $attendee_data ) {
-			/**
-			 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
-			 *
-			 * @param array $attendee_data Information that we are trying to save.
-			 * @param int   $attendee_id   The attendee ID.
-			 * @param int   $post_id       The event/post ID.
-			 */
-			do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
+		foreach ( $attendees as $order_id => $order_data ) {
+			// Extract RSVP statuses if present.
+			$rsvp_statuses = [];
+			if ( isset( $order_data['rsvp_status'] ) && is_array( $order_data['rsvp_status'] ) ) {
+				$rsvp_statuses = $order_data['rsvp_status'];
+			}
+
+			// Process each attendee in this order.
+			if ( isset( $order_data['attendees'] ) && is_array( $order_data['attendees'] ) ) {
+				foreach ( $order_data['attendees'] as $attendee_id ) {
+					$attendee_data = $order_data;
+
+					// Remove the nested arrays that aren't needed for individual attendee.
+					unset( $attendee_data['attendees'] );
+					unset( $attendee_data['rsvp_status'] );
+
+					// Add RSVP status if present for this specific attendee.
+					if ( isset( $rsvp_statuses[ $attendee_id ] ) ) {
+						$attendee_data['rsvp_status'] = $rsvp_statuses[ $attendee_id ];
+					}
+
+					/**
+					 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
+					 *
+					 * @param array $attendee_data Information that we are trying to save.
+					 * @param int   $attendee_id   The attendee ID.
+					 * @param int   $post_id       The event/post ID.
+					 */
+					do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
+				}
+			} else {
+				// Legacy format: order_id is actually attendee_id.
+				$attendee_data = $order_data;
+				unset( $attendee_data['rsvp_status'] );
+
+				// Check if RSVP status is set for this attendee (legacy format).
+				if ( isset( $rsvp_statuses[ $order_id ] ) ) {
+					$attendee_data['rsvp_status'] = $rsvp_statuses[ $order_id ];
+				}
+
+				/**
+				 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
+				 *
+				 * @param array $attendee_data Information that we are trying to save.
+				 * @param int   $attendee_id   The attendee ID.
+				 * @param int   $post_id       The event/post ID.
+				 */
+				do_action( 'event_tickets_attendee_update', $attendee_data, (int) $order_id, $post_id );
+			}
 		}
 
 		/**
@@ -643,8 +683,17 @@ class Tribe__Tickets__Tickets_View {
 		$orders = [];
 
 		foreach ( $attendees as $key => $attendee ) {
-			// Ignore RSVP if we don't tell it specifically
-			if ( 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
+			// Check if this is a TC-RSVP type attendee.
+			$is_tc_rsvp = false;
+			if ( isset( $attendee['product_id'] ) ) {
+				$ticket = Tribe__Tickets__Tickets::load_ticket_object( $attendee['product_id'] );
+				if ( $ticket && isset( $ticket->type ) && Constants::TC_RSVP_TYPE === $ticket->type ) {
+					$is_tc_rsvp = true;
+				}
+			}
+
+			// Include TC-RSVP attendees with regular tickets, but exclude legacy RSVP if not specified.
+			if ( ! $is_tc_rsvp && 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
 				continue;
 			}
 
@@ -801,8 +850,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$args = [
 			'by' => [
-				'provider__not_in' => 'rsvp',
-				'status'           => 'publish',
+				'status' => 'publish',
 			],
 		];
 

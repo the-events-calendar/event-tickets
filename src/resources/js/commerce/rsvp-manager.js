@@ -124,6 +124,9 @@ tribe.tickets.rsvp.manager = {};
 		const ajaxSettings = {
 			url: TecRsvp.orderEndpoint,
 			method: 'POST',
+			headers: {
+				'X-WP-Nonce': TecRsvp.nonce
+			},
 			beforeSend: obj.ajaxBeforeSend,
 			complete: obj.ajaxComplete,
 			success: obj.ajaxSuccess,

@@ -462,24 +462,24 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// Handle Event Tickets logic.
-		$hide_attendee_list_optout = true;
+		$show_attendee_list_optout = false;
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
 		 *
 		 * @since TBD
 		 *
-		 * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
+		 * @param bool $show_attendee_list_optout Whether to show attendees list opt-out.
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
 		 * @param int  $ticket_id                 The ticket ID.
 		 */
-		$hide_attendee_list_optout = apply_filters( 'tec_tickets_commerce_rsvp_hide_attendees_list_optout', $hide_attendee_list_optout, $post_id, $ticket_id );
+		$show_attendee_list_optout = apply_filters( 'tec_tickets_commerce_rsvp_show_attendees_list_optout', $show_attendee_list_optout, $post_id, $ticket_id );
 
 		if ( false === $args['is_going'] ) {
-			$hide_attendee_list_optout = true;
+			$show_attendee_list_optout = false;
 		}
 
-		$args['opt_in_toggle_hidden'] = $hide_attendee_list_optout;
+		$args['opt_in_toggle_hidden'] = $show_attendee_list_optout;
 
 		// Add the rendering attributes into global context.
 		$this->template->add_template_globals( $args );

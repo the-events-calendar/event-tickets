@@ -666,12 +666,67 @@ class Attendee {
 			$attendee_data_to_save['optout'] = (int) tribe_is_truthy( $attendee_data['optout'] );
 		}
 
+		// Handle RSVP status updates for TC-RSVP tickets.
+		if ( isset( $attendee_data['rsvp_status'] ) ) {
+			$this->update_rsvp_status( $attendee_id, $attendee_data['rsvp_status'], $attendee_data_to_save );
+		}
+
 		// Only update if there's data to set.
 		if ( empty( $attendee_data_to_save ) ) {
 			return;
 		}
 
 		tribe( Module::class )->update_attendee( $attendee_id, $attendee_data_to_save );
+	}
+
+	/**
+	 * Updates the RSVP status for a TC-RSVP attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $attendee_id           The attendee ID.
+	 * @param string $new_status            The new RSVP status ('yes' or 'no').
+	 * @param array  $attendee_data_to_save Reference to the attendee data array being saved.
+	 *
+	 * @return void
+	 */
+	protected function update_rsvp_status( $attendee_id, $new_status, &$attendee_data_to_save ) {
+		// Validate status value.
+		if ( ! in_array( $new_status, [ 'yes', 'no' ], true ) ) {
+			return;
+		}
+
+		// Get current status.
+		$current_status = get_post_meta( $attendee_id, static::$rsvp_status, true );
+
+		// No change needed.
+		if ( $current_status === $new_status ) {
+			return;
+		}
+
+		// Get the ticket to check type and capacity.
+		$product_id = get_post_meta( $attendee_id, static::$ticket_relation_meta_key, true );
+		if ( ! $product_id ) {
+			return;
+		}
+
+		$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $product_id );
+		if ( ! $ticket || \TEC\Tickets\Commerce\RSVP\Constants::TC_RSVP_TYPE !== $ticket->type() ) {
+			return;
+		}
+
+		// If changing from "no" to "yes", check capacity.
+		if ( $current_status === 'no' && $new_status === 'yes' ) {
+			$remaining_capacity = $ticket->available();
+			// -1 means unlimited capacity, so only block if capacity is 0 or less (but not -1).
+			if ( $remaining_capacity !== -1 && $remaining_capacity <= 0 ) {
+				// Capacity reached, cannot change to going.
+				return;
+			}
+		}
+
+		// Update the RSVP status.
+		$attendee_data_to_save['rsvp_status'] = $new_status;
 	}
 
 	/**

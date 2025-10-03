@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Commerce\RSVP\Constants as RSVP_Constants;
 use TEC\Tickets\Commerce\Settings as Settings;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Dispatcher;

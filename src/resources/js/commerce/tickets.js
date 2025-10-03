@@ -147,7 +147,7 @@ tribe.tickets.commerce.tickets = {};
 			{
 				method: 'POST',
 				headers: {
-					//'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'X-WP-Nonce': obj.getEmbedNonce(),
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify( body ),
@@ -181,7 +181,7 @@ tribe.tickets.commerce.tickets = {};
 		// Get the RSVP ID and post ID from the form
 		const $rsvpIdInput = $( '#rsvp_id' );
 		const $postIdInput = $( '#post_ID' );
-		
+
 		const rsvpId = $rsvpIdInput.val();
 		const postId = $postIdInput.val();
 

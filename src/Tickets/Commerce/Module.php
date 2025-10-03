@@ -809,6 +809,10 @@ class Module extends \Tribe__Tickets__Tickets {
 				}
 			}
 
+			if ( isset( $attendee_data['rsvp_status'] ) ) {
+				$attendee->set( 'rsvp_status', $attendee_data['rsvp_status'] );
+			}
+
 			$attendee->save();
 
 			// Send attendee email.
