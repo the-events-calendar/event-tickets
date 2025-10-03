@@ -184,6 +184,38 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			->use_asset_file( false )
 			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
 			->register();
+
+		// Set the webpack public path for dynamic asset loading.
+		// Hook to admin_head to output before scripts load.
+		add_action( 'admin_head', [ $this, 'set_webpack_public_path' ], 1 );
+	}
+
+	/**
+	 * Sets the webpack public path for dynamic asset loading.
+	 *
+	 * This ensures that webpack can correctly resolve asset URLs (images, fonts, etc.)
+	 * regardless of the WordPress install location or folder structure.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function set_webpack_public_path(): void {
+		if ( ! $this->should_show_wizard() ) {
+			return;
+		}
+
+		// Get the absolute URL to the build directory.
+		$public_url = trailingslashit( plugins_url( 'build/', EVENT_TICKETS_MAIN_PLUGIN_FILE ) );
+
+		// Output the webpack public path directly in a script tag.
+		// This must run before webpack initializes.
+		// Use a namespaced variable to avoid polluting the global namespace.
+		?>
+		<script type="text/javascript">
+			window.etWebpackPublicPath = <?php echo wp_json_encode( $public_url ); ?>;
+		</script>
+		<?php
 	}
 
 	/**
