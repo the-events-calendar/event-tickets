@@ -1,33 +1,17 @@
+import { DateUpdateType } from '@tec/common/classy/types/FieldProps';
 import * as React from 'react';
-import { Fragment } from 'react';
-import { ToggleControl } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { RefObject, useCallback, useMemo, useRef, useState } from '@wordpress/element';
-import { __, _x } from '@wordpress/i18n';
-import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
-import { default as StartSelector } from './StartSelector';
-import { default as EndSelector } from './EndSelector';
+import { useCallback, useMemo, useRef, useState } from '@wordpress/element';
+import { _x } from '@wordpress/i18n';
+import { getSettings as getCommonSettings } from '@tec/common/classy/localizedData';
+import { EndSelector, StartSelector } from '@tec/common/classy/components';
 import { getDate } from '@wordpress/date';
 
-// todo: These should be based on site settings.
-const currentDate = new Date();
-const dateWithYearFormat = 'Y-m-d';
-const startOfWeek: StartOfWeek = 0;
-const phpDateMysqlFormat = 'Y-m-d H:i:s';
-const timeFormat = 'g:i a';
-const saleStart = '2025-06-23 08:00:00';
-const saleEnd = '2025-07-23 17:00:00';
-const isMultiday = true;
 
-type DateTimeRefs = {
-	endTimeHours: number;
-	endTimeMinutes: number;
-	multiDayDuration: number;
-	singleDayDuration: number;
-	startTimeHours: number;
-	startTimeMinutes: number;
-};
+const { startOfWeek, dateWithYearFormat, timeFormat } = getCommonSettings();
+const saleStart = '2025-09-23 08:00:00';
+const saleEnd = '2025-19-23 17:00:00';
+const isMultiday = true;
 
 type NewDatesReturn = {
 	newStartDate: Date;
@@ -37,6 +21,8 @@ type NewDatesReturn = {
 		end: boolean;
 	};
 };
+
+type SelectingDateType = DateUpdateType | false;
 
 /**
  * Calculates new start and end dates based on user updates.
@@ -53,20 +39,20 @@ type NewDatesReturn = {
 function getNewStartEndDates(
 	endDate: Date,
 	startDate: Date,
-	updated: 'start' | 'end',
+	updated: SelectingDateType,
 	newDate: string
 ): NewDatesReturn {
 	let newStartDate: Date;
 	let newEndDate: Date;
 	let notify = { start: false, end: false };
 
-	if ( updated === 'start' ) {
+	if ( updated === 'startDate' ) {
 		// The user has updated the start date.
 		newStartDate = getDate( newDate );
 		newEndDate = endDate;
 
+		// The start date is after the current end date: set the end date to the start date.
 		if ( newStartDate.getTime() >= endDate.getTime() ) {
-			// The start date is after the current end date: set the end date to the start date.
 			newEndDate = new Date( newStartDate.getTime() );
 			notify.end = true;
 		}
@@ -75,8 +61,8 @@ function getNewStartEndDates(
 		newStartDate = startDate;
 		newEndDate = getDate( newDate );
 
+		// The end date is before the current start date: set the start date to the end date.
 		if ( newEndDate.getTime() <= startDate.getTime() ) {
-			// The end date is before the current start date: set the start date to the end date.
 			newStartDate = new Date( newEndDate.getTime() );
 			notify.start = true;
 		}
@@ -90,7 +76,7 @@ export default function SaleDuration() {
 
 	const { editPost } = useDispatch( 'core/editor' );
 
-	const [ isSelectingDate, setIsSelectingDate ] = useState< 'start' | 'end' | false >( false );
+	const [ isSelectingDate, setIsSelectingDate ] = useState< SelectingDateType >( false );
 	const [ dates, setDates ] = useState( {
 		start: getDate( saleStart ),
 		end: getDate( saleEnd ),
@@ -100,24 +86,12 @@ export default function SaleDuration() {
 	const [ higlightStartTime, setHighlightStartTime ] = useState( false );
 	const [ highlightEndTime, setHighlightEndTime ] = useState( false );
 
-	// Store a reference to some ground values to allow the toggle of multi-day and all-day correctly.
-	const refs = useRef( {
-		startTimeHours: startDate.getHours(),
-		startTimeMinutes: startDate.getMinutes(),
-		endTimeHours: endDate.getHours(),
-		endTimeMinutes: endDate.getMinutes(),
-		// The default single-day duration is 9 hours.
-		singleDayDuration: isMultiday ? 9 * 60 * 60 * 1000 : dates.end.getTime() - dates.start.getTime(),
-		// The default multi-day duration is 24 hours.
-		multiDayDuration: isMultiday ? dates.end.getTime() - dates.start.getTime() : 24 * 60 * 60 * 1000,
-	} );
-
 	// Used in dependencies.
 	const startDateIsoString = startDate.toISOString();
 	const endDateIsoString = endDate.toISOString();
 
 	const onDateChange = useCallback(
-		( updated: 'start' | 'end', newDate: string ): void => {
+		( updated: DateUpdateType, newDate: string ): void => {
 			const { newStartDate, newEndDate, notify } = getNewStartEndDates( endDate, startDate, updated, newDate );
 
 			// editPost( {
@@ -145,9 +119,9 @@ export default function SaleDuration() {
 	);
 
 	const onDateInputClick = useCallback(
-		( selecting: 'start' | 'end' ) => {
+		( selecting: SelectingDateType ) => {
+			// If clicking the same input when already open, do nothing.
 			if ( selecting === isSelectingDate ) {
-				// Do nothing.
 				return;
 			}
 
@@ -155,32 +129,6 @@ export default function SaleDuration() {
 		},
 		[ isSelectingDate ]
 	);
-
-	const startSelector = useMemo( () => {
-		return (
-			<StartSelector
-				dateWithYearFormat={ dateWithYearFormat }
-				endDate={ endDate }
-				highightTime={ higlightStartTime }
-				isMultiday={ isMultidayValue }
-				isSelectingDate={ isSelectingDate }
-				onChange={ onDateChange }
-				onClick={ () => onDateInputClick( 'start' ) }
-				onClose={ () => setIsSelectingDate( false ) }
-				startDate={ startDate }
-				startOfWeek={ startOfWeek }
-				timeFormat={ timeFormat }
-			/>
-		);
-	}, [
-		dateWithYearFormat,
-		endDateIsoString,
-		isMultidayValue,
-		isSelectingDate,
-		startDateIsoString,
-		startOfWeek,
-		timeFormat,
-	] );
 
 	const endSelector = useMemo( () => {
 		return (
@@ -213,7 +161,21 @@ export default function SaleDuration() {
 			<div className="classy-field__input-title">
 				<h4>{ _x( 'Start sales', 'Sale start date input title', 'event-tickets' ) }</h4>
 			</div>
-			{ startSelector }
+
+			<StartSelector
+				dateWithYearFormat={ dateWithYearFormat }
+				endDate={ endDate }
+				highlightTime={ true }
+				isAllDay={ false }
+				isMultiday={ true }
+				isSelectingDate={ isSelectingDate }
+				onChange={ onDateChange }
+				onClick={ () => onDateInputClick( 'startDate' ) }
+				onClose={ () => setIsSelectingDate( false ) }
+				startDate={ startDate }
+				startOfWeek={ startOfWeek }
+				timeFormat={ timeFormat }
+			/>
 
 			<div className="classy-field__input-title">
 				<h4>{ _x( 'End sales', 'Sale end date input title', 'event-tickets' ) }</h4>
