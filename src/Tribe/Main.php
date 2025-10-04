@@ -309,18 +309,12 @@ class Tribe__Tickets__Main {
 		}
 
 		// Register this plugin's common library.
-		$success = \TEC\Common\Common_Loader::register_common_path(
+		// Common_Loader handles all validation, version negotiation, and error handling.
+		\TEC\Common\Common_Loader::register_common_path(
 			$this->plugin_path,
 			'Event Tickets',
 			'common/src/Tribe'
 		);
-
-		if ( ! $success ) {
-			\TEC\Common\Common_Loader::handle_missing_common(
-				'Event Tickets',
-				$this->plugin_path . 'common/src/Tribe/Main.php'
-			);
-		}
 	}
 
 	/**
@@ -340,10 +334,7 @@ class Tribe__Tickets__Main {
 
 		$common_version = $matches[1];
 
-		/**
-		 * If we don't have a version of Common or a Older version of the Lib
-		 * overwrite what should be loaded by the auto-loader
-		 */
+		// If we don't have a version of Common or an older version, use this one.
 		if (
 			empty( $GLOBALS['tribe-common-info'] )
 			|| version_compare( $GLOBALS['tribe-common-info']['version'], $common_version, '<' )
