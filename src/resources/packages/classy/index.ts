@@ -4,6 +4,7 @@ import { addFilter, addAction, didAction, doAction } from '@wordpress/hooks';
 import renderFields from './functions/renderFields';
 import { storeConfig } from './store';
 import { STORE_NAME } from './constants';
+import { getLocalizedData, getSettings, getCurrencySettings } from './localizedData';
 import './style.pcss';
 
 /**
@@ -35,3 +36,23 @@ if ( didAction( 'tec.classy.initialized' ) ) {
 
 // Hook on the Classy fields rendering logic to render the fields.
 addFilter( 'tec.classy.render', 'tickets.classy.renderFields', renderFields );
+
+// Re-export things we want to expose publicly.
+export * as api from './api';
+export * as functions from './functions';
+
+/*
+ * Re-export localized data accessors and not the localized data object directly.
+ * Packages outside of this will be able to access the localized data in one of two ways:
+ *
+ * Recommended:
+ * - import { getLocalizedData, getSettings, getCurrencySettings } from '@tec/tickets/classy/localizedData';
+ *
+ * Not ideal but still possible:
+ * - const { getLocalizedData, getSettings, getCurrencySettings } = window.tec.tickets.classy.localizedData;
+ */
+export const localizedData = {
+	getLocalizedData,
+	getSettings,
+	getCurrencySettings,
+};
