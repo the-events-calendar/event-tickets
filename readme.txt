@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.26.4
+Stable tag: 5.26.5
 Requires at least: 6.6
 Tested up to: 6.8.2
 Requires PHP: 7.4
@@ -198,6 +198,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.26.5] 2025-09-16 =
+
+* Fix - Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
+* Fix - Correctly invalidate ticket caches to deal with ETP order-of-operation issue. [ETP-1044]
+* Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.26.4] 2025-09-10 =
 
