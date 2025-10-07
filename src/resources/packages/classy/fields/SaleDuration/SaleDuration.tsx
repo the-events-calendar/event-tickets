@@ -10,7 +10,7 @@ import { getDate } from '@wordpress/date';
 
 const { startOfWeek, dateWithYearFormat, timeFormat } = getCommonSettings();
 const saleStart = '2025-09-23 08:00:00';
-const saleEnd = '2025-19-23 17:00:00';
+const saleEnd = '2025-10-23 17:00:00';
 const isMultiday = true;
 
 type NewDatesReturn = {
