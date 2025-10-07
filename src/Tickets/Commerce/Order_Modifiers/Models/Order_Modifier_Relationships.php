@@ -125,6 +125,6 @@ class Order_Modifier_Relationships extends Model implements ModelPersistable {
 	 * @return array The object properties as an array.
 	 */
 	public function to_array(): array {
-		return $this->attributes;
+		return $this->toArray();
 	}
 }

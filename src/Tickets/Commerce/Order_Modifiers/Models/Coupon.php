@@ -42,12 +42,12 @@ class Coupon extends Order_Modifier {
 	public function get_discount_amount( float $subtotal ): float {
 		if ( 'flat' === $this->sub_type ) {
 			/** @var Float_Value $amount */
-			$amount = $this->attributes['raw_amount'];
+			$amount = $this->getAttribute( 'raw_amount' );
 			return $amount->invert_sign()->get();
 		}
 
 		$base_price = new Precision_Value( $subtotal );
-		$discount   = $base_price->multiply( $this->attributes['raw_amount'] );
+		$discount   = $base_price->multiply( $this->getAttribute( 'raw_amount' ) );
 
 		return $discount->invert_sign()->get();
 	}

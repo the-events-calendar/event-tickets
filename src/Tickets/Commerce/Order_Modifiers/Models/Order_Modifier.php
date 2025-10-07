@@ -11,6 +11,8 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model as ModelInterface;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
+use TEC\Common\StellarWP\Models\ModelPropertyDefinition;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
@@ -48,7 +50,6 @@ class Order_Modifier extends Model implements ModelPersistable {
 		'id'            => 'int',
 		'modifier_type' => 'string',
 		'sub_type'      => 'string',
-		'raw_amount'    => 'float',
 		'slug'          => 'string',
 		'display_name'  => 'string',
 		'status'        => 'string',
@@ -67,27 +68,31 @@ class Order_Modifier extends Model implements ModelPersistable {
 	 */
 	protected static string $order_modifier_type;
 
+	protected static function properties(): array {
+		return [
+			'raw_amount' => ( new ModelPropertyDefinition() )->type( 'float', 'object' )->castWith( fn( $value ): Float_Value => Float_Value::from_number( $value ) ),
+		];
+	}
+
 	/**
-	 * Constructor.
+	 * Acts as the constructor for the model.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param array<string,mixed> $attributes Attributes.
 	 */
-	public function __construct( array $attributes = [] ) {
-		parent::__construct( $attributes );
-
+	protected function afterConstruct(): void {
 		// If we have a percent sub_type, we need to ensure the raw_amount is a Percent_Value.
 		if ( 'flat' === $this->sub_type ) {
 			return;
 		}
 
 		// If we don't have the raw amount set, nothing else to do.
-		if ( ! array_key_exists( 'raw_amount', $this->attributes ) ) {
+		if ( $this->isset( 'raw_amount' ) ) {
 			return;
 		}
 
-		if ( $this->attributes['raw_amount'] instanceof Percent_Value ) {
+		if ( $this->getAttribute( 'raw_amount' ) instanceof Percent_Value ) {
 			return;
 		}
 
@@ -185,7 +190,7 @@ class Order_Modifier extends Model implements ModelPersistable {
 		$attributes = [];
 
 		// Use getAttribute() to ensure value objects are converted to their raw values.
-		foreach ( $this->attributes as $key => $type ) {
+		foreach ( self::propertyKeys() as $key ) {
 			$attributes[ $key ] = $this->getAttribute( $key );
 		}
 
@@ -224,7 +229,7 @@ class Order_Modifier extends Model implements ModelPersistable {
 				break;
 		}
 
-		$this->attributes[ $key ] = $value;
+		parent::setAttribute( $key, $value );
 
 		return $this;
 	}
@@ -245,7 +250,7 @@ class Order_Modifier extends Model implements ModelPersistable {
 			return $default;
 		}
 
-		$value = $this->attributes[ $key ];
+		$value = parent::getAttribute( $key, $default );
 
 		// Return the value directly if it's not a value object.
 		if ( ! $value instanceof Value_Interface ) {
