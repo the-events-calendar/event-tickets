@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.26.5] 2025-09-16
+
+* Fix - Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
+* Fix - Correctly invalidate ticket caches to deal with ETP order-of-operation issue. [ETP-1044]
+* Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.26.4] 2025-09-10
 
 * Security - Added user permission check when refreshing panels after ajax calls. [SVUL-20]

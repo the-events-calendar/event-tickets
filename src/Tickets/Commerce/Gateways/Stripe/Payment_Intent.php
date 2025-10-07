@@ -145,6 +145,7 @@ class Payment_Intent {
 	 * Creates a Payment Intent from cart.
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.4 Adjusted cart total calculations to ensure correct total is charged.
 	 *
 	 * @param Cart $cart
 	 * @param bool $retry
@@ -152,22 +153,23 @@ class Payment_Intent {
 	 * @return array
 	 */
 	public static function create_from_cart( Cart $cart, $retry = false ) {
-		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
-		if ( empty( $items ) ) {
+		// Use the cart total directly instead of trying to recalculate from items.
+		// This ensures we get the correct total, including any applied coupons.
+		$cart_total = $cart->get_cart_total();
+		if ( $cart_total <= 0 ) {
 			return [];
 		}
 
-		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+		$value = Value::create( $cart_total );
 
 		/**
-		 * Filters the value and items before creating a Payment Intent.
+		 * Filters the value before creating a Payment Intent.
 		 *
 		 * @since 5.18.0
 		 *
 		 * @param Value $value The total value of the cart.
-		 * @param array $items The items in the cart
 		 */
-		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, $items );
+		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, [] );
 
 		if ( ! $value instanceof Value && is_numeric( $value ) ) {
 			$value = Value::create( $value );
