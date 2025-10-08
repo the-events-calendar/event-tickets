@@ -41,13 +41,6 @@ if ( ! empty( $provider ) ) {
 }
 ?>
 <div class="tribe-ticket-information">
-	<?php if ( ! empty( $attendee['ticket_exists'] ) ) : ?>
-		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
-	<?php endif; ?>
-	<?php if ( ! empty( $price ) ): ?>
-		- <span class="ticket-price"><?php echo $price; ?></span>
-	<?php endif; ?>
-
 	<?php if ( $cant_go_enabled ) : ?>
 		<?php
 		$current_status = $attendee['rsvp_status'] ?? 'yes';
@@ -56,7 +49,7 @@ if ( ! empty( $provider ) ) {
 		?>
 		<div class="tribe-rsvp-status-change">
 			<label for="rsvp-status-<?php echo esc_attr( $attendee['attendee_id'] ); ?>">
-				<?php esc_html_e( 'Status:', 'event-tickets' ); ?>
+				<?php esc_html_e( 'Response:', 'event-tickets' ); ?>
 			</label>
 			<select
 				name="attendee[<?php echo esc_attr( $order_id ); ?>][rsvp_status][<?php echo esc_attr( $attendee['attendee_id'] ); ?>]"

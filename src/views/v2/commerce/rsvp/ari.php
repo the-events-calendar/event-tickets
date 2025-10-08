@@ -20,7 +20,7 @@
 <form
 	class="tribe-tickets__rsvp-ar tribe-common-g-row tribe-common-g-row--gutters"
 	name="tribe-tickets-rsvp-form-ari"
-	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+]	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 >
 	<div class="tribe-tickets__rsvp-ar-sidebar-wrapper tribe-common-g-col">
 		<?php $this->template( 'v2/commerce/rsvp/ari/sidebar', [ 'rsvp' => $rsvp ] ); ?>
