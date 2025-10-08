@@ -18,8 +18,6 @@ use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Columns\Created_At;
-use TEC\Common\StellarWP\Schema\Indexes\Primary_Key;
-use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
 
 /**
  * Webhooks table schema.

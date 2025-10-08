@@ -445,12 +445,9 @@ class Seat_Types {
 			return null;
 		}
 
-		return Seat_Types_Table::fetch_first_where(
-			DB::prepare(
-				'WHERE layout = %s ORDER BY id ASC',
-				$layout_id
-			),
-			OBJECT
+		return (object) Seat_Types_Table::get_first_by(
+			'layout',
+			$layout_id,
 		);
 	}
 }
