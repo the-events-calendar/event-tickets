@@ -1137,7 +1137,7 @@ class Tribe__Tickets__Tickets_View {
 			}
 		}
 
-		// Reindex $tickets array to avoid gaps in keys
+		// Reindex $tickets array to avoid gaps in keys.
 		$tickets = array_values( $tickets );
 
 		$args = [

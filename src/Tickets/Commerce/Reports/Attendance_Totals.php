@@ -69,9 +69,8 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	 * @return bool
 	 */
 	protected function should_count( \Tribe__Tickets__Ticket_Object $ticket ) {
-		// Exclude legacy RSVP provider and TC RSVP tickets from sales counts
-		$should_count = 'Tribe__Tickets__RSVP' !== $ticket->provider_class
-		                && RSVP_Constants::TC_RSVP_TYPE !== $ticket->type();
+		// Exclude legacy RSVP provider and TC RSVP tickets from sales counts.
+		$should_count = 'Tribe__Tickets__RSVP' !== $ticket->provider_class && RSVP_Constants::TC_RSVP_TYPE !== $ticket->type();
 
 		/**
 		 * Determine if the provided ticket object should be used when building
@@ -97,6 +96,7 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	public function print_totals() {
 		$args = [
 			'total_type_label'        => tribe_get_ticket_label_plural( 'total_type_label' ),
+			/* translators: %s: Plural ticket label (e.g., "Tickets"). */
 			'total_sold_label'        => esc_html( sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_ticket_label_plural( 'total_sold_label' ) ) ),
 			'total_complete_label'    => _x( 'Complete:', 'attendee summary', 'event-tickets' ),
 			'total_cancelled_label'   => _x( 'Cancelled:', 'attendee summary', 'event-tickets' ),

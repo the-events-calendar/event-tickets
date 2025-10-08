@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce: RSVP Order Endpoint.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */
@@ -30,12 +30,12 @@ use Tribe__Tickets__Editor__Template as Template;
 
 use WP_REST_Request;
 use WP_REST_Server;
-
+use WP_REST_Response;
 
 /**
  * Class Order Endpoint.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP\REST
  */
@@ -86,6 +86,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 	/**
 	 * Class constructor
+	 *
+	 * @since TBD
+	 *
+	 * @param RSVP_Block $block    The RSVP block instance.
+	 * @param Template   $template The template instance.
 	 */
 	public function __construct( RSVP_Block $block, Template $template ) {
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
@@ -93,6 +98,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$this->blocks_rsvp  = $block;
 		$this->template     = $template;
 	}
+
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
@@ -129,7 +135,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	public function handle_steps( WP_REST_Request $request ) {
 		$response = [
 			'success' => false,
-			'html' => '',
+			'html'    => '',
 		];
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
@@ -143,17 +149,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			// Return the HTML if it's a string.
 			$response['html'] = $render_response;
 
-			wp_send_json_success( $response );
+			return new WP_REST_Response( $response );
 		} elseif ( is_array( $render_response ) && ! empty( $render_response['errors'] ) ) {
 			$response['html'] = $this->render_rsvp_error( $render_response['errors'] );
 
-			wp_send_json_error( $response );
+			return new WP_REST_Response( $response );
 		}
 
 		$response['html'] = $this->render_rsvp_error( __( 'Something happened here.', 'event-tickets' ) );
 
 		wp_send_json_error( $response );
-		//return new WP_REST_Response( $response );
+		return new WP_REST_Response( $response );
 	}
 
 	/**
@@ -208,7 +214,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
 			$first_attendee = $this->parse_attendee_details();
-			$data = [
+			$data           = [
 				'purchaser' => [
 					'name'  => $first_attendee['full_name'],
 					'email' => $first_attendee['email'],
@@ -229,7 +235,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			// Parse the ticket quantity for this RSVP.
 			$ticket_id = $args['rsvp_id'];
-			$quantity = $this->parse_ticket_quantity( $ticket_id );
+			$quantity  = $this->parse_ticket_quantity( $ticket_id );
 
 			// Add the RSVP ticket to the cart.
 			if ( $quantity > 0 ) {
@@ -350,7 +356,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return '';
 		}
 
-		$post_id = (int) get_post_meta( $ticket_id,  Module::ATTENDEE_EVENT_KEY, true );
+		$post_id = (int) get_post_meta( $ticket_id, Module::ATTENDEE_EVENT_KEY, true );
 
 		// No post found, something went wrong.
 		if ( 0 === $post_id ) {
@@ -491,9 +497,18 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * @param $post_id
+	 * Parse and validate attendee details from POST data.
 	 *
-	 * @return array|false
+	 * @since TBD
+	 *
+	 * @return array|false {
+	 *     Array of attendee details on success, false on failure.
+	 *
+	 *     @type string $full_name    The attendee's full name.
+	 *     @type string $email        The attendee's email address.
+	 *     @type string $order_status The RSVP status ('yes' or 'no').
+	 *     @type bool   $optout       Whether the attendee opted out of the attendee list.
+	 * }
 	 */
 	public function parse_attendee_details() {
 		$first_attendee = [];

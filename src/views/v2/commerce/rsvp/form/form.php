@@ -28,13 +28,37 @@ $going = $this->get( 'going' );
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 
-		<?php $this->template( 'v2/commerce/rsvp/form/title', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+		<?php
+			$this->template(
+				'v2/commerce/rsvp/form/title',
+				[
+					'rsvp' => $rsvp,
+					'going' => $going
+				]
+			);
+		?>
 
 		<div class="tribe-tickets__rsvp-form-content tribe-tickets__form">
 
-			<?php $this->template( 'v2/commerce/rsvp/form/fields', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+			<?php
+				$this->template(
+					'v2/commerce/rsvp/form/fields',
+					[
+						'rsvp' => $rsvp,
+						'going' => $going
+					]
+				);
+			?>
 
-			<?php $this->template( 'v2/commerce/rsvp/form/buttons', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+			<?php
+				$this->template(
+					'v2/commerce/rsvp/form/buttons',
+					[
+						'rsvp' => $rsvp,
+						'going' => $going
+					]
+				);
+			?>
 
 		</div>
 

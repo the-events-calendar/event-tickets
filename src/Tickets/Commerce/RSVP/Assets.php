@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on Ticket Commerce.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce
  */
@@ -18,7 +18,7 @@ use Tribe__Templates;
 /**
  * Class Assets.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce
  */
@@ -52,7 +52,7 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		$this->assets();
+		$this->register_assets();
 	}
 
 	/**
@@ -60,7 +60,7 @@ class Assets extends Service_Provider {
 	 *
 	 * @since TBD
 	 */
-	public function assets() {
+	public function register_assets() {
 		$plugin = Tribe__Tickets__Main::instance();
 
 		tec_asset(
@@ -70,16 +70,16 @@ class Assets extends Service_Provider {
 			[ 'jquery' ],
 			null,
 			[
-				'groups'       => 'tec-tickets-commerce-rsvp',
+				'groups'   => 'tec-tickets-commerce-rsvp',
 				'localize' => [
 					'name' => 'TecRsvp',
 					'data' => fn() => [
-						'nonces'  => [
-							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
+						'nonces'        => [
+							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' ),
 						],
 						'orderEndpoint' => tribe_callback( Order_Endpoint::class, 'get_route_url' )(),
 						'nonce'         => wp_create_nonce( 'wp_rest' ),
-						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
+						'cancelText'    => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],
 				],
 			]
@@ -96,14 +96,6 @@ class Assets extends Service_Provider {
 			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
-/*				'localize'     => [
-					'name' => 'TecRsvp',
-					'data' => fn() => [
-						'nonces'  => [
-							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
-						],
-					],
-				],*/
 			]
 		);
 
@@ -121,14 +113,6 @@ class Assets extends Service_Provider {
 			null,
 			[
 				'groups'       => 'tec-tickets-commerce-rsvp',
-/*				'localize' => [
-					'name' => 'TecRsvp',
-					'data' => static function () {
-						return [
-							'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
-						];
-					},
-				],*/
 			]
 		);
 
@@ -144,7 +128,7 @@ class Assets extends Service_Provider {
 			],
 			null,
 			[
-			'groups'       => 'tec-tickets-commerce-rsvp',
+				'groups' => 'tec-tickets-commerce-rsvp',
 			]
 		);
 

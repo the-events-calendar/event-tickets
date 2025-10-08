@@ -2,7 +2,7 @@
 /**
  * Template for RSVP responses information display in admin panel.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *

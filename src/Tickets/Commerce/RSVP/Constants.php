@@ -2,7 +2,7 @@
 /**
  * Constants for RSVP Commerce functionality.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\RSVP;
 /**
  * Class Constants.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */

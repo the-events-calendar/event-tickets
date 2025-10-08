@@ -7,11 +7,11 @@
  *
  * See more documentation about our views templating system.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
- * @link    http://evnt.is/1aiy
+ * @link http://evnt.is/1aiy
  *
  * @var string $id          The ID of the field.
  * @var string $name        The name of the field.
@@ -26,17 +26,20 @@
 	<span class="tribe-field-switch-inner-wrap">
 		<div class="tribe-field-wrap">
 			<?php
-			$this->template( 'components/switch', [
-				'id'            => $id,
-				'label'         => $label,
-				'classes_wrap'  => [ 'tec-tickets-settings-switch-control' ],
-				'classes_input' => [ 'tec-tickets-settings-switch__input' ],
-				'classes_label' => [ 'tec-tickets-settings-switch__label' ],
-				'name'          => $name,
-				'value'         => 1,
-				'checked'       => $value,
-				'attrs'         => [],
-			] );
+			$this->template(
+				'components/switch',
+				[
+					'id'            => $id,
+					'label'         => $label,
+					'classes_wrap'  => [ 'tec-tickets-settings-switch-control' ],
+					'classes_input' => [ 'tec-tickets-settings-switch__input' ],
+					'classes_label' => [ 'tec-tickets-settings-switch__label' ],
+					'name'          => $name,
+					'value'         => 1,
+					'checked'       => $value,
+					'attrs'         => [],
+				]
+			);
 			?>
 			<legend class="tribe-field-label">
 				<?php echo esc_html( $label ); ?>

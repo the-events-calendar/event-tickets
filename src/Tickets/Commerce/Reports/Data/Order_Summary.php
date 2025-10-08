@@ -201,7 +201,7 @@ class Order_Summary {
 		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
 
 		foreach ( $this->get_tickets() as $ticket ) {
-			// Skip RSVP tickets if the filter is set to hide them
+			// Skip RSVP tickets if the filter is set to hide them.
 			if ( ! $show_rsvp_by_default && 'tc-rsvp' === $ticket->type ) {
 				continue;
 			}

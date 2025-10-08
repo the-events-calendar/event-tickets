@@ -2,7 +2,7 @@
 /**
  * The start and end dates field for the RSVP editor.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *

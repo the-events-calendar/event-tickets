@@ -1227,9 +1227,9 @@ class Hooks extends Service_Provider {
 		 */
 		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
 
-		// Only apply the filter if we're hiding RSVPs (default behavior)
+		// Only apply the filter if we're hiding RSVPs (default behavior).
 		if ( ! $show_rsvp_by_default ) {
-			// Add a meta query to exclude orders containing RSVP items
+			// Add a meta query to exclude orders containing RSVP items.
 			if ( ! isset( $arguments['meta_query'] ) ) {
 				$arguments['meta_query'] = [];
 			}
@@ -1240,7 +1240,7 @@ class Hooks extends Service_Provider {
 				'compare' => 'NOT LIKE',
 			];
 
-			// Ensure proper relation if multiple meta queries exist
+			// Ensure proper relation if multiple meta queries exist.
 			if ( count( $arguments['meta_query'] ) > 1 && ! isset( $arguments['meta_query']['relation'] ) ) {
 				$arguments['meta_query']['relation'] = 'AND';
 			}

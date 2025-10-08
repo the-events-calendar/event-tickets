@@ -9,7 +9,7 @@
 
 $switch_classes = [
 	'tec-tickets-rsvp-switch__wrap',
-	! empty( $tc_rsvp->ID ) ? 'tribe-common-a11y-hidden' : ''
+	! empty( $tc_rsvp->ID ) ? 'tribe-common-a11y-hidden' : '',
 ];
 ?>
 
@@ -31,7 +31,7 @@ $switch_classes = [
 					'label'       => esc_html_x( 'Enable RSVP', 'Label for the toggle switch to enable RSVP functionality in the metabox.', 'event-tickets' ),
 					'description' => esc_html_x( 'Allow users to register as attendees for this event', 'Description text explaining what happens when RSVP is enabled for an event.', 'event-tickets' ),
 					'tooltip'     => '',
-					'value'       => ! empty( $tc_rsvp->ID )
+					'value'       => ! empty( $tc_rsvp->ID ),
 				]
 			);
 		?>

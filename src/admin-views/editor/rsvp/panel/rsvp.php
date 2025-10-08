@@ -2,7 +2,7 @@
 /**
  * Ticket editor panel template for classic editor.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
@@ -34,16 +34,14 @@
  * @var Tribe__Tickets__Admin__Views  $this                             The admin views instance.
  */
 
-use TEC\Tickets\Commerce\RSVP\Constants;
-
 ?>
 
 <div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"
-	 data-default-provider="<?php echo esc_attr( $default_module_class ); ?>"
-	 data-current-provider="<?php echo esc_attr( $provider_class ); ?>"
-	 class="tribe-dependent"
-	 data-depends="#tec_tickets_rsvp_enable"
-	 data-condition-is-checked
+	data-default-provider="<?php echo esc_attr( $default_module_class ); ?>"
+	data-current-provider="<?php echo esc_attr( $provider_class ); ?>"
+	class="tribe-dependent"
+	data-depends="#tec_tickets_rsvp_enable"
+	data-condition-is-checked
 >
 	<?php
 	/**
@@ -60,7 +58,7 @@ use TEC\Tickets\Commerce\RSVP\Constants;
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<section id="ticket_form_main" class="main"
-					 data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
+				data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 
 				<?php
 				/**
@@ -128,14 +126,17 @@ use TEC\Tickets\Commerce\RSVP\Constants;
 					?>
 				</h4>
 				<?php
-				$this->template( [ 'components', 'switch-field' ], [
-					'id'          => 'tec_tickets_rsvp_enable_cannot_go',
-					'name'        => 'tec_tickets_rsvp_enable_cannot_go',
-					'label'       => esc_html_x( 'Enable "Can\'t go" responses', 'Label for toggle switch to enable negative RSVP responses in admin panel.', 'event-tickets' ),
-					'description' => '',
-					'tooltip'     => '',
-					'value'       => esc_attr( $show_not_going ),
-				] );
+				$this->template(
+					[ 'components', 'switch-field' ],
+					[
+						'id'          => 'tec_tickets_rsvp_enable_cannot_go',
+						'name'        => 'tec_tickets_rsvp_enable_cannot_go',
+						'label'       => esc_html_x( 'Enable "Can\'t go" responses', 'Label for toggle switch to enable negative RSVP responses in admin panel.', 'event-tickets' ),
+						'description' => '',
+						'tooltip'     => '',
+						'value'       => esc_attr( $show_not_going ),
+					]
+				);
 
 				/**
 				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
