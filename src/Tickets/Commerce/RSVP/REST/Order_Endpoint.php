@@ -201,7 +201,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $args {
+	 * @param array $args            {
 	 *      The list of step template arguments.
 	 *
 	 *      @type int                           $rsvp_id    The RSVP ticket ID.

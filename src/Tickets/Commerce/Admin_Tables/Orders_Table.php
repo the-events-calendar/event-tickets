@@ -1067,6 +1067,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		global $wpdb;
 
 		// Get counts of RSVP orders by status.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Complex query with JOIN and GROUP BY not supported by WP_Query. Runs only in admin context.
 		$rsvp_counts = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT p.post_status, COUNT(*) as count

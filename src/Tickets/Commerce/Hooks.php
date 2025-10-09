@@ -1231,7 +1231,7 @@ class Hooks extends Service_Provider {
 		if ( ! $show_rsvp_by_default ) {
 			// Add a meta query to exclude orders containing RSVP items.
 			if ( ! isset( $arguments['meta_query'] ) ) {
-				$arguments['meta_query'] = [];
+				$arguments['meta_query'] = []; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to filter RSVP orders.
 			}
 
 			$arguments['meta_query'][] = [

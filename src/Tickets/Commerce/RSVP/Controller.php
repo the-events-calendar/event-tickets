@@ -198,12 +198,11 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return string The rendered template content.
 	 */
-	public function render_rsvp_template( $content, $rsvp, $template, $post, $echo ) {
+	public function render_rsvp_template( $content, $rsvp, $template, $post, $echo ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- Required by filter hook signature.
+
 		if ( empty( $rsvp ) || ! $rsvp instanceof \Tribe__Tickets__Ticket_Object ) {
 			return $content;
 		}
-
-		$must_login = ! is_user_logged_in() && $this->login_required();
 
 		// Create the RSVP template args.
 		$rsvp_template_args = [
