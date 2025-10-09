@@ -42,4 +42,3 @@ $this->template(
 		'going' => $going,
 	]
 );
-?>

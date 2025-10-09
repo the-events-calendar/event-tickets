@@ -58,8 +58,7 @@ class Ticket {
 	 * @param array  $raw_data    Raw data from the form submission.
 	 * @param string $ticket_class The class type of the ticket.
 	 */
-	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by action hook signature.
-	public function save_rsvp( $post_id, $ticket, $raw_data, $ticket_class ) {
+	public function save_rsvp( $post_id, $ticket, $raw_data, $ticket_class ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by action hook signature.
 		if ( $ticket->type !== Constants::TC_RSVP_TYPE ) {
 			return;
 		}
