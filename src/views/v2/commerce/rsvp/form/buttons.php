@@ -18,21 +18,21 @@
 ?>
 <div class="tribe-tickets__rsvp-form-buttons">
 	<?php
-		$this->template(
-			'v2/commerce/rsvp/form/fields/cancel',
-			[
-				'rsvp'  => $rsvp,
-				'going' => $going,
-			]
-		);
+	$this->template(
+		'v2/commerce/rsvp/form/fields/cancel',
+		[
+			'rsvp'  => $rsvp,
+			'going' => $going,
+		]
+	);
 	?>
 	<?php
-		$this->template(
-			'v2/commerce/rsvp/form/fields/submit',
-			[
-				'rsvp'  => $rsvp,
-				'going' => $going,
-			]
-		);
+	$this->template(
+		'v2/commerce/rsvp/form/fields/submit',
+		[
+			'rsvp'  => $rsvp,
+			'going' => $going,
+		]
+	);
 	?>
 </div>
