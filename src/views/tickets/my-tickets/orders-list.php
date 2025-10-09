@@ -33,28 +33,34 @@ use TEC\Tickets\Commerce\RSVP\Constants;
 		?>
 		<li class="tribe-item" id="order-<?php echo esc_html( $order_id ); ?>">
 			<?php
-				// Check if this is a TC-RSVP order.
-				$is_tc_rsvp = false;
-				if ( ! empty( $first_attendee['product_id'] ) ) {
-					$ticket = Tribe__Tickets__Tickets::load_ticket_object( $first_attendee['product_id'] );
-					if ( $ticket && Constants::TC_RSVP_TYPE === $ticket->type() ) {
-						$is_tc_rsvp = true;
-					}
+			// Check if this is a TC-RSVP order.
+			$is_tc_rsvp = false;
+			if ( ! empty( $first_attendee['product_id'] ) ) {
+				$ticket = Tribe__Tickets__Tickets::load_ticket_object( $first_attendee['product_id'] );
+				if ( $ticket && Constants::TC_RSVP_TYPE === $ticket->type() ) {
+					$is_tc_rsvp = true;
 				}
+			}
 
-				// Use RSVP template for TC-RSVP orders, regular template for others.
-				$template_path = $is_tc_rsvp ? 'tickets/my-tickets/rsvp-user-details' : 'tickets/my-tickets/user-details';
-				$this->template( $template_path, [
+			// Use RSVP template for TC-RSVP orders, regular template for others.
+			$template_path = $is_tc_rsvp ? 'tickets/my-tickets/rsvp-user-details' : 'tickets/my-tickets/user-details';
+			$this->template(
+				$template_path,
+				[
 					'order'     => $order,
 					'attendees' => $attendees,
 					'order_id'  => $order_id,
-				] );
+				]
+			);
 
-				$this->template( 'tickets/my-tickets/tickets-list', [
+			$this->template(
+				'tickets/my-tickets/tickets-list',
+				[
 					'order'     => $order,
 					'attendees' => $attendees,
 					'order_id'  => $order_id,
-				] );
+				]
+			);
 			?>
 		</li>
 	<?php endforeach; ?>

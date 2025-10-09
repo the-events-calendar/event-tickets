@@ -308,7 +308,7 @@ class RSVP_Cart extends Abstract_Cart {
 			'extra'      => $extra_data ?? [],
 			'tc-rsvp_id' => $item_id,
 		];
-		
+
 
 		$this->items[ $item_id ] = new Cart_Item( $item_data );
 
@@ -484,7 +484,7 @@ class RSVP_Cart extends Abstract_Cart {
 	protected function add_params( $item ) {
 		// Extract the ticket ID from the appropriate field.
 		$ticket_id = $item['tc-rsvp_id'] ?? $item['ticket_id'] ?? null;
-		
+
 		if ( ! $ticket_id ) {
 			return null;
 		}
@@ -498,10 +498,10 @@ class RSVP_Cart extends Abstract_Cart {
 		$sub_total_value = Value::create();
 		$sub_total_value->set_value( $item['obj']->price );
 
-		$item['event_id']   = $item['obj']->get_event_id();
-		$item['ticket_id']  = $ticket_id;
-		$item['sub_total']  = $sub_total_value->sub_total( $item['quantity'] );
-		$item['type']       = Constants::TC_RSVP_TYPE;
+		$item['event_id']  = $item['obj']->get_event_id();
+		$item['ticket_id'] = $ticket_id;
+		$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
+		$item['type']      = Constants::TC_RSVP_TYPE;
 
 		return $item;
 	}

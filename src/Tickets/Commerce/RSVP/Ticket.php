@@ -2,7 +2,7 @@
 /**
  * Handles modifications to Ticket Objects for RSVP in Tickets Commerce.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\RSVP;
 /**
  * Class Ticket.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */
@@ -32,20 +32,20 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param object $return     The RSVP ticket object being filtered.
+	 * @param object $rsvp_obj     The RSVP ticket object being filtered.
 	 * @param int    $event_id   The ID of the event the ticket belongs to.
 	 * @param int    $ticket_id  The ID of the RSVP ticket.
 	 *
 	 * @return object The modified RSVP ticket object.
 	 */
-	public function filter_rsvp( $return, $event_id, $ticket_id ) {
-		if ( $return->type !== Constants::TC_RSVP_TYPE ) {
-			return $return;
+	public function filter_rsvp( $rsvp_obj, $event_id, $ticket_id ) {
+		if ( $rsvp_obj->type !== Constants::TC_RSVP_TYPE ) {
+			return $rsvp_obj;
 		}
 
-		$return->show_not_going = get_post_meta( $ticket_id, $this->show_not_going, true );
+		$rsvp_obj->show_not_going = get_post_meta( $ticket_id, $this->show_not_going, true );
 
-		return $return;
+		return $rsvp_obj;
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Ticket {
 	 * @param array  $raw_data    Raw data from the form submission.
 	 * @param string $ticket_class The class type of the ticket.
 	 */
-	public function save_rsvp( $post_id, $ticket, $raw_data, $ticket_class ) {
+	public function save_rsvp( $post_id, $ticket, $raw_data, $ticket_class ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Required by action hook signature.
 		if ( $ticket->type !== Constants::TC_RSVP_TYPE ) {
 			return;
 		}

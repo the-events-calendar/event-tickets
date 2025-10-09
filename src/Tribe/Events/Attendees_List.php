@@ -243,7 +243,6 @@ class Attendees_List {
 		// Check the show/hide settings for RSVPs and Tickets.
 		$show_rsvp_attendees   = get_post_meta( $post->ID, self::SHOW_RSVP_META_KEY, true );
 		$show_ticket_attendees = get_post_meta( $post->ID, self::HIDE_META_KEY, true );
-		//$show_ticket_attendees = empty( $hide_ticket_attendees );
 
 		$attendees_for_display = [];
 		foreach ( $attendees as $key => $attendee ) {

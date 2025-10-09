@@ -2,7 +2,7 @@
 /**
  * Template for RSVP responses information display in admin panel.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
@@ -20,7 +20,7 @@
 		<strong><?php echo esc_html_x( 'Responses:', 'Label for RSVP response count in admin panel.', 'event-tickets' ); ?></strong>
 		<?php if ( $cant_go_enabled ) : ?>
 			<span class="dashicons dashicons-info"
-				  title="<?php echo esc_attr_x( 'Responses count includes "not going"', 'Tooltip explaining RSVP count includes negative responses.', 'event-tickets' ); ?>"
+				title="<?php echo esc_attr_x( 'Responses count includes "not going"', 'Tooltip explaining RSVP count includes negative responses.', 'event-tickets' ); ?>"
 			>
 				</span>
 		<?php endif; ?>

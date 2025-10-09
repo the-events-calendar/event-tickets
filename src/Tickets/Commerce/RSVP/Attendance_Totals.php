@@ -79,16 +79,19 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 
 			$this->has_rsvp_enabled = true;
 
-			// Get attendees for this TC RSVP ticket using the Commerce provider directly
-			$attendee_data = \Tribe__Tickets__Tickets::get_event_attendees_by_args( $this->event_id, [
-				'provider' => 'tec-tickets-commerce',
-				'by' => [
-					'ticket' => $ticket->ID,
+			// Get attendees for this TC RSVP ticket using the Commerce provider directly.
+			$attendee_data = \Tribe__Tickets__Tickets::get_event_attendees_by_args(
+				$this->event_id,
+				[
+					'provider' => 'tec-tickets-commerce',
+					'by'       => [
+						'ticket' => $ticket->ID,
+					],
 				]
-			] );
+			);
 
 			foreach ( $attendee_data['attendees'] as $attendee ) {
-				// Only process TC RSVP attendees
+				// Only process TC RSVP attendees.
 				if ( empty( $attendee['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $attendee['ticket_type'] ) {
 					continue;
 				}
@@ -98,9 +101,9 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 				}
 
 				if ( 'yes' === $attendee['rsvp_status'] ) {
-					$this->total_going++;
+					++$this->total_going;
 				} elseif ( 'no' === $attendee['rsvp_status'] ) {
-					$this->total_not_going++;
+					++$this->total_not_going;
 				}
 			}
 		}
@@ -113,12 +116,12 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket
+	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket object to check.
 	 *
 	 * @return bool
 	 */
 	protected function should_count( \Tribe__Tickets__Ticket_Object $ticket ) {
-		// Only count TC RSVP tickets
+		// Only count TC RSVP tickets.
 		$should_count = Constants::TC_RSVP_TYPE === $ticket->type();
 
 		/**
@@ -129,8 +132,8 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool                           $should_count
-		 * @param \Tribe__Tickets__Ticket_Object $ticket
+		 * @param bool                           $should_count Whether the ticket should be counted.
+		 * @param \Tribe__Tickets__Ticket_Object $ticket       The ticket object.
 		 */
 		return (bool) apply_filters( 'tec_tickets_commerce_rsvp_should_use_ticket_in_counts', $should_count, $ticket );
 	}
@@ -151,6 +154,7 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 
 		$args = [
 			'total_type_label'        => tribe_get_rsvp_label_plural( 'total_type_label' ),
+			/* translators: %s: Plural RSVP label (e.g., "RSVPs"). */
 			'total_sold_label'        => esc_html( sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_rsvp_label_plural( 'total_sold_label' ) ) ),
 			'total_complete_label'    => _x( 'Going:', 'attendee summary', 'event-tickets' ),
 			'total_cancelled_label'   => _x( 'Not Going:', 'attendee summary', 'event-tickets' ),
@@ -175,7 +179,7 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 		 */
 		$html = apply_filters( 'tec_tickets_commerce_rsvp_print_totals_html', $html );
 
-		echo $html;
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,StellarWP.XSS.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -191,9 +195,9 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $total_rsvps
-		 * @param int $original_total_rsvps
-		 * @param int $event_id
+		 * @param int $total_rsvps          The filtered total RSVP count.
+		 * @param int $original_total_rsvps The original total RSVP count before filtering.
+		 * @param int $event_id             The event ID.
 		 */
 		return (int) apply_filters( 'tec_tickets_commerce_rsvp_get_total_rsvps', $this->total_rsvps, $this->total_rsvps, $this->event_id );
 	}
@@ -212,9 +216,9 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $total_going
-		 * @param int $original_total_going
-		 * @param int $event_id
+		 * @param int $total_going          The filtered total going count.
+		 * @param int $original_total_going The original total going count before filtering.
+		 * @param int $event_id             The event ID.
 		 */
 		return (int) apply_filters( 'tec_tickets_commerce_rsvp_get_total_going', $this->total_going, $this->total_going, $this->event_id );
 	}
@@ -233,9 +237,9 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $total_not_going
-		 * @param int $original_total_not_going
-		 * @param int $event_id
+		 * @param int $total_not_going          The filtered total not going count.
+		 * @param int $original_total_not_going The original total not going count before filtering.
+		 * @param int $event_id                 The event ID.
 		 */
 		return (int) apply_filters( 'tec_tickets_commerce_rsvp_get_total_not_going', $this->total_not_going, $this->total_not_going, $this->event_id );
 	}

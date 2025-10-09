@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for RSVP in Tickets Commerce.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\RSVP\REST\Order_Endpoint;
 /**
  * Class Controller.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\RSVP
  */
@@ -46,9 +46,9 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since   TBD
+	 * @since TBD
 	 *
-	 * @uses    Notices::register_admin_notices()
+	 * @uses Notices::register_admin_notices()
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Ticket_Endpoint::class );
@@ -66,6 +66,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		$this->remove_actions();
+		$this->remove_filters();
 	}
 
 	/**
@@ -99,7 +100,11 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function remove_actions() {
-
+		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
+		remove_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+		remove_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_rsvp' ], 10 );
+		remove_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
+		remove_action( 'tec_event_tickets_rsvp_form__start', [ $this, 'display_rsvp_responses_info' ], 10 );
 	}
 
 	/**
@@ -138,7 +143,7 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Adds the actions required by the controller.
+	 * Adds the filters required by the controller.
 	 *
 	 * @since TBD
 	 */
@@ -154,18 +159,32 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
+	 * Removes the filters required by the controller.
+	 *
+	 * @since TBD
+	 */
+	protected function remove_filters() {
+		remove_action( 'tec_tickets_commerce_get_ticket_legacy', [ $this, 'filter_rsvp' ], 10 );
+		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10 );
+		remove_filter( 'tribe_tickets_attendees_table_order_status', [ $this, 'modify_tc_rsvp_status_display' ], 10 );
+		remove_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'modify_tc_rsvp_checkin_display' ], 10 );
+		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10 );
+		remove_filter( 'tec_tickets_plus_my_tickets_order_list_ticket_type_titles', [ $this, 'add_tc_rsvp_label_for_my_tickets' ], 10 );
+	}
+
+	/**
 	 * Filters RSVP tickets for legacy compatibility.
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed $return    The return value to filter.
+	 * @param mixed $rsvp_obj  The return value to filter.
 	 * @param int   $event_id  The event ID.
 	 * @param int   $ticket_id The ticket ID.
 	 *
 	 * @return mixed The filtered return value.
 	 */
-	public function filter_rsvp( $return, $event_id, $ticket_id ) {
-		return $this->container->make( Ticket::class )->filter_rsvp( $return, $event_id, $ticket_id );
+	public function filter_rsvp( $rsvp_obj, $event_id, $ticket_id ) {
+		return $this->container->make( Ticket::class )->filter_rsvp( $rsvp_obj, $event_id, $ticket_id );
 	}
 
 	/**
@@ -181,7 +200,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return string The rendered template content.
 	 */
-	public function render_rsvp_template( $content, $rsvp, $template, $post, $echo ) {
+	public function render_rsvp_template( $content, $rsvp, $template, $post, $echo ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound -- Required by filter hook signature.
+
 		if ( empty( $rsvp ) || ! $rsvp instanceof \Tribe__Tickets__Ticket_Object ) {
 			return $content;
 		}
@@ -191,8 +211,6 @@ class Controller extends Controller_Contract {
 		if ( has_blocks( $post ) && has_block( 'tec/rsvp', $post ) ) {
 			return $content;
 		}
-
-		$must_login = ! is_user_logged_in() && $this->login_required();
 
 		// Create the RSVP template args.
 		$rsvp_template_args = [
@@ -204,7 +222,7 @@ class Controller extends Controller_Contract {
 			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
-		// Render the RSVP template and append to existing content
+		// Render the RSVP template and append to existing content.
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
 
 		return $content;
@@ -247,14 +265,12 @@ class Controller extends Controller_Contract {
 			'tec-tickets__admin-table-attendees-order-status--' . ( 'yes' === $item['rsvp_status'] ? 'going' : 'not-going' ),
 		];
 
-		$new_label = sprintf(
+		return sprintf(
 			'<div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="%1$s">%2$s%3$s</span></div>',
 			implode( ' ', $classes ),
 			$icon,
 			esc_html( $status_text )
 		);
-
-		return $new_label;
 	}
 
 	/**
@@ -352,22 +368,22 @@ class Controller extends Controller_Contract {
 	 * @param int|null $rsvp_id     The post ID of the ticket that is being edited, null if new.
 	 */
 	public function display_rsvp_responses_info( $post_id, $ticket_type, $rsvp_id = null ) {
-		// Only display for TC RSVP tickets that are saved
+		// Only display for TC RSVP tickets that are saved.
 		if ( Constants::TC_RSVP_TYPE !== $ticket_type || empty( $rsvp_id ) ) {
 			return;
 		}
 
-		// Get the attendance totals for this event
+		// Get the attendance totals for this event.
 		$attendance_totals = $this->attendance_totals( $post_id );
-		$total_responses = $attendance_totals->get_total_rsvps();
+		$total_responses   = $attendance_totals->get_total_rsvps();
 
-		// Don't display if there are no responses yet
+		// Don't display if there are no responses yet.
 		if ( 0 === $total_responses ) {
 			return;
 		}
 
-		// Get the tickets for this event to check if "Can't go" is enabled
-		$tickets = \Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		// Get the tickets for this event to check if "Can't go" is enabled.
+		$tickets         = \Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$cant_go_enabled = false;
 
 		foreach ( $tickets as $ticket ) {
@@ -377,7 +393,7 @@ class Controller extends Controller_Contract {
 			}
 		}
 
-		// Build the attendees admin URL
+		// Build the attendees admin URL.
 		$attendees_url = add_query_arg(
 			[
 				'page'     => 'tickets-attendees',
@@ -386,7 +402,7 @@ class Controller extends Controller_Contract {
 			admin_url( 'edit.php?post_type=tribe_events' )
 		);
 
-		// Render the template
+		// Render the template.
 		tribe( 'tickets.admin.views' )->template(
 			[ 'editor', 'rsvp', 'panel', 'responses-info' ],
 			[

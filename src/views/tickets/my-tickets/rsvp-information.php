@@ -16,8 +16,8 @@
 use TEC\Tickets\Commerce\RSVP\Constants;
 
 // Check if this is a TC-RSVP ticket and if "Can't Go" is enabled.
-$cant_go_enabled = false;
-$ticket = null;
+$cant_go_enabled     = false;
+$ticket              = null;
 $can_change_to_going = true;
 
 if ( ! empty( $attendee['product_id'] ) ) {
@@ -30,7 +30,7 @@ if ( ! empty( $attendee['product_id'] ) ) {
 		if ( $current_status === 'no' ) {
 			$remaining_capacity = $ticket->available();
 			// -1 means unlimited capacity.
-			$can_change_to_going = $remaining_capacity === -1 || $remaining_capacity > 0;
+			$can_change_to_going = $remaining_capacity === - 1 || $remaining_capacity > 0;
 		}
 	}
 }
@@ -41,22 +41,15 @@ if ( ! empty( $provider ) ) {
 }
 ?>
 <div class="tribe-ticket-information">
-	<?php if ( ! empty( $attendee['ticket_exists'] ) ) : ?>
-		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
-	<?php endif; ?>
-	<?php if ( ! empty( $price ) ): ?>
-		- <span class="ticket-price"><?php echo $price; ?></span>
-	<?php endif; ?>
-
 	<?php if ( $cant_go_enabled ) : ?>
 		<?php
-		$current_status = $attendee['rsvp_status'] ?? 'yes';
-		$going_label = esc_html__( 'Going', 'event-tickets' );
+		$current_status  = $attendee['rsvp_status'] ?? 'yes';
+		$going_label     = esc_html__( 'Going', 'event-tickets' );
 		$not_going_label = esc_html__( 'Not Going', 'event-tickets' );
 		?>
 		<div class="tribe-rsvp-status-change">
 			<label for="rsvp-status-<?php echo esc_attr( $attendee['attendee_id'] ); ?>">
-				<?php esc_html_e( 'Status:', 'event-tickets' ); ?>
+				<?php esc_html_e( 'Response:', 'event-tickets' ); ?>
 			</label>
 			<select
 				name="attendee[<?php echo esc_attr( $order_id ); ?>][rsvp_status][<?php echo esc_attr( $attendee['attendee_id'] ); ?>]"

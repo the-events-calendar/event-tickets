@@ -603,7 +603,7 @@ class Order extends Abstract_Order {
 	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
 	 */
- 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
+	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
 		$cart = tribe( Cart::class );
 
 		// Prepare the items for the order.

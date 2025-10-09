@@ -526,6 +526,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$sold_label = $sold_label_override;
 		}
 		if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
+			/* translators: %s: Singular RSVP label (e.g., "RSVP"). */
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
 

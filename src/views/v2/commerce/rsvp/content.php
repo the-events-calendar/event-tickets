@@ -28,7 +28,15 @@
 
 <?php elseif ( 'going' === $step || 'not-going' === $step ) : ?>
 
-	<?php $this->template( 'v2/commerce/rsvp/form/form', [ 'rsvp' => $rsvp, 'going' => $step ] ); ?>
+	<?php
+	$this->template(
+		'v2/commerce/rsvp/form/form',
+		[
+			'rsvp'  => $rsvp,
+			'going' => $step,
+		]
+	);
+	?>
 
 <?php else : ?>
 

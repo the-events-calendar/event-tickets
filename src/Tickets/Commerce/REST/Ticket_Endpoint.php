@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce: Free Gateway Order Endpoint.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
@@ -25,7 +25,7 @@ use WP_REST_Server;
 /**
  * Class Ticket Endpoint.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Free\REST
  */
@@ -133,7 +133,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$request_params                            = $request->get_params();
+		$request_params = $request->get_params();
 		if ( empty( $request_params['rsvp_limit'] ) ) {
 			unset( $request_params['rsvp_limit'] );
 		}
@@ -220,10 +220,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$ticket_id      = Arr::get( $request_params, 'rsvp_id', '' );
 
 		if ( empty( $post_id ) || empty( $ticket_id ) ) {
-			return new WP_REST_Response( [
-				'success' => false,
-				'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
-			], 400 );
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
+				],
+				400
+			);
 		}
 
 		$post_id   = Event::filter_event_id( $post_id );
@@ -232,10 +235,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		// Verify the ticket exists and belongs to this event.
 		$ticket_post = get_post( $ticket_id );
 		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_REST_Response( [
-				'success' => false,
-				'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
-			], 404 );
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
 		}
 
 		/**
@@ -285,10 +291,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		$ticket_id      = Arr::get( $request_params, 'rsvp_id', '' );
 
 		if ( empty( $post_id ) || empty( $ticket_id ) ) {
-			return new WP_REST_Response( [
-				'success' => false,
-				'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
-			], 400 );
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
+				],
+				400
+			);
 		}
 
 		$post_id   = Event::filter_event_id( $post_id );
@@ -297,10 +306,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		// Verify the ticket exists and belongs to this event.
 		$ticket_post = get_post( $ticket_id );
 		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_REST_Response( [
-				'success' => false,
-				'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
-			], 404 );
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
 		}
 
 		/**

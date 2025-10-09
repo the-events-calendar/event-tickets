@@ -1233,8 +1233,8 @@ class Tribe__Tickets__Attendees {
 				$tickets_by_type[ $ticket_type ] = [];
 			}
 			$tickets_by_type[ $ticket_type ][] = $ticket;
-			
-			// Exclude TC RSVP tickets from ticket totals
+
+			// Exclude TC RSVP tickets from ticket totals.
 			if ( Constants::TC_RSVP_TYPE !== $ticket_type ) {
 				$ticket_totals['sold'] += $ticket->qty_sold();
 			}
@@ -1250,7 +1250,7 @@ class Tribe__Tickets__Attendees {
 				continue;
 			}
 
-			// Exclude TC RSVP tickets from available counts
+			// Exclude TC RSVP tickets from available counts.
 			if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
 				continue;
 			}

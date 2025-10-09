@@ -119,5 +119,4 @@ class Metabox {
 
 		return null;
 	}
-
 }

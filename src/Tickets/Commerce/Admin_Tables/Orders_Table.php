@@ -231,7 +231,6 @@ class Orders_Table extends WP_Posts_List_Table {
 		$status_links = [];
 		$num_posts    = wp_count_posts( $post_type, 'readable' );
 
-		// Check if RSVP orders should be excluded from counts
 		/**
 		 * Filters whether to show RSVP orders by default in the admin order list.
 		 *
@@ -240,10 +239,10 @@ class Orders_Table extends WP_Posts_List_Table {
 		 * @param bool $show_rsvp_by_default Whether to show RSVP orders by default. Default false.
 		 */
 		$show_rsvp_by_default = apply_filters( 'tec_tc_orders_show_rsvp_by_default', false );
-		$rsvp_filter = tribe_get_request_var( 'tec_tc_show_rsvp', $show_rsvp_by_default ? 'yes' : 'no' );
+		$rsvp_filter          = tribe_get_request_var( 'tec_tc_show_rsvp', $show_rsvp_by_default ? 'yes' : 'no' );
 
 		// Adjust counts if hiding RSVP orders.
-		if ( 'no' === $rsvp_filter ) {
+		if ( $rsvp_filter === 'no' ) {
 			$num_posts = $this->adjust_counts_excluding_rsvp_orders( $num_posts );
 		}
 
@@ -1067,27 +1066,30 @@ class Orders_Table extends WP_Posts_List_Table {
 	protected function adjust_counts_excluding_rsvp_orders( $num_posts ) {
 		global $wpdb;
 
-		// Get counts of RSVP orders by status
-		$rsvp_counts = $wpdb->get_results( $wpdb->prepare(
-			"SELECT p.post_status, COUNT(*) as count
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-			WHERE p.post_type = %s
-			AND pm.meta_key = %s
-			AND pm.meta_value LIKE %s
-			GROUP BY p.post_status",
-			Order::POSTTYPE,
-			Order::$items_meta_key,
-			'%tc-rsvp%'
-		) );
+		// Get counts of RSVP orders by status.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Complex query with JOIN and GROUP BY not supported by WP_Query. Runs only in admin context.
+		$rsvp_counts = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT p.post_status, COUNT(*) as count
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+				WHERE p.post_type = %s
+				AND pm.meta_key = %s
+				AND pm.meta_value LIKE %s
+				GROUP BY p.post_status",
+				Order::POSTTYPE,
+				Order::$items_meta_key,
+				'%tc-rsvp%'
+			)
+		);
 
-		// Convert results to an associative array
+		// Convert results to an associative array.
 		$rsvp_counts_by_status = [];
 		foreach ( $rsvp_counts as $count_data ) {
 			$rsvp_counts_by_status[ $count_data->post_status ] = (int) $count_data->count;
 		}
 
-		// Subtract RSVP counts from each status
+		// Subtract RSVP counts from each status.
 		foreach ( get_object_vars( $num_posts ) as $status => $count ) {
 			if ( isset( $rsvp_counts_by_status[ $status ] ) ) {
 				$num_posts->$status = max( 0, $count - $rsvp_counts_by_status[ $status ] );

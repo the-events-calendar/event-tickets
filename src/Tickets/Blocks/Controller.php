@@ -186,7 +186,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	public function render_form_toggle_buttons( $post_id ): void {
 		// By default, any ticket-able post type can have tickets and RSVPs.
 		$enabled = [
-			'default' => true
+			'default' => true,
 		];
 
 		$post_type = get_post_field( 'post_type', $post_id );
