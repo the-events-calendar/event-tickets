@@ -1,0 +1,4 @@
+Significance: patch
+Type: security
+
+Enhanced authorization validation for order processing endpoints. [SVUL-24]
