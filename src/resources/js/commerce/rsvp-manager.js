@@ -200,10 +200,11 @@ tribe.tickets.rsvp.manager = {};
 	 */
 	obj.ajaxSuccess = function ( response, textStatus, jqXHR ) {
 		const $container = this;
-		const $html = response.data.html;
+		const $html = response.html;
 
 		// If the request is not successful, prepend the error.
 		if ( ! response.success ) {
+			console.log( 'RSVP Manager AJAX Error: ', response );
 			// Prepend the error only once.
 			if ( ! $container.find( obj.selectors.messageError ).length ) {
 				$container.prepend( $html );

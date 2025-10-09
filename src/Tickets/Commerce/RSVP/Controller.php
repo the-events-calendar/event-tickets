@@ -48,7 +48,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @uses    Notices::register_admin_notices()
+	 * @uses Notices::register_admin_notices()
 	 */
 	public function do_register(): void {
 		$this->container->singleton( Ticket_Endpoint::class );

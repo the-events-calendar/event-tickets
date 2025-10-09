@@ -132,33 +132,43 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		return tribe( RSVP_Cart::class );
 	}
 
+	/**
+	 * Handles RSVP form step requests via REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The REST API request object.
+	 *
+	 * @return WP_REST_Response The response containing success status and HTML content.
+	 */
 	public function handle_steps( WP_REST_Request $request ) {
 		$response = [
 			'success' => false,
 			'html'    => '',
 		];
 
-		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
-		$step      = tribe_get_request_var( 'step', null );
+		$ticket_id = absint( $request->get_param( 'ticket_id' ) ?: 0 );
+		$step      = $request->get_param( 'step' );
 
 		add_filter( 'tec_tickets_commerce_cart_repository', [ $this, 'setup_cart' ] );
 
-		$render_response = $this->render_rsvp_step( $ticket_id, $step );
+		$render_response = $this->render_rsvp_step( $ticket_id, $request, $step );
 
 		if ( is_string( $render_response ) && '' !== $render_response ) {
 			// Return the HTML if it's a string.
 			$response['html'] = $render_response;
 
+			$response['success'] = true;
 			return new WP_REST_Response( $response );
 		} elseif ( is_array( $render_response ) && ! empty( $render_response['errors'] ) ) {
 			$response['html'] = $this->render_rsvp_error( $render_response['errors'] );
 
+			$response['success'] = true;
 			return new WP_REST_Response( $response );
 		}
 
 		$response['html'] = $this->render_rsvp_error( __( 'Something happened here.', 'event-tickets' ) );
 
-		wp_send_json_error( $response );
 		return new WP_REST_Response( $response );
 	}
 
@@ -202,10 +212,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *      @type string                        $login_url  The site login URL.
 	 *      @type int                           $threshold  The RSVP ticket threshold.
 	 * }
+	 * @param WP_REST_Request $request The REST API request object.
 	 *
 	 * @return array The process result.
 	 */
-	public function process_rsvp_step( array $args ) {
+	public function process_rsvp_step( array $args, $request ) {
 		$result = [
 			'success' => null,
 			'errors'  => [],
@@ -213,7 +224,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
-			$first_attendee = $this->parse_attendee_details();
+			$first_attendee = $this->parse_attendee_details( $request );
 			$data           = [
 				'purchaser' => [
 					'name'  => $first_attendee['full_name'],
@@ -235,7 +246,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 			// Parse the ticket quantity for this RSVP.
 			$ticket_id = $args['rsvp_id'];
-			$quantity  = $this->parse_ticket_quantity( $ticket_id );
+			$quantity  = $this->parse_ticket_quantity( $ticket_id, $request );
 
 			// Add the RSVP ticket to the cart.
 			if ( $quantity > 0 ) {
@@ -307,14 +318,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $response;
 
 		} elseif ( 'opt-in' === $args['step'] ) {
-			$optout = ! tribe_is_truthy( tribe_get_request_var( 'opt_in', true ) );
+			$opt_in_value = $request->get_param( 'opt_in' ) ?? true;
+			$optout       = ! tribe_is_truthy( $opt_in_value );
 
-			$attendee_ids = Tribe__Utils__Array::list_to_array( tribe_get_request_var( 'attendee_ids', [] ) );
-			$attendee_ids = array_map( 'absint', $attendee_ids );
+			$attendee_ids_param = $request->get_param( 'attendee_ids' ) ?? [];
+			$attendee_ids       = Tribe__Utils__Array::list_to_array( $attendee_ids_param );
+			$attendee_ids       = array_map( 'absint', $attendee_ids );
 
 			$attendee_ids_flat = implode( ',', $attendee_ids );
 
-			$nonce_value  = tribe_get_request_var( 'opt_in_nonce', '' );
+			$nonce_value  = $request->get_param( 'opt_in_nonce' ) ?? '';
 			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids_flat );
 
 			if ( false === wp_verify_nonce( $nonce_value, $nonce_action ) ) {
@@ -345,12 +358,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @param int         $ticket_id The ticket ID.
-	 * @param null|string $step      Which step to render.
+	 * @param int             $ticket_id The ticket ID.
+	 * @param WP_REST_Request $request   The REST API request object.
+	 * @param null|string     $step      Which step to render.
 	 *
 	 * @return string The step template HTML.
 	 */
-	public function render_rsvp_step( $ticket_id, $step = null ) {
+	public function render_rsvp_step( $ticket_id, $request, $step = null ) {
 		// No ticket.
 		if ( 0 === $ticket_id ) {
 			return '';
@@ -399,7 +413,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'must_login' => ! is_user_logged_in() && $this->module->login_required(),
 			'login_url'  => tribe( Checkout::class )->get_login_url(),
 			'threshold'  => $this->blocks_rsvp->get_threshold( $post_id ),
-			'going'      => tribe_get_request_var( 'going', 'yes' ),
+			'going'      => $request->get_param( 'going' ) ?? 'yes',
 			'attendees'  => [],
 		];
 
@@ -419,10 +433,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 *      @type string                        $login_url  The site login URL.
 		 *      @type int                           $threshold  The RSVP ticket threshold.
 		 * }
+		 * @param WP_REST_Request $request The REST API request object.
 		 */
-		$args = apply_filters( 'tec_tickets_commerce_rsvp_render_step_template_args_pre_process', $args );
+		$args = apply_filters( 'tec_tickets_commerce_rsvp_render_step_template_args_pre_process', $args, $request );
 
-		$args['process_result'] = $this->process_rsvp_step( $args );
+		$args['process_result'] = $this->process_rsvp_step( $args, $request );
 
 		/**
 		 * Allow filtering of the template arguments used.
@@ -501,6 +516,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
+	 * @param WP_REST_Request $request The REST API request object.
+	 *
 	 * @return array|false {
 	 *     Array of attendee details on success, false on failure.
 	 *
@@ -510,17 +527,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *     @type bool   $optout       Whether the attendee opted out of the attendee list.
 	 * }
 	 */
-	public function parse_attendee_details() {
+	public function parse_attendee_details( $request ) {
 		$first_attendee = [];
 
-		if ( ! empty( $_POST['tribe_tickets'] ) ) {
-			$first_ticket = current( $_POST['tribe_tickets'] );
+		$tribe_tickets = $request->get_param( 'tribe_tickets' );
+		$attendee      = $request->get_param( 'attendee' );
+
+		if ( ! empty( $tribe_tickets ) ) {
+			$first_ticket = current( $tribe_tickets );
 
 			if ( ! empty( $first_ticket['attendees'] ) ) {
 				$first_attendee = current( $first_ticket['attendees'] );
 			}
-		} elseif ( isset( $_POST['attendee'] ) ) {
-			$first_attendee = $_POST['attendee'];
+		} elseif ( isset( $attendee ) ) {
+			$first_attendee = $attendee;
 		}
 
 		$attendee_email        = empty( $first_attendee['email'] ) ? null : htmlentities( sanitize_email( html_entity_decode( $first_attendee['email'] ) ) );
@@ -556,21 +576,26 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Parses the quantity of tickets requested for a product via the $_POST var.
+	 * Parses the quantity of tickets requested for a product via the request.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket ID.
+	 * @param int             $ticket_id The ticket ID.
+	 * @param WP_REST_Request $request   The REST API request object.
 	 *
 	 * @return int Either the requested quantity of tickets or `0` in any other case.
 	 */
-	public function parse_ticket_quantity( $ticket_id ) {
+	public function parse_ticket_quantity( $ticket_id, $request ) {
 		$quantity = 0;
 
-		if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
-			$quantity = absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
-		} elseif ( isset( $_POST["quantity_{$ticket_id}"] ) ) {
-			$quantity = absint( $_POST["quantity_{$ticket_id}"] );
+		$tribe_tickets = $request->get_param( 'tribe_tickets' );
+		if ( ! empty( $tribe_tickets[ $ticket_id ]['quantity'] ) ) {
+			$quantity = absint( $tribe_tickets[ $ticket_id ]['quantity'] );
+		} else {
+			$quantity_param = $request->get_param( "quantity_{$ticket_id}" );
+			if ( null !== $quantity_param ) {
+				$quantity = absint( $quantity_param );
+			}
 		}
 
 		return $quantity;

@@ -22,19 +22,19 @@ $switch_classes = [
 		<?php echo esc_html_x( 'RSVP active', 'Status message indicating RSVP is currently active for an event', 'event-tickets' ); ?>
 	</h4>
 	<div <?php tec_classes( $switch_classes ); ?>>
-		<?php
-			$admin_views->template(
-				[ 'components', 'switch-field' ],
-				[
-					'id'          => 'tec_tickets_rsvp_enable',
-					'name'        => 'tec_tickets_rsvp_enable',
-					'label'       => esc_html_x( 'Enable RSVP', 'Label for the toggle switch to enable RSVP functionality in the metabox.', 'event-tickets' ),
-					'description' => esc_html_x( 'Allow users to register as attendees for this event', 'Description text explaining what happens when RSVP is enabled for an event.', 'event-tickets' ),
-					'tooltip'     => '',
-					'value'       => ! empty( $tc_rsvp->ID ),
-				]
-			);
-		?>
+	<?php
+		$admin_views->template(
+			[ 'components', 'switch-field' ],
+			[
+				'id'          => 'tec_tickets_rsvp_enable',
+				'name'        => 'tec_tickets_rsvp_enable',
+				'label'       => esc_html_x( 'Enable RSVP', 'Label for the toggle switch to enable RSVP functionality in the metabox.', 'event-tickets' ),
+				'description' => esc_html_x( 'Allow users to register as attendees for this event', 'Description text explaining what happens when RSVP is enabled for an event.', 'event-tickets' ),
+				'tooltip'     => '',
+				'value'       => ! empty( $tc_rsvp->ID ),
+			]
+		);
+	?>
 	</div>
 
 	<?php $admin_views->template( [ 'editor', 'rsvp', 'panel', 'rsvp' ], get_defined_vars() ); ?>

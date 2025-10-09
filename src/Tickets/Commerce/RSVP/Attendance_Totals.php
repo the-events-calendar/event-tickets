@@ -84,7 +84,7 @@ class Attendance_Totals extends \Tribe__Tickets__Abstract_Attendance_Totals {
 				$this->event_id,
 				[
 					'provider' => 'tec-tickets-commerce',
-					'by' => [
+					'by'       => [
 						'ticket' => $ticket->ID,
 					]
 				]

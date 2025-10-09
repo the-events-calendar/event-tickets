@@ -18,8 +18,8 @@ $purchaser_name  = $order && ! empty( $order['purchaser_name'] ) ? $order['purch
 $purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
 $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
 
- ?>
- <div class="user-details">
+?>
+<div class="user-details">
 	<?php
 	printf(
 		// Translators: 1: purchaser name, 2: linked purchaser email, 3: date of purchase.

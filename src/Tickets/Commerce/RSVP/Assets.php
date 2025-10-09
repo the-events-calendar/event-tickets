@@ -112,7 +112,7 @@ class Assets extends Service_Provider {
 			],
 			null,
 			[
-				'groups'       => 'tec-tickets-commerce-rsvp',
+				'groups' => 'tec-tickets-commerce-rsvp',
 			]
 		);
 

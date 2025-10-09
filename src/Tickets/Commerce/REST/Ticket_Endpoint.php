@@ -214,7 +214,8 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 				[
 					'success' => false,
 					'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
-				], 400
+				],
+				400
 			);
 		}
 
