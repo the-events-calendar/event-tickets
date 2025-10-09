@@ -32,8 +32,8 @@
 	$this->template(
 		'v2/commerce/rsvp/form/form',
 		[
-			'rsvp' => $rsvp,
-			'going' => $step
+			'rsvp'  => $rsvp,
+			'going' => $step,
 		]
 	);
 	?>

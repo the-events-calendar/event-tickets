@@ -565,14 +565,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		$attendee_details = [
+		return [
 			'full_name'    => $attendee_full_name,
 			'email'        => $attendee_email,
 			'order_status' => $attendee_order_status,
 			'optout'       => $attendee_optout,
 		];
-
-		return $attendee_details;
 	}
 
 	/**

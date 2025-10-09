@@ -20,8 +20,8 @@
 	$this->template(
 		'v2/commerce/rsvp/form/fields/name',
 		[
-			'rsvp' => $rsvp,
-			'going' => $going
+			'rsvp'  => $rsvp,
+			'going' => $going,
 		]
 	);
 ?>
@@ -29,8 +29,8 @@
 	$this->template(
 		'v2/commerce/rsvp/form/fields/email',
 		[
-			'rsvp' => $rsvp,
-			'going' => $going
+			'rsvp'  => $rsvp,
+			'going' => $going,
 		]
 	);
 ?>
@@ -38,8 +38,8 @@
 	$this->template(
 		'v2/commerce/rsvp/form/fields/quantity',
 		[
-			'rsvp' => $rsvp,
-			'going' => $going
+			'rsvp'  => $rsvp,
+			'going' => $going,
 		]
 	);
 ?>

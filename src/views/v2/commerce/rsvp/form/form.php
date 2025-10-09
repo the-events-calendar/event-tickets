@@ -32,8 +32,8 @@ $going = $this->get( 'going' );
 			$this->template(
 				'v2/commerce/rsvp/form/title',
 				[
-					'rsvp' => $rsvp,
-					'going' => $going
+					'rsvp'  => $rsvp,
+					'going' => $going,
 				]
 			);
 		?>
@@ -44,8 +44,8 @@ $going = $this->get( 'going' );
 				$this->template(
 					'v2/commerce/rsvp/form/fields',
 					[
-						'rsvp' => $rsvp,
-						'going' => $going
+						'rsvp'  => $rsvp,
+						'going' => $going,
 					]
 				);
 			?>
@@ -54,8 +54,8 @@ $going = $this->get( 'going' );
 				$this->template(
 					'v2/commerce/rsvp/form/buttons',
 					[
-						'rsvp' => $rsvp,
-						'going' => $going
+						'rsvp'  => $rsvp,
+						'going' => $going,
 					]
 				);
 			?>

@@ -21,8 +21,8 @@
 		$this->template(
 			'v2/commerce/rsvp/form/fields/cancel',
 			[
-				'rsvp' => $rsvp,
-				'going' => $going
+				'rsvp'  => $rsvp,
+				'going' => $going,
 			]
 		);
 	?>
@@ -30,8 +30,8 @@
 		$this->template(
 			'v2/commerce/rsvp/form/fields/submit',
 			[
-				'rsvp' => $rsvp,
-				'going' => $going
+				'rsvp'  => $rsvp,
+				'going' => $going,
 			]
 		);
 	?>

@@ -22,7 +22,7 @@ $switch_classes = [
 		<?php echo esc_html_x( 'RSVP active', 'Status message indicating RSVP is currently active for an event', 'event-tickets' ); ?>
 	</h4>
 	<div <?php tec_classes( $switch_classes ); ?>>
-	<?php
+		<?php
 		$admin_views->template(
 			[ 'components', 'switch-field' ],
 			[
@@ -34,7 +34,7 @@ $switch_classes = [
 				'value'       => ! empty( $tc_rsvp->ID ),
 			]
 		);
-	?>
+		?>
 	</div>
 
 	<?php $admin_views->template( [ 'editor', 'rsvp', 'panel', 'rsvp' ], get_defined_vars() ); ?>
