@@ -49,13 +49,13 @@ class Block {
 	 *
 	 * @since TBD
 	 *
-	 * @param array    $_attributes Block attributes (unused, handled by render.php).
-	 * @param string   $_content    Block content (unused, dynamic block).
-	 * @param WP_Block $_block      Block instance (unused, handled by render.php).
+	 * @param array    $_attributes Block attributes.
+	 * @param string   $_content    Block content.
+	 * @param WP_Block $_block      Block instance.
 	 *
 	 * @return string Rendered block output.
 	 */
-	public function render_block( $_attributes, $_content, $_block ) {
+	public function render_block( $_attributes, $_content, $_block ) { 	// phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		// Use the render.php file to render the block.
 		$build_path  = Tribe__Tickets__Main::instance()->plugin_path . 'build';
 		$render_file = "{$build_path}/resources/js/commerce/rsvp-block/render.php";

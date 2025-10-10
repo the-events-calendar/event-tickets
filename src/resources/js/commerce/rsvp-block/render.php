@@ -63,4 +63,3 @@ $template->template(
 	'v2/commerce/rsvp',
 	$rsvp_template_args,
 );
-?>

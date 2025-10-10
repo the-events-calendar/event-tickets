@@ -74,11 +74,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 
 			$template = isset( $post_type_object->template )
 				? (array) $post_type_object->template
-				: array();
+				: [];
 
-			$template[] = array( 'tribe/tickets' );
+			$template[] = [ 'tribe/tickets' ];
 			// Use new TC RSVP block instead of old RSVP block.
-			$template[] = array( 'tec/rsvp' );
+			$template[] = [ 'tec/rsvp' ];
 
 			$post_type_object->template = $template;
 		}
@@ -374,11 +374,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		$content      = get_post_field( 'post_content', $post_id );
 		$post_content = $this->update_tickets_block_with_childs( $content, $post, [] );
 
-		return wp_update_post( 
+		return wp_update_post(
 			[
 				'ID'           => $post->ID,
 				'post_content' => $post_content,
-			] 
+			]
 		);
 	}
 }
