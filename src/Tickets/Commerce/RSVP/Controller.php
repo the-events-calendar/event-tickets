@@ -154,7 +154,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'modify_tc_rsvp_checkin_display' ], 10, 2 );
 		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'modify_tc_rsvp_row_actions' ], 10, 2 );
 		add_filter( 'tec_tickets_plus_my_tickets_order_list_ticket_type_titles', [ $this, 'add_tc_rsvp_label_for_my_tickets' ], 10, 2 );
-		// This is the correct filter for REST API ticket data
+		// This is the correct filter for REST API ticket data.
 		add_filter( 'tribe_tickets_rest_api_ticket_data', [ $this, 'add_rsvp_counts_to_rest_api_data' ], 10, 3 );
 	}
 
@@ -456,36 +456,36 @@ class Controller extends Controller_Contract {
 	 * @return array The modified ticket data.
 	 */
 	public function add_rsvp_counts_to_rest_api_data( $data, $ticket_id, $context ) {
-		// Only add counts for TC RSVP tickets
+		// Only add counts for TC RSVP tickets.
 		if ( empty( $data['type'] ) || Constants::TC_RSVP_TYPE !== $data['type'] ) {
 			return $data;
 		}
 
-		// Get the event ID for this ticket
+		// Get the event ID for this ticket.
 		$event_id = ! empty( $data['post_id'] ) ? $data['post_id'] : get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
 		if ( ! $event_id ) {
-			// Try to get event from ticket provider
+			// Try to get event from ticket provider.
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 			if ( $provider ) {
-				$event = $provider->get_event_for_ticket( $ticket_id );
+				$event    = $provider->get_event_for_ticket( $ticket_id );
 				$event_id = $event ? $event->ID : 0;
 			}
 		}
 
-		// Calculate the actual RSVP counts using the Attendance_Totals class
+		// Calculate the actual RSVP counts using the Attendance_Totals class.
 		if ( $event_id ) {
-			$attendance_totals = new Attendance_Totals( $event_id );
-			$data['going_count'] = $attendance_totals->get_total_going();
+			$attendance_totals       = new Attendance_Totals( $event_id );
+			$data['going_count']     = $attendance_totals->get_total_going();
 			$data['not_going_count'] = $attendance_totals->get_total_not_going();
 		} else {
-			// Fallback to zero if we can't find the event
-			$data['going_count'] = 0;
+			// Fallback to zero if we can't find the event.
+			$data['going_count']     = 0;
 			$data['not_going_count'] = 0;
 		}
 
-		// Also add the show_not_going option
+		// Also add the show_not_going option.
 		$show_not_going = get_post_meta( $ticket_id, '_tribe_ticket_show_not_going', true );
-		// The meta value might be stored as 'yes', '1', or true - use tribe_is_truthy to check
+		// The meta value might be stored as 'yes', '1', or true - use tribe_is_truthy to check.
 		$data['show_not_going'] = tribe_is_truthy( $show_not_going );
 
 		return $data;

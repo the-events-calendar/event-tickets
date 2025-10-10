@@ -53,13 +53,6 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		// Return empty string to prevent duplicate display.
 		// This method will be removed once the migration to Commerce RSVP is complete.
 		return '';
-
-		// Original code commented out to prevent duplicate display:
-		// /** @var Tribe__Tickets__Editor__Template $template */
-		// $template = tribe( 'tickets.editor.template' );
-		// $post_id = $template->get( 'post_id', null, false );
-		// $tickets_view = Tribe__Tickets__Tickets_View::instance();
-		// return $tickets_view->get_rsvp_block( $post_id, false );
 	}
 
 	/**

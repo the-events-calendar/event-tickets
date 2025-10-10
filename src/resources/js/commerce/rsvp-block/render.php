@@ -40,7 +40,7 @@ if ( ! $rsvp || ! $rsvp instanceof \Tribe__Tickets__Ticket_Object ) {
 
 // Check if login is required for RSVP.
 $requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
-$must_login = ! is_user_logged_in() && in_array( 'event-tickets_rsvp', $requirements, true );
+$must_login   = ! is_user_logged_in() && in_array( 'event-tickets_rsvp', $requirements, true );
 
 // Create the RSVP template args (matching the Classic Editor approach).
 $rsvp_template_args = [
@@ -59,5 +59,8 @@ if ( ! $template ) {
 }
 
 // Render the RSVP template using the same template as Classic Editor.
-echo $template->template( 'v2/commerce/rsvp', $rsvp_template_args, false );
+$template->template(
+	'v2/commerce/rsvp',
+	$rsvp_template_args,
+);
 ?>

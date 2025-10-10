@@ -15,7 +15,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Block
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Blocks\RSVP
  */
@@ -49,15 +49,15 @@ class Block {
 	 *
 	 * @since TBD
 	 *
-	 * @param array    $attributes Block attributes.
-	 * @param string   $content    Block content.
-	 * @param WP_Block $block      Block instance.
+	 * @param array    $_attributes Block attributes (unused, handled by render.php).
+	 * @param string   $_content    Block content (unused, dynamic block).
+	 * @param WP_Block $_block      Block instance (unused, handled by render.php).
 	 *
 	 * @return string Rendered block output.
 	 */
-	public function render_block( $attributes, $content, $block ) {
+	public function render_block( $_attributes, $_content, $_block ) {
 		// Use the render.php file to render the block.
-		$build_path = Tribe__Tickets__Main::instance()->plugin_path . 'build';
+		$build_path  = Tribe__Tickets__Main::instance()->plugin_path . 'build';
 		$render_file = "{$build_path}/resources/js/commerce/rsvp-block/render.php";
 
 		// If render.php exists, include it.
