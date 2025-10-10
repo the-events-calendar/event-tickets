@@ -7,13 +7,13 @@ exports[`RSVP block actions RSVP actions set RSVP details 1`] = `
     "description": "description",
     "endDate": "January 4, 2018",
     "endDateInput": "January 4, 2018",
-    "endDateMoment": "2018-01-04T05:00:00.000Z",
+    "endDateMoment": "2018-01-04T00:00:00.000Z",
     "endTime": "23:32",
     "endTimeInput": "23:32",
     "notGoingResponses": true,
     "startDate": "January 1, 2018",
     "startDateInput": "January 1, 2018",
-    "startDateMoment": "2018-01-01T05:00:00.000Z",
+    "startDateMoment": "2018-01-01T00:00:00.000Z",
     "startTime": "12:34",
     "startTimeInput": "12:34",
     "title": "title",
@@ -130,13 +130,13 @@ exports[`RSVP block actions RSVP actions set RSVP temp details 1`] = `
     "tempDescription": "description",
     "tempEndDate": "January 4, 2018",
     "tempEndDateInput": "January 4, 2018",
-    "tempEndDateMoment": "2018-01-04T05:00:00.000Z",
+    "tempEndDateMoment": "2018-01-04T00:00:00.000Z",
     "tempEndTime": "23:32",
     "tempEndTimeInput": "23:32",
     "tempNotGoingResponses": true,
     "tempStartDate": "January 1, 2018",
     "tempStartDateInput": "January 1, 2018",
-    "tempStartDateMoment": "2018-01-01T05:00:00.000Z",
+    "tempStartDateMoment": "2018-01-01T00:00:00.000Z",
     "tempStartTime": "12:34",
     "tempStartTimeInput": "12:34",
     "tempTitle": "title",
@@ -184,7 +184,7 @@ exports[`RSVP block actions RSVP details actions set RSVP end date input 1`] = `
 exports[`RSVP block actions RSVP details actions set RSVP end date moment 1`] = `
 {
   "payload": {
-    "endDateMoment": "2018-01-01T05:00:00.000Z",
+    "endDateMoment": "2018-01-01T00:00:00.000Z",
   },
   "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
 }
@@ -238,7 +238,7 @@ exports[`RSVP block actions RSVP details actions set RSVP start date input 1`] =
 exports[`RSVP block actions RSVP details actions set RSVP start date moment 1`] = `
 {
   "payload": {
-    "startDateMoment": "2018-01-01T05:00:00.000Z",
+    "startDateMoment": "2018-01-01T00:00:00.000Z",
   },
   "type": "@@MT/TICKETS/SET_RSVP_START_DATE_MOMENT",
 }
@@ -310,7 +310,7 @@ exports[`RSVP block actions RSVP temp details actions set RSVP temp end date inp
 exports[`RSVP block actions RSVP temp details actions set RSVP temp end date moment 1`] = `
 {
   "payload": {
-    "endDateMoment": "2018-01-01T05:00:00.000Z",
+    "endDateMoment": "2018-01-01T00:00:00.000Z",
   },
   "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
 }
@@ -364,7 +364,7 @@ exports[`RSVP block actions RSVP temp details actions set RSVP temp start date i
 exports[`RSVP block actions RSVP temp details actions set RSVP temp start date moment 1`] = `
 {
   "payload": {
-    "startDateMoment": "2018-01-01T05:00:00.000Z",
+    "startDateMoment": "2018-01-01T00:00:00.000Z",
   },
   "type": "@@MT/TICKETS/SET_RSVP_TEMP_START_DATE_MOMENT",
 }

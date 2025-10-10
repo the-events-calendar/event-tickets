@@ -66,11 +66,11 @@ describe( 'RSVP block actions', () => {
 				notGoingResponses: true,
 				startDate: 'January 1, 2018',
 				startDateInput: 'January 1, 2018',
-				startDateMoment: moment( 'January 1, 2018' ),
+				startDateMoment: moment.utc( 'January 1, 2018' ),
 				startTime: '12:34',
 				endDate: 'January 4, 2018',
 				endDateInput: 'January 4, 2018',
-				endDateMoment: moment( 'January 4, 2018' ),
+				endDateMoment: moment.utc( 'January 4, 2018' ),
 				endTime: '23:32',
 				startTimeInput: '12:34',
 				endTimeInput: '23:32',
@@ -85,11 +85,11 @@ describe( 'RSVP block actions', () => {
 				tempNotGoingResponses: true,
 				tempStartDate: 'January 1, 2018',
 				tempStartDateInput: 'January 1, 2018',
-				tempStartDateMoment: moment( 'January 1, 2018' ),
+				tempStartDateMoment: moment.utc( 'January 1, 2018' ),
 				tempStartTime: '12:34',
 				tempEndDate: 'January 4, 2018',
 				tempEndDateInput: 'January 4, 2018',
-				tempEndDateMoment: moment( 'January 4, 2018' ),
+				tempEndDateMoment: moment.utc( 'January 4, 2018' ),
 				tempEndTime: '23:32',
 				tempStartTimeInput: '12:34',
 				tempEndTimeInput: '23:32',
@@ -123,7 +123,7 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP start date moment', () => {
-			expect( actions.setRSVPStartDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect( actions.setRSVPStartDateMoment( moment.utc( 'January 1, 2018' ) ) ).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP end date', () => {
@@ -135,7 +135,7 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP end date moment', () => {
-			expect( actions.setRSVPEndDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect( actions.setRSVPEndDateMoment( moment.utc( 'January 1, 2018' ) ) ).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP start time', () => {
@@ -181,7 +181,7 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP temp start date moment', () => {
-			expect( actions.setRSVPTempStartDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect( actions.setRSVPTempStartDateMoment( moment.utc( 'January 1, 2018' ) ) ).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp end date', () => {
@@ -193,7 +193,7 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP temp end date moment', () => {
-			expect( actions.setRSVPTempEndDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect( actions.setRSVPTempEndDateMoment( moment.utc( 'January 1, 2018' ) ) ).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp start time', () => {
