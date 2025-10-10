@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Move Sagas _fetch should error 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "a": 1,
         "check": undefined,
       },
@@ -19,15 +19,15 @@ Object {
 exports[`Move Sagas _fetch should error 2`] = `undefined`;
 
 exports[`Move Sagas _fetch should fetch successfully 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       undefined,
-      Object {
+      {
         "body": "a=1&check=undefined",
         "credentials": "include",
-        "headers": Object {
+        "headers": {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
         },
         "method": "POST",
@@ -40,11 +40,11 @@ Object {
 `;
 
 exports[`Move Sagas _fetch should fetch successfully 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "json": [Function],
     },
     "fn": [Function],
@@ -55,10 +55,10 @@ Object {
 exports[`Move Sagas createBody 1`] = `"a=1&b=2&c=okay%26something"`;
 
 exports[`Move Sagas fetchPostChoices should error 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/FETCH_POST_CHOICES",
     },
     "channel": null,
@@ -67,10 +67,10 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostChoices should error 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "error": "error",
       "type": "@@MT/TICKETS/FETCH_POST_CHOICES_ERROR",
     },
@@ -80,10 +80,10 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostChoices should fetch successfully 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/FETCH_POST_CHOICES",
     },
     "channel": null,
@@ -92,11 +92,11 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostChoices should fetch successfully 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "action": "move_tickets_get_post_choices",
         "ignore": 1,
         "post_type": "all",
@@ -110,11 +110,11 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostChoices should fetch successfully 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
-      "data": Object {},
+  "PUT": {
+    "action": {
+      "data": {},
       "type": "@@MT/TICKETS/FETCH_POST_CHOICES_SUCCESS",
     },
     "channel": null,
@@ -123,10 +123,10 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostTypes should error 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/FETCH_POST_TYPES",
     },
     "channel": null,
@@ -135,10 +135,10 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostTypes should error 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "error": "error",
       "type": "@@MT/TICKETS/FETCH_POST_TYPES_ERROR",
     },
@@ -148,10 +148,10 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostTypes should fetch successfully 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/FETCH_POST_TYPES",
     },
     "channel": null,
@@ -160,11 +160,11 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostTypes should fetch successfully 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "action": "move_tickets_get_post_types",
       },
     ],
@@ -175,11 +175,11 @@ Object {
 `;
 
 exports[`Move Sagas fetchPostTypes should fetch successfully 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
-      "data": Object {},
+  "PUT": {
+    "action": {
+      "data": {},
       "type": "@@MT/TICKETS/FETCH_POST_TYPES_SUCCESS",
     },
     "channel": null,
@@ -188,11 +188,11 @@ Object {
 `;
 
 exports[`Move Sagas getCurrentPostId 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getCurrentPostId": [Function],
     },
     "fn": [Function],
@@ -201,28 +201,28 @@ Object {
 `;
 
 exports[`Move Sagas getPostChoices 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Object {
-    "ignore": Object {
+  "ALL": {
+    "ignore": {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
     },
-    "post_type": Object {
+    "post_type": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "search_terms": Object {
+    "search_terms": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
@@ -231,11 +231,11 @@ Object {
 `;
 
 exports[`Move Sagas getPostChoices 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "ignore": 2,
         "post_type": 1,
         "search_terms": "",
@@ -248,21 +248,21 @@ Object {
 `;
 
 exports[`Move Sagas initialize 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
+  "ALL": [
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
@@ -272,10 +272,10 @@ Object {
 `;
 
 exports[`Move Sagas moveTicket should error 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/MOVE_TICKET",
     },
     "channel": null,
@@ -284,10 +284,10 @@ Object {
 `;
 
 exports[`Move Sagas moveTicket should error 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "error": "error",
       "type": "@@MT/TICKETS/MOVE_TICKET_ERROR",
     },
@@ -297,10 +297,10 @@ Object {
 `;
 
 exports[`Move Sagas moveTicket should fetch successfully 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/MOVE_TICKET",
     },
     "channel": null,
@@ -309,11 +309,11 @@ Object {
 `;
 
 exports[`Move Sagas moveTicket should fetch successfully 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "action": "move_ticket_type",
         "src_post_id": 1,
         "target_post_id": 3,
@@ -327,11 +327,11 @@ Object {
 `;
 
 exports[`Move Sagas moveTicket should fetch successfully 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
-      "data": Object {},
+  "PUT": {
+    "action": {
+      "data": {},
       "type": "@@MT/TICKETS/MOVE_TICKET_SUCCESS",
     },
     "channel": null,
@@ -340,10 +340,10 @@ Object {
 `;
 
 exports[`Move Sagas onModalChange should get post choices 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       500,
     ],
     "context": null,
@@ -353,10 +353,10 @@ Object {
 `;
 
 exports[`Move Sagas onModalChange should get post choices 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
+  "CALL": {
+    "args": [],
     "context": null,
     "fn": [Function],
   },
@@ -364,10 +364,10 @@ Object {
 `;
 
 exports[`Move Sagas onModalHide 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/RESET_MODAL_DATA",
     },
     "channel": null,
@@ -376,11 +376,11 @@ Object {
 `;
 
 exports[`Move Sagas onModalShow 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
-      "payload": Object {},
+  "PUT": {
+    "action": {
+      "payload": {},
       "type": "@@MT/TICKETS/SET_MODAL_DATA",
     },
     "channel": null,
@@ -389,28 +389,28 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should hide modal on success 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Object {
-    "src_post_id": Object {
+  "ALL": {
+    "src_post_id": {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
     },
-    "target_post_id": Object {
+    "target_post_id": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "ticket_type_id": Object {
+    "ticket_type_id": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
@@ -419,11 +419,11 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should hide modal on success 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Object {
+  "FORK": {
+    "args": [
+      {
         "src_post_id": 1,
         "target_post_id": 3,
         "ticket_type_id": 2,
@@ -436,10 +436,10 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should hide modal on success 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "TAKE": Object {
-    "pattern": Array [
+  "TAKE": {
+    "pattern": [
       "@@MT/TICKETS/MOVE_TICKET_SUCCESS",
       "@@MT/TICKETS/MOVE_TICKET_ERROR",
     ],
@@ -448,10 +448,10 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should hide modal on success 4`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
-    "action": Object {
+  "PUT": {
+    "action": {
       "type": "@@MT/TICKETS/HIDE_MODAL",
     },
     "channel": null,
@@ -460,28 +460,28 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should not hide modal on error 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Object {
-    "src_post_id": Object {
+  "ALL": {
+    "src_post_id": {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
     },
-    "target_post_id": Object {
+    "target_post_id": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "ticket_type_id": Object {
+    "ticket_type_id": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
@@ -490,11 +490,11 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should not hide modal on error 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Object {
+  "FORK": {
+    "args": [
+      {
         "src_post_id": 1,
         "target_post_id": 3,
         "ticket_type_id": 2,
@@ -507,10 +507,10 @@ Object {
 `;
 
 exports[`Move Sagas onModalSubmit should not hide modal on error 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "TAKE": Object {
-    "pattern": Array [
+  "TAKE": {
+    "pattern": [
       "@@MT/TICKETS/MOVE_TICKET_SUCCESS",
       "@@MT/TICKETS/MOVE_TICKET_ERROR",
     ],
@@ -521,11 +521,11 @@ Object {
 exports[`Move Sagas onModalSubmit should not hide modal on error 4`] = `undefined`;
 
 exports[`Move Sagas watchers 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Array [
+  "FORK": {
+    "args": [
+      [
         "@@MT/TICKETS/INITIALIZE_MODAL",
       ],
       [Function],
@@ -537,11 +537,11 @@ Object {
 `;
 
 exports[`Move Sagas watchers 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Array [
+  "FORK": {
+    "args": [
+      [
         "@@MT/TICKETS/SET_MODAL_DATA",
       ],
       [Function],
@@ -553,11 +553,11 @@ Object {
 `;
 
 exports[`Move Sagas watchers 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Array [
+  "FORK": {
+    "args": [
+      [
         "@@MT/TICKETS/SUBMIT_MODAL",
       ],
       [Function],
@@ -569,11 +569,11 @@ Object {
 `;
 
 exports[`Move Sagas watchers 4`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Array [
+  "FORK": {
+    "args": [
+      [
         "@@MT/TICKETS/SHOW_MODAL",
       ],
       [Function],
@@ -585,11 +585,11 @@ Object {
 `;
 
 exports[`Move Sagas watchers 5`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "FORK": Object {
-    "args": Array [
-      Array [
+  "FORK": {
+    "args": [
+      [
         "@@MT/TICKETS/HIDE_MODAL",
       ],
       [Function],

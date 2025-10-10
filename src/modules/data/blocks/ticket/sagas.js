@@ -254,7 +254,7 @@ export function* setTicketInitialState( action ) {
 		try {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
 			// Ticket purchase window should end when event starts
-			const eventStart = yield select( tec.events.app.main.data.blocks.datetime.selectors.getStart );
+			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const endMoment = yield call( momentUtil.toMoment, eventStart );
 			const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 			const endDateInput = yield datePickerFormat

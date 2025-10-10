@@ -10,6 +10,8 @@ module.exports = {
 	moduleNameMapper: {
 		'\\.(css|pcss)$': 'identity-obj-proxy',
 		'\\.(svg)$': '<rootDir>/__mocks__/icons.js',
+		// Tickets modules.
+		'^@moderntribe/tickets/(.*)': '<rootDir>/src/modules/$1',
 		// Seating feature.
 		'^@tec/tickets/seating/tests/(.*)': '<rootDir>/tests/slr_jest/$1',
 		'^@tec/tickets/seating/(.*)': '<rootDir>/src/Tickets/Seating/app/$1',

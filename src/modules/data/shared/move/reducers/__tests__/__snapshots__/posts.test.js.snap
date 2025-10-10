@@ -1,31 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Move posts reducer should fetch choices 1`] = `
-Object {
+{
   "isFetching": true,
-  "posts": Object {},
+  "posts": {},
 }
 `;
 
 exports[`Move posts reducer should fetch choices with error 1`] = `
-Object {
+{
   "isFetching": false,
-  "posts": Object {},
+  "posts": {},
 }
 `;
 
 exports[`Move posts reducer should fetch choices with success 1`] = `
-Object {
+{
   "isFetching": false,
-  "posts": Object {
+  "posts": {
     "a": 1,
   },
 }
 `;
 
 exports[`Move posts reducer should set data 1`] = `
-Object {
+{
   "isFetching": false,
-  "posts": Object {},
+  "posts": {},
 }
 `;
