@@ -585,24 +585,29 @@ describe( 'Ticket Block sagas', () => {
 			endDate = momentUtil.toDatabaseDate( endMoment );
 			endDateInput = momentUtil.toDate( endMoment );
 			endTime = momentUtil.toDatabaseTime( endMoment );
-			global.tribe = {
-				events: {
-					data: {
-						blocks: {
-							datetime: {
-								selectors: {
-									getStart: jest.fn(),
+		global.window = global.window || {};
+		window.tec = {
+			events: {
+				app: {
+					main: {
+						data: {
+							blocks: {
+								datetime: {
+									selectors: {
+										getStart: jest.fn(),
+									},
 								},
 							},
 						},
 					},
 				},
-			};
-		} );
+			},
+		};
+	} );
 
-		afterEach( () => {
-			delete global.tribe;
-		} );
+	afterEach( () => {
+		delete window.tec;
+	} );
 
 		it( 'should set ticket initial state', () => {
 			const TICKET_ID = 99;
@@ -657,7 +662,7 @@ describe( 'Ticket Block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart ),
@@ -752,7 +757,7 @@ describe( 'Ticket Block sagas', () => {
 					clientId: CLIENT_ID,
 				},
 			};
-			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
+			window.tec.events.app.main.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
 			expect( gen.next().value ).toMatchSnapshot();
@@ -790,7 +795,7 @@ describe( 'Ticket Block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart ),
@@ -873,7 +878,7 @@ describe( 'Ticket Block sagas', () => {
 					clientId: CLIENT_ID,
 				},
 			};
-			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
+			window.tec.events.app.main.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
 			expect( gen.next().value ).toMatchSnapshot();
@@ -911,7 +916,7 @@ describe( 'Ticket Block sagas', () => {
 				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart ),
@@ -1173,7 +1178,38 @@ describe( 'Ticket Block sagas', () => {
 
 			const endTimeInput = momentUtil.toTime( endMoment );
 
+			// The saga processes available_until a second time if it exists
 			expect( gen.next( endTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, apiResponse.data.available_until )
+			);
+
+			const endMoment2 = momentUtil.toMoment( apiResponse.data.available_until );
+
+			expect( gen.next( endMoment2 ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, endMoment2 )
+			);
+
+			const endDate2 = momentUtil.toDatabaseDate( endMoment2 );
+
+			expect( gen.next( endDate2 ).value ).toEqual(
+				call( momentUtil.toDate, endMoment2 )
+			);
+
+			const endDateInput2 = momentUtil.toDate( endMoment2 );
+
+			expect( gen.next( endDateInput2 ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, endMoment2 )
+			);
+
+			const endTime2 = momentUtil.toDatabaseTime( endMoment2 );
+
+			expect( gen.next( endTime2 ).value ).toEqual(
+				call( momentUtil.toTime, endMoment2 )
+			);
+
+			const endTimeInput2 = momentUtil.toTime( endMoment2 );
+
+			expect( gen.next( endTimeInput2 ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse.data.sale_price_data.start_date )
 			);
 

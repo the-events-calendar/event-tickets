@@ -27,7 +27,9 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP is settings loading', () => {
-			expect( actions.setRSVPIsSettingsLoading( true ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPIsSettingsLoading( true )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP is modal open', () => {
@@ -43,7 +45,9 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP has attendee info fields', () => {
-			expect( actions.setRSVPHasAttendeeInfoFields( true ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPHasAttendeeInfoFields( true )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP has duration error', () => {
@@ -51,49 +55,55 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP header image', () => {
-			expect( actions.setRSVPHeaderImage( {
-				id: 42,
-				src: 'test-src',
-				alt: 'test-alt',
-			} ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPHeaderImage( {
+					id: 42,
+					src: 'test-src',
+					alt: 'test-alt',
+				} )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP details', () => {
-			expect( actions.setRSVPDetails( {
-				title: 'title',
-				description: 'description',
-				capacity: 20,
-				notGoingResponses: true,
-				startDate: 'January 1, 2018',
-				startDateInput: 'January 1, 2018',
-				startDateMoment: moment( 'January 1, 2018' ),
-				startTime: '12:34',
-				endDate: 'January 4, 2018',
-				endDateInput: 'January 4, 2018',
-				endDateMoment: moment( 'January 4, 2018' ),
-				endTime: '23:32',
-				startTimeInput: '12:34',
-				endTimeInput: '23:32',
-			} ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPDetails( {
+					title: 'title',
+					description: 'description',
+					capacity: 20,
+					notGoingResponses: true,
+					startDate: 'January 1, 2018',
+					startDateInput: 'January 1, 2018',
+					startDateMoment: moment.utc( 'January 1, 2018' ),
+					startTime: '12:34',
+					endDate: 'January 4, 2018',
+					endDateInput: 'January 4, 2018',
+					endDateMoment: moment.utc( 'January 4, 2018' ),
+					endTime: '23:32',
+					startTimeInput: '12:34',
+					endTimeInput: '23:32',
+				} )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp details', () => {
-			expect( actions.setRSVPTempDetails( {
-				tempTitle: 'title',
-				tempDescription: 'description',
-				tempCapacity: 20,
-				tempNotGoingResponses: true,
-				tempStartDate: 'January 1, 2018',
-				tempStartDateInput: 'January 1, 2018',
-				tempStartDateMoment: moment( 'January 1, 2018' ),
-				tempStartTime: '12:34',
-				tempEndDate: 'January 4, 2018',
-				tempEndDateInput: 'January 4, 2018',
-				tempEndDateMoment: moment( 'January 4, 2018' ),
-				tempEndTime: '23:32',
-				tempStartTimeInput: '12:34',
-				tempEndTimeInput: '23:32',
-			} ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempDetails( {
+					tempTitle: 'title',
+					tempDescription: 'description',
+					tempCapacity: 20,
+					tempNotGoingResponses: true,
+					tempStartDate: 'January 1, 2018',
+					tempStartDateInput: 'January 1, 2018',
+					tempStartDateMoment: moment.utc( 'January 1, 2018' ),
+					tempStartTime: '12:34',
+					tempEndDate: 'January 4, 2018',
+					tempEndDateInput: 'January 4, 2018',
+					tempEndDateMoment: moment.utc( 'January 4, 2018' ),
+					tempEndTime: '23:32',
+					tempStartTimeInput: '12:34',
+					tempEndTimeInput: '23:32',
+				} )
+			).toMatchSnapshot();
 		} );
 	} );
 
@@ -103,7 +113,9 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP description', () => {
-			expect( actions.setRSVPDescription( 'description' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPDescription( 'description' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP capacity', () => {
@@ -111,31 +123,47 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP not going responses', () => {
-			expect( actions.setRSVPNotGoingResponses( true ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPNotGoingResponses( true )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP start date', () => {
-			expect( actions.setRSVPStartDate( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPStartDate( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP start date input', () => {
-			expect( actions.setRSVPStartDateInput( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPStartDateInput( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP start date moment', () => {
-			expect( actions.setRSVPStartDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPStartDateMoment(
+					moment.utc( 'January 1, 2018' )
+				)
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP end date', () => {
-			expect( actions.setRSVPEndDate( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPEndDate( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP end date input', () => {
-			expect( actions.setRSVPEndDateInput( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPEndDateInput( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP end date moment', () => {
-			expect( actions.setRSVPEndDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPEndDateMoment( moment.utc( 'January 1, 2018' ) )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP start time', () => {
@@ -147,7 +175,9 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP start time input', () => {
-			expect( actions.setRSVPStartTimeInput( '12:34' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPStartTimeInput( '12:34' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP end time input', () => {
@@ -157,11 +187,15 @@ describe( 'RSVP block actions', () => {
 
 	describe( 'RSVP temp details actions', () => {
 		test( 'set RSVP temp title', () => {
-			expect( actions.setRSVPTempTitle( 'temp title' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempTitle( 'temp title' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp description', () => {
-			expect( actions.setRSVPTempDescription( 'temp description' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempDescription( 'temp description' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp capacity', () => {
@@ -169,31 +203,49 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP temp not going responses', () => {
-			expect( actions.setRSVPTempNotGoingResponses( true ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempNotGoingResponses( true )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp start date', () => {
-			expect( actions.setRSVPTempStartDate( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempStartDate( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp start date input', () => {
-			expect( actions.setRSVPTempStartDateInput( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempStartDateInput( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp start date moment', () => {
-			expect( actions.setRSVPTempStartDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempStartDateMoment(
+					moment.utc( 'January 1, 2018' )
+				)
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp end date', () => {
-			expect( actions.setRSVPTempEndDate( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempEndDate( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp end date input', () => {
-			expect( actions.setRSVPTempEndDateInput( 'January 1, 2018' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempEndDateInput( 'January 1, 2018' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp end date moment', () => {
-			expect( actions.setRSVPTempEndDateMoment( moment( 'January 1, 2018' ) ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempEndDateMoment(
+					moment.utc( 'January 1, 2018' )
+				)
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp start time', () => {
@@ -205,11 +257,15 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'set RSVP temp start time input', () => {
-			expect( actions.setRSVPTempStartTimeInput( '12:34' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempStartTimeInput( '12:34' )
+			).toMatchSnapshot();
 		} );
 
 		test( 'set RSVP temp end time input', () => {
-			expect( actions.setRSVPTempEndTimeInput( '12:34' ) ).toMatchSnapshot();
+			expect(
+				actions.setRSVPTempEndTimeInput( '12:34' )
+			).toMatchSnapshot();
 		} );
 	} );
 
@@ -246,11 +302,11 @@ describe( 'RSVP block actions', () => {
 			expect( actions.fetchRSVPHeaderImage( 10 ) ).toMatchSnapshot();
 		} );
 
-		test( 'fetch RSVP header image', () => {
+		test( 'update RSVP header image', () => {
 			expect( actions.updateRSVPHeaderImage( {} ) ).toMatchSnapshot();
 		} );
 
-		test( 'fetch RSVP header image', () => {
+		test( 'delete RSVP header image', () => {
 			expect( actions.deleteRSVPHeaderImage() ).toMatchSnapshot();
 		} );
 	} );
