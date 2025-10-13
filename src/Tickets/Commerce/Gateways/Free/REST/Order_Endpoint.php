@@ -68,7 +68,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Free gateway.
 	 *
 	 * @since 5.10.0
-	 * @since TBD Added cart validation to reject empty carts and carts containing paid tickets.
+	 * @since 5.26.6 Added cart validation to reject empty carts and carts containing paid tickets.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
