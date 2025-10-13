@@ -1,7 +1,7 @@
 /**
  * Tests for webpack-public-path.js
  *
- * @since TBD
+ * @since 5.26.6
  */
 
 describe( 'webpack-public-path', () => {
