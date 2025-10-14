@@ -42,6 +42,9 @@ if ( ! $rsvp || ! $rsvp instanceof \Tribe__Tickets__Ticket_Object ) {
 $requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 $must_login   = ! is_user_logged_in() && in_array( 'event-tickets_rsvp', $requirements, true );
 
+// Get the login URL with redirect back to the current page.
+$login_url = wp_login_url( get_permalink( $post->ID ) );
+
 // Create the RSVP template args (matching the Classic Editor approach).
 $rsvp_template_args = [
 	'rsvp'          => $rsvp,
@@ -50,6 +53,7 @@ $rsvp_template_args = [
 	'step'          => '',
 	'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : [],
 	'must_login'    => $must_login,
+	'login_url'     => $login_url,
 ];
 
 // Get the template instance.

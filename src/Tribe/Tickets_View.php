@@ -863,15 +863,36 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Verifies if we have RSVP attendees for this user and event.
+	 * Verifies if we have TC-RSVP attendees for this user and event.
+	 *
+	 * @since TBD Updated to only check for TC-RSVP (Tickets Commerce RSVP) attendees.
 	 *
 	 * @param int       $event_id     The Event ID we're checking.
 	 * @param int|null  $user_id      An Optional User ID.
-	 * @return int
+	 * @return bool
 	 */
 	public function has_rsvp_attendees( $event_id, $user_id = null ) {
-		$rsvp_orders = $this->count_rsvp_attendees( $event_id, $user_id );
-		return ! empty( $rsvp_orders );
+		if ( ! $user_id && null !== $user_id ) {
+			// No attendees for this user.
+			return false;
+		}
+
+		// Build query args for TC-RSVP attendees only.
+		$args = [
+			'by' => [
+				'ticket_type' => Constants::TC_RSVP_TYPE,
+			],
+		];
+
+		// Add user filter if provided.
+		if ( $user_id ) {
+			$args['by']['user'] = $user_id;
+		}
+
+		// Get TC-RSVP attendee count.
+		$tc_rsvp_count = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id, $args );
+
+		return ! empty( $tc_rsvp_count );
 	}
 
 	/**
