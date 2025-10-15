@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.26.5
+Stable tag: 5.26.6
 Requires at least: 6.6
 Tested up to: 6.8.2
 Requires PHP: 7.4
@@ -198,6 +198,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.26.6] 2025-10-14 =
+
+* Security - Enhanced authorization validation for order processing endpoints. [SVUL-24]
+* Language - 1 new strings added, 31 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.26.5] 2025-09-16 =
 
