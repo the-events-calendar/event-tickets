@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.26.5",
+  "version": "5.26.6",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -58,6 +58,7 @@
     "jest": [
       "src/modules/**/__tests__/**/*.js",
       "src/resources/js/**/__tests__/**/*.js",
+      "src/resources/packages/**/__tests__/**/*.js",
       "tests/**/*.spec.js"
     ]
   },
@@ -70,6 +71,7 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start --mode=development --devtool=source-map",
     "dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
+    "jest": "jest",
     "spectral": "spectral lint",
     "changelog": "./vendor/bin/changelogger add"
   },
