@@ -15,7 +15,7 @@ use TEC\Common\Admin\Traits\Is_Tickets_Page;
 use TEC\Common\Lists\Currency;
 use TEC\Common\Lists\Country;
 use TEC\Common\Asset;
-use Tribe__Tickets__Main;
+use Tribe__Tickets__Main as Tickets;
 use TEC\Tickets\Admin\Onboarding\API;
 use TEC\Tickets\Admin\Onboarding\Data;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant as Stripe_Merchant;
@@ -177,13 +177,20 @@ class Tickets_Landing_Page extends Abstract_Admin_Page {
 			'tec-tickets-onboarding-style',
 			'tickets-admin-onboarding.css'
 		)
-			->add_to_group_path( Tribe__Tickets__Main::class )
+			->add_to_group_path( Tickets::class )
 			->add_to_group( 'tec-tickets-onboarding' )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->set_condition( [ __CLASS__, 'is_on_page' ] )
 			->use_asset_file( false )
 			->set_dependencies( 'wp-components', 'tec-variables-full', 'tribe-common-admin' )
 			->register();
+
+			// Set the webpack public path for dynamic asset loading.
+			// This ensures that webpack can correctly resolve asset URLs (images, fonts, etc.)
+			// regardless of the WordPress install location or folder structure.
+			$public_url    = trailingslashit( plugins_url( 'build/', EVENT_TICKETS_MAIN_PLUGIN_FILE ) );
+			$inline_script = sprintf( 'window.tecTicketsWebpackPublicPath = %s;', wp_json_encode( $public_url ) );
+			wp_add_inline_script( 'tec-tickets-onboarding-wizard-script', $inline_script, 'before' );
 	}
 
 	/**

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Reducer should set the is selected 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -13,16 +13,16 @@ Object {
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
-  "tickets": Object {
-    "allClientIds": Array [],
-    "byClientId": Object {},
+  "tickets": {
+    "allClientIds": [],
+    "byClientId": {},
   },
 }
 `;
 
 exports[`Reducer should set the is settings loading 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -33,16 +33,16 @@ Object {
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
-  "tickets": Object {
-    "allClientIds": Array [],
-    "byClientId": Object {},
+  "tickets": {
+    "allClientIds": [],
+    "byClientId": {},
   },
 }
 `;
 
 exports[`Reducer should set the is settings open 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -53,16 +53,16 @@ Object {
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
-  "tickets": Object {
-    "allClientIds": Array [],
-    "byClientId": Object {},
+  "tickets": {
+    "allClientIds": [],
+    "byClientId": {},
   },
 }
 `;
 
 exports[`Reducer should set the provider 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -73,16 +73,16 @@ Object {
   "provider": "provider",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
-  "tickets": Object {
-    "allClientIds": Array [],
-    "byClientId": Object {},
+  "tickets": {
+    "allClientIds": [],
+    "byClientId": {},
   },
 }
 `;
 
 exports[`Reducer should set the shared capacity 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -93,16 +93,16 @@ Object {
   "provider": "",
   "sharedCapacity": 99,
   "tempSharedCapacity": "",
-  "tickets": Object {
-    "allClientIds": Array [],
-    "byClientId": Object {},
+  "tickets": {
+    "allClientIds": [],
+    "byClientId": {},
   },
 }
 `;
 
 exports[`Reducer should set the temp shared capacity 1`] = `
-Object {
-  "headerImage": Object {
+{
+  "headerImage": {
     "alt": "",
     "id": 0,
     "src": "",
@@ -113,9 +113,9 @@ Object {
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": 99,
-  "tickets": Object {
-    "allClientIds": Array [],
-    "byClientId": Object {},
+  "tickets": {
+    "allClientIds": [],
+    "byClientId": {},
   },
 }
 `;

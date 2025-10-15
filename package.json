@@ -58,6 +58,7 @@
     "jest": [
       "src/modules/**/__tests__/**/*.js",
       "src/resources/js/**/__tests__/**/*.js",
+      "src/resources/packages/**/__tests__/**/*.js",
       "tests/**/*.spec.js"
     ]
   },
@@ -70,6 +71,7 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start --mode=development --devtool=source-map",
     "dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
+    "jest": "jest",
     "spectral": "spectral lint",
     "changelog": "./vendor/bin/changelogger add",
     "classy:format": "wp-scripts format src/resources/packages/classy tests/classy_jest && composer run classy:format",
