@@ -137,7 +137,7 @@ class Base extends Controller {
 			'filter_out_series_type_tickets_from_order_report'
 		], 10, 4 );
 
-		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [
+		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/fieldset/settings-provider', [
 			$this,
 			'hide_header_image_option_from_ticket_settings'
 		], 10, 5 );
@@ -248,7 +248,7 @@ class Base extends Controller {
 			'filter_out_series_type_tickets_from_order_report'
 		], 10, 4 );
 
-		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [
+		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/fieldset/settings-provider', [
 			$this,
 			'hide_header_image_option_from_ticket_settings'
 		], 10, 5 );
