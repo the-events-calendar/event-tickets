@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.26.6] 2025-10-14
+
+* Security - Enhanced authorization validation for order processing endpoints. [SVUL-24]
+* Language - 1 new strings added, 31 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.26.5] 2025-09-16
 
 * Fix - Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
