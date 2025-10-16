@@ -95,7 +95,7 @@ class Order_Modifier extends Model implements ModelPersistable {
 		}
 
 		// If we don't have the raw amount set, nothing else to do.
-		if ( $this->isset( 'raw_amount' ) ) {
+		if ( ! $this->isSet( 'raw_amount' ) ) {
 			return;
 		}
 
@@ -224,13 +224,6 @@ class Order_Modifier extends Model implements ModelPersistable {
 					$value = Float_Value::from_number( $value );
 				}
 				break;
-
-			case 'id':
-				if ( ! $value instanceof Positive_Integer_Value ) {
-					$value = Positive_Integer_Value::from_number( $value );
-				}
-				break;
-
 			default:
 				// No specific action needed.
 				break;

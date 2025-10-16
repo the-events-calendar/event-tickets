@@ -249,12 +249,12 @@ trait Coupons {
 				[
 					'order_modifier_id' => $coupon_id,
 					'meta_key'          => 'coupons_uses',
-					'meta_value'        => 0,
+					'meta_value'        => '0',
 				]
 			);
 		}
 
-		$existing_uses->meta_value = (int) $existing_uses->meta_value + $quantity;
+		$existing_uses->meta_value = (string) ( (int) $existing_uses->meta_value + $quantity );
 		$existing_uses->save();
 	}
 

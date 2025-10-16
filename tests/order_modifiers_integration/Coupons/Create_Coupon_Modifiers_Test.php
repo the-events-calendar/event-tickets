@@ -61,7 +61,7 @@ class Create_Coupon_Modifiers_Test extends Order_Modifiers_TestCase {
 						[
 							'order_modifier_id' => $modifier->id,
 							'meta_key'          => 'usage_limit',
-							'meta_value'        => 20,
+							'meta_value'        => '20',
 						]
 					)
 				);
