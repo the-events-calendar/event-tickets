@@ -178,7 +178,6 @@ class Controller extends Controller_Contract {
 	 *
 	 * By default, the onboarding wizard should not show when using classy in the context of a post.
 	 *
-	 *
 	 * @since TBD
 	 *
 	 * @param bool $should_show_wizard Whether to show the onboarding wizard, initial value.

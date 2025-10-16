@@ -1,30 +1,19 @@
 import * as React from 'react';
-import { MouseEventHandler } from 'react';
 import { useSelect } from '@wordpress/data';
 import { format } from '@wordpress/date';
 import { RefObject, useRef } from '@wordpress/element';
-import { DatePicker, TimePicker } from '@tec/common/classy/components';
-import type { StartOfWeek } from '@tec/common/classy/types/StartOfWeek';
 import { _x } from '@wordpress/i18n';
+import { TimePicker } from '@tec/common/classy/components';
+import { DateSelectorProps } from '@tec/common/classy/types/DateSelectorProps';
+import { default as DatePicker } from './DatePicker';
 
-export default function StartSelector( props: {
-	dateWithYearFormat: string;
-	endDate: Date;
-	highightTime: boolean;
-	isMultiday: boolean;
-	isSelectingDate: 'start' | 'end' | false;
-	onChange: ( selecting: 'start' | 'end', date: string ) => void;
-	onClick: MouseEventHandler;
-	onClose: () => void;
-	startDate: Date;
-	startOfWeek: StartOfWeek;
-	timeFormat: string;
-} ) {
+type StartSelectorProps = Omit< DateSelectorProps, 'isMultiday' >;
+
+export default function StartSelector( props: StartSelectorProps ): React.JSX.Element {
 	const {
 		dateWithYearFormat,
 		endDate,
-		highightTime,
-		isMultiday,
+		highlightTime,
 		isSelectingDate,
 		onChange,
 		onClick,
@@ -41,7 +30,7 @@ export default function StartSelector( props: {
 	}, [] );
 
 	const onTimeChange = ( date: Date ): void => {
-		onChange( 'start', format( 'Y-m-d H:i:s', date ) );
+		onChange( 'startTime', format( 'Y-m-d H:i:s', date ) );
 	};
 
 	return (
@@ -52,11 +41,10 @@ export default function StartSelector( props: {
 					dateWithYearFormat={ dateWithYearFormat }
 					endDate={ endDate }
 					isSelectingDate={ isSelectingDate }
-					isMultiday={ isMultiday }
 					onClick={ onClick }
 					onClose={ onClose }
 					onChange={ onChange }
-					showPopover={ isSelectingDate === 'start' }
+					showPopover={ isSelectingDate === 'startDate' }
 					startDate={ startDate }
 					startOfWeek={ startOfWeek }
 					currentDate={ startDate }
@@ -70,8 +58,8 @@ export default function StartSelector( props: {
 			<div className="classy-field__input classy-field__input--start-time">
 				<TimePicker
 					currentDate={ startDate }
-					endDate={ isMultiday ? null : endDate }
-					highlight={ highightTime }
+					endDate={ endDate }
+					highlight={ highlightTime }
 					onChange={ onTimeChange }
 					timeFormat={ timeFormat }
 					timeInterval={ timeInterval }

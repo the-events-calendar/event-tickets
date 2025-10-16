@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal } from '@wordpress/components';
+import { ClassyModal } from '@tec/common/classy/components';
 import { TicketUpsert } from '../TicketUpsert';
 import { TicketId, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
@@ -25,12 +25,7 @@ export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.
 	const { isUpdate, onCancel, onClose, onDelete, onSave, value } = props;
 
 	return (
-		<Modal
-			__experimentalHideHeader={ true }
-			className="classy-modal classy-modal--ticket"
-			onRequestClose={ onClose }
-			overlayClassName="classy-modal__overlay classy-modal__overlay--ticket"
-		>
+		<ClassyModal onClose={ onClose } type="ticket">
 			<TicketUpsert
 				isUpdate={ isUpdate }
 				onCancel={ onCancel }
@@ -38,6 +33,6 @@ export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.
 				onSave={ onSave }
 				value={ value }
 			/>
-		</Modal>
+		</ClassyModal>
 	);
 }

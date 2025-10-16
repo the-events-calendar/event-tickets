@@ -1,10 +1,16 @@
-import { IconNew } from '@tec/common/classy/components';
+import * as React from 'react';
+import {
+	ClassyModalActions as Actions,
+	ClassyModalFooter as Footer,
+	ClassyModalRoot as Root,
+	ClassyModalSection,
+	IconNew,
+} from '@tec/common/classy/components';
 import { Button } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
-import * as React from 'react';
 import { Fragment, useCallback, useState } from 'react';
 import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName } from '../../fields';
 import { CapacitySettings, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
@@ -34,7 +40,6 @@ const defaultValues: TicketSettings = {
 	},
 	capacitySettings: {
 		enteredCapacity: '',
-		isShared: false,
 	},
 	costDetails: {
 		...getCurrencySettings(),
@@ -46,6 +51,9 @@ const defaultValues: TicketSettings = {
 		selectedFees: [],
 	},
 };
+
+const updteTitle = _x( 'Update Ticket', 'Update ticket modal header title', 'event-tickets' );
+const createTitle = _x( 'New Ticket', 'Create ticket modal header title', 'event-tickets' );
 
 const createButtonLabel = _x( 'Create Ticket', 'Create ticket button label', 'event-tickets' );
 const updateButtonLabel = _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' );
@@ -119,11 +127,12 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	}, [ confirmEnabled, currentValues, onSave ] );
 
 	const onDeleteClicked = useCallback( (): void => {
-		TicketApi.deleteTicket( currentValues.id )
+		const id = currentValues.id as number;
+		TicketApi.deleteTicket( id )
 			.then( () => {
 				setSaveInProgress( false );
 				setTicketUpsertError( null );
-				onDelete( currentValues.id );
+				onDelete( id );
 			} )
 			.catch( ( error: Error ) => {
 				setSaveInProgress( false );
@@ -132,16 +141,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	}, [ currentValues, onDelete ] );
 
 	return (
-		<div className="classy-root">
-			<header className="classy-modal__header classy-modal__header--ticket">
-				<IconNew />
-				<h4 className="classy-modal__header-title">
-					{ isUpdate
-						? _x( 'Edit Ticket', 'Update ticket modal header title', 'event-tickets' )
-						: _x( 'New Ticket', 'Create ticket modal header title', 'event-tickets' ) }
-				</h4>
-			</header>
-
+		<Root title={ isUpdate ? updteTitle : createTitle } headerIcon={ <IconNew /> } type="ticket">
 			<hr className="classy-modal__section-separator"></hr>
 
 			{ /* todo: this should highlight any errors in the form, instead of showing a message */ }
@@ -154,18 +154,18 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				</Fragment>
 			) }
 
-			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
+			<ClassyModalSection includeSeparator={ true }>
 				<TicketName
 					value={ decodeEntities( currentValues.name ) }
 					onChange={ ( value: string ) => {
 						const newValue = value || '';
-						setConfirmEnabled( newValue !== '' );
+						setConfirmEnabled( newValue.trim() !== '' );
 						return onValueChange( 'name', newValue );
 					} }
 				/>
 
 				<TicketDescription
-					value={ decodeEntities( currentValues.description ) }
+					value={ decodeEntities( currentValues.description as string ) }
 					onChange={ ( value: string ) => onValueChange( 'description', value || '' ) }
 				/>
 
@@ -192,40 +192,35 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					value={ currentValues.salePriceData as SalePriceDetails }
 					onChange={ ( value: SalePriceDetails ) => onValueChange( 'salePriceData', value ) }
 				/>
-			</section>
+			</ClassyModalSection>
 
-			<hr className="classy-modal__section-separator" />
+			<ClassyModalSection
+				title={ _x( 'Capacity', 'Title for the capacity section in the Classy editor', 'event-tickets' ) }
+				includeSeparator={ true }
+			>
+				<Capacity
+					value={ currentValues.capacitySettings as CapacitySettings }
+					onChange={ ( value: CapacitySettings ) =>
+						onValueChange( 'capacitySettings', value as CapacitySettings )
+					}
+				/>
+			</ClassyModalSection>
 
-			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
-				<div className="classy-field__input-title">
-					{ _x( 'Capacity', 'Title for the capacity section in the Classy editor', 'event-tickets' ) }
-				</div>
+			<ClassyModalSection
+				title={ _x(
+					'Sale Duration',
+					'Title for the sale duration section in the Classy editor',
+					'event-tickets'
+				) }
+			>
+				<SaleDuration
+					saleStart={ currentValues.availableFrom as Date | '' }
+					saleEnd={ currentValues.availableUntil as Date | '' }
+				/>
+			</ClassyModalSection>
 
-				<div className="classy-field__capacity">
-					<Capacity
-						value={ currentValues.capacitySettings }
-						onChange={ ( value: CapacitySettings ) =>
-							onValueChange( 'capacitySettings', value as CapacitySettings )
-						}
-					/>
-				</div>
-			</section>
-
-			<hr className="classy-modal__section-separator" />
-
-			<section className="classy-modal__content classy-modal__content--ticket classy-field__inputs classy-field__inputs--unboxed">
-				<div className="classy-field__input-title">
-					{ _x(
-						'Sale Duration',
-						'Title for the sale duration section in the Classy editor',
-						'event-tickets'
-					) }
-				</div>
-				<SaleDuration />
-			</section>
-
-			<footer className="classy-modal__footer classy-modal__footer--ticket">
-				<div className="classy-modal__actions classy-modal__actions--ticket">
+			<Footer type="ticket">
+				<Actions type="ticket">
 					<Button
 						aria-disabled={ ! confirmEnabled }
 						isBusy={ saveInProgress }
@@ -257,8 +252,8 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 							{ deleteButtonLabel }
 						</Button>
 					) }
-				</div>
-			</footer>
-		</div>
+				</Actions>
+			</Footer>
+		</Root>
 	);
 }

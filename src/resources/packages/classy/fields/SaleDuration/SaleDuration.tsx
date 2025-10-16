@@ -1,17 +1,14 @@
-import { DateUpdateType } from '@tec/common/classy/types/FieldProps';
 import * as React from 'react';
-import { useDispatch, useSelect } from '@wordpress/data';
-import { useCallback, useMemo, useRef, useState } from '@wordpress/element';
-import { _x } from '@wordpress/i18n';
+import { ClassyFieldGroup, StartSelector, TimePicker } from '@tec/common/classy/components';
+import { isValidDate } from '@tec/common/classy/functions';
 import { getSettings as getCommonSettings } from '@tec/common/classy/localizedData';
-import { EndSelector, StartSelector } from '@tec/common/classy/components';
-import { getDate } from '@wordpress/date';
+import { DateTimeUpdateType, DateUpdateType } from '@tec/common/classy/types/FieldProps';
+import { getDate, format } from '@wordpress/date';
+import { RefObject, useCallback, useMemo, useState } from '@wordpress/element';
+import { _x } from '@wordpress/i18n';
+import DatePicker from './DatePicker';
 
-
-const { startOfWeek, dateWithYearFormat, timeFormat } = getCommonSettings();
-const saleStart = '2025-09-23 08:00:00';
-const saleEnd = '2025-10-23 17:00:00';
-const isMultiday = true;
+const { startOfWeek, dateWithYearFormat, timeFormat, timeInterval } = getCommonSettings();
 
 type NewDatesReturn = {
 	newStartDate: Date;
@@ -36,12 +33,12 @@ type SelectingDateType = DateUpdateType | false;
  * @return {NewDatesReturn} An object defining the new start and end dates, and whether the user needs to be notified
  *     of the implicit change of either.
  */
-function getNewStartEndDates(
+const getNewStartEndDates = (
 	endDate: Date,
 	startDate: Date,
 	updated: SelectingDateType,
 	newDate: string
-): NewDatesReturn {
+): NewDatesReturn => {
 	let newStartDate: Date;
 	let newEndDate: Date;
 	let notify = { start: false, end: false };
@@ -69,53 +66,54 @@ function getNewStartEndDates(
 	}
 
 	return { newStartDate, newEndDate, notify };
-}
+};
 
-export default function SaleDuration() {
-	// todo: Obtain relevant values from the store. See EventDateTime for reference.
+type SaleDurationProps = {
+	saleStart: Date | '';
+	saleEnd: Date | '';
+};
 
-	const { editPost } = useDispatch( 'core/editor' );
+// Set default start/end dates for when nothing is selected.
+const defaultStartDate = new Date();
+const defaultEndDate = new Date();
+defaultEndDate.setHours( 23, 59, 59, 999 );
+
+type Dates = {
+	start: Date;
+	end: Date;
+};
+
+export default function SaleDuration( props: SaleDurationProps ): React.JSX.Element {
+	// const { saleStart, saleEnd } = props;
 
 	const [ isSelectingDate, setIsSelectingDate ] = useState< SelectingDateType >( false );
-	const [ dates, setDates ] = useState( {
-		start: getDate( saleStart ),
-		end: getDate( saleEnd ),
-	} );
-	const [ isMultidayValue, setIsMultidayValue ] = useState( true );
-	const { start: startDate, end: endDate } = dates;
+	const [ saleStart, setSaleStart ] = useState< Date >( props.saleStart || defaultStartDate );
+	const [ saleEnd, setSaleEnd ] = useState< Date >( props.saleEnd || defaultEndDate );
+
+	// const [ dates, setDates ] = useState< Dates >( {
+	// 	start: saleStart || defaultStartDate,
+	// 	end: saleEnd || defaultEndDate,
+	// } );
+
 	const [ higlightStartTime, setHighlightStartTime ] = useState( false );
 	const [ highlightEndTime, setHighlightEndTime ] = useState( false );
 
-	// Used in dependencies.
-	const startDateIsoString = startDate.toISOString();
-	const endDateIsoString = endDate.toISOString();
-
 	const onDateChange = useCallback(
-		( updated: DateUpdateType, newDate: string ): void => {
-			const { newStartDate, newEndDate, notify } = getNewStartEndDates( endDate, startDate, updated, newDate );
-
-			// editPost( {
-			// 	meta: {
-			// 		[ METADATA_EVENT_START_DATE ]: format( phpDateMysqlFormat, newStartDate ),
-			// 		[ METADATA_EVENT_END_DATE ]: format( phpDateMysqlFormat, newEndDate ),
-			// 	},
-			// } );
-
-			// If the start date and end date are on the same year, month, day, then it's not multiday.
-			if (
-				newStartDate.getFullYear() === newEndDate.getFullYear() &&
-				newStartDate.getMonth() === newEndDate.getMonth() &&
-				newStartDate.getDate() === newEndDate.getDate()
-			) {
-				setIsMultidayValue( false );
+		( updated: DateTimeUpdateType, newDate: string ): void => {
+			// Ensure we have a valid new date.
+			if ( ! isValidDate( newDate ) ) {
+				return;
 			}
 
-			setDates( { start: newStartDate, end: newEndDate } );
+			const { newStartDate, newEndDate, notify } = getNewStartEndDates( saleEnd, saleStart, updated, newDate );
+
+			setSaleStart( newStartDate );
+			setSaleEnd( newEndDate );
 			setIsSelectingDate( false );
 			setHighlightStartTime( notify.start );
 			setHighlightEndTime( notify.end );
 		},
-		[ endDateIsoString, startDateIsoString, editPost ]
+		[ saleStart, saleEnd ]
 	);
 
 	const onDateInputClick = useCallback(
@@ -130,31 +128,90 @@ export default function SaleDuration() {
 		[ isSelectingDate ]
 	);
 
+	const endRef: RefObject< HTMLDivElement > = React.useRef( null );
+	const startRef: RefObject< HTMLDivElement > = React.useRef( null );
+
+	const startSelector = useMemo( () => {
+		return (
+			<ClassyFieldGroup>
+				<div ref={ startRef } />
+				<DatePicker
+					anchor={ startRef.current }
+					dateWithYearFormat={ dateWithYearFormat }
+					endDate={ saleEnd }
+					isSelectingDate={ isSelectingDate }
+					onChange={ onDateChange }
+					onClick={ () => onDateInputClick( 'startDate' ) }
+					onClose={ () => setIsSelectingDate( false ) }
+					showPopover={ isSelectingDate === 'startDate' }
+					startDate={ saleStart }
+					startOfWeek={ startOfWeek }
+					currentDate={ saleStart }
+				/>
+				<div className="classy-field__input classy-field__input--start-time">
+					<TimePicker
+						currentDate={ saleStart }
+						endDate={ saleEnd }
+						highlight={ higlightStartTime }
+						onChange={ ( date: Date ): void => {
+							onDateChange( 'startDate', format( 'Y-m-d H:i:s', date ) );
+						} }
+						timeFormat={ timeFormat }
+						timeInterval={ timeInterval }
+					/>
+				</div>
+			</ClassyFieldGroup>
+
+			// <StartSelector
+			// 	dateWithYearFormat={ dateWithYearFormat }
+			// 	endDate={ saleStart }
+			// 	highlightTime={ higlightStartTime }
+			// 	isAllDay={ false }
+			// 	isMultiday={ false }
+			// 	isSelectingDate={ isSelectingDate }
+			// 	onChange={ onDateChange }
+			// 	onClick={ () => onDateInputClick( 'startDate' ) }
+			// 	onClose={ () => setIsSelectingDate( false ) }
+			// 	showTitle={ false }
+			// 	startDate={ saleStart }
+			// 	startOfWeek={ startOfWeek }
+			// 	timeFormat={ timeFormat }
+			// />
+		);
+	}, [ dateWithYearFormat, saleStart, isSelectingDate, startOfWeek, timeFormat ] );
+
 	const endSelector = useMemo( () => {
 		return (
-			<EndSelector
-				dateWithYearFormat={ dateWithYearFormat }
-				endDate={ endDate }
-				highlightTime={ highlightEndTime }
-				isMultiday={ isMultidayValue }
-				isSelectingDate={ isSelectingDate }
-				onChange={ onDateChange }
-				onClick={ () => onDateInputClick( 'end' ) }
-				onClose={ () => setIsSelectingDate( false ) }
-				startDate={ startDate }
-				startOfWeek={ startOfWeek }
-				timeFormat={ timeFormat }
-			/>
+			<ClassyFieldGroup>
+				<div ref={ endRef } />
+				<DatePicker
+					anchor={ endRef.current }
+					dateWithYearFormat={ dateWithYearFormat }
+					endDate={ saleEnd }
+					isSelectingDate={ isSelectingDate }
+					onChange={ onDateChange }
+					onClick={ () => onDateInputClick( 'endDate' ) }
+					onClose={ () => setIsSelectingDate( false ) }
+					showPopover={ isSelectingDate === 'endDate' }
+					startDate={ saleStart }
+					startOfWeek={ startOfWeek }
+					currentDate={ saleEnd }
+				/>
+				<div className="classy-field__input classy-field__input--end-time">
+					<TimePicker
+						currentDate={ saleEnd }
+						endDate={ null }
+						highlight={ highlightEndTime }
+						onChange={ ( date: Date ): void => {
+							onDateChange( 'endDate', format( 'Y-m-d H:i:s', date ) );
+						} }
+						timeFormat={ timeFormat }
+						timeInterval={ timeInterval }
+					/>
+				</div>
+			</ClassyFieldGroup>
 		);
-	}, [
-		dateWithYearFormat,
-		endDateIsoString,
-		isMultidayValue,
-		isSelectingDate,
-		startDateIsoString,
-		startOfWeek,
-		timeFormat,
-	] );
+	}, [ endRef, dateWithYearFormat, saleStart, saleEnd, isSelectingDate, startOfWeek, timeFormat ] );
 
 	return (
 		<div className="classy-field__input classy-field__input--sale-duration">
@@ -162,24 +219,12 @@ export default function SaleDuration() {
 				<h4>{ _x( 'Start sales', 'Sale start date input title', 'event-tickets' ) }</h4>
 			</div>
 
-			<StartSelector
-				dateWithYearFormat={ dateWithYearFormat }
-				endDate={ endDate }
-				highlightTime={ true }
-				isAllDay={ false }
-				isMultiday={ true }
-				isSelectingDate={ isSelectingDate }
-				onChange={ onDateChange }
-				onClick={ () => onDateInputClick( 'startDate' ) }
-				onClose={ () => setIsSelectingDate( false ) }
-				startDate={ startDate }
-				startOfWeek={ startOfWeek }
-				timeFormat={ timeFormat }
-			/>
+			{ startSelector }
 
 			<div className="classy-field__input-title">
 				<h4>{ _x( 'End sales', 'Sale end date input title', 'event-tickets' ) }</h4>
 			</div>
+
 			{ endSelector }
 		</div>
 	);

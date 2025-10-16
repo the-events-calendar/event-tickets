@@ -156,7 +156,7 @@ function mapDateStringToDate( dateString: string ): Date | '' {
 		return '';
 	}
 
-	const date = new Date( `${dateString}T12:00` );
+	const date = new Date( `${ dateString }T12:00` );
 	return isNaN( date.valueOf() ) ? '' : date;
 }
 
@@ -189,14 +189,12 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 	// Map sale dates
 	if ( ticketData.availableFrom ) {
 		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS".
-		const availableFromDate = new Date( ticketData.availableFrom );
-		body.start_date = availableFromDate.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
+		body.start_date = ticketData.availableFrom.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
 	}
 
 	if ( ticketData.availableUntil ) {
 		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS".
-		const availableUntilDate = new Date( ticketData.availableUntil );
-		body.end_date = availableUntilDate.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
+		body.end_date = ticketData.availableUntil.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
 	}
 
 	// Map sale price data.
@@ -259,7 +257,7 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
  */
 const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): TicketSettings => {
 	// Map capacity settings based on stock management.
-	const { capacity =  '' } = apiResponse;
+	const { capacity = '' } = apiResponse;
 	const capacitySettings: CapacitySettings = {
 		enteredCapacity: capacity === -1 ? '' : capacity,
 	};
@@ -278,8 +276,8 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 	};
 
 	// Map available dates.
-	const availableFrom = apiResponse.start_date || '';
-	const availableUntil = apiResponse.end_date || '';
+	const availableFrom = apiResponse.start_date ? new Date( apiResponse.start_date ) : '';
+	const availableUntil = apiResponse.end_date ? new Date( apiResponse.end_date ) : '';
 
 	// @todo: Handle fees and other fields.
 	// These are not provided by the API, so we use defaults for now.

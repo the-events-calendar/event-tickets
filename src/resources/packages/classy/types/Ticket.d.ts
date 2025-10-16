@@ -91,10 +91,8 @@ export type TicketSettings = {
 	menuOrder?: number;
 
 	// Ticket sale dates.
-	availableFrom?: string;
-	availableFromDetails?: TicketDate;
-	availableUntil?: string;
-	availableUntilDetails?: TicketDate;
+	availableFrom?: Date | '';
+	availableUntil?: Date | '';
 
 	// Features.
 	supportsAttendeeInformation?: boolean;
