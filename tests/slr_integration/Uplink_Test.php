@@ -207,7 +207,7 @@ class Uplink_Test extends Controller_Test_Case {
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $fields, JSON_SNAPSHOT_OPTIONS ) );
 		$this->assertMatchesHtmlSnapshot( $connect_html );
 	}
-	
+
 	public function test_reset_data_on_new_connection() {
 		Maps_Service::insert_rows_from_service(
 			[
@@ -226,7 +226,7 @@ class Uplink_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Maps_Service::update_transient_name(), time() );
-		
+
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
@@ -248,7 +248,7 @@ class Uplink_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Layouts_Service::update_transient_name(), time() );
-		
+
 		Seat_Types::insert_many(
 			[
 				[
@@ -268,21 +268,21 @@ class Uplink_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( Service\Seat_Types::update_transient_name(), time() );
-		
-		$this->assertCount( 2, iterator_to_array( Tables\Maps::fetch_all() ) );
-		$this->assertCount( 2, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 2, iterator_to_array( Seat_Types::fetch_all() ) );
-		
+
+		$this->assertCount( 2, iterator_to_array( Tables\Maps::get_all() ) );
+		$this->assertCount( 2, iterator_to_array( Layouts::get_all() ) );
+		$this->assertCount( 2, iterator_to_array( Seat_Types::get_all() ) );
+
 		$this->make_controller()->register();
-		
+
 		do_action( 'stellarwp/uplink/tec/tec-seating/connected' );
-		
+
 		$this->assertEmpty( get_transient( Maps_Service::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Layouts_Service::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Service\Seat_Types::update_transient_name() ) );
-		
-		$this->assertEmpty( iterator_to_array( Tables\Maps::fetch_all() ) );
-		$this->assertEmpty( iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertEmpty( iterator_to_array( Seat_Types::fetch_all() ) );
+
+		$this->assertEmpty( iterator_to_array( Tables\Maps::get_all() ) );
+		$this->assertEmpty( iterator_to_array( Layouts::get_all() ) );
+		$this->assertEmpty( iterator_to_array( Seat_Types::get_all() ) );
 	}
 }
