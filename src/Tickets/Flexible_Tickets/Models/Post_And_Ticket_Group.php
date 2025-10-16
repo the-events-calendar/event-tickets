@@ -37,6 +37,15 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 		'type'     => 'string',
 	];
 
+	/**
+	 * Finds a model instance by ID.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $id The model ID.
+	 *
+	 * @return self|null The model instance or null if not found.
+	 */
 	public static function find( $id ): ?self {
 		return tribe( Posts_And_Ticket_Groups::class )->find_by_id( $id );
 	}

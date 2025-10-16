@@ -19,8 +19,6 @@ use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
 use TEC\Common\StellarWP\Schema\Columns\Blob_Column;
 use TEC\Common\StellarWP\Schema\Columns\Column_Types;
 use TEC\Common\StellarWP\Schema\Columns\Boolean_Column;
-use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
-use TEC\Common\StellarWP\Schema\Indexes\Primary_Key;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 use TEC\Tickets\Seating\Logging;
 

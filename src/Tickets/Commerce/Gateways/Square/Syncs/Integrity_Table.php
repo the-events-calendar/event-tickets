@@ -72,6 +72,13 @@ class Integrity_Table extends Table {
 	 */
 	protected static $uid_column = 'id';
 
+	/**
+	 * Returns the schema history for this table.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, callable>
+	 */
 	public static function get_schema_history(): array {
 		$table_name = self::table_name( true );
 		return [

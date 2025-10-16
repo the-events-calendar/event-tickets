@@ -68,6 +68,13 @@ class Order_Modifier extends Model implements ModelPersistable {
 	 */
 	protected static string $order_modifier_type;
 
+	/**
+	 * Returns the properties definition for this model.
+	 *
+	 * @since 5.18.0
+	 *
+	 * @return array<string, ModelPropertyDefinition>
+	 */
 	protected static function properties(): array {
 		return [
 			'raw_amount' => ( new ModelPropertyDefinition() )->type( 'float', 'object' )->castWith( fn( $value ): Float_Value => Float_Value::from_number( $value ) ),
