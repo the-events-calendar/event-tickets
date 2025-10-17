@@ -80,29 +80,4 @@ class Order_Modifier_Relationships extends Table {
 			},
 		];
 	}
-
-	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @return string The table creation SQL, in the format supported
-	 *                by the `dbDelta` function.
-	 */
-	public function get_definition(): string {
-		global $wpdb;
-		$table_name      = self::table_name( true );
-		$charset_collate = $wpdb->get_charset_collate();
-
-		return "
-			CREATE TABLE `$table_name` (
-				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`modifier_id` BIGINT UNSIGNED NOT NULL,
-				`post_id` BIGINT UNSIGNED NOT NULL,
-				`post_type` VARCHAR(20) NOT NULL,
-				PRIMARY KEY (`id`)
-			) $charset_collate;
-		";
-	}
 }

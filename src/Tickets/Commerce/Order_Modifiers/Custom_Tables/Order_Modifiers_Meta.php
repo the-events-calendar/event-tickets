@@ -89,32 +89,4 @@ class Order_Modifiers_Meta extends Table {
 			},
 		];
 	}
-
-	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
-	 *
-	 * @since 5.18.0
-	 * @since 5.25.0 Removed the `updated_at` column.
-	 *
-	 * @return string The table creation SQL, in the format supported
-	 *                by the `dbDelta` function.
-	 */
-	public function get_definition(): string {
-		global $wpdb;
-		$table_name      = self::table_name( true );
-		$charset_collate = $wpdb->get_charset_collate();
-
-		return "
-				CREATE TABLE `$table_name` (
-				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`order_modifier_id` BIGINT UNSIGNED NOT NULL,
-				`meta_key` VARCHAR(100) NOT NULL,
-				`meta_value` TEXT NOT NULL,
-				`priority` INT NOT NULL DEFAULT 0,
-				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY (`id`)
-			) $charset_collate;
-		";
-	}
 }
