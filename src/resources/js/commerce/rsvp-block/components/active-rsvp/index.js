@@ -32,7 +32,7 @@ const ActiveRSVP = ( {
 	const [ editOpenTime, setEditOpenTime ] = useState( attributes.openRsvpTime || '12:00:00' );
 	const [ editCloseDate, setEditCloseDate ] = useState( attributes.closeRsvpDate || '' );
 	const [ editCloseTime, setEditCloseTime ] = useState( attributes.closeRsvpTime || '12:00:00' );
-	const [ attendeeInfo, setAttendeeInfo ] = useState( { content: __( 'Name, Email', 'event-tickets' ), onClick: null } );
+	const [ attendeeInfo, setAttendeeInfo ] = useState( { content: __( 'None', 'event-tickets' ), onClick: null } );
 
 	const {
 		limit,
@@ -60,7 +60,7 @@ const ActiveRSVP = ( {
 		};
 
 		document.addEventListener( 'rsvpAttendeeInfoUpdate', handleAttendeeInfoUpdate );
-		
+
 		return () => {
 			document.removeEventListener( 'rsvpAttendeeInfoUpdate', handleAttendeeInfoUpdate );
 		};
@@ -71,15 +71,15 @@ const ActiveRSVP = ( {
 		if ( ! openRsvpDate || ! closeRsvpDate ) {
 			return __( 'Date not set', 'event-tickets' );
 		}
-		
+
 		const openMonth = format( 'n', new Date( openRsvpDate ) );
 		const openDay = format( 'j', new Date( openRsvpDate ) );
 		const openYear = format( 'y', new Date( openRsvpDate ) );
-		
+
 		const closeMonth = format( 'n', new Date( closeRsvpDate ) );
 		const closeDay = format( 'j', new Date( closeRsvpDate ) );
 		const closeYear = format( 'y', new Date( closeRsvpDate ) );
-		
+
 		return `${openMonth}/${openDay}/${openYear} - ${closeMonth}/${closeDay}/${closeYear}`;
 	};
 
@@ -102,13 +102,13 @@ const ActiveRSVP = ( {
 		const updates = {
 			limit: editLimit
 		};
-		
+
 		setAttributes( updates );
-		
+
 		if ( onUpdate ) {
 			await onUpdate( updates );
 		}
-		
+
 		setIsLimitModalOpen( false );
 	};
 
@@ -119,13 +119,13 @@ const ActiveRSVP = ( {
 			closeRsvpDate: editCloseDate,
 			closeRsvpTime: editCloseTime
 		};
-		
+
 		setAttributes( updates );
-		
+
 		if ( onUpdate ) {
 			await onUpdate( updates );
 		}
-		
+
 		setIsWindowModalOpen( false );
 	};
 
@@ -145,14 +145,14 @@ const ActiveRSVP = ( {
 					<div className="tec-rsvp-block__left-content">
 						{/* RSVP Title */}
 						<h3 className="tec-rsvp-block__title">{ __( 'RSVP', 'event-tickets' ) }</h3>
-						
+
 						{/* Attendance Statistics */}
 						<div className="tec-rsvp-block__stats-section">
 							<div className="tec-rsvp-block__main-stat">
 								<span className="tec-rsvp-block__stat-number">{ goingCount }</span>
 								<span className="tec-rsvp-block__stat-label">{ __( 'Going', 'event-tickets' ) }</span>
 							</div>
-							
+
 							<a href="#" className="tec-rsvp-block__view-attendees">
 								{ __( 'View Attendees', 'event-tickets' ) }
 							</a>
