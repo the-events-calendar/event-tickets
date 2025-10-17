@@ -3,6 +3,7 @@
  * The template for the ticket header image upload.
  *
  * @since 5.8.0
+ * @depecated TBD
  *
  * @version 5.8.0
  *

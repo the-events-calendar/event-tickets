@@ -201,8 +201,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $args            {
-	 *      The list of step template arguments.
+	 * @param array           $args            {
+	 *                The list of step template arguments.
 	 *
 	 *      @type int                           $rsvp_id    The RSVP ticket ID.
 	 *      @type int                           $post_id    The ticket ID.
@@ -263,12 +263,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				 *
 				 * @since TBD
 				 *
-				 * @param array $extra_args The extra arguments for the cart item.
-				 * @param int   $ticket_id  The ticket ID.
-				 * @param int   $quantity   The quantity of tickets.
-				 * @param array $first_attendee The parsed attendee details.
+				 * @param array           $extra_args     The extra arguments for the cart item.
+				 * @param int             $ticket_id      The ticket ID.
+				 * @param int             $quantity       The quantity of tickets.
+				 * @param array           $first_attendee The parsed attendee details.
+				 * @param WP_REST_Request $request        The REST API request object.
 				 */
-				$extra_args = apply_filters( 'tec_tickets_commerce_rsvp_cart_upsert_item_args', $extra_args, $ticket_id, $quantity, $first_attendee );
+				$extra_args = apply_filters( 'tec_tickets_commerce_rsvp_cart_upsert_item_args', $extra_args, $ticket_id, $quantity, $first_attendee, $request );
 
 				$cart->upsert_item(
 					$ticket_id,

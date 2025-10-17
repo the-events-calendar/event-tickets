@@ -217,7 +217,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 
 		$request_params = $request->get_params();
 		$post_id        = Arr::get( $request_params, 'post_ID' );
-		$ticket_id      = Arr::get( $request_params, 'rsvp_id', '' );
+		$ticket_id      = Arr::get( $request_params, 'ticket_id', '' );
 
 		if ( empty( $post_id ) || empty( $ticket_id ) ) {
 			return new WP_REST_Response(
@@ -288,7 +288,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 
 		$request_params = $request->get_params();
 		$post_id        = Arr::get( $request_params, 'post_ID' );
-		$ticket_id      = Arr::get( $request_params, 'rsvp_id', '' );
+		$ticket_id      = Arr::get( $request_params, 'ticket_id', '' );
 
 		if ( empty( $post_id ) || empty( $ticket_id ) ) {
 			return new WP_REST_Response(
