@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Add logic to only show the purchase button during checkout after billing info is filled out. [ET-2592]

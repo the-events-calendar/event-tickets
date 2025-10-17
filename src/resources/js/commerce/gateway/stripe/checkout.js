@@ -546,10 +546,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.setupPaymentElement = () => {
-		// Only if we don't have the address fields to collect
+		// Only if we don't have the address fields to collect.
 		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
 			const walletSettings = obj.getWallets();
-			// Instantiate the PaymentElement
+			// Instantiate the PaymentElement.
 			obj.paymentElement = obj.stripeElements.create( 'payment', {
 				fields: {
 					name: 'auto',
@@ -632,6 +632,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Setup and initialize Stripe API.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Reveal submit button early if no billing info is required.
 	 *
 	 * @return {Promise<void>}
 	 */
@@ -650,6 +651,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			clientSecret: obj.checkout.paymentIntentData.key,
 			appearance: obj.checkout.elementsAppearance,
 		} );
+
+		// Reveal submit button if no billing info is required.
+		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+		}
 
 		if ( obj.checkout.paymentElement ) {
 			obj.setupPaymentElement();
