@@ -61,8 +61,8 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $key The attribute key.
-	 * @param mixed $value The attribute value.
+	 * @param string $key   The attribute key.
+	 * @param mixed  $value The attribute value.
 	 *
 	 * @return ModelInterface
 	 */
