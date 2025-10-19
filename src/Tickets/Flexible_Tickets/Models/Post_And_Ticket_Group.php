@@ -48,7 +48,7 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	 */
 	protected function afterConstruct(): void {
 		$this->propertyCollection->tap(
-			function( ModelProperty $property ) {
+			function ( ModelProperty $property ) {
 				if ( null !== $property->getValue() && method_exists( $this, "validate_{$property->getKey()}" ) ) {
 					$this->{"validate_{$property->getKey()}"}( $property->getValue() );
 				}
@@ -66,7 +66,7 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	 *
 	 * @return ModelInterface
 	 */
-	public function setAttribute(string $key, $value): ModelInterface {
+	public function setAttribute( string $key, $value ): ModelInterface {
 		parent::setAttribute( $key, $value );
 
 		if ( null !== $value && method_exists( $this, "validate_{$key}" ) ) {
