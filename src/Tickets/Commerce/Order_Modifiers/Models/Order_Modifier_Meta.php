@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifiers_Meta;
+use TEC\Common\StellarWP\Models\ModelPropertyDefinition;
 
 /**
  * Class Order_Modifier_Meta.
@@ -37,10 +38,18 @@ class Order_Modifier_Meta extends Model implements ModelPersistable {
 		'id'                => 'int',
 		'order_modifier_id' => 'int',
 		'meta_key'          => 'string',
-		'meta_value'        => 'string',
 		'priority'          => [ 'int', 0 ],
 		'created_at'        => 'string',
 	];
+
+	/**
+	 * @inheritDoc
+	 */
+	protected static function properties(): array {
+		return [
+			'meta_value' => ( new ModelPropertyDefinition() )->type( 'string', 'int' ),
+		];
+	}
 
 	/**
 	 * Finds a model by its ID.
