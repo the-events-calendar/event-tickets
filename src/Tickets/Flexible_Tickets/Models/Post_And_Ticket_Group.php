@@ -13,6 +13,8 @@ use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
+use TEC\Common\StellarWP\Models\Contracts\Model as ModelInterface;
+use TEC\Common\StellarWP\Models\ModelProperty;
 
 /**
  * Class Post_And_Ticket_Group.
@@ -36,6 +38,43 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 		'group_id' => 'int',
 		'type'     => 'string',
 	];
+
+	/**
+	 * Validate the model data after construction.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function afterConstruct(): void {
+		$this->propertyCollection->tap(
+			function( ModelProperty $property ) {
+				if ( null !== $property->getValue() && method_exists( $this, "validate_{$property->getKey()}" ) ) {
+					$this->{"validate_{$property->getKey()}"}( $property->getValue() );
+				}
+			}
+		);
+	}
+
+	/**
+	 * Set an attribute on the model.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key The attribute key.
+	 * @param mixed $value The attribute value.
+	 *
+	 * @return ModelInterface
+	 */
+	public function setAttribute(string $key, $value): ModelInterface {
+		parent::setAttribute( $key, $value );
+
+		if ( null !== $value && method_exists( $this, "validate_{$key}" ) ) {
+			$this->{"validate_{$key}"}( $value );
+		}
+
+		return $this;
+	}
 
 	/**
 	 * Finds a model instance by ID.
