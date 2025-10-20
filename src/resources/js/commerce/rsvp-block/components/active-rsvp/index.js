@@ -3,17 +3,19 @@
  *
  * @since TBD
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { Button, Modal, TextControl, Spinner } from '@wordpress/components';
 import { format } from '@wordpress/date';
 import { applyFilters } from '@wordpress/hooks';
+import { select } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { CalendarIcon as PencilIcon } from '../../assets/pencil';
+import { globals } from '@moderntribe/common/utils';
 import './styles.pcss';
 
 const ActiveRSVP = ( {
@@ -45,10 +47,23 @@ const ActiveRSVP = ( {
 		notGoingCount = 0
 	} = attributes;
 
-	// Calculate remaining capacity based on actual going count
-	const remaining = limit ? Math.max( 0, parseInt( limit, 10 ) - (goingCount || 0) ) : null;
+	// Calculate remaining capacity based on actual going count.
+	const remaining = limit > 0 ? Math.max( 0, parseInt( limit, 10 ) - (goingCount || 0) ) : null;
 
-	// Listen for attendee information updates from ET+
+	// Build attendees URL dynamically using WordPress data API.
+	const attendeesUrl = useMemo( () => {
+		const adminURL = globals.adminUrl();
+		const postType = select( 'core/editor' )?.getCurrentPostType() || 'tribe_events';
+		const postId = select( 'core/editor' )?.getCurrentPostId();
+
+		if ( ! postId ) {
+			return '#';
+		}
+
+		return `${ adminURL }edit.php?post_type=${ postType }&page=tickets-attendees&event_id=${ postId }`;
+	}, [] );
+
+	// Listen for attendee information updates from ET+.
 	useEffect( () => {
 		const handleAttendeeInfoUpdate = ( event ) => {
 			if ( event.detail && event.detail.rsvpId === rsvpId ) {
@@ -84,8 +99,8 @@ const ActiveRSVP = ( {
 	};
 
 	const handleOpenLimitModal = () => {
-		// Reset edit value to current value
-		setEditLimit( limit || '' );
+		// Reset edit value to current value. Show blank for unlimited.
+		setEditLimit( limit && limit > 0 ? limit : '' );
 		setIsLimitModalOpen( true );
 	};
 
@@ -99,8 +114,11 @@ const ActiveRSVP = ( {
 	};
 
 	const handleSaveLimit = async () => {
+		// Convert empty string to -1 (unlimited), or parse the integer value.
+		const limitValue = editLimit === '' ? -1 : parseInt( editLimit, 10 );
+
 		const updates = {
-			limit: editLimit
+			limit: limitValue
 		};
 
 		setAttributes( updates );
@@ -150,53 +168,52 @@ const ActiveRSVP = ( {
 						<div className="tec-rsvp-block__stats-section">
 							<div className="tec-rsvp-block__main-stat">
 								<span className="tec-rsvp-block__stat-number">{ goingCount }</span>
-								<span className="tec-rsvp-block__stat-label">{ __( 'Going', 'event-tickets' ) }</span>
+								<a
+									href={ attendeesUrl }
+									className="tec-rsvp-block__view-attendees"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{ __( 'View Attendees', 'event-tickets' ) }
+								</a>
 							</div>
-
-							<a href="#" className="tec-rsvp-block__view-attendees">
-								{ __( 'View Attendees', 'event-tickets' ) }
-							</a>
+							<span className="tec-rsvp-block__stat-label">{ __( 'Going', 'event-tickets' ) }</span>
 						</div>
 
 						{/* Combined Remaining and Not Going Stats */}
 						<div className="tec-rsvp-block__combined-stats">
-							{ remaining !== null && (
-								<span className="tec-rsvp-block__stat-text">
-									<span className="tec-rsvp-block__stat-value">{ remaining }</span>
-									{ __( ' Remaining', 'event-tickets' ) }
-									{ isSelected && (
-										<Button
-											variant="link"
-											className="tec-rsvp-block__inline-edit-icon"
-											onClick={ handleOpenLimitModal }
-											aria-label={ __( 'Edit RSVP limit', 'event-tickets' ) }
-										>
-											{ PencilIcon }
-										</Button>
-									) }
-								</span>
-							) }
-							{ showNotGoingOption && remaining !== null && (
-								<span className="tec-rsvp-block__stat-separator">, </span>
-							) }
+							<div className="tec-rsvp-block__stat-text">
+								<span className="tec-rsvp-block__stat-value">{ remaining !== null ? remaining : '—' }</span>
+								{ __( ' Remaining', 'event-tickets' ) }
+								{ isSelected && (
+									<Button
+										variant="link"
+										className="tec-rsvp-block__inline-edit-icon"
+										onClick={ handleOpenLimitModal }
+										aria-label={ __( 'Edit RSVP limit', 'event-tickets' ) }
+									>
+										{ PencilIcon }
+									</Button>
+								) }
+							</div>
 							{ showNotGoingOption && (
-								<span className="tec-rsvp-block__stat-text">
+								<div className="tec-rsvp-block__stat-text">
 									<span className="tec-rsvp-block__stat-value">{ notGoingCount }</span>
 									{ __( ' Not going', 'event-tickets' ) }
-								</span>
+								</div>
 							) }
 						</div>
 					</div>
 
 					{/* Right side: Action Buttons */}
-					<div className="tec-rsvp-block__right-actions">
-						<Button variant="primary" className="tec-rsvp-block__going-btn">
+					<div className="tec-rsvp-block__right-actions tribe-common">
+						<Button variant="primary" className="tec-rsvp-block__going-btn tribe-common-c-btn">
 							{ __( 'Going', 'event-tickets' ) }
 						</Button>
 						{ showNotGoingOption && (
-							<Button variant="secondary" className="tec-rsvp-block__cant-go-btn">
+							<a href="#" className="tec-rsvp-block__cant-go-btn">
 								{ __( "Can't go", 'event-tickets' ) }
-							</Button>
+							</a>
 						) }
 					</div>
 				</div>
@@ -285,7 +302,6 @@ const ActiveRSVP = ( {
 							type="text"
 							value={ editLimit }
 							onChange={ setEditLimit }
-							placeholder={ __( 'Leave blank for unlimited', 'event-tickets' ) }
 						/>
 						<p className="tec-rsvp-block__modal-help">
 							{ __( 'Leave blank for unlimited', 'event-tickets' ) }
