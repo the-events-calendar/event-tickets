@@ -55,6 +55,7 @@ class Tribe__Tickets__CSV_Importer__Column_Names {
 	 */
 	public function filter_rsvp_column_mapping( $mapping ) {
 		$mapping['rsvp'] = get_option( 'tribe_events_import_column_mapping_rsvp', array() );
+
 		return $mapping;
 	}
 }

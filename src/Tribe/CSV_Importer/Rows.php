@@ -51,10 +51,11 @@ class Tribe__Tickets__CSV_Importer__Rows {
 		}
 
 		// Create a clone to avoid modifying the original post type object.
-		$rsvp_post_type = clone $post_type;
-		$rsvp_post_type->name = 'rsvp';
+		$rsvp_post_type               = clone $post_type;
+		$rsvp_post_type->name         = 'rsvp';
 		$rsvp_post_type->labels->name = esc_html( tribe_get_rsvp_label_plural( 'post_type_label' ) );
-		$post_types[] = $rsvp_post_type;
+		$post_types[]                 = $rsvp_post_type;
+
 		return $post_types;
 	}
 }

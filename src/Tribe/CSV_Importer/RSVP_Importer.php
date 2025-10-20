@@ -105,6 +105,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 				'post_type'      => Ticket::POSTTYPE,
 				'posts_per_page' => 1,
 				'post_status'    => 'any',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => [
 					'relation' => 'AND',
 					[
