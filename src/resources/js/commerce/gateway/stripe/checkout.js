@@ -334,8 +334,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
-		// Only if we don't have the address fields to collect
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+		// Only if we don't have the address fields to collect.
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
 			return obj.stripeLib
 				.confirmPayment( {
 					elements: obj.stripeElements,
@@ -547,7 +547,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupPaymentElement = () => {
 		// Only if we don't have the address fields to collect.
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
 			const walletSettings = obj.getWallets();
 			// Instantiate the PaymentElement.
 			obj.paymentElement = obj.stripeElements.create( 'payment', {
@@ -652,9 +652,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			appearance: obj.checkout.elementsAppearance,
 		} );
 
-		// Reveal submit button if no billing info is required.
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
-			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+	// Reveal submit button if no billing info is required.
+	if ( 0 === $( obj.selectors.renderButton ).length ) {
+		$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
 		}
 
 		if ( obj.checkout.paymentElement ) {
