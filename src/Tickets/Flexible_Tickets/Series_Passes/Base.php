@@ -14,7 +14,6 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Provider as CT_Templates_Provider;
-use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
 use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use TEC\Tickets\Flexible_Tickets\Repositories\Event_Repository;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
@@ -54,7 +53,7 @@ class Base extends Controller {
 	/**
 	 * Base constructor.
 	 *
-	 * since 5.8.0
+	 * Since 5.8.0
 	 *
 	 * @param Container   $container   A reference to the Container.
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
@@ -79,100 +78,163 @@ class Base extends Controller {
 	 */
 	protected function do_register(): void {
 		$series_post_type = Series_Post_Type::POSTTYPE;
-		add_filter( "tec_tickets_enabled_ticket_forms_{$series_post_type}", [
-			$this,
-			'enable_ticket_forms_for_series'
-		] );
+		add_filter(
+			"tec_tickets_enabled_ticket_forms_{$series_post_type}",
+			[
+				$this,
+				'enable_ticket_forms_for_series',
+			] 
+		);
 
 		// Filter the HTML template used to render Tickets on the front-end.
-		add_filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
-			$this,
-			'classic_editor_ticket_items'
-		], 10, 5 );
+		add_filter(
+			'tribe_template_pre_html:tickets/v2/tickets/items',
+			[
+				$this,
+				'classic_editor_ticket_items',
+			],
+			10,
+			5 
+		);
 
 		// Remove the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
-		remove_action( 'admin_init', [
-			$ticket_admin_notices,
-			'maybe_display_classic_editor_ecp_recurring_tickets_notice'
-		] );
+		remove_action(
+			'admin_init',
+			[
+				$ticket_admin_notices,
+				'maybe_display_classic_editor_ecp_recurring_tickets_notice',
+			] 
+		);
 
-		add_filter( 'tec_tickets_attendees_event_details_top_label', [
-			$this,
-			'filter_attendees_event_details_top_label'
-		], 10, 2 );
+		add_filter(
+			'tec_tickets_attendees_event_details_top_label',
+			[
+				$this,
+				'filter_attendees_event_details_top_label',
+			],
+			10,
+			2 
+		);
 
 		// Filter the columns displayed in the series editor events list.
 		add_filter(
-			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
-			$this,
-			'filter_series_editor_occurrence_list_columns'
-		] );
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns',
+			[
+				$this,
+				'filter_series_editor_occurrence_list_columns',
+			] 
+		);
 
-		add_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
-			$this,
-			'render_series_editor_occurrence_list_column_ticket_types'
-		] );
+		add_action(
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types',
+			[
+				$this,
+				'render_series_editor_occurrence_list_column_ticket_types',
+			] 
+		);
 
-		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [
-			$this,
-			'include_all_events_in_move_ticket_choices'
-		] );
+		add_filter(
+			'tec_tickets_find_ticket_type_host_posts_query_args',
+			[
+				$this,
+				'include_all_events_in_move_ticket_choices',
+			] 
+		);
 		add_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
-		add_filter( 'tribe_template_context:tickets/admin-views/attendees', [
-			$this,
-			'filter_attendees_report_context'
-		] );
-		add_action( 'tribe_tickets_attendees_event_details_list_top', [
-			$this,
-			'render_series_details_on_attendee_report'
-		], 50 );
-		add_action( 'tribe_tickets_report_event_details_list_top', [
-			$this,
-			'render_series_details_on_order_report'
-		], 50 );
+		add_filter(
+			'tribe_template_context:tickets/admin-views/attendees',
+			[
+				$this,
+				'filter_attendees_report_context',
+			] 
+		);
+		add_action(
+			'tribe_tickets_attendees_event_details_list_top',
+			[
+				$this,
+				'render_series_details_on_attendee_report',
+			],
+			50 
+		);
+		add_action(
+			'tribe_tickets_report_event_details_list_top',
+			[
+				$this,
+				'render_series_details_on_order_report',
+			],
+			50 
+		);
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
-		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [
-			$this,
-			'filter_out_series_type_tickets_from_order_report'
-		], 10, 4 );
+		add_filter(
+			'tec_tickets_commerce_order_report_summary_should_include_event_sales_data',
+			[
+				$this,
+				'filter_out_series_type_tickets_from_order_report',
+			],
+			10,
+			4 
+		);
 
-		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/fieldset/settings-provider', [
-			$this,
-			'hide_header_image_option_from_ticket_settings'
-		], 10, 5 );
+		add_filter(
+			'tribe_template_pre_html:tickets/admin-views/editor/fieldset/settings-provider',
+			[
+				$this,
+				'hide_header_image_option_from_ticket_settings',
+			],
+			10,
+			5 
+		);
 		add_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
 		add_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
 
 		// TicketsCommerce Checkout handlers for Series.
-		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [
-			$this,
-			'filter_tc_checkout_template_args'
-		] );
-		add_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [
-			$this,
-			'hide_non_series_cart_footer_html'
-		], 10, 5 );
-		add_filter( 'tec_events_pro_custom_tables_v1_block_editor_ajax_series_data', [
-			$this,
-			'filter_series_ajax_data'
-		], 10, 2 );
+		add_filter(
+			'tec_tickets_commerce_shortcode_checkout_page_template_vars',
+			[
+				$this,
+				'filter_tc_checkout_template_args',
+			] 
+		);
+		add_filter(
+			'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer',
+			[
+				$this,
+				'hide_non_series_cart_footer_html',
+			],
+			10,
+			5 
+		);
+		add_filter(
+			'tec_events_pro_custom_tables_v1_block_editor_ajax_series_data',
+			[
+				$this,
+				'filter_series_ajax_data',
+			],
+			10,
+			2 
+		);
 
 		add_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
-		add_action( 'tribe_template_after_include:tickets/tickets/my-tickets/title', [
-			$this,
-			'show_series_link_after_ticket_type_title'
-		], 10, 3 );
+		add_action(
+			'tribe_template_after_include:tickets/tickets/my-tickets/title',
+			[
+				$this,
+				'show_series_link_after_ticket_type_title',
+			],
+			10,
+			3 
+		);
 
-        add_filter(
-            'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
-            [
-                $this,
-                'remove_settings_button_from_classic_metabox',
-            ],
-            10,
-            5
-        );
+		add_filter(
+			'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
+			[
+				$this,
+				'remove_settings_button_from_classic_metabox',
+			],
+			10,
+			5
+		);
 	}
 
 	/**
@@ -184,107 +246,169 @@ class Base extends Controller {
 	 */
 	public function unregister(): void {
 		$series_post_type = Series_Post_Type::POSTTYPE;
-		remove_filter( "tec_tickets_enabled_ticket_forms_{$series_post_type}", [
-			$this,
-			'enable_ticket_forms_for_series'
-		] );
+		remove_filter(
+			"tec_tickets_enabled_ticket_forms_{$series_post_type}",
+			[
+				$this,
+				'enable_ticket_forms_for_series',
+			] 
+		);
 
-		remove_Filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
-			$this,
-			'classic_editor_ticket_items'
-		] );
+		remove_Filter(
+			'tribe_template_pre_html:tickets/v2/tickets/items',
+			[
+				$this,
+				'classic_editor_ticket_items',
+			] 
+		);
 
 		// Restore the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
-		if ( ! has_action( 'admin_init',
-			[ $ticket_admin_notices, 'maybe_display_classic_editor_ecp_recurring_tickets_notice' ] )
+		if ( ! has_action(
+			'admin_init',
+			[ $ticket_admin_notices, 'maybe_display_classic_editor_ecp_recurring_tickets_notice' ] 
+		)
 		) {
-			add_action( 'admin_init', [
-				$ticket_admin_notices,
-				'maybe_display_classic_editor_ecp_recurring_tickets_notice'
-			] );
+			add_action(
+				'admin_init',
+				[
+					$ticket_admin_notices,
+					'maybe_display_classic_editor_ecp_recurring_tickets_notice',
+				] 
+			);
 		}
 
-		remove_filter( 'tec_tickets_attendees_event_details_top_label', [
-			$this,
-			'filter_attendees_event_details_top_label'
-		] );
+		remove_filter(
+			'tec_tickets_attendees_event_details_top_label',
+			[
+				$this,
+				'filter_attendees_event_details_top_label',
+			] 
+		);
 
 		// Remove the columns displayed in the series editor event List.
 		remove_filter(
-			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
-			$this,
-			'filter_series_editor_occurrence_list_columns'
-		] );
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns',
+			[
+				$this,
+				'filter_series_editor_occurrence_list_columns',
+			] 
+		);
 
-		remove_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
-			$this,
-			'render_series_editor_occurrence_list_column_ticket_types'
-		] );
+		remove_action(
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types',
+			[
+				$this,
+				'render_series_editor_occurrence_list_column_ticket_types',
+			] 
+		);
 
-		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [
-			$this,
-			'include_all_events_in_move_ticket_choices'
-		] );
+		remove_filter(
+			'tec_tickets_find_ticket_type_host_posts_query_args',
+			[
+				$this,
+				'include_all_events_in_move_ticket_choices',
+			] 
+		);
 		remove_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
-		remove_filter( 'tribe_template_context:tickets/admin-views/attendees', [
-			$this,
-			'filter_attendees_report_context'
-		] );
-		remove_action( 'tribe_tickets_attendees_event_details_list_top', [
-			$this,
-			'render_series_details_on_attendee_report'
-		], 50 );
-		remove_action( 'tribe_tickets_report_event_details_list_top', [
-			$this,
-			'render_series_details_on_order_report'
-		], 50 );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [
-			$this,
-			'filter_series_type_label'
-		] );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [
-			$this,
-			'filter_out_series_type_tickets_from_order_report'
-		], 10, 4 );
+		remove_filter(
+			'tribe_template_context:tickets/admin-views/attendees',
+			[
+				$this,
+				'filter_attendees_report_context',
+			] 
+		);
+		remove_action(
+			'tribe_tickets_attendees_event_details_list_top',
+			[
+				$this,
+				'render_series_details_on_attendee_report',
+			],
+			50 
+		);
+		remove_action(
+			'tribe_tickets_report_event_details_list_top',
+			[
+				$this,
+				'render_series_details_on_order_report',
+			],
+			50 
+		);
+		remove_filter(
+			'tec_tickets_commerce_order_report_summary_label_for_type',
+			[
+				$this,
+				'filter_series_type_label',
+			] 
+		);
+		remove_filter(
+			'tec_tickets_commerce_order_report_summary_should_include_event_sales_data',
+			[
+				$this,
+				'filter_out_series_type_tickets_from_order_report',
+			],
+			10,
+			4 
+		);
 
-		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/fieldset/settings-provider', [
-			$this,
-			'hide_header_image_option_from_ticket_settings'
-		], 10, 5 );
+		remove_filter(
+			'tribe_template_pre_html:tickets/admin-views/editor/fieldset/settings-provider',
+			[
+				$this,
+				'hide_header_image_option_from_ticket_settings',
+			],
+			10,
+			5 
+		);
 
 		remove_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
 		remove_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
 
 		// Remove the TicketsCommerce Checkout handlers for Series.
-		remove_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [
-			$this,
-			'filter_tc_checkout_template_args'
-		] );
-		remove_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [
-			$this,
-			'hide_non_series_cart_footer_html'
-		], 10, 5 );
-		remove_filter( 'tec_events_pro_custom_tables_v1_block_editor_ajax_series_data', [
-			$this,
-			'filter_series_ajax_data'
-		] );
+		remove_filter(
+			'tec_tickets_commerce_shortcode_checkout_page_template_vars',
+			[
+				$this,
+				'filter_tc_checkout_template_args',
+			] 
+		);
+		remove_filter(
+			'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer',
+			[
+				$this,
+				'hide_non_series_cart_footer_html',
+			],
+			10,
+			5 
+		);
+		remove_filter(
+			'tec_events_pro_custom_tables_v1_block_editor_ajax_series_data',
+			[
+				$this,
+				'filter_series_ajax_data',
+			] 
+		);
 
 		remove_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
-		remove_action( 'tribe_template_after_include:tickets/tickets/my-tickets/title', [
-			$this,
-			'show_series_link_after_ticket_type_title'
-		], 10, 3 );
+		remove_action(
+			'tribe_template_after_include:tickets/tickets/my-tickets/title',
+			[
+				$this,
+				'show_series_link_after_ticket_type_title',
+			],
+			10,
+			3 
+		);
 
-        remove_filter(
-            'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
-            [
-                $this,
-                'remove_settings_button_from_classic_metabox',
-            ],
-            10,
-            5
-        );
+		remove_filter(
+			'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
+			[
+				$this,
+				'remove_settings_button_from_classic_metabox',
+			],
+			10,
+			5
+		);
 	}
 
 	/**
@@ -339,9 +463,7 @@ class Base extends Controller {
 
 		$context['tickets_template'] = $template;
 		$context['series_permalink'] = get_post_permalink( $series );
-		$buffer                      = $this->admin_views->template( 'frontend/tickets/items', $context, false );
-
-		return $buffer;
+		return $this->admin_views->template( 'frontend/tickets/items', $context, false );
 	}
 
 	/**
@@ -379,7 +501,7 @@ class Base extends Controller {
 		}
 
 		// This controller will not register if ECP is not active: we can assume we'll have ECP translations available.
-		return __( 'Series', 'tribe-events-calendar-pro' );
+		return __( 'Series', 'event-tickets' );
 	}
 
 	/**
@@ -392,7 +514,8 @@ class Base extends Controller {
 	 * @return array<string,string> The filtered list of columns.
 	 */
 	public function filter_series_editor_occurrence_list_columns( array $columns ): array {
-		return Tribe__Main::array_insert_before_key( 'actions',
+		return Tribe__Main::array_insert_before_key(
+			'actions',
 			$columns,
 			[
 				'ticket_types' => sprintf(
@@ -409,7 +532,7 @@ class Base extends Controller {
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param Occurrence $occurrence
+	 * @param Occurrence $occurrence The occurrence object.
 	 *
 	 * @return void
 	 */
@@ -446,10 +569,13 @@ class Base extends Controller {
 		$ordered_by_types[ Series_Passes::TICKET_TYPE ] = $tickets_by_types[ Series_Passes::TICKET_TYPE ] ?? [];
 
 		$admin_views = new Admin_Views();
-		$admin_views->template( 'ticket-types-column/types', [
-			'tickets_by_types' => $ordered_by_types,
-			'admin_views'      => $admin_views,
-		] );
+		$admin_views->template(
+			'ticket-types-column/types',
+			[
+				'tickets_by_types' => $ordered_by_types,
+				'admin_views'      => $admin_views,
+			] 
+		);
 	}
 
 	/**
@@ -565,7 +691,7 @@ class Base extends Controller {
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
 	 * @param string[]            $name     Template name.
-	 * @param Template            $template Current instance of the Tribe__Template
+	 * @param Template            $template Current instance of the Tribe__Template.
 	 * @param array<string,mixed> $context  The context data passed to the template.
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
@@ -601,9 +727,9 @@ class Base extends Controller {
 		}
 
 		$first_event = tribe_events()->where( 'series', $series->ID )
-		                             ->order_by( 'event_date', 'ASC' )
-		                             ->per_page( - 1 )
-		                             ->first();
+									->order_by( 'event_date', 'ASC' )
+									->per_page( - 1 )
+									->first();
 
 		if ( empty( $first_event ) ) {
 			return '';
@@ -635,9 +761,9 @@ class Base extends Controller {
 		}
 
 		$last_event = tribe_events()->where( 'series', $series->ID )
-		                            ->order_by( 'event_date', 'ASC' )
-		                            ->per_page( - 1 )
-		                            ->last();
+									->order_by( 'event_date', 'ASC' )
+									->per_page( - 1 )
+									->last();
 
 		if ( empty( $last_event ) ) {
 			return '';
@@ -714,7 +840,7 @@ class Base extends Controller {
 	 *
 	 * @return array
 	 */
-	public function filter_series_ajax_data( array $data, \WP_Post $series_post ): array {
+	public function filter_series_ajax_data( array $data, WP_Post $series_post ): array {
 		$data['ticket_provider'] = Tickets::get_event_ticket_provider( $series_post->ID );
 
 		return $data;
@@ -735,10 +861,15 @@ class Base extends Controller {
 			return;
 		}
 
-		remove_filter( 'tribe_the_notices', [
-			tribe( CT_Templates_Provider::class ),
-			'add_single_series_text_marker'
-		], 15, 2 );
+		remove_filter(
+			'tribe_the_notices',
+			[
+				tribe( CT_Templates_Provider::class ),
+				'add_single_series_text_marker',
+			],
+			15,
+			2 
+		);
 	}
 
 	/**
