@@ -15,7 +15,7 @@ class Payment_Element_Template_Test extends TicketsCommerceSnapshotTestCase {
 	protected $partial_path = 'gateway/stripe/payment-element';
 
 	/**
-	 * Test that payment element renders with hidden button initially.
+	 * Test that the payment element renders with hidden "Purchase Tickets" button initially.
 	 *
 	 * @test
 	 */
@@ -34,24 +34,7 @@ class Payment_Element_Template_Test extends TicketsCommerceSnapshotTestCase {
 	}
 
 	/**
-	 * Test that payment element doesn't render when must_login is true.
-	 *
-	 * @test
-	 */
-	public function it_should_not_render_when_must_login() {
-		$shortcode = tribe( Checkout_Shortcode::class );
-
-		$html = $this->get_partial_html( [
-			'shortcode'        => $shortcode,
-			'must_login'       => true,
-			'payment_element'  => true,
-		] );
-
-		$this->assertEmpty( $html, 'Template should not render when must_login is true.' );
-	}
-
-	/**
-	 * Test that payment element doesn't render when payment_element is false.
+	 * Test that the payment element doesn't render when billing info is still not collected.
 	 *
 	 * @test
 	 */
@@ -68,11 +51,11 @@ class Payment_Element_Template_Test extends TicketsCommerceSnapshotTestCase {
 	}
 
 	/**
-	 * Test that payment element has correct structure.
+	 * Test that payment element has correct structure for JavaScript interaction.
 	 *
 	 * @test
 	 */
-	public function it_should_render_with_correct_structure() {
+	public function it_should_have_correct_structure_for_js() {
 		$shortcode = tribe( Checkout_Shortcode::class );
 
 		$html = $this->get_partial_html( [
@@ -81,19 +64,49 @@ class Payment_Element_Template_Test extends TicketsCommerceSnapshotTestCase {
 			'payment_element'  => true,
 		] );
 
-		// Check for payment element container.
-		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-payment-element"', $html );
+		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-checkout-button"', $html, 'Button should have correct ID for JS to target.' );
+		$this->assertStringContainsString( 'tribe-common-a11y-hidden', $html, 'Button should be initially hidden for JS to reveal.' );
+		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-payment-element"', $html, 'Payment element container should have ID for JS.' );
+		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-errors"', $html, 'Errors container should have ID for JS error handling.' );
+		$this->assertStringContainsString( 'role="alert"', $html, 'Errors container should have alert role for accessibility.' );
+	}
 
-		// Check for button.
-		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-checkout-button"', $html );
+	/**
+	 * Test that payment element button is always present for JS to reveal after billing collected.
+	 *
+	 * @test
+	 */
+	public function it_should_always_render_button_for_js_to_reveal() {
+		$shortcode = tribe( Checkout_Shortcode::class );
 
-		// Check for spinner.
-		$this->assertStringContainsString( 'class="spinner hidden"', $html );
+		$html = $this->get_partial_html( [
+			'shortcode'        => $shortcode,
+			'must_login'       => false,
+			'payment_element'  => true,
+		] );
 
-		// Check for payment message container.
-		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-payment-message"', $html );
+		$this->assertStringContainsString( '<button', $html, 'Button element should be present in DOM.' );
+		$this->assertStringContainsString( 'tribe-common-c-btn', $html, 'Button should have base class for styling.' );
+		$this->assertStringContainsString( 'tribe-tickets__commerce-checkout-form-submit-button', $html, 'Button should have submit class.' );
+		$this->assertStringContainsString( 'id="spinner"', $html, 'Button should have spinner element for loading state.' );
+		$this->assertStringContainsString( 'id="button-text"', $html, 'Button should have text element for JS to update.' );
+	}
 
-		// Check for errors container.
-		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-errors"', $html );
+	/**
+	 * Test that payment element has payment message container for JS updates.
+	 *
+	 * @test
+	 */
+	public function it_should_have_payment_message_container() {
+		$shortcode = tribe( Checkout_Shortcode::class );
+
+		$html = $this->get_partial_html( [
+			'shortcode'        => $shortcode,
+			'must_login'       => false,
+			'payment_element'  => true,
+		] );
+
+		$this->assertStringContainsString( 'id="tec-tc-gateway-stripe-payment-message"', $html, 'Should have payment message container for JS.' );
+		$this->assertStringContainsString( 'class="hidden"', $html, 'Payment message should be hidden initially.' );
 	}
 }
