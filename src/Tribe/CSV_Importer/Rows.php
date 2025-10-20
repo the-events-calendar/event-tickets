@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Class Tribe__Tickets__CSV_Importer__Rows
  *
@@ -45,9 +44,17 @@ class Tribe__Tickets__CSV_Importer__Rows {
 	 * @return array
 	 */
 	public function filter_csv_post_types( array $post_types ) {
-		$post_type = get_post_type_object( Tribe__Tickets__RSVP::get_instance()->ticket_object );
-		$post_type->labels->name = esc_html( tribe_get_rsvp_label_plural( 'post_type_label' ) );
-		$post_types[] = $post_type;
+		$post_type = get_post_type_object( 'tec_tc_ticket' );
+
+		if ( empty( $post_type ) ) {
+			return $post_types;
+		}
+
+		// Create a clone to avoid modifying the original post type object.
+		$rsvp_post_type = clone $post_type;
+		$rsvp_post_type->name = 'rsvp';
+		$rsvp_post_type->labels->name = esc_html( tribe_get_rsvp_label_plural( 'post_type_label' ) );
+		$post_types[] = $rsvp_post_type;
 		return $post_types;
 	}
 }
