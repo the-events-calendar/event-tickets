@@ -15,7 +15,7 @@ export type StoreState = {
 export type StoreSelect = {
 	getEventCapacity: () => number | undefined;
 	getEventHasSharedCapacity: () => boolean;
-	getTickets: ( eventId: number ) => TicketSettings[];
+	getTickets: ( eventId: number | null ) => TicketSettings[];
 	getTicketById: ( ticketId: number ) => TicketSettings | undefined;
 	isLoading: () => boolean;
 };
