@@ -1,9 +1,16 @@
 <?php
+/**
+ * Handles upsell notices for Event Tickets features.
+ *
+ * @since 5.3.4
+ *
+ * @package TEC\Tickets\Admin
+ */
 
 namespace TEC\Tickets\Admin;
 
 use TEC\Tickets\Commerce\Settings;
-use \Tribe\Admin\Upsell_Notice;
+use TEC\Common\Admin\Conditional_Content\Inline_Upsell;
 use Tribe__Template as Template;
 
 /**
@@ -27,10 +34,15 @@ class Upsell {
 		add_filter( 'tribe_tickets_commerce_settings', [ $this, 'maybe_show_paystack_promo' ] );
 
 		// Display ticket type upsell notice.
-		add_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
-			$this,
-			'render_ticket_type_upsell_notice'
-		], 20, 3 );
+		add_action(
+			'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header',
+			[
+				$this,
+				'render_ticket_type_upsell_notice',
+			],
+			20,
+			3
+		);
 
 		add_filter( 'tec_tickets_emails_settings_template_list', [ $this, 'show_on_emails_settings_page' ] );
 	}
@@ -47,23 +59,26 @@ class Upsell {
 			return;
 		}
 
-		tribe( Upsell_Notice\Main::class )->render( [
-			'classes' => [
-				'tec-admin__upsell-tec-tickets-capacity-arf'
-			],
-			'text'    => sprintf(
-				// Translators: %s: Link to "Event Tickets Plus" plugin.
-				esc_html__( 'Get individual information collection from each attendee and advanced capacity options with %s' , 'event-tickets' ),
-				''
-			 ),
-			'link'    => [
+		tribe( Inline_Upsell::class )->render(
+			[
+				'slug'    => 'et-capacity-arf',
 				'classes' => [
-					'tec-admin__upsell-link--underlined'
+					'tec-admin__upsell-tec-tickets-capacity-arf',
 				],
-				'text'    => 'Event Tickets Plus',
-				'url'     => 'https://evnt.is/et-in-app-capacity-arf',
-			],
-		] );
+				'text'    => sprintf(
+					// Translators: %s: Link to "Event Tickets Plus" plugin.
+					esc_html__( 'Get individual information collection from each attendee and advanced capacity options with %s', 'event-tickets' ),
+					''
+				),
+				'link'    => [
+					'classes' => [
+						'tec-admin__upsell-link--underlined',
+					],
+					'text'    => 'Event Tickets Plus',
+					'url'     => 'https://evnt.is/et-in-app-capacity-arf',
+				],
+			]
+		);
 	}
 
 	/**
@@ -108,23 +123,26 @@ class Upsell {
 	public function maybe_show_manual_attendees() {
 
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
-		tribe( Upsell_Notice\Main::class )->render( [
-			'classes' => [
-				'tec-admin__upsell-tec-tickets-manual-attendees'
-			],
-			'text'    => sprintf(
-				// Translators: %s: Link to "Event Tickets Plus" plugin.
-				esc_html__( 'Manually add attendees with %s' , 'event-tickets' ),
-				''
-			),
-			'link'    => [
+		tribe( Inline_Upsell::class )->render(
+			[
+				'slug'    => 'et-manual-attendees',
 				'classes' => [
-					'tec-admin__upsell-link--underlined'
+					'tec-admin__upsell-tec-tickets-manual-attendees',
 				],
-				'text'    => 'Event Tickets Plus',
-				'url'     => 'https://evnt.is/et-in-app-manual-attendees',
-			],
-		] );
+				'text'    => sprintf(
+					// Translators: %s: Link to "Event Tickets Plus" plugin.
+					esc_html__( 'Manually add attendees with %s', 'event-tickets' ),
+					''
+				),
+				'link'    => [
+					'classes' => [
+						'tec-admin__upsell-link--underlined',
+					],
+					'text'    => 'Event Tickets Plus',
+					'url'     => 'https://evnt.is/et-in-app-manual-attendees',
+				],
+			]
+		);
 		echo '</div>';
 	}
 
@@ -139,23 +157,26 @@ class Upsell {
 	public function show_wallet_plus() {
 
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
-		tribe( Upsell_Notice\Main::class )->render( [
-			'classes' => [
-				'tec-admin__upsell-tec-tickets-wallet-plus'
-			],
-			'text'    => sprintf(
-				// Translators: %s: Link to "Wallet Plus" plugin.
-				esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
-				''
-			),
-			'link'    => [
+		tribe( Inline_Upsell::class )->render(
+			[
+				'slug'    => 'et-wallet-plus',
 				'classes' => [
-					'tec-admin__upsell-link--underlined'
+					'tec-admin__upsell-tec-tickets-wallet-plus',
 				],
-				'text'    => 'Event Tickets Plus',
-				'url'     => 'https://evnt.is/1bdz',
-			],
-		] );
+				'text'    => sprintf(
+					// Translators: %s: Link to "Wallet Plus" plugin.
+					esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s', 'event-tickets' ),
+					''
+				),
+				'link'    => [
+					'classes' => [
+						'tec-admin__upsell-link--underlined',
+					],
+					'text'    => 'Event Tickets Plus',
+					'url'     => 'https://evnt.is/1bdz',
+				],
+			]
+		);
 		echo '</div>';
 	}
 
@@ -164,9 +185,9 @@ class Upsell {
 	 *
 	 * @since 5.6.5
 	 *
-	 * @param array $settings
+	 * @param array $settings The settings array to filter.
 	 *
-	 * @return array
+	 * @return array The filtered settings array.
 	 */
 	public function maybe_show_paystack_promo( $settings ) {
 
@@ -176,7 +197,7 @@ class Upsell {
 		}
 
 		// Bail if we aren't in the correct timezone.
-		$timezone = get_option( 'timezone_string' );
+		$timezone           = get_option( 'timezone_string' );
 		$paystack_timezones = [
 			'Africa/Lagos',
 			'Africa/Accra',
@@ -188,14 +209,14 @@ class Upsell {
 
 		/** @var \Tribe__Template $template  */
 		$template = tribe( Settings::class )->get_template();
-		$html = $template->template( 'paystack-promo', [], false );
+		$html     = $template->template( 'paystack-promo', [], false );
 
 		// Create the new setting.
 		$new_setting = [
 			'afterpay_promo' => [
 				'type' => 'html',
 				'html' => $html,
-			]
+			],
 		];
 
 		// Find the General Setting header.
@@ -204,8 +225,8 @@ class Upsell {
 		// Insert the new setting before the General Setting header.
 		$settings_before = array_slice( $settings, 0, $general_setting_index );
 		$settings_after  = array_slice( $settings, $general_setting_index );
-		return array_merge( $settings_before, $new_setting, $settings_after);
-    }
+		return array_merge( $settings_before, $new_setting, $settings_after );
+	}
 
 	/**
 	 * Filters the default Ticket type description in the context of Events part of a Series.
@@ -217,7 +238,8 @@ class Upsell {
 	 * @param string[] $name     Template name.
 	 * @param Template $template Current instance of the Tribe__Template.
 	 */
-	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void {
+	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+		// Parameters $file, $name, and $template are required by the hook signature but not used in this implementation.
 		// Check if post type is an event.
 		if ( ! function_exists( 'tribe_is_event' ) || ! tribe_is_event() ) {
 			return;
@@ -258,23 +280,27 @@ class Upsell {
 
 		$fields[] = [
 			'type' => 'html',
-			'html'  => tribe( Upsell_Notice\Main::class )->render( [
-				'classes' => [
-					'tec-admin__upsell-tec-tickets-wallet-plus'
-				],
-				'text'    => sprintf(
-					// Translators: %s: Link to "Wallet Plus" plugin.
-					esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
-					''
-				),
-				'link'    => [
+			'html' => tribe( Inline_Upsell::class )->render(
+				[
+					'slug'    => 'et-wallet-plus-emails',
 					'classes' => [
-						'tec-admin__upsell-link--underlined'
+						'tec-admin__upsell-tec-tickets-wallet-plus',
 					],
-					'text'    => 'Event Tickets Plus',
-					'url'     => 'https://evnt.is/1bdz',
+					'text'    => sprintf(
+						// Translators: %s: Link to "Wallet Plus" plugin.
+						esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s', 'event-tickets' ),
+						''
+					),
+					'link'    => [
+						'classes' => [
+							'tec-admin__upsell-link--underlined',
+						],
+						'text'    => 'Event Tickets Plus',
+						'url'     => 'https://evnt.is/1bdz',
+					],
 				],
-			], false ),
+				false
+			),
 		];
 
 		return $fields;
