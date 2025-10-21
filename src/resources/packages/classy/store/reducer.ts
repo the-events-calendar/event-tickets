@@ -71,7 +71,7 @@ export const reducer: Reducer< StoreState > = ( state: StoreState = initialState
 			return {
 				...state,
 				tickets: tickets.map( ( ticket: TicketSettings ) =>
-					ticket.id === ticketId ? { ...ticket, ticketData } : ticket
+					ticket.id === ticketId ? { ...ticket, ...ticketData } : ticket
 				),
 			};
 
