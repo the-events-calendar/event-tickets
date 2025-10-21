@@ -5,8 +5,9 @@ import { _x } from '@wordpress/i18n';
 import { EndSelector, StartSelector } from '@tec/common/classy/components';
 import { getSettings as getCommonSettings } from '@tec/common/classy/localizedData';
 import { DateUpdateType } from '@tec/common/classy/types/FieldProps';
+import { phpDateMysqlFormat as saleDateFormat } from '@tec/common/classy/constants';
 import { CurrencyInput } from '../../components';
-import { formatSaleDate, saleDateFormat } from '../../functions/tickets';
+import { formatSaleDate } from '../../functions/tickets';
 import { SalePriceDetails } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 

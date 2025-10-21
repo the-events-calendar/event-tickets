@@ -1,4 +1,8 @@
-export const saleDateFormat = 'Y-m-d';
+import { format } from '@wordpress/date';
+import {
+	phpDateMysqlFormat as saleDateFormat,
+	phpDateTimeMysqlFormat as saleDurationDateFormat,
+} from '@tec/common/classy/constants';
 
 /**
  * Format a date as YYYY-MM-DD for sale date fields.
@@ -9,9 +13,17 @@ export const saleDateFormat = 'Y-m-d';
  * @returns {string} Formatted date string.
  */
 export const formatSaleDate = ( date: Date ): string => {
-	const month = ( date.getMonth() + 1 ).toString().padStart( 2, '0' );
-	const day = date.getDate().toString().padStart( 2, '0' );
-	const year = date.getFullYear();
+	return format( saleDateFormat, date );
+};
 
-	return `${ year }-${ month }-${ day }`;
+/**
+ * Format a date as YYYY-MM-DD HH:MM:SS for sale duration fields.
+ *
+ * @since TBD
+ *
+ * @param {Date} date The date to format.
+ * @returns {string} Formatted date string.
+ */
+export const formatSaleDurationDate = ( date: Date ): string => {
+	return format( saleDurationDateFormat, date );
 };

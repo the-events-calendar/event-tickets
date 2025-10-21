@@ -1,1 +1,1 @@
-export { formatSaleDate, saleDateFormat } from './tickets';
+export { formatSaleDate, formatSaleDurationDate } from './tickets';

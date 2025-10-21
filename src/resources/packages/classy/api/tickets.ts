@@ -2,7 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
 import { getCurrencySettings } from '../localizedData.ts';
-import { formatSaleDate } from '../functions/tickets';
+import { formatSaleDate, formatSaleDurationDate } from '../functions/tickets';
 import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { CostDetails } from '../types/CostDetails';
 import { CapacitySettings, FeesData, SalePriceDetails, TicketSettings, TicketType } from '../types/Ticket';
@@ -188,13 +188,11 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 
 	// Map sale dates
 	if ( ticketData.availableFrom ) {
-		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS".
-		body.start_date = ticketData.availableFrom.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
+		body.start_date = formatSaleDurationDate( ticketData.availableFrom );
 	}
 
 	if ( ticketData.availableUntil ) {
-		// Convert to the format expected by the API: "YYYY-MM-DD HH:MM:SS".
-		body.end_date = ticketData.availableUntil.toISOString().slice( 0, 19 ).replace( 'T', ' ' );
+		body.end_date = formatSaleDurationDate( ticketData.availableUntil );
 	}
 
 	// Map sale price data.
