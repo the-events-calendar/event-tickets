@@ -215,6 +215,43 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$_REQUEST['payment_intent'] = 'pi_123';
+				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
+				$pi = [
+					'id' => 'pi_123',
+					'client_secret' => 'pi_123_secret',
+					'status' => 'canceled',
+				];
+
+				tec_tc_orders()
+					->by_args(
+						[
+							'id' => $order->ID,
+						]
+					)
+					->set_args(
+						[
+							'gateway_payload'  => $pi,
+							'gateway_order_id' => $pi['id'],
+						]
+					)
+					->save();
+
+				tribe( Payment_Intent_Handler::class )->set( $pi );
+				return [ $order->ID, Denied::SLUG ];
+			},
+		];
+
+		yield 'with request params - pi in memory' => [
+			function() {
+				$post = self::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -223,15 +260,19 @@ class Hooks_Test extends WPTestCase {
 					'status'        => 'canceled',
 				];
 
-				// Create order with gateway_order_id already set.
-				$order = $this->create_order_through_stripe(
-					[ $ticket_id_1 => 1 ],
-					[
-						'order_status'     => Pending::SLUG,
-						'gateway_order_id' => $pi['id'],
-						'gateway_payload'  => $pi,
-					]
-				);
+				tec_tc_orders()
+					->by_args(
+						[
+							'id' => $order->ID,
+						]
+					)
+					->set_args(
+						[
+							'gateway_payload'  => $pi,
+							'gateway_order_id' => $pi['id'],
+						]
+					)
+					->save();
 
 				tribe( Payment_Intent_Handler::class )->set( $pi );
 				return [ $order->ID, Denied::SLUG ];
@@ -246,6 +287,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -254,15 +296,19 @@ class Hooks_Test extends WPTestCase {
 					'status'        => 'canceled',
 				];
 
-				// Create order with gateway_order_id already set.
-				$order = $this->create_order_through_stripe(
-					[ $ticket_id_1 => 1 ],
-					[
-						'order_status'     => Pending::SLUG,
-						'gateway_order_id' => $pi['id'],
-						'gateway_payload'  => $pi,
-					]
-				);
+				tec_tc_orders()
+					->by_args(
+						[
+							'id' => $order->ID,
+						]
+					)
+					->set_args(
+						[
+							'gateway_payload'  => $pi,
+							'gateway_order_id' => $pi['id'],
+						]
+					)
+					->save();
 
 				$this->set_class_fn_return( Payment_Intent::class, 'get', $pi );
 				return [ $order->ID, Denied::SLUG ];
@@ -277,6 +323,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -285,15 +332,19 @@ class Hooks_Test extends WPTestCase {
 					'status'        => 'succeeded',
 				];
 
-				// Create order with gateway_order_id already set.
-				$order = $this->create_order_through_stripe(
-					[ $ticket_id_1 => 1 ],
-					[
-						'order_status'     => Pending::SLUG,
-						'gateway_order_id' => $pi['id'],
-						'gateway_payload'  => $pi,
-					]
-				);
+				tec_tc_orders()
+					->by_args(
+						[
+							'id' => $order->ID,
+						]
+					)
+					->set_args(
+						[
+							'gateway_payload'  => $pi,
+							'gateway_order_id' => $pi['id'],
+						]
+					)
+					->save();
 
 				tribe( Payment_Intent_Handler::class )->set( $pi );
 				return [ $order->ID, Completed::SLUG ];
@@ -308,6 +359,7 @@ class Hooks_Test extends WPTestCase {
 					]
 				);
 				$ticket_id_1 = $this->create_tc_ticket( $post, 10 );
+				$order = $this->create_order_through_stripe( [ $ticket_id_1 => 1 ], [ 'order_status' => Pending::SLUG ] );
 				$_REQUEST['payment_intent'] = 'pi_123';
 				$_REQUEST['payment_intent_client_secret'] = 'pi_123_secret';
 				$pi = [
@@ -316,15 +368,19 @@ class Hooks_Test extends WPTestCase {
 					'status'        => 'succeeded',
 				];
 
-				// Create order with gateway_order_id already set.
-				$order = $this->create_order_through_stripe(
-					[ $ticket_id_1 => 1 ],
-					[
-						'order_status'     => Pending::SLUG,
-						'gateway_order_id' => $pi['id'],
-						'gateway_payload'  => $pi,
-					]
-				);
+				tec_tc_orders()
+					->by_args(
+						[
+							'id' => $order->ID,
+						]
+					)
+					->set_args(
+						[
+							'gateway_payload'  => $pi,
+							'gateway_order_id' => $pi['id'],
+						]
+					)
+					->save();
 
 				$this->set_class_fn_return( Payment_Intent::class, 'get', $pi );
 				return [ $order->ID, Completed::SLUG ];
