@@ -21,15 +21,13 @@ $admin_views = tribe( 'tickets.admin.views' );
 </div>
 
 <div id="event_tickets" class="eventtable" aria-live="polite">
-	<?php wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' ); ?>
-
-	<?php $admin_views->template( [ 'editor', 'panel', 'list' ], get_defined_vars() ); ?>
-
-	<?php $admin_views->template( [ 'editor', 'panel', 'ticket' ], get_defined_vars() ); ?>
-
-	<?php $admin_views->template( [ 'editor', 'panel', 'settings' ], get_defined_vars() ); ?>
-
 	<?php
+	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
+
+	foreach ( $panels as $panel ) {
+		echo $panel;
+	}
+
 	/**
 	 * Allows for the insertion of additional content into the ticket edit form below the form
 	 * section
