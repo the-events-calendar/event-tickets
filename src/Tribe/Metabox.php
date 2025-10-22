@@ -228,8 +228,8 @@ class Tribe__Tickets__Metabox {
 			'list'     => $admin_views->template(
 				'editor/panel/list',
 				[
-					'post_id'     => $post->ID,
-					'tickets'     => $tickets,
+					'post_id' => $post->ID,
+					'tickets' => $tickets,
 				],
 				false
 			),

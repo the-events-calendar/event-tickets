@@ -25,7 +25,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
 
 	foreach ( $panels as $panel ) {
-		echo $panel; // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscapedExpected
+		echo $panel; // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscapedExpected, StellarWP.XSS.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
