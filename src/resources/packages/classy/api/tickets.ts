@@ -1,13 +1,14 @@
 import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
+import { getTecApiUrl } from '@tec/common/classy/api';
 import { getCurrencySettings } from '../localizedData.ts';
 import { formatSaleDate, formatSaleDurationDate } from '../functions/tickets';
 import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
 import { CostDetails } from '../types/CostDetails';
 import { CapacitySettings, FeesData, SalePriceDetails, TicketSettings, TicketType } from '../types/Ticket';
 
-const apiBaseUrl = '/tec/v1/tickets';
+const apiBaseUrl = getTecApiUrl( '/tickets' );
 
 /**
  * Fetch tickets from the API.
