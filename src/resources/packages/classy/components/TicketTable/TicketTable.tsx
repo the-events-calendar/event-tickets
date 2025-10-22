@@ -14,6 +14,16 @@ type TicketTableProps = {
 
 type MoveDirection = 'up' | 'down';
 
+/**
+ * Move a ticket up or down in the list.
+ *
+ * @since TBD
+ *
+ * @param {TicketSettings[]} tickets The array of tickets.
+ * @param {MoveDirection} direction The direction to move the ticket ('up' or 'down').
+ * @param {number} index The index of the ticket to move.
+ * @return {TicketSettings[]} The updated array of tickets.
+ */
 const moveTicket = ( tickets: TicketSettings[], direction: MoveDirection, index: number ): TicketSettings[] => {
 	const newTickets = [ ...tickets ];
 	const ticketToMove = newTickets[ index ];
@@ -34,9 +44,10 @@ const moveTicket = ( tickets: TicketSettings[], direction: MoveDirection, index:
  *
  * @since TBD
  *
- * @param {TicketTableProps} props
+ * @param {TicketTableProps} props The properties for the TicketTable component.
+ * @return {React.JSX.Element | null} The rendered TicketTable component or null if there are no tickets.
  */
-export default function TicketTable( props: TicketTableProps ): JSX.Element {
+export default function TicketTable( props: TicketTableProps ): React.JSX.Element | null {
 	const { onEditTicket } = props;
 
 	const { tickets } = useSelect( ( select ) => {
@@ -44,14 +55,13 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
 
 		return {
-			tickets: getTickets( getCurrentPostId() ),
+			tickets: getTickets( getCurrentPostId() as number ),
 		};
 	}, [] );
 
 	const { setTickets }: StoreDispatch = useDispatch( STORE_NAME );
 
 	const showMovers = tickets.length > 1;
-	const ticketLength = tickets.length;
 
 	// todo: update the menu order of the tickets when moving them.
 
@@ -60,7 +70,7 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 			const updatedTickets = moveTicket( tickets, direction, index );
 			setTickets( updatedTickets );
 		},
-		[ tickets, setTickets ]
+		[ tickets ]
 	);
 
 	// If there are no tickets, return null to avoid rendering an empty table.
@@ -80,7 +90,7 @@ export default function TicketTable( props: TicketTableProps ): JSX.Element {
 						onMoveUp={ () => handleMoveTicket( 'up', index ) }
 						showMovers={ showMovers }
 						canMoveUp={ index > 0 }
-						canMoveDown={ index < ticketLength - 1 }
+						canMoveDown={ index < tickets.length - 1 }
 						tabIndex={ index + 1 }
 						ticketPosition={ index }
 					/>

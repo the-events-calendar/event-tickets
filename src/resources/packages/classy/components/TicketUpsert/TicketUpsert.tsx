@@ -50,6 +50,8 @@ const defaultValues: TicketSettings = {
 		automaticFees: [],
 		selectedFees: [],
 	},
+	availableFrom: '',
+	availableUntil: '',
 };
 
 const updteTitle = _x( 'Update Ticket', 'Update ticket modal header title', 'event-tickets' );
@@ -88,7 +90,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const [ ticketUpsertError, setTicketUpsertError ] = useState< Error | null >( null );
 	const [ saveInProgress, setSaveInProgress ] = useState< boolean >( false );
 
-	const onValueChange = ( key: string, newValue: any ): void => {
+	const onValueChange = ( key: keyof TicketSettings, newValue: any ): void => {
 		return setCurrentValues( {
 			...currentValues,
 			[ key ]: newValue,
@@ -216,6 +218,13 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				<SaleDuration
 					saleStart={ currentValues.availableFrom as Date | '' }
 					saleEnd={ currentValues.availableUntil as Date | '' }
+					onChange={ ( saleStart: Date | '', saleEnd: Date | '' ) => {
+						setCurrentValues( {
+							...currentValues,
+							availableFrom: saleStart,
+							availableUntil: saleEnd,
+						} );
+					} }
 				/>
 			</ClassyModalSection>
 

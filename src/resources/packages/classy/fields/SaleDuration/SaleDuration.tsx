@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ClassyFieldGroup, StartSelector, TimePicker } from '@tec/common/classy/components';
-import { isValidDate } from '@tec/common/classy/functions';
+import { ClassyFieldGroup, TimePicker } from '@tec/common/classy/components';
+import { areDatesOnSameDay, areDatesOnSameTime, isValidDate } from '@tec/common/classy/functions';
 import { getSettings as getCommonSettings } from '@tec/common/classy/localizedData';
 import { DateTimeUpdateType, DateUpdateType } from '@tec/common/classy/types/FieldProps';
-import { getDate, format } from '@wordpress/date';
+import { format } from '@wordpress/date';
 import { RefObject, useCallback, useMemo, useState } from '@wordpress/element';
 import { _x } from '@wordpress/i18n';
 import DatePicker from './DatePicker';
@@ -14,8 +14,10 @@ type NewDatesReturn = {
 	newStartDate: Date;
 	newEndDate: Date;
 	notify: {
-		start: boolean;
-		end: boolean;
+		endDate: boolean;
+		endTime: boolean;
+		startDate: boolean;
+		startTime: boolean;
 	};
 };
 
@@ -36,33 +38,57 @@ type SelectingDateType = DateUpdateType | false;
 const getNewStartEndDates = (
 	endDate: Date,
 	startDate: Date,
-	updated: SelectingDateType,
+	updated: DateTimeUpdateType,
 	newDate: string
 ): NewDatesReturn => {
-	let newStartDate: Date;
-	let newEndDate: Date;
-	let notify = { start: false, end: false };
+	const duration = endDate.getTime() - startDate.getTime();
+	let newStartDate = startDate;
+	let newEndDate = endDate;
+	let notify = { startDate: false, startTime: false, endDate: false, endTime: false };
 
-	if ( updated === 'startDate' ) {
-		// The user has updated the start date.
-		newStartDate = getDate( newDate );
-		newEndDate = endDate;
+	try {
+		switch ( updated ) {
+			case 'startDate':
+				newStartDate = new Date( newDate );
+				if ( newStartDate.getTime() > endDate.getTime() ) {
+					newEndDate = new Date( newStartDate.getTime() + duration );
+				}
 
-		// The start date is after the current end date: set the end date to the start date.
-		if ( newStartDate.getTime() >= endDate.getTime() ) {
-			newEndDate = new Date( newStartDate.getTime() );
-			notify.end = true;
+				break;
+			case 'startTime':
+				newStartDate = new Date( newDate );
+
+				if ( newStartDate.getTime() >= endDate.getTime() ) {
+					newEndDate = new Date( newStartDate.getTime() + duration );
+				}
+
+				break;
+			case 'endDate':
+				newEndDate = new Date( newDate );
+				if ( newEndDate.getTime() <= startDate.getTime() ) {
+					newStartDate = new Date( newEndDate.getTime() - duration );
+				}
+
+				break;
+			case 'endTime':
+				newEndDate = new Date( newDate );
+
+				if ( newEndDate.getTime() < startDate.getTime() ) {
+					newStartDate = new Date( newEndDate.getTime() - duration );
+				}
+				break;
 		}
-	} else {
-		// The user has updated the end date.
+
+		// Highlight the appropriate fields if they actually changed as a consequence of the update.
+		notify.startDate = updated !== 'startDate' && ! areDatesOnSameDay( startDate, newStartDate );
+		notify.startTime = updated !== 'startTime' && ! areDatesOnSameTime( startDate, newStartDate );
+		notify.endDate = updated !== 'endDate' && ! areDatesOnSameDay( endDate, newEndDate );
+		notify.endTime = updated !== 'endTime' && ! areDatesOnSameTime( endDate, newEndDate );
+	} catch ( e ) {
+		// Something went wrong while processing the dates, return the values unchanged and notify no field.
 		newStartDate = startDate;
-		newEndDate = getDate( newDate );
-
-		// The end date is before the current start date: set the start date to the end date.
-		if ( newEndDate.getTime() <= startDate.getTime() ) {
-			newStartDate = new Date( newEndDate.getTime() );
-			notify.start = true;
-		}
+		newEndDate = endDate;
+		notify = { startDate: false, startTime: false, endDate: false, endTime: false };
 	}
 
 	return { newStartDate, newEndDate, notify };
@@ -71,6 +97,7 @@ const getNewStartEndDates = (
 type SaleDurationProps = {
 	saleStart: Date | '';
 	saleEnd: Date | '';
+	onChange: ( saleStart: Date, saleEnd: Date ) => void;
 };
 
 // Set default start/end dates for when nothing is selected.
@@ -78,23 +105,22 @@ const defaultStartDate = new Date();
 const defaultEndDate = new Date();
 defaultEndDate.setHours( 23, 59, 59, 999 );
 
-type Dates = {
-	start: Date;
-	end: Date;
-};
-
+/**
+ * SaleDuration component.
+ *
+ * Displays date and time pickers for selecting sale start and end dates.
+ *
+ * @since TBD
+ *
+ * @param {SaleDurationProps} props The properties for the SaleDuration component.
+ * @return {React.JSX.Element} The rendered SaleDuration component.
+ */
 export default function SaleDuration( props: SaleDurationProps ): React.JSX.Element {
-	// const { saleStart, saleEnd } = props;
+	const { onChange } = props;
 
 	const [ isSelectingDate, setIsSelectingDate ] = useState< SelectingDateType >( false );
 	const [ saleStart, setSaleStart ] = useState< Date >( props.saleStart || defaultStartDate );
 	const [ saleEnd, setSaleEnd ] = useState< Date >( props.saleEnd || defaultEndDate );
-
-	// const [ dates, setDates ] = useState< Dates >( {
-	// 	start: saleStart || defaultStartDate,
-	// 	end: saleEnd || defaultEndDate,
-	// } );
-
 	const [ higlightStartTime, setHighlightStartTime ] = useState( false );
 	const [ highlightEndTime, setHighlightEndTime ] = useState( false );
 
@@ -105,13 +131,19 @@ export default function SaleDuration( props: SaleDurationProps ): React.JSX.Elem
 				return;
 			}
 
-			const { newStartDate, newEndDate, notify } = getNewStartEndDates( saleEnd, saleStart, updated, newDate );
+			const { newStartDate, newEndDate, notify } = getNewStartEndDates(
+				saleEnd,
+				saleStart,
+				updated,
+				newDate
+			);
 
 			setSaleStart( newStartDate );
 			setSaleEnd( newEndDate );
 			setIsSelectingDate( false );
-			setHighlightStartTime( notify.start );
-			setHighlightEndTime( notify.end );
+			setHighlightStartTime( notify.startTime );
+			setHighlightEndTime( notify.endTime );
+			onChange( newStartDate, newEndDate );
 		},
 		[ saleStart, saleEnd ]
 	);
@@ -152,31 +184,17 @@ export default function SaleDuration( props: SaleDurationProps ): React.JSX.Elem
 					<TimePicker
 						currentDate={ saleStart }
 						endDate={ saleEnd }
+						startDate={ saleStart }
 						highlight={ higlightStartTime }
 						onChange={ ( date: Date ): void => {
-							onDateChange( 'startDate', format( 'Y-m-d H:i:s', date ) );
+							onDateChange( 'startTime', format( 'Y-m-d H:i:s', date ) );
 						} }
 						timeFormat={ timeFormat }
 						timeInterval={ timeInterval }
+						type="startTime"
 					/>
 				</div>
 			</ClassyFieldGroup>
-
-			// <StartSelector
-			// 	dateWithYearFormat={ dateWithYearFormat }
-			// 	endDate={ saleStart }
-			// 	highlightTime={ higlightStartTime }
-			// 	isAllDay={ false }
-			// 	isMultiday={ false }
-			// 	isSelectingDate={ isSelectingDate }
-			// 	onChange={ onDateChange }
-			// 	onClick={ () => onDateInputClick( 'startDate' ) }
-			// 	onClose={ () => setIsSelectingDate( false ) }
-			// 	showTitle={ false }
-			// 	startDate={ saleStart }
-			// 	startOfWeek={ startOfWeek }
-			// 	timeFormat={ timeFormat }
-			// />
 		);
 	}, [ dateWithYearFormat, saleStart, isSelectingDate, startOfWeek, timeFormat ] );
 
@@ -200,13 +218,15 @@ export default function SaleDuration( props: SaleDurationProps ): React.JSX.Elem
 				<div className="classy-field__input classy-field__input--end-time">
 					<TimePicker
 						currentDate={ saleEnd }
-						endDate={ null }
+						startDate={ saleStart }
+						endDate={ saleEnd }
 						highlight={ highlightEndTime }
 						onChange={ ( date: Date ): void => {
-							onDateChange( 'endDate', format( 'Y-m-d H:i:s', date ) );
+							onDateChange( 'endTime', format( 'Y-m-d H:i:s', date ) );
 						} }
 						timeFormat={ timeFormat }
 						timeInterval={ timeInterval }
+						type="endTime"
 					/>
 				</div>
 			</ClassyFieldGroup>

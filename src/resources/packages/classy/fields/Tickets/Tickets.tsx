@@ -24,14 +24,16 @@ const defaultTicket: TicketSettings = {
 	salePriceData: {
 		enabled: false,
 		salePrice: '',
-		startDate: null,
-		endDate: null,
+		startDate: '',
+		endDate: '',
 	},
 	capacitySettings: {
 		enteredCapacity: '',
-		isShared: false,
 	},
 };
+
+const addTicketText = _x( 'Add Ticket', 'Button text to add a new ticket', 'event-tickets' );
+const addTicketsText = _x( 'Add Tickets', 'Button text to add new tickets', 'event-tickets' );
 
 /**
  * Tickets component to display and manage tickets for an event.
@@ -67,7 +69,7 @@ export default function Tickets(): JSX.Element {
 			if ( isNewTicket ) {
 				addTicket( ticket );
 			} else {
-				updateTicket( ticket.id, ticket );
+				updateTicket( ticket.id as number, ticket );
 			}
 
 			setIsUpserting( false );
@@ -107,10 +109,7 @@ export default function Tickets(): JSX.Element {
 		return <CenteredSpinner />;
 	}
 
-	const addTicketText =
-		tickets.length > 0
-			? _x( 'Add Ticket', 'Button text to add a new ticket when tickets already exist', 'event-tickets' )
-			: _x( 'Add Tickets', 'Button text to add a new ticket when no tickets exist', 'event-tickets' );
+	const buttonText = tickets.length > 0 ? addTicketText : addTicketsText;
 
 	return (
 		<ErrorBoundary
@@ -146,7 +145,7 @@ export default function Tickets(): JSX.Element {
 
 				<TicketTable onEditTicket={ onEditTicket } />
 
-				<AddTicket buttonText={ addTicketText } onClick={ onTicketAddedClicked } />
+				<AddTicket buttonText={ buttonText } onClick={ onTicketAddedClicked } />
 			</div>
 		</ErrorBoundary>
 	);
