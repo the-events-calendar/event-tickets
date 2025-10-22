@@ -328,14 +328,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Submit the payment to Stripe for Payment Element.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Updated render button selector to use the obj.selectors object.
 	 *
 	 * @param {string} order The order object returned from the server.
 	 *
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
-		// Only if we don't have the address fields to collect
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+		// Only if we don't have the address fields to collect.
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
 			return obj.stripeLib
 				.confirmPayment( {
 					elements: obj.stripeElements,
@@ -544,12 +545,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @link https://stripe.com/docs/js/element/payment_element
 	 *
 	 * @since 5.3.0
+	 * @since TBD Updated render button selector to use the obj.selectors object.
 	 */
 	obj.setupPaymentElement = () => {
-		// Only if we don't have the address fields to collect
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+		// Only if we don't have the address fields to collect.
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
 			const walletSettings = obj.getWallets();
-			// Instantiate the PaymentElement
+			// Instantiate the PaymentElement.
 			obj.paymentElement = obj.stripeElements.create( 'payment', {
 				fields: {
 					name: 'auto',
@@ -632,6 +634,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Setup and initialize Stripe API.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Reveal submit button early if no billing info is required.
 	 *
 	 * @return {Promise<void>}
 	 */
@@ -650,6 +653,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			clientSecret: obj.checkout.paymentIntentData.key,
 			appearance: obj.checkout.elementsAppearance,
 		} );
+
+		// Reveal submit button if no billing info is required.
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
+			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+		}
 
 		if ( obj.checkout.paymentElement ) {
 			obj.setupPaymentElement();
