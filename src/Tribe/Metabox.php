@@ -225,23 +225,30 @@ class Tribe__Tickets__Metabox {
 
 		$common_panel_data = ( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array();
 		$panels = [
-			'list'     => $admin_views->template( 'editor/panel/list', [
-				'post_id'     => $post->ID,
-				'tickets'     => $tickets,
-			], false ),
+			'list'     => $admin_views->template(
+				'editor/panel/list',
+				[
+					'post_id'     => $post->ID,
+					'tickets'     => $tickets,
+				],
+				false
+			),
 			'ticket'   => $admin_views->template(
 				'editor/panel/ticket',
 				array_merge(
 					$common_panel_data,
 					[ 'ticket_type' => $ticket_type ]
 				),
-				false ),
-			'settings' => $admin_views->template( 'editor/panel/settings',
+				false
+			),
+			'settings' => $admin_views->template(
+				'editor/panel/settings',
 				array_merge(
 					$common_panel_data,
 					[ 'post_id' => $post->ID ]
 				),
-				false ),
+				false
+			),
 		];
 
 		/**
