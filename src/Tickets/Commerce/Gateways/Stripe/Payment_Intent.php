@@ -119,8 +119,9 @@ class Payment_Intent {
 	protected static function set_minimum_precision( Value $value ): Value {
 		$currency_code = $value->get_currency_code();
 
-		// Get the currency precision from the Currency class.
-		$currency_precision = Currency::get_currency_precision( $currency_code );
+		// Get the currency precision directly from the currency map (ignore user option).
+		$currency_map = Currency::get_default_currency_map();
+		$currency_precision = isset( $currency_map[ $currency_code ] ) ? $currency_map[ $currency_code ]['decimal_precision'] : 2;
 
 		/**
 		 * Filter the precision required for a specific currency in Stripe API calls.
@@ -143,9 +144,12 @@ class Payment_Intent {
 			return $value;
 		}
 
+		$value = clone $value;
+
 		// Normalize precision for Stripe API.
 		$value->set_precision( $required_precision );
 		$value->update();
+
 		return $value;
 	}
 
@@ -162,10 +166,10 @@ class Payment_Intent {
 	 * @return mixed
 	 */
 	public static function create( Value $value, $retry = false ) {
-		$fee = Application_Fee::calculate( $value );
-
 		// Ensure minimum precision for Stripe API (default: 2 decimal places for cents).
 		$value = static::set_minimum_precision( $value );
+
+		$fee = Application_Fee::calculate( $value );
 
 		$query_args = [];
 		$body       = [

@@ -91,34 +91,42 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	}
 
 	/**
-	 * Data provider for testing all currencies in the Currency class.
+	 * Data provider for testing all currencies with all WordPress option settings.
+	 *
+	 * This comprehensive test ensures our fix works correctly regardless of
+	 * WordPress display settings, catching any "oops" scenarios.
 	 *
 	 * @since TBD
 	 *
 	 * @return Generator
 	 */
-	public function all_currencies_provider() {
+	public function all_currencies_with_wordpress_options_provider() {
 		$currency_map = Currency::get_default_currency_map();
+		$wordpress_precisions = [ 0, 1, 2 ]; // Test all possible WordPress option values
 		
 		foreach ( $currency_map as $currency_code => $currency_data ) {
-			$precision = $currency_data['decimal_precision'];
-			$test_value = 100.0; // Use 100 as test value
+			$currency_decimal_precision = $currency_data['decimal_precision'];
+			$input_value = 1.0; // Test with 1 unit of currency
 			
-			// Calculate expected amount based on precision
-			if ( $precision === 0 ) {
-				$expected_amount = '100'; // 100 units (no decimal places)
-			} else {
-				$expected_amount = '10000'; // 100.00 = 10000 cents
+			foreach ( $wordpress_precisions as $wp_precision ) {
+				// Calculate expected amount based on CURRENCY precision (not WordPress option).
+				if ( $currency_decimal_precision === 0 ) {
+					// Zero-decimal currencies: 1 unit = 1 cent (regardless of WordPress option).
+					$expected_amount = '1';
+				} else {
+					// Two-decimal currencies: 1 unit = 100 cents (regardless of WordPress option).
+					$expected_amount = '100';
+				}
+				
+				yield "currency_{$currency_code}_wp_precision_{$wp_precision}" => [
+					'currency_code' => $currency_code,
+					'input_value' => $input_value,
+					'wp_precision' => $wp_precision, 
+					'currency_precision' => $currency_decimal_precision, 
+					'expected_amount' => $expected_amount,
+					'description' => "Currency {$currency_code} with WordPress option {$wp_precision} should send amount {$expected_amount} (using currency precision {$currency_decimal_precision})"
+				];
 			}
-			
-			yield "currency_{$currency_code}_precision_{$precision}" => [
-				'currency_code' => $currency_code,
-				'input_value' => $test_value,
-				'input_precision' => 0,
-				'expected_precision' => $precision,
-				'expected_amount' => $expected_amount,
-				'description' => "Currency {$currency_code} should normalize to precision {$precision}"
-			];
 		}
 	}
 
@@ -206,37 +214,46 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	}
 
 	/**
-	 * Test that ALL currencies in the Currency class work correctly with Stripe.
+	 * Test that ALL currencies work correctly with ALL WordPress option settings.
 	 *
-	 * This is a comprehensive test that validates every currency we support
-	 * to ensure data integrity from input to Stripe API output.
+	 * This comprehensive test ensures our fix works correctly regardless of
+	 * WordPress display settings, catching any "oops" scenarios.
+	 *
+	 * Test Coverage:
+	 * - Every currency in the Currency class map
+	 * - Every possible WordPress option setting (0, 1, 2 decimals)
+	 * - Validates that Stripe API receives correct amounts regardless of display settings
 	 *
 	 * @since TBD
 	 *
 	 * @test
-	 * @dataProvider all_currencies_provider
+	 * @dataProvider all_currencies_with_wordpress_options_provider
 	 */
-	public function create_method_handles_all_currencies_correctly( $currency_code, $input_value, $input_precision, $expected_precision, $expected_amount, $description ) {
-		// Store the original currency setting.
+	public function create_method_handles_all_currencies_with_all_wordpress_options( $currency_code, $input_value, $wp_precision, $currency_precision, $expected_amount, $description ) {
+		// Store original settings.
 		$original_currency = tribe_get_option( Currency::$currency_code_option );
+		$original_precision = tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_number_of_decimals );
 		
-		// Temporarily set the currency for this test.
+		// Set up the test scenario.
 		tribe_update_option( Currency::$currency_code_option, $currency_code );
+		tribe_update_option( \TEC\Tickets\Commerce\Settings::$option_currency_number_of_decimals, $wp_precision );
 		
-		// Create a value with the specified precision.
+		// Create a value that would be affected by the WordPress option.
 		$value = new Value( $input_value );
-		$value->set_precision( $input_precision );
+		$value->set_precision( $wp_precision ); // This simulates what happens when WordPress option is applied
 
 		// Call the create method.
 		$result = Payment_Intent::create( $value );
 
-		// Verify the amount matches what we expect for this currency.
+		// Verify our fix works: should use currency precision, not WordPress option.
 		$this->assertEquals( $expected_amount, $result['amount'], $description );
 		
 		// Verify the currency code is preserved.
 		$this->assertEquals( $currency_code, $result['currency'], "Currency code should be preserved for {$currency_code}" );
 		
-		// Restore the original currency setting.
+		// Restore original settings.
 		tribe_update_option( Currency::$currency_code_option, $original_currency );
+		tribe_update_option( \TEC\Tickets\Commerce\Settings::$option_currency_number_of_decimals, $original_precision );
 	}
+
 }

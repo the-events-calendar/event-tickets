@@ -35,8 +35,18 @@ class Application_Fee {
 			return Value::create();
 		}
 
+		// Calculate the fee.
+		$fee_decimal = $value->get_decimal() * static::get_application_fee_percentage();
+
+		/*
+		Create fee value by cloning the input value and setting the fee amount.
+		This is to avoid side effects on the input value, as we're modifying the value.
+		*/
+		$fee_value = clone $value;
+		$fee_value->set_value( $fee_decimal );
+
 		// Otherwise, calculate it over the total value.
-		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
+		return $fee_value;
 	}
 
 	/**
