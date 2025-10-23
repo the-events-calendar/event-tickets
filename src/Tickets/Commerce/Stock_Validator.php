@@ -155,7 +155,7 @@ class Stock_Validator {
 			$stock_meta_key = Ticket::$stock_meta_key;
 			$locked_stock   = DB::get_var(
 				DB::prepare(
-					"SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s FOR UPDATE",
+					'SELECT meta_value FROM %i WHERE post_id = %d AND meta_key = %s FOR UPDATE',
 					DB::prefix( 'postmeta' ),
 					$ticket_id,
 					$stock_meta_key

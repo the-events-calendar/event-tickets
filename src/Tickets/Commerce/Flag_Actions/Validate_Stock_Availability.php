@@ -31,6 +31,8 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @var string[]
 	 */
 	protected $flags = [
 		'decrease_stock',
@@ -38,6 +40,8 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @var string[]
 	 */
 	protected $post_types = [
 		Order::POSTTYPE,
@@ -45,6 +49,8 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @var int
 	 */
 	protected $priority = 5;
 
