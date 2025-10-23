@@ -18,7 +18,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.26.6';
+	const VERSION = '5.27.0';
 
 	/**
 	 * Used to store the version history.
@@ -1244,9 +1244,9 @@ class Tribe__Tickets__Main {
 		}
 
 		$updater = new Tribe__Tickets__Updater( self::VERSION );
-		if ( $updater->update_required() ) {
+		//if ( $updater->update_required() ) {
 			$updater->do_updates();
-		}
+		//}
 	}
 
 	/**
