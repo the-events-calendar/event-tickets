@@ -133,10 +133,9 @@ class Payment_Intent {
 		}
 
 		// Normalize precision for Stripe API.
-		$normalized = $value;
-		$normalized->set_precision( $stripe_precision );
-		$normalized->update();
-		return $normalized;
+		$value->set_precision( $stripe_precision );
+		$value->update();
+		return $value;
 	}
 
 	/**
@@ -155,12 +154,12 @@ class Payment_Intent {
 		$fee = Application_Fee::calculate( $value );
 
 		// Ensure minimum precision for Stripe API (default: 2 decimal places for cents).
-		$stripe_value = static::set_minimum_precision( $value );
+		$value = static::set_minimum_precision( $value );
 
 		$query_args = [];
 		$body       = [
-			'currency'               => $stripe_value->get_currency_code(),
-			'amount'                 => (string) $stripe_value->get_integer(),
+			'currency'               => $value->get_currency_code(),
+			'amount'                 => (string) $value->get_integer(),
 			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
 			'application_fee_amount' => (string) $fee->get_integer(),
 			'metadata'               => [
