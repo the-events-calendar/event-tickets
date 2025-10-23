@@ -6,6 +6,7 @@
 
 namespace Tribe\Tickets\Events;
 
+use TEC\Tickets\Commerce\RSVP\Constants;
 use Tribe__Tickets__Main;
 use WP_Post;
 
@@ -26,6 +27,15 @@ class Attendees_List {
 	 * @var string
 	 */
 	const HIDE_META_KEY = '_tribe_hide_attendees_list';
+
+	/**
+	 * Meta key to hold if the Post has RSVP Attendees List hidden.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SHOW_RSVP_META_KEY = '_tec_show_attendees_list_rsvp';
 
 	/**
 	 * Meta name to control whether the Attendee List meta was changed by a shortcode in the content.
@@ -204,8 +214,6 @@ class Attendees_List {
 				'optout' => 'no_or_none',
 				// Only include public attendees.
 				'post_status' => 'publish',
-				// Only include RSVP status yes.
-				'rsvp_status__or_none' => 'yes',
 				// Only include public order statuses.
 				'order_status' => 'public',
 			],
@@ -232,9 +240,25 @@ class Attendees_List {
 			return [];
 		}
 
-		$attendees_for_display = [];
+		// Check the show/hide settings for RSVPs and Tickets.
+		$show_rsvp_attendees   = get_post_meta( $post->ID, self::SHOW_RSVP_META_KEY, true );
+		$show_ticket_attendees = get_post_meta( $post->ID, self::HIDE_META_KEY, true );
 
+		$attendees_for_display = [];
 		foreach ( $attendees as $key => $attendee ) {
+			// Check if this is an RSVP (tc-rsvp type).
+			$is_rsvp = Constants::TC_RSVP_TYPE === $attendee['ticket_type'];
+
+			// Skip RSVPs if RSVP attendees are hidden.
+			if ( $is_rsvp && empty( $show_rsvp_attendees ) ) {
+				continue;
+			}
+
+			// Skip regular tickets if ticket attendees are hidden.
+			if ( ! $is_rsvp && empty( $show_ticket_attendees ) ) {
+				continue;
+			}
+
 			// Skip when we already have another email like this one.
 			if ( isset( $emails[ $attendee['purchaser_email'] ] ) ) {
 				continue;

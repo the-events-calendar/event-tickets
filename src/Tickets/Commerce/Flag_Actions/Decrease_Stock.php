@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\Commerce\Traits\Is_RSVP;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Global_Stock as Global_Stock;
@@ -25,6 +26,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 class Decrease_Stock extends Flag_Action_Abstract {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * {@inheritDoc}
@@ -97,15 +99,19 @@ class Decrease_Stock extends Flag_Action_Abstract {
 		// Loop through the order items.
 		foreach ( $post->items as $item ) {
 			// Skip if the item is not a ticket.
-			if ( ! $this->is_ticket( $item ) ) {
+			if ( ! $this->is_ticket( $item ) && ! $this->is_rsvp( $item ) ) {
 				continue;
 			}
 
 			// Load the ticket object.
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			
+
 			// Skip if the ticket is not found.
 			if ( null === $ticket ) {
+				continue;
+			}
+
+			if ( $this->is_rsvp( $item ) && $item['extra']['order_status'] === 'no' ) {
 				continue;
 			}
 

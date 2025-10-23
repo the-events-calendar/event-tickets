@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Traits\Is_RSVP;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -19,6 +20,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 class Increase_Stock extends Flag_Action_Abstract {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * {@inheritDoc}
@@ -43,7 +45,7 @@ class Increase_Stock extends Flag_Action_Abstract {
 		}
 
 		foreach ( $post->items as $item ) {
-			if ( ! $this->is_ticket( $item ) ) {
+			if ( ! $this->is_ticket( $item ) && ! $this->is_rsvp( $item ) ) {
 				continue;
 			}
 

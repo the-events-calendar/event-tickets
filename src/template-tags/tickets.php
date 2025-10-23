@@ -7,7 +7,7 @@
 
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Commerce\Module;
-
+use TEC\Tickets\Commerce\RSVP\Constants;
 
 // Don't load directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -520,16 +520,18 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$status_counts = [];
 		$is_global     = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
 		$sold_label    = __( 'issued', 'event-tickets' );
+		$ticket_type   = $ticket->type();
 
-		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
-		}
 		if ( ! empty( $sold_label_override ) ) {
 			$sold_label = $sold_label_override;
 		}
+		if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
+			/* translators: %s: Singular RSVP label (e.g., "RSVP"). */
+			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
+		}
 
 		// Message for how many remain available.
-		if ( - 1 === $available ) {
+		if ( -1 === $available ) {
 			$status_counts[] = sprintf(
 			/* translators: %1$s: formatted quantity remaining */
 				_x(
@@ -807,7 +809,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 
 	/**
 	 * Gets the ticket provider class when passed an id.
-	 * 
+	 *
 	 * @since 5.25.0 Added check to return false if the provider is Tickets Commerce but the module is disabled.
 	 *
 	 * @param int|string $id An RSVP order key, order id, attendee id, ticket id, or product id.
@@ -818,7 +820,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
 		$provider = $data_api->get_ticket_provider( $id );
-		
+
 		// Skip if the provider is Tickets Commerce but the module is disabled.
 		if ( $provider instanceof Module && ! tec_tickets_commerce_is_enabled() ) {
 			$provider = false;

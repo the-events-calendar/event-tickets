@@ -598,11 +598,12 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 * @since 5.18.1 Now it will only create one order per cart hash. Every next time it will update the existing order.
+	 * @since TBD - Add parameter to specify the ticket type to filter the cart items.
 	 *
 	 * @return false|WP_Post
 	 * @throws \Tribe__Repository__Usage_Error
 	 */
-	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
+	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
 		$cart = tribe( Cart::class );
 
 		// Prepare the items for the order.
@@ -638,7 +639,7 @@ class Order extends Abstract_Order {
 						'type'              => $item['type'] ?? 'ticket',
 					];
 				},
-				$cart->get_items_in_cart( true )
+				$cart->get_items_in_cart( true, $ticket_type )
 			)
 		);
 

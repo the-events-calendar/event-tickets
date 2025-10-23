@@ -4,6 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use TEC\Tickets\Commerce\RSVP\Constants;
+
 class Tribe__Tickets__Tickets_View {
 
 	/**
@@ -216,15 +218,55 @@ class Tribe__Tickets__Tickets_View {
 		// Sort list to handle all not attending first.
 		$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 
-		foreach ( $attendees as $attendee_id => $attendee_data ) {
-			/**
-			 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
-			 *
-			 * @param array $attendee_data Information that we are trying to save.
-			 * @param int   $attendee_id   The attendee ID.
-			 * @param int   $post_id       The event/post ID.
-			 */
-			do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
+		foreach ( $attendees as $order_id => $order_data ) {
+			// Extract RSVP statuses if present.
+			$rsvp_statuses = [];
+			if ( isset( $order_data['rsvp_status'] ) && is_array( $order_data['rsvp_status'] ) ) {
+				$rsvp_statuses = $order_data['rsvp_status'];
+			}
+
+			// Process each attendee in this order.
+			if ( isset( $order_data['attendees'] ) && is_array( $order_data['attendees'] ) ) {
+				foreach ( $order_data['attendees'] as $attendee_id ) {
+					$attendee_data = $order_data;
+
+					// Remove the nested arrays that aren't needed for individual attendee.
+					unset( $attendee_data['attendees'] );
+					unset( $attendee_data['rsvp_status'] );
+
+					// Add RSVP status if present for this specific attendee.
+					if ( isset( $rsvp_statuses[ $attendee_id ] ) ) {
+						$attendee_data['rsvp_status'] = $rsvp_statuses[ $attendee_id ];
+					}
+
+					/**
+					 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
+					 *
+					 * @param array $attendee_data Information that we are trying to save.
+					 * @param int   $attendee_id   The attendee ID.
+					 * @param int   $post_id       The event/post ID.
+					 */
+					do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
+				}
+			} else {
+				// Legacy format: order_id is actually attendee_id.
+				$attendee_data = $order_data;
+				unset( $attendee_data['rsvp_status'] );
+
+				// Check if RSVP status is set for this attendee (legacy format).
+				if ( isset( $rsvp_statuses[ $order_id ] ) ) {
+					$attendee_data['rsvp_status'] = $rsvp_statuses[ $order_id ];
+				}
+
+				/**
+				 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
+				 *
+				 * @param array $attendee_data Information that we are trying to save.
+				 * @param int   $attendee_id   The attendee ID.
+				 * @param int   $post_id       The event/post ID.
+				 */
+				do_action( 'event_tickets_attendee_update', $attendee_data, (int) $order_id, $post_id );
+			}
 		}
 
 		/**
@@ -284,7 +326,7 @@ class Tribe__Tickets__Tickets_View {
 		// Handle pretty permalinks for non-event posts.
 		$bases        = $this->add_rewrite_base_slug();
 		$tickets_slug = $bases['tickets'][0] ?? 'tickets';
-		
+
 		return home_url( untrailingslashit( "{$tickets_slug}/{$event_id}" ) );
 	}
 
@@ -408,7 +450,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
 	 * @since 5.25.0 Added filter to preserve tribe-edit-orders parameter in canonical redirect.
-	 * 
+	 *
 	 * @param string $content Normally the_content of a post.
 	 *
 	 * @return string
@@ -641,8 +683,17 @@ class Tribe__Tickets__Tickets_View {
 		$orders = [];
 
 		foreach ( $attendees as $key => $attendee ) {
-			// Ignore RSVP if we don't tell it specifically
-			if ( 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
+			// Check if this is a TC-RSVP type attendee.
+			$is_tc_rsvp = false;
+			if ( isset( $attendee['product_id'] ) ) {
+				$ticket = Tribe__Tickets__Tickets::load_ticket_object( $attendee['product_id'] );
+				if ( $ticket && isset( $ticket->type ) && Constants::TC_RSVP_TYPE === $ticket->type ) {
+					$is_tc_rsvp = true;
+				}
+			}
+
+			// Include TC-RSVP attendees with regular tickets, but exclude legacy RSVP if not specified.
+			if ( ! $is_tc_rsvp && 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
 				continue;
 			}
 
@@ -799,8 +850,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$args = [
 			'by' => [
-				'provider__not_in' => 'rsvp',
-				'status'           => 'publish',
+				'status' => 'publish',
 			],
 		];
 
@@ -1078,11 +1128,24 @@ class Tribe__Tickets__Tickets_View {
 
 		$tickets = $provider->get_tickets( $post_id );
 
+		$rsvp = null;
+
+		foreach ( $tickets as $index => $ticket ) {
+			if ( Constants::TC_RSVP_TYPE === $ticket->type ) {
+				$rsvp = $ticket;
+				unset( $tickets[ $index ] );
+			}
+		}
+
+		// Reindex $tickets array to avoid gaps in keys.
+		$tickets = array_values( $tickets );
+
 		$args = [
 			'post_id'                     => $post_id,
 			'provider'                    => $provider,
 			'provider_id'                 => $provider->class_name,
 			'tickets'                     => $tickets,
+			'rsvp'                        => $rsvp,
 			'cart_classes'                => [ 'tribe-block', 'tribe-tickets' ], // @todo: deprecate with V1.
 			'tickets_on_sale'             => $blocks_tickets->get_tickets_on_sale( $tickets ),
 			'has_tickets_on_sale'         => tribe_events_has_tickets_on_sale( $post_id ),
@@ -1204,7 +1267,19 @@ class Tribe__Tickets__Tickets_View {
 				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 			}
 
-			$rendered_content  = $before_content;
+			/**
+			 * Filters the content for ticket templates within the tickets block.
+			 *
+			 * @since TBD
+			 *
+			 * @param string                             $content  The template content to be rendered.
+			 * @param Tribe__Tickets__Ticket_Object|null $rsvp     The rsvp object or null.
+			 * @param Tribe__Tickets__Editor__Template   $template The template object.
+			 * @param WP_Post                            $post     The post object.
+			 * @param bool                               $echo     Whether to echo the output.
+			 */
+			$rendered_content = apply_filters( 'tec_tickets_front_end_ticket_form_template_content', $before_content, $rsvp, $template, $post, $echo );
+
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
@@ -1532,7 +1607,7 @@ class Tribe__Tickets__Tickets_View {
 			$query_vars['page_id'] = $post->ID;
 			unset( $query_vars['p'] );
 		}
-		
+
 		return $query_vars;
 	}
 }

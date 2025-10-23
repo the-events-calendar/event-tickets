@@ -6,6 +6,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
+use TEC\Tickets\Commerce\RSVP\Constants;
 
 /**
  * Handles most actions related to an attendee or multiple attendees.
@@ -1232,7 +1233,11 @@ class Tribe__Tickets__Attendees {
 				$tickets_by_type[ $ticket_type ] = [];
 			}
 			$tickets_by_type[ $ticket_type ][] = $ticket;
-			$ticket_totals['sold']             += $ticket->qty_sold();
+
+			// Exclude TC RSVP tickets from ticket totals.
+			if ( Constants::TC_RSVP_TYPE !== $ticket_type ) {
+				$ticket_totals['sold'] += $ticket->qty_sold();
+			}
 
 			if ( $ticket_totals['available'] === - 1 ) {
 				// Unlimited capacity trumps any other capacity; if already unlimited, it will stay unlimited.
@@ -1242,6 +1247,11 @@ class Tribe__Tickets__Attendees {
 			if ( - 1 === $ticket->available() ) {
 				// Unlimited capacity trumps any other capacity: set to unlimited.
 				$ticket_totals['available'] = - 1;
+				continue;
+			}
+
+			// Exclude TC RSVP tickets from available counts.
+			if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
 				continue;
 			}
 
@@ -1270,10 +1280,14 @@ class Tribe__Tickets__Attendees {
 				'default' => 'tec-tickets__admin-attendees-overview-ticket-type-icon--ticket',
 				'rsvp'    => 'tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp',
 			],
-			'type_labels'       => [
-				'default' => tec_tickets_get_default_ticket_type_label_plural( 'attendee overview' ),
-				'rsvp'    => tribe_get_rsvp_label_plural( 'attendee overview' ),
-			],
+			'type_labels'       => apply_filters(
+				'tec_tickets_attendees_overview_type_labels',
+				[
+					'default' => tec_tickets_get_default_ticket_type_label_plural( 'attendee overview' ),
+					'rsvp'    => tribe_get_rsvp_label_plural( 'attendee overview' ),
+					'tc-rsvp' => tribe_get_rsvp_label_plural( 'attendee overview' ),
+				]
+			),
 		];
 
 		/**

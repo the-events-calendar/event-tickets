@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\RSVP\Constants as RSVP_Constants;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 
 /**
@@ -46,6 +47,26 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 
 		if ( empty( $order->events_in_order ) || ! is_array( $order->events_in_order ) ) {
 			return;
+		}
+
+		// Check if this is a tc-rsvp order and bail if it is.
+		$provider  = tribe( $order->provider );
+		$attendees = $provider->get_attendees_by_order_id( $order->ID );
+
+		if ( ! empty( $attendees ) ) {
+			foreach ( $attendees as $attendee ) {
+				// Get the ticket using the product_id to check its type.
+				if ( isset( $attendee['product_id'] ) && isset( $attendee['event_id'] ) ) {
+					$ticket_provider = \Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] ?? null );
+					if ( $ticket_provider ) {
+						$ticket = $ticket_provider->get_ticket( $attendee['event_id'], $attendee['product_id'] );
+						if ( $ticket && RSVP_Constants::TC_RSVP_TYPE === $ticket->type ) {
+							// This is a tc-rsvp order, don't send completed order email.
+							return;
+						}
+					}
+				}
+			}
 		}
 
 		/**

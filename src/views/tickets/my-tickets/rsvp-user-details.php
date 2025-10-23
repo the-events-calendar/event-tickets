@@ -1,0 +1,50 @@
+<?php
+/**
+ * My Tickets: RSVP User Details
+ *
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/rsvp-user-details.php
+ *
+ * @since TBD
+ *
+ * @version TBD
+ *
+ * @var int    $order_id  The ID of the order.
+ * @var array  $order     The order data.
+ * @var array  $attendees The attendees for the current order.
+ * @var int    $post_id   The ID of the post the tickets are for.
+ */
+
+$purchaser_name  = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
+$purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
+$purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
+
+?>
+<div class="user-details">
+	<?php
+	printf(
+		// Translators: 1: purchaser name, 2: linked purchaser email, 3: date of purchase.
+		esc_html__( 'Reserved by %1$s (%2$s) on %3$s', 'event-tickets' ),
+		esc_attr( $purchaser_name ),
+		'<a href="mailto:' . esc_url( $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
+		esc_html( $purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( $purchase_time ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' ) )
+	);
+
+	/**
+	 * Inject content into the RSVP User Details block on the orders page
+	 *
+	 * @param array   $attendees Attendee array.
+	 * @param WP_Post $post_id   Post object that the tickets are tied to.
+	 */
+	do_action( 'event_tickets_user_details_rsvp', $attendees, $post_id );
+
+	/**
+	 * Inject content into the RSVP User Details block on the orders page
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $attendees Attendee array.
+	 * @param WP_Post $post_id   Post object that the tickets are tied to.
+	 */
+	do_action( 'tec_tickets_user_details_rsvp', $attendees, $post_id );
+	?>
+</div>

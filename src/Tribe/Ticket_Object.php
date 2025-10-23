@@ -259,6 +259,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @var null|int
 		 */
 		private $event_id = null;
+
 		/**
 		 * The type of ticket.
 		 *
@@ -269,6 +270,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @var string|null
 		 */
 		private ?string $type;
+
+		/**
+		 * Whether to show the "Can't go" option in RSVP tickets.
+		 *
+		 * @since TBD
+		 *
+		 * @var string|null
+		 */
+		public ?string $show_not_going;
 
 		/**
 		 * Tribe__Tickets__Ticket_Object constructor.
