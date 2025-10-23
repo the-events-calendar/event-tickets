@@ -102,10 +102,49 @@ class Payment_Intent {
 	}
 
 	/**
+	 * Ensures a Value object has the correct precision for Stripe API.
+	 *
+	 * Stripe expects amounts in the smallest currency unit (cents for USD).
+	 * This means we need exactly 2 decimal places, not more or less.
+	 *
+	 * @since TBD
+	 *
+	 * @param Value $value The value object to normalize.
+	 *
+	 * @return Value The normalized value object with Stripe-compatible precision.
+	 */
+	protected static function set_minimum_precision( Value $value ): Value {
+		/**
+		 * Filter the precision required for Stripe API calls.
+         *
+         * @see https://docs.stripe.com/currencies#two-decimal
+		 *
+		 * @since TBD
+		 *
+		 * @param int $stripe_precision The precision required for Stripe (default: 2 for cents).
+		 * @param Value $value The value object being normalized.
+		 *
+		 * @return int The precision to use for Stripe API.
+		 */
+		$stripe_precision = (int) apply_filters( 'tec_tickets_commerce_stripe_minimum_precision', 2, $value );
+
+		// If precision is not exactly what Stripe expects, normalize it
+		if ( $value->get_precision() !== $stripe_precision ) {
+			$normalized = clone $value;
+			$normalized->set_precision( $stripe_precision );
+			$normalized->update();
+			return $normalized;
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
 	 * front-end payment requests.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Run the Stripe Value through `set_minimum_precision` to normalize data.  [ET-2558]
 	 *
 	 * @param Value $value The value object to create a payment intent for.
 	 * @param bool  $retry Is this a retry?
@@ -115,10 +154,13 @@ class Payment_Intent {
 	public static function create( Value $value, $retry = false ) {
 		$fee = Application_Fee::calculate( $value );
 
+		// Ensure minimum precision for Stripe API (default: 2 decimal places for cents).
+		$stripe_value = static::set_minimum_precision( $value );
+
 		$query_args = [];
 		$body       = [
-			'currency'               => $value->get_currency_code(),
-			'amount'                 => (string) $value->get_integer(),
+			'currency'               => $stripe_value->get_currency_code(),
+			'amount'                 => (string) $stripe_value->get_integer(),
 			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
 			'application_fee_amount' => (string) $fee->get_integer(),
 			'metadata'               => [
