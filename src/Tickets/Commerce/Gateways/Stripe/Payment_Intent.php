@@ -133,7 +133,7 @@ class Payment_Intent {
 		}
 
 		// Normalize precision for Stripe API.
-		$normalized = clone $value;
+		$normalized = $value;
 		$normalized->set_precision( $stripe_precision );
 		$normalized->update();
 		return $normalized;
