@@ -654,15 +654,17 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			appearance: obj.checkout.elementsAppearance,
 		} );
 
-		// Reveal submit button if no billing info is required.
-		if ( 0 === $( obj.selectors.renderButton ).length ) {
-			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
-		}
-
 		if ( obj.checkout.paymentElement ) {
+			// Reveal submit button if no billing info is required.
+			if ( 0 === $( obj.selectors.renderButton ).length ) {
+				$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+			}
 			obj.setupPaymentElement();
 			return;
 		}
+
+		// For CardElement (single line or separate), always reveal the submit button.
+		$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
 
 		if ( 'separate' === obj.checkout.cardElementType ) {
 			obj.setupSeparateCardElement();
