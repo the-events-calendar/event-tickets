@@ -41,7 +41,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
-		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
+		add_action( 'tec_tickets_commerce_checkout_page_parse_request', [ $this, 'maybe_create_stripe_payment_intent' ], 10000 );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
 		// Set up during feature release.
