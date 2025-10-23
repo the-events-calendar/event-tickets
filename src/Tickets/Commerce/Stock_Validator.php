@@ -162,6 +162,12 @@ class Stock_Validator {
 				)
 			);
 
+			// If no stock meta exists yet, treat as null (not 0).
+			// This handles tickets that haven't had stock set yet.
+			if ( false === $locked_stock ) {
+				$locked_stock = null;
+			}
+
 			// Now validate with the locked value.
 			return $this->validate_ticket_stock( $ticket_id, $quantity, $locked_stock );
 
@@ -204,6 +210,11 @@ class Stock_Validator {
 					'quantity'  => $quantity,
 				]
 			);
+		}
+
+		// Bail early for seated tickets - they have their own stock management via the seating service.
+		if ( metadata_exists( 'post', $ticket_id, '_tec_slr_seat_type' ) ) {
+			return true;
 		}
 
 		// Bail early for tickets that don't manage stock.
