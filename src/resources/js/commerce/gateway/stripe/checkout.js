@@ -432,6 +432,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Create an order and start the payment process.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Enhanced error handling for stock shortage errors.
 	 *
 	 * @return {Promise<*>}
 	 */
@@ -443,10 +444,24 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		let response;
 
 		try {
-			// Fetch Publishable API Key and Initialize Stripe Elements on Ready
+			// Fetch Publishable API Key and Initialize Stripe Elements on Ready.
 			response = await ky.post( obj.checkout.orderEndpoint, args ).json();
 		} catch ( error ) {
+			// Default to the error itself.
 			response = error;
+
+			// Bail early if no response object.
+			if ( ! error.response ) {
+				tribe.tickets.debug.log( 'stripe', 'createOrder', response );
+				return response;
+			}
+
+			// Try to extract JSON from error response.
+			try {
+				response = await error.response.json();
+			} catch ( parseError ) {
+				// JSON parsing failed, stick with original error.
+			}
 		}
 
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
@@ -458,6 +473,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Starts the process to submit a payment.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Enhanced error handling for stock shortage errors.
 	 *
 	 * @param {Event} event The Click event from the payment.
 	 */
@@ -481,7 +497,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			}
 		} else {
 			tribe.tickets.loader.hide( obj.checkoutContainer );
-			obj.showNotice( {}, order.message, '' );
+
+			// Handle WordPress REST API error responses.
+			let errorMessage = order.message || '';
+
+			// Check if this is a WP_Error response with code and message.
+			if ( order.code ) {
+				errorMessage = order.message || errorMessage;
+			}
+
+			obj.showNotice( {}, '', errorMessage );
 		}
 
 		obj.submitButton( true );

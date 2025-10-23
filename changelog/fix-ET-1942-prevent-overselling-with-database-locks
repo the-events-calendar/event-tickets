@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+Prevent ticket overselling by adding database-locked stock validation before payment intent creation. [ET-1942]
