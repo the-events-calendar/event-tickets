@@ -116,8 +116,8 @@ class Payment_Intent {
 	protected static function set_minimum_precision( Value $value ): Value {
 		/**
 		 * Filter the precision required for Stripe API calls.
-         *
-         * @see https://docs.stripe.com/currencies#two-decimal
+		 *
+		 * @see https://docs.stripe.com/currencies#two-decimal
 		 *
 		 * @since TBD
 		 *
@@ -128,7 +128,7 @@ class Payment_Intent {
 		 */
 		$stripe_precision = (int) apply_filters( 'tec_tickets_commerce_stripe_minimum_precision', 2, $value );
 
-		// If precision is not exactly what Stripe expects, normalize it
+		// If precision is not exactly what Stripe expects, normalize it.
 		if ( $value->get_precision() !== $stripe_precision ) {
 			$normalized = clone $value;
 			$normalized->set_precision( $stripe_precision );
