@@ -510,15 +510,9 @@ class Payments_Tab extends Service_Provider {
 	 * Maybe Generate Checkout and Success page if not found.
 	 *
 	 * @since 5.2.1
+	 * @since TBD - Tickets Commerce Always enabled.
 	 */
 	public function maybe_generate_pages() {
-
-		$tc_enabled = tribe_get_request_var( Tickets_Commerce_Settings::$tickets_commerce_enabled );
-
-		if ( ! tribe_is_truthy( $tc_enabled ) ) {
-			return;
-		}
-
 		$this->maybe_auto_generate_checkout_page();
 		$this->maybe_auto_generate_order_success_page();
 	}

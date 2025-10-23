@@ -60,8 +60,6 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * fresh installs and existing sites where Tickets Commerce is now always enabled.
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
 	public function ensure_tickets_commerce_pages_exist() {
 		tribe( \TEC\Tickets\Commerce\Payments_Tab::class )->maybe_generate_pages();
