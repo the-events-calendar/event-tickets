@@ -128,15 +128,15 @@ class Payment_Intent {
 		 */
 		$stripe_precision = (int) apply_filters( 'tec_tickets_commerce_stripe_minimum_precision', 2, $value );
 
-		// If precision is not exactly what Stripe expects, normalize it.
-		if ( $value->get_precision() !== $stripe_precision ) {
-			$normalized = clone $value;
-			$normalized->set_precision( $stripe_precision );
-			$normalized->update();
-			return $normalized;
+		if ( $value->get_precision() === $stripe_precision ) {
+			return $value;
 		}
 
-		return $value;
+		// Normalize precision for Stripe API.
+		$normalized = clone $value;
+		$normalized->set_precision( $stripe_precision );
+		$normalized->update();
+		return $normalized;
 	}
 
 	/**
