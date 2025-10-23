@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use Generator;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
 use Codeception\TestCase\WPTestCase;
 
@@ -90,6 +91,38 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	}
 
 	/**
+	 * Data provider for testing all currencies in the Currency class.
+	 *
+	 * @since TBD
+	 *
+	 * @return Generator
+	 */
+	public function all_currencies_provider() {
+		$currency_map = Currency::get_default_currency_map();
+		
+		foreach ( $currency_map as $currency_code => $currency_data ) {
+			$precision = $currency_data['decimal_precision'];
+			$test_value = 100.0; // Use 100 as test value
+			
+			// Calculate expected amount based on precision
+			if ( $precision === 0 ) {
+				$expected_amount = '100'; // 100 units (no decimal places)
+			} else {
+				$expected_amount = '10000'; // 100.00 = 10000 cents
+			}
+			
+			yield "currency_{$currency_code}_precision_{$precision}" => [
+				'currency_code' => $currency_code,
+				'input_value' => $test_value,
+				'input_precision' => 0,
+				'expected_precision' => $precision,
+				'expected_amount' => $expected_amount,
+				'description' => "Currency {$currency_code} should normalize to precision {$precision}"
+			];
+		}
+	}
+
+	/**
 	 * Test that the create method properly normalizes precision for Stripe API.
 	 *
 	 * @since TBD
@@ -107,15 +140,15 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	}
 
 	/**
-	 * Test that the filter can be used to change minimum precision.
+	 * Test that the filter can be used to change currency precision.
 	 *
 	 * @since TBD
 	 *
 	 * @test
 	 */
 	public function create_method_respects_precision_filter() {
-		// Add filter to change minimum precision to 3.
-		add_filter( 'tec_tickets_commerce_stripe_minimum_precision', function( $precision, $value ) {
+		// Add filter to change currency precision to 3.
+		add_filter( 'tec_tickets_commerce_stripe_currency_precision', function( $precision, $currency_code ) {
 			return 3;
 		}, 10, 2 );
 
@@ -126,9 +159,9 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 		$result = Payment_Intent::create( $value );
 
 		// Verify the result has precision 3 (4.000 = 4000).
-		$this->assertEquals( '4000', $result['amount'], 'Filter should change minimum precision to 3' );
+		$this->assertEquals( '4000', $result['amount'], 'Filter should change currency precision to 3' );
 
-		remove_all_filters( 'tec_tickets_commerce_stripe_minimum_precision' );
+		remove_all_filters( 'tec_tickets_commerce_stripe_currency_precision' );
 	}
 
 	/**
@@ -170,5 +203,40 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 
 		// Verify the amount is correct (400 cents for $4.00).
 		$this->assertEquals( '400', $result['amount'], 'Value with adequate precision should work correctly' );
+	}
+
+	/**
+	 * Test that ALL currencies in the Currency class work correctly with Stripe.
+	 *
+	 * This is a comprehensive test that validates every currency we support
+	 * to ensure data integrity from input to Stripe API output.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 * @dataProvider all_currencies_provider
+	 */
+	public function create_method_handles_all_currencies_correctly( $currency_code, $input_value, $input_precision, $expected_precision, $expected_amount, $description ) {
+		// Store the original currency setting.
+		$original_currency = tribe_get_option( Currency::$currency_code_option );
+		
+		// Temporarily set the currency for this test.
+		tribe_update_option( Currency::$currency_code_option, $currency_code );
+		
+		// Create a value with the specified precision.
+		$value = new Value( $input_value );
+		$value->set_precision( $input_precision );
+
+		// Call the create method.
+		$result = Payment_Intent::create( $value );
+
+		// Verify the amount matches what we expect for this currency.
+		$this->assertEquals( $expected_amount, $result['amount'], $description );
+		
+		// Verify the currency code is preserved.
+		$this->assertEquals( $currency_code, $result['currency'], "Currency code should be preserved for {$currency_code}" );
+		
+		// Restore the original currency setting.
+		tribe_update_option( Currency::$currency_code_option, $original_currency );
 	}
 }

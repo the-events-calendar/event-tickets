@@ -104,8 +104,11 @@ class Payment_Intent {
 	/**
 	 * Ensures a Value object has the correct precision for Stripe API.
 	 *
-	 * Stripe expects amounts in the smallest currency unit (cents for USD).
-	 * This means we need exactly 2 decimal places, not more or less.
+	 * Stripe has different precision requirements based on currency:
+	 * - Two-decimal currencies (USD, EUR, etc.): require 2 decimal places (cents)
+	 * - Zero-decimal currencies (JPY, KRW, etc.): require 0 decimal places
+	 *
+	 * @see https://docs.stripe.com/currencies#two-decimal
 	 *
 	 * @since TBD
 	 *
@@ -114,26 +117,34 @@ class Payment_Intent {
 	 * @return Value The normalized value object with Stripe-compatible precision.
 	 */
 	protected static function set_minimum_precision( Value $value ): Value {
+		$currency_code = $value->get_currency_code();
+
+		// Get the currency precision from the Currency class.
+		$currency_precision = Currency::get_currency_precision( $currency_code );
+
 		/**
-		 * Filter the precision required for Stripe API calls.
-		 *
-		 * @see https://docs.stripe.com/currencies#two-decimal
+		 * Filter the precision required for a specific currency in Stripe API calls.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $stripe_precision The precision required for Stripe (default: 2 for cents).
-		 * @param Value $value The value object being normalized.
+		 * @param int    $precision     The precision required for this currency.
+		 * @param string $currency_code The currency code being processed.
 		 *
-		 * @return int The precision to use for Stripe API.
+		 * @return int The precision to use for this currency.
 		 */
-		$stripe_precision = (int) apply_filters( 'tec_tickets_commerce_stripe_minimum_precision', 2, $value );
+		$required_precision = (int) apply_filters(
+			'tec_tickets_commerce_stripe_currency_precision',
+			$currency_precision,
+			$currency_code
+		);
 
-		if ( $value->get_precision() === $stripe_precision ) {
+		// Return early if precision is already correct.
+		if ( $value->get_precision() === $required_precision ) {
 			return $value;
 		}
 
 		// Normalize precision for Stripe API.
-		$value->set_precision( $stripe_precision );
+		$value->set_precision( $required_precision );
 		$value->update();
 		return $value;
 	}
