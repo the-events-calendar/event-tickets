@@ -5,8 +5,9 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use Generator;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tests\Traits\With_Uopz;
+use Codeception\TestCase\WPTestCase;
 
-class Payment_Intent_Precision_Test extends \Codeception\TestCase\WPTestCase {
+class Payment_Intent_Precision_Test extends WPTestCase {
 
 	use With_Uopz;
 
@@ -97,14 +98,11 @@ class Payment_Intent_Precision_Test extends \Codeception\TestCase\WPTestCase {
 	 * @dataProvider precision_normalization_provider
 	 */
 	public function create_method_normalizes_precision( $input_value, $input_precision, $expected_amount, $description ) {
-		// Create a value with the specified precision
 		$value = new Value( $input_value );
 		$value->set_precision( $input_precision );
 
-		// Call the public create method
 		$result = Payment_Intent::create( $value );
 
-		// Verify the amount was normalized correctly
 		$this->assertEquals( $expected_amount, $result['amount'], $description );
 	}
 
@@ -116,22 +114,20 @@ class Payment_Intent_Precision_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function create_method_respects_precision_filter() {
-		// Add filter to change minimum precision to 3
+		// Add filter to change minimum precision to 3.
 		add_filter( 'tec_tickets_commerce_stripe_minimum_precision', function( $precision, $value ) {
 			return 3;
 		}, 10, 2 );
 
-		// Create a value with precision 2
+		// Create a value with precision 2.
 		$value = new Value( 4.0 );
 		$value->set_precision( 2 );
 
-		// Call the public create method
 		$result = Payment_Intent::create( $value );
 
-		// Verify the result has precision 3 (4.000 = 4000)
+		// Verify the result has precision 3 (4.000 = 4000).
 		$this->assertEquals( '4000', $result['amount'], 'Filter should change minimum precision to 3' );
 
-		// Clean up
 		remove_all_filters( 'tec_tickets_commerce_stripe_minimum_precision' );
 	}
 
@@ -143,14 +139,14 @@ class Payment_Intent_Precision_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function create_method_handles_edge_cases() {
-		// Test with zero value
+		// Test with zero value.
 		$zero_value = new Value( 0.0 );
 		$zero_value->set_precision( 0 );
 
 		$result = Payment_Intent::create( $zero_value );
 		$this->assertEquals( '0', $result['amount'], 'Zero value should remain zero' );
 
-		// Test with very small value
+		// Test with very small value.
 		$small_value = new Value( 0.01 );
 		$small_value->set_precision( 0 );
 
@@ -166,14 +162,13 @@ class Payment_Intent_Precision_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function create_method_does_not_modify_adequate_precision() {
-		// Create a value with precision 2
+		// Create a value with precision 2.
 		$value = new Value( 4.0 );
 		$value->set_precision( 2 );
 
-		// Call the create method
 		$result = Payment_Intent::create( $value );
 
-		// Verify the amount is correct (400 cents for $4.00)
+		// Verify the amount is correct (400 cents for $4.00).
 		$this->assertEquals( '400', $result['amount'], 'Value with adequate precision should work correctly' );
 	}
 }
