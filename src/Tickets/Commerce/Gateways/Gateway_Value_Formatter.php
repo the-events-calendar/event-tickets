@@ -83,7 +83,7 @@ class Gateway_Value_Formatter {
 	 * @return array The filtered currency data.
 	 */
 	private function get_currency_data( $currency_code ) {
-		$currency_map = Currency::get_default_currency_map();
+		$currency_map  = Currency::get_default_currency_map();
 		$currency_data = $currency_map[ $currency_code ] ?? [];
 
 		/**
@@ -93,9 +93,10 @@ class Gateway_Value_Formatter {
 		 *
 		 * @param array  $currency_data The currency data from the map.
 		 * @param string $currency_code The currency code.
-		 * @param string $gateway       The gateway name.
+		 * @param string $gateway The gateway name.
 		 */
 		$filter_name = "tec_tickets_commerce_gateway_value_formatter_{$this->gateway}_currency_map";
+
 		return apply_filters( $filter_name, $currency_data, $currency_code, $this->gateway );
 	}
 

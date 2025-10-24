@@ -638,8 +638,21 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		 * @see https://docs.stripe.com/currencies#zero-decimal
 		 */
 		$zero_decimal_currencies = [
-			'BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG',
-			'RWF', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'
+			'BIF',
+			'CLP',
+			'DJF',
+			'GNF',
+			'JPY',
+			'KMF',
+			'KRW',
+			'MGA',
+			'PYG',
+			'RWF',
+			'VND',
+			'VUV',
+			'XAF',
+			'XOF',
+			'XPF',
 		];
 
 		// Check zero-decimal currencies.
