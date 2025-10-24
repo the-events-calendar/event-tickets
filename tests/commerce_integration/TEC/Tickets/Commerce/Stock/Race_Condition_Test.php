@@ -263,4 +263,3 @@ class Race_Condition_Test extends WPTestCase {
 		$this->assertFalse( $can_transition, 'Transition should fail when stock is insufficient' );
 	}
 }
-
