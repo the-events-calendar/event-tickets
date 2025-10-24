@@ -17,9 +17,9 @@ use TEC\Common\Admin\Conditional_Content\Inline_Upsell;
  *
  * Displays inline upsell notices throughout Event Tickets admin pages.
  *
- * @since TBD     Migrated to use new Inline_Upsell component.
- * @since 5.13.1 Updated Wallet Plus notices to be Event Tickets Plus.
  * @since 5.3.4
+ * @since 5.13.1 Updated Wallet Plus notices to be Event Tickets Plus.
+ * @since TBD     Migrated to use new Inline_Upsell component.
  *
  * @package TEC\Tickets\Admin
  */
@@ -115,10 +115,10 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Manual Attendees.
 	 *
-	 * @since TBD Updated to use new Inline_Upsell component.
-	 * @since 5.7.1 Move logic into show_on_attendees_page().
-	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
+	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
+	 * @since 5.7.1 Move logic into show_on_attendees_page().
+	 * @since TBD Updated to use new Inline_Upsell component.
 	 *
 	 * @return void
 	 */
