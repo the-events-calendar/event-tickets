@@ -86,6 +86,33 @@ class Status {
 	CONST DECLINED = 'DECLINED';
 
 	/**
+	 * Order Capture Status in PayPal for refunded captures.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	CONST REFUNDED = 'REFUNDED';
+
+	/**
+	 * Order Capture Status in PayPal for partially refunded captures.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	CONST PARTIALLY_REFUNDED = 'PARTIALLY_REFUNDED';
+
+	/**
+	 * Order Capture Status in PayPal for reversed captures.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	CONST REVERSED = 'REVERSED';
+
+	/**
 	 * Default mapping from PayPal Status to Tickets Commerce
 	 *
 	 * @since 5.1.9
@@ -101,6 +128,9 @@ class Status {
 		self::PAYER_ACTION_REQUIRED => Commerce_Status\Action_Required::SLUG,
 		self::FAILED => Commerce_Status\Denied::SLUG,
 		self::DECLINED => Commerce_Status\Denied::SLUG,
+		self::REFUNDED => Commerce_Status\Refunded::SLUG,
+		self::PARTIALLY_REFUNDED => Commerce_Status\Refunded::SLUG,
+		self::REVERSED => Commerce_Status\Reversed::SLUG,
 	];
 
 	/**
