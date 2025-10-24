@@ -112,7 +112,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tickets-commerce-paypal-merchant-inactive' );
 		}
 
-		$event = $request->get_body_params();
+		$event = $request->get_json_params();
 
 		tribe( 'logger' )->log_debug(
 			sprintf(
