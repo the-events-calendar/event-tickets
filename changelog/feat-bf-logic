@@ -1,4 +1,4 @@
 Significance: minor
 Type: tweak
 
-Modified the existing inline upsell to utilize the new modular logic in common. [ET-2590]
+Modify the existing inline upsell to utilize the new modular logic in common. [ET-2590]
