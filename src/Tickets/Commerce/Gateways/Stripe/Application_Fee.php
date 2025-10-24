@@ -37,13 +37,9 @@ class Application_Fee {
 			return Value::create();
 		}
 
-		// Compute the fee as a decimal (display domain).
 		$fee_decimal = $value->get_decimal() * static::get_application_fee_percentage();
+		$fee_value   = Value::create( $fee_decimal );
 
-		// Create a fresh Value for the fee (avoid mutating the original).
-		$fee_value = Value::create( $fee_decimal );
-
-		// Normalize for the active gateway (e.g., Stripe zero-decimal, special cases).
 		$formatter = new Gateway_Value_Formatter( Gateway::get_key() );
 		$fee_value = $formatter->format( $fee_value );
 
