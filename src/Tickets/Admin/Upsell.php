@@ -16,6 +16,9 @@ use Tribe__Template as Template;
 /**
  * Class Upsell
  *
+ * Displays inline upsell notices throughout Event Tickets admin pages.
+ *
+ * @since TBD     Migrated to use new Inline_Upsell component.
  * @since 5.13.1 Updated Wallet Plus notices to be Event Tickets Plus.
  * @since 5.3.4
  *
@@ -85,6 +88,10 @@ class Upsell {
 	/**
 	 * Show upsell on Attendees page.
 	 *
+	 * Randomly displays one of two upsells if Event Tickets Plus is not active.
+	 * Both methods now handle the ET+ check internally via Inline_Upsell conditions.
+	 *
+	 * @since TBD     Simplified logic - ET+ check now in Inline_Upsell conditions.
 	 * @since 5.13.1 Update notice logic.
 	 * @since 5.7.1
 	 *
@@ -96,14 +103,7 @@ class Upsell {
 			return;
 		}
 
-		$has_tickets_plus = did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' );
-
-		// If Tickets Plus is installed, then bail.
-		if ( $has_tickets_plus ) {
-			return;
-		}
-
-		// 50% chance of showing either upsell.
+		// 50% chance of showing either upsell (both check for ET+ internally).
 		if ( wp_rand( 0, 1 ) ) {
 			$this->show_wallet_plus();
 			return;
@@ -115,8 +115,9 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Manual Attendees.
 	 *
-	 * @since 5.7.1   - Move logic into show_on_attendees_page().
-	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
+	 * @since TBD   Updated to use new Inline_Upsell component.
+	 * @since 5.7.1 Move logic into show_on_attendees_page().
+	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 *
 	 * @return void
@@ -126,30 +127,31 @@ class Upsell {
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
 		tribe( Inline_Upsell::class )->render(
 			[
-				'slug'    => 'et-manual-attendees',
-				'classes' => [
-					'tec-admin__upsell-tec-tickets-manual-attendees',
-				],
-				'text'    => sprintf(
+				'slug'       => 'et-manual-attendees',
+				'classes'    => [ 'tec-admin__upsell-tec-tickets-manual-attendees' ],
+				'text'       => sprintf(
 					// Translators: %s: Link to "Event Tickets Plus" plugin.
 					esc_html__( 'Manually add attendees with %s', 'event-tickets' ),
 					''
 				),
-				'link'    => [
-					'classes' => [
-						'tec-admin__upsell-link--underlined',
-					],
+				'link'       => [
+					'classes' => [ 'tec-admin__upsell-link--underlined' ],
 					'text'    => 'Event Tickets Plus',
 					'url'     => 'https://evnt.is/et-in-app-manual-attendees',
 				],
+				'conditions' => [
+					'plugin_not_active' => 'event-tickets-plus/event-tickets-plus.php',
+				],
 			]
 		);
+
 		echo '</div>';
 	}
 
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
+	 * @since TBD     Updated to use new Inline_Upsell component.
 	 * @since 5.13.1 Update plugin name and URL.
 	 * @since 5.7.1
 	 *
@@ -160,21 +162,20 @@ class Upsell {
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
 		tribe( Inline_Upsell::class )->render(
 			[
-				'slug'    => 'et-wallet-plus',
-				'classes' => [
-					'tec-admin__upsell-tec-tickets-wallet-plus',
-				],
-				'text'    => sprintf(
+				'slug'       => 'et-wallet-plus',
+				'classes'    => [ 'tec-admin__upsell-tec-tickets-wallet-plus' ],
+				'text'       => sprintf(
 					// Translators: %s: Link to "Wallet Plus" plugin.
 					esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s', 'event-tickets' ),
 					''
 				),
-				'link'    => [
-					'classes' => [
-						'tec-admin__upsell-link--underlined',
-					],
+				'link'       => [
+					'classes' => [ 'tec-admin__upsell-link--underlined' ],
 					'text'    => 'Event Tickets Plus',
 					'url'     => 'https://evnt.is/1bdz',
+				],
+				'conditions' => [
+					'plugin_not_active' => 'event-tickets-plus/event-tickets-plus.php',
 				],
 			]
 		);
@@ -191,7 +192,6 @@ class Upsell {
 	 * @return array The filtered settings array.
 	 */
 	public function maybe_show_paystack_promo( $settings ) {
-
 		// Bail if Paystack plugin is installed and activated.
 		if ( class_exists( 'paystack\tec\classes\Core', false ) ) {
 			return $settings;
@@ -204,6 +204,7 @@ class Upsell {
 			'Africa/Accra',
 			'Africa/Johannesburg',
 		];
+
 		if ( ! in_array( $timezone, $paystack_timezones, true ) ) {
 			return $settings;
 		}
@@ -263,6 +264,7 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
+	 * @since TBD     Updated to use new Inline_Upsell component.
 	 * @since 5.13.1 Update notice logic, plugin name and URL.
 	 * @since 5.7.1
 	 *
@@ -271,11 +273,8 @@ class Upsell {
 	 * @return array Filtered template list settings fields.
 	 */
 	public function show_on_emails_settings_page( $fields ) {
-		// If they already have ET+ activated or are not within the admin area, then bail.
-		if (
-			did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' )
-			|| ! is_admin()
-		) {
+		// If not within the admin area, then bail.
+		if ( ! is_admin() ) {
 			return $fields;
 		}
 
@@ -283,21 +282,20 @@ class Upsell {
 			'type' => 'html',
 			'html' => tribe( Inline_Upsell::class )->render(
 				[
-					'slug'    => 'et-wallet-plus-emails',
-					'classes' => [
-						'tec-admin__upsell-tec-tickets-wallet-plus',
-					],
-					'text'    => sprintf(
+					'slug'       => 'et-emails-wallet-plus',
+					'classes'    => [ 'tec-admin__upsell-tec-tickets-wallet-plus' ],
+					'text'       => sprintf(
 						// Translators: %s: Link to "Wallet Plus" plugin.
 						esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s', 'event-tickets' ),
 						''
 					),
-					'link'    => [
-						'classes' => [
-							'tec-admin__upsell-link--underlined',
-						],
+					'link'       => [
+						'classes' => [ 'tec-admin__upsell-link--underlined' ],
 						'text'    => 'Event Tickets Plus',
 						'url'     => 'https://evnt.is/1bdz',
+					],
+					'conditions' => [
+						'plugin_not_active' => 'event-tickets-plus/event-tickets-plus.php',
 					],
 				],
 				false
