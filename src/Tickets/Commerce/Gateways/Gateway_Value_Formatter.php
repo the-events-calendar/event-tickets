@@ -53,14 +53,8 @@ class Gateway_Value_Formatter {
 	 * @return Value A new Value object formatted for the gateway.
 	 */
 	public function format( Value $value ): Value {
-		// Get the currency code from the value.
-		$currency_code = $value->get_currency_code();
-
-		// Get the currency data from the currency map.
-		$currency_data = $this->get_currency_data( $currency_code );
-
 		// Determine the appropriate precision for this gateway and currency.
-		$precision = $this->get_gateway_precision( $currency_data );
+		$precision = $this->get_gateway_precision( $value );
 
 		// Create a new Value object with the same float value.
 		$formatted_value = new Value( $value->get_float() );
@@ -105,11 +99,17 @@ class Gateway_Value_Formatter {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $currency_data The filtered currency data.
+	 * @param Value $value The value to get precision for.
 	 *
 	 * @return int The precision to use.
 	 */
-	protected function get_gateway_precision( $currency_data ) {
+	protected function get_gateway_precision( Value $value ) {
+		// Get the currency code from the value.
+		$currency_code = $value->get_currency_code();
+
+		// Get the currency data from the currency map.
+		$currency_data = $this->get_currency_data( $currency_code );
+
 		// Use the precision from the filtered currency data.
 		// Gateway-specific logic is handled via filters in the respective gateway's Hooks class.
 		return $currency_data['decimal_precision'] ?? $this->gateway::get_default_currency_precision();
