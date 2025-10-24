@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { Slot } from "@wordpress/components";
+import { useMemo } from "@wordpress/element";
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
 import { formatCurrency } from '@tec/common/classy/functions';
 import { CapacitySettings, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
-import { ClipboardIcon, ClockIcon } from '../Icons';
+import { ClockIcon, TimerIcon } from '../Icons';
 import { TicketRowMover } from '../TicketRowMover';
 
 type TicketRowProps = {
@@ -63,6 +65,88 @@ const getCapacityNumber = ( settings: CapacitySettings ): string | number => {
 	}
 };
 
+/**
+ * Generates ticket icons based on the ticket's availability dates.
+ *
+ * This function checks the ticket's `availableFrom` and `availableUntil` dates
+ * to determine if the ticket sales start in the future or have ended in the past.
+ * It then returns a JSX element containing the appropriate icons.
+ *
+ * @since TBD
+ *
+ * @param {TicketSettings} ticket The ticket settings object to evaluate.
+ * @return {React.JSX.Element} A JSX element containing the relevant ticket icons.
+ */
+const getTicketIcons = ( ticket: TicketSettings ): React.JSX.Element => {
+	const now = new Date();
+	let salesStartInFuture = false;
+	let salesEndedInPast = false;
+
+	// Determine if the ticket sales start in the future.
+	if ( ticket.availableFrom ) {
+		const availableFromDate = new Date( ticket.availableFrom );
+		if ( availableFromDate > now ) {
+			salesStartInFuture = true;
+		}
+	}
+
+	// Determine if the ticket sales have ended in the past.
+	if ( ticket.availableUntil ) {
+		const availableUntilDate = new Date( ticket.availableUntil );
+		if ( availableUntilDate < now ) {
+			salesEndedInPast = true;
+		}
+	}
+
+	return (
+		<span className="classy-field__ticket-row__icons">
+			{ salesStartInFuture && ( <ClockIcon/> ) }
+			{ salesEndedInPast && ( <TimerIcon/> ) }
+			{
+				/**
+				 * Renders in the Ticket Row Icons slot, after the default icons.
+				 *
+				 * This slot allows for additional icons to be added to the ticket row. While
+				 * adding other elements is possible, only icons are recommended to maintain
+				 * visual consistency.
+				 *
+				 * To add custom icons to this slot, use the `tec.classy.render` filter to render
+				 * a `Fill` component targeting the `tec.tickets.classy.ticketRow.icons` slot. As
+				 * a child of the `Fill`, use a function that accepts the `{ ticket }` prop and returns
+				 * the desired icon(s) to be rendered.
+				 *
+				 * @since TBD
+				 *
+				 * Example:
+				 * ```tsx
+				 * addFilter(
+				 *	'tec.classy.render',
+				 *	'tec.classy.my-plugin',
+				 *	(fields: React.ReactNode | null) => (
+				 *		<Fragment>
+				 *			{fields}
+				 *			<Fill name='tec.tickets.classy.ticketRow.icons'>
+				 *				{ ( { ticket }: { ticket: TicketSettings; } ) => (
+				 *					if ( someConditionBasedOnTicket( ticket ) ) {
+				 *						return <MyCustomIcon />;
+				 *					}
+				 *					return null;
+				 *				) }
+				 *			</Fill>
+				 *		</Fragment>
+				 *	)
+				 * );
+				 * ```
+				 *
+				 * @param {Object} props The properties passed to the slot.
+				 * @param {TicketSettings} props.ticket The ticket settings object.
+				 */
+				<Slot name="tec.tickets.classy.ticketRow.icons" fillProps={ { ticket } }/>
+			}
+		</span>
+	);
+};
+
 const noop = () => {};
 
 /**
@@ -86,8 +170,10 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 		value: ticket,
 	} = props;
 
-	// todo: This should be based on whether any icons should be shown.
-	const [ hasIcons, setHasIcons ] = React.useState( true );
+	const icons = useMemo(
+		() => getTicketIcons( ticket ),
+		[ ticket ]
+	);
 
 	return (
 		<tr
@@ -99,13 +185,7 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 			<td className="classy-field__ticket-row__label classy-field__ticket-row__section">
 				<h4>
 					{ ticket.name }
-					{ hasIcons && (
-						<span className="classy-field__ticket-row__icons">
-							{ /* todo: fill in icons properly */ }
-							<ClipboardIcon />
-							<ClockIcon />
-						</span>
-					) }
+					{ icons }
 				</h4>
 				{ ticket.description && (
 					<span className="classy-field__ticket-row__description">
