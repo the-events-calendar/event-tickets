@@ -59,7 +59,9 @@ class Upsell {
 			return;
 		}
 
-		tribe( Inline_Upsell::class )->render(
+		$upsell = new Inline_Upsell();
+
+		$upsell->render(
 			[
 				'slug'       => 'et-capacity-arf',
 				'classes'    => [
@@ -122,9 +124,10 @@ class Upsell {
 	 * @return void
 	 */
 	public function maybe_show_manual_attendees() {
+		$upsell = new Inline_Upsell();
 
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
-		tribe( Inline_Upsell::class )->render(
+		$upsell->render(
 			[
 				'slug'       => 'et-manual-attendees',
 				'classes'    => [ 'tec-admin__upsell-tec-tickets-manual-attendees' ],
@@ -157,9 +160,10 @@ class Upsell {
 	 * @return void
 	 */
 	public function show_wallet_plus() {
+		$upsell = new Inline_Upsell();
 
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
-		tribe( Inline_Upsell::class )->render(
+		$upsell->render(
 			[
 				'slug'       => 'et-wallet-plus',
 				'classes'    => [ 'tec-admin__upsell-tec-tickets-wallet-plus' ],
@@ -273,9 +277,11 @@ class Upsell {
 			return $fields;
 		}
 
+		$upsell = new Inline_Upsell();
+
 		$fields[] = [
 			'type' => 'html',
-			'html' => tribe( Inline_Upsell::class )->render(
+			'html' => $upsell->render(
 				[
 					'slug'       => 'et-emails-wallet-plus',
 					'classes'    => [ 'tec-admin__upsell-tec-tickets-wallet-plus' ],
