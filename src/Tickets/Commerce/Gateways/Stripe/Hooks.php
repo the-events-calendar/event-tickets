@@ -74,6 +74,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'modify_checkout_vars' ] );
 		add_filter( 'tec_tickets_commerce_order_stripe_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_stripe_get_value_captured', [ $this, 'filter_order_get_value_captured' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_gateway_value_formatter_stripe_currency_map', [ $this, 'filter_stripe_currency_precision' ], 10, 3 );
 	}
 
 	/**
@@ -577,5 +578,76 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function filter_admin_notices( $notices ) {
 		return $this->container->make( Gateway::class )->filter_admin_notices( $notices );
+	}
+
+	/**
+	 * Filter Stripe currency precision based on Stripe's specific requirements.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $currency_data The currency data from the map.
+	 * @param string $currency_code The currency code.
+	 * @param string $gateway       The gateway name.
+	 *
+	 * @return array The modified currency data.
+	 */
+	public function filter_stripe_currency_precision( $currency_data, $currency_code, $gateway ) {
+		// Only apply Stripe-specific logic for the Stripe gateway.
+		if ( 'stripe' !== $gateway ) {
+			return $currency_data;
+		}
+
+		// Apply Stripe's currency precision rules.
+		$stripe_precision = $this->get_stripe_precision( $currency_code, $currency_data['decimal_precision'] ?? 2 );
+
+		// Update the currency data with Stripe's precision.
+		$currency_data['decimal_precision'] = $stripe_precision;
+
+		return $currency_data;
+	}
+
+	/**
+	 * Get the appropriate precision for Stripe based on their currency requirements.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $currency_code The currency code.
+	 * @param int    $default_precision The default precision from currency data.
+	 *
+	 * @return int The precision to use for Stripe.
+	 */
+	private function get_stripe_precision( $currency_code, $default_precision ) {
+		/*
+		 * Stripe special case currencies (these override the zero-decimal list).
+		 * @see https://docs.stripe.com/currencies#special-cases
+		 */
+		$special_cases = [
+			'ISK' => 2,
+			'HUF' => 0,
+			'TWD' => 0,
+			'UGX' => 2,
+		];
+
+		// Check special cases first (these take priority).
+		if ( isset( $special_cases[ $currency_code ] ) ) {
+			return $special_cases[ $currency_code ];
+		}
+
+		/*
+		 * Stripe zero-decimal currencies (no multiplication needed).
+		 * @see https://docs.stripe.com/currencies#zero-decimal
+		 */
+		$zero_decimal_currencies = [
+			'BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG',
+			'RWF', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'
+		];
+
+		// Check zero-decimal currencies.
+		if ( in_array( $currency_code, $zero_decimal_currencies, true ) ) {
+			return 0;
+		}
+
+		// Default to the currency's precision for other currencies.
+		return $default_precision;
 	}
 }

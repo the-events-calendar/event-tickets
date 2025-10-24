@@ -28,148 +28,150 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	}
 
 	/**
-	 * Data provider for testing application fee calculation with different currencies and WordPress options.
+	 * Data provider for testing application fee calculation with Stripe-specific formatting.
 	 *
-	 * This comprehensive test ensures application fees are calculated correctly regardless of
-	 * WordPress display settings, catching any "oops" scenarios.
+	 * This test ensures application fees are calculated and formatted correctly using
+	 * the new Gateway_Value_Formatter with Stripe hooks.
 	 *
 	 * @since TBD
 	 *
 	 * @return \Generator
 	 */
-	public function application_fee_calculation_provider() {
-		$currency_map = Currency::get_default_currency_map();
-		$wordpress_precisions = [ 0, 1, 2 ]; // Test all possible WordPress option values
-		
-		foreach ( $currency_map as $currency_code => $currency_data ) {
-			$currency_decimal_precision = $currency_data['decimal_precision'];
-			$input_value = 100.0; // Test with 100 units of currency
-			
-			foreach ( $wordpress_precisions as $wp_precision ) {
-				// Calculate expected fee based on CURRENCY precision (not WordPress option).
-				$fee_percentage = 0.02; // 2%
-				$expected_fee_decimal = $input_value * $fee_percentage; // 100 * 0.02 = 2
-				
-				// For zero-decimal currencies, the fee should be rounded to the nearest whole number.
-				if ( $currency_decimal_precision === 0 ) {
-					$expected_fee_integer = (int) round( $expected_fee_decimal ); // 2
-				} else {
-					// For two-decimal currencies, the fee should be in cents.
-					$expected_fee_integer = (int) round( $expected_fee_decimal * 100 ); // 200
-				}
-				
-				yield "currency_{$currency_code}_wp_precision_{$wp_precision}" => [
-					'currency_code' => $currency_code,
-					'input_value' => $input_value,
-					'wp_precision' => $wp_precision,
-					'currency_precision' => $currency_decimal_precision,
-					'expected_fee_integer' => $expected_fee_integer,
-					'expected_fee_precision' => $currency_decimal_precision,
-					'description' => "Currency {$currency_code} with WordPress option {$wp_precision} should calculate fee {$expected_fee_integer} (using currency precision {$currency_decimal_precision})"
-				];
-			}
+	public function stripe_application_fee_calculation_provider() {
+		// Test key currencies with their expected Stripe formatting
+		$test_cases = [
+			// Zero-decimal currencies
+			'JPY' => [
+				'currency_code' => 'JPY',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 2, // 2% of 100 = 2, Stripe format: 2
+				'expected_fee_precision' => 0,
+				'description' => 'JPY should use 0 decimals for Stripe'
+			],
+			'KRW' => [
+				'currency_code' => 'KRW',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 2, // 2% of 100 = 2, Stripe format: 2
+				'expected_fee_precision' => 0,
+				'description' => 'KRW should use 0 decimals for Stripe'
+			],
+			// Special case currencies
+			'HUF' => [
+				'currency_code' => 'HUF',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 2, // 2% of 100 = 2, Stripe format: 2 (0 decimals for payouts)
+				'expected_fee_precision' => 0,
+				'description' => 'HUF should use 0 decimals for Stripe payouts'
+			],
+			'TWD' => [
+				'currency_code' => 'TWD',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 2, // 2% of 100 = 2, Stripe format: 2 (0 decimals for payouts)
+				'expected_fee_precision' => 0,
+				'description' => 'TWD should use 0 decimals for Stripe payouts'
+			],
+			'ISK' => [
+				'currency_code' => 'ISK',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 200, // 2% of 100 = 2, Stripe format: 200 (2 decimals for backwards compatibility)
+				'expected_fee_precision' => 2,
+				'description' => 'ISK should use 2 decimals for Stripe backwards compatibility'
+			],
+			'UGX' => [
+				'currency_code' => 'UGX',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 200, // 2% of 100 = 2, Stripe format: 200 (2 decimals for backwards compatibility)
+				'expected_fee_precision' => 2,
+				'description' => 'UGX should use 2 decimals for Stripe backwards compatibility'
+			],
+			// Two-decimal currencies
+			'USD' => [
+				'currency_code' => 'USD',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 200, // 2% of 100 = 2, Stripe format: 200 (2 decimals)
+				'expected_fee_precision' => 2,
+				'description' => 'USD should use 2 decimals for Stripe'
+			],
+			'EUR' => [
+				'currency_code' => 'EUR',
+				'input_value' => 100.0,
+				'expected_fee_integer' => 200, // 2% of 100 = 2, Stripe format: 200 (2 decimals)
+				'expected_fee_precision' => 2,
+				'description' => 'EUR should use 2 decimals for Stripe'
+			],
+		];
+
+		foreach ( $test_cases as $test_case ) {
+			yield $test_case['currency_code'] => $test_case;
 		}
 	}
 
 	/**
-	 * Test that application fees are calculated correctly for all currencies with all WordPress option settings.
+	 * Test that application fees are calculated and formatted correctly using Stripe-specific rules.
 	 *
-	 * This comprehensive test ensures our fix works correctly regardless of
-	 * WordPress display settings, catching any "oops" scenarios.
-	 *
-	 * Test Coverage:
-	 * - Every currency in the Currency class map
-	 * - Every possible WordPress option setting (0, 1, 2 decimals)
-	 * - Validates that application fees are calculated correctly regardless of display settings
-	 * - Catches the exact bug that occurred: fee precision not matching currency precision
+	 * This test ensures application fees use the new Gateway_Value_Formatter with Stripe hooks
+	 * to apply the correct precision formatting for each currency type.
 	 *
 	 * @since TBD
 	 *
 	 * @test
-	 * @dataProvider application_fee_calculation_provider
+	 * @dataProvider stripe_application_fee_calculation_provider
 	 */
-	public function calculate_method_handles_all_currencies_with_all_wordpress_options( 
+	public function calculate_method_uses_stripe_formatting( 
 		$currency_code, 
 		$input_value, 
-		$wp_precision, 
-		$currency_precision, 
 		$expected_fee_integer, 
 		$expected_fee_precision, 
 		$description 
 	) {
-		// Store original settings.
-		$original_currency = tribe_get_option( Currency::$currency_code_option );
-		$original_precision = tribe_get_option( Settings::$option_currency_number_of_decimals );
-		
-		// Set up the test scenario.
+		// Set currency for this test.
 		tribe_update_option( Currency::$currency_code_option, $currency_code );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, $wp_precision );
-		
-		// Create a value with the correct currency precision (not WordPress option).
-		$value = new Value( $input_value );
-		$value->set_precision( $currency_precision ); // Use currency precision, not WordPress option
 
-		// Call the calculate method.
+		// Create a Value object - it will get the currency's natural precision.
+		$value = new Value( $input_value );
+
+		// Call the calculate method (now uses Gateway_Value_Formatter internally).
 		$fee = Application_Fee::calculate( $value );
 
-		// Verify our fix works: should use currency precision, not WordPress option.
+		// Verify the fee is calculated and formatted correctly for Stripe.
 		$this->assertEquals( $expected_fee_integer, $fee->get_integer(), $description );
-		$this->assertEquals( $expected_fee_precision, $fee->get_precision(), "Fee precision should match currency precision for {$currency_code}" );
+		$this->assertEquals( $expected_fee_precision, $fee->get_precision(), "Fee precision should match Stripe requirements for {$currency_code}" );
 		$this->assertEquals( $currency_code, $fee->get_currency_code(), "Fee currency should match input currency for {$currency_code}" );
-		
-		// Restore original settings.
-		tribe_update_option( Currency::$currency_code_option, $original_currency );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, $original_precision );
 	}
 
 	/**
-	 * Test specific edge cases for application fee calculation.
+	 * Test specific edge cases for application fee calculation with Stripe formatting.
 	 *
 	 * @since TBD
 	 *
 	 * @test
 	 */
 	public function calculate_method_handles_edge_cases() {
-		// Store original settings.
-		$original_currency = tribe_get_option( Currency::$currency_code_option );
-		$original_precision = tribe_get_option( Settings::$option_currency_number_of_decimals );
-		
 		// Test 1: JPY with very small amount (1 yen).
 		tribe_update_option( Currency::$currency_code_option, 'JPY' );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, 2 );
-		
 		$value_1 = new Value( 1.0 );
-		$value_1->set_precision( 0 ); // JPY precision
 		$fee_1 = Application_Fee::calculate( $value_1 );
 		
-		// 2% of 1 = 0.02, but for JPY (precision 0), this should round to 0.
+		// 2% of 1 = 0.02, but for JPY (Stripe format: 0 decimals), this should round to 0.
 		$this->assertEquals( 0, $fee_1->get_integer(), 'JPY 1 yen should have 0 fee (2% of 1 = 0.02, rounds to 0)' );
-		$this->assertEquals( 0, $fee_1->get_precision(), 'JPY fee should have precision 0' );
+		$this->assertEquals( 0, $fee_1->get_precision(), 'JPY fee should have precision 0 for Stripe' );
 		
 		// Test 2: USD with very small amount (1 cent).
 		tribe_update_option( Currency::$currency_code_option, 'USD' );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, 0 );
-		
 		$value_2 = new Value( 0.01 );
-		$value_2->set_precision( 2 ); // USD precision
 		$fee_2 = Application_Fee::calculate( $value_2 );
 		
-		// 2% of 0.01 = 0.0002, but for USD (precision 2), this should round to 0.
+		// 2% of 0.01 = 0.0002, but for USD (Stripe format: 2 decimals), this should round to 0.
 		$this->assertEquals( 0, $fee_2->get_integer(), 'USD 1 cent should have 0 fee (2% of 0.01 = 0.0002, rounds to 0)' );
-		$this->assertEquals( 2, $fee_2->get_precision(), 'USD fee should have precision 2' );
+		$this->assertEquals( 2, $fee_2->get_precision(), 'USD fee should have precision 2 for Stripe' );
 		
 		// Test 3: Large amount to ensure calculation works.
 		$value_3 = new Value( 1000.0 );
-		$value_3->set_precision( 2 ); // USD precision
 		$fee_3 = Application_Fee::calculate( $value_3 );
 		
-		// 2% of 1000 = 20, for USD (precision 2), this should be 2000 cents.
+		// 2% of 1000 = 20, for USD (Stripe format: 2 decimals), this should be 2000 cents.
 		$this->assertEquals( 2000, $fee_3->get_integer(), 'USD $1000 should have $20 fee (2000 cents)' );
-		$this->assertEquals( 2, $fee_3->get_precision(), 'USD fee should have precision 2' );
-		
-		// Restore original settings.
-		tribe_update_option( Currency::$currency_code_option, $original_currency );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, $original_precision );
+		$this->assertEquals( 2, $fee_3->get_precision(), 'USD fee should have precision 2 for Stripe' );
 	}
 
 	/**
@@ -191,36 +193,26 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	}
 
 	/**
-	 * Test the specific bug that was fixed: JPY fee precision.
+	 * Test the specific bug that was fixed: JPY fee precision with Stripe formatting.
 	 *
 	 * @since TBD
 	 *
 	 * @test
 	 */
 	public function calculate_method_fixes_jpy_precision_bug() {
-		// Store original settings.
-		$original_currency = tribe_get_option( Currency::$currency_code_option );
-		$original_precision = tribe_get_option( Settings::$option_currency_number_of_decimals );
-		
 		// Set up the exact bug scenario that occurred in production.
 		tribe_update_option( Currency::$currency_code_option, 'JPY' );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, 2 );
-		
-		// Create a value with the correct currency precision.
-		$value = new Value( 300.0 );
-		$value->set_precision( 0 ); // JPY precision
 
-		// Call the calculate method.
+		// Create a value - it will get JPY's natural precision.
+		$value = new Value( 300.0 );
+
+		// Call the calculate method (now uses Gateway_Value_Formatter internally).
 		$fee = Application_Fee::calculate( $value );
 
 		// BEFORE our fix: This would have failed with fee integer: 600
-		// AFTER our fix: This should pass with fee integer: 6
+		// AFTER our fix: This should pass with fee integer: 6 (Stripe format: 0 decimals)
 		$this->assertEquals( 6, $fee->get_integer(), 'JPY 300 yen should have 6 yen fee, not 600' );
-		$this->assertEquals( 0, $fee->get_precision(), 'JPY fee should have precision 0' );
+		$this->assertEquals( 0, $fee->get_precision(), 'JPY fee should have precision 0 for Stripe' );
 		$this->assertEquals( 'JPY', $fee->get_currency_code(), 'Fee currency should be JPY' );
-		
-		// Restore original settings.
-		tribe_update_option( Currency::$currency_code_option, $original_currency );
-		tribe_update_option( Settings::$option_currency_number_of_decimals, $original_precision );
 	}
 }

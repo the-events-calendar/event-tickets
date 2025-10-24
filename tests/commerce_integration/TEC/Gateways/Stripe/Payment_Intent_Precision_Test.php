@@ -8,6 +8,11 @@ use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
 use Codeception\TestCase\WPTestCase;
 
+/**
+ * Integration tests for Payment_Intent with Stripe-specific currency formatting.
+ *
+ * @since TBD
+ */
 class Payment_Intent_Precision_Test extends WPTestCase {
 
 	use With_Uopz;
@@ -26,234 +31,266 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	}
 
 	/**
-	 * Data provider for testing precision normalization scenarios.
+	 * Data provider for Stripe zero-decimal currencies.
 	 *
 	 * @since TBD
 	 *
 	 * @return Generator
 	 */
-	public function precision_normalization_provider() {
-		yield 'precision_0_should_normalize_to_2' => [
-			'input_value' => 4.0,
-			'input_precision' => 0,
-			'expected_amount' => '400',
-			'description' => 'Value with precision 0 should be normalized to precision 2 for Stripe'
+	public function stripe_zero_decimal_currencies_provider() {
+		$zero_decimal_currencies = [
+			'BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA', 'PYG',
+			'RWF', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'
 		];
 
-		yield 'precision_1_should_normalize_to_2' => [
-			'input_value' => 4.5,
-			'input_precision' => 1,
-			'expected_amount' => '450',
-			'description' => 'Value with precision 1 should be normalized to precision 2 for Stripe'
-		];
-
-		yield 'precision_2_should_remain_unchanged' => [
-			'input_value' => 4.0,
-			'input_precision' => 2,
-			'expected_amount' => '400',
-			'description' => 'Value with precision 2 should remain unchanged'
-		];
-
-		yield 'precision_3_should_normalize_to_2' => [
-			'input_value' => 4.0,
-			'input_precision' => 3,
-			'expected_amount' => '400',
-			'description' => 'Value with precision 3 should normalize to precision 2 for Stripe (4000 cents = $40.00, not $4.000)'
-		];
-
-		yield 'precision_4_should_normalize_to_2' => [
-			'input_value' => 4.0,
-			'input_precision' => 4,
-			'expected_amount' => '400',
-			'description' => 'Value with precision 4+ should normalize to precision 2 for Stripe'
-		];
-
-		yield 'decimal_value_precision_0_50_cents' => [
-			'input_value' => 0.50,
-			'input_precision' => 0,
-			'expected_amount' => '50',
-			'description' => 'Decimal value (50 cents) with precision 0 should normalize to precision 2 for Stripe'
-		];
-
-		yield 'decimal_value_precision_0' => [
-			'input_value' => 4.25,
-			'input_precision' => 0,
-			'expected_amount' => '425',
-			'description' => 'Decimal value with precision 0 should be normalized correctly'
-		];
-
-		yield 'large_value_precision_0' => [
-			'input_value' => 100.0,
-			'input_precision' => 0,
-			'expected_amount' => '10000',
-			'description' => 'Large value with precision 0 should be normalized correctly'
-		];
-	}
-
-	/**
-	 * Data provider for testing all currencies with all WordPress option settings.
-	 *
-	 * This comprehensive test ensures our fix works correctly regardless of
-	 * WordPress display settings, catching any "oops" scenarios.
-	 *
-	 * @since TBD
-	 *
-	 * @return Generator
-	 */
-	public function all_currencies_with_wordpress_options_provider() {
-		$currency_map = Currency::get_default_currency_map();
-		$wordpress_precisions = [ 0, 1, 2 ]; // Test all possible WordPress option values
-		
-		foreach ( $currency_map as $currency_code => $currency_data ) {
-			$currency_decimal_precision = $currency_data['decimal_precision'];
-			$input_value = 1.0; // Test with 1 unit of currency
-			
-			foreach ( $wordpress_precisions as $wp_precision ) {
-				// Calculate expected amount based on CURRENCY precision (not WordPress option).
-				if ( $currency_decimal_precision === 0 ) {
-					// Zero-decimal currencies: 1 unit = 1 cent (regardless of WordPress option).
-					$expected_amount = '1';
-				} else {
-					// Two-decimal currencies: 1 unit = 100 cents (regardless of WordPress option).
-					$expected_amount = '100';
-				}
-				
-				yield "currency_{$currency_code}_wp_precision_{$wp_precision}" => [
-					'currency_code' => $currency_code,
-					'input_value' => $input_value,
-					'wp_precision' => $wp_precision, 
-					'currency_precision' => $currency_decimal_precision, 
-					'expected_amount' => $expected_amount,
-					'description' => "Currency {$currency_code} with WordPress option {$wp_precision} should send amount {$expected_amount} (using currency precision {$currency_decimal_precision})"
-				];
-			}
+		foreach ( $zero_decimal_currencies as $currency ) {
+			yield "zero_decimal_{$currency}" => [
+				'currency_code' => $currency,
+				'input_value' => 5.0,
+				'expected_amount' => '5',
+				'expected_currency' => $currency,
+				'description' => "Zero-decimal currency {$currency} should send raw value to Stripe"
+			];
 		}
 	}
 
 	/**
-	 * Test that the create method properly normalizes precision for Stripe API.
+	 * Data provider for Stripe special case currencies.
 	 *
 	 * @since TBD
 	 *
-	 * @test
-	 * @dataProvider precision_normalization_provider
+	 * @return Generator
 	 */
-	public function create_method_normalizes_precision( $input_value, $input_precision, $expected_amount, $description ) {
-		$value = new Value( $input_value );
-		$value->set_precision( $input_precision );
-
-		$result = Payment_Intent::create( $value );
-
-		$this->assertEquals( $expected_amount, $result['amount'], $description );
+	public function stripe_special_case_currencies_provider() {
+		return [
+			'ISK' => [
+				'currency_code' => 'ISK',
+				'input_value' => 5.0,
+				'expected_amount' => '500',
+				'expected_currency' => 'ISK',
+				'description' => 'ISK should use 2 decimals for backwards compatibility'
+			],
+			'HUF' => [
+				'currency_code' => 'HUF',
+				'input_value' => 10.45,
+				'expected_amount' => '10',
+				'expected_currency' => 'HUF',
+				'description' => 'HUF should use 0 decimals for payouts'
+			],
+			'TWD' => [
+				'currency_code' => 'TWD',
+				'input_value' => 800.45,
+				'expected_amount' => '800',
+				'expected_currency' => 'TWD',
+				'description' => 'TWD should use 0 decimals for payouts'
+			],
+			'UGX' => [
+				'currency_code' => 'UGX',
+				'input_value' => 5.0,
+				'expected_amount' => '500',
+				'expected_currency' => 'UGX',
+				'description' => 'UGX should use 2 decimals for backwards compatibility'
+			],
+		];
 	}
 
 	/**
-	 * Test that the filter can be used to change currency precision.
+	 * Data provider for standard two-decimal currencies.
 	 *
 	 * @since TBD
 	 *
-	 * @test
+	 * @return Generator
 	 */
-	public function create_method_respects_precision_filter() {
-		// Add filter to change currency precision to 3.
-		add_filter( 'tec_tickets_commerce_stripe_currency_precision', function( $precision, $currency_code ) {
-			return 3;
-		}, 10, 2 );
+	public function stripe_two_decimal_currencies_provider() {
+		$two_decimal_currencies = [
+			'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'CHF', 'SEK', 'NOK', 'DKK', 'PLN', 'CZK', 'BRL', 'ILS'
+		];
 
-		// Create a value with precision 2.
-		$value = new Value( 4.0 );
-		$value->set_precision( 2 );
-
-		$result = Payment_Intent::create( $value );
-
-		// Verify the result has precision 3 (4.000 = 4000).
-		$this->assertEquals( '4000', $result['amount'], 'Filter should change currency precision to 3' );
-
-		remove_all_filters( 'tec_tickets_commerce_stripe_currency_precision' );
+		foreach ( $two_decimal_currencies as $currency ) {
+			yield "two_decimal_{$currency}" => [
+				'currency_code' => $currency,
+				'input_value' => 5.0,
+				'expected_amount' => '500',
+				'expected_currency' => $currency,
+				'description' => "Two-decimal currency {$currency} should send value × 100 to Stripe"
+			];
+		}
 	}
 
 	/**
-	 * Test that the create method handles edge cases properly.
+	 * Test that zero-decimal currencies are handled correctly by Stripe.
 	 *
 	 * @since TBD
 	 *
 	 * @test
+	 * @dataProvider stripe_zero_decimal_currencies_provider
 	 */
-	public function create_method_handles_edge_cases() {
-		// Test with zero value.
-		$zero_value = new Value( 0.0 );
-		$zero_value->set_precision( 0 );
-
-		$result = Payment_Intent::create( $zero_value );
-		$this->assertEquals( '0', $result['amount'], 'Zero value should remain zero' );
-
-		// Test with very small value.
-		$small_value = new Value( 0.01 );
-		$small_value->set_precision( 0 );
-
-		$result = Payment_Intent::create( $small_value );
-		$this->assertEquals( '1', $result['amount'], 'Small value should be normalized correctly' );
-	}
-
-	/**
-	 * Test that values with adequate precision are not modified.
-	 *
-	 * @since TBD
-	 *
-	 * @test
-	 */
-	public function create_method_does_not_modify_adequate_precision() {
-		// Create a value with precision 2.
-		$value = new Value( 4.0 );
-		$value->set_precision( 2 );
-
-		$result = Payment_Intent::create( $value );
-
-		// Verify the amount is correct (400 cents for $4.00).
-		$this->assertEquals( '400', $result['amount'], 'Value with adequate precision should work correctly' );
-	}
-
-	/**
-	 * Test that ALL currencies work correctly with ALL WordPress option settings.
-	 *
-	 * This comprehensive test ensures our fix works correctly regardless of
-	 * WordPress display settings, catching any "oops" scenarios.
-	 *
-	 * Test Coverage:
-	 * - Every currency in the Currency class map
-	 * - Every possible WordPress option setting (0, 1, 2 decimals)
-	 * - Validates that Stripe API receives correct amounts regardless of display settings
-	 *
-	 * @since TBD
-	 *
-	 * @test
-	 * @dataProvider all_currencies_with_wordpress_options_provider
-	 */
-	public function create_method_handles_all_currencies_with_all_wordpress_options( $currency_code, $input_value, $wp_precision, $currency_precision, $expected_amount, $description ) {
-		// Store original settings.
-		$original_currency = tribe_get_option( Currency::$currency_code_option );
-		$original_precision = tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_number_of_decimals );
-		
-		// Set up the test scenario.
+	public function payment_intent_handles_zero_decimal_currencies( $currency_code, $input_value, $expected_amount, $expected_currency, $description ) {
+		// Set currency for this test.
 		tribe_update_option( Currency::$currency_code_option, $currency_code );
-		tribe_update_option( \TEC\Tickets\Commerce\Settings::$option_currency_number_of_decimals, $wp_precision );
-		
-		// Create a value that would be affected by the WordPress option.
-		$value = new Value( $input_value );
-		$value->set_precision( $wp_precision ); // This simulates what happens when WordPress option is applied
 
-		// Call the create method.
+		// Create a Value object - it will get the currency's natural precision.
+		$value = new Value( $input_value );
+
+		// Call Payment_Intent::create() which now uses Gateway_Value_Formatter.
 		$result = Payment_Intent::create( $value );
 
-		// Verify our fix works: should use currency precision, not WordPress option.
+		// Assert the Stripe API receives the correct amount.
 		$this->assertEquals( $expected_amount, $result['amount'], $description );
-		
-		// Verify the currency code is preserved.
-		$this->assertEquals( $currency_code, $result['currency'], "Currency code should be preserved for {$currency_code}" );
-		
-		// Restore original settings.
-		tribe_update_option( Currency::$currency_code_option, $original_currency );
-		tribe_update_option( \TEC\Tickets\Commerce\Settings::$option_currency_number_of_decimals, $original_precision );
+		$this->assertEquals( $expected_currency, $result['currency'], "Currency should be {$expected_currency}" );
 	}
 
+	/**
+	 * Test that special case currencies are handled correctly by Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 * @dataProvider stripe_special_case_currencies_provider
+	 */
+	public function payment_intent_handles_special_case_currencies( $currency_code, $input_value, $expected_amount, $expected_currency, $description ) {
+		// Set currency for this test.
+		tribe_update_option( Currency::$currency_code_option, $currency_code );
+
+		// Create a Value object - it will get the currency's natural precision.
+		$value = new Value( $input_value );
+
+		// Call Payment_Intent::create() which now uses Gateway_Value_Formatter.
+		$result = Payment_Intent::create( $value );
+
+		// Assert the Stripe API receives the correct amount.
+		$this->assertEquals( $expected_amount, $result['amount'], $description );
+		$this->assertEquals( $expected_currency, $result['currency'], "Currency should be {$expected_currency}" );
+	}
+
+	/**
+	 * Test that standard two-decimal currencies are handled correctly by Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 * @dataProvider stripe_two_decimal_currencies_provider
+	 */
+	public function payment_intent_handles_two_decimal_currencies( $currency_code, $input_value, $expected_amount, $expected_currency, $description ) {
+		// Set currency for this test.
+		tribe_update_option( Currency::$currency_code_option, $currency_code );
+
+		// Create a Value object - it will get the currency's natural precision.
+		$value = new Value( $input_value );
+
+		// Call Payment_Intent::create() which now uses Gateway_Value_Formatter.
+		$result = Payment_Intent::create( $value );
+
+		// Assert the Stripe API receives the correct amount.
+		$this->assertEquals( $expected_amount, $result['amount'], $description );
+		$this->assertEquals( $expected_currency, $result['currency'], "Currency should be {$expected_currency}" );
+	}
+
+	/**
+	 * Test that the Stripe hook system can be overridden via filters.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 */
+	public function payment_intent_respects_stripe_currency_filter_overrides() {
+		// Set currency to JPY (normally zero-decimal).
+		tribe_update_option( Currency::$currency_code_option, 'JPY' );
+
+		// Add a filter to override JPY to use 1 decimal instead of 0.
+		add_filter( 'tec_tickets_commerce_gateway_value_formatter_stripe_currency_map', function( $currency_data, $currency_code, $gateway ) {
+			if ( $currency_code === 'JPY' && $gateway === 'stripe' ) {
+				$currency_data['decimal_precision'] = 1; // Override to 1 decimal
+			}
+			return $currency_data;
+		}, 10, 3 );
+
+		// Create a Value object for 5.0 JPY.
+		$value = new Value( 5.0 );
+
+		// Call Payment_Intent::create().
+		$result = Payment_Intent::create( $value );
+
+		// Assert the filter override worked (5.0 with precision 1 = 50).
+		$this->assertEquals( '50', $result['amount'], 'Filter override should change JPY to 1 decimal precision' );
+		$this->assertEquals( 'JPY', $result['currency'], 'Currency should remain JPY' );
+
+		// Clean up the filter.
+		remove_all_filters( 'tec_tickets_commerce_gateway_value_formatter_stripe_currency_map' );
+	}
+
+	/**
+	 * Test that application fees are also formatted correctly for Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 */
+	public function payment_intent_application_fee_uses_stripe_formatting() {
+		// Set currency to JPY (zero-decimal).
+		tribe_update_option( Currency::$currency_code_option, 'JPY' );
+
+		// Create a Value object for 100 JPY.
+		$value = new Value( 100.0 );
+
+		// Call Payment_Intent::create().
+		$result = Payment_Intent::create( $value );
+
+		// Verify both amount and application_fee_amount are formatted correctly for Stripe.
+		$this->assertEquals( '100', $result['amount'], 'JPY amount should be 100 (no decimal places)' );
+		$this->assertEquals( '2', $result['application_fee_amount'], 'JPY application fee should be 2 (2% of 100, no decimal places)' );
+		$this->assertEquals( 'JPY', $result['currency'], 'Currency should be JPY' );
+	}
+
+	/**
+	 * Test that the integration works with real-world currency scenarios.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 */
+	public function payment_intent_handles_real_world_scenarios() {
+		// Test USD: $4.50 should become 450 cents.
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+		$usd_value = new Value( 4.50 );
+		$usd_result = Payment_Intent::create( $usd_value );
+		$this->assertEquals( '450', $usd_result['amount'], 'USD $4.50 should become 450 cents' );
+		$this->assertEquals( 'USD', $usd_result['currency'], 'Currency should be USD' );
+
+		// Test JPY: ¥500 should become 500 (no multiplication).
+		tribe_update_option( Currency::$currency_code_option, 'JPY' );
+		$jpy_value = new Value( 500.0 );
+		$jpy_result = Payment_Intent::create( $jpy_value );
+		$this->assertEquals( '500', $jpy_result['amount'], 'JPY ¥500 should become 500 (no decimal places)' );
+		$this->assertEquals( 'JPY', $jpy_result['currency'], 'Currency should be JPY' );
+
+		// Test EUR: €12.99 should become 1299 cents.
+		tribe_update_option( Currency::$currency_code_option, 'EUR' );
+		$eur_value = new Value( 12.99 );
+		$eur_result = Payment_Intent::create( $eur_value );
+		$this->assertEquals( '1299', $eur_result['amount'], 'EUR €12.99 should become 1299 cents' );
+		$this->assertEquals( 'EUR', $eur_result['currency'], 'Currency should be EUR' );
+	}
+
+	/**
+	 * Test that the integration handles edge cases properly.
+	 *
+	 * @since TBD
+	 *
+	 * @test
+	 */
+	public function payment_intent_handles_edge_cases() {
+		// Test with zero value.
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+		$zero_value = new Value( 0.0 );
+		$zero_result = Payment_Intent::create( $zero_value );
+		$this->assertEquals( '0', $zero_result['amount'], 'Zero value should remain zero' );
+		$this->assertEquals( '0', $zero_result['application_fee_amount'], 'Zero application fee should remain zero' );
+
+		// Test with small value that will produce a meaningful application fee.
+		$small_value = new Value( 0.50 ); // 50 cents
+		$small_result = Payment_Intent::create( $small_value );
+		$this->assertEquals( '50', $small_result['amount'], 'Small value should be normalized correctly' );
+		$this->assertEquals( '1', $small_result['application_fee_amount'], 'Small application fee should be normalized correctly (2% of 50 cents = 1 cent)' );
+	}
 }

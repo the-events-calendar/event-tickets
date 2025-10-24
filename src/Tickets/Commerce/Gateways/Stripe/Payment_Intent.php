@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
+use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
 
 /**
  * Stripe orders aka Payment Intents class.
@@ -101,64 +102,13 @@ class Payment_Intent {
 		return true;
 	}
 
-	/**
-	 * Ensures a Value object has the correct precision for Stripe API.
-	 *
-	 * Stripe has different precision requirements based on currency:
-	 * - Two-decimal currencies (USD, EUR, etc.): require 2 decimal places (cents)
-	 * - Zero-decimal currencies (JPY, KRW, etc.): require 0 decimal places
-	 *
-	 * @see https://docs.stripe.com/currencies#two-decimal
-	 *
-	 * @since TBD
-	 *
-	 * @param Value $value The value object to normalize.
-	 *
-	 * @return Value The normalized value object with Stripe-compatible precision.
-	 */
-	protected static function set_minimum_precision( Value $value ): Value {
-		$currency_code = $value->get_currency_code();
-
-		// Get the currency precision directly from the currency map (ignore user option).
-		$currency_map = Currency::get_default_currency_map();
-		$currency_precision = isset( $currency_map[ $currency_code ] ) ? $currency_map[ $currency_code ]['decimal_precision'] : 2;
-
-		/**
-		 * Filter the precision required for a specific currency in Stripe API calls.
-		 *
-		 * @since TBD
-		 *
-		 * @param int    $precision     The precision required for this currency.
-		 * @param string $currency_code The currency code being processed.
-		 *
-		 * @return int The precision to use for this currency.
-		 */
-		$required_precision = (int) apply_filters(
-			'tec_tickets_commerce_stripe_currency_precision',
-			$currency_precision,
-			$currency_code
-		);
-
-		// Return early if precision is already correct.
-		if ( $value->get_precision() === $required_precision ) {
-			return $value;
-		}
-
-		$value = clone $value;
-
-		// Normalize precision for Stripe API.
-		$value->set_precision( $required_precision );
-		$value->update();
-
-		return $value;
-	}
 
 	/**
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
 	 * front-end payment requests.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Run the Stripe Value through `set_minimum_precision` to normalize data.  [ET-2558]
+	 * @since TBD Use Gateway_Value_Formatter to normalize data for Stripe API.  [ET-2558]
 	 *
 	 * @param Value $value The value object to create a payment intent for.
 	 * @param bool  $retry Is this a retry?
@@ -166,8 +116,9 @@ class Payment_Intent {
 	 * @return mixed
 	 */
 	public static function create( Value $value, $retry = false ) {
-		// Ensure minimum precision for Stripe API (default: 2 decimal places for cents).
-		$value = static::set_minimum_precision( $value );
+		// Format the value for Stripe API using the gateway formatter.
+		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$value = $formatter->format( $value );
 
 		$fee = Application_Fee::calculate( $value );
 

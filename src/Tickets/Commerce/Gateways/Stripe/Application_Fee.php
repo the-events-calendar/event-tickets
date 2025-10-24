@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
 
 /**
  * The Stripe Application_Fee class
@@ -25,6 +26,7 @@ class Application_Fee {
 	 * Calculate the fee value that needs to be applied to the PaymentIntent.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Use Gateway_Value_Formatter to ensure proper precision for Stripe API.
 	 *
 	 * @param Value $value the value over which to calculate the fee.
 	 *
@@ -44,6 +46,10 @@ class Application_Fee {
 		*/
 		$fee_value = clone $value;
 		$fee_value->set_value( $fee_decimal );
+
+		// Format the fee value for Stripe API to ensure proper precision.
+		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$fee_value = $formatter->format( $fee_value );
 
 		// Otherwise, calculate it over the total value.
 		return $fee_value;
