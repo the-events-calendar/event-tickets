@@ -14,6 +14,8 @@ $wrapper_classes = [
 	'tec-tickets__admin-attendees--event'     => ! empty( $event_id ),
 	'tec-tickets__admin-attendees--front-end' => empty( is_admin() ),
 ];
+
+do_action( 'tec_conditional_content_header_notice' );
 ?>
 <div <?php tribe_classes( $wrapper_classes ); ?>>
 	<?php
