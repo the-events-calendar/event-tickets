@@ -26,6 +26,15 @@ use Tribe__Utils__Array as Arr;
 class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
+	 * Default decimal precision to use when a currency does not define one.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	protected static int $default_currency_precision = 2;
+
+	/**
 	 * @inheritDoc
 	 */
 	public function register() {
@@ -598,7 +607,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		// Apply Stripe's currency precision rules.
-		$stripe_precision = $this->get_stripe_precision( $currency_code, $currency_data['decimal_precision'] ?? 2 );
+		$stripe_precision = $this->get_stripe_precision( $currency_code, $currency_data['decimal_precision'] );
 
 		// Update the currency data with Stripe's precision.
 		$currency_data['decimal_precision'] = $stripe_precision;
@@ -611,12 +620,16 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $currency_code The currency code.
-	 * @param int    $default_precision The default precision from currency data.
+	 * @param string   $currency_code The currency code.
+	 * @param int|null $default_precision The default precision from currency data.
 	 *
 	 * @return int The precision to use for Stripe.
 	 */
-	private function get_stripe_precision( $currency_code, $default_precision ) {
+	private function get_stripe_precision( $currency_code, int $default_precision = null ) {
+		if ( null === $default_precision ) {
+			$default_precision = self::$default_currency_precision;
+		}
+
 		/*
 		 * Stripe special case currencies (these override the zero-decimal list).
 		 * @see https://docs.stripe.com/currencies#special-cases
