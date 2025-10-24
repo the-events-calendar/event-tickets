@@ -442,6 +442,10 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			]
 		)->first();
 
+		if ( ! $order ) {
+			return;
+		}
+
 		// We will attempt to update the order status to the one returned by Stripe.
 		tribe( Order::class )->modify_status(
 			$order->ID,

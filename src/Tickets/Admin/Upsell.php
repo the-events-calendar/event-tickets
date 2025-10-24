@@ -11,7 +11,6 @@ namespace TEC\Tickets\Admin;
 
 use TEC\Tickets\Commerce\Settings;
 use TEC\Common\Admin\Conditional_Content\Inline_Upsell;
-use Tribe__Template as Template;
 
 /**
  * Class Upsell
@@ -49,9 +48,9 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Capacity and ARF features.
 	 *
-	 * @since TBD Updated to use new Inline_Upsell component.
-	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
+	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
+	 * @since TBD Updated to use new Inline_Upsell component.
 	 */
 	public function maybe_show_capacity_arf() {
 		// If not within the admin area, then bail.
@@ -92,9 +91,9 @@ class Upsell {
 	 * Randomly displays one of two upsells if Event Tickets Plus is not active.
 	 * Both methods now handle the ET+ check internally via Inline_Upsell conditions.
 	 *
-	 * @since TBD Simplified logic - ET+ check now in Inline_Upsell conditions.
-	 * @since 5.13.1 Update notice logic.
 	 * @since 5.7.1
+	 * @since 5.13.1 Update notice logic.
+	 * @since TBD Simplified logic - ET+ check now in Inline_Upsell conditions.
 	 *
 	 * @return void
 	 */
@@ -153,9 +152,9 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
-	 * @since TBD Updated to use new Inline_Upsell component.
-	 * @since 5.13.1 Update plugin name and URL.
 	 * @since 5.7.1
+	 * @since 5.13.1 Update plugin name and URL.
+	 * @since TBD Updated to use new Inline_Upsell component.
 	 *
 	 * @return void
 	 */
@@ -236,9 +235,9 @@ class Upsell {
 	/**
 	 * Filters the default Ticket type description in the context of Events part of a Series.
 	 *
-	 * @since TBD     Updated to use new Inline_Upsell component. Removed unused parameters.
-	 * @since 5.8.4   Add logic to bail in scenarios when upsell should not show.
 	 * @since 5.8.0
+	 * @since 5.8.4   Add logic to bail in scenarios when upsell should not show.
+	 * @since TBD     Updated to use new Inline_Upsell component. Removed unused parameters.
 	 */
 	public function render_ticket_type_upsell_notice(): void {
 		// Check if post type is an event.
@@ -263,9 +262,9 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
-	 * @since TBD     Updated to use new Inline_Upsell component.
-	 * @since 5.13.1 Update notice logic, plugin name and URL.
 	 * @since 5.7.1
+	 * @since 5.13.1 Update notice logic, plugin name and URL.
+	 * @since TBD     Updated to use new Inline_Upsell component.
 	 *
 	 * @param array $fields Template list settings fields.
 	 *
