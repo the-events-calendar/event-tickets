@@ -36,10 +36,7 @@ class Upsell {
 		// Display ticket type upsell notice.
 		add_action(
 			'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header',
-			[
-				$this,
-				'render_ticket_type_upsell_notice',
-			],
+			[ $this, 'render_ticket_type_upsell_notice' ],
 			20,
 			3
 		);
@@ -50,32 +47,36 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Capacity and ARF features.
 	 *
-	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
+	 * @since TBD   Updated to use new Inline_Upsell component.
+	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 */
 	public function maybe_show_capacity_arf() {
-		// If they already have ET+ activated or are not within the admin area, then bail.
-		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) || ! is_admin() ) {
+		// If not within the admin area, then bail.
+		if ( ! is_admin() ) {
 			return;
 		}
 
 		tribe( Inline_Upsell::class )->render(
 			[
-				'slug'    => 'et-capacity-arf',
-				'classes' => [
+				'slug'       => 'et-capacity-arf',
+				'classes'    => [
 					'tec-admin__upsell-tec-tickets-capacity-arf',
 				],
-				'text'    => sprintf(
+				'text'       => sprintf(
 					// Translators: %s: Link to "Event Tickets Plus" plugin.
 					esc_html__( 'Get individual information collection from each attendee and advanced capacity options with %s', 'event-tickets' ),
 					''
 				),
-				'link'    => [
+				'link'       => [
 					'classes' => [
 						'tec-admin__upsell-link--underlined',
 					],
 					'text'    => 'Event Tickets Plus',
 					'url'     => 'https://evnt.is/et-in-app-capacity-arf',
+				],
+				'conditions' => [
+					'plugin_not_active' => 'event-tickets-plus/event-tickets-plus.php',
 				],
 			]
 		);
