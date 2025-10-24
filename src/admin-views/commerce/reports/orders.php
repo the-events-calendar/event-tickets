@@ -6,7 +6,7 @@
  * @var Orders  $orders_table        The orders table output.
  */
 
-use \TEC\Tickets\Commerce\Admin_Tables\Orders;
+use TEC\Tickets\Commerce\Admin_Tables\Orders;
 
 ?>
 
