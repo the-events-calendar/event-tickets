@@ -227,6 +227,13 @@ class Stock_Validator {
 			return true;
 		}
 
+		// Bail early for shared capacity (global stock) tickets.
+		$global_stock_mode  = $ticket->global_stock_mode();
+		$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
+		if ( $is_shared_capacity ) {
+			return true;
+		}
+
 		// Use locked stock value if provided, otherwise get current stock.
 		$available_stock = null !== $locked_stock ? (int) $locked_stock : $ticket->stock();
 

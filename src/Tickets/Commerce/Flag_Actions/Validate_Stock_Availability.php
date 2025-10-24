@@ -90,6 +90,13 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 				continue;
 			}
 
+			// Skip validation for shared capacity (global stock) tickets.
+			$global_stock_mode  = $ticket->global_stock_mode();
+			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
+			if ( $is_shared_capacity ) {
+				continue;
+			}
+
 			$requested_quantity = (int) Arr::get( $item, 'quantity', 1 );
 			$available_stock    = $ticket->stock();
 
