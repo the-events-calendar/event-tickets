@@ -12,7 +12,7 @@ use WP_REST_Server;
  */
 class REST extends \TEC\Common\Contracts\Service_Provider {
 	public function register() {
-//		$this->container->singleton( REST\Webhook_Endpoint::class, [ $this, 'boot_webhook_endpoint' ] );
+		$this->container->singleton( REST\Webhook_Endpoint::class );
 		$this->container->singleton( REST\On_Boarding_Endpoint::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
 	}
@@ -23,6 +23,7 @@ class REST extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
+		$this->container->make( REST\Webhook_Endpoint::class )->register();
 		$this->container->make( REST\On_Boarding_Endpoint::class )->register();
 		$this->container->make( REST\Order_Endpoint::class )->register();
 	}
