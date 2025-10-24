@@ -41,7 +41,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Checks if the current admin page is an ET admin page.
 	 *
-	 * @since 6.11.0
+	 * @since TBD
 	 *
 	 * @param string $region The current admin region.
 	 *
