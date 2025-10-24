@@ -116,7 +116,7 @@ class Payment_Intent {
 	 */
 	public static function create( Value $value, $retry = false ) {
 		// Format the value for Stripe API using the gateway formatter.
-		$formatter = new Gateway_Value_Formatter( Gateway::get_key() );
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
 		$value     = $formatter->format( $value );
 
 		$fee = Application_Fee::calculate( $value );

@@ -40,7 +40,7 @@ class Application_Fee {
 		$fee_decimal = $value->get_decimal() * static::get_application_fee_percentage();
 		$fee_value   = Value::create( $fee_decimal );
 
-		$formatter = new Gateway_Value_Formatter( Gateway::get_key() );
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
 		$fee_value = $formatter->format( $fee_value );
 
 		return $fee_value;

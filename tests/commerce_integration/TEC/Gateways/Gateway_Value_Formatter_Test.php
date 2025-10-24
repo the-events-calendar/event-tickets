@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways;
 
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe_Gateway;
 use Codeception\TestCase\WPTestCase;
 
 class Gateway_Value_Formatter_Test extends WPTestCase {
@@ -138,7 +139,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 		$this->assertEquals( 'JPY', $original_value->get_currency_code(), 'Original value should have JPY currency' );
 
 		// Instantiate the formatter for Stripe.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( tribe( Stripe_Gateway::class ) );
 
 		// Format the value for Stripe gateway.
 		$formatted_value = $formatter->format( $original_value );
@@ -188,7 +189,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 		}, 10, 3 );
 
 		// Instantiate the formatter for Stripe.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( tribe( Stripe_Gateway::class ) );
 
 		// Format the value for Stripe gateway.
 		$formatted_value = $formatter->format( $original_value );
@@ -228,7 +229,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 		$this->assertEquals( '10.00', $original_value->get_string(), 'Original value should be "10.00"' );
 
 		// Instantiate the formatter for Stripe.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( tribe( Stripe_Gateway::class ) );
 
 		// Format the value for Stripe gateway.
 		$formatted_value = $formatter->format( $original_value );
@@ -351,7 +352,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 		$this->assertEquals( $currency_precision, $original_value->get_precision(), "Original value should have precision {$currency_precision} for {$currency_code}" );
 
 		// Instantiate the formatter for Stripe.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( tribe( Stripe_Gateway::class ) );
 
 		// Format the value for Stripe gateway.
 		$formatted_value = $formatter->format( $original_value );
@@ -395,7 +396,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 		}, 10, 3 );
 
 		// Instantiate the formatter for Stripe.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( tribe( Stripe_Gateway::class ) );
 
 		// Format the value for Stripe gateway.
 		$formatted_value = $formatter->format( $original_value );

@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways;
 
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 
 /**
  * Gateway Value Formatter
@@ -23,22 +24,22 @@ use TEC\Tickets\Commerce\Utils\Currency;
 class Gateway_Value_Formatter {
 
 	/**
-	 * The gateway name.
+	 * The gateway instance.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var Gateway_Interface
 	 */
-	protected string $gateway;
+	protected Gateway_Interface $gateway;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $gateway The gateway name.
+	 * @param Gateway_Interface $gateway The gateway instance.
 	 */
-	public function __construct( string $gateway ) {
+	public function __construct( Gateway_Interface $gateway ) {
 		$this->gateway = $gateway;
 	}
 
@@ -59,7 +60,7 @@ class Gateway_Value_Formatter {
 		$currency_data = $this->get_currency_data( $currency_code );
 
 		// Determine the appropriate precision for this gateway and currency.
-		$precision = $this->get_gateway_precision( $currency_code, $currency_data );
+		$precision = $this->get_gateway_precision( $currency_data );
 
 		// Create a new Value object with the same float value.
 		$formatted_value = new Value( $value->get_float() );
@@ -82,9 +83,10 @@ class Gateway_Value_Formatter {
 	 *
 	 * @return array The filtered currency data.
 	 */
-	private function get_currency_data( $currency_code ) {
+	protected function get_currency_data( $currency_code ) {
 		$currency_map  = Currency::get_default_currency_map();
 		$currency_data = $currency_map[ $currency_code ] ?? [];
+		$gateway_key   = $this->gateway::get_key();
 
 		/**
 		 * Filter the currency data for gateway value formatting.
@@ -95,9 +97,7 @@ class Gateway_Value_Formatter {
 		 * @param string $currency_code The currency code.
 		 * @param string $gateway The gateway name.
 		 */
-		$filter_name = "tec_tickets_commerce_gateway_value_formatter_{$this->gateway}_currency_map";
-
-		return apply_filters( $filter_name, $currency_data, $currency_code, $this->gateway );
+		return apply_filters( "tec_tickets_commerce_gateway_value_formatter_{$gateway_key}_currency_map", $currency_data, $currency_code, $gateway_key );
 	}
 
 	/**
@@ -105,14 +105,13 @@ class Gateway_Value_Formatter {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $currency_code The currency code.
-	 * @param array  $currency_data The filtered currency data.
+	 * @param array $currency_data The filtered currency data.
 	 *
 	 * @return int The precision to use.
 	 */
-	private function get_gateway_precision( $currency_code, $currency_data ) {
+	protected function get_gateway_precision( $currency_data ) {
 		// Use the precision from the filtered currency data.
 		// Gateway-specific logic is handled via filters in the respective gateway's Hooks class.
-		return $currency_data['decimal_precision'] ?? 2;
+		return $currency_data['decimal_precision'] ?? $this->gateway::get_default_currency_precision();
 	}
 }

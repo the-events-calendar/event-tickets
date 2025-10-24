@@ -70,14 +70,6 @@ class Gateway extends Abstract_Gateway {
 	 */
 	const VERSION = '1.0.0';
 
-	/**
-	 * Default decimal precision to use when a currency does not define one.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	protected static int $default_currency_precision = 2;
 
 	/**
 	 * @inheritDoc
@@ -270,7 +262,7 @@ class Gateway extends Abstract_Gateway {
 	 */
 	private function get_stripe_precision( $currency_code, int $default_precision = null ) {
 		if ( null === $default_precision ) {
-			$default_precision = self::$default_currency_precision;
+			$default_precision = static::get_default_currency_precision();
 		}
 
 		/*
