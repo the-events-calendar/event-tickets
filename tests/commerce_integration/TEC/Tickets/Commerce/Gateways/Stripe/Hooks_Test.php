@@ -25,6 +25,26 @@ class Hooks_Test extends WPTestCase {
 	use With_Uopz;
 	use With_Clock_Mock;
 
+	/**
+	 * Ensure cart is clean before each test.
+	 *
+	 * @before
+	 */
+	public function ensure_clean_cart() {
+		$cart = tribe( \TEC\Tickets\Commerce\Cart::class );
+		$cart->clear_cart();
+	}
+
+	/**
+	 * Clean up cart after each test.
+	 *
+	 * @after
+	 */
+	public function cleanup_cart() {
+		$cart = tribe( \TEC\Tickets\Commerce\Cart::class );
+		$cart->clear_cart();
+	}
+
 	public function test_it_processes_async_stripe_webhooks() {
 		$this->freeze_time( Dates::immutable( '2024-06-13 17:25:00' ) );
 		$post = self::factory()->post->create(
