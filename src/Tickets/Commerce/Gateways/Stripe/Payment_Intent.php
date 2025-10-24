@@ -102,7 +102,6 @@ class Payment_Intent {
 		return true;
 	}
 
-
 	/**
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
 	 * front-end payment requests.
@@ -117,7 +116,7 @@ class Payment_Intent {
 	 */
 	public static function create( Value $value, $retry = false ) {
 		// Format the value for Stripe API using the gateway formatter.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( Gateway::get_key() );
 		$value = $formatter->format( $value );
 
 		$fee = Application_Fee::calculate( $value );

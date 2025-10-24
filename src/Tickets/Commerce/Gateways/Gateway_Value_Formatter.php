@@ -51,7 +51,7 @@ class Gateway_Value_Formatter {
 	 *
 	 * @return Value A new Value object formatted for the gateway.
 	 */
-	public function format( Value $value ) {
+	public function format( Value $value ): Value {
 		// Get the currency code from the value.
 		$currency_code = $value->get_currency_code();
 

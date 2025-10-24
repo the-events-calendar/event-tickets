@@ -48,7 +48,7 @@ class Application_Fee {
 		$fee_value->set_value( $fee_decimal );
 
 		// Format the fee value for Stripe API to ensure proper precision.
-		$formatter = new Gateway_Value_Formatter( 'stripe' );
+		$formatter = new Gateway_Value_Formatter( Gateway::get_key() );
 		$fee_value = $formatter->format( $fee_value );
 
 		// Otherwise, calculate it over the total value.
