@@ -40,8 +40,7 @@ class Upsell {
 		add_action(
 			'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header',
 			[ $this, 'render_ticket_type_upsell_notice' ],
-			20,
-			3
+			20
 		);
 
 		add_filter( 'tec_tickets_emails_settings_template_list', [ $this, 'show_on_emails_settings_page' ] );
@@ -50,7 +49,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Capacity and ARF features.
 	 *
-	 * @since TBD   Updated to use new Inline_Upsell component.
+	 * @since TBD Updated to use new Inline_Upsell component.
 	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 */
@@ -91,7 +90,7 @@ class Upsell {
 	 * Randomly displays one of two upsells if Event Tickets Plus is not active.
 	 * Both methods now handle the ET+ check internally via Inline_Upsell conditions.
 	 *
-	 * @since TBD     Simplified logic - ET+ check now in Inline_Upsell conditions.
+	 * @since TBD Simplified logic - ET+ check now in Inline_Upsell conditions.
 	 * @since 5.13.1 Update notice logic.
 	 * @since 5.7.1
 	 *
@@ -115,7 +114,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Manual Attendees.
 	 *
-	 * @since TBD   Updated to use new Inline_Upsell component.
+	 * @since TBD Updated to use new Inline_Upsell component.
 	 * @since 5.7.1 Move logic into show_on_attendees_page().
 	 * @since 5.5.7 Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
@@ -151,7 +150,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
-	 * @since TBD     Updated to use new Inline_Upsell component.
+	 * @since TBD Updated to use new Inline_Upsell component.
 	 * @since 5.13.1 Update plugin name and URL.
 	 * @since 5.7.1
 	 *
@@ -233,15 +232,11 @@ class Upsell {
 	/**
 	 * Filters the default Ticket type description in the context of Events part of a Series.
 	 *
-	 * @since 5.8.0
+	 * @since TBD     Updated to use new Inline_Upsell component. Removed unused parameters.
 	 * @since 5.8.4   Add logic to bail in scenarios when upsell should not show.
-	 *
-	 * @param string   $file     Complete path to include the PHP File.
-	 * @param string[] $name     Template name.
-	 * @param Template $template Current instance of the Tribe__Template.
+	 * @since 5.8.0
 	 */
-	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-		// Parameters $file, $name, and $template are required by the hook signature but not used in this implementation.
+	public function render_ticket_type_upsell_notice(): void {
 		// Check if post type is an event.
 		if ( ! function_exists( 'tribe_is_event' ) || ! tribe_is_event() ) {
 			return;
