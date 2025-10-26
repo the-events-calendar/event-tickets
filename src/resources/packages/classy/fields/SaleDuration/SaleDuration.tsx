@@ -131,12 +131,7 @@ export default function SaleDuration( props: SaleDurationProps ): React.JSX.Elem
 				return;
 			}
 
-			const { newStartDate, newEndDate, notify } = getNewStartEndDates(
-				saleEnd,
-				saleStart,
-				updated,
-				newDate
-			);
+			const { newStartDate, newEndDate, notify } = getNewStartEndDates( saleEnd, saleStart, updated, newDate );
 
 			setSaleStart( newStartDate );
 			setSaleEnd( newEndDate );

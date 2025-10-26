@@ -4,6 +4,10 @@
 	--classy-color-destructive: var(--tec-color-gutenberg-alert-red);
 	--classy-date-picker-width: 320px;
 	--classy-icon-padding: var(--tec-spacer-0);
+
+	/* Phase 8A - Separator and spacing variables */
+	--classy-separator-offset-y: -15px;
+	--classy-separator-transform-offset: var(--tec-spacer-2);
 }
 
 .classy-root {
@@ -66,11 +70,11 @@
 				}
 
 				&:last-child {
-					margin-right: 8px;
+					margin-right: var(--tec-spacer-2);
 				}
 
 				.classy-field__ticket-row__icons {
-					padding-left: 10px;
+					padding-left: var(--tec-spacer-2);
 				}
 			}
 
@@ -98,7 +102,7 @@
 				max-width: 175px;
 
 				&__label {
-					padding-left: 10px;
+					padding-left: var(--tec-spacer-2);
 				}
 			}
 
@@ -123,7 +127,7 @@
 			.classy-field__separator {
 				border: none;
 				height: auto;
-				transform: translateY(-15px);
+				transform: translateY(var(--classy-separator-offset-y));
 			}
 
 			.classy-field__input--sale-duration {
@@ -135,11 +139,11 @@
 				flex-direction: row;
 
 				.classy-field__input {
-					width: calc( var(--classy-date-picker-width) / 2 - 10px);
+					width: calc(var(--classy-date-picker-width) / 2 - var(--tec-spacer-2));
 				}
 
 				.classy-field__separator--dates {
-					transform: translateY(8px);
+					transform: translateY(var(--classy-separator-transform-offset));
 				}
 			}
 		}

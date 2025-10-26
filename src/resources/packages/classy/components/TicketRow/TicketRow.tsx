@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Slot } from "@wordpress/components";
-import { useMemo } from "@wordpress/element";
+import { Slot } from '@wordpress/components';
+import { useMemo } from '@wordpress/element';
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
 import { formatCurrency } from '@tec/common/classy/functions';
@@ -100,8 +100,8 @@ const getTicketIcons = ( ticket: TicketSettings ): React.JSX.Element => {
 
 	return (
 		<span className="classy-field__ticket-row__icons">
-			{ salesStartInFuture && ( <ClockIcon/> ) }
-			{ salesEndedInPast && ( <TimerIcon/> ) }
+			{ salesStartInFuture && <ClockIcon /> }
+			{ salesEndedInPast && <TimerIcon /> }
 			{
 				/**
 				 * Renders in the Ticket Row Icons slot, after the default icons.
@@ -141,7 +141,7 @@ const getTicketIcons = ( ticket: TicketSettings ): React.JSX.Element => {
 				 * @param {Object} props The properties passed to the slot.
 				 * @param {TicketSettings} props.ticket The ticket settings object.
 				 */
-				<Slot name="tec.tickets.classy.ticketRow.icons" fillProps={ { ticket } }/>
+				<Slot name="tec.tickets.classy.ticketRow.icons" fillProps={ { ticket } } />
 			}
 		</span>
 	);
@@ -170,10 +170,7 @@ export default function TicketRow( props: TicketRowProps ): JSX.Element {
 		value: ticket,
 	} = props;
 
-	const icons = useMemo(
-		() => getTicketIcons( ticket ),
-		[ ticket ]
-	);
+	const icons = useMemo( () => getTicketIcons( ticket ), [ ticket ] );
 
 	return (
 		<tr

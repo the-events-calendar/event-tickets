@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ClassyModal } from '@tec/common/classy/components';
+import { ClassyModal, IconNew } from '@tec/common/classy/components';
+import { _x } from '@wordpress/i18n';
 import { TicketUpsert } from '../TicketUpsert';
 import { TicketId, TicketSettings } from '../../types/Ticket';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
@@ -24,8 +25,12 @@ type TicketUpsertModalProps = {
 export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.Element {
 	const { isUpdate, onCancel, onClose, onDelete, onSave, value } = props;
 
+	const title = isUpdate
+		? _x( 'Update Ticket', 'Update ticket modal header title', 'event-tickets' )
+		: _x( 'New Ticket', 'Create ticket modal header title', 'event-tickets' );
+
 	return (
-		<ClassyModal onClose={ onClose } type="ticket">
+		<ClassyModal onClose={ onClose } type="ticket" title={ title } icon={ <IconNew /> }>
 			<TicketUpsert
 				isUpdate={ isUpdate }
 				onCancel={ onCancel }
