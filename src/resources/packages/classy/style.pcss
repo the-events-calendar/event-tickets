@@ -1,7 +1,6 @@
 :root {
 	/* This is a place to define CSS variables for the Classy component. */
-	--classy-color-border: #e4e4e4;
-	--classy-color-destructive: var(--tec-color-gutenberg-alert-red);
+	--classy-color-border: var(--classy-border-gray);
 	--classy-date-picker-width: 320px;
 	--classy-icon-padding: var(--tec-spacer-0);
 
@@ -94,7 +93,7 @@
 
 			&__description,
 			&__capacity__label {
-				color: var(--tec-color-gutenberg-grey-900);
+				color: var(--classy-black);
 				font-size: var(--classy-font-size-13);
 			}
 
@@ -166,11 +165,11 @@
 	}
 
 	.classy-button__destructive {
-		color: var(--classy-color-destructive);
+		color: var(--classy-alert-red);
 
 		&:hover {
-			border-color: var(--classy-color-destructive);
-			color: var(--classy-color-destructive);
+			border-color: var(--classy-alert-red);
+			color: var(--classy-alert-red);
 		}
 	}
 }
