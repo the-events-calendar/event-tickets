@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.26.6\n"
+"Project-Id-Version: Event Tickets 5.26.7\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-13T21:11:33+00:00\n"
+"POT-Creation-Date: 2025-10-27T21:36:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -1469,12 +1469,12 @@ msgctxt "Modifier status dropdown label"
 msgid "Status"
 msgstr ""
 
-#: src/admin-views/order_modifiers/modifier-table.php:26
+#: src/admin-views/order_modifiers/modifier-table.php:28
 #: src/Tickets/Commerce/Order_Modifiers/Modifier_Admin_Handler.php:260
 msgid "Coupons &amp; Fees"
 msgstr ""
 
-#: src/admin-views/order_modifiers/modifier-table.php:43
+#: src/admin-views/order_modifiers/modifier-table.php:45
 msgid "Search"
 msgstr ""
 
@@ -3402,20 +3402,20 @@ msgid "No tickets found for the active filter."
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:56
+#: src/Tickets/Admin/Upsell.php:71
 #, php-format
 msgid "Get individual information collection from each attendee and advanced capacity options with %s"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:117
+#: src/Tickets/Admin/Upsell.php:135
 #, php-format
 msgid "Manually add attendees with %s"
 msgstr ""
 
 #. Translators: %s: Link to "Wallet Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:148
-#: src/Tickets/Admin/Upsell.php:267
+#: src/Tickets/Admin/Upsell.php:171
+#: src/Tickets/Admin/Upsell.php:289
 #, php-format
 msgid "Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s"
 msgstr ""
@@ -3866,20 +3866,20 @@ msgstr ""
 msgid "Sale to date cannot be less than Sale from date"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:192
+#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:212
 #: src/views/v2/commerce/checkout.php:58
 msgid "Something went wrong!"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:193
+#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:213
 msgid "Unexpected response received."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:289
+#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:309
 msgid "Enabled for Checkout"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Free/REST/Order_Endpoint.php:93
+#: src/Tickets/Commerce/Gateways/Free/REST/Order_Endpoint.php:94
 msgid "This endpoint can only be used for carts with a total of 0. Carts with paid tickets require payment."
 msgstr ""
 
@@ -4006,7 +4006,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:218
 #: src/Tickets/Commerce/Gateways/Square/Gateway.php:261
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:209
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:210
 msgid "here"
 msgstr ""
 
@@ -8019,48 +8019,48 @@ msgstr ""
 msgid "Unexpected response from PayPal when on boarding"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:482
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:520
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:491
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:529
 msgid "Order ID in PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:495
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:504
 msgid "Payer ID token from PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:533
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:233
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:368
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:542
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:242
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:377
 msgid "To which status the failing should change this order to"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:546
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:246
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:381
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:555
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:255
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:390
 msgid "Why this particular order has failed."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:587
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:596
 msgid "Creating new PayPal order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:588
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:597
 msgid "Your PayPal order was cancelled."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:589
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:598
 msgid "Provided Order id is not valid."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:590
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:599
 msgid "There was a problem while processing your payment, please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:591
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:600
 msgid "Your payment was declined."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:592
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:601
 msgid "There was a problem with the Order status change, please try again."
 msgstr ""
 
@@ -8280,7 +8280,7 @@ msgid "Unfortunately, Square doesn't support payments in %1$s. Please try using 
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/Hooks.php:154
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:153
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:154
 msgid "Failed to process the webhook after too many tries."
 msgstr ""
 
@@ -8403,7 +8403,7 @@ msgid "Square order not found."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/Payment.php:172
-#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:180
+#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:186
 msgid "Value object not returned from filter"
 msgstr ""
 
@@ -8423,45 +8423,45 @@ msgstr ""
 msgid "Error handling the OAuth callback"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:220
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:229
 msgid "Order ID in Square"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:324
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:418
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:333
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:427
 msgid "Creating new order failed, please refresh your checkout page."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:325
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:334
 msgid "Creating new Square payment failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:326
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:335
 msgid "Creating new Square order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:327
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:422
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:336
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:431
 msgid "Order not found, please restart your checkout process."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:328
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:423
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:337
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:432
 msgid "Your payment is invalid. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:329
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:425
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:338
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:434
 msgid "Your payment method has failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:330
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:426
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:339
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:435
 msgid "Your payment status was not recognized. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:331
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:427
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:340
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:436
 msgid "Cannot generate an order for an empty cart, please select new items to checkout."
 msgstr ""
 
@@ -8607,69 +8607,69 @@ msgstr ""
 msgid "Failed to register Square webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:77
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:78
 msgid "Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:87
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:88
 msgid "Stripe wasn't able to complete your connection request. Try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:92
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:93
 msgid "Stripe signup was successful but the authentication tokens could not be retrieved. Try refreshing the tokens."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:97
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:98
 msgid "Disconnecting from Stripe failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:107
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:108
 msgid "Due to Regulatory Issues between Stripe and the country listed in your Stripe account, the free version of Event Tickets cannot accept connections from accounts in your country. Please use a Stripe account from a different country or purchase Event Tickets Plus to continue."
 msgstr ""
 
 #. Translators: %1$s is the opening <a> tag for the Payments Tab page link. %2$s is the closing <a> tag.
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:114
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:115
 #, php-format
 msgid "Your Stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:136
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:137
 msgid "Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:211
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:212
 msgid "Stripe doesn't support your selected currency"
 msgstr ""
 
 #. Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:214
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:215
 #, php-format
 msgid "Unfortunately, Stripe doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:316
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:317
 msgid "Something went wrong with your Webhook Creation. Please reload the page and try again later."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:332
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:333
 msgid "Webhook successfully set up! The page will reload now."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:487
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:492
 msgid "Payment Failed"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:488
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:493
 msgid "There was an issue processing your payment with your payment method. Please try again."
 msgstr ""
 
 #. Translators: %s is the html-formatted response from Stripe servers containing the error messages.
-#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:95
+#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:96
 #, php-format
 msgid "Stripe reports that it is unable to process charges with the selected Payment Methods. Usually this means that one of the methods selected is not available or not configured in your Stripe account. The errors you see below were returned from Stripe, please correct any inconsistencies or contact Stripe support, then try again: <div class=\"stripe-errors\">%s</div>"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:315
+#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:321
 msgid "Payment methods accepted cannot be empty"
 msgstr ""
 
@@ -8677,31 +8677,31 @@ msgstr ""
 msgid "This method no longer uses the 1st param."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:225
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:234
 msgid "Order ID (Payment Intent ID) in Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:238
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:247
 msgid "Client Secret from Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:355
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:364
 msgid "Order ID in Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:419
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:428
 msgid "Completing the Stripe PaymentIntent failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:420
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:429
 msgid "Creating new Stripe PaymentIntent failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:421
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:430
 msgid "Creating new Stripe order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:424
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:433
 msgid "Your payment failed security verification with Gateway. Please try again."
 msgstr ""
 
@@ -9039,7 +9039,7 @@ msgctxt "navigation link block description"
 msgid "A link to an order."
 msgstr ""
 
-#: src/Tickets/Commerce/Order.php:1630
+#: src/Tickets/Commerce/Order.php:1641
 msgid "Square POS"
 msgstr ""
 
@@ -9715,6 +9715,36 @@ msgstr ""
 
 #: src/Tickets/Commerce/Status/Voided.php:48
 msgid "Cancelled"
+msgstr ""
+
+#: src/Tickets/Commerce/Stock_Validator.php:194
+msgid "Unable to verify ticket availability. Please try again."
+msgstr ""
+
+#: src/Tickets/Commerce/Stock_Validator.php:224
+msgid "Invalid ticket."
+msgstr ""
+
+#: src/Tickets/Commerce/Stock_Validator.php:299
+msgid "Unknown Ticket"
+msgstr ""
+
+#. translators: 1: ticket name, 2: requested quantity
+#: src/Tickets/Commerce/Stock_Validator.php:306
+#, php-format
+msgid "Sorry, \"%1$s\" tickets are sold out. You requested %2$d."
+msgstr ""
+
+#. translators: 1: ticket name, 2: requested quantity
+#: src/Tickets/Commerce/Stock_Validator.php:313
+#, php-format
+msgid "Sorry, some \"%1$s\" tickets are no longer available. You requested %2$d and there is only 1 available."
+msgstr ""
+
+#. translators: 1: ticket name, 2: requested quantity, 3: available quantity
+#: src/Tickets/Commerce/Stock_Validator.php:320
+#, php-format
+msgid "Sorry, some \"%1$s\" tickets are no longer available. You requested %2$d and there are only %3$d available."
 msgstr ""
 
 #: src/Tickets/Commerce/Success.php:153
@@ -11938,24 +11968,30 @@ msgstr ""
 msgid "The number of minutes a customer has to choose seats and complete checkout."
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:87
+#: src/Tickets/Seating/Uplink.php:88
 msgctxt "Header of the connection controls"
 msgid "Seating"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:140
+#: src/Tickets/Seating/Uplink.php:142
 msgctxt "Button text for the Seating Builder connection button"
 msgid "Disconnect from Seating Builder"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:141
+#: src/Tickets/Seating/Uplink.php:143
 msgctxt "Button text for the Seating Builder connection button"
 msgid "Connect to Seating Builder"
 msgstr ""
 
-#: src/Tickets/Seating/Uplink.php:157
+#: src/Tickets/Seating/Uplink.php:159
 msgctxt "Legend for the license key field"
 msgid "License Key"
+msgstr ""
+
+#. Translators: %1$s and %2$s are opening and closing <a> tags, respectively.
+#: src/Tickets/Seating/Uplink.php:199
+#, php-format
+msgid "%1$sBuy a license%2$s for the Seating service to access seating management features."
 msgstr ""
 
 #: src/Tickets/Site_Health/Abstract_Info_Subsection.php:75
@@ -12893,18 +12929,18 @@ msgstr ""
 msgid "Standard tickets are not yet supported on recurring events. %1$s"
 msgstr ""
 
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:270
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:271
 msgctxt "events rsvp full (v2)"
 msgid "Currently full"
 msgstr ""
 
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:272
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:273
 msgctxt "events stock sold out (v2)"
 msgid "Sold Out"
 msgstr ""
 
 #. translators: %1$s: Number of stock
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:313
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:314
 #, php-format
 msgid "%1$s spot left"
 msgid_plural "%1$s spots left"
@@ -12912,7 +12948,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:317
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:318
 #, php-format
 msgid "%1$s %2$s left"
 msgid_plural "%1$s %3$s left"
@@ -12920,14 +12956,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: RSVP singular label.
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:330
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:331
 #, php-format
 msgctxt "list view rsvp now ticket button"
 msgid "%s Now"
 msgstr ""
 
 #. Translators: Tickets plural label.
-#: src/Tribe/Events/Views/V2/Models/Tickets.php:334
+#: src/Tribe/Events/Views/V2/Models/Tickets.php:335
 #, php-format
 msgctxt "list view buy now ticket button"
 msgid "Get %s"
@@ -14921,8 +14957,8 @@ msgstr ""
 
 #. Translators: %1$s: Plural `Tickets` label.
 #: src/views/v2/commerce/checkout/header/title.php:30
-#: src/views/v2/commerce/gateway/stripe/card-element.php:58
-#: src/views/v2/commerce/gateway/stripe/payment-element.php:36
+#: src/views/v2/commerce/gateway/stripe/card-element.php:60
+#: src/views/v2/commerce/gateway/stripe/payment-element.php:37
 #, php-format
 msgid "Purchase %1$s"
 msgstr ""
@@ -15072,7 +15108,7 @@ msgstr ""
 msgid "Pay Now"
 msgstr ""
 
-#: src/views/v2/commerce/gateway/stripe/card-element.php:40
+#: src/views/v2/commerce/gateway/stripe/card-element.php:42
 msgid "Zip Code"
 msgstr ""
 
