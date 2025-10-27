@@ -2,9 +2,7 @@ import * as React from 'react';
 import {
 	ClassyModalActions as Actions,
 	ClassyModalFooter as Footer,
-	ClassyModalRoot as Root,
 	ClassyModalSection,
-	IconNew,
 } from '@tec/common/classy/components';
 import { Button } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
@@ -53,9 +51,6 @@ const defaultValues: TicketSettings = {
 	availableFrom: '',
 	availableUntil: '',
 };
-
-const updteTitle = _x( 'Update Ticket', 'Update ticket modal header title', 'event-tickets' );
-const createTitle = _x( 'New Ticket', 'Create ticket modal header title', 'event-tickets' );
 
 const createButtonLabel = _x( 'Create Ticket', 'Create ticket button label', 'event-tickets' );
 const updateButtonLabel = _x( 'Update Ticket', 'Update ticket button label', 'event-tickets' );
@@ -143,9 +138,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	}, [ currentValues, onDelete ] );
 
 	return (
-		<Root title={ isUpdate ? updteTitle : createTitle } headerIcon={ <IconNew /> } type="ticket">
-			<hr className="classy-modal__section-separator"></hr>
-
+		<div className="classy-root">
 			{ /* todo: this should highlight any errors in the form, instead of showing a message */ }
 			{ ticketUpsertError && (
 				<Fragment>
@@ -263,6 +256,6 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					) }
 				</Actions>
 			</Footer>
-		</Root>
+		</div>
 	);
 }
