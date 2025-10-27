@@ -10,9 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.3.0
- * @since TBD Hide button initially and reveal via JS after billing info or immediately if no billing required.
+ * @since 5.26.7 Hide button initially and reveal via JS after billing info or immediately if no billing required.
  *
- * @version TBD
+ * @version 5.26.7
  * 
  * @var bool   $must_login        [Global] Whether login is required to buy tickets or not.
  * @var bool   $payment_element   [Global] Whether to load the Stripe Payment Element.

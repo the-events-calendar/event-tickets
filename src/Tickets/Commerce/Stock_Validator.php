@@ -5,7 +5,7 @@
  * Provides atomic stock validation using database row-level locking
  * to prevent overselling during concurrent purchases.
  *
- * @since TBD
+ * @since 5.26.7
  *
  * @package TEC\Tickets\Commerce
  */
@@ -24,7 +24,7 @@ use WP_Post;
 /**
  * Class Stock_Validator.
  *
- * @since TBD
+ * @since 5.26.7
  *
  * @package TEC\Tickets\Commerce
  */
@@ -39,7 +39,7 @@ class Stock_Validator {
 	 * using SELECT ... FOR UPDATE to prevent concurrent modifications
 	 * during validation.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param Cart $cart The cart to validate.
 	 *
@@ -92,7 +92,7 @@ class Stock_Validator {
 	 *
 	 * Used during order status transitions to provide secondary validation.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param WP_Post $order The order to validate.
 	 *
@@ -142,7 +142,7 @@ class Stock_Validator {
 	 *
 	 * Acquires a row-level lock on the ticket's stock meta using SELECT FOR UPDATE.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $quantity  The requested quantity.
@@ -206,7 +206,7 @@ class Stock_Validator {
 	 *
 	 * Used when validation occurs within an existing transaction/lock context.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param int      $ticket_id    The ticket ID.
 	 * @param int      $quantity     The requested quantity.
@@ -282,7 +282,7 @@ class Stock_Validator {
 	/**
 	 * Builds a user-friendly WP_Error from validation errors.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param array $validation_errors Array of error data.
 	 *
@@ -340,7 +340,7 @@ class Stock_Validator {
 	/**
 	 * Determines if stock validation should occur for a status transition.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param Status\Status_Interface $new_status The status being transitioned to.
 	 *

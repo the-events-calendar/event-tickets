@@ -2,7 +2,7 @@
 /**
  * Validate Stock Availability Flag Action.
  *
- * @since TBD
+ * @since 5.26.7
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -21,7 +21,7 @@ use Tribe__Tickets__Tickets;
  * Validates stock availability before any stock decrease operations.
  * Runs with higher priority than Decrease_Stock to prevent overselling.
  *
- * @since TBD
+ * @since 5.26.7
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -57,7 +57,7 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 	/**
 	 * Handles the flag action to validate stock availability.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param Status_Interface $new_status The new status.
 	 * @param mixed            $old_status The old status.
@@ -118,7 +118,7 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 	/**
 	 * Handles the scenario when insufficient stock is detected.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param \WP_Post $order                    The order post object.
 	 * @param array    $insufficient_stock_items Array of items with insufficient stock.
@@ -127,7 +127,7 @@ class Validate_Stock_Availability extends Flag_Action_Abstract {
 		/**
 		 * Fires when insufficient stock is detected during order processing.
 		 *
-		 * @since TBD
+		 * @since 5.26.7
 		 *
 		 * @param \WP_Post $order                    The order post object.
 		 * @param array    $insufficient_stock_items Array of items with insufficient stock.

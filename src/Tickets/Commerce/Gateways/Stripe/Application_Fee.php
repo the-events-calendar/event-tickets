@@ -26,7 +26,7 @@ class Application_Fee {
 	 * Calculate the fee value that needs to be applied to the PaymentIntent.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Use Gateway_Value_Formatter to ensure proper precision for Stripe API.
+	 * @since 5.26.7 Use Gateway_Value_Formatter to ensure proper precision for Stripe API.
 	 *
 	 * @param Value $value the value over which to calculate the fee.
 	 *

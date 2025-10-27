@@ -180,7 +180,7 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Customize the field HTML to include upsell link for seating service.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param string $field_html The original field HTML.
 	 * @param object $plugin The plugin resource object.

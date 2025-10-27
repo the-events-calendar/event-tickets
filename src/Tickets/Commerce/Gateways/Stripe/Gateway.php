@@ -227,7 +227,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Filter Stripe currency precision based on Stripe's specific requirements.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param array  $currency_data The currency data from the map.
 	 * @param string $currency_code The currency code.
@@ -253,7 +253,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the appropriate precision for Stripe based on their currency requirements.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param string   $currency_code The currency code.
 	 * @param int|null $default_precision The default precision from currency data.

@@ -328,7 +328,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Submit the payment to Stripe for Payment Element.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated render button selector to use the obj.selectors object.
+	 * @since 5.26.7 Updated render button selector to use the obj.selectors object.
 	 *
 	 * @param {string} order The order object returned from the server.
 	 *
@@ -432,7 +432,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Create an order and start the payment process.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Enhanced error handling for stock shortage errors.
+	 * @since 5.26.7 Enhanced error handling for stock shortage errors.
 	 *
 	 * @return {Promise<*>}
 	 */
@@ -473,7 +473,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Starts the process to submit a payment.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Enhanced error handling for stock shortage errors.
+	 * @since 5.26.7 Enhanced error handling for stock shortage errors.
 	 *
 	 * @param {Event} event The Click event from the payment.
 	 */
@@ -570,7 +570,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @link https://stripe.com/docs/js/element/payment_element
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated render button selector to use the obj.selectors object.
+	 * @since 5.26.7 Updated render button selector to use the obj.selectors object.
 	 */
 	obj.setupPaymentElement = () => {
 		// Only if we don't have the address fields to collect.
@@ -659,7 +659,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Setup and initialize Stripe API.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Reveal submit button early if no billing info is required.
+	 * @since 5.26.7 Reveal submit button early if no billing info is required.
 	 *
 	 * @return {Promise<void>}
 	 */
