@@ -587,7 +587,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Filter Stripe currency precision based on Stripe's specific requirements.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param array  $currency_data The currency data from the map.
 	 * @param string $currency_code The currency code.

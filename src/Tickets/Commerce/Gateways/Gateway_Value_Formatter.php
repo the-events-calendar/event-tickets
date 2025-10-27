@@ -2,7 +2,7 @@
 /**
  * Gateway Value Formatter
  *
- * @since TBD
+ * @since 5.26.7
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -19,14 +19,14 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
  * Converts Value objects into gateway-specific formatted Value objects
  * without mutating the original Value object.
  *
- * @since TBD
+ * @since 5.26.7
  */
 class Gateway_Value_Formatter {
 
 	/**
 	 * The gateway instance.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @var Gateway_Interface
 	 */
@@ -35,7 +35,7 @@ class Gateway_Value_Formatter {
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param Gateway_Interface $gateway The gateway instance.
 	 */
@@ -46,7 +46,7 @@ class Gateway_Value_Formatter {
 	/**
 	 * Format a Value object for the specific gateway.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param Value $value The value to format.
 	 *
@@ -71,7 +71,7 @@ class Gateway_Value_Formatter {
 	/**
 	 * Get currency data from the currency map, filtered for this gateway.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param string $currency_code The currency code.
 	 *
@@ -85,7 +85,7 @@ class Gateway_Value_Formatter {
 		/**
 		 * Filter the currency data for gateway value formatting.
 		 *
-		 * @since TBD
+		 * @since 5.26.7
 		 *
 		 * @param array  $currency_data The currency data from the map.
 		 * @param string $currency_code The currency code.
@@ -97,7 +97,7 @@ class Gateway_Value_Formatter {
 	/**
 	 * Get the appropriate precision for the gateway and currency.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @param Value $value The value to get precision for.
 	 *

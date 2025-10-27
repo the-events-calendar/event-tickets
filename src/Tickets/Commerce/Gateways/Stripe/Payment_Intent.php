@@ -107,7 +107,7 @@ class Payment_Intent {
 	 * front-end payment requests.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Use Gateway_Value_Formatter to normalize data for Stripe API.  [ET-2558]
+	 * @since 5.26.7 Use Gateway_Value_Formatter to normalize data for Stripe API.  [ET-2558]
 	 *
 	 * @param Value $value The value object to create a payment intent for.
 	 * @param bool  $retry Is this a retry?

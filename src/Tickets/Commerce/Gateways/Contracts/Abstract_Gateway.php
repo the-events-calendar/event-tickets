@@ -58,7 +58,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Default decimal precision to use when a currency does not define one.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @var int
 	 */
@@ -109,7 +109,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Get the default currency precision for this gateway.
 	 *
-	 * @since TBD
+	 * @since 5.26.7
 	 *
 	 * @return int The default currency precision.
 	 */
