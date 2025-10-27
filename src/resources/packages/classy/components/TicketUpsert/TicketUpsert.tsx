@@ -10,7 +10,7 @@ import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
 import { _x } from '@wordpress/i18n';
 import { Fragment, useCallback, useState } from 'react';
-import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName } from '../../fields';
+import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, TicketSku } from '../../fields';
 import { CapacitySettings, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
 import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
@@ -235,6 +235,13 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 							availableUntil: saleEnd,
 						} );
 					} }
+				/>
+			</ClassyModalSection>
+
+			<ClassyModalSection>
+				<TicketSku
+					value={ currentValues.sku || '' }
+					onChange={ ( value: string ) => onValueChange( 'sku', value || '' ) }
 				/>
 			</ClassyModalSection>
 

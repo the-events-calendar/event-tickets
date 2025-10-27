@@ -225,6 +225,10 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		// todo: add fees to the API.
 	}
 
+	if ( ticketData.sku ) {
+		body.sku = ticketData.sku;
+	}
+
 	// Set the filter as its own full string, to allow for easier discoverability when searching for it.
 	const filterName = isUpdate ? 'tec.classy.tickets.updateTicket' : 'tec.classy.tickets.createTicket';
 
@@ -322,6 +326,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		availableUntil: availableUntil,
 		menuOrder: menuOrder,
 		fees: fees,
+		sku: apiResponse.sku || '',
 	};
 
 	// Add the description visibility only if the value from the API is false.

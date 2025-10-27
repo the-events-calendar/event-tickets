@@ -101,4 +101,9 @@ export type TicketSettings = {
 
 	// Features.
 	supportsAttendeeInformation?: boolean;
+
+	/**
+	 * The SKU of the ticket.
+	 */
+	sku?: string;
 };
