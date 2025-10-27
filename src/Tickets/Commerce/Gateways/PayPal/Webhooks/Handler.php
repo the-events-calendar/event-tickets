@@ -18,16 +18,40 @@ class Handler {
 	/**
 	 * Gets the parent payment link from the list of Links on the response.
 	 *
+	 * For refund events, PayPal uses 'up' relation to link to the capture.
+	 * For other events, it may use 'parent_payment'.
+	 *
 	 * @since 5.1.10
+	 * @since TBD Add support for refund parent links.
 	 *
-	 * @param array $links
+	 * @param array $links Parent payment links.
 	 *
-	 * @return array
+	 * @return array|false
 	 */
 	protected function get_parent_payment_link( $links ) {
-		return current( array_filter( $links, static function ( $link ) {
-			return 'parent_payment' === $link['rel'];
-		} ) );
+		// First try 'up' relation (used for refunds to link to capture).
+		$link = current(
+			array_filter(
+				$links,
+				static function ( $link ) {
+					return 'up' === $link['rel'];
+				} 
+			) 
+		);
+		
+		// Fallback to 'parent_payment' relation for other event types.
+		if ( empty( $link ) ) {
+			$link = current(
+				array_filter(
+					$links,
+					static function ( $link ) {
+						return 'parent_payment' === $link['rel'];
+					}
+				) 
+			);
+		}
+
+		return $link ?: false;
 	}
 
 	/**
