@@ -14,6 +14,9 @@ type TicketUpsertModalProps = {
 	value: TicketSettings;
 } & TicketComponentProps;
 
+const editTicketTitle = _x( 'Edit Ticket', 'Update ticket modal header title', 'event-tickets' );
+const newTicketTitle = _x( 'New Ticket', 'Create ticket modal header title', 'event-tickets' );
+
 /**
  * TicketUpsertModal component for rendering a modal to create or update a ticket.
  *
@@ -25,9 +28,7 @@ type TicketUpsertModalProps = {
 export default function TicketUpsertModal( props: TicketUpsertModalProps ): JSX.Element {
 	const { isUpdate, onCancel, onClose, onDelete, onSave, value } = props;
 
-	const title = isUpdate
-		? _x( 'Update Ticket', 'Update ticket modal header title', 'event-tickets' )
-		: _x( 'New Ticket', 'Create ticket modal header title', 'event-tickets' );
+	const title = isUpdate ? editTicketTitle : newTicketTitle;
 
 	return (
 		<ClassyModal onClose={ onClose } type="ticket" title={ title } icon={ <IconNew /> }>
