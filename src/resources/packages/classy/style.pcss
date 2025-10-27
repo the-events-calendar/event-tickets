@@ -47,7 +47,7 @@
 			border-bottom: none;
 			display: flex;
 			flex-direction: row;
-			font-size: var(--classy-font-size-16);
+			font-size: var(--classy-text-inputs-font-size);
 			padding: var(--classy-padding-vertical) 0;
 
 			&:hover {
@@ -93,8 +93,10 @@
 
 			&__description,
 			&__capacity__label {
+				font-size: var(--classy-text-description-font-size);
+				font-weight: var(--classy-text-description-font-weight);
+				line-height: var(--classy-text-description-line-height);
 				color: var(--classy-black);
-				font-size: var(--classy-font-size-13);
 			}
 
 			&__capacity {
@@ -150,8 +152,10 @@
 
 	&__error {
 		/* todo: Styles should be for an error elements instead of message */
+		font-size: var(--classy-text-inputs-font-size);
+		font-weight: var(--classy-text-inputs-font-weight);
+		line-height: var(--classy-text-inputs-line-height);
 		color: var(--classy-color-required-asterisk);
-		font-size: var(--classy-font-size-16);
 		padding: 0 var(--classy-padding-horizontal);
 	}
 
