@@ -87,13 +87,15 @@ const ActiveRSVP = ( {
 			return __( 'Date not set', 'event-tickets' );
 		}
 
-		const openMonth = format( 'n', new Date( openRsvpDate ) );
-		const openDay = format( 'j', new Date( openRsvpDate ) );
-		const openYear = format( 'y', new Date( openRsvpDate ) );
+		// Parse dates as local dates to avoid timezone conversion issues.
+		// Appending 'T00:00:00' ensures the date is treated as local midnight, not UTC.
+		const openMonth = format( 'n', new Date( `${openRsvpDate}T00:00:00` ) );
+		const openDay = format( 'j', new Date( `${openRsvpDate}T00:00:00` ) );
+		const openYear = format( 'y', new Date( `${openRsvpDate}T00:00:00` ) );
 
-		const closeMonth = format( 'n', new Date( closeRsvpDate ) );
-		const closeDay = format( 'j', new Date( closeRsvpDate ) );
-		const closeYear = format( 'y', new Date( closeRsvpDate ) );
+		const closeMonth = format( 'n', new Date( `${closeRsvpDate}T00:00:00` ) );
+		const closeDay = format( 'j', new Date( `${closeRsvpDate}T00:00:00` ) );
+		const closeYear = format( 'y', new Date( `${closeRsvpDate}T00:00:00` ) );
 
 		return `${openMonth}/${openDay}/${openYear} - ${closeMonth}/${closeDay}/${closeYear}`;
 	};
