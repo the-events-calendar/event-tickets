@@ -67,6 +67,11 @@ export type TicketSettings = {
 	description?: string;
 
 	/**
+	 * Whether to show the description in the ticket listing.
+	 */
+	showDescription?: boolean;
+
+	/**
 	 * The cost of the ticket, as a formatted string (e.g. "20.00").
 	 */
 	cost?: string;

@@ -178,8 +178,10 @@ const mapTicketSettingsToApiRequest = ( ticketData: TicketSettings, isUpdate: bo
 		event: ticketData.eventId,
 		price: ticketData.costDetails?.value || 0,
 		type: ticketData?.type || 'default',
-		show_description: true,
 	};
+
+	// Map description visibility, defaulting to true if not provided.
+	body.show_description = ticketData.showDescription !== undefined ? ticketData.showDescription : true;
 
 	// Map capacity and stock settings.
 	if ( ticketData.capacitySettings ) {
@@ -304,7 +306,7 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		apiResponse
 	) as Record< string, any >;
 
-	return {
+	const mappedTicket: TicketSettings = {
 		...additionalValues,
 		id: apiResponse.id,
 		eventId: apiResponse.event,
@@ -321,4 +323,11 @@ const mapApiResponseToTicketSettings = ( apiResponse: GetTicketApiResponse ): Ti
 		menuOrder: menuOrder,
 		fees: fees,
 	};
+
+	// Add the description visibility only if the value from the API is false.
+	if ( false === apiResponse.show_description ) {
+		mappedTicket.showDescription = false;
+	}
+
+	return mappedTicket;
 };

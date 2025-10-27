@@ -4,7 +4,7 @@ import {
 	ClassyModalFooter as Footer,
 	ClassyModalSection,
 } from '@tec/common/classy/components';
-import { Button } from '@wordpress/components';
+import { Button, ToggleControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -79,6 +79,10 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		...defaultValues,
 		...value,
 	} );
+
+	// Show the description toggle only if the description is currently hidden. Deliberately don't allow
+	// toggling it back off once it's been shown.
+	const [ showDescriptionToggle ] = useState< boolean >( currentValues.showDescription === false );
 
 	// Tickets must have a name at a minimum.
 	const [ confirmEnabled, setConfirmEnabled ] = useState< boolean >( currentValues.name !== '' );
@@ -163,6 +167,19 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					value={ decodeEntities( currentValues.description as string ) }
 					onChange={ ( value: string ) => onValueChange( 'description', value || '' ) }
 				/>
+
+				{ showDescriptionToggle && (
+					<ToggleControl
+						label={ _x(
+							'Show description on frontend tickets form',
+							'Label for the show description toggle',
+							'event-tickets'
+						) }
+						__nextHasNoMarginBottom={ true }
+						checked={ currentValues.showDescription }
+						onChange={ ( value: boolean ) => onValueChange( 'showDescription', value ) }
+					/>
+				) }
 
 				<CurrencyInput
 					label={ _x( 'Ticket Price', 'Label for the ticket price field', 'event-tickets' ) }
