@@ -1,4 +1,0 @@
-Significance: minor
-Type: tweak
-
-Modify the existing inline upsell to utilize the new modular logic in common. [ET-2590]

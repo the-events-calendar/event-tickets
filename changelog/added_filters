@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Added filters: `tec_tickets_commerce_gateway_value_formatter_{$gateway_key}_currency_map`
