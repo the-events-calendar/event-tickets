@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Added actions: `tec_tickets_commerce_insufficient_stock_detected`, `tec_conditional_content_header_notice`

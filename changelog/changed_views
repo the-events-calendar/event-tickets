@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+* Tweak - Changed views: `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/payment-element`
