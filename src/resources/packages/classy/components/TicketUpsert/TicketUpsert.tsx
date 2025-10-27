@@ -48,7 +48,7 @@ const defaultValues: TicketSettings = {
 		automaticFees: [],
 		selectedFees: [],
 	},
-	availableFrom: '',
+	availableFrom: new Date(),
 	availableUntil: '',
 };
 
