@@ -136,7 +136,17 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
 		}
 
-		$seller_data              = tribe( WhoDat::class )->get_seller_referral_data( $signup->get_referral_data_link() );
+		$seller_data = tribe( WhoDat::class )->get_seller_referral_data( $signup->get_referral_data_link() );
+
+		// If WhoDat API call failed, redirect with error.
+		if ( null === $seller_data ) {
+			tribe( 'logger' )->log_error(
+				__( 'Failed to retrieve seller referral data from WhoDat API during PayPal onboarding.', 'event-tickets' ),
+				'tickets-commerce-gateway-paypal'
+			);
+			$this->redirect_with( 'paypal-seller-referral-data-failed', $return_url );
+		}
+
 		$supports_custom_payments = in_array( 'PPCP', Arr::get( $seller_data, [ 'referral_data', 'products' ], [] ), true );
 
 		$merchant_id           = $request->get_param( 'merchantId' );
