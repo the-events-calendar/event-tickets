@@ -1,4 +1,0 @@
-Significance: minor
-Type: fix
-
-Correct Stripe payment amount formatting by standardizing all currency values to two decimals before creating payment intents, preventing incorrect low charge amounts.[ET-2558]
