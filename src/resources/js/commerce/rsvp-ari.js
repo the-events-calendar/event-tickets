@@ -98,6 +98,11 @@ tribe.tickets.rsvp.ari = {};
 	 * @return {boolean} True if there are required fields for ARI.
 	 */
 	obj.hasAriRequiredFields = function ( $container ) {
+		// Check if tribe.tickets.meta exists (from ET+).
+		if ( ! tribe.tickets.meta || ! tribe.tickets.meta.selectors ) {
+			return false;
+		}
+
 		const $form = $container.find( obj.selectors.rsvpForm );
 		const $required = $form.find( tribe.tickets.meta.selectors.formFieldRequired );
 		const $name = $form.find( obj.selectors.rsvpFormNameInput );
@@ -139,6 +144,11 @@ tribe.tickets.rsvp.ari = {};
 	 * @return {void}
 	 */
 	obj.isGuestValid = function ( $guestForm ) {
+		// Check if tribe.tickets.meta exists (from ET+).
+		if ( ! tribe.tickets.meta || ! tribe.tickets.meta.selectors || ! tribe.tickets.meta.validateField ) {
+			return true;
+		}
+
 		const $fields = $guestForm.find( tribe.tickets.meta.selectors.formFieldInput );
 		let isValid = true;
 
