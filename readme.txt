@@ -204,7 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Add logic to only show the purchase button during checkout after billing info is filled out. [ET-2592]
 * Fix - Correct Stripe payment amount formatting by standardizing all currency values to two decimals before creating payment intents, preventing incorrect low charge amounts.[ET-2558]
 * Fix - Prevent ticket overselling by adding database-locked stock validation before payment intent creation. [ET-1942]
-* Tweak - * Tweak - Changed views: `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/payment-element`
+* Tweak - Changed views: `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/payment-element`
 * Tweak - Added actions: `tec_tickets_commerce_insufficient_stock_detected`, `tec_conditional_content_header_notice`
 * Tweak - Added filters: `tec_tickets_commerce_gateway_value_formatter_{$gateway_key}_currency_map`
 * Tweak - Add upsell link for Seating in License page. [ET-2556]
