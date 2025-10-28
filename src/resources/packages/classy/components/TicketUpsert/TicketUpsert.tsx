@@ -17,6 +17,8 @@ import { CurrencyInput } from '../CurrencyInput';
 import * as TicketApi from '../../api/tickets';
 import { getCurrencySettings } from '../../localizedData';
 import { CoreEditorSelect } from '@tec/common/classy/types/Store';
+import { EventDateTimeDetails } from '@tec/events/classy/types/EventDateTimeDetails';
+import { StoreSelect as TECStoreSelect } from '@tec/events/classy/types/Store';
 
 type TicketUpsertProps = {
 	isUpdate: boolean;
@@ -50,7 +52,6 @@ const defaultValues: TicketSettings = {
 		selectedFees: [],
 	},
 	availableFrom: new Date(),
-	availableUntil: '',
 };
 
 const createButtonLabel = _x( 'Create Ticket', 'Create ticket button label', 'event-tickets' );
@@ -68,16 +69,23 @@ const noop = () => {};
 export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const { isUpdate, onCancel, onDelete = noop, onSave, value } = props;
 
-	const { eventId } = useSelect( ( select: SelectFunction ) => {
+	const { eventId, eventStartDate } = useSelect( ( select: SelectFunction ) => {
 		const { getCurrentPostId }: CoreEditorSelect = select( 'core/editor' );
+		const { getEventDateTimeDetails }: TECStoreSelect = select( 'tec/classy/events' );
+		const { eventStart }: EventDateTimeDetails = getEventDateTimeDetails();
 		return {
 			eventId: getCurrentPostId() as number,
+			eventStartDate: new Date( eventStart ),
 		};
 	}, [] );
 
+	// Set up current values, inserting the event ID and default values as needed.
+	// The available until date defaults to the event start date, which is why it is set
+	// here rather than in the default values object.
 	const [ currentValues, setCurrentValues ] = useState< TicketSettings >( {
 		eventId: eventId,
 		...defaultValues,
+		availableUntil: eventStartDate,
 		...value,
 	} );
 
