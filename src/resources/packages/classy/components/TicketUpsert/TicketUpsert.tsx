@@ -2,9 +2,10 @@ import * as React from 'react';
 import {
 	ClassyModalActions as Actions,
 	ClassyModalFooter as Footer,
+	ClassyModalRoot,
 	ClassyModalSection,
 } from '@tec/common/classy/components';
-import { Button, ToggleControl } from '@wordpress/components';
+import { Button, ToggleControl, __experimentalConfirmDialog as ConfirmDialog } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { SelectFunction } from '@wordpress/data/build-types/types';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -89,6 +90,9 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	const [ ticketUpsertError, setTicketUpsertError ] = useState< Error | null >( null );
 	const [ saveInProgress, setSaveInProgress ] = useState< boolean >( false );
 
+	// Set up a confirmation dialog for delete action.
+	const [ showDeleteConfirm, setShowDeleteConfirm ] = useState< boolean >( false );
+
 	const onValueChange = ( key: keyof TicketSettings, newValue: any ): void => {
 		return setCurrentValues( {
 			...currentValues,
@@ -128,6 +132,14 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 	}, [ confirmEnabled, currentValues, onSave ] );
 
 	const onDeleteClicked = useCallback( (): void => {
+		setShowDeleteConfirm( true );
+	}, [] );
+
+	const onCancelDelete = useCallback( (): void => {
+		setShowDeleteConfirm( false );
+	}, [] );
+
+	const onConfirmDelete = useCallback( () => {
 		const id = currentValues.id as number;
 		TicketApi.deleteTicket( id )
 			.then( () => {
@@ -141,8 +153,23 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 			} );
 	}, [ currentValues, onDelete ] );
 
+	// Render the delete confirmation dialog instead of the modal if needed.
+	if ( showDeleteConfirm ) {
+		return (
+			<ClassyModalRoot type="tickets">
+				<ConfirmDialog isOpen={ showDeleteConfirm } onConfirm={ onConfirmDelete } onCancel={ onCancelDelete }>
+					{ _x(
+						'Are you sure you want to delete this ticket? This cannot be undone.',
+						'Delete ticket confirmation message',
+						'event-tickets'
+					) }
+				</ConfirmDialog>
+			</ClassyModalRoot>
+		);
+	}
+
 	return (
-		<div className="classy-root">
+		<ClassyModalRoot type="tickets">
 			{ /* todo: this should highlight any errors in the form, instead of showing a message */ }
 			{ ticketUpsertError && (
 				<Fragment>
@@ -280,6 +307,6 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					) }
 				</Actions>
 			</Footer>
-		</div>
+		</ClassyModalRoot>
 	);
 }
