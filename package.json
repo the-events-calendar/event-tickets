@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.26.6",
+  "version": "5.27.0",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -109,6 +109,7 @@
     "@moderntribe/common": "file:common/src/modules",
     "@nfen/redux-reducer-injector": "0.0.3",
     "@redux-devtools/extension": "^3.3.0",
+    "@tanstack/react-query": "^5.85.5",
     "@wordpress/a11y": "^4.11.0",
     "@wordpress/date": "^5.13.0",
     "@wordpress/i18n": "^5.11.0",

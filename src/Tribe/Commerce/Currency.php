@@ -58,7 +58,21 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_symbol( $post_id = null, $decode = false ) {
-		$symbol = $this->currency_code_options_map[ $this->get_currency_code() ]['symbol'];
+		$currency_code = $this->get_currency_code();
+
+		// Check if the currency code exists in the map, use USD as fallback.
+		if ( ! isset( $this->currency_code_options_map[ $currency_code ] ) ) {
+			$currency_code = Commerce_Currency::$currency_code_fallback;
+		}
+
+		// Additional check in case fallback is also missing.
+		if ( isset( $this->currency_code_options_map[ $currency_code ]['symbol'] ) ) {
+			$symbol = $this->currency_code_options_map[ $currency_code ]['symbol'];
+		} else {
+			// Use the fallback symbol from Commerce_Currency.
+			$symbol = Commerce_Currency::$currency_code_fallback_symbol;
+		}
+
 		$symbol = apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
 
 		return $decode ? html_entity_decode( $symbol ) : $symbol;
@@ -112,16 +126,23 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_symbol_position( $post_id = null ) {
-		if ( ! isset( $this->currency_code_options_map[ $this->get_currency_code() ]['position'] ) ) {
+		$currency_code = $this->get_currency_code();
+
+		// Check if the currency code exists in the map.
+		if ( ! isset( $this->currency_code_options_map[ $currency_code ] ) ) {
+			$currency_code = Commerce_Currency::$currency_code_fallback;
+		}
+
+		if ( ! isset( $this->currency_code_options_map[ $currency_code ]['position'] ) ) {
 			$currency_position = 'prefix';
 		} else {
-			$currency_position = $this->currency_code_options_map[ $this->get_currency_code() ]['position'];
+			$currency_position = $this->currency_code_options_map[ $currency_code ]['position'];
 		}
 
 		if (
 			'prefix' === $currency_position
 			&& 'EUR' === $this->get_currency_code()
-			&& 0 !== strpos( get_locale(), 'en_' ) // site language does not start with 'en_'
+			&& 0 !== strpos( get_locale(), 'en_' ) // site language does not start with 'en_'.
 		) {
 			$currency_position = 'postfix';
 		}
@@ -677,7 +698,14 @@ class Tribe__Tickets__Commerce__Currency {
 	 *                e.g. "USD".
 	 */
 	public function get_currency_code() {
-		return Commerce_Currency::get_currency_code();
+		$code = Commerce_Currency::get_currency_code();
+
+		// Ensure we never return an empty string.
+		if ( empty( $code ) ) {
+			$code = Commerce_Currency::$currency_code_fallback;
+		}
+
+		return $code;
 	}
 
 	/**

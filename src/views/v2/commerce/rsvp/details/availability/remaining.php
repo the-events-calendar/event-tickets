@@ -11,7 +11,7 @@
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
- * @var int $threshold The threshold.
+ * @var int $threshold The threshold for showing remaining tickets.
  *
  * @since TBD
  *
@@ -19,6 +19,16 @@
  */
 
 $remaining_tickets = $rsvp->remaining();
+
+// Set default threshold if not provided.
+if ( ! isset( $threshold ) ) {
+	$threshold = 0;
+}
+
+// Set default days_to_rsvp if not provided.
+if ( ! isset( $days_to_rsvp ) ) {
+	$days_to_rsvp = false;
+}
 
 if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;

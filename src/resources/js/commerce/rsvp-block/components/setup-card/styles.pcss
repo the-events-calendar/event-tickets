@@ -1,0 +1,127 @@
+.tribe-editor__rsvp-container {
+	background-color: #fff;
+}
+
+.tribe-editor__rsvp {
+	font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+	position: relative;
+
+	&--selected.tribe-editor__rsvp--add-edit-open {
+		border: none;
+		padding: 0;
+	}
+}
+
+.tribe-editor__inactive-block__icon {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+
+	& > svg {
+		flex: none;
+	}
+}
+
+.tribe-editor__rsvp__inactive-block-icon-label {
+	color: #aeb4bb;
+	flex: none;
+	font-size: 16px;
+	font-weight: 700;
+	letter-spacing: 0.05px;
+	line-height: 19px;
+}
+
+.components-spinner {
+
+	.tribe-editor__rsvp & {
+		float: none;
+		left: 50%;
+		margin: 0;
+		opacity: 0.8;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+}
+
+.tribe-editor__card.tribe-editor__inactive-block--rsvp {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: var(--tec-spacer-10) 0;
+}
+
+.tribe-editor__inactive-block--rsvp {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: var(--tec-spacer-10) 0;
+	width: 100%;
+
+	.tribe-editor__rsvp-details-wrapper {
+		align-items: center;
+		display: flex;
+		flex: none;
+		justify-content: center;
+		padding: var(--tec-spacer-6);
+		width: calc(var(--tec-grid-width-1-of-8) *5);
+	}
+
+	.tribe-editor__rsvp-details {
+		width: 100%;
+	}
+
+	.tribe-editor__rsvp-description {
+		color: var(--tec-color-text-secondary);
+		font-size: var(--tec-font-size-1);
+		margin-top: var(--tec-spacer-1);
+	}
+
+	.tribe-editor__rsvp-actions-wrapper {
+		align-items: center;
+		border-left: 1px dashed var(--tec-color-border-secondary);
+		display: flex;
+		flex: none;
+		justify-content: center;
+		padding: 0 var(--tec-spacer-5) 0 var(--tec-spacer-4);
+		text-align: center;
+
+		@media screen and (min-width: 1024px) {
+			padding: 0 var(--tec-spacer-5) 0 var(--tec-spacer-9);
+		}
+	}
+
+	.tribe-editor__rsvp-actions {
+		border-top: 0;
+		height: 100%;
+		margin-top: 0;
+		padding: 0;
+		width: 100%;
+
+		.tribe-common-c-btn {
+			text-wrap: nowrap;
+			width: 125px;
+		}
+
+		.tribe-editor__rsvp-actions-rsvp {
+			align-items: center;
+			display: flex;
+			height: 100%;
+
+			.tribe-editor__rsvp-actions-rsvp-create {
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+				justify-content: space-between;
+			}
+
+			.tribe-editor__rsvp__action-button--settings {
+				padding: var(--tec-spacer-3) 0;
+			}
+		}
+	}
+
+	#add-rsvp {
+		margin: auto;
+	}
+}

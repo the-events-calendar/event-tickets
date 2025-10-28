@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Blocks;
 
+use TEC\Tickets\Blocks\RSVP\Block as TC_RSVP_Block;
 use Tribe\Tickets\Editor\Warnings;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
@@ -50,6 +51,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.template.overwrite', Template_Overwrite::class );
 		$this->container->singleton( 'tickets.editor.template', Template::class );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class, [ 'load' ] );
+		$this->container->singleton( 'tickets.editor.blocks.tc_rsvp', TC_RSVP_Block::class );
 		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
@@ -127,7 +129,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		}
 
 		// Register blocks.
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
+		add_action( 'init', [ $this, 'register_block' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets-item' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.attendees' ), 'register' ] );
@@ -163,6 +165,15 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
 		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
+	}
+
+	/**
+	 * Registers the RSVP block.
+	 *
+	 * @since TBD
+	 */
+	public function register_block() {
+		$this->container->make( TC_RSVP_Block::class )->register_block();
 	}
 
 	/**

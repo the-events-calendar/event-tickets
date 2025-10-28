@@ -144,11 +144,12 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				// Add RSVP status for RSVP tickets.
 				if ( $this->is_rsvp( $item ) ) {
 					$order_status = Arr::get( $item, [ 'extra', 'order_status' ] );
-					
-					// Only allow 'no' status if the ticket has show_not_going enabled.
-					if ( 'no' === $order_status && ! empty( $ticket->show_not_going ) ) {
+
+					// Always save the RSVP status - the show_not_going setting controls visibility on the frontend, not the actual attendance status.
+					if ( 'no' === $order_status ) {
 						$args['rsvp_status'] = 'no';
-					} elseif ( 'yes' === $order_status ) {
+					} else {
+						// Default to 'yes' for any other status.
 						$args['rsvp_status'] = 'yes';
 					}
 				}

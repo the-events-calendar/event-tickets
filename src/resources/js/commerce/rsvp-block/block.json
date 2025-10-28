@@ -1,0 +1,95 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tec/rsvp",
+  "version": "0.1.0",
+  "title": "RSVP",
+  "category": "tribe-tickets",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "customClassName": true,
+    "className": true,
+    "inserter": true,
+    "multiple": false,
+    "reusable": false
+  },
+  "editorStyle": "file:./index.css",
+  "attributes": {
+    "rsvpId": {
+      "type": "string",
+      "default": ""
+    },
+    "limit": {
+      "type": "string",
+      "default": ""
+    },
+    "openRsvpDate": {
+      "type": "string",
+      "default": ""
+    },
+    "openRsvpTime": {
+      "type": "string",
+      "default": "00:00:00"
+    },
+    "closeRsvpDate": {
+      "type": "string",
+      "default": ""
+    },
+    "closeRsvpTime": {
+      "type": "string",
+      "default": "00:00:00"
+    },
+    "attendeeInfoCollectionEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "showNotGoingOption": {
+      "type": "boolean",
+      "default": false
+    },
+    "showAttendees": {
+      "type": "boolean",
+      "default": false
+    },
+    "waitlistBeforeSale": {
+      "type": "boolean",
+      "default": false
+    },
+    "waitlistSoldOut": {
+      "type": "boolean",
+      "default": false
+    },
+    "goingCount": {
+      "type": "number",
+      "default": 0
+    },
+    "notGoingCount": {
+      "type": "number",
+      "default": 0
+    },
+    "message": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "example": {
+    "attributes": {
+      "limit": "100",
+      "goingCount": 25
+    }
+  },
+  "textdomain": "event-tickets",
+  "editorScript": "file:./index.js",
+  "keywords": [
+    "tickets",
+    "rsvp",
+    "attendance",
+    "event",
+    "registration",
+    "free",
+    "booking",
+    "reservation"
+  ],
+  "render": "file:./render.php"
+}

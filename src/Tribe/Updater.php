@@ -34,6 +34,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	public function get_constant_update_callbacks() {
 		return [
 			[ $this, 'migrate_4_12_hide_attendees_list' ],
+			[ $this, 'ensure_tickets_commerce_pages_exist' ],
 		];
 	}
 
@@ -50,6 +51,18 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 		if ( 'complete' !== $migration->get_current_offset() ) {
 			$migration->register_scheduled_task();
 		}
+	}
+
+	/**
+	 * Ensure Tickets Commerce checkout and success pages exist.
+	 *
+	 * Runs on every plugin update/load to ensure pages are created for both
+	 * fresh installs and existing sites where Tickets Commerce is now always enabled.
+	 *
+	 * @since TBD
+	 */
+	public function ensure_tickets_commerce_pages_exist() {
+		tribe( \TEC\Tickets\Commerce\Payments_Tab::class )->maybe_generate_pages();
 	}
 
 }

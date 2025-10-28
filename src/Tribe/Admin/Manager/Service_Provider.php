@@ -101,23 +101,6 @@ class Service_Provider extends Service_Provider_Contract {
 	 * @return string The error template HTML.
 	 */
 	public function render_error( $error_message ) {
-
-		// @todo @juanfra Re-check how we're going to deal with admin views. Ideally we should follow
-		// the same model we do for FE, like the following:
-
-		// // Set required template globals.
-		// $args = [
-		// 	'error_message' => $error_message,
-		// ];
-
-		// /** @var \Tribe__Tickets__Editor__Template $template */
-		// $template = tribe( 'tickets.editor.template' );
-
-		// // Add the rendering attributes into global context.
-		// $template->add_template_globals( $args );
-
-		// return $template->template( 'path/to/template/error', $args, false );
-
 		return $error_message;
 	}
 

@@ -4038,7 +4038,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( $update ) {
-				update_post_meta( $ticket->ID, '_type', $data['ticket_type'] ?? 'default' );
+				$ticket_type = $data['ticket_type'] ?? 'default';
+				update_post_meta( $ticket->ID, '_type', $ticket_type );
+				// Also set the type on the ticket object so hooks can access it.
+				$ticket->type = $ticket_type;
 			}
 
 			// Pass the control to the child object.

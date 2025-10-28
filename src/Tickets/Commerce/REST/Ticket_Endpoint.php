@@ -186,6 +186,16 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		if ( $rsvp_id ) {
 			$response['success']   = true;
 			$response['ticket_id'] = $rsvp_id;
+
+			// Get the full ticket data to return.
+			$ticket = tribe( Module::class )->get_ticket( $post_id, $rsvp_id );
+			if ( $ticket ) {
+				// Get the REST API data for this ticket.
+				$ticket_data = tribe( 'tickets.rest-v1.ticket-repository' )->format_item( $rsvp_id );
+				if ( ! empty( $ticket_data ) ) {
+					$response['ticket'] = $ticket_data;
+				}
+			}
 		}
 
 		return new WP_REST_Response( $response );
