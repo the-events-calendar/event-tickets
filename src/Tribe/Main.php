@@ -1244,9 +1244,9 @@ class Tribe__Tickets__Main {
 		}
 
 		$updater = new Tribe__Tickets__Updater( self::VERSION );
-		//if ( $updater->update_required() ) {
+		if ( $updater->update_required() ) {
 			$updater->do_updates();
-		//}
+		}
 	}
 
 	/**
