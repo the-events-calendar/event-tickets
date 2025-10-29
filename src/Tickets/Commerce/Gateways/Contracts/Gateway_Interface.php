@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+use TEC\Tickets\Commerce\Values\Precision_Value;
+
 /**
  * Gateway Interface
  *
@@ -124,4 +126,20 @@ interface Gateway_Interface {
 	 * @return string
 	 */
 	public function render_checkout_template( \Tribe__Template $template ): string;
+
+	/**
+	 * Normalize a Precision_Value before sending it to the payment gateway.
+	 *
+	 * This method ensures that the value uses the correct precision and format
+	 * expected by the gateway. Gateways with custom currency rules should override
+	 * this method to implement their own normalization logic.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value $value         The raw or display Precision_Value to normalize.
+	 * @param string          $currency_code The ISO currency code (e.g., USD, JPY).
+	 *
+	 * @return Precision_Value The normalized value ready for gateway use.
+	 */
+	public function normalize_value_for_gateway( Precision_Value $value, string $currency_code ): Precision_Value;
 }

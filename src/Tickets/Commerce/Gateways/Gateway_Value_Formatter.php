@@ -19,7 +19,11 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
  * Converts Value objects into gateway-specific formatted Value objects
  * without mutating the original Value object.
  *
+ * This class acts as a wrapper around Gateway_Value, which handles
+ * gateway-specific normalization via normalize_value_for_gateway.
+ *
  * @since 5.26.7
+ * @since TBD
  */
 class Gateway_Value_Formatter {
 
@@ -46,7 +50,11 @@ class Gateway_Value_Formatter {
 	/**
 	 * Format a Value object for the specific gateway.
 	 *
+	 * Uses Gateway_Value to handle normalization via the gateway's
+	 * normalize_value_for_gateway method, then converts back to Value.
+	 *
 	 * @since 5.26.7
+	 * @since TBD
 	 *
 	 * @param Value $value The value to format.
 	 *
@@ -71,6 +79,13 @@ class Gateway_Value_Formatter {
 	/**
 	 * Get currency data from the currency map, filtered for this gateway.
 	 *
+	 * This method is kept for backward compatibility with filters that may
+	 * still use the old filter hook system. The actual normalization is
+	 * now handled by Gateway_Value via normalize_value_for_gateway.
+	 *
+	 * @deprecated TBD Normalization is now handled by Gateway_Value. This method is kept for filter compatibility.
+	 *
+	 * @since TBD
 	 * @since 5.26.7
 	 *
 	 * @param string $currency_code The currency code.
@@ -97,6 +112,9 @@ class Gateway_Value_Formatter {
 	/**
 	 * Get the appropriate precision for the gateway and currency.
 	 *
+	 * @deprecated TBD Normalization is now handled by Gateway_Value. This method is kept for filter compatibility.
+	 *
+	 * @since TBD
 	 * @since 5.26.7
 	 *
 	 * @param Value $value The value to get precision for.

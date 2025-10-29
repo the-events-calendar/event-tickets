@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use \Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
 
@@ -57,6 +58,43 @@ class Gateway extends Abstract_Gateway {
 		'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS',
 		'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF',
 		'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW',
+	];
+
+	/**
+	 * Special-case precisions that override Stripe’s zero-decimal rules.
+	 *
+	 * @since TBD
+	 * @var array<string,int>
+	 */
+	protected const SPECIAL_CASE_PRECISIONS = [
+		'ISK' => 2,
+		'HUF' => 0,
+		'TWD' => 0,
+		'UGX' => 2,
+	];
+
+	/**
+	 * Zero-decimal currencies (no multiplication needed).
+	 *
+	 * @since TBD
+	 * @var array<string,bool>
+	 */
+	protected const ZERO_DECIMAL_CURRENCIES = [
+		'BIF' => true,
+		'CLP' => true,
+		'DJF' => true,
+		'GNF' => true,
+		'JPY' => true,
+		'KMF' => true,
+		'KRW' => true,
+		'MGA' => true,
+		'PYG' => true,
+		'RWF' => true,
+		'VND' => true,
+		'VUV' => true,
+		'XAF' => true,
+		'XOF' => true,
+		'XPF' => true,
 	];
 
 	/**
@@ -251,64 +289,43 @@ class Gateway extends Abstract_Gateway {
 	}
 
 	/**
-	 * Get the appropriate precision for Stripe based on their currency requirements.
+	 * Get Stripe-specific precision based on known zero-decimal and special-case rules.
 	 *
 	 * @since 5.26.7
 	 *
-	 * @param string   $currency_code The currency code.
-	 * @param int|null $default_precision The default precision from currency data.
+	 * @param string   $currency_code The ISO currency code.
+	 * @param int|null $default_precision The fallback precision from the TEC currency map.
 	 *
 	 * @return int The precision to use for Stripe.
 	 */
-	private function get_stripe_precision( $currency_code, int $default_precision = null ) {
-		if ( null === $default_precision ) {
-			$default_precision = static::get_default_currency_precision();
+	private function get_stripe_precision( string $currency_code, ?int $default_precision = null ): int {
+		if ( isset( self::SPECIAL_CASE_PRECISIONS[ $currency_code ] ) ) {
+			return self::SPECIAL_CASE_PRECISIONS[ $currency_code ];
 		}
 
-		/*
-		 * Stripe special case currencies (these override the zero-decimal list).
-		 * @see https://docs.stripe.com/currencies#special-cases
-		 */
-		$special_cases = [
-			'ISK' => 2,
-			'HUF' => 0,
-			'TWD' => 0,
-			'UGX' => 2,
-		];
-
-		// Check special cases first (these take priority).
-		if ( isset( $special_cases[ $currency_code ] ) ) {
-			return $special_cases[ $currency_code ];
-		}
-
-		/*
-		 * Stripe zero-decimal currencies (no multiplication needed).
-		 * @see https://docs.stripe.com/currencies#zero-decimal
-		 */
-		$zero_decimal_currencies = [
-			'BIF',
-			'CLP',
-			'DJF',
-			'GNF',
-			'JPY',
-			'KMF',
-			'KRW',
-			'MGA',
-			'PYG',
-			'RWF',
-			'VND',
-			'VUV',
-			'XAF',
-			'XOF',
-			'XPF',
-		];
-
-		// Check zero-decimal currencies.
-		if ( in_array( $currency_code, $zero_decimal_currencies, true ) ) {
+		if ( isset( self::ZERO_DECIMAL_CURRENCIES[ $currency_code ] ) ) {
 			return 0;
 		}
 
-		// Default to the currency's precision for other currencies.
-		return $default_precision;
+		return $default_precision ?? static::get_default_currency_precision();
+	}
+
+	/**
+	 * Normalize a value for Stripe’s specific currency precision requirements.
+	 *
+	 * This method provides Stripe-specific precision normalization rules,
+	 * referencing static constants for efficient, immutable lookups.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value $value The raw Precision_Value.
+	 * @param string          $currency_code The ISO currency code (e.g., USD, JPY, HUF).
+	 *
+	 * @return Precision_Value The normalized Precision_Value for Stripe processing.
+	 */
+	public function normalize_value_for_gateway( Precision_Value $value, string $currency_code ): Precision_Value {
+		$precision = $this->get_stripe_precision( $currency_code, Currency::get_currency_precision( $currency_code ) );
+
+		return $value->convert_to_precision( $precision );
 	}
 }
