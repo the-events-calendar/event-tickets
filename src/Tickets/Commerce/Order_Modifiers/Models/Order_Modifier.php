@@ -76,8 +76,8 @@ class Order_Modifier extends Model implements ModelPersistable {
 	 */
 	protected static function properties(): array {
 		return [
-			'sub_type' => ( new ModelPropertyDefinition() )->type( 'string' )->castWith(
-				function( $value ): string {
+			'sub_type'   => ( new ModelPropertyDefinition() )->type( 'string' )->castWith(
+				function ( $value ): string {
 					$value = strtolower( (string) $value );
 					if ( ! in_array( $value, [ 'flat', 'percentage' ], true ) ) {
 						throw new RuntimeException( 'Invalid modifier sub_type: ' . $value );
