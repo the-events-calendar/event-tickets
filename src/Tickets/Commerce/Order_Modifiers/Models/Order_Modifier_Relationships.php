@@ -122,9 +122,12 @@ class Order_Modifier_Relationships extends Model implements ModelPersistable {
 	 *
 	 * @since 5.18.0
 	 *
+	 * @deprecated TBD Use toArray() instead.
+	 *
 	 * @return array The object properties as an array.
 	 */
 	public function to_array(): array {
+		_deprecated_function( __METHOD__, 'TBD', 'toArray()' );
 		return $this->toArray();
 	}
 }

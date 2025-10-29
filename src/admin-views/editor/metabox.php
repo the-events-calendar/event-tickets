@@ -3,6 +3,8 @@
  * @var WP_Post                      $post
  * @var bool                         $show_global_stock
  * @var Tribe__Tickets__Global_Stock $global_stock
+ * @var array<string>                $panels    Array of rendered panel HTML
+ * @var int|null                     $ticket_id Ticket ID
  */
 
 // Don't load directly

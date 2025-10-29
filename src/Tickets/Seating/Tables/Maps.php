@@ -77,7 +77,7 @@ class Maps extends Table {
 	 * @var string[]
 	 */
 	public static function get_schema_history(): array {
-		$table_name = self::table_name( true );
+		$table_name = self::table_name();
 
 		return [
 			self::SCHEMA_VERSION => function () use ( $table_name ) {

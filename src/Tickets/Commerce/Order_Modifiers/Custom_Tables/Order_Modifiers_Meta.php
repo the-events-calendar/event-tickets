@@ -66,14 +66,14 @@ class Order_Modifiers_Meta extends Table {
 	protected static $uid_column = 'id';
 
 	/**
-	 * An array of all the columns in the table.
+	 * Returns the schema history for this table.
 	 *
 	 * @since TBD
 	 *
-	 * @var string[]
+	 * @return array<string, callable>
 	 */
 	public static function get_schema_history(): array {
-		$table_name = self::table_name( true );
+		$table_name = self::table_name();
 
 		return [
 			self::SCHEMA_VERSION => function () use ( $table_name ) {

@@ -355,7 +355,7 @@ class Coupons_Test extends Controller_Test_Case {
 				[
 					'order_modifier_id' => $coupon->id,
 					'meta_key'          => 'coupons_available',
-					'meta_value'        => (string) $limit,
+					'meta_value'        => $limit,
 				]
 			)
 		);
@@ -428,7 +428,7 @@ class Coupons_Test extends Controller_Test_Case {
 				[
 					'order_modifier_id' => $coupon->id,
 					'meta_key'          => 'coupons_available',
-					'meta_value'        => (string) $limit,
+					'meta_value'        => $limit,
 				]
 			)
 		);

@@ -278,13 +278,13 @@ class Integrity_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function check_data_integrity(): void {
-		$a_few_minutes_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-30 seconds' ) );
+		$half_a_minute_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-30 seconds' ) );
 
 		$to_be_deleted   = [];
 		$to_local_delete = [];
 		$to_be_checked   = [];
 
-		foreach ( Integrity_Table::get_all( 100, "WHERE last_checked < '{$a_few_minutes_ago}' AND mode = " . (int) self::$is_prod_mode ) as $item ) {
+		foreach ( Integrity_Table::get_all( 100, "WHERE last_checked < '{$half_a_minute_ago}' AND mode = " . (int) self::$is_prod_mode ) as $item ) {
 			$post_object = get_post( $item['wp_object_id'] );
 
 			if ( ! $post_object ) {
@@ -569,8 +569,10 @@ class Integrity_Controller extends Controller_Contract {
 		$skipped_tickets = [];
 		$batch           = [];
 
+		$ticket_types = array_flip( tribe_tickets()->ticket_types() );
+
 		foreach ( Integrity_Table::get_all( 100, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
-			$is_ticket = in_array( get_post_type( $item['wp_object_id'] ), tribe_tickets()->ticket_types(), true );
+			$is_ticket = isset( $ticket_types[ get_post_type( $item['wp_object_id'] ) ] );
 
 			if ( $is_ticket ) {
 				$ticket_object = $this->ticket_data->load_ticket_object( $item['wp_object_id'] );

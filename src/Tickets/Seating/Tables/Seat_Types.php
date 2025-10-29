@@ -77,7 +77,7 @@ class Seat_Types extends Table {
 	 * @var string[]
 	 */
 	public static function get_schema_history(): array {
-		$table_name = self::table_name( true );
+		$table_name = self::table_name();
 
 		return [
 			self::SCHEMA_VERSION => function () use ( $table_name ) {
@@ -132,7 +132,7 @@ class Seat_Types extends Table {
 		return (int) DB::get_var(
 			DB::prepare(
 				'SELECT seats FROM %i WHERE id = %s',
-				self::table_name( true ),
+				self::table_name(),
 				$seat_type
 			)
 		);

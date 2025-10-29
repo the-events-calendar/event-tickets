@@ -14,7 +14,6 @@ use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
 use TEC\Common\StellarWP\Schema\Columns\String_Column;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
-
 /**
  * Class Order_Modifier_Relationships.
  *
@@ -59,14 +58,14 @@ class Order_Modifier_Relationships extends Table {
 	protected static $uid_column = 'id';
 
 	/**
-	 * An array of all the columns in the table.
+	 * Returns the schema history for this table.
 	 *
 	 * @since TBD
 	 *
-	 * @var string[]
+	 * @return array<string, callable>
 	 */
 	public static function get_schema_history(): array {
-		$table_name = self::table_name( true );
+		$table_name = self::table_name();
 
 		return [
 			self::SCHEMA_VERSION => function () use ( $table_name ) {

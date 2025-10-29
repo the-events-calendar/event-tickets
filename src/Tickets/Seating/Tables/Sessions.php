@@ -115,7 +115,7 @@ class Sessions extends Table {
 	 * @var string[]
 	 */
 	public static function get_schema_history(): array {
-		$table_name = self::table_name( true );
+		$table_name = self::table_name();
 
 		return [
 			self::SCHEMA_VERSION => function () use ( $table_name ) {
@@ -142,7 +142,7 @@ class Sessions extends Table {
 	 */
 	public function get_definition(): string {
 		global $wpdb;
-		$table_name      = self::table_name( true );
+		$table_name      = self::table_name();
 		$charset_collate = $wpdb->get_charset_collate();
 
 		return "

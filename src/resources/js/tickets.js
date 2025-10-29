@@ -371,6 +371,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		 *
 		 * @param {Object} panels The panels object.
 		 * @param {string} swapTo The panel to swap to.
+		 * @param {jQuery} tickets The tickets jQuery object.
 		 */
 		doAction( 'tec.tickets.admin.panels.refreshed', { panels, swapTo, tickets: $tribe_tickets } );
 	};

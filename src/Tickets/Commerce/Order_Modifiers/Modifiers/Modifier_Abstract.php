@@ -167,7 +167,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	 * @throws RuntimeException If the modifier is not found.
 	 */
 	public function get_modifier_by_id( int $modifier_id ): ?array {
-		return $this->repository->find_by_id( $modifier_id )->to_array();
+		return $this->repository->find_by_id( $modifier_id )->toArray();
 	}
 
 	/**

@@ -274,7 +274,7 @@ class Tribe__Tickets__Metabox {
 		 *
 		 * @return array The panels data.
 		 */
-		return apply_filters( 'tec_tickets_panels', $panels, $post, $ticket_id, $ticket_type );
+		return (array) apply_filters( 'tec_tickets_panels', $panels, $post, $ticket_id, $ticket_type );
 	}
 
 	/**

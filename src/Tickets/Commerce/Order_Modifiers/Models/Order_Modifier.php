@@ -18,7 +18,6 @@ use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Values\Percent_Value;
-use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Values\Value_Interface;
 
 /**
@@ -49,7 +48,6 @@ class Order_Modifier extends Model implements ModelPersistable {
 	protected static array $properties = [
 		'id'            => 'int',
 		'modifier_type' => 'string',
-		'sub_type'      => 'string',
 		'slug'          => 'string',
 		'display_name'  => 'string',
 		'status'        => 'string',
@@ -72,38 +70,29 @@ class Order_Modifier extends Model implements ModelPersistable {
 	 * Returns the properties definition for this model.
 	 *
 	 * @since 5.18.0
+	 * @since TBD Upgraded properties definition to use ModelPropertyDefinition.
 	 *
 	 * @return array<string, ModelPropertyDefinition>
 	 */
 	protected static function properties(): array {
 		return [
-			'raw_amount' => ( new ModelPropertyDefinition() )->type( 'float', 'object' )->castWith( fn( $value ): Float_Value => Float_Value::from_number( $value ) ),
+			'sub_type' => ( new ModelPropertyDefinition() )->type( 'string' )->castWith(
+				function( $value ): string {
+					$value = strtolower( (string) $value );
+					if ( ! in_array( $value, [ 'flat', 'percentage' ], true ) ) {
+						throw new RuntimeException( 'Invalid modifier sub_type: ' . $value );
+					}
+
+					return $value;
+				}
+			),
+			'raw_amount' => ( new ModelPropertyDefinition() )->type( 'float', Float_Value::class, Percent_Value::class )->castWith(
+				function ( $value ) {
+					$sub_type = $this->getAttribute( 'sub_type' );
+					return 'flat' === $sub_type ? Float_Value::from_number( $value ) : new Percent_Value( $value );
+				}
+			),
 		];
-	}
-
-	/**
-	 * Acts as the constructor for the model.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array<string,mixed> $attributes Attributes.
-	 */
-	protected function afterConstruct(): void {
-		// If we have a percent sub_type, we need to ensure the raw_amount is a Percent_Value.
-		if ( 'flat' === $this->sub_type ) {
-			return;
-		}
-
-		// If we don't have the raw amount set, nothing else to do.
-		if ( ! $this->isSet( 'raw_amount' ) ) {
-			return;
-		}
-
-		if ( $this->getAttribute( 'raw_amount' ) instanceof Percent_Value ) {
-			return;
-		}
-
-		$this->setAttribute( 'raw_amount', new Percent_Value( $this->raw_amount ) );
 	}
 
 	/**
@@ -191,17 +180,13 @@ class Order_Modifier extends Model implements ModelPersistable {
 	 *
 	 * @since 5.18.0
 	 *
+	 * @deprecated TBD Use toArray() instead.
+	 *
 	 * @return array The object properties as an array.
 	 */
 	public function to_array(): array {
-		$attributes = [];
-
-		// Use getAttribute() to ensure value objects are converted to their raw values.
-		foreach ( self::propertyKeys() as $key ) {
-			$attributes[ $key ] = $this->getAttribute( $key );
-		}
-
-		return $attributes;
+		_deprecated_function( __METHOD__, 'TBD', 'toArray()' );
+		return $this->toArray();
 	}
 
 	/**
