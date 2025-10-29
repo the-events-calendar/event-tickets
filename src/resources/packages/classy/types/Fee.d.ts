@@ -1,4 +1,5 @@
 export type FeeSubType = 'flat' | 'percentage';
+export type FeeStatus = 'active' | 'draft' | 'inactive';
 
 export type Fee = {
 	amount: number;
@@ -6,5 +7,5 @@ export type Fee = {
 	label: string;
 	slug: string;
 	subType: FeeSubType;
-	type: string;
+	status: FeeStatus;
 };

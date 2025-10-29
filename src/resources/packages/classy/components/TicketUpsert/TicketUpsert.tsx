@@ -5,20 +5,23 @@ import {
 	ClassyModalRoot,
 	ClassyModalSection,
 } from '@tec/common/classy/components';
-import { Button, ToggleControl, __experimentalConfirmDialog as ConfirmDialog } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
-import { SelectFunction } from '@wordpress/data/build-types/types';
-import { decodeEntities } from '@wordpress/html-entities';
-import { _x } from '@wordpress/i18n';
-import { Fragment, useCallback, useState } from 'react';
-import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, TicketSku } from '../../fields';
-import { CapacitySettings, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
-import { CurrencyInput } from '../CurrencyInput';
-import * as TicketApi from '../../api/tickets';
-import { getCurrencySettings } from '../../localizedData';
 import { CoreEditorSelect } from '@tec/common/classy/types/Store';
 import { EventDateTimeDetails } from '@tec/events/classy/types/EventDateTimeDetails';
 import { StoreSelect as TECStoreSelect } from '@tec/events/classy/types/Store';
+import { Button, ToggleControl, __experimentalConfirmDialog as ConfirmDialog } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
+import { SelectFunction } from '@wordpress/data/build-types/types';
+import { useCallback, useState } from '@wordpress/element';
+import { decodeEntities } from '@wordpress/html-entities';
+import { _x } from '@wordpress/i18n';
+import { Capacity, SaleDuration, SalePrice, TicketDescription, TicketName, TicketSku } from '../../fields';
+import { CapacitySettings, FeesData, SalePriceDetails, TicketId, TicketSettings } from '../../types/Ticket';
+import { CurrencyInput } from '../CurrencyInput';
+import { TicketFees } from '../TicketFees';
+import * as TicketApi from '../../api/tickets';
+import { getCurrencySettings } from '../../localizedData';
+import { DollarIcon, TagIcon } from '../Icons';
+
 
 type TicketUpsertProps = {
 	isUpdate: boolean;
@@ -89,6 +92,8 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		...value,
 	} );
 
+	const selectedFees = currentValues?.fees?.selectedFees || [];
+
 	// Show the description toggle only if the description is currently hidden. Deliberately don't allow
 	// toggling it back off once it's been shown.
 	const [ showDescriptionToggle ] = useState< boolean >( currentValues.showDescription === false );
@@ -100,6 +105,10 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 	// Set up a confirmation dialog for delete action.
 	const [ showDeleteConfirm, setShowDeleteConfirm ] = useState< boolean >( false );
+
+	// State handlers for specific sections.
+	const [ showFeesSection, setShowFeesSection ] = useState< boolean >( selectedFees.length > 0 );
+	const [ showEcommerceSection, setShowEcommerceSection ] = useState< boolean >( false );
 
 	const onValueChange = ( key: keyof TicketSettings, newValue: any ): void => {
 		return setCurrentValues( {
@@ -180,12 +189,12 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 		<ClassyModalRoot type="tickets">
 			{ /* todo: this should highlight any errors in the form, instead of showing a message */ }
 			{ ticketUpsertError && (
-				<Fragment>
+				<React.Fragment>
 					<div className="classy-modal__error">
 						<p>{ ticketUpsertError.message }</p>
 					</div>
 					<hr className="classy-modal__section-separator"></hr>
-				</Fragment>
+				</React.Fragment>
 			) }
 
 			<ClassyModalSection includeSeparator={ true }>
@@ -259,6 +268,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					'Title for the sale duration section in the Classy editor',
 					'event-tickets'
 				) }
+				includeSeparator={ true }
 			>
 				<SaleDuration
 					saleStart={ currentValues.availableFrom as Date | '' }
@@ -273,11 +283,44 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 				/>
 			</ClassyModalSection>
 
+			{ showFeesSection && (
+				<ClassyModalSection
+					title={ _x( 'Fees', 'Title for the fees section', 'event-tickets' ) }
+					includeSeparator={ true }
+				>
+					<TicketFees fees={ currentValues.fees as FeesData }/>
+				</ClassyModalSection>
+			) }
+
+			{ showEcommerceSection && (
+				<ClassyModalSection
+					title={ _x( 'Ecommerce Options', 'Title for the ecommerce options section', 'event-tickets' ) }
+					includeSeparator={ true }
+				>
+					<TicketSku
+						value={ currentValues.sku || '' }
+						onChange={ ( value: string ) => onValueChange( 'sku', value || '' ) }
+					/>
+				</ClassyModalSection>
+			) }
+
 			<ClassyModalSection>
-				<TicketSku
-					value={ currentValues.sku || '' }
-					onChange={ ( value: string ) => onValueChange( 'sku', value || '' ) }
-				/>
+				{ ! showFeesSection && (
+					<Button variant="link" onClick={ (): void => {
+						setShowFeesSection( true );
+					} }>
+						<DollarIcon />
+						{ _x( 'Add fees', 'Add fees button label', 'event-tickets' ) }
+					</Button>
+				) }
+				{ ! showEcommerceSection && (
+					<Button variant="link" onClick={ (): void => {
+						setShowEcommerceSection( true );
+					} }>
+						<TagIcon />
+						{ _x( 'Ecommerce options', 'Ecommerce options button label', 'event-tickets' ) }
+					</Button>
+				) }
 			</ClassyModalSection>
 
 			<Footer type="ticket">

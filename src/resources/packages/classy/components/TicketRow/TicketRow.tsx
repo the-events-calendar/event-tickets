@@ -141,7 +141,7 @@ const getTicketIcons = ( ticket: TicketSettings ): React.JSX.Element => {
 				 * @param {Object} props The properties passed to the slot.
 				 * @param {TicketSettings} props.ticket The ticket settings object.
 				 */
-				<Slot name="tec.tickets.classy.ticketRow.icons" fillProps={ { ticket } } />
+				<Slot name={ `tec.tickets.classy.ticketRow.icons.${ ticket.id }` } fillProps={ { ticket } } />
 			}
 		</span>
 	);

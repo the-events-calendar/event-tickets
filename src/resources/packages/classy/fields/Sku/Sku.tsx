@@ -28,7 +28,7 @@ export default function Sku( props: TicketComponentProps ): JSX.Element {
 			/>
 			<div className="classy-field__input-note">
 				{ _x(
-					'SKU will be automatically generated if not provided.',
+					'A unique identifying code for each ticket you are selling.',
 					'Ticket SKU input note',
 					'event-tickets'
 				) }
