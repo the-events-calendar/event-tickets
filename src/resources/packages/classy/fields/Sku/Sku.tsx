@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { LabeledInput } from '@tec/common/classy/components';
 import { __experimentalInputControl as InputControl } from '@wordpress/components';
 import { __, _x } from '@wordpress/i18n';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
@@ -18,11 +17,10 @@ export default function Sku( props: TicketComponentProps ): JSX.Element {
 	const { label = defaultLabel, onChange, value } = props;
 
 	return (
-		<LabeledInput label={ label }>
+		<>
 			<InputControl
 				className="classy-field__control classy-field__control--input"
 				label={ label }
-				hideLabelFromVision={ true }
 				value={ value }
 				onChange={ onChange }
 			/>
@@ -33,6 +31,6 @@ export default function Sku( props: TicketComponentProps ): JSX.Element {
 					'event-tickets'
 				) }
 			</div>
-		</LabeledInput>
+		</>
 	);
 }

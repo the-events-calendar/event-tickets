@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { LabeledInput } from '@tec/common/classy/components';
 import { __experimentalInputControl as InputControl, Slot } from '@wordpress/components';
 import { _x } from '@wordpress/i18n';
 import { CapacitySettings } from '../../types/Ticket';
@@ -96,24 +95,21 @@ export default function Capacity( props: CapacityProps ): JSX.Element {
 				/>
 			}
 
-			<LabeledInput label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }>
-				<InputControl
-					__next40pxDefaultSize={ true }
-					className="classy-field__control classy-field__control--input classy-field__control--input-narrow"
-					label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
-					hideLabelFromVision={ true }
-					value={ capacityValue }
-					onChange={ ( value: string ) => {
-						const capacityValue = value ? Math.abs( parseInt( value, 10 ) ) : '';
-						return onValueChange( 'enteredCapacity', capacityValue );
-					} }
-					size="small"
-					placeholder={ _x( 'unlimited', 'Placeholder for unlimited capacity', 'event-tickets' ) }
-				/>
-				<div className="classy-field__input-note">
-					{ _x( 'Leave blank for unlimited', 'Ticket capacity input note', 'event-tickets' ) }
-				</div>
-			</LabeledInput>
+			<InputControl
+				__next40pxDefaultSize={ true }
+				className="classy-field__control classy-field__control--input classy-field__control--input-narrow"
+				label={ _x( 'Ticket Capacity', 'Label for the ticket capacity field', 'event-tickets' ) }
+				value={ capacityValue }
+				onChange={ ( value: string ) => {
+					const capacityValue = value ? Math.abs( parseInt( value, 10 ) ) : '';
+					return onValueChange( 'enteredCapacity', capacityValue );
+				} }
+				size="small"
+				placeholder={ _x( 'unlimited', 'Placeholder for unlimited capacity', 'event-tickets' ) }
+			/>
+			<div className="classy-field__input-note">
+				{ _x( 'Leave blank for unlimited', 'Ticket capacity input note', 'event-tickets' ) }
+			</div>
 
 			{
 				/**

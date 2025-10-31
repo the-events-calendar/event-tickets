@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { __ } from '@wordpress/i18n';
 import { TextareaControl } from '@wordpress/components';
-import { LabeledInput } from '@tec/common/classy/components';
 import { TicketComponentProps } from '../../types/TicketComponentProps';
 
 /**
@@ -15,15 +14,12 @@ export default function TicketDescription( props: TicketComponentProps ): JSX.El
 	const defaultLabel = __( 'Description', 'event-tickets' );
 
 	return (
-		<LabeledInput label={ label || defaultLabel }>
-			<TextareaControl
-				className="classy-field__control classy-field__control--textarea"
-				label={ label || defaultLabel }
-				hideLabelFromVision={ true }
-				value={ value }
-				onChange={ onChange }
-				required={ false }
-			/>
-		</LabeledInput>
+		<TextareaControl
+			className="classy-field__control classy-field__control--textarea"
+			label={ label || defaultLabel }
+			value={ value }
+			onChange={ onChange }
+			required={ false }
+		/>
 	);
 }
