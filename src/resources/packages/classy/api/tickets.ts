@@ -1,7 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { applyFilters } from '@wordpress/hooks';
 import { addQueryArgs } from '@wordpress/url';
-import { getTecApiUrl } from '@tec/common/classy/api';
+import { getTecApiUrl } from '@tec/common/tecApi';
 import { getCurrencySettings } from '../localizedData.ts';
 import { formatSaleDate, formatSaleDurationDate } from '../functions/tickets';
 import { GetTicketApiResponse, GetTicketsApiResponse, GetTicketsApiParams, UpsertTicketApiRequest } from '../types/Api';
