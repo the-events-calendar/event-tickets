@@ -36,7 +36,7 @@ export default function TicketFees( props: TicketFeesProps ): React.JSX.Element 
 	const onSelectedFeesChange = React.useCallback(
 		( event: React.ChangeEvent< HTMLInputElement > ) => {
 			const feeId = parseInt( event.target.value, 10 );
-			const isChecked = !feeIdSelectedMap[ feeId ];
+			const isChecked = ! feeIdSelectedMap[ feeId ];
 
 			if ( onFeesChange ) {
 				const updatedSelectedFees = isChecked
@@ -52,7 +52,7 @@ export default function TicketFees( props: TicketFeesProps ): React.JSX.Element 
 			// Add to displayed fees if not already there
 			if ( isChecked ) {
 				const fee = availableFees.find( ( f ) => f.id === feeId );
-				if ( fee && !displayedFees.find( ( f ) => f.id === feeId ) ) {
+				if ( fee && ! displayedFees.find( ( f ) => f.id === feeId ) ) {
 					setDisplayedFees( ( prev ) => [ ...prev, fee ] );
 				}
 			}
@@ -71,26 +71,29 @@ export default function TicketFees( props: TicketFeesProps ): React.JSX.Element 
 	}, [] );
 
 	// Handle fee selection confirm
-	const onConfirmFeeSelect = React.useCallback( ( feeId: number ) => {
-		const fee = availableFees.find( ( f ) => f.id === feeId );
-		if ( fee && !displayedFees.find( ( f ) => f.id === feeId ) ) {
-			setDisplayedFees( ( prev ) => [ ...prev, fee ] );
-		}
+	const onConfirmFeeSelect = React.useCallback(
+		( feeId: number ) => {
+			const fee = availableFees.find( ( f ) => f.id === feeId );
+			if ( fee && ! displayedFees.find( ( f ) => f.id === feeId ) ) {
+				setDisplayedFees( ( prev ) => [ ...prev, fee ] );
+			}
 
-		if ( onFeesChange ) {
-			const updatedSelectedFees = [ ...selectedFees, fee! ];
-			onFeesChange( {
-				...fees,
-				selectedFees: updatedSelectedFees,
-			} );
-		}
+			if ( onFeesChange ) {
+				const updatedSelectedFees = [ ...selectedFees, fee! ];
+				onFeesChange( {
+					...fees,
+					selectedFees: updatedSelectedFees,
+				} );
+			}
 
-		setIsSelectingFee( false );
-	}, [ availableFees, displayedFees, selectedFees, fees, onFeesChange ] );
+			setIsSelectingFee( false );
+		},
+		[ availableFees, displayedFees, selectedFees, fees, onFeesChange ]
+	);
 
 	// Get selectable fees (fees not already displayed)
-	const selectableFees = availableFees.filter( ( fee ) =>
-		!displayedFees.find( ( displayedFee ) => displayedFee.id === fee.id )
+	const selectableFees = availableFees.filter(
+		( fee ) => ! displayedFees.find( ( displayedFee ) => displayedFee.id === fee.id )
 	);
 
 	// Tooltip text for automatic fees
@@ -98,9 +101,7 @@ export default function TicketFees( props: TicketFeesProps ): React.JSX.Element 
 
 	return (
 		<div className="classy-field classy-field__fees">
-			<div className="classy-field__label">
-				{ __( 'Ticket Fees', 'event-tickets' ) }
-			</div>
+			<div className="classy-field__label">{ __( 'Ticket Fees', 'event-tickets' ) }</div>
 			<div className="classy-field__fees-container">
 				{ hasAutomaticFees && (
 					<div className="classy-field__automatic-fees">
@@ -141,10 +142,8 @@ export default function TicketFees( props: TicketFeesProps ): React.JSX.Element 
 					<AddFee onClick={ onAddFeeClick } />
 				) }
 
-				{ !hasItemsToDisplay && (
-					<p className="classy-field__no-fees">
-						{ __( 'No available fees.', 'event-tickets' ) }
-					</p>
+				{ ! hasItemsToDisplay && (
+					<p className="classy-field__no-fees">{ __( 'No available fees.', 'event-tickets' ) }</p>
 				) }
 			</div>
 		</div>

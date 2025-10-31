@@ -22,7 +22,6 @@ import * as TicketApi from '../../api/tickets';
 import { getCurrencySettings } from '../../localizedData';
 import { DollarIcon, TagIcon } from '../Icons';
 
-
 type TicketUpsertProps = {
 	isUpdate: boolean;
 	onCancel: () => void;
@@ -288,7 +287,7 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 					title={ _x( 'Fees', 'Title for the fees section', 'event-tickets' ) }
 					includeSeparator={ true }
 				>
-					<TicketFees fees={ currentValues.fees as FeesData }/>
+					<TicketFees fees={ currentValues.fees as FeesData } />
 				</ClassyModalSection>
 			) }
 
@@ -306,17 +305,23 @@ export default function TicketUpsert( props: TicketUpsertProps ): JSX.Element {
 
 			<ClassyModalSection>
 				{ ! showFeesSection && (
-					<Button variant="link" onClick={ (): void => {
-						setShowFeesSection( true );
-					} }>
+					<Button
+						variant="link"
+						onClick={ (): void => {
+							setShowFeesSection( true );
+						} }
+					>
 						<DollarIcon />
 						{ _x( 'Add fees', 'Add fees button label', 'event-tickets' ) }
 					</Button>
 				) }
 				{ ! showEcommerceSection && (
-					<Button variant="link" onClick={ (): void => {
-						setShowEcommerceSection( true );
-					} }>
+					<Button
+						variant="link"
+						onClick={ (): void => {
+							setShowEcommerceSection( true );
+						} }
+					>
 						<TagIcon />
 						{ _x( 'Ecommerce options', 'Ecommerce options button label', 'event-tickets' ) }
 					</Button>

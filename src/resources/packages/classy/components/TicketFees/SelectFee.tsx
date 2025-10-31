@@ -17,9 +17,7 @@ const placeholderOption: CustomSelectOption = {
 
 const mapFeeToOption = ( fee: Fee ): CustomSelectOption => {
 	const { amount, label, id, subType } = fee;
-	const optionLabel = subType === 'percentage'
-		? `${ label } (${ amount }%)`
-		: `${ label } ($${ amount })`;
+	const optionLabel = subType === 'percentage' ? `${ label } (${ amount }%)` : `${ label } ($${ amount })`;
 
 	return {
 		key: optionLabel,
@@ -54,10 +52,7 @@ export default function SelectFee( props: SelectFeeProps ): React.JSX.Element {
 			>
 				{ _x( 'Add Fee', 'Button label to add selected fee', 'event-tickets' ) }
 			</Button>
-			<Button
-				variant="tertiary"
-				onClick={ onCancel }
-			>
+			<Button variant="tertiary" onClick={ onCancel }>
 				{ _x( 'Cancel', 'Button label to cancel fee selection', 'event-tickets' ) }
 			</Button>
 		</div>

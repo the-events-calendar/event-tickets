@@ -13,17 +13,17 @@ type CheckboxFeeWithTooltipProps = {
 
 const getFeeLabel = ( fee: Fee ): string => {
 	const { amount, label, subType } = fee;
-	
+
 	if ( subType === 'percentage' ) {
 		return `${ label } (${ amount }%)`;
 	}
-	
+
 	return `${ label } ($${ amount })`;
 };
 
 export default function CheckboxFeeWithTooltip( props: CheckboxFeeWithTooltipProps ): React.JSX.Element | null {
 	const { fee, isChecked, isDisabled, onChange, tooltipText } = props;
-	
+
 	// Skip inactive fees
 	if ( fee.status !== 'active' ) {
 		return null;
@@ -43,7 +43,10 @@ export default function CheckboxFeeWithTooltip( props: CheckboxFeeWithTooltipPro
 				onChange={ onChange }
 			/>
 			<Tooltip text={ tooltipText }>
-				<label htmlFor={ checkboxName } className="classy-field__checkbox__label classy-field__checkbox__label--with-tooltip">
+				<label
+					htmlFor={ checkboxName }
+					className="classy-field__checkbox__label classy-field__checkbox__label--with-tooltip"
+				>
 					{ feeLabel }
 				</label>
 			</Tooltip>

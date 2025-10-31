@@ -12,17 +12,17 @@ type CheckboxFeeProps = {
 
 const getFeeLabel = ( fee: Fee ): string => {
 	const { amount, label, subType } = fee;
-	
+
 	if ( subType === 'percentage' ) {
 		return `${ label } (${ amount }%)`;
 	}
-	
+
 	return `${ label } ($${ amount })`;
 };
 
 export default function CheckboxFee( props: CheckboxFeeProps ): React.JSX.Element | null {
 	const { fee, isChecked, isDisabled, onChange } = props;
-	
+
 	// Skip inactive fees
 	if ( fee.status !== 'active' ) {
 		return null;
@@ -42,7 +42,7 @@ export default function CheckboxFee( props: CheckboxFeeProps ): React.JSX.Elemen
 				onChange={ ( checked ) => {
 					// Create a synthetic event for compatibility
 					const syntheticEvent = {
-						target: { value: fee.id.toString() }
+						target: { value: fee.id.toString() },
 					} as React.ChangeEvent< HTMLInputElement >;
 					onChange( syntheticEvent );
 				} }
