@@ -96,8 +96,15 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			return false;
 		}
 
-		// Get current sales to calculate actual change.
-		$old_sales    = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		// Get current stock and sales to calculate actual change.
+		$current_stock = (int) get_post_meta( $ticket_id, '_stock', true );
+		$old_sales     = (int) get_post_meta( $ticket_id, 'total_sales', true );
+
+		// Prevent incrementing sales when out of stock.
+		if ( $delta > 0 && $current_stock <= 0 ) {
+			return false; // Cannot sell when stock is 0 or negative
+		}
+
 		$new_sales    = max( 0, $old_sales + $delta );
 		$actual_delta = $new_sales - $old_sales;
 

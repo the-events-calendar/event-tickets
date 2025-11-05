@@ -1565,6 +1565,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( empty( $ticket->ID ) ) {
 			$save_type = 'create';
 
+			/**
+			 * Fires before an RSVP ticket is created.
+			 *
+			 * @since TBD
+			 *
+			 * @param int                           $post_id  The event/post ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket object.
+			 * @param array                         $raw_data The raw ticket data.
+			 */
+			do_action( 'event_ticket_rsvp_before_ticket_creation', $post_id, $ticket, $raw_data );
+
 			// Prepare ticket data for creation.
 			$ticket_data = [
 				'title'       => $ticket->name,
@@ -1671,6 +1682,33 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		} else {
 			delete_post_meta( $ticket->ID, '_ticket_end_date' );
+		}
+
+		// Fire RSVP-specific hooks.
+		if ( 'create' === $save_type ) {
+			/**
+			 * Fires after an RSVP ticket is created.
+			 *
+			 * @since TBD
+			 *
+			 * @param int                           $ticket_id The ticket ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+			 * @param array                         $raw_data  The raw ticket data.
+			 * @param int                           $post_id   The event/post ID.
+			 */
+			do_action( 'event_ticket_rsvp_ticket_created', $ticket->ID, $ticket, $raw_data, $post_id );
+
+			/**
+			 * Fires after an RSVP ticket is created (alternate hook name).
+			 *
+			 * @since TBD
+			 *
+			 * @param int                           $ticket_id The ticket ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+			 * @param array                         $raw_data  The raw ticket data.
+			 * @param int                           $post_id   The event/post ID.
+			 */
+			do_action( 'rsvp_ticket_created', $ticket->ID, $ticket, $raw_data, $post_id );
 		}
 
 		/**

@@ -269,6 +269,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * Bulk update multiple attendees with the same field values.
 	 *
 	 * More efficient than calling update() in a loop.
+	 * Uses batch SQL queries - one query per field instead of one query per attendee.
 	 *
 	 * @since TBD
 	 *
@@ -277,21 +278,56 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * @return array Results indexed by attendee ID (true = success, false = failure).
 	 */
 	public function bulk_update( array $attendee_ids, array $updates ) {
-		$results = [];
+		global $wpdb;
 
-		foreach ( $attendee_ids as $attendee_id ) {
-			// Check if attendee exists first.
-			$attendee = get_post( $attendee_id );
-			if ( ! $attendee ) {
-				$results[ $attendee_id ] = false;
-				continue;
+		if ( empty( $attendee_ids ) || empty( $updates ) ) {
+			return [];
+		}
+
+		// Convert field aliases to actual meta keys.
+		$meta_updates = [];
+		foreach ( $updates as $field => $value ) {
+			$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
+			if ( $meta_key ) {
+				$meta_updates[ $meta_key ] = $value;
 			}
+		}
 
-			$result = $this->by( 'id', $attendee_id )
-							->set_args( $updates )
-							->save();
+		if ( empty( $meta_updates ) ) {
+			return [];
+		}
 
-			$results[ $attendee_id ] = false !== $result;
+		// Initialize results array.
+		$results = array_fill_keys( $attendee_ids, true );
+
+		// Use single SQL query for each meta field (batch update).
+		foreach ( $meta_updates as $meta_key => $value ) {
+			// Create placeholders for IN clause.
+			$placeholders = implode( ',', array_fill( 0, count( $attendee_ids ), '%d' ) );
+
+			// Prepare the query with all parameters.
+			$query = $wpdb->prepare(
+				"UPDATE {$wpdb->postmeta}
+				SET meta_value = %s
+				WHERE post_id IN ($placeholders)
+				AND meta_key = %s",
+				$value,
+				...array_merge( $attendee_ids, [ $meta_key ] )
+			);
+
+			// Execute batch update.
+			$result = $wpdb->query( $query );
+
+			// If update failed, mark all attendees as failed.
+			if ( false === $result ) {
+				$results = array_fill_keys( $attendee_ids, false );
+				break;
+			}
+		}
+
+		// Clear post meta cache for all updated attendees.
+		foreach ( $attendee_ids as $attendee_id ) {
+			wp_cache_delete( $attendee_id, 'post_meta' );
 		}
 
 		return $results;
