@@ -43,6 +43,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 				'capacity'          => '_tribe_ticket_capacity',
 				'global_stock_mode' => '_global_stock_mode',
 				'global_stock_cap'  => '_global_stock_cap',
+				'description'       => 'post_excerpt',
 			]
 		);
 	}
