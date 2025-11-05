@@ -1,14 +1,23 @@
 <?php
+/**
+ * RSVP Attendee Repository.
+ *
+ * @since TBD
+ * @package Tribe\Tickets\Repositories\Attendee
+ */
 
 use Tribe__Utils__Array as Arr;
 
 /**
  * The ORM/Repository class for RSVP attendees.
  *
+ * Class name follows TEC naming convention with double underscores.
+ *
  * @since 4.10.6
  *
  * @property Tribe__Tickets__RSVP $attendee_provider
  */
+// phpcs:ignore StellarWP.Classes.ValidClassName.NotSnakeCase, Squiz.Commenting.ClassComment.Missing
 class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository {
 
 	/**
@@ -35,17 +44,25 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-				'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
-				'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
-				'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
-				'security_code'   => $attendee_provider->security_code,
-				'order_id'        => $attendee_provider->order_key,
-				'optout'          => $attendee_provider::ATTENDEE_OPTOUT_KEY,
-				'user_id'         => $attendee_provider->attendee_user_id,
-				'price_paid'      => $attendee_provider->price_paid,
-				'full_name'       => $attendee_provider->full_name,
-				'email'           => $attendee_provider->email,
-				'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'ticket_id'          => $attendee_provider::ATTENDEE_PRODUCT_KEY,
+				'event_id'           => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'post_id'            => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'security_code'      => $attendee_provider->security_code,
+				'order_id'           => $attendee_provider->order_key,
+				'optout'             => $attendee_provider::ATTENDEE_OPTOUT_KEY,
+				'user_id'            => $attendee_provider->attendee_user_id,
+				'price_paid'         => $attendee_provider->price_paid,
+				'full_name'          => $attendee_provider->full_name,
+				'email'              => $attendee_provider->email,
+				'attendee_status'    => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'ticket_sent'        => $attendee_provider->attendee_ticket_sent,
+				'deleted_product'    => $attendee_provider->deleted_product,
+				'is_subscribed'      => $attendee_provider->attendee_subscribed,
+				'check_in'           => $attendee_provider->checkin_key,
+				'qr_status'          => '_tribe_qr_status',
+				'check_in_details'   => $attendee_provider->checkin_key . '_details',
+				'unique_id'          => '_unique_id',
+				'attendee_meta'      => class_exists( 'Tribe__Tickets_Plus__Meta', false ) ? Tribe__Tickets_Plus__Meta::META_KEY : '_tribe_tickets_meta',
 			]
 		);
 	}
@@ -223,5 +240,132 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		 * @param string $attendee_status The status of the attendee, either yes or no.
 		 */
 		do_action( 'event_tickets_rsvp_after_attendee_update', $attendee_id, $post_id, $attendee_status );
+	}
+
+	/**
+	 * Get a single field value without loading full attendee object.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $attendee_id Attendee ID.
+	 * @param string $field       Field name (alias-aware).
+	 * @return mixed Field value or null if not found.
+	 */
+	public function get_field( int $attendee_id, string $field ) {
+		// Resolve field alias to actual meta key.
+		$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
+
+		if ( ! $meta_key ) {
+			return null;
+		}
+
+		$value = get_post_meta( $attendee_id, $meta_key, true );
+
+		// Return null if meta doesn't exist (empty string or false).
+		return ( '' === $value || false === $value ) ? null : $value;
+	}
+
+	/**
+	 * Bulk update multiple attendees with the same field values.
+	 *
+	 * More efficient than calling update() in a loop.
+	 * Uses batch SQL queries - one query per field instead of one query per attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_ids Attendee IDs.
+	 * @param array $updates      Fields to update (e.g., ['attendee_status' => 'yes']).
+	 * @return array Results indexed by attendee ID (true = success, false = failure).
+	 */
+	public function bulk_update( array $attendee_ids, array $updates ) {
+		global $wpdb;
+
+		if ( empty( $attendee_ids ) || empty( $updates ) ) {
+			return [];
+		}
+
+		// Convert field aliases to actual meta keys.
+		$meta_updates = [];
+		foreach ( $updates as $field => $value ) {
+			$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
+			if ( $meta_key ) {
+				$meta_updates[ $meta_key ] = $value;
+			}
+		}
+
+		if ( empty( $meta_updates ) ) {
+			return [];
+		}
+
+		// Initialize results array.
+		$results = array_fill_keys( $attendee_ids, true );
+
+		// Use single SQL query for each meta field (batch update).
+		foreach ( $meta_updates as $meta_key => $value ) {
+			// Create placeholders for IN clause.
+			$placeholders = implode( ',', array_fill( 0, count( $attendee_ids ), '%d' ) );
+
+			// Prepare the query with all parameters.
+			$query = $wpdb->prepare(
+				"UPDATE {$wpdb->postmeta}
+				SET meta_value = %s
+				WHERE post_id IN ($placeholders)
+				AND meta_key = %s",
+				$value,
+				...array_merge( $attendee_ids, [ $meta_key ] )
+			);
+
+			// Execute batch update.
+			$result = $wpdb->query( $query );
+
+			// If update failed, mark all attendees as failed.
+			if ( false === $result ) {
+				$results = array_fill_keys( $attendee_ids, false );
+				break;
+			}
+		}
+
+		// Clear post meta cache for all updated attendees.
+		foreach ( $attendee_ids as $attendee_id ) {
+			wp_cache_delete( $attendee_id, 'post_meta' );
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Get attendee counts grouped by RSVP status.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id Event ID.
+	 * @return array Status counts (e.g., ['yes' => 10, 'no' => 5]).
+	 */
+	public function get_status_counts( int $event_id ): array {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT pm2.meta_value as status, COUNT(*) as count
+				 FROM {$wpdb->posts} p
+				 INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
+				 INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+				 WHERE p.post_type = %s
+				 AND pm1.meta_value = %d
+				 GROUP BY pm2.meta_value",
+				'_tribe_rsvp_event',
+				'_tribe_rsvp_status',
+				'tribe_rsvp_attendees',
+				$event_id
+			)
+		);
+
+		$counts = [];
+		foreach ( $results as $row ) {
+			$counts[ $row->status ] = (int) $row->count;
+		}
+
+		return $counts;
 	}
 }

@@ -1074,13 +1074,49 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return (bool) $checkin;
 			}
 
-			update_post_meta( $attendee_id, $this->checkin_key, 1 );
+			$repository = tribe_attendees( $this->orm_provider );
 
+			// Set check-in status.
+			$repository->by( 'id', $attendee_id )
+			           ->set( 'check_in', 1 );
+
+			// Set QR status if applicable.
 			if ( isset( $qr ) && $qr = (bool) $qr ) {
-				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
+				$repository->set( 'qr_status', 1 );
 			}
 
-			$this->save_checkin_details( $attendee_id, $qr, $details );
+			// Save check-in details.
+			$checkin_details = $this->prepare_checkin_details( $qr, $details );
+
+			/**
+			 * Filters the checkin details for this attendee checkin.
+			 *
+			 * @since 5.5.2
+			 *
+			 * @param array $checkin_details The check-in details.
+			 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
+			 * @param mixed $qr              True if the check-in is from a QR code.
+			 */
+			$checkin_details = apply_filters( 'tec_tickets_checkin_details', $checkin_details, $attendee_id, $qr );
+
+			$repository->set( 'check_in_details', $checkin_details );
+
+			// Save all changes.
+			$result = $repository->save();
+
+			if ( false === $result ) {
+				return false;
+			}
+
+			// Handle app-specific logic for QR check-ins.
+			if ( ! empty( $qr ) ) {
+				// Save the latest date in which a ticket was scanned with the APP.
+				tribe_update_option( 'tec_tickets_plus_app_last_checkin_time', time() );
+
+				// Save the attendee scan count.
+				$attendee_scan_count = (int) tribe_get_option( 'tec_tickets_plus_app_attendees_checked_in' );
+				tribe_update_option( 'tec_tickets_plus_app_attendees_checked_in', ++$attendee_scan_count );
+			}
 
 			/**
 			 * Fires a checkin action
@@ -1098,7 +1134,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Prepare check-in details array.
+		 *
+		 * @since TBD
+		 *
+		 * @param mixed               $qr      True if the check-in is from a QR code.
+		 * @param array<string|mixed> $details Check-out details including timestamp and device_id information.
+		 *
+		 * @return array The prepared check-in details.
+		 */
+		protected function prepare_checkin_details( $qr, $details = [] ) {
+			$checkin_details = [
+				'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
+				'source'    => ! empty( $qr ) ? 'app' : 'site',
+				'author'    => get_current_user_id(),
+				'device_id' => $details['device_id'] ?? null,
+			];
+
+			return $checkin_details;
+		}
+
+		/**
 		 * Save the attendee checkin details.
+		 *
+		 * @deprecated TBD Use checkin() method instead which uses repository pattern.
 		 *
 		 * @since 5.5.2
 		 * @since 5.5.11 Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
@@ -1109,12 +1168,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array<string|mixed> $details     Check-out details including timestamp and device_id information.
 		 */
 		public function save_checkin_details( $attendee_id, $qr, $details = [] ) {
-			$checkin_details = [
-				'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
-				'source'    => ! empty( $qr ) ? 'app' : 'site',
-				'author'    => get_current_user_id(),
-				'device_id' => $details['device_id'] ?? null,
-			];
+			$checkin_details = $this->prepare_checkin_details( $qr, $details );
 
 			if ( ! empty( $qr ) ) {
 				// Save the latest date in which a ticket was scanned with the APP.
@@ -1169,9 +1223,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return (bool) $uncheckin;
 			}
 
-			delete_post_meta( $attendee_id, $this->checkin_key );
-			delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
-			delete_post_meta( $attendee_id, '_tribe_qr_status' );
+			$repository = tribe_attendees( $this->orm_provider );
+
+			// Clear check-in status and related data.
+			$result = $repository->by( 'id', $attendee_id )
+			                     ->set( 'check_in', '' )
+			                     ->set( 'qr_status', '' )
+			                     ->set( 'check_in_details', '' )
+			                     ->save();
+
+			if ( false === $result ) {
+				return false;
+			}
 
 			/**
 			 * Fires an uncheckin action
@@ -2883,9 +2946,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $attendee_id The attendee ID.
 		 */
 		public function update_ticket_sent_counter( $attendee_id ) {
-			$prev_val = (int) get_post_meta( $attendee_id, $this->attendee_ticket_sent, true );
+			$repository = tribe_attendees( $this->orm_provider );
 
-			update_post_meta( $attendee_id, $this->attendee_ticket_sent, $prev_val + 1 );
+			// Get current count.
+			$current = (int) $repository->get_field( $attendee_id, 'ticket_sent' );
+
+			// Increment counter.
+			$repository->by( 'id', $attendee_id )
+			           ->set( 'ticket_sent', $current + 1 )
+			           ->save();
 		}
 
 		/**
@@ -3732,6 +3801,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$data['stock'] = -1;
 			}
 
+			$repository = tribe_tickets( $this->orm_provider );
+
 			if ( -1 !== $data['capacity'] ) {
 				if ( 'update' === $save_type ) {
 					/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
@@ -3742,12 +3813,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$data['stock'] -= $totals['pending'] + $totals['sold'];
 				}
 
-				update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
-				update_post_meta( $ticket->ID, '_stock', $data['stock'] );
+				$repository->by( 'id', $ticket->ID )
+				           ->set( 'manage_stock', 'yes' )
+				           ->set( 'stock', $data['stock'] )
+				           ->save();
 			} else {
 				// unlimited stock
 				delete_post_meta( $ticket->ID, '_stock_status' );
-				update_post_meta( $ticket->ID, '_manage_stock', 'no' );
+
+				$repository->by( 'id', $ticket->ID )
+				           ->set( 'manage_stock', 'no' )
+				           ->save();
+
 				delete_post_meta( $ticket->ID, '_stock' );
 				delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
 				delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );

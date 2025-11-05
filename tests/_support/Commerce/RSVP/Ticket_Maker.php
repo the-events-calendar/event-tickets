@@ -111,4 +111,44 @@ trait Ticket_Maker {
 			return $this->create_rsvp_ticket( $post_id, $overrides );
 		}, range( 1, $count ) );
 	}
+
+	/**
+	 * Creates an RSVP attendee for a ticket.
+	 *
+	 * @param int   $ticket_id The ID of the ticket this attendee should be related to.
+	 * @param int   $event_id  The ID of the event this attendee is attending.
+	 * @param array $overrides An array of values to override the default arguments.
+	 *
+	 * @return int The generated attendee post ID.
+	 */
+	protected function create_rsvp_attendee( $ticket_id, $event_id, array $overrides = [] ) {
+		$factory = $this->factory ?? $this->factory();
+
+		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
+			? $overrides['meta_input']
+			: [];
+
+		unset( $overrides['meta_input'] );
+
+		$merged_meta_input = array_merge(
+			[
+				'_tribe_rsvp_product' => $ticket_id,
+				'_tribe_rsvp_event'   => $event_id,
+				'_tribe_rsvp_status'  => 'yes',
+			],
+			$meta_input
+		);
+
+		$attendee_id = $factory->post->create( array_merge(
+			[
+				'post_title'  => "Test Attendee for ticket " . $ticket_id,
+				'post_type'   => 'tribe_rsvp_attendees',
+				'post_status' => 'publish',
+				'meta_input'  => $merged_meta_input,
+			],
+			$overrides
+		) );
+
+		return $attendee_id;
+	}
 }
