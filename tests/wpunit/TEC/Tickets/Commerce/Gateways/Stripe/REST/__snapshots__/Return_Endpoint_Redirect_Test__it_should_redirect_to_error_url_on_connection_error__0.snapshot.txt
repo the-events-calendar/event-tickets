@@ -1,1 +1,0 @@
-http://wordpress.test/wp-admin/admin.php?page=tec-tickets-settings&tab=stripe&tc-stripe-error=test_error

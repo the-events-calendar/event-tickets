@@ -26,4 +26,7 @@ global.renderer = renderer;
 
 moment.tz.setDefault( 'UTC' );
 
+// Mock webpack public path global for tests.
+global.__webpack_public_path__ = '';
+
 import '@tec/tickets/seating/tests/_bootstrap.js';

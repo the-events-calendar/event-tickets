@@ -562,6 +562,17 @@ class Order extends Abstract_Order {
 
 		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $current_status_wp_slug );
 
+		// Validate stock availability before allowing transition to stock-decreasing status.
+		$stock_validator = tribe( Stock_Validator::class );
+		if ( $stock_validator->should_validate_for_transition( $new_status ) ) {
+			$order            = tec_tc_get_order( $order_id );
+			$stock_validation = $stock_validator->validate_order_stock( $order );
+
+			if ( is_wp_error( $stock_validation ) ) {
+				return false;
+			}
+		}
+
 		return $current_status->can_change_to( $new_status );
 	}
 

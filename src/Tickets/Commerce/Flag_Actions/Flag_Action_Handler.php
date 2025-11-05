@@ -32,6 +32,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * @var string[]
 	 */
 	protected $default_flag_actions = [
+		Validate_Stock_Availability::class,
 		Generate_Attendees::class,
 		Increase_Stock::class,
 		Decrease_Stock::class,

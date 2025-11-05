@@ -9,9 +9,22 @@
 	</rule>
 
 	<rule ref="WordPress">
-		<exclude name="WordPress.Files.FileName"/>
-		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+		<!-- Exclude Generic rules that overlap with or are overridden by StellarWP standards -->
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+
+		<!-- Exclude PEAR rules that overlap with StellarWP standards -->
+		<exclude name="PEAR.NamingConventions.ValidClassName.Invalid"/>
+
+		<!-- Exclude WP rules that overlap with or are overridden by StellarWP standards -->
+		<exclude name="WordPress.Files.FileName"/>
+		<exclude name="WordPress.DB.DirectDatabaseQuery"/>
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+		<!-- covered by: StellarWP.XSS.EscapeOutput.OutputNotEscaped -->
+		<exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped"/>
+		<!-- covered by: StellarWP.Classes.ValidClassName.NotSnakeCase -->
+		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase"/>
+		<!-- covered by: StellarWP.CodeAnalysis.RedirectAndDie.Error -->
+		<exclude name="WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit"/>
 	</rule>
 
 	<!-- Enforce our specific plugin's text domain. -->

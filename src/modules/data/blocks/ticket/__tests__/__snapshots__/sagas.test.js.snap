@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Ticket Block sagas createMissingTicketBlocks should create missing ticket blocks 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       [Function],
     ],
-    "context": Array [],
+    "context": [],
     "fn": [Function],
   },
 }
 `;
 
 exports[`Ticket Block sagas deleteTicket should delete ticket 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
@@ -30,15 +30,15 @@ Object {
 `;
 
 exports[`Ticket Block sagas deleteTicket should delete ticket 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Array [
+  "CALL": {
+    "args": [
+      [
         "modern-tribe",
       ],
     ],
-    "context": Object {
+    "context": {
       "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
@@ -50,11 +50,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas deleteTicket should delete ticket 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
@@ -66,15 +66,15 @@ Object {
 `;
 
 exports[`Ticket Block sagas deleteTicket should delete ticket 4`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Array [
+  "CALL": {
+    "args": [
+      [
         "modern-tribe",
       ],
     ],
-    "context": Object {
+    "context": {
       "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
@@ -86,11 +86,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas deleteTicket should delete ticket 5`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -107,11 +107,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas deleteTicketsHeaderImage should delete tickets header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -128,11 +128,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas deleteTicketsHeaderImage should not delete tickets header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -149,13 +149,13 @@ Object {
 `;
 
 exports[`Ticket Block sagas resetTicketsBlock should reset tickets block 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "meta",
     ],
-    "context": Object {
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -172,17 +172,17 @@ Object {
 `;
 
 exports[`Ticket Block sagas resetTicketsBlock should reset tickets block 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
-        "meta": Object {
+  "CALL": {
+    "args": [
+      {
+        "meta": {
           "_tribe_ticket_capacity": "",
         },
       },
     ],
-    "context": Object {
+    "context": {
       "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
@@ -194,13 +194,13 @@ Object {
 `;
 
 exports[`Ticket Block sagas setBodyDetails should set body details 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "modern-tribe",
     ],
-    "context": Object {
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -216,11 +216,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas setBodyDetails should set body details 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -237,14 +237,14 @@ Object {
 `;
 
 exports[`Ticket Block sagas setBodyDetails should set body details 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "modern-tribe",
       0,
     ],
-    "context": Object {
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -260,13 +260,13 @@ Object {
 `;
 
 exports[`Ticket Block sagas setTicketInitialState should set capacity type to shared if tickets plus is active 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "date",
     ],
-    "context": Object {
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -283,13 +283,13 @@ Object {
 `;
 
 exports[`Ticket Block sagas setTicketInitialState should set ticket initial state 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "date",
     ],
-    "context": Object {
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -306,13 +306,13 @@ Object {
 `;
 
 exports[`Ticket Block sagas setTicketInitialState should set tickets initial state for new ticket 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "date",
     ],
-    "context": Object {
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -329,11 +329,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas updateTicketsHeaderImage should not update tickets header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],
@@ -350,11 +350,11 @@ Object {
 `;
 
 exports[`Ticket Block sagas updateTicketsHeaderImage should update tickets header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getBlockCount": [Function],
       "getBlockIndex": [Function],
       "getBlockRootClientId": [Function],

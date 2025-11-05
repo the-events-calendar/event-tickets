@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RSVP block sagas deleteRSVPHeaderImage should delete rsvp header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
       "getEditedPostAttribute": [Function],
@@ -16,11 +16,11 @@ Object {
 `;
 
 exports[`RSVP block sagas deleteRSVPHeaderImage should not delete rsvp header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
       "getEditedPostAttribute": [Function],
@@ -31,13 +31,13 @@ Object {
 `;
 
 exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "date",
     ],
-    "context": Object {
+    "context": {
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
       "getEditedPostAttribute": [Function],
@@ -48,10 +48,10 @@ Object {
 `;
 
 exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "January 1, 2018",
     ],
     "context": null,
@@ -61,10 +61,10 @@ Object {
 `;
 
 exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
+  "CALL": {
+    "args": [
       "January 4, 2018",
     ],
     "context": null,
@@ -74,97 +74,97 @@ Object {
 `;
 
 exports[`RSVP block sagas saveRSVPWithPostSave should update when channel saves 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Object {
-    "capacity": Object {
+  "ALL": {
+    "capacity": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "description": Object {
+    "description": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "endDate": Object {
+    "endDate": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "endDateInput": Object {
+    "endDateInput": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "endDateMoment": Object {
+    "endDateMoment": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "endTime": Object {
+    "endTime": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "id": Object {
+    "id": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "notGoingResponses": Object {
+    "notGoingResponses": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "startDate": Object {
+    "startDate": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "startDateInput": Object {
+    "startDateInput": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "startDateMoment": Object {
+    "startDateMoment": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "startTime": Object {
+    "startTime": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
-    "title": Object {
+    "title": {
       "@@redux-saga/IO": true,
-      "SELECT": Object {
-        "args": Array [],
+      "SELECT": {
+        "args": [],
         "selector": [Function],
       },
     },
@@ -173,9 +173,9 @@ Object {
 `;
 
 exports[`RSVP block sagas saveRSVPWithPostSave should update when channel saves 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "PUT": Object {
+  "PUT": {
     "action": [Function],
     "channel": null,
   },
@@ -183,14 +183,14 @@ Object {
 `;
 
 exports[`RSVP block sagas setNonEventPostTypeEndDate should set end date 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
+  "ALL": [
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDate": "2018-01-01",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE",
@@ -198,11 +198,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateInput": "2018-01-01",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_INPUT",
@@ -210,11 +210,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateMoment": "2018-01-01",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
@@ -222,11 +222,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTime": "12:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME",
@@ -234,11 +234,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDate": "2018-01-01",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
@@ -246,11 +246,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateInput": "2018-01-01",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_INPUT",
@@ -258,11 +258,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateMoment": "2018-01-01",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
@@ -270,11 +270,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTime": "12:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
@@ -287,14 +287,14 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should not sync 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
+  "ALL": [
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
+      "CALL": {
+        "args": [],
+        "context": {
           "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
@@ -302,11 +302,11 @@ Object {
         "fn": [MockFunction],
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
+      "CALL": {
+        "args": [],
+        "context": {
           "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
@@ -314,11 +314,11 @@ Object {
         "fn": [MockFunction],
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
+      "CALL": {
+        "args": [],
+        "context": {
           "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
@@ -331,18 +331,18 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should not sync 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
-    "context": Object {
+    "context": {
       "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
@@ -353,18 +353,18 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should not sync 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
-    "context": Object {
+    "context": {
       "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
@@ -375,14 +375,14 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
+  "ALL": [
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
+      "CALL": {
+        "args": [],
+        "context": {
           "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
@@ -390,11 +390,11 @@ Object {
         "fn": [MockFunction],
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
+      "CALL": {
+        "args": [],
+        "context": {
           "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
@@ -402,11 +402,11 @@ Object {
         "fn": [MockFunction],
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
-        "context": Object {
+      "CALL": {
+        "args": [],
+        "context": {
           "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
@@ -419,18 +419,18 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 2`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
-    "context": Object {
+    "context": {
       "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
@@ -441,18 +441,18 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 3`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      Object {
+  "CALL": {
+    "args": [
+      {
         "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
-    "context": Object {
+    "context": {
       "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
@@ -463,14 +463,14 @@ Object {
 `;
 
 exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "ALL": Array [
-    Object {
+  "ALL": [
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE",
@@ -478,11 +478,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_INPUT",
@@ -490,11 +490,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
@@ -502,11 +502,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME",
@@ -514,11 +514,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME_INPUT",
@@ -526,11 +526,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
@@ -538,11 +538,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_INPUT",
@@ -550,11 +550,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
@@ -562,11 +562,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
@@ -574,11 +574,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME_INPUT",
@@ -586,11 +586,11 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "PUT": Object {
-        "action": Object {
-          "payload": Object {
+      "PUT": {
+        "action": {
+          "payload": {
             "hasChanges": true,
           },
           "type": "@@MT/TICKETS/SET_RSVP_HAS_CHANGES",
@@ -598,10 +598,10 @@ Object {
         "channel": null,
       },
     },
-    Object {
+    {
       "@@redux-saga/IO": true,
-      "CALL": Object {
-        "args": Array [],
+      "CALL": {
+        "args": [],
         "context": null,
         "fn": [Function],
       },
@@ -611,11 +611,11 @@ Object {
 `;
 
 exports[`RSVP block sagas updateRSVPHeaderImage should not update rsvp header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
       "getEditedPostAttribute": [Function],
@@ -626,11 +626,11 @@ Object {
 `;
 
 exports[`RSVP block sagas updateRSVPHeaderImage should update rsvp header image 1`] = `
-Object {
+{
   "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [],
-    "context": Object {
+  "CALL": {
+    "args": [],
+    "context": {
       "getCurrentPostId": [Function],
       "getCurrentPostType": [Function],
       "getEditedPostAttribute": [Function],

@@ -35,6 +35,32 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		tribe( Upsell::class )->hooks();
 		tribe( Plugin_Action_Links::class )->hooks();
 		tribe( Glance_Items::class )->hooks();
+		add_filter( 'tec_get_admin_region', [ $this, 'is_et_admin_page' ] );
 	}
 
+	/**
+	 * Checks if the current admin page is an ET admin page.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @param string $region The current admin region.
+	 *
+	 * @return bool Whether the current admin page is an ET admin page.
+	 */
+	public function is_et_admin_page( $region ) {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$parent = get_admin_page_parent();
+		if ( ! $parent ) {
+			return false;
+		}
+
+		if ( str_contains( $parent, 'tec-tickets' ) ) {
+			return 'tickets';
+		}
+
+		return $region;
+	}
 }

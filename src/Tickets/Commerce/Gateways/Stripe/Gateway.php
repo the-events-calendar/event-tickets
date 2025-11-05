@@ -70,6 +70,7 @@ class Gateway extends Abstract_Gateway {
 	 */
 	const VERSION = '1.0.0';
 
+
 	/**
 	 * @inheritDoc
 	 */
@@ -221,5 +222,93 @@ class Gateway extends Abstract_Gateway {
 			$notice_header,
 			$notice_text
 		);
+	}
+
+	/**
+	 * Filter Stripe currency precision based on Stripe's specific requirements.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @param array  $currency_data The currency data from the map.
+	 * @param string $currency_code The currency code.
+	 * @param string $gateway       The gateway name.
+	 *
+	 * @return array The modified currency data.
+	 */
+	public function filter_stripe_currency_precision( $currency_data, $currency_code, $gateway ) {
+		// Only apply Stripe-specific logic for the Stripe gateway.
+		if ( 'stripe' !== $gateway ) {
+			return $currency_data;
+		}
+
+		// Apply Stripe's currency precision rules.
+		$stripe_precision = $this->get_stripe_precision( $currency_code, $currency_data['decimal_precision'] );
+
+		// Update the currency data with Stripe's precision.
+		$currency_data['decimal_precision'] = $stripe_precision;
+
+		return $currency_data;
+	}
+
+	/**
+	 * Get the appropriate precision for Stripe based on their currency requirements.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @param string   $currency_code The currency code.
+	 * @param int|null $default_precision The default precision from currency data.
+	 *
+	 * @return int The precision to use for Stripe.
+	 */
+	private function get_stripe_precision( $currency_code, int $default_precision = null ) {
+		if ( null === $default_precision ) {
+			$default_precision = static::get_default_currency_precision();
+		}
+
+		/*
+		 * Stripe special case currencies (these override the zero-decimal list).
+		 * @see https://docs.stripe.com/currencies#special-cases
+		 */
+		$special_cases = [
+			'ISK' => 2,
+			'HUF' => 0,
+			'TWD' => 0,
+			'UGX' => 2,
+		];
+
+		// Check special cases first (these take priority).
+		if ( isset( $special_cases[ $currency_code ] ) ) {
+			return $special_cases[ $currency_code ];
+		}
+
+		/*
+		 * Stripe zero-decimal currencies (no multiplication needed).
+		 * @see https://docs.stripe.com/currencies#zero-decimal
+		 */
+		$zero_decimal_currencies = [
+			'BIF',
+			'CLP',
+			'DJF',
+			'GNF',
+			'JPY',
+			'KMF',
+			'KRW',
+			'MGA',
+			'PYG',
+			'RWF',
+			'VND',
+			'VUV',
+			'XAF',
+			'XOF',
+			'XPF',
+		];
+
+		// Check zero-decimal currencies.
+		if ( in_array( $currency_code, $zero_decimal_currencies, true ) ) {
+			return 0;
+		}
+
+		// Default to the currency's precision for other currencies.
+		return $default_precision;
 	}
 }
