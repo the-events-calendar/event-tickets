@@ -508,7 +508,7 @@ abstract class Modifier_Abstract implements Modifier_Strategy_Interface {
 	public function delete_relationship_by_post( int $post_id ): void {
 		$data = [
 			'post_id'   => $post_id,
-			'post_type' => get_post_type( $post_id ),
+			'post_type' => (string) get_post_type( $post_id ),
 		];
 		$this->relationship_repository->clear_relationships_by_post_id( new Order_Modifier_Relationships( $data ) );
 	}
