@@ -88,8 +88,7 @@ class Order_Modifier extends Model implements ModelPersistable {
 			),
 			'raw_amount' => ( new ModelPropertyDefinition() )->type( 'float', Float_Value::class, Percent_Value::class )->castWith(
 				function ( $value ) {
-					$sub_type = $this->getAttribute( 'sub_type' );
-					return 'flat' === $sub_type ? Float_Value::from_number( $value ) : new Percent_Value( $value );
+					return (float) $value;
 				}
 			),
 		];
@@ -236,6 +235,13 @@ class Order_Modifier extends Model implements ModelPersistable {
 		}
 
 		$value = parent::getAttribute( $key, $default );
+
+		if ( 'raw_amount' === $key ) {
+			if ( is_float( $value ) ) {
+				$sub_type = parent::getAttribute( 'sub_type' );
+				$value = 'flat' === $sub_type ? Float_Value::from_number( $value ) : new Percent_Value( $value );
+			}
+		}
 
 		// Return the value directly if it's not a value object.
 		if ( ! $value instanceof Value_Interface ) {
