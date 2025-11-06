@@ -239,7 +239,7 @@ class Order_Modifier extends Model implements ModelPersistable {
 		if ( 'raw_amount' === $key ) {
 			if ( is_float( $value ) ) {
 				$sub_type = parent::getAttribute( 'sub_type' );
-				$value = 'flat' === $sub_type ? Float_Value::from_number( $value ) : new Percent_Value( $value );
+				$value    = 'flat' === $sub_type ? Float_Value::from_number( $value ) : new Percent_Value( $value );
 			}
 		}
 
