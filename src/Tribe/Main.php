@@ -10,8 +10,6 @@ use Tribe\Tickets\Admin\Settings;
 use TEC\Common\StellarWP\Assets\Config as Assets_Config;
 use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page;
 
-// Hello there - added to trigger PHP tests.
-
 /**
  * Class Tribe__Tickets__Main.
  */
