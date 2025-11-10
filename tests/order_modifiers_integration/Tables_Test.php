@@ -27,12 +27,12 @@ class Tables_Test extends Controller_Test_Case {
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->exists() );
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifier_Relationships::class )->exists() );
 
-		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'tec_order_modifier_index_slug' ) );
-		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'tec_order_modifier_index_modifier_type' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'slug' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'modifier_type' ) );
 		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers::class )->has_index( 'tec_order_modifier_index_status_modifier_type' ) );
-		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->has_index( 'tec_order_modifier_meta_index_order_modifier_id' ) );
-		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->has_index( 'tec_order_modifier_meta_index_meta_key' ) );
-		$this->assertTrue( tribe( Custom_Tables\Order_Modifier_Relationships::class )->has_index( 'tec_order_modifier_relationship_index_modifier_id' ) );
-		$this->assertTrue( tribe( Custom_Tables\Order_Modifier_Relationships::class )->has_index( 'tec_order_modifier_relationship_index_post_id' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->has_index( 'order_modifier_id' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifiers_Meta::class )->has_index( 'meta_key' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifier_Relationships::class )->has_index( 'modifier_id' ) );
+		$this->assertTrue( tribe( Custom_Tables\Order_Modifier_Relationships::class )->has_index( 'post_id' ) );
 	}
 }

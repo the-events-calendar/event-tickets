@@ -895,7 +895,7 @@ class Ticket extends Ticket_Data {
 		}
 
 		// Delete the ticket/attendee post.
-		$delete = wp_trash_post( $ticket_id );
+		$delete = wp_delete_post( $ticket_id, true );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
