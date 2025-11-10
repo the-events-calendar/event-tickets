@@ -328,14 +328,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Submit the payment to Stripe for Payment Element.
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.7 Updated render button selector to use the obj.selectors object.
 	 *
 	 * @param {string} order The order object returned from the server.
 	 *
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
-		// Only if we don't have the address fields to collect
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+		// Only if we don't have the address fields to collect.
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
 			return obj.stripeLib
 				.confirmPayment( {
 					elements: obj.stripeElements,
@@ -431,6 +432,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Create an order and start the payment process.
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.7 Enhanced error handling for stock shortage errors.
 	 *
 	 * @return {Promise<*>}
 	 */
@@ -442,10 +444,24 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		let response;
 
 		try {
-			// Fetch Publishable API Key and Initialize Stripe Elements on Ready
+			// Fetch Publishable API Key and Initialize Stripe Elements on Ready.
 			response = await ky.post( obj.checkout.orderEndpoint, args ).json();
 		} catch ( error ) {
+			// Default to the error itself.
 			response = error;
+
+			// Bail early if no response object.
+			if ( ! error.response ) {
+				tribe.tickets.debug.log( 'stripe', 'createOrder', response );
+				return response;
+			}
+
+			// Try to extract JSON from error response.
+			try {
+				response = await error.response.json();
+			} catch ( parseError ) {
+				// JSON parsing failed, stick with original error.
+			}
 		}
 
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
@@ -457,6 +473,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Starts the process to submit a payment.
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.7 Enhanced error handling for stock shortage errors.
 	 *
 	 * @param {Event} event The Click event from the payment.
 	 */
@@ -480,7 +497,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			}
 		} else {
 			tribe.tickets.loader.hide( obj.checkoutContainer );
-			obj.showNotice( {}, order.message, '' );
+
+			// Handle WordPress REST API error responses.
+			let errorMessage = order.message || '';
+
+			// Check if this is a WP_Error response with code and message.
+			if ( order.code ) {
+				errorMessage = order.message || errorMessage;
+			}
+
+			obj.showNotice( {}, '', errorMessage );
 		}
 
 		obj.submitButton( true );
@@ -544,12 +570,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @link https://stripe.com/docs/js/element/payment_element
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.7 Updated render button selector to use the obj.selectors object.
 	 */
 	obj.setupPaymentElement = () => {
-		// Only if we don't have the address fields to collect
-		if ( 0 === $( '#tec-tc-gateway-stripe-render-payment' ).length ) {
+		// Only if we don't have the address fields to collect.
+		if ( 0 === $( obj.selectors.renderButton ).length ) {
 			const walletSettings = obj.getWallets();
-			// Instantiate the PaymentElement
+			// Instantiate the PaymentElement.
 			obj.paymentElement = obj.stripeElements.create( 'payment', {
 				fields: {
 					name: 'auto',
@@ -632,6 +659,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * Setup and initialize Stripe API.
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.7 Reveal submit button early if no billing info is required.
 	 *
 	 * @return {Promise<void>}
 	 */
@@ -652,9 +680,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		} );
 
 		if ( obj.checkout.paymentElement ) {
+			// Reveal submit button if no billing info is required.
+			if ( 0 === $( obj.selectors.renderButton ).length ) {
+				$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+			}
 			obj.setupPaymentElement();
 			return;
 		}
+
+		// For CardElement (single line or separate), always reveal the submit button.
+		$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
 
 		if ( 'separate' === obj.checkout.cardElementType ) {
 			obj.setupSeparateCardElement();

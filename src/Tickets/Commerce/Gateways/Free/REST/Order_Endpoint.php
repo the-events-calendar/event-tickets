@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Stock_Validator;
 
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -100,6 +101,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( is_wp_error( $purchaser ) ) {
 			return $purchaser;
+		}
+
+		// Validate stock availability with database locking before creating order.
+		$stock_validation = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $cart );
+
+		if ( is_wp_error( $stock_validation ) ) {
+			return $stock_validation;
 		}
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
