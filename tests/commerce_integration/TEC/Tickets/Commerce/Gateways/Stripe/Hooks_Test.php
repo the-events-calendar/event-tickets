@@ -248,7 +248,7 @@ class Hooks_Test extends WPTestCase {
 					->by_args(
 						[
 							'id' => $order->ID,
-							'status' => 'any',
+							'status' => $order->post_status,
 						]
 					)
 					->set_args(
@@ -290,7 +290,7 @@ class Hooks_Test extends WPTestCase {
 					->by_args(
 						[
 							'id' => $order->ID,
-							'status' => 'any',
+							'status' => $order->post_status,
 						]
 					)
 					->set_args(
@@ -329,7 +329,7 @@ class Hooks_Test extends WPTestCase {
 					->by_args(
 						[
 							'id' => $order->ID,
-							'status' => 'any',
+							'status' => $order->post_status,
 						]
 					)
 					->set_args(
@@ -369,7 +369,7 @@ class Hooks_Test extends WPTestCase {
 					->by_args(
 						[
 							'id' => $order->ID,
-							'status' => 'any',
+							'status' => $order->post_status,
 						]
 					)
 					->set_args(
@@ -409,7 +409,7 @@ class Hooks_Test extends WPTestCase {
 					->by_args(
 						[
 							'id' => $order->ID,
-							'status' => 'any',
+							'status' => $order->post_status,
 						]
 					)
 					->set_args(
