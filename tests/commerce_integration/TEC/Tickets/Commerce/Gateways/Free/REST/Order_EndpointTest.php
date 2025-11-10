@@ -27,6 +27,26 @@ class Order_EndpointTest extends WPTestCase {
 	use With_Tickets_Commerce;
 
 	/**
+	 * Ensure cart is clean before each test.
+	 *
+	 * @before
+	 */
+	public function ensure_clean_cart() {
+		$cart = tribe( Cart::class );
+		$cart->clear_cart();
+	}
+
+	/**
+	 * Clean up cart after each test.
+	 *
+	 * @after
+	 */
+	public function cleanup_cart() {
+		$cart = tribe( Cart::class );
+		$cart->clear_cart();
+	}
+
+	/**
 	 * @test
 	 * @covers Order_Endpoint::handle_create_order
 	 */

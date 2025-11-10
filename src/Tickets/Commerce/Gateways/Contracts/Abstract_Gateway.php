@@ -56,6 +56,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	protected static array $supported_currencies = [];
 
 	/**
+	 * Default decimal precision to use when a currency does not define one.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @var int
+	 */
+	protected static int $default_currency_precision = 2;
+
+	/**
 	 * The option name prefix that configured whether a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
@@ -95,6 +104,17 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 */
 	public static function get_provider_key() {
 		return Commerce::PROVIDER . '-' . static::get_key();
+	}
+
+	/**
+	 * Get the default currency precision for this gateway.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @return int The default currency precision.
+	 */
+	public static function get_default_currency_precision() {
+		return static::$default_currency_precision;
 	}
 
 	/**

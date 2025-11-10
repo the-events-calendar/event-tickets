@@ -74,6 +74,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'modify_checkout_vars' ] );
 		add_filter( 'tec_tickets_commerce_order_stripe_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_stripe_get_value_captured', [ $this, 'filter_order_get_value_captured' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_gateway_value_formatter_stripe_currency_map', [ $this, 'filter_stripe_currency_precision' ], 10, 3 );
 	}
 
 	/**
@@ -442,6 +443,10 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			]
 		)->first();
 
+		if ( ! $order ) {
+			return;
+		}
+
 		// We will attempt to update the order status to the one returned by Stripe.
 		tribe( Order::class )->modify_status(
 			$order->ID,
@@ -577,5 +582,20 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function filter_admin_notices( $notices ) {
 		return $this->container->make( Gateway::class )->filter_admin_notices( $notices );
+	}
+
+	/**
+	 * Filter Stripe currency precision based on Stripe's specific requirements.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @param array  $currency_data The currency data from the map.
+	 * @param string $currency_code The currency code.
+	 * @param string $gateway The gateway name.
+	 *
+	 * @return array The modified currency data.
+	 */
+	public function filter_stripe_currency_precision( $currency_data, $currency_code, $gateway ) {
+		return $this->container->make( Gateway::class )->filter_stripe_currency_precision( $currency_data, $currency_code, $gateway );
 	}
 }
