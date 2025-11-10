@@ -60,11 +60,11 @@ $classes = [
 ?>
 <div <?php tec_classes( $classes ); ?>>
 	<?php if ( 0 !== $max_at_a_time ) : ?>
-		<?php if ( ! isset ( $quantity_controls ) || $quantity_controls ) : ?>
+		<?php if ( ! isset( $quantity_controls ) || $quantity_controls ) : ?>
 			<?php $this->template( 'v2/tickets/item/quantity/remove' ); ?>
 		<?php endif; ?>
 		<?php $this->template( 'v2/tickets/item/quantity/number' ); ?>
-		<?php if ( ! isset ( $quantity_controls ) || $quantity_controls ) : ?>
+		<?php if ( ! isset( $quantity_controls ) || $quantity_controls ) : ?>
 			<?php $this->template( 'v2/tickets/item/quantity/add' ); ?>
 		<?php endif; ?>
 	<?php else : ?>
