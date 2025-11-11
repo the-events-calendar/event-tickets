@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
+use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
 
 /**
  * Stripe orders aka Payment Intents class.
@@ -106,6 +107,7 @@ class Payment_Intent {
 	 * front-end payment requests.
 	 *
 	 * @since 5.3.0
+	 * @since 5.26.7 Use Gateway_Value_Formatter to normalize data for Stripe API.  [ET-2558]
 	 *
 	 * @param Value $value The value object to create a payment intent for.
 	 * @param bool  $retry Is this a retry?
@@ -113,6 +115,10 @@ class Payment_Intent {
 	 * @return mixed
 	 */
 	public static function create( Value $value, $retry = false ) {
+		// Format the value for Stripe API using the gateway formatter.
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
+		$value     = $formatter->format( $value );
+
 		$fee = Application_Fee::calculate( $value );
 
 		$query_args = [];

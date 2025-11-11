@@ -76,6 +76,7 @@ class Uplink extends Controller_Contract {
 		);
 		add_action( 'stellarwp/uplink/tec/license_field_before_input', [ $this, 'render_legend_before_input' ] );
 		add_action( 'stellarwp/uplink/tec/tec-seating/connected', [ $this, 'reset_data_on_new_connection' ] );
+		add_filter( 'stellarwp_uplink_tec_tec-seating_field_html', [ $this, 'customize_field_html' ], 10, 2 );
 	}
 
 	/**
@@ -103,6 +104,7 @@ class Uplink extends Controller_Contract {
 		);
 		remove_action( 'stellarwp/uplink/tec/license_field_before_input', [ $this, 'render_legend_before_input' ] );
 		remove_action( 'stellarwp/uplink/tec/tec-seating/connected', [ $this, 'reset_data_on_new_connection' ] );
+		remove_filter( 'stellarwp_uplink_tec_tec-seating_field_html', [ $this, 'customize_field_html' ] );
 	}
 
 	/**
@@ -173,5 +175,42 @@ class Uplink extends Controller_Contract {
 		// Clear cache.
 		tribe( Service\Maps::class )->invalidate_cache();
 		tribe( Service\Layouts::class )->invalidate_cache();
+	}
+
+	/**
+	 * Customize the field HTML to include upsell link for seating service.
+	 *
+	 * @since 5.26.7
+	 *
+	 * @param string $field_html The original field HTML.
+	 * @param object $plugin The plugin resource object.
+	 *
+	 * @return string The customized field HTML.
+	 */
+	public function customize_field_html( string $field_html, $plugin ): string {
+		// Bail for non-seating services/plugins.
+		if ( 'tec-seating' !== $plugin->get_slug() ) {
+			return $field_html;
+		}
+
+		// Build the new tooltip with translation and placeholders for links.
+		$upsell_tooltip = sprintf(
+			/* Translators: %1$s and %2$s are opening and closing <a> tags, respectively. */
+			esc_html__(
+				'%1$sBuy a license%2$s for the Seating service to access seating management features.',
+				'event-tickets'
+			),
+			'<a href="https://evnt.is/1bed" target="_blank">',
+			'</a>'
+		);
+
+		// Use regex to replace only the tooltip paragraph, not touching other HTML.
+		$field_html = preg_replace(
+			'/<p class="tooltip description">\s*.*?\s*<\/p>/s',
+			'<p class="tooltip description">' . $upsell_tooltip . '</p>',
+			$field_html
+		);
+
+		return $field_html;
 	}
 }
