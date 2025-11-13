@@ -7,6 +7,7 @@ use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Send_Json_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Metabox as Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -19,6 +20,7 @@ class MetaboxTest extends WPTestCase {
 	use Ticket_Maker;
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
+	use WP_Send_Json_Mocks;
 
 	/**
 	 * @before
@@ -271,6 +273,291 @@ class MetaboxTest extends WPTestCase {
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * Data provider for ajax_panels permission tests.
+	 *
+	 * @return Generator
+	 */
+	public function ajax_panels_permission_provider(): Generator {
+		yield 'auto-draft post owned by current user should succeed' => [
+			function (): array {
+				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				wp_set_current_user( $user_id );
+				
+				$post_id = $this->factory()->post->create( [
+					'post_status' => 'auto-draft',
+					'post_author' => $user_id,
+				] );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => true,
+				];
+			},
+		];
+
+		yield 'auto-draft post NOT owned by current user should fail' => [
+			function (): array {
+				$author_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				$other_user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				
+				$post_id = $this->factory()->post->create( [
+					'post_status' => 'auto-draft',
+					'post_author' => $author_id,
+				] );
+				
+				// Switch to different user.
+				wp_set_current_user( $other_user_id );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => false,
+					'error_message' => 'You do not have permission to access this content.',
+				];
+			},
+		];
+
+		yield 'published post with edit permissions should succeed' => [
+			function (): array {
+				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				wp_set_current_user( $user_id );
+				
+				$post_id = $this->factory()->post->create( [
+					'post_status' => 'publish',
+					'post_author' => $user_id,
+				] );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => true,
+				];
+			},
+		];
+
+		yield 'published post without edit permissions should fail' => [
+			function (): array {
+				$author_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				$subscriber_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
+				
+				$post_id = $this->factory()->post->create( [
+					'post_status' => 'publish',
+					'post_author' => $author_id,
+				] );
+				
+				// Switch to subscriber (no edit permissions).
+				wp_set_current_user( $subscriber_id );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => false,
+					'error_message' => 'You do not have permission to access this content.',
+				];
+			},
+		];
+
+		yield 'password protected post with edit permissions should succeed' => [
+			function (): array {
+				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				wp_set_current_user( $user_id );
+				
+				$post_id = $this->factory()->post->create( [
+					'post_status'   => 'publish',
+					'post_author'   => $user_id,
+					'post_password' => 'secret123',
+				] );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => true,
+				];
+			},
+		];
+
+		yield 'draft post with edit permissions should succeed' => [
+			function (): array {
+				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				wp_set_current_user( $user_id );
+				
+				$post_id = $this->factory()->post->create( [
+					'post_status' => 'draft',
+					'post_author' => $user_id,
+				] );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => true,
+				];
+			},
+		];
+
+		yield 'event auto-draft owned by current user should succeed' => [
+			function (): array {
+				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				wp_set_current_user( $user_id );
+				
+				// Create auto-draft event using wp_insert_post to ensure correct status.
+				$post_id = wp_insert_post( [
+					'post_type'   => TEC::POSTTYPE,
+					'post_status' => 'auto-draft',
+					'post_author' => $user_id,
+					'post_title'  => 'Test Event',
+				] );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => true,
+				];
+			},
+		];
+
+		yield 'event auto-draft NOT owned by current user should fail' => [
+			function (): array {
+				$author_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				$other_user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+				
+				// Create auto-draft event using wp_insert_post to ensure correct status.
+				$post_id = wp_insert_post( [
+					'post_type'   => TEC::POSTTYPE,
+					'post_status' => 'auto-draft',
+					'post_author' => $author_id,
+					'post_title'  => 'Test Event',
+				] );
+				
+				// Verify it's actually auto-draft.
+				$post = get_post( $post_id );
+				
+				// Switch to different user.
+				wp_set_current_user( $other_user_id );
+
+				return [
+					'post_id'     => $post_id,
+					'should_pass' => false,
+					'error_message' => 'You do not have permission to access this content.',
+				];
+			},
+		];
+	}
+
+	/**
+	 * Test ajax_panels permission logic.
+	 *
+	 * @dataProvider ajax_panels_permission_provider
+	 *
+	 * @param Closure $fixture The fixture closure.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_panels_permissions( Closure $fixture ): void {
+		$data = $fixture();
+		
+		$metabox = tribe( Metabox::class );
+
+		// Simulate AJAX request.
+		$_POST = [
+			'post_id' => $data['post_id'],
+		];
+		$_REQUEST = $_POST;
+
+		// Mock both success and error responses.
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		$metabox->ajax_panels();
+
+		if ( $data['should_pass'] ) {
+			// Should have called wp_send_json_success, not wp_send_json_error.
+			$this->assertTrue( 
+				$wp_send_json_success->was_called(), 
+				'Expected ajax_panels to succeed but it called wp_send_json_error instead.'
+			);
+			$this->assertFalse(
+				$wp_send_json_error->was_called(),
+				'Expected ajax_panels to succeed but wp_send_json_error was called.'
+			);
+		} else {
+			// Should have called wp_send_json_error, not wp_send_json_success.
+			$this->assertTrue(
+				$wp_send_json_error->was_called(),
+				'Expected ajax_panels to fail but it called wp_send_json_success instead.'
+			);
+			$this->assertFalse(
+				$wp_send_json_success->was_called(),
+				'Expected ajax_panels to fail but wp_send_json_success was called.'
+			);
+			
+			// Verify the error message contains expected text.
+			$calls = $wp_send_json_error->get_calls();
+			$error_message = $calls[0][0];
+			$this->assertStringContainsString(
+				$data['error_message'],
+				$error_message,
+				'Expected specific error message.'
+			);
+		}
+	}
+
+	/**
+	 * Test ajax_panels with invalid post ID.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_panels_with_invalid_post_id(): void {
+		$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+		wp_set_current_user( $user_id );
+
+		$metabox = tribe( Metabox::class );
+
+		// Simulate AJAX request with invalid post ID.
+		$_POST = [
+			'post_id' => 999999,
+		];
+		$_REQUEST = $_POST;
+
+		// Mock error JSON response.
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		$metabox->ajax_panels();
+		
+		// Verify error was sent.
+		$this->assertTrue( $wp_send_json_error->was_called(), 'Expected wp_send_json_error to be called.' );
+		
+		// Get the error message.
+		$calls = $wp_send_json_error->get_calls();
+		$error_message = $calls[0][0];
+		
+		$this->assertStringContainsString( 'Invalid Post ID', $error_message );
+	}
+
+	/**
+	 * Test ajax_panels with missing post ID.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_panels_with_missing_post_id(): void {
+		$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
+		wp_set_current_user( $user_id );
+
+		$metabox = tribe( Metabox::class );
+
+		// Simulate AJAX request with no post ID.
+		$_POST = [];
+		$_REQUEST = $_POST;
+
+		// Mock error JSON response.
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		
+		$metabox->ajax_panels();
+		
+		// Verify error was sent.
+		$this->assertTrue( $wp_send_json_error->was_called(), 'Expected wp_send_json_error to be called.' );
+		
+		// Get the error message.
+		$calls = $wp_send_json_error->get_calls();
+		$error_message = $calls[0][0];
+		
+		$this->assertStringContainsString( 'Invalid Post ID', $error_message );
 	}
 
 	public function tearDown() {

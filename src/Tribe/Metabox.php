@@ -125,18 +125,23 @@ class Tribe__Tickets__Metabox {
 		// Didn't get a post id to work with - bail.
 		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
+			return;
 		}
 
-		// Check user permissions for this post - bail if not authorized.
-		if ( ! user_can( get_current_user_id(), 'edit_post', $post_id ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permission to access this content.', 'event-tickets' ) );
-		}
-
-		// Get the post object and set global $post for templates
+		// Get the post object and set global $post for templates.
 		global $post;
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			wp_send_json_error( esc_html__( 'Invalid Post ID', 'event-tickets' ) );
+			return;
+		}
+
+		// Check user permissions - bail if not authorized.
+		if ( ! $this->can_access_ajax_panels( $post_id ) ) {
+			wp_send_json_error(
+				esc_html__( 'You do not have permission to access this content.', 'event-tickets' )
+			);
+			return;
 		}
 
 		// Overwrites for a few templates that use get_the_ID() and get_post()
@@ -170,6 +175,37 @@ class Tribe__Tickets__Metabox {
 		$return = apply_filters( 'tribe_tickets_ajax_refresh_tables', $return, $post->ID );
 
 		wp_send_json_success( $return );
+	}
+
+	/**
+	 * Determines whether the current user can access ticket panels for the post.
+	 *
+	 * Auto-drafts behave differently because WordPress does not always grant
+	 * `edit_post` capability on them, even if the user is the post author. This
+	 * method handles that edge case while keeping the normal flow secure.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool Whether the user can access the ticket panels.
+	 */
+	private function can_access_ajax_panels( $post_id ) {
+		$user_id = get_current_user_id();
+		$post    = get_post( $post_id );
+
+		// Bail early if post is invalid.
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		// Auto-draft: allow only if current user is the author.
+		if ( 'auto-draft' === $post->post_status ) {
+			return $user_id === (int) $post->post_author;
+		}
+
+		// Normal posts: rely on standard capability checks.
+		return user_can( $user_id, 'edit_post', $post_id );
 	}
 
 	/**
