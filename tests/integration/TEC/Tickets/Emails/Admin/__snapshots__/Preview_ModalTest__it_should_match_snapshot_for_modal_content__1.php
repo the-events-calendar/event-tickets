@@ -27,11 +27,11 @@
 	</div>
 </script>
 		<script>
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":"#tec-tickets__emails-preview-dialog","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribeDialogCloseEmailsPreviewModal.tribeTickets","contentClasses":"tribe-dialog__wrapper tribe-modal__wrapper--emails-preview tribe-tickets__admin-container event-tickets tribe-common","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets__emails-preview-dialog","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribeDialogShowEmailsPreviewModal.tribeTickets","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js=\'trigger-dialog-tec-tickets__emails-preview-dialog\' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":"#tec-tickets__emails-preview-dialog","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribeDialogCloseEmailsPreviewModal.tribeTickets","contentClasses":"tribe-dialog__wrapper tribe-modal__wrapper--emails-preview tribe-tickets__admin-container event-tickets tribe-common","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets__emails-preview-dialog","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribeDialogShowEmailsPreviewModal.tribeTickets","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js=\'trigger-dialog-tec-tickets__emails-preview-dialog\' ]"} );
 
 					</script>
 		</div>';
