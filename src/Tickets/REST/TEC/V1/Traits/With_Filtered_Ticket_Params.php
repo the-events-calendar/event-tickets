@@ -51,23 +51,25 @@ trait With_Filtered_Ticket_Params {
 		$event_id = (int) ( $params['event'] ?? null );
 
 		if ( ! $event_id ) {
-			$exception = new InvalidRestArgumentException( __( 'Event ID is required', 'event-tickets' ) );
-			$exception->set_argument( 'event' );
-			$exception->set_internal_error_code( 'tec_rest_invalid_event_parameter' );
-
-			// translators: 1) is the name of the parameter.
-			$exception->set_details( sprintf( __( 'The parameter `{%1$s}` is missing.', 'event-tickets' ), 'event' ) );
-			throw $exception;
+			throw InvalidRestArgumentException::create(
+				// translators: 1) is the name of the parameter.
+				sprintf( __( 'The argument `{%1$s}` is missing.', 'event-tickets' ), 'event' ),
+				'event',
+				'tec_rest_invalid_event_argument',
+				// translators: 1) is the name of the parameter.
+				sprintf( __( 'The argument `{%1$s}` is missing.', 'event-tickets' ), 'event' )
+			);
 		}
 
 		if ( ! in_array( get_post_type( $event_id ), (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
-			$exception = new InvalidRestArgumentException( __( 'The specified Event ID does not support ticket creation', 'event-tickets' ) );
-			$exception->set_argument( 'event' );
-			$exception->set_internal_error_code( 'tec_rest_invalid_event_parameter' );
-
-			// translators: 1) is the name of the parameter.
-			$exception->set_details( sprintf( __( 'The parameter `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' ) );
-			throw $exception;
+			throw InvalidRestArgumentException::create(
+				// translators: 1) is the name of the parameter.
+				sprintf( __( 'The argument `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' ),
+				'event',
+				'tec_rest_invalid_event_argument',
+				// translators: 1) is the name of the parameter.
+				sprintf( __( 'The argument `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets.', 'event-tickets' ), 'event' )
+			);
 		}
 
 		if ( ! empty( $params['start_date'] ) ) {
@@ -158,7 +160,14 @@ trait With_Filtered_Ticket_Params {
 		}
 
 		if ( is_object( $new_params['ticket_sale_price'] ) ) {
-			throw new InvalidRestArgumentException( __( 'The ticket price must be a number.', 'event-tickets' ) );
+			throw InvalidRestArgumentException::create(
+				// translators: 1) is the name of the parameter.
+				sprintf( __( 'The argument `{%1$s}` must be a number.', 'event-tickets' ), 'sale_price' ),
+				'sale_price',
+				'tec_rest_invalid_sale_price_argument',
+				// translators: 1) is the name of the parameter.
+				sprintf( __( 'The argument `{%1$s}` must be a number.', 'event-tickets' ), 'sale_price' )
+			);
 		}
 
 		unset(

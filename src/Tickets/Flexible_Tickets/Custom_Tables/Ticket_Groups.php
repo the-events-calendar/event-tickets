@@ -10,6 +10,13 @@
 namespace TEC\Tickets\Flexible_Tickets\Custom_Tables;
 
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\ID;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Columns\Text_Column;
+use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
+use TEC\Common\StellarWP\Schema\Columns\Float_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.DirectQuerySchemaChange
 
@@ -61,10 +68,31 @@ class Ticket_Groups extends Table {
 
 	/**
 	 * {@inheritdoc}
+	 */
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
+
+		return [
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = new ID( 'id' );
+				$columns[] = ( new String_Column( 'slug' ) )->set_length( 255 )->set_default( '' );
+				$columns[] = new Text_Column( 'data' );
+				$columns[] = ( new Integer_Column( 'capacity' ) )->set_length( 11 )->set_default( 0 );
+				$columns[] = ( new Float_Column( 'cost' ) )->set_length( 10 )->set_precision( 2 )->set_default( 0.0 );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 )->set_default( '' );
+
+				return new Table_Schema( $table_name, $columns );
+			},
+		];
+	}
+
+	/**
+	 * {@inheritdoc}
 	 *
 	 * @since 5.24.1 Add `name`, `capacity`, and `cost` columns for Ticket Presets use.
 	 */
-	protected function get_definition() {
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();

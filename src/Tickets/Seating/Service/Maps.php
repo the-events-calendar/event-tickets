@@ -103,13 +103,13 @@ class Maps {
 
 		if ( ! ( $map_cards && is_array( $map_cards ) ) ) {
 			$map_cards = [];
-			foreach ( Maps_Table::fetch_all() as $row ) {
+			foreach ( Maps_Table::get_all() as $row ) {
 				$map_cards[] = new Map_Card(
-					$row->id,
-					$row->name,
-					$row->seats,
-					$row->screenshot_url,
-					$this->map_has_layouts( $row->id ),
+					$row['id'],
+					$row['name'],
+					$row['seats'],
+					$row['screenshot_url'],
+					$this->map_has_layouts( $row['id'] ),
 				);
 			}
 

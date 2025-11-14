@@ -77,7 +77,7 @@ class Seat_Types_Test extends WPTestCase {
 
 		// Empty seat types.
 		$this->assertEquals( 0, $seat_types->update_from_service( [] ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all(), false ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::get_all(), false ) );
 
 		// Update the first seat type.
 		$this->assertEquals( 1, $seat_types->update_from_service( [
@@ -87,7 +87,7 @@ class Seat_Types_Test extends WPTestCase {
 				'seatsCount' => 23,
 			],
 		] ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all(), false ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::get_all(), false ) );
 		$this->assertEquals(
 			[
 				'id'     => 'seat-type-1',
@@ -119,7 +119,7 @@ class Seat_Types_Test extends WPTestCase {
 				'seatsCount' => 66,
 			],
 		] ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all(), false ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::get_all(), false ) );
 		$this->assertEquals(
 			[
 				'id'     => 'seat-type-2',

@@ -117,7 +117,7 @@ class Fee_Test extends WPTestCase {
 		$object->start_time    = null;
 		$object->end_time      = null;
 
-		$fee = Fee::fromQueryBuilderObject( $object );
+		$fee = Fee::fromData( $object );
 
 		$this->assertInstanceOf( Fee::class, $fee );
 		$this->assertEquals( 'fee', $fee->modifier_type );

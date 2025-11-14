@@ -278,9 +278,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$mock_wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// Maps invalidation fail.
@@ -303,9 +303,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$mock_wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// All good.
@@ -331,9 +331,9 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_success->was_called_times_with( 1, [] ),
 			$mock_wp_send_json_success->get_calls_as_string()
 		);
-		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::get_all() ) );
 	}
 
 	public function test_invalidate_layouts_cache(): void {
@@ -354,9 +354,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$mock_wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// All good.
@@ -374,9 +374,9 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_success->was_called_times_with( 1, [] ),
 			$mock_wp_send_json_success->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::get_all() ) );
 	}
 
 	public function test_delete_map_from_service(): void {
@@ -402,9 +402,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// Map deletion attempt fails for map with layouts.
@@ -422,9 +422,9 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// Map deletion from service fails.
@@ -464,9 +464,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
@@ -505,9 +505,9 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_success->get_calls_as_string()
 		);
 		// After a deletion the local seat type, maps and layouts caches should be invalidated.
-		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 	}
 
@@ -534,9 +534,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// Map ID is missing from request context.
@@ -554,9 +554,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// Layout deletion from service fails.
@@ -597,9 +597,9 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
@@ -639,9 +639,9 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_success->get_calls_as_string()
 		);
 		// After a deletion the local seat type, maps and layouts caches should be invalidated.
-		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 	}
 
@@ -1686,8 +1686,8 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		// Add new layout from service fails.
@@ -1729,8 +1729,8 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
@@ -1774,8 +1774,8 @@ class Ajax_Test extends Controller_Test_Case {
 				'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layout-edit&layoutId=new-layout-1&isNew=1',
 			)
 		);
-		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
@@ -1808,8 +1808,8 @@ class Ajax_Test extends Controller_Test_Case {
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
 		$this->reset_wp_send_json_mocks();
 
 		$_REQUEST['layoutId'] = 'some-layout-2';
@@ -1850,8 +1850,8 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 
-		$this->assertCount( 4, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
@@ -1895,8 +1895,8 @@ class Ajax_Test extends Controller_Test_Case {
 				'http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layout-edit&layoutId=duplicated-layout-1&isNew=1',
 			)
 		);
-		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Maps::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
 		$wp_remote->tear_down();
