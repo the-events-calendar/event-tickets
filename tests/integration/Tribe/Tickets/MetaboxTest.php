@@ -285,7 +285,7 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				wp_set_current_user( $user_id );
-				
+
 				$post_id = $this->factory()->post->create( [
 					'post_status' => 'auto-draft',
 					'post_author' => $user_id,
@@ -302,12 +302,12 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$author_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				$other_user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
-				
+
 				$post_id = $this->factory()->post->create( [
 					'post_status' => 'auto-draft',
 					'post_author' => $author_id,
 				] );
-				
+
 				// Switch to different user.
 				wp_set_current_user( $other_user_id );
 
@@ -323,7 +323,7 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				wp_set_current_user( $user_id );
-				
+
 				$post_id = $this->factory()->post->create( [
 					'post_status' => 'publish',
 					'post_author' => $user_id,
@@ -340,12 +340,12 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$author_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				$subscriber_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
-				
+
 				$post_id = $this->factory()->post->create( [
 					'post_status' => 'publish',
 					'post_author' => $author_id,
 				] );
-				
+
 				// Switch to subscriber (no edit permissions).
 				wp_set_current_user( $subscriber_id );
 
@@ -361,7 +361,7 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				wp_set_current_user( $user_id );
-				
+
 				$post_id = $this->factory()->post->create( [
 					'post_status'   => 'publish',
 					'post_author'   => $user_id,
@@ -379,7 +379,7 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				wp_set_current_user( $user_id );
-				
+
 				$post_id = $this->factory()->post->create( [
 					'post_status' => 'draft',
 					'post_author' => $user_id,
@@ -396,7 +396,7 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				wp_set_current_user( $user_id );
-				
+
 				// Create auto-draft event using wp_insert_post to ensure correct status.
 				$post_id = wp_insert_post( [
 					'post_type'   => TEC::POSTTYPE,
@@ -416,7 +416,7 @@ class MetaboxTest extends WPTestCase {
 			function (): array {
 				$author_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
 				$other_user_id = $this->factory()->user->create( [ 'role' => 'editor' ] );
-				
+
 				// Create auto-draft event using wp_insert_post to ensure correct status.
 				$post_id = wp_insert_post( [
 					'post_type'   => TEC::POSTTYPE,
@@ -424,10 +424,10 @@ class MetaboxTest extends WPTestCase {
 					'post_author' => $author_id,
 					'post_title'  => 'Test Event',
 				] );
-				
+
 				// Verify it's actually auto-draft.
 				$post = get_post( $post_id );
-				
+
 				// Switch to different user.
 				wp_set_current_user( $other_user_id );
 
@@ -451,7 +451,7 @@ class MetaboxTest extends WPTestCase {
 	 */
 	public function test_ajax_panels_permissions( Closure $fixture ): void {
 		$data = $fixture();
-		
+
 		$metabox = tribe( Metabox::class );
 
 		// Simulate AJAX request.
@@ -463,13 +463,13 @@ class MetaboxTest extends WPTestCase {
 		// Mock both success and error responses.
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		$wp_send_json_error = $this->mock_wp_send_json_error();
-		
+
 		$metabox->ajax_panels();
 
 		if ( $data['should_pass'] ) {
 			// Should have called wp_send_json_success, not wp_send_json_error.
-			$this->assertTrue( 
-				$wp_send_json_success->was_called(), 
+			$this->assertTrue(
+				$wp_send_json_success->was_called(),
 				'Expected ajax_panels to succeed but it called wp_send_json_error instead.'
 			);
 			$this->assertFalse(
@@ -486,7 +486,7 @@ class MetaboxTest extends WPTestCase {
 				$wp_send_json_success->was_called(),
 				'Expected ajax_panels to fail but wp_send_json_success was called.'
 			);
-			
+
 			// Verify the error message contains expected text.
 			$calls = $wp_send_json_error->get_calls();
 			$error_message = $calls[0][0];
@@ -517,16 +517,16 @@ class MetaboxTest extends WPTestCase {
 
 		// Mock error JSON response.
 		$wp_send_json_error = $this->mock_wp_send_json_error();
-		
+
 		$metabox->ajax_panels();
-		
+
 		// Verify error was sent.
 		$this->assertTrue( $wp_send_json_error->was_called(), 'Expected wp_send_json_error to be called.' );
-		
+
 		// Get the error message.
 		$calls = $wp_send_json_error->get_calls();
 		$error_message = $calls[0][0];
-		
+
 		$this->assertStringContainsString( 'Invalid Post ID', $error_message );
 	}
 
@@ -547,16 +547,16 @@ class MetaboxTest extends WPTestCase {
 
 		// Mock error JSON response.
 		$wp_send_json_error = $this->mock_wp_send_json_error();
-		
+
 		$metabox->ajax_panels();
-		
+
 		// Verify error was sent.
 		$this->assertTrue( $wp_send_json_error->was_called(), 'Expected wp_send_json_error to be called.' );
-		
+
 		// Get the error message.
 		$calls = $wp_send_json_error->get_calls();
 		$error_message = $calls[0][0];
-		
+
 		$this->assertStringContainsString( 'Invalid Post ID', $error_message );
 	}
 

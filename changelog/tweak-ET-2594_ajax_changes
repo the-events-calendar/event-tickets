@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Improve permission validation during ticket panel AJAX updates to ensure consistent behavior across ticket creation workflows. [ET-2594]

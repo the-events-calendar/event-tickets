@@ -116,6 +116,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 5.26.4 Add user permission check.
+	 * @since TBD Moved post access check logic to `can_access_ajax_panels`. [ET-2594]
 	 *
 	 * @return string html content of the panels
 	 */
