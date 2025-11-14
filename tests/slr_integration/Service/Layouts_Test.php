@@ -43,16 +43,16 @@ class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 		set_transient( Layouts::update_transient_name(), time() );
 		set_transient( Maps::update_transient_name(), time() );
 
-		$this->assertCount( 3, iterator_to_array( Maps_Table::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Maps_Table::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::get_all() ) );
 
 		// Invalidate the cache, do not truncate the table.
 		$this->assertTrue( Layouts::invalidate_cache( false ) );
 
-		$this->assertCount( 3, iterator_to_array( Maps_Table::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Maps_Table::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->assertEmpty( get_transient( Layouts::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Seat_Types::update_transient_name() ) );
 		$this->assertEqualsWithDelta( time(), get_transient( Maps::update_transient_name() ), 5 );
@@ -60,9 +60,9 @@ class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 		// Invalidate the cache and truncate the table.
 		$this->assertTrue( Layouts::invalidate_cache( true ) );
 
-		$this->assertCount( 3, iterator_to_array( Maps_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Maps_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::get_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::get_all() ) );
 		$this->assertEmpty( get_transient( Layouts::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Seat_Types::update_transient_name() ) );
 		$this->assertEqualsWithDelta( time(), get_transient( Maps::update_transient_name() ), 5 );

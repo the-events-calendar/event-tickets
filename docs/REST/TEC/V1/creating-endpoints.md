@@ -27,7 +27,7 @@ class Controller extends Controller_Contract {
         if ( ! tec_tickets_commerce_is_enabled() ) {
             return;
         }
-        
+
         $this->container->register( Endpoints::class );
     }
 }
@@ -49,13 +49,13 @@ class Endpoints extends Endpoints_Controller {
             Custom_Ticket::class,
         ];
     }
-    
+
     public function get_tags(): array {
         return [
             Custom_Tag::class,
         ];
     }
-    
+
     public function get_definitions(): array {
         return [
             Custom_Ticket_Definition::class,
@@ -84,19 +84,19 @@ class Custom_Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, 
     use Read_Archive_Response;
     use Create_Entity_Response;
     use With_Tickets_ORM;
-    
+
     public function get_base_path(): string {
         return '/custom-tickets';
     }
-    
+
     public function get_post_type(): string {
         return 'tec_tc_ticket'; // Or your custom post type
     }
-    
+
     public function guest_can_read(): bool {
         return true; // Or implement custom logic
     }
-    
+
     public function get_model_class(): string {
         return Custom_Ticket_Model::class;
     }
@@ -119,19 +119,19 @@ class Custom_Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
     use Update_Entity_Response;
     use Delete_Entity_Response;
     use With_Tickets_ORM;
-    
+
     public function get_base_path(): string {
         return '/custom-tickets/%s';
     }
-    
+
     public function get_path_parameters(): PathArgumentCollection {
         $collection = new PathArgumentCollection();
-        
+
         $collection[] = new Positive_Integer(
             'id',
             fn() => __( 'The ID of the custom ticket', 'event-tickets' ),
         );
-        
+
         return $collection;
     }
 }
@@ -142,21 +142,21 @@ class Custom_Ticket extends Post_Entity_Endpoint implements RUD_Endpoint {
 For read operations:
 
 ```php
-public function read_args(): QueryArgumentCollection {
+public function read_params(): QueryArgumentCollection {
     $collection = new QueryArgumentCollection();
-    
+
     $collection[] = new Positive_Integer(
         'page',
         fn() => __( 'The collection page number.', 'event-tickets' ),
         1,
         1
     );
-    
+
     $collection[] = new Text(
         'custom_filter',
         fn() => __( 'Filter by custom field.', 'event-tickets' ),
     );
-    
+
     return $collection;
 }
 ```
@@ -171,9 +171,9 @@ public function read_schema(): OpenAPI_Schema {
         $this->get_operation_id( 'read' ),
         $this->get_tags(),
         null,
-        $this->read_args()
+        $this->read_params()
     );
-    
+
     // Add response definitions
     $schema->add_response(
         200,
@@ -182,7 +182,7 @@ public function read_schema(): OpenAPI_Schema {
         'application/json',
         $this->get_response_body(),
     );
-    
+
     return $schema;
 }
 ```
@@ -215,21 +215,21 @@ class Custom_Ticket_Definition extends Definition {
     public function get_type(): string {
         return 'Custom_Ticket';
     }
-    
+
     public function get_priority(): int {
         return 20; // Higher priority loads later
     }
-    
+
     public function get_documentation(): array {
         $properties = new PropertiesCollection();
-        
+
         $properties[] = (
             new Text(
                 'custom_field',
                 fn() => __( 'Custom field description', 'event-tickets' ),
             )
         )->set_example( 'Example value' );
-        
+
         return [
             'allOf' => [
                 [
@@ -272,10 +272,10 @@ Override response methods:
 ```php
 protected function prepare_item_for_response( $item, WP_REST_Request $request ): array {
     $data = parent::prepare_item_for_response( $item, $request );
-    
+
     // Add custom fields
     $data['custom_data'] = get_post_meta( $item->ID, '_custom_data', true );
-    
+
     return $data;
 }
 ```
@@ -287,7 +287,7 @@ Add validation in request preparation:
 ```php
 protected function prepare_postarr( array $postarr, WP_REST_Request $request ): array {
     $postarr = parent::prepare_postarr( $postarr, $request );
-    
+
     // Custom validation
     if ( isset( $postarr['meta_input']['_custom_field'] ) ) {
         $value = $postarr['meta_input']['_custom_field'];
@@ -295,7 +295,7 @@ protected function prepare_postarr( array $postarr, WP_REST_Request $request ): 
             throw new InvalidArgumentException( 'Invalid custom field value' );
         }
     }
-    
+
     return $postarr;
 }
 ```
@@ -365,11 +365,11 @@ class Custom_Tickets_Test extends WP_UnitTestCase {
         $endpoints = tribe( Endpoints::class )->get_endpoints();
         $this->assertContains( Custom_Tickets::class, $endpoints );
     }
-    
+
     public function test_read_permission() {
         $endpoint = tribe( Custom_Tickets::class );
         $request = new WP_REST_Request( 'GET', '/tec/v1/custom-tickets' );
-        
+
         $this->assertTrue( $endpoint->can_read( $request ) );
     }
 }
@@ -393,7 +393,7 @@ Use snapshot testing for OpenAPI schemas:
 public function test_openapi_schema_snapshot() {
     $endpoint = tribe( Custom_Tickets::class );
     $schema = $endpoint->read_schema()->jsonSerialize();
-    
+
     $this->assertMatchesJsonSnapshot( $schema );
 }
 ```
@@ -433,10 +433,10 @@ Ensure path parameters match the pattern:
 // Path: /custom-tickets/%s/items/%d
 public function get_path_parameters(): PathArgumentCollection {
     $collection = new PathArgumentCollection();
-    
+
     $collection[] = new Text( 'ticket_slug', $description );
     $collection[] = new Positive_Integer( 'item_id', $description );
-    
+
     return $collection;
 }
 ```

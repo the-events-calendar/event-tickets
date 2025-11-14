@@ -11,12 +11,8 @@ class RsvpGoingCest {
 
 		// Activate required plugins.
 		$I->amOnAdminPage( '/plugins.php' );
-		$I->activatePlugin(
-			[
-				'the-events-calendar',
-				'event-tickets',
-			]
-		);
+		$I->activatePlugin( 'the-events-calendar' );
+		$I->activatePlugin( 'event-tickets' );
 
 		// Set site options.
 		$I->haveOptionInDatabase( 'permalink_structure', '/%postname%/' );

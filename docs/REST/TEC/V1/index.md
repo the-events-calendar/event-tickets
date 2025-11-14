@@ -59,19 +59,26 @@ Located in `definitions/`:
 
 ## Architecture Overview
 
+### Plugin Structure
+
 ```
-Event Tickets REST API
-├── Controller (Main registration)
-├── Endpoints Controller
-│   ├── Tickets (Collection endpoint)
-│   └── Ticket (Single endpoint)
-├── Definitions
-│   ├── Ticket_Definition
-│   └── Ticket_Request_Body_Definition
-├── Tags
-│   └── Tickets_Tag
-└── Traits
-    └── With_Tickets_ORM
+TEC\Tickets\REST\TEC\V1\
+├── Controller.php             # Conditional registration controller
+├── Endpoints.php             # Tickets endpoints controller
+├── Endpoints/                # Ticket endpoints
+│   ├── Ticket.php           # Single ticket (RUD operations)
+│   └── Tickets.php          # Tickets collection (Read/Create)
+├── Documentation/            # OpenAPI definitions
+│   ├── Ticket_Definition.php
+│   └── Ticket_Request_Body_Definition.php
+├── Tags/                     # API tags
+│   └── Tickets_Tag.php      # Tickets tag
+└── Traits/                   # Ticket-specific traits
+    ├── With_Filtered_Ticket_Params.php
+    ├── With_Parent_Post_Read_Check.php
+    ├── With_TC_Provider.php
+    ├── With_Ticket_Upsert.php
+    └── With_Tickets_ORM.php
 ```
 
 ## Key Features

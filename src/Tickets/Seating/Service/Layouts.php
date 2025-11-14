@@ -115,11 +115,11 @@ class Layouts {
 
 		if ( ! ( $layouts && is_array( $layouts ) ) ) {
 			$layouts = [];
-			foreach ( Layouts_Table::fetch_all() as $row ) {
+			foreach ( Layouts_Table::get_all() as $row ) {
 				$layouts[] = [
-					'id'    => $row->id,
-					'name'  => $row->name,
-					'seats' => $row->seats,
+					'id'    => $row['id'],
+					'name'  => $row['name'],
+					'seats' => $row['seats'],
 				];
 			}
 
@@ -152,13 +152,13 @@ class Layouts {
 
 		if ( ! ( $layout_cards && is_array( $layout_cards ) ) ) {
 			$layout_cards = [];
-			foreach ( Layouts_Table::fetch_all() as $row ) {
+			foreach ( Layouts_Table::get_all() as $row ) {
 				$layout_cards[] = new Layout_Card(
-					$row->id,
-					$row->name,
-					$row->map,
-					$row->seats,
-					$row->screenshot_url
+					$row['id'],
+					$row['name'],
+					$row['map'],
+					$row['seats'],
+					$row['screenshot_url']
 				);
 			}
 
