@@ -70,7 +70,7 @@ trait With_Parent_Post_Read_Check {
 	 * Formats a collection of posts into a collection of post entities.
 	 *
 	 * @since 5.26.0
-	 * @since TBD method has been renamed.
+	 * @since 5.27.0 method has been renamed.
 	 *
 	 * @param array $posts The posts to format.
 	 *

@@ -75,7 +75,7 @@ class Integrity_Table extends Table {
 	/**
 	 * Returns the schema history for this table.
 	 *
-	 * @since TBD
+	 * @since 5.27.0
 	 *
 	 * @return array<string, callable>
 	 */

@@ -25,7 +25,7 @@ trait With_Tickets_ORM {
 	 * Returns a repository instance.
 	 *
 	 * @since 5.26.0
-	 * @since TBD Updated the return type to Repository_Interface.
+	 * @since 5.27.0 Updated the return type to Repository_Interface.
 	 *
 	 * @return Repository_Interface The repository instance.
 	 */
