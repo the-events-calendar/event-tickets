@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.27.0] 2025-11-18
+
+* Tweak - Supports conditional ticket quantity control availability. [ETP-1061]
+* Language - 1 new strings added, 52 updated, 2 fuzzied, and 3 obsoleted.
+
 ### [5.26.7] 2025-10-28
 
 * Fix - Add logic to only show the purchase button during checkout after billing info is filled out. [ET-2592]
