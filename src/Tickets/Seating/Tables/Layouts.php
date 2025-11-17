@@ -73,7 +73,7 @@ class Layouts extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since TBD
+	 * @since 5.27.0
 	 *
 	 * @var string[]
 	 */

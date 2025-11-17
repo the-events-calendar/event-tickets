@@ -4040,7 +4040,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fired before a ticket is saved.
 			 *
-			 * @since TBD
+			 * @since 5.27.0
 			 *
 			 * @param int                           $post_id  The ticket parent post ID.
 			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that is being saved.

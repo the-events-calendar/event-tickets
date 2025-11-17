@@ -367,7 +367,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		/**
 		 * Fires after the panels are refreshed.
 		 *
-		 * @since TBD
+		 * @since 5.27.0
 		 *
 		 * @param {Object} panels The panels object.
 		 * @param {string} swapTo The panel to swap to.

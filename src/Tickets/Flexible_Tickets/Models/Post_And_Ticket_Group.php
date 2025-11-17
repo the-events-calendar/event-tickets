@@ -42,7 +42,7 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	/**
 	 * Validate the model data after construction.
 	 *
-	 * @since TBD
+	 * @since 5.27.0
 	 *
 	 * @return void
 	 */
@@ -59,7 +59,7 @@ class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	/**
 	 * Set an attribute on the model.
 	 *
-	 * @since TBD
+	 * @since 5.27.0
 	 *
 	 * @param string $key   The attribute key.
 	 * @param mixed  $value The attribute value.

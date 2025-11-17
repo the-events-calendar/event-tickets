@@ -18,9 +18,9 @@
  * @since 5.5.6 Add the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity.
  * @since 5.16.0 Introduced 3rd parameter to `tribe_tickets_block_ticket_html_attributes` filter.
  * @since 5.18.1 Removed the `$event_id` parameter from the `tribe_tickets_block_ticket_html_attributes` filter.
- * @since TBD Added $quantity_controls parameter.
+ * @since 5.27.0 Added $quantity_controls parameter.
  *
- * @version TBD
+ * @version 5.27.0
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.

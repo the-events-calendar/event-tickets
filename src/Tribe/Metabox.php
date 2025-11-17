@@ -265,7 +265,7 @@ class Tribe__Tickets__Metabox {
 		/**
 		 * Filters the panels data.
 		 *
-		 * @since TBD
+		 * @since 5.27.0
 		 *
 		 * @param array       $panels      The panels data.
 		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.

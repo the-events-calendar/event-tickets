@@ -11,9 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.3
- * @since TBD Added $quantity_controls parameter.
+ * @since 5.27.0 Added $quantity_controls parameter.
  *
- * @version TBD
+ * @version 5.27.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
