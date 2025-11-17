@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.26.7\n"
+"Project-Id-Version: Event Tickets 5.27.0\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-27T21:36:29+00:00\n"
+"POT-Creation-Date: 2025-11-17T18:12:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -3431,13 +3431,13 @@ msgid "A single configured ticket type."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:348
-#: src/Tribe/Tickets.php:4660
+#: src/Tribe/Tickets.php:4671
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:349
-#: src/Tribe/Tickets.php:4661
+#: src/Tribe/Tickets.php:4672
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
@@ -3448,14 +3448,14 @@ msgid "The %s for this event has sold out and has been removed from your cart."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:355
-#: src/Tribe/Tickets.php:4663
+#: src/Tribe/Tickets.php:4674
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
 #. Translators: %s - the HTML of the number of tickets with validation errors.
 #: src/Tickets/Blocks/Tickets/Block.php:357
-#: src/Tribe/Tickets.php:4664
+#: src/Tribe/Tickets.php:4675
 #, php-format
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
@@ -10721,71 +10721,71 @@ msgid "Additional content will be displayed below the tickets in your email."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:144
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:172
 #, php-format
 msgid "Failed to start 1.1.0 migration transaction for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:160
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:188
 #, php-format
 msgid "Failed to get remaining rows for 1.1.0 migration for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:183
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:211
 #, php-format
 msgid "Failed to get rows for 1.1.0 migration for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:192
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:220
 #, php-format
 msgid "No rows needed 1.1.0 migration for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:240
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:268
 msgid "1.1.0 migration failed, refresh the page to re-run."
 msgstr ""
 
 #. Translators: %1$d: number of rows migrated, %2$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:252
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:280
 #, php-format
 msgid "1.1.0 migrated %1$d rows in the %2$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:281
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:309
 #, php-format
 msgid "Failed to start transaction for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:298
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:326
 #, php-format
 msgid "No rows needed MySQL compatibility migration for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:320
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:348
 #, php-format
 msgid "Failed to get rows for 1.2.0 migration for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:330
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:358
 #, php-format
 msgid "No rows needed 1.2.0 migration for %1$s table."
 msgstr ""
 
 #. Translators: %1$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:362
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:390
 msgid "1.2.0 migration failed, refresh the page to re-run."
 msgstr ""
 
 #. Translators: %1$d: number of rows migrated, %2$s: table name.
-#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:373
+#: src/Tickets/Flexible_Tickets/Custom_Tables/Ticket_Groups.php:401
 #, php-format
 msgid "1.2.0 migrated %1$d rows in the %2$s table."
 msgstr ""
@@ -11063,12 +11063,12 @@ msgstr ""
 #: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:260
-#: src/Tribe/Metabox.php:336
-#: src/Tribe/Metabox.php:461
-#: src/Tribe/Metabox.php:553
-#: src/Tribe/Metabox.php:653
-#: src/Tribe/Metabox.php:725
-#: src/Tribe/Metabox.php:775
+#: src/Tribe/Metabox.php:357
+#: src/Tribe/Metabox.php:482
+#: src/Tribe/Metabox.php:574
+#: src/Tribe/Metabox.php:674
+#: src/Tribe/Metabox.php:746
+#: src/Tribe/Metabox.php:796
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -11244,65 +11244,65 @@ msgid "The ticket ID is invalid"
 msgstr ""
 
 #: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:175
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:234
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:280
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:237
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:283
 msgid "The ticket does not exist"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:199
-msgid "Update a Ticket"
-msgstr ""
-
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:200
-msgid "Update a ticket by ID"
-msgstr ""
-
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:205
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:192
 msgid "The ticket data to update."
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:216
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:202
+msgid "Update a Ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:203
+msgid "Update a ticket by ID"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:219
 msgid "Returns the updated ticket"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:224
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:227
 #: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:179
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:319
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:322
 #: src/Tribe/REST/V1/Endpoints/QR.php:125
 msgid "A required parameter is missing or an input parameter is in the wrong format"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:229
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:275
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:324
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:232
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:278
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:327
 msgid "The request was not authorized"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:239
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:242
 msgid "Failed to update the ticket"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:250
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:253
 msgid "Delete a Ticket"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:251
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:254
 msgid "Move a ticket to the trash"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:267
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:270
 msgid "Returns the trashed ticket"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:285
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:288
 msgid "The ticket has already been trashed"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:290
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:293
 msgid "Failed to delete the ticket"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:295
+#: src/Tickets/REST/TEC/V1/Endpoints/Ticket.php:298
 msgid "The ticket does not support trashing. Set force=true to delete"
 msgstr ""
 
@@ -11378,23 +11378,23 @@ msgstr ""
 msgid "Include tickets marked as hidden from view."
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:294
-msgid "Create a Ticket"
-msgstr ""
-
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:295
-msgid "Create a new ticket"
-msgstr ""
-
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:300
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:287
 msgid "The ticket data to create."
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:311
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:297
+msgid "Create a Ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:298
+msgid "Create a new ticket"
+msgstr ""
+
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:314
 msgid "Returns the created ticket"
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:329
+#: src/Tickets/REST/TEC/V1/Endpoints/Tickets.php:332
 msgid "Failed to create the ticket"
 msgstr ""
 
@@ -11402,28 +11402,25 @@ msgstr ""
 msgid "These operations are introduced by Event Tickets."
 msgstr ""
 
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:54
-msgid "Event ID is required"
+#. translators: 1) is the name of the parameter.
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:56
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:60
+#, php-format
+msgid "The argument `{%1$s}` is missing."
 msgstr ""
 
 #. translators: 1) is the name of the parameter.
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:59
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:67
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:71
 #, php-format
-msgid "The parameter `{%1$s}` is missing."
-msgstr ""
-
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:64
-msgid "The specified Event ID does not support ticket creation"
+msgid "The argument `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets."
 msgstr ""
 
 #. translators: 1) is the name of the parameter.
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:69
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:165
+#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:169
 #, php-format
-msgid "The parameter `{%1$s}` does not support ticket creation. Make sure its post type is enabled for tickets under Tickets > Settings > Ticket Settings > Post types that can have tickets."
-msgstr ""
-
-#: src/Tickets/REST/TEC/V1/Traits/With_Filtered_Ticket_Params.php:161
-msgid "The ticket price must be a number."
+msgid "The argument `{%1$s}` must be a number."
 msgstr ""
 
 #: src/Tickets/REST/TEC/V1/Traits/With_Ticket_Upsert.php:34
@@ -12445,7 +12442,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:280
-#: src/Tribe/Metabox.php:959
+#: src/Tribe/Metabox.php:980
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -13057,78 +13054,78 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Metabox.php:127
-#: src/Tribe/Metabox.php:139
+#: src/Tribe/Metabox.php:129
+#: src/Tribe/Metabox.php:141
 msgid "Invalid Post ID"
 msgstr ""
 
-#: src/Tribe/Metabox.php:132
+#: src/Tribe/Metabox.php:134
 msgid "You do not have permission to access this content."
 msgstr ""
 
-#: src/Tribe/Metabox.php:276
-#: src/Tribe/Metabox.php:419
-#: src/Tribe/Metabox.php:508
-#: src/Tribe/Metabox.php:603
+#: src/Tribe/Metabox.php:297
+#: src/Tribe/Metabox.php:440
+#: src/Tribe/Metabox.php:529
+#: src/Tribe/Metabox.php:624
 msgid "Invalid parent Post"
 msgstr ""
 
 #. Translators:  %1$s - singular ticket term.
-#: src/Tribe/Metabox.php:305
+#: src/Tribe/Metabox.php:326
 #, php-format
 msgid "Failed to add the %1$s. Refresh the page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:319
+#: src/Tribe/Metabox.php:340
 msgid "Commerce Provider invalid"
 msgstr ""
 
 #. Translators: %1$s - Singular ticket term.
-#: src/Tribe/Metabox.php:349
+#: src/Tribe/Metabox.php:370
 #, php-format
 msgid "Failed to add the %1$s"
 msgstr ""
 
 #. Translators: %1$s - singular ticket term.
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:434
-#: src/Tribe/Metabox.php:524
+#: src/Tribe/Metabox.php:455
+#: src/Tribe/Metabox.php:545
 #, php-format
 msgid "Invalid %1$s"
 msgstr ""
 
 #. Translators: %1$s - singular ticket term.
-#: src/Tribe/Metabox.php:447
+#: src/Tribe/Metabox.php:468
 #, php-format
 msgid "Failed to edit the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:538
+#: src/Tribe/Metabox.php:559
 #, php-format
 msgid "Failed to delete the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:619
+#: src/Tribe/Metabox.php:640
 #, php-format
 msgid "Invalid %s"
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:635
+#: src/Tribe/Metabox.php:656
 #, php-format
 msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %1$s - singular ticket term
-#: src/Tribe/Metabox.php:675
+#: src/Tribe/Metabox.php:696
 #, php-format
 msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:717
-#: src/Tribe/Metabox.php:767
+#: src/Tribe/Metabox.php:738
+#: src/Tribe/Metabox.php:788
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
@@ -14146,7 +14143,7 @@ msgstr ""
 msgid "(copy)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:4662
+#: src/Tribe/Tickets.php:4673
 msgid "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
@@ -14238,7 +14235,7 @@ msgstr ""
 #: src/views/blocks/tickets/quantity-number.php:48
 #: src/views/tickets/rsvp.php:150
 #: src/views/v2/rsvp/ari/sidebar/quantity/input.php:36
-#: src/views/v2/tickets/item/quantity/number.php:64
+#: src/views/v2/tickets/item/quantity/number.php:66
 msgid "Quantity"
 msgstr ""
 
