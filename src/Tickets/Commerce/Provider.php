@@ -111,6 +111,10 @@ class Provider extends Service_Provider {
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
+
+		add_action( 'wp_loaded', function () {
+			remove_filter( 'shepherd_tec_schedule_cleanup_task_every', '__return_zero' );
+		}, 15 );
 	}
 
 	/**
