@@ -248,6 +248,7 @@ class Hooks_Test extends WPTestCase {
 					->by_args(
 						[
 							'id' => $order->ID,
+							'status' => $order->post_status,
 						]
 					)
 					->set_args(
@@ -304,7 +305,7 @@ class Hooks_Test extends WPTestCase {
 			},
 		];
 
-		yield 'with request params - pi from stripe' => [
+		yield 'with request params - payment intent from stripe' => [
 			function() {
 				$post = self::factory()->post->create(
 					[
@@ -384,7 +385,7 @@ class Hooks_Test extends WPTestCase {
 			},
 		];
 
-		yield 'with request params - pi from stripe' => [
+		yield 'with request params - payment intent from stripe - v2' => [
 			function() {
 				$post = self::factory()->post->create(
 					[

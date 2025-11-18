@@ -4037,6 +4037,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_datetime ) );
 			}
 
+			/**
+			 * Fired before a ticket is saved.
+			 *
+			 * @since 5.27.0
+			 *
+			 * @param int                           $post_id  The ticket parent post ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that is being saved.
+			 * @param array                         $data     The ticket data that is being saved.
+			 */
+			do_action( 'tec_tickets_ticket_pre_save', (int) $post_id, $ticket, $data );
+
 			if ( $update ) {
 				update_post_meta( $ticket->ID, '_type', $data['ticket_type'] ?? 'default' );
 			}

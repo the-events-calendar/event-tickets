@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.27.1
 Requires at least: 6.6
-Tested up to: 6.8.2
+Tested up to: 6.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.27.0] 2025-11-18 =
+
+* Version - Event Tickets 5.27.0 is only compatible with The Events Calendar 6.15.12 or higher.
+* Version - Event Tickets 5.27.0 is only compatible with Event Tickets Plus 6.9.0 or higher.
+* Tweak - Added filters: `tec_tickets_panels`
+* Tweak - Added actions: `tec_tickets_ticket_pre_save`
+* Tweak - Changed views: `v2/commerce/checkout/cart/items`, `v2/tickets/item`, `v2/tickets/item/quantity`, `v2/tickets/item/quantity/number`
+* Tweak - Updates Shepherd library to 0.0.9 from 0.0.6 including various improvements. Shepherd's changelog can be found here https://github.com/stellarwp/shepherd/blob/0.0.9/CHANGELOG.md
+* Tweak - Supports conditional ticket quantity control availability. [ETP-1061]
+* Language - 1 new strings added, 52 updated, 2 fuzzied, and 3 obsoleted.
 
 = [5.26.7] 2025-10-28 =
 

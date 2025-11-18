@@ -200,5 +200,4 @@ $admin_views = tribe( 'tickets.admin.views' );
 	 */
 	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
 	?>
-
 </div>

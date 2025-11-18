@@ -9,12 +9,12 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects\Ticket_Group_DTO;
 use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
+use TEC\Common\StellarWP\Models\Contracts\Model as ModelInterface;
+use TEC\Common\StellarWP\Models\ModelProperty;
 
 /**
  * Class Ticket_Group.
@@ -27,14 +27,14 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
  * @property string $slug          The Ticket Group slug.
  * @property string $data          The Ticket Group data in JSON format.
  */
-class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObject {
+class Ticket_Group extends Model implements ModelPersistable {
 
 	/**
 	 * @inheritDoc
 	 *
 	 * @since 5.24.1 Add `name`, `capacity`, and `cost` properties.
 	 */
-	protected $properties = [
+	protected static array $properties = [
 		'id'       => 'int',
 		'slug'     => 'string',
 		'data'     => 'string',
@@ -42,6 +42,43 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 		'capacity' => 'int',
 		'cost'     => 'string',
 	];
+
+	/**
+	 * Validate the model data after construction.
+	 *
+	 * @since 5.27.0
+	 *
+	 * @return void
+	 */
+	protected function afterConstruct(): void {
+		$this->propertyCollection->tap(
+			function ( ModelProperty $property ) {
+				if ( null !== $property->getValue() && method_exists( $this, "validate_{$property->getKey()}" ) ) {
+					$this->{"validate_{$property->getKey()}"}( $property->getValue() );
+				}
+			}
+		);
+	}
+
+	/**
+	 * Set an attribute on the model.
+	 *
+	 * @since 5.27.0
+	 *
+	 * @param string $key   The attribute key.
+	 * @param mixed  $value The attribute value.
+	 *
+	 * @return ModelInterface
+	 */
+	public function setAttribute( string $key, $value ): ModelInterface {
+		parent::setAttribute( $key, $value );
+
+		if ( null !== $value && method_exists( $this, "validate_{$key}" ) ) {
+			$this->{"validate_{$key}"}( $value );
+		}
+
+		return $this;
+	}
 
 	/**
 	 * Finds a model by its ID.
@@ -109,18 +146,5 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	 */
 	public static function query(): ModelQueryBuilder {
 		return tribe( Ticket_Groups::class )->query();
-	}
-
-	/**
-	 * Builds a new model from a query builder object.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param object $object The object to build the model from.
-	 *
-	 * @return Ticket_Group The model instance.
-	 */
-	public static function fromQueryBuilderObject( $object ): self {
-		return Ticket_Group_DTO::fromObject( $object )->toModel();
 	}
 }

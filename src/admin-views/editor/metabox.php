@@ -3,6 +3,8 @@
  * @var WP_Post                      $post
  * @var bool                         $show_global_stock
  * @var Tribe__Tickets__Global_Stock $global_stock
+ * @var array<string>                $panels    Array of rendered panel HTML
+ * @var int|null                     $ticket_id Ticket ID
  */
 
 // Don't load directly
@@ -21,15 +23,13 @@ $admin_views = tribe( 'tickets.admin.views' );
 </div>
 
 <div id="event_tickets" class="eventtable" aria-live="polite">
-	<?php wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' ); ?>
-
-	<?php $admin_views->template( [ 'editor', 'panel', 'list' ], get_defined_vars() ); ?>
-
-	<?php $admin_views->template( [ 'editor', 'panel', 'ticket' ], get_defined_vars() ); ?>
-
-	<?php $admin_views->template( [ 'editor', 'panel', 'settings' ], get_defined_vars() ); ?>
-
 	<?php
+	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
+
+	foreach ( $panels as $panel ) {
+		echo $panel; // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscapedExpected, StellarWP.XSS.EscapeOutput.OutputNotEscaped
+	}
+
 	/**
 	 * Allows for the insertion of additional content into the ticket edit form below the form
 	 * section

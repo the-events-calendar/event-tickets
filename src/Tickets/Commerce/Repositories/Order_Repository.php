@@ -7,10 +7,7 @@ use TEC\Tickets\Commerce\Module;
 use Tribe__Repository;
 use TEC\Tickets\Commerce\Order;
 use Tribe__Repository__Interface;
-use Tribe__Repository__Usage_Error as Usage_Error;
-
 use Tribe__Utils__Array as Arr;
-use Tribe__Date_Utils as Dates;
 use WP_Post;
 use WP_Query;
 
