@@ -4,17 +4,17 @@
         {
             "id": "layout-1",
             "name": "Test layout 1",
-            "seats": "1"
+            "seats": 1
         },
         {
             "id": "layout-2",
             "name": "Test layout 2",
-            "seats": "2"
+            "seats": 2
         },
         {
             "id": "layout-3",
             "name": "Test layout 3",
-            "seats": "3"
+            "seats": 3
         }
     ],
     "seatTypes": [],

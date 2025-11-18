@@ -10,7 +10,11 @@
 namespace TEC\Tickets\Seating\Tables;
 
 use TEC\Common\StellarWP\DB\DB;
-use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 /**
  * Class Seat_Types.
@@ -68,18 +72,51 @@ class Seat_Types extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since 5.20.0
+	 * @since 5.27.0
 	 *
 	 * @var string[]
 	 */
-	public static function get_columns(): array {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
+
 		return [
-			'id',
-			'name',
-			'map',
-			'layout',
-			'seats',
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = ( new String_Column( 'id' ) )->set_length( 36 )->set_is_primary_key( true );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
+				$columns[] = ( new String_Column( 'map' ) )->set_length( 36 );
+				$columns[] = ( new String_Column( 'layout' ) )->set_length( 36 );
+				$columns[] = ( new Integer_Column( 'seats' ) )->set_length( 11 )->set_default( 0 );
+
+				return new Table_Schema( $table_name, $columns );
+			},
 		];
+	}
+
+	/**
+	 * Returns the table creation SQL in the format supported
+	 * by the `dbDelta` function.
+	 *
+	 * @since 5.16.0
+	 *
+	 * @return string The table creation SQL, in the format supported
+	 *                by the `dbDelta` function.
+	 */
+	public function get_definition(): string {
+		global $wpdb;
+		$table_name      = self::table_name( true );
+		$charset_collate = $wpdb->get_charset_collate();
+
+		return "
+			CREATE TABLE `{$table_name}` (
+				`id` varchar(36) NOT NULL,
+				`name` varchar(255) NOT NULL,
+				`map` varchar(36) NOT NULL,
+				`layout` varchar(36) NOT NULL,
+				`seats` int(11) NOT NULL DEFAULT '0',
+				PRIMARY KEY (`id`)
+			) {$charset_collate};
+		";
 	}
 
 	/**
@@ -95,35 +132,9 @@ class Seat_Types extends Table {
 		return (int) DB::get_var(
 			DB::prepare(
 				'SELECT seats FROM %i WHERE id = %s',
-				self::table_name( true ),
+				self::table_name(),
 				$seat_type
 			)
 		);
-	}
-
-	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
-	 *
-	 * @since 5.16.0
-	 *
-	 * @return string The table creation SQL, in the format supported
-	 *                by the `dbDelta` function.
-	 */
-	protected function get_definition() {
-		global $wpdb;
-		$table_name      = self::table_name( true );
-		$charset_collate = $wpdb->get_charset_collate();
-
-		return "
-			CREATE TABLE `{$table_name}` (
-				`id` varchar(36) NOT NULL,
-				`name` varchar(255) NOT NULL,
-				`map` varchar(36) NOT NULL,
-				`layout` varchar(36) NOT NULL,
-				`seats` int(11) NOT NULL DEFAULT '0',
-				PRIMARY KEY (`id`)
-			) {$charset_collate};
-		";
 	}
 }

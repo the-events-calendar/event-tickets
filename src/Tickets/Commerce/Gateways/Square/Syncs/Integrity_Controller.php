@@ -278,34 +278,34 @@ class Integrity_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function check_data_integrity(): void {
-		$a_few_minutes_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-30 seconds' ) );
+		$half_a_minute_ago = gmdate( 'Y-m-d H:i:s', strtotime( '-30 seconds' ) );
 
 		$to_be_deleted   = [];
 		$to_local_delete = [];
 		$to_be_checked   = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, "WHERE last_checked < '{$a_few_minutes_ago}' AND mode = " . (int) self::$is_prod_mode ) as $item ) {
-			$post_object = get_post( $item->wp_object_id );
+		foreach ( Integrity_Table::get_all( 100, "WHERE last_checked < '{$half_a_minute_ago}' AND mode = " . (int) self::$is_prod_mode ) as $item ) {
+			$post_object = get_post( $item['wp_object_id'] );
 
 			if ( ! $post_object ) {
-				$to_be_deleted[] = $item->id;
+				$to_be_deleted[] = $item['id'];
 				continue;
 			}
 
-			if ( Item::get_remote_object_id( $item->wp_object_id ) !== $item->square_object_id ) {
-				$to_be_deleted[] = $item->id;
+			if ( Item::get_remote_object_id( $item['wp_object_id'] ) !== $item['square_object_id'] ) {
+				$to_be_deleted[] = $item['id'];
 				continue;
 			}
 
-			if ( isset( $to_be_checked[ $item->square_object_id ] ) ) {
-				$previous_item     = $to_be_checked[ $item->square_object_id ];
-				$to_local_delete[] = $previous_item->last_checked > $item->last_checked ? $item : $previous_item;
+			if ( isset( $to_be_checked[ $item['square_object_id'] ] ) ) {
+				$previous_item     = $to_be_checked[ $item['square_object_id'] ];
+				$to_local_delete[] = $previous_item['last_checked'] > $item['last_checked'] ? $item : $previous_item;
 
-				$to_be_checked[ $item->square_object_id ] = $previous_item->last_checked > $item->last_checked ? $previous_item : $item;
+				$to_be_checked[ $item['square_object_id'] ] = $previous_item['last_checked'] > $item['last_checked'] ? $previous_item : $item;
 				continue;
 			}
 
-			$to_be_checked[ $item->square_object_id ] = $item;
+			$to_be_checked[ $item['square_object_id'] ] = $item;
 		}
 
 		if ( ! empty( $to_local_delete ) ) {
@@ -358,8 +358,8 @@ class Integrity_Controller extends Controller_Contract {
 
 		$deleted = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
-			$deleted[ $item->square_object_id ] = $item->id;
+		foreach ( Integrity_Table::get_all( 100, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
+			$deleted[ $item['square_object_id'] ] = $item['id'];
 
 			if ( count( $deleted ) > 999 ) {
 				$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_DELETE_ITEMS, [], 5 * MINUTE_IN_SECONDS );
@@ -569,13 +569,15 @@ class Integrity_Controller extends Controller_Contract {
 		$skipped_tickets = [];
 		$batch           = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
-			$is_ticket = in_array( get_post_type( $item->wp_object_id ), tribe_tickets()->ticket_types(), true );
+		$ticket_types = array_flip( tribe_tickets()->ticket_types() );
+
+		foreach ( Integrity_Table::get_all( 100, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
+			$is_ticket = isset( $ticket_types[ get_post_type( $item['wp_object_id'] ) ] );
 
 			if ( $is_ticket ) {
-				$ticket_object = $this->ticket_data->load_ticket_object( $item->wp_object_id );
+				$ticket_object = $this->ticket_data->load_ticket_object( $item['wp_object_id'] );
 				if ( ! $ticket_object ) {
-					$skipped_tickets[] = $item->id;
+					$skipped_tickets[] = $item['id'];
 					continue;
 				}
 
@@ -586,18 +588,18 @@ class Integrity_Controller extends Controller_Contract {
 				}
 
 				// Set the parent event as a whole as in need of sync.
-				$item->wp_object_id = $ticket_object->get_event_id();
+				$item['wp_object_id'] = $ticket_object->get_event_id();
 			}
 
-			$tickets = $this->items_sync->sync_event( $item->wp_object_id, false );
+			$tickets = $this->items_sync->sync_event( $item['wp_object_id'], false );
 
 			if ( ! $tickets ) {
 				continue;
 			}
 
-			$batch[ $item->wp_object_id ] = $tickets;
+			$batch[ $item['wp_object_id'] ] = $tickets;
 
-			$objects_to_sync[] = $item->id;
+			$objects_to_sync[] = $item['id'];
 			if ( count( $batch ) > 999 ) {
 				$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_SYNC_ITEMS, [], MINUTE_IN_SECONDS / 6 );
 				break;
@@ -647,8 +649,8 @@ class Integrity_Controller extends Controller_Contract {
 		$objects_to_sync = [];
 		$batch           = [];
 
-		foreach ( Integrity_Table::fetch_all( 100, OBJECT, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
-			$ticket_object = $this->ticket_data->load_ticket_object( $item->wp_object_id );
+		foreach ( Integrity_Table::get_all( 100, 'WHERE id IN (' . implode( ',', $ids ) . ')' ) as $item ) {
+			$ticket_object = $this->ticket_data->load_ticket_object( $item['wp_object_id'] );
 			if ( ! $ticket_object ) {
 				continue;
 			}
@@ -660,7 +662,7 @@ class Integrity_Controller extends Controller_Contract {
 			}
 
 			// Set the parent event as a whole as in need of sync.
-			$item->wp_object_id = $ticket_object->get_event_id();
+			$item['wp_object_id'] = $ticket_object->get_event_id();
 
 			$event_id = $ticket_object->get_event_id();
 
@@ -672,7 +674,7 @@ class Integrity_Controller extends Controller_Contract {
 
 			$batch[ $event_id ] = $tickets;
 
-			$objects_to_sync[] = $item->id;
+			$objects_to_sync[] = $item['id'];
 			if ( count( $batch ) > 999 ) {
 				$this->regulator->schedule( self::HOOK_DATA_INTEGRITY_SYNC_INVENTORY, [], MINUTE_IN_SECONDS / 6 );
 				break;
