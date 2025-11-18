@@ -2,6 +2,9 @@
 
 ### [5.27.0] 2025-11-18
 
+* Version - Event Tickets 5.27.0 is only compatible with The Events Calendar 6.15.12 or higher.
+* Version - Event Tickets 5.27.0 is only compatible with Event Tickets Plus 6.9.0 or higher.
+* Tweak - Updates Shepherd library to 0.0.9 from 0.0.6 including various improvements. Shepherd's changelog can be found here https://github.com/stellarwp/shepherd/blob/0.0.9/CHANGELOG.md
 * Tweak - Supports conditional ticket quantity control availability. [ETP-1061]
 * Language - 1 new strings added, 52 updated, 2 fuzzied, and 3 obsoleted.
 
