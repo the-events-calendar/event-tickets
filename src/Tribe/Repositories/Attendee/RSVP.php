@@ -60,6 +60,11 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 				'full_name'       => $attendee_provider->full_name,
 				'email'           => $attendee_provider->email,
 				'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'rsvp_status'     => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'ticket_sent'     => $attendee_provider->attendee_ticket_sent,
+				'deleted_product' => $attendee_provider->deleted_product,
+				'unique_id'       => '_unique_id',
+				'subscribed'      => $attendee_provider->attendee_subscribed,
 			]
 		);
 	}
