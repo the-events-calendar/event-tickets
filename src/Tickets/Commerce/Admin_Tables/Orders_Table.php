@@ -203,7 +203,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 *
 	 * @return array
 	 */
-	protected function get_bulk_actions() {
+	public function get_bulk_actions() {
 		return [];
 	}
 

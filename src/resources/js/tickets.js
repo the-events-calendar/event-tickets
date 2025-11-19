@@ -1,6 +1,8 @@
 /* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
  tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers */
 
+import { doAction } from '@wordpress/hooks';
+
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
@@ -361,6 +363,17 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 
 		// Trigger dependency.
 		$( '.tribe-dependency' ).trigger( 'verify.dependency' );
+
+		/**
+		 * Fires after the panels are refreshed.
+		 *
+		 * @since 5.27.0
+		 *
+		 * @param {Object} panels The panels object.
+		 * @param {string} swapTo The panel to swap to.
+		 * @param {jQuery} tickets The tickets jQuery object.
+		 */
+		doAction( 'tec.tickets.admin.panels.refreshed', { panels, swapTo, tickets: $tribe_tickets } );
 	};
 
 	obj.setupPanels = function () {

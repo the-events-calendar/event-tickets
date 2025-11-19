@@ -37,12 +37,7 @@ class Webhook {
 	 * @throws Not_Found_Exception If the webhook is not found.
 	 */
 	public function __construct( string $uid ) {
-		$uid_column = Table::uid_column();
-
-		$record = Table::fetch_first_where(
-			DB::prepare( "WHERE $uid_column = %s", $uid ),
-			ARRAY_A
-		);
+		$record = Table::get_by_id( $uid );
 
 		if ( ! $record ) {
 			throw new Not_Found_Exception( 'Webhook not found' );
@@ -50,7 +45,7 @@ class Webhook {
 
 		$columns = Table::get_columns();
 
-		foreach ( $columns as $column ) {
+		foreach ( $columns->get_names() as $column ) {
 			$this->data[ $column ] = $record[ $column ] ?? null;
 		}
 	}

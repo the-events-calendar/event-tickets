@@ -9,12 +9,12 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects\Post_And_Ticket_Group_DTO;
 use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
+use TEC\Common\StellarWP\Models\Contracts\Model as ModelInterface;
+use TEC\Common\StellarWP\Models\ModelProperty;
 
 /**
  * Class Post_And_Ticket_Group.
@@ -28,18 +28,64 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
  * @property int    $group_id  The Ticket Group ID part of the relationship.
  * @property string $type      The type of the relationship.
  */
-class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObject {
+class Post_And_Ticket_Group extends Model implements ModelPersistable {
 	/**
 	 * @inheritDoc
 	 */
-	protected $properties = [
+	protected static array $properties = [
 		'id'       => 'int',
 		'post_id'  => 'int',
 		'group_id' => 'int',
 		'type'     => 'string',
 	];
 
-	public static function find( $id ) {
+	/**
+	 * Validate the model data after construction.
+	 *
+	 * @since 5.27.0
+	 *
+	 * @return void
+	 */
+	protected function afterConstruct(): void {
+		$this->propertyCollection->tap(
+			function ( ModelProperty $property ) {
+				if ( null !== $property->getValue() && method_exists( $this, "validate_{$property->getKey()}" ) ) {
+					$this->{"validate_{$property->getKey()}"}( $property->getValue() );
+				}
+			}
+		);
+	}
+
+	/**
+	 * Set an attribute on the model.
+	 *
+	 * @since 5.27.0
+	 *
+	 * @param string $key   The attribute key.
+	 * @param mixed  $value The attribute value.
+	 *
+	 * @return ModelInterface
+	 */
+	public function setAttribute( string $key, $value ): ModelInterface {
+		parent::setAttribute( $key, $value );
+
+		if ( null !== $value && method_exists( $this, "validate_{$key}" ) ) {
+			$this->{"validate_{$key}"}( $value );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Finds a model instance by ID.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $id The model ID.
+	 *
+	 * @return self|null The model instance or null if not found.
+	 */
+	public static function find( $id ): ?self {
 		return tribe( Posts_And_Ticket_Groups::class )->find_by_id( $id );
 	}
 
@@ -96,18 +142,5 @@ class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBu
 	 */
 	public static function query(): ModelQueryBuilder {
 		return tribe( Posts_And_Ticket_Groups::class )->query();
-	}
-
-	/**
-	 * Builds a new model from a query builder object.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param object $object The query builder object.
-	 *
-	 * @return static The model instance.
-	 */
-	public static function fromQueryBuilderObject( $object ) {
-		return Post_And_Ticket_Group_DTO::fromObject( $object )->toModel();
 	}
 }
