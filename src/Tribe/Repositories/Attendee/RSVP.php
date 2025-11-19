@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Repositories\Traits\Get_Field;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -10,6 +11,8 @@ use Tribe__Utils__Array as Arr;
  * @property Tribe__Tickets__RSVP $attendee_provider
  */
 class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository {
+
+	use Get_Field;
 
 	/**
 	 * Key name to use when limiting lists of keys.
@@ -223,5 +226,71 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		 * @param string $attendee_status The status of the attendee, either yes or no.
 		 */
 		do_action( 'event_tickets_rsvp_after_attendee_update', $attendee_id, $post_id, $attendee_status );
+	}
+
+	/**
+	 * Bulk update multiple attendees with the same field values.
+	 *
+	 * More efficient than calling update() in a loop.
+	 *
+	 * Note: This method does NOT use database transactions. Updates are
+	 * performed independently and may result in partial success if some
+	 * updates fail.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_ids Attendee IDs.
+	 * @param array $updates      Fields to update (e.g., ['attendee_status' => 'yes']).
+	 *
+	 * @return array Results indexed by attendee ID (true = success, false = failure).
+	 */
+	public function bulk_update( array $attendee_ids, array $updates ) {
+		$results = [];
+
+		foreach ( $attendee_ids as $attendee_id ) {
+			$result = $this->by( 'id', $attendee_id )
+			               ->set_args( $updates )
+			               ->save();
+
+			$results[ $attendee_id ] = false !== $result;
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Get attendee counts grouped by RSVP status.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id Event ID.
+	 *
+	 * @return array Status counts (e.g., ['yes' => 10, 'no' => 5]).
+	 */
+	public function get_status_counts( int $event_id ): array {
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT pm2.meta_value as status, COUNT(*) as count
+			 FROM {$wpdb->posts} p
+			 INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
+			 INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+			 WHERE p.post_type = %s
+			 AND pm1.meta_value = %d
+			 GROUP BY pm2.meta_value",
+			'_tribe_rsvp_event',
+			'_tribe_rsvp_status',
+			'tribe_rsvp_attendees',
+			$event_id
+		);
+
+		$results = $wpdb->get_results( $query );
+
+		$counts = [];
+		foreach ( $results as $row ) {
+			$counts[ $row->status ] = (int) $row->count;
+		}
+
+		return $counts;
 	}
 }
