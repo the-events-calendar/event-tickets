@@ -20,6 +20,8 @@ use Tribe__Utils__Array as Arr;
  *
  * @since 4.10.6
  *
+ * @package Tribe\Tickets\Repositories\Attendee
+ *
  * @property Tribe__Tickets__RSVP $attendee_provider
  */
 class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository implements Attendee_Repository_Interface {
@@ -309,7 +311,6 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 				'unknown'
 			)
 		);
-
 		$counts = [];
 		foreach ( $results as $row ) {
 			$counts[ $row->status ] = (int) $row->count;
