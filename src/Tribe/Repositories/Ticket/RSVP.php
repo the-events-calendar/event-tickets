@@ -1,4 +1,15 @@
 <?php
+/**
+ * RSVP Ticket Repository.
+ *
+ * Handles ORM operations for RSVP tickets.
+ *
+ * @since 4.10.6
+ *
+ * @package Tribe\Tickets\Repositories\Ticket
+ */
+
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 use TEC\Tickets\Repositories\Traits\Get_Field;
 
@@ -17,7 +28,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	public function __construct() {
 		parent::__construct();
 
-		// Add RSVP-specific field aliases
+		// Add RSVP-specific field aliases.
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
@@ -79,12 +90,12 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	public function adjust_sales( int $ticket_id, int $delta ) {
 		global $wpdb;
 
-		// Check if ticket exists first
+		// Check if ticket exists first.
 		if ( ! get_post( $ticket_id ) ) {
 			return false;
 		}
 
-		// Initialize meta keys if they don't exist
+		// Initialize meta keys if they don't exist.
 		if ( ! metadata_exists( 'post', $ticket_id, 'total_sales' ) ) {
 			add_post_meta( $ticket_id, 'total_sales', 0, true );
 		}
@@ -92,7 +103,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			add_post_meta( $ticket_id, '_stock', 0, true );
 		}
 
-		// Atomic UPDATE for sales - prevents race conditions
+		// Atomic UPDATE for sales - prevents race conditions.
 		$sales_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
@@ -103,7 +114,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			)
 		);
 
-		// Atomic UPDATE for stock - inverse of sales
+		// Atomic UPDATE for stock - inverse of sales.
 		$stock_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
@@ -118,10 +129,10 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			return false;
 		}
 
-		// Clear cache
+		// Clear cache.
 		wp_cache_delete( $ticket_id, 'post_meta' );
 
-		// Get new sales count
+		// Get new sales count.
 		return (int) get_post_meta( $ticket_id, 'total_sales', true );
 	}
 
@@ -153,14 +164,14 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return int|false New ticket ID or false on failure.
 	 */
 	public function duplicate( int $ticket_id, array $overrides = [] ) {
-		// Get original ticket using repository
+		// Get original ticket using repository.
 		$original = $this->by( 'id', $ticket_id )->first();
 
 		if ( ! $original ) {
 			return false;
 		}
 
-		// Extract ticket data from post object
+		// Extract ticket data from post object.
 		$ticket_data = [
 			'title'       => $original->post_title,
 			'description' => $original->post_excerpt,
@@ -169,7 +180,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			'menu_order'  => $original->menu_order,
 		];
 
-		// Add all meta fields using aliases
+		// Add all meta fields using aliases.
 		$aliases = $this->get_update_fields_aliases();
 		foreach ( $aliases as $alias => $meta_key ) {
 			$value = $this->get_field( $ticket_id, $alias );
@@ -178,14 +189,13 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			}
 		}
 
-		// Merge with overrides (caller can reset sales/stock if needed)
+		// Merge with overrides (caller can reset sales/stock if needed).
 		$ticket_data = array_merge( $ticket_data, $overrides );
 
-		// Create new ticket using repository
+		// Create new ticket using repository.
 		$new_ticket = $this->set_args( $ticket_data )->create();
 
-		// Repository create() returns WP_Post object or false
+		// Repository create() returns WP_Post object or false.
 		return $new_ticket instanceof \WP_Post ? $new_ticket->ID : false;
 	}
-
 }

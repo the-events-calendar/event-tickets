@@ -39,10 +39,10 @@ trait Get_Field {
 	 */
 	public function get_field( int $post_id, string $field ) {
 		// Map field aliases to actual meta keys using the repository's alias map.
-		$aliases = $this->get_update_fields_aliases();
-		$meta_key = isset( $aliases[ $field ] ) ? $aliases[ $field ] : $field;
+		$aliases  = $this->get_update_fields_aliases();
+		$meta_key = $aliases[ $field ] ?? $field;
 
-		// Check if this is a post field (not meta)
+		// Check if this is a post field (not meta).
 		$post_fields = [ 'post_title', 'post_content', 'post_excerpt', 'post_status', 'post_type', 'menu_order' ];
 
 		if ( in_array( $meta_key, $post_fields, true ) ) {
@@ -51,7 +51,7 @@ trait Get_Field {
 			return $post ? $post->$meta_key : null;
 		}
 
-		// Use metadata_exists to distinguish "not set" from "set to empty"
+		// Use metadata_exists to distinguish "not set" from "set to empty".
 		if ( ! metadata_exists( 'post', $post_id, $meta_key ) ) {
 			return null;
 		}

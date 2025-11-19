@@ -1,4 +1,15 @@
 <?php
+/**
+ * RSVP Attendee Repository.
+ *
+ * Handles ORM operations for RSVP attendees.
+ *
+ * @since 4.10.6
+ *
+ * @package Tribe\Tickets\Repositories\Attendee
+ */
+
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use Tribe__Utils__Array as Arr;
@@ -249,8 +260,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 
 		foreach ( $attendee_ids as $attendee_id ) {
 			$result = $this->by( 'id', $attendee_id )
-			               ->set_args( $updates )
-			               ->save();
+							->set_args( $updates )
+							->save();
 
 			$results[ $attendee_id ] = false !== $result;
 		}
@@ -270,21 +281,24 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	public function get_status_counts( int $event_id ): array {
 		global $wpdb;
 
-		$query = $wpdb->prepare(
-			"SELECT pm2.meta_value as status, COUNT(*) as count
-			 FROM {$wpdb->posts} p
-			 INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
-			 INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
-			 WHERE p.post_type = %s
-			 AND pm1.meta_value = %d
-			 GROUP BY pm2.meta_value",
-			'_tribe_rsvp_event',
-			'_tribe_rsvp_status',
-			'tribe_rsvp_attendees',
-			$event_id
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT pm2.meta_value as status, COUNT(*) as count
+				 FROM %i p
+				 INNER JOIN %i pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
+				 INNER JOIN %i pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+				 WHERE p.post_type = %s
+				 AND pm1.meta_value = %d
+				 GROUP BY pm2.meta_value',
+				$wpdb->posts,
+				$wpdb->postmeta,
+				'_tribe_rsvp_event',
+				$wpdb->postmeta,
+				'_tribe_rsvp_status',
+				'tribe_rsvp_attendees',
+				$event_id
+			)
 		);
-
-		$results = $wpdb->get_results( $query );
 
 		$counts = [];
 		foreach ( $results as $row ) {
