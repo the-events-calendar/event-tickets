@@ -14,6 +14,8 @@
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use Tribe__Cache_Listener as Cache_Listener;
 
+use TEC\Tickets\Repositories\Traits\Get_Field;
+
 /**
  * The ORM/Repository class for RSVP tickets.
  *
