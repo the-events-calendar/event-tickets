@@ -12,6 +12,7 @@
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 use TEC\Tickets\Repositories\Traits\Get_Field;
+use Tribe__Cache_Listener as Cache_Listener;
 
 /**
  * The ORM/Repository class for RSVP tickets.
@@ -131,6 +132,9 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 
 		// Clear cache.
 		wp_cache_delete( $ticket_id, 'post_meta' );
+
+		// A number of other elements depend on the updated values: trigger a save-post based invalidation.
+		Cache_Listener::instance()->save_post( $ticket_id, get_post( $ticket_id ) );
 
 		// Get new sales count.
 		return (int) get_post_meta( $ticket_id, 'total_sales', true );
