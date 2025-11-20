@@ -7,7 +7,7 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
-class GetTicketTest extends WPTestCase {
+class Get_Ticket_Test extends WPTestCase {
 	use Ticket_Maker;
 
 	/**

@@ -9,7 +9,7 @@ use Tribe__Tickets__Global_Stock;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object;
 
-class ConvertPostToTicketObjectTest extends WPTestCase {
+class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	use Ticket_Maker;
 
 	/**

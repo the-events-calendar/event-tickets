@@ -10,7 +10,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
  *
  * @package Tribe\Tickets\Repositories\Attendee\RSVP
  */
-class BulkUpdateTest extends \Codeception\TestCase\WPTestCase {
+class Bulk_Update_Test extends \Codeception\TestCase\WPTestCase {
 
 	use RSVP_Ticket_Maker;
 	use Attendee_Maker;

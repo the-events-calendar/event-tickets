@@ -6,7 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 use Tribe__Tickets__RSVP as RSVP;
 
-class GetAttendeeTest extends WPTestCase {
+class Get_Attendee_Test extends WPTestCase {
 	use Ticket_Maker;
 
 	/**
