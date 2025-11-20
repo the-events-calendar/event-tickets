@@ -29,7 +29,7 @@ $error_messages = $signup->get_errors_from_on_boarded_data();
 	</div>
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
 		<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-text--connected">
-			<?php esc_html_e( 'Connected' ); ?> <span class="dashicons dashicons-saved"></span>
+			<?php esc_html_e( 'Connected', 'event-tickets' ); ?> <span class="dashicons dashicons-saved"></span>
 		</span>
 
 		<?php if ( is_array( $error_messages ) ) : ?>
