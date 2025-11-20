@@ -8,6 +8,7 @@
  */
 
 use Tribe__Date_Utils as Dates;
+use Tribe__Repository__Interface as Repository_Interface;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -1979,7 +1980,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Use repository to get ticket.
 		$repository = tribe_tickets( 'rsvp' );
-		$ticket     = $repository->by( 'id', $ticket_id )->first();
+
+		if ( current_user_can( 'read_post', $ticket_id ) ) {
+			// If the user can read this ticket, then it can be in any status.
+			$repository->by( 'status', 'any' );
+			$repository->permission( Repository_Interface::PERMISSION_READABLE );
+		}
+
+		$ticket = $repository->by( 'id', $ticket_id )->first();
 
 		if ( ! $ticket ) {
 			return null;
