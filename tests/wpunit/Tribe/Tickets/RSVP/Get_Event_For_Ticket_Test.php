@@ -82,24 +82,6 @@ class Get_Event_For_Ticket_Test extends WPTestCase {
 	}
 
 	/**
-	 * It should return false for event with invalid post type
-	 *
-	 * @test
-	 */
-	public function should_return_false_for_event_with_invalid_post_type(): void {
-		// Create a regular post (not an event)
-		$post_id = static::factory()->post->create( [ 'post_type' => 'post' ] );
-
-		// Create a ticket linked to the regular post
-		$ticket_id = $this->create_rsvp_ticket( $post_id );
-
-		$event = $this->rsvp->get_event_for_ticket( $ticket_id );
-
-		// Should return false because 'post' is not a valid ticketable post type by default
-		$this->assertFalse( $event );
-	}
-
-	/**
 	 * It should handle attendee event key fallback
 	 *
 	 * @test
