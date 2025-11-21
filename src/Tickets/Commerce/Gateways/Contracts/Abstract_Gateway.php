@@ -10,6 +10,8 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -400,4 +402,51 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	public function renders_solo(): bool {
 		return true;
 	}
+
+	/**
+	 * Normalize a Precision_Value according to TEC currency precision rules.
+	 *
+	 * This provides the default normalization logic used by all gateways.
+	 * It ensures the value is adjusted to match the decimal precision defined
+	 * in the TEC currency map for the given ISO currency code.
+	 *
+	 * Gateways with their own precision or currency handling rules (e.g., Stripe,
+	 * PayPal, etc.) should override this method to apply custom normalization
+	 * before sending values to their APIs.
+	 *
+	 * @since TBD
+	 *
+	 * @param Precision_Value $value The Precision_Value to normalize.
+	 * @param string          $currency_code The ISO currency code (e.g., 'USD', 'JPY'). Expected to be in Uppercase.
+	 *
+	 * @return Precision_Value The normalized Precision_Value ready for gateway use.
+	 */
+	public function normalize_value_for_gateway( Precision_Value $value, string $currency_code ): Precision_Value {
+		$precision        = Currency::get_currency_precision( $currency_code );
+		$normalized_value = $value->convert_to_precision( $precision );
+
+		/**
+		 * Filters the normalized Precision_Value for this gateway.
+		 *
+		 * Allows modifying the normalized Precision_Value for a specific
+		 * gateway after applying the default normalization but before it is used
+		 * for gateway operations or API requests.
+		 *
+		 * To override this normalization globally for a gateway, hook into:
+		 * `tec_tickets_commerce_gateway_{gateway_key}_normalize_value`
+		 *
+		 * @since TBD
+		 *
+		 * @param Precision_Value    $normalized_value The normalized Precision_Value.
+		 * @param string             $currency_code    The ISO currency code.
+		 * @param Gateway_Interface  $gateway          The gateway instance.
+		 */
+		return apply_filters(
+			sprintf( 'tec_tickets_commerce_gateway_%s_normalize_value', static::$key ),
+			$normalized_value,
+			$currency_code,
+			$this
+		);
+	}
+
 }
