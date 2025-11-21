@@ -29,6 +29,15 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	public function __construct() {
 		parent::__construct();
 
+		$post_type = ( $this->ticket_types() )['rsvp'] ?? 'tribe_rsvp_tickets';
+
+		$this->create_args['post_type'] = $post_type;
+
+		$this->default_args = [
+			'post_type' => $post_type,
+			'orderby'   => [ 'date', 'ID' ],
+		];
+
 		// Add RSVP-specific field aliases.
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
