@@ -28,7 +28,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_array_with_all_required_keys(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -57,7 +64,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_correct_order_id(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -72,7 +86,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_purchaser_name_from_repository(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -90,7 +111,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_purchaser_email_from_repository(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -108,7 +136,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_correct_provider_class(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -123,7 +158,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_correct_provider_slug(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -138,7 +180,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_purchase_time(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -156,7 +205,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_apply_filter_tribe_tickets_order_data(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -187,7 +243,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_allow_filter_to_modify_order_data(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -216,7 +279,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_missing_purchaser_name_gracefully(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -236,7 +306,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_missing_purchaser_email_gracefully(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -256,7 +333,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_empty_name_and_email_together(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 
@@ -281,7 +365,14 @@ class Get_Order_Data_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_use_repository_get_field_method_for_data_retrieval(): void {
-		$event_id    = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id   = $this->create_rsvp_ticket( $event_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $event_id );
 

@@ -45,7 +45,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_convert_basic_post_properties(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'post_title'   => 'VIP Ticket',
 			'post_excerpt' => 'Includes backstage access',
@@ -68,7 +75,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_set_price_and_stock_fields_using_repository(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_price'      => '25.00',
@@ -91,7 +105,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_set_provider_class_correctly(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
 		$post = get_post( $ticket_id );
@@ -106,7 +127,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_start_date_when_present(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_ticket_start_date' => '2025-11-20 10:00:00',
@@ -126,7 +154,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_end_date_when_present(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_ticket_end_date' => '2025-12-31 23:59:59',
@@ -146,7 +181,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_missing_optional_dates(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_ticket_start_date' => '',
@@ -168,7 +210,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_stock_management_flag(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_manage_stock' => 'yes',
@@ -189,7 +238,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_disabled_stock_management(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_manage_stock' => 'no',
@@ -208,7 +264,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_global_stock_mode(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_capacity' => 100,
@@ -237,7 +300,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_non_own_stock_mode(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_global_stock_mode' => 'global',
@@ -256,7 +326,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_set_capacity_from_stock_calculation(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_stock'       => 50,
@@ -277,7 +354,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_set_show_description_property(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
 		$post = get_post( $ticket_id );
@@ -293,7 +377,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_use_repository_get_field_for_meta_access(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_price'      => '50.00',
@@ -323,7 +414,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_all_ticket_object_fields(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'post_title'   => 'Complete Ticket',
 			'post_excerpt' => 'Full description',
@@ -366,7 +464,14 @@ class Convert_Post_To_Ticket_Object_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_zero_values_correctly(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_price'      => '0',

@@ -29,7 +29,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_ticket_object_for_valid_ticket(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'post_title'   => 'Test Ticket',
 			'post_excerpt' => 'Test Description',
@@ -67,7 +74,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_populate_all_ticket_object_fields_correctly(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'post_title'   => 'VIP Ticket',
 			'post_excerpt' => 'VIP Access',
@@ -101,7 +115,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_use_cached_ticket_if_available(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_price' => 25,
@@ -135,7 +156,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_set_cache_after_fetch(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
 		// Flush cache
@@ -160,7 +188,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_apply_filter_tribe_tickets_rsvp_get_ticket(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_price' => 25,
@@ -196,7 +231,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_stock_management_mode(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_capacity' => 50,
@@ -215,7 +257,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_date_fields(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 
 		$start_datetime = date( 'Y-m-d H:i:s', strtotime( '+1 day' ) );
 		$end_datetime   = date( 'Y-m-d H:i:s', strtotime( '+7 days' ) );
@@ -241,7 +290,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_calculate_capacity_correctly(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_capacity' => 100,
@@ -259,7 +315,14 @@ class Get_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_sales_field(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'_capacity'   => 100,

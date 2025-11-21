@@ -28,7 +28,14 @@ class Get_Event_For_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_event_post_for_valid_ticket(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
 		$event = $this->rsvp->get_event_for_ticket( $ticket_id );
@@ -44,7 +51,14 @@ class Get_Event_For_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_event_post_when_passed_ticket_object(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
 		$ticket_object = get_post( $ticket_id );
@@ -87,7 +101,14 @@ class Get_Event_For_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_handle_attendee_event_key_fallback(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = static::factory()->post->create( [
 			'post_type' => RSVP::ATTENDEE_OBJECT,
 		] );
@@ -107,7 +128,14 @@ class Get_Event_For_Ticket_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_use_repository_get_event_id_method(): void {
-		$event_id  = static::factory()->post->create( [ 'post_type' => 'tribe_events' ] );
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2023-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
 		// Verify repository returns correct event ID
