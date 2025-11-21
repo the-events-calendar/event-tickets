@@ -81,7 +81,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * This method performs atomic read-modify-write operations to prevent
 	 * race conditions during concurrent ticket purchases.
 	 *
-	 * @since TBD
+	 * @since 5.28.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $delta     The change in sales (positive = increase, negative = decrease).
@@ -143,7 +143,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	/**
 	 * Get the event ID for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.28.0
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 *
@@ -160,7 +160,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 *
 	 * Uses repository methods for proper creation and meta handling.
 	 *
-	 * @since TBD
+	 * @since 5.28.0
 	 *
 	 * @param int   $ticket_id Ticket ID to duplicate.
 	 * @param array $overrides Optional field overrides (e.g., ['title' => 'New Name']).
@@ -201,5 +201,26 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 
 		// Repository create() returns WP_Post object or false.
 		return $new_ticket instanceof \WP_Post ? $new_ticket->ID : false;
+	}
+
+	/**
+	 * Delete meta field from a ticket.
+	 *
+	 * Provides repository-level meta deletion using WordPress meta API.
+	 * Uses field aliases from the repository for consistency.
+	 *
+	 * @since 5.28.0
+	 *
+	 * @param int    $ticket_id Ticket ID.
+	 * @param string $field     Field name (can be alias or meta key).
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete_meta( $ticket_id, $field ) {
+		// Resolve field alias to actual meta key.
+		$meta_key = Tribe__Utils__Array::get( $this->update_fields_aliases, $field, $field );
+
+		// Use WordPress meta API for deletion.
+		return delete_post_meta( $ticket_id, $meta_key );
 	}
 }
