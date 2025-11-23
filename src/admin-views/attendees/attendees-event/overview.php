@@ -56,7 +56,7 @@
 							<?php esc_html_e( $ticket->name ); ?>
 						</span>
 						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id">
-							<?php esc_html_e( sprintf( '#%d', $ticket->ID ) ); ?>
+							<?php echo esc_html( sprintf( '#%d', $ticket->ID ) ); ?>
 						</span>
 					</div>
 					<div class="tec-tickets__admin-attendees-overview-ticket-type-list-item-stat">
