@@ -108,7 +108,7 @@ class Adjust_Sales_Test extends \Codeception\TestCase\WPTestCase {
 		$repository = tribe_tickets( 'rsvp' );
 		$new_sales = $repository->adjust_sales( $ticket_id, 5 );
 
-		// Sales should increase by 5
+		// For RSVP tickets, sales can exceed capacity (10), so it should be 13
 		$this->assertEquals( 13, $new_sales );
 		$this->assertEquals( 13, get_post_meta( $ticket_id, 'total_sales', true ) );
 		// Stock should be clamped to 0, not -3
@@ -208,15 +208,15 @@ class Adjust_Sales_Test extends \Codeception\TestCase\WPTestCase {
 			'post_type' => 'tribe_rsvp_tickets',
 		] );
 
-		// Don't create meta keys initially
-		// (normally created by save_ticket() but we skip it)
+		// Set a capacity so the ticket is valid, but don't set total_sales or _stock
+		update_post_meta( $ticket_id, '_tribe_ticket_capacity', 10 );
 
 		$repository = tribe_tickets( 'rsvp' );
 		$result = $repository->adjust_sales( $ticket_id, 5 );
 
 		$this->assertNotFalse( $result );
 		$this->assertEquals( 5, get_post_meta( $ticket_id, 'total_sales', true ) );
-		// Stock starts at 0, decreasing by 5 would be -5, but GREATEST clamps to 0
-		$this->assertEquals( 0, get_post_meta( $ticket_id, '_stock', true ) );
+		// Stock = capacity - sales = 10 - 5 = 5
+		$this->assertEquals( 5, get_post_meta( $ticket_id, '_stock', true ) );
 	}
 }

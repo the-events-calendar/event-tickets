@@ -117,14 +117,13 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			add_post_meta( $ticket_id, '_stock', 0, true );
 		}
 
-		// Atomic UPDATE for sales, prevents race conditions. Must not go over capacity.
+		// Atomic UPDATE for sales, prevents race conditions. Can go over capacity.
 		$sales_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = LEAST(GREATEST(0, CAST(meta_value AS SIGNED) + %d), %d)
+				 SET meta_value = GREATEST(0, CAST(meta_value AS SIGNED) + %d)
 				 WHERE post_id = %d AND meta_key = 'total_sales'",
 				$delta,
-				$ticket_capacity,
 				$ticket_id
 			)
 		);

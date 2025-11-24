@@ -45,15 +45,14 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 5,
+				'_capacity'   => 10, // capacity = total_sales + _stock
 				'_stock'      => 5,
 			],
 		] );
 
 		// Create an attendee with 'no' status
 		$attendee_id = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'no',
-			],
+			'rsvp_status' => 'no',
 		] );
 
 		// Change status from 'no' to 'yes' (should increase sales by 1)
@@ -81,14 +80,13 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 10,
+				'_capacity'   => 20, // capacity = total_sales + _stock
 				'_stock'      => 10,
 			],
 		] );
 
 		$attendee_id = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'yes',
-			],
+			'rsvp_status' => 'yes',
 		] );
 
 		// Change from 'yes' to 'no' (should decrease sales by 1)
@@ -116,6 +114,7 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 5,
+				'_capacity'   => 10, // capacity = total_sales + _stock
 				'_stock'      => 5,
 			],
 		] );
@@ -148,14 +147,13 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 7,
+				'_capacity'   => 10, // capacity = total_sales + _stock
 				'_stock'      => 3,
 			],
 		] );
 
 		$attendee_id = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'yes',
-			],
+			'rsvp_status' => 'yes',
 		] );
 
 		// Update with same status (should return true but not change anything)
@@ -184,14 +182,13 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 8,
+				'_capacity'   => 10, // capacity = total_sales + _stock
 				'_stock'      => 2,
 			],
 		] );
 
 		$attendee_id = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'yes',
-			],
+			'rsvp_status' => 'yes',
 		] );
 
 		// Change from 'yes' to 'no'
@@ -219,14 +216,13 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 5,
+				'_capacity'   => 10, // capacity = total_sales + _stock
 				'_stock'      => 5,
 			],
 		] );
 
 		$attendee_id = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'no',
-			],
+			'rsvp_status' => 'no',
 		] );
 
 		// Change from 'no' to 'yes'
@@ -254,20 +250,17 @@ class Update_Sales_And_Stock_By_Order_Status_Test extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id, [
 			'meta_input' => [
 				'total_sales' => 0,
+				'_capacity'   => 10, // capacity = total_sales + _stock
 				'_stock'      => 10,
 			],
 		] );
 
 		// Create multiple attendees
 		$attendee1 = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'no',
-			],
+			'rsvp_status' => 'no',
 		] );
 		$attendee2 = $this->create_rsvp_attendee( $ticket_id, $event_id, [
-			'meta_input' => [
-				'_tribe_rsvp_status' => 'no',
-			],
+			'rsvp_status' => 'no',
 		] );
 
 		// Change both to 'yes'

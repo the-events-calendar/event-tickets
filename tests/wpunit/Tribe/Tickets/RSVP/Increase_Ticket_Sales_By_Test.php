@@ -165,6 +165,7 @@ class Increase_Ticket_Sales_By_Test extends WPTestCase {
 		// Try to increase by more than available stock
 		$new_sales = $this->rsvp->increase_ticket_sales_by( $ticket_id, 5 );
 
+		// For RSVP tickets, sales can exceed capacity (10), so it should be 13.
 		$this->assertEquals( 13, $new_sales );
 		// Stock should be 0, not negative
 		$this->assertEquals( 0, get_post_meta( $ticket_id, '_stock', true ) );
