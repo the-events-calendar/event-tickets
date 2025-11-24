@@ -15,7 +15,7 @@
 			<?php esc_html_e( 'Add Paystack checkout to Tickets Commerce', 'event-tickets' ); ?>
 		</div>
 		<div class="tec-tickets__admin-after-pay-promo-description">
-			<?php echo wp_kses( esc_html_e( 'Accept payments for your ticket sales in Nigeria, Ghana, South Africa, and Kenya with Paystack.  Install the free plugin to get started.', 'event-tickets' ), 'post' ); ?>
+			<?php esc_html_e( 'Accept payments for your ticket sales in Nigeria, Ghana, South Africa, and Kenya with Paystack.  Install the free plugin to get started.', 'event-tickets' ); ?>
 		</div>
 		<div class="tec-tickets__admin-after-pay-promo-links-container">
 			<a 
