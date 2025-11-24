@@ -56,6 +56,8 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 				'global_stock_cap'  => '_global_stock_cap',
 			]
 		);
+
+		$this->add_schema_entry( 'attendee_id', [ $this, 'filter_by_attendee_id' ] );
 	}
 
 	/**
@@ -105,6 +107,8 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			return false;
 		}
 
+		$ticket_capacity = get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
+
 		// Initialize meta keys if they don't exist.
 		if ( ! metadata_exists( 'post', $ticket_id, 'total_sales' ) ) {
 			add_post_meta( $ticket_id, 'total_sales', 0, true );
@@ -113,24 +117,26 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			add_post_meta( $ticket_id, '_stock', 0, true );
 		}
 
-		// Atomic UPDATE for sales - prevents race conditions.
+		// Atomic UPDATE for sales, prevents race conditions. Must not go over capacity.
 		$sales_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = GREATEST(0, CAST(meta_value AS SIGNED) + %d)
+				 SET meta_value = LEAST(GREATEST(0, CAST(meta_value AS SIGNED) + %d), %d)
 				 WHERE post_id = %d AND meta_key = 'total_sales'",
 				$delta,
+				$ticket_capacity,
 				$ticket_id
 			)
 		);
 
-		// Atomic UPDATE for stock - inverse of sales.
+		// Atomic UPDATE for stock, inverse of sales. Must not go over capacity.
 		$stock_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = GREATEST(0, CAST(meta_value AS SIGNED) - %d)
+				 SET meta_value = LEAST(GREATEST(0, CAST(meta_value AS SIGNED) - %d), %d)
 				 WHERE post_id = %d AND meta_key = '_stock'",
 				$delta,
+				$ticket_capacity,
 				$ticket_id
 			)
 		);
@@ -231,5 +237,32 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 
 		// Use WordPress meta API for deletion.
 		return delete_post_meta( $ticket_id, $meta_key );
+	}
+
+	/**
+	 * Filter by Attendee ID.
+	 *
+	 * This builds on the one-to-many relationship between Tickets and Attendees: an Attendee
+	 * will only have one Ticket, and a Ticket will be associated with many Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $value The Attendee ID to filter the tickets by.
+	 *
+	 * @return void
+	 */
+	public function filter_by_attendee_id( $value ) {
+		$ticket_id = get_post_meta( $value, \Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
+
+		if ( ! $ticket_id ) {
+			/*
+			 * Attendees have a one-to-many relationship with Tickets.
+			 * If we could not find the Ticket for the Attendee, we can't filter by it.
+			 */
+			$this->void_query( true );
+		}
+
+		// If we have a Ticket ID, then that is the only possible match.
+		$this->by( 'id', $ticket_id );
 	}
 }

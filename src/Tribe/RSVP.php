@@ -1598,7 +1598,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Assume we are updating until we find out otherwise.
 		$save_type = 'update';
-		$is_new = empty( $ticket->ID );
+		$is_new    = empty( $ticket->ID );
 
 		if ( $is_new ) {
 			$save_type = 'create';
@@ -1619,7 +1619,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Handle show_description field.
-		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
+		$ticket->show_description        = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
 		$ticket_data['show_description'] = $ticket->show_description;
 
 		// Add RSVP price.
@@ -1628,13 +1628,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Handle RSVP show_not_going option.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			$ticket_data_raw = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
-			$show_not_going = 'no';
+			$show_not_going  = 'no';
 
 			if ( isset( $ticket_data_raw['not_going'] ) ) {
 				$show_not_going = $ticket_data_raw['not_going'];
 			}
 
-			$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
+			$show_not_going                = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
 			$ticket_data['show_not_going'] = $show_not_going;
 		}
 
@@ -1646,7 +1646,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$start_date .= ' ' . $raw_data['ticket_start_time'];
 			}
 
-			$ticket->start_date = Dates::immutable( $start_date )->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
+			$ticket->start_date        = Dates::immutable( $start_date )->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
 			$ticket_data['start_date'] = $ticket->start_date;
 		} elseif ( ! $is_new ) {
 			// Empty value means delete for existing tickets.
@@ -1661,7 +1661,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$end_date .= ' ' . $raw_data['ticket_end_time'];
 			}
 
-			$ticket->end_date = Dates::immutable( $end_date )->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
+			$ticket->end_date        = Dates::immutable( $end_date )->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
 			$ticket_data['end_date'] = $ticket->end_date;
 		} elseif ( ! $is_new ) {
 			// Empty value means delete for existing tickets.
@@ -1681,8 +1681,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		} else {
 			// UPDATE - Use repository.
 			$result = $repository->by( 'id', $ticket->ID )
-			                     ->set_args( $ticket_data )
-			                     ->save();
+								->set_args( $ticket_data )
+								->save();
 
 			if ( false === $result ) {
 				return false;
@@ -1742,7 +1742,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Run anything we might need on parent method.
 		parent::delete_ticket( $event_id, $ticket_id );
 
-		$ticket_repository = tribe_tickets( 'rsvp' );
+		$ticket_repository   = tribe_tickets( 'rsvp' );
 		$attendee_repository = tribe_attendees( 'rsvp' );
 
 		// Ensure we know the event and product IDs (the event ID may not have been passed in).
@@ -1759,29 +1759,46 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		// Set permissions on the ticket repository to read Tickets in any status.
+		$ticket_repository->by( 'status', 'any' );
+
+		// Set permissions on the attendee repository to read Attendees in any status.
+		$attendee_repository->by( 'status', 'any' );
+
+		// Are we dealing with a Ticket or an Attendee?
+		$deleting_rsvp_ticket = get_post_type( $ticket_id ) === $this->ticket_object;
+
 		// Get ticket for name and type before deletion.
-		$ticket = $ticket_repository->by( 'id', $ticket_id )->first();
+		if ( $deleting_rsvp_ticket ) {
+			// We're deleting a Ticket, get it before deletion.
+			$ticket = $ticket_repository->by( 'id', $ticket_id )->first();
+		} else {
+			// We're deleting an Attendee, get the Ticket from it.
+			$ticket = $ticket_repository->by( 'attendee_id', $ticket_id )->first();
+		}
 
 		if ( ! $ticket ) {
 			return false;
 		}
 
 		$product_id = $ticket->ID;
-		$deleting_rsvp_ticket = ( $ticket->post_type === $this->ticket_object );
 
 		// Stock Adjustment handled by $this->update_stock_from_attendees_page().
 
 		// Store name so we can still show it in the attendee list.
 		// Check if we are deleting the RSVP ticket product.
 		if ( $deleting_rsvp_ticket ) {
-			$attendees = $this->get_attendees_by_ticket_id( $ticket_id );
+			$attendees    = $this->get_attendees_by_ticket_id( $ticket_id );
 			$attendee_ids = wp_list_pluck( $attendees, 'attendee_id' );
 
 			// Mark orphaned attendees via repository.
 			if ( ! empty( $attendee_ids ) ) {
-				$attendee_repository->bulk_update( $attendee_ids, [
-					'deleted_product' => $ticket->post_title
-				] );
+				$attendee_repository->bulk_update(
+					$attendee_ids,
+					[
+						'deleted_product' => $ticket->post_title,
+					] 
+				);
 			}
 		}
 
@@ -2758,9 +2775,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Calculate the difference in stock impact between old and new status.
 		// If status changes from 'no' (0) to 'yes' (1), diff = 1 (increase sales).
 		// If status changes from 'yes' (1) to 'no' (0), diff = -1 (decrease sales).
-		$diff = $status_stock_sizes['attendee_stock_size'] - $status_stock_sizes['previous_stock_size'];
-
-		return $diff;
+		return $status_stock_sizes['attendee_stock_size'] - $status_stock_sizes['previous_stock_size'];
 	}
 
 	/**
