@@ -250,4 +250,31 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 		// Use WordPress meta API for deletion.
 		return delete_post_meta( $ticket_id, $meta_key );
 	}
+
+	/**
+	 * Filter by Attendee ID.
+	 *
+	 * This builds on the one-to-many relationship between Tickets and Attendees: an Attendee
+	 * will only have one Ticket, and a Ticket will be associated with many Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $value The Attendee ID to filter the tickets by.
+	 *
+	 * @return void
+	 */
+	public function filter_by_attendee_id( $value ) {
+		$ticket_id = get_post_meta( $value, \Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
+
+		if ( ! $ticket_id ) {
+			/*
+			 * Attendees have a one-to-many relationship with Tickets.
+			 * If we could not find the Ticket for the Attendee, we can't filter by it.
+			 */
+			$this->void_query( true );
+		}
+
+		// If we have a Ticket ID, then that is the only possible match.
+		$this->by( 'id', $ticket_id );
+	}
 }
