@@ -202,7 +202,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 		$aliases = $this->get_update_fields_aliases();
 		foreach ( $aliases as $alias => $meta_key ) {
 			$value = $this->get_field( $ticket_id, $alias );
-			if ( null !== $value ) {
+			if ( '' !== $value ) {
 				$ticket_data[ $alias ] = $value;
 			}
 		}

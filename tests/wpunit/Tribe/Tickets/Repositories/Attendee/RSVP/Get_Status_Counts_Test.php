@@ -227,4 +227,44 @@ class Get_Status_Counts_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertIsArray( $result );
 		// This should return results for event ID 1 only, not all events
 	}
+
+	/**
+	 * It should include attendees without status metadata.
+	 *
+	 * @test
+	 */
+	public function should_include_attendees_without_status_metadata() {
+		$post_id = $this->factory->post->create();
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		// Create 5 attendees with 'yes' status
+		$this->create_many_attendees_for_ticket( 5, $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+		] );
+
+		// Create 3 attendees with 'no' status
+		$this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id, [
+			'rsvp_status' => 'no',
+		] );
+
+		// Create 2 legacy attendees WITHOUT status metadata
+		$attendee_1 = $this->create_attendee_for_ticket( $ticket_id, $post_id );
+		$attendee_2 = $this->create_attendee_for_ticket( $ticket_id, $post_id );
+
+		// Remove the status metadata to simulate legacy attendees
+		delete_post_meta( $attendee_1, '_tribe_rsvp_status' );
+		delete_post_meta( $attendee_2, '_tribe_rsvp_status' );
+
+		$repository = tribe_attendees( 'rsvp' );
+		$counts = $repository->get_status_counts( $post_id );
+
+		// Should include all attendees
+		$this->assertEquals( 5, $counts['yes'] );
+		$this->assertEquals( 3, $counts['no'] );
+		$this->assertEquals( 2, $counts['unknown'] ); // Legacy attendees without status
+
+		// Total should be 10
+		$total = array_sum( $counts );
+		$this->assertEquals( 10, $total, 'Total count should include all attendees, even those without status metadata' );
+	}
 }

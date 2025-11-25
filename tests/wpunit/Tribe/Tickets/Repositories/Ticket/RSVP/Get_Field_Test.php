@@ -211,30 +211,30 @@ class Get_Field_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should return null for non-existent field.
+	 * It should return empty string for non-existent field.
 	 *
 	 * @test
 	 */
-	public function should_return_null_for_nonexistent_field() {
+	public function should_return_empty_string_for_nonexistent_field() {
 		$post_id = $this->factory->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$repository = tribe_tickets( 'rsvp' );
 		$value = $repository->get_field( $ticket_id, 'non_existent_field' );
 
-		$this->assertNull( $value );
+		$this->assertSame( '', $value );
 	}
 
 	/**
-	 * It should return null for non-existent ticket.
+	 * It should return empty string for non-existent ticket.
 	 *
 	 * @test
 	 */
-	public function should_return_null_for_nonexistent_ticket() {
+	public function should_return_empty_string_for_nonexistent_ticket() {
 		$repository = tribe_tickets( 'rsvp' );
 		$value = $repository->get_field( 99999, 'price' );
 
-		$this->assertNull( $value );
+		$this->assertSame( '', $value );
 	}
 
 	/**
@@ -290,7 +290,7 @@ class Get_Field_Test extends \Codeception\TestCase\WPTestCase {
 		// Empty string should return empty string, not null
 		$this->assertSame( '', $repository->get_field( $ticket_id, '_ticket_description' ) );
 
-		// Nonexistent field should return null
-		$this->assertNull( $repository->get_field( $ticket_id, 'nonexistent_field' ) );
+		// Nonexistent field should return empty string
+		$this->assertSame( '', $repository->get_field( $ticket_id, 'nonexistent_field' ) );
 	}
 }

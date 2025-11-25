@@ -291,20 +291,22 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT pm2.meta_value as status, COUNT(*) as count
+				'SELECT COALESCE(pm2.meta_value, %s) as status, COUNT(*) as count
 				 FROM %i p
 				 INNER JOIN %i pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
-				 INNER JOIN %i pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+				 LEFT JOIN %i pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
 				 WHERE p.post_type = %s
 				 AND pm1.meta_value = %d
-				 GROUP BY pm2.meta_value',
+				 GROUP BY COALESCE(pm2.meta_value, %s)',
+				'unknown',
 				$wpdb->posts,
 				$wpdb->postmeta,
 				'_tribe_rsvp_event',
 				$wpdb->postmeta,
 				'_tribe_rsvp_status',
 				'tribe_rsvp_attendees',
-				$event_id
+				$event_id,
+				'unknown'
 			)
 		);
 

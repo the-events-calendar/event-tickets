@@ -35,7 +35,7 @@ trait Get_Field {
 	 * @param int    $post_id Post ID (ticket or attendee).
 	 * @param string $field   Field name (alias-aware, e.g., 'price', 'event_id', 'email').
 	 *
-	 * @return mixed Field value or null if not found.
+	 * @return mixed Field value or empty string if not found.
 	 */
 	public function get_field( int $post_id, string $field ) {
 		// Map field aliases to actual meta keys using the repository's alias map.
@@ -53,7 +53,7 @@ trait Get_Field {
 
 		// Use metadata_exists to distinguish "not set" from "set to empty".
 		if ( ! metadata_exists( 'post', $post_id, $meta_key ) ) {
-			return null;
+			return '';
 		}
 
 		return get_post_meta( $post_id, $meta_key, true );
