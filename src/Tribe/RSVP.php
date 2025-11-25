@@ -2078,9 +2078,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket_product = $ticket_product->ID;
 		}
 
+		// Validate ticket_product is a valid ID before proceeding.
+		if ( empty( $ticket_product ) || ! is_numeric( $ticket_product ) ) {
+			return false;
+		}
+
 		// Use repository to get event ID.
 		$repository = tribe_tickets( 'rsvp' );
-		$event_id   = $repository->get_event_id( $ticket_product );
+		$event_id   = $repository->get_event_id( (int) $ticket_product );
 
 		// Fallback to attendee event key if primary key not found.
 		if ( ! $event_id ) {
