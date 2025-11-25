@@ -1797,7 +1797,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					$attendee_ids,
 					[
 						'deleted_product' => $ticket->post_title,
-					] 
+					]
 				);
 			}
 		}
@@ -2471,17 +2471,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function checkin( $attendee_id, $qr = null, $event_id = null, $details = [] ) {
 		$qr = (bool) $qr;
 
-		if ( $qr ) {
-			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
-		}
-
 		$event_id = $event_id ?: get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
-
-		update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
 		$checkin_details = [
 			'date'      => (string) ! empty( $details['timestamp'] ) ? $details['timestamp'] : current_time( 'mysql' ),
@@ -2501,7 +2495,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$checkin_details = apply_filters( 'rsvp_checkin_details', $checkin_details, $attendee_id, $qr );
 
-		update_post_meta( $attendee_id, $this->checkin_key . '_details', $checkin_details );
+		$repository = tribe_attendees( 'rsvp' );
+
+		$updates = [
+			'check_in'         => 1,
+			'check_in_details' => $checkin_details,
+		];
+
+		if ( $qr ) {
+			$updates['qr_status'] = 1;
+		}
+
+		$repository->by( 'id', $attendee_id )
+					->set_args( $updates )
+					->save();
 
 		/**
 		 * Fires a checkin action
@@ -2531,12 +2538,73 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		delete_post_meta( $attendee_id, $this->checkin_key );
-		delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
-		delete_post_meta( $attendee_id, '_tribe_qr_status' );
+		// Remove checkin fields.
+		tribe_attendees( 'rsvp' )
+			->by( 'id', $attendee_id )
+					->set( 'check_in', null )
+					->set( 'check_in_details', null )
+					->set( 'qr_status', null )
+					->save();
+
 		do_action( 'rsvp_uncheckin', $attendee_id );
 
 		return true;
+	}
+
+	/**
+	 * Updates the ticket sent counter for an attendee.
+	 *
+	 * Overrides parent to use repository pattern for RSVP attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id Attendee post ID.
+	 */
+	public function update_ticket_sent_counter( $attendee_id ) {
+		$repository = tribe_attendees( 'rsvp' );
+
+		$current_count = (int) $repository->get_field( $attendee_id, 'ticket_sent' );
+
+		$repository->by( 'id', $attendee_id )
+					->set( 'ticket_sent', $current_count + 1 )
+					->save();
+	}
+
+	/**
+	 * Updates the activity log for an attendee.
+	 *
+	 * Overrides parent to use repository pattern for RSVP attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $attendee_id Attendee ID.
+	 * @param array $data        Data that needs to be logged.
+	 */
+	public function update_attendee_activity_log( $attendee_id, $data = [] ) {
+		$repository = tribe_attendees( 'rsvp' );
+		$activity   = $repository->get_field( $attendee_id, 'activity_log' );
+
+		if ( ! is_array( $activity ) ) {
+			$activity = [];
+		}
+
+		/**
+		 * Filter the activity log data for attendee.
+		 *
+		 * @since 5.1.0
+		 *
+		 * @param array $data        Activity data.
+		 * @param int   $attendee_id Attendee ID.
+		 */
+		$data = apply_filters( 'tribe_tickets_attendee_activity_log_data', $data, $attendee_id );
+
+		$data['time'] = time();
+
+		$activity[] = $data;
+
+		$repository->by( 'id', $attendee_id )
+					->set( 'activity_log', $activity )
+					->save();
 	}
 
 	/**
