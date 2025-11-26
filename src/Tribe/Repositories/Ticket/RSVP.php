@@ -218,7 +218,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 		];
 
 		foreach ( $aliases as $alias => $meta_key ) {
-			$value = isset( $all_meta[ $meta_key ][0] ) ? $all_meta[ $meta_key ][0] : '';
+			$value = $all_meta[ $meta_key ][0] ?? '';
 			if ( '' !== $value ) {
 				$ticket_data[ $alias ] = maybe_unserialize( $value );
 			}
