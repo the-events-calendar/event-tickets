@@ -109,7 +109,8 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 
 		$ticket_capacity = get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
 
-		// Initialize meta keys if they don't exist.
+		// Ensure meta keys exist so subsequent atomic SQL updates can modify them. If keys don't exist,
+		// the UPDATE query will silently fail, breaking the atomicity guarantee.
 		if ( ! metadata_exists( 'post', $ticket_id, 'total_sales' ) ) {
 			add_post_meta( $ticket_id, 'total_sales', 0, true );
 		}
@@ -117,7 +118,12 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			add_post_meta( $ticket_id, '_stock', 0, true );
 		}
 
-		// Atomic UPDATE for sales, prevents race conditions. Can go over capacity.
+		/*
+		 * Use atomic SQL with GREATEST/LEAST functions to prevent race conditions during concurrent
+		 * ticket purchases. Without atomic operations, two simultaneous requests could read the same
+		 * value, modify it, and write back incorrect totals. GREATEST(0, ...) ensures sales never go
+		 * negative even when processing cancellations concurrently.
+		 */
 		$sales_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
@@ -128,7 +134,11 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			)
 		);
 
-		// Atomic UPDATE for stock, inverse of sales. Must not go over capacity.
+		/*
+		 * Stock calculation uses LEAST to cap at capacity, preventing stock from exceeding ticket
+		 * limits when processing cancellations. Combined with GREATEST(0, ...), this ensures stock
+		 * stays within valid bounds [0, capacity] even under concurrent modifications.
+		 */
 		$stock_result = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta}
@@ -144,13 +154,20 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			return false;
 		}
 
-		// Clear cache.
+		/*
+		 * Clear post meta cache so subsequent get_post_meta() calls fetch fresh data from the database.
+		 * Without this, the same request could read stale cached values after the atomic SQL update.
+		 */
 		wp_cache_delete( $ticket_id, 'post_meta' );
 
-		// A number of other elements depend on the updated values: trigger a save-post based invalidation.
+		/*
+		 * Trigger save_post to invalidate dependent caches like attendance totals, REST API responses,
+		 * and any other data derived from ticket sales/stock values. This ensures consistency across
+		 * the entire system, not just for this immediate request.
+		 */
 		Cache_Listener::instance()->save_post( $ticket_id, get_post( $ticket_id ) );
 
-		// Get new sales count.
+		// Return the new sales count to confirm the atomic operation succeeded and provide updated state.
 		return (int) get_post_meta( $ticket_id, 'total_sales', true );
 	}
 
@@ -182,38 +199,37 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return int|false New ticket ID or false on failure.
 	 */
 	public function duplicate( int $ticket_id, array $overrides = [] ) {
-		// Get original ticket using repository.
-		$original = $this->by( 'id', $ticket_id )->first();
+		$ticket = $this->by( 'id', $ticket_id )->first();
 
-		if ( ! $original ) {
+		if ( ! $ticket ) {
 			return false;
 		}
 
-		// Extract ticket data from post object.
+		$all_meta = get_post_meta( $ticket_id );
+		$aliases  = $this->get_update_fields_aliases();
+
 		$ticket_data = [
-			'title'       => $original->post_title,
-			'description' => $original->post_excerpt,
-			'content'     => $original->post_content,
-			'status'      => $original->post_status,
-			'menu_order'  => $original->menu_order,
+			'title'      => $ticket->post_title,
+			'excerpt'    => $ticket->post_excerpt,
+			'content'    => $ticket->post_content,
+			'status'     => 'publish',
+			'author'     => get_current_user_id(),
+			'menu_order' => $ticket->menu_order,
 		];
 
-		// Add all meta fields using aliases.
-		$aliases = $this->get_update_fields_aliases();
 		foreach ( $aliases as $alias => $meta_key ) {
-			$value = $this->get_field( $ticket_id, $alias );
+			$value = isset( $all_meta[ $meta_key ][0] ) ? $all_meta[ $meta_key ][0] : '';
 			if ( '' !== $value ) {
-				$ticket_data[ $alias ] = $value;
+				$ticket_data[ $alias ] = maybe_unserialize( $value );
 			}
 		}
 
-		// Merge with overrides (caller can reset sales/stock if needed).
 		$ticket_data = array_merge( $ticket_data, $overrides );
 
-		// Create new ticket using repository.
+		unset( $ticket_data['ID'], $ticket_data['id'] );
+
 		$new_ticket = $this->set_args( $ticket_data )->create();
 
-		// Repository create() returns WP_Post object or false.
 		return $new_ticket instanceof \WP_Post ? $new_ticket->ID : false;
 	}
 
@@ -239,29 +255,22 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	}
 
 	/**
-	 * Filter by Attendee ID.
+	 * Filters tickets by attendee ID.
 	 *
-	 * This builds on the one-to-many relationship between Tickets and Attendees: an Attendee
-	 * will only have one Ticket, and a Ticket will be associated with many Attendees.
+	 * @since 5.19.0
 	 *
-	 * @since TBD
-	 *
-	 * @param int $value The Attendee ID to filter the tickets by.
+	 * @param int $value The attendee ID.
 	 *
 	 * @return void
 	 */
-	public function filter_by_attendee_id( $value ) {
+	public function filter_by_attendee_id( int $value ): void {
 		$ticket_id = get_post_meta( $value, \Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
 
 		if ( ! $ticket_id ) {
-			/*
-			 * Attendees have a one-to-many relationship with Tickets.
-			 * If we could not find the Ticket for the Attendee, we can't filter by it.
-			 */
 			$this->void_query( true );
+			return;
 		}
 
-		// If we have a Ticket ID, then that is the only possible match.
 		$this->by( 'id', $ticket_id );
 	}
 }

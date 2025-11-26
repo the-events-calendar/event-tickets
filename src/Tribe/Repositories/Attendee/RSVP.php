@@ -263,7 +263,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @return array Results indexed by attendee ID (true = success, false = failure).
 	 */
-	public function bulk_update( array $attendee_ids, array $updates ) {
+	public function bulk_update( array $attendee_ids, array $updates ): array {
 		$results = [];
 
 		foreach ( $attendee_ids as $attendee_id ) {
