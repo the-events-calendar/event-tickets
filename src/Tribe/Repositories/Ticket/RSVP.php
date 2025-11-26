@@ -252,29 +252,22 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	}
 
 	/**
-	 * Filter by Attendee ID.
+	 * Filters tickets by attendee ID.
 	 *
-	 * This builds on the one-to-many relationship between Tickets and Attendees: an Attendee
-	 * will only have one Ticket, and a Ticket will be associated with many Attendees.
+	 * @since 5.19.0
 	 *
-	 * @since TBD
-	 *
-	 * @param int $value The Attendee ID to filter the tickets by.
+	 * @param int $value The attendee ID.
 	 *
 	 * @return void
 	 */
-	public function filter_by_attendee_id( $value ) {
+	public function filter_by_attendee_id( int $value ): void {
 		$ticket_id = get_post_meta( $value, \Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
 
 		if ( ! $ticket_id ) {
-			/*
-			 * Attendees have a one-to-many relationship with Tickets.
-			 * If we could not find the Ticket for the Attendee, we can't filter by it.
-			 */
 			$this->void_query( true );
+			return;
 		}
 
-		// If we have a Ticket ID, then that is the only possible match.
 		$this->by( 'id', $ticket_id );
 	}
 }
