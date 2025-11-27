@@ -24,6 +24,14 @@ namespace TEC\Tickets\Repositories\Traits;
  * @package TEC\Tickets\Repositories\Traits
  */
 trait Get_Field {
+	/**
+	 * Get the aliases for the fields that can be updated via the repository.
+	 *
+	 * @since TBD
+	 *
+	 * @return array This repository update fields aliases map.
+	 */
+	abstract public function get_update_fields_aliases();
 
 	/**
 	 * Get a single field value without loading full object.
