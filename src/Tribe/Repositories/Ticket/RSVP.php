@@ -261,7 +261,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return void
 	 */
 	public function filter_by_attendee_id( int $value ): void {
-		$ticket_id = get_post_meta( $value, \Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
+		$ticket_id = get_post_meta( $value, Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
 
 		if ( ! $ticket_id ) {
 			$this->void_query( true );
