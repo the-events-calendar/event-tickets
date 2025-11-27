@@ -87,10 +87,11 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	}
 
 	/**
-	 * Atomically adjust ticket sales and stock.
+	 * Adjust ticket sales and stock.
 	 *
-	 * This method performs atomic read-modify-write operations to prevent
-	 * race conditions during concurrent ticket purchases.
+	 * Note: This method uses standard WordPress meta functions for hook compatibility.
+	 * While this may allow minor race conditions under high concurrency, it ensures
+	 * compatibility with plugins that rely on update_post_meta hooks.
 	 *
 	 * @since 5.28.0
 	 *
@@ -100,17 +101,14 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return int|false New sales count or false on failure.
 	 */
 	public function adjust_sales( int $ticket_id, int $delta ) {
-		global $wpdb;
-
 		// Check if ticket exists first.
 		if ( ! get_post( $ticket_id ) ) {
 			return false;
 		}
 
-		$ticket_capacity = get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
+		$ticket_capacity = (int) get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
 
-		// Ensure meta keys exist so subsequent atomic SQL updates can modify them. If keys don't exist,
-		// the UPDATE query will silently fail, breaking the atomicity guarantee.
+		// Ensure meta keys exist before updating.
 		if ( ! metadata_exists( 'post', $ticket_id, 'total_sales' ) ) {
 			add_post_meta( $ticket_id, 'total_sales', 0, true );
 		}
@@ -118,57 +116,34 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			add_post_meta( $ticket_id, '_stock', 0, true );
 		}
 
-		/*
-		 * Use atomic SQL with GREATEST/LEAST functions to prevent race conditions during concurrent
-		 * ticket purchases. Without atomic operations, two simultaneous requests could read the same
-		 * value, modify it, and write back incorrect totals. GREATEST(0, ...) ensures sales never go
-		 * negative even when processing cancellations concurrently.
-		 */
-		$sales_result = $wpdb->query(
-			$wpdb->prepare(
-				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = GREATEST(0, CAST(meta_value AS SIGNED) + %d)
-				 WHERE post_id = %d AND meta_key = 'total_sales'",
-				$delta,
-				$ticket_id
-			)
-		);
+		$old_sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		$old_stock = (int) get_post_meta( $ticket_id, '_stock', true );
 
 		/*
-		 * Stock calculation uses LEAST to cap at capacity, preventing stock from exceeding ticket
-		 * limits when processing cancellations. Combined with GREATEST(0, ...), this ensures stock
-		 * stays within valid bounds [0, capacity] even under concurrent modifications.
+		 * Sales can grow unbounded but never go negative. Unlike stock, there's no upper
+		 * limit since sales represent a historical count that may exceed current capacity
+		 * (e.g., capacity was reduced after sales occurred).
 		 */
-		$stock_result = $wpdb->query(
-			$wpdb->prepare(
-				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = LEAST(GREATEST(0, CAST(meta_value AS SIGNED) - %d), %d)
-				 WHERE post_id = %d AND meta_key = '_stock'",
-				$delta,
-				$ticket_capacity,
-				$ticket_id
-			)
-		);
-
-		if ( false === $sales_result || false === $stock_result ) {
-			return false;
-		}
+		$new_sales = max( 0, $old_sales + $delta );
 
 		/*
-		 * Clear post meta cache so subsequent get_post_meta() calls fetch fresh data from the database.
-		 * Without this, the same request could read stale cached values after the atomic SQL update.
+		 * Stock is bounded both below (can't go negative) and above (can't exceed capacity).
+		 * The upper bound prevents stock from exceeding capacity when processing refunds/cancellations,
+		 * ensuring available inventory never shows more than the ticket actually allows.
 		 */
-		wp_cache_delete( $ticket_id, 'post_meta' );
+		$new_stock = max( 0, min( $old_stock - $delta, $ticket_capacity ) );
+
+		// Update using WordPress API to ensure meta hooks are fired.
+		update_post_meta( $ticket_id, 'total_sales', $new_sales );
+		update_post_meta( $ticket_id, '_stock', $new_stock );
 
 		/*
 		 * Trigger save_post to invalidate dependent caches like attendance totals, REST API responses,
-		 * and any other data derived from ticket sales/stock values. This ensures consistency across
-		 * the entire system, not just for this immediate request.
+		 * and any other data derived from ticket sales/stock values.
 		 */
 		Cache_Listener::instance()->save_post( $ticket_id, get_post( $ticket_id ) );
 
-		// Return the new sales count to confirm the atomic operation succeeded and provide updated state.
-		return (int) get_post_meta( $ticket_id, 'total_sales', true );
+		return $new_sales;
 	}
 
 	/**
@@ -230,7 +205,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 
 		$new_ticket = $this->set_args( $ticket_data )->create();
 
-		return $new_ticket instanceof \WP_Post ? $new_ticket->ID : false;
+		return $new_ticket instanceof WP_Post ? $new_ticket->ID : false;
 	}
 
 	/**
@@ -264,7 +239,7 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return void
 	 */
 	public function filter_by_attendee_id( int $value ): void {
-		$ticket_id = get_post_meta( $value, \Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
+		$ticket_id = get_post_meta( $value, Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
 
 		if ( ! $ticket_id ) {
 			$this->void_query( true );
