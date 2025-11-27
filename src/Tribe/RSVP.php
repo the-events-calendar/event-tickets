@@ -1192,7 +1192,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( isset( $_POST['tribe_tickets'] ) ) {
 			$product_ids = wp_list_pluck( array_map( 'sanitize_key', $_POST['tribe_tickets'] ), 'ticket_id' );
 		} elseif ( isset( $_POST['product_id'] ) ) {
-			$product_ids = (array) sanitize_key( $_POST['product_id'] );
+			$product_ids = array_map( 'sanitize_key', (array) $_POST['product_id'] );
 		}
 
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
@@ -2229,6 +2229,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function get_attendee( $attendee, $post_id = 0 ) {
 		// Use repository to get attendee.
 		$repository = tribe_attendees( 'rsvp' );
+
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $post_id ) ) {
+			// If the user can manage attendees, then fetch Attendees in any status.
+			$repository->by( 'status', 'any' );
+		} else {
+			// Else fetch only published Attendees.
+			$repository->by( 'status', 'publish' );
+		}
 
 		if ( is_numeric( $attendee ) ) {
 			$attendee_id   = $attendee;
