@@ -1,0 +1,4 @@
+Significance: minor
+Type: fix
+
+* Fix - Resolved block editor JavaScript errors in WordPress 6.9 by properly importing `sprintf` from `@wordpress/i18n`. [TECTRIA-1459]
