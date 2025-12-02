@@ -31,12 +31,12 @@ class Tribe__Tickets__Service_Providers__ORM extends \TEC\Common\Contracts\Servi
 	public function register() {
 		// Repositories, not bound as singleton to allow for decoration and injection.
 		$this->container->bind( 'tickets.ticket-repository', 'Tribe__Tickets__Ticket_Repository' );
-		$this->container->bind( 'tickets.ticket-repository.rsvp', 'Tribe__Tickets__Repositories__Ticket__RSVP' );
 		$this->container->bind( 'tickets.ticket-repository.commerce', 'Tribe__Tickets__Repositories__Ticket__Commerce' );
 
 		$this->container->bind( 'tickets.attendee-repository', 'Tribe__Tickets__Attendee_Repository' );
-		$this->container->bind( 'tickets.attendee-repository.rsvp', 'Tribe__Tickets__Repositories__Attendee__RSVP' );
 		$this->container->bind( 'tickets.attendee-repository.commerce', 'Tribe__Tickets__Repositories__Attendee__Commerce' );
+
+		// RSVP repositories are registered by TEC\Tickets\RSVP\V1\Controller.
 
 		$this->container->bind( 'tickets.event-repository', 'Tribe__Tickets__Event_Repository' );
 
