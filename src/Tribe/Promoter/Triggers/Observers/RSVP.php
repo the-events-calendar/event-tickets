@@ -18,11 +18,11 @@ class RSVP {
 	 * Attach hooks for trigger messages.
 	 *
 	 * @since 4.12.3
+	 *
+	 * @deprecated TBD Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 	 */
 	public function hook() {
-		add_action( 'rsvp_checkin', [ $this, 'rsvp_checkin' ], 10, 2 );
-		add_action( 'event_tickets_rsvp_attendee_created', [ $this, 'attendee_created' ], 10, 3 );
-		add_action( 'updated_postmeta', [ $this, 'attendee_updated' ], 10, 4 );
+		_deprecated_function( __METHOD__, 'TBD', 'TEC\\Tickets\\RSVP\\V1\\Controller::do_register()' );
 	}
 
 	/**

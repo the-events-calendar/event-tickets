@@ -40,12 +40,7 @@ class Tribe__Tickets__Promoter__Observer {
 
 		$this->registered_types();
 
-		// Listen for changes on RSVP as Gutenberg Uses the post_type API to update RSVP's
-		add_action( 'save_post_tribe_rsvp_tickets', [ $this, 'notify_ticket_event' ], 10, 1 );
-
-		// RSVP
-		add_action( 'tickets_rsvp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
-		add_action( 'event_tickets_rsvp_tickets_generated', [ $this, 'notify_event_id' ], 10, 2 );
+		// RSVP hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 
 		// Moved tickets
 		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'ticket_moved_type' ], 10, 4 );
