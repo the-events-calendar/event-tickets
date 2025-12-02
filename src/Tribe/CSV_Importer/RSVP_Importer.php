@@ -66,7 +66,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		parent::__construct( $file_reader, $featured_image_uploader );
 		$this->rsvp_tickets = ! empty( $rsvp_tickets ) ? $rsvp_tickets : Tribe__Tickets__RSVP::get_instance();
 
-		add_action( 'tribe_aggregator_record_activity_wakeup', array( $this, 'register_rsvp_activity' ) );
+		// Hook registration is handled by TEC\Tickets\RSVP\V1\Controller.
 	}
 
 	/**
