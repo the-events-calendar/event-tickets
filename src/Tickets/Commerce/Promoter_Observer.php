@@ -1,10 +1,23 @@
 <?php
+/**
+ * Promoter Observer for Tickets Commerce.
+ *
+ * @since 5.3.2
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
 use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 use Tribe\Tickets\Promoter\Triggers\Models\Attendee;
 
+/**
+ * Class Promoter_Observer
+ *
+ * Handles Promoter triggers for Tickets Commerce attendees.
+ *
+ * @since 5.3.2
+ */
 class Promoter_Observer {
 
 	/**
@@ -16,7 +29,6 @@ class Promoter_Observer {
 
 	/**
 	 * Constructor.
-	 *
 	 */
 	public function __construct() {
 		$this->observer = tribe( \Tribe__Tickets__Promoter__Observer::class );
@@ -54,7 +66,7 @@ class Promoter_Observer {
 	 * @param int       $attendee_id The ID of the attendee utilized.
 	 * @param bool|null $qr          Whether it's from a QR scan.
 	 */
-	public function checkin( $attendee_id, $qr ) {
+	public function checkin( $attendee_id, $qr ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$this->trigger( 'checkin', $attendee_id );
 	}
 
@@ -68,9 +80,9 @@ class Promoter_Observer {
 	 */
 	private function trigger( $type, $attendee_id ) {
 
-		$attendee  = tec_tc_get_attendee( $attendee_id );
-		$ticket    = tribe( Module::class );
-		$attendee  = new Attendee( (array) $attendee );
+		$attendee = tec_tc_get_attendee( $attendee_id );
+		$ticket   = tribe( Module::class );
+		$attendee = new Attendee( (array) $attendee );
 
 		/**
 		 * Create a new action to listen for a trigger associated with an attendee.
