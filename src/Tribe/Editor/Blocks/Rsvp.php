@@ -3,18 +3,16 @@
 class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstract {
 
 	/**
-	 * Init class
+	 * Deprecated hook method.
 	 *
-	 * @since 4.9
+	 * @deprecated TBD Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
+	 *
+	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function hook() {
-		// Add AJAX calls.
-		add_action( 'wp_ajax_rsvp-form', [ $this, 'rsvp_form' ] );
-		add_action( 'wp_ajax_nopriv_rsvp-form', [ $this, 'rsvp_form' ] );
-		add_action( 'wp_ajax_rsvp-process', [ $this, 'rsvp_process' ] );
-		add_action( 'wp_ajax_nopriv_rsvp-process', [ $this, 'rsvp_process' ] );
+		_deprecated_function( __METHOD__, 'TBD', 'TEC\\Tickets\\RSVP\\V1\\Controller' );
 	}
 
 	/**

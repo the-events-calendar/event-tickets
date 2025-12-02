@@ -50,7 +50,8 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.template.overwrite', Template_Overwrite::class );
 		$this->container->singleton( 'tickets.editor.template', Template::class );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class, [ 'load' ] );
-		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class, [ 'load' ] );
+		// RSVP block hooks are registered by TEC\Tickets\RSVP\V1\Controller.
+		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class );
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
@@ -127,7 +128,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		}
 
 		// Register blocks.
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
+		// RSVP block registration is handled by TEC\Tickets\RSVP\V1\Controller.
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets-item' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.attendees' ), 'register' ] );
