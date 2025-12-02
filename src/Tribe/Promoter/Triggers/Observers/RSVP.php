@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * RSVP Observer for Promoter Triggers.
+ *
+ * @since 4.12.3
+ */
 
 namespace Tribe\Tickets\Promoter\Triggers\Observers;
 
@@ -31,7 +35,7 @@ class RSVP {
 	 * @param int       $attendee_id The ID of the attendee utilized.
 	 * @param bool|null $qr          Whether it's from a QR scan.
 	 */
-	public function rsvp_checkin( $attendee_id, $qr ) {
+	public function rsvp_checkin( $attendee_id, $qr ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$this->trigger( 'checkin', $attendee_id );
 	}
 
@@ -39,11 +43,11 @@ class RSVP {
 	 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated.
 	 * Used to assign a unique ID to the attendee.
 	 *
-	 * @param int    $attendee_id ID of attendee ticket
-	 * @param int    $post_id     ID of event
-	 * @param string $order_id    RSVP order ID (hash)
+	 * @param int    $attendee_id ID of attendee ticket.
+	 * @param int    $post_id     ID of event.
+	 * @param string $order_id    RSVP order ID (hash).
 	 */
-	public function attendee_created( $attendee_id, $post_id, $order_id ) {
+	public function attendee_created( $attendee_id, $post_id, $order_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$value = get_post_meta( $attendee_id, Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY, true );
 		$type  = $value === 'yes' ? 'rsvp_going' : 'rsvp_not_going';
 		$this->trigger( $type, $attendee_id );

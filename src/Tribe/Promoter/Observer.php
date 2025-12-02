@@ -1,4 +1,11 @@
 <?php
+/**
+ * Promoter Observer.
+ *
+ * @since 4.10.1.1
+ */
+
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 /**
  * Class Tribe__Tickets__Promoter__Observer
@@ -42,18 +49,18 @@ class Tribe__Tickets__Promoter__Observer {
 
 		// RSVP hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 
-		// Moved tickets
+		// Moved tickets.
 		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'ticket_moved_type' ], 10, 4 );
 		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved' ], 10, 6 );
 
-		// PayPal
+		// PayPal.
 		add_action( 'save_post_tribe_tpp_attendees', [ $this, 'notify_ticket_event' ], 10, 1 );
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
 		add_action( 'event_tickets_tpp_tickets_generated', [ $this, 'notify_event_id' ], 10, 2 );
 		add_action( 'event_tickets_tpp_attendee_updated', [ $this, 'tpp_attendee_updated' ], 10, 5 );
 		add_action( 'event_tickets_tpp_tickets_generated_for_product', [ $this, 'tpp_tickets_generated_for_product' ], 10, 3 );
 
-		// All tickets
+		// All tickets.
 		add_action( 'event_tickets_after_save_ticket', [ $this, 'notify' ], 10, 1 );
 	}
 
@@ -65,7 +72,6 @@ class Tribe__Tickets__Promoter__Observer {
 	 * @param int|null $attendee_id The attendee ID.
 	 *
 	 * @deprecated 4.11.5
-	 *
 	 */
 	public function notify_rsvp_event( $attendee_id ) {
 		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . '::notify_ticket_event' );
@@ -127,7 +133,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.1.1
 	 *
-	 * @param int|null $unused_ticket_id The ID of the ticket.
+	 * @param int|null $ticket_id The ID of the ticket.
 	 * @param int|null $event_id  The ID of the post/event.
 	 */
 	public function notify_event_id( $ticket_id, $event_id ) {
@@ -139,12 +145,12 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.1.2
 	 *
-	 * @param int $ticket_type_id the ticket type which has been moved
-	 * @param int $destination_id the post to which the ticket type has been moved
-	 * @param int $source_id the post which previously hosted the ticket type
-	 * @param int $instigator_id the user who initiated the change
+	 * @param int $ticket_type_id The ticket type which has been moved.
+	 * @param int $destination_id The post to which the ticket type has been moved.
+	 * @param int $source_id      The post which previously hosted the ticket type.
+	 * @param int $instigator_id  The user who initiated the change.
 	 */
-	public function ticket_moved_type( $ticket_type_id, $destination_id, $source_id, $instigator_id ) {
+	public function ticket_moved_type( $ticket_type_id, $destination_id, $source_id, $instigator_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$this->notify( $source_id );
 		// Prevent to send the same response twice if the ID's are the same.
 		if ( $source_id !== $destination_id ) {
@@ -153,20 +159,20 @@ class Tribe__Tickets__Promoter__Observer {
 	}
 
 	/**
-	 * Observer when an attendee is moved from a post to another and notify Promoter about changes on both events
+	 * Observer when an attendee is moved from a post to another and notify Promoter about changes on both events.
 	 *
 	 * @since 4.11.5
 	 *
-	 * @param int $ticket_id the ticket which has been moved
-	 * @param int $source_ticket_type_id the ticket type it belonged to originally
-	 * @param int $target_ticket_type_id the ticket type it now belongs to
-	 * @param int $source_event_id the event/post which the ticket originally belonged to
-	 * @param int $target_event_id the event/post which the ticket now belongs to
-	 * @param int $instigator_id the user who initiated the change
+	 * @param int $ticket_id             The ticket which has been moved.
+	 * @param int $source_ticket_type_id The ticket type it belonged to originally.
+	 * @param int $target_ticket_type_id The ticket type it now belongs to.
+	 * @param int $source_event_id       The event/post which the ticket originally belonged to.
+	 * @param int $target_event_id       The event/post which the ticket now belongs to.
+	 * @param int $instigator_id         The user who initiated the change.
 	 *
 	 * @return void Action hook with no return.
 	 */
-	public function ticket_moved( $ticket_id, $source_ticket_type_id, $target_ticket_type_id, $source_event_id, $target_event_id, $instigator_id ) {
+	public function ticket_moved( $ticket_id, $source_ticket_type_id, $target_ticket_type_id, $source_event_id, $target_event_id, $instigator_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$this->notify( $source_event_id );
 		// Prevent to send the same response twice if the ID's are the same.
 		if ( $source_event_id !== $target_event_id ) {
@@ -187,7 +193,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @return void
 	 */
-	public function tpp_attendee_updated( $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status ) {
+	public function tpp_attendee_updated( $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$this->notify_ticket_event( $product_id );
 	}
 
@@ -202,7 +208,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @return void
 	 */
-	public function tpp_tickets_generated_for_product( $product_id, $order_id, $qty ) {
+	public function tpp_tickets_generated_for_product( $product_id, $order_id, $qty ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$this->notify_ticket_event( $product_id );
 	}
 
@@ -214,10 +220,9 @@ class Tribe__Tickets__Promoter__Observer {
 	 * @param int|null $post_id The ID of the post.
 	 *
 	 * @deprecated 4.11.5
-	 *
 	 */
 	public function delete_post( $post_id ) {
-		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . "::on_event_deleted" );
+		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . '::on_event_deleted' );
 
 		$this->on_event_deleted( $post_id );
 	}
@@ -254,7 +259,7 @@ class Tribe__Tickets__Promoter__Observer {
 			$connector = tribe( 'promoter.connector' );
 			$connector->notify_promoter_of_changes( $post_id );
 		} catch ( RuntimeException $exception ) {
-			// TODO: Report this to the logger
+			// TODO: Report this to the logger.
 			return;
 		}
 	}

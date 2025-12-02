@@ -1,5 +1,17 @@
 <?php
+/**
+ * RSVP Block.
+ *
+ * @since 4.9
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
+
+/**
+ * Class Tribe__Tickets__Editor__Blocks__Rsvp
+ *
+ * @since 4.9
+ */
 class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstract {
 
 	/**
@@ -58,9 +70,11 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	}
 
 	/**
-	 * Method to get all RSVP tickets
+	 * Method to get all RSVP tickets.
 	 *
 	 * @since 4.9
+	 *
+	 * @param int $post_id The post ID.
 	 *
 	 * @return array
 	 */
@@ -85,7 +99,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 
 		// We only want RSVP tickets.
 		foreach ( $ticket_ids as $post ) {
-			// Get the ticket
+			// Get the ticket.
 			$ticket = $rsvp->get_ticket( $post_id, $post );
 
 			if (
@@ -102,9 +116,11 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	}
 
 	/**
-	 * Method to get the active RSVP tickets
+	 * Method to get the active RSVP tickets.
 	 *
 	 * @since 4.9
+	 *
+	 * @param array $tickets The tickets array.
 	 *
 	 * @return array
 	 */
@@ -124,11 +140,13 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	}
 
 	/**
-	 * Method to get the all RSVPs past flag
-	 * All RSVPs past flag is true if all RSVPs end date is earlier than current date
-	 * If there are no RSVPs, false is returned
+	 * Method to get the all RSVPs past flag.
+	 * All RSVPs past flag is true if all RSVPs end date is earlier than current date.
+	 * If there are no RSVPs, false is returned.
 	 *
 	 * @since 4.9
+	 *
+	 * @param array $tickets The tickets array.
 	 *
 	 * @return bool
 	 */
@@ -151,7 +169,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 *
 	 * @since 4.12.3
 	 *
-	 * @param int $post_id
+	 * @param int $post_id The post ID.
 	 *
 	 * @return int
 	 */
@@ -178,7 +196,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 *
 	 * @since 4.12.3
 	 *
-	 * @param bool $is_unlimited
+	 * @param bool $is_unlimited Whether the ticket is unlimited.
 	 *
 	 * @return bool
 	 */
@@ -215,7 +233,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 					'data' => fn() => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'nonces'  => [
-							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
+							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' ),
 						],
 					],
 				],
@@ -237,12 +255,12 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			[
 				'groups'       => 'tribe-tickets-rsvp',
 				'conditionals' => [ $this, 'should_enqueue_ari' ],
-				'localize' => [
+				'localize'     => [
 					'name' => 'TribeRsvp',
 					'data' => fn() => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 						'nonces'  => [
-							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' )
+							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' ),
 						],
 					],
 				],
@@ -415,16 +433,21 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 
 		$products = [];
 
-		if ( isset( $_POST['tribe_tickets'] ) ) {
-			$products = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
-		} elseif ( isset( $_POST['product_id'] ) ) {
-			$products = (array) $_POST['product_id'];
+		if ( isset( $_POST['tribe_tickets'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$products = wp_list_pluck( array_map( 'sanitize_key', $_POST['tribe_tickets'] ), 'ticket_id' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		} elseif ( isset( $_POST['product_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$products = array_map( 'sanitize_key', (array) $_POST['product_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		}
+
+		$products = array_map( 'absint', $products );
+		$products = array_filter( $products );
 
 		// Iterate over each product.
 		foreach ( $products as $product_id ) {
-			if ( ! $ticket_qty = $rsvp->parse_ticket_quantity( $product_id ) ) {
-				// if there were no RSVP tickets for the product added to the cart, continue.
+			$ticket_qty = $rsvp->parse_ticket_quantity( $product_id );
+
+			if ( ! $ticket_qty ) {
+				// If there were no RSVP tickets for the product added to the cart, continue.
 				continue;
 			}
 
@@ -473,7 +496,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 				$attendee_order_status
 			);
 
-			// No point sending tickets if their current intention is not to attend
+			// No point sending tickets if their current intention is not to attend.
 			if ( in_array( $attendee_order_status, $send_mail_stati, true ) ) {
 				$rsvp->send_tickets_email( $order_id, $post_id );
 			} else {

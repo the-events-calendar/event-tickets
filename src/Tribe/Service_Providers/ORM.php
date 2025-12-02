@@ -5,6 +5,8 @@
  * @since 4.10.4
  */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
+
 use Tribe\Tickets\Repositories\Post_Repository;
 use Tribe\Tickets\Repositories\Order;
 
@@ -62,7 +64,7 @@ class Tribe__Tickets__Service_Providers__ORM extends \TEC\Common\Contracts\Servi
 			$map['tickets_event_previous'] = $map['default'];
 		}
 
-		$map['default']  = 'tickets.event-repository';
+		$map['default'] = 'tickets.event-repository';
 
 		return $map;
 	}

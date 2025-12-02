@@ -1,4 +1,9 @@
 <?php
+/**
+ * Promoter Service Provider.
+ *
+ * @since 4.12.3
+ */
 
 namespace Tribe\Tickets\Promoter;
 

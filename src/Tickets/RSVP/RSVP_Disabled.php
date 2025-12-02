@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Null-object implementation of RSVP when the feature is disabled.
  *

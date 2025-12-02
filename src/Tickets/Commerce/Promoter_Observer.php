@@ -10,7 +10,7 @@ class Promoter_Observer {
 	/**
 	 * @since 4.12.0
 	 *
-	 * @var Tribe__Tickets__Promoter__Observer $observer ET Observer reference.
+	 * @var \Tribe__Tickets__Promoter__Observer $observer ET Observer reference.
 	 */
 	private $observer;
 

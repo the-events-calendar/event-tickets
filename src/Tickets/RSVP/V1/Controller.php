@@ -43,7 +43,7 @@ class Controller extends Controller_Contract {
 		$this->register_singletons();
 
 		// Get instances for hook registration.
-		$rsvp = tribe( 'tickets.rsvp' );
+		$rsvp       = tribe( 'tickets.rsvp' );
 		$rsvp_block = tribe( 'tickets.editor.blocks.rsvp' );
 
 		// Register RSVP hooks.
@@ -141,7 +141,7 @@ class Controller extends Controller_Contract {
 	 */
 	private function register_promoter_hooks(): void {
 		// RSVP Observer hooks - store callbacks for unregistration.
-		$this->callbacks['rsvp_observer_checkin'] = $this->container->callback( RSVP_Observer::class, 'rsvp_checkin' );
+		$this->callbacks['rsvp_observer_checkin']          = $this->container->callback( RSVP_Observer::class, 'rsvp_checkin' );
 		$this->callbacks['rsvp_observer_attendee_created'] = $this->container->callback( RSVP_Observer::class, 'attendee_created' );
 		$this->callbacks['rsvp_observer_attendee_updated'] = $this->container->callback( RSVP_Observer::class, 'attendee_updated' );
 
@@ -150,8 +150,8 @@ class Controller extends Controller_Contract {
 		add_action( 'updated_postmeta', $this->callbacks['rsvp_observer_attendee_updated'], 10, 4 );
 
 		// Promoter Observer hooks - store callbacks for unregistration.
-		$this->callbacks['promoter_notify_ticket_event'] = $this->container->callback( Promoter_Observer::class, 'notify_ticket_event' );
-		$this->callbacks['promoter_notify_event_id_deleted'] = $this->container->callback( Promoter_Observer::class, 'notify_event_id' );
+		$this->callbacks['promoter_notify_ticket_event']       = $this->container->callback( Promoter_Observer::class, 'notify_ticket_event' );
+		$this->callbacks['promoter_notify_event_id_deleted']   = $this->container->callback( Promoter_Observer::class, 'notify_event_id' );
 		$this->callbacks['promoter_notify_event_id_generated'] = $this->container->callback( Promoter_Observer::class, 'notify_event_id' );
 
 		add_action( 'save_post_tribe_rsvp_tickets', $this->callbacks['promoter_notify_ticket_event'] );
@@ -179,7 +179,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$rsvp = tribe( 'tickets.rsvp' );
+		$rsvp       = tribe( 'tickets.rsvp' );
 		$rsvp_block = tribe( 'tickets.editor.blocks.rsvp' );
 
 		// Remove RSVP hooks.
