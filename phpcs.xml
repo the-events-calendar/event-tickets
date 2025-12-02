@@ -30,11 +30,23 @@
 	<!-- Enforce our specific plugin's text domain. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="event-tickets" />
+			<property name="text_domain" type="string" value="event-tickets" />
 		</properties>
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+	<!-- Disable deprecated rules -->
+	<rule ref="Generic.Debug">
+		<exclude name="Generic.Debug.JSHint"/>
+		<exclude name="Generic.Debug.ClosureLinter"/>
+		<exclude name="Generic.Debug.CSSLint"/>
+		<exclude name="Generic.Debug.ESLint"/>
+	</rule>
+
+	<rule ref="WordPressVIPMinimum">
+		<exclude name="WordPressVIPMinimum.JS"/>
+	</rule>
 
 	<!-- Disable sniffs for certain directories instead of using inline comments -->
 
