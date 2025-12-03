@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
 import { TICKET_LABELS } from '../../../../../../../modules/data/blocks/ticket/constants';

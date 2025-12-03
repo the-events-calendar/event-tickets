@@ -199,6 +199,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.27.1] 2025-12-03 =
+
+* Fix - Resolved block editor JavaScript errors in WordPress 6.9 by properly importing `sprintf` from `@wordpress/i18n`. [ET-2595]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.27.0] 2025-11-18 =
 
 * Version - Event Tickets 5.27.0 is only compatible with The Events Calendar 6.15.12 or higher.
