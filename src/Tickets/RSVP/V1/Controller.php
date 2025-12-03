@@ -167,6 +167,10 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	private function register_csv_importer_hooks(): void {
+		if ( ! class_exists( 'Tribe__Events__Importer__File_Importer' ) ) {
+			return;
+		}
+
 		$this->callbacks['csv_importer_activity'] = $this->container->callback( RSVP_Importer::class, 'register_rsvp_activity' );
 		add_action( 'tribe_aggregator_record_activity_wakeup', $this->callbacks['csv_importer_activity'] );
 	}
