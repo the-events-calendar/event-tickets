@@ -2,7 +2,7 @@
 
 ### [5.27.1] 2025-12-03
 
-* Fix - * Fix - Resolved block editor JavaScript errors in WordPress 6.9 by properly importing `sprintf` from `@wordpress/i18n`. [ET-2595]
+* Fix - Resolved block editor JavaScript errors in WordPress 6.9 by properly importing `sprintf` from `@wordpress/i18n`. [ET-2595]
 * Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.27.0] 2025-11-18
