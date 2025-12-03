@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Wordpress dependencies
  */
-import { _x } from '@wordpress/i18n';
+import { _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies

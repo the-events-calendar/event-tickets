@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
  * Wordpress dependencies
  */
 import { PanelBody, PanelRow } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/editor';
 
 /**
