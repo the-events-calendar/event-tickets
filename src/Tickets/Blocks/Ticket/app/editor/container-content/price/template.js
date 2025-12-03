@@ -9,7 +9,7 @@ import { NumericFormat } from 'react-number-format';
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import uniqid from 'uniqid';
 
 /**
