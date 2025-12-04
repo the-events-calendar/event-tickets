@@ -29,20 +29,6 @@ class Controller extends Controller_Contract {
 	const DISABLED = 'TEC_TICKETS_RSVP_DISABLED';
 
 	/**
-	 * Always returns true - this Controller always registers.
-	 *
-	 * The Controller decides whether to register V1 (full functionality)
-	 * or RSVP_Disabled (null-object) based on is_rsvp_enabled().
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Always true.
-	 */
-	public function is_active(): bool {
-		return true;
-	}
-
-	/**
 	 * Checks if RSVP functionality is enabled.
 	 *
 	 * @since TBD
@@ -103,9 +89,9 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		// V1 Controller handles its own unregistration if registered.
-		if ( $this->is_rsvp_enabled() && V1\Controller::is_registered() ) {
-			tribe( V1\Controller::class )->unregister();
+		if ( $this->is_rsvp_enabled() ) {
+			// If RSVP is enabled, chances are we registered V1 Controller, unregister it.
+			$this->container->get( V1\Controller::class )->unregister();
 		}
 	}
 }

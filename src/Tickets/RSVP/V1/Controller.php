@@ -8,6 +8,7 @@
 namespace TEC\Tickets\RSVP\V1;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use Tribe__Tickets__Editor__Blocks__Rsvp as Blocks_RSVP;
 use Tribe__Tickets__RSVP;
 use Tribe__Tickets__Promoter__Observer as Promoter_Observer;
 use Tribe\Tickets\Promoter\Triggers\Observers\RSVP as RSVP_Observer;
@@ -39,8 +40,17 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		// Register singletons.
-		$this->register_singletons();
+		$this->container->singleton( 'tickets.rsvp', Tribe__Tickets__RSVP::class );
+
+		// Bind the repositories as factories to make sure each instance is different.
+		$this->container->bind(
+			'tickets.ticket-repository.rsvp',
+			'Tribe__Tickets__Repositories__Ticket__RSVP'
+		);
+		$this->container->bind(
+			'tickets.attendee-repository.rsvp',
+			'Tribe__Tickets__Repositories__Attendee__RSVP'
+		);
 
 		// Get instances for hook registration.
 		$rsvp       = tribe( 'tickets.rsvp' );
@@ -57,27 +67,6 @@ class Controller extends Controller_Contract {
 
 		// Register CSV Importer hooks.
 		$this->register_csv_importer_hooks();
-	}
-
-	/**
-	 * Register singleton bindings.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	private function register_singletons(): void {
-		$this->container->singleton( 'tickets.rsvp', Tribe__Tickets__RSVP::class );
-
-		// Bind the repositories as factories to make sure each instance is different.
-		$this->container->bind(
-			'tickets.ticket-repository.rsvp',
-			'Tribe__Tickets__Repositories__Ticket__RSVP'
-		);
-		$this->container->bind(
-			'tickets.attendee-repository.rsvp',
-			'Tribe__Tickets__Repositories__Attendee__RSVP'
-		);
 	}
 
 	/**
@@ -117,11 +106,11 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Editor__Blocks__Rsvp $rsvp_block The RSVP block instance.
+	 * @param Blocks_RSVP $rsvp_block The RSVP block instance.
 	 *
 	 * @return void
 	 */
-	private function register_block_hooks( \Tribe__Tickets__Editor__Blocks__Rsvp $rsvp_block ): void {
+	private function register_block_hooks( Blocks_RSVP $rsvp_block ): void {
 		// Register AJAX handlers.
 		add_action( 'wp_ajax_rsvp-form', [ $rsvp_block, 'rsvp_form' ] );
 		add_action( 'wp_ajax_nopriv_rsvp-form', [ $rsvp_block, 'rsvp_form' ] );
@@ -239,8 +228,5 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->callbacks = [];
-
-		// Reset the registered flag to allow re-registration.
-		$this->container->setVar( static::class . '_registered', false );
 	}
 }

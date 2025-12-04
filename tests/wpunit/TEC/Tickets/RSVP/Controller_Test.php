@@ -24,6 +24,16 @@ class Controller_Test extends Controller_Test_Case {
 	protected $controller_class = Controller::class;
 
 	/**
+	 * While the subject of this test case is the main RSVP Controller, we also need
+	 * to handle the sub-controllers managed by it.
+	 *
+	 * @var \class-string[]
+	 */
+	protected $sub_controller_classes = [
+		V1\Controller::class,
+	];
+
+	/**
 	 * @test
 	 */
 	public function test_is_active_always_returns_true(): void {
@@ -46,7 +56,6 @@ class Controller_Test extends Controller_Test_Case {
 		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 		$controller = $this->make_controller();
 		$this->assertFalse( $controller->is_rsvp_enabled() );
-		remove_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 	}
 
 	/**
@@ -95,7 +104,6 @@ class Controller_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 		$controller->register();
 		$this->assertInstanceOf( RSVP_Disabled::class, tribe( 'tickets.rsvp' ) );
-		remove_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 	}
 
 	/**
@@ -114,8 +122,6 @@ class Controller_Test extends Controller_Test_Case {
 			Repositories\Attendee_Repository_Disabled::class,
 			tribe( 'tickets.attendee-repository.rsvp' )
 		);
-
-		remove_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 	}
 
 	/**
@@ -141,9 +147,6 @@ class Controller_Test extends Controller_Test_Case {
 			'RSVP init hook should be registered'
 		);
 
-		// Manually set the V1 Controller as registered since container->register() was called.
-		tribe()->setVar( V1\Controller::class . '_registered', true );
-
 		$controller->unregister();
 
 		// Verify V1 Controller hooks are removed after unregistration.
@@ -166,7 +169,5 @@ class Controller_Test extends Controller_Test_Case {
 
 		// If we get here without exception, test passes.
 		$this->assertTrue( true );
-
-		remove_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 	}
 }

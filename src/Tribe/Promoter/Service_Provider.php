@@ -55,7 +55,6 @@ class Service_Provider extends Service_Provider_Contract {
 		tribe( 'tickets.promoter.observer' );
 		tribe( Factory::class );
 		tribe( Dispatcher::class );
-		// Do not call tribe( RSVP::class ) - the Controller handles hooking.
 		tribe( Commerce::class );
 
 		/**
