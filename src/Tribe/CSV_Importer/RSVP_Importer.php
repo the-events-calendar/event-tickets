@@ -1,5 +1,11 @@
 <?php
+/**
+ * RSVP CSV Importer.
+ *
+ * @since 4.7
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 /**
  * Class Tribe__Tickets__CSV_Importer__RSVP_Importer
@@ -9,17 +15,17 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * @var array
 	 */
-	protected $required_fields = array( 'event_name', 'ticket_name' );
+	protected $required_fields = [ 'event_name', 'ticket_name' ];
 
 	/**
 	 * @var array
 	 */
-	protected static $event_name_cache = array();
+	protected static $event_name_cache = [];
 
 	/**
 	 * @var array
 	 */
-	protected static $ticket_name_cache = array();
+	protected static $ticket_name_cache = [];
 
 	/**
 	 * @var Tribe__Tickets__RSVP
@@ -34,8 +40,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * The class constructor proxy method.
 	 *
-	 * @param Tribe__Events__Importer__File_Importer|null $instance The default instance that would be used for the type.
-	 * @param Tribe__Events__Importer__File_Reader        $file_reader
+	 * @param Tribe__Events__Importer__File_Importer|null $instance    The default instance that would be used for the type.
+	 * @param Tribe__Events__Importer__File_Reader        $file_reader The file reader instance.
 	 *
 	 * @return Tribe__Tickets__CSV_Importer__RSVP_Importer
 	 */
@@ -47,16 +53,16 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * Resets that class static caches
 	 */
 	public static function reset_cache() {
-		self::$event_name_cache  = array();
-		self::$ticket_name_cache = array();
+		self::$event_name_cache  = [];
+		self::$ticket_name_cache = [];
 	}
 
 	/**
 	 * Tribe__Tickets__CSV_Importer__RSVP_Importer constructor.
 	 *
-	 * @param Tribe__Events__Importer__File_Reader                  $file_reader
-	 * @param Tribe__Events__Importer__Featured_Image_Uploader|null $featured_image_uploader
-	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets
+	 * @param Tribe__Events__Importer__File_Reader                  $file_reader             The file reader instance.
+	 * @param Tribe__Events__Importer__Featured_Image_Uploader|null $featured_image_uploader The featured image uploader.
+	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets            The RSVP tickets instance.
 	 */
 	public function __construct(
 		Tribe__Events__Importer__File_Reader $file_reader,
@@ -66,11 +72,13 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		parent::__construct( $file_reader, $featured_image_uploader );
 		$this->rsvp_tickets = ! empty( $rsvp_tickets ) ? $rsvp_tickets : Tribe__Tickets__RSVP::get_instance();
 
-		add_action( 'tribe_aggregator_record_activity_wakeup', array( $this, 'register_rsvp_activity' ) );
+		// Hook registration is handled by TEC\Tickets\RSVP\V1\Controller.
 	}
 
 	/**
-	 * @param array $record
+	 * Matches an existing post based on the record.
+	 *
+	 * @param array $record The record data.
 	 *
 	 * @return bool
 	 */
@@ -88,12 +96,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			return self::$ticket_name_cache[ $cache_key ];
 		}
 
-		$ticket_post = ( new WP_Query( [
-			'post_type'      => $this->rsvp_tickets->ticket_object,
-			'post_title'      => $ticket_name,
-			'posts_per_page' => 1,
-			'post_status'    => 'any',
-		] ) )->get_posts()[0] ?? false;
+		$ticket_post = ( new WP_Query(
+			[
+				'post_type'      => $this->rsvp_tickets->ticket_object,
+				'post_title'     => $ticket_name,
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			]
+		) )->get_posts()[0] ?? false;
 
 		if ( empty( $ticket_post ) ) {
 			return false;
@@ -113,18 +123,22 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * @param      $post_id
-	 * @param array $record
+	 * Updates an existing post.
+	 *
+	 * @param int   $post_id The post ID.
+	 * @param array $record  The record data.
 	 */
 	public function update_post( $post_id, array $record ) {
-		// nothing is updated in existing tickets
+		// Nothing is updated in existing tickets.
 		if ( $this->is_aggregator && ! empty( $this->aggregator_record ) ) {
 			$this->aggregator_record->meta['activity']->add( 'tribe_rsvp_tickets', 'skipped', $post_id );
 		}
 	}
 
 	/**
-	 * @param array $record
+	 * Creates a new RSVP ticket post.
+	 *
+	 * @param array $record The record data.
 	 *
 	 * @return int|bool Either the new RSVP ticket post ID or `false` on failure.
 	 */
@@ -139,7 +153,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		 *
 		 * @param array
 		 */
-		$data = (array) apply_filters( 'tribe_tickets_import_rsvp_data', $data );
+		$data      = (array) apply_filters( 'tribe_tickets_import_rsvp_data', $data );
 		$ticket_id = $this->rsvp_tickets->ticket_add( $event->ID, $data );
 
 		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
@@ -155,7 +169,9 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * @param array $record
+	 * Gets the event from the record.
+	 *
+	 * @param array $record The record data.
 	 *
 	 * @return bool|WP_Post
 	 */
@@ -172,9 +188,9 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 
 		// By title.
 		global $wpdb;
-		$row = $wpdb->get_row(
+		$row   = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM %i WHERE post_type = %s AND post_title = %s LIMIT 1",
+				'SELECT * FROM %i WHERE post_type = %s AND post_title = %s LIMIT 1',
 				$wpdb->posts,
 				Tribe__Events__Main::POSTTYPE,
 				$event_name
@@ -199,12 +215,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * @param array $record
+	 * Gets the ticket data from the record.
+	 *
+	 * @param array $record The record data.
 	 *
 	 * @return array
 	 */
 	protected function get_ticket_data_from( array $record ) {
-		$data                       = array();
+		$data                       = [];
 		$data['ticket_name']        = $this->get_value_by_key( $record, 'ticket_name' );
 		$data['ticket_description'] = $this->get_value_by_key( $record, 'ticket_description' );
 		$data['ticket_start_date']  = $this->get_value_by_key( $record, 'ticket_start_sale_date' );
@@ -233,7 +251,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$data['ticket_end_time']     = $end_date->format( 'H:i:00' );
 		}
 
-		$stock = $this->get_value_by_key( $record, 'ticket_stock' );
+		$stock    = $this->get_value_by_key( $record, 'ticket_stock' );
 		$capacity = $this->get_value_by_key( $record, 'ticket_capacity' );
 
 		if ( empty( $capacity ) ) {
@@ -241,13 +259,15 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		}
 
 		$data['tribe-ticket']['capacity'] = $capacity;
-		$data['tribe-ticket']['stock'] = $stock;
+		$data['tribe-ticket']['stock']    = $stock;
 
 		return $data;
 	}
 
 	/**
-	 * @param array $record
+	 * Checks if the record is valid.
+	 *
+	 * @param array $record The record data.
 	 *
 	 * @return bool
 	 */
@@ -267,6 +287,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$is_recurring = tribe_is_recurring_event( $event->ID );
 
 			if ( $is_recurring ) {
+				// Translators: %s is the event title.
 				$this->row_message = sprintf( esc_html__( 'Recurring event tickets are not supported, event %s.', 'event-tickets' ), $event->post_title );
 			}
 
@@ -287,11 +308,11 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * Registers the RSVP post type as a trackable activity
+	 * Registers the RSVP post type as a trackable activity.
 	 *
-	 * @param Tribe__Events__Aggregator__Record__Activity $activity
+	 * @param Tribe__Events__Aggregator__Record__Activity $activity The activity instance.
 	 */
 	public function register_rsvp_activity( $activity ) {
-		$activity->register( 'tribe_rsvp_tickets', array( 'rsvp', 'rsvp_tickets' ) );
+		$activity->register( 'tribe_rsvp_tickets', [ 'rsvp', 'rsvp_tickets' ] );
 	}
 }

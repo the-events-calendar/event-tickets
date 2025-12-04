@@ -3,6 +3,10 @@
  * Main plugin class.
  */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
+// phpcs:disable WordPress.WP.CapitalPDangit.MisspelledInText
+// phpcs:disable WordPress.WP.CapitalPDangit.MisspelledInComment
+
 use Tribe\Tickets\Admin\Provider as Admin_Provider;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
@@ -147,6 +151,7 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Static Singleton Holder
+	 *
 	 * @var self
 	 */
 	protected static $instance;
@@ -158,7 +163,7 @@ class Tribe__Tickets__Main {
 	 */
 	public static function instance() {
 		if ( ! self::$instance ) {
-			self::$instance = new self;
+			self::$instance = new self();
 		}
 
 		return self::$instance;
@@ -331,11 +336,11 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
+		// If we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal.
 		$tec         = Tribe__Events__Main::instance();
 		$main_source = file_get_contents( $tec->plugin_path . 'common/src/Tribe/Main.php' );
 
-		// if there isn't a VERSION, don't override the common path
+		// If there isn't a VERSION, don't override the common path.
 		if ( ! preg_match( $this->common_version_regex, $main_source, $matches ) ) {
 			return;
 		}
@@ -375,7 +380,7 @@ class Tribe__Tickets__Main {
 	 * @since 5.9.3 added boolean "invalid" return value. True if the check fails, false if it passes.
 	 */
 	public function maybe_bail_if_old_tec_is_present(): bool {
-		// early check for an older version of The Events Calendar to prevent fatal error
+		// Early check for an older version of The Events Calendar to prevent fatal error.
 		if ( ! class_exists( 'Tribe__Events__Main', false ) ) {
 			return false;
 		}
@@ -387,6 +392,7 @@ class Tribe__Tickets__Main {
 		add_action( 'admin_notices', [ $this, 'tec_compatibility_notice' ] );
 		add_action( 'network_admin_notices', [ $this, 'tec_compatibility_notice' ] );
 		add_action( 'tribe_plugins_loaded', [ $this, 'remove_exts' ], 0 );
+
 		/*
 		 * After common was loaded by another source (e.g. The Events Calendar) let's append this plugin source files
 		 * to the ones the Autoloader will search. Since we're appending them, the ones registered by the plugin
@@ -444,7 +450,6 @@ class Tribe__Tickets__Main {
 	 * Adds our main plugin file to the list of paths.
 	 *
 	 * @since 6.1.0
-	 *
 	 *
 	 * @param array<string> $paths The paths to TCMN parent plugins.
 	 *
@@ -530,10 +535,11 @@ class Tribe__Tickets__Main {
 		// Tickets Commerce providers.
 		tribe_register_provider( TEC\Tickets\Provider::class );
 
-		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
+		// RSVP is now registered via Controller.
+		tribe_register_provider( TEC\Tickets\RSVP\Controller::class );
 		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
-		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
+		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main() );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
 		tribe_register_provider( TEC\Tickets\Configuration\Provider::class );
@@ -546,18 +552,18 @@ class Tribe__Tickets__Main {
 		// ORM.
 		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
 
-		// REST API v1
+		// REST API v1.
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
-		// REST Editor APIs
+		// REST Editor APIs.
 		tribe_register_provider( 'Tribe__Tickets__Editor__REST__V1__Service_Provider' );
 
-		// Blocks editor
+		// Blocks editor.
 		tribe_register_provider( TEC\Tickets\Blocks\Controller::class );
 
-		// Privacy
+		// Privacy.
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );
 
-		// Views V2
+		// Views V2.
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 
 		// Admin home.
@@ -616,8 +622,10 @@ class Tribe__Tickets__Main {
 				[
 					'action' => 'upgrade-plugin',
 					'plugin' => $plugin_short_path,
-				], get_admin_url() . 'update.php'
-			), 'upgrade-plugin_' . $plugin_short_path
+				],
+				get_admin_url() . 'update.php'
+			),
+			'upgrade-plugin_' . $plugin_short_path
 		);
 
 		$min_version = str_replace( '-dev', '', $this->min_tec_version );
@@ -627,19 +635,17 @@ class Tribe__Tickets__Main {
 		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $min_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
-		echo $output;
+		echo $output; // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
 	 * Prevents Extensions from running if TEC is on an Older Version
 	 *
 	 * @since 4.10.0.1
-	 *
 	 */
 	public function remove_exts() {
 
 		remove_all_actions( 'tribe_plugins_loaded', 10 );
-
 	}
 
 	/**
@@ -652,15 +658,17 @@ class Tribe__Tickets__Main {
 	 * @return boolean Whether the current version of PHP or WordPress is supported.
 	 */
 	public function supported_version( $system ) {
-		if ( $supported = wp_cache_get( $system, 'tribe_version_test' ) ) {
+		$supported = wp_cache_get( $system, 'tribe_version_test' );
+
+		if ( $supported ) {
 			return $supported;
 		}
 
 		switch ( strtolower( $system ) ) {
-			case 'wordpress' :
+			case 'wordpress':
 				$supported = version_compare( get_bloginfo( 'version' ), $this->min_wordpress, '>=' );
 				break;
-			case 'php' :
+			case 'php':
 				$supported = version_compare( phpversion(), $this->min_php, '>=' );
 				break;
 		}
@@ -687,10 +695,12 @@ class Tribe__Tickets__Main {
 	 */
 	public function not_supported_error() {
 		if ( ! self::supported_version( 'wordpress' ) ) {
+			// Translators: %s is the minimum required WordPress version.
 			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install.', 'event-tickets' ), $this->min_wordpress ) ) . '</p></div>';
 		}
 
 		if ( ! self::supported_version( 'php' ) ) {
+			// Translators: %s is the minimum required PHP version.
 			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'event-tickets' ), $this->min_php ) ) . '</p></div>';
 		}
 	}
@@ -723,7 +733,7 @@ class Tribe__Tickets__Main {
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
 		require_once $this->plugin_path . 'src/template-tags/commerce.php';
 
-		// deprecated classes are registered in a class to path fashion
+		// Deprecated classes are registered in a class to path fashion.
 		foreach ( glob( $this->plugin_path . 'src/deprecated/*.php' ) as $file ) {
 			$class_name = str_replace( '.php', '', basename( $file ) );
 			$autoloader->register_class( $class_name, $file );
@@ -801,67 +811,76 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Append the text about Event Tickets to the support section on the Help page
+	 * Append the text about Event Tickets to the support section on the Help page.
 	 *
 	 * @filter "tribe_help_pre_get_sections"
-	 * @param Tribe__Admin__Help_Page $help The Help Page Instance
+	 * @param Tribe__Admin__Help_Page $help The Help Page Instance.
 	 * @return void
 	 */
 	public function add_help_section_support_content( $help ) {
 		$help->add_section_content( 'support', '<strong>' . esc_html__( 'Support for Event Tickets', 'event-tickets' ) . '</strong>', 20 );
-		$help->add_section_content( 'support', [
-			'<strong><a href="https://evnt.is/18ne" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="https://evnt.is/18nf" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="https://evnt.is/18jb" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="https://evnt.is/18ng" target="_blank">' . esc_html__( 'Customizing Event Tickets', 'event-tickets' ) . '</a></strong>',
-		], 20 );
+		$help->add_section_content(
+			'support',
+			[
+				'<strong><a href="https://evnt.is/18ne" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
+				'<strong><a href="https://evnt.is/18nf" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
+				'<strong><a href="https://evnt.is/18jb" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
+				'<strong><a href="https://evnt.is/18ng" target="_blank">' . esc_html__( 'Customizing Event Tickets', 'event-tickets' ) . '</a></strong>',
+			],
+			20
+		);
 	}
 
 	/**
-	 * Append the text about Event Tickets to the Feature box section on the Help page
+	 * Append the text about Event Tickets to the Feature box section on the Help page.
 	 *
 	 * @filter "tribe_help_pre_get_sections"
-	 * @param Tribe__Admin__Help_Page $help The Help Page Instance
+	 * @param Tribe__Admin__Help_Page $help The Help Page Instance.
 	 * @return void
 	 */
 	public function add_help_section_featured_content( $help ) {
-		// If The Events Calendar is active dont add
+		// If The Events Calendar is active don't add.
 		if ( $help->is_active( 'the-events-calendar', true ) ) {
 			return;
 		}
 
 		$link = '<a href="https://evnt.is/18nd" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
 
+		// Translators: %1$s is the ticket label plural, %2$s is a link to the New User Primer.
 		$help->add_section_content( 'feature-box', sprintf( _x( 'We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started.', 'help feature box section', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'help_feature_box_section' ), $link ), 20 );
 	}
 
 	/**
-	 * Append the text about Event Tickets to the Extra Help section on the Help page
+	 * Append the text about Event Tickets to the Extra Help section on the Help page.
 	 *
 	 * @filter "tribe_help_pre_get_sections"
-	 * @param Tribe__Admin__Help_Page $help The Help Page Instance
+	 * @param Tribe__Admin__Help_Page $help The Help Page Instance.
 	 * @return void
 	 */
 	public function add_help_section_extra_content( $help ) {
 		if ( ! $help->is_active( [ 'events-calendar-pro', 'event-tickets-plus' ] ) && $help->is_active( 'the-events-calendar' ) ) {
-			// We just skip because it's treated on TEC
+			// We just skip because it's treated on TEC.
 			return;
 		} elseif ( ! $help->is_active( 'the-events-calendar' ) ) {
 			if ( ! $help->is_active( 'event-tickets-plus' ) ) {
 
 				$link = '<a href="https://wordpress.org/support/plugin/event-tickets/" target="_blank">' . esc_html__( 'open-source forum on WordPress.org', 'event-tickets' ) . '</a>';
+				// Translators: %s is a link to the WordPress.org support forum.
 				$help->add_section_content( 'extra-help', sprintf( __( 'If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there.', 'event-tickets' ), $link ), 20 );
 
 				$link_forum = '<a href="https://evnt.is/4w/" target="_blank">' . esc_html__( 'premium support on our website', 'event-tickets' ) . '</a>';
-				$link_plus = '<a href="https://evnt.is/18ni" target="_blank">' . esc_html__( 'Event Tickets Plus', 'event-tickets' ) . '</a>';
+				$link_plus  = '<a href="https://evnt.is/18ni" target="_blank">' . esc_html__( 'Event Tickets Plus', 'event-tickets' ) . '</a>';
+				// Translators: %1$s is a link to premium support, %2$s is a link to Event Tickets Plus.
 				$help->add_section_content( 'extra-help', sprintf( __( 'Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays.', 'event-tickets' ), $link_forum, $link_plus ), 20 );
 
 				$link = '<a href="https://evnt.is/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
+				// Translators: %s is a link to post a thread in the support forum.
 				$help->add_section_content( 'extra-help', sprintf( __( 'Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week).', 'event-tickets' ), $link ), 20 );
 
-			}  else {
+			} else {
 
 				$link = '<a href="https://evnt.is/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
+				// Translators: %s is a link to post a thread in the support forum.
 				$help->add_section_content( 'extra-help', sprintf( __( 'If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week).', 'event-tickets' ), $link ), 20 );
 
 			}
@@ -873,7 +892,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @since 5.0.3 Updated template structure.
 	 *
-	 * @param array $plugins
+	 * @param array $plugins The plugins array.
 	 *
 	 * @return array
 	 */
@@ -903,13 +922,12 @@ class Tribe__Tickets__Main {
 	 */
 	public function init() {
 		// Provide continued support for legacy ticketing modules.
-		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
+		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support();
 		$this->settings_tab();
 		$this->tickets_view();
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
 		$this->maybe_set_options_for_old_installs();
-
 	}
 
 	/**
@@ -936,7 +954,7 @@ class Tribe__Tickets__Main {
 		$modal_option = $ar_reg->is_modal_enabled();
 
 		if ( ! $modal_option && $modal_option !== false ) {
-			$modal_version_check = tribe_installed_before( Tribe__Tickets__Main::instance(), '4.11.0' );
+			$modal_version_check = tribe_installed_before( self::instance(), '4.11.0' );
 			if ( $modal_version_check ) {
 				/** @var $settings_manager Tribe__Settings_Manager */
 				$settings_manager = tribe( 'settings.manager' );
@@ -947,7 +965,7 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * rsvp ticket object accessor
+	 * RSVP ticket object accessor.
 	 */
 	public function rsvp() {
 		return tribe( 'tickets.rsvp' );
@@ -971,7 +989,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function user_event_confirmation_list_shortcode() {
 		if ( empty( $this->user_event_confirmation_list_shortcode ) ) {
-			$this->user_event_confirmation_list_shortcode = new Tribe__Tickets__Shortcodes__User_Event_Confirmation_List;
+			$this->user_event_confirmation_list_shortcode = new Tribe__Tickets__Shortcodes__User_Event_Confirmation_List();
 		}
 
 		return $this->user_event_confirmation_list_shortcode;
@@ -982,7 +1000,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function move_tickets() {
 		if ( empty( $this->move_tickets ) ) {
-			$this->move_tickets = new Tribe__Tickets__Admin__Move_Tickets;
+			$this->move_tickets = new Tribe__Tickets__Admin__Move_Tickets();
 			$this->move_tickets->setup();
 		}
 
@@ -994,7 +1012,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function move_ticket_types() {
 		if ( empty( $this->move_ticket_types ) ) {
-			$this->move_ticket_types = new Tribe__Tickets__Admin__Move_Ticket_Types;
+			$this->move_ticket_types = new Tribe__Tickets__Admin__Move_Ticket_Types();
 			$this->move_ticket_types->setup();
 		}
 
@@ -1010,17 +1028,19 @@ class Tribe__Tickets__Main {
 		_deprecated_function( __METHOD__, '5.23.0', 'Now handled by TEC\Tickets\Admin\Onboarding\Controller' );
 
 		if ( empty( $this->activation_page ) ) {
-			$this->activation_page = new Tribe__Admin__Activation_Page( [
-				'slug'                  => 'event-tickets',
-				'admin_page'            => 'tickets_page_tec-tickets-settings',
-				'admin_url'             => tribe( Settings::class )->get_url(),
-				'version'               => self::VERSION,
-				'activation_transient'  => Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION,
-				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
-				'version_history_slug'  => $this->version_history_slug,
-				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
-				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
-			] );
+			$this->activation_page = new Tribe__Admin__Activation_Page(
+				[
+					'slug'                  => 'event-tickets',
+					'admin_page'            => 'tickets_page_tec-tickets-settings',
+					'admin_url'             => tribe( Settings::class )->get_url(),
+					'version'               => self::VERSION,
+					'activation_transient'  => Tickets_Landing_Page::ACTIVATION_REDIRECT_OPTION,
+					'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
+					'version_history_slug'  => $this->version_history_slug,
+					'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
+					'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
+				]
+			);
 
 			tec_asset(
 				$this,
@@ -1065,7 +1085,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function attendance_totals( $event_id = null ) {
 		if ( empty( $this->attendance_totals ) ) {
-			$this->attendance_totals = new Tribe__Tickets__Attendance_Totals;
+			$this->attendance_totals = new Tribe__Tickets__Attendance_Totals();
 		}
 
 		$this->attendance_totals->set_event_id( $event_id );
@@ -1155,7 +1175,11 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Injects post types into the tribe-common post_types array
+	 * Injects post types into the tribe-common post_types array.
+	 *
+	 * @param array $post_types The post types array.
+	 *
+	 * @return array
 	 */
 	public function inject_post_types( $post_types ) {
 		$post_types = array_merge( $post_types, $this->post_types() );
@@ -1189,7 +1213,7 @@ class Tribe__Tickets__Main {
 			}
 		}
 
-		// if there aren't any tickets available, bail
+		// If there aren't any tickets available, bail.
 		if ( ! $available ) {
 			return;
 		}
@@ -1205,7 +1229,7 @@ class Tribe__Tickets__Main {
 
 		ob_start();
 		?>
-		<a class="tribe-event-buy" href="<?php echo esc_url( tribe_get_event_link() ); ?>" title="<?php the_title_attribute() ?>" rel="bookmark"><?php echo esc_html( $button_text ); ?></a>
+		<a class="tribe-event-buy" href="<?php echo esc_url( tribe_get_event_link() ); ?>" title="<?php the_title_attribute(); ?>" rel="bookmark"><?php echo esc_html( $button_text ); ?></a>
 		<?php
 		$buy_button = ob_get_clean();
 
@@ -1215,7 +1239,7 @@ class Tribe__Tickets__Main {
 		 * @var string The button markup
 		 * @var int Event ID
 		 */
-		echo apply_filters( 'event_tickets_embed_buy_button', $buy_button, $event_id );
+		echo apply_filters( 'event_tickets_embed_buy_button', $buy_button, $event_id ); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -1236,7 +1260,6 @@ class Tribe__Tickets__Main {
 	 * Make necessary database updates on admin_init
 	 *
 	 * @since 4.7.1
-	 *
 	 */
 	public function run_updates() {
 		if ( ! class_exists( 'Tribe__Updater' ) ) {
@@ -1260,9 +1283,11 @@ class Tribe__Tickets__Main {
 		if ( ! class_exists( 'Tribe__Autoloader' ) ) {
 			require_once $GLOBALS['tribe-common-info']['dir'] . '/Autoloader.php';
 
-			Tribe__Autoloader::instance()->register_prefixes( [
-				'Tribe__' => $GLOBALS['tribe-common-info']['dir'],
-			] );
+			Tribe__Autoloader::instance()->register_prefixes(
+				[
+					'Tribe__' => $GLOBALS['tribe-common-info']['dir'],
+				]
+			);
 		}
 
 		return Tribe__Autoloader::instance();

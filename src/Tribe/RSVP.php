@@ -236,55 +236,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		parent::__construct();
 
-		$this->hooks();
-
-		add_action( 'init', [ $this, 'init' ] );
-
-		/**
-		 * Whenever we are dealing with Redirects we cannot do stuff on `init`
-		 * Use: `template_redirect`
-		 *
-		 * Was running into an issue of `get_permalink( $event_id )` returning
-		 * the wrong url because it was too early on the execution
-		 */
-		add_action( 'template_redirect', [ $this, 'maybe_generate_tickets' ], 10, 0 );
-		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
-		add_action( 'event_tickets_after_attendees_update', [ $this, 'maybe_send_tickets_after_status_change' ] );
+		// Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 	}
 
 	/**
-	 * Registers all actions/filters
+	 * Registers all actions/filters.
+	 *
+	 * @deprecated TBD Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 	 */
 	public function hooks() {
-		add_action( 'init', [ $this, 'set_plugin_name' ], 9 );
-		add_action( 'wp_enqueue_scripts', [ $this, 'register_resources' ], 5 );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_resources' ], 11 );
-		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
-		add_filter( 'post_updated_messages', [ $this, 'updated_messages' ] );
-		add_action( 'rsvp_checkin', [ $this, 'purge_attendees_transient' ] );
-		add_action( 'rsvp_uncheckin', [ $this, 'purge_attendees_transient' ] );
-		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
-		add_filter( 'tribe_get_cost', [ $this, 'trigger_get_cost' ], 10, 3 );
-		add_filter(
-			'event_tickets_attendees_rsvp_checkin_stati',
-			[ $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' ]
-		);
-
-		if ( is_user_logged_in() ) {
-			add_filter( 'tribe_tickets_rsvp_form_full_name', [ $this, 'rsvp_form_add_full_name' ] );
-			add_filter( 'tribe_tickets_rsvp_form_email', [ $this, 'rsvp_form_add_email' ] );
-		}
-
-		// Has to be run on before_delete_post to be sure the meta is still available (and we don't want it to run again after the post is deleted).
-		// See https://codex.wordpress.org/Plugin_API/Action_Reference/delete_post.
-		add_action( 'before_delete_post', [ $this, 'update_stock_from_attendees_page' ] );
-
-		// Handle RSVP AJAX.
-		add_action( 'wp_ajax_nopriv_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
-		add_action( 'wp_ajax_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
-
-		// Cache invalidation.
-		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
+		_deprecated_function( __METHOD__, 'TBD', 'TEC\\Tickets\\RSVP\\V1\\Controller::do_register()' );
 	}
 
 	/**
@@ -641,11 +602,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Hooks into the filter `tribe_tickets_rsvp_form_full_name` to add the user full name if user is logged in.
 	 *
+	 * @since TBD Moved is_user_logged_in() check from hooks() to this method.
+	 *
 	 * @param string $name The current name value.
 	 *
 	 * @return string The user's full name.
 	 */
 	public function rsvp_form_add_full_name( $name = '' ) {
+		// Early return if user is not logged in.
+		if ( ! is_user_logged_in() ) {
+			return $name;
+		}
+
 		$current_user = wp_get_current_user();
 		$name_parts   = [ $current_user->first_name, $current_user->last_name ];
 		$name         = implode( ' ', array_filter( $name_parts ) );
@@ -659,10 +627,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Hook into the filter `tribe_tickets_rsvp_form_email` to add the user default email.
 	 *
 	 * @since 4.7.1
+	 * @since TBD Moved is_user_logged_in() check from hooks() to this method.
+	 *
+	 * @param string $email The current email value.
 	 *
 	 * @return string The user's email address.
 	 */
-	public function rsvp_form_add_email() {
+	public function rsvp_form_add_email( $email = '' ) {
+		// Early return if user is not logged in.
+		if ( ! is_user_logged_in() ) {
+			return $email;
+		}
+
 		$current_user = wp_get_current_user();
 		return $current_user->user_email;
 	}
