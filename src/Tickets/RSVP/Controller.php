@@ -29,6 +29,24 @@ class Controller extends Controller_Contract {
 	const DISABLED = 'TEC_TICKETS_RSVP_DISABLED';
 
 	/**
+	 * Version 1 of RSVP.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const VERSION_1 = 'v1';
+
+	/**
+	 * Version 2 of RSVP.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const VERSION_2 = 'v2';
+
+	/**
 	 * Checks if RSVP functionality is enabled.
 	 *
 	 * @since TBD
@@ -60,6 +78,24 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
+	 * Returns the filtered RSVP version to use.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The RSVP version to use: one of the `VERSION_*` constants.
+	 */
+	private function get_rsvp_version(): string {
+		/**
+		 * Filters the RSVP version to use.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $version The RSVP version to use.
+		 */
+		return apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
+	}
+
+	/**
 	 * Registers the controller.
 	 *
 	 * @since TBD
@@ -68,17 +104,32 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		if ( $this->is_rsvp_enabled() ) {
-			// Register V1 Controller (full RSVP functionality).
-			$this->container->register( V1\Controller::class );
-		} else {
-			// Register null-object implementations.
-			$this->container->singleton( 'tickets.rsvp', RSVP_Disabled::class );
+			$rsvp_version = $this->get_rsvp_version();
 
-			// Register null-object repositories that return empty results.
-			// Repositories must use bind(), not singleton(), to return a fresh instance on each call.
-			$this->container->bind( 'tickets.ticket-repository.rsvp', Repositories\Ticket_Repository_Disabled::class );
-			$this->container->bind( 'tickets.attendee-repository.rsvp', Repositories\Attendee_Repository_Disabled::class );
+			if ( $rsvp_version === self::VERSION_1 ) {
+				// Register V1 Controller (full RSVP functionality).
+				$this->container->register( V1\Controller::class );
+
+				return;
+			}
+
+			if ( $rsvp_version === self::VERSION_2 ) {
+				// Register V2 Controller (full RSVP functionality).
+				$this->container->register( V2\Controller::class );
+
+				return;
+			}
+
+			// Any other version will fallback to the disabled controller.
 		}
+
+		// Register null-object implementations handling the RSVP disabled case.
+		$this->container->singleton( 'tickets.rsvp', RSVP_Disabled::class );
+
+		// Register null-object repositories that return empty results.
+		// Repositories must use bind(), not singleton(), to return a fresh instance on each call.
+		$this->container->bind( 'tickets.ticket-repository.rsvp', Repositories\Ticket_Repository_Disabled::class );
+		$this->container->bind( 'tickets.attendee-repository.rsvp', Repositories\Attendee_Repository_Disabled::class );
 	}
 
 	/**
