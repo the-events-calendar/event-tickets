@@ -13,7 +13,7 @@ import withSaveData from '../../../../../../modules/blocks/hoc/with-save-data';
 import { selectors, actions, constants } from '../../../../../../modules/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 const { TICKET_LABELS } = constants;
 
