@@ -1,0 +1,275 @@
+{
+    "": {
+        "_price": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_stock": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_header": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_default_ticket_provider": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_capacity": {
+            "type": [
+                "string",
+                "integer",
+                "null"
+            ],
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": {
+                "schema": {
+                    "type": [
+                        "string",
+                        "integer",
+                        "null"
+                    ]
+                }
+            },
+            "revisions_enabled": false
+        },
+        "_ticket_start_date": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_ticket_end_date": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_show_description": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_show_not_going": {
+            "type": [
+                "boolean",
+                "null"
+            ],
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": [
+                {},
+                "sanitize_boolean"
+            ],
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": {
+                "type": "boolean",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_use_global_stock": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_global_stock_level": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_global_stock_mode": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_global_stock_cap": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_rsvp_for_event": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_going_count": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_not_going_count": {
+            "type": "string",
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": "sanitize_text_field",
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_tickets_list": {
+            "type": "string",
+            "label": "",
+            "description": "JSON object of all the post tickets",
+            "single": true,
+            "sanitize_callback": [
+                {},
+                "sanitize_tickets_list"
+            ],
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": true,
+            "revisions_enabled": false
+        },
+        "_tribe_ticket_has_attendee_info_fields": {
+            "type": [
+                "boolean",
+                "null"
+            ],
+            "label": "",
+            "description": "",
+            "single": true,
+            "sanitize_callback": [
+                {},
+                "sanitize_boolean"
+            ],
+            "auth_callback": [
+                {},
+                "auth_callback"
+            ],
+            "show_in_rest": {
+                "type": "boolean",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "revisions_enabled": false
+        }
+    }
+}

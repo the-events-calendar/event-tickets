@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fixed - Error in block editor that would prevent saving events with Tickets directly. [TECTRIA-1464]
