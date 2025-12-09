@@ -11,6 +11,8 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 	use Commerce_Ticket_Maker;
 	use SnapshotAssertions;
 
+	private ?array $global_meta_keys_backup = null;
+
 	/**
 	 * @before
 	 */
@@ -20,7 +22,8 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 		add_filter(
 			'tribe_tickets_post_types',
-			static fn( array $post_types ): array => array_values( array_unique( array_merge( $post_types, [ 'post' ] ) ) )
+			static fn( array $post_types ): array => array_values( array_unique( array_merge( $post_types,
+				[ 'post' ] ) ) )
 		);
 	}
 
@@ -29,6 +32,22 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function ensure_is_admin(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+	}
+
+	/**
+	 * @before
+	 */
+	public function backup_global_meta_keys(): void {
+		global $wp_meta_keys;
+		$this->global_meta_keys_backup = $wp_meta_keys;
+	}
+
+	/**
+	 * @aFter
+	 */
+	public function restore_global_meta_keys(): void {
+		global $wp_meta_keys;
+		$wp_meta_keys = $this->global_meta_keys_backup;
 	}
 
 	/**
@@ -162,7 +181,7 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 		// The ticket stock is 89 - 17 = 72.
 		update_post_meta( $global_capped_ticket_id, '_stock', 72 );
 		// This ticket too is a `membership_admission`.
-		update_post_meta( $global_capped_ticket_id, '_type','membership_admission' );
+		update_post_meta( $global_capped_ticket_id, '_type', 'membership_admission' );
 
 		// Impose a `menu_order` based position to the Tickets to have consistent order in the snapshot.
 		wp_update_post( [ 'ID' => $unlimited_ticket_id, 'menu_order' => 0 ] );
@@ -181,5 +200,22 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 
 		// Decode and encode again to have a pretty version of th JSON for the snapshot.
 		$this->assertMatchesJsonSnapshot( json_encode( json_decode( $tickets_list ), JSON_PRETTY_PRINT ) );
+	}
+
+	public function test_meta_keys_are_registered_with_correct_arguments(): void {
+		global $wp_meta_keys;
+		/*
+		 * Empty the global array to reduce noise and test the registration done by the Meta object.
+		 * The value is already backed up in the `backup_global_meta_keys` method.
+		 */
+		$wp_meta_keys = [];
+
+		$meta = tribe( Meta::class );
+		$meta->register();
+
+		$this->assertArrayHasKey( 'post', $wp_meta_keys );
+
+		// To quickly test the rest use a snapshot.
+		$this->assertMatchesJsonSnapshot( json_encode( $wp_meta_keys['post'], JSON_PRETTY_PRINT ) );
 	}
 }
