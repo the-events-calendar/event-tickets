@@ -198,7 +198,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Default definition for an attribute of type text that can be a text, a signed integer or null.
 	 *
-	 * @since TBD
+	 * @since 5.27.2
 	 *
 	 * @return array<string,mixed> The schema definition for the meta key.
 	 */
