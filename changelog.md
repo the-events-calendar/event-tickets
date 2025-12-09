@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.27.2] 2025-12-09
+
+* Fix - Fixed - Error in block editor that would prevent saving events with Tickets directly. [TECTRIA-1464]
+* Language - 0 new strings added, 2 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.27.1] 2025-12-03
 
 * Fix - Resolved block editor JavaScript errors in WordPress 6.9 by properly importing `sprintf` from `@wordpress/i18n`. [ET-2595]
