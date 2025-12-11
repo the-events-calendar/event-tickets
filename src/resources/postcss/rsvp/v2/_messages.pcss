@@ -1,0 +1,210 @@
+/**
+ * Event Tickets - RSVP V2 Messages
+ *
+ * Styles for RSVP V2 messages including success, error,
+ * and informational messages with icons.
+ *
+ * @since TBD
+ */
+
+.event-tickets {
+
+	/* Base message */
+	.tribe-tickets__rsvp-v2-message {
+		align-items: center;
+		background-color: var(--tec-color-accent-primary-background);
+		border-radius: var(--tec-border-radius-default);
+		display: flex;
+		padding: var(--tec-spacer-4) var(--tec-spacer-3);
+		margin-top: var(--tec-spacer-4);
+
+		@media (--viewport-medium) {
+			padding: var(--tec-spacer-3);
+		}
+	}
+
+	/* Success message */
+	.tribe-tickets__rsvp-v2-message--success {
+		&,
+		&.tribe-tickets__rsvp-v2-message {
+			background-color: var(--tec-color-background-success);
+			border-left: 4px solid var(--tec-color-accent-primary);
+		}
+
+		.tribe-tickets__rsvp-v2-message-text {
+			color: var(--tec-color-text-primary);
+		}
+	}
+
+	/* Error message */
+	.tribe-tickets__rsvp-v2-message--error {
+		&,
+		&.tribe-tickets__rsvp-v2-message {
+			background-color: var(--tec-color-background-error);
+			border-left: 4px solid var(--tec-color-border-error);
+		}
+
+		.tribe-tickets__rsvp-v2-message-text {
+			color: var(--tec-color-text-error);
+		}
+	}
+
+	/* Warning message */
+	.tribe-tickets__rsvp-v2-message--warning {
+		&,
+		&.tribe-tickets__rsvp-v2-message {
+			background-color: var(--tec-color-background-warning);
+			border-left: 4px solid var(--tec-color-border-warning);
+		}
+
+		.tribe-tickets__rsvp-v2-message-text {
+			color: var(--tec-color-text-primary);
+		}
+	}
+
+	/* Info message */
+	.tribe-tickets__rsvp-v2-message--info {
+		&,
+		&.tribe-tickets__rsvp-v2-message {
+			background-color: var(--tec-color-accent-primary-background);
+			border-left: 4px solid var(--tec-color-accent-primary);
+		}
+
+		.tribe-tickets__rsvp-v2-message-text {
+			color: var(--tec-color-text-primary);
+		}
+	}
+
+	/* Success icon */
+	.tribe-tickets__rsvp-v2-message--success-icon {
+		display: inline-block;
+		height: var(--tec-spacer-3);
+		margin-right: var(--tec-spacer-2);
+		width: var(--tec-spacer-3);
+		flex-shrink: 0;
+
+		path {
+			stroke: var(--tec-color-icon-active);
+		}
+	}
+
+	/* Error icon */
+	.tribe-tickets__rsvp-v2-message--error-icon {
+		display: inline-block;
+		margin-right: var(--tec-spacer-2);
+		flex-shrink: 0;
+
+		circle {
+			stroke: var(--tec-color-icon-active);
+		}
+
+		circle#dot {
+			fill: var(--tec-color-icon-active);
+			stroke: transparent;
+		}
+
+		path {
+			stroke: var(--tec-color-icon-active);
+		}
+	}
+
+	/* Warning icon */
+	.tribe-tickets__rsvp-v2-message--warning-icon {
+		display: inline-block;
+		margin-right: var(--tec-spacer-2);
+		flex-shrink: 0;
+
+		circle {
+			stroke: var(--tec-color-icon-active);
+		}
+
+		path {
+			stroke: var(--tec-color-icon-active);
+		}
+	}
+
+	/* Info icon */
+	.tribe-tickets__rsvp-v2-message--info-icon {
+		display: inline-block;
+		margin-right: var(--tec-spacer-2);
+		flex-shrink: 0;
+
+		circle {
+			stroke: var(--tec-color-icon-active);
+		}
+
+		path {
+			stroke: var(--tec-color-icon-active);
+		}
+	}
+
+	/* Must login icon */
+	.tribe-tickets__rsvp-v2-message--must-login-icon {
+		display: inline-block;
+		margin-right: var(--tec-spacer-2);
+		flex-shrink: 0;
+
+		circle {
+			stroke: var(--tec-color-icon-active);
+		}
+
+		circle#dot {
+			fill: var(--tec-color-icon-active);
+			stroke: transparent;
+		}
+
+		path {
+			stroke: var(--tec-color-icon-active);
+		}
+	}
+
+	/* Message text */
+	.tribe-tickets__rsvp-v2-message-text {
+		flex: 1;
+		font-size: var(--tec-font-size-2);
+		line-height: 1.5;
+	}
+
+	/* Message link */
+	.tribe-tickets__rsvp-v2-message-link {
+		color: var(--tec-color-accent-primary);
+		text-decoration: underline;
+		transition: color 0.2s ease;
+
+		&:hover,
+		&:focus {
+			color: var(--tec-color-accent-primary-hover);
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	/* Hidden state */
+	.tribe-tickets__rsvp-v2-message--hidden {
+		display: none;
+	}
+
+	/* Dismissible message */
+	.tribe-tickets__rsvp-v2-message--dismissible {
+		position: relative;
+		padding-right: var(--tec-spacer-8);
+	}
+
+	.tribe-tickets__rsvp-v2-message-dismiss {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: var(--tec-spacer-1);
+		position: absolute;
+		right: var(--tec-spacer-2);
+		top: 50%;
+		transform: translateY(-50%);
+
+		&:hover,
+		&:focus {
+			opacity: 0.7;
+		}
+	}
+}

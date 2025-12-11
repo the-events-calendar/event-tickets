@@ -1,0 +1,173 @@
+/**
+ * Event Tickets - RSVP V2 Admin Panel Styles
+ *
+ * Styles for the RSVP V2 metabox in the WordPress admin.
+ *
+ * @since TBD
+ */
+
+/* RSVP V2 Metabox Container */
+.tribe-tickets-rsvp-v2-metabox {
+	padding: 12px;
+	background: #fff;
+}
+
+/* Enable Toggle Section */
+.tribe-tickets-rsvp-v2-enable {
+	margin-bottom: 15px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #dcdcde;
+
+	& label {
+		display: flex;
+		align-items: center;
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	& input[type="checkbox"] {
+		margin-right: 8px;
+	}
+}
+
+/* Settings Container */
+.tribe-tickets-rsvp-v2-settings {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+/* Field Containers */
+.tribe-tickets-rsvp-v2-field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	& label {
+		font-weight: 500;
+		color: #1e1e1e;
+	}
+
+	& input[type="text"],
+	& input[type="number"],
+	& textarea {
+		max-width: 400px;
+	}
+
+	& .description {
+		color: #646970;
+		font-size: 12px;
+		font-style: italic;
+		margin: 0;
+	}
+}
+
+/* Show Not Going Field */
+.tribe-tickets-rsvp-v2-field--show-not-going {
+	& label {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		font-weight: normal;
+	}
+
+	& input[type="checkbox"] {
+		margin-right: 8px;
+	}
+}
+
+/* Capacity Field */
+.tribe-tickets-rsvp-v2-field--capacity {
+	& input[type="number"] {
+		width: 100px;
+	}
+}
+
+/* Bottom Right Section */
+.tribe-tickets-rsvp-v2-bottom-right {
+	margin-top: 15px;
+	padding-top: 15px;
+	border-top: 1px solid #dcdcde;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+/* Responses Info Section */
+.tribe-tickets-rsvp-v2-responses {
+	background: #f6f7f7;
+	padding: 12px;
+	border-radius: 4px;
+	margin-top: 15px;
+
+	& .tribe-tickets-rsvp-v2-responses__title {
+		font-weight: 600;
+		margin-bottom: 8px;
+	}
+
+	& .tribe-tickets-rsvp-v2-responses__stats {
+		display: flex;
+		gap: 20px;
+	}
+
+	& .tribe-tickets-rsvp-v2-responses__stat {
+		display: flex;
+		flex-direction: column;
+
+		& .stat-label {
+			font-size: 12px;
+			color: #646970;
+		}
+
+		& .stat-value {
+			font-size: 18px;
+			font-weight: 600;
+		}
+	}
+
+	& .tribe-tickets-rsvp-v2-responses__link {
+		margin-top: 8px;
+	}
+}
+
+/* Date Fields Section */
+.tribe-tickets-rsvp-v2-dates {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+
+	& .tribe-tickets-rsvp-v2-date-field {
+		flex: 1;
+		min-width: 180px;
+
+		& label {
+			display: block;
+			margin-bottom: 4px;
+			font-weight: 500;
+		}
+
+		& input {
+			width: 100%;
+		}
+	}
+}
+
+/* Loading State */
+.tribe-tickets-rsvp-v2-metabox--loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+/* Error State */
+.tribe-tickets-rsvp-v2-error {
+	color: #d63638;
+	font-size: 13px;
+	margin-top: 4px;
+}
+
+/* Success Message */
+.tribe-tickets-rsvp-v2-success {
+	color: #00a32a;
+	font-size: 13px;
+	margin-top: 4px;
+}

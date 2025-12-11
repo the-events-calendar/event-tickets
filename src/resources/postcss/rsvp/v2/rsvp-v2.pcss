@@ -1,0 +1,155 @@
+/**
+ * Event Tickets - RSVP V2 Frontend Styles
+ *
+ * Styles for the RSVP V2 block on the frontend.
+ *
+ * @since TBD
+ */
+
+/* Import common variables and utilities */
+@import "../../utilities/_all.pcss";
+
+/* RSVP V2 Block Wrapper */
+.tribe-tickets__rsvp-v2-wrapper {
+	background-color: var(--tec-color-background);
+	border: 1px solid var(--tec-color-border-secondary);
+	border-radius: var(--tec-border-radius-default);
+	margin-top: var(--tec-spacer-6);
+	max-width: 580px;
+	overflow: hidden;
+	position: relative;
+	transition: all 0.3s ease;
+	width: 100%;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+/* RSVP V2 Block Content */
+.tribe-tickets__rsvp-v2 {
+	padding: var(--tec-spacer-10) var(--tec-grid-gutter-small-half);
+
+	@media (--viewport-medium) {
+		padding: var(--tec-spacer-5) var(--tec-grid-gutter-half);
+	}
+}
+
+/* RSVP V2 Title */
+.tribe-tickets__rsvp-v2-title {
+	font-size: var(--tec-font-size-5);
+	font-weight: var(--tec-font-weight-bold);
+	margin-bottom: var(--tec-spacer-3);
+}
+
+/* RSVP V2 Description */
+.tribe-tickets__rsvp-v2-description {
+	font-size: var(--tec-font-size-2);
+	color: var(--tec-color-text-secondary);
+	margin-bottom: var(--tec-spacer-4);
+}
+
+/* RSVP V2 Actions */
+.tribe-tickets__rsvp-v2-actions {
+	display: flex;
+	gap: var(--tec-spacer-3);
+	flex-wrap: wrap;
+}
+
+/* RSVP V2 Button Base */
+.tribe-tickets__rsvp-v2-button {
+	padding: var(--tec-spacer-2) var(--tec-spacer-4);
+	border-radius: var(--tec-border-radius-default);
+	font-size: var(--tec-font-size-2);
+	font-weight: var(--tec-font-weight-bold);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 2px solid transparent;
+
+	&:hover {
+		opacity: 0.9;
+	}
+
+	&:focus {
+		outline: 2px solid var(--tec-color-accent-primary);
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+/* Going Button */
+.tribe-tickets__rsvp-v2-button--going {
+	background-color: var(--tec-color-accent-primary);
+	color: #fff;
+}
+
+/* Not Going Button */
+.tribe-tickets__rsvp-v2-button--not-going {
+	background-color: transparent;
+	color: var(--tec-color-text-primary);
+	border-color: var(--tec-color-border-default);
+}
+
+/* RSVP V2 Form */
+.tribe-tickets__rsvp-v2-form {
+	margin-top: var(--tec-spacer-4);
+	padding-top: var(--tec-spacer-4);
+	border-top: 1px solid var(--tec-color-border-secondary);
+}
+
+/* Form Fields */
+.tribe-tickets__rsvp-v2-form-field {
+	margin-bottom: var(--tec-spacer-3);
+
+	& label {
+		display: block;
+		font-weight: var(--tec-font-weight-bold);
+		margin-bottom: var(--tec-spacer-1);
+	}
+
+	& input[type="text"],
+	& input[type="email"] {
+		width: 100%;
+		padding: var(--tec-spacer-2);
+		border: 1px solid var(--tec-color-border-default);
+		border-radius: var(--tec-border-radius-default);
+	}
+}
+
+/* Success Message */
+.tribe-tickets__rsvp-v2-success {
+	background-color: var(--tec-color-background-success);
+	color: var(--tec-color-text-success);
+	padding: var(--tec-spacer-3);
+	border-radius: var(--tec-border-radius-default);
+	margin-top: var(--tec-spacer-3);
+}
+
+/* Error Message */
+.tribe-tickets__rsvp-v2-error {
+	background-color: var(--tec-color-background-error);
+	color: var(--tec-color-text-error);
+	padding: var(--tec-spacer-3);
+	border-radius: var(--tec-border-radius-default);
+	margin-top: var(--tec-spacer-3);
+}
+
+/* Loading State */
+.tribe-tickets__rsvp-v2-wrapper--loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+/* Attendance Info */
+.tribe-tickets__rsvp-v2-attendance {
+	font-size: var(--tec-font-size-1);
+	color: var(--tec-color-text-secondary);
+	margin-top: var(--tec-spacer-3);
+
+	& strong {
+		font-weight: var(--tec-font-weight-bold);
+	}
+}

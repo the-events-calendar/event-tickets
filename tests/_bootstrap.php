@@ -11,6 +11,7 @@ use TEC\Tickets\RSVP\Controller as RSVP_Controller;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
 Autoload::addNamespace( 'Tribe\Tickets\Test', __DIR__ . '/_support' );
+Autoload::addNamespace( 'TEC\Tickets\Test', __DIR__ . '/_support' );
 Autoload::addNamespace( 'TEC\Tickets\Tests', __DIR__ . '/_support' );
 
 $common_tests_dir = __DIR__ . '/../common/tests/';
@@ -101,5 +102,7 @@ tec_tickets_tests_global_rest_route_registration_listener();
 
 // In the context of the RSVP v2 suite testing, activate the RSVP v2 feature.
 Suite_Env::module_init( 'rsvp_v2_integration', static function (): void {
+	// Enable Tickets Commerce
+	Filters::add_pre_initialized_filter( 'tec_tickets_commerce_is_enabled', fn() => true, 0 );
 	Filters::add_pre_initialized_filter( 'tec_tickets_rsvp_version', fn() => RSVP_Controller::VERSION_2, 0 );
 } );

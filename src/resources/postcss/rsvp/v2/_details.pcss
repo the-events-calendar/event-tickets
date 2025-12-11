@@ -1,0 +1,109 @@
+/**
+ * Event Tickets - RSVP V2 Details
+ *
+ * Styles for RSVP V2 details section including title, description,
+ * attendance information, and availability.
+ *
+ * @since TBD
+ */
+
+.event-tickets {
+
+	/* Details wrapper */
+	.tribe-tickets__rsvp-v2-details-wrapper {
+		align-items: center;
+		display: flex;
+		flex: none;
+		justify-content: center;
+		text-align: center;
+
+		@media (--viewport-medium) {
+			width: calc(5 * var(--tec-grid-width-1-of-8));
+		}
+	}
+
+	/* Details container */
+	.tribe-tickets__rsvp-v2-details {
+		text-align: center;
+		width: 100%;
+
+		@media (--viewport-medium) {
+			text-align: initial;
+		}
+	}
+
+	/* Title */
+	.tribe-tickets__rsvp-v2-title {
+		font-size: var(--tec-font-size-5);
+		font-weight: var(--tec-font-weight-bold);
+		line-height: 1.3;
+
+		@media (--viewport-medium) {
+			font-size: var(--tec-font-size-6);
+		}
+	}
+
+	/* Description */
+	.tribe-tickets__rsvp-v2-description {
+		color: var(--tec-color-text-secondary);
+		margin-top: var(--tec-spacer-1);
+
+		@media (--viewport-medium) {
+			margin-top: var(--tec-spacer-2);
+		}
+	}
+
+	/* Attendance information */
+	.tribe-tickets__rsvp-v2-attendance {
+		display: flex;
+		flex-direction: column;
+		margin-top: var(--tec-spacer-4);
+
+		@media (--viewport-medium) {
+			margin-top: var(--tec-spacer-5);
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-attendance-number {
+		font-size: var(--tec-font-size-9);
+		font-weight: var(--tec-font-weight-bold);
+
+		@media (--viewport-medium) {
+			font-size: var(--tec-font-size-7);
+		}
+
+		&.tribe-tickets__rsvp-v2-attendance-number--no-description {
+			font-size: var(--tec-font-size-10);
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-attendance-going {
+		color: var(--tec-color-text-secondary);
+		margin-top: var(--tec-spacer-0);
+	}
+
+	/* Availability */
+	.tribe-tickets__rsvp-v2-availability {
+		color: var(--tec-color-text-secondary);
+		margin-top: var(--tec-spacer-4);
+
+		@media (--viewport-medium) {
+			margin-top: var(--tec-spacer-5);
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-availability-quantity,
+	.tribe-tickets__rsvp-v2-availability-days-left {
+		color: var(--tec-color-text-primary);
+		font-weight: var(--tec-font-weight-bold);
+	}
+
+	/* Empty state */
+	.tribe-tickets__rsvp-v2-details--empty {
+		opacity: 0.6;
+
+		.tribe-tickets__rsvp-v2-description {
+			font-style: italic;
+		}
+	}
+}

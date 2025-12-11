@@ -1,0 +1,260 @@
+/**
+ * Event Tickets - RSVP V2 Attendee Registration
+ *
+ * Styles for RSVP V2 Attendee Registration Interface (ARI).
+ * Includes guest list, quantity controls, and registration forms.
+ *
+ * @since TBD
+ */
+
+.event-tickets {
+
+	/* ARI container */
+	.tribe-tickets__rsvp-v2-ari {
+		padding-left: var(--tec-grid-gutter-small-half);
+		padding-right: var(--tec-grid-gutter-small-half);
+
+		@media (--viewport-medium) {
+			flex-direction: row-reverse;
+			padding-left: var(--tec-grid-gutter-half);
+			padding-right: var(--tec-grid-gutter-half);
+		}
+	}
+
+	/* Sidebar wrapper */
+	.tribe-tickets__rsvp-v2-ari-sidebar-wrapper {
+		display: flex;
+		flex: none;
+
+		@media (--viewport-medium) {
+			border-left: 1px dashed var(--tec-color-border-secondary);
+			width: calc(3 * var(--tec-grid-width-1-of-8));
+		}
+	}
+
+	/* Sidebar */
+	.tribe-tickets__rsvp-v2-ari-sidebar {
+		border-bottom: 1px dashed var(--tec-color-border-secondary);
+		margin-top: var(--tec-spacer-5);
+		padding: var(--tec-spacer-5) 0;
+		width: 100%;
+
+		@media (--viewport-medium) {
+			border: 0;
+			margin-top: 0;
+			padding-left: var(--tec-spacer-4);
+		}
+	}
+
+	/* Quantity controls */
+	.tribe-tickets__rsvp-v2-ari-quantity {
+		align-items: center;
+		display: flex;
+		margin-top: var(--tec-spacer-4);
+
+		@media (--viewport-medium) {
+			display: block;
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-quantity-label {
+		font-weight: var(--tec-font-weight-bold);
+		color: var(--tec-color-text-primary);
+	}
+
+	.tribe-tickets__rsvp-v2-ari-quantity-input {
+		align-items: center;
+		display: flex;
+		margin-left: var(--tec-spacer-3);
+
+		@media (--viewport-medium) {
+			margin-left: 0;
+			margin-top: var(--tec-spacer-2);
+		}
+
+		input[type="number"] {
+			appearance: textfield;
+			background: transparent;
+			border: none;
+			height: var(--tec-spacer-8);
+			max-width: var(--tec-spacer-8);
+			padding: var(--tec-spacer-0) 0;
+			text-align: center;
+			font-weight: var(--tec-font-weight-bold);
+
+			@media (--viewport-small) {
+				height: var(--tec-spacer-8);
+			}
+
+			&::-webkit-inner-spin-button,
+			&::-webkit-outer-spin-button {
+				appearance: none;
+			}
+		}
+	}
+
+	/* Quantity increment/decrement buttons */
+	.tribe-tickets__rsvp-v2-ari-quantity-input-number {
+		background-color: transparent;
+		border: 1px solid var(--tec-color-border-default);
+		border-radius: 50%;
+		flex: none;
+		height: 28px;
+		padding: 0;
+		position: relative;
+		width: 28px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+
+		&::before,
+		&::after {
+			background-color: var(--tec-color-icon-active);
+			content: "";
+			height: 2px;
+			left: 9px;
+			position: absolute;
+			top: 12px;
+			width: 8px;
+		}
+
+		&:hover,
+		&:focus {
+			background: none;
+			border-color: var(--tec-color-border-active);
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-quantity-input-number--plus {
+		&::after {
+			transform: rotate(90deg);
+		}
+	}
+
+	/* Guest list */
+	.tribe-tickets__rsvp-v2-ari-guest-list {
+		margin-top: var(--tec-spacer-7) !important;
+	}
+
+	.tribe-tickets__rsvp-v2-ari-guest-list-item {
+		display: inline-block;
+
+		@media (--viewport-medium) {
+			display: block;
+		}
+
+		&:not(:first-of-type) {
+			@media (--viewport-medium) {
+				margin-top: var(--tec-spacer-7);
+			}
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-guest-list-item-button,
+	.tribe-tickets__rsvp-v2-ari-guest-list-item-button--inactive {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: var(--tec-spacer-1);
+		transition: color 0.2s ease;
+
+		&:hover,
+		&:focus {
+			color: var(--tec-color-text-primary);
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-guest-list-item-button--inactive {
+		color: var(--tec-color-text-secondary);
+
+		.tribe-tickets__rsvp-v2-ari-guest-icon {
+			path {
+				fill: var(--tec-color-icon-disabled);
+				stroke: var(--tec-color-icon-disabled);
+			}
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-guest-list-item-button--active {
+		color: var(--tec-color-text-primary);
+
+		.tribe-tickets__rsvp-v2-ari-guest-icon {
+			path {
+				fill: var(--tec-color-icon-active);
+				stroke: var(--tec-color-icon-active);
+			}
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-guest-list-item-title {
+		@media (--viewport-medium) {
+			@mixin visually-show;
+		}
+	}
+
+	/* Guest icon */
+	.tribe-tickets__rsvp-v2-ari-guest-icon {
+		display: inline-block;
+		height: 17px;
+		margin-right: var(--tec-spacer-5);
+		width: 14px;
+
+		@media (--viewport-medium) {
+			height: 14px;
+			margin-right: var(--tec-spacer-0);
+			width: 11px;
+		}
+
+		path {
+			fill: var(--tec-color-icon-active);
+			stroke: var(--tec-color-icon-active);
+		}
+	}
+
+	/* Form wrapper */
+	.tribe-tickets__rsvp-v2-ari-form-wrapper {
+		background-color: #f6f7f9;
+		display: flex;
+		flex: none;
+
+		@media (--viewport-medium) {
+			width: calc(5 * var(--tec-grid-width-1-of-8));
+		}
+	}
+
+	/* Registration form */
+	.tribe-tickets__rsvp-v2-ari-form {
+		padding: var(--tec-spacer-5) 0;
+		width: 100%;
+
+		@media (--viewport-medium) {
+			text-align: initial;
+		}
+
+		.tribe-tickets__form {
+			margin-top: var(--tec-spacer-4);
+		}
+	}
+
+	.tribe-tickets__rsvp-v2-ari-form-title {
+		color: var(--tec-color-text-secondary);
+		font-weight: var(--tec-font-weight-bold);
+	}
+
+	/* Hidden state */
+	.tribe-tickets__rsvp-v2-ari--hidden {
+		display: none;
+	}
+
+	/* Active state */
+	.tribe-tickets__rsvp-v2-ari--active {
+		display: block;
+	}
+}

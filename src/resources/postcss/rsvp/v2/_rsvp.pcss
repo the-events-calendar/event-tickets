@@ -1,0 +1,65 @@
+/**
+ * Event Tickets - RSVP V2 Structure
+ *
+ * Main RSVP V2 block styles. This file imports all V2 partials
+ * and defines the base wrapper and content area styles.
+ *
+ * @since TBD
+ */
+
+/* Import V2 partials */
+@import "_details.pcss";
+@import "_actions.pcss";
+@import "_form.pcss";
+@import "_ari.pcss";
+@import "_messages.pcss";
+
+.event-tickets {
+
+	/* Main RSVP V2 wrapper */
+	.tribe-tickets__rsvp-v2-wrapper {
+		background-color: var(--tec-color-background);
+		border: 1px solid var(--tec-color-border-secondary);
+		border-radius: var(--tec-border-radius-default);
+		margin-top: var(--tec-spacer-6);
+		max-width: 580px;
+		overflow: hidden;
+		position: relative;
+		transition: all 0.3s ease;
+		width: 100%;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	/* Main content area */
+	.tribe-tickets__rsvp-v2-content {
+		padding: var(--tec-spacer-10) var(--tec-grid-gutter-small-half);
+
+		@media (--viewport-medium) {
+			padding: var(--tec-spacer-5) var(--tec-grid-gutter-half);
+		}
+	}
+
+	/* Loading state */
+	.tribe-tickets__rsvp-v2-wrapper--loading {
+		opacity: 0.6;
+		pointer-events: none;
+
+		@media (prefers-reduced-motion: reduce) {
+			opacity: 0.8;
+		}
+	}
+
+	/* Hidden state */
+	.tribe-tickets__rsvp-v2-wrapper--hidden {
+		display: none;
+	}
+
+	/* Disabled state */
+	.tribe-tickets__rsvp-v2-wrapper--disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
