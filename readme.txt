@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.27.1
+Stable tag: 5.27.2
 Requires at least: 6.7
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -198,6 +198,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.27.2] 2025-12-09 =
+
+* Fix - Fixed - Error in block editor that would prevent saving events with Tickets directly. [TECTRIA-1464]
+* Language - 0 new strings added, 2 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.27.1] 2025-12-03 =
 

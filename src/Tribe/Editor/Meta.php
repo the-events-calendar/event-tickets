@@ -58,7 +58,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			$handler->key_capacity,
-			$this->text_or_null()
+			$this->text_numeric_or_null()
 		);
 
 		register_meta(
@@ -191,6 +191,37 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			$args['type'],
 			'null',
 		];
+
+		return $args;
+	}
+
+	/**
+	 * Default definition for an attribute of type text that can be a text, a signed integer or null.
+	 *
+	 * @since 5.27.2
+	 *
+	 * @return array<string,mixed> The schema definition for the meta key.
+	 */
+	protected function text_numeric_or_null() {
+		$args = $this->text();
+
+		if ( ! function_exists( 'is_wp_version_compatible' ) || ! is_wp_version_compatible( '5.3' ) ) {
+			return $args;
+		}
+
+		$types = [
+			$args['type'],
+			'integer',
+			'null',
+		];
+
+		$args['show_in_rest'] = [
+			'schema' => [
+				'type' => $types,
+			],
+		];
+
+		$args['type'] = $types;
 
 		return $args;
 	}
