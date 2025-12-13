@@ -26,7 +26,25 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const DISABLED = 'TEC_TICKETS_RSVP_DISABLED';
+	public const DISABLED = 'TEC_TICKETS_RSVP_DISABLED';
+
+	/**
+	 * Name for version 1 of the RSVP implementation.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const VERSION_1 = 'v1';
+
+	/**
+	 * Name for version 2 of the RSVP implementation.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const VERSION_2 = 'v2';
 
 	/**
 	 * Checks if RSVP functionality is enabled.
@@ -68,16 +86,39 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		if ( $this->is_rsvp_enabled() ) {
-			// Register V1 Controller (full RSVP functionality).
-			$this->container->register( V1\Controller::class );
-		} else {
+			/**
+			 * Filters the RSVP version to register.
+			 *
+			 * If the provided version is not one of the supported versions, the feature will be disabled.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $version The RSVP version to register.
+			 */
+			$version = apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
+
+			if ( $version === self::VERSION_1 ) {
+				$this->container->register( V1\Controller::class );
+
+				return;
+			}
+
+			if ( $version === self::VERSION_2 ) {
+				$this->container->register( V2\Controller::class );
+
+				return;
+			}
+
+			// If the version is not supported, fallback to disable the feature. }
+
 			// Register null-object implementations.
 			$this->container->singleton( 'tickets.rsvp', RSVP_Disabled::class );
 
 			// Register null-object repositories that return empty results.
 			// Repositories must use bind(), not singleton(), to return a fresh instance on each call.
 			$this->container->bind( 'tickets.ticket-repository.rsvp', Repositories\Ticket_Repository_Disabled::class );
-			$this->container->bind( 'tickets.attendee-repository.rsvp', Repositories\Attendee_Repository_Disabled::class );
+			$this->container->bind( 'tickets.attendee-repository.rsvp',
+				Repositories\Attendee_Repository_Disabled::class );
 		}
 	}
 

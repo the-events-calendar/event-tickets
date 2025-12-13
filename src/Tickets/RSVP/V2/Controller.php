@@ -27,9 +27,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		throw new RuntimeException(
-			'RSVP V2 is not implemented yet. Use V1 controller.'
-		);
+		// V2 is not implemented yet.
 	}
 
 	/**
