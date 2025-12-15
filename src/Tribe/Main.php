@@ -12,6 +12,8 @@ use TEC\Tickets\Admin\Onboarding\Tickets_Landing_Page;
 
 /**
  * Class Tribe__Tickets__Main.
+ *
+ * Edit to trigger PHP tests.
  */
 class Tribe__Tickets__Main {
 
