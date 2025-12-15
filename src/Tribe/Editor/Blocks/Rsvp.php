@@ -433,11 +433,16 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 
 		$products = [];
 
-		if ( isset( $_POST['tribe_tickets'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$products = wp_list_pluck( array_map( 'sanitize_key', $_POST['tribe_tickets'] ), 'ticket_id' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-		} elseif ( isset( $_POST['product_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$products = array_map( 'sanitize_key', (array) $_POST['product_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		if ( isset( $_POST['tribe_tickets'] ) ) {
+			$products = wp_list_pluck(
+				array_map( 'tribe_sanitize_deep', (array) $_POST['tribe_tickets'] ),
+				'ticket_id'
+			);
+		} elseif ( isset( $_POST['product_id'] ) ) {
+			$products = array_map( 'tribe_sanitize_deep', (array) $_POST['product_id'] );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		$products = array_map( 'absint', $products );
 		$products = array_filter( $products );
