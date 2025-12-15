@@ -80,6 +80,7 @@ class Ticket_Repository extends Tribe__Repository {
 	 */
 	public function filter_by_tc_rsvp_type( array $query_args ): array {
 		if ( ! isset( $query_args['meta_query'] ) ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = [];
 		}
 

@@ -10,9 +10,7 @@
 namespace TEC\Tickets\RSVP\V2\Repositories;
 
 use TEC\Tickets\Commerce\Attendee;
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Event;
-use TEC\Tickets\RSVP\V2\Constants;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
 use WP_Post;
@@ -64,10 +62,10 @@ class Attendee_Repository extends Tribe__Repository {
 		$this->schema = array_merge(
 			$this->schema,
 			[
-				'event'      => [ $this, 'filter_by_event' ],
-				'ticket'     => [ $this, 'filter_by_ticket' ],
-				'going'      => [ $this, 'filter_by_going' ],
-				'not_going'  => [ $this, 'filter_by_not_going' ],
+				'event'     => [ $this, 'filter_by_event' ],
+				'ticket'    => [ $this, 'filter_by_ticket' ],
+				'going'     => [ $this, 'filter_by_going' ],
+				'not_going' => [ $this, 'filter_by_not_going' ],
 			]
 		);
 
@@ -177,18 +175,25 @@ class Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	protected function clean_post_ids( $posts ): array {
-		return array_unique( array_filter( array_map( static function ( $post ) {
-			$post = Event::filter_event_id( $post );
+		return array_unique(
+			array_filter(
+				array_map(
+					static function ( $post ) {
+						$post = Event::filter_event_id( $post );
 
-			if ( is_numeric( $post ) ) {
-				return (int) $post;
-			}
+						if ( is_numeric( $post ) ) {
+							return (int) $post;
+						}
 
-			if ( $post instanceof WP_Post ) {
-				return $post->ID;
-			}
+						if ( $post instanceof WP_Post ) {
+							return $post->ID;
+						}
 
-			return null;
-		}, (array) $posts ) ) );
+						return null;
+					},
+					(array) $posts 
+				) 
+			) 
+		);
 	}
 }
