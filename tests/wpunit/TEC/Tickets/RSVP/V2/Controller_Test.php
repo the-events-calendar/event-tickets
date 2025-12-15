@@ -8,7 +8,6 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
-use RuntimeException;
 
 /**
  * Class Controller_Test
@@ -18,16 +17,16 @@ use RuntimeException;
 class Controller_Test extends WPTestCase {
 
 	/**
-	 * Test that do_register throws RuntimeException.
+	 * Test that register works without errors.
 	 *
 	 * @test
 	 */
-	public function test_do_register_throws_runtime_exception(): void {
-		$this->expectException( RuntimeException::class );
-		$this->expectExceptionMessage( 'RSVP V2 is not implemented yet' );
-
+	public function test_register_works_without_errors(): void {
 		$controller = new Controller( tribe() );
 		$controller->register();
+
+		// If we get here without exception, test passes.
+		$this->assertTrue( true );
 	}
 
 	/**
@@ -41,5 +40,20 @@ class Controller_Test extends WPTestCase {
 
 		// If we get here without exception, test passes.
 		$this->assertTrue( true );
+	}
+
+	/**
+	 * Test that Constants are registered as singleton.
+	 *
+	 * @test
+	 */
+	public function test_registers_constants_singleton(): void {
+		$controller = new Controller( tribe() );
+		$controller->register();
+
+		$constants1 = tribe( Constants::class );
+		$constants2 = tribe( Constants::class );
+
+		$this->assertSame( $constants1, $constants2 );
 	}
 }
