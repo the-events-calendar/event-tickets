@@ -23,13 +23,13 @@ class Controller extends Controller_Contract {
 	use RSVP_Controller_Methods;
 
 	/**
-	 * Store hook callbacks for clean unregistration.
+	 * The action that will be fired after the successful registration of this controller.
 	 *
 	 * @since TBD
 	 *
-	 * @var array
+	 * @var string
 	 */
-	protected array $hooks = [];
+	public static string $registration_action = 'tec_tickets_rsvp_v2_registered';
 
 	/**
 	 * Register the controller.
@@ -46,14 +46,14 @@ class Controller extends Controller_Contract {
 
 		$this->register_common_rsvp_implementations();
 
-		/**
-		 * Fires after the RSVP V2 controller has been registered.
-		 *
-		 * This action allows other plugins (e.g., ET+) to register their
-		 * own V2 RSVP components after the core V2 infrastructure is ready.
-		 *
-		 * @since TBD
-		 */
-		do_action( 'tec_tickets_rsvp_v2_registered' );
+		// Bind the repositories as factories to make sure each instance is different.
+		$this->container->bind(
+			'tickets.ticket-repository.rsvp',
+			Repositories\Ticket_Repository::class
+		);
+		$this->container->bind(
+			'tickets.attendee-repository.rsvp',
+			Repositories\Attendee_Repository::class
+		);
 	}
 }

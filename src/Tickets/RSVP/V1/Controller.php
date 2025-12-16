@@ -9,6 +9,8 @@ namespace TEC\Tickets\RSVP\V1;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\RSVP\RSVP_Controller_Methods;
+use Tribe__Tickets__Repositories__Ticket__RSVP as RSVP_V1_Ticket_Repository;
+use Tribe__Tickets__Repositories__Attendee__RSVP as RSVP_V1_Attendee_Repository;
 
 /**
  * V1 Controller for RSVP functionality.
@@ -19,6 +21,15 @@ use TEC\Tickets\RSVP\RSVP_Controller_Methods;
  */
 class Controller extends Controller_Contract {
 	use RSVP_Controller_Methods;
+
+	/**
+	 * The action that will be fired after the successful registration of this controller.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_tickets_rsvp_v1_registered';
 
 	/**
 	 * Registers the controller.
@@ -33,11 +44,11 @@ class Controller extends Controller_Contract {
 		// Bind the repositories as factories to make sure each instance is different.
 		$this->container->bind(
 			'tickets.ticket-repository.rsvp',
-			'Tribe__Tickets__Repositories__Ticket__RSVP'
+			RSVP_V1_Ticket_Repository::class
 		);
 		$this->container->bind(
 			'tickets.attendee-repository.rsvp',
-			'Tribe__Tickets__Repositories__Attendee__RSVP'
+			RSVP_V1_Attendee_Repository::class
 		);
 	}
 }
