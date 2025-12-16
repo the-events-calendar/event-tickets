@@ -40,8 +40,6 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		$this->container->singleton( Constants::class );
-
-		// Register assets.
 		$this->container->register( Assets::class );
 
 		$this->register_common_rsvp_implementations();
