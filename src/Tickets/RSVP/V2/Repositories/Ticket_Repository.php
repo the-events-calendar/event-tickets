@@ -10,6 +10,7 @@
 namespace TEC\Tickets\RSVP\V2\Repositories;
 
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Repositories\Traits\Get_Field;
 use TEC\Tickets\RSVP\V2\Constants;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
@@ -27,6 +28,7 @@ use WP_Post;
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
 class Ticket_Repository extends Tribe__Repository {
+	use Get_Field;
 
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
@@ -50,12 +52,7 @@ class Ticket_Repository extends Tribe__Repository {
 		$this->default_args['post_status'] = 'publish';
 
 		// Register schema filters.
-		$this->schema = array_merge(
-			$this->schema,
-			[
-				'event' => [ $this, 'filter_by_event' ],
-			]
-		);
+		$this->schema['event'] = [ $this, 'filter_by_event' ];
 
 		$this->add_simple_meta_schema_entry( 'event', Ticket::$event_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'ticket_type', Ticket::$type_meta_key );
@@ -144,5 +141,20 @@ class Ticket_Repository extends Tribe__Repository {
 		}
 
 		$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
+	}
+
+	/**
+	 * Get the event ID for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id Ticket ID.
+	 *
+	 * @return int|false Event ID or false if not found.
+	 */
+	public function get_event_id( int $ticket_id ) {
+		$event_id = get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+
+		return $event_id ? (int) $event_id : false;
 	}
 }

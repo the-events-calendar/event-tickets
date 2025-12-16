@@ -11,6 +11,7 @@ namespace TEC\Tickets\RSVP\V2\Repositories;
 
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Event;
+use TEC\Tickets\Repositories\Traits\Get_Field;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
 use WP_Post;
@@ -27,6 +28,7 @@ use WP_Post;
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
 class Attendee_Repository extends Tribe__Repository {
+	use Get_Field;
 
 	/**
 	 * RSVP status meta key.
@@ -191,9 +193,9 @@ class Attendee_Repository extends Tribe__Repository {
 
 						return null;
 					},
-					(array) $posts 
-				) 
-			) 
+					(array) $posts
+				)
+			)
 		);
 	}
 }
