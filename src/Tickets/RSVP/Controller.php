@@ -108,7 +108,8 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		if ( $version === self::VERSION_2 ) {
+		// RSVP v2 requires Tickets Commerce to be activated to work.
+		if ( $version === self::VERSION_2 && tec_tickets_commerce_is_enabled() ) {
 			$this->container->register( V2\Controller::class );
 			// V2 uses TC infrastructure. Bind repositories but not tickets.rsvp
 			// as V2 doesn't need a legacy RSVP provider.
@@ -161,7 +162,8 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		if ( $version === self::VERSION_2 ) {
+		// RSVP v2 requires Tickets Commerce to be activated to work.
+		if ( $version === self::VERSION_2 && tec_tickets_commerce_is_enabled() ) {
 			$this->container->get( V2\Controller::class )->unregister();
 		}
 	}
