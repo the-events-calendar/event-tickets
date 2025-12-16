@@ -121,4 +121,19 @@ class Ticket_Repository extends Base_Repository {
 
 		return $event_id ? (int) $event_id : false;
 	}
+
+	/**
+	 * Get the event ID for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id Ticket ID.
+	 *
+	 * @return int|false Event ID or false if not found.
+	 */
+	public function get_event_id( int $ticket_id ) {
+		$event_id = get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+
+		return $event_id ? (int) $event_id : false;
+	}
 }
