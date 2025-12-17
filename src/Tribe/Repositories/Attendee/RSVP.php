@@ -170,7 +170,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Post                       $attendee      The attendee object.
+	 * @param WP_Post                      $attendee      The attendee object.
 	 * @param array                         $attendee_data List of additional attendee data.
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
