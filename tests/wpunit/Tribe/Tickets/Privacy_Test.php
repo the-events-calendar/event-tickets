@@ -25,6 +25,8 @@ class Privacy_Test extends WPTestCase {
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
 
+	private $original_attendee_repository = null;
+
 	/**
 	 * @before
 	 */
@@ -37,8 +39,19 @@ class Privacy_Test extends WPTestCase {
 	}
 
 	/**
-	 * @test
+	 * Restore the original RSVP Attendee repository binding to avoid following tests
+	 * from running on the disabled one.
+	 *
+	 * @after
 	 */
+	public function restore_rsvp_attendee_repository(): void {
+		if ( $this->original_attendee_repository === null ) {
+			return;
+		}
+
+		tribe()->bind( 'tickets.attendee-repository.rsvp', $this->original_attendee_repository );
+	}
+
 	public function test_rsvp_exporter_returns_attendee_data(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -71,9 +84,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertContains( 'Date', $data_names );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_exporter_pagination_done_flag(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -91,9 +101,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertCount( 3, $result['data'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_exporter_returns_empty_when_no_attendees(): void {
 		$privacy = new Privacy();
 		$result  = $privacy->rsvp_exporter( 'nonexistent@example.com' );
@@ -105,9 +112,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertTrue( $result['done'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_exporter_filter_receives_wp_post_object(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -136,9 +140,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertInstanceOf( WP_Post::class, $received_attendee );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_exporter_filter_is_applied(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -169,9 +170,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertContains( 'Custom Field', $data_names );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_eraser_deletes_attendees(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -195,9 +193,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertNull( get_post( $attendee_id ) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_eraser_clears_cache_on_success(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -222,9 +217,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertFalse( $cached_after );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_eraser_returns_early_for_empty_email(): void {
 		$privacy = new Privacy();
 		$result  = $privacy->rsvp_eraser( '' );
@@ -236,9 +228,6 @@ class Privacy_Test extends WPTestCase {
 		$this->assertTrue( $result['done'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_eraser_pagination_done_flag(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -256,13 +245,12 @@ class Privacy_Test extends WPTestCase {
 		$this->assertTrue( $result['items_removed'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_exporter_works_with_disabled_repository(): void {
 		$disabled_repository = new Attendee_Repository_Disabled();
 
-		tribe_singleton( 'tickets.attendee-repository.rsvp', $disabled_repository );
+		// Backup and override the original repository wit the disabled one.
+		$this->original_attendee_repository = tribe( 'tickets.attendee-repository.rsvp' );
+		tribe()->bind( 'tickets.attendee-repository.rsvp', $disabled_repository );
 
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -282,13 +270,12 @@ class Privacy_Test extends WPTestCase {
 		$this->assertTrue( $result['done'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_rsvp_eraser_works_with_disabled_repository(): void {
 		$disabled_repository = new Attendee_Repository_Disabled();
 
-		tribe_singleton( 'tickets.attendee-repository.rsvp', $disabled_repository );
+		// Backup and override the original repository wit the disabled one.
+		$this->original_attendee_repository = tribe( 'tickets.attendee-repository.rsvp' );
+		tribe()->bind( 'tickets.attendee-repository.rsvp', $disabled_repository );
 
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
