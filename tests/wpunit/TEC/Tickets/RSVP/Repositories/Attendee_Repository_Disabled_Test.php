@@ -108,4 +108,39 @@ class Attendee_Repository_Disabled_Test extends WPTestCase {
 
 		$this->assertSame( [], $result );
 	}
+
+	/**
+	 * @test
+	 */
+	public function test_implements_attendee_privacy_handler_interface(): void {
+		$this->assertInstanceOf(
+			\TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler::class,
+			$this->repository
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_get_attendees_by_email_returns_empty_array(): void {
+		$result = $this->repository->get_attendees_by_email( 'test@example.com', 1, 10 );
+
+		$this->assertSame( [ 'posts' => [], 'has_more' => false ], $result );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_delete_attendee_returns_failure(): void {
+		$result = $this->repository->delete_attendee( 123 );
+
+		$this->assertSame( [ 'success' => false, 'event_id' => null ], $result );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_get_ticket_id_returns_zero(): void {
+		$this->assertSame( 0, $this->repository->get_ticket_id( 123 ) );
+	}
 }

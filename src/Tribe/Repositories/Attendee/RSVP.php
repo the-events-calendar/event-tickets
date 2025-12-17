@@ -12,6 +12,7 @@
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 use TEC\Tickets\Repositories\Traits\Get_Field;
+use TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -21,7 +22,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @property Tribe__Tickets__RSVP $attendee_provider
  */
-class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository {
+class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository implements Attendee_Privacy_Handler {
 
 	use Get_Field;
 
@@ -168,7 +169,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Post                       $attendee      The attendee object.
+	 * @param WP_Post                      $attendee      The attendee object.
 	 * @param array                         $attendee_data List of additional attendee data.
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
@@ -316,5 +317,72 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		}
 
 		return $counts;
+	}
+
+	/**
+	 * Get attendees by email address for privacy operations.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $email    The email address to search for.
+	 * @param int    $page     The page number (1-indexed).
+	 * @param int    $per_page Number of results per page.
+	 *
+	 * @return array{
+	 *     posts: WP_Post[],
+	 *     has_more: bool
+	 * } The list of attendees and whether there are more results to fetch.
+	 */
+	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
+		$posts = $this->by( 'purchaser_email', $email )
+		              ->per_page( $per_page )
+		              ->page( $page )
+		              ->order_by( 'ID' )
+		              ->order( 'ASC' )
+		              ->all();
+
+		return [
+			'posts'    => $posts,
+			'has_more' => count( $posts ) >= $per_page,
+		];
+	}
+
+	/**
+	 * Delete an attendee for privacy erasure.
+	 *
+	 * This method will immediately delete the Attendee skipping trash.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID to delete.
+	 *
+	 * @return array{
+	 *     success: bool,
+	 *     event_id: int|null
+	 * } The deletion result and the event ID where the attendee was found, if any.
+	 */
+	public function delete_attendee( int $attendee_id): array {
+		$event_id = get_post_meta( $attendee_id, $this->attendee_provider::ATTENDEE_EVENT_KEY, true );
+		$deleted  = wp_delete_post( $attendee_id , true );
+
+		return [
+			'success'  => (bool) $deleted,
+			'event_id' => $event_id ? (int) $event_id : null,
+		];
+	}
+
+	/**
+	 * Get the ticket/product ID for an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID.
+	 *
+	 * @return int The ticket/product ID, or 0 if not found.
+	 */
+	public function get_ticket_id( int $attendee_id ): int {
+		$ticket_id = get_post_meta( $attendee_id, $this->attendee_provider::ATTENDEE_PRODUCT_KEY, true );
+
+		return $ticket_id ? (int) $ticket_id : 0;
 	}
 }
