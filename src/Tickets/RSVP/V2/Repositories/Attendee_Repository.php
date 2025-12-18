@@ -223,12 +223,12 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_
 	 */
 	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
 		$posts = $this->by( 'email', $email )
-		              ->by( 'meta_exists', self::RSVP_STATUS_META_KEY )
-		              ->per_page( $per_page )
-		              ->page( $page )
-		              ->order_by( 'ID' )
-		              ->order( 'ASC' )
-		              ->all();
+						->by( 'meta_exists', self::RSVP_STATUS_META_KEY )
+						->per_page( $per_page )
+						->page( $page )
+						->order_by( 'ID' )
+						->order( 'ASC' )
+						->all();
 
 		return [
 			'posts'    => $posts,

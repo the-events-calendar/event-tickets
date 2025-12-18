@@ -168,7 +168,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Post                      $attendee      The attendee object.
+	 * @param WP_Post                       $attendee      The attendee object.
 	 * @param array                         $attendee_data List of additional attendee data.
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
@@ -334,11 +334,11 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 */
 	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
 		$posts = $this->by( 'purchaser_email', $email )
-		              ->per_page( $per_page )
-		              ->page( $page )
-		              ->order_by( 'ID' )
-		              ->order( 'ASC' )
-		              ->all();
+						->per_page( $per_page )
+						->page( $page )
+						->order_by( 'ID' )
+						->order( 'ASC' )
+						->all();
 
 		return [
 			'posts'    => $posts,
@@ -360,9 +360,9 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *     event_id: int|null
 	 * } The deletion result and the event ID where the attendee was found, if any.
 	 */
-	public function delete_attendee( int $attendee_id): array {
+	public function delete_attendee( int $attendee_id ): array {
 		$event_id = get_post_meta( $attendee_id, $this->attendee_provider::ATTENDEE_EVENT_KEY, true );
-		$deleted  = wp_delete_post( $attendee_id , true );
+		$deleted  = wp_delete_post( $attendee_id, true );
 
 		return [
 			'success'  => (bool) $deleted,
