@@ -19,7 +19,6 @@ use Tribe__Tickets__RSVP;
  * @since TBD
  */
 class RSVP_Disabled extends Tribe__Tickets__RSVP {
-
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *

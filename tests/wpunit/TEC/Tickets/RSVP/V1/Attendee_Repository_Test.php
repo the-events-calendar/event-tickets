@@ -34,18 +34,12 @@ class Attendee_Repository_Test extends WPTestCase {
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_implements_attendee_privacy_handler_interface(): void {
 		$repository = new RSVP_Attendee_Repository();
 
 		$this->assertInstanceOf( Attendee_Privacy_Handler::class, $repository );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_get_attendees_by_email_returns_matching_attendees(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -76,9 +70,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		}
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_get_attendees_by_email_returns_wp_post_objects(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -98,9 +89,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		}
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_get_attendees_by_email_pagination_works(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -138,9 +126,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertEmpty( array_intersect( $page1_ids, $page3_ids ) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_get_attendees_by_email_returns_empty_for_no_matches(): void {
 		$post_id   = $this->factory()->post->create();
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -157,9 +142,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertFalse( $result['has_more'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_delete_attendee_removes_post(): void {
 		$post_id     = $this->factory()->post->create();
 		$ticket_id   = $this->create_rsvp_ticket( $post_id );
@@ -174,9 +156,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertNull( get_post( $attendee_id ) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_delete_attendee_returns_event_id(): void {
 		$post_id     = $this->factory()->post->create();
 		$ticket_id   = $this->create_rsvp_ticket( $post_id );
@@ -190,9 +169,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertSame( $post_id, $result['event_id'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_delete_attendee_returns_failure_for_invalid_id(): void {
 		$repository = new RSVP_Attendee_Repository();
 		$result     = $repository->delete_attendee( 999999 );
@@ -201,9 +177,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertNull( $result['event_id'] );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_get_ticket_id_returns_correct_product_id(): void {
 		$post_id     = $this->factory()->post->create();
 		$ticket_id   = $this->create_rsvp_ticket( $post_id );
@@ -215,9 +188,6 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertSame( $ticket_id, $result );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_get_ticket_id_returns_zero_for_invalid_attendee(): void {
 		$repository = new RSVP_Attendee_Repository();
 		$result     = $repository->get_ticket_id( 999999 );

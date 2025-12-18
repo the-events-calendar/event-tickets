@@ -22,7 +22,6 @@ use Tribe\Tickets\Test\RSVP_V2\TC_RSVP_Ticket_Maker;
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
 class Ticket_Repository_Test extends WPTestCase {
-
 	use TC_RSVP_Ticket_Maker;
 
 	/**

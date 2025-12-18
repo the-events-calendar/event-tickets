@@ -22,7 +22,6 @@ use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
  * @package TEC\Tickets\RSVP\V2
  */
 class Ticket {
-
 	/**
 	 * Get the ticket type identifier for RSVP tickets.
 	 *

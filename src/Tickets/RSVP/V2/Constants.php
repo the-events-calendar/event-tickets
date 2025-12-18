@@ -17,7 +17,6 @@ namespace TEC\Tickets\RSVP\V2;
  * @package TEC\Tickets\RSVP\V2
  */
 class Constants {
-
 	/**
 	 * The ticket type identifier for TC-RSVP tickets.
 	 *

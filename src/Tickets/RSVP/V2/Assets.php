@@ -24,7 +24,6 @@ use Tribe__Tickets__Main;
  * @package TEC\Tickets\RSVP\V2
  */
 class Assets extends Service_Provider {
-
 	/**
 	 * Binds and sets up implementations.
 	 *

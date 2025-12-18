@@ -18,7 +18,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  * @since TBD
  */
 class Controller extends Controller_Contract {
-
 	/**
 	 * Constant name for disabling RSVP.
 	 *

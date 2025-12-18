@@ -23,7 +23,6 @@ use TEC\Tickets\RSVP\V2\Repositories\Attendee_Repository;
  * @package Tribe\Tickets\Test\RSVP_V2
  */
 trait TC_RSVP_Attendee_Maker {
-
 	/**
 	 * Counter for generating unique attendee titles.
 	 *

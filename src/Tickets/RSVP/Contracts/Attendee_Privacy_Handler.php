@@ -22,7 +22,6 @@ use WP_Post;
  * @package TEC\Tickets\RSVP\Contracts
  */
 interface Attendee_Privacy_Handler {
-
 	/**
 	 * Get attendees by email address for privacy operations.
 	 *

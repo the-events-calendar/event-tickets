@@ -19,7 +19,6 @@ use Codeception\TestCase\WPTestCase;
  * @package TEC\Tickets\RSVP\V2
  */
 class Metabox_Test extends WPTestCase {
-
 	/**
 	 * @test
 	 */

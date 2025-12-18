@@ -21,7 +21,6 @@ use TEC\Tickets\RSVP\V2\Repositories\Attendee_Repository;
  * @package TEC\Tickets\RSVP\V2
  */
 class Attendance_Totals {
-
 	/**
 	 * Get the count of going attendees for an event.
 	 *

@@ -18,7 +18,6 @@ use Tribe__Repository;
  * @since TBD
  */
 class Ticket_Repository_Disabled extends Tribe__Repository {
-
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *

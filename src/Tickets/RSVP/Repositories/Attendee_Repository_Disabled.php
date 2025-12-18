@@ -19,7 +19,6 @@ use Tribe__Repository;
  * @since TBD
  */
 class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee_Privacy_Handler {
-
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *
