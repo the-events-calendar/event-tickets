@@ -1,4 +1,11 @@
 <?php
+/**
+ * Attendee Privacy Handler interface.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\Contracts
+ */
 
 namespace TEC\Tickets\RSVP\Contracts;
 
