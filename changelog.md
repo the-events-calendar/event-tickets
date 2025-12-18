@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.27.3] 2025-12-18
+
+* Security - Strengthen the user access level in the system information opt-in functionality. [SVUL-35]
+
 ### [5.27.2] 2025-12-09
 
 * Fix - Fixed - Error in block editor that would prevent saving events with Tickets directly. [TECTRIA-1464]
