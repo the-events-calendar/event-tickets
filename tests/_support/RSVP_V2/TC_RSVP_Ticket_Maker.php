@@ -24,7 +24,6 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
  * @package Tribe\Tickets\Test\RSVP_V2
  */
 trait TC_RSVP_Ticket_Maker {
-
 	use Ticket_Maker;
 
 	/**
