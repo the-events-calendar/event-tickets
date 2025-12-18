@@ -25,7 +25,13 @@ class Privacy_Test extends WPTestCase {
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
 
-	private $original_attendee_repository = null;
+	/*
+	 * The test will override this binding. This is the source of truth about the class that should be
+	 * bound back at the end of the tests.
+	 *
+	 * @var class-string<Tribe__Repository__Interface>
+	 */
+	private ?string $original_attendee_repository_class = null;
 
 	/**
 	 * @before
@@ -36,6 +42,9 @@ class Privacy_Test extends WPTestCase {
 		} );
 
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
+
+		// Backup the original Attendee repository class to restore it after the tests.
+		$this->original_attendee_repository_class = get_class( tribe()->get( 'tickets.attendee-repository.rsvp' ) );
 	}
 
 	/**
@@ -45,11 +54,7 @@ class Privacy_Test extends WPTestCase {
 	 * @after
 	 */
 	public function restore_rsvp_attendee_repository(): void {
-		if ( $this->original_attendee_repository === null ) {
-			return;
-		}
-
-		tribe()->bind( 'tickets.attendee-repository.rsvp', $this->original_attendee_repository );
+		tribe()->bind( 'tickets.attendee-repository.rsvp', $this->original_attendee_repository_class );
 	}
 
 	public function test_rsvp_exporter_returns_attendee_data(): void {
@@ -248,8 +253,10 @@ class Privacy_Test extends WPTestCase {
 	public function test_rsvp_exporter_works_with_disabled_repository(): void {
 		$disabled_repository = new Attendee_Repository_Disabled();
 
-		// Backup and override the original repository wit the disabled one.
-		$this->original_attendee_repository = tribe( 'tickets.attendee-repository.rsvp' );
+		/*
+		 * Override the original binding to bind the disabled repository.
+		 * The tests will restore the original binding after themselves.
+		 */
 		tribe()->bind( 'tickets.attendee-repository.rsvp', $disabled_repository );
 
 		$post_id   = $this->factory()->post->create();
@@ -273,8 +280,10 @@ class Privacy_Test extends WPTestCase {
 	public function test_rsvp_eraser_works_with_disabled_repository(): void {
 		$disabled_repository = new Attendee_Repository_Disabled();
 
-		// Backup and override the original repository wit the disabled one.
-		$this->original_attendee_repository = tribe( 'tickets.attendee-repository.rsvp' );
+		/*
+		 * Override the original binding to bind the disabled repository.
+		 * The tests will restore the original binding after themselves.
+		 */
 		tribe()->bind( 'tickets.attendee-repository.rsvp', $disabled_repository );
 
 		$post_id   = $this->factory()->post->create();
