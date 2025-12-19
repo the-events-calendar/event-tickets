@@ -64,20 +64,23 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 		$this->create_args['ping_status'] = 'closed';
 
 		// Set the defautl query args.
-		$this->default_args = array_merge( $this->default_args, [
-			'post_type'   => Attendee::POSTTYPE,
-			'orderby'     => [ 'date', 'title', 'ID' ],
-			'post_status' => 'any',
-		] );
+		$this->default_args = array_merge(
+			$this->default_args,
+			[
+				'post_type'   => Attendee::POSTTYPE,
+				'orderby'     => [ 'date', 'title', 'ID' ],
+				'post_status' => 'any',
+			] 
+		);
 
 		// Set up schema for filtering.
 		$this->schema = array_merge(
 			$this->schema,
 			[
-				'event'     => [ $this, 'filter_by_event' ],
-				'ticket'    => [ $this, 'filter_by_ticket' ],
-				'going'     => [ $this, 'filter_by_going' ],
-				'not_going' => [ $this, 'filter_by_not_going' ],
+				'event'      => [ $this, 'filter_by_event' ],
+				'ticket'     => [ $this, 'filter_by_ticket' ],
+				'going'      => [ $this, 'filter_by_going' ],
+				'not_going'  => [ $this, 'filter_by_not_going' ],
 				'checked_in' => [ $this, 'filter_by_checkedin' ],
 			]
 		);
@@ -93,10 +96,12 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases ?? [],
 			[
-				'full_name' => Attendee::$full_name_meta_key,
-				'email'     => Attendee::$email_meta_key,
-				'ticket_id' => Attendee::$ticket_relation_meta_key,
-				'event_id'  => Attendee::$event_relation_meta_key,
+				'full_name'   => Attendee::$full_name_meta_key,
+				'email'       => Attendee::$email_meta_key,
+				'ticket_id'   => Attendee::$ticket_relation_meta_key,
+				'event_id'    => Attendee::$event_relation_meta_key,
+				'rsvp_status' => self::RSVP_STATUS_META_KEY,
+				'checked_in'  => Attendee::$checked_in_meta_key,
 			]
 		);
 	}
