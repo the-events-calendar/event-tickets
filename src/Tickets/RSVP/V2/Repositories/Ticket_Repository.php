@@ -50,6 +50,17 @@ class Ticket_Repository extends Tribe__Repository {
 		// Set the post type to TC tickets.
 		$this->default_args['post_type']   = Ticket::POSTTYPE;
 		$this->default_args['post_status'] = 'publish';
+		$this->default_args['meta_query']  = [];
+
+		// Always filter by the RSVP ticket type.
+		$this->query_args['meta_query']['tc_rsvp_type'] = [
+			'key'   => Ticket::$type_meta_key,
+			'value' => Constants::TC_RSVP_TYPE,
+		];
+
+		// By default, order the Tickets by ID, ascending.
+		$this->query_args['orderby'] = 'ID';
+		$this->query_args['order']   = 'ASC';
 
 		// Register schema filters.
 		$this->schema['event'] = [ $this, 'filter_by_event' ];
@@ -61,32 +72,6 @@ class Ticket_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'sku', Ticket::$sku_meta_key );
 		$this->add_simple_meta_schema_entry( 'stock', Ticket::$stock_meta_key );
 		$this->add_simple_meta_schema_entry( 'stock_mode', Ticket::$stock_mode_meta_key );
-
-		// Always filter by TC-RSVP ticket type using a filter to ensure it's added to meta_query.
-		add_filter( 'tribe_repository_tc_rsvp_tickets_query_args', [ $this, 'filter_by_tc_rsvp_type' ] );
-	}
-
-	/**
-	 * Filters query args to only return TC-RSVP tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $query_args The query arguments.
-	 *
-	 * @return array The modified query arguments.
-	 */
-	public function filter_by_tc_rsvp_type( array $query_args ): array {
-		if ( ! isset( $query_args['meta_query'] ) ) {
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-			$query_args['meta_query'] = [];
-		}
-
-		$query_args['meta_query'][] = [
-			'key'   => Ticket::$type_meta_key,
-			'value' => Constants::TC_RSVP_TYPE,
-		];
-
-		return $query_args;
 	}
 
 	/**

@@ -61,6 +61,10 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_
 		$this->default_args['post_type']   = Attendee::POSTTYPE;
 		$this->default_args['post_status'] = 'publish';
 
+		// By default, order the Attendees by ID, ascending.
+		$this->query_args['orderby'] = 'ID';
+		$this->query_args['order']   = 'ASC';
+
 		// Set up schema for filtering.
 		$this->schema = array_merge(
 			$this->schema,

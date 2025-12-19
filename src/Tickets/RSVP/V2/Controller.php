@@ -53,5 +53,32 @@ class Controller extends Controller_Contract {
 			'tickets.attendee-repository.rsvp',
 			Repositories\Attendee_Repository::class
 		);
+
+		$this->container->singleton( REST\Order_Endpoint::class );
+		$this->container->singleton( Cart\RSVP_Cart::class );
+
+		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+	}
+
+	/**
+	 * Unregister the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+	}
+
+	/**
+	 * Register REST API endpoints.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_rest_endpoints(): void {
+		$this->container->make( REST\Order_Endpoint::class )->register();
 	}
 }
