@@ -15,6 +15,7 @@ use TEC\Tickets\Repositories\Traits\Get_Field;
 use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
+use Tribe__Repository__Query_Filters as Query_Filters;
 use WP_Post;
 
 /**
@@ -57,9 +58,17 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 	public function __construct() {
 		parent::__construct();
 
-		// Set the post type to TC attendees.
-		$this->default_args['post_type']   = Attendee::POSTTYPE;
-		$this->default_args['post_status'] = 'publish';
+		// Set the default create args.
+		$this->create_args['post_type']   = Attendee::POSTTYPE;
+		$this->create_args['post_status'] = 'publish';
+		$this->create_args['ping_status'] = 'closed';
+
+		// Set the defautl query args.
+		$this->default_args = array_merge( $this->default_args, [
+			'post_type'   => Attendee::POSTTYPE,
+			'orderby'     => [ 'date', 'title', 'ID' ],
+			'post_status' => 'any',
+		] );
 
 		// Set up schema for filtering.
 		$this->schema = array_merge(
@@ -69,6 +78,7 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 				'ticket'    => [ $this, 'filter_by_ticket' ],
 				'going'     => [ $this, 'filter_by_going' ],
 				'not_going' => [ $this, 'filter_by_not_going' ],
+				'checked_in' => [ $this, 'filter_by_checkedin' ],
 			]
 		);
 
@@ -77,7 +87,6 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 		$this->add_simple_meta_schema_entry( 'ticket_id', Attendee::$ticket_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'user_id', Attendee::$user_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'rsvp_status', self::RSVP_STATUS_META_KEY );
-		$this->add_simple_meta_schema_entry( 'checked_in', Attendee::$checked_in_meta_key );
 		$this->add_simple_meta_schema_entry( 'full_name', Attendee::$full_name_meta_key );
 		$this->add_simple_meta_schema_entry( 'email', Attendee::$email_meta_key );
 
@@ -176,6 +185,23 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 	 */
 	public function filter_by_not_going( bool $not_going = true ): void {
 		$this->by( 'rsvp_status', $not_going ? 'no' : 'yes' );
+	}
+
+	/**
+	 * Filters attendees depending on their checkedin status.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $checkedin Whether to filter by checked-in (true) or not checked-in (false).
+	 *
+	 * @return array|null Either the filtered query or `null` if the query filtering does not require arguments.
+	 */
+	public function filter_by_checkedin( $checkedin ) {
+		if ( tribe_is_truthy( $checkedin ) ) {
+			return Query_Filters::meta_in( Attendee::$checked_in_meta_key, '1', 'is-checked-in' );
+		}
+
+		$this->filter_query->meta_not( Attendee::$checked_in_meta_key, '1', 'is-not-checked-in' );
 	}
 
 	/**
