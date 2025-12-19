@@ -416,4 +416,309 @@ class Attendee_Repository_Test extends WPTestCase {
 
 		$this->assertSame( $email, $result );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_event_id_meta(): void {
+		$post_1_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$post_2_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+
+		$ticket_1_id = $this->create_tc_rsvp_ticket( $post_1_id );
+		$ticket_2_id = $this->create_tc_rsvp_ticket( $post_2_id );
+
+		$attendee_1_id = $this->create_tc_rsvp_attendee( $ticket_1_id, $post_1_id );
+		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_2_id, $post_2_id );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'event_id', $post_1_id )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $attendee_1_id, $attendee_ids, 'Attendee for event 1 should be returned' );
+		$this->assertNotContains( $attendee_2_id, $attendee_ids, 'Attendee for event 2 should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_ticket_id_meta(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+
+		$ticket_1_id = $this->create_tc_rsvp_ticket( $post_id );
+		$ticket_2_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$attendee_1_id = $this->create_tc_rsvp_attendee( $ticket_1_id, $post_id );
+		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_2_id, $post_id );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'ticket_id', $ticket_1_id )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $attendee_1_id, $attendee_ids, 'Attendee for ticket 1 should be returned' );
+		$this->assertNotContains( $attendee_2_id, $attendee_ids, 'Attendee for ticket 2 should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_user_id(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$user_1_id = $this->factory()->user->create();
+		$user_2_id = $this->factory()->user->create();
+
+		$attendee_1_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+
+		update_post_meta( $attendee_1_id, Attendee::$user_relation_meta_key, $user_1_id );
+		update_post_meta( $attendee_2_id, Attendee::$user_relation_meta_key, $user_2_id );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'user_id', $user_1_id )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $attendee_1_id, $attendee_ids, 'Attendee for user 1 should be returned' );
+		$this->assertNotContains( $attendee_2_id, $attendee_ids, 'Attendee for user 2 should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_checked_in_true(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$checked_in_attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+		$not_checked_in_attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+
+		update_post_meta( $checked_in_attendee_id, Attendee::$checked_in_meta_key, 1 );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'checked_in', 1 )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $checked_in_attendee_id, $attendee_ids, 'Checked-in attendee should be returned' );
+		$this->assertNotContains( $not_checked_in_attendee_id, $attendee_ids, 'Not checked-in attendee should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_checked_in_false(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$checked_in_attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+		$not_checked_in_attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+
+		update_post_meta( $checked_in_attendee_id, Attendee::$checked_in_meta_key, 1 );
+		update_post_meta( $not_checked_in_attendee_id, Attendee::$checked_in_meta_key, '' );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'checked_in', '' )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $not_checked_in_attendee_id, $attendee_ids, 'Not checked-in attendee should be returned' );
+		$this->assertNotContains( $checked_in_attendee_id, $attendee_ids, 'Checked-in attendee should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_full_name(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$attendee_1_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'full_name' => 'John Doe' ] );
+		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'full_name' => 'Jane Smith' ] );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'full_name', 'John Doe' )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $attendee_1_id, $attendee_ids, 'Attendee with matching name should be returned' );
+		$this->assertNotContains( $attendee_2_id, $attendee_ids, 'Attendee with different name should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_filter_by_email_schema(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$attendee_1_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'email' => 'john@example.com' ] );
+		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'email' => 'jane@example.com' ] );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->by( 'email', 'john@example.com' )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $attendee_1_id, $attendee_ids, 'Attendee with matching email should be returned' );
+		$this->assertNotContains( $attendee_2_id, $attendee_ids, 'Attendee with different email should not be returned' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_create_attendee_with_required_fields(): void {
+		$repo = new Attendee_Repository();
+		$attendee = $repo->set_args( [
+			'post_title'  => 'Test Attendee',
+			'post_status' => 'publish',
+		] )->create();
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+		$this->assertSame( Attendee::POSTTYPE, $attendee->post_type );
+		$this->assertSame( 'publish', $attendee->post_status );
+		$this->assertSame( 'Test Attendee', $attendee->post_title );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_create_attendee_with_all_meta_fields(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$repo = new Attendee_Repository();
+		$attendee = $repo->set_args( [
+			'post_title'                              => 'Test Attendee',
+			'post_status'                             => 'publish',
+			Attendee::$full_name_meta_key             => 'John Doe',
+			Attendee::$email_meta_key                 => 'john@example.com',
+			Attendee::$event_relation_meta_key        => $post_id,
+			Attendee::$ticket_relation_meta_key       => $ticket_id,
+			Attendee_Repository::RSVP_STATUS_META_KEY => 'yes',
+		] )->create();
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+		$this->assertSame( 'John Doe', get_post_meta( $attendee->ID, Attendee::$full_name_meta_key, true ) );
+		$this->assertSame( 'john@example.com', get_post_meta( $attendee->ID, Attendee::$email_meta_key, true ) );
+		$this->assertEquals( $post_id, get_post_meta( $attendee->ID, Attendee::$event_relation_meta_key, true ) );
+		$this->assertEquals( $ticket_id, get_post_meta( $attendee->ID, Attendee::$ticket_relation_meta_key, true ) );
+		$this->assertSame( 'yes', get_post_meta( $attendee->ID, Attendee_Repository::RSVP_STATUS_META_KEY, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_update_attendee_full_name(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'full_name' => 'Original Name' ] );
+
+		$repo = new Attendee_Repository();
+		$repo->by( 'id', $attendee_id )->set( 'full_name', 'Updated Name' )->save();
+
+		$updated_name = get_post_meta( $attendee_id, Attendee::$full_name_meta_key, true );
+		$this->assertSame( 'Updated Name', $updated_name );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_update_attendee_email(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'email' => 'original@example.com' ] );
+
+		$repo = new Attendee_Repository();
+		$repo->by( 'id', $attendee_id )->set( 'email', 'updated@example.com' )->save();
+
+		$updated_email = get_post_meta( $attendee_id, Attendee::$email_meta_key, true );
+		$this->assertSame( 'updated@example.com', $updated_email );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_update_attendee_rsvp_status(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'rsvp_status' => 'yes' ] );
+
+		$original_status = get_post_meta( $attendee_id, Attendee_Repository::RSVP_STATUS_META_KEY, true );
+		$this->assertSame( 'yes', $original_status );
+
+		$repo = new Attendee_Repository();
+		$repo->by( 'id', $attendee_id )->set( 'rsvp_status', 'no' )->save();
+
+		$updated_status = get_post_meta( $attendee_id, Attendee_Repository::RSVP_STATUS_META_KEY, true );
+		$this->assertSame( 'no', $updated_status );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_update_attendee_checked_in(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+
+		$repo = new Attendee_Repository();
+		$repo->by( 'id', $attendee_id )->set( 'checked_in', 1 )->save();
+
+		$checked_in = get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true );
+		$this->assertEquals( 1, $checked_in );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_find_attendee_by_id(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+
+		$repo = new Attendee_Repository();
+		$attendee = $repo->by( 'id', $attendee_id )->first();
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+		$this->assertSame( $attendee_id, $attendee->ID );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_return_all_attendees(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$attendee_ids = $this->create_many_tc_rsvp_attendees( 5, $ticket_id, $post_id );
+
+		$repo = new Attendee_Repository();
+		$attendees = $repo->all();
+
+		$this->assertCount( 5, $attendees );
+
+		$returned_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+		foreach ( $attendee_ids as $attendee_id ) {
+			$this->assertContains( $attendee_id, $returned_ids );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_return_first_attendee(): void {
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$this->create_many_tc_rsvp_attendees( 3, $ticket_id, $post_id );
+
+		$repo = new Attendee_Repository();
+		$attendee = $repo->first();
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+		$this->assertSame( Attendee::POSTTYPE, $attendee->post_type );
+	}
 }
