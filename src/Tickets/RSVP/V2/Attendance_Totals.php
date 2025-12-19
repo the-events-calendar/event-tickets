@@ -9,8 +9,6 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
-use TEC\Tickets\RSVP\V2\Repositories\Attendee_Repository;
-
 /**
  * Class Attendance_Totals
  *
@@ -31,7 +29,7 @@ class Attendance_Totals {
 	 * @return int The count of going attendees.
 	 */
 	public function get_going_count( int $event_id ): int {
-		$repo = new Attendee_Repository();
+		$repo = tribe( 'tickets.attendee-repository.rsvp' );
 
 		return $repo->by( 'event', $event_id )->by( 'going', true )->count();
 	}
@@ -46,7 +44,7 @@ class Attendance_Totals {
 	 * @return int The count of not going attendees.
 	 */
 	public function get_not_going_count( int $event_id ): int {
-		$repo = new Attendee_Repository();
+		$repo = tribe( 'tickets.attendee-repository.rsvp' );
 
 		return $repo->by( 'event', $event_id )->by( 'not_going', true )->count();
 	}
@@ -61,7 +59,7 @@ class Attendance_Totals {
 	 * @return int The total count of attendees.
 	 */
 	public function get_total_count( int $event_id ): int {
-		$repo = new Attendee_Repository();
+		$repo = tribe( 'tickets.attendee-repository.rsvp' );
 
 		return $repo->by( 'event', $event_id )->count();
 	}
