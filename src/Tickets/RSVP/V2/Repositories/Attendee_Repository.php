@@ -12,7 +12,7 @@ namespace TEC\Tickets\RSVP\V2\Repositories;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Event;
 use TEC\Tickets\Repositories\Traits\Get_Field;
-use TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler;
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
 use WP_Post;
@@ -28,7 +28,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
-class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_Handler {
+class Attendee_Repository extends Tribe__Repository implements Attendee_Repository_Interface {
 	use Get_Field;
 
 	/**

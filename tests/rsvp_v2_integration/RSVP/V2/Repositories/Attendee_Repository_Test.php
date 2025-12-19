@@ -11,7 +11,7 @@ namespace TEC\Tickets\RSVP\V2\Repositories;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Attendee;
-use TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler;
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe\Tickets\Test\RSVP_V2\TC_RSVP_Attendee_Maker;
 use Tribe\Tickets\Test\RSVP_V2\TC_RSVP_Ticket_Maker;
 use WP_Post;
@@ -195,13 +195,13 @@ class Attendee_Repository_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function test_implements_attendee_privacy_handler_interface(): void {
+	public function test_implements_attendee_repository_interface(): void {
 		$repo = new Attendee_Repository();
 
 		$this->assertInstanceOf(
-			Attendee_Privacy_Handler::class,
+			Attendee_Repository_Interface::class,
 			$repo,
-			'Attendee_Repository should implement Attendee_Privacy_Handler interface'
+			'Attendee_Repository should implement Attendee_Repository_Interface interface'
 		);
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Attendee Privacy Handler interface.
+ * Attendee Repository interface.
  *
  * @since TBD
  *
@@ -12,18 +12,18 @@ namespace TEC\Tickets\RSVP\Contracts;
 use WP_Post;
 
 /**
- * Interface Attendee_Privacy_Handler
+ * Interface Attendee_Repository_Interface
  *
  * Defines the public API that RSVP attendee repositories must implement
- * to support GDPR privacy export and erasure operations.
+ * to support GDPR privacy export and erasure operations among other operations.
  *
  * @since TBD
  *
  * @package TEC\Tickets\RSVP\Contracts
  */
-interface Attendee_Privacy_Handler {
+interface Attendee_Repository_Interface {
 	/**
-	 * Get attendees by email address for privacy operations.
+	 * Get attendees by email address.
 	 *
 	 * Returns WP_Post objects to maintain backward compatibility with
 	 * existing filter implementations that expect full post objects.
@@ -42,7 +42,7 @@ interface Attendee_Privacy_Handler {
 	public function get_attendees_by_email( string $email, int $page, int $per_page ): array;
 
 	/**
-	 * Delete an attendee for privacy erasure.
+	 * Delete an attendee.
 	 *
 	 * Returns the event ID so the caller can invalidate the attendees cache.
 	 * This method will immediately delete the Attendee skipping trash.
@@ -70,4 +70,18 @@ interface Attendee_Privacy_Handler {
 	 * @return int The ticket/product ID, or 0 if not found.
 	 */
 	public function get_ticket_id( int $attendee_id ): int;
+
+	/**
+	 * Get a single field value without loading full object.
+	 *
+	 * Useful for quick lookups when you only need one field value.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id Post ID (ticket or attendee).
+	 * @param string $field   Field name (alias-aware, e.g., 'price', 'event_id', 'email').
+	 *
+	 * @return mixed Field value or empty string if not found.
+	 */
+	public function get_field( int $post_id, string $field );
 }
