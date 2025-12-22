@@ -1,45 +1,57 @@
 <?php
 /**
- * RSVP V2 Controller placeholder.
+ * V2 RSVP Controller - TC-based implementation.
  *
  * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\V2
  */
 
 namespace TEC\Tickets\RSVP\V2;
 
-use RuntimeException;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\RSVP\RSVP_Controller_Methods;
 
 /**
- * Placeholder controller for future RSVP V2 implementation.
+ * Class Controller
  *
  * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\V2
  */
 class Controller extends Controller_Contract {
+	use RSVP_Controller_Methods;
 
 	/**
-	 * Registers the controller - throws exception as V2 is not implemented.
+	 * The action that will be fired after the successful registration of this controller.
 	 *
 	 * @since TBD
 	 *
-	 * @throws RuntimeException Always throws because V2 is not implemented.
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_tickets_rsvp_v2_registered';
+
+	/**
+	 * Register the controller.
+	 *
+	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function do_register(): void {
-		throw new RuntimeException(
-			'RSVP V2 is not implemented yet. Use V1 controller.'
-		);
-	}
+		$this->container->singleton( Constants::class );
+		$this->container->register( Assets::class );
 
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		// Nothing to unregister - V2 is not implemented.
+		$this->register_common_rsvp_implementations();
+
+		// Bind the repositories as factories to make sure each instance is different.
+		$this->container->bind(
+			'tickets.ticket-repository.rsvp',
+			Repositories\Ticket_Repository::class
+		);
+		$this->container->bind(
+			'tickets.attendee-repository.rsvp',
+			Repositories\Attendee_Repository::class
+		);
 	}
 }

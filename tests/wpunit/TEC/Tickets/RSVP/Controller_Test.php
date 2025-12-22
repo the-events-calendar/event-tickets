@@ -15,7 +15,6 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
  * @since TBD
  */
 class Controller_Test extends Controller_Test_Case {
-
 	/**
 	 * The controller class to test.
 	 *
@@ -33,34 +32,22 @@ class Controller_Test extends Controller_Test_Case {
 		V1\Controller::class,
 	];
 
-	/**
-	 * @test
-	 */
 	public function test_is_active_always_returns_true(): void {
 		$controller = $this->make_controller();
 		$this->assertTrue( $controller->is_active() );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_is_rsvp_enabled_by_default(): void {
 		$controller = $this->make_controller();
 		$this->assertTrue( $controller->is_rsvp_enabled() );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_filter_can_disable_rsvp(): void {
 		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 		$controller = $this->make_controller();
 		$this->assertFalse( $controller->is_rsvp_enabled() );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_option_can_disable_rsvp(): void {
 		// Must set option before creating controller instance.
 		update_option( 'tec_tickets_rsvp_active', 0 );
@@ -68,9 +55,6 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( $controller->is_rsvp_enabled() );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_env_var_disables_rsvp(): void {
 		putenv( Controller::DISABLED . '=1' );
 		$controller = $this->make_controller();
@@ -78,9 +62,6 @@ class Controller_Test extends Controller_Test_Case {
 		putenv( Controller::DISABLED ); // Clean up.
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_registers_v1_controller_when_enabled(): void {
 		$controller = $this->make_controller();
 		$controller->register();
@@ -96,9 +77,6 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue( tribe()->has( 'tickets.attendee-repository.rsvp' ) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_registers_rsvp_disabled_when_disabled(): void {
 		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 		$controller = $this->make_controller();
@@ -106,9 +84,6 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertInstanceOf( RSVP_Disabled::class, tribe( 'tickets.rsvp' ) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_registers_null_object_repositories_when_disabled(): void {
 		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 		$controller = $this->make_controller();
@@ -124,9 +99,6 @@ class Controller_Test extends Controller_Test_Case {
 		);
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_unregister_delegates_to_v1_controller(): void {
 		$controller = $this->make_controller();
 		$controller->register();
@@ -156,9 +128,6 @@ class Controller_Test extends Controller_Test_Case {
 		);
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_unregister_does_not_fail_when_disabled(): void {
 		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 		$controller = $this->make_controller();

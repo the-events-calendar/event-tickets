@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\RSVP\Repositories;
 
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe__Repository;
 
 /**
@@ -17,8 +18,7 @@ use Tribe__Repository;
  *
  * @since TBD
  */
-class Attendee_Repository_Disabled extends Tribe__Repository {
-
+class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee_Repository_Interface {
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *
@@ -140,5 +140,66 @@ class Attendee_Repository_Disabled extends Tribe__Repository {
 	 */
 	public function get_ids( $return_generator = false, int $batch_size = 50 ) {
 		return [];
+	}
+
+	/**
+	 * Get attendees by email - returns empty when disabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $email    The email address to search for.
+	 * @param int    $page     The page number (1-indexed).
+	 * @param int    $per_page Number of results per page.
+	 *
+	 * @return array{posts: \WP_Post[], has_more: bool}
+	 */
+	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
+		return [
+			'posts'    => [],
+			'has_more' => false,
+		];
+	}
+
+	/**
+	 * Delete an attendee - no-op when disabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID to delete.
+	 *
+	 * @return array{success: bool, event_id: int|null}
+	 */
+	public function delete_attendee( int $attendee_id ): array {
+		return [
+			'success'  => false,
+			'event_id' => null,
+		];
+	}
+
+	/**
+	 * Get ticket ID - returns 0 when disabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID.
+	 *
+	 * @return int Always 0.
+	 */
+	public function get_ticket_id( int $attendee_id ): int {
+		return 0;
+	}
+
+	/**
+	 * Get field value: returns empty string when disabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id The attendee post ID to return the field for.
+	 * @param string $field   The field to return the value for.
+	 *
+	 * @return string Always an empty string.
+	 */
+	public function get_field( int $post_id, string $field ) {
+		return '';
 	}
 }

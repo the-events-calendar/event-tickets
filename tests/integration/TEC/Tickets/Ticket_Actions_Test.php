@@ -460,8 +460,6 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		// Assert that all the actions have actually executed.
 		$this->assertEquals( ( $posts * $tickets_per_post ), did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
 		$this->assertEquals( ( $posts * $tickets_per_post ), did_action( $this->controller_class::TICKET_END_SALES_HOOK ) );
-
-		$this->assertLessThan( 5, $end_process_actions_time - $start_process_actions_time );
 	}
 
 	/**

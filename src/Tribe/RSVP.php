@@ -1166,9 +1166,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$product_ids = [];
 
 		if ( isset( $_POST['tribe_tickets'] ) ) {
-			$product_ids = wp_list_pluck( array_map( 'sanitize_key', $_POST['tribe_tickets'] ), 'ticket_id' );
+			$product_ids = wp_list_pluck(
+				array_map( 'tribe_sanitize_deep', (array) $_POST['tribe_tickets'] ),
+				'ticket_id'
+			);
 		} elseif ( isset( $_POST['product_id'] ) ) {
-			$product_ids = array_map( 'sanitize_key', (array) $_POST['product_id'] );
+			$product_ids = array_map( 'tribe_sanitize_deep', (array) $_POST['product_id'] );
 		}
 
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
