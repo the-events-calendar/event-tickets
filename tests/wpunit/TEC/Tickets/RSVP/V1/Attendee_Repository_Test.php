@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the V1 RSVP Attendee Repository's privacy handler methods.
+ * Tests for the V1 RSVP Attendee Repository's methods.
  *
  * @since TBD
  */
@@ -8,7 +8,7 @@
 namespace TEC\Tickets\RSVP\V1;
 
 use Codeception\TestCase\WPTestCase;
-use TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler;
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Repositories__Attendee__RSVP as RSVP_Attendee_Repository;
@@ -34,10 +34,10 @@ class Attendee_Repository_Test extends WPTestCase {
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
 	}
 
-	public function test_implements_attendee_privacy_handler_interface(): void {
+	public function test_implements_attendee_repository_interface(): void {
 		$repository = new RSVP_Attendee_Repository();
 
-		$this->assertInstanceOf( Attendee_Privacy_Handler::class, $repository );
+		$this->assertInstanceOf( Attendee_Repository_Interface::class, $repository );
 	}
 
 	public function test_get_attendees_by_email_returns_matching_attendees(): void {

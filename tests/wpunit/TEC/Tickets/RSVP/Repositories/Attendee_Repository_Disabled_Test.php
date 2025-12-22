@@ -78,9 +78,9 @@ class Attendee_Repository_Disabled_Test extends WPTestCase {
 		$this->assertSame( [], $result );
 	}
 
-	public function test_implements_attendee_privacy_handler_interface(): void {
+	public function test_implements_attendee_repository_interface(): void {
 		$this->assertInstanceOf(
-			\TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler::class,
+			\TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface::class,
 			$this->repository
 		);
 	}

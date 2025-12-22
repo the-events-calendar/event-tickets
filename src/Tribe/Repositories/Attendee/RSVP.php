@@ -12,7 +12,7 @@
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 use TEC\Tickets\Repositories\Traits\Get_Field;
-use TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler;
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -22,7 +22,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @property Tribe__Tickets__RSVP $attendee_provider
  */
-class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository implements Attendee_Privacy_Handler {
+class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository implements Attendee_Repository_Interface {
 	use Get_Field;
 
 	/**

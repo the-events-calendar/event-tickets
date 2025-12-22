@@ -12,9 +12,10 @@ namespace TEC\Tickets\RSVP\V2\Repositories;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Event;
 use TEC\Tickets\Repositories\Traits\Get_Field;
-use TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler;
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
+use Tribe__Repository__Query_Filters as Query_Filters;
 use WP_Post;
 
 /**
@@ -28,7 +29,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
-class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_Handler {
+class Attendee_Repository extends Tribe__Repository implements Attendee_Repository_Interface {
 	use Get_Field;
 
 	/**
@@ -57,9 +58,20 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_
 	public function __construct() {
 		parent::__construct();
 
-		// Set the post type to TC attendees.
-		$this->default_args['post_type']   = Attendee::POSTTYPE;
-		$this->default_args['post_status'] = 'publish';
+		// Set the default create args.
+		$this->create_args['post_type']   = Attendee::POSTTYPE;
+		$this->create_args['post_status'] = 'publish';
+		$this->create_args['ping_status'] = 'closed';
+
+		// Set the defautl query args.
+		$this->default_args = array_merge(
+			$this->default_args,
+			[
+				'post_type'   => Attendee::POSTTYPE,
+				'orderby'     => [ 'date', 'title', 'ID' ],
+				'post_status' => 'any',
+			] 
+		);
 
 		// By default, order the Attendees by ID, ascending.
 		$this->query_args['orderby'] = 'ID';
@@ -69,10 +81,11 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_
 		$this->schema = array_merge(
 			$this->schema,
 			[
-				'event'     => [ $this, 'filter_by_event' ],
-				'ticket'    => [ $this, 'filter_by_ticket' ],
-				'going'     => [ $this, 'filter_by_going' ],
-				'not_going' => [ $this, 'filter_by_not_going' ],
+				'event'      => [ $this, 'filter_by_event' ],
+				'ticket'     => [ $this, 'filter_by_ticket' ],
+				'going'      => [ $this, 'filter_by_going' ],
+				'not_going'  => [ $this, 'filter_by_not_going' ],
+				'checked_in' => [ $this, 'filter_by_checkedin' ],
 			]
 		);
 
@@ -81,17 +94,18 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_
 		$this->add_simple_meta_schema_entry( 'ticket_id', Attendee::$ticket_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'user_id', Attendee::$user_relation_meta_key );
 		$this->add_simple_meta_schema_entry( 'rsvp_status', self::RSVP_STATUS_META_KEY );
-		$this->add_simple_meta_schema_entry( 'checked_in', Attendee::$checked_in_meta_key );
 		$this->add_simple_meta_schema_entry( 'full_name', Attendee::$full_name_meta_key );
 		$this->add_simple_meta_schema_entry( 'email', Attendee::$email_meta_key );
 
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases ?? [],
 			[
-				'full_name' => Attendee::$full_name_meta_key,
-				'email'     => Attendee::$email_meta_key,
-				'ticket_id' => Attendee::$ticket_relation_meta_key,
-				'event_id'  => Attendee::$event_relation_meta_key,
+				'full_name'   => Attendee::$full_name_meta_key,
+				'email'       => Attendee::$email_meta_key,
+				'ticket_id'   => Attendee::$ticket_relation_meta_key,
+				'event_id'    => Attendee::$event_relation_meta_key,
+				'rsvp_status' => self::RSVP_STATUS_META_KEY,
+				'checked_in'  => Attendee::$checked_in_meta_key,
 			]
 		);
 	}
@@ -180,6 +194,23 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Privacy_
 	 */
 	public function filter_by_not_going( bool $not_going = true ): void {
 		$this->by( 'rsvp_status', $not_going ? 'no' : 'yes' );
+	}
+
+	/**
+	 * Filters attendees depending on their checkedin status.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $checkedin Whether to filter by checked-in (true) or not checked-in (false).
+	 *
+	 * @return array|null Either the filtered query or `null` if the query filtering does not require arguments.
+	 */
+	public function filter_by_checkedin( $checkedin ) {
+		if ( tribe_is_truthy( $checkedin ) ) {
+			return Query_Filters::meta_in( Attendee::$checked_in_meta_key, '1', 'is-checked-in' );
+		}
+
+		$this->filter_query->meta_not( Attendee::$checked_in_meta_key, '1', 'is-not-checked-in' );
 	}
 
 	/**

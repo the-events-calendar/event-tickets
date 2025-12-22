@@ -162,7 +162,7 @@ class Tribe__Tickets__Privacy {
 
 		$export_items = [];
 
-		/** @var \TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler $repository */
+		/** @var \TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface $repository */
 		$repository = tribe( 'tickets.attendee-repository.rsvp' );
 		$result     = $repository->get_attendees_by_email( $email_address, $page, $per_page );
 
@@ -241,7 +241,7 @@ class Tribe__Tickets__Privacy {
 		$per_page = 500;
 		$page     = (int) $page;
 
-		/** @var \TEC\Tickets\RSVP\Contracts\Attendee_Privacy_Handler $repository */
+		/** @var \TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface $repository */
 		$repository = tribe( 'tickets.attendee-repository.rsvp' );
 		$result     = $repository->get_attendees_by_email( $email_address, $page, $per_page );
 
