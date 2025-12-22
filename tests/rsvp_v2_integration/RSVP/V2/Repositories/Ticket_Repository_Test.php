@@ -1,28 +1,12 @@
 <?php
-/**
- * Tests for the V2 Ticket Repository.
- *
- * @since TBD
- *
- * @package TEC\Tickets\RSVP\V2\Repositories
- */
-
 namespace TEC\Tickets\RSVP\V2\Repositories;
 
 use Codeception\TestCase\WPTestCase;
-use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\RSVP\V2\Constants;
+use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tickets\Test\RSVP_V2\TC_RSVP_Ticket_Maker;
 
-/**
- * Class Ticket_Repository_Test
- *
- * @since TBD
- *
- * @package TEC\Tickets\RSVP\V2\Repositories
- */
 class Ticket_Repository_Test extends WPTestCase {
-	use TC_RSVP_Ticket_Maker;
+	use Ticket_Maker;
 
 	/**
 	 * @before

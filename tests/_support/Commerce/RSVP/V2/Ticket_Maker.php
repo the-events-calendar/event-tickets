@@ -1,35 +1,16 @@
 <?php
-/**
- * Trait for creating TC-RSVP tickets in tests.
- *
- * @since TBD
- *
- * @package Tribe\Tickets\Test\RSVP_V2
- */
 
-namespace Tribe\Tickets\Test\RSVP_V2;
+namespace TEC\Tickets\Tests\Commerce\RSVP\V2;
 
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Constants;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Base_Ticket_Maker;
 
-/**
- * Trait TC_RSVP_Ticket_Maker
- *
- * Provides methods to create TC-RSVP tickets for testing.
- * TC-RSVP tickets are Tickets Commerce tickets with `_type = 'tc-rsvp'`.
- *
- * @since TBD
- *
- * @package Tribe\Tickets\Test\RSVP_V2
- */
-trait TC_RSVP_Ticket_Maker {
-	use Ticket_Maker;
+trait Ticket_Maker {
+	use Base_Ticket_Maker;
 
 	/**
 	 * Creates a TC-RSVP ticket for a post.
-	 *
-	 * @since TBD
 	 *
 	 * @param int   $post_id   The ID of the post this ticket should be related to.
 	 * @param array $overrides An array of values to override the default and random generation arguments.
@@ -53,8 +34,6 @@ trait TC_RSVP_Ticket_Maker {
 
 	/**
 	 * Creates multiple TC-RSVP tickets for a post.
-	 *
-	 * @since TBD
 	 *
 	 * @param int   $count     The number of tickets to create.
 	 * @param int   $post_id   The ID of the post this ticket should be related to.

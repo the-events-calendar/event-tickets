@@ -1,24 +1,10 @@
 <?php
-/**
- * Tests for the V2 RSVP_Cart class.
- *
- * @since TBD
- *
- * @package TEC\Tickets\RSVP\V2\Cart
- */
 
 namespace TEC\Tickets\RSVP\V2\Cart;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\RSVP\V2\Constants;
 
-/**
- * Class RSVP_Cart_Test
- *
- * @since TBD
- *
- * @package TEC\Tickets\RSVP\V2\Cart
- */
 class RSVP_Cart_Test extends WPTestCase {
 	/**
 	 * @test

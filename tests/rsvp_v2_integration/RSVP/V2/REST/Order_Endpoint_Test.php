@@ -1,31 +1,16 @@
 <?php
-/**
- * Tests for the RSVP V2 Order Endpoint.
- *
- * @since TBD
- *
- * @package TEC\Tickets\RSVP\V2\REST
- */
-
 namespace TEC\Tickets\RSVP\V2\REST;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\RSVP\V2\Controller;
+use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Traits\With_No_Query_Commit;
-use Tribe\Tickets\Test\RSVP_V2\TC_RSVP_Ticket_Maker;
 use WP_REST_Request;
 use WP_REST_Server;
 
-/**
- * Class Order_Endpoint_Test.
- *
- * @since TBD
- *
- * @package TEC\Tickets\RSVP\V2\REST
- */
 class Order_Endpoint_Test extends WPTestCase {
-	use TC_RSVP_Ticket_Maker;
+	use Ticket_Maker;
 
 	// The Order class will call COMMIT during tests, with this we prevent it.
 	use With_No_Query_Commit;
