@@ -81,7 +81,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$not_going_ids = $this->create_not_going_tc_rsvp_attendees( 3, $ticket_id, $post_id );
 
 		$repo = new Attendee_Repository();
-		$going_attendees = $repo->by( 'going', true )->all();
+		$going_attendees = $repo->by( 'rsvp_status', 'yes' )->all();
 
 		$going_attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $going_attendees );
 
@@ -109,7 +109,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$not_going_ids = $this->create_not_going_tc_rsvp_attendees( 3, $ticket_id, $post_id );
 
 		$repo = new Attendee_Repository();
-		$not_going_attendees = $repo->by( 'not_going', true )->all();
+		$not_going_attendees = $repo->by( 'rsvp_status', 'no' )->all();
 
 		$not_going_attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $not_going_attendees );
 
@@ -172,7 +172,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$repo = new Attendee_Repository();
 		$going_for_event = $repo
 			->by( 'event', $post_id )
-			->by( 'going', true )
+			->by( 'rsvp_status', 'yes' )
 			->all();
 
 		$this->assertCount( 3, $going_for_event, 'Should return only going attendees for the event' );
@@ -381,7 +381,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_2_id, $post_2_id );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'event_id', $post_1_id )->all();
+		$attendees = $repo->by( 'event', $post_1_id )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -402,7 +402,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_2_id, $post_id );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'ticket_id', $ticket_1_id )->all();
+		$attendees = $repo->by( 'ticket', $ticket_1_id )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -427,7 +427,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		update_post_meta( $attendee_2_id, Attendee::$user_relation_meta_key, $user_2_id );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'user_id', $user_1_id )->all();
+		$attendees = $repo->by( 'user', $user_1_id )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -448,7 +448,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		update_post_meta( $checked_in_attendee_id, Attendee::$checked_in_meta_key, 1 );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'checked_in', 1 )->all();
+		$attendees = $repo->by( 'checkedin', 1 )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -470,7 +470,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		update_post_meta( $not_checked_in_attendee_id, Attendee::$checked_in_meta_key, '' );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'checked_in', '' )->all();
+		$attendees = $repo->by( 'checkedin', '' )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -489,7 +489,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'full_name' => 'Jane Smith' ] );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'full_name', 'John Doe' )->all();
+		$attendees = $repo->by( 'purchaser_name', 'John Doe' )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -508,7 +508,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$attendee_2_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'email' => 'jane@example.com' ] );
 
 		$repo = new Attendee_Repository();
-		$attendees = $repo->by( 'email', 'john@example.com' )->all();
+		$attendees = $repo->by( 'purchaser_email', 'john@example.com' )->all();
 
 		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
 
@@ -520,10 +520,13 @@ class Attendee_Repository_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_create_attendee_with_required_fields(): void {
-		$repo = new Attendee_Repository();
-		$attendee = $repo->set_args( [
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$repo      = new Attendee_Repository();
+		$attendee  = $repo->set_args( [
 			'post_title'  => 'Test Attendee',
 			'post_status' => 'publish',
+			'ticket_id'   => $ticket_id,
 		] )->create();
 
 		$this->assertInstanceOf( WP_Post::class, $attendee );
@@ -543,10 +546,10 @@ class Attendee_Repository_Test extends WPTestCase {
 		$attendee = $repo->set_args( [
 			'post_title'                              => 'Test Attendee',
 			'post_status'                             => 'publish',
-			Attendee::$full_name_meta_key             => 'John Doe',
-			Attendee::$email_meta_key                 => 'john@example.com',
-			Attendee::$event_relation_meta_key        => $post_id,
-			Attendee::$ticket_relation_meta_key       => $ticket_id,
+			'ticket_id'                               => $ticket_id,
+			'full_name'                               => 'John Doe',
+			'email'                                   => 'john@example.com',
+			'event_id'                                => $post_id,
 			Attendee_Repository::RSVP_STATUS_META_KEY => 'yes',
 		] )->create();
 
@@ -615,7 +618,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
 
 		$repo = new Attendee_Repository();
-		$repo->by( 'id', $attendee_id )->set( 'checked_in', 1 )->save();
+		$repo->by( 'id', $attendee_id )->set( 'check_in', 1 )->save();
 
 		$checked_in = get_post_meta( $attendee_id, Attendee::$checked_in_meta_key, true );
 		$this->assertEquals( 1, $checked_in );

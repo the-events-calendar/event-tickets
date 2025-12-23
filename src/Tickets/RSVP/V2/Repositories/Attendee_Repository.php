@@ -9,14 +9,13 @@
 
 namespace TEC\Tickets\RSVP\V2\Repositories;
 
+use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Attendee;
-use TEC\Tickets\Event;
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
-use Tribe__Repository;
-use Tribe__Repository__Interface;
 use Tribe__Repository__Query_Filters as Query_Filters;
 use WP_Post;
+use Tribe__Tickets__Attendee_Repository as Base_Repository;
 
 /**
  * Class Attendee_Repository
@@ -29,7 +28,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
-class Attendee_Repository extends Tribe__Repository implements Attendee_Repository_Interface {
+class Attendee_Repository extends Base_Repository implements Attendee_Repository_Interface {
 	use Get_Field;
 
 	/**
@@ -51,6 +50,15 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 	protected $filter_name = 'tc_rsvp_attendees';
 
 	/**
+	 * Key name to use when limiting lists of keys.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $key_name = 'tribe-commerce';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since TBD
@@ -59,190 +67,68 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 		parent::__construct();
 
 		// Set the default create args.
-		$this->create_args['post_type']   = Attendee::POSTTYPE;
-		$this->create_args['post_status'] = 'publish';
-		$this->create_args['ping_status'] = 'closed';
+		$this->create_args['post_type'] = Attendee::POSTTYPE;
 
-		// Set the defautl query args.
-		$this->default_args = array_merge(
-			$this->default_args,
-			[
-				'post_type'   => Attendee::POSTTYPE,
-				'orderby'     => [ 'date', 'title', 'ID' ],
-				'post_status' => 'any',
-			] 
-		);
-
-		// By default, order the Attendees by ID, ascending.
-		$this->query_args['orderby'] = 'ID';
-		$this->query_args['order']   = 'ASC';
-
-		// Set up schema for filtering.
-		$this->schema = array_merge(
-			$this->schema,
-			[
-				'event'      => [ $this, 'filter_by_event' ],
-				'ticket'     => [ $this, 'filter_by_ticket' ],
-				'going'      => [ $this, 'filter_by_going' ],
-				'not_going'  => [ $this, 'filter_by_not_going' ],
-				'checked_in' => [ $this, 'filter_by_checkedin' ],
+		// By default pick Attendees that have the going/not-going status meta key assigned.
+		$this->default_args['meta_query'] = [
+			'tc-rsvp-type' => [
+				'key'     => self::RSVP_STATUS_META_KEY,
+				'compare' => 'EXISTS'
 			]
-		);
+		];
 
-		// Add simple meta schema entries.
-		$this->add_simple_meta_schema_entry( 'event_id', Attendee::$event_relation_meta_key );
-		$this->add_simple_meta_schema_entry( 'ticket_id', Attendee::$ticket_relation_meta_key );
-		$this->add_simple_meta_schema_entry( 'user_id', Attendee::$user_relation_meta_key );
-		$this->add_simple_meta_schema_entry( 'rsvp_status', self::RSVP_STATUS_META_KEY );
-		$this->add_simple_meta_schema_entry( 'full_name', Attendee::$full_name_meta_key );
-		$this->add_simple_meta_schema_entry( 'email', Attendee::$email_meta_key );
+		// Some schema entries need to be redirected to the correct meta keys.
+		$this->add_simple_meta_schema_entry( 'user', '_tribe_tickets_attendee_user_id', 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'user', Attendee::$user_relation_meta_key, 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'user__not_in', Attendee::$user_relation_meta_key, 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'price', Attendee::$price_paid_meta_key );
 
-		$this->update_fields_aliases = array_merge(
-			$this->update_fields_aliases ?? [],
-			[
-				'full_name'   => Attendee::$full_name_meta_key,
-				'email'       => Attendee::$email_meta_key,
-				'ticket_id'   => Attendee::$ticket_relation_meta_key,
-				'event_id'    => Attendee::$event_relation_meta_key,
-				'rsvp_status' => self::RSVP_STATUS_META_KEY,
-				'checked_in'  => Attendee::$checked_in_meta_key,
-			]
-		);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function format_item( $id ) {
-		$formatted = null === $this->formatter
-			? get_post( $id )
-			: $this->formatter->format_item( $id );
-
-		/**
-		 * Filters a single formatted TC-RSVP attendee result.
-		 *
-		 * @since TBD
-		 *
-		 * @param mixed|WP_Post                $formatted  The formatted attendee result, usually a post object.
-		 * @param int                          $id         The formatted post ID.
-		 * @param Tribe__Repository__Interface $repository The current repository object.
+		/*
+		 * The `$this->schema` entry from the base repository is not overridden as it's based on methods
+		 * (`filter_by_...`) that use methods to fetch keys and types. Those methods are overridden in
+		 * this class.
 		 */
-		$formatted = apply_filters( 'tec_tickets_rsvp_v2_repository_attendee_format', $formatted, $id, $this );
 
-		return $formatted;
-	}
-
-	/**
-	 * Filters attendees by event.
-	 *
-	 * @since TBD
-	 *
-	 * @param int|array $event_id The event ID or array of event IDs.
-	 *
-	 * @return void
-	 */
-	public function filter_by_event( $event_id ): void {
-		$event_ids = $this->clean_post_ids( $event_id );
-
-		if ( empty( $event_ids ) ) {
-			return;
-		}
-
-		$this->by( 'meta_in', Attendee::$event_relation_meta_key, $event_ids );
-	}
-
-	/**
-	 * Filters attendees by ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param int|array $ticket_id The ticket ID or array of ticket IDs.
-	 *
-	 * @return void
-	 */
-	public function filter_by_ticket( $ticket_id ): void {
-		$ticket_ids = $this->clean_post_ids( $ticket_id );
-
-		if ( empty( $ticket_ids ) ) {
-			return;
-		}
-
-		$this->by( 'meta_in', Attendee::$ticket_relation_meta_key, $ticket_ids );
-	}
-
-	/**
-	 * Filters by going status.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $going Whether to filter by going (true) or not going (false).
-	 *
-	 * @return void
-	 */
-	public function filter_by_going( bool $going = true ): void {
-		$this->by( 'rsvp_status', $going ? 'yes' : 'no' );
-	}
-
-	/**
-	 * Filters by not going status.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $not_going Whether to filter by not going.
-	 *
-	 * @return void
-	 */
-	public function filter_by_not_going( bool $not_going = true ): void {
-		$this->by( 'rsvp_status', $not_going ? 'no' : 'yes' );
-	}
-
-	/**
-	 * Filters attendees depending on their checkedin status.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $checkedin Whether to filter by checked-in (true) or not checked-in (false).
-	 *
-	 * @return array|null Either the filtered query or `null` if the query filtering does not require arguments.
-	 */
-	public function filter_by_checkedin( $checkedin ) {
-		if ( tribe_is_truthy( $checkedin ) ) {
-			return Query_Filters::meta_in( Attendee::$checked_in_meta_key, '1', 'is-checked-in' );
-		}
-
-		$this->filter_query->meta_not( Attendee::$checked_in_meta_key, '1', 'is-not-checked-in' );
-	}
-
-	/**
-	 * Cleans up a list of Post IDs into an usable array for DB query.
-	 *
-	 * @since TBD
-	 *
-	 * @param int|WP_Post|int[]|WP_Post[] $posts Which posts we are filtering by.
-	 *
-	 * @return array
-	 */
-	protected function clean_post_ids( $posts ): array {
-		return array_unique(
-			array_filter(
-				array_map(
-					static function ( $post ) {
-						$post = Event::filter_event_id( $post );
-
-						if ( is_numeric( $post ) ) {
-							return (int) $post;
-						}
-
-						if ( $post instanceof WP_Post ) {
-							return $post->ID;
-						}
-
-						return null;
-					},
-					(array) $posts
-				)
-			)
+		// Override the base repository aliases with the ones specific to Tickets Commerce RSVP.
+		$this->update_fields_aliases = array_merge(
+			$this->update_fields_aliases,
+			[
+				'ticket_id'      => Attendee::$ticket_relation_meta_key,
+				'event_id'       => Attendee::$event_relation_meta_key,
+				'post_id'        => Attendee::$event_relation_meta_key,
+				'security_code'  => Attendee::$security_code_meta_key,
+				'order_id'       => Attendee::$order_relation_meta_key,
+				'optout'         => Attendee::$optout_meta_key,
+				'user_id'        => Attendee::$user_relation_meta_key,
+				'price_paid'     => Attendee::$price_paid_meta_key,
+				'price_currency' => Attendee::$currency_meta_key,
+				'full_name'      => Attendee::$full_name_meta_key,
+				'email'          => Attendee::$email_meta_key,
+				'check_in'       => current( $this->checked_in_keys() ),
+				'rsvp_status'    => self::RSVP_STATUS_META_KEY,
+			]
 		);
+	}
+
+	/**
+	 * Overrides the original, generic repository method to include only the ones related with RSVP Attendees.
+	 *
+	 * The function will be called by the original constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function init_order_statuses() {
+		if ( ! empty( static::$order_statuses ) ) {
+			// Already set up.
+			return;
+		}
+
+		// For RSVP tickets the order status is the going status
+		$statuses                     = [ 'yes', 'no' ];
+		self::$order_statuses         = $statuses;
+		self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );
 	}
 
 	/**
@@ -254,10 +140,10 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 	 * @param int    $page     The page number (1-indexed).
 	 * @param int    $per_page Number of results per page.
 	 *
-	 * @return array{posts: \WP_Post[], has_more: bool}
+	 * @return array{posts: WP_Post[], has_more: bool}
 	 */
 	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
-		$posts = $this->by( 'email', $email )
+		$posts = $this->by( 'purchaser_email', $email )
 						->by( 'meta_exists', self::RSVP_STATUS_META_KEY )
 						->per_page( $per_page )
 						->page( $page )
@@ -306,5 +192,160 @@ class Attendee_Repository extends Tribe__Repository implements Attendee_Reposito
 		$ticket_id = get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
 
 		return $ticket_id ? (int) $ticket_id : 0;
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee post type.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> The array of Attendee post types supported by this repository.
+	 */
+	public function attendee_types() {
+		return [ Commerce::PROVIDER => Attendee::POSTTYPE ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee to Event relation meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee to Event relation meta keys supported by this repository.
+	 */
+	public function attendee_to_event_keys() {
+		return [ Commerce::PROVIDER => Attendee::$event_relation_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee to Ticket relation meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee to Ticket relation meta keys supported by this repository.
+	 */
+	public function attendee_to_ticket_keys() {
+		return [ Commerce::PROVIDER => Attendee::$ticket_relation_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee to Order relation meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee to Order relation meta keys supported by this repository.
+	 */
+	protected function attendee_to_order_keys() {
+		return [ Commerce::PROVIDER => Attendee::$order_relation_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee purchaser name meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee purchaser name meta keys supported by this repository.
+	 */
+	public function purchaser_name_keys() {
+		return [ Commerce::PROVIDER => Attendee::$full_name_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee purchaser email meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee purchaser email meta keys supported by this repository.
+	 */
+	public function purchaser_email_keys() {
+		return [ Commerce::PROVIDER => Attendee::$email_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee holder name meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee holder name meta keys supported by this repository.
+	 */
+	public function holder_name_keys() {
+		return [ Commerce::PROVIDER => Attendee::$full_name_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee holder email meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee holder email meta keys supported by this repository.
+	 */
+	public function holder_email_keys() {
+		return [ Commerce::PROVIDER => Attendee::$email_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee security code meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee security code meta keys supported by this repository.
+	 */
+	public function security_code_keys() {
+		return [ Commerce::PROVIDER => Attendee::$security_code_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee optout meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee optout meta keys supported by this repository.
+	 */
+	public function attendee_optout_keys() {
+		return [ Commerce::PROVIDER => Attendee::$optout_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Attendee checked in meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Attendee checked in meta keys supported by this repository.
+	 */
+	public function checked_in_keys() {
+		return [ Commerce::PROVIDER => Attendee::$checked_in_meta_key ];
+	}
+
+	/**
+	 * Overrides the base repository method to add a filter on the RSVP status using the correct meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $rsvp_status The RSVP status to filter by.
+	 *
+	 * @return array<string,mixed> The filtered query arguments.
+	 */
+	public function filter_by_rsvp_status( $rsvp_status ) {
+		return Query_Filters::meta_in(
+			self::RSVP_STATUS_META_KEY,
+			$rsvp_status,
+			'by-rsvp-status'
+		);
+	}
+
+	/**
+	 * Overrides the base repository method to add a filter on the RSVP status using the correct meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $rsvp_status The RSVP status to filter by.
+	 *
+	 * @return array<string,mixed> The filtered query arguments.
+	 */
+	public function filter_by_rsvp_status_or_none( $rsvp_status ) {
+		return Query_Filters::meta_in_or_not_exists(
+			self::RSVP_STATUS_META_KEY,
+			$rsvp_status,
+			'by-rsvp-status-or-none'
+		);
 	}
 }
