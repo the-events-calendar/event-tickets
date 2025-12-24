@@ -31,9 +31,7 @@ class Ticket_Repository_Test extends WPTestCase {
 		$regular_ticket_id = $this->create_tc_ticket( $post_id, 10 );
 
 		$repository = new Ticket_Repository();
-		$tickets = $repository->all();
-
-		$ticket_ids = array_map( static fn( $ticket ) => $ticket->ID, $tickets );
+		$ticket_ids = $repository->get_ids();
 
 		$this->assertContains( $rsvp_ticket_id, $ticket_ids, 'TC-RSVP ticket should be returned' );
 		$this->assertNotContains( $regular_ticket_id, $ticket_ids, 'Regular TC ticket should not be returned' );

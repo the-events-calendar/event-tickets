@@ -9,12 +9,11 @@
 
 namespace TEC\Tickets\RSVP\V2\Repositories;
 
+use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use TEC\Tickets\RSVP\V2\Constants;
-use Tribe__Repository;
-use Tribe__Repository__Interface;
-use WP_Post;
+use Tribe__Tickets__Ticket_Repository as Base_Repository;
 
 /**
  * Class Ticket_Repository
@@ -27,7 +26,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
-class Ticket_Repository extends Tribe__Repository {
+class Ticket_Repository extends Base_Repository {
 	use Get_Field;
 
 	/**
@@ -40,92 +39,41 @@ class Ticket_Repository extends Tribe__Repository {
 	protected $filter_name = 'tc_rsvp_tickets';
 
 	/**
-	 * Constructor.
+	 * Override the default query args to only return TC-RSVP tickets.
 	 *
 	 * @since TBD
 	 */
 	public function __construct() {
 		parent::__construct();
 
-		// Set the post type to TC tickets.
-		$this->default_args['post_type']   = Ticket::POSTTYPE;
-		$this->default_args['post_status'] = 'publish';
-		$this->default_args['meta_query']  = [];
-
-		// Always filter by the RSVP ticket type.
-		$this->query_args['meta_query']['tc_rsvp_type'] = [
-			'key'   => Ticket::$type_meta_key,
-			'value' => Constants::TC_RSVP_TYPE,
+		// Always filter by the TC-RSVP ticket type.
+		$this->query_args['meta_query']['tc-rsvp-type'] = [
+			'key'     => '_type',
+			'compare' => '=',
+			'value'   => Constants::TC_RSVP_TYPE,
 		];
-
-		// By default, order the Tickets by ID, ascending.
-		$this->query_args['orderby'] = 'ID';
-		$this->query_args['order']   = 'ASC';
-
-		// Register schema filters.
-		$this->schema['event'] = [ $this, 'filter_by_event' ];
-
-		$this->add_simple_meta_schema_entry( 'event', Ticket::$event_relation_meta_key );
-		$this->add_simple_meta_schema_entry( 'ticket_type', Ticket::$type_meta_key );
-		$this->add_simple_meta_schema_entry( 'start_date', Ticket::START_DATE_META_KEY );
-		$this->add_simple_meta_schema_entry( 'end_date', Ticket::END_DATE_META_KEY );
-		$this->add_simple_meta_schema_entry( 'sku', Ticket::$sku_meta_key );
-		$this->add_simple_meta_schema_entry( 'stock', Ticket::$stock_meta_key );
-		$this->add_simple_meta_schema_entry( 'stock_mode', Ticket::$stock_mode_meta_key );
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	protected function format_item( $id ) {
-		$formatted = null === $this->formatter
-			? get_post( $id )
-			: $this->formatter->format_item( $id );
-
-		/**
-		 * Filters a single formatted TC-RSVP ticket result.
-		 *
-		 * @since TBD
-		 *
-		 * @param mixed|WP_Post                $formatted  The formatted ticket result, usually a post object.
-		 * @param int                          $id         The formatted post ID.
-		 * @param Tribe__Repository__Interface $repository The current repository object.
-		 */
-		$formatted = apply_filters( 'tec_tickets_rsvp_v2_repository_ticket_format', $formatted, $id, $this );
-
-		return $formatted;
-	}
-
-	/**
-	 * Filters tickets by a specific event.
+	 * Override the ticket types to return TC-RSVP tickets only.
 	 *
 	 * @since TBD
 	 *
-	 * @param int|array $event_id The post ID or array of post IDs to filter by.
-	 *
-	 * @return void
+	 * @return array<string,string> The array of ticket types supported by this repository.
 	 */
-	public function filter_by_event( $event_id ): void {
-		/**
-		 * Filters the post ID used to filter TC-RSVP tickets.
-		 *
-		 * @since TBD
-		 *
-		 * @param int|array         $event_id   The event ID or array of event IDs to filter by.
-		 * @param Ticket_Repository $repository The current repository object.
-		 */
-		$event_id = apply_filters( 'tec_tickets_rsvp_v2_repository_filter_by_event_id', $event_id, $this );
+	public function ticket_types() {
+		return [ Commerce::PROVIDER => Ticket::POSTTYPE ];
+	}
 
-		if ( is_array( $event_id ) && empty( $event_id ) ) {
-			// Bail early if the array is empty.
-			return;
-		}
-
-		if ( is_numeric( $event_id ) ) {
-			$event_id = [ $event_id ];
-		}
-
-		$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
+	/**
+	 * Overrides the base repository method to return the Tickets Commerce Ticket to Event relation meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> The array of Ticket to Event relation meta keys supported by this repository.
+	 */
+	public function ticket_to_event_keys() {
+		return [ Commerce::PROVIDER => Ticket::$event_relation_meta_key ];
 	}
 
 	/**
