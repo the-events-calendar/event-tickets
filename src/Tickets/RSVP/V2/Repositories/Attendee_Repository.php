@@ -69,12 +69,12 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 		// Set the default create args.
 		$this->create_args['post_type'] = Attendee::POSTTYPE;
 
-		// By default pick Attendees that have the going/not-going status meta key assigned.
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		$this->default_args['meta_query'] = [
 			'tc-rsvp-type' => [
 				'key'     => self::RSVP_STATUS_META_KEY,
-				'compare' => 'EXISTS'
-			]
+				'compare' => 'EXISTS',
+			],
 		];
 
 		// Some schema entries need to be redirected to the correct meta keys.
@@ -125,7 +125,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 			return;
 		}
 
-		// For RSVP tickets the order status is the going status
+		// For RSVP tickets the order status is the going status.
 		$statuses                     = [ 'yes', 'no' ];
 		self::$order_statuses         = $statuses;
 		self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );

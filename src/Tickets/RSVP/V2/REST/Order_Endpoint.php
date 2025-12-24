@@ -523,15 +523,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$first_attendee = $attendee;
 		}
 
-		$attendee_email = empty( $first_attendee['email'] ) ?
+		$attendee_email        = empty( $first_attendee['email'] ) ?
 			null
 			: htmlentities(
 				sanitize_email(
-					html_entity_decode( $first_attendee['email'] ) ),
+					html_entity_decode( $first_attendee['email'] ) 
+				),
 				ENT_COMPAT
 			);
 		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $first_attendee['full_name'] ) ?
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ?
 			null
 			: htmlentities(
 				sanitize_text_field(
