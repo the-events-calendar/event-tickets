@@ -42,6 +42,7 @@ class Controller extends Controller_Contract {
 	protected function do_register(): void {
 		$this->container->singleton( Constants::class );
 		$this->container->register( Assets::class );
+		$this->container->singleton( Metabox::class );
 
 		$this->register_common_rsvp_implementations();
 
@@ -56,8 +57,10 @@ class Controller extends Controller_Contract {
 		);
 
 		$this->container->singleton( REST\Order_Endpoint::class );
+		$this->container->singleton( REST\Ticket_Endpoint::class );
 		$this->container->singleton( Cart\RSVP_Cart::class );
 
+		add_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 
 		add_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
@@ -71,6 +74,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		remove_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
 	}
@@ -84,6 +88,20 @@ class Controller extends Controller_Contract {
 	 */
 	public function register_rest_endpoints(): void {
 		$this->container->make( REST\Order_Endpoint::class )->register();
+		$this->container->make( REST\Ticket_Endpoint::class )->register();
+	}
+
+	/**
+	 * Configures the RSVP metabox for the given post type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $post_type The post type to configure the metabox for.
+	 *
+	 * @return void
+	 */
+	public function configure( $post_type = null ): void {
+		$this->container->make( Metabox::class )->configure( $post_type );
 	}
 
 	/**
