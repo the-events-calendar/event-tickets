@@ -124,7 +124,11 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style', 'rsvp.css', [ 'tribe-common-skeleton-style', 'tribe-common-responsive' ], null );
+		tec_asset( $plugin,
+			'tec-tickets-commerce-rsvp-style',
+			'rsvp.css',
+			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ]
+		);
 
 		$stylesheet = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 

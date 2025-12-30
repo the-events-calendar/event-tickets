@@ -188,7 +188,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                  $html     The current HTML.
+	 * @param string                  $content  The template content to be rendered.
 	 * @param Ticket_Object|null      $rsvp     The RSVP ticket object or null.
 	 * @param Tickets_Editor_Template $template The template object.
 	 * @param WP_Post                 $post     The post object.
@@ -197,30 +197,31 @@ class Controller extends Controller_Contract {
 	 * @return string The modified HTML or original if not TC-RSVP.
 	 */
 	public function render_rsvp_template(
-		string $html,
+		string $content,
 		?Ticket_Object $rsvp,
 		Tickets_Editor_Template $template,
 		WP_Post $post,
 		bool $echo
 	): string {
 		// Only process if we have an RSVP object.
-		if ( ! ($rsvp instanceof Ticket_Object && $rsvp->type() === Constants::TC_RSVP_TYPE) ) {
-			return $html;
+		if ( $rsvp === null || $rsvp->type() !== Constants::TC_RSVP_TYPE ) {
+			return $content;
 		}
 
-		$args = [
-			'rsvp_id'    => $rsvp->ID,
-			'ticket_id'  => $rsvp->ID,
-			'post_id'    => $post->ID,
-			'rsvp'       => $rsvp,
-			'step'       => null,
-			'must_login' => ! is_user_logged_in() && $this->container->get( Module::class )->login_required(),
+		// Create the RSVP template args.
+		$rsvp_template_args = [
+			'rsvp'          => $rsvp,
+			'post_id'       => $post->ID,
+			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid(),
+			'step'          => '',
+			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : [],
+			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
-		$template->add_template_globals( $args );
+		// Render the RSVP template and append to existing content.
+		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
 
-		// Render and return the TC-RSVP template
-		return $template->template( 'v2/commerce/rsvp/content', $args, $echo );
+		return $content;
 	}
 
 	/**
