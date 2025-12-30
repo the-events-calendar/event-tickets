@@ -12,6 +12,7 @@ namespace TEC\Tickets\RSVP\V2;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\RSVP\RSVP_Controller_Methods;
 use TEC\Tickets\Settings;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Controller
@@ -62,8 +63,8 @@ class Controller extends Controller_Contract {
 
 		add_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
-
 		add_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
+		add_filter( "tec_tickets_enabled_ticket_forms", [ $this, 'do_not_render_rsvp_form_toggle' ] );
 	}
 
 	/**
@@ -77,6 +78,7 @@ class Controller extends Controller_Contract {
 		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		remove_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
+		remove_filter( "tec_tickets_enabled_ticket_forms", [ $this, 'do_not_render_rsvp_form_toggle' ] );
 	}
 
 	/**
@@ -136,5 +138,21 @@ class Controller extends Controller_Contract {
 		];
 
 		return $fields;
+	}
+
+	/**
+	 * Filters the enabled form toggles that would render in the default Tickets metabox to
+	 * remove the RSVP one.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,bool> $enabled A map from ticket types to their enabled status.
+	 *
+	 * @return array<string,bool> The filtered map of ticket types to their enabled status.
+	 */
+	public function do_not_render_rsvp_form_toggle( array $enabled ): array {
+		$enabled['rsvp'] = false;
+
+		return $enabled;
 	}
 }
