@@ -417,4 +417,19 @@ class Controller extends Controller_Contract {
 
 		return $enabled;
 	}
+
+	/**
+	 * Filters the list table data to remove the RSVP tickets from the list.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,array<Ticket_Object>> $ticket_types The ticket types and their tickets.
+	 *
+	 * @return array<string,array<Ticket_Object>> The filtered ticket types and their tickets.
+	 */
+	public function do_not_list_rsvp_tickets( array $ticket_types ): array {
+		$ticket_types[ Constants::TC_RSVP_TYPE ] = [];
+
+		return $ticket_types;
+	}
 }
