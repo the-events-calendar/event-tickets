@@ -64,7 +64,8 @@ class Controller extends Controller_Contract {
 		add_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		add_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
-		add_filter( "tec_tickets_enabled_ticket_forms", [ $this, 'do_not_render_rsvp_form_toggle' ] );
+		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
+		add_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
 	}
 
 	/**
@@ -78,7 +79,8 @@ class Controller extends Controller_Contract {
 		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		remove_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
-		remove_filter( "tec_tickets_enabled_ticket_forms", [ $this, 'do_not_render_rsvp_form_toggle' ] );
+		remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
+		remove_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
 	}
 
 	/**
@@ -154,5 +156,20 @@ class Controller extends Controller_Contract {
 		$enabled['rsvp'] = false;
 
 		return $enabled;
+	}
+
+	/**
+	 * Filters the list table data to remove the RSVP tickets from the list.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,array<Ticket_Object>> $ticket_types The ticket types and their tickets.
+	 *
+	 * @return array<string,array<Ticket_Object>> The filtered ticket types and their tickets.
+	 */
+	public function do_not_list_rsvp_tickets( array $ticket_types ): array {
+		$ticket_types[ Constants::TC_RSVP_TYPE ] = [];
+
+		return $ticket_types;
 	}
 }
