@@ -10,9 +10,12 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\RSVP\RSVP_Controller_Methods;
 use TEC\Tickets\Settings;
+use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use WP_Post;
 
 /**
  * Class Controller
@@ -63,9 +66,11 @@ class Controller extends Controller_Contract {
 
 		add_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_rsvp_assets' ] );
 		add_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
 		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
 		add_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
+		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
 	}
 
 	/**
@@ -78,9 +83,11 @@ class Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+		remove_action( 'wp_enqueue_scripts', [ $this, 'enqueue_rsvp_assets' ] );
 		remove_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
 		remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
 		remove_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
+		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ] );
 	}
 
 	/**
@@ -171,5 +178,98 @@ class Controller extends Controller_Contract {
 		$ticket_types[ Constants::TC_RSVP_TYPE ] = [];
 
 		return $ticket_types;
+	}
+
+	/**
+	 * Render TC-RSVP template for TC-RSVP tickets on the frontend.
+	 *
+	 * Hooks into `tec_tickets_front_end_ticket_form_template_content` to render
+	 * the V2 commerce RSVP template instead of the generic ticket form template.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                  $html     The current HTML.
+	 * @param Ticket_Object|null      $rsvp     The RSVP ticket object or null.
+	 * @param Tickets_Editor_Template $template The template object.
+	 * @param WP_Post                 $post     The post object.
+	 * @param bool                    $echo     Whether to echo the output.
+	 *
+	 * @return string The modified HTML or original if not TC-RSVP.
+	 */
+	public function render_rsvp_template(
+		string $html,
+		?Ticket_Object $rsvp,
+		Tickets_Editor_Template $template,
+		WP_Post $post,
+		bool $echo
+	): string {
+		// Only process if we have an RSVP object.
+		if ( ! ($rsvp instanceof Ticket_Object && $rsvp->type() === Constants::TC_RSVP_TYPE) ) {
+			return $html;
+		}
+
+		$args = [
+			'rsvp_id'    => $rsvp->ID,
+			'ticket_id'  => $rsvp->ID,
+			'post_id'    => $post->ID,
+			'rsvp'       => $rsvp,
+			'step'       => null,
+			'must_login' => ! is_user_logged_in() && $this->container->get( Module::class )->login_required(),
+		];
+
+		$template->add_template_globals( $args );
+
+		// Render and return the TC-RSVP template
+		return $template->template( 'v2/commerce/rsvp/content', $args, $echo );
+	}
+
+	/**
+	 * Enqueue RSVP assets on the frontend.
+	 *
+	 * Assets are only enqueued when viewing a single post/event that has TC-RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function enqueue_rsvp_assets(): void {
+		// Only enqueue on singular posts
+		if ( ! is_singular() ) {
+			return;
+		}
+
+		$post_id = get_the_ID();
+
+		// Only enqueue if the post has TC-RSVP tickets
+		if ( ! $this->post_has_tc_rsvp_tickets( $post_id ) ) {
+			return;
+		}
+
+		// Enqueue the asset group
+		tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
+	}
+
+	/**
+	 * Check if a post has TC-RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID to check.
+	 *
+	 * @return bool True if the post has TC-RSVP tickets, false otherwise.
+	 */
+	protected function post_has_tc_rsvp_tickets( int $post_id ): bool {
+		$module = $this->container->make( Module::class );
+		$tickets = $module->get_tickets( $post_id );
+
+		foreach ( $tickets as $ticket ) {
+			$ticket_type = get_post_meta( $ticket->ID, '_type', true );
+
+			if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
