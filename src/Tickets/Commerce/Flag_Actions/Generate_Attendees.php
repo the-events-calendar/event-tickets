@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\RSVP\V2\Traits\Is_RSVP;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -22,6 +23,7 @@ use Tribe__Utils__Array as Arr;
 class Generate_Attendees extends Flag_Action_Abstract {
 
 	use Is_Ticket;
+	use Is_RSVP;
 
 	/**
 	 * {@inheritDoc}
@@ -96,7 +98,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
 		foreach ( $order->items as $item ) {
-			if ( ! $this->is_ticket( $item ) ) {
+			if ( ! $this->is_ticket( $item ) && ! $this->is_rsvp( $item ) ) {
 				continue;
 			}
 
