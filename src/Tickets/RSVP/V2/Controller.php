@@ -16,6 +16,8 @@ use TEC\Tickets\Settings;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
+use Tribe__Tickets__Tickets as Tickets_Handler;
+use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 
 /**
  * Class Controller
@@ -71,6 +73,8 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
 		add_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
 		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
+
+		add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
 	}
 
 	/**
@@ -88,6 +92,8 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
 		remove_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
 		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ] );
+
+		remove_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ] );
 	}
 
 	/**
@@ -285,5 +291,29 @@ class Controller extends Controller_Contract {
 		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 		return in_array( 'event-tickets_rsvp', $requirements, true );
+	}
+
+	/**
+	 * Removes the RSVP hooks that would render the RSVP v1 form on the frontend.
+	 *
+	 * The original code hooks as part of the construction, to avoid having to update all the existing code
+	 * unhook the RSVP v1 hooks right after they are added.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets_Handler $tickets_handler  The tickets handler instance.
+	 * @param string          $ticket_form_hook The ticket form hook.
+	 *
+	 * @return void
+	 */
+	public function do_not_display_rsvp_v1_tickets_form( Tickets_Handler $tickets_handler, string $ticket_form_hook ): void {
+		if ( ! $tickets_handler instanceof RSVP_V1_Tickets_Handler ) {
+			return;
+		}
+
+		remove_action( $ticket_form_hook, [ $tickets_handler, 'maybe_add_front_end_tickets_form' ], 5 );
+		remove_filter( $ticket_form_hook, [ $tickets_handler, 'show_tickets_unavailable_message' ], 6 );
+		remove_filter( 'the_content', [ $tickets_handler, 'front_end_tickets_form_in_content' ], 11 );
+		remove_filter( 'the_content', [ $tickets_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
 	}
 }
