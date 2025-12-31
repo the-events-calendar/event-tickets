@@ -221,7 +221,7 @@ class Controller extends Controller_Contract {
 			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid( '', true ),
 			'step'          => '',
 			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : [],
-			'must_login'    => ! is_user_logged_in() && $this->eogin_required(),
+			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
 		// Render the RSVP template and append to existing content.
