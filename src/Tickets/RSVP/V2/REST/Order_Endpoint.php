@@ -125,7 +125,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return RSVP_Cart
 	 */
-	public function setup_cart( $cart ) {
+	public function setup_cart( $cart ): RSVP_Cart {
 		return tribe( RSVP_Cart::class );
 	}
 
@@ -138,7 +138,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return WP_REST_Response The response containing success status and HTML content.
 	 */
-	public function handle_steps( WP_REST_Request $request ) {
+	public function handle_steps( WP_REST_Request $request ): WP_REST_Response {
 		$response = [
 			'success' => false,
 			'html'    => '',
@@ -179,7 +179,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return string The error template HTML.
 	 */
-	public function render_rsvp_error( $error_message ) {
+	public function render_rsvp_error( $error_message ): string {
 		$args = [
 			'error_message' => $error_message,
 		];
@@ -212,7 +212,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return array The process result.
 	 */
-	public function process_rsvp_step( array $args, $request ) {
+	public function process_rsvp_step( array $args, $request ): array {
 		$result = [
 			'success' => null,
 			'errors'  => [],
@@ -357,7 +357,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return string The step template HTML.
 	 */
-	public function render_rsvp_step( $ticket_id, $request, $step = null ) {
+	public function render_rsvp_step( $ticket_id, $request, $step = null ): string {
 		if ( 0 === $ticket_id ) {
 			return '';
 		}
@@ -527,7 +527,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			null
 			: htmlentities(
 				sanitize_email(
-					html_entity_decode( $first_attendee['email'] ) 
+					html_entity_decode( $first_attendee['email'] )
 				),
 				ENT_COMPAT
 			);
@@ -577,7 +577,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return int Either the requested quantity of tickets or `0` in any other case.
 	 */
-	public function parse_ticket_quantity( $ticket_id, $request ) {
+	public function parse_ticket_quantity( $ticket_id, $request ): int {
 		$quantity = 0;
 
 		$tribe_tickets = $request->get_param( 'tribe_tickets' );
