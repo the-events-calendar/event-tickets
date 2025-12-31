@@ -212,10 +212,10 @@ class Controller extends Controller_Contract {
 		$rsvp_template_args = [
 			'rsvp'          => $rsvp,
 			'post_id'       => $post->ID,
-			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid(),
+			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid( '', true ),
 			'step'          => '',
 			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : [],
-			'must_login'    => ! is_user_logged_in() && $this->login_required(),
+			'must_login'    => ! is_user_logged_in() && $this->eogin_required(),
 		];
 
 		// Render the RSVP template and append to existing content.
@@ -272,5 +272,18 @@ class Controller extends Controller_Contract {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns whether the RSVP form requires login.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the RSVP form requires login.
+	 */
+	private function login_required(): bool {
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
+
+		return in_array( 'event-tickets_rsvp', $requirements, true );
 	}
 }
