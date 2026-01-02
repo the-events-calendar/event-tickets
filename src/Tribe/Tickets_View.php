@@ -789,11 +789,16 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Counts the Amount of Tickets attendees.
 	 *
-	 * @param int       $event_id     The Event ID we're checking.
-	 * @param int|null  $user_id      An Optional User ID.
-	 * @return int
+	 * @since 4.10.8
+	 * @since TBD Added the `$context` parameter and arguments filtering.
+	 *
+	 * @param int      $event_id The Event ID we're checking.
+	 * @param int|null $user_id  An Optional User ID.
+	 * @param string   $context  The Context of the call, used to filter the attendees count.
+	 *
+	 * @return int The Amount of Tickets attendees.
 	 */
-	public function count_ticket_attendees( $event_id, $user_id = null ) {
+	public function count_ticket_attendees( $event_id, $user_id = null, string $context = '' ) {
 		if ( ! $user_id && null !== $user_id ) {
 			// No attendees for this user.
 			return 0;
@@ -810,6 +815,24 @@ class Tribe__Tickets__Tickets_View {
 		if ( $user_id ) {
 			$args['by']['user'] = $user_id;
 		}
+
+		/**
+		 * Filters the arguments used to count the Tickets attendees.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args    {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                               [[what,args...]] format.
+		 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 * @param int   $event_id   The Event ID we're checking.
+		 * @param int   $user_id    An Optional User ID.
+		 * @param string $context    The Context of the call, used to filter the attendees count.
+		 */
+		$args = apply_filters( 'tec_tickets_count_ticket_attendees_args', $args, $event_id, $user_id, $context );
 
 		return Tribe__Tickets__Tickets::get_event_attendees_count( $event_id, $args );
 	}
@@ -855,7 +878,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$rsvp_count = $this->count_rsvp_attendees( $event_id, $user_id );
 
-		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id );
+		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id, 'get_description_rsvp_ticket' );
 
 		if ( 1 === $rsvp_count ) {
 			$descriptions[] = tribe_get_rsvp_label_singular( 'tickets_view_description' );
@@ -1428,7 +1451,7 @@ class Tribe__Tickets__Tickets_View {
 		$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 		$counters           = [];
 		$rsvp_count         = $this->count_rsvp_attendees( $event_id, $user_id );
-		$ticket_count       = $this->count_ticket_attendees( $event_id, $user_id );
+		$ticket_count       = $this->count_ticket_attendees( $event_id, $user_id, 'get_my_tickets_link_data' );
 
 		$count_by_type = [
 			'rsvp'   => [
