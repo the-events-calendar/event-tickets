@@ -239,6 +239,8 @@ class Controller extends Controller_Contract {
 			'tec_tickets_commerce_single_order_details_metabox_after',
 			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
 		);
+
+		add_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ], 10, 2 );
 	}
 
 	/**
@@ -624,5 +626,37 @@ class Controller extends Controller_Contract {
 		$args['by']['_type'] = [ '!=', Constants::TC_RSVP_TYPE ];
 
 		return $args;
+	}
+
+	/**
+	 * Prevents the rendering of some RSVP templates in the context of the RSVP v2 implementation.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null     $done Whether the template has been rendered or not.
+	 * @param string|string[] $name The template name in the form of a string or an array of strings.
+	 *
+	 * @return string|null An empty string to prevent template rendering if required, or the original value.
+	 */
+	public function prevent_template_render( $done, $name ) {
+		if ( null !== $done ) {
+			return $done;
+		}
+
+
+		$do_not_render = [
+			'v2/commerce/rsvp/attendees',
+			'v2/commerce/rsvp/attendees/attendee',
+			'v2/commerce/rsvp/attendees/attendee/name',
+			'v2/commerce/rsvp/attendees/attendee/rsvp',
+			'v2/commerce/rsvp/attendees/title',
+		];
+
+		if ( in_array( $name, $do_not_render, true ) ) {
+			// Return a non-null value to indicate the template was done.
+			return '';
+		}
+
+		return $done;
 	}
 }
