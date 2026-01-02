@@ -587,4 +587,42 @@ class Controller extends Controller_Contract {
 
 		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE;
 	}
+
+	/**
+	 * Filters the attendee count to exclude the RSVP tickets depending on the context of the count.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args    {
+	 *      List of arguments to filter attendees by.
+	 *
+	 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+	 *                               [[what,args...]] format.
+	 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
+	 * }
+	 * @param int   $event_id   The Event ID we're checking.
+	 * @param int   $user_id    An Optional User ID.
+	 * @param string $context    The Context of the call, used to filter the attendees count.
+	 *
+	 * @return array $args    {
+	 *      List of arguments to filter attendees by.
+	 *
+	 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+	 *                               [[what,args...]] format.
+	 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
+	 * }
+	 */
+	public function exclude_rsvp_tickets_from_attendee_count( array $args, int $event_id, int $user_id, string $context ): array {
+		if ( ! in_array( $context, [
+			'get_description_rsvp_ticket',
+			'get_my_tickets_link_data',
+		], true ) ) {
+			return $args;
+		}
+
+		// Exclude Attendees that have the RSVP ticket type.
+		$args['by']['_type'] = [ '!=', Constants::TC_RSVP_TYPE ];
+
+		return $args;
+	}
 }
