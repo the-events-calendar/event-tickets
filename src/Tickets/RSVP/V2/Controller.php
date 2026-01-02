@@ -75,6 +75,8 @@ class Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
 
 		add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
+
+		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_ticket_is_ticket' ], 10, 2 );
 	}
 
 	/**
@@ -94,6 +96,8 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ] );
 
 		remove_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ] );
+
+		remove_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_ticket_is_ticket' ] );
 	}
 
 	/**
@@ -315,5 +319,24 @@ class Controller extends Controller_Contract {
 		remove_filter( $ticket_form_hook, [ $tickets_handler, 'show_tickets_unavailable_message' ], 6 );
 		remove_filter( 'the_content', [ $tickets_handler, 'front_end_tickets_form_in_content' ], 11 );
 		remove_filter( 'the_content', [ $tickets_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
+	}
+
+	/**
+	 * Filters the method checking whether some thing is a ticket or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool                $is_ticket Whether the thing is a ticket or not.
+	 * @param array<string,mixed> $thing     The thing to check.
+	 *
+	 * @return bool
+	 */
+	public function rsvp_ticket_is_ticket( bool $is_ticket, array $thing ): bool {
+		if ( $is_ticket ) {
+			// Already identified as a ticket, nothing to do here.
+			return true;
+		}
+
+		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE;
 	}
 }
