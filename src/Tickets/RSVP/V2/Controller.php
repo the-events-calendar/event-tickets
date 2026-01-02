@@ -568,4 +568,23 @@ class Controller extends Controller_Contract {
 		remove_filter( 'the_content', [ $tickets_handler, 'front_end_tickets_form_in_content' ], 11 );
 		remove_filter( 'the_content', [ $tickets_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
 	}
+
+	/**
+	 * Filters the method checking whether some thing is a ticket or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool                $is_ticket Whether the thing is a ticket or not.
+	 * @param array<string,mixed> $thing     The thing to check.
+	 *
+	 * @return bool
+	 */
+	public function rsvp_ticket_is_ticket( bool $is_ticket, array $thing ): bool {
+		if ( $is_ticket ) {
+			// Already identified as a ticket, nothing to do here.
+			return true;
+		}
+
+		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE;
+	}
 }
