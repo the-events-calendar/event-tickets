@@ -127,8 +127,6 @@ class Controller extends Controller_Contract {
 			// as V2 doesn't need a legacy RSVP provider.
 			$this->container->bind( 'tickets.ticket-repository.rsvp', V2\Repositories\Ticket_Repository::class );
 			$this->container->bind( 'tickets.attendee-repository.rsvp', V2\Repositories\Attendee_Repository::class );
-			// Bind the disabled RSVP for legacy code compatibility.
-			$this->container->singleton( 'tickets.rsvp', RSVP_Disabled::class );
 
 			return;
 		}
