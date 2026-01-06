@@ -86,6 +86,9 @@ class Controller extends Controller_Contract {
 		);
 
 		add_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ], 10, 2 );
+
+		// Add V2 RSVP configuration to the block editor.
+		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
 	}
 
 	/**
@@ -115,6 +118,8 @@ class Controller extends Controller_Contract {
 
 
 		remove_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ] );
+
+		remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
 	}
 
 	/**
@@ -425,5 +430,25 @@ class Controller extends Controller_Contract {
 		}
 
 		return $done;
+	}
+
+	/**
+	 * Add V2 RSVP configuration to the block editor config.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $config The editor configuration.
+	 *
+	 * @return array<string,mixed> The modified editor configuration.
+	 */
+	public function add_rsvp_v2_editor_config( array $config ): array {
+		$config['tickets']           = $config['tickets'] ?? [];
+		$config['tickets']['rsvpV2'] = [
+			'enabled'         => true,
+			'ticketsEndpoint' => '/tec/v1/tickets',
+			'ticketType'      => Constants::TC_RSVP_TYPE,
+		];
+
+		return $config;
 	}
 }
