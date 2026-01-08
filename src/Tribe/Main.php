@@ -22,7 +22,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.27.2';
+	const VERSION = '5.27.3';
 
 	/**
 	 * Used to store the version history.
