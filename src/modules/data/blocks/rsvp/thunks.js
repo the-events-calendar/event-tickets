@@ -27,6 +27,11 @@ const METHODS = {
 	PUT: 'PUT',
 };
 
+const TEC_EEA_HEADER = {
+	'X-TEC-EEA':
+		'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
+};
+
 const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	const { title, description, capacity, notGoingResponses, startDateMoment, startTime, endDateMoment, endTime } =
 		payload;
