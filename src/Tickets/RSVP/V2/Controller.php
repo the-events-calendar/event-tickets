@@ -89,6 +89,8 @@ class Controller extends Controller_Contract {
 
 		// Add V2 RSVP configuration to the block editor.
 		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
+
+		add_filter( 'tec_tickets_editor_list_tickets', [ $this, 'exclude_rsvp_from_tickets_list' ], 10, 2 );
 	}
 
 	/**
@@ -120,6 +122,8 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ] );
 
 		remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
+
+		remove_filter( 'tec_tickets_editor_list_tickets', [ $this, 'exclude_rsvp_from_tickets_list' ] );
 	}
 
 	/**
@@ -450,5 +454,22 @@ class Controller extends Controller_Contract {
 		];
 
 		return $config;
+	}
+
+	/**
+	 * Excludes RSVP v2 tickets from the tickets list meta used by the Tickets block.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object[] $tickets        The array of ticket objects.
+	 * @param int                             $unused_post_id The post ID.
+	 *
+	 * @return Tribe__Tickets__Ticket_Object[] Filtered array with tc-rsvp tickets removed.
+	 */
+	public function exclude_rsvp_from_tickets_list( array $tickets, int $unused_post_id ): array {
+		return array_filter(
+			$tickets,
+			static fn( $ticket ) => Constants::TC_RSVP_TYPE !== $ticket->type()
+		);
 	}
 }

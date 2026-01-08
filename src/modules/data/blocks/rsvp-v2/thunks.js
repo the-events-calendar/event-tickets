@@ -14,6 +14,7 @@ import { doAction } from '@wordpress/hooks';
  * Internal dependencies
  */
 import * as actions from '../rsvp/actions';
+import { normalizeTitle, normalizeDescription } from '../../utils';
 import { getV2Config } from './config';
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
@@ -263,6 +264,9 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 			const capacity = rsvp.capacity >= 0 ? rsvp.capacity : ( rsvp.stock >= 0 ? rsvp.stock : '' );
 			const notGoingResponses = rsvp.show_not_going || false;
 
+			const title = normalizeTitle( rsvp.title );
+			const description = normalizeDescription( rsvp.description, rsvp.excerpt );
+
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( rsvp.id ) );
 			dispatch( actions.setRSVPGoingCount( parseInt( rsvp.going_count || rsvp.sold || 0, 10 ) ) );
@@ -271,8 +275,8 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 
 			dispatch(
 				actions.setRSVPDetails( {
-					title: rsvp.title,
-					description: rsvp.description || rsvp.excerpt || '',
+					title,
+					description,
 					capacity,
 					notGoingResponses,
 					startDate: momentUtil.toDate( startMoment ),
@@ -290,8 +294,8 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 
 			dispatch(
 				actions.setRSVPTempDetails( {
-					tempTitle: rsvp.title,
-					tempDescription: rsvp.description || rsvp.excerpt || '',
+					tempTitle: title,
+					tempDescription: description,
 					tempCapacity: capacity,
 					tempNotGoingResponses: notGoingResponses,
 					tempStartDate: momentUtil.toDate( startMoment ),

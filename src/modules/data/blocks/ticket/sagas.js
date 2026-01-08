@@ -151,7 +151,19 @@ export function* updateUneditableTickets() {
 		return null;
 	}
 
-	const restFormatUneditableTickets = data.tickets
+	/**
+	 * Filters the list of tickets fetched from the REST API for the Tickets block.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array} tickets Array of ticket objects from the API.
+	 */
+	const filteredTickets = applyFilters(
+		'tec.tickets.blocks.fetchedTickets',
+		data.tickets
+	);
+
+	const restFormatUneditableTickets = filteredTickets
 		// Remove the editable tickets.
 		.filter(
 			( ticket ) =>
@@ -194,7 +206,19 @@ export function* setTicketsInitialState( action ) {
 	);
 	const sharedCapacity = get( 'sharedCapacity' );
 	// Shape: [ {id: int, type: string}, ... ].
-	const allTickets = JSON.parse( get( 'tickets', '[]' ) );
+	const parsedTickets = JSON.parse( get( 'tickets', '[]' ) );
+
+	/**
+	 * Filters the list of tickets loaded from post meta for the Tickets block.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array} tickets Array of ticket objects from post meta.
+	 */
+	const allTickets = applyFilters(
+		'tec.tickets.blocks.initialTickets',
+		parsedTickets
+	);
 
 	const { editableTickets, uneditableTickets } = allTickets.reduce(
 		( acc, ticket ) => {
@@ -524,11 +548,25 @@ export function* fetchTicket( action ) {
 
 		const { status = '', provider } = ticket;
 
-		if (
+		/**
+		 * Filters whether a ticket should be removed from the Tickets block.
+		 *
+		 * @since TBD
+		 *
+		 * @param {boolean} shouldRemove Whether the ticket should be removed.
+		 * @param {Object}  ticket       The ticket object from the API response.
+		 * @param {string}  clientId     The block client ID.
+		 */
+		const shouldRemove = applyFilters(
+			'tec.tickets.blocks.shouldRemoveTicket',
 			response.status === 404 ||
-			status === 'trash' ||
-			provider === constants.RSVP
-		) {
+				status === 'trash' ||
+				provider === constants.RSVP,
+			ticket,
+			clientId
+		);
+
+		if ( shouldRemove ) {
 			yield call( removeTicketBlock, clientId );
 			return;
 		}

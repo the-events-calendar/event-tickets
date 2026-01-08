@@ -13,6 +13,7 @@ import rsvp from './rsvp';
 import rsvpV2 from './rsvp-v2';
 import attendees from './attendees';
 import { isV2Enabled } from '../data/blocks/rsvp-v2/config';
+import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-filters';
 
 /**
  * Filter callback to swap V1 RSVP block with V2 when V2 is enabled.
@@ -32,6 +33,9 @@ const maybeSwapRsvpBlock = ( blocks ) => {
 
 // Register the filter to swap RSVP blocks.
 addFilter( 'tec.tickets.blocks.beforeRegistration', 'tec.tickets.rsvp-v2', maybeSwapRsvpBlock );
+
+// Initialize filters to exclude RSVP V2 tickets from the Tickets block.
+initTicketsBlockFilters();
 
 let blocks = [ rsvp, attendees ];
 
