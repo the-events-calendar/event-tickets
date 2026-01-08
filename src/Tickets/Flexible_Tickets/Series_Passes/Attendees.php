@@ -544,7 +544,7 @@ class Attendees extends Controller {
 
 		return new WP_REST_Response(
 			[
-				'msg'         => _x( 'Multiple Event options, pick one and specify the context_id parameter.', 'event-tickets' ),
+				'msg'         => __( 'Multiple Event options, pick one and specify the context_id parameter.', 'event-tickets' ),
 				'attendee_id' => $attendee_id,
 				'candidates'  => $prepared_candidates,
 			],
