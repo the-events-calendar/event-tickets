@@ -524,11 +524,14 @@ export function* setBodyDetails( clientId ) {
 
 export function* removeTicketBlock( clientId ) {
 	const { removeBlock } = wpDispatch( 'core/editor' );
+	const allClientIds = yield select( selectors.getTicketsAllClientIds );
 
-	yield all( [
-		put( actions.removeTicketBlock( clientId ) ),
-		call( removeBlock, clientId ),
-	] );
+	if ( ! allClientIds.includes( clientId ) ) {
+		return;
+	}
+
+	yield put( actions.removeTicketBlock( clientId ) );
+	yield call( removeBlock, clientId );
 }
 
 export function* fetchTicket( action ) {
