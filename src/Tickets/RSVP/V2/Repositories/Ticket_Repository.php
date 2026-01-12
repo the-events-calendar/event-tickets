@@ -46,8 +46,8 @@ class Ticket_Repository extends Base_Repository {
 	public function __construct() {
 		parent::__construct();
 
-		// Always filter by the TC-RSVP ticket type.
-		$this->query_args['meta_query']['tc-rsvp-type'] = [
+		// Always filter by the TC-RSVP ticket type; replace the existing meta query, if any.
+		$this->query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] = [
 			'key'     => '_type',
 			'compare' => '=',
 			'value'   => Constants::TC_RSVP_TYPE,

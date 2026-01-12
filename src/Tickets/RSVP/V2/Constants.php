@@ -25,4 +25,13 @@ class Constants {
 	 * @var string
 	 */
 	public const TC_RSVP_TYPE = 'tc-rsvp';
+
+	/**
+	 * The key used to filter the repository query args to include or exclude TC-RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TYPE_META_QUERY_KEY = 'tc-rsvp-type';
 }
