@@ -253,6 +253,8 @@ class Controller extends Controller_Contract {
 
 		// Add V2 RSVP configuration to the block editor.
 		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
+
+		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ], 10, 2 );
 	}
 
 	/**
@@ -685,5 +687,19 @@ class Controller extends Controller_Contract {
 		];
 
 		return $query_args;
+	}
+
+	/**
+	 * Marks RSVP tickets as property tickets in the ticket detection logic in Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool  $is_ticket Whether the thing is a ticket.
+	 * @param array $thing     The thing to check.
+	 *
+	 * @return bool Whether the thing is a ticket.
+	 */
+	public function rsvp_are_tickets( bool $is_ticket, array $thing ): bool {
+		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE ? true : $is_ticket;
 	}
 }
