@@ -107,7 +107,7 @@ class Metabox {
 		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
 		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
 
-		$tc_rsvp = $this->get_tc_rsvp_ticket( Tribe__Tickets__Tickets::get_event_tickets( $post->ID ) );
+		$tc_rsvp = $this->get_tc_rsvp_ticket( $post->ID );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
@@ -141,17 +141,19 @@ class Metabox {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $tickets List of ticket objects.
+	 * @param int $post_id The post ID to get the ticket for.
 	 *
 	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
 	 */
-	public function get_tc_rsvp_ticket( array $tickets ) {
-		foreach ( $tickets as $ticket ) {
-			if ( $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->type() === Constants::TC_RSVP_TYPE ) {
-				return $ticket;
-			}
+	public function get_tc_rsvp_ticket( int $post_id ) {
+		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
+			->where( 'event_id', $post_id )
+			->first_id();
+
+		if ( ! $ticket_id ) {
+			return null;
 		}
 
-		return null;
+		return tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
 	}
 }
