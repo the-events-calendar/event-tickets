@@ -86,9 +86,8 @@ class Controller extends Controller_Contract {
 		// Do not show RSVP tickets in the Classic Editor metabox.
 		add_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'do_not_show_rsvp_in_tickets_metabox' ] );
 
-		// TODO: review to move hooking to RSVP block.
-		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
-		add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
+		add_filter( 'tec_tickets_front_end_rsvp_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
+		// add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
 		add_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ], 10, 2 );
 
 		// Add V2 RSVP configuration to the block editor.
@@ -119,8 +118,7 @@ class Controller extends Controller_Contract {
 		// Do not show RSVP tickets in the Classic Editor metabox.
 		remove_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'do_not_show_rsvp_in_tickets_metabox' ] );
 
-		// TODO: review to move hooking to RSVP block.
-		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ] );
+		remove_filter( 'tec_tickets_front_end_rsvp_form_template_content', [ $this, 'render_rsvp_template' ] );
 		remove_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ] );
 		remove_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ] );
 
@@ -219,15 +217,15 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Render TC-RSVP template for TC-RSVP tickets on the frontend.
+	 * Render V2 RSVP template for TC-RSVP tickets on the frontend.
 	 *
-	 * Hooks into `tec_tickets_front_end_ticket_form_template_content` to render
-	 * the V2 commerce RSVP template instead of the generic ticket form template.
+	 * Hooks into `tec_tickets_front_end_rsvp_form_template_content` to render
+	 * the V2 commerce RSVP template instead of the generic RSVP block template.
 	 *
 	 * @since TBD
 	 *
 	 * @param string                  $content  The template content to be rendered.
-	 * @param Ticket_Object|null      $rsvp     The RSVP ticket object or null.
+	 * @param array<string,mixed>     $args     The RSVP block arguments.
 	 * @param Tickets_Editor_Template $template The template object.
 	 * @param WP_Post                 $post     The post object.
 	 * @param bool                    $echo     Whether to echo the output.
@@ -236,27 +234,36 @@ class Controller extends Controller_Contract {
 	 */
 	public function render_rsvp_template(
 		string $content,
-		?Ticket_Object $rsvp,
+		array $args,
 		Tickets_Editor_Template $template,
 		WP_Post $post,
 		bool $echo
 	): string {
-		// Only process if we have an RSVP object.
-		if ( $rsvp === null || $rsvp->type() !== Constants::TC_RSVP_TYPE ) {
+		$active_rsvps = $args['active_rsvps'] ?? [];
+
+		// Find the first TC-RSVP ticket in the active RSVPs.
+		$rsvp = null;
+		foreach ( $active_rsvps as $ticket ) {
+			if ( $ticket->type() === Constants::TC_RSVP_TYPE ) {
+				$rsvp = $ticket;
+				break;
+			}
+		}
+
+		// Only process if we have a TC-RSVP ticket.
+		if ( $rsvp === null ) {
 			return $content;
 		}
 
-		// Create the RSVP template args.
 		$rsvp_template_args = [
 			'rsvp'          => $rsvp,
 			'post_id'       => $post->ID,
 			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid( '', true ),
 			'step'          => '',
-			'active_rsvps'  => $rsvp && $rsvp->date_in_range() ? [ $rsvp ] : [],
+			'active_rsvps'  => $rsvp->date_in_range() ? [ $rsvp ] : [],
 			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
-		// Render the RSVP template and append to existing content.
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
 
 		return $content;
