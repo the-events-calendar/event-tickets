@@ -94,6 +94,7 @@ class Controller extends Controller_Contract {
 		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
 
 		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ], 10, 2 );
+		add_filter( 'tribe_repository_tc_tickets_query_args', [ $this, 'include_rsvp_tickets_by_id' ] );
 	}
 
 	/**
@@ -119,6 +120,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ] );
 		remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
 		remove_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ] );
+		remove_filter( 'tribe_repository_tc_tickets_query_args', [ $this, 'include_rsvp_tickets_by_id' ] );
 	}
 
 	/**
@@ -458,5 +460,23 @@ class Controller extends Controller_Contract {
 	 */
 	public function rsvp_are_tickets( bool $is_ticket, array $thing ): bool {
 		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE ? true : $is_ticket;
+	}
+
+	/**
+	 * Filter the arguments used to fetch Tickets Commerce tickets to remove the RSVP tickets
+	 * default exclusion if the request is for a specific ticket by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $query_args The arguments used to fetch tickets.
+	 *
+	 * @return array<string,mixed> The modified arguments.
+	 */
+	public function include_rsvp_tickets_by_id( array $query_args ): array {
+		if ( isset( $query_args['p'] ) ) {
+			unset( $query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] );
+		}
+
+		return $query_args;
 	}
 }
