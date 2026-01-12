@@ -1249,21 +1249,7 @@ class Tribe__Tickets__Tickets_View {
 				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 			}
 
-		/**
-		 * Filters the content for ticket templates within the tickets block.
-		 *
-		 * Allows customization of ticket rendering, including TC-RSVP tickets which
-		 * render with their own specialized UI.
-		 *
-		 * @since TBD
-		 *
-		 * @param string                             $content  The template content to be rendered.
-		 * @param Tribe__Tickets__Ticket_Object|null $rsvp     The rsvp object or null.
-		 * @param Tribe__Tickets__Editor__Template   $template The template object.
-		 * @param WP_Post                            $post     The post object.
-		 * @param bool                               $echo     Whether to echo the output.
-		 */
-		$rendered_content = apply_filters( 'tec_tickets_front_end_ticket_form_template_content', $before_content, $rsvp, $template, $post, $echo );
+			$rendered_content = $before_content;
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
