@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Repositories;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\RSVP\V2\Constants;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
 use TEC\Tickets\RSVP\V2\Constants;
