@@ -18,6 +18,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use Tribe__Tickets__Tickets as Tickets_Handler;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
+use Tribe__Repository__Interface as Repository_Interface;
+use WP_Query;
 
 /**
  * Class Controller
@@ -69,28 +71,28 @@ class Controller extends Controller_Contract {
 		add_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_rsvp_assets' ] );
+
 		add_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
-		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
-		add_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
-		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
-
-		add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
-
-		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_ticket_is_ticket' ], 10, 2 );
 
 		add_filter(
-			'tec_tickets_count_ticket_attendees_args',
-			[ $this, 'exclude_rsvp_tickets_from_attendee_count' ],
+			'tec_tickets_commerce_repository_ticket_query_args',
+			[ $this, 'exclude_rsvp_tickets_from_repository_queries' ],
 			10,
-			4
+			2
 		);
 
+		// Do not display the "Add RSVP" button in the Classic Editor metabox.
+		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
+		// Do not show RSVP tickets in the Classic Editor metabox.
+		add_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'do_not_show_rsvp_in_tickets_metabox' ] );
+
+		// TODO: review to move hooking to RSVP block.
+		add_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
+		add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
 		add_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ], 10, 2 );
 
 		// Add V2 RSVP configuration to the block editor.
 		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
-
-		add_filter( 'tec_tickets_editor_list_tickets', [ $this, 'exclude_rsvp_from_tickets_list' ], 10, 2 );
 	}
 
 	/**
@@ -104,26 +106,26 @@ class Controller extends Controller_Contract {
 		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		remove_action( 'wp_enqueue_scripts', [ $this, 'enqueue_rsvp_assets' ] );
+
 		remove_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
-		remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
-		remove_filter( 'tec_tickets_editor_list_ticket_types', [$this, 'do_not_list_rsvp_tickets'] );
-		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ] );
-
-		remove_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ] );
-
-		remove_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_ticket_is_ticket' ] );
 
 		remove_filter(
-			'tec_tickets_count_ticket_attendees_args',
-			[ $this, 'exclude_rsvp_tickets_from_attendee_count' ]
+			'tec_tickets_commerce_repository_ticket_query_args',
+			[ $this, 'exclude_rsvp_tickets_from_repository_queries' ]
 		);
 
+		// Do not display the "Add RSVP" button in the Classic Editor metabox.
+		remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
+		// Do not show RSVP tickets in the Classic Editor metabox.
+		remove_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'do_not_show_rsvp_in_tickets_metabox' ] );
 
+		// TODO: review to move hooking to RSVP block.
+		remove_filter( 'tec_tickets_front_end_ticket_form_template_content', [ $this, 'render_rsvp_template' ] );
+		remove_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ] );
 		remove_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ] );
 
+		// Add V2 RSVP configuration to the block editor.
 		remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
-
-		remove_filter( 'tec_tickets_editor_list_tickets', [ $this, 'exclude_rsvp_from_tickets_list' ] );
 	}
 
 	/**
@@ -210,8 +212,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return array<string,array<Ticket_Object>> The filtered ticket types and their tickets.
 	 */
-	public function do_not_list_rsvp_tickets( array $ticket_types ): array {
-		$ticket_types[ Constants::TC_RSVP_TYPE ] = [];
+	public function do_not_show_rsvp_in_tickets_metabox( array $ticket_types ): array {
+		$ticket_types[ 'rsvp' ] = [];
 
 		return $ticket_types;
 	}
@@ -348,63 +350,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Filters the method checking whether some thing is a ticket or not.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool                $is_ticket Whether the thing is a ticket or not.
-	 * @param array<string,mixed> $thing     The thing to check.
-	 *
-	 * @return bool
-	 */
-	public function rsvp_ticket_is_ticket( bool $is_ticket, array $thing ): bool {
-		if ( $is_ticket ) {
-			// Already identified as a ticket, nothing to do here.
-			return true;
-		}
-
-		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE;
-	}
-
-	/**
-	 * Filters the attendee count to exclude the RSVP tickets depending on the context of the count.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $args    {
-	 *      List of arguments to filter attendees by.
-	 *
-	 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
-	 *                               [[what,args...]] format.
-	 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
-	 * }
-	 * @param int   $event_id   The Event ID we're checking.
-	 * @param int   $user_id    An Optional User ID.
-	 * @param string $context    The Context of the call, used to filter the attendees count.
-	 *
-	 * @return array $args    {
-	 *      List of arguments to filter attendees by.
-	 *
-	 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
-	 *                               [[what,args...]] format.
-	 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
-	 * }
-	 */
-	public function exclude_rsvp_tickets_from_attendee_count( array $args, int $event_id, int $user_id, string $context ): array {
-		if ( ! in_array( $context, [
-			'get_description_rsvp_ticket',
-			'get_my_tickets_link_data',
-		], true ) ) {
-			return $args;
-		}
-
-		// Exclude Attendees that have the RSVP ticket type.
-		$args['by']['_type'] = [ '!=', Constants::TC_RSVP_TYPE ];
-
-		return $args;
-	}
-
-	/**
 	 * Prevents the rendering of some RSVP templates in the context of the RSVP v2 implementation.
 	 *
 	 * @since TBD
@@ -457,19 +402,45 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Excludes RSVP v2 tickets from the tickets list meta used by the Tickets block.
+	 * Filters the Tickets Commerce repository query args to exclude RSVP tickets from the list.
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object[] $tickets        The array of ticket objects.
-	 * @param int                             $unused_post_id The post ID.
+	 * @param Repository_Interface $repository The repository instance, unused.
+	 * @param array<string,mixed>  $query_args The query args to be used to fetch the tickets.
 	 *
-	 * @return Tribe__Tickets__Ticket_Object[] Filtered array with tc-rsvp tickets removed.
+	 * @return array<string,mixed> The modified query args.
 	 */
-	public function exclude_rsvp_from_tickets_list( array $tickets, int $unused_post_id ): array {
-		return array_filter(
-			$tickets,
-			static fn( $ticket ) => Constants::TC_RSVP_TYPE !== $ticket->type()
-		);
+	public function exclude_rsvp_tickets_from_repository_queries( Repository_Interface $repository, array $query_args ): array {
+		$query_args['meta_query'] = isset( $query_args['meta_query'] ) && is_array( $query_args['meta_query'] ) ?
+			$query_args['meta_query']
+			: [];
+		$context = $repository->get_request_context();
+
+		// Let's make sure the meta query is not being added twice.
+		foreach ( $query_args['meta_query'] as $meta_query ) {
+			if (
+				isset( $meta_query['key'], $meta_query['value'] )
+				&& $meta_query['key'] === '_type'
+				&& $meta_query['value'] === Constants::TC_RSVP_TYPE
+			) {
+				// The meta query has already been filtered to either exclude or include RSVP tickets, bail.
+				return $query_args;
+			}
+		}
+
+		if ( $context === 'front_end_tickets_form' ) {
+			// Include RSVP tickets from the list.
+			return $query_args;
+		}
+
+		// Exclude RSVP tickets from the list.
+		$query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] = [
+			'key'     => '_type',
+			'compare' => '!=',
+			'value'   => Constants::TC_RSVP_TYPE,
+		];
+
+		return $query_args;
 	}
 }
