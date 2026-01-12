@@ -92,6 +92,8 @@ class Controller extends Controller_Contract {
 
 		// Add V2 RSVP configuration to the block editor.
 		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
+
+		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ], 10, 2 );
 	}
 
 	/**
@@ -105,25 +107,18 @@ class Controller extends Controller_Contract {
 		remove_action( 'add_meta_boxes', [ $this, 'configure' ] );
 		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 		remove_action( 'wp_enqueue_scripts', [ $this, 'enqueue_rsvp_assets' ] );
-
 		remove_filter( 'tec_tickets_commerce_settings_top_level', [ $this, 'change_tickets_commerce_settings' ] );
-
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
 			[ $this, 'exclude_rsvp_tickets_from_repository_queries' ]
 		);
-
-		// Do not display the "Add RSVP" button in the Classic Editor metabox.
 		remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
-		// Do not show RSVP tickets in the Classic Editor metabox.
 		remove_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'do_not_show_rsvp_in_tickets_metabox' ] );
-
 		remove_filter( 'tec_tickets_front_end_rsvp_form_template_content', [ $this, 'render_rsvp_template' ] );
 		remove_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ] );
 		remove_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ] );
-
-		// Add V2 RSVP configuration to the block editor.
 		remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
+		remove_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ] );
 	}
 
 	/**
@@ -449,5 +444,19 @@ class Controller extends Controller_Contract {
 		];
 
 		return $query_args;
+	}
+
+	/**
+	 * Marks RSVP tickets as property tickets in the ticket detection logic in Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool  $is_ticket Whether the thing is a ticket.
+	 * @param array $thing     The thing to check.
+	 *
+	 * @return bool Whether the thing is a ticket.
+	 */
+	public function rsvp_are_tickets( bool $is_ticket, array $thing ): bool {
+		return isset( $thing['type'] ) && $thing['type'] === Constants::TC_RSVP_TYPE ? true : $is_ticket;
 	}
 }
