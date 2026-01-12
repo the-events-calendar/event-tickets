@@ -147,7 +147,7 @@ class Metabox {
 	 */
 	public function get_tc_rsvp_ticket( int $post_id ) {
 		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
-			->where( 'event_id', $post_id )
+			->where( 'event', $post_id )
 			->first_id();
 
 		if ( ! $ticket_id ) {
