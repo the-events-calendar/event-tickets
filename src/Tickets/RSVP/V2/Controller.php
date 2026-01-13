@@ -264,7 +264,7 @@ class Controller extends Controller_Contract {
 		);
 		add_filter(
 			'tribe_repository_tc_tickets_query_args',
-			$this->container->callback( Repository_Filters::class, 'include_rsvp_tickets_by_id' )
+			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
 		);
 
 		// REST.
