@@ -32,7 +32,7 @@ export const KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS = '_tribe_ticket_has_attendee_i
  */
 export const normalizeTitle = ( value ) => {
 	if ( value && typeof value === 'object' ) {
-		return value.raw || '';
+		return value.raw || value.rendered || '';
 	}
 	return value || '';
 };
@@ -51,7 +51,7 @@ export const normalizeTitle = ( value ) => {
  */
 export const normalizeDescription = ( value, excerpt = '' ) => {
 	if ( value && typeof value === 'object' ) {
-		return value.raw || '';
+		return value.raw || value.rendered || '';
 	}
 	return value || excerpt || '';
 };
