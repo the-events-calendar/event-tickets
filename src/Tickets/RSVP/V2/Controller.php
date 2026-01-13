@@ -2,7 +2,7 @@
 /**
  * V2 RSVP Controller - TC-based implementation.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -10,21 +10,12 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\RSVP\RSVP_Controller_Methods;
-use TEC\Tickets\Settings;
-use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use WP_Post;
-use Tribe__Tickets__Tickets as Tickets_Handler;
-use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
-use Tribe__Repository__Interface as Repository_Interface;
-use WP_Query;
 
 /**
  * Class Controller
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -242,22 +233,42 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
 		);
 
-		// Do not display the "Add RSVP" button in the Classic Editor metabox.
-		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'do_not_render_rsvp_form_toggle' ] );
-		// Do not show RSVP tickets in the Classic Editor metabox.
-		add_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'do_not_show_rsvp_in_tickets_metabox' ] );
+		// Frontend.
+		add_action( 'wp_enqueue_scripts', $this->container->callback( Frontend::class, 'enqueue_rsvp_assets' ) );
+		add_filter(
+			'tec_tickets_front_end_rsvp_form_template_content',
+			$this->container->callback( Frontend::class, 'render_rsvp_template' ),
+			10,
+			5
+		);
+		add_filter(
+			'tribe_template_done',
+			$this->container->callback( Frontend::class, 'prevent_template_render' ),
+			10,
+			2
+		);
+		// add_action( 'tribe_tickets_tickets_hook', $this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' ), 10, 2 );
 
-		add_filter( 'tec_tickets_front_end_rsvp_form_template_content', [ $this, 'render_rsvp_template' ], 10, 5 );
-		// add_action( 'tribe_tickets_tickets_hook', [ $this, 'do_not_display_rsvp_v1_tickets_form' ], 10, 2 );
-		add_filter( 'tribe_template_done', [ $this, 'prevent_template_render' ], 10, 2 );
+		// Repository.
+		add_filter(
+			'tec_tickets_commerce_repository_ticket_query_args',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_tickets_commerce_is_ticket',
+			$this->container->callback( Repository_Filters::class, 'rsvp_are_tickets' ),
+			10,
+			2
+		);
+		add_filter(
+			'tribe_repository_tc_tickets_query_args',
+			$this->container->callback( Repository_Filters::class, 'include_rsvp_tickets_by_id' )
+		);
 
-		// Add V2 RSVP configuration to the block editor.
-		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
-
-		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ], 10, 2 );
-		add_filter( 'tribe_repository_tc_tickets_query_args', [ $this, 'include_rsvp_tickets_by_id' ] );
-
-		add_filter( 'pre_render_block', [$this, 'enqueue_tickets_block_assets'], 10, 2 );
+		// REST.
+		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
 	}
 
 	/**

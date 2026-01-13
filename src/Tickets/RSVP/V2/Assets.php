@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on RSVP V2.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -14,13 +14,14 @@ use TEC\Tickets\RSVP\V2\REST\Order_Endpoint;
 use Tribe__Templates;
 use Tribe__Tickets__Main;
 use Tribe__Templates;
+use Tribe__Tickets__Main;
 
 /**
  * Class Assets.
  *
  * Registers RSVP V2 assets including CSS and JavaScript.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
