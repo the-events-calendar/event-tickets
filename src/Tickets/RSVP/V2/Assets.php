@@ -2,29 +2,28 @@
 /**
  * Handles registering and setup for assets on RSVP V2.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
 
 namespace TEC\Tickets\RSVP\V2;
 
-use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\RSVP\V2\REST\Order_Endpoint;
 use TEC\Tickets\RSVP\V2\REST\Ticket_Endpoint;
-use Tribe__Tickets__Main;
 use Tribe__Templates;
+use Tribe__Tickets__Main;
 
 /**
  * Class Assets.
  *
  * Registers RSVP V2 assets including CSS and JavaScript.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
-class Assets extends Service_Provider {
+class Assets {
 	/**
 	 * Binds and sets up implementations.
 	 *
@@ -123,7 +122,8 @@ class Assets extends Service_Provider {
 			]
 		);
 
-		tec_asset( $plugin,
+		tec_asset(
+			$plugin,
 			'tec-tickets-commerce-rsvp-style',
 			'rsvp.css',
 			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ]

@@ -11,6 +11,7 @@ namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
 use TEC\Tickets\Event;
+use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Main;
 use Tribe__Date_Utils;
 use Tribe__Tickets__Tickets;
@@ -68,7 +69,7 @@ class Metabox {
 	 *
 	 * @param string|null $post_type The post type to configure the metabox for.
 	 */
-	public function configure( $post_type = null ) {
+	public function add( $post_type = null ) {
 		if ( ! in_array( $post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
 			return;
 		}
@@ -95,7 +96,7 @@ class Metabox {
 	 *
 	 * @return string The rendered HTML template for the RSVP metabox.
 	 */
-	public function render( $post_id ) {
+	public function render( $post_id ): string {
 		$original_id = $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id;
 		$post_id     = Event::filter_event_id( $original_id, 'tickets-metabox-render' );
 
@@ -109,7 +110,7 @@ class Metabox {
 
 		$tc_rsvp = $this->get_tc_rsvp_ticket( $post->ID );
 
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		/** @var Admin_Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = get_defined_vars();
@@ -145,7 +146,7 @@ class Metabox {
 	 *
 	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
 	 */
-	public function get_tc_rsvp_ticket( int $post_id ) {
+	public function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
 		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
 			->where( 'event', $post_id )
 			->first_id();
