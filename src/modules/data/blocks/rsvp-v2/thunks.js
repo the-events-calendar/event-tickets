@@ -235,7 +235,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 	try {
 		// GET /tec/v1/tickets?event={postId}
 		const tickets = await apiFetch( {
-			path: `${ config.ticketsEndpoint }?event=${ postId }`,
+			path: `${ config.ticketsEndpoint }?event=${ postId }&type=${config.ticketType}`,
 			method: 'GET',
 			headers: TEC_EEA_HEADER,
 		} );

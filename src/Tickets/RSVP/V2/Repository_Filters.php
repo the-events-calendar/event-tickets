@@ -80,7 +80,7 @@ class Repository_Filters {
 
 	/**
 	 * Filter the arguments used to fetch Tickets Commerce tickets to remove the RSVP tickets
-	 * default exclusion if the request is for a specific ticket by ID.
+	 * default exclusion if the request is for a specific ticket by ID or for the RSVP type.
 	 *
 	 * @since TBD
 	 *
@@ -88,9 +88,31 @@ class Repository_Filters {
 	 *
 	 * @return array<string,mixed> The modified arguments.
 	 */
-	public function include_rsvp_tickets_by_id( array $query_args ): array {
+	public function maybe_include_rsvp_tickets( array $query_args ): array {
 		if ( isset( $query_args['p'] ) ) {
+			// The query is for a specific ticket ID, include RSVP.
 			unset( $query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] );
+
+			return $query_args;
+		}
+
+		if ( isset( $query_args['meta_query'] ) && is_array( $query_args['meta_query'] ) ) {
+			// The query is for the RSVP ticket type: include it.
+			foreach ( $query_args['meta_query'] as $key => $meta_query ) {
+				if ( Constants::TYPE_META_QUERY_KEY === $key ) {
+					continue;
+				}
+
+				if (
+					isset( $meta_query['key'], $meta_query['value'] )
+					&& '_type' === $meta_query['key']
+					&& Constants::TC_RSVP_TYPE === $meta_query['value']
+				) {
+					unset( $query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] );
+
+					return $query_args;
+				}
+			}
 		}
 
 		return $query_args;
