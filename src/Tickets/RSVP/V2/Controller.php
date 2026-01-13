@@ -95,6 +95,8 @@ class Controller extends Controller_Contract {
 
 		add_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ], 10, 2 );
 		add_filter( 'tribe_repository_tc_tickets_query_args', [ $this, 'include_rsvp_tickets_by_id' ] );
+
+		add_filter( 'pre_render_block', [$this, 'enqueue_tickets_block_assets'], 10, 2 );
 	}
 
 	/**
@@ -121,6 +123,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_v2_editor_config' ] );
 		remove_filter( 'tec_tickets_commerce_is_ticket', [ $this, 'rsvp_are_tickets' ] );
 		remove_filter( 'tribe_repository_tc_tickets_query_args', [ $this, 'include_rsvp_tickets_by_id' ] );
+		remove_filter( 'pre_render_block', [$this, 'enqueue_tickets_block_assets'] );
 	}
 
 	/**
@@ -478,5 +481,26 @@ class Controller extends Controller_Contract {
 		}
 
 		return $query_args;
+	}
+
+	/**
+	 * Use the pre-render block filter as an action to ensure that Tickets' block assets
+	 * are enqueued.
+	 * The Tickets' block assets need to be enqueued before the block renders to ensure the
+	 * scripts queued with it will not be dequeued by the block rendering process.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null         $pre_render   The pre-rendered content. Default null.
+	 * @param array<string,mixed> $parsed_block The parsed block data.
+	 *
+	 * @return string|null Always the input value.
+	 */
+	public function enqueue_tickets_block_assets( $pre_render, $parsed_block ) {
+		if ( isset( $parsed_block['blockName'] ) && $parsed_block['blockName'] === 'tribe/tickets' ) {
+			tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
+		}
+
+		return $pre_render;
 	}
 }
