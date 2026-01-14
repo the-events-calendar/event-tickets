@@ -111,13 +111,13 @@ class Tickets_Repository extends Tribe__Repository {
 		 *
 		 * @since TBD
 		 *
-		 * @param Tribe__Repository   $this This repository instance.
 		 * @param array<string,mixed> $args The query args for the tickets repository.
+		 * @param Tribe__Repository   $this This repository instance.
 		 */
 		$this->query_args = apply_filters(
 			'tec_tickets_commerce_repository_ticket_query_args',
-			$this,
-			$this->query_args
+			$this->query_args,
+			$this
 		);
 
 		/**
