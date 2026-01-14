@@ -106,7 +106,6 @@ class Controller extends Controller_Contract {
 			10,
 			2
 		);
-		// add_action( 'tribe_tickets_tickets_hook', $this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' ), 10, 2 );
 
 		// Repository.
 		add_filter(
@@ -168,7 +167,6 @@ class Controller extends Controller_Contract {
 			'tribe_template_done',
 			$this->container->callback( Frontend::class, 'prevent_template_render' )
 		);
-		// remove_action( 'tribe_tickets_tickets_hook', $this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' ) );
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
 			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' )

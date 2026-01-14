@@ -26,12 +26,12 @@ class Repository_Filters {
 	 *
 	 * @since TBD
 	 *
+	 * @param array<string,mixed> $query_args The query args to be used to fetch the tickets.
 	 * @param Repository_Interface $repository The repository instance, unused.
-	 * @param array<string,mixed>  $query_args The query args to be used to fetch the tickets.
 	 *
 	 * @return array<string,mixed> The modified query args.
 	 */
-	public function exclude_rsvp_tickets_from_repository_queries( Repository_Interface $repository, array $query_args ): array {
+	public function exclude_rsvp_tickets_from_repository_queries( array $query_args, Repository_Interface $repository ): array {
 		$query_args['meta_query'] = isset( $query_args['meta_query'] ) && is_array( $query_args['meta_query'] ) ?
 			$query_args['meta_query']
 			: [];
@@ -47,11 +47,6 @@ class Repository_Filters {
 				// The meta query has already been filtered to either exclude or include RSVP tickets, bail.
 				return $query_args;
 			}
-		}
-
-		if ( $context === 'front_end_tickets_form' ) {
-			// Include RSVP tickets from the list.
-			return $query_args;
 		}
 
 		// Exclude RSVP tickets from the list.

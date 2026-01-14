@@ -355,9 +355,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @param WP_REST_Request $request   The REST API request object.
 	 * @param null|string     $step      Which step to render.
 	 *
-	 * @return string The step template HTML.
+	 * @return string|array<string,mixed> The step template HTML or an array with errors.
 	 */
-	public function render_rsvp_step( $ticket_id, $request, $step = null ): string {
+	public function render_rsvp_step( $ticket_id, $request, $step = null ) {
 		if ( 0 === $ticket_id ) {
 			return '';
 		}

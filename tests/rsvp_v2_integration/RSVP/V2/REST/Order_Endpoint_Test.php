@@ -561,6 +561,6 @@ class Order_Endpoint_Test extends WPTestCase {
 		$data     = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEmpty( $data['html'] );
+		$this->assertStringContainsString( 'Something happened here.', $data['html'] );
 	}
 }

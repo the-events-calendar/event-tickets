@@ -29,7 +29,8 @@ class Block_Editor {
 	 * @return array<string,mixed> The modified editor configuration.
 	 */
 	public function add_rsvp_v2_editor_config( array $config ): array {
-		$config['tickets']           = $config['tickets'] ?? [];
+		$config['tickets'] = $config['tickets'] ?? [];
+
 		$config['tickets']['rsvpV2'] = [
 			'enabled'         => true,
 			'ticketsEndpoint' => '/tec/v1/tickets',
