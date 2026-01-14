@@ -247,7 +247,6 @@ class Controller extends Controller_Contract {
 			10,
 			2
 		);
-		// add_action( 'tribe_tickets_tickets_hook', $this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' ), 10, 2 );
 
 		// Repository.
 		add_filter(
