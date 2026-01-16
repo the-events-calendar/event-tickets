@@ -101,8 +101,6 @@ tec_tickets_tests_global_rest_route_registration_listener();
 
 // In the context of the RSVP v2 suite testing, activate the RSVP v2 feature.
 Suite_Env::module_init( 'rsvp_v2_integration', static function (): void {
-	// Ensure that Tickets Commerce is enabled.
-	Filters::add_pre_initialized_filter( 'tec_tickets_commerce_is_enabled', fn() => true );
-	// Set the RSVP version to use to v2.
-	Filters::add_pre_initialized_filter( 'tec_tickets_rsvp_version', fn() => RSVP_Controller::VERSION_2, 0 );
+	// Set the RSVP version to use to v2, the feature will activate Tickets Commerce by default.
+	Filters::add_pre_initialized_filter( 'tec_tickets_rsvp_version', static fn() => RSVP_Controller::VERSION_2, 0 );
 } );

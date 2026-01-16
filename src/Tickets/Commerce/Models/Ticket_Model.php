@@ -50,7 +50,10 @@ class Ticket_Model extends Base {
 			$sale_price = $sale_price && $sale_price instanceof Value ? $sale_price->get_string() : $sale_price;
 			$sale_price = $sale_price ? (float) $sale_price : null;
 
+			$type = get_post_meta( $ticket_object->ID, Ticket::$type_meta_key, true );
+
 			$properties = [
+				'type'                  => $type ?: 'default',
 				'description'           => $ticket_object->description,
 				'on_sale'               => $ticket_object->on_sale,
 				'sale_price'            => $sale_price ? (float) $sale_price : null,
@@ -83,6 +86,7 @@ class Ticket_Model extends Base {
 	 */
 	public static function get_properties_to_add(): array {
 		$properties = [
+			'type'                  => true,
 			'description'           => true,
 			'on_sale'               => true,
 			'sale_price'            => true,

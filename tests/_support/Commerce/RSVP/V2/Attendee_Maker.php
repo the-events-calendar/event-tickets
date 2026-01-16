@@ -1,32 +1,13 @@
 <?php
-/**
- * Trait for creating TC-RSVP attendees in tests.
- *
- * @since TBD
- *
- * @package Tribe\Tickets\Test\RSVP_V2
- */
 
-namespace Tribe\Tickets\Test\RSVP_V2;
+namespace TEC\Tickets\Tests\Commerce\RSVP\V2;
 
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\RSVP\V2\Repositories\Attendee_Repository;
 
-/**
- * Trait TC_RSVP_Attendee_Maker
- *
- * Provides methods to create TC-RSVP attendees for testing.
- * TC-RSVP attendees are Tickets Commerce attendees with RSVP status meta.
- *
- * @since TBD
- *
- * @package Tribe\Tickets\Test\RSVP_V2
- */
-trait TC_RSVP_Attendee_Maker {
+trait Attendee_Maker {
 	/**
 	 * Counter for generating unique attendee titles.
-	 *
-	 * @since TBD
 	 *
 	 * @var int
 	 */
@@ -34,8 +15,6 @@ trait TC_RSVP_Attendee_Maker {
 
 	/**
 	 * Creates a TC-RSVP attendee for a ticket.
-	 *
-	 * @since TBD
 	 *
 	 * @param int   $ticket_id The ticket ID.
 	 * @param int   $event_id  The event/post ID.
@@ -45,8 +24,8 @@ trait TC_RSVP_Attendee_Maker {
 	 */
 	protected function create_tc_rsvp_attendee( int $ticket_id, int $event_id, array $overrides = [] ): int {
 		$rsvp_status = $overrides['rsvp_status'] ?? 'yes';
-		$full_name   = $overrides['full_name'] ?? 'Test Attendee ' . self::$tc_rsvp_attendee_counter;
-		$email       = $overrides['email'] ?? 'attendee' . self::$tc_rsvp_attendee_counter . '@test.com';
+		$full_name   = $overrides['full_name'] ?? ('Test Attendee ' . self::$tc_rsvp_attendee_counter);
+		$email       = $overrides['email'] ?? ('attendee' . self::$tc_rsvp_attendee_counter . '@test.com');
 
 		$meta_input = [
 			Attendee::$event_relation_meta_key  => $event_id,
@@ -64,7 +43,7 @@ trait TC_RSVP_Attendee_Maker {
 			$meta_input = array_merge( $meta_input, $overrides['meta_input'] );
 		}
 
-		$post_title = $overrides['post_title'] ?? 'TC-RSVP Attendee ' . self::$tc_rsvp_attendee_counter;
+		$post_title = $overrides['post_title'] ?? ('TC-RSVP Attendee ' . self::$tc_rsvp_attendee_counter);
 
 		$attendee_id = wp_insert_post( [
 			'post_type'   => Attendee::POSTTYPE,
@@ -80,8 +59,6 @@ trait TC_RSVP_Attendee_Maker {
 
 	/**
 	 * Creates multiple TC-RSVP attendees for a ticket.
-	 *
-	 * @since TBD
 	 *
 	 * @param int   $count     The number of attendees to create.
 	 * @param int   $ticket_id The ticket ID.
@@ -103,8 +80,6 @@ trait TC_RSVP_Attendee_Maker {
 	/**
 	 * Creates TC-RSVP attendees with "going" status.
 	 *
-	 * @since TBD
-	 *
 	 * @param int   $count     The number of attendees to create.
 	 * @param int   $ticket_id The ticket ID.
 	 * @param int   $event_id  The event/post ID.
@@ -120,8 +95,6 @@ trait TC_RSVP_Attendee_Maker {
 
 	/**
 	 * Creates TC-RSVP attendees with "not going" status.
-	 *
-	 * @since TBD
 	 *
 	 * @param int   $count     The number of attendees to create.
 	 * @param int   $ticket_id The ticket ID.

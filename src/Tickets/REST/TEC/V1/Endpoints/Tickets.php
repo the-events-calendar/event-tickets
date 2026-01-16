@@ -271,6 +271,11 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			false,
 		);
 
+		$collection[] = new Text(
+			'type',
+			fn() => __( 'Limit result set to tickets of a specific type.', 'event-tickets' ),
+		);
+
 		return $collection;
 	}
 

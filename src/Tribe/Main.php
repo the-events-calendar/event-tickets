@@ -532,6 +532,14 @@ class Tribe__Tickets__Main {
 		// Initialize the Service Provider for Tickets.
 		tribe_register_provider( Tribe__Tickets__Service_Provider::class );
 
+		/*
+		 * The RSVP v2 feature requires Tickets Commerce to be active.
+		 * This early call, before the Tickets Commerce provider is registered, allows
+		 * the feature to try and activate Tickets Commerce if required by the RSVP version
+		 * used.
+		 */
+		TEC\Tickets\RSVP\Controller::maybe_activate_tickets_commerce();
+
 		// Tickets Commerce providers.
 		tribe_register_provider( TEC\Tickets\Provider::class );
 

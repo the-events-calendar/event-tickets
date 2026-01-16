@@ -1299,14 +1299,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_filter( 'the_content', [ $this, 'front_end_tickets_form_in_content' ], 11 );
 			add_filter( 'the_content', [ $this, 'show_tickets_unavailable_message_in_content' ], 12 );
+
 			/**
 			 * Trigger an action every time a new ticket instance has been created
 			 *
 			 * @since 4.9
+			 * @since TBD Added the `$ticket_form_hook` parameter.
 			 *
-			 * @param Tribe__Tickets__Tickets $ticket_handler
+			 * @param Tribe__Tickets__Tickets $ticket_handler The ticket handler instance.
+			 * @param string $ticket_form_hook The ticket form hook.
 			 */
-			do_action( 'tribe_tickets_tickets_hook', $this );
+			do_action( 'tribe_tickets_tickets_hook', $this, $ticket_form_hook );
 		}
 
 		/**

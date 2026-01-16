@@ -350,6 +350,16 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
+		/**
+		 * Filters the tickets that will be included in the tickets list meta for the Block Editor.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object[] $tickets The array of ticket objects.
+		 * @param int                             $post_id The post ID.
+		 */
+		$tickets = apply_filters( 'tec_tickets_editor_list_tickets', $tickets, $post_id );
+
 		$list_of_tickets = [];
 
 		foreach ( $tickets as $ticket ) {
