@@ -133,7 +133,6 @@ class Integration extends Integration_Abstract {
 			'_tribe_wooticket_for_event',
 		];
 
-		// Register services in the container for proper DI.
 		// The container will automatically inject Wpml_Adapter into constructors.
 		$this->container->singleton( Relationship_Meta_Translator::class );
 		$this->container->when( Relationship_Meta_Translator::class )
@@ -144,7 +143,7 @@ class Integration extends Integration_Abstract {
 		$this->container->singleton( Attendee_Aggregator::class );
 		$this->container->singleton( Ticket_Language_Assigner::class );
 
-		// Meta keys that are updated AFTER wp_update_post() (line 615 in Ticket.php).
+		// Meta keys that are updated AFTER wp_update_post() (in Ticket.php).
 		// These need our updated_postmeta hook because WPML syncs during after_save_post
 		// which fires before these meta updates complete.
 		$late_sync_meta_keys = [
@@ -168,11 +167,11 @@ class Integration extends Integration_Abstract {
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 		if ( isset( $tickets_handler->key_capacity ) ) {
-			$late_sync_meta_keys[] = $tickets_handler->key_capacity; // Line 799
+			$late_sync_meta_keys[] = $tickets_handler->key_capacity;
 		}
 
 		// Add global stock mode key.
-		$late_sync_meta_keys[] = \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE; // Line 767
+		$late_sync_meta_keys[] = \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE;
 
 		// Register Meta_Sync service with only late-write keys.
 		$this->container->singleton( Meta_Sync::class );
