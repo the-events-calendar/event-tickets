@@ -178,6 +178,10 @@ class Integration extends Integration_Abstract {
 		$this->container->singleton( Checkout_Cart_Fix::class );
 		$this->container->get( Checkout_Cart_Fix::class )->register();
 
+		// Register string registrar to ensure translatable strings are registered with WPML.
+		$this->container->singleton( String_Registrar::class );
+		$this->container->get( String_Registrar::class )->register();
+
 		// Register hooks for each service.
 		$this->container->get( Relationship_Meta_Translator::class )->register();
 		$this->container->get( Special_Page_Translator::class )->register();

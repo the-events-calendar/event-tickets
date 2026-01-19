@@ -1,0 +1,29 @@
+<wpml-config>
+  <custom-types>
+    <custom-type translate="1">tec_tc_ticket</custom-type>
+    <custom-type translate="1">tribe_rsvp_tickets</custom-type>
+  </custom-types>
+  <custom-fields>
+    <custom-field action="copy">_tec_tickets_commerce_event</custom-field>
+    <custom-field action="copy">_tribe_rsvp_event</custom-field>
+    <custom-field action="copy">_tribe_wooticket_for_event</custom-field>
+    <custom-field action="copy">_tribe_ticket_show_description</custom-field>
+    <custom-field action="copy">_tribe_ticket_version</custom-field>
+    <custom-field action="copy">_ticket_start_date</custom-field>
+    <custom-field action="copy">_ticket_start_time</custom-field>
+    <custom-field action="copy">_ticket_end_date</custom-field>
+    <custom-field action="copy">_ticket_end_time</custom-field>
+    <custom-field action="copy">_tribe_ticket_manual_updated</custom-field>
+    <custom-field action="copy">_global_stock_mode</custom-field>
+    <custom-field action="copy">_manage_stock</custom-field>
+    <custom-field action="copy">_stock</custom-field>
+    <custom-field action="copy">_sku</custom-field>
+    <custom-field action="copy">_stock_status</custom-field>
+    <custom-field action="copy">_price</custom-field>
+    <custom-field action="copy">_tribe_ticket_capacity</custom-field>
+    <custom-field action="copy">_backorders</custom-field>
+    <custom-field action="copy">_tribe_tickets_ar_iac</custom-field>
+    <custom-field action="copy">_type</custom-field>
+  </custom-fields>
+</wpml-config>
+
