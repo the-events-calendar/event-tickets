@@ -22,7 +22,6 @@ use TEC\Tickets\Integrations\Plugins\WPML\Tickets\Attendee_Aggregator;
  * Class Integration
  *
  * Main integration entry point for WPML support in Event Tickets.
- * Handles service registration and lifecycle management.
  *
  * @since TBD
  */
@@ -50,7 +49,7 @@ class Integration extends Integration_Abstract {
 	}
 
 	/**
-	 * Check if WPML is available and properly configured.
+	 * Check if WPML is available.
 	 *
 	 * @since TBD
 	 *
@@ -65,12 +64,8 @@ class Integration extends Integration_Abstract {
 			return false;
 		}
 
+		// Proxy check that WPML's translation APIs are loaded.
 		if ( ! has_filter( 'wpml_object_id' ) ) {
-			return false;
-		}
-
-		// Meta_Sync relies on wpml_sync_custom_field action.
-		if ( ! has_action( 'wpml_sync_custom_field' ) ) {
 			return false;
 		}
 
@@ -93,8 +88,6 @@ class Integration extends Integration_Abstract {
 	/**
 	 * Loads the integration.
 	 *
-	 * This is the primary hook-in point required by the Common integration system.
-	 *
 	 * @since TBD
 	 *
 	 * @return void
@@ -105,8 +98,6 @@ class Integration extends Integration_Abstract {
 
 	/**
 	 * Loads conditionals for the integration.
-	 *
-	 * Keep this minimal: if some hooks should only load in admin or frontend, add them here.
 	 *
 	 * @since TBD
 	 *
@@ -124,7 +115,6 @@ class Integration extends Integration_Abstract {
 	 * @return void
 	 */
 	private function register_services(): void {
-		// Register WPML adapter first as a singleton so other services can depend on it.
 		$this->container->singleton( Wpml_Adapter::class );
 
 		$relationship_meta_keys = [
@@ -133,19 +123,15 @@ class Integration extends Integration_Abstract {
 			'_tribe_wooticket_for_event',
 		];
 
-		// The container will automatically inject Wpml_Adapter into constructors.
-		$this->container->singleton( Relationship_Meta_Translator::class );
 		$this->container->when( Relationship_Meta_Translator::class )
 			->needs( '$meta_keys' )
 			->give( $relationship_meta_keys );
+		$this->container->singleton( Relationship_Meta_Translator::class );
 
 		$this->container->singleton( Special_Page_Translator::class );
 		$this->container->singleton( Attendee_Aggregator::class );
 		$this->container->singleton( Ticket_Language_Assigner::class );
 
-		// Meta keys that are updated AFTER wp_update_post() (in Ticket.php).
-		// These need our updated_postmeta hook because WPML syncs during after_save_post
-		// which fires before these meta updates complete.
 		$late_sync_meta_keys = [
 			'_price',
 			'_sku',
@@ -163,31 +149,32 @@ class Integration extends Integration_Abstract {
 			'_sale_price_end_date',
 		];
 
-		// Add capacity key dynamically (stored in Tickets_Handler).
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 		if ( isset( $tickets_handler->key_capacity ) ) {
 			$late_sync_meta_keys[] = $tickets_handler->key_capacity;
 		}
 
-		// Add global stock mode key.
 		$late_sync_meta_keys[] = \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE;
 
-		// Register Meta_Sync service with only late-write keys.
-		$this->container->singleton( Meta_Sync::class );
 		$this->container->when( Meta_Sync::class )
 			->needs( '$meta_keys' )
 			->give( $late_sync_meta_keys );
+		$this->container->singleton( Meta_Sync::class );
 
-		// Register checkout cart fix to handle language context issues.
 		$this->container->singleton( Checkout_Cart_Fix::class );
-		$this->container->get( Checkout_Cart_Fix::class )->register();
 
-		// Register hooks for each service.
-		$this->container->get( Relationship_Meta_Translator::class )->register();
-		$this->container->get( Special_Page_Translator::class )->register();
-		$this->container->get( Attendee_Aggregator::class )->register();
-		$this->container->get( Ticket_Language_Assigner::class )->register();
-		$this->container->get( Meta_Sync::class )->register();
+		$services = [
+			Checkout_Cart_Fix::class,
+			Relationship_Meta_Translator::class,
+			Special_Page_Translator::class,
+			Attendee_Aggregator::class,
+			Ticket_Language_Assigner::class,
+			Meta_Sync::class,
+		];
+
+		foreach ( $services as $service ) {
+			$this->container->get( $service )->register();
+		}
 	}
 }
