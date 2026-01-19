@@ -9,8 +9,6 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
-use TEC\Common\lucatume\DI52\Container;
-use TEC\Tickets\Settings;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**

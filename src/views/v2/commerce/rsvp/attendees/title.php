@@ -25,9 +25,10 @@ if ( empty( $attendees ) ) {
 ?>
 <h4 class="tribe-common-h4 tribe-common-h6--min-medium">
 	<?php
-	echo sprintf(
+	printf(
 		// Translators: %s is the plural label for RSVPs.
 		esc_html__( 'Your %s', 'event-tickets' ),
-		tribe_get_rsvp_label_plural( 'rsvp_success_page_your_tickets' )
-	); ?>
+		esc_html( tribe_get_rsvp_label_plural( 'rsvp_success_page_your_tickets' ) )
+	);
+	?>
 </h4>

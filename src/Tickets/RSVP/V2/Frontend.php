@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
-use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
@@ -58,7 +57,7 @@ class Frontend {
 	 * @param array<string,mixed>     $args     The RSVP block arguments.
 	 * @param Tickets_Editor_Template $template The template object.
 	 * @param WP_Post                 $post     The post object.
-	 * @param bool                    $echo     Whether to echo the output.
+	 * @param bool                    $should_echo Whether to echo the output.
 	 *
 	 * @return string The modified HTML or original if not TC-RSVP.
 	 */
@@ -67,7 +66,7 @@ class Frontend {
 		array $args,
 		Tickets_Editor_Template $template,
 		WP_Post $post,
-		bool $echo
+		bool $should_echo
 	): string {
 		$active_rsvps = $args['active_rsvps'] ?? [];
 
@@ -94,7 +93,7 @@ class Frontend {
 			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
-		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
+		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $should_echo );
 
 		return $content;
 	}

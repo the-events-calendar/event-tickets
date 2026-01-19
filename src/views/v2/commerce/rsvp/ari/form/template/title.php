@@ -14,6 +14,6 @@
 <header>
 	<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
 		<?php /* Translators: 1 the guest number. */ ?>
-		<?php echo sprintf( esc_html_x( 'Guest %1$s', 'RSVP attendee registration form title', 'event-tickets' ), '{{data.attendee_id + 1}}' ); ?>
+		<?php printf( esc_html_x( 'Guest %1$s', 'RSVP attendee registration form title', 'event-tickets' ), '{{data.attendee_id + 1}}' ); ?>
 	</h3>
 </header>

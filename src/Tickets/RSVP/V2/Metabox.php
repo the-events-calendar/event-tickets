@@ -14,7 +14,6 @@ use TEC\Tickets\Event;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Main;
 use Tribe__Date_Utils;
-use Tribe__Tickets__Tickets;
 use WP_Post;
 use Tribe__Tickets__Ticket_Object;
 
@@ -103,8 +102,8 @@ class Metabox {
 		$post = get_post( $post_id );
 
 		// Prepare all the variables required.
-		$start_date = date( 'Y-m-d H:00:00' );
-		$end_date   = date( 'Y-m-d H:00:00' );
+		$start_date = wp_date( 'Y-m-d H:00:00' );
+		$end_date   = wp_date( 'Y-m-d H:00:00' );
 		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
 		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
 

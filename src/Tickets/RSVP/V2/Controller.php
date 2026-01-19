@@ -2,7 +2,7 @@
 /**
  * V2 RSVP Controller - TC-based implementation.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\RSVP\RSVP_Controller_Methods;
 /**
  * Class Controller
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */

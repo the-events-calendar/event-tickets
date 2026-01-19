@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on RSVP V2.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -19,7 +19,7 @@ use Tribe__Tickets__Main;
  *
  * Registers RSVP V2 assets including CSS and JavaScript.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */

@@ -26,12 +26,13 @@ class Repository_Filters {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $query_args The query args to be used to fetch the tickets.
+	 * @param array<string,mixed>  $query_args The query args to be used to fetch the tickets.
 	 * @param Repository_Interface $repository The repository instance, unused.
 	 *
 	 * @return array<string,mixed> The modified query args.
 	 */
 	public function exclude_rsvp_tickets_from_repository_queries( array $query_args, Repository_Interface $repository ): array {
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		$query_args['meta_query'] = isset( $query_args['meta_query'] ) && is_array( $query_args['meta_query'] ) ?
 			$query_args['meta_query']
 			: [];
