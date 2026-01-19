@@ -10,7 +10,7 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
-* @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since 4.12.3
  * @version 4.12.3
