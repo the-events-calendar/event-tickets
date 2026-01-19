@@ -23,6 +23,9 @@
 wp_enqueue_style( 'event-tickets-rsvp' );
 tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
+tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+tribe_asset_enqueue( 'tribe-tickets-forms-style' );
+tribe_asset_enqueue( 'tribe-common-responsive' );
 
 // Bail if there are no RSVP.
 if ( empty( $rsvp ) ) {
