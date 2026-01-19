@@ -10,6 +10,13 @@
 namespace TEC\Tickets\Integrations\Plugins\WPML;
 
 use TEC\Tickets\Integrations\Integration_Abstract;
+use TEC\Tickets\Integrations\Plugins\WPML\Core\Wpml_Adapter;
+use TEC\Tickets\Integrations\Plugins\WPML\Pages\Special_Page_Translator;
+use TEC\Tickets\Integrations\Plugins\WPML\Meta\Meta_Sync;
+use TEC\Tickets\Integrations\Plugins\WPML\Meta\Relationship_Meta_Translator;
+use TEC\Tickets\Integrations\Plugins\WPML\Cart\Checkout_Cart_Fix;
+use TEC\Tickets\Integrations\Plugins\WPML\Tickets\Ticket_Language_Assigner;
+use TEC\Tickets\Integrations\Plugins\WPML\Tickets\Attendee_Aggregator;
 
 /**
  * Class Integration
@@ -141,21 +148,20 @@ class Integration extends Integration_Abstract {
 		// These need our updated_postmeta hook because WPML syncs during after_save_post
 		// which fires before these meta updates complete.
 		$late_sync_meta_keys = [
-			'_price',                                    // Line 636
-			'_sku',                                      // Line 667
-			'_tribe_ticket_show_description',            // Line 627
-			'_ticket_start_date',                        // Line 644
-			'_ticket_start_time',                        // Line 644
-			'_ticket_end_date',                          // Line 644
-			'_ticket_end_time',                          // Line 644
-			'_stock',                                    // Line 768
-			'_stock_status',                             // Line 769
-			'_backorders',                               // Line 770
-			'_manage_stock',                             // Line 771
-			'_sale_price_checked',                       // Line 1179
-			'_sale_price',                               // Line 1194
-			'_sale_price_start_date',                    // Line 1213
-			'_sale_price_end_date',                      // Line 1219
+			'_price',
+			'_sku',
+			'_tribe_ticket_show_description',
+			'_ticket_start_date',
+			'_ticket_start_time',
+			'_ticket_end_date',
+			'_ticket_end_time',
+			'_stock',
+			'_stock_status',
+			'_backorders',
+			'_manage_stock',
+			'_sale_price_checked',
+			'_sale_price_start_date',
+			'_sale_price_end_date',
 		];
 
 		// Add capacity key dynamically (stored in Tickets_Handler).
@@ -177,10 +183,6 @@ class Integration extends Integration_Abstract {
 		// Register checkout cart fix to handle language context issues.
 		$this->container->singleton( Checkout_Cart_Fix::class );
 		$this->container->get( Checkout_Cart_Fix::class )->register();
-
-		// Register string registrar to ensure translatable strings are registered with WPML.
-		$this->container->singleton( String_Registrar::class );
-		$this->container->get( String_Registrar::class )->register();
 
 		// Register hooks for each service.
 		$this->container->get( Relationship_Meta_Translator::class )->register();
