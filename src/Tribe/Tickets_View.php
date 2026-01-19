@@ -1403,13 +1403,6 @@ class Tribe__Tickets__Tickets_View {
 
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
-			// Enqueue new assets.
-			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
-			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
-			// @todo: Remove this once we solve the common breakpoints vs container based.
-			tribe_asset_enqueue( 'tribe-common-responsive' );
-
 			/**
 			 * Filters the content for RSVP templates within the RSVP block.
 			 *
@@ -1424,12 +1417,26 @@ class Tribe__Tickets__Tickets_View {
 			 * @param WP_Post                          $post     The post object.
 			 * @param bool                             $echo     Whether to echo the output.
 			 */
-			$rendered_content = apply_filters( 'tec_tickets_front_end_rsvp_form_template_content', $before_content, $args, $template, $post, $echo );
+			$rendered_content = apply_filters(
+				'tec_tickets_front_end_rsvp_form_template_content',
+				$before_content,
+				$args,
+				$template,
+				$post,
+				$echo
+			);
 
-			// If the filter returned content, use it. Otherwise, render the default template.
+			// If the filter returned content, use it (V2 RSVP enqueues its own assets).
 			if ( $rendered_content !== $before_content ) {
 				return $rendered_content;
 			}
+
+			// Enqueue legacy RSVP assets only if the render was not overridden.
+			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
+			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
+			// @todo: Remove this once we solve the common breakpoints vs container based.
+			tribe_asset_enqueue( 'tribe-common-responsive' );
 
 			return $before_content . $template->template( 'v2/rsvp', $args, $echo );
 		}
