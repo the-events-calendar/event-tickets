@@ -129,8 +129,8 @@
 				$this->template(
 					[ 'components', 'switch-field' ],
 					[
-						'id'          => 'tec_tickets_rsvp_enable_cannot_go',
-						'name'        => 'tec_tickets_rsvp_enable_cannot_go',
+						'id'          => 'ticket_rsvp_enable_cannot_go',
+						'name'        => 'ticket_rsvp_enable_cannot_go',
 						'label'       => esc_html_x( 'Enable "Can\'t go" responses', 'Label for toggle switch to enable negative RSVP responses in admin panel.', 'event-tickets' ),
 						'description' => '',
 						'tooltip'     => '',

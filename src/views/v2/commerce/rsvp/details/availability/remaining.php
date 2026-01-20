@@ -18,8 +18,8 @@
  * @version 4.12.3
  */
 
-$remaining_tickets = $rsvp->remaining();
 
+$remaining_tickets = $rsvp->remaining();
 if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;
 }

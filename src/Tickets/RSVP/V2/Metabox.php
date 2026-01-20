@@ -28,39 +28,6 @@ use Tribe__Tickets__Ticket_Object;
  * @package TEC\Tickets\RSVP\V2
  */
 class Metabox {
-
-	/**
-	 * Get the ticket type for RSVP metabox.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The RSVP ticket type.
-	 */
-	public function get_type(): string {
-		return Constants::TC_RSVP_TYPE;
-	}
-
-	/**
-	 * Check if the metabox should be rendered for a specific post.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The post ID.
-	 *
-	 * @return bool True if the metabox should be rendered.
-	 */
-	public function should_render( int $post_id ): bool {
-		/**
-		 * Filters whether the RSVP V2 metabox should be rendered.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $should_render Whether to render the metabox.
-		 * @param int  $post_id       The post ID.
-		 */
-		return (bool) apply_filters( 'tec_tickets_rsvp_v2_metabox_should_render', true, $post_id );
-	}
-
 	/**
 	 * Configures the RSVP metabox for the given post type.
 	 *
@@ -125,9 +92,11 @@ class Metabox {
 
 		if ( $tc_rsvp instanceof Tribe__Tickets__Ticket_Object ) {
 			$context['rsvp_id']        = $tc_rsvp->ID;
-			$context['show_not_going'] = $tc_rsvp->show_not_going;
 			$capacity                  = $tc_rsvp->capacity();
 			$context['rsvp_limit']     = $capacity === - 1 ? '' : $capacity;
+			$context['show_not_going'] = tribe_is_truthy(
+				get_post_meta( $tc_rsvp->ID, Constants::SHOW_NOT_GOING_META_KEY, true )
+			);
 		}
 
 		return $admin_views->template(
@@ -145,7 +114,7 @@ class Metabox {
 	 *
 	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
 	 */
-	public function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
+	private function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
 		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
 			->where( 'event', $post_id )
 			->first_id();

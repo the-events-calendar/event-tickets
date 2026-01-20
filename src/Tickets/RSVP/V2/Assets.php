@@ -9,8 +9,8 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
+use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\RSVP\V2\REST\Order_Endpoint;
-use TEC\Tickets\RSVP\V2\REST\Ticket_Endpoint;
 use Tribe__Templates;
 use Tribe__Tickets__Main;
 
@@ -44,7 +44,8 @@ class Assets {
 					'name' => 'tecTicketsCommerceTickets',
 					'data' => static function () {
 						return [
-							'ticketEndpoint' => tribe_callback( Ticket_Endpoint::class, 'get_route_url' )(),
+							'tecApiEndpoint' => rest_url( 'tec/v1/tickets' ),
+							'ticketType'     => Constants::TC_RSVP_TYPE,
 							'nonce'          => wp_create_nonce( 'wp_rest' ),
 						];
 					},
