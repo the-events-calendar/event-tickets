@@ -268,6 +268,14 @@ class Controller extends Controller_Contract {
 
 		// REST.
 		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+
+		// RSVP-specific meta saving.
+		add_action(
+			'tec_tickets_commerce_after_save_ticket',
+			$this->container->callback( Meta_Fields::class, 'save_show_not_going' ),
+			10,
+			3
+		);
 	}
 
 	/**

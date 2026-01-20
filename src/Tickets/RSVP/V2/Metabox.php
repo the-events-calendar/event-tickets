@@ -371,9 +371,11 @@ class Metabox {
 
 		if ( $tc_rsvp instanceof Tribe__Tickets__Ticket_Object ) {
 			$context['rsvp_id']        = $tc_rsvp->ID;
-			$context['show_not_going'] = $tc_rsvp->show_not_going;
 			$capacity                  = $tc_rsvp->capacity();
 			$context['rsvp_limit']     = $capacity === - 1 ? '' : $capacity;
+			$context['show_not_going'] = tribe_is_truthy(
+				get_post_meta( $tc_rsvp->ID, Constants::SHOW_NOT_GOING_META_KEY, true )
+			);
 		}
 
 		return $admin_views->template(
@@ -391,7 +393,7 @@ class Metabox {
 	 *
 	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
 	 */
-	public function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
+	private function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
 		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
 			->where( 'event', $post_id )
 			->first_id();
