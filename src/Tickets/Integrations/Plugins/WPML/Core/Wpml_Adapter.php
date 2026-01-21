@@ -5,7 +5,7 @@
  * Adapter class that wraps WPML functionality and provides a clean interface
  * for translation operations without directly coupling to WPML's API.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Core
  */
@@ -50,10 +50,10 @@ class Wpml_Adapter {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $post_id   Post ID.
+	 * @param int    $post_id Post ID.
 	 * @param string $post_type Post type.
-	 * @param string $language  Target language code.
-	 * @param bool   $fallback  Whether to fallback to original if missing.
+	 * @param string $language Target language code.
+	 * @param bool   $fallback Whether to fallback to original if missing.
 	 *
 	 * @return int
 	 */
@@ -91,7 +91,7 @@ class Wpml_Adapter {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $post_id   Post ID.
+	 * @param int    $post_id Post ID.
 	 * @param string $post_type Post type.
 	 *
 	 * @return string Language code, empty string if not found.
@@ -156,9 +156,9 @@ class Wpml_Adapter {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $post_id   Post ID.
+	 * @param int    $post_id Post ID.
 	 * @param string $post_type Post type.
-	 * @param string $language  Language code.
+	 * @param string $language Language code.
 	 *
 	 * @return void
 	 */
@@ -193,7 +193,7 @@ class Wpml_Adapter {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $post_id   Post ID.
+	 * @param int    $post_id Post ID.
 	 * @param string $post_type Post type (e.g., 'post_tec_tc_ticket').
 	 *
 	 * @return bool True if the post is the original, false otherwise.

@@ -2,7 +2,7 @@
 /**
  * WPML integration for Event Tickets.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\WPML
  */

@@ -2,7 +2,7 @@
 /**
  * Translate relationship meta after WPML copies custom fields.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Meta
  */
@@ -37,7 +37,7 @@ class Relationship_Meta_Translator {
 	/**
 	 * @since TBD
 	 *
-	 * @param Wpml_Adapter $wpml      WPML adapter instance.
+	 * @param Wpml_Adapter  $wpml WPML adapter instance.
 	 * @param array<string> $meta_keys Meta keys to translate.
 	 */
 	public function __construct( Wpml_Adapter $wpml, array $meta_keys ) {
@@ -62,8 +62,8 @@ class Relationship_Meta_Translator {
 	 * @since TBD
 	 *
 	 * @param int    $original_id Original post ID.
-	 * @param int    $post_id     Target post ID.
-	 * @param string $key         Meta key.
+	 * @param int    $post_id Target post ID.
+	 * @param string $key Meta key.
 	 *
 	 * @return void
 	 */
@@ -104,4 +104,5 @@ class Relationship_Meta_Translator {
 		update_post_meta( $post_id, $key, $translated_id );
 	}
 }
+
 

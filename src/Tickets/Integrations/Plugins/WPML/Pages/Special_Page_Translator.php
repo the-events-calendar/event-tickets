@@ -2,7 +2,7 @@
 /**
  * Translate Tickets Commerce special pages.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Pages
  */
@@ -133,4 +133,5 @@ class Special_Page_Translator {
 		return $this->page_helper->is_translated_page( $is_current_page, $original_page_id );
 	}
 }
+
 

@@ -2,7 +2,7 @@
 /**
  * Sync ticket meta fields to WPML translations when updated.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Meta
  */
@@ -51,7 +51,7 @@ class Meta_Sync {
 	/**
 	 * @since TBD
 	 *
-	 * @param Wpml_Adapter $wpml      WPML adapter instance.
+	 * @param Wpml_Adapter  $wpml WPML adapter instance.
 	 * @param array<string> $meta_keys Meta keys to sync.
 	 */
 	public function __construct( Wpml_Adapter $wpml, array $meta_keys ) {
@@ -75,9 +75,9 @@ class Meta_Sync {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $meta_id    Meta ID.
-	 * @param int    $post_id    Post ID.
-	 * @param string $meta_key   Meta key.
+	 * @param int    $meta_id Meta ID.
+	 * @param int    $post_id Post ID.
+	 * @param string $meta_key Meta key.
 	 * @param mixed  $meta_value Meta value.
 	 *
 	 * @return void
@@ -136,4 +136,5 @@ class Meta_Sync {
 		self::$is_syncing = false;
 	}
 }
+
 

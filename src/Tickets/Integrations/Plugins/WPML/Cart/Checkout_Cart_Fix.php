@@ -2,7 +2,7 @@
 /**
  * Fix checkout cart loading when WPML is active.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Cart
  */
@@ -102,7 +102,7 @@ class Checkout_Cart_Fix {
 		}
 
 		// Check if cart has items that need loading.
-		$cart = tribe( Cart::class );
+		$cart      = tribe( Cart::class );
 		$cart_hash = $cart->get_cart_hash();
 		if ( empty( $cart_hash ) && empty( $cookie_param ) ) {
 			return;

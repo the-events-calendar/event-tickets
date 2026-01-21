@@ -2,7 +2,7 @@
 /**
  * Ensure ticket posts get WPML language details on creation.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Tickets
  */
@@ -52,7 +52,7 @@ class Ticket_Language_Assigner {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id   Event ID.
+	 * @param int $post_id Event ID.
 	 * @param int $ticket_id Ticket ID.
 	 *
 	 * @return void
@@ -77,4 +77,5 @@ class Ticket_Language_Assigner {
 		$this->wpml->set_language_details( $ticket_id, $post_type, $current_language );
 	}
 }
+
 

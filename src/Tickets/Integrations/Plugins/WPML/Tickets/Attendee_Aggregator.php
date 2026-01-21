@@ -2,7 +2,7 @@
 /**
  * Aggregate attendee queries across translations.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Tickets
  */
@@ -150,8 +150,8 @@ class Attendee_Aggregator {
 	 *
 	 * @since TBD
 	 *
-	 * @param object $ticket    Ticket object.
-	 * @param int    $event_id  Event ID.
+	 * @param object $ticket Ticket object.
+	 * @param int    $event_id Event ID.
 	 * @param int    $ticket_id Ticket ID.
 	 *
 	 * @return object Modified ticket object with aggregated qty_sold.
@@ -204,4 +204,5 @@ class Attendee_Aggregator {
 		return $query->query_vars;
 	}
 }
+
 

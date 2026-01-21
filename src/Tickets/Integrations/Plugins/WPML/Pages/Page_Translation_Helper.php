@@ -2,7 +2,7 @@
 /**
  * Helper for page translation operations.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Pages
  */
@@ -43,9 +43,9 @@ class Page_Translation_Helper {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $url              Original URL.
-	 * @param string $option_key       Option key for the page ID setting.
-	 * @param string $element_type     WPML element type (default: 'post_page').
+	 * @param string $url Original URL.
+	 * @param string $option_key Option key for the page ID setting.
+	 * @param string $element_type WPML element type (default: 'post_page').
 	 *
 	 * @return string Translated URL, or original if translation not available.
 	 */
@@ -70,14 +70,17 @@ class Page_Translation_Helper {
 		}
 
 		// Switch language context to get correct permalink.
-		return Language_Switcher::with_language( $current_language, function() use ( $translated_page_id, $url ) {
-			$translated_url = get_permalink( $translated_page_id );
-			if ( $translated_url && is_string( $translated_url ) && $translated_url !== $url ) {
-				return $translated_url;
-			}
+		return Language_Switcher::with_language(
+			$current_language,
+			function () use ( $translated_page_id, $url ) {
+				$translated_url = get_permalink( $translated_page_id );
+				if ( $translated_url && is_string( $translated_url ) && $translated_url !== $url ) {
+					return $translated_url;
+				}
 
-			return $url;
-		} );
+				return $url;
+			}
+		);
 	}
 
 	/**
@@ -87,7 +90,7 @@ class Page_Translation_Helper {
 	 *
 	 * @param bool   $is_current_page Current page check result (before WPML check).
 	 * @param int    $original_page_id Original page ID to check against.
-	 * @param string $element_type     WPML element type (default: 'post_page').
+	 * @param string $element_type WPML element type (default: 'post_page').
 	 *
 	 * @return bool
 	 */

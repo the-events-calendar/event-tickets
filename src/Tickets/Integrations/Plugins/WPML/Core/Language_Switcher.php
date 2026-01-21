@@ -2,7 +2,7 @@
 /**
  * Helper for WPML language switching operations.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Integrations\Plugins\WPML\Core
  */
@@ -52,7 +52,7 @@ class Language_Switcher {
 	 * @since TBD
 	 *
 	 * @param string   $target_language Target language code.
-	 * @param callable $callback        Callback to execute in the target language context.
+	 * @param callable $callback Callback to execute in the target language context.
 	 *
 	 * @return mixed Result of the callback.
 	 */
