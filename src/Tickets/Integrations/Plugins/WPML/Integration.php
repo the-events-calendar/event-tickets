@@ -74,6 +74,8 @@ class Integration extends Integration_Abstract {
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @param bool $value Whether the integration should load.
 	 */
 	protected function filter_should_load( bool $value ): bool {
 		$value = parent::filter_should_load( $value );

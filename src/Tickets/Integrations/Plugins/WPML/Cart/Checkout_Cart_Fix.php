@@ -142,4 +142,3 @@ class Checkout_Cart_Fix {
 		self::$original_language = null;
 	}
 }
-

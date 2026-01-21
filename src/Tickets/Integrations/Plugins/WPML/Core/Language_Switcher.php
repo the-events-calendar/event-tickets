@@ -90,4 +90,3 @@ class Language_Switcher {
 		return self::with_language( 'all', $callback );
 	}
 }
-

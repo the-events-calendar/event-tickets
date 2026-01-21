@@ -82,7 +82,7 @@ class Meta_Sync {
 	 *
 	 * @return void
 	 */
-	public function handle( $meta_id, $post_id, $meta_key, $meta_value ): void {
+	public function handle( $meta_id, $post_id, $meta_key, $meta_value ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		// Early bail: Prevent recursion.
 		if ( true === self::$is_syncing ) {
 			return;

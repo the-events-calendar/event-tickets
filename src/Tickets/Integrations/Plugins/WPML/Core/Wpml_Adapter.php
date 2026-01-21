@@ -229,4 +229,3 @@ class Wpml_Adapter {
 		return Language_Switcher::get_current_language();
 	}
 }
-

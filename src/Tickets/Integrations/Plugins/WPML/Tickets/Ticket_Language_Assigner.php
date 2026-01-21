@@ -78,4 +78,3 @@ class Ticket_Language_Assigner {
 	}
 }
 
-

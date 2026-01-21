@@ -49,7 +49,7 @@ class Page_Translation_Helper {
 	 *
 	 * @return string Translated URL, or original if translation not available.
 	 */
-	public function translate_page_url( string $url, string $option_key, string $element_type = 'post_page' ): string {
+	public function translate_page_url( string $url, string $option_key, string $element_type = 'post_page' ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		if ( ! $this->wpml->is_available() ) {
 			return $url;
 		}
@@ -134,4 +134,3 @@ class Page_Translation_Helper {
 		return $is_current_page;
 	}
 }
-
