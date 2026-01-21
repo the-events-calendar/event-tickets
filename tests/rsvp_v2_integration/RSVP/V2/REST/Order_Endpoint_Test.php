@@ -608,4 +608,12 @@ class Order_Endpoint_Test extends WPTestCase {
 		// The error should be rendered as HTML, not cause a fatal error.
 		$this->assertNotEmpty( $data['html'] );
 	}
+
+	/**
+	 * Here to implement the required abstract method, this method is a no-op since it will not be invoked.
+	 */
+	protected function avoid_query_commit_rollback_handler( string $query ): string {
+		// No-op.
+		return $query;
+	}
 }
