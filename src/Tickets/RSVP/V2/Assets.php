@@ -9,44 +9,141 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
-use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\RSVP\V2\REST\Order_Endpoint;
+use TEC\Tickets\RSVP\V2\REST\Ticket_Endpoint;
+use Tribe__Templates;
 use Tribe__Tickets__Main;
 
 /**
  * Class Assets.
  *
- * Registers RSVP-specific assets for the V2 implementation.
- * V2 RSVP uses TC (Tickets Commerce) infrastructure, so most assets
- * are inherited from TC. This class handles RSVP-specific additions.
+ * Registers RSVP V2 assets including CSS and JavaScript.
  *
  * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
-class Assets extends Service_Provider {
+class Assets {
 	/**
 	 * Binds and sets up implementations.
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
-	public function register(): void {
-		/** @var Tribe__Tickets__Main $tickets_main */
-		$tickets_main = tribe( 'tickets.main' );
+	public function register() {
+		/** @var Tribe__Tickets__Main $plugin */
+		$plugin = tribe( 'tickets.main' );
 
-		// Register RSVP V2 specific assets.
-		// Note: V2 RSVP uses TC infrastructure, so most assets are provided by TC.
-		// This file registers RSVP-specific additions if needed.
+		tec_asset(
+			$plugin,
+			'tribe-tickets-admin-tickets',
+			'commerce/tickets.js',
+			[ 'jquery' ],
+			'admin_enqueue_scripts',
+			[
+				'localize' => [
+					'name' => 'tecTicketsCommerceTickets',
+					'data' => static function () {
+						return [
+							'ticketEndpoint' => tribe_callback( Ticket_Endpoint::class, 'get_route_url' )(),
+							'nonce'          => wp_create_nonce( 'wp_rest' ),
+						];
+					},
+				],
+			]
+		);
 
-		/**
-		 * Fires after RSVP V2 assets have been registered.
-		 *
-		 * @since TBD
-		 *
-		 * @param Assets             $assets       The assets instance.
-		 * @param Tribe__Tickets__Main $tickets_main The main tickets instance.
-		 */
-		do_action( 'tec_tickets_rsvp_v2_assets_registered', $this, $tickets_main );
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp',
+			'commerce/rsvp-block.js',
+			[ 'jquery' ],
+			null,
+			[
+				'groups'   => 'tec-tickets-commerce-rsvp',
+				'localize' => [
+					'name' => 'TecRsvp',
+					'data' => fn() => [
+						'nonces'        => [
+							'rsvpHandle' => wp_create_nonce( 'tribe_tickets_rsvp_handle' ),
+						],
+						'orderEndpoint' => tribe_callback( Order_Endpoint::class, 'get_route_url' )(),
+						'nonce'         => wp_create_nonce( 'wp_rest' ),
+						'cancelText'    => __( 'Are you sure you want to cancel?', 'event-tickets' ),
+					],
+				],
+			]
+		);
+
+		tec_asset( $plugin, 'tribe-tickets-gutenberg-block-rsvp-style', 'rsvp/frontend.css' );
+
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-ari',
+			'commerce/rsvp-ari.js',
+			[ 'jquery', 'wp-util', 'tribe-common' ],
+			null,
+			[
+				'groups'       => 'tec-tickets-commerce-rsvp',
+				'conditionals' => [ $this, 'should_enqueue_ari' ],
+			]
+		);
+
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-manager',
+			'commerce/rsvp-manager.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-loader',
+				'tec-tickets-commerce-rsvp',
+				'tec-tickets-commerce-rsvp-tooltip',
+				'tec-tickets-commerce-rsvp-ari',
+			],
+			null,
+			[
+				'groups' => 'tec-tickets-commerce-rsvp',
+			]
+		);
+
+
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-tooltip',
+			'commerce/rsvp-tooltip.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tooltipster',
+			],
+			null,
+			[
+				'groups' => 'tec-tickets-commerce-rsvp',
+			]
+		);
+
+		tec_asset(
+			$plugin,
+			'tec-tickets-commerce-rsvp-style',
+			'rsvp.css',
+			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ]
+		);
+
+		$stylesheet = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
+
+		if ( $stylesheet ) {
+			tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style-override', $stylesheet, [], null );
+		}
+	}
+
+	/**
+	 * Determine whether we should enqueue the ARI assets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether we should enqueue the ARI assets.
+	 */
+	public function should_enqueue_ari(): bool {
+		return class_exists( 'Tribe__Tickets_Plus__Main' );
 	}
 }

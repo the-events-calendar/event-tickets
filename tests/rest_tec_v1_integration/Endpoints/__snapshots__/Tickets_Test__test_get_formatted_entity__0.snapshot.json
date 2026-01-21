@@ -10,7 +10,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -47,7 +47,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}-2",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -84,7 +84,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -121,7 +121,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -158,7 +158,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -195,7 +195,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -232,7 +232,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}-3",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"
@@ -269,7 +269,7 @@
         "modified_gmt": "2025-06-13T17:25:00",
         "slug": "test-tc-ticket-for-{POST_ID}-2",
         "status": "publish",
-        "type": "tec_tc_ticket",
+        "type": "default",
         "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
         "title": {
             "rendered": "Test TC ticket for {POST_ID}"

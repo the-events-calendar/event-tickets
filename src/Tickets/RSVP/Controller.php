@@ -46,6 +46,28 @@ class Controller extends Controller_Contract {
 	public const VERSION_2 = 'v2';
 
 	/**
+	 * Version 2 of the RSVP feature requires Tickets Commerce to be active.
+	 *
+	 * This method is called early, before the Tickets Commerce provider is registered, to allow the feature
+	 * to try and activate Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function maybe_activate_tickets_commerce(): void {
+		$version = self::get_version();
+
+		if ( $version !== self::VERSION_2 ) {
+			// Nothing to do: do not force activate Tickets Commerce.
+			return;
+		}
+
+		// Try and activate Tickets Commerce.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
+	}
+
+	/**
 	 * Checks if RSVP functionality is enabled.
 	 *
 	 * @since TBD
@@ -90,16 +112,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		/**
-		 * Filters the RSVP version to register.
-		 *
-		 * If the provided version is not one of the supported versions, the feature will be disabled.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $version The RSVP version to register.
-		 */
-		$version = apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
+		$version = self::get_version();
 
 		if ( $version === self::VERSION_1 ) {
 			$this->container->register( V1\Controller::class );
@@ -114,8 +127,6 @@ class Controller extends Controller_Contract {
 			// as V2 doesn't need a legacy RSVP provider.
 			$this->container->bind( 'tickets.ticket-repository.rsvp', V2\Repositories\Ticket_Repository::class );
 			$this->container->bind( 'tickets.attendee-repository.rsvp', V2\Repositories\Attendee_Repository::class );
-			// Bind the disabled RSVP for legacy code compatibility.
-			$this->container->singleton( 'tickets.rsvp', RSVP_Disabled::class );
 
 			return;
 		}
@@ -153,7 +164,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$version = apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
+		$version = self::get_version();
 
 		if ( $version === self::VERSION_1 ) {
 			$this->container->get( V1\Controller::class )->unregister();
@@ -165,5 +176,25 @@ class Controller extends Controller_Contract {
 		if ( $version === self::VERSION_2 && tec_tickets_commerce_is_enabled() ) {
 			$this->container->get( V2\Controller::class )->unregister();
 		}
+	}
+
+	/**
+	 * Returns the filtered RSVP version to use.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The filtered RSVP version to use.
+	 */
+	private static function get_version(): string {
+		/**
+		 * Filters the RSVP version to register.
+		 *
+		 * If the provided version is not one of the supported versions, the feature will be disabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $version The RSVP version to register.
+		 */
+		return (string) apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
 	}
 }

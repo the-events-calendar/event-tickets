@@ -106,6 +106,20 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'capacity', $ticket_handler->key_capacity );
 
 		/**
+		 * Filters the query args for the tickets repository.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $args The query args for the tickets repository.
+		 * @param Tribe__Repository   $this This repository instance.
+		 */
+		$this->query_args = apply_filters(
+			'tec_tickets_commerce_repository_ticket_query_args',
+			$this->query_args,
+			$this
+		);
+
+		/**
 		 * Filters the schema for the tickets repository.
 		 *
 		 * @since 5.26.0

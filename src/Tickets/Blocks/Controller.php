@@ -183,6 +183,16 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$post_type = get_post_field( 'post_type', $post_id );
 
 		/**
+		 * Filters the default ticket forms enabled for all post types.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
+		 * @param int                $post_id The ID of the post being edited.
+		 */
+		$enabled = apply_filters( 'tec_tickets_enabled_ticket_forms', $enabled, $post_id );
+
+		/**
 		 * Filters the default ticket forms enabled for a given post type.
 		 *
 		 * @since 5.8.0
