@@ -46,7 +46,6 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Frontend::class );
 		$this->container->singleton( Repository_Filters::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
-		$this->container->singleton( REST\Ticket_Meta_Endpoint::class );
 		$this->container->singleton( Cart\RSVP_Cart::class );
 		$this->container->singleton( Meta_Fields::class );
 
@@ -127,7 +126,7 @@ class Controller extends Controller_Contract {
 		);
 
 		// REST.
-		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+		add_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
 
 		// RSVP-specific meta saving.
 		add_action(
@@ -188,22 +187,10 @@ class Controller extends Controller_Contract {
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
 		);
-		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+		remove_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
 		remove_action(
 			'tec_tickets_commerce_after_save_ticket',
 			$this->container->callback( Meta_Fields::class, 'save_show_not_going' )
 		);
-	}
-
-	/**
-	 * Register REST API endpoints.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register_rest_endpoints(): void {
-		$this->container->make( REST\Order_Endpoint::class )->register();
-		$this->container->make( REST\Ticket_Meta_Endpoint::class )->register();
 	}
 }
