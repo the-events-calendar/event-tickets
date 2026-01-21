@@ -87,10 +87,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param RSVP_Block $block    The RSVP block instance.
 	 * @param Template   $template The template instance.
+	 * @param Module     $module   The Tickets Commerce module instance.
 	 */
-	public function __construct( RSVP_Block $block, Template $template ) {
+	public function __construct( RSVP_Block $block, Template $template, Module $module ) {
 		$this->tickets_view = Tickets_View::instance();
-		$this->module       = tribe( Module::class );
+		$this->module       = $module;
 		$this->blocks_rsvp  = $block;
 		$this->template     = $template;
 	}
