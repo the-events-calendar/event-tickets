@@ -1,0 +1,4 @@
+Significance: minor
+Type: feat
+
+Add WPML integration for multilingual Event Tickets support, including ticket translations, meta synchronization, and cross-language cart and checkout functionality. [ET-2599]
