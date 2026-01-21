@@ -12,6 +12,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__rsvp-ar-quantity">
 	<span class="tribe-common-h7 tribe-common-h--alt">

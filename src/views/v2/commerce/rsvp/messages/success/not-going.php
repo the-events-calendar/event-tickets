@@ -18,6 +18,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 if ( ! empty( $is_going ) ) {
 	return;
 }

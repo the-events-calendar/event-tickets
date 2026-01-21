@@ -19,6 +19,7 @@
  * @version 5.1.5
  */
 
+defined( 'ABSPATH' ) || die();
 /** @var Tribe__Tickets__Ticket_Object $rsvp */
 if ( empty( $rsvp->ID ) ) {
 	return;

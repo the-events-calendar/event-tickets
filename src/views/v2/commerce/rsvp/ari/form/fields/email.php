@@ -15,6 +15,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 /**
  * Set the default value for the email on the RSVP form.
  *

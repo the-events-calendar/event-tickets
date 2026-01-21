@@ -15,6 +15,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 $going = $this->get( 'going' );
 
 if ( 'going' === $going ) {

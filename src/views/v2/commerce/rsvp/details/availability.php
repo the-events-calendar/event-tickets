@@ -17,6 +17,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 use Tribe__Date_Utils as Dates;
 
 $is_unlimited = - 1 === $rsvp->remaining();

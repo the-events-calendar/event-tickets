@@ -16,6 +16,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 if ( ! $rsvp->show_description() ) {
 	return;
 }

@@ -15,6 +15,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 $is_unlimited = $this->get( 'is_unlimited' );
 
 if ( empty( tribe( 'tickets.editor.blocks.rsvp' )->show_unlimited( $is_unlimited ) ) ) {

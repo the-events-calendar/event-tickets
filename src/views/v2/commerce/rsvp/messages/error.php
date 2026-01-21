@@ -17,6 +17,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 // Treat error messages as an array.
 $error_messages = (array) $error_message;
 ?>

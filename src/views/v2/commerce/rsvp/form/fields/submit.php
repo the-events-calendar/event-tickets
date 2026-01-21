@@ -15,6 +15,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <button
 	class="tribe-common-c-btn tribe-tickets__rsvp-form-button"

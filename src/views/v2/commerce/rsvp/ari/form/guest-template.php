@@ -10,6 +10,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <script
 	class="tribe-tickets__rsvp-ar-form-guest-template"

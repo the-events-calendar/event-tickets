@@ -20,6 +20,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 if ( $opt_in_toggle_hidden ) {
 	return;
 }

@@ -13,6 +13,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <li class="tribe-tickets__rsvp-ar-guest-list-item">
 	<button

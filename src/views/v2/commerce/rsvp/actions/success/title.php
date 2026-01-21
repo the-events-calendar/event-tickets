@@ -14,6 +14,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 $success_text = ! empty( $is_going ) ? __( 'You are going', 'event-tickets' ) : __( "Can't go", 'event-tickets' );
 ?>
 <div class="tribe-tickets__rsvp-actions-success-going">

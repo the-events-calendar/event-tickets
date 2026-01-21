@@ -34,6 +34,7 @@
  * @var Tribe__Tickets__Admin__Views  $this                             The admin views instance.
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"

@@ -19,6 +19,8 @@
  * @var Tribe__Tickets__Ticket_Object $tc_rsvp                      The TC RSVP object.
  */
 
+defined( 'ABSPATH' ) || die();
+
 use Tribe__Date_Utils as Date_Utils;
 
 // Default values for the Start date & time fields.

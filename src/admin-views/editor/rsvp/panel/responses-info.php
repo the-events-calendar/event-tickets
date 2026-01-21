@@ -13,6 +13,7 @@
  * @var string $attendees_url   The URL to the attendees admin page.
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div class="tec-tickets-rsvp-responses-info__wrap">

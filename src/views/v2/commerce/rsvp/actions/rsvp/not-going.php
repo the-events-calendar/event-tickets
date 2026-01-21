@@ -17,6 +17,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 /**
  * @todo: Create a hook for the get_ticket method in order to set dynamic or custom properties into
  * the instance variable so we can set a new one called $ticket->show_not_going.

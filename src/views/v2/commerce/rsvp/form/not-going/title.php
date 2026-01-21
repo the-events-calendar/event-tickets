@@ -14,6 +14,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__rsvp-form-title">
 	<h3 class="tribe-common-h5">

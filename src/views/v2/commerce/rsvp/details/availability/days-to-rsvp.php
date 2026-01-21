@@ -17,6 +17,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 if ( 0 < $days_to_rsvp ) {
 	$text = sprintf(
 		// Translators: 1: opening span. 2: the number of remaining days to RSVP. 3: Closing span. 4: The RSVP label.

@@ -16,6 +16,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-common-a11y-hidden">
 	<div
