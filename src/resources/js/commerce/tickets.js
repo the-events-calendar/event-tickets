@@ -1,4 +1,5 @@
 /* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers, wp */
+import { _x } from '@wordpress/i18n';
 
 /**
  * Makes sure we have all the required levels on the Tribe Object.
@@ -60,6 +61,8 @@ tribe.tickets.commerce.tickets = {};
 
 	/**
 	 * Experimental endpoint acknowledgement header.
+	 *
+	 * @todo Remove when switching to use of `apiFetch` function.
 	 *
 	 * @since TBD
 	 *
@@ -144,22 +147,7 @@ tribe.tickets.commerce.tickets = {};
 			return '';
 		}
 
-		// Try to get the date from the datepicker element's data.
-		const $datepicker = $( '.tribe-datepicker' ).filter( function() {
-			return $( this ).val() === dateStr;
-		} );
-
-		if ( $datepicker.length && $datepicker.datepicker ) {
-			const dateObj = $datepicker.datepicker( 'getDate' );
-			if ( dateObj ) {
-				const year = dateObj.getFullYear();
-				const month = String( dateObj.getMonth() + 1 ).padStart( 2, '0' );
-				const day = String( dateObj.getDate() ).padStart( 2, '0' );
-				return `${ year }-${ month }-${ day }`;
-			}
-		}
-
-		// Fallback: try to parse common date formats.
+		// Try to parse common date formats.
 		const date = new Date( dateStr );
 		if ( ! isNaN( date.getTime() ) ) {
 			const year = date.getFullYear();
@@ -527,6 +515,8 @@ tribe.tickets.commerce.tickets = {};
 	obj.handleRemoveResponse = function( data ) {
 		// TEC REST API returns empty response on success, or { error: ... } on failure.
 		if ( data && data.error ) {
+			const errorMessage = data.message || data.error || _x( 'Failed to remove RSVP.', 'RSVP deletion error message', 'event-tickets' );
+			window.alert( errorMessage );
 			return;
 		}
 
