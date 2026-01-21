@@ -18,12 +18,11 @@ class Metabox_Test extends WPTestCase {
 	use With_Uopz;
 	use With_Clock_Mock;
 
-
 	/**
 	 * @before
 	 */
-	public function stop_time():void{
-		$this->freeze_time(new \DateTime('2020-01-01 12:00:00 UTC'));
+	public function stop_time(): void {
+		$this->freeze_time( new \DateTime( '2020-01-01 12:00:00 UTC' ) );
 	}
 
 	public function render_data_provider(): Generator {
