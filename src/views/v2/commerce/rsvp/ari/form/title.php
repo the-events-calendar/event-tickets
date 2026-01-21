@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || die();
 <header>
 	<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
 		<?php
-		echo wp_kses_post(
+		echo esc_html(
 			sprintf(
 				/* Translators: %s Guest label for RSVP attendee registration form title. */
 				__( 'Main %s', 'event-tickets' ),

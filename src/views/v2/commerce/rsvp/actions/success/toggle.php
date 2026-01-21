@@ -50,9 +50,9 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 			aria-describedby="tribe-tickets-tooltip-content-<?php echo esc_attr( $rsvp->ID ); ?>"
 		>
 			<?php
-			echo wp_kses_post(
+			echo wp_kses(
 				sprintf(
-					// Translators: 1: opening span. 2: Closing span.
+					// translators: %1$s: opening span tag, %2$s: closing span tag.
 					_x(
 						'Show me on public %1$sattendee list%2$s',
 						'Toggle for RSVP attendee list.',
@@ -60,7 +60,8 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 					),
 					'<span class="tribe-tickets__rsvp-actions-success-going-toggle-label-underline">',
 					'</span>'
-				)
+				),
+				[ 'span' => [ 'class' => [] ] ]
 			);
 			?>
 		</span>
