@@ -7,7 +7,8 @@
 /**
  * External dependencies
  */
-import React, { useCallback, useEffect, useRef } from 'react';
+import * as React from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
