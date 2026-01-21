@@ -21,7 +21,6 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\RSVP\V2\Constants;
-use Tribe\Tickets\Events\Attendees_List;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe__Tickets__Ticket_Object;
 use Tribe__Utils__Array;
@@ -88,11 +87,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param RSVP_Block $block    The RSVP block instance.
 	 * @param Template   $template The template instance.
-	 * @param Module     $module   The Tickets Commerce module instance.
 	 */
-	public function __construct( RSVP_Block $block, Template $template, Module $module ) {
+	public function __construct( RSVP_Block $block, Template $template ) {
 		$this->tickets_view = Tickets_View::instance();
-		$this->module       = $module;
+		$this->module       = tribe( Module::class );
 		$this->blocks_rsvp  = $block;
 		$this->template     = $template;
 	}
@@ -112,12 +110,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'handle_steps' ],
-
-				/*
-				 * RSVPs are publicly accessible: any site visitor, including guests, can submit an RSVP.
-				 * Additional validation (post status, password protection, login requirements) is handled
-				 * within the callback.
-				 */
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -314,8 +306,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$attendee_ids          = array_column( $attendees, 'attendee_id' );
 			$response['attendees'] = $attendee_ids;
 
-			array_map( static fn( $attendee_id ) => update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, $first_attendee['order_status'] ), $attendee_ids );
-
 			$attendee_ids_flat = implode( ',', $attendee_ids );
 
 			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids_flat );
@@ -485,7 +475,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$args['attendees'] = $args['process_result']['attendees'];
 		}
 
-		$show_attendee_list_optout = ! Attendees_List::is_hidden_on( $post_id );
+		$show_attendee_list_optout = false;
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
@@ -502,7 +492,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$show_attendee_list_optout = false;
 		}
 
-		$args['opt_in_toggle_hidden'] = ! $show_attendee_list_optout;
+		$args['opt_in_toggle_hidden'] = $show_attendee_list_optout;
 
 		$this->template->add_template_globals( $args );
 
@@ -544,20 +534,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$first_attendee = $attendee;
 		}
 
-		$attendee_email = null;
-		if ( ! empty( $first_attendee['email'] ) ) {
-			$decoded_email = html_entity_decode( $first_attendee['email'], ENT_QUOTES );
-
-			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
-				$attendee_email = htmlentities( sanitize_email( $decoded_email ), ENT_COMPAT );
-				$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-			}
-		}
+		$attendee_email        = empty( $first_attendee['email'] ) ?
+			null
+			: htmlentities(
+				sanitize_email(
+					html_entity_decode( $first_attendee['email'] )
+				),
+				ENT_COMPAT
+			);
+		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name    = empty( $first_attendee['full_name'] ) ?
 			null
 			: htmlentities(
 				sanitize_text_field(
-					html_entity_decode( $first_attendee['full_name'], ENT_QUOTES )
+					html_entity_decode( $first_attendee['full_name'] )
 				),
 				ENT_COMPAT
 			);
