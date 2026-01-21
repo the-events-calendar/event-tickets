@@ -86,13 +86,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Checks if the current user has the capability to edit events and verifies the nonce.
+	 * Checks if the current user has the capability to edit the post and verifies the nonce.
 	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The current REST request.
 	 *
-	 * @return bool True if the user has the edit events capability and nonce is valid, false otherwise.
+	 * @return bool True if the user has the edit post capability and nonce is valid, false otherwise.
 	 */
 	public function check_permission( WP_REST_Request $request ): bool {
 		$nonce = $request->get_param( '_wpnonce' );
@@ -116,9 +116,13 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		// phpcs:disable WordPress.WP.Capabilities.Unknown
-		return current_user_can( 'edit_tribe_events' );
-		// phpcs:enable WordPress.WP.Capabilities.Unknown
+		$post_id = $request->get_param( 'post_ID' );
+
+		if ( empty( $post_id ) ) {
+			return current_user_can( 'edit_posts' );
+		}
+
+		return current_user_can( 'edit_post', $post_id );
 	}
 
 	/**
