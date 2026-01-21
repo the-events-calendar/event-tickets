@@ -77,4 +77,3 @@ class Ticket_Language_Assigner {
 		$this->wpml->set_language_details( $ticket_id, $post_type, $current_language );
 	}
 }
-

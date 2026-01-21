@@ -204,4 +204,3 @@ class Attendee_Aggregator {
 		return $query->query_vars;
 	}
 }
-
