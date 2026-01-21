@@ -4,8 +4,9 @@
  * @since 5.0.0
  * @type {Object}
  */
-tribe.tickets = tribe.tickets || {};
-tribe.tickets.rsvp = tribe.tickets.rsvp || {};
+window.tribe = window.tribe || {};
+window.tribe.tickets = window.tribe.tickets || {};
+window.tribe.tickets.rsvp = window.tribe.tickets.rsvp || {};
 
 /**
  * Configures RSVP manager Object in the Global Tribe variable
@@ -13,7 +14,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * @since 5.0.0
  * @type {Object}
  */
-tribe.tickets.rsvp.manager = {};
+window.tribe.tickets.rsvp.manager = {};
 
 /**
  * Initializes in a Strict env the code that manages the RSVP Manager
