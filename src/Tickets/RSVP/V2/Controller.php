@@ -267,7 +267,7 @@ class Controller extends Controller_Contract {
 		);
 
 		// REST.
-		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+		add_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
 
 		// RSVP-specific meta saving.
 		add_action(
