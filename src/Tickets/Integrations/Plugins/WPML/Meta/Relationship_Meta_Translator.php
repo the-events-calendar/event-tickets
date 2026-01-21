@@ -104,5 +104,3 @@ class Relationship_Meta_Translator {
 		update_post_meta( $post_id, $key, $translated_id );
 	}
 }
-
-

@@ -136,5 +136,3 @@ class Meta_Sync {
 		self::$is_syncing = false;
 	}
 }
-
-
