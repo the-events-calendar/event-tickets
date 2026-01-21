@@ -17,6 +17,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <span class="tribe-tickets__rsvp-availability-no-stock">
 	<?php esc_html_e( 'Currently full', 'event-tickets' ); ?>

@@ -16,6 +16,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 $classes = [ 'tribe-tickets__rsvp-attendance-number', 'tribe-common-h4' ];
 if ( ! $rsvp->show_description() || empty( $rsvp->description ) ) {
 	$classes[] = 'tribe-tickets__rsvp-attendance-number--no-description';

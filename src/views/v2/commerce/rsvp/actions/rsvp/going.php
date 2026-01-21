@@ -13,10 +13,12 @@
  * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since 4.12.3
- * @version 4.12.3
+ * @since TBD
+ *
+ * @version TBD
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div class="tribe-tickets__rsvp-actions-rsvp-going">

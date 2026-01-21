@@ -16,7 +16,8 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	<?php echo wp_kses_post( $rsvp->name ); ?>
+	<?php echo esc_html( $rsvp->name ); ?>
 </h3>

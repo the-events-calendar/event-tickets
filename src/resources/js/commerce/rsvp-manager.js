@@ -1,24 +1,28 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since 5.0.0
+ * @since TBD
+ *
  * @type {Object}
  */
-tribe.tickets = tribe.tickets || {};
-tribe.tickets.rsvp = tribe.tickets.rsvp || {};
+window.tribe = window.tribe || {};
+window.tribe.tickets = window.tribe.tickets || {};
+window.tribe.tickets.rsvp = window.tribe.tickets.rsvp || {};
 
 /**
  * Configures RSVP manager Object in the Global Tribe variable
  *
- * @since 5.0.0
+ * @since TBD
+ *
  * @type {Object}
  */
-tribe.tickets.rsvp.manager = {};
+window.tribe.tickets.rsvp.manager = {};
 
 /**
  * Initializes in a Strict env the code that manages the RSVP Manager
  *
- * @since 5.0.0
+ * @since TBD
+ *
  * @param {Object} $   jQuery
  * @param {Object} _   Underscore.js
  * @param {Object} obj tribe.tickets.rsvp.manager
@@ -28,7 +32,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @type {Object}
 	 */
 	obj.selectors = {
@@ -41,7 +46,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Stores the current ajax request been handled by the manager.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @type {jqXHR|null}
 	 */
 	obj.currentAjaxRequest = null;
@@ -49,7 +55,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Containers on the current page that were initialized.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @type {jQuery}
 	 */
 	obj.$containers = $();
@@ -57,7 +64,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Saves all the containers in the page into the object.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @return {void}
 	 */
 	obj.selectContainers = function () {
@@ -67,7 +75,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Clean up the container and event listeners
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {jQuery} container Which element we are going to clean up
 	 * @return {void}
 	 */
@@ -82,7 +91,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Setup the container for RSVP management
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @todo  Requirement to setup other JS modules after hijacking Click and Submit
 	 * @param {number}         index     jQuery.each index param
 	 * @param {Element|jQuery} container Which element we are going to setup
@@ -99,7 +109,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Performs an AJAX request.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {Object}         data       DOM Event related to the Click action
 	 * @param {Element|jQuery} $container Which container we are dealing with
 	 * @return {void}
@@ -116,7 +127,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Gets the jQuery.ajax() settings provided a views container
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {Element|jQuery} $container Which container we are dealing with.
 	 * @return {Object} ajaxSettings
 	 */
@@ -144,7 +156,8 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {jqXHR}  jqXHR    Request object
 	 * @param {Object} settings Settings that this request will be made with
 	 * @return {void}
@@ -166,7 +179,8 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {jqXHR}  jqXHR      Request object
 	 * @param {string} textStatus Status for the request
 	 * @return {void}
@@ -192,7 +206,8 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {Object} response   Response sent from the AJAX response.
 	 * @param {string} textStatus Status for the request
 	 * @param {jqXHR}  jqXHR      Request object
@@ -238,7 +253,8 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @param {jqXHR}  jqXHR    Request object
 	 * @param {Object} settings Settings that this request was made with
 	 * @return {void}
@@ -254,7 +270,8 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Handles the initialization of the manager when Document is ready.
 	 *
-	 * @since 5.0.0
+	 * @since TBD
+	 *
 	 * @return {void}
 	 */
 	obj.ready = function () {

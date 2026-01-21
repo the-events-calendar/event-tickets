@@ -11,6 +11,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
 

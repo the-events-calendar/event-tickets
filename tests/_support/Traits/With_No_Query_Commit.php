@@ -65,16 +65,11 @@ trait With_No_Query_Commit {
 		}
 
 		if ( strcasecmp( 'ROLLBACK', $query ) === 0 ) {
-			// A ROLLBACK action cannot be cleanly done since it would roll back the fixture data as well.
-			if ( ! method_exists( $this, 'avoid_query_commit_rollback_handler' ) ) {
-				$message = 'ROLLBACK handler not found: please define a method named ' .
-				           '"avoid_query_commit_rollback_handler( string $query ) :string" in your test case. ' .
-				           'If you need real transaction logic in tests, then test the subject under test in a ' .
-				           'suite using the WPLoader module with "loadOnly: true"';
-				throw new \RuntimeException( $message );
-			}
-
-			// The test case provides a rollback handler, let's use it.
+			/*
+			 * A ROLLBACK action cannot be cleanly done since it would roll back the
+			 * WPTestCase-managed fixture data as well. The test case is tasked with
+			 * the implementation of an orderly rollback.
+			 */
 			return $this->avoid_query_commit_rollback_handler( $query );
 		}
 
@@ -104,4 +99,13 @@ trait With_No_Query_Commit {
 	protected function remove_filter_query_to_avoid_commit_rollback(): void {
 		remove_filter( 'query', [ $this, 'avoid_query_commit_rollback' ], - 100 );
 	}
+
+	/**
+	 * An abstract method that will be called when a ROLLBACK query is encountered.
+	 *
+	 * @param string $query The ROLLBACK query that needs to be handled.
+	 *
+	 * @return string The query that should be executed instead of the ROLLBACK query.
+	 */
+	abstract protected function avoid_query_commit_rollback_handler( string $query ): string;
 }

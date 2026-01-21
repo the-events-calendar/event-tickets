@@ -14,6 +14,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__form-message tribe-tickets__form-message--error tribe-common-b3 tribe-common-a11y-hidden">
 	<?php $this->template( 'v2/components/icons/error', [ 'classes' => [ 'tribe-tickets__form-message--error-icon' ] ] ); ?>

@@ -17,6 +17,7 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The RSVP ticket object.
  */
 
+defined( 'ABSPATH' ) || die();
 if ( ! $rsvp->has_meta_enabled() ) {
 	return;
 }

@@ -16,6 +16,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <form
 	class="tribe-tickets__rsvp-ar tribe-common-g-row tribe-common-g-row--gutters"

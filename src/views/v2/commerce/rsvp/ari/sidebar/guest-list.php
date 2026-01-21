@@ -10,6 +10,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <ul
 	class="tribe-tickets__rsvp-ar-guest-list tribe-common-h6"

@@ -20,6 +20,7 @@
  * @version 5.20.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 
 <?php $this->template( 'v2/commerce/rsvp/messages/must-login' ); ?>

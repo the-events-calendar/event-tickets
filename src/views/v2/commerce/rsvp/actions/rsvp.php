@@ -16,6 +16,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__rsvp-actions-rsvp">
 	<span class="tribe-common-h2 tribe-common-h6--min-medium">

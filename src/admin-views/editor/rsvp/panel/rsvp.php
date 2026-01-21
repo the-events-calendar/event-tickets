@@ -34,6 +34,7 @@
  * @var Tribe__Tickets__Admin__Views  $this                             The admin views instance.
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 
 <div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"
@@ -95,9 +96,9 @@
 					value="<?php echo absint( $rsvp_id ) === 0 ? '' : absint( $rsvp_id ); ?>"
 				/>
 
-				<?php $this->template( 'editor/panel/fields/limit', get_defined_vars() ); ?>
+				<?php $this->template( 'editor/panel/fields/limit' ); ?>
 
-				<?php $this->template( 'editor/panel/fields/rsvp/dates', get_defined_vars() ); ?>
+				<?php $this->template( 'editor/panel/fields/rsvp/dates' ); ?>
 
 				<input type="hidden" id="tec_tickets_ticket_provider" name="ticket_provider" value="<?php echo esc_attr( $provider_class ); ?>"/>
 

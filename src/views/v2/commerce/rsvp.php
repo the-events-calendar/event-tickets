@@ -19,6 +19,7 @@
  * @var string                             $block_html_id The unique HTML id for the block.
  */
 
+defined( 'ABSPATH' ) || die();
 // Enqueue assets.
 wp_enqueue_style( 'event-tickets-rsvp' );
 tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );

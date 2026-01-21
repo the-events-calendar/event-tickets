@@ -18,6 +18,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 if ( ! in_array( $step, [ 'success', 'opt-in' ], true ) ) {
 	return;
 }

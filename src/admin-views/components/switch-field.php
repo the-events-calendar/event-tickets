@@ -21,6 +21,7 @@
  * @var string $value       The value of the field.
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <fieldset id="tec-field-<?php echo esc_attr( $id ); ?>" class="tribe-field tribe-field-text tribe-size-medium tribe-field-switch">
 	<span class="tribe-field-switch-inner-wrap">

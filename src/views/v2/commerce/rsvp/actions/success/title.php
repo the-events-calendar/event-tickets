@@ -10,10 +10,12 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 4.12.3
- * @version 5.0.0
+ * @since TBD
+ *
+ * @version TBD
  */
 
+defined( 'ABSPATH' ) || die();
 $success_text = ! empty( $is_going ) ? __( 'You are going', 'event-tickets' ) : __( "Can't go", 'event-tickets' );
 ?>
 <div class="tribe-tickets__rsvp-actions-success-going">

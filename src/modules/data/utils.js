@@ -31,10 +31,7 @@ export const KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS = '_tribe_ticket_has_attendee_i
  * @return {string} The normalized title string.
  */
 export const normalizeTitle = ( value ) => {
-	if ( value && typeof value === 'object' ) {
-		return value.raw || value.rendered || '';
-	}
-	return value || '';
+	return value?.raw || value?.rendered || value || '';
 };
 
 /**
@@ -50,8 +47,5 @@ export const normalizeTitle = ( value ) => {
  * @return {string} The normalized description string.
  */
 export const normalizeDescription = ( value, excerpt = '' ) => {
-	if ( value && typeof value === 'object' ) {
-		return value.raw || value.rendered || '';
-	}
-	return value || excerpt || '';
+	return value?.raw || value?.rendered || value || excerpt || '';
 };

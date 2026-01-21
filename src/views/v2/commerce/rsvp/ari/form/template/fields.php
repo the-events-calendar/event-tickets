@@ -16,6 +16,7 @@
  * @var int $post_id The post ID the RSVP is linked to.
  */
 
+defined( 'ABSPATH' ) || die();
 if ( ! $rsvp->has_meta_enabled() ) {
 	return;
 }

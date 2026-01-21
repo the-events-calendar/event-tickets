@@ -19,15 +19,15 @@
  * @var Tribe__Tickets__Ticket_Object $tc_rsvp                      The TC RSVP object.
  */
 
+defined( 'ABSPATH' ) || die();
+
 use Tribe__Date_Utils as Date_Utils;
 
 // Default values for the Start date & time fields.
-$datepicker_format = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
-//phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+$datepicker_format  = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
 $default_start_date = Date_Utils::build_date_object( 'now' )->format( $datepicker_format );
 $default_start_time = '00:00:00';
-//phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-$default_end_date = Date_Utils::build_date_object( '+1 day' )->format( $datepicker_format );
+$default_end_date   = Date_Utils::build_date_object( '+1 day' )->format( $datepicker_format );
 
 $default_end_time = '00:00:00';
 

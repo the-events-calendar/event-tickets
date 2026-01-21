@@ -19,6 +19,7 @@
  * @version 5.7.0
  */
 
+defined( 'ABSPATH' ) || die();
 if ( empty( $attendees ) ) {
 	return;
 }

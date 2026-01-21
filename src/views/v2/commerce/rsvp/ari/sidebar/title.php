@@ -10,6 +10,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <h3 class="tribe-common-h5">
 	<?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?>

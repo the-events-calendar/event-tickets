@@ -21,14 +21,15 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\RSVP\V2\Constants;
-use Tribe__Tickets__Tickets_View;
+use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe__Tickets__Ticket_Object;
 use Tribe__Utils__Array;
 use Tribe__Tickets__Editor__Blocks__Rsvp as RSVP_Block;
 use Tribe__Tickets__Editor__Template as Template;
+use WP_Error;
 use WP_REST_Request;
-use WP_REST_Server;
 use WP_REST_Response;
+use WP_REST_Server;
 
 /**
  * Class Order_Endpoint.
@@ -50,16 +51,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * @since TBD
 	 *
-	 * @var Tribe__Tickets__Tickets_View
+	 * @var Tickets_View
 	 */
-	protected $tickets_view;
+	protected Tickets_View $tickets_view;
 
 	/**
 	 * @since TBD
 	 *
 	 * @var Module
 	 */
-	protected $module;
+	protected Module $module;
 
 	/**
 	 * RSVP blocks editor instance.
@@ -68,7 +69,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var RSVP_Block
 	 */
-	protected $blocks_rsvp;
+	protected RSVP_Block $blocks_rsvp;
 
 	/**
 	 * Tickets template renderer instance.
@@ -77,7 +78,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @var Template
 	 */
-	protected $template;
+	protected Template $template;
 
 	/**
 	 * Class constructor.
@@ -86,10 +87,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param RSVP_Block $block    The RSVP block instance.
 	 * @param Template   $template The template instance.
+	 * @param Module     $module   The Tickets Commerce module instance.
 	 */
-	public function __construct( RSVP_Block $block, Template $template ) {
-		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
-		$this->module       = tribe( Module::class );
+	public function __construct( RSVP_Block $block, Template $template, Module $module ) {
+		$this->tickets_view = Tickets_View::instance();
+		$this->module       = $module;
 		$this->blocks_rsvp  = $block;
 		$this->template     = $template;
 	}
@@ -109,6 +111,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'handle_steps' ],
+
+				/*
+				 * RSVPs are publicly accessible: any site visitor, including guests, can submit an RSVP.
+				 * Additional validation (post status, password protection, login requirements) is handled
+				 * within the callback.
+				 */
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -220,7 +228,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( 'success' === $args['step'] ) {
 			$first_attendee = $this->parse_attendee_details( $request );
-			$data           = [
+
+			if ( false === $first_attendee ) {
+				return [
+					'success' => false,
+					'errors'  => [
+						_x( 'Invalid attendee details', 'error message', 'event-tickets' ),
+					],
+				];
+			}
+
+			$data = [
 				'purchaser' => [
 					'name'  => $first_attendee['full_name'],
 					'email' => $first_attendee['email'],
@@ -230,7 +248,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$purchaser = tribe( Order::class )->get_purchaser_data( $data );
 
 			if ( is_wp_error( $purchaser ) ) {
-				return $purchaser;
+				return $this->wp_error_to_result( $purchaser );
 			}
 
 			$cart = tribe( RSVP_Cart::class );
@@ -276,13 +294,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
 			if ( is_wp_error( $created ) ) {
-				return $created;
+				return $this->wp_error_to_result( $created );
 			}
 
 			$updated = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
 
 			if ( is_wp_error( $updated ) ) {
-				return $updated;
+				return $this->wp_error_to_result( $updated );
 			}
 
 			tribe( Cart::class )->clear_cart();
@@ -591,5 +609,21 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		return $quantity;
+	}
+
+	/**
+	 * Converts a WP_Error to the expected result array format.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Error $error The WP_Error to convert.
+	 *
+	 * @return array The result array with success and errors keys.
+	 */
+	private function wp_error_to_result( WP_Error $error ): array {
+		return [
+			'success' => false,
+			'errors'  => $error->get_error_messages(),
+		];
 	}
 }

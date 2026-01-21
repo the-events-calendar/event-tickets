@@ -17,9 +17,10 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 if ( 0 < $days_to_rsvp ) {
 	$text = sprintf(
-		// Translators: 1: opening span. 2: the number of remaining days to RSVP. 3: Closing span. 4: The RSVP label.
+		// translators: %1$s: opening span tag, %2$s: the number of remaining days to RSVP, %3$s: closing span tag, %4$s: the RSVP label.
 		_nx(
 			'%1$s %2$s %3$s day left to %4$s',
 			'%1$s %2$s %3$s days left to %4$s',
@@ -34,7 +35,7 @@ if ( 0 < $days_to_rsvp ) {
 	);
 } else {
 	$text = sprintf(
-		// Translators: %s: The RSVP label.
+		// translators: %s: the RSVP label.
 		_x(
 			'Last day to %s',
 			'Last day to RSVP',
@@ -46,5 +47,5 @@ if ( 0 < $days_to_rsvp ) {
 ?>
 
 <span class="tribe-tickets__rsvp-availability-days-to-rsvp">
-	<?php echo wp_kses_post( $text ); ?>
+	<?php echo wp_kses( $text, [ 'span' => [ 'class' => [] ] ] ); ?>
 </span>

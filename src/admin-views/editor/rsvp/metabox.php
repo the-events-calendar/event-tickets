@@ -9,6 +9,7 @@
  * @since TBD
  */
 
+defined( 'ABSPATH' ) || die();
 $switch_classes = [
 	'tec-tickets-rsvp-switch__wrap',
 	! empty( $tc_rsvp->ID ) ? 'tribe-common-a11y-hidden' : '',

@@ -15,6 +15,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 $this->template(
 	'v2/commerce/rsvp/form/fields/name',
 	[

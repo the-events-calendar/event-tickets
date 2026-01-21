@@ -10,6 +10,7 @@
  * @var string $rsvp_required_type_error_message The RSVP required type error message.
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="rsvp_limit">

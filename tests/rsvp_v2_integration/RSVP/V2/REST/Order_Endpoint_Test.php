@@ -563,4 +563,57 @@ class Order_Endpoint_Test extends WPTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertStringContainsString( 'Something happened here.', $data['html'] );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_return_error_html_when_purchaser_data_is_invalid(): void {
+		// Ensure no user is logged in so get_purchaser_data() validates the input.
+		wp_set_current_user( 0 );
+
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 100 ] ] );
+
+		$this->register_endpoint();
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		/*
+		 * Provide invalid email that will cause parse_attendee_details to return false,
+		 * which then causes get_purchaser_data to receive null values and return WP_Error.
+		 */
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'quantity'  => 1,
+					'attendees' => [
+						[
+							'email'        => 'not-a-valid-email',
+							'full_name'    => 'Test User',
+							'order_status' => 'yes',
+							'optout'       => false,
+						],
+					],
+				],
+			]
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertTrue( $data['success'] );
+		// The error should be rendered as HTML, not cause a fatal error.
+		$this->assertNotEmpty( $data['html'] );
+	}
+
+	/**
+	 * Here to implement the required abstract method, this method is a no-op since it will not be invoked.
+	 */
+	protected function avoid_query_commit_rollback_handler( string $query ): string {
+		// No-op.
+		return $query;
+	}
 }

@@ -13,6 +13,7 @@
  * @version 5.0.0
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__rsvp-form-buttons">
 	<button

@@ -17,6 +17,7 @@
  * @version 4.12.3
  */
 
+defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__rsvp-actions-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-actions">

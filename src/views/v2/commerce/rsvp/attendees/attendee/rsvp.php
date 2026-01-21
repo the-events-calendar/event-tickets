@@ -20,11 +20,12 @@
  * @version 5.7.1
  */
 
+defined( 'ABSPATH' ) || die();
 if ( empty( $attendees ) || empty( $rsvp ) ) {
 	return;
 }
 
 ?>
 <div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
-	<?php echo wp_kses_post( $rsvp->name ); ?>
+	<?php echo esc_html( $rsvp->name ); ?>
 </div>

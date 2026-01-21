@@ -36,7 +36,7 @@ class Metabox {
 	 * @param string|null $post_type The post type to configure the metabox for.
 	 */
 	public function add( $post_type = null ) {
-		if ( ! in_array( $post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
+		if ( ! in_array( $post_type, Tribe__Tickets__Main::instance()->post_types(), true ) ) {
 			return;
 		}
 
