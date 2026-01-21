@@ -111,6 +111,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'handle_steps' ],
+
 				/*
 				 * RSVPs are publicly accessible: any site visitor, including guests, can submit an RSVP.
 				 * Additional validation (post status, password protection, login requirements) is handled
