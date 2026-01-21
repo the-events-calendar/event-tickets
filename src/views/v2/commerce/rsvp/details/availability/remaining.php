@@ -19,17 +19,15 @@
  */
 
 defined( 'ABSPATH' ) || die();
-
-$remaining_tickets = $rsvp->inventory();
-
 $remaining_tickets = $rsvp->remaining();
+
 if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;
 }
 
-echo wp_kses(
+echo wp_kses_post(
 	sprintf(
-		// translators: %1$s: opening span tag, %2$s: the number of remaining tickets to RSVP, %3$s: closing span tag.
+		// Translators: 1: opening span. 2: the number of remaining tickets to RSVP. 3: Closing span.
 		_x(
 			'%1$s %2$s %3$s remaining',
 			'Remaining RSVP quantity',
@@ -38,6 +36,5 @@ echo wp_kses(
 		'<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold">',
 		$remaining_tickets,
 		'</span>'
-	) . ( false !== $days_to_rsvp ? ',' : '' ),
-	[ 'span' => [ 'class' => [] ] ]
+	) . ( false !== $days_to_rsvp ? ',' : '' )
 );

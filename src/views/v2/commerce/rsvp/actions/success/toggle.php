@@ -16,14 +16,12 @@
  * @var string                        $opt_in_nonce         The nonce for opt-in AJAX requests.
  * @var boolean                       $opt_in_checked       Whether the opt-in field should be checked.
  *
- * @var bool|null                   $is_going             Whether the attendee is going. Null when unknown.
- *
  * @since 5.0.0
- * @version TBD
+ * @version 5.0.0
  */
 
 defined( 'ABSPATH' ) || die();
-if ( $opt_in_toggle_hidden || false === $is_going ) {
+if ( $opt_in_toggle_hidden ) {
 	return;
 }
 
@@ -52,9 +50,9 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 			aria-describedby="tribe-tickets-tooltip-content-<?php echo esc_attr( $rsvp->ID ); ?>"
 		>
 			<?php
-			echo wp_kses(
+			echo wp_kses_post(
 				sprintf(
-					// translators: %1$s: opening span tag, %2$s: closing span tag.
+					// Translators: 1: opening span. 2: Closing span.
 					_x(
 						'Show me on public %1$sattendee list%2$s',
 						'Toggle for RSVP attendee list.',
@@ -62,8 +60,7 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 					),
 					'<span class="tribe-tickets__rsvp-actions-success-going-toggle-label-underline">',
 					'</span>'
-				),
-				[ 'span' => [ 'class' => [] ] ]
+				)
 			);
 			?>
 		</span>
