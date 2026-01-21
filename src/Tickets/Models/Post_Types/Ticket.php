@@ -85,7 +85,7 @@ class Ticket extends Base {
 
 			// Build properties array.
 			$properties = [
-				'type'                 => $type ?: 'default',
+				'type'                 => $type,
 				'price'                => $price,
 				'sale_price'           => $sale_price,
 				'price_value'          => Value::create( $price ),
