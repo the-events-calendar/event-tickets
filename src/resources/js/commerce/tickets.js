@@ -252,8 +252,8 @@ tribe.tickets.commerce.tickets = {};
 			type: obj.tickets.ticketType || 'tc-rsvp',
 			title: formValues.ticket_name || '',
 			price: 0,
-			show_not_going: formValues.ticket_rsvp_enable_cannot_go === '1' ||
-				formValues.ticket_rsvp_enable_cannot_go === 'on',
+			show_not_going: formValues.show_not_going === '1' ||
+				formValues.show_not_going === 'on',
 		};
 
 		// Get dates from datepickers (converts to YYYY-MM-DD).

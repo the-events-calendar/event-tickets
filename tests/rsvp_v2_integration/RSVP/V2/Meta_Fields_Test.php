@@ -31,7 +31,7 @@ class Meta_Fields_Test extends WPTestCase {
 
 		$raw_data = [
 			'ticket_type'                  => Constants::TC_RSVP_TYPE,
-			'ticket_rsvp_enable_cannot_go' => '1',
+			'show_not_going' => '1',
 		];
 
 		$meta_fields = tribe( Meta_Fields::class );
@@ -52,7 +52,7 @@ class Meta_Fields_Test extends WPTestCase {
 
 		$raw_data = [
 			'ticket_type'                  => Constants::TC_RSVP_TYPE,
-			'ticket_rsvp_enable_cannot_go' => '0',
+			'show_not_going' => '0',
 		];
 
 		$meta_fields = tribe( Meta_Fields::class );
@@ -73,7 +73,7 @@ class Meta_Fields_Test extends WPTestCase {
 
 		$raw_data = [
 			'ticket_type'                  => 'default',
-			'ticket_rsvp_enable_cannot_go' => '1',
+			'show_not_going' => '1',
 		];
 
 		$meta_fields = tribe( Meta_Fields::class );
@@ -114,7 +114,7 @@ class Meta_Fields_Test extends WPTestCase {
 
 		// No ticket_type in raw_data, should read from meta.
 		$raw_data = [
-			'ticket_rsvp_enable_cannot_go' => '1',
+			'show_not_going' => '1',
 		];
 
 		$meta_fields = tribe( Meta_Fields::class );

@@ -35,11 +35,11 @@ class Meta_Fields {
 			return;
 		}
 
-		if ( ! isset( $raw_data['ticket_rsvp_enable_cannot_go'] ) ) {
+		if ( ! isset( $raw_data['show_not_going'] ) ) {
 			return;
 		}
 
-		$show_not_going = tribe_is_truthy( $raw_data['ticket_rsvp_enable_cannot_go'] ) ? '1' : '';
+		$show_not_going = tribe_is_truthy( $raw_data['show_not_going'] ) ? '1' : '';
 		update_post_meta( $ticket->ID, Constants::SHOW_NOT_GOING_META_KEY, $show_not_going );
 	}
 

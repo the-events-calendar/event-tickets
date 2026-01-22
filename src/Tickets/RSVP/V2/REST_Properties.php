@@ -112,4 +112,56 @@ class REST_Properties {
 
 		return $documentation;
 	}
+
+	/**
+	 * Add the show_not_going parameter to upsert params for RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $ticket_params The filtered ticket params.
+	 * @param array<string,mixed> $params        The original REST params.
+	 *
+	 * @return array<string,mixed> Modified ticket params.
+	 */
+	public function add_show_not_going_to_upsert_params( array $ticket_params, array $params ): array {
+		if ( ! isset( $params['show_not_going'] ) ) {
+			return $ticket_params;
+		}
+
+		$ticket_params['show_not_going'] = $params['show_not_going'];
+
+		return $ticket_params;
+	}
+
+	/**
+	 * Add the show_not_going property to REST API ticket entity response.
+	 *
+	 * This filter runs during entity transformation after the properties are collected.
+	 * It reads the meta value fresh from the database to ensure the response reflects
+	 * any recent updates.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $entity The ticket entity data.
+	 *
+	 * @return array<string,mixed> Modified entity data.
+	 */
+	public function add_show_not_going_to_rest_response( array $entity ): array {
+		$ticket_id = $entity['id'] ?? 0;
+
+		if ( ! $ticket_id ) {
+			return $entity;
+		}
+
+		$type = $entity['type'] ?? get_post_meta( $ticket_id, '_type', true );
+
+		if ( Constants::TC_RSVP_TYPE !== $type ) {
+			return $entity;
+		}
+
+		$show_not_going           = get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true );
+		$entity['show_not_going'] = tribe_is_truthy( $show_not_going );
+
+		return $entity;
+	}
 }
