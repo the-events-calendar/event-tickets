@@ -216,6 +216,108 @@ class REST_Properties_Test extends REST_Test_Case {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_include_show_not_going_in_request_body_schema(): void {
+		// Test that show_not_going is in the request body schema so it passes through param filtering.
+		$rest_properties = tribe( REST_Properties::class );
+
+		$properties    = new \TEC\Common\REST\TEC\V1\Collections\PropertiesCollection();
+		$documentation = [
+			'allOf' => [
+				[ '$ref' => '#/components/schemas/TEC_Post_Entity_Request_Body' ],
+				[
+					'title'      => 'Ticket Request Body',
+					'type'       => 'object',
+					'properties' => $properties,
+				],
+			],
+		];
+
+		$result = $rest_properties->add_show_not_going_to_request_body_docs( $documentation );
+
+		$property_names = [];
+		foreach ( $result['allOf'][1]['properties'] as $property ) {
+			$property_names[] = $property->get_name();
+		}
+
+		$this->assertContains( 'show_not_going', $property_names, 'show_not_going should be in request body schema' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_add_show_not_going_to_upsert_params(): void {
+		// Test the filter callback that adds show_not_going to ticket params.
+		$rest_properties = tribe( REST_Properties::class );
+
+		$ticket_params = [
+			'id'          => 123,
+			'ticket_name' => 'Test Ticket',
+		];
+
+		$params = [
+			'id'             => 123,
+			'show_not_going' => true,
+		];
+
+		$result = $rest_properties->add_show_not_going_to_upsert_params( $ticket_params, $params );
+
+		$this->assertArrayHasKey( 'show_not_going', $result, 'show_not_going should be added to ticket params' );
+		$this->assertTrue( $result['show_not_going'], 'show_not_going should be true' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_pass_show_not_going_through_schema_filtering(): void {
+		// Test that show_not_going passes through the endpoint's schema filtering.
+		$definition = new \TEC\Tickets\REST\TEC\V1\Documentation\Ticket_Request_Body_Definition();
+		$documentation = $definition->get_documentation();
+
+		// Get the properties collection from the documentation.
+		$properties = $documentation['allOf'][1]['properties'] ?? null;
+		$this->assertInstanceOf(
+			\TEC\Common\REST\TEC\V1\Collections\PropertiesCollection::class,
+			$properties,
+			'Properties should be a PropertiesCollection'
+		);
+
+		// Check if show_not_going is in the properties.
+		$property_names = [];
+		foreach ( $properties as $property ) {
+			$property_names[] = $property->get_name();
+		}
+
+		$this->assertContains(
+			'show_not_going',
+			$property_names,
+			'show_not_going should be in Ticket_Request_Body_Definition properties'
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_add_show_not_going_to_upsert_params_when_not_in_request(): void {
+		// Test the filter callback doesn't add show_not_going when not in request.
+		$rest_properties = tribe( REST_Properties::class );
+
+		$ticket_params = [
+			'id'          => 123,
+			'ticket_name' => 'Test Ticket',
+		];
+
+		$params = [
+			'id' => 123,
+		];
+
+		$result = $rest_properties->add_show_not_going_to_upsert_params( $ticket_params, $params );
+
+		$this->assertArrayNotHasKey( 'show_not_going', $result, 'show_not_going should not be added when not in request' );
+	}
+
+	/**
 	 * Provides different user roles for testing.
 	 *
 	 * @return Generator
