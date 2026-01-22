@@ -216,7 +216,9 @@ class REST_Properties_Test extends REST_Test_Case {
 	}
 
 	/**
-	 * @test
+	 * Provides different user roles for testing.
+	 *
+	 * @return Generator
 	 */
 	public function it_should_include_show_not_going_in_request_body_schema(): void {
 		// Test that show_not_going is in the request body schema so it passes through param filtering.
