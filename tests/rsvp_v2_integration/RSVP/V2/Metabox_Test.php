@@ -16,14 +16,6 @@ class Metabox_Test extends WPTestCase {
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use With_Uopz;
-	use With_Clock_Mock;
-
-	/**
-	 * @before
-	 */
-	public function stop_time(): void {
-		$this->freeze_time( new \DateTime( '2020-01-01 12:00:00 UTC' ) );
-	}
 
 	public function render_data_provider(): Generator {
 		yield 'post without RSVP' => [
@@ -90,6 +82,24 @@ class Metabox_Test extends WPTestCase {
 	}
 
 	/**
+	 * Replaces dynamic dates with placeholders for stable snapshots.
+	 *
+	 * @param string $snapshot The snapshot HTML.
+	 *
+	 * @return string The snapshot with date placeholders.
+	 */
+	private function placehold_dates( string $snapshot ): string {
+		$today    = Date_Utils::build_date_object( 'today' )->format( 'n/j/Y' );
+		$tomorrow = Date_Utils::build_date_object( 'tomorrow' )->format( 'n/j/Y' );
+
+		return str_replace(
+			[ $today, $tomorrow ],
+			[ '{START_DATE}', '{END_DATE}' ],
+			$snapshot
+		);
+	}
+
+	/**
 	 * @test
 	 * @dataProvider render_data_provider
 	 */
@@ -98,14 +108,15 @@ class Metabox_Test extends WPTestCase {
 		$this->set_fn_return( 'wp_create_nonce', '33333333' );
 
 		$metabox = tribe( Metabox::class );
-		$html    = $metabox->render( $post_id );
-		$html    = $this->placehold_post_ids(
+		$html = $metabox->render( $post_id );
+		$html = $this->placehold_post_ids(
 			$html,
 			[
 				'POST_ID' => $post_id,
 				'RSVP_ID' => $rsvp_id,
 			]
 		);
+		$html = $this->placehold_dates( $html );
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );

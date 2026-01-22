@@ -157,7 +157,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	public $show_not_going = '_tribe_ticket_show_not_going';
+	public static string $show_not_going = '_tribe_ticket_show_not_going';
 
 	/**
 	 * @var Tribe__Tickets__RSVP__Attendance_Totals
@@ -2738,7 +2738,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			if ( ! empty( $ticket ) ) {
 				$capacity  = $ticket->capacity();
-				$not_going = tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
+				$not_going = tribe_is_truthy( get_post_meta( $ticket_id, self::show_not_going, true ) );
 			}
 		}
 
@@ -3341,7 +3341,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool Whether the not going option is enabled or not.
 	 */
 	public function is_not_going_enabled( $ticket_id ): bool {
-		return tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
+		return tribe_is_truthy( get_post_meta( $ticket_id, self::show_not_going, true ) );
 	}
 
 	/**

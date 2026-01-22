@@ -545,7 +545,6 @@ class Ticket extends Ticket_Data {
 					'fields'     => 'ids',
 					'per_page'   => 1,
 					'post_type'  => Attendee::POSTTYPE,
-					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 					'meta_query' => [
 						[
 							'key'   => Attendee::$ticket_relation_meta_key,
