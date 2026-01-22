@@ -30,18 +30,17 @@ class REST_Properties {
 	 *
 	 * @param array<string,mixed> $properties Properties to add to the model.
 	 * @param WP_Post             $post       The ticket post object.
-	 * @param string              $filter     The filter used to build the properties.
 	 *
 	 * @return array<string,mixed> Modified properties.
 	 */
-	public function add_show_not_going_to_properties( array $properties, WP_Post $post, string $filter ): array {
+	public function add_show_not_going_to_properties( array $properties, WP_Post $post ): array {
 		$type = $properties['type'] ?? get_post_meta( $post->ID, '_type', true );
 
 		if ( Constants::TC_RSVP_TYPE !== $type ) {
 			return $properties;
 		}
 
-		$show_not_going              = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
+		$show_not_going               = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
 		$properties['show_not_going'] = tribe_is_truthy( $show_not_going );
 
 		return $properties;
@@ -68,11 +67,10 @@ class REST_Properties {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $documentation The Swagger documentation array.
-	 * @param mixed               $definition    The definition instance.
 	 *
 	 * @return array<string,mixed> Modified documentation.
 	 */
-	public function add_show_not_going_to_request_body_docs( array $documentation, $definition ): array {
+	public function add_show_not_going_to_request_body_docs( array $documentation ): array {
 		$properties = $documentation['allOf'][1]['properties'] ?? null;
 
 		if ( ! $properties instanceof PropertiesCollection ) {
@@ -95,11 +93,10 @@ class REST_Properties {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $documentation The Swagger documentation array.
-	 * @param mixed               $definition    The definition instance.
 	 *
 	 * @return array<string,mixed> Modified documentation.
 	 */
-	public function add_show_not_going_to_response_docs( array $documentation, $definition ): array {
+	public function add_show_not_going_to_response_docs( array $documentation ): array {
 		$properties = $documentation['allOf'][1]['properties'] ?? null;
 
 		if ( ! $properties instanceof PropertiesCollection ) {

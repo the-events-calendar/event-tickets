@@ -142,7 +142,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_build_ticket_properties',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
 			10,
-			3
+			2
 		);
 		add_filter(
 			'tec_rest_ticket_properties_to_add',
@@ -152,15 +152,11 @@ class Controller extends Controller_Contract {
 		// Add show_not_going to REST API documentation.
 		add_filter(
 			'tec_rest_swagger_ticket_request_body_definition',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' ),
-			10,
-			2
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
 		);
 		add_filter(
 			'tec_rest_swagger_ticket_definition',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' ),
-			10,
-			2
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
 		);
 	}
 

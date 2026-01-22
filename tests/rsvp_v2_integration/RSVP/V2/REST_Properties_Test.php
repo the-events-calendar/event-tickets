@@ -35,7 +35,7 @@ class REST_Properties_Test extends WPTestCase {
 
 		$post            = get_post( $ticket_id );
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post, 'raw' );
+		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post );
 
 		$this->assertArrayHasKey( 'show_not_going', $result );
 		$this->assertTrue( $result['show_not_going'] );
@@ -57,7 +57,7 @@ class REST_Properties_Test extends WPTestCase {
 
 		$post            = get_post( $ticket_id );
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post, 'raw' );
+		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post );
 
 		$this->assertArrayHasKey( 'show_not_going', $result );
 		$this->assertFalse( $result['show_not_going'] );
@@ -76,7 +76,7 @@ class REST_Properties_Test extends WPTestCase {
 
 		$post            = get_post( $ticket_id );
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post, 'raw' );
+		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post );
 
 		$this->assertArrayNotHasKey( 'show_not_going', $result );
 	}
@@ -95,7 +95,7 @@ class REST_Properties_Test extends WPTestCase {
 
 		$post            = get_post( $ticket_id );
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post, 'raw' );
+		$result          = $rest_properties->add_show_not_going_to_properties( $properties, $post );
 
 		$this->assertArrayHasKey( 'show_not_going', $result );
 		$this->assertTrue( $result['show_not_going'] );
@@ -138,7 +138,7 @@ class REST_Properties_Test extends WPTestCase {
 		];
 
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_request_body_docs( $documentation, null );
+		$result          = $rest_properties->add_show_not_going_to_request_body_docs( $documentation );
 
 		$result_properties = $result['allOf'][1]['properties'];
 		$this->assertInstanceOf( PropertiesCollection::class, $result_properties );
@@ -169,7 +169,7 @@ class REST_Properties_Test extends WPTestCase {
 		];
 
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_response_docs( $documentation, null );
+		$result          = $rest_properties->add_show_not_going_to_response_docs( $documentation );
 
 		$result_properties = $result['allOf'][1]['properties'];
 		$this->assertInstanceOf( PropertiesCollection::class, $result_properties );
@@ -198,7 +198,7 @@ class REST_Properties_Test extends WPTestCase {
 		];
 
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_request_body_docs( $documentation, null );
+		$result          = $rest_properties->add_show_not_going_to_request_body_docs( $documentation );
 
 		$this->assertEquals( $documentation, $result );
 	}
@@ -219,7 +219,7 @@ class REST_Properties_Test extends WPTestCase {
 		];
 
 		$rest_properties = tribe( REST_Properties::class );
-		$result          = $rest_properties->add_show_not_going_to_response_docs( $documentation, null );
+		$result          = $rest_properties->add_show_not_going_to_response_docs( $documentation );
 
 		$this->assertEquals( $documentation, $result );
 	}
