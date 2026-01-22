@@ -48,6 +48,7 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( REST\Order_Endpoint::class );
 		$this->container->singleton( Cart\RSVP_Cart::class );
 		$this->container->singleton( Meta_Fields::class );
+		$this->container->singleton( REST_Properties::class );
 
 		$this->container->get( Assets::class )->register();
 
@@ -135,6 +136,32 @@ class Controller extends Controller_Contract {
 			10,
 			3
 		);
+
+		// Add show_not_going property to REST responses for RSVP tickets.
+		add_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
+			10,
+			3
+		);
+		add_filter(
+			'tec_rest_ticket_properties_to_add',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
+		);
+
+		// Add show_not_going to REST API documentation.
+		add_filter(
+			'tec_rest_swagger_ticket_request_body_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_rest_swagger_ticket_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' ),
+			10,
+			2
+		);
 	}
 
 	/**
@@ -191,6 +218,22 @@ class Controller extends Controller_Contract {
 		remove_action(
 			'tec_tickets_commerce_after_save_ticket',
 			$this->container->callback( Meta_Fields::class, 'save_show_not_going' )
+		);
+		remove_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' )
+		);
+		remove_filter(
+			'tec_rest_ticket_properties_to_add',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
+		);
+		remove_filter(
+			'tec_rest_swagger_ticket_request_body_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
+		);
+		remove_filter(
+			'tec_rest_swagger_ticket_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
 		);
 	}
 }

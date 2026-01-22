@@ -139,13 +139,6 @@ class Ticket_Request_Body_Definition extends Definition {
 		)->set_example( 'default' );
 
 		$properties[] = (
-			new Boolean(
-				'show_not_going',
-				fn() => __( 'Whether to show the "Not Going" option for RSVP tickets', 'event-tickets' ),
-			)
-		)->set_example( false );
-
-		$properties[] = (
 			new Date_Time(
 				'start_date',
 				fn() => __( 'The start sale date of the ticket', 'event-tickets' ),

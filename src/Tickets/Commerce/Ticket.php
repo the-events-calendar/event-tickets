@@ -169,6 +169,7 @@ class Ticket extends Ticket_Data {
 	 * @var string
 	 */
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+
 	/**
 	 * The meta key that holds the ticket type.
 	 *
@@ -176,7 +177,7 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @var string
 	 */
-	public static $type_meta_key = '_type';
+	public static string $type_meta_key = '_type';
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
@@ -269,7 +270,7 @@ class Ticket extends Ticket_Data {
 		/**
 		 * Filter the arguments that craft the ticket post type.
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 *
 		 * @since 5.1.9
 		 *
@@ -369,7 +370,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Gets an individual ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
+	 * @todo TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
 	 * @since 5.1.9
 	 *
@@ -421,7 +422,7 @@ class Ticket extends Ticket_Data {
 		$return->end_time         = get_post_meta( $ticket_id, static::END_TIME_META_KEY, true );
 		$return->sku              = get_post_meta( $ticket_id, static::$sku_meta_key, true );
 
-		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
+		$qty_sold = get_post_meta( $ticket_id, static::$sales_meta_key, true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
@@ -475,7 +476,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Returns the total number of cancelled tickets.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 * @todo TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
 	 * @since 5.14.0 Added the $refresh parameter and use stored status counts and utilize new memoization class.
@@ -520,7 +521,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Returns the number of pending attendees by ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 * @todo TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since 5.1.9
 	 * @since 5.14.0 Utilize new memoization class.
@@ -539,22 +540,24 @@ class Ticket extends Ticket_Data {
 		}
 
 		if ( $refresh || ! isset( $quantities[ Pending::SLUG ] ) ) {
-			$pending_query = new \WP_Query( [
-				'fields'     => 'ids',
-				'per_page'   => 1,
-				'post_type'  => Attendee::POSTTYPE,
-				'meta_query' => [
-					[
-						'key'   => Attendee::$ticket_relation_meta_key,
-						'value' => $ticket_id,
+			$pending_query = new \WP_Query(
+				[
+					'fields'     => 'ids',
+					'per_page'   => 1,
+					'post_type'  => Attendee::POSTTYPE,
+					'meta_query' => [
+						[
+							'key'   => Attendee::$ticket_relation_meta_key,
+							'value' => $ticket_id,
+						],
+						'relation' => 'AND',
+						[
+							'key'   => Attendee::$status_meta_key,
+							'value' => tribe( Pending::class )->get_wp_slug(),
+						],
 					],
-					'relation' => 'AND',
-					[
-						'key'   => Attendee::$status_meta_key,
-						'value' => tribe( Pending::class )->get_wp_slug(),
-					],
-				],
-			] );
+				] 
+			);
 
 			$quantities[ Pending::SLUG ] = $pending_query->found_posts;
 			$cache->set( 'tec_tickets_quantities_by_status_' . $ticket_id, $quantities );
@@ -567,7 +570,7 @@ class Ticket extends Ticket_Data {
 	 * Legacy method ported from Tribe Commerce (TPP), we are specifically avoiding refactoring anything on the first
 	 * stage of Tickets Commerce
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to be split into `create` and `update`
+	 * @todo TribeCommerceLegacy: This method needs to be split into `create` and `update`
 	 *
 	 * @since 5.1.9
 	 *
@@ -584,17 +587,17 @@ class Ticket extends Ticket_Data {
 			$save_type = 'create';
 
 			/* Create main product post */
-			$args = array(
+			$args = [
 				'post_status'  => 'publish',
 				'post_type'    => static::POSTTYPE,
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => (int) ( $ticket->menu_order ?? tribe_get_request_var( 'menu_order', - 1 ) ),
-				'meta_input' => [
+				'meta_input'   => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
-				]
-			);
+				],
+			];
 
 			$ticket->ID = wp_insert_post( $args );
 
@@ -602,15 +605,15 @@ class Ticket extends Ticket_Data {
 			add_post_meta( $ticket->ID, static::$event_relation_meta_key, $post_id );
 
 		} else {
-			$args = array(
+			$args = [
 				'ID'           => $ticket->ID,
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => $ticket->menu_order,
-				'meta_input' => [
+				'meta_input'   => [
 					'_type' => $raw_data['ticket_type'] ?? 'default',
-				]
-			);
+				],
+			];
 
 			$ticket->ID = wp_update_post( $args );
 		}
@@ -636,7 +639,7 @@ class Ticket extends Ticket_Data {
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 		update_post_meta( $ticket->ID, '_type', $ticket->type() ?? 'default' );
 
-		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
 		tribe( Module::class )->update_capacity( $ticket, $ticket_data, $save_type );
 
 		foreach ( [ 'start_date', 'start_time', 'end_date', 'end_time' ] as $time_key ) {
@@ -668,7 +671,7 @@ class Ticket extends Ticket_Data {
 		}
 
 		// Fetches all Ticket Form data
-		$data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+		$data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
 
 		// Fetch the Global stock Instance for this Event
 		$event_stock = new \Tribe__Tickets__Global_Stock( $post_id );
@@ -753,11 +756,11 @@ class Ticket extends Ticket_Data {
 			$data['stock'] = - 1;
 		}
 
-		$mode = isset( $data['mode'] ) ? $data['mode'] : 'own';
+		$mode = $data['mode'] ?? 'own';
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
-				$totals        = $tickets_handler->get_ticket_totals( $ticket->ID );
+				$totals         = $tickets_handler->get_ticket_totals( $ticket->ID );
 				$data['stock'] -= $totals['pending'] + $totals['sold'];
 			}
 
@@ -828,7 +831,7 @@ class Ticket extends Ticket_Data {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @todo  TribeCommerceLegacy
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since 5.2.0
 		 *
@@ -842,7 +845,7 @@ class Ticket extends Ticket_Data {
 		/**
 		 * Generic action fired after saving a ticket.
 		 *
-		 * @todo  TribeCommerceLegacy
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since 5.2.0
 		 *
@@ -859,7 +862,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Deletes a given ticket.
 	 *
-	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
+	 * @todo TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
 	 * @since 5.1.9
 	 * @since 5.25.0 Removed the increment of deleted attendees count, it is handled in attendee deletion method.
@@ -915,7 +918,7 @@ class Ticket extends Ticket_Data {
 	 * @param int $attendee_id Attendee ID.
 	 */
 	public function update_stock_after_attendee_deletion( $attendee_id ) {
-		$event_id    = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
+		$event_id   = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
 		$product_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
 
 		$global_stock    = new \Tribe__Tickets__Global_Stock( $event_id );
@@ -937,7 +940,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Update Global Stock.
 	 *
-	 * @todo  TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
+	 * @todo TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
 	 *        create/update methods and delete this.
 	 *
 	 * @since 5.1.9
@@ -961,7 +964,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Increase the sales for a ticket by a specific quantity.
 	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
 	 * @since 5.13.3 Modified logic when updating global stock.
@@ -999,7 +1002,7 @@ class Ticket extends Ticket_Data {
 	/**
 	 * Decrease the sales for a ticket by a specific quantity.
 	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * @todo TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
 	 *
@@ -1012,12 +1015,12 @@ class Ticket extends Ticket_Data {
 	 */
 	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
 		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) - $quantity;
+		$sales = (int) get_post_meta( $ticket_id, static::$sales_meta_key, true ) - $quantity;
 
 		// Prevent negatives.
 		$sales = max( $sales, 0 );
 
-		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
+		update_post_meta( $ticket_id, static::$sales_meta_key, $sales );
 
 		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity, true );
@@ -1038,7 +1041,6 @@ class Ticket extends Ticket_Data {
 	 *
 	 * @return \TEC\Tickets\Commerce\Utils\Value|null;
 	 * @version 5.2.3
-	 *
 	 */
 	public function get_price_value( $product, $force_regular = false ) {
 		$ticket = Models\Ticket_Model::from_post( $product );
@@ -1143,8 +1145,8 @@ class Ticket extends Ticket_Data {
 	 * @return bool|int
 	 */
 	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
-		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
-		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
+		$stock = (int) get_post_meta( $ticket_id, static::$stock_meta_key, true ) + $quantity;
+		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
 
 	/**

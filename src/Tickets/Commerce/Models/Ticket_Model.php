@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Models;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Ticket;
+use WP_Post;
 
 /**
  * Class Attendee.
@@ -32,6 +33,8 @@ class Ticket_Model extends Base {
 			 *
 			 * @since 5.26.0
 			 *
+			 * @param WP_Post $post The ticket post object.
+			 * @param string $filter The filter used to build the properties.
 			 * @param array<string,mixed> $properties Properties to add to the model.
 			 */
 			$properties = apply_filters( 'tec_tickets_pre_build_ticket_properties', [], $this->post, $filter );
@@ -70,6 +73,17 @@ class Ticket_Model extends Base {
 				'sold'                  => $ticket_object->qty_sold(),
 				'sku'                   => $ticket_object->sku,
 			];
+
+			/**
+			 * Filters the properties to add to a ticket model.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<string,mixed> $properties Properties to add to the model.
+			 * @param WP_Post             $post       The ticket post object.
+			 * @param string              $filter     The filter used to build the properties.
+			 */
+			$properties = apply_filters( 'tec_tickets_build_ticket_properties', $properties, $this->post, $filter );
 		} catch ( \Exception $e ) {
 			return [];
 		}
