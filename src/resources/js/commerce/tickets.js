@@ -3,6 +3,60 @@ import { registerMiddlewares } from '@tec/common/tecApi';
 import apiFetch from '@wordpress/api-fetch';
 import { doAction } from '@wordpress/hooks';
 import { _x } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
+
+/**
+ * Experimental endpoint acknowledgement header name.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const TEC_EEA_HEADER_NAME = 'X-TEC-EEA';
+
+/**
+ * Experimental endpoint acknowledgement header value.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const TEC_EEA_HEADER_VALUE = 'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.';
+
+/**
+ * Middleware to add the TEC experimental endpoint acknowledgement header to TEC API requests.
+ *
+ * The header might already have been added by other code using the API before this middleware
+ * runs, so we check if it's already set to avoid overwriting it.
+ *
+ * @since TBD
+ *
+ * @param {Object}   options The request options.
+ * @param {Function} next    The next middleware in the chain.
+ *
+ * @return {*} The result of the next middleware.
+ */
+const tecEeaMiddleware = ( options, next ) => {
+	const url = options.url || options.path || '';
+
+	// Only add header for TEC API endpoints.
+	if ( url.includes( '/tec/v1/' ) ) {
+		const headers = options.headers || {};
+
+		// Only add header if not already set.
+		if ( ! headers[ TEC_EEA_HEADER_NAME ] ) {
+			options.headers = {
+				...headers,
+				[ TEC_EEA_HEADER_NAME ]: TEC_EEA_HEADER_VALUE,
+			};
+		}
+	}
+
+	return next( options );
+};
+
+// Register the middleware with apiFetch.
+apiFetch.use( tecEeaMiddleware );
 
 /**
  * Makes sure we have all the required levels on the Tribe Object.
@@ -63,19 +117,6 @@ tribe.tickets.commerce.tickets = {};
 	};
 
 	/**
-	 * Experimental endpoint acknowledgement header.
-	 *
-	 * @todo Remove when switching to use of `apiFetch` function.
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	obj.TEC_EEA_HEADER = {
-		'X-TEC-EEA': 'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
-	};
-
-	/**
 	 * Check and return embed URL from tec_event_pro_calendar_embed_data if available.
 	 *
 	 * @since TBD
@@ -115,25 +156,6 @@ tribe.tickets.commerce.tickets = {};
 		url.search = new URLSearchParams( params ).toString();
 
 		return url.toString();
-	}
-
-	/**
-	 * Check and return REST nonce from tecTicketsCommerceTickets if available.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The embed nonce.
-	 */
-	obj.getEmbedNonce = function() {
-		let RESTNonce = '';
-
-		if (
-			typeof tecTicketsCommerceTickets !== 'undefined' &&
-			tecTicketsCommerceTickets.nonce
-		) {
-			RESTNonce = tecTicketsCommerceTickets.nonce;
-		}
-		return RESTNonce;
 	}
 
 	/**
@@ -313,19 +335,11 @@ tribe.tickets.commerce.tickets = {};
 			: obj.tickets.tecApiEndpoint;
 		const method = isUpdate ? 'PUT' : 'POST';
 
-		fetch(
-			endpoint,
-			{
-				method: method,
-				headers: {
-					'X-WP-Nonce': obj.getEmbedNonce(),
-					'Content-Type': 'application/json',
-					...obj.TEC_EEA_HEADER,
-				},
-				body: JSON.stringify( apiParams ),
-			}
-		)
-			.then( response => response.json() )
+		apiFetch( {
+			url: endpoint,
+			method: method,
+			data: apiParams,
+		} )
 			.then( data => {
 				obj.loaderHide();
 				obj.handleTicketResponse( data );
@@ -359,27 +373,22 @@ tribe.tickets.commerce.tickets = {};
 
 		obj.loaderShow();
 
-		fetch(
-			obj.tickets.tecApiEndpoint + '/' + rsvpId,
-			{
-				method: 'DELETE',
-				headers: {
-					'X-WP-Nonce': obj.getEmbedNonce(),
-					...obj.TEC_EEA_HEADER,
-				}
-			}
-		)
-			.then( response => {
+		apiFetch( {
+			url: obj.tickets.tecApiEndpoint + '/' + rsvpId,
+			method: 'DELETE',
+		} )
+			.then( () => {
 				obj.loaderHide();
-				if ( response.ok ) {
-					obj.handleRemoveResponse( {} );
-				} else {
-					return response.json().then( data => {
-						obj.handleRemoveResponse( data );
-					} );
-				}
+				obj.handleRemoveResponse( {} );
 			} )
-			.catch( obj.handleApproveError );
+			.catch( error => {
+				obj.loaderHide();
+				if ( error && error.data ) {
+					obj.handleRemoveResponse( error.data );
+				} else {
+					obj.handleApproveError( error );
+				}
+			} );
 	};
 
 	/**
