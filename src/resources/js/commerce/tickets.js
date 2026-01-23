@@ -342,11 +342,14 @@ tribe.tickets.commerce.tickets = {};
 		} )
 			.then( data => {
 				obj.loaderHide();
+				obj.submitButton( true );
 				obj.handleTicketResponse( data );
 			} )
-			.catch( obj.handleApproveError );
-
-		obj.submitButton( true );
+			.catch( error => {
+				obj.loaderHide();
+				obj.submitButton( true );
+				obj.handleApproveError( error );
+			} );
 	};
 
 	/**
