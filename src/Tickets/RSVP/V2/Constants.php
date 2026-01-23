@@ -34,4 +34,13 @@ class Constants {
 	 * @var string
 	 */
 	public const TYPE_META_QUERY_KEY = 'tc-rsvp-type';
+
+	/**
+	 * Meta key for storing the "show not going" option.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const SHOW_NOT_GOING_META_KEY = '_tribe_ticket_show_not_going';
 }

@@ -1,0 +1,222 @@
+
+<div id="tec_tickets_rsvp_metabox" class="eventtable tec-event-tickets-from__wrap tribe-common" aria-live="polite">
+	<div class="tribe-events-virtual-loader-wrap">
+	<div class="tribe-common">
+		<div  class="tribe-events-loader__dots tribe-common-c-loader tribe-common-a11y-hidden"  >
+			<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+			<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+			<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+		</div>
+	</div>
+</div>
+	<h4 class="tribe-dependent" data-depends="#rsvp_id" data-condition-not-empty>
+		<svg
+	 class="tribe-common-c-svgicon tribe-common-c-svgicon--mail" 	aria-hidden="true"
+	viewBox="0 0 18 18"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<path d="M1.405 1.405l7.87 7.043 7.313-7.051" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="tribe-common-c-svgicon__svg-stroke"/><path clip-rule="evenodd" d="M1 2.38v10.482c0 .762.618 1.38 1.38 1.38h13.24a1.38 1.38 0 001.38-1.38V2.38A1.38 1.38 0 0015.62 1H2.38A1.38 1.38 0 001 2.38z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="tribe-common-c-svgicon__svg-stroke"/>
+</svg>
+		RSVP active	</h4>
+	<div  class="tec-tickets-rsvp-switch__wrap tribe-common-a11y-hidden" >
+		<fieldset id="tec-field-tec_tickets_rsvp_enable" class="tribe-field tribe-field-text tribe-size-medium tribe-field-switch">
+	<span class="tribe-field-switch-inner-wrap">
+		<div class="tribe-field-wrap">
+			<div
+	 class="tribe-common-control tribe-common-control--switch tec-tickets-settings-switch-control" >
+	<input
+		 class="tribe-common-switch__input tec-tickets-settings-switch__input" 		id="tec_tickets_rsvp_enable"
+		name="tec_tickets_rsvp_enable"
+		type="checkbox"
+		value="1"
+		 checked='checked'			/>
+
+	<label  class="tribe-common-switch__label tec-tickets-settings-switch__label"  for="tec_tickets_rsvp_enable">
+		<span class="screen-reader-text">
+			Enable RSVP		</span>
+	</label>
+</div>
+			<legend class="tribe-field-label">
+				Enable RSVP							</legend>
+		</div>
+					<p class="description ticket_form_right">
+				Allow users to register as attendees for this event			</p>
+			</span>
+</fieldset>
+	</div>
+
+	
+<div id="tec_event_tickets_rsvp_panel" class="tribe-dependent panel_edit tribe-validation" aria-hidden="true"
+	data-default-provider="TEC\Tickets\Commerce\Module"
+	data-current-provider="TEC\Tickets\Commerce\Module"
+	class="tribe-dependent"
+	data-depends="#tec_tickets_rsvp_enable"
+	data-condition-is-checked
+>
+	
+	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
+		<div id="ticket_form_table" class="eventtable ticket_form">
+			<section id="ticket_form_main" class="main"
+				data-datepicker_format="1">
+
+				
+				<input
+					type='hidden'
+					id='ticket_type'
+					name='ticket_type'
+					value="tc-rsvp"
+				/>
+
+				<input
+					type='hidden'
+					id='post_ID'
+					name='post_ID'
+					value="{{ POST_ID }}"
+				/>
+
+				<input
+					type='hidden'
+					id='rsvp_id'
+					name='rsvp_id'
+					value="{{ RSVP_ID }}"
+				/>
+
+				<div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="rsvp_limit">
+		Limit:	</label>
+	<input
+		type='text'
+		id='rsvp_limit'
+		name='rsvp_limit'
+		class="ticket_field ticket_form_right"\
+		value="100"
+		data-validation-error="RSVP type is a required field"
+	/>
+	<p class="description ticket_form_right">
+		Leave blank for unlimited	</p>
+</div>
+
+				<div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
+		Open RSVP:	</label>
+	<div class="ticket_form_right">
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker tribe-field-start_date ticket_field"
+			name="rsvp_start_date"
+			id="rsvp_start_date"
+			value="1/2/2020"
+			data-validation-type="datepicker"
+
+			data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
+		/>
+		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+		<span class="datetime_seperator"> at </span>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-timepicker tribe-field-start_time ticket_field"
+			name="rsvp_start_time"
+			id="rsvp_start_time"
+						data-step="30"
+			data-round="00:00:00"
+			value="08:00:00"
+			aria-label="Ticket start date"
+		/>
+		<span class="helper-text hide-if-js">HH:MM</span>
+	</div>
+</div>
+<div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="ticket_end_date">
+		Close RSVP:	</label>
+	<div class="ticket_form_right">
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker tribe-field-end_date ticket_field"
+			name="rsvp_end_date"
+			id="rsvp_end_date"
+			value="3/1/2050"
+		/>
+		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+		<span class="datetime_seperator"> at </span>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-timepicker tribe-field-end_time ticket_field"
+			name="rsvp_end_time"
+			id="rsvp_end_time"
+						data-step="30"
+			data-round="00:00:00"
+			value="20:00:00"
+			aria-label="Ticket end date"
+		/>
+		<span class="helper-text hide-if-js">HH:MM</span>
+	</div>
+</div>
+
+				<input type="hidden" id="tec_tickets_ticket_provider" name="ticket_provider" value="TEC\Tickets\Commerce\Module"/>
+
+							</section>
+			<div
+				class="tec-tickets-rsvp-form__options"
+			>
+				<h4
+					id="rsvp_title_edit"
+					class="ticket_form_title"
+				>
+					Options				</h4>
+				<fieldset id="tec-field-show_not_going" class="tribe-field tribe-field-text tribe-size-medium tribe-field-switch">
+	<span class="tribe-field-switch-inner-wrap">
+		<div class="tribe-field-wrap">
+			<div
+	 class="tribe-common-control tribe-common-control--switch tec-tickets-settings-switch-control" >
+	<input
+		 class="tribe-common-switch__input tec-tickets-settings-switch__input" 		id="show_not_going"
+		name="show_not_going"
+		type="checkbox"
+		value="1"
+					/>
+
+	<label  class="tribe-common-switch__label tec-tickets-settings-switch__label"  for="show_not_going">
+		<span class="screen-reader-text">
+			Enable &quot;Can&#039;t go&quot; responses		</span>
+	</label>
+</div>
+			<legend class="tribe-field-label">
+				Enable &quot;Can&#039;t go&quot; responses							</legend>
+		</div>
+			</span>
+</fieldset>
+			</div>
+			<div class="tec-tickets-rsvp-bottom">
+
+				<div class="tec-tickets-rsvp-buttons-left">
+					<div class="tribe-common tribe-dependent" data-depends="#rsvp_id" data-condition-not-empty>
+						<input
+							type="button"
+							id="tc_ticket_form_remove"
+							class="tribe-validation-submit tec-tickets-rsvp-buttons__remove-rsvp"
+							name="tc_ticket_form_remove"
+							value="Remove RSVP"
+						/>
+					</div>
+									</div>
+
+				<div class="tec-tickets-rsvp-buttons-right">
+					
+					<input
+						type="button"
+						id="tc_ticket_form_save"
+						class="button-primary tribe-validation-submit"
+						name="tc_ticket_form_save"
+						value="Save"
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>

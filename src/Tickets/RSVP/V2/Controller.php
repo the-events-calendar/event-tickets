@@ -46,8 +46,9 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Frontend::class );
 		$this->container->singleton( Repository_Filters::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
-		$this->container->singleton( REST\Ticket_Endpoint::class );
 		$this->container->singleton( Cart\RSVP_Cart::class );
+		$this->container->singleton( Meta_Fields::class );
+		$this->container->singleton( REST_Properties::class );
 
 		$this->container->get( Assets::class )->register();
 
@@ -126,7 +127,51 @@ class Controller extends Controller_Contract {
 		);
 
 		// REST.
-		add_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
+		add_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
+
+		// RSVP-specific meta saving.
+		add_action(
+			'tec_tickets_commerce_after_save_ticket',
+			$this->container->callback( Meta_Fields::class, 'save_show_not_going' ),
+			10,
+			3
+		);
+
+		// Add show_not_going property to REST responses for RSVP tickets.
+		add_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_rest_ticket_properties_to_add',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
+		);
+
+		// Add show_not_going to REST API documentation.
+		add_filter(
+			'tec_rest_swagger_ticket_request_body_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
+		);
+		add_filter(
+			'tec_rest_swagger_ticket_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
+		);
+
+		// Add show_not_going to upsert params for RSVP tickets.
+		add_filter(
+			'tec_tickets_rest_ticket_upsert_params',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_upsert_params' ),
+			10,
+			2
+		);
+
+		// Add show_not_going to REST API ticket entity response.
+		add_filter(
+			'tec_rest_v1_tec_tc_ticket_transform_entity',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_response' )
+		);
 	}
 
 	/**
@@ -179,18 +224,34 @@ class Controller extends Controller_Contract {
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
 		);
-		remove_action( 'rest_api_init', [ $this, 'register_rest_endpoints' ] );
-	}
-
-	/**
-	 * Register REST API endpoints.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register_rest_endpoints(): void {
-		$this->container->make( REST\Order_Endpoint::class )->register();
-		$this->container->make( REST\Ticket_Endpoint::class )->register();
+		remove_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
+		remove_action(
+			'tec_tickets_commerce_after_save_ticket',
+			$this->container->callback( Meta_Fields::class, 'save_show_not_going' )
+		);
+		remove_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' )
+		);
+		remove_filter(
+			'tec_rest_ticket_properties_to_add',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
+		);
+		remove_filter(
+			'tec_rest_swagger_ticket_request_body_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
+		);
+		remove_filter(
+			'tec_rest_swagger_ticket_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
+		);
+		remove_filter(
+			'tec_tickets_rest_ticket_upsert_params',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_upsert_params' )
+		);
+		remove_filter(
+			'tec_rest_v1_tec_tc_ticket_transform_entity',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_response' )
+		);
 	}
 }

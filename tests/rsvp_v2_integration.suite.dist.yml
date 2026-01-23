@@ -15,6 +15,7 @@ modules:
       domain: %WP_DOMAIN%
       adminEmail: admin@tribe.localhost
       title: 'Event Tickets RSVP v2 Tests'
+      configFile: tests/rsvp_v2_integration/config.php
       plugins:
         - the-events-calendar/the-events-calendar.php
         - event-tickets/event-tickets.php

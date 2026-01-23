@@ -130,8 +130,8 @@ defined( 'ABSPATH' ) || die();
 				$this->template(
 					[ 'components', 'switch-field' ],
 					[
-						'id'          => 'tec_tickets_rsvp_enable_cannot_go',
-						'name'        => 'tec_tickets_rsvp_enable_cannot_go',
+						'id'          => 'show_not_going',
+						'name'        => 'show_not_going',
 						'label'       => esc_html_x( 'Enable "Can\'t go" responses', 'Label for toggle switch to enable negative RSVP responses in admin panel.', 'event-tickets' ),
 						'description' => '',
 						'tooltip'     => '',
