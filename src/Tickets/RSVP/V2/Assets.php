@@ -46,7 +46,6 @@ class Assets {
 						return [
 							'tecApiEndpoint' => rest_url( 'tec/v1/tickets' ),
 							'ticketType'     => Constants::TC_RSVP_TYPE,
-							'nonce'          => wp_create_nonce( 'wp_rest' ),
 						];
 					},
 				],
