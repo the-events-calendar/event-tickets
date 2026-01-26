@@ -37,14 +37,14 @@ class Assets {
 			$plugin,
 			'tribe-tickets-admin-tickets',
 			'commerce/tickets.js',
-			[ 'jquery' ],
+			[ 'jquery', 'tec-api' ],
 			'admin_enqueue_scripts',
 			[
 				'localize' => [
 					'name' => 'tecTicketsCommerceTickets',
 					'data' => static function () {
 						return [
-							'tecApiEndpoint' => rest_url( 'tec/v1/tickets' ),
+							'tecApiEndpoint' => '/tec/v1/tickets',
 							'ticketType'     => Constants::TC_RSVP_TYPE,
 						];
 					},
