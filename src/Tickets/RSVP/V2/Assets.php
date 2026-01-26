@@ -86,7 +86,6 @@ class Assets {
 				'tribe-tickets-loader',
 				'tec-tickets-commerce-rsvp',
 				'tec-tickets-commerce-rsvp-tooltip',
-				'tec-tickets-commerce-rsvp-ari',
 			],
 			null,
 			[
