@@ -78,18 +78,6 @@ class Assets {
 
 		tec_asset(
 			$plugin,
-			'tec-tickets-commerce-rsvp-ari',
-			'commerce/rsvp-ari.js',
-			[ 'jquery', 'wp-util', 'tribe-common' ],
-			null,
-			[
-				'groups'       => 'tec-tickets-commerce-rsvp',
-				'conditionals' => [ $this, 'should_enqueue_ari' ],
-			]
-		);
-
-		tec_asset(
-			$plugin,
 			'tec-tickets-commerce-rsvp-manager',
 			'commerce/rsvp-manager.js',
 			[
@@ -134,16 +122,5 @@ class Assets {
 		if ( $stylesheet ) {
 			tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style-override', $stylesheet, [], null );
 		}
-	}
-
-	/**
-	 * Determine whether we should enqueue the ARI assets.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether we should enqueue the ARI assets.
-	 */
-	public function should_enqueue_ari(): bool {
-		return class_exists( 'Tribe__Tickets_Plus__Main' );
 	}
 }
