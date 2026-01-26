@@ -20,7 +20,7 @@
 defined( 'ABSPATH' ) || die();
 use Tribe__Date_Utils as Dates;
 
-$is_unlimited = - 1 === $rsvp->remaining();
+$is_unlimited = - 1 === $rsvp->inventory();
 $is_in_stock  = $rsvp->is_in_stock();
 
 $days_to_rsvp = Dates::date_diff( current_time( 'mysql' ), $rsvp->end_date );

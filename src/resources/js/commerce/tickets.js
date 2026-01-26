@@ -1,5 +1,7 @@
 /* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers, wp */
 import { _x } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
+import { registerMiddlewares } from '@tec/common/tecApi';
 
 /**
  * Makes sure we have all the required levels on the Tribe Object.
@@ -60,19 +62,6 @@ tribe.tickets.commerce.tickets = {};
 	};
 
 	/**
-	 * Experimental endpoint acknowledgement header.
-	 *
-	 * @todo Remove when switching to use of `apiFetch` function.
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	obj.TEC_EEA_HEADER = {
-		'X-TEC-EEA': 'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
-	};
-
-	/**
 	 * Check and return embed URL from tec_event_pro_calendar_embed_data if available.
 	 *
 	 * @since TBD
@@ -112,25 +101,6 @@ tribe.tickets.commerce.tickets = {};
 		url.search = new URLSearchParams( params ).toString();
 
 		return url.toString();
-	}
-
-	/**
-	 * Check and return REST nonce from tecTicketsCommerceTickets if available.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The embed nonce.
-	 */
-	obj.getEmbedNonce = function() {
-		let RESTNonce = '';
-
-		if (
-			typeof tecTicketsCommerceTickets !== 'undefined' &&
-			tecTicketsCommerceTickets.nonce
-		) {
-			RESTNonce = tecTicketsCommerceTickets.nonce;
-		}
-		return RESTNonce;
 	}
 
 	/**
@@ -310,26 +280,21 @@ tribe.tickets.commerce.tickets = {};
 			: obj.tickets.tecApiEndpoint;
 		const method = isUpdate ? 'PUT' : 'POST';
 
-		fetch(
-			endpoint,
-			{
-				method: method,
-				headers: {
-					'X-WP-Nonce': obj.getEmbedNonce(),
-					'Content-Type': 'application/json',
-					...obj.TEC_EEA_HEADER,
-				},
-				body: JSON.stringify( apiParams ),
-			}
-		)
-			.then( response => response.json() )
+		apiFetch( {
+			path: endpoint,
+			method: method,
+			data: apiParams,
+		} )
 			.then( data => {
 				obj.loaderHide();
+				obj.submitButton( true );
 				obj.handleTicketResponse( data );
 			} )
-			.catch( obj.handleApproveError );
-
-		obj.submitButton( true );
+			.catch( error => {
+				obj.loaderHide();
+				obj.submitButton( true );
+				obj.handleApproveError( error );
+			} );
 	};
 
 	/**
@@ -356,27 +321,22 @@ tribe.tickets.commerce.tickets = {};
 
 		obj.loaderShow();
 
-		fetch(
-			obj.tickets.tecApiEndpoint + '/' + rsvpId,
-			{
-				method: 'DELETE',
-				headers: {
-					'X-WP-Nonce': obj.getEmbedNonce(),
-					...obj.TEC_EEA_HEADER,
-				}
-			}
-		)
-			.then( response => {
+		apiFetch( {
+			url: obj.tickets.tecApiEndpoint + '/' + rsvpId,
+			method: 'DELETE',
+		} )
+			.then( () => {
 				obj.loaderHide();
-				if ( response.ok ) {
-					obj.handleRemoveResponse( {} );
-				} else {
-					return response.json().then( data => {
-						obj.handleRemoveResponse( data );
-					} );
-				}
+				obj.handleRemoveResponse( {} );
 			} )
-			.catch( obj.handleApproveError );
+			.catch( error => {
+				obj.loaderHide();
+				if ( error && error.data ) {
+					obj.handleRemoveResponse( error.data );
+				} else {
+					obj.handleApproveError( error );
+				}
+			} );
 	};
 
 	/**
@@ -570,6 +530,7 @@ tribe.tickets.commerce.tickets = {};
 	 * @since TBD
 	 */
 	obj.ready = () => {
+		registerMiddlewares();
 		obj.bindEvents();
 		obj.setupTimepickers();
 	};
