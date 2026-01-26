@@ -1,59 +1,7 @@
 /* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout, tribe_timepickers, wp */
 import { _x } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-
-/**
- * Experimental endpoint acknowledgement header name.
- *
- * @since TBD
- *
- * @type {string}
- */
-const TEC_EEA_HEADER_NAME = 'X-TEC-EEA';
-
-/**
- * Experimental endpoint acknowledgement header value.
- *
- * @since TBD
- *
- * @type {string}
- */
-const TEC_EEA_HEADER_VALUE = 'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.';
-
-/**
- * Middleware to add the TEC experimental endpoint acknowledgement header to TEC API requests.
- *
- * The header might already have been added by other code using the API before this middleware
- * runs, so we check if it's already set to avoid overwriting it.
- *
- * @since TBD
- *
- * @param {Object}   options The request options.
- * @param {Function} next    The next middleware in the chain.
- *
- * @return {*} The result of the next middleware.
- */
-const tecEeaMiddleware = ( options, next ) => {
-	const url = options.url || options.path || '';
-
-	// Only add header for TEC API endpoints.
-	if ( url.includes( '/tec/v1/' ) ) {
-		const headers = options.headers || {};
-
-		// Only add header if not already set.
-		if ( ! headers[ TEC_EEA_HEADER_NAME ] ) {
-			options.headers = {
-				...headers,
-				[ TEC_EEA_HEADER_NAME ]: TEC_EEA_HEADER_VALUE,
-			};
-		}
-	}
-
-	return next( options );
-};
-
-// Register the middleware with apiFetch.
-apiFetch.use( tecEeaMiddleware );
+import { registerMiddlewares } from '@tec/common/tecApi';
 
 /**
  * Makes sure we have all the required levels on the Tribe Object.
@@ -333,7 +281,7 @@ tribe.tickets.commerce.tickets = {};
 		const method = isUpdate ? 'PUT' : 'POST';
 
 		apiFetch( {
-			url: endpoint,
+			path: endpoint,
 			method: method,
 			data: apiParams,
 		} )
@@ -582,6 +530,7 @@ tribe.tickets.commerce.tickets = {};
 	 * @since TBD
 	 */
 	obj.ready = () => {
+		registerMiddlewares();
 		obj.bindEvents();
 		obj.setupTimepickers();
 	};
