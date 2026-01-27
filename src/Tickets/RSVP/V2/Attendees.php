@@ -121,7 +121,7 @@ class Attendees {
 		// In RSVP v2 the Tickets Commerce provider is active by default; an empty provider means TC.
 		$provider = tribe_tickets_get_ticket_provider( $post_id );
 
-		if ( $provider && ! $provider instanceof Module ) {
+		if ( ! $provider instanceof Module ) {
 			return $args;
 		}
 
