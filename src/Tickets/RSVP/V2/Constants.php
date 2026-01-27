@@ -43,4 +43,13 @@ class Constants {
 	 * @var string
 	 */
 	public const SHOW_NOT_GOING_META_KEY = '_tribe_ticket_show_not_going';
+
+	/**
+	 * RSVP status meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const RSVP_STATUS_META_KEY = '_tec_tickets_commerce_rsvp_status';
 }

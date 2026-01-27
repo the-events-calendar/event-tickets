@@ -2095,6 +2095,21 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return array|mixed
 	 */
 	public function get_attendees_by_id( $post_id, $post_type = null ) {
+		/**
+		 * Filters the RSVP Attendees IDs before the default logic runs.
+		 * Non-null values returned by applied filters will be returned to the caller.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|array<array<string,mixed>> $attendees_by_id Null by default.
+		 * @param int                             $post_id         The post ID.
+		 * @param null|string                     $post_type       The post type.
+		 */
+		$attendees_by_id = apply_filters( 'tec_tickets_rsvp_get_attendees_by_id_pre', null, $post_id, $post_type );
+
+		if ( null !== $attendees_by_id ) {
+			return $attendees_by_id;
+		}
 
 		// RSVP Orders are a unique hash.
 		if ( ! is_numeric( $post_id ) ) {

@@ -5,6 +5,7 @@ namespace TEC\Tickets\RSVP\V2\Repositories;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
+use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use WP_Post;
@@ -550,7 +551,7 @@ class Attendee_Repository_Test extends WPTestCase {
 			'full_name'                               => 'John Doe',
 			'email'                                   => 'john@example.com',
 			'event_id'                                => $post_id,
-			Attendee_Repository::RSVP_STATUS_META_KEY => 'yes',
+			Constants::RSVP_STATUS_META_KEY => 'yes',
 		] )->create();
 
 		$this->assertInstanceOf( WP_Post::class, $attendee );
@@ -558,7 +559,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		$this->assertSame( 'john@example.com', get_post_meta( $attendee->ID, Attendee::$email_meta_key, true ) );
 		$this->assertEquals( $post_id, get_post_meta( $attendee->ID, Attendee::$event_relation_meta_key, true ) );
 		$this->assertEquals( $ticket_id, get_post_meta( $attendee->ID, Attendee::$ticket_relation_meta_key, true ) );
-		$this->assertSame( 'yes', get_post_meta( $attendee->ID, Attendee_Repository::RSVP_STATUS_META_KEY, true ) );
+		$this->assertSame( 'yes', get_post_meta( $attendee->ID, Constants::RSVP_STATUS_META_KEY, true ) );
 	}
 
 	/**
@@ -599,13 +600,13 @@ class Attendee_Repository_Test extends WPTestCase {
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
 		$attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id, [ 'rsvp_status' => 'yes' ] );
 
-		$original_status = get_post_meta( $attendee_id, Attendee_Repository::RSVP_STATUS_META_KEY, true );
+		$original_status = get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true );
 		$this->assertSame( 'yes', $original_status );
 
 		$repo = new Attendee_Repository();
 		$repo->by( 'id', $attendee_id )->set( 'rsvp_status', 'no' )->save();
 
-		$updated_status = get_post_meta( $attendee_id, Attendee_Repository::RSVP_STATUS_META_KEY, true );
+		$updated_status = get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true );
 		$this->assertSame( 'no', $updated_status );
 	}
 
