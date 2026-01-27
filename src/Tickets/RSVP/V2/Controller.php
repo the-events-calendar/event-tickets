@@ -180,7 +180,7 @@ class Controller extends Controller_Contract {
 		);
 
 		add_filter(
-			'tec_tickets_tickets_view_count_ticket_attendees_args',
+			'tec_tickets_view_count_ticket_attendees_args',
 			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' ),
 			10,
 			4
@@ -271,7 +271,7 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
 		);
 		remove_filter(
-			'tec_tickets_tickets_view_count_ticket_attendees_args',
+			'tec_tickets_view_count_ticket_attendees_args',
 			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
 		);
 	}

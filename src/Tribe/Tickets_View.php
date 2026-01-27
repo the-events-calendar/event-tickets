@@ -833,7 +833,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @param string $context    The Context of the call, used to filter the attendees count.
 		 */
 		$args = apply_filters(
-			'tec_tickets_tickets_view_count_ticket_attendees_args',
+			'tec_tickets_view_count_ticket_attendees_args',
 			$args,
 			$event_id,
 			$user_id,
