@@ -33,29 +33,28 @@ class Attendees {
 	 *
 	 * @since TBD
 	 *
-	 * @param null|array<array<string,mixed>> $attendees_ids The attendee IDs, or null if not set.
+	 * @param null|array<array<string,mixed>> $attendees     The attendee IDs, or null if not set.
 	 * @param int                             $post_id       The post ID, it could be the post ID of an Attendee, a
 	 *                                                       Ticket, an Order hash or the ID of the post the Attendees
 	 *                                                       are related to.
 	 *
 	 * @return array|null Either the post type of the post indicated by the post ID, or null to indicate
 	 */
-	public function get_rsvp_attendees_by_id( $attendees_ids, $post_id ): ?array {
-		if ( $attendees_ids !== null ) {
-			// Already filtered, bail.
-			return $attendees_ids;
+	public function get_rsvp_attendees_by_id( $attendees, $post_id ): ?array {
+		if ( $attendees !== null ) {
+
 		}
 
 		$post_type = is_numeric( $post_id ) ?
 			get_post_type( $post_id ) :
-			// An order hash.
+			// An order hash that is really an Order ID.
 			'rsvp_order_hash';
 
 		$repository = tribe( 'tickets.attendee-repository.rsvp' );
 
 		switch ( $post_type ) {
 			case Commerce_Ticket::POSTTYPE:
-				$attendees_ids = iterator_to_array(
+				$attendees = iterator_to_array(
 					$repository
 						->where( 'ticket', $post_id )
 						->order_by( 'ID', 'ASC' )
@@ -67,12 +66,12 @@ class Attendees {
 				break;
 
 			case Attendee::POSTTYPE:
-				$attendees_ids = [ $post_id ];
+				$attendees = [ $post_id ];
 				break;
 
 			case Order::POSTTYPE:
 			case 'rsvp_order_hash':
-				$attendees_ids = iterator_to_array(
+				$attendees = iterator_to_array(
 					$repository
 						->where( 'order', $post_id )
 						->order_by( 'ID', 'ASC' )
@@ -82,7 +81,7 @@ class Attendees {
 				break;
 
 			default:
-				$attendees_ids = iterator_to_array(
+				$attendees = iterator_to_array(
 					$repository
 						->where( 'event', $post_id )
 						->order_by( 'ID', 'ASC' )
@@ -94,7 +93,7 @@ class Attendees {
 
 		$commerce = tribe( Module::class );
 
-		return array_map( static fn( $attendee ) => $commerce->get_attendee( $attendee ), $attendees_ids );
+		return array_map( static fn( $attendee ) => $commerce->get_attendee( $attendee ), $attendees );
 	}
 
 	/**
@@ -107,7 +106,7 @@ class Attendees {
 	 * @param int|null            $user_id The user ID, if any. Unused.
 	 * @param string|null         $context The context of the query.
 	 *
-	 * @return array<string,mixed> The filtered arguments, if required.
+	 * @return array<string,mixed> The filtered arguments.
 	 */
 	public function exclude_rsvp_tickets_from_tickets_view_data_link_count( array $args, int $post_id, ?int $user_id, ?string $context ): array {
 		if ( 'get_my_tickets_link_data' !== $context ) {
