@@ -13,6 +13,7 @@ use TEC\Tickets\Integrations\Integration_Abstract;
 use TEC\Tickets\Integrations\Plugins\WPML\Core\Wpml_Adapter;
 use TEC\Tickets\Integrations\Plugins\WPML\Pages\Special_Page_Translator;
 use TEC\Tickets\Integrations\Plugins\WPML\Meta\Meta_Sync;
+use TEC\Tickets\Integrations\Plugins\WPML\Meta\Meta_Retrieval_Fix;
 use TEC\Tickets\Integrations\Plugins\WPML\Meta\Relationship_Meta_Translator;
 use TEC\Tickets\Integrations\Plugins\WPML\Cart\Checkout_Cart_Fix;
 use TEC\Tickets\Integrations\Plugins\WPML\Tickets\Ticket_Language_Assigner;
@@ -149,6 +150,8 @@ class Integration extends Integration_Abstract {
 			'_sale_price_checked',
 			'_sale_price_start_date',
 			'_sale_price_end_date',
+			'_tribe_tickets_meta',
+			'_tribe_tickets_meta_enabled',
 		];
 
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
@@ -164,6 +167,16 @@ class Integration extends Integration_Abstract {
 			->give( $late_sync_meta_keys );
 		$this->container->singleton( Meta_Sync::class );
 
+		$retrieval_meta_keys = [
+			'_tribe_tickets_meta',
+			'_tribe_tickets_meta_enabled',
+		];
+
+		$this->container->when( Meta_Retrieval_Fix::class )
+			->needs( '$meta_keys' )
+			->give( $retrieval_meta_keys );
+		$this->container->singleton( Meta_Retrieval_Fix::class );
+
 		$this->container->singleton( Checkout_Cart_Fix::class );
 
 		$services = [
@@ -173,6 +186,7 @@ class Integration extends Integration_Abstract {
 			Attendee_Aggregator::class,
 			Ticket_Language_Assigner::class,
 			Meta_Sync::class,
+			Meta_Retrieval_Fix::class,
 		];
 
 		foreach ( $services as $service ) {
