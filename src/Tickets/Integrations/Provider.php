@@ -33,7 +33,5 @@ class Provider extends Service_Provider {
 		$this->container->register_on_action( 'tec_events_pro_custom_tables_v1_before_duplicate_event', Plugins\Events_Pro\Duplicate_Post::class );
 
 		$this->container->register( Themes\Divi\Provider::class );
-
-		$this->container->register( Plugins\WPML\Integration::class );
 	}
 }
