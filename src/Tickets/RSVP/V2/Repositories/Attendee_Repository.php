@@ -358,6 +358,27 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	}
 
 	/**
+	 * Validates a single order ID or a set of order IDs.
+	 *
+	 * Note the validation does not check whether the Order exists or the post type matches: this would make the check
+	 * too expensive. The method just check the ID is a positive integer.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string|int[]|string[] $order_id The order ID(s) to check.
+	 *
+	 * @return int[] An array of validated order IDs.
+	 */
+	private function validate_order_ids( $order_id ): array {
+		return array_values(
+			array_filter(
+				(array) $order_id,
+				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
+			)
+		);
+	}
+
+	/**
 	 * Filters Attendees by Order ID(s).
 	 *
 	 * This method leverages the fact that Tickets Commerce uses the `post_parent` field to store the relationship
@@ -370,12 +391,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * @return void
 	 */
 	public function filter_by_order( $order_id ): void {
-		$order_ids = array_values(
-			array_filter(
-				(array) $order_id,
-				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
-			)
-		);
+		$order_ids = $this->validate_order_ids( $order_id );
 
 		if ( ! count( $order_ids ) ) {
 			return;
@@ -397,12 +413,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * @return void
 	 */
 	public function filter_by_order_not_in( $order_id ): void {
-		$order_ids = array_values(
-			array_filter(
-				(array) $order_id,
-				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
-			)
-		);
+		$order_ids = $this->validate_order_ids( $order_id );
 
 		if ( ! count( $order_ids ) ) {
 			return;
