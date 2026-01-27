@@ -220,4 +220,17 @@ class Attendees_Test extends WPTestCase {
 		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
 		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
 	}
+
+	public function test_get_rsvp_attendees_by_id_bails_when_attendees_already_filtered(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$this->create_order( [ $ticket_id => 3 ] );
+
+		$attendees          = tribe( Attendees::class );
+		$pre_filtered_value = [ [ 'ID' => 999, 'test' => 'value' ] ];
+
+		$result = $attendees->get_rsvp_attendees_by_id( $pre_filtered_value, $post_id );
+
+		$this->assertSame( $pre_filtered_value, $result );
+	}
 }
