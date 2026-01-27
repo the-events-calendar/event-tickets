@@ -69,23 +69,6 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 			],
 		];
 
-		/*
-		 * `build_query_internally()` merges `default_args` and `query_args` with a plain, non-recursive
-		 * `array_merge()`. Any `by()` filter that sets its own top-level `meta_query` entry (e.g. the base
-		 * repository's `by( 'event', $post_id )`, which goes through a `meta_in` filter) would otherwise
-		 * completely replace the RSVP scoping set above, causing this repository to match every
-		 * Tickets Commerce attendee rather than only RSVP ones. Re-merge it back in after the query args
-		 * are finalized so the scoping always survives.
-		 *
-		 * This repository is bound as a factory (`bind()`, not `singleton()`), so a new instance is
-		 * created on every `tribe( 'tickets.attendee-repository.rsvp' )` call; `enforce_rsvp_meta_scope()`
-		 * is static and stateless, so `has_filter()` (rather than an instance- or even request-lifetime
-		 * flag) keeps a single registration in place without accumulating duplicate callbacks.
-		 */
-		if ( ! has_filter( "tribe_repository_{$this->filter_name}_query_args", [ self::class, 'enforce_rsvp_meta_scope' ] ) ) {
-			add_filter( "tribe_repository_{$this->filter_name}_query_args", [ self::class, 'enforce_rsvp_meta_scope' ] );
-		}
-
 		// Some schema entries need to be redirected to the correct meta keys.
 		$this->add_simple_meta_schema_entry( 'user', '_tribe_tickets_attendee_user_id', 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'user', Attendee::$user_relation_meta_key, 'meta_in' );
@@ -154,36 +137,6 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 		$statuses                     = [ 'yes', 'no' ];
 		self::$order_statuses         = $statuses;
 		self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );
-	}
-
-	/**
-	 * Re-applies the RSVP status meta scoping to the final query arguments.
-	 *
-	 * Hooked to `tribe_repository_{$this->filter_name}_query_args`, which fires after `default_args` and
-	 * `query_args` have already been merged, so the scoping is guaranteed to survive regardless of what
-	 * other `meta_query`-based filters (like `by( 'event', $post_id )`) ran. Static and stateless so a
-	 * single `has_filter()`-guarded registration (see the constructor) covers every instance without
-	 * reading the scoping off any particular instance's `default_args`.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $query_args The fully merged query arguments about to be used to build the query.
-	 *
-	 * @return array<string,mixed> The query arguments with the RSVP status meta scoping enforced.
-	 */
-	public static function enforce_rsvp_meta_scope( array $query_args ): array {
-		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-		$query_args['meta_query'] = \Tribe__Utils__Array::merge_recursive_query_vars(
-			$query_args['meta_query'] ?? [],
-			[
-				'tc-rsvp-type' => [
-					'key'     => Constants::RSVP_STATUS_META_KEY,
-					'compare' => 'EXISTS',
-				],
-			]
-		);
-
-		return $query_args;
 	}
 
 	/**
@@ -405,27 +358,6 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	}
 
 	/**
-	 * Validates a single order ID or a set of order IDs.
-	 *
-	 * Note the validation does not check whether the Order exists or the post type matches: this would make the check
-	 * too expensive. The method just check the ID is a positive integer.
-	 *
-	 * @since TBD
-	 *
-	 * @param int|string|int[]|string[] $order_id The order ID(s) to check.
-	 *
-	 * @return int[] An array of validated order IDs.
-	 */
-	private function validate_order_ids( $order_id ): array {
-		return array_values(
-			array_filter(
-				(array) $order_id,
-				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
-			)
-		);
-	}
-
-	/**
 	 * Filters Attendees by Order ID(s).
 	 *
 	 * This method leverages the fact that Tickets Commerce uses the `post_parent` field to store the relationship
@@ -438,7 +370,12 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * @return void
 	 */
 	public function filter_by_order( $order_id ): void {
-		$order_ids = $this->validate_order_ids( $order_id );
+		$order_ids = array_values(
+			array_filter(
+				(array) $order_id,
+				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
+			)
+		);
 
 		if ( ! count( $order_ids ) ) {
 			return;
@@ -460,7 +397,12 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * @return void
 	 */
 	public function filter_by_order_not_in( $order_id ): void {
-		$order_ids = $this->validate_order_ids( $order_id );
+		$order_ids = array_values(
+			array_filter(
+				(array) $order_id,
+				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
+			)
+		);
 
 		if ( ! count( $order_ids ) ) {
 			return;
