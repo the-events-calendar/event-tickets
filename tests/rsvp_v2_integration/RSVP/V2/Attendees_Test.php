@@ -135,4 +135,89 @@ class Attendees_Test extends WPTestCase {
 			$this->assertEquals( $expected_attendees_ids, array_column( $attendees_ids, 'ID' ) );
 		}
 	}
+
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_returns_args_unchanged_when_context_is_not_get_my_tickets_link_data(): void {
+		$post_id = static::factory()->post->create();
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		$attendees = tribe( Attendees::class );
+		$args      = [ 'by' => [ 'event' => $post_id ] ];
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'other_context' );
+
+		$this->assertEquals( $args, $result );
+		$this->assertArrayNotHasKey( 'meta_not_equals', $result['by'] );
+	}
+
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_returns_args_unchanged_when_context_is_null(): void {
+		$post_id = static::factory()->post->create();
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		$attendees = tribe( Attendees::class );
+		$args      = [ 'by' => [ 'event' => $post_id ] ];
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, null );
+
+		$this->assertEquals( $args, $result );
+		$this->assertArrayNotHasKey( 'meta_not_equals', $result['by'] );
+	}
+
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_adds_meta_not_equals_filter_for_tc_provider(): void {
+		$post_id = static::factory()->post->create();
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		$attendees = tribe( Attendees::class );
+		$args      = [ 'by' => [ 'event' => $post_id ] ];
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'get_my_tickets_link_data' );
+
+		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
+		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
+	}
+
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_preserves_existing_args(): void {
+		$post_id = static::factory()->post->create();
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		$attendees = tribe( Attendees::class );
+		$args      = [
+			'by' => [
+				'event'  => $post_id,
+				'status' => 'completed',
+			],
+		];
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'get_my_tickets_link_data' );
+
+		$this->assertEquals( $post_id, $result['by']['event'] );
+		$this->assertEquals( 'completed', $result['by']['status'] );
+		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
+	}
+
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_works_with_user_id(): void {
+		$post_id = static::factory()->post->create();
+		$user_id = static::factory()->user->create();
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		$attendees = tribe( Attendees::class );
+		$args      = [ 'by' => [ 'event' => $post_id ] ];
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, $user_id, 'get_my_tickets_link_data' );
+
+		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
+		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
+	}
+
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_adds_filter_for_post_without_provider(): void {
+		$post_id = static::factory()->post->create();
+		// No ticket created, so no provider. An empty provider means TC.
+
+		$attendees = tribe( Attendees::class );
+		$args      = [ 'by' => [ 'event' => $post_id ] ];
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'get_my_tickets_link_data' );
+
+		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
+		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
+	}
 }
