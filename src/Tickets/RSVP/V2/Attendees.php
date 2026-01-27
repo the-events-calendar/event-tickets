@@ -2,7 +2,7 @@
 /**
  * V2 Attendance Totals class for RSVP.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
  *
  * Calculates attendance totals for RSVP tickets in V2 implementation.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
  */
