@@ -5,7 +5,6 @@
 /license.txt
 /readme.txt
 /changelog.md
-/wpml-config.xml
 /src/admin-views/**/*
 /src/deprecated/**/*
 /src/functions/**/*
