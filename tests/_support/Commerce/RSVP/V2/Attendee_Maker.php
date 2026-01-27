@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Tests\Commerce\RSVP\V2;
 
 use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\RSVP\V2\Repositories\Attendee_Repository;
 
 trait Attendee_Maker {
@@ -35,7 +36,7 @@ trait Attendee_Maker {
 			Attendee::$security_code_meta_key   => md5( uniqid( '', true ) ),
 			Attendee::$optout_meta_key          => $overrides['optout'] ?? false,
 			Attendee::$checked_in_meta_key      => $overrides['checked_in'] ?? false,
-			Attendee_Repository::RSVP_STATUS_META_KEY => $rsvp_status,
+			Constants::RSVP_STATUS_META_KEY     => $rsvp_status,
 		];
 
 		// Merge any additional meta overrides.

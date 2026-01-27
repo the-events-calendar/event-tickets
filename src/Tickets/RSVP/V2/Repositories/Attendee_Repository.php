@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
+use TEC\Tickets\RSVP\V2\Constants;
 use Tribe__Repository__Query_Filters as Query_Filters;
 use WP_Post;
 use Tribe__Tickets__Attendee_Repository as Base_Repository;
@@ -30,15 +31,6 @@ use Tribe__Tickets__Attendee_Repository as Base_Repository;
  */
 class Attendee_Repository extends Base_Repository implements Attendee_Repository_Interface {
 	use Get_Field;
-
-	/**
-	 * RSVP status meta key.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const RSVP_STATUS_META_KEY = '_tec_tickets_commerce_rsvp_status';
 
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
@@ -72,7 +64,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		$this->default_args['meta_query'] = [
 			'tc-rsvp-type' => [
-				'key'     => self::RSVP_STATUS_META_KEY,
+				'key'     => Constants::RSVP_STATUS_META_KEY,
 				'compare' => 'EXISTS',
 			],
 		];
@@ -89,15 +81,31 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 		 * this class.
 		 */
 
+		/*
+		 * Override the schema entries that, by default, would use a meta key to relate Order <> Attendees
+		 * since Tickets Commerce relates Attendees to Orders by means of the `post_parent` field.
+		 * The `order_status__not_in` and `order_status` schema entries are already managed in the base
+		 * Attendee repository this repository extends.
+		 */
+		$this->add_schema_entry( 'order', [ $this, 'filter_by_order' ] );
+		$this->add_schema_entry( 'order__not_in', [ $this, 'filter_by_order_not_in' ] );
+
 		// Override the base repository aliases with the ones specific to Tickets Commerce RSVP.
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
+
+				/*
+				 * This aligns with the Tickets Commerce repository setting.
+				 *
+				 * @see \TEC\Tickets\Commerce\Repositories\Attendees_Repository
+				 */
+				'order_id'       => 'post_parent',
+
 				'ticket_id'      => Attendee::$ticket_relation_meta_key,
 				'event_id'       => Attendee::$event_relation_meta_key,
 				'post_id'        => Attendee::$event_relation_meta_key,
 				'security_code'  => Attendee::$security_code_meta_key,
-				'order_id'       => Attendee::$order_relation_meta_key,
 				'optout'         => Attendee::$optout_meta_key,
 				'user_id'        => Attendee::$user_relation_meta_key,
 				'price_paid'     => Attendee::$price_paid_meta_key,
@@ -105,7 +113,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 				'full_name'      => Attendee::$full_name_meta_key,
 				'email'          => Attendee::$email_meta_key,
 				'check_in'       => current( $this->checked_in_keys() ),
-				'rsvp_status'    => self::RSVP_STATUS_META_KEY,
+				'rsvp_status'    => Constants::RSVP_STATUS_META_KEY,
 			]
 		);
 	}
@@ -144,7 +152,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 */
 	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
 		$posts = $this->by( 'purchaser_email', $email )
-						->by( 'meta_exists', self::RSVP_STATUS_META_KEY )
+						->by( 'meta_exists', Constants::RSVP_STATUS_META_KEY )
 						->per_page( $per_page )
 						->page( $page )
 						->order_by( 'ID' )
@@ -326,7 +334,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 */
 	public function filter_by_rsvp_status( $rsvp_status ) {
 		return Query_Filters::meta_in(
-			self::RSVP_STATUS_META_KEY,
+			Constants::RSVP_STATUS_META_KEY,
 			$rsvp_status,
 			'by-rsvp-status'
 		);
@@ -343,9 +351,63 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 */
 	public function filter_by_rsvp_status_or_none( $rsvp_status ) {
 		return Query_Filters::meta_in_or_not_exists(
-			self::RSVP_STATUS_META_KEY,
+			Constants::RSVP_STATUS_META_KEY,
 			$rsvp_status,
 			'by-rsvp-status-or-none'
 		);
+	}
+
+	/**
+	 * Filters Attendees by Order ID(s).
+	 *
+	 * This method leverages the fact that Tickets Commerce uses the `post_parent` field to store the relationship
+	 * between an Attendee and the Order, not a meta value like other types of Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|int[]|string|string[] $order_id The Order ID(s) to filter by.
+	 *
+	 * @return void
+	 */
+	public function filter_by_order( $order_id ): void {
+		$order_ids = array_values(
+			array_filter(
+				(array) $order_id,
+				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
+			)
+		);
+
+		if ( ! count( $order_ids ) ) {
+			return;
+		}
+
+		$this->by( 'post_parent__in', $order_ids );
+	}
+
+	/**
+	 * Filters Attendees by Order ID(s) excluding Attendees related to the specified Order(s).
+	 *
+	 * This method leverages the fact that Tickets Commerce uses the `post_parent` field to store the relationship
+	 * between an Attendee and the Order, not a meta value like other types of Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|int[]|string|string[] $order_id The Order ID(s) to filter by.
+	 *
+	 * @return void
+	 */
+	public function filter_by_order_not_in( $order_id ): void {
+		$order_ids = array_values(
+			array_filter(
+				(array) $order_id,
+				static fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT ) > 0
+			)
+		);
+
+		if ( ! count( $order_ids ) ) {
+			return;
+		}
+
+		$this->by( 'post_parent__not_in', $order_ids );
 	}
 }

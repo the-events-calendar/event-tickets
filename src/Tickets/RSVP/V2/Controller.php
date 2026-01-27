@@ -39,7 +39,6 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-
 		$this->container->singleton( Metabox::class );
 		$this->container->singleton( Classic_Editor::class );
 		$this->container->singleton( Block_Editor::class );
@@ -172,6 +171,20 @@ class Controller extends Controller_Contract {
 			'tec_rest_v1_tec_tc_ticket_transform_entity',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_response' )
 		);
+
+		add_filter(
+			'tec_tickets_rsvp_get_attendees_by_id_pre',
+			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
+			10,
+			2
+		);
+
+		add_filter(
+			'tec_tickets_tickets_view_count_ticket_attendees_args',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' ),
+			10,
+			4
+		);
 	}
 
 	/**
@@ -252,6 +265,14 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_rest_v1_tec_tc_ticket_transform_entity',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_response' )
+		);
+		remove_filter(
+			'tec_tickets_rsvp_get_attendees_by_id_pre',
+			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
+		);
+		remove_filter(
+			'tec_tickets_tickets_view_count_ticket_attendees_args',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
 		);
 	}
 }

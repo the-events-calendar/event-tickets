@@ -832,7 +832,13 @@ class Tribe__Tickets__Tickets_View {
 		 * @param int   $user_id    An Optional User ID.
 		 * @param string $context    The Context of the call, used to filter the attendees count.
 		 */
-		$args = apply_filters( 'tec_tickets_count_ticket_attendees_args', $args, $event_id, $user_id, $context );
+		$args = apply_filters(
+			'tec_tickets_tickets_view_count_ticket_attendees_args',
+			$args,
+			$event_id,
+			$user_id,
+			$context
+		);
 
 		return Tribe__Tickets__Tickets::get_event_attendees_count( $event_id, $args );
 	}
