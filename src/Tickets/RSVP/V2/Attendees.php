@@ -28,7 +28,7 @@ class Attendees {
 	 * The method filters the default Attendee ID fetching done in RSVP (Tribe__Tickets__RSVP) class to
 	 * use the RSVP Tickets Commerce repository instead.
 	 *
-	 * This method filters a method that is managing its cache; for this reason this specific method is not caching
+	 * This method filters a method managing its cache; for this reason this specific method is not caching
 	 * to avoid stale values that the original method might have cached.
 	 *
 	 * @since TBD
@@ -42,12 +42,13 @@ class Attendees {
 	 */
 	public function get_rsvp_attendees_by_id( $attendees, $post_id ): ?array {
 		if ( $attendees !== null ) {
-
+			// Already filtered, bail.
+			return $attendees;
 		}
 
 		$post_type = is_numeric( $post_id ) ?
 			get_post_type( $post_id ) :
-			// An order hash that is really an Order ID.
+			// Extending repositories might filter by order hash and support it.
 			'rsvp_order_hash';
 
 		$repository = tribe( 'tickets.attendee-repository.rsvp' );
@@ -71,6 +72,10 @@ class Attendees {
 
 			case Order::POSTTYPE:
 			case 'rsvp_order_hash':
+				/**
+				 * Filter using the order hash.
+				 * By default, sanitized to string, but leave the door open to extensions using hashes.
+				 */
 				$attendees = iterator_to_array(
 					$repository
 						->where( 'order', $post_id )
