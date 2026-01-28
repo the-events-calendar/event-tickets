@@ -23,9 +23,8 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-// Use V1 components that don't need V2 thunks.
-import RSVPContainer from '../rsvp/container/container';
-import RSVPSettingsDashboard from '../rsvp/settings-dashboard/container';
+// Use V2-specific components.
+import RSVPContainer from './container-panel/container';
 import RSVPInactiveBlock from '../rsvp/inactive-block/container';
 import MoveModal from '../../elements/move-modal';
 import { Card } from '../../elements';
@@ -80,7 +79,6 @@ const RSVPControls = () => {
  * @param {boolean}  props.isLoading          Whether the RSVP is loading.
  * @param {boolean}  props.isModalShowing     Whether the move modal is showing.
  * @param {boolean}  props.isSelected         Whether the RSVP is selected.
- * @param {boolean}  props.isSettingsOpen     Whether the settings dashboard is open.
  * @param {boolean}  props.noRsvpsOnRecurring Whether there are no RSVPs on recurring events.
  * @param {number}   props.rsvpId             The RSVP ID.
  * @param {Function} props.setAddEditClosed   The function to set the add/edit dashboard closed.
@@ -96,7 +94,6 @@ const RSVPV2 = ( {
 	isLoading,
 	isModalShowing,
 	isSelected,
-	isSettingsOpen,
 	noRsvpsOnRecurring,
 	rsvpId,
 	setAddEditClosed,
@@ -145,23 +142,20 @@ const RSVPV2 = ( {
 				{ displayInactive ? (
 					<RSVPInactiveBlock />
 				) : (
-					! isSettingsOpen && (
-						<Card
-							className={ classNames(
-								'tribe-editor__rsvp',
-								{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
-								{ 'tribe-editor__rsvp--selected': isSelected },
-								{ 'tribe-editor__rsvp--loading': isLoading }
-							) }
-						>
-							<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
-							{ /* V2 action dashboard handles create/update via V2 endpoints */ }
-							{ isAddEditOpen && <RSVPActionDashboard clientId={ clientId } /> }
-							{ isLoading && <Spinner /> }
-						</Card>
-					)
+					<Card
+						className={ classNames(
+							'tribe-editor__rsvp',
+							{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
+							{ 'tribe-editor__rsvp--selected': isSelected },
+							{ 'tribe-editor__rsvp--loading': isLoading }
+						) }
+					>
+						<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
+						{ /* V2 action dashboard handles create/update via V2 endpoints */ }
+						{ isAddEditOpen && <RSVPActionDashboard clientId={ clientId } /> }
+						{ isLoading && <Spinner /> }
+					</Card>
 				) }
-				{ isSettingsOpen && <RSVPSettingsDashboard /> }
 				{ isModalShowing && <MoveModal /> }
 				<RSVPControls />
 			</div>
@@ -211,7 +205,6 @@ RSVPV2.propTypes = {
 	isLoading: PropTypes.bool.isRequired,
 	isModalShowing: PropTypes.bool.isRequired,
 	isSelected: PropTypes.bool.isRequired,
-	isSettingsOpen: PropTypes.bool.isRequired,
 	noRsvpsOnRecurring: PropTypes.bool.isRequired,
 	rsvpId: PropTypes.number.isRequired,
 	setAddEditClosed: PropTypes.func.isRequired,
