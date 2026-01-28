@@ -18,7 +18,6 @@ import { AttendeesActionButton } from '../../rsvp/action-buttons';
 import '../../rsvp/container-header/style.pcss';
 
 const getCapacityLabel = ( capacity ) => {
-	// todo: should use _n to be translator friendly
 	const singular = __( '%d Remaining', 'event-tickets' );
 	const plural = singular;
 	const fallback = (
@@ -71,11 +70,9 @@ const RSVPContainerHeader = ( { isAddEditOpen, isCreated, title, available, setA
 	);
 
 	return (
-		<>
-			<div className="tribe-common tribe-editor__inactive-block--rsvp tribe-editor__rsvp-container-header">
-				<SplitContainer leftColumn={ leftColumn } rightColumn={ rightColumn } />
-			</div>
-		</>
+		<div className="tribe-common tribe-editor__inactive-block--rsvp tribe-editor__rsvp-container-header">
+			<SplitContainer leftColumn={ leftColumn } rightColumn={ rightColumn } />
+		</div>
 	);
 	/* eslint-enable max-len */
 };
