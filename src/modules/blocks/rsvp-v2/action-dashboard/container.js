@@ -24,7 +24,6 @@ import { withStore } from '@moderntribe/common/hoc';
 import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
 
 const getIsConfirmDisabled = ( state ) =>
-	! selectors.getRSVPTempTitle( state ) ||
 	! selectors.getRSVPHasChanges( state ) ||
 	selectors.getRSVPIsLoading( state ) ||
 	selectors.getRSVPHasDurationError( state );
@@ -32,8 +31,6 @@ const getIsConfirmDisabled = ( state ) =>
 const onCancelClick = ( state, dispatch ) => () => {
 	dispatch(
 		actions.setRSVPTempDetails( {
-			tempTitle: selectors.getRSVPTitle( state ),
-			tempDescription: selectors.getRSVPDescription( state ),
 			tempCapacity: selectors.getRSVPCapacity( state ),
 			tempNotGoingResponses: selectors.getRSVPNotGoingResponses( state ),
 			tempStartDate: selectors.getRSVPStartDate( state ),
@@ -55,8 +52,6 @@ const onCancelClick = ( state, dispatch ) => () => {
 
 const onConfirmClick = ( state, dispatch ) => () => {
 	const payload = {
-		title: selectors.getRSVPTempTitle( state ),
-		description: selectors.getRSVPTempDescription( state ),
 		capacity: selectors.getRSVPTempCapacity( state ),
 		notGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
 		startDate: selectors.getRSVPTempStartDate( state ),

@@ -75,7 +75,6 @@ const mapStateToProps = ( state ) => {
 		isInactive: getIsInactive( state ),
 		isLoading: selectors.getRSVPIsLoading( state ),
 		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
-		isSettingsOpen: selectors.getRSVPSettingsOpen( state ),
 		hasRecurrenceRules: hasRecurrenceRules( state ),
 		noRsvpsOnRecurring: noRsvpsOnRecurring(),
 		rsvpId,

@@ -14,7 +14,6 @@ import { doAction } from '@wordpress/hooks';
  * Internal dependencies
  */
 import * as actions from '../rsvp/actions';
-import { normalizeTitle, normalizeDescription } from '../../utils';
 import { getV2Config } from './config';
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
@@ -56,8 +55,6 @@ const formatDateTime = ( momentObj, timeStr ) => {
 export const createRSVP = ( payload ) => async ( dispatch ) => {
 	const config = getV2Config();
 	const {
-		title,
-		description,
 		capacity,
 		notGoingResponses,
 		startDateMoment,
@@ -75,12 +72,12 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 		const data = {
 			event: postId,
 			type: config.ticketType,
-			title,
-			description,
+			title: 'RSVP',
+			description: '',
 			price: 0,
 			start_date: formatDateTime( startDateMoment, startTime ),
 			end_date: formatDateTime( endDateMoment, endTime ),
-			show_description: true,
+			show_description: false,
 			show_not_going: notGoingResponses ? true : false,
 			// Use 'unlimited' stock mode when no capacity, 'own' when capacity is set.
 			stock_mode: hasCapacity ? 'own' : 'unlimited',
@@ -102,7 +99,7 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 		if ( response && response.id ) {
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
-			dispatch( actions.setRSVPDetails( payload ) );
+			dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 			dispatch( actions.setRSVPHasChanges( false ) );
 		}
 
@@ -132,8 +129,6 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 	const config = getV2Config();
 	const {
 		id,
-		title,
-		description,
 		capacity,
 		notGoingResponses,
 		startDateMoment,
@@ -149,11 +144,12 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 		const hasCapacity = capacity && parseInt( capacity, 10 ) > 0;
 		const data = {
 			type: config.ticketType,
-			title,
-			description,
+			title: 'RSVP',
+			description: '',
 			price: 0,
 			start_date: formatDateTime( startDateMoment, startTime ),
 			end_date: formatDateTime( endDateMoment, endTime ),
+			show_description: false,
 			show_not_going: notGoingResponses ? true : false,
 			// Use 'unlimited' stock mode when no capacity, 'own' when capacity is set.
 			stock_mode: hasCapacity ? 'own' : 'unlimited',
@@ -172,7 +168,7 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 			data,
 		} );
 
-		dispatch( actions.setRSVPDetails( payload ) );
+		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 		dispatch( actions.setRSVPHasChanges( false ) );
 
 		/**
@@ -264,8 +260,9 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 			const capacity = rsvp.capacity >= 0 ? rsvp.capacity : ( rsvp.stock >= 0 ? rsvp.stock : '' );
 			const notGoingResponses = rsvp.show_not_going || false;
 
-			const title = normalizeTitle( rsvp.title );
-			const description = normalizeDescription( rsvp.description, rsvp.excerpt );
+			// Hard-code title and description for V2.
+			const title = 'RSVP';
+			const description = '';
 
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( rsvp.id ) );
