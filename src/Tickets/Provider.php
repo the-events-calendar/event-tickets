@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use Tribe__Tickets__Main as Tickets_Plugin;
 use TEC\Tickets\REST\Controller as REST_Controller;
+use TEC\Tickets\Migrations\Controller as Migrations_Controller;
 
 /**
  * Class Provider for all the Tickets loading.
@@ -109,6 +110,9 @@ class Provider extends Service_Provider {
 
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
+
+		// Migrations.
+		$this->container->register( Migrations_Controller::class );
 
 		$this->has_registered = true;
 
