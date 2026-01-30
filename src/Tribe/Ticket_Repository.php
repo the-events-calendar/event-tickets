@@ -807,4 +807,22 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	public function filter_by_type_not_in( $type ): void {
 		$this->filter_by_type_operator( 'NOT IN', $type );
 	}
+
+	/**
+	 * Deletes a meta field from a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id Ticket ID.
+	 * @param string $field     Field name (can be alias or meta key).
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete_meta( int $ticket_id, string $field ): bool {
+		// Resolve field alias to actual meta key.
+		$meta_key = Tribe__Utils__Array::get( $this->update_fields_aliases, $field, $field );
+
+		// Use WordPress meta API for deletion.
+		return delete_post_meta( $ticket_id, $meta_key );
+	}
 }
