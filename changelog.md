@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.27.4] 2026-01-28
+
+* Tweak - Amend small typos in text domains. Props to @DAnn2012! [ET-2596]
+* Language - 1 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.27.3] 2025-12-18
 
 * Security - Strengthen the user access level in the system information opt-in functionality. [SVUL-35]
