@@ -5,7 +5,6 @@ use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class Tribe__Tickets__Ticket_Repository
@@ -186,8 +185,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param string|array $provider
 	 */
 	public function filter_by_provider( $provider ) {
-		$providers = Arr::list_to_array( $provider );
-		$meta_keys = Arr::map_or_discard( (array) $providers, $this->ticket_to_event_keys() );
+		$providers = Tribe__Utils__Array::list_to_array( $provider );
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->ticket_to_event_keys() );
 
 		$this->by( 'meta_exists', $meta_keys );
 	}
@@ -461,7 +460,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @throws Tribe__Repository__Usage_Error
 	 */
 	public function filter_by_event_status( $event_status ) {
-		$statuses = Arr::list_to_array( $event_status );
+		$statuses = Tribe__Utils__Array::list_to_array( $event_status );
 
 		$can_read_private_posts = current_user_can( 'read_private_posts' );
 
@@ -553,7 +552,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *                                                 so that no ticket would match the query.
 	 */
 	public function filter_by_currency_code( $currency_code ) {
-		$queried_codes = Arr::list_to_array( $currency_code );
+		$queried_codes = Tribe__Utils__Array::list_to_array( $currency_code );
 
 		if ( empty( $queried_codes ) ) {
 			return;
@@ -812,20 +811,16 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Deletes a meta field from a ticket.
 	 *
-	 * Provides repository-level meta deletion using WordPress meta API.
-	 * Uses field aliases from the repository for consistency.
-	 *
-	 * @since 5.28.0 Created in the RSVP repository.
-	 * @since TBD    Moved from the RSVP repository to this repository.
+	 * @since TBD
 	 *
 	 * @param int    $ticket_id Ticket ID.
 	 * @param string $field     Field name (can be alias or meta key).
 	 *
-	 * @return bool True if the meta was removed, false otherwise.
+	 * @return bool True on success, false on failure.
 	 */
 	public function delete_meta( int $ticket_id, string $field ): bool {
 		// Resolve field alias to actual meta key.
-		$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
+		$meta_key = Tribe__Utils__Array::get( $this->update_fields_aliases, $field, $field );
 
 		// Use WordPress meta API for deletion.
 		return delete_post_meta( $ticket_id, $meta_key );
