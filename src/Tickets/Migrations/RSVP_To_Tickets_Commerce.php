@@ -67,13 +67,13 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function get_ticket_meta_to_add(): array {
 		return [
-			TC_Ticket::$type_meta_key              => RSVP_V2_Constants::TC_RSVP_TYPE,
+			TC_Ticket::$type_meta_key                => RSVP_V2_Constants::TC_RSVP_TYPE,
 			TC_Ticket::$should_manage_stock_meta_key => 'yes',
-			TC_Ticket::$stock_mode_meta_key        => 'own',
-			TC_Ticket::$stock_status_meta_key      => 'instock',
-			TC_Ticket::$allow_backorders_meta_key  => 'no',
-			'format'                               => 'standard',
-			'sticky'                               => '',
+			TC_Ticket::$stock_mode_meta_key          => 'own',
+			TC_Ticket::$stock_status_meta_key        => 'instock',
+			TC_Ticket::$allow_backorders_meta_key    => 'no',
+			'format'                                 => 'standard',
+			'sticky'                                 => '',
 		];
 	}
 
@@ -117,14 +117,14 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function get_attendee_meta_rename_map(): array {
 		return [
-			RSVP::ATTENDEE_PRODUCT_KEY   => TC_Attendee::$ticket_relation_meta_key,
-			RSVP::ATTENDEE_EVENT_KEY     => TC_Attendee::$event_relation_meta_key,
-			'_tribe_rsvp_security_code'  => TC_Attendee::$security_code_meta_key,
-			RSVP::ATTENDEE_OPTOUT_KEY    => TC_Attendee::$optout_meta_key,
-			'_paid_price'                => TC_Attendee::$price_paid_meta_key,
-			'_tribe_rsvp_email'          => TC_Attendee::$email_meta_key,
-			RSVP::ATTENDEE_TICKET_SENT   => TC_Attendee::$ticket_sent_meta_key,
-			RSVP::ATTENDEE_RSVP_KEY      => RSVP_V2_Constants::RSVP_STATUS_META_KEY,
+			RSVP::ATTENDEE_PRODUCT_KEY  => TC_Attendee::$ticket_relation_meta_key,
+			RSVP::ATTENDEE_EVENT_KEY    => TC_Attendee::$event_relation_meta_key,
+			'_tribe_rsvp_security_code' => TC_Attendee::$security_code_meta_key,
+			RSVP::ATTENDEE_OPTOUT_KEY   => TC_Attendee::$optout_meta_key,
+			'_paid_price'               => TC_Attendee::$price_paid_meta_key,
+			'_tribe_rsvp_email'         => TC_Attendee::$email_meta_key,
+			RSVP::ATTENDEE_TICKET_SENT  => TC_Attendee::$ticket_sent_meta_key,
+			RSVP::ATTENDEE_RSVP_KEY     => RSVP_V2_Constants::RSVP_STATUS_META_KEY,
 		];
 	}
 
