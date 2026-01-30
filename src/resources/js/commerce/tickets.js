@@ -325,7 +325,7 @@ tribe.tickets.commerce.tickets = {};
 		obj.loaderShow();
 
 		apiFetch( {
-			url: obj.tickets.tecApiEndpoint + '/' + rsvpId,
+			path: obj.tickets.tecApiEndpoint + '/' + rsvpId,
 			method: 'DELETE',
 		} )
 			.then( () => {
