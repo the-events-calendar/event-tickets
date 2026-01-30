@@ -2,9 +2,6 @@
 /**
  * Tests for the RSVP to Tickets Commerce Migration.
  *
- * All ticket creation in this suite uses PRODUCTION code paths (via `ticket_add()`)
- * to ensure the test data matches real-world meta fields.
- *
  * @since TBD
  */
 
@@ -16,13 +13,11 @@ use TEC\Tickets\Commerce\Attendee as TC_Attendee;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Migrations\RSVP_To_Tickets_Commerce;
-use TEC\Tickets\RSVP\Controller;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker as V2_Attendee_Maker;
-use TEC\Tickets\Tests\Commerce\RSVP_To_TC_Migration\Production_Ticket_Maker;
+use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker as V2_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
-use TEC\Common\StellarWP\Migrations\Utilities\Logger;
-use TEC\Common\Exceptions\Not_Bound_Exception;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as V1_Ticket_Maker;
 
 /**
  * Class RSVP_To_Tickets_Commerce_Test
@@ -30,9 +25,10 @@ use TEC\Common\Exceptions\Not_Bound_Exception;
  * @since TBD
  */
 class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
+	use V1_Ticket_Maker;
 	use Attendee_Maker;
+	use V2_Ticket_Maker;
 	use V2_Attendee_Maker;
-	use Production_Ticket_Maker;
 
 	/**
 	 * @var RSVP_To_Tickets_Commerce
@@ -113,31 +109,14 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		return $meta;
 	}
 
-	private function maybe_bind_logger(): void {
-		try {
-			tribe( Logger::class );
-		} catch ( Not_Bound_Exception $e ) {
-			tribe()->singleton( Logger::class, static fn() => new Logger( 0 ) );
-		}
-	}
-
 	/**
 	 * Run the migration up for all unmigrated tickets.
-	 *
-	 * Calls before_up/after_up around each batch to simulate
-	 * what the StellarWP Migrations framework does in Execute::process().
 	 */
 	protected function run_migration_up(): void {
-		$batch      = 1;
-		$batch_size = 50;
-		$run        = false;
-
-		$this->maybe_bind_logger();
+		$batch = 1;
+		$run = false;
 		while ( ! $this->migration->is_up_done() ) {
-			$this->migration->before_up( $batch, $batch_size );
-			$this->migration->up( $batch, $batch_size );
-			$is_completed = $this->migration->is_up_done();
-			$this->migration->after_up( $batch, $batch_size, $is_completed );
+			$this->migration->up( $batch, 50 );
 			$batch++;
 			$run = true;
 			// Safety limit.
@@ -151,21 +130,12 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 	/**
 	 * Run the migration down for all migrated tickets.
-	 *
-	 * Calls before_down/after_down around each batch to simulate
-	 * what the StellarWP Migrations framework does in Execute::process().
 	 */
 	protected function run_migration_down(): void {
-		$batch      = 1;
-		$batch_size = 50;
-		$run        = false;
-
-		$this->maybe_bind_logger();
+		$batch = 1;
+		$run = false;
 		while ( ! $this->migration->is_down_done() ) {
-			$this->migration->before_down( $batch, $batch_size );
-			$this->migration->down( $batch, $batch_size );
-			$is_completed = $this->migration->is_down_done();
-			$this->migration->after_down( $batch, $batch_size, $is_completed );
+			$this->migration->down( $batch, 50 );
 			$batch++;
 			$run = true;
 			// Safety limit.
@@ -186,8 +156,8 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 		$this->assertEquals( 0, $this->migration->get_total_items() );
 
-		$this->create_production_rsvp_ticket( $post_id );
-		$this->create_production_rsvp_ticket( $post_id );
+		$this->create_rsvp_ticket( $post_id );
+		$this->create_rsvp_ticket( $post_id );
 
 		$this->assertEquals( 2, $this->migration->get_total_items() );
 	}
@@ -198,9 +168,9 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_migrate_simple_ticket_with_no_attendees(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
-				'_tribe_ticket_capacity' => 100,
+				'_capacity' => 100,
 			],
 		] );
 
@@ -220,9 +190,6 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$this->assertEquals( 'yes', get_post_meta( $ticket_id, '_manage_stock', true ) );
 		$this->assertEquals( 'own', get_post_meta( $ticket_id, '_global_stock_mode', true ) );
 		$this->assertEquals( 'instock', get_post_meta( $ticket_id, '_stock_status', true ) );
-
-		// Verify RSVP version option set to v2 after migration.
-		$this->assertEquals( Controller::VERSION_2, tribe_get_option( Controller::VERSION_OPTION_KEY ) );
 	}
 
 	/**
@@ -231,7 +198,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_migrate_ticket_with_single_attendee(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'order-hash-1', [
 			'full_name' => 'John Doe',
@@ -273,7 +240,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_migrate_ticket_with_multiple_attendees_same_order(): void {
 		$post_id    = static::factory()->post->create();
-		$ticket_id  = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id  = $this->create_rsvp_ticket( $post_id );
 		$order_hash = 'same-order-hash';
 
 		$attendee_id_1 = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, $order_hash, [
@@ -315,7 +282,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_migrate_ticket_with_multiple_attendees_different_orders(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$attendee_id_1 = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'order-hash-a', [
 			'full_name' => 'Person A',
@@ -352,7 +319,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_migrate_not_going_attendees_with_status_preserved(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		// Create a "not going" attendee.
 		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'not-going-order', [
@@ -386,9 +353,9 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_migrate_ticket_with_unlimited_capacity(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
-				'_tribe_ticket_capacity' => -1,
+				'_capacity' => -1,
 			],
 		] );
 
@@ -416,12 +383,14 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 * It should migrate ticket with date restrictions.
 	 */
 	public function should_migrate_ticket_with_date_restrictions(): void {
-		$post_id = static::factory()->post->create();
+		$post_id        = static::factory()->post->create();
+		$start_datetime = '2024-01-15 09:00:00';
+		$end_datetime   = '2024-12-31 23:59:59';
 
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
-				'_ticket_start_date' => '2024-01-15 09:00:00',
-				'_ticket_end_date' => '2024-12-31 23:59:59',
+				'_ticket_start_date' => $start_datetime,
+				'_ticket_end_date'   => $end_datetime,
 			],
 		] );
 
@@ -448,7 +417,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_preserve_ar_fields_during_migration(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$ar_data = [
 			'company'  => 'Test Corp',
@@ -477,7 +446,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_rollback_simple_ticket(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		// Migrate up first.
 		$this->run_migration_up();
@@ -503,9 +472,6 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 		// Verify original meta key restored.
 		$this->assertEquals( $post_id, get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true ) );
-
-		// Verify RSVP version option set to v1 after rollback.
-		$this->assertEquals( Controller::VERSION_1, tribe_get_option( Controller::VERSION_OPTION_KEY ) );
 	}
 
 	/**
@@ -514,7 +480,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_rollback_ticket_with_attendees_and_delete_migration_orders(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'rollback-order', [
 			'full_name' => 'Rollback Person',
@@ -551,12 +517,14 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 * It should restore datetime fields on rollback.
 	 */
 	public function should_restore_datetime_fields_on_rollback(): void {
-		$post_id = static::factory()->post->create();
+		$post_id        = static::factory()->post->create();
+		$start_datetime = '2024-06-15 10:30:00';
+		$end_datetime   = '2024-08-20 18:45:00';
 
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
-				'_ticket_start_date' => '2024-06-15 10:30:00',
-				'_ticket_end_date' => '2024-08-20 18:45:00',
+				'_ticket_start_date' => $start_datetime,
+				'_ticket_end_date'   => $end_datetime,
 			],
 		] );
 
@@ -579,13 +547,13 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$post_id = static::factory()->post->create();
 
 		// Create V1 RSVP and migrate.
-		$v1_ticket_id = $this->create_production_rsvp_ticket( $post_id, [
-			'post_title'        => 'Test RSVP Ticket',
-			'post_excerpt' => 'Test description',
-			'meta_input' => [
+		$v1_ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'post_title'   => 'Test RSVP Ticket',
+			'post_content' => 'Test description',
+			'meta_input'   => [
+				'_capacity'          => 50,
 				'_ticket_start_date' => '2024-01-01 09:00:00',
-				'_ticket_end_date' => '2024-12-31 17:00:00',
-				'_tribe_ticket_capacity' => 50,
+				'_ticket_end_date'   => '2024-12-31 17:00:00',
 			],
 		] );
 
@@ -593,7 +561,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		clean_post_cache( $v1_ticket_id );
 
 		// Create a fresh V2 RSVP ticket.
-		$v2_ticket_id = $this->create_production_tc_rsvp_ticket( $post_id, [
+		$v2_ticket_id = $this->create_tc_rsvp_ticket( $post_id, [
 			'ticket_name'        => 'Test V2 RSVP Ticket',
 			'ticket_description' => 'Test V2 description',
 			'ticket_start_date'  => '2024-01-01',
@@ -601,7 +569,6 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 			'ticket_end_date'    => '2024-12-31',
 			'ticket_end_time'    => '17:00:00',
 			'tribe-ticket'       => [
-				'mode'     => 'own',
 				'capacity' => 50,
 			],
 		] );
@@ -637,7 +604,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$post_id = static::factory()->post->create();
 
 		// Create V1 RSVP with attendee and migrate.
-		$v1_ticket_id   = $this->create_production_rsvp_ticket( $post_id );
+		$v1_ticket_id   = $this->create_rsvp_ticket( $post_id );
 		$v1_attendee_id = $this->create_v1_rsvp_attendee( $v1_ticket_id, $post_id, 'comparison-order', [
 			'full_name' => 'Compare Person',
 			'email'     => 'compare@example.com',
@@ -648,7 +615,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		clean_post_cache( $v1_attendee_id );
 
 		// Create V2 RSVP attendee.
-		$v2_ticket_id   = $this->create_production_tc_rsvp_ticket( $post_id );
+		$v2_ticket_id   = $this->create_tc_rsvp_ticket( $post_id );
 		$v2_attendee_id = $this->create_tc_rsvp_attendee( $v2_ticket_id, $post_id, [
 			'full_name'   => 'Compare Person V2',
 			'email'       => 'comparev2@example.com',
@@ -678,7 +645,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_create_order_matching_tc_order_structure(): void {
 		$post_id      = static::factory()->post->create();
-		$v1_ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$v1_ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$v1_attendee_id = $this->create_v1_rsvp_attendee( $v1_ticket_id, $post_id, 'tc-order-compare', [
 			'full_name' => 'Order Compare Person',
@@ -761,10 +728,9 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_handle_ticket_with_show_not_going_option(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
-				'_tribe_ticket_capacity' => 100,
-				'_tribe_ticket_show_not_going' => true,
+				'_tribe_ticket_show_not_going' => '1',
 			],
 		] );
 
@@ -781,10 +747,11 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_set_correct_status_counts_based_on_sales(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
-
-		// Manually set total_sales after production creation (simulates existing sales).
-		update_post_meta( $ticket_id, 'total_sales', 5 );
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'total_sales' => 5,
+			],
+		] );
 
 		$this->run_migration_up();
 		clean_post_cache( $ticket_id );
@@ -802,7 +769,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_generate_correct_sku_format(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$this->run_migration_up();
 		clean_post_cache( $ticket_id );
@@ -822,14 +789,13 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 		$ticket_ids = [];
 		for ( $i = 0; $i < 5; $i++ ) {
-			$ticket_ids[] = $this->create_production_rsvp_ticket( $post_id );
+			$ticket_ids[] = $this->create_rsvp_ticket( $post_id );
 		}
 
 		$this->assertEquals( 5, $this->migration->get_total_items() );
 		$this->assertFalse( $this->migration->is_up_done() );
 
 		// Migrate in batch of 2.
-		$this->maybe_bind_logger();
 		$this->migration->up( 1, 2 );
 
 		// Should have 3 remaining.
@@ -853,7 +819,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_handle_attendee_with_missing_order_hash(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		// Create attendee without setting order hash.
 		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, '', [
@@ -882,7 +848,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$this->assertFalse( $this->migration->is_applicable() );
 
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		// Has V1 tickets - applicable.
 		$this->assertTrue( $this->migration->is_applicable() );
@@ -906,7 +872,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	 */
 	public function should_handle_optout_attendees_correctly(): void {
 		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'optout-order', [
 			'full_name' => 'Optout Person',
@@ -971,7 +937,7 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$ticket_ids = [];
 
 		for ( $t = 0; $t < $ticket_count; $t++ ) {
-			$ticket_ids[] = $this->create_production_rsvp_ticket( $post_id );
+			$ticket_ids[] = $this->create_rsvp_ticket( $post_id );
 		}
 
 		$attendee_ids = [];
@@ -1020,725 +986,5 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 			$this->assertEquals( 'tribe_rsvp_attendees', get_post_type( $attendee_id ) );
 			$this->assertEquals( 0, get_post( $attendee_id )->post_parent );
 		}
-	}
-
-	// ==========================================
-	// Edge Case Tests - Data Corruption
-	// ==========================================
-
-	/**
-	 * @test
-	 * It should skip ticket with no event relation.
-	 */
-	public function should_skip_ticket_with_no_event_relation(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
-
-		// Remove the event relation to simulate corrupted data.
-		delete_post_meta( $ticket_id, '_tribe_rsvp_for_event' );
-
-		// Migration should complete without error.
-		$this->maybe_bind_logger();
-		$this->migration->up( 1, 50 );
-
-		clean_post_cache( $ticket_id );
-
-		// Ticket should be marked as migrated even when skipped to avoid infinite loops.
-		$this->assertNotEmpty( get_post_meta( $ticket_id, '_tec_rsvp_migrated_to_tc', true ) );
-
-		// Post type should still be V1.
-		$this->assertEquals( 'tribe_rsvp_tickets', get_post_type( $ticket_id ) );
-
-		// Rollback should clean up the skipped ticket marker.
-		$this->run_migration_down();
-
-		clean_post_cache( $ticket_id );
-
-		$this->assertEmpty( get_post_meta( $ticket_id, '_tec_rsvp_migrated_to_tc', true ) );
-		$this->assertEquals( 'tribe_rsvp_tickets', get_post_type( $ticket_id ) );
-	}
-
-	/**
-	 * @test
-	 * It should handle malformed datetime values.
-	 */
-	public function should_handle_malformed_datetime_values(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
-
-		// Corrupt the datetime meta after production creation to simulate legacy bad data.
-		update_post_meta( $ticket_id, '_ticket_start_date', 'not-a-date' );
-		delete_post_meta( $ticket_id, '_ticket_end_date' );
-
-		$this->run_migration_up();
-
-		clean_post_cache( $ticket_id );
-
-		// Migration should complete.
-		$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $ticket_id ) );
-
-		// Malformed date should result in epoch-based date (1970-01-01).
-		$start_date = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$this->assertNotEmpty( $start_date );
-	}
-
-	/**
-	 * @test
-	 * It should handle ticket with zero capacity.
-	 */
-	public function should_handle_ticket_with_zero_capacity(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
-			'meta_input' => [
-				'_tribe_ticket_capacity' => 0,
-			],
-		] );
-
-		$this->run_migration_up();
-
-		clean_post_cache( $ticket_id );
-
-		$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $ticket_id ) );
-
-		// Capacity of 0 may be stored as '0', 0, or empty - migration should handle gracefully.
-		$capacity = get_post_meta( $ticket_id, '_capacity', true );
-		$this->assertTrue( empty( $capacity ) || $capacity === '0' || $capacity === 0 );
-	}
-
-	// ==========================================
-	// Edge Case Tests - Empty/Null Values
-	// ==========================================
-
-	/**
-	 * Data provider for empty value edge cases.
-	 *
-	 * @return \Generator
-	 */
-	public function empty_value_edge_cases_provider(): \Generator {
-		yield 'empty_full_name' => [
-			'overrides' => [ 'full_name' => '' ],
-		];
-
-		yield 'whitespace_only_name' => [
-			'overrides' => [ 'full_name' => '   ' ],
-		];
-
-		yield 'single_word_name' => [
-			'overrides' => [ 'full_name' => 'Madonna' ],
-		];
-
-		yield 'very_long_name' => [
-			'overrides' => [ 'full_name' => str_repeat( 'A', 200 ) ],
-		];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider empty_value_edge_cases_provider
-	 *
-	 * It should handle empty and edge case attendee values.
-	 *
-	 * @param array $overrides The attendee overrides.
-	 */
-	public function should_handle_empty_attendee_values( array $overrides ): void {
-		$post_id     = static::factory()->post->create();
-		$ticket_id   = $this->create_production_rsvp_ticket( $post_id );
-		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'edge-order', $overrides );
-
-		$this->run_migration_up();
-
-		clean_post_cache( $attendee_id );
-
-		// Migration should complete.
-		$this->assertEquals( TC_Attendee::POSTTYPE, get_post_type( $attendee_id ) );
-
-		// Should have an order.
-		$order_id = get_post( $attendee_id )->post_parent;
-		$this->assertGreaterThan( 0, $order_id );
-	}
-
-	// ==========================================
-	// Edge Case Tests - Resume/Idempotency
-	// ==========================================
-
-	/**
-	 * @test
-	 * It should resume migration after partial completion.
-	 */
-	public function should_resume_migration_after_partial_completion(): void {
-		$post_id = static::factory()->post->create();
-
-		$ticket_ids = [];
-		for ( $i = 0; $i < 10; $i++ ) {
-			$ticket_ids[] = $this->create_production_rsvp_ticket( $post_id );
-		}
-
-		// Migrate first batch (5 tickets).
-		$this->maybe_bind_logger();
-		$this->migration->up( 1, 5 );
-
-		// Should have 5 remaining.
-		$this->assertEquals( 5, $this->migration->get_total_items() );
-
-		// Complete migration.
-		$this->run_migration_up();
-
-		// All should be migrated.
-		$this->assertTrue( $this->migration->is_up_done() );
-		foreach ( $ticket_ids as $ticket_id ) {
-			clean_post_cache( $ticket_id );
-			$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $ticket_id ) );
-		}
-	}
-
-	/**
-	 * @test
-	 * It should not re-migrate already migrated tickets.
-	 */
-	public function should_not_remigrate_already_migrated_tickets(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
-
-		$this->run_migration_up();
-
-		$migration_timestamp = get_post_meta( $ticket_id, '_tec_rsvp_migrated_to_tc', true );
-
-		// Wait a moment to ensure timestamp would differ.
-		usleep( 100000 ); // 0.1 seconds
-
-		// Run migration again.
-		$this->maybe_bind_logger();
-		$this->migration->up( 1, 50 );
-
-		// Migration marker should be unchanged.
-		$this->assertEquals(
-			$migration_timestamp,
-			get_post_meta( $ticket_id, '_tec_rsvp_migrated_to_tc', true )
-		);
-	}
-
-	/**
-	 * @test
-	 * It should correctly report completion status during partial migration.
-	 */
-	public function should_correctly_report_completion_status_during_partial_migration(): void {
-		$post_id = static::factory()->post->create();
-
-		// Create 3 tickets.
-		$this->create_production_rsvp_ticket( $post_id );
-		$this->create_production_rsvp_ticket( $post_id );
-		$this->create_production_rsvp_ticket( $post_id );
-
-		$this->assertFalse( $this->migration->is_up_done() );
-		$this->assertEquals( 3, $this->migration->get_total_items() );
-
-		// Migrate 1 ticket.
-		$this->maybe_bind_logger();
-		$this->migration->up( 1, 1 );
-
-		$this->assertFalse( $this->migration->is_up_done() );
-		$this->assertEquals( 2, $this->migration->get_total_items() );
-
-		// Complete migration.
-		$this->run_migration_up();
-
-		$this->assertTrue( $this->migration->is_up_done() );
-		$this->assertEquals( 0, $this->migration->get_total_items() );
-	}
-
-	// ==========================================
-	// Edge Case Tests - Timezone Handling
-	// ==========================================
-
-	/**
-	 * @test
-	 * It should preserve time values correctly in datetime migration.
-	 */
-	public function should_preserve_time_values_in_datetime_migration(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
-			'meta_input' => [
-				'_ticket_start_date' => '2024-06-15 08:30:00',
-				'_ticket_end_date' => '2024-12-25 23:59:59',
-			],
-		] );
-
-		$this->run_migration_up();
-
-		clean_post_cache( $ticket_id );
-
-		// Times should be preserved.
-		$this->assertEquals( '2024-06-15', get_post_meta( $ticket_id, '_ticket_start_date', true ) );
-		$this->assertEquals( '08:30:00', get_post_meta( $ticket_id, '_ticket_start_time', true ) );
-		$this->assertEquals( '2024-12-25', get_post_meta( $ticket_id, '_ticket_end_date', true ) );
-		$this->assertEquals( '23:59:59', get_post_meta( $ticket_id, '_ticket_end_time', true ) );
-	}
-
-	/**
-	 * @test
-	 * It should handle midnight time correctly.
-	 */
-	public function should_handle_midnight_time_correctly(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
-			'meta_input' => [
-				'_ticket_start_date' => '2024-01-01 00:00:00',
-				'_ticket_end_date' => '2024-01-02 00:00:00',
-			],
-		] );
-
-		$this->run_migration_up();
-
-		clean_post_cache( $ticket_id );
-
-		$this->assertEquals( '00:00:00', get_post_meta( $ticket_id, '_ticket_start_time', true ) );
-		$this->assertEquals( '00:00:00', get_post_meta( $ticket_id, '_ticket_end_time', true ) );
-	}
-
-	// ==========================================
-	// Edge Case Tests - Multi-Event Scenarios
-	// ==========================================
-
-	/**
-	 * @test
-	 * It should handle multiple tickets across different events.
-	 */
-	public function should_handle_multiple_tickets_across_different_events(): void {
-		$event_1 = static::factory()->post->create();
-		$event_2 = static::factory()->post->create();
-		$event_3 = static::factory()->post->create();
-
-		$ticket_1 = $this->create_production_rsvp_ticket( $event_1 );
-		$ticket_2 = $this->create_production_rsvp_ticket( $event_2 );
-		$ticket_3 = $this->create_production_rsvp_ticket( $event_3 );
-
-		$this->run_migration_up();
-
-		// All tickets should be migrated with correct event relations.
-		clean_post_cache( $ticket_1 );
-		clean_post_cache( $ticket_2 );
-		clean_post_cache( $ticket_3 );
-
-		$this->assertEquals( $event_1, get_post_meta( $ticket_1, '_tec_tickets_commerce_event', true ) );
-		$this->assertEquals( $event_2, get_post_meta( $ticket_2, '_tec_tickets_commerce_event', true ) );
-		$this->assertEquals( $event_3, get_post_meta( $ticket_3, '_tec_tickets_commerce_event', true ) );
-	}
-
-	/**
-	 * @test
-	 * It should create separate orders for attendees from different tickets same order hash.
-	 */
-	public function should_create_separate_orders_for_different_tickets_same_order_hash(): void {
-		$event_1 = static::factory()->post->create();
-		$event_2 = static::factory()->post->create();
-
-		$ticket_1 = $this->create_production_rsvp_ticket( $event_1 );
-		$ticket_2 = $this->create_production_rsvp_ticket( $event_2 );
-
-		// Same order hash but different tickets.
-		$order_hash = 'shared-order-hash';
-
-		$attendee_1 = $this->create_v1_rsvp_attendee( $ticket_1, $event_1, $order_hash );
-		$attendee_2 = $this->create_v1_rsvp_attendee( $ticket_2, $event_2, $order_hash );
-
-		$this->run_migration_up();
-
-		clean_post_cache( $attendee_1 );
-		clean_post_cache( $attendee_2 );
-
-		$order_1 = get_post( $attendee_1 )->post_parent;
-		$order_2 = get_post( $attendee_2 )->post_parent;
-
-		// Each ticket migration creates its own orders.
-		$this->assertGreaterThan( 0, $order_1 );
-		$this->assertGreaterThan( 0, $order_2 );
-	}
-
-	// ==========================================
-	// Edge Case Tests - Rollback
-	// ==========================================
-
-	/**
-	 * @test
-	 * It should preserve non-migration orders during rollback.
-	 */
-	public function should_preserve_non_migration_orders_during_rollback(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
-
-		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'rollback-test', [
-			'full_name' => 'Rollback Test',
-			'email'     => 'rollback@example.com',
-		] );
-
-		// Migrate up.
-		$this->run_migration_up();
-
-		clean_post_cache( $attendee_id );
-		$order_id = get_post( $attendee_id )->post_parent;
-
-		// Remove the migration marker from the order (simulate a manually created order).
-		delete_post_meta( $order_id, '_tec_rsvp_migration_created' );
-
-		// Rollback.
-		$this->run_migration_down();
-
-		clean_post_cache( $order_id );
-
-		// Order should still exist (not deleted).
-		$this->assertNotNull( get_post( $order_id ) );
-		$this->assertEquals( Order::POSTTYPE, get_post_type( $order_id ) );
-	}
-
-	/**
-	 * @test
-	 * It should handle rollback with multiple attendees per order.
-	 */
-	public function should_handle_rollback_with_multiple_attendees_per_order(): void {
-		$post_id    = static::factory()->post->create();
-		$ticket_id  = $this->create_production_rsvp_ticket( $post_id );
-		$order_hash = 'multi-attendee-order';
-
-		$attendee_1 = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, $order_hash, [
-			'full_name' => 'Person One',
-			'email'     => 'one@example.com',
-		] );
-		$attendee_2 = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, $order_hash, [
-			'full_name' => 'Person Two',
-			'email'     => 'two@example.com',
-		] );
-
-		// Migrate up.
-		$this->run_migration_up();
-
-		clean_post_cache( $attendee_1 );
-		clean_post_cache( $attendee_2 );
-
-		// Both should share the same order.
-		$order_id = get_post( $attendee_1 )->post_parent;
-		$this->assertEquals( $order_id, get_post( $attendee_2 )->post_parent );
-
-		// Rollback.
-		$this->run_migration_down();
-
-		clean_post_cache( $attendee_1 );
-		clean_post_cache( $attendee_2 );
-		clean_post_cache( $order_id );
-
-		// Both attendees should be restored.
-		$this->assertEquals( 'tribe_rsvp_attendees', get_post_type( $attendee_1 ) );
-		$this->assertEquals( 'tribe_rsvp_attendees', get_post_type( $attendee_2 ) );
-		$this->assertEquals( 0, get_post( $attendee_1 )->post_parent );
-		$this->assertEquals( 0, get_post( $attendee_2 )->post_parent );
-
-		// Order should be deleted.
-		$this->assertNull( get_post( $order_id ) );
-	}
-
-	/**
-	 * @test
-	 * It should restore attendee title format on rollback.
-	 */
-	public function should_restore_attendee_title_format_on_rollback(): void {
-		$post_id     = static::factory()->post->create();
-		$ticket_id   = $this->create_production_rsvp_ticket( $post_id );
-		$order_hash  = 'title-test-order';
-		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, $order_hash, [
-			'full_name' => 'Title Test Person',
-			'email'     => 'title@example.com',
-		] );
-
-		// Store original title format.
-		$original_title = get_post( $attendee_id )->post_title;
-
-		// Migrate and rollback.
-		$this->run_migration_up();
-		$this->run_migration_down();
-
-		clean_post_cache( $attendee_id );
-
-		// Title should be restored to the exact original value.
-		$restored_title = get_post( $attendee_id )->post_title;
-		$this->assertEquals( $original_title, $restored_title, 'Attendee post_title should be restored exactly' );
-	}
-
-	// ==========================================
-	// Edge Case Tests - Large Dataset
-	// ==========================================
-
-	/**
-	 * @test
-	 * @group slow
-	 * It should handle large dataset migration.
-	 */
-	public function should_handle_large_dataset_migration(): void {
-		$post_id    = static::factory()->post->create();
-		$ticket_ids = [];
-
-		// Create 20 tickets with 5 attendees each (100 attendees total).
-		for ( $t = 0; $t < 20; $t++ ) {
-			$ticket_id    = $this->create_production_rsvp_ticket( $post_id );
-			$ticket_ids[] = $ticket_id;
-
-			$order_hash = 'large-order-' . $t;
-			for ( $a = 0; $a < 5; $a++ ) {
-				$this->create_v1_rsvp_attendee( $ticket_id, $post_id, $order_hash, [
-					'full_name' => "Attendee {$t}-{$a}",
-					'email'     => "attendee{$t}_{$a}@example.com",
-				] );
-			}
-		}
-
-		$this->assertEquals( 20, $this->migration->get_total_items() );
-
-		$this->run_migration_up();
-
-		$this->assertTrue( $this->migration->is_up_done() );
-
-		// Verify all tickets migrated.
-		foreach ( $ticket_ids as $ticket_id ) {
-			clean_post_cache( $ticket_id );
-			$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $ticket_id ) );
-		}
-	}
-
-	/**
-	 * @test
-	 * It should migrate stock and capacity meta to match a natively created TC ticket.
-	 */
-	public function should_migrate_stock_and_capacity_meta_to_match_tc_ticket(): void {
-		$post_id  = static::factory()->post->create();
-		$capacity = 100;
-
-		$v1_ticket_id = $this->create_production_rsvp_ticket( $post_id, [
-			'post_title'        => 'Migrated RSVP Ticket',
-			'post_excerpt' => 'Migrated RSVP description',
-			'meta_input' => [
-				'_ticket_start_date' => '2024-01-01 09:00:00',
-				'_ticket_end_date' => '2024-12-31 17:00:00',
-				'_tribe_ticket_capacity' => $capacity,
-			],
-		] );
-
-		$this->assertEquals( 'tribe_rsvp_tickets', get_post_type( $v1_ticket_id ) );
-
-		$this->run_migration_up();
-		clean_post_cache( $v1_ticket_id );
-
-		$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $v1_ticket_id ) );
-
-		$tc_ticket_id = $this->create_production_tc_ticket( $post_id, 0, [
-			'ticket_name'        => 'Native TC Ticket',
-			'ticket_description' => 'Native TC description',
-			'ticket_start_date'  => '2024-01-01',
-			'ticket_start_time'  => '09:00:00',
-			'ticket_end_date'    => '2024-12-31',
-			'ticket_end_time'    => '17:00:00',
-			'tribe-ticket'       => [
-				'mode'     => 'own',
-				'capacity' => $capacity,
-			],
-		] );
-
-		$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $tc_ticket_id ) );
-
-		$all_tc_meta = $this->get_comparable_meta( $tc_ticket_id );
-		$all_rsvp_meta = $this->get_comparable_meta( $v1_ticket_id );
-
-		$stock_and_capacity_keys = [
-			'_stock',
-			'_stock_status',
-			'_manage_stock',
-			'_global_stock_mode',
-			'_backorders',
-			'_tribe_ticket_capacity',
-			'_price',
-		];
-
-		foreach ( $stock_and_capacity_keys as $key ) {
-			$this->assertArrayHasKey(
-				$key,
-				$all_tc_meta,
-				"Native TC ticket should have meta key: {$key}"
-			);
-
-			$this->assertArrayHasKey(
-				$key,
-				$all_rsvp_meta,
-				"Migrated RSVP V2 ticket should have meta key: {$key} (present on native TC ticket with value: " . print_r( $all_tc_meta[ $key ] ?? 'NOT SET', true ) . ')'
-			);
-		}
-
-		$missing_keys = array_diff_key( $all_tc_meta, $all_rsvp_meta );
-		$this->assertEmpty(
-			$missing_keys,
-			'Migrated RSVP V2 ticket is missing meta keys that a native TC ticket has: ' . implode( ', ', array_keys( $missing_keys ) )
-		);
-
-		$should_not_compare_keys = [
-			'_sku',
-			'_type',
-		];
-
-		foreach ( $all_tc_meta as $key => $value ) {
-			if ( in_array( $key, $should_not_compare_keys, true ) ) {
-				if ( '_type' === $key ) {
-					$this->assertEquals( 'default', $value );
-					$this->assertEquals( Constants::TC_RSVP_TYPE, $all_rsvp_meta[ $key ] );
-				}
-				continue;
-			}
-
-			$this->assertEquals(
-				$value,
-				$all_rsvp_meta[ $key ],
-				"Meta key {$key} should match between native TC ticket and migrated RSVP V2 ticket"
-			);
-		}
-	}
-
-	/**
-	 * @test
-	 * It should fully revert all ticket and attendee state on rollback.
-	 */
-	public function should_fully_revert_all_ticket_and_attendee_state_on_rollback(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
-			'meta_input' => [
-				'_tribe_ticket_capacity' => 100,
-				'_ticket_start_date'     => '2024-06-15 10:30:00',
-				'_ticket_end_date'       => '2024-12-31 23:59:59',
-			],
-		] );
-
-		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'revert-order', [
-			'full_name' => 'Revert Test Person',
-			'email'     => 'revert@example.com',
-		] );
-
-		// Capture pre-migration state.
-		$pre_ticket_meta   = $this->get_comparable_meta( $ticket_id );
-		$pre_ticket_post   = get_post( $ticket_id );
-		$pre_attendee_meta = $this->get_comparable_meta( $attendee_id );
-		$pre_attendee_post = get_post( $attendee_id );
-
-		// Run migration up then down.
-		$this->run_migration_up();
-		$this->run_migration_down();
-
-		clean_post_cache( $ticket_id );
-		clean_post_cache( $attendee_id );
-
-		// Capture post-rollback state.
-		$post_ticket_meta   = $this->get_comparable_meta( $ticket_id );
-		$post_ticket_post   = get_post( $ticket_id );
-		$post_attendee_meta = $this->get_comparable_meta( $attendee_id );
-		$post_attendee_post = get_post( $attendee_id );
-
-		// === Ticket post fields ===
-		$this->assertEquals( $pre_ticket_post->post_type, $post_ticket_post->post_type, 'Ticket post_type should be restored' );
-		$this->assertEquals( $pre_ticket_post->menu_order, $post_ticket_post->menu_order, 'Ticket menu_order should be restored' );
-		$this->assertEquals( $pre_ticket_post->comment_status, $post_ticket_post->comment_status, 'Ticket comment_status should be restored' );
-		$this->assertEquals( $pre_ticket_post->ping_status, $post_ticket_post->ping_status, 'Ticket ping_status should be restored' );
-
-		// === Ticket meta: no leftover V2 meta ===
-		$leftover_ticket_meta = array_diff_key( $post_ticket_meta, $pre_ticket_meta );
-		$this->assertEmpty(
-			$leftover_ticket_meta,
-			'Rollback left over ticket meta keys that did not exist before migration: ' . implode( ', ', array_keys( $leftover_ticket_meta ) )
-		);
-
-		// === Ticket meta: all original meta still present ===
-		$missing_ticket_meta = array_diff_key( $pre_ticket_meta, $post_ticket_meta );
-		$this->assertEmpty(
-			$missing_ticket_meta,
-			'Rollback removed ticket meta keys that existed before migration: ' . implode( ', ', array_keys( $missing_ticket_meta ) )
-		);
-
-		// === Ticket meta values match ===
-		foreach ( $pre_ticket_meta as $key => $value ) {
-			$this->assertEquals(
-				$value,
-				$post_ticket_meta[ $key ] ?? null,
-				"Ticket meta key '{$key}' value should be restored after rollback"
-			);
-		}
-
-		// === Attendee post fields ===
-		$this->assertEquals( $pre_attendee_post->post_type, $post_attendee_post->post_type, 'Attendee post_type should be restored' );
-		$this->assertEquals( $pre_attendee_post->post_parent, $post_attendee_post->post_parent, 'Attendee post_parent should be restored' );
-		$this->assertEquals( $pre_attendee_post->post_title, $post_attendee_post->post_title, 'Attendee post_title should be restored' );
-		$this->assertEquals( $pre_attendee_post->post_name, $post_attendee_post->post_name, 'Attendee post_name should be restored' );
-
-		// === Attendee meta: no leftover V2 meta ===
-		$leftover_attendee_meta = array_diff_key( $post_attendee_meta, $pre_attendee_meta );
-		$this->assertEmpty(
-			$leftover_attendee_meta,
-			'Rollback left over attendee meta keys that did not exist before migration: ' . implode( ', ', array_keys( $leftover_attendee_meta ) )
-		);
-
-		// === Attendee meta: all original meta still present ===
-		$missing_attendee_meta = array_diff_key( $pre_attendee_meta, $post_attendee_meta );
-		$this->assertEmpty(
-			$missing_attendee_meta,
-			'Rollback removed attendee meta keys that existed before migration: ' . implode( ', ', array_keys( $missing_attendee_meta ) )
-		);
-
-		// === Attendee meta values match ===
-		foreach ( $pre_attendee_meta as $key => $value ) {
-			$this->assertEquals(
-				$value,
-				$post_attendee_meta[ $key ] ?? null,
-				"Attendee meta key '{$key}' value should be restored after rollback"
-			);
-		}
-	}
-
-	/**
-	 * @test
-	 * It should handle ticket with many attendees.
-	 */
-	public function should_handle_ticket_with_many_attendees(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_production_rsvp_ticket( $post_id );
-
-		// Create 50 attendees with same order hash.
-		$order_hash = 'large-single-order';
-		for ( $i = 0; $i < 50; $i++ ) {
-			$this->create_v1_rsvp_attendee( $ticket_id, $post_id, $order_hash, [
-				'full_name' => "Attendee {$i}",
-				'email'     => "attendee{$i}@example.com",
-			] );
-		}
-
-		$this->run_migration_up();
-
-		clean_post_cache( $ticket_id );
-
-		$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $ticket_id ) );
-
-		// Verify order has correct quantity.
-		$attendees = get_posts( [
-			'post_type'      => TC_Attendee::POSTTYPE,
-			'posts_per_page' => -1,
-			'meta_query'     => [
-				[
-					'key'   => '_tec_tickets_commerce_ticket',
-					'value' => $ticket_id,
-				],
-			],
-		] );
-
-		$this->assertCount( 50, $attendees );
-
-		// All should have the same order parent.
-		$order_id = $attendees[0]->post_parent;
-		foreach ( $attendees as $attendee ) {
-			$this->assertEquals( $order_id, $attendee->post_parent );
-		}
-
-		// Order quantity should be 50.
-		$items = get_post_meta( $order_id, Order::$items_meta_key, true );
-		$this->assertEquals( 50, $items[0]['quantity'] );
 	}
 }
