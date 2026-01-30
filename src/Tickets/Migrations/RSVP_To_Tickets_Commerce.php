@@ -16,6 +16,8 @@ use TEC\Tickets\Commerce\Attendee as TC_Attendee;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use Tribe__Tickets__RSVP as RSVP;
 use WP_Post;
 
 /**
@@ -44,91 +46,101 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	private const MIGRATION_ORDER_META_KEY = '_tec_rsvp_migration_created';
 
 	/**
-	 * Ticket meta keys to rename during migration (old_key => new_key).
+	 * Get ticket meta keys to rename during migration.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, string>
+	 * @return array<string, string> old_key => new_key pairs.
 	 */
-	private const TICKET_META_RENAME_MAP = [
-		'_tribe_rsvp_for_event' => '_tec_tickets_commerce_event', // TC_Ticket::$event_relation_meta_key
-	];
+	private function get_ticket_meta_rename_map(): array {
+		return [
+			'_tribe_rsvp_for_event' => TC_Ticket::$event_relation_meta_key,
+		];
+	}
 
 	/**
-	 * Static ticket meta to add during migration (key => value).
+	 * Get the static ticket meta to add during migration.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, string|int>
+	 * @return array<string, string|int> Meta key => value pairs.
 	 */
-	private const TICKET_META_ADD = [
-		'_type'           => 'tc-rsvp', // Constants::TC_RSVP_TYPE
-		'_manage_stock'   => 'yes',
-		'_global_stock_mode' => 'own',
-		'_stock_status'   => 'instock',
-		'_backorders'     => 'no',
-		'format'          => 'standard',
-		'sticky'          => '',
-	];
+	private function get_ticket_meta_to_add(): array {
+		return [
+			TC_Ticket::$type_meta_key              => RSVP_V2_Constants::TC_RSVP_TYPE,
+			TC_Ticket::$should_manage_stock_meta_key => 'yes',
+			TC_Ticket::$stock_mode_meta_key        => 'own',
+			TC_Ticket::$stock_status_meta_key      => 'instock',
+			TC_Ticket::$allow_backorders_meta_key  => 'no',
+			'format'                               => 'standard',
+			'sticky'                               => '',
+		];
+	}
 
 	/**
-	 * Ticket meta keys to delete during rollback.
+	 * Get ticket meta keys to delete during rollback.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string>
+	 * @return array<string> Meta keys to delete.
 	 */
-	private const TICKET_META_DELETE = [
-		'_ticket_start_time',
-		'_ticket_end_time',
-		'ticket_start_date',
-		'ticket_start_time',
-		'ticket_end_date',
-		'ticket_end_time',
-		'_type',
-		'_manage_stock',
-		'_sku',
-		'_global_stock_mode',
-		'_stock_status',
-		'_backorders',
-		'format',
-		'sticky',
-		'show_not_going',
-		'_tec_tc_ticket_status_count:created',
-		'_tec_tc_ticket_status_count:unknown',
-		'_tec_tc_ticket_status_count:pending',
-		'_tec_tc_ticket_status_count:completed',
-	];
+	private function get_ticket_meta_to_delete(): array {
+		return [
+			TC_Ticket::START_TIME_META_KEY,
+			TC_Ticket::END_TIME_META_KEY,
+			'ticket_start_date',
+			'ticket_start_time',
+			'ticket_end_date',
+			'ticket_end_time',
+			TC_Ticket::$type_meta_key,
+			TC_Ticket::$should_manage_stock_meta_key,
+			TC_Ticket::$sku_meta_key,
+			TC_Ticket::$stock_mode_meta_key,
+			TC_Ticket::$stock_status_meta_key,
+			TC_Ticket::$allow_backorders_meta_key,
+			'format',
+			'sticky',
+			'show_not_going',
+			TC_Ticket::$status_count_meta_key_prefix . ':created',
+			TC_Ticket::$status_count_meta_key_prefix . ':unknown',
+			TC_Ticket::$status_count_meta_key_prefix . ':pending',
+			TC_Ticket::$status_count_meta_key_prefix . ':completed',
+		];
+	}
 
 	/**
-	 * Attendee meta keys to rename during migration (old_key => new_key).
+	 * Get attendee meta keys to rename during migration.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, string>
+	 * @return array<string, string> old_key => new_key pairs.
 	 */
-	private const ATTENDEE_META_RENAME_MAP = [
-		'_tribe_rsvp_product'              => '_tec_tickets_commerce_ticket', // TC_Attendee::$ticket_relation_meta_key
-		'_tribe_rsvp_event'                => '_tec_tickets_commerce_event', // TC_Attendee::$event_relation_meta_key
-		'_tribe_rsvp_security_code'        => '_tec_tickets_commerce_security_code', // TC_Attendee::$security_code_meta_key
-		'_tribe_rsvp_attendee_optout'      => '_tec_tickets_commerce_optout', // TC_Attendee::$optout_meta_key
-		'_paid_price'                      => '_tec_tickets_commerce_price_paid', // TC_Attendee::$price_paid_meta_key
-		'_tribe_rsvp_email'                => '_tec_tickets_commerce_email', // TC_Attendee::$email_meta_key
-		'_tribe_rsvp_attendee_ticket_sent' => '_tec_tickets_commerce_attendee_ticket_sent', // TC_Attendee::$ticket_sent_meta_key
-		'_tribe_rsvp_status'               => '_tec_tickets_commerce_rsvp_status', // Constants::RSVP_STATUS_META_KEY
-	];
+	private function get_attendee_meta_rename_map(): array {
+		return [
+			RSVP::ATTENDEE_PRODUCT_KEY   => TC_Attendee::$ticket_relation_meta_key,
+			RSVP::ATTENDEE_EVENT_KEY     => TC_Attendee::$event_relation_meta_key,
+			'_tribe_rsvp_security_code'  => TC_Attendee::$security_code_meta_key,
+			RSVP::ATTENDEE_OPTOUT_KEY    => TC_Attendee::$optout_meta_key,
+			'_paid_price'                => TC_Attendee::$price_paid_meta_key,
+			'_tribe_rsvp_email'          => TC_Attendee::$email_meta_key,
+			RSVP::ATTENDEE_TICKET_SENT   => TC_Attendee::$ticket_sent_meta_key,
+			RSVP::ATTENDEE_RSVP_KEY      => RSVP_V2_Constants::RSVP_STATUS_META_KEY,
+		];
+	}
 
 	/**
-	 * Attendee meta keys to delete during rollback.
+	 * Get attendee meta keys to delete during rollback.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string>
+	 * @return array<string> Meta keys to delete.
 	 */
-	private const ATTENDEE_META_DELETE = [
-		'_tec_tickets_commerce_currency',
-		'_tec_tickets_commerce_order',
-	];
+	private function get_attendee_meta_to_delete(): array {
+		return [
+			TC_Attendee::$currency_meta_key,
+			TC_Attendee::$order_relation_meta_key,
+		];
+	}
 
 	/**
 	 * Get the migration label.
@@ -459,52 +471,52 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function migrate_ticket_meta( int $ticket_id, string $event_id ): void {
 		// Rename meta keys.
-		foreach ( self::TICKET_META_RENAME_MAP as $old_key => $new_key ) {
+		foreach ( $this->get_ticket_meta_rename_map() as $old_key => $new_key ) {
 			$this->rename_meta_key( $ticket_id, $old_key, $new_key );
 		}
 
 		// Split datetime fields into date and time.
-		$start_datetime = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$end_datetime   = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$start_datetime = get_post_meta( $ticket_id, TC_Ticket::START_DATE_META_KEY, true );
+		$end_datetime   = get_post_meta( $ticket_id, TC_Ticket::END_DATE_META_KEY, true );
 
 		if ( $start_datetime ) {
-			$start_date = date( 'Y-m-d', strtotime( $start_datetime ) );
-			$start_time = date( 'H:i:s', strtotime( $start_datetime ) );
-			update_post_meta( $ticket_id, '_ticket_start_date', $start_date );
-			update_post_meta( $ticket_id, '_ticket_start_time', $start_time );
+			$start_date = gmdate( 'Y-m-d', strtotime( $start_datetime ) );
+			$start_time = gmdate( 'H:i:s', strtotime( $start_datetime ) );
+			update_post_meta( $ticket_id, TC_Ticket::START_DATE_META_KEY, $start_date );
+			update_post_meta( $ticket_id, TC_Ticket::START_TIME_META_KEY, $start_time );
 			update_post_meta( $ticket_id, 'ticket_start_date', $start_date );
 			update_post_meta( $ticket_id, 'ticket_start_time', $start_time );
 		}
 
 		if ( $end_datetime ) {
-			$end_date = date( 'Y-m-d', strtotime( $end_datetime ) );
-			$end_time = date( 'H:i:s', strtotime( $end_datetime ) );
-			update_post_meta( $ticket_id, '_ticket_end_date', $end_date );
-			update_post_meta( $ticket_id, '_ticket_end_time', $end_time );
+			$end_date = gmdate( 'Y-m-d', strtotime( $end_datetime ) );
+			$end_time = gmdate( 'H:i:s', strtotime( $end_datetime ) );
+			update_post_meta( $ticket_id, TC_Ticket::END_DATE_META_KEY, $end_date );
+			update_post_meta( $ticket_id, TC_Ticket::END_TIME_META_KEY, $end_time );
 			update_post_meta( $ticket_id, 'ticket_end_date', $end_date );
 			update_post_meta( $ticket_id, 'ticket_end_time', $end_time );
 		}
 
 		// Add static meta.
-		foreach ( self::TICKET_META_ADD as $key => $value ) {
+		foreach ( $this->get_ticket_meta_to_add() as $key => $value ) {
 			update_post_meta( $ticket_id, $key, $value );
 		}
 
 		// Add dynamic meta.
-		update_post_meta( $ticket_id, '_sku', sprintf( '%d-%s-RSVP', $ticket_id, $event_id ) );
+		update_post_meta( $ticket_id, TC_Ticket::$sku_meta_key, sprintf( '%d-%s-RSVP', $ticket_id, $event_id ) );
 
 		// Copy show_not_going to non-prefixed version.
-		$show_not_going = get_post_meta( $ticket_id, '_tribe_ticket_show_not_going', true );
+		$show_not_going = get_post_meta( $ticket_id, RSVP_V2_Constants::SHOW_NOT_GOING_META_KEY, true );
 		if ( $show_not_going ) {
 			update_post_meta( $ticket_id, 'show_not_going', $show_not_going );
 		}
 
 		// Add status counts based on current sales.
-		$total_sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, '_tec_tc_ticket_status_count:created', 0 );
-		update_post_meta( $ticket_id, '_tec_tc_ticket_status_count:unknown', 0 );
-		update_post_meta( $ticket_id, '_tec_tc_ticket_status_count:pending', 0 );
-		update_post_meta( $ticket_id, '_tec_tc_ticket_status_count:completed', $total_sales );
+		$total_sales = (int) get_post_meta( $ticket_id, TC_Ticket::$sales_meta_key, true );
+		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':created', 0 );
+		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':unknown', 0 );
+		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':pending', 0 );
+		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':completed', $total_sales );
 	}
 
 	/**
@@ -526,8 +538,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 				AND pm.meta_value = %s',
 				DB::prefix( 'posts' ),
 				DB::prefix( 'postmeta' ),
-				'tribe_rsvp_attendees',
-				'_tribe_rsvp_product',
+				RSVP::ATTENDEE_OBJECT,
+				RSVP::ATTENDEE_PRODUCT_KEY,
 				$ticket_id
 			)
 		);
@@ -589,7 +601,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		$first_attendee = $attendees[0];
 		$full_name      = get_post_meta( $first_attendee->ID, '_tribe_rsvp_full_name', true );
 		$email          = get_post_meta( $first_attendee->ID, '_tribe_rsvp_email', true );
-		$user_id        = get_post_meta( $first_attendee->ID, '_tribe_tickets_attendee_user_id', true );
+		$user_id        = get_post_meta( $first_attendee->ID, TC_Attendee::$user_relation_meta_key, true );
 
 		// Create the order.
 		$order_id = $this->create_order(
@@ -662,7 +674,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 				'sub_total'         => '0',
 				'regular_price'     => '0',
 				'regular_sub_total' => '0',
-				'type'              => 'tc-rsvp',
+				'type'              => RSVP_V2_Constants::TC_RSVP_TYPE,
 				'extra'             => [],
 			],
 		];
@@ -737,17 +749,17 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function migrate_attendee_meta( int $attendee_id, int $ticket_id, string $event_id, int $order_id ): void {
 		// Rename meta keys.
-		foreach ( self::ATTENDEE_META_RENAME_MAP as $old_key => $new_key ) {
+		foreach ( $this->get_attendee_meta_rename_map() as $old_key => $new_key ) {
 			$this->rename_meta_key( $attendee_id, $old_key, $new_key );
 		}
 
 		// Add new meta (dynamic values).
-		update_post_meta( $attendee_id, '_tec_tickets_commerce_currency', Currency::get_currency_code() );
-		update_post_meta( $attendee_id, '_tec_tickets_commerce_order', $order_id );
+		update_post_meta( $attendee_id, TC_Attendee::$currency_meta_key, Currency::get_currency_code() );
+		update_post_meta( $attendee_id, TC_Attendee::$order_relation_meta_key, $order_id );
 
 		// Ensure the ticket and event relations are set correctly.
-		update_post_meta( $attendee_id, '_tec_tickets_commerce_ticket', $ticket_id );
-		update_post_meta( $attendee_id, '_tec_tickets_commerce_event', (int) $event_id );
+		update_post_meta( $attendee_id, TC_Attendee::$ticket_relation_meta_key, $ticket_id );
+		update_post_meta( $attendee_id, TC_Attendee::$event_relation_meta_key, (int) $event_id );
 
 		// The _tribe_tickets_meta (AR fields) is preserved as-is.
 	}
@@ -772,7 +784,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 				DB::prefix( 'posts' ),
 				DB::prefix( 'postmeta' ),
 				TC_Attendee::POSTTYPE,
-				'_tec_tickets_commerce_ticket',
+				TC_Attendee::$ticket_relation_meta_key,
 				$ticket_id
 			)
 		);
@@ -799,7 +811,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 		// Restore original post title format.
 		$order_hash = '';
-		$full_name  = get_post_meta( $attendee_id, '_tec_tickets_commerce_email', true );
+		$full_name  = get_post_meta( $attendee_id, TC_Attendee::$email_meta_key, true );
 
 		if ( $order_id ) {
 			$order_hash = get_post_meta( $order_id, Order::$hash_meta_key, true );
@@ -810,7 +822,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		wp_update_post(
 			[
 				'ID'          => $attendee_id,
-				'post_type'   => 'tribe_rsvp_attendees',
+				'post_type'   => RSVP::ATTENDEE_OBJECT,
 				'post_parent' => 0,
 				'post_title'  => $order_hash . ' | ' . $full_name,
 			]
@@ -831,26 +843,26 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function rollback_ticket_meta( int $ticket_id ): void {
 		// Restore renamed meta keys.
-		foreach ( self::TICKET_META_RENAME_MAP as $old_key => $new_key ) {
+		foreach ( $this->get_ticket_meta_rename_map() as $old_key => $new_key ) {
 			$this->rename_meta_key( $ticket_id, $new_key, $old_key );
 		}
 
 		// Restore datetime fields (merge date + time back into single field).
-		$start_date = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$start_time = get_post_meta( $ticket_id, '_ticket_start_time', true );
-		$end_date   = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$end_time   = get_post_meta( $ticket_id, '_ticket_end_time', true );
+		$start_date = get_post_meta( $ticket_id, TC_Ticket::START_DATE_META_KEY, true );
+		$start_time = get_post_meta( $ticket_id, TC_Ticket::START_TIME_META_KEY, true );
+		$end_date   = get_post_meta( $ticket_id, TC_Ticket::END_DATE_META_KEY, true );
+		$end_time   = get_post_meta( $ticket_id, TC_Ticket::END_TIME_META_KEY, true );
 
 		if ( $start_date && $start_time ) {
-			update_post_meta( $ticket_id, '_ticket_start_date', $start_date . ' ' . $start_time );
+			update_post_meta( $ticket_id, TC_Ticket::START_DATE_META_KEY, $start_date . ' ' . $start_time );
 		}
 
 		if ( $end_date && $end_time ) {
-			update_post_meta( $ticket_id, '_ticket_end_date', $end_date . ' ' . $end_time );
+			update_post_meta( $ticket_id, TC_Ticket::END_DATE_META_KEY, $end_date . ' ' . $end_time );
 		}
 
 		// Remove V2 specific meta.
-		foreach ( self::TICKET_META_DELETE as $key ) {
+		foreach ( $this->get_ticket_meta_to_delete() as $key ) {
 			delete_post_meta( $ticket_id, $key );
 		}
 	}
@@ -866,12 +878,12 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function rollback_attendee_meta( int $attendee_id ): void {
 		// Restore renamed meta keys.
-		foreach ( self::ATTENDEE_META_RENAME_MAP as $old_key => $new_key ) {
+		foreach ( $this->get_attendee_meta_rename_map() as $old_key => $new_key ) {
 			$this->rename_meta_key( $attendee_id, $new_key, $old_key );
 		}
 
 		// Remove V2 specific meta.
-		foreach ( self::ATTENDEE_META_DELETE as $key ) {
+		foreach ( $this->get_attendee_meta_to_delete() as $key ) {
 			delete_post_meta( $attendee_id, $key );
 		}
 	}
