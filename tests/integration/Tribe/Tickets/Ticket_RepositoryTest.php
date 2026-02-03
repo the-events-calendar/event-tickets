@@ -191,7 +191,6 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 		// Attempt to delete non-existent meta.
 		$result = tribe_tickets()->delete_meta( $ticket_id, '_non_existent_meta' );
 
-		// WordPress returns true for non-existent meta deletion.
-		$this->assertTrue( $result );
+		$this->assertFalse( $result );
 	}
 }

@@ -812,7 +812,11 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Deletes a meta field from a ticket.
 	 *
-	 * @since TBD
+	 * Provides repository-level meta deletion using WordPress meta API.
+	 * Uses field aliases from the repository for consistency.
+	 *
+	 * @since 5.28.0 Created in the RSVP repository.
+	 * @since TBD    Moved from the RSVP repository to this repository.
 	 *
 	 * @param int    $ticket_id Ticket ID.
 	 * @param string $field     Field name (can be alias or meta key).
@@ -823,16 +827,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		// Resolve field alias to actual meta key.
 		$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
 
-		/*
-		 * Use WordPress API for deletion.
-		 * Note that a `false` result here means that either there was an issue
-		 * or the meta was not there to begin with. Since the return value
-		 * does not allow this discrimination, we return the result of the
-		 * check on whether the metadata still exists for the object or not
-		 * after the deletion.
-		 */
-		delete_post_meta( $ticket_id, $meta_key );
-
-		return ! metadata_exists( 'post', $ticket_id, $meta_key );
+		// Use WordPress meta API for deletion.
+		return delete_post_meta( $ticket_id, $meta_key );
 	}
 }
