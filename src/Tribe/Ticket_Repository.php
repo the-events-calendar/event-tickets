@@ -823,11 +823,20 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @return bool True if the meta was removed, false otherwise.
 	 */
-	public function delete_meta( int $ticket_id, string $field ): bool {
+	public function delete_meta( $ticket_id, $field ) {
 		// Resolve field alias to actual meta key.
 		$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
 
-		// Use WordPress meta API for deletion.
-		return delete_post_meta( $ticket_id, $meta_key );
+		/*
+		 * Use WordPress API for deletion.
+		 * Note that a `false` result here means that either there was an issue
+		 * or the meta was not there to begin with. Since the return value
+		 * does not allow this discrimination, we return the result of the
+		 * check on whether the metadata still exists for the object or not
+		 * after the deletion.
+		 */
+		delete_post_meta( $ticket_id, $meta_key );
+
+		return ! metadata_exists( 'post', $ticket_id, $meta_key );
 	}
 }
