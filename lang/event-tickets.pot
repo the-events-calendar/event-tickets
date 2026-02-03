@@ -1,15 +1,15 @@
-# Copyright (C) 2025 The Events Calendar
+# Copyright (C) 2026 The Events Calendar
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.27.2\n"
+"Project-Id-Version: Event Tickets 5.27.4\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-09T15:06:53+00:00\n"
+"POT-Creation-Date: 2026-01-28T16:39:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -107,7 +107,7 @@ msgid "Event Tickets logo"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:72
-#: src/admin-views/tribe-commerce-settings.php:4
+#: src/admin-views/tribe-commerce-settings.php:12
 #: src/Tickets/Commerce/Payments_Tab.php:343
 #: src/Tribe/Admin/Notices.php:209
 #: src/Tribe/Main.php:856
@@ -426,15 +426,16 @@ msgid "Attendee ID"
 msgstr ""
 
 #: src/admin-views/attendees/modal/attendee/attendee-info/rsvp-going.php:21
-#: src/admin-views/tribe-commerce-settings.php:93
-#: src/admin-views/tribe-commerce-settings.php:105
+#: src/admin-views/tribe-commerce-settings.php:101
+#: src/admin-views/tribe-commerce-settings.php:113
 #: src/Tickets/Commerce/Reports/Attendees.php:540
 #: src/Tribe/Attendees.php:674
 msgid "Yes"
 msgstr ""
 
 #: src/admin-views/attendees/modal/attendee/attendee-info/rsvp-going.php:21
-#: src/admin-views/tribe-commerce-settings.php:106
+#: src/admin-views/tribe-commerce-settings.php:102
+#: src/admin-views/tribe-commerce-settings.php:114
 msgid "No"
 msgstr ""
 
@@ -1843,6 +1844,11 @@ msgstr ""
 msgid "PayPal Status:"
 msgstr ""
 
+#: src/admin-views/settings/tickets-commerce/paypal/connect/active/paypal-status.php:32
+#: src/admin-views/settings/tickets-commerce/square/connected.php:63
+msgid "Connected"
+msgstr ""
+
 #: src/admin-views/settings/tickets-commerce/paypal/connect/active/webhooks.php:37
 #: src/admin-views/settings/tickets-commerce/square/connect/webhook-status.php:28
 msgid "Webhooks:"
@@ -2106,10 +2112,6 @@ msgstr ""
 msgid "Connection:"
 msgstr ""
 
-#: src/admin-views/settings/tickets-commerce/square/connected.php:63
-msgid "Connected"
-msgstr ""
-
 #: src/admin-views/settings/tickets-commerce/square/connected.php:70
 msgid "Account:"
 msgstr ""
@@ -2366,147 +2368,147 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:9
+#: src/admin-views/tribe-commerce-settings.php:17
 msgid "Check it out!"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:13
+#: src/admin-views/tribe-commerce-settings.php:21
 #, php-format
 msgctxt "about Tribe Commerce"
 msgid "Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check attendees in via QR codes, and share stock between %2$s. %3$s"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:40
+#: src/admin-views/tribe-commerce-settings.php:48
 msgid "these instructions"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:41
+#: src/admin-views/tribe-commerce-settings.php:49
 #, php-format
 msgctxt "tickets fields settings PayPal setup"
 msgid "In order to use Tribe Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:45
+#: src/admin-views/tribe-commerce-settings.php:53
 msgid "Have you entered this site's address in the Notification URL field in IPN Settings?"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:47
+#: src/admin-views/tribe-commerce-settings.php:55
 #, php-format
 msgid "Your site address is: %s"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:55
+#: src/admin-views/tribe-commerce-settings.php:63
 #: src/Tribe/Admin/Settings/Service_Provider.php:202
 msgid "Tribe Commerce"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:63
+#: src/admin-views/tribe-commerce-settings.php:71
 msgid "Enable Tribe Commerce "
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:64
+#: src/admin-views/tribe-commerce-settings.php:72
 msgid "Check this box if you wish to turn on Tribe Commerce functionality."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:77
+#: src/admin-views/tribe-commerce-settings.php:85
 msgid "Configure PayPal:"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:83
+#: src/admin-views/tribe-commerce-settings.php:91
 msgid "PayPal email to receive payments:"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:91
+#: src/admin-views/tribe-commerce-settings.php:99
 msgid "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:117
+#: src/admin-views/tribe-commerce-settings.php:125
 msgid "PayPal configuration status:"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:120
+#: src/admin-views/tribe-commerce-settings.php:128
 msgid "For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:129
+#: src/admin-views/tribe-commerce-settings.php:137
 msgid "PayPal Sandbox"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:130
+#: src/admin-views/tribe-commerce-settings.php:138
 msgid "Enables PayPal Sandbox mode for testing."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:136
+#: src/admin-views/tribe-commerce-settings.php:144
 #: src/Tickets/Commerce/Settings.php:350
 msgid "Currency Code"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:137
+#: src/admin-views/tribe-commerce-settings.php:145
 msgid "The currency that will be used for Tribe Commerce transactions."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:144
+#: src/admin-views/tribe-commerce-settings.php:152
 #: src/Tickets/Commerce/Settings.php:308
 msgid "Stock Handling"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:145
+#: src/admin-views/tribe-commerce-settings.php:153
 #, php-format
 msgctxt "tickets fields settings paypal stock handling"
 msgid "When a customer purchases a %s, PayPal might flag the order as Pending. The order will be Complete once payment is confirmed by PayPal."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:150
+#: src/admin-views/tribe-commerce-settings.php:158
 #, php-format
 msgid "Decrease available %s stock as soon as a Pending order is created."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:154
+#: src/admin-views/tribe-commerce-settings.php:162
 #, php-format
 msgid "Only decrease available %s stock if an order is confirmed as Completed by PayPal."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:162
+#: src/admin-views/tribe-commerce-settings.php:170
 #: src/Tickets/Commerce/Settings.php:417
 msgid "Success page"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:165
+#: src/admin-views/tribe-commerce-settings.php:173
 #, php-format
 msgid "After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:176
+#: src/admin-views/tribe-commerce-settings.php:184
 #: src/Tickets/Commerce/Settings.php:448
 msgid "Confirmation email sender address"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:177
+#: src/admin-views/tribe-commerce-settings.php:185
 #, php-format
 msgctxt "tickets fields settings paypal confirmation email"
 msgid "Email address PayPal %s customers will receive confirmation from. Leave empty to use the default WordPress site email address."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:185
+#: src/admin-views/tribe-commerce-settings.php:193
 #: src/Tickets/Commerce/Settings.php:463
 msgid "Confirmation email sender name"
 msgstr ""
 
 #. Translators: %s: The word "ticket" in lowercase.
-#: src/admin-views/tribe-commerce-settings.php:186
+#: src/admin-views/tribe-commerce-settings.php:194
 #: src/Tickets/Commerce/Settings.php:467
 #, php-format
 msgctxt "tickets fields settings paypal email sender"
 msgid "Sender name of the confirmation email sent to customers when confirming a %s purchase."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:194
+#: src/admin-views/tribe-commerce-settings.php:202
 #: src/Tickets/Commerce/Settings.php:478
 msgid "Confirmation email subject"
 msgstr ""
 
 #. Translators: %s: The word "ticket" in lowercase.
-#: src/admin-views/tribe-commerce-settings.php:195
+#: src/admin-views/tribe-commerce-settings.php:203
 #: src/Tickets/Commerce/Settings.php:482
 #, php-format
 msgctxt "tickets fields settings paypal email subject"
@@ -2514,23 +2516,23 @@ msgid "Subject of the confirmation email sent to customers when confirming a %s 
 msgstr ""
 
 #. Translators: %s: The word "tickets" in lowercase.
-#: src/admin-views/tribe-commerce-settings.php:197
+#: src/admin-views/tribe-commerce-settings.php:205
 #: src/Tickets/Commerce/Settings.php:490
 #, php-format
 msgctxt "tickets fields settings paypal email subject"
 msgid "You have %s!"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:209
+#: src/admin-views/tribe-commerce-settings.php:217
 #, php-format
 msgid "You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s)."
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:219
+#: src/admin-views/tribe-commerce-settings.php:227
 msgid "IPN Notify URL"
 msgstr ""
 
-#: src/admin-views/tribe-commerce-settings.php:221
+#: src/admin-views/tribe-commerce-settings.php:229
 #, php-format
 msgid "Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s)."
 msgstr ""
@@ -10832,6 +10834,10 @@ msgstr ""
 #: src/Tickets/Flexible_Tickets/Series_Passes/Attendees.php:531
 #: src/Tribe/REST/V1/Endpoints/QR.php:357
 msgid "Already checked in!"
+msgstr ""
+
+#: src/Tickets/Flexible_Tickets/Series_Passes/Attendees.php:547
+msgid "Multiple Event options, pick one and specify the context_id parameter."
 msgstr ""
 
 #. translators: %s Ticket singular label text.

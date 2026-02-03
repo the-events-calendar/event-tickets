@@ -48,7 +48,7 @@ $capabilities = $merchant_status['capabilities'];
 		<?php endif; ?>
 
 		<?php if ( ! empty( $errors['requirements'] ) && is_array( $errors['requirements'] ) ) : ?>
-			<h3><?php echo esc_html_e( 'Requirements', 'event-tickets' ); ?></h3>
+			<h3><?php esc_html_e( 'Requirements', 'event-tickets' ); ?></h3>
 			<ul>
 				<?php foreach ( $errors['requirements'] as $error ) : ?>
 					<li>
@@ -61,7 +61,7 @@ $capabilities = $merchant_status['capabilities'];
 		<?php endif; ?>
 
 		<?php if ( ! empty( $errors['future_requirements'] ) && is_array( $errors['future_requirements'] ) ) : ?>
-			<h3><?php echo esc_html_e( 'Future Requirements', 'event-tickets' ); ?></h3>
+			<h3><?php esc_html_e( 'Future Requirements', 'event-tickets' ); ?></h3>
 			<ul>
 				<?php foreach ( $errors['future_requirements'] as $error ) : ?>
 					<li>
