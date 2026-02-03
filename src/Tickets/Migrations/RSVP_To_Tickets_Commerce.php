@@ -246,8 +246,19 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			$ticket_id = $ticket->ID;
 			$event_id  = get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
 
+			// Skip tickets with no event relation.
+			if ( empty( $event_id ) ) {
+				do_action(
+					'tribe_log',
+					'error',
+					'RSVP Migration: Ticket has no event relation',
+					[ 'ticket_id' => $ticket_id ]
+				);
+				continue;
+			}
+
 			// Update ticket post type and fields.
-			wp_update_post(
+			$result = wp_update_post(
 				[
 					'ID'             => $ticket_id,
 					'post_type'      => TC_Ticket::POSTTYPE,
@@ -256,6 +267,19 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 					'ping_status'    => 'open',
 				]
 			);
+
+			if ( is_wp_error( $result ) || 0 === $result ) {
+				do_action(
+					'tribe_log',
+					'error',
+					'RSVP Migration: Failed to update ticket post type',
+					[
+						'ticket_id' => $ticket_id,
+						'error'     => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error',
+					]
+				);
+				continue;
+			}
 
 			// Migrate ticket meta.
 			$this->migrate_ticket_meta( $ticket_id, $event_id );
@@ -425,6 +449,9 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			return [];
 		}
 
+		// Prime post caches in a single query to avoid N+1.
+		_prime_post_caches( $ticket_ids );
+
 		return array_filter( array_map( 'get_post', $ticket_ids ) );
 	}
 
@@ -455,6 +482,9 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		if ( empty( $ticket_ids ) ) {
 			return [];
 		}
+
+		// Prime post caches in a single query to avoid N+1.
+		_prime_post_caches( $ticket_ids );
 
 		return array_filter( array_map( 'get_post', $ticket_ids ) );
 	}
@@ -547,6 +577,9 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		if ( empty( $attendee_ids ) ) {
 			return [];
 		}
+
+		// Prime post caches in a single query to avoid N+1.
+		_prime_post_caches( $attendee_ids );
 
 		return array_filter( array_map( 'get_post', $attendee_ids ) );
 	}
@@ -715,13 +748,13 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @param int     $ticket_id The ticket ID.
 	 * @param string  $event_id  The event ID.
 	 *
-	 * @return void
+	 * @return bool Whether the migration was successful.
 	 */
-	private function migrate_attendee( WP_Post $attendee, int $order_id, int $ticket_id, string $event_id ): void {
+	private function migrate_attendee( WP_Post $attendee, int $order_id, int $ticket_id, string $event_id ): bool {
 		$attendee_id = $attendee->ID;
 
 		// Update post type and parent.
-		wp_update_post(
+		$result = wp_update_post(
 			[
 				'ID'          => $attendee_id,
 				'post_type'   => TC_Attendee::POSTTYPE,
@@ -731,8 +764,23 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			]
 		);
 
+		if ( is_wp_error( $result ) || 0 === $result ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'RSVP Migration: Failed to update attendee post type',
+				[
+					'attendee_id' => $attendee_id,
+					'error'       => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error',
+				]
+			);
+			return false;
+		}
+
 		// Migrate meta keys.
 		$this->migrate_attendee_meta( $attendee_id, $ticket_id, $event_id, $order_id );
+
+		return true;
 	}
 
 	/**
@@ -793,6 +841,9 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			return [];
 		}
 
+		// Prime post caches in a single query to avoid N+1.
+		_prime_post_caches( $attendee_ids );
+
 		return array_filter( array_map( 'get_post', $attendee_ids ) );
 	}
 
@@ -811,7 +862,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 		// Restore original post title format.
 		$order_hash = '';
-		$full_name  = get_post_meta( $attendee_id, TC_Attendee::$email_meta_key, true );
+		$full_name  = get_post_meta( $attendee_id, '_tribe_rsvp_full_name', true );
 
 		if ( $order_id ) {
 			$order_hash = get_post_meta( $order_id, Order::$hash_meta_key, true );
@@ -921,7 +972,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	}
 
 	/**
-	 * Rename a meta key.
+	 * Rename a meta key using direct SQL for better performance.
 	 *
 	 * @since TBD
 	 *
@@ -932,11 +983,14 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @return void
 	 */
 	private function rename_meta_key( int $post_id, string $old_key, string $new_key ): void {
-		$value = get_post_meta( $post_id, $old_key, true );
-
-		if ( '' !== $value && false !== $value ) {
-			update_post_meta( $post_id, $new_key, $value );
-			delete_post_meta( $post_id, $old_key );
-		}
+		DB::query(
+			DB::prepare(
+				'UPDATE %i SET meta_key = %s WHERE post_id = %d AND meta_key = %s',
+				DB::prefix( 'postmeta' ),
+				$new_key,
+				$post_id,
+				$old_key
+			)
+		);
 	}
 }
