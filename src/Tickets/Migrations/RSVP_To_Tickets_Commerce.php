@@ -383,6 +383,17 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 				continue;
 			}
 
+			// Skip tickets with no event relation.
+			if ( empty( $event_id ) ) {
+				do_action(
+					'tribe_log',
+					'error',
+					'RSVP Migration: Ticket has no event relation',
+					[ 'ticket_id' => $ticket_id ]
+				);
+				continue;
+			}
+
 			// Update ticket post type and fields.
 			$result = wp_update_post(
 				[
