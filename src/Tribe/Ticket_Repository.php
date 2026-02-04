@@ -823,7 +823,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @return bool True if the meta was removed, false otherwise.
 	 */
-	public function delete_meta( $ticket_id, $field ) {
+	public function delete_meta( int $ticket_id, string $field ): bool {
 		// Resolve field alias to actual meta key.
 		$meta_key = Arr::get( $this->update_fields_aliases, $field, $field );
 
