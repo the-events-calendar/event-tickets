@@ -174,14 +174,13 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should return true when deleting non-existent meta.
+	 * It should return false when deleting non-existent meta.
 	 *
-	 * WordPress's delete_post_meta returns true even when meta doesn't exist,
-	 * it only returns false on actual database errors.
+	 * WordPress's delete_post_meta returns false when meta doesn't exist.
 	 *
 	 * @test
 	 */
-	public function should_return_true_when_deleting_non_existent_meta(): void {
+	public function should_return_false_when_deleting_non_existent_meta(): void {
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_paypal_ticket( $post_id );
 
