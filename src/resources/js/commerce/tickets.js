@@ -4,6 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { doAction } from '@wordpress/hooks';
 import { _x } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import { applyFilters } from '@wordpress/hooks';
 import { registerMiddlewares } from '@tec/common/tecApi';
 
 /**
