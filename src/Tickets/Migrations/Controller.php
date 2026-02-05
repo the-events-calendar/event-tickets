@@ -11,7 +11,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use Tribe__Settings_Tab as Tab;
 use TEC\Common\StellarWP\Migrations\Admin\UI;
-use Tribe__Tickets__Main as Tickets_Main;
 use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
@@ -48,6 +47,13 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_migrations_tab_id' ] );
 	}
 
+	/**
+	 * Remove form element open and close actions for the migrations tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function remove_form_element_open_and_close(): void {
 		remove_action( 'tribe_settings_form_element_open', [ tribe( Plugin_Settings::class ), 'settings_form_element_open' ] );
 		remove_action( 'tribe_settings_form_element_close', [ tribe( Plugin_Settings::class ), 'settings_form_element_close' ] );
@@ -58,6 +64,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $admin_page The admin page ID.
+	 *
 	 * @return void
 	 */
 	public function register_migrations_tab( $admin_page ): void {
@@ -67,7 +75,7 @@ class Controller extends Controller_Contract {
 
 		$tab_settings = [
 			'priority'         => 25,
-			'display_callback' => static function(): void {
+			'display_callback' => static function (): void {
 				$ui = tribe( UI::class );
 				$ui->set_additional_params(
 					[
