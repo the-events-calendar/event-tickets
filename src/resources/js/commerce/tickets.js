@@ -4,6 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { doAction } from '@wordpress/hooks';
 import { _x } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import { applyFilters } from '@wordpress/hooks';
 import { registerMiddlewares } from '@tec/common/tecApi';
 
 /**
@@ -256,7 +257,17 @@ tribe.tickets.commerce.tickets = {};
 			params.stock_mode = 'unlimited';
 		}
 
-		return params;
+		/**
+		 * Filters the mapped API parameters before they are sent to the REST API.
+		 *
+		 * Plugins can use this filter to add extra form values to the API request.
+		 *
+		 * @since TBD
+		 *
+		 * @param {Object} params     The mapped API parameters.
+		 * @param {Object} formValues The raw form input values.
+		 */
+		return applyFilters( 'tec.tickets.commerce.rsvp.apiParams', params, formValues );
 	};
 
 	/**
