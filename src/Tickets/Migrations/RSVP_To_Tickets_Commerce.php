@@ -75,6 +75,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			TC_Ticket::$stock_mode_meta_key          => 'own',
 			TC_Ticket::$stock_status_meta_key        => 'instock',
 			TC_Ticket::$allow_backorders_meta_key    => 'no',
+			'_price'                                 => 0,
+			'_tribe_ticket_show_description'         => 'yes',
 			'format'                                 => 'standard',
 			'sticky'                                 => '',
 		];
