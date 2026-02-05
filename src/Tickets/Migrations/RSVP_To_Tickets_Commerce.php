@@ -385,12 +385,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 			// Skip tickets with no event relation.
 			if ( empty( $event_id ) ) {
-				do_action(
-					'tribe_log',
-					'error',
-					'RSVP Migration: Ticket has no event relation',
-					[ 'ticket_id' => $ticket_id ]
-				);
+				$logger->warning( 'RSVP Migration: Ticket has no event relation', [ 'ticket_id' => $ticket_id ] );
+				update_post_meta( $ticket_id, self::MIGRATED_TICKET_META_KEY, -1 );
 				continue;
 			}
 
