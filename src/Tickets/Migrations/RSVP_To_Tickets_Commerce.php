@@ -272,6 +272,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @param int $batch      The batch number.
 	 * @param int $batch_size The batch size.
 	 *
+	 * @throws Exception If a ticket post type update fails.
+	 *
 	 * @return void
 	 */
 	public function up( int $batch, int $batch_size ): void {
@@ -302,7 +304,13 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			);
 
 			if ( is_wp_error( $result ) || 0 === $result ) {
-				$logger->error( 'RSVP Migration: Failed to update ticket post type', [ 'ticket_id' => $ticket_id, 'error' => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error' ] );
+				$logger->error(
+					'RSVP Migration: Failed to update ticket post type',
+					[
+						'ticket_id' => $ticket_id,
+						'error'     => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error',
+					]
+				);
 				throw new Exception( is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error' );
 			}
 
@@ -817,7 +825,13 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 		if ( is_wp_error( $result ) || 0 === $result ) {
 			$logger = tribe( Logger::class );
-			$logger->error( 'RSVP Migration: Failed to update attendee post type', [ 'attendee_id' => $attendee_id, 'error' => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error' ] );
+			$logger->error(
+				'RSVP Migration: Failed to update attendee post type',
+				[
+					'attendee_id' => $attendee_id,
+					'error'       => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error',
+				]
+			);
 			return false;
 		}
 
