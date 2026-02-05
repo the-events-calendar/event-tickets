@@ -18,7 +18,6 @@ use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Tickets__RSVP as RSVP;
-use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Square_Syncs_Controller;
 use TEC\Common\StellarWP\Migrations\Utilities\Logger;
 use WP_Post;
 use Exception;
@@ -47,6 +46,33 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @var string
 	 */
 	private const MIGRATION_ORDER_META_KEY = '_tec_rsvp_migration_created';
+
+	/**
+	 * Meta key to store original ticket meta values before overwriting.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORIGINAL_TICKET_META_KEY = '_tec_rsvp_original_ticket_meta';
+
+	/**
+	 * Meta key to store original attendee post_name before overwriting.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORIGINAL_POST_NAME_META_KEY = '_tec_rsvp_original_post_name';
+
+	/**
+	 * Meta key to store original attendee post_title before overwriting.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORIGINAL_POST_TITLE_META_KEY = '_tec_rsvp_original_post_title';
 
 	/**
 	 * Get ticket meta keys to rename during migration.
@@ -100,6 +126,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			TC_Ticket::$type_meta_key,
 			TC_Ticket::$should_manage_stock_meta_key,
 			TC_Ticket::$sku_meta_key,
+			TC_Ticket::$stock_meta_key,
 			TC_Ticket::$stock_mode_meta_key,
 			TC_Ticket::$stock_status_meta_key,
 			TC_Ticket::$allow_backorders_meta_key,
@@ -144,6 +171,9 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		return [
 			TC_Attendee::$currency_meta_key,
 			TC_Attendee::$order_relation_meta_key,
+			self::ORIGINAL_POST_NAME_META_KEY,
+			self::ORIGINAL_POST_TITLE_META_KEY,
+			'_wp_old_slug',
 		];
 	}
 
@@ -495,6 +525,24 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @return void
 	 */
 	private function migrate_ticket_meta( int $ticket_id, string $event_id ): void {
+		// Save original values of meta keys that will be overwritten during migration.
+		// This allows the rollback to restore them instead of blindly deleting.
+		$overwrite_keys = array_merge(
+			array_keys( $this->get_ticket_meta_to_add() ),
+			[ TC_Ticket::$stock_meta_key ]
+		);
+
+		$original_meta = [];
+		foreach ( $overwrite_keys as $key ) {
+			if ( metadata_exists( 'post', $ticket_id, $key ) ) {
+				$original_meta[ $key ] = get_post_meta( $ticket_id, $key, true );
+			}
+		}
+
+		if ( ! empty( $original_meta ) ) {
+			update_post_meta( $ticket_id, self::ORIGINAL_TICKET_META_KEY, $original_meta );
+		}
+
 		// Rename meta keys.
 		foreach ( $this->get_ticket_meta_rename_map() as $old_key => $new_key ) {
 			$this->rename_meta_key( $ticket_id, $old_key, $new_key );
@@ -752,6 +800,10 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	private function migrate_attendee( WP_Post $attendee, int $order_id, int $ticket_id, string $event_id ): bool {
 		$attendee_id = $attendee->ID;
 
+		// Save original post fields for rollback.
+		update_post_meta( $attendee_id, self::ORIGINAL_POST_NAME_META_KEY, $attendee->post_name );
+		update_post_meta( $attendee_id, self::ORIGINAL_POST_TITLE_META_KEY, $attendee->post_title );
+
 		// Update post type and parent.
 		$result = wp_update_post(
 			[
@@ -850,28 +902,23 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 */
 	private function rollback_attendee( WP_Post $attendee ): void {
 		$attendee_id = $attendee->ID;
-		$order_id    = $attendee->post_parent;
 
-		// Restore original post title format.
-		$order_hash = '';
-		$full_name  = get_post_meta( $attendee_id, '_tribe_rsvp_full_name', true );
+		// Restore original post fields saved during migration.
+		$original_post_name  = get_post_meta( $attendee_id, self::ORIGINAL_POST_NAME_META_KEY, true );
+		$original_post_title = get_post_meta( $attendee_id, self::ORIGINAL_POST_TITLE_META_KEY, true );
 
-		if ( $order_id ) {
-			$order_hash = get_post_meta( $order_id, Order::$hash_meta_key, true );
-			$full_name  = get_post_meta( $order_id, Order::$purchaser_full_name_meta_key, true );
-		}
-
-		// Update post type and remove parent.
+		// Update post type, remove parent, restore title and post_name.
 		wp_update_post(
 			[
 				'ID'          => $attendee_id,
 				'post_type'   => RSVP::ATTENDEE_OBJECT,
 				'post_parent' => 0,
-				'post_title'  => $order_hash . ' | ' . $full_name,
+				'post_title'  => $original_post_title ?: '',
+				'post_name'   => $original_post_name ?: '',
 			]
 		);
 
-		// Rollback attendee meta.
+		// Rollback attendee meta (also deletes ORIGINAL_POST_NAME_META_KEY).
 		$this->rollback_attendee_meta( $attendee_id );
 	}
 
@@ -908,6 +955,15 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		foreach ( $this->get_ticket_meta_to_delete() as $key ) {
 			delete_post_meta( $ticket_id, $key );
 		}
+
+		// Restore original meta values that were overwritten during migration.
+		$original_meta = get_post_meta( $ticket_id, self::ORIGINAL_TICKET_META_KEY, true );
+		if ( is_array( $original_meta ) ) {
+			foreach ( $original_meta as $key => $value ) {
+				update_post_meta( $ticket_id, $key, $value );
+			}
+		}
+		delete_post_meta( $ticket_id, self::ORIGINAL_TICKET_META_KEY );
 	}
 
 	/**

@@ -1427,10 +1427,9 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 		clean_post_cache( $attendee_id );
 
-		// Title should be restored to original format (order_hash | full_name).
+		// Title should be restored to the exact original value.
 		$restored_title = get_post( $attendee_id )->post_title;
-		$this->assertStringContainsString( '|', $restored_title );
-		$this->assertStringContainsString( 'Title Test Person', $restored_title );
+		$this->assertEquals( $original_title, $restored_title, 'Attendee post_title should be restored exactly' );
 	}
 
 	// ==========================================
@@ -1564,6 +1563,103 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 				$value,
 				$all_rsvp_meta[ $key ],
 				"Meta key {$key} should match between native TC ticket and migrated RSVP V2 ticket"
+			);
+		}
+	}
+
+	/**
+	 * @test
+	 * It should fully revert all ticket and attendee state on rollback.
+	 */
+	public function should_fully_revert_all_ticket_and_attendee_state_on_rollback(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_tribe_ticket_capacity' => 100,
+				'_ticket_start_date'     => '2024-06-15 10:30:00',
+				'_ticket_end_date'       => '2024-12-31 23:59:59',
+			],
+		] );
+
+		$attendee_id = $this->create_v1_rsvp_attendee( $ticket_id, $post_id, 'revert-order', [
+			'full_name' => 'Revert Test Person',
+			'email'     => 'revert@example.com',
+		] );
+
+		// Capture pre-migration state.
+		$pre_ticket_meta   = $this->get_comparable_meta( $ticket_id );
+		$pre_ticket_post   = get_post( $ticket_id );
+		$pre_attendee_meta = $this->get_comparable_meta( $attendee_id );
+		$pre_attendee_post = get_post( $attendee_id );
+
+		// Run migration up then down.
+		$this->run_migration_up();
+		$this->run_migration_down();
+
+		clean_post_cache( $ticket_id );
+		clean_post_cache( $attendee_id );
+
+		// Capture post-rollback state.
+		$post_ticket_meta   = $this->get_comparable_meta( $ticket_id );
+		$post_ticket_post   = get_post( $ticket_id );
+		$post_attendee_meta = $this->get_comparable_meta( $attendee_id );
+		$post_attendee_post = get_post( $attendee_id );
+
+		// === Ticket post fields ===
+		$this->assertEquals( $pre_ticket_post->post_type, $post_ticket_post->post_type, 'Ticket post_type should be restored' );
+		$this->assertEquals( $pre_ticket_post->menu_order, $post_ticket_post->menu_order, 'Ticket menu_order should be restored' );
+		$this->assertEquals( $pre_ticket_post->comment_status, $post_ticket_post->comment_status, 'Ticket comment_status should be restored' );
+		$this->assertEquals( $pre_ticket_post->ping_status, $post_ticket_post->ping_status, 'Ticket ping_status should be restored' );
+
+		// === Ticket meta: no leftover V2 meta ===
+		$leftover_ticket_meta = array_diff_key( $post_ticket_meta, $pre_ticket_meta );
+		$this->assertEmpty(
+			$leftover_ticket_meta,
+			'Rollback left over ticket meta keys that did not exist before migration: ' . implode( ', ', array_keys( $leftover_ticket_meta ) )
+		);
+
+		// === Ticket meta: all original meta still present ===
+		$missing_ticket_meta = array_diff_key( $pre_ticket_meta, $post_ticket_meta );
+		$this->assertEmpty(
+			$missing_ticket_meta,
+			'Rollback removed ticket meta keys that existed before migration: ' . implode( ', ', array_keys( $missing_ticket_meta ) )
+		);
+
+		// === Ticket meta values match ===
+		foreach ( $pre_ticket_meta as $key => $value ) {
+			$this->assertEquals(
+				$value,
+				$post_ticket_meta[ $key ] ?? null,
+				"Ticket meta key '{$key}' value should be restored after rollback"
+			);
+		}
+
+		// === Attendee post fields ===
+		$this->assertEquals( $pre_attendee_post->post_type, $post_attendee_post->post_type, 'Attendee post_type should be restored' );
+		$this->assertEquals( $pre_attendee_post->post_parent, $post_attendee_post->post_parent, 'Attendee post_parent should be restored' );
+		$this->assertEquals( $pre_attendee_post->post_title, $post_attendee_post->post_title, 'Attendee post_title should be restored' );
+		$this->assertEquals( $pre_attendee_post->post_name, $post_attendee_post->post_name, 'Attendee post_name should be restored' );
+
+		// === Attendee meta: no leftover V2 meta ===
+		$leftover_attendee_meta = array_diff_key( $post_attendee_meta, $pre_attendee_meta );
+		$this->assertEmpty(
+			$leftover_attendee_meta,
+			'Rollback left over attendee meta keys that did not exist before migration: ' . implode( ', ', array_keys( $leftover_attendee_meta ) )
+		);
+
+		// === Attendee meta: all original meta still present ===
+		$missing_attendee_meta = array_diff_key( $pre_attendee_meta, $post_attendee_meta );
+		$this->assertEmpty(
+			$missing_attendee_meta,
+			'Rollback removed attendee meta keys that existed before migration: ' . implode( ', ', array_keys( $missing_attendee_meta ) )
+		);
+
+		// === Attendee meta values match ===
+		foreach ( $pre_attendee_meta as $key => $value ) {
+			$this->assertEquals(
+				$value,
+				$post_attendee_meta[ $key ] ?? null,
+				"Attendee meta key '{$key}' value should be restored after rollback"
 			);
 		}
 	}
