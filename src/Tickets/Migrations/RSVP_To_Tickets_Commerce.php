@@ -542,6 +542,10 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':unknown', 0 );
 		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':pending', 0 );
 		update_post_meta( $ticket_id, TC_Ticket::$status_count_meta_key_prefix . ':completed', $total_sales );
+
+		$capacity = (int) get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
+
+		update_post_meta( $ticket_id, TC_Ticket::$stock_meta_key, max( 0, $capacity - $total_sales ) );
 	}
 
 	/**
