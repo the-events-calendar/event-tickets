@@ -18,7 +18,10 @@ use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Tickets__RSVP as RSVP;
+use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Square_Syncs_Controller;
+use TEC\Common\StellarWP\Migrations\Utilities\Logger;
 use WP_Post;
+use Exception;
 
 /**
  * RSVP to Tickets Commerce Migration.
@@ -242,18 +245,16 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	public function up( int $batch, int $batch_size ): void {
 		$tickets = $this->get_unmigrated_tickets( $batch_size );
 
+		$logger = tribe( Logger::class );
+
 		foreach ( $tickets as $ticket ) {
 			$ticket_id = $ticket->ID;
 			$event_id  = get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
 
 			// Skip tickets with no event relation.
 			if ( empty( $event_id ) ) {
-				do_action(
-					'tribe_log',
-					'error',
-					'RSVP Migration: Ticket has no event relation',
-					[ 'ticket_id' => $ticket_id ]
-				);
+				$logger->warning( 'RSVP Migration: Ticket has no event relation', [ 'ticket_id' => $ticket_id ] );
+				update_post_meta( $ticket_id, self::MIGRATED_TICKET_META_KEY, -1 );
 				continue;
 			}
 
@@ -269,16 +270,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			);
 
 			if ( is_wp_error( $result ) || 0 === $result ) {
-				do_action(
-					'tribe_log',
-					'error',
-					'RSVP Migration: Failed to update ticket post type',
-					[
-						'ticket_id' => $ticket_id,
-						'error'     => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error',
-					]
-				);
-				continue;
+				$logger->error( 'RSVP Migration: Failed to update ticket post type', [ 'ticket_id' => $ticket_id, 'error' => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error' ] );
+				throw new Exception( is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error' );
 			}
 
 			// Migrate ticket meta.
@@ -765,15 +758,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		);
 
 		if ( is_wp_error( $result ) || 0 === $result ) {
-			do_action(
-				'tribe_log',
-				'error',
-				'RSVP Migration: Failed to update attendee post type',
-				[
-					'attendee_id' => $attendee_id,
-					'error'       => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error',
-				]
-			);
+			$logger = tribe( Logger::class );
+			$logger->error( 'RSVP Migration: Failed to update attendee post type', [ 'attendee_id' => $attendee_id, 'error' => is_wp_error( $result ) ? $result->get_error_message() : 'Unknown error' ] );
 			return false;
 		}
 
