@@ -9,6 +9,7 @@ namespace TEC\Tickets\Migrations;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
+use Tribe__Settings as Common_Settings;
 use Tribe__Settings_Tab as Tab;
 use TEC\Common\StellarWP\Migrations\Admin\UI;
 use function TEC\Common\StellarWP\Migrations\migrations;
@@ -55,8 +56,8 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function remove_form_element_open_and_close(): void {
-		remove_action( 'tribe_settings_form_element_open', [ tribe( Plugin_Settings::class ), 'settings_form_element_open' ] );
-		remove_action( 'tribe_settings_form_element_close', [ tribe( Plugin_Settings::class ), 'settings_form_element_close' ] );
+		remove_action( 'tribe_settings_form_element_open', [ tribe( Common_Settings::class ), 'settings_form_element_open' ] );
+		remove_action( 'tribe_settings_form_element_close', [ tribe( Common_Settings::class ), 'settings_form_element_close' ] );
 	}
 
 	/**
