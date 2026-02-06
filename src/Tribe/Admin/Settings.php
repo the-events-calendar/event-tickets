@@ -260,20 +260,6 @@ class Settings {
 			]
 		);
 
-		add_action(
-			'tribe_settings_form_element_open',
-			[ $this, 'settings_form_element_open' ],
-			10,
-			3
-		);
-
-		add_action(
-			'tribe_settings_form_element_close',
-			[ $this, 'settings_form_element_close' ],
-			10,
-			3
-		);
-
 		// Redirects users from the outdated Help page to the new Help Hub page if accessed.
 		$this->redirect_to_help_hub();
 
@@ -297,53 +283,6 @@ class Settings {
 		);
 
 		$this->maybe_add_troubleshooting();
-	}
-
-	/**
-	 * Open the settings form element.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $tab The tab name.
-	 * @param Tribe__Settings_Tab $tab_object The tab object.
-	 * @param string $admin_page The admin page ID.
-	 */
-	public function settings_form_element_open( $tab, $tab_object, $admin_page ) : void {
-		$form_id = 'tec-settings-form';
-
-		$form_classes = [
-			"tec-settings-form__{$tab}-tab--active" => true,
-			'tec-settings-form__subnav-active'              => ( $tab_object && $tab_object->has_parent() ),
-			'tec-settings-form'                             => true,
-		];
-
-		/**
-		 * Filter the classes for the settings form.
-		 *
-		 * @since 6.1.0
-		 *
-		 * @param array<string>            $form_classes The classes for the settings form.
-		 * @param string                   $admin_page   The admin page ID.
-		 * @param Tribe__Settings_Tab|null $tab_object   The current tab object.
-		 */
-		$form_classes = apply_filters( 'tribe_settings_form_class', $form_classes, $admin_page, $tab_object );
-
-		?>
-		<form id="<?php echo esc_attr( $form_id ); ?>" <?php tec_classes( $form_classes ); ?> method="post">
-		<?php
-	}
-
-	/**
-	 * Close the settings form element.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $tab The tab name.
-	 * @param Tribe__Settings_Tab $tab_object The tab object.
-	 * @param string $admin_page The admin page ID.
-	 */
-	public function settings_form_element_close( $tab, $tab_object, $admin_page ) : void {
-		echo apply_filters( 'tribe_settings_closing_form_element', '</form>' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,StellarWP.XSS.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
