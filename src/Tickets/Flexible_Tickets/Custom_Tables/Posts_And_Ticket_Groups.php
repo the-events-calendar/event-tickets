@@ -1,6 +1,6 @@
 <?php
 /**
- * ${CARET}
+ * This class is used to store the relationship between posts and ticket groups.
  *
  * @since 5.8.0
  *
@@ -10,6 +10,11 @@
 namespace TEC\Tickets\Flexible_Tickets\Custom_Tables;
 
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\ID;
+use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 /**
  * Class Posts_And_Ticket_Groups.
@@ -47,7 +52,26 @@ class Posts_And_Ticket_Groups extends Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function get_definition() {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
+
+		return [
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = new ID( 'id' );
+				$columns[] = new Referenced_ID( 'post_id' );
+				$columns[] = new Referenced_ID( 'group_id' );
+				$columns[] = ( new String_Column( 'type' ) )->set_length( 255 )->set_default( '' );
+
+				return new Table_Schema( $table_name, $columns );
+			},
+		];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
@@ -88,6 +112,4 @@ class Posts_And_Ticket_Groups extends Table {
 
 		return $results;
 	}
-
-
 }

@@ -12,8 +12,9 @@
  *
  * @since 5.0.3
  * @since 5.1.5 Add label to the input to improve accessibility.
+ * @since 5.27.0 Added $quantity_controls parameter.
  *
- * @version 5.1.5
+ * @version 5.27.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -45,6 +46,7 @@
  * @var int                                $available_count             The quantity of Available tickets based on the Attendees number.
  * @var bool                               $is_unlimited                Whether the ticket has unlimited quantity.
  * @var int                                $max_at_a_time               The maximum quantity able to be purchased in a single Add to Cart action.
+ * @var bool                               $quantity_controls           Whether to show the quantity controls.
  */
 
 $max_at_a_time = $handler->get_ticket_max_purchase( $ticket->ID );
@@ -56,7 +58,7 @@ $classes = [
 
 ?>
 
-<div <?php tribe_classes( $classes ); ?>>
+<div <?php tec_classes( $classes ); ?>>
 	<label
 		class="tribe-common-a11y-visual-hide"
 		for="tribe-tickets__tickets-item-quantity-number--<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
@@ -72,6 +74,9 @@ $classes = [
 		max="<?php echo esc_attr( $max_at_a_time ); ?>"
 		value="0"
 		autocomplete="off"
+		<?php if ( isset( $quantity_controls ) && is_bool( $quantity_controls ) && ! $quantity_controls ) : ?>
+			readonly="true"
+		<?php endif; ?>
 		<?php disabled( $must_login ); ?>
 	/>
 </div>

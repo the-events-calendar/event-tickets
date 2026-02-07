@@ -7,7 +7,12 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
 
-use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\ID;
+use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 /**
  * Class Order_Modifier_Relationships.
@@ -53,68 +58,25 @@ class Order_Modifier_Relationships extends Table {
 	protected static $uid_column = 'id';
 
 	/**
-	 * An array of all the columns in the table.
+	 * Returns the schema history for this table.
 	 *
-	 * @since 5.20.0
+	 * @since 5.27.0
 	 *
-	 * @var string[]
+	 * @return array<string, callable>
 	 */
-	public static function get_columns(): array {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
+
 		return [
-			'id',
-			'modifier_id',
-			'post_id',
-			'post_type',
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = new ID( 'id' );
+				$columns[] = new Referenced_ID( 'modifier_id' );
+				$columns[] = new Referenced_ID( 'post_id' );
+				$columns[] = ( new String_Column( 'post_type' ) )->set_length( 20 );
+
+				return new Table_Schema( $table_name, $columns );
+			},
 		];
-	}
-
-	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @return string The table creation SQL, in the format supported
-	 *                by the `dbDelta` function.
-	 */
-	protected function get_definition() {
-		global $wpdb;
-		$table_name      = self::table_name( true );
-		$charset_collate = $wpdb->get_charset_collate();
-
-		return "
-			CREATE TABLE `$table_name` (
-				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`modifier_id` BIGINT UNSIGNED NOT NULL,
-				`post_id` BIGINT UNSIGNED NOT NULL,
-				`post_type` VARCHAR(20) NOT NULL,
-				PRIMARY KEY (`id`)
-			) $charset_collate;
-		";
-	}
-
-	/**
-	 * Allows extending classes that require it to run some methods
-	 * immediately after the table creation or update.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param array<string,string> $results A map of results in the format
-	 *                                      returned by the `dbDelta` function.
-	 *
-	 * @return array<string,string> A map of results in the format returned by
-	 *                              the `dbDelta` function.
-	 */
-	protected function after_update( array $results ): array {
-		// If nothing was changed by dbDelta(), bail.
-		if ( ! count( $results ) ) {
-			return $results;
-		}
-
-		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_index_modifier_id', 'modifier_id' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_relationship_index_post_id', 'post_id' );
-
-		return $results;
 	}
 }

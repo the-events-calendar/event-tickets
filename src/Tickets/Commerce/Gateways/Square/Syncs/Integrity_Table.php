@@ -9,7 +9,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square\Syncs;
 
-use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\ID;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Columns\Boolean_Column;
+use TEC\Common\StellarWP\Schema\Columns\Created_At;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 /**
  * Integrity_Table table schema.
@@ -67,20 +73,26 @@ class Integrity_Table extends Table {
 	protected static $uid_column = 'id';
 
 	/**
-	 * An array of all the columns in the table.
+	 * Returns the schema history for this table.
 	 *
-	 * @since 5.24.0
+	 * @since 5.27.0
 	 *
-	 * @var string[]
+	 * @return array<string, callable>
 	 */
-	public static function get_columns(): array {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
 		return [
-			static::$uid_column,
-			'square_object_id',
-			'wp_object_id',
-			'square_object_hash',
-			'mode',
-			'last_checked',
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = new ID( 'id' );
+				$columns[] = ( new String_Column( 'square_object_id' ) )->set_length( 128 )->set_is_index( true );
+				$columns[] = ( new String_Column( 'wp_object_id' ) )->set_length( 20 )->set_is_index( true );
+				$columns[] = ( new String_Column( 'square_object_hash' ) )->set_length( 128 )->set_is_index( true );
+				$columns[] = ( new Boolean_Column( 'mode' ) )->set_default( false );
+				$columns[] = new Created_At( 'last_checked' );
+
+				return new Table_Schema( $table_name, $columns );
+			},
 		];
 	}
 
@@ -93,7 +105,7 @@ class Integrity_Table extends Table {
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
-	protected function get_definition() {
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
@@ -110,23 +122,5 @@ class Integrity_Table extends Table {
 				PRIMARY KEY (`{$uid_column}`)
 			) {$charset_collate};
 		";
-	}
-
-	/**
-	 * Add indexes after table creation.
-	 *
-	 * @since 5.24.0
-	 *
-	 * @param array<string,string> $results A map of results in the format
-	 *                                      returned by the `dbDelta` function.
-	 *
-	 * @return array<string,string> A map of results in the format returned by
-	 *                              the `dbDelta` function.
-	 */
-	protected function after_update( array $results ) {
-		$this->check_and_add_index( $results, 'square_object_id', 'square_object_id' );
-		$this->check_and_add_index( $results, 'wp_object_id', 'wp_object_id' );
-
-		return $results;
 	}
 }

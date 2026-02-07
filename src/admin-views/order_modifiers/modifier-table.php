@@ -21,6 +21,8 @@ $form_classes = [
 	'event-tickets__order-modifiers-admin-form',
 ];
 
+do_action( 'tec_conditional_content_header_notice' );
+
 ?>
 <div class="wrap">
 	<h1><?php echo esc_html__( 'Coupons &amp; Fees', 'event-tickets' ); ?></h1>

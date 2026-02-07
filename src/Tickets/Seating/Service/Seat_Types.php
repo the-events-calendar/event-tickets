@@ -116,14 +116,11 @@ class Seat_Types {
 		}
 
 		$seat_types              = [];
-		$layout_ids_placeholders = implode( ',', array_fill( 0, count( $layout_ids ), '%s' ) );
-		$layout_ids_interval     = DB::prepare( $layout_ids_placeholders, ...$layout_ids );
-		/** @var object{id: string, name: string, seats: int} $row */
-		foreach ( Seat_Types_Table::fetch_all_where( "WHERE layout IN ({$layout_ids_interval})" ) as $row ) {
+		foreach ( Seat_Types_Table::get_all_by( 'layout', $layout_ids, 'IN' ) as $row ) {
 			$seat_types[] = [
-				'id'    => $row->id,
-				'name'  => $row->name,
-				'seats' => $row->seats,
+				'id'    => $row['id'],
+				'name'  => $row['name'],
+				'seats' => $row['seats'],
 			];
 		}
 
@@ -445,12 +442,15 @@ class Seat_Types {
 			return null;
 		}
 
-		return Seat_Types_Table::fetch_first_where(
-			DB::prepare(
-				'WHERE layout = %s ORDER BY id ASC',
-				$layout_id
-			),
-			OBJECT
+		$result = (object) Seat_Types_Table::get_first_by(
+			'layout',
+			$layout_id,
 		);
+
+		if ( empty( $result ) ) {
+			return null;
+		}
+
+		return empty( $result->id ) ? null : $result;
 	}
 }

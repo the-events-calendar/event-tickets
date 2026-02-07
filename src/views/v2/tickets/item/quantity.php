@@ -11,8 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.3
+ * @since 5.27.0 Added $quantity_controls parameter.
  *
- * @version 5.0.3
+ * @version 5.27.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -44,6 +45,7 @@
  * @var int                                $available_count             The quantity of Available tickets based on the Attendees number.
  * @var bool                               $is_unlimited                Whether the ticket has unlimited quantity.
  * @var int                                $max_at_a_time               The maximum quantity able to be purchased in a single Add to Cart action.
+ * @var bool                               $quantity_controls           Whether to show the quantity controls.
  */
 
 // Bail if it's "mini cart" context.
@@ -56,11 +58,15 @@ $classes = [
 	'tribe-tickets__tickets-item-quantity',
 ];
 ?>
-<div <?php tribe_classes( $classes ); ?>>
+<div <?php tec_classes( $classes ); ?>>
 	<?php if ( 0 !== $max_at_a_time ) : ?>
-		<?php $this->template( 'v2/tickets/item/quantity/remove' ); ?>
+		<?php if ( ! isset( $quantity_controls ) || $quantity_controls ) : ?>
+			<?php $this->template( 'v2/tickets/item/quantity/remove' ); ?>
+		<?php endif; ?>
 		<?php $this->template( 'v2/tickets/item/quantity/number' ); ?>
-		<?php $this->template( 'v2/tickets/item/quantity/add' ); ?>
+		<?php if ( ! isset( $quantity_controls ) || $quantity_controls ) : ?>
+			<?php $this->template( 'v2/tickets/item/quantity/add' ); ?>
+		<?php endif; ?>
 	<?php else : ?>
 		<?php $this->template( 'v2/tickets/item/quantity/unavailable' ); ?>
 	<?php endif; ?>

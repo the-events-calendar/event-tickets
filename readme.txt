@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.26.4
-Requires at least: 6.6
-Tested up to: 6.8.2
+Stable tag: 5.27.4
+Requires at least: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,60 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.27.4] 2026-01-28 =
+
+* Tweak - Amend small typos in text domains. Props to @DAnn2012! [ET-2596]
+* Language - 1 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.27.3] 2025-12-18 =
+
+* Security - Strengthen the user access level in the system information opt-in functionality. [SVUL-35]
+
+= [5.27.2] 2025-12-09 =
+
+* Fix - Fixed - Error in block editor that would prevent saving events with Tickets directly. [TECTRIA-1464]
+* Language - 0 new strings added, 2 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.27.1] 2025-12-03 =
+
+* Fix - Resolved block editor JavaScript errors in WordPress 6.9 by properly importing `sprintf` from `@wordpress/i18n`. [ET-2595]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.27.0] 2025-11-18 =
+
+* Version - Event Tickets 5.27.0 is only compatible with The Events Calendar 6.15.12 or higher.
+* Version - Event Tickets 5.27.0 is only compatible with Event Tickets Plus 6.9.0 or higher.
+* Tweak - Added filters: `tec_tickets_panels`
+* Tweak - Added actions: `tec_tickets_ticket_pre_save`
+* Tweak - Changed views: `v2/commerce/checkout/cart/items`, `v2/tickets/item`, `v2/tickets/item/quantity`, `v2/tickets/item/quantity/number`
+* Tweak - Updates Shepherd library to 0.0.9 from 0.0.6 including various improvements. Shepherd's changelog can be found here https://github.com/stellarwp/shepherd/blob/0.0.9/CHANGELOG.md
+* Tweak - Supports conditional ticket quantity control availability. [ETP-1061]
+* Language - 1 new strings added, 52 updated, 2 fuzzied, and 3 obsoleted.
+
+= [5.26.7] 2025-10-28 =
+
+* Fix - Add logic to only show the purchase button during checkout after billing info is filled out. [ET-2592]
+* Fix - Correct Stripe payment amount formatting by standardizing all currency values to two decimals before creating payment intents, preventing incorrect low charge amounts.[ET-2558]
+* Fix - Prevent ticket overselling by adding database-locked stock validation before payment intent creation. [ET-1942]
+* Tweak - Changed views: `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/payment-element`
+* Tweak - Added actions: `tec_tickets_commerce_insufficient_stock_detected`, `tec_conditional_content_header_notice`
+* Tweak - Added filters: `tec_tickets_commerce_gateway_value_formatter_{$gateway_key}_currency_map`
+* Tweak - Add upsell link for Seating in License page. [ET-2556]
+* Tweak - Modify the existing inline upsell to utilize the new modular logic in common. [ET-2590]
+* Tweak - Tweak logic when fetching ticket data. [ET-2555]
+* Language - 6 new strings added, 66 updated, 1 fuzzied, and 0 obsoleted.
+
+= [5.26.6] 2025-10-14 =
+
+* Security - Enhanced authorization validation for order processing endpoints. [SVUL-24]
+* Language - 1 new strings added, 31 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.26.5] 2025-09-16 =
+
+* Fix - Adjusted how cart total is handled on page refresh to avoid coupons not being applied. [ETP-1060]
+* Fix - Correctly invalidate ticket caches to deal with ETP order-of-operation issue. [ETP-1044]
+* Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.26.4] 2025-09-10 =
 

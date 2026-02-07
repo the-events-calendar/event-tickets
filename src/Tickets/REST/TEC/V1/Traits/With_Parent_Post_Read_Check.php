@@ -70,12 +70,13 @@ trait With_Parent_Post_Read_Check {
 	 * Formats a collection of posts into a collection of post entities.
 	 *
 	 * @since 5.26.0
+	 * @since 5.27.0 method has been renamed.
 	 *
 	 * @param array $posts The posts to format.
 	 *
 	 * @return array
 	 */
-	protected function format_post_entity_collection( array $posts ): array {
+	protected function format_entity_collection( array $posts ): array {
 		$formatted_posts = [];
 		foreach ( $posts as $post ) {
 			$ticket_object   = Tickets::load_ticket_object( (int) $post->ID );

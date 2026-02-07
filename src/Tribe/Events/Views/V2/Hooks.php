@@ -113,8 +113,13 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 4.10.9
 	 */
 	protected function add_actions() {
-		add_action( 'wp_insert_post', [ $this, 'regenerate_post_kv_caches' ], 100 );
-		add_action( 'clean_post_cache', [ $this, 'regenerate_post_kv_caches' ], 100 );
+		if ( ! has_action( 'wp_insert_post', [ $this, 'regenerate_post_kv_caches' ] ) ) {
+			add_action( 'wp_insert_post', [ $this, 'regenerate_post_kv_caches' ], 100 );
+		}
+
+		if ( ! has_action( 'clean_post_cache', [ $this, 'regenerate_post_kv_caches' ] ) ) {
+			add_action( 'clean_post_cache', [ $this, 'regenerate_post_kv_caches' ], 100 );
+		}
 	}
 
 	/**
@@ -123,9 +128,27 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 4.10.9
 	 */
 	protected function add_filters() {
-		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ], 15, 2 );
-		add_filter( 'tribe_template_origin_namespace_map', [ $this, 'filter_add_template_origin_namespace' ], 15, 3 );
-		add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
+		if ( ! has_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] ) ) {
+			add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ], 15, 2 );
+		}
+
+
+		if ( ! has_filter(
+			'tribe_template_origin_namespace_map',
+			[ $this, 'filter_add_template_origin_namespace' ]
+		) ) {
+			add_filter(
+				'tribe_template_origin_namespace_map',
+				[ $this, 'filter_add_template_origin_namespace' ],
+				15,
+				3
+			);
+		}
+
+
+		if ( ! has_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ] ) ) {
+			add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
+		}
 	}
 
 	/**

@@ -36,7 +36,7 @@ if ( empty( $items ) ) {
 <div class="tribe-tickets__commerce-checkout-cart-items">
 	<?php
 	foreach ( $items as $item ) {
-		if ( $item['event_id'] !== $section ) {
+		if ( ! isset( $item['event_id'] ) || $item['event_id'] !== $section ) {
 			continue;
 		}
 

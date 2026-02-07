@@ -46,11 +46,11 @@ the test is targeting; use directories to group tests by component or controller
 The mu-plugin applies the `tec_debug_data` filter to print, on the `wp_footer` and `admin_footer` actions, debug
 information that can be accessed in the context of a smoketest like this:
 
-``php
+```php
 $I->amOnPage( '/some-page' );
 $debug_data = json_decode( $I->grabTextFrom( '#tec-debug-data' ) );
 $I->assertEquals( 'foo-bar', $debug_data->some_data );
-``
+```
 
 Hook on the `tec_debug_data` filter to add your own data to the debug information you might need on a page.
 

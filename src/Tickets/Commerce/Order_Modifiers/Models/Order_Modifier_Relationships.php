@@ -11,11 +11,9 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_Relationships_DTO;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationship as Order_Modifier_Relationships_Repository;
 
 /**
@@ -30,7 +28,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Order_Modifier_Relationshi
  * @property int    $post_id       The related post ID.
  * @property string $post_type     The post type.
  */
-class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFromQueryBuilderObject {
+class Order_Modifier_Relationships extends Model implements ModelPersistable {
 
 	/**
 	 * Properties of the Order Modifier Relationships model.
@@ -42,7 +40,7 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	 *
 	 * @inheritDoc
 	 */
-	protected $properties = [
+	protected static array $properties = [
 		'id'          => 'int',
 		'modifier_id' => 'int',
 		'post_id'     => 'int',
@@ -120,26 +118,16 @@ class Order_Modifier_Relationships extends Model implements ModelCrud, ModelFrom
 	}
 
 	/**
-	 * Builds a new model from a query builder object.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param object $object The object to build the model from.
-	 *
-	 * @return static
-	 */
-	public static function fromQueryBuilderObject( $object ) {
-		return Order_Modifier_Relationships_DTO::fromObject( $object )->toModel();
-	}
-
-	/**
 	 * Converts the Order_Modifier_Relationship object to an array.
 	 *
 	 * @since 5.18.0
 	 *
+	 * @deprecated 5.27.0 Use toArray() instead.
+	 *
 	 * @return array The object properties as an array.
 	 */
 	public function to_array(): array {
-		return $this->attributes;
+		_deprecated_function( __METHOD__, '5.27.0', 'toArray()' );
+		return $this->toArray();
 	}
 }

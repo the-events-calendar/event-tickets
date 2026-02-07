@@ -9,7 +9,15 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables;
 
-use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\Created_At;
+use TEC\Common\StellarWP\Schema\Columns\ID;
+use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Columns\Text_Column;
+use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 
 /**
  * Class Order_Modifiers_Meta.
@@ -58,74 +66,27 @@ class Order_Modifiers_Meta extends Table {
 	protected static $uid_column = 'id';
 
 	/**
-	 * An array of all the columns in the table.
+	 * Returns the schema history for this table.
 	 *
-	 * @since 5.20.0
-	 * @since 5.25.0 Removed the `updated_at` column.
+	 * @since 5.27.0
 	 *
-	 * @var string[]
+	 * @return array<string, callable>
 	 */
-	public static function get_columns(): array {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
+
 		return [
-			'id',
-			'order_modifier_id',
-			'meta_key',
-			'meta_value',
-			'priority',
-			'created_at',
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = new ID( 'id' );
+				$columns[] = new Referenced_ID( 'order_modifier_id' );
+				$columns[] = ( new String_Column( 'meta_key' ) )->set_length( 100 )->set_is_index( true );
+				$columns[] = new Text_Column( 'meta_value' );
+				$columns[] = ( new Integer_Column( 'priority' ) )->set_default( 0 );
+				$columns[] = new Created_At( 'created_at' );
+
+				return new Table_Schema( $table_name, $columns );
+			},
 		];
-	}
-
-	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
-	 *
-	 * @since 5.18.0
-	 * @since 5.25.0 Removed the `updated_at` column.
-	 *
-	 * @return string The table creation SQL, in the format supported
-	 *                by the `dbDelta` function.
-	 */
-	protected function get_definition() {
-		global $wpdb;
-		$table_name      = self::table_name( true );
-		$charset_collate = $wpdb->get_charset_collate();
-
-		return "
-				CREATE TABLE `$table_name` (
-				`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`order_modifier_id` BIGINT UNSIGNED NOT NULL,
-				`meta_key` VARCHAR(100) NOT NULL,
-				`meta_value` TEXT NOT NULL,
-				`priority` INT NOT NULL DEFAULT 0,
-				`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY (`id`)
-			) $charset_collate;
-		";
-	}
-
-	/**
-	 * Allows extending classes that require it to run some methods
-	 * immediately after the table creation or update.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param array<string,string> $results A map of results in the format
-	 *                                      returned by the `dbDelta` function.
-	 *
-	 * @return array<string,string> A map of results in the format returned by
-	 *                              the `dbDelta` function.
-	 */
-	protected function after_update( array $results ): array {
-		// If nothing was changed by dbDelta(), bail.
-		if ( ! count( $results ) ) {
-			return $results;
-		}
-
-		// Helper method to check and add indexes.
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_index_order_modifier_id', 'order_modifier_id' );
-		$results = $this->check_and_add_index( $results, 'tec_order_modifier_meta_index_meta_key', 'meta_key' );
-
-		return $results;
 	}
 }

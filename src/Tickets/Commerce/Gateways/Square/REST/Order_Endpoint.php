@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Payment_Handler;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
+use TEC\Tickets\Commerce\Stock_Validator;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
@@ -122,6 +123,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					'data'      => $data,
 				]
 			);
+		}
+
+		// Validate stock availability with database locking before creating order.
+		$cart             = tribe( Cart::class );
+		$stock_validation = tribe( Stock_Validator::class )->validate_cart_stock_with_lock( $cart );
+
+		if ( is_wp_error( $stock_validation ) ) {
+			return $stock_validation;
 		}
 
 		// If an order was created for this hash, we will attempt to update it, otherwise create a new one.

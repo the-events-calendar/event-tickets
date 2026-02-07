@@ -10,7 +10,7 @@ import uniqid from 'uniqid';
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Dashicon } from '@wordpress/components';
 
 /**

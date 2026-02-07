@@ -599,14 +599,15 @@ class Attendees_Test extends WPTestCase {
 		$admin_id = $this->factory->user->create( [ 'role' => 'administrator' ] );
 		wp_set_current_user( $admin_id );
 
-		$post_id = tribe_events()->set_args(
+		$post    = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event',
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 09:00:00',
 				'end_date'   => '2020-01-01 11:30:00',
 			]
-		)->create()->ID;
+		)->create();
+		$post_id = $post->ID;
 
 		// Switch to the test role user.
 		$user_id = $this->factory->user->create( [ 'role' => $role ] );
@@ -615,8 +616,8 @@ class Attendees_Test extends WPTestCase {
 		$attendees       = new Attendees();
 		$can_access_page = $attendees->can_access_page( $post_id );
 
-		// Expected behavior: Only roles with `edit_others_posts` should have access by default.
-		$expected_access = current_user_can( 'edit_others_posts' );
+		// Expected behavior: Only roles with `edit_others_<post_type>` should have access by default.
+		$expected_access = current_user_can( 'edit_others_' . $post->post_type );
 		$this->assertSame( $expected_access, $can_access_page, sprintf( 'Role %s access did not match expected.', $role ) );
 	}
 

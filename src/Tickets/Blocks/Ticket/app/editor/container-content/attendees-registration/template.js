@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies

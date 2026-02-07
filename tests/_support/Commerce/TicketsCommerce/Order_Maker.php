@@ -32,7 +32,7 @@ trait Order_Maker {
 	protected function create_order( array $items, array $overrides = [] ) {
 		$cart = new Cart();
 
-		// Individiaul items can be a simple quantity, or an array with more data.
+		// Individual items can be a simple quantity, or an array with more data.
 		foreach ( $items as $id => $data ) {
 			if ( is_array( $data ) ) {
 				$cart->get_repository()->upsert_item(

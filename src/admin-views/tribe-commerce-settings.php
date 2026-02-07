@@ -1,4 +1,12 @@
 <?php
+/**
+ * Tribe Commerce Settings Configuration.
+ *
+ * This file contains the settings fields configuration for Tribe Commerce (PayPal) integration.
+ *
+ * @package Tribe\Tickets\Admin\Settings
+ */
+
 $plus_link = sprintf(
 	'<a href="https://evnt.is/19zl" target="_blank">%s</a>',
 	__( 'Event Tickets Plus', 'event-tickets' )

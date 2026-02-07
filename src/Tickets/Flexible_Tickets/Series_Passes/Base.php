@@ -34,7 +34,7 @@ use WP_Post;
  */
 class Base extends Controller {
 	/**
-	 * ${CARET}
+	 * A reference to the Admin Views handler for Flexible Tickets.
 	 *
 	 * @since 5.8.0
 	 *

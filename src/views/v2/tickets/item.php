@@ -18,8 +18,9 @@
  * @since 5.5.6 Add the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity.
  * @since 5.16.0 Introduced 3rd parameter to `tribe_tickets_block_ticket_html_attributes` filter.
  * @since 5.18.1 Removed the `$event_id` parameter from the `tribe_tickets_block_ticket_html_attributes` filter.
+ * @since 5.27.0 Added $quantity_controls parameter.
  *
- * @version 5.18.1
+ * @version 5.27.0
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
@@ -67,6 +68,7 @@
  * @var int                                $available_count             The quantity of Available tickets based on the Attendees number.
  * @var bool                               $is_unlimited                Whether the ticket has unlimited quantity.
  * @var int                                $max_at_a_time               The maximum quantity able to be purchased in a single Add to Cart action.
+ * @var bool                               $quantity_controls           Whether to show the quantity controls.
  */
 
 if (
@@ -83,10 +85,11 @@ $privacy = tribe( 'tickets.privacy' );
 $handler = tribe( 'tickets.handler' );
 
 $context = [
-	'ticket'        => $ticket,
-	'key'           => $this->get( 'key' ),
-	'privacy'       => $privacy,
-	'max_at_a_time' => $handler->get_ticket_max_purchase( $ticket->ID ),
+	'ticket'            => $ticket,
+	'key'               => $this->get( 'key' ),
+	'privacy'           => $privacy,
+	'max_at_a_time'     => $handler->get_ticket_max_purchase( $ticket->ID ),
+	'quantity_controls' => isset( $quantity_controls ) && is_bool( $quantity_controls ) ? $quantity_controls : true,
 ];
 
 $has_suffix = ! empty( $ticket->price_suffix );

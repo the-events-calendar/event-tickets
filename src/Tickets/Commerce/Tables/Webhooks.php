@@ -9,8 +9,15 @@
 
 namespace TEC\Tickets\Commerce\Tables;
 
-use TEC\Common\Integrations\Custom_Table_Abstract as Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
+use TEC\Common\StellarWP\Schema\Columns\Referenced_ID;
+use TEC\Common\StellarWP\Schema\Columns\String_Column;
+use TEC\Common\StellarWP\Schema\Columns\Text_Column;
+use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
+use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\StellarWP\Schema\Columns\Created_At;
 
 /**
  * Webhooks table schema.
@@ -70,18 +77,25 @@ class Webhooks extends Table {
 	/**
 	 * An array of all the columns in the table.
 	 *
-	 * @since 5.24.0
+	 * @since 5.27.0
 	 *
 	 * @var string[]
 	 */
-	public static function get_columns(): array {
+	public static function get_schema_history(): array {
+		$table_name = self::table_name();
+
 		return [
-			static::$uid_column,
-			'order_id',
-			'event_type',
-			'event_data',
-			'created_at',
-			'processed_at',
+			self::SCHEMA_VERSION => function () use ( $table_name ) {
+				$columns   = new Column_Collection();
+				$columns[] = ( new String_Column( 'event_id' ) )->set_length( 128 )->set_is_primary_key( true );
+				$columns[] = ( new Referenced_ID( 'order_id' ) )->set_nullable( true );
+				$columns[] = ( new String_Column( 'event_type' ) )->set_length( 128 )->set_is_index( true );
+				$columns[] = ( new Text_Column( 'event_data' ) );
+				$columns[] = ( new Created_At( 'created_at' ) )->set_nullable( true );
+				$columns[] = ( new Datetime_Column( 'processed_at' ) )->set_nullable( true );
+
+				return new Table_Schema( $table_name, $columns );
+			},
 		];
 	}
 
@@ -94,7 +108,7 @@ class Webhooks extends Table {
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
-	protected function get_definition() {
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
@@ -111,23 +125,6 @@ class Webhooks extends Table {
 				PRIMARY KEY (`{$uid_column}`)
 			) {$charset_collate};
 		";
-	}
-
-	/**
-	 * Add indexes after table creation.
-	 *
-	 * @since 5.24.0
-	 *
-	 * @param array<string,string> $results A map of results in the format
-	 *                                      returned by the `dbDelta` function.
-	 *
-	 * @return array<string,string> A map of results in the format returned by
-	 *                              the `dbDelta` function.
-	 */
-	protected function after_update( array $results ) {
-		$this->check_and_add_index( $results, 'order_id', 'order_id' );
-
-		return $results;
 	}
 
 	/**

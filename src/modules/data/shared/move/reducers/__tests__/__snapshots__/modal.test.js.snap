@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Move modal reducer should move ticket 1`] = `
-Object {
+{
   "clientId": null,
   "isSubmitting": true,
   "post_type": "all",
@@ -12,7 +12,7 @@ Object {
 `;
 
 exports[`Move modal reducer should move ticket with error 1`] = `
-Object {
+{
   "clientId": null,
   "isSubmitting": false,
   "post_type": "all",
@@ -23,7 +23,7 @@ Object {
 `;
 
 exports[`Move modal reducer should move ticket with success 1`] = `
-Object {
+{
   "clientId": null,
   "isSubmitting": false,
   "post_type": "all",
@@ -34,7 +34,7 @@ Object {
 `;
 
 exports[`Move modal reducer should set data 1`] = `
-Object {
+{
   "clientId": null,
   "isSubmitting": false,
   "post_type": "some",

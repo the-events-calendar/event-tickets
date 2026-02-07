@@ -11,15 +11,13 @@ namespace TEC\Tickets\Commerce\Order_Modifiers\Models;
 
 use RuntimeException;
 use TEC\Common\StellarWP\Models\Contracts\Model as ModelInterface;
-use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
-use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
+use TEC\Common\StellarWP\Models\Contracts\ModelPersistable;
+use TEC\Common\StellarWP\Models\ModelPropertyDefinition;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
-use TEC\Tickets\Commerce\Order_Modifiers\Data_Transfer_Objects\Order_Modifier_DTO;
 use TEC\Tickets\Commerce\Order_Modifiers\Factory;
 use TEC\Tickets\Commerce\Values\Float_Value;
 use TEC\Tickets\Commerce\Values\Percent_Value;
-use TEC\Tickets\Commerce\Values\Positive_Integer_Value;
 use TEC\Tickets\Commerce\Values\Value_Interface;
 
 /**
@@ -40,18 +38,16 @@ use TEC\Tickets\Commerce\Values\Value_Interface;
  * @property string $start_time      When the modifier becomes active.
  * @property string $end_time        When the modifier expires.
  */
-class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderObject {
+class Order_Modifier extends Model implements ModelPersistable {
 
 	/**
 	 * The model properties assigned to their types.
 	 *
 	 * @var array<string,string>
 	 */
-	protected $properties = [
+	protected static array $properties = [
 		'id'            => 'int',
 		'modifier_type' => 'string',
-		'sub_type'      => 'string',
-		'raw_amount'    => 'float',
 		'slug'          => 'string',
 		'display_name'  => 'string',
 		'status'        => 'string',
@@ -71,30 +67,31 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	protected static string $order_modifier_type;
 
 	/**
-	 * Constructor.
+	 * Returns the properties definition for this model.
 	 *
-	 * @since 1.0.0
+	 * @since 5.18.0
+	 * @since 5.27.0 Upgraded properties definition to use ModelPropertyDefinition.
 	 *
-	 * @param array<string,mixed> $attributes Attributes.
+	 * @return array<string, ModelPropertyDefinition>
 	 */
-	public function __construct( array $attributes = [] ) {
-		parent::__construct( $attributes );
+	protected static function properties(): array {
+		return [
+			'sub_type'   => ( new ModelPropertyDefinition() )->type( 'string' )->castWith(
+				function ( $value ): string {
+					$value = strtolower( (string) $value );
+					if ( ! in_array( $value, [ 'flat', 'percentage' ], true ) ) {
+						throw new RuntimeException( 'Invalid modifier sub_type: ' . $value );
+					}
 
-		// If we have a percent sub_type, we need to ensure the raw_amount is a Percent_Value.
-		if ( 'flat' === $this->sub_type ) {
-			return;
-		}
-
-		// If we don't have the raw amount set, nothing else to do.
-		if ( ! array_key_exists( 'raw_amount', $this->attributes ) ) {
-			return;
-		}
-
-		if ( $this->attributes['raw_amount'] instanceof Percent_Value ) {
-			return;
-		}
-
-		$this->setAttribute( 'raw_amount', new Percent_Value( $this->raw_amount ) );
+					return $value;
+				}
+			),
+			'raw_amount' => ( new ModelPropertyDefinition() )->type( 'float', Float_Value::class, Percent_Value::class )->castWith(
+				function ( $value ) {
+					return (float) $value;
+				}
+			),
+		];
 	}
 
 	/**
@@ -178,57 +175,17 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	}
 
 	/**
-	 * Builds a new model from a query builder object.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param object $object The object to build the model from.
-	 *
-	 * @return static
-	 */
-	public static function fromQueryBuilderObject( $object ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
-		return Order_Modifier_DTO::fromObject( $object )->toModel();
-	}
-
-	/**
 	 * Converts the Order_Modifier object to an array.
 	 *
 	 * @since 5.18.0
 	 *
+	 * @deprecated 5.27.0 Use toArray() instead.
+	 *
 	 * @return array The object properties as an array.
 	 */
 	public function to_array(): array {
-		$attributes = [];
-
-		// Use getAttribute() to ensure value objects are converted to their raw values.
-		foreach ( $this->attributes as $key => $type ) {
-			$attributes[ $key ] = $this->getAttribute( $key );
-		}
-
-		return $attributes;
-	}
-
-	/**
-	 * Validates an attribute to a PHP type.
-	 *
-	 * @since 5.18.0
-	 *
-	 * @param string $key   Property name.
-	 * @param mixed  $value Property value.
-	 *
-	 * @return bool
-	 */
-	public function isPropertyTypeValid( string $key, $value ): bool {
-		switch ( $key ) {
-			case 'raw_amount':
-				return is_float( $value ) || $value instanceof Float_Value || $value instanceof Percent_Value;
-
-			case 'id':
-				return is_int( $value ) || $value instanceof Positive_Integer_Value;
-
-			default:
-				return parent::isPropertyTypeValid( $key, $value );
-		}
+		_deprecated_function( __METHOD__, '5.27.0', 'toArray()' );
+		return $this->toArray();
 	}
 
 	/**
@@ -242,8 +199,6 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @return ModelInterface
 	 */
 	public function setAttribute( string $key, $value ): ModelInterface {
-		$this->validatePropertyExists( $key );
-		$this->validatePropertyType( $key, $value );
 		$this->run_validation_method( $key, $value );
 
 		// Ensure specific attributes are stored as value objects.
@@ -253,19 +208,12 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 					$value = Float_Value::from_number( $value );
 				}
 				break;
-
-			case 'id':
-				if ( ! $value instanceof Positive_Integer_Value ) {
-					$value = Positive_Integer_Value::from_number( $value );
-				}
-				break;
-
 			default:
 				// No specific action needed.
 				break;
 		}
 
-		$this->attributes[ $key ] = $value;
+		parent::setAttribute( $key, $value );
 
 		return $this;
 	}
@@ -282,12 +230,18 @@ class Order_Modifier extends Model implements ModelCrud, ModelFromQueryBuilderOb
 	 * @throws RuntimeException When the attribute does not exist.
 	 */
 	public function getAttribute( string $key, $default = null ) { // phpcs:ignore Universal.NamingConventions
-		$this->validatePropertyExists( $key );
 		if ( ! $this->hasAttribute( $key ) ) {
 			return $default;
 		}
 
-		$value = $this->attributes[ $key ];
+		$value = parent::getAttribute( $key, $default );
+
+		if ( 'raw_amount' === $key ) {
+			if ( is_float( $value ) ) {
+				$sub_type = parent::getAttribute( 'sub_type' );
+				$value    = 'flat' === $sub_type ? Float_Value::from_number( $value ) : new Percent_Value( $value );
+			}
+		}
 
 		// Return the value directly if it's not a value object.
 		if ( ! $value instanceof Value_Interface ) {

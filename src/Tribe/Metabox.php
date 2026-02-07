@@ -108,6 +108,8 @@ class Tribe__Tickets__Metabox {
 		// Add the data required by each panel to render correctly.
 		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID ) )->to_array() );
 
+		$context['panels'] = $this->get_panels( $post );
+
 		return $admin_views->template( [ 'editor', 'metabox' ], $context );
 	}
 
@@ -223,23 +225,30 @@ class Tribe__Tickets__Metabox {
 
 		$common_panel_data = ( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array();
 		$panels = [
-			'list'     => $admin_views->template( 'editor/panel/list', [
-				'post_id'     => $post->ID,
-				'tickets'     => $tickets,
-			], false ),
-			'settings' => $admin_views->template( 'editor/panel/settings',
-				array_merge(
-					$common_panel_data,
-					[ 'post_id' => $post->ID ]
-				),
-				false ),
+			'list'     => $admin_views->template(
+				'editor/panel/list',
+				[
+					'post_id' => $post->ID,
+					'tickets' => $tickets,
+				],
+				false
+			),
 			'ticket'   => $admin_views->template(
 				'editor/panel/ticket',
 				array_merge(
 					$common_panel_data,
 					[ 'ticket_type' => $ticket_type ]
 				),
-				false )
+				false
+			),
+			'settings' => $admin_views->template(
+				'editor/panel/settings',
+				array_merge(
+					$common_panel_data,
+					[ 'post_id' => $post->ID ]
+				),
+				false
+			),
 		];
 
 		/**
@@ -253,7 +262,19 @@ class Tribe__Tickets__Metabox {
 		 */
 		do_action( 'tec_tickets_panels_after', $post, $ticket_id, $ticket_type );
 
-		return $panels;
+		/**
+		 * Filters the panels data.
+		 *
+		 * @since 5.27.0
+		 *
+		 * @param array       $panels      The panels data.
+		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
+		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
+		 * @param string      $ticket_type The ticket type being rendered, `default` if not specified.
+		 *
+		 * @return array The panels data.
+		 */
+		return (array) apply_filters( 'tec_tickets_panels', $panels, $post, $ticket_id, $ticket_type );
 	}
 
 	/**

@@ -36,7 +36,6 @@
     "fakerphp/faker": "^1.23",
     "lucatume/wp-browser": "3.7.12",
     "lucatume/wp-snaphot-assertions": "^1.1.0",
-    "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "stellarwp/coding-standards": "^2.1",
     "the-events-calendar/tec-testing-facilities": "dev-master",

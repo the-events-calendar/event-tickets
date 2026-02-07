@@ -73,6 +73,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Cart::class );
 		$this->container->singleton( Cart\Unmanaged_Cart::class );
 		$this->container->singleton( Cart_Interface::class, Agnostic_Cart::class );
+		$this->container->singleton( Stock_Validator::class );
 
 		$this->container->singleton( Checkout::class );
 		$this->container->singleton( Settings::class );
@@ -110,6 +111,15 @@ class Provider extends Service_Provider {
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
+
+		// Since currently shepherd is only used with ET's TicketsCommerce, we re-enable the cleanup task here.
+		add_action(
+			'wp_loaded',
+			function () {
+				remove_filter( 'shepherd_tec_schedule_cleanup_task_every', '__return_zero' );
+			},
+			15
+		);
 	}
 
 	/**
