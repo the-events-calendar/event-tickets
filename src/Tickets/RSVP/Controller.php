@@ -8,9 +8,7 @@
 namespace TEC\Tickets\RSVP;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Migrations\Enums\Status;
 use TEC\Tickets\Commerce\Payments_Tab;
-use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
  * Main controller for RSVP functionality.
@@ -78,26 +76,11 @@ class Controller extends Controller_Contract {
 	 * @return bool Always returns true to enable Tickets Commerce.
 	 */
 	public static function enable_tickets_commerce(): bool {
-		// Defer page creation to `init` because wp_insert_post() requires $wp_rewrite to be initialized.
-		if ( did_action( 'init' ) || doing_action( 'init' ) ) {
-			self::maybe_create_tickets_commerce_pages();
-		} else {
-			add_action( 'init', [ self::class, 'maybe_create_tickets_commerce_pages' ] );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Creates the Tickets Commerce checkout and success pages if they don't exist.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public static function maybe_create_tickets_commerce_pages(): void {
+		// Trust the options and remove do not force the creation if the options are set.
 		tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
 		tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page();
+
+		return true;
 	}
 
 	/**
@@ -118,10 +101,8 @@ class Controller extends Controller_Contract {
 			return false;
 		}
 
-		$is_active = self::get_version_from_migration_status() !== self::DISABLED;
-
 		// Check option (developer-only, no UI).
-		$active = (bool) get_option( 'tec_tickets_rsvp_active', $is_active );
+		$active = (bool) get_option( 'tec_tickets_rsvp_active', true );
 
 		/**
 		 * Filters whether RSVP functionality is enabled.
@@ -185,44 +166,6 @@ class Controller extends Controller_Contract {
 		// Repositories must use bind(), not singleton(), to return a fresh instance on each call.
 		$this->container->bind( 'tickets.ticket-repository.rsvp', Repositories\Ticket_Repository_Disabled::class );
 		$this->container->bind( 'tickets.attendee-repository.rsvp', Repositories\Attendee_Repository_Disabled::class );
-
-		// Tell the Block Editor that RSVP is disabled so the JS block is not registered.
-		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_disabled_editor_config' ] );
-
-		// Disable the RSVP form toggle in the Classic Editor metabox.
-		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'disable_rsvp_form_toggle' ] );
-	}
-
-	/**
-	 * Adds the RSVP disabled flag to the Block Editor configuration.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $config The editor configuration.
-	 *
-	 * @return array<string,mixed> The modified editor configuration.
-	 */
-	public function add_rsvp_disabled_editor_config( array $config ): array {
-		$config['tickets']                   ??= [];
-		$config['tickets']['rsvpDisabled']     = true;
-		$config['tickets']['migrationsTabUrl'] = admin_url( 'admin.php?page=tec-tickets-settings&tab=migrations' );
-
-		return $config;
-	}
-
-	/**
-	 * Disables the RSVP form toggle in the Classic Editor metabox.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,bool> $enabled The enabled ticket forms.
-	 *
-	 * @return array<string,bool> The modified enabled ticket forms.
-	 */
-	public function disable_rsvp_form_toggle( array $enabled ): array {
-		$enabled['rsvp'] = false;
-
-		return $enabled;
 	}
 
 	/**
@@ -234,9 +177,6 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		if ( ! $this->is_rsvp_enabled() ) {
-			remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_disabled_editor_config' ] );
-			remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'disable_rsvp_form_toggle' ] );
-
 			return;
 		}
 
@@ -262,13 +202,6 @@ class Controller extends Controller_Contract {
 	 * @return string The filtered RSVP version to use.
 	 */
 	private static function get_version(): string {
-		$version = self::get_version_from_migration_status();
-
-		if ( $version === self::DISABLED ) {
-			// This should never happen! RSVP are disabled before we reach this point.
-			return self::VERSION_1;
-		}
-
 		/**
 		 * Filters the RSVP version to register.
 		 *
@@ -278,83 +211,6 @@ class Controller extends Controller_Contract {
 		 *
 		 * @param string $version The RSVP version to register.
 		 */
-		return (string) apply_filters( 'tec_tickets_rsvp_version', $version );
-	}
-
-	/**
-	 * The option key used to store the RSVP version.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const VERSION_OPTION_KEY = 'tickets_rsvp_version';
-
-	/**
-	 * Returns the RSVP version based on the migration status.
-	 *
-	 * The version is stored in a tribe option and updated by the migration's
-	 * before/after hooks. On first load (no option set), live detection runs
-	 * once from the migration status and saves the result.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The RSVP version based on the migration status.
-	 */
-	private static function get_version_from_migration_status(): string {
-		$version = tribe_get_option( self::VERSION_OPTION_KEY, null );
-
-		if ( is_string( $version ) && in_array( $version, [ self::VERSION_1, self::VERSION_2, self::DISABLED ], true ) ) {
-			return $version;
-		}
-
-		// First load: detect from migration status and persist.
-		$version = self::detect_version_from_migration_status();
-		tribe_update_option( self::VERSION_OPTION_KEY, $version );
-
-		return $version;
-	}
-
-	/**
-	 * Detects the RSVP version from the migration status.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The detected RSVP version.
-	 */
-	private static function detect_version_from_migration_status(): string {
-		$registry = migrations()->get_registry();
-
-		$rsvp_to_tc = $registry->get( 'rsvp-to-tc' );
-
-		if ( ! $rsvp_to_tc ) {
-			// Assume that it has been completed and removed in the future.
-			return self::VERSION_2;
-		}
-
-		$migration_status = $rsvp_to_tc->get_status();
-
-		if ( Status::COMPLETED()->equals( $migration_status ) ) {
-			return self::VERSION_2;
-		} elseif ( Status::FAILED()->equals( $migration_status ) ) {
-			return self::VERSION_1;
-		} elseif ( Status::NOT_APPLICABLE()->equals( $migration_status ) ) {
-			return self::VERSION_2;
-		} elseif ( Status::PAUSED()->equals( $migration_status ) ) {
-			return self::DISABLED;
-		} elseif ( Status::PENDING()->equals( $migration_status ) ) {
-			return self::VERSION_1;
-		} elseif ( Status::RUNNING()->equals( $migration_status ) ) {
-			return self::DISABLED;
-		} elseif ( Status::SCHEDULED()->equals( $migration_status ) ) {
-			return self::VERSION_1;
-		} elseif ( Status::CANCELED()->equals( $migration_status ) ) {
-			return self::VERSION_1;
-		} elseif ( Status::REVERTED()->equals( $migration_status ) ) {
-			return self::VERSION_1;
-		}
-
-		// Unknown status: determine version from the actual data state.
-		return $rsvp_to_tc->is_applicable() ? self::VERSION_1 : self::VERSION_2;
+		return (string) apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
 	}
 }
