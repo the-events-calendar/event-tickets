@@ -62,6 +62,8 @@ class REST_Properties {
 			add_filter(
 				'tec_tickets_build_ticket_properties',
 				tribe()->callback( self::class, 'add_show_not_going_to_properties' ),
+				10,
+				2
 			);
 
 			$properties['not_going_count'] = count(
