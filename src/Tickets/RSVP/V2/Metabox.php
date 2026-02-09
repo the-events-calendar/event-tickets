@@ -12,6 +12,8 @@ namespace TEC\Tickets\RSVP\V2;
 use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Admin__Views as Admin_Views;
+use TEC\Tickets\RSVP\V2\Constants;
+use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Main;
 use Tribe__Date_Utils;
 use WP_Post;
@@ -103,6 +105,82 @@ class Metabox {
 			[ 'editor', 'rsvp', 'metabox' ],
 			$context
 		);
+	}
+
+	/**
+	 * Adds the RSVP status to the single order details metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order post object.
+	 *
+	 * @return void
+	 */
+	public function add_rsvp_status_to_single_order_details_metabox( WP_Post $order ) {
+		$order = tec_tc_get_order( $order );
+
+		if ( ! $order ) {
+			return;
+		}
+
+		$tickets = $order->tickets_in_order ?? [];
+
+		if ( ! $tickets ) {
+			return;
+		}
+
+		$there_is_at_least_one_rsvp_ticket = false;
+
+
+		/** @var Ticket $commerce_ticket */
+		$commerce_ticket = tribe( Ticket::class );
+
+		foreach ( $tickets as $ticket_id ) {
+			$ticket = $commerce_ticket->get_ticket( $ticket_id );
+
+			if ( ! $ticket ) {
+				continue;
+			}
+
+			if ( Constants::TC_RSVP_TYPE !== $ticket->type() ) {
+				continue;
+			}
+
+			$there_is_at_least_one_rsvp_ticket = $ticket;
+			break;
+		}
+
+		if ( ! $there_is_at_least_one_rsvp_ticket ) {
+			return;
+		}
+
+		$show_not_going = tribe_is_truthy(
+			get_post_meta( $there_is_at_least_one_rsvp_ticket->ID, Constants::SHOW_NOT_GOING_META_KEY, true )
+		);
+
+		if ( ! $show_not_going ) {
+			return;
+		}
+
+		$attendees = $there_is_at_least_one_rsvp_ticket->get_provider()->get_attendees_by_order_id( $order->ID );
+
+		if ( ! $attendees ) {
+			return;
+		}
+
+		$first_attendee = $attendees[0];
+
+		$not_going = 'no' === get_post_meta( $first_attendee['ID'], Constants::RSVP_STATUS_META_KEY, true )
+		?>
+		<div class="tec-tickets-commerce-single-order--details--item">
+			<div class="tec-tickets-commerce-single-order--details--item--label">
+				<?php esc_html_e( 'Attendee\'s status', 'event-tickets' ); ?>
+			</div>
+			<div class="tec-tickets-commerce-single-order--details--item--value">
+				<?php echo $not_going ? esc_html__( 'Not going', 'event-tickets' ) : esc_html__( 'Going', 'event-tickets' ); ?>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**
