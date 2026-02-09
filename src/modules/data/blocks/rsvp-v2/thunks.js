@@ -160,10 +160,10 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 			data.capacity = parseInt( capacity, 10 );
 		}
 
-		// POST /tec/v1/tickets/{id}
+		// PUT /tec/v1/tickets/{id}
 		await apiFetch( {
 			path: `${ config.ticketsEndpoint }/${ id }`,
-			method: 'POST',
+			method: 'PUT',
 			headers: TEC_EEA_HEADER,
 			data,
 		} );
