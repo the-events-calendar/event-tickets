@@ -3,6 +3,9 @@
 namespace TEC\Tickets_Plus\Test\Integration\Settings;
 
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Codeception\TestCase\WPTestCase;
@@ -345,5 +348,196 @@ class Payments_Tab_Test extends WPTestCase {
 		if ( $success_page ) {
 			wp_delete_post( $success_page->ID, true );
 		}
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_checkout_page
+	 */
+	public function it_should_skip_checkout_page_creation_without_force_when_option_is_set(): void {
+		$page_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->set_option( Commerce_Settings::$option_checkout_page, $page_id );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
+
+		$this->assertFalse( $result );
+		$this->assertEquals( $page_id, (int) tribe_get_option( Commerce_Settings::$option_checkout_page ) );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_checkout_page
+	 */
+	public function it_should_create_checkout_page_when_option_is_not_set(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Reset the settings cache to avoid stale values from previous tests.
+		tribe_set_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME, null );
+		$this->set_option( Commerce_Settings::$option_checkout_page, 0 );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
+
+		$this->assertTrue( $result );
+		$new_page_id = (int) tribe_get_option( Commerce_Settings::$option_checkout_page );
+		$this->assertGreaterThan( 0, $new_page_id );
+		$page = get_post( $new_page_id );
+		$this->assertInstanceOf( \WP_Post::class, $page );
+		$this->assertStringContainsString( '[' . Checkout_Shortcode::get_wp_slug() . ']', $page->post_content );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_checkout_page
+	 */
+	public function it_should_skip_checkout_page_with_force_when_shortcode_exists(): void {
+		if ( ! shortcode_exists( Checkout_Shortcode::get_wp_slug() ) ) {
+			add_shortcode( Checkout_Shortcode::get_wp_slug(), '__return_empty_string' );
+		}
+		$page_id = static::factory()->post->create( [
+			'post_type'    => 'page',
+			'post_content' => '<!-- wp:shortcode -->[' . Checkout_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
+		] );
+		$this->set_option( Commerce_Settings::$option_checkout_page, $page_id );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page( true );
+
+		$this->assertFalse( $result );
+		$this->assertEquals( $page_id, (int) tribe_get_option( Commerce_Settings::$option_checkout_page ) );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_checkout_page
+	 */
+	public function it_should_create_checkout_page_with_force_when_shortcode_missing(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$page_id = static::factory()->post->create( [
+			'post_type'    => 'page',
+			'post_content' => 'No shortcode here.',
+		] );
+		$this->set_option( Commerce_Settings::$option_checkout_page, $page_id );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page( true );
+
+		$this->assertTrue( $result );
+		$new_page_id = (int) tribe_get_option( Commerce_Settings::$option_checkout_page );
+		$this->assertNotEquals( $page_id, $new_page_id );
+		$this->assertGreaterThan( 0, $new_page_id );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_order_success_page
+	 */
+	public function it_should_skip_success_page_creation_without_force_when_option_is_set(): void {
+		$page_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->set_option( Commerce_Settings::$option_success_page, $page_id );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page();
+
+		$this->assertFalse( $result );
+		$this->assertEquals( $page_id, (int) tribe_get_option( Commerce_Settings::$option_success_page ) );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_order_success_page
+	 */
+	public function it_should_create_success_page_when_option_is_not_set(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Reset the settings cache to avoid stale values from previous tests.
+		tribe_set_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME, null );
+		$this->set_option( Commerce_Settings::$option_success_page, 0 );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page();
+
+		$this->assertTrue( $result );
+		$new_page_id = (int) tribe_get_option( Commerce_Settings::$option_success_page );
+		$this->assertGreaterThan( 0, $new_page_id );
+		$page = get_post( $new_page_id );
+		$this->assertInstanceOf( \WP_Post::class, $page );
+		$this->assertStringContainsString( '[' . Success_Shortcode::get_wp_slug() . ']', $page->post_content );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_order_success_page
+	 */
+	public function it_should_skip_success_page_with_force_when_shortcode_exists(): void {
+		if ( ! shortcode_exists( Success_Shortcode::get_wp_slug() ) ) {
+			add_shortcode( Success_Shortcode::get_wp_slug(), '__return_empty_string' );
+		}
+		$page_id = static::factory()->post->create( [
+			'post_type'    => 'page',
+			'post_content' => '<!-- wp:shortcode -->[' . Success_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
+		] );
+		$this->set_option( Commerce_Settings::$option_success_page, $page_id );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page( true );
+
+		$this->assertFalse( $result );
+		$this->assertEquals( $page_id, (int) tribe_get_option( Commerce_Settings::$option_success_page ) );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::maybe_auto_generate_order_success_page
+	 */
+	public function it_should_create_success_page_with_force_when_shortcode_missing(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$page_id = static::factory()->post->create( [
+			'post_type'    => 'page',
+			'post_content' => 'No shortcode here.',
+		] );
+		$this->set_option( Commerce_Settings::$option_success_page, $page_id );
+
+		$result = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page( true );
+
+		$this->assertTrue( $result );
+		$new_page_id = (int) tribe_get_option( Commerce_Settings::$option_success_page );
+		$this->assertNotEquals( $page_id, $new_page_id );
+		$this->assertGreaterThan( 0, $new_page_id );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::clear_commerce_page_options
+	 */
+	public function it_should_clear_checkout_option_when_page_is_permanently_deleted(): void {
+		$page_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->set_option( Commerce_Settings::$option_checkout_page, $page_id );
+
+		wp_delete_post( $page_id, true );
+
+		$this->assertEmpty( tribe_get_option( Commerce_Settings::$option_checkout_page ) );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::clear_commerce_page_options
+	 */
+	public function it_should_clear_success_option_when_page_is_permanently_deleted(): void {
+		$page_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->set_option( Commerce_Settings::$option_success_page, $page_id );
+
+		wp_delete_post( $page_id, true );
+
+		$this->assertEmpty( tribe_get_option( Commerce_Settings::$option_success_page ) );
+	}
+
+	/**
+	 * @test
+	 * @covers \TEC\Tickets\Commerce\Payments_Tab::clear_commerce_page_options
+	 */
+	public function it_should_not_clear_options_when_unrelated_page_is_deleted(): void {
+		$checkout_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$success_id   = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$unrelated_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->set_option( Commerce_Settings::$option_checkout_page, $checkout_id );
+		$this->set_option( Commerce_Settings::$option_success_page, $success_id );
+
+		wp_delete_post( $unrelated_id, true );
+
+		$this->assertEquals( $checkout_id, (int) tribe_get_option( Commerce_Settings::$option_checkout_page ) );
+		$this->assertEquals( $success_id, (int) tribe_get_option( Commerce_Settings::$option_success_page ) );
 	}
 }

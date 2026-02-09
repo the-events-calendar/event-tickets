@@ -8,6 +8,7 @@
 namespace TEC\Tickets\RSVP;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\Payments_Tab;
 
 /**
  * Main controller for RSVP functionality.
@@ -64,7 +65,22 @@ class Controller extends Controller_Contract {
 		}
 
 		// Try and activate Tickets Commerce.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
+		add_filter( 'tec_tickets_commerce_is_enabled', [ self::class, 'enable_tickets_commerce' ] );
+	}
+
+	/**
+	 * Enables Tickets Commerce and ensures the checkout and success pages exist.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Always returns true to enable Tickets Commerce.
+	 */
+	public static function enable_tickets_commerce(): bool {
+		// Trust the options and remove do not force the creation if the options are set.
+		tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
+		tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page();
+
+		return true;
 	}
 
 	/**
