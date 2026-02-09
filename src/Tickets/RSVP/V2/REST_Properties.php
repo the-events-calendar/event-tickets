@@ -13,6 +13,8 @@ namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Boolean;
+use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
+use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
 
 /**
@@ -40,8 +42,35 @@ class REST_Properties {
 			return $properties;
 		}
 
-		$show_not_going               = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
-		$properties['show_not_going'] = tribe_is_truthy( $show_not_going );
+		$show_not_going                = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
+		$properties['show_not_going']  = tribe_is_truthy( $show_not_going );
+		$properties['not_going_count'] = 0;
+
+		if ( $properties['show_not_going'] ) {
+			/** @var Ticket $ticket_data */
+			$ticket_data   = tribe( Ticket::class );
+			$ticket_object = $ticket_data->load_ticket_object( $post->ID );
+			$provider      = $ticket_object->get_provider();
+
+			remove_filter(
+				'tec_tickets_build_ticket_properties',
+				tribe()->callback(self::class , 'add_show_not_going_to_properties' ),
+			);
+
+			$attendees = $provider->get_attendees_by_id( $ticket_object->ID );
+
+			add_filter(
+				'tec_tickets_build_ticket_properties',
+				tribe()->callback(self::class , 'add_show_not_going_to_properties' ),
+			);
+
+			$properties['not_going_count'] = count(
+				array_filter(
+					$attendees,
+					static fn( array $attendee ): bool => 'no' === get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true )
+				)
+			);
+		}
 
 		return $properties;
 	}
@@ -56,7 +85,8 @@ class REST_Properties {
 	 * @return array<string,bool> Modified properties.
 	 */
 	public function add_show_not_going_to_rest_properties( array $properties ): array {
-		$properties['show_not_going'] = true;
+		$properties['show_not_going']  = true;
+		$properties['not_going_count'] = true;
 
 		return $properties;
 	}
@@ -110,6 +140,13 @@ class REST_Properties {
 			)
 		)->set_example( false );
 
+		$properties[] = (
+			new Positive_Integer(
+				'not_going_count',
+				fn() => __( 'The number of "Not Going" responses for RSVP tickets.', 'event-tickets' ),
+			)
+		)->set_example( 7 );
+
 		return $documentation;
 	}
 
@@ -131,37 +168,5 @@ class REST_Properties {
 		$ticket_params['show_not_going'] = $params['show_not_going'];
 
 		return $ticket_params;
-	}
-
-	/**
-	 * Add the show_not_going property to REST API ticket entity response.
-	 *
-	 * This filter runs during entity transformation after the properties are collected.
-	 * It reads the meta value fresh from the database to ensure the response reflects
-	 * any recent updates.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $entity The ticket entity data.
-	 *
-	 * @return array<string,mixed> Modified entity data.
-	 */
-	public function add_show_not_going_to_rest_response( array $entity ): array {
-		$ticket_id = $entity['id'] ?? 0;
-
-		if ( ! $ticket_id ) {
-			return $entity;
-		}
-
-		$type = $entity['type'] ?? get_post_meta( $ticket_id, '_type', true );
-
-		if ( Constants::TC_RSVP_TYPE !== $type ) {
-			return $entity;
-		}
-
-		$show_not_going           = get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true );
-		$entity['show_not_going'] = tribe_is_truthy( $show_not_going );
-
-		return $entity;
 	}
 }

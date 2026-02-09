@@ -2822,12 +2822,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * order creation, cause the inventory to be decreased.
 	 *
 	 * @since 4.7
+	 * @since TBD Added the `$type` parameter to allow for RSVP tickets to be excluded from inventory decrease based on the RSVP status.
 	 *
-	 * @param array $attendee
+	 * @param array  $attendee The attendee data.
+	 * @param string $type The type of ticket.
 	 *
 	 * @return bool
 	 */
-	public function attendee_decreases_inventory( array $attendee ) {
+	public function attendee_decreases_inventory( array $attendee, string $type = 'default' ) {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
 		$order_id = Tribe__Utils__Array::get( $attendee, 'order_id', false );
 		$attendee_id = Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
