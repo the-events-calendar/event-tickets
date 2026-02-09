@@ -307,12 +307,6 @@ class Controller extends Controller_Contract {
 			2
 		);
 
-		// Add show_not_going to REST API ticket entity response.
-		add_filter(
-			'tec_rest_v1_tec_tc_ticket_transform_entity',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_response' )
-		);
-
 		add_filter(
 			'tec_tickets_rsvp_get_attendees_by_id_pre',
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
