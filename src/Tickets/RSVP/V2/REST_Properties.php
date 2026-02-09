@@ -54,14 +54,14 @@ class REST_Properties {
 
 			remove_filter(
 				'tec_tickets_build_ticket_properties',
-				tribe()->callback(self::class , 'add_show_not_going_to_properties' ),
+				tribe()->callback( self::class, 'add_show_not_going_to_properties' ),
 			);
 
 			$attendees = $provider->get_attendees_by_id( $ticket_object->ID );
 
 			add_filter(
 				'tec_tickets_build_ticket_properties',
-				tribe()->callback(self::class , 'add_show_not_going_to_properties' ),
+				tribe()->callback( self::class, 'add_show_not_going_to_properties' ),
 			);
 
 			$properties['not_going_count'] = count(
