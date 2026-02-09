@@ -1,11 +1,4 @@
 <?php
-/**
- * Tickets Commerce Module.
- *
- * @since 5.1.9
- *
- * @package TEC\Tickets\Commerce
- */
 
 namespace TEC\Tickets\Commerce;
 
@@ -14,7 +7,7 @@ use WP_Error;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
-use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
@@ -64,8 +57,6 @@ class Module extends \Tribe__Tickets__Tickets {
 
 	/**
 	 * {@inheritdoc}
-	 *
-	 * @var string
 	 */
 	public $orm_provider = \TEC\Tickets\Commerce::PROVIDER;
 
@@ -261,7 +252,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since 5.1.9
 	 */
 	public function hooks() {
-		// If the hooks have already been bound, don't do it again.
+		// if the hooks have already been bound, don't do it again
 		if ( $this->is_loaded ) {
 			return false;
 		}
@@ -272,9 +263,9 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $attendees   List of attendees.
-	 * @param array $args        {
-	 *                           The list of arguments to use for sending ticket emails.
+	 * @param array       $attendees   List of attendees.
+	 * @param array       $args        {
+	 *                                 The list of arguments to use for sending ticket emails.
 	 *
 	 * @type string       $subject     The email subject.
 	 * @type string       $content     The email content.
@@ -339,7 +330,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function login_required() {
-		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
 
 		return in_array( 'event-tickets_all', $requirements, true );
 	}
@@ -356,10 +347,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return array|mixed
 	 */
 	public function get_attendees_by_id( $post_id, $post_type = null ) {
-		if ( ! tec_tickets_commerce_is_enabled() ) {
-			return [];
-		}
-
 		if ( ! $post_type ) {
 			$post_type = get_post_type( $post_id );
 		}
@@ -374,6 +361,7 @@ class Module extends \Tribe__Tickets__Tickets {
 			default:
 				return $this->get_attendees_by_post_id( $post_id );
 		}
+
 	}
 
 	/**
@@ -383,7 +371,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|string $order_id Order ID.
+	 * @param int|string $order_id  Order ID.
+	 * @param null|int   $ticket_id (optional) Ticket ID.
 	 *
 	 * @return array List of attendees.
 	 */
@@ -503,13 +492,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function attendee_decreases_inventory( array $attendee, string $type = 'default' ) {
-		if ( $type === RSVP_V2_Constants::TC_RSVP_TYPE ) {
-			$meta_exists = metadata_exists( 'post', $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY );
-			if ( $meta_exists && ! tribe_is_truthy( get_post_meta( $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) ) ) {
-				return false;
-			}
-		}
-
 		return tribe( Attendee::class )->decreases_inventory( $attendee );
 	}
 
@@ -517,10 +499,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * {@inheritdoc}
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
-		if ( ! tec_tickets_commerce_is_enabled() ) {
-			return false;
-		}
-
 		return tec_tc_get_attendee( $attendee, ARRAY_A );
 	}
 
@@ -529,7 +507,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string|int $order_id The order ID.
+	 *
+	 * @param string|int $order_id
 	 *
 	 * @return array
 	 */
@@ -592,8 +571,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since 5.1.9
 	 * @since 5.6.7 Set some provider-invariant ticket properties.
 	 *
-	 * @param int|WP_post $post_id   The post ID.
-	 * @param int|WP_post $ticket_id The ticket ID.
+	 * @param int|WP_post $post_id
+	 * @param int|WP_post $ticket_id
 	 *
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
@@ -739,8 +718,8 @@ class Module extends \Tribe__Tickets__Tickets {
 		$extra              = [];
 		$extra['attendees'] = [
 			1 => [
-				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] ),
-			],
+				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] )
+			]
 		];
 		$extra['optout']    = ! Arr::get( $attendee_data, 'send_ticket_email', true );
 		$extra['iac']       = false;
@@ -751,7 +730,7 @@ class Module extends \Tribe__Tickets__Tickets {
 				'ticket_id' => $ticket->ID,
 				'quantity'  => 1,
 				'extra'     => $extra,
-			],
+			]
 		];
 
 		$purchaser = [
@@ -780,7 +759,9 @@ class Module extends \Tribe__Tickets__Tickets {
 			return $updated;
 		}
 
-		return tec_tc_attendees()->by( 'order_id', $order->ID )->first();
+		$attendee = tec_tc_attendees()->by( 'order_id', $order->ID )->first();
+
+		return $attendee;
 	}
 
 	/**

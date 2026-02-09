@@ -1,18 +1,10 @@
 <?php
-/**
- * Ticket Object class.
- *
- * @package Tribe\Tickets
- */
 
- // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
-
-use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Cache_Listener as Cache;
 
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	/**
-	 * Generic object to hold information about a single ticket.
+	 *    Generic object to hold information about a single ticket
 	 */
 	class Tribe__Tickets__Ticket_Object {
 		/**
@@ -24,20 +16,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Unique identifier
-		 *
 		 * @var int
 		 */
 		public $ID;
 		/**
 		 * Name of the ticket
-		 *
 		 * @var string
 		 */
 		public $name;
 
 		/**
 		 * Free text with a description of the ticket
-		 *
 		 * @var string
 		 */
 		public $description;
@@ -63,7 +52,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @var int
+		 * @var    int
 		 */
 		public $capacity;
 
@@ -86,7 +75,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Link to the admin edit screen for this ticket in the provider system,
 		 * or null if the provider doesn't have any way to edit the ticket.
-		 *
 		 * @var string
 		 */
 		public $admin_link;
@@ -94,7 +82,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Link to the report screen for this ticket in the provider system,
 		 * or null if the provider doesn't have any sales reports.
-		 *
 		 * @var string
 		 */
 		public $report_link;
@@ -102,15 +89,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Link to the front end of this ticket, if the providers has single view
 		 * for this ticket.
-		 *
 		 * @var string
 		 */
 		public $frontend_link;
 
 		/**
 		 * Class name of the provider handling this ticket
-		 *
-		 * @var string
+		 * @var
 		 */
 		public $provider_class;
 
@@ -236,7 +221,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Date the ticket should be stop being sold
-		 *
 		 * @var string
 		 */
 		public $end_date;
@@ -253,7 +237,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Purchase limit for the ticket
 		 *
-		 * @var int
+		 * @var
 		 * @deprecated 4.7.5
 		 */
 		public $purchase_limit;
@@ -289,13 +273,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Tribe__Tickets__Ticket_Object constructor.
 		 *
-		 * Since 5.6.4
-		 *
-		 * @since 5.29.0 Made $data explicitly nullable.
+		 * since 5.6.4
 		 *
 		 * @param array<string,mixed>|null $data The data to populate the object with, if any.
 		 */
-		public function __construct( ?array $data = null ) {
+		public function __construct( array $data = null ) {
 			if ( empty( $data ) ) {
 				return;
 			}
@@ -374,8 +356,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$end = $this->end_date();
 			}
 
-			// Bail if we don't have an end date and the event has passed.
-			// Check if the event has passed in case we're using TEC.
+			// Bail if we don't have an end date and the event has passed
+			// Check if the event has passed in case we're using TEC
 			$is_past_event = false;
 
 			$event = $this->get_event();
@@ -408,8 +390,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.7.1
 		 *
-		 * @param string $date         The date string.
-		 * @param bool   $as_timestamp Whether to return as timestamp.
+		 * @param string $date
+		 * @param bool $as_timestamp
 		 *
 		 * @return DateTime|false|int
 		 */
@@ -478,7 +460,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Determines if the given date is before the ticket's start date
 		 *
-		 * @param null|string $datetime The date/time that we want to compare to the ticket's start date.
+		 * @param null|string $datetime The date/time that we want to compare to the ticket's start date
 		 *
 		 * @return boolean Whether or not the provided date/time is before than the ticket's start date
 		 */
@@ -497,7 +479,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Determines if the given date is after the ticket's end date
 		 *
-		 * @param null|string $datetime The date/time that we want to compare to the ticket's start date.
+		 * @param null|string $datetime The date/time that we want to compare to the ticket's start date
 		 *
 		 * @return boolean Whether or not the provided date/time is after than the ticket's end date
 		 */
@@ -519,7 +501,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * The availability slug is used for CSS class names and filter helper strings
 		 *
 		 * @since 4.2
-		 * @param int (null) $datetime The timestamp to test.
+		 * @param int (null) $datetime the timestamp to test
 		 *
 		 * @return string
 		 */
@@ -566,8 +548,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			/** @var Tribe__Cache $cache */
-			$cache                   = tribe( 'cache' );
-			$cache_key               = __METHOD__ . '-' . $this->ID;
+			$cache = tribe( 'cache' );
+			$cache_key   = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -586,7 +568,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			if ( $is_ticket_cache_enabled ) {
+			if( $is_ticket_cache_enabled ) {
 				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
 			}
 
@@ -596,7 +578,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Returns whether or not the ticket is managing stock
 		 *
-		 * @param boolean $manages_stock Boolean to set stock management state.
+		 * @param boolean $manages_stock Boolean to set stock management state
 		 * @return boolean
 		 */
 		public function manage_stock( $manages_stock = null ) {
@@ -610,7 +592,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Returns whether or not the ticket is managing stock. Alias method with a friendlier name for fetching state.
 		 *
-		 * @param boolean $manages_stock Boolean to set stock management state.
+		 * @param boolean $manages_stock Boolean to set stock management state
 		 * @return boolean
 		 */
 		public function managing_stock( $manages_stock = null ) {
@@ -627,8 +609,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function inventory() {
 			/** @var Tribe__Cache $cache */
-			$cache                   = tribe( 'cache' );
-			$cache_key               = __METHOD__ . '-' . $this->ID;
+			$cache = tribe( 'cache' );
+			$cache_key   = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -677,38 +659,30 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/** @var Tribe__Tickets__Status__Manager $status_mgr */
 			$status_mgr = tribe( 'tickets.status' );
 
-			// Fetch the Attendees.
+			// Fetch the Attendees
 			$attendees       = $provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
 			$not_going_arr   = $status_mgr->get_statuses_by_action( 'count_not_going', 'rsvp' );
 
-			// Loop on All the attendees, allowing for some filtering of which will be removed or not.
+			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
-				// Prevent RSVP with Not Going Status to decrease Inventory.
+				// Prevent RSVP with Not Going Status to decrease Inventory
 				if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slug'] && in_array( $attendee['order_status'], $not_going_arr, true ) ) {
 					continue;
 				}
 
-				// TC-RSVP V2 attendees marked Not Going do not hold a seat.
-				if ( ! empty( $attendee['ID'] ) && metadata_exists( 'post', $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY ) ) {
-					$tc_rsvp_status = get_post_meta( $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY, true );
-					if ( ! tribe_is_truthy( $tc_rsvp_status ) ) {
-						continue;
-					}
-				}
-
-				// Allow providers to decide if an attendee will count toward inventory decrease or not.
+				// allow providers to decide if an attendee will count toward inventory decrease or not
 				if ( ! $provider->attendee_decreases_inventory( $attendee, $this->type() ) ) {
 					continue;
 				}
 
-				++$attendees_count;
+				$attendees_count++;
 			}
 
 			// Do the math!
 			$inventory[] = $capacity - $attendees_count;
 
-			// Calculate and verify the Event Inventory.
+			// Calculate and verify the Event Inventory
 			if (
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
 				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
@@ -726,7 +700,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 					$attendee_ticket_stock_mode = get_post_meta( $attendee['product_id'], Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
-					// On all cases of indy stock we don't add.
+					// On all cases of indy stock we don't add
 					if (
 						! $attendee_ticket_stock->is_enabled()
 						|| empty( $attendee_ticket_stock_mode )
@@ -736,15 +710,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 						continue;
 					}
 
-					// All the others we add to the count.
-					++$event_attendees_count;
+					// All the others we add to the count
+					$event_attendees_count++;
 				}
 
 				$inventory[] = tribe_tickets_get_capacity( $event_id ) - $event_attendees_count;
 			}
 
 			$inventory = min( $inventory );
-			// Prevents Negative.
+			// Prevents Negative
 			$inventory = max( $inventory, 0 );
 
 			/**
@@ -775,7 +749,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of remaining tickets
 		 *
-		 * @deprecated 4.6  We are now using inventory as the new Remaining
+		 * @deprecated   4.6  We are now using inventory as the new Remaining
 		 *
 		 * @return int
 		 */
@@ -786,7 +760,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of Available tickets based on the Attendees number
 		 *
-		 * @todo Create a way to get the Available for an Event (currently impossible)
+		 * @todo   Create a way to get the Available for an Event (currently impossible)
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
 		 *
@@ -797,8 +771,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
 			/** @var Tribe__Cache $cache */
-			$cache                   = tribe( 'cache' );
-			$cache_key               = __METHOD__ . '-' . $this->ID;
+			$cache = tribe( 'cache' );
+			$cache_key   = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -822,10 +796,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$values[] = $this->capacity();
 			$values[] = $this->stock();
 
-			// Whatever is the lowest we use it.
+			// Whatever is the lowest we use it
 			$available = min( $values );
 
-			// Prevents Negative.
+			// Prevents Negative
 			$available = max( $available, 0 );
 
 			if ( $is_ticket_cache_enabled ) {
@@ -840,7 +814,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @return int
+		 * @return  int
 		 */
 		public function capacity() {
 			if ( ! $this->managing_stock() ) {
@@ -848,8 +822,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			/** @var Tribe__Cache $cache */
-			$cache                   = tribe( 'cache' );
-			$cache_key               = __METHOD__ . '-' . $this->ID;
+			$cache = tribe( 'cache' );
+			$cache_key = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -866,7 +840,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$stock_mode = $this->global_stock_mode();
 
-			// Unlimited is always unlimited.
+			// Unlimited is always unlimited
 			if ( - 1 === (int) $this->capacity ) {
 				if ( $is_ticket_cache_enabled ) {
 					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
@@ -875,7 +849,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return - 1;
 			}
 
-			// If Capped or we used the local Capacity.
+			// If Capped or we used the local Capacity
 			if (
 				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
 				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
@@ -904,7 +878,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * empty string (Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK)
 		 * if stock is unlimited.
 		 *
-		 * @param int|null $value This will overwrite the old value.
+		 * @param int|null $value This will overwrite the old value
 		 *
 		 * @return int|string
 		 */
@@ -915,7 +889,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					: $this->stock;
 			}
 
-			// If we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if (
 				! $this->managing_stock()
 				|| -1 === $this->capacity()
@@ -923,7 +897,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return -1;
 			}
 
-			// If the Value was passed as numeric value overwrite.
+			// If the Value was passed as numeric value overwrite
 			if (
 				is_numeric( $value )
 				|| $value === self::UNLIMITED_STOCK
@@ -931,7 +905,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$this->stock = $value;
 			}
 
-			// If stock is negative, force it to 0.
+			// if stock is negative, force it to 0
 			$this->stock = 0 >= $this->stock ? 0 : $this->stock;
 
 			$stock[] = $this->stock;
@@ -946,6 +920,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 			}
 
+			// return the new Stock
 			return min( $stock );
 		}
 
@@ -958,7 +933,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *     CAPPED_STOCK_MODE as above but with a limit on the total number of allowed sales
 		 *     OWN_STOCK_MODE if it should behave as if global stock is not in effect
 		 *
-		 * @param string $mode The global stock mode.
+		 * @param string $mode
 		 *
 		 * @return string
 		 */
@@ -978,7 +953,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Sets or gets any cap on sales that might be in effect for this ticket when global stock
 		 * mode is in effect.
 		 *
-		 * @param int $cap The global stock cap.
+		 * @param int $cap
 		 *
 		 * @return int
 		 */
@@ -994,7 +969,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Method to manage the protected `qty_sold` property of the Object
 		 * Prevents setting `qty_sold` lower then zero
 		 *
-		 * @param int|null $value This will overwrite the old value.
+		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
@@ -1005,7 +980,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Method to manage the protected `qty_pending` property of the Object
 		 * Prevents setting `qty_pending` lower then zero
 		 *
-		 * @param int|null $value This will overwrite the old value.
+		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
 		public function qty_pending( $value = null ) {
@@ -1019,32 +994,32 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Callables are also supported, allowing properties to be lazily fetched
 		 * or calculated on demand.
 		 *
-		 * @param int               &$property The property to get or set.
-		 * @param int|callable|null $value     The value to set or callable to execute.
+		 * @param int               &$property
+		 * @param int|callable|null $value
 		 *
 		 * @return int|mixed
 		 */
 		protected function qty_getter_setter( &$property, $value = null ) {
-			// Set to a positive numeric value.
+			// Set to a positive numeric value
 			if ( is_numeric( $value ) ) {
 				$property = (int) $value;
 
-				// Disallow negative values (and force to zero if one is passed).
+				// Disallow negative values (and force to zero if one is passed)
 				$property = max( (int) $property, 0 );
 			}
 
-			// Set to a callback.
+			// Set to a callback
 			if ( is_callable( $value ) ) {
 				$property = $value;
 			}
 
 			// Return the callback's output if appropriate: but only when the
-			// Property is being set to avoid upfront costs.
+			// property is being set to avoid upfront costs
 			if ( null === $value && is_callable( $property ) ) {
 				return call_user_func( $property, $this->ID );
 			}
 
-			// Or else return the current property value.
+			// Or else return the current property value
 			return $property;
 		}
 
@@ -1057,22 +1032,29 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @return mixed Value of the property.
 		 */
-		public function __get( $var ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.varFound
+		public function __get( $var ) {
 			switch ( $var ) {
 				case 'stock':
 					return $this->stock();
+					break;
 				case 'qty_pending':
 					return $this->qty_pending();
+					break;
 				case 'qty_sold':
 					return $this->qty_sold();
+					break;
 				case 'qty_refunded':
 					return $this->qty_refunded();
+					break;
 				case 'qty_completed':
 					return $this->qty_completed();
+					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled();
+					break;
 				case 'type':
 					return $this->type();
+					break;
 			}
 
 			return null;
@@ -1086,18 +1068,23 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @param string $var   Property to set.
 		 * @param mixed  $value Value to set the property to.
 		 */
-		public function __set( $var, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.varFound
+		public function __set( $var, $value ) {
 			switch ( $var ) {
 				case 'stock':
 					return $this->stock( $value );
+					break;
 				case 'qty_pending':
 					return $this->qty_pending( $value );
+					break;
 				case 'qty_sold':
 					return $this->qty_sold( $value );
+					break;
 				case 'qty_refunded':
 					return $this->qty_refunded( $value );
+					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled( $value );
+					break;
 				case 'type':
 					if ( $this->ID ) {
 						update_post_meta( $this->ID, '_type', $value );
@@ -1112,19 +1099,19 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Method to manage the protected `qty_cancelled` property of the Object
 		 * Prevents setting `qty_cancelled` lower then zero
 		 *
-		 * @param int|null $value This will overwrite the old value.
+		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
 		public function qty_cancelled( $value = null ) {
-			// If the Value was passed as numeric value overwrite.
+			// If the Value was passed as numeric value overwrite
 			if ( is_numeric( $value ) ) {
 				$this->qty_cancelled = $value;
 			}
 
-			// Prevents qty_cancelled from going negative.
+			// Prevents qty_cancelled from going negative
 			$this->qty_cancelled = max( (int) $this->qty_cancelled, 0 );
 
-			// Return the new Qty Cancelled.
+			// return the new Qty Cancelled
 			return $this->qty_cancelled;
 		}
 
@@ -1134,19 +1121,19 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.7.3
 		 *
-		 * @param int|null $value This will overwrite the old value.
+		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
 		public function qty_refunded( $value = null ) {
-			// If the Value was passed as numeric value overwrite.
+			// If the Value was passed as numeric value overwrite
 			if ( is_numeric( $value ) ) {
 				$this->qty_refunded = $value;
 			}
 
-			// Prevents qty_refunded from going negative.
+			// Prevents qty_refunded from going negative
 			$this->qty_refunded = max( (int) $this->qty_refunded, 0 );
 
-			// Return the new Qty Refunded.
+			// return the new Qty Refunded
 			return $this->qty_refunded;
 		}
 
@@ -1156,7 +1143,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.7.3
 		 *
-		 * @param int|null $value This will overwrite the old value.
+		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
 		public function qty_completed( $value = null ) {
@@ -1248,7 +1235,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 */
 			$show = apply_filters( 'tribe_tickets_show_description', $show, $this->ID );
 
-			// Make sure we have the correct value.
+			// Make sure we have the correct value
 			return tribe_is_truthy( $show );
 		}
 
@@ -1345,7 +1332,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @param string $type The ticket type.
 		 */
-		public function set_type( string $type = 'default' ): void {
+		public function setType( string $type = 'default' ): void {
 			$this->type = $type;
 		}
 	}
