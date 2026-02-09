@@ -214,6 +214,11 @@ class Controller extends Controller_Contract {
 			'tec_tickets_commerce_attendee_before_delete',
 			$this->container->callback( Attendees::class, 'void_order_after_last_attendee_deleted' )
 		);
+
+		add_action(
+			'tec_tickets_commerce_single_order_details_metabox_after',
+			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
+		);
 	}
 
 	/**
