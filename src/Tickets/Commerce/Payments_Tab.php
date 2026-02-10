@@ -1,4 +1,11 @@
 <?php
+/**
+ * Payments Tab for Tickets Commerce settings.
+ *
+ * @since 5.2.0
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -117,6 +124,7 @@ class Payments_Tab extends Service_Provider {
 		add_filter( 'tribe_settings_form_class', [ $this, 'include_form_class' ], 15, 3 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
 		add_action( "tribe_settings_after_save_{$tab_id}", [ $this, 'maybe_generate_pages' ] );
+		add_action( 'deleted_post', [ $this, 'clear_commerce_page_options' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_tab_id' ] );
 	}
 
@@ -289,7 +297,7 @@ class Payments_Tab extends Service_Provider {
 			return $url;
 		}
 
-		if ( empty( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+		if ( empty( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) ) {
 			return $url;
 		}
 
@@ -521,29 +529,40 @@ class Payments_Tab extends Service_Provider {
 			return;
 		}
 
-		$this->maybe_auto_generate_checkout_page();
-		$this->maybe_auto_generate_order_success_page();
+		$this->maybe_auto_generate_checkout_page( true );
+		$this->maybe_auto_generate_order_success_page( true );
 	}
 
 	/**
 	 * Generate Checkout page with the shortcode if the page is non-existent.
 	 *
 	 * @since 5.2.1
+	 * @since TBD Added the `$force` parameter.
+	 *
+	 * @param bool $force When false, the method trusts the option value to determine if the page exists.
+	 *                     When true, it checks the actual page pointed to by the option for the shortcode
+	 *                     and queries for pages created with the marker meta.
 	 *
 	 * @return bool
 	 */
-	public function maybe_auto_generate_checkout_page() {
-		if ( tribe( Checkout::class )->page_has_shortcode() ) {
-			return false;
+	public function maybe_auto_generate_checkout_page( bool $force = false ) {
+		if ( tribe( Checkout::class )->is_option_set() ) {
+			if ( ! $force ) {
+				return false;
+			}
+
+			if ( tribe( Checkout::class )->page_has_shortcode() ) {
+				return false;
+			}
 		}
 
-		$page_slug = 'tickets-checkout';
 		$shortcode = Checkout_Shortcode::get_wp_slug();
 
 		if ( $this->is_page_created( $shortcode ) ) {
 			return false;
 		}
 
+		$page_slug = 'tickets-checkout';
 		$page_name = __( 'Tickets Checkout', 'event-tickets' );
 		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, $shortcode );
 
@@ -558,21 +577,32 @@ class Payments_Tab extends Service_Provider {
 	 * Generate Order Success page with the shortcode if the page is non-existent.
 	 *
 	 * @since 5.2.1
+	 * @since TBD Added the `$force` parameter.
+	 *
+	 * @param bool $force When false, the method trusts the option value to determine if the page exists.
+	 *                     When true, it checks the actual page pointed to by the option for the shortcode
+	 *                     and queries for pages created with the marker meta.
 	 *
 	 * @return bool
 	 */
-	public function maybe_auto_generate_order_success_page() {
-		if ( tribe( Success::class )->page_has_shortcode() ) {
-			return false;
+	public function maybe_auto_generate_order_success_page( bool $force = false ) {
+		if ( tribe( Success::class )->is_option_set() ) {
+			if ( ! $force ) {
+				return false;
+			}
+
+			if ( tribe( Success::class )->page_has_shortcode() ) {
+				return false;
+			}
 		}
 
-		$page_slug = 'tickets-order';
 		$shortcode = Success_Shortcode::get_wp_slug();
 
 		if ( $this->is_page_created( $shortcode ) ) {
 			return false;
 		}
 
+		$page_slug = 'tickets-order';
 		$page_name = __( 'Order Completed', 'event-tickets' );
 		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, $shortcode );
 
@@ -630,13 +660,35 @@ class Payments_Tab extends Service_Provider {
 
 		$args = [
 			'post_type'  => 'page',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			'meta_key'   => static::$option_page_created_meta_key,
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'meta_value' => $shortcode_name,
 		];
 
 		$query = new \WP_Query( $args );
 
 		return (bool) $query->post_count;
+	}
+
+	/**
+	 * Clears the checkout or success page option when the corresponding page is permanently deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the deleted post.
+	 */
+	public function clear_commerce_page_options( int $post_id ): void {
+		$checkout_page_id = (int) tribe_get_option( Settings::$option_checkout_page );
+		$success_page_id  = (int) tribe_get_option( Settings::$option_success_page );
+
+		if ( $post_id === $checkout_page_id ) {
+			tribe_remove_option( Settings::$option_checkout_page );
+		}
+
+		if ( $post_id === $success_page_id ) {
+			tribe_remove_option( Settings::$option_success_page );
+		}
 	}
 
 	/*********************
