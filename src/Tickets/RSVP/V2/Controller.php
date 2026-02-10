@@ -185,6 +185,11 @@ class Controller extends Controller_Contract {
 			10,
 			4
 		);
+
+		add_action(
+			'tec_tickets_commerce_single_order_details_metabox_after',
+			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
+		);
 	}
 
 	/**
@@ -273,6 +278,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_view_count_ticket_attendees_args',
 			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
+		);
+		remove_action(
+			'tec_tickets_commerce_single_order_details_metabox_after',
+			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
 		);
 	}
 }
