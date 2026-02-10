@@ -151,24 +151,4 @@ class REST_Properties {
 
 		return $documentation;
 	}
-
-	/**
-	 * Add the show_not_going parameter to upsert params for RSVP tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $ticket_params The filtered ticket params.
-	 * @param array<string,mixed> $params        The original REST params.
-	 *
-	 * @return array<string,mixed> Modified ticket params.
-	 */
-	public function add_show_not_going_to_upsert_params( array $ticket_params, array $params ): array {
-		if ( ! isset( $params['show_not_going'] ) ) {
-			return $ticket_params;
-		}
-
-		$ticket_params['show_not_going'] = $params['show_not_going'];
-
-		return $ticket_params;
-	}
 }
