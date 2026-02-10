@@ -72,6 +72,7 @@ class Ticket_Model extends Base {
 				'stock'                 => $ticket_object->stock(),
 				'sold'                  => $ticket_object->qty_sold(),
 				'sku'                   => $ticket_object->sku,
+				'capacity'              => $ticket_object->capacity(),
 			];
 
 			/**
@@ -116,6 +117,7 @@ class Ticket_Model extends Base {
 			'stock'                 => true,
 			'sold'                  => true,
 			'sku'                   => true,
+			'capacity'              => true,
 		];
 
 		/**

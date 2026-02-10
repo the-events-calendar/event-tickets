@@ -2,6 +2,7 @@
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\RSVP\V2\Constants;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
@@ -1008,12 +1009,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Whether a specific attendee is valid toward inventory decrease or not.
 		 *
 		 * @since 4.7
+		 * @since TBD Added the `$type` parameter to allow for RSVP tickets to be excluded from inventory decrease based on the RSVP status.
 		 *
-		 * @param array $attendee
+		 * @param array  $attendee The attendee data.
+		 * @param string $type     The type of ticket.
 		 *
 		 * @return bool
 		 */
-		public function attendee_decreases_inventory( array $attendee ) {
+		public function attendee_decreases_inventory( array $attendee, string $type = 'default' ) {
+			if ( $type === Constants::TC_RSVP_TYPE ) {
+				$meta_exists = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY );
+				return ! $meta_exists || tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) );
+			}
+
 			return true;
 		}
 

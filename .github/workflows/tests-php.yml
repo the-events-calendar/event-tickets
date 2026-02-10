@@ -41,6 +41,7 @@ jobs:
           - wpunit
           - slr_integration
           - square_integration
+          - rsvp_v2_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
