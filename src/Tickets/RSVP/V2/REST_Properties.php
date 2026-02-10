@@ -60,7 +60,7 @@ class REST_Properties {
 			$properties['not_going_count'] = count(
 				array_filter(
 					$attendees,
-					static fn( array $attendee ): bool => ! tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
+					static fn( array $attendee ): bool => metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY ) && ! tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
 				)
 			);
 		}
