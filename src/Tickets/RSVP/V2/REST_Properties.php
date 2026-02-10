@@ -51,20 +51,11 @@ class REST_Properties {
 			$ticket_data   = tribe( Ticket::class );
 			$ticket_object = $ticket_data->load_ticket_object( $post->ID );
 			$provider      = $ticket_object->get_provider();
+			$controller    = tribe( Controller::class );
 
-			remove_filter(
-				'tec_tickets_build_ticket_properties',
-				tribe()->callback( self::class, 'add_show_not_going_to_properties' ),
-			);
-
+			$controller->unhook_add_show_not_going_to_properties();
 			$attendees = $provider->get_attendees_by_id( $ticket_object->ID );
-
-			add_filter(
-				'tec_tickets_build_ticket_properties',
-				tribe()->callback( self::class, 'add_show_not_going_to_properties' ),
-				10,
-				2
-			);
+			$controller->hook_add_show_not_going_to_properties();
 
 			$properties['not_going_count'] = count(
 				array_filter(
