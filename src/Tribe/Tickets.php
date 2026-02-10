@@ -1020,7 +1020,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $type === Constants::TC_RSVP_TYPE ) {
 				$going = get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true );
 
-				return 'no' !== $going;
+				return tribe_is_truthy( $going );
 			}
 
 			return true;
