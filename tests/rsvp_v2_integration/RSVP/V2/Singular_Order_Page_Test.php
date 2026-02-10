@@ -34,7 +34,7 @@ class Singular_Order_Page_Test extends WPTestCase {
 			update_post_meta( $rsvp_id, Constants::SHOW_NOT_GOING_META_KEY, '1' );
 		}
 
-		$order = $this->create_order( [ $rsvp_id => 1 ] );
+		$order = $this->create_order( [ $rsvp_id => 1 ], [ 'purchaser_email' => 'user@example.com' ] );
 		wp_update_post(
 			[
 				'ID'            => $order->ID,
