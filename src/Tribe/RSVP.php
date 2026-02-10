@@ -2411,20 +2411,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->report_link      = '';
 		$return->show_description = $return->show_description();
 
-		// Handle dates.
+		/*
+		 * Depending on the RSVP version in use, the date and time fields are stored differently:
+		 * - RSVP v1: start_date/end_date store full datetime (Y-m-d H:i:s), no separate time fields.
+		 * - RSVP v2 (TC-based): start_date/end_date store date only (Y-m-d), start_time/end_time store time (H:i:s).
+		 */
 		$start_date = $repository->get_field( $post->ID, 'start_date' );
 		$end_date   = $repository->get_field( $post->ID, 'end_date' );
+		$start_time = $repository->get_field( $post->ID, 'start_time' );
+		$end_time   = $repository->get_field( $post->ID, 'end_time' );
 
 		if ( ! empty( $start_date ) ) {
 			$start_date_unix    = strtotime( $start_date );
 			$return->start_date = Tribe__Date_Utils::date_only( $start_date_unix, true );
-			$return->start_time = Tribe__Date_Utils::time_only( $start_date_unix );
+			$return->start_time = ! empty( $start_time )
+				? $start_time
+				: Tribe__Date_Utils::time_only( $start_date_unix );
 		}
 
 		if ( ! empty( $end_date ) ) {
 			$end_date_unix    = strtotime( $end_date );
 			$return->end_date = Tribe__Date_Utils::date_only( $end_date_unix, true );
-			$return->end_time = Tribe__Date_Utils::time_only( $end_date_unix );
+			$return->end_time = ! empty( $end_time )
+				? $end_time
+				: Tribe__Date_Utils::time_only( $end_date_unix );
 		}
 
 		// Handle stock management.
