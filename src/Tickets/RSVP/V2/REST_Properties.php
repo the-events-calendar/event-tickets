@@ -53,6 +53,10 @@ class REST_Properties {
 			$provider      = $ticket_object->get_provider();
 			$controller    = tribe( Controller::class );
 
+			/**
+			 * The `get_attendees_by_id` will eventually call TEC\Tickets\Commerce\Module::get_attendee which calls tec_tc_get_attendee which is going
+			 * to build an `TEC\Tickets\Commerce\Models\Attendee_Model` instance, which internally calls `tec_tc_get_ticket` creating the infinite loop.
+			 */
 			$controller->unhook_add_show_not_going_to_properties();
 			$attendees = $provider->get_attendees_by_id( $ticket_object->ID );
 			$controller->hook_add_show_not_going_to_properties();
