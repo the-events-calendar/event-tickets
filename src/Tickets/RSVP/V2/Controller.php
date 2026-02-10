@@ -278,12 +278,8 @@ class Controller extends Controller_Contract {
 		);
 
 		// Add show_not_going property to REST responses for RSVP tickets.
-		add_filter(
-			'tec_tickets_build_ticket_properties',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
-			10,
-			2
-		);
+		$this->hook_add_show_not_going_to_properties();
+
 		add_filter(
 			'tec_rest_ticket_properties_to_add',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
