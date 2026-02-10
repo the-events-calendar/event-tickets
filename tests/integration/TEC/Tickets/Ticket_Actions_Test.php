@@ -4,6 +4,7 @@ namespace TEC\Tickets;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Clock_Mock;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Date_Utils as Dates;
@@ -18,6 +19,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 	use RSVP_Maker;
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
+	use With_Uopz;
 
 	protected $controller_class = Ticket_Actions::class;
 
@@ -31,10 +33,10 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		global $wp_actions;
 
 		self::$back_up_actions = $wp_actions;
-		$wp_actions = [];
+		$wp_actions            = [];
 
 		self::$back_up_counts['start'] = count( $this->query_action_scheduler_actions_count() );
-		self::$back_up_counts['end'] = count( $this->query_action_scheduler_actions_count( null, false ) );
+		self::$back_up_counts['end']   = count( $this->query_action_scheduler_actions_count( null, false ) );
 	}
 
 	/**
@@ -54,7 +56,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			'ticket_start_time' => '08:00:00',
 			'ticket_end_date'   => '2050-03-01',
 			'ticket_end_time'   => '20:00:00',
-			'tribe-ticket'            => [
+			'tribe-ticket'      => [
 				'mode'     => Global_Stock::OWN_STOCK_MODE,
 				'capacity' => $capacity_of_all,
 			],
@@ -65,7 +67,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			'ticket_start_time' => '08:00:00',
 			'ticket_end_date'   => '2020-03-01',
 			'ticket_end_time'   => '20:00:00',
-			'tribe-ticket'            => [
+			'tribe-ticket'      => [
 				'mode'     => Global_Stock::OWN_STOCK_MODE,
 				'capacity' => $capacity_of_all,
 			],
@@ -76,7 +78,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			'ticket_start_time' => '08:00:00',
 			'ticket_end_date'   => '2050-03-01',
 			'ticket_end_time'   => '20:00:00',
-			'tribe-ticket'            => [
+			'tribe-ticket'      => [
 				'mode'     => Global_Stock::OWN_STOCK_MODE,
 				'capacity' => $capacity_of_all,
 			],
@@ -86,7 +88,7 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			'meta_input' => [
 				'_ticket_start_date' => '2050-01-01 08:00:00',
 				'_ticket_end_date'   => '2050-03-01 20:00:00',
-				'_capacity'   => $capacity_of_all,
+				'_capacity'          => $capacity_of_all,
 			]
 		];
 
@@ -110,12 +112,12 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 			'tickets' => [
 				'pre_sale'   => $pre_sale_overrides,
 				'after_sale' => $after_sales_overrides,
-				'on_sale' 	 => $on_sale_overrides,
+				'on_sale'    => $on_sale_overrides,
 			],
 			'rsvp'    => [
 				'pre_sale'   => $rsvp_overrides_pre_sale,
 				'after_sale' => $rsvp_overrides_after_sale,
-				'on_sale' 	 => $rsvp_overrides_on_sale,
+				'on_sale'    => $rsvp_overrides_on_sale,
 			],
 		];
 	}
@@ -133,7 +135,11 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 				$ticket_id = $this->create_tc_ticket( $post_id, 10, $data['tickets']['pre_sale'] );
 
-				return [ $post_id, $ticket_id, fn( string $offset ) => $this->update_ticket( $ticket_id, $data['tickets'][ $offset ] ) ];
+				return [
+					$post_id,
+					$ticket_id,
+					fn( string $offset ) => $this->update_ticket( $ticket_id, $data['tickets'][ $offset ] )
+				];
 			}
 		];
 		yield 'rsvp' => [
@@ -153,11 +159,12 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 				return [
 					$post_id,
 					$rsvp_id,
-					function( string $offset ) use ( $rsvp_id, $data ) {
+					function ( string $offset ) use ( $rsvp_id, $data ) {
 						$result = $this->update_rsvp_ticket( $rsvp_id, $data['rsvp'][ $offset ] );
 						do_action( 'tec_shutdown' );
+
 						return $result;
-			 		},
+					},
 				];
 			}
 		];
@@ -172,9 +179,14 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 
 		$store = [];
-		add_action( 'tec_tickets_ticket_stock_changed', function ( $ticket_id, $new_stock, $old_stock ) use ( &$store ) {
-			$store = compact( 'ticket_id', 'new_stock', 'old_stock' );
-		}, 10, 3 );
+		add_action(
+			'tec_tickets_ticket_stock_changed',
+			function ( $ticket_id, $new_stock, $old_stock ) use ( &$store ) {
+				$store = compact( 'ticket_id', 'new_stock', 'old_stock' );
+			},
+			10,
+			3
+		);
 		add_action( 'tec_tickets_ticket_stock_added', function ( $ticket_id, $new_stock ) use ( &$store ) {
 			$store = compact( 'ticket_id', 'new_stock' );
 		}, 10, 2 );
@@ -278,18 +290,23 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		[ $post_id, $ticket_id, $updater ] = $fixture();
 
 		$listeners = [
-			'ticket_id' => null,
+			'ticket_id'     => null,
 			'its_happening' => null,
-			'timestamp' => null,
-			'event' => null,
+			'timestamp'     => null,
+			'event'         => null,
 		];
 
-		add_action( 'tec_tickets_ticket_start_date_trigger', function ( $ticket_id, $its_happening, $timestamp, $event ) use ( &$listeners ) {
-			$listeners['ticket_id'] = $ticket_id;
-			$listeners['its_happening'] = $its_happening;
-			$listeners['timestamp'] = $timestamp;
-			$listeners['event'] = $event;
-		}, 10, 4 );
+		add_action(
+			'tec_tickets_ticket_start_date_trigger',
+			function ( $ticket_id, $its_happening, $timestamp, $event ) use ( &$listeners ) {
+				$listeners['ticket_id']     = $ticket_id;
+				$listeners['its_happening'] = $its_happening;
+				$listeners['timestamp']     = $timestamp;
+				$listeners['event']         = $event;
+			},
+			10,
+			4
+		);
 
 		$this->assertEquals( 0, did_action( 'tec_tickets_ticket_start_date_trigger' ) );
 
@@ -403,17 +420,22 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 
 		$store = [];
 
-		add_action( 'tec_tickets_ticket_stock_changed', function ( $ticket_id, $new_stock, $old_stock ) use ( &$store ) {
-			$store = compact( 'ticket_id', 'new_stock', 'old_stock' );
-		}, 10, 3 );
+		add_action(
+			'tec_tickets_ticket_stock_changed',
+			function ( $ticket_id, $new_stock, $old_stock ) use ( &$store ) {
+				$store = compact( 'ticket_id', 'new_stock', 'old_stock' );
+			},
+			10,
+			3
+		);
 		add_action( 'tec_tickets_ticket_stock_added', function ( $ticket_id, $new_stock ) use ( &$store ) {
 			$store = compact( 'ticket_id', 'new_stock' );
 		}, 10, 2 );
 
-		for ( $i = 0; $i < $posts; $i++ ) {
+		for ( $i = 0; $i < $posts; $i ++ ) {
 			$post_id = $this->factory()->post->create();
-			for ( $j = 0; $j < $tickets_per_post; $j++ ) {
-				$counter++;
+			for ( $j = 0; $j < $tickets_per_post; $j ++ ) {
+				$counter ++;
 				$this->create_tc_ticket( $post_id, 10, self::set_up_data()['tickets']['pre_sale'] );
 				$this->assertEquals( $counter, did_action( 'tec_tickets_ticket_dates_updated' ) );
 				$this->assertEquals( 0, did_action( 'tec_tickets_ticket_stock_changed' ) );
@@ -458,8 +480,14 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$end_process_actions_time = time();
 
 		// Assert that all the actions have actually executed.
-		$this->assertEquals( ( $posts * $tickets_per_post ), did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
-		$this->assertEquals( ( $posts * $tickets_per_post ), did_action( $this->controller_class::TICKET_END_SALES_HOOK ) );
+		$this->assertEquals(
+			( $posts * $tickets_per_post ),
+			did_action( $this->controller_class::TICKET_START_SALES_HOOK )
+		);
+		$this->assertEquals(
+			( $posts * $tickets_per_post ),
+			did_action( $this->controller_class::TICKET_END_SALES_HOOK )
+		);
 	}
 
 	/**
@@ -488,5 +516,123 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		}
 
 		return as_get_scheduled_actions( $params, OBJECT );
+	}
+
+	public function test_update_event_cost_bails_if_tec_not_fully_activated(): void {
+		$post_id = tribe_events()->set_args( [
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		// Remove the filter to make sure the `did_action` call will return false.
+		global $wp_filter;
+		unset( $wp_filter['tec_events_fully_loaded'] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+
+		$ticket_actions = $this->make_controller();
+		$ticket_actions->update_event_cost( $ticket_id, $post_id );
+
+		$this->assertEquals( [], get_post_meta( $post_id, '_EventCost' ) );
+	}
+
+	public function test_update_event_cost_bails_if_api_class_does_not_exist(): void {
+		$post_id   = tribe_events()->set_args( [
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->set_fn_return(
+			'did_action',
+			static fn( string $action ): bool => $action === 'tec_events_fully_loaded' ? true : did_action( $action ),
+			true
+		);
+		$this->set_fn_return(
+			'class_exists',
+			static fn( string $class ): bool => ! ( $class === \Tribe__Events__API::class ) && class_exists(
+					$class
+				),
+			true
+		);
+
+		$ticket_actions = $this->make_controller();
+		$ticket_actions->update_event_cost( $ticket_id, $post_id );
+
+		$this->assertEquals( [], get_post_meta( $post_id, '_EventCost' ) );
+	}
+
+	public static function update_event_cost_data_provider(): array {
+		return [
+			'no previous tickets, one ticket with cost 9.99' => [
+				function () {
+					$post_id   = tribe_events()->set_args( [
+							'title'      => 'Test Event',
+							'status'     => 'publish',
+							'start_date' => '2020-01-01 12:00:00',
+							'duration'   => 2 * HOUR_IN_SECONDS,
+						]
+					)->create()->ID;
+					$ticket_id = $this->create_tc_ticket( $post_id, 9.99 );
+					$expected  = [ '9.99' ];
+
+					return [ $ticket_id, $post_id, $expected ];
+				}
+			],
+
+			'one previous ticket with cost 3.99, one ticket with cost 9.99' => [
+				function () {
+					$post_id = tribe_events()->set_args( [
+							'title'      => 'Test Event',
+							'status'     => 'publish',
+							'start_date' => '2020-01-01 12:00:00',
+							'duration'   => 2 * HOUR_IN_SECONDS,
+						]
+					)->create()->ID;
+					$this->create_tc_ticket( $post_id, 3.99 );
+					$ticket_id = $this->create_tc_ticket( $post_id, 9.99 );
+					$expected  = [ '3.99', '9.99' ];
+
+					return [ $ticket_id, $post_id, $expected ];
+				}
+			],
+
+			'one previous ticket with cost 3.99, one free/RSVP ticket' => [
+				function () {
+					$post_id = tribe_events()->set_args( [
+							'title'      => 'Test Event',
+							'status'     => 'publish',
+							'start_date' => '2020-01-01 12:00:00',
+							'duration'   => 2 * HOUR_IN_SECONDS,
+						]
+					)->create()->ID;
+					$this->create_tc_ticket( $post_id, 3.99 );
+					$ticket_id = $this->create_tc_ticket( $post_id, 0 );
+					$expected  = [ '3.99', '0' ];
+
+					return [ $ticket_id, $post_id, $expected ];
+				}
+			]
+		];
+	}
+
+	/**
+	 * @dataProvider update_event_cost_data_provider
+	 */
+	public function test_update_event_cost( Closure $fixture ): void {
+		[ $ticket_id, $post_id, $expected ] = Closure::bind( $fixture, $this )();
+		$this->set_fn_return(
+			'did_action',
+			static fn( string $action ): bool => $action === 'tec_events_fully_loaded' ? true : did_action( $action ),
+			true
+		);
+
+		$ticket_actions = $this->make_controller();
+		$ticket_actions->update_event_cost( $ticket_id, $post_id );
+
+		$this->assertEquals( $expected, get_post_meta( $post_id, '_EventCost' ) );
 	}
 }
