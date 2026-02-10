@@ -42,10 +42,12 @@ class Tickets_Repository extends Tribe__Repository {
 		parent::__construct();
 
 		// Set the order post type.
-		$this->default_args['post_type']   = Ticket::POSTTYPE;
-		$this->default_args['post_status'] = 'publish';
-		$this->create_args['post_status']  = 'publish';
-		$this->create_args['post_type']    = Ticket::POSTTYPE;
+		$this->default_args['post_type']      = Ticket::POSTTYPE;
+		$this->default_args['post_status']    = 'publish';
+		$this->default_args['show_not_going'] = false;
+		$this->create_args['post_status']     = 'publish';
+		$this->create_args['post_type']       = Ticket::POSTTYPE;
+		$this->create_args['show_not_going']  = false;
 
 		/** @var \Tribe__Tickets__Tickets_Handler $ticket_handler */
 		$ticket_handler = tribe( 'tickets.handler' );
