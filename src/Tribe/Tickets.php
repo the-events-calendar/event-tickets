@@ -1018,9 +1018,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function attendee_decreases_inventory( array $attendee, string $type = 'default' ) {
 			if ( $type === Constants::TC_RSVP_TYPE ) {
-				$going = get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true );
-
-				return tribe_is_truthy( $going );
+				$meta_exists = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY );
+				return ! $meta_exists || tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) );
 			}
 
 			return true;
