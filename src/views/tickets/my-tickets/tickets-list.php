@@ -17,10 +17,6 @@
  * @var array   $titles    List of ticket type titles.
  */
 
-use TEC\Tickets\RSVP\V2\Constants;
-
-defined( 'ABSPATH' ) || exit;
-
 $attendees_by_ticket_type = [];
 
 foreach ( $attendees as $attendee ) {
@@ -35,13 +31,7 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 <?php foreach ( $attendees_by_ticket_type as $ticket_type => $attendees ) : ?>
 	<?php
 	$label = $titles[ $ticket_type ] ?? $titles['default'] ?? tec_tickets_get_default_ticket_type_label_lowercase( 'order list view' );
-	$this->template(
-		'tickets/my-tickets/title',
-		[
-			'title'       => $label,
-			'ticket_type' => $ticket_type,
-		] 
-	);
+	$this->template( 'tickets/my-tickets/title', [ 'title' => $label, 'ticket_type' => $ticket_type ] );
 	?>
 	<div class="tec__tickets-my-tickets-order-tickets-list-wrapper">
 		<ul class="tribe-tickets-list tribe-list">
@@ -54,7 +44,7 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 							'tickets/my-tickets/attendee-label',
 							[
 								// Translators: %d is the attendee number.
-								'attendee_label' => Constants::TC_RSVP_TYPE === $ticket_type && ! empty( $attendee['holder_name'] ) ? esc_html( $attendee['holder_name'] ) : sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
+								'attendee_label' => ! empty( $attendee['holder_name'] ) ? esc_html( $attendee['holder_name'] ) : sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
 							]
 						);
 					?>
