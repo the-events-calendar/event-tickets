@@ -17,6 +17,9 @@ use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets_Handler;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
 
 /**
