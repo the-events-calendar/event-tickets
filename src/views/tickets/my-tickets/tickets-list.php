@@ -44,7 +44,7 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 							'tickets/my-tickets/attendee-label',
 							[
 								// Translators: %d is the attendee number.
-								'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
+								'attendee_label' => ! empty( $attendee['holder_name'] ) ? esc_html( $attendee['holder_name'] ) : sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
 							]
 						);
 					?>
