@@ -101,6 +101,13 @@ class Controller extends Controller_Contract {
 			5
 		);
 
+		add_action(
+			'event_tickets_attendee_update',
+			$this->container->callback( Frontend::class, 'update_attendee_data' ),
+			10,
+			2
+		);
+
 		// Repository.
 		add_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
@@ -219,6 +226,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_front_end_rsvp_form_template_content',
 			$this->container->callback( Frontend::class, 'render_rsvp_template' )
+		);
+		remove_action(
+			'event_tickets_attendee_update',
+			$this->container->callback( Frontend::class, 'update_attendee_data' ),
 		);
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
