@@ -23,6 +23,10 @@ defined( 'ABSPATH' ) || die();
 if ( empty( $attendees ) ) {
 	return;
 }
+
+if ( isset( $is_going ) && false === $is_going ) {
+	return;
+}
 ?>
 <div class="tribe-tickets__rsvp-attendees-wrapper tribe-common-g-row">
 	<div class="tec-tickets__attendees-list-wrapper tribe-tickets__rsvp-attendees tribe-common-b1 tribe-common-g-col">
