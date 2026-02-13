@@ -13,11 +13,10 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
  * @var array $attendees List of attendees IDs confirmed for the RSVP.
- * @var bool|null $is_going Whether the user is going. False prevents rendering.
  *
  * @since 5.7.0
  *
- * @version TBD
+ * @version 5.7.0
  */
 
 defined( 'ABSPATH' ) || die();
@@ -25,7 +24,7 @@ if ( empty( $attendees ) ) {
 	return;
 }
 
-if ( isset( $is_going ) && ! tribe_is_truthy( $is_going ) ) {
+if ( isset( $is_going ) && false === $is_going ) {
 	return;
 }
 ?>
