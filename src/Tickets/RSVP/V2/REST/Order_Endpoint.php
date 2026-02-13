@@ -313,6 +313,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$attendee_ids          = array_column( $attendees, 'attendee_id' );
 			$response['attendees'] = $attendee_ids;
 
+			array_map( static fn( $attendee_id ) => update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, $first_attendee['order_status'] ), $attendee_ids );
+
 			$attendee_ids_flat = implode( ',', $attendee_ids );
 
 			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids_flat );
