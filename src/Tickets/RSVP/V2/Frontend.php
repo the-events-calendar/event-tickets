@@ -9,14 +9,13 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
-use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets_Handler;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
 
 /**
@@ -72,35 +71,21 @@ class Frontend {
 		WP_Post $post,
 		bool $should_echo
 	): string {
-		// Check $args['active_rsvps'] first (may be populated by third-party extensions).
+		$active_rsvps = $args['active_rsvps'] ?? [];
+
+		// Find the first TC-RSVP ticket in the active RSVPs.
 		$rsvp = null;
-		foreach ( $args['active_rsvps'] ?? [] as $ticket ) {
+		foreach ( $active_rsvps as $ticket ) {
 			if ( $ticket->type() === Constants::TC_RSVP_TYPE ) {
-				if ( $rsvp === null || $ticket->ID > $rsvp->ID ) {
-					$rsvp = $ticket;
-				}
+				$rsvp = $ticket;
+				break;
 			}
 		}
 
-		// $args['active_rsvps'] is built from V1 RSVP tickets only; query TC-RSVP tickets directly.
-		if ( $rsvp === null ) {
-			$rsvp = tribe( RSVP_V2_Ticket::class )->get_for_event( $post->ID );
-		}
-
+		// Only process if we have a TC-RSVP ticket.
 		if ( $rsvp === null ) {
 			return $content;
 		}
-
-		/**
-		 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
-		 *
-		 * @since TBD
-		 *
-		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
-		 * @param int                           $event_id  The event post ID.
-		 * @param int                           $ticket_id The ticket post ID.
-		 */
-		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
 
 		$rsvp_template_args = [
 			'rsvp'          => $rsvp,
@@ -231,40 +216,6 @@ class Frontend {
 	}
 
 	/**
-	 * Render the RSVP ticket status on the My Tickets page.
-	 *
-	 * Hooked to `tec_tickets_my_tickets_ticket_information_after_ticket_name`.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $attendee The attendee data.
-	 */
-	public function render_my_tickets_ticket_status( array $attendee ): void {
-		if ( empty( $attendee['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $attendee['ticket_type'] ) {
-			return;
-		}
-
-		$ticket_id         = (int) ( $attendee['product_id'] ?? 0 );
-		$attendee_is_going = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY )
-			? tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
-			: true;
-		$show_not_going    = false;
-
-		if ( $ticket_id ) {
-			$show_not_going = tribe_is_truthy( get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true ) );
-		}
-
-		tribe( 'tickets.editor.template' )->template(
-			'v2/commerce/rsvp/my-tickets/ticket-status',
-			[
-				'attendee_is_going' => $attendee_is_going,
-				'show_not_going'    => $show_not_going,
-				'attendee_id'       => $attendee['ID'],
-			]
-		);
-	}
-
-	/**
 	 * Prevents the rendering of some RSVP templates in the context of the RSVP v2 implementation.
 	 *
 	 * @since TBD
@@ -305,9 +256,17 @@ class Frontend {
 	 * @return bool True if the post has TC-RSVP tickets, false otherwise.
 	 */
 	private function post_has_tc_rsvp_tickets( int $post_id ): bool {
-		return tribe( 'tickets.ticket-repository.rsvp' )
-			->by( 'event', $post_id )
-			->found();
+		$tickets = $this->module->get_tickets( $post_id );
+
+		foreach ( $tickets as $ticket ) {
+			$ticket_type = get_post_meta( $ticket->ID, '_type', true );
+
+			if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
