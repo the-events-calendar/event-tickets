@@ -17,6 +17,10 @@
  * @var array   $titles    List of ticket type titles.
  */
 
+use TEC\Tickets\RSVP\V2\Constants;
+
+defined( 'ABSPATH' ) || exit;
+
 $attendees_by_ticket_type = [];
 
 foreach ( $attendees as $attendee ) {
@@ -44,7 +48,7 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 							'tickets/my-tickets/attendee-label',
 							[
 								// Translators: %d is the attendee number.
-								'attendee_label' => ! empty( $attendee['holder_name'] ) ? esc_html( $attendee['holder_name'] ) : sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
+								'attendee_label' => Constants::TC_RSVP_TYPE === $ticket_type && ! empty( $attendee['holder_name'] ) ? esc_html( $attendee['holder_name'] ) : sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
 							]
 						);
 					?>
