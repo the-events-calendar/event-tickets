@@ -2,9 +2,12 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
+use Closure;
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 
 /**
@@ -15,6 +18,7 @@ use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
  */
 class Frontend_Test extends WPTestCase {
 	use Ticket_Maker;
+	use Order_Maker;
 
 	/**
 	 * Get the tickets editor template instance.
@@ -23,6 +27,48 @@ class Frontend_Test extends WPTestCase {
 	 */
 	private function get_template(): Tickets_Editor_Template {
 		return tribe( 'tickets.editor.template' );
+	}
+
+	/**
+	 * Helper to create a user, a post, a TC-RSVP ticket, an order (owned by the user),
+	 * and return the attendee ID.
+	 *
+	 * Creates a regular TC ticket first (so that Order_Maker can generate attendees),
+	 * then retroactively sets the _type meta to tc-rsvp.
+	 *
+	 * @param string $rsvp_status The RSVP status to set on the attendee ('yes' or 'no').
+	 *
+	 * @return array{user_id: int, post_id: int, ticket_id: int, attendee_id: int}
+	 */
+	private function create_rsvp_order_with_attendee( string $rsvp_status = 'yes' ): array {
+		$user_id = static::factory()->user->create( [ 'role' => 'subscriber' ] );
+
+		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		// Create as a regular TC ticket (price 0) so the cart-based order creation works.
+		$ticket_id = $this->create_tc_ticket( $post_id, 0 );
+
+		$order = $this->create_order(
+			[ $ticket_id => 1 ],
+			[ 'purchaser_user_id' => $user_id ]
+		);
+
+		// Retroactively set the ticket type to TC-RSVP.
+		update_post_meta( $ticket_id, '_type', Constants::TC_RSVP_TYPE );
+
+		$attendees   = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$attendee_id = $attendees[0]['attendee_id'];
+
+		// Set the RSVP status meta on the attendee.
+		update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, $rsvp_status );
+
+		wp_set_current_user( $user_id );
+
+		return [
+			'user_id'     => $user_id,
+			'post_id'     => $post_id,
+			'ticket_id'   => $ticket_id,
+			'attendee_id' => $attendee_id,
+		];
 	}
 
 	public function test_should_return_original_content_when_no_tc_rsvp_tickets(): void {
@@ -129,5 +175,220 @@ class Frontend_Test extends WPTestCase {
 			has_action( $ticket_form_hook, [ $tc_handler, 'get_tickets' ] ),
 			'Hooks should not be removed for non-RSVP handlers'
 		);
+	}
+
+	/**
+	 * Data provider for update_attendee_data early return scenarios.
+	 *
+	 * Each closure sets up its own scenario and returns the attendee_data,
+	 * attendee_id, and expected RSVP status meta value (or null if no meta should exist).
+	 */
+	public function update_attendee_data_early_return_provider(): Generator {
+		yield 'returns early when order_status is empty' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				$attendee_data = [ 'order_status' => '' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					'yes', // Status should remain unchanged.
+				];
+			},
+		];
+
+		yield 'returns early when user is not logged in' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				// Log out the user.
+				wp_set_current_user( 0 );
+
+				$attendee_data = [ 'order_status' => 'not-going' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					'yes', // Status should remain unchanged because user is not logged in.
+				];
+			},
+		];
+
+		yield 'returns early for non-RSVP ticket type' => [
+			function () {
+				$user_id = static::factory()->user->create( [ 'role' => 'subscriber' ] );
+				wp_set_current_user( $user_id );
+
+				$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+
+				// Create a regular TC ticket (not RSVP) with a price.
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+				$order = $this->create_order(
+					[ $ticket_id => 1 ],
+					[
+						'purchaser_user_id'    => $user_id,
+						'purchaser_full_name'  => 'Test User',
+						'purchaser_first_name' => 'Test',
+						'purchaser_last_name'  => 'User',
+						'purchaser_email'      => 'test@example.com',
+					]
+				);
+
+				$attendees   = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+				$attendee_id = $attendees[0]['attendee_id'];
+
+				// Set some initial meta to verify it does not get changed.
+				update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'yes' );
+
+				$attendee_data = [ 'order_status' => 'not-going' ];
+
+				return [
+					$attendee_data,
+					$attendee_id,
+					'yes', // Status should remain unchanged because the ticket is not TC-RSVP.
+				];
+			},
+		];
+
+		yield 'returns early when order belongs to a different user' => [
+			function () {
+				// Create order as user A.
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				// Now switch to a different user.
+				$other_user_id = static::factory()->user->create( [ 'role' => 'subscriber' ] );
+				wp_set_current_user( $other_user_id );
+
+				$attendee_data = [ 'order_status' => 'not-going' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					'yes', // Status should remain unchanged because the current user does not own the order.
+				];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider update_attendee_data_early_return_provider
+	 */
+	public function test_update_attendee_data_returns_early( Closure $scenario ): void {
+		[ $attendee_data, $attendee_id, $expected_status ] = $scenario();
+
+		$frontend = tribe( Frontend::class );
+		$frontend->update_attendee_data( $attendee_data, $attendee_id );
+
+		$this->assertSame(
+			$expected_status,
+			get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ),
+			'RSVP status meta should not be changed when the method returns early.'
+		);
+	}
+
+	/**
+	 * Data provider for update_attendee_data status change scenarios.
+	 *
+	 * Each closure creates a scenario with a known initial status and an attempted update,
+	 * and returns the expected final status.
+	 */
+	public function update_attendee_data_status_change_provider(): Generator {
+		yield 'does not update when status has not changed (going -> going)' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				$attendee_data = [ 'order_status' => 'going' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'yes', // Already 'yes', so 'going' (mapped to 'yes') should cause no change.
+					false,  // Expect no update.
+				];
+			},
+		];
+
+		yield 'updates status from going to not-going' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				$attendee_data = [ 'order_status' => 'not-going' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'no', // Should be updated from 'yes' to 'no'.
+					true,  // Expect update.
+				];
+			},
+		];
+
+		yield 'updates status from not-going to going' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'no' );
+
+				$attendee_data = [ 'order_status' => 'going' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'yes', // Should be updated from 'no' to 'yes'.
+					true,   // Expect update.
+				];
+			},
+		];
+
+		yield 'defaults to yes when no meta exists and going is submitted (no change)' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				// Remove the meta entirely to simulate an attendee that never had it set.
+				delete_post_meta( $fixture['attendee_id'], Constants::RSVP_STATUS_META_KEY );
+
+				$attendee_data = [ 'order_status' => 'going' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'', // No meta exists yet and method should not create it (default is 'yes', submitted is 'yes').
+					false, // Expect no update since default='yes' and submitted='yes' are the same.
+				];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider update_attendee_data_status_change_provider
+	 */
+	public function test_update_attendee_data_status_changes( Closure $scenario ): void {
+		[ $attendee_data, $attendee_id, $user_id, $expected_status, $expect_update ] = $scenario();
+
+		// Ensure the correct user is set (the order owner).
+		wp_set_current_user( $user_id );
+
+		$frontend = tribe( Frontend::class );
+		$frontend->update_attendee_data( $attendee_data, $attendee_id );
+
+		$actual_status = get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true );
+
+		if ( $expect_update ) {
+			$this->assertSame(
+				$expected_status,
+				$actual_status,
+				'RSVP status meta should be updated to the new value.'
+			);
+		} else {
+			$this->assertSame(
+				$expected_status,
+				$actual_status,
+				'RSVP status meta should not have been changed.'
+			);
+		}
 	}
 }
