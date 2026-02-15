@@ -68,7 +68,7 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 
 	try {
 		// Build request data.
-		const hasCapacity = capacity && parseInt( capacity, 10 ) > 0;
+		const hasCapacity = false !== capacity && null !== capacity && parseInt( capacity, 10 ) >= 0;
 		const data = {
 			event: postId,
 			type: config.ticketType,
@@ -141,7 +141,7 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 
 	try {
 		// Build request data.
-		const hasCapacity = capacity && parseInt( capacity, 10 ) > 0;
+		const hasCapacity = false !== capacity && null !== capacity && parseInt( capacity, 10 ) >= 0;
 		const data = {
 			type: config.ticketType,
 			title: 'RSVP',
