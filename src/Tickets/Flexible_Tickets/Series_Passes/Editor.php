@@ -178,7 +178,7 @@ class Editor extends Controller {
 				'differentProviderNoticeTemplate' => _x(
 				// Translators: %1$s is the event title, %2$s is the series title.
 					'The event %1$s cannot be added to the Series %2$s because they use two different ecommerce' .
-					' providers. Change the provider using the Sell tickets using option in the tickets settings.',
+					' providers. Change the provider using the Payment provider option in the tickets settings.',
 					'Notice shown when the user tries to add an event to a series that uses a different ' .
 					'ticket provider.',
 					'event-tickets'
@@ -426,7 +426,7 @@ class Editor extends Controller {
 
 		echo wp_kses(
 			__(
-				'The ecommerce provider for events must match the provider for the Series. Events with a mismatched provider will not be listed. Change the provider using the <em>Sell tickets using</em> option in the tickets settings.',
+				'The ecommerce provider for events must match the provider for the Series. Events with a mismatched provider will not be listed. Change the provider using the <em>Payment provider</em> option in the tickets settings.',
 				'event-tickets'
 			),
 			[
