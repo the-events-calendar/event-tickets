@@ -33,7 +33,7 @@ $has_tickets    = tribe_events_has_tickets( $post_id );
 					<?php esc_html_e( 'Payment provider:', 'event-tickets' ); ?>
 				</legend>
 				<p class="ticket_form_right">
-					<?php echo wp_kses_post( $multiple_providers_notice); ?>
+					<?php echo wp_kses_post( $multiple_providers_notice ); ?>
 				</p>
 				<?php foreach ( $active_providers as $active_provider ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>">
