@@ -43,24 +43,14 @@ class Editor extends Controller {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ], 5 );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ], 10, 2 );
 		add_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
-		add_filter(
-			'tec_events_pro_custom_tables_v1_add_to_series_available_events',
-			[
-				$this,
-				'remove_diff_ticket_provider_events',
-			],
-			10,
-			2 
-		);
-		add_action(
-			'tec_events_pro_custom_tables_v1_series_relationships_after',
-			[
-				$this,
-				'print_multiple_providers_notice',
-			],
-			10,
-			0 
-		);
+		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
+			$this,
+			'remove_diff_ticket_provider_events'
+		], 10, 2 );
+		add_action( 'tec_events_pro_custom_tables_v1_series_relationships_after', [
+			$this,
+			'print_multiple_providers_notice'
+		], 10, 0 );
 	}
 
 	/**
@@ -79,20 +69,14 @@ class Editor extends Controller {
 		remove_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ], 5 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ] );
 		remove_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
-		remove_filter(
-			'tec_events_pro_custom_tables_v1_add_to_series_available_events',
-			[
-				$this,
-				'remove_diff_ticket_provider_events',
-			] 
-		);
-		remove_action(
-			'tec_events_pro_custom_tables_v1_series_relationships_after',
-			[
-				$this,
-				'print_multiple_providers_notice',
-			] 
-		);
+		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
+			$this,
+			'remove_diff_ticket_provider_events'
+		] );
+		remove_action( 'tec_events_pro_custom_tables_v1_series_relationships_after', [
+			$this,
+			'print_multiple_providers_notice'
+		] );
 	}
 
 	/**
@@ -157,8 +141,7 @@ class Editor extends Controller {
 				->where( 'type', Series_Passes::TICKET_TYPE )
 				->get_independent_capacity();
 
-			$series_pass_independent_capacity_items = implode(
-				', ',
+			$series_pass_independent_capacity_items = implode( ', ',
 				tribe_tickets()
 					->where( 'event', $series_id )
 					->where( 'type', Series_Passes::TICKET_TYPE )
@@ -171,16 +154,14 @@ class Editor extends Controller {
 				->where( 'type', Series_Passes::TICKET_TYPE )
 				->get_shared_capacity();
 
-			$series_pass_shared_capacity_items    = implode(
-				', ',
+			$series_pass_shared_capacity_items    = implode( ', ',
 				tribe_tickets()
 					->where( 'event', $series_id )
 					->where( 'type', Series_Passes::TICKET_TYPE )
 					->where( 'global_stock_mode', [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ] )
 					->map( fn( $ticket ) => $ticket->post_title )
 			);
-			$series_pass_unlimited_capacity_items = implode(
-				', ',
+			$series_pass_unlimited_capacity_items = implode( ', ',
 				tribe_tickets()
 					->where( 'event', $series_id )
 					->where( 'type', Series_Passes::TICKET_TYPE )
@@ -194,12 +175,14 @@ class Editor extends Controller {
 				'fieldSelector'                   => '#' . Relationship::EVENTS_TO_SERIES_REQUEST_KEY,
 				'containerSelector'               => '#tec_event_series_relationship .inside .tec-events-pro-series',
 				'differentProviderNoticeSelector' => '.tec-flexible-tickets-different-ticket-provider-notice',
-				// Translators: %1$s is the event title, %2$s is the series title.
 				'differentProviderNoticeTemplate' => _x(
-					'The event %1$s cannot be added to the Series %2$s because they use two different ecommerce providers. Change the provider using the Payment provider option in the tickets settings.',
-					'Notice shown when the user tries to add an event to a series that uses a different ticket provider.',
+				// Translators: %1$s is the event title, %2$s is the series title.
+					'The event %1$s cannot be added to the Series %2$s because they use two different ecommerce' .
+					' providers. Change the provider using the Payment provider option in the tickets settings.',
+					'Notice shown when the user tries to add an event to a series that uses a different ' .
+					'ticket provider.',
 					'event-tickets'
-				),
+				)
 			],
 			'classic'            => [
 				'ticketPanelEditSelector'                 => '#tribe_panel_edit',
@@ -227,9 +210,9 @@ class Editor extends Controller {
 				'headerLinkText'                     => $this->get_header_link_text(),
 				'headerLinkTemplate'                 => home_url() . '/?p=%d',
 			],
-			'labels'             => [
+			'labels' => [
 				'seriesPassPluralUppercase' => tec_tickets_get_series_pass_plural_uppercase(),
-			],
+			]
 		];
 
 		/**
@@ -259,7 +242,7 @@ class Editor extends Controller {
 					'localize' => [
 						'name' => 'TECFtEditorData',
 						'data' => $editor_data,
-					],
+					]
 				],
 			);
 			tribe_asset_enqueue( 'tec-tickets-flexible-tickets-block-editor-js' );
@@ -280,7 +263,7 @@ class Editor extends Controller {
 				'localize' => [
 					'name' => 'TECFtEditorData',
 					'data' => $editor_data,
-				],
+				]
 			],
 		);
 		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-event-classic-editor-js' );
@@ -290,13 +273,12 @@ class Editor extends Controller {
 	 * Returns the Series related to an Event.
 	 *
 	 * @since 5.8.0
-	 * @since 5.29.0 Made $post_id explicitly nullable.
 	 *
 	 * @param int|null $post_id The ID of the Event.
 	 *
 	 * @return int|null The ID of the Series related to the Event.
 	 */
-	private function get_series_related_to_event( ?int $post_id = null ): ?int {
+	private function get_series_related_to_event( int $post_id = null ): ?int {
 		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			return null;
 		}
@@ -338,8 +320,8 @@ class Editor extends Controller {
 
 		$edit_link                         = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
 		$data['multiple_providers_notice'] = sprintf(
-			// translators: %s is the series title with a link to edit it.
 			_x(
+			// Translators: %s is the series title with a link to edit it.
 				'The ecommerce provider is defined in the ticket settings for the Series %s.',
 				'The notice shown when there are multiple ticket providers available and the Event is part of a Series.',
 				'event-tickets'
@@ -371,8 +353,8 @@ class Editor extends Controller {
 			$data['tickets'] = [];
 		}
 
-		// Translators: %s is the series title with a link to edit it.
 		$data['tickets']['multipleProvidersNoticeTemplate'] = _x(
+		// Translators: %s is the series title with a link to edit it.
 			'The ecommerce provider is defined in the ticket settings for the Series %s.',
 			'The notice shown when there are multiple ticket providers available and the Event is part of a Series.',
 			'event-tickets'
