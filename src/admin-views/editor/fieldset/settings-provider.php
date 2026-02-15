@@ -11,6 +11,7 @@ $multiple_providers = 1 < count( $active_providers );
 $current_provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 // We use 'screen-reader-text' to hide it if there really aren't any choices.
 $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
+$has_tickets    = tribe_events_has_tickets( $post_id );
 ?>
 
 <?php if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) : ?>
@@ -28,16 +29,11 @@ $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
 			<?php endforeach; ?>
 		<?php else : ?>
 			<section style="margin-bottom: 0;">
-				<legend id="default_ticket_provider_legend" class="ticket_form_left"><?php
-					echo esc_html(
-						sprintf(
-							__( 'Sell %s using:', 'event-tickets' ),
-							tribe_get_ticket_label_plural_lowercase( 'default_ticket_provider' )
-						)
-					);
-					?></legend>
+				<legend id="default_ticket_provider_legend" class="ticket_form_left">
+					<?php esc_html_e( 'Payment provider:', 'event-tickets' ); ?>
+				</legend>
 				<p class="ticket_form_right">
-                    <?php echo wp_kses_post( $multiple_providers_notice); ?>
+					<?php echo wp_kses_post( $multiple_providers_notice); ?>
 				</p>
 				<?php foreach ( $active_providers as $active_provider ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>">
@@ -49,7 +45,7 @@ $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
 							value="<?php echo esc_attr( $active_provider['class'] ); ?>"
 							class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 							aria-labelledby="default_ticket_provider_legend"
-							<?php disabled( $active_provider['disabled'] ?? false, true ); ?>
+							<?php disabled( $has_tickets ? true : $active_provider['disabled'] ?? false, true ); ?>
 						>
 						<?php
 						/**
@@ -60,6 +56,12 @@ $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
 						 * @param string $module - the name of the module
 						 */
 						echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $active_provider['name'] ) );
+
+						if ( $has_tickets && $current_provider->class_name === $active_provider['class'] ) :
+							?>
+							<span class="tec-tickets-provider-locked dashicons dashicons-lock"></span>
+							<?php
+						endif;
 						?>
 					</label>
 				<?php endforeach; ?>
