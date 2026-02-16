@@ -125,37 +125,6 @@ class Frontend {
 	}
 
 	/**
-	 * Prevents the rendering of some RSVP templates in the context of the RSVP v2 implementation.
-	 *
-	 * @since TBD
-	 *
-	 * @param string|null     $done Whether the template has been rendered or not.
-	 * @param string|string[] $name The template name in the form of a string or an array of strings.
-	 *
-	 * @return string|null An empty string to prevent template rendering if required, or the original value.
-	 */
-	public function prevent_template_render( $done, $name ) {
-		if ( null !== $done ) {
-			return $done;
-		}
-
-		$do_not_render = [
-			'v2/commerce/rsvp/attendees',
-			'v2/commerce/rsvp/attendees/attendee',
-			'v2/commerce/rsvp/attendees/attendee/name',
-			'v2/commerce/rsvp/attendees/attendee/rsvp',
-			'v2/commerce/rsvp/attendees/title',
-		];
-
-		if ( in_array( $name, $do_not_render, true ) ) {
-			// Return a non-null value to indicate the template was done.
-			return '';
-		}
-
-		return $done;
-	}
-
-	/**
 	 * Removes the RSVP hooks that would render the RSVP v1 form on the frontend.
 	 *
 	 * The original code hooks as part of the construction, to avoid having to update all the existing code

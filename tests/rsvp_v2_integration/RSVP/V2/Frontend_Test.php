@@ -25,41 +25,6 @@ class Frontend_Test extends WPTestCase {
 		return tribe( 'tickets.editor.template' );
 	}
 
-	public function test_should_prevent_rsvp_attendees_template_render(): void {
-		$template = $this->get_template();
-		$html     = $template->template( 'v2/commerce/rsvp/attendees', [], false );
-
-		$this->assertFalse( $html, 'RSVP attendees template should render empty string' );
-	}
-
-	public function test_should_prevent_rsvp_attendee_template_render(): void {
-		$template = $this->get_template();
-		$html     = $template->template( 'v2/commerce/rsvp/attendees/attendee', [], false );
-
-		$this->assertFalse( $html, 'RSVP attendee template should render empty string' );
-	}
-
-	public function test_should_prevent_rsvp_attendee_name_template_render(): void {
-		$template = $this->get_template();
-		$html     = $template->template( 'v2/commerce/rsvp/attendees/attendee/name', [], false );
-
-		$this->assertFalse( $html, 'RSVP attendee name template should render empty string' );
-	}
-
-	public function test_should_prevent_rsvp_attendee_rsvp_template_render(): void {
-		$template = $this->get_template();
-		$html     = $template->template( 'v2/commerce/rsvp/attendees/attendee/rsvp', [], false );
-
-		$this->assertFalse( $html, 'RSVP attendee rsvp template should render empty string' );
-	}
-
-	public function test_should_prevent_rsvp_attendees_title_template_render(): void {
-		$template = $this->get_template();
-		$html     = $template->template( 'v2/commerce/rsvp/attendees/title', [], false );
-
-		$this->assertFalse( $html, 'RSVP attendees title template should render empty string' );
-	}
-
 	public function test_should_return_original_content_when_no_tc_rsvp_tickets(): void {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$post    = get_post( $post_id );

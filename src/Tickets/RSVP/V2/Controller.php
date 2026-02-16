@@ -100,12 +100,6 @@ class Controller extends Controller_Contract {
 			10,
 			5
 		);
-		add_filter(
-			'tribe_template_done',
-			$this->container->callback( Frontend::class, 'prevent_template_render' ),
-			10,
-			2
-		);
 
 		// Repository.
 		add_filter(
@@ -225,10 +219,6 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_front_end_rsvp_form_template_content',
 			$this->container->callback( Frontend::class, 'render_rsvp_template' )
-		);
-		remove_filter(
-			'tribe_template_done',
-			$this->container->callback( Frontend::class, 'prevent_template_render' )
 		);
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
