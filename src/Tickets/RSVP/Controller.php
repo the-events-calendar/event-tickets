@@ -259,21 +259,21 @@ class Controller extends Controller_Contract {
 
 		if ( Status::COMPLETED()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_2;
-		} else if ( Status::FAILED()->equals( $migration_status ) ) {
+		} elseif ( Status::FAILED()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_1;
-		} else if ( Status::NOT_APPLICABLE()->equals( $migration_status ) ) {
+		} elseif ( Status::NOT_APPLICABLE()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_2;
-		} else if ( Status::PAUSED()->equals( $migration_status ) ) {
+		} elseif ( Status::PAUSED()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::DISABLED;
-		} else if ( Status::PENDING()->equals( $migration_status ) ) {
+		} elseif ( Status::PENDING()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_1;
-		} else if ( Status::RUNNING()->equals( $migration_status ) ) {
+		} elseif ( Status::RUNNING()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::DISABLED;
-		} else if ( Status::SCHEDULED()->equals( $migration_status ) ) {
+		} elseif ( Status::SCHEDULED()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_1;
-		} else if ( Status::CANCELED()->equals( $migration_status ) ) {
+		} elseif ( Status::CANCELED()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_1;
-		} else if ( Status::REVERTED()->equals( $migration_status ) ) {
+		} elseif ( Status::REVERTED()->equals( $migration_status ) ) {
 			$cache[ $cache_key ] = self::VERSION_1;
 		} else {
 			throw new RuntimeException( 'Unknown migration status: ' . $migration_status->getValue() );
