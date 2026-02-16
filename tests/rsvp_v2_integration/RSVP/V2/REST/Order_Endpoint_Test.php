@@ -3,6 +3,7 @@ namespace TEC\Tickets\RSVP\V2\REST;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\RSVP\V2\Controller;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Traits\With_No_Query_Commit;
@@ -607,6 +608,176 @@ class Order_Endpoint_Test extends WPTestCase {
 		$this->assertTrue( $data['success'] );
 		// The error should be rendered as HTML, not cause a fatal error.
 		$this->assertNotEmpty( $data['html'] );
+	}
+
+	/**
+	 * @test
+	 *
+	 * Note: Attendees are not generated during the REST call because
+	 * With_No_Query_Commit prevents modify_status from completing the
+	 * status transitions that trigger Generate_Attendees. Instead, we
+	 * capture the process result to verify the endpoint correctly
+	 * determines the RSVP going status and creates the order.
+	 */
+	public function it_should_save_rsvp_status_meta_on_attendees_during_order_creation(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 100 ] ] );
+
+		$this->register_endpoint();
+
+		$captured_result = null;
+		add_filter(
+			'tec_tickets_rsvp_v2_render_step_template_args',
+			static function ( $args ) use ( &$captured_result ) {
+				$captured_result = $args['process_result'] ?? null;
+				return $args;
+			}
+		);
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'quantity'  => 2,
+					'attendees' => [
+						[
+							'email'        => 'going@example.com',
+							'full_name'    => 'Going User',
+							'order_status' => 'yes',
+							'optout'       => false,
+						],
+					],
+				],
+			]
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertTrue( $data['success'] );
+		$this->assertNotNull( $captured_result, 'Process result should be captured.' );
+		$this->assertTrue( $captured_result['success'], 'Order creation should succeed.' );
+		$this->assertArrayHasKey( 'opt_in_args', $captured_result, 'Process result should contain opt_in_args.' );
+		$this->assertTrue( $captured_result['opt_in_args']['is_going'], 'is_going should be true for "yes" order status.' );
+		$this->assertArrayHasKey( 'id', $captured_result, 'Process result should contain the order ID.' );
+	}
+
+	/**
+	 * @test
+	 *
+	 * @see it_should_save_rsvp_status_meta_on_attendees_during_order_creation
+	 */
+	public function it_should_save_not_going_rsvp_status_meta_on_attendees_during_order_creation(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 100 ] ] );
+
+		$this->register_endpoint();
+
+		$captured_result = null;
+		add_filter(
+			'tec_tickets_rsvp_v2_render_step_template_args',
+			static function ( $args ) use ( &$captured_result ) {
+				$captured_result = $args['process_result'] ?? null;
+				return $args;
+			}
+		);
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'quantity'  => 1,
+					'attendees' => [
+						[
+							'email'        => 'notgoing@example.com',
+							'full_name'    => 'Not Going User',
+							'order_status' => 'no',
+							'optout'       => true,
+						],
+					],
+				],
+			]
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertTrue( $data['success'] );
+		$this->assertNotNull( $captured_result, 'Process result should be captured.' );
+		$this->assertTrue( $captured_result['success'], 'Order creation should succeed.' );
+		$this->assertArrayHasKey( 'opt_in_args', $captured_result, 'Process result should contain opt_in_args.' );
+		$this->assertFalse( $captured_result['opt_in_args']['is_going'], 'is_going should be false for "no" order status.' );
+		$this->assertArrayHasKey( 'id', $captured_result, 'Process result should contain the order ID.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_use_provided_name_when_logged_in_user_has_no_first_or_last_name(): void {
+		// Create a user with no first/last name.
+		$user_id = static::factory()->user->create(
+			[
+				'role'       => 'subscriber',
+				'user_email' => 'nameless@example.com',
+				'first_name' => '',
+				'last_name'  => '',
+			]
+		);
+		wp_set_current_user( $user_id );
+
+		$purchaser_data = tribe( Order::class )->get_purchaser_data(
+			[
+				'purchaser' => [
+					'name'  => 'RSVP Guest Name',
+					'email' => 'nameless@example.com',
+				],
+			]
+		);
+
+		$this->assertIsArray( $purchaser_data );
+		$this->assertSame( 'RSVP Guest Name', $purchaser_data['purchaser_full_name'], 'Should fall back to provided name when user has no first/last name.' );
+		$this->assertSame( 'RSVP Guest Name', $purchaser_data['purchaser_first_name'], 'Should fall back to provided name for first name.' );
+		$this->assertSame( $user_id, $purchaser_data['purchaser_user_id'] );
+
+		wp_set_current_user( 0 );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_use_user_name_when_logged_in_user_has_first_and_last_name(): void {
+		$user_id = static::factory()->user->create(
+			[
+				'role'       => 'subscriber',
+				'user_email' => 'named@example.com',
+				'first_name' => 'John',
+				'last_name'  => 'Doe',
+			]
+		);
+		wp_set_current_user( $user_id );
+
+		$purchaser_data = tribe( Order::class )->get_purchaser_data(
+			[
+				'purchaser' => [
+					'name'  => 'Ignored Name',
+					'email' => 'named@example.com',
+				],
+			]
+		);
+
+		$this->assertIsArray( $purchaser_data );
+		$this->assertSame( 'John Doe', $purchaser_data['purchaser_full_name'], 'Should use user first/last name, not provided name.' );
+		$this->assertSame( 'John', $purchaser_data['purchaser_first_name'] );
+
+		wp_set_current_user( 0 );
 	}
 
 	/**

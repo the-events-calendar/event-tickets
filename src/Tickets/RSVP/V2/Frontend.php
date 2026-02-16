@@ -13,6 +13,9 @@ use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets_Handler;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
 
 /**
@@ -125,37 +128,6 @@ class Frontend {
 	}
 
 	/**
-	 * Prevents the rendering of some RSVP templates in the context of the RSVP v2 implementation.
-	 *
-	 * @since TBD
-	 *
-	 * @param string|null     $done Whether the template has been rendered or not.
-	 * @param string|string[] $name The template name in the form of a string or an array of strings.
-	 *
-	 * @return string|null An empty string to prevent template rendering if required, or the original value.
-	 */
-	public function prevent_template_render( $done, $name ) {
-		if ( null !== $done ) {
-			return $done;
-		}
-
-		$do_not_render = [
-			'v2/commerce/rsvp/attendees',
-			'v2/commerce/rsvp/attendees/attendee',
-			'v2/commerce/rsvp/attendees/attendee/name',
-			'v2/commerce/rsvp/attendees/attendee/rsvp',
-			'v2/commerce/rsvp/attendees/title',
-		];
-
-		if ( in_array( $name, $do_not_render, true ) ) {
-			// Return a non-null value to indicate the template was done.
-			return '';
-		}
-
-		return $done;
-	}
-
-	/**
 	 * Removes the RSVP hooks that would render the RSVP v1 form on the frontend.
 	 *
 	 * The original code hooks as part of the construction, to avoid having to update all the existing code
@@ -177,6 +149,104 @@ class Frontend {
 		remove_filter( $ticket_form_hook, [ $tickets_handler, 'show_tickets_unavailable_message' ], 6 );
 		remove_filter( 'the_content', [ $tickets_handler, 'front_end_tickets_form_in_content' ], 11 );
 		remove_filter( 'the_content', [ $tickets_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
+	}
+
+	/**
+	 * Update the RSVP values for this user.
+	 *
+	 * Note that, within this method, $attendee_id refers to the attendee or ticket ID
+	 * (it does not refer to an "order" in the sense of a transaction that may include
+	 * multiple tickets, as is the case in some other methods for instance).
+	 *
+	 * @param array $attendee_data Information that we are trying to save.
+	 * @param int   $attendee_id   The attendee ID.
+	 */
+	public function update_attendee_data( $attendee_data, $attendee_id ) {
+		if ( empty( $attendee_data['order_status'] ) ) {
+			return;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		$attendee = tribe( Attendee::class )->load_attendee_data( get_post( $attendee_id ) );
+
+		if ( ! $attendee instanceof WP_Post ) {
+			return;
+		}
+
+		$ticket_id = $attendee->product_id;
+
+		/** @var Ticket $ticket_data */
+		$ticket_data = tribe( Ticket::class );
+		$ticket      = $ticket_data->load_ticket_object( $ticket_id );
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return;
+		}
+
+		if ( $ticket->type() !== Constants::TC_RSVP_TYPE ) {
+			return;
+		}
+
+		$order = tec_tc_get_order( $attendee->post_parent );
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		$order_user_id = $order->purchaser['user_id'] ?? 0;
+
+		if ( $order_user_id !== $user_id ) {
+			return;
+		}
+
+		$attendee_status = 'going' === $attendee_data['order_status'] ? 'yes' : 'no';
+
+		$current_status = metadata_exists( 'post', $attendee_id, Constants::RSVP_STATUS_META_KEY ) ? get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) : 'yes';
+
+		if ( tribe_is_truthy( $current_status ) === tribe_is_truthy( $attendee_status ) ) {
+			return;
+		}
+
+		update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, $attendee_status );
+	}
+
+	/**
+	 * Render the RSVP ticket status on the My Tickets page.
+	 *
+	 * Hooked to `tec_tickets_my_tickets_ticket_information_after_ticket_name`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attendee The attendee data.
+	 */
+	public function render_my_tickets_ticket_status( array $attendee ): void {
+		if ( empty( $attendee['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $attendee['ticket_type'] ) {
+			return;
+		}
+
+		$ticket_id         = (int) ( $attendee['product_id'] ?? 0 );
+		$attendee_is_going = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY )
+			? tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
+			: true;
+		$show_not_going    = false;
+
+		if ( $ticket_id ) {
+			$show_not_going = tribe_is_truthy( get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true ) );
+		}
+
+		tribe( 'tickets.editor.template' )->template(
+			'v2/commerce/rsvp/my-tickets/ticket-status',
+			[
+				'attendee_is_going' => $attendee_is_going,
+				'show_not_going'    => $show_not_going,
+				'attendee_id'       => $attendee['ID'],
+			]
+		);
 	}
 
 	/**
