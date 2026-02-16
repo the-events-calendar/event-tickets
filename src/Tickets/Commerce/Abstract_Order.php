@@ -94,8 +94,8 @@ abstract class Abstract_Order {
 		if ( is_user_logged_in() ) {
 			$user                              = wp_get_current_user();
 			$purchaser['purchaser_user_id']    = $user->ID;
-			$purchaser['purchaser_full_name']  = $user->first_name || $user->last_name ? trim( $user->first_name . ' ' . $user->last_name ) : $data['purchaser']['name'] ?? '';
-			$purchaser['purchaser_first_name'] = $user->first_name ? $user->first_name : $data['purchaser']['name'] ?? '';
+			$purchaser['purchaser_full_name']  = ! empty( $user->first_name ) || ! empty( $user->last_name ) ? trim( $user->first_name . ' ' . $user->last_name ) : ( $data['purchaser']['name'] ?? '' );
+			$purchaser['purchaser_first_name'] = ! empty( $user->first_name ) ? $user->first_name : ( $data['purchaser']['name'] ?? '' );
 			$purchaser['purchaser_last_name']  = $user->last_name;
 			$purchaser['purchaser_email']      = $user->user_email;
 
