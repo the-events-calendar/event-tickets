@@ -1,11 +1,11 @@
 <?php
 /**
- * Tests for the RSVP V1 attendees template `is_going` guard.
+ * Tests for the RSVP V2 attendees template `is_going` guard.
  *
  * @since TBD
  */
 
-namespace TEC\Tickets\RSVP\V1;
+namespace TEC\Tickets\RSVP\V2;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
