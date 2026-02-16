@@ -1,4 +1,11 @@
 <?php
+/**
+ * Abstract Order.
+ *
+ * @since 5.2.3
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -17,9 +24,9 @@ abstract class Abstract_Order {
 	 *
 	 * @since 5.2.3
 	 *
-	 * @param int[]|float[] $items a list of values
+	 * @param int[]|float[] $items A list of values.
 	 *
-	 * @return Value;
+	 * @return Value.
 	 */
 	public function get_value_total( $items ) {
 		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
@@ -33,7 +40,7 @@ abstract class Abstract_Order {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array $data user data input in the checkout page
+	 * @param array $data User data input in the checkout page.
 	 *
 	 * @return array
 	 */

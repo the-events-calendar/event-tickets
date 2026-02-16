@@ -35,7 +35,7 @@
 	 */
 	do_action( 'tec_tickets_my_tickets_ticket_information_after_ticket_name', $attendee );
 	?>
-	<?php if ( ! empty( $price ) ): ?>
-		- <span class="ticket-price"><?php echo $price; ?></span>
+	<?php if ( ! empty( $price ) ) : ?>
+		- <span class="ticket-price"><?php echo wp_kses_post( $price ); ?></span>
 	<?php endif; ?>
 </div>
