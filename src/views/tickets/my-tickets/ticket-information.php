@@ -25,7 +25,17 @@
 	<?php if ( ! empty( $attendee['ticket_exists'] ) ) : ?>
 		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
 	<?php endif; ?>
-	<?php if ( ! empty( $price ) ): ?>
-		- <span class="ticket-price"><?php echo $price; ?></span>
+	<?php
+	/**
+	 * Fires after the ticket name in the My Tickets ticket information template.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attendee The attendee data.
+	 */
+	do_action( 'tec_tickets_my_tickets_ticket_information_after_ticket_name', $attendee );
+	?>
+	<?php if ( ! empty( $price ) ) : ?>
+		- <span class="ticket-price"><?php echo wp_kses_post( $price ); ?></span>
 	<?php endif; ?>
 </div>

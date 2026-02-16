@@ -36,17 +36,25 @@ class Settings {
 
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
+		$fields['tec-settings-payment-header-start'] = [
+			'type' => 'html',
+			'html' => '',
+		];
+
+		$fields['tec-settings-payment-header-end'] = [
+			'type' => 'html',
+			'html' => '',
+		];
+
 		$fields['tec-settings-payment-enable'] = [
 			'type' => 'html',
-			'html' => '<div>
+			'html' => '
 				<input
 					type="hidden"
 					name="' . Tickets_Settings::$tickets_commerce_enabled . '"
 					' . checked( $is_tickets_commerce_enabled, true, false ) . '
 					id="tickets-commerce-enable-input"
-					class="tribe-dependency tribe-dependency-verified">
-			</div>
-			<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Commerce', 'event-tickets' ) . '</h2>',
+					class="tribe-dependency tribe-dependency-verified">',
 		];
 
 		return $fields;

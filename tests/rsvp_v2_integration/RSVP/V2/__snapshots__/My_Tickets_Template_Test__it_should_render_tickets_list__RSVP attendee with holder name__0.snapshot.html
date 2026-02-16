@@ -1,0 +1,18 @@
+	<div class="tec-tickets__my-tickets-list-title-container type-tc-rsvp">
+	<div class="tec-tickets__my-tickets-list-title">
+		RSVPs	</div>
+</div>	<div class="tec__tickets-my-tickets-order-tickets-list-wrapper">
+		<ul class="tribe-tickets-list tribe-list">
+							<input type="hidden" name="attendee[{{ ORDER_ID }}][attendees][]" value="{{ ATTENDEE_ID }}">
+				<li class="tribe-item" id="ticket-{{ ORDER_ID }}">
+					<input type="hidden" name="attendee[{{ ORDER_ID }}][attendees][]" value="{{ ATTENDEE_ID }}">
+					<div class="list-attendee">
+	Jane Doe</div>					<div class="tribe-ticket-information">
+				<span class="ticket-name">Test TC ticket for {{ POST_ID }}</span>
+							<span class="ticket-status">
+				Response:				<span class="ticket-status-value">Going</span>
+			</span>
+					</div>
+									</li>
+					</ul>
+			</div>

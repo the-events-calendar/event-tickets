@@ -12,6 +12,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__RSVP as RSVP;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Generator;
 
 /**
@@ -100,6 +101,10 @@ class Ticket_Data {
 				continue;
 			}
 
+			if ( $ticket->type() === RSVP_V2_Constants::TC_RSVP_TYPE ) {
+				continue;
+			}
+
 			if ( $ticket->get_event_id() !== $post_id ) {
 				// This is a series ticket which is coming from the series!
 				continue;
@@ -119,7 +124,11 @@ class Ticket_Data {
 	 * @return Ticket_Object|null The ticket object or null if not found.
 	 */
 	public function get_posts_rsvp( int $post_id ): ?Ticket_Object {
-		$rsvp = tribe_tickets( 'rsvp' )->where( 'event', $post_id )->first();
+		if ( did_action( 'tec_tickets_rsvp_v2_registered' ) ) {
+			$rsvp = tribe( 'tickets.ticket-repository.rsvp' )->where( 'event', $post_id )->first();
+		} else {
+			$rsvp = tribe_tickets( 'rsvp' )->where( 'event', $post_id )->first();
+		}
 
 		if ( ! $rsvp ) {
 			return null;
@@ -228,7 +237,7 @@ class Ticket_Data {
 		$end_sale_ts   = $ticket->end_date( true );
 
 		if ( $available > 0 || -1 === $available ) {
-			$sold = RSVP::class !== $ticket->provider_class ?
+			$sold = RSVP::class !== $ticket->provider_class && $ticket->type() !== RSVP_V2_Constants::TC_RSVP_TYPE ?
 				$ticket->qty_sold() + $ticket->qty_pending() :
 				count( $ticket->get_provider()->get_attendees_by_id( $ticket->ID ) );
 
