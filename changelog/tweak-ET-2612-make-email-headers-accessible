@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Made Tickets Email Template headers accessible. [ET-2612]
