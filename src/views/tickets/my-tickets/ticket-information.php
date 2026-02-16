@@ -14,10 +14,6 @@
  * @var array                   $attendee The attendee data.
  */
 
-use TEC\Tickets\RSVP\V2\Constants;
-
-defined( 'ABSPATH' ) || exit;
-
 ?>
 <div class="tribe-ticket-information">
 	<?php
