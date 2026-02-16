@@ -25,7 +25,7 @@ if ( empty( $attendees ) ) {
 	return;
 }
 
-if ( isset( $is_going ) && false === $is_going ) {
+if ( isset( $is_going ) && ! tribe_is_truthy( $is_going ) ) {
 	return;
 }
 ?>
