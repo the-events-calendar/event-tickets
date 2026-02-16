@@ -5,6 +5,7 @@ namespace TEC\Tickets\RSVP\V2;
 use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -19,6 +20,7 @@ use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 class Frontend_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
+	use SnapshotAssertions;
 
 	/**
 	 * Get the tickets editor template instance.
@@ -390,5 +392,116 @@ class Frontend_Test extends WPTestCase {
 				'RSVP status meta should not have been changed.'
 			);
 		}
+	}
+
+	/**
+	 * Data provider for render_my_tickets_ticket_status early return scenarios.
+	 */
+	public function render_my_tickets_ticket_status_early_return_provider(): Generator {
+		yield 'returns early when ticket_type is empty' => [
+			function () {
+				return [
+					'ticket_type' => '',
+					'product_id'  => 1,
+					'ID'          => 1,
+				];
+			},
+		];
+
+		yield 'returns early when ticket_type is not tc-rsvp' => [
+			function () {
+				return [
+					'ticket_type' => 'default',
+					'product_id'  => 1,
+					'ID'          => 1,
+				];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider render_my_tickets_ticket_status_early_return_provider
+	 */
+	public function test_render_my_tickets_ticket_status_returns_early( Closure $scenario ): void {
+		$attendee = $scenario();
+
+		$frontend = tribe( Frontend::class );
+
+		ob_start();
+		$frontend->render_my_tickets_ticket_status( $attendee );
+		$output = ob_get_clean();
+
+		$this->assertEmpty( $output, 'Should produce no output for non-TC-RSVP attendee.' );
+	}
+
+	/**
+	 * Replaces dynamic IDs with placeholders for stable snapshots.
+	 *
+	 * @param string $html The HTML to process.
+	 * @param array  $ids  Associative array of placeholder => ID.
+	 *
+	 * @return string
+	 */
+	private function placehold_ids( string $html, array $ids ): string {
+		$ids = array_filter( $ids, static fn( $id ) => $id !== null );
+
+		return str_replace(
+			array_map( 'strval', array_values( $ids ) ),
+			array_map( static fn( string $name ) => "{{ $name }}", array_keys( $ids ) ),
+			$html
+		);
+	}
+
+	/**
+	 * Data provider for render_my_tickets_ticket_status rendering scenarios.
+	 */
+	public function render_my_tickets_ticket_status_render_provider(): Generator {
+		yield 'going with show_not_going enabled' => [
+			'yes',
+			true,
+		];
+
+		yield 'not going with show_not_going enabled' => [
+			'no',
+			true,
+		];
+
+		yield 'going with show_not_going disabled' => [
+			'yes',
+			false,
+		];
+	}
+
+	/**
+	 * @dataProvider render_my_tickets_ticket_status_render_provider
+	 */
+	public function test_render_my_tickets_ticket_status_renders_output( string $rsvp_status, bool $show_not_going ): void {
+		$fixture = $this->create_rsvp_order_with_attendee( $rsvp_status );
+
+		if ( $show_not_going ) {
+			update_post_meta( $fixture['ticket_id'], Constants::SHOW_NOT_GOING_META_KEY, '1' );
+		}
+
+		$attendee = [
+			'ticket_type' => Constants::TC_RSVP_TYPE,
+			'product_id'  => $fixture['ticket_id'],
+			'ID'          => $fixture['attendee_id'],
+		];
+
+		$frontend = tribe( Frontend::class );
+
+		ob_start();
+		$frontend->render_my_tickets_ticket_status( $attendee );
+		$output = ob_get_clean();
+
+		$this->assertNotEmpty( $output, 'Should produce output for a TC-RSVP attendee.' );
+
+		$output = $this->placehold_ids( $output, [
+			'ATTENDEE_ID' => $fixture['attendee_id'],
+			'TICKET_ID'   => $fixture['ticket_id'],
+			'POST_ID'     => $fixture['post_id'],
+		] );
+
+		$this->assertMatchesHtmlSnapshot( $output );
 	}
 }

@@ -216,6 +216,40 @@ class Frontend {
 	}
 
 	/**
+	 * Render the RSVP ticket status on the My Tickets page.
+	 *
+	 * Hooked to `tec_tickets_my_tickets_ticket_information_after_ticket_name`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attendee The attendee data.
+	 */
+	public function render_my_tickets_ticket_status( array $attendee ): void {
+		if ( empty( $attendee['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $attendee['ticket_type'] ) {
+			return;
+		}
+
+		$ticket_id         = (int) ( $attendee['product_id'] ?? 0 );
+		$attendee_is_going = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY )
+			? tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
+			: true;
+		$show_not_going    = false;
+
+		if ( $ticket_id ) {
+			$show_not_going = tribe_is_truthy( get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true ) );
+		}
+
+		tribe( 'tickets.editor.template' )->template(
+			'v2/commerce/rsvp/my-tickets/ticket-status',
+			[
+				'attendee_is_going' => $attendee_is_going,
+				'show_not_going'    => $show_not_going,
+				'attendee_id'       => $attendee['ID'],
+			]
+		);
+	}
+
+	/**
 	 * Check if a post has TC-RSVP tickets.
 	 *
 	 * @since TBD

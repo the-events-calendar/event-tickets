@@ -107,6 +107,10 @@ class Controller extends Controller_Contract {
 			10,
 			2
 		);
+		add_action(
+			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
+			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' )
+		);
 
 		// Repository.
 		add_filter(
@@ -230,6 +234,10 @@ class Controller extends Controller_Contract {
 		remove_action(
 			'event_tickets_attendee_update',
 			$this->container->callback( Frontend::class, 'update_attendee_data' ),
+		);
+		remove_action(
+			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
+			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' ),
 		);
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
