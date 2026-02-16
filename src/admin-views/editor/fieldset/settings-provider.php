@@ -5,13 +5,13 @@
  * @var string                     $default_module_class      The default ticket provider class.
  */
 
-$post_id = get_the_ID();
+$current_post_id = get_the_ID();
 
 $multiple_providers = 1 < count( $active_providers );
-$current_provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+$current_provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $current_post_id );
 // We use 'screen-reader-text' to hide it if there really aren't any choices.
 $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
-$has_tickets    = tribe_events_has_tickets( $post_id );
+$has_tickets    = tribe_events_has_tickets( $current_post_id );
 ?>
 
 <?php if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) : ?>
@@ -68,11 +68,12 @@ $has_tickets    = tribe_events_has_tickets( $post_id );
 			</section>
 		<?php endif; ?>
 	</fieldset>
-<?php else: ?>
+<?php else : ?>
 	<input
 		type="hidden"
 		name="tribe-tickets[settings][default_provider]"
 		value="<?php echo esc_attr( $default_module_class ); ?>"
 		class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 	>
-<?php endif;
+	<?php
+endif;
