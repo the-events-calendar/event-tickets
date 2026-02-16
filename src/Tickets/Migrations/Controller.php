@@ -12,6 +12,7 @@ use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use Tribe__Settings as Common_Settings;
 use Tribe__Settings_Tab as Tab;
 use TEC\Common\StellarWP\Migrations\Admin\UI;
+use TEC\Common\StellarWP\Migrations\Admin\Provider as Migrations_Admin_Provider;
 use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
@@ -28,7 +29,10 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		add_filter( 'stellarwp_migrations_tec_automatic_schedule', '__return_false' );
 		migrations()->get_registry()->register( 'rsvp-to-tc', RSVP_To_Tickets_Commerce::class );
+		Migrations_Admin_Provider::set_list_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=migrations' ) );
+		Migrations_Admin_Provider::set_parent_page( 'tec-tickets-settings' );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_migrations_tab' ], 20 );
 		add_action( 'tribe_settings_below_tabs_tab_migrations', [ $this, 'remove_form_element_open_and_close' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_migrations_tab_id' ] );
@@ -42,6 +46,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_filter( 'stellarwp_migrations_tec_automatic_schedule', '__return_false' );
 		migrations()->get_registry()->offsetUnset( 'rsvp-to-tc' );
 		remove_action( 'tribe_settings_do_tabs', [ $this, 'register_migrations_tab' ], 20 );
 		remove_action( 'tribe_settings_below_tabs_tab_migrations', [ $this, 'remove_form_element_open_and_close' ] );
