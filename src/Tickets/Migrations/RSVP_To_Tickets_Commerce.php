@@ -823,7 +823,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * @param string $order_hash The order hash.
 	 * @param int    $ticket_id  The ticket ID.
-	 * @param string $event_id   The event ID.
+	 * @param int    $event_id   The event ID.
 	 * @param int    $quantity   The number of attendees.
 	 * @param string $full_name  The purchaser full name.
 	 * @param string $email      The purchaser email.
@@ -905,7 +905,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @param WP_Post $attendee  The attendee post.
 	 * @param int     $order_id  The order ID.
 	 * @param int     $ticket_id The ticket ID.
-	 * @param string  $event_id  The event ID.
+	 * @param int     $event_id  The event ID.
 	 *
 	 * @return bool Whether the migration was successful.
 	 */
