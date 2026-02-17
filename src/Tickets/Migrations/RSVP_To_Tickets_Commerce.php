@@ -18,6 +18,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use Tribe__Cache_Listener as Cache_Listener;
 use Tribe__Tickets__RSVP as RSVP;
 use TEC\Common\StellarWP\Migrations\Utilities\Logger;
 use WP_Post;
@@ -1157,5 +1158,11 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 				$old_key
 			)
 		);
+
+		// Invalidate the WP post meta cache since the direct SQL update bypasses it.
+		wp_cache_delete( $post_id, 'post_meta' );
+
+		// Invalidate tribe_cache entries keyed on save_post since the direct SQL update bypasses the save_post hook.
+		tribe_cache()->set_last_occurrence( Cache_Listener::TRIGGER_SAVE_POST );
 	}
 }
