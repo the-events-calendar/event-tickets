@@ -16,17 +16,20 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Unique identifier
+		 *
 		 * @var int
 		 */
 		public $ID;
 		/**
 		 * Name of the ticket
+		 *
 		 * @var string
 		 */
 		public $name;
 
 		/**
 		 * Free text with a description of the ticket
+		 *
 		 * @var string
 		 */
 		public $description;
@@ -52,7 +55,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @var    int
+		 * @var int
 		 */
 		public $capacity;
 
@@ -75,6 +78,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Link to the admin edit screen for this ticket in the provider system,
 		 * or null if the provider doesn't have any way to edit the ticket.
+		 *
 		 * @var string
 		 */
 		public $admin_link;
@@ -82,6 +86,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Link to the report screen for this ticket in the provider system,
 		 * or null if the provider doesn't have any sales reports.
+		 *
 		 * @var string
 		 */
 		public $report_link;
@@ -89,12 +94,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Link to the front end of this ticket, if the providers has single view
 		 * for this ticket.
+		 *
 		 * @var string
 		 */
 		public $frontend_link;
 
 		/**
 		 * Class name of the provider handling this ticket
+		 *
 		 * @var
 		 */
 		public $provider_class;
@@ -221,6 +228,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Date the ticket should be stop being sold
+		 *
 		 * @var string
 		 */
 		public $end_date;
@@ -391,7 +399,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @since 4.7.1
 		 *
 		 * @param string $date
-		 * @param bool $as_timestamp
+		 * @param bool   $as_timestamp
 		 *
 		 * @return DateTime|false|int
 		 */
@@ -548,8 +556,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			/** @var Tribe__Cache $cache */
-			$cache = tribe( 'cache' );
-			$cache_key   = __METHOD__ . '-' . $this->ID;
+			$cache                   = tribe( 'cache' );
+			$cache_key               = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -568,7 +576,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			if( $is_ticket_cache_enabled ) {
+			if ( $is_ticket_cache_enabled ) {
 				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
 			}
 
@@ -609,8 +617,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function inventory() {
 			/** @var Tribe__Cache $cache */
-			$cache = tribe( 'cache' );
-			$cache_key   = __METHOD__ . '-' . $this->ID;
+			$cache                   = tribe( 'cache' );
+			$cache_key               = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -676,7 +684,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					continue;
 				}
 
-				$attendees_count++;
+				++$attendees_count;
 			}
 
 			// Do the math!
@@ -711,7 +719,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					}
 
 					// All the others we add to the count
-					$event_attendees_count++;
+					++$event_attendees_count;
 				}
 
 				$inventory[] = tribe_tickets_get_capacity( $event_id ) - $event_attendees_count;
@@ -749,7 +757,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of remaining tickets
 		 *
-		 * @deprecated   4.6  We are now using inventory as the new Remaining
+		 * @deprecated 4.6  We are now using inventory as the new Remaining
 		 *
 		 * @return int
 		 */
@@ -760,7 +768,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of Available tickets based on the Attendees number
 		 *
-		 * @todo   Create a way to get the Available for an Event (currently impossible)
+		 * @todo Create a way to get the Available for an Event (currently impossible)
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
 		 *
@@ -771,8 +779,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
 			/** @var Tribe__Cache $cache */
-			$cache = tribe( 'cache' );
-			$cache_key   = __METHOD__ . '-' . $this->ID;
+			$cache                   = tribe( 'cache' );
+			$cache_key               = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {
@@ -814,7 +822,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @return  int
+		 * @return int
 		 */
 		public function capacity() {
 			if ( ! $this->managing_stock() ) {
@@ -822,8 +830,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			/** @var Tribe__Cache $cache */
-			$cache = tribe( 'cache' );
-			$cache_key = __METHOD__ . '-' . $this->ID;
+			$cache                   = tribe( 'cache' );
+			$cache_key               = __METHOD__ . '-' . $this->ID;
 			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
 			if ( $is_ticket_cache_enabled ) {

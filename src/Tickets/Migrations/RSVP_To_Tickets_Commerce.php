@@ -631,8 +631,8 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $ticket_id The ticket ID.
-	 * @param int    $event_id  The event ID.
+	 * @param int $ticket_id The ticket ID.
+	 * @param int $event_id  The event ID.
 	 *
 	 * @return void
 	 */
@@ -950,10 +950,10 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $attendee_id The attendee ID.
-	 * @param int    $ticket_id   The ticket ID.
-	 * @param int    $event_id    The event ID.
-	 * @param int    $order_id    The order ID.
+	 * @param int $attendee_id The attendee ID.
+	 * @param int $ticket_id   The ticket ID.
+	 * @param int $event_id    The event ID.
+	 * @param int $order_id    The order ID.
 	 *
 	 * @return void
 	 */
