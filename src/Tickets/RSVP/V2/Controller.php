@@ -142,8 +142,12 @@ class Controller extends Controller_Contract {
 		);
 
 		// Add show_not_going property to REST responses for RSVP tickets.
-		$this->hook_add_show_not_going_to_properties();
-
+		add_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
+			10,
+			2
+		);
 		add_filter(
 			'tec_rest_ticket_properties_to_add',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
@@ -239,8 +243,10 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Meta_Fields::class, 'save_show_not_going' )
 		);
 
-		$this->unhook_add_show_not_going_to_properties();
-
+		remove_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' )
+		);
 		remove_filter(
 			'tec_rest_ticket_properties_to_add',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
@@ -264,36 +270,6 @@ class Controller extends Controller_Contract {
 		remove_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
 			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
-		);
-	}
-
-	/**
-	 * Hook the add_show_not_going_to_properties filter.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function hook_add_show_not_going_to_properties(): void {
-		add_filter(
-			'tec_tickets_build_ticket_properties',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
-			10,
-			2
-		);
-	}
-
-	/**
-	 * Unhook the add_show_not_going_to_properties filter.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unhook_add_show_not_going_to_properties(): void {
-		remove_filter(
-			'tec_tickets_build_ticket_properties',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' )
 		);
 	}
 }

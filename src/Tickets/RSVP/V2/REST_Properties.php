@@ -14,7 +14,9 @@ namespace TEC\Tickets\RSVP\V2;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Boolean;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
-use TEC\Tickets\Commerce\Ticket;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Attendee as TC_Attendee;
+use Tribe__Cache_Listener as Cache_Listener;
 use WP_Post;
 
 /**
@@ -47,26 +49,36 @@ class REST_Properties {
 		$properties['not_going_count'] = 0;
 
 		if ( $properties['show_not_going'] ) {
-			/** @var Ticket $ticket_data */
-			$ticket_data   = tribe( Ticket::class );
-			$ticket_object = $ticket_data->load_ticket_object( $post->ID );
-			$provider      = $ticket_object->get_provider();
-			$controller    = tribe( Controller::class );
+			$cache     = tribe_cache();
+			$cache_key = 'tec_rsvp_not_going_count_' . $post->ID;
+			$count     = $cache->get( $cache_key, Cache_Listener::TRIGGER_SAVE_POST );
 
-			/**
-			 * The `get_attendees_by_id` will eventually call TEC\Tickets\Commerce\Module::get_attendee which calls tec_tc_get_attendee which is going
-			 * to build an `TEC\Tickets\Commerce\Models\Attendee_Model` instance, which internally calls `tec_tc_get_ticket` creating the infinite loop.
-			 */
-			$controller->unhook_add_show_not_going_to_properties();
-			$attendees = $provider->get_attendees_by_id( $ticket_object->ID );
-			$controller->hook_add_show_not_going_to_properties();
+			if ( false === $count ) {
+				$count = (int) DB::get_var(
+					DB::prepare(
+						'SELECT COUNT(*) FROM %i p
+						INNER JOIN %i pm_ticket ON p.ID = pm_ticket.post_id
+						INNER JOIN %i pm_status ON p.ID = pm_status.post_id
+						WHERE p.post_type = %s
+						AND pm_ticket.meta_key = %s
+						AND pm_ticket.meta_value = %s
+						AND pm_status.meta_key = %s
+						AND pm_status.meta_value IN (%s, %s)',
+						DB::prefix( 'posts' ),
+						DB::prefix( 'postmeta' ),
+						DB::prefix( 'postmeta' ),
+						TC_Attendee::POSTTYPE,
+						TC_Attendee::$ticket_relation_meta_key,
+						$post->ID,
+						Constants::RSVP_STATUS_META_KEY,
+						'no',
+						'0'
+					)
+				);
+				$cache->set( $cache_key, $count, WEEK_IN_SECONDS, Cache_Listener::TRIGGER_SAVE_POST );
+			}
 
-			$properties['not_going_count'] = count(
-				array_filter(
-					$attendees,
-					static fn( array $attendee ): bool => metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY ) && ! tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
-				)
-			);
+			$properties['not_going_count'] = (int) $count;
 		}
 
 		return $properties;

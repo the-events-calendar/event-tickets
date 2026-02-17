@@ -8,9 +8,8 @@
 namespace TEC\Tickets\RSVP;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Common\StellarWP\Migrations\Enums\Status;
-use RuntimeException;
+use TEC\Tickets\Commerce\Payments_Tab;
 use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
@@ -227,58 +226,79 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
+	 * The option key used to store the RSVP version.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const VERSION_OPTION_KEY = 'tickets_rsvp_version';
+
+	/**
 	 * Returns the RSVP version based on the migration status.
+	 *
+	 * The version is stored in a tribe option and updated by the migration's
+	 * before/after hooks. On first load (no option set), live detection runs
+	 * once from the migration status and saves the result.
 	 *
 	 * @since TBD
 	 *
 	 * @return string The RSVP version based on the migration status.
-	 *
-	 * @throws RuntimeException If the migration status is unknown.
 	 */
 	private static function get_version_from_migration_status(): string {
-		$cache     = tribe_cache();
-		$cache_key = 'tec_tickets_rsvp_version_from_migration_status';
+		$version = tribe_get_option( self::VERSION_OPTION_KEY, null );
 
-		$cached = $cache[$cache_key] ?? null;
-
-		if ( is_string( $cached ) && in_array( $cached, [ self::VERSION_1, self::VERSION_2, self::DISABLED ], true ) ) {
-			return $cached;
+		if ( is_string( $version ) && in_array( $version, [ self::VERSION_1, self::VERSION_2, self::DISABLED ], true ) ) {
+			return $version;
 		}
 
+		// First load: detect from migration status and persist.
+		$version = self::detect_version_from_migration_status();
+		tribe_update_option( self::VERSION_OPTION_KEY, $version );
+
+		return $version;
+	}
+
+	/**
+	 * Detects the RSVP version from the migration status.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The detected RSVP version.
+	 */
+	private static function detect_version_from_migration_status(): string {
 		$registry = migrations()->get_registry();
 
 		$rsvp_to_tc = $registry->get( 'rsvp-to-tc' );
 
 		if ( ! $rsvp_to_tc ) {
-			$cache[ $cache_key ] = self::VERSION_2;
-			// Assume that it has been completed and removed in the future ?
-			return $cache[ $cache_key ];
+			// Assume that it has been completed and removed in the future.
+			return self::VERSION_2;
 		}
 
 		$migration_status = $rsvp_to_tc->get_status();
 
 		if ( Status::COMPLETED()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_2;
+			return self::VERSION_2;
 		} elseif ( Status::FAILED()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_1;
+			return self::VERSION_1;
 		} elseif ( Status::NOT_APPLICABLE()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_2;
+			return self::VERSION_2;
 		} elseif ( Status::PAUSED()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::DISABLED;
+			return self::DISABLED;
 		} elseif ( Status::PENDING()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_1;
+			return self::VERSION_1;
 		} elseif ( Status::RUNNING()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::DISABLED;
+			return self::DISABLED;
 		} elseif ( Status::SCHEDULED()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_1;
+			return self::VERSION_1;
 		} elseif ( Status::CANCELED()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_1;
+			return self::VERSION_1;
 		} elseif ( Status::REVERTED()->equals( $migration_status ) ) {
-			$cache[ $cache_key ] = self::VERSION_1;
-		} else {
-			throw new RuntimeException( 'Unknown migration status: ' . $migration_status->getValue() );
+			return self::VERSION_1;
 		}
 
-		return $cache[ $cache_key ];
+		// Unknown status: determine version from the actual data state.
+		return $rsvp_to_tc->is_applicable() ? self::VERSION_1 : self::VERSION_2;
 	}
 }

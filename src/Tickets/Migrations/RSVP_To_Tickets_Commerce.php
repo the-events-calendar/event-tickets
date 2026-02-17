@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Migrations\Abstracts\Migration_Abstract;
 use TEC\Common\StellarWP\Migrations\Enums\Operation;
 use TEC\Tickets\Commerce\Attendee as TC_Attendee;
+use TEC\Tickets\RSVP\Controller;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
@@ -265,6 +266,92 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	}
 
 	/**
+	 * Runs before each batch of the migration.
+	 *
+	 * Disables RSVP while the migration is running.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $batch      The batch number.
+	 * @param int $batch_size The batch size.
+	 *
+	 * @return void
+	 */
+	public function before_up( int $batch, int $batch_size ): void {
+		// Only set on the first batch: the option persists across batches and does not need to be set again.
+		if ( 1 !== $batch ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::DISABLED );
+	}
+
+	/**
+	 * Runs after each batch of the migration.
+	 *
+	 * Sets the RSVP version to v2 when migration completes.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $batch        The batch number.
+	 * @param int  $batch_size   The batch size.
+	 * @param bool $is_completed Whether the migration has been completed.
+	 *
+	 * @return void
+	 */
+	public function after_up( int $batch, int $batch_size, bool $is_completed ): void {
+		// Only set on the last batch: intermediate batches keep the DISABLED value set in before_up.
+		if ( ! $is_completed ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::VERSION_2 );
+	}
+
+	/**
+	 * Runs before each batch of the rollback.
+	 *
+	 * Disables RSVP while the rollback is running.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $batch      The batch number.
+	 * @param int $batch_size The batch size.
+	 *
+	 * @return void
+	 */
+	public function before_down( int $batch, int $batch_size ): void {
+		// Only set on the first batch: the option persists across batches and does not need to be set again.
+		if ( 1 !== $batch ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::DISABLED );
+	}
+
+	/**
+	 * Runs after each batch of the rollback.
+	 *
+	 * Sets the RSVP version to v1 when rollback completes.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $batch        The batch number.
+	 * @param int  $batch_size   The batch size.
+	 * @param bool $is_completed Whether the rollback has been completed.
+	 *
+	 * @return void
+	 */
+	public function after_down( int $batch, int $batch_size, bool $is_completed ): void {
+		// Only set on the last batch: intermediate batches keep the DISABLED value set in before_down.
+		if ( ! $is_completed ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::VERSION_1 );
+	}
+
+	/**
 	 * Run the migration.
 	 *
 	 * @since TBD
@@ -283,10 +370,10 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 		foreach ( $tickets as $ticket ) {
 			$ticket_id = $ticket->ID;
-			$event_id  = get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
+			$event_id  = (int) get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true );
 
 			// Skip tickets with no event relation.
-			if ( empty( $event_id ) ) {
+			if ( 0 === $event_id ) {
 				$logger->warning( 'RSVP Migration: Ticket has no event relation', [ 'ticket_id' => $ticket_id ] );
 				update_post_meta( $ticket_id, self::MIGRATED_TICKET_META_KEY, -1 );
 				continue;
@@ -382,6 +469,22 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			// Remove migration marker.
 			delete_post_meta( $ticket_id, self::MIGRATED_TICKET_META_KEY );
 		}
+
+		// Clean up skipped ticket markers (tickets that were skipped during migration and kept their original post type).
+		DB::query(
+			DB::prepare(
+				'DELETE pm FROM %i pm
+				INNER JOIN %i p ON pm.post_id = p.ID
+				WHERE pm.meta_key = %s
+				AND pm.meta_value = %s
+				AND p.post_type = %s',
+				DB::prefix( 'postmeta' ),
+				DB::prefix( 'posts' ),
+				self::MIGRATED_TICKET_META_KEY,
+				'-1',
+				'tribe_rsvp_tickets'
+			)
+		);
 	}
 
 	/**
@@ -528,11 +631,11 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @since TBD
 	 *
 	 * @param int    $ticket_id The ticket ID.
-	 * @param string $event_id  The event ID.
+	 * @param int    $event_id  The event ID.
 	 *
 	 * @return void
 	 */
-	private function migrate_ticket_meta( int $ticket_id, string $event_id ): void {
+	private function migrate_ticket_meta( int $ticket_id, int $event_id ): void {
 		// Save original values of meta keys that will be overwritten during migration.
 		// This allows the rollback to restore them instead of blindly deleting.
 		$overwrite_keys = array_merge(
@@ -584,7 +687,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		}
 
 		// Add dynamic meta.
-		update_post_meta( $ticket_id, TC_Ticket::$sku_meta_key, sprintf( '%d-%s-RSVP', $ticket_id, $event_id ) );
+		update_post_meta( $ticket_id, TC_Ticket::$sku_meta_key, sprintf( '%d-%d-RSVP', $ticket_id, $event_id ) );
 
 		// Copy show_not_going to non-prefixed version.
 		$show_not_going = get_post_meta( $ticket_id, RSVP_V2_Constants::SHOW_NOT_GOING_META_KEY, true );
@@ -676,11 +779,11 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @param string    $order_hash The order hash.
 	 * @param WP_Post[] $attendees  The attendees in this order.
 	 * @param int       $ticket_id  The ticket ID.
-	 * @param string    $event_id   The event ID.
+	 * @param int       $event_id   The event ID.
 	 *
 	 * @return void
 	 */
-	private function migrate_attendee_group( string $order_hash, array $attendees, int $ticket_id, string $event_id ): void {
+	private function migrate_attendee_group( string $order_hash, array $attendees, int $ticket_id, int $event_id ): void {
 		if ( empty( $attendees ) ) {
 			return;
 		}
@@ -689,7 +792,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		$first_attendee = $attendees[0];
 		$full_name      = get_post_meta( $first_attendee->ID, '_tribe_rsvp_full_name', true );
 		$email          = get_post_meta( $first_attendee->ID, '_tribe_rsvp_email', true );
-		$user_id        = get_post_meta( $first_attendee->ID, TC_Attendee::$user_relation_meta_key, true );
+		$user_id        = (int) get_post_meta( $first_attendee->ID, TC_Attendee::$user_relation_meta_key, true );
 
 		// Create the order.
 		$order_id = $this->create_order(
@@ -727,12 +830,12 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * @return int|false The order ID or false on failure.
 	 */
-	private function create_order( string $order_hash, int $ticket_id, string $event_id, int $quantity, string $full_name, string $email, $user_id ) {
+	private function create_order( string $order_hash, int $ticket_id, int $event_id, int $quantity, string $full_name, string $email, int $user_id ) {
 		$name_parts = explode( ' ', $full_name, 2 );
 		$first_name = $name_parts[0] ?? '';
 		$last_name  = $name_parts[1] ?? '';
 
-		$gateway_order_id = md5( $order_hash . $email . time() );
+		$gateway_order_id = md5( $order_hash . $email . $ticket_id );
 		$currency         = Currency::get_currency_code();
 		$title            = sprintf( 'TEC-TC-%s-T-%d', substr( $order_hash, 0, 12 ), $ticket_id );
 
@@ -756,7 +859,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		$items = [
 			[
 				'ticket_id'         => $ticket_id,
-				'event_id'          => (int) $event_id,
+				'event_id'          => $event_id,
 				'quantity'          => $quantity,
 				'price'             => '0',
 				'sub_total'         => '0',
@@ -774,13 +877,13 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 		update_post_meta( $order_id, Order::$gateway_meta_key, 'free' );
 		update_post_meta( $order_id, Order::$hash_meta_key, $order_hash );
 		update_post_meta( $order_id, Order::$currency_meta_key, $currency );
-		update_post_meta( $order_id, Order::$purchaser_user_id_meta_key, $user_id ?: 0 );
+		update_post_meta( $order_id, Order::$purchaser_user_id_meta_key, $user_id );
 		update_post_meta( $order_id, Order::$purchaser_full_name_meta_key, $full_name );
 		update_post_meta( $order_id, Order::$purchaser_first_name_meta_key, $first_name );
 		update_post_meta( $order_id, Order::$purchaser_last_name_meta_key, $last_name );
 		update_post_meta( $order_id, Order::$purchaser_email_meta_key, $email );
 		update_post_meta( $order_id, Order::$gateway_order_id_meta_key, $gateway_order_id );
-		update_post_meta( $order_id, Order::$events_in_order_meta_key, (int) $event_id );
+		update_post_meta( $order_id, Order::$events_in_order_meta_key, $event_id );
 		update_post_meta( $order_id, Order::$tickets_in_order_meta_key, $ticket_id );
 
 		// Add status log.
@@ -805,7 +908,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * @return bool Whether the migration was successful.
 	 */
-	private function migrate_attendee( WP_Post $attendee, int $order_id, int $ticket_id, string $event_id ): bool {
+	private function migrate_attendee( WP_Post $attendee, int $order_id, int $ticket_id, int $event_id ): bool {
 		$attendee_id = $attendee->ID;
 
 		// Save original post fields for rollback.
@@ -848,12 +951,12 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * @param int    $attendee_id The attendee ID.
 	 * @param int    $ticket_id   The ticket ID.
-	 * @param string $event_id    The event ID.
+	 * @param int    $event_id    The event ID.
 	 * @param int    $order_id    The order ID.
 	 *
 	 * @return void
 	 */
-	private function migrate_attendee_meta( int $attendee_id, int $ticket_id, string $event_id, int $order_id ): void {
+	private function migrate_attendee_meta( int $attendee_id, int $ticket_id, int $event_id, int $order_id ): void {
 		// Rename meta keys.
 		foreach ( $this->get_attendee_meta_rename_map() as $old_key => $new_key ) {
 			$this->rename_meta_key( $attendee_id, $old_key, $new_key );
@@ -865,7 +968,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 		// Ensure the ticket and event relations are set correctly.
 		update_post_meta( $attendee_id, TC_Attendee::$ticket_relation_meta_key, $ticket_id );
-		update_post_meta( $attendee_id, TC_Attendee::$event_relation_meta_key, (int) $event_id );
+		update_post_meta( $attendee_id, TC_Attendee::$event_relation_meta_key, $event_id );
 
 		// The _tribe_tickets_meta (AR fields) is preserved as-is.
 	}

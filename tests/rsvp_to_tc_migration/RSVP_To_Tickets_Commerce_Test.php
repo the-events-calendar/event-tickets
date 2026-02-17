@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Attendee as TC_Attendee;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Migrations\RSVP_To_Tickets_Commerce;
+use TEC\Tickets\RSVP\Controller;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker as V2_Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP_To_TC_Migration\Production_Ticket_Maker;
@@ -122,14 +123,21 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 	/**
 	 * Run the migration up for all unmigrated tickets.
+	 *
+	 * Calls before_up/after_up around each batch to simulate
+	 * what the StellarWP Migrations framework does in Execute::process().
 	 */
 	protected function run_migration_up(): void {
-		$batch = 1;
-		$run = false;
+		$batch      = 1;
+		$batch_size = 50;
+		$run        = false;
 
 		$this->maybe_bind_logger();
 		while ( ! $this->migration->is_up_done() ) {
-			$this->migration->up( $batch, 50 );
+			$this->migration->before_up( $batch, $batch_size );
+			$this->migration->up( $batch, $batch_size );
+			$is_completed = $this->migration->is_up_done();
+			$this->migration->after_up( $batch, $batch_size, $is_completed );
 			$batch++;
 			$run = true;
 			// Safety limit.
@@ -143,13 +151,21 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 	/**
 	 * Run the migration down for all migrated tickets.
+	 *
+	 * Calls before_down/after_down around each batch to simulate
+	 * what the StellarWP Migrations framework does in Execute::process().
 	 */
 	protected function run_migration_down(): void {
-		$batch = 1;
-		$run = false;
+		$batch      = 1;
+		$batch_size = 50;
+		$run        = false;
+
 		$this->maybe_bind_logger();
 		while ( ! $this->migration->is_down_done() ) {
-			$this->migration->down( $batch, 50 );
+			$this->migration->before_down( $batch, $batch_size );
+			$this->migration->down( $batch, $batch_size );
+			$is_completed = $this->migration->is_down_done();
+			$this->migration->after_down( $batch, $batch_size, $is_completed );
 			$batch++;
 			$run = true;
 			// Safety limit.
@@ -204,6 +220,9 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$this->assertEquals( 'yes', get_post_meta( $ticket_id, '_manage_stock', true ) );
 		$this->assertEquals( 'own', get_post_meta( $ticket_id, '_global_stock_mode', true ) );
 		$this->assertEquals( 'instock', get_post_meta( $ticket_id, '_stock_status', true ) );
+
+		// Verify RSVP version option set to v2 after migration.
+		$this->assertEquals( Controller::VERSION_2, tribe_get_option( Controller::VERSION_OPTION_KEY ) );
 	}
 
 	/**
@@ -484,6 +503,9 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 		// Verify original meta key restored.
 		$this->assertEquals( $post_id, get_post_meta( $ticket_id, '_tribe_rsvp_for_event', true ) );
+
+		// Verify RSVP version option set to v1 after rollback.
+		$this->assertEquals( Controller::VERSION_1, tribe_get_option( Controller::VERSION_OPTION_KEY ) );
 	}
 
 	/**
@@ -1025,6 +1047,14 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 		$this->assertNotEmpty( get_post_meta( $ticket_id, '_tec_rsvp_migrated_to_tc', true ) );
 
 		// Post type should still be V1.
+		$this->assertEquals( 'tribe_rsvp_tickets', get_post_type( $ticket_id ) );
+
+		// Rollback should clean up the skipped ticket marker.
+		$this->run_migration_down();
+
+		clean_post_cache( $ticket_id );
+
+		$this->assertEmpty( get_post_meta( $ticket_id, '_tec_rsvp_migrated_to_tc', true ) );
 		$this->assertEquals( 'tribe_rsvp_tickets', get_post_type( $ticket_id ) );
 	}
 
