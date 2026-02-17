@@ -44,8 +44,8 @@ class REST_Properties {
 			return $properties;
 		}
 
-		$show_not_going                = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
-		$properties['show_not_going']  = tribe_is_truthy( $show_not_going );
+		$show_not_going               = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
+		$properties['show_not_going'] = tribe_is_truthy( $show_not_going );
 		/*
 		 * Always include not_going_count to match the REST API schema. When show_not_going is disabled,
 		 * the count is 0 because the "Not Going" option is not shown and no count is computed.
