@@ -356,6 +356,92 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	}
 
 	/**
+	 * Runs before each batch of the migration.
+	 *
+	 * Disables RSVP while the migration is running.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $batch      The batch number.
+	 * @param int $batch_size The batch size.
+	 *
+	 * @return void
+	 */
+	public function before_up( int $batch, int $batch_size ): void {
+		// Only set on the first batch: the option persists across batches and does not need to be set again.
+		if ( 1 !== $batch ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::DISABLED );
+	}
+
+	/**
+	 * Runs after each batch of the migration.
+	 *
+	 * Sets the RSVP version to v2 when migration completes.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $batch        The batch number.
+	 * @param int  $batch_size   The batch size.
+	 * @param bool $is_completed Whether the migration has been completed.
+	 *
+	 * @return void
+	 */
+	public function after_up( int $batch, int $batch_size, bool $is_completed ): void {
+		// Only set on the last batch: intermediate batches keep the DISABLED value set in before_up.
+		if ( ! $is_completed ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::VERSION_2 );
+	}
+
+	/**
+	 * Runs before each batch of the rollback.
+	 *
+	 * Disables RSVP while the rollback is running.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $batch      The batch number.
+	 * @param int $batch_size The batch size.
+	 *
+	 * @return void
+	 */
+	public function before_down( int $batch, int $batch_size ): void {
+		// Only set on the first batch: the option persists across batches and does not need to be set again.
+		if ( 1 !== $batch ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::DISABLED );
+	}
+
+	/**
+	 * Runs after each batch of the rollback.
+	 *
+	 * Sets the RSVP version to v1 when rollback completes.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $batch        The batch number.
+	 * @param int  $batch_size   The batch size.
+	 * @param bool $is_completed Whether the rollback has been completed.
+	 *
+	 * @return void
+	 */
+	public function after_down( int $batch, int $batch_size, bool $is_completed ): void {
+		// Only set on the last batch: intermediate batches keep the DISABLED value set in before_down.
+		if ( ! $is_completed ) {
+			return;
+		}
+
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::VERSION_1 );
+	}
+
+	/**
 	 * Run the migration.
 	 *
 	 * @since TBD
@@ -384,7 +470,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			}
 
 			// Skip tickets with no event relation.
-			if ( empty( $event_id ) ) {
+			if ( 0 === $event_id ) {
 				$logger->warning( 'RSVP Migration: Ticket has no event relation', [ 'ticket_id' => $ticket_id ] );
 				update_post_meta( $ticket_id, self::MIGRATED_TICKET_META_KEY, -1 );
 				continue;
