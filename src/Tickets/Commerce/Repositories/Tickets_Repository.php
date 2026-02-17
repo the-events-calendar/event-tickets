@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Tickets Repository.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Repositories
+ */
 
 namespace TEC\Tickets\Commerce\Repositories;
 

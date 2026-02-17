@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Module.
+ *
+ * @since 5.1.9
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -56,6 +63,8 @@ class Module extends \Tribe__Tickets__Tickets {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var string
 	 */
 	public $orm_provider = \TEC\Tickets\Commerce::PROVIDER;
 
@@ -251,7 +260,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since 5.1.9
 	 */
 	public function hooks() {
-		// if the hooks have already been bound, don't do it again
+		// If the hooks have already been bound, don't do it again.
 		if ( $this->is_loaded ) {
 			return false;
 		}
@@ -369,8 +378,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|string $order_id  Order ID.
-	 * @param null|int   $ticket_id (optional) Ticket ID.
+	 * @param int|string $order_id Order ID.
 	 *
 	 * @return array List of attendees.
 	 */
@@ -505,7 +513,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string|int $order_id
+	 * @param string|int $order_id The order ID.
 	 *
 	 * @return array
 	 */
@@ -568,8 +576,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since 5.1.9
 	 * @since 5.6.7 Set some provider-invariant ticket properties.
 	 *
-	 * @param int|WP_post $post_id
-	 * @param int|WP_post $ticket_id
+	 * @param int|WP_post $post_id   The post ID.
+	 * @param int|WP_post $ticket_id The ticket ID.
 	 *
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
