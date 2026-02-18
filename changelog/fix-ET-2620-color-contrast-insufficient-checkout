@@ -1,5 +1,5 @@
 Significance: patch
 Type: fix
 
-Fix an accessibility issue where the input error color of Stripe credit card form was not passing on the contrast color validation.
+Improve accessibility by updating the Stripe credit card form input error color to meet contrast validation requirements. [ET-2620]
 The original color was #eb1c26 changed to #C00 to pass the validation and be according the brand guideline
