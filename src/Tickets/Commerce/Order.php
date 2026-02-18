@@ -419,7 +419,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param Status\Status_Interface $status
+	 * @param Status\Status_Interface $status The order status object.
 	 *
 	 * @return string
 	 */
@@ -432,8 +432,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param string $flag   Which flag we are getting the meta key for.
-	 * @param string $status Which status ID we are getting the meta key for.
+	 * @param string                  $flag   Which flag we are getting the meta key for.
+	 * @param Status\Status_Interface $status Which status ID we are getting the meta key for.
 	 *
 	 * @return string
 	 */
@@ -611,8 +611,12 @@ class Order extends Abstract_Order {
 	 * @since 5.18.1 Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 * @since TBD - Add parameter to specify the ticket type to filter the cart items.
 	 *
+	 * @param Gateway_Interface $gateway     The payment gateway.
+	 * @param array|null        $purchaser   The purchaser information.
+	 * @param string            $ticket_type The type of ticket to filter cart items.
+	 *
 	 * @return false|WP_Post
-	 * @throws \Tribe__Repository__Usage_Error
+	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
 		$cart = tribe( Cart::class );
@@ -762,11 +766,11 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param Gateway_Interface $gateway
-	 * @param array             $args
+	 * @param Gateway_Interface $gateway The payment gateway.
+	 * @param array             $args    The order creation arguments.
 	 *
 	 * @return false|WP_Post
-	 * @throws \Tribe__Repository__Usage_Error
+	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 *
 	 * @internal Use `upsert` instead.
 	 */
@@ -908,7 +912,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $items List of events form.
+	 * @param array       $items List of events form.
+	 * @param string|null $hash  The cart hash.
 	 *
 	 * @return string
 	 */
@@ -969,7 +974,8 @@ class Order extends Abstract_Order {
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
 		if ( $redirect ) {
-			wp_redirect( esc_url_raw( $url ) );
+			wp_safe_redirect( esc_url_raw( $url ) );
+			die;
 		}
 		tribe_exit();
 	}
