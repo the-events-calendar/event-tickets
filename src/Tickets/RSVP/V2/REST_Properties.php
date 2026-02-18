@@ -13,6 +13,9 @@ namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Boolean;
+use TEC\Common\REST\TEC\V1\Parameter_Types\Positive_Integer;
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Attendee as TC_Attendee;
 use WP_Post;
 
 /**
@@ -43,6 +46,46 @@ class REST_Properties {
 		$show_not_going               = get_post_meta( $post->ID, Constants::SHOW_NOT_GOING_META_KEY, true );
 		$properties['show_not_going'] = tribe_is_truthy( $show_not_going );
 
+		/*
+		 * Always include not_going_count to match the REST API schema. When show_not_going is disabled,
+		 * the count is 0 because the "Not Going" option is not shown and no count is computed.
+		 */
+		$properties['not_going_count'] = 0;
+
+		if ( $properties['show_not_going'] ) {
+			/*
+			 * Why is this value not cached?
+			 * Caching this value would be done by Ticket ID.
+			 * But that value would have to be invalidated on each Ticket or connected Attendee
+			 * update. To capture Ticket and Attendee updates, the required logic would be to
+			 * listen for all updates/deletion of posts (Attendees) and post meta (going/not-going).
+			 * That filtering would likely cost more than this query.
+			 */
+			$count = (int) DB::get_var(
+				DB::prepare(
+					'SELECT COUNT(*) FROM %i p
+						INNER JOIN %i pm_ticket ON p.ID = pm_ticket.post_id
+						INNER JOIN %i pm_status ON p.ID = pm_status.post_id
+						WHERE p.post_type = %s
+						AND pm_ticket.meta_key = %s
+						AND pm_ticket.meta_value = %s
+						AND pm_status.meta_key = %s
+						AND pm_status.meta_value IN (%s, %s)',
+					DB::prefix( 'posts' ),
+					DB::prefix( 'postmeta' ),
+					DB::prefix( 'postmeta' ),
+					TC_Attendee::POSTTYPE,
+					TC_Attendee::$ticket_relation_meta_key,
+					$post->ID,
+					Constants::RSVP_STATUS_META_KEY,
+					'no',
+					'0'
+				)
+			);
+
+			$properties['not_going_count'] = (int) $count;
+		}
+
 		return $properties;
 	}
 
@@ -56,7 +99,8 @@ class REST_Properties {
 	 * @return array<string,bool> Modified properties.
 	 */
 	public function add_show_not_going_to_rest_properties( array $properties ): array {
-		$properties['show_not_going'] = true;
+		$properties['show_not_going']  = true;
+		$properties['not_going_count'] = true;
 
 		return $properties;
 	}
@@ -110,58 +154,13 @@ class REST_Properties {
 			)
 		)->set_example( false );
 
+		$properties[] = (
+			new Positive_Integer(
+				'not_going_count',
+				fn() => __( 'The number of "Not Going" responses for RSVP tickets.', 'event-tickets' ),
+			)
+		)->set_example( 7 );
+
 		return $documentation;
-	}
-
-	/**
-	 * Add the show_not_going parameter to upsert params for RSVP tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $ticket_params The filtered ticket params.
-	 * @param array<string,mixed> $params        The original REST params.
-	 *
-	 * @return array<string,mixed> Modified ticket params.
-	 */
-	public function add_show_not_going_to_upsert_params( array $ticket_params, array $params ): array {
-		if ( ! isset( $params['show_not_going'] ) ) {
-			return $ticket_params;
-		}
-
-		$ticket_params['show_not_going'] = $params['show_not_going'];
-
-		return $ticket_params;
-	}
-
-	/**
-	 * Add the show_not_going property to REST API ticket entity response.
-	 *
-	 * This filter runs during entity transformation after the properties are collected.
-	 * It reads the meta value fresh from the database to ensure the response reflects
-	 * any recent updates.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $entity The ticket entity data.
-	 *
-	 * @return array<string,mixed> Modified entity data.
-	 */
-	public function add_show_not_going_to_rest_response( array $entity ): array {
-		$ticket_id = $entity['id'] ?? 0;
-
-		if ( ! $ticket_id ) {
-			return $entity;
-		}
-
-		$type = $entity['type'] ?? get_post_meta( $ticket_id, '_type', true );
-
-		if ( Constants::TC_RSVP_TYPE !== $type ) {
-			return $entity;
-		}
-
-		$show_not_going           = get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true );
-		$entity['show_not_going'] = tribe_is_truthy( $show_not_going );
-
-		return $entity;
 	}
 }

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Tickets Repository.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Repositories
+ */
 
 namespace TEC\Tickets\Commerce\Repositories;
 
@@ -6,6 +13,7 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
+use TEC\Tickets\RSVP\V2\Constants;
 use WP_Post;
 
 /**
@@ -74,6 +82,7 @@ class Tickets_Repository extends Tribe__Repository {
 				'sale_price_start_date' => Ticket::$sale_price_start_date_key,
 				'sale_price_end_date'   => Ticket::$sale_price_end_date_key,
 				'capacity'              => $ticket_handler->key_capacity,
+				'show_not_going'        => Constants::SHOW_NOT_GOING_META_KEY,
 			]
 		);
 

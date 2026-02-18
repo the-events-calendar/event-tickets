@@ -8,7 +8,9 @@
 namespace TEC\Tickets\RSVP;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\StellarWP\Migrations\Enums\Status;
 use TEC\Tickets\Commerce\Payments_Tab;
+use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
  * Main controller for RSVP functionality.
@@ -101,8 +103,10 @@ class Controller extends Controller_Contract {
 			return false;
 		}
 
+		$is_active = self::get_version_from_migration_status() !== self::DISABLED;
+
 		// Check option (developer-only, no UI).
-		$active = (bool) get_option( 'tec_tickets_rsvp_active', true );
+		$active = (bool) get_option( 'tec_tickets_rsvp_active', $is_active );
 
 		/**
 		 * Filters whether RSVP functionality is enabled.
@@ -202,6 +206,13 @@ class Controller extends Controller_Contract {
 	 * @return string The filtered RSVP version to use.
 	 */
 	private static function get_version(): string {
+		$version = self::get_version_from_migration_status();
+
+		if ( $version === self::DISABLED ) {
+			// This should never happen! RSVP are disabled before we reach this point.
+			return self::VERSION_1;
+		}
+
 		/**
 		 * Filters the RSVP version to register.
 		 *
@@ -211,6 +222,83 @@ class Controller extends Controller_Contract {
 		 *
 		 * @param string $version The RSVP version to register.
 		 */
-		return (string) apply_filters( 'tec_tickets_rsvp_version', self::VERSION_1 );
+		return (string) apply_filters( 'tec_tickets_rsvp_version', $version );
+	}
+
+	/**
+	 * The option key used to store the RSVP version.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const VERSION_OPTION_KEY = 'tickets_rsvp_version';
+
+	/**
+	 * Returns the RSVP version based on the migration status.
+	 *
+	 * The version is stored in a tribe option and updated by the migration's
+	 * before/after hooks. On first load (no option set), live detection runs
+	 * once from the migration status and saves the result.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The RSVP version based on the migration status.
+	 */
+	private static function get_version_from_migration_status(): string {
+		$version = tribe_get_option( self::VERSION_OPTION_KEY, null );
+
+		if ( is_string( $version ) && in_array( $version, [ self::VERSION_1, self::VERSION_2, self::DISABLED ], true ) ) {
+			return $version;
+		}
+
+		// First load: detect from migration status and persist.
+		$version = self::detect_version_from_migration_status();
+		tribe_update_option( self::VERSION_OPTION_KEY, $version );
+
+		return $version;
+	}
+
+	/**
+	 * Detects the RSVP version from the migration status.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The detected RSVP version.
+	 */
+	private static function detect_version_from_migration_status(): string {
+		$registry = migrations()->get_registry();
+
+		$rsvp_to_tc = $registry->get( 'rsvp-to-tc' );
+
+		if ( ! $rsvp_to_tc ) {
+			// Assume that it has been completed and removed in the future.
+			return self::VERSION_2;
+		}
+
+		$migration_status = $rsvp_to_tc->get_status();
+
+		if ( Status::COMPLETED()->equals( $migration_status ) ) {
+			return self::VERSION_2;
+		} elseif ( Status::FAILED()->equals( $migration_status ) ) {
+			return self::VERSION_1;
+		} elseif ( Status::NOT_APPLICABLE()->equals( $migration_status ) ) {
+			return self::VERSION_2;
+		} elseif ( Status::PAUSED()->equals( $migration_status ) ) {
+			return self::DISABLED;
+		} elseif ( Status::PENDING()->equals( $migration_status ) ) {
+			return self::VERSION_1;
+		} elseif ( Status::RUNNING()->equals( $migration_status ) ) {
+			return self::DISABLED;
+		} elseif ( Status::SCHEDULED()->equals( $migration_status ) ) {
+			return self::VERSION_1;
+		} elseif ( Status::CANCELED()->equals( $migration_status ) ) {
+			return self::VERSION_1;
+		} elseif ( Status::REVERTED()->equals( $migration_status ) ) {
+			return self::VERSION_1;
+		}
+
+		// Unknown status: determine version from the actual data state.
+		return $rsvp_to_tc->is_applicable() ? self::VERSION_1 : self::VERSION_2;
 	}
 }

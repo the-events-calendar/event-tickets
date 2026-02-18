@@ -35,6 +35,7 @@ jobs:
           - integration
           - restv1
           - rest_tec_v1_integration
+          - rsvp_to_tc_migration
           - views_integration
           - commerce_integration
           - wpunit
