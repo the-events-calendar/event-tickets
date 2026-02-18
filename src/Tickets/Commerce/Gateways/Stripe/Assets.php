@@ -105,7 +105,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 									'color' => '#23282d',
 								],
 								'invalid' => [
-									'color' => '#c00',
+									'color' => '#c00000',
 								],
 							],
 							'cardElementOptions' => [
