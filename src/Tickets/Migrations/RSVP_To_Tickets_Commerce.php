@@ -263,7 +263,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @return bool Whether the migration has been rolled back.
 	 */
 	public function is_down_done(): bool {
-		return $this->get_migrated_tickets_count() === 0;
+		return $this->get_migrated_tickets_count() === 0 && $this->get_skipped_tickets_count() === 0;
 	}
 
 	/**
@@ -554,6 +554,28 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 				DB::prefix( 'posts' ),
 				self::MIGRATED_TICKET_META_KEY,
 				TC_Ticket::POSTTYPE
+			)
+		);
+	}
+
+	/**
+	 * Get the count of skipped tickets that still have migration markers to clean up.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The count.
+	 */
+	private function get_skipped_tickets_count(): int {
+		return (int) DB::get_var(
+			DB::prepare(
+				'SELECT COUNT(*) FROM %i pm
+				INNER JOIN %i p ON pm.post_id = p.ID
+				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_type = %s',
+				DB::prefix( 'postmeta' ),
+				DB::prefix( 'posts' ),
+				self::MIGRATED_TICKET_META_KEY,
+				'-1',
+				'tribe_rsvp_tickets'
 			)
 		);
 	}
