@@ -5,6 +5,7 @@ use Codeception\Event\SuiteEvent;
 use Codeception\Events;
 use lucatume\WPBrowser\Events\Dispatcher;
 use lucatume\WPBrowser\Module\WPFilesystem;
+use lucatume\WPBrowser\Utils\Filesystem;
 
 /**
  * Retrieves the WPFilesystem module instance from the current suite.
@@ -53,7 +54,12 @@ Dispatcher::addListener(
 			return get_option( 'test_rsvp_version', RSVP_Controller::VERSION_1 );
 		} );
 		PHP;
-		$fsModule                     = get_wpfilesystem_module( $event );
+
+
+		// Place the must-use plugin.
+		$fsModule = get_wpfilesystem_module( $event );
+		// Ensure the must-use plugins directory exists.
+		Filesystem::mkdirp( $fsModule->_getConfig( 'mu-plugins' ) );
 		$fsModule->writeToMuPluginFile( 'force_rsvp_v1.php', $force_rsvp_v1_mu_plugin_code );
 		$mu_plugin_file = $fsModule->_getConfig( 'mu-plugins' ) . 'force_rsvp_v1.php';
 	}
