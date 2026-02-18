@@ -406,7 +406,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param Status\Status_Interface $status
+	 * @param Status\Status_Interface $status The order status object.
 	 *
 	 * @return string
 	 */
@@ -630,7 +630,12 @@ class Order extends Abstract_Order {
 					}
 
 					// Ensure we have the properties we need on the ticket object.
-					if ( ! isset( $ticket->price, $ticket->regular_price ) ) {
+					if ( ! isset( $ticket->price ) ) {
+						// A ticket must have a price, that price could bo `0`.
+						return null;
+					}
+					if ( ! empty( $ticket->price ) && ! isset( $ticket->regular_price ) ) {
+						// If the prices is not `0`, then the ticket must have a regular price.
 						return null;
 					}
 
