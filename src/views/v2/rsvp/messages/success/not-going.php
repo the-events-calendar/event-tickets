@@ -23,7 +23,7 @@ if ( ! empty( $is_going ) ) {
 }
 ?>
 
-<span class="tribe-tickets__rsvp-message-text">
+<span class="tribe-tickets__rsvp-message-text" role="alert">
 	<strong>
 		<?php esc_html_e( 'Thank you for confirming!', 'event-tickets' ); ?>
 	</strong>
