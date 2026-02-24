@@ -78,11 +78,26 @@ class Controller extends Controller_Contract {
 	 * @return bool Always returns true to enable Tickets Commerce.
 	 */
 	public static function enable_tickets_commerce(): bool {
-		// Trust the options and remove do not force the creation if the options are set.
-		tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
-		tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page();
+		// Defer page creation to `init` because wp_insert_post() requires $wp_rewrite to be initialized.
+		if ( did_action( 'init' ) || doing_action( 'init' ) ) {
+			self::maybe_create_tickets_commerce_pages();
+		} else {
+			add_action( 'init', [ self::class, 'maybe_create_tickets_commerce_pages' ] );
+		}
 
 		return true;
+	}
+
+	/**
+	 * Creates the Tickets Commerce checkout and success pages if they don't exist.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function maybe_create_tickets_commerce_pages(): void {
+		tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
+		tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page();
 	}
 
 	/**
