@@ -203,8 +203,9 @@ class Controller extends Controller_Contract {
 	 * @return array<string,mixed> The modified editor configuration.
 	 */
 	public function add_rsvp_disabled_editor_config( array $config ): array {
-		$config['tickets']               ??= [];
-		$config['tickets']['rsvpDisabled'] = true;
+		$config['tickets']                    ??= [];
+		$config['tickets']['rsvpDisabled']      = true;
+		$config['tickets']['migrationsTabUrl']  = admin_url( 'admin.php?page=tec-tickets-settings&tab=migrations' );
 
 		return $config;
 	}

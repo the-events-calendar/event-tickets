@@ -145,6 +145,7 @@ class Controller_Test extends Controller_Test_Case {
 		$config     = $controller->add_rsvp_disabled_editor_config( [] );
 
 		$this->assertTrue( $config['tickets']['rsvpDisabled'] );
+		$this->assertStringContainsString( 'page=tec-tickets-settings&tab=migrations', $config['tickets']['migrationsTabUrl'] );
 	}
 
 	public function test_add_rsvp_disabled_editor_config_preserves_existing_tickets_config(): void {
