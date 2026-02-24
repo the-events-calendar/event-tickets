@@ -330,4 +330,18 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	public function is_not_going_enabled( $ticket_id ): bool {
 		return false;
 	}
+
+	/**
+	 * Returns empty array - no ticket IDs when disabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post $post    The post.
+	 * @param string|null $context The context.
+	 *
+	 * @return array Empty array.
+	 */
+	public function get_tickets_ids( $post = 0, string $context = null ) {
+		return [];
+	}
 }

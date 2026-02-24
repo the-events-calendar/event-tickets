@@ -96,6 +96,10 @@ class RSVP_Disabled_Test extends WPTestCase {
 		$this->assertFalse( $this->rsvp_disabled->is_not_going_enabled( 1 ) );
 	}
 
+	public function test_get_tickets_ids_returns_empty_array(): void {
+		$this->assertSame( [], $this->rsvp_disabled->get_tickets_ids( 1 ) );
+	}
+
 	public function test_init_is_noop(): void {
 		// Should not throw or have side effects.
 		$this->rsvp_disabled->init();
