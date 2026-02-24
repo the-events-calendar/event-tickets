@@ -80,7 +80,7 @@ class Controller extends Controller_Contract {
 		}
 
 		$tab_settings = [
-			'priority'         => 25,
+			'priority'         => 37,
 			'display_callback' => static function (): void {
 				$ui = tribe( UI::class );
 				$ui->set_additional_params(
