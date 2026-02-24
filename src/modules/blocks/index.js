@@ -11,18 +11,36 @@ const { addFilter, applyFilters, doAction } = wp.hooks;
 import { initStore } from '../data';
 import rsvp from './rsvp';
 import rsvpV2 from './rsvp-v2';
+import rsvpDisabled from './rsvp-disabled';
 import attendees from './attendees';
 import { isV2Enabled } from '../data/blocks/rsvp-v2/config';
 import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-filters';
 
 /**
- * Filter callback to swap V1 RSVP block with V2 when V2 is enabled.
+ * Check if RSVP is disabled via editor config.
+ *
+ * @since TBD
+ * @return {boolean} Whether RSVP is disabled.
+ */
+const isRsvpDisabled = () =>
+	Boolean( window.tribe_editor_config?.tickets?.rsvpDisabled );
+
+/**
+ * Filter callback to handle RSVP block based on version state.
+ *
+ * When RSVP is disabled, replaces the block with a disabled placeholder
+ * that shows a migration-in-progress message.
+ * When V2 is enabled, swaps V1 RSVP block with V2.
  *
  * @since TBD
  * @param {Object[]} blocks The blocks to be registered.
  * @return {Object[]} The filtered blocks.
  */
 const maybeSwapRsvpBlock = ( blocks ) => {
+	if ( isRsvpDisabled() ) {
+		return blocks.map( ( block ) => ( block.id === 'rsvp' ? rsvpDisabled : block ) );
+	}
+
 	if ( ! isV2Enabled() ) {
 		return blocks;
 	}
