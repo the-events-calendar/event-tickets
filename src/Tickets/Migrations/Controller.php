@@ -13,6 +13,7 @@ use Tribe__Settings as Common_Settings;
 use Tribe__Settings_Tab as Tab;
 use TEC\Common\StellarWP\Migrations\Admin\UI;
 use TEC\Common\StellarWP\Migrations\Admin\Provider as Migrations_Admin_Provider;
+use TEC\Common\StellarWP\Migrations\Contracts\Migration;
 use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
@@ -35,6 +36,7 @@ class Controller extends Controller_Contract {
 		Migrations_Admin_Provider::set_parent_page( 'tec-tickets-settings' );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_migrations_tab' ], 20 );
 		add_action( 'tribe_settings_below_tabs_tab_migrations', [ $this, 'remove_form_element_open_and_close' ] );
+		add_action( 'tribe_settings_before_content_tab_migrations', [ $this, 'filter_migrations_to_event_tickets' ] );
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_migrations_tab_id' ] );
 	}
 
@@ -50,6 +52,7 @@ class Controller extends Controller_Contract {
 		migrations()->get_registry()->offsetUnset( 'rsvp-to-tc' );
 		remove_action( 'tribe_settings_do_tabs', [ $this, 'register_migrations_tab' ], 20 );
 		remove_action( 'tribe_settings_below_tabs_tab_migrations', [ $this, 'remove_form_element_open_and_close' ] );
+		remove_action( 'tribe_settings_before_content_tab_migrations', [ $this, 'filter_migrations_to_event_tickets' ] );
 		remove_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'settings_add_migrations_tab_id' ] );
 	}
 
@@ -63,6 +66,43 @@ class Controller extends Controller_Contract {
 	public function remove_form_element_open_and_close(): void {
 		remove_action( 'tribe_settings_form_element_open', [ tribe( Common_Settings::class ), 'settings_form_element_open' ] );
 		remove_action( 'tribe_settings_form_element_close', [ tribe( Common_Settings::class ), 'settings_form_element_close' ] );
+	}
+
+	/**
+	 * Filters the migrations list to only show Event Tickets migrations.
+	 *
+	 * Adds a filter on the StellarWP filtered migrations hook to restrict
+	 * the displayed migrations to those tagged with 'event-tickets'.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function filter_migrations_to_event_tickets(): void {
+		add_filter(
+			'stellarwp_migrations_tec_filtered_migrations',
+			[ $this, 'keep_only_event_tickets_migrations' ]
+		);
+	}
+
+	/**
+	 * Keeps only migrations tagged with 'event-tickets'.
+	 *
+	 * @since TBD
+	 *
+	 * @param Migration[] $migrations The filtered migrations.
+	 *
+	 * @return Migration[] The migrations tagged with 'event-tickets'.
+	 */
+	public function keep_only_event_tickets_migrations( array $migrations ): array {
+		return array_values(
+			array_filter(
+				$migrations,
+				static function ( Migration $migration ): bool {
+					return in_array( 'event-tickets', $migration->get_tags(), true );
+				}
+			)
+		);
 	}
 
 	/**
