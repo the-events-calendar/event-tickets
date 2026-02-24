@@ -88,9 +88,21 @@ class Controller extends Controller_Contract {
 						'tab' => 'migrations',
 					]
 				);
+
+				// Filter the migration query to show only migrations tagged with 'event-tickets'.
+				$add_tags = static function ( array $filters ): array {
+					$filters['tags'] ??= [];
+					$filters['tags'][] = 'event-tickets';
+
+					return $filters;
+				};
 				?>
 				<div class="tec-settings-form tec-settings-form__migrations-tab--active" style="grid-template-columns: 1fr;">
-					<?php $ui->render_list(); ?>
+					<?php
+					add_filter( 'stellarwp_migrations_tec_filters', $add_tags );
+					$ui->render_list();
+					remove_filter( 'stellarwp_migrations_tec_filters', $add_tags );
+					?>
 				</div>
 				<?php
 			},
