@@ -97,6 +97,20 @@ class Controller extends Controller_Contract {
 					return $filters;
 				};
 				?>
+				<?php
+				// Hide the tag search field and individual migration tags using inline CSS
+				// to avoid overriding the StellarWP migrations templates. Strategy requested
+				// these fields to be hidden from the Event Tickets migrations tab.
+				?>
+				<style>
+					.stellarwp-migrations-filters__row,
+					.stellarwp-migration-card__tags {
+						display: none !important;
+					}
+					.tickets_page_tec-tickets-settings .tec-settings-form.tec-settings-form__migrations-tab--active {
+						padding-top: 0;
+					}
+				</style>
 				<div class="tec-settings-form tec-settings-form__migrations-tab--active" style="grid-template-columns: 1fr;">
 					<?php
 					add_filter( 'stellarwp_migrations_tec_filters', $add_tags );

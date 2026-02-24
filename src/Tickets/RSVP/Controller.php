@@ -185,6 +185,44 @@ class Controller extends Controller_Contract {
 		// Repositories must use bind(), not singleton(), to return a fresh instance on each call.
 		$this->container->bind( 'tickets.ticket-repository.rsvp', Repositories\Ticket_Repository_Disabled::class );
 		$this->container->bind( 'tickets.attendee-repository.rsvp', Repositories\Attendee_Repository_Disabled::class );
+
+		// Tell the Block Editor that RSVP is disabled so the JS block is not registered.
+		add_filter( 'tribe_editor_config', [ $this, 'add_rsvp_disabled_editor_config' ] );
+
+		// Disable the RSVP form toggle in the Classic Editor metabox.
+		add_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'disable_rsvp_form_toggle' ] );
+	}
+
+	/**
+	 * Adds the RSVP disabled flag to the Block Editor configuration.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $config The editor configuration.
+	 *
+	 * @return array<string,mixed> The modified editor configuration.
+	 */
+	public function add_rsvp_disabled_editor_config( array $config ): array {
+		$config['tickets']                   ??= [];
+		$config['tickets']['rsvpDisabled']     = true;
+		$config['tickets']['migrationsTabUrl'] = admin_url( 'admin.php?page=tec-tickets-settings&tab=migrations' );
+
+		return $config;
+	}
+
+	/**
+	 * Disables the RSVP form toggle in the Classic Editor metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,bool> $enabled The enabled ticket forms.
+	 *
+	 * @return array<string,bool> The modified enabled ticket forms.
+	 */
+	public function disable_rsvp_form_toggle( array $enabled ): array {
+		$enabled['rsvp'] = false;
+
+		return $enabled;
 	}
 
 	/**
@@ -196,6 +234,9 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		if ( ! $this->is_rsvp_enabled() ) {
+			remove_filter( 'tribe_editor_config', [ $this, 'add_rsvp_disabled_editor_config' ] );
+			remove_filter( 'tec_tickets_enabled_ticket_forms', [ $this, 'disable_rsvp_form_toggle' ] );
+
 			return;
 		}
 

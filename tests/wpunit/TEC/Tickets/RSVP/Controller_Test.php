@@ -139,4 +139,104 @@ class Controller_Test extends Controller_Test_Case {
 		// If we get here without exception, test passes.
 		$this->assertTrue( true );
 	}
+
+	public function test_add_rsvp_disabled_editor_config_sets_flag(): void {
+		$controller = $this->make_controller();
+		$config     = $controller->add_rsvp_disabled_editor_config( [] );
+
+		$this->assertTrue( $config['tickets']['rsvpDisabled'] );
+		$this->assertStringContainsString( 'page=tec-tickets-settings&tab=migrations', $config['tickets']['migrationsTabUrl'] );
+	}
+
+	public function test_add_rsvp_disabled_editor_config_preserves_existing_tickets_config(): void {
+		$controller = $this->make_controller();
+		$config     = $controller->add_rsvp_disabled_editor_config( [
+			'tickets' => [ 'someOtherKey' => 'value' ],
+		] );
+
+		$this->assertSame( 'value', $config['tickets']['someOtherKey'] );
+		$this->assertTrue( $config['tickets']['rsvpDisabled'] );
+	}
+
+	public function test_add_rsvp_disabled_editor_config_preserves_other_config_keys(): void {
+		$controller = $this->make_controller();
+		$config     = $controller->add_rsvp_disabled_editor_config( [
+			'common' => [ 'key' => 'value' ],
+		] );
+
+		$this->assertSame( [ 'key' => 'value' ], $config['common'] );
+		$this->assertTrue( $config['tickets']['rsvpDisabled'] );
+	}
+
+	public function test_disable_rsvp_form_toggle_sets_rsvp_false(): void {
+		$controller = $this->make_controller();
+		$enabled    = $controller->disable_rsvp_form_toggle( [ 'rsvp' => true, 'tc' => true ] );
+
+		$this->assertFalse( $enabled['rsvp'] );
+	}
+
+	public function test_disable_rsvp_form_toggle_preserves_other_forms(): void {
+		$controller = $this->make_controller();
+		$enabled    = $controller->disable_rsvp_form_toggle( [ 'rsvp' => true, 'tc' => true ] );
+
+		$this->assertTrue( $enabled['tc'] );
+	}
+
+	public function test_register_disabled_hooks_editor_config_filter(): void {
+		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertNotFalse(
+			has_filter( 'tribe_editor_config', [ $controller, 'add_rsvp_disabled_editor_config' ] ),
+			'tribe_editor_config filter should be registered when RSVP is disabled'
+		);
+	}
+
+	public function test_register_disabled_hooks_ticket_forms_filter(): void {
+		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertNotFalse(
+			has_filter( 'tec_tickets_enabled_ticket_forms', [ $controller, 'disable_rsvp_form_toggle' ] ),
+			'tec_tickets_enabled_ticket_forms filter should be registered when RSVP is disabled'
+		);
+	}
+
+	public function test_unregister_removes_editor_config_filter_when_disabled(): void {
+		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Confirm filter is hooked before unregister.
+		$this->assertNotFalse(
+			has_filter( 'tribe_editor_config', [ $controller, 'add_rsvp_disabled_editor_config' ] )
+		);
+
+		$controller->unregister();
+
+		$this->assertFalse(
+			has_filter( 'tribe_editor_config', [ $controller, 'add_rsvp_disabled_editor_config' ] ),
+			'tribe_editor_config filter should be removed after unregister'
+		);
+	}
+
+	public function test_unregister_removes_ticket_forms_filter_when_disabled(): void {
+		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Confirm filter is hooked before unregister.
+		$this->assertNotFalse(
+			has_filter( 'tec_tickets_enabled_ticket_forms', [ $controller, 'disable_rsvp_form_toggle' ] )
+		);
+
+		$controller->unregister();
+
+		$this->assertFalse(
+			has_filter( 'tec_tickets_enabled_ticket_forms', [ $controller, 'disable_rsvp_form_toggle' ] ),
+			'tec_tickets_enabled_ticket_forms filter should be removed after unregister'
+		);
+	}
 }

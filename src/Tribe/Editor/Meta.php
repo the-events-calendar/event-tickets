@@ -524,11 +524,19 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 * Renders the New RSVP form in the metabox, as appropriate.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Added `$disabled` parameter to support rendering a disabled button.
 	 *
-	 * @param int $post_id The ID of the post the form is being rendered for.
+	 * @param int  $post_id  The ID of the post the form is being rendered for.
+	 * @param bool $disabled Whether the RSVP form toggle should be disabled.
 	 */
-	public function render_rsvp_form_toggle( int $post_id ): void {
-		$this->admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
+	public function render_rsvp_form_toggle( int $post_id, bool $disabled = false ): void {
+		$this->admin_views->template(
+			'editor/elements/new-rsvp',
+			[
+				'post_id'  => $post_id,
+				'disabled' => $disabled,
+			]
+		);
 	}
 
 	/**
