@@ -530,10 +530,13 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 * @param bool $disabled Whether the RSVP form toggle should be disabled.
 	 */
 	public function render_rsvp_form_toggle( int $post_id, bool $disabled = false ): void {
-		$this->admin_views->template( 'editor/elements/new-rsvp', [
-			'post_id'  => $post_id,
-			'disabled' => $disabled,
-		] );
+		$this->admin_views->template(
+			'editor/elements/new-rsvp',
+			[
+				'post_id'  => $post_id,
+				'disabled' => $disabled,
+			]
+		);
 	}
 
 	/**
