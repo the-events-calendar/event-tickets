@@ -24,7 +24,7 @@ const RSVPDisabledBlock = () => (
 			</div>
 			<a
 				className="tribe-editor__rsvp-disabled-text helper-link"
-				href={ window.tribe_editor_config?.tickets?.migrationsTabUrl || '#' }
+				href={ `${ window.ajaxurl?.replace( '/admin-ajax.php', '' ) || '/wp-admin' }/admin.php?page=tec-tickets-settings&tab=migrations` }
 				target="_blank"
 				rel="noopener noreferrer"
 			>

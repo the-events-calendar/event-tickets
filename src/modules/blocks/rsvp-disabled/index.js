@@ -40,12 +40,12 @@ export default {
 
 	attributes: {
 		goingCount: {
-			type: 'string',
+			type: 'integer',
 			source: 'meta',
 			meta: KEY_TICKET_GOING_COUNT,
 		},
 		notGoingCount: {
-			type: 'string',
+			type: 'integer',
 			source: 'meta',
 			meta: KEY_TICKET_NOT_GOING_COUNT,
 		},
