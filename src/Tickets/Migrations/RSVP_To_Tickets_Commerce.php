@@ -187,7 +187,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @return string The migration label.
 	 */
 	public function get_label(): string {
-		return __( 'RSVP to Tickets Commerce', 'event-tickets' );
+		return __( 'RSVP Upgrade', 'event-tickets' );
 	}
 
 	/**
@@ -198,7 +198,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @return string The migration description.
 	 */
 	public function get_description(): string {
-		return __( 'Migrate your RSVPs to Tickets Commerce.', 'event-tickets' );
+		return __( 'Migrate your RSVPs to the new data system', 'event-tickets' );
 	}
 
 	/**
