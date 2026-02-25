@@ -112,14 +112,14 @@ class Return_Endpoint_Test extends WPTestCase {
 	 */
 	public function should_reject_request_with_payload_missing_state(): void {
 		$payload = $this->encode_payload( [
-			'stripe_user_id' => 'acct_ATTACKER',
+			'stripe_user_id' => 'acct_UNAUTHORIZED123',
 			'live'           => [
-				'access_token'    => 'sk_live_ATTACKER',
-				'publishable_key' => 'pk_live_ATTACKER',
+				'access_token'    => 'sk_live_UNAUTHORIZED',
+				'publishable_key' => 'pk_live_UNAUTHORIZED',
 			],
 			'sandbox'        => [
-				'access_token'    => 'sk_test_ATTACKER',
-				'publishable_key' => 'pk_test_ATTACKER',
+				'access_token'    => 'sk_test_UNAUTHORIZED',
+				'publishable_key' => 'pk_test_UNAUTHORIZED',
 			],
 		] );
 
@@ -131,17 +131,17 @@ class Return_Endpoint_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_reject_request_with_forged_state_nonce(): void {
+	public function should_reject_request_with_invalid_state_nonce(): void {
 		$payload = $this->encode_payload( [
-			'stripe_user_id' => 'acct_ATTACKER',
-			'state'          => 'totally_fake_nonce_value',
+			'stripe_user_id' => 'acct_UNAUTHORIZED123',
+			'state'          => 'not_a_real_nonce_value',
 			'live'           => [
-				'access_token'    => 'sk_live_ATTACKER',
-				'publishable_key' => 'pk_live_ATTACKER',
+				'access_token'    => 'sk_live_UNAUTHORIZED',
+				'publishable_key' => 'pk_live_UNAUTHORIZED',
 			],
 			'sandbox'        => [
-				'access_token'    => 'sk_test_ATTACKER',
-				'publishable_key' => 'pk_test_ATTACKER',
+				'access_token'    => 'sk_test_UNAUTHORIZED',
+				'publishable_key' => 'pk_test_UNAUTHORIZED',
 			],
 		] );
 
@@ -153,31 +153,31 @@ class Return_Endpoint_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_reject_unauthenticated_credential_overwrite_attempt(): void {
-		$attacker_payload = [
-			'stripe_user_id' => 'acct_ATTACKER_ACCOUNT_ID',
+	public function should_reject_unauthorized_credential_overwrite(): void {
+		$unauthorized_payload = [
+			'stripe_user_id' => 'acct_UNAUTHORIZED_ACCOUNT_ID',
 			'live'           => [
-				'access_token'    => 'sk_live_ATTACKER_SECRET_KEY',
-				'publishable_key' => 'pk_live_ATTACKER_PUBLISHABLE_KEY',
+				'access_token'    => 'sk_live_UNAUTHORIZED_SECRET_KEY',
+				'publishable_key' => 'pk_live_UNAUTHORIZED_PUBLISHABLE_KEY',
 			],
 			'sandbox'        => [
-				'access_token'    => 'sk_test_ATTACKER_SECRET_KEY',
-				'publishable_key' => 'pk_test_ATTACKER_PUBLISHABLE_KEY',
+				'access_token'    => 'sk_test_UNAUTHORIZED_SECRET_KEY',
+				'publishable_key' => 'pk_test_UNAUTHORIZED_PUBLISHABLE_KEY',
 			],
 		];
 
-		$encoded = $this->encode_payload( $attacker_payload );
+		$encoded = $this->encode_payload( $unauthorized_payload );
 
 		$result = $this->call_has_permission( $encoded );
 
 		// The request must be rejected at the permission level.
-		$this->assertFalse( $result, 'Unauthenticated credential overwrite should be blocked.' );
+		$this->assertFalse( $result, 'Unauthorized credential overwrite should be blocked.' );
 
-		// Verify the attacker's credentials were NOT saved.
+		// Verify the unauthorized credentials were NOT saved.
 		$signup_data = get_option( tribe( Merchant::class )->get_signup_data_key() );
 
 		if ( ! empty( $signup_data['stripe_user_id'] ) ) {
-			$this->assertNotEquals( 'acct_ATTACKER_ACCOUNT_ID', $signup_data['stripe_user_id'] );
+			$this->assertNotEquals( 'acct_UNAUTHORIZED_ACCOUNT_ID', $signup_data['stripe_user_id'] );
 		}
 	}
 
@@ -224,11 +224,11 @@ class Return_Endpoint_Test extends WPTestCase {
 		$wrong_nonce = wp_create_nonce( 'some_other_action' );
 
 		$payload = $this->encode_payload( [
-			'stripe_user_id' => 'acct_ATTACKER',
+			'stripe_user_id' => 'acct_UNAUTHORIZED123',
 			'state'          => $wrong_nonce,
 			'live'           => [
-				'access_token'    => 'sk_live_ATTACKER',
-				'publishable_key' => 'pk_live_ATTACKER',
+				'access_token'    => 'sk_live_UNAUTHORIZED',
+				'publishable_key' => 'pk_live_UNAUTHORIZED',
 			],
 		] );
 
@@ -255,11 +255,11 @@ class Return_Endpoint_Test extends WPTestCase {
 	 */
 	public function should_reject_request_with_state_as_empty_string(): void {
 		$payload = $this->encode_payload( [
-			'stripe_user_id' => 'acct_ATTACKER',
+			'stripe_user_id' => 'acct_UNAUTHORIZED123',
 			'state'          => '',
 			'live'           => [
-				'access_token'    => 'sk_live_ATTACKER',
-				'publishable_key' => 'pk_live_ATTACKER',
+				'access_token'    => 'sk_live_UNAUTHORIZED',
+				'publishable_key' => 'pk_live_UNAUTHORIZED',
 			],
 		] );
 
