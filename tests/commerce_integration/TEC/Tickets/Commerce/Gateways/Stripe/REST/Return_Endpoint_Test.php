@@ -152,12 +152,8 @@ class Return_Endpoint_Test extends WPTestCase {
 
 	/**
 	 * @test
-	 *
-	 * Reproduces the exact attack from the vulnerability PoC:
-	 * An unauthenticated attacker crafts a base64 payload to overwrite Stripe credentials.
 	 */
 	public function should_reject_unauthenticated_credential_overwrite_attempt(): void {
-		// Simulate the exact attack payload from the vulnerability PoC.
 		$attacker_payload = [
 			'stripe_user_id' => 'acct_ATTACKER_ACCOUNT_ID',
 			'live'           => [
