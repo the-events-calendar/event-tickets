@@ -18,6 +18,7 @@
 	<button
 		type="button"
 		class="tribe-tickets__item__remove"
+		aria-label="<?php esc_attr_e( 'Remove item', 'event-tickets' ); ?>"
 	>
 	</button>
 </div>
