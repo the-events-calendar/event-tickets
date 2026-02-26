@@ -1,0 +1,4 @@
+Significance: patch
+Type: accessibility
+
+Added aria-label to the close button on ticket list modal [ET-2228]
