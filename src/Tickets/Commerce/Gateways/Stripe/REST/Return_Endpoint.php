@@ -45,11 +45,11 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		$payload = tribe_get_request_var( 'stripe' );
 		$response = $this->decode_payload( $payload );
 
-		if ( empty( $response->state ) ) {
+		if ( empty( $response->nonce ) ) {
 			return false;
 		}
 
-		return wp_verify_nonce( $response->state, tribe( WhoDat::class )->get_state_nonce_action() );
+		return wp_verify_nonce( $response->nonce, tribe( WhoDat::class )->get_state_nonce_action() );
 	}
 
 	/**

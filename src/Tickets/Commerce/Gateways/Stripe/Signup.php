@@ -47,7 +47,7 @@ class Signup extends Abstract_Signup {
 		// Generate nonce as user 0 so it can be verified on the unauthenticated REST callback.
 		$user_id = get_current_user_id();
 		wp_set_current_user( 0 );
-		$state = wp_create_nonce( $whodat->get_state_nonce_action() );
+		$nonce = wp_create_nonce( $whodat->get_state_nonce_action() );
 		wp_set_current_user( $user_id );
 
 		return $whodat->get_api_url(
@@ -61,7 +61,7 @@ class Signup extends Abstract_Signup {
 				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe( Webhooks::class )->get_known_webhooks() ) ),
-				'state'          => $state,
+				'nonce'       => $nonce,
 			]
 		);
 	}
@@ -82,7 +82,7 @@ class Signup extends Abstract_Signup {
 		// Generate nonce as user 0 so it can be verified on the unauthenticated REST callback.
 		$user_id = get_current_user_id();
 		wp_set_current_user( 0 );
-		$state = wp_create_nonce( $whodat->get_state_nonce_action() );
+		$nonce = wp_create_nonce( $whodat->get_state_nonce_action() );
 		wp_set_current_user( $user_id );
 
 		return $whodat->get_api_url(
@@ -93,7 +93,7 @@ class Signup extends Abstract_Signup {
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
-				'state'          => $state,
+				'nonce' => $nonce,
 			]
 		);
 	}

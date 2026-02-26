@@ -205,6 +205,7 @@ class Merchant extends Abstract_Merchant {
 	public function save_signup_data( array $signup_data ) {
 		unset( $signup_data['whodat'] );
 		unset( $signup_data['state'] );
+		unset( $signup_data['nonce'] );
 
 		return update_option( $this->get_signup_data_key(), $signup_data );
 	}
