@@ -8,12 +8,24 @@
  * @var bool $disabled Whether the RSVP form toggle should be disabled.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $disabled = ! empty( $disabled );
 ?>
 <button
 	id="rsvp_form_toggle"
 	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-	aria-label="<?php echo esc_attr(sprintf(_x('Add a new %s', 'RSVP form toggle button label', 'event-tickets'), tribe_get_rsvp_label_singular('rsvp_form_toggle_button_label'))); ?>"
+	aria-label="
+	<?php
+	echo esc_attr(
+		sprintf(
+			// translators: the %s is the name of the RSVP ticket type.
+			_x( 'Add a new %s', 'RSVP form toggle button label', 'event-tickets' ),
+			tribe_get_rsvp_label_singular( 'rsvp_form_toggle_button_label' )
+		)
+	);
+	?>
+	"
 	<?php if ( $disabled ) : ?>
 		disabled
 		title="<?php echo esc_attr_x( 'RSVP is temporarily disabled while migration is in progress.', 'Tooltip for disabled RSVP button during migration.', 'event-tickets' ); ?>"
@@ -22,8 +34,10 @@ $disabled = ! empty( $disabled );
 	<?php
 	echo esc_html(
 		sprintf(
-			_x('New %s', 'RSVP form toggle button text', 'event-tickets'),
-			tribe_get_rsvp_label_singular('rsvp_form_toggle_button_text')
+			// translators: the %s is the name of the RSVP ticket type.
+			_x( 'New %s', 'RSVP form toggle button text', 'event-tickets' ),
+			tribe_get_rsvp_label_singular( 'rsvp_form_toggle_button_text' )
 		)
-	); ?>
+	);
+	?>
 </button>
