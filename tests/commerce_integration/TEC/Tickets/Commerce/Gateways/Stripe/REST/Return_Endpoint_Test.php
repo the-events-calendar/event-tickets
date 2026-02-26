@@ -134,7 +134,7 @@ class Return_Endpoint_Test extends WPTestCase {
 	public function should_reject_request_with_invalid_state_nonce(): void {
 		$payload = $this->encode_payload( [
 			'stripe_user_id' => 'acct_UNAUTHORIZED123',
-			'state'          => 'not_a_real_nonce_value',
+			'nonce'          => 'not_a_real_nonce_value',
 			'live'           => [
 				'access_token'    => 'sk_live_UNAUTHORIZED',
 				'publishable_key' => 'pk_live_UNAUTHORIZED',
@@ -189,7 +189,7 @@ class Return_Endpoint_Test extends WPTestCase {
 
 		$payload = $this->encode_payload( [
 			'stripe_user_id' => 'acct_LEGITIMATE',
-			'state'          => $valid_nonce,
+			'nonce'          => $valid_nonce,
 			'live'           => [
 				'access_token'    => 'sk_live_LEGITIMATE',
 				'publishable_key' => 'pk_live_LEGITIMATE',
@@ -225,7 +225,7 @@ class Return_Endpoint_Test extends WPTestCase {
 
 		$payload = $this->encode_payload( [
 			'stripe_user_id' => 'acct_UNAUTHORIZED123',
-			'state'          => $wrong_nonce,
+			'nonce'          => $wrong_nonce,
 			'live'           => [
 				'access_token'    => 'sk_live_UNAUTHORIZED',
 				'publishable_key' => 'pk_live_UNAUTHORIZED',
@@ -256,7 +256,7 @@ class Return_Endpoint_Test extends WPTestCase {
 	public function should_reject_request_with_state_as_empty_string(): void {
 		$payload = $this->encode_payload( [
 			'stripe_user_id' => 'acct_UNAUTHORIZED123',
-			'state'          => '',
+			'nonce'          => '',
 			'live'           => [
 				'access_token'    => 'sk_live_UNAUTHORIZED',
 				'publishable_key' => 'pk_live_UNAUTHORIZED',
