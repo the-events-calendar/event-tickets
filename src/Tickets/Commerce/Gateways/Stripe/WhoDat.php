@@ -25,7 +25,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The nonce action for the state.
 	 *
-	 * @since TBD
+	 * @since 5.27.4
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Get the state nonce action.
 	 *
-	 * @since TBD
+	 * @since 5.27.4
 	 *
 	 * @return string
 	 */

@@ -37,7 +37,7 @@ class Signup extends Abstract_Signup {
 	 * Generates a Stripe connection URL from WhoDat.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Added state nonce management.
+	 * @since 5.27.4 Added state nonce management.
 	 *
 	 * @return string
 	 */
