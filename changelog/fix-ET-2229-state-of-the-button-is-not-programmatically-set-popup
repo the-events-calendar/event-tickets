@@ -1,0 +1,4 @@
+Significance: patch
+Type: accessibility
+
+Added aria-expanded to the toggle description button [ET-2229]

@@ -63,6 +63,7 @@ $ticket_details_id .= '--' . $ticket->ID;
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
 		aria-controls="<?php echo esc_attr( $ticket_details_id ); ?>"
 		tabindex="0"
+		aria-expanded="false"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
 		<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
@@ -72,6 +73,7 @@ $ticket_details_id .= '--' . $ticket->ID;
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
 		aria-controls="<?php echo esc_attr( $ticket_details_id ); ?>"
 		tabindex="0"
+		aria-expanded="true"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
 		<?php echo esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ); ?>
