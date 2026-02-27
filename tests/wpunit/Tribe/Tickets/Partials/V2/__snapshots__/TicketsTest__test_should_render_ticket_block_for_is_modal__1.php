@@ -83,38 +83,26 @@ Test ticket for {{POST_TICKET_ID}}
 
 type="button"
 
-class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
+class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button tribe-tickets__tickets-item-details-summary-button--more"
 
 aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
-
-tabindex="0"
 
 aria-expanded="false"
 
->
+aria-label="Open the ticket description."
 
-<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
+data-label-expanded="Close the ticket description."
 
-More
-</button>
+data-label-collapsed="Open the ticket description."
 
-<button
+data-text-expanded="Less"
 
-type="button"
-
-class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-
-aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
-
-tabindex="0"
-
-aria-expanded="true"
+data-text-collapsed="More"
 
 >
 
-<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
+<span class="tribe-tickets__tickets-item-details-summary-button-text">More</span>
 
-Less
 </button>
 </div>
 
@@ -195,38 +183,26 @@ Test ticket for {{POST_TICKET_ID}}
 
 type="button"
 
-class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
+class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button tribe-tickets__tickets-item-details-summary-button--more"
 
 aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
-
-tabindex="0"
 
 aria-expanded="false"
 
->
+aria-label="Open the ticket description."
 
-<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
+data-label-expanded="Close the ticket description."
 
-More
-</button>
+data-label-collapsed="Open the ticket description."
 
-<button
+data-text-expanded="Less"
 
-type="button"
-
-class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-
-aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
-
-tabindex="0"
-
-aria-expanded="true"
+data-text-collapsed="More"
 
 >
 
-<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
+<span class="tribe-tickets__tickets-item-details-summary-button-text">More</span>
 
-Less
 </button>
 </div>
 
