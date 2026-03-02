@@ -280,6 +280,22 @@ class Controller_Test extends Controller_Test_Case {
 			$html = str_replace( $ids, array_fill( 0, count( $ids ), '{{ID}}' ), $html );
 		}
 
+		// Normalize empty list: WP may or may not output tablenav-pages for 0 items (CI vs local).
+		if ( strpos( $html, 'No Associated Events found' ) !== false ) {
+			$html = $this->remove_tablenav_pages_blocks( $html );
+		}
+
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * Removes tablenav-pages blocks so snapshot is stable (WP may or may not output them for 0 items).
+	 *
+	 * @param string $html Raw list table HTML.
+	 * @return string Normalized HTML.
+	 */
+	private function remove_tablenav_pages_blocks( string $html ): string {
+		$pattern = "#<div\s+[^>]*class\s*=\s*['\"]?[^'\"]*tablenav-pages[^'\"]*['\"]?[^>]*>.*?</div>#s";
+		return (string) preg_replace( $pattern, '', $html );
 	}
 }
