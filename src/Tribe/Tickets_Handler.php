@@ -835,6 +835,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return bool|int
 	 */
 	public function migrate_object_capacity( $object ) {
+		// We are CREATING through rest, no need to migrate anything.
+		if ( did_action( 'rest_insert_tribe_rsvp_tickets' ) ) {
+			return false;
+		}
+
 		if ( ! $object instanceof WP_Post ) {
 			$object = get_post( $object );
 		}
