@@ -1,4 +1,0 @@
-Significance: patch
-Type: security
-
-Strengthen token verification for Stripe. [SVUL-51]

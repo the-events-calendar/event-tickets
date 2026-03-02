@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.27.4.1] 2026-03-2
+### [5.27.4.1] 2026-03-02
 
 * Security - Strengthen token verification for Stripe. [SVUL-51]
 
