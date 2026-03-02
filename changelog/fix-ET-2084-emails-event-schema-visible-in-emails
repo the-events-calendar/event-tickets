@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Removed json_ld from RSVP emails
+Removed json_ld from RSVP emails [ET-2084]
