@@ -37,21 +37,31 @@ class Signup extends Abstract_Signup {
 	 * Generates a Stripe connection URL from WhoDat.
 	 *
 	 * @since 5.3.0
+	 * @since 5.27.4.1 Added state nonce management.
 	 *
 	 * @return string
 	 */
 	public function generate_signup_url() {
-		return tribe( WhoDat::class )->get_api_url(
+		$whodat = tribe( WhoDat::class );
+
+		// Generate nonce as user 0 so it can be verified on the unauthenticated REST callback.
+		$user_id = get_current_user_id();
+		wp_set_current_user( 0 );
+		$nonce = wp_create_nonce( $whodat->get_state_nonce_action() );
+		wp_set_current_user( $user_id );
+
+		return $whodat->get_api_url(
 			'connect',
 			[
 				// @todo these have been working fine for 2 years without rawurlencode.
 				// Seems like a bad idea to leave them like this. Marking for discussion with reviewers.
 				'token'          => $this->get_client_id(),
-				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
+				'return_url'     => $whodat->get_api_url( 'connected' ),
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe( Webhooks::class )->get_known_webhooks() ) ),
+				'nonce'       => $nonce,
 			]
 		);
 	}
@@ -64,11 +74,18 @@ class Signup extends Abstract_Signup {
 	 * @return string
 	 */
 	public function generate_disconnect_url() {
+		$whodat   = tribe( WhoDat::class );
 		$webhooks = tribe( Webhooks::class );
 
 		$known_webhooks = $webhooks->get_current_webhook_id();
 
-		return tribe( WhoDat::class )->get_api_url(
+		// Generate nonce as user 0 so it can be verified on the unauthenticated REST callback.
+		$user_id = get_current_user_id();
+		wp_set_current_user( 0 );
+		$nonce = wp_create_nonce( $whodat->get_state_nonce_action() );
+		wp_set_current_user( $user_id );
+
+		return $whodat->get_api_url(
 			'disconnect',
 			[
 				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
@@ -76,6 +93,7 @@ class Signup extends Abstract_Signup {
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
+				'nonce' => $nonce,
 			]
 		);
 	}
