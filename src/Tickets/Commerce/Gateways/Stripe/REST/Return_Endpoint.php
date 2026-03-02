@@ -35,7 +35,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Checks if the current request has permission to access the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.27.4.1
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -56,7 +56,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Register the actual endpoint on WP Rest API.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Added permission callback.
+	 * @since 5.27.4.1 Added permission callback.
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
