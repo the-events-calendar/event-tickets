@@ -835,10 +835,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return bool|int
 	 */
 	public function migrate_object_capacity( $object ) {
-		// We are CREATING through rest, no need to migrate anything.
-		if ( did_action( 'rest_insert_tribe_rsvp_tickets' ) ) {
-			return false;
-		}
 
 		if ( ! $object instanceof WP_Post ) {
 			$object = get_post( $object );
@@ -914,6 +910,11 @@ class Tribe__Tickets__Tickets_Handler {
 			// Apply to the Event
 			if ( ! empty( $event_id ) ) {
 				$this->migrate_object_capacity( $event_id );
+			}
+
+			// The check `pre_post_insert` works after wp 6.9.0, so we use the negation of pre_post_update to ensure this runs on updates only.
+			if ( ! did_action( 'pre_post_update' ) ) {
+				return false;
 			}
 		}
 
