@@ -317,7 +317,7 @@ class Tickets implements ArrayAccess, Serializable {
 							/* translators: %1$s: Number of stock */
 							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 						} else {
-							//Respecting the phpcs warning for WordPress.WP.I18n.MismatchedPlaceholders.
+							// Respecting the phpcs warning for WordPress.WP.I18n.MismatchedPlaceholders.
 
 							$ticket_label = ( 1 === $stock ) ? $ticket_label_singular : $ticket_label_plural;
 							/* translators: %1$s: Number of stock, %2$s: Ticket label */
