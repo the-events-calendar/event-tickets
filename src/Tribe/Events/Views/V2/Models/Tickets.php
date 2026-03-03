@@ -16,8 +16,8 @@ use InvalidArgumentException;
 use ReturnTypeWillChange;
 use Serializable;
 use Tribe\Utils\Lazy_Events;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets_Tickets;
 use WP_Post;
 
@@ -228,6 +228,9 @@ class Tickets implements ArrayAccess, Serializable {
 		}
 
 		if ( null !== $this->data && ! empty( $this->data ) ) {
+			// Refresh stock display from current availability so list/archive views stay correct
+			// when event or ticket model is served from cache (e.g. tribe_get_event memoization).
+			$this->refresh_cached_stock_display();
 			return $this->data;
 		}
 
@@ -279,6 +282,7 @@ class Tickets implements ArrayAccess, Serializable {
 					$sold_out      = $parts[ $type . '_stock' ];
 				}
 			} else {
+				// Use get_ticket_counts() so shared capacity shows pool remaining (one number), not sum of per-ticket.
 				$stock = $data['stock'];
 				if ( $data['unlimited'] || ! $data['stock'] ) {
 					// If unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count.
@@ -472,6 +476,65 @@ class Tickets implements ArrayAccess, Serializable {
 		}
 
 		return $this->exists;
+	}
+
+	/**
+	 * Updates cached data's stock display (X tickets/spots left) from current counts.
+	 * Uses get_ticket_counts() so shared capacity shows the pool remaining (one number), not the sum of per-ticket.
+	 * Called when serving from cache so the number stays correct despite tribe_get_event or model cache.
+	 *
+	 * @since TBD
+	 */
+	protected function refresh_cached_stock_display(): void {
+		if ( ! isset( $this->data['stock'] ) || ! is_object( $this->data['stock'] ) ) {
+			return;
+		}
+
+		$types = Tickets_Tickets::get_ticket_counts( $this->post_id );
+		if ( ! $types ) {
+			return;
+		}
+
+		// Use the same type that would "win" in fetch_data (last with count): prefer tickets over rsvp.
+		$data = null;
+		if ( ! empty( $types['tickets']['count'] ) ) {
+			$data = $types['tickets'];
+			$type = 'tickets';
+		} elseif ( ! empty( $types['rsvp']['count'] ) ) {
+			$data = $types['rsvp'];
+			$type = 'rsvp';
+		}
+
+		if ( ! $data || ! $data['available'] ) {
+			return;
+		}
+
+		$stock = $data['stock'];
+		if ( $data['unlimited'] || ! $stock ) {
+			$this->data['stock']->available = '';
+			return;
+		}
+
+		$stock = (int) $stock;
+		$settings_manager = tribe( 'settings.manager' );
+		$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+		$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
+
+		if ( $threshold && $stock > $threshold ) {
+			$this->data['stock']->available = '';
+			return;
+		}
+
+		$number = number_format_i18n( $stock );
+		if ( 'rsvp' === $type ) {
+			$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
+			$this->data['stock']->available = esc_html( sprintf( $text, $number ) );
+		} else {
+			$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
+			$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
+			$text = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' );
+			$this->data['stock']->available = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
+		}
 	}
 
 	/**
