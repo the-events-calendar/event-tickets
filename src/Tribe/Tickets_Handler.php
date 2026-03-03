@@ -835,7 +835,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return bool|int
 	 */
 	public function migrate_object_capacity( $object ) {
-
 		if ( ! $object instanceof WP_Post ) {
 			$object = get_post( $object );
 		}
