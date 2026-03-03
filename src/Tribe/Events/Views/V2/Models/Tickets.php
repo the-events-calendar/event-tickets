@@ -515,10 +515,10 @@ class Tickets implements ArrayAccess, Serializable {
 			return;
 		}
 
-		$stock = (int) $stock;
+		$stock            = (int) $stock;
 		$settings_manager = tribe( 'settings.manager' );
-		$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
-		$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
+		$threshold        = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+		$threshold        = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
 
 		if ( $threshold && $stock > $threshold ) {
 			$this->data['stock']->available = '';
@@ -527,12 +527,14 @@ class Tickets implements ArrayAccess, Serializable {
 
 		$number = number_format_i18n( $stock );
 		if ( 'rsvp' === $type ) {
-			$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
+			/* translators: %1$s: Number of stock */
+			$text                           = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 			$this->data['stock']->available = esc_html( sprintf( $text, $number ) );
 		} else {
 			$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
 			$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
-			$text = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' );
+			/* translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label */
+			$text                           = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' );
 			$this->data['stock']->available = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
 		}
 	}
