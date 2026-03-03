@@ -532,12 +532,13 @@ class Tickets implements ArrayAccess, Serializable {
 			$text                           = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 			$this->data['stock']->available = esc_html( sprintf( $text, $number ) );
 		} else {
-		$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
-		$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
-		$ticket_label          = ( 1 === $stock ) ? $ticket_label_singular : $ticket_label_plural;
-		/* translators: %1$s: Number of stock, %2$s: Ticket label */
-		$text                           = _n( '%1$s %2$s left', '%1$s %2$s left', $stock, 'event-tickets' );
-		$this->data['stock']->available = esc_html( sprintf( $text, $number, $ticket_label ) );
+			$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
+			$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
+			$ticket_label          = ( 1 === $stock ) ? $ticket_label_singular : $ticket_label_plural;
+			/* translators: %1$s: Number of stock, %2$s: Ticket label */
+			$text                           = _n( '%1$s %2$s left', '%1$s %2$s left', $stock, 'event-tickets' );
+			$this->data['stock']->available = esc_html( sprintf( $text, $number, $ticket_label ) );
+		}
 	}
 
 	/**
