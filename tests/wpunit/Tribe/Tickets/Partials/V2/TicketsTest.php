@@ -2,8 +2,8 @@
 
 namespace Tribe\Tickets\Partials\V2;
 
-use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class TicketsTest extends V2TestCase {
 
@@ -221,8 +221,6 @@ class TicketsTest extends V2TestCase {
 		$driver->setTolerableDifferences( $this->tolerables );
 
 		$html = str_replace( $this->tolerables, '{{POST_TICKET_ID}}', $html );
-		// Normalize whitespace (tabs to newlines) so snapshot matches across environments.
-		$html = preg_replace( '/\t+/', "\n", $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
