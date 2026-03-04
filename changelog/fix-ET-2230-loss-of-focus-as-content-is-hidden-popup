@@ -1,4 +1,4 @@
 Significance: patch
 Type: accessibility
 
-Made the description toggle button just 1 [ET-2230]
+Prevent loss of focus when description content is hidden in the checkout modal. [ET-2230]
