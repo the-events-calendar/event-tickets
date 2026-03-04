@@ -60,20 +60,15 @@ $ticket_details_id .= '--' . $ticket->ID;
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button tribe-tickets__tickets-item-details-summary-button--more"
 		aria-controls="<?php echo esc_attr( $ticket_details_id ); ?>"
-		tabindex="0"
+		aria-expanded="false"
+		aria-label="<?php esc_attr_e( 'Open the ticket description.', 'event-tickets' ); ?>"
+		data-label-expanded="<?php esc_attr_e( 'Close the ticket description.', 'event-tickets' ); ?>"
+		data-label-collapsed="<?php esc_attr_e( 'Open the ticket description.', 'event-tickets' ); ?>"
+		data-text-expanded="<?php echo esc_attr( esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ) ); ?>"
+		data-text-collapsed="<?php echo esc_attr( esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ) ); ?>"
 	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
-		<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
-	</button>
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="<?php echo esc_attr( $ticket_details_id ); ?>"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
-		<?php echo esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ); ?>
+		<span class="tribe-tickets__tickets-item-details-summary-button-text"><?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?></span>
 	</button>
 </div>

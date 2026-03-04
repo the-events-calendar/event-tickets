@@ -2,8 +2,8 @@
 
 namespace Tribe\Tickets\Partials\V2\Tickets\Item;
 
-use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class ContentTest extends V2TestCase {
 
@@ -82,21 +82,6 @@ class ContentTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
-
-		$driver->setTolerableDifferences( [
-				$args['post_id'],
-				$args['ticket']->price,
-				$args['ticket']->ID,
-			]
-		);
-
-		$driver->setTolerableDifferencesPrefixes( [
-			'post-',
-			'Test ticket for ',
-			'Test ticket description for ',
-			'tribe__details__content--',
-		] );
-
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }
