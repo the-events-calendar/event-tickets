@@ -47,7 +47,7 @@ tribe.tickets.block = {
 		item: '.tribe-tickets__tickets-item',
 		itemDescription: '.tribe-tickets__tickets-item-details-content',
 		itemDescriptionButtonMore: '.tribe-tickets__tickets-item-details-summary-button--more',
-		itemDescriptionButtonExpanded: 'tribe-tickets__tickets-item-details-summary-button--expanded',
+		itemDescriptionButtonExpanded: '.tribe-tickets__tickets-item-details-summary-button--expanded',
 		itemExtraAvailable: '.tribe-tickets__tickets-item-extra-available',
 		itemExtraAvailableQuantity: '.tribe-tickets__tickets-item-extra-available-quantity',
 		itemOptOut: '.tribe-tickets-attendees-list-optout--wrapper',
@@ -676,7 +676,7 @@ tribe.tickets.block = {
 
 		// Single button: keep aria-expanded, aria-label, visible text (More/Less), and arrow state in sync.
 		$trigger.attr( 'aria-expanded', isExpanded );
-		$trigger.toggleClass( obj.selectors.itemDescriptionButtonExpanded, isExpanded );
+		$trigger.toggleClass( obj.selectors.itemDescriptionButtonExpanded.className(), isExpanded );
 		$trigger.attr(
 			'aria-label',
 			isExpanded ? $trigger.data( 'label-expanded' ) : $trigger.data( 'label-collapsed' )
