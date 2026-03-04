@@ -81,13 +81,6 @@ class ContentTest extends V2TestCase {
 		$args = $this->get_default_args();
 		$html = $template->template( $this->partial_path, $args, false );
 
-		// Normalize variable IDs so snapshot is stable (avoids driver fragment alignment issues).
-		$html = str_replace( [ $args['post_id'], $args['ticket']->ID ], '{{ID}}', $html );
-		// Normalize price in amount span only (avoid replacing digits inside class names).
-		$html = preg_replace( '/<span class="tribe-amount">[^<]+<\/span>/', '<span class="tribe-amount">{{PRICE}}</span>', $html );
-		// Normalize whitespace (tabs to newlines) so snapshot matches across environments.
-		$html = preg_replace( '/\t+/', "\n", $html );
-
 		$driver = $this->get_html_output_driver();
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
