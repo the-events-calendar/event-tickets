@@ -671,6 +671,16 @@ tribe.tickets.block = {
 		$parent.toggleClass( 'tribe__details--open', onOff );
 		$target.toggleClass( 'tribe__details--open', onOff );
 		$target.toggleClass( obj.selectors.hiddenElement.className() );
+
+		// Keep aria-expanded in sync for accessibility (show/hide state).
+		const $summary = $trigger.closest( '.tribe-tickets__tickets-item-details-summary' );
+		if ( $summary.length ) {
+			$summary
+				.find(
+					obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
+				)
+				.attr( 'aria-expanded', onOff );
+		}
 	};
 
 	/**
