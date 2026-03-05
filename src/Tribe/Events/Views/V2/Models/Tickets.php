@@ -219,6 +219,7 @@ class Tickets implements ArrayAccess, Serializable {
 	 *
 	 * @since 5.6.3 Add support for the updated anchor link from new ticket templates.
 	 * @since 5.26.7 Fixed issue where empty arrays were being returned when data existed but was empty.
+	 * @since TBD Fixed issue where the stock display was not being refreshed from the current availability.
 	 *
 	 * @return array Ticket data or empty array.
 	 */
@@ -290,42 +291,7 @@ class Tickets implements ArrayAccess, Serializable {
 				}
 
 				if ( $stock ) {
-					/** @var Tribe__Settings_Manager $settings_manager */
-					$settings_manager = tribe( 'settings.manager' );
-
-					$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
-
-					/**
-					 * Overwrites the threshold to display "# tickets left".
-					 *
-					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
-					 * @param array $data      Ticket data.
-					 * @param int   $event_id  Event ID.
-					 *
-					 * @since 4.10.1
-					 */
-					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
-
-					if ( ! $threshold || $stock <= $threshold ) {
-
-						$number = number_format_i18n( $stock );
-
-						$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
-						$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
-
-						if ( 'rsvp' === $type ) {
-							/* translators: %1$s: Number of stock */
-							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
-						} else {
-							// Respecting the phpcs warning for WordPress.WP.I18n.MismatchedPlaceholders.
-
-							$ticket_label = ( 1 === $stock ) ? $ticket_label_singular : $ticket_label_plural;
-							/* translators: %1$s: Number of stock, %2$s: Ticket label */
-							$text = _n( '%1$s %2$s left', '%1$s %2$s left', $stock, 'event-tickets' );
-						}
-
-						$stock_html = esc_html( sprintf( $text, $number, $ticket_label ) );
-					}
+					$stock_html = $this->build_stock_html( $stock, $type, $data );
 				}
 
 				$html['stock']             = $stock_html;
@@ -516,29 +482,7 @@ class Tickets implements ArrayAccess, Serializable {
 			return;
 		}
 
-		$stock            = (int) $stock;
-		$settings_manager = tribe( 'settings.manager' );
-		$threshold        = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
-		$threshold        = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
-
-		if ( $threshold && $stock > $threshold ) {
-			$this->data['stock']->available = '';
-			return;
-		}
-
-		$number = number_format_i18n( $stock );
-		if ( 'rsvp' === $type ) {
-			/* translators: %1$s: Number of stock */
-			$text                           = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
-			$this->data['stock']->available = esc_html( sprintf( $text, $number ) );
-		} else {
-			$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
-			$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
-			$ticket_label          = ( 1 === $stock ) ? $ticket_label_singular : $ticket_label_plural;
-			/* translators: %1$s: Number of stock, %2$s: Ticket label */
-			$text                           = _n( '%1$s %2$s left', '%1$s %2$s left', $stock, 'event-tickets' );
-			$this->data['stock']->available = esc_html( sprintf( $text, $number, $ticket_label ) );
-		}
+		$this->data['stock']->available = $this->build_stock_html( (int) $stock, $type, $data );
 	}
 
 	/**
@@ -567,6 +511,59 @@ class Tickets implements ArrayAccess, Serializable {
 		$data = $this->fetch_data();
 
 		return ! empty( $data['stock']->sold_out );
+	}
+
+	/**
+	 * Builds the "X tickets/spots left" HTML string for a given stock count and type.
+	 *
+	 * Applies the threshold filter and returns an empty string when the stock is above
+	 * the configured threshold so the display is hidden.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $stock The number of tickets/spots remaining.
+	 * @param string $type  The ticket type ('rsvp' or 'tickets').
+	 * @param array  $data  The ticket-count data array forwarded to the threshold filter.
+	 *
+	 * @return string The escaped HTML string, or an empty string when hidden by threshold.
+	 */
+	private function build_stock_html( int $stock, string $type, array $data ): string {
+		/** @var Tribe__Settings_Manager $settings_manager */
+		$settings_manager = tribe( 'settings.manager' );
+		$threshold        = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+		/**
+		 * Overwrites the threshold to display "# tickets left".
+		 *
+		 * @since 4.10.1
+		 *
+		 * @param int   $threshold Stock threshold to trigger display of "# tickets left".
+		 * @param array $data      Ticket data.
+		 * @param int   $event_id  Event ID.
+		 */
+		$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
+
+		if ( $threshold && $stock > $threshold ) {
+			return '';
+		}
+
+		$number = number_format_i18n( $stock );
+
+		if ( 'rsvp' === $type ) {
+			/* translators: %1$s: Number of stock */
+			$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
+			return esc_html( sprintf( $text, $number ) );
+		}
+
+		$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
+		$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
+
+		// phpcs:disable -- to suppress WordPress.WP.I18n.MismatchedPlaceholders incorrect warning.
+		/* translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label */
+		$text = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' );
+		// phpcs:enable
+
+		return esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
 	}
 
 	/**
