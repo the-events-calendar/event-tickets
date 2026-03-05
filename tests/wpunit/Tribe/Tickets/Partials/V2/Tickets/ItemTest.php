@@ -2,8 +2,8 @@
 
 namespace Tribe\Tickets\Partials\V2\Tickets;
 
-use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class ItemTest extends V2TestCase {
 
@@ -143,7 +143,7 @@ class ItemTest extends V2TestCase {
 			]
 		);
 
-		$html = str_replace( [ $args['ticket']->ID, $args['post_id'] ], [ '{{TICKET_ID}}', '{{POST_ID}}' ], $html );
+		$html = str_replace( [ $args['post_id'], $args['ticket']->ID ], [ '{{POST_ID}}', '{{TICKET_ID}}'], $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -198,7 +198,7 @@ class ItemTest extends V2TestCase {
 			]
 		);
 
-		$html = str_replace( [ $args['ticket']->ID, $args['post_id'] ], [ '{{TICKET_ID}}', '{{POST_ID}}' ], $html );
+		$html = str_replace( [ $args['post_id'], $args['ticket']->ID ], [ '{{POST_ID}}', '{{TICKET_ID}}'], $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
