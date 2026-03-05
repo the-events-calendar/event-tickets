@@ -82,6 +82,21 @@ class ContentTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
+
+		$driver->setTolerableDifferences( [
+				$args['post_id'],
+				$args['ticket']->price,
+				$args['ticket']->ID,
+			]
+		);
+
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'Test ticket for ',
+			'Test ticket description for ',
+			'tribe__details__content--',
+		] );
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }
