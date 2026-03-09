@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correctly save RSVP capacity in Block Editor. [ET-2631]

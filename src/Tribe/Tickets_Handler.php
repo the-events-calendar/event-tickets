@@ -910,6 +910,11 @@ class Tribe__Tickets__Tickets_Handler {
 			if ( ! empty( $event_id ) ) {
 				$this->migrate_object_capacity( $event_id );
 			}
+
+			// The check `pre_post_insert` works after wp 6.9.0, so we use the negation of pre_post_update to ensure this runs on updates only.
+			if ( ! did_action( 'pre_post_update' ) ) {
+				return false;
+			}
 		}
 
 		// Bail when we didn't have a capacity
