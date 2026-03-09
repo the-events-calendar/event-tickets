@@ -16077,3 +16077,8 @@ msgstr ""
 msgctxt "block keyword"
 msgid "events-gutenberg"
 msgstr ""
+
+#: src/views/modal/item-remove.php
+msgctxt "Remove item button label"
+msgid "Remove item"
+msgstr ""
