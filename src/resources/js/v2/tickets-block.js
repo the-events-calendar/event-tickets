@@ -47,7 +47,7 @@ tribe.tickets.block = {
 		item: '.tribe-tickets__tickets-item',
 		itemDescription: '.tribe-tickets__tickets-item-details-content',
 		itemDescriptionButtonMore: '.tribe-tickets__tickets-item-details-summary-button--more',
-		itemDescriptionButtonLess: '.tribe-tickets__tickets-item-details-summary-button--less',
+		itemDescriptionButtonExpanded: '.tribe-tickets__tickets-item-details-summary-button--expanded',
 		itemExtraAvailable: '.tribe-tickets__tickets-item-extra-available',
 		itemExtraAvailableQuantity: '.tribe-tickets__tickets-item-extra-available-quantity',
 		itemOptOut: '.tribe-tickets-attendees-list-optout--wrapper',
@@ -640,11 +640,16 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.itemDescriptionToggle = function ( event ) {
-		if ( 'keyup' === event.type && 13 !== event.keyCode ) {
+		// Support both click and Enter/Space (keyup) for accessibility.
+		if ( 'keyup' === event.type && 13 !== event.keyCode && 32 !== event.keyCode ) {
 			return;
 		}
+		if ( 'keyup' === event.type ) {
+			event.preventDefault();
+		}
 
-		const trigger = event.target;
+		// Use currentTarget so clicks on the inner span still toggle (target would be the span).
+		const trigger = event.currentTarget;
 
 		if ( ! trigger ) {
 			return;
@@ -652,10 +657,7 @@ tribe.tickets.block = {
 
 		const $trigger = $( trigger );
 
-		if (
-			! $trigger.hasClass( obj.selectors.itemDescriptionButtonMore.className() ) &&
-			! $trigger.hasClass( obj.selectors.itemDescriptionButtonLess.className() )
-		) {
+		if ( ! $trigger.hasClass( obj.selectors.itemDescriptionButtonMore.className() ) ) {
 			return;
 		}
 
@@ -667,20 +669,21 @@ tribe.tickets.block = {
 		}
 
 		// Let our CSS handle the hide/show. Also allows us to make it responsive.
-		const onOff = ! $parent.hasClass( 'tribe__details--open' );
-		$parent.toggleClass( 'tribe__details--open', onOff );
-		$target.toggleClass( 'tribe__details--open', onOff );
+		const isExpanded = ! $parent.hasClass( 'tribe__details--open' );
+		$parent.toggleClass( 'tribe__details--open', isExpanded );
+		$target.toggleClass( 'tribe__details--open', isExpanded );
 		$target.toggleClass( obj.selectors.hiddenElement.className() );
 
-		// Keep aria-expanded in sync for accessibility (show/hide state).
-		const $summary = $trigger.closest( '.tribe-tickets__tickets-item-details-summary' );
-		if ( $summary.length ) {
-			$summary
-				.find(
-					obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
-				)
-				.attr( 'aria-expanded', onOff );
-		}
+		// Single button: keep aria-expanded, aria-label, visible text (More/Less), and arrow state in sync.
+		$trigger.attr( 'aria-expanded', isExpanded );
+		$trigger.toggleClass( obj.selectors.itemDescriptionButtonExpanded.className(), isExpanded );
+		$trigger.attr(
+			'aria-label',
+			isExpanded ? $trigger.data( 'label-expanded' ) : $trigger.data( 'label-collapsed' )
+		);
+		$trigger.find( '.tribe-tickets__tickets-item-details-summary-button-text' ).text(
+			isExpanded ? $trigger.data( 'text-expanded' ) : $trigger.data( 'text-collapsed' )
+		);
 	};
 
 	/**
@@ -691,13 +694,10 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindDescriptionToggle = function ( $container ) {
-		const $descriptionToggleButtons = $container.find(
-			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
-		);
+		const $descriptionToggleButtons = $container.find( obj.selectors.itemDescriptionButtonMore );
 
-		// Add keyboard support for enter key.
+		// Add keyboard support for Enter and Space (button activation).
 		$descriptionToggleButtons.on( 'keyup', obj.itemDescriptionToggle );
-
 		$descriptionToggleButtons.on( 'click', obj.itemDescriptionToggle );
 	};
 
@@ -709,9 +709,7 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.unbindDescriptionToggle = function ( $container ) {
-		const $descriptionToggleButtons = $container.find(
-			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
-		);
+		const $descriptionToggleButtons = $container.find( obj.selectors.itemDescriptionButtonMore );
 
 		$descriptionToggleButtons.off();
 	};
