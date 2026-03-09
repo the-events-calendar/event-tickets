@@ -48,6 +48,7 @@
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
 		aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
 		tabindex="0"
+		aria-expanded="false"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
 		More	</button>
@@ -56,6 +57,7 @@
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
 		aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
 		tabindex="0"
+		aria-expanded="true"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
 		Less	</button>
@@ -110,6 +112,7 @@
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
 		aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
 		tabindex="0"
+		aria-expanded="false"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
 		More	</button>
@@ -118,6 +121,7 @@
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
 		aria-controls="tribe__details__content__modal--{{POST_TICKET_ID}}"
 		tabindex="0"
+		aria-expanded="true"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
 		Less	</button>
