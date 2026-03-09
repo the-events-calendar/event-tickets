@@ -24,7 +24,7 @@ $error_messages = (array) $error_message;
 	<?php $this->template( 'v2/components/icons/error', [ 'classes' => [ 'tribe-tickets__rsvp-message--error-icon' ] ] ); ?>
 
 	<?php foreach ( $error_messages as $message ) : ?>
-		<span class="tribe-tickets__rsvp-message-text">
+		<span class="tribe-tickets__rsvp-message-text" role="alert">
 			<strong>
 				<?php echo wp_kses_post( $message ); ?>
 			</strong>
