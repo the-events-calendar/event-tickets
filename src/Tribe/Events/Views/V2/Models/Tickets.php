@@ -219,7 +219,7 @@ class Tickets implements ArrayAccess, Serializable {
 	 *
 	 * @since 5.6.3 Add support for the updated anchor link from new ticket templates.
 	 * @since 5.26.7 Fixed issue where empty arrays were being returned when data existed but was empty.
-	 * @since TBD Fixed issue where the stock display was not being refreshed from the current availability.
+	 * @since 5.27.5 Fixed issue where the stock display was not being refreshed from the current availability.
 	 *
 	 * @return array Ticket data or empty array.
 	 */
@@ -450,7 +450,7 @@ class Tickets implements ArrayAccess, Serializable {
 	 * Uses get_ticket_counts() so shared capacity shows the pool remaining (one number), not the sum of per-ticket.
 	 * Called when serving from cache so the number stays correct despite tribe_get_event or model cache.
 	 *
-	 * @since TBD
+	 * @since 5.27.5
 	 */
 	protected function refresh_cached_stock_display(): void {
 		if ( ! isset( $this->data['stock'] ) || ! is_object( $this->data['stock'] ) ) {
@@ -519,7 +519,7 @@ class Tickets implements ArrayAccess, Serializable {
 	 * Applies the threshold filter and returns an empty string when the stock is above
 	 * the configured threshold so the display is hidden.
 	 *
-	 * @since TBD
+	 * @since 5.27.5
 	 *
 	 * @param int    $stock The number of tickets/spots remaining.
 	 * @param string $type  The ticket type ('rsvp' or 'tickets').

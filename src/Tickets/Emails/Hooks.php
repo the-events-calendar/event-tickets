@@ -289,7 +289,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the template arguments to remove json_ld schema data that should not be visible in emails.
 	 *
-	 * @since TBD
+	 * @since 5.27.5
 	 *
 	 * @param array $args The email template arguments.
 	 *
