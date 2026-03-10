@@ -144,6 +144,9 @@ class Payments_Tab_Test extends WPTestCase {
 			$content
 		);
 
+		// Normalize nonces in the content to avoid environment-specific snapshot mismatches.
+		$content = preg_replace( '/nonce=[a-f0-9]+/', 'nonce={nonce}', $content );
+
 		// Assert the snapshot
 		$this->assertMatchesHtmlSnapshot( $content );
 	}
