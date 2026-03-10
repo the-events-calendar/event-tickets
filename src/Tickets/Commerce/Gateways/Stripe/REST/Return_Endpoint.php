@@ -42,7 +42,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @return bool Whether the request has a valid state nonce.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		$payload = tribe_get_request_var( 'stripe' );
+		$payload  = tribe_get_request_var( 'stripe' );
 		$response = $this->decode_payload( $payload );
 
 		if ( empty( $response->nonce ) ) {
