@@ -1,4 +1,0 @@
-Significance: patch
-Type: accessibility
-
-Prevent loss of focus when description content is hidden in the checkout modal. [ET-2230]
