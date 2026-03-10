@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
+use TEC\Tickets\Commerce\Gateways\Stripe\WhoDat;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
@@ -32,9 +33,30 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	protected string $path = '/commerce/stripe/return';
 
 	/**
+	 * Checks if the current request has permission to access the endpoint.
+	 *
+	 * @since 5.27.4.1
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return bool Whether the request has a valid state nonce.
+	 */
+	public function has_permission( WP_REST_Request $request ) {
+		$payload = tribe_get_request_var( 'stripe' );
+		$response = $this->decode_payload( $payload );
+
+		if ( empty( $response->nonce ) ) {
+			return false;
+		}
+
+		return wp_verify_nonce( $response->nonce, tribe( WhoDat::class )->get_state_nonce_action() );
+	}
+
+	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
 	 * @since 5.3.0
+	 * @since 5.27.4.1 Added permission callback.
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -47,7 +69,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::READABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_stripe_return' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'has_permission' ],
 			]
 		);
 

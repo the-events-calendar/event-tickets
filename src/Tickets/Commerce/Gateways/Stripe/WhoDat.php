@@ -23,6 +23,26 @@ class WhoDat extends Abstract_WhoDat {
 	protected const API_ENDPOINT = 'commerce/v1/stripe';
 
 	/**
+	 * The nonce action for the state.
+	 *
+	 * @since 5.27.4.1
+	 *
+	 * @var string
+	 */
+	protected const STATE_NONCE_ACTION = 'tec_stripe_connect_state';
+
+	/**
+	 * Get the state nonce action.
+	 *
+	 * @since 5.27.4.1
+	 *
+	 * @return string
+	 */
+	public function get_state_nonce_action(): string {
+		return self::STATE_NONCE_ACTION;
+	}
+
+	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
 	 * @since 5.3.0

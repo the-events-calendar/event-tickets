@@ -14,6 +14,10 @@
 * Accessibility - Set the toggle description button state programmatically with aria-expanded in the checkout modal. [ET-2229]
 * Language - 1 new strings added, 28 updated, 0 fuzzied, and 0 obsoleted.
 
+### [5.27.4.1] 2026-03-02
+
+* Security - Strengthen token verification for Stripe. [SVUL-51]
+
 ### [5.27.4] 2026-01-28
 
 * Tweak - Amend small typos in text domains. Props to @DAnn2012! [ET-2596]
