@@ -1,4 +1,0 @@
-Significance: patch
-Type: accessibility
-
-Add the attribute "role" on RSVP alerts to improve accessibility. [ET-2227]

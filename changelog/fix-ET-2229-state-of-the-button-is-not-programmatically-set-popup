@@ -1,4 +1,0 @@
-Significance: patch
-Type: accessibility
-
-Set the toggle description button state programmatically with aria-expanded in the checkout modal. [ET-2229]

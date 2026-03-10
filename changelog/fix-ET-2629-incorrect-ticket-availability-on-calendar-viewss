@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Change the way that the available tickets was being calculated on event list [ET-2629]
