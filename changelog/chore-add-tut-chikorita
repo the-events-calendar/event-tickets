@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Changed views: `modal/item-remove`, `tickets/email`, `v2/rsvp/messages/error`, `v2/rsvp/messages/must-login`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`, `v2/tickets/item/content/description-toggle`, `v2/tickets/item/extra/description-toggle`
