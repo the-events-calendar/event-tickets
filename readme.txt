@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.27.4.1
+Stable tag: 5.27.5
 Requires at least: 6.7
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -198,6 +198,20 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.27.5] 2026-03-11 =
+
+* Fix - Change the way that the available tickets was being calculated on event list [ET-2629]
+* Fix - Correctly save RSVP capacity in Block Editor. [ET-2631]
+* Fix - Improve accessibility by updating the Stripe credit card form input error color to meet contrast validation requirements. [ET-2620]
+* Fix - Remove json_ld from RSVP emails [ET-2084]
+* Tweak - Changed views: `modal/item-remove`, `tickets/email`, `v2/rsvp/messages/error`, `v2/rsvp/messages/must-login`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`, `v2/tickets/item/content/description-toggle`, `v2/tickets/item/extra/description-toggle`
+* Tweak - Make email headers accessible in the Tickets Email Template. [ET-2612]
+* Accessibility - Add aria-label to the close button on ticket list modal [ET-2228]
+* Accessibility - Add the attribute "role" on RSVP alerts to improve accessibility. [ET-2227]
+* Accessibility - Prevent loss of focus when description content is hidden in the checkout modal. [ET-2230]
+* Accessibility - Set the toggle description button state programmatically with aria-expanded in the checkout modal. [ET-2229]
+* Language - 1 new strings added, 28 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.27.4.1] 2026-03-02 =
 

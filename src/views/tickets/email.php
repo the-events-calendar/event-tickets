@@ -48,8 +48,9 @@
  * @since 5.0.3 Update comments for single ticket array.
  * @since 5.1.7 Changed the word `Purchaser` to `Attendee` in the ticket details.
  * @since 5.9.1 Corrected template override filepath
+ * @since 5.27.5 Improved accessibility of headings.
  *
- * @version 5.9.1
+ * @version 5.27.5
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -437,11 +438,11 @@
 										<table class="ticket-details" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
 											<tr>
 												<td class="ticket-details" valign="top" align="left" width="100" style="padding: 0; width:100px; margin:0 !important;">
-													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Ticket #', 'event-tickets' ); ?></h6>
+													<h6 style="color:#0a0a0e !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Ticket #', 'event-tickets' ); ?></h6>
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_id']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0; width:120px; margin:0 !important;">
-													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php
+													<h6 style="color:#0a0a0e !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php
 														echo esc_html(
 															sprintf(
 																_x( '%s Name', 'ticket name email heading', 'event-tickets' ),
@@ -452,11 +453,11 @@
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_name']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0 !important; width:120px; margin:0 !important;">
-													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Attendee', 'event-tickets' ); ?></h6>
+													<h6 style="color:#0a0a0e !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Attendee', 'event-tickets' ); ?></h6>
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['holder_name']; ?></span>
 												</td>
 												<td class="ticket-details new-row new-left-row" valign="top" align="left" width="120" style="padding: 0; width:120px; margin:0 !important;">
-													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Security Code', 'event-tickets' ); ?></h6>
+													<h6 style="color:#0a0a0e !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Security Code', 'event-tickets' ); ?></h6>
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['security_code']; ?></span>
 												</td>
 											</tr>
@@ -488,7 +489,7 @@
 													if ( $venue_name ) {
 														?>
 														<td class="ticket-venue" valign="top" align="left" width="300" style="padding: 0 !important; width:300px; margin:0 !important;">
-															<h6 style="color:#909090 !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( $venue_label, 'event-tickets' ); ?></h6>
+															<h6 style="color:#0a0a0e !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( $venue_label, 'event-tickets' ); ?></h6>
 															<table class="venue-details" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
 																<tr>
 																	<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
@@ -519,7 +520,7 @@
 													if ( ! empty( $organizers ) ) {
 														?>
 														<td class="ticket-organizer" valign="top" align="left" width="140" style="padding: 0 !important; width:140px; margin:0 !important;">
-															<h6 style="color:#909090 !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo tribe_get_organizer_label( count( $organizers ) < 2 ); ?></h6>
+															<h6 style="color:#0a0a0e !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo tribe_get_organizer_label( count( $organizers ) < 2 ); ?></h6>
 															<?php foreach ( $organizers as $organizer_id ) { ?>
 																<span
 																	style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; display:block; padding-bottom:5px;"><?php echo tribe_get_organizer( $organizer_id ); ?></span>
