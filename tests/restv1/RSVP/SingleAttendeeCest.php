@@ -40,6 +40,95 @@ class SingleAttendeeCest extends BaseRestCest {
 	}
 
 	/**
+	 * It should block unauthenticated access to an attendee on a private event.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
+	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
+	 */
+	public function should_block_unauthenticated_access_to_attendee_on_private_event( Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
+		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
+
+		$I->seeResponseCodeIs( 401 );
+		$I->seeResponseIsJson();
+		$I->seeResponseContainsJson( [ 'code' => 'attendee-not-accessible' ] );
+	}
+
+	/**
+	 * It should block unauthenticated access to an attendee on a password-protected event.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
+	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
+	 */
+	public function should_block_unauthenticated_access_to_attendee_on_password_protected_event( Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase( [ 'post_password' => 'topsecret' ] );
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
+		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
+
+		$I->seeResponseCodeIs( 401 );
+		$I->seeResponseIsJson();
+		$I->seeResponseContainsJson( [ 'code' => 'attendee-not-accessible' ] );
+	}
+
+	/**
+	 * It should block subscriber access to an attendee on a private event.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
+	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
+	 */
+	public function should_block_subscriber_access_to_attendee_on_private_event( Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
+		$I->generate_nonce_for_role( 'subscriber' );
+		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
+
+		$I->seeResponseCodeIs( 401 );
+		$I->seeResponseIsJson();
+		$I->seeResponseContainsJson( [ 'code' => 'attendee-not-accessible' ] );
+	}
+
+	/**
+	 * It should allow an administrator to access an attendee on a private event.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
+	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
+	 */
+	public function should_allow_administrator_to_access_attendee_on_private_event( Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
+		$I->generate_nonce_for_role( 'administrator' );
+		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
+
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+	}
+
+	/**
 	 * @test
 	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::validate_check_in
 	 */

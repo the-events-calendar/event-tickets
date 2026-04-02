@@ -87,9 +87,25 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 * @since TBD Check whether the attendee is accessible for the current user.
 	 */
 	public function get( WP_REST_Request $request ) {
-		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
+		$result = tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		if ( ! tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			$validator = tribe( 'tickets.rest-v1.validator' );
+			if ( ! $validator->should_see_ticket( (int) ( $result['post_id'] ?? 0 ), $request ) ) {
+				/** @var Tribe__Tickets__REST__V1__Messages $messages */
+				$messages = tribe( 'tickets.rest-v1.messages' );
+				return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), [ 'status' => 401 ] );
+			}
+		}
+
+		return $result;
 	}
 
 	/**

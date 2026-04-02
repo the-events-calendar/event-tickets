@@ -110,6 +110,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * attendees are returned.
 	 *
 	 * @since 4.8
+	 * @since TBD Added event_status and event__show_attendees criteria to the query when the user doesn't have manage access.
 	 *
 	 * @param mixed $primary_key The attendee ID.
 	 *
@@ -137,6 +138,8 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		$this->decorated->by( 'optout', 'no' );
 		$this->decorated->by( 'post_status', 'publish' );
 		$this->decorated->by( 'rsvp_status__or_none', 'yes' );
+		$this->decorated->by( 'event_status', 'publish' );
+		$this->decorated->by( 'event__show_attendees' );
 
 		$cap_query = $this->decorated->get_query();
 		$cap_query->set( 'fields', 'ids' );
