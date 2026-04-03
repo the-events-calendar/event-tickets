@@ -21,8 +21,6 @@ class SingleAttendeeCest extends BaseRestCest {
 	public function should_return_attendee_response( Restv1Tester $I ) {
 		$post_id = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 
-		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
-
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		$attendees = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
