@@ -42,7 +42,6 @@ class SingleAttendeeCest extends BaseRestCest {
 	 *
 	 * @test
 	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
-	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
 	 */
 	public function should_block_unauthenticated_access_to_attendee_on_private_event( Restv1Tester $I ) {
 		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
@@ -64,7 +63,6 @@ class SingleAttendeeCest extends BaseRestCest {
 	 *
 	 * @test
 	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
-	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
 	 */
 	public function should_block_unauthenticated_access_to_attendee_on_password_protected_event( Restv1Tester $I ) {
 		$post_id     = $I->havePostInDatabase( [ 'post_password' => 'topsecret' ] );
@@ -86,7 +84,6 @@ class SingleAttendeeCest extends BaseRestCest {
 	 *
 	 * @test
 	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
-	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
 	 */
 	public function should_block_subscriber_access_to_attendee_on_private_event( Restv1Tester $I ) {
 		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
@@ -109,7 +106,6 @@ class SingleAttendeeCest extends BaseRestCest {
 	 *
 	 * @test
 	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
-	 * @covers Tribe__Tickets__REST__V1__Attendee_Repository::by_primary_key
 	 */
 	public function should_allow_administrator_to_access_attendee_on_private_event( Restv1Tester $I ) {
 		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
