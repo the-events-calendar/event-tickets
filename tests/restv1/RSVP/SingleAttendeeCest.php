@@ -80,6 +80,28 @@ class SingleAttendeeCest extends BaseRestCest {
 	}
 
 	/**
+	 * It should allow unauthenticated access to an attendee on a password-protected event when the correct password is supplied.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
+	 */
+	public function should_allow_unauthenticated_access_to_attendee_on_password_protected_event_with_correct_password( Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase( [ 'post_password' => 'secret' ] );
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
+		// Simulate the cookie WordPress sets after the correct password is submitted.
+		$I->setCookie( 'wp-postpass_' . COOKIEHASH, wp_hash_password( 'secret' ) );
+		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
+
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+	}
+
+	/**
 	 * It should block subscriber access to an attendee on a private event.
 	 *
 	 * @test
@@ -116,6 +138,26 @@ class SingleAttendeeCest extends BaseRestCest {
 		] );
 
 		$I->generate_nonce_for_role( 'administrator' );
+		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
+
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+	}
+
+	/**
+	 * It should allow unauthenticated access to an attendee on a public event.
+	 *
+	 * @test
+	 * @covers Tribe__Tickets__REST__V1__Endpoints__Single_Attendee::get
+	 */
+	public function should_allow_unauthenticated_access_to_attendee_on_public_event( Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
 		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
 
 		$I->seeResponseCodeIs( 200 );

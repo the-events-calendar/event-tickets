@@ -469,8 +469,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return false;
 		}
 
-		// Event must not be password-protected.
-		if ( ! empty( $event->post_password ) ) {
+		// Password-protected event.
+		if ( post_password_required( $event ) ) {
 			return false;
 		}
 
