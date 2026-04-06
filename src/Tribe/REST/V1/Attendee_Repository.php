@@ -110,7 +110,6 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * attendees are returned.
 	 *
 	 * @since 4.8
-	 * @since TBD Added event status checking to filter by event visibility.
 	 *
 	 * @param mixed $primary_key The attendee ID.
 	 *
@@ -135,15 +134,9 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return $this->format_item( $found[0] );
 		}
 
-		if ( ! $this->is_publicly_visible_attendee_event( (int) $found[0] ) ) {
-			return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), [ 'status' => 401 ] );
-		}
-
 		$this->decorated->by( 'optout', 'no' );
 		$this->decorated->by( 'post_status', 'publish' );
 		$this->decorated->by( 'rsvp_status__or_none', 'yes' );
-		$this->decorated->by( 'event_status', 'publish' );
-		$this->decorated->by( 'event__show_attendees' );
 
 		$cap_query = $this->decorated->get_query();
 		$cap_query->set( 'fields', 'ids' );
@@ -157,57 +150,6 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		$this->decorated->set_query_builder( $this );
 
 		return $this->format_item( $found_w_cap[0] );
-	}
-
-	/**
-	 * Checks if the attendee event is publicly visible.
-	 *
-	 * Conditions for visibility:
-	 * - Event post status must be publish.
-	 * - Event must not be password protected.
-	 * - Event must not hide attendees from public listing.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $attendee_id The attendee post ID.
-	 *
-	 * @return bool True if publicly visible, false otherwise.
-	 */
-	private function is_publicly_visible_attendee_event( $attendee_id ) {
-		if ( ! $attendee_id ) {
-			return false;
-		}
-
-		$event_id = 0;
-		foreach ( $this->decorated->attendee_to_event_keys() as $event_meta_key ) {
-			$event_id = (int) get_post_meta( $attendee_id, $event_meta_key, true );
-			if ( $event_id ) {
-				break;
-			}
-		}
-
-		if ( ! $event_id ) {
-			return false;
-		}
-
-		$event = get_post( $event_id );
-
-		if ( ! $event instanceof WP_Post ) {
-			return false;
-		}
-
-		// Check if the event is published (not private).
-		if ( 'publish' !== $event->post_status ) {
-			return false;
-		}
-
-		// Check if the event is password protected.
-		if ( ! empty( $event->post_password ) ) {
-			return false;
-		}
-
-		// Check if the event hides attendees from public listing.
-		return ! tribe_is_truthy( get_post_meta( $event_id, '_tribe_hide_attendees_list', true ) );
 	}
 
 	/**
