@@ -87,7 +87,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
-	 * @since TBD Added event visibility checks for private, password-protected, and hidden attendee list events.
+	 * @since 5.27.6 Added event visibility checks for private, password-protected, and hidden attendee list events.
 	 */
 	public function get( WP_REST_Request $request ) {
 		$attendee_id = (int) $request['id'];
@@ -432,7 +432,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Blocks access when the event is private, password-protected,
 	 * or hides attendees from public listing.
 	 *
-	 * @since TBD
+	 * @since 5.27.6
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *
