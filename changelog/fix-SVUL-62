@@ -1,4 +1,0 @@
-Significance: patch
-Type: security
-
-Strengthen event attendee data access controls. [SVUL-62]

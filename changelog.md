@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.27.6] 2026-04-07
+
+* Security - Strengthen event attendee data access controls. [SVUL-62]
+* Language - 0 new strings added, 14 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.27.5] 2026-03-11
 
 * Fix - Change the way that the available tickets was being calculated on event list [ET-2629]
