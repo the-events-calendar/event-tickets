@@ -18,7 +18,10 @@ use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
 use TEC\Tickets\Commerce\Stock_Validator;
 use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Success;
 
 use WP_Error;
@@ -62,7 +65,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_create_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'can_create' ],
 			]
 		);
 
@@ -73,11 +76,60 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::DELETABLE,
 				'args'                => $this->fail_order_args(),
 				'callback'            => [ $this, 'handle_fail_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'can_delete' ],
 			]
 		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
+	}
+
+	/**
+	 * Returns whether a create/update order request can proceed.
+	 *
+	 * Allows authenticated users with manage access (e.g. admin via basic auth) or
+	 * frontend buyers who present a valid checkout nonce and have the gateway enabled.
+	 *
+	 * @since 5.27.6
+	 *
+	 * @param WP_REST_Request $request The incoming REST request.
+	 *
+	 * @return bool
+	 */
+	public function can_create( WP_REST_Request $request ): bool {
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			return true;
+		}
+
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+
+		if ( ! empty( $nonce ) && \wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return Gateway::is_enabled();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns whether a fail/cancel order request can proceed.
+	 *
+	 * @since 5.27.6
+	 *
+	 * @param WP_REST_Request $request The incoming REST request.
+	 *
+	 * @return bool
+	 */
+	public function can_delete( WP_REST_Request $request ): bool {
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			return true;
+		}
+
+		$nonce = $request->get_header( 'X-WP-Nonce' );
+
+		if ( ! empty( $nonce ) && \wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			return Gateway::is_enabled();
+		}
+
+		return false;
 	}
 
 	/**
@@ -117,11 +169,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! tribe( Cart::class )->has_items() ) {
 			return new WP_Error(
 				'tec-tc-empty-cart',
-				$messages['empty-cart'],
-				[
-					'purchaser' => $purchaser,
-					'data'      => $data,
-				]
+				$messages['empty-cart']
 			);
 		}
 
@@ -138,12 +186,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! $order instanceof WP_Post ) {
 			return new WP_Error(
 				'tec-tc-gateway-square-order-creation-failed',
-				$messages['failed-order-creation'],
-				[
-					'cart_items' => tribe( Cart::class )->get_items_in_cart(),
-					'order'      => $order,
-					'purchaser'  => $purchaser,
-				]
+				$messages['failed-order-creation']
 			);
 		}
 
@@ -153,7 +196,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		try {
 			$square_order_id = tribe( Square_Order::class )->upsert_square_from_local_order( $order );
 		} catch ( RuntimeException $e ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-order'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-order'] );
 		}
 
 		// Get the order object from the database, since the order object might have been updated by the Square_Order::upsert_square_from_local_order method.
@@ -167,13 +210,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) || empty( $payment['status'] ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
 		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
 
 		if ( 'COMPLETED' !== $payment['status'] ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
 		tec_tc_orders()
@@ -243,8 +286,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'required'          => false,
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a string.', [ 'status' => 400 ] );
+					$allowed = [ Not_Completed::SLUG, Denied::SLUG, Voided::SLUG ];
+					if ( ! is_string( $value ) || ! in_array( $value, $allowed, true ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a valid failure status.', [ 'status' => 400 ] );
 					}
 
 					return $value;
@@ -297,15 +341,18 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		)->first();
 
 		if ( is_wp_error( $order ) || empty( $order ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'] );
 		}
+
+		$allowed_failure_statuses = [ Not_Completed::SLUG, Denied::SLUG, Voided::SLUG ];
+		$failed_status            = in_array( $failed_status, $allowed_failure_statuses, true ) ? $failed_status : Not_Completed::SLUG;
 
 		$orders = tribe( Order::class );
 
 		// Mark the order as failed.
 		$orders->modify_status(
 			$order->ID,
-			$failed_status ?: 'failed',
+			$failed_status,
 			[
 				'gateway_payload'  => [
 					'failed_reason' => $failed_reason,

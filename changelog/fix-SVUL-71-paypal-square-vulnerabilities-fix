@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved some security vulnerabilities in Paypal and Square endpoints
