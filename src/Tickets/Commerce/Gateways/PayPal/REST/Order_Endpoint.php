@@ -61,7 +61,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_create_order' ],
-				'permission_callback' => [ $this, 'can_create' ],
+				'permission_callback' => '__return_true',
 			]
 		);
 
@@ -72,7 +72,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
 				'callback'            => [ $this, 'handle_update_order' ],
-				'permission_callback' => [ $this, 'can_create' ],
+				'permission_callback' => '__return_true',
 			]
 		);
 
@@ -83,7 +83,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::DELETABLE,
 				'args'                => $this->fail_order_args(),
 				'callback'            => [ $this, 'handle_fail_order' ],
-				'permission_callback' => [ $this, 'can_delete' ],
+				'permission_callback' => '__return_true',
 			]
 		);
 
@@ -473,60 +473,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['title']    = $messages['canceled-creating-order'];
 
 		return new WP_REST_Response( $response );
-	}
-
-	/**
-	 * Returns whether the PayPal gateway is active and a create/update order request can proceed.
-	 *
-	 * Follows the can_create / can_delete convention from
-	 * TEC\Common\REST\TEC\V1\Abstracts\Custom_Entity_Endpoint.
-	 * The endpoint is public (guest checkout), so no user capability is required —
-	 * the gateway being enabled is the appropriate guard.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request The incoming REST request.
-	 *
-	 * @return bool
-	 */
-	public function can_create( WP_REST_Request $request ): bool {
-		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
-			return true;
-		}
-
-		$nonce = $request->get_header( 'X-WP-Nonce' );
-
-		if ( ! empty( $nonce ) && \wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return Gateway::is_enabled();
-		}
-
-		return false;
-	}
-
-	/**
-	 * Returns whether a fail/cancel order request can proceed.
-	 *
-	 * Follows the can_create / can_delete convention from
-	 * TEC\Common\REST\TEC\V1\Abstracts\Custom_Entity_Endpoint.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request The incoming REST request.
-	 *
-	 * @return bool
-	 */
-	public function can_delete( WP_REST_Request $request ): bool {
-		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
-			return true;
-		}
-
-		$nonce = $request->get_header( 'X-WP-Nonce' );
-
-		if ( ! empty( $nonce ) && \wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return Gateway::is_enabled();
-		}
-
-		return false;
 	}
 
 	/**
