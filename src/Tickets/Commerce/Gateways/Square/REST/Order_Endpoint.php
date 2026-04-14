@@ -276,51 +276,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	public function handle_fail_order( WP_REST_Request $request ) {
 		_deprecated_function( __METHOD__, 'TBD', 'This endpoint is no longer used and will be removed in a future release.' );
 
-		$response = [
-			'success' => false,
-		];
-
-		$messages      = $this->get_error_messages();
-		$order_id      = $request->get_param( 'order_id' );
-		$failed_status = $request->get_param( 'failed_status' );
-		$failed_reason = $request->get_param( 'failed_reason' );
-
-		$order = tec_tc_orders()->by_args(
-			[
-				'status'           => [
-					tribe( Created::class )->get_wp_slug(),
-					tribe( Pending::class )->get_wp_slug(),
-				],
-				'gateway_order_id' => $order_id,
-			]
-		)->first();
-
-		if ( is_wp_error( $order ) || empty( $order ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'] );
-		}
-
-		$allowed_failure_statuses = [ Not_Completed::SLUG, Denied::SLUG, Voided::SLUG ];
-		$failed_status            = in_array( $failed_status, $allowed_failure_statuses, true ) ? $failed_status : Not_Completed::SLUG;
-
-		$orders = tribe( Order::class );
-
-		// Mark the order as failed.
-		$orders->modify_status(
-			$order->ID,
-			$failed_status,
-			[
-				'gateway_payload'  => [
-					'failed_reason' => $failed_reason,
-				],
-				'gateway_order_id' => $order_id,
-			]
-		);
-
-		$response['success'] = true;
-		$response['status']  = $failed_status ?: 'failed';
-		$response['message'] = $failed_reason ?: $messages['failed-payment'];
-
-		return new WP_REST_Response( $response );
+		return new WP_REST_Response( [] );
 	}
 
 	/**
