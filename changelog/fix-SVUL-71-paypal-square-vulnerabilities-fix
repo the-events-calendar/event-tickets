@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Resolved some security vulnerabilities in Paypal and Square endpoints
+Adjust PayPal and Square endpoints for security improvements. [SVUL-71]

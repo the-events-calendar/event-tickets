@@ -89,7 +89,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Allows authenticated users with manage access (e.g. admin via basic auth) or
 	 * frontend buyers who present a valid checkout nonce and have the gateway enabled.
 	 *
-	 * @since 5.27.6
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The incoming REST request.
 	 *
@@ -112,7 +112,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Returns whether a fail/cancel order request can proceed.
 	 *
-	 * @since 5.27.6
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The incoming REST request.
 	 *

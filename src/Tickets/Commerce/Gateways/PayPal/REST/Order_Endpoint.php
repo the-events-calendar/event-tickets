@@ -483,7 +483,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * The endpoint is public (guest checkout), so no user capability is required —
 	 * the gateway being enabled is the appropriate guard.
 	 *
-	 * @since 5.27.6
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The incoming REST request.
 	 *
@@ -509,7 +509,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Follows the can_create / can_delete convention from
 	 * TEC\Common\REST\TEC\V1\Abstracts\Custom_Entity_Endpoint.
 	 *
-	 * @since 5.27.6
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The incoming REST request.
 	 *
