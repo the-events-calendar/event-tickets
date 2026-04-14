@@ -267,11 +267,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.24.0
 	 *
+	 * @deprecated TBD
+	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function handle_fail_order( WP_REST_Request $request ) {
+		_deprecated_function( __METHOD__, 'TBD', 'This endpoint is no longer used and will be removed in a future release.' );
+
 		$response = [
 			'success' => false,
 		];
