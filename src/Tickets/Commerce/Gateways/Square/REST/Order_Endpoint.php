@@ -18,7 +18,10 @@ use TEC\Tickets\Commerce\Gateways\Square\Order as Square_Order;
 use TEC\Tickets\Commerce\Gateways\Square\Status;
 use TEC\Tickets\Commerce\Stock_Validator;
 use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Success;
 
 use WP_Error;
@@ -95,6 +98,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Square gateway.
 	 *
 	 * @since 5.24.0
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -117,11 +121,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! tribe( Cart::class )->has_items() ) {
 			return new WP_Error(
 				'tec-tc-empty-cart',
-				$messages['empty-cart'],
-				[
-					'purchaser' => $purchaser,
-					'data'      => $data,
-				]
+				$messages['empty-cart']
 			);
 		}
 
@@ -138,12 +138,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! $order instanceof WP_Post ) {
 			return new WP_Error(
 				'tec-tc-gateway-square-order-creation-failed',
-				$messages['failed-order-creation'],
-				[
-					'cart_items' => tribe( Cart::class )->get_items_in_cart(),
-					'order'      => $order,
-					'purchaser'  => $purchaser,
-				]
+				$messages['failed-order-creation']
 			);
 		}
 
@@ -153,7 +148,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		try {
 			$square_order_id = tribe( Square_Order::class )->upsert_square_from_local_order( $order );
 		} catch ( RuntimeException $e ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-order'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-order', $messages['failed-creating-order'] );
 		}
 
 		// Get the order object from the database, since the order object might have been updated by the Square_Order::upsert_square_from_local_order method.
@@ -167,13 +162,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		if ( empty( $payment['id'] ) || empty( $payment['created_at'] ) || empty( $payment['status'] ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
 		tribe( Square_Order::class )->add_payment_id( $order, $payment['id'] );
 
 		if ( 'COMPLETED' !== $payment['status'] ) {
-			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'], $order );
+			return new WP_Error( 'tec-tc-gateway-square-failed-creating-payment', $messages['failed-creating-payment'] );
 		}
 
 		tec_tc_orders()
@@ -220,6 +215,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the fail order endpoint.
 	 *
 	 * @since 5.24.0
+	 * @since 5.27.6.1 Added allowed failure statuses to the response for failed orders.
 	 *
 	 * @return array
 	 */
@@ -243,8 +239,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'required'          => false,
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a string.', [ 'status' => 400 ] );
+					$allowed = [ Not_Completed::SLUG, Denied::SLUG, Voided::SLUG ];
+					if ( ! is_string( $value ) || ! in_array( $value, $allowed, true ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a valid failure status.', [ 'status' => 400 ] );
 					}
 
 					return $value;
@@ -272,53 +269,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.24.0
 	 *
+	 * @deprecated 5.27.6.1
+	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function handle_fail_order( WP_REST_Request $request ) {
-		$response = [
-			'success' => false,
-		];
+		_deprecated_function( __METHOD__, '5.27.6.1', 'This endpoint is no longer used and will be removed in a future release.' );
 
-		$messages      = $this->get_error_messages();
-		$order_id      = $request->get_param( 'order_id' );
-		$failed_status = $request->get_param( 'failed_status' );
-		$failed_reason = $request->get_param( 'failed_reason' );
-
-		$order = tec_tc_orders()->by_args(
-			[
-				'status'           => [
-					tribe( Created::class )->get_wp_slug(),
-					tribe( Pending::class )->get_wp_slug(),
-				],
-				'gateway_order_id' => $order_id,
-			]
-		)->first();
-
-		if ( is_wp_error( $order ) || empty( $order ) ) {
-			return new WP_Error( 'tec-tc-gateway-square-order-not-found', $messages['order-not-found'], $order );
-		}
-
-		$orders = tribe( Order::class );
-
-		// Mark the order as failed.
-		$orders->modify_status(
-			$order->ID,
-			$failed_status ?: 'failed',
-			[
-				'gateway_payload'  => [
-					'failed_reason' => $failed_reason,
-				],
-				'gateway_order_id' => $order_id,
-			]
-		);
-
-		$response['success'] = true;
-		$response['status']  = $failed_status ?: 'failed';
-		$response['message'] = $failed_reason ?: $messages['failed-payment'];
-
-		return new WP_REST_Response( $response );
+		return new WP_REST_Response( [] );
 	}
 
 	/**
