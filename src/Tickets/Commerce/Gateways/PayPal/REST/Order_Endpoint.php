@@ -331,10 +331,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'gateway_payload' => $paypal_capture_response,
 			] );
 
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], [
-				'name'    => Arr::get( $paypal_capture_response, 'name' ),
-				'details' => Arr::get( $paypal_capture_response, 'details', [] ),
-			] );
+			return new WP_Error(
+				'tec-tc-gateway-paypal-failed-capture',
+				$messages['failed-capture'],
+				[
+					'name'    => Arr::get( $paypal_capture_response, 'name' ),
+					'details' => Arr::get( $paypal_capture_response, 'details', [] ),
+				]
+			);
 		}
 
 		$response['success']  = true;
