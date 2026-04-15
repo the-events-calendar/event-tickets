@@ -2,7 +2,7 @@
 /**
  * Tests for the PayPal Order Endpoint permission callbacks.
  *
- * @since TBD
+ * @since 5.27.6.1
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -17,7 +17,7 @@ use WP_REST_Request;
 /**
  * Class Order_Endpoint_Permission_Test.
  *
- * @since TBD
+ * @since 5.27.6.1
  *
  * @covers \TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint::can_create
  * @covers \TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint::can_delete

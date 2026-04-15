@@ -2,7 +2,7 @@
 /**
  * Tests for the Square Order Endpoint permission callbacks.
  *
- * @since TBD
+ * @since 5.27.6.1
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\REST
  */
@@ -17,7 +17,7 @@ use WP_REST_Request;
 /**
  * Class Order_Endpoint_Permission_Test.
  *
- * @since TBD
+ * @since 5.27.6.1
  *
  * @covers \TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint::can_create
  * @covers \TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint::can_delete

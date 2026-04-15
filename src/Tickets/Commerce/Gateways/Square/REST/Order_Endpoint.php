@@ -98,6 +98,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Square gateway.
 	 *
 	 * @since 5.24.0
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -214,6 +215,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the fail order endpoint.
 	 *
 	 * @since 5.24.0
+	 * @since 5.27.6.1 Added allowed failure statuses to the response for failed orders.
 	 *
 	 * @return array
 	 */
@@ -267,7 +269,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.24.0
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.27.6.1
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *

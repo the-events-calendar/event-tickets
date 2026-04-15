@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.27.6.1] 2026-04-15
+
+* Security - Improves PayPal's and Square's handle failure endpoint. [SVUL-71]
+
 ### [5.27.6] 2026-04-07
 
 * Security - Strengthen event attendee data access controls. [SVUL-62]

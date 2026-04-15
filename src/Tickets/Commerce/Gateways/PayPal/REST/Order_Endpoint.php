@@ -95,6 +95,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.1.9
 	 * @since 5.6.4 Include Event/Post title in the Ticket name.
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -283,6 +284,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that updates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -345,6 +347,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Gets the Order object again, in another request, to check for purchases possibly denied after creation.
 	 *
 	 * @since 5.4.0.2
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param string   $order_id The PayPal order ID.
 	 * @param WP_Post $order    The TC Order object.
@@ -418,6 +421,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that handles failing an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.2.0
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -528,6 +532,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the deleting order for PayPal.
 	 *
 	 * @since 5.2.0
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @return array
 	 */

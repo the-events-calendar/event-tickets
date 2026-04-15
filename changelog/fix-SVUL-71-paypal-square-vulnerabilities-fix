@@ -1,4 +1,0 @@
-Significance: patch
-Type: security
-
-Improves PayPal's and Square's handle failure endpoint. [SVUL-71]
