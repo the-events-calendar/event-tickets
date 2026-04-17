@@ -11,8 +11,10 @@ use TEC\Tickets\Commerce\Stock_Validator;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
 use Tribe__Tickets__Tickets as Tickets;
@@ -93,6 +95,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.1.9
 	 * @since 5.6.4 Include Event/Post title in the Ticket name.
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -122,7 +125,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		if ( ! $order ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'], $order );
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'] );
 		}
 
 		$unit = [
@@ -152,7 +155,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$paypal_order = tribe( Client::class )->create_order( $unit );
 
 		if ( empty( $paypal_order['id'] ) || empty( $paypal_order['create_time'] ) ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'], $order );
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'] );
 		}
 
 		$debug_header = tribe( Client::class )->get_debug_header();
@@ -281,6 +284,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that updates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -301,7 +305,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		] )->first();
 
 		if ( ! $order ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'], $order );
+			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'] );
 		}
 
 		$recheck = $request->get_param( 'recheck' );
@@ -327,7 +331,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'gateway_payload' => $paypal_capture_response,
 			] );
 
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
+			return new WP_Error(
+				'tec-tc-gateway-paypal-failed-capture',
+				$messages['failed-capture'],
+				[
+					'name'    => Arr::get( $paypal_capture_response, 'name' ),
+					'details' => Arr::get( $paypal_capture_response, 'details', [] ),
+				]
+			);
 		}
 
 		$response['success']  = true;
@@ -340,6 +351,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Gets the Order object again, in another request, to check for purchases possibly denied after creation.
 	 *
 	 * @since 5.4.0.2
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param string   $order_id The PayPal order ID.
 	 * @param WP_Post $order    The TC Order object.
@@ -382,7 +394,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_order_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_order_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'] );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
@@ -394,7 +406,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-capture-declined', $messages['capture-declined'], $paypal_order_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-capture-declined', $messages['capture-declined'] );
 		}
 
 		$response['success']  = true;
@@ -413,6 +425,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that handles failing an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.2.0
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -432,7 +445,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$messages = $this->get_error_messages();
 
 		if ( ! $order ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
+			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null );
 		}
 
 		$failed_reason = $request->get_param( 'failed_reason' );
@@ -441,13 +454,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$failed_status = 'not-completed';
 		}
 
+		$allowed_failure_statuses = [ Not_Completed::SLUG, Denied::SLUG, Voided::SLUG ];
+
+		if ( ! in_array( $failed_status, $allowed_failure_statuses, true ) ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-failed-status', null );
+		}
+
 		$status = tribe( Status_Handler::class )->get_by_slug( $failed_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-failed-status', null, [
-				'failed_status' => $failed_status,
-				'failed_reason' => $failed_reason
-			] );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-failed-status', null );
 		}
 
 		/**
@@ -520,6 +536,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the deleting order for PayPal.
 	 *
 	 * @since 5.2.0
+	 * @since 5.27.6.1 Removed order data from response for failed orders.
 	 *
 	 * @return array
 	 */
@@ -543,8 +560,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'required'          => false,
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a string.', [ 'status' => 400 ] );
+					$allowed = [ Not_Completed::SLUG, Denied::SLUG, Voided::SLUG ];
+					if ( ! is_string( $value ) || ! in_array( $value, $allowed, true ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a valid failure status.', [ 'status' => 400 ] );
 					}
 
 					return $value;
