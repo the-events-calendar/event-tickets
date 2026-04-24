@@ -31,6 +31,6 @@ $the_title = sprintf(
 	tribe_get_ticket_label_plural( 'tickets_commerce_checkout_title' ) // phpcs:ignore
 );
 ?>
-<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
+<h2 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
 	<?php echo esc_html( $the_title ); ?>
-</h3>
+</h2>
