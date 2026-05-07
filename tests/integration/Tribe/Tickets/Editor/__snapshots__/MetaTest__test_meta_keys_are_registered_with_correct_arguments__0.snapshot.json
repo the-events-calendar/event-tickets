@@ -55,6 +55,7 @@
         "_tribe_ticket_capacity": {
             "type": [
                 "string",
+                "integer",
                 "null"
             ],
             "label": "",
@@ -67,7 +68,11 @@
             ],
             "show_in_rest": {
                 "schema": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "integer",
+                        "null"
+                    ]
                 }
             },
             "revisions_enabled": false
