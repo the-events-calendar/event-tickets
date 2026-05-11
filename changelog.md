@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.27.7] 2026-05-11
+### [5.28.0] 2026-05-11
 
 * Feature - Integrate with Nexcess Licensing and Portal.
 * Tweak - Updated branding references from StellarWP to Nexcess.
