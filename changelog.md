@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.28.0] 2026-05-11
+
+* Feature - Integrate with Nexcess Licensing and Portal.
+* Tweak - Updated branding references from StellarWP to Nexcess.
+
 ### [5.27.6.1] 2026-04-15
 
 * Security - Improves PayPal's and Square's handle failure endpoint. [SVUL-71]

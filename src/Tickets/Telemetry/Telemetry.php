@@ -57,15 +57,7 @@ class Telemetry {
 	public function filter_tec_common_telemetry_optin_args( $original_optin_args ): array {
 		// @todo: check for ET admin page.
 
-		$intro_message = sprintf(
-			/* Translators: %1$s - the user name. */
-			__( 'Hi, %1$s! This is an invitation to help our StellarWP community.', 'event-tickets' ),
-			wp_get_current_user()->display_name // escaped after string is assembled, below.
-		);
-
-		$intro_message .= ' ' . __( 'If you opt-in, some data about your usage of Event Tickets and future StellarWP Products will be shared with our teams (so they can work their butts off to improve).' , 'event-tickets');
-		$intro_message .= ' ' . __( 'We will also share some helpful info on WordPress, and our products from time to time.' , 'event-tickets');
-		$intro_message .= ' ' . __( 'And if you skip this, that’s okay! Our products still work just fine.', 'event-tickets' );
+		$intro_message = __( 'Want to help shape the future of Event Tickets? Opting in shares anonymous usage data with our team at Liquid Web, the company behind Event Tickets, giving us the insights we need to keep improving the tools you rely on.', 'event-tickets' );
 
 		$tec_optin_args = [
 			'plugin_logo_alt' => 'Event Tickets Logo',
@@ -105,7 +97,7 @@ class Telemetry {
 			'tooltip'         => sprintf(
 			// Translators: 1: opening anchor tag, 2: opening anchor tag, 3: opening anchor tag, 4: closing anchor tag.
 				_x(
-					'Enable this option to share usage data with Event Tickets and StellarWP.
+					'Enable this option to share usage data with Event Tickets and Liquid Web.
 			This also activates access to TEC AI chatbot and in-app priority support for premium users.
 			%1$sWhat permissions are being granted?%4$s
 			%2$sRead our terms of service%4$s.

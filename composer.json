@@ -62,7 +62,7 @@
   "scripts": {
     "pup": [
       "Composer\\Config::disableProcessTimeout",
-      "test -f ./bin/pup.phar || curl -o ./bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.8/pup.phar",
+      "test -f ./bin/pup.phar || curl -o ./bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.3.9/pup.phar",
       "@php bin/pup.phar"
     ]
   },
