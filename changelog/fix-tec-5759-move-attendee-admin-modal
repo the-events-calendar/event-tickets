@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Initialize the `$hook_suffix` global to a string before the Move Attendees iframe fires `admin_enqueue_scripts`, preventing fatal TypeErrors in strictly-typed third-party listeners (e.g. WooCommerce Stripe).

@@ -92,6 +92,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		set_current_screen();
 		define( 'IFRAME_REQUEST', true );
+
+		// Ensure $hook_suffix is a string before iframe_header() fires admin_enqueue_scripts.
+		// Some third-party listeners (e.g. WC Stripe) declare a strict string type and fatal on null.
+		global $hook_suffix;
+		if ( ! is_string( $hook_suffix ) ) {
+			$hook_suffix = '';
+		}
+
 		$this->dialog_assets();
 		iframe_header( $template_vars['title'] );
 
@@ -633,14 +641,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
 			} else {
 				$c_ticket = new Commerce_Ticket();
-				
+
 				// Check if the ticket type uses shared capacity.
 				$shared_capacity = $ticket_type->global_stock_mode() === 'global' || $ticket_type->global_stock_mode() === 'capped';
-				
+
 				// Create separate global stock objects for source and target events.
 				$src_global_stock = new Tribe__Tickets__Global_Stock( $src_event_id );
 				$tgt_global_stock = new Tribe__Tickets__Global_Stock( $tgt_event_id );
-				
+
 				// Adjust the stock level for the source and target events.
 				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id, 1, $shared_capacity, $src_global_stock );
 				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id, 1, $shared_capacity, $tgt_global_stock );
