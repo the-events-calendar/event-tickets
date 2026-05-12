@@ -97,6 +97,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// Some third-party listeners (e.g. WC Stripe) declare a strict string type and fatal on null.
 		global $hook_suffix;
 		if ( ! is_string( $hook_suffix ) ) {
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Normalizing a core global to a string so strictly-typed admin_enqueue_scripts listeners do not fatal.
 			$hook_suffix = '';
 		}
 
