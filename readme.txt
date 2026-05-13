@@ -294,4 +294,4 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted.
 
 
-[See changelog for all versions](https://evnt.is/1b5k)
+[See changelog for all versions](https://github.com/the-events-calendar/event-tickets/blob/main/changelog.md)
