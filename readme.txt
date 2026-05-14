@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.27.6.1
+Stable tag: 5.28.1
 Requires at least: 6.7
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -198,6 +198,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.28.1] 2026-05-12 =
+
+* Tweak - Update Harbor to version 1.1.0 to remove the top level Liquid Web page added to the dashboard.
+
+= [5.28.0] 2026-05-11 =
+
+* Feature - Integrate with Nexcess Licensing and Portal.
+* Tweak - Updated branding references from StellarWP to Nexcess.
 
 = [5.27.6.1] 2026-04-15 =
 
