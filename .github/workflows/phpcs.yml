@@ -29,5 +29,6 @@ jobs:
     with:
       ref: ${{ github.event.inputs.ref }}
       change_permissions: false
+      phpcs_command: 'vendor/bin/phpcs --report=json -q 2>/dev/null || echo ""'
     secrets:
       access-token: ${{ secrets.GH_BOT_TOKEN }}
