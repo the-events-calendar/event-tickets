@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.28.2] 2026-05-14
+
+* Tweak - Update Harbor to 1.2.0, removing the Liquid Web Products page when there are no premium plugins present.
+
 ### [5.28.1] 2026-05-12
 
 * Tweak - Update Harbor to version 1.1.0 to remove the top level Liquid Web page added to the dashboard.
