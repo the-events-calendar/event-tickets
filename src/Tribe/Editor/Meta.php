@@ -58,7 +58,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			$handler->key_capacity,
-			$this->text_numeric_or_null()
+			$this->text_or_null()
 		);
 
 		register_meta(

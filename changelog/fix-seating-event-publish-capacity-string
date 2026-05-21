@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Allowed `_tribe_ticket_capacity` post meta to accept integer or null values in the REST schema, preventing publish failures on events with Assigned Seating [SL-310]
+Correctly publish events with Assigned Seating enabled in the Block Editor. [SMTNC-263]
