@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.27.6\n"
+"Project-Id-Version: Event Tickets 5.28.0\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-07T15:13:03+00:00\n"
+"POT-Creation-Date: 2026-05-11T00:02:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -8021,48 +8021,48 @@ msgstr ""
 msgid "Unexpected response from PayPal when on boarding"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:491
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:529
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:507
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:546
 msgid "Order ID in PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:504
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:520
 msgid "Payer ID token from PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:542
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:242
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:559
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:238
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:377
 msgid "To which status the failing should change this order to"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:555
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:255
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:573
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:252
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:390
 msgid "Why this particular order has failed."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:596
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:614
 msgid "Creating new PayPal order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:597
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:615
 msgid "Your PayPal order was cancelled."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:598
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:616
 msgid "Provided Order id is not valid."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:599
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:617
 msgid "There was a problem while processing your payment, please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:600
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:618
 msgid "Your payment was declined."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:601
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:619
 msgid "There was a problem with the Order status change, please try again."
 msgstr ""
 
@@ -8425,44 +8425,44 @@ msgstr ""
 msgid "Error handling the OAuth callback"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:229
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:225
 msgid "Order ID in Square"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:333
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:293
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:427
 msgid "Creating new order failed, please refresh your checkout page."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:334
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:294
 msgid "Creating new Square payment failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:335
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:295
 msgid "Creating new Square order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:336
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:296
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:431
 msgid "Order not found, please restart your checkout process."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:337
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:297
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:432
 msgid "Your payment is invalid. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:338
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:298
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:434
 msgid "Your payment method has failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:339
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:299
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:435
 msgid "Your payment status was not recognized. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:340
+#: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:300
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:436
 msgid "Cannot generate an order for an empty cart, please select new items to checkout."
 msgstr ""
@@ -12129,38 +12129,24 @@ msgstr ""
 msgid "No Attendee's found"
 msgstr ""
 
-#. Translators: %1$s - the user name.
-#: src/Tickets/Telemetry/Telemetry.php:62
-#, php-format
-msgid "Hi, %1$s! This is an invitation to help our StellarWP community."
+#: src/Tickets/Telemetry/Telemetry.php:60
+msgid "Want to help shape the future of Event Tickets? Opting in shares anonymous usage data with our team at Liquid Web, the company behind Event Tickets, giving us the insights we need to keep improving the tools you rely on."
 msgstr ""
 
-#: src/Tickets/Telemetry/Telemetry.php:66
-msgid "If you opt-in, some data about your usage of Event Tickets and future StellarWP Products will be shared with our teams (so they can work their butts off to improve)."
-msgstr ""
-
-#: src/Tickets/Telemetry/Telemetry.php:67
-msgid "We will also share some helpful info on WordPress, and our products from time to time."
-msgstr ""
-
-#: src/Tickets/Telemetry/Telemetry.php:68
-msgid "And if you skip this, that’s okay! Our products still work just fine."
-msgstr ""
-
-#: src/Tickets/Telemetry/Telemetry.php:73
+#: src/Tickets/Telemetry/Telemetry.php:65
 msgid "We hope you love Event Tickets!"
 msgstr ""
 
-#: src/Tickets/Telemetry/Telemetry.php:100
+#: src/Tickets/Telemetry/Telemetry.php:92
 msgid "Data sharing consent"
 msgstr ""
 
 #. Translators: 1: opening anchor tag, 2: opening anchor tag, 3: opening anchor tag, 4: closing anchor tag.
-#: src/Tickets/Telemetry/Telemetry.php:107
+#: src/Tickets/Telemetry/Telemetry.php:99
 #, php-format
 msgctxt "Description of opt-in setting."
 msgid ""
-"Enable this option to share usage data with Event Tickets and StellarWP.\n"
+"Enable this option to share usage data with Event Tickets and Liquid Web.\n"
 "\t\t\tThis also activates access to TEC AI chatbot and in-app priority support for premium users.\n"
 "\t\t\t%1$sWhat permissions are being granted?%4$s\n"
 "\t\t\t%2$sRead our terms of service%4$s.\n"

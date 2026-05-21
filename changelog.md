@@ -1,5 +1,14 @@
 # Changelog
 
+### [5.28.1] 2026-05-12
+
+* Tweak - Update Harbor to version 1.1.0 to remove the top level Liquid Web page added to the dashboard.
+
+### [5.28.0] 2026-05-11
+
+* Feature - Integrate with Nexcess Licensing and Portal.
+* Tweak - Updated branding references from StellarWP to Nexcess.
+
 ### [5.27.6.1] 2026-04-15
 
 * Security - Improves PayPal's and Square's handle failure endpoint. [SVUL-71]
