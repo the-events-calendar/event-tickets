@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved a fatal error on the Tickets > All Tickets admin page when listing tickets with no end date on PHP 8.3.9 or later. [SMTNC-295]

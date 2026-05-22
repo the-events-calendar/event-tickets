@@ -13,6 +13,7 @@ use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
 use DateTime;
+use DateTimeInterface;
 use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Admin\Settings;
 use Tribe__Template;
@@ -681,6 +682,10 @@ class List_Table extends WP_List_Table {
 		}
 
 		$datetime = $item->end_date( false );
+		if ( ! $datetime instanceof DateTimeInterface ) {
+			return '-';
+		}
+
 		$now      = new DateTime();
 		$interval = $now->diff( $datetime );
 
