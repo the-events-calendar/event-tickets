@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/check-php-changes
   phpcs:
     needs: check
-    if: needs.check.outputs.run_tests
+    if: needs.check.outputs.run_tests == 'true'
     uses: stellarwp/github-actions/.github/workflows/phpcs.yml@main
     with:
       ref: ${{ github.event.inputs.ref }}
