@@ -2,8 +2,8 @@
 
 namespace Tribe\Tickets\Partials\V2\Tickets\Item;
 
-use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class ContentTest extends V2TestCase {
 

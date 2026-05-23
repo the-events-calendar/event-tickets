@@ -53,8 +53,7 @@
 		}
 	}
 
-	.tribe-tickets__tickets-item-details-summary-button--more,
-	.tribe-tickets__tickets-item-details-summary-button--less {
+	.tribe-tickets__tickets-item-details-summary-button--more {
 
 		@mixin mobile-body-2;
 
@@ -63,11 +62,20 @@
 		position: relative;
 		white-space: nowrap;
 
+		/* Arrow down when collapsed */
 		&::after {
 			border: var(--tec-spacer-0) solid var(--tec-color-background-transparent);
+			border-bottom: 0 none;
+			border-top: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
 			content: "";
 			display: inline-block;
 			margin-bottom: 1px;
+		}
+
+		/* Arrow up when expanded */
+		&.tribe-tickets__tickets-item-details-summary-button--expanded::after {
+			border-bottom: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
+			border-top: 0 none;
 		}
 
 		@media (--viewport-medium) {
@@ -76,35 +84,6 @@
 
 				@mixin hidden;
 			}
-		}
-	}
-
-	.tribe-tickets__tickets-item-details-summary-button--more {
-
-		&::after {
-			border-bottom: 0 none;
-			border-top: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
-		}
-	}
-
-	.tribe-tickets__tickets-item-details-summary-button--less {
-		display: none;
-
-		&::after {
-			border-bottom: var(--tec-spacer-0) solid var(--tec-color-text-secondary);
-			border-top: 0 none;
-		}
-	}
-
-	.tribe__details--open {
-
-		.tribe-tickets__tickets-item-details-summary-button--more {
-
-			@mixin hidden;
-		}
-
-		.tribe-tickets__tickets-item-details-summary-button--less {
-			display: block;
 		}
 	}
 }
