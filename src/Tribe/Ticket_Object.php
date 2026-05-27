@@ -686,10 +686,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					continue;
 				}
 
-				// SOFT-3342: TC-RSVP V2 attendees marked Not Going do not hold a seat.
-				// Check the attendee's TC RSVP status meta directly so this works under any
-				// provider context (the admin attendees page can hydrate the ticket through the
-				// legacy V1 RSVP provider, which bypasses the TC Module's attendee_decreases_inventory override).
+				// TC-RSVP V2 attendees marked Not Going do not hold a seat.
 				if ( ! empty( $attendee['ID'] ) && metadata_exists( 'post', $attendee['ID'], '_tec_tickets_commerce_rsvp_status' ) ) {
 					$tc_rsvp_status = get_post_meta( $attendee['ID'], '_tec_tickets_commerce_rsvp_status', true );
 					if ( ! tribe_is_truthy( $tc_rsvp_status ) ) {
