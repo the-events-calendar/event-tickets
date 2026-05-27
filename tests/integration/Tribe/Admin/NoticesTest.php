@@ -78,12 +78,56 @@ class NoticesTest extends WPTestCase {
 	}
 
 	/**
-	 * The screen gate must reject screens outside the Tickets and Plugins contexts.
+	 * The screen gate must allow The Events Calendar submenu screens.
+	 *
+	 * @test
+	 */
+	public function is_plus_commerce_notice_context_should_allow_tec_submenu_screen(): void {
+		set_current_screen( 'tribe_events_page_tec-events-settings' );
+
+		$this->assertTrue( $this->get_notices_class()->is_plus_commerce_notice_context() );
+	}
+
+	/**
+	 * The screen gate must allow the All Events list table.
+	 *
+	 * @test
+	 */
+	public function is_plus_commerce_notice_context_should_allow_events_list_screen(): void {
+		set_current_screen( 'edit-tribe_events' );
+
+		$this->assertTrue( $this->get_notices_class()->is_plus_commerce_notice_context() );
+	}
+
+	/**
+	 * The screen gate must allow the single event editor.
+	 *
+	 * @test
+	 */
+	public function is_plus_commerce_notice_context_should_allow_single_event_screen(): void {
+		set_current_screen( 'tribe_events' );
+
+		$this->assertTrue( $this->get_notices_class()->is_plus_commerce_notice_context() );
+	}
+
+	/**
+	 * The screen gate must reject screens outside the Tickets, TEC, and Plugins contexts.
 	 *
 	 * @test
 	 */
 	public function is_plus_commerce_notice_context_should_reject_unrelated_screen(): void {
 		set_current_screen( 'dashboard' );
+
+		$this->assertFalse( $this->get_notices_class()->is_plus_commerce_notice_context() );
+	}
+
+	/**
+	 * Editing a non-event post should not surface the notice.
+	 *
+	 * @test
+	 */
+	public function is_plus_commerce_notice_context_should_reject_non_event_post_editor(): void {
+		set_current_screen( 'post' );
 
 		$this->assertFalse( $this->get_notices_class()->is_plus_commerce_notice_context() );
 	}

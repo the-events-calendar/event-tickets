@@ -258,10 +258,15 @@ class Tribe__Tickets__Admin__Notices {
 			return false;
 		}
 
-		$is_tickets_screen = 0 === strpos( (string) $screen->id, 'tickets_page_' );
-		$is_plugins_screen = 'plugins' === $screen->base;
+		$is_tickets_screen     = 0 === strpos( (string) $screen->id, 'tickets_page_' );
+		$is_plugins_screen     = 'plugins' === $screen->base;
+		$is_tec_submenu_screen = 0 === strpos( (string) $screen->id, 'tribe_events_page_' );
+		$is_event_post_screen  = 'tribe_events' === ( $screen->post_type ?? '' );
 
-		return $is_tickets_screen || $is_plugins_screen;
+		return $is_tickets_screen
+			|| $is_plugins_screen
+			|| $is_tec_submenu_screen
+			|| $is_event_post_screen;
 	}
 
 	/**
