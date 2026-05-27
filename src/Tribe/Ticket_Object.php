@@ -935,8 +935,21 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 			}
 
-			// Return the new Stock.
-			return min( $stock );
+			$stock = min( $stock );
+
+			if ( null === $value ) {
+				/**
+				 * Filters the computed stock for a ticket. Only fires on getter calls.
+				 *
+				 * @since TBD
+				 *
+				 * @param int                           $stock  The computed stock value.
+				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+				 */
+				$stock = (int) apply_filters( 'tribe_tickets_ticket_stock', $stock, $this );
+			}
+
+			return $stock;
 		}
 
 		/**
@@ -988,7 +1001,21 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
-			return $this->qty_getter_setter( $this->qty_sold, $value );
+			$qty_sold = $this->qty_getter_setter( $this->qty_sold, $value );
+
+			if ( null === $value ) {
+				/**
+				 * Filters the qty_sold for a ticket. Only fires on getter calls.
+				 *
+				 * @since TBD
+				 *
+				 * @param int                           $qty_sold The computed qty_sold value.
+				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket object.
+				 */
+				$qty_sold = (int) apply_filters( 'tribe_tickets_ticket_qty_sold', $qty_sold, $this );
+			}
+
+			return $qty_sold;
 		}
 
 		/**

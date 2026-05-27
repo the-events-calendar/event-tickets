@@ -54,13 +54,12 @@ class Stock_Capacity_Test extends WPTestCase {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
+		// Not Going attendees do not count toward held seats anywhere — stock/qty_sold add back / subtract them so the public-facing numbers stay consistent.
 		$this->assertEquals( 50, $ticket->capacity() );
-		// Stock/sold track raw order counts (decremented at order creation).
-		$this->assertEquals( 48, $ticket->stock() );
-		$this->assertEquals( 2, $ticket->qty_sold() );
-		// Inventory excludes not-going attendees (the seat isn't held). available() is min(inventory, capacity, stock) so it stays bounded by stock — see follow-up ticket.
+		$this->assertEquals( 50, $ticket->stock() );
+		$this->assertEquals( 0, $ticket->qty_sold() );
 		$this->assertEquals( 50, $ticket->inventory() );
-		$this->assertEquals( 48, $ticket->available() );
+		$this->assertEquals( 50, $ticket->available() );
 	}
 
 	public function test_stock_and_inventory_with_mixed_going_and_not_going(): void {
@@ -82,12 +81,12 @@ class Stock_Capacity_Test extends WPTestCase {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// Stock/qty_sold count all 5 orders; inventory excludes not-going. available() stays bounded by stock — see follow-up ticket.
+		// 3 going hold seats; 2 not-going do not, so every counter lands at 50 − 3 = 47.
 		$this->assertEquals( 50, $ticket->capacity() );
-		$this->assertEquals( 45, $ticket->stock() );
-		$this->assertEquals( 5, $ticket->qty_sold() );
+		$this->assertEquals( 47, $ticket->stock() );
+		$this->assertEquals( 3, $ticket->qty_sold() );
 		$this->assertEquals( 47, $ticket->inventory() );
-		$this->assertEquals( 45, $ticket->available() );
+		$this->assertEquals( 47, $ticket->available() );
 	}
 
 	public function test_show_not_going_disabled_does_not_affect_stock_or_inventory(): void {
@@ -104,12 +103,12 @@ class Stock_Capacity_Test extends WPTestCase {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// Stock/qty_sold count all 3 orders; inventory excludes the 1 not-going. available() stays bounded by stock — see follow-up ticket.
+		// 2 going hold seats; 1 not-going does not — show_not_going setting doesn't affect counting.
 		$this->assertEquals( 50, $ticket->capacity() );
-		$this->assertEquals( 47, $ticket->stock() );
-		$this->assertEquals( 3, $ticket->qty_sold() );
+		$this->assertEquals( 48, $ticket->stock() );
+		$this->assertEquals( 2, $ticket->qty_sold() );
 		$this->assertEquals( 48, $ticket->inventory() );
-		$this->assertEquals( 47, $ticket->available() );
+		$this->assertEquals( 48, $ticket->available() );
 	}
 
 	public function test_show_not_going_enabled_does_not_affect_stock(): void {
@@ -126,9 +125,9 @@ class Stock_Capacity_Test extends WPTestCase {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// 3 created, 1 not-going — all 3 still consume stock.
+		// 2 going hold seats; 1 not-going does not — show_not_going setting doesn't affect counting.
 		$this->assertEquals( 50, $ticket->capacity() );
-		$this->assertEquals( 47, $ticket->stock() );
-		$this->assertEquals( 3, $ticket->qty_sold() );
+		$this->assertEquals( 48, $ticket->stock() );
+		$this->assertEquals( 2, $ticket->qty_sold() );
 	}
 }
