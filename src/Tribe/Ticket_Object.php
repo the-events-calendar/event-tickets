@@ -898,6 +898,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|string
 		 */
 		public function stock( $value = null ) {
+			$is_getter_call = ( null === $value );
+
 			if ( null === $value ) {
 				$value = null === $this->stock
 					? (int) get_post_meta( $this->ID, '_stock', true )
@@ -937,7 +939,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$stock = min( $stock );
 
-			if ( null === $value ) {
+			if ( $is_getter_call ) {
 				/**
 				 * Filters the computed stock for a ticket. Only fires on getter calls.
 				 *
