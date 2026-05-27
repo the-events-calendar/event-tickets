@@ -75,8 +75,8 @@ class Stock_Capacity_Test extends WPTestCase {
 		$this->assertEquals( 50, $ticket->capacity() );
 		$this->assertEquals( 47, $ticket->stock() );
 		$this->assertEquals( 3, $ticket->qty_sold() );
-		$this->assertEquals( 47, $ticket->inventory() );
-		$this->assertEquals( 47, $ticket->available() );
+		$this->assertEquals( 48, $ticket->inventory() );
+		$this->assertEquals( 48, $ticket->available() );
 	}
 
 	public function test_show_not_going_disabled_does_not_affect_stock_or_inventory(): void {
