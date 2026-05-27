@@ -68,6 +68,8 @@ class Stock_Adjustments {
 	 * Whether the ticket is a Tickets Commerce RSVP (V2).
 	 *
 	 * @param mixed $ticket Anything; only Ticket_Object with a `type()` of TC_RSVP_TYPE qualifies.
+	 *
+	 * @return bool
 	 */
 	private function is_tc_rsvp( $ticket ): bool {
 		return $ticket instanceof Ticket_Object
@@ -82,6 +84,10 @@ class Stock_Adjustments {
 	 * count matches what the REST API reports as `not_going_count`. Not persistently
 	 * cached for the same reasons noted there (invalidation on every attendee /
 	 * meta change would cost more than the query itself).
+	 *
+	 * @param int $ticket_id The ticket post ID whose Not Going attendees should be counted.
+	 *
+	 * @return int
 	 */
 	private function count_not_going( int $ticket_id ): int {
 		if ( isset( $this->not_going_cache[ $ticket_id ] ) ) {

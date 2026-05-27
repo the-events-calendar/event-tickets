@@ -909,6 +909,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|string
 		 */
 		public function stock( $value = null ) {
+			$is_getter_call = ( null === $value );
+
 			if ( null === $value ) {
 				$value = null === $this->stock
 					? (int) get_post_meta( $this->ID, '_stock', true )
