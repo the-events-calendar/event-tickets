@@ -56,7 +56,7 @@ class Stock_Capacity_Test extends WPTestCase {
 		$this->assertEquals( 50, $ticket->stock() );
 		$this->assertEquals( 0, $ticket->qty_sold() );
 		$this->assertEquals( 50, $ticket->inventory() );
-		$this->assertEquals( 48, $ticket->available() );
+		$this->assertEquals( 50, $ticket->available() );
 	}
 
 	public function test_stock_and_inventory_with_mixed_going_and_not_going(): void {
@@ -95,7 +95,7 @@ class Stock_Capacity_Test extends WPTestCase {
 		$this->assertEquals( 48, $ticket->stock() );
 		$this->assertEquals( 2, $ticket->qty_sold() );
 		$this->assertEquals( 48, $ticket->inventory() );
-		$this->assertEquals( 47, $ticket->available() );
+		$this->assertEquals( 48, $ticket->available() );
 	}
 
 	public function test_show_not_going_enabled_does_not_affect_stock(): void {
