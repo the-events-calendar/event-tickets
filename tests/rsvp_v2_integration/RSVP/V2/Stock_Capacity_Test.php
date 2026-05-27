@@ -58,9 +58,9 @@ class Stock_Capacity_Test extends WPTestCase {
 		// Stock/sold track raw order counts (decremented at order creation).
 		$this->assertEquals( 48, $ticket->stock() );
 		$this->assertEquals( 2, $ticket->qty_sold() );
-		// Inventory and available also reflect the order-level stock decrease.
-		$this->assertEquals( 48, $ticket->inventory() );
-		$this->assertEquals( 48, $ticket->available() );
+		// Inventory and available exclude not-going attendees — the seat isn't held.
+		$this->assertEquals( 50, $ticket->inventory() );
+		$this->assertEquals( 50, $ticket->available() );
 	}
 
 	public function test_stock_and_inventory_with_mixed_going_and_not_going(): void {
@@ -82,12 +82,12 @@ class Stock_Capacity_Test extends WPTestCase {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// All 5 attendees consume stock at order creation time, capacity remains unchanged.
+		// Stock/qty_sold count all 5 orders; inventory/available count only the 3 going attendees.
 		$this->assertEquals( 50, $ticket->capacity() );
 		$this->assertEquals( 45, $ticket->stock() );
 		$this->assertEquals( 5, $ticket->qty_sold() );
-		$this->assertEquals( 45, $ticket->inventory() );
-		$this->assertEquals( 45, $ticket->available() );
+		$this->assertEquals( 47, $ticket->inventory() );
+		$this->assertEquals( 47, $ticket->available() );
 	}
 
 	public function test_show_not_going_disabled_does_not_affect_stock_or_inventory(): void {
@@ -104,12 +104,12 @@ class Stock_Capacity_Test extends WPTestCase {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// 3 created, 1 not-going — all 3 still consume stock.
+		// Stock/qty_sold count all 3 orders; inventory/available exclude the 1 not-going regardless of show_not_going setting.
 		$this->assertEquals( 50, $ticket->capacity() );
 		$this->assertEquals( 47, $ticket->stock() );
 		$this->assertEquals( 3, $ticket->qty_sold() );
-		$this->assertEquals( 47, $ticket->inventory() );
-		$this->assertEquals( 47, $ticket->available() );
+		$this->assertEquals( 48, $ticket->inventory() );
+		$this->assertEquals( 48, $ticket->available() );
 	}
 
 	public function test_show_not_going_enabled_does_not_affect_stock(): void {
