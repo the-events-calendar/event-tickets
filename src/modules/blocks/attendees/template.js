@@ -11,7 +11,7 @@ import { reactInputAutosize as AutosizeInput } from '@moderntribe/common/modules
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, PanelBody } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/editor';
+import { InspectorControls } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies

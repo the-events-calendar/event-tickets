@@ -10,7 +10,7 @@ import classNames from 'classnames';
  */
 import { Spinner, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
@@ -111,9 +111,10 @@ const RSVP = ( {
 
 	useEffect( () => {
 		! rsvpId && initializeRSVP();
-		document.addEventListener( 'click', handleAddEditClose );
+		const ownerDocument = rsvpBlockRef.current?.ownerDocument || document;
+		ownerDocument.addEventListener( 'click', handleAddEditClose );
 
-		return () => document.removeEventListener( 'click', handleAddEditClose );
+		return () => ownerDocument.removeEventListener( 'click', handleAddEditClose );
 	}, [ handleAddEditClose, initializeRSVP, rsvpId ] );
 
 	const renderBlock = () => {

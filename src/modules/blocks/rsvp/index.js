@@ -19,6 +19,7 @@ import { KEY_TICKET_GOING_COUNT, KEY_TICKET_NOT_GOING_COUNT, KEY_TICKET_HEADER }
  * Module Code
  */
 export default {
+	apiVersion: 3,
 	id: 'rsvp',
 	title: __( 'RSVP', 'event-tickets' ),
 	description: __( 'Find out who is planning to attend!', 'event-tickets' ),

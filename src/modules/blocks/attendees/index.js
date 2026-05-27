@@ -18,6 +18,7 @@ import { Attendees as AttendeesIcon } from '../../icons';
  * Module Code
  */
 export default {
+	apiVersion: 3,
 	id: 'attendees',
 	title: __( 'Attendee List', 'event-tickets' ),
 	description: __( 'Show the gravatars of people coming to this event.', 'event-tickets' ),
