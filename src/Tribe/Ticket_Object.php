@@ -686,6 +686,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					continue;
 				}
 
+				// SOFT-3342: TC-RSVP V2 attendees marked Not Going do not hold a seat.
+				// Check the attendee's TC RSVP status meta directly so this works under any
+				// provider context (the admin attendees page can hydrate the ticket through the
+				// legacy V1 RSVP provider, which bypasses the TC Module's attendee_decreases_inventory override).
+				if ( ! empty( $attendee['ID'] ) && metadata_exists( 'post', $attendee['ID'], '_tec_tickets_commerce_rsvp_status' ) ) {
+					$tc_rsvp_status = get_post_meta( $attendee['ID'], '_tec_tickets_commerce_rsvp_status', true );
+					if ( ! tribe_is_truthy( $tc_rsvp_status ) ) {
+						continue;
+					}
+				}
+
 				// Allow providers to decide if an attendee will count toward inventory decrease or not.
 				if ( ! $provider->attendee_decreases_inventory( $attendee, $this->type() ) ) {
 					continue;
@@ -898,8 +909,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|string
 		 */
 		public function stock( $value = null ) {
-			$is_getter_call = ( null === $value );
-
 			if ( null === $value ) {
 				$value = null === $this->stock
 					? (int) get_post_meta( $this->ID, '_stock', true )
@@ -937,21 +946,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 			}
 
-			$stock = min( $stock );
-
-			if ( $is_getter_call ) {
-				/**
-				 * Filters the computed stock for a ticket. Only fires on getter calls.
-				 *
-				 * @since TBD
-				 *
-				 * @param int                           $stock  The computed stock value.
-				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
-				 */
-				$stock = (int) apply_filters( 'tribe_tickets_ticket_stock', $stock, $this );
-			}
-
-			return $stock;
+			return min( $stock );
 		}
 
 		/**
@@ -1003,21 +998,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
-			$qty_sold = $this->qty_getter_setter( $this->qty_sold, $value );
-
-			if ( null === $value ) {
-				/**
-				 * Filters the qty_sold for a ticket. Only fires on getter calls.
-				 *
-				 * @since TBD
-				 *
-				 * @param int                           $qty_sold The computed qty_sold value.
-				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket object.
-				 */
-				$qty_sold = (int) apply_filters( 'tribe_tickets_ticket_qty_sold', $qty_sold, $this );
-			}
-
-			return $qty_sold;
+			return $this->qty_getter_setter( $this->qty_sold, $value );
 		}
 
 		/**

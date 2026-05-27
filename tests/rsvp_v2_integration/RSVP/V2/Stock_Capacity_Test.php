@@ -3,6 +3,7 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Tickets as Tickets;
@@ -43,18 +44,11 @@ class Stock_Capacity_Test extends WPTestCase {
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
 
-		$this->create_order( [ $ticket_id => 2 ] );
-
-		// Mark all attendees as not going.
-		$attendee_ids = tribe( 'tickets.attendee-repository.rsvp' )
-			->by( 'event_id', $post_id )->order_by( 'ID', 'ASC' )->get_ids();
-		foreach ( $attendee_ids as $attendee_id ) {
-			update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'no' );
-		}
+		$this->create_not_going_rsvp_order( $ticket_id, 2 );
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// Not Going attendees do not count toward held seats anywhere — stock/qty_sold add back / subtract them so the public-facing numbers stay consistent.
+		// Not Going attendees do not hold seats: Decrease_Stock bails, so _stock and qty_sold stay at their baseline.
 		$this->assertEquals( 50, $ticket->capacity() );
 		$this->assertEquals( 50, $ticket->stock() );
 		$this->assertEquals( 0, $ticket->qty_sold() );
@@ -66,18 +60,11 @@ class Stock_Capacity_Test extends WPTestCase {
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
 
-		// Create 3 going attendees.
+		// 3 going attendees: a normal Decrease_Stock decrement.
 		$this->create_order( [ $ticket_id => 3 ] );
 
-		// Create 2 more attendees, then mark them as not going.
-		$this->create_order( [ $ticket_id => 2 ] );
-		$all_attendee_ids = tribe( 'tickets.attendee-repository.rsvp' )
-			->by( 'event_id', $post_id )->order_by( 'ID', 'DESC' )->get_ids();
-		// Mark the 2 most recent as not going.
-		$not_going_ids = array_slice( $all_attendee_ids, 0, 2 );
-		foreach ( $not_going_ids as $attendee_id ) {
-			update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'no' );
-		}
+		// 2 not-going attendees: order is created but Decrease_Stock bails for these items.
+		$this->create_not_going_rsvp_order( $ticket_id, 2 );
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
@@ -94,16 +81,13 @@ class Stock_Capacity_Test extends WPTestCase {
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
 		update_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, '' );
 
-		$this->create_order( [ $ticket_id => 3 ] );
-		$attendee_ids = tribe( 'tickets.attendee-repository.rsvp' )
-			->by( 'event_id', $post_id )->order_by( 'ID', 'ASC' )->get_ids();
-		foreach ( array_slice( $attendee_ids, 0, 1 ) as $attendee_id ) {
-			update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'no' );
-		}
+		// 2 going + 1 not-going.
+		$this->create_order( [ $ticket_id => 2 ] );
+		$this->create_not_going_rsvp_order( $ticket_id, 1 );
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// 2 going hold seats; 1 not-going does not — show_not_going setting doesn't affect counting.
+		// show_not_going only controls the UI; counting is unaffected.
 		$this->assertEquals( 50, $ticket->capacity() );
 		$this->assertEquals( 48, $ticket->stock() );
 		$this->assertEquals( 2, $ticket->qty_sold() );
@@ -116,18 +100,38 @@ class Stock_Capacity_Test extends WPTestCase {
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
 		update_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, '1' );
 
-		$this->create_order( [ $ticket_id => 3 ] );
-		$attendee_ids = tribe( 'tickets.attendee-repository.rsvp' )
-			->by( 'event_id', $post_id )->order_by( 'ID', 'ASC' )->get_ids();
-		foreach ( array_slice( $attendee_ids, 0, 1 ) as $attendee_id ) {
-			update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'no' );
-		}
+		// 2 going + 1 not-going.
+		$this->create_order( [ $ticket_id => 2 ] );
+		$this->create_not_going_rsvp_order( $ticket_id, 1 );
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		// 2 going hold seats; 1 not-going does not — show_not_going setting doesn't affect counting.
 		$this->assertEquals( 50, $ticket->capacity() );
 		$this->assertEquals( 48, $ticket->stock() );
 		$this->assertEquals( 2, $ticket->qty_sold() );
+	}
+
+	/**
+	 * Mirrors the production Order_Endpoint flow for Not Going: places a cart item with
+	 * type=tc-rsvp + order_status=no (so Decrease_Stock bails) and stamps the rsvp_status
+	 * meta on the resulting attendees (so inventory() excludes them).
+	 */
+	private function create_not_going_rsvp_order( int $ticket_id, int $quantity ): void {
+		$order = $this->create_order(
+			[
+				$ticket_id => [
+					'quantity' => $quantity,
+					'extras'   => [
+						'type'         => Constants::TC_RSVP_TYPE,
+						'order_status' => 'no',
+					],
+				],
+			]
+		);
+
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		foreach ( $attendees as $attendee ) {
+			update_post_meta( $attendee['attendee_id'], Constants::RSVP_STATUS_META_KEY, 'no' );
+		}
 	}
 }
