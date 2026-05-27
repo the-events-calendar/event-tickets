@@ -42,14 +42,20 @@ function selectFromCommonStore( selector, ...args ) {
 /**
  * Sets the shared capacity in the common store.
  *
+ * The value is cast to a string before dispatch — the Tickets block declares its
+ * `sharedCapacity` attribute as `type: 'string', source: 'meta'`, and the registered
+ * `_tribe_ticket_capacity` REST schema only accepts string|null. A numeric value here
+ * would fail Gutenberg's `POST /wp/v2/posts` validation on publish.
+ *
  * @since 5.16.0
  *
- * @param {string} clientId The client ID of Ticket block to set the capacity for.
- * @param {number} capacity The capacity to set.
+ * @param {string}          clientId The client ID of Ticket block to set the capacity for.
+ * @param {string|number}   capacity The capacity to set.
  */
 export function setTicketsSharedCapacityInCommonStore( clientId, capacity ) {
-	dispatchToCommonStore( setTicketsSharedCapacity( capacity ) );
-	dispatchToCommonStore( setTicketsTempSharedCapacity( capacity ) );
+	const value = String( capacity );
+	dispatchToCommonStore( setTicketsSharedCapacity( value ) );
+	dispatchToCommonStore( setTicketsTempSharedCapacity( value ) );
 	setTicketHasChangesInCommonStore( clientId );
 }
 
@@ -58,12 +64,13 @@ export function setTicketsSharedCapacityInCommonStore( clientId, capacity ) {
  *
  * @since 5.16.0
  *
- * @param {string} clientId The client ID of the current ticket block.
- * @param {number} capacity The capacity to set.
+ * @param {string}          clientId The client ID of the current ticket block.
+ * @param {string|number}   capacity The capacity to set.
  */
 export function setCappedTicketCapacityInCommonStore( clientId, capacity ) {
-	dispatchToCommonStore( setTicketCapacity( clientId, capacity ) );
-	dispatchToCommonStore( setTicketTempCapacity( clientId, capacity ) );
+	const value = String( capacity );
+	dispatchToCommonStore( setTicketCapacity( clientId, value ) );
+	dispatchToCommonStore( setTicketTempCapacity( clientId, value ) );
 	dispatchToCommonStore( setTicketCapacityType( clientId, CAPPED ) );
 	dispatchToCommonStore( setTicketTempCapacityType( clientId, CAPPED ) );
 	setTicketHasChangesInCommonStore( clientId );

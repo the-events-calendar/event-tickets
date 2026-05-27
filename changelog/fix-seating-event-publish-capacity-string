@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Correctly publish events with Assigned Seating enabled in the Block Editor. [SMTNC-263]

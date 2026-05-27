@@ -16,7 +16,7 @@ runs:
       id: check_changes
       shell: bash
       run: |
-        if ! git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} HEAD | grep -q "\.php$"; then
+        if ! git diff --name-only --diff-filter=AM ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- . ':!tests' | grep -q "\.php$"; then
           echo "value=false" >> $GITHUB_OUTPUT
           echo "## No PHP files changed, skipping tests." >> $GITHUB_STEP_SUMMARY
         else
