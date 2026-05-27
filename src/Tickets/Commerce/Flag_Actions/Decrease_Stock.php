@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Global_Stock as Global_Stock;
@@ -98,6 +99,14 @@ class Decrease_Stock extends Flag_Action_Abstract {
 		foreach ( $post->items as $item ) {
 			// Skip if the item is not a ticket.
 			if ( ! $this->is_ticket( $item ) ) {
+				continue;
+			}
+
+			// Skip RSVP V2 "Not Going" items: the hidden TC order is for tracking only, the seat is not held.
+			if (
+				RSVP_V2_Constants::TC_RSVP_TYPE === ( $item['type'] ?? '' )
+				&& 'no' === ( $item['extra']['order_status'] ?? '' )
+			) {
 				continue;
 			}
 

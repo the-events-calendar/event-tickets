@@ -48,25 +48,10 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Cart\RSVP_Cart::class );
 		$this->container->singleton( Meta_Fields::class );
 		$this->container->singleton( REST_Properties::class );
-		$this->container->singleton( Stock_Adjustments::class );
 
 		$this->container->get( Assets::class )->register();
 
 		$this->register_common_rsvp_implementations();
-
-		// Stock / qty_sold adjustments so Not Going attendees don't count as held seats.
-		add_filter(
-			'tribe_tickets_ticket_stock',
-			$this->container->callback( Stock_Adjustments::class, 'adjust_stock' ),
-			10,
-			2
-		);
-		add_filter(
-			'tribe_tickets_ticket_qty_sold',
-			$this->container->callback( Stock_Adjustments::class, 'adjust_qty_sold' ),
-			10,
-			2
-		);
 
 		// Bind the repositories as factories to make sure each instance is different.
 		$this->container->bind(
