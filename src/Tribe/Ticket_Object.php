@@ -909,8 +909,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|string
 		 */
 		public function stock( $value = null ) {
-			$is_getter_call = ( null === $value );
-
 			if ( null === $value ) {
 				$value = null === $this->stock
 					? (int) get_post_meta( $this->ID, '_stock', true )
@@ -1000,21 +998,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
-			$qty_sold = $this->qty_getter_setter( $this->qty_sold, $value );
-
-			if ( null === $value ) {
-				/**
-				 * Filters the qty_sold for a ticket. Only fires on getter calls.
-				 *
-				 * @since TBD
-				 *
-				 * @param int                           $qty_sold The computed qty_sold value.
-				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket object.
-				 */
-				$qty_sold = (int) apply_filters( 'tribe_tickets_ticket_qty_sold', $qty_sold, $this );
-			}
-
-			return $qty_sold;
+			return $this->qty_getter_setter( $this->qty_sold, $value );
 		}
 
 		/**
