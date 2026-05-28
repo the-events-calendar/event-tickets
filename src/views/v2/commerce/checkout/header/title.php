@@ -11,7 +11,7 @@
  *
  * @since 5.1.10
  *
- * @version TBD
+ * @version 5.28.3
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
