@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Corrected checkout page heading from `h3` to `h2` for proper heading hierarchy and screen reader accessibility.
