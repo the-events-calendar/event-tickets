@@ -201,9 +201,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.28.3] 2026-05-28 =
 
-* Fix - Corrected checkout page heading from `h3` to `h2` for proper heading hierarchy and screen reader accessibility.
-* Fix - Correctly publish events with Assigned Seating enabled in the Block Editor. [SMTNC-263]
-* Fix - Correct WordPress translation function usage. [ET-2634]
+* Fix - Change checkout page heading from `h3` to `h2` for proper heading hierarchy and screen reader accessibility. [SMTNC-971]
+* Fix - Publish events with Assigned Seating enabled in the Block Editor. [SMTNC-263]
+* Fix - Ensure the correct usage of WordPress translation function. [ET-2634]
 * Tweak - Changed views: `v2/commerce/checkout/header/title`
 * Language - 2 new strings added, 22 updated, 1 fuzzied, and 4 obsoleted.
 
