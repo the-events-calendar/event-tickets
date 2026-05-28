@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Resolved an issue where the Event Tickets Plus upsell notice for WooCommerce and Easy Digital Downloads was being shown on every wp-admin page; it is now limited to the Tickets admin screens, The Events Calendar admin screens, and the Plugins page.
+Resolve an issue where the Event Tickets Plus upsell notice for WooCommerce and Easy Digital Downloads was shown on every wp-admin page; it is now limited to the Tickets admin screens, The Events Calendar admin screens, and the Plugins page.
