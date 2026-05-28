@@ -259,7 +259,7 @@ class Tribe__Tickets__Admin__Notices {
 		}
 
 		$is_tickets_screen     = 0 === strpos( (string) $screen->id, 'tickets_page_' );
-		$is_plugins_screen     = 'plugins' === $screen->base;
+		$is_plugins_screen     = in_array( $screen->id, [ 'plugins', 'plugins-network' ], true );
 		$is_tec_submenu_screen = 0 === strpos( (string) $screen->id, 'tribe_events_page_' );
 		$is_event_post_screen  = 'tribe_events' === ( $screen->post_type ?? '' );
 
