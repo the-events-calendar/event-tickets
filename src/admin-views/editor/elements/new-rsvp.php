@@ -15,8 +15,7 @@ $disabled = ! empty( $disabled );
 <button
 	id="rsvp_form_toggle"
 	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-	aria-label="
-	<?php
+	aria-label="<?php
 	echo esc_attr(
 		sprintf(
 			// translators: the %s is the name of the RSVP ticket type.
@@ -24,8 +23,7 @@ $disabled = ! empty( $disabled );
 			tribe_get_rsvp_label_singular( 'rsvp_form_toggle_button_label' )
 		)
 	);
-	?>
-	"
+	?>"
 	<?php if ( $disabled ) : ?>
 		disabled
 		title="<?php echo esc_attr_x( 'RSVP is temporarily disabled while migration is in progress.', 'Tooltip for disabled RSVP button during migration.', 'event-tickets' ); ?>"
