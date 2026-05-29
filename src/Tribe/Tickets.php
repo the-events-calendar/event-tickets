@@ -3448,7 +3448,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					if ( $display_time ) {
 						$time_format     = tribe_get_time_format();
 						$start_sale_time = Tribe__Date_Utils::build_date_object( $start_sale_time )->format_i18n( $time_format );
-						$message .= __( ' at ', 'event-tickets' ) . $start_sale_time;
+						$message        .= __( ' at ', 'event-tickets' ) . $start_sale_time;
 					}
 				} else {
 					/* translators: %s: Ticket label plural. */
