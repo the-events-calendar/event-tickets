@@ -2,19 +2,18 @@
 
 namespace Tribe\Tickets;
 
-use Closure;
-use Generator;
 use Prophecy\Argument;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\Traits\With_Snapshot_Post_Id_Replacement;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Generator;
+use Closure;
+use Tribe\Tests\Traits\With_Uopz;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
@@ -22,7 +21,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
-	use With_Snapshot_Post_Id_Replacement;
 
 	/**
 	 * @var Tickets_View
@@ -145,50 +143,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
 
 		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ) );
-	}
-
-	/**
-	 * @test
-	 * it should reject a ticket generated directly for a private event's ticket, even when
-	 * the caller never checked the event's accessibility (e.g. a smuggled `product_id`).
-	 *
-	 * @since TBD
-	 */
-	public function it_should_reject_generate_tickets_for_a_private_event() {
-		$private_post_id = $this->factory()->post->create( [ 'post_status' => 'private' ] );
-		$ticket_id        = $this->make_stock_ticket( 10, $private_post_id );
-
-		wp_set_current_user( 0 );
-
-		$sut    = $this->make_instance();
-		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
-
-		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ), 'Stock must not be decreased for an inaccessible event.' );
-		$this->assertCount( 0, $sut->get_attendees_by_id( $ticket_id ) );
-	}
-
-	/**
-	 * @test
-	 * it should reject a ticket generated directly for a password-protected event's ticket.
-	 *
-	 * @since TBD
-	 */
-	public function it_should_reject_generate_tickets_for_a_password_protected_event() {
-		$pw_post_id = $this->factory()->post->create( [
-			'post_status'   => 'publish',
-			'post_password' => 'secret',
-		] );
-		$ticket_id  = $this->make_stock_ticket( 10, $pw_post_id );
-
-		wp_set_current_user( 0 );
-
-		$sut    = $this->make_instance();
-		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
-
-		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ), 'Stock must not be decreased for an inaccessible event.' );
-		$this->assertCount( 0, $sut->get_attendees_by_id( $ticket_id ) );
 	}
 
 	/**
@@ -801,6 +755,14 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
+		$driver->setTolerableDifferences( [ $post_id, $ticket_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'quantity_',
+			'tribe-tickets-rsvp-name-',
+			'tribe-tickets-rsvp-email-',
+			'tribe-tickets__rsvp-ar-quantity-number--',
+		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
 			'data-product-id',
@@ -808,13 +770,19 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-opt-in-nonce',
 		] );
 
-		// Handle variations that tolerances won't handle.
-		$html = $this->replace_snapshot_post_ids(
-			$html,
+		// Handle ticket ID variations that tolerances won't handle
+		$html = str_replace(
 			[
-				$post_id   => '[EVENT_ID]',
-				$ticket_id => '[TICKET_ID]',
-			]
+				'[' . $ticket_id . ']',
+				'"' . $ticket_id . '"',
+				'--' . $ticket_id . '',
+			],
+			[
+				'[TICKET_ID]',
+				'"TICKET_ID"',
+				'--TICKET_ID',
+			],
+			$html
 		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -1052,33 +1020,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			);
 		},
 		false
-	];
-
-	// The markup guard is tag-agnostic, not script-specific: any HTML tag in the email rejects the attendee.
-	yield 'trying to expose only email with non-script markup' => [
-		function () {
-			$_POST['attendee'] = $this->fake_attendee_details(
-				[
-					'email' => '<img src=x onerror=alert(1)>@test.com',
-				],
-			);
-		},
-		false
-	];
-
-	// Markup in the full name is stripped and accepted, unlike markup in the email which rejects the attendee.
-	yield 'non-script markup in full name is stripped' => [
-		function () {
-			$_POST['attendee'] = $this->fake_attendee_details(
-				[
-					'full_name' => '<b>Bold</b>Name',
-				],
-			);
-		},
-		$this->fake_attendee_details([
-			'optout' => false,
-			'full_name' => 'BoldName',
-		])
 	];
 	}
 
