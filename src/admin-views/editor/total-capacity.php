@@ -15,7 +15,7 @@ $post_labels          = get_post_type_labels( get_post_type_object( get_post_typ
 $uppercase_post_label = $post_labels->singular_name ?? 'Event';
 $label                = sprintf(
 	/* translators: %s: uppercase post type label */
-	_x(
+	__(
 		'Total %s Capacity:',
 		'event-tickets'
 	),
