@@ -121,6 +121,8 @@ class Tickets implements ArrayAccess, Serializable {
 		add_action( 'parse_query', $do_not_cache_results );
 
 		if ( $post->post_type === TEC::POSTTYPE ) {
+			self::invalidate_event_ticket_provider_caches( $post->ID );
+
 			// It's an Event: refresh its cache.
 			$model = new self( $post->ID );
 			$model->exist();
@@ -162,18 +164,9 @@ class Tickets implements ArrayAccess, Serializable {
 			}
 			/** @var array<int> $connected_event_ids */
 			$connected_event_ids = array_merge( ...$connected_event_ids );
-			$tribe_cache         = tribe_cache();
-			$tickets_class       = Tickets_Tickets::class;
 
 			foreach ( $connected_event_ids as $connected_event_id ) {
-				// Reset the `Tribe__Tickets__Tickets::get_tickets` method cache to get the last version of them.
-				$provider = Tickets_Tickets::get_event_ticket_provider_object( $connected_event_id );
-
-				if ( $provider ) {
-					$orm_provider                      = $provider->orm_provider;
-					$tickets_cache_key                 = "{$tickets_class}::get_tickets-{$orm_provider}-{$connected_event_id}";
-					$tribe_cache[ $tickets_cache_key ] = null;
-				}
+				self::invalidate_event_ticket_provider_caches( $connected_event_id );
 
 				$model = new self( $connected_event_id );
 				// The call will trigger a priming of the model cache.
@@ -183,6 +176,33 @@ class Tickets implements ArrayAccess, Serializable {
 		}
 
 		remove_action( 'parse_query', $do_not_cache_results );
+	}
+
+	/**
+	 * Invalidates provider-level ticket caches for an event before model regeneration.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return void
+	 */
+	private static function invalidate_event_ticket_provider_caches( int $event_id ): void {
+		$tribe_cache   = tribe_cache();
+		$tickets_class = Tickets_Tickets::class;
+
+		foreach ( Tickets_Tickets::modules() as $class => $module ) {
+			$provider = call_user_func( [ $class, 'get_instance' ] );
+			$provider->clear_ticket_cache_for_post( $event_id );
+
+			$orm_provider                      = $provider->orm_provider;
+			$tickets_cache_key                 = "{$tickets_class}::get_tickets-{$orm_provider}-{$event_id}";
+			$tribe_cache[ $tickets_cache_key ] = null;
+
+			foreach ( (array) $provider->get_tickets_ids( $event_id ) as $ticket_id ) {
+				wp_cache_delete( $ticket_id, 'tec_tickets' );
+			}
+		}
 	}
 
 	/**
