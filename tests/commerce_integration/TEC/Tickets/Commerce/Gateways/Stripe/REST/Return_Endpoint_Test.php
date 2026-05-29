@@ -184,6 +184,42 @@ class Return_Endpoint_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function should_accept_user_zero_nonce_when_authenticated_admin_returns_from_stripe(): void {
+		$admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+
+		// Signup generates the state nonce as user 0 before redirecting to Stripe.
+		$valid_nonce = $this->generate_valid_state_nonce();
+
+		// The admin's browser returns with WordPress auth cookies, so verification
+		// runs under the REST-authenticated admin user, not user 0.
+		wp_set_current_user( $admin_id );
+
+		$payload = $this->encode_payload( [
+			'stripe_user_id' => 'acct_LEGITIMATE',
+			'nonce'          => $valid_nonce,
+			'live'           => [
+				'access_token'    => 'sk_live_LEGITIMATE',
+				'publishable_key' => 'pk_live_LEGITIMATE',
+			],
+			'sandbox'        => [
+				'access_token'    => 'sk_test_LEGITIMATE',
+				'publishable_key' => 'pk_test_LEGITIMATE',
+			],
+		] );
+
+		$result = $this->call_has_permission( $payload );
+
+		$this->assertNotFalse(
+			$result,
+			'User-0 nonce from Signup should pass when the admin returns with auth cookies.'
+		);
+
+		wp_set_current_user( 0 );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_accept_request_with_valid_state_nonce(): void {
 		$valid_nonce = $this->generate_valid_state_nonce();
 
