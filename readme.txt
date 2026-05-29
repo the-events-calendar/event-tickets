@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.28.2
+Stable tag: 5.28.3
 Requires at least: 6.7
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -198,6 +198,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.28.3] 2026-05-28 =
+
+* Fix - Change checkout page heading from `h3` to `h2` for proper heading hierarchy and screen reader accessibility. [SMTNC-971]
+* Fix - Publish events with Assigned Seating enabled in the Block Editor. [SMTNC-263]
+* Fix - Ensure the correct usage of WordPress translation function. [ET-2634]
+* Tweak - Changed views: `v2/commerce/checkout/header/title`
+* Language - 2 new strings added, 22 updated, 1 fuzzied, and 4 obsoleted.
 
 = [5.28.2] 2026-05-14 =
 

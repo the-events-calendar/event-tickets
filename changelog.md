@@ -1,5 +1,13 @@
 # Changelog
 
+### [5.28.3] 2026-05-28
+
+* Fix - Change checkout page heading from `h3` to `h2` for proper heading hierarchy and screen reader accessibility. [SMTNC-971]
+* Fix - Publish events with Assigned Seating enabled in the Block Editor. [SMTNC-263]
+* Fix - Ensure the correct usage of WordPress translation function. [ET-2634]
+* Tweak - Changed views: `v2/commerce/checkout/header/title`
+* Language - 2 new strings added, 22 updated, 1 fuzzied, and 4 obsoleted.
+
 ### [5.28.2] 2026-05-14
 
 * Tweak - Update Harbor to 1.2.0, removing the Liquid Web Products page when there are no premium plugins present.

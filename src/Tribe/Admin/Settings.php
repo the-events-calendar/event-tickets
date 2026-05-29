@@ -226,7 +226,7 @@ class Settings {
 			[
 				'id'       => static::$parent_slug,
 				'path'     => static::$parent_slug,
-				'title'    => 'Tickets',
+				'title'    => esc_html__( 'Tickets', 'event-tickets' ),
 				'icon'     => $this->get_menu_icon(),
 				'position' => 7,
 				'callback' => [
