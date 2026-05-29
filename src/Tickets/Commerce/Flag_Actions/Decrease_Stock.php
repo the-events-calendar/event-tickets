@@ -105,7 +105,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			// Skip RSVP V2 "Not Going" items: the hidden TC order is for tracking only, the seat is not held.
 			if (
 				RSVP_V2_Constants::TC_RSVP_TYPE === ( $item['type'] ?? '' )
-				&& 'no' === ( $item['extra']['order_status'] ?? '' )
+				&& ! tribe_is_truthy( $item['extra']['order_status'] ?? 'yes' )
 			) {
 				continue;
 			}
