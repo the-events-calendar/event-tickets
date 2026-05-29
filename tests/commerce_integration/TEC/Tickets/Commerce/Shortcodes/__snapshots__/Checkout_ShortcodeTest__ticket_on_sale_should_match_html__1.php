@@ -1,19 +1,19 @@
-<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/variables-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/common-skeleton.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/variables-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/common-full.css?ver={{COMMON_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/stripe.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/paypal.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/free.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/common-responsive.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
-<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce.css?ver={{ET_VERSION}}\' type=\'text/css\' media=\'all\' />
+<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/variables-skeleton.css?ver={{COMMON_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/common-skeleton.css?ver={{COMMON_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/variables-full.css?ver={{COMMON_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/build/css/common-full.css?ver={{COMMON_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/common-responsive.css?ver={{ET_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce.css?ver={{ET_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/stripe.css?ver={{ET_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/paypal.css?ver={{ET_VERSION}}\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/build/css/tickets-commerce/gateway/free.css?ver={{ET_VERSION}}\' media=\'all\' />
 <div class="tribe-common event-tickets">
 	<section
 		class="tribe-tickets__commerce-checkout"
 		 data-js="tec-tickets-commerce-notice" data-notice-default-title="Checkout Unavailable!" data-notice-default-content="Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator." 	>
 		<input type="hidden" id="tec-tc-checkout-nonce" name="tec-tc-checkout-nonce" value="jhd73jd873" /><input type="hidden" name="_wp_http_referer" value="" />		<header class="tribe-tickets__commerce-checkout-header">
-	<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
-	Purchase Tickets</h3>
+	<h2 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
+	Purchase Tickets</h2>
 	<div class="tribe-common-b2 tribe-tickets__commerce-checkout-header-links">
 	
 <a
