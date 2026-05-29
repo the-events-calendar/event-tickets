@@ -543,15 +543,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$first_attendee = $attendee;
 		}
 
-		$attendee_email        = empty( $first_attendee['email'] ) ?
-			null
-			: htmlentities(
-				sanitize_email(
-					html_entity_decode( $first_attendee['email'] )
-				),
-				ENT_COMPAT
-			);
-		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_email = null;
+		if ( ! empty( $first_attendee['email'] ) ) {
+			$decoded_email = html_entity_decode( $first_attendee['email'] );
+
+			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
+				$attendee_email = htmlentities( sanitize_email( $decoded_email ), ENT_COMPAT );
+				$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+			}
+		}
 		$attendee_full_name    = empty( $first_attendee['full_name'] ) ?
 			null
 			: htmlentities(

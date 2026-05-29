@@ -9,7 +9,6 @@
 
 use Tribe__Date_Utils as Dates;
 use Tribe__Repository__Interface as Repository_Interface;
-use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -157,7 +156,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	public static string $show_not_going = '_tribe_ticket_show_not_going';
+	public $show_not_going = '_tribe_ticket_show_not_going';
 
 	/**
 	 * @var Tribe__Tickets__RSVP__Attendance_Totals
@@ -297,7 +296,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.12.3
 	 * @since 5.5.10 Added `going` to the $args variable.
 	 * @since 5.18.0 Added check for valid post status.
-	 * @since 5.29.1 Extracted the event-accessibility check into `is_event_accessible()` for reuse.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -312,17 +310,26 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$post_id = (int) get_post_meta( $ticket_id, $this->get_event_key(), true );
 
-		// Fallback for TC-RSVP tickets which use a different event relation meta key.
-		if ( ! $post_id ) {
-			$post_id = (int) tribe_tickets( 'rsvp' )->get_event_id( $ticket_id );
-		}
-
 		// No post found, something went wrong.
 		if ( 0 === $post_id ) {
 			return '';
 		}
 
-		if ( ! $this->is_event_accessible( $post_id ) ) {
+		// Get post status.
+		$post_status = get_post_status( $post_id );
+
+		// Check if the post is private and the user can't read it.
+		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
+			return '';
+		}
+
+		// If post is anything other than private or published, return empty.
+		if ( ! in_array( $post_status, [ 'publish', 'private' ] ) ) {
+			return '';
+		}
+
+		// Check password if one exists.
+		if ( post_password_required( $post_id ) ) {
 			return '';
 		}
 
@@ -451,14 +458,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		$html = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
+		$html  = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
+		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
-		// Use the TC-RSVP commerce template for TC-RSVP tickets.
-		$content_template = $ticket instanceof \Tribe__Tickets__Ticket_Object && RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type()
-			? 'v2/commerce/rsvp/content'
-			: 'v2/rsvp/content';
-
-		return $html . $template->template( $content_template, $args, false );
+		return $html;
 	}
 
 	/**
@@ -710,13 +713,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
 
 		if ( ! is_singular( $post_types ) ) {
-			return;
-		}
-
-		// Only load the RSVP assets when the post actually has tickets to render. Otherwise these
-		// would load on every singular tickets-enabled post (the `page` post type is enabled by
-		// default), including pages with no RSVP/ticket UI such as the WooCommerce cart and checkout.
-		if ( ! tribe_events_has_tickets( get_queried_object_id() ) ) {
 			return;
 		}
 
@@ -1830,9 +1826,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 * @since 5.8.0 Added the $context parameter.
-	 * @since 5.29.0 Made $context explicitly nullable.
 	 */
-	public function get_tickets( $post_id, ?string $context = null ) {
+	public function get_tickets( $post_id, string $context = null ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 		if ( ! $ticket_ids ) {
 			return [];
@@ -2040,58 +2035,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$ticket = apply_filters( 'tribe_tickets_rsvp_get_ticket', $ticket, $event_id, $ticket_id );
 
-		// For TC-RSVP tickets, fire the TC legacy filter so extensions (e.g. ET+) can populate
-		// additional properties such as IAC from meta.
-		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object && RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type() ) {
-			/**
-			 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
-			 *
-			 * @since TBD
-			 *
-			 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
-			 * @param int                           $event_id  The event post ID.
-			 * @param int                           $ticket_id The ticket post ID.
-			 */
-			$ticket = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $ticket, $event_id, $ticket_id );
-		}
-
 		// Set cache after filter is applied.
 		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
 			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
 		}
 
 		return $ticket;
-	}
-
-	/**
-	 * Determines whether an event is currently visible/accessible to the requesting user,
-	 * i.e. whether an RSVP for it should be rendered or processed.
-	 *
-	 * @since 5.29.1
-	 *
-	 * @param int $post_id The event (or other ticket-able post) ID.
-	 *
-	 * @return bool
-	 */
-	public function is_event_accessible( $post_id ) {
-		$post_status = get_post_status( $post_id );
-
-		// Check if the post is private and the user can't read it.
-		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
-			return false;
-		}
-
-		// If post is anything other than private or published, it's not accessible.
-		if ( ! in_array( $post_status, [ 'publish', 'private' ], true ) ) {
-			return false;
-		}
-
-		// Check password if one exists.
-		if ( post_password_required( $post_id ) ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -2738,7 +2687,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			if ( ! empty( $ticket ) ) {
 				$capacity  = $ticket->capacity();
-				$not_going = tribe_is_truthy( get_post_meta( $ticket_id, self::show_not_going, true ) );
+				$not_going = tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
 			}
 		}
 
@@ -3026,7 +2975,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 *
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
-	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -3040,9 +2988,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Get the event this tickets is for.
 		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
 
-		// Deliberately identical to the empty-$post_id error: don't let the response reveal
-		// whether a ticket ID exists but is inaccessible versus not existing at all.
-		if ( empty( $post_id ) || ! $this->is_event_accessible( $post_id ) ) {
+		if ( empty( $post_id ) ) {
 			return new WP_Error( 'rsvp-invalid-parent-id', __( 'Invalid parent ID provided!', 'event-tickets' ) );
 		}
 
@@ -3193,15 +3139,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$attendee_email = null;
 		if ( ! empty( $first_attendee['email'] ) ) {
-			$decoded_email = html_entity_decode( $first_attendee['email'], ENT_COMPAT );
+			$decoded_email = html_entity_decode( $first_attendee['email'] );
 
-			// Reject emails that contain HTML/script markup rather than silently sanitizing them into a valid address.
 			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
-				$attendee_email = htmlentities( sanitize_email( $decoded_email ), ENT_COMPAT );
+				$attendee_email = htmlentities( sanitize_email( $decoded_email ) );
 				$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 			}
 		}
-		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'], ENT_COMPAT ) ), ENT_COMPAT );
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'] ) ) );
 		$attendee_optout       = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
 		$attendee_order_status = empty( $first_attendee['order_status'] ) ? 'yes' : $first_attendee['order_status'];
 
@@ -3341,7 +3286,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool Whether the not going option is enabled or not.
 	 */
 	public function is_not_going_enabled( $ticket_id ): bool {
-		return tribe_is_truthy( get_post_meta( $ticket_id, self::show_not_going, true ) );
+		return tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
 	}
 
 	/**
