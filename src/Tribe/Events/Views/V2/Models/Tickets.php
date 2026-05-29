@@ -464,6 +464,8 @@ class Tickets implements ArrayAccess, Serializable {
 
 		// Use the same type that would "win" in fetch_data (last with count): prefer tickets over rsvp.
 		$data = null;
+		$type = null;
+
 		if ( ! empty( $types['tickets']['count'] ) ) {
 			$data = $types['tickets'];
 			$type = 'tickets';
@@ -472,7 +474,15 @@ class Tickets implements ArrayAccess, Serializable {
 			$type = 'rsvp';
 		}
 
-		if ( ! $data || ! $data['available'] ) {
+		if ( ! $data ) {
+			return;
+		}
+
+		if ( ! $data['available'] ) {
+			$this->data['stock']->available = '';
+			$this->data['stock']->sold_out  = 'rsvp' === $type
+				? esc_html_x( 'Currently full', 'events rsvp full (v2)', 'event-tickets' )
+				: esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 			return;
 		}
 
