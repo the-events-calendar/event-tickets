@@ -8,12 +8,12 @@
 
 namespace TEC\Tickets;
 
-use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use Tribe__Tickets__RSVP as RSVP;
+use Generator;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
-use Generator;
+use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Ticket_Data.
@@ -262,6 +262,41 @@ class Ticket_Data {
 		if ( $end_sale_ts < time() ) {
 			$tickets_have_ended_sales[] = $ticket->ID;
 		}
+	}
+
+	/**
+	 * Whether a ticket should be synced based on its sale window.
+	 *
+	 * Unlike {@see self::count_ticket_stats()}, this does not require remaining inventory.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket The ticket object.
+	 *
+	 * @return bool Whether the ticket is syncable.
+	 */
+	public function is_ticket_syncable( Ticket_Object $ticket ): bool {
+		$start_sale_ts = $ticket->start_date( true );
+		$end_sale_ts   = $ticket->end_date( true );
+		$now           = time();
+
+		if ( $end_sale_ts < $now ) {
+			return true;
+		}
+
+		if ( $start_sale_ts < $now && $end_sale_ts > $now ) {
+			return true;
+		}
+
+		if (
+			$start_sale_ts - self::get_ticket_about_to_go_to_sale_seconds( $ticket->ID ) <= $now
+			&& $start_sale_ts > $now
+			&& $end_sale_ts > $now
+		) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

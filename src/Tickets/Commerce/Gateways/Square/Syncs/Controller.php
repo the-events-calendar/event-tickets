@@ -217,31 +217,13 @@ class Controller extends Controller_Contract {
 		}
 
 		$ticket_data = tribe( Ticket_Data::class );
+		$tickets     = [];
 
-		$tickets_stats = $ticket_data->get_posts_tickets_data( $event_id );
-
-		if (
-			empty( $tickets_stats['tickets_on_sale'] ) &&
-			empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
-			empty( $tickets_stats['tickets_have_ended_sales'] )
-		) {
-			return [];
+		foreach ( $ticket_data->get_posts_tickets( $event_id ) as $ticket ) {
+			if ( $ticket_data->is_ticket_syncable( $ticket ) ) {
+				$tickets[] = $ticket;
+			}
 		}
-
-		$ticket_ids = array_unique(
-			array_merge(
-				$tickets_stats['tickets_on_sale'],
-				$tickets_stats['tickets_about_to_go_to_sale'],
-				$tickets_stats['tickets_have_ended_sales']
-			)
-		);
-
-		$tickets = array_filter(
-			array_map(
-				static fn ( $ticket_id ) => $ticket_data->load_ticket_object( $ticket_id ),
-				$ticket_ids
-			)
-		);
 
 		$cache[ $cache_key ] = $tickets;
 

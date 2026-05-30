@@ -149,7 +149,7 @@
 </footer>
 
 </div>
-				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tec-tickets__admin-settings-tickets-commerce-gateway-connected-resync-button-icon" >
+				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	<svg
 	 class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first" 	aria-hidden="true"
 	viewBox="0 0 15 15"
@@ -172,7 +172,7 @@
 	<circle cx="7.5" cy="7.5" r="7.5"/>
 </svg>
 </div>
-		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
+		<div id=""  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>
 	
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
