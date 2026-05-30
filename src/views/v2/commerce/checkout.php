@@ -43,11 +43,12 @@ $attributes = [
 		<?php foreach ( $sections as $section ) : ?>
 			<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 		<?php endforeach; ?>
-		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
+		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader', [ 'classes' => [] ] ); ?>
 		<?php
 		tribe( 'tickets.editor.template' )->template(
 				'components/notice',
 				[
+					'id'              => '',
 					'notice_classes'  => [
 						'tribe-tickets__notice--error',
 						'tribe-tickets__commerce-checkout-notice',
