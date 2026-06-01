@@ -87,9 +87,23 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 * @since 5.27.6 Added event visibility checks for private, password-protected, and hidden attendee list events.
 	 */
 	public function get( WP_REST_Request $request ) {
-		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
+		$attendee_id = (int) $request['id'];
+
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			return tribe_attendees( 'restv1' )->by_primary_key( $attendee_id );
+		}
+
+		if ( ! $this->is_publicly_visible_attendee_event( $attendee_id ) ) {
+			/** @var Tribe__Tickets__REST__V1__Messages $messages */
+			$messages = tribe( 'tickets.rest-v1.messages' );
+
+			return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), [ 'status' => 401 ] );
+		}
+
+		return tribe_attendees( 'restv1' )->by_primary_key( $attendee_id );
 	}
 
 	/**
@@ -410,5 +424,57 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		}
 
 		return $check_in;
+	}
+
+	/**
+	 * Checks if the attendee's parent event is publicly visible.
+	 *
+	 * Blocks access when the event is private, password-protected,
+	 * or hides attendees from public listing.
+	 *
+	 * @since 5.27.6
+	 *
+	 * @param int $attendee_id The attendee post ID.
+	 *
+	 * @return bool True if publicly visible, false otherwise.
+	 */
+	private function is_publicly_visible_attendee_event( int $attendee_id ): bool {
+		if ( ! $attendee_id ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Attendee_Repository $attendee_repository */
+		$attendee_repository = tribe( 'tickets.attendee-repository' );
+
+		$event_id = 0;
+		foreach ( $attendee_repository->attendee_to_event_keys() as $event_meta_key ) {
+			$event_id = (int) get_post_meta( $attendee_id, $event_meta_key, true );
+			if ( $event_id ) {
+				break;
+			}
+		}
+
+		if ( ! $event_id ) {
+			return false;
+		}
+
+		$event = get_post( $event_id );
+
+		if ( ! $event instanceof WP_Post ) {
+			return false;
+		}
+
+		// Event must be published (not private or draft).
+		if ( 'publish' !== $event->post_status ) {
+			return false;
+		}
+
+		// Password-protected event.
+		if ( post_password_required( $event ) ) {
+			return false;
+		}
+
+		// Event must not hide attendees from public listing.
+		return ! tribe_is_truthy( get_post_meta( $event_id, '_tribe_hide_attendees_list', true ) );
 	}
 }

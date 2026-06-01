@@ -2162,8 +2162,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
-				// flag if we have any shared capacity tickets.
-				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+				// flag if we have any shared capacity tickets (global or capped).
+				// For both modes we rely on the event's global stock level (remaining) added in the loop below,
+				// not each ticket's cap/total, so we skip adding here to avoid showing total capacity instead of remaining.
+				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode
+					|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
 					$types['tickets']['global'] = 1;
 					continue;
 				}
@@ -2205,9 +2208,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$global_stock                   = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
 				$types['tickets']['available'] += $global_stock;
 
-				// If there's at least one ticket with shared capacity add the global stock to the stock total.
+				// If there's at least one ticket with shared capacity, add the global stock to both available and stock totals.
+				// Only add global stock if tickets don't manage their own stock to prevent double-counting.
 				if ( ! self::tickets_own_stock( $ticket_post_id ) ) {
-					$types['tickets']['stock'] += $global_stock;
+					$types['tickets']['available'] += $global_stock;
+					$types['tickets']['stock']     += $global_stock;
 				}
 			}
 

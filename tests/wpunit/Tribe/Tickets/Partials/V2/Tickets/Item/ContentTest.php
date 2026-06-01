@@ -2,8 +2,8 @@
 
 namespace Tribe\Tickets\Partials\V2\Tickets\Item;
 
-use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class ContentTest extends V2TestCase {
 
@@ -23,7 +23,7 @@ class ContentTest extends V2TestCase {
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		$event = $this->get_mock_event( 'events/single/1.json' );
-		$ids   = $this->create_many_paypal_tickets( 1, $event->ID );
+		$ids   = $this->create_many_paypal_tickets( 1, $event->ID, [ 'price' => 6 ] );
 
 		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );

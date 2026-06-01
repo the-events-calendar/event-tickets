@@ -77,6 +77,9 @@ class Hooks extends Service_Provider {
 
 		// skip saving hidden fields for RSVP emails.
 		add_filter( 'tribe_settings_fields', [ $this, 'filter_rsvp_fields_before_saving' ], 90, 2 );
+
+		// Remove json_ld schema data from email template arguments.
+		add_filter( 'tec_tickets_emails_template_args', [ $this, 'filter_remove_json_ld_from_template_args' ] );
 	}
 
 	/**
@@ -281,5 +284,22 @@ class Hooks extends Service_Provider {
 	 */
 	public function action_template_redirect_tickets_emails() {
 		$this->container->make( Web_View::class )->action_template_redirect_tickets_emails();
+	}
+
+	/**
+	 * Filters the template arguments to remove json_ld schema data that should not be visible in emails.
+	 *
+	 * @since 5.27.5
+	 *
+	 * @param array $args The email template arguments.
+	 *
+	 * @return array The filtered template arguments.
+	 */
+	public function filter_remove_json_ld_from_template_args( $args ) {
+		if ( ! empty( $args['json_ld'] ) ) {
+			unset( $args['json_ld'] );
+		}
+
+		return $args;
 	}
 }
