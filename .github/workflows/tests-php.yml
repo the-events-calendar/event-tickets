@@ -190,7 +190,7 @@ jobs:
       # Run tests
       # ------------------------------------------------------------------------------
       - name: Run suite tests
-        run: ${SLIC_BIN} run ${{ matrix.suite }} --ext DotReporter
+        run: ${SLIC_BIN} run ${{ matrix.suite }} --ext DotReporter --debug
       # ------------------------------------------------------------------------------
       # Upload artifacts (On failure)
       # ------------------------------------------------------------------------------
