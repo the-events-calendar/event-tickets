@@ -499,14 +499,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// Include details of the new ticket type the tickets were reassigned to
 		$moved_to = sprintf(
 			_x( 'assigned to %s', 'moved tickets success message fragment', 'event-tickets' ),
-			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_type_id ) . '</a>'
+			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_type_id ) ) . '</a>'
 		);
 
 		// If that ticket type is hosted by a different event post, prepend details of that also
 		if ( $src_post_id !== $target_post_id ) {
 			$moved_to = sprintf(
 				            _x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
-				            '<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_post_id ) . '</a>'
+				            '<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_post_id ) ) . '</a>'
 			            ) . ' ' . $moved_to;
 		}
 
@@ -519,7 +519,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 					'event-tickets'
 				),
 				$moved_tickets,
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>',
 				$moved_to
 			),
 			'remove_tickets' => $remove_tickets,
@@ -836,8 +836,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			// Maintain an audit trail
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s from %2$s', 'event-tickets' ),
-				'<a href="' . esc_url( get_the_permalink( $destination_post_id ) ) . '" target="_blank">' . get_the_title( $destination_post_id ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_post_id ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>'
+				'<a href="' . esc_url( get_the_permalink( $destination_post_id ) ) . '" target="_blank">' . esc_html( get_the_title( $destination_post_id ) ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_post_id ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>'
 			);
 
 			$history_data = array(
