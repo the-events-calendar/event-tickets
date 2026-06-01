@@ -648,10 +648,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
-				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . get_the_title( $tgt_event_id ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $tgt_ticket_type_id ) . ')</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . get_the_title( $src_event_id ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $src_ticket_type_id ) . ')</a>'
+				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $tgt_event_id ) ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $tgt_ticket_type_id ) ) . ')</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $src_event_id ) ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $src_ticket_type_id ) ) . ')</a>'
 			);
 
 			$history_data = array(
