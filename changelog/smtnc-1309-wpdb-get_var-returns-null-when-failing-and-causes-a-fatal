@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved a fatal error on the Events backend list that causes a fatal error when accessing events.

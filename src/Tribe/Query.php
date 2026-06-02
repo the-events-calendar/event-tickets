@@ -161,7 +161,7 @@ class Tribe__Tickets__Query {
 			// phpcs:enable
 		}
 
-		return $wpdb->get_var( $query );
+		return (int) $wpdb->get_var( $query );
 	}
 
 	/**
@@ -212,7 +212,7 @@ class Tribe__Tickets__Query {
 			// phpcs:enable
 		}
 
-		return $wpdb->get_var( $query );
+		return (int) $wpdb->get_var( $query );
 	}
 
 	/**

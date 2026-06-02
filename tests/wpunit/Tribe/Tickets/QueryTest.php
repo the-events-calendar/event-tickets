@@ -79,6 +79,130 @@ class QueryTest extends WPTestCase {
 	}
 
 	/**
+	 * Data provider for should_return_correct_ticketed_count.
+	 *
+	 * @return Generator
+	 */
+	public function get_ticketed_count_provider(): Generator {
+		yield 'no posts at all' => [
+			function (): array {
+				return [ 'post', 0 ];
+			}
+		];
+
+		yield '3 unticketed posts, none ticketed' => [
+			function (): array {
+				static::factory()->post->create_many( 3 );
+
+				return [ 'post', 0 ];
+			}
+		];
+
+		yield '3 ticketed posts' => [
+			function (): array {
+				$ticketed = static::factory()->post->create_many( 3 );
+				foreach ( $ticketed as $id ) {
+					$this->create_tc_ticket( $id );
+				}
+
+				return [ 'post', 3 ];
+			}
+		];
+
+		yield '2 ticketed, 4 unticketed posts' => [
+			function (): array {
+				static::factory()->post->create_many( 4 );
+				$ticketed = static::factory()->post->create_many( 2 );
+				foreach ( $ticketed as $id ) {
+					$this->create_tc_ticket( $id );
+				}
+
+				return [ 'post', 2 ];
+			}
+		];
+	}
+
+	/**
+	 * It should return correct int count of ticketed posts, including 0 when none exist.
+	 *
+	 * @test
+	 * @dataProvider get_ticketed_count_provider
+	 *
+	 * @param Closure $fixture Fixture providing post_type and expected count.
+	 */
+	public function should_return_correct_ticketed_count( Closure $fixture ): void {
+		[ $post_type, $expected ] = $fixture();
+
+		$query  = tribe( 'tickets.query' );
+		$result = $query->get_ticketed_count( $post_type );
+
+		$this->assertIsInt( $result );
+		$this->assertEquals( $expected, $result );
+	}
+
+	/**
+	 * Data provider for should_return_correct_unticketed_count.
+	 *
+	 * @return Generator
+	 */
+	public function get_unticketed_count_provider(): Generator {
+		yield 'no posts at all' => [
+			function (): array {
+				return [ 'post', 0 ];
+			}
+		];
+
+		yield '3 unticketed posts' => [
+			function (): array {
+				static::factory()->post->create_many( 3 );
+
+				return [ 'post', 3 ];
+			}
+		];
+
+		yield '3 ticketed posts, none unticketed' => [
+			function (): array {
+				$ticketed = static::factory()->post->create_many( 3 );
+				foreach ( $ticketed as $id ) {
+					$this->create_tc_ticket( $id );
+				}
+
+				return [ 'post', 0 ];
+			}
+		];
+
+		yield '2 ticketed, 4 unticketed posts' => [
+			function (): array {
+				static::factory()->post->create_many( 4 );
+				$ticketed = static::factory()->post->create_many( 2 );
+				foreach ( $ticketed as $id ) {
+					$this->create_tc_ticket( $id );
+				}
+
+				return [ 'post', 4 ];
+			}
+		];
+	}
+
+	/**
+	 * It should return correct int count of unticketed posts, including 0 when none exist.
+	 *
+	 * @test
+	 * @dataProvider get_unticketed_count_provider
+	 *
+	 * @param Closure $fixture Fixture providing post_type and expected count.
+	 */
+	public function should_return_correct_unticketed_count( Closure $fixture ): void {
+		[ $post_type, $expected ] = $fixture();
+
+		$query  = tribe( 'tickets.query' );
+		$result = $query->get_unticketed_count( $post_type );
+
+		$this->assertIsInt( $result );
+		$this->assertEquals( $expected, $result );
+	}
+
+	/**
 	 * It should correctly restrict by ticketed status
 	 *
 	 * @test
