@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Prevented exposure of attendee names (PII) via the public REST API attendees endpoint. [SMTNC-1326]
