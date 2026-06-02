@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Ticket as TC_Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Cache_Listener as Cache_Listener;
+use Tribe__Tickets__Main;
 use Tribe__Tickets__RSVP as RSVP;
 use TEC\Common\StellarWP\Migrations\Utilities\Logger;
 use WP_Post;
@@ -105,6 +106,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			TC_Ticket::$allow_backorders_meta_key    => 'no',
 			'_price'                                 => 0,
 			'_tribe_ticket_show_description'         => 'yes',
+			'_tribe_ticket_version'                  => Tribe__Tickets__Main::VERSION,
 			'format'                                 => 'standard',
 			'sticky'                                 => '',
 		];
@@ -132,6 +134,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 			TC_Ticket::$stock_mode_meta_key,
 			TC_Ticket::$stock_status_meta_key,
 			TC_Ticket::$allow_backorders_meta_key,
+			'_tribe_ticket_version',
 			'format',
 			'sticky',
 			'show_not_going',
