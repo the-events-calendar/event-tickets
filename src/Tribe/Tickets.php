@@ -2170,19 +2170,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$types['tickets']['global'] = 1;
 					continue;
 				}
-
-				$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
-
-				// Whether the stock level is negative because it represents unlimited stock (`-1`)
-				// or because it's oversold we normalize to `0` for the sake of displaying.
-				$stock_level = max( 0, (int) $stock_level );
-
-				$types['tickets']['stock'] += $stock_level;
-
-				// If current availability is unlimited (available = -1) and the ticket has stock, set it to 0.
-				if ( $types['tickets']['available'] < 0 && 0 !== $types['tickets']['stock'] ) {
-					$types['tickets']['available'] = 0;
-				}
 			}
 
 			/*
@@ -2204,9 +2191,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			);
 
 			foreach ( $ticket_post_ids as $ticket_post_id ) {
-				$global_stock                   = new Tribe__Tickets__Global_Stock( $ticket_post_id );
-				$global_stock                   = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
-				$types['tickets']['available'] += $global_stock;
+				$global_stock = new Tribe__Tickets__Global_Stock( $ticket_post_id );
+				$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
 
 				// If there's at least one ticket with shared capacity, add the global stock to both available and stock totals.
 				// Only add global stock if tickets don't manage their own stock to prevent double-counting.
