@@ -12,8 +12,8 @@ defined( 'ABSPATH' ) || exit;
 
 $disabled = ! empty( $disabled );
 
-// translators: the %s is the name of the RSVP ticket type.
 $add_new_rsvp_label = sprintf(
+	// translators: the %s is the name of the RSVP ticket type.
 	_x( 'Add a new %s', 'RSVP form toggle button label', 'event-tickets' ),
 	tribe_get_rsvp_label_singular( 'rsvp_form_toggle_button_label' )
 );
