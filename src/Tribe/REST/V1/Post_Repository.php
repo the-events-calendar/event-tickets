@@ -1016,12 +1016,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
-		// Only show the attendee name if the attendee did not optout or the user can read private posts.
-		if ( empty( $attendee['optout'] ) || $has_manage_access ) {
-			$attendee_data['title']  = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
-			$attendee_data['optout'] = tribe_is_truthy( $attendee['optout'] );
-		} else {
-			$attendee_data['optout'] = true;
+		// Always expose optout status so callers know the attendee's preference.
+		$attendee_data['optout'] = tribe_is_truthy( $attendee['optout'] );
+
+		// Only show the attendee name to users with manage access — the name is PII and must not be publicly accessible.
+		if ( $has_manage_access ) {
+			$attendee_data['title'] = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
 		}
 
 		// Sensible information should not be shown to everyone.
