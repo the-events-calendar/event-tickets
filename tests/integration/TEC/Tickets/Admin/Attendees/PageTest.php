@@ -25,6 +25,16 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $page;
 
+	/**
+	 * The admin-menu globals as they were before this test mutated them, keyed by
+	 * global name. A key maps to [ bool $existed, mixed $value ] so tearDown can
+	 * restore the exact prior state (including "was unset") and avoid leaking an
+	 * empty array into sibling tests. See SMTNC-1439 regression notes.
+	 *
+	 * @var array<string,array{0:bool,1:mixed}>
+	 */
+	protected $original_admin_menu_globals = [];
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -38,7 +48,7 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->page = new Page();
 
-		// Start each test from a clean admin-menu state.
+		// Start each test from a clean admin-menu state, remembering the prior one.
 		$this->reset_admin_menu_globals();
 
 		// Reset the static suffix to its English default so we observe the value the
@@ -47,22 +57,43 @@ class PageTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown(): void {
-		$this->reset_admin_menu_globals();
+		$this->restore_admin_menu_globals();
 		Page::$hook_suffix = 'tickets_page_tec-tickets-attendees';
 
 		parent::tearDown();
 	}
 
 	/**
-	 * Clears the WordPress admin-menu registries so each test registers the parent
-	 * "Tickets" menu (and its hook suffix) from scratch.
+	 * Snapshots and then clears the WordPress admin-menu registries so each test
+	 * registers the parent "Tickets" menu (and its hook suffix) from scratch.
 	 */
 	protected function reset_admin_menu_globals(): void {
-		$GLOBALS['menu']              = [];
-		$GLOBALS['submenu']           = [];
-		$GLOBALS['admin_page_hooks']  = [];
-		$GLOBALS['_registered_pages'] = [];
-		$GLOBALS['_parent_pages']     = [];
+		$globals = [ 'menu', 'submenu', 'admin_page_hooks', '_registered_pages', '_parent_pages' ];
+
+		foreach ( $globals as $key ) {
+			$this->original_admin_menu_globals[ $key ] = [
+				array_key_exists( $key, $GLOBALS ),
+				$GLOBALS[ $key ] ?? null,
+			];
+
+			$GLOBALS[ $key ] = [];
+		}
+	}
+
+	/**
+	 * Restores the admin-menu registries to their pre-test state so we do not leak
+	 * an empty array (or a freshly-created key) into other test cases.
+	 */
+	protected function restore_admin_menu_globals(): void {
+		foreach ( $this->original_admin_menu_globals as $key => [ $existed, $value ] ) {
+			if ( $existed ) {
+				$GLOBALS[ $key ] = $value;
+			} else {
+				unset( $GLOBALS[ $key ] );
+			}
+		}
+
+		$this->original_admin_menu_globals = [];
 	}
 
 	/**
