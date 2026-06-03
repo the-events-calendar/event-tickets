@@ -219,7 +219,7 @@ tribe.tickets.commerce.tickets = {};
 	 */
 	obj.mapFormValuesToApiParams = function( formValues ) {
 		const params = {
-			event: formValues.post_ID,
+			event: parseInt( formValues.post_ID, 10 ),
 			type: obj.tickets.ticketType || 'tc-rsvp',
 			title: formValues.ticket_name || '',
 			price: 0,
