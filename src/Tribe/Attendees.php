@@ -338,12 +338,6 @@ class Tribe__Tickets__Attendees {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'load_pointers' ] );
 		add_action( "load-{$this->page_id}", [ $this, 'screen_setup' ] );
-
-		/*
-		 * The modern `tec-tickets-attendees` page hooks `screen_setup` onto its
-		 * own (locale-dependent) hook suffix from within its registration; see
-		 * TEC\Tickets\Admin\Attendees\Page::add_tec_tickets_attendees_page().
-		 */
 	}
 
 	/**
