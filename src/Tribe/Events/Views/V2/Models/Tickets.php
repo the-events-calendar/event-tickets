@@ -121,6 +121,17 @@ class Tickets implements ArrayAccess, Serializable {
 		add_action( 'parse_query', $do_not_cache_results );
 
 		if ( $post->post_type === TEC::POSTTYPE ) {
+			// It's an Event: reset the provider's get_tickets method cache so we read fresh tickets.
+			$provider = Tickets_Tickets::get_event_ticket_provider_object( $post->ID );
+
+			if ( $provider ) {
+				$tribe_cache       = tribe_cache();
+				$tickets_class     = Tickets_Tickets::class;
+				$tickets_cache_key = "{$tickets_class}::get_tickets-{$provider->orm_provider}-{$post->ID}";
+
+				$tribe_cache[ $tickets_cache_key ] = null;
+			}
+
 			// It's an Event: refresh its cache.
 			$model = new self( $post->ID );
 			$model->exist();
