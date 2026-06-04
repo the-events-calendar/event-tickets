@@ -1023,7 +1023,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$attendee_data['title'] = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
 		}
 
-		// Sensible information should not be shown to everyone.
+		// Sensitive information should not be shown to everyone.
 		if ( $has_manage_access ) {
 			$attendee_data = array_merge(
 				$attendee_data,
