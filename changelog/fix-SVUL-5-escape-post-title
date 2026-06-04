@@ -1,4 +1,0 @@
-Significance: patch
-Type: security
-
-Improve escaping in titles when moving tickets. [SVUL-5]
