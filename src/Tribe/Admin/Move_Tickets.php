@@ -505,9 +505,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// If that ticket type is hosted by a different event post, prepend details of that also
 		if ( $src_post_id !== $target_post_id ) {
 			$moved_to = sprintf(
-				            _x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
-			                '<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_post_id ) ) . '</a>'
-			            ) . ' ' . $moved_to;
+				_x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_post_id ) ) . '</a>'
+			) . ' ' . $moved_to;
 
 		}
 
