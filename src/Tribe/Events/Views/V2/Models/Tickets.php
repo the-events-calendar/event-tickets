@@ -121,6 +121,17 @@ class Tickets implements ArrayAccess, Serializable {
 		add_action( 'parse_query', $do_not_cache_results );
 
 		if ( $post->post_type === TEC::POSTTYPE ) {
+			// It's an Event: reset the provider's get_tickets method cache so we read fresh tickets.
+			$provider = Tickets_Tickets::get_event_ticket_provider_object( $post->ID );
+
+			if ( $provider ) {
+				$tribe_cache       = tribe_cache();
+				$tickets_class     = Tickets_Tickets::class;
+				$tickets_cache_key = "{$tickets_class}::get_tickets-{$provider->orm_provider}-{$post->ID}";
+
+				$tribe_cache[ $tickets_cache_key ] = null;
+			}
+
 			// It's an Event: refresh its cache.
 			$model = new self( $post->ID );
 			$model->exist();
@@ -464,6 +475,8 @@ class Tickets implements ArrayAccess, Serializable {
 
 		// Use the same type that would "win" in fetch_data (last with count): prefer tickets over rsvp.
 		$data = null;
+		$type = null;
+
 		if ( ! empty( $types['tickets']['count'] ) ) {
 			$data = $types['tickets'];
 			$type = 'tickets';
@@ -472,7 +485,15 @@ class Tickets implements ArrayAccess, Serializable {
 			$type = 'rsvp';
 		}
 
-		if ( ! $data || ! $data['available'] ) {
+		if ( ! $data ) {
+			return;
+		}
+
+		if ( ! $data['available'] ) {
+			$this->data['stock']->available = '';
+			$this->data['stock']->sold_out  = 'rsvp' === $type
+				? esc_html_x( 'Currently full', 'events rsvp full (v2)', 'event-tickets' )
+				: esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 			return;
 		}
 

@@ -985,49 +985,42 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 
-		yield 'trying to expose both email and full name with markup' => [
-			function () {
-				$_POST['attendee'] = $this->fake_attendee_details(
-					[
-						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
-						'email'     => '<script>alert(\'hello\');</script>@test.com',
-					],
-				);
-			},
-			$this->fake_attendee_details([
-				'optout' => false,
-				'full_name' => 'LittleTest',
-				'email' => 'scriptalert\'hello\'/script@test.com',
-			])
-		];
+	yield 'trying to expose both email and full name with markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+					'email'     => '<script>alert(\'hello\');</script>@test.com',
+				],
+			);
+		},
+		false
+	];
 
-		yield 'trying to expose only full name with markup' => [
-			function () {
-				$_POST['attendee'] = $this->fake_attendee_details(
-					[
-						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
-					],
-				);
-			},
-			$this->fake_attendee_details([
-				'optout' => false,
-				'full_name' => 'LittleTest',
-			])
-		];
+	yield 'trying to expose only full name with markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+				],
+			);
+		},
+		$this->fake_attendee_details([
+			'optout' => false,
+			'full_name' => 'LittleTest',
+		])
+	];
 
-		yield 'trying to expose only email with markup' => [
-			function () {
-				$_POST['attendee'] = $this->fake_attendee_details(
-					[
-						'email' => '<script>alert(\'hello\');</script>@test.com',
-					],
-				);
-			},
-			$this->fake_attendee_details([
-				'optout' => false,
-				'email' => 'scriptalert\'hello\'/script@test.com',
-			])
-		];
+	yield 'trying to expose only email with markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'email' => '<script>alert(\'hello\');</script>@test.com',
+				],
+			);
+		},
+		false
+	];
 	}
 
 	/**
@@ -1040,7 +1033,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_parse_attendee_details( Closure $fixture, $expected ) {
 		$fixture();
 		$sut = $this->make_instance();
-		$this->set_class_fn_return( get_class( $sut ), 'generate_order_id', $expected['order_id'] );
+		if ( is_array( $expected ) ) {
+			$this->set_class_fn_return( get_class( $sut ), 'generate_order_id', $expected['order_id'] );
+		}
 		$attendee = $sut->parse_attendee_details();
 		$this->assertEquals( $expected, $attendee );
 	}

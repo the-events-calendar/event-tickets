@@ -7,6 +7,7 @@
 
  // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Cache_Listener as Cache;
 
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
@@ -686,6 +687,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					continue;
 				}
 
+				// TC-RSVP V2 attendees marked Not Going do not hold a seat.
+				if ( ! empty( $attendee['ID'] ) && metadata_exists( 'post', $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY ) ) {
+					$tc_rsvp_status = get_post_meta( $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY, true );
+					if ( ! tribe_is_truthy( $tc_rsvp_status ) ) {
+						continue;
+					}
+				}
+
 				// Allow providers to decide if an attendee will count toward inventory decrease or not.
 				if ( ! $provider->attendee_decreases_inventory( $attendee, $this->type() ) ) {
 					continue;
@@ -935,7 +944,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 			}
 
-			// Return the new Stock.
 			return min( $stock );
 		}
 

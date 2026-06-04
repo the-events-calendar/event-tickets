@@ -14,6 +14,7 @@ use WP_Error;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
@@ -498,6 +499,13 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function attendee_decreases_inventory( array $attendee, string $type = 'default' ) {
+		if ( $type === RSVP_V2_Constants::TC_RSVP_TYPE ) {
+			$meta_exists = metadata_exists( 'post', $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY );
+			if ( $meta_exists && ! tribe_is_truthy( get_post_meta( $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) ) ) {
+				return false;
+			}
+		}
+
 		return tribe( Attendee::class )->decreases_inventory( $attendee );
 	}
 
