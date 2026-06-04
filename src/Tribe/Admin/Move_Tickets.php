@@ -498,16 +498,19 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		// Include details of the new ticket type the tickets were reassigned to
 		$moved_to = sprintf(
+			// translators: %s is the linked title of the ticket type the tickets were assigned to.
 			_x( 'assigned to %s', 'moved tickets success message fragment', 'event-tickets' ),
-			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_type_id ) . '</a>'
+			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_type_id ) ) . '</a>'
 		);
 
 		// If that ticket type is hosted by a different event post, prepend details of that also
 		if ( $src_post_id !== $target_post_id ) {
 			$moved_to = sprintf(
-				            _x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
-				            '<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_post_id ) . '</a>'
-			            ) . ' ' . $moved_to;
+				// translators: %s is the linked title of the event post the ticket type was moved to.
+				_x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_post_id ) ) . '</a>'
+			) . ' ' . $moved_to;
+
 		}
 
 		wp_send_json_success( array(
@@ -519,7 +522,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 					'event-tickets'
 				),
 				$moved_tickets,
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>',
 				$moved_to
 			),
 			'remove_tickets' => $remove_tickets,
@@ -633,14 +636,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$rsvp->increase_ticket_sales_by( $tgt_ticket_type_id );
 			} else {
 				$c_ticket = new Commerce_Ticket();
-				
+
 				// Check if the ticket type uses shared capacity.
 				$shared_capacity = $ticket_type->global_stock_mode() === 'global' || $ticket_type->global_stock_mode() === 'capped';
-				
+
 				// Create separate global stock objects for source and target events.
 				$src_global_stock = new Tribe__Tickets__Global_Stock( $src_event_id );
 				$tgt_global_stock = new Tribe__Tickets__Global_Stock( $tgt_event_id );
-				
+
 				// Adjust the stock level for the source and target events.
 				$c_ticket->decrease_ticket_sales_by( $src_ticket_type_id, 1, $shared_capacity, $src_global_stock );
 				$c_ticket->increase_ticket_sales_by( $tgt_ticket_type_id, 1, $shared_capacity, $tgt_global_stock );
@@ -648,10 +651,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
-				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . get_the_title( $tgt_event_id ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $tgt_ticket_type_id ) . ')</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . get_the_title( $src_event_id ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $src_ticket_type_id ) . ')</a>'
+				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $tgt_event_id ) ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $tgt_ticket_type_id ) ) . ')</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . esc_html( get_the_title( $src_event_id ) ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . esc_html( get_the_title( $src_ticket_type_id ) ) . ')</a>'
 			);
 
 			$history_data = array(
@@ -836,8 +839,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			// Maintain an audit trail
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s from %2$s', 'event-tickets' ),
-				'<a href="' . esc_url( get_the_permalink( $destination_post_id ) ) . '" target="_blank">' . get_the_title( $destination_post_id ) . '</a>',
-				'<a href="' . esc_url( get_the_permalink( $src_post_id ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>'
+				'<a href="' . esc_url( get_the_permalink( $destination_post_id ) ) . '" target="_blank">' . esc_html( get_the_title( $destination_post_id ) ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_post_id ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>'
 			);
 
 			$history_data = array(

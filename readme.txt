@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.28.3
+Stable tag: 5.28.3.1
 Requires at least: 6.7
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -198,6 +198,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.28.3.1] 2026-06-04 =
+
+* Security - Improve escaping in titles when moving tickets. [SVUL-5]
 
 = [5.28.3] 2026-05-28 =
 
