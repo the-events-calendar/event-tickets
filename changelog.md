@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.28.3.1] 2026-06-04
+
+* Security - Improve escaping in titles when moving tickets. [SVUL-5]
+
 ### [5.28.3] 2026-05-28
 
 * Fix - Change checkout page heading from `h3` to `h2` for proper heading hierarchy and screen reader accessibility. [SMTNC-971]

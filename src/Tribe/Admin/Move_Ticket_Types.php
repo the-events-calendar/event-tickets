@@ -211,7 +211,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			esc_url( get_permalink( $destination_post_id ) ),
 			esc_html( get_the_title( $destination_post_id ) ),
 			esc_url( get_permalink( $src_post_id ) ),
-			get_the_title( $src_post_id )
+			esc_html( get_the_title( $src_post_id ) )
 		);
 
 		$history_data = [
