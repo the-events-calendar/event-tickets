@@ -194,6 +194,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		 * @param bool            $include_hidden Whether to include hidden-from-listings events.
 		 * @param array           $args           The current query args.
 		 * @param WP_REST_Request $request        The request object.
+		 
+		 * @return bool true to include hidden events, false to exclude.
 		 */
 		$include_hidden = apply_filters(
 			'tec_tickets_rest_events_archive_include_hidden_from_listings',
