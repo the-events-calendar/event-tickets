@@ -498,6 +498,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		// Include details of the new ticket type the tickets were reassigned to
 		$moved_to = sprintf(
+			// translators: %s is the linked title of the ticket type the tickets were assigned to.
 			_x( 'assigned to %s', 'moved tickets success message fragment', 'event-tickets' ),
 			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_type_id ) ) . '</a>'
 		);
@@ -505,6 +506,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// If that ticket type is hosted by a different event post, prepend details of that also
 		if ( $src_post_id !== $target_post_id ) {
 			$moved_to = sprintf(
+				// translators: %s is the linked title of the event post the ticket type was moved to.
 				_x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $target_post_id ) ) . '</a>'
 			) . ' ' . $moved_to;
