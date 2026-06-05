@@ -71,6 +71,12 @@ class Controller extends Controller_Contract {
 
 		// Classic Editor.
 		add_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ) );
+		add_action(
+			'tec_event_tickets_rsvp_form__start',
+			$this->container->callback( Metabox::class, 'display_responses_info' ),
+			10,
+			3
+		);
 		add_filter(
 			'tec_tickets_enabled_ticket_forms',
 			$this->container->callback( Classic_Editor::class, 'do_not_render_rsvp_form_toggle' )
@@ -196,6 +202,11 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Settings::class, 'change_tickets_commerce_settings' )
 		);
 		remove_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ) );
+		remove_action(
+			'tec_event_tickets_rsvp_form__start',
+			$this->container->callback( Metabox::class, 'display_responses_info' ),
+			10
+		);
 		remove_filter(
 			'tec_tickets_enabled_ticket_forms',
 			$this->container->callback( Classic_Editor::class, 'do_not_render_rsvp_form_toggle' )
