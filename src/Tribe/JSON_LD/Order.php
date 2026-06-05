@@ -193,9 +193,10 @@ class Tribe__Tickets__JSON_LD__Order {
 	 */
 	public function get_price_currency( $ticket ) {
 
-		$currency = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
+		$currency = tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code );
 
-		if ( class_exists( $ticket->provider_class ) ) {
+
+		if ( class_exists( $ticket->provider_class ) && empty( $currency ) ) {
 			$instance = call_user_func( array( $ticket->provider_class, 'get_instance' ) ) ;
 			$currency = $instance->get_currency();
 		}

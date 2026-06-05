@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolve an issue where the Event Schema always reported the price currency as USD, ignoring the currency configured in the Tickets Commerce settings. [SMTNC-1239]
