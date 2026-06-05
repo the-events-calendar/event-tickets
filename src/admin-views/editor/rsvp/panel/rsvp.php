@@ -195,7 +195,7 @@ defined( 'ABSPATH' ) || die();
 						id="tc_ticket_form_save"
 						class="button-primary tribe-validation-submit"
 						name="tc_ticket_form_save"
-						value="<?php echo esc_attr_x( 'Save', 'Button text to save RSVP settings in admin panel.', 'event-tickets' ); ?>"
+						value="<?php echo esc_attr_x( 'Save RSVP Ticket', 'Button text to save RSVP ticket settings in admin panel.', 'event-tickets' ); ?>"
 					/>
 				</div>
 			</div>
