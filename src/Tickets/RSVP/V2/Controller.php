@@ -177,6 +177,26 @@ class Controller extends Controller_Contract {
 			4
 		);
 
+		// Attendees report: show Going/Not Going status and hide check-in for "not going" RSVPs.
+		add_filter(
+			'tribe_tickets_attendees_table_order_status',
+			$this->container->callback( Attendees::class, 'modify_status_display' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_tickets_attendees_table_column_check_in',
+			$this->container->callback( Attendees::class, 'modify_checkin_display' ),
+			10,
+			2
+		);
+		add_filter(
+			'event_tickets_attendees_table_row_actions',
+			$this->container->callback( Attendees::class, 'modify_row_actions' ),
+			10,
+			2
+		);
+
 		add_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
 			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
@@ -266,6 +286,18 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_view_count_ticket_attendees_args',
 			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
+		);
+		remove_filter(
+			'tribe_tickets_attendees_table_order_status',
+			$this->container->callback( Attendees::class, 'modify_status_display' )
+		);
+		remove_filter(
+			'tec_tickets_attendees_table_column_check_in',
+			$this->container->callback( Attendees::class, 'modify_checkin_display' )
+		);
+		remove_filter(
+			'event_tickets_attendees_table_row_actions',
+			$this->container->callback( Attendees::class, 'modify_row_actions' )
 		);
 		remove_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
