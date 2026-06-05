@@ -161,6 +161,8 @@ class Tribe__Tickets__Query {
 			// phpcs:enable
 		}
 
+		// Custom SQL can be provided by the related filter and is expected to be fully prepared.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return (int) $wpdb->get_var( $query );
 	}
 
@@ -212,6 +214,8 @@ class Tribe__Tickets__Query {
 			// phpcs:enable
 		}
 
+		// Custom SQL can be provided by the related filter and is expected to be fully prepared.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return (int) $wpdb->get_var( $query );
 	}
 
