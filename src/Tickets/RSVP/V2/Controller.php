@@ -69,10 +69,11 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Settings::class, 'change_tickets_commerce_settings' )
 		);
 
-		// Classic Editor. Priority 20 so the Tickets metabox (registered at the
-		// default priority of 10) renders above the RSVP metabox; both stay in the
-		// `normal`/`high` bucket.
-		add_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ), 20 );
+		// Classic Editor.
+		add_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ) );
+		// Reposition the RSVP metabox to sit directly after the Tickets metabox.
+		// Runs late (priority 100) so every metabox is registered before reordering.
+		add_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'reorder_after_tickets_metabox' ), 100 );
 		add_filter(
 			'tec_tickets_enabled_ticket_forms',
 			$this->container->callback( Classic_Editor::class, 'do_not_render_rsvp_form_toggle' )
@@ -197,7 +198,8 @@ class Controller extends Controller_Contract {
 			'tec_tickets_commerce_settings_top_level',
 			$this->container->callback( Settings::class, 'change_tickets_commerce_settings' )
 		);
-		remove_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ), 20 );
+		remove_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ) );
+		remove_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'reorder_after_tickets_metabox' ), 100 );
 		remove_filter(
 			'tec_tickets_enabled_ticket_forms',
 			$this->container->callback( Classic_Editor::class, 'do_not_render_rsvp_form_toggle' )
