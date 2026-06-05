@@ -449,6 +449,18 @@ class Controller extends Controller_Contract {
 			'event_tickets_attendees_table_row_actions',
 			$this->container->callback( Attendees::class, 'modify_row_actions' )
 		);
+		remove_filter(
+			'tribe_tickets_attendees_table_order_status',
+			$this->container->callback( Attendees::class, 'modify_status_display' )
+		);
+		remove_filter(
+			'tec_tickets_attendees_table_column_check_in',
+			$this->container->callback( Attendees::class, 'modify_checkin_display' )
+		);
+		remove_filter(
+			'event_tickets_attendees_table_row_actions',
+			$this->container->callback( Attendees::class, 'modify_row_actions' )
+		);
 		remove_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
 			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
