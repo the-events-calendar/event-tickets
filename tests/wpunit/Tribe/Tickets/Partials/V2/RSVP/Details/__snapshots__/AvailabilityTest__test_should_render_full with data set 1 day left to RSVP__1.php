@@ -1,6 +1,7 @@
 <?php return '<div class="tribe-tickets__rsvp-availability tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-			<span class="tribe-tickets__rsvp-availability-no-stock">
-	Currently full</span>
-	
+				
+			
+<span class="tribe-tickets__rsvp-availability-days-to-rsvp">
+	<span class="tribe-tickets__rsvp-availability-days-left tribe-common-b2--bold"> 1 </span> day left to RSVP</span>
 	</div>
 ';

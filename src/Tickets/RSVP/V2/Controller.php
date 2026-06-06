@@ -79,6 +79,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_editor_list_ticket_types',
 			$this->container->callback( Classic_Editor::class, 'do_not_show_rsvp_in_tickets_metabox' )
 		);
+		$this->container->get( Classic_Editor::class )->register_save_post_hooks();
 
 		// Block Editor.
 		add_filter(
@@ -204,6 +205,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_editor_list_ticket_types',
 			$this->container->callback( Classic_Editor::class, 'do_not_show_rsvp_in_tickets_metabox' )
 		);
+		$this->container->get( Classic_Editor::class )->unregister_save_post_hooks();
 		remove_filter(
 			'tribe_editor_config',
 			$this->container->callback( Block_Editor::class, 'add_rsvp_v2_editor_config' )
