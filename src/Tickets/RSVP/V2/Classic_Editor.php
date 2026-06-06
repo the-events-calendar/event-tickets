@@ -13,7 +13,6 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use WP_Post;
 
 /**
  * Class Classic_Editor
