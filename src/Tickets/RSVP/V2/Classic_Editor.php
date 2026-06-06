@@ -13,7 +13,6 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use Tribe__Tickets__Tickets_Handler;
 use WP_Post;
 
 /**
@@ -62,12 +61,11 @@ class Classic_Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param int     $post_id The post ID being saved.
-	 * @param WP_Post $post    The post object being saved.
+	 * @param int $post_id The post ID being saved.he post object being saved.
 	 *
 	 * @return void
 	 */
-	public function save_rsvp_on_post_save( int $post_id, WP_Post $post ): void {
+	public function save_rsvp_on_post_save( int $post_id ): void {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
@@ -86,6 +84,7 @@ class Classic_Editor {
 
 		$this->process_rsvp_post_save( $post_id, $post_data );
 	}
+
 
 	/**
 	 * Processes TC-RSVP ticket data from metabox POST values.
@@ -106,7 +105,7 @@ class Classic_Editor {
 			return;
 		}
 
-		$data = $this->map_post_to_ticket_data( $post_data, $post_id );
+		$data = $this->map_post_to_ticket_data( $post_data );
 
 		/**
 		 * Filters the ticket data before saving TC-RSVP from the Classic Editor post save.
@@ -136,11 +135,10 @@ class Classic_Editor {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $post_data The POST data from the metabox.
-	 * @param int                 $post_id   The parent post ID.
 	 *
 	 * @return array<string,mixed> The mapped ticket data.
 	 */
-	public function map_post_to_ticket_data( array $post_data, int $post_id ): array {
+	public function map_post_to_ticket_data( array $post_data ): array {
 		$rsvp_id = absint( $post_data['rsvp_id'] ?? 0 );
 		$limit   = trim( (string) ( $post_data['rsvp_limit'] ?? '' ) );
 
