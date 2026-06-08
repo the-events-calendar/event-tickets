@@ -131,4 +131,120 @@ class Attendees {
 
 		return $args;
 	}
+
+	/**
+	 * Replaces the order-status label with a "Going" / "Not Going" indicator for TC RSVP attendees.
+	 *
+	 * Hooked to `tribe_tickets_attendees_table_order_status`. All RSVP attendees have a
+	 * "Completed" order status, so the going/not-going answer is read from attendee meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                     $label The order-status HTML built by the attendees table.
+	 * @param array<string,mixed>|object $item  The attendees-table row item.
+	 *
+	 * @return string The (possibly) modified status label.
+	 */
+	public function modify_status_display( $label, $item ): string {
+		$status = $this->get_item_rsvp_status( $item );
+
+		if ( null === $status ) {
+			return $label;
+		}
+
+		$is_going    = 'no' !== $status;
+		$status_text = __( 'Not Going', 'event-tickets' );
+
+		if ( $is_going ) {
+			$status_text = __( 'Going', 'event-tickets' );
+		}
+
+		// Reuse the existing status-pill styling: blue-grey for going, amber for not going.
+		$classes = [
+			'tec-tickets__admin-table-attendees-order-status',
+			'tec-tickets__admin-table-attendees-order-status--tc-rsvp',
+			'tec-tickets__admin-table-attendees-order-status--' . ( $is_going ? 'going' : 'not-going' ),
+			'tec-tickets__admin-table-attendees-order-status--' . ( $is_going ? 'completed' : 'cancelled' ),
+		];
+
+		return sprintf(
+			'<div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="%1$s">%2$s</span></div>',
+			esc_attr( implode( ' ', $classes ) ),
+			esc_html( $status_text )
+		);
+	}
+
+	/**
+	 * Hides the check-in column control for TC RSVP attendees who are not going.
+	 *
+	 * Hooked to `tec_tickets_attendees_table_column_check_in`.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                     $content The check-in column HTML.
+	 * @param array<string,mixed>|object $item    The attendees-table row item.
+	 *
+	 * @return string The (possibly) emptied check-in content.
+	 */
+	public function modify_checkin_display( $content, $item ): string {
+		if ( 'no' === $this->get_item_rsvp_status( $item ) ) {
+			return '';
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Removes the check-in row action for TC RSVP attendees who are not going.
+	 *
+	 * Hooked to `event_tickets_attendees_table_row_actions`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string,string>   $actions The row actions.
+	 * @param array<string,mixed>|object $item    The attendees-table row item.
+	 *
+	 * @return array<int|string,string> The (possibly) filtered row actions.
+	 */
+	public function modify_row_actions( $actions, $item ): array {
+		if ( 'no' !== $this->get_item_rsvp_status( $item ) ) {
+			return (array) $actions;
+		}
+
+		// Drop the check-in / undo check-in action; not-going attendees cannot be checked in.
+		foreach ( (array) $actions as $key => $action ) {
+			if ( false !== strpos( (string) $action, 'tickets_checkin' ) ) {
+				unset( $actions[ $key ] );
+			}
+		}
+
+		return (array) $actions;
+	}
+
+	/**
+	 * Resolves the RSVP "going" status for an attendees-table row.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>|object $item The attendees-table row item.
+	 *
+	 * @return string|null 'no' when the attendee is not going, 'yes' when going, or null when the
+	 *                     row is not a TC RSVP attendee and should be left untouched.
+	 */
+	private function get_item_rsvp_status( $item ): ?string {
+		$item = (array) $item;
+
+		if ( empty( $item['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $item['ticket_type'] ) {
+			return null;
+		}
+
+		$attendee_id = (int) ( $item['attendee_id'] ?? $item['ID'] ?? 0 );
+
+		if ( ! $attendee_id ) {
+			return null;
+		}
+
+		// Only an explicit "no" counts as not going; anything else is treated as going.
+		return 'no' === get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) ? 'no' : 'yes';
+	}
 }
