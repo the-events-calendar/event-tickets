@@ -21,18 +21,20 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $ticket;
 
-	public function setUp() {
-		parent::setUp();
-
+	/**
+	 * @before
+	 */
+	public function set_up_ticket() {
 		$this->post_id   = $this->factory()->post->create();
 		$ticket_id       = $this->create_tc_ticket( $this->post_id, 10 );
 		$this->ticket    = tribe( Module::class )->get_ticket( $this->post_id, $ticket_id );
 	}
 
-	public function tearDown() {
+	/**
+	 * @after
+	 */
+	public function reset_currency() {
 		tribe_update_option( Settings::$option_currency_code, 'USD' );
-
-		parent::tearDown();
 	}
 
 	/**
@@ -52,13 +54,30 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should use the currency configured in Tickets Commerce settings
+	 *
+	 * @dataProvider currency_code_provider
 	 */
-	public function it_should_use_the_configured_tickets_commerce_currency() {
-		tribe_update_option( Settings::$option_currency_code, 'EUR' );
+	public function it_should_use_the_configured_tickets_commerce_currency( $currency_code ) {
+		tribe_update_option( Settings::$option_currency_code, $currency_code );
 
 		$currency = $this->make_instance()->get_price_currency( $this->ticket );
 
-		$this->assertEquals( 'EUR', $currency, 'The schema currency should follow the Tickets Commerce currency setting.' );
+		$this->assertEquals( $currency_code, $currency, 'The schema currency should follow the Tickets Commerce currency setting.' );
+	}
+
+	/**
+	 * Provides a set of currency codes to verify the schema follows the configured setting.
+	 *
+	 * @return array<string,array{0:string}>
+	 */
+	public function currency_code_provider() {
+		return [
+			'Euro'            => [ 'EUR' ],
+			'British Pound'   => [ 'GBP' ],
+			'Japanese Yen'    => [ 'JPY' ],
+			'Canadian Dollar' => [ 'CAD' ],
+			'Brazilian Real'  => [ 'BRL' ],
+		];
 	}
 
 	/**
