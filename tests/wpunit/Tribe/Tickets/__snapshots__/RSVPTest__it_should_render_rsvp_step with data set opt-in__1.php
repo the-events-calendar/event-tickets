@@ -41,10 +41,10 @@
 		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-details">
 		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	Test RSVP ticket for 14130</h3>
+	Test RSVP ticket for 13774</h3>
 
 		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-	<p>Ticket RSVP ticket excerpt for 14130</p>
+	<p>Ticket RSVP ticket excerpt for 13774</p>
 </div>
 
 		<div class="tribe-tickets__rsvp-attendance">
@@ -55,7 +55,7 @@
 </div>
 
 		<div class="tribe-tickets__rsvp-availability tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-			<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"> 10 </span> remaining,	
+			<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"> 5 </span> remaining,	
 			
 <span class="tribe-tickets__rsvp-availability-days-to-rsvp">
 	Last day to RSVP</span>
