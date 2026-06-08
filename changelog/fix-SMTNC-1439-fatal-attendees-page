@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolve an issue where the Attendees admin page caused a fatal error on sites using a translated admin locale. [SMTNC-1439]
