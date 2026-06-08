@@ -56,6 +56,60 @@ class Metabox {
 	}
 
 	/**
+	 * Repositions the RSVP metabox to render immediately after the Tickets metabox.
+	 *
+	 * The Tickets, RSVP, and (when Event Tickets Plus is active) Waitlist metaboxes all
+	 * register into the `normal`/`high` group, where WordPress orders boxes by
+	 * registration order. That can leave another box (e.g. Waitlist) between the Tickets
+	 * and RSVP boxes. This moves the RSVP box to sit directly after the Tickets box.
+	 *
+	 * Users who have manually reordered their metaboxes are unaffected: WordPress applies
+	 * their saved per-user order separately, which takes precedence over this default.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $post_type The post type the metaboxes are being added for.
+	 *
+	 * @return void
+	 */
+	public function reorder_after_tickets_metabox( $post_type = null ): void {
+		if ( ! in_array( $post_type, Tribe__Tickets__Main::instance()->post_types(), true ) ) {
+			return;
+		}
+
+		global $wp_meta_boxes;
+
+		if ( empty( $wp_meta_boxes[ $post_type ]['normal']['high'] ) ) {
+			return;
+		}
+
+		$high           = &$wp_meta_boxes[ $post_type ]['normal']['high'];
+		$tickets_box_id = 'tribetickets';
+		$rsvp_box_id    = 'tec-tickets-commerce-rsvp';
+
+		// Both boxes must be present to reposition; the rebuild below is a no-op if the
+		// RSVP box already follows the Tickets box.
+		if ( ! isset( $high[ $tickets_box_id ], $high[ $rsvp_box_id ] ) ) {
+			return;
+		}
+
+		$rsvp_box = $high[ $rsvp_box_id ];
+		unset( $high[ $rsvp_box_id ] );
+
+		// Rebuild the group, inserting the RSVP box right after the Tickets box.
+		$reordered = [];
+		foreach ( $high as $id => $box ) {
+			$reordered[ $id ] = $box;
+
+			if ( $id === $tickets_box_id ) {
+				$reordered[ $rsvp_box_id ] = $rsvp_box;
+			}
+		}
+
+		$high = $reordered;
+	}
+
+	/**
 	 * Renders the RSVP metabox for the event editor in the admin area.
 	 *
 	 * @since TBD
