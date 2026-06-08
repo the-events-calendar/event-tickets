@@ -10,6 +10,7 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
+use TEC\Tickets\Commerce;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use TEC\Tickets\RSVP\V2\Constants;
@@ -158,6 +159,61 @@ class Metabox {
 		return $admin_views->template(
 			[ 'editor', 'rsvp', 'metabox' ],
 			$context
+		);
+	}
+
+	/**
+	 * Renders the "Responses" count and "View Attendees" link at the top of the RSVP form.
+	 *
+	 * Hooked to `tec_event_tickets_rsvp_form__start`. The response total includes both
+	 * "going" and "not going" attendees, matching the count shown on the attendees report.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post $post_id     The event the RSVP is attached to.
+	 * @param string      $ticket_type The ticket type the form is being rendered for.
+	 * @param int|null    $rsvp_id     The RSVP ticket ID, or null when adding a new RSVP.
+	 *
+	 * @return void
+	 */
+	public function display_responses_info( $post_id, string $ticket_type, $rsvp_id = null ): void {
+		// Only render for saved TC RSVP tickets.
+		if ( Constants::TC_RSVP_TYPE !== $ticket_type || empty( $rsvp_id ) ) {
+			return;
+		}
+
+		// Count every response for this RSVP, including "going" and "not going".
+		$total_responses = tec_tc_attendees( Commerce::PROVIDER )
+			->by( 'ticket_id', $rsvp_id )
+			->found();
+
+		// Nothing to show until there is at least one response.
+		if ( $total_responses < 1 ) {
+			return;
+		}
+
+		$post = get_post( $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id );
+
+		if ( ! $post instanceof WP_Post ) {
+			return;
+		}
+
+		$cant_go_enabled = tribe_is_truthy(
+			get_post_meta( $rsvp_id, Constants::SHOW_NOT_GOING_META_KEY, true )
+		);
+
+		/** @var Admin_Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template(
+			[ 'editor', 'rsvp', 'panel', 'responses-info' ],
+			[
+				'post_id'         => $post->ID,
+				'rsvp_id'         => $rsvp_id,
+				'total_responses' => $total_responses,
+				'cant_go_enabled' => $cant_go_enabled,
+				'attendees_url'   => tribe( 'tickets.attendees' )->get_report_link( $post ),
+			]
 		);
 	}
 
