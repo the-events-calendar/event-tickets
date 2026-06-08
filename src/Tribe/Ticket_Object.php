@@ -996,9 +996,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
-			if ( null === $value && in_array( $this->type(), [ RSVP_V2_Constants::TC_RSVP_TYPE, 'rsvp' ], true ) ) {
-				$value = max( 0, $this->stock() - $this->available() );
-			}
 			return $this->qty_getter_setter( $this->qty_sold, $value );
 		}
 
