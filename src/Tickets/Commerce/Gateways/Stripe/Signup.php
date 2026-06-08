@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
+use TEC\Tickets\Commerce\Gateways\Contracts\OAuth_State;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -38,17 +39,15 @@ class Signup extends Abstract_Signup {
 	 *
 	 * @since 5.3.0
 	 * @since 5.27.4.1 Added state nonce management.
+	 * @since TBD Issue a single-use, server-stored state token instead of a uid-0 nonce.
 	 *
 	 * @return string
 	 */
 	public function generate_signup_url() {
 		$whodat = tribe( WhoDat::class );
 
-		// Generate nonce as user 0 so it can be verified on the unauthenticated REST callback.
-		$user_id = get_current_user_id();
-		wp_set_current_user( 0 );
-		$nonce = wp_create_nonce( $whodat->get_state_nonce_action() );
-		wp_set_current_user( $user_id );
+		// Single-use, server-side state token verified on the unauthenticated REST callback.
+		$nonce = tribe( OAuth_State::class )->issue();
 
 		return $whodat->get_api_url(
 			'connect',
@@ -70,6 +69,7 @@ class Signup extends Abstract_Signup {
 	 * Generates a Stripe disconnection URL from WhoDat
 	 *
 	 * @since 5.3.0
+	 * @since TBD Issue a single-use, server-stored state token instead of a uid-0 nonce.
 	 *
 	 * @return string
 	 */
@@ -79,11 +79,8 @@ class Signup extends Abstract_Signup {
 
 		$known_webhooks = $webhooks->get_current_webhook_id();
 
-		// Generate nonce as user 0 so it can be verified on the unauthenticated REST callback.
-		$user_id = get_current_user_id();
-		wp_set_current_user( 0 );
-		$nonce = wp_create_nonce( $whodat->get_state_nonce_action() );
-		wp_set_current_user( $user_id );
+		// Single-use, server-side state token verified on the unauthenticated REST callback.
+		$nonce = tribe( OAuth_State::class )->issue();
 
 		return $whodat->get_api_url(
 			'disconnect',

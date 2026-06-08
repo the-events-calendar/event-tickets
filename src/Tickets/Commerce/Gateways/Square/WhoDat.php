@@ -11,6 +11,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
+use TEC\Tickets\Commerce\Gateways\Contracts\OAuth_State;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use RuntimeException;
 /**
@@ -44,6 +45,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Issue a single-use, server-stored state token instead of a uid-0 nonce.
 	 *
 	 * @param bool $is_wizard Whether this is in the wizard context.
 	 *
@@ -54,11 +56,7 @@ class WhoDat extends Abstract_WhoDat {
 
 		// Generate and store the code challenge using the Merchant class.
 		$code_challenge = $merchant->generate_code_challenge();
-		$user_id        = get_current_user_id();
-
-		wp_set_current_user( 0 );
-		$nonce = wp_create_nonce( $this->get_state_nonce_action() );
-		wp_set_current_user( $user_id );
+		$nonce = tribe( OAuth_State::class )->issue();
 
 		$query_args = [
 			'mode'                  => tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live',
@@ -308,6 +306,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * Get a URL to reconnect with specific scopes.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Issue a single-use, server-stored state token instead of a uid-0 nonce.
 	 *
 	 * @param array $scopes Array of required scope IDs.
 	 *
@@ -317,11 +316,7 @@ class WhoDat extends Abstract_WhoDat {
 		$merchant = tribe( Merchant::class );
 
 		$code_challenge = $merchant->generate_code_challenge();
-		$user_id        = get_current_user_id();
-
-		wp_set_current_user( 0 );
-		$nonce = wp_create_nonce( $this->get_state_nonce_action() );
-		wp_set_current_user( $user_id );
+		$nonce = tribe( OAuth_State::class )->issue();
 
 		$query_args = [
 			'mode'                  => tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live',

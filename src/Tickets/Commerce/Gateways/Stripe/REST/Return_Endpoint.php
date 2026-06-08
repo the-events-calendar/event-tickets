@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Contracts\OAuth_State;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
@@ -35,14 +36,20 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Checks if the current request has permission to access the endpoint.
 	 *
 	 * @since 5.27.4.1
-	 * @since 5.28.4 Hardened the permission check to require site-management capabilities.
+	 * @since TBD Verify a single-use, server-issued state token instead of a guessable nonce.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return bool Whether the current user is permitted to access the endpoint.
+	 * @return bool Whether the request carries a valid connection token.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		return current_user_can( 'manage_options' );
+		$response = $this->decode_payload( tribe_get_request_var( 'stripe' ) );
+
+		if ( empty( $response->nonce ) ) {
+			return false;
+		}
+
+		return tribe( OAuth_State::class )->verify( (string) $response->nonce );
 	}
 
 	/**

@@ -10,10 +10,10 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Contracts\OAuth_State;
 use TEC\Tickets\Commerce\Gateways\Square\Gateway;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
-use TEC\Tickets\Commerce\Gateways\Square\WhoDat;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
@@ -75,20 +75,23 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 * Checks if the current user has permissions to the endpoint.
 	 *
 	 * @since 5.24.0
-	 * @since 5.28.4 Hardened the permission check to require site-management capabilities.
+	 * @since TBD Verify a single-use, server-issued state token instead of a guessable nonce.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return bool Whether the current user can access the endpoint or not.
+	 * @return bool Whether the request carries a valid connection token.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		return current_user_can( 'manage_options' );
+		return tribe( OAuth_State::class )->verify( (string) $request->get_param( 'state' ) );
 	}
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
 	 * @since 5.24.0
+	 * @since TBD The state token is verified in the permission check; the state arg now only requires presence.
+	 *
+	 * @return void
 	 */
 	public function register(): void {
 		$namespace = $this->get_namespace();
@@ -117,11 +120,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 						'required'          => true,
 						'type'              => 'string',
 						'validate_callback' => static function ( $value ) {
-							if ( empty( $value ) ) {
-								return false;
-							}
-
-							return wp_verify_nonce( $value, tribe( WhoDat::class )->get_state_nonce_action() );
+							// The token is verified (and consumed) once in has_permission();
+							// here we only require it to be present and well-formed.
+							return is_string( $value ) && '' !== $value;
 						},
 					],
 					'token_type'   => [
