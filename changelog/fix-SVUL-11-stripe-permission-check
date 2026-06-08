@@ -1,0 +1,4 @@
+Significance: patch
+Type: security
+
+Harden permission check in Stripe and Square endpoints. [SVUL-11]

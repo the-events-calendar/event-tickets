@@ -75,19 +75,14 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 * Checks if the current user has permissions to the endpoint.
 	 *
 	 * @since 5.24.0
+	 * @since 5.28.4 Hardened the permission check to require site-management capabilities.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return bool Whether the current user can access the endpoint or not.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		$state = $request->get_param( 'state' );
-
-		if ( empty( $state ) ) {
-			return false;
-		}
-
-		return wp_verify_nonce( $state, tribe( WhoDat::class )->get_state_nonce_action() );
+		return current_user_can( 'manage_options' );
 	}
 
 	/**

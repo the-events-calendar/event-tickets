@@ -7,7 +7,6 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
-use TEC\Tickets\Commerce\Gateways\Stripe\WhoDat;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
@@ -36,20 +35,14 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * Checks if the current request has permission to access the endpoint.
 	 *
 	 * @since 5.27.4.1
+	 * @since 5.28.4 Hardened the permission check to require site-management capabilities.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return bool Whether the request has a valid state nonce.
+	 * @return bool Whether the current user is permitted to access the endpoint.
 	 */
 	public function has_permission( WP_REST_Request $request ) {
-		$payload  = tribe_get_request_var( 'stripe' );
-		$response = $this->decode_payload( $payload );
-
-		if ( empty( $response->nonce ) ) {
-			return false;
-		}
-
-		return wp_verify_nonce( $response->nonce, tribe( WhoDat::class )->get_state_nonce_action() );
+		return current_user_can( 'manage_options' );
 	}
 
 	/**
