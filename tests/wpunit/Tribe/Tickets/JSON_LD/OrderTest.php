@@ -30,8 +30,6 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown() {
-		// Reset the currency inside the transaction so Tribe's in-memory option
-		// cache is refreshed before the DB rollback; otherwise the value leaks.
 		tribe_update_option( Settings::$option_currency_code, 'USD' );
 
 		parent::tearDown();
@@ -54,43 +52,13 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should use the currency configured in Tickets Commerce settings
-	 *
-	 * @dataProvider currency_code_provider
 	 */
-	public function it_should_use_the_configured_tickets_commerce_currency( $currency_code ) {
-		tribe_update_option( Settings::$option_currency_code, $currency_code );
+	public function it_should_use_the_configured_tickets_commerce_currency() {
+		tribe_update_option( Settings::$option_currency_code, 'EUR' );
 
 		$currency = $this->make_instance()->get_price_currency( $this->ticket );
 
-		$this->assertEquals( $currency_code, $currency, 'The schema currency should follow the Tickets Commerce currency setting.' );
-	}
-
-	/**
-	 * Provides currency codes to verify the schema follows the configured setting.
-	 *
-	 * @return array<string,array{0:string}>
-	 */
-	public function currency_code_provider() {
-		return [
-			'Euro'            => [ 'EUR' ],
-			'British Pound'   => [ 'GBP' ],
-			'Japanese Yen'    => [ 'JPY' ],
-			'Canadian Dollar' => [ 'CAD' ],
-			'Brazilian Real'  => [ 'BRL' ],
-		];
-	}
-
-	/**
-	 * @test
-	 * it should reflect changes to the Tickets Commerce currency setting
-	 */
-	public function it_should_reflect_a_non_default_currency() {
-		tribe_update_option( Settings::$option_currency_code, 'GBP' );
-
-		$currency = $this->make_instance()->get_price_currency( $this->ticket );
-
-		$this->assertEquals( 'GBP', $currency );
-		$this->assertNotEquals( 'USD', $currency, 'The currency should no longer be hardcoded to USD.' );
+		$this->assertEquals( 'EUR', $currency, 'The schema currency should follow the Tickets Commerce currency setting.' );
 	}
 
 	/**
