@@ -16,7 +16,9 @@ New ticket</button><button
 	id="rsvp_form_toggle"
 	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
 	aria-label="Add a new RSVP"
->
+			disabled
+		title="RSVP is temporarily disabled while migration is in progress."
+	>
 	New RSVP</button>
 <button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
     Settings</button>
@@ -313,6 +315,26 @@ New ticket</button><button
 	</div>
 
 	</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#tec_tickets_ticket_provider"
+	data-condition-not="Tribe__Tickets__RSVP"
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
+</div>
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
 	data-depends="#tec_tickets_ticket_provider"
@@ -351,26 +373,6 @@ New ticket</button><button
 		value="yes"
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
-</div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#tec_tickets_ticket_provider"
-	data-condition-not="Tribe__Tickets__RSVP"
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
 			</section>
 			<div class="accordion">

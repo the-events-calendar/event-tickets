@@ -1,3 +1,13 @@
 <?php return '<div class="tribe-block__rsvp__status">
-			RSVP Full	</div>
+	
+		<span>
+	<button
+	class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--going"
+		>
+		<span>Going</span>
+		
+	</button>
+</span>
+		
+	</div>
 ';
