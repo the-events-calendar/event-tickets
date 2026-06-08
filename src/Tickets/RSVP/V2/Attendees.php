@@ -153,7 +153,11 @@ class Attendees {
 		}
 
 		$is_going    = 'no' !== $status;
-		$status_text = $is_going ? __( 'Going', 'event-tickets' ) : __( 'Not Going', 'event-tickets' );
+		$status_text = __( 'Not Going', 'event-tickets' );
+
+		if ( $is_going ) {
+			$status_text = __( 'Going', 'event-tickets' );
+		}
 
 		// Reuse the existing status-pill styling: blue-grey for going, amber for not going.
 		$classes = [
