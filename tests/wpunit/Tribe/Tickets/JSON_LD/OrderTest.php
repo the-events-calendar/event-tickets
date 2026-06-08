@@ -29,11 +29,12 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 		$this->ticket    = tribe( Module::class )->get_ticket( $this->post_id, $ticket_id );
 	}
 
-	/**
-	 * @after
-	 */
-	public function reset_currency() {
+	public function tearDown() {
+		// Reset the currency inside the transaction so Tribe's in-memory option
+		// cache is refreshed before the DB rollback; otherwise the value leaks.
 		tribe_update_option( Settings::$option_currency_code, 'USD' );
+
+		parent::tearDown();
 	}
 
 	/**
