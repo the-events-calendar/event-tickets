@@ -108,6 +108,63 @@ class MainTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @test
+	 * it should include hidden-from-listings events for privileged requests
+	 */
+	public function it_should_include_hidden_events_for_privileged_requests() {
+		// The `tribe_manage_attendees` cap grants manage access (works on single and multisite).
+		$admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		( new \WP_User( $admin_id ) )->add_cap( 'tribe_manage_attendees' );
+		wp_set_current_user( $admin_id );
+
+		$sut     = $this->make_instance();
+		$request = new \WP_REST_Request( 'GET', '/tribe/events/v1/events' );
+
+		$args = $sut->parse_events_rest_args( [], [], $request );
+
+		$this->assertArrayHasKey( 'hide_upcoming', $args );
+		$this->assertFalse( $args['hide_upcoming'] );
+	}
+
+	/**
+	 * @test
+	 * it should not include hidden-from-listings events for unprivileged requests
+	 */
+	public function it_should_not_include_hidden_events_for_unprivileged_requests() {
+		// Logged-out request with no API key configured: no manage access.
+		wp_set_current_user( 0 );
+		tribe_update_option( 'tickets-plus-qr-options-api-key', '' );
+
+		$sut     = $this->make_instance();
+		$request = new \WP_REST_Request( 'GET', '/tribe/events/v1/events' );
+
+		$args = $sut->parse_events_rest_args( [], [], $request );
+
+		$this->assertArrayNotHasKey( 'hide_upcoming', $args );
+	}
+
+	/**
+	 * @test
+	 * it should let the filter override the include-hidden decision
+	 */
+	public function it_should_let_the_filter_override_the_include_hidden_decision() {
+		$admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		( new \WP_User( $admin_id ) )->add_cap( 'tribe_manage_attendees' );
+		wp_set_current_user( $admin_id );
+
+		add_filter( 'tec_tickets_rest_events_archive_include_hidden_from_listings', '__return_false' );
+
+		$sut     = $this->make_instance();
+		$request = new \WP_REST_Request( 'GET', '/tribe/events/v1/events' );
+
+		$args = $sut->parse_events_rest_args( [], [], $request );
+
+		remove_filter( 'tec_tickets_rest_events_archive_include_hidden_from_listings', '__return_false' );
+
+		$this->assertArrayNotHasKey( 'hide_upcoming', $args );
+	}
+
+	/**
 	 * @return Main
 	 */
 	protected function make_instance() {
