@@ -461,7 +461,10 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 		$help_pages[] = self::HELP_HUB_PAGE_ID;
 
 		// This list is matched against the current screen id, so add the translated screen id too.
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$screen = null;
+		if( function_exists( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+		}
 		if ( $screen instanceof \WP_Screen && $this->is_help_hub_page() ) {
 			$help_pages[] = $screen->id;
 		}
