@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.28.3.1\n"
+"Project-Id-Version: Event Tickets 5.28.3.2\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-04T14:42:00+00:00\n"
+"POT-Creation-Date: 2026-06-09T21:33:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -12231,37 +12231,39 @@ msgstr ""
 msgid "%s could not be moved: there was an unexpected failure during reassignment."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:501
+#. translators: %s is the linked title of the ticket type the tickets were assigned to.
+#: src/Tribe/Admin/Move_Tickets.php:502
 #, php-format
 msgctxt "moved tickets success message fragment"
 msgid "assigned to %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:508
+#. translators: %s is the linked title of the event post the ticket type was moved to.
+#: src/Tribe/Admin/Move_Tickets.php:510
 #, php-format
 msgctxt "moved tickets success message fragment"
 msgid "moved to %s and"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:515
+#: src/Tribe/Admin/Move_Tickets.php:518
 #, php-format
 msgid "%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. This attendee will receive an email notifying them of the change."
 msgid_plural "%1$d attendees for %2$s were successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. These attendees will receive an email notifying them of the change."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:650
+#: src/Tribe/Admin/Move_Tickets.php:653
 #, php-format
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:775
+#: src/Tribe/Admin/Move_Tickets.php:778
 #: src/Tribe/Admin/Move_Ticket_Types.php:310
 #, php-format
 msgid "Changes to your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:838
+#: src/Tribe/Admin/Move_Tickets.php:841
 #, php-format
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
