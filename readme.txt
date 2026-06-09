@@ -199,6 +199,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.28.3.2] 2026-06-09 =
+
+* Language - 0 new strings added, 6 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.28.3.1] 2026-06-04 =
 
 * Security - Improve escaping in titles when moving tickets. [SVUL-5]
