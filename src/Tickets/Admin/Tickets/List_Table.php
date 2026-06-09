@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Admin\Tickets;
 
+use Tribe__Cache_Listener;
 use Tribe__Tickets__Commerce__Currency;
 use Tribe__Tickets__Ticket_Object;
 use WP_List_Table;
@@ -1039,7 +1040,7 @@ class List_Table extends WP_List_Table {
 		// @todo @codingmusician - Add query priming solutions for other providers.
 		$ticket_ids             = wp_list_pluck( $items, 'ID' );
 		$cache                  = tribe_cache();
-		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id', Tribe__Cache_Listener::TRIGGER_SAVE_POST );
 		if ( ! is_array( $attendees_by_ticket_id ) ) {
 			$attendees_by_ticket_id = [];
 		}
@@ -1081,7 +1082,7 @@ class List_Table extends WP_List_Table {
 			$attendees_by_ticket_id[ $ticket_id ][] = $attendee;
 		}
 
-		$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
+		$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id, 0, Tribe__Cache_Listener::TRIGGER_SAVE_POST );
 	}
 
 	/**
