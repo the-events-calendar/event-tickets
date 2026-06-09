@@ -462,7 +462,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 
 		// This list is matched against the current screen id, so add the translated screen id too.
 		$screen = null;
-		if( function_exists( 'get_current_screen' ) ) {
+		if ( function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 		}
 		if ( $screen instanceof \WP_Screen && $this->is_help_hub_page() ) {
