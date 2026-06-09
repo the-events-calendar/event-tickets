@@ -62,7 +62,10 @@ class Notifications extends Integration_Abstract {
 		$allowed[] = 'tickets_page_tickets-setup';
 
 		// Also allow the translated screen id when on those pages.
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$screen = null;
+		if ( function_exists( 'get_current_screen' ) ) {
+			$screen = function_exists( 'get_current_screen' );
+		}
 		if ( $screen instanceof \WP_Screen && preg_match( '/_page_(tec-tickets-settings|tickets-setup)$/', $screen->id ) ) {
 			$allowed[] = $screen->id;
 		}
