@@ -158,6 +158,43 @@ class Settings {
 	}
 
 	/**
+	 * Adds a locale-independent body class to the Tickets admin pages.
+	 *
+	 * WordPress builds the admin body class from the (translatable) parent menu title, so the
+	 * Tickets pages get `tickets_page_*` in English but `biglietti_page_*`, `karten_page_*`, etc.
+	 * in other languages. The admin CSS targets the English value (e.g. `.tickets_page_tec-tickets-settings`),
+	 * which means non-English installs render unstyled. Re-add the canonical English-prefixed class so
+	 * the existing selectors keep matching in any language.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $classes Space-separated list of admin body classes.
+	 *
+	 * @return string The filtered list of admin body classes.
+	 */
+	public function filter_admin_body_class( $classes ): string {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		if ( ! $screen instanceof \WP_Screen ) {
+			return $classes;
+		}
+
+		// Match the "{menu}_page_{slug}" hook suffix for the Tickets admin pages.
+		if ( ! preg_match( '/_page_(tec-tickets[\w-]*)$/', $screen->id, $matches ) ) {
+			return $classes;
+		}
+
+		$canonical = 'tickets_page_' . $matches[1];
+
+		// Bail if the class is already present (e.g. on English installs).
+		if ( in_array( $canonical, preg_split( '/\s+/', trim( $classes ) ), true ) ) {
+			return $classes;
+		}
+
+		return trim( $classes . ' ' . $canonical );
+	}
+
+	/**
 	 * Check if the current page is on a specific tab for the Tickets settings.
 	 *
 	 * @since 5.5.9
