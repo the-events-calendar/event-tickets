@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.28.3.2] 2026-06-09
+
+* Fix - Send the `domain` property over to Promoter's Authentication layer during update notifications. [SMTNC-1351]
+* Language - 0 new strings added, 6 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.28.3.1] 2026-06-04
 
 * Security - Improve escaping in titles when moving tickets. [SVUL-5]
