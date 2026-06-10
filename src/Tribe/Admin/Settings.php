@@ -168,7 +168,10 @@ class Settings {
 	 * @return string The filtered list of admin body classes.
 	 */
 	public function filter_admin_body_class( $classes ): string {
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$screen = null;
+		if ( function_exists( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+		}
 
 		if ( ! $screen instanceof \WP_Screen ) {
 			return $classes;
