@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-09T21:33:36+00:00\n"
+"POT-Creation-Date: 2026-06-10T18:30:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: event-tickets.php:68
 #: src/admin-views/admin-welcome-message.php:74
 #: src/Tickets/Admin/Onboarding/Tickets_Landing_Page.php:344
-#: src/Tickets/Admin/Tickets/Page.php:403
+#: src/Tickets/Admin/Tickets/Page.php:415
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:87
 #: src/Tribe/Main.php:881
@@ -102,7 +102,7 @@ msgid "Shapes and lines for visual interest"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:67
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:432
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:439
 msgid "Event Tickets logo"
 msgstr ""
 
@@ -231,7 +231,7 @@ msgstr ""
 #: src/Tickets/Emails/Email/RSVP_Not_Going.php:108
 #: src/Tickets/Emails/Email/Ticket.php:119
 #: src/Tickets/Flexible_Tickets/Series_Passes/Emails/Series_Pass.php:99
-#: src/Tribe/Admin/Notices.php:305
+#: src/Tribe/Admin/Notices.php:341
 #: src/Tribe/Admin/Settings/Service_Provider.php:145
 #: src/Tribe/Admin/Settings/Service_Provider.php:193
 msgid "Learn more"
@@ -394,8 +394,8 @@ msgstr ""
 
 #: src/admin-views/attendees/attendees.php:18
 #: src/admin-views/list.php:95
-#: src/Tickets/Admin/Attendees/Page.php:101
-#: src/Tickets/Admin/Tickets/List_Table.php:563
+#: src/Tickets/Admin/Attendees/Page.php:105
+#: src/Tickets/Admin/Tickets/List_Table.php:564
 #: src/Tickets/Commerce/Attendee.php:200
 #: src/Tickets/Commerce/Reports/Attendees_Tab.php:35
 #: src/Tribe/Admin/Columns/Tickets.php:58
@@ -429,7 +429,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:101
 #: src/admin-views/tribe-commerce-settings.php:113
 #: src/Tickets/Commerce/Reports/Attendees.php:540
-#: src/Tribe/Attendees.php:674
+#: src/Tribe/Attendees.php:671
 msgid "Yes"
 msgstr ""
 
@@ -665,7 +665,7 @@ msgid "Attendee"
 msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-metabox-item.php:82
-#: src/Tickets/Admin/Tickets/List_Table.php:207
+#: src/Tickets/Admin/Tickets/List_Table.php:208
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:167
 msgid "Event"
 msgstr ""
@@ -690,7 +690,7 @@ msgstr ""
 
 #: src/admin-views/commerce/orders/single/order-items-metabox.php:27
 #: src/admin-views/editor/column-head-price.php:11
-#: src/Tickets/Admin/Tickets/List_Table.php:211
+#: src/Tickets/Admin/Tickets/List_Table.php:212
 #: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:38
 #: src/views/registration/summary/tickets-header.php:19
 msgid "Price"
@@ -702,7 +702,7 @@ msgstr ""
 
 #: src/admin-views/commerce/reports/attendees.php:27
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:562
-#: src/Tribe/Attendees.php:1204
+#: src/Tribe/Attendees.php:1201
 #: src/Tribe/Attendees_Table.php:745
 msgid "Export"
 msgstr ""
@@ -1003,7 +1003,7 @@ msgstr ""
 #: src/Tickets/Emails/Email/RSVP_Not_Going.php:143
 #: src/Tickets/Emails/Email/Ticket.php:153
 #: src/Tickets/Flexible_Tickets/Series_Passes/Emails/Series_Pass.php:146
-#: src/Tribe/Admin/Settings.php:253
+#: src/Tribe/Admin/Settings.php:282
 #: src/modules/blocks/rsvp/action-buttons/settings-action-button/template.js:27
 #: src/Tickets/Blocks/Tickets/app/editor/action-buttons/settings/template.js:20
 msgid "Settings"
@@ -2919,7 +2919,7 @@ msgstr ""
 msgid "Attendee provider not found."
 msgstr ""
 
-#: src/Tickets/Admin/Attendees/Page.php:149
+#: src/Tickets/Admin/Attendees/Page.php:167
 msgctxt "attendee table actions column header"
 msgid "Associated Post"
 msgstr ""
@@ -2932,117 +2932,117 @@ msgid_plural "%s Attendees"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:183
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:190
 msgctxt "Help Hub resources description"
 msgid "Help on setting up, customizing, and troubleshooting your tickets."
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:196
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:203
 msgctxt "Help Hub support description"
 msgid "Help on setting up, customizing, and troubleshooting your tickets."
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:208
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:215
 msgctxt "Help Hub support title"
 msgid "Event Tickets (TEC) Support Hub"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:257
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:264
 msgctxt "Section title"
 msgid "Getting started guides"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:260
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:267
 msgctxt "Section description"
 msgid "Learn how to get started and configure the plugin for your WordPress site."
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:262
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:269
 msgctxt "Getting started article"
 msgid "Getting Started with Event Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:278
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:285
 msgctxt "Section title"
 msgid "Tickets & RSVPs"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:281
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:288
 msgctxt "Section description"
 msgid "Now that you're set up, you're ready to create your first ticket or RSVP for an event!"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:283
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:290
 msgctxt "RSVPs article"
 msgid "Using RSVPs"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:288
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:295
 msgctxt "E-Commerce article"
 msgid "Setting Up E-Commerce for Selling Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:293
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:300
 msgctxt "Creating tickets article"
 msgid "Creating Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:298
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:305
 msgctxt "Moving tickets article"
 msgid "Moving Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:314
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:321
 msgctxt "Section title"
 msgid "Attendee Management"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:318
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:325
 msgctxt "Section description"
 msgid "Collect key details during registration, publicly display attendees, and generate reports."
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:321
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:328
 msgctxt "Registration settings article"
 msgid "Attendee Registration Settings"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:326
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:333
 msgctxt "Attendee information article"
 msgid "Enabling Attendee Information for Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:331
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:338
 msgctxt "Managing orders article"
 msgid "Managing Orders and Attendees"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:336
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:343
 msgctxt "Refunding tickets article"
 msgid "Refunding and Canceling Ticket Orders"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:352
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:359
 msgctxt "Section title"
 msgid "Ticket Emails"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:356
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:363
 msgctxt "Section description"
 msgid "Learn all about how to customize the ticket email without any coding knowledge."
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:359
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:366
 msgctxt "Email marketing article"
 msgid "Create Custom Email Marketing"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:364
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:371
 msgctxt "Ticket emails article"
 msgid "All About Event Ticket Emails"
 msgstr ""
 
-#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:369
+#: src/Tickets/Admin/Help_Hub/ET_Hub_Resource_Data.php:376
 msgctxt "Email customization article"
 msgid "Customizing the Ticket Email"
 msgstr ""
@@ -3315,64 +3315,64 @@ msgctxt "The help text for the default ticket type in the ticket form."
 msgid "A %1$s is specific to this %2$s."
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:189
+#: src/Tickets/Admin/Tickets/List_Table.php:190
 msgid "Number of tickets per page:"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:205
+#: src/Tickets/Admin/Tickets/List_Table.php:206
 msgid "Ticket Name"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:206
+#: src/Tickets/Admin/Tickets/List_Table.php:207
 #: src/views/emails/template-parts/body/order/attendees-table/header-row.php:30
 msgid "Ticket ID"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:208
+#: src/Tickets/Admin/Tickets/List_Table.php:209
 msgid "Sale Starts"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:209
+#: src/Tickets/Admin/Tickets/List_Table.php:210
 msgid "Sale Ends"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:210
+#: src/Tickets/Admin/Tickets/List_Table.php:211
 msgid "Days Left"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:212
+#: src/Tickets/Admin/Tickets/List_Table.php:213
 #: src/Tribe/Status/Abstract_Commerce.php:169
 msgid "Sold"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:213
+#: src/Tickets/Admin/Tickets/List_Table.php:214
 #: src/Tickets/Commerce/Order_Modifiers/Table_Views/Coupon_Table.php:64
 msgid "Remaining"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:214
+#: src/Tickets/Admin/Tickets/List_Table.php:215
 msgid "Sales"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:509
+#: src/Tickets/Admin/Tickets/List_Table.php:510
 msgid "This ticket is connected to a disabled post type."
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:515
+#: src/Tickets/Admin/Tickets/List_Table.php:516
 msgid "Ticket Settings Page"
 msgstr ""
 
 #. Translators: %s: Ticket Settings Page link.
-#: src/Tickets/Admin/Tickets/List_Table.php:519
+#: src/Tickets/Admin/Tickets/List_Table.php:520
 #, php-format
 msgid "You can enable this post type on the %s."
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:529
+#: src/Tickets/Admin/Tickets/List_Table.php:530
 msgid "No associated event"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:549
+#: src/Tickets/Admin/Tickets/List_Table.php:550
 #: src/Tickets/Commerce/Admin/Orders_Page.php:108
 #: src/Tickets/Commerce/Order.php:334
 #: src/Tickets/Commerce/Order.php:359
@@ -3383,29 +3383,29 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1267
+#: src/Tickets/Admin/Tickets/List_Table.php:1272
 msgid "Active Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1268
+#: src/Tickets/Admin/Tickets/List_Table.php:1273
 msgid "Past Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1269
+#: src/Tickets/Admin/Tickets/List_Table.php:1274
 msgid "Upcoming Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1270
+#: src/Tickets/Admin/Tickets/List_Table.php:1275
 msgid "Discounted Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1271
-#: src/Tickets/Admin/Tickets/Page.php:317
-#: src/Tickets/Admin/Tickets/Page.php:326
+#: src/Tickets/Admin/Tickets/List_Table.php:1276
+#: src/Tickets/Admin/Tickets/Page.php:329
+#: src/Tickets/Admin/Tickets/Page.php:338
 msgid "All Tickets"
 msgstr ""
 
-#: src/Tickets/Admin/Tickets/List_Table.php:1304
+#: src/Tickets/Admin/Tickets/List_Table.php:1309
 msgid "No tickets found for the active filter."
 msgstr ""
 
@@ -3572,12 +3572,12 @@ msgid "Number of attendees per page:"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:151
-#: src/Tribe/Attendees.php:420
+#: src/Tribe/Attendees.php:417
 msgid "Columns"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:151
-#: src/Tribe/Attendees.php:420
+#: src/Tribe/Attendees.php:417
 msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
 msgstr ""
 
@@ -8516,7 +8516,7 @@ msgstr ""
 #: src/Tickets/Commerce/Gateways/Square/Settings.php:140
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:273
 #: src/Tickets/Commerce/Settings.php:297
-#: src/Tribe/Admin/Settings.php:375
+#: src/Tribe/Admin/Settings.php:404
 msgid "General"
 msgstr ""
 
@@ -9403,45 +9403,45 @@ msgid "attendees"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:501
-#: src/Tribe/Attendees.php:598
+#: src/Tribe/Attendees.php:595
 msgctxt "attendee export"
 msgid "Order ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:502
-#: src/Tribe/Attendees.php:603
+#: src/Tribe/Attendees.php:600
 msgctxt "attendee export"
 msgid "Order Status"
 msgstr ""
 
 #. Translators: %s: The type of ID.
 #: src/Tickets/Commerce/Reports/Attendees.php:503
-#: src/Tribe/Attendees.php:611
+#: src/Tribe/Attendees.php:608
 #, php-format
 msgctxt "attendee export"
 msgid "%s ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:504
-#: src/Tribe/Attendees.php:619
+#: src/Tribe/Attendees.php:616
 msgctxt "attendee export"
 msgid "Ticket Holder Name"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:505
-#: src/Tribe/Attendees.php:624
+#: src/Tribe/Attendees.php:621
 msgctxt "attendee export"
 msgid "Ticket Holder Email Address"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:506
-#: src/Tribe/Attendees.php:629
+#: src/Tribe/Attendees.php:626
 msgctxt "attendee export"
 msgid "Purchaser Name"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:507
-#: src/Tribe/Attendees.php:634
+#: src/Tribe/Attendees.php:631
 msgctxt "attendee export"
 msgid "Purchaser Email Address"
 msgstr ""
@@ -9760,7 +9760,7 @@ msgid "Tickets Commerce Success Page"
 msgstr ""
 
 #: src/Tickets/Commerce/Ticket.php:253
-#: src/Tribe/Admin/Settings.php:229
+#: src/Tribe/Admin/Settings.php:258
 #: src/Tribe/Commerce/PayPal/Main.php:472
 #: src/views/seating/iframe-view.php:41
 msgid "Tickets"
@@ -12341,7 +12341,7 @@ msgstr ""
 msgid "Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s."
 msgstr ""
 
-#: src/Tribe/Admin/Notices.php:296
+#: src/Tribe/Admin/Notices.php:332
 msgctxt "heading for Paystack notice"
 msgid "Sell tickets with Paystack"
 msgstr ""
@@ -12352,28 +12352,28 @@ msgstr ""
 msgid "%1$s Settings"
 msgstr ""
 
-#: src/Tribe/Admin/Settings.php:245
+#: src/Tribe/Admin/Settings.php:274
 msgid "Home"
 msgstr ""
 
-#: src/Tribe/Admin/Settings.php:278
+#: src/Tribe/Admin/Settings.php:307
 msgid "Help"
 msgstr ""
 
-#: src/Tribe/Admin/Settings.php:336
+#: src/Tribe/Admin/Settings.php:365
 msgid "Troubleshooting"
 msgstr ""
 
-#: src/Tribe/Admin/Settings.php:419
+#: src/Tribe/Admin/Settings.php:448
 msgid "Tickets Settings"
 msgstr ""
 
-#: src/Tribe/Admin/Settings.php:444
+#: src/Tribe/Admin/Settings.php:473
 msgid "Network"
 msgstr ""
 
 #. Translators: %1$s: Opening `<a>` to Event Tickets rating page. %2$s: Closing `</a>` tag. %3$s: Five stars.
-#: src/Tribe/Admin/Settings.php:468
+#: src/Tribe/Admin/Settings.php:497
 #, php-format
 msgid "If you like %1$sEvent Tickets%2$s please leave us a %3$s. It takes a minute and it helps a lot."
 msgstr ""
@@ -12502,52 +12502,52 @@ msgctxt "attendee event actions"
 msgid "View"
 msgstr ""
 
-#: src/Tribe/Attendees.php:511
+#: src/Tribe/Attendees.php:508
 #, php-format
 msgid "%s - Attendee list"
 msgstr ""
 
-#: src/Tribe/Attendees.php:793
+#: src/Tribe/Attendees.php:790
 msgctxt "CSV export file name"
 msgid "attendees"
 msgstr ""
 
-#: src/Tribe/Attendees.php:795
+#: src/Tribe/Attendees.php:792
 msgctxt "CSV export file name"
 msgid "All event attendees"
 msgstr ""
 
-#: src/Tribe/Attendees.php:864
+#: src/Tribe/Attendees.php:861
 msgid "Invalid Event ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:884
+#: src/Tribe/Attendees.php:881
 msgid "Cheatin Huh?"
 msgstr ""
 
-#: src/Tribe/Attendees.php:890
+#: src/Tribe/Attendees.php:887
 msgid "Empty user and/or email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:896
+#: src/Tribe/Attendees.php:893
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:902
-#: src/Tribe/Attendees.php:955
+#: src/Tribe/Attendees.php:899
+#: src/Tribe/Attendees.php:952
 msgid "Invalid User ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:975
+#: src/Tribe/Attendees.php:972
 #, php-format
 msgid "Attendee List for: %s"
 msgstr ""
 
-#: src/Tribe/Attendees.php:976
+#: src/Tribe/Attendees.php:973
 msgid "Error when sending the email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:983
+#: src/Tribe/Attendees.php:980
 msgid "Email sent successfully!"
 msgstr ""
 
