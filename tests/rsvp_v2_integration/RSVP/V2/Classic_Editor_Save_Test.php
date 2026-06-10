@@ -29,12 +29,45 @@ class Classic_Editor_Save_Test extends WPTestCase {
 
 		$this->classic_editor = tribe( Classic_Editor::class );
 		$this->original_post    = $_POST;
+
+		// Make the default `post` type ticket-able so the save_post guard does not short-circuit.
+		add_filter( 'tribe_tickets_post_types', [ $this, 'enable_post_ticket_type' ] );
 	}
 
 	protected function tearDown(): void {
 		$_POST = $this->original_post;
 
+		remove_filter( 'tribe_tickets_post_types', [ $this, 'enable_post_ticket_type' ] );
+
 		parent::tearDown();
+	}
+
+	/**
+	 * Adds the `post` type to the list of ticket-able post types.
+	 *
+	 * @param array<string> $post_types The ticket-able post types.
+	 *
+	 * @return array<string> The filtered ticket-able post types.
+	 */
+	public function enable_post_ticket_type( array $post_types ): array {
+		$post_types[] = 'post';
+
+		return array_unique( $post_types );
+	}
+
+	/**
+	 * Invokes a private method on the Classic_Editor instance under test.
+	 *
+	 * @param string $method The method name.
+	 * @param mixed  ...$args The arguments to pass to the method.
+	 *
+	 * @return mixed The method return value.
+	 */
+	private function invoke_private( string $method, ...$args ) {
+		$reflection = new \ReflectionMethod( Classic_Editor::class, $method );
+		$reflection->setAccessible( true );
+
+		return $reflection->invoke( $this->classic_editor, ...$args );
 	}
 
 	/**
@@ -56,7 +89,7 @@ class Classic_Editor_Save_Test extends WPTestCase {
 		$post = get_post( $post_id );
 		$this->assertInstanceOf( WP_Post::class, $post );
 
-		$this->classic_editor->process_rsvp_post_save( $post_id, $post_data );
+		$this->invoke_private( 'process_rsvp_post_save', $post_id, $post_data );
 	}
 
 	private function get_rsvp_ticket_id_for_event( int $post_id ): ?int {
@@ -201,7 +234,7 @@ class Classic_Editor_Save_Test extends WPTestCase {
 			]
 		);
 
-		$this->classic_editor->save_rsvp_on_post_save( $post_id, $post );
+		$this->classic_editor->save_rsvp_on_post_save( $post_id );
 
 		$this->assertNull( $this->get_rsvp_ticket_id_for_event( $post_id ) );
 	}
@@ -225,7 +258,7 @@ class Classic_Editor_Save_Test extends WPTestCase {
 			]
 		);
 
-		$this->classic_editor->save_rsvp_on_post_save( $post_id, $post );
+		$this->classic_editor->save_rsvp_on_post_save( $post_id );
 
 		$this->assertNull( $this->get_rsvp_ticket_id_for_event( $post_id ) );
 	}
@@ -234,9 +267,8 @@ class Classic_Editor_Save_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_map_post_data_to_ticket_add_format(): void {
-		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
-
-		$data = $this->classic_editor->map_post_to_ticket_data(
+		$data = $this->invoke_private(
+			'map_post_to_ticket_data',
 			[
 				'rsvp_id'         => '123',
 				'rsvp_limit'      => '75',
@@ -246,8 +278,7 @@ class Classic_Editor_Save_Test extends WPTestCase {
 				'rsvp_end_time'   => '17:00:00',
 				'show_not_going'  => '1',
 				'ticket_provider' => Module::class,
-			],
-			$post_id
+			]
 		);
 
 		$this->assertSame( 123, $data['ticket_id'] );

@@ -201,6 +201,12 @@ tribe.tickets.commerce.tickets = {};
 			$rsvpMetabox.trigger( 'verify.dependency' );
 		}
 
+		/**
+		 * Fires after the RSVP has been removed from the Classic Editor metabox and the
+		 * form has been reset to its default empty state.
+		 *
+		 * @since TBD
+		 */
 		doAction( 'tec.tickets.rsvp.classic.removed' );
 	};
 

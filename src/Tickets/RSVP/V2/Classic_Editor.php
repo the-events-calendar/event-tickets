@@ -58,9 +58,12 @@ class Classic_Editor {
 	/**
 	 * Saves TC-RSVP ticket data when the parent post is saved in the Classic Editor.
 	 *
+	 * Hooked on the generic `save_post` action and guarded to only run for ticket-able
+	 * post types, so we register a single hook instead of one per post type.
+	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID being saved.he post object being saved.
+	 * @param int $post_id The post ID being saved.
 	 *
 	 * @return void
 	 */
@@ -70,6 +73,10 @@ class Classic_Editor {
 		}
 
 		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		if ( ! tribe_tickets_post_type_enabled( get_post_type( $post_id ) ) ) {
 			return;
 		}
 
@@ -84,7 +91,6 @@ class Classic_Editor {
 		$this->process_rsvp_post_save( $post_id, $post_data );
 	}
 
-
 	/**
 	 * Processes TC-RSVP ticket data from metabox POST values.
 	 *
@@ -95,7 +101,7 @@ class Classic_Editor {
 	 *
 	 * @return void
 	 */
-	public function process_rsvp_post_save( int $post_id, array $post_data ): void {
+	private function process_rsvp_post_save( int $post_id, array $post_data ): void {
 		if ( empty( $post_data['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $post_data['ticket_type'] ) {
 			return;
 		}
@@ -137,7 +143,7 @@ class Classic_Editor {
 	 *
 	 * @return array<string,mixed> The mapped ticket data.
 	 */
-	public function map_post_to_ticket_data( array $post_data ): array {
+	private function map_post_to_ticket_data( array $post_data ): array {
 		$rsvp_id = absint( $post_data['rsvp_id'] ?? 0 );
 		$limit   = trim( (string) ( $post_data['rsvp_limit'] ?? '' ) );
 
@@ -178,31 +184,5 @@ class Classic_Editor {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Registers save_post hooks for ticket-enabled post types.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register_save_post_hooks(): void {
-		foreach ( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) as $post_type ) {
-			add_action( "save_post_{$post_type}", [ $this, 'save_rsvp_on_post_save' ], 20, 2 );
-		}
-	}
-
-	/**
-	 * Unregisters save_post hooks for ticket-enabled post types.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister_save_post_hooks(): void {
-		foreach ( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) as $post_type ) {
-			remove_action( "save_post_{$post_type}", [ $this, 'save_rsvp_on_post_save' ], 20 );
-		}
 	}
 }

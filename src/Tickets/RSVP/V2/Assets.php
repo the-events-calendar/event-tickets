@@ -40,7 +40,8 @@ class Assets {
 			[ 'jquery', 'tec-api' ],
 			'admin_enqueue_scripts',
 			[
-				'localize' => [
+				'conditionals' => [ $this, 'should_enqueue_classic_editor_assets' ],
+				'localize'     => [
 					'name' => 'tecTicketsCommerceTickets',
 					'data' => static function () {
 						return [
@@ -121,5 +122,24 @@ class Assets {
 		if ( $stylesheet ) {
 			tec_asset( $plugin, 'tec-tickets-commerce-rsvp-style-override', $stylesheet, [], null );
 		}
+	}
+
+	/**
+	 * Whether to enqueue Classic Editor RSVP metabox assets.
+	 *
+	 * Limits `commerce/tickets.js` to ticket-enabled post edit screens only.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_classic_editor_assets(): bool {
+		global $post;
+
+		if ( empty( $post ) ) {
+			return false;
+		}
+
+		return tribe_tickets_post_type_enabled( $post->post_type );
 	}
 }
