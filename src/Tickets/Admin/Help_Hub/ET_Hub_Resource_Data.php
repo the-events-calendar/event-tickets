@@ -77,24 +77,15 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @since 5.24.0
 	 */
 	public function __construct() {
-		add_action( 'current_screen', [ $this, 'maybe_initialize' ] );
+		add_action(
+			'admin_init',
+			function () {
+				$page_hook = $this->get_help_hub_id();
+
+				add_action( 'load-' . $page_hook, [ $this, 'initialize' ] );
+			}
+		);
 		add_action( 'tec_help_hub_before_iframe_render', [ $this, 'register_with_hub' ] );
-	}
-
-	/**
-	 * Initializes the Help Hub data when on the Help Hub page, using a locale-independent slug check
-	 * instead of a `load-{hook_suffix}` action that breaks when the menu title is translated.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function maybe_initialize(): void {
-		if ( ! $this->is_help_hub_page() ) {
-			return;
-		}
-
-		$this->initialize();
 	}
 
 	/**
@@ -107,8 +98,8 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @return void
 	 */
 	public function register_with_hub( Hub $help_hub ): void {
-		// Slug-based check; the HELP_HUB_PAGE_ID hook suffix never matches when the menu title is translated.
-		if ( ! $this->is_help_hub_page() ) {
+		$page = tec_get_request_var( 'page' );
+		if ( self::HELP_HUB_PAGE_ID !== $page ) {
 			return;
 		}
 		$this->initialize();
@@ -458,17 +449,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @return array<string> Modified array of help pages.
 	 */
 	public function add_help_hub_pages( $help_pages ): array {
-		$help_pages[] = self::HELP_HUB_PAGE_ID;
-
-		// This list is matched against the current screen id, so add the translated screen id too.
-		$screen = null;
-		if ( function_exists( 'get_current_screen' ) ) {
-			$screen = get_current_screen();
-		}
-		if ( $screen instanceof \WP_Screen && $this->is_help_hub_page() ) {
-			$help_pages[] = $screen->id;
-		}
-
+		$help_pages[] = $this->get_help_hub_id();
 		return $help_pages;
 	}
 
@@ -491,10 +472,22 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Get the Help Hub page ID.
 	 *
+	 * @since TBD Updated to account for translations.
+	 *
 	 * @return string
 	 */
 	public function get_help_hub_id(): string {
-		return self::HELP_HUB_PAGE_ID;
+		if ( ! did_action( 'admin_init' ) ) {
+			return self::HELP_HUB_PAGE_ID;
+		}
+
+		$page_hook = get_plugin_page_hook( self::HELP_HUB_SLUG, 'admin.php' );
+
+		if ( ! $page_hook || ! is_string( $page_hook ) ) {
+			return self::HELP_HUB_PAGE_ID;
+		}
+
+		return $page_hook;
 	}
 
 	/**
