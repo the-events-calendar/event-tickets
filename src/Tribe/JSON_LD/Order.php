@@ -188,7 +188,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	 * Return the price currency used on the Ticket
 	 *
 	 * @since 4.7.1
-	 * @since TBD Use the Tickets Commerce currency setting as the source of truth.
+	 * @since 5.28.3.2 Use the Tickets Commerce currency setting as the source of truth.
 	 *
 	 * @param object  $ticket
 	 *

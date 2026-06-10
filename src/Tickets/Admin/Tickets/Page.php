@@ -91,7 +91,7 @@ class Page extends Abstract_Admin_Page {
 	 * Registers the All Tickets admin page and captures the real (locale-dependent) hook suffix,
 	 * which the hardcoded default cannot represent when the menu title is translated.
 	 *
-	 * @since TBD
+	 * @since 5.28.3.2
 	 */
 	public function admin_page() {
 		parent::admin_page();

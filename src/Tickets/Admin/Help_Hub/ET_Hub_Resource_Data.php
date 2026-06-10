@@ -472,7 +472,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Get the Help Hub page ID.
 	 *
-	 * @since TBD Updated to account for translations.
+	 * @since 5.28.3.2 Updated to account for translations.
 	 *
 	 * @return string
 	 */

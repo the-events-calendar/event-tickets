@@ -52,7 +52,7 @@ class Notifications extends Integration_Abstract {
 	 * Adds the Tickets settings page to the list of allowed pages for Notifications.
 	 *
 	 * @since 5.19.3
-	 * @since TBD Resolve page hooks so the icon keeps showing in non-English locales.
+	 * @since 5.28.3.2 Resolve page hooks so the icon keeps showing in non-English locales.
 	 *
 	 * @param array $allowed An array of pages where notifications will be displayed.
 	 *

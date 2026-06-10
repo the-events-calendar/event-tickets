@@ -244,7 +244,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * Runs at notice-display time (admin_notices), when `get_current_screen()` is guaranteed to be
 	 * resolved — unlike `admin_init`, where the screen may still be null.
 	 *
-	 * @since TBD
+	 * @since 5.28.3.2
 	 *
 	 * @return bool
 	 */
