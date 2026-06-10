@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Ensure proper functionality of Tickets admin pages (Settings, Help Hub, and Notifications) on non-English installs. [SMTNC-1469]
