@@ -5,11 +5,15 @@ namespace TEC\Tickets\Admin\Help_Hub;
 use Codeception\TestCase\WPTestCase;
 
 /**
- * Ensures the Help Hub page detection and asset gating stay locale-independent so the page keeps
- * loading its assets when the menu title is translated (and the screen id is no longer `tickets_page_*`).
+ * Ensures the Help Hub page detection stays locale-independent so the page keeps loading its assets
+ * when the menu title is translated (and the screen id is no longer `tickets_page_*`).
+ *
+ * The page is detected by its URL `page` slug, which is locale-independent, and the page hook is
+ * resolved from WordPress core via get_plugin_page_hook(), falling back to the canonical English id.
  *
  * @see ET_Hub_Resource_Data::is_help_hub_page()
  * @see ET_Hub_Resource_Data::add_help_hub_pages()
+ * @see ET_Hub_Resource_Data::get_help_hub_id()
  */
 class Resource_Data_Test extends WPTestCase {
 
@@ -34,7 +38,7 @@ class Resource_Data_Test extends WPTestCase {
 	public function it_should_detect_the_help_hub_page_by_slug_in_any_language(): void {
 		$instance = $this->make_instance();
 
-		$_GET['page'] = 'tec-tickets-help-hub';
+		$_GET['page'] = ET_Hub_Resource_Data::HELP_HUB_SLUG;
 		$this->assertTrue( $instance->is_help_hub_page() );
 
 		$_GET['page'] = 'some-other-page';
@@ -44,27 +48,16 @@ class Resource_Data_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_allow_the_translated_screen_id_on_the_help_hub_page(): void {
-		$_GET['page'] = 'tec-tickets-help-hub';
-		// German: "Tickets" -> "Karten", so the screen id is prefixed with `karten_page_`.
-		set_current_screen( 'karten_page_tec-tickets-help-hub' );
-
-		$pages = $this->make_instance()->add_help_hub_pages( [] );
-
-		// The canonical English id and the live (translated) screen id must both be present.
-		$this->assertContains( 'tickets_page_tec-tickets-help-hub', $pages );
-		$this->assertContains( 'karten_page_tec-tickets-help-hub', $pages );
+	public function it_should_not_detect_the_help_hub_page_without_a_page_request(): void {
+		$this->assertFalse( $this->make_instance()->is_help_hub_page() );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_not_add_the_current_screen_when_off_the_help_hub_page(): void {
-		$_GET['page'] = 'some-other-page';
-		set_current_screen( 'karten_page_tec-tickets-help-hub' );
-
+	public function it_should_fall_back_to_the_canonical_id_when_the_page_hook_is_unresolved(): void {
 		$pages = $this->make_instance()->add_help_hub_pages( [] );
 
-		$this->assertNotContains( 'karten_page_tec-tickets-help-hub', $pages );
+		$this->assertContains( ET_Hub_Resource_Data::HELP_HUB_PAGE_ID, $pages );
 	}
 }
