@@ -19,6 +19,32 @@ use Tribe__Tickets__RSVP as RSVP;
 class AssetsTest extends Ticket_Object_TestCase {
 
 	/**
+	 * The REQUEST_URI value before each test, restored on tear down.
+	 *
+	 * @var string|null
+	 */
+	protected $original_request_uri;
+
+	public function setUp() {
+		parent::setUp();
+
+		$this->original_request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : null;
+	}
+
+	public function tearDown() {
+		// go_to() sets $_SERVER['REQUEST_URI'] and $_GET without restoring them; clean up so the
+		// leaked request context does not bleed into later tests (e.g. WP_List_Table referer URLs).
+		if ( null === $this->original_request_uri ) {
+			unset( $_SERVER['REQUEST_URI'] );
+		} else {
+			$_SERVER['REQUEST_URI'] = $this->original_request_uri;
+		}
+		$_GET = [];
+
+		parent::tearDown();
+	}
+
+	/**
 	 * @return Assets
 	 */
 	private function assets(): Assets {
