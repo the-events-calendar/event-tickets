@@ -9,6 +9,9 @@ use Tribe\Tickets\Admin\Settings;
  * Ensures the Tickets admin pages keep a locale-independent body class so the admin CSS (which is
  * scoped to `.tickets_page_tec-tickets-*`) keeps matching when the menu title is translated.
  *
+ * The page is detected via its URL `page` slug, which is locale-independent, so the canonical class
+ * is added regardless of the (possibly translated) screen id.
+ *
  * @see Settings::filter_admin_body_class()
  */
 class Admin_Body_Class_Test extends WPTestCase {
@@ -16,8 +19,8 @@ class Admin_Body_Class_Test extends WPTestCase {
 	/**
 	 * @after
 	 */
-	public function reset_screen(): void {
-		unset( $GLOBALS['current_screen'] );
+	public function reset_request(): void {
+		unset( $_GET['page'], $_REQUEST['page'] );
 	}
 
 	/**
@@ -28,11 +31,20 @@ class Admin_Body_Class_Test extends WPTestCase {
 	}
 
 	/**
+	 * @param string $page The URL `page` slug.
+	 */
+	private function set_current_page( string $page ): void {
+		$_GET['page']     = $page;
+		$_REQUEST['page'] = $page;
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_add_the_canonical_class_when_the_menu_title_is_translated(): void {
-		// Italian: "Tickets" -> "Biglietti", so the screen id is prefixed with `biglietti_page_`.
-		set_current_screen( 'biglietti_page_tec-tickets-settings' );
+		// Italian: "Tickets" -> "Biglietti", so the screen id is prefixed with `biglietti_page_`,
+		// but the URL slug stays `tec-tickets-settings`.
+		$this->set_current_page( 'tec-tickets-settings' );
 
 		$classes = $this->make_instance()->filter_admin_body_class( 'wp-admin biglietti_page_tec-tickets-settings' );
 
@@ -43,7 +55,7 @@ class Admin_Body_Class_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_not_duplicate_the_class_on_an_english_install(): void {
-		set_current_screen( 'tickets_page_tec-tickets-settings' );
+		$this->set_current_page( 'tec-tickets-settings' );
 
 		$classes = $this->make_instance()->filter_admin_body_class( 'wp-admin tickets_page_tec-tickets-settings' );
 
@@ -59,7 +71,7 @@ class Admin_Body_Class_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_leave_non_tickets_screens_untouched(): void {
-		set_current_screen( 'edit-post' );
+		$this->set_current_page( 'edit-post' );
 
 		$classes = $this->make_instance()->filter_admin_body_class( 'wp-admin edit-post' );
 

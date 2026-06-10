@@ -161,6 +161,8 @@ class Settings {
 	 * Adds the canonical English-prefixed body class to the Tickets admin pages so locale-independent
 	 * CSS selectors keep matching when the menu title is translated.
 	 *
+	 * The page is detected via its URL slug, which is locale-independent, rather than the translated screen id.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $classes Space-separated list of admin body classes.
@@ -168,20 +170,14 @@ class Settings {
 	 * @return string The filtered list of admin body classes.
 	 */
 	public function filter_admin_body_class( $classes ): string {
-		$screen = null;
-		if ( function_exists( 'get_current_screen' ) ) {
-			$screen = get_current_screen();
-		}
 
-		if ( ! $screen instanceof \WP_Screen ) {
+		$admin_page = tribe_get_request_var( 'page' );
+
+		if ( empty( $admin_page ) || 0 !== strpos( $admin_page, static::$parent_slug ) ) {
 			return $classes;
 		}
 
-		if ( ! preg_match( '/_page_(tec-tickets[\w-]*)$/', $screen->id, $matches ) ) {
-			return $classes;
-		}
-
-		$canonical = 'tickets_page_' . $matches[1];
+		$canonical = 'tickets_page_' . $admin_page;
 
 		if ( in_array( $canonical, preg_split( '/\s+/', trim( $classes ) ), true ) ) {
 			return $classes;

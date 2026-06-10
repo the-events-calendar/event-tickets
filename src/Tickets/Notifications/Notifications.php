@@ -52,6 +52,7 @@ class Notifications extends Integration_Abstract {
 	 * Adds the Tickets settings page to the list of allowed pages for Notifications.
 	 *
 	 * @since 5.19.3
+	 * @since TBD Resolve page hooks so the icon keeps showing in non-English locales.
 	 *
 	 * @param array $allowed An array of pages where notifications will be displayed.
 	 *
@@ -61,13 +62,13 @@ class Notifications extends Integration_Abstract {
 		$allowed[] = 'tickets_page_tec-tickets-settings';
 		$allowed[] = 'tickets_page_tickets-setup';
 
-		// Also allow the translated screen id when on those pages.
-		$screen = null;
-		if ( function_exists( 'get_current_screen' ) ) {
-			$screen = get_current_screen();
-		}
-		if ( $screen instanceof \WP_Screen && preg_match( '/_page_(tec-tickets-settings|tickets-setup)$/', $screen->id ) ) {
-			$allowed[] = $screen->id;
+		// Check page hook of each slug to keep matching in non-English locales.
+		foreach ( [ 'tec-tickets-settings', 'tickets-setup' ] as $slug ) {
+			$page_hook = get_plugin_page_hook( $slug, 'admin.php' );
+
+			if ( is_string( $page_hook ) && '' !== $page_hook ) {
+				$allowed[] = $page_hook;
+			}
 		}
 
 		return $allowed;
