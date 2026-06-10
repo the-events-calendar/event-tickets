@@ -708,6 +708,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
+		// Only load the RSVP assets when the post actually has tickets to render. Otherwise these
+		// would load on every singular tickets-enabled post (the `page` post type is enabled by
+		// default), including pages with no RSVP/ticket UI such as the WooCommerce cart and checkout.
+		if ( ! tribe_events_has_tickets( get_queried_object_id() ) ) {
+			return;
+		}
+
 		wp_enqueue_style( 'event-tickets-rsvp' );
 		wp_enqueue_script( 'event-tickets-rsvp' );
 
