@@ -5,7 +5,7 @@
 * Fix - Ensure proper functionality of Tickets admin pages (Settings, Help Hub, and Notifications) on non-English installs. [SMTNC-1469]
 * Fix - Resolve an issue where the Attendees admin page caused a fatal error on sites using a translated admin locale. [SMTNC-1439]
 * Fix - Resolve an issue where the Event Schema always reported the price currency as USD, ignoring the currency configured in the Tickets Commerce settings. [SMTNC-1239]
-* Fix - Resolve an issue where the Event Tickets Plus upsell notice for WooCommerce and Easy Digital Downloads was shown on every wp-admin page; it is now limited to the Tickets admin screens, The Events Calendar admin screens, and the Plugins page.
+* Fix - Resolve an issue where the Event Tickets Plus upsell notice for WooCommerce and Easy Digital Downloads was shown on every wp-admin page; it is now limited to the Tickets admin screens, The Events Calendar admin screens, and the Plugins page. [SMTNC-1303]
 * Fix - Resolved a fatal error on the Tickets > All Tickets admin page when listing tickets with no end date on PHP 8.3.9 or later. [SMTNC-295]
 * Fix - Show events marked "Hide From Event Listings" in the Event Tickets App so on-site managers can still see and check them in. [SMTNC-288]
 * Tweak - Added filters: `tec_tickets_rest_events_archive_include_hidden_from_listings`.
