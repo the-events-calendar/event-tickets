@@ -179,13 +179,15 @@ class Tribe__Tickets__Query {
 			);
 			// phpcs:enable
 
-			$count                                  = (int) $wpdb->get_var( $query );
+			// $query is built via $wpdb->prepare() above.
+			$count                                    = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$this->ticketed_count_cache[ $post_type ] = $count;
 
 			return $count;
 		}
 
-		return (int) $wpdb->get_var( $query );
+		// $query comes from the filter above; preparing it is the filter's responsibility.
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
@@ -229,7 +231,8 @@ class Tribe__Tickets__Query {
 			return max( 0, $total - $this->get_ticketed_count( $post_type ) );
 		}
 
-		return (int) $wpdb->get_var( $query );
+		// $query comes from the filter above; preparing it is the filter's responsibility.
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
