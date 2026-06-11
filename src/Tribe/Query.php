@@ -13,18 +13,6 @@ class Tribe__Tickets__Query {
 	public static $has_tickets = 'tribe-has-tickets';
 
 	/**
-	 * Per-request memoization of the ticketed count, keyed by post type.
-	 *
-	 * The ticketed count is requested twice per list render (directly, and again to derive the unticketed
-	 * count), so caching it avoids running the same query twice on a single page load.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<string,int>
-	 */
-	protected $ticketed_count_cache = [];
-
-	/**
 	 *  Hooks to add query vars and filter the post query.
 	 */
 	public function hook() {
@@ -156,11 +144,6 @@ class Tribe__Tickets__Query {
 		global $wpdb;
 
 		if ( $query === null ) {
-			// Return a memoized value when available; this count is requested twice per list render.
-			if ( isset( $this->ticketed_count_cache[ $post_type ] ) ) {
-				return $this->ticketed_count_cache[ $post_type ];
-			}
-
 			// Build a complete list of meta keys to leverage the meta_key index; LIKE will not hit the index.
 			$meta_keys_in = $this->build_meta_keys_in();
 
@@ -180,10 +163,7 @@ class Tribe__Tickets__Query {
 			// phpcs:enable
 
 			// $query is built via $wpdb->prepare() above.
-			$count                                    = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$this->ticketed_count_cache[ $post_type ] = $count;
-
-			return $count;
+			return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
 		// $query comes from the filter above; preparing it is the filter's responsibility.
@@ -217,9 +197,10 @@ class Tribe__Tickets__Query {
 			/*
 			 * Unticketed is derived as `total - ticketed` rather than a `NOT IN ( <ticketed subquery> )`.
 			 * `NOT IN` against an unindexed sub-query of post IDs scales with the number of posts and could take
-			 * tens of seconds on large sites. The total is a fast `COUNT(*)` served by the `type_status_date` index,
-			 * and `get_ticketed_count()` is already memoized, so this resolves with two fast, indexed queries.
-			 * The `post_status` filter matches `get_ticketed_count()` so the subtraction stays consistent.
+			 * tens of seconds on large sites. The total is a fast `COUNT(*)` served by the `type_status_date`
+			 * index, and `get_ticketed_count()` is a single indexed query, so this resolves with two fast,
+			 * indexed queries. The `post_status` filter matches `get_ticketed_count()` so the subtraction stays
+			 * consistent.
 			 */
 			$total = (int) $wpdb->get_var(
 				$wpdb->prepare(
