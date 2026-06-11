@@ -76,6 +76,7 @@ class Listeners extends Controller_Contract {
 	 * Register the controller.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Updated hooks we listen for changes.
 	 *
 	 * @return void
 	 */
@@ -86,12 +87,12 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		add_action( 'tec_tickets_ticket_able_post_upserted', [ $this, 'schedule_sync_on_save' ], 10, 2 );
+		add_action( 'tec_tickets_ticket_able_post_upserted', [ $this, 'schedule_sync_on_save' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
-		add_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
-		add_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+		add_action( 'tec_tickets_ticket_able_post_deleted', [ $this, 'schedule_deletion_on_ticket_able_deleted' ] );
+		add_action( 'tec_tickets_ticket_deleted', [ $this, 'schedule_deletion_on_ticket_deleted' ] );
 		add_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ], 10, 3 );
 		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ] );
 		add_action( 'tec_tickets_commerce_square_merchant_disconnected', [ $this, 'unsync' ] );
@@ -101,6 +102,7 @@ class Listeners extends Controller_Contract {
 	 * Unregister the controller.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Updated hooks we listen for changes.
 	 *
 	 * @return void
 	 */
@@ -115,8 +117,8 @@ class Listeners extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ] );
 		remove_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ] );
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
-		remove_action( 'wp_trash_post', [ $this, 'schedule_sync_on_delete' ] );
-		remove_action( 'before_delete_post', [ $this, 'schedule_sync_on_delete' ] );
+		remove_action( 'tec_tickets_ticket_able_post_deleted', [ $this, 'schedule_deletion_on_ticket_able_deleted' ] );
+		remove_action( 'tec_tickets_ticket_deleted', [ $this, 'schedule_deletion_on_ticket_deleted' ] );
 		remove_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ] );
 		remove_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ] );
 		remove_action( 'tec_tickets_commerce_square_merchant_disconnected', [ $this, 'unsync' ] );
@@ -294,22 +296,17 @@ class Listeners extends Controller_Contract {
 	 * Schedule the sync on save.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Updated hook we are listening for and its arguments.
 	 *
 	 * @param int     $post_id The post ID.
 	 * @param WP_Post $post    The post object.
+	 * @param bool    $is_update Whether the post is being updated.
+	 * @param bool    $has_syncable_tickets Whether the post has sync-able tickets.
 	 *
 	 * @return void
 	 */
-	public function schedule_sync_on_save( int $post_id, WP_Post $post ): void {
-		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
-			return;
-		}
-
-		if ( ! in_array( $post->post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
-			return;
-		}
-
-		if ( empty( tribe( Ticket_Data::class )->get_sync_able_tickets_of_event( $post_id ) ) ) {
+	public function schedule_sync_on_save( int $post_id, WP_Post $post, bool $is_update, bool $has_syncable_tickets ): void {
+		if ( ! $has_syncable_tickets ) {
 			return;
 		}
 
@@ -320,68 +317,56 @@ class Listeners extends Controller_Contract {
 	 * Schedule the sync on delete.
 	 *
 	 * @since 5.24.0
+	 * @deprecated TBD
 	 *
 	 * @param int $post_id The post ID.
 	 *
 	 * @return void
 	 */
 	public function schedule_sync_on_delete( int $post_id ): void {
-		$post = get_post( $post_id );
+		_deprecated_function( __METHOD__, 'TBD' );
+	}
 
-		if ( ! $post instanceof WP_Post ) {
-			return;
-		}
-
-		if ( 'publish' !== $post->post_status ) {
-			return;
-		}
-
-		$ticket_types = tribe_tickets()->ticket_types();
-
-		$ticket_or_event_types = array_merge(
-			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
-			$ticket_types
-		);
-
-		if ( ! in_array( $post->post_type, $ticket_or_event_types, true ) ) {
-			return;
-		}
-
+	/**
+	 * Schedule the deletion on ticket-able post deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 */
+	public function schedule_deletion_on_ticket_able_deleted( int $post_id ): void {
 		if ( ! $this->is_object_syncable( $post_id, true ) ) {
 			return;
 		}
 
-		if ( ! in_array( $post->post_type, $ticket_types, true ) ) {
-			$this->schedule_deletion( $post_id );
+		$this->schedule_deletion( $post_id );
+	}
+
+	/**
+	 * Schedule the deletion on ticket deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $ticket_id The ticket ID.
+	 * @param bool  $is_full_deletion Whether the post is being fully deleted.
+	 * @param ?int  $parent_id The parent ID.
+	 * @param ?bool $has_more_syncable_tickets Whether the post has more sync-able tickets.
+	 */
+	public function schedule_deletion_on_ticket_deleted( int $ticket_id, bool $is_full_deletion, ?int $parent_id, ?bool $has_more_syncable_tickets ): void {
+		if ( ! $this->is_object_syncable( $ticket_id, true ) ) {
 			return;
 		}
-
-		// This is a ticket - if this is the last "sync-able" ticket we need to schedule deletion for the parent event instead.
-		$ticket = Tickets::load_ticket_object( $post_id );
-
-		if ( ! $ticket instanceof Ticket_Object ) {
-			// It seems like we cant delete its parent...
-			$this->schedule_deletion( $post_id );
-			return;
-		}
-
-		$parent_id = $ticket->get_event_id();
 
 		if ( ! $parent_id ) {
-			// The parent is already deleted...
-			$this->schedule_deletion( $post_id );
+			$this->schedule_deletion( $ticket_id );
 			return;
 		}
 
-		$syncable_tickets = tribe( Ticket_Data::class )->get_sync_able_tickets_of_event( $parent_id );
-
-		if ( count( $syncable_tickets ) > 1 ) {
-			// There are more sync-able tickets for this event, we only need to delete the ticket from Square.
-			$this->schedule_deletion( $post_id );
+		if ( $has_more_syncable_tickets ) {
+			$this->schedule_deletion( $ticket_id );
 			return;
 		}
 
-		// This is the last sync-able ticket for this event, we need to schedule deletion for the parent event instead.
 		$this->schedule_deletion( $parent_id );
 	}
 
