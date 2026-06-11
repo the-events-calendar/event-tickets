@@ -49,6 +49,33 @@ require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min
 // Load the Composer autoload file.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
 
+// TEMP DEBUG (scratch branch only): list EVERY pre-init `event-tickets` translation caller. Do not merge.
+$GLOBALS['td_seen'] = array();
+$td_capture = static function ( $translation, $a2 = null, $a3 = null, $a4 = null ) {
+	// gettext: (translation, text, domain). gettext_with_context: (translation, text, context, domain).
+	$domain = ( null !== $a4 ) ? $a4 : $a3;
+	if ( 'event-tickets' !== $domain || did_action( 'init' ) ) {
+		return $translation;
+	}
+	$trace = wp_debug_backtrace_summary( null, 0, false );
+	// Find the first frame outside WP i18n internals = the real caller.
+	$caller = 'unknown';
+	foreach ( $trace as $frame ) {
+		if ( false === stripos( $frame, 'gettext' ) && false === stripos( $frame, 'translate' ) && false === stripos( $frame, '{closure}' ) && false === stripos( $frame, 'apply_filters' ) && '__' !== $frame && '_x' !== $frame && '_n' !== $frame && '_ex' !== $frame ) {
+			$caller = $frame;
+			break;
+		}
+	}
+	$key = implode( '|', array_slice( $trace, 0, 10 ) );
+	if ( ! isset( $GLOBALS['td_seen'][ $key ] ) ) {
+		$GLOBALS['td_seen'][ $key ] = true;
+		echo "\nTD2 | caller={$caller} | text=" . substr( (string) $a2, 0, 40 ) . " | stack=" . implode( ' < ', array_slice( $trace, 0, 10 ) ) . "\n";
+	}
+	return $translation;
+};
+add_filter( 'gettext', $td_capture, 1, 3 );
+add_filter( 'gettext_with_context', $td_capture, 1, 4 );
+
 /**
  * Verifies if we need to warn the user about min PHP version and bail to avoid fatal errors.
  */
