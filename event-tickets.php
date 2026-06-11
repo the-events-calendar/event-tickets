@@ -49,6 +49,20 @@ require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min
 // Load the Composer autoload file.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
 
+// TEMP DEBUG (scratch branch only): dump the backtrace of the early `event-tickets` textdomain load. Do not merge.
+add_action(
+	'doing_it_wrong_run',
+	static function ( $function_name, $message ) {
+		$message = (string) $message;
+		if ( false === stripos( $message, 'Translation loading' ) || false === stripos( $message, 'event-tickets' ) ) {
+			return;
+		}
+		echo "\nTD-TRACE-START\n" . implode( "\n", wp_debug_backtrace_summary( null, 0, false ) ) . "\nTD-TRACE-END\n";
+	},
+	10,
+	2
+);
+
 /**
  * Verifies if we need to warn the user about min PHP version and bail to avoid fatal errors.
  */
