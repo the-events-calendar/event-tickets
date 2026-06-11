@@ -160,8 +160,8 @@ class Block extends Abstract_Block {
 	 * @return void
 	 */
 	public function register() {
+		$this->register_editor_scripts();
 		parent::register();
-		add_action( 'admin_enqueue_scripts', [ $this, 'register_editor_scripts' ] );
 	}
 
 	/**
