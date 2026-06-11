@@ -9,14 +9,11 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket_Data;
 use WP_Post;
-use Exception;
 use TEC\Tickets\Commerce\Module as Commerce_Ticket_Provider;
-use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Ticket_Able_Post_Actions.
