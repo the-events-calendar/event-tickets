@@ -133,6 +133,11 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	 *                     or `false` if the specified field or slug was not found.
 	 */
 	public function get_config_status( $field = 'slug', $slug = null ) {
-		return _x( 'incomplete', 'a PayPal configuration status', 'event-tickets' );
+		// Only translate when a label is requested, to avoid loading the text domain too early (before `init`).
+		if ( 'label' === $field ) {
+			return _x( 'incomplete', 'a PayPal configuration status', 'event-tickets' );
+		}
+
+		return 'incomplete';
 	}
 }
