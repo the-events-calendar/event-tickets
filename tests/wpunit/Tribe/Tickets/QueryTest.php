@@ -93,4 +93,59 @@ class QueryTest extends WPTestCase {
 
 		$this->assertEqualSets( $expected, $posts );
 	}
+
+	/**
+	 * It should count ticketed and unticketed posts correctly
+	 *
+	 * @test
+	 */
+	public function should_count_ticketed_and_unticketed_posts(): void {
+		static::factory()->post->create_many( 4 );
+		$ticketed = static::factory()->post->create_many( 3 );
+		foreach ( $ticketed as $id ) {
+			$this->create_tc_ticket( $id );
+		}
+
+		$query = tribe( 'tickets.query' );
+
+		$this->assertEquals( 3, $query->get_ticketed_count( 'post' ) );
+		$this->assertEquals( 4, $query->get_unticketed_count( 'post' ) );
+	}
+
+	/**
+	 * It should exclude auto-draft and trashed posts from the counts
+	 *
+	 * @test
+	 */
+	public function should_exclude_auto_draft_and_trashed_posts_from_counts(): void {
+		$ticketed = static::factory()->post->create_many( 2 );
+		foreach ( $ticketed as $id ) {
+			$this->create_tc_ticket( $id );
+		}
+		static::factory()->post->create_many( 3 );
+
+		// A trashed and an auto-draft post should not be counted as unticketed.
+		static::factory()->post->create( [ 'post_status' => 'trash' ] );
+		static::factory()->post->create( [ 'post_status' => 'auto-draft' ] );
+
+		$query = tribe( 'tickets.query' );
+
+		$this->assertEquals( 2, $query->get_ticketed_count( 'post' ) );
+		$this->assertEquals( 3, $query->get_unticketed_count( 'post' ) );
+	}
+
+	/**
+	 * It should honor the count query filters
+	 *
+	 * @test
+	 */
+	public function should_honor_the_count_query_filters(): void {
+		$query = tribe( 'tickets.query' );
+
+		add_filter( 'tec_tickets_query_ticketed_count_query', static fn() => 'SELECT 0' );
+		add_filter( 'tec_tickets_query_unticketed_count_query', static fn() => 'SELECT 0' );
+
+		$this->assertEquals( 0, $query->get_ticketed_count( 'post' ) );
+		$this->assertEquals( 0, $query->get_unticketed_count( 'post' ) );
+	}
 }
