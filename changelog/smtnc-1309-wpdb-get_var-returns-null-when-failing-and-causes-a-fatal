@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Resolved a fatal error on the Events backend list that causes a fatal error when accessing events.
+Prevent a fatal error on the Events admin list when the ticketed or unticketed post counts could not be calculated.
