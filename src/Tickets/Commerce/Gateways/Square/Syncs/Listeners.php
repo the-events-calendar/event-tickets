@@ -86,7 +86,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		add_action( 'save_post', [ $this, 'schedule_sync_on_save' ], 10, 2 );
+		add_action( 'tec_tickets_ticket_able_post_upserted', [ $this, 'schedule_sync_on_save' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
@@ -111,7 +111,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		remove_action( 'save_post', [ $this, 'schedule_sync_on_save' ] );
+		remove_action( 'tec_tickets_ticket_able_post_upserted', [ $this, 'schedule_sync_on_save' ] );
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'schedule_sync' ] );
 		remove_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ] );
 		remove_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ] );
