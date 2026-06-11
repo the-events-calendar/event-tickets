@@ -429,10 +429,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'conditionals' => 'is_admin',
 				'localize'     => (object) [
 					'name' => 'tribe_tickets_tpp_admin_strings',
-					'data' => [
-						'complete'   => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'complete' ),
-						'incomplete' => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'incomplete' ),
-					],
+					// Deferred to a callable so the labels are translated at enqueue time (after `init`),
+					// not while registering the asset during bootstrap, which loads the text domain too early.
+					'data' => static function () {
+						return [
+							'complete'   => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'complete' ),
+							'incomplete' => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'incomplete' ),
+						];
+					},
 				],
 			]
 		);
