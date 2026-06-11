@@ -17,7 +17,6 @@
  * @var string                        $default_module_class             The default module class.
  * @var string                        $ticket_end_date                  The ticket end date.
  * @var string                        $provider_class                   The provider class.
- * @var string                        $rsvp_form_save_text              The RSVP form save text.
  * @var string                        $rsvp_required_type_error_message Error message for required RSVP type.
  * @var string                        $show_not_going                   Whether to show the "Can't go" option.
  * @var string                        $ticket_start_date                The ticket start date.
@@ -25,8 +24,6 @@
  * @var string                        $ticket_end_date_aria_label       The ticket end date ARIA attribute.
  * @var string                        $ticket_end_date_help_text        The ticket end date help text.
  * @var string                        $ticket_end_time                  The ticket end time.
- * @var string                        $ticket_form_save_text            The ticket form save text.
- * @var string                        $ticket_name                      The ticket name.
  * @var string                        $ticket_start_date_aria_label     The ticket start date ARIA attribute.
  * @var string                        $ticket_start_time                The ticket start time.
  * @var string                        $timepicker_round                 The timepicker round.
@@ -174,29 +171,6 @@ defined( 'ABSPATH' ) || die();
 					 */
 					do_action( 'tec_event_tickets_rsvp_bottom', $post_id, $rsvp_id );
 					?>
-				</div>
-
-				<div class="tec-tickets-rsvp-buttons-right">
-					<?php
-					/**
-					 * Allows for the insertion of additional content into the ticket edit form bottom (links on right)
-					 * section
-					 *
-					 * @since TBD
-					 *
-					 * @param int Post ID
-					 * @param int Ticket ID
-					 */
-					do_action( 'tec_event_tickets_rsvp_bottom_right', $post_id, $rsvp_id );
-					?>
-
-					<input
-						type="button"
-						id="tc_ticket_form_save"
-						class="button-primary tribe-validation-submit"
-						name="tc_ticket_form_save"
-						value="<?php echo esc_attr_x( 'Save', 'Button text to save RSVP settings in admin panel.', 'event-tickets' ); ?>"
-					/>
 				</div>
 			</div>
 		</div>
