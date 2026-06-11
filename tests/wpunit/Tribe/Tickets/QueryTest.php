@@ -203,6 +203,32 @@ class QueryTest extends WPTestCase {
 	}
 
 	/**
+	 * It should return zero and not fatal when ticketed count query fails.
+	 *
+	 * @test
+	 */
+	public function should_return_zero_and_not_fatal_when_ticketed_count_query_fails(): void {
+		add_filter( 'tec_tickets_query_ticketed_count_query', static fn() => 'SELECT NULL' );
+
+		$result = tribe( 'tickets.query' )->get_ticketed_count( 'post' );
+
+		$this->assertSame( 0, $result );
+	}
+
+	/**
+	 * It should return zero and not fatal when unticketed count query fails.
+	 *
+	 * @test
+	 */
+	public function should_return_zero_and_not_fatal_when_unticketed_count_query_fails(): void {
+		add_filter( 'tec_tickets_query_unticketed_count_query', static fn() => 'SELECT NULL' );
+
+		$result = tribe( 'tickets.query' )->get_unticketed_count( 'post' );
+
+		$this->assertSame( 0, $result );
+	}
+
+	/**
 	 * It should correctly restrict by ticketed status
 	 *
 	 * @test
