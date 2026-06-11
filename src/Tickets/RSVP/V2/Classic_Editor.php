@@ -162,7 +162,7 @@ class Classic_Editor {
 			'ticket_description' => '',
 			'ticket_price'       => 0,
 			'ticket_type'        => Constants::TC_RSVP_TYPE,
-			'ticket_provider'    => sanitize_text_field( $post_data['ticket_provider'] ?? Module::class ),
+			'ticket_provider'    => Module::class,
 			'show_not_going'     => isset( $post_data['show_not_going'] ) ? tribe_is_truthy( $post_data['show_not_going'] ) : false,
 			'tribe-ticket'       => $tribe_ticket,
 		];
