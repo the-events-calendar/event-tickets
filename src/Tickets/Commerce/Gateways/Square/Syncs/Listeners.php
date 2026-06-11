@@ -92,7 +92,7 @@ class Listeners extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_start_date_trigger', [ $this, 'schedule_sync_on_date_start' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_end_date_trigger', [ $this, 'schedule_sync_on_date_end' ], 10, 4 );
 		add_action( 'tec_tickets_ticket_able_post_deleted', [ $this, 'schedule_deletion_on_ticket_able_deleted' ] );
-		add_action( 'tec_tickets_ticket_deleted', [ $this, 'schedule_deletion_on_ticket_deleted' ] );
+		add_action( 'tec_tickets_ticket_deleted', [ $this, 'schedule_deletion_on_ticket_deleted' ], 10, 4 );
 		add_action( 'tec_tickets_commerce_square_ticket_out_of_sync', [ $this, 'schedule_ticket_sync_on_out_of_sync' ], 10, 3 );
 		add_action( 'tec_tickets_ticket_stock_changed', [ $this, 'schedule_ticket_sync_on_stock_changed' ] );
 		add_action( 'tec_tickets_commerce_square_merchant_disconnected', [ $this, 'unsync' ] );
