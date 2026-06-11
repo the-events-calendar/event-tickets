@@ -309,7 +309,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		if ( empty( Sync_Controller::get_sync_able_tickets_of_event( $post_id ) ) ) {
+		if ( empty( tribe( Ticket_Data::class )->get_sync_able_tickets_of_event( $post_id ) ) ) {
 			return;
 		}
 
@@ -373,7 +373,7 @@ class Listeners extends Controller_Contract {
 			return;
 		}
 
-		$syncable_tickets = Sync_Controller::get_sync_able_tickets_of_event( $parent_id );
+		$syncable_tickets = tribe( Ticket_Data::class )->get_sync_able_tickets_of_event( $parent_id );
 
 		if ( count( $syncable_tickets ) > 1 ) {
 			// There are more sync-able tickets for this event, we only need to delete the ticket from Square.

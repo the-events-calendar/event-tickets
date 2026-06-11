@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
-use TEC\Tickets\Commerce\Ticket as Tickets_Data;
+use TEC\Tickets\Commerce\Ticket as Ticket_Data;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\NotSyncableItemException;
 
@@ -180,7 +180,7 @@ class Inventory_Sync {
 	 */
 	public function sync_event( int $event_id, bool $execute = true, array $tickets = [] ): array {
 		if ( empty( $tickets ) ) {
-			$tickets = Sync_Controller::get_sync_able_tickets_of_event( $event_id );
+			$tickets = tribe( Ticket_Data::class )->get_sync_able_tickets_of_event( $event_id );
 		}
 
 		if ( ! $execute ) {
@@ -204,7 +204,7 @@ class Inventory_Sync {
 	 * @return void
 	 */
 	public function sync_ticket( int $ticket_id, int $square_quantity, string $square_state ): void {
-		$ticket = tribe( Tickets_Data::class )->load_ticket_object( $ticket_id );
+		$ticket = tribe( Ticket_Data::class )->load_ticket_object( $ticket_id );
 
 		if ( ! $ticket instanceof Ticket_Object ) {
 			return;
