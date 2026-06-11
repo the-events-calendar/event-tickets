@@ -210,7 +210,7 @@ class Controller extends Controller_Contract {
 	 * @return array The syncable tickets.
 	 */
 	public static function get_sync_able_tickets_of_event( int $event_id ): array {
-		_deprecated_function( __METHOD__, 'TBD', Ticket_Data::class . '::get_sync_able_tickets_of_event' );
+		_deprecated_function( __METHOD__, 'TBD', esc_html( Ticket_Data::class . '::get_sync_able_tickets_of_event' ) );
 		$ticket_data = tribe( Ticket_Data::class );
 		return $ticket_data->get_sync_able_tickets_of_event( $event_id );
 	}
