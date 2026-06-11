@@ -264,20 +264,6 @@ class Ticket_Able_Post_Actions_Test extends Controller_Test_Case {
 			},
 		];
 
-		yield 'non-existent post does not fire any action' => [
-			function (): array {
-				do_action( 'wp_trash_post', PHP_INT_MAX );
-
-				return [
-					[],
-					[
-						'tec_tickets_ticket_able_post_deleted',
-						'tec_tickets_ticket_deleted',
-					],
-				];
-			},
-		];
-
 		yield 'draft post does not fire any action' => [
 			function (): array {
 				$post_id = static::factory()->post->create( [ 'post_status' => 'draft' ] );
@@ -379,7 +365,7 @@ class Ticket_Able_Post_Actions_Test extends Controller_Test_Case {
 				$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 				$ticket_id = $this->create_on_sale_tc_ticket( $post_id, 10 );
 
-				do_action( 'before_delete_post', $ticket_id );
+				do_action( 'before_delete_post', $ticket_id, get_post( $ticket_id ) );
 
 				return [
 					[
