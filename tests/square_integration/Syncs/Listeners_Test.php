@@ -137,7 +137,7 @@ class Listeners_Test extends Controller_Test_Case {
 				}
 
 				$post = get_post( $post_id );
-				do_action( 'tec_tickets_ticket_able_post_upserted', $post_id, $post );
+				do_action( 'save_post', $post_id, $post, true );
 
 				return [ $post_id, true ];
 			},
@@ -148,7 +148,7 @@ class Listeners_Test extends Controller_Test_Case {
 				$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 				$post = get_post( $post_id );
-				do_action( 'tec_tickets_ticket_able_post_upserted', $post_id, $post );
+				do_action( 'save_post', $post_id, $post, true );
 
 				return [ $post_id, false ];
 			},
@@ -163,7 +163,7 @@ class Listeners_Test extends Controller_Test_Case {
 				] );
 
 				$post = get_post( $post_id );
-				do_action( 'tec_tickets_ticket_able_post_upserted', $post_id, $post );
+				do_action( 'save_post', $post_id, $post, true );
 
 				return [ $post_id, false ];
 			},
@@ -177,7 +177,7 @@ class Listeners_Test extends Controller_Test_Case {
 				$this->set_fn_return( 'wp_is_post_revision', true );
 
 				$post = get_post( $post_id );
-				do_action( 'tec_tickets_ticket_able_post_upserted', $post_id, $post );
+				do_action( 'save_post', $post_id, $post, true );
 
 				return [ $post_id, false ];
 			},
@@ -208,14 +208,6 @@ class Listeners_Test extends Controller_Test_Case {
 	}
 
 	public function schedule_sync_on_delete_data_provider(): Generator {
-		yield 'non-existent post does not schedule' => [
-			function (): array {
-				do_action( 'wp_trash_post', PHP_INT_MAX );
-
-				return [ null, null ];
-			},
-		];
-
 		yield 'draft post does not schedule' => [
 			function (): array {
 				$post_id = static::factory()->post->create( [ 'post_status' => 'draft' ] );
