@@ -88,6 +88,10 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 			data.capacity = parseInt( capacity, 10 );
 		}
 
+		if ( payload.iac ) {
+			data.iac = payload.iac;
+		}
+
 		// POST /tec/v1/tickets
 		const response = await apiFetch( {
 			path: config.ticketsEndpoint,
@@ -158,6 +162,10 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 		// Only include capacity if it's a positive number.
 		if ( hasCapacity ) {
 			data.capacity = parseInt( capacity, 10 );
+		}
+
+		if ( payload.iac ) {
+			data.iac = payload.iac;
 		}
 
 		// PUT /tec/v1/tickets/{id}
@@ -269,6 +277,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 			dispatch( actions.setRSVPGoingCount( parseInt( rsvp.going_count || rsvp.sold || 0, 10 ) ) );
 			dispatch( actions.setRSVPNotGoingCount( parseInt( rsvp.not_going_count || 0, 10 ) ) );
 			dispatch( actions.setRSVPHasAttendeeInfoFields( rsvp.has_attendee_info_fields || false ) );
+			dispatch( actions.setRSVPIAC( rsvp.iac || 'none' ) );
 
 			dispatch(
 				actions.setRSVPDetails( {

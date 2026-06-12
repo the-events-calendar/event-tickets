@@ -18,6 +18,7 @@ export const DEFAULT_STATE = {
 	goingCount: 0,
 	notGoingCount: 0,
 	hasAttendeeInfoFields: false,
+	iac: 'none',
 	details: DETAILS_DEFAULT_STATE,
 	tempDetails: DETAILS_DEFAULT_STATE,
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
@@ -86,6 +87,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				hasDurationError: action.payload.hasDurationError,
+			};
+		case types.SET_RSVP_IAC:
+			return {
+				...state,
+				iac: action.payload.iac,
 			};
 		case types.SET_RSVP_TITLE:
 		case types.SET_RSVP_DESCRIPTION:

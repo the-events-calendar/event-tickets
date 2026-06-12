@@ -64,6 +64,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
 		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
+		iac: selectors.getRSVPIAC( state ),
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {
