@@ -323,7 +323,7 @@ class Metabox_Test extends WPTestCase {
 		$output = $this->capture_responses_info( $post_id, Constants::TC_RSVP_TYPE, $rsvp_id );
 
 		$this->assertStringContainsString( 'tec-tickets-rsvp-responses-info__wrap', $output );
-		$this->assertMatchesRegularExpression( '/tec-tickets-rsvp-total-count">\s*3\s*</', $output );
+		$this->assertRegExp( '/tec-tickets-rsvp-total-count">\s*3\s*</', $output );
 		$this->assertStringContainsString( 'View Attendees', $output );
 		// "Not going" tooltip stays hidden unless show_not_going is enabled.
 		$this->assertStringNotContainsString( 'dashicons-info', $output );
