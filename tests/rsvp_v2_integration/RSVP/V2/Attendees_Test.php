@@ -233,4 +233,130 @@ class Attendees_Test extends WPTestCase {
 
 		$this->assertSame( $pre_filtered_value, $result );
 	}
+
+	/**
+	 * Creates a TC RSVP attendee and returns an attendees-table row item pointing at it.
+	 *
+	 * @param string $rsvp_status The RSVP status meta to stamp ('yes' or 'no').
+	 * @param string $id_key      Which row key carries the attendee ID ('attendee_id' or 'ID').
+	 *
+	 * @return array<string,mixed> The row item.
+	 */
+	private function make_rsvp_item( string $rsvp_status, string $id_key = 'attendee_id' ): array {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$attendee_id = 'no' === $rsvp_status
+			? $this->create_not_going_tc_rsvp_attendees( 1, $ticket_id, $post_id )[0]
+			: $this->create_going_tc_rsvp_attendees( 1, $ticket_id, $post_id )[0];
+
+		return [
+			'ticket_type' => Constants::TC_RSVP_TYPE,
+			$id_key       => $attendee_id,
+		];
+	}
+
+	public function test_modify_status_display_returns_label_unchanged_for_non_rsvp_item(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+
+		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
+	}
+
+	public function test_modify_status_display_returns_label_unchanged_without_attendee_id(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = [ 'ticket_type' => Constants::TC_RSVP_TYPE ];
+
+		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
+	}
+
+	public function test_modify_status_display_shows_going_label(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'yes' );
+
+		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
+
+		$this->assertStringContainsString( 'Going', $output );
+		$this->assertStringNotContainsString( 'Not Going', $output );
+		$this->assertStringContainsString( 'tec-tickets__admin-table-attendees-order-status--going', $output );
+	}
+
+	public function test_modify_status_display_shows_not_going_label(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'no' );
+
+		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
+
+		$this->assertStringContainsString( 'Not Going', $output );
+		$this->assertStringContainsString( 'tec-tickets__admin-table-attendees-order-status--not-going', $output );
+	}
+
+	public function test_modify_status_display_resolves_attendee_from_id_key(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'yes', 'ID' );
+
+		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
+
+		$this->assertStringContainsString( 'Going', $output );
+	}
+
+	public function test_modify_checkin_display_keeps_content_for_non_rsvp_item(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+
+		$this->assertSame( 'CONTENT', $attendees->modify_checkin_display( 'CONTENT', $item ) );
+	}
+
+	public function test_modify_checkin_display_keeps_content_for_going_attendee(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'yes' );
+
+		$this->assertSame( 'CONTENT', $attendees->modify_checkin_display( 'CONTENT', $item ) );
+	}
+
+	public function test_modify_checkin_display_hides_content_for_not_going_attendee(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'no' );
+
+		$this->assertSame( '', $attendees->modify_checkin_display( 'CONTENT', $item ) );
+	}
+
+	public function test_modify_row_actions_keeps_checkin_for_going_attendee(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'yes' );
+		$actions   = [
+			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
+			'delete'          => '<a class="delete">Delete</a>',
+		];
+
+		$result = $attendees->modify_row_actions( $actions, $item );
+
+		$this->assertArrayHasKey( 'tickets_checkin', $result );
+		$this->assertArrayHasKey( 'delete', $result );
+	}
+
+	public function test_modify_row_actions_removes_checkin_for_not_going_attendee(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = $this->make_rsvp_item( 'no' );
+		$actions   = [
+			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
+			'delete'          => '<a class="delete">Delete</a>',
+		];
+
+		$result = $attendees->modify_row_actions( $actions, $item );
+
+		$this->assertArrayNotHasKey( 'tickets_checkin', $result );
+		$this->assertArrayHasKey( 'delete', $result );
+	}
+
+	public function test_modify_row_actions_leaves_actions_unchanged_for_non_rsvp_item(): void {
+		$attendees = tribe( Attendees::class );
+		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+		$actions   = [
+			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
+			'delete'          => '<a class="delete">Delete</a>',
+		];
+
+		$this->assertSame( $actions, $attendees->modify_row_actions( $actions, $item ) );
+	}
 }
