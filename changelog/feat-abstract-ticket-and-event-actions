@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Absrtact ticket-able post type changed action, ticket-able post type deleted and ticket deleted actions. [SOFT-3451]
