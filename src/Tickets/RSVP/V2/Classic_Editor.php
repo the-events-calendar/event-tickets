@@ -11,7 +11,7 @@ namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Event;
-use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\RSVP\V2\Data_Transfer_Objects\Classic_Editor_Post_Data;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -22,6 +22,9 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @since TBD
  *
  * @package TEC\Tickets\RSVP\V2
+ *
+ * @phpstan-import-type Post_Data from Classic_Editor_Post_Data
+ * @phpstan-import-type Ticket_Add_Data from Classic_Editor_Post_Data
  */
 class Classic_Editor {
 	/**
@@ -97,7 +100,8 @@ class Classic_Editor {
 	 * @since TBD
 	 *
 	 * @param int                 $post_id   The post ID being saved.
-	 * @param array<string,mixed> $post_data The metabox POST data.
+	 * @param array<string,mixed> $post_data The unslashed $_POST data from the metabox.
+	 * @phpstan-param Post_Data   $post_data
 	 *
 	 * @return void
 	 */
@@ -110,16 +114,16 @@ class Classic_Editor {
 			return;
 		}
 
-		$data = $this->map_post_to_ticket_data( $post_data );
+		$data = Classic_Editor_Post_Data::from_post_data( $post_data )->to_ticket_add_data();
 
 		/**
 		 * Filters the ticket data before saving TC-RSVP from the Classic Editor post save.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $data    The mapped ticket data for ticket_add().
-		 * @param int   $post_id The parent post ID.
-		 * @param array $post_data The raw POST data from the metabox.
+		 * @param Ticket_Add_Data $data      The serialized ticket data for ticket_add().
+		 * @param int             $post_id   The parent post ID.
+		 * @param Post_Data       $post_data The raw POST data from the metabox.
 		 */
 		$data = apply_filters( 'tec_tickets_rsvp_v2_classic_save_data', $data, $post_id, $post_data );
 
@@ -132,57 +136,5 @@ class Classic_Editor {
 		update_post_meta( $event_id, $tickets_handler->key_provider_field, Module::class );
 
 		Module::get_instance()->ticket_add( $event_id, $data );
-	}
-
-	/**
-	 * Maps Classic Editor metabox POST fields to ticket_add() data.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $post_data The POST data from the metabox.
-	 *
-	 * @return array<string,mixed> The mapped ticket data.
-	 */
-	private function map_post_to_ticket_data( array $post_data ): array {
-		$rsvp_id = absint( $post_data['rsvp_id'] ?? 0 );
-		$limit   = trim( (string) ( $post_data['rsvp_limit'] ?? '' ) );
-
-		$tribe_ticket = [];
-
-		if ( '' !== $limit && (int) $limit > 0 ) {
-			$tribe_ticket['mode']     = Global_Stock::OWN_STOCK_MODE;
-			$tribe_ticket['capacity'] = (int) $limit;
-		} else {
-			$tribe_ticket['mode'] = '';
-		}
-
-		$data = [
-			'ticket_id'          => $rsvp_id ?: null,
-			'ticket_name'        => 'RSVP',
-			'ticket_description' => '',
-			'ticket_price'       => 0,
-			'ticket_type'        => Constants::TC_RSVP_TYPE,
-			'ticket_provider'    => Module::class,
-			'show_not_going'     => isset( $post_data['show_not_going'] ) ? tribe_is_truthy( $post_data['show_not_going'] ) : false,
-			'tribe-ticket'       => $tribe_ticket,
-		];
-
-		if ( ! empty( $post_data['rsvp_start_date'] ) ) {
-			$data['ticket_start_date'] = sanitize_text_field( $post_data['rsvp_start_date'] );
-		}
-
-		if ( ! empty( $post_data['rsvp_start_time'] ) ) {
-			$data['ticket_start_time'] = sanitize_text_field( $post_data['rsvp_start_time'] );
-		}
-
-		if ( ! empty( $post_data['rsvp_end_date'] ) ) {
-			$data['ticket_end_date'] = sanitize_text_field( $post_data['rsvp_end_date'] );
-		}
-
-		if ( ! empty( $post_data['rsvp_end_time'] ) ) {
-			$data['ticket_end_time'] = sanitize_text_field( $post_data['rsvp_end_time'] );
-		}
-
-		return $data;
 	}
 }
