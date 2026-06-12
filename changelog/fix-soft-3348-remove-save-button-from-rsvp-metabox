@@ -1,4 +1,4 @@
-Significance: minor
-Type: feat
+Significance: patch
+Type: tweak
 
-tec_tickets_rsvp_v2_classic_save_data
+Save RSVP settings with post save in Classic Editor for users using RSVP V2. [SOFT-3348]
