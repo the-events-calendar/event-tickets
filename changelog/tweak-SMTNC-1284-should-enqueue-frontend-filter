@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Add the `tribe_tickets_assets_should_enqueue_frontend` filter to allow controlling whether the front-end ticket styles and scripts are enqueued for the current request. [SMTNC-1284]
