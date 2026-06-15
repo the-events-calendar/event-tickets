@@ -7,7 +7,6 @@ use WP_Error;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
-use TEC\Tickets\Commerce\Reports\Attendees as Attendees_Reports;
 
 /**
  * Class Tickets Provider class for Tickets Commerce

@@ -755,6 +755,11 @@ class Attendee {
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
+
+		if ( ! $order ) {
+			return false;
+		}
+
 		$statuses = array_unique(
 			[
 				tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(),
@@ -809,7 +814,7 @@ class Attendee {
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return [];
 		}
-		
+
 		// Check cache.
 		$cache                  = tribe_cache();
 		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );

@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Requests;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket_Data;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 
 /**
@@ -191,7 +192,7 @@ class Items_Sync {
 	 * @return array The tickets.
 	 */
 	public function sync_event( int $event_id, bool $execute = true ): array {
-		$tickets = Sync_Controller::get_sync_able_tickets_of_event( $event_id );
+		$tickets = tribe( Commerce_Ticket_Data::class )->get_sync_able_tickets_of_event( $event_id );
 
 		if ( ! $execute ) {
 			return $tickets;
