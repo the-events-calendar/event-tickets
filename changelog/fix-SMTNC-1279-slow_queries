@@ -1,4 +1,4 @@
 Significance: patch
 Type: performance
 
-Improve the performance of the Ticketed and Unticketed filter counts on admin post lists, which could take tens of seconds to load on sites with a large number of posts.
+Improve the performance of the Ticketed and Unticketed filter counts on admin post lists. [SMTNC-1279]
