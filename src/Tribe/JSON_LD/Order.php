@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use TEC\Tickets\Commerce\Settings;
+
 /**
  * A JSON-LD class to hook and change how Orders work on Events
  * @todo rework this class to make it standalone from The Events Calendar
@@ -186,6 +188,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	 * Return the price currency used on the Ticket
 	 *
 	 * @since 4.7.1
+	 * @since 5.28.4 Use the Tickets Commerce currency setting as the source of truth.
 	 *
 	 * @param object  $ticket
 	 *
@@ -193,9 +196,10 @@ class Tribe__Tickets__JSON_LD__Order {
 	 */
 	public function get_price_currency( $ticket ) {
 
-		$currency = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
+		$currency = tribe_get_option( Settings::$option_currency_code );
 
-		if ( class_exists( $ticket->provider_class ) ) {
+
+		if ( class_exists( $ticket->provider_class ) && empty( $currency ) ) {
 			$instance = call_user_func( array( $ticket->provider_class, 'get_instance' ) ) ;
 			$currency = $instance->get_currency();
 		}

@@ -88,6 +88,18 @@ class Page extends Abstract_Admin_Page {
 	const STATUS_KEY = 'status-filter';
 
 	/**
+	 * Registers the All Tickets admin page and captures the real (locale-dependent) hook suffix,
+	 * which the hardcoded default cannot represent when the menu title is translated.
+	 *
+	 * @since 5.28.4
+	 */
+	public function admin_page() {
+		parent::admin_page();
+
+		static::$hook_suffix = get_plugin_page_hookname( static::get_page_slug(), static::$parent_slug );
+	}
+
+	/**
 	 * Get Provider information.
 	 *
 	 * @since 5.14.0

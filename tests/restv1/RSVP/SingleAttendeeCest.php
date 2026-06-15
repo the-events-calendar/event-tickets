@@ -94,7 +94,11 @@ class SingleAttendeeCest extends BaseRestCest {
 		] );
 
 		// Simulate the cookie WordPress sets after the correct password is submitted.
-		$I->setCookie( 'wp-postpass_' . COOKIEHASH, wp_hash_password( 'secret' ) );
+		// Post passwords use phpass ($P$B) via post_password_required(), independent of
+		// wp_hash_password() which switched to bcrypt in WP 6.8. Mirror WP's postpass handler exactly.
+		require_once ABSPATH . WPINC . '/class-phpass.php';
+		$hasher = new \PasswordHash( 8, true );
+		$I->setCookie( 'wp-postpass_' . COOKIEHASH, $hasher->HashPassword( 'secret' ) );
 		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
 
 		$I->seeResponseCodeIs( 200 );

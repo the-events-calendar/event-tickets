@@ -158,6 +158,35 @@ class Settings {
 	}
 
 	/**
+	 * Adds the canonical English-prefixed body class to the Tickets admin pages so locale-independent
+	 * CSS selectors keep matching when the menu title is translated.
+	 *
+	 * The page is detected via its URL slug, which is locale-independent, rather than the translated screen id.
+	 *
+	 * @since 5.28.4
+	 *
+	 * @param string $classes Space-separated list of admin body classes.
+	 *
+	 * @return string The filtered list of admin body classes.
+	 */
+	public function filter_admin_body_class( $classes ): string {
+
+		$admin_page = tribe_get_request_var( 'page' );
+
+		if ( empty( $admin_page ) || 0 !== strpos( $admin_page, static::$parent_slug ) ) {
+			return $classes;
+		}
+
+		$canonical = 'tickets_page_' . $admin_page;
+
+		if ( in_array( $canonical, preg_split( '/\s+/', trim( $classes ) ), true ) ) {
+			return $classes;
+		}
+
+		return trim( $classes . ' ' . $canonical );
+	}
+
+	/**
 	 * Check if the current page is on a specific tab for the Tickets settings.
 	 *
 	 * @since 5.5.9
