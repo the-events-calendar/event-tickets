@@ -77,7 +77,14 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @since 5.24.0
 	 */
 	public function __construct() {
-		add_action( 'load-' . self::HELP_HUB_PAGE_ID, [ $this, 'initialize' ] );
+		add_action(
+			'admin_init',
+			function () {
+				$page_hook = $this->get_help_hub_id();
+
+				add_action( 'load-' . $page_hook, [ $this, 'initialize' ] );
+			}
+		);
 		add_action( 'tec_help_hub_before_iframe_render', [ $this, 'register_with_hub' ] );
 	}
 
@@ -442,7 +449,7 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	 * @return array<string> Modified array of help pages.
 	 */
 	public function add_help_hub_pages( $help_pages ): array {
-		$help_pages[] = self::HELP_HUB_PAGE_ID;
+		$help_pages[] = $this->get_help_hub_id();
 		return $help_pages;
 	}
 
@@ -465,10 +472,22 @@ class ET_Hub_Resource_Data implements Help_Hub_Data_Interface {
 	/**
 	 * Get the Help Hub page ID.
 	 *
+	 * @since 5.28.4 Updated to account for translations.
+	 *
 	 * @return string
 	 */
 	public function get_help_hub_id(): string {
-		return self::HELP_HUB_PAGE_ID;
+		if ( ! did_action( 'admin_init' ) ) {
+			return self::HELP_HUB_PAGE_ID;
+		}
+
+		$page_hook = get_plugin_page_hook( self::HELP_HUB_SLUG, 'admin.php' );
+
+		if ( ! $page_hook || ! is_string( $page_hook ) ) {
+			return self::HELP_HUB_PAGE_ID;
+		}
+
+		return $page_hook;
 	}
 
 	/**

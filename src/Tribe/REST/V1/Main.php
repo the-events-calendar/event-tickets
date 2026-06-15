@@ -182,6 +182,35 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 			$args['has_rsvp_or_tickets'] = tribe_is_truthy( $request['ticketed'] );
 		}
 
+		/**
+		 * Whether the REST events archive query should include events marked
+		 * "Hide From Event Listings". Defaults to true for privileged requests
+		 * (e.g. the Event Tickets App) so on-site managers can still see and
+		 * check in hidden events, while the public website and unauthenticated
+		 * REST consumers keep them hidden.
+		 *
+		 * @since 5.28.4
+		 *
+		 * @param bool            $include_hidden Whether to include hidden-from-listings events.
+		 * @param array           $args           The current query args.
+		 * @param WP_REST_Request $request        The request object.
+		 
+		 * @return bool true to include hidden events, false to exclude.
+		 */
+		$include_hidden = apply_filters(
+			'tec_tickets_rest_events_archive_include_hidden_from_listings',
+			$this->request_has_manage_access(),
+			$args,
+			$request
+		);
+
+		if ( $include_hidden ) {
+			// In Tribe__Events__Query::getEvents(), hide_upcoming=false sets the internal
+			// $hidden flag to null, which skips the hidden-from-upcoming exclusion and
+			// returns hidden + visible events alike.
+			$args['hide_upcoming'] = false;
+		}
+
 		return $args;
 	}
 
