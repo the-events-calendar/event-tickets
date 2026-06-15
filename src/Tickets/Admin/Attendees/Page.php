@@ -39,6 +39,10 @@ class Page {
 	/**
 	 * Event Tickets Attendees page hook suffix.
 	 *
+	 * This default reflects an English install. WordPress derives the real hook
+	 * suffix from the (translatable) parent menu title, so the actual value is
+	 * captured from the page registration in add_tec_tickets_attendees_page().
+	 *
 	 * @var string
 	 */
 	public static $hook_suffix = 'tickets_page_tec-tickets-attendees';
@@ -106,6 +110,20 @@ class Page {
 				],
 			]
 		);
+
+		// Bail if the page was not registered (e.g. the user lacks the capability).
+		if ( empty( $attendees_page ) ) {
+			return;
+		}
+
+		/*
+		 * Capture the hook suffix WordPress actually generated for this page and
+		 * use it to set up the attendees screen. The suffix is derived from the
+		 * translatable parent menu title, so it cannot be reliably hardcoded.
+		 */
+		static::$hook_suffix = $attendees_page;
+
+		add_action( "load-{$attendees_page}", [ tribe( 'tickets.attendees' ), 'screen_setup' ] );
 	}
 
 	/**

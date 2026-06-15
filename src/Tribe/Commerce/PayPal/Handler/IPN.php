@@ -138,13 +138,21 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 		             && 'yes' === tribe_get_option( 'ticket-paypal-ipn-enabled', 'no' )
 		             && 'yes' === tribe_get_option( 'ticket-paypal-ipn-address-set', 'no' );
 
+		/*
+		 * Only translate the labels when a label is actually requested. Resolving them
+		 * unconditionally loads the `event-tickets` text domain too early (before `init`)
+		 * when this runs during bootstrap via is_active(), which WordPress 6.7+ flags via
+		 * just-in-time loading. The slug callers don't need the translated labels.
+		 */
+		$translate_label = 'label' === $field;
+
 		$map = array(
 			'complete'   => array(
-				'label' => _x( 'complete', 'a PayPal configuration status', 'event-tickets' ),
+				'label' => $translate_label ? _x( 'complete', 'a PayPal configuration status', 'event-tickets' ) : 'complete',
 				'slug'  => 'complete',
 			),
 			'incomplete' => array(
-				'label' => _x( 'incomplete', 'a PayPal configuration status', 'event-tickets' ),
+				'label' => $translate_label ? _x( 'incomplete', 'a PayPal configuration status', 'event-tickets' ) : 'incomplete',
 				'slug'  => 'incomplete',
 			),
 		);

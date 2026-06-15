@@ -229,8 +229,44 @@ class Tribe__Tickets__Admin__Notices {
 			// Wrap in <p> tag.
 			$message = sprintf( '<p>%s</p>', $message );
 
-			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
+			tribe_notice(
+				"event-tickets-plus-missing-{$provider}-support",
+				$message,
+				'dismiss=1&type=warning',
+				[ $this, 'is_plus_commerce_notice_context' ]
+			);
 		}
+	}
+
+	/**
+	 * Whether the current admin screen is one where the ET+ commerce upsell notice should appear.
+	 *
+	 * Runs at notice-display time (admin_notices), when `get_current_screen()` is guaranteed to be
+	 * resolved — unlike `admin_init`, where the screen may still be null.
+	 *
+	 * @since 5.28.4
+	 *
+	 * @return bool
+	 */
+	public function is_plus_commerce_notice_context(): bool {
+		if ( ! function_exists( '\get_current_screen' ) ) {
+			return false;
+		}
+
+		$screen = \get_current_screen();
+		if ( ! $screen ) {
+			return false;
+		}
+
+		$is_tickets_screen     = 0 === strpos( (string) $screen->id, 'tickets_page_' );
+		$is_plugins_screen     = in_array( $screen->id, [ 'plugins', 'plugins-network' ], true );
+		$is_tec_submenu_screen = 0 === strpos( (string) $screen->id, 'tribe_events_page_' );
+		$is_event_post_screen  = 'tribe_events' === ( $screen->post_type ?? '' );
+
+		return $is_tickets_screen
+			|| $is_plugins_screen
+			|| $is_tec_submenu_screen
+			|| $is_event_post_screen;
 	}
 
 	/**

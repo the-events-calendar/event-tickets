@@ -1,0 +1,75 @@
+<?php
+
+namespace Tribe\Tickets\JSON_LD;
+
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Settings;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as TC_Ticket_Maker;
+use Tribe__Tickets__JSON_LD__Order as JSON_LD_Order;
+
+class OrderTest extends \Codeception\TestCase\WPTestCase {
+
+	use TC_Ticket_Maker;
+
+	/**
+	 * @var int
+	 */
+	protected $post_id;
+
+	/**
+	 * @var \Tribe__Tickets__Ticket_Object
+	 */
+	protected $ticket;
+
+	public function setUp() {
+		parent::setUp();
+
+		$this->post_id   = $this->factory()->post->create();
+		$ticket_id       = $this->create_tc_ticket( $this->post_id, 10 );
+		$this->ticket    = tribe( Module::class )->get_ticket( $this->post_id, $ticket_id );
+	}
+
+	public function tearDown() {
+		tribe_update_option( Settings::$option_currency_code, 'USD' );
+
+		parent::tearDown();
+	}
+
+	/**
+	 * @return JSON_LD_Order
+	 */
+	private function make_instance() {
+		return JSON_LD_Order::instance();
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_be_instantiatable() {
+		$this->assertInstanceOf( JSON_LD_Order::class, $this->make_instance() );
+	}
+
+	/**
+	 * @test
+	 * it should use the currency configured in Tickets Commerce settings
+	 */
+	public function it_should_use_the_configured_tickets_commerce_currency() {
+		tribe_update_option( Settings::$option_currency_code, 'EUR' );
+
+		$currency = $this->make_instance()->get_price_currency( $this->ticket );
+
+		$this->assertEquals( 'EUR', $currency, 'The schema currency should follow the Tickets Commerce currency setting.' );
+	}
+
+	/**
+	 * @test
+	 * it should fall back to the provider currency when the option is empty
+	 */
+	public function it_should_fall_back_to_the_provider_currency_when_option_is_empty() {
+		tribe_update_option( Settings::$option_currency_code, '' );
+
+		$currency = $this->make_instance()->get_price_currency( $this->ticket );
+
+		$this->assertEquals( $this->ticket->get_provider()->get_currency(), $currency );
+	}
+}
