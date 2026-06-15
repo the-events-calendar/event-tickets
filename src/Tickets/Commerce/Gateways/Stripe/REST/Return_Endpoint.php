@@ -49,14 +49,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		// Nonces are created as user 0 in Signup; verify the same way even when the
-		// admin returns with WordPress auth cookies on this REST callback.
-		$user_id = get_current_user_id();
-		wp_set_current_user( 0 );
-		$verified = wp_verify_nonce( $response->nonce, tribe( WhoDat::class )->get_state_nonce_action() );
-		wp_set_current_user( $user_id );
-
-		return $verified;
+		return wp_verify_nonce( $response->nonce, tribe( WhoDat::class )->get_state_nonce_action() );
 	}
 
 	/**

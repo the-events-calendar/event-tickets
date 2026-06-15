@@ -330,4 +330,60 @@ class Tickets_Test extends WPTestCase {
 			'sold_out() must return true when the RSVP is at capacity.'
 		);
 	}
+
+	/**
+	 * get_tickets() serves cached object instances keyed by get_tickets_cache_key(). Because
+	 * clear_ticket_cache_for_post() now builds its key from the same helper, clearing the cache must
+	 * force get_tickets() to rebuild — proving the writer and the invalidator agree on the key.
+	 *
+	 * @test
+	 * @covers \Tribe__Tickets__Tickets::clear_ticket_cache_for_post
+	 * @covers \Tribe__Tickets__Tickets::get_tickets_cache_key
+	 */
+	public function should_clear_the_get_tickets_cache_for_post(): void {
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2030-01-01 09:00:00',
+			'duration'   => 4 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$this->with_capacity( 10 );
+		$this->create_tc_ticket( $event_id, 1 );
+
+		$provider = tribe( Module::class );
+
+		// Prime the cache, then confirm a second read serves the same cached instances.
+		$first = $provider->get_tickets( $event_id );
+		$this->assertCount( 1, $first, 'The event should have exactly one ticket.' );
+		$this->assertSame(
+			$first[0],
+			$provider->get_tickets( $event_id )[0],
+			'get_tickets() should serve the same cached instance until invalidated.'
+		);
+
+		// Clear via the provider method, which builds its key from the same get_tickets_cache_key() helper.
+		$provider->clear_ticket_cache_for_post( $event_id );
+
+		$this->assertNotSame(
+			$first[0],
+			$provider->get_tickets( $event_id )[0],
+			'After clear_ticket_cache_for_post(), get_tickets() must rebuild fresh instances.'
+		);
+	}
+
+	/**
+	 * The cache key helper is the single source of truth for the get_tickets() cache key; this guards
+	 * the format so the various invalidation sites stay in sync with the value get_tickets() stores.
+	 *
+	 * @test
+	 * @covers \Tribe__Tickets__Tickets::get_tickets_cache_key
+	 */
+	public function should_build_a_stable_get_tickets_cache_key(): void {
+		$this->assertSame(
+			Tickets_Tickets::class . '::get_tickets-tribe-commerce-123',
+			Tickets_Tickets::get_tickets_cache_key( 'tribe-commerce', 123 ),
+			'The get_tickets cache key format must remain stable.'
+		);
+	}
 }
