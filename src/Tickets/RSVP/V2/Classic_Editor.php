@@ -83,10 +83,6 @@ class Classic_Editor {
 			return;
 		}
 
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return;
-		}
-
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$post_data = wp_unslash( $_POST );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
