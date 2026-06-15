@@ -342,6 +342,36 @@ class List_TableTest extends \Codeception\TestCase\WPTestCase {
 			yield "filter by discounted" => [ 'discounted' ];
 			yield "filter by all"        => [ 'all' ];
 	}
+
+	/**
+	 * Regression: tickets with no end date must not fatal in column_days_left().
+	 *
+	 * On PHP 8.3.9+ / 8.4, DateTime::diff() rejects null and throws TypeError. Before
+	 * the fix, end_date() returned null and triggered a fatal mid-row when the admin
+	 * list table rendered such a ticket.
+	 *
+	 * @see SMTNC-295
+	 */
+	public function test_column_days_left_returns_dash_when_ticket_has_no_end_date() {
+		$ticket = new \Tribe__Tickets__Ticket_Object();
+		// end_date intentionally left empty.
+
+		$this->assertSame( '-', $this->list_table->column_days_left( $ticket ) );
+	}
+
+	/**
+	 * Sanity check: tickets with a future end date still report numeric days remaining.
+	 */
+	public function test_column_days_left_returns_numeric_days_for_future_end_date() {
+		$ticket           = new \Tribe__Tickets__Ticket_Object();
+		$ticket->end_date = ( new \DateTime( '+15 days' ) )->format( 'Y-m-d' );
+
+		$output = $this->list_table->column_days_left( $ticket );
+
+		$this->assertNotSame( '-', $output );
+		$this->assertIsNumeric( $output );
+		$this->assertGreaterThan( 0, (int) $output );
+	}
 }
 
 
