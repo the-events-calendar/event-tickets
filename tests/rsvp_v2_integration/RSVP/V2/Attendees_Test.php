@@ -136,89 +136,104 @@ class Attendees_Test extends WPTestCase {
 		}
 	}
 
-	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_returns_args_unchanged_when_context_is_not_get_my_tickets_link_data(): void {
-		$post_id = static::factory()->post->create();
-		$this->create_tc_rsvp_ticket( $post_id );
+	/**
+	 * Each fixture returns [ $args, $post_id, $user_id, $context ]; the flag is whether the
+	 * RSVP-exclusion filter should be added for that combination.
+	 */
+	public static function exclude_rsvp_tickets_data_provider(): array {
+		return [
+			'unchanged for non-matching context' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$attendees = tribe( Attendees::class );
-		$args      = [ 'by' => [ 'event' => $post_id ] ];
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, 'other_context' ];
+				},
+				false,
+			],
 
-		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'other_context' );
+			'unchanged for null context' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$this->assertEquals( $args, $result );
-		$this->assertArrayNotHasKey( 'meta_not_equals', $result['by'] );
-	}
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, null ];
+				},
+				false,
+			],
 
-	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_returns_args_unchanged_when_context_is_null(): void {
-		$post_id = static::factory()->post->create();
-		$this->create_tc_rsvp_ticket( $post_id );
+			'adds filter for tc provider' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$attendees = tribe( Attendees::class );
-		$args      = [ 'by' => [ 'event' => $post_id ] ];
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, 'get_my_tickets_link_data' ];
+				},
+				true,
+			],
 
-		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, null );
+			'preserves existing args' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$this->assertEquals( $args, $result );
-		$this->assertArrayNotHasKey( 'meta_not_equals', $result['by'] );
-	}
+					return [
+						[ 'by' => [ 'event' => $post_id, 'status' => 'completed' ] ],
+						$post_id,
+						null,
+						'get_my_tickets_link_data',
+					];
+				},
+				true,
+			],
 
-	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_adds_meta_not_equals_filter_for_tc_provider(): void {
-		$post_id = static::factory()->post->create();
-		$this->create_tc_rsvp_ticket( $post_id );
+			'adds filter with user id' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$user_id = static::factory()->user->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$attendees = tribe( Attendees::class );
-		$args      = [ 'by' => [ 'event' => $post_id ] ];
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, $user_id, 'get_my_tickets_link_data' ];
+				},
+				true,
+			],
 
-		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'get_my_tickets_link_data' );
+			'adds filter for post without provider' => [
+				function () {
+					// No ticket created, so no provider. An empty provider means TC.
+					$post_id = static::factory()->post->create();
 
-		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
-		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
-	}
-
-	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_preserves_existing_args(): void {
-		$post_id = static::factory()->post->create();
-		$this->create_tc_rsvp_ticket( $post_id );
-
-		$attendees = tribe( Attendees::class );
-		$args      = [
-			'by' => [
-				'event'  => $post_id,
-				'status' => 'completed',
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, 'get_my_tickets_link_data' ];
+				},
+				true,
 			],
 		];
-
-		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'get_my_tickets_link_data' );
-
-		$this->assertEquals( $post_id, $result['by']['event'] );
-		$this->assertEquals( 'completed', $result['by']['status'] );
-		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
 	}
 
-	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_works_with_user_id(): void {
-		$post_id = static::factory()->post->create();
-		$user_id = static::factory()->user->create();
-		$this->create_tc_rsvp_ticket( $post_id );
+	/**
+	 * @dataProvider exclude_rsvp_tickets_data_provider
+	 */
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count( Closure $fixture, bool $adds_filter ): void {
+		[ $args, $post_id, $user_id, $context ] = Closure::bind( $fixture, $this, self::class )();
 
 		$attendees = tribe( Attendees::class );
-		$args      = [ 'by' => [ 'event' => $post_id ] ];
 
-		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, $user_id, 'get_my_tickets_link_data' );
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, $user_id, $context );
+
+		if ( ! $adds_filter ) {
+			$this->assertEquals( $args, $result );
+			$this->assertArrayNotHasKey( 'meta_not_equals', $result['by'] );
+
+			return;
+		}
 
 		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
 		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
-	}
 
-	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count_adds_filter_for_post_without_provider(): void {
-		$post_id = static::factory()->post->create();
-		// No ticket created, so no provider. An empty provider means TC.
-
-		$attendees = tribe( Attendees::class );
-		$args      = [ 'by' => [ 'event' => $post_id ] ];
-
-		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, null, 'get_my_tickets_link_data' );
-
-		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
-		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
+		// The original `by` args are preserved alongside the added filter.
+		foreach ( $args['by'] as $key => $value ) {
+			$this->assertEquals( $value, $result['by'][ $key ] );
+		}
 	}
 
 	public function test_get_rsvp_attendees_by_id_bails_when_attendees_already_filtered(): void {
@@ -256,74 +271,162 @@ class Attendees_Test extends WPTestCase {
 		];
 	}
 
-	public function test_modify_status_display_returns_label_unchanged_for_non_rsvp_item(): void {
+	/**
+	 * Each fixture returns an attendees-table row item for which the status label should be
+	 * returned unchanged (non-RSVP rows, or RSVP rows that carry no attendee ID).
+	 */
+	public static function modify_status_display_unchanged_data_provider(): array {
+		return [
+			'non-rsvp item' => [
+				function () {
+					return [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+				},
+			],
+
+			'rsvp item without attendee id' => [
+				function () {
+					return [ 'ticket_type' => Constants::TC_RSVP_TYPE ];
+				},
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider modify_status_display_unchanged_data_provider
+	 */
+	public function test_modify_status_display_returns_label_unchanged( Closure $fixture ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
 
 		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
 	}
 
-	public function test_modify_status_display_returns_label_unchanged_without_attendee_id(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => Constants::TC_RSVP_TYPE ];
+	/**
+	 * Each fixture returns an RSVP row item; the test asserts the rendered label, its CSS class
+	 * and, where relevant, a label that must NOT appear.
+	 */
+	public static function modify_status_display_label_data_provider(): array {
+		return [
+			'going label' => [
+				function () {
+					return $this->make_rsvp_item( 'yes' );
+				},
+				'Going',
+				'tec-tickets__admin-table-attendees-order-status--going',
+				'Not Going',
+			],
 
-		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
+			'not going label' => [
+				function () {
+					return $this->make_rsvp_item( 'no' );
+				},
+				'Not Going',
+				'tec-tickets__admin-table-attendees-order-status--not-going',
+				null,
+			],
+
+			'resolves attendee from id key' => [
+				function () {
+					return $this->make_rsvp_item( 'yes', 'ID' );
+				},
+				'Going',
+				'tec-tickets__admin-table-attendees-order-status--going',
+				'Not Going',
+			],
+		];
 	}
 
-	public function test_modify_status_display_shows_going_label(): void {
+	/**
+	 * @dataProvider modify_status_display_label_data_provider
+	 */
+	public function test_modify_status_display_shows_label( Closure $fixture, string $expected_label, string $expected_class, ?string $not_expected ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes' );
 
 		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
 
-		$this->assertStringContainsString( 'Going', $output );
-		$this->assertStringNotContainsString( 'Not Going', $output );
-		$this->assertStringContainsString( 'tec-tickets__admin-table-attendees-order-status--going', $output );
+		$this->assertStringContainsString( $expected_label, $output );
+		$this->assertStringContainsString( $expected_class, $output );
+
+		if ( null !== $not_expected ) {
+			$this->assertStringNotContainsString( $not_expected, $output );
+		}
 	}
 
-	public function test_modify_status_display_shows_not_going_label(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'no' );
+	/**
+	 * Each fixture returns a row item; the expected value is what the check-in cell should render
+	 * for it (content is hidden only for "not going" RSVP attendees).
+	 */
+	public static function modify_checkin_display_data_provider(): array {
+		return [
+			'non-rsvp item keeps content' => [
+				function () {
+					return [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+				},
+				'CONTENT',
+			],
 
-		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
+			'going attendee keeps content' => [
+				function () {
+					return $this->make_rsvp_item( 'yes' );
+				},
+				'CONTENT',
+			],
 
-		$this->assertStringContainsString( 'Not Going', $output );
-		$this->assertStringContainsString( 'tec-tickets__admin-table-attendees-order-status--not-going', $output );
+			'not going attendee hides content' => [
+				function () {
+					return $this->make_rsvp_item( 'no' );
+				},
+				'',
+			],
+		];
 	}
 
-	public function test_modify_status_display_resolves_attendee_from_id_key(): void {
+	/**
+	 * @dataProvider modify_checkin_display_data_provider
+	 */
+	public function test_modify_checkin_display( Closure $fixture, string $expected ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes', 'ID' );
 
-		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
-
-		$this->assertStringContainsString( 'Going', $output );
+		$this->assertSame( $expected, $attendees->modify_checkin_display( 'CONTENT', $item ) );
 	}
 
-	public function test_modify_checkin_display_keeps_content_for_non_rsvp_item(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+	/**
+	 * Each fixture returns a row item; the flag is whether the check-in row action should survive
+	 * (it is removed only for "not going" RSVP attendees). The delete action is always kept.
+	 */
+	public static function modify_row_actions_data_provider(): array {
+		return [
+			'going attendee keeps checkin' => [
+				function () {
+					return $this->make_rsvp_item( 'yes' );
+				},
+				true,
+			],
 
-		$this->assertSame( 'CONTENT', $attendees->modify_checkin_display( 'CONTENT', $item ) );
+			'not going attendee loses checkin' => [
+				function () {
+					return $this->make_rsvp_item( 'no' );
+				},
+				false,
+			],
+
+			'non-rsvp item unchanged' => [
+				function () {
+					return [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+				},
+				true,
+			],
+		];
 	}
 
-	public function test_modify_checkin_display_keeps_content_for_going_attendee(): void {
+	/**
+	 * @dataProvider modify_row_actions_data_provider
+	 */
+	public function test_modify_row_actions( Closure $fixture, bool $keeps_checkin ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes' );
-
-		$this->assertSame( 'CONTENT', $attendees->modify_checkin_display( 'CONTENT', $item ) );
-	}
-
-	public function test_modify_checkin_display_hides_content_for_not_going_attendee(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'no' );
-
-		$this->assertSame( '', $attendees->modify_checkin_display( 'CONTENT', $item ) );
-	}
-
-	public function test_modify_row_actions_keeps_checkin_for_going_attendee(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes' );
 		$actions   = [
 			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
 			'delete'          => '<a class="delete">Delete</a>',
@@ -331,32 +434,12 @@ class Attendees_Test extends WPTestCase {
 
 		$result = $attendees->modify_row_actions( $actions, $item );
 
-		$this->assertArrayHasKey( 'tickets_checkin', $result );
 		$this->assertArrayHasKey( 'delete', $result );
-	}
 
-	public function test_modify_row_actions_removes_checkin_for_not_going_attendee(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'no' );
-		$actions   = [
-			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
-			'delete'          => '<a class="delete">Delete</a>',
-		];
-
-		$result = $attendees->modify_row_actions( $actions, $item );
-
-		$this->assertArrayNotHasKey( 'tickets_checkin', $result );
-		$this->assertArrayHasKey( 'delete', $result );
-	}
-
-	public function test_modify_row_actions_leaves_actions_unchanged_for_non_rsvp_item(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
-		$actions   = [
-			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
-			'delete'          => '<a class="delete">Delete</a>',
-		];
-
-		$this->assertSame( $actions, $attendees->modify_row_actions( $actions, $item ) );
+		if ( $keeps_checkin ) {
+			$this->assertArrayHasKey( 'tickets_checkin', $result );
+		} else {
+			$this->assertArrayNotHasKey( 'tickets_checkin', $result );
+		}
 	}
 }
