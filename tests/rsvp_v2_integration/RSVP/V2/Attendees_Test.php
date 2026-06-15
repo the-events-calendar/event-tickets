@@ -462,74 +462,162 @@ class Attendees_Test extends WPTestCase {
 		];
 	}
 
-	public function test_modify_status_display_returns_label_unchanged_for_non_rsvp_item(): void {
+	/**
+	 * Each fixture returns an attendees-table row item for which the status label should be
+	 * returned unchanged (non-RSVP rows, or RSVP rows that carry no attendee ID).
+	 */
+	public static function modify_status_display_unchanged_data_provider(): array {
+		return [
+			'non-rsvp item' => [
+				function () {
+					return [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+				},
+			],
+
+			'rsvp item without attendee id' => [
+				function () {
+					return [ 'ticket_type' => Constants::TC_RSVP_TYPE ];
+				},
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider modify_status_display_unchanged_data_provider
+	 */
+	public function test_modify_status_display_returns_label_unchanged( Closure $fixture ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
 
 		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
 	}
 
-	public function test_modify_status_display_returns_label_unchanged_without_attendee_id(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => Constants::TC_RSVP_TYPE ];
+	/**
+	 * Each fixture returns an RSVP row item; the test asserts the rendered label, its CSS class
+	 * and, where relevant, a label that must NOT appear.
+	 */
+	public static function modify_status_display_label_data_provider(): array {
+		return [
+			'going label' => [
+				function () {
+					return $this->make_rsvp_item( 'yes' );
+				},
+				'Going',
+				'tec-tickets__admin-table-attendees-order-status--going',
+				'Not Going',
+			],
 
-		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
+			'not going label' => [
+				function () {
+					return $this->make_rsvp_item( 'no' );
+				},
+				'Not Going',
+				'tec-tickets__admin-table-attendees-order-status--not-going',
+				null,
+			],
+
+			'resolves attendee from id key' => [
+				function () {
+					return $this->make_rsvp_item( 'yes', 'ID' );
+				},
+				'Going',
+				'tec-tickets__admin-table-attendees-order-status--going',
+				'Not Going',
+			],
+		];
 	}
 
-	public function test_modify_status_display_shows_going_label(): void {
+	/**
+	 * @dataProvider modify_status_display_label_data_provider
+	 */
+	public function test_modify_status_display_shows_label( Closure $fixture, string $expected_label, string $expected_class, ?string $not_expected ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes' );
 
 		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
 
-		$this->assertStringContainsString( 'Going', $output );
-		$this->assertStringNotContainsString( 'Not Going', $output );
-		$this->assertStringContainsString( 'tec-tickets__admin-table-attendees-order-status--going', $output );
+		$this->assertStringContainsString( $expected_label, $output );
+		$this->assertStringContainsString( $expected_class, $output );
+
+		if ( null !== $not_expected ) {
+			$this->assertStringNotContainsString( $not_expected, $output );
+		}
 	}
 
-	public function test_modify_status_display_shows_not_going_label(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'no' );
+	/**
+	 * Each fixture returns a row item; the expected value is what the check-in cell should render
+	 * for it (content is hidden only for "not going" RSVP attendees).
+	 */
+	public static function modify_checkin_display_data_provider(): array {
+		return [
+			'non-rsvp item keeps content' => [
+				function () {
+					return [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+				},
+				'CONTENT',
+			],
 
-		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
+			'going attendee keeps content' => [
+				function () {
+					return $this->make_rsvp_item( 'yes' );
+				},
+				'CONTENT',
+			],
 
-		$this->assertStringContainsString( 'Not Going', $output );
-		$this->assertStringContainsString( 'tec-tickets__admin-table-attendees-order-status--not-going', $output );
+			'not going attendee hides content' => [
+				function () {
+					return $this->make_rsvp_item( 'no' );
+				},
+				'',
+			],
+		];
 	}
 
-	public function test_modify_status_display_resolves_attendee_from_id_key(): void {
+	/**
+	 * @dataProvider modify_checkin_display_data_provider
+	 */
+	public function test_modify_checkin_display( Closure $fixture, string $expected ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes', 'ID' );
 
-		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
-
-		$this->assertStringContainsString( 'Going', $output );
+		$this->assertSame( $expected, $attendees->modify_checkin_display( 'CONTENT', $item ) );
 	}
 
-	public function test_modify_checkin_display_keeps_content_for_non_rsvp_item(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+	/**
+	 * Each fixture returns a row item; the flag is whether the check-in row action should survive
+	 * (it is removed only for "not going" RSVP attendees). The delete action is always kept.
+	 */
+	public static function modify_row_actions_data_provider(): array {
+		return [
+			'going attendee keeps checkin' => [
+				function () {
+					return $this->make_rsvp_item( 'yes' );
+				},
+				true,
+			],
 
-		$this->assertSame( 'CONTENT', $attendees->modify_checkin_display( 'CONTENT', $item ) );
+			'not going attendee loses checkin' => [
+				function () {
+					return $this->make_rsvp_item( 'no' );
+				},
+				false,
+			],
+
+			'non-rsvp item unchanged' => [
+				function () {
+					return [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
+				},
+				true,
+			],
+		];
 	}
 
-	public function test_modify_checkin_display_keeps_content_for_going_attendee(): void {
+	/**
+	 * @dataProvider modify_row_actions_data_provider
+	 */
+	public function test_modify_row_actions( Closure $fixture, bool $keeps_checkin ): void {
+		$item      = Closure::bind( $fixture, $this, self::class )();
 		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes' );
-
-		$this->assertSame( 'CONTENT', $attendees->modify_checkin_display( 'CONTENT', $item ) );
-	}
-
-	public function test_modify_checkin_display_hides_content_for_not_going_attendee(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'no' );
-
-		$this->assertSame( '', $attendees->modify_checkin_display( 'CONTENT', $item ) );
-	}
-
-	public function test_modify_row_actions_keeps_checkin_for_going_attendee(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'yes' );
 		$actions   = [
 			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
 			'delete'          => '<a class="delete">Delete</a>',
@@ -537,32 +625,12 @@ class Attendees_Test extends WPTestCase {
 
 		$result = $attendees->modify_row_actions( $actions, $item );
 
-		$this->assertArrayHasKey( 'tickets_checkin', $result );
 		$this->assertArrayHasKey( 'delete', $result );
-	}
 
-	public function test_modify_row_actions_removes_checkin_for_not_going_attendee(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = $this->make_rsvp_item( 'no' );
-		$actions   = [
-			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
-			'delete'          => '<a class="delete">Delete</a>',
-		];
-
-		$result = $attendees->modify_row_actions( $actions, $item );
-
-		$this->assertArrayNotHasKey( 'tickets_checkin', $result );
-		$this->assertArrayHasKey( 'delete', $result );
-	}
-
-	public function test_modify_row_actions_leaves_actions_unchanged_for_non_rsvp_item(): void {
-		$attendees = tribe( Attendees::class );
-		$item      = [ 'ticket_type' => 'default', 'attendee_id' => 123 ];
-		$actions   = [
-			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
-			'delete'          => '<a class="delete">Delete</a>',
-		];
-
-		$this->assertSame( $actions, $attendees->modify_row_actions( $actions, $item ) );
+		if ( $keeps_checkin ) {
+			$this->assertArrayHasKey( 'tickets_checkin', $result );
+		} else {
+			$this->assertArrayNotHasKey( 'tickets_checkin', $result );
+		}
 	}
 }
