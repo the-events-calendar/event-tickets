@@ -163,7 +163,7 @@ class Settings {
 	 *
 	 * The page is detected via its URL slug, which is locale-independent, rather than the translated screen id.
 	 *
-	 * @since 5.28.3.2
+	 * @since 5.28.4
 	 *
 	 * @param string $classes Space-separated list of admin body classes.
 	 *

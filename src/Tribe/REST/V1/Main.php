@@ -189,7 +189,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		 * check in hidden events, while the public website and unauthenticated
 		 * REST consumers keep them hidden.
 		 *
-		 * @since 5.28.3.2
+		 * @since 5.28.4
 		 *
 		 * @param bool            $include_hidden Whether to include hidden-from-listings events.
 		 * @param array           $args           The current query args.
