@@ -124,6 +124,7 @@ class Tribe__Tickets__Query {
 	 * Returns the number of ticketed posts of a certain type.
 	 *
 	 * @since 5.6.7
+	 * @since TBD Resolve the `wp_posts` row via the primary key (`p.ID = pm.meta_value`) instead of `CONCAT( p.ID, '' )`, so the count no longer scans `wp_posts` proportionally to the post count.
 	 *
 	 * @param string $post_type The post type the ticketed count is being calculated for.
 	 *
@@ -155,8 +156,8 @@ class Tribe__Tickets__Query {
 			 */
 			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$query = $wpdb->prepare(
-				"SELECT COUNT(DISTINCT pm.meta_value) FROM $wpdb->postmeta pm
-				  JOIN $wpdb->posts p ON p.ID = pm.meta_value
+				"SELECT COUNT(DISTINCT p.ID) FROM $wpdb->postmeta pm
+				  INNER JOIN $wpdb->posts p ON p.ID = pm.meta_value
 				  WHERE ( $meta_keys_in ) AND p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type
 			);
@@ -174,6 +175,7 @@ class Tribe__Tickets__Query {
 	 * Returns the number of unticketed posts of a certain type.
 	 *
 	 * @since 5.6.7
+	 * @since TBD Derive the count as `total - ticketed` instead of a `NOT IN ( <ticketed subquery> )`, so it resolves with two indexed queries instead of scanning `wp_posts`.
 	 *
 	 * @param string $post_type The post type the unticketed count is being calculated for.
 	 *

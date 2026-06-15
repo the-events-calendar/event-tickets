@@ -135,6 +135,36 @@ class QueryTest extends WPTestCase {
 	}
 
 	/**
+	 * It should not count orphaned ticket meta whose event no longer exists
+	 *
+	 * A ticket-to-event meta can be left behind when its event is deleted. The count joins on
+	 * `wp_posts` via the primary key, so such orphaned meta must not be counted as ticketed.
+	 *
+	 * @test
+	 */
+	public function should_not_count_orphaned_ticket_meta(): void {
+		$ticketed = static::factory()->post->create_many( 2 );
+		foreach ( $ticketed as $id ) {
+			$this->create_tc_ticket( $id );
+		}
+		static::factory()->post->create_many( 3 );
+
+		// Orphaned ticket meta pointing at an event that does not exist.
+		$missing_event_id = PHP_INT_MAX;
+		add_post_meta( static::factory()->post->create(), '_tec_tickets_commerce_event', $missing_event_id );
+
+		// Orphaned ticket meta pointing at a deleted event.
+		$deleted_event = static::factory()->post->create();
+		add_post_meta( static::factory()->post->create(), '_tec_tickets_commerce_event', $deleted_event );
+		wp_delete_post( $deleted_event, true );
+
+		$query = tribe( 'tickets.query' );
+
+		// Only the 2 real tickets are counted; the orphaned meta are ignored.
+		$this->assertEquals( 2, $query->get_ticketed_count( 'post' ) );
+	}
+
+	/**
 	 * It should honor the count query filters
 	 *
 	 * @test
