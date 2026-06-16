@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Moved `register_editor_scripts()` from `admin_enqueue_scripts` hook to direct call before `parent::register()`. Fixes Tickets block in WP 7 block editor. [SMTNC-298]
+Moved `register_editor_scripts()` from `admin_enqueue_scripts` hook to direct call before `parent::register()`. Fixes Tickets block in WP 7 block editor.
