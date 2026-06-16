@@ -471,9 +471,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			? 'v2/commerce/rsvp/content'
 			: 'v2/rsvp/content';
 
-		$html .= $template->template( $content_template, $args, false );
-
-		return $html;
+		return $html . $template->template( $content_template, $args, false );
 	}
 
 	/**
