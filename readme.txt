@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.29.0
-Requires at least: 6.7
-Tested up to: 6.9
+Requires at least: 6.8
+Tested up to: 7.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,22 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.28.4] 2026-06-15 =
+
+* Fix - Ensure proper functionality of Tickets admin pages (Settings, Help Hub, and Notifications) on non-English installs. [SMTNC-1469]
+* Fix - Resolve an issue where the Attendees admin page caused a fatal error on sites using a translated admin locale. [SMTNC-1439]
+* Fix - Resolve an issue where the Event Schema always reported the price currency as USD, ignoring the currency configured in the Tickets Commerce settings. [SMTNC-1239]
+* Fix - Resolve an issue where the Event Tickets Plus upsell notice for WooCommerce and Easy Digital Downloads was shown on every wp-admin page; it is now limited to the Tickets admin screens, The Events Calendar admin screens, and the Plugins page. [SMTNC-1303]
+* Fix - Resolved a fatal error on the Tickets > All Tickets admin page when listing tickets with no end date on PHP 8.3.9 or later. [SMTNC-295]
+* Fix - Show events marked "Hide From Event Listings" in the Event Tickets App so on-site managers can still see and check them in. [SMTNC-288]
+* Tweak - Added filters: `tec_tickets_rest_events_archive_include_hidden_from_listings`.
+* Language - 0 new strings added, 82 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.28.3.2] 2026-06-09 =
+
+* Fix - Send the `domain` property over to Promoter's Authentication layer during update notifications. [SMTNC-1351]
+* Language - 0 new strings added, 6 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.28.3.1] 2026-06-04 =
 

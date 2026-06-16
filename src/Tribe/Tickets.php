@@ -765,15 +765,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$class = __CLASS__;
 
-			$methods = [
-				'get_tickets',
-			];
-
-			foreach ( $methods as $method ) {
-				$key = $class . '::' . $method . '-' . $this->orm_provider . '-' . $post_id;
-
-				unset( $cache[ $key ] );
-			}
+			// Clear the request-scoped get_tickets() cache, sharing its key format via get_tickets_cache_key().
+			unset( $cache[ self::get_tickets_cache_key( $this->orm_provider, $post_id ) ] );
 
 			$static_methods = [
 				'get_all_event_tickets',
@@ -807,7 +800,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
-			$key   = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
+			$key   = self::get_tickets_cache_key( $this->orm_provider, $post_id );
 
 			if ( isset( $cache[ $key ] ) && is_array( $cache[ $key ] ) ) {
 				return $cache[ $key ];
@@ -851,6 +844,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$cache[ $key ] = $tickets;
 
 			return $tickets;
+		}
+
+		/**
+		 * Builds the cache key used to store the result of `get_tickets()` for a provider and post.
+		 *
+		 * Centralizing the key format here keeps it in a single place, so cache invalidation never has
+		 * to reconstruct the string by hand and the key cannot silently drift out of sync.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $orm_provider The provider ORM slug (e.g. `tribe-commerce`, `rsvp`).
+		 * @param int    $post_id      The post (event) ID the tickets belong to.
+		 *
+		 * @return string The cache key.
+		 */
+		public static function get_tickets_cache_key( string $orm_provider, int $post_id ): string {
+			return self::class . '::get_tickets-' . $orm_provider . '-' . $post_id;
 		}
 
 		/**
