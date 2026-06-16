@@ -20,27 +20,6 @@ class Metabox_Test extends WPTestCase {
 	use Order_Maker;
 	use With_Uopz;
 
-	/**
-	 * Backup of the global $wp_meta_boxes, restored after each test.
-	 *
-	 * @var mixed
-	 */
-	private $wp_meta_boxes_backup;
-
-	public function setUp(): void {
-		parent::setUp();
-
-		global $wp_meta_boxes;
-		$this->wp_meta_boxes_backup = $wp_meta_boxes;
-	}
-
-	public function tearDown(): void {
-		global $wp_meta_boxes;
-		$wp_meta_boxes = $this->wp_meta_boxes_backup;
-
-		parent::tearDown();
-	}
-
 	public function render_data_provider(): Generator {
 		yield 'post without RSVP' => [
 			function (): array {
