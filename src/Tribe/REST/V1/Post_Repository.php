@@ -1,7 +1,7 @@
 <?php
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Module;
-
+use Tribe__Utils__Array as Arr;
 
 class Tribe__Tickets__REST__V1__Post_Repository
 	extends Tribe__REST__Post_Repository
@@ -292,7 +292,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$values  = array_values( $map );
 		$default = $values[0];
 
-		return Tribe__Utils__Array::get( $map, $provider_class, $default );
+		return Arr::get( $map, $provider_class, $default );
 	}
 
 	/**
@@ -1017,10 +1017,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		// Always expose optout status so callers know the attendee's preference.
-		$attendee_data['optout'] = tribe_is_truthy( Tribe__Utils__Array::get( $attendee, 'optout', false ) );
+		$attendee_data['optout'] = tribe_is_truthy( Arr::get( $attendee, 'optout', false ) );
 		// Only show the attendee name to users with manage access — the name is PII and must not be publicly accessible.
 		if ( $has_manage_access ) {
-			$attendee_data['title'] = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
+			$attendee_data['title'] = Arr::get( $attendee, 'holder_name', Arr::get( $attendee, 'purchaser_name', '' ) );
 		}
 
 		// Sensitive information should not be shown to everyone.
@@ -1031,7 +1031,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 					'provider'        => $this->get_provider_slug( $provider ),
 					'order'           => $attendee_order_id,
 					'sku'             => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),
-					'email'           => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
+					'email'           => Arr::get( $attendee, 'holder_email', Arr::get( $attendee, 'purchaser_email', '' ) ),
 					'checked_in'      => $checked_in,
 					'checkin_details' => $checkin_details,
 
@@ -1056,9 +1056,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 					$ticket_object = $this->get_ticket_object( $attendee['product_id'] );
 
 					if ( ! is_wp_error( $ticket_object ) ) {
-						$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
+						$purchase_time            = Arr::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
 						$attendee_data['payment'] = [
-							'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
+							'provider'     => Arr::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
 							'price'        => ! empty( $ticket_object->price ) ? $ticket_object->price : '',
 							'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
 							'date'         => $purchase_time,
