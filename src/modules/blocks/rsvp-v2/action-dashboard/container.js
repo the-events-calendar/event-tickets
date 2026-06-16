@@ -51,6 +51,21 @@ const onCancelClick = ( state, dispatch ) => () => {
 };
 
 const onConfirmClick = ( state, dispatch ) => () => {
+	const postId = select( 'core/editor' ).getCurrentPostId();
+
+	// The IAC admin modal (iac-admin.js) writes to localStorage when in block editor
+	// context since the ticket may not yet exist. Read it here to include the selected
+	// IAC value in the REST call, then the thunk clears it after a successful save.
+	let iac = selectors.getRSVPIAC( state );
+	if ( postId ) {
+		try {
+			const stored = JSON.parse( localStorage.getItem( 'tec_rsvp_attendee_info_' + postId ) || 'null' );
+			if ( stored && stored.iac ) {
+				iac = stored.iac;
+			}
+		} catch ( e ) {}
+	}
+
 	const payload = {
 		capacity: selectors.getRSVPTempCapacity( state ),
 		notGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
@@ -64,7 +79,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
 		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
-		iac: selectors.getRSVPIAC( state ),
+		iac,
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {
@@ -72,7 +87,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		dispatch(
 			thunks.createRSVP( {
 				...payload,
-				postId: select( 'core/editor' ).getCurrentPostId(),
+				postId,
 			} )
 		);
 	} else {
@@ -81,6 +96,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 			thunks.updateRSVP( {
 				...payload,
 				id: selectors.getRSVPId( state ),
+				postId,
 			} )
 		);
 	}

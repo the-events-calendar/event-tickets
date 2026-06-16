@@ -19,10 +19,6 @@
 defined( 'ABSPATH' ) || die();
 ?>
 <div class="tribe-tickets__rsvp-actions-rsvp">
-	<span class="tribe-common-h2 tribe-common-h6--min-medium">
-		<?php esc_html_e( 'RSVP Here', 'event-tickets' ); ?>
-	</span>
-
 	<?php $this->template( 'v2/commerce/rsvp/actions/rsvp/going', [ 'rsvp' => $rsvp ] ); ?>
 
 	<?php $this->template( 'v2/commerce/rsvp/actions/rsvp/not-going', [ 'rsvp' => $rsvp ] ); ?>

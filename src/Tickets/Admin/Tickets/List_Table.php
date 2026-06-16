@@ -21,6 +21,7 @@ use Tribe__Tickets__Main;
 use WP_Post;
 use WP_Query;
 use TEC\Events_Pro\Custom_Tables\V1\Links\Provider as Custom_Tables_Links_Provider;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 /**
  * Class List_Table.
@@ -438,15 +439,23 @@ class List_Table extends WP_List_Table {
 			return get_the_title( $item );
 		}
 
+		$ticket_name = $item->name;
+
+		// TC-RSVP tickets created before titles were enforced may have an empty name.
+		// Fall back to the generic "RSVP" label so the list always shows a meaningful value.
+		if ( empty( $ticket_name ) && method_exists( $item, 'type' ) && RSVP_V2_Constants::TC_RSVP_TYPE === $item->type() ) {
+			$ticket_name = _x( 'RSVP', 'Default TC-RSVP ticket name in the All Tickets list', 'event-tickets' );
+		}
+
 		$event = $item->get_event();
 		if ( ! $event ) {
-			return esc_html( $item->name );
+			return esc_html( $ticket_name );
 		}
 
 		$edit_post_link = sprintf(
 			'<a href="%s" class="tec-tickets-admin-tickets-table-event-link" target="_blank" rel="nofollow noopener">%s</a>',
 			esc_url( $this->get_event_edit_url( $event->ID ) ),
-			esc_html( $item->name )
+			esc_html( $ticket_name )
 		);
 
 		$template = $this->get_template();
