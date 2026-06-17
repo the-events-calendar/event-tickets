@@ -1020,7 +1020,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$attendee_data['optout'] = tribe_is_truthy( Arr::get( $attendee, 'optout', false ) );
 		// Only show the attendee name to users with manage access — the name is PII and must not be publicly accessible.
 		if ( $has_manage_access ) {
-			$attendee_data['title'] = Arr::get( $attendee, 'holder_name', Arr::get( $attendee, 'purchaser_name', '' ) );
+			// Prefer holder_name, fall back to purchaser_name.
+			$attendee_data['title'] = Arr::get_first_set( $attendee, [ 'holder_name', 'purchaser_name' ], '' );
 		}
 
 		// Sensitive information should not be shown to everyone.
