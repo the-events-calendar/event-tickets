@@ -17,7 +17,11 @@
  */
 
 defined( 'ABSPATH' ) || die();
-if ( ! $rsvp->has_meta_enabled() ) {
+
+$iac_active = ! empty( $rsvp->iac ) && 'none' !== $rsvp->iac;
+$has_meta   = $rsvp->has_meta_enabled();
+
+if ( ! $iac_active && ! $has_meta ) {
 	return;
 }
 ?>
@@ -25,6 +29,7 @@ if ( ! $rsvp->has_meta_enabled() ) {
 
 	<?php $this->template( 'v2/commerce/rsvp/ari/form/error', [ 'rsvp' => $rsvp ] ); ?>
 
+	<?php if ( $has_meta ) : ?>
 	<?php
 		/**
 		 * Allows injection of meta fields in the RSVP ARI form template.
@@ -36,4 +41,5 @@ if ( ! $rsvp->has_meta_enabled() ) {
 		 */
 		$this->do_entry_point( 'rsvp_attendee_fields_template' );
 	?>
+	<?php endif; ?>
 </div>

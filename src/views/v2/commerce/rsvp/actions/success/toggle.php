@@ -16,12 +16,14 @@
  * @var string                        $opt_in_nonce         The nonce for opt-in AJAX requests.
  * @var boolean                       $opt_in_checked       Whether the opt-in field should be checked.
  *
+ * @var boolean|null                   $is_going             Whether the attendee is going. Null when unknown.
+ *
  * @since 5.0.0
  * @version 5.0.0
  */
 
 defined( 'ABSPATH' ) || die();
-if ( $opt_in_toggle_hidden ) {
+if ( $opt_in_toggle_hidden || false === $is_going ) {
 	return;
 }
 

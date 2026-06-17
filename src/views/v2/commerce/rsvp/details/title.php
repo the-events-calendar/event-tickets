@@ -19,5 +19,5 @@
 defined( 'ABSPATH' ) || die();
 ?>
 <h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	<?php echo esc_html( $rsvp->name ); ?>
+	<?php echo esc_html( tribe_get_rsvp_label_singular( 'rsvp_block_details_title' ) ); ?>
 </h3>
