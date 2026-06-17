@@ -39,7 +39,6 @@ if ( empty( $attendee_name ) ) {
 if ( empty( $attendee_name ) ) {
 	$attendee_name = get_the_title( $attendee_id );
 }
-
 if ( empty( $attendee_name ) ) {
 	return;
 }
