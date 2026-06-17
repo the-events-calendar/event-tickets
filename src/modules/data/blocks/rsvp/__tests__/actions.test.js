@@ -54,6 +54,18 @@ describe( 'RSVP block actions', () => {
 			expect( actions.setRSVPHasDurationError( true ) ).toMatchSnapshot();
 		} );
 
+		test( 'set RSVP IAC to allowed', () => {
+			expect( actions.setRSVPIAC( 'allowed' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set RSVP IAC to none', () => {
+			expect( actions.setRSVPIAC( 'none' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set RSVP IAC to required', () => {
+			expect( actions.setRSVPIAC( 'required' ) ).toMatchSnapshot();
+		} );
+
 		test( 'set RSVP header image', () => {
 			expect(
 				actions.setRSVPHeaderImage( {

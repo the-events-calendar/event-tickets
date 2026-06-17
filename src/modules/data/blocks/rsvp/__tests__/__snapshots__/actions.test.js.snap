@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`RSVP block actions RSVP actions set RSVP IAC to allowed 1`] = `
+{
+  "payload": {
+    "iac": "allowed",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_IAC",
+}
+`;
+
+exports[`RSVP block actions RSVP actions set RSVP IAC to none 1`] = `
+{
+  "payload": {
+    "iac": "none",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_IAC",
+}
+`;
+
+exports[`RSVP block actions RSVP actions set RSVP IAC to required 1`] = `
+{
+  "payload": {
+    "iac": "required",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_IAC",
+}
+`;
+
 exports[`RSVP block actions RSVP actions set RSVP details 1`] = `
 {
   "payload": {
@@ -409,27 +436,18 @@ exports[`RSVP block actions RSVP thunk & saga actions delete RSVP 1`] = `
 }
 `;
 
+exports[`RSVP block actions RSVP thunk & saga actions delete RSVP header image 1`] = `
+{
+  "type": "@@MT/TICKETS/DELETE_RSVP_HEADER_IMAGE",
+}
+`;
+
 exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 1`] = `
 {
   "payload": {
     "id": 10,
   },
   "type": "@@MT/TICKETS/FETCH_RSVP_HEADER_IMAGE",
-}
-`;
-
-exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 2`] = `
-{
-  "payload": {
-    "image": {},
-  },
-  "type": "@@MT/TICKETS/UPDATE_RSVP_HEADER_IMAGE",
-}
-`;
-
-exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 3`] = `
-{
-  "type": "@@MT/TICKETS/DELETE_RSVP_HEADER_IMAGE",
 }
 `;
 
@@ -468,5 +486,14 @@ exports[`RSVP block actions RSVP thunk & saga actions handle RSVP start time 1`]
 exports[`RSVP block actions RSVP thunk & saga actions initialize RSVP 1`] = `
 {
   "type": "@@MT/TICKETS/INITIALIZE_RSVP",
+}
+`;
+
+exports[`RSVP block actions RSVP thunk & saga actions update RSVP header image 1`] = `
+{
+  "payload": {
+    "image": {},
+  },
+  "type": "@@MT/TICKETS/UPDATE_RSVP_HEADER_IMAGE",
 }
 `;
