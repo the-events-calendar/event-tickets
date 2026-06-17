@@ -20,12 +20,14 @@
  * @version 5.7.1
  */
 
+use TEC\Tickets\Commerce\Attendee;
+
 defined( 'ABSPATH' ) || die();
 if ( empty( $attendees ) || empty( $attendee_id ) ) {
 	return;
 }
 
-$attendee_name = get_post_meta( $attendee_id, tribe( Tribe__Tickets__RSVP::class )->full_name, true );
+$attendee_name = get_post_meta( $attendee_id, Attendee::$full_name_meta_key, true );
 if ( empty( $attendee_name ) ) {
 	return;
 }
