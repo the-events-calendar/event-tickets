@@ -18,7 +18,7 @@ import { select, dispatch as wpDispatch } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import RSVPActionDashboard from '../../rsvp-shared/templates/action-dashboard/template';
+import RSVPActionDashboard from '../../rsvp/action-dashboard/template';
 import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
 import { withStore } from '@moderntribe/common/hoc';
 import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
@@ -53,14 +53,17 @@ const onCancelClick = ( state, dispatch ) => () => {
 const onConfirmClick = ( state, dispatch ) => () => {
 	const postId = select( 'core/editor' ).getCurrentPostId();
 
-	// The IAC admin modal (iac-admin.js) writes to the in-memory global store when in
-	// block editor context since the ticket may not yet exist. Read it here to include
-	// the selected IAC value in the REST call, then the thunk clears it after save.
+	// The IAC admin modal (iac-admin.js) writes to localStorage when in block editor
+	// context since the ticket may not yet exist. Read it here to include the selected
+	// IAC value in the REST call, then the thunk clears it after a successful save.
 	let iac = selectors.getRSVPIAC( state );
-	const pendingAttendeeInfo = window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo?.[ postId ];
-
-	if ( pendingAttendeeInfo?.iac ) {
-		iac = pendingAttendeeInfo.iac;
+	if ( postId ) {
+		try {
+			const stored = JSON.parse( localStorage.getItem( 'tec_rsvp_attendee_info_' + postId ) || 'null' );
+			if ( stored && stored.iac ) {
+				iac = stored.iac;
+			}
+		} catch ( e ) {}
 	}
 
 	const payload = {
@@ -76,7 +79,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
 		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
-		iac: selectors.getRSVPIAC( state ),
+		iac,
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {

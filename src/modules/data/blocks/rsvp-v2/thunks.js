@@ -88,6 +88,10 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 			data.capacity = parseInt( capacity, 10 );
 		}
 
+		if ( payload.iac ) {
+			data.iac = payload.iac;
+		}
+
 		// POST /tec/v1/tickets
 		const response = await apiFetch( {
 			path: config.ticketsEndpoint,
@@ -97,8 +101,10 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 		} );
 
 		if ( response && response.id ) {
+			localStorage.removeItem( 'tec_rsvp_attendee_info_' + postId );
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
+			dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
 			dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 			dispatch( actions.setRSVPHasChanges( false ) );
 		}
@@ -160,6 +166,10 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 			data.capacity = parseInt( capacity, 10 );
 		}
 
+		if ( payload.iac ) {
+			data.iac = payload.iac;
+		}
+
 		// PUT /tec/v1/tickets/{id}
 		await apiFetch( {
 			path: `${ config.ticketsEndpoint }/${ id }`,
@@ -168,6 +178,10 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 			data,
 		} );
 
+		if ( payload.postId ) {
+			localStorage.removeItem( 'tec_rsvp_attendee_info_' + payload.postId );
+		}
+		dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
 		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 		dispatch( actions.setRSVPHasChanges( false ) );
 
@@ -269,6 +283,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 			dispatch( actions.setRSVPGoingCount( parseInt( rsvp.going_count || rsvp.sold || 0, 10 ) ) );
 			dispatch( actions.setRSVPNotGoingCount( parseInt( rsvp.not_going_count || 0, 10 ) ) );
 			dispatch( actions.setRSVPHasAttendeeInfoFields( rsvp.has_attendee_info_fields || false ) );
+			dispatch( actions.setRSVPIAC( rsvp.iac || 'none' ) );
 
 			dispatch(
 				actions.setRSVPDetails( {

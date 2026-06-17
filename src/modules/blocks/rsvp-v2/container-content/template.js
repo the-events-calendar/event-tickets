@@ -11,9 +11,10 @@ import RSVPCapacity from '../../rsvp/capacity/container';
 import RSVPNotGoingResponses from '../../rsvp/not-going/container';
 import RSVPDuration from '../../rsvp/duration/container';
 import RSVPAttendeeRegistration from '../../rsvp/attendee-registration/container';
+import RSVPAttendeeCollection from '../../rsvp/attendee-collection/container';
 import '../../rsvp/container-content/style.pcss';
 
-const RSVPContainerContent = ( { isAddEditOpen, hasTicketsPlus } ) => {
+const RSVPContainerContent = ( { isAddEditOpen, hasTicketsPlus, hasIacVars } ) => {
 	if ( ! isAddEditOpen ) {
 		return null;
 	}
@@ -23,6 +24,7 @@ const RSVPContainerContent = ( { isAddEditOpen, hasTicketsPlus } ) => {
 			<RSVPCapacity />
 			<RSVPDuration />
 			<RSVPNotGoingResponses />
+			{ hasTicketsPlus && hasIacVars && <RSVPAttendeeCollection /> }
 			{ hasTicketsPlus && <RSVPAttendeeRegistration /> }
 		</>
 	);
@@ -31,6 +33,7 @@ const RSVPContainerContent = ( { isAddEditOpen, hasTicketsPlus } ) => {
 RSVPContainerContent.propTypes = {
 	isAddEditOpen: PropTypes.bool,
 	hasTicketsPlus: PropTypes.bool,
+	hasIacVars: PropTypes.bool,
 };
 
 export default RSVPContainerContent;

@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import * as types from './types';
+import { types } from './index';
 
 //
 // ─── RSVP ACTIONS ───────────────────────────────────────────────────────────────
@@ -42,13 +42,6 @@ export const setRSVPIsLoading = ( isLoading ) => ( {
 	},
 } );
 
-export const setRSVPIsInitializing = ( isInitializing ) => ( {
-	type: types.SET_RSVP_IS_INITIALIZING,
-	payload: {
-		isInitializing,
-	},
-} );
-
 export const setRSVPIsSettingsLoading = ( isSettingsLoading ) => ( {
 	type: types.SET_RSVP_IS_SETTINGS_LOADING,
 	payload: {
@@ -77,24 +70,10 @@ export const setRSVPNotGoingCount = ( notGoingCount ) => ( {
 	},
 } );
 
-export const setRSVPInventory = ( inventory ) => ( {
-	type: types.SET_RSVP_INVENTORY,
-	payload: {
-		inventory,
-	},
-} );
-
 export const setRSVPHasAttendeeInfoFields = ( hasAttendeeInfoFields ) => ( {
 	type: types.SET_RSVP_HAS_ATTENDEE_INFO_FIELDS,
 	payload: {
 		hasAttendeeInfoFields,
-	},
-} );
-
-export const setRSVPAttendeeInfoFieldNames = ( attendeeInfoFieldNames ) => ( {
-	type: types.SET_RSVP_ATTENDEE_INFO_FIELD_NAMES,
-	payload: {
-		attendeeInfoFieldNames,
 	},
 } );
 
