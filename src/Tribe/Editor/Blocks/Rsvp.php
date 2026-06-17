@@ -86,6 +86,10 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			return $tickets;
 		}
 
+		if ( did_action( 'tec_tickets_rsvp_v2_registered' ) ) {
+			return $this->get_v2_tickets( $post_id );
+		}
+
 		/** @var Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
@@ -110,6 +114,36 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			}
 
 			$tickets[] = $ticket;
+		}
+
+		return $tickets;
+	}
+
+	/**
+	 * Get TC-RSVP tickets for the RSVP block when V2 is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return Tribe__Tickets__Ticket_Object[]
+	 */
+	protected function get_v2_tickets( $post_id ) {
+		$tickets = [];
+
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		foreach ( tribe( 'tickets.ticket-repository.rsvp' )->by( 'event', $post_id )->all() as $ticket_post ) {
+			if ( ! $ticket_post instanceof WP_Post ) {
+				continue;
+			}
+
+			$ticket = $rsvp->get_ticket( $post_id, $ticket_post->ID );
+
+			if ( $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				$tickets[] = $ticket;
+			}
 		}
 
 		return $tickets;
