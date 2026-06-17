@@ -12,6 +12,15 @@ use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 class Rsvp_Block_Test extends WPTestCase {
 	use Ticket_Maker;
 
+	/**
+	 * Reset the template singleton so each test starts with a clean context.
+	 *
+	 * @before
+	 */
+	public function reset_template_singleton(): void {
+		tribe_singleton( 'tickets.editor.template', new Tickets_Editor_Template() );
+	}
+
 	public function test_rsvp_block_get_tickets_should_include_tc_rsvp_tickets(): void {
 		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
@@ -29,6 +38,9 @@ class Rsvp_Block_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$this->create_tc_rsvp_ticket( $post_id );
 
+		// Skip the "My Tickets" view-link; it requires a full singular post query context.
+		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $rsvp_block */
 		$rsvp_block = tribe( 'tickets.editor.blocks.rsvp' );
 
@@ -37,6 +49,8 @@ class Rsvp_Block_Test extends WPTestCase {
 		$editor_template->set( 'post_id', $post_id, false );
 
 		$html = $rsvp_block->render();
+
+		remove_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 
 		$this->assertNotEmpty( $html, 'RSVP block should render TC-RSVP tickets on the frontend.' );
 		$this->assertStringContainsString( 'tribe-tickets__rsvp-wrapper', $html, 'RSVP block should include the RSVP wrapper markup.' );
