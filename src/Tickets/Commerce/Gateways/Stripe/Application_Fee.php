@@ -33,7 +33,7 @@ class Application_Fee {
 	 * @return Value;
 	 */
 	public static function calculate( Value $value ) {
-		if ( Settings::is_licensed_plugin( true ) ) {
+		if ( Settings::is_licensed_plugin() ) {
 			return Value::create();
 		}
 

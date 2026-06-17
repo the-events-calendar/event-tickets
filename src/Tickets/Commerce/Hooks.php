@@ -105,6 +105,12 @@ class Hooks extends Service_Provider {
 		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
 
 		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'route_async_webhook_process' ], 10, 2 );
+
+		add_action( 'tribe_settings_save', [ $this, 'clear_licensed_plugin_cache' ] );
+		add_action( 'update_option_pue_install_key_event_tickets_plus', [ $this, 'clear_licensed_plugin_cache' ] );
+		add_action( 'stellarwp/uplink/tec/connected', [ $this, 'maybe_clear_licensed_plugin_cache_on_uplink_change' ] );
+		add_action( 'stellarwp/uplink/tec/disconnected', [ $this, 'maybe_clear_licensed_plugin_cache_on_uplink_change' ] );
+		add_action( 'activated_plugin', [ $this, 'maybe_clear_licensed_plugin_cache_on_plugin_activation' ], 10, 2 );
 	}
 
 	/**
@@ -1186,5 +1192,57 @@ class Hooks extends Service_Provider {
 			default:
 				return;
 		}
+	}
+
+	/**
+	 * Clears the cached Event Tickets Plus license validation result.
+	 *
+	 * @since 5.28.5
+	 *
+	 * @return void
+	 */
+	public function clear_licensed_plugin_cache(): void {
+		Settings::clear_licensed_plugin_cache();
+	}
+
+	/**
+	 * Clears the license cache when Event Tickets Plus Uplink status changes.
+	 *
+	 * @since 5.28.5
+	 *
+	 * @param object $plugin The Uplink plugin resource.
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_licensed_plugin_cache_on_uplink_change( $plugin ): void {
+		if ( ! is_object( $plugin ) || ! method_exists( $plugin, 'get_slug' ) ) {
+			return;
+		}
+
+		if ( 'event-tickets-plus' !== $plugin->get_slug() ) {
+			return;
+		}
+
+		Settings::clear_licensed_plugin_cache();
+	}
+
+	/**
+	 * Clears the license cache when Event Tickets Plus is activated.
+	 *
+	 * @since 5.28.5
+	 *
+	 * @param string $plugin       The plugin basename.
+	 * @param bool   $network_wide Whether the plugin was activated network-wide.
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_licensed_plugin_cache_on_plugin_activation( $plugin, $network_wide ): void {
+		unset( $network_wide );
+
+		if ( 'event-tickets-plus/event-tickets-plus.php' !== $plugin ) {
+			return;
+		}
+
+		Settings::clear_licensed_plugin_cache();
 	}
 }

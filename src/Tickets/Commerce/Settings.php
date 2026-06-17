@@ -16,8 +16,8 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use Tribe__Template;
 use Tribe__Field_Conditional;
+use Tribe__Template;
 use Tribe__Tickets__Main;
 use WP_Admin_Bar;
 
@@ -643,15 +643,18 @@ class Settings {
 			return true;
 		}
 
-		$cache_key = __METHOD__;
-		$cached    = get_transient( $cache_key );
+		$cache_key = self::get_licensed_plugin_cache_key();
 
-		// Decode the JSON string. If $cached is false (transient not set), json_decode returns null.
-		$cached_value = false !== $cached ? json_decode( $cached, true ) : null;
+		if ( ! $revalidate ) {
+			$cached = get_transient( $cache_key );
 
-		// Check explicitly for null to determine if the transient was not set.
-		if ( null !== $cached_value ) {
-			return $cached_value;
+			// Decode the JSON string. If $cached is false (transient not set), json_decode returns null.
+			$cached_value = false !== $cached ? json_decode( $cached, true ) : null;
+
+			// Check explicitly for null to determine if the transient was not set.
+			if ( null !== $cached_value ) {
+				return $cached_value;
+			}
 		}
 
 		$is_license_valid = $pue->is_current_license_valid( $revalidate );
@@ -660,6 +663,28 @@ class Settings {
 		set_transient( $cache_key, wp_json_encode( $is_license_valid ), HOUR_IN_SECONDS );
 
 		return $is_license_valid;
+	}
+
+	/**
+	 * Clears the cached Event Tickets Plus license validation result.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public static function clear_licensed_plugin_cache(): void {
+		delete_transient( self::get_licensed_plugin_cache_key() );
+	}
+
+	/**
+	 * Returns the transient key used to cache license validation results.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private static function get_licensed_plugin_cache_key(): string {
+		return self::class . '::is_licensed_plugin';
 	}
 
 	/**

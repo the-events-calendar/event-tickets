@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Ensure the 2% Tickets Commerce application fee is waived after a valid Event Tickets Plus license is activated on Stripe and Square. [SMTNC-1519]
