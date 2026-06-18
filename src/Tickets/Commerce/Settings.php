@@ -668,10 +668,6 @@ class Settings {
 			if ( false === $cached_value ) {
 				return false;
 			}
-
-			if ( true === $cached_value ) {
-				return true;
-			}
 		}
 
 		if ( ! $pue->is_current_license_valid( $revalidate ) ) {
