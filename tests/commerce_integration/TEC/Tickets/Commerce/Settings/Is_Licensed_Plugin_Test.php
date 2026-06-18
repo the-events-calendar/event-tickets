@@ -11,7 +11,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Tests for Settings::is_licensed_plugin() caching behavior.
  *
- * @since TBD
+ * @since 5.28.4.1
  */
 class Is_Licensed_Plugin_Test extends WPTestCase {
 
@@ -127,8 +127,22 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 		$value = new Value( 100.0 );
 		$fee   = Application_Fee::calculate( $value );
 
-		$this->assertFalse( Settings::is_licensed_plugin( true ) );
+		$this->assertFalse( Settings::is_licensed_plugin() );
 		$this->assertGreaterThan( 0, $fee->get_integer(), 'Application fee should apply without a valid license.' );
+	}
+
+	/**
+	 * Ensures checkout uses a cached invalid license result without revalidating.
+	 *
+	 * @test
+	 */
+	public function should_use_cached_invalid_result_during_checkout_without_revalidating(): void {
+		$this->register_pue_stub();
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', false );
+
+		set_transient( self::CACHE_KEY, wp_json_encode( false ), HOUR_IN_SECONDS );
+
+		$this->assertFalse( Settings::is_licensed_plugin() );
 	}
 
 	/**
