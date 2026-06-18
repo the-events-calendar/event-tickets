@@ -50,7 +50,7 @@ class Application_Fee {
 			return Value::create();
 		}
 
-		if ( Settings::is_licensed_plugin() ) {
+		if ( Settings::is_licensed_plugin( true ) ) {
 			return Value::create();
 		}
 

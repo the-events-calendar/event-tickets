@@ -92,7 +92,7 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 	 * @test
 	 */
 	public function should_return_false_when_event_tickets_plus_is_not_active(): void {
-		if ( class_exists( 'Tribe__Tickets_Plus__PUE', false ) ) {
+		if ( did_action( 'tec_tickets_plus_fully_loaded' ) ) {
 			$this->markTestSkipped( 'Event Tickets Plus is loaded in this environment.' );
 		}
 
@@ -127,7 +127,7 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 		$value = new Value( 100.0 );
 		$fee   = Application_Fee::calculate( $value );
 
-		$this->assertFalse( Settings::is_licensed_plugin() );
+		$this->assertFalse( Settings::is_licensed_plugin( true ) );
 		$this->assertGreaterThan( 0, $fee->get_integer(), 'Application fee should apply without a valid license.' );
 	}
 
@@ -140,5 +140,9 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 		require_once dirname( __DIR__, 5 ) . '/_support/Stubs/Tribe__Tickets_Plus__PUE_Stub.php';
 
 		tribe_singleton( \Tribe__Tickets_Plus__PUE::class, new \Tribe__Tickets_Plus__PUE() );
+
+		if ( ! did_action( 'tec_tickets_plus_fully_loaded' ) ) {
+			do_action( 'tec_tickets_plus_fully_loaded' );
+		}
 	}
 }

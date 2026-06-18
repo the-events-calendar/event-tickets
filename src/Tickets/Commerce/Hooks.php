@@ -18,23 +18,23 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
-use TEC\Tickets\Commerce\Gateways\Manager;
-use Tribe\Tickets\Admin\Settings as Ticket_Settings;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
+use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
+use TEC\Tickets\Commerce\Gateways\Stripe\Hooks as Stripe_Hooks;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Hooks as Tickets_Hooks;
+use Tribe\Tickets\Admin\Settings as Ticket_Settings;
 use Tribe__Date_Utils;
 use WP_Admin_Bar;
 use WP_Post;
 use WP_Query;
 use WP_User_Query;
-use TEC\Tickets\Hooks as Tickets_Hooks;
-use TEC\Tickets\Commerce\Gateways\Stripe\Hooks as Stripe_Hooks;
-use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
 /**
  * Class Hooks.
  *
@@ -1198,7 +1198,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Clears the cached Event Tickets Plus license validation result.
 	 *
-	 * @since 5.28.5
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -1209,18 +1209,16 @@ class Hooks extends Service_Provider {
 	/**
 	 * Clears the license cache when Event Tickets Plus Uplink status changes.
 	 *
-	 * @since 5.28.5
+	 * @since TBD
 	 *
-	 * @param object $plugin The Uplink plugin resource.
+	 * @param object|string $plugin The Uplink plugin resource or slug.
 	 *
 	 * @return void
 	 */
 	public function maybe_clear_licensed_plugin_cache_on_uplink_change( $plugin ): void {
-		if ( ! is_object( $plugin ) || ! method_exists( $plugin, 'get_slug' ) ) {
-			return;
-		}
+		$slug = is_string( $plugin ) ? $plugin : ( is_object( $plugin ) && method_exists( $plugin, 'get_slug' ) ? $plugin->get_slug() : '' );
 
-		if ( 'event-tickets-plus' !== $plugin->get_slug() ) {
+		if ( 'event-tickets-plus' !== $slug ) {
 			return;
 		}
 
@@ -1230,7 +1228,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Clears the license cache when Event Tickets Plus is activated or deactivated.
 	 *
-	 * @since 5.28.5
+	 * @since TBD
 	 *
 	 * @param string $plugin       The plugin basename.
 	 * @param bool   $network_wide Whether the plugin was activated network-wide.

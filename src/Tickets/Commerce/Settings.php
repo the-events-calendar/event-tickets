@@ -624,30 +624,27 @@ class Settings {
 	/**
 	 * Is a valid license of Event Tickets Plus available?
 	 *
-	 * A live license check always runs before returning true so the application fee
-	 * is only waived for currently valid licenses. Cached "not licensed" results may
-	 * be reused to limit repeated validation requests.
-	 *
 	 * @since 5.3.0
 	 * @since 5.8.4 Added caching.
+	 * @since TBD Fixed stale cache bypass when revalidating. Cached invalid results may be reused to limit repeated validation requests.
 	 *
 	 * @param bool $revalidate whether to submit a new validation API request.
 	 *
 	 * @return bool
 	 */
 	public static function is_licensed_plugin( $revalidate = false ) {
-		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
+		if ( ! did_action( 'tec_tickets_plus_fully_loaded' ) || ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
 			return false;
 		}
 
-		$pue       = tribe( \Tribe__Tickets_Plus__PUE::class );
-		$cache_key = self::get_licensed_plugin_cache_key();
+		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
 
-		if ( $pue->is_current_license_valid( $revalidate ) ) {
-			set_transient( $cache_key, wp_json_encode( true ), HOUR_IN_SECONDS );
-
+		// Attempt to use the immediate result of is_current_license_valid if revalidate is false.
+		if ( ! $revalidate && $pue->is_current_license_valid() ) {
 			return true;
 		}
+
+		$cache_key = self::get_licensed_plugin_cache_key();
 
 		if ( ! $revalidate ) {
 			$cached = get_transient( $cache_key );
