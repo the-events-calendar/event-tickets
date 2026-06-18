@@ -90,19 +90,7 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 	 * @return void
 	 */
 	private function register_pue_stub(): void {
-		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE', false ) ) {
-			// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound
-			class Tribe__Tickets_Plus__PUE {
-				/**
-				 * @param bool $revalidate Whether to revalidate the license.
-				 *
-				 * @return bool
-				 */
-				public function is_current_license_valid( $revalidate = false ) {
-					return false;
-				}
-			}
-		}
+		require_once dirname( __DIR__, 5 ) . '/_support/Stubs/Tribe__Tickets_Plus__PUE_Stub.php';
 
 		tribe_singleton( \Tribe__Tickets_Plus__PUE::class, new \Tribe__Tickets_Plus__PUE() );
 	}
