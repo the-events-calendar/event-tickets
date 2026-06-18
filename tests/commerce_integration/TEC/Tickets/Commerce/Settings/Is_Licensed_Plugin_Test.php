@@ -3,7 +3,9 @@
 namespace TEC\Tickets\Commerce\Settings;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Gateways\Stripe\Application_Fee;
 use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tests\Traits\With_Uopz;
 
 /**
@@ -82,6 +84,51 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 		Settings::clear_licensed_plugin_cache();
 
 		$this->assertTrue( Settings::is_licensed_plugin() );
+	}
+
+	/**
+	 * Ensures the fee is not waived when Event Tickets Plus is not active.
+	 *
+	 * @test
+	 */
+	public function should_return_false_when_event_tickets_plus_is_not_active(): void {
+		if ( class_exists( 'Tribe__Tickets_Plus__PUE', false ) ) {
+			$this->markTestSkipped( 'Event Tickets Plus is loaded in this environment.' );
+		}
+
+		$this->assertFalse( Settings::is_licensed_plugin() );
+	}
+
+	/**
+	 * Ensures a stale cached valid license does not waive fees after invalidation.
+	 *
+	 * @test
+	 */
+	public function should_not_trust_stale_cached_valid_license(): void {
+		$this->register_pue_stub();
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', false );
+
+		set_transient( self::CACHE_KEY, wp_json_encode( true ), HOUR_IN_SECONDS );
+
+		$this->assertFalse( Settings::is_licensed_plugin() );
+	}
+
+	/**
+	 * Ensures the Stripe application fee is applied without a valid license.
+	 *
+	 * @test
+	 */
+	public function should_apply_application_fee_when_license_is_invalid(): void {
+		$this->register_pue_stub();
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', false );
+
+		set_transient( self::CACHE_KEY, wp_json_encode( true ), HOUR_IN_SECONDS );
+
+		$value = new Value( 100.0 );
+		$fee   = Application_Fee::calculate( $value );
+
+		$this->assertFalse( Settings::is_licensed_plugin() );
+		$this->assertGreaterThan( 0, $fee->get_integer(), 'Application fee should apply without a valid license.' );
 	}
 
 	/**

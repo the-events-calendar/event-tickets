@@ -110,7 +110,8 @@ class Hooks extends Service_Provider {
 		add_action( 'update_option_pue_install_key_event_tickets_plus', [ $this, 'clear_licensed_plugin_cache' ] );
 		add_action( 'stellarwp/uplink/tec/connected', [ $this, 'maybe_clear_licensed_plugin_cache_on_uplink_change' ] );
 		add_action( 'stellarwp/uplink/tec/disconnected', [ $this, 'maybe_clear_licensed_plugin_cache_on_uplink_change' ] );
-		add_action( 'activated_plugin', [ $this, 'maybe_clear_licensed_plugin_cache_on_plugin_activation' ], 10, 2 );
+		add_action( 'activated_plugin', [ $this, 'maybe_clear_licensed_plugin_cache_on_plugin_change' ], 10, 2 );
+		add_action( 'deactivated_plugin', [ $this, 'maybe_clear_licensed_plugin_cache_on_plugin_change' ], 10, 2 );
 	}
 
 	/**
@@ -1227,7 +1228,7 @@ class Hooks extends Service_Provider {
 	}
 
 	/**
-	 * Clears the license cache when Event Tickets Plus is activated.
+	 * Clears the license cache when Event Tickets Plus is activated or deactivated.
 	 *
 	 * @since 5.28.5
 	 *
@@ -1236,7 +1237,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function maybe_clear_licensed_plugin_cache_on_plugin_activation( $plugin, $network_wide ): void {
+	public function maybe_clear_licensed_plugin_cache_on_plugin_change( $plugin, $network_wide ): void {
 		unset( $network_wide );
 
 		if ( 'event-tickets-plus/event-tickets-plus.php' !== $plugin ) {
