@@ -1018,9 +1018,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		// Always expose optout status so callers know the attendee's preference.
 		$attendee_data['optout'] = tribe_is_truthy( Arr::get( $attendee, 'optout', false ) );
-		// Only show the attendee name to users with manage access — the name is PII and must not be publicly accessible.
-		if ( $has_manage_access ) {
-			// Prefer holder_name, fall back to purchaser_name.
+
+		// Show attendee name when the attendee gave positive consent (optout=false) or the user has manage access.
+		if ( ! $attendee_data['optout'] || $has_manage_access ) {
 			$attendee_data['title'] = Arr::get_first_set( $attendee, [ 'holder_name', 'purchaser_name' ], '' );
 		}
 

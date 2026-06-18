@@ -357,6 +357,7 @@ class SingleTicketCest extends BaseRestCest {
 			'modified'          => $first_attendee_post->post_modified,
 			'modified_utc'      => $first_attendee_post->post_modified_gmt,
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
+			'title'             => $first_attendee_object['holder_name'],
 			'optout'            => false,
 			'ticket'            => [
 				'id'              => $ticket_id,
