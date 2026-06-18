@@ -50,6 +50,7 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 	public function should_bypass_stale_cache_when_revalidating(): void {
 		$this->register_pue_stub();
 		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', true );
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE__Checker_Stub', 'validate_key', [ 'status' => 1 ] );
 
 		set_transient( self::CACHE_KEY, wp_json_encode( false ), HOUR_IN_SECONDS );
 
@@ -78,6 +79,7 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 	public function should_recheck_license_after_cache_is_cleared(): void {
 		$this->register_pue_stub();
 		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', true );
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE__Checker_Stub', 'validate_key', [ 'status' => 1 ] );
 
 		set_transient( self::CACHE_KEY, wp_json_encode( false ), HOUR_IN_SECONDS );
 
@@ -141,6 +143,36 @@ class Is_Licensed_Plugin_Test extends WPTestCase {
 		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', false );
 
 		set_transient( self::CACHE_KEY, wp_json_encode( false ), HOUR_IN_SECONDS );
+
+		$this->assertFalse( Settings::is_licensed_plugin() );
+	}
+
+	/**
+	 * Ensures stale Uplink state does not waive fees when server validation fails.
+	 *
+	 * @test
+	 */
+	public function should_apply_fee_when_local_license_check_is_stale(): void {
+		$this->register_pue_stub();
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE', 'is_current_license_valid', true );
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE__Checker_Stub', 'validate_key', [ 'status' => 0 ] );
+
+		$this->assertFalse( Settings::is_licensed_plugin() );
+
+		$value = new Value( 100.0 );
+		$fee   = Application_Fee::calculate( $value );
+
+		$this->assertGreaterThan( 0, $fee->get_integer(), 'Application fee should apply when server validation fails.' );
+	}
+
+	/**
+	 * Ensures fees apply when Event Tickets Plus is active without a license key.
+	 *
+	 * @test
+	 */
+	public function should_apply_fee_when_license_key_is_empty(): void {
+		$this->register_pue_stub();
+		$this->set_class_fn_return( 'Tribe__Tickets_Plus__PUE__Checker_Stub', 'get_key', '' );
 
 		$this->assertFalse( Settings::is_licensed_plugin() );
 	}

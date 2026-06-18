@@ -641,13 +641,22 @@ class Settings {
 			return false;
 		}
 
-		$pue       = tribe( \Tribe__Tickets_Plus__PUE::class );
-		$cache_key = self::get_licensed_plugin_cache_key();
+		$pue          = tribe( \Tribe__Tickets_Plus__PUE::class );
+		$pue_instance = $pue->get_pue();
+		$cache_key    = self::get_licensed_plugin_cache_key();
 
-		if ( $pue->is_current_license_valid( $revalidate ) ) {
-			set_transient( $cache_key, wp_json_encode( true ), HOUR_IN_SECONDS );
+		if ( empty( $pue_instance ) ) {
+			set_transient( $cache_key, wp_json_encode( false ), HOUR_IN_SECONDS );
 
-			return true;
+			return false;
+		}
+
+		$license_key = $pue_instance->get_key();
+
+		if ( empty( $license_key ) ) {
+			set_transient( $cache_key, wp_json_encode( false ), HOUR_IN_SECONDS );
+
+			return false;
 		}
 
 		if ( ! $revalidate ) {
@@ -659,9 +668,21 @@ class Settings {
 			if ( false === $cached_value ) {
 				return false;
 			}
+
+			if ( true === $cached_value ) {
+				return true;
+			}
 		}
 
-		$is_license_valid = $pue->is_current_license_valid( $revalidate );
+		if ( ! $pue->is_current_license_valid( $revalidate ) ) {
+			set_transient( $cache_key, wp_json_encode( false ), HOUR_IN_SECONDS );
+
+			return false;
+		}
+
+		// Confirm with the licensing server. is_key_valid() may report valid via stale Uplink state.
+		$response         = $pue_instance->validate_key( $license_key );
+		$is_license_valid = ! empty( $response['status'] ) && tribe_is_truthy( $response['status'] );
 
 		set_transient( $cache_key, wp_json_encode( $is_license_valid ), HOUR_IN_SECONDS );
 
@@ -671,7 +692,7 @@ class Settings {
 	/**
 	 * Clears the cached Event Tickets Plus license validation result.
 	 *
-	 * @since TBD
+	 * @since 5.28.4.1
 	 *
 	 * @return void
 	 */
@@ -682,7 +703,7 @@ class Settings {
 	/**
 	 * Returns the transient key used to cache license validation results.
 	 *
-	 * @since TBD
+	 * @since 5.28.4.1
 	 *
 	 * @return string
 	 */
