@@ -1198,7 +1198,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Clears the cached Event Tickets Plus license validation result.
 	 *
-	 * @since TBD
+	 * @since 5.28.4.1
 	 *
 	 * @return void
 	 */
@@ -1209,7 +1209,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Clears the license cache when Event Tickets Plus Uplink status changes.
 	 *
-	 * @since TBD
+	 * @since 5.28.4.1
 	 *
 	 * @param object|string $plugin The Uplink plugin resource or slug.
 	 *
@@ -1228,7 +1228,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Clears the license cache when Event Tickets Plus is activated or deactivated.
 	 *
-	 * @since TBD
+	 * @since 5.28.4.1
 	 *
 	 * @param string $plugin       The plugin basename.
 	 * @param bool   $network_wide Whether the plugin was activated network-wide.

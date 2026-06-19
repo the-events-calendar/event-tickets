@@ -195,7 +195,7 @@ class Payment_Intent {
 	 * Reused payment intents must reflect the current cart total and application fee so license
 	 * changes and cart updates are not charged using stale Stripe data.
 	 *
-	 * @since TBD
+	 * @since 5.28.4.1
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
