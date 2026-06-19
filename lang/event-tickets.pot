@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.28.3.2\n"
+"Project-Id-Version: Event Tickets 5.28.4.1\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-10T18:30:57+00:00\n"
+"POT-Creation-Date: 2026-06-19T12:44:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -401,7 +401,7 @@ msgstr ""
 #: src/Tribe/Admin/Columns/Tickets.php:58
 #: src/Tribe/Admin/Manager/Service_Provider.php:173
 #: src/Tribe/Attendees.php:295
-#: src/Tribe/Commerce/PayPal/Main.php:488
+#: src/Tribe/Commerce/PayPal/Main.php:492
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
 #: src/Tickets/Blocks/Tickets/app/editor/action-buttons/attendees/template.js:21
 msgid "Attendees"
@@ -524,7 +524,7 @@ msgstr ""
 
 #: src/admin-views/commerce/metabox/sale-price.php:80
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:826
-#: src/Tickets/Commerce/Hooks.php:1088
+#: src/Tickets/Commerce/Hooks.php:1095
 msgid "to"
 msgstr ""
 
@@ -3378,7 +3378,7 @@ msgstr ""
 #: src/Tickets/Commerce/Order.php:359
 #: src/Tickets/Commerce/Reports/Orders.php:242
 #: src/Tickets/Commerce/Reports/Orders_Tab.php:33
-#: src/Tribe/Commerce/PayPal/Main.php:500
+#: src/Tribe/Commerce/PayPal/Main.php:504
 #: src/Tickets/Blocks/Tickets/app/editor/action-buttons/orders/template.js:21
 msgid "Orders"
 msgstr ""
@@ -3699,7 +3699,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:115
 #: src/Tickets/Commerce/Admin_Tables/Orders_Table.php:162
-#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent_Handler.php:336
+#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent_Handler.php:342
 #: src/Tickets/Commerce/Order.php:360
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:98
 msgid "Order"
@@ -8149,7 +8149,7 @@ msgstr ""
 
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
-#: src/Tribe/Commerce/PayPal/Main.php:1974
+#: src/Tribe/Commerce/PayPal/Main.php:1978
 #: src/Tribe/RSVP.php:2515
 #, php-format
 msgid "Return to the %1$sAttendees Report%2$s."
@@ -8157,7 +8157,7 @@ msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
-#: src/Tribe/Commerce/PayPal/Main.php:1981
+#: src/Tribe/Commerce/PayPal/Main.php:1985
 #: src/Tribe/RSVP.php:2523
 #, php-format
 msgid "Post updated. %1$s"
@@ -8165,26 +8165,26 @@ msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
-#: src/Tribe/Commerce/PayPal/Main.php:1985
+#: src/Tribe/Commerce/PayPal/Main.php:1989
 #: src/Tribe/RSVP.php:2528
 #, php-format
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
-#: src/Tribe/Commerce/PayPal/Main.php:1988
+#: src/Tribe/Commerce/PayPal/Main.php:1992
 #: src/Tribe/RSVP.php:2531
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
-#: src/Tribe/Commerce/PayPal/Main.php:1989
+#: src/Tribe/Commerce/PayPal/Main.php:1993
 #: src/Tribe/RSVP.php:2532
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
-#: src/Tribe/Commerce/PayPal/Main.php:1990
+#: src/Tribe/Commerce/PayPal/Main.php:1994
 #: src/Tribe/RSVP.php:2533
 msgid "Post draft updated."
 msgstr ""
@@ -8677,7 +8677,7 @@ msgstr ""
 msgid "Stripe reports that it is unable to process charges with the selected Payment Methods. Usually this means that one of the methods selected is not available or not configured in your Stripe account. The errors you see below were returned from Stripe, please correct any inconsistencies or contact Stripe support, then try again: <div class=\"stripe-errors\">%s</div>"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:321
+#: src/Tickets/Commerce/Gateways/Stripe/Payment_Intent.php:376
 msgid "Payment methods accepted cannot be empty"
 msgstr ""
 
@@ -8920,23 +8920,23 @@ msgstr ""
 msgid "Event was received but events of type %1$s are not currently handled."
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1085
+#: src/Tickets/Commerce/Hooks.php:1092
 msgid "Add sale price"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1086
+#: src/Tickets/Commerce/Hooks.php:1093
 msgid "Sale Price"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1087
+#: src/Tickets/Commerce/Hooks.php:1094
 msgid "On sale from"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1089
+#: src/Tickets/Commerce/Hooks.php:1096
 msgid "Sale price must be lower than the regular ticket price."
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:1090
+#: src/Tickets/Commerce/Hooks.php:1097
 #: src/views/v2/tickets/item/content/sale-label.php:35
 msgid "On Sale"
 msgstr ""
@@ -8946,7 +8946,7 @@ msgid "Tribe Commerce ( Legacy PayPal, not recommended )"
 msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:70
-#: src/Tribe/Commerce/PayPal/Main.php:3027
+#: src/Tribe/Commerce/PayPal/Main.php:3031
 #: src/Tribe/RSVP.php:2170
 msgid "(deleted)"
 msgstr ""
@@ -9469,12 +9469,12 @@ msgid "Orders for: %1$s [#%2$d]"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Orders.php:119
-#: src/Tribe/Commerce/PayPal/Main.php:1790
+#: src/Tribe/Commerce/PayPal/Main.php:1794
 msgid "Sales report"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Orders.php:160
-#: src/Tribe/Commerce/PayPal/Main.php:1816
+#: src/Tribe/Commerce/PayPal/Main.php:1820
 msgid "Report"
 msgstr ""
 
@@ -9761,7 +9761,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Ticket.php:253
 #: src/Tribe/Admin/Settings.php:258
-#: src/Tribe/Commerce/PayPal/Main.php:472
+#: src/Tribe/Commerce/PayPal/Main.php:476
 #: src/views/seating/iframe-view.php:41
 msgid "Tickets"
 msgstr ""
@@ -12653,13 +12653,13 @@ msgid "Your order is currently processing. Once completed, you'll receive your %
 msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Handler/Invalid_PDT.php:74
-#: src/Tribe/Commerce/PayPal/Handler/IPN.php:147
+#: src/Tribe/Commerce/PayPal/Handler/IPN.php:155
 #: src/Tribe/Commerce/PayPal/Handler/PDT.php:136
 msgctxt "a PayPal configuration status"
 msgid "incomplete"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Handler/IPN.php:143
+#: src/Tribe/Commerce/PayPal/Handler/IPN.php:151
 msgctxt "a PayPal configuration status"
 msgid "complete"
 msgstr ""
@@ -12677,11 +12677,11 @@ msgctxt "ticket provider"
 msgid "Tribe Commerce"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:474
+#: src/Tribe/Commerce/PayPal/Main.php:478
 msgid "Tribe Commerce Tickets"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:475
+#: src/Tribe/Commerce/PayPal/Main.php:479
 msgid "Tribe Commerce Ticket"
 msgstr ""
 
