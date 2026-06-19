@@ -310,31 +310,6 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-		/*
-		 * Clear stale IAC localStorage entries. When the admin saves IAC via the
-		 * modal, the new value is written to localStorage so the frontend can reflect
-		 * it immediately (see iac-admin.js and obj.hasIac). Once the post is saved
-		 * and the page reloads, the server-rendered `data-iac` attribute reflects the
-		 * database value. At that point the localStorage entry is no longer needed
-		 * and is removed so the two sources cannot drift apart over time.
-		 */
-		$( obj.selectors.container ).each( function () {
-			const $container = $( this );
-			const rsvpId = $container.data( 'rsvp-id' );
-			if ( ! rsvpId ) {
-				return;
-			}
-			const key = obj.iacStorageKey( rsvpId );
-			const storedIac = localStorage.getItem( key );
-			if ( storedIac === null ) {
-				return;
-			}
-			const serverIac = $container.data( 'iac' ) || 'none';
-			if ( storedIac === serverIac ) {
-				localStorage.removeItem( key );
-			}
-		} );
-
 		$document.on( 'afterSetup.tribeTicketsRsvp', tribe.tickets.rsvp.manager.selectors.container, obj.init );
 	};
 
