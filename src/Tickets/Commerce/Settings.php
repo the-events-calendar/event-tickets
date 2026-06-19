@@ -630,7 +630,7 @@ class Settings {
 	 *
 	 * @since 5.3.0
 	 * @since 5.8.4 Added caching.
-	 * @since TBD Fixed stale cache bypass when revalidating. Cached invalid results may be reused to limit repeated validation requests.
+	 * @since 5.28.4.1 Fixed stale cache bypass when revalidating. Cached invalid results may be reused to limit repeated validation requests.
 	 *
 	 * @param bool $revalidate whether to submit a new validation API request.
 	 *
