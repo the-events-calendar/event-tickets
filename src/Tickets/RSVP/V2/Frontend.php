@@ -87,7 +87,15 @@ class Frontend {
 			return $content;
 		}
 
-		// Allow extensions (e.g. ET+) to populate additional ticket properties such as IAC from meta.
+		/**
+		 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+		 * @param int                           $event_id  The event post ID.
+		 * @param int                           $ticket_id The ticket post ID.
+		 */
 		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
 
 		$rsvp_template_args = [
