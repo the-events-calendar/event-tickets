@@ -19,7 +19,7 @@
  * @var bool|null                   $is_going             Whether the attendee is going. Null when unknown.
  *
  * @since 5.0.0
- * @version 5.0.0
+ * @version TBD
  */
 
 defined( 'ABSPATH' ) || die();
