@@ -15,7 +15,7 @@ class Attendees_Test extends WPTestCase {
 	use Attendee_Maker;
 	use Order_Maker;
 
-	public static function get_rsvp_attendees_data_provider(): array {
+	public function get_rsvp_attendees_data_provider(): array {
 		return [
 			'no attendees' => [
 				function () {
@@ -100,7 +100,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider get_rsvp_attendees_data_provider
 	 */
 	public function test_get_rsvp_attendees_by_id_with_ticket_id( Closure $fixture ): void {
-		[ , $ticket_id, , $expected_attendees_ids ] = Closure::bind( $fixture, $this, self::class )();
+		[ , $ticket_id, , $expected_attendees_ids ] = $fixture();
 
 		$attendees = tribe( Attendees::class );
 
@@ -113,7 +113,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider get_rsvp_attendees_data_provider
 	 */
 	public function test_get_rsvp_attendees_by_id_with_post_id( Closure $fixture ): void {
-		[ $post_id, , , $expected_attendees_ids ] = Closure::bind( $fixture, $this, self::class )();
+		[ $post_id, , , $expected_attendees_ids ] = $fixture();
 
 		$attendees = tribe( Attendees::class );
 
@@ -126,7 +126,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider get_rsvp_attendees_data_provider
 	 */
 	public function test_get_rsvp_attendees_by_id_with_order_id( Closure $fixture ): void {
-		[ $post_id, , $order_ids ] = Closure::bind( $fixture, $this, self::class )();
+		[ $post_id, , $order_ids ] = $fixture();
 
 		$attendees = tribe( Attendees::class );
 
@@ -140,7 +140,7 @@ class Attendees_Test extends WPTestCase {
 	 * Each fixture returns [ $args, $post_id, $user_id, $context ]; the flag is whether the
 	 * RSVP-exclusion filter should be added for that combination.
 	 */
-	public static function exclude_rsvp_tickets_data_provider(): array {
+	public function exclude_rsvp_tickets_data_provider(): array {
 		return [
 			'unchanged for non-matching context' => [
 				function () {
@@ -214,7 +214,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider exclude_rsvp_tickets_data_provider
 	 */
 	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count( Closure $fixture, bool $adds_filter ): void {
-		[ $args, $post_id, $user_id, $context ] = Closure::bind( $fixture, $this, self::class )();
+		[ $args, $post_id, $user_id, $context ] = $fixture();
 
 		$attendees = tribe( Attendees::class );
 
@@ -275,7 +275,7 @@ class Attendees_Test extends WPTestCase {
 	 * Each fixture returns an attendees-table row item for which the status label should be
 	 * returned unchanged (non-RSVP rows, or RSVP rows that carry no attendee ID).
 	 */
-	public static function modify_status_display_unchanged_data_provider(): array {
+	public function modify_status_display_unchanged_data_provider(): array {
 		return [
 			'non-rsvp item' => [
 				function () {
@@ -295,7 +295,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider modify_status_display_unchanged_data_provider
 	 */
 	public function test_modify_status_display_returns_label_unchanged( Closure $fixture ): void {
-		$item      = Closure::bind( $fixture, $this, self::class )();
+		$item      = $fixture();
 		$attendees = tribe( Attendees::class );
 
 		$this->assertSame( 'ORIGINAL', $attendees->modify_status_display( 'ORIGINAL', $item ) );
@@ -305,7 +305,7 @@ class Attendees_Test extends WPTestCase {
 	 * Each fixture returns an RSVP row item; the test asserts the rendered label, its CSS class
 	 * and, where relevant, a label that must NOT appear.
 	 */
-	public static function modify_status_display_label_data_provider(): array {
+	public function modify_status_display_label_data_provider(): array {
 		return [
 			'going label' => [
 				function () {
@@ -340,7 +340,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider modify_status_display_label_data_provider
 	 */
 	public function test_modify_status_display_shows_label( Closure $fixture, string $expected_label, string $expected_class, ?string $not_expected ): void {
-		$item      = Closure::bind( $fixture, $this, self::class )();
+		$item      = $fixture();
 		$attendees = tribe( Attendees::class );
 
 		$output = $attendees->modify_status_display( 'ORIGINAL', $item );
@@ -357,7 +357,7 @@ class Attendees_Test extends WPTestCase {
 	 * Each fixture returns a row item; the expected value is what the check-in cell should render
 	 * for it (content is hidden only for "not going" RSVP attendees).
 	 */
-	public static function modify_checkin_display_data_provider(): array {
+	public function modify_checkin_display_data_provider(): array {
 		return [
 			'non-rsvp item keeps content' => [
 				function () {
@@ -386,7 +386,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider modify_checkin_display_data_provider
 	 */
 	public function test_modify_checkin_display( Closure $fixture, string $expected ): void {
-		$item      = Closure::bind( $fixture, $this, self::class )();
+		$item      = $fixture();
 		$attendees = tribe( Attendees::class );
 
 		$this->assertSame( $expected, $attendees->modify_checkin_display( 'CONTENT', $item ) );
@@ -396,7 +396,7 @@ class Attendees_Test extends WPTestCase {
 	 * Each fixture returns a row item; the flag is whether the check-in row action should survive
 	 * (it is removed only for "not going" RSVP attendees). The delete action is always kept.
 	 */
-	public static function modify_row_actions_data_provider(): array {
+	public function modify_row_actions_data_provider(): array {
 		return [
 			'going attendee keeps checkin' => [
 				function () {
@@ -425,7 +425,7 @@ class Attendees_Test extends WPTestCase {
 	 * @dataProvider modify_row_actions_data_provider
 	 */
 	public function test_modify_row_actions( Closure $fixture, bool $keeps_checkin ): void {
-		$item      = Closure::bind( $fixture, $this, self::class )();
+		$item      = $fixture();
 		$attendees = tribe( Attendees::class );
 		$actions   = [
 			'tickets_checkin' => '<a class="tickets_checkin">Check In</a>',
