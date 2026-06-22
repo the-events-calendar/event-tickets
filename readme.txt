@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.28.4
+Stable tag: 5.28.4.1
 Requires at least: 6.8
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -198,6 +198,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.28.4.1] 2026-06-19 =
+
+* Fix - Ensure the 2% Tickets Commerce application fee is waived after a valid Event Tickets Plus license is activated on Stripe and Square. [SMTNC-1519]
 
 = [5.28.4] 2026-06-15 =
 

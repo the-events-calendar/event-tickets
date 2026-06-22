@@ -16,8 +16,8 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use Tribe__Template;
 use Tribe__Field_Conditional;
+use Tribe__Template;
 use Tribe__Tickets__Main;
 use WP_Admin_Bar;
 
@@ -624,42 +624,87 @@ class Settings {
 	/**
 	 * Is a valid license of Event Tickets Plus available?
 	 *
+	 * A live license check always runs before returning true so the application fee
+	 * is only waived for currently valid licenses. Cached "not licensed" results may
+	 * be reused to limit repeated validation requests.
+	 *
 	 * @since 5.3.0
 	 * @since 5.8.4 Added caching.
+	 * @since 5.28.4.1 Fixed stale cache bypass when revalidating. Cached invalid results may be reused to limit repeated validation requests.
 	 *
 	 * @param bool $revalidate whether to submit a new validation API request.
 	 *
 	 * @return bool
 	 */
 	public static function is_licensed_plugin( $revalidate = false ) {
-		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
+		if ( ! did_action( 'tec_tickets_plus_fully_loaded' ) || ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
 			return false;
 		}
 
-		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
+		$pue          = tribe( \Tribe__Tickets_Plus__PUE::class );
+		$pue_instance = $pue->get_pue();
+		$cache_key    = self::get_licensed_plugin_cache_key();
 
-		// Attempt to use the immediate result of is_current_license_valid if revalidate is false.
-		if ( ! $revalidate && $pue->is_current_license_valid() ) {
-			return true;
+		if ( empty( $pue_instance ) ) {
+			set_transient( $cache_key, wp_json_encode( false ), HOUR_IN_SECONDS );
+
+			return false;
 		}
 
-		$cache_key = __METHOD__;
-		$cached    = get_transient( $cache_key );
+		$license_key = $pue_instance->get_key();
 
-		// Decode the JSON string. If $cached is false (transient not set), json_decode returns null.
-		$cached_value = false !== $cached ? json_decode( $cached, true ) : null;
+		if ( empty( $license_key ) ) {
+			set_transient( $cache_key, wp_json_encode( false ), HOUR_IN_SECONDS );
 
-		// Check explicitly for null to determine if the transient was not set.
-		if ( null !== $cached_value ) {
-			return $cached_value;
+			return false;
 		}
 
-		$is_license_valid = $pue->is_current_license_valid( $revalidate );
+		if ( ! $revalidate ) {
+			$cached = get_transient( $cache_key );
 
-		// Forcing a revalidate of is_current_license_valid can be expensive. Cache it for 1 hour.
+			// Decode the JSON string. If $cached is false (transient not set), json_decode returns null.
+			$cached_value = false !== $cached ? json_decode( $cached, true ) : null;
+
+			if ( false === $cached_value ) {
+				return false;
+			}
+		}
+
+		if ( ! $pue->is_current_license_valid( $revalidate ) ) {
+			set_transient( $cache_key, wp_json_encode( false ), HOUR_IN_SECONDS );
+
+			return false;
+		}
+
+		// Confirm with the licensing server. is_key_valid() may report valid via stale Uplink state.
+		$response         = $pue_instance->validate_key( $license_key );
+		$is_license_valid = ! empty( $response['status'] ) && tribe_is_truthy( $response['status'] );
+
 		set_transient( $cache_key, wp_json_encode( $is_license_valid ), HOUR_IN_SECONDS );
 
 		return $is_license_valid;
+	}
+
+	/**
+	 * Clears the cached Event Tickets Plus license validation result.
+	 *
+	 * @since 5.28.4.1
+	 *
+	 * @return void
+	 */
+	public static function clear_licensed_plugin_cache(): void {
+		delete_transient( self::get_licensed_plugin_cache_key() );
+	}
+
+	/**
+	 * Returns the transient key used to cache license validation results.
+	 *
+	 * @since 5.28.4.1
+	 *
+	 * @return string
+	 */
+	private static function get_licensed_plugin_cache_key(): string {
+		return self::class . '::is_licensed_plugin';
 	}
 
 	/**
