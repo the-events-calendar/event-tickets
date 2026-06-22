@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.28.4.1] 2026-06-19
+
+* Fix - Ensure the 2% Tickets Commerce application fee is waived after a valid Event Tickets Plus license is activated on Stripe and Square. [SMTNC-1519]
+
 ### [5.28.4] 2026-06-15
 
 * Fix - Ensure proper functionality of Tickets admin pages (Settings, Help Hub, and Notifications) on non-English installs. [SMTNC-1469]
