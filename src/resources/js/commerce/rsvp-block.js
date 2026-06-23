@@ -70,12 +70,12 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindGoing = function ( $container ) {
+		const rsvpId = $container.data( 'rsvp-id' );
 		let data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			nonce: TecRsvp.nonces.rsvpHandle,
 		};
-		const rsvpId = $container.data( 'rsvp-id' );
 		const $goingButton = $container.find( obj.selectors.goingButton );
 
 		$goingButton.each( function ( index, button ) {
@@ -101,12 +101,12 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindNotGoing = function ( $container ) {
+		const rsvpId = $container.data( 'rsvp-id' );
 		let data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			nonce: TecRsvp.nonces.rsvpHandle,
 		};
-		const rsvpId = $container.data( 'rsvp-id' );
 		const $notGoingButton = $container.find( obj.selectors.notGoingButton );
 
 		$notGoingButton.each( function ( index, button ) {

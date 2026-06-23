@@ -43,11 +43,11 @@ class Legacy_RSVP_Test extends WPTestCase {
 
 		add_filter( 'tec_tickets_commerce_get_ticket_legacy', $filter, 10, 3 );
 
-		// Commerce and Legacy RSVP share the `tec_tickets` object cache; clear it so get_ticket()
-		// rebuilds the ticket and runs the legacy filter registered above.
-		wp_cache_delete( (int) $ticket_id, 'tec_tickets' );
+		wp_cache_flush();
 
 		$ticket = $this->rsvp->get_ticket( $post_id, $ticket_id );
+
+		remove_filter( 'tec_tickets_commerce_get_ticket_legacy', $filter );
 
 		$this->assertInstanceOf( Ticket_Object::class, $ticket );
 		$this->assertSame( Constants::TC_RSVP_TYPE, $ticket->type() );
@@ -77,6 +77,8 @@ class Legacy_RSVP_Test extends WPTestCase {
 		add_filter( 'tec_tickets_commerce_get_ticket_legacy', $filter, 10, 3 );
 
 		$this->rsvp->get_ticket( $event_id, $ticket_id );
+
+		remove_filter( 'tec_tickets_commerce_get_ticket_legacy', $filter );
 
 		$this->assertFalse( $filter_called, 'Legacy commerce filter should not run for classic RSVP tickets.' );
 	}
@@ -131,6 +133,8 @@ class Legacy_RSVP_Test extends WPTestCase {
 			get_post( $post_id ),
 			false
 		);
+
+		remove_filter( 'tec_tickets_commerce_get_ticket_legacy', $filter );
 
 		$this->assertTrue( $filter_called, 'Frontend should apply the legacy commerce filter for TC-RSVP tickets.' );
 		$this->assertStringContainsString( 'data-iac="allowed"', $result );
