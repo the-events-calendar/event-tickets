@@ -76,7 +76,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
 		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
-		iac,
+		iac: selectors.getRSVPIAC( state ),
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {
@@ -84,7 +84,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		dispatch(
 			thunks.createRSVP( {
 				...payload,
-				postId,
+				postId: select( 'core/editor' ).getCurrentPostId(),
 			} )
 		);
 	} else {
@@ -93,7 +93,6 @@ const onConfirmClick = ( state, dispatch ) => () => {
 			thunks.updateRSVP( {
 				...payload,
 				id: selectors.getRSVPId( state ),
-				postId,
 			} )
 		);
 	}
