@@ -101,7 +101,6 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 		} );
 
 		if ( response && response.id ) {
-			localStorage.removeItem( 'tec_rsvp_attendee_info_' + postId );
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
 			dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
@@ -178,9 +177,6 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 			data,
 		} );
 
-		if ( payload.postId ) {
-			localStorage.removeItem( 'tec_rsvp_attendee_info_' + payload.postId );
-		}
 		dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
 		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 		dispatch( actions.setRSVPHasChanges( false ) );
