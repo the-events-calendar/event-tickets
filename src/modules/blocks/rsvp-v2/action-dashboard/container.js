@@ -84,7 +84,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		dispatch(
 			thunks.createRSVP( {
 				...payload,
-				postId: select( 'core/editor' ).getCurrentPostId(),
+				postId,
 			} )
 		);
 	} else {
@@ -93,6 +93,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 			thunks.updateRSVP( {
 				...payload,
 				id: selectors.getRSVPId( state ),
+				postId,
 			} )
 		);
 	}
