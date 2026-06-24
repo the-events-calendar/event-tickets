@@ -11,6 +11,7 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
@@ -92,6 +93,45 @@ class Attendees_Template_Test extends WPTestCase {
 				] );
 
 				return [ $post_id, $ticket_id, $attendee_ids, false, false ];
+			},
+		];
+
+		// RSVP V2 attendees only store the holder name under the Tickets Commerce meta key,
+		// not the legacy `_tribe_rsvp_full_name` key. The name template should read it from there.
+		yield 'attendees going with tickets commerce name meta' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+				$attendee_ids = $this->create_going_tc_rsvp_attendees( 2, $ticket_id, $post_id, [
+					'full_name'  => 'Commerce Name Holder',
+					'post_title' => 'Commerce Name Holder',
+				] );
+
+				// Intentionally leave the legacy `_tribe_rsvp_full_name` meta empty: the maker
+				// only sets the Tickets Commerce `full_name` meta, which is what V2 attendees use.
+
+				return [ $post_id, $ticket_id, $attendee_ids, true, true ];
+			},
+		];
+
+		// When neither name meta key is populated, the template falls back to the attendee post title.
+		yield 'attendees going falls back to post title' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+				$attendee_ids = $this->create_going_tc_rsvp_attendees( 2, $ticket_id, $post_id, [
+					'post_title' => 'Post Title Holder',
+				] );
+
+				// Clear both name meta keys so only the post title remains as a source.
+				foreach ( $attendee_ids as $attendee_id ) {
+					delete_post_meta( $attendee_id, Attendee::$full_name_meta_key );
+					delete_post_meta( $attendee_id, '_tribe_rsvp_full_name' );
+				}
+
+				return [ $post_id, $ticket_id, $attendee_ids, true, true ];
 			},
 		];
 	}
