@@ -14,7 +14,6 @@ use ArrayAccess;
 use Closure;
 use InvalidArgumentException;
 use ReturnTypeWillChange;
-use Serializable;
 use Tribe\Utils\Lazy_Events;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -28,7 +27,7 @@ use WP_Post;
  *
  * @package Tribe\Tickets\Events\Views\V2\Models
  */
-class Tickets implements ArrayAccess, Serializable {
+class Tickets implements ArrayAccess {
 	use Lazy_Events;
 
 	/**

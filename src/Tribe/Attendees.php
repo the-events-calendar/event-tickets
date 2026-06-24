@@ -810,7 +810,7 @@ class Tribe__Tickets__Attendees {
 
 		// Output the lines into the file.
 		foreach ( $items as $item ) {
-			fputcsv( $output, $item, $delimiter ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+			fputcsv( $output, $item, $delimiter, '"', '\\' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 		}
 
 		fclose( $output );

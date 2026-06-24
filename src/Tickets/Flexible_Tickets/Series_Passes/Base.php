@@ -570,7 +570,7 @@ class Base extends Controller {
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
 	 */
-	public function hide_header_image_option_from_ticket_settings( ?string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
+	public function hide_header_image_option_from_ticket_settings( ?string $html = null, string $file = '', array $name = [], ?Template $template = null, array $context = [] ): ?bool {
 		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
 			return $html;
 		}
@@ -688,7 +688,7 @@ class Base extends Controller {
 	 *
 	 * @return string|null The filtered HTML, or `false` to hide the option.
 	 */
-	public function hide_non_series_cart_footer_html( ?string $html = null, string $file, array $name, Template $template, array $context ) {
+	public function hide_non_series_cart_footer_html( ?string $html = null, string $file = '', array $name = [], ?Template $template = null, array $context = [] ) {
 		$template_data = $template->get_values();
 
 		// If the template data is not set, return the html.
@@ -789,7 +789,7 @@ class Base extends Controller {
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
 	 */
-	public function remove_settings_button_from_classic_metabox( ?string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
+	public function remove_settings_button_from_classic_metabox( ?string $html = null, string $file = '', array $name = [], ?Template $template = null, array $context = [] ): ?bool {
 		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
 			return $html;
 		}

@@ -925,7 +925,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_ticketed_status_query( ?string $query = null, bool $has_tickets, array $post_types ): ?string {
+	public function filter_ticketed_status_query( ?string $query = null, bool $has_tickets = false, array $post_types = [] ): ?string {
 		// Filter if working with Events alone.
 		if ( $post_types !== [ TEC::POSTTYPE ] ) {
 			return $query;
@@ -945,7 +945,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_ticketed_count_query( ?string $query = null, string $post_type ): ?string {
+	public function filter_ticketed_count_query( ?string $query = null, string $post_type = '' ): ?string {
 		if ( $post_type !== TEC::POSTTYPE ) {
 			return $query;
 		}
@@ -964,7 +964,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_unticketed_count_query( ?string $query = null, string $post_type ): ?string {
+	public function filter_unticketed_count_query( ?string $query = null, string $post_type = '' ): ?string {
 		if ( $post_type !== TEC::POSTTYPE ) {
 			return $query;
 		}
