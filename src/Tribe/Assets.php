@@ -525,7 +525,7 @@ class Tribe__Tickets__Assets {
 		 * Useful to force-load (or prevent loading of) the front-end ticket styles and scripts
 		 * in custom contexts that are not covered by the default checks.
 		 *
-		 * @since TBD
+		 * @since 5.28.5
 		 *
 		 * @param bool $should_enqueue Whether the front-end ticket assets should be enqueued.
 		 */
@@ -543,7 +543,7 @@ class Tribe__Tickets__Assets {
 	 * tickets-enabled archive. The purchase flow's attendee fields live on the dedicated
 	 * Attendee Registration page, which is handled separately in should_enqueue_frontend().
 	 *
-	 * @since TBD
+	 * @since 5.28.5
 	 *
 	 * @return bool Whether the front-end ticket assets are needed for the current request.
 	 */

@@ -124,7 +124,7 @@ class Tribe__Tickets__Query {
 	 * Returns the number of ticketed posts of a certain type.
 	 *
 	 * @since 5.6.7
-	 * @since TBD Resolve the `wp_posts` row via the primary key (`p.ID = pm.meta_value`) instead of `CONCAT( p.ID, '' )`, so the count no longer scans `wp_posts` proportionally to the post count.
+	 * @since 5.28.5 Resolve the `wp_posts` row via the primary key (`p.ID = pm.meta_value`) instead of `CONCAT( p.ID, '' )`, so the count no longer scans `wp_posts` proportionally to the post count.
 	 *
 	 * @param string $post_type The post type the ticketed count is being calculated for.
 	 *
@@ -175,7 +175,7 @@ class Tribe__Tickets__Query {
 	 * Returns the number of unticketed posts of a certain type.
 	 *
 	 * @since 5.6.7
-	 * @since TBD Derive the count as `total - ticketed` instead of a `NOT IN ( <ticketed subquery> )`, so it resolves with two indexed queries instead of scanning `wp_posts`.
+	 * @since 5.28.5 Derive the count as `total - ticketed` instead of a `NOT IN ( <ticketed subquery> )`, so it resolves with two indexed queries instead of scanning `wp_posts`.
 	 *
 	 * @param string $post_type The post type the unticketed count is being calculated for.
 	 *
