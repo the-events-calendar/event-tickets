@@ -784,7 +784,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return void The link is rendered.
 	 */
-	public function render_link_to_series( Ticket_object $ticket, ?int $post_id = null ): void {
+	public function render_link_to_series( Ticket_Object $ticket, ?int $post_id = null ): void {
 		if ( $post_id === $ticket->get_event_id() ) {
 			// Let the default controls render.
 			return;
