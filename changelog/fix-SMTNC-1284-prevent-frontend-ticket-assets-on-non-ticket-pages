@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Prevent the front-end ticket styles and scripts from loading on pages without tickets — such as the WooCommerce cart and checkout. [SMTNC-1284]
+Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
