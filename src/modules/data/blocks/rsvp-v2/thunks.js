@@ -101,6 +101,9 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 		} );
 
 		if ( response && response.id ) {
+			if ( postId && window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo ) {
+				delete window.tribe_event_tickets_plus.rsvp.pendingAttendeeInfo[ postId ];
+			}
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
 			dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
@@ -177,6 +180,9 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 			data,
 		} );
 
+		if ( payload.postId && window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo ) {
+			delete window.tribe_event_tickets_plus.rsvp.pendingAttendeeInfo[ payload.postId ];
+		}
 		dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
 		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 		dispatch( actions.setRSVPHasChanges( false ) );
