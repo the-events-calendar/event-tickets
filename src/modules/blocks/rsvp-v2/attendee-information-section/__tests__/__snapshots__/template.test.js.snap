@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RSVPAttendeeInformationSection should render attendee information section 1`] = `
+<div
+  className="tribe-editor__rsvp-attendee-information"
+>
+  <button
+    className="tribe-editor__rsvp-attendee-information__title-edit"
+    onClick={[Function]}
+    type="button"
+  >
+    <span
+      className="tribe-editor__rsvp-attendee-information__title tribe-common-h6 tribe-common-h--alt"
+    >
+      Attendee Information
+    </span>
+    <span
+      className="tribe-editor__rsvp-attendee-information__edit-icon"
+    >
+      edit
+    </span>
+  </button>
+  <div
+    className="tribe-editor__rsvp-attendee-information__fields tribe-common-b2"
+  >
+    Email, Phone
+  </div>
+</div>
+`;

@@ -9,13 +9,23 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { doAction } from '@wordpress/hooks';
+import { select } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import * as actions from '../rsvp/actions';
+import * as selectors from '../rsvp/selectors';
 import { getV2Config } from './config';
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { buildPersistPayload } from './build-persist-payload';
+
+/**
+ * Prevents overlapping create/update/delete requests.
+ *
+ * @type {boolean}
+ */
+let persistLocked = false;
 
 /**
  * Experimental endpoint acknowledgement header.
@@ -52,18 +62,15 @@ const formatDateTime = ( momentObj, timeStr ) => {
  * @param {Object} payload The RSVP data payload.
  * @return {Function} Redux thunk function.
  */
-export const createRSVP = ( payload ) => async ( dispatch ) => {
-	const config = getV2Config();
-	const {
-		capacity,
-		notGoingResponses,
-		startDateMoment,
-		startTime,
-		endDateMoment,
-		endTime,
-		postId,
-	} = payload;
+export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
+	if ( persistLocked || selectors.getRSVPIsLoading( getState() ) ) {
+		return;
+	}
 
+	const config = getV2Config();
+	const { capacity, notGoingResponses, startDateMoment, startTime, endDateMoment, endTime, postId } = payload;
+
+	persistLocked = true;
 	dispatch( actions.setRSVPIsLoading( true ) );
 
 	try {
@@ -115,6 +122,7 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
 		// eslint-disable-next-line no-console
 		console.error( 'Error creating V2 RSVP:', error );
 	} finally {
+		persistLocked = false;
 		dispatch( actions.setRSVPIsLoading( false ) );
 	}
 };
@@ -125,18 +133,15 @@ export const createRSVP = ( payload ) => async ( dispatch ) => {
  * @param {Object} payload The RSVP data payload.
  * @return {Function} Redux thunk function.
  */
-export const updateRSVP = ( payload ) => async ( dispatch ) => {
-	const config = getV2Config();
-	const {
-		id,
-		capacity,
-		notGoingResponses,
-		startDateMoment,
-		startTime,
-		endDateMoment,
-		endTime,
-	} = payload;
+export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
+	if ( persistLocked || selectors.getRSVPIsLoading( getState() ) ) {
+		return;
+	}
 
+	const config = getV2Config();
+	const { id, capacity, notGoingResponses, startDateMoment, startTime, endDateMoment, endTime } = payload;
+
+	persistLocked = true;
 	dispatch( actions.setRSVPIsLoading( true ) );
 
 	try {
@@ -169,6 +174,22 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 		} );
 
 		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
+		dispatch(
+			actions.setRSVPTempDetails( {
+				tempCapacity: capacity,
+				tempNotGoingResponses: notGoingResponses,
+				tempStartDate: payload.startDate,
+				tempStartDateInput: payload.startDateInput,
+				tempStartDateMoment: startDateMoment,
+				tempEndDate: payload.endDate,
+				tempEndDateInput: payload.endDateInput,
+				tempEndDateMoment: endDateMoment,
+				tempStartTime: startTime,
+				tempEndTime: endTime,
+				tempStartTimeInput: payload.startTimeInput,
+				tempEndTimeInput: payload.endTimeInput,
+			} )
+		);
 		dispatch( actions.setRSVPHasChanges( false ) );
 
 		/**
@@ -183,8 +204,44 @@ export const updateRSVP = ( payload ) => async ( dispatch ) => {
 		// eslint-disable-next-line no-console
 		console.error( 'Error updating V2 RSVP:', error );
 	} finally {
+		persistLocked = false;
 		dispatch( actions.setRSVPIsLoading( false ) );
 	}
+};
+
+/**
+ * Creates or updates the RSVP based on current editor state.
+ *
+ * @param {Object} overrides Optional field overrides for the payload.
+ * @return {Function} Redux thunk function.
+ */
+export const persistRSVP = ( overrides = {} ) => async ( dispatch, getState ) => {
+	const state = getState();
+
+	if ( persistLocked || selectors.getRSVPIsLoading( state ) ) {
+		return;
+	}
+
+	if ( selectors.getRSVPHasDurationError( state ) ) {
+		return;
+	}
+
+	const payload = buildPersistPayload( state, overrides );
+
+	if ( selectors.getRSVPCreated( state ) ) {
+		if ( ! payload.id ) {
+			return;
+		}
+
+		return dispatch( updateRSVP( payload ) );
+	}
+
+	return dispatch(
+		createRSVP( {
+			...payload,
+			postId: select( 'core/editor' ).getCurrentPostId(),
+		} )
+	);
 };
 
 /**
@@ -231,7 +288,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 	try {
 		// GET /tec/v1/tickets?event={postId}
 		const tickets = await apiFetch( {
-			path: `${ config.ticketsEndpoint }?event=${ postId }&type=${config.ticketType}`,
+			path: `${ config.ticketsEndpoint }?event=${ postId }&type=${ config.ticketType }`,
 			method: 'GET',
 			headers: TEC_EEA_HEADER,
 		} );
@@ -257,7 +314,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 				: momentUtil.toDate( endMoment );
 
 			// TEC REST V1 returns 'stock' for capacity, or -1 for unlimited.
-			const capacity = rsvp.capacity >= 0 ? rsvp.capacity : ( rsvp.stock >= 0 ? rsvp.stock : '' );
+			const capacity = rsvp.capacity >= 0 ? rsvp.capacity : rsvp.stock >= 0 ? rsvp.stock : '';
 			const notGoingResponses = rsvp.show_not_going || false;
 
 			// Hard-code title and description for V2.

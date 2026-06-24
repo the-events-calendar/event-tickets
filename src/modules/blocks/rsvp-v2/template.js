@@ -1,7 +1,8 @@
 /**
  * V2 RSVP Template
  *
- * This template extends the V1 RSVP template but uses V2 action-dashboard for API calls.
+ * Autosaves RSVP changes via REST. The create form opens on "Add RSVP" and
+ * persists field edits without an explicit save button.
  */
 
 /**
@@ -23,13 +24,12 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-// Use V2-specific components.
 import RSVPContainer from './container-panel/container';
-import RSVPInactiveBlock from '../rsvp/inactive-block/container';
+import RSVPInactiveBlock from './inactive-block/container';
 import MoveModal from '../../elements/move-modal';
 import { Card } from '../../elements';
-// Use V2 action-dashboard for create/update operations.
-import RSVPActionDashboard from './action-dashboard/container';
+import RSVPSidebarControls from './sidebar-controls/container';
+import { isSavedSummary } from './utils/block-state';
 import '../rsvp/style.pcss';
 
 /**
@@ -75,7 +75,6 @@ const RSVPControls = () => {
  * @param {boolean}  props.hasRecurrenceRules Whether the event has recurrence rules.
  * @param {Function} props.initializeRSVP     The function to initialize the RSVP.
  * @param {boolean}  props.isAddEditOpen      Whether the add/edit dashboard is open.
- * @param {boolean}  props.isInactive         Whether the RSVP is inactive.
  * @param {boolean}  props.isLoading          Whether the RSVP is loading.
  * @param {boolean}  props.isModalShowing     Whether the move modal is showing.
  * @param {boolean}  props.isSelected         Whether the RSVP is selected.
@@ -90,7 +89,6 @@ const RSVPV2 = ( {
 	hasRecurrenceRules,
 	initializeRSVP,
 	isAddEditOpen,
-	isInactive,
 	isLoading,
 	isModalShowing,
 	isSelected,
@@ -102,7 +100,11 @@ const RSVPV2 = ( {
 
 	const handleAddEditClose = useCallback(
 		( event ) => {
-			const rsvpButtons = [ 'add-rsvp', 'edit-rsvp', 'attendees-rsvp', 'settings-rsvp' ];
+			if ( ! isAddEditOpen ) {
+				return;
+			}
+
+			const rsvpButtons = [ 'add-rsvp', 'attendees-rsvp', 'settings-rsvp' ];
 
 			if (
 				rsvpBlockRef.current &&
@@ -112,7 +114,7 @@ const RSVPV2 = ( {
 				setAddEditClosed();
 			}
 		},
-		[ setAddEditClosed ]
+		[ isAddEditOpen, setAddEditClosed ]
 	);
 
 	useEffect( () => {
@@ -123,8 +125,6 @@ const RSVPV2 = ( {
 	}, [ handleAddEditClose, initializeRSVP, rsvpId ] );
 
 	const renderBlock = () => {
-		const displayInactive = ! isAddEditOpen && ( ( created && isInactive ) || ! created );
-
 		/**
 		 * Filters the components injected before the header of the RSVP block.
 		 *
@@ -136,28 +136,38 @@ const RSVPV2 = ( {
 			[]
 		);
 
+		// Show the inactive "Add RSVP" prompt when the create form is closed
+		// and no ticket exists yet.
+		const displayInactive = ! isAddEditOpen && ! created;
+		const savedSummary = isSavedSummary( { created, isAddEditOpen } );
+
+		const blockClassName = classNames(
+			'tribe-editor__rsvp',
+			{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
+			{ 'tribe-editor__rsvp--selected': isSelected },
+			{ 'tribe-editor__rsvp--loading': isLoading }
+		);
+
+		const blockBody = (
+			<>
+				<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
+				{ isLoading && <Spinner /> }
+			</>
+		);
+
 		return (
 			<div ref={ rsvpBlockRef }>
 				{ injectedComponentsTicketsBeforeHeader }
 				{ displayInactive ? (
 					<RSVPInactiveBlock />
+				) : savedSummary ? (
+					<div className={ blockClassName }>{ blockBody }</div>
 				) : (
-					<Card
-						className={ classNames(
-							'tribe-editor__rsvp',
-							{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
-							{ 'tribe-editor__rsvp--selected': isSelected },
-							{ 'tribe-editor__rsvp--loading': isLoading }
-						) }
-					>
-						<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
-						{ /* V2 action dashboard handles create/update via V2 endpoints */ }
-						{ isAddEditOpen && <RSVPActionDashboard clientId={ clientId } /> }
-						{ isLoading && <Spinner /> }
-					</Card>
+					<Card className={ blockClassName }>{ blockBody }</Card>
 				) }
 				{ isModalShowing && <MoveModal /> }
 				<RSVPControls />
+				{ isSelected && <RSVPSidebarControls /> }
 			</div>
 		);
 	};
@@ -201,7 +211,6 @@ RSVPV2.propTypes = {
 	hasRecurrenceRules: PropTypes.bool.isRequired,
 	initializeRSVP: PropTypes.func.isRequired,
 	isAddEditOpen: PropTypes.bool.isRequired,
-	isInactive: PropTypes.bool.isRequired,
 	isLoading: PropTypes.bool.isRequired,
 	isModalShowing: PropTypes.bool.isRequired,
 	isSelected: PropTypes.bool.isRequired,

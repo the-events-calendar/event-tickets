@@ -20,6 +20,27 @@ namespace TEC\Tickets\RSVP\V2;
  */
 class Block_Editor {
 	/**
+	 * Style handle for RSVP V2 editor canvas overrides (mirror affordances).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const EDITOR_MIRROR_STYLE = 'tec-tickets-rsvp-v2-block-editor-mirror-style';
+
+	/**
+	 * Register `register_block_type_args` filter so the canvas iframe (WP 6.3+)
+	 * also receives the shared frontend RSVP styles via the block's `editorStyle`.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register(): void {
+		add_filter( 'register_block_type_args', [ $this, 'add_rsvp_block_editor_style_args' ], 10, 2 );
+	}
+
+	/**
 	 * Add V2 RSVP configuration to the block editor config.
 	 *
 	 * @since TBD
@@ -42,10 +63,10 @@ class Block_Editor {
 
 	/**
 	 * Use the pre-render block filter as an action to ensure that Tickets' block assets
-	 * are enqueued.
+	 * are enqueued for server-side rendering contexts (REST API, etc.).
 	 *
-	 * The Tickets' block assets need to be enqueued before the block renders to ensure the
-	 * scripts queued with it will not be dequeued by the block rendering process.
+	 * Note: this does NOT fire in the block editor admin (blocks render client-side there).
+	 * Editor assets are handled by `enqueue_rsvp_block_editor_styles` instead.
 	 *
 	 * @since TBD
 	 *
@@ -60,5 +81,92 @@ class Block_Editor {
 		}
 
 		return $pre_render;
+	}
+
+	/**
+	 * Attach frontend RSVP styles to the tribe/rsvp block type so WordPress
+	 * automatically loads them inside the editor canvas iframe (WP 6.3+).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $args       Block registration arguments.
+	 * @param string              $block_type The block name.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function add_rsvp_block_editor_style_args( array $args, string $block_type ): array {
+		if ( 'tribe/rsvp' !== $block_type ) {
+			return $args;
+		}
+
+		$canvas_styles = [
+			'tribe-common-skeleton-style',
+			'tribe-common-responsive',
+			'tribe-common-full-style',
+			'tec-tickets-commerce-rsvp-style',
+			self::EDITOR_MIRROR_STYLE,
+		];
+
+		$existing = isset( $args['editorStyle'] ) ? (array) $args['editorStyle'] : [];
+
+		$args['editorStyle'] = array_values( array_unique( array_merge( $existing, $canvas_styles ) ) );
+
+		return $args;
+	}
+
+	/**
+	 * Whether RSVP editor canvas styles should be enqueued.
+	 *
+	 * Called during `enqueue_block_editor_assets` and `enqueue_block_assets`.
+	 * Uses `get_current_screen()` so it works even when `get_post()` is not yet set.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_block_editor_styles(): bool {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		if ( $screen instanceof \WP_Screen && $screen->base === 'post' ) {
+			return tribe_tickets_post_type_enabled( $screen->post_type );
+		}
+
+		// Fallback: if screen is not set yet (e.g. during REST block rendering), check the post.
+		$post = get_post();
+
+		if ( ! $post instanceof \WP_Post ) {
+			return false;
+		}
+
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		return in_array( $post->post_type, $ticketable_post_types, true );
+	}
+
+	/**
+	 * Enqueue RSVP frontend styles in the block editor.
+	 *
+	 * Hooked to both `enqueue_block_editor_assets` (editor chrome + non-iframe WP < 6.3)
+	 * and `enqueue_block_assets` (editor canvas iframe WP 6.3+).
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function enqueue_rsvp_block_editor_styles(): void {
+		if ( ! $this->should_enqueue_block_editor_styles() ) {
+			return;
+		}
+
+		tribe_asset_enqueue( 'tribe-common-skeleton-style' );
+		tribe_asset_enqueue( 'tribe-common-responsive' );
+		tribe_asset_enqueue( 'tribe-common-full-style' );
+		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
+		tribe_asset_enqueue( 'tec-tickets-commerce-rsvp-style' );
+		tribe_asset_enqueue( self::EDITOR_MIRROR_STYLE );
 	}
 }

@@ -4,12 +4,21 @@
 
 	.tribe-editor__day-picker-input.DayPickerInput input,
 	.tribe-editor__timepicker .components-dropdown.tribe-editor__timepicker__toggle {
-		border-radius: var(--tec-spacer-0);
+		border-radius: var( --tec-spacer-0 );
+	}
+
+	&--no-margin-left {
+		margin-left: 0;
+	}
+
+	&--sm-label {
+		.tribe-editor__date-time-range-picker__field-label {
+			font-size: 14px;
+		}
 	}
 }
 
 .tribe-editor__date-time-range-picker .tribe-editor__date-time-range-picker__separator {
-
 	.tribe-editor__rsvp-container--disabled & {
 		color: #aeb4bb;
 	}

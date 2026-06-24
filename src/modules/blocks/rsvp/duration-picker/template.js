@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * Internal dependencies
@@ -18,6 +18,7 @@ RSVPDurationPicker.propTypes = {
 	fromDate: PropTypes.instanceOf( Date ),
 	fromDateInput: PropTypes.string,
 	fromDateDisabled: PropTypes.bool,
+	fromLabel: PropTypes.string,
 	fromTime: PropTypes.string,
 	fromTimeDisabled: PropTypes.bool,
 	onFromDateChange: PropTypes.func,
@@ -31,8 +32,10 @@ RSVPDurationPicker.propTypes = {
 	toDate: PropTypes.instanceOf( Date ),
 	toDateInput: PropTypes.string,
 	toDateDisabled: PropTypes.bool,
+	toLabel: PropTypes.string,
 	toTime: PropTypes.string,
 	toTimeDisabled: PropTypes.bool,
+	separatorTimeRange: PropTypes.string,
 };
 
 export default RSVPDurationPicker;

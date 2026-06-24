@@ -17,7 +17,13 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem, NumberInput } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPCapacity = ( { isDisabled, onTempCapacityChange, tempCapacity } ) => {
+const RSVPCapacity = ( {
+	helpText = __( 'Leave blank if unlimited', 'event-tickets' ),
+	isDisabled,
+	label = __( 'RSVP Capacity', 'event-tickets' ),
+	onTempCapacityChange,
+	tempCapacity,
+} ) => {
 	const capacityId = uniqid();
 
 	return (
@@ -32,7 +38,7 @@ const RSVPCapacity = ( { isDisabled, onTempCapacityChange, tempCapacity } ) => {
 				className="tribe-editor__ticket__capacity-label"
 				forId={ capacityId }
 				isLabel={ true }
-				label={ __( 'RSVP Capacity', 'event-tickets' ) }
+				label={ label }
 			/>
 			<div className="tribe-editor__rsvp-container-content__capacity">
 				<NumberInput
@@ -44,7 +50,7 @@ const RSVPCapacity = ( { isDisabled, onTempCapacityChange, tempCapacity } ) => {
 					value={ tempCapacity }
 				/>
 				<span className="tribe-editor__rsvp-container-content__capacity-label-help">
-					{ __( 'Leave blank if unlimited', 'event-tickets' ) }
+					{ helpText }
 				</span>
 			</div>
 		</div>
@@ -52,7 +58,9 @@ const RSVPCapacity = ( { isDisabled, onTempCapacityChange, tempCapacity } ) => {
 };
 
 RSVPCapacity.propTypes = {
+	helpText: PropTypes.string,
 	isDisabled: PropTypes.bool,
+	label: PropTypes.string,
 	onTempCapacityChange: PropTypes.func.isRequired,
 	tempCapacity: PropTypes.string,
 };
