@@ -278,7 +278,7 @@ class Editor extends Controller {
 	 *
 	 * @return int|null The ID of the Series related to the Event.
 	 */
-	private function get_series_related_to_event( int $post_id = null ): ?int {
+	private function get_series_related_to_event( ?int $post_id = null ): ?int {
 		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			return null;
 		}

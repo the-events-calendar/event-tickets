@@ -562,7 +562,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return void The Series Pass meta is updated, if the Ticket is a Series Pass and it's required.
 	 */
-	public function update_pass_meta_on_save( $post_id, Ticket_Object $ticket = null ): void {
+	public function update_pass_meta_on_save( $post_id, ?Ticket_Object $ticket = null ): void {
 		if ( $ticket === null ) {
 			return;
 		}
@@ -597,7 +597,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return void The Series Passes are updated.
 	 */
-	public function update_passes_for_event( int $event_id, array $series_ids = null ): void {
+	public function update_passes_for_event( int $event_id, ?array $series_ids = null ): void {
 		// Get the Series the Event belongs to if not provided.
 		$series_ids = $series_ids ?? tec_series()->where( 'event_post_id', $event_id )->fields( 'ids' )->get_ids();
 
@@ -784,7 +784,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return void The link is rendered.
 	 */
-	public function render_link_to_series( Ticket_object $ticket, int $post_id = null ): void {
+	public function render_link_to_series( Ticket_object $ticket, ?int $post_id = null ): void {
 		if ( $post_id === $ticket->get_event_id() ) {
 			// Let the default controls render.
 			return;
@@ -925,7 +925,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_ticketed_status_query( string $query = null, bool $has_tickets, array $post_types ): ?string {
+	public function filter_ticketed_status_query( ?string $query = null, bool $has_tickets, array $post_types ): ?string {
 		// Filter if working with Events alone.
 		if ( $post_types !== [ TEC::POSTTYPE ] ) {
 			return $query;
@@ -945,7 +945,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_ticketed_count_query( string $query = null, string $post_type ): ?string {
+	public function filter_ticketed_count_query( ?string $query = null, string $post_type ): ?string {
 		if ( $post_type !== TEC::POSTTYPE ) {
 			return $query;
 		}
@@ -964,7 +964,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_unticketed_count_query( string $query = null, string $post_type ): ?string {
+	public function filter_unticketed_count_query( ?string $query = null, string $post_type ): ?string {
 		if ( $post_type !== TEC::POSTTYPE ) {
 			return $query;
 		}

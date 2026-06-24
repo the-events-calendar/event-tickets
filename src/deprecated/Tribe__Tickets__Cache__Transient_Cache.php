@@ -51,7 +51,7 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 *
 	 * @return array
 	 */
-	public function posts_without_ticket_types( array $post_types = null, $refetch = false ) {
+	public function posts_without_ticket_types( ?array $post_types = null, $refetch = false ) {
 		if ( ! empty( $post_types ) ) {
 			$cache_key = __CLASS__ . 'posts_without_tickets' . md5( serialize( $post_types ) );
 		} else {
@@ -81,7 +81,7 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 *
 	 * @return array
 	 */
-	public function posts_with_ticket_types( array $post_types = null, $refetch = false ) {
+	public function posts_with_ticket_types( ?array $post_types = null, $refetch = false ) {
 		if ( ! empty( $post_types ) ) {
 			$cache_key = __CLASS__ . 'posts_with_tickets' . md5( serialize( $post_types ) );
 		} else {

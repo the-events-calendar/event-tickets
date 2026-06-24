@@ -50,9 +50,9 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 * @param Tribe__Tickets__REST__V1__Validator__Interface    $validator
 	 */
 	public function __construct(
-		Tribe__REST__Messages_Interface $messages = null,
-		Tribe__Tickets__REST__Interfaces__Post_Repository $post_repository = null,
-		Tribe__Tickets__REST__V1__Validator__Interface $validator = null
+		?Tribe__REST__Messages_Interface $messages = null,
+		?Tribe__Tickets__REST__Interfaces__Post_Repository $post_repository = null,
+		?Tribe__Tickets__REST__V1__Validator__Interface $validator = null
 	) {
 		$this->messages        = $messages;
 		$this->post_repository = $post_repository;

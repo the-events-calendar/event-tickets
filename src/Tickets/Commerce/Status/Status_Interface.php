@@ -29,7 +29,7 @@ interface Status_Interface {
 	 *
 	 * @return string[]
 	 */
-	public function filter_get_flags( $flags, \WP_Post $post = null );
+	public function filter_get_flags( $flags, ?\WP_Post $post = null );
 
 	/**
 	 * Gets the name of this status.
@@ -58,7 +58,7 @@ interface Status_Interface {
 	 *
 	 * @return array
 	 */
-	public function get_flags( \WP_Post $post = null );
+	public function get_flags( ?\WP_Post $post = null );
 
 	/**
 	 * Determines if this Status has a set of flags.
@@ -71,7 +71,7 @@ interface Status_Interface {
 	 *
 	 * @return bool
 	 */
-	public function has_flags( $flags, $operator = 'AND', \WP_Post $post = null );
+	public function has_flags( $flags, $operator = 'AND', ?\WP_Post $post = null );
 
 	/**
 	 * Determines if a given order can be modified to this status.

@@ -35,8 +35,8 @@ class Refresh_Token {
 	 * @param Client   $client
 	 */
 	public function __construct(
-		Merchant $merchant = null,
-		Client $client = null
+		?Merchant $merchant = null,
+		?Client $client = null
 	) {
 		$this->merchant = $merchant ?: tribe( Merchant::class );
 		$this->client   = $client ?: tribe( Client::class );

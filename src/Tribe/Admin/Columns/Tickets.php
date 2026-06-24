@@ -163,7 +163,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( int $post_id, $deprecated = null, int $total = null, int $not_going = null ): string {
+	protected function get_percentage_string( int $post_id, $deprecated = null, ?int $total = null, ?int $not_going = null ): string {
 
 		/** @var Tribe__Cache $cache */
 		$cache = tribe( 'cache' );

@@ -115,7 +115,7 @@ class Service_Status {
 	 *
 	 * @throws InvalidArgumentException If the status is not one of the valid statuses.
 	 */
-	public function __construct( string $backend_base_url, int $status = null, string $context = 'admin' ) {
+	public function __construct( string $backend_base_url, ?int $status = null, string $context = 'admin' ) {
 		$this->backend_base_url = $backend_base_url;
 		$this->context          = $context;
 

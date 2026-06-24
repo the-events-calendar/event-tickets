@@ -60,8 +60,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 */
 	public function __construct(
 		Tribe__Events__Importer__File_Reader $file_reader,
-		Tribe__Events__Importer__Featured_Image_Uploader $featured_image_uploader = null,
-		Tribe__Tickets__RSVP $rsvp_tickets = null
+		?Tribe__Events__Importer__Featured_Image_Uploader $featured_image_uploader = null,
+		?Tribe__Tickets__RSVP $rsvp_tickets = null
 	) {
 		parent::__construct( $file_reader, $featured_image_uploader );
 		$this->rsvp_tickets = ! empty( $rsvp_tickets ) ? $rsvp_tickets : Tribe__Tickets__RSVP::get_instance();

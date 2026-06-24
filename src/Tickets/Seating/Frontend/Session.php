@@ -357,7 +357,7 @@ class Session {
 	 *
 	 * @return array|null The reservations for the ticket and post.
 	 */
-	public function get_post_ticket_reservations( int $post_id = null, int $ticket_id = null ): ?array {
+	public function get_post_ticket_reservations( ?int $post_id = null, ?int $ticket_id = null ): ?array {
 		if ( ! ( $ticket_id && $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
 			return null;
 		}

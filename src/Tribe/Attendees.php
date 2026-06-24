@@ -1165,7 +1165,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @return string Relative URL for the export.
 	 */
-	public function include_export_button_title( $event_id, Tribe__Tickets__Attendees $attendees = null ) {
+	public function include_export_button_title( $event_id, ?Tribe__Tickets__Attendees $attendees = null ) {
 		// Bail if not on the Attendees page.
 		if ( 'tickets-attendees' !== tribe_get_request_var( 'page' ) ) {
 			return;

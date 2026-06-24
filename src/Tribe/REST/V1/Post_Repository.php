@@ -61,7 +61,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @param Tribe__REST__Messages_Interface|null $messages The messages instance.
 	 */
-	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
+	public function __construct( ?Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = [
 			Tribe__Tickets__RSVP::ATTENDEE_OBJECT => [ $this, 'get_attendee_data' ],
 		];

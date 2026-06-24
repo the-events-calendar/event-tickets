@@ -29,7 +29,7 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 *
 	 * @return array
 	 */
-	public function posts_without_ticket_types( array $post_types = null, $refetch = false );
+	public function posts_without_ticket_types( ?array $post_types = null, $refetch = false );
 
 	/**
 	 * Returns array of post IDs of posts that have at least one ticket assigned.
@@ -43,7 +43,7 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 *
 	 * @return array
 	 */
-	public function posts_with_ticket_types( array $post_types = null, $refetch = false );
+	public function posts_with_ticket_types( ?array $post_types = null, $refetch = false );
 
 	/**
 	 * Returns an array of all past events post IDs.

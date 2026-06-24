@@ -19,7 +19,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @param Tribe__Cache|null $cache
 	 */
-	public function __construct( Tribe__Cache $cache = null ) {
+	public function __construct( ?Tribe__Cache $cache = null ) {
 		$this->cache = null === $cache ? new Tribe__Cache() : $cache;
 	}
 
@@ -278,7 +278,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @return array
 	 */
-	public function get_orders_for_post( $post_id, array $ticket_ids = null ) {
+	public function get_orders_for_post( $post_id, ?array $ticket_ids = null ) {
 		$cache_key = ! empty( $ticket_ids )
 			? sprintf( "{$post_id}-%s-orders", implode( '|', $ticket_ids ) )
 			: "{$post_id}-orders";

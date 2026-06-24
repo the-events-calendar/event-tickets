@@ -404,7 +404,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Repository__Interface
 		 */
-		public function set_tickets_query_args( $post_id = null, string $context = null ) {
+		public function set_tickets_query_args( $post_id = null, ?string $context = null ) {
 			$repository = tribe_tickets( $this->orm_provider );
 			$repository->set_request_context( $context );
 			$repository->by( 'event', $post_id );
@@ -442,7 +442,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array|false
 		 */
-		public function get_tickets_ids( $post = 0, string $context = null ) {
+		public function get_tickets_ids( $post = 0, ?string $context = null ) {
 			$post_id = 0;
 			if ( is_numeric( $post ) ) {
 				$post_id = (int) $post;
@@ -795,7 +795,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		public function get_tickets( $post_id, string $context = null ) {
+		public function get_tickets( $post_id, ?string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -1838,7 +1838,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		public static function get_all_event_tickets( $post_id, string $context = null ) {
+		public static function get_all_event_tickets( $post_id, ?string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );

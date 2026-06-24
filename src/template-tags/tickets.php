@@ -646,7 +646,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 	 *
 	 * @return string|void Whether it's echoing or not.
 	 */
-	function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
+	function tribe_tickets_get_template_part( $slug, $name = null, ?array $data = null, $echo = true ) {
 
 		/**
 		 * Fires an Action before echoing the Template

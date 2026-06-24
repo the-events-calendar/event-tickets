@@ -281,7 +281,7 @@ class Timer extends Controller_Contract {
 	 *
 	 * @return void The seat selection timer HTML is rendered.
 	 */
-	public function render( string $token = null, int $post_id = null, bool $sync_on_load = false ): void {
+	public function render( ?string $token = null, ?int $post_id = null, bool $sync_on_load = false ): void {
 		if ( ! ( $token && $post_id ) ) {
 			// Token and post ID did not come from the action, pull them from the cookie, if possible.
 			$cookie_timer_token_post_id = $this->session->get_session_token_object_id();

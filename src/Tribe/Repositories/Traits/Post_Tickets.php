@@ -351,7 +351,7 @@ trait Post_Tickets {
 	 *
 	 * @return string The SQL clause to compare meta keys to the ones relating tickets to posts.
 	 */
-	protected function ticket_to_post_meta_key_compare( string $alias, array $allow = null, array $exclude = null ): string {
+	protected function ticket_to_post_meta_key_compare( string $alias, ?array $allow = null, ?array $exclude = null ): string {
 		$meta_keys = [];
 		foreach ( Tickets::modules() as $provider => $name ) {
 			if ( $allow !== null && ! in_array( $provider, $allow, true ) ) {

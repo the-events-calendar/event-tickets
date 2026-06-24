@@ -269,7 +269,7 @@ class Attendees extends Controller {
 	 *
 	 * @return bool|null Null to let the default checkin logic run, boolean value to prevent it.
 	 */
-	public function handle_series_pass_attendee_checkin( $checkin, int $attendee_id, int $event_id = null, bool $qr = false ) {
+	public function handle_series_pass_attendee_checkin( $checkin, int $attendee_id, ?int $event_id = null, bool $qr = false ) {
 		if ( ! $this->is_series_pass_attendee( $attendee_id ) ) {
 			// Not an Attendee for a Series Pass, let the default logic run its course.
 			return $checkin;
@@ -782,7 +782,7 @@ class Attendees extends Controller {
 	 *
 	 * @return bool Whether the Attendee was checked in or not.
 	 */
-	private function checkin_attendee_using_provider( int $series_id, int $attendee_id, bool $qr = false, int $event_id = null ): bool {
+	private function checkin_attendee_using_provider( int $series_id, int $attendee_id, bool $qr = false, ?int $event_id = null ): bool {
 		$ticket_provider = Tickets::get_event_ticket_provider_object( $series_id );
 
 		if ( ! $ticket_provider instanceof Tickets ) {
@@ -1211,7 +1211,7 @@ class Attendees extends Controller {
 	 *
 	 * @return bool Whether the Attendee is a clone of the other Attendee.
 	 */
-	public function attendee_is_clone_of( int $clone_id, int $original_id = null ): bool {
+	public function attendee_is_clone_of( int $clone_id, ?int $original_id = null ): bool {
 		return $original_id ?
 			(int) get_post_meta( $clone_id, self::CLONE_META_KEY, true ) === $original_id
 			: (int) get_post_meta( $clone_id, self::CLONE_META_KEY, true ) !== 0;

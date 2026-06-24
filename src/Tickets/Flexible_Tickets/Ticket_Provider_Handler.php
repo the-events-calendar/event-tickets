@@ -51,7 +51,7 @@ class Ticket_Provider_Handler {
 	 *
 	 * @return void The ticket provider of the Events part of the Series are updated.
 	 */
-	public function update_from_series( int $series_id, string $value = null ): void {
+	public function update_from_series( int $series_id, ?string $value = null ): void {
 		if ( $value === null ) {
 			$value = get_post_meta( $series_id, '_tribe_default_ticket_provider', true );
 		}

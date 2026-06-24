@@ -315,7 +315,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_possible_matches( array $request = null ) {
+	protected function get_possible_matches( ?array $request = null ) {
 		// Take the params from $request if set, else look at $_POST
 		$params = wp_parse_args( is_null( $request ) ? $_POST : $request, array(
 			'post_type'    => array(),

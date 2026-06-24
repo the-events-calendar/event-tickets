@@ -65,7 +65,7 @@ interface Flag_Action_Interface {
 	 *
 	 * @return bool
 	 */
-	public function has_flags( Status_Interface $status, $operator = 'AND', \WP_Post $post = null );
+	public function has_flags( Status_Interface $status, $operator = 'AND', ?\WP_Post $post = null );
 
 	/**
 	 * Determines if a given post object is the correct post type to trigger this flag action

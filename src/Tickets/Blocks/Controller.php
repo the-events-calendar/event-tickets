@@ -220,7 +220,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @param Ticket_Object $ticket  The ticket object.
 	 * @param int|null      $post_id The ID of the post context of the print.
 	 */
-	public function render_ticket_edit_controls( Ticket_Object $ticket, int $post_id = null ): void {
+	public function render_ticket_edit_controls( Ticket_Object $ticket, ?int $post_id = null ): void {
 		if ( $ticket->get_event_id() !== $post_id ) {
 			// If the ticket is not associated with the current post, don't render the controls.
 			return;
