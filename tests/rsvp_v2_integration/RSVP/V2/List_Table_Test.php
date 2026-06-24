@@ -14,9 +14,7 @@ use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 class List_Table_Test extends WPTestCase {
 	use Ticket_Maker;
 
-	public function setUp(): void {
-		parent::setUp();
-
+	public function test_column_name_falls_back_to_rsvp_label_for_empty_tc_rsvp_name(): void {
 		add_filter(
 			'tec_tickets_admin_tickets_table_provider_info',
 			static function () {
@@ -30,9 +28,7 @@ class List_Table_Test extends WPTestCase {
 				];
 			}
 		);
-	}
 
-	public function test_column_name_falls_back_to_rsvp_label_for_empty_tc_rsvp_name(): void {
 		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$ticket_id = $this->create_tc_rsvp_ticket(
 			$post_id,

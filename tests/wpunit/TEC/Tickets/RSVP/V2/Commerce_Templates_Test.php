@@ -13,6 +13,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Tests for TC-RSVP commerce view templates touched by SOFT-3334.
+ *
+ * Snapshot tests that exercise production render paths live in the rsvp_v2_integration suite.
  */
 class Commerce_Templates_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -33,56 +35,6 @@ class Commerce_Templates_Test extends WPTestCase {
 		$this->assertInstanceOf( Ticket_Object::class, $ticket );
 
 		return $ticket;
-	}
-
-	public function test_rsvp_wrapper_outputs_data_iac_attribute(): void {
-		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
-		$ticket  = $this->create_ticket_object( $post_id );
-		$ticket->iac = 'required';
-
-		$template = $this->get_template();
-		$template->add_template_globals(
-			[
-				'post_id'    => $post_id,
-				'step'       => '',
-				'must_login' => false,
-				'threshold'  => 0,
-			]
-		);
-
-		$html = $template->template(
-			'v2/commerce/rsvp',
-			[
-				'rsvp'          => $ticket,
-				'post_id'       => $post_id,
-				'active_rsvps'  => [ $ticket ],
-				'block_html_id' => 'rsvp-block-test',
-				'step'          => '',
-				'must_login'    => false,
-			],
-			false
-		);
-
-		$this->assertStringContainsString(
-			sprintf( 'data-iac="%s"', esc_attr( $ticket->iac ) ),
-			$html
-		);
-	}
-
-	public function test_details_title_uses_rsvp_label_singular(): void {
-		$post_id = static::factory()->post->create();
-		$ticket  = $this->create_ticket_object( $post_id, [ 'ticket_name' => 'Custom Ticket Name' ] );
-
-		$html = $this->get_template()->template(
-			'v2/commerce/rsvp/details/title',
-			[ 'rsvp' => $ticket ],
-			false
-		);
-
-		$expected_label = tribe_get_rsvp_label_singular( 'rsvp_block_details_title' );
-
-		$this->assertStringContainsString( esc_html( $expected_label ), $html );
-		$this->assertStringNotContainsString( 'Custom Ticket Name', $html );
 	}
 
 	public function test_success_toggle_does_not_render_when_not_going(): void {
