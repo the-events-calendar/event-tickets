@@ -1,4 +1,0 @@
-Significance: patch
-Type: tweak
-
-Added the `tribe_tickets_assets_should_enqueue_frontend` filter to control whether front-end ticket assets are enqueued.

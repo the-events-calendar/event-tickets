@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Resolved an issue where select dropdowns, such as Ticket Capacity, rendered unstyled in the WordPress 7 block editor.

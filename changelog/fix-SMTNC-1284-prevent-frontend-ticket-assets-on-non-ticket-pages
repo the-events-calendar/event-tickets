@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
