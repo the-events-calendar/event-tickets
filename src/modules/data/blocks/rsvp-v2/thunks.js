@@ -14,10 +14,15 @@ import { select } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import * as actions from '../rsvp/actions';
-import * as selectors from '../rsvp/selectors';
+import * as actions from '../rsvp-shared/actions';
+import * as selectors from '../rsvp-shared/selectors';
+import { normalizeRSVPResponseFromV2Ticket } from '../rsvp-shared/utils/normalize-rsvp-response';
+import {
+	getAttendanceCountsFromV2Ticket,
+	hydrateRsvpAttendanceCounts,
+} from '../rsvp-shared/utils/hydrate-rsvp-attendance-counts';
+import { selectLatestRsvpTicket } from '../rsvp-shared/utils/select-latest-rsvp-ticket';
 import { getV2Config } from './config';
-import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 import { buildPersistPayload } from './build-persist-payload';
 
 /**
@@ -34,6 +39,39 @@ let persistLocked = false;
 const TEC_EEA_HEADER = {
 	'X-TEC-EEA':
 		'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
+};
+
+/**
+ * Fetches a single ticket from the TEC REST API.
+ *
+ * @param {number} ticketId Ticket ID.
+ * @return {Promise<Object|null>} Ticket REST response.
+ */
+const fetchV2Ticket = async ( ticketId ) => {
+	const config = getV2Config();
+
+	return apiFetch( {
+		path: `${ config.ticketsEndpoint }/${ ticketId }`,
+		method: 'GET',
+		headers: TEC_EEA_HEADER,
+	} );
+};
+
+/**
+ * Hydrates attendance counts and refreshes from the single-ticket endpoint when needed.
+ *
+ * @param {Function} dispatch Redux dispatch.
+ * @param {Object}   ticket   Ticket REST response.
+ * @return {Promise<void>}
+ */
+const hydrateAttendanceCountsFromTicket = async ( dispatch, ticket ) => {
+	const counts = getAttendanceCountsFromV2Ticket( ticket );
+
+	hydrateRsvpAttendanceCounts( dispatch, actions, counts );
+
+	if ( counts.goingCount === undefined || counts.inventory === undefined ) {
+		await dispatch( refreshRSVPAttendanceCounts() );
+	}
 };
 
 /**
@@ -107,6 +145,7 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
 			dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
+			await hydrateAttendanceCountsFromTicket( dispatch, response );
 			dispatch( actions.setRSVPHasChanges( false ) );
 		}
 
@@ -166,7 +205,7 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 		}
 
 		// PUT /tec/v1/tickets/{id}
-		await apiFetch( {
+		const response = await apiFetch( {
 			path: `${ config.ticketsEndpoint }/${ id }`,
 			method: 'PUT',
 			headers: TEC_EEA_HEADER,
@@ -191,6 +230,10 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 			} )
 		);
 		dispatch( actions.setRSVPHasChanges( false ) );
+
+		if ( response ) {
+			await hydrateAttendanceCountsFromTicket( dispatch, response );
+		}
 
 		/**
 		 * Fires after an RSVP is updated.
@@ -288,81 +331,42 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 	try {
 		// GET /tec/v1/tickets?event={postId}
 		const tickets = await apiFetch( {
-			path: `${ config.ticketsEndpoint }?event=${ postId }&type=${ config.ticketType }`,
+			path: `${ config.ticketsEndpoint }?event=${ postId }&type=${ config.ticketType }&orderby=id&order=desc`,
 			method: 'GET',
 			headers: TEC_EEA_HEADER,
 		} );
 
-		// Filter for tc-rsvp type tickets.
-		const rsvpTickets = Array.isArray( tickets )
-			? tickets.filter( ( ticket ) => ticket.type === config.ticketType )
-			: [];
+		const listTicket = selectLatestRsvpTicket( tickets, config.ticketType );
 
-		if ( rsvpTickets.length > 0 ) {
-			const rsvp = rsvpTickets[ 0 ];
-			const datePickerFormat = globals.tecDateSettings().datepickerFormat;
-
-			// Parse dates from the response.
-			const startMoment = momentUtil.toMoment( rsvp.start_date );
-			const endMoment = momentUtil.toMoment( rsvp.end_date );
-
-			const startDateInput = datePickerFormat
-				? startMoment.format( momentUtil.toFormat( datePickerFormat ) )
-				: momentUtil.toDate( startMoment );
-			const endDateInput = datePickerFormat
-				? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
-				: momentUtil.toDate( endMoment );
-
-			// TEC REST V1 returns 'stock' for capacity, or -1 for unlimited.
-			const capacity = rsvp.capacity >= 0 ? rsvp.capacity : rsvp.stock >= 0 ? rsvp.stock : '';
-			const notGoingResponses = rsvp.show_not_going || false;
-
-			// Hard-code title and description for V2.
-			const title = 'RSVP';
-			const description = '';
+		if ( listTicket ) {
+			const normalized = normalizeRSVPResponseFromV2Ticket( listTicket, {
+				title: 'RSVP',
+				description: '',
+			} );
 
 			dispatch( actions.createRSVP() );
-			dispatch( actions.setRSVPId( rsvp.id ) );
-			dispatch( actions.setRSVPGoingCount( parseInt( rsvp.going_count || rsvp.sold || 0, 10 ) ) );
-			dispatch( actions.setRSVPNotGoingCount( parseInt( rsvp.not_going_count || 0, 10 ) ) );
-			dispatch( actions.setRSVPHasAttendeeInfoFields( rsvp.has_attendee_info_fields || false ) );
+			dispatch( actions.setRSVPId( normalized.id ) );
+			dispatch( actions.setRSVPHasAttendeeInfoFields( normalized.hasAttendeeInfoFields ) );
+			dispatch( actions.setRSVPDetails( normalized.details ) );
+			dispatch( actions.setRSVPTempDetails( normalized.tempDetails ) );
 
-			dispatch(
-				actions.setRSVPDetails( {
-					title,
-					description,
-					capacity,
-					notGoingResponses,
-					startDate: momentUtil.toDate( startMoment ),
-					startDateInput,
-					startDateMoment: startMoment.clone().startOf( 'day' ),
-					endDate: momentUtil.toDate( endMoment ),
-					endDateInput,
-					endDateMoment: endMoment.clone().seconds( 0 ),
-					startTime: momentUtil.toDatabaseTime( startMoment ),
-					endTime: momentUtil.toDatabaseTime( endMoment ),
-					startTimeInput: momentUtil.toTime( startMoment ),
-					endTimeInput: momentUtil.toTime( endMoment ),
-				} )
-			);
+			let countsTicket = listTicket;
 
-			dispatch(
-				actions.setRSVPTempDetails( {
-					tempTitle: title,
-					tempDescription: description,
-					tempCapacity: capacity,
-					tempNotGoingResponses: notGoingResponses,
-					tempStartDate: momentUtil.toDate( startMoment ),
-					tempStartDateInput: startDateInput,
-					tempStartDateMoment: startMoment.clone().startOf( 'day' ),
-					tempEndDate: momentUtil.toDate( endMoment ),
-					tempEndDateInput: endDateInput,
-					tempEndDateMoment: endMoment.clone().seconds( 0 ),
-					tempStartTime: momentUtil.toDatabaseTime( startMoment ),
-					tempEndTime: momentUtil.toDatabaseTime( endMoment ),
-					tempStartTimeInput: momentUtil.toTime( startMoment ),
-					tempEndTimeInput: momentUtil.toTime( endMoment ),
-				} )
+			try {
+				const detailedTicket = await fetchV2Ticket( normalized.id );
+
+				if ( detailedTicket ) {
+					countsTicket = detailedTicket;
+				}
+			} catch ( fetchError ) {
+				// eslint-disable-next-line no-console
+				console.error( 'Error fetching V2 RSVP ticket details:', fetchError );
+			}
+
+			hydrateRsvpAttendanceCounts(
+				dispatch,
+				actions,
+				getAttendanceCountsFromV2Ticket( countsTicket )
 			);
 		}
 	} catch ( error ) {
@@ -370,5 +374,29 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 		console.error( 'Error fetching V2 RSVP:', error );
 	} finally {
 		dispatch( actions.setRSVPIsLoading( false ) );
+	}
+};
+
+/**
+ * Refresh RSVP attendance counts from the TEC REST ticket endpoint.
+ *
+ * @return {Function} Redux thunk function.
+ */
+export const refreshRSVPAttendanceCounts = () => async ( dispatch, getState ) => {
+	const ticketId = selectors.getRSVPId( getState() );
+
+	if ( ! ticketId ) {
+		return;
+	}
+
+	try {
+		const ticket = await fetchV2Ticket( ticketId );
+
+		if ( ticket ) {
+			hydrateRsvpAttendanceCounts( dispatch, actions, getAttendanceCountsFromV2Ticket( ticket ) );
+		}
+	} catch ( error ) {
+		// eslint-disable-next-line no-console
+		console.error( 'Error refreshing V2 RSVP attendance counts:', error );
 	}
 };

@@ -19,6 +19,7 @@ import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
 import { withStore } from '@moderntribe/common/hoc';
 import { formatRsvpWindow } from '../utils/format-rsvp-window';
 import { showEditAffordances as getShowEditAffordances } from '../utils/block-state';
+import { useListenForCloseOverlays } from '../../rsvp-shared/utils/close-overlays';
 
 const buildUpdatePayload = ( state ) => ( {
 	capacity: selectors.getRSVPTempCapacity( state ),
@@ -103,6 +104,18 @@ const RSVPSavedSummary = ( {
 			suppressWindowOpenRef.current = false;
 		}, 0 );
 	}, [ onSaveWindow ] );
+
+	const closeLocalOverlays = useCallback( () => {
+		if ( isLimitOpen ) {
+			handleCancelLimit();
+		}
+
+		if ( isWindowOpen ) {
+			handleCancelWindow();
+		}
+	}, [ handleCancelLimit, handleCancelWindow, isLimitOpen, isWindowOpen ] );
+
+	useListenForCloseOverlays( closeLocalOverlays );
 
 	return (
 		<div className="tribe-editor__rsvp-saved-summary">

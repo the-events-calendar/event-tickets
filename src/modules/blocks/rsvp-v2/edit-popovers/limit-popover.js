@@ -26,6 +26,7 @@ const RSVPLimitPopover = ( { anchorRef, isOpen, isSaving, onCancel, onSave, onTe
 			anchor={ anchorRef?.current }
 			className="tribe-editor__rsvp-limit-popover"
 			onClose={ onCancel }
+			onFocusOutside={ onCancel }
 			position="bottom center"
 		>
 			<div className="tribe-editor__rsvp-limit-popover__content">

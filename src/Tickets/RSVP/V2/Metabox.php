@@ -303,14 +303,6 @@ class Metabox {
 	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
 	 */
 	private function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
-		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
-			->where( 'event', $post_id )
-			->first_id();
-
-		if ( ! $ticket_id ) {
-			return null;
-		}
-
-		return tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
+		return tribe( Ticket::class )->get_for_event( $post_id );
 	}
 }

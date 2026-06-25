@@ -6,8 +6,8 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import * as actions from '../../rsvp/actions';
-import { createRSVP, updateRSVP } from '../thunks';
+import * as actions from '../../rsvp-shared/actions';
+import { createRSVP, getRSVP, updateRSVP } from '../thunks';
 
 jest.mock( '@wordpress/api-fetch', () => jest.fn(), { virtual: true } );
 jest.mock( '@wordpress/hooks', () => ( {
@@ -78,7 +78,7 @@ describe( 'rsvp-v2 thunks', () => {
 				endTimeInput: '12:00 am',
 			};
 
-			await updateRSVP( payload )( dispatch );
+			await updateRSVP( payload )( dispatch, () => ( { tickets: { blocks: { rsvp: { isLoading: false } } } } ) );
 
 			expect( apiFetch ).toHaveBeenCalledWith(
 				expect.objectContaining( {
@@ -109,7 +109,7 @@ describe( 'rsvp-v2 thunks', () => {
 				endTimeInput: '12:00 am',
 			};
 
-			await updateRSVP( payload )( dispatch );
+			await updateRSVP( payload )( dispatch, () => ( { tickets: { blocks: { rsvp: { isLoading: false } } } } ) );
 
 			expect( apiFetch ).toHaveBeenCalledWith(
 				expect.objectContaining( {
@@ -120,6 +120,44 @@ describe( 'rsvp-v2 thunks', () => {
 					} ),
 				} )
 			);
+		} );
+	} );
+
+	describe( 'getRSVP', () => {
+		it( 'fetches single-ticket counts after loading the RSVP list', async () => {
+			apiFetch
+				.mockResolvedValueOnce( [
+					{
+						id: 42,
+						type: 'tc-rsvp',
+						start_date: '2026-03-05 00:00:00',
+						end_date: '2026-03-25 00:00:00',
+						capacity: 10,
+						stock_mode: 'own',
+						sold: 0,
+						stock: 10,
+					},
+				] )
+				.mockResolvedValueOnce( {
+					id: 42,
+					type: 'tc-rsvp',
+					sold: 1,
+					stock: 9,
+					not_going_count: 0,
+				} );
+
+			await getRSVP( 1 )( dispatch );
+
+			expect( apiFetch ).toHaveBeenCalledTimes( 2 );
+			expect( apiFetch ).toHaveBeenNthCalledWith(
+				2,
+				expect.objectContaining( {
+					path: '/tec/v1/tickets/42',
+					method: 'GET',
+				} )
+			);
+			expect( dispatch ).toHaveBeenCalledWith( actions.setRSVPGoingCount( 1 ) );
+			expect( dispatch ).toHaveBeenCalledWith( actions.setRSVPInventory( 9 ) );
 		} );
 	} );
 } );

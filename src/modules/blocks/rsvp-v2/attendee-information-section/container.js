@@ -19,7 +19,7 @@ import { actions, selectors } from '../../../data/blocks/rsvp-v2';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
 import { showEditAffordances as getShowEditAffordances } from '../utils/block-state';
-import RSVPAttendeeRegistration from '../../rsvp/attendee-registration/container';
+import RSVPAttendeeRegistration from '../../rsvp-shared/attendee-registration/container';
 import './style.pcss';
 
 const AttendeeInformationWithModal = ( {

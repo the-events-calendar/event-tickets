@@ -38,14 +38,12 @@ const mapStateToProps = ( state ) => ( {
 	isModalOpen: selectors.getRSVPIsModalOpen( state ),
 } );
 
-const mapDispatchToProps = ( dispatch, ownProps ) => ( {
+const mapDispatchToProps = ( dispatch ) => ( {
 	onClick: () => {
 		dispatch( actions.setRSVPIsModalOpen( true ) );
 	},
-	onClose: ( e ) => {
-		if ( ! e.target.classList.contains( 'components-modal__content' ) ) {
-			dispatch( actions.setRSVPIsModalOpen( ownProps.clientId, false ) );
-		}
+	onClose: () => {
+		dispatch( actions.setRSVPIsModalOpen( false ) );
 	},
 	onIframeLoad: ( iframe ) => {
 		const iframeWindow = iframe.contentWindow;

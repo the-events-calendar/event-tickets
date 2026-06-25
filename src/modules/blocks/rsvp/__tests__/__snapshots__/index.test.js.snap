@@ -6,7 +6,7 @@ exports[`RSVP block declaration register the RSVP block 1`] = `
     "goingCount": {
       "meta": "_tribe_ticket_going_count",
       "source": "meta",
-      "type": "integer",
+      "type": "string",
     },
     "headerImageId": {
       "meta": "_tribe_ticket_header",
@@ -16,7 +16,7 @@ exports[`RSVP block declaration register the RSVP block 1`] = `
     "notGoingCount": {
       "meta": "_tribe_ticket_not_going_count",
       "source": "meta",
-      "type": "integer",
+      "type": "string",
     },
   },
   "category": "tribe-tickets",

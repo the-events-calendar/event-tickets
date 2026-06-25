@@ -17,7 +17,7 @@ jest.mock( '@wordpress/components', () => ( {
  */
 import RSVPFrontendMirror from '../template';
 
-jest.mock( '../../../rsvp/action-buttons', () => ( {
+jest.mock( '../../../rsvp-shared/action-buttons', () => ( {
 	AttendeesActionButton: () => <a data-testid="view-attendees">View Attendees</a>,
 } ) );
 

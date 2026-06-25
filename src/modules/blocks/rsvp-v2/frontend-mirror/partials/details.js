@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 import RSVPDetailsTitle from './details-title';
 import RSVPDetailsAttendance from './details-attendance';
 import RSVPDetailsAvailability from './details-availability';
-import { AttendeesActionButton } from '../../../rsvp/action-buttons';
+import { AttendeesActionButton } from '../../../rsvp-shared/action-buttons';
 
 const RSVPDetails = ( {
 	available,

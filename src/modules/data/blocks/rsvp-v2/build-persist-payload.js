@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import * as selectors from '../rsvp/selectors';
+import * as selectors from '../rsvp-shared/selectors';
 
 /**
  * Builds the RSVP REST payload from the current Redux state.

@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPCapacity from '../../rsvp/capacity/template';
+import RSVPCapacity from '../../rsvp-shared/templates/capacity/template';
 
 const RSVPV2Capacity = ( props ) => (
 	<RSVPCapacity

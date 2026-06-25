@@ -75,19 +75,15 @@ class Frontend {
 		$rsvp = null;
 		foreach ( $args['active_rsvps'] ?? [] as $ticket ) {
 			if ( $ticket->type() === Constants::TC_RSVP_TYPE ) {
-				$rsvp = $ticket;
-				break;
+				if ( $rsvp === null || $ticket->ID > $rsvp->ID ) {
+					$rsvp = $ticket;
+				}
 			}
 		}
 
 		// $args['active_rsvps'] is built from V1 RSVP tickets only; query TC-RSVP tickets directly.
 		if ( $rsvp === null ) {
-			foreach ( $this->module->get_tickets( $post->ID ) as $ticket ) {
-				if ( $ticket->type() === Constants::TC_RSVP_TYPE ) {
-					$rsvp = $ticket;
-					break;
-				}
-			}
+			$rsvp = tribe( Ticket::class )->get_for_event( $post->ID );
 		}
 
 		if ( $rsvp === null ) {

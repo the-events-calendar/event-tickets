@@ -21,7 +21,7 @@ import * as selectors from '../selectors';
 import {
 	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
 } from '../reducers/header-image';
-import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp-shared/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
