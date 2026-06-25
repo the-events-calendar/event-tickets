@@ -424,21 +424,6 @@ exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 1`
 }
 `;
 
-exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 2`] = `
-{
-  "payload": {
-    "image": {},
-  },
-  "type": "@@MT/TICKETS/UPDATE_RSVP_HEADER_IMAGE",
-}
-`;
-
-exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 3`] = `
-{
-  "type": "@@MT/TICKETS/DELETE_RSVP_HEADER_IMAGE",
-}
-`;
-
 exports[`RSVP block actions RSVP thunk & saga actions handle RSVP end date 1`] = `
 {
   "payload": {},

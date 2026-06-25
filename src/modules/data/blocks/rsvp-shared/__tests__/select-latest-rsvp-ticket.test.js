@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { selectLatestRsvpTicket } from '../select-latest-rsvp-ticket';
+import { selectLatestRsvpTicket } from '../utils/select-latest-rsvp-ticket';
 
 describe( 'selectLatestRsvpTicket', () => {
 	it( 'returns the ticket with the highest id', () => {

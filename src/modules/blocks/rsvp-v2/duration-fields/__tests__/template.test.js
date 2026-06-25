@@ -8,7 +8,7 @@ import React from 'react';
  */
 import RSVPV2DurationFields from '../template';
 
-jest.mock( '../../../rsvp/duration-picker/container', () => () => <div data-testid="duration-picker" /> );
+jest.mock( '../../duration-picker/container', () => () => <div data-testid="duration-picker" /> );
 
 describe( 'RSVPV2DurationFields', () => {
 	it( 'should render duration picker with Open and Close RSVP labels', () => {

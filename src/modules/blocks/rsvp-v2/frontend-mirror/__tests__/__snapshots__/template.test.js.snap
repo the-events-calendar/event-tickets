@@ -22,22 +22,22 @@ exports[`RSVPFrontendMirror should mirror frontend markup structure 1`] = `
             RSVP
           </h3>
           <div
-            className="tribe-tickets__rsvp-attendance"
+            className="tribe-editor__rsvp-frontend-mirror__going-row"
           >
-            <span
-              className="tribe-tickets__rsvp-attendance-number tribe-common-h4 tribe-tickets__rsvp-attendance-number--no-description"
+            <div
+              className="tribe-tickets__rsvp-attendance"
             >
-              0
-            </span>
-            <span
-              className="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium"
-            >
-              Going
-            </span>
-          </div>
-          <div
-            className="tribe-editor__rsvp-frontend-mirror__view-attendees"
-          >
+              <span
+                className="tribe-tickets__rsvp-attendance-number tribe-common-h4 tribe-tickets__rsvp-attendance-number--no-description"
+              >
+                0
+              </span>
+              <span
+                className="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium"
+              >
+                Going
+              </span>
+            </div>
             <a
               data-testid="view-attendees"
             >
@@ -55,7 +55,7 @@ exports[`RSVPFrontendMirror should mirror frontend markup structure 1`] = `
             remaining
           </div>
           <div
-            className="tribe-editor__rsvp-frontend-mirror__not-going-count tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium"
+            className="tribe-editor__rsvp-frontend-mirror__not-going-count tribe-common-b3--min-medium"
           >
             <span
               className="tribe-editor__rsvp-frontend-mirror__not-going-quantity"
