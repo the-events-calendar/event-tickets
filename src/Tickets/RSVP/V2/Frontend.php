@@ -12,6 +12,7 @@ namespace TEC\Tickets\RSVP\V2;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -83,7 +84,7 @@ class Frontend {
 
 		// $args['active_rsvps'] is built from V1 RSVP tickets only; query TC-RSVP tickets directly.
 		if ( $rsvp === null ) {
-			$rsvp = tribe( Ticket::class )->get_for_event( $post->ID );
+			$rsvp = tribe( RSVP_V2_Ticket::class )->get_for_event( $post->ID );
 		}
 
 		if ( $rsvp === null ) {
