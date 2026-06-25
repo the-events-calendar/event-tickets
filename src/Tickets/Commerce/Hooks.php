@@ -18,23 +18,23 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
-use TEC\Tickets\Commerce\Gateways\Manager;
-use Tribe\Tickets\Admin\Settings as Ticket_Settings;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
+use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
+use TEC\Tickets\Commerce\Gateways\Stripe\Hooks as Stripe_Hooks;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Hooks as Tickets_Hooks;
+use Tribe\Tickets\Admin\Settings as Ticket_Settings;
 use Tribe__Date_Utils;
 use WP_Admin_Bar;
 use WP_Post;
 use WP_Query;
 use WP_User_Query;
-use TEC\Tickets\Hooks as Tickets_Hooks;
-use TEC\Tickets\Commerce\Gateways\Stripe\Hooks as Stripe_Hooks;
-use TEC\Tickets\Commerce\Gateways\Square\Hooks as Square_Hooks;
 /**
  * Class Hooks.
  *
@@ -105,6 +105,13 @@ class Hooks extends Service_Provider {
 		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
 
 		add_action( 'tec_tickets_commerce_async_webhook_process', [ $this, 'route_async_webhook_process' ], 10, 2 );
+
+		add_action( 'tribe_settings_save', [ $this, 'clear_licensed_plugin_cache' ] );
+		add_action( 'update_option_pue_install_key_event_tickets_plus', [ $this, 'clear_licensed_plugin_cache' ] );
+		add_action( 'stellarwp/uplink/tec/connected', [ $this, 'maybe_clear_licensed_plugin_cache_on_uplink_change' ] );
+		add_action( 'stellarwp/uplink/tec/disconnected', [ $this, 'maybe_clear_licensed_plugin_cache_on_uplink_change' ] );
+		add_action( 'activated_plugin', [ $this, 'maybe_clear_licensed_plugin_cache_on_plugin_change' ], 10, 2 );
+		add_action( 'deactivated_plugin', [ $this, 'maybe_clear_licensed_plugin_cache_on_plugin_change' ], 10, 2 );
 	}
 
 	/**
@@ -1186,5 +1193,55 @@ class Hooks extends Service_Provider {
 			default:
 				return;
 		}
+	}
+
+	/**
+	 * Clears the cached Event Tickets Plus license validation result.
+	 *
+	 * @since 5.28.4.1
+	 *
+	 * @return void
+	 */
+	public function clear_licensed_plugin_cache(): void {
+		Settings::clear_licensed_plugin_cache();
+	}
+
+	/**
+	 * Clears the license cache when Event Tickets Plus Uplink status changes.
+	 *
+	 * @since 5.28.4.1
+	 *
+	 * @param object|string $plugin The Uplink plugin resource or slug.
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_licensed_plugin_cache_on_uplink_change( $plugin ): void {
+		$slug = is_string( $plugin ) ? $plugin : ( is_object( $plugin ) && method_exists( $plugin, 'get_slug' ) ? $plugin->get_slug() : '' );
+
+		if ( 'event-tickets-plus' !== $slug ) {
+			return;
+		}
+
+		Settings::clear_licensed_plugin_cache();
+	}
+
+	/**
+	 * Clears the license cache when Event Tickets Plus is activated or deactivated.
+	 *
+	 * @since 5.28.4.1
+	 *
+	 * @param string $plugin       The plugin basename.
+	 * @param bool   $network_wide Whether the plugin was activated network-wide.
+	 *
+	 * @return void
+	 */
+	public function maybe_clear_licensed_plugin_cache_on_plugin_change( $plugin, $network_wide ): void {
+		unset( $network_wide );
+
+		if ( 'event-tickets-plus/event-tickets-plus.php' !== $plugin ) {
+			return;
+		}
+
+		Settings::clear_licensed_plugin_cache();
 	}
 }

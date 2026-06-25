@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use Generator;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
@@ -292,5 +294,41 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 		$small_result = Payment_Intent::create( $small_value );
 		$this->assertEquals( '50', $small_result['amount'], 'Small value should be normalized correctly' );
 		$this->assertEquals( '1', $small_result['application_fee_amount'], 'Small application fee should be normalized correctly (2% of 50 cents = 1 cent)' );
+	}
+
+	/**
+	 * Ensures stale payment intents with incorrect application fees are rejected.
+	 *
+	 * @test
+	 */
+	public function should_reject_payment_intent_with_incorrect_application_fee(): void {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', false );
+		$this->set_class_fn_return( Cart::class, 'get_cart_total', 10.0 );
+
+		tribe_update_option( Currency::$currency_code_option, 'USD' );
+
+		$cart = tribe( Cart::class );
+
+		$payment_intent_without_fee = [
+			'id'                     => 'pi_test',
+			'amount'                 => '1000',
+			'application_fee_amount' => '0',
+		];
+
+		$this->assertFalse(
+			Payment_Intent::is_valid_for_cart( $payment_intent_without_fee, $cart ),
+			'Payment intents created before a license change must not be reused.'
+		);
+
+		$payment_intent_with_fee = [
+			'id'                     => 'pi_test',
+			'amount'                 => '1000',
+			'application_fee_amount' => '20',
+		];
+
+		$this->assertTrue(
+			Payment_Intent::is_valid_for_cart( $payment_intent_with_fee, $cart ),
+			'Payment intents with the correct application fee should be reused.'
+		);
 	}
 }
