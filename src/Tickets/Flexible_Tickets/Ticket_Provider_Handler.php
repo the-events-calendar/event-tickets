@@ -44,6 +44,7 @@ class Ticket_Provider_Handler {
 	 * Updates the ticket provider of the Events part of a Series following the update of the Series ticket provider.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $value explicitly nullable.
 	 *
 	 * @param int         $series_id The ID of the Series.
 	 * @param string|null $value     The new ticket provider of the Events part of the Series; if `null` then the
@@ -51,7 +52,7 @@ class Ticket_Provider_Handler {
 	 *
 	 * @return void The ticket provider of the Events part of the Series are updated.
 	 */
-	public function update_from_series( int $series_id, string $value = null ): void {
+	public function update_from_series( int $series_id, ?string $value = null ): void {
 		if ( $value === null ) {
 			$value = get_post_meta( $series_id, '_tribe_default_ticket_provider', true );
 		}

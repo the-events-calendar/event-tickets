@@ -24,12 +24,14 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 *
 	 * @deprecated 5.6.5
 	 *
+	 * @since TBD Made $post_types explicitly nullable.
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
 	 *
 	 * @return array
 	 */
-	public function posts_without_ticket_types( array $post_types = null, $refetch = false );
+	public function posts_without_ticket_types( ?array $post_types = null, $refetch = false );
 
 	/**
 	 * Returns array of post IDs of posts that have at least one ticket assigned.
@@ -38,12 +40,14 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 *
 	 * @deprecated 5.6.5
 	 *
+	 * @since TBD Made $post_types explicitly nullable.
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
 	 *
 	 * @return array
 	 */
-	public function posts_with_ticket_types( array $post_types = null, $refetch = false );
+	public function posts_with_ticket_types( ?array $post_types = null, $refetch = false );
 
 	/**
 	 * Returns an array of all past events post IDs.
