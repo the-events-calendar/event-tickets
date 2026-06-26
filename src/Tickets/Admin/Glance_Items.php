@@ -1,8 +1,13 @@
 <?php
+/**
+ * Glance Items for the WordPress Dashboard.
+ *
+ * @since 5.5.10
+ *
+ * @package TEC\Tickets\Admin
+ */
 
 namespace TEC\Tickets\Admin;
-
-use Tribe__Tickets__Tickets;
 
 /**
  * Class Glance_Items
@@ -36,11 +41,28 @@ class Glance_Items {
 	 * Custom glance item for Attendees count.
 	 *
 	 * @since 5.6.0 Make use of transients and cron jobs to avoid performance issues.
+	 * @since TBD Add filter to allow disabling the glance item attendee count.
 	 *
 	 * @param array $items The array of items to be displayed.
 	 * @return array $items The maybe modified array of items to be displayed.
 	 */
 	public function custom_glance_items_attendees( $items = [] ): array {
+		/**
+		 * Filters whether the attendee count glance item is enabled.
+		 *
+		 * Return false to disable the count entirely (no cron scheduled, no display).
+		 * Useful on high-volume sites where even the transient-backed display is unwanted.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
+		 *
+		 * @return bool
+		 */
+		if ( ! apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true ) ) {
+			return (array) $items;
+		}
+
 		$total = get_transient( static::$attendee_count_key );
 
 		if ( false === $total ) {
@@ -67,15 +89,38 @@ class Glance_Items {
 	 * Update the attendee count.
 	 *
 	 * @since 5.6.0
+	 * @since TBD Replace full object hydration with a single COUNT query via the Repository.
+	 * @since TBD Always persist the transient (even when count is zero) to prevent infinite cron rescheduling.
 	 */
 	public function update_attendee_count() {
-		$results = Tribe__Tickets__Tickets::get_attendees_by_args( [] );
-		$total   = count( $results['attendees'] );
+		/**
+		 * Filters whether the attendee count glance item is enabled.
+		 *
+		 * Return false to disable the count entirely (no cron scheduled, no display).
+		 * Useful on high-volume sites where even the transient-backed display is unwanted.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
+	 	 * @param array $items The array of items to be displayed. Default empty array.
 
-		if ( empty( $total ) ) {
+	 	 * @return bool $enabled Whether the glance item attendee count is enabled.
+		 */
+		if ( ! apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true ) ) {
 			return;
 		}
 
-		set_transient( static::$attendee_count_key, $total, DAY_IN_SECONDS );
+		/*
+		 * The Repository issues a single SQL_CALC_FOUND_ROWS query with LIMIT 1, returning
+		 * the total count from MySQL's FOUND_ROWS() without transferring the full result set.
+		 */
+		$total = tribe_attendees()->per_page( 1 )->found();
+
+		/*
+		 * Always set the transient, including when $total is 0.
+		 * Skipping the set when the count is zero leaves the transient permanently unset,
+		 * causing the cron to reschedule itself on every dashboard page load.
+		 */
+		set_transient( static::$attendee_count_key, (int) $total, DAY_IN_SECONDS );
 	}
 }
