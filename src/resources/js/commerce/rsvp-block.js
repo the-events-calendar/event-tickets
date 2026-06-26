@@ -49,6 +49,19 @@ window.tribe.tickets.rsvp.block = {};
 	};
 
 	/**
+	 * Returns true when Individual Attendee Collection is active for this container.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the RSVP container.
+	 * @return {boolean}
+	 */
+	obj.hasIac = function ( $container ) {
+		const iac = $container.data( 'iac' );
+		return iac && iac !== 'none';
+	};
+
+	/**
 	 * Binds events for the going button.
 	 *
 	 * @since TBD
@@ -57,18 +70,22 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindGoing = function ( $container ) {
-		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
+		let data = {
+			action: 'tribe_tickets_rsvp_handle',
+			ticket_id: rsvpId,
+			nonce: TecRsvp.nonces.rsvpHandle,
+		};
 		const $goingButton = $container.find( obj.selectors.goingButton );
 
 		$goingButton.each( function ( index, button ) {
 			$( button ).on( 'click', function () {
-				data = {
-					action: 'tribe_tickets_rsvp_handle',
-					ticket_id: rsvpId,
-					step: 'going',
-					nonce: TecRsvp.nonces.rsvpHandle,
-				};
+				if ( obj.hasIac( $container ) ) {
+					data.step = 'ari';
+					data.going = 'going';
+				} else {
+					data.step = 'going';
+				}
 
 				tribe.tickets.rsvp.manager.request( data, $container );
 			} );
@@ -84,18 +101,23 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindNotGoing = function ( $container ) {
-		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
+		let data = {
+			action: 'tribe_tickets_rsvp_handle',
+			ticket_id: rsvpId,
+			nonce: TecRsvp.nonces.rsvpHandle,
+		};
 		const $notGoingButton = $container.find( obj.selectors.notGoingButton );
 
 		$notGoingButton.each( function ( index, button ) {
 			$( button ).on( 'click', function () {
-				data = {
-					action: 'tribe_tickets_rsvp_handle',
-					ticket_id: rsvpId,
-					step: 'not-going',
-					nonce: TecRsvp.nonces.rsvpHandle,
-				};
+				if ( obj.hasIac( $container ) ) {
+					data.step = 'ari';
+					data.going = 'not-going';
+				} else {
+					data.step = 'not-going';
+
+				}
 
 				tribe.tickets.rsvp.manager.request( data, $container );
 			} );

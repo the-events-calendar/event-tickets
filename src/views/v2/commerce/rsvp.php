@@ -47,6 +47,7 @@ if ( empty( $active_rsvps ) ) {
 	<div
 		class="tribe-tickets__rsvp-wrapper"
 		data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+		data-iac="<?php echo esc_attr( $rsvp->iac ); ?>"
 	>
 		<?php $this->template( 'v2/components/loader/loader' ); ?>
 		<?php $this->template( 'v2/commerce/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>

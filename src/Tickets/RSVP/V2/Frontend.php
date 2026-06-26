@@ -87,6 +87,17 @@ class Frontend {
 			return $content;
 		}
 
+		/**
+		 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+		 * @param int                           $event_id  The event post ID.
+		 * @param int                           $ticket_id The ticket post ID.
+		 */
+		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
+
 		$rsvp_template_args = [
 			'rsvp'          => $rsvp,
 			'post_id'       => $post->ID,
@@ -259,17 +270,9 @@ class Frontend {
 	 * @return bool True if the post has TC-RSVP tickets, false otherwise.
 	 */
 	private function post_has_tc_rsvp_tickets( int $post_id ): bool {
-		$tickets = $this->module->get_tickets( $post_id );
-
-		foreach ( $tickets as $ticket ) {
-			$ticket_type = get_post_meta( $ticket->ID, '_type', true );
-
-			if ( Constants::TC_RSVP_TYPE === $ticket_type ) {
-				return true;
-			}
-		}
-
-		return false;
+		return tribe( 'tickets.ticket-repository.rsvp' )
+			->by( 'event', $post_id )
+			->found();
 	}
 
 	/**
