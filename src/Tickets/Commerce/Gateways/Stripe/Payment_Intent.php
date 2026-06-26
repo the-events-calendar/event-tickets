@@ -253,7 +253,7 @@ class Payment_Intent {
 	 * is the platform's commission and is not part of the buyer's payment authorization, and
 	 * intermediate statuses legitimately report a zero captured amount.
 	 *
-	 * @since TBD
+	 * @since 5.28.5.1
 	 *
 	 * @param array    $payment_intent Payment intent data from Stripe.
 	 * @param \WP_Post $order          The local Tickets Commerce order.

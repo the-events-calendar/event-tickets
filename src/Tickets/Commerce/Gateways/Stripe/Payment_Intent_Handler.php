@@ -208,7 +208,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @since 5.3.0
 	 * @since 5.8.1   Added customer's name / event name to the payment intent description
-	 * @since TBD     Added validation to ensure the PaymentIntent amount matches the order total
+	 * @since 5.28.5.1     Added validation to ensure the PaymentIntent amount matches the order total
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.

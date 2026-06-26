@@ -1,4 +1,0 @@
-Significance: patch
-Type: security
-
-Validated that Stripe's PaymentIntent amount matches the cart and order before binding or completing a Tickets Commerce order, preventing an unauthenticated underpayment bypass.

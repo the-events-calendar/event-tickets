@@ -5,7 +5,7 @@
  * Ensures a PaymentIntent created for one (e.g. lower-value) cart cannot be bound to, or used
  * to complete, a different (e.g. higher-value) local order.
  *
- * @since TBD
+ * @since 5.28.5.1
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -25,7 +25,7 @@ use WP_Error;
 /**
  * Class Payment_Intent_Order_Binding_Test.
  *
- * @since TBD
+ * @since 5.28.5.1
  *
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent::is_valid_for_order
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler::update_payment_intent
