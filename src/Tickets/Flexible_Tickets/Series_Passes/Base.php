@@ -571,7 +571,7 @@ class Base extends Controller {
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
 	 */
-	public function hide_header_image_option_from_ticket_settings( ?string $html = null, string $file = '', array $name = [], ?Template $template = null, array $context = [] ): ?bool {
+	public function hide_header_image_option_from_ticket_settings( ?string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
 		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
 			return $html;
 		}
