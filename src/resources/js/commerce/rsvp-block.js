@@ -49,25 +49,7 @@ window.tribe.tickets.rsvp.block = {};
 	};
 
 	/**
-	 * Returns the localStorage key for IAC for a given RSVP ticket ID.
-	 *
-	 * @since TBD
-	 *
-	 * @param {string|number} rsvpId The RSVP ticket ID.
-	 * @return {string}
-	 */
-	obj.iacStorageKey = function ( rsvpId ) {
-		return 'tec_rsvp_iac_' + rsvpId;
-	};
-
-	/**
 	 * Returns true when Individual Attendee Collection is active for this container.
-	 *
-	 * IAC is first read from localStorage (written by the admin modal save in
-	 * iac-admin.js) so the frontend can reflect a change immediately — before
-	 * the server-rendered `data-iac` attribute is updated on the next page load
-	 * after a post save. localStorage is cleared automatically in obj.ready()
-	 * once the server-rendered value catches up.
 	 *
 	 * @since TBD
 	 *
@@ -75,9 +57,7 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {boolean}
 	 */
 	obj.hasIac = function ( $container ) {
-		const rsvpId = $container.data( 'rsvp-id' );
-		const storedIac = rsvpId ? localStorage.getItem( obj.iacStorageKey( rsvpId ) ) : null;
-		const iac = storedIac !== null ? storedIac : $container.data( 'iac' );
+		const iac = $container.data( 'iac' );
 		return iac && iac !== 'none';
 	};
 
@@ -90,27 +70,21 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindGoing = function ( $container ) {
-		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
+		let data = {
+			action: 'tribe_tickets_rsvp_handle',
+			ticket_id: rsvpId,
+			nonce: TecRsvp.nonces.rsvpHandle,
+		};
 		const $goingButton = $container.find( obj.selectors.goingButton );
 
 		$goingButton.each( function ( index, button ) {
 			$( button ).on( 'click', function () {
 				if ( obj.hasIac( $container ) ) {
-					data = {
-						action: 'tribe_tickets_rsvp_handle',
-						ticket_id: rsvpId,
-						step: 'ari',
-						going: 'going',
-						nonce: TecRsvp.nonces.rsvpHandle,
-					};
+					data.step = 'ari';
+					data.going = 'going';
 				} else {
-					data = {
-						action: 'tribe_tickets_rsvp_handle',
-						ticket_id: rsvpId,
-						step: 'going',
-						nonce: TecRsvp.nonces.rsvpHandle,
-					};
+					data.step = 'going';
 				}
 
 				tribe.tickets.rsvp.manager.request( data, $container );
@@ -127,27 +101,22 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindNotGoing = function ( $container ) {
-		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
+		let data = {
+			action: 'tribe_tickets_rsvp_handle',
+			ticket_id: rsvpId,
+			nonce: TecRsvp.nonces.rsvpHandle,
+		};
 		const $notGoingButton = $container.find( obj.selectors.notGoingButton );
 
 		$notGoingButton.each( function ( index, button ) {
 			$( button ).on( 'click', function () {
 				if ( obj.hasIac( $container ) ) {
-					data = {
-						action: 'tribe_tickets_rsvp_handle',
-						ticket_id: rsvpId,
-						step: 'ari',
-						going: 'not-going',
-						nonce: TecRsvp.nonces.rsvpHandle,
-					};
+					data.step = 'ari';
+					data.going = 'not-going';
 				} else {
-					data = {
-						action: 'tribe_tickets_rsvp_handle',
-						ticket_id: rsvpId,
-						step: 'not-going',
-						nonce: TecRsvp.nonces.rsvpHandle,
-					};
+					data.step = 'not-going';
+
 				}
 
 				tribe.tickets.rsvp.manager.request( data, $container );
@@ -341,31 +310,6 @@ window.tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-		/*
-		 * Clear stale IAC localStorage entries. When the admin saves IAC via the
-		 * modal, the new value is written to localStorage so the frontend can reflect
-		 * it immediately (see iac-admin.js and obj.hasIac). Once the post is saved
-		 * and the page reloads, the server-rendered `data-iac` attribute reflects the
-		 * database value. At that point the localStorage entry is no longer needed
-		 * and is removed so the two sources cannot drift apart over time.
-		 */
-		$( obj.selectors.container ).each( function () {
-			const $container = $( this );
-			const rsvpId = $container.data( 'rsvp-id' );
-			if ( ! rsvpId ) {
-				return;
-			}
-			const key = obj.iacStorageKey( rsvpId );
-			const storedIac = localStorage.getItem( key );
-			if ( storedIac === null ) {
-				return;
-			}
-			const serverIac = $container.data( 'iac' ) || 'none';
-			if ( storedIac === serverIac ) {
-				localStorage.removeItem( key );
-			}
-		} );
-
 		$document.on( 'afterSetup.tribeTicketsRsvp', tribe.tickets.rsvp.manager.selectors.container, obj.init );
 	};
 
