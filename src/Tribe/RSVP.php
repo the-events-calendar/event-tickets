@@ -1843,8 +1843,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 * @since 5.8.0 Added the $context parameter.
+	 * @since TBD Made $context explicitly nullable.
 	 */
-	public function get_tickets( $post_id, string $context = null ) {
+	public function get_tickets( $post_id, ?string $context = null ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 		if ( ! $ticket_ids ) {
 			return [];
@@ -3169,16 +3170,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		$attendee_email = null;
-		if ( ! empty( $first_attendee['email'] ) ) {
-			$decoded_email = html_entity_decode( $first_attendee['email'] );
-
-			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
-				$attendee_email = htmlentities( sanitize_email( $decoded_email ) );
-				$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-			}
-		}
-		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'] ) ) );
+		$attendee_email        = empty( $first_attendee['email'] ) ? null : htmlentities( sanitize_email( html_entity_decode( $first_attendee['email'], ENT_COMPAT ) ), ENT_COMPAT );
+		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'], ENT_COMPAT ) ), ENT_COMPAT );
 		$attendee_optout       = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
 		$attendee_order_status = empty( $first_attendee['order_status'] ) ? 'yes' : $first_attendee['order_status'];
 

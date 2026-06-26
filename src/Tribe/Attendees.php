@@ -810,7 +810,7 @@ class Tribe__Tickets__Attendees {
 
 		// Output the lines into the file.
 		foreach ( $items as $item ) {
-			fputcsv( $output, $item, $delimiter ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+			fputcsv( $output, $item, $delimiter, '"', '\\' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 		}
 
 		fclose( $output );
@@ -1159,13 +1159,14 @@ class Tribe__Tickets__Attendees {
 	 * Echo the button for the export that appears next to the attendees page title.
 	 *
 	 * @since 5.1.7
+	 * @since TBD Made $attendees explicitly nullable.
 	 *
 	 * @param int                       $event_id  The Post ID of the event.
 	 * @param Tribe__Tickets__Attendees $attendees The attendees object.
 	 *
 	 * @return string Relative URL for the export.
 	 */
-	public function include_export_button_title( $event_id, Tribe__Tickets__Attendees $attendees = null ) {
+	public function include_export_button_title( $event_id, ?Tribe__Tickets__Attendees $attendees = null ) {
 		// Bail if not on the Attendees page.
 		if ( 'tickets-attendees' !== tribe_get_request_var( 'page' ) ) {
 			return;

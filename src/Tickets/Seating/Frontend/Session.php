@@ -351,13 +351,14 @@ class Session {
 	 * Returns a list of all the reservations details for a specific ticket and event.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Made $post_id and $ticket_id explicitly nullable.
 	 *
 	 * @param int|null $post_id   The post ID to get the reservations for.
 	 * @param int|null $ticket_id The ticket ID to get the reservations for.
 	 *
 	 * @return array|null The reservations for the ticket and post.
 	 */
-	public function get_post_ticket_reservations( int $post_id = null, int $ticket_id = null ): ?array {
+	public function get_post_ticket_reservations( ?int $post_id = null, ?int $ticket_id = null ): ?array {
 		if ( ! ( $ticket_id && $post_id && tec_tickets_seating_enabled( $post_id ) ) ) {
 			return null;
 		}

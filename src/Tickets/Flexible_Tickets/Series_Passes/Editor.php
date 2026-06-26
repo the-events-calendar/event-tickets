@@ -290,12 +290,13 @@ class Editor extends Controller {
 	 * Returns the Series related to an Event.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $post_id explicitly nullable.
 	 *
 	 * @param int|null $post_id The ID of the Event.
 	 *
 	 * @return int|null The ID of the Series related to the Event.
 	 */
-	private function get_series_related_to_event( int $post_id = null ): ?int {
+	private function get_series_related_to_event( ?int $post_id = null ): ?int {
 		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			return null;
 		}

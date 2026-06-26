@@ -433,7 +433,7 @@ class Attendees extends Report_Abstract {
 
 			// Output the lines into the file.
 			foreach ( $items as $item ) {
-				fputcsv( $output, $item, $delimiter ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+				fputcsv( $output, $item, $delimiter, '"', '\\' ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 			}
 
 			fclose( $output );
