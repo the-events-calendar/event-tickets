@@ -854,13 +854,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $orm_provider The provider ORM slug (e.g. `tribe-commerce`, `rsvp`).
-		 * @param int    $post_id      The post (event) ID the tickets belong to.
+		 * @param string   $orm_provider The provider ORM slug (e.g. `tribe-commerce`, `rsvp`).
+		 * @param int|null $post_id      The post (event) ID the tickets belong to. May be null when the
+		 *                               caller has no post context (e.g. deleting an attendee).
 		 *
 		 * @return string The cache key.
 		 */
-		public static function get_tickets_cache_key( string $orm_provider, int $post_id ): string {
-			return self::class . '::get_tickets-' . $orm_provider . '-' . $post_id;
+		public static function get_tickets_cache_key( string $orm_provider, ?int $post_id ): string {
+			return self::class . '::get_tickets-' . $orm_provider . '-' . (int) $post_id;
 		}
 
 		/**
