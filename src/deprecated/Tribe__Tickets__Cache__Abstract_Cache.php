@@ -43,11 +43,13 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	/**
 	 * @deprecated 5.6.5
 	 *
+	 * @since TBD Made $post_types explicitly nullable.
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
 	 * @return array
 	 */
-	protected function fetch_posts_with_ticket_types( array $post_types = null ) {
+	protected function fetch_posts_with_ticket_types( ?array $post_types = null ) {
 		if ( ! empty( $post_types ) ) {
 			$supported_types = array_map( 'esc_sql', $post_types );
 		} else {
@@ -107,11 +109,13 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	/**
 	 * @deprecated 5.6.5
 	 *
+	 * @since TBD Made $post_types explicitly nullable.
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
 	 * @return array
 	 */
-	protected function fetch_posts_without_ticket_types( array $post_types = null ) {
+	protected function fetch_posts_without_ticket_types( ?array $post_types = null ) {
 		if ( ! empty( $post_types ) ) {
 			$supported_types = array_map( 'esc_sql', $post_types );
 		} else {

@@ -108,6 +108,7 @@ class Service_Status {
 	 *
 	 * @since 5.16.0
 	 * @since 5.17.0 Added the `$context` argument.
+	 * @since TBD Made $status explicitly nullable.
 	 *
 	 * @param string      $backend_base_url The base URL of the service from the site backend.
 	 * @param int|null    $status           The status of the service.
@@ -115,7 +116,7 @@ class Service_Status {
 	 *
 	 * @throws InvalidArgumentException If the status is not one of the valid statuses.
 	 */
-	public function __construct( string $backend_base_url, int $status = null, string $context = 'admin' ) {
+	public function __construct( string $backend_base_url, ?int $status = null, string $context = 'admin' ) {
 		$this->backend_base_url = $backend_base_url;
 		$this->context          = $context;
 

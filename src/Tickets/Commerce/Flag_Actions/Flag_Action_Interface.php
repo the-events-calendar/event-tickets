@@ -58,6 +58,7 @@ interface Flag_Action_Interface {
 	 * Determines if a given status has the correct action flag to trigger.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Made $post explicitly nullable.
 	 *
 	 * @param Status_Interface $status   Which status we are checking for.
 	 * @param string           $operator Which conditional we are using for checking.
@@ -65,7 +66,7 @@ interface Flag_Action_Interface {
 	 *
 	 * @return bool
 	 */
-	public function has_flags( Status_Interface $status, $operator = 'AND', \WP_Post $post = null );
+	public function has_flags( Status_Interface $status, $operator = 'AND', ?\WP_Post $post = null );
 
 	/**
 	 * Determines if a given post object is the correct post type to trigger this flag action
