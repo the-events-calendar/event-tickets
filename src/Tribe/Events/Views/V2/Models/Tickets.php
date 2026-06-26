@@ -386,8 +386,7 @@ class Tickets implements ArrayAccess {
 		$data['post_id'] = $this->post_id;
 
 		// Kept for back-compatibility reasons.
-		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-		return serialize( $this->__serialize() );
+		return maybe_serialize( $this->__serialize() );
 	}
 
 	/**
@@ -430,8 +429,7 @@ class Tickets implements ArrayAccess {
 		_deprecated_function( __METHOD__, 'TBD', '__unserialize()' );
 
 		// Kept for back-compatibility reasons.
-		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
-		$data = unserialize( $serialized );
+		$data = maybe_unserialize( $serialized );
 		$this->__unserialize( $data );
 
 		unset( $data['post_id'] );
