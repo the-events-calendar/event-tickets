@@ -503,8 +503,6 @@ class Tribe__Tickets__Assets {
 	 * @return bool
 	 */
 	public function should_enqueue_frontend() {
-		$is_on_valid_post_type = tribe_tickets_is_enabled_post_context();
-
 		/**
 		 * This Try/Catch is present to deal with a problem on Autoloading from version 5.1.0 ET+ with ET 5.0.3.
 		 *
@@ -519,7 +517,49 @@ class Tribe__Tickets__Assets {
 			$is_on_ar_page = false;
 		}
 
-		return $is_on_valid_post_type || $is_on_ar_page;
+		$should_enqueue = $is_on_ar_page || $this->is_frontend_ticket_context();
+
+		/**
+		 * Allow filtering whether the Event Tickets front-end ticket assets should be enqueued.
+		 *
+		 * Useful to force-load (or prevent loading of) the front-end ticket styles and scripts
+		 * in custom contexts that are not covered by the default checks.
+		 *
+		 * @since 5.28.5
+		 *
+		 * @param bool $should_enqueue Whether the front-end ticket assets should be enqueued.
+		 */
+		return (bool) apply_filters( 'tribe_tickets_assets_should_enqueue_frontend', $should_enqueue );
+	}
+
+	/**
+	 * Whether the current front-end request actually renders ticket UI and therefore needs
+	 * the front-end ticket assets.
+	 *
+	 * Being on a tickets-enabled post type is not, on its own, enough: by default the `page`
+	 * post type is tickets-enabled, which would otherwise load these assets on every WordPress
+	 * Page — including the WooCommerce cart and checkout pages, which render no ticket UI. We
+	 * therefore additionally require that the post actually has tickets or that we are on a
+	 * tickets-enabled archive. The purchase flow's attendee fields live on the dedicated
+	 * Attendee Registration page, which is handled separately in should_enqueue_frontend().
+	 *
+	 * @since 5.28.5
+	 *
+	 * @return bool Whether the front-end ticket assets are needed for the current request.
+	 */
+	protected function is_frontend_ticket_context(): bool {
+		// Not a tickets-enabled context at all (e.g. an unrelated post type).
+		if ( ! tribe_tickets_is_enabled_post_context() ) {
+			return false;
+		}
+
+		// Archives of tickets-enabled post types: we cannot check per-post, so load.
+		if ( is_post_type_archive( tribe( 'tickets.main' )->post_types() ) ) {
+			return true;
+		}
+
+		// On a singular tickets-enabled post, only load when the post actually has tickets.
+		return tribe_events_has_tickets( get_queried_object_id() );
 	}
 
 	/**

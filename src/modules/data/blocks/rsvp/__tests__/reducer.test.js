@@ -58,4 +58,17 @@ describe( 'RSVP block reducer', () => {
 	it( 'should set the has duration error', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPHasDurationError( true ) ) ).toMatchSnapshot();
 	} );
+
+	it( 'should set the IAC value to allowed', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPIAC( 'allowed' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the IAC value to required', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPIAC( 'required' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should reset the IAC value to none', () => {
+		const modifiedState = { ...DEFAULT_STATE, iac: 'allowed' };
+		expect( reducer( modifiedState, actions.setRSVPIAC( 'none' ) ) ).toMatchSnapshot();
+	} );
 } );

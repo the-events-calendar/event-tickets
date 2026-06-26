@@ -254,13 +254,14 @@ class Gateway extends Abstract_Gateway {
 	 * Get the appropriate precision for Stripe based on their currency requirements.
 	 *
 	 * @since 5.26.7
+	 * @since TBD Made $default_precision explicity nullable.
 	 *
 	 * @param string   $currency_code The currency code.
 	 * @param int|null $default_precision The default precision from currency data.
 	 *
 	 * @return int The precision to use for Stripe.
 	 */
-	private function get_stripe_precision( $currency_code, int $default_precision = null ) {
+	private function get_stripe_precision( $currency_code, ?int $default_precision = null ) {
 		if ( null === $default_precision ) {
 			$default_precision = static::get_default_currency_precision();
 		}

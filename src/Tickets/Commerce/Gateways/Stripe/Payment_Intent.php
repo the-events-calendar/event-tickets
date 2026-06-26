@@ -4,11 +4,11 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use RuntimeException;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
+use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Gateways\Stripe\Settings as Stripe_Settings;
-use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
 
 /**
  * Stripe orders aka Payment Intents class.
@@ -187,6 +187,61 @@ class Payment_Intent {
 		}
 
 		return static::create( $value, $retry );
+	}
+
+	/**
+	 * Determines whether an existing Payment Intent matches the current cart checkout values.
+	 *
+	 * Reused payment intents must reflect the current cart total and application fee so license
+	 * changes and cart updates are not charged using stale Stripe data.
+	 *
+	 * @since 5.28.4.1
+	 *
+	 * @param array $payment_intent Payment intent data from Stripe.
+	 * @param Cart  $cart           The cart used for checkout.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid_for_cart( array $payment_intent, Cart $cart ): bool {
+		if ( empty( $payment_intent['id'] ) || ! empty( $payment_intent['errors'] ) ) {
+			return false;
+		}
+
+		$cart_total = $cart->get_cart_total();
+
+		if ( $cart_total <= 0 ) {
+			return false;
+		}
+
+		$value = Value::create( $cart_total );
+
+		/**
+		 * Filters the value before creating a Payment Intent.
+		 *
+		 * @since 5.18.0
+		 *
+		 * @param Value $value The total value of the cart.
+		 */
+		$value = apply_filters( 'tec_tickets_commerce_stripe_create_from_cart', $value, [] );
+
+		if ( ! $value instanceof Value && is_numeric( $value ) ) {
+			$value = Value::create( $value );
+		}
+
+		if ( ! $value instanceof Value ) {
+			return false;
+		}
+
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
+		$value     = $formatter->format( $value );
+		$fee       = Application_Fee::calculate( $value );
+
+		$expected_amount = (string) $value->get_integer();
+		$expected_fee    = (string) $fee->get_integer();
+		$actual_amount   = isset( $payment_intent['amount'] ) ? (string) $payment_intent['amount'] : '';
+		$actual_fee      = isset( $payment_intent['application_fee_amount'] ) ? (string) $payment_intent['application_fee_amount'] : '0';
+
+		return $expected_amount === $actual_amount && $expected_fee === $actual_fee;
 	}
 
 	/**

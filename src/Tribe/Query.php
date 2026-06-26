@@ -124,6 +124,7 @@ class Tribe__Tickets__Query {
 	 * Returns the number of ticketed posts of a certain type.
 	 *
 	 * @since 5.6.7
+	 * @since 5.28.5 Resolve the `wp_posts` row via the primary key (`p.ID = pm.meta_value`) instead of `CONCAT( p.ID, '' )`, so the count no longer scans `wp_posts` proportionally to the post count.
 	 *
 	 * @param string $post_type The post type the ticketed count is being calculated for.
 	 *
@@ -148,26 +149,33 @@ class Tribe__Tickets__Query {
 			$meta_keys_in = $this->build_meta_keys_in();
 
 			/*
-			 * A fast query on the indexed `wp_postmeta.meta_key` column; then a slow comparison on few values
-			 * in the `wp_postmeta.meta_value` column for a fast query.
+			 * Drive the query from the indexed `wp_postmeta.meta_key` column: the ticket-to-event meta set is small
+			 * (one row per ticket), so resolving each to its event via the `wp_posts` primary key (`p.ID = pm.meta_value`)
+			 * is fast. The previous `pm.meta_value = CONCAT( p.ID, '' )` form wrapped the indexed `p.ID`, forcing a
+			 * full scan of `wp_posts` and making this query slow on sites with many posts.
 			 */
 			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$query = $wpdb->prepare(
-				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
-				  JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
-				  WHERE p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
+				"SELECT COUNT(DISTINCT p.ID) FROM $wpdb->postmeta pm
+				  INNER JOIN $wpdb->posts p ON p.ID = pm.meta_value
+				  WHERE ( $meta_keys_in ) AND p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type
 			);
 			// phpcs:enable
+
+			// $query is built via $wpdb->prepare() above.
+			return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		return $wpdb->get_var( $query );
+		// $query comes from the filter above; preparing it is the filter's responsibility.
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
 	 * Returns the number of unticketed posts of a certain type.
 	 *
 	 * @since 5.6.7
+	 * @since 5.28.5 Derive the count as `total - ticketed` instead of a `NOT IN ( <ticketed subquery> )`, so it resolves with two indexed queries instead of scanning `wp_posts`.
 	 *
 	 * @param string $post_type The post type the unticketed count is being calculated for.
 	 *
@@ -188,31 +196,26 @@ class Tribe__Tickets__Query {
 		global $wpdb;
 
 		if ( $query === null ) {
-			// Build a complete list of meta keys to leverage the meta_key index; LIKE will not hit the index.
-			$meta_keys_in = $this->build_meta_keys_in();
-
 			/*
-			 * The `wp_postmeta.meta_value` column is not indexed, negative comparisons (!=) on it are slow as there
-			 * are way more values that are not equal and must be checked.
-			 * So we make the query fast by fetching unticketed as all the posts that are not ticketed.
-			 * The SELECT sub-query to pull ticketed is fast, and then we run a query on `wp_posts.ID`: another
-			 * indexed column for another fast query.
+			 * Unticketed is derived as `total - ticketed` rather than a `NOT IN ( <ticketed subquery> )`.
+			 * `NOT IN` against an unindexed sub-query of post IDs scales with the number of posts and could take
+			 * tens of seconds on large sites. The total is a fast `COUNT(*)` served by the `type_status_date`
+			 * index, and `get_ticketed_count()` is a single indexed query, so this resolves with two fast,
+			 * indexed queries. The `post_status` filter matches `get_ticketed_count()` so the subtraction stays
+			 * consistent.
 			 */
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare(
-				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
-					WHERE p.ID NOT IN (
-						SELECT p.ID FROM $wpdb->posts p
-									JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = CONCAT( p.ID, '' )
-									WHERE p.post_type = %s
-					) AND p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
-				$post_type,
-				$post_type
+			$total = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s AND post_status NOT IN ('auto-draft', 'trash')",
+					$post_type
+				)
 			);
-			// phpcs:enable
+
+			return max( 0, $total - $this->get_ticketed_count( $post_type ) );
 		}
 
-		return $wpdb->get_var( $query );
+		// $query comes from the filter above; preparing it is the filter's responsibility.
+		return (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**

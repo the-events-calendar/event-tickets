@@ -272,6 +272,7 @@ class Timer extends Controller_Contract {
 	 * Note it's the JS code responsibility to start the timer by means of a request to the backend.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Made $token and $post_id explicitly nullable.
 	 *
 	 * @param string|null $token        The ephemeral token used to secure the iframe communication with the service
 	 *                                  and identify the seat selection session.
@@ -281,7 +282,7 @@ class Timer extends Controller_Contract {
 	 *
 	 * @return void The seat selection timer HTML is rendered.
 	 */
-	public function render( string $token = null, int $post_id = null, bool $sync_on_load = false ): void {
+	public function render( ?string $token = null, ?int $post_id = null, bool $sync_on_load = false ): void {
 		if ( ! ( $token && $post_id ) ) {
 			// Token and post ID did not come from the action, pull them from the cookie, if possible.
 			$cookie_timer_token_post_id = $this->session->get_session_token_object_id();

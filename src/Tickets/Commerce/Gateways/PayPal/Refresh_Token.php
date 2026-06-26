@@ -30,13 +30,14 @@ class Refresh_Token {
 	 * Refresh_Token constructor.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Made $merchant and $client explicitly nullable.
 	 *
 	 * @param Merchant $merchant
 	 * @param Client   $client
 	 */
 	public function __construct(
-		Merchant $merchant = null,
-		Client $client = null
+		?Merchant $merchant = null,
+		?Client $client = null
 	) {
 		$this->merchant = $merchant ?: tribe( Merchant::class );
 		$this->client   = $client ?: tribe( Client::class );

@@ -343,7 +343,6 @@ class Classic_Editor_Test extends WPTestCase {
 		tribe( Classic_Editor::class )->save_rsvp_on_post_save( $post_id );
 
 		$_POST = $saved_post;
-		remove_filter( 'tec_tickets_rsvp_v2_classic_save_data', $callback );
 
 		return $captured;
 	}

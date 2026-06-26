@@ -9,6 +9,7 @@
 
 use Tribe__Date_Utils as Dates;
 use Tribe__Repository__Interface as Repository_Interface;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -310,6 +311,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$post_id = (int) get_post_meta( $ticket_id, $this->get_event_key(), true );
 
+		// Fallback for TC-RSVP tickets which use a different event relation meta key.
+		if ( ! $post_id ) {
+			$post_id = (int) tribe_tickets( 'rsvp' )->get_event_id( $ticket_id );
+		}
+
 		// No post found, something went wrong.
 		if ( 0 === $post_id ) {
 			return '';
@@ -458,10 +464,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		$html  = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
-		$html .= $template->template( 'v2/rsvp/content', $args, false );
+		$html = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
 
-		return $html;
+		// Use the TC-RSVP commerce template for TC-RSVP tickets.
+		$content_template = $ticket instanceof \Tribe__Tickets__Ticket_Object && RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type()
+			? 'v2/commerce/rsvp/content'
+			: 'v2/rsvp/content';
+
+		return $html . $template->template( $content_template, $args, false );
 	}
 
 	/**
@@ -713,6 +723,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
 
 		if ( ! is_singular( $post_types ) ) {
+			return;
+		}
+
+		// Only load the RSVP assets when the post actually has tickets to render. Otherwise these
+		// would load on every singular tickets-enabled post (the `page` post type is enabled by
+		// default), including pages with no RSVP/ticket UI such as the WooCommerce cart and checkout.
+		if ( ! tribe_events_has_tickets( get_queried_object_id() ) ) {
 			return;
 		}
 
@@ -1826,8 +1843,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 * @since 5.8.0 Added the $context parameter.
+	 * @since TBD Made $context explicitly nullable.
 	 */
-	public function get_tickets( $post_id, string $context = null ) {
+	public function get_tickets( $post_id, ?string $context = null ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 		if ( ! $ticket_ids ) {
 			return [];
@@ -2034,6 +2052,21 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int                           $ticket_id The ticket ID.
 		 */
 		$ticket = apply_filters( 'tribe_tickets_rsvp_get_ticket', $ticket, $event_id, $ticket_id );
+
+		// For TC-RSVP tickets, fire the TC legacy filter so extensions (e.g. ET+) can populate
+		// additional properties such as IAC from meta.
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object && RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type() ) {
+			/**
+			 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
+			 *
+			 * @since TBD
+			 *
+			 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+			 * @param int                           $event_id  The event post ID.
+			 * @param int                           $ticket_id The ticket post ID.
+			 */
+			$ticket = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $ticket, $event_id, $ticket_id );
+		}
 
 		// Set cache after filter is applied.
 		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
@@ -3137,16 +3170,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		$attendee_email = null;
-		if ( ! empty( $first_attendee['email'] ) ) {
-			$decoded_email = html_entity_decode( $first_attendee['email'] );
-
-			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
-				$attendee_email = htmlentities( sanitize_email( $decoded_email ) );
-				$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-			}
-		}
-		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'] ) ) );
+		$attendee_email        = empty( $first_attendee['email'] ) ? null : htmlentities( sanitize_email( html_entity_decode( $first_attendee['email'], ENT_COMPAT ) ), ENT_COMPAT );
+		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : htmlentities( sanitize_text_field( html_entity_decode( $first_attendee['full_name'], ENT_COMPAT ) ), ENT_COMPAT );
 		$attendee_optout       = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
 		$attendee_order_status = empty( $first_attendee['order_status'] ) ? 'yes' : $first_attendee['order_status'];
 

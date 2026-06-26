@@ -556,13 +556,14 @@ class Series_Passes extends Controller {
 	 * Updates a Series Pass meta when created or edited.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $ticket explicitly nullable.
 	 *
 	 * @param int           $post_id The ID of the post the Ticket is being saved for.
 	 * @param Ticket_Object $ticket  The Ticket being saved.
 	 *
 	 * @return void The Series Pass meta is updated, if the Ticket is a Series Pass and it's required.
 	 */
-	public function update_pass_meta_on_save( $post_id, Ticket_Object $ticket = null ): void {
+	public function update_pass_meta_on_save( $post_id, ?Ticket_Object $ticket = null ): void {
 		if ( $ticket === null ) {
 			return;
 		}
@@ -591,13 +592,14 @@ class Series_Passes extends Controller {
 	 * Updates the Series Passes when an Event relationship with Series are updated.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $series_ids explicitly nullable.
 	 *
 	 * @param int             $event_id   The Event post ID.
 	 * @param array<int>|null $series_ids The Series post IDs, if known.
 	 *
 	 * @return void The Series Passes are updated.
 	 */
-	public function update_passes_for_event( int $event_id, array $series_ids = null ): void {
+	public function update_passes_for_event( int $event_id, ?array $series_ids = null ): void {
 		// Get the Series the Event belongs to if not provided.
 		$series_ids = $series_ids ?? tec_series()->where( 'event_post_id', $event_id )->fields( 'ids' )->get_ids();
 
@@ -778,13 +780,14 @@ class Series_Passes extends Controller {
 	 * when displaying the Series Pass in the context of a Series' Event.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $post_id explicitly nullable.
 	 *
 	 * @param Ticket_Object $ticket  The ticket object.
 	 * @param int|null      $post_id The post ID the ticket is being rendered for, if any.
 	 *
 	 * @return void The link is rendered.
 	 */
-	public function render_link_to_series( Ticket_object $ticket, int $post_id = null ): void {
+	public function render_link_to_series( Ticket_Object $ticket, ?int $post_id = null ): void {
 		if ( $post_id === $ticket->get_event_id() ) {
 			// Let the default controls render.
 			return;
@@ -918,6 +921,7 @@ class Series_Passes extends Controller {
 	 * by being associated with a Series that has one or more Series Passes.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $query explicitly nullable.
 	 *
 	 * @param string|null   $query       The SQL query to filter.
 	 * @param bool          $has_tickets Whether to filter by ticketed or unticketed status.
@@ -925,7 +929,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_ticketed_status_query( string $query = null, bool $has_tickets, array $post_types ): ?string {
+	public function filter_ticketed_status_query( ?string $query = null, bool $has_tickets = false, array $post_types = [] ): ?string {
 		// Filter if working with Events alone.
 		if ( $post_types !== [ TEC::POSTTYPE ] ) {
 			return $query;
@@ -939,13 +943,14 @@ class Series_Passes extends Controller {
 	 * "by proxy" by being associated with a Series that has one or more Series Passes.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $query explicitly nullable.
 	 *
 	 * @param string|null $query     The SQL query to filter.
 	 * @param string      $post_type The post type the unticketed count is being calculated for.
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_ticketed_count_query( string $query = null, string $post_type ): ?string {
+	public function filter_ticketed_count_query( ?string $query = null, string $post_type = '' ): ?string {
 		if ( $post_type !== TEC::POSTTYPE ) {
 			return $query;
 		}
@@ -958,13 +963,14 @@ class Series_Passes extends Controller {
 	 * ticketed "by proxy" by being associated with a Series that has one or more Series Passes.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $query explicitly nullable.
 	 *
 	 * @param string|null $query     The SQL query to filter.
 	 * @param string      $post_type The post type the unticketed count is being calculated for.
 	 *
 	 * @return string|null The filtered SQL query, if required.
 	 */
-	public function filter_unticketed_count_query( string $query = null, string $post_type ): ?string {
+	public function filter_unticketed_count_query( ?string $query = null, string $post_type = '' ): ?string {
 		if ( $post_type !== TEC::POSTTYPE ) {
 			return $query;
 		}

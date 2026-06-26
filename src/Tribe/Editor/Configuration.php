@@ -197,7 +197,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 
 			$providers[] = [
 				'class'                       => $class_name,
-				'currency'                    => html_entity_decode( $currency_symbol ),
+				'currency'                    => html_entity_decode( $currency_symbol, ENT_COMPAT ),
 				'currency_decimal_point'      => $currency_decimal_point,
 				'currency_number_of_decimals' => $currency_number_of_decimals,
 				'currency_position'           => $currency_position,

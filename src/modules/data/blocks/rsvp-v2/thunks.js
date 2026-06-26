@@ -134,6 +134,10 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 			data.capacity = parseInt( capacity, 10 );
 		}
 
+		if ( payload.iac ) {
+			data.iac = payload.iac;
+		}
+
 		// POST /tec/v1/tickets
 		const response = await apiFetch( {
 			path: config.ticketsEndpoint,
@@ -143,8 +147,12 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 		} );
 
 		if ( response && response.id ) {
+			if ( postId && window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo ) {
+				delete window.tribe_event_tickets_plus.rsvp.pendingAttendeeInfo[ postId ];
+			}
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
+			dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
 			dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 			await hydrateAttendanceCountsFromTicket( dispatch, response );
 			dispatch( actions.setRSVPHasChanges( false ) );
@@ -205,6 +213,10 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 			data.capacity = parseInt( capacity, 10 );
 		}
 
+		if ( payload.iac ) {
+			data.iac = payload.iac;
+		}
+
 		// PUT /tec/v1/tickets/{id}
 		const response = await apiFetch( {
 			path: `${ config.ticketsEndpoint }/${ id }`,
@@ -213,6 +225,10 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 			data,
 		} );
 
+		if ( payload.postId && window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo ) {
+			delete window.tribe_event_tickets_plus.rsvp.pendingAttendeeInfo[ payload.postId ];
+		}
+		dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
 		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 		dispatch(
 			actions.setRSVPTempDetails( {
