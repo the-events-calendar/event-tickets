@@ -9,6 +9,9 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
+use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket as Ticket_Endpoint;
+use WP_Post;
+
 /**
  * Class Block_Editor
  *
@@ -56,9 +59,49 @@ class Block_Editor {
 			'enabled'         => true,
 			'ticketsEndpoint' => '/tec/v1/tickets',
 			'ticketType'      => Constants::TC_RSVP_TYPE,
+			'initialTicket'   => $this->get_initial_rsvp_ticket(),
 		];
 
 		return $config;
+	}
+
+	/**
+	 * Returns the RSVP ticket for the current post in REST-shaped format.
+	 *
+	 * Preloaded into the block editor so the RSVP block can render without
+	 * waiting for an async fetch on first paint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,mixed>|null Formatted ticket entity or null when none exists.
+	 */
+	private function get_initial_rsvp_ticket(): ?array {
+		$post_id = get_the_ID();
+
+		if ( ! $post_id ) {
+			return null;
+		}
+
+		$ticket = tribe( Ticket::class )->get_for_event( (int) $post_id );
+
+		if ( ! $ticket ) {
+			return null;
+		}
+
+		if ( ! function_exists( 'tec_tc_get_ticket' ) ) {
+			return null;
+		}
+
+		$ticket_post = tec_tc_get_ticket( (int) $ticket->ID );
+
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return null;
+		}
+
+		/** @var Ticket_Endpoint $endpoint */
+		$endpoint = tribe( Ticket_Endpoint::class );
+
+		return $endpoint->get_formatted_entity( $ticket_post );
 	}
 
 	/**

@@ -16,14 +16,15 @@ import { select } from '@wordpress/data';
  */
 import * as actions from '../rsvp-shared/actions';
 import * as selectors from '../rsvp-shared/selectors';
-import { normalizeRSVPResponseFromV2Ticket } from '../rsvp-shared/utils/normalize-rsvp-response';
 import {
 	getAttendanceCountsFromV2Ticket,
 	hydrateRsvpAttendanceCounts,
 } from '../rsvp-shared/utils/hydrate-rsvp-attendance-counts';
+import { hydrateRsvpFromTicket } from '../rsvp-shared/utils/hydrate-rsvp-from-ticket';
 import { selectLatestRsvpTicket } from '../rsvp-shared/utils/select-latest-rsvp-ticket';
 import { getV2Config } from './config';
 import { buildPersistPayload } from './build-persist-payload';
+import { clearRsvpEventMeta } from './utils/clear-rsvp-event-meta';
 
 /**
  * Prevents overlapping create/update/delete requests.
@@ -293,16 +294,18 @@ export const persistRSVP = ( overrides = {} ) => async ( dispatch, getState ) =>
  * @param {number} id The RSVP ID.
  * @return {Function} Redux thunk function.
  */
-export const deleteRSVP = ( id ) => async () => {
+export const deleteRSVP = ( id ) => async ( dispatch ) => {
 	const config = getV2Config();
 
 	try {
-		// DELETE /tec/v1/tickets/{id}
+		// DELETE /tec/v1/tickets/{id}?force=true
 		await apiFetch( {
-			path: `${ config.ticketsEndpoint }/${ id }`,
+			path: `${ config.ticketsEndpoint }/${ id }?force=true`,
 			method: 'DELETE',
 			headers: TEC_EEA_HEADER,
 		} );
+
+		dispatch( clearRsvpEventMeta() );
 
 		/**
 		 * Fires after an RSVP is deleted.
@@ -311,9 +314,13 @@ export const deleteRSVP = ( id ) => async () => {
 		 * @param {number} id The RSVP ID.
 		 */
 		doAction( 'tec.tickets.blocks.rsvp.deleted', id );
+
+		return true;
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( 'Error deleting V2 RSVP:', error );
+
+		return false;
 	}
 };
 
@@ -339,21 +346,12 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 		const listTicket = selectLatestRsvpTicket( tickets, config.ticketType );
 
 		if ( listTicket ) {
-			const normalized = normalizeRSVPResponseFromV2Ticket( listTicket, {
-				title: 'RSVP',
-				description: '',
-			} );
-
-			dispatch( actions.createRSVP() );
-			dispatch( actions.setRSVPId( normalized.id ) );
-			dispatch( actions.setRSVPHasAttendeeInfoFields( normalized.hasAttendeeInfoFields ) );
-			dispatch( actions.setRSVPDetails( normalized.details ) );
-			dispatch( actions.setRSVPTempDetails( normalized.tempDetails ) );
+			hydrateRsvpFromTicket( dispatch, actions, listTicket );
 
 			let countsTicket = listTicket;
 
 			try {
-				const detailedTicket = await fetchV2Ticket( normalized.id );
+				const detailedTicket = await fetchV2Ticket( listTicket.id );
 
 				if ( detailedTicket ) {
 					countsTicket = detailedTicket;
@@ -374,6 +372,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 		console.error( 'Error fetching V2 RSVP:', error );
 	} finally {
 		dispatch( actions.setRSVPIsLoading( false ) );
+		dispatch( actions.setRSVPIsInitializing( false ) );
 	}
 };
 

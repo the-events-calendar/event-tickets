@@ -1,3 +1,5 @@
+@import './edit-button/style.pcss';
+
 .tribe-editor__rsvp-container {
 	background-color: #fff;
 }
@@ -5,6 +7,24 @@
 .tribe-editor__rsvp {
 	font-family: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
 	position: relative;
+
+
+	.tribe-editor {
+
+		&__ticket__capacity-label {
+			width: 90px;
+		}
+	}
+
+	.components-spinner {
+		float: none;
+		left: 50%;
+		margin: 0;
+		opacity: 0.8;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
 
 	&--selected.tribe-editor__rsvp--add-edit-open {
 		border: none;
@@ -17,31 +37,18 @@
 	display: flex;
 	flex-direction: column;
 
-	& > svg {
+	> svg {
 		flex: none;
 	}
 }
 
 .tribe-editor__rsvp__inactive-block-icon-label {
-	color: #aeb4bb;
+	color: var(--tec-color-text-disabled);
 	flex: none;
 	font-size: 16px;
 	font-weight: 700;
 	letter-spacing: 0.05px;
 	line-height: 19px;
-}
-
-.components-spinner {
-
-	.tribe-editor__rsvp & {
-		float: none;
-		left: 50%;
-		margin: 0;
-		opacity: 0.8;
-		position: absolute;
-		top: 50%;
-		transform: translate(-50%, -50%);
-	}
 }
 
 .tribe-editor__card.tribe-editor__inactive-block--rsvp {
@@ -131,5 +138,73 @@
 
 	#add-rsvp {
 		margin: auto;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   RSVP disabled / loading muted styles
+   ------------------------------------------------------------------------- */
+
+.tribe-editor__rsvp-container--disabled {
+	.tribe-editor__rsvp-container-header__title,
+	.tribe-editor__rsvp-container-header__description,
+	.tribe-editor__numeric-label.tribe-editor__rsvp-container-header__capacity-label,
+	.tribe-editor__rsvp-container-header__capacity-label-fallback,
+	.tribe-editor__rsvp-container-content__capacity-label,
+	.tribe-editor__rsvp-container-content__not-going-responses .tribe-editor__checkbox__label,
+	.tribe-editor__rsvp__attendee-registration-label-with-modal .tribe-editor__labeled-item__label,
+	.tribe-editor__rsvp__attendee-registration-helper-text,
+	.tribe-editor__rsvp-container__icon-label,
+	.tribe-editor__rsvp-duration__duration-label .tribe-editor__labeled-item__label,
+	.tribe-editor__rsvp__advanced-options-header-text,
+	.tribe-editor__date-time-range-picker__separator {
+		color: var(--tec-color-text-disabled);
+	}
+
+	svg.tribe-editor__rsvp-duration__duration-tooltip-label,
+	svg.tribe-editor__rsvp__advanced-options-header-icon {
+		fill: var(--tec-color-icon-disabled);
+	}
+}
+
+.tribe-editor__rsvp .tribe-editor__rsvp-container .tribe-editor__rsvp-container-content__capacity-input:disabled {
+	color: var(--tec-color-text-disabled);
+}
+
+.tribe-editor__rsvp .tribe-editor__rsvp-container-header__title-input:disabled,
+.tribe-editor__rsvp .tribe-editor__rsvp-container-header__title-input:disabled:hover,
+.tribe-editor__rsvp .tribe-editor__rsvp-container-header__title-input:disabled:focus,
+.tribe-editor__rsvp .tribe-editor__rsvp-container-header__description-input:disabled,
+.tribe-editor__rsvp .tribe-editor__rsvp-container-header__description-input:disabled:hover,
+.tribe-editor__rsvp .tribe-editor__rsvp-container-header__description-input:disabled:focus {
+	background-color: transparent;
+	color: var(--tec-color-text-disabled);
+}
+
+.tribe-editor__rsvp--loading {
+	.tribe-editor__warning-button-text {
+		color: var(--tec-color-text-disabled);
+	}
+
+	svg.tribe-editor__warning-button-icon {
+		fill: var(--tec-color-icon-disabled);
+	}
+}
+
+.tribe-editor__rsvp__settings-dashboard--loading {
+	.tribe-editor__settings-dashboard__header-left-text {
+		color: var(--tec-color-text-disabled);
+	}
+
+	.tribe-editor__settings-dashboard__header-left > svg,
+	.tribe-editor__settings-dashboard__header-left > svg path {
+		fill: var(--tec-color-icon-disabled);
+	}
+}
+
+.edit-post-visual-editor .editor-block-list__block .tribe-editor__rsvp__settings-dashboard--loading {
+	.tribe-editor__image-upload__title,
+	.tribe-editor__image-upload__content p.tribe-editor__image-upload__description {
+		color: var(--tec-color-text-disabled);
 	}
 }

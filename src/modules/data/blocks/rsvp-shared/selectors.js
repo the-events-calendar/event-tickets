@@ -29,6 +29,8 @@ export const getRSVPHasChanges = createSelector( [ getRSVPBlock ], ( rsvp ) => r
 
 export const getRSVPIsLoading = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isLoading );
 
+export const getRSVPIsInitializing = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isInitializing );
+
 export const getRSVPIsSettingsLoading = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isSettingsLoading );
 
 export const getRSVPIsModalOpen = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isModalOpen );

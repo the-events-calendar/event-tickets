@@ -12,6 +12,7 @@ export const DEFAULT_STATE = {
 	hasChanges: false,
 	isAddEditOpen: false,
 	isLoading: false,
+	isInitializing: true,
 	isSettingsLoading: false,
 	isModalOpen: false,
 	goingCount: 0,
@@ -55,6 +56,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				isLoading: action.payload.isLoading,
+			};
+		case types.SET_RSVP_IS_INITIALIZING:
+			return {
+				...state,
+				isInitializing: action.payload.isInitializing,
 			};
 		case types.SET_RSVP_IS_SETTINGS_LOADING:
 			return {

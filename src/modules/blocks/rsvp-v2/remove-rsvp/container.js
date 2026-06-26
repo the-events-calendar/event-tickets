@@ -27,19 +27,22 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		...ownProps,
 		isDisabled: stateProps.isDisabled,
 		isLoading: stateProps.isLoading,
-		onRemove: () => {
+		onRemove: async () => {
 			if (
-				window.confirm(
+				! window.confirm(
 					// eslint-disable-line no-alert
 					__( 'Are you sure you want to remove RSVP? This cannot be undone.', 'event-tickets' )
 				)
 			) {
-				dispatch( actions.deleteRSVP() );
-				if ( stateProps.created && stateProps.rsvpId ) {
-					dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
-				}
-				wpDispatch( 'core/block-editor' ).removeBlocks( [ ownProps.clientId ] );
+				return;
 			}
+
+			if ( stateProps.created && stateProps.rsvpId ) {
+				await dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
+			}
+
+			dispatch( actions.deleteRSVP() );
+			wpDispatch( 'core/block-editor' ).removeBlocks( [ ownProps.clientId ] );
 		},
 	};
 };

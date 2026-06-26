@@ -50,14 +50,14 @@ const RSVPAttendeeInformationSection = ( {
 		<div className="tribe-editor__rsvp-attendee-information">
 			{ showEditAffordances ? (
 				<button
-					className="tribe-editor__rsvp-attendee-information__title-edit"
+					className="tribe-editor__rsvp-inline-edit-button tribe-editor__rsvp-attendee-information__title-edit"
 					onClick={ handleEdit }
 					type="button"
 				>
 					<span className="tribe-editor__rsvp-attendee-information__title tribe-common-h6 tribe-common-h--alt">
 						{ title }
 					</span>
-					<Dashicon className="tribe-editor__rsvp-attendee-information__edit-icon" icon="edit" />
+					<Dashicon className="tribe-editor__rsvp-inline-edit-button__icon" icon="edit" />
 				</button>
 			) : (
 				<span className="tribe-editor__rsvp-attendee-information__title tribe-common-h6 tribe-common-h--alt">

@@ -42,6 +42,13 @@ export const setRSVPIsLoading = ( isLoading ) => ( {
 	},
 } );
 
+export const setRSVPIsInitializing = ( isInitializing ) => ( {
+	type: types.SET_RSVP_IS_INITIALIZING,
+	payload: {
+		isInitializing,
+	},
+} );
+
 export const setRSVPIsSettingsLoading = ( isSettingsLoading ) => ( {
 	type: types.SET_RSVP_IS_SETTINGS_LOADING,
 	payload: {

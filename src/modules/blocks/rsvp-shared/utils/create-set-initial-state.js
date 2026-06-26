@@ -11,6 +11,7 @@ import { select } from '@wordpress/data';
  * @param {Object}   options.thunks               RSVP thunks.
  * @param {boolean}  options.hydrateHeaderImage         Whether to hydrate header image from attributes.
  * @param {boolean}  options.hydrateCountsFromAttributes Whether to seed counts from block attributes.
+ * @param {boolean}  options.hydrateFromEditorConfig     Whether to hydrate from PHP-localized config.
  * @return {Function} setInitialState factory bound to dispatch and ownProps.
  */
 export const createSetInitialState = ( {
@@ -18,8 +19,15 @@ export const createSetInitialState = ( {
 	thunks,
 	hydrateHeaderImage = false,
 	hydrateCountsFromAttributes = true,
+	hydrateFromEditorConfig = false,
+	hydrateFromEditorConfigFn = null,
 } ) => ( dispatch, ownProps ) => () => {
 	const postId = select( 'core/editor' ).getCurrentPostId();
+
+	if ( hydrateFromEditorConfig && hydrateFromEditorConfigFn ) {
+		hydrateFromEditorConfigFn( dispatch, actions );
+	}
+
 	dispatch( thunks.getRSVP( postId ) );
 
 	const { attributes = {} } = ownProps;

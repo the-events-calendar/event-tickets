@@ -52,6 +52,10 @@ export default {
 			source: 'meta',
 			meta: KEY_TICKET_NOT_GOING_COUNT,
 		},
+		rsvpFingerprint: {
+			type: 'string',
+			default: '',
+		},
 	},
 
 	edit: RSVPV2Container,

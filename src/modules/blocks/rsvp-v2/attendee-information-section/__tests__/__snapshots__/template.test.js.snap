@@ -5,7 +5,7 @@ exports[`RSVPAttendeeInformationSection should render attendee information secti
   className="tribe-editor__rsvp-attendee-information"
 >
   <button
-    className="tribe-editor__rsvp-attendee-information__title-edit"
+    className="tribe-editor__rsvp-inline-edit-button tribe-editor__rsvp-attendee-information__title-edit"
     onClick={[Function]}
     type="button"
   >
@@ -15,7 +15,7 @@ exports[`RSVPAttendeeInformationSection should render attendee information secti
       Attendee Information
     </span>
     <span
-      className="tribe-editor__rsvp-attendee-information__edit-icon"
+      className="tribe-editor__rsvp-inline-edit-button__icon"
     >
       edit
     </span>

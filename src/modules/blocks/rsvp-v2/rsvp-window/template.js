@@ -27,7 +27,7 @@ const RSVPRsvpWindow = ( { anchorRef, dateRange, isWindowOpen, onEditWindow, sho
 			{ showEditAffordances ? (
 				<button
 					ref={ anchorRef }
-					className="tribe-editor__rsvp-window__title-edit"
+					className="tribe-editor__rsvp-inline-edit-button tribe-editor__rsvp-window__title-edit"
 					disabled={ isWindowOpen }
 					onClick={ onEditWindow }
 					type="button"
@@ -35,7 +35,7 @@ const RSVPRsvpWindow = ( { anchorRef, dateRange, isWindowOpen, onEditWindow, sho
 					<span className="tribe-editor__rsvp-window__title tribe-common-h6 tribe-common-h--alt">
 						{ title }
 					</span>
-					<Dashicon className="tribe-editor__rsvp-window__edit-icon" icon="edit" />
+					<Dashicon className="tribe-editor__rsvp-inline-edit-button__icon" icon="edit" />
 				</button>
 			) : (
 				<span className="tribe-editor__rsvp-window__title tribe-common-h6 tribe-common-h--alt">{ title }</span>

@@ -60,6 +60,7 @@ const RSVPV2 = ( {
 	hasRecurrenceRules,
 	initializeRSVP,
 	isAddEditOpen,
+	isInitializing,
 	isLoading,
 	isModalShowing,
 	isSelected,
@@ -110,9 +111,10 @@ const RSVPV2 = ( {
 			[]
 		);
 
-		// Show the inactive "Add RSVP" prompt when the create form is closed
-		// and no ticket exists yet.
-		const displayInactive = ! isAddEditOpen && ! created;
+		// Show the inactive "Add RSVP" prompt when the create form is closed,
+		// no ticket exists yet, and the initial fetch has completed.
+		const displayInactive = ! isAddEditOpen && ! created && ! isInitializing;
+		const displayInitializing = isInitializing && ! created && ! isAddEditOpen;
 		const savedSummary = isSavedSummary( { created, isAddEditOpen } );
 
 		const blockClassName = classNames(
@@ -132,7 +134,11 @@ const RSVPV2 = ( {
 		return (
 			<div ref={ rsvpBlockRef }>
 				{ injectedComponentsTicketsBeforeHeader }
-				{ displayInactive ? (
+				{ displayInitializing ? (
+					<div className={ classNames( 'tribe-editor__rsvp', 'tribe-editor__rsvp--loading' ) }>
+						<Spinner />
+					</div>
+				) : displayInactive ? (
 					<RSVPInactiveBlock />
 				) : savedSummary ? (
 					<div className={ blockClassName }>{ blockBody }</div>
@@ -159,6 +165,7 @@ RSVPV2.propTypes = {
 	hasRecurrenceRules: PropTypes.bool.isRequired,
 	initializeRSVP: PropTypes.func.isRequired,
 	isAddEditOpen: PropTypes.bool.isRequired,
+	isInitializing: PropTypes.bool.isRequired,
 	isLoading: PropTypes.bool.isRequired,
 	isModalShowing: PropTypes.bool.isRequired,
 	isSelected: PropTypes.bool.isRequired,
