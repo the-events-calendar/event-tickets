@@ -54,6 +54,14 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 			// Track whether the form was submitted so handleUnload can mark changes.
 			let wasFormSubmitted = false;
 
+			// Expose a same-origin callback for ET+ to sync IAC radio changes in real time.
+			window.tribe_event_tickets_plus = window.tribe_event_tickets_plus || {};
+			window.tribe_event_tickets_plus.rsvp = window.tribe_event_tickets_plus.rsvp || {};
+			const previousOnIacChange = window.tribe_event_tickets_plus.rsvp.onIacChange;
+			window.tribe_event_tickets_plus.rsvp.onIacChange = ( iacValue ) => {
+				dispatch( actions.setRSVPIAC( iacValue ) );
+			};
+
 			// show overlay
 			const showOverlay = () => {
 				wasFormSubmitted = true;
@@ -64,23 +72,11 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 			const form = iframeWindow.document.querySelector( '#event-tickets-attendee-information' );
 			form.addEventListener( 'submit', showOverlay );
 
-			// Listen for real-time IAC changes posted from the iframe (ET+ posts these on radio change).
-			const handleIacMessage = ( event ) => {
-				if (
-					event.source === iframeWindow &&
-					event.data &&
-					event.data.action === 'tec_rsvp_iac_change'
-				) {
-					dispatch( actions.setRSVPIAC( event.data.iac ) );
-				}
-			};
-			window.addEventListener( 'message', handleIacMessage );
-
 			// remove listeners
 			const removeListeners = () => {
 				iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 				form.removeEventListener( 'submit', showOverlay );
-				window.removeEventListener( 'message', handleIacMessage );
+				window.tribe_event_tickets_plus.rsvp.onIacChange = previousOnIacChange;
 			};
 
 			// handle unload on iframe unload
@@ -92,7 +88,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
 				const hasFields = metaFields ? Boolean( metaFields.firstElementChild ) : false;
 
-				// Sync final IAC value to Redux on close (covers the case where postMessage was not sent).
+				// Sync final IAC value to Redux on close (covers the case where the callback was not invoked).
 				const iacInput = iframeWindow.document.querySelector( 'input[name="ticket_iac"]:checked' );
 				if ( iacInput ) {
 					dispatch( actions.setRSVPIAC( iacInput.value ) );

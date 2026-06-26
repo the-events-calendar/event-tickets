@@ -16,8 +16,9 @@
  * @var int $attendee_id The attendee ID.
  *
  * @since 5.7.1
+ * @since TBD Read the attendee name from the Tickets Commerce meta key used by RSVP V2, with fallbacks.
  *
- * @version 5.7.1
+ * @version TBD
  */
 
 use TEC\Tickets\Commerce\Attendee;
@@ -27,7 +28,18 @@ if ( empty( $attendees ) || empty( $attendee_id ) ) {
 	return;
 }
 
-$attendee_name = get_post_meta( $attendee_id, Attendee::$full_name_meta_key, true );
+$attendee_name = get_post_meta( $attendee_id, tribe( Tribe__Tickets__RSVP::class )->full_name, true );
+
+// RSVP V2 creates Tickets Commerce attendees, which store the holder name under a different meta key.
+if ( empty( $attendee_name ) ) {
+	$attendee_name = get_post_meta( $attendee_id, Attendee::$full_name_meta_key, true );
+}
+
+// Final fallback to the attendee post title, which is also set to the holder name on creation.
+if ( empty( $attendee_name ) ) {
+	$attendee_name = get_the_title( $attendee_id );
+}
+
 if ( empty( $attendee_name ) ) {
 	return;
 }
