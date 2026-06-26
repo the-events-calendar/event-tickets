@@ -561,17 +561,17 @@ class Base extends Controller {
 	 * Filters the HTML for the ticket editor to hide the header image option from the ticket settings.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Made $html and $template explicitly nullable.
+	 * @since TBD Made $html and $template explicitly nullable and added default values to remaining args.
 	 *
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
 	 * @param string[]            $name     Template name.
-	 * @param Template            $template Current instance of the Tribe__Template
+	 * @param ?Template           $template Current instance of the Tribe__Template
 	 * @param array<string,mixed> $context  The context data passed to the template.
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
 	 */
-	public function hide_header_image_option_from_ticket_settings( ?string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
+	public function hide_header_image_option_from_ticket_settings( ?string $html = null, string $file = '', array $name = [], ?Template $template = null, array $context = [] ): ?bool {
 		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
 			return $html;
 		}
