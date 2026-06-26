@@ -67,15 +67,19 @@ abstract class Status_Abstract implements Status_Interface {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @since TBD Made $post explicitly nullable.
 	 */
-	public function get_flags( \WP_Post $post = null ) {
+	public function get_flags( ?\WP_Post $post = null ) {
 		return $this->filter_get_flags( $this->flags, $post );
 	}
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @since TBD Made $post explicitly nullable.
 	 */
-	public function filter_get_flags( $flags, \WP_Post $post = null ) {
+	public function filter_get_flags( $flags, ?\WP_Post $post = null ) {
 		/**
 		 * Allows filtering of which flags are associated with this Status.
 		 *
@@ -101,8 +105,10 @@ abstract class Status_Abstract implements Status_Interface {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @since TBD Made $post explicitly nullable.
 	 */
-	public function has_flags( $flags, $operator = 'AND', \WP_Post $post = null ) {
+	public function has_flags( $flags, $operator = 'AND', ?\WP_Post $post = null ) {
 		$intersection = array_intersect( (array) $flags, $this->get_flags( $post ) );
 
 		if ( 'AND' === strtoupper( $operator ) ) {

@@ -64,3 +64,6 @@ DOCKER_ENV
 docker_tag
 output.log
 Dockerfile-php-build
+
+# PHP compatibility checker cache (downloaded phpcs phar + standards)
+dev/php-compat/

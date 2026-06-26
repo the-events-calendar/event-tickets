@@ -764,7 +764,10 @@ class Orders extends WP_List_Table {
 		foreach ( $formatted_data as $row ) {
 			fputcsv(
 				$output,
-				$row
+				$row,
+				',',
+				'"',
+				'\\'
 			); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 		}
 
