@@ -760,6 +760,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id The post ID.
 		 */
 		public function clear_ticket_cache_for_post( $post_id ) {
+			// No post context (e.g. deleting an attendee) means there is nothing to clear.
+			if ( empty( $post_id ) ) {
+				return;
+			}
+
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
 
@@ -854,14 +859,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param string   $orm_provider The provider ORM slug (e.g. `tribe-commerce`, `rsvp`).
-		 * @param int|null $post_id      The post (event) ID the tickets belong to. May be null when the
-		 *                               caller has no post context (e.g. deleting an attendee).
+		 * @param string $orm_provider The provider ORM slug (e.g. `tribe-commerce`, `rsvp`).
+		 * @param int    $post_id      The post (event) ID the tickets belong to.
 		 *
 		 * @return string The cache key.
 		 */
-		public static function get_tickets_cache_key( string $orm_provider, ?int $post_id ): string {
-			return self::class . '::get_tickets-' . $orm_provider . '-' . (int) $post_id;
+		public static function get_tickets_cache_key( string $orm_provider, int $post_id ): string {
+			return self::class . '::get_tickets-' . $orm_provider . '-' . $post_id;
 		}
 
 		/**
