@@ -1,5 +1,15 @@
 # Changelog
 
+### [5.28.5] 2026-06-24
+
+* Fix - Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
+* Fix - Resolved an issue where select dropdowns, such as Ticket Capacity, rendered unstyled in the WordPress 7 block editor.
+* Tweak - Added the `tribe_tickets_assets_should_enqueue_frontend` filter to control whether front-end ticket assets are enqueued.
+* Tweak - Updated broken link to coding standards in `CONTRIBUTING.md`
+* Performance - Improved the performance of the ticketed and unticketed filter counts on admin post lists.
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted.
+* Language - 0 new strings added, 25 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.28.4.1] 2026-06-19
 
 * Fix - Ensure the 2% Tickets Commerce application fee is waived after a valid Event Tickets Plus license is activated on Stripe and Square. [SMTNC-1519]
