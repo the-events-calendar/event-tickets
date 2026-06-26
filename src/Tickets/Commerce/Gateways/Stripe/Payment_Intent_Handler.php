@@ -80,6 +80,12 @@ class Payment_Intent_Handler {
 			return null;
 		}
 
+		if ( ! Payment_Intent::is_valid_for_cart( $payment_intent, tribe( Cart::class ) ) ) {
+			$this->store_payment_intent_cookie( null );
+
+			return null;
+		}
+
 		return $payment_intent;
 	}
 
