@@ -10,6 +10,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * Tribe__Tickets__Attendee_Registration__Rewrite constructor.
 	 *
 	 * @since 4.9
+	 * @since TBD Made $wp_rewrite explicitly nullable.
 	 *
 	 * @param WP_Rewrite|null $wp_rewrite
 	 */

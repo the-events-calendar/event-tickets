@@ -154,6 +154,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @since 4.6.2 Deprecated the second parameter.
 	 * @since 4.10.6 Added $total and $not_going parameters to further optimize requests.
 	 * @since 5.5.11 Added caching and reorganized code to further optimize requests.
+	 * @since TBD Made $total and $not_going explicitly nullable.
 	 *
 	 * @param int $post_id   The current post ID.
 	 * @param null    $deprecated

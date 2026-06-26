@@ -1159,6 +1159,7 @@ class Tribe__Tickets__Attendees {
 	 * Echo the button for the export that appears next to the attendees page title.
 	 *
 	 * @since 5.1.7
+	 * @since TBD Made $attendees explicitly nullable.
 	 *
 	 * @param int                       $event_id  The Post ID of the event.
 	 * @param Tribe__Tickets__Attendees $attendees The attendees object.

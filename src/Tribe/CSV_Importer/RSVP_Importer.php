@@ -54,6 +54,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Tribe__Tickets__CSV_Importer__RSVP_Importer constructor.
 	 *
+	 * @since TBD Made $featured_image_uploader and $rsvp_tickets explicitly nullable.
+	 *
 	 * @param Tribe__Events__Importer__File_Reader                  $file_reader
 	 * @param Tribe__Events__Importer__Featured_Image_Uploader|null $featured_image_uploader
 	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets

@@ -16,6 +16,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * Tribe__Tickets__Commerce__PayPal__Orders__Sales constructor.
 	 *
 	 * @since 4.7
+	 * @since TBD Made $cache explicitly nullable.
 	 *
 	 * @param Tribe__Cache|null $cache
 	 */
@@ -272,6 +273,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * Returns a list of orders for the post.
 	 *
 	 * @since 4.7
+	 * @since TBD Made $ticket_ids explicitly nullable.
 	 *
 	 * @param int   $post_id
 	 * @param array $ticket_ids An optional array of ticket IDs to limit the table items.

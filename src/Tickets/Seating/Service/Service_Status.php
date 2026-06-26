@@ -108,6 +108,7 @@ class Service_Status {
 	 *
 	 * @since 5.16.0
 	 * @since 5.17.0 Added the `$context` argument.
+	 * @since TBD Made $status explicitly nullable.
 	 *
 	 * @param string      $backend_base_url The base URL of the service from the site backend.
 	 * @param int|null    $status           The status of the service.

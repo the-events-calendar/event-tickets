@@ -561,6 +561,7 @@ class Base extends Controller {
 	 * Filters the HTML for the ticket editor to hide the header image option from the ticket settings.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $html and $template explicitly nullable.
 	 *
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -679,6 +680,7 @@ class Base extends Controller {
 	 * Filters HTML to hide the footer for regular event cart section when series pass is added in the cart.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $html and $template explicitly nullable.
 	 *
 	 * @param string               $html     The initial HTML or null.
 	 * @param string               $file     Complete path to include the PHP File.
@@ -780,6 +782,7 @@ class Base extends Controller {
 	 * Hides the settings button from showing up for the classic editor metabox.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $html and $template explicitly nullable.
 	 *
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.

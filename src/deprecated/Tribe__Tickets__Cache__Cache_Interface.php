@@ -24,6 +24,8 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 *
 	 * @deprecated 5.6.5
 	 *
+	 * @since TBD Made $post_types explicitly nullable.
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
 	 *
@@ -37,6 +39,8 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 * Please note that the list is aware of supported types.
 	 *
 	 * @deprecated 5.6.5
+	 *
+	 * @since TBD Made $post_types explicitly nullable.
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.

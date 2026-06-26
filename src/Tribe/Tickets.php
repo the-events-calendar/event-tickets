@@ -397,6 +397,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 5.5.2 Set default query args.
 		 * @since 5.8.0 Added the `$context` parameter.
 		 * @since 5.24.1 Correct the docblock to reflect the method's behavior.
+		 * @since TBD Made $context explicitly nullable.
 		 *
 		 * @param int         $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
@@ -437,6 +438,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.6
 		 * @since 5.5.0 refactored to use the tickets ORM.
 		 * @since 5.8.0 Added the `$context` parameter.
+		 * @since TBD Made $context explicitly nullable.
 		 *
 		 * @param int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
@@ -789,6 +791,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
 		 * @since 5.8.0 Added the `$context` parameter.
+		 * @since TBD Made $context explicitly nullable.
 		 *
 		 * @param int $post_id ID of parent "event" post.
 		 * @param string|null $context The context of the request.
@@ -1832,6 +1835,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
 		 * @since 5.8.0 Added the `$context` parameter.
+		 * @since TBD Made $context explicitly nullable.
 		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @param string|null $context The context of the request.

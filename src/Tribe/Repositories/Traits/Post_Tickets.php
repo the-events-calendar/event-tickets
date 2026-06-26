@@ -342,6 +342,7 @@ trait Post_Tickets {
 	 * @since 5.8.0
 	 * @since 5.8.3 Set $meta_keys to an empty array.
 	 * @since 5.8.4 Implemented a check for when $meta_keys is empty to not prepare anything for the query.
+	 * @since TBD Made $allow and $exclude explicitly nullable.
 	 *
 	 * @param string   $alias     The alias to use for the post meta table.
 	 * @param string[] $allow     A list of providers to include in the comparison. If this argument is `null`,

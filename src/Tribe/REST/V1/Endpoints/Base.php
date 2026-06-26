@@ -44,6 +44,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 * Tribe__Tickets__REST__V1__Endpoints__Base constructor.
 	 *
 	 * @since 4.7.5
+	 * @since TBD Made $messages, $post_repository and $validator explicitly nullable.
 	 *
 	 * @param Tribe__REST__Messages_Interface                   $messages
 	 * @param Tribe__Tickets__REST__Interfaces__Post_Repository $post_repository

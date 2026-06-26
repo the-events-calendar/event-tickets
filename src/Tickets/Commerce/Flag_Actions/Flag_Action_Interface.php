@@ -58,6 +58,7 @@ interface Flag_Action_Interface {
 	 * Determines if a given status has the correct action flag to trigger.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Made $post explicitly nullable.
 	 *
 	 * @param Status_Interface $status   Which status we are checking for.
 	 * @param string           $operator Which conditional we are using for checking.

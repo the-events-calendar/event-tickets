@@ -23,6 +23,7 @@ interface Status_Interface {
 	 * Filters and returns the flags for the get_flags method.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Made $post explicitly nullable.
 	 *
 	 * @param string[] $flags Which flags will be filtered.
 	 * @param \WP_Post $post  Which order we are testing against.
@@ -53,6 +54,7 @@ interface Status_Interface {
 	 * Gets the flags associated with this status.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Made $post explicitly nullable.
 	 *
 	 * @param \WP_Post $post Which order we are testing against.
 	 *
@@ -64,6 +66,7 @@ interface Status_Interface {
 	 * Determines if this Status has a set of flags.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Made $post explicitly nullable.
 	 *
 	 * @param array|string $flags    Which flags we are testing.
 	 * @param string       $operator Operator for the test.

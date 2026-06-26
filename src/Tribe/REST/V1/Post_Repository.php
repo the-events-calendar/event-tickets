@@ -59,6 +59,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Tribe__Tickets__REST__V1__Post_Repository constructor.
 	 *
+	 * @since TBD Made $messages explicitly nullable.
+	 *
 	 * @param Tribe__REST__Messages_Interface|null $messages The messages instance.
 	 */
 	public function __construct( ?Tribe__REST__Messages_Interface $messages = null ) {

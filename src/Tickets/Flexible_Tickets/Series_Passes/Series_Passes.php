@@ -556,6 +556,7 @@ class Series_Passes extends Controller {
 	 * Updates a Series Pass meta when created or edited.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $ticket explicitly nullable.
 	 *
 	 * @param int           $post_id The ID of the post the Ticket is being saved for.
 	 * @param Ticket_Object $ticket  The Ticket being saved.
@@ -591,6 +592,7 @@ class Series_Passes extends Controller {
 	 * Updates the Series Passes when an Event relationship with Series are updated.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $series_ids explicitly nullable.
 	 *
 	 * @param int             $event_id   The Event post ID.
 	 * @param array<int>|null $series_ids The Series post IDs, if known.
@@ -778,6 +780,7 @@ class Series_Passes extends Controller {
 	 * when displaying the Series Pass in the context of a Series' Event.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $post_id explicitly nullable.
 	 *
 	 * @param Ticket_Object $ticket  The ticket object.
 	 * @param int|null      $post_id The post ID the ticket is being rendered for, if any.
@@ -918,6 +921,7 @@ class Series_Passes extends Controller {
 	 * by being associated with a Series that has one or more Series Passes.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $query explicitly nullable.
 	 *
 	 * @param string|null   $query       The SQL query to filter.
 	 * @param bool          $has_tickets Whether to filter by ticketed or unticketed status.
@@ -939,6 +943,7 @@ class Series_Passes extends Controller {
 	 * "by proxy" by being associated with a Series that has one or more Series Passes.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $query explicitly nullable.
 	 *
 	 * @param string|null $query     The SQL query to filter.
 	 * @param string      $post_type The post type the unticketed count is being calculated for.
@@ -958,6 +963,7 @@ class Series_Passes extends Controller {
 	 * ticketed "by proxy" by being associated with a Series that has one or more Series Passes.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Made $query explicitly nullable.
 	 *
 	 * @param string|null $query     The SQL query to filter.
 	 * @param string      $post_type The post type the unticketed count is being calculated for.

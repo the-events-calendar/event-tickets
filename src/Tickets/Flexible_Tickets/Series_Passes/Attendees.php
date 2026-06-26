@@ -260,6 +260,7 @@ class Attendees extends Controller {
 	 * Filters the Attendee checkin to prevent Series Pass Attendees from being checked in.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Made $event_id explicitly nullable.
 	 *
 	 * @param mixed    $checkin     Null by default, if not null, it will prevent the default checkin logic
 	 *                              from firing.
@@ -774,6 +775,7 @@ class Attendees extends Controller {
 	 * Checks in an Attendee using the ticket provider.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Made $event_id explicitly nullable.
 	 *
 	 * @param int       $series_id   The post ID of the Series the Attendee holds a Series Pass for.
 	 * @param int       $attendee_id The post ID of the cloned Attendee to check in.
@@ -1204,6 +1206,7 @@ class Attendees extends Controller {
 	 * Returns whether an Attendee is a clone of Another Attendee.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Made $original_id explicitly nullable.
 	 *
 	 * @param int      $clone_id   The post ID of the Attendee to check.
 	 * @param int|null $original_id The post ID of the Attendee to check against. If `null`, the

@@ -272,6 +272,7 @@ class Timer extends Controller_Contract {
 	 * Note it's the JS code responsibility to start the timer by means of a request to the backend.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Made $token and $post_id explicitly nullable.
 	 *
 	 * @param string|null $token        The ephemeral token used to secure the iframe communication with the service
 	 *                                  and identify the seat selection session.
