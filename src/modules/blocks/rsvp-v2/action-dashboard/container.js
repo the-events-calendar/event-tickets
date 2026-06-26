@@ -51,6 +51,18 @@ const onCancelClick = ( state, dispatch ) => () => {
 };
 
 const onConfirmClick = ( state, dispatch ) => () => {
+	const postId = select( 'core/editor' ).getCurrentPostId();
+
+	// The IAC admin modal (iac-admin.js) writes to the in-memory global store when in
+	// block editor context since the ticket may not yet exist. Read it here to include
+	// the selected IAC value in the REST call, then the thunk clears it after save.
+	let iac = selectors.getRSVPIAC( state );
+	const pendingAttendeeInfo = window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo?.[ postId ];
+
+	if ( pendingAttendeeInfo?.iac ) {
+		iac = pendingAttendeeInfo.iac;
+	}
+
 	const payload = {
 		capacity: selectors.getRSVPTempCapacity( state ),
 		notGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
@@ -64,6 +76,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
 		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
+		iac,
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {
@@ -71,7 +84,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		dispatch(
 			thunks.createRSVP( {
 				...payload,
-				postId: select( 'core/editor' ).getCurrentPostId(),
+				postId,
 			} )
 		);
 	} else {
@@ -80,6 +93,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 			thunks.updateRSVP( {
 				...payload,
 				id: selectors.getRSVPId( state ),
+				postId,
 			} )
 		);
 	}

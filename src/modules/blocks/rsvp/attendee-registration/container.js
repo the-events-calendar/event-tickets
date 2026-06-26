@@ -51,8 +51,20 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 		onIframeLoad: ( iframe ) => {
 			const iframeWindow = iframe.contentWindow;
 
+			// Track whether the form was submitted so handleUnload can mark changes.
+			let wasFormSubmitted = false;
+
+			// Expose a same-origin callback for ET+ to sync IAC radio changes in real time.
+			window.tribe_event_tickets_plus = window.tribe_event_tickets_plus || {};
+			window.tribe_event_tickets_plus.rsvp = window.tribe_event_tickets_plus.rsvp || {};
+			const previousOnIacChange = window.tribe_event_tickets_plus.rsvp.onIacChange;
+			window.tribe_event_tickets_plus.rsvp.onIacChange = ( iacValue ) => {
+				dispatch( actions.setRSVPIAC( iacValue ) );
+			};
+
 			// show overlay
 			const showOverlay = () => {
+				wasFormSubmitted = true;
 				iframe.nextSibling.classList.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
 			};
 
@@ -64,6 +76,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 			const removeListeners = () => {
 				iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 				form.removeEventListener( 'submit', showOverlay );
+				window.tribe_event_tickets_plus.rsvp.onIacChange = previousOnIacChange;
 			};
 
 			// handle unload on iframe unload
@@ -73,7 +86,19 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 				// check if there are meta fields
 				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
-				const hasFields = Boolean( metaFields.firstElementChild );
+				const hasFields = metaFields ? Boolean( metaFields.firstElementChild ) : false;
+
+				// Sync final IAC value to Redux on close (covers the case where the callback was not invoked).
+				const iacInput = iframeWindow.document.querySelector( 'input[name="ticket_iac"]:checked' );
+				if ( iacInput ) {
+					dispatch( actions.setRSVPIAC( iacInput.value ) );
+				}
+
+				// If the form was submitted (not just dismissed), mark RSVP as having changes
+				// so the "Update RSVP" button becomes enabled and the REST save includes the new IAC.
+				if ( wasFormSubmitted ) {
+					dispatch( actions.setRSVPHasChanges( true ) );
+				}
 
 				// dispatch actions
 				dispatch( actions.setRSVPHasAttendeeInfoFields( hasFields ) );
