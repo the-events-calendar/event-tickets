@@ -37,7 +37,7 @@ class Glance_Items {
 	 *
 	 * @return bool Whether the glance item attendee count is enabled. Default true.
 	 */
-	protected function is_enabled(): bool {
+	private function is_enabled(): bool {
 		/**
 		 * Filters whether the attendee count glance item is enabled.
 		 *
