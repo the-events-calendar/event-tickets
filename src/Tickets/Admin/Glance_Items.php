@@ -110,17 +110,8 @@ class Glance_Items {
 			return;
 		}
 
-		/*
-		 * The Repository issues a single SQL_CALC_FOUND_ROWS query with LIMIT 1, returning
-		 * the total count from MySQL's FOUND_ROWS() without transferring the full result set.
-		 */
 		$total = tribe_attendees()->per_page( 1 )->found();
 
-		/*
-		 * Always set the transient, including when $total is 0.
-		 * Skipping the set when the count is zero leaves the transient permanently unset,
-		 * causing the cron to reschedule itself on every dashboard page load.
-		 */
 		set_transient( static::$attendee_count_key, (int) $total, DAY_IN_SECONDS );
 	}
 }
