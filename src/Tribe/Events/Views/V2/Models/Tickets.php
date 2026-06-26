@@ -372,9 +372,16 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Legacy serialization method kept for backward compatibility.
+	 *
+	 * @since 5.7.0
+	 * @deprecated TBD Use __serialize() instead.
+	 *
+	 * @return string
 	 */
 	public function serialize() {
+		_deprecated_function( __METHOD__, 'TBD', '__serialize()' );
+
 		$data            = $this->fetch_data();
 		$data['post_id'] = $this->post_id;
 
@@ -410,9 +417,18 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Legacy unserialization method kept for backward compatibility.
+	 *
+	 * @since 5.7.0
+	 * @deprecated TBD Use __unserialize() instead.
+	 *
+	 * @param array|string $serialized The serialized data.
+	 *
+	 * @return void
 	 */
 	public function unserialize( $serialized ) {
+		_deprecated_function( __METHOD__, 'TBD', '__unserialize()' );
+
 		// Kept for back-compatibility reasons.
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
 		$data = unserialize( $serialized );
