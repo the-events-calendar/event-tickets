@@ -28,6 +28,29 @@ class Glance_Items {
 	protected static string $attendee_count_key = 'tec_tickets_glance_item_attendees_count';
 
 	/**
+	 * Check if the attendee count glance item is enabled.
+	 *
+	 * Return false to disable the count entirely (no cron scheduled, no display).
+	 * Useful on high-volume sites where even the transient-backed display is unwanted.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the glance item attendee count is enabled. Default true.
+	 */
+	protected function is_enabled(): bool {
+		/**
+		 * Filters whether the attendee count glance item is enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true );
+	}
+
+	/**
 	 * Method to register glance items related hooks.
 	 *
 	 * @since 5.5.10
@@ -47,19 +70,7 @@ class Glance_Items {
 	 * @return array $items The maybe modified array of items to be displayed.
 	 */
 	public function custom_glance_items_attendees( $items = [] ): array {
-		/**
-		 * Filters whether the attendee count glance item is enabled.
-		 *
-		 * Return false to disable the count entirely (no cron scheduled, no display).
-		 * Useful on high-volume sites where even the transient-backed display is unwanted.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
-		 *
-		 * @return bool
-		 */
-		if ( ! apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true ) ) {
+		if ( ! $this->is_enabled() ) {
 			return (array) $items;
 		}
 
@@ -93,20 +104,7 @@ class Glance_Items {
 	 * @since TBD Always persist the transient (even when count is zero) to prevent infinite cron rescheduling.
 	 */
 	public function update_attendee_count() {
-		/**
-		 * Filters whether the attendee count glance item is enabled.
-		 *
-		 * Return false to disable the count entirely (no cron scheduled, no display).
-		 * Useful on high-volume sites where even the transient-backed display is unwanted.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
-		 * @param array $items The array of items to be displayed. Default empty array.
-		 *
-		 * @return bool $enabled Whether the glance item attendee count is enabled.
-		 */
-		if ( ! apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true ) ) {
+		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
