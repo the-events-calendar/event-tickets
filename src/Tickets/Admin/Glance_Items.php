@@ -102,9 +102,9 @@ class Glance_Items {
 		 * @since TBD
 		 *
 		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
-	 	 * @param array $items The array of items to be displayed. Default empty array.
-
-	 	 * @return bool $enabled Whether the glance item attendee count is enabled.
+		 * @param array $items The array of items to be displayed. Default empty array.
+		 *
+		 * @return bool $enabled Whether the glance item attendee count is enabled.
 		 */
 		if ( ! apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true ) ) {
 			return;
