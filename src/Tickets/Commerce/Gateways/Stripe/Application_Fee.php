@@ -2,9 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
 use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Commerce\Gateways\Gateway_Value_Formatter;
 
 /**
  * The Stripe Application_Fee class
@@ -33,7 +33,7 @@ class Application_Fee {
 	 * @return Value;
 	 */
 	public static function calculate( Value $value ) {
-		if ( Settings::is_licensed_plugin( true ) ) {
+		if ( Settings::is_licensed_plugin() ) {
 			return Value::create();
 		}
 
