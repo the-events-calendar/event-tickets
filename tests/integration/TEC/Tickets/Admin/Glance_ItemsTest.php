@@ -62,16 +62,6 @@ class Glance_ItemsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * Clean up after each test.
-	 */
-	public function tearDown(): void {
-		// your tear down methods here
-
-		// then
-		parent::tearDown();
-	}
-
-	/**
 	 * update_attendee_count() stores the correct attendee total in the transient.
 	 *
 	 * @test
