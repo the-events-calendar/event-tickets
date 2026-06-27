@@ -101,7 +101,22 @@ class Block_Editor {
 		/** @var Ticket_Endpoint $endpoint */
 		$endpoint = tribe( Ticket_Endpoint::class );
 
-		return $endpoint->get_formatted_entity( $ticket_post );
+		$initial_ticket = $endpoint->get_formatted_entity( $ticket_post );
+
+		/**
+		 * Filters the initial RSVP ticket data preloaded into the block editor.
+		 *
+		 * Allows ET+ and other add-ons to inject additional fields (e.g.,
+		 * has_attendee_info_fields, field_labels) into the server-preloaded
+		 * ticket data so the RSVP block renders correctly on first paint.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $initial_ticket The formatted ticket entity.
+		 * @param int                 $post_id        The current post ID.
+		 * @param int                 $ticket_id      The ticket post ID.
+		 */
+		return apply_filters( 'tec_tickets_rsvp_v2_initial_ticket', $initial_ticket, $post_id, (int) $ticket_post->ID );
 	}
 
 	/**

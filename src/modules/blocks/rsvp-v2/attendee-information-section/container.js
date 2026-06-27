@@ -7,11 +7,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
- * WordPress dependencies
- */
-import { applyFilters } from '@wordpress/hooks';
-
-/**
  * Internal dependencies
  */
 import RSVPAttendeeInformationSection from './template';
@@ -58,7 +53,7 @@ const mapStateToProps = ( state, ownProps ) => {
 
 	return {
 		created: selectors.getRSVPCreated( state ),
-		fieldNames: applyFilters( 'tec.tickets.blocks.rsvp.attendeeInformationFields', [], { rsvpId } ),
+		fieldNames: selectors.getRSVPAttendeeInfoFieldNames( state ),
 		hasAttendeeInfoFields: selectors.getRSVPHasAttendeeInfoFields( state ),
 		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 		isModalOpen: selectors.getRSVPIsModalOpen( state ),

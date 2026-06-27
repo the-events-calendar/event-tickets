@@ -91,6 +91,13 @@ export const setRSVPHasAttendeeInfoFields = ( hasAttendeeInfoFields ) => ( {
 	},
 } );
 
+export const setRSVPAttendeeInfoFieldNames = ( attendeeInfoFieldNames ) => ( {
+	type: types.SET_RSVP_ATTENDEE_INFO_FIELD_NAMES,
+	payload: {
+		attendeeInfoFieldNames,
+	},
+} );
+
 export const setRSVPIAC = ( iac ) => ( {
 	type: types.SET_RSVP_IAC,
 	payload: {

@@ -106,6 +106,7 @@ export const normalizeRSVPResponseFromV1Post = ( rsvp ) => {
 		goingCount: parseInt( meta[ utils.KEY_TICKET_GOING_COUNT ], 10 ) || 0,
 		notGoingCount: parseInt( meta[ utils.KEY_TICKET_NOT_GOING_COUNT ], 10 ) || 0,
 		hasAttendeeInfoFields: meta[ utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ],
+		fieldLabels: rsvp.field_labels || [],
 		...normalizeRSVPResponse( {
 			title: rsvp.title,
 			description: rsvp.excerpt,
@@ -139,6 +140,7 @@ export const normalizeRSVPResponseFromV2Ticket = ( rsvp, options = {} ) => {
 		goingCount: parseInt( rsvp.going_count || rsvp.sold || 0, 10 ),
 		notGoingCount: parseInt( rsvp.not_going_count || 0, 10 ),
 		hasAttendeeInfoFields: rsvp.has_attendee_info_fields || false,
+		fieldLabels: rsvp.field_labels || [],
 		...normalizeRSVPResponse( {
 			title,
 			description,

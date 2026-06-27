@@ -31,6 +31,11 @@ export const hydrateRsvpFromTicket = ( dispatch, actions, ticket, options = {} )
 	dispatch( actions.createRSVP() );
 	dispatch( actions.setRSVPId( normalized.id ) );
 	dispatch( actions.setRSVPHasAttendeeInfoFields( normalized.hasAttendeeInfoFields ) );
+
+	if ( 'field_labels' in ticket ) {
+		dispatch( actions.setRSVPAttendeeInfoFieldNames( normalized.fieldLabels ) );
+	}
+
 	dispatchRsvpDetails( dispatch, actions, normalized.details );
 	dispatchRsvpTempDetails( dispatch, actions, normalized.tempDetails );
 	hydrateRsvpAttendanceCounts( dispatch, actions, getAttendanceCountsFromV2Ticket( ticket ) );

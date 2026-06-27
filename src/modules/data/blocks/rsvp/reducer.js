@@ -2,8 +2,8 @@
  * Internal dependencies
  */
 import sharedReducer, { DEFAULT_STATE as SHARED_DEFAULT_STATE } from '../rsvp-shared/reducer';
-import headerImage, { DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import * as types from '../rsvp-shared/types';
+import headerImage, { DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 
 export const DEFAULT_STATE = {
 	...SHARED_DEFAULT_STATE,
@@ -28,7 +28,4 @@ export default ( state = DEFAULT_STATE, action ) => {
 		default:
 			return nextState;
 	}
-	}
-
-	return nextState;
 };

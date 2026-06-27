@@ -19,6 +19,7 @@ export const DEFAULT_STATE = {
 	notGoingCount: 0,
 	inventory: null,
 	hasAttendeeInfoFields: false,
+	attendeeInfoFieldNames: [],
 	details: DETAILS_DEFAULT_STATE,
 	tempDetails: DETAILS_DEFAULT_STATE,
 };
@@ -91,6 +92,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				hasAttendeeInfoFields: action.payload.hasAttendeeInfoFields,
+			};
+		case types.SET_RSVP_ATTENDEE_INFO_FIELD_NAMES:
+			return {
+				...state,
+				attendeeInfoFieldNames: action.payload.attendeeInfoFieldNames,
 			};
 		case types.SET_RSVP_HAS_DURATION_ERROR:
 			return {

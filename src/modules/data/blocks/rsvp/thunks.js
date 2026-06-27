@@ -129,6 +129,11 @@ const hydrateRSVPFromResponse = ( dispatch, normalized ) => {
 		notGoingCount: normalized.notGoingCount,
 	} );
 	dispatch( actions.setRSVPHasAttendeeInfoFields( normalized.hasAttendeeInfoFields ) );
+
+	if ( normalized.fieldLabels && normalized.fieldLabels.length ) {
+		dispatch( actions.setRSVPAttendeeInfoFieldNames( normalized.fieldLabels ) );
+	}
+
 	dispatch( actions.setRSVPDetails( normalized.details ) );
 	dispatch( actions.setRSVPTempDetails( normalized.tempDetails ) );
 };

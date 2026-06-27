@@ -64,7 +64,33 @@ const mapDispatchToProps = ( dispatch ) => ( {
 		const handleUnload = () => {
 			removeListeners( iframeWindow );
 
-			const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
+			const iframeDocument = iframeWindow.document;
+			const fieldNames = [];
+
+			const iacContainer = iframeDocument.querySelector( '.tribe-tickets__admin-attendees-info-iac-fields' );
+			if ( iacContainer && ! iacContainer.classList.contains( 'tribe-common-a11y-hidden' ) ) {
+				const iacTypes = iacContainer.querySelectorAll( '.tribe-tickets-attendee-info-field-type' );
+				iacTypes.forEach( ( el ) => {
+					if ( el.textContent?.trim() ) {
+						fieldNames.push( el.textContent.trim() );
+					}
+				} );
+			}
+
+			const sortablesContainer = iframeDocument.querySelector( '#tribe-tickets-attendee-sortables' );
+			if ( sortablesContainer ) {
+				const fieldPostboxes = sortablesContainer.querySelectorAll( '.meta-postbox' );
+				fieldPostboxes.forEach( ( postbox ) => {
+					const input = postbox.querySelector( 'input.ticket_field[name*="[label]"]' );
+					if ( input && input.value?.trim() ) {
+						fieldNames.push( input.value.trim() );
+					}
+				} );
+			}
+
+			dispatch( actions.setRSVPAttendeeInfoFieldNames( fieldNames ) );
+
+			const metaFields = iframeDocument.querySelector( '#tribe-tickets-attendee-sortables' );
 			const hasFields = Boolean( metaFields.firstElementChild );
 
 			dispatch( actions.setRSVPHasAttendeeInfoFields( hasFields ) );
