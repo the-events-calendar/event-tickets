@@ -59,7 +59,7 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
           "capacityType": "unlimited",
           "description": "",
           "endDate": "2019-09-02",
-          "endDateInput": "September 2, 2019",
+          "endDateInput": "2019-09-02",
           "endDateMoment": "2019-09-02T00:30:00.000Z",
           "endTime": "00:30:00",
           "endTimeInput": "12:30 am",
@@ -76,7 +76,7 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
           "saleStartDateMoment": "",
           "sku": "",
           "startDate": "2018-09-01",
-          "startDateInput": "September 1, 2018",
+          "startDateInput": "2018-09-01",
           "startDateMoment": "2018-09-01T22:30:00.000Z",
           "startTime": "22:30:00",
           "startTimeInput": "10:30 pm",
@@ -97,7 +97,7 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
           "capacityType": "unlimited",
           "description": "",
           "endDate": "2019-09-02",
-          "endDateInput": "September 2, 2019",
+          "endDateInput": "2019-09-02",
           "endDateMoment": "2019-09-02T00:30:00.000Z",
           "endTime": "00:30:00",
           "endTimeInput": "12:30 am",
@@ -113,7 +113,7 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
           "saleStartDateMoment": "",
           "sku": "",
           "startDate": "2018-09-01",
-          "startDateInput": "September 1, 2018",
+          "startDateInput": "2018-09-01",
           "startDateMoment": "2018-09-01T22:30:00.000Z",
           "startTime": "22:30:00",
           "startTimeInput": "10:30 pm",
@@ -187,7 +187,7 @@ exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = 
   "capacityType": "unlimited",
   "description": "",
   "endDate": "2019-09-02",
-  "endDateInput": "September 2, 2019",
+  "endDateInput": "2019-09-02",
   "endDateMoment": "2019-09-02T00:30:00.000Z",
   "endTime": "00:30:00",
   "endTimeInput": "12:30 am",
@@ -204,7 +204,7 @@ exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = 
   "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-09-01",
-  "startDateInput": "September 1, 2018",
+  "startDateInput": "2018-09-01",
   "startDateMoment": "2018-09-01T22:30:00.000Z",
   "startTime": "22:30:00",
   "startTimeInput": "10:30 pm",
@@ -215,7 +215,7 @@ exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = 
 
 exports[`Ticket block selectors Ticket details selectors getTicketEndDate 1`] = `"2019-09-02"`;
 
-exports[`Ticket block selectors Ticket details selectors getTicketEndDateInput 1`] = `"September 2, 2019"`;
+exports[`Ticket block selectors Ticket details selectors getTicketEndDateInput 1`] = `"2019-09-02"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketEndDateMoment 1`] = `"2019-09-02T00:30:00.000Z"`;
 
@@ -233,7 +233,7 @@ exports[`Ticket block selectors Ticket details selectors getTicketSku 1`] = `""`
 
 exports[`Ticket block selectors Ticket details selectors getTicketStartDate 1`] = `"2018-09-01"`;
 
-exports[`Ticket block selectors Ticket details selectors getTicketStartDateInput 1`] = `"September 1, 2018"`;
+exports[`Ticket block selectors Ticket details selectors getTicketStartDateInput 1`] = `"2018-09-01"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketStartDateMoment 1`] = `"2018-09-01T22:30:00.000Z"`;
 
@@ -273,7 +273,7 @@ exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
     "capacityType": "unlimited",
     "description": "",
     "endDate": "2019-09-02",
-    "endDateInput": "September 2, 2019",
+    "endDateInput": "2019-09-02",
     "endDateMoment": "2019-09-02T00:30:00.000Z",
     "endTime": "00:30:00",
     "endTimeInput": "12:30 am",
@@ -290,7 +290,7 @@ exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
     "saleStartDateMoment": "",
     "sku": "",
     "startDate": "2018-09-01",
-    "startDateInput": "September 1, 2018",
+    "startDateInput": "2018-09-01",
     "startDateMoment": "2018-09-01T22:30:00.000Z",
     "startTime": "22:30:00",
     "startTimeInput": "10:30 pm",
@@ -311,7 +311,7 @@ exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
     "capacityType": "unlimited",
     "description": "",
     "endDate": "2019-09-02",
-    "endDateInput": "September 2, 2019",
+    "endDateInput": "2019-09-02",
     "endDateMoment": "2019-09-02T00:30:00.000Z",
     "endTime": "00:30:00",
     "endTimeInput": "12:30 am",
@@ -327,7 +327,7 @@ exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
     "saleStartDateMoment": "",
     "sku": "",
     "startDate": "2018-09-01",
-    "startDateInput": "September 1, 2018",
+    "startDateInput": "2018-09-01",
     "startDateMoment": "2018-09-01T22:30:00.000Z",
     "startTime": "22:30:00",
     "startTimeInput": "10:30 pm",
@@ -381,7 +381,7 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempDetai
   "capacityType": "unlimited",
   "description": "",
   "endDate": "2019-09-02",
-  "endDateInput": "September 2, 2019",
+  "endDateInput": "2019-09-02",
   "endDateMoment": "2019-09-02T00:30:00.000Z",
   "endTime": "00:30:00",
   "endTimeInput": "12:30 am",
@@ -397,7 +397,7 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempDetai
   "saleStartDateMoment": "",
   "sku": "",
   "startDate": "2018-09-01",
-  "startDateInput": "September 1, 2018",
+  "startDateInput": "2018-09-01",
   "startDateMoment": "2018-09-01T22:30:00.000Z",
   "startTime": "22:30:00",
   "startTimeInput": "10:30 pm",
@@ -407,7 +407,7 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempDetai
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndDate 1`] = `"2019-09-02"`;
 
-exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndDateInput 1`] = `"September 2, 2019"`;
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndDateInput 1`] = `"2019-09-02"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndDateMoment 1`] = `"2019-09-02T00:30:00.000Z"`;
 
@@ -425,7 +425,7 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempSku 1
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartDate 1`] = `"2018-09-01"`;
 
-exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartDateInput 1`] = `"September 1, 2018"`;
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartDateInput 1`] = `"2018-09-01"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartDateMoment 1`] = `"2018-09-01T22:30:00.000Z"`;
 
@@ -462,7 +462,7 @@ exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
         "capacityType": "unlimited",
         "description": "",
         "endDate": "2019-09-02",
-        "endDateInput": "September 2, 2019",
+        "endDateInput": "2019-09-02",
         "endDateMoment": "2019-09-02T00:30:00.000Z",
         "endTime": "00:30:00",
         "endTimeInput": "12:30 am",
@@ -479,7 +479,7 @@ exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
         "saleStartDateMoment": "",
         "sku": "",
         "startDate": "2018-09-01",
-        "startDateInput": "September 1, 2018",
+        "startDateInput": "2018-09-01",
         "startDateMoment": "2018-09-01T22:30:00.000Z",
         "startTime": "22:30:00",
         "startTimeInput": "10:30 pm",
@@ -500,7 +500,7 @@ exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
         "capacityType": "unlimited",
         "description": "",
         "endDate": "2019-09-02",
-        "endDateInput": "September 2, 2019",
+        "endDateInput": "2019-09-02",
         "endDateMoment": "2019-09-02T00:30:00.000Z",
         "endTime": "00:30:00",
         "endTimeInput": "12:30 am",
@@ -516,7 +516,7 @@ exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
         "saleStartDateMoment": "",
         "sku": "",
         "startDate": "2018-09-01",
-        "startDateInput": "September 1, 2018",
+        "startDateInput": "2018-09-01",
         "startDateMoment": "2018-09-01T22:30:00.000Z",
         "startTime": "22:30:00",
         "startTimeInput": "10:30 pm",
@@ -549,7 +549,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
       "capacityType": "unlimited",
       "description": "",
       "endDate": "2019-09-02",
-      "endDateInput": "September 2, 2019",
+      "endDateInput": "2019-09-02",
       "endDateMoment": "2019-09-02T00:30:00.000Z",
       "endTime": "00:30:00",
       "endTimeInput": "12:30 am",
@@ -566,7 +566,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
       "saleStartDateMoment": "",
       "sku": "",
       "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
+      "startDateInput": "2018-09-01",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
       "startTimeInput": "10:30 pm",
@@ -587,7 +587,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
       "capacityType": "unlimited",
       "description": "",
       "endDate": "2019-09-02",
-      "endDateInput": "September 2, 2019",
+      "endDateInput": "2019-09-02",
       "endDateMoment": "2019-09-02T00:30:00.000Z",
       "endTime": "00:30:00",
       "endTimeInput": "12:30 am",
@@ -603,7 +603,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
       "saleStartDateMoment": "",
       "sku": "",
       "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
+      "startDateInput": "2018-09-01",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
       "startTimeInput": "10:30 pm",
@@ -629,7 +629,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
       "capacityType": "unlimited",
       "description": "",
       "endDate": "2019-09-02",
-      "endDateInput": "September 2, 2019",
+      "endDateInput": "2019-09-02",
       "endDateMoment": "2019-09-02T00:30:00.000Z",
       "endTime": "00:30:00",
       "endTimeInput": "12:30 am",
@@ -646,7 +646,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
       "saleStartDateMoment": "",
       "sku": "",
       "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
+      "startDateInput": "2018-09-01",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
       "startTimeInput": "10:30 pm",
@@ -667,7 +667,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
       "capacityType": "unlimited",
       "description": "",
       "endDate": "2019-09-02",
-      "endDateInput": "September 2, 2019",
+      "endDateInput": "2019-09-02",
       "endDateMoment": "2019-09-02T00:30:00.000Z",
       "endTime": "00:30:00",
       "endTimeInput": "12:30 am",
@@ -683,7 +683,7 @@ exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
       "saleStartDateMoment": "",
       "sku": "",
       "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
+      "startDateInput": "2018-09-01",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
       "startTimeInput": "10:30 pm",
@@ -713,7 +713,7 @@ exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
       "capacityType": "unlimited",
       "description": "",
       "endDate": "2019-09-02",
-      "endDateInput": "September 2, 2019",
+      "endDateInput": "2019-09-02",
       "endDateMoment": "2019-09-02T00:30:00.000Z",
       "endTime": "00:30:00",
       "endTimeInput": "12:30 am",
@@ -730,7 +730,7 @@ exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
       "saleStartDateMoment": "",
       "sku": "",
       "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
+      "startDateInput": "2018-09-01",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
       "startTimeInput": "10:30 pm",
@@ -751,7 +751,7 @@ exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
       "capacityType": "unlimited",
       "description": "",
       "endDate": "2019-09-02",
-      "endDateInput": "September 2, 2019",
+      "endDateInput": "2019-09-02",
       "endDateMoment": "2019-09-02T00:30:00.000Z",
       "endTime": "00:30:00",
       "endTimeInput": "12:30 am",
@@ -767,7 +767,7 @@ exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
       "saleStartDateMoment": "",
       "sku": "",
       "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
+      "startDateInput": "2018-09-01",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
       "startTimeInput": "10:30 pm",
