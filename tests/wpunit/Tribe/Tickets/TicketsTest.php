@@ -503,4 +503,105 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( 'some-context', $request_context );
 	}
+
+	/**
+	 * Empty post IDs that may reach clear_ticket_cache_for_post() when there is no post context,
+	 * e.g. when deleting an attendee that is no longer attached to an event.
+	 *
+	 * @return array<string,array{0:mixed}>
+	 */
+	public function empty_post_id_provider(): array {
+		return [
+			'null'         => [ null ],
+			'zero int'     => [ 0 ],
+			'zero string'  => [ '0' ],
+			'empty string' => [ '' ],
+			'false'        => [ false ],
+		];
+	}
+
+	/**
+	 * It should not throw when clearing the ticket cache without a post context.
+	 *
+	 * Deleting an attendee can call clear_ticket_cache_for_post() with no post ID. The cache key
+	 * helper is strictly typed to an int, so an empty value must be guarded before it is used.
+	 *
+	 * @test
+	 * @dataProvider empty_post_id_provider
+	 */
+	public function should_not_throw_when_clearing_cache_without_post_context( $post_id ): void {
+		$provider = tribe( 'tickets.rsvp' );
+
+		// Before the guard this would throw a TypeError from get_tickets_cache_key().
+		$provider->clear_ticket_cache_for_post( $post_id );
+
+		$this->assertNull( $provider->clear_ticket_cache_for_post( $post_id ) );
+	}
+
+	/**
+	 * It should not throw when deleting a ticket without a post context.
+	 *
+	 * This mirrors the real-world path that surfaced the bug: deleting an attendee with no
+	 * associated event post should not blow up while clearing caches.
+	 *
+	 * @test
+	 */
+	public function should_not_throw_when_deleting_ticket_without_post_context(): void {
+		$post_id        = $this->factory->post->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$provider = tribe( 'tickets.rsvp' );
+
+		// Delete with an empty parent post ID, as happens for an orphaned attendee.
+		$provider->delete_ticket( null, $rsvp_ticket_id );
+
+		$this->assertTrue( true, 'delete_ticket() should complete without throwing a TypeError.' );
+	}
+
+	/**
+	 * It should clear the cached tickets for a post.
+	 *
+	 * @test
+	 */
+	public function should_clear_cached_tickets_for_post(): void {
+		$post_id = $this->factory->post->create();
+		$this->create_paypal_ticket_basic( $post_id, 1 );
+
+		/** @var Tribe__Tickets__Tickets $provider */
+		$provider = call_user_func( [ Tickets::get_event_ticket_provider( $post_id ), 'get_instance' ] );
+
+		/** @var \Tribe__Cache $cache */
+		$cache = tribe( 'cache' );
+		$key   = Tickets::get_tickets_cache_key( $provider->orm_provider, $post_id );
+
+		// Populate the request-scoped get_tickets() cache.
+		$provider->get_tickets( $post_id );
+		$this->assertTrue( isset( $cache[ $key ] ), 'get_tickets() should have primed the cache.' );
+
+		$provider->clear_ticket_cache_for_post( $post_id );
+		$this->assertFalse( isset( $cache[ $key ] ), 'clear_ticket_cache_for_post() should remove the cached entry.' );
+	}
+
+	/**
+	 * It should build a stable cache key for a provider and post.
+	 *
+	 * @test
+	 */
+	public function should_build_stable_cache_key_for_provider_and_post(): void {
+		$post_id = $this->factory->post->create();
+
+		$expected = Tickets::class . '::get_tickets-rsvp-' . $post_id;
+
+		$this->assertSame( $expected, Tickets::get_tickets_cache_key( 'rsvp', $post_id ) );
+		// The key is deterministic for the same inputs.
+		$this->assertSame(
+			Tickets::get_tickets_cache_key( 'rsvp', $post_id ),
+			Tickets::get_tickets_cache_key( 'rsvp', $post_id )
+		);
+		// Different providers and posts produce different keys.
+		$this->assertNotSame(
+			Tickets::get_tickets_cache_key( 'rsvp', $post_id ),
+			Tickets::get_tickets_cache_key( 'tribe-commerce', $post_id )
+		);
+	}
 }
