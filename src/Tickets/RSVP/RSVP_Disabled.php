@@ -38,7 +38,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	 *
 	 * @return array Empty array.
 	 */
-	public function get_tickets( $post_id, string $context = null ) {
+	public function get_tickets( $post_id, ?string $context = null ) {
 		return [];
 	}
 
@@ -341,7 +341,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	 *
 	 * @return array Empty array.
 	 */
-	public function get_tickets_ids( $post = 0, string $context = null ) {
+	public function get_tickets_ids( $post = 0, ?string $context = null ) {
 		return [];
 	}
 }

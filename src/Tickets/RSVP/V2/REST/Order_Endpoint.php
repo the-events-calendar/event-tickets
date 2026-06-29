@@ -545,7 +545,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$attendee_email = null;
 		if ( ! empty( $first_attendee['email'] ) ) {
-			$decoded_email = html_entity_decode( $first_attendee['email'] );
+			$decoded_email = html_entity_decode( $first_attendee['email'], ENT_QUOTES );
 
 			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
 				$attendee_email = htmlentities( sanitize_email( $decoded_email ), ENT_COMPAT );
@@ -556,7 +556,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			null
 			: htmlentities(
 				sanitize_text_field(
-					html_entity_decode( $first_attendee['full_name'] )
+					html_entity_decode( $first_attendee['full_name'], ENT_QUOTES )
 				),
 				ENT_COMPAT
 			);
