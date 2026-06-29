@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.28.5
+Stable tag: 5.28.5.1
 Requires at least: 6.8
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -198,6 +198,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.28.5.1] 2026-06-29 =
+
+* Security - Tightened up Stripe checkout validation.
 
 = [5.28.5] 2026-06-24 =
 
