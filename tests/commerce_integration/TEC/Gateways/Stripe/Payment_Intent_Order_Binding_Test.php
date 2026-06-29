@@ -47,7 +47,7 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 	 * CapacityTest, Stock\Race_Condition_Test). Clearing the var forces a fresh read from the
 	 * rolled-back DB on the next access. We also empty the shared cart this test populates.
 	 *
-	 * @since TBD
+	 * @since 5.28.5.1
 	 */
 	public function tearDown(): void {
 		tribe( Cart::class )->clear_cart();
