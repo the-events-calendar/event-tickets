@@ -20,6 +20,7 @@ use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Settings_Manager;
 use WP_Error;
 
 /**
@@ -35,6 +36,25 @@ class Payment_Intent_Order_Binding_Test extends WPTestCase {
 	use With_Uopz;
 	use Ticket_Maker;
 	use Order_Maker;
+
+	/**
+	 * Cleans up state shared across the suite after each test.
+	 *
+	 * make_order_for_price() calls tribe_update_option(), which memoizes the options in an
+	 * in-memory tribe var (Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME). The per-test DB
+	 * rollback does not touch that cache, so the mutated options (e.g. ticket-enabled-post-types,
+	 * currency) bleed into later tests and corrupt their stock assertions (EventStockTest,
+	 * CapacityTest, Stock\Race_Condition_Test). Clearing the var forces a fresh read from the
+	 * rolled-back DB on the next access. We also empty the shared cart this test populates.
+	 *
+	 * @since TBD
+	 */
+	public function tearDown(): void {
+		tribe( Cart::class )->clear_cart();
+		tribe_set_var( Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME, [] );
+
+		parent::tearDown();
+	}
 
 	/**
 	 * Create a Tickets Commerce order for a single ticket at the given price.
