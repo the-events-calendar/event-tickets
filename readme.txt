@@ -199,6 +199,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.28.5.1] 2026-06-29 =
+
+* Security - Validated that Stripe's PaymentIntent amount matches the cart and order before binding or completing a Tickets Commerce order, preventing an unauthenticated underpayment bypass.
+
 = [5.28.5] 2026-06-24 =
 
 * Fix - Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
