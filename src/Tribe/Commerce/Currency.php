@@ -61,7 +61,7 @@ class Tribe__Tickets__Commerce__Currency {
 		$symbol = $this->currency_code_options_map[ $this->get_currency_code() ]['symbol'];
 		$symbol = apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
 
-		return $decode ? html_entity_decode( $symbol ) : $symbol;
+		return $decode ? html_entity_decode( $symbol, ENT_COMPAT ) : $symbol;
 	}
 
 	/**
@@ -635,7 +635,7 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$matches = array();
 		foreach ( $this->currency_code_options_map as $currency_code => $currency ) {
-			if ( $currency['symbol'] === $symbol || html_entity_decode( $currency['symbol'] ) === $symbol ) {
+			if ( $currency['symbol'] === $symbol || html_entity_decode( $currency['symbol'], ENT_COMPAT ) === $symbol ) {
 				$matches[] = $currency_code;
 			}
 		}

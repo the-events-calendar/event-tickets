@@ -62,8 +62,10 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Made $post explicitly nullable.
 	 */
-	public function get_flags( \WP_Post $post = null ) {
+	public function get_flags( ?\WP_Post $post = null ) {
 		$flags = $this->flags;
 
 		/**
@@ -109,8 +111,10 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Made $post explicitly nullable.
 	 */
-	public function has_flags( Status_Interface $status, $operator = 'AND', \WP_Post $post = null ) {
+	public function has_flags( Status_Interface $status, $operator = 'AND', ?\WP_Post $post = null ) {
 		return $status->has_flags( $this->get_flags( $post ), $operator, $post );
 	}
 

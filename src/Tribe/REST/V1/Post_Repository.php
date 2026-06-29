@@ -59,9 +59,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Tribe__Tickets__REST__V1__Post_Repository constructor.
 	 *
+	 * @since TBD Made $messages explicitly nullable.
+	 *
 	 * @param Tribe__REST__Messages_Interface|null $messages The messages instance.
 	 */
-	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
+	public function __construct( ?Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = [
 			Tribe__Tickets__RSVP::ATTENDEE_OBJECT => [ $this, 'get_attendee_data' ],
 		];
@@ -650,14 +652,14 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			}
 		}
 
-		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );
+		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ), ENT_COMPAT );
 
 		if ( ! $get_details ) {
 			return $formatted_price;
 		}
 
 		return [
-			'currency_symbol'             => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
+			'currency_symbol'             => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ), ENT_COMPAT ),
 			'currency_position'           => $currency->get_provider_symbol_position( $provider, $ticket_id ),
 			'values'                      => [ $price ],
 			'suffix'                      => $ticket->price_suffix,
@@ -1061,7 +1063,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 						$attendee_data['payment'] = [
 							'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
 							'price'        => ! empty( $ticket_object->price ) ? $ticket_object->price : '',
-							'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
+							'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ), ENT_COMPAT ),
 							'date'         => $purchase_time,
 							'date_details' => $this->get_date_details( $purchase_time ),
 						];
