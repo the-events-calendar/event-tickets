@@ -2,7 +2,7 @@
 
 ### [5.28.5.1] 2026-06-29
 
-* Security - Validated that Stripe's PaymentIntent amount matches the cart and order before binding or completing a Tickets Commerce order, preventing an unauthenticated underpayment bypass.
+* Security - Tightened up Stripe checkout validation.
 
 ### [5.28.5] 2026-06-24
 
