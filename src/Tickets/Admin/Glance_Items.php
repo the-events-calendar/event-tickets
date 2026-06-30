@@ -102,13 +102,14 @@ class Glance_Items {
 	 * @since 5.6.0
 	 * @since TBD Replace full object hydration with a single COUNT query via the Repository.
 	 * @since TBD Always persist the transient (even when count is zero) to prevent infinite cron rescheduling.
+	 * @since TBD Exclude RSVP "not going" attendees via the `rsvp_status__or_none` Repository filter.
 	 */
 	public function update_attendee_count() {
 		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
-		$total = tribe_attendees()->per_page( 1 )->found();
+		$total = tribe_attendees()->where( 'rsvp_status__or_none', 'yes' )->per_page( 1 )->found();
 
 		set_transient( static::$attendee_count_key, (int) $total, DAY_IN_SECONDS );
 	}

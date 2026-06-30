@@ -20,8 +20,8 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
  *    update_attendee_count() and the cron from being scheduled in
  *    custom_glance_items_attendees().
  * 4. update_attendee_count() aggregates attendees across multiple events.
- * 5. RSVP "not going" attendees are included in the count (the Repository does
- *    not filter on the going/not-going meta key).
+ * 5. RSVP "not going" attendees are excluded from the count (the query uses
+ *    `rsvp_status__or_none` = 'yes' to skip opt-outs).
  * 6. Attendees of hard-deleted events are still counted, because deleting an
  *    event does not cascade-delete its attendee posts.
  *
@@ -179,15 +179,17 @@ class Glance_ItemsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * update_attendee_count() includes RSVP "not going" attendees in the total.
+	 * update_attendee_count() excludes RSVP "not going" attendees from the total.
 	 *
-	 * The merged tribe_attendees() Repository queries by attendee post type with
-	 * post_status = 'publish' and does not filter on the RSVP going/not-going
-	 * meta key. "Not going" attendees are thus included in the dashboard count.
+	 * The query uses the `rsvp_status__or_none` Repository filter set to 'yes',
+	 * which includes attendees where the RSVP status meta equals 'yes' or does
+	 * not exist (non-RSVP providers like WooCommerce/Tickets Commerce). RSVP
+	 * attendees with status 'no' ("not going") are excluded because they represent
+	 * opt-outs, not actual attendance.
 	 *
 	 * @test
 	 */
-	public function update_attendee_count_includes_rsvp_not_going_attendees(): void {
+	public function update_attendee_count_excludes_rsvp_not_going_attendees(): void {
 		add_filter( 'tribe_tickets_post_types', static function () {
 			return [ 'post' ];
 		} );
@@ -204,7 +206,7 @@ class Glance_ItemsTest extends \Codeception\TestCase\WPTestCase {
 		$stored = get_transient( self::TRANSIENT_KEY );
 
 		$this->assertNotFalse( $stored, 'Transient should be set when attendees exist.' );
-		$this->assertSame( 2, (int) $stored, 'Both "going" and "not going" RSVP attendees should be included in the count.' );
+		$this->assertSame( 1, (int) $stored, '"Not going" RSVP attendees should be excluded from the count.' );
 	}
 
 	/**
