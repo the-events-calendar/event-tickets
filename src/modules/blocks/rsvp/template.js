@@ -127,6 +127,7 @@ const RSVP = ( {
 						<Card
 							className={ classNames(
 								'tribe-editor__rsvp',
+								'tribe-editor__rsvp-v1',
 								{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
 								{ 'tribe-editor__rsvp--selected': isSelected },
 								{ 'tribe-editor__rsvp--loading': isLoading }

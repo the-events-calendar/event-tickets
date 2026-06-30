@@ -1,6 +1,3 @@
-/**
- * Internal dependencies
- */
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 /**
@@ -15,11 +12,12 @@ export const formatRsvpWindow = ( startDateMoment, endDateMoment ) => {
 		return '';
 	}
 
-	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
-	const format = datePickerFormat ? momentUtil.toFormat( datePickerFormat ) : 'LL';
+	const dateFormat = globals.tecDateSettings().datepickerFormat
+	? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
+	: 'LL';
 
-	const startFormatted = startDateMoment.format( format );
-	const endFormatted = endDateMoment.format( format );
+	const startFormatted = momentUtil.toDatePicker( startDateMoment, dateFormat );
+	const endFormatted = momentUtil.toDatePicker( endDateMoment, dateFormat );
 
 	return `${ startFormatted } - ${ endFormatted }`;
 };

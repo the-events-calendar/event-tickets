@@ -8,10 +8,10 @@
 /**
  * External dependencies
  */
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useCallback, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -22,19 +22,20 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
+import { Card } from '../../elements';
+import MoveModal from '../../elements/move-modal';
+import '../rsvp-shared/style.pcss';
+import { RSVPControls } from '../rsvp-shared/utils/block-controls';
+import {
+	isRsvpOverlayClick,
+	useCloseOverlaysOnDeselect,
+} from '../rsvp-shared/utils/close-overlays';
+import { renderBlockNotSupported } from '../rsvp-shared/utils/not-supported';
 import RSVPContainer from './container-panel/container';
 import RSVPInactiveBlock from './inactive-block/container';
-import MoveModal from '../../elements/move-modal';
-import { Card } from '../../elements';
 import RSVPSidebarControls from './sidebar-controls/container';
+import './style.pcss';
 import { isSavedSummary } from './utils/block-state';
-import { RSVPControls } from '../rsvp-shared/utils/block-controls';
-import { renderBlockNotSupported } from '../rsvp-shared/utils/not-supported';
-import {
-	useCloseOverlaysOnDeselect,
-	isRsvpOverlayClick,
-} from '../rsvp-shared/utils/close-overlays';
-import '../rsvp-shared/style.pcss';
 
 /**
  * The V2 RSVP block template.
@@ -119,6 +120,7 @@ const RSVPV2 = ( {
 
 		const blockClassName = classNames(
 			'tribe-editor__rsvp',
+			'tribe-editor__rsvp-v2',
 			{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
 			{ 'tribe-editor__rsvp--selected': isSelected },
 			{ 'tribe-editor__rsvp--loading': isLoading }
@@ -135,7 +137,7 @@ const RSVPV2 = ( {
 			<div ref={ rsvpBlockRef }>
 				{ injectedComponentsTicketsBeforeHeader }
 				{ displayInitializing ? (
-					<div className={ classNames( 'tribe-editor__rsvp', 'tribe-editor__rsvp--loading' ) }>
+					<div className={ classNames( 'tribe-editor__rsvp', 'tribe-editor__rsvp-v2', 'tribe-editor__rsvp--loading' ) }>
 						<Spinner />
 					</div>
 				) : displayInactive ? (

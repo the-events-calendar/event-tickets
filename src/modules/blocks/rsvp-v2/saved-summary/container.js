@@ -1,25 +1,25 @@
 /**
  * External dependencies
  */
-import React, { useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useCallback, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
  * Internal dependencies
  */
-import './style.pcss';
-import '../edit-popovers/style.pcss';
-import RSVPRsvpWindow from '../rsvp-window/template';
-import RSVPFrontendMirror from '../frontend-mirror/template';
-import RSVPLimitPopover from '../edit-popovers/limit-popover';
-import RSVPWindowPopover from '../edit-popovers/window-popover';
-import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
 import { withStore } from '@moderntribe/common/hoc';
-import { formatRsvpWindow } from '../utils/format-rsvp-window';
-import { showEditAffordances as getShowEditAffordances } from '../utils/block-state';
+import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
 import { useListenForCloseOverlays } from '../../rsvp-shared/utils/close-overlays';
+import RSVPLimitPopover from '../edit-popovers/limit-popover';
+import '../edit-popovers/style.pcss';
+import RSVPWindowPopover from '../edit-popovers/window-popover';
+import RSVPFrontendMirror from '../frontend-mirror/template';
+import RSVPRsvpWindow from '../rsvp-window/template';
+import { showEditAffordances as getShowEditAffordances } from '../utils/block-state';
+import { formatRsvpWindow } from '../utils/format-rsvp-window';
+import './style.pcss';
 
 const buildUpdatePayload = ( state ) => ( {
 	capacity: selectors.getRSVPTempCapacity( state ),
@@ -187,7 +187,7 @@ RSVPSavedSummary.propTypes = {
 
 const mapStateToProps = ( state, ownProps ) => {
 	const startDateMoment = selectors.getRSVPStartDateMoment( state );
-	const endDateMoment = selectors.getRSVPEndDateMoment( state );
+	const endDateMoment = selectors.getRSVPEndDateMoment(state);
 
 	return {
 		available: selectors.getRSVPAvailable( state ),
