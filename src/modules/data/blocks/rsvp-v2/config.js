@@ -50,9 +50,21 @@ export const getTicketsEndpoint = () => getV2Config().ticketsEndpoint;
  */
 export const getTicketType = () => getV2Config().ticketType;
 
+/**
+ * Get the server-preloaded RSVP ticket for the current post, if any.
+ *
+ * @return {Object|null} Ticket REST-shaped object or null.
+ */
+export const getInitialTicket = () => {
+	const ticket = window.tribe_editor_config?.tickets?.rsvpV2?.initialTicket;
+
+	return ticket?.id ? ticket : null;
+};
+
 export default {
 	getV2Config,
 	isV2Enabled,
 	getTicketsEndpoint,
 	getTicketType,
+	getInitialTicket,
 };
