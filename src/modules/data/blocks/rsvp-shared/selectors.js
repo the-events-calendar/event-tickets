@@ -2,6 +2,12 @@
  * External dependencies
  */
 import { createSelector } from 'reselect';
+import moment from 'moment';
+
+/**
+ * Internal dependencies
+ */
+import { moment as momentUtil, time } from '@moderntribe/common/utils';
 
 /**
  * ------------------------------------------------------------
@@ -23,6 +29,8 @@ export const getRSVPHasChanges = createSelector( [ getRSVPBlock ], ( rsvp ) => r
 
 export const getRSVPIsLoading = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isLoading );
 
+export const getRSVPIsInitializing = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isInitializing );
+
 export const getRSVPIsSettingsLoading = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isSettingsLoading );
 
 export const getRSVPIsModalOpen = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.isModalOpen );
@@ -31,11 +39,15 @@ export const getRSVPGoingCount = createSelector( [ getRSVPBlock ], ( rsvp ) => r
 
 export const getRSVPNotGoingCount = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.notGoingCount );
 
+export const getRSVPInventory = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.inventory );
+
 export const getRSVPHasAttendeeInfoFields = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.hasAttendeeInfoFields );
 
 export const getRSVPHasDurationError = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.hasDurationError );
 
 export const getRSVPIAC = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.iac );
+
+export const getRSVPAttendeeInfoFieldNames = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.attendeeInfoFieldNames );
 
 /**
  * ------------------------------------------------------------
@@ -50,19 +62,23 @@ export const getRSVPDescription = createSelector( [ getRSVPDetails ], ( details 
 
 export const getRSVPCapacity = createSelector( [ getRSVPDetails ], ( details ) => details.capacity );
 
-export const getRSVPAvailable = createSelector( [ getRSVPCapacity, getRSVPGoingCount ], ( capacity, goingCount ) => {
-	if ( capacity === '' ) {
-		return -1;
-	}
+export const getRSVPAvailable = createSelector(
+	[ getRSVPCapacity, getRSVPGoingCount, getRSVPInventory ],
+	( capacity, goingCount, inventory ) => {
+		if ( capacity === '' ) {
+			return -1;
+		}
 
-	const total = parseInt( capacity, 10 ) || 0;
-	const going = parseInt( goingCount, 10 ) || 0;
-	/**
-	 * Prevent to have negative values when subtracting the going amount from total amount, so it takes the max value
-	 * of the substraction operation or zero if the operation is lower than zero it will return zero insted.
-	 */
-	return Math.max( total - going, 0 );
-} );
+		if ( inventory != null && inventory >= 0 ) {
+			return inventory;
+		}
+
+		const total = parseInt( capacity, 10 ) || 0;
+		const going = parseInt( goingCount, 10 ) || 0;
+
+		return Math.max( total - going, 0 );
+	}
+);
 
 export const getRSVPNotGoingResponses = createSelector( [ getRSVPDetails ], ( details ) => details.notGoingResponses );
 
@@ -171,3 +187,24 @@ export const getRSVPHeaderImageId = createSelector( [ getRSVPHeaderImage ], ( he
 export const getRSVPHeaderImageSrc = createSelector( [ getRSVPHeaderImage ], ( headerImage ) => headerImage.src );
 
 export const getRSVPHeaderImageAlt = createSelector( [ getRSVPHeaderImage ], ( headerImage ) => headerImage.alt );
+
+export const getRSVPIsInactive = createSelector(
+	[ getRSVPStartDateMoment, getRSVPStartTimeNoSeconds, getRSVPEndDateMoment, getRSVPEndTimeNoSeconds ],
+	( startDateMoment, startTime, endDateMoment, endTime ) => {
+		if ( ! startDateMoment || ! endDateMoment ) {
+			return false;
+		}
+
+		const startMoment = momentUtil.setTimeInSeconds(
+			startDateMoment.clone(),
+			time.toSeconds( startTime, time.TIME_FORMAT_HH_MM )
+		);
+		const endMoment = momentUtil.setTimeInSeconds(
+			endDateMoment.clone(),
+			time.toSeconds( endTime, time.TIME_FORMAT_HH_MM )
+		);
+		const currentMoment = moment();
+
+		return ! ( currentMoment.isAfter( startMoment ) && currentMoment.isBefore( endMoment ) );
+	}
+);
