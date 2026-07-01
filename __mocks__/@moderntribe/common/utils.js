@@ -74,6 +74,12 @@ const moment = {
 		const converted = chars.map( ( c ) => replacements[ c ] !== undefined ? replacements[ c ] : c );
 		return converted.join( '' );
 	} ),
+	toDatePicker: jest.fn( ( date, format ) => {
+		if ( ! date ) {
+			return '';
+		}
+		return format ? date.format( format ) : date.format( 'YYYY-MM-DDTHH:mm:ss' );
+	} ),
 	setTimeInSeconds: jest.fn( ( m ) => m ),
 };
 
