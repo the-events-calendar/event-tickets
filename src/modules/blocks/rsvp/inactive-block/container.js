@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * Internal dependencies
  */
-import RSVPInactiveBlock from './template';
+import RSVPInactiveBlock from '../../rsvp-shared/templates/inactive-block/template';
 import { actions, selectors } from '../../../data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
