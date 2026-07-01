@@ -762,6 +762,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id The post ID.
 		 */
 		public function clear_ticket_cache_for_post( $post_id ) {
+			// No post context (e.g. deleting an attendee) means there is nothing to clear.
+			if ( empty( $post_id ) ) {
+				return;
+			}
+
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
 
