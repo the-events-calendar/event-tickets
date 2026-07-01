@@ -12,10 +12,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPCounters from '../../rsvp/counters/container';
+import RSVPCounters from '../../rsvp-shared/counters/container';
 import { NumericLabel, SplitContainer } from '../../../elements';
-import { AttendeesActionButton } from '../../rsvp/action-buttons';
-import '../../rsvp/container-header/style.pcss';
+import { AttendeesActionButton } from '../../rsvp-shared/action-buttons';
+import '../../rsvp-shared/container-header/style.pcss';
 
 const getCapacityLabel = ( capacity ) => {
 	const singular = __( '%d Remaining', 'event-tickets' );
