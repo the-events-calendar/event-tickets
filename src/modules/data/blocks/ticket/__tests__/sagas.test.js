@@ -34,6 +34,8 @@ import {
 	time as timeUtil,
 	globals,
 } from '@moderntribe/common/utils';
+const { wpREST } = api;
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 import { plugins } from '@moderntribe/common/data';
 import {
 	isTribeEventPostType,
