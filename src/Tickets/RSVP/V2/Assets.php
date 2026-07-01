@@ -117,6 +117,17 @@ class Assets {
 			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ]
 		);
 
+		tec_asset(
+			$plugin,
+			Block_Editor::EDITOR_MIRROR_STYLE,
+			'rsvp/editor-mirror.css',
+			[ 'tec-tickets-commerce-rsvp-style' ],
+			'enqueue_block_editor_assets',
+			[
+				'conditionals' => [ $this, 'should_enqueue_block_editor_styles' ],
+			]
+		);
+
 		$stylesheet = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 
 		if ( $stylesheet ) {
@@ -141,5 +152,34 @@ class Assets {
 		}
 
 		return tribe_tickets_post_type_enabled( $post->post_type );
+	}
+
+	/**
+	 * Whether to enqueue block editor RSVP canvas styles.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_block_editor_styles(): bool {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		if ( $screen instanceof \WP_Screen && $screen->base === 'post' ) {
+			return tribe_tickets_post_type_enabled( $screen->post_type );
+		}
+
+		$post = get_post();
+
+		if ( ! $post instanceof \WP_Post ) {
+			return false;
+		}
+
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		return in_array( $post->post_type, $ticketable_post_types, true );
 	}
 }
