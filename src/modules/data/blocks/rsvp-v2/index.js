@@ -1,16 +1,16 @@
 /**
  * V2 RSVP Data Layer
  *
- * Re-exports the V1 RSVP data layer with V2-specific thunks.
+ * Re-exports the shared RSVP data layer with V2-specific thunks.
  * This allows the V2 block to use the same Redux store structure
  * while making API calls to V2 endpoints.
  */
 
 /**
- * Internal dependencies - Import from V1 RSVP data layer.
+ * Internal dependencies - Import from shared RSVP data layer.
  */
-import { types, actions, selectors, sagas } from '../rsvp';
-import reducer from '../rsvp/reducer';
+import { types, actions, selectors, sagas } from '../rsvp-shared';
+import reducer from '../rsvp-shared/reducer';
 
 /**
  * V2-specific thunks.
