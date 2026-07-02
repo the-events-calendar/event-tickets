@@ -633,7 +633,6 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$ticket_actions = $this->make_controller();
 		$ticket_actions->update_event_cost( $ticket_id, $post_id );
 
-		$actual = get_post_meta( $post_id, '_EventCost' );
-		$this->assertEquals( $expected, $actual, 'Failed asserting event cost arrays match.', 0.0, 10, true );
+		$this->assertEquals( $expected, get_post_meta( $post_id, '_EventCost' ) );
 	}
 }
