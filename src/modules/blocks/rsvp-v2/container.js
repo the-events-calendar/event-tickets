@@ -1,7 +1,7 @@
 /**
  * V2 RSVP Container
  *
- * This container wraps the V1 RSVP template but uses V2 thunks for API calls.
+ * This container wraps the V2 RSVP template but uses V2 thunks for API calls.
  */
 
 /**
@@ -9,12 +9,6 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import moment from 'moment';
-
-/**
- * WordPress dependencies
- */
-import { select } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -24,47 +18,11 @@ import { actions, selectors, thunks } from '../../data/blocks/rsvp-v2';
 import { isModalShowing, getModalTicketId } from '../../data/shared/move/selectors';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '../hoc/with-save-data';
-import { moment as momentUtil, time } from '@moderntribe/common/utils';
 import { hasRecurrenceRules, noRsvpsOnRecurring } from '@moderntribe/common/utils/recurrence';
-
-const getIsInactive = ( state ) => {
-	const startDateMoment = selectors.getRSVPStartDateMoment( state );
-	const startTime = selectors.getRSVPStartTimeNoSeconds( state );
-	const endDateMoment = selectors.getRSVPEndDateMoment( state );
-	const endTime = selectors.getRSVPEndTimeNoSeconds( state );
-
-	if ( ! startDateMoment || ! endDateMoment ) {
-		return false;
-	}
-
-	const startMoment = momentUtil.setTimeInSeconds(
-		startDateMoment.clone(),
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM )
-	);
-	const endMoment = momentUtil.setTimeInSeconds(
-		endDateMoment.clone(),
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM )
-	);
-	const currentMoment = moment();
-
-	return ! ( currentMoment.isAfter( startMoment ) && currentMoment.isBefore( endMoment ) );
-};
-
-const setInitialState = ( dispatch, ownProps ) => () => {
-	const postId = select( 'core/editor' ).getCurrentPostId();
-	// Use V2 thunk to fetch RSVP.
-	dispatch( thunks.getRSVP( postId ) );
-	const { attributes = {} } = ownProps;
-	if ( parseInt( attributes.headerImageId, 10 ) ) {
-		dispatch( actions.fetchRSVPHeaderImage( attributes.headerImageId ) );
-	}
-	if ( attributes.goingCount ) {
-		dispatch( actions.setRSVPGoingCount( parseInt( attributes.goingCount, 10 ) ) );
-	}
-	if ( attributes.notGoingCount ) {
-		dispatch( actions.setRSVPNotGoingCount( parseInt( attributes.notGoingCount, 10 ) ) );
-	}
-};
+import { createSetInitialState } from '../rsvp-shared/utils/create-set-initial-state';
+import { createCloseBlockOverlays } from '../rsvp-shared/utils/create-close-block-overlays';
+import { hydrateRsvpFromEditorConfig } from '../../data/blocks/rsvp-v2/utils/hydrate-rsvp-from-editor-config';
+import { computeRsvpFingerprint } from '../../data/blocks/rsvp-v2/utils/compute-rsvp-fingerprint';
 
 const mapStateToProps = ( state ) => {
 	const rsvpId = selectors.getRSVPId( state );
@@ -72,20 +30,40 @@ const mapStateToProps = ( state ) => {
 	return {
 		created: selectors.getRSVPCreated( state ),
 		isAddEditOpen: selectors.getRSVPIsAddEditOpen( state ),
-		isInactive: getIsInactive( state ),
+		isInitializing: selectors.getRSVPIsInitializing( state ),
 		isLoading: selectors.getRSVPIsLoading( state ),
 		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
 		hasRecurrenceRules: hasRecurrenceRules( state ),
 		noRsvpsOnRecurring: noRsvpsOnRecurring(),
 		rsvpId,
+		goingCount: String( selectors.getRSVPGoingCount( state ) ?? '' ),
+		notGoingCount: String( selectors.getRSVPNotGoingCount( state ) ?? '' ),
+		rsvpFingerprint: computeRsvpFingerprint( state ),
 	};
 };
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
-	onBlockRemoved: () => dispatch( actions.deleteRSVP() ),
-	setInitialState: setInitialState( dispatch, ownProps ),
-	setAddEditClosed: () => dispatch( actions.setRSVPIsAddEditOpen( false ) ),
+	onBlockRemoved: ( props ) => {
+		if ( props.created && props.rsvpId ) {
+			dispatch( thunks.deleteRSVP( props.rsvpId ) );
+		}
+
+		dispatch( actions.deleteRSVP() );
+	},
+	setInitialState: createSetInitialState( {
+		actions,
+		thunks,
+		hydrateCountsFromAttributes: false,
+		hydrateFromEditorConfig: true,
+		hydrateFromEditorConfigFn: hydrateRsvpFromEditorConfig,
+	} )( dispatch, ownProps ),
+	closeBlockOverlays: createCloseBlockOverlays( { dispatch, actions } ),
+	closeBlockOverlaysOnDeselect: createCloseBlockOverlays( {
+		dispatch,
+		actions,
+		closeAttendeeModal: false,
+	} ),
 } );
 
 export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ), withSaveData() )( RSVP );
