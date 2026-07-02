@@ -199,6 +199,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.28.5.1] 2026-06-29 =
+
+* Security - Tightened up Stripe checkout validation.
+
 = [5.28.5] 2026-06-24 =
 
 * Fix - Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
