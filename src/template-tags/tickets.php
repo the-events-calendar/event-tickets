@@ -1088,12 +1088,14 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 	 *
 	 * @since 4.11.3
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
+	 * @since TBD Added the `$tickets_only` parameter to allow excluding RSVP capacity from the total.
 	 *
-	 * @param int|WP_Post $post Post (event) we are trying to fetch capacity for.
+	 * @param int|WP_Post $post          Post (event) we are trying to fetch capacity for.
+	 * @param bool        $tickets_only  Whether to exclude RSVP capacity and return ticket-only capacity.
 	 *
 	 * @return int|null
 	 */
-	function tribe_get_event_capacity( $post ) {
+	function tribe_get_event_capacity( $post, $tickets_only = false ) {
 		// When not dealing with an instance of post try to set it up..
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
@@ -1135,7 +1137,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 		if ( ( ! $has_provider && $rsvp_tickets ) || $provider instanceof Tribe__Tickets__RSVP ) {
 			// If we have no provider but have RSVP tickets, or the provider is RSVP, return the RSVP capacity.
-			return (int) $rsvp_cap;
+			return $tickets_only ? 0 : (int) $rsvp_cap;
 		} elseif ( ! $has_provider ) {
 			// If we have no provider, return null for no capacity set.
 			return null;
@@ -1145,7 +1147,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 		// We only have RSVPs.
 		if ( empty( $tickets ) ) {
-			return (int) $rsvp_cap;
+			return $tickets_only ? 0 : (int) $rsvp_cap;
 		}
 
 		$global_stock = new \Tribe__Tickets__Global_Stock( $post_id );
@@ -1176,12 +1178,20 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 			}
 		}
 
-		// If either is unlimited, it's all unlimited.
-		if ( -1 === $tickets_cap || -1 === $rsvp_cap ) {
-			return -1;
-		}
+		if ( $tickets_only ) {
+			if ( -1 === $tickets_cap ) {
+				return -1;
+			}
 
-		$value = (int) $rsvp_cap + (int) $tickets_cap;
+			$value = (int) $tickets_cap;
+		} else {
+			// If either is unlimited, it's all unlimited.
+			if ( -1 === $tickets_cap || -1 === $rsvp_cap ) {
+				return -1;
+			}
+
+			$value = (int) $rsvp_cap + (int) $tickets_cap;
+		}
 
 		/**
 		 * Filters the event capacity.

@@ -791,6 +791,8 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.10.8
 	 * @since TBD Added the `$context` parameter and arguments filtering.
+	 * @since TBD Excluded RSVP V2 (TC-RSVP) attendees, which share the Tickets Commerce
+	 *        attendee/provider with regular tickets and were not caught by `provider__not_in`.
 	 *
 	 * @param int      $event_id The Event ID we're checking.
 	 * @param int|null $user_id  An Optional User ID.
@@ -806,8 +808,9 @@ class Tribe__Tickets__Tickets_View {
 
 		$args = [
 			'by' => [
-				'provider__not_in' => 'rsvp',
-				'status'           => 'publish',
+				'provider__not_in'    => 'rsvp',
+				'ticket_type__not_in' => Constants::TC_RSVP_TYPE,
+				'status'              => 'publish',
 			],
 		];
 
