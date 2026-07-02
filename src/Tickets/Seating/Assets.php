@@ -96,7 +96,7 @@ class Assets extends Controller_Contract {
 		$currency = tribe( 'tickets.commerce.currency' );
 
 		return [
-			'symbol'            => html_entity_decode( $currency->get_provider_symbol( $provider, $post_id ) ),
+			'symbol'            => html_entity_decode( $currency->get_provider_symbol( $provider, $post_id ), ENT_COMPAT ),
 			'position'          => $currency->get_provider_symbol_position( $provider, $post_id ),
 			'decimalSeparator'  => $currency->get_currency_decimal_point( $provider ),
 			'decimalNumbers'    => $currency->get_currency_number_of_decimals(),

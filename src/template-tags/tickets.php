@@ -639,14 +639,16 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 	 *
 	 * @uses Tribe__Tickets__Templates::get_template_hierarchy
 	 *
+	 * @since TBD Made $data explicitly nullable.
+	 *
 	 * @param string      $slug The Base template name.
 	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file.
 	 * @param array       $data (optional) array of vars to inject into the template part.
-	 * @param bool        $echo (optional) Allows the user to print or return the template.
+	 * @param bool        $should_echo (optional) Allows the user to print or return the template.
 	 *
 	 * @return string|void Whether it's echoing or not.
 	 */
-	function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
+	function tribe_tickets_get_template_part( $slug, $name = null, ?array $data = null, $should_echo = true ) {
 
 		/**
 		 * Fires an Action before echoing the Template
@@ -747,7 +749,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 			 */
 			$html = apply_filters( 'tribe_tickets_get_template_part_content', $html, $template, $file, $slug, $name, $data );
 
-			if ( $echo ) {
+			if ( $should_echo ) {
 				echo $html;
 			}
 
@@ -763,7 +765,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 		 */
 		do_action( 'tribe_tickets_post_get_template_part', $slug, $name, $data );
 
-		if ( ! $echo ) {
+		if ( ! $should_echo ) {
 			// Return should come at the end
 			return $html;
 		}

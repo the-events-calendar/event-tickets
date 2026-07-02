@@ -16,10 +16,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * Tribe__Tickets__Commerce__PayPal__Orders__Sales constructor.
 	 *
 	 * @since 4.7
+	 * @since TBD Made $cache explicitly nullable.
 	 *
 	 * @param Tribe__Cache|null $cache
 	 */
-	public function __construct( Tribe__Cache $cache = null ) {
+	public function __construct( ?Tribe__Cache $cache = null ) {
 		$this->cache = null === $cache ? new Tribe__Cache() : $cache;
 	}
 
@@ -272,13 +273,14 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * Returns a list of orders for the post.
 	 *
 	 * @since 4.7
+	 * @since TBD Made $ticket_ids explicitly nullable.
 	 *
 	 * @param int   $post_id
 	 * @param array $ticket_ids An optional array of ticket IDs to limit the table items.
 	 *
 	 * @return array
 	 */
-	public function get_orders_for_post( $post_id, array $ticket_ids = null ) {
+	public function get_orders_for_post( $post_id, ?array $ticket_ids = null ) {
 		$cache_key = ! empty( $ticket_ids )
 			? sprintf( "{$post_id}-%s-orders", implode( '|', $ticket_ids ) )
 			: "{$post_id}-orders";
