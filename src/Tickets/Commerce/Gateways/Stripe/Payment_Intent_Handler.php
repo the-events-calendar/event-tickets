@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
+use WP_Error;
 
 /**
  * Class Payment Intent Handler
@@ -207,6 +208,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @since 5.3.0
 	 * @since 5.8.1   Added customer's name / event name to the payment intent description
+	 * @since 5.28.5.1     Added validation to ensure the PaymentIntent amount matches the order total
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -221,6 +223,26 @@ class Payment_Intent_Handler {
 
 		if ( empty( $payment_intent['id'] ) || empty( $data['payment_intent']['id'] ) || $data['payment_intent']['id'] !== $payment_intent['id'] ) {
 			$payment_intent = Payment_Intent::get( $data['payment_intent']['id'] );
+		}
+
+		if ( is_wp_error( $payment_intent ) || ! is_array( $payment_intent ) || empty( $payment_intent['id'] ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-stripe-payment-intent-invalid',
+				__( 'The payment could not be verified. Please refresh checkout and try again.', 'event-tickets' )
+			);
+		}
+
+		/*
+		 * Security: the Payment Intent ID is supplied by the client, so confirm it matches the
+		 * current cart before binding it to this order. Without this a Payment Intent created for
+		 * a different (e.g. lower-value) cart could be attached here and later used to complete the
+		 * order after paying the smaller amount.
+		 */
+		if ( ! Payment_Intent::is_valid_for_cart( $payment_intent, tribe( Cart::class ) ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-stripe-payment-intent-cart-mismatch',
+				__( 'The selected payment does not match the items in your cart. Please refresh checkout and try again.', 'event-tickets' )
+			);
 		}
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
