@@ -16,7 +16,7 @@ $label = sprintf(
 	_x( 'Total %s Capacity:', 'ticket capacity label in admin panel', 'event-tickets' ),
 	tribe_get_ticket_label_singular( 'total_capacity_label' )
 );
-$title = sprintf(
+$capacity_tooltip = sprintf(
 	/* translators: %s: lowercase singular ticket label, e.g. "ticket" */
 	_x( 'The total number of possible %s attendees for this event', 'ticket capacity label description in admin panel', 'event-tickets' ),
 	tribe_get_ticket_label_singular_lowercase( 'total_capacity_label_description' )
@@ -24,7 +24,7 @@ $title = sprintf(
 ?>
 <span id="ticket_form_total_capacity">
 	<?php echo esc_html( $label ); ?>
-	<span id="ticket_form_total_capacity_value" title="<?php echo esc_attr( $title ); ?>">
+	<span id="ticket_form_total_capacity_value" title="<?php echo esc_attr( $capacity_tooltip ); ?>">
 		<?php
 		switch ( $total_tickets ) {
 			case -1:
