@@ -1,0 +1,59 @@
+.tribe-editor__rsvp-frontend-mirror {
+	width: 100%;
+}
+
+/* Going count row: number + View Attendees link side by side. */
+.tribe-editor__rsvp-frontend-mirror__going-row {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 12px;
+	margin-bottom: 4px;
+}
+
+/* Make the going count number larger in the editor preview. */
+.tribe-editor__rsvp-frontend-mirror__going-row .tribe-tickets__rsvp-attendance-number {
+	font-size: 2rem;
+	line-height: 1.2;
+}
+
+/* Make the "X remaining" text bold. */
+.tribe-editor__rsvp-frontend-mirror .tribe-tickets__rsvp-availability {
+	font-weight: var(--tec-font-weight-bold, 700);
+}
+
+.tribe-editor__rsvp-frontend-mirror__not-going-count {
+	color: var(--tec-color-text-secondary, #545d66);
+	margin-top: 4px;
+}
+
+/* Both the count and label use the same secondary (gray) color. */
+.tribe-editor__rsvp-frontend-mirror__not-going-quantity {
+	color: var(--tec-color-text-secondary, #545d66);
+}
+
+.tribe-editor__rsvp-frontend-mirror__availability-edit {
+	align-items: center;
+	background: none;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	gap: 4px;
+	padding: 0;
+}
+
+.tribe-editor__rsvp-frontend-mirror__edit-icon {
+	color: var(--tec-color-text-secondary, #545d66);
+	flex: none;
+}
+
+/* Non-interactive frontend preview in the editor. */
+.tribe-editor__rsvp-frontend-mirror__actions {
+	pointer-events: none;
+
+	button {
+		cursor: default;
+	}
+}
