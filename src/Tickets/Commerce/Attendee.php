@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Communications\Email;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Cache_Listener;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils;
 use WP_Post;
@@ -810,9 +811,14 @@ class Attendee {
 			return [];
 		}
 		
-		// Check cache.
+		/*
+		 * Check cache. The cache is keyed to the `save_post` trigger so creating, updating or deleting
+		 * an Attendee (a post) invalidates it. Without this trigger the cached list would survive for the
+		 * rest of the request even after new Attendees are generated, making inventory()/available() report
+		 * a stale count right after an RSVP/purchase until the next page load.
+		 */
 		$cache                  = tribe_cache();
-		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id' );
+		$attendees_by_ticket_id = $cache->get( 'tec_tickets_attendees_by_ticket_id', Tribe__Cache_Listener::TRIGGER_SAVE_POST );
 		if ( ! is_array( $attendees_by_ticket_id ) ) {
 			$attendees_by_ticket_id = [];
 		}
@@ -824,7 +830,7 @@ class Attendee {
 
 			// Store in cache.
 			$attendees_by_ticket_id[ $ticket_id ] = $attendees;
-			$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id );
+			$cache->set( 'tec_tickets_attendees_by_ticket_id', $attendees_by_ticket_id, 0, Tribe__Cache_Listener::TRIGGER_SAVE_POST );
 		}
 
 		return tribe( Module::class )->get_attendees_from_module( $attendees_by_ticket_id[ $ticket_id ] );

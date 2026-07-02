@@ -1,5 +1,18 @@
 <?php
+/**
+ * RSVP Attendee Repository.
+ *
+ * Handles ORM operations for RSVP attendees.
+ *
+ * @since 4.10.6
+ *
+ * @package Tribe\Tickets\Repositories\Attendee
+ */
 
+// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
+
+use TEC\Tickets\Repositories\Traits\Get_Field;
+use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -9,7 +22,8 @@ use Tribe__Utils__Array as Arr;
  *
  * @property Tribe__Tickets__RSVP $attendee_provider
  */
-class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository {
+class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository implements Attendee_Repository_Interface {
+	use Get_Field;
 
 	/**
 	 * Key name to use when limiting lists of keys.
@@ -35,17 +49,25 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-				'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
-				'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
-				'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
-				'security_code'   => $attendee_provider->security_code,
-				'order_id'        => $attendee_provider->order_key,
-				'optout'          => $attendee_provider::ATTENDEE_OPTOUT_KEY,
-				'user_id'         => $attendee_provider->attendee_user_id,
-				'price_paid'      => $attendee_provider->price_paid,
-				'full_name'       => $attendee_provider->full_name,
-				'email'           => $attendee_provider->email,
-				'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'ticket_id'        => $attendee_provider::ATTENDEE_PRODUCT_KEY,
+				'event_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'post_id'          => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'security_code'    => $attendee_provider->security_code,
+				'order_id'         => $attendee_provider->order_key,
+				'optout'           => $attendee_provider::ATTENDEE_OPTOUT_KEY,
+				'user_id'          => $attendee_provider->attendee_user_id,
+				'price_paid'       => $attendee_provider->price_paid,
+				'full_name'        => $attendee_provider->full_name,
+				'email'            => $attendee_provider->email,
+				'attendee_status'  => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'rsvp_status'      => $attendee_provider::ATTENDEE_RSVP_KEY,
+				'ticket_sent'      => $attendee_provider->attendee_ticket_sent,
+				'deleted_product'  => $attendee_provider->deleted_product,
+				'unique_id'        => '_unique_id',
+				'subscribed'       => $attendee_provider->attendee_subscribed,
+				'qr_status'        => '_tribe_qr_status',
+				'check_in_details' => $attendee_provider->checkin_key . '_details',
+				'activity_log'     => '_tribe_attendee_activity_log',
 			]
 		);
 	}
@@ -223,5 +245,143 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		 * @param string $attendee_status The status of the attendee, either yes or no.
 		 */
 		do_action( 'event_tickets_rsvp_after_attendee_update', $attendee_id, $post_id, $attendee_status );
+	}
+
+	/**
+	 * Bulk update multiple attendees with the same field values.
+	 *
+	 * More efficient than calling update() in a loop.
+	 *
+	 * Note: This method does NOT use database transactions. Updates are
+	 * performed independently and may result in partial success if some
+	 * updates fail.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_ids Attendee IDs.
+	 * @param array $updates      Fields to update (e.g., ['attendee_status' => 'yes']).
+	 *
+	 * @return array Results indexed by attendee ID (true = success, false = failure).
+	 */
+	public function bulk_update( array $attendee_ids, array $updates ): array {
+		$results = [];
+
+		foreach ( $attendee_ids as $attendee_id ) {
+			$result = $this->by( 'id', $attendee_id )
+							->set_args( $updates )
+							->save();
+
+			$results[ $attendee_id ] = false !== $result;
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Get attendee counts grouped by RSVP status.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id Event ID.
+	 *
+	 * @return array Status counts (e.g., ['yes' => 10, 'no' => 5]).
+	 */
+	public function get_status_counts( int $event_id ): array {
+		global $wpdb;
+
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COALESCE(pm2.meta_value, %s) as status, COUNT(*) as count
+				 FROM %i p
+				 INNER JOIN %i pm1 ON p.ID = pm1.post_id AND pm1.meta_key = %s
+				 LEFT JOIN %i pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
+				 WHERE p.post_type = %s
+				 AND pm1.meta_value = %d
+				 GROUP BY COALESCE(pm2.meta_value, %s)',
+				'unknown',
+				$wpdb->posts,
+				$wpdb->postmeta,
+				'_tribe_rsvp_event',
+				$wpdb->postmeta,
+				'_tribe_rsvp_status',
+				'tribe_rsvp_attendees',
+				$event_id,
+				'unknown'
+			)
+		);
+
+		$counts = [];
+		foreach ( $results as $row ) {
+			$counts[ $row->status ] = (int) $row->count;
+		}
+
+		return $counts;
+	}
+
+	/**
+	 * Get attendees by email address for privacy operations.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $email    The email address to search for.
+	 * @param int    $page     The page number (1-indexed).
+	 * @param int    $per_page Number of results per page.
+	 *
+	 * @return array{
+	 *     posts: WP_Post[],
+	 *     has_more: bool
+	 * } The list of attendees and whether there are more results to fetch.
+	 */
+	public function get_attendees_by_email( string $email, int $page, int $per_page ): array {
+		$posts = $this->by( 'purchaser_email', $email )
+						->per_page( $per_page )
+						->page( $page )
+						->order_by( 'ID' )
+						->order( 'ASC' )
+						->all();
+
+		return [
+			'posts'    => $posts,
+			'has_more' => count( $posts ) >= $per_page,
+		];
+	}
+
+	/**
+	 * Delete an attendee for privacy erasure.
+	 *
+	 * This method will immediately delete the Attendee skipping trash.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID to delete.
+	 *
+	 * @return array{
+	 *     success: bool,
+	 *     event_id: int|null
+	 * } The deletion result and the event ID where the attendee was found, if any.
+	 */
+	public function delete_attendee( int $attendee_id ): array {
+		$event_id = get_post_meta( $attendee_id, $this->attendee_provider::ATTENDEE_EVENT_KEY, true );
+		$deleted  = wp_delete_post( $attendee_id, true );
+
+		return [
+			'success'  => (bool) $deleted,
+			'event_id' => $event_id ? (int) $event_id : null,
+		];
+	}
+
+	/**
+	 * Get the ticket/product ID for an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee post ID.
+	 *
+	 * @return int The ticket/product ID, or 0 if not found.
+	 */
+	public function get_ticket_id( int $attendee_id ): int {
+		$ticket_id = get_post_meta( $attendee_id, $this->attendee_provider::ATTENDEE_PRODUCT_KEY, true );
+
+		return $ticket_id ? (int) $ticket_id : 0;
 	}
 }

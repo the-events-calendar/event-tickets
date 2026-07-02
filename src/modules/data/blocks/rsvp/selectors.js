@@ -35,6 +35,8 @@ export const getRSVPHasAttendeeInfoFields = createSelector( [ getRSVPBlock ], ( 
 
 export const getRSVPHasDurationError = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.hasDurationError );
 
+export const getRSVPIAC = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.iac );
+
 /**
  * ------------------------------------------------------------
  * RSVP Details

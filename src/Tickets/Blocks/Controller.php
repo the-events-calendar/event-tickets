@@ -50,7 +50,8 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.template.overwrite', Template_Overwrite::class );
 		$this->container->singleton( 'tickets.editor.template', Template::class );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', Tickets_Block::class, [ 'load' ] );
-		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class, [ 'load' ] );
+		// RSVP block hooks are registered by TEC\Tickets\RSVP\V1\Controller.
+		$this->container->singleton( 'tickets.editor.blocks.rsvp', RSVP_Block::class );
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', Ticket_Item_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
@@ -127,7 +128,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		}
 
 		// Register blocks.
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
+		// RSVP block registration is handled by TEC\Tickets\RSVP\V1\Controller.
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets-item' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.attendees' ), 'register' ] );
@@ -169,6 +170,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
 	 *
 	 * @since 5.8.0
+	 * @since TBD RSVP button is always rendered, disabled when RSVP feature is off.
 	 *
 	 * @param int $post_id The post id.
 	 */
@@ -180,6 +182,16 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		];
 
 		$post_type = get_post_field( 'post_type', $post_id );
+
+		/**
+		 * Filters the default ticket forms enabled for all post types.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
+		 * @param int                $post_id The ID of the post being edited.
+		 */
+		$enabled = apply_filters( 'tec_tickets_enabled_ticket_forms', $enabled, $post_id );
 
 		/**
 		 * Filters the default ticket forms enabled for a given post type.
@@ -194,9 +206,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		if ( ! empty( $enabled['default'] ) ) {
 			tribe( Meta::class )->render_ticket_form_toggle( $post_id );
 		}
-		if ( ! empty( $enabled['rsvp'] ) ) {
-			tribe( Meta::class )->render_rsvp_form_toggle( $post_id );
-		}
+		tribe( Meta::class )->render_rsvp_form_toggle( $post_id, empty( $enabled['rsvp'] ) );
 	}
 
 	/**

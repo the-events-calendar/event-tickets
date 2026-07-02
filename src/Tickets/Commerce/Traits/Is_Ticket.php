@@ -33,6 +33,22 @@ trait Is_Ticket {
 			return true;
 		}
 
-		return 'ticket' === $thing['type'];
+		/**
+		 * Filter whether a thing is a ticket.
+		 *
+		 * The return value will be cast to a boolean.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool                $is_ticket Whether the thing is a ticket.
+		 * @param array<string,mixed> $thing     The thing to check.
+		 */
+		$is_ticket = apply_filters(
+			'tec_tickets_commerce_is_ticket',
+			'ticket' === $thing['type'],
+			$thing
+		);
+
+		return (bool) $is_ticket;
 	}
 }

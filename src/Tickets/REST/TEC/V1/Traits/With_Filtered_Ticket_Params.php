@@ -192,6 +192,16 @@ trait With_Filtered_Ticket_Params {
 
 		$ticket_params = array_filter( $new_params, fn( $value ) => null !== $value );
 
+		/**
+		 * Filter the ticket params before they are returned.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $ticket_params The filtered ticket params.
+		 * @param array $params        The original REST params.
+		 */
+		$ticket_params = apply_filters( 'tec_tickets_rest_ticket_upsert_params', $ticket_params, $params );
+
 		return compact( 'post_params', 'ticket_params' );
 	}
 

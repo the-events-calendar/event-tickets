@@ -77,6 +77,12 @@
                     "type": "integer",
                     "example": 123
                 },
+                "capacity": {
+                    "description": "The capacity of the ticket",
+                    "nullable": true,
+                    "type": "integer",
+                    "example": 100
+                },
                 "manage_stock": {
                     "description": "Whether stock is being managed for this ticket",
                     "type": "boolean",

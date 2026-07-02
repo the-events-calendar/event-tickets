@@ -1,4 +1,11 @@
 <?php
+/**
+ * Abstract Order.
+ *
+ * @since 5.2.3
+ *
+ * @package TEC\Tickets\Commerce
+ */
 
 namespace TEC\Tickets\Commerce;
 
@@ -17,9 +24,9 @@ abstract class Abstract_Order {
 	 *
 	 * @since 5.2.3
 	 *
-	 * @param int[]|float[] $items a list of values
+	 * @param int[]|float[] $items A list of values.
 	 *
-	 * @return Value;
+	 * @return Value.
 	 */
 	public function get_value_total( $items ) {
 		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
@@ -33,7 +40,7 @@ abstract class Abstract_Order {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array $data user data input in the checkout page
+	 * @param array $data User data input in the checkout page.
 	 *
 	 * @return array
 	 */
@@ -91,12 +98,11 @@ abstract class Abstract_Order {
 	 * @return array|WP_Error
 	 */
 	public function get_purchaser_data( $data ) {
-
 		if ( is_user_logged_in() ) {
 			$user                              = wp_get_current_user();
 			$purchaser['purchaser_user_id']    = $user->ID;
-			$purchaser['purchaser_full_name']  = trim( $user->first_name . ' ' . $user->last_name );
-			$purchaser['purchaser_first_name'] = $user->first_name;
+			$purchaser['purchaser_full_name']  = ! empty( $user->first_name ) || ! empty( $user->last_name ) ? trim( $user->first_name . ' ' . $user->last_name ) : ( $data['purchaser']['name'] ?? '' );
+			$purchaser['purchaser_first_name'] = ! empty( $user->first_name ) ? $user->first_name : ( $data['purchaser']['name'] ?? '' );
 			$purchaser['purchaser_last_name']  = $user->last_name;
 			$purchaser['purchaser_email']      = $user->user_email;
 

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce Tickets Repository.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Repositories
+ */
 
 namespace TEC\Tickets\Commerce\Repositories;
 
@@ -6,6 +13,7 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Repository;
 use Tribe__Repository__Interface;
+use TEC\Tickets\RSVP\V2\Constants;
 use WP_Post;
 
 /**
@@ -74,6 +82,7 @@ class Tickets_Repository extends Tribe__Repository {
 				'sale_price_start_date' => Ticket::$sale_price_start_date_key,
 				'sale_price_end_date'   => Ticket::$sale_price_end_date_key,
 				'capacity'              => $ticket_handler->key_capacity,
+				'show_not_going'        => Constants::SHOW_NOT_GOING_META_KEY,
 			]
 		);
 
@@ -104,6 +113,20 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'sale_price_start_date', Ticket::$sale_price_start_date_key );
 		$this->add_simple_meta_schema_entry( 'sale_price_end_date', Ticket::$sale_price_end_date_key );
 		$this->add_simple_meta_schema_entry( 'capacity', $ticket_handler->key_capacity );
+
+		/**
+		 * Filters the query args for the tickets repository.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $args The query args for the tickets repository.
+		 * @param Tribe__Repository   $this This repository instance.
+		 */
+		$this->query_args = apply_filters(
+			'tec_tickets_commerce_repository_ticket_query_args',
+			$this->query_args,
+			$this
+		);
 
 		/**
 		 * Filters the schema for the tickets repository.

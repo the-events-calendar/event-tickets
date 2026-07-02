@@ -3,8 +3,9 @@
  * Single order - Items metabox - SingleItem.
  *
  * @since 5.13.3
+ * @since TBD Added support for RSVP tickets.
  *
- * @version 5.13.3
+ * @version TBD
  *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.
@@ -13,10 +14,21 @@
  */
 
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\RSVP\V2\Constants;
+
+defined( 'ABSPATH' ) || exit;
+
+if ( 'series_pass' === $ticket->type ) {
+	$ticket_type = esc_html__( 'Series Pass', 'event-tickets' );
+} elseif ( Constants::TC_RSVP_TYPE === $ticket->type ) {
+	$ticket_type = esc_html__( 'RSVP Ticket', 'event-tickets' );
+} else {
+	$ticket_type = esc_html__( 'Standard Ticket', 'event-tickets' );
+}
 ?>
 <tr class="tec-tickets-commerce-single-order--items--table--row">
 	<td><?php echo esc_html( $ticket->name ); ?></td>
-	<td class="tribe-desktop-only"><?php echo 'series_pass' === $ticket->type ? esc_html__( 'Series Pass', 'event-tickets' ) : esc_html__( 'Standard Ticket', 'event-tickets' ); ?></td>
+	<td class="tribe-desktop-only"><?php echo esc_html( $ticket_type ); ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--info-column"><?php /* @todo dpan: this is were Refunded would go */ ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--price-column">
 		<?php

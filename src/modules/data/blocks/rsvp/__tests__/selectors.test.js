@@ -73,6 +73,21 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.hasDurationError );
 	} );
 
+	it( 'should return the default IAC value', () => {
+		expect( selectors.getRSVPIAC( state ) ).toBe( DEFAULT_STATE.iac );
+	} );
+
+	it( 'should return the IAC value from modified state', () => {
+		const modifiedState = {
+			tickets: {
+				blocks: {
+					rsvp: { ...DEFAULT_STATE, iac: 'required' },
+				},
+			},
+		};
+		expect( selectors.getRSVPIAC( modifiedState ) ).toBe( 'required' );
+	} );
+
 	it( 'should return the details object', () => {
 		expect( selectors.getRSVPDetails( state ) )
 			.toBe( DEFAULT_STATE.details );

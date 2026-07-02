@@ -15,12 +15,14 @@
  * @var int    $post_id   The ID of the post the tickets are for.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $purchaser_name  = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
 $purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
 $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
 
- ?>
- <div class="user-details">
+?>
+<div class="user-details">
 	<?php
 		printf(
 			// Translators: 1: order number, 2: count of attendees in the order, 3: ticket label (dynamically singular or plural), 4: purchaser name, 5: linked purchaser email, 6: date of purchase.
@@ -57,5 +59,5 @@ $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purcha
 		 * @param WP_Post $post_id   Post object that the tickets are tied to.
 		 */
 		do_action( 'tec_tickets_user_details_tickets', $attendees, $post_id );
-	?>
+		?>
 </div>

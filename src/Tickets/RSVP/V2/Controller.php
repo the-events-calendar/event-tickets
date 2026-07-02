@@ -1,0 +1,332 @@
+<?php
+/**
+ * V2 RSVP Controller - TC-based implementation.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\V2
+ */
+
+namespace TEC\Tickets\RSVP\V2;
+
+use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\RSVP\RSVP_Controller_Methods;
+
+/**
+ * Class Controller
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\V2
+ */
+class Controller extends Controller_Contract {
+	use RSVP_Controller_Methods;
+
+	/**
+	 * The action that will be fired after the successful registration of this controller.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_tickets_rsvp_v2_registered';
+
+	/**
+	 * Register the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function do_register(): void {
+		$this->container->singleton( Metabox::class );
+		$this->container->singleton( Classic_Editor::class );
+		$this->container->singleton( Block_Editor::class );
+		$this->container->singleton( Frontend::class );
+		$this->container->singleton( Repository_Filters::class );
+		$this->container->singleton( REST\Order_Endpoint::class );
+		$this->container->singleton( Cart\RSVP_Cart::class );
+		$this->container->singleton( Meta_Fields::class );
+		$this->container->singleton( REST_Properties::class );
+
+		$this->container->get( Assets::class )->register();
+
+		$this->register_common_rsvp_implementations();
+
+		// Bind the repositories as factories to make sure each instance is different.
+		$this->container->bind(
+			'tickets.ticket-repository.rsvp',
+			Repositories\Ticket_Repository::class
+		);
+		$this->container->bind(
+			'tickets.attendee-repository.rsvp',
+			Repositories\Attendee_Repository::class
+		);
+
+		// Settings.
+		add_filter(
+			'tec_tickets_commerce_settings_top_level',
+			$this->container->callback( Settings::class, 'change_tickets_commerce_settings' )
+		);
+
+		// Classic Editor.
+		add_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ) );
+		add_action(
+			'tec_event_tickets_rsvp_form__start',
+			$this->container->callback( Metabox::class, 'display_responses_info' ),
+			10,
+			3
+		);
+		// Reposition the RSVP metabox to sit directly after the Tickets metabox.
+		// Runs late (priority 100) so every metabox is registered before reordering.
+		add_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'reorder_after_tickets_metabox' ), 100 );
+		add_filter(
+			'tec_tickets_enabled_ticket_forms',
+			$this->container->callback( Classic_Editor::class, 'do_not_render_rsvp_form_toggle' )
+		);
+		add_filter(
+			'tec_tickets_editor_list_ticket_types',
+			$this->container->callback( Classic_Editor::class, 'do_not_show_rsvp_in_tickets_metabox' )
+		);
+		add_action(
+			'save_post',
+			$this->container->callback( Classic_Editor::class, 'save_rsvp_on_post_save' ),
+			20
+		);
+
+		// Block Editor.
+		add_filter(
+			'tribe_editor_config',
+			$this->container->callback( Block_Editor::class, 'add_rsvp_v2_editor_config' )
+		);
+		add_filter(
+			'pre_render_block',
+			$this->container->callback( Block_Editor::class, 'enqueue_tickets_block_assets' ),
+			10,
+			2
+		);
+
+		// Frontend.
+		add_action( 'wp_enqueue_scripts', $this->container->callback( Frontend::class, 'enqueue_rsvp_assets' ) );
+		add_filter(
+			'tec_tickets_front_end_rsvp_form_template_content',
+			$this->container->callback( Frontend::class, 'render_rsvp_template' ),
+			10,
+			5
+		);
+
+		add_action(
+			'event_tickets_attendee_update',
+			$this->container->callback( Frontend::class, 'update_attendee_data' ),
+			10,
+			2
+		);
+		add_action(
+			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
+			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' )
+		);
+
+		// Repository.
+		add_filter(
+			'tec_tickets_commerce_repository_ticket_query_args',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_tickets_commerce_is_ticket',
+			$this->container->callback( Repository_Filters::class, 'rsvp_are_tickets' ),
+			10,
+			2
+		);
+		add_filter(
+			'tribe_repository_tc_tickets_query_args',
+			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+
+		// REST.
+		add_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
+
+		// RSVP-specific meta saving.
+		add_action(
+			'tec_tickets_commerce_after_save_ticket',
+			$this->container->callback( Meta_Fields::class, 'save_show_not_going' ),
+			10,
+			3
+		);
+
+		// Add show_not_going property to REST responses for RSVP tickets.
+		add_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_rest_ticket_properties_to_add',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
+		);
+
+		// Add show_not_going to REST API documentation.
+		add_filter(
+			'tec_rest_swagger_ticket_request_body_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
+		);
+		add_filter(
+			'tec_rest_swagger_ticket_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
+		);
+
+		add_filter(
+			'tec_tickets_rsvp_get_attendees_by_id_pre',
+			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
+			10,
+			2
+		);
+
+		add_filter(
+			'tec_tickets_view_count_ticket_attendees_args',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' ),
+			10,
+			4
+		);
+
+		// Attendees report: show Going/Not Going status and hide check-in for "not going" RSVPs.
+		add_filter(
+			'tribe_tickets_attendees_table_order_status',
+			$this->container->callback( Attendees::class, 'modify_status_display' ),
+			10,
+			2
+		);
+		add_filter(
+			'tec_tickets_attendees_table_column_check_in',
+			$this->container->callback( Attendees::class, 'modify_checkin_display' ),
+			10,
+			2
+		);
+		add_filter(
+			'event_tickets_attendees_table_row_actions',
+			$this->container->callback( Attendees::class, 'modify_row_actions' ),
+			10,
+			2
+		);
+
+		add_action(
+			'tec_tickets_commerce_single_order_details_metabox_after',
+			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
+		);
+	}
+
+	/**
+	 * Unregister the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_filter(
+			'tec_tickets_commerce_settings_top_level',
+			$this->container->callback( Settings::class, 'change_tickets_commerce_settings' )
+		);
+		remove_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'add' ) );
+		remove_action(
+			'tec_event_tickets_rsvp_form__start',
+			$this->container->callback( Metabox::class, 'display_responses_info' ),
+			10
+		);
+		remove_action( 'add_meta_boxes', $this->container->callback( Metabox::class, 'reorder_after_tickets_metabox' ), 100 );
+		remove_filter(
+			'tec_tickets_enabled_ticket_forms',
+			$this->container->callback( Classic_Editor::class, 'do_not_render_rsvp_form_toggle' )
+		);
+		remove_filter(
+			'tec_tickets_editor_list_ticket_types',
+			$this->container->callback( Classic_Editor::class, 'do_not_show_rsvp_in_tickets_metabox' )
+		);
+		remove_action(
+			'save_post',
+			$this->container->callback( Classic_Editor::class, 'save_rsvp_on_post_save' ),
+			20
+		);
+		remove_filter(
+			'tribe_editor_config',
+			$this->container->callback( Block_Editor::class, 'add_rsvp_v2_editor_config' )
+		);
+		remove_filter(
+			'pre_render_block',
+			$this->container->callback( Block_Editor::class, 'enqueue_tickets_block_assets' )
+		);
+		remove_action( 'wp_enqueue_scripts', $this->container->callback( Frontend::class, 'enqueue_rsvp_assets' ) );
+		remove_filter(
+			'tec_tickets_front_end_rsvp_form_template_content',
+			$this->container->callback( Frontend::class, 'render_rsvp_template' )
+		);
+		remove_action(
+			'event_tickets_attendee_update',
+			$this->container->callback( Frontend::class, 'update_attendee_data' ),
+		);
+		remove_action(
+			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
+			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' ),
+		);
+		remove_filter(
+			'tec_tickets_commerce_repository_ticket_query_args',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' )
+		);
+		remove_filter(
+			'tec_tickets_commerce_is_ticket',
+			$this->container->callback( Repository_Filters::class, 'rsvp_are_tickets' )
+		);
+		remove_filter(
+			'tribe_repository_tc_tickets_query_args',
+			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+		remove_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
+		remove_action(
+			'tec_tickets_commerce_after_save_ticket',
+			$this->container->callback( Meta_Fields::class, 'save_show_not_going' )
+		);
+
+		remove_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' )
+		);
+		remove_filter(
+			'tec_rest_ticket_properties_to_add',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
+		);
+		remove_filter(
+			'tec_rest_swagger_ticket_request_body_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
+		);
+		remove_filter(
+			'tec_rest_swagger_ticket_definition',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
+		);
+		remove_filter(
+			'tec_tickets_rsvp_get_attendees_by_id_pre',
+			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
+		);
+		remove_filter(
+			'tec_tickets_view_count_ticket_attendees_args',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
+		);
+		remove_filter(
+			'tribe_tickets_attendees_table_order_status',
+			$this->container->callback( Attendees::class, 'modify_status_display' )
+		);
+		remove_filter(
+			'tec_tickets_attendees_table_column_check_in',
+			$this->container->callback( Attendees::class, 'modify_checkin_display' )
+		);
+		remove_filter(
+			'event_tickets_attendees_table_row_actions',
+			$this->container->callback( Attendees::class, 'modify_row_actions' )
+		);
+		remove_action(
+			'tec_tickets_commerce_single_order_details_metabox_after',
+			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
+		);
+	}
+}

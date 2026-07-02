@@ -77,6 +77,13 @@ export const setRSVPHasAttendeeInfoFields = ( hasAttendeeInfoFields ) => ( {
 	},
 } );
 
+export const setRSVPIAC = ( iac ) => ( {
+	type: types.SET_RSVP_IAC,
+	payload: {
+		iac,
+	},
+} );
+
 export const setRSVPHasDurationError = ( hasDurationError ) => ( {
 	type: types.SET_RSVP_HAS_DURATION_ERROR,
 	payload: {

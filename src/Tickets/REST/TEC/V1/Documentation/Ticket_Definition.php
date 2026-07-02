@@ -138,6 +138,13 @@ class Ticket_Definition extends Definition {
 		)->set_example( 123 );
 
 		$properties[] = (
+			new Positive_Integer(
+				'capacity',
+				fn() => __( 'The capacity of the ticket', 'event-tickets' ),
+			)
+		)->set_example( 100 )->set_nullable( true );
+
+		$properties[] = (
 			new Boolean(
 				'manage_stock',
 				fn() => __( 'Whether stock is being managed for this ticket', 'event-tickets' ),

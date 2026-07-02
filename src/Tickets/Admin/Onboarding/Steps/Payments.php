@@ -73,8 +73,8 @@ class Payments extends Abstract_Step {
 		}
 
 		if ( ! empty( $params['stripeConnected'] ) || ! empty( $params['squareConnected'] ) ) {
-			$success = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page();
-			$success = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page() || $success;
+			$success = tribe( Payments_Tab::class )->maybe_auto_generate_checkout_page( true );
+			$success = tribe( Payments_Tab::class )->maybe_auto_generate_order_success_page( true ) || $success;
 
 			return $this->add_message( $response, __( 'Stripe checkout and order pages created.', 'event-tickets' ) );
 		}
