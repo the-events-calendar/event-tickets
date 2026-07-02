@@ -66,6 +66,24 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			) );
 		}
 
+		/*
+		 * Security: confirm the Payment Intent's amount matches the resolved order's total before
+		 * applying any status change. The order can be located from client-influenced metadata, so
+		 * without this a Payment Intent created for a different (e.g. lower-value) order could drive
+		 * this order to a paid status.
+		 */
+		if ( ! Payment_Intent::is_valid_for_order( $payment_intent, $order ) ) {
+			return new \WP_Error(
+				400,
+				sprintf(
+					// Translators: %1$s is the payment intent id and %2$d is the order id.
+					__( 'Payment Intent %1$s amount does not match order %2$d total and will not be processed.', 'event-tickets' ),
+					esc_html( $payment_intent_id ),
+					(int) $order->ID
+				)
+			);
+		}
+
 		$meta = [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent_id,
