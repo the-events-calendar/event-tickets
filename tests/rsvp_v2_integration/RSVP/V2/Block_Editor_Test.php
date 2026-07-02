@@ -50,6 +50,49 @@ class Block_Editor_Test extends WPTestCase {
 		);
 	}
 
+	public function test_rsvp_v2_config_should_include_initial_ticket_key(): void {
+		$config = apply_filters( 'tribe_editor_config', [] );
+
+		$this->assertArrayHasKey(
+			'initialTicket',
+			$config['tickets']['rsvpV2'],
+			'RSVP V2 config should include initialTicket key'
+		);
+	}
+
+	public function test_rsvp_v2_config_initial_ticket_is_null_without_post(): void {
+		$config = apply_filters( 'tribe_editor_config', [] );
+
+		$this->assertNull(
+			$config['tickets']['rsvpV2']['initialTicket'],
+			'initialTicket should be null when no post context exists'
+		);
+	}
+
+	public function test_rsvp_v2_config_initial_ticket_matches_event_rsvp(): void {
+		wp_set_current_user( 1 );
+
+		$post_id = static::factory()->post->create(
+			[
+				'post_title'  => 'RSVP Event',
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			]
+		);
+
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		global $post;
+		$post = get_post( $post_id );
+
+		$config = apply_filters( 'tribe_editor_config', [] );
+
+		$this->assertIsArray( $config['tickets']['rsvpV2']['initialTicket'] );
+		$this->assertSame( $ticket_id, $config['tickets']['rsvpV2']['initialTicket']['id'] );
+
+		wp_set_current_user( 0 );
+	}
+
 	public function test_should_preserve_existing_config_when_adding_rsvp_v2(): void {
 		$existing_config = [
 			'someKey'   => 'someValue',
