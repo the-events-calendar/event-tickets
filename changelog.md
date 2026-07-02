@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.28.5.1] 2026-06-29
+
+* Security - Tightened up Stripe checkout validation.
+
 ### [5.28.5] 2026-06-24
 
 * Fix - Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
@@ -7,7 +11,6 @@
 * Tweak - Added the `tribe_tickets_assets_should_enqueue_frontend` filter to control whether front-end ticket assets are enqueued.
 * Tweak - Updated broken link to coding standards in `CONTRIBUTING.md`
 * Performance - Improved the performance of the ticketed and unticketed filter counts on admin post lists.
-* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted.
 * Language - 0 new strings added, 25 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.28.4.1] 2026-06-19
