@@ -9,13 +9,14 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
-use Tribe__Tickets__Tickets as Tickets_Handler;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use TEC\Tickets\Commerce\Attendee;
-use TEC\Tickets\Commerce\Ticket;
+use Tribe__Tickets__Tickets as Tickets_Handler;
 use WP_Post;
 
 /**
@@ -71,18 +72,21 @@ class Frontend {
 		WP_Post $post,
 		bool $should_echo
 	): string {
-		$active_rsvps = $args['active_rsvps'] ?? [];
-
-		// Find the first TC-RSVP ticket in the active RSVPs.
+		// Check $args['active_rsvps'] first (may be populated by third-party extensions).
 		$rsvp = null;
-		foreach ( $active_rsvps as $ticket ) {
+		foreach ( $args['active_rsvps'] ?? [] as $ticket ) {
 			if ( $ticket->type() === Constants::TC_RSVP_TYPE ) {
-				$rsvp = $ticket;
-				break;
+				if ( $rsvp === null || $ticket->ID > $rsvp->ID ) {
+					$rsvp = $ticket;
+				}
 			}
 		}
 
-		// Only process if we have a TC-RSVP ticket.
+		// $args['active_rsvps'] is built from V1 RSVP tickets only; query TC-RSVP tickets directly.
+		if ( $rsvp === null ) {
+			$rsvp = tribe( RSVP_V2_Ticket::class )->get_for_event( $post->ID );
+		}
+
 		if ( $rsvp === null ) {
 			return $content;
 		}

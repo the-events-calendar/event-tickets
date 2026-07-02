@@ -137,15 +137,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -537,15 +536,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -985,15 +983,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -1480,15 +1477,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -2022,15 +2018,14 @@ exports[`Seat Selection Modal selection push to backend should handle adding sea
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -2611,15 +2606,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -3153,15 +3147,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -3648,15 +3641,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>
@@ -4096,15 +4088,14 @@ exports[`Seat Selection Modal selection push to backend should handle removing s
 
       </script>
       
-
 		
       <script>
         
-			var tribe = tribe || {};
-			tribe.dialogs = tribe.dialogs || [];
-			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
+			window.tribe = window.tribe || {};
+			window.tribe.dialogs = window.tribe.dialogs || [];
+			window.tribe.dialogs.dialogs = window.tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			window.tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					
       </script>

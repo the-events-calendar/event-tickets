@@ -42,6 +42,8 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Metabox::class );
 		$this->container->singleton( Classic_Editor::class );
 		$this->container->singleton( Block_Editor::class );
+		$block_editor = $this->container->get( Block_Editor::class );
+		$block_editor->register();
 		$this->container->singleton( Frontend::class );
 		$this->container->singleton( Repository_Filters::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
@@ -104,6 +106,17 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Block_Editor::class, 'enqueue_tickets_block_assets' ),
 			10,
 			2
+		);
+		// Load in editor chrome (WP < 6.3 non-iframe) AND canvas iframe (WP 6.3+).
+		add_action(
+			'enqueue_block_editor_assets',
+			$this->container->callback( Block_Editor::class, 'enqueue_rsvp_block_editor_styles' ),
+			20
+		);
+		add_action(
+			'enqueue_block_assets',
+			$this->container->callback( Block_Editor::class, 'enqueue_rsvp_block_editor_styles' ),
+			20
 		);
 
 		// Frontend.
@@ -256,6 +269,21 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'pre_render_block',
 			$this->container->callback( Block_Editor::class, 'enqueue_tickets_block_assets' )
+		);
+		remove_filter(
+			'register_block_type_args',
+			$this->container->callback( Block_Editor::class, 'add_rsvp_block_editor_style_args' ),
+			10
+		);
+		remove_action(
+			'enqueue_block_editor_assets',
+			$this->container->callback( Block_Editor::class, 'enqueue_rsvp_block_editor_styles' ),
+			20
+		);
+		remove_action(
+			'enqueue_block_assets',
+			$this->container->callback( Block_Editor::class, 'enqueue_rsvp_block_editor_styles' ),
+			20
 		);
 		remove_action( 'wp_enqueue_scripts', $this->container->callback( Frontend::class, 'enqueue_rsvp_assets' ) );
 		remove_filter(

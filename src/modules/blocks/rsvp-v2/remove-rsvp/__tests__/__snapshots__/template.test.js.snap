@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RSVPRemoveRsvp should render Remove RSVP button 1`] = `
+<div
+  className="tribe-editor__rsvp-remove"
+>
+  <button
+    className="tribe-editor__button"
+    disabled={false}
+    onClick={[MockFunction]}
+    type="button"
+  >
+    Remove RSVP
+  </button>
+</div>
+`;
