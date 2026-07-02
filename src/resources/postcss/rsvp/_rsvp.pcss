@@ -6,28 +6,31 @@
  */
 
 .event-tickets {
-
 	.tribe-tickets__rsvp-wrapper {
-		background-color: var(--tec-color-background);
-		border: 1px solid var(--tec-color-border-secondary);
-		border-radius: var(--tec-border-radius-default);
-		margin-top: var(--tec-spacer-6);
+		background-color: var( --tec-color-background );
+		border: 1px solid var( --tec-color-border-secondary );
+		border-radius: var( --tec-border-radius-default );
+		margin-top: var( --tec-spacer-6 );
 		max-width: 580px;
 		overflow: hidden;
 		position: relative;
 		transition: all 0.3s ease;
 		width: 100%;
 
-		@media (prefers-reduced-motion: reduce) {
+		@media ( prefers-reduced-motion: reduce ) {
 			transition: none;
+		}
+
+		.block-editor & {
+			border: none;
 		}
 	}
 
 	.tribe-tickets__rsvp {
-		padding: var(--tec-spacer-10) var(--tec-grid-gutter-small-half);
+		padding: var( --tec-spacer-10 ) var( --tec-grid-gutter-small-half );
 
-		@media (--viewport-medium) {
-			padding: var(--tec-spacer-5) var(-tec-grid-gutter-half);
+		@media ( --viewport-medium ) {
+			padding: var( --tec-spacer-5 ) var( -tec-grid-gutter-half );
 		}
 	}
 }
