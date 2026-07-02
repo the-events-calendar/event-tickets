@@ -15,6 +15,7 @@ use TEC\Tickets\Event;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
 use Tribe__Tickets__Main;
 use Tribe__Date_Utils;
 use WP_Post;
@@ -303,14 +304,6 @@ class Metabox {
 	 * @return Tribe__Tickets__Ticket_Object|null Matching ticket object or null if not found.
 	 */
 	private function get_tc_rsvp_ticket( int $post_id ): ?Tribe__Tickets__Ticket_Object {
-		$ticket_id = tribe( 'tickets.ticket-repository.rsvp' )
-			->where( 'event', $post_id )
-			->first_id();
-
-		if ( ! $ticket_id ) {
-			return null;
-		}
-
-		return tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
+		return tribe( RSVP_V2_Ticket::class )->get_for_event( $post_id );
 	}
 }
