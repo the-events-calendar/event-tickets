@@ -4,27 +4,22 @@ $post_id = get_the_ID();
 /** @var Tribe__Tickets__Tickets_Handler $handler */
 $handler = tribe( 'tickets.handler' );
 
-$total_tickets = tribe_get_event_capacity( $post_id );
+$total_tickets = tribe_get_event_capacity( $post_id, true );
 
 // only show if there are tickets
 if ( empty( $total_tickets ) ) {
 	return;
 }
 
-$post_labels          = get_post_type_labels( get_post_type_object( get_post_type( $post_id ) ) );
-$uppercase_post_label = $post_labels->singular_name ?? 'Event';
-$label                = sprintf(
-	/* translators: %s: uppercase post type label */
-	__(
-		'Total %s Capacity:',
-		'event-tickets'
-	),
-	$uppercase_post_label
+$label = sprintf(
+	/* translators: %s: singular ticket label, e.g. "Ticket" */
+	_x( 'Total %s Capacity:', 'ticket capacity label in admin panel', 'event-tickets' ),
+	tribe_get_ticket_label_singular( 'total_capacity_label' )
 );
-$title                = sprintf(
-	/* translators: %s: lowercase post type label */
-	__( 'The total number of possible attendees for this %s', 'event-tickets' ),
-	strtolower( $uppercase_post_label )
+$title = sprintf(
+	/* translators: %s: lowercase singular ticket label, e.g. "ticket" */
+	_x( 'The total number of possible %s attendees for this event', 'ticket capacity label description in admin panel', 'event-tickets' ),
+	tribe_get_ticket_label_singular_lowercase( 'total_capacity_label_description' )
 );
 ?>
 <span id="ticket_form_total_capacity">

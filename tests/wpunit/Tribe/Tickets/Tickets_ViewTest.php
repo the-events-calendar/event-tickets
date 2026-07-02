@@ -5,11 +5,40 @@ use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Module as Commerce;
+use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker as RSVP_V2_Attendee_Maker;
+use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker as RSVP_V2_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class Tickets_ViewTest extends WPTestCase {
 
 	use SnapshotAssertions;
+	use RSVP_V2_Attendee_Maker;
+	use RSVP_V2_Ticket_Maker;
+	use Attendee_Maker;
+	use Commerce_Ticket_Maker;
+
+	/**
+	 * Low-level registration of the Commerce provider. There is no need for a full-blown registration
+	 * at this stage: having the module as active and as a valid provider is enough.
+	 *
+	 * @before
+	 */
+	public function activate_commerce_tickets(): void {
+		// The wpunit suite disables Tickets Commerce by default via the `TEC_TICKETS_COMMERCE` env var.
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
+
+		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
+			$modules[ Commerce::class ] = 'Commerce';
+
+			return $modules;
+		} );
+		// Regenerate the Tickets Data API to pick up the filtered providers.
+		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
+	}
+
 	public function setUp() {
 		// before
 		parent::setUp();
@@ -39,6 +68,51 @@ class Tickets_ViewTest extends WPTestCase {
 	 */
 	private function make_instance() {
 		return new Tickets_View();
+	}
+
+	/**
+	 * @test
+	 * it should not count RSVP V2 attendees as ticket attendees
+	 */
+	public function it_should_not_count_rsvp_v2_attendees_as_ticket_attendees(): void {
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'end_date'   => '2020-01-01 11:30:00',
+		] )->create()->ID;
+
+		$rsvp_ticket_id = $this->create_tc_rsvp_ticket( $event_id );
+		$this->create_tc_rsvp_attendee( $rsvp_ticket_id, $event_id );
+
+		$sut = $this->make_instance();
+
+		$this->assertEquals( 0, $sut->count_ticket_attendees( $event_id ) );
+		$this->assertFalse( $sut->has_ticket_attendees( $event_id ) );
+	}
+
+	/**
+	 * @test
+	 * it should count only non RSVP V2 attendees when the event has both ticket and RSVP V2 attendees
+	 */
+	public function it_should_count_only_non_rsvp_v2_attendees_when_event_has_both(): void {
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'end_date'   => '2020-01-01 11:30:00',
+		] )->create()->ID;
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_attendee_for_ticket( $ticket_id, $event_id );
+
+		$rsvp_ticket_id = $this->create_tc_rsvp_ticket( $event_id );
+		$this->create_tc_rsvp_attendee( $rsvp_ticket_id, $event_id );
+
+		$sut = $this->make_instance();
+
+		$this->assertEquals( 1, $sut->count_ticket_attendees( $event_id ) );
+		$this->assertTrue( $sut->has_ticket_attendees( $event_id ) );
 	}
 	
 	/**
