@@ -1759,6 +1759,7 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 	 * Example: if provider is for a WooCommerce Ticket but ETP is disabled, returns False.
 	 *
 	 * @since 4.12.3
+	 * @since TBD A disabled Tickets Commerce module is treated as inactive even after construction.
 	 *
 	 * @param Tribe__Tickets__Tickets|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
 	 *                                                 'woo', 'rsvp', etc.
@@ -1779,6 +1780,12 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 		$status = tribe( 'tickets.status' );
 
 		$provider = $status->get_provider_class_from_slug( $provider );
+
+		// @since TBD A disabled Tickets Commerce module is never an active provider, even if something
+		// constructed it (e.g. ETP's Orders Tabbed View) and it self-registered into the modules list.
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
 
 		return (
 			class_exists( $provider )
