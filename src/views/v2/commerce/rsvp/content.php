@@ -16,9 +16,12 @@
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
  * @since 5.20.0 Added waitlist entry point.
+ * @since TBD Only render the attendees list when Event Tickets Plus is active and licensed.
  *
- * @version 5.20.0
+ * @version TBD
  */
+
+use TEC\Tickets\Licensing\Addon_License;
 
 defined( 'ABSPATH' ) || die();
 ?>
@@ -55,6 +58,10 @@ defined( 'ABSPATH' ) || die();
 
 	</div>
 
-	<?php $this->template( 'v2/commerce/rsvp/attendees' ); ?>
+	<?php if ( class_exists( 'Tribe__Tickets_Plus__Main' ) && tribe( Addon_License::class )->is_active( 'Tribe__Tickets_Plus__Main', 'event-tickets-plus' ) ) : ?>
+
+		<?php $this->template( 'v2/commerce/rsvp/attendees' ); ?>
+
+	<?php endif; ?>
 
 <?php endif; ?>
