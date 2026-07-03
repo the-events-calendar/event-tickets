@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Excluded RSVP "not going" attendees from the Dashboard "At a Glance" attendee count so the number reflects actual attendance.

@@ -1,8 +1,13 @@
 <?php
+/**
+ * Glance Items for the WordPress Dashboard.
+ *
+ * @since 5.5.10
+ *
+ * @package TEC\Tickets\Admin
+ */
 
 namespace TEC\Tickets\Admin;
-
-use Tribe__Tickets__Tickets;
 
 /**
  * Class Glance_Items
@@ -23,6 +28,29 @@ class Glance_Items {
 	protected static string $attendee_count_key = 'tec_tickets_glance_item_attendees_count';
 
 	/**
+	 * Check if the attendee count glance item is enabled.
+	 *
+	 * Return false to disable the count entirely (no cron scheduled, no display).
+	 * Useful on high-volume sites where even the transient-backed display is unwanted.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the glance item attendee count is enabled. Default true.
+	 */
+	private function is_enabled(): bool {
+		/**
+		 * Filters whether the attendee count glance item is enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tec_tickets_glance_item_attendee_count_enabled', true );
+	}
+
+	/**
 	 * Method to register glance items related hooks.
 	 *
 	 * @since 5.5.10
@@ -36,11 +64,16 @@ class Glance_Items {
 	 * Custom glance item for Attendees count.
 	 *
 	 * @since 5.6.0 Make use of transients and cron jobs to avoid performance issues.
+	 * @since TBD Add filter to allow disabling the glance item attendee count.
 	 *
 	 * @param array $items The array of items to be displayed.
 	 * @return array $items The maybe modified array of items to be displayed.
 	 */
 	public function custom_glance_items_attendees( $items = [] ): array {
+		if ( ! $this->is_enabled() ) {
+			return (array) $items;
+		}
+
 		$total = get_transient( static::$attendee_count_key );
 
 		if ( false === $total ) {
@@ -67,15 +100,17 @@ class Glance_Items {
 	 * Update the attendee count.
 	 *
 	 * @since 5.6.0
+	 * @since TBD Replace full object hydration with a single COUNT query via the Repository.
+	 * @since TBD Always persist the transient (even when count is zero) to prevent infinite cron rescheduling.
+	 * @since TBD Exclude RSVP "not going" attendees via the `rsvp_status__or_none` Repository filter.
 	 */
 	public function update_attendee_count() {
-		$results = Tribe__Tickets__Tickets::get_attendees_by_args( [] );
-		$total   = count( $results['attendees'] );
-
-		if ( empty( $total ) ) {
+		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
-		set_transient( static::$attendee_count_key, $total, DAY_IN_SECONDS );
+		$total = tribe_attendees()->where( 'rsvp_status__or_none', 'yes' )->per_page( 1 )->found();
+
+		set_transient( static::$attendee_count_key, (int) $total, DAY_IN_SECONDS );
 	}
 }
