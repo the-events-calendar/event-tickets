@@ -115,6 +115,10 @@ class Tabbed_View {
 			return;
 		}
 
+		if ( $this->woo_orders_tab_is_registered( $tabbed_view ) ) {
+			return;
+		}
+
 		add_filter( 'tribe_tickets_attendees_show_title', '__return_false' );
 
 		$orders_report     = new Orders_Tab( $tabbed_view );
