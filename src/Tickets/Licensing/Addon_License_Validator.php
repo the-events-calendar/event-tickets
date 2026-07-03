@@ -1,6 +1,6 @@
 <?php
 /**
- * Determines whether a companion add-on plugin is active and licensed.
+ * Determines whether a companion add-on's license is valid.
  *
  * @since TBD
  *
@@ -22,23 +22,22 @@ use function TEC\Common\StellarWP\Uplink\get_resource;
  */
 class Addon_License_Validator {
 	/**
-	 * Whether an add-on plugin is active and licensed.
+	 * Whether an add-on's license is valid.
 	 *
 	 * Accepts either a Harbor unified license that covers the add-on's Harbor/Uplink product
 	 * slug, or a legacy per-plugin license key that has not yet been migrated to Harbor.
 	 *
+	 * Does not check whether the add-on plugin itself is active: callers that need that should
+	 * check it separately (e.g. via `class_exists()`) once per feature, rather than relying on
+	 * this method to answer both questions.
+	 *
 	 * @since TBD
 	 *
-	 * @param string $main_class  Fully qualified name of a class that only exists when the add-on is active.
 	 * @param string $harbor_slug The add-on's Harbor/Uplink product slug (e.g. `event-tickets-plus`).
 	 *
 	 * @return bool
 	 */
-	public function is_active( string $main_class, string $harbor_slug ): bool {
-		if ( ! class_exists( $main_class ) ) {
-			return false;
-		}
-
+	public function is_licensed( string $harbor_slug ): bool {
 		if ( tribe( Harbor::class )->is_product_licensed( $harbor_slug ) ) {
 			return true;
 		}

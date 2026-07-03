@@ -464,7 +464,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Only show the attendees list and opt-in toggle when Event Tickets Plus is active and licensed.
 		$args['show_attendees_list'] = class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& tribe( Addon_License_Validator::class )->is_active( 'Tribe__Tickets_Plus__Main', 'event-tickets-plus' );
+			&& tribe( Addon_License_Validator::class )->is_licensed( 'event-tickets-plus' );
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );

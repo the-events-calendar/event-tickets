@@ -63,18 +63,12 @@ class Addon_License_Validator_Test extends WPTestCase {
 		return $resource;
 	}
 
-	public function test_it_returns_false_when_main_class_does_not_exist(): void {
-		$this->assertFalse(
-			$this->addon_license->is_active( 'Addon_License_Validator_Test_Nonexistent_Class', 'irrelevant-slug' )
-		);
-	}
-
 	public function test_it_returns_true_when_harbor_reports_product_licensed(): void {
 		$this->set_class_fn_return( Harbor::class, 'is_product_licensed', true );
 
 		// No legacy resource is registered for this slug: the Harbor check alone must be enough.
 		$this->assertTrue(
-			$this->addon_license->is_active( self::class, 'addon-license-test-harbor-licensed' )
+			$this->addon_license->is_licensed( 'addon-license-test-harbor-licensed' )
 		);
 	}
 
@@ -82,7 +76,7 @@ class Addon_License_Validator_Test extends WPTestCase {
 		$this->set_class_fn_return( Harbor::class, 'is_product_licensed', false );
 
 		$this->assertFalse(
-			$this->addon_license->is_active( self::class, 'addon-license-test-never-registered' )
+			$this->addon_license->is_licensed( 'addon-license-test-never-registered' )
 		);
 	}
 
@@ -92,7 +86,7 @@ class Addon_License_Validator_Test extends WPTestCase {
 		$slug = 'addon-license-test-legacy-valid';
 		$this->register_legacy_resource( $slug, 'a-real-license-key', 'valid' );
 
-		$this->assertTrue( $this->addon_license->is_active( self::class, $slug ) );
+		$this->assertTrue( $this->addon_license->is_licensed( $slug ) );
 	}
 
 	public function test_it_returns_false_when_legacy_status_is_invalid(): void {
@@ -101,7 +95,7 @@ class Addon_License_Validator_Test extends WPTestCase {
 		$slug = 'addon-license-test-legacy-invalid';
 		$this->register_legacy_resource( $slug, 'a-real-license-key', 'invalid' );
 
-		$this->assertFalse( $this->addon_license->is_active( self::class, $slug ) );
+		$this->assertFalse( $this->addon_license->is_licensed( $slug ) );
 	}
 
 	/**
@@ -116,6 +110,6 @@ class Addon_License_Validator_Test extends WPTestCase {
 		// Deliberately do not seed a key: only the (stale) cached status is present.
 		$this->register_legacy_resource( $slug, null, 'valid' );
 
-		$this->assertFalse( $this->addon_license->is_active( self::class, $slug ) );
+		$this->assertFalse( $this->addon_license->is_licensed( $slug ) );
 	}
 }
