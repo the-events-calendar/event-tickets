@@ -10,6 +10,7 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Licensing\Addon_License_Validator;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 use Tribe__Tickets__Tickets as Tickets_Handler;
@@ -98,13 +99,18 @@ class Frontend {
 		 */
 		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
 
+		// Only show the attendees list and opt-in toggle when Event Tickets Plus is active and licensed.
+		$show_attendees_list = class_exists( 'Tribe__Tickets_Plus__Main' )
+			&& tribe( Addon_License_Validator::class )->is_active( 'Tribe__Tickets_Plus__Main', 'event-tickets-plus' );
+
 		$rsvp_template_args = [
-			'rsvp'          => $rsvp,
-			'post_id'       => $post->ID,
-			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid( '', true ),
-			'step'          => '',
-			'active_rsvps'  => $rsvp->date_in_range() ? [ $rsvp ] : [],
-			'must_login'    => ! is_user_logged_in() && $this->login_required(),
+			'rsvp'                => $rsvp,
+			'post_id'             => $post->ID,
+			'block_html_id'       => Constants::TC_RSVP_TYPE . uniqid( '', true ),
+			'step'                => '',
+			'active_rsvps'        => $rsvp->date_in_range() ? [ $rsvp ] : [],
+			'must_login'          => ! is_user_logged_in() && $this->login_required(),
+			'show_attendees_list' => $show_attendees_list,
 		];
 
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $should_echo );

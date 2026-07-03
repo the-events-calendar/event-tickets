@@ -12,6 +12,7 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
+ * @var bool $show_attendees_list Whether Event Tickets Plus is active and licensed, and the attendees list should be shown.
  *
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
@@ -20,8 +21,6 @@
  *
  * @version TBD
  */
-
-use TEC\Tickets\Licensing\Addon_License;
 
 defined( 'ABSPATH' ) || die();
 ?>
@@ -58,7 +57,7 @@ defined( 'ABSPATH' ) || die();
 
 	</div>
 
-	<?php if ( class_exists( 'Tribe__Tickets_Plus__Main' ) && tribe( Addon_License::class )->is_active( 'Tribe__Tickets_Plus__Main', 'event-tickets-plus' ) ) : ?>
+	<?php if ( ! empty( $show_attendees_list ) ) : ?>
 
 		<?php $this->template( 'v2/commerce/rsvp/attendees' ); ?>
 

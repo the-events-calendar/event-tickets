@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the Addon_License service.
+ * Tests for the Addon_License_Validator service.
  *
  * @since TBD
  */
@@ -17,17 +17,17 @@ use Tribe__Main;
 use function TEC\Common\StellarWP\Uplink\get_resource;
 
 /**
- * Class Addon_License_Test
+ * Class Addon_License_Validator_Test
  *
  * @since TBD
  */
-class Addon_License_Test extends WPTestCase {
+class Addon_License_Validator_Test extends WPTestCase {
 	use With_Uopz;
 
 	/**
-	 * The Addon_License instance under test.
+	 * The Addon_License_Validator instance under test.
 	 *
-	 * @var Addon_License
+	 * @var Addon_License_Validator
 	 */
 	private $addon_license;
 
@@ -36,7 +36,7 @@ class Addon_License_Test extends WPTestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		$this->addon_license = new Addon_License();
+		$this->addon_license = new Addon_License_Validator();
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Addon_License_Test extends WPTestCase {
 
 	public function test_it_returns_false_when_main_class_does_not_exist(): void {
 		$this->assertFalse(
-			$this->addon_license->is_active( 'Addon_License_Test_Nonexistent_Class', 'irrelevant-slug' )
+			$this->addon_license->is_active( 'Addon_License_Validator_Test_Nonexistent_Class', 'irrelevant-slug' )
 		);
 	}
 

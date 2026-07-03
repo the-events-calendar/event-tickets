@@ -14,13 +14,13 @@ use Throwable;
 use function TEC\Common\StellarWP\Uplink\get_resource;
 
 /**
- * Class Addon_License
+ * Class Addon_License_Validator
  *
  * @since TBD
  *
  * @package TEC\Tickets\Licensing
  */
-class Addon_License {
+class Addon_License_Validator {
 	/**
 	 * Whether an add-on plugin is active and licensed.
 	 *

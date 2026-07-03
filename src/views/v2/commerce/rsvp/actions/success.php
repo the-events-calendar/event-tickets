@@ -10,12 +10,12 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
+ * @var bool $show_attendees_list Whether Event Tickets Plus is active and licensed, and the opt-in toggle should be shown.
+ *
  * @since 4.12.3
  * @version 4.12.3
  * @since TBD Only render the toggle when Event Tickets Plus is active and licensed.
  */
-
-use TEC\Tickets\Licensing\Addon_License;
 
 defined( 'ABSPATH' ) || die();
 ?>
@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || die();
 
 	<?php $this->template( 'v2/commerce/rsvp/actions/success/title' ); ?>
 
-	<?php if ( class_exists( 'Tribe__Tickets_Plus__Main' ) && tribe( Addon_License::class )->is_active( 'Tribe__Tickets_Plus__Main', 'event-tickets-plus' ) ) : ?>
+	<?php if ( ! empty( $show_attendees_list ) ) : ?>
 		<?php $this->template( 'v2/commerce/rsvp/actions/success/toggle' ); ?>
 	<?php endif; ?>
 

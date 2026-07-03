@@ -20,6 +20,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
+use TEC\Tickets\Licensing\Addon_License_Validator;
 use TEC\Tickets\RSVP\V2\Constants;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe__Tickets__Ticket_Object;
@@ -502,6 +503,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$args['opt_in_toggle_hidden'] = $show_attendee_list_optout;
+
+		// Only show the attendees list and opt-in toggle when Event Tickets Plus is active and licensed.
+		$args['show_attendees_list'] = class_exists( 'Tribe__Tickets_Plus__Main' )
+			&& tribe( Addon_License_Validator::class )->is_active( 'Tribe__Tickets_Plus__Main', 'event-tickets-plus' );
 
 		$this->template->add_template_globals( $args );
 
