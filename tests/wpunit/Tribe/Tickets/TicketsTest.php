@@ -283,6 +283,58 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * It should show RSVP tickets on the front end even when the post has no explicit default
+	 * provider meta saved and RSVP is the only ticket type on the post.
+	 *
+	 * Reproduces a reported bug: an RSVP ticket added via the classic (non-block) editor renders
+	 * fine in wp-admin but silently disappears on the front end. Root cause: when a post has no
+	 * `_tribe_default_ticket_provider` meta (e.g. because the classic ticket panel never submitted
+	 * a `default_provider` value), get_event_ticket_provider() falls back to the site-wide default
+	 * module, which may not be RSVP. get_tickets() then filters out RSVP tickets whose provider
+	 * doesn't match that default -- but only on the front end, since the check is skipped entirely
+	 * in wp-admin (see should_show_rsvp_tickets_in_admin_context_when_default_meta_is_missing below).
+	 *
+	 * @test
+	 */
+	public function should_show_rsvp_tickets_on_front_end_when_default_meta_is_missing() {
+		$post_id = $this->factory->post->create();
+		$this->create_rsvp_ticket( $post_id );
+
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		set_current_screen( 'front' );
+
+		$tickets = $rsvp->get_tickets( $post_id );
+
+		$this->assertNotEmpty( $tickets, 'RSVP tickets should be visible on the front end even without an explicit default provider meta.' );
+	}
+
+	/**
+	 * It should show RSVP tickets in wp-admin when the post has no explicit default provider meta
+	 * saved. Paired with should_show_rsvp_tickets_on_front_end_when_default_meta_is_missing above:
+	 * the same setup returns tickets in admin but not on the front end, which is the exact
+	 * discrepancy behind the reported bug.
+	 *
+	 * @test
+	 */
+	public function should_show_rsvp_tickets_in_admin_context_when_default_meta_is_missing() {
+		$post_id = $this->factory->post->create();
+		$this->create_rsvp_ticket( $post_id );
+
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		set_current_screen( 'edit-post' );
+
+		$tickets = $rsvp->get_tickets( $post_id );
+
+		set_current_screen( 'front' );
+
+		$this->assertNotEmpty( $tickets, 'RSVP tickets should always be visible in wp-admin regardless of default provider meta.' );
+	}
+
+	/**
 	 * It should allow getting the ticket provider for a RSVP post.
 	 *
 	 * @test
