@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved an issue where the legacy Orders tabbed view could render duplicate "Orders" tabs when both Tickets Commerce and WooCommerce (Event Tickets Plus) were active.

@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved a fatal error on the Attendees admin page when having both TC and Woo tickets bought on the same event.
