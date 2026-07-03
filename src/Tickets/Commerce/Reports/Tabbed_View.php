@@ -41,18 +41,18 @@ class Tabbed_View {
 	public function register(): void {
 		add_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_order_tab' ] );
 		add_action( 'tec_tickets_commerce_reports_tabbed_view_before_register_tab', [ $this, 'register_tabs' ], 10, 2 );
-
-		// Legacy compatibility with Attendees page which is not part of Tickets Commerce.
-		// Runs at priority 20 so any other provider (WooCommerce, EDD, ...) registering at the default
-		// priority has already registered its Orders tab and we can defer to it.
-		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_tabs_on_attendees_page' ], 20, 2 );
+ 
+		/**
+		 * Runs at priority 20 so any other provider (WooCommerce, EDD, ...) registering at the default
+		 * priority has already registered its Orders tab and we can defer to it.
+		*/
+		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_tabs' ], 20, 2 );
 	}
 
 	/**
-	 * Registers the Tickets Commerce Orders tab on the legacy Attendees page's tabbed view.
-	 *
-	 * Skips registration when Tickets Commerce is disabled or when another provider has already
-	 * registered an Orders tab on the same tabbed view — so we don't render two "Orders" tabs.
+	 * Registers the Tickets Commerce Orders tab on the Attendees page's tabbed view.
+	 * 
+	 * Skips registration when Tickets Commerce is disabled or when ETP has already registered an Orders tab.
 	 *
 	 * @since TBD
 	 *
