@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Date_Utils as Dates;
 
 
@@ -123,6 +124,29 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 */
 	public function is_correct_post_type( \WP_Post $post ) {
 		return in_array( $post->post_type, $this->get_post_types(), true );
+	}
+
+	/**
+	 * Determines whether an order is composed exclusively of TC-RSVP items.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The decorated order post object.
+	 *
+	 * @return bool
+	 */
+	protected function is_rsvp_order( \WP_Post $order ): bool {
+		if ( empty( $order->items ) || ! is_array( $order->items ) ) {
+			return false;
+		}
+
+		foreach ( $order->items as $item ) {
+			if ( RSVP_V2_Constants::TC_RSVP_TYPE !== ( $item['type'] ?? '' ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

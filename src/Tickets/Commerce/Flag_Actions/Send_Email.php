@@ -37,6 +37,10 @@ class Send_Email extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
+		// Bail if the order is a TC-RSVP order; RSVP confirmations are handled by Send_Email_RSVP.
+		if ( $this->is_rsvp_order( $order ) ) {
+			return;
+		}
 
 		// temporary fix for manual attendees first email
 		// @todo backend review this logic

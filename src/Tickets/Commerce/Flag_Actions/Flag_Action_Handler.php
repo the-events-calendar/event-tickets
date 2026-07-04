@@ -39,6 +39,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 		Archive_Attendees::class,
 		Backfill_Purchaser::class,
 		Send_Email::class,
+		Send_Email_RSVP::class,
 		Send_Email_Purchase_Receipt::class,
 		Send_Email_Completed_Order::class,
 		End_Duplicated_Pending_Orders::class,

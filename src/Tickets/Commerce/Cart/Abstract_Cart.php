@@ -11,12 +11,12 @@ namespace TEC\Tickets\Commerce\Cart;
 
 use InvalidArgumentException;
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Values\Legacy_Value_Factory as Factory;
-use TEC\Tickets\Commerce\Values\Precision_Value;
 use TEC\Tickets\Commerce\Traits\Cart as Cart_Trait;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Commerce\Values\Legacy_Value_Factory as Factory;
+use TEC\Tickets\Commerce\Values\Precision_Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Abstract_Cart
@@ -398,7 +398,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 
 				$item['event_id']  = $item['obj']->get_event_id();
 				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-				$item['type']      = 'ticket';
+				$item['type']    ??= 'ticket';
 
 				return $item;
 			},

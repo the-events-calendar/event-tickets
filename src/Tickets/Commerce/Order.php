@@ -18,6 +18,8 @@ use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
@@ -619,7 +621,10 @@ class Order extends Abstract_Order {
 	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
-		$cart = tribe( Cart::class );
+		$cart        = tribe( Cart::class );
+		$cart_reader = RSVP_V2_Constants::TC_RSVP_TYPE === $ticket_type
+			? tribe( RSVP_Cart::class )
+			: $cart->get_repository();
 
 		// Prepare the items for the order.
 		$items = array_filter(
@@ -659,7 +664,7 @@ class Order extends Abstract_Order {
 						'type'              => $item['type'] ?? 'ticket',
 					];
 				},
-				$cart->get_items_in_cart( true, $ticket_type )
+				$cart_reader->get_items_in_cart( true, $ticket_type )
 			)
 		);
 
