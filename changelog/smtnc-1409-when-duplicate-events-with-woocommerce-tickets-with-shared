@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved an issue where duplicating an event with shared-capacity tickets reset the duplicated tickets capacity to zero.
