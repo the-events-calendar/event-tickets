@@ -68,18 +68,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
 				'callback'            => [ $this, 'handle_update_order' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z_-]+)',
-			[
-				'methods'             => WP_REST_Server::DELETABLE,
-				'args'                => $this->fail_order_args(),
-				'callback'            => [ $this, 'handle_fail_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'current_user_can_edit_order' ],
 			]
 		);
 
@@ -217,6 +206,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( $status->get_slug() === Pending::SLUG ) {
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 		}
+
+		$this->pending_order->set( $payment_intent['id'] );
 
 		return new WP_REST_Response( $response );
 	}
@@ -416,12 +407,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 *
+	 * @depreacated TBD
+	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function handle_fail_order( WP_REST_Request $request ) {
-
+		_deprecated_function( __METHOD__, 'TBD', 'This method has been deprecated without a replacement.' );
 	}
 
 	/**

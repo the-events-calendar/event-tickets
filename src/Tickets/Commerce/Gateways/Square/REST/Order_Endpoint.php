@@ -69,17 +69,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z_-]+)',
-			[
-				'methods'             => WP_REST_Server::DELETABLE,
-				'args'                => $this->fail_order_args(),
-				'callback'            => [ $this, 'handle_fail_order' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
@@ -217,9 +206,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.24.0
 	 * @since 5.27.6.1 Added allowed failure statuses to the response for failed orders.
 	 *
+	 * @depecated TBD
+	 *
 	 * @return array
 	 */
 	public function fail_order_args(): array {
+		_deprecated_function( __METHOD__, 'TBD', 'This method is deprecated without replacement.' );
+
 		return [
 			'order_id'      => [
 				'description'       => __( 'Order ID in Square', 'event-tickets' ),
