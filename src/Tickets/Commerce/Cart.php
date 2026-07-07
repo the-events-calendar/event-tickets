@@ -290,10 +290,13 @@ class Cart {
 	 * Clear the cart.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added Pending_Order clean up before anything else.
 	 *
 	 * @return bool
 	 */
 	public function clear_cart() {
+		// Important that this is called before the cart hash is cleared.
+		tribe( Pending_Order::class )->clear();
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
