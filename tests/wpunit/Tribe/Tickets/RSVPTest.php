@@ -814,18 +814,20 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-opt-in-nonce',
 		] );
 
-		// Handle ID variations that tolerances won't handle
+		// Handle ID variations that tolerances won't handle.
 		$html = str_replace(
 			[
 				'[' . $ticket_id . ']',
 				'"' . $ticket_id . '"',
 				'--' . $ticket_id . '',
 				'[' . $post_id . ']',
+				(string) $post_id,
 			],
 			[
 				'[TICKET_ID]',
 				'"TICKET_ID"',
 				'--TICKET_ID',
+				'[EVENT_ID]',
 				'[EVENT_ID]',
 			],
 			$html

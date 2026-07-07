@@ -41,10 +41,10 @@
 		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-details">
 		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	Test RSVP ticket for 14105</h3>
+	Test RSVP ticket for [EVENT_ID]</h3>
 
 		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-	<p>Ticket RSVP ticket excerpt for 14105</p>
+	<p>Ticket RSVP ticket excerpt for [EVENT_ID]</p>
 </div>
 
 		<div class="tribe-tickets__rsvp-attendance">
@@ -95,7 +95,7 @@
 	<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
 	Jane Doe</div>
 	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
-	Test RSVP ticket for 14105</div>
+	Test RSVP ticket for [EVENT_ID]</div>
 </div>
 				</div>
 							<div class="tec-tickets__attendees-list-item">
@@ -103,7 +103,7 @@
 	<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
 	Jane Doe</div>
 	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
-	Test RSVP ticket for 14105</div>
+	Test RSVP ticket for [EVENT_ID]</div>
 </div>
 				</div>
 					</div>
