@@ -2,18 +2,18 @@
 
 namespace Tribe\Tickets;
 
+use Closure;
+use Generator;
 use Prophecy\Argument;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Events\Test\Factories\Event;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
-use Generator;
-use Closure;
-use Tribe\Tests\Traits\With_Uopz;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
@@ -770,17 +770,19 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-opt-in-nonce',
 		] );
 
-		// Handle ticket ID variations that tolerances won't handle
+		// Handle ID variations that tolerances won't handle
 		$html = str_replace(
 			[
 				'[' . $ticket_id . ']',
 				'"' . $ticket_id . '"',
 				'--' . $ticket_id . '',
+				'[' . $post_id . ']',
 			],
 			[
 				'[TICKET_ID]',
 				'"TICKET_ID"',
 				'--TICKET_ID',
+				'[EVENT_ID]',
 			],
 			$html
 		);
