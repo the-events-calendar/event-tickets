@@ -80,6 +80,13 @@ class Duplicate_Post extends Integration_Abstract {
 			return;
 		}
 
+		/*
+		 * The duplicated event is created global-stock-enabled with a capacity but no stock
+		 * level. Seed the level from its capacity before cloning tickets, or saving the first
+		 * shared ticket syncs the empty level to zero and resets every ticket's capacity.
+		 */
+		$this->seed_duplicated_global_stock_level( $new_post_id, $post->ID );
+
 		$duplicated_ticket_ids = [];
 
 		// You technically can have multiple providers if you have RSVP + a ticket provider.
@@ -151,16 +158,6 @@ class Duplicate_Post extends Integration_Abstract {
 				'post_content' => $new_post_content,
 			]
 		);
-
-		if ( ! get_post_meta( $original_post_id, Global_Stock::GLOBAL_STOCK_ENABLED, true ) ) {
-			return;
-		}
-
-		update_post_meta(
-			$new_post_id,
-			Global_Stock::GLOBAL_STOCK_LEVEL,
-			get_post_meta( $original_post_id, tribe( 'tickets.handler' )->key_capacity, true )
-		);
 	}
 
 	/**
@@ -182,6 +179,33 @@ class Duplicate_Post extends Integration_Abstract {
 				Global_Stock::GLOBAL_STOCK_ENABLED,
 				Attendees_List::HIDE_META_KEY,
 			],
+		);
+	}
+
+	/**
+	 * Seed a duplicated event's shared-stock level from its capacity before its tickets clone.
+	 *
+	 * A duplicated event is created global-stock-enabled with a capacity but no stock level;
+	 * cloning the first shared-capacity ticket onto it would otherwise sync the empty level to
+	 * zero and reset every ticket's capacity. A fresh duplicate has no sales, so the level
+	 * equals the full capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $new_post_id      The duplicated event post ID.
+	 * @param int $original_post_id The original event post ID.
+	 *
+	 * @return void
+	 */
+	private function seed_duplicated_global_stock_level( int $new_post_id, int $original_post_id ): void {
+		if ( ! get_post_meta( $original_post_id, Global_Stock::GLOBAL_STOCK_ENABLED, true ) ) {
+			return;
+		}
+
+		update_post_meta(
+			$new_post_id,
+			Global_Stock::GLOBAL_STOCK_LEVEL,
+			get_post_meta( $original_post_id, tribe( 'tickets.handler' )->key_capacity, true )
 		);
 	}
 }

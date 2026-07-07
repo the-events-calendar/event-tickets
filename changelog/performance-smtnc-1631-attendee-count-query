@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Replaced full attendee object hydration in `Glance_Items::update_attendee_count()` with a single SQL COUNT query, preventing PHP timeouts and infinite WP-Cron re-queuing on high-volume sites.

@@ -1,0 +1,4 @@
+Significance: patch
+Type: tweak
+
+Added the `tec_tickets_glance_item_attendee_count_enabled` filter to allow disabling the attendee count glance item entirely.
