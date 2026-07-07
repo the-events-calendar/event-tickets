@@ -7,9 +7,9 @@
  * @since 4.0.0
  */
 
-use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Date_Utils as Dates;
 use Tribe__Repository__Interface as Repository_Interface;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -3174,7 +3174,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( ! empty( $first_attendee['email'] ) ) {
 			$decoded_email = html_entity_decode( $first_attendee['email'], ENT_COMPAT );
 
-			// Reject emails that contain HTML/script markup rather than silently sanitizing them into a valid address.
 			if ( $decoded_email === wp_strip_all_tags( $decoded_email ) ) {
 				$attendee_email = htmlentities( sanitize_email( $decoded_email ), ENT_COMPAT );
 				$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
