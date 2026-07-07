@@ -88,10 +88,6 @@ class Block_Editor {
 			return null;
 		}
 
-		if ( ! function_exists( 'tec_tc_get_ticket' ) ) {
-			return null;
-		}
-
 		$ticket_post = tec_tc_get_ticket( (int) $ticket->ID );
 
 		if ( ! $ticket_post instanceof WP_Post ) {
@@ -187,7 +183,7 @@ class Block_Editor {
 			return false;
 		}
 
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$screen = get_current_screen();
 
 		if ( $screen instanceof \WP_Screen && $screen->base === 'post' ) {
 			return tribe_tickets_post_type_enabled( $screen->post_type );
