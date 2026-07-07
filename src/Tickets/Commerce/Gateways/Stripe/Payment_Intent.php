@@ -245,6 +245,40 @@ class Payment_Intent {
 	}
 
 	/**
+	 * Determines whether a Payment Intent's amount matches a local order's total.
+	 *
+	 * The Payment Intent ID is supplied by the client, so this guards against binding or
+	 * completing an order with a Payment Intent that was created for a different cart and a
+	 * different (e.g. lower) amount. Only the charge amount is compared: the application fee
+	 * is the platform's commission and is not part of the buyer's payment authorization, and
+	 * intermediate statuses legitimately report a zero captured amount.
+	 *
+	 * @since 5.28.5.1
+	 *
+	 * @param array    $payment_intent Payment intent data from Stripe.
+	 * @param \WP_Post $order          The local Tickets Commerce order.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid_for_order( array $payment_intent, \WP_Post $order ): bool {
+		if ( empty( $payment_intent['id'] ) || ! empty( $payment_intent['errors'] ) ) {
+			return false;
+		}
+
+		if ( empty( $order->total_value ) || ! $order->total_value instanceof Value ) {
+			return false;
+		}
+
+		$formatter = new Gateway_Value_Formatter( tribe( Gateway::class ) );
+		$value     = $formatter->format( $order->total_value );
+
+		$expected_amount = (string) $value->get_integer();
+		$actual_amount   = isset( $payment_intent['amount'] ) ? (string) $payment_intent['amount'] : '';
+
+		return $expected_amount === $actual_amount;
+	}
+
+	/**
 	 * Calls the Stripe API and returns an existing Payment Intent.
 	 *
 	 * @since 5.3.0

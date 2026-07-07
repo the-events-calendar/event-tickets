@@ -310,6 +310,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment-intent-secret', $messages['failed-payment-intent-secret'], $order );
 		}
 
+		/*
+		 * Security: confirm the Payment Intent's amount matches this order's total before
+		 * completing it, so a Payment Intent created for a different (e.g. lower-value) order
+		 * cannot be used to mark this one paid.
+		 */
+		if ( ! Payment_Intent::is_valid_for_order( $payment_intent, $order ) ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-payment-intent-order-mismatch', $messages['payment-intent-order-mismatch'], $order );
+		}
+
 		$status = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
 
 		if ( ! $status ) {
@@ -431,6 +440,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'order-not-found'                  => __( 'Order not found, please restart your checkout process.', 'event-tickets' ),
 			'failed-getting-payment-intent'    => __( 'Your payment is invalid. Please try again.', 'event-tickets' ),
 			'failed-payment-intent-secret'     => __( 'Your payment failed security verification with Gateway. Please try again.', 'event-tickets' ),
+			'payment-intent-order-mismatch'    => __( 'Your payment does not match this order. Please restart your checkout process.', 'event-tickets' ),
 			'failed-payment'                   => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
 			'invalid-payment-intent-status'    => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
 			'empty-cart'                       => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),

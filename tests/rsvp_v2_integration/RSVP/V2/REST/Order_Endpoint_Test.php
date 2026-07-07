@@ -381,6 +381,58 @@ class Order_Endpoint_Test extends WPTestCase {
 	}
 
 	/**
+	 * An email containing HTML/script markup must be rejected outright rather than
+	 * sanitized into a superficially-valid address.
+	 *
+	 * @test
+	 */
+	public function it_should_return_false_for_email_with_markup(): void {
+		$endpoint = tribe( Order_Endpoint::class );
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_body_params(
+			[
+				'attendee' => [
+					'email'        => '<script>alert(\'hello\');</script>@test.com',
+					'full_name'    => 'Test User',
+					'order_status' => 'yes',
+				],
+			]
+		);
+
+		$result = $endpoint->parse_attendee_details( $request );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * Markup in the full name is stripped and accepted, unlike markup in the email
+	 * which rejects the whole attendee. This asymmetry is intentional.
+	 *
+	 * @test
+	 */
+	public function it_should_strip_markup_from_full_name(): void {
+		$endpoint = tribe( Order_Endpoint::class );
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_body_params(
+			[
+				'attendee' => [
+					'email'        => 'test@example.com',
+					'full_name'    => 'Little<script>alert(\'hello\');</script>Test',
+					'order_status' => 'yes',
+				],
+			]
+		);
+
+		$result = $endpoint->parse_attendee_details( $request );
+
+		$this->assertIsArray( $result );
+		$this->assertEquals( 'LittleTest', $result['full_name'] );
+		$this->assertEquals( 'test@example.com', $result['email'] );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_normalize_going_order_status(): void {

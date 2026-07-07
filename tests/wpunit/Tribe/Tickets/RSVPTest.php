@@ -1021,6 +1021,33 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		},
 		false
 	];
+
+	// The markup guard is tag-agnostic, not script-specific: any HTML tag in the email rejects the attendee.
+	yield 'trying to expose only email with non-script markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'email' => '<img src=x onerror=alert(1)>@test.com',
+				],
+			);
+		},
+		false
+	];
+
+	// Markup in the full name is stripped and accepted, unlike markup in the email which rejects the attendee.
+	yield 'non-script markup in full name is stripped' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'full_name' => '<b>Bold</b>Name',
+				],
+			);
+		},
+		$this->fake_attendee_details([
+			'optout' => false,
+			'full_name' => 'BoldName',
+		])
+	];
 	}
 
 	/**
