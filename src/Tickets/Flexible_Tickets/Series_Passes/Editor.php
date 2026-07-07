@@ -273,7 +273,7 @@ class Editor extends Controller {
 	 * Returns the Series related to an Event.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Made $post_id explicitly nullable.
+	 * @since 5.28.6 Made $post_id explicitly nullable.
 	 *
 	 * @param int|null $post_id The ID of the Event.
 	 *

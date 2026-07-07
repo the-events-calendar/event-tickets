@@ -38,7 +38,7 @@ class Tribe__Tickets__Cache__Central {
 	 *
 	 * @deprecated 5.6.5
 	 *
-	 * @since TBD Made $cache explicitly nullable.
+	 * @since 5.28.6 Made $cache explicitly nullable.
 	 *
 	 * @param Tribe__Tickets__Cache__Cache_Interface|null $cache An injectable cache object instance.
 	 */

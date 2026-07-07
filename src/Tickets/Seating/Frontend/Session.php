@@ -351,7 +351,7 @@ class Session {
 	 * Returns a list of all the reservations details for a specific ticket and event.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Made $post_id and $ticket_id explicitly nullable.
+	 * @since 5.28.6 Made $post_id and $ticket_id explicitly nullable.
 	 *
 	 * @param int|null $post_id   The post ID to get the reservations for.
 	 * @param int|null $ticket_id The ticket ID to get the reservations for.

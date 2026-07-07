@@ -46,7 +46,7 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 *
 	 * @deprecated 5.6.5
 	 *
-	 * @since TBD Made $post_types explicitly nullable.
+	 * @since 5.28.6 Made $post_types explicitly nullable.
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
@@ -78,7 +78,7 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 *
 	 * @deprecated 5.6.5
 	 *
-	 * @since TBD Made $post_types explicitly nullable.
+	 * @since 5.28.6 Made $post_types explicitly nullable.
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
