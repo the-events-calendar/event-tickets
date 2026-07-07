@@ -2,8 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Pending_Order;
 use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Created;
 use WP_REST_Request;
 
 /**
@@ -34,12 +37,23 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	protected Pending_Order $pending_order;
 
 	/**
+	 * The Cart instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Cart
+	 */
+	private Cart $cart;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Pending_Order $pending_order The Pending_Order instance.
+	 * @param Cart          $cart          The Cart instance.
 	 */
-	public function __construct( Pending_Order $pending_order ) {
+	public function __construct( Pending_Order $pending_order, Cart $cart ) {
 		$this->pending_order = $pending_order;
+		$this->cart          = $cart;
 	}
 
 	/**
@@ -123,6 +137,21 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 			return false;
 		}
 
-		return $order_id === $this->pending_order->get();
+		if ( $order_id !== $this->pending_order->get() ) {
+			return false;
+		}
+
+		$existing_order = tec_tc_orders()->by_args(
+			[
+				'gateway_order_id' => $order_id,
+				'hash'             => $this->cart->get_cart_hash( false ),
+				'status'           => [
+					tribe( Created::class )->get_wp_slug(),
+					tribe( Pending::class )->get_wp_slug(),
+				],
+			]
+		)->first();
+
+		return ! empty( $existing_order->ID );
 	}
 }
