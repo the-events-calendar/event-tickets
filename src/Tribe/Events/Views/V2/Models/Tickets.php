@@ -375,12 +375,12 @@ class Tickets implements ArrayAccess {
 	 * Legacy serialization method kept for backward compatibility.
 	 *
 	 * @since 5.7.0
-	 * @deprecated TBD Use __serialize() instead.
+	 * @deprecated 5.29.0 Use __serialize() instead.
 	 *
 	 * @return string
 	 */
 	public function serialize() {
-		_deprecated_function( __METHOD__, 'TBD', '__serialize()' );
+		_deprecated_function( __METHOD__, '5.29.0', '__serialize()' );
 
 		$data            = $this->fetch_data();
 		$data['post_id'] = $this->post_id;
@@ -419,14 +419,14 @@ class Tickets implements ArrayAccess {
 	 * Legacy unserialization method kept for backward compatibility.
 	 *
 	 * @since 5.7.0
-	 * @deprecated TBD Use __unserialize() instead.
+	 * @deprecated 5.29.0 Use __unserialize() instead.
 	 *
 	 * @param array|string $serialized The serialized data.
 	 *
 	 * @return void
 	 */
 	public function unserialize( $serialized ) {
-		_deprecated_function( __METHOD__, 'TBD', '__unserialize()' );
+		_deprecated_function( __METHOD__, '5.29.0', '__unserialize()' );
 
 		// Kept for back-compatibility reasons.
 		$data = maybe_unserialize( $serialized );
