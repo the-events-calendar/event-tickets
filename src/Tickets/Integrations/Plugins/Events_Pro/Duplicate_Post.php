@@ -190,7 +190,7 @@ class Duplicate_Post extends Integration_Abstract {
 	 * zero and reset every ticket's capacity. A fresh duplicate has no sales, so the level
 	 * equals the full capacity.
 	 *
-	 * @since TBD
+	 * @since 5.29.0
 	 *
 	 * @param int $new_post_id      The duplicated event post ID.
 	 * @param int $original_post_id The original event post ID.
