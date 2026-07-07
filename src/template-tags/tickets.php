@@ -1781,8 +1781,7 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 
 		$provider = $status->get_provider_class_from_slug( $provider );
 
-		// @since TBD A disabled Tickets Commerce module is never an active provider, even if something
-		// constructed it (e.g. ETP's Orders Tabbed View) and it self-registered into the modules list.
+		// A constructed Commerce module self-registers into the modules list, so guard on TC being enabled.
 		if ( \TEC\Tickets\Commerce\Module::class === $provider && ! tec_tickets_commerce_is_enabled() ) {
 			return false;
 		}

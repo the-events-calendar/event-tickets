@@ -7,9 +7,9 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 /**
- * SMTNC-345: a disabled Tickets Commerce module must resolve as an INACTIVE provider even after
- * something constructs it (e.g. ETP's Orders Tabbed View), so the Attendees inventory path cannot
- * reach the unloaded tec_tc_* helpers and fatal.
+ * A disabled Tickets Commerce module must resolve as an inactive provider even after something
+ * constructs it (e.g. ETP's Orders Tabbed View), so the Attendees inventory path cannot reach the
+ * unloaded tec_tc_* helpers and fatal.
  *
  * @group commerce
  */
@@ -45,9 +45,8 @@ class Provider_Active_TC_Disabled_Test extends WPTestCase {
 	}
 
 	/**
-	 * Event + stock-managed TC ticket + attendee (TC on), then force-construct the Module so it
-	 * self-registers into Tribe__Tickets__Tickets::$active_modules -- exactly the state ETP creates
-	 * via Reports\Tabbed_View::register_tabs() ( tribe( Module::class ) ) on the Attendees screen.
+	 * Force-constructs the Module so it self-registers into the modules list, mirroring the state
+	 * ETP's Orders Tabbed View creates on the Attendees screen.
 	 *
 	 * @return array{event_id:int, ticket_id:int}
 	 */
@@ -62,8 +61,7 @@ class Provider_Active_TC_Disabled_Test extends WPTestCase {
 	}
 
 	/**
-	 * The fix: a constructed-but-disabled Commerce module is not an active provider.
-	 * Fails on HEAD (is_provider_active returns true once the Module is in the modules list).
+	 * A constructed-but-disabled Commerce module is not an active provider.
 	 *
 	 * @test
 	 */
@@ -79,7 +77,7 @@ class Provider_Active_TC_Disabled_Test extends WPTestCase {
 	}
 
 	/**
-	 * The guard must not over-reach: with TC enabled the Module resolves active as before.
+	 * With TC enabled the Module still resolves as an active provider.
 	 *
 	 * @test
 	 */
@@ -93,8 +91,8 @@ class Provider_Active_TC_Disabled_Test extends WPTestCase {
 	}
 
 	/**
-	 * The crash path: Ticket_Object::inventory() resolves the provider; with the fix it now comes back
-	 * inactive, so inventory() takes its empty-provider fallback instead of fetching attendees -- no fatal.
+	 * Ticket_Object::inventory() resolves the provider; an inactive one must take the empty-provider
+	 * fallback rather than reaching the unloaded tec_tc_* helpers and fataling.
 	 *
 	 * @test
 	 */
