@@ -33,7 +33,7 @@ class Glance_Items {
 	 * Return false to disable the count entirely (no cron scheduled, no display).
 	 * Useful on high-volume sites where even the transient-backed display is unwanted.
 	 *
-	 * @since TBD
+	 * @since 5.29.0
 	 *
 	 * @return bool Whether the glance item attendee count is enabled. Default true.
 	 */
@@ -41,7 +41,7 @@ class Glance_Items {
 		/**
 		 * Filters whether the attendee count glance item is enabled.
 		 *
-		 * @since TBD
+		 * @since 5.29.0
 		 *
 		 * @param bool $enabled Whether the glance item attendee count is enabled. Default true.
 		 *
@@ -64,7 +64,7 @@ class Glance_Items {
 	 * Custom glance item for Attendees count.
 	 *
 	 * @since 5.6.0 Make use of transients and cron jobs to avoid performance issues.
-	 * @since TBD Add filter to allow disabling the glance item attendee count.
+	 * @since 5.29.0 Add filter to allow disabling the glance item attendee count.
 	 *
 	 * @param array $items The array of items to be displayed.
 	 * @return array $items The maybe modified array of items to be displayed.
@@ -100,9 +100,9 @@ class Glance_Items {
 	 * Update the attendee count.
 	 *
 	 * @since 5.6.0
-	 * @since TBD Replace full object hydration with a single COUNT query via the Repository.
-	 * @since TBD Always persist the transient (even when count is zero) to prevent infinite cron rescheduling.
-	 * @since TBD Exclude RSVP "not going" attendees via the `rsvp_status__or_none` Repository filter.
+	 * @since 5.29.0 Replace full object hydration with a single COUNT query via the Repository.
+	 * @since 5.29.0 Always persist the transient (even when count is zero) to prevent infinite cron rescheduling.
+	 * @since 5.29.0 Exclude RSVP "not going" attendees via the `rsvp_status__or_none` Repository filter.
 	 */
 	public function update_attendee_count() {
 		if ( ! $this->is_enabled() ) {
