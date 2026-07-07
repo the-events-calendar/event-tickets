@@ -2,7 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+use TEC\Tickets\Commerce\Pending_Order;
 use TEC\Tickets\Commerce\Settings;
+use WP_REST_Request;
 
 /**
  * Abstract REST Endpoint Contract
@@ -21,6 +23,24 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 * @var string
 	 */
 	protected string $path;
+
+	/**
+	 * The Pending_Order instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Pending_Order
+	 */
+	protected Pending_Order $pending_order;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Pending_Order $pending_order The Pending_Order instance.
+	 */
+	public function __construct( Pending_Order $pending_order ) {
+		$this->pending_order = $pending_order;
+	}
 
 	/**
 	 * @inheritDoc
@@ -85,5 +105,24 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 */
 	public function get_documentation() {
 		return [];
+	}
+
+	/**
+	 * Ensures that the current request tries to edit an order id which is stored as pending edit.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The REST Request instance.
+	 *
+	 * @return bool
+	 */
+	public function current_user_can_edit_order( WP_REST_Request $request ): bool {
+		$order_id = $request->get_param( 'order_id' );
+
+		if ( ! $order_id ) {
+			return false;
+		}
+
+		return $order_id === $this->pending_order->get();
 	}
 }
