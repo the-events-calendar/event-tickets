@@ -162,11 +162,7 @@ class Assets {
 	 * @return bool
 	 */
 	public function should_enqueue_block_editor_styles(): bool {
-		if ( ! is_admin() ) {
-			return false;
-		}
-
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$screen = get_current_screen();
 
 		if ( $screen instanceof \WP_Screen && $screen->base === 'post' ) {
 			return tribe_tickets_post_type_enabled( $screen->post_type );
