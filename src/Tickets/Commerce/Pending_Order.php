@@ -66,7 +66,14 @@ final class Pending_Order {
 		try {
 			set_transient( $this->get_transient_name(), $gateway_order_id, $this->cart->get_cart_expiration() );
 		} catch ( RuntimeException $e ) {
-			$this->logger->debug( 'No cart hash present.', [ 'method' => __METHOD__ ] );
+			$this->logger->debug(
+				'No cart hash present.',
+				[
+					'method'  => __METHOD__,
+					'message' => $e->getMessage(),
+					'code'    => $e->getCode(),
+				]
+			);
 		}
 	}
 
@@ -86,7 +93,14 @@ final class Pending_Order {
 
 			return $gateway_order_id;
 		} catch ( RuntimeException $e ) {
-			$this->logger->debug( 'No cart hash present.', [ 'method' => __METHOD__ ] );
+			$this->logger->debug(
+				'No cart hash present.',
+				[
+					'method'  => __METHOD__,
+					'message' => $e->getMessage(),
+					'code'    => $e->getCode(),
+				]
+			);
 		}
 
 		return null;
@@ -103,7 +117,14 @@ final class Pending_Order {
 		try {
 			delete_transient( $this->get_transient_name() );
 		} catch ( RuntimeException $e ) {
-			$this->logger->debug( 'No cart hash present.', [ 'method' => __METHOD__ ] );
+			$this->logger->debug(
+				'No cart hash present.',
+				[
+					'method'  => __METHOD__,
+					'message' => $e->getMessage(),
+					'code'    => $e->getCode(),
+				]
+			);
 		}
 	}
 
