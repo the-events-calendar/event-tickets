@@ -60,7 +60,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 *
 	 * @param Status_Interface      $new_status New status.
 	 * @param null|Status_Interface $old_status Old status.
-	 * @param \WP_Post              $post
+	 * @param \WP_Post              $post       Order post object.
 	 */
 	protected function mark( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		foreach ( $this->get_flags( $post ) as $flag ) {
