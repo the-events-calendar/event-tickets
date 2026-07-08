@@ -114,16 +114,11 @@ class Checkout {
 	 * we do it.
 	 *
 	 * @since 5.1.9
+	 * @since TBD No longer sets the cart hash cookie from a request param. See SVUL-L34.
 	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {
 			return;
-		}
-
-		// In case the ID is passed we set the cookie for usage.
-		$cookie_param = tribe_get_request_var( Cart::$cookie_query_arg, false );
-		if ( $cookie_param ) {
-			tribe( Cart::class )->set_cart_hash_cookie( $cookie_param );
 		}
 
 		/**

@@ -27,6 +27,7 @@ class Events {
 	 * short-circuit the context.
 	 *
 	 * @since 5.2.0
+	 * @since TBD No longer depends on the removed cart hash query param. See SVUL-L34.
 	 *
 	 * @param string $location the URL we're redirecting to.
 	 * @param int    $status   The redirect status code.
@@ -35,7 +36,7 @@ class Events {
 	 */
 	public function prevent_filter_redirect_canonical( $location, $status ) {
 
-		if ( 302 !== $status || false === strpos( $location, 'tec-tc-cookie=' ) ) {
+		if ( 302 !== $status ) {
 			return $location;
 		}
 
