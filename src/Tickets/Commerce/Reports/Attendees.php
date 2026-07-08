@@ -390,7 +390,7 @@ class Attendees extends Report_Abstract {
 		// Verify event exists and current user has access to it.
 		if (
 			! $event instanceof \WP_Post
-			|| ! current_user_can( 'edit_posts', $event_id )
+			|| ! current_user_can( 'edit_post', $event_id )
 		) {
 			return;
 		}
