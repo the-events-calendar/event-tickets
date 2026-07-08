@@ -20,7 +20,6 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
-use TEC\Tickets\Licensing\Addon_License_Validator;
 use TEC\Tickets\RSVP\V2\Constants;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe__Tickets__Ticket_Object;
@@ -504,9 +503,20 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$args['opt_in_toggle_hidden'] = $show_attendee_list_optout;
 
-		// Only show the attendees list and opt-in toggle when Event Tickets Plus is active and licensed.
-		$args['show_attendees_list'] = class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& tribe( Addon_License_Validator::class )->is_licensed( 'event-tickets-plus' );
+		/**
+		 * Filters whether to show the RSVP attendees list and public opt-in toggle.
+		 *
+		 * Event Tickets does not know about companion add-ons or their license state; an
+		 * add-on that provides this functionality (e.g. Event Tickets Plus) should hook into
+		 * this filter and decide for itself whether to enable it.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_attendees_list Whether to show the attendees list and opt-in toggle. Default false.
+		 * @param int  $post_id             The post ID the RSVP belongs to.
+		 * @param int  $ticket_id           The RSVP ticket ID.
+		 */
+		$args['show_attendees_list'] = apply_filters( 'tec_tickets_rsvp_show_attendees_list', false, $post_id, $ticket_id );
 
 		$this->template->add_template_globals( $args );
 

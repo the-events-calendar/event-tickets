@@ -10,11 +10,11 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @var bool $show_attendees_list Whether Event Tickets Plus is active and licensed, and the opt-in toggle should be shown.
+ * @var bool $show_attendees_list Whether the opt-in toggle should be shown. Filterable via `tec_tickets_rsvp_show_attendees_list`.
  *
  * @since 4.12.3
  * @version 4.12.3
- * @since TBD Only render the toggle when Event Tickets Plus is active and licensed.
+ * @since TBD Only render the toggle when `tec_tickets_rsvp_show_attendees_list` allows it.
  */
 
 defined( 'ABSPATH' ) || die();

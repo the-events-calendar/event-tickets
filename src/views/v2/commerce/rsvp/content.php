@@ -12,12 +12,12 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
- * @var bool $show_attendees_list Whether Event Tickets Plus is active and licensed, and the attendees list should be shown.
+ * @var bool $show_attendees_list Whether the attendees list should be shown. Filterable via `tec_tickets_rsvp_show_attendees_list`.
  *
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
  * @since 5.20.0 Added waitlist entry point.
- * @since TBD Only render the attendees list when Event Tickets Plus is active and licensed.
+ * @since TBD Only render the attendees list when `tec_tickets_rsvp_show_attendees_list` allows it.
  *
  * @version TBD
  */

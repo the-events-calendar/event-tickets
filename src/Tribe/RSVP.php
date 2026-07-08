@@ -9,7 +9,6 @@
 
 use Tribe__Date_Utils as Dates;
 use Tribe__Repository__Interface as Repository_Interface;
-use TEC\Tickets\Licensing\Addon_License_Validator;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
@@ -462,9 +461,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$args['opt_in_toggle_hidden'] = $hide_attendee_list_optout;
 
-		// Only show the attendees list and opt-in toggle when Event Tickets Plus is active and licensed.
-		$args['show_attendees_list'] = class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& tribe( Addon_License_Validator::class )->is_licensed( 'event-tickets-plus' );
+		/**
+		 * Filters whether to show the RSVP attendees list and public opt-in toggle.
+		 *
+		 * Event Tickets does not know about companion add-ons or their license state; an
+		 * add-on that provides this functionality (e.g. Event Tickets Plus) should hook into
+		 * this filter and decide for itself whether to enable it.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $show_attendees_list Whether to show the attendees list and opt-in toggle. Default false.
+		 * @param int  $post_id             The post ID the RSVP belongs to.
+		 * @param int  $ticket_id           The RSVP ticket ID.
+		 */
+		$args['show_attendees_list'] = apply_filters( 'tec_tickets_rsvp_show_attendees_list', false, $post_id, $ticket_id );
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
