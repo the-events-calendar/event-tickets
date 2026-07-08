@@ -44,6 +44,17 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	protected $post_types;
 
 	/**
+	 * Which order types this flag action applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	protected $order_contexts = [
+		Order_Context::ALL,
+	];
+
+	/**
 	 * Marks a given order with all the flags for this given status update.
 	 * The value of those markers is the time where the update happened.
 	 *
@@ -96,6 +107,27 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	}
 
 	/**
+	 * Gets the order type contexts this flag action applies to.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_order_contexts() {
+		$contexts = $this->order_contexts;
+
+		/**
+		 * Allows modifications of which order types will trigger this action.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $contexts    Which order types will trigger this action.
+		 * @param static   $action_flag Instance of action flag we are triggering.
+		 */
+		return apply_filters( 'tec_tickets_commerce_flag_actions_get_order_contexts', $contexts, $this );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
@@ -104,6 +136,10 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		}
 
 		if ( ! $this->is_correct_post_type( $post ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_correct_order_context( $post ) ) {
 			return false;
 		}
 
@@ -124,6 +160,41 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 */
 	public function is_correct_post_type( \WP_Post $post ) {
 		return in_array( $post->post_type, $this->get_post_types(), true );
+	}
+
+	/**
+	 * Determines whether the order matches this action's registered order context(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The decorated order post object.
+	 *
+	 * @return bool
+	 */
+	public function is_correct_order_context( \WP_Post $order ): bool {
+		$contexts = $this->get_order_contexts();
+
+		if ( in_array( Order_Context::ALL, $contexts, true ) ) {
+			return true;
+		}
+
+		$is_rsvp       = $this->is_rsvp_order( $order );
+		$wants_rsvp    = in_array( Order_Context::RSVP_V2, $contexts, true );
+		$wants_ticket  = in_array( Order_Context::TICKET, $contexts, true );
+
+		if ( $wants_rsvp && $wants_ticket ) {
+			return true;
+		}
+
+		if ( $wants_rsvp ) {
+			return $is_rsvp;
+		}
+
+		if ( $wants_ticket ) {
+			return ! $is_rsvp;
+		}
+
+		return false;
 	}
 
 	/**
@@ -153,14 +224,15 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * {@inheritDoc}
 	 */
 	public function maybe_handle( Status_Interface $new_status, $old_status, $post ) {
-		if ( ! $this->should_trigger( $new_status, $old_status, $post ) ) {
-			return;
-		}
 		/**
 		 * @todo For now Flag actions are only for order, so we use `tec_tc_get_order()` but if in the future we add any
 		 *       other post types to the mix we will need to provide a way to pass the post via a formatting method.
 		 */
 		$post = tec_tc_get_order( $post );
+
+		if ( ! $this->should_trigger( $new_status, $old_status, $post ) ) {
+			return;
+		}
 
 		$this->handle( $new_status, $old_status, $post );
 

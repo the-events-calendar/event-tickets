@@ -18,8 +18,6 @@ use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
-use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 
@@ -621,10 +619,13 @@ class Order extends Abstract_Order {
 	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
-		$cart        = tribe( Cart::class );
-		$cart_reader = RSVP_V2_Constants::TC_RSVP_TYPE === $ticket_type
-			? tribe( RSVP_Cart::class )
-			: $cart->get_repository();
+		$cart = tribe( Cart::class );
+
+		tribe_set_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR, $ticket_type );
+
+		$cart_reader = $cart->get_repository();
+
+		tribe_unset_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR );
 
 		// Prepare the items for the order.
 		$items = array_filter(
@@ -669,7 +670,7 @@ class Order extends Abstract_Order {
 		);
 
 		// Get the subtotal calculation from the cart.
-		$cart_subtotal = Value::create( $cart->get_cart_subtotal() );
+		$cart_subtotal = Value::create( $cart_reader->get_cart_subtotal() );
 
 		$original_cart_items = $items;
 
@@ -701,7 +702,7 @@ class Order extends Abstract_Order {
 		);
 
 		// Get the total calculation from the cart.
-		$cart_total = Value::create( $cart->get_cart_total() );
+		$cart_total = Value::create( $cart_reader->get_cart_total() );
 
 		/**
 		 * Filter the cart total before creating an order.

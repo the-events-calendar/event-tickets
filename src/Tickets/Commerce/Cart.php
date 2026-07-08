@@ -71,6 +71,17 @@ class Cart {
 	public static $cart_hash_cookie_name = 'tec-tickets-commerce-cart';
 
 	/**
+	 * Container var key set while resolving the cart repository during order creation.
+	 *
+	 * RSVP V2 reads this var in `tec_tickets_commerce_cart_repository` to return `RSVP_Cart`.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ORDER_FROM_CART_TICKET_TYPE_VAR = 'tec_tickets_commerce_order_from_cart_ticket_type';
+
+	/**
 	 * Gets the current instance of cart handling that we are using.
 	 * Most of the pieces should be handled in the Repository for the cart, only piece fully handled by the
 	 * parent class is the cookie handling.

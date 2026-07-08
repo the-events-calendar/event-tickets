@@ -27,6 +27,15 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 	 *
 	 * @var array
 	 */
+	protected $order_contexts = [
+		Order_Context::TICKET,
+	];
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @var array
+	 */
 	protected $post_types = [
 		Order::POSTTYPE,
 	];
@@ -35,11 +44,6 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
-		// Bail if the order is a TC-RSVP order; RSVPs are not purchases.
-		if ( $this->is_rsvp_order( $order ) ) {
-			return;
-		}
-
 		// Bail if tickets emails is not enabled.
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			return;

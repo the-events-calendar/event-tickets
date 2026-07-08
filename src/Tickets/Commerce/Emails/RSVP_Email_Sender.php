@@ -1,56 +1,39 @@
 <?php
 /**
- * File: Send_Email_RSVP.php
- * Sends the RSVP-specific confirmation email for TC-RSVP orders.
+ * Sends RSVP confirmation emails for TC-RSVP orders.
  *
  * @since TBD
  *
- * @package TEC\Tickets\Commerce\Flag_Actions
+ * @package TEC\Tickets\Commerce\Emails
  */
 
-namespace TEC\Tickets\Commerce\Flag_Actions;
+namespace TEC\Tickets\Commerce\Emails;
 
-use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Emails\Email\RSVP as RSVP_Email;
 use TEC\Tickets\Emails\Email\RSVP_Not_Going;
+use WP_Post;
 
 /**
- * Class Send_Email_RSVP, sends the RSVP-specific confirmation email for TC-RSVP orders.
+ * Class RSVP_Email_Sender.
  *
  * @since TBD
  *
- * @package TEC\Tickets\Commerce\Flag_Actions
+ * @package TEC\Tickets\Commerce\Emails
  */
-class Send_Email_RSVP extends Flag_Action_Abstract {
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @var array
-	 */
-	protected $flags = [
-		'send_email',
-	];
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @var array
-	 */
-	protected $post_types = [
-		Order::POSTTYPE,
-	];
+class RSVP_Email_Sender implements Order_Email_Sender_Interface {
+	use Order_Type_Trait;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
-		// Only handle TC-RSVP orders; regular purchases are handled by Send_Email.
-		if ( ! $this->is_rsvp_order( $order ) ) {
-			return;
-		}
+	public function supports( WP_Post $order ): bool {
+		return $this->is_rsvp_order( $order );
+	}
 
-		// Bail if tickets emails is not enabled.
+	/**
+	 * {@inheritDoc}
+	 */
+	public function send( WP_Post $order ): void {
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			return;
 		}
@@ -86,6 +69,6 @@ class Send_Email_RSVP extends Flag_Action_Abstract {
 		$email_class->set( 'tickets', $attendees );
 		$email_class->recipient = $order->purchaser['email'] ?? $attendees[0]['holder_email'];
 
-		return $email_class->send();
+		$email_class->send();
 	}
 }
