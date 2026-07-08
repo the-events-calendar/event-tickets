@@ -58,8 +58,8 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param Status_Interface      $new_status
-	 * @param null|Status_Interface $old_status
+	 * @param Status_Interface      $new_status New status.
+	 * @param null|Status_Interface $old_status Old status.
 	 * @param \WP_Post              $post
 	 */
 	protected function mark( Status_Interface $new_status, $old_status, \WP_Post $post ) {
