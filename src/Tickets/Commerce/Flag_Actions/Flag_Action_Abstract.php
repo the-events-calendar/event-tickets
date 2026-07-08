@@ -5,8 +5,6 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
-use Tribe__Date_Utils as Dates;
-
 
 /**
  * Class Flag Action Abstract.
@@ -62,8 +60,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 *
 	 * @param Status_Interface      $new_status
 	 * @param null|Status_Interface $old_status
-	 * @param \WP_Post $post
-	 *
+	 * @param \WP_Post              $post
 	 */
 	protected function mark( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		foreach ( $this->get_flags( $post ) as $flag ) {
@@ -178,9 +175,9 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 			return true;
 		}
 
-		$is_rsvp       = $this->is_rsvp_order( $order );
-		$wants_rsvp    = in_array( Order_Context::RSVP_V2, $contexts, true );
-		$wants_ticket  = in_array( Order_Context::TICKET, $contexts, true );
+		$is_rsvp      = $this->is_rsvp_order( $order );
+		$wants_rsvp   = in_array( Order_Context::RSVP_V2, $contexts, true );
+		$wants_ticket = in_array( Order_Context::TICKET, $contexts, true );
 
 		if ( $wants_rsvp && $wants_ticket ) {
 			return true;
