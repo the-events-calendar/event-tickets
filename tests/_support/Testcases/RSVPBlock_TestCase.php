@@ -4,10 +4,13 @@ namespace Tribe\Tickets\Test\Testcases;
 
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Tickets\Test\Testcases\TicketsBlock_TestCase;
+use Tribe\Tickets\Test\Traits\With_Snapshot_Post_Id_Replacement;
 
 class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 	use RSVP_Ticket_Maker;
+	use With_Snapshot_Post_Id_Replacement;
 
 	/**
 	 * Get list of providers for test.
@@ -82,16 +85,12 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );
 
 		// Handle variations that tolerances won't handle.
-		$html = str_replace(
+		$html = $this->replace_snapshot_post_ids(
+			$html,
 			[
-				$post_id,
-				$ticket_id,
-			],
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID]',
-			],
-			$html
+				$post_id   => '[EVENT_ID]',
+				$ticket_id => '[TICKET_ID]',
+			]
 		);
 
 		$this->assertNotEmpty( $html, 'RSVP block is not rendering' );
@@ -136,16 +135,12 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 		// Remove pesky SVG.
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );
 		// Handle variations that tolerances won't handle.
-		$html = str_replace(
+		$html = $this->replace_snapshot_post_ids(
+			$html,
 			[
-				$post_id,
-				$ticket_id,
-			],
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID]',
-			],
-			$html
+				$post_id   => '[EVENT_ID]',
+				$ticket_id => '[TICKET_ID]',
+			]
 		);
 
 		$this->assertNotEmpty( $html, 'RSVP block is not rendering' );
