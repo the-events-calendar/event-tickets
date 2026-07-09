@@ -9,8 +9,8 @@ namespace TEC\Tickets\Commerce\Reports;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Admin_Tables;
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Event;
+use Tribe__Tickets__Tickets;
 
 /**
  * Class Reports for Attendees
@@ -215,7 +215,7 @@ class Attendees extends Report_Abstract {
 		$post_type_object    = get_post_type_object( $post->post_type );
 		$post_singular_label = $post_type_object->labels->singular_name;
 
-		$tickets    = \Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets    = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$ticket_ids = tribe_get_request_var( 'product_ids', false );
 
 		if ( false !== $ticket_ids ) {
@@ -470,8 +470,7 @@ class Attendees extends Report_Abstract {
 		$filter_name = "manage_{$this->page_id}_columns";
 		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
-		$tickets_class = tribe( \Tribe__Tickets__Tickets::class );
-		$items         = $tickets_class::get_event_attendees( $event_id );
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
 		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {
