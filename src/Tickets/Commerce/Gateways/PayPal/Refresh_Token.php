@@ -30,7 +30,7 @@ class Refresh_Token {
 	 * Refresh_Token constructor.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Made $merchant and $client explicitly nullable.
+	 * @since 5.29.0 Made $merchant and $client explicitly nullable.
 	 *
 	 * @param Merchant $merchant
 	 * @param Client   $client
