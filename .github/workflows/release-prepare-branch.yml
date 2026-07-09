@@ -29,7 +29,7 @@ jobs:
           echo "- new-branch: \`${{ github.event.inputs['new-branch'] }}\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref }}
 
@@ -96,7 +96,7 @@ jobs:
                 echo "Skipping version bump in \`package.json\` for \`hotfix\` mode" >> $GITHUB_STEP_SUMMARY
                 continue
               fi
-              
+
               IFS='.' read -r -a version_parts <<< "$existing_version"
 
               case "$versionBumpType" in
