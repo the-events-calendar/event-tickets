@@ -1,5 +1,14 @@
 # Changelog
 
+### [5.29.0] 2026-07-08
+
+* Fix - Excluded RSVP "not going" attendees from the Dashboard "At a Glance" attendee count so the number reflects actual attendance.
+* Fix - Resolved an issue where duplicating an event with shared-capacity tickets reset the duplicated tickets capacity to zero.
+* Tweak - Added the `tec_tickets_glance_item_attendee_count_enabled` filter to allow disabling the attendee count glance item entirely.
+* Performance - Replaced full attendee object hydration in `Glance_Items::update_attendee_count()` with a single SQL COUNT query, preventing PHP timeouts and infinite WP-Cron re-queuing on high-volume sites.
+* Compatibility - Improved PHP compatibility for versions 7.4 and up to 8.4.
+* Language - 4 new strings added, 97 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.28.5.1] 2026-06-29
 
 * Security - Tightened up Stripe checkout validation.
