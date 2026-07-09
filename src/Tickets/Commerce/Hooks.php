@@ -969,7 +969,7 @@ class Hooks extends Service_Provider {
 	 * @return array
 	 */
 	public function filter_rest_get_tickets_in_cart( $tickets ) {
-		/* @var Cart $cart */
+		/** @var Cart $cart */
 		$cart = tribe( Cart::class );
 
 		// The cart is identified solely by the visitor's server-set cart cookie; a request parameter
