@@ -38,7 +38,7 @@ jobs:
       RELEASE_DATE: ${{ inputs.release-date }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
