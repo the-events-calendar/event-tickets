@@ -37,7 +37,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @deprecated TBD The cart hash is now derived solely from the server-set cart cookie; this
+	 * @deprecated 5.29.0.1 The cart hash is now derived solely from the server-set cart cookie; this
 	 *             parameter is no longer read or emitted by the plugin and has no effect. Kept only
 	 *             to avoid breaking any external references. See SVUL-L34.
 	 *
@@ -293,7 +293,7 @@ class Cart {
 	 * Clear the cart.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added Pending_Order clean up before anything else.
+	 * @since 5.29.0.1 Added Pending_Order clean up before anything else.
 	 *
 	 * @return bool
 	 */
@@ -556,7 +556,7 @@ class Cart {
 	 * Prepares the data from the Tickets form.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Stopped adding the cart hash to the checkout redirect URL. See SVUL-L34.
+	 * @since 5.29.0.1 Stopped adding the cart hash to the checkout redirect URL. See SVUL-L34.
 	 *
 	 * @return bool
 	 */

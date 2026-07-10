@@ -215,7 +215,7 @@ class Coupons extends Base_API {
 	 * Apply a coupon.
 	 *
 	 * @since 5.18.0
-	 * @since TBD The cart is identified by the cart cookie, not the request. See SVUL-L34.
+	 * @since 5.29.0.1 The cart is identified by the cart cookie, not the request. See SVUL-L34.
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -297,7 +297,7 @@ class Coupons extends Base_API {
 	 * Remove a coupon.
 	 *
 	 * @since 5.18.0
-	 * @since TBD The cart is identified by the cart cookie, not the request. See SVUL-L34.
+	 * @since 5.29.0.1 The cart is identified by the cart cookie, not the request. See SVUL-L34.
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -459,7 +459,7 @@ class Coupons extends Base_API {
 	 * Get the arguments for an endpoint.
 	 *
 	 * @since 5.18.0
-	 * @since TBD Deprecated the ignored 'cart_hash' argument. See SVUL-L34.
+	 * @since 5.29.0.1 Deprecated the ignored 'cart_hash' argument. See SVUL-L34.
 	 *
 	 * @param string $endpoint
 	 *

@@ -2,7 +2,7 @@
 /**
  * Pending Order implementation.
  *
- * @since TBD
+ * @since 5.29.0.1
  * @package TEC\Tickets\Commerce
  */
 
@@ -15,7 +15,7 @@ use RuntimeException;
  * Pending_Order implementation which is used to store that a specific cart hash,
  * has a pending order to be updated.
  *
- * @since TBD
+ * @since 5.29.0.1
  * @package TEC\Tickets\Commerce
  */
 final class Pending_Order {
@@ -43,7 +43,7 @@ final class Pending_Order {
 	/**
 	 * The constructor.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @param Cart   $cart   The cart instance.
 	 * @param Logger $logger The logger instance.
@@ -56,7 +56,7 @@ final class Pending_Order {
 	/**
 	 * Stores a gateway's order id as a pending order for the current Cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @param string $gateway_order_id The gateway's order id.
 	 *
@@ -80,7 +80,7 @@ final class Pending_Order {
 	/**
 	 * Retrieves the gateway's order id for the current cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @return string|null
 	 */
@@ -109,7 +109,7 @@ final class Pending_Order {
 	/**
 	 * Clears the stored gateway order id for the current cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @return void
 	 */
@@ -131,7 +131,7 @@ final class Pending_Order {
 	/**
 	 * Builds the transient name for the current cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @return string
 	 *

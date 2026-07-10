@@ -27,7 +27,7 @@ class Events {
 	 * short-circuit the context.
 	 *
 	 * @since 5.2.0
-	 * @since TBD No longer depends on the removed cart hash query param. See SVUL-L34.
+	 * @since 5.29.0.1 No longer depends on the removed cart hash query param. See SVUL-L34.
 	 *
 	 * @param string $location the URL we're redirecting to.
 	 * @param int    $status   The redirect status code.

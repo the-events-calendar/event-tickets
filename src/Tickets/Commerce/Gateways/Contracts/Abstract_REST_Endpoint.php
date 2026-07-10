@@ -30,7 +30,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * The Pending_Order instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @var Pending_Order
 	 */
@@ -39,14 +39,14 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * The Cart instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @var Cart
 	 */
 	private Cart $cart;
 
 	/**
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @param Pending_Order $pending_order The Pending_Order instance.
 	 * @param Cart          $cart          The Cart instance.
@@ -124,7 +124,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * Ensures that the current request tries to edit an order id which is stored as pending edit.
 	 *
-	 * @since TBD
+	 * @since 5.29.0.1
 	 *
 	 * @param WP_REST_Request $request The REST Request instance.
 	 *

@@ -114,7 +114,7 @@ class Checkout {
 	 * we do it.
 	 *
 	 * @since 5.1.9
-	 * @since TBD No longer sets the cart hash cookie from a request param. See SVUL-L34.
+	 * @since 5.29.0.1 No longer sets the cart hash cookie from a request param. See SVUL-L34.
 	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {

@@ -206,12 +206,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.24.0
 	 * @since 5.27.6.1 Added allowed failure statuses to the response for failed orders.
 	 *
-	 * @depecated TBD
+	 * @depecated 5.29.0.1
 	 *
 	 * @return array
 	 */
 	public function fail_order_args(): array {
-		_deprecated_function( __METHOD__, 'TBD', 'This method is deprecated without replacement.' );
+		_deprecated_function( __METHOD__, '5.29.0.1', 'This method is deprecated without replacement.' );
 
 		return [
 			'order_id'      => [

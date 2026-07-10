@@ -90,7 +90,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Removed the cart hash query param from the return URL. See SVUL-L34.
+	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -408,14 +408,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.29.0.1
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function handle_fail_order( WP_REST_Request $request ) {
-		_deprecated_function( __METHOD__, 'TBD', 'This method has been deprecated without a replacement.' );
+		_deprecated_function( __METHOD__, '5.29.0.1', 'This method has been deprecated without a replacement.' );
 	}
 
 	/**
