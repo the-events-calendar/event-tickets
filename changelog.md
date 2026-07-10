@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.29.0.1] 2026-07-10
+
+* Security - Strengthened Tickets Commerce failed order Gateway endpoints.
+* Security - Strengthened capability checks for Seating's Layout ajax actions.
+
 ### [5.29.0] 2026-07-08
 
 * Fix - Excluded RSVP "not going" attendees from the Dashboard "At a Glance" attendee count so the number reflects actual attendance.
