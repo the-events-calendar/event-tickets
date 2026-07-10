@@ -962,7 +962,7 @@ class Hooks extends Service_Provider {
 	 * Modify the cart contents for the Rest call around Tickets Commerce cart.
 	 *
 	 * @since 5.2.0
-	 * @since TBD The cart is read from the cart cookie, not the request param. See SVUL-L34.
+	 * @since 5.29.0.1 The cart is read from the cart cookie, not the request param. See SVUL-L34.
 	 *
 	 * @param array $tickets
 	 *
@@ -1001,7 +1001,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @deprecated TBD The cart hash is no longer passed through the URL; the cart is identified solely
+	 * @deprecated 5.29.0.1 The cart hash is no longer passed through the URL; the cart is identified solely
 	 *             by the server-set cart cookie. This filter is no longer registered and returns the URL
 	 *             unchanged. See SVUL-L34.
 	 *
@@ -1013,7 +1013,7 @@ class Hooks extends Service_Provider {
 	 * @return string
 	 */
 	public function filter_rest_cart_url( $url, $path, $blog_id, $scheme ) {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.29.0.1' );
 
 		return $url;
 	}
@@ -1022,7 +1022,7 @@ class Hooks extends Service_Provider {
 	 * Hooks for Compatibility with The Events Calendar
 	 *
 	 * @since 5.2.0
-	 * @since TBD Stopped registering the deprecated filter_rest_cart_url filter. See SVUL-L34.
+	 * @since 5.29.0.1 Stopped registering the deprecated filter_rest_cart_url filter. See SVUL-L34.
 	 */
 	public function register_event_compatibility_hooks() {
 
