@@ -535,6 +535,22 @@
 		}
 	}
 
+	.tec-tickets-rsvp-field-row {
+
+		@media (min-width: 782px) {
+			align-items: center;
+			display: flex;
+
+			.ticket_form_left {
+				flex: 0 0 132px;
+			}
+
+			.ticket_form_right {
+				margin-left: 0;
+			}
+		}
+	}
+
 	.input_block {
 		margin-top: 1em;
 	}
@@ -604,7 +620,7 @@ h4.ticket_form_title {
 
 .tribe_soft_note,
 p.description {
-	color: #a3a3a3;
+	color: var(--tec-admin-core-grey-50);
 	font-size: inherit;
 	font-style: normal;
 }
