@@ -254,7 +254,7 @@ class Gateway extends Abstract_Gateway {
 	 * Get the appropriate precision for Stripe based on their currency requirements.
 	 *
 	 * @since 5.26.7
-	 * @since TBD Made $default_precision explicity nullable.
+	 * @since 5.29.0 Made $default_precision explicity nullable.
 	 *
 	 * @param string   $currency_code The currency code.
 	 * @param int|null $default_precision The default precision from currency data.
