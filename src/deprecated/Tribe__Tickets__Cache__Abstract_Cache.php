@@ -43,7 +43,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	/**
 	 * @deprecated 5.6.5
 	 *
-	 * @since TBD Made $post_types explicitly nullable.
+	 * @since 5.29.0 Made $post_types explicitly nullable.
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
@@ -109,7 +109,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	/**
 	 * @deprecated 5.6.5
 	 *
-	 * @since TBD Made $post_types explicitly nullable.
+	 * @since 5.29.0 Made $post_types explicitly nullable.
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
