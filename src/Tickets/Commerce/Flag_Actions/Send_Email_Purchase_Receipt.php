@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\RSVP\V2\Traits\Not_Going_Order;
 
 /**
  * Class Send_Email_Purchase_Receipt, normally triggered when an order is completed.
@@ -13,6 +14,8 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
+	use Not_Going_Order;
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -37,6 +40,11 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
 		// Bail if tickets emails is not enabled.
 		if ( ! tec_tickets_emails_is_enabled() ) {
+			return;
+		}
+
+		// RSVP V2 "Not Going" orders are hidden orders for tracking only; no purchase to confirm.
+		if ( $this->is_rsvp_v2_not_going_order( $order ) ) {
 			return;
 		}
 

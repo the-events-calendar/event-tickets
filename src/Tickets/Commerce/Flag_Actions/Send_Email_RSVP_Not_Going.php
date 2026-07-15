@@ -4,16 +4,18 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Emails\Email\RSVP_Not_Going;
 use TEC\Tickets\RSVP\V2\Traits\Not_Going_Order;
 
 /**
- * Class Send_Email_Completed_Order, normally triggered when an order is completed.
+ * Class Send_Email_RSVP_Not_Going, sends the RSVP "Not Going" confirmation email for
+ * RSVP V2 orders where the attendee indicated they will not be attending.
  *
- * @since 5.5.10
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
-class Send_Email_Completed_Order extends Flag_Action_Abstract {
+class Send_Email_RSVP_Not_Going extends Flag_Action_Abstract {
 	use Not_Going_Order;
 
 	/**
@@ -43,35 +45,34 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 			return;
 		}
 
-		// RSVP V2 "Not Going" orders are hidden orders for tracking only; no purchase to confirm.
-		if ( $this->is_rsvp_v2_not_going_order( $order ) ) {
+		if ( ! $this->is_rsvp_v2_not_going_order( $order ) ) {
 			return;
-		}
-
-		if ( ! empty( $order->gateway ) && 'manual' === $order->gateway && empty( $order->events_in_order ) ) {
-			$order->events_in_order[] = $order;
 		}
 
 		if ( empty( $order->events_in_order ) || ! is_array( $order->events_in_order ) ) {
 			return;
 		}
 
-		/**
-		 * Filter the order before sending the email about the completed order.
-		 *
-		 * @since 5.18.0
-		 *
-		 * @param \WP_Post $order The order.
-		 */
-		$order = apply_filters( 'tec_tickets_commerce_prepare_order_for_email_send_email_completed_order', $order );
-
 		$provider  = tribe( $order->provider );
 		$attendees = $provider->get_attendees_by_order_id( $order->ID );
 
-		$email_class = tribe( \TEC\Tickets\Emails\Email\Completed_Order::class );
-		$email_class->set( 'order', $order );
-		$email_class->set( 'attendees', $attendees );
+		if ( empty( $attendees ) ) {
+			return;
+		}
 
-		return $email_class->send();
+		$to = $attendees[0]['holder_email'] ?? '';
+
+		if ( ! is_email( $to ) ) {
+			return;
+		}
+
+		$event_id = reset( $order->events_in_order );
+
+		$email_class = tribe( RSVP_Not_Going::class );
+		$email_class->set( 'post_id', $event_id );
+		$email_class->set( 'tickets', $attendees );
+		$email_class->recipient = $to;
+
+		$email_class->send();
 	}
 }

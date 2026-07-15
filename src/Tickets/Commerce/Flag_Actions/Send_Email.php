@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\BackgroundJobs\SendTicketEmail;
+use TEC\Tickets\RSVP\V2\Traits\Not_Going_Order;
 use function TEC\Common\StellarWP\Shepherd\shepherd;
 
 /**
@@ -15,6 +16,8 @@ use function TEC\Common\StellarWP\Shepherd\shepherd;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class Send_Email extends Flag_Action_Abstract {
+	use Not_Going_Order;
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -37,6 +40,10 @@ class Send_Email extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
+		// RSVP V2 "Not Going" orders are hidden orders for tracking only; no ticket to deliver.
+		if ( $this->is_rsvp_v2_not_going_order( $order ) ) {
+			return;
+		}
 
 		// temporary fix for manual attendees first email
 		// @todo backend review this logic
