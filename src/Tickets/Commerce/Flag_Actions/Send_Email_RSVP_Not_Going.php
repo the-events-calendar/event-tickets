@@ -1,4 +1,11 @@
 <?php
+/**
+ * Sends the RSVP "Not Going" confirmation email for RSVP V2 orders.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Flag_Actions
+ */
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 

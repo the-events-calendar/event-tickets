@@ -13,9 +13,6 @@ use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
 use WP_Post;
 
-/**
- * @see https://linear.app/nexcess/issue/SOFT-3854 "Can't Go" RSVP emails are wrong.
- */
 class Emails_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
