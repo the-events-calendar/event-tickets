@@ -49,6 +49,40 @@ class Attendee_Repository_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_not_include_non_rsvp_attendees_when_filtered_by_event(): void {
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		$rsvp_attendee_id = $this->create_tc_rsvp_attendee( $ticket_id, $post_id );
+
+		// A real ticket attendee for the same event, sharing the Tickets Commerce attendee post type
+		// but carrying no RSVP status meta at all.
+		$real_ticket_attendee_id = wp_insert_post( [
+			'post_type'   => Attendee::POSTTYPE,
+			'post_status' => 'publish',
+			'post_title'  => 'Real ticket attendee',
+			'meta_input'  => [
+				Attendee::$event_relation_meta_key  => $post_id,
+				Attendee::$ticket_relation_meta_key => $ticket_id,
+			],
+		] );
+
+		$repo      = new Attendee_Repository();
+		$attendees = $repo->by( 'event', $post_id )->all();
+
+		$attendee_ids = array_map( static fn( $attendee ) => $attendee->ID, $attendees );
+
+		$this->assertContains( $rsvp_attendee_id, $attendee_ids, 'RSVP attendee should be returned' );
+		$this->assertNotContains(
+			$real_ticket_attendee_id,
+			$attendee_ids,
+			'A non-RSVP attendee for the same event should not be returned by the RSVP repository'
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_filter_by_ticket(): void {
 		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
 

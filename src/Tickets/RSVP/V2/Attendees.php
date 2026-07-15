@@ -102,37 +102,6 @@ class Attendees {
 	}
 
 	/**
-	 * Filters the arguments used to count the Attendees in the Tickets View data link.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $args    The arguments used to count the attendees.
-	 * @param int                 $post_id The post ID the Attendees are being counted for.
-	 * @param int|null            $user_id The user ID, if any. Unused.
-	 * @param string|null         $context The context of the query.
-	 *
-	 * @return array<string,mixed> The filtered arguments.
-	 */
-	public function exclude_rsvp_tickets_from_tickets_view_data_link_count( array $args, int $post_id, ?int $user_id, ?string $context ): array {
-		if ( 'get_my_tickets_link_data' !== $context ) {
-			return $args;
-		}
-
-		// In RSVP v2 the Tickets Commerce provider is active by default; an empty provider means TC.
-		$provider = tribe_tickets_get_ticket_provider( $post_id );
-
-		// There is a provider and it's not TC, then bail.
-		if ( ! empty( $provider ) && ! $provider instanceof Module ) {
-			return $args;
-		}
-
-		// Exclude RSVP attendees from the count.
-		$args['by']['meta_not_equals'] = [ '_type', Constants::TC_RSVP_TYPE ];
-
-		return $args;
-	}
-
-	/**
 	 * Replaces the order-status label with a "Going" / "Not Going" indicator for TC RSVP attendees.
 	 *
 	 * Hooked to `tribe_tickets_attendees_table_order_status`. All RSVP attendees have a
