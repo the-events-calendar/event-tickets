@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved a fatal error on the Orders admin page when viewing orders for an event without an active ticket provider. The Orders page now gracefully handles missing provider context instead of crashing.

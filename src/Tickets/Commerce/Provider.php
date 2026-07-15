@@ -57,6 +57,7 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Reports\Attendance_Totals::class );
 		$this->container->singleton( Reports\Attendees::class );
 		$this->container->singleton( Reports\Orders::class );
+		$this->container->singleton( Reports\Tabbed_View::class );
 		$this->container->singleton( Admin_Tables\Orders::class );
 		$this->container->singleton( Admin_Tables\Attendees::class );
 

@@ -347,6 +347,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return array|mixed
 	 */
 	public function get_attendees_by_id( $post_id, $post_type = null ) {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return [];
+		}
+
 		if ( ! $post_type ) {
 			$post_type = get_post_type( $post_id );
 		}
@@ -497,6 +501,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * {@inheritdoc}
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
 		return tec_tc_get_attendee( $attendee, ARRAY_A );
 	}
 
