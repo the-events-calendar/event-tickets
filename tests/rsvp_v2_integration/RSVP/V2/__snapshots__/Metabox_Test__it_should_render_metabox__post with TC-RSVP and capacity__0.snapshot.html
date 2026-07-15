@@ -82,77 +82,83 @@
 				/>
 
 				<div class="input_block">
-	<label class="ticket_form_label ticket_form_left" for="rsvp_limit">
-		Limit:	</label>
-	<input
-		type='text'
-		id='rsvp_limit'
-		name='rsvp_limit'
-		class="ticket_field ticket_form_right"\
-		value="50"
-		data-validation-error="RSVP type is a required field"
-	/>
+	<div class="tec-tickets-rsvp-field-row">
+		<label class="ticket_form_label ticket_form_left" for="rsvp_limit">
+			Limit:		</label>
+		<input
+			type='text'
+			id='rsvp_limit'
+			name='rsvp_limit'
+			class="ticket_field ticket_form_right"
+			value="50"
+			data-validation-error="RSVP type is a required field"
+		/>
+	</div>
 	<p class="description ticket_form_right">
 		Leave blank for unlimited	</p>
 </div>
 
 				<div class="input_block">
-	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
-		Open RSVP:	</label>
-	<div class="ticket_form_right">
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-datepicker tribe-field-start_date ticket_field"
-			name="rsvp_start_date"
-			id="rsvp_start_date"
-			value="1/2/2020"
-			data-validation-type="datepicker"
+	<div class="tec-tickets-rsvp-field-row">
+		<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
+			Open RSVP:		</label>
+		<div class="ticket_form_right">
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-start_date ticket_field"
+				name="rsvp_start_date"
+				id="rsvp_start_date"
+				value="1/2/2020"
+				data-validation-type="datepicker"
 
-			data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
-		/>
-		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-		<span class="datetime_seperator"> at </span>
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-timepicker tribe-field-start_time ticket_field"
-			name="rsvp_start_time"
-			id="rsvp_start_time"
-						data-step="30"
-			data-round="00:00:00"
-			value="08:00:00"
-			aria-label="Ticket start date"
-		/>
-		<span class="helper-text hide-if-js">HH:MM</span>
+				data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
+			/>
+			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+			<span class="datetime_seperator"> at </span>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-timepicker tribe-field-start_time ticket_field"
+				name="rsvp_start_time"
+				id="rsvp_start_time"
+								data-step="30"
+				data-round="00:00:00"
+				value="08:00:00"
+				aria-label="Ticket start date"
+			/>
+			<span class="helper-text hide-if-js">HH:MM</span>
+		</div>
 	</div>
 </div>
 <div class="input_block">
-	<label class="ticket_form_label ticket_form_left" for="ticket_end_date">
-		Close RSVP:	</label>
-	<div class="ticket_form_right">
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-datepicker tribe-field-end_date ticket_field"
-			name="rsvp_end_date"
-			id="rsvp_end_date"
-			value="3/1/2050"
-		/>
-		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-		<span class="datetime_seperator"> at </span>
-		<input
-			autocomplete="off"
-			type="text"
-			class="tribe-timepicker tribe-field-end_time ticket_field"
-			name="rsvp_end_time"
-			id="rsvp_end_time"
-						data-step="30"
-			data-round="00:00:00"
-			value="20:00:00"
-			aria-label="Ticket end date"
-		/>
-		<span class="helper-text hide-if-js">HH:MM</span>
+	<div class="tec-tickets-rsvp-field-row">
+		<label class="ticket_form_label ticket_form_left" for="ticket_end_date">
+			Close RSVP:		</label>
+		<div class="ticket_form_right">
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-end_date ticket_field"
+				name="rsvp_end_date"
+				id="rsvp_end_date"
+				value="3/1/2050"
+			/>
+			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+			<span class="datetime_seperator"> at </span>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-timepicker tribe-field-end_time ticket_field"
+				name="rsvp_end_time"
+				id="rsvp_end_time"
+								data-step="30"
+				data-round="00:00:00"
+				value="20:00:00"
+				aria-label="Ticket end date"
+			/>
+			<span class="helper-text hide-if-js">HH:MM</span>
+		</div>
 	</div>
 </div>
 

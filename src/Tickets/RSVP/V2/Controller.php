@@ -190,13 +190,6 @@ class Controller extends Controller_Contract {
 			2
 		);
 
-		add_filter(
-			'tec_tickets_view_count_ticket_attendees_args',
-			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' ),
-			10,
-			4
-		);
-
 		// Attendees report: show Going/Not Going status and hide check-in for "not going" RSVPs.
 		add_filter(
 			'tribe_tickets_attendees_table_order_status',
@@ -317,10 +310,6 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_rsvp_get_attendees_by_id_pre',
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
-		);
-		remove_filter(
-			'tec_tickets_view_count_ticket_attendees_args',
-			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
 		);
 		remove_filter(
 			'tribe_tickets_attendees_table_order_status',

@@ -20,6 +20,7 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\RSVP\V2\Constants;
+use Tribe\Tickets\Events\Attendees_List;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe__Tickets__Ticket_Object;
 use Tribe__Utils__Array;
@@ -472,7 +473,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$args['attendees'] = $args['process_result']['attendees'];
 		}
 
-		$show_attendee_list_optout = false;
+		$show_attendee_list_optout = ! Attendees_List::is_hidden_on( $post_id );
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
@@ -489,7 +490,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$show_attendee_list_optout = false;
 		}
 
-		$args['opt_in_toggle_hidden'] = $show_attendee_list_optout;
+		$args['opt_in_toggle_hidden'] = ! $show_attendee_list_optout;
 
 		$this->template->add_template_globals( $args );
 
