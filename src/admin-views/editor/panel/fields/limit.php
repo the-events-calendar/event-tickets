@@ -13,17 +13,19 @@
 defined( 'ABSPATH' ) || die();
 ?>
 <div class="input_block">
-	<label class="ticket_form_label ticket_form_left" for="rsvp_limit">
-		<?php echo esc_html_x( 'Limit:', 'RSVP limit for an event.', 'event-tickets' ); ?>
-	</label>
-	<input
-		type='text'
-		id='rsvp_limit'
-		name='rsvp_limit'
-		class="ticket_field ticket_form_right"\
-		value="<?php echo esc_attr( $rsvp_limit ); ?>"
-		data-validation-error="<?php echo esc_attr( $rsvp_required_type_error_message ); ?>"
-	/>
+	<div class="tec-tickets-rsvp-field-row">
+		<label class="ticket_form_label ticket_form_left" for="rsvp_limit">
+			<?php echo esc_html_x( 'Limit:', 'RSVP limit for an event.', 'event-tickets' ); ?>
+		</label>
+		<input
+			type='text'
+			id='rsvp_limit'
+			name='rsvp_limit'
+			class="ticket_field ticket_form_right"
+			value="<?php echo esc_attr( $rsvp_limit ); ?>"
+			data-validation-error="<?php echo esc_attr( $rsvp_required_type_error_message ); ?>"
+		/>
+	</div>
 	<p class="description ticket_form_right">
 		<?php echo esc_html_x( 'Leave blank for unlimited', 'price description', 'event-tickets' ); ?>
 	</p>
