@@ -84,12 +84,6 @@ class Order_Email_Sender_Registry {
 	 * @return Order_Email_Sender_Interface[]
 	 */
 	private function get_senders(): array {
-		$senders = [];
-
-		foreach ( $this->container->tagged( self::CONTAINER_TAG ) as $sender ) {
-			$senders[] = $sender;
-		}
-
 		/**
 		 * Filters the order email senders used when the `send_email` flag action fires.
 		 *
@@ -100,6 +94,6 @@ class Order_Email_Sender_Registry {
 		 *
 		 * @param Order_Email_Sender_Interface[] $senders Registered senders.
 		 */
-		return (array) apply_filters( 'tec_tickets_commerce_order_email_senders', $senders );
+		return (array) apply_filters( 'tec_tickets_commerce_order_email_senders', $this->container->tagged( self::CONTAINER_TAG ) );
 	}
 }
