@@ -53,14 +53,10 @@ class RSVP_Ticket_REST_Snapshot_Test extends REST_Test_Case {
 		// 3. RSVP ticket with show_not_going=true, 2 going + 1 not-going.
 		$rsvp_mixed = $this->create_tc_rsvp_ticket( $post_id );
 		update_post_meta( $rsvp_mixed, Constants::SHOW_NOT_GOING_META_KEY, '1' );
-		$this->create_order( [ $rsvp_mixed => 3 ] );
-		$mixed_attendee_ids = tribe( 'tickets.attendee-repository.rsvp' )
-			->by( 'event_id', $post_id )
-			->by( 'ticket_id', $rsvp_mixed )
-			->order_by( 'ID', 'DESC' )
-			->get_ids();
+		$mixed_order_id      = $this->create_order( [ $rsvp_mixed => 3 ] )->ID;
+		$mixed_attendee_ids  = array_column( tribe( TC_Provider::class )->get_attendees_by_order_id( $mixed_order_id ), 'ID' );
 		// Mark the most recent attendee as not going.
-		update_post_meta( $mixed_attendee_ids[0], Constants::RSVP_STATUS_META_KEY, 'no' );
+		update_post_meta( max( $mixed_attendee_ids ), Constants::RSVP_STATUS_META_KEY, 'no' );
 
 		// 4. RSVP ticket with show_not_going=false.
 		$rsvp_disabled = $this->create_tc_rsvp_ticket( $post_id );
