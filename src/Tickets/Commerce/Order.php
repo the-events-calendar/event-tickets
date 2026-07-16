@@ -1134,7 +1134,7 @@ class Order extends Abstract_Order {
 	 * @return ?string
 	 */
 	public function get_item_value( $item, $original = false ): ?string {
-		$current = $item['price'];
+		$current = $item['price'] ?? 0;
 		$regular = $item['regular_price'] ?? $current;
 
 		return $original ? Value::create( $regular )->get_currency() : Value::create( $current )->get_currency();
