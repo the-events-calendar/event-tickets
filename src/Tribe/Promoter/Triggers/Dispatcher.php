@@ -95,6 +95,7 @@ class Dispatcher {
 	 * Creat ea payload using the trigger object.
 	 *
 	 * @since 4.12.3
+	 * @since TBD Added the `domain` key, required by the Promoter connector to authorize the request.
 	 *
 	 * @param Triggered $trigger The trigger object creating this action.
 	 *
@@ -103,6 +104,7 @@ class Dispatcher {
 	private function get_payload( Triggered $trigger ) {
 		return [
 			'license'  => $this->license_key,
+			'domain'   => strtolower( untrailingslashit( preg_replace( '#^https?://#i', '', home_url( '/' ) ) ) ),
 			'type'     => $trigger->type(),
 			'event'    => [
 				'id' => $trigger->post()->ID,
