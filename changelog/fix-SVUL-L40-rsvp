@@ -1,0 +1,4 @@
+Significance: patch
+Type: security
+
+Extracted the event-accessibility check into `is_event_accessible()` for reuse in RSVPs.
