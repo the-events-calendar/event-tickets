@@ -60,6 +60,8 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 		$cache_post->post_modified,
 		// Use the `post_password` field as we show/hide some information depending on that.
 		$cache_post->post_password,
+		// Include check-in meta in the cache key so check-in/uncheck-in is reflected in the cache.
+		get_post_meta( $cache_post->ID, Attendee::$checked_in_meta_key, true ),
 		// We must include options on cache key, because options influence the hydrated data on the Order object.
 		wp_json_encode( Tribe__Settings_Manager::get_options() ),
 		wp_json_encode( [
