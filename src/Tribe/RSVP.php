@@ -306,6 +306,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.12.3
 	 * @since 5.5.10 Added `going` to the $args variable.
 	 * @since 5.18.0 Added check for valid post status.
+	 * @since TBD Extracted the event-accessibility check into `is_event_accessible()` for reuse.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -325,21 +326,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		// Get post status.
-		$post_status = get_post_status( $post_id );
-
-		// Check if the post is private and the user can't read it.
-		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
-			return '';
-		}
-
-		// If post is anything other than private or published, return empty.
-		if ( ! in_array( $post_status, [ 'publish', 'private' ] ) ) {
-			return '';
-		}
-
-		// Check password if one exists.
-		if ( post_password_required( $post_id ) ) {
+		if ( ! $this->is_event_accessible( $post_id ) ) {
 			return '';
 		}
 
@@ -1990,6 +1977,37 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		return $ticket;
+	}
+
+	/**
+	 * Determines whether an event is currently visible/accessible to the requesting user,
+	 * i.e. whether an RSVP for it should be rendered or processed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The event (or other ticket-able post) ID.
+	 *
+	 * @return bool
+	 */
+	public function is_event_accessible( $post_id ) {
+		$post_status = get_post_status( $post_id );
+
+		// Check if the post is private and the user can't read it.
+		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
+			return false;
+		}
+
+		// If post is anything other than private or published, it's not accessible.
+		if ( ! in_array( $post_status, [ 'publish', 'private' ], true ) ) {
+			return false;
+		}
+
+		// Check password if one exists.
+		if ( post_password_required( $post_id ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
