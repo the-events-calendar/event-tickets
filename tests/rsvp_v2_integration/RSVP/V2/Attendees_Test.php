@@ -190,6 +190,49 @@ class Attendees_Test extends WPTestCase {
 		$this->assertSame( $pre_filtered_value, $result );
 	}
 
+	public function test_deleting_the_last_rsvp_attendee_voids_the_order(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$order     = $this->create_order( [ $ticket_id => 1 ] );
+
+		$attendee_ids = tec_tc_attendees()->by( 'post_parent', $order->ID )->order_by( 'ID', 'ASC' )->get_ids();
+
+		$this->assertCount( 1, $attendee_ids );
+
+		tribe( Attendee::class )->delete( $attendee_ids[0] );
+
+		$this->assertSame( 'tec-tc-voided', get_post_status( $order->ID ) );
+	}
+
+	public function test_deleting_one_of_several_rsvp_attendees_does_not_void_the_order(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$order     = $this->create_order( [ $ticket_id => 3 ] );
+
+		$attendee_ids = tec_tc_attendees()->by( 'post_parent', $order->ID )->order_by( 'ID', 'ASC' )->get_ids();
+
+		$this->assertCount( 3, $attendee_ids );
+
+		tribe( Attendee::class )->delete( $attendee_ids[0] );
+
+		$this->assertSame( 'tec-tc-completed', get_post_status( $order->ID ) );
+		$this->assertCount( 2, tec_tc_attendees()->by( 'post_parent', $order->ID )->get_ids() );
+	}
+
+	public function test_deleting_a_regular_ticket_attendee_does_not_void_its_order(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		$order     = $this->create_order( [ $ticket_id => 1 ] );
+
+		$attendee_ids = tec_tc_attendees()->by( 'post_parent', $order->ID )->get_ids();
+
+		$this->assertCount( 1, $attendee_ids );
+
+		tribe( Attendee::class )->delete( $attendee_ids[0] );
+
+		$this->assertSame( 'tec-tc-completed', get_post_status( $order->ID ) );
+	}
+
 	/**
 	 * Creates a TC RSVP attendee and returns an attendees-table row item pointing at it.
 	 *
