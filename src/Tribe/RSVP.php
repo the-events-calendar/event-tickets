@@ -2708,6 +2708,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 *
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
+	 * @since TBD Reject the request unless the requesting user can access the ticket's event.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -2721,7 +2722,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Get the event this tickets is for.
 		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
 
-		if ( empty( $post_id ) ) {
+		// Deliberately identical to the empty-$post_id error: don't let the response reveal
+		// whether a ticket ID exists but is inaccessible versus not existing at all.
+		if ( empty( $post_id ) || ! $this->is_event_accessible( $post_id ) ) {
 			return new WP_Error( 'rsvp-invalid-parent-id', __( 'Invalid parent ID provided!', 'event-tickets' ) );
 		}
 

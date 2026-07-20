@@ -117,6 +117,35 @@ class RsvpTest extends \Codeception\TestCase\WPAjaxTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_reject_a_private_event_ticket_smuggled_via_product_id() {
+		wp_set_current_user( 0 );
+
+		// The "cover" ticket: publicly accessible, used only to pass the outer ticket_id check.
+		$public_post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$public_ticket_id = $this->create_rsvp_ticket( $public_post_id );
+
+		// The actual target: a private event's ticket, smuggled in via product_id[].
+		$private_post_id   = $this->factory()->post->create( [ 'post_status' => 'private' ] );
+		$private_ticket_id = $this->create_rsvp_ticket( $private_post_id );
+
+		$this->set_process_request( $public_ticket_id );
+		// Override product_id/quantity to point at the private ticket instead of the cover one.
+		$_POST['product_id'] = [ $private_ticket_id ];
+		unset( $_POST[ "quantity_{$public_ticket_id}" ] );
+		$_POST[ "quantity_{$private_ticket_id}" ] = 1;
+
+		$this->process_and_capture();
+
+		$this->assertCount(
+			0,
+			$this->get_rsvp_provider()->get_attendees_by_id( $private_ticket_id ),
+			'No attendee should have been created for the private event smuggled in via product_id.'
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_still_allow_unauthenticated_rsvp_for_a_public_event() {
 		wp_set_current_user( 0 );
 
