@@ -10,7 +10,7 @@ import * as utils from '../../../utils';
  * @param {Object} rsvp Ticket REST response object.
  * @return {number|string} Capacity value or empty string for unlimited.
  */
-const resolveV2Capacity = ( rsvp ) => {
+export const resolveV2Capacity = ( rsvp ) => {
 	if ( rsvp.capacity != null && Number( rsvp.capacity ) >= 0 ) {
 		return Number( rsvp.capacity );
 	}
