@@ -12,12 +12,28 @@ describe( 'resolveV2Capacity', () => {
 		expect( resolveV2Capacity( { stock: '15' } ) ).toBe( 15 );
 	} );
 
-	it( 'falls back to stock when capacity is negative (unlimited)', () => {
-		expect( resolveV2Capacity( { capacity: -1, stock: '15' } ) ).toBe( 15 );
+	it( 'falls through empty-string capacity to stock (unlimited payload)', () => {
+		expect( resolveV2Capacity( { capacity: '', stock: -1 } ) ).toBe( '' );
 	} );
 
-	it( 'returns an empty string when both capacity and stock are unlimited (-1)', () => {
+	it( 'falls through empty-string capacity to a finite stock value', () => {
+		expect( resolveV2Capacity( { capacity: '', stock: '15' } ) ).toBe( 15 );
+	} );
+
+	it( 'returns zero when capacity is explicitly 0', () => {
+		expect( resolveV2Capacity( { capacity: 0, stock: -1 } ) ).toBe( 0 );
+	} );
+
+	it( 'returns an empty string when capacity is -1 (unlimited), even if stock is set', () => {
+		expect( resolveV2Capacity( { capacity: -1, stock: '15' } ) ).toBe( '' );
+	} );
+
+	it( 'returns an empty string when capacity is -1 (unlimited)', () => {
 		expect( resolveV2Capacity( { capacity: -1, stock: -1 } ) ).toBe( '' );
+	} );
+
+	it( 'returns an empty string when stock fallback is -1 (unlimited)', () => {
+		expect( resolveV2Capacity( { stock: -1 } ) ).toBe( '' );
 	} );
 
 	it( 'returns an empty string when neither capacity nor stock is present', () => {

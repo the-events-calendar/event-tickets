@@ -11,12 +11,14 @@ import * as utils from '../../../utils';
  * @return {number|string} Capacity value or empty string for unlimited.
  */
 export const resolveV2Capacity = ( rsvp ) => {
-	if ( rsvp.capacity != null && Number( rsvp.capacity ) >= 0 ) {
-		return Number( rsvp.capacity );
+	if ( rsvp.capacity != null && rsvp.capacity !== '' ) {
+		const capacity = Number( rsvp.capacity );
+		return capacity >= 0 ? capacity : '';
 	}
 
-	if ( rsvp.stock != null && Number( rsvp.stock ) >= 0 ) {
-		return Number( rsvp.stock );
+	if ( rsvp.stock != null && rsvp.stock !== '' ) {
+		const stock = Number( rsvp.stock );
+		return stock >= 0 ? stock : '';
 	}
 
 	return '';
