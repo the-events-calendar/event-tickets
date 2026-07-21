@@ -18,6 +18,7 @@ export const DEFAULT_STATE = {
 	goingCount: 0,
 	notGoingCount: 0,
 	inventory: null,
+	iac: 'none',
 	hasAttendeeInfoFields: false,
 	attendeeInfoFieldNames: [],
 	details: DETAILS_DEFAULT_STATE,
@@ -87,6 +88,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				inventory: action.payload.inventory,
+			};
+		case types.SET_RSVP_IAC:
+			return {
+				...state,
+				iac: action.payload.iac,
 			};
 		case types.SET_RSVP_HAS_ATTENDEE_INFO_FIELDS:
 			return {
