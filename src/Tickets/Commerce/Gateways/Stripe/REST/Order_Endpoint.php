@@ -408,7 +408,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @depreacated 5.29.0.1
+	 * @deprecated 5.29.0.1
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
