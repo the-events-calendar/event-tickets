@@ -2880,4 +2880,160 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->reset_wp_send_json_mocks();
 	}
+
+	/**
+	 * A user who only has the generic `edit_posts` capability but does not own (or otherwise have
+	 * access to) the target event must NOT be able to change that event's seating layout.
+	 *
+	 * This is the security regression these permission checks address: the previous `edit_posts`
+	 * check ignored the second (post ID) argument, letting any Author/Contributor act on events
+	 * they had no rights to. The fixed `edit_post` meta-capability check is post-specific.
+	 *
+	 * @test
+	 * @covers \TEC\Tickets\Seating\Admin\Ajax::update_event_layout
+	 */
+	public function test_update_event_layout_denies_non_owner_with_generic_edit_posts(): void {
+		// An event owned by an administrator - NOT by the acting user.
+		$owner_id = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		$post_id  = static::factory()->post->create(
+			[
+				'post_author' => $owner_id,
+				'post_status' => 'publish',
+			]
+		);
+
+		// The acting user is an Author: they have the generic `edit_posts` capability, but do not
+		// own this event and lack `edit_others_posts`.
+		$author_id = self::factory()->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $author_id );
+
+		// Demonstrate exactly why `edit_posts` was insecure and `edit_post` is the fix: for a post
+		// this user does not own, the old check passes while the new one correctly denies.
+		$this->assertTrue(
+			current_user_can( 'edit_posts', $post_id ),
+			'The old, insecure check (edit_posts) ignores the post ID and lets a non-owner through.'
+		);
+		$this->assertFalse(
+			current_user_can( 'edit_post', $post_id ),
+			'The new, secure check (edit_post) is post-specific and denies the non-owner.'
+		);
+
+		$this->set_up_ajax_request_context( $author_id );
+		$this->make_controller()->register();
+
+		$_REQUEST['postId']    = $post_id;
+		$_REQUEST['newLayout'] = 'some-layout-1';
+		$wp_send_json_error    = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'User has no permission.',
+				],
+				403
+			),
+			'A non-owner with only edit_posts must be denied the layout update.'
+		);
+	}
+
+	/**
+	 * A user who genuinely has edit rights over the specific event (here an Editor, via
+	 * `edit_others_posts`) must pass the permission gate and proceed with the update.
+	 *
+	 * @test
+	 * @covers \TEC\Tickets\Seating\Admin\Ajax::update_event_layout
+	 */
+	public function test_update_event_layout_allows_authorized_user(): void {
+		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$editor_id = self::factory()->user->create( [ 'role' => 'editor' ] );
+		wp_set_current_user( $editor_id );
+
+		$this->assertTrue(
+			current_user_can( 'edit_post', $post_id ),
+			'An Editor can edit_post any post via edit_others_posts.'
+		);
+
+		$this->set_up_ajax_request_context( $editor_id );
+		$this->make_controller()->register();
+
+		$_REQUEST['postId']    = $post_id;
+		$_REQUEST['newLayout'] = 'non-existent-layout';
+		$wp_send_json_error    = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_UPDATED );
+
+		// The authorized user must NOT be blocked by the permission check; they proceed and only
+		// fail later because the requested layout does not exist.
+		$this->assertFalse(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'User has no permission.',
+				],
+				403
+			),
+			'An authorized user must not be blocked by the permission gate.'
+		);
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'Invalid layout ID',
+				],
+				400
+			),
+			'The authorized user proceeds past the permission gate to the layout lookup.'
+		);
+	}
+
+	/**
+	 * A user who only has the generic `edit_posts` capability but does not own the target event
+	 * must NOT be able to remove that event's seating layout.
+	 *
+	 * @test
+	 * @covers \TEC\Tickets\Seating\Admin\Ajax::remove_event_layout
+	 */
+	public function test_remove_event_layout_denies_non_owner_with_generic_edit_posts(): void {
+		$owner_id = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		$post_id  = static::factory()->post->create(
+			[
+				'post_author' => $owner_id,
+				'post_status' => 'publish',
+			]
+		);
+
+		$author_id = self::factory()->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $author_id );
+
+		$this->assertTrue(
+			current_user_can( 'edit_posts', $post_id ),
+			'The old, insecure check (edit_posts) ignores the post ID and lets a non-owner through.'
+		);
+		$this->assertFalse(
+			current_user_can( 'edit_post', $post_id ),
+			'The new, secure check (edit_post) is post-specific and denies the non-owner.'
+		);
+
+		$this->set_up_ajax_request_context( $author_id );
+		$this->make_controller()->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_EVENT_LAYOUT_REMOVE );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[
+					'error' => 'User has no permission.',
+				],
+				403
+			),
+			'A non-owner with only edit_posts must be denied the layout removal.'
+		);
+	}
 }

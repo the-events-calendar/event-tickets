@@ -33,10 +33,13 @@ class Cart {
 	public static $url_query_arg = 'tec-tc-cart';
 
 	/**
-	 * Which URL param we use to tell the checkout page to set a cookie, since you cannot set a cookie on a 302
-	 * redirect.
+	 * Which URL param was historically used to tell the checkout page to set a cart hash cookie.
 	 *
 	 * @since 5.1.9
+	 *
+	 * @deprecated 5.29.0.1 The cart hash is now derived solely from the server-set cart cookie; this
+	 *             parameter is no longer read or emitted by the plugin and has no effect. Kept only
+	 *             to avoid breaking any external references. See SVUL-L34.
 	 *
 	 * @var string
 	 */
@@ -290,10 +293,13 @@ class Cart {
 	 * Clear the cart.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.0.1 Added Pending_Order clean up before anything else.
 	 *
 	 * @return bool
 	 */
 	public function clear_cart() {
+		// Important that this is called before the cart hash is cleared.
+		tribe( Pending_Order::class )->clear();
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
@@ -550,6 +556,7 @@ class Cart {
 	 * Prepares the data from the Tickets form.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.0.1 Stopped adding the cart hash to the checkout redirect URL. See SVUL-L34.
 	 *
 	 * @return bool
 	 */
@@ -595,13 +602,6 @@ class Cart {
 			 * @param array  $data         Data that we just processed on the cart.
 			 */
 			$redirect_url = apply_filters( 'tec_tickets_commerce_cart_to_checkout_redirect_url_base', $redirect_url, $data );
-
-			if (
-				! isset( $_COOKIE[ $this->get_cart_hash() ] )
-				|| ! $_COOKIE[ $this->get_cart_hash() ]
-			) {
-				$redirect_url = add_query_arg( [ static::$cookie_query_arg => $this->get_cart_hash() ], $redirect_url );
-			}
 
 			/**
 			 * Which url it redirects after the processing of the cart.

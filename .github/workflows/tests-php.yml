@@ -11,7 +11,7 @@ jobs:
       # Checkout the repo
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
       # Checkout the repo
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
           token: ${{ secrets.GH_BOT_TOKEN }}
@@ -55,7 +55,7 @@ jobs:
       # Checkout slic
       # ------------------------------------------------------------------------------
       - name: Checkout slic
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: stellarwp/slic
           ref: main
