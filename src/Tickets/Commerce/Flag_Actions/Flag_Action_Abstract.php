@@ -2,9 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Emails\Order_Type_Trait;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 /**
  * Class Flag Action Abstract.
@@ -14,6 +14,8 @@ use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 abstract class Flag_Action_Abstract implements Flag_Action_Interface {
+	use Order_Type_Trait;
+
 	/**
 	 * When will this particular flag wil be triggered
 	 *
@@ -126,6 +128,9 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Now also checks `is_correct_order_context()` so a flag action can be scoped to
+	 *            RSVP-only or ticket-only orders.
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
 		if ( ! $this->has_flags( $new_status, 'AND', $post ) ) {
@@ -195,30 +200,10 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	}
 
 	/**
-	 * Determines whether an order is composed exclusively of TC-RSVP items.
-	 *
-	 * @since TBD
-	 *
-	 * @param \WP_Post $order The decorated order post object.
-	 *
-	 * @return bool
-	 */
-	protected function is_rsvp_order( \WP_Post $order ): bool {
-		if ( empty( $order->items ) || ! is_array( $order->items ) ) {
-			return false;
-		}
-
-		foreach ( $order->items as $item ) {
-			if ( RSVP_V2_Constants::TC_RSVP_TYPE !== ( $item['type'] ?? '' ) ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD The post is now resolved to its decorated order via `tec_tc_get_order()` before
+	 *            `should_trigger()` runs, so order-context checks can read `$order->items`.
 	 */
 	public function maybe_handle( Status_Interface $new_status, $old_status, $post ) {
 		/**

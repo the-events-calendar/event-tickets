@@ -1,6 +1,6 @@
 <?php
 /**
- * Shared order-type helpers for email senders.
+ * Shared order-type helpers, used by order email senders and Flag Actions alike.
  *
  * @since TBD
  *

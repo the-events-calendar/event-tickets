@@ -610,6 +610,8 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since 5.18.1 Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 * @since TBD - Add parameter to specify the ticket type to filter the cart items.
+	 * @since TBD Resolves the cart repository via `$ticket_type` (through `Cart::get_repository()`),
+	 *            so TC-RSVP orders read from `RSVP_Cart` instead of the generic cart.
 	 *
 	 * @param Gateway_Interface $gateway     The payment gateway.
 	 * @param array|null        $purchaser   The purchaser information.
@@ -623,9 +625,11 @@ class Order extends Abstract_Order {
 
 		tribe_set_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR, $ticket_type );
 
-		$cart_reader = $cart->get_repository();
-
-		tribe_unset_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR );
+		try {
+			$cart_reader = $cart->get_repository();
+		} finally {
+			tribe_unset_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR );
+		}
 
 		// Prepare the items for the order.
 		$items = array_filter(

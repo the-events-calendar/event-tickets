@@ -80,6 +80,8 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Sets up all the Flag Action instances for the Classes registered in $default_flag_actions.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Merges the shared and ticket-only flag action lists, registers the order email
+	 *            senders, and resolves each flag action via the container instead of `new`.
 	 */
 	public function register() {
 		$this->default_flag_actions = array_merge(
