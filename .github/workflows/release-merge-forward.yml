@@ -19,7 +19,7 @@ jobs:
           echo "- forward-branch: \`${{ github.event.inputs.forward-branch }}\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.forward-branch }}
           fetch-depth: 0
@@ -53,7 +53,7 @@ jobs:
     if: ${{ needs.create-branch.outputs.skip == '0' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
