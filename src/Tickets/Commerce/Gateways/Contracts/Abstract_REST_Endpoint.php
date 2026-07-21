@@ -2,7 +2,12 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Pending_Order;
 use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Created;
+use WP_REST_Request;
 
 /**
  * Abstract REST Endpoint Contract
@@ -21,6 +26,35 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 * @var string
 	 */
 	protected string $path;
+
+	/**
+	 * The Pending_Order instance.
+	 *
+	 * @since 5.29.0.1
+	 *
+	 * @var Pending_Order
+	 */
+	protected Pending_Order $pending_order;
+
+	/**
+	 * The Cart instance.
+	 *
+	 * @since 5.29.0.1
+	 *
+	 * @var Cart
+	 */
+	private Cart $cart;
+
+	/**
+	 * @since 5.29.0.1
+	 *
+	 * @param Pending_Order $pending_order The Pending_Order instance.
+	 * @param Cart          $cart          The Cart instance.
+	 */
+	public function __construct( Pending_Order $pending_order, Cart $cart ) {
+		$this->pending_order = $pending_order;
+		$this->cart          = $cart;
+	}
 
 	/**
 	 * @inheritDoc
@@ -85,5 +119,39 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 */
 	public function get_documentation() {
 		return [];
+	}
+
+	/**
+	 * Ensures that the current request tries to edit an order id which is stored as pending edit.
+	 *
+	 * @since 5.29.0.1
+	 *
+	 * @param WP_REST_Request $request The REST Request instance.
+	 *
+	 * @return bool
+	 */
+	public function current_user_can_edit_order( WP_REST_Request $request ): bool {
+		$order_id = $request->get_param( 'order_id' );
+
+		if ( ! $order_id ) {
+			return false;
+		}
+
+		if ( $order_id !== $this->pending_order->get() ) {
+			return false;
+		}
+
+		$existing_order = tec_tc_orders()->by_args(
+			[
+				'gateway_order_id' => $order_id,
+				'hash'             => $this->cart->get_cart_hash( false ),
+				'status'           => [
+					tribe( Created::class )->get_wp_slug(),
+					tribe( Pending::class )->get_wp_slug(),
+				],
+			]
+		)->first();
+
+		return ! empty( $existing_order->ID );
 	}
 }
