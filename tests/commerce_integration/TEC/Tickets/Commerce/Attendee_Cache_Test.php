@@ -8,6 +8,8 @@
 namespace TEC\Tickets\Commerce;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
 use TEC\Tickets\Commerce\Module as Commerce;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -99,6 +101,37 @@ class Attendee_Cache_Test extends WPTestCase {
 		$this->assertEmpty(
 			$cached_after['check_in'],
 			'Uncheck-in must invalidate the cached attendee without an object-cache flush.'
+		);
+	}
+
+	/**
+	 * It should return updated ticket-sent status from cache after the counter increments without flushing.
+	 *
+	 * @test
+	 */
+	public function should_reflect_ticket_sent_in_cached_attendee_without_flushing(): void {
+		$post_id     = static::factory()->post->create();
+		$ticket_id   = $this->create_tc_ticket( $post_id, 10 );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'ticket_sent' => false ] );
+
+		// Prime the week-long `tec_tc_get_attendee` cache while the ticket email has not been sent.
+		$cached_before = tec_tc_get_attendee( $attendee_id, ARRAY_A );
+		$this->assertNotEmpty( $cached_before );
+		$this->assertEmpty( $cached_before['ticket_sent'] );
+
+		tribe( Email_Communication::class )->update_ticket_sent_counter( $attendee_id );
+
+		$cached_after = tec_tc_get_attendee( $attendee_id, ARRAY_A );
+
+		$this->assertNotEmpty( $cached_after );
+		$this->assertEquals(
+			1,
+			(int) $cached_after['ticket_sent'],
+			'Ticket-sent counter must invalidate the cached attendee without an object-cache flush.'
+		);
+		$this->assertEquals(
+			1,
+			(int) get_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, true )
 		);
 	}
 }
