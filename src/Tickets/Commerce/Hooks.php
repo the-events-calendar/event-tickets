@@ -132,7 +132,6 @@ class Hooks extends Service_Provider {
 
 		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'filter_tickets_in_cart' ], 10, 2 );
 		add_filter( 'tribe_tickets_commerce_cart_get_tickets_' . Base_Commerce::PROVIDER, [ $this, 'filter_rest_get_tickets_in_cart' ] );
-		add_filter( 'tribe_rest_url', [ $this, 'filter_rest_cart_url' ], 15, 4 );
 
 		// @todo @backend We need to revisit the refactoring of this report.
 		// add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
@@ -963,24 +962,25 @@ class Hooks extends Service_Provider {
 	 * Modify the cart contents for the Rest call around Tickets Commerce cart.
 	 *
 	 * @since 5.2.0
+	 * @since 5.29.0.1 The cart is read from the cart cookie, not the request param. See SVUL-L34.
 	 *
 	 * @param array $tickets
 	 *
 	 * @return array
 	 */
 	public function filter_rest_get_tickets_in_cart( $tickets ) {
-		$cookie = tribe_get_request_var( Cart::$cookie_query_arg );
-		if ( empty( $cookie ) ) {
+		/** @var Cart $cart */
+		$cart = tribe( Cart::class );
+
+		// The cart is identified solely by the visitor's server-set cart cookie; a request parameter
+		// must never be able to select or override which cart is read. See SVUL-L34.
+		if ( empty( $cart->get_cart_hash() ) ) {
 			return $tickets;
 		}
 
 		// We reset the tickets passed.
 		$tickets = [];
-		/* @var Cart $cart */
-		$cart   = tribe( Cart::class );
-		$cookie = tribe_get_request_var( Cart::$cookie_query_arg );
-		$cart->set_cart_hash( $cookie );
-		$items = $cart->get_items_in_cart( true );
+		$items   = $cart->get_items_in_cart( true );
 
 		foreach ( $items as $data ) {
 			$tickets[] = [
@@ -1001,30 +1001,28 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $url
-	 * @param string $path
-	 * @param int    $blog_id
-	 * @param string $scheme
+	 * @deprecated 5.29.0.1 The cart hash is no longer passed through the URL; the cart is identified solely
+	 *             by the server-set cart cookie. This filter is no longer registered and returns the URL
+	 *             unchanged. See SVUL-L34.
+	 *
+	 * @param string $url     The REST URL.
+	 * @param string $path    The REST path.
+	 * @param int    $blog_id The blog ID.
+	 * @param string $scheme  The request scheme.
 	 *
 	 * @return string
 	 */
 	public function filter_rest_cart_url( $url, $path, $blog_id, $scheme ) {
-		if ( '/cart/' !== $path ) {
-			return $url;
-		}
+		_deprecated_function( __METHOD__, '5.29.0.1' );
 
-		$cookie = tribe_get_request_var( Cart::$cookie_query_arg );
-		if ( empty( $cookie ) ) {
-			return $url;
-		}
-
-		return add_query_arg( [ Cart::$cookie_query_arg => $cookie ], $url );
+		return $url;
 	}
 
 	/**
 	 * Hooks for Compatibility with The Events Calendar
 	 *
 	 * @since 5.2.0
+	 * @since 5.29.0.1 Stopped registering the deprecated filter_rest_cart_url filter. See SVUL-L34.
 	 */
 	public function register_event_compatibility_hooks() {
 

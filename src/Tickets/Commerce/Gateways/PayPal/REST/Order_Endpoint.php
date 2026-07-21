@@ -72,7 +72,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
 				'callback'            => [ $this, 'handle_update_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'current_user_can_edit_order' ],
 			]
 		);
 
@@ -83,7 +83,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::DELETABLE,
 				'args'                => $this->fail_order_args(),
 				'callback'            => [ $this, 'handle_fail_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'current_user_can_edit_order' ],
 			]
 		);
 
@@ -175,6 +175,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Respond with the ID for Paypal Usage.
 		$response['success'] = true;
 		$response['id']      = $paypal_order['id'];
+
+		$this->pending_order->set( $response['id'] );
 
 		return new WP_REST_Response( $response );
 	}
@@ -448,7 +450,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null );
 		}
 
-		$failed_reason = $request->get_param( 'failed_reason' );
 		$failed_status = $request->get_param( 'failed_status' );
 		if ( empty( $failed_status ) ) {
 			$failed_status = 'not-completed';

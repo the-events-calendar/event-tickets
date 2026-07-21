@@ -23,7 +23,8 @@ class REST_Test extends Controller_Test_Case {
 		$routes = $rest_server->get_routes();
 		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/on-boarding', $routes );
 		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/order', $routes );
-		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/order/(?P<order_id>[0-9a-zA-Z_-]+)', $routes );
+		// The `order/(?P<order_id>)` DELETE (fail order) route was intentionally removed; `handle_fail_order`/`fail_order_args` are deprecated.
+		$this->assertArrayNotHasKey( '/tribe/tickets/v1/commerce/square/order/(?P<order_id>[0-9a-zA-Z_-]+)', $routes );
 		$this->assertArrayHasKey( '/tribe/tickets/v1/commerce/square/webhooks', $routes );
 	}
 }
