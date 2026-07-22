@@ -215,6 +215,7 @@ class Coupons extends Base_API {
 	 * Apply a coupon.
 	 *
 	 * @since 5.18.0
+	 * @since 5.29.0.1 The cart is identified by the cart cookie, not the request. See SVUL-L34.
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -231,7 +232,10 @@ class Coupons extends Base_API {
 
 			/** @var Cart $cart_page */
 			$cart_page = tribe( Cart::class );
-			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
+
+			// The cart is identified solely by the visitor's server-set cart cookie; the request
+			// cannot select or override which cart is used. See SVUL-L34.
+			$cart_page->set_cart_hash( $cart_page->get_cart_hash() );
 
 			/** @var Abstract_Cart $cart */
 			$cart = $cart_page->get_repository();
@@ -293,6 +297,7 @@ class Coupons extends Base_API {
 	 * Remove a coupon.
 	 *
 	 * @since 5.18.0
+	 * @since 5.29.0.1 The cart is identified by the cart cookie, not the request. See SVUL-L34.
 	 *
 	 * @param Request $request The request object.
 	 *
@@ -311,7 +316,10 @@ class Coupons extends Base_API {
 
 			/** @var Cart $cart_page */
 			$cart_page = tribe( Cart::class );
-			$cart_page->set_cart_hash( $request->get_param( 'cart_hash' ) );
+
+			// The cart is identified solely by the visitor's server-set cart cookie; the request
+			// cannot select or override which cart is used. See SVUL-L34.
+			$cart_page->set_cart_hash( $cart_page->get_cart_hash() );
 
 			/** @var Abstract_Cart $cart */
 			$cart = $cart_page->get_repository();
@@ -451,6 +459,7 @@ class Coupons extends Base_API {
 	 * Get the arguments for an endpoint.
 	 *
 	 * @since 5.18.0
+	 * @since 5.29.0.1 Deprecated the ignored 'cart_hash' argument. See SVUL-L34.
 	 *
 	 * @param string $endpoint
 	 *
@@ -468,10 +477,12 @@ class Coupons extends Base_API {
 
 		$common_args = [
 			'cart_hash'         => [
-				'description' => esc_html__( 'The cart hash.', 'event-tickets' ),
+				// Deprecated: the cart is now identified solely by the visitor's cart cookie. This
+				// parameter is accepted for backwards compatibility but ignored. See SVUL-L34.
+				'description' => esc_html__( 'Deprecated. The cart is identified by the cart cookie; this value is ignored.', 'event-tickets' ),
 				'type'        => 'string',
 				'format'      => 'text-field',
-				'required'    => true,
+				'required'    => false,
 			],
 			'payment_intent_id' => [
 				'description' => esc_html__( 'The Stripe payment intent to apply the coupon to.', 'event-tickets' ),

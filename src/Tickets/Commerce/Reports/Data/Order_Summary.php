@@ -449,7 +449,12 @@ class Order_Summary {
 		}
 
 		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $this->post_id );
-		$tickets  = $provider->get_tickets( $this->post_id );
+
+		if ( ! $provider ) {
+			return [];
+		}
+
+		$tickets = $provider->get_tickets( $this->post_id );
 
 		foreach ( $tickets as $ticket ) {
 			$this->tickets[ $ticket->ID ] = $ticket;

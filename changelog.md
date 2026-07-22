@@ -1,5 +1,19 @@
 # Changelog
 
+### [5.29.1] 2026-07-22
+
+* Fix - Fixed triggered emails (RSVP going, ticket purchased) failing silently with a 403 "Unauthorized token" response from Promoter due to a missing `domain` claim in the trigger JWT payload.
+* Fix - Resolved a fatal error on the Attendees admin page when having both TC and Woo tickets bought on the same event.
+* Fix - Resolved a fatal error on the Orders admin page when viewing orders for an event without an active ticket provider. The Orders page now gracefully handles missing provider context instead of crashing.
+* Fix - Resolved an issue where the legacy Orders tabbed view could render duplicate "Orders" tabs when both Tickets Commerce and WooCommerce (Event Tickets Plus) were active.
+* Security - Extracted the event-accessibility check into `is_event_accessible()` for reuse in RSVPs.
+* Language - 1 new strings added, 87 updated, 0 fuzzied, and 1 obsoleted.
+
+### [5.29.0.1] 2026-07-10
+
+* Security - Strengthened Tickets Commerce failed order Gateway endpoints.
+* Security - Strengthened capability checks for Seating's Layout ajax actions.
+
 ### [5.29.0] 2026-07-08
 
 * Fix - Excluded RSVP "not going" attendees from the Dashboard "At a Glance" attendee count so the number reflects actual attendance.
