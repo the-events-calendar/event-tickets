@@ -380,6 +380,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * Function that process the RSVP
 	 *
 	 * @since 4.9
+	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 *
 	 * @return void
 	 */
@@ -399,8 +400,19 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		$rsvp        = tribe( 'tickets.rsvp' );
 		$has_tickets = false;
 		$event       = $rsvp->get_event_for_ticket( $ticket_id );
-		$post_id     = $event->ID;
-		$ticket      = $rsvp->get_ticket( $post_id, $ticket_id );
+
+		if ( ! $event instanceof WP_Post ) {
+			wp_send_json_error( $response );
+		}
+
+		$post_id = $event->ID;
+
+		// Block processing RSVPs for events the requesting user cannot currently see.
+		if ( ! $rsvp->is_event_accessible( $post_id ) ) {
+			wp_send_json_error( $response );
+		}
+
+		$ticket = $rsvp->get_ticket( $post_id, $ticket_id );
 
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated

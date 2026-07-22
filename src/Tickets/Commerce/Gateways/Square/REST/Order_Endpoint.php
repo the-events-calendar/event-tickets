@@ -206,7 +206,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.24.0
 	 * @since 5.27.6.1 Added allowed failure statuses to the response for failed orders.
 	 *
-	 * @depecated 5.29.0.1
+	 * @deprecated 5.29.0.1
 	 *
 	 * @return array
 	 */
