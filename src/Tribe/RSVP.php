@@ -306,6 +306,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.12.3
 	 * @since 5.5.10 Added `going` to the $args variable.
 	 * @since 5.18.0 Added check for valid post status.
+	 * @since TBD Extracted the event-accessibility check into `is_event_accessible()` for reuse.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -325,21 +326,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		// Get post status.
-		$post_status = get_post_status( $post_id );
-
-		// Check if the post is private and the user can't read it.
-		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
-			return '';
-		}
-
-		// If post is anything other than private or published, return empty.
-		if ( ! in_array( $post_status, [ 'publish', 'private' ] ) ) {
-			return '';
-		}
-
-		// Check password if one exists.
-		if ( post_password_required( $post_id ) ) {
+		if ( ! $this->is_event_accessible( $post_id ) ) {
 			return '';
 		}
 
@@ -1993,6 +1980,37 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Determines whether an event is currently visible/accessible to the requesting user,
+	 * i.e. whether an RSVP for it should be rendered or processed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The event (or other ticket-able post) ID.
+	 *
+	 * @return bool
+	 */
+	public function is_event_accessible( $post_id ) {
+		$post_status = get_post_status( $post_id );
+
+		// Check if the post is private and the user can't read it.
+		if ( 'private' === $post_status && ! current_user_can( 'read_private_posts' ) ) {
+			return false;
+		}
+
+		// If post is anything other than private or published, it's not accessible.
+		if ( ! in_array( $post_status, [ 'publish', 'private' ], true ) ) {
+			return false;
+		}
+
+		// Check password if one exists.
+		if ( post_password_required( $post_id ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Accepts a reference to a product (either an object or a numeric ID) and
 	 * tests to see if it functions as a ticket: if so, the corresponding event
 	 * object is returned. If not, boolean false is returned.
@@ -2690,6 +2708,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 *
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
+	 * @since TBD Reject the request unless the requesting user can access the ticket's event.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -2703,7 +2722,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Get the event this tickets is for.
 		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
 
-		if ( empty( $post_id ) ) {
+		// Deliberately identical to the empty-$post_id error: don't let the response reveal
+		// whether a ticket ID exists but is inaccessible versus not existing at all.
+		if ( empty( $post_id ) || ! $this->is_event_accessible( $post_id ) ) {
 			return new WP_Error( 'rsvp-invalid-parent-id', __( 'Invalid parent ID provided!', 'event-tickets' ) );
 		}
 
