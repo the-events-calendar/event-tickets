@@ -107,6 +107,9 @@ class Provider extends Service_Provider {
 		// Seating.
 		$this->container->register( Seating\Controller::class );
 
+		// Ticket-Able Post Actions.
+		$this->container->register( Ticket_Able_Post_Actions::class );
+
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
 

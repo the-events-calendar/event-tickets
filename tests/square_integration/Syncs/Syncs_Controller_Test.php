@@ -91,27 +91,6 @@ class Syncs_Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_should_get_sync_able_tickets_of_event(): void {
-		$post = self::factory()->post->create();
-		$ticket_id_1 = $this->create_on_sale_tc_ticket( $post, 10 );
-		$ticket_id_2 = $this->create_about_to_be_on_sale_tc_ticket( $post, 20 );
-		$ticket_id_3 = $this->create_pre_sale_tc_ticket( $post, 30 );
-		$ticket_id_4 = $this->create_after_sales_tc_ticket( $post, 40 );
-
-		$tickets = Controller::get_sync_able_tickets_of_event( $post );
-
-		$ticket_ids = array_map( fn( $ticket ) => $ticket->ID, $tickets );
-
-		$this->assertCount( 3, $tickets );
-		$this->assertContains( $ticket_id_1, $ticket_ids );
-		$this->assertContains( $ticket_id_2, $ticket_ids );
-		$this->assertNotContains( $ticket_id_3, $ticket_ids );
-		$this->assertContains( $ticket_id_4, $ticket_ids );
-	}
-
-	/**
-	 * @test
-	 */
 	public function it_should_get_ticket_able_post_types_to_sync(): void {
 		$ptypes = Controller::ticket_able_post_types_to_sync();
 

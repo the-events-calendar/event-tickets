@@ -90,7 +90,7 @@ trait Ticket_Maker {
 	protected function create_about_to_be_on_sale_tc_ticket( $post_id, $price = 1, array $overrides = [] ) {
 		return $this->create_tc_ticket( $post_id, $price, array_merge( $overrides, [
 			'ticket_start_date' => gmdate( 'Y-m-d' ),
-			'ticket_start_time' => gmdate( 'H:i:s', time() + MINUTE_IN_SECONDS - Ticket_Data::get_ticket_about_to_go_to_sale_seconds( $post_id ) ),
+			'ticket_start_time' => gmdate( 'H:i:s', time() + Ticket_Data::get_ticket_about_to_go_to_sale_seconds( $post_id ) - MINUTE_IN_SECONDS ),
 			'ticket_end_date'   => '2150-03-01',
 			'ticket_end_time'   => '20:00:00',
 		] ) );

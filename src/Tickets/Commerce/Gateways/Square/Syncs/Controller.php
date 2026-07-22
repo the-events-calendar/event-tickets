@@ -203,49 +203,16 @@ class Controller extends Controller_Contract {
 	 * Get the sync-able tickets of an event.
 	 *
 	 * @since 5.24.0
+	 * @deprecated TBD
 	 *
 	 * @param int $event_id The event ID.
 	 *
 	 * @return array The syncable tickets.
 	 */
 	public static function get_sync_able_tickets_of_event( int $event_id ): array {
-		$cache_key = 'tec_tickets_commerce_square_sync_able_tickets_' . $event_id;
-		$cache     = tribe_cache();
-
-		if ( ! empty( $cache[ $cache_key ] ) && is_array( $cache[ $cache_key ] ) ) {
-			return $cache[ $cache_key ];
-		}
-
+		_deprecated_function( __METHOD__, 'TBD', esc_html( Ticket_Data::class . '::get_sync_able_tickets_of_event' ) );
 		$ticket_data = tribe( Ticket_Data::class );
-
-		$tickets_stats = $ticket_data->get_posts_tickets_data( $event_id );
-
-		if (
-			empty( $tickets_stats['tickets_on_sale'] ) &&
-			empty( $tickets_stats['tickets_about_to_go_to_sale'] ) &&
-			empty( $tickets_stats['tickets_have_ended_sales'] )
-		) {
-			return [];
-		}
-
-		$ticket_ids = array_unique(
-			array_merge(
-				$tickets_stats['tickets_on_sale'],
-				$tickets_stats['tickets_about_to_go_to_sale'],
-				$tickets_stats['tickets_have_ended_sales']
-			)
-		);
-
-		$tickets = array_filter(
-			array_map(
-				static fn ( $ticket_id ) => $ticket_data->load_ticket_object( $ticket_id ),
-				$ticket_ids
-			)
-		);
-
-		$cache[ $cache_key ] = $tickets;
-
-		return $tickets;
+		return $ticket_data->get_sync_able_tickets_of_event( $event_id );
 	}
 
 	/**

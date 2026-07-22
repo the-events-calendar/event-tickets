@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects;
 
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
-use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Sync_Controller;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket_Data;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 
 /**
@@ -98,7 +98,7 @@ class Event_Item extends Item {
 		$this->event            = get_post( $post_id );
 
 		if ( empty( $tickets ) ) {
-			$tickets = Sync_Controller::get_sync_able_tickets_of_event( $post_id );
+			$tickets = tribe( Commerce_Ticket_Data::class )->get_sync_able_tickets_of_event( $post_id );
 		}
 
 		$this->set_tickets( $tickets );

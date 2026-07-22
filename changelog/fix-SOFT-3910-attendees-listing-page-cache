@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+The Attendees page table could show stale check-in data in some cases.

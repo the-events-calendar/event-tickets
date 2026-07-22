@@ -1126,7 +1126,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$this->items = $items;
-		$cache->set( $cache_key, $items, 60 );
+		$cache->set( $cache_key, $items, Tribe__Cache::NON_PERSISTENT );
 
 		$this->set_pagination_args( $pagination_args );
 	}
