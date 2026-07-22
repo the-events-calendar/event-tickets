@@ -15,6 +15,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 	const nextState = sharedReducer( state, action );
 
 	switch ( action.type ) {
+		case types.DELETE_RSVP:
+			return DEFAULT_STATE;
 		case types.SET_RSVP_IAC:
 			return {
 				...nextState,
