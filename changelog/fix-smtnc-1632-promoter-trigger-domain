@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Fixed triggered emails (RSVP going, ticket purchased) failing silently with a 403 "Unauthorized token" response from Promoter due to a missing `domain` claim in the trigger JWT payload.
