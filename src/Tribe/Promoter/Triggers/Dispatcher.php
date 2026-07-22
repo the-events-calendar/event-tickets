@@ -95,7 +95,7 @@ class Dispatcher {
 	 * Creat ea payload using the trigger object.
 	 *
 	 * @since 4.12.3
-	 * @since TBD Added the `domain` key, required by the Promoter connector to authorize the request.
+	 * @since 5.29.1 Added the `domain` key, required by the Promoter connector to authorize the request.
 	 *
 	 * @param Triggered $trigger The trigger object creating this action.
 	 *

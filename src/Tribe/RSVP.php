@@ -306,7 +306,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.12.3
 	 * @since 5.5.10 Added `going` to the $args variable.
 	 * @since 5.18.0 Added check for valid post status.
-	 * @since TBD Extracted the event-accessibility check into `is_event_accessible()` for reuse.
+	 * @since 5.29.1 Extracted the event-accessibility check into `is_event_accessible()` for reuse.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -1983,7 +1983,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Determines whether an event is currently visible/accessible to the requesting user,
 	 * i.e. whether an RSVP for it should be rendered or processed.
 	 *
-	 * @since TBD
+	 * @since 5.29.1
 	 *
 	 * @param int $post_id The event (or other ticket-able post) ID.
 	 *
@@ -2708,7 +2708,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 *
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
-	 * @since TBD Reject the request unless the requesting user can access the ticket's event.
+	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
