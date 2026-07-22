@@ -380,7 +380,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * Function that process the RSVP
 	 *
 	 * @since 4.9
-	 * @since TBD Reject the request unless the requesting user can access the ticket's event.
+	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
 	 *
 	 * @return void
 	 */

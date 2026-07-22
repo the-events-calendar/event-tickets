@@ -54,7 +54,7 @@ class Tabbed_View {
 	 * 
 	 * Skips registration when Tickets Commerce is disabled or when ETP has already registered an Orders tab.
 	 *
-	 * @since TBD
+	 * @since 5.29.1
 	 *
 	 * @param Tribe__Tabbed_View $tabbed_view The tabbed view that is rendering.
 	 * @param WP_Post            $post        The post orders should be shown for.
@@ -130,7 +130,7 @@ class Tabbed_View {
 	/**
 	 * Whether the given tabbed view already has an Orders tab registered by another provider.
 	 *
-	 * @since TBD
+	 * @since 5.29.1
 	 *
 	 * @param Tribe__Tabbed_View $tabbed_view The tabbed view being rendered.
 	 *
