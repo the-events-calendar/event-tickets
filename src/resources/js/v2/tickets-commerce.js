@@ -365,14 +365,10 @@ window.tribe.tickets.commerce = {};
 			ajaxInProgress = true;
 			obj.loaderShow();
 
-			// Get the cart hash from the URL.
-			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
-
 			const requestData = {
 				coupon: couponValue,
 				nonce,
 				purchaser_data: obj.getPurchaserData( $( obj.selectors.purchaserFormContainer ) ),
-				cart_hash: cartHash[ 1 ],
 			};
 
 			if ( undefined !== stripeIntentId ) {
@@ -382,6 +378,8 @@ window.tribe.tickets.commerce = {};
 			$.ajax( {
 				url: `${ tecTicketsCommerce.restUrl }coupons/apply`,
 				method: 'POST',
+				// Forward the cart cookie so the server can identify the cart.
+				xhrFields: { withCredentials: true },
 				data: requestData,
 				success( response ) {
 					if ( response.success ) {
@@ -454,12 +452,9 @@ window.tribe.tickets.commerce = {};
 			ajaxInProgress = true;
 			obj.loaderShow();
 
-			const cartHash = window.location.search.match( /tec-tc-cookie=([^&]*)/ );
-
 			const requestData = {
 				nonce,
 				coupon: couponValue,
-				cart_hash: cartHash[ 1 ],
 			};
 
 			if ( undefined !== paymentIntentId ) {
@@ -470,6 +465,8 @@ window.tribe.tickets.commerce = {};
 			$.ajax( {
 				url: `${ window.tecTicketsCommerce.restUrl }coupons/remove`,
 				method: 'POST',
+				// Forward the cart cookie so the server can identify the cart.
+				xhrFields: { withCredentials: true },
 				data: requestData,
 				beforeSend() {
 					obj.loaderShow();

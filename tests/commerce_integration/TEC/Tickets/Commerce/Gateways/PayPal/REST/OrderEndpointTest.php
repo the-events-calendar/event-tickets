@@ -8,7 +8,7 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 	 * @dataProvider order_item_name_provider
 	 */
 	public function test_format_order_item_name( string $text, string $expected ): void {
-		$order_endpoint = new Order_Endpoint();
+		$order_endpoint = tribe( Order_Endpoint::class );
 		$result         = $order_endpoint->format_order_item_name( $text );
 		$this->assertSame( $expected, $result );
 	}

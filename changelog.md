@@ -1,5 +1,23 @@
 # Changelog
 
+### [5.29.0.1] 2026-07-10
+
+* Security - Strengthened Tickets Commerce failed order Gateway endpoints.
+* Security - Strengthened capability checks for Seating's Layout ajax actions.
+
+### [5.29.0] 2026-07-08
+
+* Fix - Excluded RSVP "not going" attendees from the Dashboard "At a Glance" attendee count so the number reflects actual attendance.
+* Fix - Resolved an issue where duplicating an event with shared-capacity tickets reset the duplicated tickets capacity to zero.
+* Tweak - Added the `tec_tickets_glance_item_attendee_count_enabled` filter to allow disabling the attendee count glance item entirely.
+* Performance - Replaced full attendee object hydration in `Glance_Items::update_attendee_count()` with a single SQL COUNT query, preventing PHP timeouts and infinite WP-Cron re-queuing on high-volume sites.
+* Compatibility - Improved PHP compatibility for versions 7.4 and up to 8.4.
+* Language - 4 new strings added, 97 updated, 0 fuzzied, and 0 obsoleted.
+
+### [5.28.5.1] 2026-06-29
+
+* Security - Tightened up Stripe checkout validation.
+
 ### [5.28.5] 2026-06-24
 
 * Fix - Prevented the front-end ticket styles and scripts from loading on pages without tickets, such as the WooCommerce cart and checkout.
@@ -7,7 +25,6 @@
 * Tweak - Added the `tribe_tickets_assets_should_enqueue_frontend` filter to control whether front-end ticket assets are enqueued.
 * Tweak - Updated broken link to coding standards in `CONTRIBUTING.md`
 * Performance - Improved the performance of the ticketed and unticketed filter counts on admin post lists.
-* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted.
 * Language - 0 new strings added, 25 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.28.4.1] 2026-06-19

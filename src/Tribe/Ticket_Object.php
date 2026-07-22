@@ -275,7 +275,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * since 5.6.4
 		 *
-		 * @since TBD Made $data explicitly nullable.
+		 * @since 5.29.0 Made $data explicitly nullable.
 		 *
 		 * @param array<string,mixed>|null $data The data to populate the object with, if any.
 		 */

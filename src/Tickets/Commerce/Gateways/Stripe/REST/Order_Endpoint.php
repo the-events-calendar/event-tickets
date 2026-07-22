@@ -68,18 +68,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
 				'callback'            => [ $this, 'handle_update_order' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z_-]+)',
-			[
-				'methods'             => WP_REST_Server::DELETABLE,
-				'args'                => $this->fail_order_args(),
-				'callback'            => [ $this, 'handle_fail_order' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'current_user_can_edit_order' ],
 			]
 		);
 
@@ -101,6 +90,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
 	 * @since 5.3.0
+	 * @since 5.29.0.1 Removed the cart hash query param from the return URL. See SVUL-L34.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -212,11 +202,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['success']       = true;
 		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
-		$response['return_url']    = add_query_arg( [ Cart::$cookie_query_arg => tribe( Cart::class )->get_cart_hash() ], tribe( Checkout::class )->get_url() );
+		$response['return_url']    = tribe( Checkout::class )->get_url();
 
 		if ( $status->get_slug() === Pending::SLUG ) {
 			$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 		}
+
+		$this->pending_order->set( $payment_intent['id'] );
 
 		return new WP_REST_Response( $response );
 	}
@@ -308,6 +300,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( $payment_intent['client_secret'] !== $client_secret ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-payment-intent-secret', $messages['failed-payment-intent-secret'], $order );
+		}
+
+		/*
+		 * Security: confirm the Payment Intent's amount matches this order's total before
+		 * completing it, so a Payment Intent created for a different (e.g. lower-value) order
+		 * cannot be used to mark this one paid.
+		 */
+		if ( ! Payment_Intent::is_valid_for_order( $payment_intent, $order ) ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-payment-intent-order-mismatch', $messages['payment-intent-order-mismatch'], $order );
 		}
 
 		$status = tribe( Status::class )->convert_payment_intent_to_commerce_status( $payment_intent );
@@ -407,12 +408,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 *
+	 * @depreacated 5.29.0.1
+	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function handle_fail_order( WP_REST_Request $request ) {
-
+		_deprecated_function( __METHOD__, '5.29.0.1', 'This method has been deprecated without a replacement.' );
 	}
 
 	/**
@@ -431,6 +434,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'order-not-found'                  => __( 'Order not found, please restart your checkout process.', 'event-tickets' ),
 			'failed-getting-payment-intent'    => __( 'Your payment is invalid. Please try again.', 'event-tickets' ),
 			'failed-payment-intent-secret'     => __( 'Your payment failed security verification with Gateway. Please try again.', 'event-tickets' ),
+			'payment-intent-order-mismatch'    => __( 'Your payment does not match this order. Please restart your checkout process.', 'event-tickets' ),
 			'failed-payment'                   => __( 'Your payment method has failed. Please try again.', 'event-tickets' ),
 			'invalid-payment-intent-status'    => __( 'Your payment status was not recognized. Please try again.', 'event-tickets' ),
 			'empty-cart'                       => __( 'Cannot generate an order for an empty cart, please select new items to checkout.', 'event-tickets' ),
