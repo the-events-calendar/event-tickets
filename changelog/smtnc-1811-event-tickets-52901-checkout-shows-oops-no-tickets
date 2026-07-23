@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Resolved an issue where the Tickets Commerce checkout could show no tickets after selecting tickets on sites behind a full-page or edge cache, by preventing the cart-to-checkout redirect from being cached.
