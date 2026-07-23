@@ -73,13 +73,14 @@
     "dev": "WP_DEVTOOL=eval-source-map wp-scripts start",
     "jest": "jest",
     "spectral": "spectral lint",
-    "changelog": "./vendor/bin/changelogger add"
+    "changelog": "npx @stellarwp/changelogger add"
   },
   "engines": {
     "node": "18.17.0",
     "npm": "9.6.7"
   },
   "devDependencies": {
+    "@stellarwp/changelogger": "^0.10.0",
     "@redux-devtools/extension": "^3.3.0",
     "@stellarwp/tyson": "*",
     "@stoplight/spectral-cli": "^6.15.0",
@@ -147,5 +148,36 @@
     "validator": "^13.7.0",
     "whatwg-fetch": "^2.0.4",
     "zero-fill": "^2.2.3"
+  },
+  "changelogger": {
+    "changelogFile": "changelog.md",
+    "changesDir": "changelog",
+    "ordering": [
+      "type",
+      "content"
+    ],
+    "types": {
+      "version": "Version",
+      "feat": "Feature",
+      "fix": "Fix",
+      "tweak": "Tweak",
+      "performance": "Performance",
+      "security": "Security",
+      "accessibility": "Accessibility",
+      "compatibility": "Compatibility",
+      "deprecated": "Deprecated",
+      "language": "Language"
+    },
+    "versioning": "./bin/tec-changelog-versioning.js",
+    "files": [
+      {
+        "path": "changelog.md",
+        "strategy": "stellarwp-changelog"
+      },
+      {
+        "path": "readme.txt",
+        "strategy": "stellarwp-readme"
+      }
+    ]
   }
 }
