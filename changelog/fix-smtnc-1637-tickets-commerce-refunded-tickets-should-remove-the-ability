@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-sdsds
+Resolved an issue where an attendee could still be checked in after their order was refunded.
