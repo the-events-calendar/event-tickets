@@ -134,30 +134,30 @@ class Hooks extends Service_Provider {
 	 *
 	 * @return bool|null
 	 */
-	public function prevent_checkin_for_invalid_order_status( bool|null $checkin, int $attendee_id ): bool|null {
+	public function prevent_checkin_for_invalid_order_status( ?bool $checkin, int $attendee_id ): ?bool {
 		if ( null !== $checkin ) {
 			return $checkin;
 		}
 
-			$ticket_provider = tribe( 'tickets.data_api' )->get_ticket_provider( $attendee_id );
+		$ticket_provider = tribe( 'tickets.data_api' )->get_ticket_provider( $attendee_id );
 
 		if ( ! $ticket_provider ) {
 			return $checkin;
 		}
 
-			$attendee = $ticket_provider->get_attendees_by_id( $attendee_id );
-			$attendee = reset( $attendee );
+		$attendee = $ticket_provider->get_attendees_by_id( $attendee_id );
+		$attendee = reset( $attendee );
 
 		if ( ! is_array( $attendee ) || ! isset( $attendee['order_status'] ) ) {
 			return $checkin;
 		}
 
-			$completed_statuses = (array) tribe( 'tickets.status' )->get_completed_status_by_provider_name( $ticket_provider );
+		$completed_statuses = (array) tribe( 'tickets.status' )->get_completed_status_by_provider_name( $ticket_provider );
 
 		if ( in_array( $attendee['order_status'], $completed_statuses, true ) ) {
 			return $checkin;
 		}
 
-			return false;
+		return false;
 	}
 }
