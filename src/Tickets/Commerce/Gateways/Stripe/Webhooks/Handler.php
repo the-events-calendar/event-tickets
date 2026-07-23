@@ -143,6 +143,20 @@ class Handler {
 			return false;
 		}
 
-		return tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
+		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
+
+		if ( ! $updated ) {
+			tribe( 'logger' )->log_error(
+				sprintf(
+					'Stripe Webhook: failed to update Order %1$d from status "%2$s" to "%3$s".',
+					$order->ID,
+					$order->post_status,
+					$status->get_slug()
+				),
+				'tickets-commerce-gateway-stripe'
+			);
+		}
+
+		return $updated;
 	}
 }

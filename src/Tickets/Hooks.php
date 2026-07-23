@@ -112,8 +112,52 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets component.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Added the `tec_tickets_attendee_checkin` filter.
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
+		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'prevent_checkin_for_invalid_order_status' ], 10, 2 );
+	}
+
+	/**
+	 * Prevents an Attendee from being checked in when the order backing it is not in a status
+	 * that counts as "completed" for its provider (e.g. an order that has been refunded).
+	 *
+	 * This is a defense-in-depth guard: it runs regardless of the entry point (admin AJAX, QR
+	 * redirect, REST API, etc.) since it hooks directly into `Tribe__Tickets__Tickets::checkin()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool|null $checkin     The current filtered value; a non-null value here means another
+	 *                               callback already decided the outcome, so we defer to it.
+	 * @param int       $attendee_id The post ID of the Attendee being checked in.
+	 *
+	 * @return bool|null
+	 */
+	public function prevent_checkin_for_invalid_order_status( bool|null $checkin, int $attendee_id ): bool|null {
+		if ( null !== $checkin ) {
+			return $checkin;
+		}
+
+			$ticket_provider = tribe( 'tickets.data_api' )->get_ticket_provider( $attendee_id );
+
+		if ( ! $ticket_provider ) {
+			return $checkin;
+		}
+
+			$attendee = $ticket_provider->get_attendees_by_id( $attendee_id );
+			$attendee = reset( $attendee );
+
+		if ( ! is_array( $attendee ) || ! isset( $attendee['order_status'] ) ) {
+			return $checkin;
+		}
+
+			$completed_statuses = (array) tribe( 'tickets.status' )->get_completed_status_by_provider_name( $ticket_provider );
+
+		if ( in_array( $attendee['order_status'], $completed_statuses, true ) ) {
+			return $checkin;
+		}
+
+			return false;
 	}
 }
