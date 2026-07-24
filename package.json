@@ -158,7 +158,6 @@
     ],
     "types": {
       "version": "Version",
-      "feat": "Feature",
       "fix": "Fix",
       "tweak": "Tweak",
       "performance": "Performance",
