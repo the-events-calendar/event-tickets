@@ -158,7 +158,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @return bool|null
 	 */
-	public function prevent_checkin_for_invalid_order_status( ?bool $checkin, int $attendee_id ): ?bool {
+	public function prevent_checkin_for_invalid_order_status( $checkin, int $attendee_id ): ?bool {
 		if ( null !== $checkin ) {
 			return $checkin;
 		}
