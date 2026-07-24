@@ -18,6 +18,7 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Payments_Tab;
 use WP_Query;
 use WP_Post;
@@ -48,6 +49,29 @@ class Hooks extends Service_Provider {
 	 */
 	protected function add_actions() {
 		$this->container->register( Ticket_Cache_Controller::class );
+		add_action( 'tec_tickets_commerce_attendee_after_archive', [ $this, 'uncheckin_attendee_on_archive' ] );
+	}
+
+	/**
+	 * Revokes an Attendee's check-in status when their order is archived (e.g. refunded).
+	 *
+	 * An Attendee can legitimately check in before a deferred webhook that would move the order away
+	 * from a completed status is applied - see Order::has_on_checkout_screen_hold(). Once that webhook
+	 * does apply and the order's Attendees are archived, any check-in that happened in that window is
+	 * stale and must be revoked.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The Attendee post ID that was just archived.
+	 */
+	public function uncheckin_attendee_on_archive( int $attendee_id ): void {
+		$module = tribe( Module::class );
+
+		if ( ! get_post_meta( $attendee_id, $module->checkin_key, true ) ) {
+			return;
+		}
+
+		$module->uncheckin( $attendee_id );
 	}
 
 	/**
@@ -139,6 +163,15 @@ class Hooks extends Service_Provider {
 			return $checkin;
 		}
 
+		/*
+		 * A non-completed order (e.g. refunded, not-completed) archives its Attendees by trashing them.
+		 * Trashed Attendees are excluded from the provider's default Attendee queries below, which would
+		 * otherwise make this guard fail open (allow check-in) for exactly the case it needs to block.
+		 */
+		if ( 'trash' === get_post_status( $attendee_id ) ) {
+			return false;
+		}
+
 		$ticket_provider = tribe( 'tickets.data_api' )->get_ticket_provider( $attendee_id );
 
 		if ( ! $ticket_provider ) {
@@ -154,10 +187,20 @@ class Hooks extends Service_Provider {
 
 		$completed_statuses = (array) tribe( 'tickets.status' )->get_completed_status_by_provider_name( $ticket_provider );
 
-		if ( in_array( $attendee['order_status'], $completed_statuses, true ) ) {
-			return $checkin;
+		if ( ! in_array( $attendee['order_status'], $completed_statuses, true ) ) {
+			return false;
 		}
 
-		return false;
+		/*
+		 * The order's live status can still read as completed while a gateway webhook that would move it
+		 * away from that status (e.g. a refund) is deferred and not yet applied - see
+		 * Order::has_on_checkout_screen_hold(). Gateways that defer webhooks this way hook into this
+		 * filter to report that an in-flight, not-yet-applied change exists for the order.
+		 */
+		if ( ! empty( $attendee['order_id'] ) && apply_filters( 'tec_tickets_commerce_order_has_pending_non_completed_transition', false, (int) $attendee['order_id'] ) ) {
+			return false;
+		}
+
+		return $checkin;
 	}
 }
