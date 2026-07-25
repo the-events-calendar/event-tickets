@@ -33,7 +33,7 @@ import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
 import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import { DEFAULT_STATE as TICKET_DEFAULT_STATE } from './reducers/tickets/ticket';
-import * as rsvpActions from '../../blocks/rsvp/actions';
+import * as rsvpActions from '../rsvp-shared/actions';
 import { DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE } from '../rsvp/reducers/header-image';
 import * as utils from '../../utils';
 import {
