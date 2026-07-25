@@ -49,7 +49,17 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onIframeLoad: ( iframe ) => {
 		const iframeWindow = iframe.contentWindow;
 
+		let wasFormSubmitted = false;
+
+		window.tribe_event_tickets_plus = window.tribe_event_tickets_plus || {};
+		window.tribe_event_tickets_plus.rsvp = window.tribe_event_tickets_plus.rsvp || {};
+		const previousOnIacChange = window.tribe_event_tickets_plus.rsvp.onIacChange;
+		window.tribe_event_tickets_plus.rsvp.onIacChange = ( iacValue ) => {
+			dispatch( actions.setRSVPIAC( iacValue ) );
+		};
+
 		const showOverlay = () => {
+			wasFormSubmitted = true;
 			iframe.nextSibling.classList.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
 		};
 
@@ -59,6 +69,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 		const removeListeners = () => {
 			iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 			form.removeEventListener( 'submit', showOverlay );
+			window.tribe_event_tickets_plus.rsvp.onIacChange = previousOnIacChange;
 		};
 
 		const handleUnload = () => {
@@ -92,6 +103,15 @@ const mapDispatchToProps = ( dispatch ) => ( {
 
 			const metaFields = iframeDocument.querySelector( '#tribe-tickets-attendee-sortables' );
 			const hasFields = Boolean( metaFields.firstElementChild );
+
+			const iacInput = iframeDocument.querySelector( 'input[name="ticket_iac"]:checked' );
+			if ( iacInput ) {
+				dispatch( actions.setRSVPIAC( iacInput.value ) );
+			}
+
+			if ( wasFormSubmitted ) {
+				dispatch( actions.setRSVPHasChanges( true ) );
+			}
 
 			dispatch( actions.setRSVPHasAttendeeInfoFields( hasFields ) );
 			dispatch( actions.setRSVPIsModalOpen( false ) );
