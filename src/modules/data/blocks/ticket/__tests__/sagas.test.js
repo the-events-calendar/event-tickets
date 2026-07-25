@@ -34,8 +34,6 @@ import {
 	time as timeUtil,
 	globals,
 } from '@moderntribe/common/utils';
-const { wpREST } = api;
-const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 import { plugins } from '@moderntribe/common/data';
 import {
 	isTribeEventPostType,
@@ -44,6 +42,8 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
+const { wpREST } = api;
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 
 jest.mock( '@moderntribe/common/utils/moment', () => ( {
 	toMoment: ( date ) => date,

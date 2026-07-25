@@ -12,7 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Renders the not-supported message for RSVP on recurring events.
  *
- * @since 5.20.0
+ * @since 5.6.0 Introduced.
+ * @since TBD Extracted into shared RSVP block utils.
  * @param {string} clientId The client ID of the block.
  * @return {Node} The not-supported message.
  */
