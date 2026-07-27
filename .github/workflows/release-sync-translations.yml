@@ -18,7 +18,7 @@ jobs:
     name: 🔁 Sync Translations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
 
@@ -27,7 +27,7 @@ jobs:
         run: |
           branch_name="${{ github.head_ref || github.ref_name }}"
           should_glotpress=0
-          if [[ "$branch_name" =~ ^release/.* || "$branch_name" == "master" || "$branch_name" == "main" ]]; then
+          if [[ "$branch_name" =~ ^release/.* || "$branch_name" == "main" ]]; then
               should_glotpress=1
           fi
           echo "should_glotpress=$should_glotpress" >> $GITHUB_OUTPUT
@@ -69,7 +69,7 @@ jobs:
           entry: "${{ steps.push-translations.outputs.glotpress-result }}"
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@v7
         id: create-pull-request
         with:
           token: ${{ secrets.GHA_BOT_TOKEN_MANAGER }}
