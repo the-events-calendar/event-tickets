@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Resolved an issue where an attendee could still be checked in after their order was refunded.
