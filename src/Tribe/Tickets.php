@@ -1707,7 +1707,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $post_id && ! empty( $attendees ) ) {
 				/** @var Tribe__Cache $cache */
 				$cache     = tribe( 'cache' );
-				$cache_key = __METHOD__ . '-' . $post_id;
+				$cache_key = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
 
 				if ( isset( $cache[ $cache_key ] ) ) {
 					return $cache[ $cache_key ];
