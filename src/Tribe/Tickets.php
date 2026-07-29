@@ -1696,6 +1696,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Get attendee data for attendees from the current module.
 		 *
 		 * @since 4.10.6
+		 * @since TBD Added cache to handle the attendees data from the current module.
 		 *
 		 * @param array $attendees Attendee objects or IDs.
 		 * @param int   $post_id   Parent post ID.
