@@ -11,7 +11,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
- * Guards the shared capacity inventory calculation against the N+1 attendee fetch fixed in SMTNC-1404.
+ * Guards the shared capacity inventory calculation against the N+1 attendee fetch.
  *
  * @since TBD
  */
