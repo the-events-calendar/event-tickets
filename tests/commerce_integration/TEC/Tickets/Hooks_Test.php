@@ -143,6 +143,10 @@ class Hooks_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( $module->checkin( $attendee_id ) );
 		$this->assertEquals( 1, (int) get_post_meta( $attendee_id, $module->checkin_key, true ) );
 
+		// Simulate the held-webhook resolution context by setting the meta flag so the
+		// archive-triggered uncheckin recognizes this as a deferred-webhook resolution.
+		update_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive', 1 );
+
 		// Once the refund is applied, the Attendee is archived - and the stale check-in must be revoked.
 		$this->assertTrue( tribe( Order::class )->modify_status( $order->ID, Refunded::SLUG ) );
 
@@ -154,7 +158,7 @@ class Hooks_Test extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @covers TEC\Tickets\Hooks::uncheckin_attendee_on_archive
 	 */
-	public function it_should_not_run_uncheckin_when_attendee_was_never_checked_in() {
+	public function it_should_not_uncheckin_when_attendee_was_never_checked_in_under_held_webhook() {
 		[ $order, $attendee_id ] = $this->create_order_and_attendee();
 
 		$uncheckin_ran = false;
@@ -162,10 +166,33 @@ class Hooks_Test extends \Codeception\TestCase\WPTestCase {
 			$uncheckin_ran = true;
 		} );
 
+		// Simulate the held-webhook resolution context.
+		update_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive', 1 );
+
 		// The attendee is archived without ever having been checked in.
 		$this->assertTrue( tribe( Order::class )->modify_status( $order->ID, Refunded::SLUG ) );
 
 		$this->assertFalse( $uncheckin_ran, 'uncheckin() should not run for an attendee that was never checked in.' );
+	}
+
+	/**
+	 * @test
+	 *
+	 * @covers TEC\Tickets\Hooks::uncheckin_attendee_on_archive
+	 */
+	public function it_should_not_uncheckin_when_archive_is_outside_held_webhook_context() {
+		[ $order, $attendee_id ] = $this->create_order_and_attendee();
+
+		$module = tribe( Module::class );
+
+		$this->assertTrue( $module->checkin( $attendee_id ) );
+		$this->assertEquals( 1, (int) get_post_meta( $attendee_id, $module->checkin_key, true ) );
+
+		// No meta flag set — archive from a post-event refund or direct status change must NOT uncheck.
+		$this->assertTrue( tribe( Order::class )->modify_status( $order->ID, Refunded::SLUG ) );
+
+		// Check-in must be preserved for legitimate archives outside the hold window.
+		$this->assertEquals( 1, (int) get_post_meta( $attendee_id, $module->checkin_key, true ) );
 	}
 
 	/**

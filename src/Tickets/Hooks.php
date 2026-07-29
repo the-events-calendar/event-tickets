@@ -77,9 +77,10 @@ class Hooks extends Service_Provider {
 			return;
 		}
 
-		// Only act when the archive is part of resolving a held gateway webhook.
-		$order_id = (int) get_post_meta( $attendee_id, '_tec_tickets_commerce_order', true );
+		// Tickets Commerce stores the order relationship as post_parent on the attendee.
+		$order_id = wp_get_post_parent_id( $attendee_id );
 
+		// Only act when the archive is part of resolving a held gateway webhook.
 		if ( ! $order_id || ! get_post_meta( $order_id, '_tec_tickets_commerce_webhook_resolving_archive', true ) ) {
 			return;
 		}
