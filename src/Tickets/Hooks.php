@@ -46,6 +46,7 @@ class Hooks extends Service_Provider {
 	 * Adds the actions required by each Tickets component.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Added the `tec_tickets_commerce_attendee_after_archive` action for uncheck-in on archive.
 	 */
 	protected function add_actions() {
 		$this->container->register( Ticket_Cache_Controller::class );
@@ -53,12 +54,17 @@ class Hooks extends Service_Provider {
 	}
 
 	/**
-	 * Revokes an Attendee's check-in status when their order is archived (e.g. refunded).
+	 * Revokes an Attendee's check-in status when a held gateway webhook is resolved and their
+	 * order is archived (e.g. a deferred Stripe refund that applies after the checkout hold window).
 	 *
-	 * An Attendee can legitimately check in before a deferred webhook that would move the order away
-	 * from a completed status is applied - see Order::has_on_checkout_screen_hold(). Once that webhook
-	 * does apply and the order's Attendees are archived, any check-in that happened in that window is
-	 * stale and must be revoked.
+	 * During the hold window an Attendee can legitimately check in before a deferred webhook that
+	 * would move the order away from a completed status is applied. Once that webhook does apply
+	 * (via the async processor) and the order's Attendees are archived, any check-in that happened
+	 * in that window is stale and must be revoked.
+	 *
+	 * Only unchecks when the archive was triggered by a held-webhook resolution (detected via a
+	 * post meta flag set by the gateway's async processor). Post-event refunds that archive
+	 * attendees outside the hold window are left alone so legitimate attendance history.
 	 *
 	 * @since TBD
 	 *
@@ -68,6 +74,13 @@ class Hooks extends Service_Provider {
 		$module = tribe( Module::class );
 
 		if ( ! get_post_meta( $attendee_id, $module->checkin_key, true ) ) {
+			return;
+		}
+
+		// Only act when the archive is part of resolving a held gateway webhook.
+		$order_id = (int) get_post_meta( $attendee_id, '_tec_tickets_commerce_order', true );
+
+		if ( ! $order_id || ! get_post_meta( $order_id, '_tec_tickets_commerce_webhook_resolving_archive', true ) ) {
 			return;
 		}
 
@@ -187,6 +200,10 @@ class Hooks extends Service_Provider {
 
 		$completed_statuses = (array) tribe( 'tickets.status' )->get_completed_status_by_provider_name( $ticket_provider );
 
+		if ( empty( $completed_statuses ) ) {
+			return $checkin;
+		}
+
 		if ( ! in_array( $attendee['order_status'], $completed_statuses, true ) ) {
 			return false;
 		}
@@ -196,6 +213,11 @@ class Hooks extends Service_Provider {
 		 * away from that status (e.g. a refund) is deferred and not yet applied - see
 		 * Order::has_on_checkout_screen_hold(). Gateways that defer webhooks this way hook into this
 		 * filter to report that an in-flight, not-yet-applied change exists for the order.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $has_pending Whether the order has a pending non-completed transition.
+		 * @param int  $order_id    The order ID.
 		 */
 		if ( ! empty( $attendee['order_id'] ) && apply_filters( 'tec_tickets_commerce_order_has_pending_non_completed_transition', false, (int) $attendee['order_id'] ) ) {
 			return false;

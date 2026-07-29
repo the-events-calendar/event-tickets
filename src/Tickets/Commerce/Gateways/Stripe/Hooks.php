@@ -165,6 +165,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 5.18.1
 	 * @since 5.19.3 Added the $retry parameter.
+	 * @since TBD Sets a post meta flag to scope the attendee uncheck-in to held-webhook resolutions.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry      The number of times this has been tried.
@@ -210,6 +211,12 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		// On multiple checkout completes, make sure we dont process the same webhook twice.
 		$webhooks->delete_pending_webhooks( $order->ID );
 
+		// Flag the order so that attendee archive triggered by the async webhook resolution
+		// (via modify_status below) can be distinguished from post-event refund archives.
+		// The flag is checked by TEC\Tickets\Hooks::uncheckin_attendee_on_archive() and deleted
+		// after all pending webhooks are processed.
+		update_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive', 1 );
+
 		foreach ( $pending_webhooks as $pending_webhook ) {
 			if ( ! ( is_array( $pending_webhook ) ) ) {
 				continue;
@@ -237,6 +244,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 				$pending_webhook['metadata']
 			);
 		}
+
+		delete_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive' );
 	}
 
 	/**

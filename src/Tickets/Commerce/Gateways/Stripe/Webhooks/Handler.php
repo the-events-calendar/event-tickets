@@ -120,6 +120,7 @@ class Handler {
 	 * Generic handler to update order statuses to a defined Status.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Lowered log level from error to warning for non-updates to reduce noise from re-deliveries.
 	 *
 	 * @param \WP_Post                         $order    The order to update.
 	 * @param Commerce_Status\Status_Interface $status   The new status to use.
@@ -146,7 +147,7 @@ class Handler {
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
 
 		if ( ! $updated ) {
-			tribe( 'logger' )->log_error(
+			tribe( 'logger' )->log_warning(
 				sprintf(
 					'Stripe Webhook: failed to update Order %1$d from status "%2$s" to "%3$s".',
 					$order->ID,
