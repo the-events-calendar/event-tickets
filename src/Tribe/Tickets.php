@@ -1703,7 +1703,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array The attendee data for attendees.
 		 */
 		public function get_attendees_from_module( $attendees, $post_id = 0 ) {
+			if ( $post_id && ! empty( $attendees ) ) {
+				/** @var Tribe__Cache $cache */
+				$cache     = tribe( 'cache' );
+				$cache_key = __METHOD__ . '-' . $post_id;
+
+				if ( isset( $cache[ $cache_key ] ) ) {
+					return $cache[ $cache_key ];
+				}
+			}
+
 			$attendees_from_module = [];
+
+			$attendee_ids = [];
+			foreach ( $attendees as $attendee ) {
+				$attendee_id = $attendee instanceof WP_Post ? $attendee->ID : (int) $attendee;
+				if ( $attendee_id ) {
+					$attendee_ids[] = $attendee_id;
+				}
+			}
+			$attendee_ids = array_unique( $attendee_ids );
+
+			if ( $attendee_ids ) {
+				tribe( 'cache' )->warmup_post_caches( $attendee_ids, true );
+			}
 
 			foreach ( $attendees as $attendee ) {
 				$attendee_data = $this->get_attendee( $attendee, $post_id );
@@ -1712,10 +1735,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
-				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
 				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
 
 				$attendees_from_module[] = $attendee_data;
+			}
+
+			if ( $post_id && ! empty( $attendees_from_module ) ) {
+				$cache[ $cache_key ] = $attendees_from_module;
 			}
 
 			return $attendees_from_module;
