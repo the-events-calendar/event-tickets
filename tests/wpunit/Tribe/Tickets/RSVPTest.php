@@ -147,6 +147,50 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should reject a ticket generated directly for a private event's ticket, even when
+	 * the caller never checked the event's accessibility (e.g. a smuggled `product_id`).
+	 *
+	 * @since TBD
+	 */
+	public function it_should_reject_generate_tickets_for_a_private_event() {
+		$private_post_id = $this->factory()->post->create( [ 'post_status' => 'private' ] );
+		$ticket_id        = $this->make_stock_ticket( 10, $private_post_id );
+
+		wp_set_current_user( 0 );
+
+		$sut    = $this->make_instance();
+		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ), 'Stock must not be decreased for an inaccessible event.' );
+		$this->assertCount( 0, $sut->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 * it should reject a ticket generated directly for a password-protected event's ticket.
+	 *
+	 * @since TBD
+	 */
+	public function it_should_reject_generate_tickets_for_a_password_protected_event() {
+		$pw_post_id = $this->factory()->post->create( [
+			'post_status'   => 'publish',
+			'post_password' => 'secret',
+		] );
+		$ticket_id  = $this->make_stock_ticket( 10, $pw_post_id );
+
+		wp_set_current_user( 0 );
+
+		$sut    = $this->make_instance();
+		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ), 'Stock must not be decreased for an inaccessible event.' );
+		$this->assertCount( 0, $sut->get_attendees_by_id( $ticket_id ) );
+	}
+
+	/**
+	 * @test
 	 * it should increase sales by the status stock size
 	 */
 	public function it_should_increase_sales_by_the_status_stock_size() {

@@ -64,7 +64,7 @@ class Seats_Report extends Report_Abstract {
 	 */
 	public function register_tab() {
 		// Register the tabbed view.
-		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view = tribe( Tabbed_View::class );
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->register();
 	}
@@ -107,7 +107,7 @@ class Seats_Report extends Report_Abstract {
 	 * @since 5.16.0
 	 */
 	public function render_page() {
-		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view = tribe( Tabbed_View::class );
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->render();
 
