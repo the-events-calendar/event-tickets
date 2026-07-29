@@ -12,6 +12,7 @@ namespace TEC\Tickets\RSVP\V2;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 
 /**
@@ -215,5 +216,45 @@ class Attendees {
 
 		// Only an explicit "no" counts as not going; anything else is treated as going.
 		return 'no' === get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) ? 'no' : 'yes';
+	}
+
+	/**
+	 * Voids the hidden TC-RSVP Order once its last Attendee is deleted.
+	 *
+	 * TC-RSVP Orders are backend-only Orders created to back RSVP attendee records; nothing else marks
+	 * them as no-longer-relevant once every Attendee is gone, so they are otherwise left behind as
+	 * permanently "Completed" orphans.
+	 *
+	 * Hooked to `tec_tickets_commerce_attendee_before_delete`, which fires before the Attendee post (and
+	 * its meta) is removed, so the Ticket/Order relation is still readable here.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The Attendee post ID about to be deleted.
+	 *
+	 * @return void
+	 */
+	public function void_order_after_last_attendee_deleted( int $attendee_id ): void {
+		$ticket_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
+
+		if ( ! $ticket_id || ! tribe( Ticket::class )->is_rsvp( $ticket_id ) ) {
+			return;
+		}
+
+		$order_id = wp_get_post_parent_id( $attendee_id );
+
+		if ( ! $order_id ) {
+			return;
+		}
+
+		// `order_id` is only a valid alias for *updates* on this repository; `post_parent` is the real query filter.
+		$remaining_attendees = tec_tc_attendees()->by( 'post_parent', $order_id )->count();
+
+		if ( $remaining_attendees > 1 ) {
+			// Other Attendees still exist on this Order; leave its status alone.
+			return;
+		}
+
+		tribe( Order::class )->modify_status( $order_id, Voided::SLUG );
 	}
 }

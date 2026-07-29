@@ -1154,7 +1154,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		if ( ! $this->check_current_ajax_user_can( 'edit_posts', $post_id ) ) {
+		if ( ! $this->check_current_ajax_user_can( 'edit_post', $post_id ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'User has no permission.',
@@ -1266,7 +1266,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		if ( ! $this->check_current_ajax_user_can( 'edit_posts', $post_id ) ) {
+		if ( ! $this->check_current_ajax_user_can( 'edit_post', $post_id ) ) {
 			wp_send_json_error(
 				[
 					'error' => __( 'User has no permission.', 'event-tickets' ),

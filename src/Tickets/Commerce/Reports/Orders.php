@@ -197,7 +197,7 @@ class Orders extends Report_Abstract {
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ], 5 );
 
 		// Register the tabbed view.
-		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view = tribe( Tabbed_View::class );
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->register();
 	}

@@ -41,9 +41,36 @@ class Tabbed_View {
 	public function register(): void {
 		add_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_order_tab' ] );
 		add_action( 'tec_tickets_commerce_reports_tabbed_view_before_register_tab', [ $this, 'register_tabs' ], 10, 2 );
+ 
+		/**
+		 * Runs at priority 20 so any other provider (WooCommerce, EDD, ...) registering at the default
+		 * priority has already registered its Orders tab and we can defer to it.
+		*/
+		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_tabs' ], 20, 2 );
+	}
 
-		// Legacy compatibility with Attendees page which is not part of Tickets Commerce.
-		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_tabs' ], 10, 2 );
+	/**
+	 * Registers the Tickets Commerce Orders tab on the Attendees page's tabbed view.
+	 * 
+	 * Skips registration when Tickets Commerce is disabled or when ETP has already registered an Orders tab.
+	 *
+	 * @since 5.29.1
+	 *
+	 * @param Tribe__Tabbed_View $tabbed_view The tabbed view that is rendering.
+	 * @param WP_Post            $post        The post orders should be shown for.
+	 *
+	 * @return void
+	 */
+	public function register_tabs_on_attendees_page( Tribe__Tabbed_View $tabbed_view, WP_Post $post ): void {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return;
+		}
+
+		if ( $this->woo_orders_tab_is_registered( $tabbed_view ) ) {
+			return;
+		}
+
+		$this->register_tabs( $tabbed_view, $post );
 	}
 
 	/**
@@ -88,12 +115,35 @@ class Tabbed_View {
 			return;
 		}
 
+		if ( $this->woo_orders_tab_is_registered( $tabbed_view ) ) {
+			return;
+		}
+
 		add_filter( 'tribe_tickets_attendees_show_title', '__return_false' );
 
 		$orders_report     = new Orders_Tab( $tabbed_view );
 		$orders_report_url = Orders::get_tickets_report_link( $post );
 		$orders_report->set_url( $orders_report_url );
 		$tabbed_view->register( $orders_report );
+	}
+
+	/**
+	 * Whether the given tabbed view already has an Orders tab registered by another provider.
+	 *
+	 * @since 5.29.1
+	 *
+	 * @param Tribe__Tabbed_View $tabbed_view The tabbed view being rendered.
+	 *
+	 * @return bool
+	 */
+	protected function woo_orders_tab_is_registered( Tribe__Tabbed_View $tabbed_view ): bool {
+		foreach ( $tabbed_view->get_tabs() as $tab ) {
+			if ( $tab instanceof \Tribe__Tickets_Plus__Commerce__WooCommerce__Tabbed_View__Orders_Report_Tab ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
