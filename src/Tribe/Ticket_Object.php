@@ -695,7 +695,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$event_id = $this->get_event()->ID;
 
 				// Share the event attendees across all the shared capacity tickets of the same event.
-				$event_attendees_key = __METHOD__ . '-event-attendees-' . $event_id;
+				$event_attendees_key = __METHOD__ . '-event-attendees-' . $provider->orm_provider . '-' . $event_id;
 				$event_attendees     = $is_ticket_cache_enabled
 					? $cache->get( $event_attendees_key, Cache::TRIGGER_SAVE_POST, null )
 					: null;
