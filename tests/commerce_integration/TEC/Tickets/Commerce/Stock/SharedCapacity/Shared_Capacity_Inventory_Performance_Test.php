@@ -37,7 +37,7 @@ class Shared_Capacity_Inventory_Performance_Test extends \Codeception\TestCase\W
 		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 	}
 
-	public function test_debug_dump_of_attendee_queries(): void {
+	public function test_should_not_make_n_plus_one_attendee_queries_when_calculating_shared_capacity_inventory(): void {
 		[ $event_id, $ticket_ids ] = $this->given_an_event_with_shared_capacity_tickets( 4 );
 
 		$tickets = array_map(
@@ -55,13 +55,14 @@ class Shared_Capacity_Inventory_Performance_Test extends \Codeception\TestCase\W
 			}
 		);
 
-		codecept_debug( 'ATTENDEE QUERY COUNT: ' . count( $queries ) );
-
-		foreach ( $queries as $i => $query ) {
-			codecept_debug( "--- [$i] " . preg_replace( '/\s+/', ' ', $query ) );
-		}
-
-		codecept_debug( 'INVENTORIES: ' . implode( ',', array_map( static fn( $t ) => $t->inventory(), $tickets ) ) );
+		// The cache shares event attendees across all tickets of the same event, so the number of
+		// attendee queries must be strictly less than the number of tickets. With N tickets making
+		// N attendee queries, the N+1 optimization is broken.
+		$this->assertLessThan(
+			count( $ticket_ids ),
+			count( $queries ),
+			'The attendee query count should be less than the number of shared capacity tickets, proving the attendee cache is working.'
+		);
 	}
 
 	/**
