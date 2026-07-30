@@ -214,13 +214,18 @@ class Hooks extends Service_Provider {
 		 * away from that status (e.g. a refund) is deferred and not yet applied - see
 		 * Order::has_on_checkout_screen_hold(). Gateways that defer webhooks this way hook into this
 		 * filter to report that an in-flight, not-yet-applied change exists for the order.
+		 */
+		/**
+		 * Filters whether the order has a pending non-completed transition.
 		 *
 		 * @since TBD
 		 *
 		 * @param bool $has_pending Whether the order has a pending non-completed transition.
 		 * @param int  $order_id    The order ID.
 		 */
-		if ( ! empty( $attendee['order_id'] ) && apply_filters( 'tec_tickets_commerce_order_has_pending_non_completed_transition', false, (int) $attendee['order_id'] ) ) {
+		$has_pending = (bool) apply_filters( 'tec_tickets_commerce_order_has_pending_non_completed_transition', false, (int) $attendee['order_id'] );
+
+		if ( ! empty( $attendee['order_id'] ) && $has_pending ) {
 			return false;
 		}
 
