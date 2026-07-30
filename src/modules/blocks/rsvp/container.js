@@ -39,7 +39,12 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
 	onBlockRemoved: ( props ) => {
 		if ( props.created && props.rsvpId ) {
-			dispatch( thunks.deleteRSVP( props.rsvpId ) );
+			// Only fire the REST DELETE when the block is genuinely removed from the
+			// block editor — not on unmount/remount cycles such as toggling the Code
+			// Editor, which would trash a live RSVP ticket unintentionally.
+			if ( typeof wp !== 'undefined' && ! wp.data.select( 'core/block-editor' ).getBlock( props.clientId ) ) {
+				dispatch( thunks.deleteRSVP( props.rsvpId ) );
+			}
 		}
 
 		dispatch( actions.deleteRSVP() );
