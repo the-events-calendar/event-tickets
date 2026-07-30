@@ -22,6 +22,7 @@ export const hydrateRsvpFromTicket = ( dispatch, actions, ticket, options = {} )
 		return false;
 	}
 
+	// On RSVP the user doesn't have a title or description, so we need to set them to empty strings.
 	const normalized = normalizeRSVPResponseFromV2Ticket( ticket, {
 		title: 'RSVP',
 		description: '',
