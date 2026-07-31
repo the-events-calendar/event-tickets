@@ -1,6 +1,7 @@
 <?php
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
@@ -1704,13 +1705,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array The attendee data for attendees.
 		 */
 		public function get_attendees_from_module( $attendees, $post_id = 0 ) {
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+
 			if ( $post_id && ! empty( $attendees ) ) {
-				/** @var Tribe__Cache $cache */
-				$cache     = tribe( 'cache' );
 				$cache_key = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
 
-				if ( isset( $cache[ $cache_key ] ) ) {
-					return $cache[ $cache_key ];
+				$cached_attendees = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
+
+				if ( is_array( $cached_attendees ) ) {
+					return $cached_attendees;
 				}
 			}
 
@@ -1741,8 +1745,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$attendees_from_module[] = $attendee_data;
 			}
 
-			if ( $post_id && ! empty( $attendees_from_module ) ) {
-				$cache[ $cache_key ] = $attendees_from_module;
+			if ( $post_id && ! empty( $attendees_from_module ) && ! empty( $cache_key ) ) {
+				$cache->set( $cache_key, $attendees_from_module, Tribe__Cache::NON_PERSISTENT, Cache::TRIGGER_SAVE_POST );
 			}
 
 			return $attendees_from_module;
