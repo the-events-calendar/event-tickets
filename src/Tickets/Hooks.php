@@ -210,15 +210,7 @@ class Hooks extends Service_Provider {
 		}
 
 		/**
-		 * Filters whether the order has a pending non-completed transition, i.e. a deferred webhook that
-		 * would move it away from a completed status (e.g. a refund) that is not yet applied. The order's
-		 * live status can still read as completed while a gateway webhook that would move it
-		 * away from that status (e.g. a refund) is deferred and not yet applied - see
-		 * Order::has_on_checkout_screen_hold(). Gateways that defer webhooks this way hook into this
-		 * filter to report that an in-flight, not-yet-applied change exists for the order.
-		 */
-		/**
-		 * Filters whether the order has a pending non-completed transition.
+		 * Filters whether the order has a pending non-completed transition (e.g. a deferred refund webhook).
 		 *
 		 * @since TBD
 		 *

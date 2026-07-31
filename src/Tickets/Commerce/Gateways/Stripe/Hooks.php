@@ -217,35 +217,37 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		// after all pending webhooks are processed.
 		update_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive', 1 );
 
-		foreach ( $pending_webhooks as $pending_webhook ) {
-			if ( ! ( is_array( $pending_webhook ) ) ) {
-				continue;
+		try {
+			foreach ( $pending_webhooks as $pending_webhook ) {
+				if ( ! ( is_array( $pending_webhook ) ) ) {
+					continue;
+				}
+
+				if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
+					continue;
+				}
+
+				$new_status_wp_slug = $pending_webhook['new_status'];
+
+				// The order is already there!
+				if ( $order->post_status === $new_status_wp_slug ) {
+					continue;
+				}
+
+				// The order is no longer where it was... that could be dangerous, lets bail?
+				if ( $order->post_status !== $pending_webhook['old_status'] ) {
+					continue;
+				}
+
+				tribe( Order::class )->modify_status(
+					$order->ID,
+					tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
+					$pending_webhook['metadata']
+				);
 			}
-
-			if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
-				continue;
-			}
-
-			$new_status_wp_slug = $pending_webhook['new_status'];
-
-			// The order is already there!
-			if ( $order->post_status === $new_status_wp_slug ) {
-				continue;
-			}
-
-			// The order is no longer where it was... that could be dangerous, lets bail?
-			if ( $order->post_status !== $pending_webhook['old_status'] ) {
-				continue;
-			}
-
-			tribe( Order::class )->modify_status(
-				$order->ID,
-				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
-				$pending_webhook['metadata']
-			);
+		} finally {
+			delete_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive' );
 		}
-
-		delete_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive' );
 	}
 
 	/**
