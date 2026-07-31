@@ -15,8 +15,9 @@ import { __ } from '@wordpress/i18n';
 import { AttendeesRegistration as ARElement } from '../../../elements';
 import './style.pcss';
 
-const linkTextAdd = __( '+ Add', 'event-tickets' );
-const linkTextEdit = __( 'Edit', 'event-tickets' );
+const defaultLinkTextAdd = __( '+ Add', 'event-tickets' );
+const defaultLinkTextEdit = __( 'Edit', 'event-tickets' );
+const defaultLabel = __( 'Attendee Information', 'event-tickets' );
 
 const RSVPAttendeeRegistration = ( {
 	attendeeRegistrationURL,
@@ -27,6 +28,9 @@ const RSVPAttendeeRegistration = ( {
 	onClick,
 	onClose,
 	onIframeLoad,
+	label = defaultLabel,
+	linkTextAdd = defaultLinkTextAdd,
+	linkTextEdit = defaultLinkTextEdit,
 } ) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
@@ -36,7 +40,7 @@ const RSVPAttendeeRegistration = ( {
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }
 			isModalOpen={ isModalOpen }
-			label={ __( 'Attendee Information', 'event-tickets' ) }
+			label={ label }
 			linkText={ linkText }
 			modalTitle={ __( 'Attendee Information', 'event-tickets' ) }
 			onClick={ onClick }
@@ -57,6 +61,9 @@ RSVPAttendeeRegistration.propTypes = {
 	onClick: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onIframeLoad: PropTypes.func.isRequired,
+	label: PropTypes.string,
+	linkTextAdd: PropTypes.string,
+	linkTextEdit: PropTypes.string,
 };
 
 export default RSVPAttendeeRegistration;
