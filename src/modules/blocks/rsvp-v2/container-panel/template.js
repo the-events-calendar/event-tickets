@@ -11,23 +11,24 @@ import classNames from 'classnames';
 import { ContainerPanel } from '../../../elements';
 import { LAYOUT } from '../../../elements/container-panel';
 import RSVPContainerContent from '../container-content/container';
-import RSVPSavedSummary from '../saved-summary/container';
-import RSVPAttendeeInformationSection from '../attendee-information-section/container';
-import RSVPRemoveRsvp from '../remove-rsvp/container';
-import { isSavedSummary } from '../utils/block-state';
+// TODO: Restore RSVPSavedSummary import when ../saved-summary/container lands in PR #4298.
+// TODO: Restore RSVPAttendeeInformationSection import when ../attendee-information-section/container lands in PR #4298.
+// TODO: Restore RSVPRemoveRsvp import when ../remove-rsvp/container lands in PR #4299.
+// TODO: Restore isSavedSummary() import when ../utils/block-state lands in PR #4301.
 import '../../rsvp/container/style.pcss';
 
-const RSVPContainer = ( { clientId, created, isAddEditOpen, isDisabled, isSelected } ) => {
-	if ( isSavedSummary( { created, isAddEditOpen } ) ) {
+const RSVPContainer = ( { clientId, isDisabled } ) => {
+	// TODO: Restore the saved-summary guard with isSavedSummary() when ../utils/block-state lands in PR #4301.
+	if ( false ) {
 		return (
 			<div
 				className={ classNames( 'tribe-editor__rsvp-container', 'tribe-editor__rsvp-container--saved-summary', {
 					'tribe-editor__rsvp-container--disabled': isDisabled,
 				} ) }
 			>
-				<RSVPSavedSummary isSelected={ isSelected } />
-				<RSVPAttendeeInformationSection clientId={ clientId } isSelected={ isSelected } />
-				<RSVPRemoveRsvp clientId={ clientId } created={ created } isSelected={ isSelected } />
+				{ /* TODO: Restore <RSVPSavedSummary /> when ../saved-summary/container lands in PR #4298. */ }
+				{ /* TODO: Restore <RSVPAttendeeInformationSection /> when ../attendee-information-section/container lands in PR #4298. */ }
+				{ /* TODO: Restore <RSVPRemoveRsvp /> when ../remove-rsvp/container lands in PR #4299. */ }
 			</div>
 		);
 	}
