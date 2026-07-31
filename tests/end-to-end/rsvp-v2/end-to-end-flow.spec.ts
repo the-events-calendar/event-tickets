@@ -151,12 +151,11 @@ test.describe('RSVP Block End-to-End Flow', () => {
 		await rsvp.deselectBlock();
 		await expect(rsvp.savedSummary).toBeVisible({ timeout: 15000 });
 
-		// Attendee Information section should exist in the saved summary.
+		// Attendee Information section should be present in the saved summary
+		// when ET+ is active.
 		const attendeeSection = page.locator('.tribe-editor__rsvp-attendee-information');
 		const count = await attendeeSection.count();
-		// The section may or may not be present depending on ET+ state.
-		// When ET+ is active, it should be visible.
-		expect(count).toBeGreaterThanOrEqual(0);
+		expect(count).toBeGreaterThan(0);
 	});
 
 	// -----------------------------------------------------------------------
