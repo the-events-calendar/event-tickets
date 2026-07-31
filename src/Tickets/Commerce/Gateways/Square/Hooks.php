@@ -128,7 +128,7 @@ class Hooks extends Controller_Contract {
 	/**
 	 * Reports whether a Square order has a deferred webhook queued that would move it away from a
 	 * completed status - e.g. a refund received while the order is still within its post-checkout hold
-	 * window (see Order::has_on_checkout_screen_hold()).
+	 * window (see TEC\Tickets\Commerce\Order::has_on_checkout_screen_hold()).
 	 *
 	 * @since TBD
 	 *
@@ -142,7 +142,7 @@ class Hooks extends Controller_Contract {
 			return $has_pending;
 		}
 
-		if ( ! tribe( Order::class )->has_on_checkout_screen_hold( $order_id ) ) {
+		if ( ! tribe( Commerce_Order::class )->has_on_checkout_screen_hold( $order_id ) ) {
 			return false;
 		}
 
