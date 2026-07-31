@@ -74,23 +74,24 @@ const ConnectedAttendeeInformation = compose(
 	connect( mapStateToProps, mapDispatchToProps )
 )( AttendeeInformationWithModal );
 
-const RSVPAttendeeInformationSectionContainer = ( { clientId, isSelected } ) => {
-	const Gate = compose(
-		withStore(),
-		connect( ( state ) => ( {
-			created: selectors.getRSVPCreated( state ),
-			hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-		} ) )
-	)( ( { created, hasTicketsPlus } ) => {
-		if ( ! hasTicketsPlus || ! created || ! isSelected ) {
-			return null;
-		}
+const Gate = compose(
+	withStore(),
+	connect( ( state, ownProps ) => ( {
+		created: selectors.getRSVPCreated( state ),
+		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
+		isSelected: ownProps.isSelected,
+	} ) )
+)( ( { clientId, created, hasTicketsPlus, isSelected } ) => {
+	if ( ! hasTicketsPlus || ! created || ! isSelected ) {
+		return null;
+	}
 
-		return <ConnectedAttendeeInformation clientId={ clientId } isSelected={ isSelected } />;
-	} );
+	return <ConnectedAttendeeInformation clientId={ clientId } isSelected={ isSelected } />;
+} );
 
-	return <Gate />;
-};
+const RSVPAttendeeInformationSectionContainer = ( { clientId, isSelected } ) => (
+	<Gate clientId={ clientId } isSelected={ isSelected } />
+);
 
 RSVPAttendeeInformationSectionContainer.propTypes = {
 	clientId: PropTypes.string.isRequired,
