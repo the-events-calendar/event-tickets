@@ -493,12 +493,6 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		$products = array_map( 'absint', $products );
 		$products = array_filter( $products );
 
-		$products = array_map( 'absint', $products );
-		$products = array_filter( $products );
-
-		$products = array_map( 'absint', $products );
-		$products = array_filter( $products );
-
 		// Iterate over each product.
 		foreach ( $products as $product_id ) {
 			$ticket_qty = $rsvp->parse_ticket_quantity( $product_id );

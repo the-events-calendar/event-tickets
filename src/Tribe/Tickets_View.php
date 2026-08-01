@@ -1447,41 +1447,6 @@ class Tribe__Tickets__Tickets_View {
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
-			/**
-			 * Filters the content for RSVP templates within the RSVP block.
-			 *
-			 * Allows customization of RSVP rendering, including V2 RSVP tickets which
-			 * render with their own specialized UI.
-			 *
-			 * @since TBD
-			 *
-			 * @param string                           $content  The template content to be rendered.
-			 * @param array<string,mixed>              $args     The RSVP block arguments.
-			 * @param Tribe__Tickets__Editor__Template $template The template object.
-			 * @param WP_Post                          $post     The post object.
-			 * @param bool                             $echo     Whether to echo the output.
-			 */
-			$rendered_content = apply_filters(
-				'tec_tickets_front_end_rsvp_form_template_content',
-				$before_content,
-				$args,
-				$template,
-				$post,
-				$echo
-			);
-
-			// If the filter returned content, use it (V2 RSVP enqueues its own assets).
-			if ( $rendered_content !== $before_content ) {
-				return $rendered_content;
-			}
-
-			// Enqueue legacy RSVP assets only if the render was not overridden.
-			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
-			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
-			// @todo: Remove this once we solve the common breakpoints vs container based.
-			tribe_asset_enqueue( 'tribe-common-responsive' );
-
 			return $before_content . $template->template( 'v2/rsvp', $args, $echo );
 		}
 

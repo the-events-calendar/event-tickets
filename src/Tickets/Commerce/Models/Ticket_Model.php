@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Models;
 
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\RSVP\V2\Constants;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Ticket;
 use WP_Post;
@@ -63,6 +64,7 @@ class Ticket_Model extends Base {
 				'price'                 => (float) $ticket_object->price,
 				'regular_price'         => (float) $ticket_data->get_regular_price( $ticket_object->ID ),
 				'show_description'      => $ticket_object->show_description,
+				'show_not_going'        => tribe_is_truthy( get_post_meta( $ticket_object->ID, Constants::SHOW_NOT_GOING_META_KEY, true ) ),
 				'start_date'            => trim( $ticket_object->start_date . ' ' . $ticket_object->start_time ),
 				'end_date'              => trim( $ticket_object->end_date . ' ' . $ticket_object->end_time ),
 				'sale_price_start_date' => $sale_start_date ? $sale_start_date : null,
@@ -108,6 +110,7 @@ class Ticket_Model extends Base {
 			'price'                 => true,
 			'regular_price'         => true,
 			'show_description'      => true,
+			'show_not_going'        => true,
 			'start_date'            => true,
 			'end_date'              => true,
 			'sale_price_start_date' => true,

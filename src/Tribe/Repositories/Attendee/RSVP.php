@@ -25,8 +25,6 @@ use Tribe__Utils__Array as Arr;
 class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository implements Attendee_Repository_Interface {
 	use Get_Field;
 
-	use Get_Field;
-
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *

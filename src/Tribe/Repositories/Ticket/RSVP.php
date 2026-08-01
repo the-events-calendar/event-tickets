@@ -14,8 +14,6 @@
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use Tribe__Cache_Listener as Cache_Listener;
 
-use TEC\Tickets\Repositories\Traits\Get_Field;
-
 /**
  * The ORM/Repository class for RSVP tickets.
  *
@@ -208,47 +206,6 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 		$new_ticket = $this->set_args( $ticket_data )->create();
 
 		return $new_ticket instanceof WP_Post ? $new_ticket->ID : false;
-	}
-
-	/**
-	 * Filters tickets by attendee ID.
-	 *
-	 * @since 5.19.0
-	 *
-	 * @param int $value The attendee ID.
-	 *
-	 * @return void
-	 */
-	public function filter_by_attendee_id( int $value ): void {
-		$ticket_id = get_post_meta( $value, Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
-
-		if ( ! $ticket_id ) {
-			$this->void_query( true );
-			return;
-		}
-
-		$this->by( 'id', $ticket_id );
-	}
-
-	/**
-	 * Delete meta field from a ticket.
-	 *
-	 * Provides repository-level meta deletion using WordPress meta API.
-	 * Uses field aliases from the repository for consistency.
-	 *
-	 * @since 5.28.0
-	 *
-	 * @param int    $ticket_id Ticket ID.
-	 * @param string $field     Field name (can be alias or meta key).
-	 *
-	 * @return bool True on success, false on failure.
-	 */
-	public function delete_meta( $ticket_id, $field ) {
-		// Resolve field alias to actual meta key.
-		$meta_key = Tribe__Utils__Array::get( $this->update_fields_aliases, $field, $field );
-
-		// Use WordPress meta API for deletion.
-		return delete_post_meta( $ticket_id, $meta_key );
 	}
 
 	/**

@@ -74,6 +74,11 @@
                     "type": "string",
                     "example": "default"
                 },
+                "show_not_going": {
+                    "description": "Whether to show the \"Not Going\" option for RSVP tickets",
+                    "type": "boolean",
+                    "example": false
+                },
                 "start_date": {
                     "description": "The start sale date of the ticket",
                     "type": "string",

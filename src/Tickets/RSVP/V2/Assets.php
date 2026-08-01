@@ -13,8 +13,6 @@ use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\RSVP\V2\REST\Order_Endpoint;
 use Tribe__Templates;
 use Tribe__Tickets__Main;
-use Tribe__Templates;
-use Tribe__Tickets__Main;
 
 /**
  * Class Assets.

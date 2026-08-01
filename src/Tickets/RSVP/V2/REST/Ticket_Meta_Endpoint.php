@@ -85,7 +85,14 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		return current_user_can( 'edit_tribe_events' );
+		// The request carries the event ID the ticket meta belongs to; check edit rights on it when available.
+		$post_id = (int) Arr::get( $request->get_params(), 'post_ID' );
+
+		if ( $post_id ) {
+			return current_user_can( 'edit_post', $post_id );
+		}
+
+		return current_user_can( 'edit_posts' );
 	}
 
 	/**

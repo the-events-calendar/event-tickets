@@ -159,6 +159,7 @@ class Controller extends Controller_Contract {
 
 		// REST.
 		add_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
+		add_action( 'rest_api_init', $this->container->callback( REST\Ticket_Meta_Endpoint::class, 'register' ) );
 
 		// RSVP-specific meta saving.
 		add_action(
@@ -261,21 +262,6 @@ class Controller extends Controller_Contract {
 			10,
 			2
 		);
-		add_filter(
-			'tribe_repository_tc_tickets_query_args',
-			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
-		);
-
-		// REST.
-		add_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
-
-		// RSVP-specific meta saving.
-		add_action(
-			'tec_tickets_commerce_after_save_ticket',
-			$this->container->callback( Meta_Fields::class, 'save_show_not_going' ),
-			10,
-			3
-		);
 
 		// Add show_not_going property to REST responses for RSVP tickets.
 		$this->hook_add_show_not_going_to_properties();
@@ -300,13 +286,6 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
 			10,
 			2
-		);
-
-		add_filter(
-			'tec_tickets_view_count_ticket_attendees_args',
-			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' ),
-			10,
-			4
 		);
 
 		// Attendees report: show Going/Not Going status and hide check-in for "not going" RSVPs.
@@ -395,6 +374,10 @@ class Controller extends Controller_Contract {
 			'tec_tickets_front_end_rsvp_form_template_content',
 			$this->container->callback( Frontend::class, 'render_rsvp_template' )
 		);
+		remove_filter(
+			'tribe_template_done',
+			$this->container->callback( Frontend::class, 'prevent_template_render' )
+		);
 		remove_action(
 			'event_tickets_attendee_update',
 			$this->container->callback( Frontend::class, 'update_attendee_data' ),
@@ -416,15 +399,14 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
 		);
 		remove_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
+		remove_action( 'rest_api_init', $this->container->callback( REST\Ticket_Meta_Endpoint::class, 'register' ) );
 		remove_action(
 			'tec_tickets_commerce_after_save_ticket',
 			$this->container->callback( Meta_Fields::class, 'save_show_not_going' )
 		);
 
-		remove_filter(
-			'tec_tickets_build_ticket_properties',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' )
-		);
+		$this->unhook_add_show_not_going_to_properties();
+
 		remove_filter(
 			'tec_rest_ticket_properties_to_add',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
@@ -468,10 +450,6 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_rsvp_get_attendees_by_id_pre',
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
-		);
-		remove_filter(
-			'tec_tickets_view_count_ticket_attendees_args',
-			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
 		);
 		remove_filter(
 			'tribe_tickets_attendees_table_order_status',
@@ -518,8 +496,7 @@ class Controller extends Controller_Contract {
                       id="tickets-commerce-enable-input"
                       class="tribe-dependency tribe-dependency-verified">
               </div>
-              <h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Commerce',
-					'event-tickets' ) . '</h2>',
+              <h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Commerce', 'event-tickets' ) . '</h2>',
 		];
 
 		return $fields;
@@ -551,7 +528,7 @@ class Controller extends Controller_Contract {
 	 * @return array<string,array<Ticket_Object>> The filtered ticket types and their tickets.
 	 */
 	public function do_not_show_rsvp_in_tickets_metabox( array $ticket_types ): array {
-		$ticket_types[ 'rsvp' ] = [];
+		$ticket_types['rsvp'] = [];
 
 		return $ticket_types;
 	}
@@ -568,7 +545,7 @@ class Controller extends Controller_Contract {
 	 * @param array<string,mixed>     $args     The RSVP block arguments.
 	 * @param Tickets_Editor_Template $template The template object.
 	 * @param WP_Post                 $post     The post object.
-	 * @param bool                    $echo     Whether to echo the output.
+	 * @param bool                    $echo_output Whether to echo the output.
 	 *
 	 * @return string The modified HTML or original if not TC-RSVP.
 	 */
@@ -577,7 +554,7 @@ class Controller extends Controller_Contract {
 		array $args,
 		Tickets_Editor_Template $template,
 		WP_Post $post,
-		bool $echo
+		bool $echo_output
 	): string {
 		$active_rsvps = $args['active_rsvps'] ?? [];
 
@@ -604,7 +581,7 @@ class Controller extends Controller_Contract {
 			'must_login'    => ! is_user_logged_in() && $this->login_required(),
 		];
 
-		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo );
+		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $echo_output );
 
 		return $content;
 	}
@@ -619,19 +596,19 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function enqueue_rsvp_assets(): void {
-		// Only enqueue on singular posts
+		// Only enqueue on singular posts.
 		if ( ! is_singular() ) {
 			return;
 		}
 
 		$post_id = get_the_ID();
 
-		// Only enqueue if the post has TC-RSVP tickets
+		// Only enqueue if the post has TC-RSVP tickets.
 		if ( ! $this->post_has_tc_rsvp_tickets( $post_id ) ) {
 			return;
 		}
 
-		// Enqueue the asset group
+		// Enqueue the asset group.
 		tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
 	}
 
@@ -645,7 +622,7 @@ class Controller extends Controller_Contract {
 	 * @return bool True if the post has TC-RSVP tickets, false otherwise.
 	 */
 	protected function post_has_tc_rsvp_tickets( int $post_id ): bool {
-		$module = $this->container->make( Module::class );
+		$module  = $this->container->make( Module::class );
 		$tickets = $module->get_tickets( $post_id );
 
 		foreach ( $tickets as $ticket ) {
@@ -697,38 +674,6 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Prevents the rendering of some RSVP templates in the context of the RSVP v2 implementation.
-	 *
-	 * @since TBD
-	 *
-	 * @param string|null     $done Whether the template has been rendered or not.
-	 * @param string|string[] $name The template name in the form of a string or an array of strings.
-	 *
-	 * @return string|null An empty string to prevent template rendering if required, or the original value.
-	 */
-	public function prevent_template_render( $done, $name ) {
-		if ( null !== $done ) {
-			return $done;
-		}
-
-
-		$do_not_render = [
-			'v2/commerce/rsvp/attendees',
-			'v2/commerce/rsvp/attendees/attendee',
-			'v2/commerce/rsvp/attendees/attendee/name',
-			'v2/commerce/rsvp/attendees/attendee/rsvp',
-			'v2/commerce/rsvp/attendees/title',
-		];
-
-		if ( in_array( $name, $do_not_render, true ) ) {
-			// Return a non-null value to indicate the template was done.
-			return '';
-		}
-
-		return $done;
-	}
-
-	/**
 	 * Add V2 RSVP configuration to the block editor config.
 	 *
 	 * @since TBD
@@ -738,7 +683,7 @@ class Controller extends Controller_Contract {
 	 * @return array<string,mixed> The modified editor configuration.
 	 */
 	public function add_rsvp_v2_editor_config( array $config ): array {
-		$config['tickets']           = $config['tickets'] ?? [];
+		$config['tickets']         ??= [];
 		$config['tickets']['rsvpV2'] = [
 			'enabled'         => true,
 			'ticketsEndpoint' => '/tec/v1/tickets',
@@ -759,10 +704,11 @@ class Controller extends Controller_Contract {
 	 * @return array<string,mixed> The modified query args.
 	 */
 	public function exclude_rsvp_tickets_from_repository_queries( Repository_Interface $repository, array $query_args ): array {
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- The meta query is filtered, not executed, by this method.
 		$query_args['meta_query'] = isset( $query_args['meta_query'] ) && is_array( $query_args['meta_query'] ) ?
 			$query_args['meta_query']
 			: [];
-		$context = $repository->get_request_context();
+		$context                  = $repository->get_request_context();
 
 		// Let's make sure the meta query is not being added twice.
 		foreach ( $query_args['meta_query'] as $meta_query ) {
@@ -824,23 +770,37 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Use the pre-render block filter as an action to ensure that Tickets' block assets
-	 * are enqueued.
-	 * The Tickets' block assets need to be enqueued before the block renders to ensure the
-	 * scripts queued with it will not be dequeued by the block rendering process.
+	 * Hooks the filter that adds the show_not_going property to REST responses for RSVP tickets.
+	 *
+	 * Hooked to `tec_tickets_build_ticket_properties`.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null         $pre_render   The pre-rendered content. Default null.
-	 * @param array<string,mixed> $parsed_block The parsed block data.
-	 *
-	 * @return string|null Always the input value.
+	 * @return void
 	 */
-	public function enqueue_tickets_block_assets( $pre_render, $parsed_block ) {
-		if ( isset( $parsed_block['blockName'] ) && $parsed_block['blockName'] === 'tribe/tickets' ) {
-			tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
-		}
+	private function hook_add_show_not_going_to_properties(): void {
+		add_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
+			10,
+			2
+		);
+	}
 
-		return $pre_render;
+	/**
+	 * Unhooks the filter that adds the show_not_going property to REST responses for RSVP tickets.
+	 *
+	 * Unhooks `tec_tickets_build_ticket_properties`.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function unhook_add_show_not_going_to_properties(): void {
+		remove_filter(
+			'tec_tickets_build_ticket_properties',
+			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
+			10
+		);
 	}
 }
