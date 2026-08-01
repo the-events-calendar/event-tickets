@@ -2325,7 +2325,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Returns a list of attendees grouped by order.
 	 *
 	 * @since 4.7
-	 * @since TBD Made $ticket_ids explicitly nullable.
+	 * @since 5.29.0 Made $ticket_ids explicitly nullable.
 	 *
 	 * @param int        $post_id    The post ID.
 	 * @param array|null $ticket_ids An optional array of ticket IDs to limit the orders by.

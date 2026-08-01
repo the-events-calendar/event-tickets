@@ -39,7 +39,7 @@ runs:
 
     - name: Checkout Other Repo
       id: checkout_step
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         repository: ${{ inputs.other_repo }}
         path: ${{ inputs.path }}

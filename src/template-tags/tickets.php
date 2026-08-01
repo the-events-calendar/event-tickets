@@ -647,7 +647,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 	 *
 	 * @uses Tribe__Tickets__Templates::get_template_hierarchy
 	 *
-	 * @since TBD Made $data explicitly nullable.
+	 * @since 5.29.0 Made $data explicitly nullable.
 	 *
 	 * @param string      $slug The Base template name.
 	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file.
