@@ -283,8 +283,6 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 			$result = $this->by( 'id', $attendee_id )
 							->set_args( $updates )
 							->save();
-							->set_args( $updates )
-							->save();
 
 			$results[ $attendee_id ] = false !== $result;
 		}
