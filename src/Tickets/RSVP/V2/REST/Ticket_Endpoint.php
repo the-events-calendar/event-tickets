@@ -322,6 +322,17 @@ if ( $ticket_event_id !== $post_id ) {
 			);
 		}
 
+$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+if ( $ticket_event_id !== $post_id ) {
+    return new WP_REST_Response(
+        [
+            'success' => false,
+            'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+        ],
+        404
+    );
+}
+
 		/**
 		 * Allow for processing before RSVP ticket deletion.
 		 *
