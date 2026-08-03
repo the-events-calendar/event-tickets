@@ -213,6 +213,11 @@ class Controller extends Controller_Contract {
 	/**
 	 * Disables the RSVP form toggle in the Classic Editor metabox.
 	 *
+	 * Also flags whether RSVP is disabled because the migration to Tickets Commerce is actively
+	 * running (or paused), so the Classic Editor can render a disabled button with an explanatory
+	 * tooltip instead of hiding it outright. In every other case (migration completed, RSVP
+	 * permanently disabled, etc.) the button should be hidden entirely.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string,bool> $enabled The enabled ticket forms.
@@ -220,9 +225,21 @@ class Controller extends Controller_Contract {
 	 * @return array<string,bool> The modified enabled ticket forms.
 	 */
 	public function disable_rsvp_form_toggle( array $enabled ): array {
-		$enabled['rsvp'] = false;
+		$enabled['rsvp']           = false;
+		$enabled['rsvp_migrating'] = self::is_migration_in_progress();
 
 		return $enabled;
+	}
+
+	/**
+	 * Checks whether the RSVP to Tickets Commerce migration is currently running or paused.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the migration is currently in progress.
+	 */
+	public static function is_migration_in_progress(): bool {
+		return self::DISABLED === tribe_get_option( self::VERSION_OPTION_KEY );
 	}
 
 	/**

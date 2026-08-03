@@ -170,7 +170,9 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
 	 *
 	 * @since 5.8.0
-	 * @since TBD RSVP button is always rendered, disabled when RSVP feature is off.
+	 * @since TBD RSVP button is hidden when not applicable to the post (e.g. migration completed,
+	 *            RSVP disabled, Series/recurring events); it is only rendered disabled, with a
+	 *            tooltip, while the RSVP to Tickets Commerce migration is actively in progress.
 	 *
 	 * @param int $post_id The post id.
 	 */
@@ -206,7 +208,13 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		if ( ! empty( $enabled['default'] ) ) {
 			tribe( Meta::class )->render_ticket_form_toggle( $post_id );
 		}
-		tribe( Meta::class )->render_rsvp_form_toggle( $post_id, empty( $enabled['rsvp'] ) );
+
+		if ( ! empty( $enabled['rsvp'] ) ) {
+			tribe( Meta::class )->render_rsvp_form_toggle( $post_id );
+		} elseif ( ! empty( $enabled['rsvp_migrating'] ) ) {
+			// RSVP is temporarily unavailable while its migration to Tickets Commerce is running.
+			tribe( Meta::class )->render_rsvp_form_toggle( $post_id, true );
+		}
 	}
 
 	/**
