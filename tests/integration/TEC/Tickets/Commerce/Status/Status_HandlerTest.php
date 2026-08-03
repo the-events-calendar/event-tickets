@@ -141,6 +141,7 @@ class Status_HandlerTest extends \Codeception\TestCase\WPTestCase {
 			[ Pending::class, [ Pending::class, Action_Required::class, Approved::class, Created::class, Not_Completed::class ] ],
 			[ Completed::class, [ Completed::class ] ],
 			[ Denied::class, [ Denied::class, Undefined::class ] ],
+			[ Partially_Refunded::class, [ Partially_Refunded::class ] ],
 			[ Refunded::class, [ Refunded::class, Reversed::class ] ],
 			[ Voided::class, [ Voided::class ] ],
 		];

@@ -20,6 +20,7 @@ class Status_Test extends WPTestCase {
 			[ Denied::SLUG, Denied::SLUG, false ],
 			[ Not_Completed::SLUG, Not_Completed::SLUG, false ],
 			[ Pending::SLUG, Pending::SLUG, false ],
+			[ Partially_Refunded::SLUG, Partially_Refunded::SLUG, true ], // Stacked partial refunds.
 			[ Refunded::SLUG, Refunded::SLUG, true ], // Only status transition allowed from same to same to support multiple refunds. e.g. in stripe i can refund from X order total, Y at first and then Z where Z + Y <= X.
 			[ Reversed::SLUG, Reversed::SLUG, false ],
 			[ Trashed::SLUG, Trashed::SLUG, false ],
@@ -31,6 +32,7 @@ class Status_Test extends WPTestCase {
 			[ Action_Required::SLUG, Denied::SLUG, true ],
 			[ Action_Required::SLUG, Not_Completed::SLUG, true ],
 			[ Action_Required::SLUG, Pending::SLUG, true ],
+			[ Action_Required::SLUG, Partially_Refunded::SLUG, true ],
 			[ Action_Required::SLUG, Refunded::SLUG, true ],
 			[ Action_Required::SLUG, Reversed::SLUG, true ],
 			[ Action_Required::SLUG, Trashed::SLUG, true ],
@@ -42,6 +44,7 @@ class Status_Test extends WPTestCase {
 			[ Approved::SLUG, Denied::SLUG, true ],
 			[ Approved::SLUG, Not_Completed::SLUG, true ],
 			[ Approved::SLUG, Pending::SLUG, true ],
+			[ Approved::SLUG, Partially_Refunded::SLUG, true ],
 			[ Approved::SLUG, Refunded::SLUG, true ],
 			[ Approved::SLUG, Reversed::SLUG, true ],
 			[ Approved::SLUG, Trashed::SLUG, true ],
@@ -53,6 +56,7 @@ class Status_Test extends WPTestCase {
 			[ Completed::SLUG, Denied::SLUG, true ], // Completed is not final ?
 			[ Completed::SLUG, Not_Completed::SLUG, true ], // Completed is not final ?
 			[ Completed::SLUG, Pending::SLUG, true ], // Completed is not final ?
+			[ Completed::SLUG, Partially_Refunded::SLUG, true ], // Completed is not final ?
 			[ Completed::SLUG, Refunded::SLUG, true ], // Completed is not final ?
 			[ Completed::SLUG, Reversed::SLUG, true ], // Completed is not final ?
 			[ Completed::SLUG, Trashed::SLUG, true ], // Completed is not final ?
@@ -64,6 +68,7 @@ class Status_Test extends WPTestCase {
 			[ Created::SLUG, Denied::SLUG, true ],
 			[ Created::SLUG, Not_Completed::SLUG, true ],
 			[ Created::SLUG, Pending::SLUG, true ],
+			[ Created::SLUG, Partially_Refunded::SLUG, true ],
 			[ Created::SLUG, Refunded::SLUG, true ],
 			[ Created::SLUG, Reversed::SLUG, true ],
 			[ Created::SLUG, Trashed::SLUG, true ],
@@ -75,6 +80,7 @@ class Status_Test extends WPTestCase {
 			[ Denied::SLUG, Created::SLUG, false ], // Denied is final
 			[ Denied::SLUG, Not_Completed::SLUG, false ], // Denied is final
 			[ Denied::SLUG, Pending::SLUG, false ], // Denied is final
+			[ Denied::SLUG, Partially_Refunded::SLUG, false ], // Denied is final
 			[ Denied::SLUG, Refunded::SLUG, false ], // Denied is final
 			[ Denied::SLUG, Reversed::SLUG, false ], // Denied is final
 			[ Denied::SLUG, Trashed::SLUG, false ], // Denied is final
@@ -86,6 +92,7 @@ class Status_Test extends WPTestCase {
 			[ Not_Completed::SLUG, Created::SLUG, true ],
 			[ Not_Completed::SLUG, Denied::SLUG, true ],
 			[ Not_Completed::SLUG, Pending::SLUG, true ],
+			[ Not_Completed::SLUG, Partially_Refunded::SLUG, true ],
 			[ Not_Completed::SLUG, Refunded::SLUG, true ],
 			[ Not_Completed::SLUG, Reversed::SLUG, true ],
 			[ Not_Completed::SLUG, Trashed::SLUG, true ],
@@ -97,6 +104,7 @@ class Status_Test extends WPTestCase {
 			[ Pending::SLUG, Created::SLUG, true ],
 			[ Pending::SLUG, Denied::SLUG, true ],
 			[ Pending::SLUG, Not_Completed::SLUG, true ],
+			[ Pending::SLUG, Partially_Refunded::SLUG, true ],
 			[ Pending::SLUG, Refunded::SLUG, true ],
 			[ Pending::SLUG, Reversed::SLUG, true ],
 			[ Pending::SLUG, Trashed::SLUG, true ],
@@ -109,6 +117,7 @@ class Status_Test extends WPTestCase {
 			[ Refunded::SLUG, Denied::SLUG, false ], // Refunded is final.
 			[ Refunded::SLUG, Not_Completed::SLUG, false ], // Refunded is final.
 			[ Refunded::SLUG, Pending::SLUG, false ], // Refunded is final.
+			[ Refunded::SLUG, Partially_Refunded::SLUG, false ], // Refunded is final.
 			[ Refunded::SLUG, Reversed::SLUG, false ], // Refunded is final.
 			[ Refunded::SLUG, Trashed::SLUG, false ], // Refunded is final.
 			[ Refunded::SLUG, Undefined::SLUG, false ], // Refunded is final.
@@ -120,6 +129,7 @@ class Status_Test extends WPTestCase {
 			[ Reversed::SLUG, Denied::SLUG, false ], // Reversed is final.
 			[ Reversed::SLUG, Not_Completed::SLUG, false ], // Reversed is final.
 			[ Reversed::SLUG, Pending::SLUG, false ], // Reversed is final.
+			[ Reversed::SLUG, Partially_Refunded::SLUG, false ], // Reversed is final.
 			[ Reversed::SLUG, Refunded::SLUG, false ], // Reversed is final.
 			[ Reversed::SLUG, Trashed::SLUG, false ], // Reversed is final.
 			[ Reversed::SLUG, Undefined::SLUG, false ], // Reversed is final.
@@ -131,6 +141,7 @@ class Status_Test extends WPTestCase {
 			[ Trashed::SLUG, Denied::SLUG, true ],
 			[ Trashed::SLUG, Not_Completed::SLUG, true ],
 			[ Trashed::SLUG, Pending::SLUG, true ],
+			[ Trashed::SLUG, Partially_Refunded::SLUG, true ],
 			[ Trashed::SLUG, Refunded::SLUG, true ],
 			[ Trashed::SLUG, Reversed::SLUG, true ],
 			[ Trashed::SLUG, Undefined::SLUG, true ],
@@ -142,6 +153,7 @@ class Status_Test extends WPTestCase {
 			[ Undefined::SLUG, Denied::SLUG, true ],
 			[ Undefined::SLUG, Not_Completed::SLUG, true ],
 			[ Undefined::SLUG, Pending::SLUG, true ],
+			[ Undefined::SLUG, Partially_Refunded::SLUG, true ],
 			[ Undefined::SLUG, Refunded::SLUG, true ],
 			[ Undefined::SLUG, Reversed::SLUG, true ],
 			[ Undefined::SLUG, Trashed::SLUG, true ],
@@ -153,10 +165,23 @@ class Status_Test extends WPTestCase {
 			[ Unsupported::SLUG, Denied::SLUG, true ],
 			[ Unsupported::SLUG, Not_Completed::SLUG, true ],
 			[ Unsupported::SLUG, Pending::SLUG, true ],
+			[ Unsupported::SLUG, Partially_Refunded::SLUG, true ],
 			[ Unsupported::SLUG, Refunded::SLUG, true ],
 			[ Unsupported::SLUG, Reversed::SLUG, true ],
 			[ Unsupported::SLUG, Trashed::SLUG, true ],
 			[ Unsupported::SLUG, Undefined::SLUG, true ],
+			[ Partially_Refunded::SLUG, Action_Required::SLUG, true ],
+			[ Partially_Refunded::SLUG, Approved::SLUG, true ],
+			[ Partially_Refunded::SLUG, Completed::SLUG, true ],
+			[ Partially_Refunded::SLUG, Created::SLUG, true ],
+			[ Partially_Refunded::SLUG, Denied::SLUG, true ],
+			[ Partially_Refunded::SLUG, Not_Completed::SLUG, true ],
+			[ Partially_Refunded::SLUG, Pending::SLUG, true ],
+			[ Partially_Refunded::SLUG, Refunded::SLUG, true ],
+			[ Partially_Refunded::SLUG, Reversed::SLUG, true ],
+			[ Partially_Refunded::SLUG, Trashed::SLUG, true ],
+			[ Partially_Refunded::SLUG, Undefined::SLUG, true ],
+			[ Partially_Refunded::SLUG, Unsupported::SLUG, true ],
 		];
 	}
 

@@ -185,6 +185,7 @@ class Pending extends Status_Abstract {
 	public function can_be_updated_to(): array {
 		return [
 			tribe( Voided::class ),
+			tribe( Partially_Refunded::class ),
 			tribe( Refunded::class ),
 			tribe( Completed::class ),
 			tribe( Denied::class ),

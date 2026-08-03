@@ -23,6 +23,7 @@ use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use TEC\Tickets\Commerce\Meta as Commerce_Meta;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
+use TEC\Tickets\Commerce\Status\Partially_Refunded;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Objects\Item;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -497,8 +498,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				->save();
 		}
 
+		$refund_status = $this->resolve_square_refund_status( $order, $event_data );
+
 		if ( time() < $order->on_checkout_hold ) {
-			$this->webhooks->add_pending_webhook( $order->ID, tribe( Refunded::class )->get_wp_slug(), $order->post_status, [ 'gateway_payload' => $event_data ] );
+			$this->webhooks->add_pending_webhook( $order->ID, $refund_status->get_wp_slug(), $order->post_status, [ 'gateway_payload' => $event_data ] );
 
 			as_schedule_single_action(
 				$order->on_checkout_hold + MINUTE_IN_SECONDS,
@@ -521,10 +524,45 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			);
 
 		// Update the order status.
-		tribe( Commerce_Order::class )->modify_status( $order->ID, Refunded::SLUG, [ 'gateway_payload' => $event_data ] );
+		tribe( Commerce_Order::class )->modify_status( $order->ID, $refund_status->get_slug(), [ 'gateway_payload' => $event_data ] );
 
 		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->gateway_order_id ] );
 		tribe( Regulator::class )->unschedule( Order::HOOK_PULL_ORDER_ACTION, [ $order->original_gateway_order_id ] );
+	}
+
+	/**
+	 * Resolve Partially Refunded vs Refunded for a Square refund webhook event.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order      The Tickets Commerce order.
+	 * @param array   $event_data The Square webhook event data.
+	 *
+	 * @return \TEC\Tickets\Commerce\Status\Status_Interface
+	 */
+	protected function resolve_square_refund_status( WP_Post $order, array $event_data ) {
+		$refunded_amounts = [];
+
+		$payloads = array_merge(
+			(array) ( $order->gateway_payload[ Refunded::SLUG ] ?? [] ),
+			(array) ( $order->gateway_payload[ Partially_Refunded::SLUG ] ?? [] )
+		);
+
+		foreach ( $payloads as $payload ) {
+			$refund = $payload['data']['object']['refund'] ?? [];
+			if ( empty( $refund['id'] ) || empty( $refund['amount_money']['amount'] ) ) {
+				continue;
+			}
+
+			$refunded_amounts[ $refund['id'] ] = (int) $refund['amount_money']['amount'];
+		}
+
+		$current_refund = $event_data['data']['object']['refund'] ?? [];
+		if ( ! empty( $current_refund['id'] ) && ! empty( $current_refund['amount_money']['amount'] ) ) {
+			$refunded_amounts[ $current_refund['id'] ] = (int) $current_refund['amount_money']['amount'];
+		}
+
+		return tribe( Commerce_Order::class )->resolve_refund_status( (int) array_sum( $refunded_amounts ), $order );
 	}
 
 	/**

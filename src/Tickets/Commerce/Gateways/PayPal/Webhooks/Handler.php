@@ -4,6 +4,9 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Partially_Refunded;
+use TEC\Tickets\Commerce\Status\Refunded;
+use Tribe__Utils__Array as Arr;
 use WP_Error;
 
 /**
@@ -34,6 +37,7 @@ class Handler {
 	 * Process a given PayPal Webhook event, possibly updating the local order with the status sent by the request.
 	 *
 	 * @since 5.1.10
+	 * @since TBD Route partial refunds to Partially Refunded instead of fully Refunded.
 	 *
 	 * @param array $event The PayPal payment event object.
 	 *
@@ -104,8 +108,18 @@ class Handler {
 			] );
 		}
 
-		// Don't do anything if the status is already set.
-		if ( $new_status->get_wp_slug() === $order->post_status ) {
+		if ( Events::PAYMENT_CAPTURE_REFUNDED === $event['event_type'] ) {
+			$new_status = tribe( Order::class )->resolve_refund_status(
+				$this->get_total_refunded_minor_units( $event, $order ),
+				$order
+			);
+		}
+
+		// Don't do anything if the status is already set, unless same-status transitions are allowed (stacked refunds).
+		if (
+			$new_status->get_wp_slug() === $order->post_status
+			&& ! $order->status_obj->can_change_to( $new_status )
+		) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
 				// Translators: %s: The PayPal payment ID.
@@ -140,5 +154,45 @@ class Handler {
 		);
 
 		return $updated;
+	}
+
+	/**
+	 * Get the cumulative refunded amount for a PayPal refund event in minor units.
+	 *
+	 * @since TBD
+	 *
+	 * @param array    $event The PayPal webhook event.
+	 * @param \WP_Post $order The Tickets Commerce order.
+	 *
+	 * @return int
+	 */
+	protected function get_total_refunded_minor_units( array $event, \WP_Post $order ): int {
+		$total_refunded = Arr::get( $event, [ 'resource', 'seller_payable_breakdown', 'total_refunded_amount', 'value' ], null );
+
+		if ( null !== $total_refunded && '' !== $total_refunded ) {
+			return (int) round( 100 * (float) $total_refunded );
+		}
+
+		$refunded_minor_units = 0;
+		$payloads             = array_merge(
+			(array) ( $order->gateway_payload[ Refunded::SLUG ] ?? [] ),
+			(array) ( $order->gateway_payload[ Partially_Refunded::SLUG ] ?? [] )
+		);
+
+		foreach ( $payloads as $payload ) {
+			$value = Arr::get( $payload, [ 'resource', 'amount', 'value' ], null );
+			if ( null === $value || '' === $value ) {
+				continue;
+			}
+
+			$refunded_minor_units += (int) round( 100 * (float) $value );
+		}
+
+		$current_value = Arr::get( $event, [ 'resource', 'amount', 'value' ], null );
+		if ( null !== $current_value && '' !== $current_value ) {
+			$refunded_minor_units += (int) round( 100 * (float) $current_value );
+		}
+
+		return $refunded_minor_units;
 	}
 }

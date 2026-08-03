@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Partially_Refunded;
+use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
@@ -95,12 +97,38 @@ class Charge_Webhook implements Webhook_Event_Interface {
 			) );
 		}
 
+		if ( Events::CHARGE_REFUNDED === Arr::get( $event, 'type' ) ) {
+			$new_status = static::is_charge_fully_refunded( $charge_data )
+				? tribe( Refunded::class )
+				: tribe( Partially_Refunded::class );
+		}
+
 		$meta = [
 			'gateway_payload'  => $charge_data,
 			'gateway_order_id' => $payment_intent_id,
 		];
 
 		return Handler::update_order_status( $order, $new_status, $meta );
+	}
+
+	/**
+	 * Whether a Stripe charge represents a full refund.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $charge_data Stripe charge object from the webhook.
+	 *
+	 * @return bool
+	 */
+	public static function is_charge_fully_refunded( array $charge_data ): bool {
+		if ( ! empty( $charge_data['refunded'] ) ) {
+			return true;
+		}
+
+		$amount_refunded = (int) ( $charge_data['amount_refunded'] ?? 0 );
+		$amount_captured = (int) ( $charge_data['amount_captured'] ?? 0 );
+
+		return $amount_captured > 0 && $amount_refunded >= $amount_captured;
 	}
 
 	/**

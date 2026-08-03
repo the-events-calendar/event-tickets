@@ -1,11 +1,13 @@
 [
     [
+        "part-refunded",
         "refunded",
         "voided"
     ],
     [
         "completed",
         "denied",
+        "part-refunded",
         "refunded",
         "voided"
     ],

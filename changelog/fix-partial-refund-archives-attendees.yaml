@@ -1,0 +1,3 @@
+significance: patch
+type: fix
+entry: Prevent partial Tickets Commerce refunds from archiving attendees by introducing a Partially Refunded status for Stripe, PayPal, and Square.

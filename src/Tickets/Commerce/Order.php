@@ -14,6 +14,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Partially_Refunded;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
@@ -1039,9 +1040,10 @@ class Order extends Abstract_Order {
 			return null;
 		}
 
-		$reversed = tribe( Reversed::class )->get_wp_slug();
-		$refunded = tribe( Refunded::class )->get_wp_slug();
-		if ( ! in_array( $order->post_status, [ $reversed, $refunded ], true ) ) {
+		$reversed            = tribe( Reversed::class )->get_wp_slug();
+		$refunded            = tribe( Refunded::class )->get_wp_slug();
+		$partially_refunded  = tribe( Partially_Refunded::class )->get_wp_slug();
+		if ( ! in_array( $order->post_status, [ $reversed, $refunded, $partially_refunded ], true ) ) {
 			$regular = 0;
 			$total   = 0;
 
@@ -1063,12 +1065,15 @@ class Order extends Abstract_Order {
 			return $order->total_value->get_currency();
 		}
 
-		if ( empty( $order->gateway_payload['refunded'] ) ) {
+		$refunds = array_merge(
+			(array) ( $order->gateway_payload['refunded'] ?? [] ),
+			(array) ( $order->gateway_payload[ Partially_Refunded::SLUG ] ?? [] )
+		);
+
+		if ( empty( $refunds ) ) {
 			// The item was refunded but we don't know anything about it.
 			return $order->total_value->get_currency();
 		}
-
-		$refunds = $order->gateway_payload['refunded'];
 
 		/**
 		 * Filters the refunded amount of an order.
@@ -1121,6 +1126,32 @@ class Order extends Abstract_Order {
 		$total_value = $total - $refunded;
 
 		return Value::create( ( $original ? $total : $total_value ) / 100 )->get_currency();
+	}
+
+	/**
+	 * Resolve whether a refund amount should map to Partially Refunded or fully Refunded.
+	 *
+	 * @since TBD
+	 *
+	 * @param int          $total_refunded_minor_units Cumulative refunded amount in minor currency units (e.g. cents).
+	 * @param WP_Post|int  $order                      The order object or ID.
+	 *
+	 * @return Status_Interface
+	 */
+	public function resolve_refund_status( int $total_refunded_minor_units, $order ): Status_Interface {
+		$order = tec_tc_get_order( $order );
+
+		if ( ! $order instanceof WP_Post || empty( $order->total_value ) ) {
+			return tribe( Refunded::class );
+		}
+
+		$order_total_minor_units = (int) round( 100 * (float) $order->total_value->get_decimal() );
+
+		if ( $total_refunded_minor_units >= $order_total_minor_units ) {
+			return tribe( Refunded::class );
+		}
+
+		return tribe( Partially_Refunded::class );
 	}
 
 	/**

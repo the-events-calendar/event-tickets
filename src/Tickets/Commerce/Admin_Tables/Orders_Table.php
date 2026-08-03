@@ -368,6 +368,7 @@ class Orders_Table extends WP_Posts_List_Table {
 					$dashicon = 'yes';
 					break;
 				case 'refunded':
+				case 'part-refunded':
 					$dashicon = 'undo';
 					break;
 				case 'failed':

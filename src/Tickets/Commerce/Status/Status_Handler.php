@@ -38,6 +38,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 		Denied::class,
 		Not_Completed::class,
 		Pending::class,
+		Partially_Refunded::class,
 		Refunded::class,
 		Reversed::class,
 		Undefined::class,
@@ -52,17 +53,18 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * @var string[]
 	 */
 	protected const STATUS_MAP = [
-		Action_Required::class => Pending::class,
-		Approved::class        => Pending::class,
-		Completed::class       => Completed::class,
-		Created::class         => Pending::class,
-		Denied::class          => Denied::class,
-		Not_Completed::class   => Pending::class,
-		Pending::class         => Pending::class,
-		Refunded::class        => Refunded::class,
-		Reversed::class        => Refunded::class,
-		Undefined::class       => Denied::class,
-		Voided::class          => Voided::class,
+		Action_Required::class    => Pending::class,
+		Approved::class           => Pending::class,
+		Completed::class          => Completed::class,
+		Created::class            => Pending::class,
+		Denied::class             => Denied::class,
+		Not_Completed::class      => Pending::class,
+		Pending::class            => Pending::class,
+		Partially_Refunded::class => Partially_Refunded::class,
+		Refunded::class           => Refunded::class,
+		Reversed::class           => Refunded::class,
+		Undefined::class          => Denied::class,
+		Voided::class             => Voided::class,
 	];
 
 	/**

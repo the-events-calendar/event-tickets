@@ -498,19 +498,27 @@ class Order extends Abstract_Order {
 		}
 
 		$additional_data = [];
+		$status_obj      = null;
 
 		if ( ! empty( $square_order['refunds'] ) ) {
 			if ( 'COMPLETED' !== $status ) {
 				return $order;
 			}
 
-			$status = 'REFUNDED';
-
-			$payload = [];
+			$refunded_amounts = [];
+			$payload          = [];
 
 			foreach ( $square_order['refunds'] as $refund ) {
 				$payload[]['data']['object']['refund'] = $refund;
+
+				if ( empty( $refund['id'] ) || empty( $refund['amount_money']['amount'] ) ) {
+					continue;
+				}
+
+				$refunded_amounts[ $refund['id'] ] = (int) $refund['amount_money']['amount'];
 			}
+
+			$status_obj = $this->commerce_order->resolve_refund_status( (int) array_sum( $refunded_amounts ), $order );
 
 			$additional_data = [
 				'gateway_payload' => $payload,
@@ -522,7 +530,9 @@ class Order extends Abstract_Order {
 			}
 		}
 
-		$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
+		if ( null === $status_obj ) {
+			$status_obj = tribe( Status::class )->convert_to_commerce_status( $status );
+		}
 
 		if ( ! $status_obj ) {
 			do_action(

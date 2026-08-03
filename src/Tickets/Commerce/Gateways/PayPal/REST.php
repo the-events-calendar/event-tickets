@@ -23,6 +23,7 @@ class REST extends \TEC\Common\Contracts\Service_Provider {
 	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
+		// $this->container->make( REST\Webhook_Endpoint::class )->register();
 		$this->container->make( REST\On_Boarding_Endpoint::class )->register();
 		$this->container->make( REST\Order_Endpoint::class )->register();
 	}

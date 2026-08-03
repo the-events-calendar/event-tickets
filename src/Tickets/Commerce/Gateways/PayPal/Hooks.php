@@ -79,6 +79,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
 		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
+		add_filter( 'tec_tickets_commerce_order_paypal_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 	}
 
 	/**
@@ -354,5 +355,40 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function filter_admin_notices( $notices ) {
 		return $this->container->make( Gateway::class )->filter_admin_notices( $notices );
+	}
+
+	/**
+	 * Filter the refunded amount for a PayPal order.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?int  $nothing The current value.
+	 * @param array $refunds The refund payloads for the order.
+	 *
+	 * @return int
+	 */
+	public function filter_order_get_value_refunded( ?int $nothing, array $refunds ): int {
+		if ( $nothing ) {
+			return $nothing;
+		}
+
+		$refunded_minor_units = 0;
+
+		foreach ( $refunds as $refund ) {
+			$total_refunded = Arr::get( $refund, [ 'resource', 'seller_payable_breakdown', 'total_refunded_amount', 'value' ], null );
+			if ( null !== $total_refunded && '' !== $total_refunded ) {
+				$refunded_minor_units = max( $refunded_minor_units, (int) round( 100 * (float) $total_refunded ) );
+				continue;
+			}
+
+			$value = Arr::get( $refund, [ 'resource', 'amount', 'value' ], null );
+			if ( null === $value || '' === $value ) {
+				continue;
+			}
+
+			$refunded_minor_units += (int) round( 100 * (float) $value );
+		}
+
+		return $refunded_minor_units;
 	}
 }
