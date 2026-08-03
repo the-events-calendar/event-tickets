@@ -59,7 +59,6 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Which classes we will load for order flag actions by default.
 	 *
-	 * @since 5.1.9
 	 * @since TBD Merges the shared and ticket-only flag action lists, registers the order email
 	 *
 	 * @var string[]
