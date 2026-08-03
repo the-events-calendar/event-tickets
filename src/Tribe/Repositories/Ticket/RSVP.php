@@ -10,17 +10,6 @@
  */
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
-/**
- * RSVP Ticket Repository.
- *
- * Handles ORM operations for RSVP tickets.
- *
- * @since 4.10.6
- *
- * @package Tribe\Tickets\Repositories\Ticket
- */
-
-// phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 use TEC\Tickets\Repositories\Traits\Get_Field;
 use Tribe__Cache_Listener as Cache_Listener;
@@ -39,6 +28,15 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		$post_type = ( $this->ticket_types() )['rsvp'] ?? 'tribe_rsvp_tickets';
+
+		$this->create_args['post_type'] = $post_type;
+
+		$this->default_args = [
+			'post_type' => $post_type,
+			'orderby'   => [ 'date', 'ID' ],
+		];
 
 		// Add RSVP-specific field aliases.
 		$this->update_fields_aliases = array_merge(
@@ -103,14 +101,14 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return int|false New sales count or false on failure.
 	 */
 	public function adjust_sales( int $ticket_id, int $delta ) {
-		global $wpdb;
-
 		// Check if ticket exists first.
 		if ( ! get_post( $ticket_id ) ) {
 			return false;
 		}
 
-		// Initialize meta keys if they don't exist.
+		$ticket_capacity = (int) get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
+
+		// Ensure meta keys exist before updating.
 		if ( ! metadata_exists( 'post', $ticket_id, 'total_sales' ) ) {
 			add_post_meta( $ticket_id, 'total_sales', 0, true );
 		}
@@ -118,40 +116,34 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			add_post_meta( $ticket_id, '_stock', 0, true );
 		}
 
-		// Atomic UPDATE for sales - prevents race conditions.
-		$sales_result = $wpdb->query(
-			$wpdb->prepare(
-				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = GREATEST(0, CAST(meta_value AS SIGNED) + %d)
-				 WHERE post_id = %d AND meta_key = 'total_sales'",
-				$delta,
-				$ticket_id
-			)
-		);
+		$old_sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		$old_stock = (int) get_post_meta( $ticket_id, '_stock', true );
 
-		// Atomic UPDATE for stock - inverse of sales.
-		$stock_result = $wpdb->query(
-			$wpdb->prepare(
-				"UPDATE {$wpdb->postmeta}
-				 SET meta_value = GREATEST(0, CAST(meta_value AS SIGNED) - %d)
-				 WHERE post_id = %d AND meta_key = '_stock'",
-				$delta,
-				$ticket_id
-			)
-		);
+		/*
+		 * Sales can grow unbounded but never go negative. Unlike stock, there's no upper
+		 * limit since sales represent a historical count that may exceed current capacity
+		 * (e.g., capacity was reduced after sales occurred).
+		 */
+		$new_sales = max( 0, $old_sales + $delta );
 
-		if ( false === $sales_result || false === $stock_result ) {
-			return false;
-		}
+		/*
+		 * Stock is bounded both below (can't go negative) and above (can't exceed capacity).
+		 * The upper bound prevents stock from exceeding capacity when processing refunds/cancellations,
+		 * ensuring available inventory never shows more than the ticket actually allows.
+		 */
+		$new_stock = max( 0, min( $old_stock - $delta, $ticket_capacity ) );
 
-		// Clear cache.
-		wp_cache_delete( $ticket_id, 'post_meta' );
+		// Update using WordPress API to ensure meta hooks are fired.
+		update_post_meta( $ticket_id, 'total_sales', $new_sales );
+		update_post_meta( $ticket_id, '_stock', $new_stock );
 
-		// A number of other elements depend on the updated values: trigger a save-post based invalidation.
+		/*
+		 * Trigger save_post to invalidate dependent caches like attendance totals, REST API responses,
+		 * and any other data derived from ticket sales/stock values.
+		 */
 		Cache_Listener::instance()->save_post( $ticket_id, get_post( $ticket_id ) );
 
-		// Get new sales count.
-		return (int) get_post_meta( $ticket_id, 'total_sales', true );
+		return $new_sales;
 	}
 
 	/**
@@ -182,14 +174,15 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * @return int|false New ticket ID or false on failure.
 	 */
 	public function duplicate( int $ticket_id, array $overrides = [] ) {
-		// Get original ticket using repository.
-		$original = $this->by( 'id', $ticket_id )->first();
+		$ticket = $this->by( 'id', $ticket_id )->first();
 
 		if ( ! $ticket ) {
 			return false;
 		}
 
-		// Extract ticket data from post object.
+		$all_meta = get_post_meta( $ticket_id );
+		$aliases  = $this->get_update_fields_aliases();
+
 		$ticket_data = [
 			'title'      => $ticket->post_title,
 			'excerpt'    => $ticket->post_excerpt,
@@ -199,8 +192,6 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			'menu_order' => $ticket->menu_order,
 		];
 
-		// Add all meta fields using aliases.
-		$aliases = $this->get_update_fields_aliases();
 		foreach ( $aliases as $alias => $meta_key ) {
 			$value = $all_meta[ $meta_key ][0] ?? '';
 			if ( '' !== $value ) {
@@ -208,13 +199,32 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 			}
 		}
 
-		// Merge with overrides (caller can reset sales/stock if needed).
 		$ticket_data = array_merge( $ticket_data, $overrides );
 
-		// Create new ticket using repository.
+		unset( $ticket_data['ID'], $ticket_data['id'] );
+
 		$new_ticket = $this->set_args( $ticket_data )->create();
 
-		// Repository create() returns WP_Post object or false.
-		return $new_ticket instanceof \WP_Post ? $new_ticket->ID : false;
+		return $new_ticket instanceof WP_Post ? $new_ticket->ID : false;
+	}
+
+	/**
+	 * Filters tickets by attendee ID.
+	 *
+	 * @since 5.19.0
+	 *
+	 * @param int $value The attendee ID.
+	 *
+	 * @return void
+	 */
+	public function filter_by_attendee_id( int $value ): void {
+		$ticket_id = get_post_meta( $value, Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY, true );
+
+		if ( ! $ticket_id ) {
+			$this->void_query( true );
+			return;
+		}
+
+		$this->by( 'id', $ticket_id );
 	}
 }
