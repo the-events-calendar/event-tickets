@@ -12,12 +12,14 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
+ * @var bool $show_attendees_list Whether the attendees list should be shown. Filterable via `tec_tickets_rsvp_show_attendees_list`.
  *
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
  * @since 5.20.0 Added waitlist entry point.
+ * @since TBD Only render the attendees list when `tec_tickets_rsvp_show_attendees_list` allows it.
  *
- * @version 5.20.0
+ * @version TBD
  */
 
 ?>
@@ -46,6 +48,10 @@
 
 	</div>
 
-	<?php $this->template( 'v2/rsvp/attendees' ); ?>
+	<?php if ( ! empty( $show_attendees_list ) ) : ?>
+
+		<?php $this->template( 'v2/rsvp/attendees' ); ?>
+
+	<?php endif; ?>
 
 <?php endif; ?>
