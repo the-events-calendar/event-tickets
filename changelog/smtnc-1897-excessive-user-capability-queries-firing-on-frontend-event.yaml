@@ -1,0 +1,5 @@
+significance: patch
+type: performance
+entry: Stopped resolving the current user during bootstrap on front-end requests
+  to decide whether the admin Attendees screens should be registered.
+timestamp: 2026-08-01T04:57:46.914Z
