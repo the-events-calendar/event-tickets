@@ -171,13 +171,6 @@ class Controller extends Controller_Contract {
 			3
 		);
 
-		// Add show_not_going property to REST responses for RSVP tickets.
-		add_filter(
-			'tec_tickets_build_ticket_properties',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_properties' ),
-			10,
-			2
-		);
 		add_filter(
 			'tec_rest_ticket_properties_to_add',
 			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
@@ -231,19 +224,7 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Attendees::class, 'void_order_after_last_attendee_deleted' )
 		);
 
-		add_action(
-			'tec_tickets_commerce_single_order_details_metabox_after',
-			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
-		);
-
 		// Frontend.
-		add_action( 'wp_enqueue_scripts', $this->container->callback( Frontend::class, 'enqueue_rsvp_assets' ) );
-		add_filter(
-			'tec_tickets_front_end_rsvp_form_template_content',
-			$this->container->callback( Frontend::class, 'render_rsvp_template' ),
-			10,
-			5
-		);
 		add_filter(
 			'tribe_template_done',
 			$this->container->callback( Frontend::class, 'prevent_template_render' ),
@@ -251,76 +232,8 @@ class Controller extends Controller_Contract {
 			2
 		);
 
-		// Repository.
-		add_filter(
-			'tec_tickets_commerce_repository_ticket_query_args',
-			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' ),
-			10,
-			2
-		);
-		add_filter(
-			'tec_tickets_commerce_is_ticket',
-			$this->container->callback( Repository_Filters::class, 'rsvp_are_tickets' ),
-			10,
-			2
-		);
-
 		// Add show_not_going property to REST responses for RSVP tickets.
 		$this->hook_add_show_not_going_to_properties();
-
-		add_filter(
-			'tec_rest_ticket_properties_to_add',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_rest_properties' )
-		);
-
-		// Add show_not_going to REST API documentation.
-		add_filter(
-			'tec_rest_swagger_ticket_request_body_definition',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_request_body_docs' )
-		);
-		add_filter(
-			'tec_rest_swagger_ticket_definition',
-			$this->container->callback( REST_Properties::class, 'add_show_not_going_to_response_docs' )
-		);
-
-		add_filter(
-			'tec_tickets_rsvp_get_attendees_by_id_pre',
-			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
-			10,
-			2
-		);
-
-		// Attendees report: show Going/Not Going status and hide check-in for "not going" RSVPs.
-		add_filter(
-			'tribe_tickets_attendees_table_order_status',
-			$this->container->callback( Attendees::class, 'modify_status_display' ),
-			10,
-			2
-		);
-		add_filter(
-			'tec_tickets_attendees_table_column_check_in',
-			$this->container->callback( Attendees::class, 'modify_checkin_display' ),
-			10,
-			2
-		);
-		add_filter(
-			'event_tickets_attendees_table_row_actions',
-			$this->container->callback( Attendees::class, 'modify_row_actions' ),
-			10,
-			2
-		);
-
-		add_action(
-			'tec_tickets_commerce_single_order_details_metabox_after',
-			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' )
-		);
-
-		add_filter(
-			'tec_tickets_rsvp_get_attendees_by_id_pre',
-			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
-			10,
-			2
-		);
 
 		add_filter(
 			'tec_tickets_view_count_ticket_attendees_args',
@@ -452,18 +365,6 @@ class Controller extends Controller_Contract {
 			'event_tickets_attendees_table_row_actions',
 			$this->container->callback( Attendees::class, 'modify_row_actions' )
 		);
-		remove_filter(
-			'tribe_tickets_attendees_table_order_status',
-			$this->container->callback( Attendees::class, 'modify_status_display' )
-		);
-		remove_filter(
-			'tec_tickets_attendees_table_column_check_in',
-			$this->container->callback( Attendees::class, 'modify_checkin_display' )
-		);
-		remove_filter(
-			'event_tickets_attendees_table_row_actions',
-			$this->container->callback( Attendees::class, 'modify_row_actions' )
-		);
 		remove_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
 			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
@@ -471,34 +372,6 @@ class Controller extends Controller_Contract {
 		remove_action(
 			'tec_tickets_commerce_attendee_before_delete',
 			$this->container->callback( Attendees::class, 'void_order_after_last_attendee_deleted' )
-		);
-		remove_action(
-			'tec_tickets_commerce_single_order_details_metabox_after',
-			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
-		);
-		remove_filter(
-			'tec_tickets_rsvp_get_attendees_by_id_pre',
-			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
-		);
-		remove_filter(
-			'tribe_tickets_attendees_table_order_status',
-			$this->container->callback( Attendees::class, 'modify_status_display' )
-		);
-		remove_filter(
-			'tec_tickets_attendees_table_column_check_in',
-			$this->container->callback( Attendees::class, 'modify_checkin_display' )
-		);
-		remove_filter(
-			'event_tickets_attendees_table_row_actions',
-			$this->container->callback( Attendees::class, 'modify_row_actions' )
-		);
-		remove_action(
-			'tec_tickets_commerce_single_order_details_metabox_after',
-			$this->container->callback( Metabox::class, 'add_rsvp_status_to_single_order_details_metabox' ),
-		);
-		remove_filter(
-			'tec_tickets_rsvp_get_attendees_by_id_pre',
-			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
 		);
 		remove_filter(
 			'tec_tickets_view_count_ticket_attendees_args',
