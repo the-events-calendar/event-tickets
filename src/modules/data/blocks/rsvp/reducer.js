@@ -1,8 +1,8 @@
 /**
  * Internal dependencies
  */
-import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from './reducers/details';
-import tempDetails from './reducers/temp-details';
+import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from '../rsvp-shared/reducers/details';
+import tempDetails from '../rsvp-shared/reducers/temp-details';
 import headerImage, { DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import { types } from './index';
 
@@ -18,6 +18,7 @@ export const DEFAULT_STATE = {
 	goingCount: 0,
 	notGoingCount: 0,
 	hasAttendeeInfoFields: false,
+	hasDurationError: false,
 	iac: 'none',
 	details: DETAILS_DEFAULT_STATE,
 	tempDetails: DETAILS_DEFAULT_STATE,

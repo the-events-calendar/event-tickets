@@ -14,7 +14,6 @@ use ArrayAccess;
 use Closure;
 use InvalidArgumentException;
 use ReturnTypeWillChange;
-use Serializable;
 use Tribe\Utils\Lazy_Events;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -28,7 +27,7 @@ use WP_Post;
  *
  * @package Tribe\Tickets\Events\Views\V2\Models
  */
-class Tickets implements ArrayAccess, Serializable {
+class Tickets implements ArrayAccess {
 	use Lazy_Events;
 
 	/**
@@ -379,13 +378,16 @@ class Tickets implements ArrayAccess, Serializable {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Serializes the model to a string.
+	 *
+	 * Kept for back-compatibility reasons; new code should rely on PHP's
+	 * `serialize()` calling `__serialize()` directly.
+	 *
+	 * @since 5.7.0
+	 *
+	 * @return string The serialized representation of the model data.
 	 */
 	public function serialize() {
-		$data            = $this->fetch_data();
-		$data['post_id'] = $this->post_id;
-
-		// Kept for back-compatibility reasons.
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		return serialize( $this->__serialize() );
 	}
@@ -417,15 +419,22 @@ class Tickets implements ArrayAccess, Serializable {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Restores the model state from a serialized string.
+	 *
+	 * Kept for back-compatibility reasons; new code should rely on PHP's
+	 * `unserialize()` calling `__unserialize()` directly.
+	 *
+	 * @since 5.7.0
+	 *
+	 * @param string $serialized The serialized representation of the model data.
+	 *
+	 * @return void
 	 */
 	public function unserialize( $serialized ) {
-		// Kept for back-compatibility reasons.
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
 		$data = unserialize( $serialized );
-		$this->__unserialize( $data );
 
-		unset( $data['post_id'] );
+		$this->__unserialize( $data );
 	}
 
 	/**

@@ -33,7 +33,7 @@ class Attendance_Totals {
 	public function get_going_count( int $event_id ): int {
 		$repo = new Attendee_Repository();
 
-		return $repo->by( 'event', $event_id )->by( 'going', true )->count();
+		return $repo->by( 'event', $event_id )->by( 'rsvp_status', 'yes' )->count();
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Attendance_Totals {
 	public function get_not_going_count( int $event_id ): int {
 		$repo = new Attendee_Repository();
 
-		return $repo->by( 'event', $event_id )->by( 'not_going', true )->count();
+		return $repo->by( 'event', $event_id )->by( 'rsvp_status', 'no' )->count();
 	}
 
 	/**

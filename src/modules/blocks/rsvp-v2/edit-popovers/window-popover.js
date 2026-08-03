@@ -55,7 +55,7 @@ const RSVPWindowPopover = ( { anchorRef, hasDurationError, isOpen, isSaving, onC
 					<Button isSecondary onClick={ onCancel }>
 						{ __( 'Cancel', 'event-tickets' ) }
 					</Button>
-					<Button disabled={ hasDurationError } isPrimary isBusy={ isSaving } onClick={ onSave }>
+					<Button disabled={ hasDurationError || isSaving } isPrimary isBusy={ isSaving } onClick={ onSave }>
 						{ __( 'Save', 'event-tickets' ) }
 					</Button>
 				</div>

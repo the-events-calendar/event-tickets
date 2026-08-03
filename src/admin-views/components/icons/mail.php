@@ -14,8 +14,8 @@
  * @version TBD
  *
  * @var array<string> $classes Additional classes to add to the svg icon.
- *
  */
+
 $svg_classes = [ 'tribe-common-c-svgicon', 'tribe-common-c-svgicon--mail' ];
 
 if ( ! empty( $classes ) ) {

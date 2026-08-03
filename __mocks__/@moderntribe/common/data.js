@@ -7,4 +7,10 @@ const plugins = {
 	},
 };
 
-module.exports = { plugins };
+const editor = {
+	EVENT: 'tribe_events',
+	VENUE: 'tribe_venue',
+	ORGANIZER: 'tribe_organizer',
+};
+
+module.exports = { plugins, editor };

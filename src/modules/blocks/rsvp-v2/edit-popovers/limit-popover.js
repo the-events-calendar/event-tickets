@@ -46,7 +46,7 @@ const RSVPLimitPopover = ( { anchorRef, isOpen, isSaving, onCancel, onSave, onTe
 					<Button isSecondary onClick={ onCancel }>
 						{ __( 'Cancel', 'event-tickets' ) }
 					</Button>
-					<Button isPrimary isBusy={ isSaving } onClick={ onSave }>
+					<Button disabled={ isSaving } isPrimary isBusy={ isSaving } onClick={ onSave }>
 						{ __( 'Save', 'event-tickets' ) }
 					</Button>
 				</div>
