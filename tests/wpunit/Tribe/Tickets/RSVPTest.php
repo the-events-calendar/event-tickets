@@ -808,21 +808,26 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-opt-in-nonce',
 		] );
 
-		// Handle ticket and post ID variations that tolerances won't handle
-		$html = str_replace(
+		$html = $this->replace_snapshot_post_ids(
+			$html,
 			[
-				'[' . $ticket_id . ']',
-				'"' . $ticket_id . '"',
-				'--' . $ticket_id . '',
-				$post_id,
-			],
+				$post_id   => '[EVENT_ID]',
+				$ticket_id => '[TICKET_ID]',
+			]
+		);
+
+		$html = $this->replace_snapshot_post_ids(
+			$html,
 			[
-				'[TICKET_ID]',
-				'"TICKET_ID"',
-				'--TICKET_ID',
-				'[EVENT_ID]',
-			],
-			$html
+				$ticket_id => '--TICKET_ID',
+			]
+		);
+
+		$html = $this->replace_snapshot_post_ids(
+			$html,
+			[
+				$ticket_id => '"TICKET_ID"',
+			]
 		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
