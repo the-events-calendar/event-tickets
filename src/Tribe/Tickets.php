@@ -1,6 +1,7 @@
 <?php
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
@@ -1696,6 +1697,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Get attendee data for attendees from the current module.
 		 *
 		 * @since 4.10.6
+		 * @since TBD Added cache to handle the attendees data from the current module.
 		 *
 		 * @param array $attendees Attendee objects or IDs.
 		 * @param int   $post_id   Parent post ID.
@@ -1703,7 +1705,33 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array The attendee data for attendees.
 		 */
 		public function get_attendees_from_module( $attendees, $post_id = 0 ) {
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+
+			if ( $post_id && ! empty( $attendees ) ) {
+				$cache_key = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
+
+				$cached_attendees = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
+
+				if ( is_array( $cached_attendees ) ) {
+					return $cached_attendees;
+				}
+			}
+
 			$attendees_from_module = [];
+
+			$attendee_ids = [];
+			foreach ( $attendees as $attendee ) {
+				$attendee_id = $attendee instanceof WP_Post ? $attendee->ID : (int) $attendee;
+				if ( $attendee_id ) {
+					$attendee_ids[] = $attendee_id;
+				}
+			}
+			$attendee_ids = array_unique( $attendee_ids );
+
+			if ( $attendee_ids ) {
+				tribe( 'cache' )->warmup_post_caches( $attendee_ids, true );
+			}
 
 			foreach ( $attendees as $attendee ) {
 				$attendee_data = $this->get_attendee( $attendee, $post_id );
@@ -1712,10 +1740,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
-				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
 				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
 
 				$attendees_from_module[] = $attendee_data;
+			}
+
+			if ( $post_id && ! empty( $attendees_from_module ) && ! empty( $cache_key ) ) {
+				$cache->set( $cache_key, $attendees_from_module, Tribe__Cache::NON_PERSISTENT, Cache::TRIGGER_SAVE_POST );
 			}
 
 			return $attendees_from_module;
