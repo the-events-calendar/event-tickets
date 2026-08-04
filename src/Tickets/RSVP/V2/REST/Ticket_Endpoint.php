@@ -11,6 +11,7 @@ namespace TEC\Tickets\RSVP\V2\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
@@ -240,16 +241,16 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
-if ( $ticket_event_id !== $post_id ) {
-    return new WP_REST_Response(
-        [
-            'success' => false,
-            'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
-        ],
-        404
-    );
-}
+		$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+		if ( $ticket_event_id !== $post_id ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
+		}
 
 		/**
 		 * Allow for processing additional IAC and attendee meta fields before updating.
@@ -322,16 +323,16 @@ if ( $ticket_event_id !== $post_id ) {
 			);
 		}
 
-$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
-if ( $ticket_event_id !== $post_id ) {
-    return new WP_REST_Response(
-        [
-            'success' => false,
-            'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
-        ],
-        404
-    );
-}
+		$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+		if ( $ticket_event_id !== $post_id ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
+		}
 
 		/**
 		 * Allow for processing before RSVP ticket deletion.

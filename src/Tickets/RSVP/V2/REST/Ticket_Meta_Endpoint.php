@@ -12,6 +12,7 @@
 namespace TEC\Tickets\RSVP\V2\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
 use WP_Post;
@@ -133,16 +134,16 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
-if ( $ticket_event_id !== $post_id ) {
-    return new WP_REST_Response(
-        [
-            'success' => false,
-            'message' => __( 'Ticket not found.', 'event-tickets' ),
-        ],
-        404
-    );
-}
+		$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+		if ( $ticket_event_id !== $post_id ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found.', 'event-tickets' ),
+				],
+				404
+			);
+		}
 
 		/**
 		 * Allow for processing additional IAC and attendee meta fields before updating.
