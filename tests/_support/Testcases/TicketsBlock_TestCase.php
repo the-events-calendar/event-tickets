@@ -95,15 +95,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 	}
 
 	/**
-	 * Setup ticket.
+	 * Get the ticket overrides built from a capacity matrix.
 	 *
-	 * @param int   $post_id   Post ID.
 	 * @param array $matrix    Matrix data to setup with.
 	 * @param array $overrides Overrides for ticket data.
 	 *
-	 * @return int Ticket ID.
+	 * @return array Ticket overrides.
 	 */
-	protected function setup_block_ticket( $post_id, $matrix, $overrides = [] ) {
+	protected function get_block_ticket_overrides( $matrix, $overrides = [] ) {
 		$mode           = $matrix['ticket']['mode'] ?? null;
 		$capacity       = $matrix['ticket']['capacity'] ?? null;
 		$event_capacity = $matrix['ticket']['event_capacity'] ?? null;
@@ -129,7 +128,20 @@ class TicketsBlock_TestCase extends WPTestCase {
 			$overrides[ $arg ] = $value;
 		}
 
-		return $this->create_block_ticket( $post_id, 5, $overrides );
+		return $overrides;
+	}
+
+	/**
+	 * Setup ticket.
+	 *
+	 * @param int   $post_id   Post ID.
+	 * @param array $matrix    Matrix data to setup with.
+	 * @param array $overrides Overrides for ticket data.
+	 *
+	 * @return int Ticket ID.
+	 */
+	protected function setup_block_ticket( $post_id, $matrix, $overrides = [] ) {
+		return $this->create_block_ticket( $post_id, 5, $this->get_block_ticket_overrides( $matrix, $overrides ) );
 	}
 
 	/**

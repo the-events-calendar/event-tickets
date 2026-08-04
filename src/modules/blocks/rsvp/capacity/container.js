@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * Internal dependencies
  */
-import Template from './template';
+import RSVPCapacity from '../../rsvp-shared/templates/capacity/template';
 import { withStore } from '@moderntribe/common/hoc';
 import { actions, selectors } from '../../../data/blocks/rsvp';
 
@@ -23,4 +23,4 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	},
 } );
 
-export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( Template );
+export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPCapacity );

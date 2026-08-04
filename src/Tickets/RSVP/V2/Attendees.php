@@ -12,7 +12,6 @@ namespace TEC\Tickets\RSVP\V2;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 
 /**
@@ -103,6 +102,37 @@ class Attendees {
 	}
 
 	/**
+	 * Filters the arguments used to count the Attendees in the Tickets View data link.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $args    The arguments used to count the attendees.
+	 * @param int                 $post_id The post ID the Attendees are being counted for.
+	 * @param int|null            $user_id The user ID, if any. Unused.
+	 * @param string|null         $context The context of the query.
+	 *
+	 * @return array<string,mixed> The filtered arguments.
+	 */
+	public function exclude_rsvp_tickets_from_tickets_view_data_link_count( array $args, int $post_id, ?int $user_id, ?string $context ): array {
+		if ( 'get_my_tickets_link_data' !== $context ) {
+			return $args;
+		}
+
+		// In RSVP v2 the Tickets Commerce provider is active by default; an empty provider means TC.
+		$provider = tribe_tickets_get_ticket_provider( $post_id );
+
+		// There is a provider and it's not TC, then bail.
+		if ( ! empty( $provider ) && ! $provider instanceof Module ) {
+			return $args;
+		}
+
+		// Exclude RSVP attendees from the count.
+		$args['by']['meta_not_equals'] = [ '_type', Constants::TC_RSVP_TYPE ];
+
+		return $args;
+	}
+
+	/**
 	 * Replaces the order-status label with a "Going" / "Not Going" indicator for TC RSVP attendees.
 	 *
 	 * Hooked to `tribe_tickets_attendees_table_order_status`. All RSVP attendees have a
@@ -123,11 +153,7 @@ class Attendees {
 		}
 
 		$is_going    = 'no' !== $status;
-		$status_text = __( 'Not Going', 'event-tickets' );
-
-		if ( $is_going ) {
-			$status_text = __( 'Going', 'event-tickets' );
-		}
+		$status_text = $is_going ? __( 'Going', 'event-tickets' ) : __( 'Not Going', 'event-tickets' );
 
 		// Reuse the existing status-pill styling: blue-grey for going, amber for not going.
 		$classes = [
@@ -216,45 +242,5 @@ class Attendees {
 
 		// Only an explicit "no" counts as not going; anything else is treated as going.
 		return 'no' === get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) ? 'no' : 'yes';
-	}
-
-	/**
-	 * Voids the hidden TC-RSVP Order once its last Attendee is deleted.
-	 *
-	 * TC-RSVP Orders are backend-only Orders created to back RSVP attendee records; nothing else marks
-	 * them as no-longer-relevant once every Attendee is gone, so they are otherwise left behind as
-	 * permanently "Completed" orphans.
-	 *
-	 * Hooked to `tec_tickets_commerce_attendee_before_delete`, which fires before the Attendee post (and
-	 * its meta) is removed, so the Ticket/Order relation is still readable here.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $attendee_id The Attendee post ID about to be deleted.
-	 *
-	 * @return void
-	 */
-	public function void_order_after_last_attendee_deleted( int $attendee_id ): void {
-		$ticket_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
-
-		if ( ! $ticket_id || ! tribe( Ticket::class )->is_rsvp( $ticket_id ) ) {
-			return;
-		}
-
-		$order_id = wp_get_post_parent_id( $attendee_id );
-
-		if ( ! $order_id ) {
-			return;
-		}
-
-		// `order_id` is only a valid alias for *updates* on this repository; `post_parent` is the real query filter.
-		$remaining_attendees = tec_tc_attendees()->by( 'post_parent', $order_id )->count();
-
-		if ( $remaining_attendees > 1 ) {
-			// Other Attendees still exist on this Order; leave its status alone.
-			return;
-		}
-
-		tribe( Order::class )->modify_status( $order_id, Voided::SLUG );
 	}
 }
