@@ -378,18 +378,21 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
-	 * Serializes the model to a string.
-	 *
-	 * Kept for back-compatibility reasons; new code should rely on PHP's
-	 * `serialize()` calling `__serialize()` directly.
+	 * Legacy serialization method kept for backward compatibility.
 	 *
 	 * @since 5.7.0
+	 * @deprecated 5.29.0 Use __serialize() instead.
 	 *
-	 * @return string The serialized representation of the model data.
+	 * @return string
 	 */
 	public function serialize() {
-		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-		return serialize( $this->__serialize() );
+		_deprecated_function( __METHOD__, '5.29.0', '__serialize()' );
+
+		$data            = $this->fetch_data();
+		$data['post_id'] = $this->post_id;
+
+		// Kept for back-compatibility reasons.
+		return maybe_serialize( $this->__serialize() );
 	}
 
 	/**
@@ -419,22 +422,23 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
-	 * Restores the model state from a serialized string.
-	 *
-	 * Kept for back-compatibility reasons; new code should rely on PHP's
-	 * `unserialize()` calling `__unserialize()` directly.
+	 * Legacy unserialization method kept for backward compatibility.
 	 *
 	 * @since 5.7.0
+	 * @deprecated 5.29.0 Use __unserialize() instead.
 	 *
-	 * @param string $serialized The serialized representation of the model data.
+	 * @param array|string $serialized The serialized data.
 	 *
 	 * @return void
 	 */
 	public function unserialize( $serialized ) {
-		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
-		$data = unserialize( $serialized );
+		_deprecated_function( __METHOD__, '5.29.0', '__unserialize()' );
 
+		// Kept for back-compatibility reasons.
+		$data = maybe_unserialize( $serialized );
 		$this->__unserialize( $data );
+
+		unset( $data['post_id'] );
 	}
 
 	/**
