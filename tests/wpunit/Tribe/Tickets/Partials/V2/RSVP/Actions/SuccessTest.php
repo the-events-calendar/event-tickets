@@ -47,22 +47,24 @@ class SuccessTest extends WPTestCase {
 			'opt_in_attendee_ids'  => '',
 			'opt_in_nonce'         => '',
 			'is_going'             => true,
+			'show_attendees_list'  => true,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
-		/*$html = str_replace(
+		// Handle ticket and event ID variations that tolerances won't handle.
+		$html = str_replace(
 			[
-				'-' . $ticket_id . '"',
-				'-' . $event_id . '"',
+				$ticket_id,
+				$event_id,
 			],
 			[
-				'-TICKET_ID"',
-				'-EVENT_ID"',
+				'[TICKET_ID]',
+				'[EVENT_ID]',
 			],
 			$html
-		);*/
+		);
 
 		$driver->setTolerableDifferences(
 			[
