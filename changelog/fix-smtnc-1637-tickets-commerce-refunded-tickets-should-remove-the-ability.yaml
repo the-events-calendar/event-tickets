@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Resolved an issue where an attendee could still be checked in after their
+  order was refunded.
+timestamp: 2026-07-27T19:37:11.255Z

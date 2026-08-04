@@ -14,6 +14,7 @@ use TEC\Common\Contracts\Container;
 use WP_Post;
 use Tribe__Repository;
 use Exception;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Models\Webhook as Webhook_Model;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
@@ -60,6 +61,7 @@ class Hooks extends Controller_Contract {
 		add_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
+		add_filter( 'tec_tickets_commerce_order_has_pending_non_completed_transition', [ $this, 'filter_order_has_pending_non_completed_transition' ], 10, 2 );
 	}
 
 	/**
@@ -74,6 +76,7 @@ class Hooks extends Controller_Contract {
 		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ] );
 		remove_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ] );
 		remove_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
+		remove_filter( 'tec_tickets_commerce_order_has_pending_non_completed_transition', [ $this, 'filter_order_has_pending_non_completed_transition' ] );
 	}
 
 	/**
@@ -120,6 +123,44 @@ class Hooks extends Controller_Contract {
 		$gateways[ Gateway::get_key() ] = $this->gateway;
 
 		return $gateways;
+	}
+
+	/**
+	 * Reports whether a Square order has a deferred webhook queued that would move it away from a
+	 * completed status - e.g. a refund received while the order is still within its post-checkout hold
+	 * window (see TEC\Tickets\Commerce\Order::has_on_checkout_screen_hold()).
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $has_pending Whether another callback already found a pending non-completed transition.
+	 * @param int  $order_id    The order ID.
+	 *
+	 * @return bool
+	 */
+	public function filter_order_has_pending_non_completed_transition( $has_pending, int $order_id ): bool {
+		if ( $has_pending ) {
+			return $has_pending;
+		}
+
+		if ( ! tribe( Commerce_Order::class )->has_on_checkout_screen_hold( $order_id ) ) {
+			return false;
+		}
+
+		$pending_webhooks = tribe( Webhooks::class )->get_pending_webhooks( $order_id );
+
+		if ( ! $pending_webhooks ) {
+			return false;
+		}
+
+		$completed_wp_slug = tribe( Status_Handler::class )->get_by_slug( Completed::SLUG )->get_wp_slug();
+
+		foreach ( $pending_webhooks as $pending_webhook ) {
+			if ( is_array( $pending_webhook ) && ! empty( $pending_webhook['new_status'] ) && $completed_wp_slug !== $pending_webhook['new_status'] ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -171,44 +212,54 @@ class Hooks extends Controller_Contract {
 		// On multiple checkout completes, make sure we don't process the same webhook twice.
 		$webhooks->delete_pending_webhooks( $order->ID );
 
-		foreach ( $pending_webhooks as $pending_webhook ) {
-			if ( ! ( is_array( $pending_webhook ) ) ) {
-				continue;
-			}
+		// Flag the order so that attendee archive triggered by the async webhook resolution
+		// (via modify_status below) can be distinguished from post-event refund archives.
+		// The flag is checked by TEC\Tickets\Hooks::uncheckin_attendee_on_archive() and deleted
+		// after all pending webhooks are processed.
+		update_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive', 1 );
 
-			if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
-				continue;
-			}
+		try {
+			foreach ( $pending_webhooks as $pending_webhook ) {
+				if ( ! ( is_array( $pending_webhook ) ) ) {
+					continue;
+				}
 
-			$new_status_wp_slug = $pending_webhook['new_status'];
+				if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
+					continue;
+				}
 
-			// The order is already there!
-			if ( $order->post_status === $new_status_wp_slug ) {
-				continue;
-			}
+				$new_status_wp_slug = $pending_webhook['new_status'];
 
-			// The order is no longer where it was... that could be dangerous, lets bail?
-			if ( $order->post_status !== $pending_webhook['old_status'] ) {
-				continue;
-			}
+				// The order is already there!
+				if ( $order->post_status === $new_status_wp_slug ) {
+					continue;
+				}
 
-			$event_id = $pending_webhook['metadata']['event_id'] ?? '';
+				// The order is no longer where it was... that could be dangerous, lets bail?
+				if ( $order->post_status !== $pending_webhook['old_status'] ) {
+					continue;
+				}
 
-			if ( $event_id ) {
-				Webhook_Model::update(
-					[
-						'event_id'     => $event_id,
-						'order_id'     => $order->ID,
-						'processed_at' => current_time( 'mysql' ),
-					]
+				$event_id = $pending_webhook['metadata']['event_id'] ?? '';
+
+				if ( $event_id ) {
+					Webhook_Model::update(
+						[
+							'event_id'     => $event_id,
+							'order_id'     => $order->ID,
+							'processed_at' => current_time( 'mysql' ),
+						]
+					);
+				}
+
+				tribe( Commerce_Order::class )->modify_status(
+					$order->ID,
+					tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
+					$pending_webhook['metadata']
 				);
 			}
-
-			tribe( Commerce_Order::class )->modify_status(
-				$order->ID,
-				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
-				$pending_webhook['metadata']
-			);
+		} finally {
+			delete_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive' );
 		}
 	}
 

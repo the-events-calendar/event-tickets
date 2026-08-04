@@ -18,6 +18,7 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Payments_Tab;
 use WP_Query;
 use WP_Post;
@@ -45,9 +46,46 @@ class Hooks extends Service_Provider {
 	 * Adds the actions required by each Tickets component.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Added the `tec_tickets_commerce_attendee_after_archive` action for uncheck-in on archive.
 	 */
 	protected function add_actions() {
 		$this->container->register( Ticket_Cache_Controller::class );
+		add_action( 'tec_tickets_commerce_attendee_after_archive', [ $this, 'uncheckin_attendee_on_archive' ] );
+	}
+
+	/**
+	 * Revokes an Attendee's check-in status when a held gateway webhook is resolved and their
+	 * order is archived (e.g. a deferred Stripe refund that applies after the checkout hold window).
+	 *
+	 * During the hold window an Attendee can legitimately check in before a deferred webhook that
+	 * would move the order away from a completed status is applied. Once that webhook does apply
+	 * (via the async processor) and the order's Attendees are archived, any check-in that happened
+	 * in that window is stale and must be revoked.
+	 *
+	 * Only unchecks when the archive was triggered by a held-webhook resolution (detected via a
+	 * post meta flag set by the gateway's async processor). Post-event refunds that archive
+	 * attendees outside the hold window are left alone so legitimate attendance history.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The Attendee post ID that was just archived.
+	 */
+	public function uncheckin_attendee_on_archive( int $attendee_id ): void {
+		$module = tribe( Module::class );
+
+		if ( ! get_post_meta( $attendee_id, $module->checkin_key, true ) ) {
+			return;
+		}
+
+		// Tickets Commerce stores the order relationship as post_parent on the attendee.
+		$order_id = wp_get_post_parent_id( $attendee_id );
+
+		// Only act when the archive is part of resolving a held gateway webhook.
+		if ( ! $order_id || ! get_post_meta( $order_id, '_tec_tickets_commerce_webhook_resolving_archive', true ) ) {
+			return;
+		}
+
+		$module->uncheckin( $attendee_id );
 	}
 
 	/**
@@ -112,8 +150,79 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets component.
 	 *
 	 * @since 5.1.6
+	 * @since TBD Added the `tec_tickets_attendee_checkin` filter.
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
+		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'prevent_checkin_for_invalid_order_status' ], 10, 2 );
+	}
+
+	/**
+	 * Prevents an Attendee from being checked in when the order backing it is not in a status
+	 * that counts as "completed" for its provider (e.g. an order that has been refunded).
+	 *
+	 * This is a defense-in-depth guard: it runs regardless of the entry point (admin AJAX, QR
+	 * redirect, REST API, etc.) since it hooks directly into `Tribe__Tickets__Tickets::checkin()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool|null $checkin     The current filtered value; a non-null value here means another
+	 *                               callback already decided the outcome, so we defer to it.
+	 * @param int       $attendee_id The post ID of the Attendee being checked in.
+	 *
+	 * @return bool|null
+	 */
+	public function prevent_checkin_for_invalid_order_status( $checkin, int $attendee_id ): ?bool {
+		if ( null !== $checkin ) {
+			return $checkin;
+		}
+
+		/*
+		 * A non-completed order (e.g. refunded, not-completed) archives its Attendees by trashing them.
+		 * Trashed Attendees are excluded from the provider's default Attendee queries below, which would
+		 * otherwise make this guard fail open (allow check-in) for exactly the case it needs to block.
+		 */
+		if ( 'trash' === get_post_status( $attendee_id ) ) {
+			return false;
+		}
+
+		$ticket_provider = tribe( 'tickets.data_api' )->get_ticket_provider( $attendee_id );
+
+		if ( ! $ticket_provider ) {
+			return $checkin;
+		}
+
+		$attendee = $ticket_provider->get_attendees_by_id( $attendee_id );
+		$attendee = reset( $attendee );
+
+		if ( ! is_array( $attendee ) || ! isset( $attendee['order_status'] ) ) {
+			return $checkin;
+		}
+
+		$completed_statuses = (array) tribe( 'tickets.status' )->get_completed_status_by_provider_name( $ticket_provider );
+
+		if ( empty( $completed_statuses ) ) {
+			return $checkin;
+		}
+
+		if ( ! in_array( $attendee['order_status'], $completed_statuses, true ) ) {
+			return false;
+		}
+
+		/**
+		 * Filters whether the order has a pending non-completed transition (e.g. a deferred refund webhook).
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $has_pending Whether the order has a pending non-completed transition.
+		 * @param int  $order_id    The order ID.
+		 */
+		$has_pending = (bool) apply_filters( 'tec_tickets_commerce_order_has_pending_non_completed_transition', false, (int) $attendee['order_id'] );
+
+		if ( ! empty( $attendee['order_id'] ) && $has_pending ) {
+			return false;
+		}
+
+		return $checkin;
 	}
 }
