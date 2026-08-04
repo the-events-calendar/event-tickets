@@ -188,15 +188,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 			return true;
 		}
 
-		if ( $wants_rsvp ) {
-			return $is_rsvp;
-		}
-
-		if ( $wants_ticket ) {
-			return ! $is_rsvp;
-		}
-
-		return false;
+return $wants_rsvp ? $is_rsvp : ! $is_rsvp;
 	}
 
 	/**
