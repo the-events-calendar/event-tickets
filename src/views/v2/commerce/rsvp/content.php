@@ -58,9 +58,7 @@ defined( 'ABSPATH' ) || die();
 	</div>
 
 	<?php if ( ! empty( $show_attendees_list ) ) : ?>
-
 		<?php $this->template( 'v2/commerce/rsvp/attendees' ); ?>
-
 	<?php endif; ?>
 
 <?php endif; ?>

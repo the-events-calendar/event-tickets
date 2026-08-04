@@ -49,9 +49,7 @@
 	</div>
 
 	<?php if ( ! empty( $show_attendees_list ) ) : ?>
-
 		<?php $this->template( 'v2/rsvp/attendees' ); ?>
-
 	<?php endif; ?>
 
 <?php endif; ?>
