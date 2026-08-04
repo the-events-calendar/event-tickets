@@ -22,6 +22,7 @@ defined( 'ABSPATH' ) || die();
 
 $remaining_tickets = $rsvp->inventory();
 
+$remaining_tickets = $rsvp->remaining();
 if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;
 }

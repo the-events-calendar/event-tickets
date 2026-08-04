@@ -20,7 +20,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { RSVP as RSVPIcon } from '../../icons';
 import RSVPV2Container from './container';
-import { KEY_TICKET_GOING_COUNT, KEY_TICKET_NOT_GOING_COUNT, KEY_TICKET_HEADER } from '../../data/utils';
+import { KEY_TICKET_GOING_COUNT, KEY_TICKET_NOT_GOING_COUNT } from '../../data/utils';
 
 /**
  * V2 RSVP Block definition.
@@ -43,19 +43,18 @@ export default {
 
 	attributes: {
 		goingCount: {
-			type: 'integer',
+			type: 'string',
 			source: 'meta',
 			meta: KEY_TICKET_GOING_COUNT,
 		},
 		notGoingCount: {
-			type: 'integer',
+			type: 'string',
 			source: 'meta',
 			meta: KEY_TICKET_NOT_GOING_COUNT,
 		},
-		headerImageId: {
-			type: 'integer',
-			source: 'meta',
-			meta: KEY_TICKET_HEADER,
+		rsvpFingerprint: {
+			type: 'string',
+			default: '',
 		},
 	},
 

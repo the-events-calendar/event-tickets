@@ -22,5 +22,4 @@ defined( 'ABSPATH' ) || die();
 	<?php $this->template( 'v2/commerce/rsvp/actions/rsvp/going', [ 'rsvp' => $rsvp ] ); ?>
 
 	<?php $this->template( 'v2/commerce/rsvp/actions/rsvp/not-going', [ 'rsvp' => $rsvp ] ); ?>
-
 </div>

@@ -71,4 +71,13 @@ describe( 'RSVP block reducer', () => {
 		const modifiedState = { ...DEFAULT_STATE, iac: 'allowed' };
 		expect( reducer( modifiedState, actions.setRSVPIAC( 'none' ) ) ).toMatchSnapshot();
 	} );
+
+	it( 'should reset to the full default state, including iac and headerImage, on delete', () => {
+		const modifiedState = {
+			...DEFAULT_STATE,
+			iac: 'allowed',
+			headerImage: { id: 42, src: 'https://example.com/image.jpg', alt: 'alt text' },
+		};
+		expect( reducer( modifiedState, actions.deleteRSVP() ) ).toEqual( DEFAULT_STATE );
+	} );
 } );

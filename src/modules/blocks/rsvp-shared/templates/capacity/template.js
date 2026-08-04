@@ -1,0 +1,68 @@
+/**
+ * External dependencies
+ */
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
+import uniqid from 'uniqid';
+
+/**
+ * Wordpress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import { LabeledItem, NumberInput } from '@moderntribe/common/elements';
+import './styles.pcss';
+
+const RSVPCapacity = ( {
+	helpText = __( 'Leave blank if unlimited', 'event-tickets' ),
+	isDisabled,
+	label = __( 'RSVP Capacity', 'event-tickets' ),
+	onTempCapacityChange,
+	tempCapacity,
+} ) => {
+	const capacityId = uniqid();
+
+	return (
+		<div
+			className={ classNames(
+				'tribe-editor__ticket__capacity',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--capacity'
+			) }
+		>
+			<LabeledItem
+				className="tribe-editor__ticket__capacity-label"
+				forId={ capacityId }
+				isLabel={ true }
+				label={ label }
+			/>
+			<div className="tribe-editor__rsvp-container-content__capacity">
+				<NumberInput
+					className="tribe-editor__rsvp-container-content__capacity-input"
+					disabled={ isDisabled }
+					id={ capacityId }
+					min={ 0 }
+					onChange={ onTempCapacityChange }
+					value={ tempCapacity }
+				/>
+				<span className="tribe-editor__rsvp-container-content__capacity-label-help">
+					{ helpText }
+				</span>
+			</div>
+		</div>
+	);
+};
+
+RSVPCapacity.propTypes = {
+	helpText: PropTypes.string,
+	isDisabled: PropTypes.bool,
+	label: PropTypes.string,
+	onTempCapacityChange: PropTypes.func.isRequired,
+	tempCapacity: PropTypes.string,
+};
+
+export default RSVPCapacity;

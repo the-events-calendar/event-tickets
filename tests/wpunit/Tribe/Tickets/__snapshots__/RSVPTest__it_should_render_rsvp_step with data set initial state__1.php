@@ -57,9 +57,6 @@
 
 		
 			<div class="tribe-tickets__rsvp-actions-rsvp">
-	<span class="tribe-common-h2 tribe-common-h6--min-medium">
-		RSVP Here	</span>
-
 	
 <div class="tribe-tickets__rsvp-actions-rsvp-going">
 	<button
@@ -69,8 +66,7 @@
 		Going	</button>
 </div>
 
-	
-</div>
+	</div>
 
 			</div>
 
