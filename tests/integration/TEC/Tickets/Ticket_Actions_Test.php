@@ -633,6 +633,6 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		$ticket_actions = $this->make_controller();
 		$ticket_actions->update_event_cost( $ticket_id, $post_id );
 
-		$this->assertEquals( $expected, get_post_meta( $post_id, '_EventCost' ) );
+		$this->assertEqualsCanonicalizing( $expected, get_post_meta( $post_id, '_EventCost' ) );
 	}
 }

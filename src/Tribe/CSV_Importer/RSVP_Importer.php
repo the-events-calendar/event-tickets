@@ -62,9 +62,9 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 *
 	 * @since 5.29.0 Made $featured_image_uploader and $rsvp_tickets explicitly nullable.
 	 *
-	 * @param Tribe__Events__Importer__File_Reader                  $file_reader
-	 * @param Tribe__Events__Importer__Featured_Image_Uploader|null $featured_image_uploader
-	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets
+	 * @param Tribe__Events__Importer__File_Reader                  $file_reader             The file reader instance.
+	 * @param Tribe__Events__Importer__Featured_Image_Uploader|null $featured_image_uploader The featured image uploader.
+	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets            The RSVP tickets instance.
 	 */
 	public function __construct(
 		Tribe__Events__Importer__File_Reader $file_reader,
