@@ -32,9 +32,10 @@ import {
 } from '../rsvp-shared/utils/close-overlays';
 import { renderBlockNotSupported } from '../rsvp-shared/utils/not-supported';
 import RSVPContainer from './container-panel/container';
-// TODO: Restore RSVPInactiveBlock import when ./inactive-block/container lands in PR #4296.
-// TODO: Restore RSVPSidebarControls import when ./sidebar-controls/container lands in PR #4299.
-// TODO: Restore ./style.pcss import when the file lands in PR #4296.
+import RSVPInactiveBlock from './inactive-block/container';
+import RSVPSidebarControls from './sidebar-controls/container';
+import './style.pcss';
+import { isSavedSummary } from './utils/block-state';
 
 /**
  * The V2 RSVP block template.
@@ -115,8 +116,7 @@ const RSVPV2 = ( {
 		// no ticket exists yet, and the initial fetch has completed.
 		const displayInactive = ! isAddEditOpen && ! created && ! isInitializing;
 		const displayInitializing = isInitializing && ! created && ! isAddEditOpen;
-		// TODO: Restore isSavedSummary() when ./utils/block-state lands in PR #4301.
-		const savedSummary = false;
+		const savedSummary = isSavedSummary( { created, isAddEditOpen } );
 
 		const blockClassName = classNames(
 			'tribe-editor__rsvp',
@@ -140,14 +140,16 @@ const RSVPV2 = ( {
 					<div className={ classNames( 'tribe-editor__rsvp', 'tribe-editor__rsvp-v2', 'tribe-editor__rsvp--loading' ) }>
 						<Spinner />
 					</div>
-				) : displayInactive /* TODO: Restore <RSVPInactiveBlock /> import when ./inactive-block/container lands in PR #4296. */ ? null : savedSummary ? (
+				) : displayInactive ? (
+					<RSVPInactiveBlock />
+				) : savedSummary ? (
 					<div className={ blockClassName }>{ blockBody }</div>
 				) : (
 					<Card className={ blockClassName }>{ blockBody }</Card>
 				) }
 				{ isModalShowing && <MoveModal /> }
 				<RSVPControls />
-				{ /* TODO: Restore <RSVPSidebarControls /> import when ./sidebar-controls/container lands in PR #4299. */ }
+				{ isSelected && <RSVPSidebarControls /> }
 			</div>
 		);
 	};

@@ -70,18 +70,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			]
 		);
 
-		// Register IAC and attendee meta update endpoint.
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path() . '/meta',
-			[
-				[
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => [ $this, 'handle_update_ticket_meta' ],
-					'permission_callback' => [ $this, 'check_permission' ],
-				],
-			]
-		);
+		// The IAC and attendee meta update route is owned by Ticket_Meta_Endpoint.
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}

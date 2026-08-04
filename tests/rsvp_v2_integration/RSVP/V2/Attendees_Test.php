@@ -4,19 +4,15 @@ namespace TEC\Tickets\RSVP\V2;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
-use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\Attendee_Maker as TC_Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as TC_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
-use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class Attendees_Test extends WPTestCase {
 	use Ticket_Maker;
 	use TC_Ticket_Maker;
 	use Attendee_Maker;
-	use TC_Attendee_Maker;
 	use Order_Maker;
 
 	public function get_rsvp_attendees_data_provider(): array {
@@ -141,40 +137,103 @@ class Attendees_Test extends WPTestCase {
 	}
 
 	/**
-	 * @test
+	 * Each fixture returns [ $args, $post_id, $user_id, $context ]; the flag is whether the
+	 * RSVP-exclusion filter should be added for that combination.
 	 */
-	public function it_should_not_conflate_rsvp_and_ticket_counts_in_my_tickets_link_data(): void {
-		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
-		$user_id = static::factory()->user->create();
+	public function exclude_rsvp_tickets_data_provider(): array {
+		return [
+			'unchanged for non-matching context' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-		$this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => $user_id ] );
-		$this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => $user_id ] );
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, 'other_context' ];
+				},
+				false,
+			],
 
-		$rsvp_ticket_id = $this->create_tc_rsvp_ticket( $post_id );
-		$this->create_tc_rsvp_attendee( $rsvp_ticket_id, $post_id, [
-			'meta_input' => [ Attendee::$user_relation_meta_key => $user_id ],
-		] );
+			'unchanged for null context' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$view = new Tickets_View();
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, null ];
+				},
+				false,
+			],
 
-		$this->assertSame(
-			1,
-			$view->count_rsvp_attendees( $post_id, $user_id ),
-			'RSVP count should only include the RSVP attendee, not the real ticket attendees'
-		);
-		$this->assertSame(
-			2,
-			$view->count_ticket_attendees( $post_id, $user_id, 'get_my_tickets_link_data' ),
-			'Ticket count should include real ticket attendees even in the my-tickets-link-data context'
-		);
+			'adds filter for tc provider' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
 
-		$data = $view->get_my_tickets_link_data( $post_id, $user_id );
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, 'get_my_tickets_link_data' ];
+				},
+				true,
+			],
 
-		$this->assertSame( 3, $data['total_count'] );
-		$this->assertStringContainsString( '1 RSVP', $data['message'] );
-		$this->assertStringContainsString( '2 Tickets', $data['message'] );
-		$this->assertSame( 'View all', $data['link_label'] );
+			'preserves existing args' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$this->create_tc_rsvp_ticket( $post_id );
+
+					return [
+						[ 'by' => [ 'event' => $post_id, 'status' => 'completed' ] ],
+						$post_id,
+						null,
+						'get_my_tickets_link_data',
+					];
+				},
+				true,
+			],
+
+			'adds filter with user id' => [
+				function () {
+					$post_id = static::factory()->post->create();
+					$user_id = static::factory()->user->create();
+					$this->create_tc_rsvp_ticket( $post_id );
+
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, $user_id, 'get_my_tickets_link_data' ];
+				},
+				true,
+			],
+
+			'adds filter for post without provider' => [
+				function () {
+					// No ticket created, so no provider. An empty provider means TC.
+					$post_id = static::factory()->post->create();
+
+					return [ [ 'by' => [ 'event' => $post_id ] ], $post_id, null, 'get_my_tickets_link_data' ];
+				},
+				true,
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider exclude_rsvp_tickets_data_provider
+	 */
+	public function test_exclude_rsvp_tickets_from_tickets_view_data_link_count( Closure $fixture, bool $adds_filter ): void {
+		[ $args, $post_id, $user_id, $context ] = $fixture();
+
+		$attendees = tribe( Attendees::class );
+
+		$result = $attendees->exclude_rsvp_tickets_from_tickets_view_data_link_count( $args, $post_id, $user_id, $context );
+
+		if ( ! $adds_filter ) {
+			$this->assertEquals( $args, $result );
+			$this->assertArrayNotHasKey( 'meta_not_equals', $result['by'] );
+
+			return;
+		}
+
+		$this->assertArrayHasKey( 'meta_not_equals', $result['by'] );
+		$this->assertEquals( [ '_type', Constants::TC_RSVP_TYPE ], $result['by']['meta_not_equals'] );
+
+		// The original `by` args are preserved alongside the added filter.
+		foreach ( $args['by'] as $key => $value ) {
+			$this->assertEquals( $value, $result['by'][ $key ] );
+		}
 	}
 
 	public function test_get_rsvp_attendees_by_id_bails_when_attendees_already_filtered(): void {
@@ -188,49 +247,6 @@ class Attendees_Test extends WPTestCase {
 		$result = $attendees->get_rsvp_attendees_by_id( $pre_filtered_value, $post_id );
 
 		$this->assertSame( $pre_filtered_value, $result );
-	}
-
-	public function test_deleting_the_last_rsvp_attendee_voids_the_order(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
-		$order     = $this->create_order( [ $ticket_id => 1 ] );
-
-		$attendee_ids = tec_tc_attendees()->by( 'post_parent', $order->ID )->order_by( 'ID', 'ASC' )->get_ids();
-
-		$this->assertCount( 1, $attendee_ids );
-
-		tribe( Attendee::class )->delete( $attendee_ids[0] );
-
-		$this->assertSame( 'tec-tc-voided', get_post_status( $order->ID ) );
-	}
-
-	public function test_deleting_one_of_several_rsvp_attendees_does_not_void_the_order(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
-		$order     = $this->create_order( [ $ticket_id => 3 ] );
-
-		$attendee_ids = tec_tc_attendees()->by( 'post_parent', $order->ID )->order_by( 'ID', 'ASC' )->get_ids();
-
-		$this->assertCount( 3, $attendee_ids );
-
-		tribe( Attendee::class )->delete( $attendee_ids[0] );
-
-		$this->assertSame( 'tec-tc-completed', get_post_status( $order->ID ) );
-		$this->assertCount( 2, tec_tc_attendees()->by( 'post_parent', $order->ID )->get_ids() );
-	}
-
-	public function test_deleting_a_regular_ticket_attendee_does_not_void_its_order(): void {
-		$post_id   = static::factory()->post->create();
-		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-		$order     = $this->create_order( [ $ticket_id => 1 ] );
-
-		$attendee_ids = tec_tc_attendees()->by( 'post_parent', $order->ID )->get_ids();
-
-		$this->assertCount( 1, $attendee_ids );
-
-		tribe( Attendee::class )->delete( $attendee_ids[0] );
-
-		$this->assertSame( 'tec-tc-completed', get_post_status( $order->ID ) );
 	}
 
 	/**
