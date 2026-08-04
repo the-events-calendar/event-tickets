@@ -11,6 +11,7 @@ namespace TEC\Tickets\RSVP\V2\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
@@ -187,6 +188,88 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
+	 * Handles the request to update IAC and attendee meta fields for existing tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_update_ticket_meta( WP_REST_Request $request ): WP_REST_Response {
+		$response = [
+			'success' => false,
+		];
+
+		$request_params = $request->get_params();
+		$post_id        = Arr::get( $request_params, 'post_ID' );
+		$ticket_id      = Arr::get( $request_params, 'ticket_id', '' );
+
+		if ( empty( $post_id ) || empty( $ticket_id ) ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Missing required post ID or ticket ID.', 'event-tickets' ),
+				],
+				400
+			);
+		}
+
+		$post_id   = Event::filter_event_id( $post_id );
+		$ticket_id = absint( $ticket_id );
+
+		// Verify the ticket exists and belongs to this event.
+		$ticket_post = get_post( $ticket_id );
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
+		}
+
+		$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+		if ( $ticket_event_id !== $post_id ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
+		}
+
+		/**
+		 * Allow for processing additional IAC and attendee meta fields before updating.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $request_params The original request parameters.
+		 * @param int   $ticket_id      The ticket ID being updated.
+		 * @param int   $post_id        The post ID.
+		 */
+		$request_params = apply_filters( 'tec_tickets_rsvp_process_additional_fields', $request_params, $ticket_id, $post_id );
+
+		/**
+		 * Allow for additional processing after IAC and attendee meta updates.
+		 *
+		 * @since TBD
+		 *
+		 * @param int   $ticket_id      The ticket ID being updated.
+		 * @param int   $post_id        The post ID.
+		 * @param array $request_params The original request parameters.
+		 */
+		do_action( 'tec_tickets_rsvp_after_meta_update', $ticket_id, $post_id, $request_params );
+
+		$response['success']   = true;
+		$response['ticket_id'] = $ticket_id;
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
 	 * Handles the request to delete an RSVP ticket.
 	 *
 	 * @since TBD
@@ -220,6 +303,17 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		// Verify the ticket exists and belongs to this event.
 		$ticket_post = get_post( $ticket_id );
 		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
+		}
+
+		$ticket_event_id = (int) get_post_meta( $ticket_id, Ticket::$event_relation_meta_key, true );
+		if ( $ticket_event_id !== $post_id ) {
 			return new WP_REST_Response(
 				[
 					'success' => false,
