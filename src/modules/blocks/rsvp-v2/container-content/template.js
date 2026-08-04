@@ -1,23 +1,25 @@
 /**
  * External dependencies
  */
+import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
  */
+import RSVPCreateForm from '../create-form/template';
 import '../../rsvp/container-content/style.pcss';
 
-const RSVPContainerContent = ( { isAddEditOpen } ) => {
+const RSVPContainerContent = ( { clientId, isAddEditOpen } ) => {
 	if ( ! isAddEditOpen ) {
 		return null;
 	}
 
-	// TODO: Restore <RSVPCreateForm /> when ../create-form/template lands in PR #4298.
-	return null;
+	return <RSVPCreateForm clientId={ clientId } />;
 };
 
 RSVPContainerContent.propTypes = {
+	clientId: PropTypes.string,
 	isAddEditOpen: PropTypes.bool,
 };
 
