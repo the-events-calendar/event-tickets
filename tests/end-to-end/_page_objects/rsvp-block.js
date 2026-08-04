@@ -148,6 +148,10 @@ exports.RSVPBlock = class RSVPBlock {
 		return this.windowPopover.locator('button:has-text("Cancel")');
 	}
 
+	get windowPopoverDateInputs() {
+		return this.windowPopover.locator('input.tribe-editor__date-input');
+	}
+
 	// ---------------------------------------------------------------------------
 	// Remove RSVP
 	// ---------------------------------------------------------------------------
