@@ -606,7 +606,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 * @since 4.12.3 Account for possibly inactive ticket provider.
-		 * @since TBD Cache the event attendees used by the shared capacity calculation and fix the cache hit check for
+		 * @since 5.29.2 Cache the event attendees used by the shared capacity calculation and fix the cache hit check for
 		 *             sold out tickets.
 		 *
 		 * @return int

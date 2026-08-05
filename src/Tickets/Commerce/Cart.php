@@ -557,7 +557,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 * @since 5.29.0.1 Stopped adding the cart hash to the checkout redirect URL. See SVUL-L34.
-	 * @since TBD Sent no-cache headers on the cart-to-checkout redirect so the cart-hash cookie survives edge caches.
+	 * @since 5.29.2 Sent no-cache headers on the cart-to-checkout redirect so the cart-hash cookie survives edge caches.
 	 *
 	 * @return bool
 	 */

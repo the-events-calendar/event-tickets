@@ -120,7 +120,7 @@ class Handler {
 	 * Generic handler to update order statuses to a defined Status.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Lowered log level from error to warning for non-updates to reduce noise from re-deliveries.
+	 * @since 5.29.2 Lowered log level from error to warning for non-updates to reduce noise from re-deliveries.
 	 *
 	 * @param \WP_Post                         $order    The order to update.
 	 * @param Commerce_Status\Status_Interface $status   The new status to use.
