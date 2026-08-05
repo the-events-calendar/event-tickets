@@ -46,6 +46,7 @@ class Controller extends Controller_Contract {
 		$block_editor->register();
 		$this->container->singleton( Frontend::class );
 		$this->container->singleton( Repository_Filters::class );
+		$this->container->singleton( Cart\Repository_Filter::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
 		$this->container->singleton( REST\Ticket_Endpoint::class );
 		$this->container->singleton( Cart\RSVP_Cart::class );
@@ -156,6 +157,13 @@ class Controller extends Controller_Contract {
 		add_filter(
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+
+		add_filter(
+			'tec_tickets_commerce_cart_repository',
+			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' ),
+			10,
+			2
 		);
 
 		// REST.
@@ -326,6 +334,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+		remove_filter(
+			'tec_tickets_commerce_cart_repository',
+			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' )
 		);
 		remove_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
 		remove_action( 'rest_api_init', $this->container->callback( REST\Ticket_Endpoint::class, 'register' ) );

@@ -610,6 +610,9 @@ class Order extends Abstract_Order {
 	 * @since 5.1.9
 	 * @since 5.18.1 Now it will only create one order per cart hash. Every next time it will update the existing order.
 	 * @since TBD - Add parameter to specify the ticket type to filter the cart items.
+	 * @since TBD Resolves the cart repository by passing `$ticket_type` directly into
+	 *            `Cart::get_repository()`, so TC-RSVP orders read from `RSVP_Cart` instead of the
+	 *            generic cart.
 	 *
 	 * @param Gateway_Interface $gateway     The payment gateway.
 	 * @param array|null        $purchaser   The purchaser information.
@@ -619,7 +622,8 @@ class Order extends Abstract_Order {
 	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
-		$cart = tribe( Cart::class );
+		$cart        = tribe( Cart::class );
+		$cart_reader = $cart->get_repository( $ticket_type );
 
 		// Prepare the items for the order.
 		$items = array_filter(
@@ -659,12 +663,12 @@ class Order extends Abstract_Order {
 						'type'              => $item['type'] ?? 'ticket',
 					];
 				},
-				$cart->get_items_in_cart( true, $ticket_type )
+				$cart_reader->get_items_in_cart( true, $ticket_type )
 			)
 		);
 
 		// Get the subtotal calculation from the cart.
-		$cart_subtotal = Value::create( $cart->get_cart_subtotal() );
+		$cart_subtotal = Value::create( $cart_reader->get_cart_subtotal() );
 
 		$original_cart_items = $items;
 
@@ -696,7 +700,7 @@ class Order extends Abstract_Order {
 		);
 
 		// Get the total calculation from the cart.
-		$cart_total = Value::create( $cart->get_cart_total() );
+		$cart_total = Value::create( $cart_reader->get_cart_total() );
 
 		/**
 		 * Filter the cart total before creating an order.

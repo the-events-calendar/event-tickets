@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\RSVP\V2\REST;
 
-use TEC\Tickets\Commerce\Cart\Cart_Interface;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
 use TEC\Tickets\Commerce\Cart;
@@ -126,19 +125,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Filters the cart repository, to use RSVP_Cart instead of the default Cart.
-	 *
-	 * @since TBD
-	 *
-	 * @param Cart_Interface $cart Instance of the cart repository managing the cart.
-	 *
-	 * @return RSVP_Cart
-	 */
-	public function setup_cart( $cart ): RSVP_Cart {
-		return tribe( RSVP_Cart::class );
-	}
-
-	/**
 	 * Handles RSVP form step requests via REST API.
 	 *
 	 * @since TBD
@@ -155,8 +141,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$ticket_id = absint( $request->get_param( 'ticket_id' ) ?: 0 );
 		$step      = $request->get_param( 'step' );
-
-		add_filter( 'tec_tickets_commerce_cart_repository', [ $this, 'setup_cart' ] );
 
 		$render_response = $this->render_rsvp_step( $ticket_id, $request, $step );
 
