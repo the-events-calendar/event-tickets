@@ -83,7 +83,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * completed status - e.g. a refund received while the order is still within its post-checkout hold
 	 * window (see Order::has_on_checkout_screen_hold() and Handler::update_order_status()).
 	 *
-	 * @since TBD
+	 * @since 5.29.2
 	 *
 	 * @param bool $has_pending Whether another callback already found a pending non-completed transition.
 	 * @param int  $order_id    The order ID.
@@ -165,7 +165,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 5.18.1
 	 * @since 5.19.3 Added the $retry parameter.
-	 * @since TBD Sets a post meta flag to scope the attendee uncheck-in to held-webhook resolutions.
+	 * @since 5.29.2 Sets a post meta flag to scope the attendee uncheck-in to held-webhook resolutions.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry      The number of times this has been tried.

@@ -46,7 +46,7 @@ class Hooks extends Service_Provider {
 	 * Adds the actions required by each Tickets component.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Added the `tec_tickets_commerce_attendee_after_archive` action for uncheck-in on archive.
+	 * @since 5.29.2 Added the `tec_tickets_commerce_attendee_after_archive` action for uncheck-in on archive.
 	 */
 	protected function add_actions() {
 		$this->container->register( Ticket_Cache_Controller::class );
@@ -66,7 +66,7 @@ class Hooks extends Service_Provider {
 	 * post meta flag set by the gateway's async processor). Post-event refunds that archive
 	 * attendees outside the hold window are left alone so legitimate attendance history.
 	 *
-	 * @since TBD
+	 * @since 5.29.2
 	 *
 	 * @param int $attendee_id The Attendee post ID that was just archived.
 	 */
@@ -150,7 +150,7 @@ class Hooks extends Service_Provider {
 	 * Adds the filters required by each Tickets component.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Added the `tec_tickets_attendee_checkin` filter.
+	 * @since 5.29.2 Added the `tec_tickets_attendee_checkin` filter.
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_dropdown_tec_tickets_list_ticketables_ajax', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
@@ -164,7 +164,7 @@ class Hooks extends Service_Provider {
 	 * This is a defense-in-depth guard: it runs regardless of the entry point (admin AJAX, QR
 	 * redirect, REST API, etc.) since it hooks directly into `Tribe__Tickets__Tickets::checkin()`.
 	 *
-	 * @since TBD
+	 * @since 5.29.2
 	 *
 	 * @param bool|null $checkin     The current filtered value; a non-null value here means another
 	 *                               callback already decided the outcome, so we defer to it.
@@ -212,7 +212,7 @@ class Hooks extends Service_Provider {
 		/**
 		 * Filters whether the order has a pending non-completed transition (e.g. a deferred refund webhook).
 		 *
-		 * @since TBD
+		 * @since 5.29.2
 		 *
 		 * @param bool $has_pending Whether the order has a pending non-completed transition.
 		 * @param int  $order_id    The order ID.

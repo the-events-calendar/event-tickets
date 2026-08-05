@@ -130,7 +130,7 @@ class Hooks extends Controller_Contract {
 	 * completed status - e.g. a refund received while the order is still within its post-checkout hold
 	 * window (see TEC\Tickets\Commerce\Order::has_on_checkout_screen_hold()).
 	 *
-	 * @since TBD
+	 * @since 5.29.2
 	 *
 	 * @param bool $has_pending Whether another callback already found a pending non-completed transition.
 	 * @param int  $order_id    The order ID.
