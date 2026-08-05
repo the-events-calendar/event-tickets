@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.29.2] 2026-08-05
+
+* Tweak - Improved the unified licensing page experience.
+* Tweak - Switched changelog tooling from jetpack-changelogger to @stellarwp/changelogger.
+* Fix - Reduced the number of queries and the memory used when rendering events with shared capacity tickets by sharing the event attendees between all the tickets of the same event and by caching sold out inventory results in `Tribe__Tickets__Ticket_Object::inventory()`.
+* Fix - Resolved an issue where an attendee could still be checked in after their order was refunded.
+
 ### [5.29.1] 2026-07-22
 
 * Fix - Fixed triggered emails (RSVP going, ticket purchased) failing silently with a 403 "Unauthorized token" response from Promoter due to a missing `domain` claim in the trigger JWT payload.

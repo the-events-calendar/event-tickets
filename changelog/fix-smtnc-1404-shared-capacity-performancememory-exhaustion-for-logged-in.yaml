@@ -1,4 +1,0 @@
-significance: patch
-type: fix
-entry: Reduced the number of queries and the memory used when rendering events with shared capacity tickets by sharing the event attendees between all the tickets of the same event and by caching sold out inventory results in `Tribe__Tickets__Ticket_Object::inventory()`.
-timestamp: 2026-07-28T21:38:04.869Z
