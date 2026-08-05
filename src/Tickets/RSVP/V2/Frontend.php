@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
+use Tribe\Tickets\Events\Attendees_List;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -102,20 +103,7 @@ class Frontend {
 		 */
 		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
 
-		/**
-		 * Filters whether to show the RSVP attendees list and public opt-in toggle.
-		 *
-		 * Event Tickets does not know about companion add-ons or their license state; an
-		 * add-on that provides this functionality (e.g. Event Tickets Plus) should hook into
-		 * this filter and decide for itself whether to enable it.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $show_attendees_list Whether to show the attendees list and opt-in toggle. Default false.
-		 * @param int  $post_id             The post ID the RSVP belongs to.
-		 * @param int  $ticket_id           The RSVP ticket ID.
-		 */
-		$show_attendees_list = apply_filters( 'tec_tickets_rsvp_show_attendees_list', false, $post->ID, $rsvp->ID );
+		$show_attendees_list = Attendees_List::should_show_rsvp_attendees_list( $post->ID, $rsvp->ID );
 
 		$rsvp_template_args = [
 			'rsvp'                => $rsvp,
