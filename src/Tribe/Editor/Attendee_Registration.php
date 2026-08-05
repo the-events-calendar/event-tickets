@@ -237,10 +237,18 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * URL to this standalone page
 	 *
 	 * @since 4.9
+	 * @since TBD Preserve the `tribe_events_modal` request var so the form action and
+	 *            post-save redirect keep rendering inside the block editor's modal iframe.
 	 *
 	 * @return string URL
 	 */
 	private function url() {
-		return admin_url( 'edit.php?post_type=' . $this->post->post_type . '&page=attendee-registration&ticket_id=' . $this->ticket_id );
+		$url = admin_url( 'edit.php?post_type=' . $this->post->post_type . '&page=attendee-registration&ticket_id=' . $this->ticket_id );
+
+		if ( tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
+			$url = add_query_arg( 'tribe_events_modal', 1, $url );
+		}
+
+		return $url;
 	}
 }
