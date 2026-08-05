@@ -82,6 +82,8 @@ export const getRSVPAvailable = createSelector(
 
 export const getRSVPNotGoingResponses = createSelector( [ getRSVPDetails ], ( details ) => details.notGoingResponses );
 
+export const getRSVPShowAttendees = createSelector( [ getRSVPDetails ], ( details ) => details.showAttendees );
+
 export const getRSVPStartDate = createSelector( [ getRSVPDetails ], ( details ) => details.startDate );
 
 export const getRSVPStartDateInput = createSelector( [ getRSVPDetails ], ( details ) => details.startDateInput );
@@ -127,6 +129,11 @@ export const getRSVPTempCapacity = createSelector( [ getRSVPTempDetails ], ( tem
 export const getRSVPTempNotGoingResponses = createSelector(
 	[ getRSVPTempDetails ],
 	( tempDetails ) => tempDetails.notGoingResponses
+);
+
+export const getRSVPTempShowAttendees = createSelector(
+	[ getRSVPTempDetails ],
+	( tempDetails ) => tempDetails.showAttendees
 );
 
 export const getRSVPTempStartDate = createSelector( [ getRSVPTempDetails ], ( tempDetails ) => tempDetails.startDate );

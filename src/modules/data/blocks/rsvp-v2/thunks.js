@@ -107,7 +107,8 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 	}
 
 	const config = getV2Config();
-	const { capacity, notGoingResponses, startDateMoment, startTime, endDateMoment, endTime, postId } = payload;
+	const { capacity, notGoingResponses, showAttendees, startDateMoment, startTime, endDateMoment, endTime, postId } =
+		payload;
 
 	persistLocked = true;
 	dispatch( actions.setRSVPIsLoading( true ) );
@@ -125,6 +126,7 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 			end_date: formatDateTime( endDateMoment, endTime ),
 			show_description: false,
 			show_not_going: notGoingResponses ? true : false,
+			rsvp_show_attendees: showAttendees ? true : false,
 			// Use 'unlimited' stock mode when no capacity, 'own' when capacity is set.
 			stock_mode: hasCapacity ? 'own' : 'unlimited',
 		};
@@ -187,7 +189,8 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 	}
 
 	const config = getV2Config();
-	const { id, capacity, notGoingResponses, startDateMoment, startTime, endDateMoment, endTime } = payload;
+	const { id, capacity, notGoingResponses, showAttendees, startDateMoment, startTime, endDateMoment, endTime } =
+		payload;
 
 	persistLocked = true;
 	dispatch( actions.setRSVPIsLoading( true ) );
@@ -204,6 +207,7 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 			end_date: formatDateTime( endDateMoment, endTime ),
 			show_description: false,
 			show_not_going: notGoingResponses ? true : false,
+			rsvp_show_attendees: showAttendees ? true : false,
 			// Use 'unlimited' stock mode when no capacity, 'own' when capacity is set.
 			stock_mode: hasCapacity ? 'own' : 'unlimited',
 		};
@@ -234,6 +238,7 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 			actions.setRSVPTempDetails( {
 				tempCapacity: capacity,
 				tempNotGoingResponses: notGoingResponses,
+				tempShowAttendees: showAttendees,
 				tempStartDate: payload.startDate,
 				tempStartDateInput: payload.startDateInput,
 				tempStartDateMoment: startDateMoment,

@@ -26,6 +26,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				notGoingResponses: action.payload.notGoingResponses,
 			};
+		case types.SET_RSVP_TEMP_SHOW_ATTENDEES:
+			return {
+				...state,
+				showAttendees: action.payload.showAttendees,
+			};
 		case types.SET_RSVP_TEMP_START_DATE:
 			return {
 				...state,

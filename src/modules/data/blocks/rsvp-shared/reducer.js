@@ -113,6 +113,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_DESCRIPTION:
 		case types.SET_RSVP_CAPACITY:
 		case types.SET_RSVP_NOT_GOING_RESPONSES:
+		case types.SET_RSVP_SHOW_ATTENDEES:
 		case types.SET_RSVP_START_DATE:
 		case types.SET_RSVP_START_DATE_INPUT:
 		case types.SET_RSVP_START_DATE_MOMENT:
@@ -131,6 +132,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_TEMP_DESCRIPTION:
 		case types.SET_RSVP_TEMP_CAPACITY:
 		case types.SET_RSVP_TEMP_NOT_GOING_RESPONSES:
+		case types.SET_RSVP_TEMP_SHOW_ATTENDEES:
 		case types.SET_RSVP_TEMP_START_DATE:
 		case types.SET_RSVP_TEMP_START_DATE_INPUT:
 		case types.SET_RSVP_TEMP_START_DATE_MOMENT:
