@@ -606,6 +606,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since 4.6
 		 * @since 4.12.3 Account for possibly inactive ticket provider.
+		 * @since 5.29.2 Cache the event attendees used by the shared capacity calculation and fix the cache hit check for
+		 *             sold out tickets.
 		 *
 		 * @return int
 		 */
@@ -618,7 +620,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( $is_ticket_cache_enabled ) {
 				$cached = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
 
-				if ( $cached && is_int( $cached ) ) {
+				// A sold out ticket has an inventory of `0`, which is a valid cache hit.
+				if ( is_int( $cached ) ) {
 					return $cached;
 				}
 			}
@@ -689,22 +692,53 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
 				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
 			) {
-				$event_id              = $this->get_event()->ID;
-				$event_attendees       = $provider->get_attendees_by_id( $event_id );
+				$event_id = $this->get_event()->ID;
+
+				// Share the event attendees across all the shared capacity tickets of the same event.
+				$event_attendees_key = __METHOD__ . '-event-attendees-' . $provider->orm_provider . '-' . $event_id;
+				$event_attendees     = $is_ticket_cache_enabled
+					? $cache->get( $event_attendees_key, Cache::TRIGGER_SAVE_POST, null )
+					: null;
+
+				if ( ! is_array( $event_attendees ) ) {
+					$event_attendees = $provider->get_attendees_by_id( $event_id );
+
+					if ( $is_ticket_cache_enabled ) {
+						$cache->set( $event_attendees_key, $event_attendees, Tribe__Cache::NON_PERSISTENT, Cache::TRIGGER_SAVE_POST );
+					}
+				}
+
+				$product_ids = [];
+				foreach ( $event_attendees as $attendee ) {
+					if ( ! empty( $attendee['product_id'] ) && (int) $attendee['event_id'] === (int) $event_id ) {
+						$product_ids[] = (int) $attendee['product_id'];
+					}
+				}
+
+				$ticket_stock_modes = [];
+				foreach ( array_unique( $product_ids ) as $pid ) {
+					$ticket_stock_modes[ $pid ] = get_post_meta( $pid, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+				}
+
+				$global_stock_enabled = tribe_is_truthy(
+					get_post_meta( $event_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true )
+				);
+
 				$event_attendees_count = 0;
 
 				foreach ( $event_attendees as $attendee ) {
-					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['event_id'] );
+					$attendee_event_id = (int) $attendee['event_id'];
+
 					// Bypass any potential weirdness (RSVPs or such).
-					if ( empty( $attendee['product_id'] ) || (int) $attendee['event_id'] !== (int) $event_id ) {
+					if ( empty( $attendee['product_id'] ) || $attendee_event_id !== (int) $event_id ) {
 						continue;
 					}
 
-					$attendee_ticket_stock_mode = get_post_meta( $attendee['product_id'], Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+					$attendee_ticket_stock_mode = $ticket_stock_modes[ (int) $attendee['product_id'] ] ?? '';
 
-					// On all cases of indy stock we don't add
+					// On all cases of indy stock we don't add.
 					if (
-						! $attendee_ticket_stock->is_enabled()
+						! $global_stock_enabled
 						|| empty( $attendee_ticket_stock_mode )
 						|| ! $provider->attendee_decreases_inventory( $attendee )
 						|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $attendee_ticket_stock_mode
@@ -712,8 +746,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 						continue;
 					}
 
-					// All the others we add to the count
-					$event_attendees_count++;
+					// All the others we add to the count.
+					++$event_attendees_count;
 				}
 
 				$inventory[] = tribe_tickets_get_capacity( $event_id ) - $event_attendees_count;
