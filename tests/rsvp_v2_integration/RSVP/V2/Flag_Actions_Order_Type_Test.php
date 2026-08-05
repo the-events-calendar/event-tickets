@@ -3,9 +3,18 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Flag_Actions\Archive_Attendees;
+use TEC\Tickets\Commerce\Flag_Actions\Backfill_Purchaser;
+use TEC\Tickets\Commerce\Flag_Actions\Decrease_Stock;
+use TEC\Tickets\Commerce\Flag_Actions\End_Duplicated_Pending_Orders;
+use TEC\Tickets\Commerce\Flag_Actions\Flag_Action_Handler;
+use TEC\Tickets\Commerce\Flag_Actions\Generate_Attendees;
+use TEC\Tickets\Commerce\Flag_Actions\Increase_Stock;
 use TEC\Tickets\Commerce\Flag_Actions\Order_Context;
+use TEC\Tickets\Commerce\Flag_Actions\Send_Email;
 use TEC\Tickets\Commerce\Flag_Actions\Send_Email_Completed_Order;
 use TEC\Tickets\Commerce\Flag_Actions\Send_Email_Purchase_Receipt;
+use TEC\Tickets\Commerce\Flag_Actions\Validate_Stock_Availability;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -132,5 +141,76 @@ class Flag_Actions_Order_Type_Test extends WPTestCase {
 
 		$this->assertSame( [ Order_Context::TICKET ], $purchase_receipt->get_order_contexts() );
 		$this->assertSame( [ Order_Context::TICKET ], $completed_order->get_order_contexts() );
+	}
+
+	public function test_order_context_filter_tag_is_unique_per_flag_action_class(): void {
+		/** @var Send_Email_Purchase_Receipt $purchase_receipt */
+		$purchase_receipt = tribe( Send_Email_Purchase_Receipt::class );
+
+		$purchase_receipt_tag = 'tec_tickets_commerce_flag_actions_get_order_contexts_'
+			. strtolower( str_replace( '\\', '_', Send_Email_Purchase_Receipt::class ) );
+		$completed_order_tag  = 'tec_tickets_commerce_flag_actions_get_order_contexts_'
+			. strtolower( str_replace( '\\', '_', Send_Email_Completed_Order::class ) );
+
+		$this->assertNotSame(
+			$purchase_receipt_tag,
+			$completed_order_tag,
+			'Different flag action classes must get different order-context filter tags.'
+		);
+
+		$fired = [];
+
+		add_filter(
+			$purchase_receipt_tag,
+			function ( $contexts ) use ( &$fired ) {
+				$fired[] = 'purchase_receipt';
+
+				return $contexts;
+			}
+		);
+		add_filter(
+			$completed_order_tag,
+			function ( $contexts ) use ( &$fired ) {
+				$fired[] = 'completed_order';
+
+				return $contexts;
+			}
+		);
+
+		$purchase_receipt->get_order_contexts();
+
+		$this->assertSame(
+			[ 'purchase_receipt' ],
+			$fired,
+			'Only the calling class\'s own filter tag should fire.'
+		);
+	}
+
+	public function test_flag_action_handler_registers_all_shared_and_ticket_only_actions(): void {
+		/** @var Flag_Action_Handler $handler */
+		$handler = tribe( Flag_Action_Handler::class );
+
+		$registered_classes = array_map( 'get_class', $handler->get_all() );
+
+		$expected = [
+			Validate_Stock_Availability::class,
+			Generate_Attendees::class,
+			Increase_Stock::class,
+			Decrease_Stock::class,
+			Archive_Attendees::class,
+			Backfill_Purchaser::class,
+			Send_Email::class,
+			End_Duplicated_Pending_Orders::class,
+			Send_Email_Purchase_Receipt::class,
+			Send_Email_Completed_Order::class,
+		];
+
+		foreach ( $expected as $flag_action_class ) {
+			$this->assertContains(
+				$flag_action_class,
+				$registered_classes,
+				"{$flag_action_class} should be registered after Flag_Action_Handler::register()."
+			);
+		}
 	}
 }

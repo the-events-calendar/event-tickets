@@ -57,15 +57,6 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	];
 
 	/**
-	 * Which classes we will load for order flag actions by default.
-	 *
-	 * @since TBD Merges the shared and ticket-only flag action lists, registers the order email
-	 *
-	 * @var string[]
-	 */
-	protected $default_flag_actions = [];
-
-	/**
 	 * Gets the flag actions registered.
 	 *
 	 * @since 5.1.9
@@ -77,22 +68,28 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
-	 * Sets up all the Flag Action instances for the Classes registered in $default_flag_actions.
+	 * Sets up all the Flag Action instances for the classes in `$shared_flag_actions` and
+	 * `$ticket_only_flag_actions`.
 	 *
 	 * @since 5.1.9
 	 * @since TBD Merges the shared and ticket-only flag action lists, registers the order email
 	 *            senders, and resolves each flag action via the container instead of `new`.
+	 *
+	 * @note Flag action classes are merged shared-first, ticket-only-second. That order carries no
+	 *       runtime meaning: each flag action listens on its own distinct
+	 *       `tec_tickets_commerce_order_status_flag_{$flag}` hook, so registration order between
+	 *       different flags never affects which handlers fire.
 	 */
 	public function register() {
-		$this->default_flag_actions = array_merge(
+		$flag_actions = array_merge(
 			$this->shared_flag_actions,
 			$this->ticket_only_flag_actions
 		);
 
 		$this->register_order_email_senders();
-		$this->register_flag_action_bindings();
+		$this->register_flag_action_bindings( $flag_actions );
 
-		foreach ( $this->default_flag_actions as $flag_action_class ) {
+		foreach ( $flag_actions as $flag_action_class ) {
 			$this->register_flag_action( $this->container->make( $flag_action_class ) );
 		}
 
@@ -103,9 +100,11 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Registers singleton bindings for all default flag action classes.
 	 *
 	 * @since TBD
+	 *
+	 * @param string[] $flag_actions The flag action classes to bind as singletons.
 	 */
-	protected function register_flag_action_bindings(): void {
-		foreach ( $this->default_flag_actions as $flag_action_class ) {
+	protected function register_flag_action_bindings( array $flag_actions ): void {
+		foreach ( $flag_actions as $flag_action_class ) {
 			$this->container->singleton( $flag_action_class );
 		}
 	}
@@ -114,6 +113,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Registers order email senders and the registry used by the `send_email` flag action.
 	 *
 	 * @since TBD
+	 * @since TBD Resolves `Order_Email_Sender_Registry`'s `$senders` lazily via `->when()->needs()->give()`
 	 */
 	protected function register_order_email_senders(): void {
 		$this->container->singleton( RSVP_Email_Sender::class );
@@ -126,6 +126,27 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 			],
 			Order_Email_Sender_Registry::CONTAINER_TAG
 		);
+
+		$this->container->when( Order_Email_Sender_Registry::class )
+			->needs( '$senders' )
+			->give(
+				function () {
+					/**
+					 * Filters the order email senders used when the `send_email` flag action fires.
+					 *
+					 * Prefer registering senders on the container tag
+					 * `Order_Email_Sender_Registry::CONTAINER_TAG` via `tribe()->tag()`.
+					 *
+					 * @since TBD
+					 *
+					 * @param Order_Email_Sender_Interface[] $senders Registered senders.
+					 */
+					return (array) apply_filters(
+						'tec_tickets_commerce_order_email_senders',
+						$this->container->tagged( Order_Email_Sender_Registry::CONTAINER_TAG )
+					);
+				}
+			);
 
 		$this->container->singleton( Order_Email_Sender_Registry::class );
 	}

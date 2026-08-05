@@ -147,7 +147,9 @@ class Controller extends Controller_Contract {
 
 		add_filter(
 			'tec_tickets_commerce_cart_repository',
-			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' )
+			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' ),
+			10,
+			2
 		);
 
 		// REST.

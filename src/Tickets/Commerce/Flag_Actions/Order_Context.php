@@ -16,7 +16,7 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
-class Order_Context {
+final class Order_Context {
 	/**
 	 * Applies to all Tickets Commerce order types.
 	 *

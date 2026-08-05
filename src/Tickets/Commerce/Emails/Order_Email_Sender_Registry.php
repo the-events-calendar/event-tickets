@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Commerce\Emails;
 
-use TEC\Common\StellarWP\ContainerContract\ContainerInterface;
 use WP_Post;
 
 /**
@@ -34,36 +33,45 @@ class Order_Email_Sender_Registry {
 	public const CONTAINER_TAG = 'tec.tickets.commerce.order_email_senders';
 
 	/**
-	 * The DI container.
+	 * The registered order email senders, in dispatch order.
 	 *
 	 * @since TBD
 	 *
-	 * @var ContainerInterface
+	 * @var Order_Email_Sender_Interface[]
 	 */
-	private ContainerInterface $container;
+	private array $senders;
 
 	/**
 	 * Order_Email_Sender_Registry constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param ContainerInterface $container The plugin DI container.
+	 * @param Order_Email_Sender_Interface[] $senders The order email senders to dispatch to.
 	 */
-	public function __construct( ContainerInterface $container ) {
-		$this->container = $container;
+	public function __construct( array $senders ) {
+		$this->senders = $senders;
 	}
 
 	/**
 	 * Sends the appropriate email for the given order.
 	 *
+	 * Dispatches to the first registered sender whose `supports()` returns true and stops there —
+	 * an order only ever needs one confirmation email, so this is intentionally first-match-wins
+	 * rather than a broadcast to every supporting sender.
+	 *
 	 * @since TBD
+	 * @since TBD Checks `tec_tickets_emails_is_enabled()` once here instead of in each sender.
 	 *
 	 * @param WP_Post $order The decorated order post object.
 	 *
 	 * @return void
 	 */
 	public function send( WP_Post $order ): void {
-		foreach ( $this->get_senders() as $sender ) {
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return;
+		}
+
+		foreach ( $this->senders as $sender ) {
 			if ( ! $sender instanceof Order_Email_Sender_Interface ) {
 				continue;
 			}
@@ -74,26 +82,5 @@ class Order_Email_Sender_Registry {
 				return;
 			}
 		}
-	}
-
-	/**
-	 * Returns the registered senders from the container tag, allowing extensions to add or reorder them.
-	 *
-	 * @since TBD
-	 *
-	 * @return Order_Email_Sender_Interface[]
-	 */
-	private function get_senders(): array {
-		/**
-		 * Filters the order email senders used when the `send_email` flag action fires.
-		 *
-		 * Prefer registering senders on the container tag
-		 * `Order_Email_Sender_Registry::CONTAINER_TAG` via `tribe()->tag()`.
-		 *
-		 * @since TBD
-		 *
-		 * @param Order_Email_Sender_Interface[] $senders Registered senders.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_order_email_senders', $this->container->tagged( self::CONTAINER_TAG ) );
 	}
 }

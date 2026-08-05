@@ -142,13 +142,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$ticket_id = absint( $request->get_param( 'ticket_id' ) ?: 0 );
 		$step      = $request->get_param( 'step' );
 
-		tribe_set_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR, Constants::TC_RSVP_TYPE );
-
-		try {
-			$render_response = $this->render_rsvp_step( $ticket_id, $request, $step );
-		} finally {
-			tribe_unset_var( Cart::ORDER_FROM_CART_TICKET_TYPE_VAR );
-		}
+		$render_response = $this->render_rsvp_step( $ticket_id, $request, $step );
 
 		if ( is_string( $render_response ) && '' !== $render_response ) {
 			$response['html'] = $render_response;

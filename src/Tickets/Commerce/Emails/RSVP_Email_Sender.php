@@ -32,12 +32,11 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Removed the `tec_tickets_emails_is_enabled()` check: `Order_Email_Sender_Registry::send()`
+	 *            now checks it once for every sender before dispatching.
 	 */
 	public function send( WP_Post $order ): void {
-		if ( ! tec_tickets_emails_is_enabled() ) {
-			return;
-		}
-
 		$provider  = tribe( $order->provider );
 		$attendees = $provider->get_attendees_by_order_id( $order->ID );
 

@@ -74,27 +74,20 @@ class Cart {
 	public static $cart_hash_cookie_name = 'tec-tickets-commerce-cart';
 
 	/**
-	 * Container var key set while resolving the cart repository during order creation.
-	 *
-	 * RSVP V2 reads this var in `tec_tickets_commerce_cart_repository` to return `RSVP_Cart`.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const ORDER_FROM_CART_TICKET_TYPE_VAR = 'tec_tickets_commerce_order_from_cart_ticket_type';
-
-	/**
 	 * Gets the current instance of cart handling that we are using.
 	 * Most of the pieces should be handled in the Repository for the cart, only piece fully handled by the
 	 * parent class is the cookie handling.
 	 *
 	 * @since 5.1.9
 	 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
+	 * @since TBD Added the $ticket_type parameter, passed through to the `tec_tickets_commerce_cart_repository`
+	 *            filter so subscribers can swap the repository per ticket type without global state.
+	 *
+	 * @param string $ticket_type The type of ticket the repository is being resolved for.
 	 *
 	 * @return Cart_Interface
 	 */
-	public function get_repository() {
+	public function get_repository( string $ticket_type = 'ticket' ) {
 		$default_cart = tribe( Cart_Interface::class );
 
 		/**
@@ -102,10 +95,12 @@ class Cart {
 		 *
 		 * @since 5.1.9
 		 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
+		 * @since TBD Added the $ticket_type parameter.
 		 *
-		 * @param Cart_Interface $cart Instance of the cart repository managing the cart.
+		 * @param Cart_Interface $cart        Instance of the cart repository managing the cart.
+		 * @param string         $ticket_type The type of ticket the repository is being resolved for.
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_repository', $default_cart );
+		return apply_filters( 'tec_tickets_commerce_cart_repository', $default_cart, $ticket_type );
 	}
 
 	/**

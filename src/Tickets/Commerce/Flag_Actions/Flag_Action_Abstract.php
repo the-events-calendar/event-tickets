@@ -108,7 +108,8 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Gets the order type contexts this flag action applies to.
 	 *
-	 * @since TBD
+	 * @since TBD Filters on a per-class tag (`get_order_context_filter_tag()`) instead of one name
+	 *            shared by every subclass, so each flag action can be targeted individually.
 	 *
 	 * @return string[]
 	 */
@@ -123,7 +124,18 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		 * @param string[] $contexts    Which order types will trigger this action.
 		 * @param static   $action_flag Instance of action flag we are triggering.
 		 */
-		return apply_filters( 'tec_tickets_commerce_flag_actions_get_order_contexts', $contexts, $this );
+		return apply_filters( $this->get_order_context_filter_tag(), $contexts, $this );
+	}
+
+	/**
+	 * Builds the class-unique filter tag used by `get_order_contexts()`.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_order_context_filter_tag(): string {
+		return 'tec_tickets_commerce_flag_actions_get_order_contexts_' . strtolower( str_replace( '\\', '_', static::class ) );
 	}
 
 	/**
@@ -188,7 +200,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 			return true;
 		}
 
-return $wants_rsvp ? $is_rsvp : ! $is_rsvp;
+		return $wants_rsvp ? $is_rsvp : ! $is_rsvp;
 	}
 
 	/**
