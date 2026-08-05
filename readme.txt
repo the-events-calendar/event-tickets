@@ -199,8 +199,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.29.2] 2026-08-05 =
+= [5.29.2] 2026-08-06 =
 
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted.
 * Tweak - Improved the unified licensing page experience.
 * Tweak - Switched changelog tooling from jetpack-changelogger to @stellarwp/changelogger.
 * Fix - Reduced the number of queries and the memory used when rendering events with shared capacity tickets by sharing the event attendees between all the tickets of the same event and by caching sold out inventory results in `Tribe__Tickets__Ticket_Object::inventory()`.
