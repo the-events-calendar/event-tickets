@@ -346,7 +346,7 @@ class Attendees_List {
 	 *
 	 * @return bool Whether to show the attendees list and opt-in toggle. Default false.
 	 */
-	public static function should_show_rsvp_attendees_list( $post_id, $ticket_id ) {
+	public static function should_show_rsvp_attendees_list( int $post_id, int $ticket_id ): bool {
 		/**
 		 * Filters whether to show the RSVP attendees list and public opt-in toggle.
 		 *

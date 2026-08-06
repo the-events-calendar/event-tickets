@@ -13,8 +13,9 @@
  * @var bool $show_attendees_list Whether the opt-in toggle should be shown. Filterable via `tec_tickets_rsvp_show_attendees_list`.
  *
  * @since 4.12.3
- * @version 4.12.3
  * @since TBD Only render the toggle when `tec_tickets_rsvp_show_attendees_list` allows it.
+ *
+ * @version TBD
  */
 
 defined( 'ABSPATH' ) || die();
@@ -23,7 +24,7 @@ defined( 'ABSPATH' ) || die();
 
 	<?php $this->template( 'v2/commerce/rsvp/actions/success/title' ); ?>
 
-	<?php if ( ! empty( $show_attendees_list ) ) : ?>
+	<?php if ( ! isset( $show_attendees_list ) || $show_attendees_list ) : ?>
 		<?php $this->template( 'v2/commerce/rsvp/actions/success/toggle' ); ?>
 	<?php endif; ?>
 

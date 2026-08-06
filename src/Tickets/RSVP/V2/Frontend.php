@@ -103,8 +103,6 @@ class Frontend {
 		 */
 		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
 
-		$show_attendees_list = Attendees_List::should_show_rsvp_attendees_list( $post->ID, $rsvp->ID );
-
 		$rsvp_template_args = [
 			'rsvp'                => $rsvp,
 			'post_id'             => $post->ID,
@@ -112,7 +110,7 @@ class Frontend {
 			'step'                => '',
 			'active_rsvps'        => $rsvp->date_in_range() ? [ $rsvp ] : [],
 			'must_login'          => ! is_user_logged_in() && $this->login_required(),
-			'show_attendees_list' => $show_attendees_list,
+			'show_attendees_list' => Attendees_List::should_show_rsvp_attendees_list( $post->ID, $rsvp->ID ),
 		];
 
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $should_echo );

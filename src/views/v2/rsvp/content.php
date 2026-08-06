@@ -48,7 +48,7 @@
 
 	</div>
 
-	<?php if ( ! empty( $show_attendees_list ) ) : ?>
+	<?php if ( ! isset( $show_attendees_list ) || $show_attendees_list ) : ?>
 		<?php $this->template( 'v2/rsvp/attendees' ); ?>
 	<?php endif; ?>
 
