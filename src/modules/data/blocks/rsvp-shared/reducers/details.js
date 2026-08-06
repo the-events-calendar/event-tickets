@@ -27,6 +27,7 @@ export const DEFAULT_STATE = {
 	description: '',
 	capacity: '',
 	notGoingResponses: false,
+	showAttendees: false,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
 	startDateInput,
 	startDateMoment: currentMoment,
@@ -60,6 +61,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				notGoingResponses: action.payload.notGoingResponses,
+			};
+		case types.SET_RSVP_SHOW_ATTENDEES:
+			return {
+				...state,
+				showAttendees: action.payload.showAttendees,
 			};
 		case types.SET_RSVP_START_DATE:
 			return {

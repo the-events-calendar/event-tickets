@@ -67,7 +67,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 		form.addEventListener( 'submit', showOverlay );
 
 		const removeListeners = () => {
-			iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
+			iframeWindow.removeEventListener( 'pagehide', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 			form.removeEventListener( 'submit', showOverlay );
 			window.tribe_event_tickets_plus.rsvp.onIacChange = previousOnIacChange;
 		};
@@ -117,7 +117,9 @@ const mapDispatchToProps = ( dispatch ) => ( {
 			dispatch( actions.setRSVPIsModalOpen( false ) );
 		};
 
-		iframeWindow.addEventListener( 'unload', handleUnload );
+		// Chrome (and other modern browsers) do not reliably fire `unload` for same-origin
+		// iframe navigations triggered by a form submit; `pagehide` is the supported replacement.
+		iframeWindow.addEventListener( 'pagehide', handleUnload );
 
 		const introLink = iframeWindow.document.querySelector( '.tribe-intro > a' );
 		if ( introLink ) {

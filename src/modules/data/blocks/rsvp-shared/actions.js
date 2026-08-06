@@ -159,6 +159,13 @@ export const setRSVPNotGoingResponses = ( notGoingResponses ) => ( {
 	},
 } );
 
+export const setRSVPShowAttendees = ( showAttendees ) => ( {
+	type: types.SET_RSVP_SHOW_ATTENDEES,
+	payload: {
+		showAttendees,
+	},
+} );
+
 export const setRSVPStartDate = ( startDate ) => ( {
 	type: types.SET_RSVP_START_DATE,
 	payload: {
@@ -258,6 +265,13 @@ export const setRSVPTempNotGoingResponses = ( notGoingResponses ) => ( {
 	type: types.SET_RSVP_TEMP_NOT_GOING_RESPONSES,
 	payload: {
 		notGoingResponses,
+	},
+} );
+
+export const setRSVPTempShowAttendees = ( showAttendees ) => ( {
+	type: types.SET_RSVP_TEMP_SHOW_ATTENDEES,
+	payload: {
+		showAttendees,
 	},
 } );
 

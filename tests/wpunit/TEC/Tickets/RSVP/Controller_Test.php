@@ -182,6 +182,42 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue( $enabled['tc'] );
 	}
 
+	public function test_disable_rsvp_form_toggle_sets_rsvp_migrating_true_while_migration_in_progress(): void {
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::DISABLED );
+
+		$controller = $this->make_controller();
+		$enabled    = $controller->disable_rsvp_form_toggle( [ 'rsvp' => true ] );
+
+		$this->assertTrue( $enabled['rsvp_migrating'], 'rsvp_migrating should be true while the migration is running or paused.' );
+
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+	}
+
+	public function test_disable_rsvp_form_toggle_sets_rsvp_migrating_false_when_migration_completed(): void {
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::VERSION_2 );
+
+		$controller = $this->make_controller();
+		$enabled    = $controller->disable_rsvp_form_toggle( [ 'rsvp' => true ] );
+
+		$this->assertFalse( $enabled['rsvp_migrating'], 'rsvp_migrating should be false once migration has completed (RSVP button should be hidden, not disabled).' );
+
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+	}
+
+	public function test_is_migration_in_progress_false_by_default(): void {
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+
+		$this->assertFalse( Controller::is_migration_in_progress() );
+	}
+
+	public function test_is_migration_in_progress_true_when_version_option_disabled(): void {
+		tribe_update_option( Controller::VERSION_OPTION_KEY, Controller::DISABLED );
+
+		$this->assertTrue( Controller::is_migration_in_progress() );
+
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+	}
+
 	public function test_register_disabled_hooks_editor_config_filter(): void {
 		add_filter( 'tec_tickets_rsvp_enabled', '__return_false' );
 		$controller = $this->make_controller();

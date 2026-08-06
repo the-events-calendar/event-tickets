@@ -11,6 +11,7 @@ export const dispatchRsvpDetails = ( dispatch, actions, details ) => {
 		description,
 		capacity,
 		notGoingResponses,
+		showAttendees,
 		startDate,
 		startDateInput,
 		startDateMoment,
@@ -27,6 +28,7 @@ export const dispatchRsvpDetails = ( dispatch, actions, details ) => {
 	dispatch( actions.setRSVPDescription( description ) );
 	dispatch( actions.setRSVPCapacity( capacity ) );
 	dispatch( actions.setRSVPNotGoingResponses( notGoingResponses ) );
+	dispatch( actions.setRSVPShowAttendees( showAttendees ) );
 	dispatch( actions.setRSVPStartDate( startDate ) );
 	dispatch( actions.setRSVPStartDateInput( startDateInput ) );
 	dispatch( actions.setRSVPStartDateMoment( startDateMoment ) );
@@ -52,6 +54,7 @@ export const dispatchRsvpTempDetails = ( dispatch, actions, tempDetails ) => {
 		tempDescription,
 		tempCapacity,
 		tempNotGoingResponses,
+		tempShowAttendees,
 		tempStartDate,
 		tempStartDateInput,
 		tempStartDateMoment,
@@ -68,6 +71,7 @@ export const dispatchRsvpTempDetails = ( dispatch, actions, tempDetails ) => {
 	dispatch( actions.setRSVPTempDescription( tempDescription ) );
 	dispatch( actions.setRSVPTempCapacity( tempCapacity ) );
 	dispatch( actions.setRSVPTempNotGoingResponses( tempNotGoingResponses ) );
+	dispatch( actions.setRSVPTempShowAttendees( tempShowAttendees ) );
 	dispatch( actions.setRSVPTempStartDate( tempStartDate ) );
 	dispatch( actions.setRSVPTempStartDateInput( tempStartDateInput ) );
 	dispatch( actions.setRSVPTempStartDateMoment( tempStartDateMoment ) );

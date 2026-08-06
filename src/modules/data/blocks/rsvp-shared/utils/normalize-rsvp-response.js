@@ -32,6 +32,7 @@ export const resolveV2Capacity = ( rsvp ) => {
  * @param {string} params.description        RSVP description.
  * @param {*}      params.capacity           RSVP capacity.
  * @param {*}      params.notGoingResponses   Whether not-going responses are enabled.
+ * @param {*}      params.showAttendees      Whether the attendees list is shown on the event page.
  * @param {Object} params.startMoment        Start moment object.
  * @param {Object} params.endMoment          End moment object.
  * @return {Object} Normalized RSVP state payloads.
@@ -41,6 +42,7 @@ export const normalizeRSVPResponse = ( {
 	description,
 	capacity,
 	notGoingResponses,
+	showAttendees,
 	startMoment,
 	endMoment,
 } ) => {
@@ -61,6 +63,7 @@ export const normalizeRSVPResponse = ( {
 			description: normalizedDescription,
 			capacity,
 			notGoingResponses,
+			showAttendees,
 			startDate: momentUtil.toDate( startMoment ),
 			startDateInput,
 			startDateMoment: startMoment.clone().startOf( 'day' ),
@@ -77,6 +80,7 @@ export const normalizeRSVPResponse = ( {
 			tempDescription: normalizedDescription,
 			tempCapacity: capacity,
 			tempNotGoingResponses: notGoingResponses,
+			tempShowAttendees: showAttendees,
 			tempStartDate: momentUtil.toDate( startMoment ),
 			tempStartDateInput: startDateInput,
 			tempStartDateMoment: startMoment.clone().startOf( 'day' ),
@@ -148,6 +152,7 @@ export const normalizeRSVPResponseFromV2Ticket = ( rsvp, options = {} ) => {
 			description,
 			capacity,
 			notGoingResponses: rsvp.show_not_going || false,
+			showAttendees: rsvp.rsvp_show_attendees || false,
 			startMoment,
 			endMoment,
 		} ),

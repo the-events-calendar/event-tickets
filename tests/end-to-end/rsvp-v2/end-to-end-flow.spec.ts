@@ -119,6 +119,17 @@ test.describe('RSVP Block End-to-End Flow', () => {
 		await rsvp.clickEditWindow();
 		await expect(rsvp.windowPopover).toBeVisible();
 
+		// Regression: the Open/Close RSVP date inputs must render their full
+		// value — a scrollWidth wider than the input's clientWidth means the
+		// text is visually clipped inside the field.
+		const dateInputs = rsvp.windowPopoverDateInputs;
+		const dateInputCount = await dateInputs.count();
+		expect(dateInputCount).toBeGreaterThanOrEqual(2);
+		for (let i = 0; i < dateInputCount; i++) {
+			const isClipped = await dateInputs.nth(i).evaluate((el) => el.scrollWidth > el.clientWidth);
+			expect(isClipped).toBe(false);
+		}
+
 		// Wait for the update request after saving (may be POST or PUT).
 		const savePromise = page.waitForResponse(
 			(r) => r.url().includes('/tec/v1/tickets') && (r.request().method() === 'PUT' || r.request().method() === 'POST') && r.ok(),

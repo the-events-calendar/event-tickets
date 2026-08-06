@@ -46,6 +46,7 @@ class Controller extends Controller_Contract {
 		$block_editor->register();
 		$this->container->singleton( Frontend::class );
 		$this->container->singleton( Repository_Filters::class );
+		$this->container->singleton( Cart\Repository_Filter::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
 		$this->container->singleton( REST\Ticket_Endpoint::class );
 		$this->container->singleton( Cart\RSVP_Cart::class );
@@ -139,6 +140,12 @@ class Controller extends Controller_Contract {
 			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
 			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' )
 		);
+		add_action(
+			'tribe_tickets_tickets_hook',
+			$this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' ),
+			10,
+			2
+		);
 
 		// Repository.
 		add_filter(
@@ -156,6 +163,13 @@ class Controller extends Controller_Contract {
 		add_filter(
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+
+		add_filter(
+			'tec_tickets_commerce_cart_repository',
+			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' ),
+			10,
+			2
 		);
 
 		// REST.
@@ -315,6 +329,10 @@ class Controller extends Controller_Contract {
 			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
 			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' ),
 		);
+		remove_action(
+			'tribe_tickets_tickets_hook',
+			$this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' )
+		);
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
 			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' )
@@ -326,6 +344,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+		remove_filter(
+			'tec_tickets_commerce_cart_repository',
+			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' )
 		);
 		remove_action( 'rest_api_init', $this->container->callback( REST\Order_Endpoint::class, 'register' ) );
 		remove_action( 'rest_api_init', $this->container->callback( REST\Ticket_Endpoint::class, 'register' ) );
@@ -557,30 +579,6 @@ class Controller extends Controller_Contract {
 		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 		return in_array( 'event-tickets_rsvp', $requirements, true );
-	}
-
-	/**
-	 * Removes the RSVP hooks that would render the RSVP v1 form on the frontend.
-	 *
-	 * The original code hooks as part of the construction, to avoid having to update all the existing code
-	 * unhook the RSVP v1 hooks right after they are added.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tickets_Handler $tickets_handler  The tickets handler instance.
-	 * @param string          $ticket_form_hook The ticket form hook.
-	 *
-	 * @return void
-	 */
-	public function do_not_display_rsvp_v1_tickets_form( Tickets_Handler $tickets_handler, string $ticket_form_hook ): void {
-		if ( ! $tickets_handler instanceof RSVP_V1_Tickets_Handler ) {
-			return;
-		}
-
-		remove_action( $ticket_form_hook, [ $tickets_handler, 'maybe_add_front_end_tickets_form' ], 5 );
-		remove_filter( $ticket_form_hook, [ $tickets_handler, 'show_tickets_unavailable_message' ], 6 );
-		remove_filter( 'the_content', [ $tickets_handler, 'front_end_tickets_form_in_content' ], 11 );
-		remove_filter( 'the_content', [ $tickets_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
 	}
 
 	/**
