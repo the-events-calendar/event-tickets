@@ -13,6 +13,7 @@ import * as selectors from '../rsvp-shared/selectors';
 export const buildPersistPayload = ( state, overrides = {} ) => ( {
 	capacity: selectors.getRSVPTempCapacity( state ),
 	notGoingResponses: selectors.getRSVPNotGoingResponses( state ),
+	showAttendees: selectors.getRSVPShowAttendees( state ),
 	startDate: selectors.getRSVPTempStartDate( state ),
 	startDateInput: selectors.getRSVPTempStartDateInput( state ),
 	startDateMoment: selectors.getRSVPTempStartDateMoment( state ),

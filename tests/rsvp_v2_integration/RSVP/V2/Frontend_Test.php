@@ -179,6 +179,35 @@ class Frontend_Test extends WPTestCase {
 		);
 	}
 
+	public function test_v1_front_end_hooks_are_removed_when_tickets_hook_fires(): void {
+		$rsvp_handler     = tribe( 'tickets.rsvp' );
+		$ticket_form_hook = $rsvp_handler->get_ticket_form_hook();
+
+		// Re-add the legacy hooks as Tickets::hook() would, to make this test
+		// independent of provider bootstrap ordering.
+		add_action( $ticket_form_hook, [ $rsvp_handler, 'maybe_add_front_end_tickets_form' ], 5 );
+		add_filter( $ticket_form_hook, [ $rsvp_handler, 'show_tickets_unavailable_message' ], 6 );
+		add_filter( 'the_content', [ $rsvp_handler, 'front_end_tickets_form_in_content' ], 11 );
+		add_filter( 'the_content', [ $rsvp_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
+
+		// This is exactly what Tickets::hook() fires right after registering the hooks above.
+		do_action( 'tribe_tickets_tickets_hook', $rsvp_handler, $ticket_form_hook );
+
+		$this->assertFalse(
+			has_action( $ticket_form_hook, [ $rsvp_handler, 'maybe_add_front_end_tickets_form' ] ),
+			'The legacy V1 front-end ticket form must be unhooked once RSVP V2 is active, or it renders alongside the V2 block and duplicates content like the attendees list.'
+		);
+		$this->assertFalse(
+			has_filter( $ticket_form_hook, [ $rsvp_handler, 'show_tickets_unavailable_message' ] )
+		);
+		$this->assertFalse(
+			has_filter( 'the_content', [ $rsvp_handler, 'front_end_tickets_form_in_content' ] )
+		);
+		$this->assertFalse(
+			has_filter( 'the_content', [ $rsvp_handler, 'show_tickets_unavailable_message_in_content' ] )
+		);
+	}
+
 	/**
 	 * Data provider for update_attendee_data early return scenarios.
 	 *

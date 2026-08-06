@@ -1123,6 +1123,11 @@ class Tribe__Tickets__Tickets_View {
 			}
 		}
 
+		// RSVPs are rendered by get_rsvp_block(); if no non-RSVP tickets remain, there is nothing to render here.
+		if ( empty( $tickets ) ) {
+			return '';
+		}
+
 		$args = [
 			'post_id'                     => $post_id,
 			'provider'                    => $provider,

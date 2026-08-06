@@ -114,7 +114,46 @@ class Tickets_ViewTest extends WPTestCase {
 		$this->assertEquals( 1, $sut->count_ticket_attendees( $event_id ) );
 		$this->assertTrue( $sut->has_ticket_attendees( $event_id ) );
 	}
-	
+
+	/**
+	 * @test
+	 * it should render nothing for the Tickets block when the event only has an RSVP
+	 *
+	 * The RSVP is rendered by get_rsvp_block(); if get_tickets_block() renders anything
+	 * for an RSVP-only event, its "Who's Attending" content duplicates the RSVP block's own.
+	 */
+	public function it_should_render_nothing_for_tickets_block_when_event_only_has_rsvp(): void {
+		add_filter( 'tribe_tickets_new_views_is_enabled', '__return_true' );
+
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 09:00:00',
+				'end_date'   => '2020-01-01 11:30:00',
+			]
+		)->create()->ID;
+
+		$this->create_tc_rsvp_ticket( $event_id );
+
+		$fired = 0;
+		add_action(
+			'tribe_tickets_before_front_end_ticket_form',
+			function () use ( &$fired ) {
+				$fired++;
+			}
+		);
+
+		$sut = $this->make_instance();
+
+		$this->assertSame( '', $sut->get_tickets_block( $event_id, false ) );
+		$this->assertSame(
+			0,
+			$fired,
+			'The Tickets block must not fire its pre-content hook for an RSVP-only event, or the RSVP block\'s own hook firing duplicates content like the attendees list.'
+		);
+	}
+
 	/**
 	 * Placeholder for post ids.
 	 */
