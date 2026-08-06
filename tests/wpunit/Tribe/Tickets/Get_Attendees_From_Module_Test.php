@@ -2,6 +2,8 @@
 
 namespace Tribe\Tickets;
 
+use Faker\Factory;
+use Generator;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -40,7 +42,7 @@ class Get_Attendees_From_Module_Test extends \Codeception\TestCase\WPTestCase {
 
 		$generator = tribe_attendees( $module->orm_provider )->by( 'ticket', $ticket_id )->all( true );
 
-		$this->assertInstanceOf( \Generator::class, $generator, 'The ORM should hand back a generator for this test to be meaningful.' );
+		$this->assertInstanceOf( Generator::class, $generator, 'The ORM should hand back a generator for this test to be meaningful.' );
 
 		$attendees = $module->get_attendees_from_module( $generator );
 
@@ -62,7 +64,8 @@ class Get_Attendees_From_Module_Test extends \Codeception\TestCase\WPTestCase {
 	 * @return array{0: Tribe__Tickets__RSVP, 1: int, 2: int, 3: int}
 	 */
 	private function given_an_event_with_attendees(): array {
-		$count     = 3;
+		/* More than one attendee, so each internal pass over the set reads several items. */
+		$count     = Factory::create()->numberBetween( 2, 5 );
 		$event_id  = $this->factory()->event->create();
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
