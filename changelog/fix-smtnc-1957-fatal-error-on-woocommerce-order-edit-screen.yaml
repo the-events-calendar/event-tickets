@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Prevented a fatal error on the WooCommerce order edit screen when
+  attendee data was read from a generator, so orders containing tickets open
+  normally again.
+timestamp: 2026-08-06T10:32:14.989Z
