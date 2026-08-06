@@ -495,14 +495,16 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * order creation, cause the inventory to be decreased.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Added the `$type` parameter to allow for RSVP tickets to be excluded from inventory decrease based on the RSVP status.
+	 * @since TBD Attendees marked with a `ticket_type` of RSVP are excluded from inventory
+	 *            decrease based on their RSVP status.
 	 *
-	 * @param array  $attendee The attendee.
-	 * @param string $type     The type of ticket.
+	 * @param array $attendee The attendee. May include a `ticket_type` key.
 	 *
 	 * @return bool
 	 */
-	public function attendee_decreases_inventory( array $attendee, string $type = 'default' ) {
+	public function attendee_decreases_inventory( array $attendee ) {
+		$type = $attendee['ticket_type'] ?? 'default';
+
 		if ( $type === RSVP_V2_Constants::TC_RSVP_TYPE ) {
 			$meta_exists = metadata_exists( 'post', $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY );
 			if ( $meta_exists && ! tribe_is_truthy( get_post_meta( $attendee['ID'], RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) ) ) {
