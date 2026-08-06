@@ -205,15 +205,17 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		 */
 		$enabled = apply_filters( "tec_tickets_enabled_ticket_forms_{$post_type}", $enabled, $post_id );
 
+		$meta = tribe( Meta::class );
+
 		if ( ! empty( $enabled['default'] ) ) {
-			tribe( Meta::class )->render_ticket_form_toggle( $post_id );
+			$meta->render_ticket_form_toggle( $post_id );
 		}
 
 		if ( ! empty( $enabled['rsvp'] ) ) {
-			tribe( Meta::class )->render_rsvp_form_toggle( $post_id );
+			$meta->render_rsvp_form_toggle( $post_id );
 		} elseif ( ! empty( $enabled['rsvp_migrating'] ) ) {
 			// RSVP is temporarily unavailable while its migration to Tickets Commerce is running.
-			tribe( Meta::class )->render_rsvp_form_toggle( $post_id, true );
+			$meta->render_rsvp_form_toggle( $post_id, true );
 		}
 	}
 
