@@ -61,6 +61,24 @@ class Get_Attendees_From_Module_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * The cache only engages when a post ID accompanies a non-empty set.
+	 *
+	 * @test
+	 */
+	public function it_should_serve_attendee_data_from_the_cache_on_a_second_call() {
+		[ $module, $event_id, $ticket_id, $count ] = $this->given_an_event_with_attendees();
+
+		$first = $module->get_attendees_from_module( tribe_attendees( $module->orm_provider )->by( 'ticket', $ticket_id )->all( true ), $event_id );
+
+		$this->assertCount( $count, $first );
+
+		/* Recomputing this single-attendee set would return one row, so a full set proves the cache answered. */
+		$second = $module->get_attendees_from_module( [ $first[0]['attendee_id'] ], $event_id );
+
+		$this->assertSame( $first, $second );
+	}
+
+	/**
 	 * @return array{0: Tribe__Tickets__RSVP, 1: int, 2: int, 3: int}
 	 */
 	private function given_an_event_with_attendees(): array {
