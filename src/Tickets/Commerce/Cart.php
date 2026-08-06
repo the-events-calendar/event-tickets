@@ -563,6 +563,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 * @since 5.29.0.1 Stopped adding the cart hash to the checkout redirect URL. See SVUL-L34.
+	 * @since 5.29.2 Sent no-cache headers on the cart-to-checkout redirect so the cart-hash cookie survives edge caches.
 	 *
 	 * @return bool
 	 */
@@ -620,6 +621,12 @@ class Cart {
 			$redirect_url = apply_filters( 'tec_tickets_commerce_cart_to_checkout_redirect_url', $redirect_url, $data );
 
 			if ( null !== $redirect_url ) {
+				/*
+				 * The cart hash is carried to checkout only by the Set-Cookie header emitted while
+				 * processing the cart. A cacheable 302 lets full-page and edge caches (e.g. Pantheon,
+				 * Varnish) cache the redirect and strip that header, leaving checkout with no cart.
+				 */
+				nocache_headers();
 				wp_safe_redirect( $redirect_url );
 				tribe_exit();
 			}

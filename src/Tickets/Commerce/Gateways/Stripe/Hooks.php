@@ -75,6 +75,45 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tec_tickets_commerce_order_stripe_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_stripe_get_value_captured', [ $this, 'filter_order_get_value_captured' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_gateway_value_formatter_stripe_currency_map', [ $this, 'filter_stripe_currency_precision' ], 10, 3 );
+		add_filter( 'tec_tickets_commerce_order_has_pending_non_completed_transition', [ $this, 'filter_order_has_pending_non_completed_transition' ], 10, 2 );
+	}
+
+	/**
+	 * Reports whether a Stripe order has a deferred webhook queued that would move it away from a
+	 * completed status - e.g. a refund received while the order is still within its post-checkout hold
+	 * window (see Order::has_on_checkout_screen_hold() and Handler::update_order_status()).
+	 *
+	 * @since 5.29.2
+	 *
+	 * @param bool $has_pending Whether another callback already found a pending non-completed transition.
+	 * @param int  $order_id    The order ID.
+	 *
+	 * @return bool
+	 */
+	public function filter_order_has_pending_non_completed_transition( $has_pending, int $order_id ): bool {
+		if ( $has_pending ) {
+			return $has_pending;
+		}
+
+		if ( ! tribe( Order::class )->has_on_checkout_screen_hold( $order_id ) ) {
+			return false;
+		}
+
+		$pending_webhooks = tribe( Webhooks::class )->get_pending_webhooks( $order_id );
+
+		if ( ! $pending_webhooks ) {
+			return false;
+		}
+
+		$completed_wp_slug = tribe( Status_Handler::class )->get_by_slug( Completed::SLUG )->get_wp_slug();
+
+		foreach ( $pending_webhooks as $pending_webhook ) {
+			if ( is_array( $pending_webhook ) && ! empty( $pending_webhook['new_status'] ) && $completed_wp_slug !== $pending_webhook['new_status'] ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -126,6 +165,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 5.18.1
 	 * @since 5.19.3 Added the $retry parameter.
+	 * @since 5.29.2 Sets a post meta flag to scope the attendee uncheck-in to held-webhook resolutions.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $retry      The number of times this has been tried.
@@ -171,32 +211,42 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		// On multiple checkout completes, make sure we dont process the same webhook twice.
 		$webhooks->delete_pending_webhooks( $order->ID );
 
-		foreach ( $pending_webhooks as $pending_webhook ) {
-			if ( ! ( is_array( $pending_webhook ) ) ) {
-				continue;
+		// Flag the order so that attendee archive triggered by the async webhook resolution
+		// (via modify_status below) can be distinguished from post-event refund archives.
+		// The flag is checked by TEC\Tickets\Hooks::uncheckin_attendee_on_archive() and deleted
+		// after all pending webhooks are processed.
+		update_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive', 1 );
+
+		try {
+			foreach ( $pending_webhooks as $pending_webhook ) {
+				if ( ! ( is_array( $pending_webhook ) ) ) {
+					continue;
+				}
+
+				if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
+					continue;
+				}
+
+				$new_status_wp_slug = $pending_webhook['new_status'];
+
+				// The order is already there!
+				if ( $order->post_status === $new_status_wp_slug ) {
+					continue;
+				}
+
+				// The order is no longer where it was... that could be dangerous, lets bail?
+				if ( $order->post_status !== $pending_webhook['old_status'] ) {
+					continue;
+				}
+
+				tribe( Order::class )->modify_status(
+					$order->ID,
+					tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
+					$pending_webhook['metadata']
+				);
 			}
-
-			if ( ! isset( $pending_webhook['new_status'], $pending_webhook['metadata'], $pending_webhook['old_status'] ) ) {
-				continue;
-			}
-
-			$new_status_wp_slug = $pending_webhook['new_status'];
-
-			// The order is already there!
-			if ( $order->post_status === $new_status_wp_slug ) {
-				continue;
-			}
-
-			// The order is no longer where it was... that could be dangerous, lets bail?
-			if ( $order->post_status !== $pending_webhook['old_status'] ) {
-				continue;
-			}
-
-			tribe( Order::class )->modify_status(
-				$order->ID,
-				tribe( Status_Handler::class )->get_by_wp_slug( $new_status_wp_slug )->get_slug(),
-				$pending_webhook['metadata']
-			);
+		} finally {
+			delete_post_meta( $order->ID, '_tec_tickets_commerce_webhook_resolving_archive' );
 		}
 	}
 

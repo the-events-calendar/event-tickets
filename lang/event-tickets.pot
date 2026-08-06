@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.28.2\n"
+"Project-Id-Version: Event Tickets 5.29.2\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-11T00:02:51+00:00\n"
+"POT-Creation-Date: 2026-08-05T00:09:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -3433,13 +3433,13 @@ msgid "A single configured ticket type."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:348
-#: src/Tribe/Tickets.php:4662
+#: src/Tribe/Tickets.php:4697
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:349
-#: src/Tribe/Tickets.php:4663
+#: src/Tribe/Tickets.php:4698
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
@@ -3450,14 +3450,14 @@ msgid "The %s for this event has sold out and has been removed from your cart."
 msgstr ""
 
 #: src/Tickets/Blocks/Tickets/Block.php:355
-#: src/Tribe/Tickets.php:4665
+#: src/Tribe/Tickets.php:4700
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
 #. Translators: %s - the HTML of the number of tickets with validation errors.
 #: src/Tickets/Blocks/Tickets/Block.php:357
-#: src/Tribe/Tickets.php:4666
+#: src/Tribe/Tickets.php:4701
 #, php-format
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
@@ -8281,8 +8281,8 @@ msgstr ""
 msgid "Unfortunately, Square doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Square/Hooks.php:154
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:154
+#: src/Tickets/Commerce/Gateways/Square/Hooks.php:195
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:194
 msgid "Failed to process the webhook after too many tries."
 msgstr ""
 
@@ -8649,19 +8649,19 @@ msgstr ""
 msgid "Unfortunately, Stripe doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:317
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:367
 msgid "Something went wrong with your Webhook Creation. Please reload the page and try again later."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:333
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:383
 msgid "Webhook successfully set up! The page will reload now."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:492
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:542
 msgid "Payment Failed"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:493
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:543
 msgid "There was an issue processing your payment with your payment method. Please try again."
 msgstr ""
 
@@ -9688,13 +9688,13 @@ msgid "%s will be available on %s at %s"
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:163
-#: src/Tribe/Tickets.php:3424
+#: src/Tribe/Tickets.php:3459
 #, php-format
 msgid "%s are no longer available."
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:165
-#: src/Tribe/Tickets.php:3426
+#: src/Tribe/Tickets.php:3461
 #, php-format
 msgid "There are no %s available at this time."
 msgstr ""
@@ -12261,7 +12261,7 @@ msgstr ""
 
 #. Translators: %s - the singular label for a ticket.
 #: src/Tribe/Admin/Move_Ticket_Types.php:28
-#: src/Tribe/Tickets.php:571
+#: src/Tribe/Tickets.php:574
 #: src/Tickets/Blocks/Ticket/app/editor/dashboard/move-delete/template.js:26
 #, php-format,js-format
 msgid "Move %s"
@@ -14087,23 +14087,23 @@ msgstr ""
 msgid "Stock"
 msgstr ""
 
-#: src/Tribe/Tickets.php:489
+#: src/Tribe/Tickets.php:492
 #, php-format
 msgctxt "delete link"
 msgid "Delete %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1965
+#: src/Tribe/Tickets.php:2000
 msgid "Shared capacity with other tickets"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1966
+#: src/Tribe/Tickets.php:2001
 #: src/modules/data/blocks/ticket/options.js:17
 msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2641
+#: src/Tribe/Tickets.php:2676
 #, php-format
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
@@ -14111,23 +14111,23 @@ msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3376
+#: src/Tribe/Tickets.php:3411
 #, php-format
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3412
+#: src/Tribe/Tickets.php:3447
 #, php-format
 msgid "%s will be available on "
 msgstr ""
 
-#: src/Tribe/Tickets.php:3418
+#: src/Tribe/Tickets.php:3453
 msgid " at "
 msgstr ""
 
 #. translators: %s: Tickets label
 #. Translators: %s - the plural label for a ticket.
-#: src/Tribe/Tickets.php:3421
+#: src/Tribe/Tickets.php:3456
 #: src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 #: src/Tickets/Blocks/Tickets/app/editor/inactive/template.js:100
@@ -14135,11 +14135,11 @@ msgstr ""
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3873
+#: src/Tribe/Tickets.php:3908
 msgid "(copy)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:4664
+#: src/Tribe/Tickets.php:4699
 msgid "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
