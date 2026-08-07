@@ -146,6 +146,116 @@ class Stock_Capacity_Test extends WPTestCase {
 	}
 
 	/**
+	 * Regression: saving a TC-RSVP ticket must not re-count a Going attendee that was flipped to
+	 * Not Going as sold. The flip (RSVP V2 frontend, `Frontend::update_attendee_data()`) only
+	 * updates the `_tec_tickets_commerce_rsvp_status` meta and never decrements `total_sales`, so
+	 * `Ticket::save()` would recompute `_stock` as `capacity - stale_sold` and silently reintroduce
+	 * the Not Going over-count into `available()`/`get_ticket_max_purchase()`.
+	 *
+	 * @see \TEC\Tickets\Commerce\Ticket::save()
+	 * @see \TEC\Tickets\RSVP\V2\Frontend::update_attendee_data()
+	 */
+	public function test_save_does_not_recount_flipped_not_going_attendees_as_sold(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
+
+		// Going order: Decrease_Stock runs, so total_sales = 1 and _stock = 49.
+		$order     = $this->create_order( [ $ticket_id => 1 ] );
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$this->assertCount( 1, $attendees );
+		$attendee_id = $attendees[0]['attendee_id'];
+
+		// Flip the attendee to Not Going, exactly what the RSVP V2 frontend status toggle does.
+		update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'no' );
+
+		// Save the ticket (e.g. a title change in the admin editor).
+		$this->save_renamed_ticket( $post_id, $ticket_id, Constants::TC_RSVP_TYPE );
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		// The flipped attendee does not hold a seat, so every counter must land at 50, not 49.
+		$this->assertEquals( 50, $ticket->available() );
+		$this->assertEquals( 50, $ticket->inventory() );
+		$this->assertEquals( 50, (int) get_post_meta( $ticket_id, '_stock', true ) );
+
+		// `total_sales` is a separate legacy counter the flip does not decrement; this fix only
+		// stops it from over-subtracting `_stock` on save.
+		$this->assertEquals( 1, $ticket->qty_sold() );
+	}
+
+	/**
+	 * Sanity: saving a TC-RSVP ticket with a directly-created Not Going attendee (which never
+	 * touched `total_sales` because `Decrease_Stock` bails for it) must keep stock correct. This
+	 * guards the fix against over-subtracting when `total_sales` already excludes the Not Going
+	 * attendee.
+	 *
+	 * @see \TEC\Tickets\Commerce\Flag_Actions\Decrease_Stock::handle()
+	 */
+	public function test_save_keeps_stock_for_directly_created_not_going_attendees(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
+
+		// 1 going attendee (total_sales = 1, _stock = 49) + 1 directly-created Not Going attendee.
+		$this->create_order( [ $ticket_id => 1 ] );
+		$this->create_not_going_rsvp_order( $ticket_id, 1 );
+
+		$this->save_renamed_ticket( $post_id, $ticket_id, Constants::TC_RSVP_TYPE );
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		// Only the 1 going attendee holds a seat: 50 − 1 = 49.
+		$this->assertEquals( 49, $ticket->available() );
+		$this->assertEquals( 49, (int) get_post_meta( $ticket_id, '_stock', true ) );
+		$this->assertEquals( 1, $ticket->qty_sold() );
+	}
+
+	/**
+	 * Sanity: saving a regular paid Tickets Commerce ticket must keep the pre-existing `sold`
+	 * recompute untouched. The RSVP V2 Not Going exclusion only applies to TC-RSVP tickets.
+	 */
+	public function test_save_stock_unaffected_for_regular_tc_tickets(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10, [ 'tribe-ticket' => [ 'capacity' => 50 ] ] );
+
+		$this->create_order( [ $ticket_id => 2 ] );
+
+		$this->save_renamed_ticket( $post_id, $ticket_id );
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		$this->assertEquals( 48, $ticket->available() );
+		$this->assertEquals( 48, (int) get_post_meta( $ticket_id, '_stock', true ) );
+		$this->assertEquals( 2, $ticket->qty_sold() );
+	}
+
+	/**
+	 * Saves a ticket through the real provider flow, as the admin editor does on any change.
+	 *
+	 * A no-op title change is enough to trigger the `'update'` branch of `Ticket::save()`. The
+	 * `$ticket_type` is passed through as the production `ticket_add()` flow does: `Ticket::save()`
+	 * rewrites the `_type` meta from `$raw_data['ticket_type'] ?? 'default'`, so omitting it would
+	 * strip the ticket's type (and the RSVP V2 Not Going exclusion along with it). The
+	 * `tec_tickets` wp_cache is not invalidated by the save (only `clean_post_cache()` runs), so
+	 * it is cleared here for the follow-up `load_ticket_object()` to read the freshly persisted
+	 * `_stock` rather than the pre-save cached value.
+	 */
+	private function save_renamed_ticket( int $post_id, int $ticket_id, string $ticket_type = 'default' ): void {
+		$ticket       = Tickets::load_ticket_object( $ticket_id );
+		$ticket->name = 'Renamed';
+
+		tribe( Module::class )->save_ticket(
+			$post_id,
+			$ticket,
+			[
+				'ticket_type'  => $ticket_type,
+				'tribe-ticket' => [ 'mode' => 'own', 'capacity' => 50 ],
+			]
+		);
+
+		wp_cache_delete( $ticket_id, 'tec_tickets' );
+	}
+
+	/**
 	 * Mirrors the production Order_Endpoint flow for Not Going: places a cart item with
 	 * type=tc-rsvp + order_status=no (so Decrease_Stock bails) and stamps the rsvp_status
 	 * meta on the resulting attendees (so inventory() excludes them).
