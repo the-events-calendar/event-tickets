@@ -7,9 +7,9 @@
     },
     "tickets": {
         "count": 2,
-        "stock": 2,
+        "stock": 0,
         "global": 0,
         "unlimited": 0,
-        "available": 2
+        "available": 0
     }
 }

@@ -105,6 +105,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		add_action( 'tec_tickets_ticket_upserted', [ $this, 'update_event_cost' ], 10, 2 );
 		add_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
 		add_action( 'update_post_meta', [ $this, 'pre_update_listener' ], 1000, 3 );
 		add_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000, 4 );
@@ -122,6 +123,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'update_event_cost' ], 10 );
 		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'sync_ticket_dates_actions' ], 1000 );
 		remove_action( 'update_post_meta', [ $this, 'pre_update_listener' ], 1000 );
 		remove_action( 'added_post_meta', [ $this, 'meta_keys_listener' ], 1000 );
@@ -158,6 +160,29 @@ class Ticket_Actions extends Controller_Contract {
 	public function fire_ticket_end_date_action( int $ticket_id ): void {
 		as_unschedule_action( self::TICKET_END_SALES_HOOK, [ $ticket_id ], self::AS_TICKET_ACTIONS_GROUP );
 		$this->fire_ticket_date_action( $ticket_id, false );
+	}
+
+	/**
+	 * Updates the event cost meta when a ticket is upserted.
+	 *
+	 * The TEC REST API V1 endpoints (e.g. /tec/v1/tickets) do not fire
+	 * `tribe_tickets_ticket_added`; they rely on `ticket_add()` which fires
+	 * `tec_tickets_ticket_upserted`. Without this hook the event cost meta
+	 * is not refreshed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 * @param int $post_id   The parent post ID.
+	 *
+	 * @return void
+	 */
+	public function update_event_cost( int $ticket_id, int $post_id ): void {
+		if ( ! did_action( 'tec_events_fully_loaded' ) || ! class_exists( 'Tribe__Events__API' ) ) {
+			return;
+		}
+
+		\Tribe__Events__API::update_event_cost( $post_id );
 	}
 
 	/**

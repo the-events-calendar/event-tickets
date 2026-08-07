@@ -1,0 +1,15 @@
+	<div class="tec-tickets__my-tickets-list-title-container type-default">
+	<div class="tec-tickets__my-tickets-list-title">
+		Tickets	</div>
+</div>	<div class="tec__tickets-my-tickets-order-tickets-list-wrapper">
+		<ul class="tribe-tickets-list tribe-list">
+							<input type="hidden" name="attendee[{{ ORDER_ID }}][attendees][]" value="{{ ATTENDEE_ID }}">
+				<li class="tribe-item" id="ticket-{{ ORDER_ID }}">
+					<input type="hidden" name="attendee[{{ ORDER_ID }}][attendees][]" value="{{ ATTENDEE_ID }}">
+					<div class="list-attendee">
+	Attendee 1</div>					<div class="tribe-ticket-information">
+				<span class="ticket-name">Test TC ticket for {{ POST_ID }}</span>
+			</div>
+									</li>
+					</ul>
+			</div>

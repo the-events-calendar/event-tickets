@@ -1,0 +1,200 @@
+[
+    {
+        "id": {TICKET_ID},
+        "date": "2025-06-13T17:25:00",
+        "date_gmt": "2025-06-13T17:25:00",
+        "guid": {
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+        },
+        "modified": "2025-06-13T17:25:00",
+        "modified_gmt": "2025-06-13T17:25:00",
+        "slug": "test-tc-ticket-for-{POST_ID}",
+        "status": "publish",
+        "type": "tc-rsvp",
+        "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
+        "title": {
+            "rendered": "Test TC ticket for {POST_ID}"
+        },
+        "content": {
+            "rendered": "",
+            "protected": false
+        },
+        "template": "",
+        "description": "Test TC ticket description for {POST_ID}",
+        "on_sale": false,
+        "sale_price": null,
+        "price": 0,
+        "regular_price": 0,
+        "show_description": true,
+        "start_date": "2020-01-02 08:00:00",
+        "end_date": "2050-03-01 20:00:00",
+        "sale_price_start_date": null,
+        "sale_price_end_date": null,
+        "event_id": {POST_ID},
+        "manage_stock": true,
+        "stock": 100,
+        "sold": 0,
+        "sku": "TEST-TKT-{POST_ID}",
+        "capacity": 100,
+        "show_not_going": true,
+        "not_going_count": 0
+    },
+    {
+        "id": {TICKET_ID},
+        "date": "2025-06-13T17:25:00",
+        "date_gmt": "2025-06-13T17:25:00",
+        "guid": {
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+        },
+        "modified": "2025-06-13T17:25:00",
+        "modified_gmt": "2025-06-13T17:25:00",
+        "slug": "test-tc-ticket-for-{POST_ID}-2",
+        "status": "publish",
+        "type": "tc-rsvp",
+        "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
+        "title": {
+            "rendered": "Test TC ticket for {POST_ID}"
+        },
+        "content": {
+            "rendered": "",
+            "protected": false
+        },
+        "template": "",
+        "description": "Test TC ticket description for {POST_ID}",
+        "on_sale": false,
+        "sale_price": null,
+        "price": 0,
+        "regular_price": 0,
+        "show_description": true,
+        "start_date": "2020-01-02 08:00:00",
+        "end_date": "2050-03-01 20:00:00",
+        "sale_price_start_date": null,
+        "sale_price_end_date": null,
+        "event_id": {POST_ID},
+        "manage_stock": true,
+        "stock": 98,
+        "sold": 2,
+        "sku": "TEST-TKT-{POST_ID}",
+        "capacity": 100,
+        "show_not_going": true,
+        "not_going_count": 0
+    },
+    {
+        "id": {TICKET_ID},
+        "date": "2025-06-13T17:25:00",
+        "date_gmt": "2025-06-13T17:25:00",
+        "guid": {
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+        },
+        "modified": "2025-06-13T17:25:00",
+        "modified_gmt": "2025-06-13T17:25:00",
+        "slug": "test-tc-ticket-for-{POST_ID}-3",
+        "status": "publish",
+        "type": "tc-rsvp",
+        "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
+        "title": {
+            "rendered": "Test TC ticket for {POST_ID}"
+        },
+        "content": {
+            "rendered": "",
+            "protected": false
+        },
+        "template": "",
+        "description": "Test TC ticket description for {POST_ID}",
+        "on_sale": false,
+        "sale_price": null,
+        "price": 0,
+        "regular_price": 0,
+        "show_description": true,
+        "start_date": "2020-01-02 08:00:00",
+        "end_date": "2050-03-01 20:00:00",
+        "sale_price_start_date": null,
+        "sale_price_end_date": null,
+        "event_id": {POST_ID},
+        "manage_stock": true,
+        "stock": 97,
+        "sold": 3,
+        "sku": "TEST-TKT-{POST_ID}",
+        "capacity": 100,
+        "show_not_going": true,
+        "not_going_count": 1
+    },
+    {
+        "id": {TICKET_ID},
+        "date": "2025-06-13T17:25:00",
+        "date_gmt": "2025-06-13T17:25:00",
+        "guid": {
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+        },
+        "modified": "2025-06-13T17:25:00",
+        "modified_gmt": "2025-06-13T17:25:00",
+        "slug": "test-tc-ticket-for-{POST_ID}-4",
+        "status": "publish",
+        "type": "tc-rsvp",
+        "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
+        "title": {
+            "rendered": "Test TC ticket for {POST_ID}"
+        },
+        "content": {
+            "rendered": "",
+            "protected": false
+        },
+        "template": "",
+        "description": "Test TC ticket description for {POST_ID}",
+        "on_sale": false,
+        "sale_price": null,
+        "price": 0,
+        "regular_price": 0,
+        "show_description": true,
+        "start_date": "2020-01-02 08:00:00",
+        "end_date": "2050-03-01 20:00:00",
+        "sale_price_start_date": null,
+        "sale_price_end_date": null,
+        "event_id": {POST_ID},
+        "manage_stock": true,
+        "stock": 100,
+        "sold": 0,
+        "sku": "TEST-TKT-{POST_ID}",
+        "capacity": 100,
+        "show_not_going": false,
+        "not_going_count": 0
+    },
+    {
+        "id": {TICKET_ID},
+        "date": "2025-06-13T17:25:00",
+        "date_gmt": "2025-06-13T17:25:00",
+        "guid": {
+            "rendered": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}"
+        },
+        "modified": "2025-06-13T17:25:00",
+        "modified_gmt": "2025-06-13T17:25:00",
+        "slug": "test-tc-ticket-for-{POST_ID}-5",
+        "status": "publish",
+        "type": "default",
+        "link": "http://wordpress.test/?post_type=tec_tc_ticket&p={TICKET_ID}",
+        "title": {
+            "rendered": "Test TC ticket for {POST_ID}"
+        },
+        "content": {
+            "rendered": "",
+            "protected": false
+        },
+        "template": "",
+        "description": "Test TC ticket description for {POST_ID}",
+        "on_sale": false,
+        "sale_price": null,
+        "price": 25,
+        "regular_price": 25,
+        "show_description": true,
+        "start_date": "2020-01-02 08:00:00",
+        "end_date": "2050-03-01 20:00:00",
+        "sale_price_start_date": null,
+        "sale_price_end_date": null,
+        "event_id": {POST_ID},
+        "manage_stock": true,
+        "stock": 100,
+        "sold": 0,
+        "sku": "TEST-TKT-{POST_ID}",
+        "capacity": 100
+    }
+]

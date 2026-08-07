@@ -57,6 +57,8 @@ exports[`Ticket Constants TC_CLASS 1`] = `"Tribe__Tickets__Commerce__PayPal__Mai
 
 exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
 
+exports[`Ticket Constants TC_RSVP_TYPE 1`] = `"tc-rsvp"`;
+
 exports[`Ticket Constants TICKET_LABELS 1`] = `undefined`;
 
 exports[`Ticket Constants TICKET_ORDERS_PAGE_SLUG 1`] = `

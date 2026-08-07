@@ -2,18 +2,19 @@
 
 namespace Tribe\Tickets;
 
+use Closure;
+use Generator;
 use Prophecy\Argument;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Events\Test\Factories\Event;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Snapshot_Post_Id_Replacement;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
-use Generator;
-use Closure;
-use Tribe\Tests\Traits\With_Uopz;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
@@ -21,6 +22,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
+	use With_Snapshot_Post_Id_Replacement;
 
 	/**
 	 * @var Tickets_View
@@ -799,14 +801,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
-		$driver->setTolerableDifferences( [ $post_id, $ticket_id ] );
-		$driver->setTolerableDifferencesPrefixes( [
-			'quantity_',
-			'tribe-tickets-rsvp-name-',
-			'tribe-tickets-rsvp-email-',
-			'tribe-tickets__rsvp-ar-quantity-number--',
-		] );
-
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
 			'data-product-id',
@@ -814,19 +808,26 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-opt-in-nonce',
 		] );
 
-		// Handle ticket ID variations that tolerances won't handle
-		$html = str_replace(
+		$html = $this->replace_snapshot_post_ids(
+			$html,
 			[
-				'[' . $ticket_id . ']',
-				'"' . $ticket_id . '"',
-				'--' . $ticket_id . '',
-			],
+				$post_id   => '[EVENT_ID]',
+				$ticket_id => '[TICKET_ID]',
+			]
+		);
+
+		$html = $this->replace_snapshot_post_ids(
+			$html,
 			[
-				'[TICKET_ID]',
-				'"TICKET_ID"',
-				'--TICKET_ID',
-			],
-			$html
+				$ticket_id => '--TICKET_ID',
+			]
+		);
+
+		$html = $this->replace_snapshot_post_ids(
+			$html,
+			[
+				$ticket_id => '"TICKET_ID"',
+			]
 		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -1029,49 +1030,69 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 
-		yield 'trying to expose both email and full name with markup' => [
-			function () {
-				$_POST['attendee'] = $this->fake_attendee_details(
-					[
-						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
-						'email'     => '<script>alert(\'hello\');</script>@test.com',
-					],
-				);
-			},
-			$this->fake_attendee_details([
-				'optout' => false,
-				'full_name' => 'LittleTest',
-				'email' => 'scriptalert\'hello\'/script@test.com',
-			])
-		];
+	yield 'trying to expose both email and full name with markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+					'email'     => '<script>alert(\'hello\');</script>@test.com',
+				],
+			);
+		},
+		false
+	];
 
-		yield 'trying to expose only full name with markup' => [
-			function () {
-				$_POST['attendee'] = $this->fake_attendee_details(
-					[
-						'full_name' => 'Little<script>alert(\'hello\');</script>Test',
-					],
-				);
-			},
-			$this->fake_attendee_details([
-				'optout' => false,
-				'full_name' => 'LittleTest',
-			])
-		];
+	yield 'trying to expose only full name with markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'full_name' => 'Little<script>alert(\'hello\');</script>Test',
+				],
+			);
+		},
+		$this->fake_attendee_details([
+			'optout' => false,
+			'full_name' => 'LittleTest',
+		])
+	];
 
-		yield 'trying to expose only email with markup' => [
-			function () {
-				$_POST['attendee'] = $this->fake_attendee_details(
-					[
-						'email' => '<script>alert(\'hello\');</script>@test.com',
-					],
-				);
-			},
-			$this->fake_attendee_details([
-				'optout' => false,
-				'email' => 'scriptalert\'hello\'/script@test.com',
-			])
-		];
+	yield 'trying to expose only email with markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'email' => '<script>alert(\'hello\');</script>@test.com',
+				],
+			);
+		},
+		false
+	];
+
+	// The markup guard is tag-agnostic, not script-specific: any HTML tag in the email rejects the attendee.
+	yield 'trying to expose only email with non-script markup' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'email' => '<img src=x onerror=alert(1)>@test.com',
+				],
+			);
+		},
+		false
+	];
+
+	// Markup in the full name is stripped and accepted, unlike markup in the email which rejects the attendee.
+	yield 'non-script markup in full name is stripped' => [
+		function () {
+			$_POST['attendee'] = $this->fake_attendee_details(
+				[
+					'full_name' => '<b>Bold</b>Name',
+				],
+			);
+		},
+		$this->fake_attendee_details([
+			'optout' => false,
+			'full_name' => 'BoldName',
+		])
+	];
 	}
 
 	/**
@@ -1084,7 +1105,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_parse_attendee_details( Closure $fixture, $expected ) {
 		$fixture();
 		$sut = $this->make_instance();
-		$this->set_class_fn_return( get_class( $sut ), 'generate_order_id', $expected['order_id'] );
+		if ( is_array( $expected ) ) {
+			$this->set_class_fn_return( get_class( $sut ), 'generate_order_id', $expected['order_id'] );
+		}
 		$attendee = $sut->parse_attendee_details();
 		$this->assertEquals( $expected, $attendee );
 	}

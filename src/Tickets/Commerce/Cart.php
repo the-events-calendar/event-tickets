@@ -80,10 +80,14 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
+	 * @since TBD Added the $ticket_type parameter, passed through to the `tec_tickets_commerce_cart_repository`
+	 *            filter so subscribers can swap the repository per ticket type without global state.
+	 *
+	 * @param string $ticket_type The type of ticket the repository is being resolved for.
 	 *
 	 * @return Cart_Interface
 	 */
-	public function get_repository() {
+	public function get_repository( string $ticket_type = 'ticket' ) {
 		$default_cart = tribe( Cart_Interface::class );
 
 		/**
@@ -91,10 +95,12 @@ class Cart {
 		 *
 		 * @since 5.1.9
 		 * @since 5.21.0 Updated to use Cart_Interface instead of Unmanaged_Cart.
+		 * @since TBD Added the $ticket_type parameter.
 		 *
-		 * @param Cart_Interface $cart Instance of the cart repository managing the cart.
+		 * @param Cart_Interface $cart        Instance of the cart repository managing the cart.
+		 * @param string         $ticket_type The type of ticket the repository is being resolved for.
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_repository', $default_cart );
+		return apply_filters( 'tec_tickets_commerce_cart_repository', $default_cart, $ticket_type );
 	}
 
 	/**
