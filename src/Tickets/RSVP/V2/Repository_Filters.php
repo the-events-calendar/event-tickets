@@ -9,7 +9,9 @@
 
 namespace TEC\Tickets\RSVP\V2;
 
+use TEC\Tickets\Commerce\Order;
 use Tribe__Repository__Interface as Repository_Interface;
+use WP_Query;
 
 /**
  * Class Repository_Filters
@@ -112,5 +114,51 @@ class Repository_Filters {
 		}
 
 		return $query_args;
+	}
+
+	/**
+	 * Excludes RSVP orders from the admin Orders list table.
+	 *
+	 * RSVP orders are hidden Tickets Commerce orders whose items are all `tc-rsvp`;
+	 * they must not appear on the `tec_tc_order` edit screen. Orders are always
+	 * entirely RSVP or entirely tickets, so excluding any order whose serialized
+	 * `_tec_tc_order_items` meta does not contain a `tc-rsvp` item is equivalent to
+	 * checking every item, while keeping the existing status/date/gateway filters
+	 * added by `Hooks::pre_filter_admin_order_table` intact.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Query $query The WP_Query instance, passed by reference.
+	 *
+	 * @return void
+	 */
+	public function exclude_rsvp_orders_from_admin_list( WP_Query $query ): void {
+		if ( ! $query->is_main_query() || ! $query->is_admin || Order::POSTTYPE !== $query->get( 'post_type' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return;
+		}
+
+		$meta_query = $query->get( 'meta_query' );
+
+		if ( empty( $meta_query ) || ! is_array( $meta_query ) ) {
+			$meta_query = [];
+		}
+
+		$meta_query[] = [
+			'key'     => Order::$items_meta_key,
+			'value'   => Constants::TC_RSVP_TYPE,
+			'compare' => 'NOT LIKE',
+		];
+
+		if ( count( $meta_query ) > 1 && empty( $meta_query['relation'] ) ) {
+			$meta_query['relation'] = 'AND';
+		}
+
+		$query->set( 'meta_query', $meta_query );
 	}
 }

@@ -3,9 +3,19 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Gateways\Free\Gateway;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository as TC_Tickets_Repository;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
+use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
+use WP_Post;
+use WP_Query;
+use WP_Screen;
 
 /**
  * Tests for Repository_Filters.
@@ -16,6 +26,7 @@ use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
  */
 class Repository_Filters_Test extends WPTestCase {
 	use Ticket_Maker;
+	use Order_Maker;
 
 	/**
 	 * Helper class to expose the is_ticket trait method for testing.
@@ -36,6 +47,69 @@ class Repository_Filters_Test extends WPTestCase {
 				return $this->is_ticket( $thing );
 			}
 		};
+
+		// Simulate the admin Orders list screen for the admin list filter tests.
+		global $current_screen, $typenow;
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$typenow        = Order::POSTTYPE;
+	}
+
+	/**
+	 * Builds a TC-RSVP order and transitions it Pending -> Completed.
+	 *
+	 * @param int $ticket_id The RSVP ticket ID.
+	 *
+	 * @return WP_Post The created RSVP order.
+	 */
+	private function create_tc_rsvp_order( int $ticket_id ): WP_Post {
+		/** @var RSVP_Cart $cart */
+		$cart = tribe( RSVP_Cart::class );
+		$cart->clear();
+		$cart->upsert_item(
+			$ticket_id,
+			1,
+			[
+				'type'         => Constants::TC_RSVP_TYPE,
+				'order_status' => 'yes',
+			]
+		);
+		$cart->save();
+
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'attendee@example.com',
+		];
+
+		/** @var Order $orders */
+		$orders = tribe( Order::class );
+		$order  = $orders->create_from_cart( tribe( Gateway::class ), $purchaser, Constants::TC_RSVP_TYPE );
+
+		$orders->modify_status( $order->ID, Pending::SLUG );
+		$orders->modify_status( $order->ID, Completed::SLUG );
+
+		$cart->clear();
+
+		return tec_tc_get_order( $order );
+	}
+
+	/**
+	 * Overwrite the global WP_Query, making it the main query.
+	 *
+	 * @param array $args The arguments for the query.
+	 *
+	 * @return WP_Query The query.
+	 */
+	protected function overwrite_global_wp_query( array $args ): WP_Query {
+		$overwrite_query = new WP_Query( $args );
+
+		global $wp_query, $wp_the_query;
+		$wp_query     = $overwrite_query;
+		$wp_the_query = $overwrite_query;
+
+		return $overwrite_query;
 	}
 
 	public function test_should_exclude_rsvp_tickets_from_tc_repository_queries(): void {
@@ -231,5 +305,91 @@ class Repository_Filters_Test extends WPTestCase {
 		$this->assertEquals( $ids1, $ids2, 'Multiple repository instances should return consistent results' );
 		$this->assertContains( $regular_ticket_id, $ids1 );
 		$this->assertNotContains( $rsvp_ticket_id, $ids1 );
+	}
+
+	public function test_should_exclude_rsvp_orders_from_admin_orders_list(): void {
+		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$rsvp_id   = $this->create_tc_rsvp_ticket( $post_id );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$rsvp_order   = $this->create_tc_rsvp_order( $rsvp_id );
+		$ticket_order = $this->create_order( [ $ticket_id => 1 ] );
+
+		// Stamp the RSVP status on the attendees, like a completed RSVP order.
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $rsvp_order->ID );
+		foreach ( $attendees as $attendee ) {
+			update_post_meta( $attendee['attendee_id'], Constants::RSVP_STATUS_META_KEY, 'yes' );
+		}
+
+		$query = $this->overwrite_global_wp_query(
+			[
+				'post_type'      => Order::POSTTYPE,
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+			]
+		);
+
+		$filters = tribe( Repository_Filters::class );
+		$filters->exclude_rsvp_orders_from_admin_list( $query );
+
+		$order_ids = wp_list_pluck( $query->get_posts(), 'ID' );
+
+		$this->assertContains( $ticket_order->ID, $order_ids, 'Ticket order should be listed on the admin Orders screen' );
+		$this->assertNotContains( $rsvp_order->ID, $order_ids, 'RSVP order should be excluded from the admin Orders screen' );
+	}
+
+	public function test_should_preserve_existing_meta_query_when_adding_rsvp_exclusion(): void {
+		$query = $this->overwrite_global_wp_query(
+			[
+				'post_type'   => Order::POSTTYPE,
+				'post_status' => 'any',
+			]
+		);
+
+		// Simulate a gateway clause already added by `Hooks::pre_filter_admin_order_table`.
+		$query->set(
+			'meta_query',
+			[
+				[
+					'key'     => Order::$gateway_meta_key,
+					'value'   => 'free',
+					'compare' => '=',
+				],
+			]
+		);
+
+		$filters = tribe( Repository_Filters::class );
+		$filters->exclude_rsvp_orders_from_admin_list( $query );
+
+		$this->assertSame(
+			[
+				[
+					'key'     => Order::$gateway_meta_key,
+					'value'   => 'free',
+					'compare' => '=',
+				],
+				[
+					'key'     => Order::$items_meta_key,
+					'value'   => Constants::TC_RSVP_TYPE,
+					'compare' => 'NOT LIKE',
+				],
+				'relation' => 'AND',
+			],
+			$query->get( 'meta_query' )
+		);
+	}
+
+	public function test_should_not_filter_queries_for_other_post_types(): void {
+		$query = $this->overwrite_global_wp_query(
+			[
+				'post_type'   => 'post',
+				'post_status' => 'any',
+			]
+		);
+
+		$filters = tribe( Repository_Filters::class );
+		$filters->exclude_rsvp_orders_from_admin_list( $query );
+
+		$this->assertEmpty( $query->get( 'meta_query' ) );
 	}
 }

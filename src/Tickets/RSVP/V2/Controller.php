@@ -165,6 +165,14 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
 		);
 
+		// Exclude RSVP orders from the admin Orders list table; runs after
+		// `Hooks::pre_filter_admin_order_table` (priority 10) so the meta query merges.
+		add_action(
+			'pre_get_posts',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_orders_from_admin_list' ),
+			20
+		);
+
 		add_filter(
 			'tec_tickets_commerce_cart_repository',
 			$this->container->callback( Cart\Repository_Filter::class, 'use_rsvp_cart_when_needed' ),
@@ -344,6 +352,11 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tribe_repository_tc_tickets_query_args',
 			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+		);
+		remove_action(
+			'pre_get_posts',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_orders_from_admin_list' ),
+			20
 		);
 		remove_filter(
 			'tec_tickets_commerce_cart_repository',
