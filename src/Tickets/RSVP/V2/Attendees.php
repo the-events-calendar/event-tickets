@@ -10,8 +10,10 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Emails\Order_Type_Trait;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 
 /**
@@ -24,6 +26,8 @@ use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
  * @package TEC\Tickets\RSVP\V2
  */
 class Attendees {
+	use Order_Type_Trait;
+
 	/**
 	 * The method filters the default Attendee ID fetching done in RSVP (Tribe__Tickets__RSVP) class to
 	 * use the RSVP Tickets Commerce repository instead.
@@ -215,6 +219,63 @@ class Attendees {
 		}
 
 		return (array) $actions;
+	}
+
+	/**
+	 * Voids an RSVP order once its last attendee is deleted.
+	 *
+	 * Hooked to `tec_tickets_commerce_attendee_before_delete`, which fires for every Tickets
+	 * Commerce attendee deletion — including real paid-ticket orders — so this method bails unless
+	 * the attendee's order is composed exclusively of RSVP items and no other live attendee remains
+	 * on it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The ID of the attendee being deleted.
+	 *
+	 * @return void
+	 */
+	public function void_order_after_last_attendee_deleted( int $attendee_id ): void {
+		$attendee = get_post( $attendee_id );
+
+		// Bail if the attendee no longer exists, is not a TC attendee, or is not attached to an order.
+		if (
+			! $attendee instanceof \WP_Post
+			|| Attendee::POSTTYPE !== $attendee->post_type
+			|| empty( $attendee->post_parent )
+		) {
+			return;
+		}
+
+		$order = tec_tc_get_order( $attendee->post_parent );
+
+		// Bail if the parent order no longer exists.
+		if ( ! $order instanceof \WP_Post ) {
+			return;
+		}
+
+		// This hook fires for ALL Tickets Commerce attendees: never void a real paid-ticket order.
+		if ( ! $this->is_rsvp_order( $order ) ) {
+			return;
+		}
+
+		// Bail if the order was already voided or trashed.
+		if ( in_array( $order->post_status, [ tribe( Voided::class )->get_wp_slug(), 'trash' ], true ) ) {
+			return;
+		}
+
+		// Fetch the other live attendees left on the order, excluding the one being deleted.
+		$remaining_attendees = array_diff(
+			tribe( 'tickets.attendee-repository.rsvp' )->where( 'order', $order->ID )->get_ids(),
+			[ $attendee_id ]
+		);
+
+		// Keep the order alive while at least one attendee remains on it.
+		if ( ! empty( $remaining_attendees ) ) {
+			return;
+		}
+
+		tribe( Order::class )->modify_status( $order->ID, Voided::SLUG );
 	}
 
 	/**
