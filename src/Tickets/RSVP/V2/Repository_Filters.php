@@ -61,6 +61,47 @@ class Repository_Filters {
 	}
 
 	/**
+	 * Excludes RSVP tickets from the Tickets Admin list table query args.
+	 *
+	 * Hooks into `tec_tickets_admin_tickets_table_query_args` to exclude TC-RSVP tickets from the
+	 * All Tickets list table, which runs a raw `WP_Query` and does not go through the Tickets
+	 * Commerce repository.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $args The query args to be used to fetch the tickets.
+	 *
+	 * @return array<string,mixed> The modified query args.
+	 */
+	public function exclude_rsvp_tickets_from_list_table( array $args ): array {
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+		$args['meta_query'] = isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) ?
+			$args['meta_query']
+			: [];
+
+		// Let's make sure the meta query is not being added twice.
+		foreach ( $args['meta_query'] as $meta_query ) {
+			if (
+				isset( $meta_query['key'], $meta_query['value'] )
+				&& $meta_query['key'] === '_type'
+				&& $meta_query['value'] === Constants::TC_RSVP_TYPE
+			) {
+				// The meta query has already been filtered to either exclude or include RSVP tickets, bail.
+				return $args;
+			}
+		}
+
+		// Exclude RSVP tickets from the list.
+		$args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] = [
+			'key'     => '_type',
+			'compare' => '!=',
+			'value'   => Constants::TC_RSVP_TYPE,
+		];
+
+		return $args;
+	}
+
+	/**
 	 * Marks RSVP tickets as proper tickets in the ticket detection logic in Tickets Commerce.
 	 *
 	 * @since TBD

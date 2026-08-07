@@ -155,6 +155,10 @@ class Controller extends Controller_Contract {
 			2
 		);
 		add_filter(
+			'tec_tickets_admin_tickets_table_query_args',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_list_table' )
+		);
+		add_filter(
 			'tec_tickets_commerce_is_ticket',
 			$this->container->callback( Repository_Filters::class, 'rsvp_are_tickets' ),
 			10,
@@ -336,6 +340,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_commerce_repository_ticket_query_args',
 			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_repository_queries' )
+		);
+		remove_filter(
+			'tec_tickets_admin_tickets_table_query_args',
+			$this->container->callback( Repository_Filters::class, 'exclude_rsvp_tickets_from_list_table' )
 		);
 		remove_filter(
 			'tec_tickets_commerce_is_ticket',
