@@ -701,7 +701,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				}
 
 				// Allow providers to decide if an attendee will count toward inventory decrease or not.
-				if ( ! $provider->attendee_decreases_inventory( $attendee, $this->type() ) ) {
+				$attendee['ticket_type'] = $this->type();
+				if ( ! $provider->attendee_decreases_inventory( $attendee ) ) {
 					continue;
 				}
 
@@ -760,11 +761,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 					$attendee_ticket_stock_mode = $ticket_stock_modes[ (int) $attendee['product_id'] ] ?? '';
 
+					$attendee['ticket_type'] = $this->type();
+
 					// On all cases of indy stock we don't add.
 					if (
 						! $global_stock_enabled
 						|| empty( $attendee_ticket_stock_mode )
-						|| ! $provider->attendee_decreases_inventory( $attendee, $this->type() )
+						|| ! $provider->attendee_decreases_inventory( $attendee )
 						|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $attendee_ticket_stock_mode
 					) {
 						continue;
