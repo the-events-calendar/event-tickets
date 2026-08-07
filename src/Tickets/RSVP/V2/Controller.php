@@ -92,6 +92,7 @@ class Controller extends Controller_Contract {
 			'tec_tickets_editor_list_ticket_types',
 			$this->container->callback( Classic_Editor::class, 'do_not_show_rsvp_in_tickets_metabox' )
 		);
+
 		add_action(
 			'save_post',
 			$this->container->callback( Classic_Editor::class, 'save_rsvp_on_post_save' ),

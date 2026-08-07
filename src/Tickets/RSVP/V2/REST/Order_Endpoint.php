@@ -488,6 +488,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$args['opt_in_toggle_hidden'] = ! $show_attendee_list_optout;
 
+		$args['show_attendees_list'] = Attendees_List::should_show_rsvp_attendees_list( $post_id, $ticket_id );
+
 		$this->template->add_template_globals( $args );
 
 		$html  = $this->template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );

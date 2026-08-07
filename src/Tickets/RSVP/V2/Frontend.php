@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
+use Tribe\Tickets\Events\Attendees_List;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
 use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -103,12 +104,13 @@ class Frontend {
 		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
 
 		$rsvp_template_args = [
-			'rsvp'          => $rsvp,
-			'post_id'       => $post->ID,
-			'block_html_id' => Constants::TC_RSVP_TYPE . uniqid( '', true ),
-			'step'          => '',
-			'active_rsvps'  => $rsvp->date_in_range() ? [ $rsvp ] : [],
-			'must_login'    => ! is_user_logged_in() && $this->login_required(),
+			'rsvp'                => $rsvp,
+			'post_id'             => $post->ID,
+			'block_html_id'       => Constants::TC_RSVP_TYPE . uniqid( '', true ),
+			'step'                => '',
+			'active_rsvps'        => $rsvp->date_in_range() ? [ $rsvp ] : [],
+			'must_login'          => ! is_user_logged_in() && $this->login_required(),
+			'show_attendees_list' => Attendees_List::should_show_rsvp_attendees_list( $post->ID, $rsvp->ID ),
 		];
 
 		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $should_echo );

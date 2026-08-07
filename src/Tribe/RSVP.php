@@ -448,6 +448,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$args['opt_in_toggle_hidden'] = $hide_attendee_list_optout;
 
+		$args['show_attendees_list'] = \Tribe\Tickets\Events\Attendees_List::should_show_rsvp_attendees_list( $post_id, $ticket_id );
+
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
