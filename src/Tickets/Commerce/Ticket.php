@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
@@ -761,7 +762,18 @@ class Ticket extends Ticket_Data {
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
-				$totals         = $tickets_handler->get_ticket_totals( $ticket->ID );
+				$totals = $tickets_handler->get_ticket_totals( $ticket->ID );
+
+				/*
+				 * RSVP V2 "Not Going" attendees do not hold a seat, but the Going -> Not Going
+				 * flip only updates the RSVP status meta (never `total_sales`), so the raw figure
+				 * would over-subtract from `_stock` on every save. Mirror the exclusion
+				 * `Ticket_Object::inventory()` applies by recomputing `sold` from live Going attendees.
+				 */
+				if ( RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type() ) {
+					$totals['sold'] = $this->get_going_rsvp_attendee_count( $ticket->ID );
+				}
+
 				$data['stock'] -= $totals['pending'] + $totals['sold'];
 			}
 
@@ -1378,5 +1390,46 @@ class Ticket extends Ticket_Data {
 	 */
 	public function load_ticket_object( int $ticket_id ): ?Ticket_Object {
 		return tribe( Module::class )->get_ticket( 0, $ticket_id );
+	}
+
+	/**
+	 * Counts the live RSVP V2 "Going" attendees for a ticket.
+	 *
+	 * A ticket's `total_sales` is never decremented when an attendee flips Going to Not Going:
+	 * the flip only updates the `_tec_tickets_commerce_rsvp_status` meta (see
+	 * \TEC\Tickets\RSVP\V2\Frontend::update_attendee_data()), so the raw sales figure would
+	 * over-subtract from `_stock` on every save. This counts the attendees that actually hold a
+	 * seat instead, mirroring the exclusion `Tribe__Tickets__Ticket_Object::inventory()` applies:
+	 * an attendee whose RSVP status meta exists with a falsy value ('no') does not hold a seat.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return int The number of Going RSVP V2 attendees for the ticket.
+	 */
+	private function get_going_rsvp_attendee_count( int $ticket_id ): int {
+		$attendee_ids = tribe( 'tickets.attendee-repository' )
+			->where( 'ticket', $ticket_id )
+			->get_ids();
+
+		if ( empty( $attendee_ids ) ) {
+			return 0;
+		}
+
+		$count = 0;
+
+		foreach ( $attendee_ids as $attendee_id ) {
+			if (
+				metadata_exists( 'post', $attendee_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY )
+				&& ! tribe_is_truthy( get_post_meta( $attendee_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) )
+			) {
+				continue;
+			}
+
+			++$count;
+		}
+
+		return $count;
 	}
 }
