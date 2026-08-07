@@ -4,6 +4,15 @@ namespace TEC\Tickets\RSVP\V2;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Free\Gateway;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Voided;
+use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as TC_Ticket_Maker;
@@ -441,5 +450,139 @@ class Attendees_Test extends WPTestCase {
 		} else {
 			$this->assertArrayNotHasKey( 'tickets_checkin', $result );
 		}
+	}
+
+	/**
+	 * Creates an RSVP order with the given quantity and returns its ID plus the live attendee IDs.
+	 *
+	 * Builds a real TC-RSVP order through the canonical cart flow (mirrors
+	 * Order_Endpoint::create and Flag_Actions_Order_Type_Test::create_tc_rsvp_order) so the
+	 * order line items are typed `tc-rsvp` and the generated attendees carry the RSVP status
+	 * meta the RSVP attendee repository requires.
+	 *
+	 * @param int $ticket_id The RSVP ticket ID.
+	 * @param int $quantity  The number of attendees to put on the order.
+	 *
+	 * @return array{0:int,1:int[]} The order ID and the attendee IDs.
+	 */
+	private function create_rsvp_order_with_attendees( int $ticket_id, int $quantity ): array {
+		/** @var RSVP_Cart $cart */
+		$cart = tribe( RSVP_Cart::class );
+		$cart->clear();
+		$cart->upsert_item(
+			$ticket_id,
+			$quantity,
+			[
+				'type'         => Constants::TC_RSVP_TYPE,
+				'order_status' => 'yes',
+			]
+		);
+		$cart->save();
+
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'attendee@example.com',
+		];
+
+		/** @var Order $orders */
+		$orders = tribe( Order::class );
+		$order  = $orders->create_from_cart( tribe( Gateway::class ), $purchaser, Constants::TC_RSVP_TYPE );
+
+		$orders->modify_status( $order->ID, Pending::SLUG );
+		$orders->modify_status( $order->ID, Completed::SLUG );
+
+		$cart->clear();
+		tribe( Cart::class )->clear_cart();
+
+		$attendees    = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$attendee_ids = array_column( $attendees, 'attendee_id' );
+		array_map( static fn( $attendee_id ) => update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'yes' ), $attendee_ids );
+
+		return [ $order->ID, $attendee_ids ];
+	}
+
+	public function test_deleting_only_rsvp_attendee_voids_the_order(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		[ $order_id, $attendee_ids ] = $this->create_rsvp_order_with_attendees( $ticket_id, 1 );
+		$this->assertCount( 1, $attendee_ids );
+
+		// The hook used to fatal here on the undefined `void_order_after_last_attendee_deleted()` callback.
+		tribe( Attendee::class )->delete( $attendee_ids[0] );
+
+		$this->assertSame( tribe( Voided::class )->get_wp_slug(), get_post_status( $order_id ) );
+
+		// No live attendee remains on the order.
+		$this->assertSame(
+			[],
+			tribe( 'tickets.attendee-repository.rsvp' )->where( 'order', $order_id )->get_ids()
+		);
+
+		$attendee_status = get_post_status( $attendee_ids[0] );
+		$this->assertTrue(
+			false === $attendee_status || 'trash' === $attendee_status,
+			'The attendee should be deleted (or trashed) after the deletion.'
+		);
+	}
+
+	public function test_deleting_one_of_multiple_rsvp_attendees_keeps_order_completed(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		[ $order_id, $attendee_ids ] = $this->create_rsvp_order_with_attendees( $ticket_id, 2 );
+		$this->assertCount( 2, $attendee_ids );
+
+		tribe( Attendee::class )->delete( $attendee_ids[0] );
+
+		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order_id ) );
+
+		// The remaining attendee is still live on the order.
+		$this->assertCount(
+			1,
+			tribe( 'tickets.attendee-repository.rsvp' )->where( 'order', $order_id )->get_ids()
+		);
+	}
+
+	public function test_deleting_only_attendee_of_ticket_order_does_not_void_it(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		$order_id  = $this->create_order( [ $ticket_id => 1 ] )->ID;
+
+		$attendee_ids = tec_tc_attendees()->where( 'event_id', $post_id )->get_ids();
+		$this->assertCount( 1, $attendee_ids );
+
+		// The hook fires for ALL TC attendees: a real paid-ticket order must never be voided.
+		tribe( Attendee::class )->delete( $attendee_ids[0] );
+
+		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order_id ) );
+	}
+
+	public function test_void_order_after_last_attendee_deleted_direct_call_voids_rsvp_order(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		[ $order_id, $attendee_ids ] = $this->create_rsvp_order_with_attendees( $ticket_id, 1 );
+		$this->assertCount( 1, $attendee_ids );
+
+		tribe( Attendees::class )->void_order_after_last_attendee_deleted( $attendee_ids[0] );
+
+		$this->assertSame( tribe( Voided::class )->get_wp_slug(), get_post_status( $order_id ) );
+	}
+
+	public function test_void_order_after_last_attendee_deleted_direct_call_bails_for_ticket_order(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		$order_id  = $this->create_order( [ $ticket_id => 1 ] )->ID;
+
+		$attendee_ids = tec_tc_attendees()->where( 'event_id', $post_id )->get_ids();
+		$this->assertCount( 1, $attendee_ids );
+
+		tribe( Attendees::class )->void_order_after_last_attendee_deleted( $attendee_ids[0] );
+
+		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order_id ) );
 	}
 }
