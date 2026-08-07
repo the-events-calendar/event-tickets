@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.29.2.1] 2026-08-07
+
+* Fix - Prevented a fatal error on the WooCommerce order edit screen when attendee data was read from a generator, so orders containing tickets open normally again.
+* Language - 0 new strings added, 15 updated, 0 fuzzied, and 0 obsoleted.
+
 ### [5.29.2] 2026-08-05
 
 * Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted.

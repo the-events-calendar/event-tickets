@@ -1698,13 +1698,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.10.6
 		 * @since 5.29.2 Added cache to handle the attendees data from the current module.
+		 * @since 5.29.2.1 Normalized traversable input, as the attendees are read more than once here.
 		 *
-		 * @param array $attendees Attendee objects or IDs.
-		 * @param int   $post_id   Parent post ID.
+		 * @param array|Traversable $attendees Attendee objects or IDs.
+		 * @param int               $post_id   Parent post ID.
 		 *
 		 * @return array The attendee data for attendees.
 		 */
 		public function get_attendees_from_module( $attendees, $post_id = 0 ) {
+			/*
+			 * Callers may hand over a generator, e.g. from `Tribe__Repository::all( true )`, and this method
+			 * reads the set twice: once to warm the post caches and once to build the data.
+			 */
+			if ( $attendees instanceof Traversable ) {
+				$attendees = iterator_to_array( $attendees, false );
+			}
+
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
 
