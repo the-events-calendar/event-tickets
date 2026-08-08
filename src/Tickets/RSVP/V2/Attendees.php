@@ -137,6 +137,71 @@ class Attendees {
 	}
 
 	/**
+	 * Provides the TC-RSVP attendee data for a user and event.
+	 *
+	 * The RSVP V1 handler cannot build attendee data for TC-RSVP attendees: this method
+	 * queries the RSVP attendee repository and builds the data through the Tickets Commerce
+	 * module, shaping it like the RSVP V1 data the My Tickets templates expect.
+	 *
+	 * Hooked to `tec_tickets_rsvp_get_attendees_by_user_id_pre`.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|array<array<string,mixed>> $attendees Null by default.
+	 * @param int                             $user_id   The user ID.
+	 * @param int                             $post_id   The post ID.
+	 *
+	 * @return array|null Either the attendee data, or null to let the default logic run.
+	 */
+	public function get_rsvp_attendees_by_user_id( $attendees, $user_id, $post_id ): ?array {
+		if ( $attendees !== null ) {
+			// Already filtered, bail.
+			return $attendees;
+		}
+
+		if ( empty( $post_id ) ) {
+			// Let the default logic run.
+			return null;
+		}
+
+		$repository = tribe( 'tickets.attendee-repository.rsvp' );
+
+		$attendee_ids = iterator_to_array(
+			$repository
+				->where( 'user', $user_id )
+				->where( 'event', $post_id )
+				->order_by( 'ID', 'ASC' )
+				->get_ids( true ),
+			false
+		);
+
+		if ( empty( $attendee_ids ) ) {
+			return [];
+		}
+
+		$commerce = tribe( Module::class );
+
+		$attendee_data = [];
+
+		foreach ( $attendee_ids as $attendee_id ) {
+			$data = $commerce->get_attendee( $attendee_id, $post_id );
+
+			if ( ! $data ) {
+				continue;
+			}
+
+			// The My Tickets RSVP templates expect RSVP V1-shaped attendee data.
+			$data['order_status']  = 'no' === get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) ? 'no' : 'yes';
+			$data['purchase_time'] = get_the_date( 'Y-m-d H:i:s', $attendee_id );
+			$data['ticket_exists'] = true;
+
+			$attendee_data[] = $data;
+		}
+
+		return $attendee_data;
+	}
+
+	/**
 	 * Replaces the order-status label with a "Going" / "Not Going" indicator for TC RSVP attendees.
 	 *
 	 * Hooked to `tribe_tickets_attendees_table_order_status`. All RSVP attendees have a
