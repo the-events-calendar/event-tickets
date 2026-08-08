@@ -81,8 +81,8 @@ class Repository_Filters {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed>     $query_args The arguments used to fetch tickets.
-	 * @param mixed                   $query      The query object, unused.
+	 * @param array<string,mixed>       $query_args The arguments used to fetch tickets.
+	 * @param mixed                     $query      The query object, unused.
 	 * @param Repository_Interface|null $repository The repository instance.
 	 *
 	 * @return array<string,mixed> The modified arguments.

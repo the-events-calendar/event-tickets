@@ -324,7 +324,7 @@ class Tribe__Tickets__Tickets_View {
 		// Loop back to the Event, this page is only for Logged users.
 		// The `tribe_redirected` query arg prevents TEC from stopping the redirect on non-view URLs
 		// (see `Tribe\Events\Views\V2\Hooks::filter_redirect_canonical`).
-		wp_redirect( add_query_arg( 'tribe_redirected', 1, get_permalink() ) );
+		wp_safe_redirect( add_query_arg( 'tribe_redirected', 1, get_permalink() ) );
 		exit;
 	}
 
