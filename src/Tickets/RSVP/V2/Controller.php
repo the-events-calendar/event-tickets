@@ -163,7 +163,9 @@ class Controller extends Controller_Contract {
 		);
 		add_filter(
 			'tribe_repository_tc_tickets_query_args',
-			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' ),
+			10,
+			3
 		);
 
 		add_filter(
@@ -206,6 +208,12 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' ),
 			10,
 			2
+		);
+		add_filter(
+			'tec_tickets_rsvp_get_attendees_by_user_id_pre',
+			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_user_id' ),
+			10,
+			3
 		);
 
 		// Attendees report: show Going/Not Going status and hide check-in for "not going" RSVPs.
@@ -344,7 +352,8 @@ class Controller extends Controller_Contract {
 		);
 		remove_filter(
 			'tribe_repository_tc_tickets_query_args',
-			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' )
+			$this->container->callback( Repository_Filters::class, 'maybe_include_rsvp_tickets' ),
+			10
 		);
 		remove_filter(
 			'tec_tickets_commerce_cart_repository',
@@ -375,6 +384,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_rsvp_get_attendees_by_id_pre',
 			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_id' )
+		);
+		remove_filter(
+			'tec_tickets_rsvp_get_attendees_by_user_id_pre',
+			$this->container->callback( Attendees::class, 'get_rsvp_attendees_by_user_id' )
 		);
 		remove_filter(
 			'tribe_tickets_attendees_table_order_status',
@@ -631,7 +644,7 @@ class Controller extends Controller_Contract {
 			}
 		}
 
-		if ( $context === 'front_end_tickets_form' ) {
+		if ( $context === Constants::FRONT_END_TICKETS_FORM_CONTEXT ) {
 			// Include RSVP tickets from the list.
 			return $query_args;
 		}
