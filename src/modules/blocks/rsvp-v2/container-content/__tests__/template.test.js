@@ -1,5 +1,7 @@
-jest.mock( '../../create-form/template', () => ( { clientId } ) => (
-	<div data-testid="rsvp-create-form">{ clientId }</div>
+jest.mock( '../../create-form/template', () => ( { clientId, hasTicketsPlus } ) => (
+	<div data-testid="rsvp-create-form" data-has-tickets-plus={ String( hasTicketsPlus ) }>
+		{ clientId }
+	</div>
 ) );
 
 /**
@@ -22,6 +24,20 @@ describe( 'RSVPContainerContent', () => {
 
 		expect( tree.props[ 'data-testid' ] ).toBe( 'rsvp-create-form' );
 		expect( tree.children ).toEqual( [ 'test-client-id' ] );
+	} );
+
+	it( 'forwards the Event Tickets Plus flag to the create form', () => {
+		const withPlus = renderer.create(
+			<RSVPContainerContent clientId="test-client-id" hasTicketsPlus={ true } isAddEditOpen={ true } />
+		);
+
+		expect( withPlus.toJSON().props[ 'data-has-tickets-plus' ] ).toBe( 'true' );
+
+		const withoutPlus = renderer.create(
+			<RSVPContainerContent clientId="test-client-id" hasTicketsPlus={ false } isAddEditOpen={ true } />
+		);
+
+		expect( withoutPlus.toJSON().props[ 'data-has-tickets-plus' ] ).toBe( 'false' );
 	} );
 
 	it( 'renders nothing when add/edit is closed', () => {

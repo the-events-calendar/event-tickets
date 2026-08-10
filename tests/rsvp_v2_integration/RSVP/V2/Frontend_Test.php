@@ -374,6 +374,57 @@ class Frontend_Test extends WPTestCase {
 			},
 		];
 
+		yield 'updates status from going to not-going with legacy yes/no values' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				// The legacy My Tickets selector posts `yes` / `no`.
+				$attendee_data = [ 'order_status' => 'no' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'no', // Should be updated from 'yes' to 'no'.
+					true,  // Expect update.
+				];
+			},
+		];
+
+		yield 'updates status from not-going to going with legacy yes/no values' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'no' );
+
+				// The legacy My Tickets selector posts `yes` / `no`.
+				$attendee_data = [ 'order_status' => 'yes' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'yes', // Should be updated from 'no' to 'yes'.
+					true,   // Expect update.
+				];
+			},
+		];
+
+		yield 'does not update when legacy value matches current status' => [
+			function () {
+				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );
+
+				// The legacy My Tickets selector posts `yes` / `no`.
+				$attendee_data = [ 'order_status' => 'yes' ];
+
+				return [
+					$attendee_data,
+					$fixture['attendee_id'],
+					$fixture['user_id'],
+					'yes', // Already 'yes', so no change.
+					false,  // Expect no update.
+				];
+			},
+		];
+
 		yield 'defaults to yes when no meta exists and going is submitted (no change)' => [
 			function () {
 				$fixture = $this->create_rsvp_order_with_attendee( 'yes' );

@@ -2067,7 +2067,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Set cache after filter is applied.
 		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
-			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+			// Do not cache TC-RSVP tickets: they are owned by the Tickets Commerce provider, and caching
+			// the legacy RSVP representation here would poison the shared `tec_tickets` cache with a
+			// mismatching provider class for Tickets Commerce reads.
+			if ( ! ( RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type() ) ) {
+				wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+			}
 		}
 
 		return $ticket;
@@ -2261,6 +2266,39 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$repository = tribe_attendees( $this->orm_provider );
 
 		return $repository->by( 'event', $post_id )->by( 'user', $user_id )->by( 'rsvp_status', 'no' )->found();
+	}
+
+	/**
+	 * Get attendees for a ticket by user ID.
+	 *
+	 * Allows implementations (e.g. RSVP V2) to provide the attendee data for TC-RSVP attendees,
+	 * which the RSVP V1 handler cannot build.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $user_id User ID.
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_user_id( int $user_id, int $post_id = 0 ) {
+		/**
+		 * Filters the RSVP Attendees by user ID before the default logic runs.
+		 * Non-null values returned by applied filters will be returned to the caller.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|array<array<string,mixed>> $attendees Null by default.
+		 * @param int                             $user_id   The user ID.
+		 * @param int                             $post_id   The post ID.
+		 */
+		$attendees = apply_filters( 'tec_tickets_rsvp_get_attendees_by_user_id_pre', null, $user_id, $post_id );
+
+		if ( null !== $attendees ) {
+			return $attendees;
+		}
+
+		return parent::get_attendees_by_user_id( $user_id, $post_id );
 	}
 
 	/**

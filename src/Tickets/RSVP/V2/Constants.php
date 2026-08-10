@@ -36,6 +36,15 @@ class Constants {
 	public const TYPE_META_QUERY_KEY = 'tc-rsvp-type';
 
 	/**
+	 * The repository request context used when fetching tickets for the front-end ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const FRONT_END_TICKETS_FORM_CONTEXT = 'front_end_tickets_form';
+
+	/**
 	 * Meta key for storing the "show not going" option.
 	 *
 	 * @since TBD

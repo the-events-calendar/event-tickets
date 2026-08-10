@@ -315,7 +315,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	public function front_end_tickets_form( $unused_content ) {
 
 		$post    = $GLOBALS['post'];
-		$tickets = $this->get_tickets( $post->ID );
+		$tickets = $this->get_tickets( $post->ID, RSVP_V2_Constants::FRONT_END_TICKETS_FORM_CONTEXT );
 
 		foreach ( $tickets as $index => $ticket ) {
 			if ( __CLASS__ !== $ticket->provider_class ) {
@@ -327,7 +327,17 @@ class Module extends \Tribe__Tickets__Tickets {
 			return;
 		}
 
-		tribe( Tickets_View::class )->get_tickets_block( $post->ID );
+		$tickets_view = tribe( Tickets_View::class );
+
+		$tickets_view->get_tickets_block( $post->ID );
+
+		// TC-RSVP tickets are rendered by the RSVP block: render it when RSVP tickets are present.
+		foreach ( $tickets as $ticket ) {
+			if ( RSVP_V2_Constants::TC_RSVP_TYPE === $ticket->type ) {
+				$tickets_view->get_rsvp_block( $post );
+				break;
+			}
+		}
 	}
 
 	/**

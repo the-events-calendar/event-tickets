@@ -982,7 +982,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array List of attendees.
 		 */
-		public function get_attendees_by_user_id( $user_id, $post_id = 0 ) {
+		public function get_attendees_by_user_id( int $user_id, int $post_id = 0 ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 

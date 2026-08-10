@@ -222,7 +222,8 @@ class Frontend {
 			return;
 		}
 
-		$attendee_status = 'going' === $attendee_data['order_status'] ? 'yes' : 'no';
+		// The RSVP V2 form posts `going` / `not_going`, while the legacy My Tickets selector posts `yes` / `no`.
+		$attendee_status = in_array( $attendee_data['order_status'], [ 'going', 'yes' ], true ) ? 'yes' : 'no';
 
 		$current_status = metadata_exists( 'post', $attendee_id, Constants::RSVP_STATUS_META_KEY ) ? get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) : 'yes';
 
