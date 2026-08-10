@@ -56,18 +56,52 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 		$order_status = $order->items[0]['extra']['order_status'] ?? 'yes';
 		$going        = tribe_is_truthy( $order_status );
 
+		$this->send_rsvp_email(
+			$attendees,
+			(int) $event_id,
+			$order->purchaser['email'] ?? $attendees[0]['holder_email'],
+			$going
+		);
+	}
+
+	/**
+	 * Sends the "Going" or "Not Going" RSVP email for a set of attendees.
+	 *
+	 * Split out of `send()` so callers outside the order status-transition cascade — such as an
+	 * attendee flipping their response on the My Tickets page — reach the same email, rather than
+	 * having to rebuild it and drift from this one.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,array<string,mixed>> $attendees The attendees to include in the email.
+	 * @param int                            $event_id  The event the RSVP belongs to.
+	 * @param string                         $recipient The email address to send to.
+	 * @param bool                           $going     Whether the response is "Going" or "Not Going".
+	 *
+	 * @return bool Whether the email was sent.
+	 */
+	public function send_rsvp_email( array $attendees, int $event_id, string $recipient, bool $going ): bool {
+		if ( empty( $attendees ) || empty( $event_id ) || empty( $recipient ) ) {
+			return false;
+		}
+
+		// Callers outside `Order_Email_Sender_Registry::send()` do not pass through its check.
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return false;
+		}
+
 		$email_class = $going
 			? tribe( RSVP_Email::class )
 			: tribe( RSVP_Not_Going::class );
 
 		if ( ! $email_class->is_enabled() ) {
-			return;
+			return false;
 		}
 
 		$email_class->set( 'post_id', $event_id );
 		$email_class->set( 'tickets', $attendees );
-		$email_class->recipient = $order->purchaser['email'] ?? $attendees[0]['holder_email'];
+		$email_class->recipient = $recipient;
 
-		$email_class->send();
+		return (bool) $email_class->send();
 	}
 }

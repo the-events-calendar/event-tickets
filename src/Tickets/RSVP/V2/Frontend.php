@@ -10,6 +10,7 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Emails\RSVP_Email_Sender;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
@@ -230,6 +231,48 @@ class Frontend {
 		}
 
 		update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, $attendee_status );
+
+		$this->send_status_change_email( $order, (int) $attendee_id, tribe_is_truthy( $attendee_status ) );
+	}
+
+	/**
+	 * Sends the "Going" / "Not Going" email after an attendee changes their RSVP response.
+	 *
+	 * The order-completion email is sent by the `send_email` flag action, which only fires on a status
+	 * transition of the order. Changing a response afterwards never touches the order, so without this
+	 * the attendee is told nothing about the change.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order       The decorated order the attendee belongs to.
+	 * @param int     $attendee_id The attendee whose response changed.
+	 * @param bool    $going       The attendee's new response.
+	 *
+	 * @return void
+	 */
+	private function send_status_change_email( WP_Post $order, int $attendee_id, bool $going ): void {
+		$attendees = $this->module->get_attendees_by_order_id( $order->ID );
+
+		// Only the attendee whose response changed belongs in the email.
+		$attendees = array_values(
+			array_filter(
+				$attendees,
+				static fn( $attendee ) => (int) ( $attendee['attendee_id'] ?? 0 ) === $attendee_id
+			)
+		);
+
+		if ( empty( $attendees ) ) {
+			return;
+		}
+
+		$event_id = (int) ( $order->events_in_order[0] ?? $attendees[0]['event_id'] ?? 0 );
+
+		tribe( RSVP_Email_Sender::class )->send_rsvp_email(
+			$attendees,
+			$event_id,
+			$order->purchaser['email'] ?? $attendees[0]['holder_email'],
+			$going
+		);
 	}
 
 	/**
