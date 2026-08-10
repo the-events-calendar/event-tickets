@@ -137,6 +137,37 @@ class Attendees {
 	}
 
 	/**
+	 * Registers the label and icon the Attendees page Ticket Overview uses for TC-RSVP tickets.
+	 *
+	 * Hooked to `tec_tickets_attendees_page_render_context`. That page groups tickets by
+	 * `Ticket_Object::type()` and looks the group up in two maps that only know `default` and `rsvp`.
+	 * A TC-RSVP ticket reports `tc-rsvp`, so without these entries the template falls back to printing
+	 * the raw type slug as the heading and renders no icon.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The Attendees page render context.
+	 *
+	 * @return array<string,mixed> The context with the TC-RSVP label and icon registered.
+	 */
+	public function add_ticket_overview_type_labels( $context ): array {
+		if ( ! is_array( $context ) ) {
+			return $context;
+		}
+
+		// Share the RSVP label and icon: to everyone but the code, a TC-RSVP is just an RSVP.
+		if ( isset( $context['type_labels'] ) && is_array( $context['type_labels'] ) ) {
+			$context['type_labels'][ Constants::TC_RSVP_TYPE ] = tribe_get_rsvp_label_plural( 'attendee overview' );
+		}
+
+		if ( isset( $context['type_icon_classes'] ) && is_array( $context['type_icon_classes'] ) ) {
+			$context['type_icon_classes'][ Constants::TC_RSVP_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp';
+		}
+
+		return $context;
+	}
+
+	/**
 	 * Replaces the order-status label with a "Going" / "Not Going" indicator for TC RSVP attendees.
 	 *
 	 * Hooked to `tribe_tickets_attendees_table_order_status`. All RSVP attendees have a

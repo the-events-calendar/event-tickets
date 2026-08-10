@@ -117,22 +117,44 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 				 *
 				 * @see \TEC\Tickets\Commerce\Repositories\Attendees_Repository
 				 */
-				'order_id'       => 'post_parent',
+				'order_id'        => 'post_parent',
 
-				'ticket_id'      => Attendee::$ticket_relation_meta_key,
-				'event_id'       => Attendee::$event_relation_meta_key,
-				'post_id'        => Attendee::$event_relation_meta_key,
-				'security_code'  => Attendee::$security_code_meta_key,
-				'optout'         => Attendee::$optout_meta_key,
-				'user_id'        => Attendee::$user_relation_meta_key,
-				'price_paid'     => Attendee::$price_paid_meta_key,
-				'price_currency' => Attendee::$currency_meta_key,
-				'full_name'      => Attendee::$full_name_meta_key,
-				'email'          => Attendee::$email_meta_key,
-				'check_in'       => current( $this->checked_in_keys() ),
-				'rsvp_status'    => Constants::RSVP_STATUS_META_KEY,
+				'ticket_id'       => Attendee::$ticket_relation_meta_key,
+				'event_id'        => Attendee::$event_relation_meta_key,
+				'post_id'         => Attendee::$event_relation_meta_key,
+				'security_code'   => Attendee::$security_code_meta_key,
+				'optout'          => Attendee::$optout_meta_key,
+				'user_id'         => Attendee::$user_relation_meta_key,
+				'price_paid'      => Attendee::$price_paid_meta_key,
+				'price_currency'  => Attendee::$currency_meta_key,
+				'full_name'       => Attendee::$full_name_meta_key,
+				'email'           => Attendee::$email_meta_key,
+				'check_in'        => current( $this->checked_in_keys() ),
+				'rsvp_status'     => Constants::RSVP_STATUS_META_KEY,
+
+				/*
+				 * Attendee creation outside the RSVP endpoint (the Attendees screen's "Add Attendee"
+				 * form, for one) supplies the going/not-going answer under this name.
+				 */
+				'attendee_status' => Constants::RSVP_STATUS_META_KEY,
 			]
 		);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Guarantees every Attendee created here carries the RSVP status meta, because that same meta is
+	 * what scopes every query this repository runs. An Attendee created without it exists but is
+	 * invisible to the repository, which surfaces as an Attendee that cannot be looked up, and so
+	 * cannot be edited, only duplicated.
+	 */
+	public function filter_postarr_for_create( array $postarr ) {
+		if ( empty( $postarr['meta_input'][ Constants::RSVP_STATUS_META_KEY ] ) ) {
+			$postarr['meta_input'][ Constants::RSVP_STATUS_META_KEY ] = 'yes';
+		}
+
+		return parent::filter_postarr_for_create( $postarr );
 	}
 
 	/**
