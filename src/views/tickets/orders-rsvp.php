@@ -15,6 +15,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+
+use TEC\Tickets\RSVP\V2\Constants;
+
 $view      = Tribe__Tickets__Tickets_View::instance();
 $post_id   = get_the_ID();
 $post      = get_post( $post_id );
@@ -57,7 +60,8 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 		</div>
 		<?php
 			$this->template( 'tickets/my-tickets/title', [
-				'title'  => tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+				'title'       => tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+				'ticket_type' => Constants::TC_RSVP_TYPE,
 			] );
 		?>
 		<div class="tec__tickets-my-tickets-rsvp-attendee-list-wrapper">

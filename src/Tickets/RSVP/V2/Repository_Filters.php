@@ -76,15 +76,25 @@ class Repository_Filters {
 
 	/**
 	 * Filter the arguments used to fetch Tickets Commerce tickets to remove the RSVP tickets
-	 * default exclusion if the request is for a specific ticket by ID or for the RSVP type.
+	 * default exclusion if the request is for a specific ticket by ID, for the RSVP type, or
+	 * for the front-end ticket form (which renders RSVP tickets through the RSVP block).
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $query_args The arguments used to fetch tickets.
+	 * @param array<string,mixed>       $query_args The arguments used to fetch tickets.
+	 * @param mixed                     $query      The query object, unused.
+	 * @param Repository_Interface|null $repository The repository instance.
 	 *
 	 * @return array<string,mixed> The modified arguments.
 	 */
-	public function maybe_include_rsvp_tickets( array $query_args ): array {
+	public function maybe_include_rsvp_tickets( array $query_args, $query = null, $repository = null ): array {
+		if ( $repository instanceof Repository_Interface && Constants::FRONT_END_TICKETS_FORM_CONTEXT === $repository->get_request_context() ) {
+			// The front-end ticket form renders RSVP tickets through the RSVP block: include them.
+			unset( $query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] );
+
+			return $query_args;
+		}
+
 		if ( isset( $query_args['p'] ) ) {
 			// The query is for a specific ticket ID, include RSVP.
 			unset( $query_args['meta_query'][ Constants::TYPE_META_QUERY_KEY ] );
