@@ -289,15 +289,6 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	}
 
 	/**
-	 * No-op replacement for tribe_exit()'s `die` handler.
-	 *
-	 * @since TBD
-	 */
-	public function dont_die() {
-		// no-op, go on
-	}
-
-	/**
 	 * Clean up after tests.
 	 *
 	 * @after
