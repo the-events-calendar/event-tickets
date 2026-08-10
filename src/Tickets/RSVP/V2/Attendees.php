@@ -166,18 +166,11 @@ class Attendees {
 
 		$repository = tribe( 'tickets.attendee-repository.rsvp' );
 
-		$attendee_ids = iterator_to_array(
-			$repository
-				->where( 'user', $user_id )
-				->where( 'event', $post_id )
-				->order_by( 'ID', 'ASC' )
-				->get_ids( true ),
-			false
-		);
-
-		if ( empty( $attendee_ids ) ) {
-			return [];
-		}
+		$attendee_ids = $repository
+			->where( 'user', $user_id )
+			->where( 'event', $post_id )
+			->order_by( 'ID', 'ASC' )
+			->get_ids( true );
 
 		$commerce = tribe( Module::class );
 
