@@ -844,6 +844,8 @@ class Module extends \Tribe__Tickets__Tickets {
 
 			$attendee->save();
 
+			$this->maybe_update_rsvp_status( $attendee_id, $attendee_data );
+
 			// Send attendee email.
 			$send_ticket_email      = (bool) Arr::get( $attendee_data, 'send_ticket_email', false );
 			$send_ticket_email_args = (array) Arr::get( $attendee_data, 'send_ticket_email_args', [] );
@@ -864,6 +866,41 @@ class Module extends \Tribe__Tickets__Tickets {
 		}
 
 		return $attendee;
+	}
+
+	/**
+	 * Persists a Going / Not Going answer supplied alongside an Attendee update.
+	 *
+	 * The RSVP status lives in its own meta rather than in an Attendee field, so it is not covered by the
+	 * field updates above. Callers that offer the answer, such as the Attendees screen's "Edit Attendee"
+	 * modal, supply it as `attendee_status`. Without this the update reports success while the answer
+	 * silently stays as it was.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $attendee_id   The Attendee being updated.
+	 * @param array<string,mixed> $attendee_data The submitted Attendee data.
+	 *
+	 * @return void
+	 */
+	protected function maybe_update_rsvp_status( int $attendee_id, array $attendee_data ): void {
+		$status = $attendee_data['attendee_status'] ?? null;
+
+		if ( null === $status || '' === $status ) {
+			return;
+		}
+
+		$ticket_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
+
+		if ( ! $ticket_id || RSVP_V2_Constants::TC_RSVP_TYPE !== get_post_meta( $ticket_id, '_type', true ) ) {
+			return;
+		}
+
+		update_post_meta(
+			$attendee_id,
+			RSVP_V2_Constants::RSVP_STATUS_META_KEY,
+			tribe_is_truthy( $status ) ? 'yes' : 'no'
+		);
 	}
 
 	/**
