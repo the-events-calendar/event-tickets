@@ -14,6 +14,7 @@ use WP_Error;
 use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
+use TEC\Tickets\Commerce\Emails\RSVP_Email_Sender;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 /**
@@ -851,7 +852,7 @@ class Module extends \Tribe__Tickets__Tickets {
 			$send_ticket_email_args = (array) Arr::get( $attendee_data, 'send_ticket_email_args', [] );
 
 			// Check if we need to send the ticket email.
-			if ( $send_ticket_email ) {
+			if ( $send_ticket_email && ! $this->maybe_send_rsvp_email( $attendee_id ) ) {
 				$attendee_tickets = [
 					$attendee_id,
 				];
@@ -901,6 +902,45 @@ class Module extends \Tribe__Tickets__Tickets {
 			RSVP_V2_Constants::RSVP_STATUS_META_KEY,
 			tribe_is_truthy( $status ) ? 'yes' : 'no'
 		);
+	}
+
+	/**
+	 * Sends the RSVP confirmation matching an Attendee's current answer, in place of the ticket email.
+	 *
+	 * An RSVP has no ticket to hand over, so the generic ticket email is the wrong thing to send: it
+	 * carries a QR code, and it says the same thing whether the person is coming or not. This sends the
+	 * Going or Not Going email instead, chosen from the answer stored on the Attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The Attendee to email.
+	 *
+	 * @return bool Whether this Attendee was handled as an RSVP, and so the ticket email should be skipped.
+	 */
+	protected function maybe_send_rsvp_email( int $attendee_id ): bool {
+		$ticket_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
+
+		if ( ! $ticket_id || RSVP_V2_Constants::TC_RSVP_TYPE !== get_post_meta( $ticket_id, '_type', true ) ) {
+			return false;
+		}
+
+		$attendee = $this->get_attendee( $attendee_id );
+
+		if ( empty( $attendee ) ) {
+			// Still an RSVP, so the ticket email stays the wrong thing to fall back to.
+			return true;
+		}
+
+		$going = 'no' !== get_post_meta( $attendee_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY, true );
+
+		tribe( RSVP_Email_Sender::class )->send_rsvp_email(
+			[ $attendee ],
+			(int) ( $attendee['event_id'] ?? 0 ),
+			(string) ( $attendee['holder_email'] ?? '' ),
+			$going
+		);
+
+		return true;
 	}
 
 	/**
