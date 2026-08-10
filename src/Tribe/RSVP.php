@@ -1849,7 +1849,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$ticket->set_type( 'rsvp' );
+			/*
+			 * Only label the ticket when it has no type of its own. A TC-RSVP ticket already carries
+			 * `tc-rsvp` in its `_type` meta, and every RSVP type comparison across Event Tickets and
+			 * Event Tickets Plus tests for that value, so overwriting it here would erase the only
+			 * reliable way to tell an RSVP v2 ticket from a v1 one.
+			 */
+			if ( 'default' === $ticket->type() ) {
+				$ticket->set_type( 'rsvp' );
+			}
 
 			$tickets[] = $ticket;
 		}
