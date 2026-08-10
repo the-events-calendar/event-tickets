@@ -64,10 +64,10 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 		// The TEC/ET onboarding "guided setup" activation redirect would otherwise exit() the test
 		// process (wp_safe_redirect + tribe_exit on tec_admin_headers_about_to_be_sent) on the first
 		// set_current_screen() call, killing Codeception mid-suite (exit 255, "COMMAND DID NOT FINISH
-		// PROPERLY."). The transients are re-armed on every test's WP boot, so clear them per test.
-		delete_transient( '_tribe_events_activation_redirect' ); // TEC guided-setup activation redirect.
-		delete_transient( '_tec_tickets_activation_redirect' );  // ET guided-setup activation redirect.
-		delete_transient( '_tec_tickets_wizard_redirect' );      // ET guided-setup bulk-activation redirect.
+		// PROPERLY."). Mock tribe_exit() so the redirect logic still runs but does not kill the process.
+		add_filter( 'tribe_exit', function () {
+			return '__return_true';
+		} );
 
 		$this->landing_page = tribe( Tickets_Landing_Page::class );
 	}
@@ -300,6 +300,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	public function after() {
 		global $current_screen;
 		remove_all_filters( 'tribe_admin_pages_current_page' );
+		remove_all_filters( 'tribe_exit' );
 		$_GET           = $this->get_vars;
 		$current_screen = $this->original_screen ?? null;
 	}
