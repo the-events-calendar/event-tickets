@@ -2293,7 +2293,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_id   = $attendee instanceof \WP_Post ? $attendee->ID : 0;
 		}
 
-		if ( ! $attendee_post instanceof \WP_Post || self::ATTENDEE_OBJECT !== $attendee_post->post_type ) {
+		/*
+		 * Validate against the post type the RSVP attendee repository is actually bound to, rather than
+		 * assuming the v1 one. Under RSVP v2 the repository is rebound to serve `tec_tc_attendee` posts,
+		 * so a hardcoded `self::ATTENDEE_OBJECT` check rejects every attendee this method just fetched.
+		 */
+		$attendee_post_types = (array) ( $repository->get_default_args()['post_type'] ?? self::ATTENDEE_OBJECT );
+
+		if ( ! $attendee_post instanceof \WP_Post || ! in_array( $attendee_post->post_type, $attendee_post_types, true ) ) {
 			return false;
 		}
 
