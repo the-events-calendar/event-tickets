@@ -345,8 +345,17 @@ class Controller extends Controller_Contract {
 		$rsvp_to_tc = $registry->get( 'rsvp-to-tc' );
 
 		if ( ! $rsvp_to_tc ) {
-			// Assume that it has been completed and removed in the future.
-			return self::VERSION_2;
+			/*
+			 * The migration is missing either because it was removed in a future release, or simply
+			 * because it is not registered yet: `Tribe__Tickets__Main::bind_implementations()` calls
+			 * `maybe_activate_tickets_commerce()` before registering the provider that registers it.
+			 *
+			 * Assuming it completed is only safe in the first case. In the second it permanently flips
+			 * a site holding V1 data to V2 without migrating (the result is persisted), unregistering
+			 * the V1 post types and hiding every legacy RSVP ticket and attendee. The data state tells
+			 * the two apart.
+			 */
+			return self::has_rsvp_v1_tickets() ? self::VERSION_1 : self::VERSION_2;
 		}
 
 		$migration_status = $rsvp_to_tc->get_status();
@@ -373,5 +382,28 @@ class Controller extends Controller_Contract {
 
 		// Unknown status: determine version from the actual data state.
 		return $rsvp_to_tc->is_applicable() ? self::VERSION_1 : self::VERSION_2;
+	}
+
+	/**
+	 * Checks whether the site still holds legacy V1 RSVP tickets.
+	 *
+	 * Deliberately a direct query: this runs early enough in the bootstrap that the RSVP post types
+	 * are not registered yet and no RSVP class can safely be instantiated, so `WP_Query` and the
+	 * ticket repositories are both out of reach. The post type is hard-coded for the same reason
+	 * (see `Tribe__Tickets__RSVP::$ticket_object`, mirrored in `Ticket_Cache_Controller`).
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether at least one V1 RSVP ticket exists.
+	 */
+	private static function has_rsvp_v1_tickets(): bool {
+		global $wpdb;
+
+		return (bool) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s LIMIT 1",
+				'tribe_rsvp_tickets'
+			)
+		);
 	}
 }

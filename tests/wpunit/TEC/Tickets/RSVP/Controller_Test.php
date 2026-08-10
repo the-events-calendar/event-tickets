@@ -7,7 +7,10 @@
 
 namespace TEC\Tickets\RSVP;
 
+use ReflectionMethod;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Migrations\RSVP_To_Tickets_Commerce;
+use function TEC\Common\StellarWP\Migrations\migrations;
 
 /**
  * Class Controller_Test
@@ -216,6 +219,129 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue( Controller::is_migration_in_progress() );
 
 		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+	}
+
+	/**
+	 * Runs a callback with `rsvp-to-tc` absent from the registry, reproducing the state the version
+	 * detection actually runs in: `Tribe__Tickets__Main::bind_implementations()` calls
+	 * `maybe_activate_tickets_commerce()` before the provider that registers the migration.
+	 *
+	 * The migration is always restored, so a failure here cannot cascade into other tests.
+	 *
+	 * @param callable $callback The callback to run.
+	 *
+	 * @return mixed The callback return value.
+	 */
+	private function without_registered_rsvp_migration( callable $callback ) {
+		$registry = migrations()->get_registry();
+		$registry->offsetUnset( 'rsvp-to-tc' );
+
+		try {
+			return $callback();
+		} finally {
+			$registry->register( 'rsvp-to-tc', RSVP_To_Tickets_Commerce::class );
+		}
+	}
+
+	/**
+	 * Runs the private version detection.
+	 *
+	 * @return string The detected version.
+	 */
+	private function detect_version(): string {
+		$method = new ReflectionMethod( Controller::class, 'detect_version_from_migration_status' );
+		$method->setAccessible( true );
+
+		return $method->invoke( null );
+	}
+
+	/**
+	 * Runs the private version resolution, which also persists the result.
+	 *
+	 * @return string The resolved version.
+	 */
+	private function resolve_and_persist_version(): string {
+		$method = new ReflectionMethod( Controller::class, 'get_version_from_migration_status' );
+		$method->setAccessible( true );
+
+		return $method->invoke( null );
+	}
+
+	/**
+	 * Creates a legacy V1 RSVP ticket.
+	 *
+	 * @return int The ticket post ID.
+	 */
+	private function given_a_v1_rsvp_ticket(): int {
+		return wp_insert_post(
+			[
+				'post_type'   => 'tribe_rsvp_tickets',
+				'post_title'  => 'Legacy RSVP ticket',
+				'post_status' => 'publish',
+			]
+		);
+	}
+
+	public function test_detects_v1_when_migration_not_registered_and_v1_tickets_exist(): void {
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+		$this->given_a_v1_rsvp_ticket();
+
+		$version = $this->without_registered_rsvp_migration(
+			function () {
+				return $this->detect_version();
+			}
+		);
+
+		$this->assertSame(
+			Controller::VERSION_1,
+			$version,
+			'A site still holding V1 RSVP tickets must stay on V1 when the migration is not in the registry yet, otherwise every legacy RSVP ticket and attendee becomes unreadable.'
+		);
+	}
+
+	public function test_detects_v2_when_migration_not_registered_and_no_v1_tickets_exist(): void {
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+
+		$version = $this->without_registered_rsvp_migration(
+			function () {
+				return $this->detect_version();
+			}
+		);
+
+		$this->assertSame(
+			Controller::VERSION_2,
+			$version,
+			'With no V1 RSVP data on the site the migration is genuinely done (or gone), so V2 is correct.'
+		);
+	}
+
+	public function test_does_not_persist_v2_when_migration_not_registered_and_v1_tickets_exist(): void {
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+		$this->given_a_v1_rsvp_ticket();
+
+		$version = $this->without_registered_rsvp_migration(
+			function () {
+				return $this->resolve_and_persist_version();
+			}
+		);
+
+		$this->assertSame( Controller::VERSION_1, $version );
+		$this->assertSame(
+			Controller::VERSION_1,
+			tribe_get_option( Controller::VERSION_OPTION_KEY ),
+			'The detected version is persisted permanently, so persisting V2 here would strand the site on a version that cannot read its own RSVP data.'
+		);
+	}
+
+	public function test_detects_v1_when_migration_is_registered_and_pending(): void {
+		tribe_remove_option( Controller::VERSION_OPTION_KEY );
+		$this->given_a_v1_rsvp_ticket();
+
+		$this->assertSame(
+			Controller::VERSION_1,
+			$this->detect_version(),
+			'A registered, applicable, never-run migration is pending, which means the site is still on V1.'
+		);
 	}
 
 	public function test_register_disabled_hooks_editor_config_filter(): void {
