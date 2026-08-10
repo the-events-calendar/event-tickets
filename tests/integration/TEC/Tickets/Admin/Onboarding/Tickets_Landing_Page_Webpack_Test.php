@@ -65,9 +65,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 		// process (wp_safe_redirect + tribe_exit on tec_admin_headers_about_to_be_sent) on the first
 		// set_current_screen() call, killing Codeception mid-suite (exit 255, "COMMAND DID NOT FINISH
 		// PROPERLY."). Mock tribe_exit() so the redirect logic still runs but does not kill the process.
-		add_filter( 'tribe_exit', function () {
-			return [ $this, 'dont_die' ];
-		} );
+		add_filter( 'tribe_exit', '__return_true' );
 
 		$this->landing_page = tribe( Tickets_Landing_Page::class );
 	}
