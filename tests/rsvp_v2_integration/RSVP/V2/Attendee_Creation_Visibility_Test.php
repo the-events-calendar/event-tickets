@@ -3,6 +3,7 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 
 /**
@@ -72,6 +73,39 @@ class Attendee_Creation_Visibility_Test extends WPTestCase {
 			'no',
 			get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ),
 			'A Not Going answer must not be overwritten by the default.'
+		);
+	}
+
+	/**
+	 * The Attendees screen reaches Tickets Commerce rather than the RSVP repository, building a manual
+	 * Order and letting attendee generation run off it. That path has to stamp the status too.
+	 */
+	public function test_an_attendee_created_through_tickets_commerce_is_findable(): void {
+		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 10 ] ] );
+
+		$attendee = tribe( Module::class )->create_attendee(
+			tribe( Module::class )->get_ticket( $post_id, $ticket_id ),
+			[
+				'full_name'         => 'Commerce Attendee',
+				'email'             => 'commerce@example.com',
+				'send_ticket_email' => false,
+			]
+		);
+
+		$this->assertInstanceOf( \WP_Post::class, $attendee, 'Tickets Commerce should have created an Attendee.' );
+
+		$this->assertTrue(
+			metadata_exists( 'post', $attendee->ID, Constants::RSVP_STATUS_META_KEY ),
+			'An Attendee added from the Attendees screen still needs the RSVP status meta.'
+		);
+
+		$found = tribe_attendees( 'rsvp' )->by( 'status', 'any' )->by( 'id', $attendee->ID )->first();
+
+		$this->assertInstanceOf(
+			\WP_Post::class,
+			$found,
+			'The RSVP repository must be able to find an Attendee added from the Attendees screen.'
 		);
 	}
 }
