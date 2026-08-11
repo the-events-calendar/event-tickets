@@ -83,6 +83,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @since 5.1.9
 	 * @since 5.18.0 Added runtime cache.
+	 * @since TBD Send the access token in the request body instead of the query string.
 	 *
 	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
 	 *
@@ -98,13 +99,17 @@ class WhoDat extends Abstract_WhoDat {
 			return $cache[ $cache_key ];
 		}
 
-		$query_args = [
-			'mode'         => tribe( Merchant::class )->get_mode(),
-			'merchant_id'  => $saved_merchant_id,
-			'access_token' => tribe( Merchant::class )->get_access_token(),
-		];
-
-		$cache[ $cache_key ] = $this->post( 'seller/status', $query_args );
+		$cache[ $cache_key ] = $this->post(
+			'seller/status',
+			[],
+			[
+				'body' => [
+					'mode'         => tribe( Merchant::class )->get_mode(),
+					'merchant_id'  => $saved_merchant_id,
+					'access_token' => tribe( Merchant::class )->get_access_token(),
+				],
+			]
+		);
 
 		return $cache[ $cache_key ];
 	}
@@ -113,18 +118,23 @@ class WhoDat extends Abstract_WhoDat {
 	 * Get seller rest API credentials
 	 *
 	 * @since 5.1.9
+	 * @since TBD Send the access token in the request body instead of the query string.
 	 *
 	 * @param string $access_token
 	 *
 	 * @return array|null
 	 */
 	public function get_seller_credentials( $access_token ) {
-		$query_args = [
-			'mode'         => tribe( Merchant::class )->get_mode(),
-			'access_token' => $access_token,
-		];
-
-		return $this->post( 'seller/credentials', $query_args );
+		return $this->post(
+			'seller/credentials',
+			[],
+			[
+				'body' => [
+					'mode'         => tribe( Merchant::class )->get_mode(),
+					'access_token' => $access_token,
+				],
+			]
+		);
 	}
 
 }

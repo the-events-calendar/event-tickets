@@ -113,35 +113,22 @@ class WhoDat extends Abstract_WhoDat {
 	 * De-authorize the current seller account in Square oAuth.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Send the access token in the request body instead of the query string.
 	 *
 	 * @return ?array
 	 */
 	public function disconnect_account(): ?array {
 		$merchant = tribe( Merchant::class );
 
-		$query_args = [
-			'access_token' => $merchant->get_access_token(),
-		];
-
-		return $this->post( 'oauth/token/revoke', $query_args );
-	}
-
-	/**
-	 * Requests WhoDat to refresh the oAuth tokens.
-	 *
-	 * @since 5.24.0
-	 *
-	 * @return ?array
-	 */
-	public function refresh_token(): ?array {
-		$refresh_token = tribe( Merchant::class )->get_refresh_token();
-
-		$query_args = [
-			'grant_type'    => 'refresh_token',
-			'refresh_token' => $refresh_token,
-		];
-
-		return $this->get( 'oauth/token/refresh', $query_args );
+		return $this->post(
+			'oauth/token/revoke',
+			[],
+			[
+				'body' => [
+					'access_token' => $merchant->get_access_token(),
+				],
+			]
+		);
 	}
 
 	/**
