@@ -15,6 +15,8 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use WP_Post;
 
 /**
  * Class Attendees
@@ -134,6 +136,87 @@ class Attendees {
 		$args['by']['meta_not_equals'] = [ '_type', Constants::TC_RSVP_TYPE ];
 
 		return $args;
+	}
+
+	/**
+	 * Stamps the RSVP status meta on a TC-RSVP Attendee created through Tickets Commerce.
+	 *
+	 * Hooked to `tec_tickets_commerce_attendee_after_create`. TC-RSVP Attendees are created down two
+	 * separate paths: the RSVP repository (guarded in `Attendee_Repository::filter_postarr_for_create()`)
+	 * and this one, which the Attendees screen's "Add Attendee" form reaches by way of a manual Order.
+	 * Both have to stamp the status, because the RSVP repository scopes every query to Attendees that
+	 * carry it and an Attendee without it cannot be looked up, and so cannot be edited.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $attendee The created Attendee post.
+	 * @param mixed $order    The Order that generated the Attendee.
+	 * @param mixed $ticket   The Ticket that generated the Attendee.
+	 *
+	 * @return void
+	 */
+	public function ensure_rsvp_status_on_create( $attendee, $order, $ticket ): void {
+		if ( ! $attendee instanceof WP_Post ) {
+			return;
+		}
+
+		if ( ! $ticket instanceof Ticket_Object || Constants::TC_RSVP_TYPE !== $ticket->type() ) {
+			return;
+		}
+
+		if ( metadata_exists( 'post', $attendee->ID, Constants::RSVP_STATUS_META_KEY ) ) {
+			return;
+		}
+
+		// Prefer the answer carried on the Order item; an Attendee added by hand has none, so assume Going.
+		$status = 'yes';
+
+		if ( $order instanceof WP_Post && ! empty( $order->items ) && is_array( $order->items ) ) {
+			foreach ( $order->items as $item ) {
+				if ( (int) ( $item['ticket_id'] ?? 0 ) !== (int) $ticket->ID ) {
+					continue;
+				}
+
+				if ( isset( $item['extra']['order_status'] ) ) {
+					$status = tribe_is_truthy( $item['extra']['order_status'] ) ? 'yes' : 'no';
+				}
+
+				break;
+			}
+		}
+
+		update_post_meta( $attendee->ID, Constants::RSVP_STATUS_META_KEY, $status );
+	}
+
+	/**
+	 * Registers the label and icon the Attendees page Ticket Overview uses for TC-RSVP tickets.
+	 *
+	 * Hooked to `tec_tickets_attendees_page_render_context`. That page groups tickets by
+	 * `Ticket_Object::type()` and looks the group up in two maps that only know `default` and `rsvp`.
+	 * A TC-RSVP ticket reports `tc-rsvp`, so without these entries the template falls back to printing
+	 * the raw type slug as the heading and renders no icon.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The Attendees page render context.
+	 *
+	 * @return array<string,mixed> The context with the TC-RSVP label and icon registered.
+	 */
+	public function add_ticket_overview_type_labels( $context ): array {
+		if ( ! is_array( $context ) ) {
+			return $context;
+		}
+
+		// Share the RSVP label and icon: to everyone but the code, a TC-RSVP is just an RSVP.
+		if ( isset( $context['type_labels'] ) && is_array( $context['type_labels'] ) ) {
+			$context['type_labels'][ Constants::TC_RSVP_TYPE ] = tribe_get_rsvp_label_plural( 'attendee overview' );
+		}
+
+		if ( isset( $context['type_icon_classes'] ) && is_array( $context['type_icon_classes'] ) ) {
+			$context['type_icon_classes'][ Constants::TC_RSVP_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp';
+		}
+
+		return $context;
 	}
 
 	/**

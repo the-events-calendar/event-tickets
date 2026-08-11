@@ -1849,7 +1849,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$ticket->set_type( 'rsvp' );
+			/*
+			 * Only label the ticket when it has no type of its own. A TC-RSVP ticket already carries
+			 * `tc-rsvp` in its `_type` meta, and every RSVP type comparison across Event Tickets and
+			 * Event Tickets Plus tests for that value, so overwriting it here would erase the only
+			 * reliable way to tell an RSVP v2 ticket from a v1 one.
+			 */
+			if ( 'default' === $ticket->type() ) {
+				$ticket->set_type( 'rsvp' );
+			}
 
 			$tickets[] = $ticket;
 		}
@@ -2331,7 +2339,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_id   = $attendee instanceof \WP_Post ? $attendee->ID : 0;
 		}
 
-		if ( ! $attendee_post instanceof \WP_Post || self::ATTENDEE_OBJECT !== $attendee_post->post_type ) {
+		/*
+		 * Validate against the post type the RSVP attendee repository is actually bound to, rather than
+		 * assuming the v1 one. Under RSVP v2 the repository is rebound to serve `tec_tc_attendee` posts,
+		 * so a hardcoded `self::ATTENDEE_OBJECT` check rejects every attendee this method just fetched.
+		 */
+		$attendee_post_types = (array) ( $repository->get_default_args()['post_type'] ?? self::ATTENDEE_OBJECT );
+
+		if ( ! $attendee_post instanceof \WP_Post || ! in_array( $attendee_post->post_type, $attendee_post_types, true ) ) {
 			return false;
 		}
 

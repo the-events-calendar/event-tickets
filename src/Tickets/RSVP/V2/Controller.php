@@ -235,6 +235,16 @@ class Controller extends Controller_Contract {
 			10,
 			2
 		);
+		add_filter(
+			'tec_tickets_attendees_page_render_context',
+			$this->container->callback( Attendees::class, 'add_ticket_overview_type_labels' )
+		);
+		add_action(
+			'tec_tickets_commerce_attendee_after_create',
+			$this->container->callback( Attendees::class, 'ensure_rsvp_status_on_create' ),
+			10,
+			3
+		);
 
 		add_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
@@ -400,6 +410,14 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'event_tickets_attendees_table_row_actions',
 			$this->container->callback( Attendees::class, 'modify_row_actions' )
+		);
+		remove_filter(
+			'tec_tickets_attendees_page_render_context',
+			$this->container->callback( Attendees::class, 'add_ticket_overview_type_labels' )
+		);
+		remove_action(
+			'tec_tickets_commerce_attendee_after_create',
+			$this->container->callback( Attendees::class, 'ensure_rsvp_status_on_create' )
 		);
 		remove_action(
 			'tec_tickets_commerce_single_order_details_metabox_after',
