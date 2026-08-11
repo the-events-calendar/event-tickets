@@ -3,8 +3,9 @@
  * Single order - Items metabox - SingleItem.
  *
  * @since 5.13.3
+ * @since TBD Adjusted the attendee meta rendering.
  *
- * @version 5.13.3
+ * @version TBD
  *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.
@@ -52,7 +53,7 @@ use TEC\Tickets\Commerce\Order;
 	</td>
 </tr>
 <?php
-if ( ! empty( $attendee ) ) :
+if ( ! empty( $attendee ) && is_array( $attendee ) ) :
 	?>
 	<tr class="tec-tickets-commerce-single-order--items--table--attendee-row tec-tickets-commerce-single-order--items--table--row--gray-bg">
 		<td colspan="4">
@@ -70,10 +71,14 @@ if ( ! empty( $attendee ) ) :
 						HTML;
 
 						$edit = sprintf( $edit, esc_html__( 'Edit', 'event-tickets' ) );
-						$attendee['meta'][ array_keys( $attendee['meta'] )[0] ] .= '%s';
-						echo is_array( $attendee['meta'] ) ?
-						sprintf( implode( '</br>', array_map( 'esc_html', $attendee['meta'] ) ), $edit ) : // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
-						'';
+
+						if ( ! empty( $attendee['meta'] ) && is_array( $attendee['meta'] ) ) {
+							$meta      = array_map( 'esc_html', $attendee['meta'] );
+							$first_key = array_key_first( $meta );
+							$meta[ $first_key ] .= $edit;
+
+							echo implode( '</br>', $meta ); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
+						}
 						?>
 					</div>
 				</div>
