@@ -147,6 +147,37 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should update the existing attendee instead of creating a duplicate when the same user resubmits the RSVP
+	 *
+	 * @since TBD
+	 */
+	public function it_should_update_existing_attendee_when_same_user_resubmits_rsvp() {
+		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
+		$user_id   = $this->factory()->user->create();
+
+		wp_set_current_user( $user_id );
+
+		$sut = $this->make_instance();
+
+		$first_attendee_ids  = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
+		$second_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertCount( 1, $first_attendee_ids );
+		$this->assertCount( 1, $second_attendee_ids );
+		$this->assertEquals(
+			$first_attendee_ids,
+			$second_attendee_ids,
+			'Resubmitting the RSVP as the same user should update the existing attendee, not create a new one.'
+		);
+
+		$attendees = $sut->get_attendees_by_user_id( $user_id, $this->event_id );
+		$this->assertCount( 1, $attendees, 'Only one attendee record should exist for this user after resubmitting the RSVP.' );
+
+		$this->assertEquals( 'yes', get_post_meta( $first_attendee_ids[0], RSVP::ATTENDEE_RSVP_KEY, true ) );
+	}
+
+	/**
+	 * @test
 	 * it should reject a ticket generated directly for a private event's ticket, even when
 	 * the caller never checked the event's accessibility (e.g. a smuggled `product_id`).
 	 *

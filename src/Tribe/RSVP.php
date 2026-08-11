@@ -2151,6 +2151,23 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get the IDs of the attendee record(s) a user already holds for a specific RSVP ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $product_id The RSVP ticket (product) ID.
+	 * @param int $user_id    The user ID.
+	 *
+	 * @return int[] List of attendee IDs.
+	 */
+	public function get_attendee_ids_by_user_for_ticket( $product_id, $user_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'ticket', $product_id )->by( 'user', $user_id )->get_ids();
+	}
+
+	/**
 	 * {@inheritdoc}
 	 *
 	 * Get all the attendees for post type. It returns an array with the
@@ -2805,6 +2822,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$attendee_ids = [];
 
+		/*
+		 * A logged-in user resubmitting the RSVP for this ticket (e.g. switching Going <-> Not
+		 * Going) should update their existing attendee record(s) rather than create duplicates.
+		 */
+		$existing_attendee_ids = is_user_logged_in()
+			? $this->get_attendee_ids_by_user_for_ticket( $product_id, get_current_user_id() )
+			: [];
+
 		// Iterate over all the amount of tickets purchased (for this product).
 		for ( $i = 0; $i < $qty; $i++ ) {
 			try {
@@ -2818,7 +2843,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'user_id'           => is_user_logged_in() ? get_current_user_id() : 0,
 				];
 
-				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
+				$existing_attendee_id = array_shift( $existing_attendee_ids );
+
+				if ( $existing_attendee_id ) {
+					$this->update_sales_and_stock_by_order_status( $existing_attendee_id, $attendee_order_status, $product_id );
+					$this->update_attendee( $existing_attendee_id, $attendee_data );
+					$attendee_ids[] = $existing_attendee_id;
+				} else {
+					$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
+				}
 			} catch ( Exception $exception ) {
 				// Stop processing and return false.
 				return new WP_Error( 'rsvp-invalid-stock-request', $exception->getMessage() );
