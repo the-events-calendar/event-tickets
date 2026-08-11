@@ -197,6 +197,8 @@ class Merchant extends Abstract_Merchant {
 	 * Saves signup data from the redirect into permanent option.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Stored without autoloading, so the credentials are not read into memory on
+	 *            every page load.
 	 *
 	 * @param array $signup_data
 	 *
@@ -207,7 +209,7 @@ class Merchant extends Abstract_Merchant {
 		unset( $signup_data['state'] );
 		unset( $signup_data['nonce'] );
 
-		return update_option( $this->get_signup_data_key(), $signup_data );
+		return update_option( $this->get_signup_data_key(), $signup_data, false );
 	}
 
 	/**

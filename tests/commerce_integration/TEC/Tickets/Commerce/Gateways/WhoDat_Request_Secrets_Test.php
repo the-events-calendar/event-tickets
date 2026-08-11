@@ -80,13 +80,14 @@ class WhoDat_Request_Secrets_Test extends WPTestCase {
 	/**
 	 * Every WhoDat call that carries a credential.
 	 *
-	 * @return array<string,array{0:string,1:string}>
+	 * @return array<string,array{0:string,1:string,2:string}>
 	 */
 	public function secret_bearing_call_provider(): array {
 		return [
-			'Square disconnect'         => [ 'square_disconnect', 'sq0atp-SQUARE-ACCESS-TOKEN' ],
-			'PayPal seller status'      => [ 'paypal_status', 'A21AA-PAYPAL-ACCESS-TOKEN' ],
-			'PayPal seller credentials' => [ 'paypal_credentials', 'A21AA-PAYPAL-CREDENTIALS-TOKEN' ],
+			'Square disconnect'         => [ 'square_disconnect', 'sq0atp-SQUARE-ACCESS-TOKEN', 'access_token' ],
+			'Square token refresh'      => [ 'square_refresh', 'sq0rtp-SQUARE-REFRESH-TOKEN', 'refresh_token' ],
+			'PayPal seller status'      => [ 'paypal_status', 'A21AA-PAYPAL-ACCESS-TOKEN', 'access_token' ],
+			'PayPal seller credentials' => [ 'paypal_credentials', 'A21AA-PAYPAL-CREDENTIALS-TOKEN', 'access_token' ],
 		];
 	}
 
@@ -108,6 +109,14 @@ class WhoDat_Request_Secrets_Test extends WPTestCase {
 				tribe( Square_WhoDat::class )->disconnect_account();
 				break;
 
+			case 'square_refresh':
+				update_option(
+					tribe( Square_Merchant::class )->get_signup_data_key(),
+					[ 'refresh_token' => $secret ]
+				);
+				tribe( Square_WhoDat::class )->refresh_token();
+				break;
+
 			case 'paypal_status':
 				tribe( PayPal_Merchant::class )->set_access_token( $secret, false );
 				tribe( PayPal_WhoDat::class )->get_seller_status( 'MERCHANT-' . uniqid() );
@@ -123,10 +132,11 @@ class WhoDat_Request_Secrets_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider secret_bearing_call_provider
 	 *
-	 * @param string $case   Which call to exercise.
-	 * @param string $secret The credential that must not leak into the URL.
+	 * @param string $case      Which call to exercise.
+	 * @param string $secret    The credential that must not leak into the URL.
+	 * @param string $body_key  The body parameter the credential is expected under.
 	 */
-	public function should_send_credentials_in_the_body_never_the_url( string $case, string $secret ): void {
+	public function should_send_credentials_in_the_body_never_the_url( string $case, string $secret, string $body_key ): void {
 		$this->capture_next_request();
 
 		$this->invoke_case( $case, $secret );
@@ -140,7 +150,7 @@ class WhoDat_Request_Secrets_Test extends WPTestCase {
 		);
 
 		$this->assertStringNotContainsString(
-			'access_token',
+			$body_key,
 			$this->captured['url'],
 			'Not even the parameter name belongs in the URL.'
 		);
@@ -150,7 +160,7 @@ class WhoDat_Request_Secrets_Test extends WPTestCase {
 
 		$this->assertSame(
 			$secret,
-			$body['access_token'] ?? null,
+			$body[ $body_key ] ?? null,
 			'The credential must be sent in the request body.'
 		);
 	}

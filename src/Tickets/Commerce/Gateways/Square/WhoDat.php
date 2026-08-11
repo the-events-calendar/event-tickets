@@ -132,6 +132,28 @@ class WhoDat extends Abstract_WhoDat {
 	}
 
 	/**
+	 * Requests WhoDat to refresh the oAuth tokens.
+	 *
+	 * @since 5.24.0
+	 * @since TBD Send the refresh token in the request body instead of the query string, and use
+	 *            POST to match the route WhoDat registers for this endpoint.
+	 *
+	 * @return ?array
+	 */
+	public function refresh_token(): ?array {
+		return $this->post(
+			'oauth/token/refresh',
+			[],
+			[
+				'body' => [
+					'grant_type'    => 'refresh_token',
+					'refresh_token' => tribe( Merchant::class )->get_refresh_token(),
+				],
+			]
+		);
+	}
+
+	/**
 	 * Get the token status from Square.
 	 *
 	 * @since 5.24.0
