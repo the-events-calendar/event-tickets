@@ -73,6 +73,15 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 							'cardElementType'   => tribe( Stripe_Elements::class )->card_element_type(),
 							'publishableKey'    => tribe( Merchant::class )->get_publishable_key(),
 							'paymentIntentData' => tribe( Payment_Intent_Handler::class )->get_publishable_payment_intent_data(),
+							/*
+							 * Shown when the payment succeeded but the order could not be finalized. It has to
+							 * steer the buyer away from paying again, since their card has already been charged.
+							 */
+							'updateOrderFailedMessage' => sprintf(
+								/* translators: %s: The lowercase plural tickets label. */
+								__( 'Your payment went through, but we could not finish your order. Please do not pay again. Contact the organizer to have your %s issued.', 'event-tickets' ),
+								tribe_get_ticket_label_plural_lowercase( 'stripe_checkout_update_order_failed' )
+							),
 							'elementsAppearance' => [
 								'variables' => [
 									'borderRadius'   => '4px',

@@ -261,6 +261,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * When a successful request is completed to our Approval endpoint.
 	 *
 	 * @since 5.3.0
+	 * @since TBD Updated to handle the case where the payment intent is not present.
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -269,13 +270,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePaymentSuccess = async ( data ) => {
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentSuccess', data );
 
-		const response = await obj.handleUpdateOrder( data.paymentIntent );
-
-		// Redirect the user to the success page.
-		if ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
-			window.location = response.redirect_url;
-		}
-		return true;
+		return obj.handleUpdateOrderResponse( await obj.handleUpdateOrder( data.paymentIntent ) );
 	};
 
 	/**
@@ -288,14 +283,44 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePaymentDelayed = async ( data ) => {
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentDelayed', data );
 
-		const response = await obj.handleUpdateOrder( data.paymentIntent );
+		return obj.handleUpdateOrderResponse( await obj.handleUpdateOrder( data.paymentIntent ) );
+	};
 
-		// Redirect the user to the success page.
-		if ( response.redirect_url && URL.canParse( response.redirect_url ) ) {
-			window.location = response.redirect_url;
+	/**
+	 * Acts on the response from the order update request.
+	 *
+	 * The buyer has already been charged by the time this runs, so a failure here must be surfaced
+	 * rather than swallowed. Previously anything without a `redirect_url` (a permission failure, a
+	 * network drop, an expired session) left the loader spinning with no message, and buyers retried
+	 * and were charged again.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} response The parsed response from the order update endpoint.
+	 *
+	 * @return {boolean} Whether the order update succeeded.
+	 */
+	obj.handleUpdateOrderResponse = ( response ) => {
+		try {
+			// Not URL.canParse(): it is missing on older browsers, where calling it throws and leaves
+			// the checkout hanging on the loader. new URL() is everywhere and throws on bad input.
+			window.location = new URL( response.redirect_url ).href;
+
+			return true;
+		} catch ( error ) {
+			// No usable redirect, so fall through and tell the buyer.
 		}
 
-		return true;
+		tribe.tickets.loader.hide( obj.checkoutContainer );
+
+		/*
+		 * Deliberately not surfacing the server's own message here: the buyer's card has been charged,
+		 * and a raw "you are not allowed to do that" would read as a failed payment and invite a retry.
+		 * The response is already in the debug log for support.
+		 */
+		obj.showNotice( obj.checkoutContainer, '', obj.checkout.updateOrderFailedMessage );
+
+		return false;
 	};
 
 	/**

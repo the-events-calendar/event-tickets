@@ -124,7 +124,13 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * Ensures that the current request tries to edit an order id which is stored as pending edit.
 	 *
+	 * The cart-bound check is the preferred path. It depends on the visitor's cart cookie surviving the
+	 * round trip to the gateway, which is not guaranteed on every host: edge caches, proxies and
+	 * hostname mismatches can all drop it. When that happens the buyer has already been charged, so
+	 * gateways may authorize the request instead with a credential they issued for that specific order.
+	 *
 	 * @since 5.29.0.1
+	 * @since TBD Falls back to a gateway-issued, order-scoped credential when the cart cookie is gone.
 	 *
 	 * @param WP_REST_Request $request The REST Request instance.
 	 *
@@ -137,21 +143,91 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 			return false;
 		}
 
-		if ( $order_id !== $this->pending_order->get() ) {
+		if ( $this->cart_owns_pending_order( (string) $order_id ) ) {
+			return true;
+		}
+
+		return $this->request_carries_order_credential( $request, (string) $order_id );
+	}
+
+	/**
+	 * Whether the current visitor's cart is the one that registered the given gateway order id as its
+	 * pending order.
+	 *
+	 * The order id must match the pending order stored for the cart hash read from the visitor's
+	 * cookie, and a Created/Pending order carrying that same cart hash must exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $gateway_order_id The gateway's order id.
+	 *
+	 * @return bool
+	 */
+	protected function cart_owns_pending_order( string $gateway_order_id ): bool {
+		if ( $gateway_order_id !== $this->pending_order->get() ) {
 			return false;
 		}
 
+		// Reaching here means the pending order resolved, which already required a cart hash.
 		$existing_order = tec_tc_orders()->by_args(
 			[
-				'gateway_order_id' => $order_id,
+				'gateway_order_id' => $gateway_order_id,
 				'hash'             => $this->cart->get_cart_hash( false ),
-				'status'           => [
-					tribe( Created::class )->get_wp_slug(),
-					tribe( Pending::class )->get_wp_slug(),
-				],
+				'status'           => 'any',
 			]
 		)->first();
 
-		return ! empty( $existing_order->ID );
+		return $this->order_is_in_flight( $existing_order );
+	}
+
+	/**
+	 * Whether an order exists and is still in flight, so a gateway request may drive it to a final
+	 * status.
+	 *
+	 * The status is checked here, on the fetched post, rather than handed to the query, because the
+	 * orders ORM does neither of the things a status argument looks like it does. A list of statuses
+	 * produces no post_status clause at all, so it filters nothing; omitting the argument instead falls
+	 * back to the repository's default post_status, which is the insert status alone. Querying for
+	 * `any` and deciding here is the only combination that means what it says.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $order The order post, or anything falsy when no order was found.
+	 *
+	 * @return bool
+	 */
+	protected function order_is_in_flight( $order ): bool {
+		if ( empty( $order->ID ) ) {
+			return false;
+		}
+
+		$in_flight = [
+			tribe( Created::class )->get_wp_slug(),
+			tribe( Pending::class )->get_wp_slug(),
+		];
+
+		return in_array( $order->post_status, $in_flight, true );
+	}
+
+	/**
+	 * Whether the request carries a credential this gateway issued for the given order.
+	 *
+	 * Gateways that hand the buyer an order-scoped secret when the order is created can override this
+	 * to authorize the request on that secret alone, which keeps checkout working when the cart cookie
+	 * did not survive. Gateways with no such secret keep the cart-bound check as their only path.
+	 *
+	 * A gateway overriding this MUST compare against a value it stored for that specific order, using
+	 * a timing-safe comparison. Accepting a merely well-formed value would reduce this gate to an
+	 * existence check on the order id.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request          The REST Request instance.
+	 * @param string          $gateway_order_id The gateway's order id.
+	 *
+	 * @return bool
+	 */
+	protected function request_carries_order_credential( WP_REST_Request $request, string $gateway_order_id ): bool {
+		return false;
 	}
 }
