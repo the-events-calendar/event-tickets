@@ -154,7 +154,7 @@ trait With_Filtered_Ticket_Params {
 
 		$sale_price = $new_params['ticket_sale_price'];
 		if ( is_string( $sale_price ) && is_serialized( $sale_price ) ) {
-			$sale_price = unserialize( $sale_price, [ 'allowed_classes' => [ Value::class ] ] );
+			$sale_price = @unserialize( $sale_price, [ 'allowed_classes' => [ Value::class ] ] );
 		}
 
 		$new_params['ticket_sale_price']      = $sale_price;
