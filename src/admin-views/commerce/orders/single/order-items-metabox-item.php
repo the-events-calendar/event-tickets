@@ -64,20 +64,27 @@ if ( ! empty( $attendee ) && is_array( $attendee ) ) :
 					</div>
 					<div class="tec-tickets-commerce-single-order--items--table--attendee-row--column--row--value">
 						<?php
-						$edit = <<<HTML
-						<a class="tribe-dashicons" href="javascript:void(0)"><span class="dashicons dashicons-edit"></span>
-							%s
-						</a>
-						HTML;
-
-						$edit = sprintf( $edit, esc_html__( 'Edit', 'event-tickets' ) );
-
 						if ( ! empty( $attendee['meta'] ) && is_array( $attendee['meta'] ) ) {
-							$meta      = array_map( 'esc_html', $attendee['meta'] );
-							$first_key = array_key_first( $meta );
-							$meta[ $first_key ] .= $edit;
+							$first_key = array_key_first( $attendee['meta'] );
+							$last_key  = array_key_last( $attendee['meta'] );
 
-							echo implode( '</br>', $meta ); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped
+							foreach ( $attendee['meta'] as $key => $value ) {
+								echo esc_html( $value );
+
+								if ( $key === $first_key ) :
+									?>
+									<a class="tribe-dashicons" href="javascript:void(0)"><span class="dashicons dashicons-edit"></span>
+										<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
+									</a>
+									<?php
+								endif;
+
+								if ( $key !== $last_key ) :
+									?>
+									<br/>
+									<?php
+								endif;
+							}
 						}
 						?>
 					</div>

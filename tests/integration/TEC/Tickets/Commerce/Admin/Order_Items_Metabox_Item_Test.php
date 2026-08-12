@@ -5,9 +5,11 @@ namespace TEC\Tickets\Commerce\Admin;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 class Order_Items_Metabox_Item_Test extends WPTestCase {
 
+	use SnapshotAssertions;
 	use With_Test_Orders;
 
 	/**
@@ -15,16 +17,16 @@ class Order_Items_Metabox_Item_Test extends WPTestCase {
 	 *
 	 * @param array $meta The attendee meta to render.
 	 *
-	 * @return string The rendered HTML.
+	 * @return string The rendered HTML, with dynamic IDs normalized for snapshots.
 	 */
-	protected function render_item_with_meta( array $meta ): string {
+	private function render_item_with_meta( array $meta ): string {
 		$event_id  = $this->create_test_events( 1 )[0];
 		$ticket_id = $this->create_tc_ticket( $event_id );
 		$order     = tec_tc_get_order( $this->create_order( [ $ticket_id => 1 ] )->ID );
 		$item      = $order->items[ array_key_first( $order->items ) ];
 		$ticket    = tribe( Module::class )->get_ticket( 0, $item['ticket_id'] );
 
-		return tribe( Singular_Order_Page::class )->template(
+		$html = tribe( Singular_Order_Page::class )->template(
 			'order-items-metabox-item',
 			[
 				'order'    => $order,
@@ -34,6 +36,8 @@ class Order_Items_Metabox_Item_Test extends WPTestCase {
 			],
 			false
 		);
+
+		return str_replace( [ (string) $order->ID, (string) $event_id ], [ '{{order_id}}', '{{event_id}}' ], $html );
 	}
 
 	/**
@@ -71,21 +75,10 @@ class Order_Items_Metabox_Item_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_join_meta_values_and_render_the_edit_link_once() {
-		$html = $this->render_item_with_meta( [ 'a' => 'First', 'b' => 'Second' ] );
+	public function it_should_match_the_rendered_attendee_meta() {
+		$html = $this->render_item_with_meta( [ 'a' => 'Jane Doe', 'b' => 'jane@example.test' ] );
 
-		$this->assertSame( 1, substr_count( $html, 'dashicons-edit' ) );
-		$this->assertLessThan( strpos( $html, 'dashicons-edit' ), strpos( $html, 'First' ) );
-		$this->assertLessThan( strpos( $html, 'Second' ), strpos( $html, 'dashicons-edit' ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_still_render_benign_meta_with_the_edit_link() {
-		$html = $this->render_item_with_meta( [ 'field' => 'Jane Doe' ] );
-
-		$this->assertStringContainsString( 'Jane Doe', $html );
-		$this->assertStringContainsString( 'dashicons-edit', $html );
+		// Full output: escaped values, the Edit link after the first value, a single break between values.
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
