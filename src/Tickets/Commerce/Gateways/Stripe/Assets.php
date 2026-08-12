@@ -73,6 +73,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 							'cardElementType'   => tribe( Stripe_Elements::class )->card_element_type(),
 							'publishableKey'    => tribe( Merchant::class )->get_publishable_key(),
 							'paymentIntentData' => tribe( Payment_Intent_Handler::class )->get_publishable_payment_intent_data(),
+
 							/*
 							 * Shown when the payment succeeded but the order could not be finalized. It has to
 							 * steer the buyer away from paying again, since their card has already been charged.
