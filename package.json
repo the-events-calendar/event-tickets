@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.29.1",
+  "version": "5.29.2",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -157,7 +157,7 @@
       "content"
     ],
     "types": {
-      "version": "Version",
+      "version": "5.29.2",
       "performance": "Performance",
       "accessibility": "Accessibility"
     },
