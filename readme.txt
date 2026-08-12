@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.29.1
+Stable tag: 5.29.2.1
 Requires at least: 6.8
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -198,6 +198,19 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.29.2.1] 2026-08-07 =
+
+* Fix - Prevented a fatal error on the WooCommerce order edit screen when attendee data was read from a generator, so orders containing tickets open normally again.
+* Language - 0 new strings added, 15 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.29.2] 2026-08-05 =
+
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted.
+* Tweak - Improved the unified licensing page experience.
+* Tweak - Switched changelog tooling from jetpack-changelogger to @stellarwp/changelogger.
+* Fix - Reduced the number of queries and the memory used when rendering events with shared capacity tickets by sharing the event attendees between all the tickets of the same event and by caching sold out inventory results in `Tribe__Tickets__Ticket_Object::inventory()`.
+* Fix - Resolved an issue where an attendee could still be checked in after their order was refunded.
 
 = [5.29.1] 2026-07-22 =
 
