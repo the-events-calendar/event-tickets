@@ -70,6 +70,30 @@ class Classic_Editor_Test extends WPTestCase {
 		$this->assertEmpty( $result['rsvp'], 'RSVP tickets should be removed from metabox list' );
 	}
 
+	/**
+	 * TC-RSVP tickets carry the Tickets Commerce provider, so the list panel buckets them under
+	 * their own `tc-rsvp` type rather than under `rsvp`. That bucket has to be emptied too, or the
+	 * RSVP renders its own table inside the Tickets metabox.
+	 *
+	 * @see \TEC\Tickets\RSVP\V2\Classic_Editor::do_not_show_rsvp_in_tickets_metabox()
+	 */
+	public function test_should_remove_tc_rsvp_tickets_from_metabox_list(): void {
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+
+		$rsvp_ticket_id    = $this->create_tc_rsvp_ticket( $post_id );
+		$regular_ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$ticket_types = [
+			Constants::TC_RSVP_TYPE => [ tec_tc_get_ticket( $rsvp_ticket_id ) ],
+			'default'               => [ tec_tc_get_ticket( $regular_ticket_id ) ],
+		];
+
+		$result = apply_filters( 'tec_tickets_editor_list_ticket_types', $ticket_types );
+
+		$this->assertEmpty( $result[ Constants::TC_RSVP_TYPE ], 'TC-RSVP tickets should be removed from metabox list' );
+		$this->assertCount( 1, $result['default'], 'Regular tickets should still be listed' );
+	}
+
 	public function test_should_preserve_other_ticket_types_in_metabox_list(): void {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 

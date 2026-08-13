@@ -799,6 +799,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
 		 * @since 5.8.0 Added the `$context` parameter.
 		 * @since 5.29.0 Made $context explicitly nullable.
+		 * @since TBD Only cache the result when no context is passed, since a context changes which tickets are returned.
 		 *
 		 * @param int         $post_id ID of parent "event" post.
 		 * @param string|null $context The context of the request.
@@ -811,7 +812,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = self::get_tickets_cache_key( $this->orm_provider, $post_id );
 
-			if ( isset( $cache[ $key ] ) && is_array( $cache[ $key ] ) ) {
+			// Only the context-less list is cached: a context can change which tickets are returned.
+			$use_cache = null === $context;
+
+			if ( $use_cache && isset( $cache[ $key ] ) && is_array( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
 
@@ -850,7 +854,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$tickets[] = $ticket;
 			}
 
-			$cache[ $key ] = $tickets;
+			if ( $use_cache ) {
+				$cache[ $key ] = $tickets;
+			}
 
 			return $tickets;
 		}
