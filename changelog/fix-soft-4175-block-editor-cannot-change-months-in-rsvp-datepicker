@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix the RSVP block datepickers not allowing users to change months when setting the RSVP window in the block editor.
