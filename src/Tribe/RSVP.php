@@ -2726,6 +2726,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
+	 * @since TBD Only require the additional stock needed on top of the seats held by the reused attendees.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -2800,8 +2801,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$qty = max( $ticket_qty, 0 );
 
-		// Throw an error if Qty is bigger then Remaining
-		if ( $ticket_type->managing_stock() && $ticket_type->inventory() < $qty ) {
+		/*
+		 * A logged-in user resubmitting the RSVP for this ticket (e.g. switching Going <-> Not
+		 * Going) should update their existing attendee record(s) rather than create duplicates.
+		 */
+		$existing_attendee_ids = is_user_logged_in()
+			? $this->get_attendee_ids_by_user_for_ticket( $product_id, get_current_user_id() )
+			: [];
+
+		// Seats already held by the attendee record(s) this submission is going to update in place.
+		$held_stock = 0;
+
+		foreach ( array_slice( $existing_attendee_ids, 0, $qty ) as $attendee_id ) {
+			$previous_status = get_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, true );
+
+			if ( isset( $rsvp_options[ $previous_status ] ) ) {
+				$held_stock += $rsvp_options[ $previous_status ]['decrease_stock_by'];
+			}
+		}
+
+		// Only the additional stock, on top of what the reused attendees already hold, is required.
+		$required_stock = max( 0, ( $status_stock_size * $qty ) - $held_stock );
+
+		// Throw an error if the additional stock required is bigger than the remaining stock.
+		if ( $ticket_type->managing_stock() && $ticket_type->inventory() < $required_stock ) {
 			if ( $redirect ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
 				wp_redirect( esc_url_raw( $url ) );
@@ -2821,14 +2844,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $post_id, $ticket_type, $_POST );
 
 		$attendee_ids = [];
-
-		/*
-		 * A logged-in user resubmitting the RSVP for this ticket (e.g. switching Going <-> Not
-		 * Going) should update their existing attendee record(s) rather than create duplicates.
-		 */
-		$existing_attendee_ids = is_user_logged_in()
-			? $this->get_attendee_ids_by_user_for_ticket( $product_id, get_current_user_id() )
-			: [];
 
 		// Iterate over all the amount of tickets purchased (for this product).
 		for ( $i = 0; $i < $qty; $i++ ) {
