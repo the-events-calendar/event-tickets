@@ -34,3 +34,15 @@
 		}
 	}
 }
+
+/**
+ * On single events, TEC's skeleton stylesheet pulls the second
+ * `.event-tickets` sibling after the event meta up with a negative top
+ * margin so it hugs the first one. The RSVP block is a standalone card,
+ * so that pull collapses the gap between it and the Tickets block. Undo
+ * it and let the wrapper's own top margin space the two cards apart.
+ */
+.tribe-events-event-meta + .event-tickets:has(.tribe-tickets__rsvp-wrapper) + .event-tickets,
+.tribe-events-event-meta + .event-tickets + .event-tickets:has(.tribe-tickets__rsvp-wrapper) {
+	margin-top: 0;
+}
