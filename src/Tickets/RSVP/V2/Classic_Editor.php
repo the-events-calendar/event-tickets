@@ -55,6 +55,9 @@ class Classic_Editor {
 	public function do_not_show_rsvp_in_tickets_metabox( array $ticket_types ): array {
 		$ticket_types['rsvp'] = [];
 
+		// TC-RSVP tickets carry the Tickets Commerce provider, so they are bucketed under their own type.
+		$ticket_types[ Constants::TC_RSVP_TYPE ] = [];
+
 		return $ticket_types;
 	}
 

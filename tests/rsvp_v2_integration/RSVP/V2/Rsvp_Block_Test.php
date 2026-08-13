@@ -3,8 +3,10 @@
 namespace TEC\Tickets\RSVP\V2;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Tests for RSVP block frontend rendering with TC-RSVP tickets.
@@ -54,5 +56,39 @@ class Rsvp_Block_Test extends WPTestCase {
 
 		$this->assertNotEmpty( $html, 'RSVP block should render TC-RSVP tickets on the frontend.' );
 		$this->assertStringContainsString( 'tribe-tickets__rsvp-wrapper', $html, 'RSVP block should include the RSVP wrapper markup.' );
+	}
+
+	/**
+	 * The single post view asks for the post's tickets without a context long before the ticket form
+	 * renders, and RSVPs are filtered out of that list. If that result is cached and handed back to the
+	 * front-end form request, which asks *with* a context precisely to get the RSVP included, the RSVP
+	 * silently disappears from any post that also has a regular ticket.
+	 *
+	 * @see \Tribe__Tickets__Tickets::get_tickets()
+	 */
+	public function test_front_end_form_should_render_rsvp_when_post_also_has_a_ticket(): void {
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$this->create_tc_ticket( $post_id, 10 );
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		// Warm the request cache the way the single post view does, without a context.
+		Tickets::get_all_event_tickets( $post_id );
+
+		// Skip the "My Tickets" view-link; it requires a full singular post query context.
+		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+
+		$GLOBALS['post'] = get_post( $post_id );
+
+		ob_start();
+		tribe( Module::class )->front_end_tickets_form( '' );
+		$html = ob_get_clean();
+
+		remove_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+
+		$this->assertStringContainsString(
+			'tribe-tickets__rsvp-wrapper',
+			$html,
+			'Front-end ticket form should render the RSVP alongside the ticket.'
+		);
 	}
 }
