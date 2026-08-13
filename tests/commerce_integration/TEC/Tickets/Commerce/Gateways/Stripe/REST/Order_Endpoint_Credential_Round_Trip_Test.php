@@ -107,7 +107,11 @@ class Order_Endpoint_Credential_Round_Trip_Test extends WPTestCase {
 		$this->stub_stripe_payment_intent();
 
 		$response = $this->create_order();
-		$data     = $response->get_data();
+
+		// handle_create_order() can return a WP_Error, which has no get_data() and would fatal below.
+		$this->assertNotWPError( $response, 'The create-order handler must not return an error.' );
+
+		$data = $response->get_data();
 
 		$this->assertTrue( $data['success'] ?? false, 'The order should have been created.' );
 		$this->assertSame(
