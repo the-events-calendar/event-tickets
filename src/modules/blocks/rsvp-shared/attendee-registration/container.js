@@ -31,18 +31,22 @@ const getIsDisabled = ( state ) =>
 	selectors.getRSVPSettingsOpen( state ) ||
 	! selectors.getRSVPCreated( state );
 
-const mapStateToProps = ( state ) => ( {
+const mapStateToProps = ( state, ownProps ) => ( {
 	attendeeRegistrationURL: getAttendeeRegistrationUrl( state ),
 	hasAttendeeInfoFields: selectors.getRSVPHasAttendeeInfoFields( state ),
 	isCreated: selectors.getRSVPCreated( state ),
-	isDisabled: getIsDisabled( state ),
+	isDisabled: ownProps.isDisabled !== undefined ? ownProps.isDisabled : getIsDisabled( state ),
 	isModalOpen: selectors.getRSVPIsModalOpen( state ),
+	helperText: ownProps.helperText || '',
+	showHelperText: ownProps.showHelperText !== undefined ? ownProps.showHelperText : false,
 } );
 
-const mapDispatchToProps = ( dispatch ) => ( {
-	onClick: () => {
-		dispatch( actions.setRSVPIsModalOpen( true ) );
-	},
+const mapDispatchToProps = ( dispatch, ownProps ) => ( {
+	onClick:
+		ownProps.onClick ||
+		( () => {
+			dispatch( actions.setRSVPIsModalOpen( true ) );
+		} ),
 	onClose: () => {
 		dispatch( actions.setRSVPIsModalOpen( false ) );
 	},
