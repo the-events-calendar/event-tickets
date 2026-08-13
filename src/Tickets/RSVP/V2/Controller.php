@@ -274,6 +274,14 @@ class Controller extends Controller_Contract {
 			10,
 			4
 		);
+
+		// RSVPs have no description; migrated ones would otherwise render their stale V1 excerpt.
+		add_filter(
+			'tribe_tickets_show_description',
+			$this->container->callback( Ticket::class, 'hide_description' ),
+			10,
+			2
+		);
 	}
 
 	/**
@@ -430,6 +438,10 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_view_count_ticket_attendees_args',
 			$this->container->callback( Attendees::class, 'exclude_rsvp_tickets_from_tickets_view_data_link_count' )
+		);
+		remove_filter(
+			'tribe_tickets_show_description',
+			$this->container->callback( Ticket::class, 'hide_description' )
 		);
 	}
 

@@ -89,4 +89,22 @@ class Ticket {
 
 		return $ticket instanceof Ticket_Object ? $ticket : null;
 	}
+
+	/**
+	 * Never show a description for RSVP tickets.
+	 *
+	 * V2 RSVPs have no description field, but RSVPs migrated from V1 keep their old
+	 * `post_excerpt` and a `_tribe_ticket_show_description` value of `yes`, so the
+	 * stale text would otherwise render on the front end.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $show      Whether the description should show.
+	 * @param mixed $ticket_id The ticket ID.
+	 *
+	 * @return mixed Whether the description should show.
+	 */
+	public function hide_description( $show, $ticket_id ) {
+		return $this->is_rsvp( (int) $ticket_id ) ? false : $show;
+	}
 }
