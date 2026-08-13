@@ -7,13 +7,28 @@ import moment from 'moment';
  * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { select } from '@wordpress/data';
+
+jest.mock( '@wordpress/data', () => ( {
+	select: jest.fn(),
+} ) );
 
 /**
  * Internal dependencies
  */
-import { createRSVP, getRSVP, updateRSVP } from '../thunks';
+import { createRSVP, getRSVP, persistRSVP, updateRSVP } from '../thunks';
 import { types } from '../../rsvp';
 import { moment as momentUtil } from '@moderntribe/common/utils';
+
+const getState = () => ( {
+	tickets: {
+		blocks: {
+			rsvp: {
+				isLoading: false,
+			},
+		},
+	},
+} );
 
 const startDateMoment = moment( '2026-06-01' ).startOf( 'day' );
 const endDateMoment = moment( '2026-06-02' ).startOf( 'day' );
@@ -52,6 +67,8 @@ describe( 'RSVP V2 thunks', () => {
 				},
 			},
 		};
+
+		select.mockReturnValue( { getCurrentPostId: () => 42 } );
 	} );
 
 	describe( 'createRSVP', () => {
@@ -62,7 +79,7 @@ describe( 'RSVP V2 thunks', () => {
 				...basePayload,
 				postId: 42,
 				iac: 'required',
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			expect( apiFetch ).toHaveBeenCalledWith(
 				expect.objectContaining( {
@@ -83,7 +100,7 @@ describe( 'RSVP V2 thunks', () => {
 				...basePayload,
 				postId: 42,
 				iac: 'allowed',
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			expect( dispatch ).toHaveBeenCalledWith( {
 				type: types.SET_RSVP_IAC,
@@ -97,7 +114,7 @@ describe( 'RSVP V2 thunks', () => {
 			await createRSVP( {
 				...basePayload,
 				postId: 42,
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			const { data } = apiFetch.mock.calls[ 0 ][ 0 ];
 			expect( data ).not.toHaveProperty( 'iac' );
@@ -109,7 +126,7 @@ describe( 'RSVP V2 thunks', () => {
 			await createRSVP( {
 				...basePayload,
 				postId: 42,
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			expect( dispatch ).toHaveBeenCalledWith( {
 				type: types.SET_RSVP_IAC,
@@ -126,7 +143,7 @@ describe( 'RSVP V2 thunks', () => {
 				...basePayload,
 				id: 99,
 				iac: 'required',
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			expect( apiFetch ).toHaveBeenCalledWith(
 				expect.objectContaining( {
@@ -146,7 +163,7 @@ describe( 'RSVP V2 thunks', () => {
 				...basePayload,
 				id: 99,
 				iac: 'allowed',
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			expect( dispatch ).toHaveBeenCalledWith( {
 				type: types.SET_RSVP_IAC,
@@ -160,7 +177,7 @@ describe( 'RSVP V2 thunks', () => {
 			await updateRSVP( {
 				...basePayload,
 				id: 99,
-			} )( dispatch );
+			} )( dispatch, getState );
 
 			const { data } = apiFetch.mock.calls[ 0 ][ 0 ];
 			expect( data ).not.toHaveProperty( 'iac' );
@@ -168,7 +185,7 @@ describe( 'RSVP V2 thunks', () => {
 	} );
 
 	describe( 'getRSVP', () => {
-		it( 'should sync IAC from the REST response into Redux', async () => {
+		it( 'should hydrate the RSVP from the REST response into Redux', async () => {
 			apiFetch.mockResolvedValue( [
 				{
 					id: 99,
@@ -177,6 +194,7 @@ describe( 'RSVP V2 thunks', () => {
 					start_date: '2026-06-01 09:00:00',
 					end_date: '2026-06-02 17:00:00',
 					capacity: 10,
+					stock: 10,
 					show_not_going: true,
 					going_count: 0,
 					not_going_count: 0,
@@ -187,9 +205,122 @@ describe( 'RSVP V2 thunks', () => {
 			await getRSVP( 42 )( dispatch );
 
 			expect( dispatch ).toHaveBeenCalledWith( {
-				type: types.SET_RSVP_IAC,
-				payload: { iac: 'required' },
+				type: types.SET_RSVP_ID,
+				payload: { id: 99 },
 			} );
+		} );
+	} );
+
+	describe( 'persistRSVP', () => {
+		// Wraps dispatch so thunks dispatched by persistRSVP are actually executed.
+		const dispatchThunks = ( getState ) => {
+			const dispatch = jest.fn( ( action ) => {
+				if ( typeof action === 'function' ) {
+					return action( dispatch, getState );
+				}
+			} );
+
+			return dispatch;
+		};
+
+		it( 'should not create the RSVP when there is a duration error (e.g. the event has already started)', async () => {
+			const getStateWithDurationError = () => ( {
+				tickets: {
+					blocks: {
+						rsvp: {
+							isLoading: false,
+							hasDurationError: true,
+							created: false,
+						},
+					},
+				},
+			} );
+
+			await persistRSVP()( dispatch, getStateWithDurationError );
+
+			expect( apiFetch ).not.toHaveBeenCalled();
+			expect( dispatch ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should create the RSVP with the current post ID when there is no duration error and the RSVP has not been created yet', async () => {
+			apiFetch.mockResolvedValue( { id: 99 } );
+
+			const getStateWithValidDuration = () => ( {
+				tickets: {
+					blocks: {
+						rsvp: {
+							isLoading: false,
+							hasDurationError: false,
+							created: false,
+							details: {},
+							tempDetails: {},
+						},
+					},
+				},
+			} );
+			const thunkDispatch = dispatchThunks( getStateWithValidDuration );
+
+			await persistRSVP()( thunkDispatch, getStateWithValidDuration );
+
+			expect( apiFetch ).toHaveBeenCalledWith(
+				expect.objectContaining( {
+					method: 'POST',
+					path: '/tec/v1/tickets',
+					data: expect.objectContaining( {
+						event: 42,
+					} ),
+				} )
+			);
+		} );
+
+		it( 'should update the existing RSVP when there is no duration error and the RSVP has already been created', async () => {
+			apiFetch.mockResolvedValue( {} );
+
+			const getStateWithCreatedRsvp = () => ( {
+				tickets: {
+					blocks: {
+						rsvp: {
+							isLoading: false,
+							hasDurationError: false,
+							created: true,
+							id: 77,
+							details: {},
+							tempDetails: {},
+						},
+					},
+				},
+			} );
+			const thunkDispatch = dispatchThunks( getStateWithCreatedRsvp );
+
+			await persistRSVP()( thunkDispatch, getStateWithCreatedRsvp );
+
+			expect( apiFetch ).toHaveBeenCalledWith(
+				expect.objectContaining( {
+					method: 'PUT',
+					path: '/tec/v1/tickets/77',
+				} )
+			);
+		} );
+
+		it( 'should not persist when the RSVP is marked as created but has no ID yet', async () => {
+			const getStateWithoutRsvpId = () => ( {
+				tickets: {
+					blocks: {
+						rsvp: {
+							isLoading: false,
+							hasDurationError: false,
+							created: true,
+							id: null,
+							details: {},
+							tempDetails: {},
+						},
+					},
+				},
+			} );
+
+			await persistRSVP()( dispatch, getStateWithoutRsvpId );
+
+			expect( apiFetch ).not.toHaveBeenCalled();
 		} );
 	} );
 } );

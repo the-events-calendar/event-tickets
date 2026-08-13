@@ -14,7 +14,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPInactiveBlock from '../../rsvp-shared/templates/inactive-block/template';
-import { actions, selectors } from '../../../data/blocks/rsvp-v2';
+import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
@@ -22,7 +22,10 @@ const mapStateToProps = ( state ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	setAddEditOpen: () => dispatch( actions.setRSVPIsAddEditOpen( true ) ),
+	setAddEditOpen: () => {
+		dispatch( actions.setRSVPIsAddEditOpen( true ) );
+		dispatch( thunks.persistRSVP() );
+	},
 } );
 
 export default compose( withStore(), connect( mapStateToProps, mapDispatchToProps ) )( RSVPInactiveBlock );
