@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Hardened validation of the ticket parameters.
-timestamp: 2026-08-12T04:21:42.292Z

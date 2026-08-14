@@ -28,7 +28,7 @@ trait With_Filtered_Ticket_Params {
 	 * Filters the upsert params.
 	 *
 	 * @since 5.26.0
-	 * @since TBD Hardened sale price handling.
+	 * @since 5.29.2.2 Hardened sale price handling.
 	 *
 	 * @param array $params The params to filter.
 	 *
