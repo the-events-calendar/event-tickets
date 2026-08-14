@@ -3,8 +3,9 @@
  * Single order - Items metabox - SingleItem.
  *
  * @since 5.13.3
+ * @since 5.29.2.2 Adjusted the attendee meta rendering.
  *
- * @version 5.13.3
+ * @version 5.29.2.2
  *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.
@@ -52,7 +53,7 @@ use TEC\Tickets\Commerce\Order;
 	</td>
 </tr>
 <?php
-if ( ! empty( $attendee ) ) :
+if ( ! empty( $attendee ) && is_array( $attendee ) ) :
 	?>
 	<tr class="tec-tickets-commerce-single-order--items--table--attendee-row tec-tickets-commerce-single-order--items--table--row--gray-bg">
 		<td colspan="4">
@@ -63,17 +64,28 @@ if ( ! empty( $attendee ) ) :
 					</div>
 					<div class="tec-tickets-commerce-single-order--items--table--attendee-row--column--row--value">
 						<?php
-						$edit = <<<HTML
-						<a class="tribe-dashicons" href="javascript:void(0)"><span class="dashicons dashicons-edit"></span>
-							%s
-						</a>
-						HTML;
+						if ( ! empty( $attendee['meta'] ) && is_array( $attendee['meta'] ) ) {
+							$first_key = array_key_first( $attendee['meta'] );
+							$last_key  = array_key_last( $attendee['meta'] );
 
-						$edit = sprintf( $edit, esc_html__( 'Edit', 'event-tickets' ) );
-						$attendee['meta'][ array_keys( $attendee['meta'] )[0] ] .= '%s';
-						echo is_array( $attendee['meta'] ) ?
-						sprintf( implode( '</br>', array_map( 'esc_html', $attendee['meta'] ) ), $edit ) : // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
-						'';
+							foreach ( $attendee['meta'] as $key => $value ) {
+								echo esc_html( $value );
+
+								if ( $key === $first_key ) :
+									?>
+									<a class="tribe-dashicons" href="javascript:void(0)"><span class="dashicons dashicons-edit"></span>
+										<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
+									</a>
+									<?php
+								endif;
+
+								if ( $key !== $last_key ) :
+									?>
+									<br/>
+									<?php
+								endif;
+							}
+						}
 						?>
 					</div>
 				</div>

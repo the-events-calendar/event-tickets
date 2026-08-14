@@ -1,5 +1,10 @@
 # Changelog
 
+### [5.29.2.2] 2026-08-17
+
+* Security - Hardened attendee details rendering.
+* Security - Hardened validation of the ticket parameters.
+
 ### [5.29.2.1] 2026-08-07
 
 * Fix - Prevented a fatal error on the WooCommerce order edit screen when attendee data was read from a generator, so orders containing tickets open normally again.

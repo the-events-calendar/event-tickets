@@ -28,6 +28,7 @@ trait With_Filtered_Ticket_Params {
 	 * Filters the upsert params.
 	 *
 	 * @since 5.26.0
+	 * @since 5.29.2.2 Hardened sale price handling.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -151,7 +152,12 @@ trait With_Filtered_Ticket_Params {
 			'ticket_sale_end_date'    => $params['sale_price_end_date'] ?? $ticket_data[ $orm->get_update_fields_aliases()['sale_price_end_date'] ]['0'] ?? null,
 		];
 
-		$new_params['ticket_sale_price']      = maybe_unserialize( $new_params['ticket_sale_price'] );
+		$sale_price = $new_params['ticket_sale_price'];
+		if ( is_string( $sale_price ) && is_serialized( $sale_price ) ) {
+			$sale_price = @unserialize( $sale_price, [ 'allowed_classes' => [ Value::class ] ] );
+		}
+
+		$new_params['ticket_sale_price']      = $sale_price;
 		$new_params['ticket_sale_start_date'] = is_numeric( $new_params['ticket_sale_start_date'] ) ? gmdate( 'Y-m-d', (int) $new_params['ticket_sale_start_date'] ) : $new_params['ticket_sale_start_date'];
 		$new_params['ticket_sale_end_date']   = is_numeric( $new_params['ticket_sale_end_date'] ) ? gmdate( 'Y-m-d', (int) $new_params['ticket_sale_end_date'] ) : $new_params['ticket_sale_end_date'];
 
