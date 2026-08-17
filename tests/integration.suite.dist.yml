@@ -22,3 +22,5 @@ modules:
                 - the-events-calendar/the-events-calendar.php
                 - event-tickets/event-tickets.php
             theme: twentytwenty
+            bootstrapActions:
+                - tec_tickets_tests_clear_activation_redirects
