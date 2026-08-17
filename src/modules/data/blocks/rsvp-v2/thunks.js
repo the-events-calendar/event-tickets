@@ -10,6 +10,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { doAction } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
+import { globals } from '@moderntribe/common/utils';
 
 /**
  * Internal dependencies
@@ -154,7 +155,7 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 			}
 			dispatch( actions.createRSVP() );
 			dispatch( actions.setRSVPId( response.id ) );
-			dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
+			dispatch( actions.setRSVPIAC( payload.iac || globals.iacVars().iacDefault || 'none' ) );
 			dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 			await hydrateAttendanceCountsFromTicket( dispatch, response );
 			dispatch( actions.setRSVPHasChanges( false ) );
@@ -232,7 +233,7 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 		if ( payload.postId && window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo ) {
 			delete window.tribe_event_tickets_plus.rsvp.pendingAttendeeInfo[ payload.postId ];
 		}
-		dispatch( actions.setRSVPIAC( payload.iac || 'none' ) );
+		dispatch( actions.setRSVPIAC( payload.iac || globals.iacVars().iacDefault || 'none' ) );
 		dispatch( actions.setRSVPDetails( { ...payload, title: 'RSVP', description: '' } ) );
 		dispatch(
 			actions.setRSVPTempDetails( {

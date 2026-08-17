@@ -1,6 +1,6 @@
 const globals = {
 	tecDateSettings: jest.fn( () => ( { datepickerFormat: 'Y-m-d' } ) ),
-	iacVars: jest.fn( () => ( {} ) ),
+	iacVars: jest.fn( () => window.tribe_editor_config?.ticketsPlus?.iacVars || {} ),
 	tickets: jest.fn( () => ( {
 		end_sale_buffer_duration: 2,
 		end_sale_buffer_years: 1,
