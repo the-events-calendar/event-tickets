@@ -872,7 +872,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			return $this->get_attendees_from_module( $repository->by( 'event', $event_id )->all(), $event_id );
+			$repository = $repository->by( 'event', $event_id );
+
+			// Prime the post caches before formatting so get_post() does not hit the DB once per attendee.
+			$ids = $repository->get_ids();
+
+			if ( $ids ) {
+				tribe( 'cache' )->warmup_post_caches( $ids, true );
+			}
+
+			return $this->get_attendees_from_module( $repository->all(), $event_id );
 		}
 
 		/**
@@ -888,7 +897,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			return $this->get_attendees_from_module( $repository->by( 'ticket', $ticket_id )->all() );
+			$repository = $repository->by( 'ticket', $ticket_id );
+
+			// Prime the post caches before formatting so get_post() does not hit the DB once per attendee.
+			$ids = $repository->get_ids();
+
+			if ( $ids ) {
+				tribe( 'cache' )->warmup_post_caches( $ids, true );
+			}
+
+			return $this->get_attendees_from_module( $repository->all() );
 		}
 
 		/**
@@ -1940,10 +1958,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
+			// Post ID is required.
+			if ( empty( $post_id ) ) {
+				return 0;
+			}
+
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees();
 
-			return $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
+			$found = $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
+
+			$cache[ $key ] = $found;
+
+			return $found;
 		}
 
 		// end Attendees

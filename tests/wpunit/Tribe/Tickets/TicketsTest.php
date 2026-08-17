@@ -231,6 +231,29 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * It should cache the checked-in attendees count within a request.
+	 *
+	 * @test
+	 */
+	public function should_cache_checkedin_attendees_count() {
+		$post_id        = $this->factory->post->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+		$attendee_ids   = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $post_id );
+
+		$rsvp_main = tribe( 'tickets.rsvp' );
+
+		// Check in one attendee and read the count, priming the cache.
+		update_post_meta( $attendee_ids[0], $rsvp_main->checkin_key, 1 );
+
+		$this->assertEquals( 1, Tickets::get_event_checkedin_attendees_count( $post_id ) );
+
+		// Check in a second attendee; the cached count should still be returned for the rest of the request.
+		update_post_meta( $attendee_ids[1], $rsvp_main->checkin_key, 1 );
+
+		$this->assertEquals( 1, Tickets::get_event_checkedin_attendees_count( $post_id ) );
+	}
+
+	/**
 	 * It should allow getting availability slug by collection.
 	 *
 	 * @test
