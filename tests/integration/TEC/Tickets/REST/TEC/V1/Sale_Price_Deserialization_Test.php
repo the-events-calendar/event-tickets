@@ -11,7 +11,10 @@ class Sale_Price_Deserialization_Test extends WPTestCase {
 
 	protected function filter_params( $sale_price ): array {
 		$event_id = static::factory()->post->create( [ 'post_type' => 'post', 'post_status' => 'publish' ] );
-		tribe_update_option( 'ticket-enabled-post-types', [ 'post' ] );
+
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 
 		return tribe( Ticket::class )->filter_upsert_params(
 			[
