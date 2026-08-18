@@ -40,6 +40,9 @@ function tec_tickets_tests_get_fake_merchant_data(): array {
 		'merchant_country'  => 'US',
 		'merchant_currency' => 'USD',
 		'whodat_signature'  => 'whodat-signature',
+		// Fixed, not relative: this function is re-called inside assertions. Far enough out that no
+		// suite drifts into the token refresh window and starts making outbound requests.
+		'expires_at'        => '2099-01-01T00:00:00Z',
 	];
 }
 

@@ -25,6 +25,13 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @after
+	 */
+	public function reset_token_status(): void {
+		tribe( Merchant::class )->delete_token_status();
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_not_show_webhook_notice_when_gateway_not_enabled(): void {
@@ -225,5 +232,93 @@ class Notices_Controller_Test extends Controller_Test_Case {
 		$notice = $this->make_controller()->render_remotely_disconnected_notice();
 
 		$this->assertMatchesHtmlSnapshot($notice);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_show_token_invalid_notice_while_the_token_works(): void {
+		$this->assertFalse( $this->make_controller()->should_display_token_invalid_notice() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_show_token_invalid_notice_when_square_refused_the_refresh(): void {
+		tribe( Merchant::class )->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+
+		$this->assertTrue( $this->make_controller()->should_display_token_invalid_notice() );
+	}
+
+	/**
+	 * The notice explains why the gateway went inactive, so it cannot depend on the gateway being active.
+	 *
+	 * @test
+	 */
+	public function it_should_show_token_invalid_notice_even_though_the_gateway_is_inactive(): void {
+		tribe( Merchant::class )->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+
+		$this->assertFalse( tribe( Gateway::class )->is_active() );
+		$this->assertTrue( $this->make_controller()->should_display_token_invalid_notice() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_show_token_invalid_notice_when_gateway_not_enabled(): void {
+		tribe( Merchant::class )->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'is_enabled', false );
+
+		$this->assertFalse( $this->make_controller()->should_display_token_invalid_notice() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_token_invalid_notice(): void {
+		$this->assertMatchesHtmlSnapshot( $this->make_controller()->render_token_invalid_notice() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_only_show_token_refresh_failing_notice_after_repeated_failures(): void {
+		$merchant   = tribe( Merchant::class );
+		$controller = $this->make_controller();
+
+		$this->assertFalse( $controller->should_display_token_refresh_failing_notice() );
+
+		$merchant->update_token_status( [ 'failures' => 2 ] );
+		$this->assertFalse( $controller->should_display_token_refresh_failing_notice() );
+
+		$merchant->update_token_status( [ 'failures' => 3 ] );
+		$this->assertTrue( $controller->should_display_token_refresh_failing_notice() );
+	}
+
+	/**
+	 * The two notices describe the same connection, so they must never appear together.
+	 *
+	 * @test
+	 */
+	public function it_should_not_stack_the_two_token_notices(): void {
+		$merchant   = tribe( Merchant::class );
+		$controller = $this->make_controller();
+
+		$merchant->update_token_status(
+			[
+				'failures'   => 5,
+				'invalid_at' => '2026-01-01 00:00:00',
+			]
+		);
+
+		$this->assertTrue( $controller->should_display_token_invalid_notice() );
+		$this->assertFalse( $controller->should_display_token_refresh_failing_notice() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_token_refresh_failing_notice(): void {
+		$this->assertMatchesHtmlSnapshot( $this->make_controller()->render_token_refresh_failing_notice() );
 	}
 }

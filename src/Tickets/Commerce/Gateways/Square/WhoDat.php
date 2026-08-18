@@ -134,11 +134,18 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return ?array
 	 */
 	public function refresh_token(): ?array {
-		$refresh_token = tribe( Merchant::class )->get_refresh_token();
+		$merchant      = tribe( Merchant::class );
+		$refresh_token = $merchant->get_refresh_token();
+
+		if ( ! $refresh_token ) {
+			return null;
+		}
 
 		$query_args = [
 			'grant_type'    => 'refresh_token',
 			'refresh_token' => $refresh_token,
+			'merchant_id'   => $merchant->get_merchant_id(),
+			'mode'          => $merchant->get_mode(),
 		];
 
 		return $this->get( 'oauth/token/refresh', $query_args );

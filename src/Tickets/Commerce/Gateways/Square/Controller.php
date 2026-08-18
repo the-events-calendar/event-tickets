@@ -33,6 +33,7 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Gateway::class );
 		$this->container->singleton( Merchant::class );
 		$this->container->singleton( WhoDat::class );
+		$this->container->singleton( Token_Refresher::class );
 		$this->container->singleton( Order::class );
 		$this->container->singleton( Settings::class );
 

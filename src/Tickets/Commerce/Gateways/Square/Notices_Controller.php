@@ -67,6 +67,24 @@ class Notices_Controller extends Controller_Contract {
 	public const REMOTELY_DISCONNECTED_NOTICE_SLUG = 'tec-tickets-commerce-square-remotely-disconnected-notice';
 
 	/**
+	 * Token rejected notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TOKEN_INVALID_NOTICE_SLUG = 'tec-tickets-commerce-square-token-invalid-notice';
+
+	/**
+	 * Token refresh failing notice slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const TOKEN_REFRESH_FAILING_NOTICE_SLUG = 'tec-tickets-commerce-square-token-refresh-failing-notice';
+
+	/**
 	 * Webhooks instance.
 	 *
 	 * @since 5.24.0
@@ -172,6 +190,28 @@ class Notices_Controller extends Controller_Contract {
 			],
 			[ $this, 'should_display_remotely_disconnected_notice' ]
 		);
+
+		tribe_notice(
+			self::TOKEN_INVALID_NOTICE_SLUG,
+			[ $this, 'render_token_invalid_notice' ],
+			[
+				'type'     => 'error',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_token_invalid_notice' ]
+		);
+
+		tribe_notice(
+			self::TOKEN_REFRESH_FAILING_NOTICE_SLUG,
+			[ $this, 'render_token_refresh_failing_notice' ],
+			[
+				'type'     => 'warning',
+				'dismiss'  => false,
+				'priority' => 10,
+			],
+			[ $this, 'should_display_token_refresh_failing_notice' ]
+		);
 	}
 
 	/**
@@ -188,6 +228,8 @@ class Notices_Controller extends Controller_Contract {
 			self::CURRENCY_MISMATCH_NOTICE_SLUG,
 			self::JUST_ONBOARDED_NOTICE_SLUG,
 			self::REMOTELY_DISCONNECTED_NOTICE_SLUG,
+			self::TOKEN_INVALID_NOTICE_SLUG,
+			self::TOKEN_REFRESH_FAILING_NOTICE_SLUG,
 		] as $slug ) {
 			tec_remove_notice( $slug );
 		}
@@ -442,6 +484,84 @@ class Notices_Controller extends Controller_Contract {
 			),
 			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=payments' ) ),
 			esc_html__( 'Configure TicketsCommerce Currency', 'event-tickets' )
+		);
+	}
+
+	/**
+	 * Determines if the token rejected notice should be displayed.
+	 *
+	 * Deliberately does not check is_active(): a rejected token is exactly the state that makes the
+	 * gateway inactive, so gating on it would hide the notice that explains why.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_token_invalid_notice(): bool {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_enabled() ) {
+			return false;
+		}
+
+		return $this->merchant->is_token_invalid();
+	}
+
+	/**
+	 * Determines if the repeated refresh failure notice should be displayed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_display_token_refresh_failing_notice(): bool {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		if ( ! $this->gateway->is_enabled() ) {
+			return false;
+		}
+
+		// The rejected notice covers this case with a clearer message.
+		if ( $this->merchant->is_token_invalid() ) {
+			return false;
+		}
+
+		return (int) $this->merchant->get_token_status()['failures'] >= 3;
+	}
+
+	/**
+	 * Render the token rejected notice.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function render_token_invalid_notice(): string {
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p><p><a href="%3$s" class="button button-primary">%4$s</a></p>',
+			esc_html__( 'Square connection expired', 'event-tickets' ),
+			esc_html__( 'Square would not renew the credentials for this site, so ticket sales through Square are paused. Reconnect your Square account to start selling again.', 'event-tickets' ),
+			esc_url( admin_url( 'admin.php?page=tec-tickets-settings&tab=square' ) ),
+			esc_html__( 'Reconnect Square', 'event-tickets' )
+		);
+	}
+
+	/**
+	 * Render the repeated refresh failure notice.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function render_token_refresh_failing_notice(): string {
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			esc_html__( 'Square connection could not be renewed', 'event-tickets' ),
+			esc_html__( 'The last few attempts to renew your Square credentials did not go through. Ticket sales through Square still work for now, but they will stop once the current credentials expire.', 'event-tickets' )
 		);
 	}
 
