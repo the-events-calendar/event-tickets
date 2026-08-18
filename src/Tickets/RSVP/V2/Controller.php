@@ -257,14 +257,6 @@ class Controller extends Controller_Contract {
 			$this->container->callback( Attendees::class, 'void_order_after_last_attendee_deleted' )
 		);
 
-		// Frontend.
-		add_filter(
-			'tribe_template_done',
-			$this->container->callback( Frontend::class, 'prevent_template_render' ),
-			10,
-			2
-		);
-
 		// Add show_not_going property to REST responses for RSVP tickets.
 		$this->hook_add_show_not_going_to_properties();
 
@@ -343,10 +335,6 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_front_end_rsvp_form_template_content',
 			$this->container->callback( Frontend::class, 'render_rsvp_template' )
-		);
-		remove_filter(
-			'tribe_template_done',
-			$this->container->callback( Frontend::class, 'prevent_template_render' )
 		);
 		remove_action(
 			'event_tickets_attendee_update',
