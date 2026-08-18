@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.29.2.2] 2026-08-17
+### [5.29.3] 2026-08-19
 
 * Security - Hardened attendee details rendering.
 * Security - Hardened validation of the ticket parameters.

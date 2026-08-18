@@ -3,9 +3,9 @@
  * Single order - Items metabox - SingleItem.
  *
  * @since 5.13.3
- * @since 5.29.2.2 Adjusted the attendee meta rendering.
+ * @since 5.29.3 Adjusted the attendee meta rendering.
  *
- * @version 5.29.2.2
+ * @version 5.29.3
  *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.
