@@ -13,6 +13,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use RuntimeException;
+use WP_Error;
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
  *
@@ -130,35 +131,81 @@ class WhoDat extends Abstract_WhoDat {
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Sends a POST; the endpoint answers 405 to the GET this used to send.
 	 *
-	 * @return ?array
+	 * @return ?array The refreshed credentials, or null when they could not be refreshed.
 	 */
 	public function refresh_token(): ?array {
+		$result = $this->request_token_refresh();
+
+		return empty( $result['body']['access_token'] ) ? null : $result['body'];
+	}
+
+	/**
+	 * Requests WhoDat to refresh the oAuth tokens, reporting how the request went.
+	 *
+	 * The endpoint answers a rejected refresh token with an HTML error page rather than a machine
+	 * readable body, so the status code is the only thing a caller can reason about.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{code: int, body: mixed, error: ?WP_Error} The response code (0 when the request never
+	 *                                                         completed), the decoded body, and the
+	 *                                                         transport error if there was one.
+	 */
+	public function request_token_refresh(): array {
 		$merchant      = tribe( Merchant::class );
 		$refresh_token = $merchant->get_refresh_token();
 
-		if ( ! $refresh_token ) {
-			return null;
-		}
-
-		$query_args = [
-			'grant_type'    => 'refresh_token',
-			'refresh_token' => $refresh_token,
-			'merchant_id'   => $merchant->get_merchant_id(),
-			'mode'          => $merchant->get_mode(),
+		$result = [
+			'code'  => 0,
+			'body'  => null,
+			'error' => null,
 		];
 
-		return $this->get( 'oauth/token/refresh', $query_args );
+		if ( ! $refresh_token ) {
+			return $result;
+		}
+
+		$url = $this->get_api_url( 'oauth/token/refresh' );
+
+		$response = wp_remote_post(
+			$url,
+			[
+				'body' => [
+					'grant_type'    => 'refresh_token',
+					'refresh_token' => $refresh_token,
+					'merchant_id'   => $merchant->get_merchant_id(),
+					'mode'          => $merchant->get_mode(),
+				],
+			]
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$this->log_error( 'WhoDat request error:', $response->get_error_message(), $url );
+
+			$result['error'] = $response;
+
+			return $result;
+		}
+
+		$result['code'] = (int) wp_remote_retrieve_response_code( $response );
+		$result['body'] = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		return $result;
 	}
 
 	/**
 	 * Get the token status from Square.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Added the $force parameter.
+	 *
+	 * @param bool $force Whether to bypass the cached status.
 	 *
 	 * @return array|null
 	 */
-	public function get_token_status(): ?array {
+	public function get_token_status( bool $force = false ): ?array {
 		$merchant = tribe( Merchant::class );
 
 		$query_args = [
@@ -166,7 +213,42 @@ class WhoDat extends Abstract_WhoDat {
 			'mode'         => $merchant->get_mode(),
 		];
 
+		if ( $force ) {
+			return $this->get( 'oauth/token/status', $query_args );
+		}
+
 		return $this->get_with_cache( 'oauth/token/status', $query_args );
+	}
+
+	/**
+	 * Whether Square still accepts the stored access token.
+	 *
+	 * The status endpoint answers a rejected token with `{ type: UNAUTHORIZED }` and a valid one with the
+	 * granted scopes. Anything else - an outage, a malformed body - is reported as unknown rather than as
+	 * a rejection, so a blip is never mistaken for a revoked connection.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $force Whether to bypass the cached status.
+	 *
+	 * @return ?bool True when accepted, false when rejected, null when it could not be established.
+	 */
+	public function is_token_accepted( bool $force = false ): ?bool {
+		$status = $this->get_token_status( $force );
+
+		if ( ! is_array( $status ) ) {
+			return null;
+		}
+
+		if ( ! empty( $status['scopes'] ) ) {
+			return true;
+		}
+
+		if ( ! empty( $status['type'] ) || ! empty( $status['error'] ) ) {
+			return false;
+		}
+
+		return null;
 	}
 
 	/**

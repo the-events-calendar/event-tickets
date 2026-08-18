@@ -28,11 +28,25 @@ class Requests_Test extends WPTestCase {
 	protected string $accepted_token = 'refreshed-access-token';
 
 	/**
+	 * The response code WhoDat answers a refresh with.
+	 *
+	 * @var int
+	 */
+	protected int $whodat_code = 200;
+
+	/**
 	 * The body WhoDat answers a refresh with.
 	 *
 	 * @var mixed
 	 */
 	protected $whodat_response;
+
+	/**
+	 * What the token status endpoint reports about the stored access token.
+	 *
+	 * @var array
+	 */
+	protected array $token_status = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
 
 	/**
 	 * The response Square should answer with instead of the default, when set.
@@ -65,6 +79,8 @@ class Requests_Test extends WPTestCase {
 		$this->square_calls    = [];
 		$this->whodat_calls    = 0;
 		$this->accepted_token  = 'refreshed-access-token';
+		$this->whodat_code     = 200;
+		$this->token_status    = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
 		$this->whodat_response = [
 			'access_token'  => 'refreshed-access-token',
 			'refresh_token' => 'refreshed-refresh-token',
@@ -125,10 +141,14 @@ class Requests_Test extends WPTestCase {
 	 * @return mixed
 	 */
 	public function answer_request( $pre, $args, $url ) {
+		if ( false !== strpos( $url, 'oauth/token/status' ) ) {
+			return $this->build_response( $this->token_status );
+		}
+
 		if ( false !== strpos( $url, 'whodat' ) ) {
 			++$this->whodat_calls;
 
-			return $this->build_response( $this->whodat_response );
+			return $this->build_response( $this->whodat_response, $this->whodat_code );
 		}
 
 		if ( false === strpos( $url, 'squareup' ) ) {
@@ -163,7 +183,7 @@ class Requests_Test extends WPTestCase {
 	protected function build_response( $body, int $code = 200 ): array {
 		return [
 			'headers'  => [],
-			'body'     => wp_json_encode( $body ),
+			'body'     => is_string( $body ) ? $body : wp_json_encode( $body ),
 			'response' => [
 				'code'    => $code,
 				'message' => 200 === $code ? 'OK' : 'Unauthorized',
@@ -248,7 +268,8 @@ class Requests_Test extends WPTestCase {
 	 */
 	public function it_should_not_retry_when_the_refresh_is_refused(): void {
 		$merchant              = $this->connect( $this->not_due() );
-		$this->whodat_response = [ 'error' => 'invalid_grant' ];
+		$this->whodat_code     = 422;
+		$this->whodat_response = '<!DOCTYPE html><html><head><title>Error</title></head><body></body></html>';
 
 		$response = Requests::get( 'locations' );
 

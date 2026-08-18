@@ -1,7 +1,8 @@
 significance: patch
 type: fix
-entry: Refreshed the Square OAuth access token automatically before Square API calls and retried once
-  when Square rejects it, so Tickets Commerce checkout no longer stops working about 30 days after
-  connecting. When Square refuses to renew the stored credentials the gateway is now shown as
-  disconnected with an admin notice, instead of reporting a healthy connection while live charges fail.
+entry: Refreshed the Square OAuth access token before Square API calls and retried once when Square
+  rejects it, so Tickets Commerce checkout no longer stops working about 30 days after connecting. The
+  refresh request was also being sent as a GET, which the endpoint answers with 405. When Square will
+  neither renew the credentials nor accept the stored token, the gateway is now shown as disconnected
+  with an admin notice instead of reporting a healthy connection while live charges fail.
 timestamp: 2026-08-18T21:46:14.000Z

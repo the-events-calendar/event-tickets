@@ -8,7 +8,7 @@ use WP_Hook;
 
 class Token_Refresher_Test extends WPTestCase {
 	/**
-	 * The bodies WhoDat will answer with, one per call.
+	 * The answers WhoDat will give, one per call, each [ code, body ] or a WP_Error.
 	 *
 	 * @var array
 	 */
@@ -20,6 +20,13 @@ class Token_Refresher_Test extends WPTestCase {
 	 * @var array
 	 */
 	protected array $whodat_calls = [];
+
+	/**
+	 * What the token status endpoint reports about the stored access token.
+	 *
+	 * @var array
+	 */
+	protected array $token_status = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
 
 	/**
 	 * The tribe_log hook as it was before the test replaced it.
@@ -44,6 +51,7 @@ class Token_Refresher_Test extends WPTestCase {
 	public function intercept_requests(): void {
 		$this->whodat_responses = [];
 		$this->whodat_calls     = [];
+		$this->token_status     = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
 
 		self::$current = $this;
 		add_filter( 'pre_http_request', [ __CLASS__, 'route_request' ], 10, 3 );
@@ -102,9 +110,22 @@ class Token_Refresher_Test extends WPTestCase {
 			return $pre;
 		}
 
+		if ( false !== strpos( $url, 'oauth/token/status' ) ) {
+			return $this->build_response( 200, $this->token_status );
+		}
+
 		$parsed = [];
 		parse_str( (string) wp_parse_url( $url, PHP_URL_QUERY ), $parsed );
-		$this->whodat_calls[] = $parsed;
+
+		$body = $args['body'] ?? [];
+
+		if ( is_string( $body ) ) {
+			$parsed_body = [];
+			parse_str( $body, $parsed_body );
+			$body = $parsed_body;
+		}
+
+		$this->whodat_calls[] = array_merge( $parsed, is_array( $body ) ? $body : [] );
 
 		$response = array_shift( $this->whodat_responses );
 
@@ -112,10 +133,27 @@ class Token_Refresher_Test extends WPTestCase {
 			return $response;
 		}
 
+		[ $code, $payload ] = $response;
+
+		return $this->build_response( $code, $payload );
+	}
+
+	/**
+	 * Builds an HTTP response array.
+	 *
+	 * @param int   $code The response code.
+	 * @param mixed $body The response body; a string is sent through as-is.
+	 *
+	 * @return array
+	 */
+	protected function build_response( int $code, $body ): array {
 		return [
 			'headers'  => [],
-			'body'     => wp_json_encode( $response ),
-			'response' => [ 'code' => 200, 'message' => 'OK' ],
+			'body'     => is_string( $body ) ? $body : wp_json_encode( $body ),
+			'response' => [
+				'code'    => $code,
+				'message' => 200 === $code ? 'OK' : 'Error',
+			],
 			'cookies'  => [],
 			'filename' => null,
 		];
@@ -159,6 +197,26 @@ class Token_Refresher_Test extends WPTestCase {
 		];
 	}
 
+	/**
+	 * A successful refresh answer.
+	 *
+	 * @return array
+	 */
+	protected function refresh_ok(): array {
+		return [ 200, $this->fresh_credentials() ];
+	}
+
+	/**
+	 * The HTML error page the endpoint really answers a rejected refresh token with.
+	 *
+	 * @param int $code The response code.
+	 *
+	 * @return array
+	 */
+	protected function refresh_error_page( int $code ): array {
+		return [ $code, '<!DOCTYPE html><html><head><title>Server Error</title></head><body></body></html>' ];
+	}
+
 	protected function expiring_soon(): array {
 		return [ 'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() + HOUR_IN_SECONDS ) ];
 	}
@@ -180,14 +238,15 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_refresh_a_token_that_is_about_to_expire(): void {
 		$merchant                = $this->connect( $this->expiring_soon() );
-		$credentials             = $this->fresh_credentials();
-		$this->whodat_responses[] = $credentials;
+		$credentials              = $this->fresh_credentials();
+		$this->whodat_responses[] = [ 200, $credentials ];
 
 		$this->assertTrue( $this->refresher()->should_refresh() );
 		$this->assertTrue( $this->refresher()->refresh_if_needed() );
 
 		$this->assertCount( 1, $this->whodat_calls );
 		$this->assertSame( 'refresh_token', $this->whodat_calls[0]['grant_type'] );
+		$this->assertSame( tribe( Merchant::class )->get_mode(), $this->whodat_calls[0]['mode'] );
 		$this->assertSame( tec_tickets_tests_get_fake_merchant_data()['refresh_token'], $this->whodat_calls[0]['refresh_token'] );
 
 		$this->assertSame( $credentials['access_token'], $merchant->get_access_token() );
@@ -202,7 +261,7 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_refresh_a_token_that_has_already_expired(): void {
 		$merchant                 = $this->connect( [ 'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() - DAY_IN_SECONDS ) ] );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->assertTrue( $this->refresher()->refresh_if_needed() );
 		$this->assertSame( 'refreshed-access-token', $merchant->get_access_token() );
@@ -213,7 +272,7 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_refresh_a_connection_with_no_recorded_expiration(): void {
 		$merchant                 = $this->connect( [], [ 'expires_at' ] );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->assertTrue( $this->refresher()->refresh_if_needed() );
 		$this->assertCount( 1, $this->whodat_calls );
@@ -225,8 +284,8 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_throttle_a_connection_with_no_recorded_expiration(): void {
 		$this->connect( [], [ 'expires_at' ] );
-		// A response with neither credentials nor a recognised error is treated as a blip.
-		$this->whodat_responses[] = [];
+		// A 200 that carries no credentials is treated as a blip.
+		$this->whodat_responses[] = [ 200, [] ];
 
 		$this->assertFalse( $this->refresher()->refresh_if_needed() );
 		$this->assertCount( 1, $this->whodat_calls );
@@ -247,19 +306,23 @@ class Token_Refresher_Test extends WPTestCase {
 	}
 
 	/**
+	 * The endpoint answers a rejected refresh token with an HTML 500, so the only way to tell a rejection
+	 * from an outage is to ask Square whether it still accepts the stored token.
+	 *
 	 * @test
 	 */
-	public function it_should_mark_the_connection_unavailable_when_square_refuses_the_refresh(): void {
+	public function it_should_mark_the_connection_unavailable_when_the_token_is_also_rejected(): void {
 		$merchant                 = $this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = [
-			'error'             => 'invalid_grant',
-			'error_description' => 'Authorization code is expired.',
+		$this->whodat_responses[] = $this->refresh_error_page( 500 );
+		$this->token_status       = [
+			'type'    => 'UNAUTHORIZED',
+			'message' => 'This request could not be authorized.',
 		];
 
 		$this->assertFalse( $this->refresher()->refresh_if_needed() );
 
 		$this->assertTrue( $merchant->is_token_invalid() );
-		$this->assertSame( 'invalid_grant', $merchant->get_token_status()['error'] );
+		$this->assertSame( '500', $merchant->get_token_status()['error'] );
 		$this->assertFalse( $merchant->is_connected() );
 
 		// The credentials stay put so support can still see what is stored.
@@ -270,19 +333,30 @@ class Token_Refresher_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_treat_a_square_authentication_error_body_as_unrecoverable(): void {
+	public function it_should_mark_the_connection_unavailable_when_the_request_is_turned_down(): void {
 		$merchant                 = $this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = [
-			'errors' => [
-				[
-					'category' => 'AUTHENTICATION_ERROR',
-					'code'     => 'UNAUTHORIZED',
-				],
-			],
-		];
+		$this->whodat_responses[] = $this->refresh_error_page( 422 );
 
 		$this->assertFalse( $this->refresher()->refresh_if_needed() );
+
 		$this->assertTrue( $merchant->is_token_invalid() );
+		$this->assertFalse( $merchant->is_connected() );
+	}
+
+	/**
+	 * A failing refresh while Square still honours the token is a blip, not a disconnection.
+	 *
+	 * @test
+	 */
+	public function it_should_not_mark_the_connection_unavailable_while_the_token_still_works(): void {
+		$merchant                 = $this->connect( $this->expiring_soon() );
+		$this->whodat_responses[] = $this->refresh_error_page( 500 );
+
+		$this->assertFalse( $this->refresher()->refresh_if_needed() );
+
+		$this->assertFalse( $merchant->is_token_invalid() );
+		$this->assertTrue( $merchant->is_connected() );
+		$this->assertSame( 1, (int) $merchant->get_token_status()['failures'] );
 	}
 
 	/**
@@ -301,18 +375,14 @@ class Token_Refresher_Test extends WPTestCase {
 	}
 
 	/**
+	 * A transport failure says nothing about the credentials, even when the token is also unreachable.
+	 *
 	 * @test
 	 */
-	public function it_should_not_mark_the_connection_unavailable_on_a_square_server_error(): void {
+	public function it_should_not_mark_the_connection_unavailable_when_nothing_can_be_reached(): void {
 		$merchant                 = $this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = [
-			'errors' => [
-				[
-					'category' => 'API_ERROR',
-					'code'     => 'INTERNAL_SERVER_ERROR',
-				],
-			],
-		];
+		$this->whodat_responses[] = new WP_Error( 'http_request_failed', 'Connection timed out' );
+		$this->token_status       = [ 'type' => 'UNAUTHORIZED' ];
 
 		$this->assertFalse( $this->refresher()->refresh_if_needed() );
 		$this->assertFalse( $merchant->is_token_invalid() );
@@ -324,7 +394,7 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_back_off_after_a_transient_failure(): void {
 		$merchant                 = $this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = new WP_Error( 'http_request_failed', 'Connection timed out' );
+		$this->whodat_responses[] = $this->refresh_error_page( 500 );
 
 		$this->refresher()->refresh_if_needed();
 		$this->assertCount( 1, $this->whodat_calls );
@@ -334,7 +404,7 @@ class Token_Refresher_Test extends WPTestCase {
 
 		// Move the attempt far enough into the past for the backoff to lapse.
 		$merchant->update_token_status( [ 'last_attempt_at' => gmdate( 'Y-m-d H:i:s', time() - 2 * DAY_IN_SECONDS ) ] );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->assertTrue( $this->refresher()->refresh_if_needed() );
 		$this->assertCount( 2, $this->whodat_calls );
@@ -359,7 +429,7 @@ class Token_Refresher_Test extends WPTestCase {
 	public function it_should_not_refresh_while_another_process_holds_the_lock(): void {
 		$this->connect( $this->expiring_soon() );
 		add_option( $this->get_lock_key(), (string) time(), '', 'no' );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->assertFalse( $this->refresher()->refresh_if_needed() );
 		$this->assertCount( 0, $this->whodat_calls );
@@ -373,7 +443,7 @@ class Token_Refresher_Test extends WPTestCase {
 	public function it_should_take_over_an_abandoned_lock(): void {
 		$this->connect( $this->expiring_soon() );
 		add_option( $this->get_lock_key(), (string) ( time() - 300 ), '', 'no' );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->assertTrue( $this->refresher()->refresh_if_needed() );
 		$this->assertCount( 1, $this->whodat_calls );
@@ -384,13 +454,13 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_release_the_lock_whatever_the_outcome(): void {
 		$this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->refresher()->refresh_if_needed();
 		$this->assertFalse( get_option( $this->get_lock_key() ) );
 
 		$this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = [ 'error' => 'invalid_grant' ];
+		$this->whodat_responses[] = $this->refresh_error_page( 422 );
 
 		$this->refresher()->refresh_if_needed();
 		$this->assertFalse( get_option( $this->get_lock_key() ) );
@@ -401,7 +471,7 @@ class Token_Refresher_Test extends WPTestCase {
 	 */
 	public function it_should_refresh_on_demand_regardless_of_the_expiration(): void {
 		$merchant                 = $this->connect( [ 'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() + 25 * DAY_IN_SECONDS ) ] );
-		$this->whodat_responses[] = $this->fresh_credentials();
+		$this->whodat_responses[] = $this->refresh_ok();
 
 		$this->assertFalse( $this->refresher()->should_refresh() );
 		$this->assertTrue( $this->refresher()->refresh_now( 'square_unauthorized' ) );

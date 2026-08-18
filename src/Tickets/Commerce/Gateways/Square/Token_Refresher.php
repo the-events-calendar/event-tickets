@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 use TEC\Common\StellarWP\DB\DB;
 use Tribe__Date_Utils as Dates;
 use Throwable;
+use WP_Error;
 
 /**
  * Class Token_Refresher
@@ -265,30 +266,65 @@ class Token_Refresher {
 				return true;
 			}
 
-			$response = $this->who_dat->refresh_token();
-			$result   = $this->classify_response( $response );
+			$result = $this->who_dat->request_token_refresh();
+			$status = $this->classify_result( $result );
 
 			$this->merchant->update_token_status(
 				[ 'last_attempt_at' => Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT ) ]
 			);
 
-			if ( self::RESULT_SUCCESS === $result ) {
-				return $this->record_success( $response, $reason );
+			if ( self::RESULT_SUCCESS === $status ) {
+				return $this->record_success( (array) $result['body'], $reason );
 			}
 
-			if ( self::RESULT_PERMANENT === $result ) {
-				$this->record_permanent_failure( $this->get_error_code( $response ), $reason );
+			if ( self::RESULT_PERMANENT === $status ) {
+				$this->record_permanent_failure( (int) $result['code'], $reason );
 
 				return false;
 			}
 
-			$this->record_transient_failure( $reason );
+			$this->record_transient_failure( (int) $result['code'], $reason );
 
 			return false;
 		} finally {
 			$this->refreshing = false;
 			$this->release_lock();
 		}
+	}
+
+	/**
+	 * Decides whether a refresh attempt failed for good or is worth trying again.
+	 *
+	 * The endpoint answers a rejected refresh token with an HTML 500 rather than a machine readable
+	 * error, so a 500 on its own says nothing. Square's own view of the stored access token settles it:
+	 * if Square no longer accepts the token and it cannot be renewed, the connection really is finished.
+	 * Anything less certain counts as transient, so that an outage never disconnects a working site.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $result The outcome of the refresh request.
+	 *
+	 * @return string One of the RESULT_* constants.
+	 */
+	protected function classify_result( array $result ): string {
+		$code = (int) $result['code'];
+		$body = $result['body'];
+
+		if ( 200 === $code && ! empty( $body['access_token'] ) && is_string( $body['access_token'] ) ) {
+			return self::RESULT_SUCCESS;
+		}
+
+		// The request never completed, so nothing has been established about the credentials.
+		if ( $result['error'] instanceof WP_Error || 0 === $code ) {
+			return self::RESULT_TRANSIENT;
+		}
+
+		// The request was understood and turned down.
+		if ( $code >= 400 && $code < 500 ) {
+			return self::RESULT_PERMANENT;
+		}
+
+		return false === $this->who_dat->is_token_accepted( true ) ? self::RESULT_PERMANENT : self::RESULT_TRANSIENT;
 	}
 
 	/**
@@ -303,7 +339,7 @@ class Token_Refresher {
 	 */
 	protected function record_success( array $response, string $reason ): bool {
 		if ( ! $this->merchant->save_refreshed_tokens( $response ) ) {
-			$this->record_transient_failure( $reason );
+			$this->record_transient_failure( 200, $reason );
 
 			return false;
 		}
@@ -329,16 +365,16 @@ class Token_Refresher {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $error  The error code Square returned.
+	 * @param int    $code   The response code the refresh came back with.
 	 * @param string $reason Why the refresh was attempted.
 	 *
 	 * @return void
 	 */
-	protected function record_permanent_failure( string $error, string $reason ): void {
+	protected function record_permanent_failure( int $code, string $reason ): void {
 		$this->merchant->update_token_status(
 			[
 				'invalid_at' => Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT ),
-				'error'      => $error,
+				'error'      => (string) $code,
 			]
 		);
 
@@ -347,9 +383,9 @@ class Token_Refresher {
 			'error',
 			'Square rejected the access token refresh',
 			[
-				'source' => 'tickets-commerce-square',
-				'error'  => $error,
-				'reason' => $reason,
+				'source'        => 'tickets-commerce-square',
+				'response_code' => $code,
+				'reason'        => $reason,
 			]
 		);
 
@@ -358,10 +394,10 @@ class Token_Refresher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $error  The error code Square returned.
+		 * @param int    $code   The response code the refresh came back with.
 		 * @param string $reason Why the refresh was attempted.
 		 */
-		do_action( 'tec_tickets_commerce_square_access_token_refresh_failed', $error, $reason );
+		do_action( 'tec_tickets_commerce_square_access_token_refresh_failed', $code, $reason );
 	}
 
 	/**
@@ -369,11 +405,12 @@ class Token_Refresher {
 	 *
 	 * @since TBD
 	 *
+	 * @param int    $code   The response code the refresh came back with, 0 when it never completed.
 	 * @param string $reason Why the refresh was attempted.
 	 *
 	 * @return void
 	 */
-	protected function record_transient_failure( string $reason ): void {
+	protected function record_transient_failure( int $code, string $reason ): void {
 		$failures = (int) $this->merchant->get_token_status()['failures'];
 
 		$this->merchant->update_token_status( [ 'failures' => $failures + 1 ] );
@@ -383,107 +420,12 @@ class Token_Refresher {
 			'warning',
 			'Square access token refresh did not go through',
 			[
-				'source'   => 'tickets-commerce-square',
-				'reason'   => $reason,
-				'failures' => $failures + 1,
+				'source'        => 'tickets-commerce-square',
+				'response_code' => $code,
+				'reason'        => $reason,
+				'failures'      => $failures + 1,
 			]
 		);
-	}
-
-	/**
-	 * Decides whether a refresh response is a success, an unrecoverable rejection, or a blip.
-	 *
-	 * Abstract_WhoDat::get() returns null both for transport errors and for bodies it cannot decode, and
-	 * returns the decoded body whatever the status code, so the body is all there is to go on.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $response The refresh response.
-	 *
-	 * @return string One of the RESULT_* constants.
-	 */
-	protected function classify_response( $response ): string {
-		if ( ! is_array( $response ) ) {
-			return self::RESULT_TRANSIENT;
-		}
-
-		if ( ! empty( $response['access_token'] ) && is_string( $response['access_token'] ) ) {
-			return self::RESULT_SUCCESS;
-		}
-
-		$error = $this->get_error_code( $response );
-
-		if ( '' === $error ) {
-			return self::RESULT_TRANSIENT;
-		}
-
-		return in_array( $error, $this->get_permanent_error_codes(), true ) ? self::RESULT_PERMANENT : self::RESULT_TRANSIENT;
-	}
-
-	/**
-	 * Pulls an error code out of either the OAuth or the Square error shape.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $response The refresh response.
-	 *
-	 * @return string Lowercased error code, empty when there is none.
-	 */
-	protected function get_error_code( $response ): string {
-		if ( ! is_array( $response ) ) {
-			return '';
-		}
-
-		if ( ! empty( $response['error'] ) && is_string( $response['error'] ) ) {
-			return strtolower( $response['error'] );
-		}
-
-		$error = $response['errors'][0] ?? null;
-
-		if ( ! is_array( $error ) ) {
-			return '';
-		}
-
-		foreach ( [ 'code', 'category' ] as $key ) {
-			if ( ! empty( $error[ $key ] ) && is_string( $error[ $key ] ) ) {
-				return strtolower( $error[ $key ] );
-			}
-		}
-
-		return '';
-	}
-
-	/**
-	 * The error codes that mean the refresh token will never work again.
-	 *
-	 * @since TBD
-	 *
-	 * @return string[]
-	 */
-	protected function get_permanent_error_codes(): array {
-		$codes = [
-			'access_denied',
-			'authentication_error',
-			'forbidden',
-			'invalid_client',
-			'invalid_grant',
-			'refresh_token_expired',
-			'refresh_token_revoked',
-			'unauthorized',
-			'unauthorized_client',
-			'unsupported_grant_type',
-		];
-
-		/**
-		 * Filters the Square token refresh errors treated as unrecoverable.
-		 *
-		 * Anything not listed here is treated as transient and leaves the connection alone.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $codes Lowercased error codes.
-		 */
-		return (array) apply_filters( 'tec_tickets_commerce_square_permanent_token_errors', $codes );
 	}
 
 	/**

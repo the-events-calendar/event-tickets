@@ -455,15 +455,17 @@ class Merchant extends Abstract_Merchant {
 			return $return;
 		}
 
-		$status = tribe( WhoDat::class )->get_token_status();
+		$accepted = tribe( WhoDat::class )->is_token_accepted();
 
-		if ( ! is_array( $status ) || empty( $status ) ) {
+		if ( null === $accepted ) {
 			$return['errors'][] = __( 'Unable to connect to Square.', 'event-tickets' );
 			return $return;
 		}
 
-		if ( ! empty( $status['error'] ) ) {
-			$return['errors'][] = $status['error_description'] ?? __( 'Unknown Square error.', 'event-tickets' );
+		if ( ! $accepted ) {
+			$status = tribe( WhoDat::class )->get_token_status();
+
+			$return['errors'][] = $status['message'] ?? $status['error_description'] ?? __( 'Square no longer accepts the stored credentials.', 'event-tickets' );
 			return $return;
 		}
 
