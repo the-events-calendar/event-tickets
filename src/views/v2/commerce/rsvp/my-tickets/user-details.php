@@ -1,19 +1,22 @@
 <?php
 /**
- * My Tickets: User Details
+ * RSVP V2: My Tickets - User Details
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/user-details.php
+ * Renders the "Reserved by" details line for a TC-RSVP order on the My Tickets page, replacing
+ * `tickets/my-tickets/user-details.php` for RSVP orders (see
+ * `TEC\Tickets\RSVP\V2\Frontend::render_my_tickets_user_details()`).
  *
- * @since 5.6.7
- * @since 5.9.1 Corrected template override filepath
- * @since TBD Fixed the `mailto:` link escaping.
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/v2/commerce/rsvp/my-tickets/user-details.php
  *
- * @version 5.9.1
+ * @since TBD
  *
- * @var int    $order_id  The ID of the order.
- * @var array  $order     The order data.
- * @var array  $attendees The attendees for the current order.
- * @var int    $post_id   The ID of the post the tickets are for.
+ * @version TBD
+ *
+ * @var array $order     The order data.
+ * @var array $attendees The attendees for the current order.
+ * @var int   $order_id  The order ID.
+ * @var int   $post_id   The ID of the post the tickets are for.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -26,19 +29,9 @@ $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purcha
 <div class="user-details">
 	<?php
 		printf(
-			// Translators: 1: order number, 2: count of attendees in the order, 3: ticket label (dynamically singular or plural), 4: purchaser name, 5: linked purchaser email, 6: date of purchase.
-			esc_html__( 'Order #%1$s: %2$d %3$s reserved by %4$s (%5$s) on %6$s', 'event-tickets' ),
-			(int) $order_id,
-			(int) count( $attendees ),
-			esc_html(
-				_n(
-					'Ticket',
-					'Tickets',
-					count( $attendees ),
-					'event-tickets'
-				)
-			),
-			esc_attr( $purchaser_name ),
+			// Translators: 1: attendee name, 2: linked attendee email, 3: date of RSVP.
+			esc_html__( 'Reserved by %1$s (%2$s) on %3$s', 'event-tickets' ),
+			esc_html( $purchaser_name ),
 			'<a href="' . esc_url( 'mailto:' . $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
 			esc_html( $purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( $purchase_time ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' ) )
 		);
@@ -62,3 +55,4 @@ $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purcha
 		do_action( 'tec_tickets_user_details_tickets', $attendees, $post_id );
 		?>
 </div>
+

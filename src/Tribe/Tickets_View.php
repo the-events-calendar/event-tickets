@@ -873,6 +873,27 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
+	 * Verifies if we have RSVP V2 (Tickets Commerce backed) attendees for this user and event.
+	 *
+	 * RSVP V2 attendees are Tickets Commerce attendees (provider `tc`), so they are not caught
+	 * by `has_ticket_attendees()` (which excludes the TC-RSVP ticket type) nor by the RSVP V1
+	 * templates. This check lets the My Tickets page route them through the Tickets Commerce
+	 * templates that render the RSVP V2 UI.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $event_id The Event ID we're checking.
+	 * @param int|null $user_id  An Optional User ID.
+	 *
+	 * @return bool Whether the user has RSVP V2 attendees for the event.
+	 */
+	public function has_rsvp_v2_attendees( $event_id, $user_id = null ) {
+		$attendees = $this->get_event_rsvp_attendees( $event_id, $user_id );
+
+		return ! empty( $attendees ) && 'tc' === ( $attendees[0]['provider_slug'] ?? '' );
+	}
+
+	/**
 	 * Gets the name(s) of the type(s) of ticket(s) the specified user (optional) has for the specified event.
 	 *
 	 * @since 4.2

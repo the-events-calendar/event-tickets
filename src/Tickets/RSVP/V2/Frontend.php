@@ -321,24 +321,49 @@ class Frontend {
 			return;
 		}
 
-		$ticket_id         = (int) ( $attendee['product_id'] ?? 0 );
 		$attendee_is_going = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY )
 			? tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
 			: true;
-		$show_not_going    = false;
-
-		if ( $ticket_id ) {
-			$show_not_going = tribe_is_truthy( get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true ) );
-		}
 
 		tribe( 'tickets.editor.template' )->template(
 			'v2/commerce/rsvp/my-tickets/ticket-status',
 			[
 				'attendee_is_going' => $attendee_is_going,
-				'show_not_going'    => $show_not_going,
 				'attendee_id'       => $attendee['ID'],
 			]
 		);
+	}
+
+	/**
+	 * Replaces the default `tickets/my-tickets/user-details` template for TC-RSVP orders.
+	 *
+	 * Hooked to the template's `tribe_template_pre_html` filter so the alternate template
+	 * supports both echoed and non-echoed template rendering.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null         $html    The filtered template HTML, or null before rendering.
+	 * @param string              $file    The template file path.
+	 * @param array<string>       $name    The template name parts.
+	 * @param Tribe__Template     $template The current template instance.
+	 * @param array<string,mixed> $context The context data passed to the template.
+	 *
+	 * @return string|null The alternate template HTML, or the original value.
+	 */
+	public function render_my_tickets_user_details( $html, $file, $name, $template, $context ) {
+		$name = is_array( $name ) ? implode( '/', $name ) : $name;
+
+		if ( 'tickets/my-tickets/user-details' !== $name ) {
+			return $html;
+		}
+
+		$attendees = $context['attendees'] ?? [];
+
+		if ( empty( $attendees ) || Constants::TC_RSVP_TYPE !== ( $attendees[0]['ticket_type'] ?? '' ) ) {
+			return $html;
+		}
+
+		return $template->template( 'v2/commerce/rsvp/my-tickets/user-details', $context, false );
 	}
 
 	/**

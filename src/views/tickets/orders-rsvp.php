@@ -29,6 +29,13 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
 }
 
+// RSVP V2 attendees are Tickets Commerce attendees and render through the Tickets Commerce
+// My Tickets templates (`orders-tc-tickets.php`), which provide the V2 RSVP UI. Keep this
+// legacy list for RSVP V1 data only.
+if ( $view->has_rsvp_v2_attendees( $post_id, $user_id ) ) {
+	return;
+}
+
 $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 
 $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user_id );

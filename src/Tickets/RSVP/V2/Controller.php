@@ -141,6 +141,12 @@ class Controller extends Controller_Contract {
 			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
 			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' )
 		);
+		add_filter(
+			'tribe_template_pre_html',
+			$this->container->callback( Frontend::class, 'render_my_tickets_user_details' ),
+			10,
+			5
+		);
 		add_action(
 			'tribe_tickets_tickets_hook',
 			$this->container->callback( Frontend::class, 'do_not_display_rsvp_v1_tickets_form' ),
@@ -355,6 +361,11 @@ class Controller extends Controller_Contract {
 		remove_action(
 			'tec_tickets_my_tickets_ticket_information_after_ticket_name',
 			$this->container->callback( Frontend::class, 'render_my_tickets_ticket_status' ),
+		);
+		remove_filter(
+			'tribe_template_pre_html',
+			$this->container->callback( Frontend::class, 'render_my_tickets_user_details' ),
+			10
 		);
 		remove_action(
 			'tribe_tickets_tickets_hook',
