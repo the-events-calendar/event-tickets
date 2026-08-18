@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Prevented the cart-to-checkout redirect from being cached to avoid an issue where the Tickets Commerce checkout could show 'Oops, no tickets!' after selecting tickets on sites behind a full-page or edge cache.
+Prevented the cart-to-checkout redirect and the checkout page from being stored by full-page and edge caches, resolving an issue where the Tickets Commerce checkout could show 'Oops, no tickets!' after selecting tickets.
