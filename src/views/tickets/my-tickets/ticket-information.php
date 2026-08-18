@@ -14,6 +14,8 @@
  * @var array                   $attendee The attendee data.
  */
 
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+
 ?>
 <div class="tribe-ticket-information">
 	<?php
@@ -22,7 +24,7 @@
 		$price = $provider->get_price_html( $attendee['product_id'], $attendee );
 	}
 	?>
-	<?php if ( ! empty( $attendee['ticket_exists'] ) ) : ?>
+	<?php if ( ! empty( $attendee['ticket_exists'] ) && RSVP_V2_Constants::TC_RSVP_TYPE !== ( $attendee['ticket_type'] ?? '' ) ) : ?>
 		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
 	<?php endif; ?>
 	<?php

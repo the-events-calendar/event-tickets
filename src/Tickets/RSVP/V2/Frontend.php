@@ -321,14 +321,17 @@ class Frontend {
 			return;
 		}
 
+		$ticket_id         = (int) ( $attendee['product_id'] ?? 0 );
 		$attendee_is_going = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY )
 			? tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
 			: true;
+		$show_not_going    = $ticket_id && tribe_is_truthy( get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true ) );
 
 		tribe( 'tickets.editor.template' )->template(
 			'v2/commerce/rsvp/my-tickets/ticket-status',
 			[
 				'attendee_is_going' => $attendee_is_going,
+				'show_not_going'    => $show_not_going,
 				'attendee_id'       => $attendee['ID'],
 			]
 		);

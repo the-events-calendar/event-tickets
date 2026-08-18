@@ -177,6 +177,46 @@ class My_Tickets_Template_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 */
+	public function it_should_not_render_the_ticket_name_for_rsvp_attendees(): void {
+		$data     = $this->create_rsvp_fixture( false, 'yes', 'Jane Doe' );
+		$template = $this->get_template();
+
+		$html = $template->template(
+			'tickets/my-tickets/ticket-information',
+			[ 'attendee' => $data['attendee'] ],
+			false
+		);
+
+		$this->assertStringNotContainsString( 'ticket-name', $html, 'The RSVP ticket name should not be rendered for RSVP attendees' );
+		$this->assertStringNotContainsString( 'Test TC ticket', $html, 'The RSVP ticket title should not leak into the ticket information' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_the_ticket_name_for_non_rsvp_attendees(): void {
+		$post_id   = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$order     = $this->create_order( [ $ticket_id => 1 ] );
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$attendee  = $attendees[0];
+
+		$attendee['ticket_type'] = 'default';
+
+		$template = $this->get_template();
+		$html     = $template->template(
+			'tickets/my-tickets/ticket-information',
+			[ 'attendee' => $attendee ],
+			false
+		);
+
+		$this->assertStringContainsString( 'ticket-name', $html, 'The ticket name should still render for non-RSVP attendees' );
+	}
+
+	/**
+	 * @test
 	 * @dataProvider tickets_list_data_provider
 	 */
 	public function it_should_render_tickets_list( Closure $fixture ): void {
