@@ -261,7 +261,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * When a successful request is completed to our Approval endpoint.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Updated to handle the case where the payment intent is not present.
+	 * @since 5.29.3 Updated to handle the case where the payment intent is not present.
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -294,7 +294,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * network drop, an expired session) left the loader spinning with no message, and buyers retried
 	 * and were charged again.
 	 *
-	 * @since TBD
+	 * @since 5.29.3
 	 *
 	 * @param {Object} response The parsed response from the order update endpoint.
 	 *
