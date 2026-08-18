@@ -1,5 +1,0 @@
-significance: patch
-type: fix
-entry: Resolved an issue where a Stripe checkout could leave the buyer on an
-  endless spinner with their payment taken but no order completed.
-timestamp: 2026-08-12T16:57:06.638Z
