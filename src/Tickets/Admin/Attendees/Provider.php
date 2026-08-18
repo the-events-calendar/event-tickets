@@ -20,7 +20,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	 * Register the provider singletons.
 	 *
 	 * @since 5.9.1
-	 * @since TBD Skipped registration on front-end requests.
+	 * @since 5.29.3 Skipped registration on front-end requests.
 	 */
 	public function register() {
 		/*

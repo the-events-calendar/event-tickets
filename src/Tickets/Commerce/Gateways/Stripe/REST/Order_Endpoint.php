@@ -99,7 +99,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * checking out. It is compared against the value stored on that specific order, never against the
 	 * request's own claims, and it travels in the request body rather than the URL.
 	 *
-	 * @since TBD
+	 * @since 5.29.3
 	 *
 	 * @param WP_REST_Request $request          The REST Request instance.
 	 * @param string          $gateway_order_id The Payment Intent ID.
@@ -142,7 +142,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * on every status change, so the same intent can appear under more than one status bucket. Only a
 	 * payload whose own id matches the requested Payment Intent is considered.
 	 *
-	 * @since TBD
+	 * @since 5.29.3
 	 *
 	 * @param int    $order_id         The Tickets Commerce order post ID.
 	 * @param string $gateway_order_id The Payment Intent ID.

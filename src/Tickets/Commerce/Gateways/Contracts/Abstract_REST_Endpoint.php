@@ -130,7 +130,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 * gateways may authorize the request instead with a credential they issued for that specific order.
 	 *
 	 * @since 5.29.0.1
-	 * @since TBD Falls back to a gateway-issued, order-scoped credential when the cart cookie is gone.
+	 * @since 5.29.3 Falls back to a gateway-issued, order-scoped credential when the cart cookie is gone.
 	 *
 	 * @param WP_REST_Request $request The REST Request instance.
 	 *
@@ -157,7 +157,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 * The order id must match the pending order stored for the cart hash read from the visitor's
 	 * cookie, and a Created/Pending order carrying that same cart hash must exist.
 	 *
-	 * @since TBD
+	 * @since 5.29.3
 	 *
 	 * @param string $gateway_order_id The gateway's order id.
 	 *
@@ -190,7 +190,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 * back to the repository's default post_status, which is the insert status alone. Querying for
 	 * `any` and deciding here is the only combination that means what it says.
 	 *
-	 * @since TBD
+	 * @since 5.29.3
 	 *
 	 * @param mixed $order The order post, or anything falsy when no order was found.
 	 *
@@ -220,7 +220,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 * a timing-safe comparison. Accepting a merely well-formed value would reduce this gate to an
 	 * existence check on the order id.
 	 *
-	 * @since TBD
+	 * @since 5.29.3
 	 *
 	 * @param WP_REST_Request $request          The REST Request instance.
 	 * @param string          $gateway_order_id The gateway's order id.
