@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.29.2.1\n"
+"Project-Id-Version: Event Tickets 5.29.3\n"
 "Report-Msgid-Bugs-To: https://evnt.is/191x\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-07T12:48:29+00:00\n"
+"POT-Creation-Date: 2026-08-18T18:20:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: event-tickets\n"
@@ -8038,13 +8038,13 @@ msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:560
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:231
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:378
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:469
 msgid "To which status the failing should change this order to"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:574
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:245
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:391
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:482
 msgid "Why this particular order has failed."
 msgstr ""
 
@@ -8436,7 +8436,7 @@ msgid "Order ID in Square"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:286
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:430
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:521
 msgid "Creating new order failed, please refresh your checkout page."
 msgstr ""
 
@@ -8449,27 +8449,27 @@ msgid "Creating new Square order failed. Please try again."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:289
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:434
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:525
 msgid "Order not found, please restart your checkout process."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:290
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:435
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:526
 msgid "Your payment is invalid. Please try again."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:291
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:438
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:529
 msgid "Your payment method has failed. Please try again."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:292
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:439
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:530
 msgid "Your payment status was not recognized. Please try again."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Square/REST/Order_Endpoint.php:293
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:440
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:531
 msgid "Cannot generate an order for an empty cart, please select new items to checkout."
 msgstr ""
 
@@ -8615,6 +8615,12 @@ msgstr ""
 msgid "Failed to register Square webhook"
 msgstr ""
 
+#. translators: %s: The lowercase plural tickets label.
+#: src/Tickets/Commerce/Gateways/Stripe/Assets.php:83
+#, php-format
+msgid "Your payment went through, but we could not finish your order. Please do not pay again. Contact the organizer to have your %s issued."
+msgstr ""
+
 #: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:78
 msgid "Stripe"
 msgstr ""
@@ -8693,35 +8699,35 @@ msgstr ""
 msgid "The selected payment does not match the items in your cart. Please refresh checkout and try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:226
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:317
 msgid "Order ID (Payment Intent ID) in Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:239
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:330
 msgid "Client Secret from Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:365
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:456
 msgid "Order ID in Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:431
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:522
 msgid "Completing the Stripe PaymentIntent failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:432
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:523
 msgid "Creating new Stripe PaymentIntent failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:433
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:524
 msgid "Creating new Stripe order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:436
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:527
 msgid "Your payment failed security verification with Gateway. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:437
+#: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:528
 msgid "Your payment does not match this order. Please restart your checkout process."
 msgstr ""
 

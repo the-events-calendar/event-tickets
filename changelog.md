@@ -4,6 +4,9 @@
 
 * Security - Hardened attendee details rendering.
 * Security - Hardened validation of the ticket parameters.
+* Fix - Resolved an issue where a Stripe checkout could leave the buyer on an endless spinner with their payment taken but no order completed.
+* Performance - Stopped resolving the current user during bootstrap on front-end requests to decide whether the admin Attendees screens should be registered.
+* Language - 1 new strings added, 16 updated, 0 fuzzied, and 0 obsoleted.
 
 ### [5.29.2.1] 2026-08-07
 
