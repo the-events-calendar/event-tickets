@@ -199,7 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.29.3] 2026-08-19 =
+= [5.29.3] 2026-08-20 =
 
 * Security - Hardened attendee details rendering.
 * Security - Hardened validation of the ticket parameters.
