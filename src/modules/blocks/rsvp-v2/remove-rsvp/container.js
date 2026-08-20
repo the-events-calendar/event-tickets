@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { dispatch as wpDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -29,9 +28,9 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		isLoading: stateProps.isLoading,
 		onRemove: async () => {
 			if (
+				// eslint-disable-next-line no-alert
 				! window.confirm(
-					// eslint-disable-line no-alert
-					__( 'Are you sure you want to disable RSVP? This cannot be undone.', 'event-tickets' )
+					__( 'Are you sure you want to remove RSVP? This cannot be undone.', 'event-tickets' )
 				)
 			) {
 				return;
@@ -42,7 +41,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 			}
 
 			dispatch( actions.deleteRSVP() );
-			wpDispatch( 'core/block-editor' ).removeBlocks( [ ownProps.clientId ] );
+			dispatch( actions.setRSVPIsInitializing( false ) );
 		},
 	};
 };
