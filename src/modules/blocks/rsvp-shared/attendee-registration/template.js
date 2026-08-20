@@ -22,7 +22,6 @@ const defaultLabel = __( 'Attendee Information', 'event-tickets' );
 const RSVPAttendeeRegistration = ( {
 	attendeeRegistrationURL,
 	hasAttendeeInfoFields,
-	isCreated,
 	isDisabled,
 	isModalOpen,
 	onClick,
@@ -31,12 +30,14 @@ const RSVPAttendeeRegistration = ( {
 	label = defaultLabel,
 	linkTextAdd = defaultLinkTextAdd,
 	linkTextEdit = defaultLinkTextEdit,
+	helperText,
+	showHelperText,
 } ) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
 	return (
 		<ARElement
-			helperText={ __( 'Save your RSVP to enable attendee information fields', 'event-tickets' ) }
+			helperText={ helperText }
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }
 			isModalOpen={ isModalOpen }
@@ -46,7 +47,7 @@ const RSVPAttendeeRegistration = ( {
 			onClick={ onClick }
 			onClose={ onClose }
 			onIframeLoad={ onIframeLoad }
-			showHelperText={ ! isCreated }
+			showHelperText={ showHelperText }
 			shouldCloseOnClickOutside={ false }
 		/>
 	);
@@ -55,7 +56,6 @@ const RSVPAttendeeRegistration = ( {
 RSVPAttendeeRegistration.propTypes = {
 	attendeeRegistrationURL: PropTypes.string.isRequired,
 	hasAttendeeInfoFields: PropTypes.bool.isRequired,
-	isCreated: PropTypes.bool.isRequired,
 	isDisabled: PropTypes.bool.isRequired,
 	isModalOpen: PropTypes.bool.isRequired,
 	onClick: PropTypes.func.isRequired,
@@ -64,6 +64,8 @@ RSVPAttendeeRegistration.propTypes = {
 	label: PropTypes.string,
 	linkTextAdd: PropTypes.string,
 	linkTextEdit: PropTypes.string,
+	helperText: PropTypes.string.isRequired,
+	showHelperText: PropTypes.bool.isRequired,
 };
 
 export default RSVPAttendeeRegistration;
