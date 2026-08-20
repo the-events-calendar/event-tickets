@@ -303,7 +303,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// When it's not Events Query and we have TEC active we don't care.
 		// Non-event queries can still be tickets pages (e.g. pretty permalink `/tickets/{id}`), so let those through.
-		if ( class_exists( 'Tribe__Events__Main' ) && ! $is_event_query && ! $this->is_edit_page() ) {
+		if ( class_exists( 'Tribe__Events__Main', false ) && ! $is_event_query && ! $this->is_edit_page() ) {
 			return;
 		}
 
