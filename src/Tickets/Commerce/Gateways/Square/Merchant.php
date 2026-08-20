@@ -247,7 +247,7 @@ class Merchant extends Abstract_Merchant {
 	public function save_signup_data( array $signup_data ): bool {
 		unset( $signup_data['state'] );
 
-		$this->delete_token_status();
+		$this->delete_refresh_status();
 
 		return update_option( $this->get_signup_data_key(), $signup_data );
 	}
@@ -261,7 +261,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return string
 	 */
-	public function get_token_status_option_key(): string {
+	public function get_refresh_status_option_key(): string {
 		$gateway_key = Gateway::get_key();
 		$mode        = $this->get_mode();
 
@@ -271,12 +271,15 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the outcome of the last access token refresh attempt.
 	 *
+	 * The timestamps are UTC, so that they compare correctly against strtotime(), which WordPress pins
+	 * to UTC whatever the site timezone is.
+	 *
 	 * @since TBD
 	 *
-	 * @return array{invalid_at: string, error: string, failures: int, last_attempt_at: string}
+	 * @return array{invalid_at: string, error: string, failures: int, last_attempt_at: string, first_failure_at: string}
 	 */
-	public function get_token_status(): array {
-		$status = get_option( $this->get_token_status_option_key(), [] );
+	public function get_refresh_status(): array {
+		$status = get_option( $this->get_refresh_status_option_key(), [] );
 
 		if ( ! is_array( $status ) ) {
 			$status = [];
@@ -284,13 +287,25 @@ class Merchant extends Abstract_Merchant {
 
 		return array_merge(
 			[
-				'invalid_at'      => '',
-				'error'           => '',
-				'failures'        => 0,
-				'last_attempt_at' => '',
+				'invalid_at'       => '',
+				'error'            => '',
+				'failures'         => 0,
+				'last_attempt_at'  => '',
+				'first_failure_at' => '',
 			],
 			$status
 		);
+	}
+
+	/**
+	 * How many consecutive refresh attempts have failed.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_refresh_failure_count(): int {
+		return (int) $this->get_refresh_status()['failures'];
 	}
 
 	/**
@@ -302,8 +317,8 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function update_token_status( array $data ): bool {
-		return update_option( $this->get_token_status_option_key(), array_merge( $this->get_token_status(), $data ), false );
+	public function update_refresh_status( array $data ): bool {
+		return update_option( $this->get_refresh_status_option_key(), array_merge( $this->get_refresh_status(), $data ), false );
 	}
 
 	/**
@@ -313,8 +328,8 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function delete_token_status(): bool {
-		return delete_option( $this->get_token_status_option_key() );
+	public function delete_refresh_status(): bool {
+		return delete_option( $this->get_refresh_status_option_key() );
 	}
 
 	/**
@@ -378,7 +393,7 @@ class Merchant extends Abstract_Merchant {
 	 * @return bool
 	 */
 	public function is_token_invalid(): bool {
-		return ! empty( $this->get_token_status()['invalid_at'] );
+		return ! empty( $this->get_refresh_status()['invalid_at'] );
 	}
 
 	/**
@@ -397,7 +412,7 @@ class Merchant extends Abstract_Merchant {
 
 		$update = [
 			'expires_at'   => '',
-			'refreshed_at' => Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT ),
+			'refreshed_at' => Dates::build_date_object( 'now', 'UTC' )->format( Dates::DBDATETIMEFORMAT ),
 		];
 
 		// Only overwrite what the response actually carried; omitted keys keep their current value.
@@ -426,7 +441,7 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function flush_option_cache(): void {
 		wp_cache_delete( $this->get_signup_data_key(), 'options' );
-		wp_cache_delete( $this->get_token_status_option_key(), 'options' );
+		wp_cache_delete( $this->get_refresh_status_option_key(), 'options' );
 		wp_cache_delete( 'alloptions', 'options' );
 	}
 
@@ -455,7 +470,8 @@ class Merchant extends Abstract_Merchant {
 			return $return;
 		}
 
-		$accepted = tribe( WhoDat::class )->is_token_accepted();
+		// Forced: this is the explicit recheck, and a token refreshed moments ago outdates the cache.
+		$accepted = tribe( WhoDat::class )->is_token_accepted( true );
 
 		if ( null === $accepted ) {
 			$return['errors'][] = __( 'Unable to connect to Square.', 'event-tickets' );
@@ -463,7 +479,7 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		if ( ! $accepted ) {
-			$status = tribe( WhoDat::class )->get_token_status();
+			$status = tribe( WhoDat::class )->get_token_status( true );
 
 			$return['errors'][] = $status['message'] ?? $status['error_description'] ?? __( 'Square no longer accepts the stored credentials.', 'event-tickets' );
 			return $return;
@@ -484,7 +500,7 @@ class Merchant extends Abstract_Merchant {
 		// Also delete any stored merchant data.
 		$this->delete_merchant_data();
 
-		$this->delete_token_status();
+		$this->delete_refresh_status();
 
 		$result = delete_option( $this->get_signup_data_key() );
 

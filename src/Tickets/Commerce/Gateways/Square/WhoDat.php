@@ -172,7 +172,9 @@ class WhoDat extends Abstract_WhoDat {
 		$response = wp_remote_post(
 			$url,
 			[
-				'body' => [
+				// This runs inside a checkout request, so it may not hold it open for WordPress's default.
+				'timeout' => 3,
+				'body'    => [
 					'grant_type'    => 'refresh_token',
 					'refresh_token' => $refresh_token,
 					'merchant_id'   => $merchant->get_merchant_id(),
@@ -244,7 +246,8 @@ class WhoDat extends Abstract_WhoDat {
 			return true;
 		}
 
-		if ( ! empty( $status['type'] ) || ! empty( $status['error'] ) ) {
+		// Only this one type means the token was refused; the rest describe Square being unwell.
+		if ( isset( $status['type'] ) && 'UNAUTHORIZED' === strtoupper( (string) $status['type'] ) ) {
 			return false;
 		}
 

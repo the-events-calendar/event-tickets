@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use Codeception\TestCase\WPTestCase;
-use WP_Hook;
 
 class Requests_Test extends WPTestCase {
 	/**
@@ -56,13 +55,6 @@ class Requests_Test extends WPTestCase {
 	protected ?array $square_response_override = null;
 
 	/**
-	 * The tribe_log hook as it was before the test replaced it.
-	 *
-	 * @var mixed
-	 */
-	protected $previous_log_hook;
-
-	/**
 	 * The instance the shared filter callback should route to.
 	 *
 	 * WordPress restores $wp_filter after the @fter methods run, which puts an instance callback back
@@ -92,9 +84,9 @@ class Requests_Test extends WPTestCase {
 		self::$current = $this;
 		add_filter( 'pre_http_request', [ __CLASS__, 'route_request' ], 10, 3 );
 
-		global $wp_filter;
-		$this->previous_log_hook = $wp_filter['tribe_log'] ?? null;
-		$wp_filter['tribe_log']  = new WP_Hook(); // phpcs:ignore
+		// The suite bootstrap turns any error or warning log into an exception; these tests assert on
+		// failure paths, which log on purpose. Lifted by name so the rest of $wp_filter stays untouched.
+		remove_action( 'tribe_log', $GLOBALS['tec_tickets_square_log_guard'], 10 );
 	}
 
 	/**
@@ -104,15 +96,10 @@ class Requests_Test extends WPTestCase {
 		remove_filter( 'pre_http_request', [ __CLASS__, 'route_request' ], 10 );
 		self::$current = null;
 
-		global $wp_filter;
-		if ( null === $this->previous_log_hook ) {
-			unset( $wp_filter['tribe_log'] );
-		} else {
-			$wp_filter['tribe_log'] = $this->previous_log_hook; // phpcs:ignore
-		}
+		add_action( 'tribe_log', $GLOBALS['tec_tickets_square_log_guard'], 10, 3 );
 
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_token_status();
+		$merchant->delete_refresh_status();
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 		delete_option( 'tec_tickets_commerce_square_token_refresh_lock_' . $merchant->get_mode() );
 		tribe_cache()->reset();
@@ -200,7 +187,7 @@ class Requests_Test extends WPTestCase {
 	 */
 	protected function connect( array $overrides = [] ): Merchant {
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_token_status();
+		$merchant->delete_refresh_status();
 		delete_option( 'tec_tickets_commerce_square_token_refresh_lock_' . $merchant->get_mode() );
 		$merchant->save_signup_data( array_merge( tec_tickets_tests_get_fake_merchant_data(), $overrides ) );
 		tribe_cache()->reset();
@@ -268,7 +255,7 @@ class Requests_Test extends WPTestCase {
 	 */
 	public function it_should_not_retry_when_the_refresh_is_refused(): void {
 		$merchant              = $this->connect( $this->not_due() );
-		$this->whodat_code     = 422;
+		$this->whodat_code     = 401;
 		$this->whodat_response = '<!DOCTYPE html><html><head><title>Error</title></head><body></body></html>';
 
 		$response = Requests::get( 'locations' );
@@ -291,6 +278,23 @@ class Requests_Test extends WPTestCase {
 		$this->assertCount( 1, $this->square_calls );
 		$this->assertSame( 0, $this->whodat_calls );
 		$this->assertSame( 'INVALID_REQUEST_ERROR', $response['errors'][0]['category'] );
+	}
+
+	/**
+	 * Square does not always file an expired token under AUTHENTICATION_ERROR, so the code has to be
+	 * enough on its own.
+	 *
+	 * @test
+	 */
+	public function it_should_retry_on_an_expired_token_code_whatever_the_category(): void {
+		$this->connect( $this->not_due() );
+
+		$this->square_response_override = [ 'errors' => [ [ 'category' => 'INVALID_REQUEST_ERROR', 'code' => 'ACCESS_TOKEN_EXPIRED' ] ] ];
+
+		Requests::get( 'locations' );
+
+		$this->assertCount( 2, $this->square_calls );
+		$this->assertSame( 1, $this->whodat_calls );
 	}
 
 	/**

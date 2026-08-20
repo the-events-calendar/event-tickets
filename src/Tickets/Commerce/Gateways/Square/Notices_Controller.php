@@ -490,8 +490,10 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Determines if the token rejected notice should be displayed.
 	 *
-	 * Deliberately does not check is_active(): a rejected token is exactly the state that makes the
-	 * gateway inactive, so gating on it would hide the notice that explains why.
+	 * Deliberately checks neither is_active() nor is_enabled(): a rejected token is what makes the
+	 * gateway inactive, and saving the Payments tab in that state clears the enabled flag, because the
+	 * enable toggle renders disabled and so submits nothing. Gating on either would let the screen that
+	 * explains the problem erase the notice explaining it.
 	 *
 	 * @since TBD
 	 *
@@ -502,15 +504,15 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		if ( ! $this->gateway->is_enabled() ) {
-			return false;
-		}
-
 		return $this->merchant->is_token_invalid();
 	}
 
 	/**
 	 * Determines if the repeated refresh failure notice should be displayed.
+	 *
+	 * Failures only matter once the token is close enough to expiring for them to cost a sale. Warning
+	 * about them on day 5 of a 30 day token would leave an undismissable banner up for weeks over
+	 * something that has every chance of clearing up on its own.
 	 *
 	 * @since TBD
 	 *
@@ -530,7 +532,13 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		return (int) $this->merchant->get_token_status()['failures'] >= 3;
+		if ( $this->merchant->get_refresh_failure_count() < 3 ) {
+			return false;
+		}
+
+		// An expiration we never learned is treated as imminent, since it may already have passed.
+		return null === $this->merchant->get_token_expiration()
+			|| $this->merchant->is_token_expiring_within( 2 * DAY_IN_SECONDS );
 	}
 
 	/**

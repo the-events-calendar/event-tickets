@@ -62,6 +62,33 @@ class Token_Refresher {
 	protected const LOCK_TIMEOUT = 60;
 
 	/**
+	 * How long to keep polling for the winner's result when the lock is contended, in microseconds.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	protected const LOCK_WAIT = 1000000;
+
+	/**
+	 * How often to re-read the credentials while waiting on a contended lock, in microseconds.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	protected const LOCK_POLL = 100000;
+
+	/**
+	 * How many failures must pile up before an uncorroborated rejection counts as final.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	protected const PERSISTENT_FAILURES = 5;
+
+	/**
 	 * Merchant instance.
 	 *
 	 * @since TBD
@@ -87,6 +114,15 @@ class Token_Refresher {
 	 * @var bool
 	 */
 	private bool $refreshing = false;
+
+	/**
+	 * The value written into the lock row while this process holds it.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $lock_value = '';
 
 	/**
 	 * Token_Refresher constructor.
@@ -128,7 +164,12 @@ class Token_Refresher {
 	 * @return bool Whether the stored access token is now different from the rejected one.
 	 */
 	public function refresh_now( string $reason = 'forced' ): bool {
-		if ( ! $this->merchant->get_refresh_token() || $this->merchant->is_token_invalid() ) {
+		if ( ! $this->merchant->get_refresh_token() ) {
+			return false;
+		}
+
+		// Without this a connection Square keeps rejecting would refresh once per Square API call.
+		if ( $this->is_backing_off() ) {
 			return false;
 		}
 
@@ -147,19 +188,20 @@ class Token_Refresher {
 			return false;
 		}
 
-		if ( $this->merchant->is_token_invalid() ) {
+		if ( $this->is_backing_off() ) {
 			return false;
 		}
 
-		if ( $this->is_backing_off() ) {
-			return false;
+		// A rejected connection is retried rarely rather than never, so a wrong verdict heals itself.
+		if ( $this->merchant->is_token_invalid() ) {
+			return true;
 		}
 
 		$expiration = $this->merchant->get_token_expiration();
 
 		if ( null === $expiration ) {
 			// Connected before the expiration was tracked: try occasionally until we learn a real one.
-			$last_attempt = strtotime( (string) $this->merchant->get_token_status()['last_attempt_at'] );
+			$last_attempt = strtotime( (string) $this->merchant->get_refresh_status()['last_attempt_at'] );
 
 			return false === $last_attempt || $last_attempt < time() - $this->get_unknown_expiration_interval();
 		}
@@ -213,10 +255,11 @@ class Token_Refresher {
 	 * @return bool
 	 */
 	protected function is_backing_off(): bool {
-		$status   = $this->merchant->get_token_status();
+		$status   = $this->merchant->get_refresh_status();
 		$failures = (int) $status['failures'];
+		$invalid  = ! empty( $status['invalid_at'] );
 
-		if ( $failures < 1 ) {
+		if ( $failures < 1 && ! $invalid ) {
 			return false;
 		}
 
@@ -226,9 +269,29 @@ class Token_Refresher {
 			return false;
 		}
 
-		$backoff = min( 12 * HOUR_IN_SECONDS, HOUR_IN_SECONDS * ( 2 ** min( 4, $failures - 1 ) ) );
+		$backoff = $invalid
+			? $this->get_invalid_recheck_interval()
+			: min( 12 * HOUR_IN_SECONDS, HOUR_IN_SECONDS * ( 2 ** min( 4, $failures - 1 ) ) );
 
 		return $last_attempt + $backoff > time();
+	}
+
+	/**
+	 * How long a rejected connection waits before it asks Square again.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	protected function get_invalid_recheck_interval(): int {
+		/**
+		 * Filters how often a rejected Square connection re-checks whether it can be renewed after all.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $interval The interval, in seconds.
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_square_token_invalid_recheck_interval', 12 * HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -249,7 +312,9 @@ class Token_Refresher {
 		$previous_token = $this->merchant->get_access_token();
 
 		if ( ! $this->create_lock() ) {
-			return false;
+			// Only a caller whose request already failed waits; a proactive refresh has nothing to gain
+			// from holding a page load open while somebody else does the work.
+			return $forced && $this->wait_for_lock_holder( $previous_token );
 		}
 
 		$this->refreshing = true;
@@ -269,8 +334,8 @@ class Token_Refresher {
 			$result = $this->who_dat->request_token_refresh();
 			$status = $this->classify_result( $result );
 
-			$this->merchant->update_token_status(
-				[ 'last_attempt_at' => Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT ) ]
+			$this->merchant->update_refresh_status(
+				[ 'last_attempt_at' => Dates::build_date_object( 'now', 'UTC' )->format( Dates::DBDATETIMEFORMAT ) ]
 			);
 
 			if ( self::RESULT_SUCCESS === $status ) {
@@ -319,12 +384,47 @@ class Token_Refresher {
 			return self::RESULT_TRANSIENT;
 		}
 
-		// The request was understood and turned down.
-		if ( $code >= 400 && $code < 500 ) {
+		// An outright authorization refusal needs no corroboration.
+		if ( 401 === $code || 403 === $code ) {
 			return self::RESULT_PERMANENT;
 		}
 
-		return false === $this->who_dat->is_token_accepted( true ) ? self::RESULT_PERMANENT : self::RESULT_TRANSIENT;
+		// Everything else, a rate limit or a gateway error included, has to be corroborated.
+		return $this->is_rejection_final() ? self::RESULT_PERMANENT : self::RESULT_TRANSIENT;
+	}
+
+	/**
+	 * Whether a refusal the response could not explain is worth acting on.
+	 *
+	 * Square's status endpoint reports on the *access* token, which has usually expired by the time a
+	 * refresh runs, so on its own it cannot tell a revoked grant from an outage: it says UNAUTHORIZED
+	 * either way. It only carries independent information while the access token is still inside its
+	 * own lifetime. When it does not, the connection is written off only after failures that keep
+	 * repeating over more than a day, which an outage does not do.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function is_rejection_final(): bool {
+		if ( false !== $this->who_dat->is_token_accepted( true ) ) {
+			return false;
+		}
+
+		$expiration = $this->merchant->get_token_expiration();
+
+		// Square refusing a token that is still inside its own lifetime means the grant itself is gone.
+		// An expiration we never recorded proves nothing either way, so it does not count here.
+		if ( null !== $expiration && $expiration->getTimestamp() > time() ) {
+			return true;
+		}
+
+		$status        = $this->merchant->get_refresh_status();
+		$first_failure = strtotime( (string) $status['first_failure_at'] );
+
+		return (int) $status['failures'] >= self::PERSISTENT_FAILURES
+			&& false !== $first_failure
+			&& $first_failure <= time() - DAY_IN_SECONDS;
 	}
 
 	/**
@@ -344,7 +444,15 @@ class Token_Refresher {
 			return false;
 		}
 
-		$this->merchant->delete_token_status();
+		// last_attempt_at survives: it is the only throttle a connection with no known expiration has.
+		$this->merchant->update_refresh_status(
+			[
+				'invalid_at'       => '',
+				'error'            => '',
+				'failures'         => 0,
+				'first_failure_at' => '',
+			]
+		);
 
 		/**
 		 * Fires after the Square access token has been refreshed.
@@ -359,9 +467,10 @@ class Token_Refresher {
 	}
 
 	/**
-	 * Marks the connection as unrecoverable.
+	 * Marks the connection as unavailable.
 	 *
-	 * The credentials are deliberately kept so support can still see what is stored.
+	 * The credentials are deliberately kept, both so support can still see what is stored and so the
+	 * occasional re-check can lift the flag if Square starts renewing them again.
 	 *
 	 * @since TBD
 	 *
@@ -371,9 +480,9 @@ class Token_Refresher {
 	 * @return void
 	 */
 	protected function record_permanent_failure( int $code, string $reason ): void {
-		$this->merchant->update_token_status(
+		$this->merchant->update_refresh_status(
 			[
-				'invalid_at' => Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT ),
+				'invalid_at' => Dates::build_date_object( 'now', 'UTC' )->format( Dates::DBDATETIMEFORMAT ),
 				'error'      => (string) $code,
 			]
 		);
@@ -411,9 +520,15 @@ class Token_Refresher {
 	 * @return void
 	 */
 	protected function record_transient_failure( int $code, string $reason ): void {
-		$failures = (int) $this->merchant->get_token_status()['failures'];
+		$status   = $this->merchant->get_refresh_status();
+		$failures = (int) $status['failures'] + 1;
 
-		$this->merchant->update_token_status( [ 'failures' => $failures + 1 ] );
+		$this->merchant->update_refresh_status(
+			[
+				'failures'         => $failures,
+				'first_failure_at' => $status['first_failure_at'] ?: Dates::build_date_object( 'now', 'UTC' )->format( Dates::DBDATETIMEFORMAT ),
+			]
+		);
 
 		do_action(
 			'tribe_log',
@@ -456,6 +571,7 @@ class Token_Refresher {
 		$key   = $this->get_lock_option_key();
 		$now   = time();
 		$table = DB::prefix( 'options' );
+		$value = $now . ':' . wp_generate_password( 12, false );
 
 		try {
 			$acquired = (bool) DB::query(
@@ -463,7 +579,7 @@ class Token_Refresher {
 					'INSERT IGNORE INTO %i ( option_name, option_value, autoload ) VALUES ( %s, %s, %s )',
 					$table,
 					$key,
-					(string) $now,
+					$value,
 					'no'
 				)
 			);
@@ -472,32 +588,102 @@ class Token_Refresher {
 				// A crash must not hold refreshes off forever.
 				$acquired = (bool) DB::query(
 					DB::prepare(
-						'UPDATE %i SET option_value = %s WHERE option_name = %s AND CAST( option_value AS UNSIGNED ) < %d',
+						'UPDATE %i SET option_value = %s WHERE option_name = %s AND CAST( SUBSTRING_INDEX( option_value, %s, 1 ) AS UNSIGNED ) < %d',
 						$table,
-						(string) $now,
+						$value,
 						$key,
+						':',
 						$now - self::LOCK_TIMEOUT
 					)
 				);
 			}
 		} catch ( Throwable $e ) {
+			// Left unlogged the refresh would simply stop happening, which is the failure being fixed.
+			do_action(
+				'tribe_log',
+				'error',
+				'Square access token refresh could not take its lock',
+				[
+					'source' => 'tickets-commerce-square',
+					'error'  => $e->getMessage(),
+				]
+			);
+
 			return false;
 		}
+
+		if ( ! $acquired ) {
+			return false;
+		}
+
+		$this->lock_value = $value;
 
 		wp_cache_delete( 'notoptions', 'options' );
 		wp_cache_delete( $key, 'options' );
 
-		return $acquired;
+		return true;
 	}
 
 	/**
-	 * Releases the refresh lock.
+	 * Releases the refresh lock, but only while this process still holds it.
+	 *
+	 * A process that stalled past the lock timeout has had its lock taken over, and must not delete the
+	 * row a second process is now working under.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function release_lock(): void {
-		delete_option( $this->get_lock_option_key() );
+		if ( '' === $this->lock_value ) {
+			return;
+		}
+
+		try {
+			DB::query(
+				DB::prepare(
+					'DELETE FROM %i WHERE option_name = %s AND option_value = %s',
+					DB::prefix( 'options' ),
+					$this->get_lock_option_key(),
+					$this->lock_value
+				)
+			);
+		} catch ( Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			// The stale takeover will clear it.
+		}
+
+		$this->lock_value = '';
+
+		wp_cache_delete( $this->get_lock_option_key(), 'options' );
+	}
+
+	/**
+	 * Waits out a refresh another process is already running.
+	 *
+	 * Without this every concurrent request that finds an expired token fails its Square call while the
+	 * winner is still mid-refresh, which at checkout means a failed payment per shopper.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $previous_token The access token this process started with.
+	 *
+	 * @return bool Whether the credentials were renewed by whoever held the lock.
+	 */
+	protected function wait_for_lock_holder( string $previous_token ): bool {
+		$waited = 0;
+
+		while ( $waited < self::LOCK_WAIT ) {
+			usleep( self::LOCK_POLL );
+
+			$waited += self::LOCK_POLL;
+
+			$this->merchant->flush_option_cache();
+
+			if ( $this->merchant->get_access_token() !== $previous_token ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

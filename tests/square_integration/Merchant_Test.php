@@ -11,7 +11,7 @@ class Merchant_Test extends WPTestCase {
 	 */
 	public function restore_merchant_data(): void {
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_token_status();
+		$merchant->delete_refresh_status();
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 	}
 
@@ -116,13 +116,13 @@ class Merchant_Test extends WPTestCase {
 
 		$this->assertTrue( $merchant->is_connected() );
 
-		$merchant->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 
 		$this->assertTrue( $merchant->is_token_invalid() );
 		$this->assertFalse( $merchant->is_connected() );
 		$this->assertFalse( $merchant->is_active() );
 
-		$merchant->delete_token_status();
+		$merchant->delete_refresh_status();
 
 		$this->assertTrue( $merchant->is_connected() );
 	}
@@ -135,10 +135,10 @@ class Merchant_Test extends WPTestCase {
 	public function it_should_not_share_state_with_stripe(): void {
 		$merchant = tribe( Merchant::class );
 
-		$merchant->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 
-		$this->assertNotSame( Stripe_Merchant::$merchant_unauthorized_option_key, $merchant->get_token_status_option_key() );
-		$this->assertNotSame( Stripe_Merchant::$merchant_deauthorized_option_key, $merchant->get_token_status_option_key() );
+		$this->assertNotSame( Stripe_Merchant::$merchant_unauthorized_option_key, $merchant->get_refresh_status_option_key() );
+		$this->assertNotSame( Stripe_Merchant::$merchant_deauthorized_option_key, $merchant->get_refresh_status_option_key() );
 		$this->assertEmpty( get_option( Stripe_Merchant::$merchant_unauthorized_option_key ) );
 		$this->assertEmpty( get_option( Stripe_Merchant::$merchant_deauthorized_option_key ) );
 	}
@@ -152,10 +152,10 @@ class Merchant_Test extends WPTestCase {
 
 		try {
 			$merchant->set_mode( 'live' );
-			$live = $merchant->get_token_status_option_key();
+			$live = $merchant->get_refresh_status_option_key();
 
 			$merchant->set_mode( 'sandbox' );
-			$sandbox = $merchant->get_token_status_option_key();
+			$sandbox = $merchant->get_refresh_status_option_key();
 
 			$this->assertNotSame( $live, $sandbox );
 		} finally {
@@ -237,12 +237,12 @@ class Merchant_Test extends WPTestCase {
 	public function it_should_clear_the_token_status_on_reconnect_and_disconnect(): void {
 		$merchant = tribe( Merchant::class );
 
-		$merchant->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 
 		$this->assertFalse( $merchant->is_token_invalid() );
 
-		$merchant->update_token_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 		$merchant->delete_signup_data();
 
 		$this->assertFalse( $merchant->is_token_invalid() );

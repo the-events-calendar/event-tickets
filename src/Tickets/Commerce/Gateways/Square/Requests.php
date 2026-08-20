@@ -74,6 +74,9 @@ class Requests extends Abstract_Requests {
 	 * @return array|null
 	 */
 	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ): ?array {
+		// Before the key is built, or a refresh mid-request would file the response under the old token.
+		tribe( Token_Refresher::class )->refresh_if_needed();
+
 		$merchant_id = self::get_merchant_id();
 		$token_hash  = substr( md5( tribe( static::$merchant )->get_access_token() ), 0, 8 );
 		$cache_key   = md5( wp_json_encode( [ $merchant_id, $token_hash, $endpoint, $query_args, $request_arguments, $raw ] ) );
