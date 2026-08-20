@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.29.2.1
+Stable tag: 5.29.3
 Requires at least: 6.8
 Tested up to: 7.0
 Requires PHP: 7.4
@@ -198,6 +198,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.29.3] 2026-08-20 =
+
+* Security - Hardened attendee details rendering.
+* Security - Hardened validation of the ticket parameters.
+* Fix - Resolved an issue where a Stripe checkout could leave the buyer on an endless spinner with their payment taken but no order completed.
+* Performance - Stopped resolving the current user during bootstrap on front-end requests to decide whether the admin Attendees screens should be registered.
+* Language - 1 new strings added, 16 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.29.2.1] 2026-08-07 =
 
