@@ -286,7 +286,7 @@ describe( 'RSVP shared block sagas', () => {
 	} );
 
 	describe( 'initializeRSVP', () => {
-		let state;
+		let state, startMomentMock, endMomentMock;
 		beforeEach( () => {
 			state = {
 				startDate: 'January 1, 2018',
@@ -294,6 +294,8 @@ describe( 'RSVP shared block sagas', () => {
 				endDate: 'January 4, 2018',
 				endTime: '23:32',
 			};
+			startMomentMock = { isAfter: jest.fn() };
+			endMomentMock = { isAfter: jest.fn() };
 			global.window = global.window || {};
 			window.tec = {
 				events: {
@@ -319,13 +321,14 @@ describe( 'RSVP shared block sagas', () => {
 		} );
 
 		it( 'should initialize state from datetime block', () => {
+			endMomentMock.isAfter.mockReturnValue( true );
 			const gen = sagas.initializeRSVP();
 
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( state.startDate ).value ).toMatchSnapshot();
 
 			expect( gen.next( {
-				moment: state.startDate,
+				moment: startMomentMock,
 				date: state.startDate,
 				dateInput: state.startDate,
 				time: state.startTime,
@@ -334,12 +337,12 @@ describe( 'RSVP shared block sagas', () => {
 				all( [
 					put( actions.setRSVPStartDate( state.startDate ) ),
 					put( actions.setRSVPStartDateInput( state.startDate ) ),
-					put( actions.setRSVPStartDateMoment( state.startDate ) ),
+					put( actions.setRSVPStartDateMoment( startMomentMock ) ),
 					put( actions.setRSVPStartTime( state.startTime ) ),
 					put( actions.setRSVPStartTimeInput( state.startTime ) ),
 					put( actions.setRSVPTempStartDate( state.startDate ) ),
 					put( actions.setRSVPTempStartDateInput( state.startDate ) ),
-					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
+					put( actions.setRSVPTempStartDateMoment( startMomentMock ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
 					put( actions.setRSVPTempStartTimeInput( state.startTime ) ),
 				] ),
@@ -352,7 +355,7 @@ describe( 'RSVP shared block sagas', () => {
 			);
 			expect( gen.next( state.endDate ).value ).toMatchSnapshot();
 			expect( gen.next( {
-				moment: state.endDate,
+				moment: endMomentMock,
 				date: state.endDate,
 				dateInput: state.endDate,
 				time: state.endTime,
@@ -361,17 +364,46 @@ describe( 'RSVP shared block sagas', () => {
 				all( [
 					put( actions.setRSVPEndDate( state.endDate ) ),
 					put( actions.setRSVPEndDateInput( state.endDate ) ),
-					put( actions.setRSVPEndDateMoment( state.endDate ) ),
+					put( actions.setRSVPEndDateMoment( endMomentMock ) ),
 					put( actions.setRSVPEndTime( state.endTime ) ),
 					put( actions.setRSVPEndTimeInput( state.endTime ) ),
 					put( actions.setRSVPTempEndDate( state.endDate ) ),
 					put( actions.setRSVPTempEndDateInput( state.endDate ) ),
-					put( actions.setRSVPTempEndDateMoment( state.endDate ) ),
+					put( actions.setRSVPTempEndDateMoment( endMomentMock ) ),
 					put( actions.setRSVPTempEndTime( state.endTime ) ),
 					put( actions.setRSVPTempEndTimeInput( state.endTime ) ),
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPDurationError ),
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not sync the end date when the event starts before the RSVP start time', () => {
+			endMomentMock.isAfter.mockReturnValue( false );
+			const gen = sagas.initializeRSVP();
+
+			gen.next();
+			gen.next( state.startDate );
+			gen.next( {
+				moment: startMomentMock,
+				date: state.startDate,
+				dateInput: state.startDate,
+				time: state.startTime,
+				timeInput: state.startTime,
+			} );
+			gen.next();
+			gen.next( true );
+			gen.next( state.endDate );
+
+			expect( gen.next( {
+				moment: endMomentMock,
+				date: state.endDate,
+				dateInput: state.endDate,
+				time: state.endTime,
+				timeInput: state.endTime,
+			} ).value ).toEqual(
 				call( sagas.handleRSVPDurationError ),
 			);
 			expect( gen.next().done ).toEqual( true );
