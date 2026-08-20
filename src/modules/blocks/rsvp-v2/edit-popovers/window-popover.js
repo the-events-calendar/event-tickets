@@ -44,7 +44,7 @@ const RSVPWindowPopover = ( { anchorRef, hasDurationError, isOpen, isSaving, onC
 			focusOnMount={ false }
 			onClose={ handleDismiss }
 			onFocusOutside={ handleDismiss }
-			position="bottom start"
+			placement="bottom-start"
 		>
 			<div className="tribe-editor__rsvp-window-popover__content">
 				<h4 className="tribe-editor__rsvp-window-popover__title tribe-common-h6">
