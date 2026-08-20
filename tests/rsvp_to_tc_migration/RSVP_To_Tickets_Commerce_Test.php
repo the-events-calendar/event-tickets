@@ -473,6 +473,83 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * It should preserve the IAC setting on the ticket during migration.
+	 */
+	public function should_preserve_iac_setting_during_migration(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_tribe_tickets_ar_iac' => 'required',
+			],
+		] );
+
+		$this->run_migration_up();
+		clean_post_cache( $ticket_id );
+
+		// IAC setting should be preserved on the migrated TC ticket.
+		$this->assertEquals( 'required', get_post_meta( $ticket_id, '_tribe_tickets_ar_iac', true ) );
+	}
+
+	/**
+	 * @test
+	 * It should restore the IAC setting on rollback.
+	 */
+	public function should_restore_iac_setting_on_rollback(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_tribe_tickets_ar_iac' => 'allowed',
+			],
+		] );
+
+		$this->run_migration_up();
+		$this->run_migration_down();
+		clean_post_cache( $ticket_id );
+
+		$this->assertEquals( 'allowed', get_post_meta( $ticket_id, '_tribe_tickets_ar_iac', true ) );
+	}
+
+	/**
+	 * @test
+	 * It should preserve ticket-level ARF fields and the meta-enabled flag during migration.
+	 */
+	public function should_preserve_ticket_arf_fields_during_migration(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_production_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_tribe_tickets_meta_enabled' => 'yes',
+				'_tribe_tickets_meta'         => [
+					[
+						'type'     => 'text',
+						'required' => '',
+						'label'    => 'Favorite Color',
+						'slug'     => 'favorite-color',
+						'extra'    => [],
+					],
+				],
+			],
+		] );
+
+		$this->run_migration_up();
+		clean_post_cache( $ticket_id );
+
+		$this->assertEquals( 'yes', get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true ) );
+		$this->assertEquals(
+			[
+				[
+					'type'     => 'text',
+					'required' => '',
+					'label'    => 'Favorite Color',
+					'slug'     => 'favorite-color',
+					'extra'    => [],
+				],
+			],
+			get_post_meta( $ticket_id, '_tribe_tickets_meta', true )
+		);
+	}
+
+	/**
+	 * @test
 	 * It should rollback simple ticket.
 	 */
 	public function should_rollback_simple_ticket(): void {

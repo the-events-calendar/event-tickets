@@ -120,7 +120,25 @@ describe( 'RSVP V2 thunks', () => {
 			expect( data ).not.toHaveProperty( 'iac' );
 		} );
 
-		it( 'should default IAC to none in Redux when not provided', async () => {
+		it( 'should default IAC to the global default in Redux when not provided', async () => {
+			apiFetch.mockResolvedValue( { id: 99 } );
+
+			window.tribe_editor_config.ticketsPlus = {
+				iacVars: { iacDefault: 'allowed' },
+			};
+
+			await createRSVP( {
+				...basePayload,
+				postId: 42,
+			} )( dispatch, getState );
+
+			expect( dispatch ).toHaveBeenCalledWith( {
+				type: types.SET_RSVP_IAC,
+				payload: { iac: 'allowed' },
+			} );
+		} );
+
+		it( 'should default IAC to none in Redux when no iacVars are present', async () => {
 			apiFetch.mockResolvedValue( { id: 99 } );
 
 			await createRSVP( {
@@ -181,6 +199,24 @@ describe( 'RSVP V2 thunks', () => {
 
 			const { data } = apiFetch.mock.calls[ 0 ][ 0 ];
 			expect( data ).not.toHaveProperty( 'iac' );
+		} );
+
+		it( 'should default IAC to the global default in Redux when not provided', async () => {
+			apiFetch.mockResolvedValue( {} );
+
+			window.tribe_editor_config.ticketsPlus = {
+				iacVars: { iacDefault: 'required' },
+			};
+
+			await updateRSVP( {
+				...basePayload,
+				id: 99,
+			} )( dispatch, getState );
+
+			expect( dispatch ).toHaveBeenCalledWith( {
+				type: types.SET_RSVP_IAC,
+				payload: { iac: 'required' },
+			} );
 		} );
 	} );
 
