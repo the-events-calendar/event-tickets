@@ -81,7 +81,6 @@ exports[`RSVPFrontendMirror should mirror frontend markup structure 1`] = `
             >
               <button
                 className="tribe-common-c-btn tribe-tickets__rsvp-actions-button-going tribe-common-b1 tribe-common-b2--min-medium"
-                disabled={true}
                 type="button"
               >
                 Going
@@ -92,7 +91,6 @@ exports[`RSVPFrontendMirror should mirror frontend markup structure 1`] = `
             >
               <button
                 className="tribe-common-cta tribe-common-cta--alt tribe-tickets__rsvp-actions-button-not-going"
-                disabled={true}
                 type="button"
               >
                 Can't go
