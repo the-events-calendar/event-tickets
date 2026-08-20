@@ -148,26 +148,33 @@ export function* initializeRSVP() {
 		if ( yield call( isTribeEventPostType ) ) {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
 			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
-			const {
-				moment: endMoment,
-				date: endDate,
-				dateInput: endDateInput,
-				time: endTime,
-				timeInput: endTimeInput,
-			} = yield call( createDates, eventStart );
+			const endData = yield call( createDates, eventStart );
 
-			yield all( [
-				put( actions.setRSVPEndDate( endDate ) ),
-				put( actions.setRSVPEndDateInput( endDateInput ) ),
-				put( actions.setRSVPEndDateMoment( endMoment ) ),
-				put( actions.setRSVPEndTime( endTime ) ),
-				put( actions.setRSVPEndTimeInput( endTimeInput ) ),
-				put( actions.setRSVPTempEndDate( endDate ) ),
-				put( actions.setRSVPTempEndDateInput( endDateInput ) ),
-				put( actions.setRSVPTempEndDateMoment( endMoment ) ),
-				put( actions.setRSVPTempEndTime( endTime ) ),
-				put( actions.setRSVPTempEndTimeInput( endTimeInput ) ),
-			] );
+			// Only sync the RSVP end to the event start when the event starts after the
+			// RSVP start time. Syncing to an earlier event start would invert the window
+			// (end before start), which blocks RSVP persistence with a duration error.
+			if ( endData.moment.isAfter( startMoment ) ) {
+				const {
+					moment: endMoment,
+					date: endDate,
+					dateInput: endDateInput,
+					time: endTime,
+					timeInput: endTimeInput,
+				} = endData;
+
+				yield all( [
+					put( actions.setRSVPEndDate( endDate ) ),
+					put( actions.setRSVPEndDateInput( endDateInput ) ),
+					put( actions.setRSVPEndDateMoment( endMoment ) ),
+					put( actions.setRSVPEndTime( endTime ) ),
+					put( actions.setRSVPEndTimeInput( endTimeInput ) ),
+					put( actions.setRSVPTempEndDate( endDate ) ),
+					put( actions.setRSVPTempEndDateInput( endDateInput ) ),
+					put( actions.setRSVPTempEndDateMoment( endMoment ) ),
+					put( actions.setRSVPTempEndTime( endTime ) ),
+					put( actions.setRSVPTempEndTimeInput( endTimeInput ) ),
+				] );
+			}
 		}
 	} catch ( error ) {
 		// ¯\_(ツ)_/¯
