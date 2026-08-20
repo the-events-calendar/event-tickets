@@ -279,9 +279,11 @@ class Success_Shortcode_Test extends WPTestCase {
 
 		$html = $shortcode->get_html();
 
+		// Replace the order key first: the random hex gateway order ID can contain the post ID
+		// as a substring, which would mangle the key if the post ID were replaced first.
 		$html = str_replace(
-			[ $post_id, $order_key ],
-			[ '{EVENT_ID}', '{ORDER_ID}' ],
+			[ $order_key, $post_id ],
+			[ '{ORDER_ID}', '{EVENT_ID}' ],
 			$html
 		);
 

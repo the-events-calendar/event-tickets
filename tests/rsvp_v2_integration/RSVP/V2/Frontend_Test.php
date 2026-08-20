@@ -124,6 +124,23 @@ class Frontend_Test extends WPTestCase {
 		$this->assertStringStartsWith( 'original content', $result, 'Should preserve original content' );
 	}
 
+	public function test_should_render_rsvp_attendees_template(): void {
+		$fixture = $this->create_rsvp_order_with_attendee();
+		$rsvp    = tribe( Module::class )->get_ticket( $fixture['post_id'], $fixture['ticket_id'] );
+
+		$html = $this->get_template()->template(
+			'v2/commerce/rsvp/attendees',
+			[
+				'attendees' => [ $fixture['attendee_id'] ],
+				'is_going'  => true,
+				'rsvp'      => $rsvp,
+			],
+			false
+		);
+
+		$this->assertStringContainsString( 'tribe-tickets__rsvp-attendees', $html );
+	}
+
 	public function test_do_not_display_rsvp_v1_form_should_remove_hooks_for_rsvp_handler(): void {
 		$frontend = tribe( Frontend::class );
 
