@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fixed the Tickets Commerce PayPal "Connect Automatically" button linking to a 404 when the connection link could not be generated. An error notice is shown in its place.

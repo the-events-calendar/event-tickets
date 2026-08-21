@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fixed the country selector on the PayPal connection screen not updating the Connect button.

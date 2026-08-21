@@ -20,6 +20,25 @@ $selected_country_code = $country_code;
 if ( empty( $selected_country_code ) ) {
 	$selected_country_code = $default_country_code;
 }
+
+// Read the host off the client so the notice stays true when TEC_TC_WHODAT_DEV_URL is set.
+$signup_host = (string) wp_parse_url(
+	tribe( \TEC\Tickets\Commerce\Gateways\PayPal\WhoDat::class )->get_api_base_url(),
+	PHP_URL_HOST
+);
+
+$signup_error_link = sprintf(
+	'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+	esc_url( 'https://evnt.is/1axw' ),
+	esc_html__( 'Learn more', 'event-tickets' )
+);
+
+$signup_error = sprintf(
+	/* translators: %1$s: Host name of the PayPal connection service. %2$s: Link to the PayPal troubleshooting article. */
+	esc_html__( 'We could not get a connection link from PayPal. Reload this page to try again. If it keeps failing, check that your site can reach %1$s. %2$s', 'event-tickets' ),
+	esc_html( $signup_host ),
+	$signup_error_link
+);
 ?>
 <div
 	class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings"
@@ -62,6 +81,7 @@ if ( empty( $selected_country_code ) ) {
 
 		<div
 			class="event-tickets tec-tickets__admin-settings-tickets-commerce-gateway-connect-error"
+			role="alert"
 			style="<?php echo esc_attr( empty( $url ) ? '' : 'display: none;' ); ?>"
 		>
 			<div class="tribe-tickets__notice tribe-tickets__notice--error tec-tickets__admin-settings-tickets-commerce-gateway-modal-notice-error">
@@ -70,7 +90,7 @@ if ( empty( $selected_country_code ) ) {
 						<?php esc_html_e( 'PayPal connection unavailable', 'event-tickets' ); ?>
 					</h4>
 					<div class="tribe-tickets-notice__message">
-						<?php esc_html_e( 'We could not get a connection link from PayPal. Reload this page to try again. If this keeps happening, make sure your site can reach whodat.theeventscalendar.com.', 'event-tickets' ); ?>
+						<?php echo wp_kses_post( $signup_error ); ?>
 					</div>
 				</div>
 			</div>

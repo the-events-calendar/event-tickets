@@ -77,13 +77,9 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 		}
 
 		$body = wp_remote_retrieve_body( $request );
+		$body = json_decode( $body, true );
 
-		$status_code = wp_remote_retrieve_response_code( $request );
-		if ( $status_code < 200 || $status_code > 299 ) {
-			$this->log_error( sprintf( 'WhoDat responded with HTTP %d:', $status_code ), $body, $url );
-		}
-
-		return json_decode( $body, true );
+		return $body;
 	}
 
 	/**

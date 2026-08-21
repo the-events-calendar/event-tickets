@@ -98,6 +98,8 @@ class Signup extends Abstract_Signup {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @since TBD Drops the cached URL and logs when the request fails.
+	 *
 	 * @param string $country Which country code we are generating the URL for.
 	 * @param bool   $force   It prevents the system from using the cached version of the URL.
 	 *
@@ -119,6 +121,25 @@ class Signup extends Abstract_Signup {
 		$signup = tribe( WhoDat::class )->get_seller_signup_data( $hash, $country );
 
 		if ( ! $signup_url = Arr::get( $signup, [ 'links', 1, 'href' ] ) ) {
+			/*
+			 * The cached URL is tied to whichever country was current when it was stored, so keeping it
+			 * would hand the seller a working button for a country they have moved off.
+			 */
+			$this->delete_transient_data();
+
+			do_action(
+				'tribe_log',
+				'error',
+				__CLASS__,
+				[
+					sprintf(
+						'PayPal signup URL could not be generated for country "%1$s". Response: %2$s',
+						$country,
+						wp_json_encode( $signup )
+					),
+				]
+			);
+
 			return false;
 		}
 
@@ -170,8 +191,8 @@ class Signup extends Abstract_Signup {
 			return;
 		}
 
-		// Append the minibrowser query arg.
-		$data['new_url'] = add_query_arg( 'displayMode', 'minibrowser', $new_url );
+		// The JS assigns this straight to the button's href, so it gets the same scheme check as the template.
+		$data['new_url'] = esc_url_raw( add_query_arg( 'displayMode', 'minibrowser', $new_url ) );
 
 		wp_send_json_success( $data );
 		return;

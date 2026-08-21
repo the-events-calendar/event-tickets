@@ -98,6 +98,18 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	};
 
 	/**
+	 * Sequence number of the most recent country refresh.
+	 *
+	 * Responses can arrive out of order, and a stale one would point the button at a country the seller
+	 * has already moved off.
+	 *
+	 * @since TBD
+	 *
+	 * @type {number}
+	 */
+	obj.refreshRequest = 0;
+
+	/**
 	 * Handles the singup onboarding of customers to PayPal.
 	 *
 	 * @since 5.2.0
@@ -135,7 +147,9 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 		const $container = $field.closest( obj.selectors.container );
 		const $button = $container.find( obj.selectors.button );
 		const $error = $container.find( obj.selectors.error );
-		$button.addClass( 'disabled' );
+		const request = ++obj.refreshRequest;
+
+		obj.disableButton( $button );
 
 		fetch(
 			ajaxurl +
@@ -154,6 +168,10 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 				return response.json();
 			} )
 			.then( function ( res ) {
+				if ( request !== obj.refreshRequest ) {
+					return;
+				}
+
 				if ( true !== res.success || ! res.data || ! res.data.new_url ) {
 					// The stored link is for the country the seller just changed away from, so keep it unclickable.
 					$error.show();
@@ -167,8 +185,44 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 
 				$error.hide();
 				$button.attr( 'href', res.data.new_url );
-				$button.removeClass( 'disabled' );
+				obj.enableButton( $button );
+			} )
+			.catch( function () {
+				if ( request !== obj.refreshRequest ) {
+					return;
+				}
+
+				$error.show();
 			} );
+	};
+
+	/**
+	 * Makes the connect button unusable, including for keyboard and assistive technology.
+	 *
+	 * The `disabled` class only sets `pointer-events: none`, which leaves the anchor focusable and
+	 * activatable with Enter.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} $button jQuery object of the connect button.
+	 *
+	 * @return {void}
+	 */
+	obj.disableButton = ( $button ) => {
+		$button.addClass( 'disabled' ).attr( 'aria-disabled', 'true' ).attr( 'tabindex', '-1' );
+	};
+
+	/**
+	 * Restores the connect button.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} $button jQuery object of the connect button.
+	 *
+	 * @return {void}
+	 */
+	obj.enableButton = ( $button ) => {
+		$button.removeClass( 'disabled' ).removeAttr( 'aria-disabled' ).removeAttr( 'tabindex' );
 	};
 
 	/**
