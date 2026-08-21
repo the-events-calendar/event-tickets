@@ -1,4 +1,4 @@
 Significance: minor
 Type: fix
 
-Removed the "Enable Updated Tickets Experience" and "Enable New RSVP Experience" settings and turned both on for every site. Sites that first installed Event Tickets before 5.0.3, or before 5.0 for the RSVP one, were still shown these, and turning them off broke the ticket blocks. A site that was still on the older views will now see the redesigned ticket and RSVP forms on the front end: theme template overrides under tribe/tickets/blocks/ and tribe/tickets/rsvp.php are no longer used, and custom CSS written against the older markup may need updating. Clear any full page cache after updating.
+Removed the "Enable Updated Tickets Experience" and "Enable New RSVP Experience" settings and turned both on for every site. Sites still on the older views will see the redesigned ticket and RSVP forms, and their template overrides under tribe/tickets/blocks/ stop being used.
