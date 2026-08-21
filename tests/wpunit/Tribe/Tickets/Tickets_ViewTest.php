@@ -48,9 +48,200 @@ class Tickets_ViewTest extends WPTestCase {
 
 	public function tearDown() {
 		// your tear down methods here
+		remove_all_filters( 'wp_redirect' );
+		set_query_var( 'tribe-edit-orders', null );
+		set_query_var( 'eventDisplay', null );
+		set_query_var( 'p', null );
+		wp_reset_query();
+		wp_set_current_user( 0 );
 
 		// then
 		parent::tearDown();
+	}
+
+	/**
+	 * Sets up the main query and query vars to simulate a tickets page request.
+	 *
+	 * @param int   $post_id    The post or event ID the request resolves to.
+	 * @param array $query_args Query vars and/or the `tribe_is_event_query` flag to simulate.
+	 */
+	private function setup_tickets_query( int $post_id, array $query_args ): void {
+		$query               = new \WP_Query( [ 'p' => $post_id ] );
+		$GLOBALS['wp_query'] = $query;
+		$GLOBALS['post']     = get_post( $post_id );
+
+		foreach ( $query_args as $key => $value ) {
+			if ( 'tribe_is_event_query' === $key ) {
+				$query->tribe_is_event_query = $value;
+				continue;
+			}
+			set_query_var( $key, $value );
+		}
+	}
+
+	/**
+	 * Hooks the `wp_redirect` filter so `wp_safe_redirect()` calls are captured
+	 * instead of exiting, then runs `authorization_redirect()`.
+	 *
+	 * The filter throws after recording the location: `authorization_redirect()`
+	 * calls `exit` unconditionally after `wp_safe_redirect()`, which would kill the
+	 * test process. Throwing unwinds the stack before `exit` runs.
+	 *
+	 * @return array{redirected: bool, location: ?string}
+	 */
+	private function run_authorization_redirect(): array {
+		$captured = [
+			'redirected' => false,
+			'location'   => null,
+		];
+		add_filter(
+			'wp_redirect',
+			static function ( $location ) use ( &$captured ) {
+				$captured['redirected'] = true;
+				$captured['location']   = $location;
+
+				throw new \RuntimeException( 'Redirect intercepted for authorization_redirect().' );
+			}
+		);
+
+		try {
+			$this->make_instance()->authorization_redirect();
+		} catch ( \RuntimeException $e ) {
+			// Expected: the redirect was intercepted.
+		}
+
+		return $captured;
+	}
+
+	/**
+	 * @test
+	 * it should redirect logged out users from an event tickets page to the event
+	 *
+	 * Regression guard: an anonymous visitor hitting `/event/{slug}/tickets/`
+	 * must be bounced to the event page, not left on a blank tickets page.
+	 */
+	public function it_should_redirect_logged_out_users_from_event_tickets_page_to_event(): void {
+		// Arrange.
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 09:00:00',
+				'end_date'   => '2020-01-01 11:30:00',
+			]
+		)->create()->ID;
+
+		$this->setup_tickets_query(
+			$event_id,
+			[
+				'tribe_is_event_query' => true,
+				'eventDisplay'         => 'tickets',
+			]
+		);
+
+		// Act.
+		$captured = $this->run_authorization_redirect();
+
+		// Assert.
+		$this->assertTrue( $captured['redirected'] );
+		$this->assertSame(
+			add_query_arg( 'tribe_redirected', 1, get_permalink( $event_id ) ),
+			$captured['location']
+		);
+	}
+
+	/**
+	 * @test
+	 * it should redirect logged out users from a non-event post tickets page to the post
+	 *
+	 * Regression guard: with TEC active, the non-event query early-bail used to return
+	 * before the edit-page check, so the pretty permalink `/tickets/{id}` never
+	 * redirected anonymous visitors.
+	 */
+	public function it_should_redirect_logged_out_users_from_non_event_post_tickets_page_to_post(): void {
+		// Arrange.
+		$post_id = wp_insert_post(
+			[
+				'post_type'   => 'post',
+				'post_title'  => 'Test Post',
+				'post_status' => 'publish',
+			]
+		);
+
+		$this->setup_tickets_query(
+			$post_id,
+			[
+				'tribe_is_event_query' => false,
+				'tribe-edit-orders'    => 1,
+			]
+		);
+
+		// Act.
+		$captured = $this->run_authorization_redirect();
+
+		// Assert.
+		$this->assertTrue( $captured['redirected'] );
+		$this->assertSame(
+			add_query_arg( 'tribe_redirected', 1, get_permalink( $post_id ) ),
+			$captured['location']
+		);
+	}
+
+	/**
+	 * @test
+	 * it should not redirect logged in users from a tickets page
+	 */
+	public function it_should_not_redirect_logged_in_users_from_a_tickets_page(): void {
+		// Arrange.
+		wp_set_current_user( $this->factory()->user->create() );
+
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 09:00:00',
+				'end_date'   => '2020-01-01 11:30:00',
+			]
+		)->create()->ID;
+
+		$this->setup_tickets_query(
+			$event_id,
+			[
+				'tribe_is_event_query' => true,
+				'eventDisplay'         => 'tickets',
+			]
+		);
+
+		// Act.
+		$captured = $this->run_authorization_redirect();
+
+		// Assert.
+		$this->assertFalse( $captured['redirected'] );
+		$this->assertNull( $captured['location'] );
+	}
+
+	/**
+	 * @test
+	 * it should not redirect when the query is neither an event nor a tickets page
+	 */
+	public function it_should_not_redirect_when_query_is_neither_event_nor_tickets_page(): void {
+		// Arrange.
+		$post_id = wp_insert_post(
+			[
+				'post_type'   => 'post',
+				'post_title'  => 'Test Post',
+				'post_status' => 'publish',
+			]
+		);
+
+		$this->setup_tickets_query( $post_id, [ 'tribe_is_event_query' => false ] );
+
+		// Act.
+		$captured = $this->run_authorization_redirect();
+
+		// Assert.
+		$this->assertFalse( $captured['redirected'] );
+		$this->assertNull( $captured['location'] );
 	}
 
 	/**
@@ -356,7 +547,7 @@ class Tickets_ViewTest extends WPTestCase {
 		$this->assertArrayHasKey( 'no', $options );
 		$this->assertEquals( 0, $options['no']['decrease_stock_by'] );
 	}
-	
+
 	public function provide_get_tickets_page_url_data(): Generator {
 		yield 'with invalid post id' => [
 			function (): array {
@@ -366,7 +557,7 @@ class Tickets_ViewTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'with valid post id' => [
 			function (): array {
 				$post_id = wp_insert_post(
@@ -376,14 +567,14 @@ class Tickets_ViewTest extends WPTestCase {
 						'post_status' => 'publish',
 					]
 				);
-				
+
 				return [
 					$post_id,
 					true,
 				];
 			},
 		];
-		
+
 		yield 'with valid event id' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
@@ -394,7 +585,7 @@ class Tickets_ViewTest extends WPTestCase {
 						'end_date'   => '2020-01-01 11:30:00',
 					]
 				)->create()->ID;
-				
+
 				return [
 					$event_id,
 					true,
@@ -402,7 +593,7 @@ class Tickets_ViewTest extends WPTestCase {
 			},
 		];
 	}
-	
+
 	/**
 	 * @dataProvider provide_get_tickets_page_url_data
 	 *
@@ -412,18 +603,18 @@ class Tickets_ViewTest extends WPTestCase {
 	 */
 	public function should_get_tickets_page_url( Closure $fixture ): void {
 		[ $post_id, $has_output ] = $fixture();
-		
+
 		$sut = $this->make_instance();
 		$url = $sut->get_tickets_page_url( $post_id );
 		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
-		
+
 		if ( $has_output ) {
 			$this->assertMatchesHtmlSnapshot( $url );
 		} else {
 			$this->assertEmpty( $url );
 		}
 	}
-	
+
 	/**
 	 * @dataProvider provide_get_tickets_page_url_data
 	 *
@@ -433,18 +624,18 @@ class Tickets_ViewTest extends WPTestCase {
 	 */
 	public function should_get_tickets_page_url_for_plain_permalink( Closure $fixture ): void {
 		[ $post_id, $has_output ] = $fixture();
-		
+
 		update_option( 'permalink_structure', '' );
 		$sut = $this->make_instance();
 		$url = $sut->get_tickets_page_url( $post_id );
 		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
-		
+
 		if ( $has_output ) {
 			$this->assertMatchesHtmlSnapshot( $url );
 		} else {
 			$this->assertEmpty( $url );
 		}
-		
+
 		// reset to default.
 		update_option( 'permalink_structure', false );
 	}
@@ -720,7 +911,7 @@ class Tickets_ViewTest extends WPTestCase {
 			// For generated URLs, ensure they're not empty and contain tickets.
 			$this->assertNotEmpty( $result );
 			$this->assertStringContainsString( 'tickets', $result );
-			
+
 			// For events, URL contains event slug; for posts, URL contains post ID.
 			$post_type = get_post_type( $post_id );
 			if ( 'tribe_events' === $post_type || 'tribe_event_series' === $post_type ) {
@@ -875,12 +1066,12 @@ class Tickets_ViewTest extends WPTestCase {
 		set_query_var( 'p', $post_id );
 
 		$sut = $this->make_instance();
-		
+
 		// Test that get_tickets_page_url generates the expected URL.
 		$tickets_url = $sut->get_tickets_page_url( $post_id );
 		$this->assertNotEmpty( $tickets_url );
 		$this->assertStringContainsString( 'tickets', $tickets_url );
-		
+
 		// For regular posts, URL should contain the post ID.
 		$post_type = get_post_type( $post_id );
 		if ( 'tribe_events' === $post_type || 'tribe_event_series' === $post_type ) {
