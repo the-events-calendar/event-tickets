@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets;
 
+use TEC\Tickets\Admin\Notice_New_Views_Upgrade;
 use Tribe__Tickets__Main;
 use Tribe__Tickets__Updater;
 
@@ -30,7 +31,7 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 	 * @before
 	 */
 	public function remember_options(): void {
-		foreach ( [ 'previous_event_tickets_versions', 'tickets_use_new_views', 'tickets_rsvp_use_new_views', 'event-tickets-schema-version' ] as $option ) {
+		foreach ( [ 'previous_event_tickets_versions', 'tickets_use_new_views', 'tickets_rsvp_use_new_views', 'event-tickets-schema-version', Notice_New_Views_Upgrade::OPTION_FORCED_ON ] as $option ) {
 			$this->original_options[ $option ] = tribe_get_option( $option );
 		}
 	}
@@ -175,5 +176,30 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->migrate_force_new_views();
 
 		$this->assertSame( 0, $writes );
+		$this->assertFalse( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
+	}
+
+	/**
+	 * Only a site the upgrade actually switched gets told about it.
+	 *
+	 * @test
+	 */
+	public function it_should_record_that_the_site_was_switched() {
+		$this->given_an_old_install_with_the_views_turned_off();
+
+		$this->assertFalse( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
+
+		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->migrate_force_new_views();
+
+		$this->assertTrue( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_offer_the_upgrade_notice_to_a_site_that_was_not_switched() {
+		tribe_update_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON, false );
+
+		$this->assertFalse( tribe( Notice_New_Views_Upgrade::class )->should_display() );
 	}
 }

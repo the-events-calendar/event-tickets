@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Admin\Notice_New_Views_Upgrade;
+
 /**
  * Class Tribe__Tickets__Updater
  *
@@ -53,20 +55,59 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * @since TBD
 	 */
 	public function migrate_force_new_views() {
-		$resolved = [
+		$enabled = [
 			'tickets_use_new_views'      => tribe_tickets_new_views_is_enabled(),
 			'tickets_rsvp_use_new_views' => tribe_tickets_rsvp_new_views_is_enabled(),
 		];
 
-		foreach ( $resolved as $option => $enabled ) {
+		$switched = false;
+
+		foreach ( $enabled as $option => $is_enabled ) {
 			// A site holding the views off through the constant, the env var or a filter keeps a
 			// stored value that agrees with what it actually renders.
-			if ( ! $enabled || true === tribe_get_option( $option ) ) {
+			if ( ! $is_enabled ) {
 				continue;
 			}
 
-			tribe_update_option( $option, true );
+			if ( ! $this->was_rendering_new_views( $option ) ) {
+				$switched = true;
+			}
+
+			if ( true !== tribe_get_option( $option ) ) {
+				tribe_update_option( $option, true );
+			}
 		}
+
+		if ( ! $switched ) {
+			return;
+		}
+
+		// This site was rendering the old views a moment ago, so it gets told.
+		tribe_update_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON, true );
+	}
+
+	/**
+	 * Whether the site was already on the new views before this upgrade reached it.
+	 *
+	 * The stored option is not enough on its own: a site that never opened the settings has no option
+	 * at all, and what it rendered then depended on when it was first installed. This reproduces that
+	 * answer, and it is the only thing left that needs to.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option to resolve.
+	 *
+	 * @return bool
+	 */
+	protected function was_rendering_new_views( $option ) {
+		if ( 'tickets_rsvp_use_new_views' === $option ) {
+			$default = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' );
+		} else {
+			$default = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0.3' )
+				|| ( class_exists( 'Tribe__Tickets_Plus__Main' ) && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' ) );
+		}
+
+		return (bool) tribe_get_option( $option, $default );
 	}
 
 	/**
