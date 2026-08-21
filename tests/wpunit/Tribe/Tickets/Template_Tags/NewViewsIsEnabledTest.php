@@ -28,23 +28,11 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 	protected array $original_options = [];
 
 	/**
-	 * Options that were absent before the test, tracked separately from false values.
-	 *
-	 * @var array
-	 */
-	protected array $absent_options = [];
-
-	/**
 	 * @before
 	 */
 	public function remember_options(): void {
 		foreach ( [ 'previous_event_tickets_versions', 'tickets_use_new_views', 'tickets_rsvp_use_new_views', 'event-tickets-schema-version', Notice_New_Views_Upgrade::OPTION_FORCED_ON ] as $option ) {
-			$value = tribe_get_option( $option, null );
-			if ( null === $value ) {
-				$this->absent_options[] = $option;
-			} else {
-				$this->original_options[ $option ] = $value;
-			}
+			$this->original_options[ $option ] = tribe_get_option( $option );
 		}
 	}
 
@@ -54,11 +42,6 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 	public function restore_options(): void {
 		foreach ( $this->original_options as $option => $value ) {
 			tribe_update_option( $option, $value );
-		}
-
-		// Remove options that were absent before the test.
-		foreach ( $this->absent_options as $option ) {
-			tribe_update_option( $option, null );
 		}
 	}
 
