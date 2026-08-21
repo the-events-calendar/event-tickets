@@ -24,6 +24,33 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	}
 
 	/**
+	 * Returns an array of callbacks keyed by the version that introduced them.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_update_callbacks() {
+		return [
+			'5.29.3' => [ $this, 'migrate_5_29_3_force_new_views' ],
+		];
+	}
+
+	/**
+	 * Turns the new Tickets and RSVP views on for sites that still had them off.
+	 *
+	 * The settings that controlled these are gone, and nothing in Event Tickets reads the options any
+	 * more. They are written all the same so that anything else reading them directly, Event Tickets
+	 * Plus included, sees the same answer.
+	 *
+	 * @since TBD
+	 */
+	public function migrate_5_29_3_force_new_views() {
+		tribe_update_option( 'tickets_use_new_views', true );
+		tribe_update_option( 'tickets_rsvp_use_new_views', true );
+	}
+
+	/**
 	 * Returns an array of callbacks that should be called
 	 * every time the version is updated.
 	 *

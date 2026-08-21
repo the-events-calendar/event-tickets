@@ -11,8 +11,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	/**
 	 * Determine whether the new Tickets views are enabled.
 	 *
-	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
-	 * allow filtering.
+	 * Always false here: the plugin is soft-disabled, so nothing should render.
 	 *
 	 * @since 5.0.3
 	 * @since 5.9.3 Copied to the soft-disable functions.
@@ -28,8 +27,7 @@ if ( ! function_exists( 'tribe_tickets_rsvp_new_views_is_enabled' ) ) {
 	/**
 	 * Determine whether new RSVP views are enabled.
 	 *
-	 * In order the function will check the `TRIBE_TICKETS_RSVP_NEW_VIEWS` constant,
-	 * the `TRIBE_TICKETS_RSVP_NEW_VIEWS` environment variable and, finally, the `tickets_rsvp_use_new_views` option.
+	 * Always false here: the plugin is soft-disabled, so nothing should render.
 	 *
 	 * @since 4.12.3
 	 * @since 5.9.3 Copied to the soft-disable functions.
