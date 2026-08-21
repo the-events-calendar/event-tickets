@@ -171,7 +171,7 @@ class Signup extends Abstract_Signup {
 		}
 
 		// Append the minibrowser query arg.
-		$data['new_url'] = $new_url . '&displayMode=minibrowser';
+		$data['new_url'] = add_query_arg( 'displayMode', 'minibrowser', $new_url );
 
 		wp_send_json_success( $data );
 		return;
