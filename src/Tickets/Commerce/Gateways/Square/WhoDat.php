@@ -169,11 +169,13 @@ class WhoDat extends Abstract_WhoDat {
 
 		$url = $this->get_api_url( 'oauth/token/refresh' );
 
+		// Admin refreshes can afford to wait, but checkout requests must not hold the customer's request open.
+		$timeout = is_admin() ? 10 : 3;
+
 		$response = wp_remote_post(
 			$url,
 			[
-				// This runs inside a checkout request, so it may not hold it open for WordPress's default.
-				'timeout' => 3,
+				'timeout' => $timeout,
 				'body'    => [
 					'grant_type'    => 'refresh_token',
 					'refresh_token' => $refresh_token,

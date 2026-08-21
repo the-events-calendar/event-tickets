@@ -459,26 +459,32 @@ class Token_Refresher_Test extends WPTestCase {
 	 * @param string $timezone The site timezone to run under.
 	 */
 	public function it_should_back_off_whatever_the_site_timezone( string $timezone ): void {
-		update_option( 'timezone_string', $timezone );
+		$original_timezone = get_option( 'timezone_string' );
 
-		$merchant                 = $this->connect( $this->expiring_soon() );
-		$this->whodat_responses[] = $this->refresh_error_page( 500 );
+		try {
+			update_option( 'timezone_string', $timezone );
 
-		$this->refresher()->refresh_if_needed();
-		$this->assertCount( 1, $this->whodat_calls );
+			$merchant                 = $this->connect( $this->expiring_soon() );
+			$this->whodat_responses[] = $this->refresh_error_page( 500 );
 
-		// The invariant the intervals rest on: what was written reads back as now, not as now +/- offset.
-		$this->assertEqualsWithDelta( time(), strtotime( $merchant->get_refresh_status()['last_attempt_at'] ), 5 );
+			$this->refresher()->refresh_if_needed();
+			$this->assertCount( 1, $this->whodat_calls );
 
-		// Well inside the first backoff step, so nothing may go out.
-		$this->refresher()->refresh_if_needed();
-		$this->assertCount( 1, $this->whodat_calls );
+			// The invariant the intervals rest on: what was written reads back as now, not as now +/- offset.
+			$this->assertEqualsWithDelta( time(), strtotime( $merchant->get_refresh_status()['last_attempt_at'] ), 5 );
 
-		$merchant->update_refresh_status( [ 'last_attempt_at' => gmdate( 'Y-m-d H:i:s', time() - 2 * HOUR_IN_SECONDS ) ] );
-		$this->whodat_responses[] = $this->refresh_ok();
+			// Well inside the first backoff step, so nothing may go out.
+			$this->refresher()->refresh_if_needed();
+			$this->assertCount( 1, $this->whodat_calls );
 
-		$this->assertTrue( $this->refresher()->refresh_if_needed() );
-		$this->assertCount( 2, $this->whodat_calls );
+			$merchant->update_refresh_status( [ 'last_attempt_at' => gmdate( 'Y-m-d H:i:s', time() - 2 * HOUR_IN_SECONDS ) ] );
+			$this->whodat_responses[] = $this->refresh_ok();
+
+			$this->assertTrue( $this->refresher()->refresh_if_needed() );
+			$this->assertCount( 2, $this->whodat_calls );
+		} finally {
+			update_option( 'timezone_string', $original_timezone );
+		}
 	}
 
 	/**
@@ -690,11 +696,12 @@ class Token_Refresher_Test extends WPTestCase {
 		$this->assertTrue( $refresher->take_lock() );
 
 		// Whoever took over stamped its own value over this process's.
-		update_option( $this->get_lock_key(), time() . ':somebody-else' );
+		$takeover_time = time();
+		update_option( $this->get_lock_key(), $takeover_time . ':somebody-else' );
 
 		$refresher->give_lock_back();
 
-		$this->assertSame( time() . ':somebody-else', get_option( $this->get_lock_key() ) );
+		$this->assertSame( $takeover_time . ':somebody-else', get_option( $this->get_lock_key() ) );
 	}
 
 	/**

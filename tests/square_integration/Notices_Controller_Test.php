@@ -307,7 +307,10 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_not_show_token_refresh_failing_notice_far_from_the_expiration(): void {
-		tribe( Merchant::class )->update_refresh_status( [ 'failures' => 5 ] );
+		$merchant = tribe( Merchant::class );
+
+		$merchant->update( [ 'expires_at' => gmdate( 'c', time() + 30 * DAY_IN_SECONDS ) ] );
+		$merchant->update_refresh_status( [ 'failures' => 5 ] );
 
 		$this->assertFalse( $this->make_controller()->should_display_token_refresh_failing_notice() );
 	}

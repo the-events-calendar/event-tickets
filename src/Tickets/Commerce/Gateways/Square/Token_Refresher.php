@@ -538,7 +538,7 @@ class Token_Refresher {
 				'source'        => 'tickets-commerce-square',
 				'response_code' => $code,
 				'reason'        => $reason,
-				'failures'      => $failures + 1,
+				'failures'      => $failures,
 			]
 		);
 	}

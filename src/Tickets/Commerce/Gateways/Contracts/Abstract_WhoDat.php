@@ -65,7 +65,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get( $endpoint, array $query_args ) {
+	public function get( $endpoint, array $query_args ): ?array {
 		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$request = wp_remote_get( $url ); // phpcs:ignore WordPress.WP.AlternativeFunctions.remote_get_remote_get, WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
@@ -79,7 +79,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 		$body = wp_remote_retrieve_body( $request );
 		$body = json_decode( $body, true );
 
-		return $body;
+		return is_array( $body ) ? $body : null;
 	}
 
 	/**
