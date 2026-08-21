@@ -9,7 +9,8 @@
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
-_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
+// Third argument is $replacement, so leaving it off gets "with no alternative available".
+_deprecated_file( __FILE__, 'TBD' );
 
 /**
  * Manages the admin settings UI in relation to display configuration.
