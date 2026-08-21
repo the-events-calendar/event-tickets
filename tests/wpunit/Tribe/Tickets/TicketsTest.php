@@ -564,11 +564,12 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function empty_post_id_provider(): array {
 		return [
-			'null'         => [ null ],
-			'zero int'     => [ 0 ],
-			'zero string'  => [ '0' ],
-			'empty string' => [ '' ],
-			'false'        => [ false ],
+			'null'               => [ null ],
+			'zero int'           => [ 0 ],
+			'zero string'        => [ '0' ],
+			'empty string'       => [ '' ],
+			'false'              => [ false ],
+			'non-numeric string' => [ 'all' ],
 		];
 	}
 
@@ -655,5 +656,23 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 			Tickets::get_tickets_cache_key( 'rsvp', $post_id ),
 			Tickets::get_tickets_cache_key( 'tribe-commerce', $post_id )
 		);
+	}
+
+	/**
+	 * It should bail for the `all` keyword used by the "all attendees" CSV export.
+	 *
+	 * The export passes `all` as the event ID down to get_event_tickets(); the strictly-typed
+	 * cache key builder must never see it. Fetching tickets for `all` yields none, and the
+	 * builder itself stays strict.
+	 *
+	 * @test
+	 */
+	public function should_bail_for_the_all_keyword(): void {
+		// The full export path must not throw and should yield no tickets.
+		$this->assertSame( [], Tickets::get_event_tickets( 'all' ) );
+
+		// The cache key builder stays strictly typed: `all` is not a post ID.
+		$this->expectException( \TypeError::class );
+		Tickets::get_tickets_cache_key( 'rsvp', 'all' );
 	}
 }
