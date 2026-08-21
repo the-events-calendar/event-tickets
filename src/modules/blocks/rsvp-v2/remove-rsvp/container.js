@@ -12,14 +12,14 @@ import { withStore } from '@moderntribe/common/hoc';
 import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
 import RSVPRemoveRsvp from './template';
 
-const mapStateToProps = ( state ) => ( {
+export const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 	isDisabled: selectors.getRSVPSettingsOpen( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),
 	rsvpId: selectors.getRSVPId( state ),
 } );
 
-const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
+export const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 	const { dispatch } = dispatchProps;
 
 	return {
