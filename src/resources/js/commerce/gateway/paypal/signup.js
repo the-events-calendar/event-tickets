@@ -91,7 +91,9 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
+		container: '.tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings',
 		button: '.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link',
+		error: '.tec-tickets__admin-settings-tickets-commerce-gateway-connect-error',
 		countryField: '[name="tec-tickets-commerce-gateway-paypal-merchant-country"]',
 	};
 
@@ -130,7 +132,9 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 */
 	obj.onCountryChange = function ( event ) {
 		const $field = $( this );
-		const $button = $( obj.selectors.button );
+		const $container = $field.closest( obj.selectors.container );
+		const $button = $container.find( obj.selectors.button );
+		const $error = $container.find( obj.selectors.error );
 		$button.addClass( 'disabled' );
 
 		fetch(
@@ -152,9 +156,16 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 			.then( function ( res ) {
 				if ( true !== res.success || ! res.data || ! res.data.new_url ) {
 					// The stored link is for the country the seller just changed away from, so keep it unclickable.
+					$error.show();
 					return;
 				}
 
+				// Without a button there is nothing to point at the new link, and the notice says to reload.
+				if ( ! $button.length ) {
+					return;
+				}
+
+				$error.hide();
 				$button.attr( 'href', res.data.new_url );
 				$button.removeClass( 'disabled' );
 			} );

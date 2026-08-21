@@ -52,6 +52,7 @@ class SignupTest extends WPTestCase {
 		$this->assertStringNotContainsString( 'href=', $html );
 		$this->assertStringNotContainsString( 'connect_to_paypal', $html );
 		$this->assertStringContainsString( 'PayPal connection unavailable', $html );
+		$this->assertStringNotContainsString( 'display: none;', $html, 'The notice should be visible.' );
 	}
 
 	public function test_failed_signup_request_is_logged(): void {
@@ -99,5 +100,9 @@ class SignupTest extends WPTestCase {
 			'https://www.sandbox.paypal.com/merchantsignup/partner/onboardingentry?token=ABC123&displayMode=minibrowser',
 			$href
 		);
+
+		// The notice ships hidden so the refresh handler can reveal it without a page load.
+		$this->assertStringContainsString( 'PayPal connection unavailable', $html );
+		$this->assertStringContainsString( 'display: none;', $html );
 	}
 }

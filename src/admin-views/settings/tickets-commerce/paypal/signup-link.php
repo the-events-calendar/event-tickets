@@ -47,20 +47,7 @@ if ( empty( $selected_country_code ) ) {
 	</p>
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button">
-		<?php if ( empty( $url ) ) : ?>
-			<div class="event-tickets">
-				<div class="tribe-tickets__notice tribe-tickets__notice--error tec-tickets__admin-settings-tickets-commerce-gateway-modal-notice-error">
-					<div class="tribe-common-b2 tribe-tickets-notice__content">
-						<h4 class="tribe-tickets-notice__title">
-							<?php esc_html_e( 'PayPal connection unavailable', 'event-tickets' ); ?>
-						</h4>
-						<div class="tribe-tickets-notice__message">
-							<?php esc_html_e( 'We could not get a connection link from PayPal. Reload this page to try again. If this keeps happening, make sure your site can reach whodat.theeventscalendar.com.', 'event-tickets' ); ?>
-						</div>
-					</div>
-				</div>
-			</div>
-		<?php else : ?>
+		<?php if ( ! empty( $url ) ) : ?>
 			<a
 				target="_blank"
 				data-paypal-onboard-complete="tecTicketsCommerceGatewayPayPalSignupCallback"
@@ -72,6 +59,22 @@ if ( empty( $selected_country_code ) ) {
 				<?php echo wp_kses( __( 'Connect Automatically with <i>PayPal</i>', 'event-tickets' ), 'post' ); ?>
 			</a>
 		<?php endif; ?>
+
+		<div
+			class="event-tickets tec-tickets__admin-settings-tickets-commerce-gateway-connect-error"
+			style="<?php echo esc_attr( empty( $url ) ? '' : 'display: none;' ); ?>"
+		>
+			<div class="tribe-tickets__notice tribe-tickets__notice--error tec-tickets__admin-settings-tickets-commerce-gateway-modal-notice-error">
+				<div class="tribe-common-b2 tribe-tickets-notice__content">
+					<h4 class="tribe-tickets-notice__title">
+						<?php esc_html_e( 'PayPal connection unavailable', 'event-tickets' ); ?>
+					</h4>
+					<div class="tribe-tickets-notice__message">
+						<?php esc_html_e( 'We could not get a connection link from PayPal. Reload this page to try again. If this keeps happening, make sure your site can reach whodat.theeventscalendar.com.', 'event-tickets' ); ?>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <?php
