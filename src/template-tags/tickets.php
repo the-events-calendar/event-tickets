@@ -1623,7 +1623,8 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
  *
  * The new views are on for every site. The function will still check the `TRIBE_TICKETS_RSVP_NEW_VIEWS`
  * constant and the environment variable of the same name, which need file access to set, and the result
- * remains filterable.
+ * remains filterable. Assets are registered on `init` at priority 10 and read this, so a filter added
+ * after that point renders the old markup against the new assets.
  *
  * @since 4.12.3
  * @since TBD Stopped reading the `tickets_rsvp_use_new_views` option and the install date.
@@ -1790,7 +1791,8 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	 *
 	 * The new views are on for every site. The function will still check the `TRIBE_TICKETS_NEW_VIEWS`
 	 * constant and the environment variable of the same name, which need file access to set, and the
-	 * result remains filterable.
+	 * result remains filterable. Assets are registered on `init` at priority 10 and read this, so a
+	 * filter added after that point renders the old markup against the new assets.
 	 *
 	 * @since 5.0.3
 	 * @since TBD Stopped reading the `tickets_use_new_views` option and the install date.
