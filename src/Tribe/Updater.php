@@ -37,8 +37,22 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	public function get_constant_update_callbacks() {
 		return [
 			[ $this, 'migrate_4_12_hide_attendees_list' ],
-			[ $this, 'migrate_force_new_views' ],
 		];
+	}
+
+	/**
+	 * Run the update callbacks.
+	 *
+	 * Overrides the parent to ensure migrate_force_new_views runs after third-party filters
+	 * are registered.
+	 *
+	 * @since TBD
+	 */
+	public function run_updates() {
+		parent::run_updates();
+
+		// Run after all other updates to ensure third-party view filters are registered.
+		$this->migrate_force_new_views();
 	}
 
 	/**
