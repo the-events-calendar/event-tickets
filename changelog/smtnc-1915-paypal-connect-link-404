@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Replaced the Tickets Commerce PayPal "Connect Automatically" button with an error notice when the signup link cannot be generated, instead of rendering a link that leads to a 404. Changing the country now updates the button again, and failed responses from the connection service are written to the log.
