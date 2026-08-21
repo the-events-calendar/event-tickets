@@ -91,7 +91,7 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
-		button: '.tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link',
+		button: '.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link',
 		countryField: '[name="tec-tickets-commerce-gateway-paypal-merchant-country"]',
 	};
 
@@ -150,11 +150,12 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 				return response.json();
 			} )
 			.then( function ( res ) {
-				// Handle success.
-				if ( true === res.success ) {
-					$button.prop( 'href', res.data.new_url );
+				if ( true !== res.success || ! res.data || ! res.data.new_url ) {
+					// The stored link is for the country the seller just changed away from, so keep it unclickable.
+					return;
 				}
 
+				$button.attr( 'href', res.data.new_url );
 				$button.removeClass( 'disabled' );
 			} );
 	};
