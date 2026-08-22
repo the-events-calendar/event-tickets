@@ -63,6 +63,14 @@ class Notice_New_Views_Upgrade {
 			return false;
 		}
 
+		/** @var \Tribe__Settings $settings */
+		$settings = tribe( 'settings' );
+
+		// The notice is about a setting that was removed, so it is only meaningful to someone who had it.
+		if ( ! current_user_can( $settings->requiredCap ) ) {
+			return false;
+		}
+
 		/** @var \Tribe__Admin__Helpers $admin_helpers */
 		$admin_helpers = tribe( 'admin.helpers' );
 

@@ -202,4 +202,30 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( tribe( Notice_New_Views_Upgrade::class )->should_display() );
 	}
+
+	/**
+	 * The notice explains that a setting was taken away, which means nothing to someone who could
+	 * never reach it.
+	 *
+	 * @test
+	 */
+	public function it_should_not_offer_the_upgrade_notice_to_a_user_who_cannot_change_settings() {
+		tribe_update_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON, true );
+
+		$notice = tribe( Notice_New_Views_Upgrade::class );
+
+		/*
+		 * Put a qualifying screen in place first, so the capability is the only thing left that can
+		 * decide the answer. Setting a screen fires `current_screen`, which the guided setup listens
+		 * on to consume the activation flag and redirect, and that redirect ends in tribe_exit().
+		 */
+		delete_transient( '_tribe_events_activation_redirect' );
+		set_current_screen( 'tribe_events_page_tec-tickets-settings' );
+
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->assertTrue( $notice->should_display(), 'An administrator on a Tickets screen should see it.' );
+
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+		$this->assertFalse( $notice->should_display(), 'The same screen, without the capability, should not.' );
+	}
 }
