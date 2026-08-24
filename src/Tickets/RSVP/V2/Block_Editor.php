@@ -161,9 +161,9 @@ class Block_Editor {
 			self::EDITOR_MIRROR_STYLE,
 		];
 
-		$existing = isset( $args['editorStyle'] ) ? (array) $args['editorStyle'] : [];
+		$existing = isset( $args['editor_style_handles'] ) ? (array) $args['editor_style_handles'] : [];
 
-		$args['editorStyle'] = array_values( array_unique( array_merge( $existing, $canvas_styles ) ) );
+		$args['editor_style_handles'] = array_values( array_unique( array_merge( $existing, $canvas_styles ) ) );
 
 		return $args;
 	}

@@ -115,6 +115,37 @@ class Block_Editor_Test extends WPTestCase {
 		$this->assertArrayHasKey( 'rsvpV2', $config['tickets'], 'RSVP V2 config should be added' );
 	}
 
+	public function test_rsvp_block_editor_style_args_should_set_editor_style_handles(): void {
+		$args = apply_filters( 'register_block_type_args', [], 'tribe/rsvp' );
+
+		$this->assertArrayHasKey(
+			'editor_style_handles',
+			$args,
+			'RSVP block registration should include editor_style_handles so styles reach the editor canvas iframe'
+		);
+
+		$this->assertContains(
+			'tec-tickets-commerce-rsvp-style',
+			$args['editor_style_handles'],
+			'RSVP frontend styles should be part of the editor canvas styles'
+		);
+		$this->assertContains(
+			Block_Editor::EDITOR_MIRROR_STYLE,
+			$args['editor_style_handles'],
+			'RSVP editor mirror styles should be part of the editor canvas styles'
+		);
+	}
+
+	public function test_rsvp_block_editor_style_args_should_not_set_camel_case_editor_style(): void {
+		$args = apply_filters( 'register_block_type_args', [], 'tribe/rsvp' );
+
+		$this->assertArrayNotHasKey(
+			'editorStyle',
+			$args,
+			'WP_Block_Type ignores the camelCase editorStyle key; use editor_style_handles instead'
+		);
+	}
+
 	public function test_should_enqueue_tickets_block_assets_for_tickets_block(): void {
 		$parsed_block = [
 			'blockName' => 'tribe/tickets',
