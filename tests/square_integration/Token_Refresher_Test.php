@@ -21,11 +21,11 @@ class Token_Refresher_Test extends WPTestCase {
 	protected array $whodat_calls = [];
 
 	/**
-	 * What the token status endpoint reports about the stored access token.
+	 * What the token status endpoint reports about the stored access token, decoded or as a raw body.
 	 *
-	 * @var array
+	 * @var mixed
 	 */
-	protected array $token_status = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
+	protected $token_status = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
 
 	/**
 	 * The instance the shared filter callback should route to.
@@ -360,6 +360,25 @@ class Token_Refresher_Test extends WPTestCase {
 		$merchant                 = $this->connect( [ 'expires_at' => gmdate( 'c', time() - HOUR_IN_SECONDS ) ] );
 		$this->whodat_responses[] = $this->refresh_error_page( 500 );
 		$this->token_status       = [ 'type' => 'UNAUTHORIZED' ];
+
+		$this->assertFalse( $this->refresher()->refresh_if_needed() );
+
+		$this->assertFalse( $merchant->is_token_invalid() );
+		$this->assertTrue( $merchant->is_connected() );
+	}
+
+	/**
+	 * A JSON scalar decodes to a scalar, and the status reader is typed to an array. Reading one has to
+	 * come back as unknown rather than throw or count as a refusal.
+	 *
+	 * @test
+	 */
+	public function it_should_read_a_scalar_status_body_as_unknown(): void {
+		$merchant                 = $this->connect( [ 'expires_at' => gmdate( 'c', time() - HOUR_IN_SECONDS ) ] );
+		$this->whodat_responses[] = $this->refresh_error_page( 500 );
+		$this->token_status       = '"UNAUTHORIZED"';
+
+		$this->assertNull( tribe( WhoDat::class )->is_token_accepted( true ) );
 
 		$this->assertFalse( $this->refresher()->refresh_if_needed() );
 
