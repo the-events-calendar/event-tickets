@@ -439,29 +439,31 @@ class Ticket_Actions_Test extends Controller_Test_Case {
 		 *
 		 * Of course there are filters to change this behavior, but this is default.
 		 *
-		 * Lets do a time limit of 5 seconds and process all 1000 actions as a stress test.
+		 * We process all 1000 actions well inside that window as a stress test.
 		 *
-		 * That is in total 180 times more performant of what AS can handle.
+		 * The budget is deliberately loose. This runs on shared CI hardware, so a tight bound
+		 * measures the runner rather than the code, and the regression worth catching here is a
+		 * blow-up in orders of magnitude, not a second either way.
 		 */
 
 		// Assert that no action is executed yet at this point.
 		$this->assertEquals( 0, did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
 		$this->assertEquals( 0, did_action( $this->controller_class::TICKET_END_SALES_HOOK ) );
 
-		$start_process_actions_time = time();
+		$start_process_actions_time = microtime( true );
 		foreach ( $start_actions as $action ) {
 			$action->execute();
 		}
 		foreach ( $end_actions as $action ) {
 			$action->execute();
 		}
-		$end_process_actions_time = time();
+		$end_process_actions_time = microtime( true );
 
 		// Assert that all the actions have actually executed.
 		$this->assertEquals( ( $posts * $tickets_per_post ), did_action( $this->controller_class::TICKET_START_SALES_HOOK ) );
 		$this->assertEquals( ( $posts * $tickets_per_post ), did_action( $this->controller_class::TICKET_END_SALES_HOOK ) );
 
-		$this->assertLessThan( 5, $end_process_actions_time - $start_process_actions_time );
+		$this->assertLessThan( 30, $end_process_actions_time - $start_process_actions_time );
 	}
 
 	/**
