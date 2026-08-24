@@ -49,6 +49,7 @@ class RsvpTest extends \Codeception\TestCase\WPAjaxTestCase {
 		$_REQUEST['action']                       = 'rsvp-process';
 		$_REQUEST['ticket_id']                     = $ticket_id;
 		$_POST['ticket_id']                        = $ticket_id;
+		$_POST['nonce']                            = wp_create_nonce( 'tribe_tickets_rsvp_handle' );
 		$_POST['product_id']                       = [ $ticket_id ];
 		$_POST[ "quantity_{$ticket_id}" ]          = 1;
 		$_POST['attendee']                         = [
@@ -140,6 +141,80 @@ class RsvpTest extends \Codeception\TestCase\WPAjaxTestCase {
 			0,
 			$this->get_rsvp_provider()->get_attendees_by_id( $private_ticket_id ),
 			'No attendee should have been created for the private event smuggled in via product_id.'
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_rsvp_without_a_valid_nonce() {
+		wp_set_current_user( 0 );
+
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->set_process_request( $ticket_id );
+		$_POST['nonce'] = 'not-a-valid-nonce';
+
+		$response = $this->process_and_capture();
+
+		$this->assertFalse( $response['success'], 'RSVP processing without a valid nonce must be rejected.' );
+		$this->assertCount(
+			0,
+			$this->get_rsvp_provider()->get_attendees_by_id( $ticket_id ),
+			'No attendee should have been created without a valid nonce.'
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_rsvp_before_the_ticket_start_date() {
+		wp_set_current_user( 0 );
+
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+2 days' ) ),
+			],
+		] );
+
+		$this->set_process_request( $ticket_id );
+
+		$response = $this->process_and_capture();
+
+		$this->assertFalse( $response['success'], 'RSVP processing before the ticket sale start date must be rejected.' );
+		$this->assertCount(
+			0,
+			$this->get_rsvp_provider()->get_attendees_by_id( $ticket_id ),
+			'No attendee should have been created before the ticket sale start date.'
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_rsvp_after_the_ticket_end_date() {
+		wp_set_current_user( 0 );
+
+		$post_id = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-2 days' ) ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+			],
+		] );
+
+		$this->set_process_request( $ticket_id );
+
+		$response = $this->process_and_capture();
+
+		$this->assertFalse( $response['success'], 'RSVP processing after the ticket sale end date must be rejected.' );
+		$this->assertCount(
+			0,
+			$this->get_rsvp_provider()->get_attendees_by_id( $ticket_id ),
+			'No attendee should have been created after the ticket sale end date.'
 		);
 	}
 

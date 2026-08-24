@@ -14,6 +14,7 @@
  * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
  * @since 4.12.3 Add comments to help IDE auto-completion. Array short syntax.
  * @since 5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
+ * @since TBD Add the nonce field required by the RSVP processing AJAX action.
  *
  * @version 5.0.3
  *
@@ -37,7 +38,7 @@ $event_id = $ticket_data->event;
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( absint( $ticket->ID ) ); ?>">
 	<input type="hidden" name="attendee[order_status]" value="<?php echo esc_attr( $going ); ?>">
-	<!-- Maybe add nonce over here? Try to leave templates as clean as possible -->
+	<?php wp_nonce_field( 'tribe_tickets_rsvp_handle', 'nonce' ); ?>
 
 	<div class="tribe-left">
 		<?php if ( ! $must_login ) : ?>

@@ -1085,8 +1085,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Generate and store all the attendees information for a new order.
+	 *
+	 * @since TBD Reject submissions without a valid nonce; the classic RSVP form renders one.
 	 */
 	public function maybe_generate_tickets() {
+		// Reject requests without a valid nonce; the classic RSVP form renders one.
+		if ( ! wp_verify_nonce( tribe_get_request_var( 'nonce', '' ), 'tribe_tickets_rsvp_handle' ) ) {
+			return;
+		}
+
 		$has_ticket_attendees = ! empty( $_POST['tribe_tickets'] );
 
 		if (
@@ -2735,6 +2742,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return new WP_Error( 'rsvp-invalid-ticket-id', __( 'Invalid Ticket ID provided!', 'event-tickets' ) );
 		}
 
+		// Reject RSVPs for tickets outside their sale window.
+		if ( ! $ticket_type->date_in_range() ) {
+			return new WP_Error( 'rsvp-ticket-not-available', __( 'This RSVP is not currently available.', 'event-tickets' ) );
+		}
+
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
 
 		$required_details = [
@@ -2902,6 +2914,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Parses the quantity of tickets requested for a product via the $_POST var.
 	 *
 	 * @since 4.7
+	 * @since TBD Cap the requested quantity to the maximum allowed in a single purchase.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -2915,6 +2928,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		} elseif ( isset( $_POST["quantity_{$ticket_id}"] ) ) {
 			$quantity = absint( $_POST["quantity_{$ticket_id}"] );
 		}
+
+		// Cap the requested quantity to the maximum allowed in a single purchase.
+		$quantity = min( $quantity, tribe( 'tickets.handler' )->get_ticket_max_purchase( $ticket_id ) );
 
 		return $quantity;
 	}

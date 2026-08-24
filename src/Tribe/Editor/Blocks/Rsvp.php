@@ -381,6 +381,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 *
 	 * @since 4.9
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
+	 * @since TBD Reject requests without a valid nonce and tickets outside their sale window.
 	 *
 	 * @return void
 	 */
@@ -389,6 +390,11 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			'html' => '',
 			'view' => 'rsvp-process',
 		];
+
+		// Reject requests without a valid nonce; the RSVP form renders one.
+		if ( ! wp_verify_nonce( tribe_get_request_var( 'nonce', '' ), 'tribe_tickets_rsvp_handle' ) ) {
+			wp_send_json_error( $response );
+		}
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
@@ -413,6 +419,11 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		}
 
 		$ticket = $rsvp->get_ticket( $post_id, $ticket_id );
+
+		// Reject requests for tickets outside their sale window or that cannot be resolved.
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object || ! $ticket->date_in_range() ) {
+			wp_send_json_error( $response );
+		}
 
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
