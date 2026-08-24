@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\Commerce\Success;
 use TEC\Tickets\Commerce\Values\Legacy_Value_Factory;
@@ -287,6 +288,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.1.9
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
+	 * @since TBD Records what PayPal answered and fails when it did not acknowledge a capture.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -301,13 +303,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$paypal_order_id = $request->get_param( 'order_id' );
 
-		$order = tec_tc_orders()->by_args( [
-			'status'           => tribe( Pending::class )->get_wp_slug(),
-			'gateway_order_id' => $paypal_order_id,
-		] )->first();
+		$order = tec_tc_orders()->by_args(
+			[
+				'status'           => 'any',
+				'gateway_order_id' => $paypal_order_id,
+			]
+		)->first();
 
 		if ( ! $order ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'] );
+			return new WP_Error(
+				'tec-tc-gateway-paypal-nonexistent-order-id',
+				$messages['nonexistent-order-id'],
+				[ 'status' => 404 ]
+			);
 		}
 
 		$recheck = $request->get_param( 'recheck' );
@@ -316,18 +324,30 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $this->handle_recheck_order( $paypal_order_id, $order );
 		}
 
+		// An earlier request already captured this order, and capturing twice is an error at PayPal.
+		// Send the buyer to the order rather than asking them to pay for it again.
+		if ( ! $this->order_is_in_flight( $order ) ) {
+			return $this->settled_response( $order, $paypal_order_id );
+		}
+
 		$payer_id = $request->get_param( 'payer_id' );
 
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
+
+		if ( ! $this->is_paypal_payload( $paypal_capture_response ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-failed-capture',
+				$messages['failed-capture'],
+				[ 'status' => 502 ]
+			);
+		}
 
 		$debug_header = tribe( Client::class )->get_debug_header();
 		if ( ! empty( $debug_header ) ) {
 			$paypal_capture_response['debug_id'] = $debug_header;
 		}
 
-		if (
-			'UNPROCESSABLE_ENTITY' === Arr::get( $paypal_capture_response, 'name' )
-		) {
+		if ( 'UNPROCESSABLE_ENTITY' === Arr::get( $paypal_capture_response, 'name' ) ) {
 			// Flag the order as Denied.
 			tribe( Order::class )->modify_status( $order->ID, Denied::SLUG, [
 				'gateway_payload' => $paypal_capture_response,
@@ -337,16 +357,33 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				'tec-tc-gateway-paypal-failed-capture',
 				$messages['failed-capture'],
 				[
+					'status'  => 400,
 					'name'    => Arr::get( $paypal_capture_response, 'name' ),
-					'details' => Arr::get( $paypal_capture_response, 'details', [] ),
+					'details' => (array) Arr::get( $paypal_capture_response, 'details', [] ),
 				]
 			);
 		}
 
-		$response['success']  = true;
-		$response['order_id'] = $paypal_order_id;
+		// Record the capture before answering. The browser may never receive this response, and until
+		// the capture is on the order nothing on the site knows the money was taken.
+		$status = $this->settle_order_status( $order, $paypal_capture_response );
 
-		return new WP_REST_Response( $response );
+		if ( is_wp_error( $status ) ) {
+			return $status;
+		}
+
+		if ( null === $status ) {
+			// PayPal took the money but has not settled the order, which an authentication such as
+			// BankID finishes on its own side. The recheck is what waits for that.
+			$response['success']  = true;
+			$response['order_id'] = $paypal_order_id;
+
+			return new WP_REST_Response( $response );
+		}
+
+		// The capture answered, so the buyer has somewhere to go without a second round trip. A
+		// blocked or delayed recheck can no longer be what strands them.
+		return $this->settled_response( $order, $paypal_order_id, $status );
 	}
 
 	/**
@@ -354,73 +391,228 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.4.0.2
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
+	 * @since TBD Captures an approved order nothing captured yet, and stops writing unsettled PayPal
+	 *        states over the order.
 	 *
-	 * @param string   $order_id The PayPal order ID.
+	 * @param string  $order_id The PayPal order ID.
 	 * @param WP_Post $order    The TC Order object.
 	 *
-	 * @return bool|WP_Error|WP_REST_Response
+	 * @return WP_Error|WP_REST_Response
 	 */
 	public function handle_recheck_order( $order_id, $order ) {
+		$messages = $this->get_error_messages();
 
-		$paypal_order_response       = tribe( Client::class )->get_order( $order_id );
-		$paypal_order_status         = Arr::get( $paypal_order_response, [ 'status' ] );
-		$paypal_order_purchase_units = Arr::get( $paypal_order_response, [ 'purchase_units' ], [] );
-		$paypal_order_captures       = [];
-		$messages                    = $this->get_error_messages();
+		$paypal_order_response = tribe( Client::class )->get_order( $order_id );
 
-		foreach( $paypal_order_purchase_units as $unit ) {
-			if ( ! empty( $unit['payments']['captures'] ) ) {
-				$paypal_order_captures[] = $unit['payments']['captures'];
+		if ( ! $this->is_paypal_payload( $paypal_order_response ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-invalid-capture-status',
+				$messages['invalid-capture-status'],
+				[ 'status' => 502 ]
+			);
+		}
+
+		// The payer approved and nothing was captured, so either the capture request never reached
+		// PayPal or its answer never got back. Capturing here is what keeps a delayed or blocked round
+		// trip from leaving an approved order unpaid.
+		if (
+			Status::APPROVED === Arr::get( $paypal_order_response, 'status' )
+			&& null === $this->get_deciding_capture( $paypal_order_response )
+		) {
+			$paypal_capture_response = tribe( Client::class )->capture_order( $order_id );
+
+			if ( $this->is_paypal_payload( $paypal_capture_response ) ) {
+				$paypal_order_response = $paypal_capture_response;
 			}
 		}
 
-		if ( Status::CREATED === $paypal_order_status && ! empty( $paypal_order_captures ) ) {
-			$paypal_order_captures = array_shift( $paypal_order_captures );
-			if ( count( $paypal_order_captures ) > 1 ) {
-				// Sort the captures array by the update timestamp
-				usort( $paypal_order_captures, function( $a, $b ) {
-					return strtotime( $a['update_time'] ) <=> strtotime( $b['update_time'] );
-				} );
-			}
+		$status = $this->settle_order_status( $order, $paypal_order_response );
 
-			foreach( $paypal_order_captures as $capture ) {
-				$paypal_order_status = $capture['status'];
-				$final = $capture['final_capture'] ?? false;
+		if ( is_wp_error( $status ) ) {
+			return $status;
+		}
 
-				if ( $final ) {
-					break;
+		// The buyer leaves checkout either way. A payment PayPal has not settled yet keeps the order
+		// pending for the PAYMENT.CAPTURE.COMPLETED webhook to finish; what must not happen is holding
+		// the buyer on the loader over money they have already handed over.
+		return $this->settled_response( $order, $order_id, $status );
+	}
+
+	/**
+	 * Writes the state PayPal settled on onto the Tickets Commerce order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order    The Tickets Commerce order.
+	 * @param array   $response A PayPal order or capture response.
+	 *
+	 * @return Status_Interface|WP_Error|null The status written, an error the buyer has to be told
+	 *                                        about, or null while PayPal has settled nothing.
+	 */
+	protected function settle_order_status( $order, array $response ) {
+		$messages      = $this->get_error_messages();
+		$paypal_status = $this->get_settled_status( $response );
+
+		if ( null === $paypal_status ) {
+			return null;
+		}
+
+		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_status );
+
+		if ( ! $status ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-invalid-capture-status',
+				$messages['invalid-capture-status'],
+				[ 'status' => 500 ]
+			);
+		}
+
+		tribe( Order::class )->modify_status(
+			$order->ID,
+			$status->get_slug(),
+			[ 'gateway_payload' => $response ]
+		);
+
+		if ( in_array( $paypal_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-capture-declined',
+				$messages['capture-declined'],
+				[ 'status' => 402 ]
+			);
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Builds the response that takes the buyer off checkout and on to their order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post               $order           The Tickets Commerce order.
+	 * @param string                $paypal_order_id The PayPal order ID.
+	 * @param Status_Interface|null $status          The status PayPal settled on, if it settled.
+	 *
+	 * @return WP_REST_Response
+	 */
+	protected function settled_response( $order, string $paypal_order_id, ?Status_Interface $status = null ): WP_REST_Response {
+		// When we have success we clear the cart.
+		tribe( Cart::class )->clear_cart();
+
+		return new WP_REST_Response(
+			[
+				'success'      => true,
+				'status'       => $status ? $status->get_slug() : Pending::SLUG,
+				'order_id'     => $order->ID,
+				'redirect_url' => add_query_arg( [ 'tc-order-id' => $paypal_order_id ], tribe( Success::class )->get_url() ),
+			]
+		);
+	}
+
+	/**
+	 * Resolves the status a PayPal response has settled on, if it has settled on one.
+	 *
+	 * The order status on its own is not an answer: an order reads COMPLETED as soon as a capture
+	 * exists, whatever that capture's own status is, and reads CREATED or APPROVED while the payer
+	 * finishes an authentication such as BankID. The capture, when there is one, is the authority.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $response A PayPal order or capture response.
+	 *
+	 * @return string|null The settled PayPal status, or null while the payment is still in flight.
+	 */
+	protected function get_settled_status( array $response ): ?string {
+		$capture = $this->get_deciding_capture( $response );
+		$status  = null !== $capture ? Arr::get( $capture, 'status' ) : Arr::get( $response, 'status' );
+
+		if ( ! is_string( $status ) || in_array( $status, $this->get_in_flight_statuses(), true ) ) {
+			return null;
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Picks the capture that decides a PayPal order out of its purchase units.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $response A PayPal order or capture response.
+	 *
+	 * @return array|null The deciding capture, or null when nothing has been captured.
+	 */
+	protected function get_deciding_capture( array $response ): ?array {
+		$captures = [];
+
+		foreach ( (array) Arr::get( $response, 'purchase_units', [] ) as $unit ) {
+			foreach ( (array) Arr::get( $unit, [ 'payments', 'captures' ], [] ) as $capture ) {
+				if ( ! empty( $capture['status'] ) ) {
+					$captures[] = $capture;
 				}
 			}
 		}
 
-		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_order_status );
-
-		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'] );
+		if ( empty( $captures ) ) {
+			return null;
 		}
 
-		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
-			'gateway_payload' => $paypal_order_response,
-		] );
+		usort(
+			$captures,
+			static function ( $a, $b ) {
+				return strtotime( Arr::get( $a, 'update_time', '' ) ) <=> strtotime( Arr::get( $b, 'update_time', '' ) );
+			}
+		);
 
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
+		foreach ( $captures as $capture ) {
+			if ( ! empty( $capture['final_capture'] ) ) {
+				return $capture;
+			}
 		}
 
-		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-capture-declined', $messages['capture-declined'] );
+		return end( $captures );
+	}
+
+	/**
+	 * PayPal statuses that mean the payment has not resolved yet.
+	 *
+	 * None of these may be written over the order. They map to Tickets Commerce statuses that generate
+	 * attendees or walk the order backwards out of pending, and reaching one of them means the money
+	 * has not been taken.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_in_flight_statuses(): array {
+		return [
+			Status::CREATED,
+			Status::SAVED,
+			Status::APPROVED,
+			Status::PAYER_ACTION_REQUIRED,
+			Status::PENDING,
+		];
+	}
+
+	/**
+	 * Whether a Client response is a payload PayPal produced.
+	 *
+	 * A transport failure comes back as a WP_Error and a body the Client could not decode comes back
+	 * as the raw wp_remote_* response. Neither says anything about the payment, and treating either as
+	 * an answer is how a blocked request ends up reported as a successful capture.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $response A Client response.
+	 *
+	 * @return bool
+	 */
+	protected function is_paypal_payload( $response ): bool {
+		if ( is_wp_error( $response ) || ! is_array( $response ) ) {
+			return false;
 		}
 
-		$response['success']  = true;
-		$response['status']   = $status->get_slug();
-		$response['order_id'] = $order->ID;
-
-		// When we have success we clear the cart.
-		tribe( Cart::class )->clear_cart();
-
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order_id ], tribe( Success::class )->get_url() );
-
-		return new WP_REST_Response( $response );
+		return ! isset( $response['response'], $response['headers'] );
 	}
 
 	/**
