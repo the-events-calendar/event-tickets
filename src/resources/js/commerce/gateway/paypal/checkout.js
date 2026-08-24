@@ -603,11 +603,12 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @param {jQuery} $container jQuery Object.
 	 */
 	obj.timeoutRedirect = ( $container ) => {
-		// Prevent redirecting when a payment is engaged. The active payment class only covers the
-		// buttons flow, and a card authentication such as BankID is exactly the payment long enough to
-		// outlast the token: reloading through it abandons the PayPal order the buyer is authenticating
-		// against, and their retry leaves a second pending order behind.
-		if ( obj.paymentInFlight || $container.is( obj.selectors.activePayment.className() ) ) {
+		// Prevent redirecting when a payment is engaged. A card authentication such as BankID is
+		// exactly the payment long enough to outlast the token: reloading through it abandons the
+		// PayPal order the buyer is authenticating against, and their retry leaves a second pending
+		// order behind. The class is matched with the dotted selector because className() strips the
+		// dot for hasClass, and is() reads the bare name as a tag, which never matches.
+		if ( obj.paymentInFlight || $container.is( obj.selectors.activePayment ) ) {
 			obj.reloadWhenIdle = true;
 			return;
 		}
