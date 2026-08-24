@@ -364,6 +364,22 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
+		// PayPal answered with an error object rather than an order. RESOURCE_NOT_FOUND,
+		// PERMISSION_DENIED and the rest land here, and none of them mean the payment is still in
+		// flight. Without this they read as unsettled and the buyer is sent into a recheck that has
+		// nothing to find.
+		if ( ! isset( $paypal_capture_response['status'] ) && ! empty( $paypal_capture_response['name'] ) ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-failed-capture',
+				$messages['failed-capture'],
+				[
+					'status'  => 400,
+					'name'    => Arr::get( $paypal_capture_response, 'name' ),
+					'details' => (array) Arr::get( $paypal_capture_response, 'details', [] ),
+				]
+			);
+		}
+
 		// Record the capture before answering. The browser may never receive this response, and until
 		// the capture is on the order nothing on the site knows the money was taken.
 		$status = $this->settle_order_status( $order, $paypal_capture_response );
