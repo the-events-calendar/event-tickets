@@ -105,7 +105,7 @@ class Block_Editor {
 
 		$initial_ticket = $endpoint->get_formatted_entity( $ticket_post );
 
-		$post = $original_post;
+		$post = $original_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- restoring the global post polluted by WP_REST_Posts_Controller.
 
 		/**
 		 * Filters the initial RSVP ticket data preloaded into the block editor.
