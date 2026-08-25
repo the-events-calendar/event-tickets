@@ -139,6 +139,21 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should cap the requested quantity to the remaining stock when the request exceeds it
+	 */
+	public function it_should_cap_the_requested_quantity_to_the_remaining_stock() {
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->make_stock_ticket( 3, $post_id );
+
+		$_POST[ "quantity_{$ticket_id}" ] = 10;
+
+		$sut = $this->make_instance();
+
+		$this->assertEquals( 3, $sut->parse_ticket_quantity( $ticket_id ) );
+	}
+
+	/**
+	 * @test
 	 * it should not generate tickets when the sale window has passed
 	 */
 	public function it_should_not_generate_tickets_when_the_sale_window_has_passed() {

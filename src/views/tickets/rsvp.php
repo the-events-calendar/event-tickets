@@ -15,7 +15,7 @@
  * @since 5.9.1 Corrected template override filepath
  * @since TBD Add the nonce field required by the RSVP form processing.
  *
- * @version 5.9.1
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
