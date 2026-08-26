@@ -170,6 +170,81 @@ class Order_Endpoint_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_hide_attendees_list_in_confirmation_when_no_addon_enables_it(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 100 ] ] );
+
+		$this->register_endpoint();
+
+		remove_all_filters( 'tec_tickets_rsvp_show_attendees_list' );
+
+		$data = $this->submit_rsvp( $ticket_id );
+
+		$this->assertTrue( $data['success'] );
+		$this->assertStringNotContainsString( 'tec-tickets__attendees-list-item', $data['html'] );
+	}
+
+	/**
+	 * @test
+	 * @see https://linear.app/nexcess/issue/SOFT-3632 When shown, each confirmation row names its guest.
+	 */
+	public function it_should_render_attendee_names_in_confirmation_when_list_is_enabled(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 100 ] ] );
+
+		$this->register_endpoint();
+
+		// Simulate an add-on (e.g. Event Tickets Plus) enabling the attendees list.
+		add_filter( 'tec_tickets_rsvp_show_attendees_list', '__return_true', 100 );
+
+		$data = $this->submit_rsvp( $ticket_id );
+
+		$this->assertTrue( $data['success'] );
+		$this->assertStringContainsString( 'tec-tickets__attendees-list-item-attendee-details-name', $data['html'], 'The confirmation rows should render each guest name.' );
+		$this->assertGreaterThanOrEqual( 2, substr_count( (string) $data['html'], 'Guest Alpha' ), 'Each captured guest row should be named.' );
+
+		remove_filter( 'tec_tickets_rsvp_show_attendees_list', '__return_true', 100 );
+	}
+
+	/**
+	 * Submits a two-guest Going RSVP through the order endpoint.
+	 *
+	 * @param int $ticket_id The TC-RSVP ticket ID.
+	 *
+	 * @return array The endpoint response data.
+	 */
+	private function submit_rsvp( int $ticket_id ): array {
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'quantity'  => 2,
+					'attendees' => [
+						[
+							'email'        => 'guest@example.com',
+							'full_name'    => 'Guest Alpha',
+							'order_status' => 'going',
+							'optout'       => false,
+						],
+					],
+				],
+			]
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		return $data;
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_process_opt_in_step_with_valid_nonce(): void {
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 100 ] ] );
