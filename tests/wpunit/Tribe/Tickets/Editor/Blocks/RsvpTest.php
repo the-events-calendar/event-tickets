@@ -26,9 +26,6 @@ class RsvpTest extends \Codeception\TestCase\WPAjaxTestCase {
 
 	public function _tearDown() {
 		parent::_tearDown();
-
-		// Prevent "Test code or tested code did not (only) close its own output buffers".
-		ob_start();
 	}
 
 	/**
