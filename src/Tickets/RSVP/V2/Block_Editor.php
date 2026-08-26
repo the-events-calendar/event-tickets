@@ -97,7 +97,15 @@ class Block_Editor {
 		/** @var Ticket_Endpoint $endpoint */
 		$endpoint = tribe( Ticket_Endpoint::class );
 
+		// get_formatted_entity() runs the ticket through WP_REST_Posts_Controller::prepare_item_for_response(),
+		// which calls setup_postdata() and leaves the global $post pointing at the ticket. Restore it so the
+		// rest of the admin page (e.g. the Virtual Events metabox) keeps rendering the event.
+		global $post;
+		$original_post = $post;
+
 		$initial_ticket = $endpoint->get_formatted_entity( $ticket_post );
+
+		$post = $original_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- restoring the global post polluted by WP_REST_Posts_Controller.
 
 		/**
 		 * Filters the initial RSVP ticket data preloaded into the block editor.

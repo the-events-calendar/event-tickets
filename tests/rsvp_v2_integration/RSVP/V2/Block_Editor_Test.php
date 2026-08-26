@@ -93,6 +93,35 @@ class Block_Editor_Test extends WPTestCase {
 		wp_set_current_user( 0 );
 	}
 
+	/**
+	 * The preloaded RSVP ticket is formatted through WP_REST_Posts_Controller::prepare_item_for_response(),
+	 * which calls setup_postdata() and leaves the global $post pointing at the ticket. Verify the global post
+	 * is restored to the event so other admin metaboxes (e.g. Virtual Events) keep rendering the event.
+	 */
+	public function test_rsvp_v2_config_preserves_global_post_when_preloading_initial_ticket(): void {
+		wp_set_current_user( 1 );
+
+		$post_id = static::factory()->post->create(
+			[
+				'post_title'  => 'RSVP Event',
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			]
+		);
+
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		global $post;
+		$post = get_post( $post_id );
+
+		apply_filters( 'tribe_editor_config', [] );
+
+		$this->assertSame( $post_id, $post->ID, 'Global $post should still reference the event, not the RSVP ticket' );
+		$this->assertSame( 'page', $post->post_type, 'Global $post post type should be unchanged' );
+
+		wp_set_current_user( 0 );
+	}
+
 	public function test_should_preserve_existing_config_when_adding_rsvp_v2(): void {
 		$existing_config = [
 			'someKey'   => 'someValue',
