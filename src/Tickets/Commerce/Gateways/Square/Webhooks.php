@@ -149,19 +149,11 @@ class Webhooks extends Abstract_Webhooks {
 				return '';
 			}
 
-			/*
-			 * wp_hash_password() trims the secret and wp_check_password() does not, so a secret held
-			 * either side by whitespace can never verify. wp_generate_password() includes a space in
-			 * its extra special characters, so roughly one secret in forty-five is born unusable.
-			 */
-			$webhook_secret = trim( wp_generate_password( 64, true, true ) );
+			$webhook_secret = wp_generate_password( 64, true, true );
 
 			// We specifically save the raw secret key, not the hashed version, so that if the salt changes the webhooks fail.
 			set_transient( self::OPTION_WEBHOOK_SECRET, $webhook_secret, 2 * DAY_IN_SECONDS );
 		}
-
-		// Heals a secret already stored with surrounding whitespace, which would otherwise never verify.
-		$webhook_secret = trim( $webhook_secret );
 
 		return $hash ? wp_hash_password( $webhook_secret ) : $webhook_secret;
 	}
