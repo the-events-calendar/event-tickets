@@ -13,8 +13,9 @@
  * @since 4.11.5 Display total available separately from setting max allowed to purchase at once.
  * @since 5.1.5 Add label to the quantity input to improve accessibility.
  * @since 5.9.1 Corrected template override filepath
+ * @since TBD Add the nonce field required by the RSVP form processing.
  *
- * @version 5.9.1
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -74,6 +75,8 @@ if ( ! $already_rendered ) {
 	<h2 class="tribe-events-tickets-title tribe--rsvp">
 		<?php echo esc_html( tribe_get_rsvp_label_singular( 'form_heading' ) ); ?>
 	</h2>
+
+	<?php wp_nonce_field( 'tribe_tickets_rsvp_handle', 'nonce' ); ?>
 
 	<div class="tribe-rsvp-messages">
 		<?php
