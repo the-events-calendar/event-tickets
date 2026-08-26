@@ -23,14 +23,14 @@
 defined( 'ABSPATH' ) || die();
 
 if ( $rsvp->date_is_later() ) {
-	// Translators: %s is the plural label for RSVPs.
 	$message = sprintf(
+		// Translators: %s is the plural label for RSVPs.
 		_x( '%s are no longer available', 'RSVP block inactive content in the past', 'event-tickets' ),
 		tribe_get_rsvp_label_plural( 'block_inactive_content_past' )
 	);
 } else {
-	// Translators: %s is the plural label for RSVPs.
 	$message = sprintf(
+		// Translators: %s is the plural label for RSVPs.
 		_x( '%s are not yet available', 'RSVP block inactive content', 'event-tickets' ),
 		tribe_get_rsvp_label_plural( 'block_inactive_content' )
 	);
