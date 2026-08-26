@@ -763,8 +763,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id The post ID.
 		 */
 		public function clear_ticket_cache_for_post( $post_id ) {
-			// No post context (e.g. deleting an attendee) means there is nothing to clear.
-			if ( empty( $post_id ) ) {
+			// No post context (e.g. deleting an attendee) or a non-numeric value means there is nothing to clear.
+			if ( empty( $post_id ) || ! is_numeric( $post_id ) ) {
 				return;
 			}
 
@@ -774,7 +774,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$class = __CLASS__;
 
 			// Clear the request-scoped get_tickets() cache, sharing its key format via get_tickets_cache_key().
-			unset( $cache[ self::get_tickets_cache_key( $this->orm_provider, $post_id ) ] );
+			unset( $cache[ self::get_tickets_cache_key( $this->orm_provider, (int) $post_id ) ] );
 
 			$static_methods = [
 				'get_all_event_tickets',
@@ -807,10 +807,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
 		public function get_tickets( $post_id, ?string $context = null ) {
+			// A non-numeric post ID (e.g. the `all` keyword of the "all attendees" CSV export) can never
+			// resolve to tickets; bail before reaching the strictly-typed cache key builder.
+			if ( ! is_numeric( $post_id ) ) {
+				return [];
+			}
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
-			$key   = self::get_tickets_cache_key( $this->orm_provider, $post_id );
+			$key   = self::get_tickets_cache_key( $this->orm_provider, (int) $post_id );
 
 			// Only the context-less list is cached: a context can change which tickets are returned.
 			$use_cache = null === $context;
