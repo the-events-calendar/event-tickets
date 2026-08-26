@@ -12,36 +12,14 @@ const createMoment = ( formatted ) => ( {
 describe( 'formatRsvpWindow', () => {
 	beforeEach( () => {
 		jest.clearAllMocks();
-		globals.tecDateSettings.mockReturnValue( { datepickerFormat: 'Y-m-d' } );
+		globals.dateSettings.mockReturnValue( { formats: { date: 'F j, Y' } } );
 	} );
 
-	it( 'formats start and end dates using toFormat when datepickerFormat is set', () => {
-		const start = createMoment( '2026-03-05' );
-		const end = createMoment( '2026-03-25' );
-
-		expect( formatRsvpWindow( start, end ) ).toBe( '2026-03-05 - 2026-03-25' );
-		expect( start.format ).toHaveBeenCalledWith( 'YYYY-MM-DD' );
-		expect( end.format ).toHaveBeenCalledWith( 'YYYY-MM-DD' );
-	} );
-
-	it( 'formats dates with n/j/Y datepicker format', () => {
-		globals.tecDateSettings.mockReturnValue( { datepickerFormat: 'n/j/Y' } );
-
-		const start = createMoment( '6/29/2026' );
-		const end = createMoment( '6/29/2026' );
-
-		expect( formatRsvpWindow( start, end ) ).toBe( '6/29/2026 - 6/29/2026' );
-		expect( start.format ).toHaveBeenCalledWith( 'M/D/YYYY' );
-		expect( end.format ).toHaveBeenCalledWith( 'M/D/YYYY' );
-	} );
-
-	it( 'falls back to F j, Y format when datepickerFormat is not set', () => {
-		globals.tecDateSettings.mockReturnValue( {} );
-
+	it( 'formats dates using the WordPress date format', () => {
 		const start = createMoment( 'June 29, 2026' );
-		const end = createMoment( 'June 29, 2026' );
+		const end = createMoment( 'July 2, 2026' );
 
-		expect( formatRsvpWindow( start, end ) ).toBe( 'June 29, 2026 - June 29, 2026' );
+		expect( formatRsvpWindow( start, end ) ).toBe( 'June 29, 2026 - July 2, 2026' );
 		expect( start.format ).toHaveBeenCalledWith( 'MMMM D, YYYY' );
 		expect( end.format ).toHaveBeenCalledWith( 'MMMM D, YYYY' );
 	} );

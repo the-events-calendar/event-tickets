@@ -15,8 +15,24 @@ import * as selectors from './selectors';
 import { MOVE_TICKET_SUCCESS } from '../../shared/move/types';
 import * as moveSelectors from '../../shared/move/selectors';
 import { isTribeEventPostType, createDates } from '../../shared/sagas';
+import { getRsvpDateFormat } from './utils/rsvp-date-format';
 
 import { api, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
+
+/**
+ * Creates dates like the shared createDates, but formats the input string with
+ * the RSVP display format (WordPress date format) instead of TEC's compact
+ * datepicker format.
+ *
+ * @param {string|Date} date The source date.
+ * @return {Object} { moment, date, dateInput, time, timeInput }
+ */
+export function* createRSVPDates( date ) {
+	const { moment, date: databaseDate, time, timeInput } = yield call( createDates, date );
+	const dateInput = yield call( momentUtil.toDate, moment, getRsvpDateFormat() );
+
+	return { moment, date: databaseDate, dateInput, time, timeInput };
+}
 
 //
 // ─── RSVP DETAILS ───────────────────────────────────────────────────────────────
@@ -129,7 +145,7 @@ export function* initializeRSVP() {
 		dateInput: startDateInput,
 		time: startTime,
 		timeInput: startTimeInput,
-	} = yield call( createDates, publishDate );
+	} = yield call( createRSVPDates, publishDate );
 
 	yield all( [
 		put( actions.setRSVPStartDate( startDate ) ),
@@ -148,7 +164,7 @@ export function* initializeRSVP() {
 		if ( yield call( isTribeEventPostType ) ) {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
 			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
-			const endData = yield call( createDates, eventStart );
+			const endData = yield call( createRSVPDates, eventStart );
 
 			// Only sync the RSVP end to the event start when the event starts after the
 			// RSVP start time. Syncing to an earlier event start would invert the window
@@ -218,7 +234,7 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 				dateInput: endDateInput,
 				time: endTime,
 				timeInput: endTimeInput,
-			} = yield call( createDates, eventStart );
+			} = yield call( createRSVPDates, eventStart );
 
 			yield all( [
 				put( actions.setRSVPTempEndDate( endDate ) ),
@@ -444,7 +460,7 @@ export function* setNonEventPostTypeEndDate() {
 
 	const tempEndMoment = yield select( selectors.getRSVPTempEndDateMoment );
 	const endMoment = yield call( [ tempEndMoment, 'clone' ] );
-	const { date, dateInput, moment, time } = yield call( createDates, endMoment.toDate() );
+	const { date, dateInput, moment, time } = yield call( createRSVPDates, endMoment.toDate() );
 
 	yield all( [
 		put( actions.setRSVPTempEndDate( date ) ),

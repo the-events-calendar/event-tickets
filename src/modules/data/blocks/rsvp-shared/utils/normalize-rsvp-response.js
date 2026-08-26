@@ -1,7 +1,8 @@
 /**
  * Internal dependencies
  */
-import { globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { moment as momentUtil } from '@moderntribe/common/utils';
+import { getRsvpDateFormat } from './rsvp-date-format';
 import * as utils from '../../../utils';
 
 /**
@@ -46,13 +47,9 @@ export const normalizeRSVPResponse = ( {
 	startMoment,
 	endMoment,
 } ) => {
-	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
-	const startDateInput = datePickerFormat
-		? startMoment.format( momentUtil.toFormat( datePickerFormat ) )
-		: momentUtil.toDate( startMoment );
-	const endDateInput = datePickerFormat
-		? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
-		: momentUtil.toDate( endMoment );
+	const dateFormat = momentUtil.toFormat( getRsvpDateFormat() );
+	const startDateInput = startMoment.format( dateFormat );
+	const endDateInput = endMoment.format( dateFormat );
 
 	const normalizedTitle = utils.normalizeTitle( title );
 	const normalizedDescription = utils.normalizeDescription( description );

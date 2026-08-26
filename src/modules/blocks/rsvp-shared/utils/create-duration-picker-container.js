@@ -9,7 +9,8 @@ import { compose } from 'redux';
  */
 import DateTimeRangePicker from '../templates/duration-picker/template';
 import { withStore } from '@moderntribe/common/hoc';
-import { globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { moment as momentUtil } from '@moderntribe/common/utils';
+import { getRsvpDateFormat } from '../../../data/blocks/rsvp-shared/utils/rsvp-date-format';
 
 /**
  * Creates a duration picker container with optional autosave support.
@@ -23,9 +24,7 @@ import { globals, moment as momentUtil } from '@moderntribe/common/utils';
  */
 export const createDurationPickerContainer = ( { actions, selectors, autosave = false, onAutosave } ) => {
 	const mapStateToProps = ( state ) => {
-		const datePickerFormat = globals.tecDateSettings().datepickerFormat
-			? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
-			: 'LL';
+		const datePickerFormat = momentUtil.toFormat( getRsvpDateFormat() );
 		const isDisabled = selectors.getRSVPIsLoading( state ) || selectors.getRSVPSettingsOpen( state );
 
 		const startDateMoment = selectors.getRSVPTempStartDateMoment( state );

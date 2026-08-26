@@ -1,4 +1,5 @@
-import { globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { moment as momentUtil } from '@moderntribe/common/utils';
+import { getRsvpDateFormat } from '../../../data/blocks/rsvp-shared/utils/rsvp-date-format';
 
 /**
  * Format RSVP start and end dates for display in the RSVP Window section.
@@ -12,8 +13,7 @@ export const formatRsvpWindow = ( startDateMoment, endDateMoment ) => {
 		return '';
 	}
 
-	const phpFormat = globals.tecDateSettings().datepickerFormat || 'F j, Y';
-	const dateFormat = momentUtil.toFormat( phpFormat );
+	const dateFormat = momentUtil.toFormat( getRsvpDateFormat() );
 
 	const startFormatted = startDateMoment.format( dateFormat );
 	const endFormatted = endDateMoment.format( dateFormat );

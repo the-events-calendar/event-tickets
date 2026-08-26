@@ -33,8 +33,10 @@ if ( empty( $rsvp ) ) {
 	return;
 }
 
-// Bail if there are no active RSVP.
+// Render an unavailable message when the RSVP window is closed or not open yet.
 if ( empty( $active_rsvps ) ) {
+	$this->template( 'v2/commerce/rsvp/content-inactive', [ 'rsvp' => $rsvp ] );
+
 	return;
 }
 

@@ -479,7 +479,7 @@ describe( 'RSVP shared block sagas', () => {
 				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
-				call( createDates, '2018-02-02 02:00:00' ),
+				call( sagas.createRSVPDates, '2018-02-02 02:00:00' ),
 			);
 
 			expect( gen.next( {
@@ -920,7 +920,7 @@ describe( 'RSVP shared block sagas', () => {
 				call( [ momentMock, 'clone' ] ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( createDates, momentMock.toDate() ),
+				call( sagas.createRSVPDates, momentMock.toDate() ),
 			);
 			expect( gen.next( {
 				date: '2018-01-01',
