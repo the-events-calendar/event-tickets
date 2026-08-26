@@ -11,6 +11,7 @@ namespace TEC\Tickets\RSVP\V2;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\RSVP\RSVP_Controller_Methods;
+use Tribe__Template as Template;
 
 /**
  * Class Controller
@@ -97,6 +98,14 @@ class Controller extends Controller_Contract {
 			'save_post',
 			$this->container->callback( Classic_Editor::class, 'save_rsvp_on_post_save' ),
 			20
+		);
+
+		// Hide the ticket header image option from the settings panel for posts with TC-RSVP tickets.
+		add_filter(
+			'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image',
+			[ $this, 'hide_header_image_from_ticket_settings' ],
+			10,
+			5
 		);
 
 		// Block Editor.
@@ -313,6 +322,11 @@ class Controller extends Controller_Contract {
 			'save_post',
 			$this->container->callback( Classic_Editor::class, 'save_rsvp_on_post_save' ),
 			20
+		);
+		remove_filter(
+			'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image',
+			[ $this, 'hide_header_image_from_ticket_settings' ],
+			10
 		);
 		remove_filter(
 			'tribe_editor_config',
@@ -609,6 +623,30 @@ class Controller extends Controller_Contract {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Hides the ticket header image option from the settings panel when the post has TC-RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|string         $html     The initial HTML.
+	 * @param string              $file     Complete path to include the PHP File.
+	 * @param string[]            $name     Template name.
+	 * @param ?Template           $template Current instance of the Tribe__Template.
+	 * @param array<string,mixed> $context  The context data passed to the template.
+	 *
+	 * @return null|string|false The initial HTML, or `false` to prevent the template from rendering.
+	 */
+	public function hide_header_image_from_ticket_settings( ?string $html = null, string $file = '', array $name = [], ?Template $template = null, array $context = [] ) {
+		if ( ! isset( $context['post_id'] ) ) {
+			return $html;
+		}
+
+		$repository = tribe( 'tickets.ticket-repository.rsvp' );
+		$has_rsvp   = $repository->by( 'event', (int) $context['post_id'] )->found();
+
+		return $has_rsvp ? false : $html;
 	}
 
 	/**
