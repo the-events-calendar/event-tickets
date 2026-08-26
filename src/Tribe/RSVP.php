@@ -1086,7 +1086,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since TBD Reject submissions without a valid nonce; the classic RSVP form renders one.
+	 * @since 5.29.3.1 Reject submissions without a valid nonce; the classic RSVP form renders one.
 	 */
 	public function maybe_generate_tickets() {
 		// Reject requests without a valid nonce; the classic RSVP form renders one.
@@ -2914,7 +2914,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Parses the quantity of tickets requested for a product via the $_POST var.
 	 *
 	 * @since 4.7
-	 * @since TBD Cap the requested quantity to the maximum allowed in a single purchase.
+	 * @since 5.29.3.1 Cap the requested quantity to the maximum allowed in a single purchase.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *

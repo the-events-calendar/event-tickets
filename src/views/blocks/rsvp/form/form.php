@@ -14,7 +14,7 @@
  * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
  * @since 4.12.3 Add comments to help IDE auto-completion. Array short syntax.
  * @since 5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
- * @since TBD Add the nonce field required by the RSVP processing AJAX action.
+ * @since 5.29.3.1 Add the nonce field required by the RSVP processing AJAX action.
  *
  * @version 5.0.3
  *

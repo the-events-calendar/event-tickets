@@ -1,4 +1,0 @@
-significance: minor
-type: security
-entry: Enforced ticket sale start and end dates server-side, and capped RSVP quantities to the maximum allowed per purchase.
-timestamp: 2026-08-24T19:28:56.437Z

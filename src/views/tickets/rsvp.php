@@ -13,9 +13,9 @@
  * @since 4.11.5 Display total available separately from setting max allowed to purchase at once.
  * @since 5.1.5 Add label to the quantity input to improve accessibility.
  * @since 5.9.1 Corrected template override filepath
- * @since TBD Add the nonce field required by the RSVP form processing.
+ * @since 5.29.3.1 Add the nonce field required by the RSVP form processing.
  *
- * @version TBD
+ * @version 5.29.3.1
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login

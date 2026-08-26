@@ -381,7 +381,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 *
 	 * @since 4.9
 	 * @since 5.29.1 Reject the request unless the requesting user can access the ticket's event.
-	 * @since TBD Reject requests without a valid nonce and tickets outside their sale window.
+	 * @since 5.29.3.1 Reject requests without a valid nonce and tickets outside their sale window.
 	 *
 	 * @return void
 	 */
