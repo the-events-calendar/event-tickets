@@ -95,8 +95,8 @@ class SignupTest extends WPTestCase {
 	}
 
 	/**
-	 * A signup URL that fails to generate used to render `href="&displayMode=minibrowser"`, which the
-	 * browser resolves against /wp-admin/.
+	 * A bare `&displayMode=minibrowser` href has no scheme and no leading `/`, so the browser resolves
+	 * it against /wp-admin/.
 	 */
 	public function test_failed_signup_request_renders_no_link(): void {
 		$this->stub_whodat( 400, '{"message":"Bad Request"}' );
@@ -161,8 +161,7 @@ class SignupTest extends WPTestCase {
 	}
 
 	/**
-	 * The concatenation this replaced produced `...entry&displayMode=...` as a single path segment when
-	 * the signup URL carried no query string of its own.
+	 * `add_query_arg()` prepends `?` when the signup URL carries no query string of its own.
 	 */
 	public function test_signup_url_without_a_query_string_gets_a_question_mark(): void {
 		$this->stub_whodat( 200, $this->whodat_signup_body( 'https://www.paypal.com/merchantsignup/partner/entry' ) );
@@ -203,6 +202,56 @@ class SignupTest extends WPTestCase {
 		$this->assertSame(
 			'https://www.paypal.com/onboard?token=ABC123&displayMode=minibrowser',
 			$payload['data']['new_url']
+		);
+	}
+
+	/**
+	 * `generate_url()` rotates the signup hash before it calls WhoDat, so a country change invalidates
+	 * an onboarding session opened against the previous hash whether the refresh succeeds or fails.
+	 * `On_Boarding_Endpoint::handle_signup_redirect()` bails on that hash check before it reads the
+	 * referral data link, so dropping the whole payload costs nothing that keeping `links[0]` would save.
+	 */
+	public function test_failed_refresh_invalidates_an_open_onboarding_session(): void {
+		$responses = [
+			[ 200, $this->whodat_signup_body( 'https://www.paypal.com/onboard?token=ABC123' ) ],
+			[ 400, '{"message":"Bad Request"}' ],
+		];
+
+		add_filter(
+			'pre_http_request',
+			static function ( $pre, $args, $url ) use ( &$responses ) {
+				if ( false === strpos( $url, '/commerce/v1/paypal/' ) ) {
+					return $pre;
+				}
+
+				[ $code, $body ] = array_shift( $responses ) ?? [ 400, '{}' ];
+
+				return [
+					'headers'  => [],
+					'body'     => $body,
+					'response' => [ 'code' => $code, 'message' => '' ],
+					'cookies'  => [],
+					'filename' => null,
+				];
+			},
+			10,
+			3
+		);
+
+		$signup = tribe( Signup::class );
+
+		$this->assertNotFalse( $signup->generate_url( 'US' ) );
+		$hash_onboarding_opened_with = $signup->get_transient_hash();
+		$this->assertNotEmpty( $hash_onboarding_opened_with );
+		$this->assertNotFalse( $signup->get_referral_data_link() );
+
+		// The seller changes country and the refresh fails while PayPal onboarding is still open.
+		$this->assertFalse( $signup->generate_url( 'CA', true ) );
+
+		$this->assertNotSame(
+			$hash_onboarding_opened_with,
+			$signup->get_transient_hash(),
+			'A country change must not leave the hash an open onboarding session started with.'
 		);
 	}
 }
