@@ -119,6 +119,61 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should cap the requested quantity to the maximum allowed in a single purchase
+	 */
+	public function it_should_cap_the_requested_quantity_to_the_maximum_allowed_in_a_single_purchase() {
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_capacity'     => - 1,
+				'_manage_stock' => 'no',
+			],
+		] );
+
+		$_POST[ "quantity_{$ticket_id}" ] = 99999;
+
+		$sut = $this->make_instance();
+
+		$this->assertEquals( 100, $sut->parse_ticket_quantity( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 * it should cap the requested quantity to the remaining stock when the request exceeds it
+	 */
+	public function it_should_cap_the_requested_quantity_to_the_remaining_stock() {
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->make_stock_ticket( 3, $post_id );
+
+		$_POST[ "quantity_{$ticket_id}" ] = 10;
+
+		$sut = $this->make_instance();
+
+		$this->assertEquals( 3, $sut->parse_ticket_quantity( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 * it should not generate tickets when the sale window has passed
+	 */
+	public function it_should_not_generate_tickets_when_the_sale_window_has_passed() {
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-2 days' ) ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+			],
+		] );
+
+		$sut = $this->make_instance();
+
+		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details(), false );
+
+		$this->assertWPError( $result );
+	}
+
+	/**
+	 * @test
 	 * it should not increase sales when an attendee is not going
 	 */
 	public function it_should_not_increase_sales_when_an_attendee_is_not_going() {;
