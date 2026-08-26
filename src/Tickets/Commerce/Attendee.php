@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Communications\Email;
+use TEC\Tickets\Commerce\Communication\Email;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Cache_Listener;
