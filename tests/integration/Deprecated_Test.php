@@ -89,16 +89,16 @@ class Tribe_Deprecated_Test extends WPTestCase {
 		$this->assertTrue( class_exists( $class ) || interface_exists( $class ), 'Class "' . $class . '" does not exist.' );
 	}
 
-	public function deprecated_classes_tbd() {
+	public function deprecated_classes_nidoking() {
 		return [
 			[ 'Tribe__Tickets__Admin__Display_Settings' ],
 		];
 	}
 
 	/**
-	 * @dataProvider deprecated_classes_tbd
+	 * @dataProvider deprecated_classes_nidoking
 	 */
-	public function test_deprecated_classes_tbd( string $class ): void {
+	public function test_deprecated_classes_nidoking( string $class ): void {
 		if ( class_exists( $class, false ) ) {
 			$this->markTestSkipped( $class . ' was already loaded' );
 		}
