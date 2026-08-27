@@ -23,7 +23,7 @@ class Token_Refresher_Test extends WPTestCase {
 	/**
 	 * What the token status endpoint reports about the stored access token, decoded or as a raw body.
 	 *
-	 * @var mixed
+	 * @var array|string
 	 */
 	protected $token_status = [ 'scopes' => [ 'PAYMENTS_WRITE' ] ];
 

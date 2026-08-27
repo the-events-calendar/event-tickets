@@ -133,45 +133,6 @@ class Requests extends Abstract_Requests {
 	}
 
 	/**
-	 * Whether Square turned the request down because of the access token.
-	 *
-	 * Square reports these under a plural `errors` key, which Abstract_Requests::process_response() leaves
-	 * alone because it looks for the singular `error` shape, so the decoded body arrives here as-is.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $response The response returned by the request.
-	 * @param bool  $raw      Whether the response is an unprocessed HTTP response.
-	 *
-	 * @return bool
-	 */
-	protected static function is_unauthorized_response( $response, bool $raw = false ): bool {
-		if ( $raw ) {
-			return 401 === (int) wp_remote_retrieve_response_code( $response );
-		}
-
-		if ( ! is_array( $response ) || empty( $response['errors'] ) || ! is_array( $response['errors'] ) ) {
-			return false;
-		}
-
-		foreach ( $response['errors'] as $error ) {
-			if ( ! is_array( $error ) ) {
-				continue;
-			}
-
-			if ( 'AUTHENTICATION_ERROR' === ( $error['category'] ?? '' ) ) {
-				return true;
-			}
-
-			if ( in_array( $error['code'] ?? '', [ 'UNAUTHORIZED', 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_REVOKED' ], true ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get REST API endpoint URL for requests.
 	 *
 	 * @since 5.24.0
@@ -247,5 +208,44 @@ class Requests extends Abstract_Requests {
 			'Content-Type'   => 'application/json',
 			'Accept'         => 'application/json',
 		];
+	}
+
+	/**
+	 * Whether Square turned the request down because of the access token.
+	 *
+	 * Square reports these under a plural `errors` key, which Abstract_Requests::process_response() leaves
+	 * alone because it looks for the singular `error` shape, so the decoded body arrives here as-is.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $response The response returned by the request.
+	 * @param bool  $raw      Whether the response is an unprocessed HTTP response.
+	 *
+	 * @return bool
+	 */
+	protected static function is_unauthorized_response( $response, bool $raw = false ): bool {
+		if ( $raw ) {
+			return 401 === (int) wp_remote_retrieve_response_code( $response );
+		}
+
+		if ( ! is_array( $response ) || empty( $response['errors'] ) || ! is_array( $response['errors'] ) ) {
+			return false;
+		}
+
+		foreach ( $response['errors'] as $error ) {
+			if ( ! is_array( $error ) ) {
+				continue;
+			}
+
+			if ( 'AUTHENTICATION_ERROR' === ( $error['category'] ?? '' ) ) {
+				return true;
+			}
+
+			if ( in_array( $error['code'] ?? '', [ 'UNAUTHORIZED', 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_REVOKED' ], true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

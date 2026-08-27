@@ -85,6 +85,18 @@ class Notices_Controller extends Controller_Contract {
 	public const TOKEN_REFRESH_FAILING_NOTICE_SLUG = 'tec-tickets-commerce-square-token-refresh-failing-notice';
 
 	/**
+	 * How many consecutive refresh failures the notice waits for.
+	 *
+	 * Below the disconnect threshold in Token_Refresher, so the warning has room to appear while the
+	 * connection is still working, but high enough that a single bad response does not raise it.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const REFRESH_FAILURES_BEFORE_NOTICE = 3;
+
+	/**
 	 * Webhooks instance.
 	 *
 	 * @since 5.24.0
@@ -532,7 +544,7 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		if ( $this->merchant->get_refresh_failure_count() < 3 ) {
+		if ( $this->merchant->get_refresh_failure_count() < self::REFRESH_FAILURES_BEFORE_NOTICE ) {
 			return false;
 		}
 

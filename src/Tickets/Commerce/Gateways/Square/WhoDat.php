@@ -42,6 +42,17 @@ class WhoDat extends Abstract_WhoDat {
 	protected const STATE_NONCE_ACTION = 'tec-tc-square-connect';
 
 	/**
+	 * How long the token calls made from a front end request may take, in seconds.
+	 *
+	 * These run inside checkout, so they may not hold the page open for WordPress's default.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const TOKEN_REQUEST_TIMEOUT = 3;
+
+	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
 	 * @since 5.24.0
@@ -172,8 +183,7 @@ class WhoDat extends Abstract_WhoDat {
 		$response = wp_remote_post(
 			$url,
 			[
-				// This runs inside a checkout request, so it may not hold it open for WordPress's default.
-				'timeout' => 3,
+				'timeout' => self::TOKEN_REQUEST_TIMEOUT,
 				'body'    => [
 					'grant_type'    => 'refresh_token',
 					'refresh_token' => $refresh_token,
@@ -201,13 +211,14 @@ class WhoDat extends Abstract_WhoDat {
 	 * Get the token status from Square.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Added the $force parameter.
+	 * @since TBD Added the $force and $request_arguments parameters.
 	 *
-	 * @param bool $force Whether to bypass the cached status.
+	 * @param bool  $force             Whether to bypass the cached status.
+	 * @param array $request_arguments Arguments passed on to wp_remote_get(), forced requests only.
 	 *
 	 * @return array|null
 	 */
-	public function get_token_status( bool $force = false ): ?array {
+	public function get_token_status( bool $force = false, array $request_arguments = [] ): ?array {
 		$merchant = tribe( Merchant::class );
 
 		$query_args = [
@@ -216,7 +227,7 @@ class WhoDat extends Abstract_WhoDat {
 		];
 
 		$status = $force ?
-			$this->get( 'oauth/token/status', $query_args ) :
+			$this->get( 'oauth/token/status', $query_args, $request_arguments ) :
 			$this->get_with_cache( 'oauth/token/status', $query_args );
 
 		// A scalar body decodes to a scalar, and every caller here reads the status as an array.
@@ -237,8 +248,22 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return ?bool True when accepted, false when rejected, null when it could not be established.
 	 */
 	public function is_token_accepted( bool $force = false ): ?bool {
-		$status = $this->get_token_status( $force );
+		return $this->interpret_token_status( $this->get_token_status( $force ) );
+	}
 
+	/**
+	 * Reads the verdict out of a status response that has already been fetched.
+	 *
+	 * Split from is_token_accepted() so that a caller which also needs the message the endpoint sent
+	 * does not have to ask for the same status twice.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?array $status The decoded status response.
+	 *
+	 * @return ?bool True when accepted, false when rejected, null when it could not be established.
+	 */
+	public function interpret_token_status( ?array $status ): ?bool {
 		if ( ! is_array( $status ) ) {
 			return null;
 		}

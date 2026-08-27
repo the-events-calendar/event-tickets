@@ -64,20 +64,25 @@ class Token_Refresher {
 	/**
 	 * How long to keep polling for the winner's result when the lock is contended, in microseconds.
 	 *
+	 * Has to outlast the holder's refresh call, or every waiter walks away before the new token lands
+	 * and takes the rejection it was waiting to avoid. A second of headroom covers the writes around it.
+	 *
 	 * @since TBD
 	 *
 	 * @var int
 	 */
-	protected const LOCK_WAIT = 1000000;
+	protected const LOCK_WAIT = ( WhoDat::TOKEN_REQUEST_TIMEOUT + 1 ) * 1000000;
 
 	/**
 	 * How often to re-read the credentials while waiting on a contended lock, in microseconds.
 	 *
+	 * Each poll drops the options cache, so this is coarse enough to keep the count down over the wait.
+	 *
 	 * @since TBD
 	 *
 	 * @var int
 	 */
-	protected const LOCK_POLL = 100000;
+	protected const LOCK_POLL = 250000;
 
 	/**
 	 * How many failures must pile up before an uncorroborated rejection counts as final.
@@ -312,8 +317,10 @@ class Token_Refresher {
 		$previous_token = $this->merchant->get_access_token();
 
 		if ( ! $this->create_lock() ) {
-			// Only a caller whose request already failed waits; a proactive refresh has nothing to gain
-			// from holding a page load open while somebody else does the work.
+			/**
+			 * Only a caller whose request already failed waits; a proactive refresh has nothing to gain
+			 * from holding a page load open while somebody else does the work.
+			 */
 			return $forced && $this->wait_for_lock_holder( $previous_token );
 		}
 
@@ -407,14 +414,19 @@ class Token_Refresher {
 	 * @return bool
 	 */
 	protected function is_rejection_final(): bool {
-		if ( false !== $this->who_dat->is_token_accepted( true ) ) {
+		// Capped like the refresh itself: this runs on the same checkout request the refresh came from.
+		$status = $this->who_dat->get_token_status( true, [ 'timeout' => WhoDat::TOKEN_REQUEST_TIMEOUT ] );
+
+		if ( false !== $this->who_dat->interpret_token_status( $status ) ) {
 			return false;
 		}
 
 		$expiration = $this->merchant->get_token_expiration();
 
-		// Square refusing a token that is still inside its own lifetime means the grant itself is gone.
-		// An expiration we never recorded proves nothing either way, so it does not count here.
+		/**
+		 * Square refusing a token that is still inside its own lifetime means the grant itself is gone.
+		 * An expiration we never recorded proves nothing either way, so it does not count here.
+		 */
 		if ( null !== $expiration && $expiration->getTimestamp() > time() ) {
 			return true;
 		}

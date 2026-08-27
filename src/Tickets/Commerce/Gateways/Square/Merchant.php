@@ -470,8 +470,11 @@ class Merchant extends Abstract_Merchant {
 			return $return;
 		}
 
+		$who_dat = tribe( WhoDat::class );
+
 		// Forced: this is the explicit recheck, and a token refreshed moments ago outdates the cache.
-		$accepted = tribe( WhoDat::class )->is_token_accepted( true );
+		$status   = $who_dat->get_token_status( true );
+		$accepted = $who_dat->interpret_token_status( $status );
 
 		if ( null === $accepted ) {
 			$return['errors'][] = __( 'Unable to connect to Square.', 'event-tickets' );
@@ -479,8 +482,6 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		if ( ! $accepted ) {
-			$status = tribe( WhoDat::class )->get_token_status( true );
-
 			$return['errors'][] = $status['message'] ?? $status['error_description'] ?? __( 'Square no longer accepts the stored credentials.', 'event-tickets' );
 			return $return;
 		}

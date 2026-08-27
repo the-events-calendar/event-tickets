@@ -84,8 +84,10 @@ class Requests_Test extends WPTestCase {
 		self::$current = $this;
 		add_filter( 'pre_http_request', [ __CLASS__, 'route_request' ], 10, 3 );
 
-		// The suite bootstrap turns any error or warning log into an exception; these tests assert on
-		// failure paths, which log on purpose. Lifted by name so the rest of $wp_filter stays untouched.
+		/**
+		 * The suite bootstrap turns any error or warning log into an exception; these tests assert on
+		 * failure paths, which log on purpose. Lifted by name so the rest of $wp_filter stays untouched.
+		 */
 		remove_action( 'tribe_log', $GLOBALS['tec_tickets_square_log_guard'], 10 );
 	}
 
