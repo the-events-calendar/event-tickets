@@ -2,11 +2,11 @@
 /**
  * Regression test for the checkout page being stored by full-page and edge caches.
  *
- * Since SVUL-L34 the cart is identified solely by the visitor's cart cookie, so the checkout render
- * differs per visitor while its URL does not. Without cache directives a shared cache stores one
- * visitor's render and serves it to everyone: a shopper lands on an empty cart, or on someone
- * else's. Reverse proxies and CDNs honour the response headers, the WordPress-side page caches
- * buffer the output and read DONOTCACHEPAGE instead, so the page must send both.
+ * The cart is identified solely by the visitor's cart cookie, so the checkout render differs per
+ * visitor while its URL does not. Without cache directives a shared cache stores one visitor's
+ * render and serves it to everyone: a shopper lands on an empty cart, or on someone else's.
+ * Reverse proxies and CDNs honour the response headers, the WordPress-side page caches buffer the
+ * output and read DONOTCACHEPAGE instead, so the page must send both.
  */
 
 namespace TEC\Tickets\Commerce;
