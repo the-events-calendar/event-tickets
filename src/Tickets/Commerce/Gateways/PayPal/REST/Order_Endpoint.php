@@ -324,7 +324,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $this->handle_recheck_order( $paypal_order_id, $order );
 		}
 
-		// An earlier request already captured this order, and capturing twice is an error at PayPal.
+		// An earlier request already resolved this order, and capturing twice is an error at PayPal.
 		// Report the status the order actually carries rather than asking the buyer to pay again.
 		if ( ! $this->order_is_in_flight( $order ) ) {
 			$settled = tribe( Status_Handler::class )->get_by_wp_slug( (string) get_post_status( $order->ID ) );
@@ -334,6 +334,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 					'tec-tc-gateway-paypal-invalid-capture-status',
 					$messages['invalid-capture-status'],
 					[ 'status' => 500 ]
+				);
+			}
+
+			if ( ! $this->status_is_paid( $settled ) ) {
+				return new WP_Error(
+					'tec-tc-gateway-paypal-capture-declined',
+					$messages['capture-declined'],
+					[ 'status' => 402 ]
 				);
 			}
 
@@ -516,7 +524,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			[ 'gateway_payload' => $response ]
 		);
 
-		if ( in_array( $paypal_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
+		if ( ! $this->status_is_paid( $status ) ) {
 			return new WP_Error(
 				'tec-tc-gateway-paypal-capture-declined',
 				$messages['capture-declined'],
@@ -525,6 +533,23 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Whether a status means the buyer paid and has tickets waiting for them.
+	 *
+	 * Only a paid order may be answered with the success page. Denied, Voided and anything else a
+	 * settled PayPal response maps to took no money and generated no attendees, so sending the buyer
+	 * there would promise a receipt that does not exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface $status The status the order settled on.
+	 *
+	 * @return bool
+	 */
+	protected function status_is_paid( Status_Interface $status ): bool {
+		return $status->has_flags( [ 'complete' ] );
 	}
 
 	/**
