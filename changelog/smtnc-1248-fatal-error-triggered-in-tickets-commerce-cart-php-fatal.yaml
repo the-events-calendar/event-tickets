@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Resolved a fatal error that could be triggered in the Tickets Commerce
+  cart when the decoded ticket data was null.
+timestamp: 2026-08-27T02:22:29.266Z

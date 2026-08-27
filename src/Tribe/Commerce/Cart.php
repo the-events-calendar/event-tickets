@@ -42,7 +42,13 @@ class Tribe__Tickets__Commerce__Cart {
 				$data = json_decode( $data, true );
 			}
 
-			$data = array_merge( $_POST, $data );
+			if ( is_array( $data ) ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified upstream by tec_tickets_ar action handler.
+				$data = array_merge( $_POST, $data );
+			} else {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified upstream by tec_tickets_ar action handler.
+				$data = $_POST;
+			}
 		}
 
 		$post_id  = isset( $data['tribe_tickets_post_id'] ) ? absint( $data['tribe_tickets_post_id'] ) : null;
