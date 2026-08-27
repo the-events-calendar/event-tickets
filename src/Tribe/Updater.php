@@ -80,8 +80,10 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 				$switched = true;
 			}
 
-			// A site holding the views off through the constant, the env var or a filter stores the
-			// value it actually renders, which is the whole point of still writing these.
+			/**
+			* A site holding the views off through the constant, the env var or a filter stores the
+			* value it actually renders, which is the whole point of still writing these.
+			*/
 			if ( $is_enabled !== tribe_get_option( $option ) ) {
 				tribe_update_option( $option, $is_enabled );
 			}
