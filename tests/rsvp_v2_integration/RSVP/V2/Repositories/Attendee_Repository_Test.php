@@ -4,7 +4,15 @@ namespace TEC\Tickets\RSVP\V2\Repositories;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Free\Gateway;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Voided;
 use TEC\Tickets\RSVP\Contracts\Attendee_Repository_Interface;
+use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Attendee_Maker;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
@@ -356,6 +364,104 @@ class Attendee_Repository_Test extends WPTestCase {
 
 		$this->assertArrayHasKey( 'event_id', $result );
 		$this->assertSame( $post_id, $result['event_id'] );
+	}
+
+	/**
+	 * Builds a real TC-RSVP order through the cart flow and returns its ID plus the attendee IDs.
+	 *
+	 * Mirrors the helper in RSVP\V2\Attendees_Test so the order line items are typed `tc-rsvp` and
+	 * the generated attendees carry the RSVP status meta the RSVP attendee repository requires.
+	 *
+	 * @param int $ticket_id The RSVP ticket ID.
+	 * @param int $quantity  The number of attendees to put on the order.
+	 *
+	 * @return array{0:int,1:int[]} The order ID and the attendee IDs.
+	 */
+	private function create_rsvp_order_with_attendees( int $ticket_id, int $quantity ): array {
+		/** @var RSVP_Cart $cart */
+		$cart = tribe( RSVP_Cart::class );
+		$cart->clear();
+		$cart->upsert_item(
+			$ticket_id,
+			$quantity,
+			[
+				'type'         => Constants::TC_RSVP_TYPE,
+				'order_status' => 'yes',
+			]
+		);
+		$cart->save();
+
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'attendee@example.com',
+		];
+
+		/** @var Order $orders */
+		$orders = tribe( Order::class );
+		$order  = $orders->create_from_cart( tribe( Gateway::class ), $purchaser, Constants::TC_RSVP_TYPE );
+
+		$orders->modify_status( $order->ID, Pending::SLUG );
+		$orders->modify_status( $order->ID, Completed::SLUG );
+
+		$cart->clear();
+		tribe( Cart::class )->clear_cart();
+
+		$attendees    = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$attendee_ids = array_column( $attendees, 'attendee_id' );
+		array_map(
+			static fn( $attendee_id ) => update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, 'yes' ),
+			$attendee_ids
+		);
+
+		return [ $order->ID, $attendee_ids ];
+	}
+
+	public function test_delete_attendee_voids_rsvp_order_when_last_attendee_deleted(): void {
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		[ $order_id, $attendee_ids ] = $this->create_rsvp_order_with_attendees( $ticket_id, 1 );
+		$this->assertCount( 1, $attendee_ids );
+
+		$repo   = new Attendee_Repository();
+		$result = $repo->delete_attendee( $attendee_ids[0] );
+
+		$this->assertTrue( $result['success'] );
+		$this->assertSame(
+			tribe( Voided::class )->get_wp_slug(),
+			get_post_status( $order_id ),
+			'Deleting the last attendee should void the parent RSVP order'
+		);
+		$this->assertNull(
+			get_post( $attendee_ids[0] ),
+			'Privacy erasure must remove the attendee post, not trash it'
+		);
+	}
+
+	public function test_delete_attendee_keeps_rsvp_order_completed_when_other_attendees_remain(): void {
+		$post_id   = $this->factory()->post->create( [ 'post_status' => 'publish' ] );
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+
+		[ $order_id, $attendee_ids ] = $this->create_rsvp_order_with_attendees( $ticket_id, 2 );
+		$this->assertCount( 2, $attendee_ids );
+
+		$repo   = new Attendee_Repository();
+		$result = $repo->delete_attendee( $attendee_ids[0] );
+
+		$this->assertTrue( $result['success'] );
+		$this->assertSame(
+			tribe( Completed::class )->get_wp_slug(),
+			get_post_status( $order_id ),
+			'The order should stay completed while another attendee remains'
+		);
+		$this->assertInstanceOf(
+			WP_Post::class,
+			get_post( $attendee_ids[1] ),
+			'The remaining attendee should still exist'
+		);
 	}
 
 	public function test_get_ticket_id_returns_correct_product_id(): void {
