@@ -518,7 +518,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			);
 		}
 
-		tribe( Order::class )->modify_status(
+		$updated = tribe( Order::class )->modify_status(
+			$order->ID,
+			$status->get_slug(),
+			[ 'gateway_payload' => $response ]
+		);
+
+		if ( ! $updated ) {
+			return new WP_Error(
+				'tec-tc-gateway-paypal-unconfirmed-capture',
+				$messages['unconfirmed-capture'],
+				[ 'status' => 502 ]
+			);
+		}
 			$order->ID,
 			$status->get_slug(),
 			[ 'gateway_payload' => $response ]

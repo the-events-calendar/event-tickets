@@ -106,7 +106,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 					'data' => static function () {
 						return [
 							'orderEndpoint'        => tribe( Order_Endpoint::class )->get_route_url(),
-							'requestFailedMessage' => esc_html__( 'We could not confirm your payment. Check your PayPal account before trying again, so that you are not charged twice.', 'event-tickets' ),
+							'requestFailedMessage' => tribe( Order_Endpoint::class )->get_error_messages()['unconfirmed-capture'],
 							'advancedPayments'     => [
 								'fieldPlaceholders' => [
 									'cvv' => esc_html__( 'E.g.: 123', 'event-tickets' ),
