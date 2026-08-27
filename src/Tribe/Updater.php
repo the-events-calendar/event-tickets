@@ -42,19 +42,32 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	}
 
 	/**
+	 * Schedules the new views migration for later in the request.
+	 *
+	 * This runs on every version bump rather than under a version key. A key at or below a version
+	 * that already shipped never runs, because the site recorded that version when it got there, and
+	 * a key above the shipping version never runs either, so the correct key is whatever release this
+	 * turns out to go out in.
+	 *
+	 * The work itself waits for `wp_loaded`. Updates run on `init` at priority 0, before a theme or
+	 * plugin filtering the views off has had a chance to register anything, so reading the flags
+	 * there would record a value the site does not go on to render.
+	 *
+	 * @since TBD
+	 */
+	public function migrate_force_new_views() {
+		add_action( 'wp_loaded', [ $this, 'force_new_views' ] );
+	}
+
+	/**
 	 * Turns the new Tickets and RSVP views on for sites that still had them off.
 	 *
 	 * The settings that controlled these are gone and nothing in Event Tickets reads the options any
 	 * more. They are written all the same, for anything outside the plugin that reads them directly.
 	 *
-	 * This runs on every version bump rather than under a version key. A key at or below a version
-	 * that already shipped never runs, because the site recorded that version when it got there, and
-	 * a key above the shipping version never runs either, so the correct key is whatever release this
-	 * turns out to go out in. Writing an option that is already true costs nothing.
-	 *
 	 * @since TBD
 	 */
-	public function migrate_force_new_views() {
+	public function force_new_views() {
 		$enabled = [
 			'tickets_use_new_views'      => tribe_tickets_new_views_is_enabled(),
 			'tickets_rsvp_use_new_views' => tribe_tickets_rsvp_new_views_is_enabled(),
@@ -63,18 +76,14 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 		$switched = false;
 
 		foreach ( $enabled as $option => $is_enabled ) {
-			// A site holding the views off through the constant, the env var or a filter keeps a
-			// stored value that agrees with what it actually renders.
-			if ( ! $is_enabled ) {
-				continue;
-			}
-
-			if ( ! $this->was_rendering_new_views( $option ) ) {
+			if ( $is_enabled && ! $this->was_rendering_new_views( $option ) ) {
 				$switched = true;
 			}
 
-			if ( true !== tribe_get_option( $option ) ) {
-				tribe_update_option( $option, true );
+			// A site holding the views off through the constant, the env var or a filter stores the
+			// value it actually renders, which is the whole point of still writing these.
+			if ( $is_enabled !== tribe_get_option( $option ) ) {
+				tribe_update_option( $option, $is_enabled );
 			}
 		}
 
@@ -84,6 +93,21 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 
 		// This site was rendering the old views a moment ago, so it gets told.
 		tribe_update_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON, true );
+	}
+
+	/**
+	 * Trigger setup of cron task to migrate the hide attendees list meta for block/shortcode enabled posts.
+	 *
+	 * @since 4.12.0
+	 */
+	public function migrate_4_12_hide_attendees_list() {
+		/** @var \Tribe\Tickets\Migration\Queue_4_12 $migration */
+		$migration = tribe( 'tickets.migration.queue_4_12' );
+
+		// Trigger adding task to cron if it hasn't already been completed.
+		if ( 'complete' !== $migration->get_current_offset() ) {
+			$migration->register_scheduled_task();
+		}
 	}
 
 	/**
@@ -109,20 +133,4 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 
 		return (bool) tribe_get_option( $option, $default );
 	}
-
-	/**
-	 * Trigger setup of cron task to migrate the hide attendees list meta for block/shortcode enabled posts.
-	 *
-	 * @since 4.12.0
-	 */
-	public function migrate_4_12_hide_attendees_list() {
-		/** @var \Tribe\Tickets\Migration\Queue_4_12 $migration */
-		$migration = tribe( 'tickets.migration.queue_4_12' );
-
-		// Trigger adding task to cron if it hasn't already been completed.
-		if ( 'complete' !== $migration->get_current_offset() ) {
-			$migration->register_scheduled_task();
-		}
-	}
-
 }

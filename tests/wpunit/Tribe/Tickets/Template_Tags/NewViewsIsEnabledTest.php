@@ -14,6 +14,7 @@ use Tribe__Tickets__Updater;
  * @see     \tribe_tickets_new_views_is_enabled()
  * @see     \tribe_tickets_rsvp_new_views_is_enabled()
  * @see     \Tribe__Tickets__Updater::migrate_force_new_views()
+ * @see     \Tribe__Tickets__Updater::force_new_views()
  */
 class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 
@@ -43,18 +44,6 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 		foreach ( $this->original_options as $option => $value ) {
 			tribe_update_option( $option, $value );
 		}
-	}
-
-	/**
-	 * Puts the site in the state that used to show the settings toggles: an install old enough to
-	 * predate the new views, with both of them turned off.
-	 */
-	protected function given_an_old_install_with_the_views_turned_off(): void {
-		tribe_update_option( 'previous_event_tickets_versions', [ '4.9.2' ] );
-		tribe_update_option( 'tickets_use_new_views', false );
-		tribe_update_option( 'tickets_rsvp_use_new_views', false );
-
-		$this->assertTrue( tribe_installed_before( Tribe__Tickets__Main::class, '5.0.3' ), 'The fixture has to read as an old install.' );
 	}
 
 	/**
@@ -123,7 +112,7 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_store_the_views_as_true_booleans() {
 		$this->given_an_old_install_with_the_views_turned_off();
 
-		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->migrate_force_new_views();
+		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->force_new_views();
 
 		$this->assertSame( true, tribe_get_option( 'tickets_use_new_views' ) );
 		$this->assertSame( true, tribe_get_option( 'tickets_rsvp_use_new_views' ) );
@@ -150,6 +139,10 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 
 		$updater->do_updates();
 
+		$this->assertNotFalse( has_action( 'wp_loaded', [ $updater, 'force_new_views' ] ), 'The migration has to be deferred, not skipped.' );
+
+		do_action( 'wp_loaded' );
+
 		$this->assertSame( true, tribe_get_option( 'tickets_use_new_views' ) );
 		$this->assertSame( true, tribe_get_option( 'tickets_rsvp_use_new_views' ) );
 	}
@@ -173,7 +166,7 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 			}
 		);
 
-		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->migrate_force_new_views();
+		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->force_new_views();
 
 		$this->assertSame( 0, $writes );
 		$this->assertFalse( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
@@ -189,7 +182,7 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
 
-		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->migrate_force_new_views();
+		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->force_new_views();
 
 		$this->assertTrue( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
 	}
@@ -227,5 +220,62 @@ class NewViewsIsEnabledTest extends \Codeception\TestCase\WPTestCase {
 
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'subscriber' ] ) );
 		$this->assertFalse( $notice->should_display(), 'The same screen, without the capability, should not.' );
+	}
+
+	/**
+	 * The options are written for readers outside the plugin, so a site the filter holds off has to
+	 * store what it renders rather than keep a stale true.
+	 *
+	 * @test
+	 */
+	public function it_should_store_false_for_a_site_the_filter_holds_off() {
+		tribe_update_option( 'tickets_use_new_views', true );
+		tribe_update_option( 'tickets_rsvp_use_new_views', true );
+
+		add_filter( 'tribe_tickets_new_views_is_enabled', '__return_false' );
+		add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
+
+		( new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION ) )->force_new_views();
+
+		$this->assertSame( false, tribe_get_option( 'tickets_use_new_views' ) );
+		$this->assertSame( false, tribe_get_option( 'tickets_rsvp_use_new_views' ) );
+		$this->assertFalse( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ) );
+	}
+
+	/**
+	 * Updates run on `init` at priority 0, so reading the flags there sees none of the filters a
+	 * theme or plugin registers on `init` itself.
+	 *
+	 * @test
+	 */
+	public function it_should_not_read_the_flags_before_the_filters_are_registered() {
+		$this->given_an_old_install_with_the_views_turned_off();
+
+		$updater = new Tribe__Tickets__Updater( Tribe__Tickets__Main::VERSION );
+		$updater->migrate_force_new_views();
+
+		$this->assertSame( false, tribe_get_option( 'tickets_use_new_views' ), 'Nothing may be written while the migration is still scheduled.' );
+
+		// The window the deferral exists for: registered after updates ran, before the views render.
+		add_filter( 'tribe_tickets_new_views_is_enabled', '__return_false' );
+		add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
+
+		$updater->force_new_views();
+
+		$this->assertSame( false, tribe_get_option( 'tickets_use_new_views' ) );
+		$this->assertSame( false, tribe_get_option( 'tickets_rsvp_use_new_views' ) );
+		$this->assertFalse( (bool) tribe_get_option( Notice_New_Views_Upgrade::OPTION_FORCED_ON ), 'A site still rendering the old views must not be told it was switched.' );
+	}
+
+	/**
+	 * Puts the site in the state that used to show the settings toggles: an install old enough to
+	 * predate the new views, with both of them turned off.
+	 */
+	protected function given_an_old_install_with_the_views_turned_off(): void {
+		tribe_update_option( 'previous_event_tickets_versions', [ '4.9.2' ] );
+		tribe_update_option( 'tickets_use_new_views', false );
+		tribe_update_option( 'tickets_rsvp_use_new_views', false );
+
+		$this->assertTrue( tribe_installed_before( Tribe__Tickets__Main::class, '5.0.3' ), 'The fixture has to read as an old install.' );
 	}
 }
