@@ -246,8 +246,8 @@ class Checkout {
 		 * the next sees someone else's. Reverse proxies and CDNs honour the response headers, while
 		 * the WordPress-side page caches buffer the output and read DONOTCACHEPAGE instead.
 		 */
-		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
-			define( 'DONOTCACHEPAGE', true );
+		if ( ! defined( 'DO_NOT_CACHE_PAGE' ) ) {
+			define( 'DO_NOT_CACHE_PAGE', true );
 		}
 
 		nocache_headers();
