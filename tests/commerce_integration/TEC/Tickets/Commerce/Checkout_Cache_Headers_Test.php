@@ -19,57 +19,37 @@ class Checkout_Cache_Headers_Test extends WPTestCase {
 	use With_Uopz;
 
 	/**
-	 * Whether DONOTCACHEPAGE was already defined when the test started.
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	private $donotcachepage_was_defined = false;
-
-	/**
-	 * @before
-	 */
-	public function record_donotcachepage_state(): void {
-		$this->donotcachepage_was_defined = defined( 'DONOTCACHEPAGE' );
-	}
-
-	/**
-	 * @after
-	 */
-	public function restore_donotcachepage_state(): void {
-		if ( $this->donotcachepage_was_defined || ! defined( 'DONOTCACHEPAGE' ) ) {
-			return;
-		}
-
-		uopz_undefine( 'DONOTCACHEPAGE' );
-	}
-
-	/**
-	 * The checkout page must send no-cache headers so proxies and CDNs never store a render that
-	 * belongs to one visitor's cart cookie.
+	 * The checkout page must opt out of both caching layers, so neither a shared proxy nor a
+	 * WordPress page cache can hand one visitor's cart render to the next.
 	 *
 	 * @since TBD
 	 */
-	public function test_checkout_page_sends_nocache_headers(): void {
+	public function test_checkout_page_opts_out_of_caching(): void {
+		// parse_request() only acts on the checkout page; force that gate open.
+		$this->set_class_fn_return( Checkout::class, 'is_current_page', true );
+
+		$nocache_sent = $this->capture_nocache_during(
+			static fn() => tribe( Checkout::class )->parse_request()
+		);
+
 		$this->assertTrue(
-			$this->run_checkout_parse_request_capturing_nocache(),
+			$nocache_sent,
 			'The checkout page must send no-cache headers so shared caches do not store one visitor cart render.'
 		);
-	}
 
-	/**
-	 * The checkout page must also opt out of the WordPress-side page caches, which buffer output and
-	 * never see the response headers.
-	 *
-	 * @since TBD
-	 */
-	public function test_checkout_page_defines_donotcachepage(): void {
-		$this->run_checkout_parse_request_capturing_nocache();
-
+		/*
+		 * DONOTCACHEPAGE is left defined for the rest of the suite on purpose. Undefining it between
+		 * tests made this class order-dependent: the constant did not come back on the second
+		 * parse_request(), so the assertion failed only when the whole suite ran. Nothing else in
+		 * the plugin or the suite reads the constant, so leaking it costs nothing.
+		 */
 		$this->assertTrue(
-			defined( 'DONOTCACHEPAGE' ) && true === constant( 'DONOTCACHEPAGE' ),
+			defined( 'DONOTCACHEPAGE' ),
 			'The checkout page must define DONOTCACHEPAGE so WordPress page caches skip it.'
+		);
+		$this->assertTrue(
+			tribe_is_truthy( constant( 'DONOTCACHEPAGE' ) ),
+			'DONOTCACHEPAGE must be truthy for page caches to treat the checkout as uncacheable.'
 		);
 	}
 
@@ -86,20 +66,6 @@ class Checkout_Cache_Headers_Test extends WPTestCase {
 			$this->capture_nocache_during( static fn() => tribe( Checkout::class )->parse_request() ),
 			'A page that is not the checkout must not be marked non-cacheable.'
 		);
-	}
-
-	/**
-	 * Drives the real Checkout::parse_request() on the checkout page.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the no-cache headers were emitted.
-	 */
-	private function run_checkout_parse_request_capturing_nocache(): bool {
-		// parse_request() only acts on the checkout page; force that gate open.
-		$this->set_class_fn_return( Checkout::class, 'is_current_page', true );
-
-		return $this->capture_nocache_during( static fn() => tribe( Checkout::class )->parse_request() );
 	}
 
 	/**
