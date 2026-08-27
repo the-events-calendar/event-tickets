@@ -402,6 +402,7 @@ class Attendee_Repository_Test extends WPTestCase {
 		/** @var Order $orders */
 		$orders = tribe( Order::class );
 		$order  = $orders->create_from_cart( tribe( Gateway::class ), $purchaser, Constants::TC_RSVP_TYPE );
+		$this->assertInstanceOf( WP_Post::class, $order, 'Order creation from cart should return a WP_Post' );
 
 		$orders->modify_status( $order->ID, Pending::SLUG );
 		$orders->modify_status( $order->ID, Completed::SLUG );
