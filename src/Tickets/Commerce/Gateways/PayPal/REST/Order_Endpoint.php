@@ -524,17 +524,16 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			[ 'gateway_payload' => $response ]
 		);
 
-		if ( ! $updated ) {
+		// modify_status refuses a transition to the status the order already carries, so a recheck of
+		// an order an earlier request settled reports a failure that did not happen. Only a status
+		// that never made it onto the order is an unconfirmed capture.
+		if ( ! $updated && $status->get_wp_slug() !== get_post_status( $order->ID ) ) {
 			return new WP_Error(
 				'tec-tc-gateway-paypal-unconfirmed-capture',
 				$messages['unconfirmed-capture'],
 				[ 'status' => 502 ]
 			);
 		}
-			$order->ID,
-			$status->get_slug(),
-			[ 'gateway_payload' => $response ]
-		);
 
 		if ( ! $this->status_is_paid( $status ) ) {
 			return new WP_Error(
