@@ -1818,8 +1818,6 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		 * @since 5.0.3
 		 *
 		 * @param bool $enabled Whether the tickets block views are enabled.
-		 *
-		 * @var bool   $enabled Whether the tickets block views are enabled.
 		 */
 		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', true );
 	}
