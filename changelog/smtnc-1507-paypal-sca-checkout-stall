@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Fixed PayPal card payments that go through SCA/3DS, such as Swedish BankID, leaving the buyer on a spinning loader with no error: every failure now clears the loader and shows a message, the capture is recorded as soon as PayPal answers it, an approved order nothing captured is captured on the recheck, and the client token no longer reloads checkout out from under a card authentication.
+Fixed PayPal card payments that go through SCA/3DS, such as Swedish BankID, leaving the buyer on a spinning loader with no error: every failure now clears the loader and shows a message, the capture is recorded as soon as PayPal answers it, an approved order with nothing captured is captured on the recheck, and the client token no longer reloads checkout from under a card authentication.
