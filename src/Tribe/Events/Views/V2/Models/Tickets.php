@@ -174,10 +174,22 @@ class Tickets implements ArrayAccess {
 					$tribe_cache[ $tickets_cache_key ] = null;
 				}
 
+				/*
+				 * The model reads the aggregate list, not the per-provider one, and that list holds Ticket
+				 * objects carrying the stock they had when it was built.
+				 */
+				$all_tickets_cache_key                 = "{$tickets_class}::get_all_event_tickets-{$connected_event_id}";
+				$tribe_cache[ $all_tickets_cache_key ] = null;
+
+				/*
+				 * Drop the Event model entry before rebuilding it: a model built while its entry is live
+				 * restores that entry's data and stores it back, keeping the pre-purchase stock.
+				 */
+				tec_kv_cache()->delete( self::get_cache_key( $connected_event_id ) );
+
 				$model = new self( $connected_event_id );
 				// The call will trigger a priming of the model cache.
 				$model->exist();
-				$model->prime_cache();
 			}
 		}
 

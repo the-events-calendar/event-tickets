@@ -186,4 +186,37 @@ class Tickets_Test extends WPTestCase {
 				],
 		], $array_model );
 	}
+
+	/**
+	 * @test
+	 * @covers \Tribe\Tickets\Events\Views\V2\Models\Tickets::regenerate_caches
+	 */
+	public function should_report_sold_out_after_the_last_available_ticket_is_purchased(): void {
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2023-01-01 09:00:00',
+			'duration'   => 4 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+		$capacity  = 5;
+		$ticket_id = $this->with_capacity( $capacity )->create_tc_ticket( $event_id );
+
+		// Warm the model cache the way a calendar view would, while the ticket is still on sale.
+		$on_sale_stock = ( new Tickets( $event_id ) )['stock'];
+
+		$this->assertEquals( "{$capacity} tickets left", $on_sale_stock->available );
+		$this->assertEquals( '', $on_sale_stock->sold_out );
+
+		$this->create_order( [ $ticket_id => $capacity ] );
+
+		$attendee_id = tribe_attendees()->where( 'event', $event_id )->fields( 'ids' )->first();
+		Tickets::regenerate_caches( $attendee_id );
+
+		$sold_out_model = new Tickets( $event_id );
+		$sold_out_stock = $sold_out_model['stock'];
+
+		$this->assertTrue( $sold_out_model->sold_out() );
+		$this->assertEquals( 'Sold Out', $sold_out_stock->sold_out );
+		$this->assertEquals( '', $sold_out_stock->available );
+	}
 }
