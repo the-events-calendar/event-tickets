@@ -294,6 +294,18 @@ class Tribe__Tickets__Admin__Notices {
 	/**
 	 * Will be removed. Doing nothing other than triggering a deprecation notice.
 	 *
+	 * @since 4.12.3
+	 * @deprecated TBD This method will be removed in a future release.
+	 *
+	 * @return void
+	 */
+	public function maybe_display_rsvp_new_views_options_notice() {
+		_deprecated_function( __METHOD__, 'TBD' );
+	}
+
+	/**
+	 * Will be removed. Doing nothing other than triggering a deprecation notice.
+	 *
 	 * @since 5.17.0
 	 * @deprecated 5.18.0 This method will be removed in a future release.
 	 *
