@@ -248,7 +248,16 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 */
 	public function delete_attendee( int $attendee_id ): array {
 		$event_id = get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
-		$deleted  = wp_delete_post( $attendee_id, true );
+
+		/*
+		 * Fire the same hooks as Attendee::delete() so listeners keep running — e.g. voiding the
+		 * hidden RSVP order once its last attendee is gone and restoring stock — while keeping the
+		 * force delete (bypass trash) that privacy erasure requires. Attendee::delete() cannot be
+		 * reused as-is because it does not forward its $force argument to wp_delete_post().
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_delete', $attendee_id, true );
+		$deleted = wp_delete_post( $attendee_id, true );
+		do_action( 'tec_tickets_commerce_attendee_after_delete', $attendee_id, $deleted, true );
 
 		return [
 			'success'  => (bool) $deleted,
