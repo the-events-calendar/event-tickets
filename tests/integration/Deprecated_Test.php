@@ -100,7 +100,7 @@ class Tribe_Deprecated_Test extends WPTestCase {
 	 */
 	public function test_deprecated_classes_tbd( string $class ): void {
 		if ( class_exists( $class, false ) ) {
-			$this->markTestSkipped( $class . 'was already loaded' );
+			$this->markTestSkipped( $class . ' was already loaded' );
 		}
 
 		$file_path = codecept_root_dir( "src/deprecated/{$class}.php" );
