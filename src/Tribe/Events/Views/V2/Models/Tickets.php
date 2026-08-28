@@ -87,7 +87,10 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
-	 * Regenerates the caches for the models associated with the post ID.
+	 * Drops the cached models associated with the post ID so the next front-end request rebuilds them.
+	 *
+	 * The models are not rebuilt here. Commerce writes the Attendee posts before it writes the Ticket
+	 * stock, so a model built from this hook would capture a mid-order stock and keep serving it.
 	 *
 	 * @since 5.26.1
 	 *
@@ -119,11 +122,7 @@ class Tickets implements ArrayAccess {
 
 		add_action( 'parse_query', $do_not_cache_results );
 
-		if ( $post->post_type === TEC::POSTTYPE ) {
-			// It's an Event: refresh its cache.
-			$model = new self( $post->ID );
-			$model->exist();
-		} else {
+		if ( $post->post_type !== TEC::POSTTYPE ) {
 			// These are maps from the service slug to the post type, so we keep only the post type.
 			$attendee_post_types = array_values( tribe_attendees()->attendee_types() );
 			$ticket_types        = array_values( tribe_tickets()->ticket_types() );
@@ -181,15 +180,7 @@ class Tickets implements ArrayAccess {
 				$all_tickets_cache_key                 = "{$tickets_class}::get_all_event_tickets-{$connected_event_id}";
 				$tribe_cache[ $all_tickets_cache_key ] = null;
 
-				/*
-				 * Drop the Event model entry before rebuilding it: a model built while its entry is live
-				 * restores that entry's data and stores it back, keeping the pre-purchase stock.
-				 */
 				tec_kv_cache()->delete( self::get_cache_key( $connected_event_id ) );
-
-				$model = new self( $connected_event_id );
-				// The call will trigger a priming of the model cache.
-				$model->exist();
 			}
 		}
 
