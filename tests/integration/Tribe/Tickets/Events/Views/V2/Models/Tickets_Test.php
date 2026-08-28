@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Events\Views\V2\Models;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Events\Views\V2\Hooks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -218,5 +219,27 @@ class Tickets_Test extends WPTestCase {
 		$this->assertTrue( $sold_out_model->sold_out() );
 		$this->assertEquals( 'Sold Out', $sold_out_stock->sold_out );
 		$this->assertEquals( '', $sold_out_stock->available );
+	}
+
+	/**
+	 * @test
+	 * @covers \Tribe\Tickets\Events\Views\V2\Models\Tickets::get_cache_key
+	 */
+	public function should_key_the_cache_on_the_normalized_event_id(): void {
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2023-01-01 09:00:00',
+			'duration'   => 4 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		/* The key only normalizes when Custom Tables is already loaded, as it is on a front-end request. */
+		$this->assertTrue( class_exists( Occurrence::class ) );
+
+		/* Custom Tables hands out no provisional IDs in this suite, so stand in for its normalization. */
+		$provisional_id = static::factory()->post->create();
+		add_filter( 'tec_tickets_normalize_occurrence_id', static fn() => $event_id );
+
+		$this->assertEquals( Tickets::get_cache_key( $event_id ), Tickets::get_cache_key( $provisional_id ) );
 	}
 }

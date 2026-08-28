@@ -14,6 +14,7 @@ use ArrayAccess;
 use Closure;
 use InvalidArgumentException;
 use ReturnTypeWillChange;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe\Utils\Lazy_Events;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -234,6 +235,7 @@ class Tickets implements ArrayAccess {
 			// Refresh stock display from current availability so list/archive views stay correct
 			// when event or ticket model is served from cache (e.g. tribe_get_event memoization).
 			$this->refresh_cached_stock_display();
+			$this->refresh_cached_link();
 			return $this->data;
 		}
 
@@ -583,6 +585,26 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
+	 * Points the cached link at this model's own post, keeping the anchor it was built with.
+	 *
+	 * Occurrences of a recurring Event share one cached entry but not one permalink, so the link
+	 * has to be rebuilt for whichever Occurrence is being rendered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function refresh_cached_link(): void {
+		if ( ! isset( $this->data['link'] ) || ! is_object( $this->data['link'] ) ) {
+			return;
+		}
+
+		$anchor = strstr( $this->data['link']->anchor, '#' );
+
+		$this->data['link']->anchor = get_permalink( $this->post_id ) . ( false === $anchor ? '' : $anchor );
+	}
+
+	/**
 	 * Primes the model cache from the key-value cache, if possible.
 	 *
 	 * @since 5.26.1
@@ -617,6 +639,14 @@ class Tickets implements ArrayAccess {
 	 * @return string The model cache key used to store it in the key-value cache.
 	 */
 	public static function get_cache_key( int $post_id ): string {
+		if ( class_exists( Occurrence::class, false ) ) {
+			/*
+			 * Views hand over the Occurrence's provisional ID while the invalidation side only ever
+			 * knows the Event post ID, so the two have to meet on the normalized one.
+			 */
+			$post_id = apply_filters( 'tec_tickets_normalize_occurrence_id', Occurrence::normalize_id( $post_id ) );
+		}
+
 		return 'tec_tickets_views_v2_model_ticket_' . $post_id;
 	}
 
