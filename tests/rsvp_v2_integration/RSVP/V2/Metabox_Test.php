@@ -126,6 +126,25 @@ class Metabox_Test extends WPTestCase {
 	}
 
 	/**
+	 * The Open RSVP field constrains itself against Close RSVP; without the attribute the
+	 * panel saves an impossible window and the RSVP silently vanishes from the front end.
+	 *
+	 * @test
+	 */
+	public function it_should_constrain_the_open_date_against_the_close_date(): void {
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$this->create_tc_rsvp_ticket( $post_id );
+
+		$html = tribe( Metabox::class )->render( $post_id );
+
+		$this->assertStringContainsString(
+			'data-validation-is-less-or-equal-to="#rsvp_end_date"',
+			$html,
+			'The Open RSVP date field must be constrained against the Close RSVP date field.'
+		);
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_render_same_output_for_post_id_and_wp_post_object(): void {
