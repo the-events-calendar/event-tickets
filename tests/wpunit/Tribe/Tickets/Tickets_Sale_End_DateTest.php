@@ -151,7 +151,7 @@ class Tickets_Sale_End_DateTest extends WPBrowserTestCase {
 
 		$ticket_id = $rsvp->ticket_add( $post_id, $data );
 
-		$this->assertNotEmpty( $ticket_id );
+		$this->assertIsInt( $ticket_id );
 
 		return $ticket_id;
 	}
