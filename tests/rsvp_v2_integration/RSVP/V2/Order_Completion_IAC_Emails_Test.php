@@ -13,6 +13,9 @@ use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
 
+/**
+ * @group rsvp_iac
+ */
 class Order_Completion_IAC_Emails_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
@@ -35,9 +38,9 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 			$purchaser_overrides,
 			[
 				'purchaser_user_id'    => 0,
-				'purchaser_full_name'  => 'Test Purchaser',
-				'purchaser_first_name' => 'Test',
-				'purchaser_last_name'  => 'Purchaser',
+				'purchaser_full_name'  => 'Alice',
+				'purchaser_first_name' => 'Alice',
+				'purchaser_last_name'  => '',
 				'purchaser_email'      => 'alice@example.test',
 			]
 		);
@@ -96,8 +99,9 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 
 		// Second attendee is the guest (index 1).
 		$second = $attendees[1];
-		update_post_meta( $second['attendee_id'], '_tec_tickets_commerce_email', 'bob@example.test' );
-		update_post_meta( $second['attendee_id'], '_tec_tickets_commerce_full_name', 'Bob' );
+		tec_tc_attendees()->where( 'id', $second['attendee_id'] )->set_args( [ 'email' => 'bob@example.test', 'full_name' => 'Bob' ] )->save();
+		clean_post_cache( $second['attendee_id'] );
+		wp_cache_flush();
 
 		// Re-run sender for the same order (as if order completion re-fired after IAC).
 		$mail->emails = [];
@@ -126,7 +130,7 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 10 ] ] );
 
 		$mail = $this->intercept_wp_mail();
-		$order = $this->create_tc_rsvp_order_with_quantity( $ticket_id, 2, 'yes', [ 'purchaser_email' => 'alice@example.test' ] );
+		$order = $this->create_tc_rsvp_order_with_quantity( $ticket_id, 2, 'yes', [ 'purchaser_email' => 'alice@example.test', 'purchaser_full_name' => 'Alice', 'purchaser_first_name' => 'Alice', 'purchaser_last_name' => '' ] );
 		$mail->emails = [];
 
 		// Both attendees share alice's email (no IAC distinct).
@@ -149,7 +153,9 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 
 		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 		$second = $attendees[1];
-		update_post_meta( $second['attendee_id'], '_tec_tickets_commerce_email', 'not-an-email' );
+		tec_tc_attendees()->where( 'id', $second['attendee_id'] )->set_args( [ 'email' => 'not-an-email' ] )->save();
+		clean_post_cache( $second['attendee_id'] );
+		wp_cache_flush();
 
 		$mail->emails = [];
 		tribe( \TEC\Tickets\Commerce\Emails\RSVP_Email_Sender::class )->send( tec_tc_get_order( $order->ID ) );
