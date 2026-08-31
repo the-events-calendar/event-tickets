@@ -46,7 +46,7 @@ $default_end_time = '00:00:00';
 				id="rsvp_start_date"
 				value="<?php echo esc_attr( $tc_rsvp ? $ticket_start_date : $default_start_date ); ?>"
 				data-validation-type="datepicker"
-
+				data-validation-is-less-or-equal-to="#rsvp_end_date"
 				data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ); ?></span>
