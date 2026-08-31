@@ -271,7 +271,7 @@ class Frontend {
 		tribe( RSVP_Email_Sender::class )->send_rsvp_email(
 			$attendees,
 			$event_id,
-			$order->purchaser['email'] ?? $attendees[0]['holder_email'],
+			$attendees[0]['holder_email'] ?? $order->purchaser['email'] ?? '',
 			$going
 		);
 	}

@@ -56,12 +56,57 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 		$order_status = $order->items[0]['extra']['order_status'] ?? 'yes';
 		$going        = tribe_is_truthy( $order_status );
 
-		$this->send_rsvp_email(
-			$attendees,
-			(int) $event_id,
-			$order->purchaser['email'] ?? $attendees[0]['holder_email'],
-			$going
-		);
+		// Group tickets by holder email for per-attendee fan-out — mirrors
+		// Tribe__Tickets__Tickets::send_tickets_email_for_attendees().
+		$unique = [];
+
+		foreach ( $attendees as $attendee ) {
+			if ( ! is_array( $attendee ) ) {
+				continue;
+			}
+
+			$holder_email = $attendee['holder_email'] ?? '';
+
+			if ( ! is_string( $holder_email ) ) {
+				continue;
+			}
+
+			$holder_email = strtolower( trim( $holder_email ) );
+
+			if ( '' === $holder_email || ! is_email( $holder_email ) ) {
+				continue;
+			}
+
+			if ( ! isset( $unique[ $holder_email ] ) ) {
+				$unique[ $holder_email ] = [];
+			}
+
+			$unique[ $holder_email ][] = $attendee;
+		}
+
+		// Main Guest / purchaser always receives the full bundle.
+		// When purchaser email equals a holder email this overwrites that bucket
+		// to the bundle (same as Tribe__Tickets__Tickets::send_tickets_email_for_attendees).
+		$purchaser_email = $order->purchaser['email'] ?? $attendees[0]['holder_email'] ?? '';
+
+		if ( is_string( $purchaser_email ) ) {
+			$purchaser_email = strtolower( trim( $purchaser_email ) );
+		}
+
+		if ( '' !== $purchaser_email && is_email( $purchaser_email ) ) {
+			$unique[ $purchaser_email ] = $attendees;
+		}
+
+		// If no holder emails were valid but purchaser exists, fall back to single bundle send.
+		if ( empty( $unique ) && ! empty( $purchaser_email ) && is_email( $purchaser_email ) ) {
+			$this->send_rsvp_email( $attendees, (int) $event_id, $purchaser_email, $going );
+
+			return;
+		}
+
+		foreach ( $unique as $recipient => $tickets ) {
+			$this->send_rsvp_email( $tickets, (int) $event_id, $recipient, $going );
+		}
 	}
 
 	/**
