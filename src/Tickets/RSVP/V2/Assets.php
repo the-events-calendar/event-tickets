@@ -37,7 +37,7 @@ class Assets {
 			$plugin,
 			'tribe-tickets-admin-tickets',
 			'commerce/tickets.js',
-			[ 'jquery', 'tec-api' ],
+			[ 'jquery', 'tec-api', 'jquery-ui-datepicker', 'tribe-validation' ],
 			'admin_enqueue_scripts',
 			[
 				'conditionals' => [ $this, 'should_enqueue_classic_editor_assets' ],

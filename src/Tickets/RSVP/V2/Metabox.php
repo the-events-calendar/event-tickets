@@ -142,6 +142,12 @@ class Metabox {
 		$rsvp_id = $tc_rsvp instanceof Tribe__Tickets__Ticket_Object ? $tc_rsvp->ID : null;
 		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID, $rsvp_id ) )->to_array() );
 
+		// The panel data speaks in ticket sale dates; the RSVP metabox labels them Open/Close RSVP.
+		$context['start_date_errors'] = [
+			'is-required'         => __( 'Open RSVP date cannot be empty.', 'event-tickets' ),
+			'is-less-or-equal-to' => __( 'Open RSVP date cannot be later than the Close RSVP date.', 'event-tickets' ),
+		];
+
 		// Add the data required by each panel to render correctly.
 		$context['rsvp_id']        = 0;
 		$context['show_not_going'] = '';
