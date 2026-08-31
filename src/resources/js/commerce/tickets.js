@@ -174,6 +174,15 @@ tribe.tickets.commerce.tickets = {};
 			changeYear: true,
 			numberOfMonths: 3,
 			showButtonPanel: false,
+			beforeShow( element, object ) {
+				// The datepicker stylesheet is scoped to this class, and `#ui-datepicker-div` is
+				// shared with every other picker on the page, so it is added on open and removed
+				// on close rather than left behind to style someone else's calendar.
+				$( object.dpDiv ).addClass( 'tribe-ui-datepicker' );
+			},
+			onClose() {
+				$( '#ui-datepicker-div' ).removeClass( 'tribe-ui-datepicker' );
+			},
 			onSelect( dateText, inst ) {
 				const date = $.datepicker.parseDate( dateFormat, dateText );
 
