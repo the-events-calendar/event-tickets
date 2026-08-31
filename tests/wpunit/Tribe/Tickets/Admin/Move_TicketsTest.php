@@ -5,6 +5,7 @@ namespace Tribe\Tickets\Admin;
 use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
+use RuntimeException;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Main as Main;
 use Tribe__Events__Main as TEC;
@@ -16,6 +17,7 @@ use Tribe__Tickets__RSVP__Attendance_Totals as Tickets_Attendance;
 use Tribe__Tickets__Admin__Move_Tickets as Move_Tickets;
 use TEC\Tickets\Commerce\Module as Commerce;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
+use WP_Hook;
 
 
 class Move_TicketsTest extends WPTestCase {
@@ -387,5 +389,59 @@ class Move_TicketsTest extends WPTestCase {
 		// Confirm the attendee counts are as expected after the move.
 		$this->assertEquals( 0, count( $src_attendance ) );
 		$this->assertEquals( 5, count( $trg_attendance ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_render_the_dialog_with_a_resolved_admin_screen(): void {
+		$event_id = $this->factory()->event->create();
+
+		$get_backup         = $_GET;
+		$hook_suffix_backup = $GLOBALS['hook_suffix'] ?? null;
+		$_GET               = [
+			'dialog'   => 'move_tickets',
+			'check'    => wp_create_nonce( 'move_tickets' ),
+			'event_id' => $event_id,
+		];
+
+		/* Isolate the hooks admin.php fires around its `$hook_suffix` assignment. */
+		$GLOBALS['wp_filter']['admin_init']     = new WP_Hook();
+		$GLOBALS['wp_filter']['current_screen'] = new WP_Hook();
+
+		( new Move_Tickets() )->setup();
+
+		$received = [];
+		add_action(
+			'admin_enqueue_scripts',
+			static function ( $hook_suffix ) use ( &$received ) {
+				$received[] = $hook_suffix;
+
+				/* iframe_header() has been reached; stop before dialog() exits the process. */
+				throw new RuntimeException( 'Dialog rendered.' );
+			},
+			1
+		);
+
+		/*
+		 * admin.php dispatches `admin_init` while `$hook_suffix` is still null, assigns it, and only
+		 * then calls set_current_screen(). Replay that order.
+		 */
+		$GLOBALS['hook_suffix'] = null;
+		ob_start();
+
+		try {
+			do_action( 'admin_init' );
+			$GLOBALS['hook_suffix'] = 'edit.php';
+			set_current_screen();
+		} catch ( RuntimeException $e ) {
+			/* Expected: the listener above interrupts the dialog mid-render. */
+		} finally {
+			ob_end_clean();
+			$_GET                   = $get_backup;
+			$GLOBALS['hook_suffix'] = $hook_suffix_backup;
+		}
+
+		$this->assertSame( [ 'edit.php' ], $received );
 	}
 }
