@@ -634,6 +634,9 @@ class Tickets implements ArrayAccess {
 	/**
 	 * Returns the model cache key used to store it in the key-value cache.
 	 *
+	 * Views hand over the Occurrence's provisional ID while the invalidation side only ever knows the
+	 * Event post ID, so the key is built from the normalized one to make the two meet.
+	 *
 	 * @since 5.26.1
 	 * @since TBD Normalized the Occurrence ID so the views and the invalidation resolve to the same key.
 	 *
@@ -643,9 +646,13 @@ class Tickets implements ArrayAccess {
 	 */
 	public static function get_cache_key( int $post_id ): string {
 		if ( class_exists( Occurrence::class, false ) ) {
-			/*
-			 * Views hand over the Occurrence's provisional ID while the invalidation side only ever
-			 * knows the Event post ID, so the two have to meet on the normalized one.
+			/**
+			 * Filters the post ID to use when fetching tickets for an Occurrence.
+			 *
+			 * @since 5.8.0
+			 *
+			 * @param int $post_id The post ID to use when fetching tickets for an Occurrence; this might
+			 *                     be a real post ID, or a provisional one.
 			 */
 			$post_id = apply_filters( 'tec_tickets_normalize_occurrence_id', Occurrence::normalize_id( $post_id ) );
 		}
