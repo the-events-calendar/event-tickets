@@ -203,6 +203,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		}
 
 		// Fallback: direct query if repository not available.
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-off fallback lookup, limited to 1 result.
 		$found = ( new WP_Query(
 			[
 				'post_type'      => 'tec_tc_ticket',
@@ -243,14 +244,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @since TBD
 	 *
 	 * @param string $cache_key Cache key.
-	 * @param bool   $match     Match result.
+	 * @param bool   $is_match  Match result.
 	 *
 	 * @return bool The same match value (for chaining).
 	 */
-	private function cache_match( string $cache_key, bool $match ): bool {
-		self::$ticket_name_cache[ $cache_key ] = $match;
+	private function cache_match( string $cache_key, bool $is_match ): bool {
+		self::$ticket_name_cache[ $cache_key ] = $is_match;
 
-		return $match;
+		return $is_match;
 	}
 
 	/**
@@ -311,7 +312,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @return int
 	 */
 	private function create_post_v2( array $record, WP_Post $event, array $data ): int {
-		$ticket_id = Commerce_Module::get_instance()->ticket_add( $event->ID, $data );
+		$ticket_id                                     = Commerce_Module::get_instance()->ticket_add( $event->ID, $data );
 		self::$ticket_name_cache[ 'v2-' . $event->ID ] = true;
 
 		$tickets_handler = tribe( 'tickets.handler' );
@@ -431,14 +432,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 
 		$ticket_start_sale_time = $this->get_value_by_key( $record, 'ticket_start_sale_time' );
 		if ( ! empty( $start_date ) && ! empty( $ticket_start_sale_time ) ) {
-			$start = new DateTime( $start_date . ' ' . $ticket_start_sale_time );
+			$start                         = new DateTime( $start_date . ' ' . $ticket_start_sale_time );
 			$data['ticket_start_meridian'] = $start->format( 'A' );
 			$data['ticket_start_time']     = $start->format( 'H:i:00' );
 		}
 
 		$ticket_end_sale_time = $this->get_value_by_key( $record, 'ticket_end_sale_time' );
 		if ( ! empty( $end_date ) && ! empty( $ticket_end_sale_time ) ) {
-			$end = new DateTime( $end_date . ' ' . $ticket_end_sale_time );
+			$end                         = new DateTime( $end_date . ' ' . $ticket_end_sale_time );
 			$data['ticket_end_meridian'] = $end->format( 'A' );
 			$data['ticket_end_time']     = $end->format( 'H:i:00' );
 		}
