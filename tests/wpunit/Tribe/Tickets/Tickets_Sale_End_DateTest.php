@@ -43,6 +43,11 @@ class Tickets_Sale_End_DateTest extends WPBrowserTestCase {
 		);
 
 		$this->assertContains( '_ticket_end_date', get_post_meta( $ticket_id, '_tribe_ticket_manual_updated' ) );
+
+		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
+
+		$this->assertEquals( '2026-09-15', $ticket->end_date );
+		$this->assertEquals( strtotime( '2026-09-15 08:00:00' ), $ticket->end_date() );
 	}
 
 	/**
