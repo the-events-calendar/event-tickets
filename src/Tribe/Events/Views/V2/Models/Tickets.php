@@ -94,6 +94,7 @@ class Tickets implements ArrayAccess {
 	 * stock, so a model built from this hook would capture a mid-order stock and keep serving it.
 	 *
 	 * @since 5.26.1
+	 * @since TBD Dropped the models instead of rebuilding them, so a mid-order stock is never stored.
 	 *
 	 * @param int $post_id The post ID. It could be any post type, not just events.
 	 *
@@ -223,6 +224,7 @@ class Tickets implements ArrayAccess {
 	 * @since 5.6.3 Add support for the updated anchor link from new ticket templates.
 	 * @since 5.26.7 Fixed issue where empty arrays were being returned when data existed but was empty.
 	 * @since 5.27.5 Fixed issue where the stock display was not being refreshed from the current availability.
+	 * @since TBD Rebuilt the link from the model's own post so a shared cache entry keeps per-Occurrence permalinks.
 	 *
 	 * @return array Ticket data or empty array.
 	 */
@@ -633,6 +635,7 @@ class Tickets implements ArrayAccess {
 	 * Returns the model cache key used to store it in the key-value cache.
 	 *
 	 * @since 5.26.1
+	 * @since TBD Normalized the Occurrence ID so the views and the invalidation resolve to the same key.
 	 *
 	 * @param int $post_id The post ID to provide the cache key for.
 	 *

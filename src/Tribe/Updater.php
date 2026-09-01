@@ -28,6 +28,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * every time the version is updated.
 	 *
 	 * @since 4.12.0
+	 * @since TBD Added the key-value cache flush.
 	 *
 	 * @return array
 	 */
@@ -63,7 +64,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 *
 	 * @return void
 	 */
-	public function flush_key_value_cache() {
+	public function flush_key_value_cache(): void {
 		tec_kv_cache()->flush();
 	}
 
