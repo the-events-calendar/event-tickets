@@ -105,8 +105,9 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 					'name' => 'tecTicketsCommerceGatewayPayPalCheckout',
 					'data' => static function () {
 						return [
-							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
-							'advancedPayments' => [
+							'orderEndpoint'        => tribe( Order_Endpoint::class )->get_route_url(),
+							'requestFailedMessage' => tribe( Order_Endpoint::class )->get_error_messages()['unconfirmed-capture'],
+							'advancedPayments'     => [
 								'fieldPlaceholders' => [
 									'cvv' => esc_html__( 'E.g.: 123', 'event-tickets' ),
 									'expirationDate' => esc_html__( 'E.g.: 03/26', 'event-tickets' ),

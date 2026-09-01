@@ -86,6 +86,18 @@ class Status {
 	CONST DECLINED = 'DECLINED';
 
 	/**
+	 * Order Capture Status in PayPal for captures PayPal has taken but not settled yet.
+	 *
+	 * Deliberately absent from the status map below: it is not an outcome, and a Tickets Commerce
+	 * status standing in for it would say the payment resolved when it has not.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const PENDING = 'PENDING';
+
+	/**
 	 * Default mapping from PayPal Status to Tickets Commerce
 	 *
 	 * @since 5.1.9
