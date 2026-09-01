@@ -4121,7 +4121,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 				}
 
-				if ( ! $is_default ) {
+				if ( ! $is_default && ! $tickets_handler->has_manual_update( $ticket->ID, $tickets_handler->key_end_date ) ) {
 					add_post_meta( $ticket->ID, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 				}
 			}

@@ -124,6 +124,78 @@ class Tickets_Sale_End_DateTest extends WPBrowserTestCase {
 	}
 
 	/**
+	 * It should only add the manual update flag once per ticket creation.
+	 *
+	 * @test
+	 */
+	public function should_only_add_manual_update_flag_once() {
+		$post_id = $this->factory->post->create();
+		update_post_meta( $post_id, '_EventStartDate', '2026-08-28 08:00:00' );
+
+		$ticket_id = $this->create_ticket(
+			$post_id,
+			[
+				'ticket_end_date' => '2026-09-15',
+				'ticket_end_time' => '08:00:00',
+			]
+		);
+
+		$manual_updates = get_post_meta( $ticket_id, '_tribe_ticket_manual_updated' );
+		$this->assertCount( 1, $manual_updates, 'Manual update flag should only be added once' );
+		$this->assertContains( '_ticket_end_date', $manual_updates );
+	}
+
+	/**
+	 * It demonstrates that a raw add_post_meta() call allows duplicate meta entries.
+	 *
+	 * add_post_meta() does not check for existing values by default, so calling it
+	 * directly (bypassing the has_manual_update() guard) multiple times with the same
+	 * key/value will keep appending entries. This is why the flag must always be
+	 * added through a has_manual_update() check, never with a bare add_post_meta() call.
+	 *
+	 * @test
+	 */
+	public function demonstrates_raw_add_post_meta_allows_duplicates() {
+		$ticket_id = $this->factory->post->create( [ 'post_type' => 'tribe_rsvp_tickets' ] );
+
+		add_post_meta( $ticket_id, '_tribe_ticket_manual_updated', '_ticket_end_date' );
+		add_post_meta( $ticket_id, '_tribe_ticket_manual_updated', '_ticket_end_date' );
+
+		$manual_updates = get_post_meta( $ticket_id, '_tribe_ticket_manual_updated' );
+		$this->assertCount( 2, $manual_updates, 'A bare add_post_meta() call allows duplicate entries with the same key and value' );
+		$this->assertEquals( [ '_ticket_end_date', '_ticket_end_date' ], $manual_updates );
+	}
+
+	/**
+	 * It should not duplicate the manual update flag if the guarded add is run more than once.
+	 *
+	 * Mirrors the fixed code path in Tribe__Tickets__Tickets::ticket_add(): the flag is only
+	 * added when has_manual_update() is false for that key, so re-running the same guarded
+	 * logic against a ticket that already carries the flag is a no-op.
+	 *
+	 * @test
+	 */
+	public function should_not_duplicate_manual_update_flag_when_guarded_add_runs_twice() {
+		/** @var \Tribe__Tickets__Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$ticket_id = $this->factory->post->create( [ 'post_type' => 'tribe_rsvp_tickets' ] );
+
+		$add_flag_if_missing = static function () use ( $tickets_handler, $ticket_id ) {
+			if ( ! $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) ) {
+				add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+			}
+		};
+
+		$add_flag_if_missing();
+		$add_flag_if_missing();
+		$add_flag_if_missing();
+
+		$manual_updates = get_post_meta( $ticket_id, '_tribe_ticket_manual_updated' );
+		$this->assertCount( 1, $manual_updates, 'The has_manual_update() guard must prevent duplicate entries across repeated calls' );
+	}
+
+	/**
 	 * Creates a ticket through the RSVP provider using the shared ticket_add() path.
 	 *
 	 * @param int   $post_id   The ticket-able post ID.
