@@ -55,7 +55,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * Hooked to `current_screen` rather than `admin_init`: `iframe_header()` hands the `$hook_suffix`
 	 * global to `admin_enqueue_scripts`, and wp-admin/admin.php only assigns it once `admin_init` has
-	 * finished.
+	 * finished. WordPress has resolved the screen by then, so calling `set_current_screen()` here
+	 * would re-enter this method until the request times out.
+	 *
+	 * @since TBD Moved off `admin_init` so the admin screen is resolved before the iframe renders.
 	 */
 	public function dialog() {
 		if ( ! $this->is_move_tickets_dialog() ) {
