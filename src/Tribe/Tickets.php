@@ -1955,7 +1955,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @static
 		 *
 		 * @param int $post_id ID of parent "event" post
-		 * @return mixed
+		 * @return int
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
 			// Post ID is required.
