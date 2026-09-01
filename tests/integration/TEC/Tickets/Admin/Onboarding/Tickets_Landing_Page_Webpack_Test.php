@@ -61,6 +61,9 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 		// Set up current user as admin.
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
 
+		// Prevent onboarding redirect hang (admin + set_current_screen triggers tec_admin_headers_about_to_be_sent which hangs in test env).
+		remove_all_actions( 'tec_admin_headers_about_to_be_sent' );
+
 		$this->landing_page = tribe( Tickets_Landing_Page::class );
 	}
 
