@@ -872,16 +872,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			$repository = $repository->by( 'event', $event_id );
-
-			// Prime the post caches before formatting so get_post() does not hit the DB once per attendee.
-			$ids = $repository->get_ids();
-
-			if ( $ids ) {
-				tribe( 'cache' )->warmup_post_caches( $ids, true );
-			}
-
-			return $this->get_attendees_from_module( $repository->all(), $event_id );
+			return $this->get_attendees_from_module( $repository->by( 'event', $event_id )->all(), $event_id );
 		}
 
 		/**
@@ -897,16 +888,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			$repository = $repository->by( 'ticket', $ticket_id );
-
-			// Prime the post caches before formatting so get_post() does not hit the DB once per attendee.
-			$ids = $repository->get_ids();
-
-			if ( $ids ) {
-				tribe( 'cache' )->warmup_post_caches( $ids, true );
-			}
-
-			return $this->get_attendees_from_module( $repository->all() );
+			return $this->get_attendees_from_module( $repository->by( 'ticket', $ticket_id )->all() );
 		}
 
 		/**

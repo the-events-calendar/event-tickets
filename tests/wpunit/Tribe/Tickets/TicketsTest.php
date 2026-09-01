@@ -236,21 +236,27 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_cache_checkedin_attendees_count() {
+		global $wpdb;
+
 		$post_id        = $this->factory->post->create();
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
 		$attendee_ids   = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $post_id );
 
 		$rsvp_main = tribe( 'tickets.rsvp' );
 
-		// Check in one attendee and read the count, priming the cache.
 		update_post_meta( $attendee_ids[0], $rsvp_main->checkin_key, 1 );
 
+		$queries_before_first_call = $wpdb->num_queries;
 		$this->assertEquals( 1, Tickets::get_event_checkedin_attendees_count( $post_id ) );
+		$queries_after_first_call = $wpdb->num_queries;
 
-		// Check in a second attendee; the cached count should still be returned for the rest of the request.
 		update_post_meta( $attendee_ids[1], $rsvp_main->checkin_key, 1 );
 
+		$queries_before_second_call = $wpdb->num_queries;
 		$this->assertEquals( 1, Tickets::get_event_checkedin_attendees_count( $post_id ) );
+
+		$this->assertGreaterThan( $queries_before_first_call, $queries_after_first_call );
+		$this->assertSame( $queries_before_second_call, $wpdb->num_queries );
 	}
 
 	/**
