@@ -203,12 +203,12 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		}
 
 		// Fallback: direct query if repository not available.
-		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-off fallback lookup, limited to 1 result.
 		$found = ( new WP_Query(
 			[
 				'post_type'      => 'tec_tc_ticket',
 				'posts_per_page' => 1,
 				'post_status'    => 'any',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-off fallback lookup, limited to 1 result.
 				'meta_query'     => [
 					[
 						'key'   => '_type',
@@ -312,11 +312,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @return int
 	 */
 	private function create_post_v2( array $record, WP_Post $event, array $data ): int {
-		$ticket_id                                     = Commerce_Module::get_instance()->ticket_add( $event->ID, $data );
-		self::$ticket_name_cache[ 'v2-' . $event->ID ] = true;
+		$ticket_id = Commerce_Module::get_instance()->ticket_add( $event->ID, $data );
 
-		$tickets_handler = tribe( 'tickets.handler' );
-		update_post_meta( $event->ID, $tickets_handler->key_provider_field, Commerce_Module::class );
+		if ( $ticket_id ) {
+			self::$ticket_name_cache[ 'v2-' . $event->ID ] = true;
+
+			$tickets_handler = tribe( 'tickets.handler' );
+			update_post_meta( $event->ID, $tickets_handler->key_provider_field, Commerce_Module::class );
+		}
 
 		return (int) $ticket_id;
 	}

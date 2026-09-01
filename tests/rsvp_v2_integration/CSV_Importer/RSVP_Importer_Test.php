@@ -15,12 +15,20 @@ class RSVP_Importer_Test extends WPTestCase {
 
 	protected $rsvp_module;
 
+	/**
+	 * @var callable|null Hook callback for `tec_tickets_rsvp_version` added in setUp().
+	 *
+	 * @since TBD
+	 */
+	private $version_filter;
+
 	public function setUp(): void {
 		parent::setUp();
 		// Hook-verifiable version: tests control RSVP version via `test_rsvp_version` option.
-		add_filter( 'tec_tickets_rsvp_version', function(): string {
+		$this->version_filter = function(): string {
 			return get_option( 'test_rsvp_version', RSVP_Controller::VERSION_1 );
-		}, 20 );
+		};
+		add_filter( 'tec_tickets_rsvp_version', $this->version_filter, 20 );
 		update_option( 'test_rsvp_version', RSVP_Controller::VERSION_2 );
 
 		\Tribe__Tickets__CSV_Importer__RSVP_Importer::reset_cache();
@@ -31,11 +39,9 @@ class RSVP_Importer_Test extends WPTestCase {
 
 	public function tearDown(): void {
 		delete_option( 'test_rsvp_version' );
-		remove_filter( 'tec_tickets_rsvp_version', '__return_true' ); // noop – ensures next test starts clean
-		// Remove the test filter added in setUp (priority 20).
-		remove_all_filters( 'tec_tickets_rsvp_version' );
-		// Re-add suite bootstrap filter (v2) so remaining tests in suite keep passing.
-		add_filter( 'tec_tickets_rsvp_version', static fn(): string => RSVP_Controller::VERSION_2 );
+		if ( $this->version_filter ) {
+			remove_filter( 'tec_tickets_rsvp_version', $this->version_filter, 20 );
+		}
 		parent::tearDown();
 	}
 
@@ -94,7 +100,7 @@ class RSVP_Importer_Test extends WPTestCase {
 		// Unlimited: mode should be '' (no own stock). Capacity is handled as -1/'' for unlimited; we just verify it is not a limited value.
 		$mode = get_post_meta( $ticket_id, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 		$this->assertEquals( '', $mode, 'unlimited RSVP should have empty stock mode' );
-		$this->assertTrue( in_array( $ticket->capacity(), [ -1, '', 0, null ], true ), 'unlimited RSVP capacity should be -1/empty, got ' . var_export( $ticket->capacity(), true ) );
+			$this->assertTrue( in_array( $ticket->capacity(), [ -1, '', null ], true ), 'unlimited RSVP capacity should be -1/empty, got ' . var_export( $ticket->capacity(), true ) );
 	}
 
 	/**
