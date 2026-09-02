@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Resolved an issue where the Tickets Commerce PayPal "Connect
+  Automatically" button linked to a 404 when the connection link could not be
+  generated. An error notice is shown in its place.
+timestamp: 2026-08-26T21:36:14.363Z
