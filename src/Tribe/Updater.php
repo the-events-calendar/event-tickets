@@ -30,7 +30,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * every time the version is updated.
 	 *
 	 * @since 4.12.0
-	 * @since TBD Added the new views migration.
+	 * @since 5.29.4 Added the new views migration.
 	 *
 	 * @return array
 	 */
@@ -53,7 +53,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * plugin filtering the views off has had a chance to register anything, so reading the flags
 	 * there would record a value the site does not go on to render.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 */
 	public function migrate_force_new_views() {
 		add_action( 'wp_loaded', [ $this, 'force_new_views' ] );
@@ -65,7 +65,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * The settings that controlled these are gone and nothing in Event Tickets reads the options any
 	 * more. They are written all the same, for anything outside the plugin that reads them directly.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 */
 	public function force_new_views() {
 		$enabled = [
@@ -119,7 +119,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * at all, and what it rendered then depended on when it was first installed. This reproduces that
 	 * answer, and it is the only thing left that needs to.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param string $option The option to resolve.
 	 *

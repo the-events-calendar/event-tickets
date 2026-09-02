@@ -288,7 +288,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.1.9
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
-	 * @since TBD Records what PayPal answered and fails when it did not acknowledge a capture.
+	 * @since 5.29.4 Records what PayPal answered and fails when it did not acknowledge a capture.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -430,7 +430,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.4.0.2
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
-	 * @since TBD Captures an approved order nothing captured yet, and stops writing unsettled PayPal
+	 * @since 5.29.4 Captures an approved order nothing captured yet, and stops writing unsettled PayPal
 	 *        states over the order.
 	 *
 	 * @param string  $order_id The PayPal order ID.
@@ -492,7 +492,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Writes the state PayPal settled on onto the Tickets Commerce order.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param WP_Post $order    The Tickets Commerce order.
 	 * @param array   $response A PayPal order or capture response.
@@ -553,7 +553,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * settled PayPal response maps to took no money and generated no attendees, so sending the buyer
 	 * there would promise a receipt that does not exist.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param Status_Interface $status The status the order settled on.
 	 *
@@ -566,7 +566,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Builds the response that takes the buyer off checkout and on to their order.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param WP_Post          $order           The Tickets Commerce order.
 	 * @param string           $paypal_order_id The PayPal order ID.
@@ -595,7 +595,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * exists, whatever that capture's own status is, and reads CREATED or APPROVED while the payer
 	 * finishes an authentication such as BankID. The capture, when there is one, is the authority.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param array $response A PayPal order or capture response.
 	 *
@@ -615,7 +615,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Picks the capture that decides a PayPal order out of its purchase units.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param array $response A PayPal order or capture response.
 	 *
@@ -659,7 +659,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * attendees or walk the order backwards out of pending, and reaching one of them means the money
 	 * has not been taken.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @return string[]
 	 */
@@ -680,7 +680,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * as the raw wp_remote_* response. Neither says anything about the payment, and treating either as
 	 * an answer is how a blocked request ends up reported as a successful capture.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param mixed $response A Client response.
 	 *

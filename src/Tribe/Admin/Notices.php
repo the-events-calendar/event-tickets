@@ -15,7 +15,7 @@ class Tribe__Tickets__Admin__Notices {
 	 *
 	 * @since 4.7
 	 * @since 5.18.0 Removed FSE AR Page notice.
-	 * @since TBD Removed the RSVP new views notice along with the setting it pointed at.
+	 * @since 5.29.4 Removed the RSVP new views notice along with the setting it pointed at.
 	 */
 	public function hook() {
 		// Bail if some missing component does not exist.
@@ -295,12 +295,12 @@ class Tribe__Tickets__Admin__Notices {
 	 * Will be removed. Doing nothing other than triggering a deprecation notice.
 	 *
 	 * @since 4.12.3
-	 * @deprecated TBD This method will be removed in a future release.
+	 * @deprecated 5.29.4 This method will be removed in a future release.
 	 *
 	 * @return void
 	 */
 	public function maybe_display_rsvp_new_views_options_notice() {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.29.4' );
 	}
 
 	/**
