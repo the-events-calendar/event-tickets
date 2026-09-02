@@ -199,6 +199,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.29.4] 2026-09-03 =
+
+* Fix - Resolved a fatal error that could be triggered in the Tickets Commerce cart when the decoded ticket data was null.
+* Fix - Prevented the cart-to-checkout redirect and the checkout page from being stored by full-page and edge caches, resolving an issue where the Tickets Commerce checkout could show 'Oops, no tickets!' after selecting tickets.
+* Language - 5 new strings added, 75 updated, 0 fuzzied, and 9 obsoleted.
+
 = [5.29.3.1] 2026-08-26 =
 
 * Security - Enforced ticket sale start and end dates server-side, and capped RSVP quantities to the maximum allowed per purchase.
