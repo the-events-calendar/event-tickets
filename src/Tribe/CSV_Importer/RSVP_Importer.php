@@ -567,7 +567,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 *
 	 * @param Tribe__Events__Aggregator__Record__Activity $activity The activity instance.
 	 */
-	public function register_rsvp_activity( $activity ) {
+	public static function register_rsvp_activity( $activity ) {
 		$activity->register( 'tribe_rsvp_tickets', [ 'rsvp', 'rsvp_tickets' ] );
 	}
 }
