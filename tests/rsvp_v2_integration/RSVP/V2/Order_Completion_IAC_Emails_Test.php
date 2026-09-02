@@ -186,7 +186,7 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 
 		// Main Guest's holder_email is the form email, distinct from the WP account email.
 		$first = $attendees[0];
-		tec_tc_attendees()->where( 'id', $first['attendee_id'] )->set_args( [ 'email' => 'zoe@example.test', 'full_name' => 'Zoe' ] )->save();
+		tec_tc_attendees()->where( 'id', $first['attendee_id'] )->set_args( [ 'email' => 'alice@example.test', 'full_name' => 'Alice' ] )->save();
 		clean_post_cache( $first['attendee_id'] );
 
 		$second = $attendees[1];

@@ -89,11 +89,11 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 				// rows come back sorted by guest name rather than creation order. Attendee IDs do follow
 				// creation order, and the Main Guest is created first.
 				usort(
-					$ordered,
+					$attendees,
 					static fn( $a, $b ) => ( (int) ( $a['attendee_id'] ?? 0 ) ) <=> ( (int) (
-					$b['attendee_id'] ?? 0 ) ) 
+					$b['attendee_id'] ?? 0 ) )
 				);
-				$main_guest_email = strtolower( trim( (string) ( $ordered[0]['holder_email'] ?? '' ) ) );
+				$main_guest_email = strtolower( trim( (string) ( $attendees[0]['holder_email'] ?? '' ) ) );
 
 		if ( ! is_email( $main_guest_email ) ) {
 			$main_guest_email = strtolower( trim( (string) ( $order->purchaser['email'] ?? '' ) ) );
