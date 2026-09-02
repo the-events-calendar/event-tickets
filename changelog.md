@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.29.3.1] 2026-08-26
+
+* Security - Enforced ticket sale start and end dates server-side, and capped RSVP quantities to the maximum allowed per purchase.
+
 ### [5.29.3] 2026-08-20
 
 * Security - Hardened attendee details rendering.

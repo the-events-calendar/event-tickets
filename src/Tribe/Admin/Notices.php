@@ -15,6 +15,7 @@ class Tribe__Tickets__Admin__Notices {
 	 *
 	 * @since 4.7
 	 * @since 5.18.0 Removed FSE AR Page notice.
+	 * @since TBD Removed the RSVP new views notice along with the setting it pointed at.
 	 */
 	public function hook() {
 		// Bail if some missing component does not exist.
@@ -25,88 +26,10 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		add_action( 'admin_init', [ $this, 'maybe_display_rsvp_new_views_options_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_classic_editor_ecp_recurring_tickets_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_plus_commerce_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_unsupported_currency_notice' ] );
 		add_action( 'admin_init', [ $this, 'maybe_display_paystack_notice' ] );
-	}
-
-	/**
-	 * Display dismissible notice about new RSVP view settings.
-	 *
-	 * @since 4.12.3
-	 */
-	public function maybe_display_rsvp_new_views_options_notice() {
-		// Bail if previously dismissed this notice.
-		if ( Tribe__Admin__Notices::instance()->has_user_dimissed( __FUNCTION__ ) ) {
-			return;
-		}
-
-		/** @var Tribe__Settings $settings */
-		$settings = tribe( 'settings' );
-
-		// Bail if user cannot change settings.
-		if ( ! current_user_can( $settings->requiredCap ) ) {
-			return;
-		}
-
-		// Only show to previously existing installs.
-		if ( ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
-			return;
-		}
-
-		// Bail if we aren't in Tickets > Settings.
-		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== tribe_get_request_var( 'page' ) ) {
-			return;
-		}
-
-		// Bail if already at wp-admin > Tickets > Settings > Tickets tab to avoid redundancy/confusion by linking to itself.
-		if ( 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
-			return;
-		}
-
-		// Bail if the option is already in use.
-		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
-			return;
-		}
-
-		// Get link to Display Tab.
-		$url = $settings->get_url( [
-			'page' => 'tribe-common',
-			'tab'  => 'display',
-		] );
-
-		$link = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			esc_url( $url ),
-			esc_html_x( 'RSVP Display Settings', 'Admin notice link text', 'event-tickets' )
-		);
-
-		// Set heading text.
-		$heading = __( 'Event Tickets', 'event-tickets' );
-
-		// Build notice text.
-		$text = sprintf(
-		// translators: %1$s: RSVP singular text, %2$s: Link to settings page.
-			__( 'With this new version, we\'ve introduced newly redesigned %1$s frontend views. If you have customized the %1$s section, this update will likely impact your customizations.
-
-			To upgrade to the new frontend views, please enable them in the %2$s.', 'event-tickets' ),
-			tribe_get_rsvp_label_singular( 'admin_notices' ),
-			$link
-		);
-
-		// Build notice message.
-		$message = sprintf( '<h3>%1$s</h3>%2$s', $heading, wpautop( $text ) );
-
-		tribe_notice(
-			__FUNCTION__,
-			$message,
-			[
-				'dismiss' => true,
-				'type'    => 'warning',
-			]
-		);
 	}
 
 	/**
@@ -366,6 +289,18 @@ class Tribe__Tickets__Admin__Notices {
 			]
 		);
 
+	}
+
+	/**
+	 * Will be removed. Doing nothing other than triggering a deprecation notice.
+	 *
+	 * @since 4.12.3
+	 * @deprecated TBD This method will be removed in a future release.
+	 *
+	 * @return void
+	 */
+	public function maybe_display_rsvp_new_views_options_notice() {
+		_deprecated_function( __METHOD__, 'TBD' );
 	}
 
 	/**
