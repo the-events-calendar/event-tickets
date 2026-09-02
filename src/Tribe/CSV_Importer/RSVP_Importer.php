@@ -62,15 +62,15 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * Whether the RSVP->Tickets Commerce migration is currently running or paused, in which
-	 * case neither V1 nor V2 tickets should be imported.
+	 * Whether RSVP is disabled on this site, in which case neither V1 nor V2 ticket
+	 * should be imported.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
 	private function is_rsvp_disabled(): bool {
-		return RSVP_Controller::is_migration_in_progress();
+		return ! tribe( RSVP_Controller::class )->is_rsvp_enabled();
 	}
 
 	/**
