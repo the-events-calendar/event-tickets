@@ -78,7 +78,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Whether a payment is currently waiting on PayPal or on our endpoints.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @type {boolean}
 	 */
@@ -88,7 +88,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Whether the client token expired while a payment was in flight, so the reload it asked for was
 	 * deferred until the buyer is idle again.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @type {boolean}
 	 */
@@ -121,7 +121,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the creation of the orders via PayPal.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Marks the payment as no longer in flight.
+	 * @since 5.29.4 Marks the payment as no longer in flight.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -139,7 +139,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the creation of the orders via PayPal.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Clears the loader, which nothing else does when PayPal itself reports the error.
+	 * @since 5.29.4 Clears the loader, which nothing else does when PayPal itself reports the error.
 	 *
 	 * @param {Object} error      PayPal data passed to this method.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -166,7 +166,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the click when one of the buttons were clicked.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Takes a reload the client token deferred while a payment was in flight.
+	 * @since 5.29.4 Takes a reload the client token deferred while a payment was in flight.
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -242,7 +242,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 * @since 5.2.0 $container Param added.
-	 * @since TBD Ends the payment rather than leaving the loader up.
+	 * @since 5.29.4 Ends the payment rather than leaving the loader up.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} data       Data returning from our endpoint.
@@ -260,7 +260,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 * @since 5.2.0 $container Param added.
-	 * @since TBD Ends the payment with a message instead of returning silently.
+	 * @since 5.29.4 Ends the payment with a message instead of returning silently.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
@@ -360,7 +360,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a successful request is completed to our Approval endpoint.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Ends the payment when the response carries no destination.
+	 * @since 5.29.4 Ends the payment when the response carries no destination.
 	 *
 	 * @param         actions
 	 * @param         $container
@@ -384,7 +384,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a failed request is completed to our Approval endpoint.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Stopped reading the error shape unguarded.
+	 * @since 5.29.4 Stopped reading the error shape unguarded.
 	 *
 	 * @param         actions
 	 * @param         $container
@@ -401,7 +401,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a error happens on the fetch request to our Approval endpoint.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Ends the payment with a message instead of returning silently.
+	 * @since 5.29.4 Ends the payment with a message instead of returning silently.
 	 *
 	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -419,7 +419,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Every path out of a payment has to come through here. A handler that returns without clearing
 	 * the loader leaves the buyer watching a spinner with no way to tell whether they were charged.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 * @param {string} message    What to tell the buyer.
@@ -441,7 +441,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Reads the message for a rejected payment out of whichever shape the endpoint answered with.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -463,7 +463,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Performs a reload the client token asked for while a payment was in flight.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @return {boolean} Whether the browser is now navigating away.
 	 */
@@ -598,7 +598,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Redirect the user back to the checkout page when the Token is expired so it gets refreshed properly.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Defers the reload while a payment is in flight.
+	 * @since 5.29.4 Defers the reload while a payment is in flight.
 	 *
 	 * @param {jQuery} $container jQuery Object.
 	 */
@@ -1019,7 +1019,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a failed request is completed to our Approval endpoint.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Stopped reading the error shape unguarded.
+	 * @since 5.29.4 Stopped reading the error shape unguarded.
 	 *
 	 * @param         actions
 	 * @param         $container
@@ -1036,7 +1036,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a error happens on the fetch request to our Approval endpoint.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Ends the payment with a message instead of only hiding the loader.
+	 * @since 5.29.4 Ends the payment with a message instead of only hiding the loader.
 	 *
 	 * @param         $container
 	 * @param {...any} rest

@@ -91,7 +91,7 @@ class Status {
 	 * Deliberately absent from the status map below: it is not an outcome, and a Tickets Commerce
 	 * status standing in for it would say the payment resolved when it has not.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @var string
 	 */

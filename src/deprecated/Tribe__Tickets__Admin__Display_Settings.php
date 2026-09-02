@@ -10,7 +10,7 @@
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 // Third argument is $replacement, so leaving it off gets "with no alternative available".
-_deprecated_file( __FILE__, 'TBD' );
+_deprecated_file( __FILE__, '5.29.4' );
 
 /**
  * Manages the admin settings UI in relation to display configuration.
@@ -20,7 +20,7 @@ _deprecated_file( __FILE__, 'TBD' );
  *
  * @since 4.12.3
  *
- * @deprecated TBD
+ * @deprecated 5.29.4
  */
 class Tribe__Tickets__Admin__Display_Settings {
 
@@ -29,10 +29,10 @@ class Tribe__Tickets__Admin__Display_Settings {
 	 *
 	 * @since 4.12.3
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.29.4
 	 */
 	public function hook() {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.29.4' );
 	}
 
 	/**
@@ -40,14 +40,14 @@ class Tribe__Tickets__Admin__Display_Settings {
 	 *
 	 * @since 4.12.3
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.29.4
 	 *
 	 * @param array $settings List of display settings.
 	 *
 	 * @return array List of display settings, unchanged.
 	 */
 	public function add_display_settings( $settings ) {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.29.4' );
 
 		return $settings;
 	}
