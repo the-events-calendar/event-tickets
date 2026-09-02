@@ -62,6 +62,18 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
+	 * Whether the RSVP->Tickets Commerce migration is currently running or paused, in which
+	 * case neither V1 nor V2 tickets should be imported.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	private function is_rsvp_disabled(): bool {
+		return RSVP_Controller::is_migration_in_progress();
+	}
+
+	/**
 	 * Whether the site is on RSVP V2 (Commerce) - i.e. the import should produce a TC-RSVP ticket.
 	 *
 	 * Version is hook-verifiable via `tec_tickets_rsvp_version`. Tests can control it
@@ -80,6 +92,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 
 		$default = RSVP_Controller::VERSION_1;
 		$version = tribe_get_option( RSVP_Controller::VERSION_OPTION_KEY, $default );
+
+		/** This filter is documented in src/Tickets/RSVP/Controller.php. */
 		$version = apply_filters( 'tec_tickets_rsvp_version', $version );
 
 		return RSVP_Controller::VERSION_2 === $version;
@@ -197,32 +211,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @return bool
 	 */
 	private function has_rsvp_for_event_v2( WP_Post $event ): bool {
-		$repo = tribe( 'tickets.ticket-repository.rsvp' );
-		if ( $repo && $repo->by( 'event', $event->ID )->found() ) {
-			return true;
-		}
-
-		// Fallback: direct query if repository not available.
-		$found = ( new WP_Query(
-			[
-				'post_type'      => 'tec_tc_ticket',
-				'posts_per_page' => 1,
-				'post_status'    => 'any',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-off fallback lookup, limited to 1 result.
-				'meta_query'     => [
-					[
-						'key'   => '_type',
-						'value' => RSVP_V2_Constants::TC_RSVP_TYPE,
-					],
-					[
-						'key'   => '_tec_tickets_commerce_event',
-						'value' => $event->ID,
-					],
-				],
-			]
-		) )->get_posts();
-
-		return ! empty( $found );
+		return (bool) tribe( 'tickets.ticket-repository.rsvp' )->by( 'event', $event->ID )->found();
 	}
 
 	/**
@@ -454,13 +443,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$capacity = $stock;
 		}
 
-		// Unlimited when blank - keep mode empty (Classic_Editor_Post_Data logic).
-		if ( '' === $capacity || '0' === $capacity ) {
+		// Unlimited when blank or non-positive - mirrors Classic_Editor_Post_Data::from_post_data().
+		$capacity_int = (int) $capacity;
+		if ( '' === $capacity || $capacity_int <= 0 ) {
 			$data['tribe-ticket'] = [ 'mode' => '' ];
 		} else {
 			$data['tribe-ticket'] = [
 				'mode'     => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
-				'capacity' => (int) $capacity,
+				'capacity' => $capacity_int,
 			];
 		}
 
@@ -532,9 +522,22 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			return false;
 		}
 
+		if ( $this->is_rsvp_disabled() ) {
+			$this->row_message = esc_html__( 'RSVP is temporarily disabled while migrating to Tickets Commerce.', 'event-tickets' );
+
+			return false;
+		}
+
 		$event = $this->get_event_from( $record );
 
 		if ( empty( $event ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_rsvp_v2() && empty( $this->get_value_by_key( $record, 'ticket_name' ) ) ) {
+			// Translators: %s is the event title.
+			$this->row_message = sprintf( esc_html__( 'ticket_name is required, event %s.', 'event-tickets' ), $event->post_title );
+
 			return false;
 		}
 
@@ -563,9 +566,17 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * Registers the RSVP post type as a trackable activity.
+	 * Registers the legacy `tribe_rsvp_tickets` post type as a trackable Event Aggregator
+	 * activity, so imported/updated RSVP tickets are counted and reported in the import summary.
+	 *
+	 * Hooked to `tribe_aggregator_record_activity_wakeup` by both the V1 and V2 RSVP controllers
+	 * via `RSVP_Controller_Methods::register_csv_importer_hooks()`.
+	 *
+	 * @since TBD
 	 *
 	 * @param Tribe__Events__Aggregator__Record__Activity $activity The activity instance.
+	 *
+	 * @return void
 	 */
 	public static function register_rsvp_activity( $activity ) {
 		$activity->register( 'tribe_rsvp_tickets', [ 'rsvp', 'rsvp_tickets' ] );
