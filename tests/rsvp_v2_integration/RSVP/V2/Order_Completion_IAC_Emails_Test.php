@@ -11,6 +11,7 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\RSVP\V2\Cart\RSVP_Cart;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
+use TEC\Tickets\Commerce\Emails\RSVP_Email_Sender;
 use Tribe\Tests\Traits\With_Uopz;
 
 /**
@@ -105,7 +106,7 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 
 		// Re-run sender for the same order (as if order completion re-fired after IAC).
 		$mail->emails = [];
-		tribe( \TEC\Tickets\Commerce\Emails\RSVP_Email_Sender::class )->send( tec_tc_get_order( $order->ID ) );
+		tribe( RSVP_Email_Sender::class )->send( tec_tc_get_order( $order->ID ) );
 
 		$this->assertCount( 2, $mail->emails, 'Exactly two emails should be sent: one per unique holder_email.' );
 
@@ -162,5 +163,53 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 
 		$this->assertCount( 1, $mail->emails, 'Invalid second email should not create extra mail; only purchaser bundle.' );
 		$this->assertEquals( 'alice@example.test', $mail->emails[0]['to'] );
+	}
+
+	/**
+	 * Logged-in purchaser: order->purchaser['email'] holds the WP account email, which differs
+	 * from the Main Guest's typed form email. The bundle must follow the form email, not the account.
+	 */
+	public function test_logged_in_purchaser_account_email_does_not_receive_bundle(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_rsvp_ticket( $post_id, [ 'tribe-ticket' => [ 'capacity' => 10 ] ] );
+
+		$mail  = $this->intercept_wp_mail();
+		$order = $this->create_tc_rsvp_order_with_quantity(
+			$ticket_id,
+			2,
+			'yes',
+			[ 'purchaser_email' => 'account@example.test', 'purchaser_full_name' => 'Alice' ]
+		);
+
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$this->assertCount( 2, $attendees, 'Quantity 2 should create 2 attendees.' );
+
+		// Main Guest's holder_email is the form email, distinct from the WP account email.
+		$first = $attendees[0];
+		tec_tc_attendees()->where( 'id', $first['attendee_id'] )->set_args( [ 'email' => 'alice@example.test', 'full_name' => 'Alice' ] )->save();
+		clean_post_cache( $first['attendee_id'] );
+
+		$second = $attendees[1];
+		tec_tc_attendees()->where( 'id', $second['attendee_id'] )->set_args( [ 'email' => 'bob@example.test', 'full_name' => 'Bob' ] )->save();
+		clean_post_cache( $second['attendee_id'] );
+		wp_cache_flush();
+
+		$mail->emails = [];
+		tribe( RSVP_Email_Sender::class )->send( tec_tc_get_order( $order->ID ) );
+
+		$this->assertCount( 2, $mail->emails, 'Exactly two emails should be sent: alice@ and bob@.' );
+
+		$recipients = array_column( $mail->emails, 'to' );
+		sort( $recipients );
+		$this->assertEquals( [ 'alice@example.test', 'bob@example.test' ], $recipients );
+		$this->assertNotContains( 'account@example.test', $recipients, 'The WP account email must never receive an RSVP email.' );
+
+		$alice_mail = array_values( array_filter( $mail->emails, fn( $e ) => $e['to'] === 'alice@example.test' ) )[0];
+		$bob_mail   = array_values( array_filter( $mail->emails, fn( $e ) => $e['to'] === 'bob@example.test' ) )[0];
+
+		$this->assertStringContainsString( 'Alice', $alice_mail['message'], 'Alice mail should contain Alice.' );
+		$this->assertStringContainsString( 'Bob', $alice_mail['message'], 'Alice, as Main Guest, should receive the full bundle including Bob.' );
+		$this->assertStringContainsString( 'Bob', $bob_mail['message'], 'Bob mail should contain Bob.' );
+		$this->assertStringNotContainsString( 'Alice', $bob_mail['message'], 'Bob should only receive his own ticket, not the bundle.' );
 	}
 }

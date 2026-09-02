@@ -84,24 +84,17 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 			$unique[ $holder_email ][] = $attendee;
 		}
 
-		// Main Guest / purchaser always receives the full bundle.
-		// When purchaser email equals a holder email this overwrites that bucket
-		// to the bundle (same as Tribe__Tickets__Tickets::send_tickets_email_for_attendees).
-		$purchaser_email = $order->purchaser['email'] ?? $attendees[0]['holder_email'] ?? '';
+		// The Main Guest receives every ticket in the order. The order purchaser is not a
+		// reliable stand-in: for a logged-in user it holds the WP account's address rather
+		// than the details typed into the RSVP form.
+		$main_guest_email = strtolower( trim( (string) ( $attendees[0]['holder_email'] ?? '' ) ) );
 
-		if ( is_string( $purchaser_email ) ) {
-			$purchaser_email = strtolower( trim( $purchaser_email ) );
+		if ( ! is_email( $main_guest_email ) ) {
+			$main_guest_email = strtolower( trim( (string) ( $order->purchaser['email'] ?? '' ) ) );
 		}
 
-		if ( '' !== $purchaser_email && is_email( $purchaser_email ) ) {
-			$unique[ $purchaser_email ] = $attendees;
-		}
-
-		// If no holder emails were valid but purchaser exists, fall back to single bundle send.
-		if ( empty( $unique ) && ! empty( $purchaser_email ) && is_email( $purchaser_email ) ) {
-			$this->send_rsvp_email( $attendees, (int) $event_id, $purchaser_email, $going );
-
-			return;
+		if ( is_email( $main_guest_email ) ) {
+			$unique[ $main_guest_email ] = $attendees;
 		}
 
 		foreach ( $unique as $recipient => $tickets ) {
