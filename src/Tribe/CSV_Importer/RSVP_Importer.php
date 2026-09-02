@@ -517,6 +517,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @return bool
 	 */
 	public function is_valid_record( array $record ) {
+		$this->row_message = false;
+		
 		$valid = parent::is_valid_record( $record );
 		if ( empty( $valid ) ) {
 			return false;
