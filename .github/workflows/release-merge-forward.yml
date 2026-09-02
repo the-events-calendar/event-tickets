@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       forward-branch:
-        description: 'Name of the branch to merge into (e.g. release/T25.adamwarlock, master)'
+        description: 'Name of the branch to merge into (e.g. release/T25.adamwarlock, main)'
         default: release/T25.name
         required: true
 
@@ -19,10 +19,11 @@ jobs:
           echo "- forward-branch: \`${{ github.event.inputs.forward-branch }}\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.forward-branch }}
           fetch-depth: 0
+          submodules: recursive
 
       - name: Set up Git configuration
         run: |
@@ -53,9 +54,10 @@ jobs:
     if: ${{ needs.create-branch.outputs.skip == '0' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: recursive
 
       - name: Set up Git configuration
         run: |
