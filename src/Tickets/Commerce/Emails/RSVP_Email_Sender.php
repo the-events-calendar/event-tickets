@@ -84,10 +84,13 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 			$unique[ $holder_email ][] = $attendee;
 		}
 
-		// The Main Guest receives every ticket in the order. The order purchaser is not a
-		// reliable stand-in: for a logged-in user it holds the WP account's address rather
-		// than the details typed into the RSVP form.
-		$main_guest_email = strtolower( trim( (string) ( $attendees[0]['holder_email'] ?? '' ) ) );
+              // The Main Guest receives every ticket in the order, but neither obvious source identifies
+              // them: the order purchaser holds the WP account address for a logged-in user, and attendee
+              // rows come back sorted by guest name rather than creation order. Attendee IDs do follow
+              // creation order, and the Main Guest is created first.
+              usort( $ordered, static fn( $a, $b ) => ( (int) ( $a['attendee_id'] ?? 0 ) ) <=> ( (int) (
+$b['attendee_id'] ?? 0 ) ) );
+              $main_guest_email = strtolower( trim( (string) ( $ordered[0]['holder_email'] ?? '' ) ) );
 
 		if ( ! is_email( $main_guest_email ) ) {
 			$main_guest_email = strtolower( trim( (string) ( $order->purchaser['email'] ?? '' ) ) );
