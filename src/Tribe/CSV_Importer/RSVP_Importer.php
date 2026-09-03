@@ -5,6 +5,10 @@
  * @since 4.7
  */
 
+use TEC\Tickets\Commerce\Module as Commerce_Module;
+use TEC\Tickets\RSVP\Controller as RSVP_Controller;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
 /**
@@ -15,7 +19,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * @var array
 	 */
-	protected $required_fields = [ 'event_name', 'ticket_name' ];
+	protected $required_fields = [ 'event_name' ];
 
 	/**
 	 * @var array
@@ -58,6 +62,44 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
+	 * Whether RSVP is disabled on this site, in which case neither V1 nor V2 ticket
+	 * should be imported.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	private function is_rsvp_disabled(): bool {
+		return ! tribe( RSVP_Controller::class )->is_rsvp_enabled();
+	}
+
+	/**
+	 * Whether the site is on RSVP V2 (Commerce) - i.e. the import should produce a TC-RSVP ticket.
+	 *
+	 * Version is hook-verifiable via `tec_tickets_rsvp_version`. Tests can control it
+	 * without touching the real option:
+	 * `add_filter( 'tec_tickets_rsvp_version', fn(): string => get_option( 'test_rsvp_version', RSVP_Controller::VERSION_1 ) );`
+	 * then `update_option( 'test_rsvp_version', RSVP_Controller::VERSION_2 )` to force V2.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	private function is_rsvp_v2(): bool {
+		if ( ! function_exists( 'tec_tickets_commerce_is_enabled' ) || ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
+		$default = RSVP_Controller::VERSION_1;
+		$version = tribe_get_option( RSVP_Controller::VERSION_OPTION_KEY, $default );
+
+		/** This filter is documented in src/Tickets/RSVP/Controller.php. */
+		$version = apply_filters( 'tec_tickets_rsvp_version', $version );
+
+		return RSVP_Controller::VERSION_2 === $version;
+	}
+
+	/**
 	 * Tribe__Tickets__CSV_Importer__RSVP_Importer constructor.
 	 *
 	 * @since 5.29.0 Made $featured_image_uploader and $rsvp_tickets explicitly nullable.
@@ -80,6 +122,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Matches an existing post based on the record.
 	 *
+	 * @since TBD
+	 *
 	 * @param array $record The record data.
 	 *
 	 * @return bool
@@ -91,11 +135,50 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			return false;
 		}
 
+		return $this->is_rsvp_v2()
+			? $this->match_existing_post_v2( $record, $event )
+			: $this->match_existing_post_v1( $record, $event );
+	}
+
+	/**
+	 * V2: one RSVP per event - match if any TC-RSVP ticket exists for the event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $record The record data.
+	 * @param WP_Post $event  The event post.
+	 *
+	 * @return bool
+	 */
+	private function match_existing_post_v2( array $record, WP_Post $event ): bool {
+		$cache_key = 'v2-' . $event->ID;
+		$cached    = $this->get_cached_match( $cache_key );
+		if ( null !== $cached ) {
+			return $cached;
+		}
+
+		$match = $this->has_rsvp_for_event_v2( $event );
+
+		return $this->cache_match( $cache_key, $match );
+	}
+
+	/**
+	 * V1: match by ticket_name + event (legacy).
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $record The record data.
+	 * @param WP_Post $event  The event post.
+	 *
+	 * @return bool
+	 */
+	private function match_existing_post_v1( array $record, WP_Post $event ): bool {
 		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
 		$cache_key   = $ticket_name . '-' . $event->ID;
 
-		if ( isset( self::$ticket_name_cache[ $cache_key ] ) ) {
-			return self::$ticket_name_cache[ $cache_key ];
+		$cached = $this->get_cached_match( $cache_key );
+		if ( null !== $cached ) {
+			return $cached;
 		}
 
 		$ticket_post = ( new WP_Query(
@@ -108,20 +191,56 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		) )->get_posts()[0] ?? false;
 
 		if ( empty( $ticket_post ) ) {
-			return false;
+			return $this->cache_match( $cache_key, false );
 		}
 
 		$ticket = $this->rsvp_tickets->get_ticket( $event->ID, $ticket_post->ID );
 
-		$match = false;
+		$match = $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->get_event() == $event;
 
-		if ( $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->get_event() == $event ) {
-			$match = true;
-		}
+		return $this->cache_match( $cache_key, $match );
+	}
 
-		self::$ticket_name_cache[ $cache_key ] = $match;
+	/**
+	 * Check if an event already has a V2 TC-RSVP ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $event The event post.
+	 *
+	 * @return bool
+	 */
+	private function has_rsvp_for_event_v2( WP_Post $event ): bool {
+		return (bool) tribe( 'tickets.ticket-repository.rsvp' )->by( 'event', $event->ID )->found();
+	}
 
-		return $match;
+	/**
+	 * Get a cached match result.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cache_key Cache key.
+	 *
+	 * @return bool|null Cached value or null if not cached.
+	 */
+	private function get_cached_match( string $cache_key ): ?bool {
+		return self::$ticket_name_cache[ $cache_key ] ?? null;
+	}
+
+	/**
+	 * Cache a match result and return it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cache_key Cache key.
+	 * @param bool   $is_match  Match result.
+	 *
+	 * @return bool The same match value (for chaining).
+	 */
+	private function cache_match( string $cache_key, bool $is_match ): bool {
+		self::$ticket_name_cache[ $cache_key ] = $is_match;
+
+		return $is_match;
 	}
 
 	/**
@@ -140,6 +259,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Creates a new RSVP ticket post.
 	 *
+	 * @since TBD Added V2 handling via `is_rsvp_v2()` dispatcher.
+	 *
 	 * @param array $record The record data.
 	 *
 	 * @return int|bool Either the new RSVP ticket post ID or `false` on failure.
@@ -155,19 +276,60 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		 *
 		 * @param array
 		 */
-		$data      = (array) apply_filters( 'tribe_tickets_import_rsvp_data', $data );
-		$ticket_id = $this->rsvp_tickets->ticket_add( $event->ID, $data );
+		$data = (array) apply_filters( 'tribe_tickets_import_rsvp_data', $data );
 
-		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
-		$cache_key   = $ticket_name . '-' . $event->ID;
-
-		self::$ticket_name_cache[ $cache_key ] = true;
+		$ticket_id = $this->is_rsvp_v2()
+			? $this->create_post_v2( $record, $event, $data )
+			: $this->create_post_v1( $record, $event, $data );
 
 		if ( $this->is_aggregator && ! empty( $this->aggregator_record ) ) {
 			$this->aggregator_record->meta['activity']->add( 'rsvp_tickets', 'created', $ticket_id );
 		}
 
 		return $ticket_id;
+	}
+
+	/**
+	 * Create via Commerce (V2).
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $record The record data.
+	 * @param WP_Post $event  The event.
+	 * @param array   $data   Ticket data.
+	 *
+	 * @return int
+	 */
+	private function create_post_v2( array $record, WP_Post $event, array $data ): int {
+		$ticket_id = Commerce_Module::get_instance()->ticket_add( $event->ID, $data );
+
+		if ( $ticket_id ) {
+			self::$ticket_name_cache[ 'v2-' . $event->ID ] = true;
+
+			$tickets_handler = tribe( 'tickets.handler' );
+			update_post_meta( $event->ID, $tickets_handler->key_provider_field, Commerce_Module::class );
+		}
+
+		return (int) $ticket_id;
+	}
+
+	/**
+	 * Create via legacy RSVP (V1).
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $record The record data.
+	 * @param WP_Post $event  The event.
+	 * @param array   $data   Ticket data.
+	 *
+	 * @return int
+	 */
+	private function create_post_v1( array $record, WP_Post $event, array $data ): int {
+		$ticket_id   = $this->rsvp_tickets->ticket_add( $event->ID, $data );
+		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
+		self::$ticket_name_cache[ $ticket_name . '-' . $event->ID ] = true;
+
+		return (int) $ticket_id;
 	}
 
 	/**
@@ -217,13 +379,94 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	}
 
 	/**
-	 * Gets the ticket data from the record.
+	 * Gets the ticket data from the record - dispatcher.
+	 *
+	 * @since TBD
 	 *
 	 * @param array $record The record data.
 	 *
 	 * @return array
 	 */
 	protected function get_ticket_data_from( array $record ) {
+		return $this->is_rsvp_v2()
+			? $this->get_ticket_data_from_v2( $record )
+			: $this->get_ticket_data_from_v1( $record );
+	}
+
+	/**
+	 * V2 data shape - Commerce TC-RSVP.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $record The record data.
+	 *
+	 * @return array
+	 */
+	private function get_ticket_data_from_v2( array $record ): array {
+		$data = [
+			'ticket_name'        => 'RSVP',
+			'ticket_description' => '',
+			'ticket_price'       => 0,
+			'ticket_type'        => RSVP_V2_Constants::TC_RSVP_TYPE,
+			'ticket_provider'    => Commerce_Module::class,
+			'show_not_going'     => false,
+		];
+
+		$start_date = $this->get_value_by_key( $record, 'ticket_start_sale_date' );
+		$end_date   = $this->get_value_by_key( $record, 'ticket_end_sale_date' );
+
+		if ( ! empty( $start_date ) ) {
+			$data['ticket_start_date'] = $start_date;
+		}
+		if ( ! empty( $end_date ) ) {
+			$data['ticket_end_date'] = $end_date;
+		}
+
+		$ticket_start_sale_time = $this->get_value_by_key( $record, 'ticket_start_sale_time' );
+		if ( ! empty( $start_date ) && ! empty( $ticket_start_sale_time ) ) {
+			$start                         = new DateTime( $start_date . ' ' . $ticket_start_sale_time );
+			$data['ticket_start_meridian'] = $start->format( 'A' );
+			$data['ticket_start_time']     = $start->format( 'H:i:00' );
+		}
+
+		$ticket_end_sale_time = $this->get_value_by_key( $record, 'ticket_end_sale_time' );
+		if ( ! empty( $end_date ) && ! empty( $ticket_end_sale_time ) ) {
+			$end                         = new DateTime( $end_date . ' ' . $ticket_end_sale_time );
+			$data['ticket_end_meridian'] = $end->format( 'A' );
+			$data['ticket_end_time']     = $end->format( 'H:i:00' );
+		}
+
+		$stock    = trim( (string) $this->get_value_by_key( $record, 'ticket_stock' ) );
+		$capacity = trim( (string) $this->get_value_by_key( $record, 'ticket_capacity' ) );
+
+		if ( '' === $capacity ) {
+			$capacity = $stock;
+		}
+
+		// Unlimited when blank or non-positive - mirrors Classic_Editor_Post_Data::from_post_data().
+		$capacity_int = (int) $capacity;
+		if ( '' === $capacity || $capacity_int <= 0 ) {
+			$data['tribe-ticket'] = [ 'mode' => '' ];
+		} else {
+			$data['tribe-ticket'] = [
+				'mode'     => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
+				'capacity' => $capacity_int,
+			];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * V1 data shape - legacy tribe_rsvp_tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $record The record data.
+	 *
+	 * @return array
+	 */
+	private function get_ticket_data_from_v1( array $record ): array {
 		$data                       = [];
 		$data['ticket_name']        = $this->get_value_by_key( $record, 'ticket_name' );
 		$data['ticket_description'] = $this->get_value_by_key( $record, 'ticket_description' );
@@ -274,14 +517,29 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @return bool
 	 */
 	public function is_valid_record( array $record ) {
+		$this->row_message = false;
+		
 		$valid = parent::is_valid_record( $record );
 		if ( empty( $valid ) ) {
+			return false;
+		}
+
+		if ( $this->is_rsvp_disabled() ) {
+			$this->row_message = esc_html__( 'RSVP is temporarily disabled while migrating to Tickets Commerce.', 'event-tickets' );
+
 			return false;
 		}
 
 		$event = $this->get_event_from( $record );
 
 		if ( empty( $event ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_rsvp_v2() && empty( $this->get_value_by_key( $record, 'ticket_name' ) ) ) {
+			// Translators: %s is the event title.
+			$this->row_message = sprintf( esc_html__( 'ticket_name is required, event %s.', 'event-tickets' ), $event->post_title );
+
 			return false;
 		}
 
@@ -306,15 +564,23 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @return string
 	 */
 	protected function get_skipped_row_message( $row ) {
-		return $this->row_message === false ? parent::get_skipped_row_message( $row ) : $this->row_message;
+		return false === $this->row_message ? parent::get_skipped_row_message( $row ) : $this->row_message;
 	}
 
 	/**
-	 * Registers the RSVP post type as a trackable activity.
+	 * Registers the legacy `tribe_rsvp_tickets` post type as a trackable Event Aggregator
+	 * activity, so imported/updated RSVP tickets are counted and reported in the import summary.
+	 *
+	 * Hooked to `tribe_aggregator_record_activity_wakeup` by both the V1 and V2 RSVP controllers
+	 * via `RSVP_Controller_Methods::register_csv_importer_hooks()`.
+	 *
+	 * @since TBD
 	 *
 	 * @param Tribe__Events__Aggregator__Record__Activity $activity The activity instance.
+	 *
+	 * @return void
 	 */
-	public function register_rsvp_activity( $activity ) {
+	public static function register_rsvp_activity( $activity ) {
 		$activity->register( 'tribe_rsvp_tickets', [ 'rsvp', 'rsvp_tickets' ] );
 	}
 }

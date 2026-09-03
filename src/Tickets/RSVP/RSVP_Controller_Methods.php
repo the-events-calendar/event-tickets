@@ -71,10 +71,7 @@ trait RSVP_Controller_Methods {
 			return;
 		}
 
-		$this->callbacks['csv_importer_activity'] = $this->container->callback(
-			RSVP_Importer::class,
-			'register_rsvp_activity' 
-		);
+		$this->callbacks['csv_importer_activity'] = [ RSVP_Importer::class, 'register_rsvp_activity' ];
 		add_action( 'tribe_aggregator_record_activity_wakeup', $this->callbacks['csv_importer_activity'] );
 	}
 
