@@ -56,14 +56,30 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 		$order_status = $order->items[0]['extra']['order_status'] ?? 'yes';
 		$going        = tribe_is_truthy( $order_status );
 
+		// Attendee rows come back sorted by guest name rather than creation
+		// order. Attendee IDs do follow creation order, and the Main Guest is
+		// created first, so sort here and the first group is the Main Guest.
+		$attendees = array_values( array_filter( $attendees, 'is_array' ) );
+
+		if ( empty( $attendees ) ) {
+			 return;
+		}
+
+		usort(
+			$attendees,
+			static function ( $a, $b ) {
+				$a_id = (int) ( $a['attendee_id'] ?? 0 );
+				$b_id = (int) ( $b['attendee_id'] ?? 0 );
+
+				return $a_id <=> $b_id;
+			}
+		);
+
 		// Group tickets by holder email for per-attendee fan-out — mirrors
 		// Tribe__Tickets__Tickets::send_tickets_email_for_attendees().
 		$unique = [];
 
 		foreach ( $attendees as $attendee ) {
-			if ( ! is_array( $attendee ) ) {
-				continue;
-			}
 
 			$holder_email = $attendee['holder_email'] ?? '';
 
