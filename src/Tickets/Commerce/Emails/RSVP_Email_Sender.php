@@ -62,7 +62,7 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 		$attendees = array_values( array_filter( $attendees, 'is_array' ) );
 
 		if ( empty( $attendees ) ) {
-			 return;
+			return;
 		}
 
 		usort(
