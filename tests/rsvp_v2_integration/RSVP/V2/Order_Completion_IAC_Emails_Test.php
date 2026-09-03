@@ -159,7 +159,7 @@ class Order_Completion_IAC_Emails_Test extends WPTestCase {
 		wp_cache_flush();
 
 		$mail->emails = [];
-		tribe( \TEC\Tickets\Commerce\Emails\RSVP_Email_Sender::class )->send( tec_tc_get_order( $order->ID ) );
+		tribe( RSVP_Email_Sender::class )->send( tec_tc_get_order( $order->ID ) );
 
 		$this->assertCount( 1, $mail->emails, 'Invalid second email should not create extra mail; only purchaser bundle.' );
 		$this->assertEquals( 'alice@example.test', $mail->emails[0]['to'] );
