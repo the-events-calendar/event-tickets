@@ -56,12 +56,72 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 		$order_status = $order->items[0]['extra']['order_status'] ?? 'yes';
 		$going        = tribe_is_truthy( $order_status );
 
-		$this->send_rsvp_email(
+		// Attendee rows come back sorted by guest name rather than creation
+		// order. Attendee IDs do follow creation order, and the Main Guest is
+		// created first, so sort here and the first group is the Main Guest.
+		$attendees = array_values( array_filter( $attendees, 'is_array' ) );
+
+		if ( empty( $attendees ) ) {
+			return;
+		}
+
+		usort(
 			$attendees,
-			(int) $event_id,
-			$order->purchaser['email'] ?? $attendees[0]['holder_email'],
-			$going
+			static function ( $a, $b ) {
+				$a_id = (int) ( $a['attendee_id'] ?? 0 );
+				$b_id = (int) ( $b['attendee_id'] ?? 0 );
+
+				return $a_id <=> $b_id;
+			}
 		);
+
+		// Group tickets by holder email for per-attendee fan-out — mirrors
+		// Tribe__Tickets__Tickets::send_tickets_email_for_attendees().
+		$unique = [];
+
+		foreach ( $attendees as $attendee ) {
+
+			$holder_email = $attendee['holder_email'] ?? '';
+
+			if ( ! is_string( $holder_email ) ) {
+				continue;
+			}
+
+			$holder_email = strtolower( trim( $holder_email ) );
+
+			if ( '' === $holder_email || ! is_email( $holder_email ) ) {
+				continue;
+			}
+
+			if ( ! isset( $unique[ $holder_email ] ) ) {
+				$unique[ $holder_email ] = [];
+			}
+
+			$unique[ $holder_email ][] = $attendee;
+		}
+
+				// The Main Guest receives every ticket in the order, but neither obvious source identifies
+				// them: the order purchaser holds the WP account address for a logged-in user, and attendee
+				// rows come back sorted by guest name rather than creation order. Attendee IDs do follow
+				// creation order, and the Main Guest is created first.
+				usort(
+					$attendees,
+					static fn( $a, $b ) => ( (int) ( $a['attendee_id'] ?? 0 ) ) <=> ( (int) (
+					$b['attendee_id'] ?? 0 ) )
+				);
+				$main_guest_email = strtolower( trim( (string) ( $attendees[0]['holder_email'] ?? '' ) ) );
+
+		if ( ! is_email( $main_guest_email ) ) {
+			$main_guest_email = strtolower( trim( (string) ( $order->purchaser['email'] ?? '' ) ) );
+		}
+
+		if ( is_email( $main_guest_email ) ) {
+			$unique[ $main_guest_email ] = $attendees;
+		}
+
+		foreach ( $unique as $recipient => $tickets ) {
+			$this->send_rsvp_email( $tickets, (int) $event_id, $recipient, $going );
+		}
 	}
 
 	/**

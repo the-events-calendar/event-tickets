@@ -268,10 +268,21 @@ class Frontend {
 
 		$event_id = (int) ( $order->events_in_order[0] ?? $attendees[0]['event_id'] ?? 0 );
 
+		$holder_email = $attendees[0]['holder_email'] ?? '';
+		$holder_email = is_string( $holder_email ) ? strtolower( trim( $holder_email ) ) : '';
+
+		if ( '' !== $holder_email && is_email( $holder_email ) ) {
+			$recipient = $holder_email;
+		} else {
+			$purchaser_email = $order->purchaser['email'] ?? '';
+			$purchaser_email = is_string( $purchaser_email ) ? strtolower( trim( $purchaser_email ) ) : '';
+			$recipient       = ( '' !== $purchaser_email && is_email( $purchaser_email ) ) ? $purchaser_email : '';
+		}
+
 		tribe( RSVP_Email_Sender::class )->send_rsvp_email(
 			$attendees,
 			$event_id,
-			$order->purchaser['email'] ?? $attendees[0]['holder_email'],
+			$recipient,
 			$going
 		);
 	}
