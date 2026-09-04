@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Resolved a fatal error that could occur while rendering the Move
+  Attendees dialog when another plugin listened on the admin_enqueue_scripts
+  action.
+timestamp: 2026-08-30T00:41:28.974Z

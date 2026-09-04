@@ -26,10 +26,15 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 */
 	protected $attendees = [];
 
+	/**
+	 * Registers the move attendees hooks.
+	 *
+	 * @since TBD Moved the dialog off `admin_init`, which fires before WordPress resolves the admin screen.
+	 */
 	public function setup() {
 		$this->ticket_history();
 
-		add_action( 'admin_init', [ $this, 'dialog' ] );
+		add_action( 'current_screen', [ $this, 'dialog' ] );
 		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'bulk_actions' ] );
 		add_action( 'wp_ajax_move_tickets', [ $this, 'move_tickets_request' ] );
 		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'move_all_tickets_for_type' ], 10, 4 );
@@ -52,6 +57,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 	/**
 	 * Sets up the move tickets dialog.
+	 *
+	 * Hooked to `current_screen` rather than `admin_init`: `iframe_header()` hands the `$hook_suffix`
+	 * global to `admin_enqueue_scripts`, and wp-admin/admin.php only assigns it once `admin_init` has
+	 * finished. WordPress has resolved the screen by then, so calling `set_current_screen()` here
+	 * would re-enter this method until the request times out.
+	 *
+	 * @since TBD Moved off `admin_init` so the admin screen is resolved before the iframe renders.
 	 */
 	public function dialog() {
 		if ( ! $this->is_move_tickets_dialog() ) {
@@ -90,7 +102,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'multiple_providers' => $this->has_multiple_providers,
 		) );
 
-		set_current_screen();
 		define( 'IFRAME_REQUEST', true );
 		$this->dialog_assets();
 		iframe_header( $template_vars['title'] );
