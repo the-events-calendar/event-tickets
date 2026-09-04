@@ -52,15 +52,17 @@ interface WhoDat_Interface {
 	/**
 	 * Send a GET request to WhoDat.
 	 *
+	 * @since TBD Added the $request_arguments parameter.
 	 * @since 5.3.0 moved to Abstract_WhoDat.
 	 * @since 5.1.9
 	 *
-	 * @param string $endpoint   The endpoint path.
-	 * @param array  $query_args Query args appended to the URL.
+	 * @param string $endpoint          The endpoint path.
+	 * @param array  $query_args        Query args appended to the URL.
+	 * @param array  $request_arguments Arguments passed on to wp_remote_get().
 	 *
 	 * @return mixed|null
 	 */
-	public function get( $endpoint, array $query_args );
+	public function get( $endpoint, array $query_args, array $request_arguments = [] );
 
 	/**
 	 * Log WhoDat errors.

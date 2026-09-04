@@ -33,6 +33,66 @@ class Hooks_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The Square request path cannot be the only trigger: a site that takes no Square traffic would
+	 * never notice its token expiring, and one already marked unavailable stops making Square calls
+	 * altogether, which would leave a mistaken verdict with no way back.
+	 *
+	 * @test
+	 */
+	public function it_should_renew_the_access_token_from_the_admin(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertNotFalse( has_action( 'admin_init', [ $controller, 'maybe_refresh_access_token' ] ) );
+
+		$merchant = tribe( Merchant::class );
+		$merchant->delete_refresh_status();
+		$merchant->save_signup_data(
+			array_merge(
+				tec_tickets_tests_get_fake_merchant_data(),
+				[ 'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() + HOUR_IN_SECONDS ) ]
+			)
+		);
+
+		$refreshed = false;
+
+		add_filter(
+			'pre_http_request',
+			static function ( $pre, $args, $url ) use ( &$refreshed ) {
+				if ( false === strpos( $url, 'oauth/token/refresh' ) ) {
+					return $pre;
+				}
+
+				$refreshed = true;
+
+				return [
+					'headers'  => [],
+					'body'     => wp_json_encode(
+						[
+							'access_token'  => 'renewed-from-the-admin',
+							'refresh_token' => 'rt-8PoFNX4o9XOz9vMYOrZ6vA',
+							'expires_at'    => gmdate( 'Y-m-d\TH:i:s\Z', time() + 30 * DAY_IN_SECONDS ),
+						]
+					),
+					'response' => [ 'code' => 200, 'message' => 'OK' ],
+					'cookies'  => [],
+					'filename' => null,
+				];
+			},
+			10,
+			3
+		);
+
+		$controller->maybe_refresh_access_token();
+
+		$this->assertTrue( $refreshed );
+		$this->assertSame( 'renewed-from-the-admin', $merchant->get_access_token() );
+
+		$merchant->delete_refresh_status();
+		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_filter_the_orders_repository_schema(): void {

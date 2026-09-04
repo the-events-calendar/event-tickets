@@ -74,8 +74,12 @@ class Requests extends Abstract_Requests {
 	 * @return array|null
 	 */
 	public static function get_with_cache( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ): ?array {
+		// Before the key is built, or a refresh mid-request would file the response under the old token.
+		tribe( Token_Refresher::class )->refresh_if_needed();
+
 		$merchant_id = self::get_merchant_id();
-		$cache_key   = md5( wp_json_encode( [ $merchant_id, $endpoint, $query_args, $request_arguments, $raw ] ) );
+		$token_hash  = substr( md5( tribe( static::$merchant )->get_access_token() ), 0, 8 );
+		$cache_key   = md5( wp_json_encode( [ $merchant_id, $token_hash, $endpoint, $query_args, $request_arguments, $raw ] ) );
 		$cache       = tribe_cache();
 
 		$cached_response = $cache[ $cache_key ] ?? $cache->get_transient( $cache_key );
@@ -89,6 +93,43 @@ class Requests extends Abstract_Requests {
 		$cache->set_transient( $cache_key, $response, MINUTE_IN_SECONDS * 10 );
 
 		return $response;
+	}
+
+	/**
+	 * Sends a request to Square, keeping the access token current.
+	 *
+	 * Square access tokens expire, and nothing else in the plugin renews them, so the renewal happens
+	 * here: this is the one place every Square API call passes through, and it is reached even on sites
+	 * where the cron queue is not running.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $method            The request method.
+	 * @param string $url               The endpoint path or full URL.
+	 * @param array  $query_args        Query args appended to the URL.
+	 * @param array  $request_arguments Request arguments.
+	 * @param bool   $raw               Whether to return the raw response.
+	 * @param int    $retries           How many times this request has already been re-sent.
+	 *
+	 * @return array|\WP_Error
+	 */
+	public static function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false, $retries = 0 ) {
+		if ( 0 === $retries ) {
+			tribe( Token_Refresher::class )->refresh_if_needed();
+		}
+
+		$response = parent::request( $method, $url, $query_args, $request_arguments, $raw, $retries );
+
+		// Square can reject a token before its recorded expiration, for instance after a password reset.
+		if ( 0 !== $retries || ! static::is_unauthorized_response( $response, (bool) $raw ) ) {
+			return $response;
+		}
+
+		if ( ! tribe( Token_Refresher::class )->refresh_now( 'square_unauthorized' ) ) {
+			return $response;
+		}
+
+		return static::request( $method, $url, $query_args, $request_arguments, $raw, $retries + 1 );
 	}
 
 	/**
@@ -167,5 +208,44 @@ class Requests extends Abstract_Requests {
 			'Content-Type'   => 'application/json',
 			'Accept'         => 'application/json',
 		];
+	}
+
+	/**
+	 * Whether Square turned the request down because of the access token.
+	 *
+	 * Square reports these under a plural `errors` key, which Abstract_Requests::process_response() leaves
+	 * alone because it looks for the singular `error` shape, so the decoded body arrives here as-is.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $response The response returned by the request.
+	 * @param bool  $raw      Whether the response is an unprocessed HTTP response.
+	 *
+	 * @return bool
+	 */
+	protected static function is_unauthorized_response( $response, bool $raw = false ): bool {
+		if ( $raw ) {
+			return 401 === (int) wp_remote_retrieve_response_code( $response );
+		}
+
+		if ( ! is_array( $response ) || empty( $response['errors'] ) || ! is_array( $response['errors'] ) ) {
+			return false;
+		}
+
+		foreach ( $response['errors'] as $error ) {
+			if ( ! is_array( $error ) ) {
+				continue;
+			}
+
+			if ( 'AUTHENTICATION_ERROR' === ( $error['category'] ?? '' ) ) {
+				return true;
+			}
+
+			if ( in_array( $error['code'] ?? '', [ 'UNAUTHORIZED', 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_REVOKED' ], true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
