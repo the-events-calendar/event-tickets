@@ -26,6 +26,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 */
 	protected $attendees = [];
 
+	/**
+	 * Registers the move attendees hooks.
+	 *
+	 * @since TBD Moved the dialog off `admin_init`, which fires before WordPress resolves the admin screen.
+	 */
 	public function setup() {
 		$this->ticket_history();
 
