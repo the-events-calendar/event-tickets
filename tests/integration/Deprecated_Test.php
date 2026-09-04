@@ -88,4 +88,43 @@ class Tribe_Deprecated_Test extends WPTestCase {
 		$this->setExpectedDeprecated( $file_path );
 		$this->assertTrue( class_exists( $class ) || interface_exists( $class ), 'Class "' . $class . '" does not exist.' );
 	}
+
+	public function deprecated_classes_nidoking() {
+		return [
+			[ 'Tribe__Tickets__Admin__Display_Settings' ],
+		];
+	}
+
+	/**
+	 * @dataProvider deprecated_classes_nidoking
+	 */
+	public function test_deprecated_classes_nidoking( string $class ): void {
+		if ( class_exists( $class, false ) ) {
+			$this->markTestSkipped( $class . ' was already loaded' );
+		}
+
+		$file_path = codecept_root_dir( "src/deprecated/{$class}.php" );
+		$this->setExpectedDeprecated( $file_path );
+		$this->assertTrue( class_exists( $class ), 'Class "' . $class . '" does not exist.' );
+	}
+
+	/**
+	 * The shim has to leave the settings it used to add alone.
+	 */
+	public function test_deprecated_display_settings_adds_nothing(): void {
+		$file_path = codecept_root_dir( 'src/deprecated/Tribe__Tickets__Admin__Display_Settings.php' );
+
+		if ( ! class_exists( 'Tribe__Tickets__Admin__Display_Settings', false ) ) {
+			$this->setExpectedDeprecated( $file_path );
+		}
+
+		$this->setExpectedDeprecated( 'Tribe__Tickets__Admin__Display_Settings::hook' );
+		$this->setExpectedDeprecated( 'Tribe__Tickets__Admin__Display_Settings::add_display_settings' );
+
+		$settings = [ 'tribe-form-content-end' => [] ];
+		$instance = new Tribe__Tickets__Admin__Display_Settings();
+		$instance->hook();
+
+		$this->assertSame( $settings, $instance->add_display_settings( $settings ) );
+	}
 }
