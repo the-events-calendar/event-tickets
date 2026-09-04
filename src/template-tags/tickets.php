@@ -1663,10 +1663,13 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 /**
  * Determine whether new RSVP views are enabled.
  *
- * In order the function will check the `TRIBE_TICKETS_RSVP_NEW_VIEWS` constant,
- * the `TRIBE_TICKETS_RSVP_NEW_VIEWS` environment variable and, finally, the `tickets_rsvp_use_new_views` option.
+ * The new views are on for every site. The function will still check the `TRIBE_TICKETS_RSVP_NEW_VIEWS`
+ * constant and the environment variable of the same name, which need file access to set, and the result
+ * remains filterable. Assets are registered on `init` at priority 10 and read this, so a filter added
+ * after that point renders the old markup against the new assets.
  *
  * @since 4.12.3
+ * @since 5.29.4 Stopped reading the `tickets_rsvp_use_new_views` option and the install date.
  *
  * @return bool Whether new RSVP views are enabled.
  */
@@ -1683,11 +1686,6 @@ function tribe_tickets_rsvp_new_views_is_enabled() {
 		return (bool) $env_var;
 	}
 
-	// Determine if ET was installed at version 5.0+.
-	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' );
-
-	$enabled = (bool) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on );
-
 	/**
 	 * Allows filtering whether new RSVP views are enabled.
 	 *
@@ -1695,7 +1693,7 @@ function tribe_tickets_rsvp_new_views_is_enabled() {
 	 *
 	 * @param bool $enabled Whether new RSVP views are enabled.
 	 */
-	return apply_filters( 'tribe_tickets_rsvp_new_views_is_enabled', $enabled );
+	return (bool) apply_filters( 'tribe_tickets_rsvp_new_views_is_enabled', true );
 }
 
 if ( ! function_exists( 'tribe_get_guest_label_singular' ) ) {
@@ -1833,10 +1831,13 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	/**
 	 * Determine whether the new Tickets views are enabled.
 	 *
-	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
-	 * allow filtering.
+	 * The new views are on for every site. The function will still check the `TRIBE_TICKETS_NEW_VIEWS`
+	 * constant and the environment variable of the same name, which need file access to set, and the
+	 * result remains filterable. Assets are registered on `init` at priority 10 and read this, so a
+	 * filter added after that point renders the old markup against the new assets.
 	 *
 	 * @since 5.0.3
+	 * @since 5.29.4 Stopped reading the `tickets_use_new_views` option and the install date.
 	 *
 	 * @return bool Whether the tickets block views is enabled.
 	 */
@@ -1853,27 +1854,14 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 			return (bool) $env_var;
 		}
 
-		// If ET was installed on or after version 5.0.3, default to enabled.
-		$should_default_to_on_et = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0.3' );
-
-		// If ETP was installed on or after version 5.1, default to enabled.
-		$should_default_to_on_etp = class_exists( 'Tribe__Tickets_Plus__Main' ) && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
-
-		$should_default_to_on = $should_default_to_on_etp || $should_default_to_on_et;
-
-		// Check for settings UI option.
-		$enabled = (bool) tribe_get_option( 'tickets_use_new_views', $should_default_to_on );
-
 		/**
 		 * Allows filtering whether the tickets block views is enabled.
 		 *
 		 * @since 5.0.3
 		 *
 		 * @param bool $enabled Whether the tickets block views are enabled.
-		 *
-		 * @var bool   $enabled Whether the tickets block views are enabled.
 		 */
-		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
+		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', true );
 	}
 }
 /**

@@ -35,9 +35,10 @@ class Form extends WPTestCase {
 		$ticket = $rsvp_instance->get_ticket( $event->ID, $ticket_id );
 
 		$args = [
-			'ticket'  => $ticket,
-			'post_id' => $event->ID,
-			'going'   => true,
+			'ticket'     => $ticket,
+			'post_id'    => $event->ID,
+			'must_login' => false,
+			'going'      => true,
 		];
 
 		$html = $template->template( $this->partial_path, $args, false );
@@ -50,6 +51,7 @@ class Form extends WPTestCase {
 				'quantity_',
 			]
 		);
+		$driver->setTimeDependentKeys( [ '_wpnonce', 'nonce' ] );
 
 		$driver->setTimeDependentAttributes(
 			[

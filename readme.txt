@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.30.0
 Requires at least: 6.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,29 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.29.4] 2026-09-03 =
+
+* Fix - Resolved a fatal error that could be triggered in the Tickets Commerce cart when the decoded ticket data was null.
+* Fix - Prevented the cart-to-checkout redirect and the checkout page from being stored by full-page and edge caches, resolving an issue where the Tickets Commerce checkout could show 'Oops, no tickets!' after selecting tickets.
+* Language - 5 new strings added, 75 updated, 0 fuzzied, and 9 obsoleted.
+
+= [5.29.3.1] 2026-08-26 =
+
+* Security - Enforced ticket sale start and end dates server-side, and capped RSVP quantities to the maximum allowed per purchase.
+
+= [5.29.3] 2026-08-20 =
+
+* Security - Hardened attendee details rendering.
+* Security - Hardened validation of the ticket parameters.
+* Fix - Resolved an issue where a Stripe checkout could leave the buyer on an endless spinner with their payment taken but no order completed.
+* Performance - Stopped resolving the current user during bootstrap on front-end requests to decide whether the admin Attendees screens should be registered.
+* Language - 1 new strings added, 16 updated, 0 fuzzied, and 0 obsoleted.
+
+= [5.29.2.1] 2026-08-07 =
+
+* Fix - Prevented a fatal error on the WooCommerce order edit screen when attendee data was read from a generator, so orders containing tickets open normally again.
+* Language - 0 new strings added, 15 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.29.2] 2026-08-05 =
 
