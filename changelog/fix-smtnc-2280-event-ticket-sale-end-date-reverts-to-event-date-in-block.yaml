@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Fixed an issue where a custom ticket sale end date set during ticket
+  creation in the block editor reverted to the event start date after saving the
+  event.
+timestamp: 2026-08-28T03:41:09.843Z
