@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Resolved an issue where clicking Go or Not Going on an RSVP created a new
+  attendee record instead of updating the same user's existing attendee.
+timestamp: 2026-08-11T22:23:40.743Z

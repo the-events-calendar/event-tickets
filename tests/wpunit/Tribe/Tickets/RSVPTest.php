@@ -202,6 +202,121 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should update the existing attendee instead of creating a duplicate when the same user resubmits the RSVP
+	 *
+	 * @since TBD
+	 */
+	public function it_should_update_existing_attendee_when_same_user_resubmits_rsvp() {
+		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
+		$user_id   = $this->factory()->user->create();
+
+		wp_set_current_user( $user_id );
+
+		$sut = $this->make_instance();
+
+		$first_attendee_ids  = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
+		$second_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertCount( 1, $first_attendee_ids );
+		$this->assertCount( 1, $second_attendee_ids );
+		$this->assertEquals(
+			$first_attendee_ids,
+			$second_attendee_ids,
+			'Resubmitting the RSVP as the same user should update the existing attendee, not create a new one.'
+		);
+
+		$attendees = $sut->get_attendees_by_user_id( $user_id, $this->event_id );
+		$this->assertCount( 1, $attendees, 'Only one attendee record should exist for this user after resubmitting the RSVP.' );
+
+		$this->assertEquals( 'yes', get_post_meta( $first_attendee_ids[0], RSVP::ATTENDEE_RSVP_KEY, true ) );
+	}
+
+	/**
+	 * @test
+	 * it should allow updating an existing attendee to not going when stock is zero, as that releases the held seat
+	 *
+	 * @since TBD
+	 */
+	public function it_should_update_existing_attendee_to_not_going_when_stock_is_zero() {
+		$ticket_id = $this->make_stock_ticket( 1, $this->event_id );
+		$user_id   = $this->factory()->user->create();
+
+		wp_set_current_user( $user_id );
+
+		$sut = $this->make_instance();
+
+		$going_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertCount( 1, $going_attendee_ids );
+		$this->assertEquals( 0, get_post_meta( $ticket_id, '_stock', true ) );
+
+		$not_going_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
+
+		$this->assertNotWPError( $not_going_attendee_ids, 'Switching to Not Going should be allowed even when stock is zero, as it releases a held seat.' );
+		$this->assertCount( 1, $not_going_attendee_ids );
+		$this->assertEquals( $going_attendee_ids, $not_going_attendee_ids );
+		$this->assertEquals( 'no', get_post_meta( $going_attendee_ids[0], RSVP::ATTENDEE_RSVP_KEY, true ) );
+		$this->assertEquals( 1, get_post_meta( $ticket_id, '_stock', true ) );
+	}
+
+	/**
+	 * @test
+	 * it should allow resubmitting the same RSVP status when stock is zero, as no additional seat is needed
+	 *
+	 * @since TBD
+	 */
+	public function it_should_allow_resubmitting_same_rsvp_status_when_stock_is_zero() {
+		$ticket_id = $this->make_stock_ticket( 1, $this->event_id );
+		$user_id   = $this->factory()->user->create();
+
+		wp_set_current_user( $user_id );
+
+		$sut = $this->make_instance();
+
+		$first_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertCount( 1, $first_attendee_ids );
+		$this->assertEquals( 0, get_post_meta( $ticket_id, '_stock', true ) );
+
+		$second_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertNotWPError( $second_attendee_ids, 'Resubmitting the same RSVP status should be allowed when stock is zero, as no additional seat is needed.' );
+		$this->assertCount( 1, $second_attendee_ids );
+		$this->assertEquals( $first_attendee_ids, $second_attendee_ids );
+		$this->assertEquals( 'yes', get_post_meta( $first_attendee_ids[0], RSVP::ATTENDEE_RSVP_KEY, true ) );
+	}
+
+	/**
+	 * @test
+	 * it should reject increasing attendance when stock is zero, even when reusing an existing attendee
+	 *
+	 * @since TBD
+	 */
+	public function it_should_reject_increasing_attendance_when_stock_is_zero() {
+		$ticket_id = $this->make_stock_ticket( 1, $this->event_id );
+		$user_id   = $this->factory()->user->create();
+
+		$sut = $this->make_instance();
+
+		// An anonymous attendee consumes the only available seat.
+		wp_set_current_user( 0 );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes', 'email' => 'other@doe.com' ] ), false );
+		$this->assertEquals( 0, get_post_meta( $ticket_id, '_stock', true ) );
+
+		// This user can RSVP "not going" without needing a seat...
+		wp_set_current_user( $user_id );
+		$not_going_attendee_ids = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
+		$this->assertNotWPError( $not_going_attendee_ids );
+
+		// ...but switching to "going" still requires an available seat.
+		$result = $sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+
+		$this->assertWPError( $result, 'Switching from Not Going to Going should still require available stock.' );
+		$this->assertEquals( 'rsvp-invalid-stock-request', $result->get_error_code() );
+	}
+
+	/**
+	 * @test
 	 * it should reject a ticket generated directly for a private event's ticket, even when
 	 * the caller never checked the event's accessibility (e.g. a smuggled `product_id`).
 	 *
