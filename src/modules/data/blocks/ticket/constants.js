@@ -2,6 +2,7 @@ export const TC = 'tribe-commerce';
 export const EDD = 'edd';
 export const WOO = 'woo';
 export const RSVP = 'rsvp';
+export const TC_RSVP_TYPE = 'tc-rsvp';
 
 export const RSVP_CLASS = 'Tribe__Tickets__RSVP';
 export const TICKETS_COMMERCE_MODULE_CLASS = 'TEC\\Tickets\\Commerce\\Module';

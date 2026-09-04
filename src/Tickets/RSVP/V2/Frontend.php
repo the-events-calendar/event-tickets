@@ -1,0 +1,379 @@
+<?php
+/**
+ * Frontend delegate for RSVP V2.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\V2
+ */
+
+namespace TEC\Tickets\RSVP\V2;
+
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Emails\RSVP_Email_Sender;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\RSVP\V2\Ticket as RSVP_V2_Ticket;
+use Tribe\Tickets\Events\Attendees_List;
+use Tribe__Tickets__Editor__Template as Tickets_Editor_Template;
+use Tribe__Tickets__RSVP as RSVP_V1_Tickets_Handler;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets_Handler;
+use WP_Post;
+
+/**
+ * Class Frontend
+ *
+ * Handles frontend rendering and assets for RSVP V2.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\RSVP\V2
+ */
+class Frontend {
+	/**
+	 * A reference to the Tickets Commerce module instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Module
+	 */
+	private Module $module;
+
+	/**
+	 * Frontend constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Module $module A reference to the Tickets Commerce module instance.
+	 */
+	public function __construct( Module $module ) {
+		$this->module = $module;
+	}
+
+	/**
+	 * Render V2 RSVP template for TC-RSVP tickets on the frontend.
+	 *
+	 * Hooks into `tec_tickets_front_end_rsvp_form_template_content` to render
+	 * the V2 commerce RSVP template instead of the generic RSVP block template.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                  $content  The template content to be rendered.
+	 * @param array<string,mixed>     $args     The RSVP block arguments.
+	 * @param Tickets_Editor_Template $template The template object.
+	 * @param WP_Post                 $post     The post object.
+	 * @param bool                    $should_echo Whether to echo the output.
+	 *
+	 * @return string The modified HTML or original if not TC-RSVP.
+	 */
+	public function render_rsvp_template(
+		string $content,
+		array $args,
+		Tickets_Editor_Template $template,
+		WP_Post $post,
+		bool $should_echo
+	): string {
+		// Check $args['active_rsvps'] first (may be populated by third-party extensions).
+		$rsvp = null;
+		foreach ( $args['active_rsvps'] ?? [] as $ticket ) {
+			if ( $ticket->type() === Constants::TC_RSVP_TYPE ) {
+				if ( $rsvp === null || $ticket->ID > $rsvp->ID ) {
+					$rsvp = $ticket;
+				}
+			}
+		}
+
+		// $args['active_rsvps'] is built from V1 RSVP tickets only; query TC-RSVP tickets directly.
+		if ( $rsvp === null ) {
+			$rsvp = tribe( RSVP_V2_Ticket::class )->get_for_event( $post->ID );
+		}
+
+		if ( $rsvp === null ) {
+			return $content;
+		}
+
+		/**
+		 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+		 * @param int                           $event_id  The event post ID.
+		 * @param int                           $ticket_id The ticket post ID.
+		 */
+		$rsvp = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $rsvp, $post->ID, $rsvp->ID );
+
+		$rsvp_template_args = [
+			'rsvp'                => $rsvp,
+			'post_id'             => $post->ID,
+			'block_html_id'       => Constants::TC_RSVP_TYPE . uniqid( '', true ),
+			'step'                => '',
+			'active_rsvps'        => $rsvp->date_in_range() ? [ $rsvp ] : [],
+			'must_login'          => ! is_user_logged_in() && $this->login_required(),
+			'show_attendees_list' => Attendees_List::should_show_rsvp_attendees_list( $post->ID, $rsvp->ID ),
+		];
+
+		$content .= $template->template( 'v2/commerce/rsvp', $rsvp_template_args, $should_echo );
+
+		return $content;
+	}
+
+	/**
+	 * Enqueue RSVP assets on the frontend.
+	 *
+	 * Assets are only enqueued when viewing a single post/event that has TC-RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function enqueue_rsvp_assets(): void {
+		// Only enqueue on singular posts.
+		if ( ! is_singular() ) {
+			return;
+		}
+
+		$post_id = get_the_ID();
+
+		// Only enqueue if the post has TC-RSVP tickets.
+		if ( ! $this->post_has_tc_rsvp_tickets( $post_id ) ) {
+			return;
+		}
+
+		// Enqueue the asset group.
+		tribe_asset_enqueue_group( 'tec-tickets-commerce-rsvp' );
+	}
+
+	/**
+	 * Removes the RSVP hooks that would render the RSVP v1 form on the frontend.
+	 *
+	 * The original code hooks as part of the construction, to avoid having to update all the existing code
+	 * unhook the RSVP v1 hooks right after they are added.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets_Handler $tickets_handler  The tickets handler instance.
+	 * @param string          $ticket_form_hook The ticket form hook.
+	 *
+	 * @return void
+	 */
+	public function do_not_display_rsvp_v1_tickets_form( Tickets_Handler $tickets_handler, string $ticket_form_hook ): void {
+		if ( ! $tickets_handler instanceof RSVP_V1_Tickets_Handler ) {
+			return;
+		}
+
+		remove_action( $ticket_form_hook, [ $tickets_handler, 'maybe_add_front_end_tickets_form' ], 5 );
+		remove_filter( $ticket_form_hook, [ $tickets_handler, 'show_tickets_unavailable_message' ], 6 );
+		remove_filter( 'the_content', [ $tickets_handler, 'front_end_tickets_form_in_content' ], 11 );
+		remove_filter( 'the_content', [ $tickets_handler, 'show_tickets_unavailable_message_in_content' ], 12 );
+	}
+
+	/**
+	 * Update the RSVP values for this user.
+	 *
+	 * Note that, within this method, $attendee_id refers to the attendee or ticket ID
+	 * (it does not refer to an "order" in the sense of a transaction that may include
+	 * multiple tickets, as is the case in some other methods for instance).
+	 *
+	 * @param array $attendee_data Information that we are trying to save.
+	 * @param int   $attendee_id   The attendee ID.
+	 */
+	public function update_attendee_data( $attendee_data, $attendee_id ) {
+		if ( empty( $attendee_data['order_status'] ) ) {
+			return;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		$attendee = tribe( Attendee::class )->load_attendee_data( get_post( $attendee_id ) );
+
+		if ( ! $attendee instanceof WP_Post ) {
+			return;
+		}
+
+		$ticket_id = $attendee->product_id;
+
+		/** @var Ticket $ticket_data */
+		$ticket_data = tribe( Ticket::class );
+		$ticket      = $ticket_data->load_ticket_object( $ticket_id );
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return;
+		}
+
+		if ( $ticket->type() !== Constants::TC_RSVP_TYPE ) {
+			return;
+		}
+
+		$order = tec_tc_get_order( $attendee->post_parent );
+
+		if ( ! $order instanceof WP_Post ) {
+			return;
+		}
+
+		$order_user_id = $order->purchaser['user_id'] ?? 0;
+
+		if ( $order_user_id !== $user_id ) {
+			return;
+		}
+
+		// The RSVP V2 form posts `going` / `not_going`, while the legacy My Tickets selector posts `yes` / `no`.
+		$attendee_status = in_array( $attendee_data['order_status'], [ 'going', 'yes' ], true ) ? 'yes' : 'no';
+
+		$current_status = metadata_exists( 'post', $attendee_id, Constants::RSVP_STATUS_META_KEY ) ? get_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, true ) : 'yes';
+
+		if ( tribe_is_truthy( $current_status ) === tribe_is_truthy( $attendee_status ) ) {
+			return;
+		}
+
+		update_post_meta( $attendee_id, Constants::RSVP_STATUS_META_KEY, $attendee_status );
+
+		$this->send_status_change_email( $order, (int) $attendee_id, tribe_is_truthy( $attendee_status ) );
+	}
+
+	/**
+	 * Sends the "Going" / "Not Going" email after an attendee changes their RSVP response.
+	 *
+	 * The order-completion email is sent by the `send_email` flag action, which only fires on a status
+	 * transition of the order. Changing a response afterwards never touches the order, so without this
+	 * the attendee is told nothing about the change.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order       The decorated order the attendee belongs to.
+	 * @param int     $attendee_id The attendee whose response changed.
+	 * @param bool    $going       The attendee's new response.
+	 *
+	 * @return void
+	 */
+	private function send_status_change_email( WP_Post $order, int $attendee_id, bool $going ): void {
+		$attendees = $this->module->get_attendees_by_order_id( $order->ID );
+
+		// Only the attendee whose response changed belongs in the email.
+		$attendees = array_values(
+			array_filter(
+				$attendees,
+				static fn( $attendee ) => (int) ( $attendee['attendee_id'] ?? 0 ) === $attendee_id
+			)
+		);
+
+		if ( empty( $attendees ) ) {
+			return;
+		}
+
+		$event_id = (int) ( $order->events_in_order[0] ?? $attendees[0]['event_id'] ?? 0 );
+
+		$holder_email = $attendees[0]['holder_email'] ?? '';
+		$holder_email = is_string( $holder_email ) ? strtolower( trim( $holder_email ) ) : '';
+
+		if ( '' !== $holder_email && is_email( $holder_email ) ) {
+			$recipient = $holder_email;
+		} else {
+			$purchaser_email = $order->purchaser['email'] ?? '';
+			$purchaser_email = is_string( $purchaser_email ) ? strtolower( trim( $purchaser_email ) ) : '';
+			$recipient       = ( '' !== $purchaser_email && is_email( $purchaser_email ) ) ? $purchaser_email : '';
+		}
+
+		tribe( RSVP_Email_Sender::class )->send_rsvp_email(
+			$attendees,
+			$event_id,
+			$recipient,
+			$going
+		);
+	}
+
+	/**
+	 * Render the RSVP ticket status on the My Tickets page.
+	 *
+	 * Hooked to `tec_tickets_my_tickets_ticket_information_after_ticket_name`.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attendee The attendee data.
+	 */
+	public function render_my_tickets_ticket_status( array $attendee ): void {
+		if ( empty( $attendee['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $attendee['ticket_type'] ) {
+			return;
+		}
+
+		$ticket_id         = (int) ( $attendee['product_id'] ?? 0 );
+		$attendee_is_going = metadata_exists( 'post', $attendee['ID'], Constants::RSVP_STATUS_META_KEY )
+			? tribe_is_truthy( get_post_meta( $attendee['ID'], Constants::RSVP_STATUS_META_KEY, true ) )
+			: true;
+		$show_not_going    = $ticket_id && tribe_is_truthy( get_post_meta( $ticket_id, Constants::SHOW_NOT_GOING_META_KEY, true ) );
+
+		tribe( 'tickets.editor.template' )->template(
+			'v2/commerce/rsvp/my-tickets/ticket-status',
+			[
+				'attendee_is_going' => $attendee_is_going,
+				'show_not_going'    => $show_not_going,
+				'attendee_id'       => $attendee['ID'],
+			]
+		);
+	}
+
+	/**
+	 * Replaces the default `tickets/my-tickets/user-details` template for TC-RSVP orders.
+	 *
+	 * Hooked to the template's `tribe_template_pre_html` filter so the alternate template
+	 * supports both echoed and non-echoed template rendering.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null         $html    The filtered template HTML, or null before rendering.
+	 * @param string              $file    The template file path.
+	 * @param array<string>       $name    The template name parts.
+	 * @param Tribe__Template     $template The current template instance.
+	 * @param array<string,mixed> $context The context data passed to the template.
+	 *
+	 * @return string|null The alternate template HTML, or the original value.
+	 */
+	public function render_my_tickets_user_details( $html, $file, $name, $template, $context ) {
+		$name = is_array( $name ) ? implode( '/', $name ) : $name;
+
+		if ( 'tickets/my-tickets/user-details' !== $name ) {
+			return $html;
+		}
+
+		$attendees = $context['attendees'] ?? [];
+
+		if ( empty( $attendees ) || Constants::TC_RSVP_TYPE !== ( $attendees[0]['ticket_type'] ?? '' ) ) {
+			return $html;
+		}
+
+		return $template->template( 'v2/commerce/rsvp/my-tickets/user-details', $context, false );
+	}
+
+	/**
+	 * Check if a post has TC-RSVP tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID to check.
+	 *
+	 * @return bool True if the post has TC-RSVP tickets, false otherwise.
+	 */
+	private function post_has_tc_rsvp_tickets( int $post_id ): bool {
+		return tribe( 'tickets.ticket-repository.rsvp' )
+			->by( 'event', $post_id )
+			->found();
+	}
+
+	/**
+	 * Returns whether the RSVP form requires login.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the RSVP form requires login.
+	 */
+	private function login_required(): bool {
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
+
+		return in_array( 'event-tickets_rsvp', $requirements, true );
+	}
+}

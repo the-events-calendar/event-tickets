@@ -442,13 +442,16 @@
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_id']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0; width:120px; margin:0 !important;">
-													<h6 style="color:#0a0a0e !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php
+													<h6 style="color:#0a0a0e !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;">
+														<?php
 														echo esc_html(
 															sprintf(
+																/* translators: %s: ticket label singular. */
 																_x( '%s Name', 'ticket name email heading', 'event-tickets' ),
 																tribe_get_ticket_label_singular( 'ticket_name_email_heading' )
 															)
-														); ?>
+														);
+														?>
 													</h6>
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_name']; ?></span>
 												</td>
@@ -489,7 +492,7 @@
 													if ( $venue_name ) {
 														?>
 														<td class="ticket-venue" valign="top" align="left" width="300" style="padding: 0 !important; width:300px; margin:0 !important;">
-															<h6 style="color:#0a0a0e !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( $venue_label, 'event-tickets' ); ?></h6>
+															<h6 style="color:#0a0a0e !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo esc_html( $venue_label ); ?></h6>
 															<table class="venue-details" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
 																<tr>
 																	<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
@@ -520,7 +523,7 @@
 													if ( ! empty( $organizers ) ) {
 														?>
 														<td class="ticket-organizer" valign="top" align="left" width="140" style="padding: 0 !important; width:140px; margin:0 !important;">
-															<h6 style="color:#0a0a0e !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo tribe_get_organizer_label( count( $organizers ) < 2 ); ?></h6>
+															<h6 style="color:#0a0a0e !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo esc_html( tribe_get_organizer_label( count( $organizers ) < 2 ) ); ?></h6>
 															<?php foreach ( $organizers as $organizer_id ) { ?>
 																<span
 																	style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; display:block; padding-bottom:5px;"><?php echo tribe_get_organizer( $organizer_id ); ?></span>

@@ -2796,16 +2796,18 @@ class Ajax_Test extends Controller_Test_Case {
 		$ticket_1 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_1 );
 		$ticket_2 = tribe( Module::class )->get_ticket( $post_id, $ticket_id_2 );
 
-		// Confirm the tickets have no layout set.
+		// Confirm the tickets have no layout set: capacity and raw stock are reset to 1 by the handler.
 		$this->assertEquals( 1, $ticket_1->capacity() );
 		$this->assertEquals( 1, $ticket_1->stock() );
-		$this->assertEquals( 1, $ticket_1->available() );
-		$this->assertEquals( 1, $ticket_1->inventory() );
+		// Removing the layout resets capacity to 1 but leaves the 5 existing attendees in place, so the
+		// ticket is oversold: inventory()/available() (which count attendees) correctly report 0, not 1.
+		$this->assertEquals( 0, $ticket_1->available() );
+		$this->assertEquals( 0, $ticket_1->inventory() );
 
 		$this->assertEquals( 1, $ticket_2->capacity() );
 		$this->assertEquals( 1, $ticket_2->stock() );
-		$this->assertEquals( 1, $ticket_2->available() );
-		$this->assertEquals( 1, $ticket_2->inventory() );
+		$this->assertEquals( 0, $ticket_2->available() );
+		$this->assertEquals( 0, $ticket_2->inventory() );
 
 		// Confirm the global stock is removed.
 		$this->assertFalse( $global_stock->is_enabled() );

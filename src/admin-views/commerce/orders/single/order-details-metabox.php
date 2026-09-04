@@ -3,12 +3,15 @@
  * Single order - Details metabox.
  *
  * @since 5.13.3
+ * @since TBD Introduced actions before and after the order details metabox.
  *
- * @version 5.13.3
+ * @version TBD
  *
- * @var WP_Post                                         $order             The current post object.
- * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.
+ * @var WP_Post             $order             The current post object.
+ * @var Singular_Order_Page $single_page       The orders table output.
  */
+
+use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 
 $ts = strtotime( $order->post_date_gmt );
 
@@ -24,6 +27,17 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 	?>
 </h2>
 <div class="tec-tickets-commerce-single-order--details">
+	<?php
+	/**
+	 * Fires before the order details metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post             $order             The current post object.
+	 * @param Singular_Order_Page $single_page       The orders table output.
+	 */
+	do_action( 'tec_tickets_commerce_single_order_details_metabox_before', $order, $single_page );
+	?>
 	<div class="tec-tickets-commerce-single-order--details--item">
 		<div class="tec-tickets-commerce-single-order--details--item--label">
 			<?php esc_html_e( 'Date of purchase', 'event-tickets' ); ?>
@@ -63,5 +77,16 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 			?>
 		</div>
 	</div>
+	<?php
+	/**
+	 * Fires after the order details metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post             $order             The current post object.
+	 * @param Singular_Order_Page $single_page       The orders table output.
+	 */
+	do_action( 'tec_tickets_commerce_single_order_details_metabox_after', $order, $single_page );
+	?>
 </div>
 <?php
