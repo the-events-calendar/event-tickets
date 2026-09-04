@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Reports\Attendance_Totals;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Voided;
@@ -584,5 +585,30 @@ class Attendees_Test extends WPTestCase {
 		tribe( Attendees::class )->void_order_after_last_attendee_deleted( $attendee_ids[0] );
 
 		$this->assertSame( tribe( Completed::class )->get_wp_slug(), get_post_status( $order_id ) );
+	}
+
+	public function test_rsvp_tickets_are_left_out_of_the_ticket_sales_counts(): void {
+		$post_id        = static::factory()->post->create();
+		$rsvp_ticket_id = $this->create_tc_rsvp_ticket( $post_id );
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+
+		$this->create_rsvp_order_with_attendees( $rsvp_ticket_id, 2 );
+		$this->create_order( [ $ticket_id => 1 ] );
+
+		// The Attendees page builds its render context first, which leaves the RSVP Ticket Object in the
+		// shared `tec_tickets` cache reporting the Tickets Commerce provider instead of the RSVP one.
+		tribe( 'tickets.attendees' )->get_render_context( $post_id );
+
+		$totals = new Attendance_Totals( $post_id );
+
+		// Only the real ticket: the two Going RSVPs belong to the RSVP totals.
+		$this->assertSame( 1, $totals->get_total_sold() );
+		$this->assertSame( 1, $totals->get_total_complete() );
+
+		// Event Tickets Plus runs its own Attendance Totals off the twin filter.
+		$rsvp_ticket = tribe( Module::class )->get_ticket( $post_id, $rsvp_ticket_id );
+		$this->assertFalse(
+			apply_filters( 'tribe_tickets_plus_should_use_ticket_in_sales_counts', true, $rsvp_ticket )
+		);
 	}
 }

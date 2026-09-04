@@ -189,6 +189,30 @@ class Attendees {
 	}
 
 	/**
+	 * Keeps TC-RSVP tickets out of the Attendees page ticket sales counts.
+	 *
+	 * Hooked to `tribe_tickets_should_use_ticket_in_sales_counts` and its Event Tickets Plus twin.
+	 * Both Attendance Totals classes exclude RSVPs by provider class alone, and a TC-RSVP ticket
+	 * reports the Tickets Commerce provider whenever its Ticket Object comes back from the shared
+	 * `tec_tickets` cache, so its Going attendees would be counted a second time under "Tickets".
+	 * The ticket type is the same in either case.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $should_count Whether the ticket should be factored into the sales counts.
+	 * @param mixed $ticket       The ticket being counted.
+	 *
+	 * @return bool Whether the ticket should be factored into the sales counts.
+	 */
+	public function exclude_rsvp_from_sales_counts( $should_count, $ticket ): bool {
+		if ( $ticket instanceof Ticket_Object && Constants::TC_RSVP_TYPE === $ticket->type() ) {
+			return false;
+		}
+
+		return (bool) $should_count;
+	}
+
+	/**
 	 * Registers the label and icon the Attendees page Ticket Overview uses for TC-RSVP tickets.
 	 *
 	 * Hooked to `tec_tickets_attendees_page_render_context`. That page groups tickets by

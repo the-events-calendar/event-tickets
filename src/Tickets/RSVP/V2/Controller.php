@@ -254,6 +254,20 @@ class Controller extends Controller_Contract {
 			'tec_tickets_attendees_page_render_context',
 			$this->container->callback( Attendees::class, 'add_ticket_overview_type_labels' )
 		);
+
+		// Both Attendance Totals classes exclude RSVPs by provider class alone; TC-RSVP needs the type.
+		add_filter(
+			'tribe_tickets_should_use_ticket_in_sales_counts',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_from_sales_counts' ),
+			10,
+			2
+		);
+		add_filter(
+			'tribe_tickets_plus_should_use_ticket_in_sales_counts',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_from_sales_counts' ),
+			10,
+			2
+		);
 		add_action(
 			'tec_tickets_commerce_attendee_after_create',
 			$this->container->callback( Attendees::class, 'ensure_rsvp_status_on_create' ),
@@ -435,6 +449,14 @@ class Controller extends Controller_Contract {
 		remove_filter(
 			'tec_tickets_attendees_page_render_context',
 			$this->container->callback( Attendees::class, 'add_ticket_overview_type_labels' )
+		);
+		remove_filter(
+			'tribe_tickets_should_use_ticket_in_sales_counts',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_from_sales_counts' )
+		);
+		remove_filter(
+			'tribe_tickets_plus_should_use_ticket_in_sales_counts',
+			$this->container->callback( Attendees::class, 'exclude_rsvp_from_sales_counts' )
 		);
 		remove_action(
 			'tec_tickets_commerce_attendee_after_create',
