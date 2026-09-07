@@ -45,3 +45,12 @@ rebuild and try again.
 ```
 npm rebuild
 ```
+
+## Spec-driven development
+
+Before you write code for a feature or refactor, write a spec. We use
+[OpenSpec](https://github.com/Fission-AI/OpenSpec); specs live in `openspec/`.
+Every Pull Request needs either a spec change or an
+`sdd-exception: <reason>` line in its description. See the
+[Spec-driven development](README.md#spec-driven-development) section of the
+README.

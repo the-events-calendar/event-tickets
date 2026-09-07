@@ -29,3 +29,16 @@ Support requests on this repository will be closed on sight.
 
 ## Contributing to Event Tickets
 If you have a patch or have stumbled upon an issue with Event Tickets core, you can contribute this back to the code. Please read our [contributor guidelines](https://github.com/the-events-calendar/event-tickets/blob/master/CONTRIBUTING.md) for more information how you can do this.
+
+## Spec-driven development
+Meaningful feature and refactor work in this repository starts with a written spec. We use [OpenSpec](https://github.com/Fission-AI/OpenSpec) as our spec-driven development framework:
+
+* Specs live in `openspec/` — capability specs in `openspec/specs/`, in-flight change proposals in `openspec/changes/`, and shipped ones in `openspec/changes/archive/`.
+* The workflow is `/opsx:propose` → review → `/opsx:apply` → `/opsx:archive`, driven by the commands and skills in `.claude/`.
+* Every pull request must either include a spec change under `openspec/` or declare an exception in its description:
+
+```
+sdd-exception: <reason>
+```
+
+The `Check spec` CI job enforces this. Exceptions are for changes with no behavior to specify — a dependency bump, a translation sync, a typo fix, tooling or CI configuration.
