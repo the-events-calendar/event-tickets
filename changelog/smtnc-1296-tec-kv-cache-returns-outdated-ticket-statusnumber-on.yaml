@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Dropped the cached calendar-view ticket data when tickets are sold and when the
+  plugin updates, instead of rebuilding it mid-order, resolving an issue where sold-out
+  events kept showing the remaining ticket count on calendar and list views.
+timestamp: 2026-08-27T21:57:28.008Z
