@@ -65,10 +65,10 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get( $endpoint, array $query_args ) {
+	public function get( $endpoint, array $query_args, array $request_arguments = [] ) {
 		$url = $this->get_api_url( $endpoint, $query_args );
 
-		$request = wp_remote_get( $url ); // phpcs:ignore WordPress.WP.AlternativeFunctions.remote_get_remote_get, WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
+		$request = wp_remote_get( $url, $request_arguments ); // phpcs:ignore WordPress.WP.AlternativeFunctions.remote_get_remote_get, WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 
 		if ( is_wp_error( $request ) ) {
 			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
