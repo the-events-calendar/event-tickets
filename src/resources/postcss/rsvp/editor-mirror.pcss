@@ -1,0 +1,15 @@
+/**
+ * RSVP V2 block editor canvas overrides for the frontend-mirror preview.
+ *
+ * Built to `build/css/rsvp/editor-mirror.css` and enqueued in the block editor iframe
+ * via `enqueue_block_assets` / block `editorStyle`.
+ */
+
+@import "../../../modules/blocks/rsvp-v2/frontend-mirror/style.pcss";
+@import "../../../modules/blocks/rsvp-v2/saved-summary/style.pcss";
+@import "../../../modules/blocks/rsvp-v2/edit-popovers/style.pcss";
+
+/* Saved summary uses the frontend mirror card — no editor Card wrapper. */
+.tribe-editor__rsvp:not(.tribe-editor__card) {
+	width: 100%;
+}

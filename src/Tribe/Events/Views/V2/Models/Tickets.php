@@ -120,6 +120,15 @@ class Tickets implements ArrayAccess {
 		add_action( 'parse_query', $do_not_cache_results );
 
 		if ( $post->post_type === TEC::POSTTYPE ) {
+			// It's an Event: reset the provider's get_tickets method cache so we read fresh tickets.
+			$provider = Tickets_Tickets::get_event_ticket_provider_object( $post->ID );
+
+			if ( $provider ) {
+				$tribe_cache = tribe_cache();
+
+				$tribe_cache[ Tickets_Tickets::get_tickets_cache_key( $provider->orm_provider, $post->ID ) ] = null;
+			}
+
 			// It's an Event: refresh its cache.
 			$model = new self( $post->ID );
 			$model->exist();
@@ -162,16 +171,13 @@ class Tickets implements ArrayAccess {
 			/** @var array<int> $connected_event_ids */
 			$connected_event_ids = array_merge( ...$connected_event_ids );
 			$tribe_cache         = tribe_cache();
-			$tickets_class       = Tickets_Tickets::class;
 
 			foreach ( $connected_event_ids as $connected_event_id ) {
 				// Reset the `Tribe__Tickets__Tickets::get_tickets` method cache to get the last version of them.
 				$provider = Tickets_Tickets::get_event_ticket_provider_object( $connected_event_id );
 
 				if ( $provider ) {
-					$orm_provider                      = $provider->orm_provider;
-					$tickets_cache_key                 = "{$tickets_class}::get_tickets-{$orm_provider}-{$connected_event_id}";
-					$tribe_cache[ $tickets_cache_key ] = null;
+					$tribe_cache[ Tickets_Tickets::get_tickets_cache_key( $provider->orm_provider, $connected_event_id ) ] = null;
 				}
 
 				$model = new self( $connected_event_id );
@@ -477,6 +483,8 @@ class Tickets implements ArrayAccess {
 
 		// Use the same type that would "win" in fetch_data (last with count): prefer tickets over rsvp.
 		$data = null;
+		$type = null;
+
 		if ( ! empty( $types['tickets']['count'] ) ) {
 			$data = $types['tickets'];
 			$type = 'tickets';
@@ -485,7 +493,15 @@ class Tickets implements ArrayAccess {
 			$type = 'rsvp';
 		}
 
-		if ( ! $data || ! $data['available'] ) {
+		if ( ! $data ) {
+			return;
+		}
+
+		if ( ! $data['available'] ) {
+			$this->data['stock']->available = '';
+			$this->data['stock']->sold_out  = 'rsvp' === $type
+				? esc_html_x( 'Currently full', 'events rsvp full (v2)', 'event-tickets' )
+				: esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 			return;
 		}
 

@@ -350,6 +350,16 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
+		/**
+		 * Filters the tickets that will be included in the tickets list meta for the Block Editor.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object[] $tickets The array of ticket objects.
+		 * @param int                             $post_id The post ID.
+		 */
+		$tickets = apply_filters( 'tec_tickets_editor_list_tickets', $tickets, $post_id );
+
 		$list_of_tickets = [];
 
 		foreach ( $tickets as $ticket ) {
@@ -514,11 +524,19 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 * Renders the New RSVP form in the metabox, as appropriate.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Added `$disabled` parameter to support rendering a disabled button.
 	 *
-	 * @param int $post_id The ID of the post the form is being rendered for.
+	 * @param int  $post_id  The ID of the post the form is being rendered for.
+	 * @param bool $disabled Whether the RSVP form toggle should be disabled.
 	 */
-	public function render_rsvp_form_toggle( int $post_id ): void {
-		$this->admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
+	public function render_rsvp_form_toggle( int $post_id, bool $disabled = false ): void {
+		$this->admin_views->template(
+			'editor/elements/new-rsvp',
+			[
+				'post_id'  => $post_id,
+				'disabled' => $disabled,
+			]
+		);
 	}
 
 	/**

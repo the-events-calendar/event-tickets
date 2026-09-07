@@ -15,6 +15,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+
+use TEC\Tickets\RSVP\V2\Constants;
+
 $view      = Tribe__Tickets__Tickets_View::instance();
 $post_id   = get_the_ID();
 $post      = get_post( $post_id );
@@ -23,6 +26,13 @@ $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
+	return;
+}
+
+// RSVP V2 attendees are Tickets Commerce attendees and render through the Tickets Commerce
+// My Tickets templates (`orders-tc-tickets.php`), which provide the V2 RSVP UI. Keep this
+// legacy list for RSVP V1 data only.
+if ( $view->has_rsvp_v2_attendees( $post_id, $user_id ) ) {
 	return;
 }
 
@@ -57,7 +67,8 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 		</div>
 		<?php
 			$this->template( 'tickets/my-tickets/title', [
-				'title'  => tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+				'title'       => tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+				'ticket_type' => Constants::TC_RSVP_TYPE,
 			] );
 		?>
 		<div class="tec__tickets-my-tickets-rsvp-attendee-list-wrapper">

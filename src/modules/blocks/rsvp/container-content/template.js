@@ -12,7 +12,7 @@ import RSVPDescription from './../description/container';
 import RSVPNotGoingResponses from './../not-going/container';
 import RSVPTitle from './../title/container';
 import RSVPDuration from './../duration/container';
-import RSVPAttendeeRegistration from '../attendee-registration/container';
+import RSVPAttendeeRegistration from '../../rsvp-shared/attendee-registration/container';
 import './style.pcss';
 
 const RSVPContainerContent = ( { isAddEditOpen, hasTicketsPlus } ) => {

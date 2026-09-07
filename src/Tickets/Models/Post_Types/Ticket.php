@@ -81,8 +81,11 @@ class Ticket extends Base {
 				$availability_message = __( 'Sold out', 'event-tickets' );
 			}
 
+			$type = Arr::get( $post_meta, [ Ticket_CPT::$type_meta_key, 0 ], 'default' );
+
 			// Build properties array.
 			$properties = [
+				'type'                 => $type,
 				'price'                => $price,
 				'sale_price'           => $sale_price,
 				'price_value'          => Value::create( $price ),
@@ -172,6 +175,7 @@ class Ticket extends Base {
 		return (array) apply_filters(
 			'tec_rest_ticket_properties_to_add',
 			[
+				'type'                 => true,
 				'price'                => true,
 				'sale_price'           => true,
 				'price_value'          => true,

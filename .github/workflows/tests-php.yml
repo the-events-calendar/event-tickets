@@ -35,11 +35,13 @@ jobs:
           - integration
           - restv1
           - rest_tec_v1_integration
+          - rsvp_to_tc_migration
           - views_integration
           - commerce_integration
           - wpunit
           - slr_integration
           - square_integration
+          - rsvp_v2_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------

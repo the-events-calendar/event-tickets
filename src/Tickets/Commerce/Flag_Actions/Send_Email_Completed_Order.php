@@ -27,6 +27,15 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 	 *
 	 * @var array
 	 */
+	protected $order_contexts = [
+		Order_Context::TICKET,
+	];
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @var array
+	 */
 	protected $post_types = [
 		Order::POSTTYPE,
 	];

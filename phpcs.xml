@@ -65,6 +65,15 @@
 		<exclude-pattern>src/views/v2/commerce/checkout/cart/*</exclude-pattern>
 	</rule>
 
+	<!-- Configure custom sanitization functions -->
+	<rule ref="WordPress.Security.ValidatedSanitizedInput">
+		<properties>
+			<property name="customSanitizingFunctions" type="array">
+				<element value="tribe_sanitize_deep"/>
+			</property>
+		</properties>
+	</rule>
+
 	<!-- General exclusions -->
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>

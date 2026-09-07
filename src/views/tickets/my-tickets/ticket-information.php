@@ -14,6 +14,8 @@
  * @var array                   $attendee The attendee data.
  */
 
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+
 ?>
 <div class="tribe-ticket-information">
 	<?php
@@ -22,10 +24,20 @@
 		$price = $provider->get_price_html( $attendee['product_id'], $attendee );
 	}
 	?>
-	<?php if ( ! empty( $attendee['ticket_exists'] ) ) : ?>
+	<?php if ( ! empty( $attendee['ticket_exists'] ) && RSVP_V2_Constants::TC_RSVP_TYPE !== ( $attendee['ticket_type'] ?? '' ) ) : ?>
 		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
 	<?php endif; ?>
-	<?php if ( ! empty( $price ) ): ?>
-		- <span class="ticket-price"><?php echo $price; ?></span>
+	<?php
+	/**
+	 * Fires after the ticket name in the My Tickets ticket information template.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attendee The attendee data.
+	 */
+	do_action( 'tec_tickets_my_tickets_ticket_information_after_ticket_name', $attendee );
+	?>
+	<?php if ( ! empty( $price ) ) : ?>
+		- <span class="ticket-price"><?php echo wp_kses_post( $price ); ?></span>
 	<?php endif; ?>
 </div>

@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RSVPV2Capacity should render Limit label and help text 1`] = `
+<div
+  className="tribe-editor__ticket__capacity tribe-editor__ticket__content-row tribe-editor__ticket__content-row--capacity"
+>
+  <div
+    className="tribe-editor__labeled-item tribe-editor__ticket__capacity-label"
+  >
+    <label
+      className="tribe-editor__labeled-item__label"
+      htmlFor="uniqid"
+    >
+      Limit:
+    </label>
+  </div>
+  <div
+    className="tribe-editor__rsvp-container-content__capacity"
+  >
+    <input
+      className="tribe-editor__input tribe-editor__input--number tribe-editor__rsvp-container-content__capacity-input"
+      id="uniqid"
+      min={0}
+      onChange={[MockFunction]}
+      type="number"
+      value=""
+    />
+    <span
+      className="tribe-editor__rsvp-container-content__capacity-label-help"
+    >
+      Leave blank for unlimited
+    </span>
+  </div>
+</div>
+`;

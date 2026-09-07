@@ -32,7 +32,7 @@ if ( ! $must_login ) {
 			<?php
 			echo esc_html(
 				sprintf(
-					/* Translators: 1: RSVP label. */
+					/* translators: %1$s is the RSVP label. */
 					_x( 'You must be logged in to %1$s.', 'rsvp must login', 'event-tickets' ),
 					tribe_get_rsvp_label_singular( 'rsvp_must_login' )
 				)

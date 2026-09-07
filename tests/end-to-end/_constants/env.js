@@ -1,9 +1,13 @@
-const envFilePath = __dirname + '/../../../.env.testing.slic';
+// Load env vars from .env.testing.slic (CI default), but prefer
+// values already set in the shell (process.env). This keeps local
+// credentials out of tracked/disk files.
 
-// Just requiring the file will load the environment variables in it in the current process.
-require('dotenv').config({
-	path: envFilePath,
-});
+const fs = require('node:fs');
 
-exports.adminUser = process.env.WP_ADMIN_USERNAME;
-exports.adminPassword = process.env.WP_ADMIN_PASSWORD;
+const slicEnvPath = __dirname + '/../../../.env.testing.slic';
+
+// Load the slic env file (safe defaults for CI) — process.env takes precedence.
+require('dotenv').config({ path: slicEnvPath });
+
+exports.adminUser = process.env.WP_ADMIN_USERNAME || 'admin';
+exports.adminPassword = process.env.WP_ADMIN_PASSWORD || 'password';

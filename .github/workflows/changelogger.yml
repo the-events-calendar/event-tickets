@@ -17,7 +17,7 @@ jobs:
     if: "!contains(github.event.pull_request.body, '[skip-changelog]')"
     steps:
       # clone the repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 1000
           submodules: recursive

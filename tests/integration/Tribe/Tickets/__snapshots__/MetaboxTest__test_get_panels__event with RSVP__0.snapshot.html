@@ -4,7 +4,7 @@
 	aria-hidden="false"
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
-	<div class="tribe_sectionheader ticket_list_container">
+	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
 		<div class="ticket_table_intro">
 			<button
 	id="ticket_form_toggle"
@@ -16,7 +16,7 @@ New ticket</button><button
 	id="rsvp_form_toggle"
 	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
 	aria-label="Add a new RSVP"
->
+	>
 	New RSVP</button>
 		</div>
 
@@ -118,19 +118,11 @@ New ticket</button><button
 	</div>
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
-							<a
-					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{ post_id }}"
-				>
-					View Attendees				</a>
-
+							
 									</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
-							<span id="ticket_form_total_capacity">
-	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
-		<a href="#" id="capacity_form_toggle">100</a>	</span>
-</span>
-			
+										
 			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
     Settings</button>
 		</div>

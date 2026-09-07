@@ -376,6 +376,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
+			'has_attendee_info_fields'      => false,
+			'field_labels'                  => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -394,7 +396,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$is_plus_test = $this->is_plus;
 
 		if ( ! $is_plus_test ) {
-			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'], $expected_json['has_attendee_info_fields'], $expected_json['field_labels'] );
 		}
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -505,6 +507,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
+			'has_attendee_info_fields'      => false,
+			'field_labels'                  => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -533,7 +537,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$is_plus_test = $this->is_plus;
 
 		if ( ! $is_plus_test ) {
-			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'], $expected_json['has_attendee_info_fields'], $expected_json['field_labels'] );
 		}
 
 		$create_response = json_decode( $I->grabResponse(), true );
@@ -688,6 +692,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
+			'has_attendee_info_fields'      => false,
+			'field_labels'                  => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -707,7 +713,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$is_plus_test = $this->is_plus;
 
 		if ( ! $is_plus_test ) {
-			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'], $expected_json['has_attendee_info_fields'], $expected_json['field_labels'] );
 		}
 
 		$response = json_decode( $I->grabResponse(), true );
