@@ -56,6 +56,7 @@ class Content extends WPTestCase {
 				'quantity_',
 			]
 		);
+		$driver->setTimeDependentKeys( [ '_wpnonce', 'nonce' ] );
 
 		$driver->setTimeDependentAttributes(
 			[
@@ -92,11 +93,13 @@ class Content extends WPTestCase {
 		$ticket = $rsvp->get_ticket( $event->ID, $ticket_id );
 
 		$args = [
-			'ticket'  => $ticket,
-			'post_id' => $event->ID,
+			'ticket'     => $ticket,
+			'post_id'    => $event->ID,
+			'must_login' => false,
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
+		$html = $template->template( $this->partial_path, $args, false );
+
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event->ID ] );
@@ -105,6 +108,7 @@ class Content extends WPTestCase {
 				'quantity_',
 			]
 		);
+		$driver->setTimeDependentKeys( [ '_wpnonce', 'nonce' ] );
 
 		$driver->setTimeDependentAttributes(
 			[
@@ -158,6 +162,7 @@ class Content extends WPTestCase {
 				'quantity_',
 			]
 		);
+		$driver->setTimeDependentKeys( [ '_wpnonce', 'nonce' ] );
 
 		$driver->setTimeDependentAttributes(
 			[

@@ -87,6 +87,97 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
+	 * Authorizes the request with the Payment Intent client secret this site issued for the order.
+	 *
+	 * The cart-bound check in the parent class is still the preferred path. It needs the visitor's cart
+	 * cookie, which does not always survive the round trip to Stripe: edge caches, proxies and
+	 * www/non-www mismatches can all drop it. Since the buyer has already been charged by the time this
+	 * route is called, losing the cookie must not strand the order.
+	 *
+	 * The client secret is a per-Payment-Intent credential Stripe issues to the buyer's browser and we
+	 * store on the order when we create the intent, so possessing it is proof the caller is the buyer
+	 * checking out. It is compared against the value stored on that specific order, never against the
+	 * request's own claims, and it travels in the request body rather than the URL.
+	 *
+	 * @since 5.29.3
+	 *
+	 * @param WP_REST_Request $request          The REST Request instance.
+	 * @param string          $gateway_order_id The Payment Intent ID.
+	 *
+	 * @return bool
+	 */
+	protected function request_carries_order_credential( WP_REST_Request $request, string $gateway_order_id ): bool {
+		$client_secret = $request->get_param( 'client_secret' );
+
+		if ( ! is_string( $client_secret ) || '' === $client_secret ) {
+			return false;
+		}
+
+		$order = tec_tc_orders()->by_args(
+			[
+				'gateway_order_id' => $gateway_order_id,
+				'gateway'          => Gateway::get_key(),
+				'status'           => 'any',
+			]
+		)->first();
+
+		// The status is verified here rather than in the query above; see order_is_in_flight().
+		if ( ! $this->order_is_in_flight( $order ) ) {
+			return false;
+		}
+
+		$stored_secret = $this->get_stored_client_secret( (int) $order->ID, $gateway_order_id );
+
+		if ( '' === $stored_secret ) {
+			return false;
+		}
+
+		return hash_equals( $stored_secret, $client_secret );
+	}
+
+	/**
+	 * Reads the client secret stored on an order for a given Payment Intent.
+	 *
+	 * The Payment Intent is saved to the order's gateway payload when the intent is created, and again
+	 * on every status change, so the same intent can appear under more than one status bucket. Only a
+	 * payload whose own id matches the requested Payment Intent is considered.
+	 *
+	 * @since 5.29.3
+	 *
+	 * @param int    $order_id         The Tickets Commerce order post ID.
+	 * @param string $gateway_order_id The Payment Intent ID.
+	 *
+	 * @return string The stored client secret, or an empty string when there is none.
+	 */
+	protected function get_stored_client_secret( int $order_id, string $gateway_order_id ): string {
+		$order = tec_tc_get_order( $order_id );
+
+		if ( empty( $order->gateway_payload ) || ! is_array( $order->gateway_payload ) ) {
+			return '';
+		}
+
+		foreach ( $order->gateway_payload as $status_payloads ) {
+			foreach ( (array) $status_payloads as $payload ) {
+				if ( ! is_array( $payload ) ) {
+					continue;
+				}
+
+				if ( ( $payload['id'] ?? '' ) !== $gateway_order_id ) {
+					continue;
+				}
+
+				$stored_secret = $payload['client_secret'] ?? '';
+
+				if ( is_string( $stored_secret ) && '' !== $stored_secret ) {
+					return $stored_secret;
+				}
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
 	 * @since 5.3.0

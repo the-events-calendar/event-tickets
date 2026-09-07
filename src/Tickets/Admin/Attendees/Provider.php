@@ -20,8 +20,19 @@ class Provider extends \tad_DI52_ServiceProvider {
 	 * Register the provider singletons.
 	 *
 	 * @since 5.9.1
+	 * @since 5.29.3 Skipped registration on front-end requests.
 	 */
 	public function register() {
+		/*
+		 * Everything this provider wires is admin-only. The container registers it on
+		 * `plugins_loaded`, so on the front end the capability check below would resolve
+		 * the current user - auth cookie validation plus a usermeta capabilities read -
+		 * before `init`, on every request, to reach a conclusion nothing then uses.
+		 */
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		if (
 			! tribe( 'tickets.attendees' )->user_can_manage_attendees()
 			|| ! tec_tickets_attendees_page_is_enabled()
