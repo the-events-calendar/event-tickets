@@ -777,6 +777,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket attendees list.
 	 *
+	 * @since TBD Reindexes the attendees so they always encode as a JSON array.
+	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return array|bool An array of ticket attendees or `false` on failure.
@@ -800,7 +802,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$query->where( 'meta_equals', Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY, 'yes' );
 		}
 
-		return $query->all();
+		$attendees = $query->all();
+
+		return Tribe__Tickets__REST__V1__Archive_List::reindex( $attendees );
 	}
 
 	/**

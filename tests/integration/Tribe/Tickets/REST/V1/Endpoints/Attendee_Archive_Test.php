@@ -66,6 +66,31 @@ class Attendee_Archive_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_return_a_list_when_a_filter_rekeys_the_attendees(): void {
+		$attendee_count = $this->faker->numberBetween( 2, 8 );
+		[ $event_id ]   = $this->create_event_with_attendees( $attendee_count );
+
+		add_filter(
+			'tec_tickets_rest_attendee_archive_data',
+			static function ( $data ) {
+				$data['attendees'] = array_combine(
+					range( 100, 99 + count( $data['attendees'] ) ),
+					$data['attendees']
+				);
+
+				return $data;
+			}
+		);
+
+		$data = $this->get_archive( $event_id, $attendee_count );
+
+		$this->assertSame( range( 0, $attendee_count - 1 ), array_keys( $data['attendees'] ) );
+		$this->assertStringContainsString( '"attendees":[', wp_json_encode( $data ) );
+	}
+
+	/**
 	 * @param int $attendee_count How many attendees to attach to the ticket.
 	 *
 	 * @return array{0: int, 1: array<int>} The event ID and the attendee IDs.
@@ -94,15 +119,30 @@ class Attendee_Archive_Test extends WPTestCase {
 	private function get_archive( int $event_id, int $per_page ): array {
 		$request = new WP_REST_Request( 'GET', '' );
 		$request->set_param( 'post_id', $event_id );
+		/* $per_page covers every seeded attendee, so there is exactly one page to ask for. */
 		$request->set_param( 'per_page', $per_page );
 		$request->set_param( 'page', 1 );
+		/*
+		 * The attendees are created within the same second, so the default date sort ties and the
+		 * skipped one can land last, where no gap forms and the test would pass with the bug present.
+		 */
+		$request->set_param( 'orderby', 'id' );
+		$request->set_param( 'order', 'ASC' );
 
-		$archive = new Archive(
+		return $this->make_instance()->get( $request )->get_data();
+	}
+
+	/**
+	 * The sibling tests in this directory pass Prophecy doubles through the same factory; these
+	 * exercise the real repository end to end, so they take the container's services instead.
+	 *
+	 * @return Archive The endpoint under test.
+	 */
+	private function make_instance(): Archive {
+		return new Archive(
 			tribe( 'tickets.rest-v1.messages' ),
 			tribe( 'tickets.rest-v1.repository' ),
 			tribe( 'tickets.rest-v1.validator' )
 		);
-
-		return $archive->get( $request )->get_data();
 	}
 }

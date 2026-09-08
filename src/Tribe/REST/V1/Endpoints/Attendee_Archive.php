@@ -182,13 +182,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/attendees/' ) );
 		$data['total']       = $found;
 		$data['total_pages'] = $total_pages;
-
-		/*
-		 * Attendees the provider cannot hydrate are dropped from the fetched set, which leaves gaps in
-		 * its keys; encoded as-is those gaps turn the list into a JSON object and consumers expecting an
-		 * array stop rendering it.
-		 */
-		$data['attendees'] = array_values( $attendees );
+		$data['attendees']   = $attendees;
 
 		$headers = [
 			'X-ET-TOTAL'       => $data['total'],
@@ -204,6 +198,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		 * @param WP_REST_Request $request The request object for this endpoint.
 		 */
 		$data = apply_filters( 'tec_tickets_rest_attendee_archive_data', $data, $request );
+
+		/* Reindexed last so the array shape holds for whatever the filter returned. */
+		if ( isset( $data['attendees'] ) ) {
+			$data['attendees'] = Tribe__Tickets__REST__V1__Archive_List::reindex( $data['attendees'] );
+		}
 
 		return new WP_REST_Response( $data, 200, $headers );
 	}
