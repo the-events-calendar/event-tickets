@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\Contracts\Container;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 /**
@@ -87,7 +88,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * How many consecutive refresh failures the notice waits for.
 	 *
-	 * Below the disconnect threshold in Token_Refresher, so the warning has room to appear while the
+	 * Below the disconnect threshold in Refresh_Client, so the warning has room to appear while the
 	 * connection is still working, but high enough that a single bad response does not raise it.
 	 *
 	 * @since TBD
@@ -124,20 +125,32 @@ class Notices_Controller extends Controller_Contract {
 	private Merchant $merchant;
 
 	/**
+	 * Token refresh status instance.
+	 *
+	 * @since TBD
+	 *
+	 * @var Refresh_Status
+	 */
+	private Refresh_Status $refresh_status;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Added the $refresh_status parameter.
 	 *
-	 * @param Container $container Container instance.
-	 * @param Webhooks  $webhooks  Webhooks instance.
-	 * @param Gateway   $gateway   Gateway instance.
-	 * @param Merchant  $merchant  Merchant instance.
+	 * @param Container      $container      Container instance.
+	 * @param Webhooks       $webhooks       Webhooks instance.
+	 * @param Gateway        $gateway        Gateway instance.
+	 * @param Merchant       $merchant       Merchant instance.
+	 * @param Refresh_Status $refresh_status Token refresh status instance.
 	 */
-	public function __construct( Container $container, Webhooks $webhooks, Gateway $gateway, Merchant $merchant ) {
+	public function __construct( Container $container, Webhooks $webhooks, Gateway $gateway, Merchant $merchant, Refresh_Status $refresh_status ) {
 		parent::__construct( $container );
-		$this->webhooks = $webhooks;
-		$this->gateway  = $gateway;
-		$this->merchant = $merchant;
+		$this->webhooks       = $webhooks;
+		$this->gateway        = $gateway;
+		$this->merchant       = $merchant;
+		$this->refresh_status = $refresh_status;
 	}
 
 	/**
@@ -544,7 +557,7 @@ class Notices_Controller extends Controller_Contract {
 			return false;
 		}
 
-		if ( $this->merchant->get_refresh_failure_count() < self::REFRESH_FAILURES_BEFORE_NOTICE ) {
+		if ( $this->refresh_status->get_failure_count() < self::REFRESH_FAILURES_BEFORE_NOTICE ) {
 			return false;
 		}
 

@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use Tribe\Tests\Traits\With_Uopz;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 
 class Hooks_Test extends Controller_Test_Case {
 	use With_Uopz;
@@ -46,7 +47,7 @@ class Hooks_Test extends Controller_Test_Case {
 		$this->assertNotFalse( has_action( 'admin_init', [ $controller, 'maybe_refresh_access_token' ] ) );
 
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 		$merchant->save_signup_data(
 			array_merge(
 				tec_tickets_tests_get_fake_merchant_data(),
@@ -88,7 +89,7 @@ class Hooks_Test extends Controller_Test_Case {
 		$this->assertTrue( $refreshed );
 		$this->assertSame( 'renewed-from-the-admin', $merchant->get_access_token() );
 
-		$merchant->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 	}
 

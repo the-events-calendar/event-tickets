@@ -65,21 +65,8 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get( $endpoint, array $query_args, array $request_arguments = [] ) {
-		$url = $this->get_api_url( $endpoint, $query_args );
-
-		$request = wp_remote_get( $url, $request_arguments ); // phpcs:ignore WordPress.WP.AlternativeFunctions.remote_get_remote_get, WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
-
-		if ( is_wp_error( $request ) ) {
-			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
-
-			return null;
-		}
-
-		$body = wp_remote_retrieve_body( $request );
-		$body = json_decode( $body, true );
-
-		return $body;
+	public function get( $endpoint, array $query_args ) {
+		return $this->get_with_request_args( $endpoint, $query_args );
 	}
 
 	/**
@@ -176,5 +163,33 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 			$message
 		);
 		do_action( 'tribe_log', 'error', __CLASS__, [ $log ] );
+	}
+
+	/**
+	 * Sends a GET request to WhoDat, with control over the HTTP arguments.
+	 *
+	 * Deliberately absent from WhoDat_Interface: adding a parameter to an interface method, optional or
+	 * not, is a fatal error for every implementer that does not declare it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint          The endpoint path.
+	 * @param array  $query_args        Query args appended to the URL.
+	 * @param array  $request_arguments Arguments passed on to wp_remote_get().
+	 *
+	 * @return mixed The decoded response body, or null when the request could not be made.
+	 */
+	protected function get_with_request_args( string $endpoint, array $query_args = [], array $request_arguments = [] ) {
+		$url = $this->get_api_url( $endpoint, $query_args );
+
+		$request = wp_remote_get( $url, $request_arguments ); // phpcs:ignore WordPress.WP.AlternativeFunctions.remote_get_remote_get, WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
+
+		if ( is_wp_error( $request ) ) {
+			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
+
+			return null;
+		}
+
+		return json_decode( wp_remote_retrieve_body( $request ), true );
 	}
 }

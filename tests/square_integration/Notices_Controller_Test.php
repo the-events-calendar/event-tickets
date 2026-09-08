@@ -7,6 +7,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 
 /**
  * Test class for the Square Notices Controller
@@ -28,7 +29,7 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function reset_token_status(): void {
-		tribe( Merchant::class )->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 	}
 
 	/**
@@ -245,7 +246,7 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_show_token_invalid_notice_when_square_refused_the_refresh(): void {
-		tribe( Merchant::class )->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 
 		$this->assertTrue( $this->make_controller()->should_display_token_invalid_notice() );
 	}
@@ -256,7 +257,7 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_show_token_invalid_notice_even_though_the_gateway_is_inactive(): void {
-		tribe( Merchant::class )->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 
 		$this->assertFalse( tribe( Gateway::class )->is_active() );
 		$this->assertTrue( $this->make_controller()->should_display_token_invalid_notice() );
@@ -269,7 +270,7 @@ class Notices_Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function it_should_show_token_invalid_notice_even_though_the_gateway_is_not_enabled(): void {
-		tribe( Merchant::class )->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 		$this->set_class_fn_return( Abstract_Gateway::class, 'is_enabled', false );
 
 		$this->assertTrue( $this->make_controller()->should_display_token_invalid_notice() );
@@ -293,10 +294,10 @@ class Notices_Controller_Test extends Controller_Test_Case {
 
 		$this->assertFalse( $controller->should_display_token_refresh_failing_notice() );
 
-		$merchant->update_refresh_status( [ 'failures' => 2 ] );
+		tribe( Refresh_Status::class )->update( [ 'failures' => 2 ] );
 		$this->assertFalse( $controller->should_display_token_refresh_failing_notice() );
 
-		$merchant->update_refresh_status( [ 'failures' => 3 ] );
+		tribe( Refresh_Status::class )->update( [ 'failures' => 3 ] );
 		$this->assertTrue( $controller->should_display_token_refresh_failing_notice() );
 	}
 
@@ -310,7 +311,7 @@ class Notices_Controller_Test extends Controller_Test_Case {
 		$merchant = tribe( Merchant::class );
 
 		$merchant->update( [ 'expires_at' => gmdate( 'c', time() + 30 * DAY_IN_SECONDS ) ] );
-		$merchant->update_refresh_status( [ 'failures' => 5 ] );
+		tribe( Refresh_Status::class )->update( [ 'failures' => 5 ] );
 
 		$this->assertFalse( $this->make_controller()->should_display_token_refresh_failing_notice() );
 	}
@@ -324,7 +325,7 @@ class Notices_Controller_Test extends Controller_Test_Case {
 		$merchant   = tribe( Merchant::class );
 		$controller = $this->make_controller();
 
-		$merchant->update_refresh_status(
+		tribe( Refresh_Status::class )->update(
 			[
 				'failures'   => 5,
 				'invalid_at' => '2026-01-01 00:00:00',

@@ -201,7 +201,7 @@ class WhoDat extends Abstract_WhoDat {
 			return $result;
 		}
 
-		$result['code'] = (int) wp_remote_retrieve_response_code( $response );
+		$result['code'] = absint( wp_remote_retrieve_response_code( $response ) );
 		$result['body'] = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		return $result;
@@ -211,51 +211,44 @@ class WhoDat extends Abstract_WhoDat {
 	 * Get the token status from Square.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Added the $force and $request_arguments parameters.
-	 *
-	 * @param bool  $force             Whether to bypass the cached status.
-	 * @param array $request_arguments Arguments passed on to wp_remote_get(), forced requests only.
+	 * @since TBD Returns null for a body that did not decode to an array.
 	 *
 	 * @return array|null
 	 */
-	public function get_token_status( bool $force = false, array $request_arguments = [] ): ?array {
-		$merchant = tribe( Merchant::class );
+	public function get_token_status(): ?array {
+		$status = $this->get_with_cache( 'oauth/token/status', $this->get_token_status_query_args() );
 
-		$query_args = [
-			'access_token' => $merchant->get_access_token(),
-			'mode'         => $merchant->get_mode(),
-		];
-
-		$status = $force ?
-			$this->get( 'oauth/token/status', $query_args, $request_arguments ) :
-			$this->get_with_cache( 'oauth/token/status', $query_args );
-
-		// A scalar body decodes to a scalar, and every caller here reads the status as an array.
+		// A scalar body decodes to a scalar, and every caller reads the status as an array.
 		return is_array( $status ) ? $status : null;
 	}
 
 	/**
-	 * Whether Square still accepts the stored access token.
+	 * Get the token status from Square, bypassing the cache.
+	 *
+	 * A separate method rather than a flag on get_token_status(): that one is released, so widening it
+	 * would break any override, and `get_token_status( true )` says nothing at the call site.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $request_arguments Arguments passed on to wp_remote_get().
+	 *
+	 * @return array|null The decoded status response, or null when the body was not an array.
+	 */
+	public function get_fresh_token_status( array $request_arguments = [] ): ?array {
+		$status = $this->get_with_request_args( 'oauth/token/status', $this->get_token_status_query_args(), $request_arguments );
+
+		return is_array( $status ) ? $status : null;
+	}
+
+	/**
+	 * Reads the verdict out of a status response.
 	 *
 	 * The status endpoint answers a rejected token with `{ type: UNAUTHORIZED }` and a valid one with the
 	 * granted scopes. Anything else - an outage, a malformed body - is reported as unknown rather than as
 	 * a rejection, so a blip is never mistaken for a revoked connection.
 	 *
-	 * @since TBD
-	 *
-	 * @param bool $force Whether to bypass the cached status.
-	 *
-	 * @return ?bool True when accepted, false when rejected, null when it could not be established.
-	 */
-	public function is_token_accepted( bool $force = false ): ?bool {
-		return $this->interpret_token_status( $this->get_token_status( $force ) );
-	}
-
-	/**
-	 * Reads the verdict out of a status response that has already been fetched.
-	 *
-	 * Split from is_token_accepted() so that a caller which also needs the message the endpoint sent
-	 * does not have to ask for the same status twice.
+	 * Takes the response rather than fetching it, so a caller that also needs the message the endpoint
+	 * sent does not have to ask for the same status twice.
 	 *
 	 * @since TBD
 	 *
@@ -264,7 +257,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return ?bool True when accepted, false when rejected, null when it could not be established.
 	 */
 	public function interpret_token_status( ?array $status ): ?bool {
-		if ( ! is_array( $status ) ) {
+		if ( null === $status ) {
 			return null;
 		}
 
@@ -273,7 +266,7 @@ class WhoDat extends Abstract_WhoDat {
 		}
 
 		// Only this one type means the token was refused; the rest describe Square being unwell.
-		if ( isset( $status['type'] ) && 'UNAUTHORIZED' === strtoupper( (string) $status['type'] ) ) {
+		if ( isset( $status['type'] ) && is_string( $status['type'] ) && 'UNAUTHORIZED' === strtoupper( $status['type'] ) ) {
 			return false;
 		}
 
@@ -456,5 +449,21 @@ class WhoDat extends Abstract_WhoDat {
 		$connection_response = $this->get_with_cache( 'oauth/authorize', $query_args );
 
 		return $connection_response['auth_url'] ?? '';
+	}
+
+	/**
+	 * The query args identifying the connection whose token status is being asked about.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{access_token: string, mode: string}
+	 */
+	private function get_token_status_query_args(): array {
+		$merchant = tribe( Merchant::class );
+
+		return [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
 	}
 }

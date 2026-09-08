@@ -121,7 +121,7 @@ class Requests extends Abstract_Requests {
 		$response = parent::request( $method, $url, $query_args, $request_arguments, $raw, $retries );
 
 		// Square can reject a token before its recorded expiration, for instance after a password reset.
-		if ( 0 !== $retries || ! static::is_unauthorized_response( $response, (bool) $raw ) ) {
+		if ( 0 !== $retries || ! self::is_unauthorized_response( $response, tribe_is_truthy( $raw ) ) ) {
 			return $response;
 		}
 
@@ -223,9 +223,9 @@ class Requests extends Abstract_Requests {
 	 *
 	 * @return bool
 	 */
-	protected static function is_unauthorized_response( $response, bool $raw = false ): bool {
+	private static function is_unauthorized_response( $response, bool $raw = false ): bool {
 		if ( $raw ) {
-			return 401 === (int) wp_remote_retrieve_response_code( $response );
+			return 401 === absint( wp_remote_retrieve_response_code( $response ) );
 		}
 
 		if ( ! is_array( $response ) || empty( $response['errors'] ) || ! is_array( $response['errors'] ) ) {

@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
+use Tribe__Utils__Array as Arr;
 
 class Requests_Test extends WPTestCase {
 	/**
@@ -101,7 +103,7 @@ class Requests_Test extends WPTestCase {
 		add_action( 'tribe_log', $GLOBALS['tec_tickets_square_log_guard'], 10, 3 );
 
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 		delete_option( 'tec_tickets_commerce_square_token_refresh_lock_' . $merchant->get_mode() );
 		tribe_cache()->reset();
@@ -144,7 +146,7 @@ class Requests_Test extends WPTestCase {
 			return $pre;
 		}
 
-		$authorization        = (string) ( $args['headers']['Authorization'] ?? '' );
+		$authorization        = Arr::get( $args, [ 'headers', 'Authorization' ], '' );
 		$this->square_calls[] = $authorization;
 
 		if ( null !== $this->square_response_override ) {
@@ -189,7 +191,7 @@ class Requests_Test extends WPTestCase {
 	 */
 	protected function connect( array $overrides = [] ): Merchant {
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 		delete_option( 'tec_tickets_commerce_square_token_refresh_lock_' . $merchant->get_mode() );
 		$merchant->save_signup_data( array_merge( tec_tickets_tests_get_fake_merchant_data(), $overrides ) );
 		tribe_cache()->reset();

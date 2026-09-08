@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant as Stripe_Merchant;
 
 class Merchant_Test extends WPTestCase {
@@ -11,27 +12,8 @@ class Merchant_Test extends WPTestCase {
 	 */
 	public function restore_merchant_data(): void {
 		$merchant = tribe( Merchant::class );
-		$merchant->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
-	}
-
-	/**
-	 * Replaces the stored signup data, keeping the rest of the fixture intact.
-	 *
-	 * @param array    $overrides Values to override.
-	 * @param string[] $remove    Keys to drop entirely.
-	 */
-	protected function set_signup_data( array $overrides = [], array $remove = [] ): Merchant {
-		$merchant = tribe( Merchant::class );
-		$data     = array_merge( tec_tickets_tests_get_fake_merchant_data(), $overrides );
-
-		foreach ( $remove as $key ) {
-			unset( $data[ $key ] );
-		}
-
-		$merchant->save_signup_data( $data );
-
-		return $merchant;
 	}
 
 	/**
@@ -62,9 +44,10 @@ class Merchant_Test extends WPTestCase {
 		update_option( 'timezone_string', 'Pacific/Kiritimati' );
 
 		try {
-			$merchant = $this->set_signup_data( [ 'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() - HOUR_IN_SECONDS ) ] );
+			$expires_at = gmdate( 'Y-m-d\TH:i:s\Z', time() - HOUR_IN_SECONDS );
+			$merchant   = $this->set_signup_data( [ 'expires_at' => $expires_at ] );
 
-			$this->assertTrue( $merchant->is_token_expired() );
+			$this->assertSame( strtotime( $expires_at ), $merchant->get_token_expiration()->getTimestamp() );
 		} finally {
 			update_option( 'timezone_string', $original );
 		}
@@ -93,7 +76,7 @@ class Merchant_Test extends WPTestCase {
 	public function it_should_not_treat_an_unknown_expiration_as_expired(): void {
 		$merchant = $this->set_signup_data( [], [ 'expires_at' ] );
 
-		$this->assertFalse( $merchant->is_token_expired() );
+		$this->assertNull( $merchant->get_token_expiration() );
 		$this->assertTrue( $merchant->is_connected() );
 	}
 
@@ -103,7 +86,6 @@ class Merchant_Test extends WPTestCase {
 	public function it_should_report_an_expiring_token(): void {
 		$merchant = $this->set_signup_data( [ 'expires_at' => gmdate( 'Y-m-d\TH:i:s\Z', time() + 2 * DAY_IN_SECONDS ) ] );
 
-		$this->assertFalse( $merchant->is_token_expired() );
 		$this->assertTrue( $merchant->is_token_expiring_within( 3 * DAY_IN_SECONDS ) );
 		$this->assertFalse( $merchant->is_token_expiring_within( DAY_IN_SECONDS ) );
 	}
@@ -116,13 +98,13 @@ class Merchant_Test extends WPTestCase {
 
 		$this->assertTrue( $merchant->is_connected() );
 
-		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 
 		$this->assertTrue( $merchant->is_token_invalid() );
 		$this->assertFalse( $merchant->is_connected() );
 		$this->assertFalse( $merchant->is_active() );
 
-		$merchant->delete_refresh_status();
+		tribe( Refresh_Status::class )->delete();
 
 		$this->assertTrue( $merchant->is_connected() );
 	}
@@ -135,32 +117,10 @@ class Merchant_Test extends WPTestCase {
 	public function it_should_not_share_state_with_stripe(): void {
 		$merchant = tribe( Merchant::class );
 
-		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 
-		$this->assertNotSame( Stripe_Merchant::$merchant_unauthorized_option_key, $merchant->get_refresh_status_option_key() );
-		$this->assertNotSame( Stripe_Merchant::$merchant_deauthorized_option_key, $merchant->get_refresh_status_option_key() );
 		$this->assertEmpty( get_option( Stripe_Merchant::$merchant_unauthorized_option_key ) );
 		$this->assertEmpty( get_option( Stripe_Merchant::$merchant_deauthorized_option_key ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_scope_the_token_status_to_the_mode(): void {
-		$merchant = tribe( Merchant::class );
-		$original = $merchant->get_mode();
-
-		try {
-			$merchant->set_mode( 'live' );
-			$live = $merchant->get_refresh_status_option_key();
-
-			$merchant->set_mode( 'sandbox' );
-			$sandbox = $merchant->get_refresh_status_option_key();
-
-			$this->assertNotSame( $live, $sandbox );
-		} finally {
-			$merchant->set_mode( $original );
-		}
 	}
 
 	/**
@@ -217,7 +177,6 @@ class Merchant_Test extends WPTestCase {
 
 		$this->assertSame( '', get_option( $merchant->get_signup_data_key() )['expires_at'] );
 		$this->assertNull( $merchant->get_token_expiration() );
-		$this->assertFalse( $merchant->is_token_expired() );
 	}
 
 	/**
@@ -237,14 +196,34 @@ class Merchant_Test extends WPTestCase {
 	public function it_should_clear_the_token_status_on_reconnect_and_disconnect(): void {
 		$merchant = tribe( Merchant::class );
 
-		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 		$merchant->save_signup_data( tec_tickets_tests_get_fake_merchant_data() );
 
 		$this->assertFalse( $merchant->is_token_invalid() );
 
-		$merchant->update_refresh_status( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
+		tribe( Refresh_Status::class )->update( [ 'invalid_at' => '2026-01-01 00:00:00' ] );
 		$merchant->delete_signup_data();
 
 		$this->assertFalse( $merchant->is_token_invalid() );
 	}
+
+	/**
+	 * Replaces the stored signup data, keeping the rest of the fixture intact.
+	 *
+	 * @param array    $overrides Values to override.
+	 * @param string[] $remove    Keys to drop entirely.
+	 */
+	protected function set_signup_data( array $overrides = [], array $remove = [] ): Merchant {
+		$merchant = tribe( Merchant::class );
+		$data     = array_merge( tec_tickets_tests_get_fake_merchant_data(), $overrides );
+
+		foreach ( $remove as $key ) {
+			unset( $data[ $key ] );
+		}
+
+		$merchant->save_signup_data( $data );
+
+		return $merchant;
+	}
+
 }
