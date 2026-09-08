@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Resolved an issue where the attendees REST API archive could return a
+  JSON object instead of an array when an attendee could not be formatted,
+  preventing the Event Tickets Plus App from listing attendees.
+timestamp: 2026-09-08T01:02:58.757Z

@@ -82,6 +82,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @param WP_REST_Request $request
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 * @since TBD Reindexes the attendees so the response always encodes them as a JSON array.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -181,7 +182,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/attendees/' ) );
 		$data['total']       = $found;
 		$data['total_pages'] = $total_pages;
-		$data['attendees']   = $attendees;
+
+		/*
+		 * Attendees the provider cannot hydrate are dropped from the fetched set, which leaves gaps in
+		 * its keys; encoded as-is those gaps turn the list into a JSON object and consumers expecting an
+		 * array stop rendering it.
+		 */
+		$data['attendees'] = array_values( $attendees );
 
 		$headers = [
 			'X-ET-TOTAL'       => $data['total'],
