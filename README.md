@@ -77,3 +77,83 @@ archiving it once (after the last repository merges, not per repo). Install it w
 /plugin marketplace add the-events-calendar/skills
 /plugin install tec
 ```
+
+## Running the tests
+
+PHP tests are Codeception/wp-browser suites run inside Docker by [slic](https://github.com/stellarwp/slic), the same runner CI uses.
+
+### Setup
+
+Event Tickets does not test alone. CI clones **the-events-calendar as a sibling directory** of `event-tickets` (plus `events-pro` for the CT1/FT suites) and points slic at the shared parent. This layout is the thing people get wrong — the suites activate `the-events-calendar/the-events-calendar.php` by path relative to the plugins directory.
+
+```bash
+# 1. One parent directory holding every plugin side by side.
+mkdir -p ~/plugins && cd ~/plugins
+git clone --recurse-submodules git@github.com:the-events-calendar/event-tickets.git
+git clone --recurse-submodules git@github.com:the-events-calendar/the-events-calendar.git
+git clone --recurse-submodules git@github.com:the-events-calendar/events-pro.git   # ct1_*/ft_*/slr_ecp_* only
+git clone https://github.com/stellarwp/slic.git
+# => ~/plugins/{event-tickets,the-events-calendar,events-pro,slic}
+
+# 2. Point slic at that parent.
+./slic/slic here
+./slic/slic build-subdir off
+./slic/slic xdebug off
+
+# 3. Install deps for every plugin AND every common, in this order.
+./slic/slic use the-events-calendar        && ./slic/slic composer install --no-dev
+./slic/slic use the-events-calendar/common && ./slic/slic composer install --no-dev
+./slic/slic use events-pro                 && ./slic/slic composer install --no-dev   # if cloned
+./slic/slic use event-tickets/common       && ./slic/slic composer install --no-dev
+./slic/slic use event-tickets              && ./slic/slic composer install
+
+# 4. Start WordPress and the themes the suites expect.
+./slic/slic up wordpress
+./slic/slic wp theme install twentytwenty --activate
+./slic/slic wp theme install kadence       # square_integration runs on this theme
+```
+
+`slic use event-tickets` must come last — it selects the plugin whose suites run.
+
+### Running a suite
+
+```bash
+cd ~/plugins && ./slic/slic use event-tickets
+
+./slic/slic run integration                                              # whole suite
+./slic/slic run integration tests/integration/RSVP_Tickets_Test.php      # one file
+./slic/slic run integration tests/integration/RSVP_Tickets_Test.php:test_ticket_with_stock
+./slic/slic run wpunit --filter test_ticket_stock                        # by name
+```
+
+Never run `slic run` with no suite — WordPress globals leak across suites and everything fails.
+
+### Suites
+
+Every suite below runs on each PR that touches PHP files. `acceptance` is commented out of the CI matrix and is not run.
+
+| Suite | Covers | Workflow |
+|---|---|---|
+| `functional` | Browser-less request/response tests (WPBrowser + DB dump) | tests-php.yml |
+| `integration` | Core ET integration tests with TEC active | tests-php.yml |
+| `wpunit` | Unit-level tests booted inside WordPress | tests-php.yml |
+| `restv1` | Legacy `tribe/tickets/v1` REST API | tests-php.yml |
+| `rest_tec_v1_integration` | New `tec/v1` REST API; CI also Spectral-lints the OpenAPI docs | tests-php.yml |
+| `views_integration` | Template/view rendering | tests-php.yml |
+| `commerce_integration` | Tickets Commerce: orders, gateways, checkout | tests-php.yml |
+| `slr_integration` | Seating (layouts/reservations) with TEC | tests-php.yml |
+| `square_integration` | Square gateway, on the Kadence theme | tests-php.yml |
+| `ct1_integration` | Custom Tables v1 with TEC + ECP | tests-php-ct1.yml |
+| `slr_ecp_integration` | Seating combined with Events Calendar Pro | tests-php-ct1.yml |
+| `order_modifiers_integration` | Fees, coupons, other order modifiers | tests-php-ct1.yml |
+| `ft_smoketest` | Flexible Tickets smoke tests against a seeded dump | tests-php-ft.yml |
+| `ft_integration` | Flexible Tickets / Series Passes with TEC + ECP | tests-php-ft.yml |
+| `ft_ct1_migration` | Flexible Tickets migration onto CT1 tables | tests-php-ft.yml |
+| `acceptance` | Chrome/WebDriver e2e (`slic up chrome`, `slic npm run build`) | none |
+
+### How this differs from CI
+
+- CI pins WordPress with `slic wp core update --force --version=6.8`; locally the container's shipped version is fine unless chasing a version-specific failure.
+- CI appends `--ext DotReporter` (compact logs) and installs `twentytwentyfour` as well; neither matters locally.
+- CI runs `slic npm install && slic npm run build` only for `acceptance`, which is disabled.
+- CI checks out sibling plugins on a matching branch via its `smart-checkout` action; locally check out the branches you need by hand.
