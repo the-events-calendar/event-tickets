@@ -1291,6 +1291,7 @@ class Attendees extends Controller {
 	 * have not been cloned to the Event.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Let the row actions render for the per-Occurrence clone Attendee, which carries a real checkin status.
 	 *
 	 * @param array<int,string>   $row_actions Array of row action links.
 	 * @param array<string,mixed> $item        The array representation of the item.
@@ -1299,6 +1300,11 @@ class Attendees extends Controller {
 	 */
 	public function filter_attendees_row_actions( array $row_actions, array $item ): array {
 		if ( Series_Passes::TICKET_TYPE !== $item['ticket_type'] ) {
+			return $row_actions;
+		}
+
+		if ( $this->attendee_is_clone_of( (int) $item['attendee_id'] ) ) {
+			// This is the per-Occurrence clone: it carries a real checkin status, let the actions render normally.
 			return $row_actions;
 		}
 
@@ -1319,6 +1325,7 @@ class Attendees extends Controller {
 	 * Filters the attendee table check-in column.
 	 *
 	 * @since 5.9.1
+	 * @since TBD Let the column render for the per-Occurrence clone Attendee, which carries a real checkin status.
 	 *
 	 * @param string              $html The HTML content of the column.
 	 * @param array<string,mixed> $item The array representation of the item.
@@ -1327,6 +1334,11 @@ class Attendees extends Controller {
 	 */
 	public function filter_attendees_table_column_check_in( string $html, array $item ) {
 		if ( Series_Passes::TICKET_TYPE !== $item['ticket_type'] ) {
+			return $html;
+		}
+
+		if ( $this->attendee_is_clone_of( (int) $item['attendee_id'] ) ) {
+			// This is the per-Occurrence clone: it carries a real checkin status, let it render normally.
 			return $html;
 		}
 
