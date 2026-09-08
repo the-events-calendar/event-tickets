@@ -2,17 +2,22 @@
 
 namespace TEC\Tickets\Admin\Attendees;
 
+use Tribe\Tests\Traits\With_Uopz;
+use Codeception\TestCase\WPTestCase;
+
 /**
  * @covers \TEC\Tickets\Admin\Attendees\Provider
  *
- * Regression coverage for SMTNC-1897: the provider decided whether to wire the
+ * The provider decided whether to wire the
  * admin-only Attendees screens by running a capability check inside register(),
  * which the container executes while it is still being built on `plugins_loaded`.
  * On the front end that resolved the current user - auth cookie validation plus a
  * usermeta capabilities read - before `init`, on every single request, to reach a
  * conclusion no front-end request ever uses.
  */
-class ProviderTest extends \Codeception\TestCase\WPTestCase {
+class ProviderTest extends WPTestCase {
+
+	use With_Uopz;
 
 	/**
 	 * How many times user_can_manage_attendees() reached its capability list.
@@ -35,16 +40,19 @@ class ProviderTest extends \Codeception\TestCase\WPTestCase {
 
 		add_filter(
 			'tribe_tickets_caps_can_manage_attendees',
-			function ( $caps ) {
-				++$this->cap_checks;
-
-				return $caps;
-			}
+			[ $this, 'count_cap_check' ]
 		);
 	}
 
+	public function count_cap_check( $caps ) {
+		++$this->cap_checks;
+
+		return $caps;
+	}
+
 	public function tearDown(): void {
-		unset( $GLOBALS['current_screen'] );
+		remove_filter( 'tribe_tickets_caps_can_manage_attendees', [ $this, 'count_cap_check' ] );
+		unset( $GLOBALS['current_screen'], $GLOBALS['typenow'], $GLOBALS['taxnow'] );
 
 		parent::tearDown();
 	}
@@ -89,7 +97,7 @@ class ProviderTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_check_capabilities_on_admin_requests(): void {
-		set_current_screen( 'edit-post' );
+		$this->set_fn_return( 'is_admin', true );
 
 		$this->make_provider()->register();
 
@@ -104,7 +112,7 @@ class ProviderTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_wire_the_admin_attendees_screens_for_a_permitted_admin_user(): void {
-		set_current_screen( 'edit-post' );
+		$this->set_fn_return( 'is_admin', true );
 
 		$this->make_provider()->register();
 
