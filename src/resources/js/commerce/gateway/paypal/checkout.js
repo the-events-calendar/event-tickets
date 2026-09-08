@@ -76,6 +76,25 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.isGenericError = true;
 
 	/**
+	 * Whether a payment is currently waiting on PayPal or on our endpoints.
+	 *
+	 * @since 5.29.4
+	 *
+	 * @type {boolean}
+	 */
+	obj.paymentInFlight = false;
+
+	/**
+	 * Whether the client token expired while a payment was in flight, so the reload it asked for was
+	 * deferred until the buyer is idle again.
+	 *
+	 * @since 5.29.4
+	 *
+	 * @type {boolean}
+	 */
+	obj.reloadWhenIdle = false;
+
+	/**
 	 * PayPal Checkout Selectors.
 	 *
 	 * @since 5.1.9
@@ -102,6 +121,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the creation of the orders via PayPal.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Marks the payment as no longer in flight.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -110,6 +130,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCancel = function ( data, $container ) {
 		tribe.tickets.debug.log( 'handleCancel', arguments );
+		obj.paymentInFlight = false;
 		$container.removeClass( obj.selectors.activePayment.className() );
 		obj.triggerCancelOrder( $container, data.orderID, null, null );
 	};
@@ -118,6 +139,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the creation of the orders via PayPal.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Clears the loader, which nothing else does when PayPal itself reports the error.
 	 *
 	 * @param {Object} error      PayPal data passed to this method.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -125,6 +147,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+		obj.paymentInFlight = false;
+
 		// Bail out if there were other errors.
 		if ( ! obj.isGenericError ) {
 			// reset the flag.
@@ -133,6 +157,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 		}
 		tribe.tickets.debug.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
+		tribe.tickets.loader.hide( $container );
 
 		obj.showNotice( $container, error.title, error.content );
 	};
@@ -141,6 +166,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the click when one of the buttons were clicked.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Takes a reload the client token deferred while a payment was in flight.
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -148,6 +174,11 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleClick = function ( $container ) {
 		tribe.tickets.debug.log( 'handleClick', arguments );
+
+		if ( obj.takeDeferredReload() ) {
+			return;
+		}
+
 		$container.addClass( obj.selectors.activePayment.className() );
 		obj.hideNotice( $container );
 	};
@@ -165,6 +196,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
+		obj.paymentInFlight = true;
 
 		return fetch( obj.orderEndpointUrl, {
 			method: 'POST',
@@ -210,6 +242,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 * @since 5.2.0 $container Param added.
+	 * @since 5.29.4 Ends the payment rather than leaving the loader up.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} data       Data returning from our endpoint.
@@ -218,7 +251,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderFail = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
-		obj.showNotice( $container, data.message, '' );
+		obj.endPayment( $container, obj.getFailureMessage( data ) );
 		obj.isGenericError = false;
 	};
 
@@ -227,6 +260,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 * @since 5.2.0 $container Param added.
+	 * @since 5.29.4 Ends the payment with a message instead of returning silently.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
@@ -235,6 +269,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderError = function ( $container, error ) {
 		tribe.tickets.debug.log( 'handleCreateOrderError', arguments );
+		obj.endPayment( $container, tecTicketsCommerceGatewayPayPalCheckout.requestFailedMessage );
+		obj.isGenericError = false;
 	};
 
 	/**
@@ -270,7 +306,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 				}
 				return obj.handleApproveFail( data, actions, $container );
 			} )
-			.catch( obj.handleApproveError );
+			.catch( ( error ) => obj.handleApproveError( error, $container ) );
 	};
 
 	/**
@@ -305,18 +341,26 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 		} )
 			.then( ( response ) => response.json() )
 			.then( ( data ) => {
-				if ( data.success ) {
-					return obj.handleCheckSuccess( data, actions, $container );
+				if ( ! data.success ) {
+					return obj.handleApproveFail( data, actions, $container );
 				}
-				return obj.handleApproveFail( data, actions, $container );
+
+				// The capture settled the order, so there is nothing left for the recheck to wait on
+				// and no second round trip to be blocked on.
+				if ( data.redirect_url ) {
+					return obj.handleApproveSuccess( data, actions, $container );
+				}
+
+				return obj.handleCheckSuccess( data, actions, $container );
 			} )
-			.catch( obj.handleApproveError );
+			.catch( ( error ) => obj.handleApproveError( error, $container ) );
 	};
 
 	/**
 	 * When a successful request is completed to our Approval endpoint.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Ends the payment when the response carries no destination.
 	 *
 	 * @param         actions
 	 * @param         $container
@@ -326,6 +370,12 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleApproveSuccess = ( data, actions, $container ) => {
 		tribe.tickets.debug.log( 'handleApproveSuccess', data, actions );
+
+		if ( ! data.redirect_url ) {
+			obj.endPayment( $container, tecTicketsCommerceGatewayPayPalCheckout.requestFailedMessage );
+			return;
+		}
+
 		// If the Token has expired we refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
@@ -334,6 +384,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a failed request is completed to our Approval endpoint.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Stopped reading the error shape unguarded.
 	 *
 	 * @param         actions
 	 * @param         $container
@@ -343,34 +394,87 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleApproveFail = ( data, actions, $container ) => {
 		tribe.tickets.debug.log( 'handleApproveFail', data, actions );
-
-		if ( 'UNPROCESSABLE_ENTITY' === data.data.name ) {
-			if ( 'INSTRUMENT_DECLINED' === data.data.details[ 0 ].issue ) {
-				obj.showNotice( $container, '', data.data.details[ 0 ].description );
-				// Recoverable state, per:
-				// return actions.restart();
-				// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
-			} else {
-				obj.showNotice( $container, '', data.message );
-			}
-		} else {
-			obj.showNotice( $container, '', data.message );
-		}
-
-		tribe.tickets.loader.hide( $container );
+		obj.endPayment( $container, obj.getFailureMessage( data ) );
 	};
 
 	/**
 	 * When a error happens on the fetch request to our Approval endpoint.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Ends the payment with a message instead of returning silently.
 	 *
-	 * @param {Object} error Which error the fetch() threw on requesting our endpoints.
+	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
+	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
 	 * @return {void}
 	 */
-	obj.handleApproveError = function ( error ) {
+	obj.handleApproveError = function ( error, $container ) {
 		tribe.tickets.debug.log( 'handleApproveError', arguments );
+		obj.endPayment( $container, tecTicketsCommerceGatewayPayPalCheckout.requestFailedMessage );
+	};
+
+	/**
+	 * Takes the buyer off the loader and tells them where the payment ended.
+	 *
+	 * Every path out of a payment has to come through here. A handler that returns without clearing
+	 * the loader leaves the buyer watching a spinner with no way to tell whether they were charged.
+	 *
+	 * @since 5.29.4
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 * @param {string} message    What to tell the buyer.
+	 *
+	 * @return {void}
+	 */
+	obj.endPayment = ( $container, message ) => {
+		obj.paymentInFlight = false;
+
+		if ( ! $container || ! $container.length ) {
+			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
+		}
+
+		$container.removeClass( obj.selectors.activePayment.className() );
+		tribe.tickets.loader.hide( $container );
+		obj.showNotice( $container, '', message );
+	};
+
+	/**
+	 * Reads the message for a rejected payment out of whichever shape the endpoint answered with.
+	 *
+	 * @since 5.29.4
+	 *
+	 * @param {Object} data Data returning from our endpoint.
+	 *
+	 * @return {string} The message to show the buyer.
+	 */
+	obj.getFailureMessage = ( data ) => {
+		const details = data?.data?.details;
+		const declined = Array.isArray( details ) ? details[ 0 ] : null;
+
+		// Recoverable state, per:
+		// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+		if ( 'INSTRUMENT_DECLINED' === declined?.issue && declined?.description ) {
+			return declined.description;
+		}
+
+		return data?.message || tecTicketsCommerceGatewayPayPalCheckout.requestFailedMessage;
+	};
+
+	/**
+	 * Performs a reload the client token asked for while a payment was in flight.
+	 *
+	 * @since 5.29.4
+	 *
+	 * @return {boolean} Whether the browser is now navigating away.
+	 */
+	obj.takeDeferredReload = () => {
+		if ( ! obj.reloadWhenIdle ) {
+			return false;
+		}
+
+		window.location.replace( window.location.href );
+
+		return true;
 	};
 
 	/**
@@ -494,12 +598,18 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Redirect the user back to the checkout page when the Token is expired so it gets refreshed properly.
 	 *
 	 * @since 5.1.9
+	 * @since 5.29.4 Defers the reload while a payment is in flight.
 	 *
 	 * @param {jQuery} $container jQuery Object.
 	 */
 	obj.timeoutRedirect = ( $container ) => {
-		// Prevent redirecting when a payment is engaged.
-		if ( $container.is( obj.selectors.activePayment.className() ) ) {
+		// Prevent redirecting when a payment is engaged. A card authentication such as BankID is
+		// exactly the payment long enough to outlast the token: reloading through it abandons the
+		// PayPal order the buyer is authenticating against, and their retry leaves a second pending
+		// order behind. The class is matched with the dotted selector because className() strips the
+		// dot for hasClass, and is() reads the bare name as a tag, which never matches.
+		if ( obj.paymentInFlight || $container.is( obj.selectors.activePayment ) ) {
+			obj.reloadWhenIdle = true;
 			return;
 		}
 
@@ -780,6 +890,11 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.onHostedSubmit = ( event, cardFields, $container ) => {
 		event.preventDefault();
 
+		if ( obj.takeDeferredReload() ) {
+			return;
+		}
+
+		obj.paymentInFlight = true;
 		tribe.tickets.loader.show( $container );
 
 		cardFields
@@ -803,6 +918,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleHostedCaptureError = ( error, $container ) => {
 		tribe.tickets.debug.log( 'handleHostedCaptureError', error );
+		obj.paymentInFlight = false;
 		tribe.tickets.loader.hide( $container );
 
 		if ( ! obj.isGenericError ) {
@@ -865,10 +981,16 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			.then( ( response ) => response.json() )
 			.then( ( data ) => {
 				tribe.tickets.debug.log( data );
-				if ( data.success ) {
-					return obj.handleCheckSuccess( data, actions, $container );
+
+				if ( ! data.success ) {
+					return obj.handleHostedApproveFail( data, actions, $container );
 				}
-				return obj.handleHostedApproveFail( data, actions, $container );
+
+				if ( data.redirect_url ) {
+					return obj.handleApproveSuccess( data, actions, $container );
+				}
+
+				return obj.handleCheckSuccess( data, actions, $container );
 			} )
 			.catch( ( error ) => {
 				obj.handleHostedApproveError( error, $container );
@@ -897,6 +1019,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a failed request is completed to our Approval endpoint.
 	 *
 	 * @since 5.2.0
+	 * @since 5.29.4 Stopped reading the error shape unguarded.
 	 *
 	 * @param         actions
 	 * @param         $container
@@ -906,26 +1029,14 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleHostedApproveFail = ( data, actions, $container ) => {
 		tribe.tickets.debug.log( 'handleHostedApproveFail', data, actions, $container );
-		if ( 'UNPROCESSABLE_ENTITY' === data.data.name ) {
-			if ( 'INSTRUMENT_DECLINED' === data.data.details[ 0 ].issue ) {
-				obj.showNotice( $container, '', data.data.details[ 0 ].description );
-				// Recoverable stawte, per:
-				// return actions.restart();
-				// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
-			} else {
-				obj.showNotice( $container, '', data.message );
-			}
-		} else {
-			obj.showNotice( $container, '', data.message );
-		}
-
-		tribe.tickets.loader.hide( $container );
+		obj.endPayment( $container, obj.getFailureMessage( data ) );
 	};
 
 	/**
 	 * When a error happens on the fetch request to our Approval endpoint.
 	 *
 	 * @since 5.2.0
+	 * @since 5.29.4 Ends the payment with a message instead of only hiding the loader.
 	 *
 	 * @param         $container
 	 * @param {...any} rest
@@ -934,8 +1045,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleHostedApproveError = ( error, $container, ...rest ) => {
-		tribe.tickets.loader.hide( $container );
 		tribe.tickets.debug.log( 'handleHostedApproveError', error, rest );
+		obj.endPayment( $container, tecTicketsCommerceGatewayPayPalCheckout.requestFailedMessage );
 	};
 
 	/**
