@@ -20,7 +20,6 @@ class RsvpGoingCest {
 
 		// Set tribe options.
 		$I->setTribeOption( 'toggle_blocks_editor', 1 );
-		$I->setTribeOption( 'tickets_rsvp_use_new_views', 1 );
 	}
 
 	/*

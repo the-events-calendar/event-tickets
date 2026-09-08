@@ -40,7 +40,6 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 		$this->container->singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', [ 'hook' ] );
 		$this->container->singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', [ 'hook' ] );
 		$this->container->singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', [ 'hook' ] );
-		$this->container->singleton( 'tickets.admin.settings.display', 'Tribe__Tickets__Admin__Display_Settings', [ 'hook' ] );
 
 		// Status Manager
 		$this->container->singleton( 'tickets.status', 'Tribe__Tickets__Status__Manager', [ 'hook' ] );
@@ -89,7 +88,6 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 			tribe( 'tickets.admin.columns' );
 			tribe( 'tickets.admin.screen-options' );
 			tribe( 'tickets.admin.notices' );
-			tribe( 'tickets.admin.settings.display' );
 		}
 	}
 }
