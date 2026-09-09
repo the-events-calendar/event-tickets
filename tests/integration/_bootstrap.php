@@ -5,6 +5,33 @@ use TEC\Tickets\Commerce\Module as Commerce_Module;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
+/*
+ * Turn a `tribe_exit()` into a failing test rather than a dead run.
+ *
+ * Codeception's shutdown handler cannot tell a deliberate exit from a crash: it finds no fatal
+ * error, prints "COMMAND DID NOT FINISH PROPERLY." and exits 255, with no test name and no stack.
+ * Registered below the default priority so the tests that already install their own handler keep
+ * winning.
+ */
+add_filter(
+	'tribe_exit',
+	static function () {
+		return static function ( $status = '' ) {
+			throw new RuntimeException( 'tribe_exit() was called during a test: ' . var_export( $status, true ) );
+		};
+	},
+	5
+);
+
+/*
+ * Activating a plugin leaves a redirect flag behind, and the guided setup screens consume it on the
+ * first admin page load to send the user to onboarding. In tests that page load is whichever test
+ * first calls set_current_screen() as a capable user, and the redirect ends in tribe_exit().
+ */
+foreach ( [ '_tribe_events_activation_redirect', '_tec_tickets_activation_redirect', '_tec_tickets_wizard_redirect' ] as $tec_activation_redirect ) {
+	delete_transient( $tec_activation_redirect );
+}
+
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
 DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );

@@ -1,0 +1,4 @@
+Significance: minor
+Type: removed
+
+Removed the "Enable Updated Tickets Experience" and "Enable New RSVP Experience" settings and turned both on for every site. Sites still on the older views will see the redesigned ticket and RSVP forms, and their template overrides under tribe/tickets/blocks/ stop being used.

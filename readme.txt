@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.29.3.1
+Stable tag: 5.29.4
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -198,6 +198,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.29.4] 2026-09-03 =
+
+* Fix - Resolved a fatal error that could be triggered in the Tickets Commerce cart when the decoded ticket data was null.
+* Fix - Prevented the cart-to-checkout redirect and the checkout page from being stored by full-page and edge caches, resolving an issue where the Tickets Commerce checkout could show 'Oops, no tickets!' after selecting tickets.
+* Language - 5 new strings added, 75 updated, 0 fuzzied, and 9 obsoleted.
 
 = [5.29.3.1] 2026-08-26 =
 
