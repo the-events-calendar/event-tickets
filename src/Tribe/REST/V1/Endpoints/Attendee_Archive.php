@@ -82,6 +82,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @param WP_REST_Request $request
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 * @since TBD Stop narrowing a manage-access request by the related post status.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -123,9 +124,19 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		}
 
 		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
+			/*
+			 * A request with manage access is not narrowed by the status of the post the Attendee belongs to,
+			 * so no `event_status` default is set below and the filter is skipped entirely. Defaulting it to
+			 * `any` would not do: the filter downgrades `any` to `publish` for any request without a WP user
+			 * - which is every Event Tickets Plus App request, authorized by API key alone - and then joins
+			 * `wp_posts` on the Attendee to Event ID meta value. A Series Pass Attendee cloned to an
+			 * Occurrence holds a provisional Occurrence ID there, which has no `wp_posts` row, so every
+			 * cloned Attendee, and with it the check-in status the App reads, would be dropped from the
+			 * results. A status the request asked for explicitly still applies, having been mapped into
+			 * `event_status` above.
+			 */
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
-			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
 			$fetch_args['order_status'] = Tribe__Utils__Array::get( $fetch_args, 'order_status', 'any' );
 		} else {
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_READABLE;
