@@ -1,6 +1,7 @@
 significance: patch
 type: fix
-entry: Resolved an issue where the Tickets Commerce Orders report could fatal
-  when an order carried a fee or coupon for a ticket that was no longer part of
-  the event's sales data.
+entry: Seeded the per-status totals row from fee and coupon items as well as
+  ticket items, to avoid a fatal error on the Tickets Commerce Orders report
+  when an order carried a fee or coupon for a ticket that was no longer part
+  of the event's sales data.
 timestamp: 2026-09-08T01:58:38.986Z
