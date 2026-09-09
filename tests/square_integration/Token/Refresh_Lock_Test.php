@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square\Token;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Square\Merchant;
 
 class Refresh_Lock_Test extends WPTestCase {
@@ -86,12 +87,22 @@ class Refresh_Lock_Test extends WPTestCase {
 		$merchant   = tribe( Merchant::class );
 		$option_key = 'tec_tickets_commerce_square_signup_data_' . $merchant->get_mode();
 
-		// Stands in for the process holding the lock committing its refreshed credentials.
-		add_filter(
-			"option_{$option_key}",
-			static function ( $data ) {
-				return array_merge( is_array( $data ) ? $data : [], [ 'access_token' => 'renewed-by-the-winner' ] );
-			}
+		$committed                 = tec_tickets_tests_get_fake_merchant_data();
+		$committed['access_token'] = 'renewed-by-the-winner';
+
+		/*
+		 * Stands in for the process holding the lock committing its refreshed credentials. Written
+		 * straight to the row so this process's object cache stays stale, which is the state a waiter
+		 * is actually in; going through update_option() would prime the cache here and let the wait
+		 * succeed without ever re-reading anything.
+		 */
+		DB::query(
+			DB::prepare(
+				'UPDATE %i SET option_value = %s WHERE option_name = %s',
+				DB::prefix( 'options' ),
+				maybe_serialize( $committed ),
+				$option_key
+			)
 		);
 
 		$this->assertTrue( $this->lock()->wait_for_holder( tec_tickets_tests_get_fake_merchant_data()['access_token'] ) );

@@ -141,6 +141,10 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
+	 * Nothing calls this. The refresh runs through request_token_refresh(), which reports the response
+	 * code that telling a revoked grant from an outage depends on; this only survives because it is
+	 * public and released.
+	 *
 	 * @since 5.24.0
 	 * @since TBD Sends a POST; the endpoint answers 405 to the GET this used to send.
 	 *

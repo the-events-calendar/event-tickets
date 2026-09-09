@@ -15,14 +15,40 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
  * Class Refresh_Policy
  *
  * Answers "should this run now?" from the stored credentials and the refresh history alone: no
- * network, no writes, no locking. Every interval it works from is filterable, and every one of those
- * filters is the reason a method here exists.
+ * network, no writes, no locking.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
 final class Refresh_Policy {
+	/**
+	 * How long before its expiration the access token is refreshed, in seconds.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const REFRESH_WINDOW = DAY_IN_SECONDS;
+
+	/**
+	 * How often a connection with no recorded expiration retries, in seconds.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const UNKNOWN_EXPIRATION_INTERVAL = 12 * HOUR_IN_SECONDS;
+
+	/**
+	 * How long a rejected connection waits before it asks Square again, in seconds.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const INVALID_RECHECK_INTERVAL = 12 * HOUR_IN_SECONDS;
+
 	/**
 	 * Merchant instance.
 	 *
@@ -81,10 +107,10 @@ final class Refresh_Policy {
 			// Connected before the expiration was tracked: try occasionally until we learn a real one.
 			$last_attempt = $this->status->get_last_attempt_timestamp();
 
-			return null === $last_attempt || $last_attempt < time() - $this->get_unknown_expiration_interval();
+			return null === $last_attempt || $last_attempt < time() - self::UNKNOWN_EXPIRATION_INTERVAL;
 		}
 
-		return $expiration->getTimestamp() - $this->get_refresh_window() <= time();
+		return $expiration->getTimestamp() - self::REFRESH_WINDOW <= time();
 	}
 
 	/**
@@ -111,63 +137,9 @@ final class Refresh_Policy {
 		}
 
 		$backoff = $invalid
-			? $this->get_invalid_recheck_interval()
+			? self::INVALID_RECHECK_INTERVAL
 			: min( 12 * HOUR_IN_SECONDS, HOUR_IN_SECONDS * ( 2 ** min( 4, $failures - 1 ) ) );
 
 		return $last_attempt + $backoff > time();
-	}
-
-	/**
-	 * How long before the expiration a refresh is attempted, in seconds.
-	 *
-	 * @since TBD
-	 *
-	 * @return int The window, in seconds.
-	 */
-	private function get_refresh_window(): int {
-		/**
-		 * Filters how long before its expiration the Square access token is refreshed.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $window The window, in seconds.
-		 */
-		return absint( apply_filters( 'tec_tickets_commerce_square_token_refresh_window', DAY_IN_SECONDS ) );
-	}
-
-	/**
-	 * How often a connection with no recorded expiration retries, in seconds.
-	 *
-	 * @since TBD
-	 *
-	 * @return int The interval, in seconds.
-	 */
-	private function get_unknown_expiration_interval(): int {
-		/**
-		 * Filters how often a Square connection with no recorded expiration attempts a refresh.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $interval The interval, in seconds.
-		 */
-		return absint( apply_filters( 'tec_tickets_commerce_square_token_refresh_unknown_expiration_interval', 12 * HOUR_IN_SECONDS ) );
-	}
-
-	/**
-	 * How long a rejected connection waits before it asks Square again.
-	 *
-	 * @since TBD
-	 *
-	 * @return int The interval, in seconds.
-	 */
-	private function get_invalid_recheck_interval(): int {
-		/**
-		 * Filters how often a rejected Square connection re-checks whether it can be renewed after all.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $interval The interval, in seconds.
-		 */
-		return absint( apply_filters( 'tec_tickets_commerce_square_token_invalid_recheck_interval', 12 * HOUR_IN_SECONDS ) );
 	}
 }

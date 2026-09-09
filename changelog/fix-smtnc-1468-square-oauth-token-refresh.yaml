@@ -1,8 +1,8 @@
 significance: patch
 type: fix
-entry: Resolved an issue where Tickets Commerce checkout failed with Square about 30 days after
-  connecting, by renewing the Square access token before it expired and retrying once when Square
-  rejected it. When Square would neither renew the credentials nor accept the stored token, the
-  gateway was shown as disconnected with an admin notice instead of reporting a healthy connection
-  while live charges failed.
+entry: Renewed the Square access token ahead of its expiration and retried a rejected request once
+  against the fresh one, which kept Tickets Commerce checkout from failing about 30 days after
+  connecting to Square. Where Square would neither renew the credentials nor accept the stored
+  token, the gateway reported itself as disconnected with an admin notice instead of showing a
+  healthy connection while live charges failed.
 timestamp: 2026-08-18T21:46:14.000Z

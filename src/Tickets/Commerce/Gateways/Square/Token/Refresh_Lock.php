@@ -51,7 +51,8 @@ final class Refresh_Lock {
 	/**
 	 * How often to re-read the credentials while waiting, in microseconds.
 	 *
-	 * Each poll drops the options cache, so this is coarse enough to keep the count down over the wait.
+	 * Each poll is one indexed row read, so this only has to be fine enough to hand the waiter its
+	 * token promptly once the holder writes it.
 	 *
 	 * @since TBD
 	 *
@@ -207,6 +208,10 @@ final class Refresh_Lock {
 			usleep( self::POLL );
 
 			$waited += self::POLL;
+
+			if ( $this->merchant->get_access_token_uncached() === $previous_token ) {
+				continue;
+			}
 
 			$this->merchant->flush_option_cache();
 

@@ -546,6 +546,39 @@ class Token_Refresher_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_retry_a_rejected_connection_on_an_explicit_recheck(): void {
+		$merchant = $this->connect( $this->expiring_soon() );
+		$this->reject_connection();
+
+		$this->assertTrue( $this->policy()->is_backing_off() );
+		$this->assertFalse( $merchant->is_connected() );
+		$this->assertCount( 0, $this->whodat_calls );
+
+		$this->whodat_responses[] = $this->refresh_ok();
+
+		$this->assertTrue( $merchant->is_connected( true ) );
+		$this->assertCount( 1, $this->whodat_calls );
+		$this->assertFalse( $merchant->is_token_invalid() );
+		$this->assertSame( $this->fresh_credentials()['access_token'], $merchant->get_access_token() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_a_rejected_connection_rejected_when_the_recheck_fails(): void {
+		$merchant = $this->connect( $this->expiring_soon() );
+		$this->reject_connection();
+
+		$this->whodat_responses[] = $this->refresh_error_page( 401 );
+
+		$this->assertFalse( $merchant->is_connected( true ) );
+		$this->assertCount( 1, $this->whodat_calls );
+		$this->assertTrue( $merchant->is_token_invalid() );
+	}
+
+	/**
 	 * Answers WhoDat calls from the queued responses.
 	 *
 	 * @param mixed  $pre  The short-circuit value.
@@ -623,6 +656,20 @@ class Token_Refresher_Test extends WPTestCase {
 			'cookies'  => [],
 			'filename' => null,
 		];
+	}
+
+	/**
+	 * Puts the connection in the state a refusal Square just handed back leaves it in.
+	 */
+	protected function reject_connection(): void {
+		$now = gmdate( 'Y-m-d H:i:s' );
+
+		tribe( Refresh_Status::class )->update(
+			[
+				'invalid_at'      => $now,
+				'last_attempt_at' => $now,
+			]
+		);
 	}
 
 	protected function get_lock_key(): string {

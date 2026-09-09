@@ -137,17 +137,6 @@ final class Refresh_Outcome {
 	}
 
 	/**
-	 * Whether the refresh is worth trying again.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool True when the refresh is worth trying again.
-	 */
-	public function is_transient(): bool {
-		return self::TRANSIENT === $this->verdict;
-	}
-
-	/**
 	 * Returns the response code the refresh came back with.
 	 *
 	 * @since TBD

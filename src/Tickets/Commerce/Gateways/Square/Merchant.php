@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
@@ -86,6 +87,7 @@ class Merchant extends Abstract_Merchant {
 	 * Determines if the Merchant is connected.
 	 *
 	 * @since 5.24.0
+	 * @since TBD A recheck retries a rejected connection before reading its verdict back.
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -99,6 +101,16 @@ class Merchant extends Abstract_Merchant {
 			|| empty( $client_data['access_token'] )
 		) {
 			return false;
+		}
+
+		/*
+		 * An explicit recheck is somebody asking us to go and look, so the rejected connection gets one
+		 * more attempt at renewal before its own verdict is read back. Reading the flag first would
+		 * answer from it and never look, leaving a connection that started working again to sit out the
+		 * re-check interval.
+		 */
+		if ( $recheck && $this->is_token_invalid() ) {
+			tribe( Token_Refresher::class )->refresh_now( 'connection_recheck', true );
 		}
 
 		// A token Square refused to renew cannot be recovered without a new OAuth handshake.
@@ -157,6 +169,35 @@ class Merchant extends Abstract_Merchant {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( empty( $data['access_token'] ) ) {
+			return '';
+		}
+
+		return $data['access_token'];
+	}
+
+	/**
+	 * Returns the Square access token read straight from the database, bypassing the object cache.
+	 *
+	 * Callers that poll for another process's write cannot use the cached read: the signup data is
+	 * autoloaded, so seeing a fresh value means dropping the whole `alloptions` blob on every pass,
+	 * which a persistent object cache then rebuilds with a full scan of the options table.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The stored access token, or an empty string when there is none.
+	 */
+	public function get_access_token_uncached(): string {
+		$stored = DB::get_var(
+			DB::prepare(
+				'SELECT option_value FROM %i WHERE option_name = %s',
+				DB::prefix( 'options' ),
+				$this->get_signup_data_key()
+			)
+		);
+
+		$data = maybe_unserialize( $stored );
+
+		if ( ! is_array( $data ) || empty( $data['access_token'] ) ) {
 			return '';
 		}
 

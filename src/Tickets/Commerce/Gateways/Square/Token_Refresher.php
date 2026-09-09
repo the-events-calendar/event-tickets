@@ -131,17 +131,18 @@ final class Token_Refresher {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $reason Why the refresh was forced, for logging.
+	 * @param string $reason         Why the refresh was forced, for logging.
+	 * @param bool   $ignore_backoff Whether to attempt the refresh even inside the back-off window.
 	 *
 	 * @return bool Whether the stored access token is now different from the rejected one.
 	 */
-	public function refresh_now( string $reason = 'forced' ): bool {
+	public function refresh_now( string $reason = 'forced', bool $ignore_backoff = false ): bool {
 		if ( ! $this->merchant->get_refresh_token() ) {
 			return false;
 		}
 
 		// Without this a connection Square keeps rejecting would refresh once per Square API call.
-		if ( $this->policy->is_backing_off() ) {
+		if ( ! $ignore_backoff && $this->policy->is_backing_off() ) {
 			return false;
 		}
 
@@ -230,15 +231,6 @@ final class Token_Refresher {
 
 		$this->status->record_success();
 
-		/**
-		 * Fires after the Square access token has been refreshed.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $reason Why the refresh was attempted.
-		 */
-		do_action( 'tec_tickets_commerce_square_access_token_refreshed', $reason );
-
 		return true;
 	}
 
@@ -268,16 +260,6 @@ final class Token_Refresher {
 				'reason'        => $reason,
 			]
 		);
-
-		/**
-		 * Fires when Square refuses to renew the stored credentials.
-		 *
-		 * @since TBD
-		 *
-		 * @param int    $code   The response code the refresh came back with.
-		 * @param string $reason Why the refresh was attempted.
-		 */
-		do_action( 'tec_tickets_commerce_square_access_token_refresh_failed', $code, $reason );
 	}
 
 	/**
