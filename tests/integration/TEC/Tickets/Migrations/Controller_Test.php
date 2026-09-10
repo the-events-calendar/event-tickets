@@ -55,4 +55,36 @@ class Controller_Test extends Controller_Test_Case {
 
 		remove_filter( 'stellarwp_migrations_tec_filters', $add_tags );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_render_backup_notice_with_link_in_display_callback(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Capture the display callback when the tab is constructed.
+		$display_callback = null;
+		$capture          = static function ( $value, $id ) use ( &$display_callback ) {
+			if ( 'migrations' === $id ) {
+				$display_callback = $value;
+			}
+
+			return $value;
+		};
+		add_filter( 'tribe_settings_tab_display_callback', $capture, 10, 2 );
+
+		$controller->register_migrations_tab( 'tec-tickets-settings' );
+
+		remove_filter( 'tribe_settings_tab_display_callback', $capture );
+
+		$this->assertIsCallable( $display_callback, 'The migrations tab should register a display callback.' );
+
+		ob_start();
+		$display_callback();
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'notice notice-info inline notice-info--migration', $html );
+		$this->assertStringContainsString( 'We recommend doing a <a href="https://evnt.is/1bei" target="_blank" rel="noopener noreferrer">site backup</a> before starting migration.', $html );
+	}
 }

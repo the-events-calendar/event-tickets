@@ -1,8 +1,38 @@
-.tec-settings-form__migrations-tab--active {
-	grid-template-columns: 1fr;
+.tribe_settings {
 
-	> .wrap {
-		grid-column: 1;
-		padding-left: var(--tec-spacer-settings-form-right-gap);
+	.tec-settings-form {
+
+		> .notice.notice-info.notice-info--migration {
+			align-items: center;
+			background: var(--tec-admin-core-grey-0);
+			display: flex;
+			grid-column: 1;
+			margin-bottom: calc(var(--tec-spacer-2) * -1);
+			margin-left: 34px;
+			max-width: 765px;
+			padding-bottom: var(--tec-spacer-3);
+		}
+
+		/*
+			Hide the tag search field and individual migration tags using inline CSS
+			to avoid overriding the StellarWP migrations templates. Strategy requested
+			these fields to be hidden from the Event Tickets migrations tab.
+		*/
+
+		.stellarwp-migrations-filters__row,
+		.stellarwp-migration-card__tags {
+			display: none !important;
+		}
+
+		&__migrations-tab--active {
+			gap: 0;
+			grid-template-columns: 1fr;
+			padding-top: 0;
+
+			> .wrap {
+				grid-column: 1;
+				padding-left: var(--tec-spacer-settings-form-right-gap);
+			}
+		}
 	}
 }
