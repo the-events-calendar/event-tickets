@@ -18,6 +18,7 @@ use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
@@ -254,6 +255,7 @@ class Frontend extends Controller_Contract {
 	 * Returns the HTML content of the seat selection modal.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Recorded the issued token so the timer can verify it, and refused to render one that could not be recorded.
 	 *
 	 * @param int $post_id The post ID of the post to purchase tickets for.
 	 * @param int $timeout The timeout in seconds.
@@ -270,7 +272,19 @@ class Frontend extends Controller_Contract {
 
 		$ephemeral_token = $this->service->get_ephemeral_token( $ephemeral_token_ttl, 'visitor' );
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url      = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
+		$error           = $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '';
+
+		/*
+		 * Record the token the service just issued, so the timer can later tell it apart from a string
+		 * the visitor made up. Without that row the token is inert, so a failed write has to surface
+		 * here rather than as a rejected seat selection later.
+		 */
+		if ( $token && ! tribe( Sessions::class )->insert_or_update( $token, $post_id, time() + $ephemeral_token_ttl ) ) {
+			$token = '';
+			$error = __( 'Seat selection is unavailable right now. Please try again.', 'event-tickets' );
+		}
+
+		$iframe_url = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
 
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
@@ -283,7 +297,7 @@ class Frontend extends Controller_Contract {
 			[
 				'iframe_url'          => $iframe_url,
 				'token'               => $token,
-				'error'               => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
+				'error'               => $error,
 				'initial_total_text'  => _x( '0 Tickets', 'Seat selection modal initial total string', 'event-tickets' ),
 				'initial_total_price' => $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false ),
 				'post_id'             => $post_id,

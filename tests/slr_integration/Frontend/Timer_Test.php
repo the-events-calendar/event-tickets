@@ -368,12 +368,51 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
 		$this->assertEquals( 200, $wp_send_json_success_code );
-		$timeout = $timer->get_timeout( 23 );
-		$this->assertEquals( $timeout, $wp_send_json_success_data['secondsLeft'] );
+		$this->assertEqualsWithDelta( 100, $wp_send_json_success_data['secondsLeft'], 5 );
 		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
 	}
 
-	public function test_ajax_start_fails_if_session_upsert_fails(): void {
+	/**
+	 * A token the site never issued has no session row, so the timer must refuse to open one for it.
+	 */
+	public function test_ajax_start_rejects_a_token_the_site_never_issued(): void {
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'attacker-chosen-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		$wp_send_json_error_data = null;
+		$wp_send_json_error_code = null;
+		$this->set_fn_return( 'wp_send_json_error',
+			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
+				$wp_send_json_error_data = $data;
+				$wp_send_json_error_code = $code;
+			},
+			true );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
+
+		$this->assertEquals( 403, $wp_send_json_error_code );
+		$this->assertEquals( [ 'error' => 'Invalid session token' ], $wp_send_json_error_data );
+		$this->assertEquals(
+			0,
+			DB::get_var(
+				DB::prepare(
+					'SELECT COUNT(*) FROM %i WHERE token = %s',
+					Sessions::table_name(),
+					'attacker-chosen-token'
+				)
+			),
+			'No session row should have been created for an unissued token.'
+		);
+	}
+
+	public function test_ajax_start_fails_if_session_confirmation_fails(): void {
+		tribe( Sessions::class )->insert_or_update( 'test-token', 23, strtotime( '2100-01-01 00:00:00' ) );
+
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
 		$_REQUEST['token']       = 'test-token';
@@ -389,9 +428,43 @@ class Timer_Test extends Controller_Test_Case {
 				$wp_send_json_error_code = $code;
 			},
 			true );
-		// Mock the Sessions table dependency of the service to return `false` on the `insert_or_update` method.
+		// Mock the Sessions table dependency of the service to fail the token lookup.
 		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'insert_or_update' => false
+			'token_exists_for_post' => false
+		] ) );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
+
+		$this->assertEquals( 403, $wp_send_json_error_code );
+		$this->assertEquals( [
+			'error' => 'Invalid session token',
+		], $wp_send_json_error_data );
+	}
+
+	public function test_ajax_start_fails_if_the_timer_cannot_be_started(): void {
+		// The token is valid; only the write fails.
+		tribe( Sessions::class )->insert_or_update( 'test-token', 23, strtotime( '2100-01-01 00:00:00' ) );
+
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		$wp_send_json_error_data = null;
+		$wp_send_json_error_code = null;
+		$this->set_fn_return( 'wp_send_json_error',
+			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
+				$wp_send_json_error_data = $data;
+				$wp_send_json_error_code = $code;
+			},
+			true );
+
+		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
+			'token_exists_for_post' => true,
+			'start_timer'           => false,
 		] ) );
 
 		$timer = $this->make_controller();
@@ -400,9 +473,7 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
 
 		$this->assertEquals( 500, $wp_send_json_error_code );
-		$this->assertEquals( [
-			'error' => 'Failed to start timer',
-		], $wp_send_json_error_data );
+		$this->assertEquals( [ 'error' => 'Failed to start timer' ], $wp_send_json_error_data );
 	}
 
 	public function test_ajax_sync_with_stock(): void {

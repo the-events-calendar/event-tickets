@@ -431,6 +431,7 @@ class Timer extends Controller_Contract {
 	 * This request will create a new session in the database and will return the number of seconds left in the timer.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Rejected tokens the site never issued, before cancelling any previous session.
 	 *
 	 * @return void
 	 */
@@ -446,14 +447,25 @@ class Timer extends Controller_Contract {
 		$timeout = $this->get_timeout( $post_id );
 
 		// When starting a new session, we need to remove the previous sessions for the same post.
+		/* Validate before touching anything: cancelling runs off the cookie, not off this token. */
+		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid session token',
+				],
+				403
+			);
+
+			return;
+		}
+
 		$this->session->cancel_previous_for_object( $post_id, $token );
 
-		// We're in the context of an XHR/AJAX request: the browser will set the cookie for us.
 		$now        = microtime( true );
 		$expiration = (int) $now + $timeout;
 		$this->session->add_entry( $post_id, $token );
 
-		if ( ! $this->sessions->insert_or_update( $token, $post_id, $expiration ) ) {
+		if ( ! $this->sessions->start_timer( $token, $post_id, $expiration ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Failed to start timer',
@@ -466,7 +478,7 @@ class Timer extends Controller_Contract {
 
 		wp_send_json_success(
 			[
-				'secondsLeft' => $timeout,
+				'secondsLeft' => $this->sessions->get_seconds_left( $token ),
 				'timestamp'   => $now,
 			]
 		);
