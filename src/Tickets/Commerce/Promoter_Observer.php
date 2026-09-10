@@ -40,6 +40,8 @@ class Promoter_Observer {
 	 * Attach hooks for trigger messages.
 	 *
 	 * @since 5.3.2
+	 * @since TBD Watch the RSVP status meta, so an Attendee changing their going/not-going answer
+	 *            after the order is placed triggers too.
 	 */
 	public function hook() {
 
@@ -53,6 +55,8 @@ class Promoter_Observer {
 	 * Action fired when a TC attendee is created.
 	 *
 	 * @since 5.3.2
+	 * @since TBD Report TC-RSVP Attendees as an RSVP response rather than a purchase, so Promoter's
+	 *            RSVP triggers match. Previously every generated Attendee reported `ticket_purchased`.
 	 *
 	 * @param \WP_Post $attendee Attendee object.
 	 */
