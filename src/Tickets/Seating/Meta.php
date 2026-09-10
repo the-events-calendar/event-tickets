@@ -70,4 +70,17 @@ class Meta {
 	 * @var string
 	 */
 	public const META_KEY_RESERVATION_ID = '_tec_slr_reservation_id';
+
+	/**
+	 * Sanitizes a seat label before it is stored.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $seat_label The value to store as a seat label.
+	 *
+	 * @return string The seat label with any markup removed.
+	 */
+	public static function sanitize_seat_label( $seat_label ): string {
+		return is_string( $seat_label ) ? tec_sanitize_string( $seat_label ) : '';
+	}
 }

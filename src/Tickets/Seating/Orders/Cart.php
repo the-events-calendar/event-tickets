@@ -158,6 +158,7 @@ class Cart {
 	 * Saves the seat data for the attendee.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Sanitized the seat label.
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
@@ -172,7 +173,7 @@ class Cart {
 			$session_stack->next();
 			$reservation_id = $reservation_data['reservation_id'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, $reservation_id );
-			$seat_label = $reservation_data['seat_label'] ?? '';
+			$seat_label = Meta::sanitize_seat_label( $reservation_data['seat_label'] ?? '' );
 			update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seat_label );
 			$seat_type_id = $reservation_data['seat_type_id'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
