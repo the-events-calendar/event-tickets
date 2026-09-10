@@ -2,11 +2,11 @@
 
 	.tec-settings-form {
 
-		> .notice.notice-info.inline {
+		> .notice.notice-info.notice-info--migration {
 			align-items: center;
 			background: var(--tec-admin-core-grey-0);
 			display: flex;
-			grid-column-end: 1;
+			grid-column: 1;
 			margin-bottom: calc(var(--tec-spacer-2) * -1);
 			margin-left: 34px;
 			max-width: 765px;
@@ -27,6 +27,7 @@
 		&__migrations-tab--active {
 			gap: 0;
 			grid-template-columns: 1fr;
+			padding-top: 0;
 
 			> .wrap {
 				grid-column: 1;

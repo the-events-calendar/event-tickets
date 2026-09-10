@@ -101,10 +101,10 @@ class Controller extends Controller_Contract {
 					<?php
 					// The migration card template escapes its description, so the backup link is rendered here instead.
 					printf(
-						'<div class="notice notice-info inline"><p>%s</p></div>',
+						'<div class="notice notice-info inline notice-info--migration"><p>%s</p></div>',
 						sprintf(
 							// Translators: %1$s is the opening anchor tag for the site backup guide, %2$s is the closing anchor tag.
-							esc_html__( 'Just in case, we recommend doing a %1$ssite backup%2$s before starting migration.', 'event-tickets' ),
+							esc_html__( 'We recommend doing a %1$ssite backup%2$s before starting migration.', 'event-tickets' ),
 							'<a href="' . esc_url( 'https://evnt.is/1bei' ) . '" target="_blank" rel="noopener noreferrer">',
 							'</a>'
 						)
