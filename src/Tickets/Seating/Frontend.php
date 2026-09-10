@@ -445,6 +445,12 @@ class Frontend extends Controller_Contract {
 			'providerClass'             => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
 			'postId'                    => $post_id,
 			'ajaxUrl'                   => admin_url( 'admin-ajax.php' ),
+
+			/*
+			 * Seat selection is open to logged-out visitors, so this nonce ships in the page source
+			 * and WordPress computes the same value for every one of them. It is a request-origin
+			 * check only: the endpoints behind it must treat their input as public.
+			 */
 			'ajaxNonce'                 => wp_create_nonce( Ajax::NONCE_ACTION ),
 			'ACTION_POST_RESERVATIONS'  => Ajax::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
