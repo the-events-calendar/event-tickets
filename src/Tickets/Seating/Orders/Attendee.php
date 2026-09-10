@@ -14,6 +14,7 @@ use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
 use Tribe__Template as Template;
 use TEC\Tickets\Commerce\Attendee as Commerce_Attendee;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Meta;
 use WP_Query;
@@ -33,16 +34,19 @@ class Attendee {
 	 * Adds the attendee seat column to the attendee list.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Kept the column off the all-events list when no attendee has a seat.
 	 *
 	 * @param array<string,string> $columns The columns for the Attendees table.
-	 * @param int                  $event_id The event ID.
+	 * @param int                  $event_id The event ID, `0` when listing every event's attendees.
 	 *
 	 * @return array<string,string> The filtered columns for the Attendees table.
 	 */
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
-		$event_layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
+		$has_seating = $event_id
+			? tec_tickets_seating_enabled( $event_id )
+			: $this->site_has_seated_attendees();
 
-		if ( $event_id && empty( $event_layout_id ) ) {
+		if ( ! $has_seating ) {
 			return $columns;
 		}
 
@@ -435,5 +439,41 @@ class Attendee {
 		$render_context['ticket_totals']['available'] = array_sum( $available_by_seat_type );
 
 		return $render_context;
+	}
+
+	/**
+	 * Whether any Attendee on the site carries seating meta.
+	 *
+	 * The all-events list has no single event to check, and a list table's columns are all-or-nothing
+	 * for every row, so the closest the column can get to "this attendee has no seat" is to leave the
+	 * column out while no attendee has one. The key is written for every seated Attendee even when the
+	 * seat is unassigned, so its presence is the test rather than its value.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether any Attendee on the site carries seating meta.
+	 */
+	private function site_has_seated_attendees(): bool {
+		$cache = tribe_cache();
+		$key   = 'tec_tickets_seating_site_has_seated_attendees';
+
+		/* The cache reports a stored `false` as absent, so a site with no seating is kept as '0'. */
+		if ( isset( $cache[ $key ] ) ) {
+			return tribe_is_truthy( $cache[ $key ] );
+		}
+
+		global $wpdb;
+		$found = DB::get_var(
+			DB::prepare(
+				'SELECT 1 FROM %i WHERE meta_key = %s LIMIT 1',
+				$wpdb->postmeta,
+				Meta::META_KEY_ATTENDEE_SEAT_LABEL
+			)
+		);
+
+		$has_seated_attendees = tribe_is_truthy( $found );
+		$cache[ $key ]        = $has_seated_attendees ? '1' : '0';
+
+		return $has_seated_attendees;
 	}
 }

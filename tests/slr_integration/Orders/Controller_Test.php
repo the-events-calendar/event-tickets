@@ -789,6 +789,77 @@ class Controller_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The all-events list passes event id 0, so there is no single event to check; the column should
+	 * follow whether any attendee actually has a seat to show.
+	 *
+	 * @test
+	 * @covers Attendee::add_attendee_seat_column
+	 */
+	public function test_seat_column_follows_whether_any_attendee_is_seated() {
+		$columns = [ 'ticket' => 'Ticket', 'status' => 'Status' ];
+
+		tribe_cache()->reset();
+		$this->assertArrayNotHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, 0 ),
+			'With no seated attendee the column has nothing to show.'
+		);
+
+		/* Tribe__Cache reads a stored `false` back as absent, so the negative answer needs checking. */
+		$this->assertTrue(
+			isset( tribe_cache()['tec_tickets_seating_site_has_seated_attendees'] ),
+			'The no-seating answer should be cached rather than re-queried on every call.'
+		);
+
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Seated event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		/* A layout on the event is not a seated attendee: the column stays out until one exists. */
+		tribe_cache()->reset();
+		$this->assertArrayNotHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, 0 ),
+			'A configured layout alone should not bring the column back.'
+		);
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tribe_attendees()->by( 'event_id', $event_id )->first()->ID;
+
+		/* Written empty on purpose: a seated attendee with no assigned seat still carries the key. */
+		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
+
+		tribe_cache()->reset();
+		$this->assertArrayHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, 0 ),
+			'A seated attendee, even an unassigned one, belongs in the column.'
+		);
+
+		$unseated_id = tribe_events()->set_args(
+			[
+				'title'      => 'Unseated event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		$this->assertArrayNotHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, $unseated_id ),
+			'A single event with no layout should still be excluded.'
+		);
+	}
+
+	/**
 	 * @test
 	 * @covers Attendee::include_seat_info_in_email
 	 */
