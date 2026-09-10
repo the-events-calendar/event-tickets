@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fixed Promoter's "RSVP Going" and "RSVP Not Going" triggers never firing for RSVPs on the new RSVP experience, and added the missing trigger for an Attendee changing their response after the fact.

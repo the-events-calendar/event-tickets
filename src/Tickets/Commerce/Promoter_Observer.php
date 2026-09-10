@@ -8,6 +8,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 use Tribe\Tickets\Promoter\Triggers\Models\Attendee;
 
@@ -45,6 +46,7 @@ class Promoter_Observer {
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'attendee_created' ], 10, 5 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', tribe_callback( 'tickets.promoter.observer', 'notify_event_id' ), 10, 2 );
 		add_action( 'event_tickets_checkin', [ $this, 'checkin' ], 10, 2 );
+		add_action( 'updated_post_meta', [ $this, 'rsvp_status_updated' ], 10, 4 );
 	}
 
 	/**
@@ -55,7 +57,50 @@ class Promoter_Observer {
 	 * @param \WP_Post $attendee Attendee object.
 	 */
 	public function attendee_created( \WP_Post $attendee ) {
-		$this->trigger( 'ticket_purchased', $attendee->ID );
+		$this->trigger( $this->attendee_trigger_type( $attendee->ID ), $attendee->ID );
+	}
+
+	/**
+	 * Responds to an Attendee changing their going/not-going answer after the fact, from the My
+	 * Tickets page or the Attendees screen. That answer never touches the order, so the
+	 * attendee-generated action cannot cover it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $meta_id    ID of the updated metadata entry.
+	 * @param int    $object_id  The post ID the meta belongs to.
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $meta_value The new meta value.
+	 */
+	public function rsvp_status_updated( $meta_id, $object_id, $meta_key, $meta_value ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+		if ( RSVP_V2_Constants::RSVP_STATUS_META_KEY !== $meta_key ) {
+			return;
+		}
+
+		$this->trigger( tribe_is_truthy( $meta_value ) ? 'rsvp_going' : 'rsvp_not_going', (int) $object_id );
+	}
+
+	/**
+	 * Returns the trigger type an Attendee's creation should report.
+	 *
+	 * TC-RSVP Attendees travel this same Tickets Commerce pipeline as purchases, so reporting every
+	 * one of them as a purchase would leave Promoter's RSVP triggers permanently unmatched. The
+	 * presence of the RSVP status meta is what separates the two throughout Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The ID of the Attendee.
+	 *
+	 * @return string The trigger type.
+	 */
+	private function attendee_trigger_type( int $attendee_id ): string {
+		if ( ! metadata_exists( 'post', $attendee_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY ) ) {
+			return 'ticket_purchased';
+		}
+
+		return tribe_is_truthy( get_post_meta( $attendee_id, RSVP_V2_Constants::RSVP_STATUS_META_KEY, true ) )
+			? 'rsvp_going'
+			: 'rsvp_not_going';
 	}
 
 	/**
