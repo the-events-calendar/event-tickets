@@ -201,7 +201,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 * @return string The migration description.
 	 */
 	public function get_description(): string {
-		return __( 'Migrate your RSVPs to the new data system', 'event-tickets' );
+		return __( 'Migrate your RSVPs to the new data system. During migration, RSVPs and ticket sales will be temporarily unavailable. For most users, this process will be completed quickly. If you have a significant number of RSVPs, you may want to run when your site traffic is light.', 'event-tickets' );
 	}
 
 	/**

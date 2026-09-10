@@ -97,22 +97,19 @@ class Controller extends Controller_Contract {
 					return $filters;
 				};
 				?>
-				<?php
-				// Hide the tag search field and individual migration tags using inline CSS
-				// to avoid overriding the StellarWP migrations templates. Strategy requested
-				// these fields to be hidden from the Event Tickets migrations tab.
-				?>
-				<style>
-					.stellarwp-migrations-filters__row,
-					.stellarwp-migration-card__tags {
-						display: none !important;
-					}
-					.tickets_page_tec-tickets-settings .tec-settings-form.tec-settings-form__migrations-tab--active {
-						padding-top: 0;
-					}
-				</style>
-				<div class="tec-settings-form tec-settings-form__migrations-tab--active" style="grid-template-columns: 1fr;">
+				<div class="tec-settings-form tec-settings-form__migrations-tab--active">
 					<?php
+					// The migration card template escapes its description, so the backup link is rendered here instead.
+					printf(
+						'<div class="notice notice-info inline"><p>%s</p></div>',
+						sprintf(
+							// Translators: %1$s is the opening anchor tag for the site backup guide, %2$s is the closing anchor tag.
+							esc_html__( 'Just in case, we recommend doing a %1$ssite backup%2$s before starting migration.', 'event-tickets' ),
+							'<a href="' . esc_url( 'https://evnt.is/1bei' ) . '" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						)
+					);
+
 					add_filter( 'stellarwp_migrations_tec_filters', $add_tags );
 					$ui->render_list();
 					remove_filter( 'stellarwp_migrations_tec_filters', $add_tags );
