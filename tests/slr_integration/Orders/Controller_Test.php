@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Orders;
 
 use Closure;
+use Faker\Factory;
 use Generator;
 use PHPUnit\Framework\AssertionFailedError;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
@@ -683,6 +684,108 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 'C-1', $attendee_d['seat_label'] );
 		$this->assertEquals( 'general-admission-hash', $attendee_d['seat_type_id'] );
 		$this->assertEquals( 'layout-id', $attendee_d['layout_id'] );
+	}
+
+	/**
+	 * A label already in the database predates any write-side sanitizer, and the list table echoes
+	 * whatever a column handler returns, so the escaping has to happen on the way out.
+	 *
+	 * @test
+	 * @covers Attendee::render_seat_column
+	 */
+	public function test_seat_column_escapes_the_stored_seat_label() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tribe_attendees()->by( 'event_id', $event_id )->first()->ID;
+
+		$faker      = Factory::create();
+		$seat_label = $faker->bothify( '?-##' );
+		$stored     = $seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() );
+
+		/* Write the row directly: update_post_meta() would sanitize the value this test needs stored. */
+		global $wpdb;
+		$wpdb->insert(
+			$wpdb->postmeta,
+			[
+				'post_id'    => $attendee_id,
+				'meta_key'   => Meta::META_KEY_ATTENDEE_SEAT_LABEL,
+				'meta_value' => $stored,
+			]
+		);
+		wp_cache_delete( $attendee_id, 'post_meta' );
+
+		$this->make_controller()->register();
+
+		$rendered = tribe( Orders_Attendee::class )->render_seat_column(
+			'',
+			[
+				'attendee_id' => $attendee_id,
+				'product_id'  => $ticket_id,
+			],
+			'seat'
+		);
+
+		$this->assertEquals( esc_html( $stored ), $rendered );
+	}
+
+	/**
+	 * The CSV export reads its values through the same column filter as the list table, but strips
+	 * tags and decodes entities afterwards, so the label has to reach the file as plain text.
+	 *
+	 * @test
+	 * @covers Attendee::render_seat_column
+	 */
+	public function test_seat_column_export_is_not_html_encoded() {
+		$_GET['search'] = '';
+		$_GET['page']   = 'tickets-attendees';
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tribe_attendees()->by( 'event_id', $event_id )->first()->ID;
+
+		$faker = Factory::create();
+		/* An ampersand is the character esc_html() would change and the export has to give back. */
+		$seat_label = sprintf( '%s & %s', $faker->bothify( '?-##' ), $faker->bothify( '?-##' ) );
+		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seat_label );
+
+		$this->make_controller()->register();
+
+		/* get_hidden_columns() needs an admin screen this test has no reason to build. */
+		$this->set_fn_return( 'get_hidden_columns', [] );
+
+		$_GET['event_id'] = $event_id;
+		$attendees        = tribe( Attendees::class );
+		$attendees->screen_setup();
+		$rows = $attendees->generate_filtered_list( $event_id );
+
+		$seat_column = array_search( 'Seat', $rows[0], true );
+		$this->assertNotFalse( $seat_column, 'The export should carry a Seat column.' );
+		$this->assertEquals( $seat_label, $rows[1][ $seat_column ] );
 	}
 
 	/**

@@ -57,6 +57,7 @@ class Attendee {
 	 * Renders the seat column for the attendee list.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Escaped the seat label.
 	 *
 	 * @param string              $value  Row item value.
 	 * @param array<string,mixed> $item   Row item data.
@@ -76,7 +77,7 @@ class Attendee {
 		$seat_label = get_post_meta( $item['attendee_id'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
 
 		if ( ! empty( $seat_label ) ) {
-			return $seat_label;
+			return esc_html( $seat_label );
 		}
 
 		$ticket_id   = Arr::get( $item, 'product_id' );
