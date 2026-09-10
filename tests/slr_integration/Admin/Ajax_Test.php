@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Seating\Admin;
 
+use Faker\Factory;
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
@@ -842,8 +843,7 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 		$this->reset_wp_send_json_mocks();
 
-		// Update of reservations fails.
-		// Delete the token entry in the sessions table, failing the update.
+		// Without a session row the token is not one this site issued.
 		DB::query(
 			DB::prepare(
 				'DELETE FROM %i WHERE token = %s',
@@ -864,8 +864,8 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
 				1,
-				[ 'error' => 'Failed to update the reservations' ],
-				500
+				[ 'error' => 'Invalid session token' ],
+				403
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
@@ -901,6 +901,93 @@ class Ajax_Test extends Controller_Test_Case {
 						'reservation_id' => 'reservation-id-2',
 						'seat_type_id'   => 'seat-type-id-0',
 						'seat_label'     => 'seat-label-0-2',
+					],
+				],
+			],
+			$sessions->get_reservations_for_token( 'some-token' )
+		);
+
+		// The token is valid but the session store refuses the write.
+		$this->set_class_fn_return( Sessions::class, 'update_reservations', false );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Failed to update the reservations' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+	}
+
+	/**
+	 * The authenticated twin of this endpoint runs the decoded body through tribe_sanitize_deep();
+	 * this one is reachable by anonymous visitors and has to do the same.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_sanitizes_the_seat_label(): void {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file, ...$args ) use ( &$request_body ) {
+				if ( 'php://input' !== $file ) {
+					return file_get_contents( $file, ...$args );
+				}
+
+				return $request_body;
+			},
+			true
+		);
+
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$sessions  = tribe( Sessions::class );
+		/* The expiry is stored but never read by this endpoint; the token/post pairing is what matters. */
+		$sessions->insert_or_update( 'some-token', $post_id, strtotime( '2100-01-01 00:00:00' ) );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$faker      = Factory::create();
+		$seat_label = $faker->bothify( '?-##' );
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => 'seat-type-id-0',
+							'seatLabel'     => $seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() ),
+						],
+					],
+				],
+			]
+		);
+
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->assertEquals(
+			[
+				$ticket_id => [
+					[
+						'reservation_id' => 'reservation-id-1',
+						'seat_type_id'   => 'seat-type-id-0',
+						'seat_label'     => $seat_label,
 					],
 				],
 			],

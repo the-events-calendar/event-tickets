@@ -637,6 +637,7 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to update reservations on the Service.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Sanitized the request body and tied the token to the post.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -664,6 +665,7 @@ class Ajax extends Controller_Contract {
 		if ( ! (
 			$decoded
 			&& is_array( $decoded )
+			&& tribe_sanitize_deep( $decoded )
 			&& isset( $decoded['token'], $decoded['reservations'] )
 			&& is_string( $decoded['token'] )
 			&& is_array( $decoded['reservations'] )
@@ -680,6 +682,17 @@ class Ajax extends Controller_Contract {
 
 		$token             = $decoded['token'];
 		$json_reservations = $decoded['reservations'];
+
+		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid session token',
+				],
+				403
+			);
+
+			return;
+		}
 
 		$reservations = [];
 		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
@@ -700,6 +713,9 @@ class Ajax extends Controller_Contract {
 				if ( ! (
 					is_array( $reservation )
 					&& isset( $reservation['reservationId'], $reservation['seatTypeId'], $reservation['seatLabel'] )
+					&& is_string( $reservation['reservationId'] )
+					&& is_string( $reservation['seatTypeId'] )
+					&& is_string( $reservation['seatLabel'] )
 				) ) {
 					wp_send_json_error(
 						[
