@@ -13,6 +13,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use RuntimeException;
+use WP_Error;
 /**
  * Class WhoDat. Handles connection to Square when the platform keys are needed.
  *
@@ -39,6 +40,17 @@ class WhoDat extends Abstract_WhoDat {
 	 * @var string
 	 */
 	protected const STATE_NONCE_ACTION = 'tec-tc-square-connect';
+
+	/**
+	 * How long the token calls made from a front end request may take, in seconds.
+	 *
+	 * These run inside checkout, so they may not hold the page open for WordPress's default.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const TOKEN_REQUEST_TIMEOUT = 3;
 
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
@@ -129,37 +141,140 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
-	 * @since 5.24.0
+	 * Nothing calls this. The refresh runs through request_token_refresh(), which reports the response
+	 * code that telling a revoked grant from an outage depends on; this only survives because it is
+	 * public and released.
 	 *
-	 * @return ?array
+	 * @since 5.24.0
+	 * @since TBD Sends a POST; the endpoint answers 405 to the GET this used to send.
+	 *
+	 * @return ?array The refreshed credentials, or null when they could not be refreshed.
 	 */
 	public function refresh_token(): ?array {
-		$refresh_token = tribe( Merchant::class )->get_refresh_token();
+		$result = $this->request_token_refresh();
 
-		$query_args = [
-			'grant_type'    => 'refresh_token',
-			'refresh_token' => $refresh_token,
+		return empty( $result['body']['access_token'] ) ? null : $result['body'];
+	}
+
+	/**
+	 * Requests WhoDat to refresh the oAuth tokens, reporting how the request went.
+	 *
+	 * The endpoint answers a rejected refresh token with an HTML error page rather than a machine
+	 * readable body, so the status code is the only thing a caller can reason about.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{code: int, body: mixed, error: ?WP_Error} The response code (0 when the request never
+	 *                                                         completed), the decoded body, and the
+	 *                                                         transport error if there was one.
+	 */
+	public function request_token_refresh(): array {
+		$merchant      = tribe( Merchant::class );
+		$refresh_token = $merchant->get_refresh_token();
+
+		$result = [
+			'code'  => 0,
+			'body'  => null,
+			'error' => null,
 		];
 
-		return $this->get( 'oauth/token/refresh', $query_args );
+		if ( ! $refresh_token ) {
+			return $result;
+		}
+
+		$url = $this->get_api_url( 'oauth/token/refresh' );
+
+		$response = wp_remote_post(
+			$url,
+			[
+				'timeout' => self::TOKEN_REQUEST_TIMEOUT,
+				'body'    => [
+					'grant_type'    => 'refresh_token',
+					'refresh_token' => $refresh_token,
+					'merchant_id'   => $merchant->get_merchant_id(),
+					'mode'          => $merchant->get_mode(),
+				],
+			]
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$this->log_error( 'WhoDat request error:', $response->get_error_message(), $url );
+
+			$result['error'] = $response;
+
+			return $result;
+		}
+
+		$result['code'] = absint( wp_remote_retrieve_response_code( $response ) );
+		$result['body'] = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		return $result;
 	}
 
 	/**
 	 * Get the token status from Square.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Returns null for a body that did not decode to an array.
 	 *
 	 * @return array|null
 	 */
 	public function get_token_status(): ?array {
-		$merchant = tribe( Merchant::class );
+		$status = $this->get_with_cache( 'oauth/token/status', $this->get_token_status_query_args() );
 
-		$query_args = [
-			'access_token' => $merchant->get_access_token(),
-			'mode'         => $merchant->get_mode(),
-		];
+		// A scalar body decodes to a scalar, and every caller reads the status as an array.
+		return is_array( $status ) ? $status : null;
+	}
 
-		return $this->get_with_cache( 'oauth/token/status', $query_args );
+	/**
+	 * Get the token status from Square, bypassing the cache.
+	 *
+	 * A separate method rather than a flag on get_token_status(): that one is released, so widening it
+	 * would break any override, and `get_token_status( true )` says nothing at the call site.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $request_arguments Arguments passed on to wp_remote_get().
+	 *
+	 * @return array|null The decoded status response, or null when the body was not an array.
+	 */
+	public function get_fresh_token_status( array $request_arguments = [] ): ?array {
+		$status = $this->get_with_request_args( 'oauth/token/status', $this->get_token_status_query_args(), $request_arguments );
+
+		return is_array( $status ) ? $status : null;
+	}
+
+	/**
+	 * Reads the verdict out of a status response.
+	 *
+	 * The status endpoint answers a rejected token with `{ type: UNAUTHORIZED }` and a valid one with the
+	 * granted scopes. Anything else - an outage, a malformed body - is reported as unknown rather than as
+	 * a rejection, so a blip is never mistaken for a revoked connection.
+	 *
+	 * Takes the response rather than fetching it, so a caller that also needs the message the endpoint
+	 * sent does not have to ask for the same status twice.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?array $status The decoded status response.
+	 *
+	 * @return ?bool True when accepted, false when rejected, null when it could not be established.
+	 */
+	public function interpret_token_status( ?array $status ): ?bool {
+		if ( null === $status ) {
+			return null;
+		}
+
+		if ( ! empty( $status['scopes'] ) ) {
+			return true;
+		}
+
+		// Only this one type means the token was refused; the rest describe Square being unwell.
+		if ( isset( $status['type'] ) && is_string( $status['type'] ) && 'UNAUTHORIZED' === strtoupper( $status['type'] ) ) {
+			return false;
+		}
+
+		return null;
 	}
 
 	/**
@@ -338,5 +453,21 @@ class WhoDat extends Abstract_WhoDat {
 		$connection_response = $this->get_with_cache( 'oauth/authorize', $query_args );
 
 		return $connection_response['auth_url'] ?? '';
+	}
+
+	/**
+	 * The query args identifying the connection whose token status is being asked about.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{access_token: string, mode: string}
+	 */
+	private function get_token_status_query_args(): array {
+		$merchant = tribe( Merchant::class );
+
+		return [
+			'access_token' => $merchant->get_access_token(),
+			'mode'         => $merchant->get_mode(),
+		];
 	}
 }

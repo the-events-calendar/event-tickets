@@ -9,8 +9,12 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
+use Tribe__Date_Utils as Dates;
+use DateTimeInterface;
 use Exception;
 
 /**
@@ -83,6 +87,7 @@ class Merchant extends Abstract_Merchant {
 	 * Determines if the Merchant is connected.
 	 *
 	 * @since 5.24.0
+	 * @since TBD A recheck retries a rejected connection before reading its verdict back.
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -95,6 +100,21 @@ class Merchant extends Abstract_Merchant {
 			empty( $client_data['client_id'] )
 			|| empty( $client_data['access_token'] )
 		) {
+			return false;
+		}
+
+		/*
+		 * An explicit recheck is somebody asking us to go and look, so the rejected connection gets one
+		 * more attempt at renewal before its own verdict is read back. Reading the flag first would
+		 * answer from it and never look, leaving a connection that started working again to sit out the
+		 * re-check interval.
+		 */
+		if ( $recheck && $this->is_token_invalid() ) {
+			tribe( Token_Refresher::class )->refresh_now( 'connection_recheck', true );
+		}
+
+		// A token Square refused to renew cannot be recovered without a new OAuth handshake.
+		if ( $this->is_token_invalid() ) {
 			return false;
 		}
 
@@ -149,6 +169,35 @@ class Merchant extends Abstract_Merchant {
 		$data = get_option( $this->get_signup_data_key() );
 
 		if ( empty( $data['access_token'] ) ) {
+			return '';
+		}
+
+		return $data['access_token'];
+	}
+
+	/**
+	 * Returns the Square access token read straight from the database, bypassing the object cache.
+	 *
+	 * Callers that poll for another process's write cannot use the cached read: the signup data is
+	 * autoloaded, so seeing a fresh value means dropping the whole `alloptions` blob on every pass,
+	 * which a persistent object cache then rebuilds with a full scan of the options table.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The stored access token, or an empty string when there is none.
+	 */
+	public function get_access_token_uncached(): string {
+		$stored = DB::get_var(
+			DB::prepare(
+				'SELECT option_value FROM %i WHERE option_name = %s',
+				DB::prefix( 'options' ),
+				$this->get_signup_data_key()
+			)
+		);
+
+		$data = maybe_unserialize( $stored );
+
+		if ( ! is_array( $data ) || empty( $data['access_token'] ) ) {
 			return '';
 		}
 
@@ -240,7 +289,105 @@ class Merchant extends Abstract_Merchant {
 	public function save_signup_data( array $signup_data ): bool {
 		unset( $signup_data['state'] );
 
+		tribe( Refresh_Status::class )->delete();
+
 		return update_option( $this->get_signup_data_key(), $signup_data );
+	}
+
+	/**
+	 * Returns the moment the Square access token expires.
+	 *
+	 * @since TBD
+	 *
+	 * @return ?DateTimeInterface Null when no usable expiration is stored.
+	 */
+	public function get_token_expiration(): ?DateTimeInterface {
+		$data = get_option( $this->get_signup_data_key() );
+
+		if ( empty( $data['expires_at'] ) || ! is_string( $data['expires_at'] ) ) {
+			return null;
+		}
+
+		// Dates::build_date_object() falls back to "now" for anything it cannot parse.
+		if ( false === strtotime( $data['expires_at'] ) ) {
+			return null;
+		}
+
+		return Dates::build_date_object( $data['expires_at'] );
+	}
+
+	/**
+	 * Whether the Square access token expires within the given number of seconds.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $window Seconds ahead of now to look.
+	 *
+	 * @return bool False when no expiration is stored, since an unknown one is not an imminent one.
+	 */
+	public function is_token_expiring_within( int $window ): bool {
+		$expiration = $this->get_token_expiration();
+
+		return null !== $expiration && $expiration->getTimestamp() - $window <= time();
+	}
+
+	/**
+	 * Whether Square has refused to renew the stored credentials.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool True once Square has refused to renew the stored credentials.
+	 */
+	public function is_token_invalid(): bool {
+		return tribe( Refresh_Status::class )->is_invalid();
+	}
+
+	/**
+	 * Stores the credentials returned by a successful token refresh.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{access_token?: string, refresh_token?: string, expires_at?: string, token_type?: string, merchant_id?: string, whodat_signature?: string} $data The refresh response.
+	 *
+	 * @return bool Whether the credentials were stored.
+	 */
+	public function save_refreshed_tokens( array $data ): bool {
+		if ( empty( $data['access_token'] ) || ! is_string( $data['access_token'] ) ) {
+			return false;
+		}
+
+		$update = [
+			'expires_at'   => '',
+			'refreshed_at' => Dates::build_date_object( 'now', 'UTC' )->format( Dates::DBDATETIMEFORMAT ),
+		];
+
+		// Only overwrite what the response actually carried; omitted keys keep their current value.
+		foreach ( [ 'access_token', 'refresh_token', 'expires_at', 'token_type', 'merchant_id', 'whodat_signature' ] as $key ) {
+			if ( ! empty( $data[ $key ] ) && is_string( $data[ $key ] ) ) {
+				$update[ $key ] = $data[ $key ];
+			}
+		}
+
+		// An expiration we cannot read is an unknown one, never the previous one.
+		if ( false === strtotime( $update['expires_at'] ) ) {
+			$update['expires_at'] = '';
+		}
+
+		return $this->update( $update );
+	}
+
+	/**
+	 * Drops the object cache entries backing the merchant options.
+	 *
+	 * Used to re-read the credentials from the database after another process may have refreshed them.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function flush_option_cache(): void {
+		wp_cache_delete( $this->get_signup_data_key(), 'options' );
+		wp_cache_delete( 'alloptions', 'options' );
 	}
 
 	/**
@@ -268,15 +415,19 @@ class Merchant extends Abstract_Merchant {
 			return $return;
 		}
 
-		$status = tribe( WhoDat::class )->get_token_status();
+		$who_dat = tribe( WhoDat::class );
 
-		if ( ! is_array( $status ) || empty( $status ) ) {
+		// Uncached: this is the explicit recheck, and a token refreshed moments ago outdates the cache.
+		$status   = $who_dat->get_fresh_token_status();
+		$accepted = $who_dat->interpret_token_status( $status );
+
+		if ( null === $accepted ) {
 			$return['errors'][] = __( 'Unable to connect to Square.', 'event-tickets' );
 			return $return;
 		}
 
-		if ( ! empty( $status['error'] ) ) {
-			$return['errors'][] = $status['error_description'] ?? __( 'Unknown Square error.', 'event-tickets' );
+		if ( ! $accepted ) {
+			$return['errors'][] = $status['message'] ?? $status['error_description'] ?? __( 'Square no longer accepts the stored credentials.', 'event-tickets' );
 			return $return;
 		}
 
@@ -294,6 +445,8 @@ class Merchant extends Abstract_Merchant {
 	public function delete_signup_data(): bool {
 		// Also delete any stored merchant data.
 		$this->delete_merchant_data();
+
+		tribe( Refresh_Status::class )->delete();
 
 		$result = delete_option( $this->get_signup_data_key() );
 
