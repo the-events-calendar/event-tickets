@@ -313,8 +313,9 @@ export function* setTicketInitialState( action ) {
 
 	const isEvent = yield call( isTribeEventPostType );
 
-	// Only run this on events post type.
-	if ( isEvent && window.tec.events ) {
+	// Only run this on events post type and for new tickets; existing tickets
+	// load their saved sale end date from the server via fetchTicket below.
+	if ( isEvent && window.tec.events && ticketId === 0 ) {
 		// This try-catch may be redundant given the above if statement.
 		try {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date

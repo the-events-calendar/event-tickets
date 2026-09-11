@@ -4090,6 +4090,42 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object.
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
+			/*
+			 * The sale end date is added, not updated, on ticket creation, so the usual
+			 * manual-update flag does not fire. Flag explicitly supplied custom sale end
+			 * dates so later event start changes do not overwrite them.
+			 */
+			if (
+				! $update
+				&& ! empty( $ticket->ID )
+				&& ! empty( $data['ticket_end_date'] )
+				&& ! empty( $ticket->end_date )
+				&& ! $tickets_handler->has_manual_update( $ticket->ID, $tickets_handler->key_end_date )
+			) {
+				$event_start = get_post_meta( $post_id, '_EventStartDate', true );
+				$is_default  = false;
+
+				if ( $event_start ) {
+					$event_ts = strtotime( $event_start );
+
+					// Some providers normalize the ticket end date to a full datetime; rebuild it
+					// from the date part so the end time is not appended twice below.
+					$end_date_ts = strtotime( $ticket->end_date );
+					$end_date    = gmdate( Tribe__Date_Utils::DBDATEFORMAT, $end_date_ts );
+
+					if ( ! empty( $ticket->end_time ) ) {
+						$ticket_ts  = strtotime( $end_date . ' ' . $ticket->end_time );
+						$is_default = false !== $event_ts && false !== $end_date_ts && false !== $ticket_ts && $event_ts === $ticket_ts;
+					} else {
+						$is_default = false !== $event_ts && false !== $end_date_ts && $end_date === gmdate( Tribe__Date_Utils::DBDATEFORMAT, $event_ts );
+					}
+				}
+
+				if ( ! $is_default ) {
+					add_post_meta( $ticket->ID, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+				}
+			}
+
 			// Set the ticket type before the module saves the ticket.
 			$ticket_type = 'default';
 			if ( $update ) {
