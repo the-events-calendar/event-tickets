@@ -1937,13 +1937,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @static
 		 *
 		 * @param int $post_id ID of parent "event" post
-		 * @return mixed
+		 * @return int
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
+			// Post ID is required.
+			if ( empty( $post_id ) ) {
+				return 0;
+			}
+
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees();
 
-			return $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
+			$found = $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
+
+			$cache[ $key ] = $found;
+
+			return $found;
 		}
 
 		// end Attendees
