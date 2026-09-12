@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Resolved an issue where a Series Pass Attendee checked in from the Event Tickets Plus App appeared checked in and then reverted to unchecked on the next refresh: the Attendee list no longer drops the per-Occurrence Attendee that carries the check-in status, it reports the original Attendee ID alongside it so the App keeps one identity per Attendee across Occurrences, and a manual check-in from the App is no longer restricted to the Events happening now the way a QR code scan is.
