@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+
 class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__READ_Endpoint_Interface,
@@ -82,7 +84,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @param WP_REST_Request $request
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
-	 * @since TBD Stop narrowing a manage-access request by the related post status.
+	 * @since TBD Stop narrowing a manage-access request by the related post status only when the request is
+	 *            about a Series Pass Occurrence - every other request keeps being narrowed as before.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
@@ -125,19 +128,33 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 
 		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
 			/*
-			 * A request with manage access is not narrowed by the status of the post the Attendee belongs to,
-			 * so no `event_status` default is set below and the filter is skipped entirely. Defaulting it to
-			 * `any` would not do: the filter downgrades `any` to `publish` for any request without a WP user
-			 * - which is every Event Tickets Plus App request, authorized by API key alone - and then joins
-			 * `wp_posts` on the Attendee to Event ID meta value. A Series Pass Attendee cloned to an
-			 * Occurrence holds a provisional Occurrence ID there, which has no `wp_posts` row, so every
-			 * cloned Attendee, and with it the check-in status the App reads, would be dropped from the
-			 * results. A status the request asked for explicitly still applies, having been mapped into
-			 * `event_status` above.
+			 * A request with manage access is narrowed by the status of the post the Attendee belongs to,
+			 * same as any other request, EXCEPT when it is about a Series Pass Occurrence: the filter
+			 * downgrades `any` to `publish` for any request without a WP user - which is every Event
+			 * Tickets Plus App request, authorized by API key alone - and then joins `wp_posts` on the
+			 * Attendee to Event ID meta value. A Series Pass Attendee cloned to an Occurrence holds a
+			 * provisional Occurrence ID there, which has no `wp_posts` row, so every cloned Attendee, and
+			 * with it the check-in status the App reads, would be dropped from the results - whether the
+			 * status came from that downgrade or was asked for explicitly. `Occurrence::normalize_id()`
+			 * is a safe no-op for a real post ID (returns it unchanged), so this only skips the filter for
+			 * an actual Occurrence request.
 			 */
+			$requested_event_id    = $fetch_args['event'] ?? null;
+			$is_occurrence_request = is_numeric( $requested_event_id )
+				&& Occurrence::normalize_id( (int) $requested_event_id ) !== (int) $requested_event_id;
+
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['order_status'] = Tribe__Utils__Array::get( $fetch_args, 'order_status', 'any' );
+
+			if ( $is_occurrence_request ) {
+				// An Occurrence has no status of its own to match against `event_status` - drop it even if
+				// the request set it explicitly (e.g. via `post_status`, mapped above), not just when it
+				// would otherwise default to one.
+				unset( $fetch_args['event_status'] );
+			} else {
+				$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
+			}
 		} else {
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_READABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'publish' );

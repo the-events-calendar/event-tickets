@@ -950,16 +950,18 @@ class Attendees extends Controller {
 	}
 
 	/**
-	 * Returns whether the meta key is the one used to store the checkin status or the check-in
-	 * details.
+	 * Returns whether the meta key is the one used to store the checkin status, the check-in details, or the
+	 * per-Occurrence check-in failure log.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Also exclude the check-in failure log meta key: it records a failure for one specific
+	 *            Occurrence and must not be copied onto every other Occurrence's clone Attendee.
 	 *
 	 * @param int    $post_id  The post ID of the Attendee to check.
 	 * @param string $meta_key The meta key to check.
 	 *
-	 * @return bool Whether the meta key is the one used to store the checkin status or the check-in
-	 *              details.
+	 * @return bool Whether the meta key is one that must stay local to a single Occurrence's clone Attendee
+	 *              instead of being synced to the original and every other clone.
 	 */
 	private function is_checked_in_meta_key( int $post_id, string $meta_key ): bool {
 		$post_type = get_post_type( $post_id );
@@ -983,7 +985,12 @@ class Attendees extends Controller {
 			$this->post_type_checkin_keys[ $post_type ] = $checkin_key;
 		}
 
-		return $meta_key === $checkin_key || $meta_key === $checkin_key . '_details' || $meta_key === '_tribe_qr_status';
+		return $meta_key === $checkin_key
+			|| $meta_key === $checkin_key . '_details'
+			|| $meta_key === '_tribe_qr_status'
+			// Matches TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY (event-tickets-plus is not
+			// a hard dependency of this file, so the literal is duplicated here rather than importing it).
+			|| $meta_key === '_tec_tickets_checkin_log';
 	}
 
 	/**

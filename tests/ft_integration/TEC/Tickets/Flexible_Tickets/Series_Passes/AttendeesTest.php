@@ -1383,6 +1383,72 @@ class AttendeesTest extends Controller_Test_Case {
 	}
 
 	/**
+	 * A check-in failure logged for one Occurrence (e.g. a duplicate check-in attempt) must stay local to
+	 * that Occurrence's clone Attendee, not be copied onto every other Occurrence's clone: it would read as
+	 * a failure that never happened there.
+	 *
+	 * @test
+	 */
+	public function should_not_sync_the_checkin_failure_log_to_other_occurrence_clones(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
+		// Create two Events part of the Series.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event #1',
+				'status'     => 'publish',
+				'start_date' => '+3 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event #2',
+				'status'     => 'publish',
+				'start_date' => '+27 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$controller = $this->make_controller();
+		$clone_1    = $controller->clone_attendee_to_event( $original, $event_1 );
+		$clone_2    = $controller->clone_attendee_to_event( $original, $event_2 );
+		$controller->register();
+
+		// A failed check-in against the 1st Occurrence's clone is logged as it would be by the Bulk Check-in
+		// endpoint (`Tribe\Tickets\Plus\REST\V1\Endpoints\Bulk_Checkin::log_failed_checkin()`).
+		add_post_meta(
+			$clone_1,
+			'_tec_tickets_checkin_log', // TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY
+			[ 'reason' => 'DUPLICATE', 'event_id' => $event_1 ]
+		);
+
+		$this->assertNotEmpty(
+			get_post_meta( $clone_1, '_tec_tickets_checkin_log' ),
+			'The failure should be logged against the Occurrence clone it actually happened on.'
+		);
+		$this->assertEmpty(
+			get_post_meta( $original, '_tec_tickets_checkin_log' ),
+			'The failure log must not be copied onto the original Series-level Attendee.'
+		);
+		$this->assertEmpty(
+			get_post_meta( $clone_2, '_tec_tickets_checkin_log' ),
+			'The failure log must not be copied onto an unrelated Occurrence clone.'
+		);
+	}
+
+	/**
 	 * It should update original Attendee when cloned Attendee updated
 	 *
 	 * @test

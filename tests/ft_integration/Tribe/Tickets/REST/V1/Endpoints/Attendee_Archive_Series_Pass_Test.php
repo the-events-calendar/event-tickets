@@ -99,6 +99,11 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 	private function fetch_occurrence_attendees( int $provisional_id ): array {
 		wp_set_current_user( 0 );
 
+		// Re-assert the API key request vars: creating the order/ticket in setup goes through a simulated
+		// checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		$_GET['api_key']     = $this->api_key;
+		$_REQUEST['api_key'] = $this->api_key;
+
 		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/attendees' );
 		$request->set_param( 'api_key', $this->api_key );
 		$request->set_param( 'post_id', $provisional_id );
@@ -180,6 +185,102 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 		$this->assertFalse(
 			$other_attendees[0]['checked_in'],
 			'Checking in for one Occurrence should not check the Attendee into the others.'
+		);
+	}
+
+	/**
+	 * The manage-access branch only needs to skip `event_status` filtering for an actual Occurrence
+	 * request - it must not stop mattering just because the request happens to explicitly ask for a
+	 * status. The recurring Event backing this Occurrence really is published, so an explicit, correct
+	 * `post_status=publish` filter must not be the thing that hides the clone Attendee.
+	 *
+	 * @test
+	 */
+	public function should_list_the_checked_in_clone_attendee_when_the_request_explicitly_filters_by_published_status(): void {
+		[ $attendee_id, $provisional_ids ] = $this->make_series_pass_attendee_with_occurrences();
+
+		$this->make_controller()->register();
+
+		$checked_in_id = end( $provisional_ids );
+
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		tribe_tickets_get_ticket_provider( $attendee_id )->checkin( $attendee_id, false, $checked_in_id );
+
+		wp_set_current_user( 0 );
+
+		// Re-assert the API key request vars: creating the order/ticket above goes through a simulated
+		// checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		$_GET['api_key']     = $this->api_key;
+		$_REQUEST['api_key'] = $this->api_key;
+
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/attendees' );
+		$request->set_param( 'api_key', $this->api_key );
+		$request->set_param( 'post_id', $checked_in_id );
+		$request->set_param( 'page', 1 );
+		$request->set_param( 'per_page', 25 );
+		$request->set_param( 'order_status', 'public' );
+		$request->set_param( 'post_status', 'publish' );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$attendees = $response->get_data()['attendees'];
+
+		$this->assertCount(
+			1,
+			$attendees,
+			'The clone Attendee for a published Occurrence must not be hidden by an explicit, correct status filter.'
+		);
+	}
+
+	/**
+	 * The event_status skip is specific to Occurrence requests - it must not silently widen visibility for
+	 * every other ticket type too. A manage-access request for a regular (non-Series) draft Event's
+	 * Attendees, with no status filter of its own, should still default to the same narrowing a request
+	 * without manage access would get.
+	 *
+	 * @test
+	 */
+	public function should_not_list_attendees_of_a_regular_draft_event_via_manage_access_without_an_explicit_status_filter(): void {
+		$draft_event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Draft Event',
+				'status'     => 'draft',
+				'start_date' => '-1 hour',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id = $this->create_tc_ticket( $draft_event_id, 1 );
+		$this->create_order( [ $ticket_id => 1 ] );
+
+		$this->make_controller()->register();
+
+		wp_set_current_user( 0 );
+
+		// Re-assert the API key request vars: creating the order/ticket above goes through a simulated
+		// checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		$_GET['api_key']     = $this->api_key;
+		$_REQUEST['api_key'] = $this->api_key;
+
+		$this->assertTrue(
+			tribe( 'tickets.rest-v1.main' )->request_has_manage_access(),
+			'This test is only meaningful if it actually exercises the manage-access branch.'
+		);
+
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/attendees' );
+		$request->set_param( 'api_key', $this->api_key );
+		$request->set_param( 'post_id', $draft_event_id );
+		$request->set_param( 'page', 1 );
+		$request->set_param( 'per_page', 25 );
+		$request->set_param( 'order_status', 'public' );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertCount(
+			0,
+			$response->get_data()['attendees'],
+			"A regular Event's Attendees should still be narrowed to `publish` by default - only an Occurrence request skips that."
 		);
 	}
 }
