@@ -42,8 +42,10 @@ use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Reports\Attendance_Totals;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
 
 class Controller_Test extends Controller_Test_Case {
+	use Seating_Sessions;
 	use SnapshotAssertions;
 	use With_Uopz;
 	use Ticket_Maker;
@@ -174,7 +176,7 @@ class Controller_Test extends Controller_Test_Case {
 				$session->add_entry( $event_id, 'test-token' );
 				// Create a session in the database for user on the event.
 				$sessions = tribe( Sessions::class );
-				$sessions->insert_or_update( 'test-token', $event_id, time() + DAY_IN_SECONDS );
+				$this->given_a_started_session( 'test-token', $event_id );
 				$sessions->update_reservations(
 					'test-token',
 					$this->create_mock_reservations_data( [ $ticket_id ], 3 )
@@ -1316,6 +1318,69 @@ class Controller_Test extends Controller_Test_Case {
 			$wp_send_json_success->get_calls_as_string()
 		);
 		$this->reset_wp_send_json_mocks();
+	}
+
+	/**
+	 * The capability is checked against the post the request names, so without this an editor of one
+	 * event can rewrite the seats of attendees on every other one.
+	 *
+	 * @test
+	 * @covers Controller::update_reservation
+	 */
+	public function test_update_reservation_refuses_an_attendee_from_another_post(): void {
+		$editor = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $editor );
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+
+		$request_body = '';
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file ) use ( &$request_body ) {
+				if ( 'php://input' === $file ) {
+					return $request_body;
+				}
+
+				return file_get_contents( $file );
+			},
+			true
+		);
+
+		$edited_post_id = self::factory()->post->create();
+		$other_post_id  = self::factory()->post->create();
+		$other_ticket   = $this->create_tc_ticket( $other_post_id );
+		$this->create_order( [ $other_ticket => 1 ] );
+		[ $other_attendee ] = tribe_attendees()->by( 'event_id', $other_post_id )->get_ids();
+
+		update_post_meta( $other_attendee, Meta::META_KEY_SEAT_TYPE, 'original-seat-type' );
+		update_post_meta( $other_attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'original-label' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $edited_post_id;
+		$request_body       = wp_json_encode(
+			[
+				'attendeeId'    => $other_attendee,
+				'reservationId' => 'moved-reservation-id',
+				'seatTypeId'    => 'vip',
+				'seatLabel'     => 'VIP A1',
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'You do not have permission to perform this action.' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEquals( 'original-seat-type', get_post_meta( $other_attendee, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'original-label', get_post_meta( $other_attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
 	}
 
 	public function test_update_reservation(): void {

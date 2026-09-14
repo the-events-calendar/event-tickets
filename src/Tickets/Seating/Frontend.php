@@ -99,6 +99,33 @@ class Frontend extends Controller_Contract {
 		remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
 
 		remove_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ] );
+
+		remove_action( 'template_redirect', [ $this, 'prevent_caching' ] );
+	}
+
+	/**
+	 * Marks a response that will render the seat selection modal as non-cacheable.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function prevent_caching(): void {
+		if ( ! $this->should_enqueue_assets() ) {
+			return;
+		}
+
+		/*
+		 * The modal embeds an ephemeral token the Seating service issued for one visitor. A stored copy
+		 * of the page hands that token to everyone served from cache for the length of the TTL, putting
+		 * them all in the same seat selection session. Reverse proxies and CDNs honour the response
+		 * headers, while the WordPress-side page caches read DONOTCACHEPAGE instead.
+		 */
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
+
+		nocache_headers();
 	}
 
 	/**
@@ -327,6 +354,8 @@ class Frontend extends Controller_Contract {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
 		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 2 );
+
+		add_action( 'template_redirect', [ $this, 'prevent_caching' ] );
 
 		// Register the front-end JS.
 		Asset::add(

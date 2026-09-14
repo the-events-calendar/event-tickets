@@ -31,8 +31,10 @@ use Tribe__Tickets__Tickets as Tickets;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Seating\Orders\Cart;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
 
 class Frontend_Test extends Controller_Test_Case {
+	use Seating_Sessions;
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use Order_Maker;
@@ -124,6 +126,61 @@ class Frontend_Test extends Controller_Test_Case {
 				return true;
 			},
 		];
+	}
+
+	/**
+	 * The modal carries a token the Seating service issued for one visitor, so a cached copy of the
+	 * page hands that same token to everyone it is served to.
+	 *
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_prevent_caching_on_a_page_rendering_the_modal(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		$GLOBALS['post'] = $post_id;
+		$this->set_fn_return( 'is_singular', true );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->prevent_caching();
+
+		$this->assertTrue( $nocache_headers_sent );
+	}
+
+	/**
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_does_not_prevent_caching_on_a_page_without_the_modal(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$post_id         = static::factory()->post->create();
+		$GLOBALS['post'] = $post_id;
+		$this->set_fn_return( 'is_singular', true );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->prevent_caching();
+
+		$this->assertFalse( $nocache_headers_sent );
 	}
 
 	/**
@@ -1050,7 +1107,7 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertNull( $session->get_session_token_object_id() );
 
 		$session->add_entry( $event_id, 'test-token-1' );
-		$sessions->insert_or_update( 'test-token-1', $event_id, time() + 100 );
+		$this->given_a_started_session( 'test-token-1', $event_id );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ $ticket_id ], 2 ) );
 
 		$this->assertEquals( [ 'test-token-1', $event_id ], $session->get_session_token_object_id() );

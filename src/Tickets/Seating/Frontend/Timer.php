@@ -22,6 +22,12 @@ use Tribe__Tickets__Main as ET;
 /**
  * Class Cookie.
  *
+ * The ephemeral token these actions are keyed on is not a secret the visitor keeps: it is rendered
+ * into the seat selection iframe URL and into the page DOM, so anything that stores a copy of the
+ * page — a full-page cache above all — serves one visitor's token to the next. Pairing the token
+ * with the post it was issued for is what keeps those visitors out of each other's sessions, and
+ * pages that render the modal are marked non-cacheable in `Frontend::prevent_caching()`.
+ *
  * @since 5.16.0
  *
  * @package TEC\Tickets\Seating\Frontend;
@@ -391,8 +397,9 @@ class Timer extends Controller_Contract {
 	 * Checks the AJAX request parameters and returns them if they are valid.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Refused a token the site never issued for the post the request names.
 	 *
-	 * @return array{0: string, 1: int}|false The token and post ID or `false` if the nonce verification failed.
+	 * @return array{0: string, 1: int}|false The token and post ID or `false` if a check failed.
 	 */
 	private function ajax_check_request() {
 		if ( ! check_ajax_referer( Session::COOKIE_NAME, '_ajaxNonce', false ) ) {
@@ -410,12 +417,25 @@ class Timer extends Controller_Contract {
 		$token   = tribe_get_request_var( 'token', null );
 		$post_id = tribe_get_request_var( 'postId', null );
 
-		if ( ! ( $token && $post_id ) ) {
+		if ( ! ( $token && is_string( $token ) && $post_id ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Missing required parameters',
 				],
 				400
+			);
+
+			// This will never be reached, but we need to return something.
+			return false;
+		}
+
+		/* Every action reached through here would otherwise act on whatever token the request names. */
+		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid session token',
+				],
+				403
 			);
 
 			// This will never be reached, but we need to return something.
@@ -445,18 +465,6 @@ class Timer extends Controller_Contract {
 		[ $token, $post_id ] = $token_and_post_id;
 
 		$timeout = $this->get_timeout( $post_id );
-
-		/* Validate before touching anything: cancelling runs off the cookie, not off this token. */
-		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
-			wp_send_json_error(
-				[
-					'error' => 'Invalid session token',
-				],
-				403
-			);
-
-			return;
-		}
 
 		// When starting a new session, we need to remove the previous sessions for the same post.
 		$this->session->cancel_previous_for_object( $post_id, $token );
@@ -491,11 +499,18 @@ class Timer extends Controller_Contract {
 	 * frontend to update the timer with a synced value.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Stopped acting on a request that failed its own checks.
 	 *
 	 * @return void The AJAX response is sent back to the browser.
 	 */
 	public function ajax_sync(): void {
-		[ $token, $post_id ] = $this->ajax_check_request();
+		$token_and_post_id = $this->ajax_check_request();
+
+		if ( ! $token_and_post_id ) {
+			return;
+		}
+
+		[ $token, $post_id ] = $token_and_post_id;
 
 		$has_tickets_available = $this->frontend->get_events_ticket_capacity_for_seating( $post_id );
 
@@ -663,11 +678,18 @@ class Timer extends Controller_Contract {
 	 * Handles the action from the backend signaling the user is checking out.
 	 *
 	 * @since 5.17.0
+	 * @since TBD Stopped acting on a request that failed its own checks.
 	 *
 	 * @return void  The AJAX response is sent back to the browser.
 	 */
 	public function ajax_pause_to_checkout(): void {
-		[ $token, $post_id ] = $this->ajax_check_request();
+		$token_and_post_id = $this->ajax_check_request();
+
+		if ( ! $token_and_post_id ) {
+			return;
+		}
+
+		[ $token, $post_id ] = $token_and_post_id;
 
 		$has_tickets_available = $this->frontend->get_events_ticket_capacity_for_seating( $post_id );
 
