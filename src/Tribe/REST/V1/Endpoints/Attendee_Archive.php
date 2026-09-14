@@ -140,7 +140,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			 * an actual Occurrence request.
 			 */
 			$requested_event_id    = $fetch_args['event'] ?? null;
-			$is_occurrence_request = is_numeric( $requested_event_id )
+			$is_occurrence_request = class_exists( Occurrence::class )
+				&& is_numeric( $requested_event_id )
 				&& Occurrence::normalize_id( (int) $requested_event_id ) !== (int) $requested_event_id;
 
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
