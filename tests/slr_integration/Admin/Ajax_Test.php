@@ -948,7 +948,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$post_id   = self::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
 		$sessions  = tribe( Sessions::class );
-		/* The expiry is stored but never read by this endpoint; the token/post pairing is what matters. */
+		/* The endpoint only accepts a token issued for this post and not yet expired, so both are set here. */
 		$sessions->insert_or_update( 'some-token', $post_id, strtotime( '2100-01-01 00:00:00' ) );
 
 		$controller = $this->make_controller();

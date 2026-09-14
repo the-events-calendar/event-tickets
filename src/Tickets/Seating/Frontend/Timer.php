@@ -446,7 +446,6 @@ class Timer extends Controller_Contract {
 
 		$timeout = $this->get_timeout( $post_id );
 
-		// When starting a new session, we need to remove the previous sessions for the same post.
 		/* Validate before touching anything: cancelling runs off the cookie, not off this token. */
 		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
 			wp_send_json_error(
@@ -459,6 +458,7 @@ class Timer extends Controller_Contract {
 			return;
 		}
 
+		// When starting a new session, we need to remove the previous sessions for the same post.
 		$this->session->cancel_previous_for_object( $post_id, $token );
 
 		$now        = microtime( true );
