@@ -637,7 +637,7 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to update reservations on the Service.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Sanitized the request body, replaced the capability check with a nonce check and tied the token to the post.
+	 * @since TBD Sanitized the request body, replaced the capability check with a nonce check, tied the token to the post, required a started session, and refused a ticket outside the post or a seat type the ticket does not carry.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -683,7 +683,7 @@ class Ajax extends Controller_Contract {
 		$token             = $decoded['token'];
 		$json_reservations = $decoded['reservations'];
 
-		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+		if ( ! $this->sessions->token_started_for_post( $token, $post_id ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Invalid session token',
@@ -694,7 +694,9 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$reservations = [];
+		$post_seat_types = $this->get_seat_types_by_ticket( $post_id );
+		$reservations    = [];
+
 		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
 			$reservations[ $ticket_id ] = [];
 
@@ -704,6 +706,19 @@ class Ajax extends Controller_Contract {
 						'error' => 'Reservation data is not in correct format',
 					],
 					400
+				);
+
+				return;
+			}
+
+			$ticket_seat_type = $post_seat_types[ $ticket_id ] ?? '';
+
+			if ( ! $ticket_seat_type ) {
+				wp_send_json_error(
+					[
+						'error' => 'Invalid reservation data',
+					],
+					403
 				);
 
 				return;
@@ -722,6 +737,17 @@ class Ajax extends Controller_Contract {
 							'error' => 'Reservation data is not in correct format',
 						],
 						400
+					);
+
+					return;
+				}
+
+				if ( $ticket_seat_type !== $reservation['seatTypeId'] ) {
+					wp_send_json_error(
+						[
+							'error' => 'Invalid reservation data',
+						],
+						403
 					);
 
 					return;
@@ -753,7 +779,7 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to remove reservations on the Service.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Replaced the capability check with a nonce check.
+	 * @since TBD Replaced the capability check with a nonce check and refused a token the site never issued for the post the request names.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -771,6 +797,17 @@ class Ajax extends Controller_Contract {
 					'error' => __( 'Invalid request parameters', 'event-tickets' ),
 				],
 				400
+			);
+
+			return;
+		}
+
+		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid session token',
+				],
+				403
 			);
 
 			return;
@@ -1366,5 +1403,30 @@ class Ajax extends Controller_Contract {
 				'updatedAttendees' => $updated_attendees,
 			]
 		);
+	}
+
+	/**
+	 * Maps each of a post's seated ticket IDs to the seat type it carries.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post to collect the tickets of.
+	 *
+	 * @return array<int,string> A map from ticket ID to seat type, skipping tickets that have none.
+	 */
+	private function get_seat_types_by_ticket( int $post_id ): array {
+		$seat_types = [];
+
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$seat_type = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
+
+			if ( ! ( $seat_type && is_string( $seat_type ) ) ) {
+				continue;
+			}
+
+			$seat_types[ $ticket_id ] = $seat_type;
+		}
+
+		return $seat_types;
 	}
 }

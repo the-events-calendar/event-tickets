@@ -1,0 +1,7 @@
+significance: patch
+type: security
+entry: Tightened the authorization of Assigned Seating reservation data,
+  covering the seat details accepted for a ticket, the session tokens seat holds
+  are filed under, the caching of pages offering seat selection, and the
+  attendees an authenticated seat update can reach.
+timestamp: 2026-09-14T23:45:28.562Z

@@ -243,6 +243,7 @@ class Session {
 	 * Returns the token and object ID couple with the earliest expiration time from the cookie.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Skipped sessions whose timer was never started.
 	 *
 	 * @param array<string,string> $cookie_entries The entries from the cookie. A map from object ID to token.
 	 *
@@ -253,8 +254,9 @@ class Session {
 		$object_ids_interval_p = implode( ',', array_fill( 0, count( $cookie_entries ), '%d' ) );
 		$tokens_interval       = DB::prepare( $tokens_interval_p, ...array_values( $cookie_entries ) );
 		$object_ids_interval   = DB::prepare( $object_ids_interval_p, ...array_keys( $cookie_entries ) );
-		$query                 = DB::prepare(
-			"SELECT object_id, token FROM %i WHERE token IN ({$tokens_interval}) AND object_id IN ({$object_ids_interval}) ORDER BY expiration ASC LIMIT 1",
+
+		$query = DB::prepare(
+			"SELECT object_id, token FROM %i WHERE token IN ({$tokens_interval}) AND object_id IN ({$object_ids_interval}) AND timer_started = 1 ORDER BY expiration ASC LIMIT 1",
 			Sessions::table_name()
 		);
 
