@@ -349,6 +349,15 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 		// Check if the attendee is checked in. For a Series Pass Attendee, the checkin flag is recorded on the
 		// per-Occurrence clone Attendee, not on the Series-level Attendee, so resolve the clone first.
 		$checkin_status_attendee_id = $this->get_checkin_status_attendee_id( $attendee_id, $event_id, $ticket_provider );
+		if ( $checkin_status_attendee_id !== $attendee_id ) {
+			$attendee_data = apply_filters(
+				'tec_tickets_qr_checkin_attendee_data',
+				tribe( 'tickets.rest-v1.attendee-repository' )->format_item( $checkin_status_attendee_id ),
+				$checkin_status_attendee_id,
+				$event_id,
+				$ticket_provider
+			);
+		}
 
 		$checked_status = get_post_meta( $checkin_status_attendee_id, '_tribe_qr_status', true );
 
