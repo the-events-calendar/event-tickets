@@ -79,6 +79,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	/**
 	 * Handles GET requests on the endpoint.
 	 *
+	 * @since TBD Reindexes the tickets so the response always encodes them as a JSON array.
+	 *
 	 * @param WP_REST_Request $request
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
@@ -228,7 +230,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		 * @param array           $tickets The tickets returned by the REST API.
 		 * @param WP_REST_Request $request The request object.
 		 */
-		$data['tickets'] = apply_filters( 'tec_tickets_rest_api_archive_results', $tickets, $request );
+		$data['tickets'] = Tribe__Tickets__REST__V1__Archive_List::reindex(
+			apply_filters( 'tec_tickets_rest_api_archive_results', $tickets, $request )
+		);
 
 		$headers = array(
 			'X-ET-TOTAL'       => $data['total'],
