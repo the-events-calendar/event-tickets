@@ -57,6 +57,7 @@ class Hooks extends Controller_Contract {
 	 * @return void
 	 */
 	public function do_register(): void {
+		add_action( 'admin_init', [ $this, 'maybe_refresh_access_token' ] );
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		add_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ], 10, 2 );
@@ -72,11 +73,33 @@ class Hooks extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_action( 'admin_init', [ $this, 'maybe_refresh_access_token' ] );
 		remove_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ] );
 		remove_filter( 'tec_repository_schema_tc_orders', [ $this, 'filter_orders_repository_schema' ] );
 		remove_filter( 'tec_tickets_commerce_order_square_get_value_refunded', [ $this, 'filter_order_get_value_refunded' ] );
 		remove_filter( 'tec_tickets_commerce_success_page_should_display_billing_fields', [ $this, 'filter_display_billing_fields' ], 20 );
 		remove_filter( 'tec_tickets_commerce_order_has_pending_non_completed_transition', [ $this, 'filter_order_has_pending_non_completed_transition' ] );
+	}
+
+	/**
+	 * Renews the Square access token from the admin when it is due.
+	 *
+	 * The request path alone is not enough. A site that takes no Square traffic for a month never calls
+	 * the API, so nothing would notice the token expiring; and once a connection is marked unavailable
+	 * the Square API stops being called at all, which would leave a mistaken verdict with no way back.
+	 * Both are covered here without a scheduled action, which sites with a stalled cron queue would not
+	 * run. Token_Refresher throttles this, so it is one non-autoloaded option read on a normal page load.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function maybe_refresh_access_token(): void {
+		if ( wp_doing_ajax() || wp_doing_cron() ) {
+			return;
+		}
+
+		$this->container->get( Token_Refresher::class )->refresh_if_needed();
 	}
 
 	/**
