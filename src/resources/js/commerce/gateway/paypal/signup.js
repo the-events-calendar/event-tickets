@@ -91,9 +91,23 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
-		button: '.tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link',
+		container: '.tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings',
+		button: '.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link',
+		error: '.tec-tickets__admin-settings-tickets-commerce-gateway-connect-error',
 		countryField: '[name="tec-tickets-commerce-gateway-paypal-merchant-country"]',
 	};
+
+	/**
+	 * Sequence number of the most recent country refresh.
+	 *
+	 * Responses can arrive out of order, and a stale one would point the button at a country the seller
+	 * has already moved off.
+	 *
+	 * @since TBD
+	 *
+	 * @type {number}
+	 */
+	obj.refreshRequest = 0;
 
 	/**
 	 * Handles the singup onboarding of customers to PayPal.
@@ -130,8 +144,12 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 */
 	obj.onCountryChange = function ( event ) {
 		const $field = $( this );
-		const $button = $( obj.selectors.button );
-		$button.addClass( 'disabled' );
+		const $container = $field.closest( obj.selectors.container );
+		const $button = $container.find( obj.selectors.button );
+		const $error = $container.find( obj.selectors.error );
+		const request = ++obj.refreshRequest;
+
+		obj.disableButton( $button );
 
 		fetch(
 			ajaxurl +
@@ -150,13 +168,61 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 				return response.json();
 			} )
 			.then( function ( res ) {
-				// Handle success.
-				if ( true === res.success ) {
-					$button.prop( 'href', res.data.new_url );
+				if ( request !== obj.refreshRequest ) {
+					return;
 				}
 
-				$button.removeClass( 'disabled' );
+				if ( true !== res.success || ! res.data || ! res.data.new_url ) {
+					// The stored link is for the country the seller just changed away from, so keep it unclickable.
+					$error.show();
+					return;
+				}
+
+				// Without a button there is nothing to point at the new link, and the notice says to reload.
+				if ( ! $button.length ) {
+					return;
+				}
+
+				$error.hide();
+				$button.attr( 'href', res.data.new_url );
+				obj.enableButton( $button );
+			} )
+			.catch( function () {
+				if ( request !== obj.refreshRequest ) {
+					return;
+				}
+
+				$error.show();
 			} );
+	};
+
+	/**
+	 * Makes the connect button unusable, including for keyboard and assistive technology.
+	 *
+	 * The `disabled` class only sets `pointer-events: none`, which leaves the anchor focusable and
+	 * activatable with Enter.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} $button jQuery object of the connect button.
+	 *
+	 * @return {void}
+	 */
+	obj.disableButton = ( $button ) => {
+		$button.addClass( 'disabled' ).attr( 'aria-disabled', 'true' ).attr( 'tabindex', '-1' );
+	};
+
+	/**
+	 * Restores the connect button.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} $button jQuery object of the connect button.
+	 *
+	 * @return {void}
+	 */
+	obj.enableButton = ( $button ) => {
+		$button.removeClass( 'disabled' ).removeAttr( 'aria-disabled' ).removeAttr( 'tabindex' );
 	};
 
 	/**
