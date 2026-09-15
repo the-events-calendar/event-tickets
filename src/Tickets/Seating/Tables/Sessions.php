@@ -158,6 +158,90 @@ class Sessions extends Table {
 	}
 
 	/**
+	 * Whether a session row exists for a token and post.
+	 *
+	 * Reads only. A token the site never issued has no row, so this is what separates a token the
+	 * Seating service handed out from a string the request made up. An expired row does not count:
+	 * cleanup is scheduled, not immediate, so the timestamp is checked rather than the row's presence.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token     The session token to look for.
+	 * @param int    $object_id The post ID the token should have been issued for.
+	 *
+	 * @return bool Whether a session row exists for that token and post.
+	 */
+	public function token_exists_for_post( string $token, int $object_id ): bool {
+		try {
+			return tribe_is_truthy(
+				DB::get_var(
+					DB::prepare(
+						'SELECT 1 FROM %i WHERE token = %s AND object_id = %d AND expiration > %d',
+						self::table_name(),
+						$token,
+						$object_id,
+						time()
+					)
+				)
+			);
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to look up the session token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Brings a session's expiration forward to the timer's, without ever pushing it back.
+	 *
+	 * The row is created when the Seating service issues the token, carrying the token's own longer
+	 * lifetime; starting the timer shortens it. Re-opening the seat selection starts the timer again,
+	 * and the `expiration >` guard is what stops that second start from extending a running hold.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token                The session token to start the timer for.
+	 * @param int    $object_id            The post ID the token was issued for.
+	 * @param int    $expiration_timestamp The timestamp the timer would expire at.
+	 *
+	 * @return bool Whether the query ran, whether or not it moved the expiration.
+	 */
+	public function start_timer( string $token, int $object_id, int $expiration_timestamp ): bool {
+		try {
+			return false !== DB::query(
+				DB::prepare(
+					'UPDATE %i SET expiration = %d WHERE token = %s AND object_id = %d AND expiration > %d',
+					self::table_name(),
+					$expiration_timestamp,
+					$token,
+					$object_id,
+					$expiration_timestamp
+				)
+			);
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to start the session timer.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
 	 * Insert or updates a new row in the table depending on the existence of the token.
 	 *
 	 * @since 5.16.0

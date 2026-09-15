@@ -106,8 +106,22 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 * Registers the meta for the Tickets and the ticketable post types.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Registered the Attendee seat label meta.
 	 */
 	public function register_meta(): void {
+		/* Attendee post types vary by ticket provider, so this one is registered for all of them. */
+		register_meta(
+			'post',
+			Meta::META_KEY_ATTENDEE_SEAT_LABEL,
+			[
+				'show_in_rest'      => false,
+				'single'            => true,
+				'type'              => 'string',
+				'sanitize_callback' => [ Meta::class, 'sanitize_seat_label' ],
+				'auth_callback'     => '__return_false',
+			]
+		);
+
 		foreach ( tribe_tickets()->ticket_types() as $ticket_type ) {
 			foreach (
 				[
