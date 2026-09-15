@@ -259,10 +259,7 @@ class Coupons extends Base_API {
 
 			// Update the payment intent with the new value.
 			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
-				$this->update_stripe_payment_intent(
-					$request->get_param( 'payment_intent_id' ),
-					$cart_total->get_raw_value()->get_as_integer()
-				);
+				$this->update_stripe_payment_intent( $request->get_param( 'payment_intent_id' ), $cart_page );
 			}
 
 			return rest_ensure_response(
@@ -335,10 +332,7 @@ class Coupons extends Base_API {
 
 			// Update the payment intent with the new value.
 			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
-				$this->update_stripe_payment_intent(
-					$request->get_param( 'payment_intent_id' ),
-					$cart_total->get_raw_value()->get_as_integer()
-				);
+				$this->update_stripe_payment_intent( $request->get_param( 'payment_intent_id' ), $cart_page );
 			}
 
 			return rest_ensure_response(
@@ -367,18 +361,28 @@ class Coupons extends Base_API {
 	}
 
 	/**
-	 * Update the Stripe payment intent.
+	 * Update the Stripe payment intent to match the current cart.
 	 *
 	 * @since 5.21.0
+	 * @since TBD Takes the cart and sends the application fee alongside the amount.
 	 *
-	 * @param string $id     The payment intent ID.
-	 * @param int    $amount The new amount as an integer. This should be in the smallest currency
-	 *                       unit (e.g. cents for USD: $1 = 100 cents).
+	 * @param string $id   The payment intent ID.
+	 * @param Cart   $cart The cart the payment intent is being charged for.
 	 *
 	 * @return void
 	 */
-	protected function update_stripe_payment_intent( string $id, int $amount ) {
-		Payment_Intent::update( $id, [ 'amount' => $amount ] );
+	protected function update_stripe_payment_intent( string $id, Cart $cart ) {
+		$values = Payment_Intent::get_values_for_cart( $cart );
+
+		/*
+		 * A cart that cannot be charged is handed to another gateway, so leave the intent untouched
+		 * rather than writing an amount Stripe would reject.
+		 */
+		if ( ! $values ) {
+			return;
+		}
+
+		Payment_Intent::update( $id, $values );
 	}
 
 	/**
