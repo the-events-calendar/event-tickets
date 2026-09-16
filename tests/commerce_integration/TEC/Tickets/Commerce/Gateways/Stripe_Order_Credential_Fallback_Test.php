@@ -20,7 +20,6 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Common\Monolog\Logger;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
-use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint as PayPal_Order_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint as Stripe_Order_Endpoint;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Pending_Order;
@@ -310,22 +309,6 @@ class Stripe_Order_Credential_Fallback_Test extends WPTestCase {
 				$this->make_request( self::PAYMENT_INTENT, 'pi_test_stale_secret_xyz' )
 			),
 			'The secret belonging to a different Payment Intent must not authorize this one.'
-		);
-	}
-
-	/**
-	 * Gateways that issue no order-scoped secret keep the cart-bound check as their only path, so a
-	 * stray client_secret param cannot widen them.
-	 */
-	public function test_paypal_has_no_credential_fallback(): void {
-		$this->create_stripe_order( self::PAYMENT_INTENT, self::CLIENT_SECRET );
-		$this->activate_cart_hash( '' );
-
-		$endpoint = $this->make_endpoint( PayPal_Order_Endpoint::class );
-
-		$this->assertFalse(
-			$endpoint->current_user_can_edit_order( $this->make_request( self::PAYMENT_INTENT, self::CLIENT_SECRET ) ),
-			'PayPal must not gain a credential fallback it never issues credentials for.'
 		);
 	}
 

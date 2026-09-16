@@ -58,6 +58,18 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.advancedPayments = tecTicketsCommerceGatewayPayPalCheckout.advancedPayments;
 
 	/**
+	 * Credentials issued by our Create Order endpoint, keyed by PayPal Order ID.
+	 *
+	 * They authorize the capture when the cart cookie did not survive the round trip to PayPal, so
+	 * every request that settles an order sends the one issued for it.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
+	obj.orderCredentials = {};
+
+	/**
 	 * Set of timeout IDs so we can clear when the process of purchasing starts.
 	 *
 	 * @since 5.1.9
@@ -226,6 +238,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 * @since 5.2.0 $container Param added.
+	 * @since TBD Keeps the order credential the endpoint issued.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} data       Data returning from our endpoint.
@@ -234,7 +247,25 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderSuccess = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderSuccess', arguments );
+
+		if ( data.order_credential ) {
+			obj.orderCredentials[ data.id ] = data.order_credential;
+		}
+
 		return data.id;
+	};
+
+	/**
+	 * The credential issued for a PayPal order, if this browser still holds it.
+	 *
+	 * @since TBD
+	 *
+	 * @param {string} orderId PayPal Order ID.
+	 *
+	 * @return {string} The credential, or an empty string when there is none.
+	 */
+	obj.getOrderCredential = function ( orderId ) {
+		return obj.orderCredentials[ orderId ] ?? '';
 	};
 
 	/**
@@ -277,6 +308,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles checking if a purchase was really successful or was late-declined.
 	 *
 	 * @since 5.4.0.2
+	 * @since TBD Sends the order credential, so a lost cart cookie no longer refuses the recheck.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {Object} actions    PayPal actions available on approve.
@@ -289,6 +321,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const body = {
 			recheck: true,
+			order_credential: obj.getOrderCredential( data.order_id ),
 		};
 
 		return fetch( obj.orderEndpointUrl + '/' + data.order_id, {
@@ -313,6 +346,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the Approval of the orders via PayPal.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Sends the order credential, so a lost cart cookie no longer refuses the capture.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {Object} actions    PayPal actions available on approve.
@@ -329,6 +363,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const body = {
 			payer_id: data.payerID ?? '',
+			order_credential: obj.getOrderCredential( data.orderID ),
 		};
 
 		return fetch( obj.orderEndpointUrl + '/' + data.orderID, {
@@ -956,6 +991,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handles the Approval of the orders via PayPal.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Sends the order credential, so a lost cart cookie no longer refuses the capture.
 	 *
 	 * @param {Object} data       PayPal data passed to this method.
 	 * @param {Object} actions    PayPal actions available on approve.
@@ -968,6 +1004,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const body = {
 			advanced_payment: true,
+			order_credential: obj.getOrderCredential( data.orderId ),
 		};
 
 		return fetch( obj.orderEndpointUrl + '/' + data.orderId, {

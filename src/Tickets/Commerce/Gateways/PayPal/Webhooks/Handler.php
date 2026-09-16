@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Order;
+use Tribe__Utils__Array as Arr;
 use WP_Error;
 
 /**
@@ -35,6 +36,8 @@ class Handler {
 	 *
 	 * @since 5.1.10
 	 *
+	 * @since TBD Reads the parent payment link from `href`, which is the key PayPal sends it under.
+	 *
 	 * @param array $event The PayPal payment event object.
 	 *
 	 * @return \WP_Post|WP_Error Whether the event was processed successfully.
@@ -61,9 +64,30 @@ class Handler {
 
 		$new_status = tribe( Events::class )->convert_to_commerce_status( $event['event_type'] );
 
-		$link = $this->get_parent_payment_link( $event['resource']['links'] );
+		$link = $this->get_parent_payment_link( Arr::get( $event, [ 'resource', 'links' ], [] ) );
 
-		$parent_payment = tribe( Client::class )->request( $link['method'], $link['url'] );
+		if ( ! $link ) {
+			tribe( 'logger' )->log_debug(
+				sprintf(
+				// Translators: %s: The PayPal payment event.
+					__( 'No parent payment link on webhook event: %s', 'event-tickets' ),
+					wp_json_encode( $event )
+				),
+				'tickets-commerce-gateway-paypal'
+			);
+
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-missing-parent-payment-link', null, [ 'event' => $event ] );
+		}
+
+		/*
+		 * PayPal addresses its HATEOAS links with `href`, as the rest of this gateway reads them. This
+		 * asked for `url`, which no PayPal payload carries, so every real event died here resolving its
+		 * parent payment. Nothing noticed because the webhook route was never served.
+		 */
+		$parent_payment = tribe( Client::class )->request(
+			Arr::get( $link, 'method', 'GET' ),
+			Arr::get( $link, 'href' )
+		);
 
 		if ( ! $parent_payment ) {
 			tribe( 'logger' )->log_debug(
