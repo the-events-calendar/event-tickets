@@ -115,7 +115,7 @@ class Checkout {
 	 *
 	 * @since 5.1.9
 	 * @since 5.29.0.1 No longer sets the cart hash cookie from a request param. See SVUL-L34.
-	 * @since TBD Marked the checkout response as non-cacheable.
+	 * @since 5.29.4 Marked the checkout response as non-cacheable.
 	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {
@@ -235,7 +235,7 @@ class Checkout {
 	/**
 	 * Marks the checkout response as non-cacheable.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @return void
 	 */

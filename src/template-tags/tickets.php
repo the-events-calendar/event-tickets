@@ -1627,7 +1627,7 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
  * after that point renders the old markup against the new assets.
  *
  * @since 4.12.3
- * @since TBD Stopped reading the `tickets_rsvp_use_new_views` option and the install date.
+ * @since 5.29.4 Stopped reading the `tickets_rsvp_use_new_views` option and the install date.
  *
  * @return bool Whether new RSVP views are enabled.
  */
@@ -1795,7 +1795,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	 * filter added after that point renders the old markup against the new assets.
 	 *
 	 * @since 5.0.3
-	 * @since TBD Stopped reading the `tickets_use_new_views` option and the install date.
+	 * @since 5.29.4 Stopped reading the `tickets_use_new_views` option and the install date.
 	 *
 	 * @return bool Whether the tickets block views is enabled.
 	 */

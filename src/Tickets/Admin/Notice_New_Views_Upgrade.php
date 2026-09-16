@@ -2,7 +2,7 @@
 /**
  * Tells a site that was switched to the updated ticket and RSVP views what changed.
  *
- * @since TBD
+ * @since 5.29.4
  *
  * @package TEC\Tickets\Admin
  */
@@ -16,7 +16,7 @@ namespace TEC\Tickets\Admin;
  * with it, and nothing else says so: Tribe__Template stops looking for an override rather than
  * reporting that it found one it can no longer use.
  *
- * @since TBD
+ * @since 5.29.4
  *
  * @package TEC\Tickets\Admin
  */
@@ -25,7 +25,7 @@ class Notice_New_Views_Upgrade {
 	/**
 	 * Option recording that the upgrade turned the new views on for this site.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Notice_New_Views_Upgrade {
 	/**
 	 * Registers the notice.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @return void
 	 */
@@ -54,7 +54,7 @@ class Notice_New_Views_Upgrade {
 	/**
 	 * Whether this site is one the upgrade switched over.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @return bool
 	 */
@@ -80,7 +80,7 @@ class Notice_New_Views_Upgrade {
 	/**
 	 * The notice body.
 	 *
-	 * @since TBD
+	 * @since 5.29.4
 	 *
 	 * @return string
 	 */
