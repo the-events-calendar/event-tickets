@@ -20,11 +20,11 @@ class Handler {
 	 * Resolves the PayPal order id an event belongs to.
 	 *
 	 * The events this gateway subscribes to are Payments v2, whose captures carry the order id outright
-	 * under supplementary data. Reading it there settles the common case without a round trip to PayPal
-	 * at all. Only when it is absent is a link followed, and then only a link back to PayPal's own API.
+	 * under supplementary data. Failing that, the resource's links are read: one of them addresses the
+	 * order, and the id is the last segment of that url, so it can be taken straight from the payload.
 	 *
-	 * This used to look for a link with the `parent_payment` relation, which belongs to Payments v1. No
-	 * v2 capture carries one, so it resolved nothing for any real delivery.
+	 * Nothing is fetched from PayPal either way. This used to follow a link with the `parent_payment`
+	 * relation, which belongs to Payments v1 and appears on no v2 event, so it resolved nothing at all.
 	 *
 	 * @since TBD
 	 *
@@ -40,49 +40,38 @@ class Handler {
 		}
 
 		$links = Arr::get( $event, [ 'resource', 'links' ], [] );
-		$link  = is_array( $links ) ? $this->get_order_link( $links ) : '';
 
-		if ( ! $link ) {
-			return '';
-		}
-
-		$payment = tribe( Client::class )->request( 'GET', $link );
-
-		if ( ! is_array( $payment ) || empty( $payment['id'] ) || ! is_string( $payment['id'] ) ) {
-			return '';
-		}
-
-		return $payment['id'];
+		return is_array( $links ) ? $this->get_order_id_from_links( $links ) : '';
 	}
 
 	/**
-	 * Finds the link in an event's resource that points back at the order it belongs to.
+	 * Reads the order id out of whichever of an event's links addresses an order.
 	 *
-	 * `up` is what a Payments v2 capture carries; `parent_payment` is its v1 predecessor and is accepted
-	 * so an older payload still resolves. The link is required to address PayPal's own API, because the
-	 * request made with it carries this merchant's access token and an event is not a trusted source of
-	 * hostnames.
+	 * Only a link to this environment's own `/v2/checkout/orders/` is read. A capture's links also point
+	 * at the capture, the refund and, for an authorized payment, the authorization, and the id in any of
+	 * those is not an order id: taking one would send the lookup after an order that does not exist. The
+	 * host is pinned for the same reason a fetch would need it -- an event is not a trusted source of
+	 * urls -- even though nothing is requested here.
 	 *
 	 * @since TBD
 	 *
 	 * @param array $links The links on the event's resource.
 	 *
-	 * @return string The link to follow, or an empty string when there is none worth following.
+	 * @return string The order id, or an empty string when no link addresses an order.
 	 */
-	protected function get_order_link( array $links ): string {
-		$api_base = tribe( Client::class )->get_environment_url();
+	protected function get_order_id_from_links( array $links ): string {
+		$orders_url = tribe( Client::class )->get_environment_url() . '/v2/checkout/orders/';
+		$pattern    = '~^' . preg_quote( $orders_url, '~' ) . '(?<order_id>[A-Za-z0-9_-]+)/?$~';
 
-		foreach ( [ 'up', 'parent_payment' ] as $relation ) {
-			foreach ( $links as $link ) {
-				if ( ! is_array( $link ) || $relation !== Arr::get( $link, 'rel' ) ) {
-					continue;
-				}
+		foreach ( $links as $link ) {
+			if ( ! is_array( $link ) ) {
+				continue;
+			}
 
-				$href = Arr::get( $link, 'href', '' );
+			$href = Arr::get( $link, 'href', '' );
 
-				if ( is_string( $href ) && 0 === strpos( $href, $api_base . '/' ) ) {
-					return $href;
-				}
+			if ( is_string( $href ) && preg_match( $pattern, $href, $matches ) ) {
+				return $matches['order_id'];
 			}
 		}
 

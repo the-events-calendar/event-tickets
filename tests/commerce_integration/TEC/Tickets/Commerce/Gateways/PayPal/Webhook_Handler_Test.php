@@ -15,6 +15,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Handler;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -116,7 +117,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	 * link back to it -- which must be the `up` relation a v2 capture carries, not the `parent_payment`
 	 * relation that belongs to Payments v1 and appears on no v2 event.
 	 */
-	public function test_order_is_resolved_by_following_the_up_link_when_supplementary_data_is_absent(): void {
+	public function test_order_is_resolved_from_the_order_link_when_supplementary_data_is_absent(): void {
 		$order = $this->make_pending_paypal_order();
 
 		$this->stub_parent_payment_lookup();
@@ -134,17 +135,58 @@ class Webhook_Handler_Test extends WPTestCase {
 		$this->assertSame(
 			tribe( Completed::class )->get_wp_slug(),
 			get_post_status( $order->ID ),
-			'Following the up link must carry the order to Completed.'
+			'Reading the order link must carry the order to Completed.'
 		);
 
 		$this->assertSame(
-			[
-				'method' => 'GET',
-				'url'    => 'https://api.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
-			],
-			$this->requests[0] ?? [],
-			'The order must be fetched from the up link PayPal sent, by its href.'
+			[],
+			$this->requests,
+			'The order id is in the link itself, so resolving it costs no request.'
 		);
+	}
+
+	/**
+	 * A capture's links also address the capture, the refund and, on an authorized payment, the
+	 * authorization. None of those ids is an order id, so none may be read as one.
+	 *
+	 * @dataProvider non_order_link_provider
+	 */
+	public function test_links_that_do_not_address_an_order_are_not_read( string $href, string $message ): void {
+		$this->make_pending_paypal_order();
+
+		$this->stub_parent_payment_lookup();
+
+		$event = $this->capture_completed_event();
+		unset( $event['resource']['supplementary_data'] );
+		$event['resource']['links'] = [
+			[
+				'rel'    => 'up',
+				'method' => 'GET',
+				'href'   => $href,
+			],
+		];
+
+		$this->assertWPError( tribe( Handler::class )->process_event( $event ), $message );
+	}
+
+	/**
+	 * @return Generator<string,array{0:string,1:string}>
+	 */
+	public function non_order_link_provider(): Generator {
+		yield 'a capture' => [
+			'https://api.paypal.com/v2/payments/captures/3C679366HH908993F',
+			'A capture id must not be read as an order id.',
+		];
+
+		yield 'an authorization' => [
+			'https://api.paypal.com/v2/payments/authorizations/0VF52814937998046',
+			'An authorization id must not be read as an order id.',
+		];
+
+		yield 'a refund' => [
+			'https://api.paypal.com/v2/payments/refunds/1JU08902781691411',
+			'A refund id must not be read as an order id.',
+		];
 	}
 
 	/**
@@ -174,7 +216,7 @@ class Webhook_Handler_Test extends WPTestCase {
 		$this->assertSame(
 			[],
 			$this->requests,
-			'No request may be made to a host the event named.'
+			'A host the event named must never be contacted.'
 		);
 	}
 
