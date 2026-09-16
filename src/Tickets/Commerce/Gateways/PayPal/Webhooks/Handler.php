@@ -17,18 +17,76 @@ use WP_Error;
 class Handler {
 
 	/**
-	 * Gets the parent payment link from the list of Links on the response.
+	 * Resolves the PayPal order id an event belongs to.
 	 *
-	 * @since 5.1.10
+	 * The events this gateway subscribes to are Payments v2, whose captures carry the order id outright
+	 * under supplementary data. Reading it there settles the common case without a round trip to PayPal
+	 * at all. Only when it is absent is a link followed, and then only a link back to PayPal's own API.
 	 *
-	 * @param array $links
+	 * This used to look for a link with the `parent_payment` relation, which belongs to Payments v1. No
+	 * v2 capture carries one, so it resolved nothing for any real delivery.
 	 *
-	 * @return array
+	 * @since TBD
+	 *
+	 * @param array $event The PayPal payment event object.
+	 *
+	 * @return string The PayPal order id, or an empty string when it cannot be resolved.
 	 */
-	protected function get_parent_payment_link( $links ) {
-		return current( array_filter( $links, static function ( $link ) {
-			return 'parent_payment' === $link['rel'];
-		} ) );
+	protected function get_gateway_order_id( array $event ): string {
+		$order_id = Arr::get( $event, [ 'resource', 'supplementary_data', 'related_ids', 'order_id' ], '' );
+
+		if ( is_string( $order_id ) && '' !== $order_id ) {
+			return $order_id;
+		}
+
+		$links = Arr::get( $event, [ 'resource', 'links' ], [] );
+		$link  = is_array( $links ) ? $this->get_order_link( $links ) : '';
+
+		if ( ! $link ) {
+			return '';
+		}
+
+		$payment = tribe( Client::class )->request( 'GET', $link );
+
+		if ( ! is_array( $payment ) || empty( $payment['id'] ) || ! is_string( $payment['id'] ) ) {
+			return '';
+		}
+
+		return $payment['id'];
+	}
+
+	/**
+	 * Finds the link in an event's resource that points back at the order it belongs to.
+	 *
+	 * `up` is what a Payments v2 capture carries; `parent_payment` is its v1 predecessor and is accepted
+	 * so an older payload still resolves. The link is required to address PayPal's own API, because the
+	 * request made with it carries this merchant's access token and an event is not a trusted source of
+	 * hostnames.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $links The links on the event's resource.
+	 *
+	 * @return string The link to follow, or an empty string when there is none worth following.
+	 */
+	protected function get_order_link( array $links ): string {
+		$api_base = tribe( Client::class )->get_environment_url();
+
+		foreach ( [ 'up', 'parent_payment' ] as $relation ) {
+			foreach ( $links as $link ) {
+				if ( ! is_array( $link ) || $relation !== Arr::get( $link, 'rel' ) ) {
+					continue;
+				}
+
+				$href = Arr::get( $link, 'href', '' );
+
+				if ( is_string( $href ) && 0 === strpos( $href, $api_base . '/' ) ) {
+					return $href;
+				}
+			}
+		}
+
+		return '';
 	}
 
 	/**
@@ -64,50 +122,24 @@ class Handler {
 
 		$new_status = tribe( Events::class )->convert_to_commerce_status( $event['event_type'] );
 
-		$link = $this->get_parent_payment_link( Arr::get( $event, [ 'resource', 'links' ], [] ) );
+		$gateway_order_id = $this->get_gateway_order_id( $event );
 
-		if ( ! $link ) {
+		if ( '' === $gateway_order_id ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
 				// Translators: %s: The PayPal payment event.
-					__( 'No parent payment link on webhook event: %s', 'event-tickets' ),
+					__( 'No PayPal order could be resolved for webhook event: %s', 'event-tickets' ),
 					wp_json_encode( $event )
 				),
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-missing-parent-payment-link', null, [ 'event' => $event ] );
-		}
-
-		/*
-		 * PayPal addresses its HATEOAS links with `href`, as the rest of this gateway reads them. This
-		 * asked for `url`, which no PayPal payload carries, so every real event died here resolving its
-		 * parent payment. Nothing noticed because the webhook route was never served.
-		 */
-		$parent_payment = tribe( Client::class )->request(
-			Arr::get( $link, 'method', 'GET' ),
-			Arr::get( $link, 'href' )
-		);
-
-		if ( ! is_array( $parent_payment ) || empty( $parent_payment['id'] ) ) {
-			tribe( 'logger' )->log_debug(
-				sprintf(
-				// Translators: %s: The PayPal payment event.
-					__( 'Missing PayPal payment for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
-				),
-				'tickets-commerce-gateway-paypal'
-			);
-
-			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-parent-payment', null, [
-				'parent_payment' => $parent_payment,
-				'event'          => $event
-			] );
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-unresolved-order', null, [ 'event' => $event ] );
 		}
 
 		$order = tec_tc_orders()->by_args( [
 			'status'           => 'any',
-			'gateway_order_id' => $parent_payment['id'],
+			'gateway_order_id' => $gateway_order_id,
 		] )->first();
 
 		// If there's no matching payment then it's not tracked by Tickets Commerce.
@@ -116,15 +148,14 @@ class Handler {
 				sprintf(
 				// Translators: %s: The PayPal payment ID.
 					__( 'Missing order for PayPal payment from webhook: %s', 'event-tickets' ),
-					$parent_payment['id']
+					$gateway_order_id
 				),
 				'tickets-commerce-gateway-paypal'
 			);
 
 			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-order-not-found', null, [
-				'parent_payment' => $parent_payment,
-				'order'          => $order,
-				'event'          => $event
+				'gateway_order_id' => $gateway_order_id,
+				'event'            => $event,
 			] );
 		}
 
@@ -134,7 +165,7 @@ class Handler {
 				sprintf(
 				// Translators: %s: The PayPal payment ID.
 					__( 'PayPal Order "%1$s" already on status "%2$s" from webhook: %3$s', 'event-tickets' ),
-					$parent_payment['id'],
+					$gateway_order_id,
 					$new_status->get_slug(),
 					json_encode( $event )
 				),
@@ -142,7 +173,7 @@ class Handler {
 			);
 
 			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-order-status-already-updated', null, [
-				'parent_payment' => $parent_payment,
+				'gateway_order_id' => $gateway_order_id,
 				'order'          => $order,
 				'new_status'     => $new_status,
 				'event'          => $event
@@ -158,7 +189,7 @@ class Handler {
 			// Translators: %1$s: The status name; %2$s: The payment information.
 				__( 'Change %1$s in PayPal from webhook: %2$s', 'event-tickets' ),
 				$new_status->get_slug(),
-				sprintf( '[Order ID: %s; PayPal Payment ID: %s]', $order->ID, $parent_payment['id'] )
+				sprintf( '[Order ID: %s; PayPal Order ID: %s]', $order->ID, $gateway_order_id )
 			),
 			'tickets-commerce-gateway-paypal'
 		);

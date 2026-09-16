@@ -104,17 +104,77 @@ class Webhook_Handler_Test extends WPTestCase {
 			'The order must reach Completed through the status transition, which is what generates the attendee and sends the ticket email.'
 		);
 
-		/*
-		 * Without this the test passes whatever the handler reads the link from, including the `url`
-		 * key no PayPal payload carries, because the stub answers every call the same way.
-		 */
+		$this->assertSame(
+			[],
+			$this->requests,
+			'A capture carrying the order id needs no round trip to PayPal to resolve it.'
+		);
+	}
+
+	/**
+	 * Older or partial payloads may omit supplementary data. Then the order is resolved by following the
+	 * link back to it -- which must be the `up` relation a v2 capture carries, not the `parent_payment`
+	 * relation that belongs to Payments v1 and appears on no v2 event.
+	 */
+	public function test_order_is_resolved_by_following_the_up_link_when_supplementary_data_is_absent(): void {
+		$order = $this->make_pending_paypal_order();
+
+		$this->stub_parent_payment_lookup();
+
+		$event = $this->capture_completed_event();
+		unset( $event['resource']['supplementary_data'] );
+
+		$this->assertNotWPError(
+			tribe( Handler::class )->process_event( $event ),
+			'An event with only links must still resolve its order.'
+		);
+
+		clean_post_cache( $order->ID );
+
+		$this->assertSame(
+			tribe( Completed::class )->get_wp_slug(),
+			get_post_status( $order->ID ),
+			'Following the up link must carry the order to Completed.'
+		);
+
 		$this->assertSame(
 			[
 				'method' => 'GET',
 				'url'    => 'https://api.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
 			],
 			$this->requests[0] ?? [],
-			'The handler must read the parent payment from the link PayPal sent, using its href.'
+			'The order must be fetched from the up link PayPal sent, by its href.'
+		);
+	}
+
+	/**
+	 * A link pointing somewhere other than PayPal must not be followed: the request carries this
+	 * merchant's access token, and a webhook body is not a trusted source of hostnames.
+	 */
+	public function test_a_link_pointing_off_paypal_is_not_followed(): void {
+		$this->make_pending_paypal_order();
+
+		$this->stub_parent_payment_lookup();
+
+		$event = $this->capture_completed_event();
+		unset( $event['resource']['supplementary_data'] );
+		$event['resource']['links'] = [
+			[
+				'rel'    => 'up',
+				'method' => 'GET',
+				'href'   => 'https://attacker.example/v2/checkout/orders/' . self::PAYPAL_ORDER,
+			],
+		];
+
+		$this->assertWPError(
+			tribe( Handler::class )->process_event( $event ),
+			'An order link pointing off PayPal must not resolve.'
+		);
+
+		$this->assertSame(
+			[],
+			$this->requests,
+			'No request may be made to a host the event named.'
 		);
 	}
 
@@ -198,45 +258,51 @@ class Webhook_Handler_Test extends WPTestCase {
 	}
 
 	/**
-	 * A PAYMENT.CAPTURE.COMPLETED event shaped the way PayPal sends it, whose links carry `href`.
+	 * A PAYMENT.CAPTURE.COMPLETED event as Payments v2 sends one: the order id under supplementary
+	 * data, and self / refund / up links. Payments v1's `parent_payment` relation is absent, because
+	 * no v2 capture carries it.
 	 *
 	 * @return array{
 	 *     id: string,
 	 *     event_type: string,
-	 *     resource_type: string,
 	 *     resource: array{
 	 *         id: string,
 	 *         status: string,
 	 *         amount: array{currency_code: string, value: string},
+	 *         supplementary_data: array{related_ids: array{order_id: string}},
 	 *         links: array<int, array{rel: string, method: string, href: string}>
 	 *     }
 	 * }
 	 */
 	private function capture_completed_event(): array {
 		return [
-			'id'            => 'WH-TESTEVENT-0001',
-			'event_type'    => Webhooks\Events::PAYMENT_CAPTURE_COMPLETED,
-			'resource_type' => 'capture',
-			'resource'      => [
-				'id'     => '3C679366HH908993F',
-				'status' => 'COMPLETED',
-				'amount' => [
+			'id'         => 'WH-TESTEVENT-0001',
+			'event_type' => Webhooks\Events::PAYMENT_CAPTURE_COMPLETED,
+			'resource'   => [
+				'id'                 => '3C679366HH908993F',
+				'status'             => 'COMPLETED',
+				'amount'             => [
 					'currency_code' => 'USD',
 					'value'         => '10.00',
 				],
-				'links'  => [
+				'supplementary_data' => [
+					'related_ids' => [
+						'order_id' => self::PAYPAL_ORDER,
+					],
+				],
+				'links'              => [
 					[
 						'rel'    => 'self',
 						'method' => 'GET',
 						'href'   => 'https://api.paypal.com/v2/payments/captures/3C679366HH908993F',
 					],
 					[
-						'rel'    => 'up',
-						'method' => 'GET',
-						'href'   => 'https://api.paypal.com/v2/payments/authorizations/0VF52814937998046',
+						'rel'    => 'refund',
+						'method' => 'POST',
+						'href'   => 'https://api.paypal.com/v2/payments/captures/3C679366HH908993F/refund',
 					],
 					[
-						'rel'    => 'parent_payment',
+						'rel'    => 'up',
 						'method' => 'GET',
 						'href'   => 'https://api.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
 					],

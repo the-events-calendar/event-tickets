@@ -225,7 +225,9 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	}
 
 	/**
-	 * A PAYMENT.CAPTURE.COMPLETED event, whose links carry `href` as PayPal sends them.
+	 * A PAYMENT.CAPTURE.COMPLETED event as Payments v2 sends one: the order id under supplementary
+	 * data, and self / refund / up links. Payments v1's `parent_payment` relation is absent, because
+	 * no v2 capture carries it.
 	 *
 	 * @return array{
 	 *     id: string,
@@ -233,6 +235,8 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	 *     resource: array{
 	 *         id: string,
 	 *         status: string,
+	 *         amount: array{currency_code: string, value: string},
+	 *         supplementary_data: array{related_ids: array{order_id: string}},
 	 *         links: array<int, array{rel: string, method: string, href: string}>
 	 *     }
 	 * }
@@ -242,11 +246,30 @@ class Webhook_Endpoint_Test extends WPTestCase {
 			'id'         => 'WH-TESTEVENT-0001',
 			'event_type' => Webhooks\Events::PAYMENT_CAPTURE_COMPLETED,
 			'resource'   => [
-				'id'     => '3C679366HH908993F',
-				'status' => 'COMPLETED',
-				'links'  => [
+				'id'                 => '3C679366HH908993F',
+				'status'             => 'COMPLETED',
+				'amount'             => [
+					'currency_code' => 'USD',
+					'value'         => '10.00',
+				],
+				'supplementary_data' => [
+					'related_ids' => [
+						'order_id' => self::PAYPAL_ORDER,
+					],
+				],
+				'links'              => [
 					[
-						'rel'    => 'parent_payment',
+						'rel'    => 'self',
+						'method' => 'GET',
+						'href'   => 'https://api.paypal.com/v2/payments/captures/3C679366HH908993F',
+					],
+					[
+						'rel'    => 'refund',
+						'method' => 'POST',
+						'href'   => 'https://api.paypal.com/v2/payments/captures/3C679366HH908993F/refund',
+					],
+					[
+						'rel'    => 'up',
 						'method' => 'GET',
 						'href'   => 'https://api.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
 					],
