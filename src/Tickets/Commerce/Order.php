@@ -1432,7 +1432,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return bool Whether the stale lock was taken over.
 	 */
-	protected function reclaim_stale_lock( int $order_id ): bool {
+	private function reclaim_stale_lock( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
 
 		$current = DB::get_var(
@@ -1507,7 +1507,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return int|null The Unix timestamp the lock was taken, or null when it cannot be read.
 	 */
-	protected function get_lock_timestamp( string $lock_id ): ?int {
+	private function get_lock_timestamp( string $lock_id ): ?int {
 		$pattern = '/^' . preg_quote( self::LOCK_ID_PREFIX, '/' ) . '(?<timestamp>[a-f0-9]{8})(?<rest>[a-f0-9]+)\.(?<entropy>[0-9]+)$/';
 
 		if ( ! preg_match( $pattern, $lock_id, $matches ) ) {

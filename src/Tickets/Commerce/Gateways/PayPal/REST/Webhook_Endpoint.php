@@ -121,7 +121,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		 */
 		$event = $request->get_json_params();
 
-		if ( ! is_array( $event ) || empty( $event['event_type'] ) || empty( $event['resource'] ) ) {
+		if ( ! is_array( $event ) || empty( $event['event_type'] ) || ! is_string( $event['event_type'] ) || empty( $event['resource'] ) ) {
 			return new WP_Error(
 				'tec-tickets-commerce-paypal-webhook-invalid-payload',
 				null,
@@ -133,18 +133,22 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			sprintf(
 			// Translators: %s: The event type.
 				__( 'Received PayPal webhook event for type: %s', 'event-tickets' ),
-				$event['event_type']
+				substr( $event['event_type'], 0, 100 )
 			),
 			'tickets-commerce-gateway-paypal'
 		);
 
 		// Check if the event type matches.
 		if ( ! tribe( Webhooks\Events::class )->is_valid( $event['event_type'] ) ) {
+			/*
+			 * The type alone, and bounded: nothing here is verified yet, so an unauthenticated caller
+			 * chooses what this writes. The full payload went in before, which let one choose its size.
+			 */
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal webhook event type.
 					__( 'Invalid event type for webhook event: %s', 'event-tickets' ),
-					wp_json_encode( $event )
+					substr( $event['event_type'], 0, 100 )
 				),
 				'tickets-commerce-gateway-paypal'
 			);
