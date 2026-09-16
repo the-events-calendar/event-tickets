@@ -236,17 +236,38 @@ class Order_Stale_Lock_Test extends WPTestCase {
 	}
 
 	/**
-	 * A lock dated in the future -- a server clock stepped back -- is never old enough to reclaim, which
-	 * is exactly the permanently stuck order this reclaim exists to prevent.
+	 * A lock dated in the future must be left alone.
+	 *
+	 * Lock ids carry the clock of whichever node wrote them, so on a node running even slightly ahead
+	 * every brand new lock looks future dated to its neighbours. Reclaiming those would let two requests
+	 * mutate one order at once, which is worse than waiting.
 	 */
-	public function test_a_future_dated_lock_is_reclaimable(): void {
+	public function test_a_future_dated_lock_is_not_reclaimed(): void {
 		$order = $this->make_pending_order();
 
-		$this->write_lock( $order->ID, $this->lock_id_aged( -DAY_IN_SECONDS ) );
+		$this->write_lock( $order->ID, $this->lock_id_aged( -HOUR_IN_SECONDS ) );
+
+		$this->assertFalse(
+			tribe( Order::class )->lock_order( $order->ID ),
+			'A lock dated in the future belongs to a node whose clock runs ahead, not to a dead request.'
+		);
+	}
+
+	/**
+	 * Leaving future-dated locks alone does not strand the order: the wall clock catches up, and once it
+	 * has passed the lock by the lifetime, the lock is reclaimed like any other.
+	 */
+	public function test_a_future_dated_lock_is_reclaimed_once_the_clock_catches_up(): void {
+		$order = $this->make_pending_order();
+
+		$this->write_lock( $order->ID, $this->lock_id_aged( -HOUR_IN_SECONDS ) );
+
+		// An hour and a half later: past the lock's own timestamp, and past the lifetime on top of it.
+		$this->freeze_time( $this->frozen_now()->modify( '+90 minutes' ) );
 
 		$this->assertTrue(
 			tribe( Order::class )->lock_order( $order->ID ),
-			'A lock dated in the future must not be permanent.'
+			'Once the clock has passed a future-dated lock by the lifetime, it is stale like any other.'
 		);
 	}
 

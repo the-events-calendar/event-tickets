@@ -112,7 +112,7 @@ class Handler {
 				sprintf(
 				// Translators: %s: The PayPal payment event.
 					__( 'Invalid event type for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
+					wp_json_encode( $event )
 				),
 				'tickets-commerce-gateway-paypal'
 			);
@@ -167,7 +167,7 @@ class Handler {
 					__( 'PayPal Order "%1$s" already on status "%2$s" from webhook: %3$s', 'event-tickets' ),
 					$gateway_order_id,
 					$new_status->get_slug(),
-					json_encode( $event )
+					wp_json_encode( $event )
 				),
 				'tickets-commerce-gateway-paypal'
 			);

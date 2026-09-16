@@ -1467,13 +1467,13 @@ class Order extends Abstract_Order {
 		 */
 		$ttl = max( MINUTE_IN_SECONDS, absint( apply_filters( 'tec_tickets_commerce_order_lock_ttl', self::LOCK_TTL, $order_id, $current ) ) );
 
-		$age = time() - $locked_at;
-
 		/*
-		 * A lock dated in the future comes from a server clock that was stepped back. Left alone it is
-		 * never old enough to reclaim, which is the permanently stuck order this reclaim exists to end.
+		 * A lock dated in the future is not treated as stale. Lock ids carry the clock of whichever node
+		 * wrote them, so a node running even slightly ahead would otherwise have its brand new locks
+		 * reclaimed instantly by every other node, which is worse than the delay this avoids: a future
+		 * dated lock becomes reclaimable on its own once the wall clock passes it by the lifetime below.
 		 */
-		if ( $age >= 0 && $age < $ttl ) {
+		if ( time() - $locked_at < $ttl ) {
 			return false;
 		}
 
