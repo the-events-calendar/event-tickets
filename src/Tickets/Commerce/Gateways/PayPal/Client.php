@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
 use Tribe__Utils__Array as Arr;
@@ -452,6 +451,8 @@ class Client {
 	 * @type string                            $tax_id_type        (optional) Tax ID for this purchase Unit.
 	 *
 	 *                     }
+	 * @since TBD Keys the PayPal idempotency header on the payload instead of the cart cookie.
+	 *
 	 * @return array|null
 	 */
 	public function create_order( array $units = [] ) {
@@ -546,7 +547,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
+				'PayPal-Request-Id'             => $this->get_request_id( 'create', wp_json_encode( $body ) ),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
@@ -558,9 +559,36 @@ class Client {
 	}
 
 	/**
+	 * Builds the idempotency key PayPal is sent for a request.
+	 *
+	 * PayPal treats `PayPal-Request-Id` as an idempotency key: a repeat of the same key against the
+	 * same endpoint is answered with the first call's result rather than performed again. The key was
+	 * derived from the visitor's cart cookie, which makes it wrong in both directions. A buyer whose
+	 * cookie was dropped sent an md5 of the empty string, the same value as every other cookie-less
+	 * request; and a buyer whose cookie changed between a call and its retry sent a new key, so a
+	 * retried capture read as a fresh one rather than being deduplicated.
+	 *
+	 * Keying on what the request is actually about fixes both: the same order captured twice is
+	 * recognised as a repeat, and two different orders never collide.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $operation The operation being performed, so the same subject used for different
+	 *                          calls does not share a key.
+	 * @param string $subject   What the request is about: the PayPal order id, or the payload for a
+	 *                          call that has no id yet.
+	 *
+	 * @return string The idempotency key to send PayPal.
+	 */
+	protected function get_request_id( string $operation, string $subject ): string {
+		return 'tec-tc-' . md5( $operation . '|' . $subject );
+	}
+
+	/**
 	 * Retrieves an order object for a given ID in PayPal.
 	 *
 	 * @since 5.4.0.2
+	 * @since TBD Keys the PayPal idempotency header on the order instead of the cart cookie.
 	 *
 	 * @param string $order_id Order ID to retrieve.
 	 *
@@ -573,7 +601,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
+				'PayPal-Request-Id'             => $this->get_request_id( 'get', $order_id ),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
@@ -593,6 +621,7 @@ class Client {
 	 * @since 5.1.9
 	 *
 	 * @since 5.1.10 Added support for passing `payerID` param for PayPal API.
+	 * @since TBD Keys the PayPal idempotency header on the order instead of the cart cookie.
 	 *
 	 * @param string $order_id Order ID to capture.
 	 * @param string $payer_id Payer ID for given order from PayPal.
@@ -616,7 +645,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
+				'PayPal-Request-Id'             => $this->get_request_id( 'capture', $order_id ),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,

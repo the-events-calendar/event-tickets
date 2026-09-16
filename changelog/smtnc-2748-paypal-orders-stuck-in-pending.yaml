@@ -1,0 +1,8 @@
+significance: patch
+type: fix
+entry: "Stopped PayPal orders stranding in Pending after a successful payment,
+  which left buyers without their attendees or ticket emails: the capture no
+  longer depends on the cart cookie surviving the round trip, PayPal's webhook
+  route is served rather than answering 404, and a lock left behind by a failed
+  request no longer freezes the order."
+timestamp: 2026-09-15T21:02:11.963Z
