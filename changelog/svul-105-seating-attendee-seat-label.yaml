@@ -1,0 +1,6 @@
+significance: patch
+type: security
+entry: Tightened the handling of Assigned Seating reservations, covering the seat
+  labels stored against attendees and the session tokens reservations are filed
+  under.
+timestamp: 2026-09-09T15:32:01.198Z
