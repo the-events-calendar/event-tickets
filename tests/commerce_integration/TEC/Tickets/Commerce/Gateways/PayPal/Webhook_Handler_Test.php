@@ -146,6 +146,49 @@ class Webhook_Handler_Test extends WPTestCase {
 	}
 
 	/**
+	 * PayPal serves the same API under two hostnames, and its v2 webhook links use `api-m` while the
+	 * rest of this gateway talks to `api`. Both have to resolve, or the link path is dead in production.
+	 *
+	 * @dataProvider api_host_provider
+	 */
+	public function test_order_links_resolve_on_either_paypal_api_host( string $host ): void {
+		$order = $this->make_pending_paypal_order();
+
+		$this->stub_parent_payment_lookup();
+
+		$event = $this->capture_completed_event();
+		unset( $event['resource']['supplementary_data'] );
+		$event['resource']['links'] = [
+			[
+				'rel'    => 'up',
+				'method' => 'GET',
+				'href'   => 'https://' . $host . '/v2/checkout/orders/' . self::PAYPAL_ORDER,
+			],
+		];
+
+		$this->assertNotWPError(
+			tribe( Handler::class )->process_event( $event ),
+			"An order link on {$host} must resolve."
+		);
+
+		clean_post_cache( $order->ID );
+
+		$this->assertSame(
+			tribe( Completed::class )->get_wp_slug(),
+			get_post_status( $order->ID ),
+			"An order link on {$host} must carry the order to Completed."
+		);
+	}
+
+	/**
+	 * @return Generator<string,array{0:string}>
+	 */
+	public function api_host_provider(): Generator {
+		yield 'api' => [ 'api.paypal.com' ];
+		yield 'api-m' => [ 'api-m.paypal.com' ];
+	}
+
+	/**
 	 * A capture's links also address the capture, the refund and, on an authorized payment, the
 	 * authorization. None of those ids is an order id, so none may be read as one.
 	 *
@@ -346,7 +389,7 @@ class Webhook_Handler_Test extends WPTestCase {
 					[
 						'rel'    => 'up',
 						'method' => 'GET',
-						'href'   => 'https://api.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
+						'href'   => 'https://api-m.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
 					],
 				],
 			],

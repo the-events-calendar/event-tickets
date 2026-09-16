@@ -17,6 +17,25 @@ use WP_Error;
 class Handler {
 
 	/**
+	 * Gets the parent payment link from the list of Links on the response.
+	 *
+	 * @since 5.1.10
+	 * @deprecated TBD The `parent_payment` relation belongs to Payments v1 and appears on none of the v2
+	 *             events this gateway subscribes to.
+	 *
+	 * @param array $links
+	 *
+	 * @return array
+	 */
+	protected function get_parent_payment_link( $links ) {
+		_deprecated_function( __METHOD__, 'TBD' );
+
+		return current( array_filter( $links, static function ( $link ) {
+			return 'parent_payment' === $link['rel'];
+		} ) );
+	}
+
+	/**
 	 * Resolves the PayPal order id an event belongs to.
 	 *
 	 * The events this gateway subscribes to are Payments v2, whose captures carry the order id outright
@@ -32,7 +51,7 @@ class Handler {
 	 *
 	 * @return string The PayPal order id, or an empty string when it cannot be resolved.
 	 */
-	protected function get_gateway_order_id( array $event ): string {
+	private function get_gateway_order_id( array $event ): string {
 		$order_id = Arr::get( $event, [ 'resource', 'supplementary_data', 'related_ids', 'order_id' ], '' );
 
 		if ( is_string( $order_id ) && '' !== $order_id ) {
@@ -47,11 +66,9 @@ class Handler {
 	/**
 	 * Reads the order id out of whichever of an event's links addresses an order.
 	 *
-	 * Only a link to this environment's own `/v2/checkout/orders/` is read. A capture's links also point
-	 * at the capture, the refund and, for an authorized payment, the authorization, and the id in any of
-	 * those is not an order id: taking one would send the lookup after an order that does not exist. The
-	 * host is pinned for the same reason a fetch would need it -- an event is not a trusted source of
-	 * urls -- even though nothing is requested here.
+	 * Only a link to this environment's own orders endpoint is read. A capture's links also point at the
+	 * capture, the refund and, for an authorized payment, the authorization, and the id in any of those
+	 * is not an order id: taking one would send the lookup after an order that does not exist.
 	 *
 	 * @since TBD
 	 *
@@ -59,10 +76,7 @@ class Handler {
 	 *
 	 * @return string The order id, or an empty string when no link addresses an order.
 	 */
-	protected function get_order_id_from_links( array $links ): string {
-		$orders_url = tribe( Client::class )->get_environment_url() . '/v2/checkout/orders/';
-		$pattern    = '~^' . preg_quote( $orders_url, '~' ) . '(?<order_id>[A-Za-z0-9_-]+)/?$~';
-
+	private function get_order_id_from_links( array $links ): string {
 		foreach ( $links as $link ) {
 			if ( ! is_array( $link ) ) {
 				continue;
@@ -70,12 +84,68 @@ class Handler {
 
 			$href = Arr::get( $link, 'href', '' );
 
-			if ( is_string( $href ) && preg_match( $pattern, $href, $matches ) ) {
-				return $matches['order_id'];
+			if ( ! is_string( $href ) ) {
+				continue;
+			}
+
+			$order_id = $this->get_order_id_from_url( $href );
+
+			if ( '' !== $order_id ) {
+				return $order_id;
 			}
 		}
 
 		return '';
+	}
+
+	/**
+	 * Reads the order id out of a url, when that url addresses an order on PayPal's own API.
+	 *
+	 * The host is pinned because an event is not a trusted source of urls. It is matched rather than
+	 * prefixed, because PayPal serves the same API under two names and its v2 webhook links use the
+	 * `api-m` one while the rest of this gateway talks to `api`.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url The url to read.
+	 *
+	 * @return string The order id, or an empty string when the url does not address an order.
+	 */
+	private function get_order_id_from_url( string $url ): string {
+		$parts = wp_parse_url( $url );
+
+		if ( 'https' !== strtolower( Arr::get( $parts, 'scheme', '' ) ) ) {
+			return '';
+		}
+
+		if ( ! in_array( strtolower( Arr::get( $parts, 'host', '' ) ), $this->get_api_hosts(), true ) ) {
+			return '';
+		}
+
+		if ( ! preg_match( '~^/v2/checkout/orders/(?<order_id>[A-Za-z0-9_-]+)/?$~', Arr::get( $parts, 'path', '' ), $matches ) ) {
+			return '';
+		}
+
+		return $matches['order_id'];
+	}
+
+	/**
+	 * The hostnames PayPal serves this environment's API under.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<int,string>
+	 */
+	private function get_api_hosts(): array {
+		$host = wp_parse_url( tribe( Client::class )->get_environment_url(), PHP_URL_HOST );
+
+		if ( ! is_string( $host ) || '' === $host ) {
+			return [];
+		}
+
+		$host = strtolower( $host );
+
+		return array_unique( [ $host, str_replace( 'api.', 'api-m.', $host ) ] );
 	}
 
 	/**

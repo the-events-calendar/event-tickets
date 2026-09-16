@@ -580,7 +580,7 @@ class Client {
 	 *
 	 * @return string The idempotency key to send PayPal.
 	 */
-	protected function get_request_id( string $operation, string $subject ): string {
+	private function get_request_id( string $operation, string $subject ): string {
 		return 'tec-tc-' . md5( $operation . '|' . $subject );
 	}
 
