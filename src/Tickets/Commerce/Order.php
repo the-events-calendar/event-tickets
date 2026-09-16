@@ -901,7 +901,16 @@ class Order extends Abstract_Order {
 			->set_args( $update_args )
 			->save();
 
-		$this->unlock_order( $existing_order_id );
+		$held_until_now = $this->unlock_order( $existing_order_id );
+
+		/*
+		 * The save pins the lock id, so losing the lock to another request makes it match no rows. That
+		 * is not the same as the order having gone away, and creating a second order for it would give
+		 * one gateway order id two Tickets Commerce orders.
+		 */
+		if ( empty( $updated[ $existing_order_id ] ) && ! $held_until_now ) {
+			return false;
+		}
 
 		if ( empty( $updated[ $existing_order_id ] ) ) {
 			/**
@@ -1288,18 +1297,25 @@ class Order extends Abstract_Order {
 	 * Unlock an order to allow it to be modified.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Only releases a lock this request holds.
 	 *
 	 * @param int $order_id The order ID.
 	 *
-	 * @return bool Whether the order was unlocked.
+	 * @return bool Whether this request held the lock and released it.
 	 */
 	public function unlock_order( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
 		try {
-			$result = (bool) DB::query(
+			/*
+			 * Matched on the lock id this request holds. Without that match any caller could clear any
+			 * lock, including one another request had just taken over from a stale holder.
+			 */
+			$result = 0 < DB::query(
 				DB::prepare(
-					"UPDATE %i set $lock_key = '' where ID = $order_id",
-					DB::prefix( 'posts' )
+					"UPDATE %i SET $lock_key = '' WHERE ID = %d AND $lock_key = %s",
+					DB::prefix( 'posts' ),
+					$order_id,
+					$this->get_lock_id()
 				)
 			);
 
@@ -1440,15 +1456,24 @@ class Order extends Abstract_Order {
 		/**
 		 * Filters how long an order lock is honoured before another request may take it over.
 		 *
+		 * The returned value is floored at one minute: a zero, or anything absint() flattens to zero,
+		 * would make every lock reclaimable on sight and turn locking off without saying so.
+		 *
 		 * @since TBD
 		 *
 		 * @param int    $ttl      The lock lifetime, in seconds.
 		 * @param int    $order_id The order ID the lock is held on.
 		 * @param string $lock_id  The lock id currently held.
 		 */
-		$ttl = absint( apply_filters( 'tec_tickets_commerce_order_lock_ttl', self::LOCK_TTL, $order_id, $current ) );
+		$ttl = max( MINUTE_IN_SECONDS, absint( apply_filters( 'tec_tickets_commerce_order_lock_ttl', self::LOCK_TTL, $order_id, $current ) ) );
 
-		if ( time() - $locked_at < $ttl ) {
+		$age = time() - $locked_at;
+
+		/*
+		 * A lock dated in the future comes from a server clock that was stepped back. Left alone it is
+		 * never old enough to reclaim, which is the permanently stuck order this reclaim exists to end.
+		 */
+		if ( $age >= 0 && $age < $ttl ) {
 			return false;
 		}
 
@@ -1483,13 +1508,13 @@ class Order extends Abstract_Order {
 	 * @return int|null The Unix timestamp the lock was taken, or null when it cannot be read.
 	 */
 	protected function get_lock_timestamp( string $lock_id ): ?int {
-		$pattern = '/^' . preg_quote( self::LOCK_ID_PREFIX, '/' ) . '([0-9a-f]{8})[0-9a-f]{5}\./';
+		$pattern = '/^' . preg_quote( self::LOCK_ID_PREFIX, '/' ) . '(?<timestamp>[a-f0-9]{8})(?<rest>[a-f0-9]+)\.(?<entropy>[0-9]+)$/';
 
 		if ( ! preg_match( $pattern, $lock_id, $matches ) ) {
 			return null;
 		}
 
-		return absint( hexdec( $matches[1] ) );
+		return absint( hexdec( $matches['timestamp'] ) );
 	}
 
 	/**

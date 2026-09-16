@@ -89,7 +89,7 @@ class Handler {
 			Arr::get( $link, 'href' )
 		);
 
-		if ( ! $parent_payment ) {
+		if ( ! is_array( $parent_payment ) || empty( $parent_payment['id'] ) ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
 				// Translators: %s: The PayPal payment event.

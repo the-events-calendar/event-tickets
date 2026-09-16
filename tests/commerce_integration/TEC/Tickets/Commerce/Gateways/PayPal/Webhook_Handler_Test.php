@@ -34,8 +34,17 @@ class Webhook_Handler_Test extends WPTestCase {
 
 	private const PAYPAL_ORDER = '37E53548EJ332603U';
 
+	/**
+	 * The arguments the handler passed to Client::request(), in call order.
+	 *
+	 * @var array<int,array{method: string, url: string|null}>
+	 */
+	private array $requests = [];
+
 	public function setUp(): void {
 		parent::setUp();
+
+		$this->requests = [];
 
 		tribe( Status_Handler::class )->register_order_statuses();
 	}
@@ -93,6 +102,19 @@ class Webhook_Handler_Test extends WPTestCase {
 			[ Completed::SLUG, Pending::SLUG, $order->ID ],
 			$transitions,
 			'The order must reach Completed through the status transition, which is what generates the attendee and sends the ticket email.'
+		);
+
+		/*
+		 * Without this the test passes whatever the handler reads the link from, including the `url`
+		 * key no PayPal payload carries, because the stub answers every call the same way.
+		 */
+		$this->assertSame(
+			[
+				'method' => 'GET',
+				'url'    => 'https://api.paypal.com/v2/checkout/orders/' . self::PAYPAL_ORDER,
+			],
+			$this->requests[0] ?? [],
+			'The handler must read the parent payment from the link PayPal sent, using its href.'
 		);
 	}
 
@@ -154,13 +176,24 @@ class Webhook_Handler_Test extends WPTestCase {
 	 * @param string $paypal_order_id The PayPal order id the lookup resolves to.
 	 */
 	private function stub_parent_payment_lookup( string $paypal_order_id = self::PAYPAL_ORDER ): void {
+		// By reference, not $this: uopz runs the replacement in the stubbed class's scope.
+		$requests = &$this->requests;
+
 		$this->set_class_fn_return(
 			Client::class,
 			'request',
-			[
-				'id'     => $paypal_order_id,
-				'status' => 'COMPLETED',
-			]
+			static function ( $method, $url ) use ( $paypal_order_id, &$requests ) {
+				$requests[] = [
+					'method' => $method,
+					'url'    => $url,
+				];
+
+				return [
+					'id'     => $paypal_order_id,
+					'status' => 'COMPLETED',
+				];
+			},
+			true
 		);
 	}
 
