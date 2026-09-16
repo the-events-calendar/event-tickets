@@ -5,7 +5,6 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
-use TEC\Tickets\Commerce\Gateways\PayPal\Order_Credential;
 use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Stock_Validator;
@@ -98,7 +97,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * @since 5.1.9
 	 * @since 5.6.4 Include Event/Post title in the Ticket name.
 	 * @since 5.27.6.1 Removed order data from response for failed orders.
-	 * @since TBD Issues the order-scoped credential that authorizes the capture without a cart cookie.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -178,13 +176,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Respond with the ID for Paypal Usage.
 		$response['success'] = true;
 		$response['id']      = $paypal_order['id'];
-
-		/*
-		 * The credential the buyer sends back to capture this order. It is the only way back in when
-		 * the cart cookie does not survive the round trip to PayPal, so it is issued here, once, and
-		 * never returned again.
-		 */
-		$response[ Order_Credential::REQUEST_PARAM ] = tribe( Order_Credential::class )->issue( $order->ID, $paypal_order['id'] );
 
 		$this->pending_order->set( $response['id'] );
 
@@ -499,50 +490,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Authorizes the request with the order-scoped credential this site issued when the order was
-	 * created.
-	 *
-	 * The cart-bound check in the parent class is still the preferred path. It needs the visitor's cart
-	 * cookie, which does not always survive the round trip to PayPal: edge caches, proxies and
-	 * www/non-www mismatches can all drop it. Losing it used to refuse the capture outright, and the
-	 * recheck that recovers a stranded order rides the same route, so the buyer had no way back and the
-	 * order stayed pending with no attendee generated.
-	 *
-	 * PayPal issues nothing that can serve as the credential here, so this site mints one and stores
-	 * its hash on the order; see Order_Credential. It is compared against the value stored for that
-	 * specific order, never against the request's own claims.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request          The REST Request instance.
-	 * @param string          $gateway_order_id The PayPal order id.
-	 *
-	 * @return bool Whether the request carries the credential issued for this order.
-	 */
-	protected function request_carries_order_credential( WP_REST_Request $request, string $gateway_order_id ): bool {
-		$credential = $request->get_param( Order_Credential::REQUEST_PARAM );
-
-		if ( ! is_string( $credential ) || '' === $credential ) {
-			return false;
-		}
-
-		$order = tec_tc_orders()->by_args(
-			[
-				'gateway_order_id' => $gateway_order_id,
-				'gateway'          => Gateway::get_key(),
-				'status'           => 'any',
-			]
-		)->first();
-
-		// The status is verified here rather than in the query above; see order_is_in_flight().
-		if ( ! $this->order_is_in_flight( $order ) ) {
-			return false;
-		}
-
-		return tribe( Order_Credential::class )->matches( absint( $order->ID ), $gateway_order_id, $credential );
-	}
-
-	/**
 	 * Writes the state PayPal settled on onto the Tickets Commerce order.
 	 *
 	 * @since 5.29.4
@@ -823,13 +770,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Arguments used for the updating order for PayPal.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Accepts the order-scoped credential issued when the order was created.
 	 *
 	 * @return array
 	 */
 	public function update_order_args() {
 		return [
-			'order_id'                      => [
+			'order_id' => [
 				'description'       => __( 'Order ID in PayPal', 'event-tickets' ),
 				'required'          => true,
 				'type'              => 'string',
@@ -842,26 +788,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				},
 				'sanitize_callback' => [ $this, 'sanitize_callback' ],
 			],
-			'payer_id'                      => [
+			'payer_id' => [
 				'description'       => __( 'Payer ID token from PayPal', 'event-tickets' ),
 				'required'          => false,
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
 					if ( ! is_string( $value ) ) {
 						return new WP_Error( 'rest_invalid_param', 'The payer ID argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-			Order_Credential::REQUEST_PARAM => [
-				'description'       => __( 'Credential issued for this order when it was created', 'event-tickets' ),
-				'required'          => false,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The order credential argument must be a string.', [ 'status' => 400 ] );
 					}
 
 					return $value;

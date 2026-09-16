@@ -22,6 +22,7 @@ namespace TEC\Tickets\Commerce;
 use Codeception\TestCase\WPTestCase;
 use DateTimeImmutable;
 use DateTimeZone;
+use ReflectionProperty;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -186,6 +187,70 @@ class Order_Stale_Lock_Test extends WPTestCase {
 	}
 
 	/**
+	 * The request whose lock was taken over must not be able to release the new holder's lock. Without
+	 * a match on the lock id, it clears whatever is there and both requests believe they hold the order.
+	 */
+	public function test_a_superseded_request_cannot_release_the_new_holders_lock(): void {
+		$order = $this->make_pending_order();
+		$stale = $this->lock_id_aged( DAY_IN_SECONDS );
+
+		$this->write_lock( $order->ID, $stale );
+
+		$this->assertTrue(
+			tribe( Order::class )->lock_order( $order->ID ),
+			'The stale lock must be reclaimable.'
+		);
+
+		$new_holder = $this->read_lock( $order->ID );
+
+		// The original request resumes, still believing the lock is its own.
+		$this->hold_lock_id( $stale );
+		tribe( Order::class )->unlock_order( $order->ID );
+
+		$this->assertSame(
+			$new_holder,
+			$this->read_lock( $order->ID ),
+			"A superseded request must not clear the lock another request now holds."
+		);
+	}
+
+	/**
+	 * A filter answering zero must not silently switch locking off.
+	 */
+	public function test_a_filtered_ttl_of_zero_does_not_disable_locking(): void {
+		$order = $this->make_pending_order();
+
+		$this->write_lock( $order->ID, $this->lock_id_aged( 0 ) );
+
+		$ttl = static fn() => 0;
+		add_filter( 'tec_tickets_commerce_order_lock_ttl', $ttl );
+
+		$reclaimed = tribe( Order::class )->lock_order( $order->ID );
+
+		remove_filter( 'tec_tickets_commerce_order_lock_ttl', $ttl );
+
+		$this->assertFalse(
+			$reclaimed,
+			'A TTL of zero must not make a lock taken moments ago reclaimable.'
+		);
+	}
+
+	/**
+	 * A lock dated in the future -- a server clock stepped back -- is never old enough to reclaim, which
+	 * is exactly the permanently stuck order this reclaim exists to prevent.
+	 */
+	public function test_a_future_dated_lock_is_reclaimable(): void {
+		$order = $this->make_pending_order();
+
+		$this->write_lock( $order->ID, $this->lock_id_aged( -DAY_IN_SECONDS ) );
+
+		$this->assertTrue(
+			tribe( Order::class )->lock_order( $order->ID ),
+			'A lock dated in the future must not be permanent.'
+		);
+	}
+
+	/**
 	 * An unlocked order is still locked the ordinary way.
 	 */
 	public function test_unlocked_order_is_locked_normally(): void {
@@ -222,6 +287,15 @@ class Order_Stale_Lock_Test extends WPTestCase {
 		);
 
 		clean_post_cache( $order_id );
+	}
+
+	/**
+	 * Makes the Order class believe this request holds the given lock id.
+	 */
+	private function hold_lock_id( string $lock_id ): void {
+		$property = new ReflectionProperty( Order::class, 'lock_id' );
+		$property->setAccessible( true );
+		$property->setValue( null, $lock_id );
 	}
 
 	/**

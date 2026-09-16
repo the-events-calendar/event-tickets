@@ -112,6 +112,27 @@ class Pending_Order_Protection_Test extends WPTestCase {
 	}
 
 	/**
+	 * The pending-order binding must expire with the cart it is keyed to. It was given an absolute
+	 * timestamp where set_transient() wants a duration, which made it outlive the cart by decades and
+	 * leave a permanent row behind for every abandoned checkout.
+	 */
+	public function test_pending_order_binding_expires_with_the_cart(): void {
+		$this->activate_cart_hash( self::VICTIM_HASH );
+		$this->store_pending_order( self::VICTIM_ORDER );
+
+		$timeout = get_option( '_transient_timeout_' . sprintf( 'tec_tickets_commerce_pending_order_%s', self::VICTIM_HASH ) );
+
+		$this->assertNotEmpty( $timeout, 'The binding must carry an expiry.' );
+
+		// Compared against the cart's own expiry, which is the lifetime this binding is supposed to share.
+		$this->assertLessThanOrEqual(
+			tribe( Cart::class )->get_cart_expiration(),
+			absint( $timeout ),
+			'The binding must expire no later than the cart it is keyed to, not decades from now.'
+		);
+	}
+
+	/**
 	 * The legitimate buyer who created the order can edit it within their own session.
 	 *
 	 * @dataProvider gateway_endpoint_provider
