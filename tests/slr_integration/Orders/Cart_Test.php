@@ -33,6 +33,82 @@ class Cart_Test extends WPTestCase {
 		tribe( Sessions_Table::class )->empty_table();
 	}
 
+	/**
+	 * The quantity is posted by the browser alongside the seats. Without this, a quantity larger than
+	 * the seats actually held mints attendees with no reservation and no seat.
+	 *
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_handle_seat_selection_caps_quantity_to_the_seats_held(): void {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket = $this->create_tc_ticket( $post, 10 );
+
+		$session = tribe( Session::class );
+		$session->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+
+		$held = 2;
+		tribe( Sessions_Table::class )->update_reservations(
+			'test-token',
+			$this->create_mock_reservations_data( [ $ticket ], $held )
+		);
+
+		$cart = tribe( Cart::class );
+		$data = $cart->handle_seat_selection(
+			[
+				'tickets' => [
+					[
+						'ticket_id'   => $ticket,
+						'quantity'    => $held + 3,
+						'seat_labels' => [ 'seat-label-0-1', 'seat-label-0-2' ],
+					],
+				],
+			]
+		);
+
+		$this->assertEquals( $held, $data['tickets'][0]['quantity'] );
+	}
+
+	/**
+	 * @test
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_handle_seat_selection_leaves_a_matching_quantity_alone(): void {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket = $this->create_tc_ticket( $post, 10 );
+
+		$session = tribe( Session::class );
+		$session->add_entry( $post, 'test-token' );
+		$this->given_a_started_session( 'test-token', $post );
+
+		$held = 2;
+		tribe( Sessions_Table::class )->update_reservations(
+			'test-token',
+			$this->create_mock_reservations_data( [ $ticket ], $held )
+		);
+
+		$cart = tribe( Cart::class );
+		$data = $cart->handle_seat_selection(
+			[
+				'tickets' => [
+					[
+						'ticket_id'   => $ticket,
+						'quantity'    => $held,
+						'seat_labels' => [ 'seat-label-0-1', 'seat-label-0-2' ],
+					],
+				],
+			]
+		);
+
+		$this->assertEquals( $held, $data['tickets'][0]['quantity'] );
+		$this->assertEquals( [ 'seat-label-0-1', 'seat-label-0-2' ], $data['tickets'][0]['extra']['seats'] );
+	}
+
 	public function test_save_seat_data_for_attendee():void{
 		$post = self::factory()->post->create();
 		update_post_meta( $post, Meta::META_KEY_ENABLED, true );

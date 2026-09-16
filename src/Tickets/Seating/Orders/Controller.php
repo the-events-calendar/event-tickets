@@ -731,7 +731,19 @@ class Controller extends Controller_Contract {
 		}
 
 		if ( isset( $json['ticketId'] ) ) {
-			$new_ticket_id           = $json['ticketId'];
+			$new_ticket_id = $json['ticketId'];
+
+			if ( ! $this->ticket_belongs_to_post( absint( $new_ticket_id ), $post_id ) ) {
+				wp_send_json_error(
+					[
+						'error' => 'You do not have permission to perform this action.',
+					],
+					403
+				);
+
+				return;
+			}
+
 			$attendee_to_ticket_keys = array_values( tribe_attendees()->attendee_to_ticket_keys() );
 			global $wpdb;
 			$attendee_to_ticket_keys_list = DB::prepare(
@@ -852,6 +864,30 @@ class Controller extends Controller_Contract {
 		$this->cart->warmup_caches();
 
 		$this->session->confirm_all_reservations();
+	}
+
+	/**
+	 * Whether a ticket belongs to a given post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket to check.
+	 * @param int $post_id   The post the ticket should belong to.
+	 *
+	 * @return bool Whether the ticket belongs to the post.
+	 */
+	private function ticket_belongs_to_post( int $ticket_id, int $post_id ): bool {
+		if ( ! $ticket_id ) {
+			return false;
+		}
+
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $post_ticket_id ) {
+			if ( absint( $post_ticket_id ) === $ticket_id ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

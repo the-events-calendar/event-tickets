@@ -23,6 +23,8 @@ use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
+use WP_Post;
+use WP_Query;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Main as Common;
 use TEC\Tickets\Commerce\Checkout;
@@ -111,10 +113,50 @@ class Frontend extends Controller_Contract {
 	 * @return void
 	 */
 	public function prevent_caching(): void {
-		if ( ! $this->should_enqueue_assets() ) {
+		if ( ! ( $this->should_enqueue_assets() || $this->queried_posts_include_seating() ) ) {
 			return;
 		}
 
+		$this->mark_response_non_cacheable();
+	}
+
+	/**
+	 * Whether any post in the main query has seating enabled.
+	 *
+	 * The tickets block renders from post content, so a response that is not a singular ticketable post
+	 * can still embed a seat selection token — an archive showing full content, above all. This runs
+	 * before any output, which is the only point at which the response headers can still be set.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the main query holds a post that would render seat selection.
+	 */
+	private function queried_posts_include_seating(): bool {
+		global $wp_query;
+
+		if ( ! ( $wp_query instanceof WP_Query && is_array( $wp_query->posts ) ) ) {
+			return false;
+		}
+
+		foreach ( $wp_query->posts as $queried_post ) {
+			$queried_post_id = $queried_post instanceof WP_Post ? $queried_post->ID : $queried_post;
+
+			if ( is_numeric( $queried_post_id ) && tec_tickets_seating_enabled( absint( $queried_post_id ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Marks the current response as non-cacheable.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function mark_response_non_cacheable(): void {
 		/*
 		 * The modal embeds an ephemeral token the Seating service issued for one visitor. A stored copy
 		 * of the page hands that token to everyone served from cache for the length of the TTL, putting
@@ -132,6 +174,7 @@ class Frontend extends Controller_Contract {
 	 * Replace the Tickets' block with the one starting the seat selection flow.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Marked a response embedding a seat selection token as non-cacheable.
 	 *
 	 * @param string              $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -205,14 +248,20 @@ class Frontend extends Controller_Contract {
 			. ' - '
 			. $currency->get_formatted_currency_with_symbol( max( $prices ), $post_id, $provider, false );
 
-		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
+		$timeout       = $this->container->get( Timer::class )->get_timeout( $post_id );
+		$modal_content = '';
+
+		if ( 0 !== $inventory ) {
+			$this->mark_response_non_cacheable();
+			$modal_content = $this->get_seat_selection_modal_content( $post_id, $timeout );
+		}
 
 		$html = $this->template->template(
 			'tickets-block',
 			[
 				'cost_range'    => $cost_range,
 				'inventory'     => $inventory,
-				'modal_content' => 0 === $inventory ? '' : $this->get_seat_selection_modal_content( $post_id, $timeout ),
+				'modal_content' => $modal_content,
 				'timeout'       => $timeout,
 			],
 			false

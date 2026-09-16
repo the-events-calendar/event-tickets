@@ -76,6 +76,7 @@ class Cart {
 	 * Handles the seat selection for the cart.
 	 *
 	 * @since 5.16.0
+	 * @since TBD Capped each seated ticket's quantity at the number of seats the session actually holds.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
@@ -86,12 +87,22 @@ class Cart {
 			return $data;
 		}
 
+		[ $token ] = $this->get_session_token_object_id();
+		$held      = $token ? $this->get_token_reservations( $token ) : [];
+
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
 			if ( ! isset( $ticket_data['seat_labels'] ) ) {
 				continue;
 			}
 
 			$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
+
+			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
+			$seats_held = count( $held[ $ticket_id ] ?? [] );
+
+			if ( isset( $ticket_data['quantity'] ) && $ticket_data['quantity'] > $seats_held ) {
+				$ticket_data['quantity'] = $seats_held;
+			}
 
 			$data['tickets'][ $key ] = $ticket_data;
 		}

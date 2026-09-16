@@ -1383,6 +1383,72 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 'original-label', get_post_meta( $other_attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
 	}
 
+	/**
+	 * move_tickets() only checks the target ticket exists, so an unbound ticketId reaches a ticket
+	 * on another event and moves the attendee onto it.
+	 *
+	 * @test
+	 * @covers Controller::update_reservation
+	 */
+	public function test_update_reservation_refuses_a_ticket_from_another_post(): void {
+		$editor = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $editor );
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+
+		$request_body = '';
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file ) use ( &$request_body ) {
+				if ( 'php://input' === $file ) {
+					return $request_body;
+				}
+
+				return file_get_contents( $file );
+			},
+			true
+		);
+
+		$edited_post_id = self::factory()->post->create();
+		$edited_ticket  = $this->create_tc_ticket( $edited_post_id );
+		$this->create_order( [ $edited_ticket => 1 ] );
+		[ $attendee ] = tribe_attendees()->by( 'event_id', $edited_post_id )->get_ids();
+
+		$other_post_id = self::factory()->post->create();
+		$other_ticket  = $this->create_tc_ticket( $other_post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $edited_post_id;
+		$request_body       = wp_json_encode(
+			[
+				'attendeeId'    => $attendee,
+				'ticketId'      => $other_ticket,
+				'reservationId' => 'some-reservation-id',
+				'seatTypeId'    => 'some-seat-type',
+				'seatLabel'     => 'A-1',
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'You do not have permission to perform this action.' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEquals(
+			$edited_ticket,
+			absint( get_post_meta( $attendee, Module::ATTENDEE_PRODUCT_KEY, true ) ),
+			'the attendee must still be on its own event\'s ticket'
+		);
+	}
+
 	public function test_update_reservation(): void {
 		// Set up the request context.
 		$administrator = self::factory()->user->create( [ 'role' => 'administrator' ] );
