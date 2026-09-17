@@ -43,6 +43,8 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		// Register singleton classes.
 		$this->container->singleton( Plugin_Action_Links::class );
 		$this->container->singleton( Glance_Items::class );
+		$this->container->singleton( Notice_New_Views_Upgrade::class, Notice_New_Views_Upgrade::class, [ 'hook' ] );
+		$this->container->make( Notice_New_Views_Upgrade::class );
 
 		add_action( 'tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_default_ticket_type_header' ], 10, 3 );
 	}

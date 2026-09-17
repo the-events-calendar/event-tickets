@@ -115,11 +115,14 @@ class Checkout {
 	 *
 	 * @since 5.1.9
 	 * @since 5.29.0.1 No longer sets the cart hash cookie from a request param. See SVUL-L34.
+	 * @since 5.29.4 Marked the checkout response as non-cacheable.
 	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {
 			return;
 		}
+
+		$this->prevent_caching();
 
 		/**
 		 * Allows for additional parsing of the request on the checkout page.
@@ -227,5 +230,26 @@ class Checkout {
 
 		$shortcode = Shortcodes\Checkout_Shortcode::get_wp_slug();
 		return has_shortcode( $page->post_content, $shortcode );
+	}
+
+	/**
+	 * Marks the checkout response as non-cacheable.
+	 *
+	 * @since 5.29.4
+	 *
+	 * @return void
+	 */
+	protected function prevent_caching(): void {
+		/*
+		 * Checkout renders whatever the visitor's own cart cookie points at, so a stored copy is
+		 * handed to every later visitor regardless of their cart: one shopper sees an empty cart,
+		 * the next sees someone else's. Reverse proxies and CDNs honour the response headers, while
+		 * the WordPress-side page caches buffer the output and read DONOTCACHEPAGE instead.
+		 */
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
+
+		nocache_headers();
 	}
 }
