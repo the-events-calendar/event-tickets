@@ -1,5 +1,0 @@
-significance: patch
-type: fix
-entry: Stopped PayPal orders from stranding in Pending after a successful
-  payment, which left buyers without their attendees or ticket emails.
-timestamp: 2026-09-16T14:30:12.017Z
