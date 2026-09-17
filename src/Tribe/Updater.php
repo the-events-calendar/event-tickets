@@ -31,6 +31,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 *
 	 * @since 4.12.0
 	 * @since 5.29.4 Added the new views migration.
+	 * @since TBD Added the key-value cache flush.
 	 *
 	 * @return array
 	 */
@@ -38,6 +39,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 		return [
 			[ $this, 'migrate_4_12_hide_attendees_list' ],
 			[ $this, 'migrate_force_new_views' ],
+			[ $this, 'flush_key_value_cache' ],
 		];
 	}
 
@@ -110,6 +112,20 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 		if ( 'complete' !== $migration->get_current_offset() ) {
 			$migration->register_scheduled_task();
 		}
+	}
+
+	/**
+	 * Drops the key-value cache so nothing an earlier version stored survives the update.
+	 *
+	 * Entries live for a day and are only rewritten when a Ticket is sold, so one holding a stale
+	 * availability would otherwise keep being served on calendar views long after the update.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function flush_key_value_cache(): void {
+		tec_kv_cache()->flush();
 	}
 
 	/**

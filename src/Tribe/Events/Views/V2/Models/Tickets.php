@@ -14,6 +14,7 @@ use ArrayAccess;
 use Closure;
 use InvalidArgumentException;
 use ReturnTypeWillChange;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe\Utils\Lazy_Events;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -87,9 +88,13 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
-	 * Regenerates the caches for the models associated with the post ID.
+	 * Drops the cached models associated with the post ID so the next front-end request rebuilds them.
+	 *
+	 * The models are not rebuilt here. Commerce writes the Attendee posts before it writes the Ticket
+	 * stock, so a model built from this hook would capture a mid-order stock and keep serving it.
 	 *
 	 * @since 5.26.1
+	 * @since TBD Dropped the models instead of rebuilding them, so a mid-order stock is never stored.
 	 *
 	 * @param int $post_id The post ID. It could be any post type, not just events.
 	 *
@@ -119,11 +124,7 @@ class Tickets implements ArrayAccess {
 
 		add_action( 'parse_query', $do_not_cache_results );
 
-		if ( $post->post_type === TEC::POSTTYPE ) {
-			// It's an Event: refresh its cache.
-			$model = new self( $post->ID );
-			$model->exist();
-		} else {
+		if ( $post->post_type !== TEC::POSTTYPE ) {
 			// These are maps from the service slug to the post type, so we keep only the post type.
 			$attendee_post_types = array_values( tribe_attendees()->attendee_types() );
 			$ticket_types        = array_values( tribe_tickets()->ticket_types() );
@@ -174,10 +175,14 @@ class Tickets implements ArrayAccess {
 					$tribe_cache[ $tickets_cache_key ] = null;
 				}
 
-				$model = new self( $connected_event_id );
-				// The call will trigger a priming of the model cache.
-				$model->exist();
-				$model->prime_cache();
+				/*
+				 * The model reads the aggregate list, not the per-provider one, and that list holds Ticket
+				 * objects carrying the stock they had when it was built.
+				 */
+				$all_tickets_cache_key                 = "{$tickets_class}::get_all_event_tickets-{$connected_event_id}";
+				$tribe_cache[ $all_tickets_cache_key ] = null;
+
+				tec_kv_cache()->delete( self::get_cache_key( $connected_event_id ) );
 			}
 		}
 
@@ -219,6 +224,7 @@ class Tickets implements ArrayAccess {
 	 * @since 5.6.3 Add support for the updated anchor link from new ticket templates.
 	 * @since 5.26.7 Fixed issue where empty arrays were being returned when data existed but was empty.
 	 * @since 5.27.5 Fixed issue where the stock display was not being refreshed from the current availability.
+	 * @since TBD Rebuilt the link from the model's own post so a shared cache entry keeps per-Occurrence permalinks.
 	 *
 	 * @return array Ticket data or empty array.
 	 */
@@ -231,6 +237,7 @@ class Tickets implements ArrayAccess {
 			// Refresh stock display from current availability so list/archive views stay correct
 			// when event or ticket model is served from cache (e.g. tribe_get_event memoization).
 			$this->refresh_cached_stock_display();
+			$this->refresh_cached_link();
 			return $this->data;
 		}
 
@@ -580,6 +587,26 @@ class Tickets implements ArrayAccess {
 	}
 
 	/**
+	 * Points the cached link at this model's own post, keeping the anchor it was built with.
+	 *
+	 * Occurrences of a recurring Event share one cached entry but not one permalink, so the link
+	 * has to be rebuilt for whichever Occurrence is being rendered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function refresh_cached_link(): void {
+		if ( ! isset( $this->data['link'] ) || ! is_object( $this->data['link'] ) ) {
+			return;
+		}
+
+		$anchor = strstr( $this->data['link']->anchor, '#' );
+
+		$this->data['link']->anchor = get_permalink( $this->post_id ) . ( false === $anchor ? '' : $anchor );
+	}
+
+	/**
 	 * Primes the model cache from the key-value cache, if possible.
 	 *
 	 * @since 5.26.1
@@ -607,13 +634,29 @@ class Tickets implements ArrayAccess {
 	/**
 	 * Returns the model cache key used to store it in the key-value cache.
 	 *
+	 * Views hand over the Occurrence's provisional ID while the invalidation side only ever knows the
+	 * Event post ID, so the key is built from the normalized one to make the two meet.
+	 *
 	 * @since 5.26.1
+	 * @since TBD Normalized the Occurrence ID so the views and the invalidation resolve to the same key.
 	 *
 	 * @param int $post_id The post ID to provide the cache key for.
 	 *
 	 * @return string The model cache key used to store it in the key-value cache.
 	 */
 	public static function get_cache_key( int $post_id ): string {
+		if ( class_exists( Occurrence::class, false ) ) {
+			/**
+			 * Filters the post ID to use when fetching tickets for an Occurrence.
+			 *
+			 * @since 5.8.0
+			 *
+			 * @param int $post_id The post ID to use when fetching tickets for an Occurrence; this might
+			 *                     be a real post ID, or a provisional one.
+			 */
+			$post_id = apply_filters( 'tec_tickets_normalize_occurrence_id', Occurrence::normalize_id( $post_id ) );
+		}
+
 		return 'tec_tickets_views_v2_model_ticket_' . $post_id;
 	}
 
