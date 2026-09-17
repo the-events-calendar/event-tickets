@@ -231,11 +231,15 @@ class Handler {
 				'tickets-commerce-gateway-paypal'
 			);
 
+			/*
+			 * Answered as success: the delivery was understood and the order is already where it asks
+			 * for. Without a status this fell back to 500, which PayPal reads as a failure and retries --
+			 * and every retry finds the same settled order, so the redelivery never stops.
+			 */
 			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-order-status-already-updated', null, [
+				'status'           => 200,
 				'gateway_order_id' => $gateway_order_id,
-				'order'          => $order,
-				'new_status'     => $new_status,
-				'event'          => $event
+				'new_status'       => $new_status->get_slug(),
 			] );
 		}
 

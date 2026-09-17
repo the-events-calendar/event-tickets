@@ -76,7 +76,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var string
 	 */
-	protected const LOCK_ID_PREFIX = '_order_lock';
+	private const LOCK_ID_PREFIX = '_order_lock';
 
 	/**
 	 * How long a lock is honoured before another request may take it over, in seconds.
@@ -88,7 +88,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @var int
 	 */
-	protected const LOCK_TTL = 15 * MINUTE_IN_SECONDS;
+	private const LOCK_TTL = 15 * MINUTE_IN_SECONDS;
 
 	/**
 	 * Keeping track of the lock id generated during a request.
