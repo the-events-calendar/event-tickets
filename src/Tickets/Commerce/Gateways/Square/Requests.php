@@ -102,7 +102,7 @@ class Requests extends Abstract_Requests {
 	 * here: this is the one place every Square API call passes through, and it is reached even on sites
 	 * where the cron queue is not running.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $method            The request method.
 	 * @param string $url               The endpoint path or full URL.
@@ -216,7 +216,7 @@ class Requests extends Abstract_Requests {
 	 * Square reports these under a plural `errors` key, which Abstract_Requests::process_response() leaves
 	 * alone because it looks for the singular `error` shape, so the decoded body arrives here as-is.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param mixed $response The response returned by the request.
 	 * @param bool  $raw      Whether the response is an unprocessed HTTP response.

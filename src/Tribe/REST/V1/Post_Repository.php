@@ -777,7 +777,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket attendees list.
 	 *
-	 * @since TBD Reindexes the attendees so they always encode as a JSON array.
+	 * @since 5.29.5 Reindexes the attendees so they always encode as a JSON array.
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *

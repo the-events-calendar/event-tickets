@@ -70,7 +70,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Token rejected notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Token refresh failing notice slug.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -91,7 +91,7 @@ class Notices_Controller extends Controller_Contract {
 	 * Below the disconnect threshold in Refresh_Client, so the warning has room to appear while the
 	 * connection is still working, but high enough that a single bad response does not raise it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -127,7 +127,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Token refresh status instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Status
 	 */
@@ -137,7 +137,7 @@ class Notices_Controller extends Controller_Contract {
 	 * Constructor.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Added the $refresh_status parameter.
+	 * @since 5.29.5 Added the $refresh_status parameter.
 	 *
 	 * @param Container      $container      Container instance.
 	 * @param Webhooks       $webhooks       Webhooks instance.
@@ -520,7 +520,7 @@ class Notices_Controller extends Controller_Contract {
 	 * enable toggle renders disabled and so submits nothing. Gating on either would let the screen that
 	 * explains the problem erase the notice explaining it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool
 	 */
@@ -539,7 +539,7 @@ class Notices_Controller extends Controller_Contract {
 	 * about them on day 5 of a 30 day token would leave an undismissable banner up for weeks over
 	 * something that has every chance of clearing up on its own.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool
 	 */
@@ -569,7 +569,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the token rejected notice.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return string
 	 */
@@ -586,7 +586,7 @@ class Notices_Controller extends Controller_Contract {
 	/**
 	 * Render the repeated refresh failure notice.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return string
 	 */
