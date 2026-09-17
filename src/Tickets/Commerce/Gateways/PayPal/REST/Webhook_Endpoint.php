@@ -58,10 +58,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * both forms of the headers (studly case and all caps).
 	 *
 	 * @since 5.1.10
+	 * @since TBD Normalizes a header that arrives as a list of values into the string PayPal signed.
 	 *
-	 * @param array $paypal_headers
+	 * @param array $paypal_headers The request headers, as WP_REST_Request::get_headers() returns them.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error The five signature inputs keyed by property, or an error naming what was missing.
 	 */
 	public function parse_headers( array $paypal_headers ) {
 		$header_keys = [
@@ -85,7 +86,15 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			if ( isset( $paypal_headers[ $key ] ) ) {
-				$headers[ $property ] = $paypal_headers[ $key ];
+				$value = $paypal_headers[ $key ];
+
+				/*
+				 * WP_REST_Request keeps every header as a list of values, so what arrives here is
+				 * ['b1c1...'] rather than 'b1c1...'. These go into the verify call's JSON body, where
+				 * PayPal matches them against the signature byte for byte, and an encoded list matches
+				 * nothing -- which refused every genuine delivery.
+				 */
+				$headers[ $property ] = is_array( $value ) ? implode( ',', $value ) : $value;
 			} else {
 				$missing_keys[] = $property;
 			}

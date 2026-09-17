@@ -23,6 +23,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Settings_Manager;
+use Tribe__Utils__Array as Arr;
 use WP_Post;
 use WP_REST_Request;
 
@@ -36,16 +37,52 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	private const WEBHOOK_ID   = 'WH-TEST-WEBHOOK-ID';
 
 	/**
+	 * The headers PayPal signs a delivery with, keyed by the property the endpoint maps each to.
+	 *
+	 * @var array<string,array{header:string,value:string}>
+	 */
+	private const SIGNATURE_HEADERS = [
+		'transmission_id'   => [
+			'header' => 'Paypal-Transmission-Id',
+			'value'  => 'b1c1e2f0-0000-11ef-8000-000000000000',
+		],
+		'transmission_time' => [
+			'header' => 'Paypal-Transmission-Time',
+			'value'  => '2026-09-16T10:00:00Z',
+		],
+		'transmission_sig'  => [
+			'header' => 'Paypal-Transmission-Sig',
+			'value'  => 'dGVzdC1zaWduYXR1cmU=',
+		],
+		'cert_url'          => [
+			'header' => 'Paypal-Cert-Url',
+			'value'  => 'https://api.paypal.com/v1/notifications/certs/CERT-TEST',
+		],
+		'auth_algo'         => [
+			'header' => 'Paypal-Auth-Algo',
+			'value'  => 'SHA256withRSA',
+		],
+	];
+
+	/**
 	 * Outbound HTTP requests the endpoint made while handling the delivery.
 	 *
 	 * @var array<int,string>
 	 */
 	private array $outbound = [];
 
+	/**
+	 * Bodies of those requests, keyed by the URL they were sent to.
+	 *
+	 * @var array<string,mixed>
+	 */
+	private array $outbound_bodies = [];
+
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->outbound = [];
+		$this->outbound        = [];
+		$this->outbound_bodies = [];
 
 		tribe( Status_Handler::class )->register_order_statuses();
 
@@ -72,7 +109,8 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	 * @return array A canned empty response.
 	 */
 	public function block_outbound( $preempt, $args, $url ) {
-		$this->outbound[] = $url;
+		$this->outbound[]              = $url;
+		$this->outbound_bodies[ $url ] = Arr::get( $args, 'body', '' );
 
 		return [
 			'headers'  => [],
@@ -175,6 +213,48 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	}
 
 	/**
+	 * The five signature headers have to reach PayPal as the strings it sent, because the verify call
+	 * carries them in a JSON body and PayPal matches them against the signature byte for byte.
+	 *
+	 * WP_REST_Request stores every header as a list of values, so reading get_headers() straight out
+	 * hands on ['b1c1...'] rather than 'b1c1...'. Encoded that is "transmission_id":["b1c1..."], which
+	 * PayPal answers with anything but SUCCESS -- so every genuine delivery is refused. The other tests
+	 * here stub verify_webhook_signature, which is exactly the seam this bug lives behind, so this one
+	 * goes through the real client and reads the body on the wire.
+	 */
+	public function test_signature_headers_reach_paypal_as_strings(): void {
+		$this->make_pending_paypal_order();
+
+		// Deliberately not stub_verified_webhook(): the real client has to build the verify request.
+		$this->set_class_fn_return( Merchant::class, 'is_active', true );
+		tribe( Webhooks::class )->update_settings( [ 'id' => self::WEBHOOK_ID ] );
+
+		rest_do_request( $this->make_delivery() );
+
+		$verify_url = '';
+		foreach ( $this->outbound as $url ) {
+			if ( false !== strpos( $url, 'verify-webhook-signature' ) ) {
+				$verify_url = $url;
+				break;
+			}
+		}
+
+		$this->assertNotSame( '', $verify_url, 'The endpoint must ask PayPal to verify the signature.' );
+
+		$sent = json_decode( Arr::get( $this->outbound_bodies, $verify_url, '' ), true );
+
+		$this->assertIsArray( $sent, 'The verify request must carry a JSON body.' );
+
+		foreach ( self::SIGNATURE_HEADERS as $property => $header ) {
+			$this->assertSame(
+				$header['value'],
+				Arr::get( $sent, $property ),
+				sprintf( 'PayPal must receive %s as the string it sent.', $property )
+			);
+		}
+	}
+
+	/**
 	 * A malformed body must be refused cleanly, without dereferencing keys that are not there.
 	 */
 	public function test_malformed_body_is_refused_cleanly(): void {
@@ -232,12 +312,18 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	private function make_delivery(): WP_REST_Request {
 		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/commerce/paypal/webhook' );
 
-		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_header( 'Paypal-Transmission-Id', 'b1c1e2f0-0000-11ef-8000-000000000000' );
-		$request->set_header( 'Paypal-Transmission-Time', '2026-09-16T10:00:00Z' );
-		$request->set_header( 'Paypal-Transmission-Sig', 'dGVzdC1zaWduYXR1cmU=' );
-		$request->set_header( 'Paypal-Cert-Url', 'https://api.paypal.com/v1/notifications/certs/CERT-TEST' );
-		$request->set_header( 'Paypal-Auth-Algo', 'SHA256withRSA' );
+		/*
+		 * Built from a PayPal-shaped $_SERVER through the REST server's own reader, rather than by
+		 * calling set_header() directly, so the headers reach the endpoint by the route a request off
+		 * the wire takes.
+		 */
+		$server = [ 'CONTENT_TYPE' => 'application/json' ];
+
+		foreach ( self::SIGNATURE_HEADERS as $header ) {
+			$server[ 'HTTP_' . strtoupper( str_replace( '-', '_', $header['header'] ) ) ] = $header['value'];
+		}
+
+		$request->set_headers( rest_get_server()->get_headers( $server ) );
 
 		$request->set_body( wp_json_encode( $this->capture_completed_event() ) );
 
