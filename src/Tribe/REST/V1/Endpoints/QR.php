@@ -346,9 +346,11 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 			return $response;
 		}
 
-		// Check if the attendee is checked in. For a Series Pass Attendee, the checkin flag is recorded on the
-		// per-Occurrence clone Attendee, not on the Series-level Attendee, so resolve the clone first.
-		$checkin_status_attendee_id = $this->get_checkin_status_attendee_id( $attendee_id, $event_id, $ticket_provider );
+		/*
+		 * Check if the attendee is checked in. For a Series Pass Attendee, the checkin flag is recorded on the
+		 * per-Occurrence clone Attendee, not on the Series-level Attendee, so resolve the clone first.
+		 */
+		$checkin_status_attendee_id = $this->get_checkin_status_attendee_id( $attendee_id, $event_id );
 		if ( $checkin_status_attendee_id !== $attendee_id ) {
 			$attendee_data = apply_filters(
 				'tec_tickets_qr_checkin_attendee_data',
@@ -410,7 +412,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 					)
 				),
 				'error'           => 'attendee_failed_check_in',
-				'tribe_qr_status' => get_post_meta( $attendee_id, '_tribe_qr_status', 1 ),
+				'tribe_qr_status' => get_post_meta( $checkin_status_attendee_id, '_tribe_qr_status', true ),
 				'attendee'        => $attendee_data,
 			];
 			$result  = array_merge( $msg_arr, $qr_arr );
@@ -442,7 +444,7 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 		}
 
 		// Re-resolve to the clone Attendee, now that it exists, so the response reflects the real checkin status.
-		$checked_in_attendee_id = $this->get_checkin_status_attendee_id( $attendee_id, $event_id, $ticket_provider );
+		$checked_in_attendee_id = $this->get_checkin_status_attendee_id( $attendee_id, $event_id );
 		if ( $checked_in_attendee_id !== $attendee_id ) {
 			$attendee_data = apply_filters(
 				'tec_tickets_qr_checkin_attendee_data',
@@ -468,30 +470,21 @@ class Tribe__Tickets__REST__V1__Endpoints__QR extends Tribe__Tickets__REST__V1__
 	 * Resolves the Attendee post ID that actually carries the checkin status meta.
 	 *
 	 * For a Series Pass Attendee, the checkin flag is recorded on the Attendee clone made for the specific
-	 * Occurrence, not on the original Series-level Attendee post, so the clone for the given event ID, if one
-	 * exists, is returned instead.
+	 * Occurrence, not on the original Series-level Attendee post; the Series Passes controller resolves it.
 	 *
 	 * @since TBD
 	 *
-	 * @param int     $attendee_id     The Attendee ID as provided in the check-in request.
-	 * @param int     $event_id        The ID of the ticket-able post the Attendee is being checked into.
-	 * @param Tickets $ticket_provider The Attendee ticket provider.
+	 * @param int $attendee_id The Attendee ID as provided in the check-in request.
+	 * @param int $event_id    The ID of the ticket-able post the Attendee is being checked into.
 	 *
 	 * @return int The Attendee ID that carries the checkin status meta: the clone if one exists, the original otherwise.
 	 */
-	private function get_checkin_status_attendee_id( int $attendee_id, int $event_id, $ticket_provider ): int {
-		$attendee_event_key = $ticket_provider->attendee_event_key ?? '';
-
-		if ( ! $attendee_event_key ) {
+	private function get_checkin_status_attendee_id( int $attendee_id, int $event_id ): int {
+		if ( ! Series_Pass_Attendees::is_registered() ) {
 			return $attendee_id;
 		}
 
-		$clone_id = tribe_attendees()
-			->where( 'meta_equals', Series_Pass_Attendees::CLONE_META_KEY, $attendee_id )
-			->where( 'meta_equals', $attendee_event_key, $event_id )
-			->first_id();
-
-		return $clone_id ? (int) $clone_id : $attendee_id;
+		return tribe( Series_Pass_Attendees::class )->get_checkin_status_attendee_id( $attendee_id, $event_id, true );
 	}
 
 	/**

@@ -1,4 +1,4 @@
 significance: patch
 type: fix
-entry: Resolved an issue where Series Pass Attendees checked in from the Event Tickets Plus App appeared checked in and then reverted to unchecked on the next refresh.
+entry: Corrected the check-in of Series Pass Attendees from the Event Tickets Plus App, which appeared checked in and then reverted to unchecked on the next refresh.
 timestamp: 2026-09-12T05:33:04.121Z

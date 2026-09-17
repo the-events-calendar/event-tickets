@@ -137,21 +137,29 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			 * with it the check-in status the App reads, would be dropped from the results - whether the
 			 * status came from that downgrade or was asked for explicitly. `Occurrence::normalize_id()`
 			 * is a safe no-op for a real post ID (returns it unchanged), so this only skips the filter for
-			 * an actual Occurrence request.
+			 * an actual Occurrence request. `post_id` arrives as a scalar, `include_post` as an array; a
+			 * request mixing Occurrences and regular posts keeps the filter, since the regular posts still
+			 * need it.
 			 */
-			$requested_event_id    = $fetch_args['event'] ?? null;
+			$requested_event_ids   = (array) ( $fetch_args['event'] ?? [] );
 			$is_occurrence_request = class_exists( Occurrence::class )
-				&& is_numeric( $requested_event_id )
-				&& Occurrence::normalize_id( (int) $requested_event_id ) !== (int) $requested_event_id;
+				&& count( $requested_event_ids ) > 0
+				&& $requested_event_ids === array_filter(
+					$requested_event_ids,
+					static fn( $event_id ) => is_numeric( $event_id )
+						&& Occurrence::normalize_id( (int) $event_id ) !== (int) $event_id
+				);
 
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['order_status'] = Tribe__Utils__Array::get( $fetch_args, 'order_status', 'any' );
 
 			if ( $is_occurrence_request ) {
-				// An Occurrence has no status of its own to match against `event_status` - drop it even if
-				// the request set it explicitly (e.g. via `post_status`, mapped above), not just when it
-				// would otherwise default to one.
+				/*
+				 * An Occurrence has no status of its own to match against `event_status` - drop it even if
+				 * the request set it explicitly (e.g. via `post_status`, mapped above), not just when it
+				 * would otherwise default to one.
+				 */
 				unset( $fetch_args['event_status'] );
 			} else {
 				$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );

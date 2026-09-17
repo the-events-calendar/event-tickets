@@ -307,28 +307,7 @@ class Attendees extends Controller {
 			return $checkin;
 		}
 
-
-		if ( $event_id && $series_id !== $event_id ) {
-			$is_in_series = Series_Relationship::where( 'series_post_id', $series_id )
-					->where( 'event_post_id', Occurrence::normalize_id( $event_id ) )
-					->count();
-
-			if ( ! $is_in_series ) {
-				// The provided Event ID does point to an Event part of the Series: fail the checkin.
-				return false;
-			}
-
-			$event_id_candidate = $this->get_event_candidate_from_event( $event_id, $attendee_id, $series_id, $qr );
-			$event_post_id      = Occurrence::normalize_id( $event_id_candidate );
-
-			if ( $event_id_candidate && ! tribe_is_recurring_event( $event_post_id ) ) {
-				// Single Event Attendees are related to the Event ID, not to their only Occurrence Provisional ID.
-				$event_id_candidate = $event_post_id;
-			}
-		} else {
-			// Either no Event ID was specified, or the check-in is happening from the context of a Series.
-			$event_id_candidate = $this->get_event_candidate_from_series( $attendee_id, $series_id, $qr );
-		}
+		$event_id_candidate = $this->get_event_id_candidate( $attendee_id, $series_id, $event_id, $qr );
 
 		if ( $event_id_candidate === false ) {
 			/*
@@ -362,6 +341,48 @@ class Attendees extends Controller {
 
 		// Check in the cloned Attendee.
 		return $this->checkin_attendee_using_provider( $series_id, $clone_id, $qr, $event_id_candidate );
+	}
+
+	/**
+	 * Returns the ID of the Attendee that carries the check-in status for the given Event.
+	 *
+	 * A Series Pass Attendee is never checked in itself: the check-in is recorded on the clone Attendee made
+	 * for the specific Occurrence. This resolves the Occurrence the same way the check-in itself would - from
+	 * the given Event or Occurrence ID, or from the Series when the request carries the Series ID, as a Series
+	 * Pass QR code does - and returns the clone for it, if one exists.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $attendee_id The post ID of the Attendee as provided in the check-in request.
+	 * @param int|null $event_id    The ID of the post the Attendee is being checked into, if available.
+	 * @param bool     $qr          Whether the checkin is being done via QR code or not.
+	 *
+	 * @return int The clone Attendee post ID if one exists for the resolved Occurrence, the given ID otherwise.
+	 */
+	public function get_checkin_status_attendee_id( int $attendee_id, ?int $event_id = null, bool $qr = false ): int {
+		if ( ! $this->is_series_pass_attendee( $attendee_id ) || $this->attendee_is_clone_of( $attendee_id ) ) {
+			return $attendee_id;
+		}
+
+		$ticket_provider    = tribe_tickets_get_ticket_provider( $attendee_id );
+		$attendee_event_key = $ticket_provider instanceof Tickets ? (string) $ticket_provider->attendee_event_key : '';
+		$series_id          = $attendee_event_key ? (int) get_post_meta( $attendee_id, $attendee_event_key, true ) : 0;
+
+		if ( ! $series_id ) {
+			return $attendee_id;
+		}
+
+		$event_id_candidate = $this->get_event_id_candidate( $attendee_id, $series_id, $event_id, $qr );
+
+		if ( $event_id_candidate === false ) {
+			return $attendee_id;
+		}
+
+		$clone_id = tribe_attendees()->where( 'meta_equals', $attendee_event_key, $event_id_candidate )
+			->where( 'meta_equals', self::CLONE_META_KEY, $attendee_id )
+			->first_id();
+
+		return $clone_id ? (int) $clone_id : $attendee_id;
 	}
 
 	/**
@@ -700,6 +721,46 @@ class Attendees extends Controller {
 	}
 
 	/**
+	 * Returns the ID of the Event, or Occurrence, to check a Series Pass Attendee into.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $attendee_id The Attendee ID to check in.
+	 * @param int      $series_id   The Series ID the Attendee holds a Series Pass for.
+	 * @param int|null $event_id    The ID of the post the Attendee is checking into, if available.
+	 * @param bool     $qr          Whether the checkin is being done via QR code or not.
+	 *
+	 * @return false|int The ID to check the Attendee into - the Event post ID for a single Event, the Occurrence
+	 *                   provisional ID otherwise - or `false` if the Event is not part of the Series, there are
+	 *                   no candidate Events to check the Attendee into, or there are too many.
+	 */
+	private function get_event_id_candidate( int $attendee_id, int $series_id, ?int $event_id, bool $qr ) {
+		if ( ! $event_id || $series_id === $event_id ) {
+			// Either no Event ID was specified, or the check-in is happening from the context of a Series.
+			return $this->get_event_candidate_from_series( $attendee_id, $series_id, $qr );
+		}
+
+		$is_in_series = Series_Relationship::where( 'series_post_id', $series_id )
+				->where( 'event_post_id', Occurrence::normalize_id( $event_id ) )
+				->count();
+
+		if ( ! $is_in_series ) {
+			// The provided Event ID does not point to an Event part of the Series: fail the checkin.
+			return false;
+		}
+
+		$event_id_candidate = $this->get_event_candidate_from_event( $event_id, $attendee_id, $series_id, $qr );
+		$event_post_id      = Occurrence::normalize_id( $event_id_candidate );
+
+		if ( $event_id_candidate && ! tribe_is_recurring_event( $event_post_id ) ) {
+			// Single Event Attendees are related to the Event ID, not to their only Occurrence Provisional ID.
+			$event_id_candidate = $event_post_id;
+		}
+
+		return $event_id_candidate;
+	}
+
+	/**
 	 * Returns the Occurrence provisional ID to check the Attendee into from an Event ID.
 	 *
 	 * @since 5.8.2
@@ -985,11 +1046,13 @@ class Attendees extends Controller {
 			$this->post_type_checkin_keys[ $post_type ] = $checkin_key;
 		}
 
+		/*
+		 * `_tec_tickets_checkin_log` matches TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY;
+		 * event-tickets-plus is not a hard dependency of this file, so the literal is duplicated here.
+		 */
 		return $meta_key === $checkin_key
 			|| $meta_key === $checkin_key . '_details'
 			|| $meta_key === '_tribe_qr_status'
-			// Matches TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY (event-tickets-plus is not
-			// a hard dependency of this file, so the literal is duplicated here rather than importing it).
 			|| $meta_key === '_tec_tickets_checkin_log';
 	}
 

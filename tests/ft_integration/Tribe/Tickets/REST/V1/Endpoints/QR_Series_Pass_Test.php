@@ -24,45 +24,6 @@ class QR_Series_Pass_Test extends Controller_Test_Case {
 	protected string $controller_class = Attendees::class;
 
 	/**
-	 * Creates a Series Pass Attendee and a single Event, part of the Series, that is the
-	 * only checkin candidate for that Attendee.
-	 *
-	 * @return array{0: int, 1: int} The Series Pass Attendee ID and the Event ID.
-	 */
-	private function make_series_pass_attendee_with_one_occurrence(): array {
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$pass_id = $this->create_tc_ticket( $series_id, 1, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] );
-		$this->create_order( [ $pass_id => 1 ] );
-
-		$attendee_id = tribe_attendees()->where( 'event', $series_id )->first_id();
-		$this->assertNotEmpty( $attendee_id, 'A Series Pass Attendee should have been created.' );
-
-		$event_id = tribe_events()->set_args( [
-			'title'      => 'Event in Series',
-			'status'     => 'publish',
-			'start_date' => '-30 minutes',
-			'duration'   => 3 * HOUR_IN_SECONDS,
-			'series'     => $series_id,
-		] )->create()->ID;
-
-		return [ $attendee_id, $event_id ];
-	}
-
-	private function build_qr_check_in_request( string $api_key, int $attendee_id, int $event_id ): WP_REST_Request {
-		$commerce = Module::get_instance();
-
-		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
-		$request->set_param( 'api_key', $api_key );
-		$request->set_param( 'ticket_id', (string) $attendee_id );
-		$request->set_param( 'security_code', get_post_meta( $attendee_id, $commerce->security_code, true ) );
-		$request->set_param( 'event_id', $event_id );
-
-		return $request;
-	}
-
-	/**
 	 * @before
 	 */
 	public function set_up_qr_check_in(): void {
@@ -123,5 +84,84 @@ class QR_Series_Pass_Test extends Controller_Test_Case {
 			'Scanning the same Series Pass Attendee for the same Occurrence again should be rejected as a duplicate.'
 		);
 		$this->assertEquals( 'attendee_already_checked_in', $second_response->data['error'] );
+	}
+
+	/**
+	 * A Series Pass QR code carries the Series ID, not an Event or Occurrence ID, as its `event_id`: the
+	 * clone has to be resolved through the checkin candidate the Series Pass handler would pick.
+	 *
+	 * @test
+	 */
+	public function should_resolve_the_clone_when_the_qr_code_carries_the_series_id(): void {
+		$api_key = 'test-api-key';
+		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
+
+		[ $attendee_id, $event_id, $series_id ] = $this->make_series_pass_attendee_with_one_occurrence();
+
+		$first_response = rest_get_server()->dispatch( $this->build_qr_check_in_request( $api_key, $attendee_id, $series_id ) );
+
+		$this->assertEquals( 201, $first_response->status, 'The check-in against the Series should succeed.' );
+		$this->assertTrue(
+			$first_response->data['attendee']['checked_in'],
+			'The response should report the per-Occurrence clone as checked in.'
+		);
+		$this->assertEquals(
+			$attendee_id,
+			$first_response->data['attendee']['clone_of'],
+			'The response should carry the clone Attendee, pointing back at the original.'
+		);
+		$this->assertEquals(
+			$event_id,
+			(int) $first_response->data['attendee']['post_id'],
+			'The clone should belong to the only candidate Event of the Series.'
+		);
+
+		$second_response = rest_get_server()->dispatch( $this->build_qr_check_in_request( $api_key, $attendee_id, $series_id ) );
+
+		$this->assertEquals( 403, $second_response->status, 'Scanning the Series Pass again should be rejected as a duplicate.' );
+		$this->assertEquals( 'attendee_already_checked_in', $second_response->data['error'] );
+		$this->assertTrue(
+			$second_response->data['attendee']['checked_in'],
+			'The duplicate scan response should report the clone, which is checked in, not the original.'
+		);
+	}
+
+	/**
+	 * Creates a Series Pass Attendee and a single Event, part of the Series, that is the
+	 * only checkin candidate for that Attendee.
+	 *
+	 * @return array{0: int, 1: int, 2: int} The Series Pass Attendee ID, the Event ID and the Series ID.
+	 */
+	private function make_series_pass_attendee_with_one_occurrence(): array {
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$pass_id = $this->create_tc_ticket( $series_id, 1, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] );
+		$this->create_order( [ $pass_id => 1 ] );
+
+		$attendee_id = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$this->assertNotEmpty( $attendee_id, 'A Series Pass Attendee should have been created.' );
+
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Event in Series',
+			'status'     => 'publish',
+			'start_date' => '-30 minutes',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+
+		return [ (int) $attendee_id, $event_id, $series_id ];
+	}
+
+	private function build_qr_check_in_request( string $api_key, int $attendee_id, int $event_id ): WP_REST_Request {
+		$commerce = Module::get_instance();
+
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $attendee_id );
+		$request->set_param( 'security_code', get_post_meta( $attendee_id, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		return $request;
 	}
 }

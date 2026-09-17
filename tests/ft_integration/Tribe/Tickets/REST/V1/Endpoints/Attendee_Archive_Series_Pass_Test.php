@@ -53,72 +53,6 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Creates a Series Pass Attendee and a recurring Event, part of the Series, with 3 Occurrences.
-	 *
-	 * @return array{0: int, 1: array<int>} The Series Pass Attendee ID and the Occurrence provisional IDs.
-	 */
-	private function make_series_pass_attendee_with_occurrences(): array {
-		$series_id = static::factory()->post->create(
-			[
-				'post_type' => Series_Post_Type::POSTTYPE,
-			]
-		);
-		$pass_id   = $this->create_tc_ticket( $series_id, 1, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] );
-		$this->create_order( [ $pass_id => 1 ] );
-
-		$attendee_id = tribe_attendees()->where( 'event', $series_id )->first_id();
-		$this->assertNotEmpty( $attendee_id, 'A Series Pass Attendee should have been created.' );
-
-		$recurring_event_id = tribe_events()->set_args(
-			[
-				'title'      => 'Recurring Event in Series',
-				'status'     => 'publish',
-				'start_date' => '-1 hour',
-				'duration'   => 3 * HOUR_IN_SECONDS,
-				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
-				'series'     => $series_id,
-			]
-		)->create()->ID;
-
-		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event_id )
-			->map( fn( Occurrence $occurrence ) => (int) $occurrence->provisional_id );
-
-		$this->assertCount( 3, $provisional_ids, 'The recurring Event should have 3 Occurrences.' );
-
-		return [ (int) $attendee_id, array_values( $provisional_ids ) ];
-	}
-
-	/**
-	 * Fetches the Attendee archive for an Occurrence the way the App does: by provisional ID, authorized
-	 * by API key, with no logged in user.
-	 *
-	 * @param int $provisional_id The provisional ID of the Occurrence to fetch the Attendees of.
-	 *
-	 * @return array<array<string,mixed>> The Attendee entries in the response.
-	 */
-	private function fetch_occurrence_attendees( int $provisional_id ): array {
-		wp_set_current_user( 0 );
-
-		// Re-assert the API key request vars: creating the order/ticket in setup goes through a simulated
-		// checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
-		$_GET['api_key']     = $this->api_key;
-		$_REQUEST['api_key'] = $this->api_key;
-
-		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/attendees' );
-		$request->set_param( 'api_key', $this->api_key );
-		$request->set_param( 'post_id', $provisional_id );
-		$request->set_param( 'page', 1 );
-		$request->set_param( 'per_page', 25 );
-		$request->set_param( 'order_status', 'public' );
-
-		$response = rest_get_server()->dispatch( $request );
-
-		$this->assertEquals( 200, $response->get_status(), 'The Attendee archive request should succeed.' );
-
-		return $response->get_data()['attendees'];
-	}
-
-	/**
 	 * @test
 	 */
 	public function should_list_the_original_series_pass_attendee_for_an_occurrence_not_yet_checked_into(): void {
@@ -208,8 +142,10 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 
 		wp_set_current_user( 0 );
 
-		// Re-assert the API key request vars: creating the order/ticket above goes through a simulated
-		// checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		/*
+		 * Re-assert the API key request vars: creating the order/ticket above goes through a simulated
+		 * checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		 */
 		$_GET['api_key']     = $this->api_key;
 		$_REQUEST['api_key'] = $this->api_key;
 
@@ -257,8 +193,10 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 
 		wp_set_current_user( 0 );
 
-		// Re-assert the API key request vars: creating the order/ticket above goes through a simulated
-		// checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		/*
+		 * Re-assert the API key request vars: creating the order/ticket above goes through a simulated
+		 * checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		 */
 		$_GET['api_key']     = $this->api_key;
 		$_REQUEST['api_key'] = $this->api_key;
 
@@ -282,5 +220,73 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 			$response->get_data()['attendees'],
 			"A regular Event's Attendees should still be narrowed to `publish` by default - only an Occurrence request skips that."
 		);
+	}
+
+	/**
+	 * Creates a Series Pass Attendee and a recurring Event, part of the Series, with 3 Occurrences.
+	 *
+	 * @return array{0: int, 1: array<int>} The Series Pass Attendee ID and the Occurrence provisional IDs.
+	 */
+	private function make_series_pass_attendee_with_occurrences(): array {
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		$pass_id   = $this->create_tc_ticket( $series_id, 1, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] );
+		$this->create_order( [ $pass_id => 1 ] );
+
+		$attendee_id = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$this->assertNotEmpty( $attendee_id, 'A Series Pass Attendee should have been created.' );
+
+		$recurring_event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Recurring Event in Series',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+
+		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event_id )
+			->map( fn( Occurrence $occurrence ) => (int) $occurrence->provisional_id );
+
+		$this->assertCount( 3, $provisional_ids, 'The recurring Event should have 3 Occurrences.' );
+
+		return [ (int) $attendee_id, array_values( $provisional_ids ) ];
+	}
+
+	/**
+	 * Fetches the Attendee archive for an Occurrence the way the App does: by provisional ID, authorized
+	 * by API key, with no logged in user.
+	 *
+	 * @param int $provisional_id The provisional ID of the Occurrence to fetch the Attendees of.
+	 *
+	 * @return array<array<string,mixed>> The Attendee entries in the response.
+	 */
+	private function fetch_occurrence_attendees( int $provisional_id ): array {
+		wp_set_current_user( 0 );
+
+		/*
+		 * Re-assert the API key request vars: creating the order/ticket in setup goes through a simulated
+		 * checkout that clears $_GET/$_REQUEST, wiping what the `@before` hook set.
+		 */
+		$_GET['api_key']     = $this->api_key;
+		$_REQUEST['api_key'] = $this->api_key;
+
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/attendees' );
+		$request->set_param( 'api_key', $this->api_key );
+		$request->set_param( 'post_id', $provisional_id );
+		$request->set_param( 'page', 1 );
+		$request->set_param( 'per_page', 25 );
+		$request->set_param( 'order_status', 'public' );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status(), 'The Attendee archive request should succeed.' );
+
+		return $response->get_data()['attendees'];
 	}
 }
