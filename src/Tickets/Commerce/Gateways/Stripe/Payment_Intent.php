@@ -196,7 +196,7 @@ class Payment_Intent {
 	 * changes and cart updates are not charged using stale Stripe data.
 	 *
 	 * @since 5.28.4.1
-	 * @since TBD Expected values now come from get_values_for_cart().
+	 * @since TBD Expected values now come from get_charge_values_for_cart().
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
@@ -208,7 +208,7 @@ class Payment_Intent {
 			return false;
 		}
 
-		$expected = static::get_values_for_cart( $cart );
+		$expected = static::get_charge_values_for_cart( $cart );
 
 		if ( ! $expected ) {
 			return false;
@@ -223,7 +223,7 @@ class Payment_Intent {
 	}
 
 	/**
-	 * Builds the Stripe charge values that represent the current cart checkout state.
+	 * Gets the Stripe charge values that represent the current cart checkout state.
 	 *
 	 * Every place that writes an amount to a Payment Intent reads from here, so the amount and the
 	 * application fee cannot drift apart when the cart total changes mid-checkout.
@@ -234,7 +234,7 @@ class Payment_Intent {
 	 *
 	 * @return array{amount?: string, application_fee_amount?: string} Empty when the cart cannot be charged.
 	 */
-	public static function get_values_for_cart( Cart $cart ): array {
+	public static function get_charge_values_for_cart( Cart $cart ): array {
 		$cart_total = $cart->get_cart_total();
 
 		if ( $cart_total <= 0 ) {

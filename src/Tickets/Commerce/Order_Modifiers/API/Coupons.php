@@ -259,7 +259,7 @@ class Coupons extends Base_API {
 
 			// Update the payment intent with the new value.
 			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
-				$this->update_stripe_payment_intent( $request->get_param( 'payment_intent_id' ), $cart_page );
+				$this->update_stripe_payment_intent_for_cart( $request->get_param( 'payment_intent_id' ), $cart_page );
 			}
 
 			return rest_ensure_response(
@@ -332,7 +332,7 @@ class Coupons extends Base_API {
 
 			// Update the payment intent with the new value.
 			if ( $this->is_using_stripe() && $request->has_param( 'payment_intent_id' ) ) {
-				$this->update_stripe_payment_intent( $request->get_param( 'payment_intent_id' ), $cart_page );
+				$this->update_stripe_payment_intent_for_cart( $request->get_param( 'payment_intent_id' ), $cart_page );
 			}
 
 			return rest_ensure_response(
@@ -361,28 +361,18 @@ class Coupons extends Base_API {
 	}
 
 	/**
-	 * Update the Stripe payment intent to match the current cart.
+	 * Update the Stripe payment intent.
 	 *
 	 * @since 5.21.0
-	 * @since TBD Takes the cart and sends the application fee alongside the amount.
 	 *
-	 * @param string $id   The payment intent ID.
-	 * @param Cart   $cart The cart the payment intent is being charged for.
+	 * @param string $id     The payment intent ID.
+	 * @param int    $amount The new amount as an integer. This should be in the smallest currency
+	 *                       unit (e.g. cents for USD: $1 = 100 cents).
 	 *
 	 * @return void
 	 */
-	protected function update_stripe_payment_intent( string $id, Cart $cart ) {
-		$values = Payment_Intent::get_values_for_cart( $cart );
-
-		/*
-		 * A cart that cannot be charged is handed to another gateway, so leave the intent untouched
-		 * rather than writing an amount Stripe would reject.
-		 */
-		if ( ! $values ) {
-			return;
-		}
-
-		Payment_Intent::update( $id, $values );
+	protected function update_stripe_payment_intent( string $id, int $amount ) {
+		Payment_Intent::update( $id, [ 'amount' => $amount ] );
 	}
 
 	/**
@@ -629,5 +619,29 @@ class Coupons extends Base_API {
 
 		// We got here because one is zero and the other isn't, so we need a reload.
 		return true;
+	}
+
+	/**
+	 * Updates the Stripe payment intent so it matches the current cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The payment intent ID.
+	 * @param Cart   $cart The cart the payment intent is being charged for.
+	 *
+	 * @return void
+	 */
+	private function update_stripe_payment_intent_for_cart( string $id, Cart $cart ): void {
+		$values = Payment_Intent::get_charge_values_for_cart( $cart );
+
+		/*
+		 * A cart that cannot be charged is handed to another gateway, so leave the intent untouched
+		 * rather than writing an amount Stripe would reject.
+		 */
+		if ( ! $values ) {
+			return;
+		}
+
+		Payment_Intent::update( $id, $values );
 	}
 }
