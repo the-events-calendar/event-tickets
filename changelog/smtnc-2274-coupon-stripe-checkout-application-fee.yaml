@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Stripe checkout could return a server error and never charge the buyer
+  when a coupon changed the cart total, because the application fee left on the
+  Payment Intent no longer matched the discounted amount.
+timestamp: 2026-09-15T11:06:50.223Z
