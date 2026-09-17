@@ -112,6 +112,26 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	}
 
 	/**
+	 * PayPal redelivers, and retries anything that is not answered with a 2xx. A second delivery of an
+	 * event already applied has to read as success, or the order sits settled while PayPal retries the
+	 * same event indefinitely.
+	 */
+	public function test_a_redelivered_event_is_answered_as_success(): void {
+		$this->make_pending_paypal_order();
+		$this->stub_verified_webhook();
+
+		rest_do_request( $this->make_delivery() );
+
+		$response = rest_do_request( $this->make_delivery() );
+
+		$this->assertSame(
+			200,
+			$response->get_status(),
+			'A redelivery of an already-applied event must be acknowledged, not retried forever.'
+		);
+	}
+
+	/**
 	 * A delivery whose signature does not verify must not disclose the merchant's webhook id, which is
 	 * one of the three inputs PayPal's signature binds.
 	 */
