@@ -31,7 +31,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 *
 	 * @since 4.12.0
 	 * @since 5.29.4 Added the new views migration.
-	 * @since TBD Added the key-value cache flush.
+	 * @since 5.29.5 Added the key-value cache flush.
 	 *
 	 * @return array
 	 */
@@ -120,7 +120,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * Entries live for a day and are only rewritten when a Ticket is sold, so one holding a stale
 	 * availability would otherwise keep being served on calendar views long after the update.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */

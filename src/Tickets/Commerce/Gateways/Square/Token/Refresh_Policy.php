@@ -2,7 +2,7 @@
 /**
  * Decides when the Square access token should be refreshed.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -17,7 +17,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Merchant;
  * Answers "should this run now?" from the stored credentials and the refresh history alone: no
  * network, no writes, no locking.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -25,7 +25,7 @@ final class Refresh_Policy {
 	/**
 	 * How long before its expiration the access token is refreshed, in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -34,7 +34,7 @@ final class Refresh_Policy {
 	/**
 	 * How often a connection with no recorded expiration retries, in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -43,7 +43,7 @@ final class Refresh_Policy {
 	/**
 	 * How long a rejected connection waits before it asks Square again, in seconds.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -52,7 +52,7 @@ final class Refresh_Policy {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Merchant
 	 */
@@ -61,7 +61,7 @@ final class Refresh_Policy {
 	/**
 	 * Refresh status instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Status
 	 */
@@ -70,7 +70,7 @@ final class Refresh_Policy {
 	/**
 	 * Refresh_Policy constructor.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Merchant       $merchant Merchant instance.
 	 * @param Refresh_Status $status   Refresh status instance.
@@ -83,7 +83,7 @@ final class Refresh_Policy {
 	/**
 	 * Whether a refresh is due.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True when the token is close to expiring, or a rejected connection is due a re-check.
 	 */
@@ -118,7 +118,7 @@ final class Refresh_Policy {
 	 *
 	 * Keeps a WhoDat outage from turning into an outbound request on every page load.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True while the back-off window opened by the last failure is still running.
 	 */

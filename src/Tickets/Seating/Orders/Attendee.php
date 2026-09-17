@@ -34,7 +34,7 @@ class Attendee {
 	 * Adds the attendee seat column to the attendee list.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Kept the column off the all-events list when no attendee has a seat.
+	 * @since 5.29.5 Kept the column off the all-events list when no attendee has a seat.
 	 *
 	 * @param array<string,string> $columns The columns for the Attendees table.
 	 * @param int                  $event_id The event ID, `0` when listing every event's attendees.
@@ -61,7 +61,7 @@ class Attendee {
 	 * Renders the seat column for the attendee list.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Escaped the seat label.
+	 * @since 5.29.5 Escaped the seat label.
 	 *
 	 * @param string              $value  Row item value.
 	 * @param array<string,mixed> $item   Row item data.
@@ -449,7 +449,7 @@ class Attendee {
 	 * column out while no attendee has one. The key is written for every seated Attendee even when the
 	 * seat is unassigned, so its presence is the test rather than its value.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool Whether any Attendee on the site carries seating meta.
 	 */

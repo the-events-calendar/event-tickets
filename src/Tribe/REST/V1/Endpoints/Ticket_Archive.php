@@ -79,7 +79,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	/**
 	 * Handles GET requests on the endpoint.
 	 *
-	 * @since TBD Reindexes the tickets so the response always encodes them as a JSON array.
+	 * @since 5.29.5 Reindexes the tickets so the response always encodes them as a JSON array.
 	 *
 	 * @param WP_REST_Request $request
 	 *

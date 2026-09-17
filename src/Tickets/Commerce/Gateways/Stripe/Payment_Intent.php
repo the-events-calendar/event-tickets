@@ -196,7 +196,7 @@ class Payment_Intent {
 	 * changes and cart updates are not charged using stale Stripe data.
 	 *
 	 * @since 5.28.4.1
-	 * @since TBD Expected values now come from get_charge_values_for_cart().
+	 * @since 5.29.5 Expected values now come from get_charge_values_for_cart().
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 * @param Cart  $cart           The cart used for checkout.
@@ -228,7 +228,7 @@ class Payment_Intent {
 	 * Every place that writes an amount to a Payment Intent reads from here, so the amount and the
 	 * application fee cannot drift apart when the cart total changes mid-checkout.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Cart $cart The cart used for checkout.
 	 *

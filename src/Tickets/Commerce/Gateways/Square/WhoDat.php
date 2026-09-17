@@ -46,7 +46,7 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * These run inside checkout, so they may not hold the page open for WordPress's default.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -146,7 +146,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * public and released.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Sends a POST; the endpoint answers 405 to the GET this used to send.
+	 * @since 5.29.5 Sends a POST; the endpoint answers 405 to the GET this used to send.
 	 *
 	 * @return ?array The refreshed credentials, or null when they could not be refreshed.
 	 */
@@ -162,7 +162,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * The endpoint answers a rejected refresh token with an HTML error page rather than a machine
 	 * readable body, so the status code is the only thing a caller can reason about.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return array{code: int, body: mixed, error: ?WP_Error} The response code (0 when the request never
 	 *                                                         completed), the decoded body, and the
@@ -215,7 +215,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * Get the token status from Square.
 	 *
 	 * @since 5.24.0
-	 * @since TBD Returns null for a body that did not decode to an array.
+	 * @since 5.29.5 Returns null for a body that did not decode to an array.
 	 *
 	 * @return array|null
 	 */
@@ -232,7 +232,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * A separate method rather than a flag on get_token_status(): that one is released, so widening it
 	 * would break any override, and `get_token_status( true )` says nothing at the call site.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param array $request_arguments Arguments passed on to wp_remote_get().
 	 *
@@ -254,7 +254,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * Takes the response rather than fetching it, so a caller that also needs the message the endpoint
 	 * sent does not have to ask for the same status twice.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param ?array $status The decoded status response.
 	 *
@@ -458,7 +458,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The query args identifying the connection whose token status is being asked about.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return array{access_token: string, mode: string}
 	 */

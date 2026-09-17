@@ -171,7 +171,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	 * Deliberately absent from WhoDat_Interface: adding a parameter to an interface method, optional or
 	 * not, is a fatal error for every implementer that does not declare it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $endpoint          The endpoint path.
 	 * @param array  $query_args        Query args appended to the URL.

@@ -2,7 +2,7 @@
 /**
  * Serializes the Square access token refresh across concurrent requests.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -22,7 +22,7 @@ use Throwable;
  * the options table rather than in the object cache, because it has to hold across processes on a
  * site with no persistent cache.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -30,7 +30,7 @@ final class Refresh_Lock {
 	/**
 	 * Seconds after which a held lock is considered abandoned.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -42,7 +42,7 @@ final class Refresh_Lock {
 	 * Has to outlast the holder's refresh call, or every waiter walks away before the new token lands
 	 * and takes the rejection it was waiting to avoid. A second of headroom covers the writes around it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -54,7 +54,7 @@ final class Refresh_Lock {
 	 * Each poll is one indexed row read, so this only has to be fine enough to hand the waiter its
 	 * token promptly once the holder writes it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -63,7 +63,7 @@ final class Refresh_Lock {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Merchant
 	 */
@@ -72,7 +72,7 @@ final class Refresh_Lock {
 	/**
 	 * The value written into the lock row while this process holds it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -81,7 +81,7 @@ final class Refresh_Lock {
 	/**
 	 * Refresh_Lock constructor.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Merchant $merchant Merchant instance.
 	 */
@@ -95,7 +95,7 @@ final class Refresh_Lock {
 	 * INSERT IGNORE is atomic on the unique option_name index; add_option() reads before it writes and
 	 * can be raced.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool Whether the lock is now held by this process.
 	 */
@@ -162,7 +162,7 @@ final class Refresh_Lock {
 	 * A process that stalled past the timeout has had its lock taken over, and must not delete the row a
 	 * second process is now working under.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */
@@ -195,7 +195,7 @@ final class Refresh_Lock {
 	 * Without this every concurrent request that finds an expired token fails its Square call while the
 	 * winner is still mid-refresh, which at checkout means a failed payment per shopper.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $previous_token The access token this process started with.
 	 *
@@ -226,7 +226,7 @@ final class Refresh_Lock {
 	/**
 	 * The option name backing the lock.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return string The option name the lock row is stored under.
 	 */

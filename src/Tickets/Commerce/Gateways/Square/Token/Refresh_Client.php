@@ -2,7 +2,7 @@
 /**
  * Sends the Square access token refresh and reads Square's answer.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -20,7 +20,7 @@ use WP_Error;
  * so the response alone often says nothing. Turning that into a verdict a caller can act on - and
  * corroborating it against Square when it is ambiguous - is this class's whole job.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -28,7 +28,7 @@ final class Refresh_Client {
 	/**
 	 * How many failures must pile up before an uncorroborated rejection counts as final.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -37,7 +37,7 @@ final class Refresh_Client {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Merchant
 	 */
@@ -46,7 +46,7 @@ final class Refresh_Client {
 	/**
 	 * WhoDat instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var WhoDat
 	 */
@@ -55,7 +55,7 @@ final class Refresh_Client {
 	/**
 	 * Refresh status instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Status
 	 */
@@ -64,7 +64,7 @@ final class Refresh_Client {
 	/**
 	 * Refresh_Client constructor.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Merchant       $merchant Merchant instance.
 	 * @param WhoDat         $who_dat  WhoDat instance.
@@ -79,7 +79,7 @@ final class Refresh_Client {
 	/**
 	 * Asks Square to renew the credentials.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return Refresh_Outcome The verdict Square's answer supports.
 	 */
@@ -94,7 +94,7 @@ final class Refresh_Client {
 	 * accepts the token and it cannot be renewed, the connection really is finished. Anything less
 	 * certain counts as transient, so that an outage never disconnects a working site.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param array{code: int, body: mixed, error: ?WP_Error} $result The outcome of the refresh request.
 	 *
@@ -133,7 +133,7 @@ final class Refresh_Client {
 	 * own lifetime. When it does not, the connection is written off only after failures that keep
 	 * repeating over more than a day, which an outage does not do.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True when the connection should be written off rather than retried.
 	 */

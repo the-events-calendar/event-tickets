@@ -90,7 +90,7 @@ class Hooks extends Controller_Contract {
 	 * Both are covered here without a scheduled action, which sites with a stalled cron queue would not
 	 * run. Token_Refresher throttles this, so it is one non-autoloaded option read on a normal page load.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */

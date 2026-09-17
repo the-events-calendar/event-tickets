@@ -2,7 +2,7 @@
 /**
  * Stores the outcome of the Square access token refresh attempts.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -20,7 +20,7 @@ use Tribe__Date_Utils as Dates;
  * row have failed, and whether Square has refused to renew the credentials outright. Storage only -
  * what to do about any of it belongs to Refresh_Policy, and announcing it to Token_Refresher.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -28,7 +28,7 @@ final class Refresh_Status {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Merchant
 	 */
@@ -37,7 +37,7 @@ final class Refresh_Status {
 	/**
 	 * Refresh_Status constructor.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Merchant $merchant Merchant instance.
 	 */
@@ -51,7 +51,7 @@ final class Refresh_Status {
 	 * The timestamps are UTC, so that they compare correctly against strtotime(), which WordPress pins
 	 * to UTC whatever the site timezone is.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return array{invalid_at: string, error: int, failures: int, last_attempt_at: string, first_failure_at: string}
 	 */
@@ -77,7 +77,7 @@ final class Refresh_Status {
 	/**
 	 * Returns how many consecutive refresh attempts have failed.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return int Zero when no failure has been recorded.
 	 */
@@ -88,7 +88,7 @@ final class Refresh_Status {
 	/**
 	 * Returns when the last refresh was attempted.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return ?int A UTC timestamp, or null when no attempt has been recorded.
 	 */
@@ -99,7 +99,7 @@ final class Refresh_Status {
 	/**
 	 * Returns when the current run of failures started.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return ?int A UTC timestamp, or null when no failure has been recorded.
 	 */
@@ -110,7 +110,7 @@ final class Refresh_Status {
 	/**
 	 * Whether Square has refused to renew the stored credentials.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True once a permanent failure has been recorded.
 	 */
@@ -121,7 +121,7 @@ final class Refresh_Status {
 	/**
 	 * Records that a refresh was attempted, whatever came of it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ final class Refresh_Status {
 	 *
 	 * The last attempt survives: it is the only throttle a connection with no known expiration has.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */
@@ -152,7 +152,7 @@ final class Refresh_Status {
 	/**
 	 * Marks the connection as one Square will not renew.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param int $code The response code the refresh came back with.
 	 *
@@ -170,7 +170,7 @@ final class Refresh_Status {
 	/**
 	 * Counts a failure that may well clear up on its own.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return int The number of consecutive failures after this one.
 	 */
@@ -191,7 +191,7 @@ final class Refresh_Status {
 	/**
 	 * Deletes the stored status.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool Whether the option was deleted.
 	 */
@@ -204,7 +204,7 @@ final class Refresh_Status {
 	 *
 	 * Used to re-read the status from the database after another process may have written it.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */
@@ -218,7 +218,7 @@ final class Refresh_Status {
 	 * The single write path: the record_* methods above are the transitions this class knows how to
 	 * name, and this is the general form they specialize, matching Merchant::update() next door.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param array{invalid_at?: string, error?: int, failures?: int, last_attempt_at?: string, first_failure_at?: string} $data The status data to merge in.
 	 *
@@ -233,7 +233,7 @@ final class Refresh_Status {
 	 *
 	 * Scoped to the gateway mode so the sandbox and live connections never share state.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return string The option key, scoped to the gateway mode.
 	 */
@@ -247,7 +247,7 @@ final class Refresh_Status {
 	/**
 	 * Reads one of the stored dates as a timestamp.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $key The status key to read.
 	 *
@@ -268,7 +268,7 @@ final class Refresh_Status {
 	/**
 	 * The current moment, in the format the stored timestamps use.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return string
 	 */

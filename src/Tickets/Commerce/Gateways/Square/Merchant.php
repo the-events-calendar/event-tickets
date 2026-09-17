@@ -87,7 +87,7 @@ class Merchant extends Abstract_Merchant {
 	 * Determines if the Merchant is connected.
 	 *
 	 * @since 5.24.0
-	 * @since TBD A recheck retries a rejected connection before reading its verdict back.
+	 * @since 5.29.5 A recheck retries a rejected connection before reading its verdict back.
 	 *
 	 * @param bool $recheck Whether to force a recheck of the connection.
 	 *
@@ -182,7 +182,7 @@ class Merchant extends Abstract_Merchant {
 	 * autoloaded, so seeing a fresh value means dropping the whole `alloptions` blob on every pass,
 	 * which a persistent object cache then rebuilds with a full scan of the options table.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return string The stored access token, or an empty string when there is none.
 	 */
@@ -297,7 +297,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the moment the Square access token expires.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return ?DateTimeInterface Null when no usable expiration is stored.
 	 */
@@ -319,7 +319,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Whether the Square access token expires within the given number of seconds.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param int $window Seconds ahead of now to look.
 	 *
@@ -334,7 +334,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Whether Square has refused to renew the stored credentials.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True once Square has refused to renew the stored credentials.
 	 */
@@ -345,7 +345,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Stores the credentials returned by a successful token refresh.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param array{access_token?: string, refresh_token?: string, expires_at?: string, token_type?: string, merchant_id?: string, whodat_signature?: string} $data The refresh response.
 	 *
@@ -381,7 +381,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * Used to re-read the credentials from the database after another process may have refreshed them.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return void
 	 */

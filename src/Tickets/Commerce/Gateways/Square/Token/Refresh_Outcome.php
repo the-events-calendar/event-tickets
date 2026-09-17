@@ -2,7 +2,7 @@
 /**
  * The result of a single Square access token refresh attempt.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -16,7 +16,7 @@ namespace TEC\Tickets\Commerce\Gateways\Square\Token;
  * Modelled as an object rather than a string constant so that no caller can compare against the wrong
  * one, and so the credentials travel with the verdict that says they exist.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square\Token
  */
@@ -24,7 +24,7 @@ final class Refresh_Outcome {
 	/**
 	 * The refresh response carried a new access token.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ final class Refresh_Outcome {
 	/**
 	 * Square refused the refresh token; only a new OAuth handshake can recover.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class Refresh_Outcome {
 	/**
 	 * The refresh did not go through, but the credentials may still be good.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ final class Refresh_Outcome {
 	/**
 	 * Which of the three verdicts this is.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ final class Refresh_Outcome {
 	/**
 	 * The response code the refresh came back with, 0 when the request never completed.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var int
 	 */
@@ -69,7 +69,7 @@ final class Refresh_Outcome {
 	/**
 	 * The credentials the refresh returned, empty unless it succeeded.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var array{access_token?: string, refresh_token?: string, expires_at?: string, token_type?: string, merchant_id?: string, whodat_signature?: string}
 	 */
@@ -78,7 +78,7 @@ final class Refresh_Outcome {
 	/**
 	 * The refresh returned new credentials.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param array{access_token?: string, refresh_token?: string, expires_at?: string, token_type?: string, merchant_id?: string, whodat_signature?: string} $credentials The credentials the refresh returned.
 	 *
@@ -91,7 +91,7 @@ final class Refresh_Outcome {
 	/**
 	 * Square will not renew this connection.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param int $code The response code the refresh came back with.
 	 *
@@ -104,7 +104,7 @@ final class Refresh_Outcome {
 	/**
 	 * The refresh did not go through, and is worth trying again.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param int $code The response code the refresh came back with, 0 when it never completed.
 	 *
@@ -117,7 +117,7 @@ final class Refresh_Outcome {
 	/**
 	 * Whether the refresh returned new credentials.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True when the refresh returned new credentials.
 	 */
@@ -128,7 +128,7 @@ final class Refresh_Outcome {
 	/**
 	 * Whether Square will not renew this connection.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool True when Square will not renew this connection.
 	 */
@@ -139,7 +139,7 @@ final class Refresh_Outcome {
 	/**
 	 * Returns the response code the refresh came back with.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return int Zero when the request never completed.
 	 */
@@ -150,7 +150,7 @@ final class Refresh_Outcome {
 	/**
 	 * Returns the credentials the refresh returned.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return array{access_token?: string, refresh_token?: string, expires_at?: string, token_type?: string, merchant_id?: string, whodat_signature?: string} Empty unless the refresh succeeded.
 	 */
@@ -164,7 +164,7 @@ final class Refresh_Outcome {
 	 * Private: an outcome is built through one of the three named constructors, which is what keeps an
 	 * unreachable combination - success with no credentials, say - from being expressible.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $verdict     One of the class verdict constants.
 	 * @param int    $code        The response code the refresh came back with.

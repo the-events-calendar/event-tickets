@@ -2,7 +2,7 @@
 /**
  * Keeps the Square OAuth access token alive.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -25,7 +25,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
  * exactly once across processes is Refresh_Lock's, talking to Square is Refresh_Client's, and what is
  * remembered afterwards is Refresh_Status's.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package TEC\Tickets\Commerce\Gateways\Square
  */
@@ -33,7 +33,7 @@ final class Token_Refresher {
 	/**
 	 * Merchant instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Merchant
 	 */
@@ -42,7 +42,7 @@ final class Token_Refresher {
 	/**
 	 * Refresh policy instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Policy
 	 */
@@ -51,7 +51,7 @@ final class Token_Refresher {
 	/**
 	 * Refresh lock instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Lock
 	 */
@@ -60,7 +60,7 @@ final class Token_Refresher {
 	/**
 	 * Refresh client instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Client
 	 */
@@ -69,7 +69,7 @@ final class Token_Refresher {
 	/**
 	 * Refresh status instance.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var Refresh_Status
 	 */
@@ -78,7 +78,7 @@ final class Token_Refresher {
 	/**
 	 * Guards against a refresh re-entering itself within the same process.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @var bool
 	 */
@@ -87,7 +87,7 @@ final class Token_Refresher {
 	/**
 	 * Token_Refresher constructor.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Merchant       $merchant Merchant instance.
 	 * @param Refresh_Policy $policy   Refresh policy instance.
@@ -112,7 +112,7 @@ final class Token_Refresher {
 	/**
 	 * Refreshes the access token when it is close enough to expiring.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool Whether the stored credentials are known to be current.
 	 */
@@ -129,7 +129,7 @@ final class Token_Refresher {
 	 *
 	 * Used when Square itself rejects the token, which can happen before the recorded expiration.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $reason         Why the refresh was forced, for logging.
 	 * @param bool   $ignore_backoff Whether to attempt the refresh even inside the back-off window.
@@ -152,7 +152,7 @@ final class Token_Refresher {
 	/**
 	 * Performs the refresh under the cross-process lock.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $reason Why the refresh was attempted, for logging.
 	 * @param bool   $forced Whether the recorded expiration was ignored.
@@ -215,7 +215,7 @@ final class Token_Refresher {
 	/**
 	 * Stores the refreshed credentials and clears the failure bookkeeping.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param Refresh_Outcome $outcome The successful outcome.
 	 * @param string          $reason  Why the refresh was attempted.
@@ -240,7 +240,7 @@ final class Token_Refresher {
 	 * The credentials are deliberately kept, both so support can still see what is stored and so the
 	 * occasional re-check can lift the flag if Square starts renewing them again.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param int    $code   The response code the refresh came back with.
 	 * @param string $reason Why the refresh was attempted.
@@ -265,7 +265,7 @@ final class Token_Refresher {
 	/**
 	 * Counts a failure that may well clear up on its own.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param int    $code   The response code the refresh came back with, 0 when it never completed.
 	 * @param string $reason Why the refresh was attempted.
