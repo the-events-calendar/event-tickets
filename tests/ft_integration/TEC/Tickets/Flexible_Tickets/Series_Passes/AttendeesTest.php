@@ -2316,6 +2316,68 @@ class AttendeesTest extends Controller_Test_Case {
 	}
 
 	/**
+	 * It should resolve the Attendee carrying the check-in status for an Event
+	 *
+	 * @test
+	 */
+	public function should_resolve_the_attendee_carrying_the_checkin_status_for_an_event(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create a Series Pass and, through a completed Order, an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_attendee_id = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$this->assertNotEmpty( $series_attendee_id );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+2 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create an Event that is not part of the Series, with a regular Attendee.
+		$other_event = tribe_events()->set_args(
+			[
+				'title'      => 'Event outside the Series',
+				'status'     => 'publish',
+				'start_date' => '+2 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$other_ticket_id = $this->create_tc_ticket( $other_event );
+		$this->create_order( [ $other_ticket_id => 1 ] );
+		$other_attendee_id = tribe_attendees()->where( 'event', $other_event )->first_id();
+		$this->assertNotEmpty( $other_attendee_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Not cloned yet: the Series Pass Attendee itself carries its, unchecked, status.
+		$this->assertEquals( $series_attendee_id, $controller->get_checkin_status_attendee_id( $series_attendee_id, $single_event ) );
+
+		$this->assertTrue( Module::get_instance()->checkin( $series_attendee_id, false, $single_event ) );
+		$clone_id = tribe_attendees()->where( 'meta_equals', Attendees::CLONE_META_KEY, $series_attendee_id )->first_id();
+		$this->assertNotEmpty( $clone_id );
+
+		// Checked in: the clone made for the Event carries the status, whichever of the two is asked about.
+		$this->assertEquals( $clone_id, $controller->get_checkin_status_attendee_id( $series_attendee_id, $single_event ) );
+		$this->assertEquals( $clone_id, $controller->get_checkin_status_attendee_id( $clone_id, $single_event ) );
+		// An Event outside the Series can have no clone.
+		$this->assertEquals( $series_attendee_id, $controller->get_checkin_status_attendee_id( $series_attendee_id, $other_event ) );
+		// A regular Attendee is never cloned.
+		$this->assertEquals( $other_attendee_id, $controller->get_checkin_status_attendee_id( $other_attendee_id, $other_event ) );
+	}
+
+	/**
 	 * It should reference real post ID of Single Event from cloned Attendee
 	 *
 	 * @test
