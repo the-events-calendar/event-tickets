@@ -6,7 +6,7 @@ use Closure;
 use Faker\Factory;
 use Generator;
 use PHPUnit\Framework\AssertionFailedError;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Cart;
@@ -44,7 +44,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Reports\Attendance_Totals;
 
 class Controller_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Ticket_Maker;
 	use Order_Maker;

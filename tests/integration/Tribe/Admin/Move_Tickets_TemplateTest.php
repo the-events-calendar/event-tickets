@@ -4,14 +4,14 @@ namespace Tribe\Tickets\Admin;
 
 use Generator;
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Admin__Move_Tickets;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 
 class Move_Tickets_TemplateTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Ticket_Maker;
 	use Attendee_Maker;

@@ -2,12 +2,12 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
 
 class Assets_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	
 	/**

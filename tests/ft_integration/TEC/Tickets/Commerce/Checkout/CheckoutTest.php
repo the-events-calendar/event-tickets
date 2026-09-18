@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Checkout;
 use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
@@ -13,7 +13,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class CheckoutTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use With_Uopz;
 	use Series_Pass_Factory;

@@ -5,7 +5,7 @@ namespace Tribe\Tickets;
 use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
@@ -18,7 +18,7 @@ use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe__Tickets__Tickets as Tickets;
 
 class AttendeesTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Ticket_Maker;
 	use Order_Maker;

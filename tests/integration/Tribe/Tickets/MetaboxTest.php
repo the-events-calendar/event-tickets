@@ -5,7 +5,7 @@ namespace Tribe\Tickets;
 use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Metabox as Metabox;
@@ -15,7 +15,7 @@ use Tribe__Events__Main as TEC;
 use Tribe__Date_Utils as Date_Utils;
 
 class MetaboxTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use RSVP_Ticket_Maker;
 	use With_Uopz;

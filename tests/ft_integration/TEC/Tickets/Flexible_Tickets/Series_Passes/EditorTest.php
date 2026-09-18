@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Events_Metaboxes;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
@@ -12,7 +12,7 @@ use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Hook;
 
 class EditorTest extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	protected string $controller_class = Editor::class;
 

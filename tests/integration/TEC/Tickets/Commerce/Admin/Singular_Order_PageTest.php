@@ -10,12 +10,12 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Coupon_Creator;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
 use WP_Screen;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 
 class Singular_Order_PageTest extends WPTestCase {
 
 	use Coupon_Creator;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Type;
 	use With_Test_Orders;
 	use With_Uopz;

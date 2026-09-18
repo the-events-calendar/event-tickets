@@ -4,7 +4,7 @@ namespace TEC\Tickets\Seating\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use PHPUnit\Framework\Assert;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps as Maps_Tab;
@@ -21,7 +21,7 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use Tribe__Tickets__Data_API as Data_API;
 
 class Maps_Layout_Homepage_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Service_Locator_Mocks;
 

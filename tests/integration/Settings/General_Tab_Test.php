@@ -3,7 +3,7 @@
 namespace TEC\Tickets_Plus\Test\Integration\Settings;
 
 use Tribe\Tickets\Admin\Settings;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Codeception\TestCase\WPTestCase;
 use Tribe\Tests\Traits\With_Uopz;
 use Generator;
@@ -14,7 +14,7 @@ use Generator;
  * @package TEC\Tickets_Plus\Tests\Integration\Settings
  */
 class General_Tab_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	/**

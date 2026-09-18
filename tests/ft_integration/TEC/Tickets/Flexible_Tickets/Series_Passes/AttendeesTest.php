@@ -4,7 +4,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use ActionScheduler_Action;
 use ActionScheduler_DBStore;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Migration\Provider;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
@@ -28,7 +28,7 @@ class AttendeesTest extends Controller_Test_Case {
 	use Series_Pass_Factory;
 	use Attendee_Maker;
 	use Order_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	protected string $controller_class = Attendees::class;

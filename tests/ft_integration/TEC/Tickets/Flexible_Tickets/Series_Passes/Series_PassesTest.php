@@ -4,7 +4,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use Closure;
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Event;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
@@ -21,7 +21,7 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Series_PassesTest extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Series_Pass_Factory;
 	use Ticket_Data_Factory;

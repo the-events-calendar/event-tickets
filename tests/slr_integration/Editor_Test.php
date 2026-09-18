@@ -5,7 +5,7 @@ namespace TEC\Tickets\Seating;
 use Closure;
 use Faker\Factory;
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Service\Service_Status;
 use TEC\Tickets\Seating\Tables\Layouts;
@@ -22,7 +22,7 @@ use TEC\Common\StellarWP\Assets\Assets;
 
 class Editor_Test extends Controller_Test_Case {
 	use Layouts_Factory;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use Order_Maker;
 	use Truncates_Custom_Tables;

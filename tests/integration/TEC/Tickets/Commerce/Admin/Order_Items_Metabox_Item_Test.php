@@ -5,11 +5,11 @@ namespace TEC\Tickets\Commerce\Admin;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 
 class Order_Items_Metabox_Item_Test extends WPTestCase {
 
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Test_Orders;
 
 	/**

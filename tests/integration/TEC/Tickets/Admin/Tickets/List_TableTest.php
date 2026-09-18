@@ -5,13 +5,13 @@ namespace TEC\Tickets\Admin\Tickets;
 use TEC\Tickets\Admin\Tickets\List_Table;
 use TEC\Tickets\Commerce as TicketsCommerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 
 /**
  * Tests for the List_Table class.
  */
 class List_TableTest extends \Codeception\TestCase\WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 
 	/**

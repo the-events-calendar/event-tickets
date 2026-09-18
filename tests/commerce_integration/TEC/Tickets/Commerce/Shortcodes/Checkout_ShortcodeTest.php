@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Shortcodes;
 
 use Codeception\TestCase\WPTestCase;
+use Spatie\Snapshots\Drivers\VarDriver;
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Agnostic_Cart;
@@ -12,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Shortcode\Manager;
+use Tribe\Tests\Snapshots\WP_Version_Tolerant_Driver;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -121,7 +123,7 @@ class Checkout_ShortcodeTest extends WPTestCase {
 			$html
 		);
 
-		$this->assertMatchesSnapshot( str_replace( '.min.css', '.css', $html ) );
+		$this->assertMatchesSnapshot( str_replace( '.min.css', '.css', $html ), new WP_Version_Tolerant_Driver( new VarDriver() ) );
 	}
 
 	/**
@@ -150,6 +152,6 @@ class Checkout_ShortcodeTest extends WPTestCase {
 			$html
 		);
 
-		$this->assertMatchesSnapshot( $html );
+		$this->assertMatchesSnapshot( $html, new WP_Version_Tolerant_Driver( new VarDriver() ) );
 	}
 }

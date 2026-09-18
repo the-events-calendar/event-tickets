@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Shortcodes;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Success;
@@ -20,7 +20,7 @@ class Success_Shortcode_Test extends WPTestCase {
 	use Ticket_Maker;
 	use Attendee_Maker;
 	use Order_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	/**

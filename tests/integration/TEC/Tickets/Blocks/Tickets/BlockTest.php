@@ -3,11 +3,11 @@
 namespace TEC\Tickets\Blocks\Tickets;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\StellarWP\Assets\Assets;
 
 class BlockTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	public function test_get_registration_args(): void {
 		$block = tribe( Block::class );
