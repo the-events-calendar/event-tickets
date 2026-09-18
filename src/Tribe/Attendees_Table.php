@@ -1042,6 +1042,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
+	 * @since TBD Only a sortable column and an `ASC`/`DESC` direction are read from the request.
 	 *
 	 * @return void
 	 */
@@ -1076,12 +1077,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		// Setup sorting args.
-		if ( tribe_get_request_var( 'orderby' ) ) {
-			$args['orderby'] = tribe_get_request_var( 'orderby' );
+		$orderby = tribe_get_request_var( 'orderby' );
+
+		if ( is_string( $orderby ) && in_array( $orderby, array_filter( $this->get_sortable_columns(), 'is_string' ), true ) ) {
+			$args['orderby'] = $orderby;
 		}
 
-		if ( tribe_get_request_var( 'order' ) ) {
-			$args['order']   = tribe_get_request_var( 'order' );
+		$order = tribe_get_request_var( 'order' );
+		$order = is_string( $order ) ? strtoupper( $order ) : '';
+
+		if ( in_array( $order, [ 'ASC', 'DESC' ], true ) ) {
+			$args['order'] = $order;
 		}
 
 		/**

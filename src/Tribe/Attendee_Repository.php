@@ -1386,6 +1386,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Handles the `order_by` clauses for events
 	 *
 	 * @since 5.5.0
+	 * @since TBD Directions other than `ASC` or `DESC` are replaced with `DESC`.
 	 *
 	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
 	 */
@@ -1403,6 +1404,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$order_by      = is_numeric( $key ) ? $value : $key;
 			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
 			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// The direction is interpolated unquoted into the ORDER BY clause, so it can only ever be one of the two keywords.
+			$order = is_string( $order ) ? strtoupper( $order ) : '';
+
+			if ( ! in_array( $order, [ 'ASC', 'DESC' ], true ) ) {
+				$order = 'DESC';
+			}
 
 			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
 			$override = $loop === 0;
