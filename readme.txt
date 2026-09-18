@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.29.4
+Stable tag: 5.29.5
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -198,6 +198,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.29.5] 2026-09-17 =
+
+* Fix - Dropped the cached calendar-view ticket data when tickets are sold and when the plugin updates, instead of rebuilding it mid-order, resolving an issue where sold-out events kept showing the remaining ticket count on calendar and list views.
+* Fix - Fixed an issue where a custom ticket sale end date set during ticket creation in the block editor reverted to the event start date after saving the event.
+* Fix - Renewed the Square access token ahead of its expiration and retried a rejected request once against the fresh one, which kept Tickets Commerce checkout from failing about 30 days after connecting to Square. Where Square would neither renew the credentials nor accept the stored token, the gateway reported itself as disconnected with an admin notice instead of showing a healthy connection while live charges failed.
+* Fix - Resolved a fatal error that could occur while rendering the Move Attendees dialog when another plugin listened on the admin_enqueue_scripts action.
+* Fix - Resolved an issue where the tickets and attendees REST API archives could return a JSON object instead of an array when an entry could not be formatted, preventing the Event Tickets Plus App from listing attendees.
+* Fix - Stripe checkout could return a server error and never charge the buyer when a coupon changed the cart total, because the application fee left on the Payment Intent no longer matched the discounted amount.
+* Language - 7 new strings added, 153 updated, 0 fuzzied, and 1 obsoleted.
+* Security - Tightened the handling of Assigned Seating reservations, covering the seat labels stored against attendees and the session tokens reservations are filed under.
 
 = [5.29.4] 2026-09-03 =
 
