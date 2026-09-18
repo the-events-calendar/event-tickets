@@ -57,6 +57,7 @@ final class Pending_Order {
 	 * Stores a gateway's order id as a pending order for the current Cart hash.
 	 *
 	 * @since 5.29.0.1
+	 * @since TBD Expires with the cart rather than outliving it.
 	 *
 	 * @param string $gateway_order_id The gateway's order id.
 	 *
@@ -64,7 +65,15 @@ final class Pending_Order {
 	 */
 	public function set( string $gateway_order_id ): void {
 		try {
-			set_transient( $this->get_transient_name(), $gateway_order_id, $this->cart->get_cart_expiration() );
+			/*
+			 * get_cart_expiration() answers an absolute timestamp, because that is what setcookie() takes.
+			 * set_transient() takes a duration, so handing it the timestamp gave this binding a lifetime
+			 * of about 56 years: it outlived the cart it is keyed to, and every abandoned checkout left a
+			 * row behind that nothing ever cleared.
+			 */
+			$lifetime = max( MINUTE_IN_SECONDS, $this->cart->get_cart_expiration() - time() );
+
+			set_transient( $this->get_transient_name(), $gateway_order_id, $lifetime );
 		} catch ( RuntimeException $e ) {
 			$this->logger->debug(
 				'No cart hash present.',

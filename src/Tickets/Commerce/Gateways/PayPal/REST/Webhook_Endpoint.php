@@ -58,10 +58,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * both forms of the headers (studly case and all caps).
 	 *
 	 * @since 5.1.10
+	 * @since TBD Normalizes a header that arrives as a list of values into the string PayPal signed.
 	 *
-	 * @param array $paypal_headers
+	 * @param array $paypal_headers The request headers, as WP_REST_Request::get_headers() returns them.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error The five signature inputs keyed by property, or an error naming what was missing.
 	 */
 	public function parse_headers( array $paypal_headers ) {
 		$header_keys = [
@@ -85,7 +86,15 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			if ( isset( $paypal_headers[ $key ] ) ) {
-				$headers[ $property ] = $paypal_headers[ $key ];
+				$value = $paypal_headers[ $key ];
+
+				/*
+				 * WP_REST_Request keeps every header as a list of values, so what arrives here is
+				 * ['b1c1...'] rather than 'b1c1...'. These go into the verify call's JSON body, where
+				 * PayPal matches them against the signature byte for byte, and an encoded list matches
+				 * nothing -- which refused every genuine delivery.
+				 */
+				$headers[ $property ] = is_array( $value ) ? implode( ',', $value ) : $value;
 			} else {
 				$missing_keys[] = $property;
 			}
@@ -102,6 +111,8 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle the Webhook requests coming from PayPal.
 	 *
 	 * @since 5.1.10
+	 * @since TBD Reads the JSON body PayPal sends, refuses an unverifiable delivery before calling out,
+	 *        and stops returning the webhook id to the caller.
 	 *
 	 * @param WP_REST_Request $request   The request object.
 	 *
@@ -109,41 +120,79 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_request( WP_REST_Request $request ) {
 		if ( ! tribe( Merchant::class )->is_active() ) {
-			return new WP_Error( 'tec-tickets-commerce-paypal-merchant-inactive' );
+			return new WP_Error( 'tec-tickets-commerce-paypal-merchant-inactive', null, [ 'status' => 403 ] );
 		}
 
-		$event = $request->get_body_params();
+		/*
+		 * PayPal delivers webhooks as application/json, which WordPress parses into the JSON parameter
+		 * bucket. get_body_params() reads the form-urlencoded bucket, so it answered an empty array for
+		 * every genuine delivery and the event type below was always null.
+		 */
+		$event = $request->get_json_params();
+
+		if ( ! is_array( $event ) || empty( $event['event_type'] ) || ! is_string( $event['event_type'] ) || empty( $event['resource'] ) ) {
+			return new WP_Error(
+				'tec-tickets-commerce-paypal-webhook-invalid-payload',
+				null,
+				[ 'status' => 400 ]
+			);
+		}
 
 		tribe( 'logger' )->log_debug(
 			sprintf(
 			// Translators: %s: The event type.
 				__( 'Received PayPal webhook event for type: %s', 'event-tickets' ),
-				$event['event_type']
+				substr( $event['event_type'], 0, 100 )
 			),
 			'tickets-commerce-gateway-paypal'
 		);
 
 		// Check if the event type matches.
 		if ( ! tribe( Webhooks\Events::class )->is_valid( $event['event_type'] ) ) {
+			/*
+			 * The type alone, and bounded: nothing here is verified yet, so an unauthenticated caller
+			 * chooses what this writes. The full payload went in before, which let one choose its size.
+			 */
 			tribe( 'logger' )->log_debug(
 				sprintf(
-				// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal webhook event type.
 					__( 'Invalid event type for webhook event: %s', 'event-tickets' ),
-					json_encode( $event )
+					substr( $event['event_type'], 0, 100 )
 				),
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-type', null, $event );
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-type', null, [ 'status' => 400 ] );
 		}
 
 		$webhook_id = tribe( Webhooks::class )->get_setting( 'id' );
 		$headers    = $this->parse_headers( $request->get_headers() );
 
+		/*
+		 * Refused before the signature check, because verifying costs an outbound call to PayPal. Without
+		 * this an unauthenticated request with no headers, or one to a site with no webhook configured,
+		 * spends that call anyway and ties up a worker doing it.
+		 */
+		if ( ! $webhook_id || is_wp_error( $headers ) ) {
+			return new WP_Error(
+				'tec-tickets-commerce-paypal-webhook-unverifiable',
+				null,
+				[ 'status' => 403 ]
+			);
+		}
+
 		if ( ! tribe( Client::class )->verify_webhook_signature( $webhook_id, $event, $headers ) ) {
 			tribe( 'logger' )->log_error( __( 'Failed PayPal webhook event verification', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
 
-			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-signature-error', null, [  'webhook_id' => $webhook_id, 'event' => $event, 'headers' => $headers ] );
+			/*
+			 * No data payload: WP_Error data is copied verbatim into the REST response, and the webhook id
+			 * is one of the three inputs PayPal's signature binds. It is already in the log above.
+			 */
+			return new WP_Error(
+				'tec-tickets-commerce-paypal-webhook-signature-error',
+				null,
+				[ 'status' => 403 ]
+			);
 		}
 
 		$debug_header = $request->get_header( 'Paypal-Debug-Id' );

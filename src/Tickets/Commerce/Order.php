@@ -67,6 +67,30 @@ class Order extends Abstract_Order {
 	public const ORDER_LOCK_KEY = 'post_content_filtered';
 
 	/**
+	 * Prefix every generated lock id carries.
+	 *
+	 * The lock column is a general purpose WordPress column, so this is what tells a lock this plugin
+	 * wrote apart from anything else that may be stored there.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const LOCK_ID_PREFIX = '_order_lock';
+
+	/**
+	 * How long a lock is honoured before another request may take it over, in seconds.
+	 *
+	 * A lock is held for one order mutation, which is the work of a single request, so anything still
+	 * held after this belongs to a request that died before it could release it.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const LOCK_TTL = 15 * MINUTE_IN_SECONDS;
+
+	/**
 	 * Keeping track of the lock id generated during a request.
 	 *
 	 * Enables to determine if the order has also been locked by current request, so that we can allow edit operations while the order is locked.
@@ -877,7 +901,16 @@ class Order extends Abstract_Order {
 			->set_args( $update_args )
 			->save();
 
-		$this->unlock_order( $existing_order_id );
+		$held_until_now = $this->unlock_order( $existing_order_id );
+
+		/*
+		 * The save pins the lock id, so losing the lock to another request makes it match no rows. That
+		 * is not the same as the order having gone away, and creating a second order for it would give
+		 * one gateway order id two Tickets Commerce orders.
+		 */
+		if ( empty( $updated[ $existing_order_id ] ) && ! $held_until_now ) {
+			return false;
+		}
 
 		if ( empty( $updated[ $existing_order_id ] ) ) {
 			/**
@@ -1217,6 +1250,7 @@ class Order extends Abstract_Order {
 	 * Lock an order to prevent it from being modified.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Takes over a lock left behind by a request that died before releasing it.
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1235,6 +1269,10 @@ class Order extends Abstract_Order {
 					$this->get_lock_id()
 				)
 			);
+
+			if ( ! $result ) {
+				$result = $this->reclaim_stale_lock( $order_id );
+			}
 
 			wp_cache_delete( $order_id, 'posts' );
 
@@ -1259,18 +1297,25 @@ class Order extends Abstract_Order {
 	 * Unlock an order to allow it to be modified.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Only releases a lock this request holds.
 	 *
 	 * @param int $order_id The order ID.
 	 *
-	 * @return bool Whether the order was unlocked.
+	 * @return bool Whether this request held the lock and released it.
 	 */
 	public function unlock_order( int $order_id ): bool {
 		$lock_key = self::ORDER_LOCK_KEY;
 		try {
-			$result = (bool) DB::query(
+			/*
+			 * Matched on the lock id this request holds. Without that match any caller could clear any
+			 * lock, including one another request had just taken over from a stale holder.
+			 */
+			$result = 0 < DB::query(
 				DB::prepare(
-					"UPDATE %i set $lock_key = '' where ID = $order_id",
-					DB::prefix( 'posts' )
+					"UPDATE %i SET $lock_key = '' WHERE ID = %d AND $lock_key = %s",
+					DB::prefix( 'posts' ),
+					$order_id,
+					$this->get_lock_id()
 				)
 			);
 
@@ -1325,7 +1370,7 @@ class Order extends Abstract_Order {
 	 * @return string The lock ID.
 	 */
 	public function generate_lock_id(): string {
-		self::$lock_id = uniqid( '_order_lock', true );
+		self::$lock_id = uniqid( self::LOCK_ID_PREFIX, true );
 
 		return self::$lock_id;
 	}
@@ -1364,6 +1409,112 @@ class Order extends Abstract_Order {
 		} catch ( DatabaseQueryException $e ) {
 			return false;
 		}
+	}
+
+	/**
+	 * Takes over a lock that the request holding it never released.
+	 *
+	 * A lock is written into the order's lock column and cleared when the work is done. A request that
+	 * dies in between -- a fatal, a timeout, or an exception thrown by a third party filter inside
+	 * upsert(), which locks outside any transaction -- leaves the lock behind. Nothing expired it, so
+	 * the order could never change status again: not through a gateway recheck, not through a webhook
+	 * and not through the admin. A buyer whose payment had been captured stayed stranded.
+	 *
+	 * Only a value this plugin wrote as a lock is ever taken over, and only once it is older than the
+	 * window a single request could still be running in.
+	 *
+	 * Unlike its neighbours this carries no try/catch of its own: it runs inside lock_order()'s, so a
+	 * query exception there already answers the acquisition with false.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the stale lock was taken over.
+	 */
+	private function reclaim_stale_lock( int $order_id ): bool {
+		$lock_key = self::ORDER_LOCK_KEY;
+
+		$current = DB::get_var(
+			DB::prepare(
+				"SELECT $lock_key FROM %i WHERE ID = %d",
+				DB::prefix( 'posts' ),
+				$order_id
+			)
+		);
+
+		if ( ! is_string( $current ) || '' === $current ) {
+			return false;
+		}
+
+		$locked_at = $this->get_lock_timestamp( $current );
+
+		if ( null === $locked_at ) {
+			return false;
+		}
+
+		/**
+		 * Filters how long an order lock is honoured before another request may take it over.
+		 *
+		 * The returned value is floored at one minute: a zero, or anything absint() flattens to zero,
+		 * would make every lock reclaimable on sight and turn locking off without saying so.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $ttl      The lock lifetime, in seconds.
+		 * @param int    $order_id The order ID the lock is held on.
+		 * @param string $lock_id  The lock id currently held.
+		 */
+		$ttl = max( MINUTE_IN_SECONDS, absint( apply_filters( 'tec_tickets_commerce_order_lock_ttl', self::LOCK_TTL, $order_id, $current ) ) );
+
+		/*
+		 * A lock dated in the future is not treated as stale. Lock ids carry the clock of whichever node
+		 * wrote them, so a node running even slightly ahead would otherwise have its brand new locks
+		 * reclaimed instantly by every other node, which is worse than the delay this avoids: a future
+		 * dated lock becomes reclaimable on its own once the wall clock passes it by the lifetime below.
+		 */
+		if ( time() - $locked_at < $ttl ) {
+			return false;
+		}
+
+		/*
+		 * Matching on the lock id we just read makes this a compare and swap: if another request
+		 * reclaimed the same stale lock in between, no row matches and this one reports failure rather
+		 * than both believing they hold it.
+		 */
+		return 0 < DB::query(
+			DB::prepare(
+				"UPDATE %i SET $lock_key = %s WHERE ID = %d AND $lock_key = %s",
+				DB::prefix( 'posts' ),
+				$this->get_lock_id(),
+				$order_id,
+				$current
+			)
+		);
+	}
+
+	/**
+	 * Reads the moment a lock was taken out of the lock id itself.
+	 *
+	 * Lock ids come from uniqid(), whose first eight hexadecimal characters after the prefix are the
+	 * Unix seconds it was generated at, so a lock carries its own age and no extra storage is needed to
+	 * date one. Anything not matching that shape is not a lock this plugin wrote, or is too old to
+	 * carry a readable timestamp, and is left alone.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $lock_id The value held in the lock column.
+	 *
+	 * @return int|null The Unix timestamp the lock was taken, or null when it cannot be read.
+	 */
+	private function get_lock_timestamp( string $lock_id ): ?int {
+		$pattern = '/^' . preg_quote( self::LOCK_ID_PREFIX, '/' ) . '(?<timestamp>[a-f0-9]{8})(?<rest>[a-f0-9]+)\.(?<entropy>[0-9]+)$/';
+
+		if ( ! preg_match( $pattern, $lock_id, $matches ) ) {
+			return null;
+		}
+
+		return absint( hexdec( $matches['timestamp'] ) );
 	}
 
 	/**
