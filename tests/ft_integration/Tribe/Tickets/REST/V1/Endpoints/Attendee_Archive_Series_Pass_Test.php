@@ -34,6 +34,12 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 	 * @before
 	 */
 	public function set_up_api_key_request(): void {
+		/*
+		 * The options row is rolled back between tests while the object and settings caches keep the
+		 * previous test's value, so `update_option()` would see no change and never write the row again.
+		 */
+		wp_cache_delete( \Tribe__Main::OPTIONNAME, 'options' );
+		tribe_set_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME, [] );
 		tribe_update_option( 'tickets-plus-qr-options-api-key', $this->api_key );
 
 		// The API key is read off the request vars, not off the `WP_REST_Request`.
@@ -223,11 +229,43 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * Skipping the related post status filter for an Occurrence request must not open a door the filter
+	 * used to keep shut: an API key alone grants no WP user, so the Attendees of a draft (or trashed)
+	 * recurring Event's Occurrences stay hidden, Series Pass clones included.
+	 *
+	 * @test
+	 */
+	public function should_not_list_attendees_of_a_draft_recurring_event_occurrence_via_api_key_alone(): void {
+		[ , $provisional_ids ] = $this->make_series_pass_attendee_with_occurrences( 'draft' );
+
+		$this->make_controller()->register();
+
+		wp_set_current_user( 0 );
+		$_GET['api_key']     = $this->api_key;
+		$_REQUEST['api_key'] = $this->api_key;
+
+		$this->assertTrue(
+			tribe( 'tickets.rest-v1.main' )->request_has_manage_access(),
+			'This test is only meaningful if it actually exercises the manage-access branch.'
+		);
+
+		foreach ( $provisional_ids as $provisional_id ) {
+			$this->assertCount(
+				0,
+				$this->fetch_occurrence_attendees( $provisional_id ),
+				"Occurrence {$provisional_id} of a draft Event should list no Attendees to an API key only caller."
+			);
+		}
+	}
+
+	/**
 	 * Creates a Series Pass Attendee and a recurring Event, part of the Series, with 3 Occurrences.
+	 *
+	 * @param string $event_status The post status of the recurring Event.
 	 *
 	 * @return array{0: int, 1: array<int>} The Series Pass Attendee ID and the Occurrence provisional IDs.
 	 */
-	private function make_series_pass_attendee_with_occurrences(): array {
+	private function make_series_pass_attendee_with_occurrences( string $event_status = 'publish' ): array {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
@@ -242,7 +280,7 @@ class Attendee_Archive_Series_Pass_Test extends Controller_Test_Case {
 		$recurring_event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Recurring Event in Series',
-				'status'     => 'publish',
+				'status'     => $event_status,
 				'start_date' => '-1 hour',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',

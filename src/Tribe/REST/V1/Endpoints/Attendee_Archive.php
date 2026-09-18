@@ -84,7 +84,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @param WP_REST_Request $request
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
-	 * @since TBD Stop narrowing a manage-access request by the related post status.
+	 * @since TBD Gate an Occurrence request by its Event's status instead of the related post status filter.
 	 * @since TBD Reindexes the attendees so the response always encodes them as a JSON array.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
@@ -158,8 +158,14 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				/*
 				 * An Occurrence has no status of its own to match against `event_status` - drop it even if
 				 * the request set it explicitly (e.g. via `post_status`, mapped above), not just when it
-				 * would otherwise default to one.
+				 * would otherwise default to one. That filter was also the only gate on the related
+				 * post's status, so apply the same gate here against the Occurrence's Event: a caller who
+				 * cannot read private posts only ever sees `publish`, whatever was asked for.
 				 */
+				$fetch_args['event'] = $this->filter_occurrences_by_event_status(
+					$requested_event_ids,
+					Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' )
+				);
 				unset( $fetch_args['event_status'] );
 			} else {
 				$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
@@ -174,6 +180,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$query = tribe_attendees( 'restv1' )
 			->by_args( $fetch_args )
 			->permission( $permission );
+
+		if ( isset( $fetch_args['event'] ) && [] === $fetch_args['event'] ) {
+			$query->void_query();
+		}
 
 		if ( $request['orderby'] ) {
 			$query->order_by( $request['orderby'] );
@@ -516,6 +526,41 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'required'    => false,
 				'type'        => 'string',
 			),
+		);
+	}
+
+	/**
+	 * Keeps the Occurrences whose Event the current user is allowed to read Attendees of.
+	 *
+	 * Mirrors `Tribe__Tickets__Attendee_Repository::filter_by_event_status()`, which cannot match an
+	 * Occurrence itself because its provisional ID has no `wp_posts` row.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string>    $provisional_ids The Occurrence provisional IDs the request asked for.
+	 * @param string|array<string> $event_status    The requested Event statuses, `any` included.
+	 *
+	 * @return array<int> The provisional IDs whose Event status the current user may read.
+	 */
+	private function filter_occurrences_by_event_status( array $provisional_ids, $event_status ): array {
+		$statuses = Tribe__Utils__Array::list_to_array( $event_status );
+
+		if ( ! current_user_can( 'read_private_posts' ) ) {
+			$statuses = [ 'publish' ];
+		}
+
+		/* `any` still excludes trashed and auto-draft posts, same as WP_Query. */
+		$is_allowed = in_array( 'any', $statuses, true )
+			? static fn( $status ) => ! in_array( $status, [ 'trash', 'auto-draft', false ], true )
+			: static fn( $status ) => in_array( $status, $statuses, true );
+
+		return array_values(
+			array_filter(
+				wp_parse_id_list( $provisional_ids ),
+				static fn( int $provisional_id ) => $is_allowed(
+					get_post_status( Occurrence::normalize_id( $provisional_id ) )
+				)
+			)
 		);
 	}
 }
