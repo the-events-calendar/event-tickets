@@ -10,13 +10,13 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 
 class Editor_Test extends Controller_Test_Case {
 	use With_Uopz;
 	use Fee_Creator;
 	use Ticket_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	protected string $controller_class = Editor::class;
 

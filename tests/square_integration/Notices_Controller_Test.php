@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use Tribe\Tests\Traits\With_Uopz;
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
  */
 class Notices_Controller_Test extends Controller_Test_Case {
 	use With_Uopz;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	protected string $controller_class = Notices_Controller::class;
 

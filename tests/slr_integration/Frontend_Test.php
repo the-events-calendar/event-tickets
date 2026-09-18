@@ -5,7 +5,7 @@ namespace TEC\Tickets\Seating\Frontend;
 use Closure;
 use Generator;
 use PHPUnit\Framework\Assert;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Tickets_View;
@@ -33,7 +33,7 @@ use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Seating\Orders\Cart;
 
 class Frontend_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use Order_Maker;
 	use Series_Pass_Factory;

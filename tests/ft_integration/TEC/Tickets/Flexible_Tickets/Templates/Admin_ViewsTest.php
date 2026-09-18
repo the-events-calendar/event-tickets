@@ -3,10 +3,10 @@
 namespace TEC\Tickets\Flexible_Tickets\Templates;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 
 class Admin_ViewsTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	public function template_fixture_provider(): array {
 		return [

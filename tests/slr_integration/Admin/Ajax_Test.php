@@ -4,7 +4,7 @@ namespace TEC\Tickets\Seating\Admin;
 
 use Faker\Factory;
 use PHPUnit\Framework\Assert;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
@@ -32,7 +32,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Common\StellarWP\Assets\Assets;
 
 class Ajax_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use OAuth_Token;
 	use WP_Remote_Mocks;

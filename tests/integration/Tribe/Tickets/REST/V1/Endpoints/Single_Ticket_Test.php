@@ -5,13 +5,13 @@ namespace Tribe\Tickets\REST\V1\Endpoints;
 use Tribe__Tickets__REST__V1__Endpoints__Single_Ticket as Single;
 use Codeception\TestCase\WPTestCase;
 use Tribe\Tests\Traits\With_Clock_Mock;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Date_Utils as Dates;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class Single_Ticket_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Clock_Mock;
 	use Ticket_Maker;
 

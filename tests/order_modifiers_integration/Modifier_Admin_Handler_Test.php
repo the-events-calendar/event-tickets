@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Order_Modifiers;
 
 use InvalidArgumentException;
 use ReflectionMethod;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Common\StellarWP\Assets\Assets;
 use Tribe\Tests\Traits\With_Uopz;
@@ -16,7 +16,7 @@ use TEC\Tickets\Exceptions\Not_Found_Exception;
 
 class Modifier_Admin_Handler_Test extends Controller_Test_Case {
 	use With_Uopz;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Order_Modifiers;
 
 	protected string $controller_class = Modifier_Admin_Handler::class;

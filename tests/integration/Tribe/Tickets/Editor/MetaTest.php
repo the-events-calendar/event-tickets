@@ -2,14 +2,14 @@
 
 namespace Tribe\Tickets\Editor;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
 use Tribe__Tickets__Editor__Meta as Meta;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class MetaTest extends \Codeception\TestCase\WPTestCase {
 	use Commerce_Ticket_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	private ?array $global_meta_keys_backup = null;
 

@@ -3,13 +3,13 @@
 namespace TEC\Tickets\Commerce\Status;
 
 use Tribe\Tickets\Test\Traits\With_Test_Orders;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Order;
 
 class Status_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
 	use With_Test_Orders;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	/**
 	 * @test

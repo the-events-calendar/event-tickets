@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
@@ -15,7 +15,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Seat_Types_Test extends WPTestCase {
 	use Ticket_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Order_Maker;
 
 	/**

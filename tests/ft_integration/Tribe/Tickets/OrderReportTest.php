@@ -5,7 +5,7 @@ namespace Tribe\Tickets;
 use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
@@ -17,7 +17,7 @@ use TEC\Tickets\Commerce\Admin_Tables\Orders as Orders_Table;
 
 class OrderReportTest extends WPTestCase {
 
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Ticket_Maker;
 	use Order_Maker;

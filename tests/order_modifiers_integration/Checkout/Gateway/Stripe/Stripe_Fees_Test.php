@@ -13,7 +13,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use WP_Post;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Order_Modifiers\Checkout\Fees as BaseFees;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
@@ -24,7 +24,7 @@ class Stripe_Fees_Test extends Controller_Test_Case {
 	use Attendee_Maker;
 	use With_Tickets_Commerce;
 	use Reservations_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Order_Maker;
 	use Fee_Creator;
 	use With_No_Object_Storage;

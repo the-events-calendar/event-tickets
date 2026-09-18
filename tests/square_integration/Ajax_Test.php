@@ -4,14 +4,14 @@ namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use Generator;
 use Closure;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
 use Tribe\Tickets\Test\Traits\WhoDat_Mocks;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 
 class Ajax_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use WP_Send_Json_Mocks;
 	use WhoDat_Mocks;
 

@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use PHPUnit\Framework\Assert;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
@@ -20,7 +20,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use OAuth_Token;
 	use Reservations_Maker;
 	use Ticket_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	public function test_entry_manipulation(): void {
 		$session = tribe( Session::class );

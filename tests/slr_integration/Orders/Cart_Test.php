@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Seating\Orders;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
@@ -21,7 +21,7 @@ class Cart_Test extends WPTestCase {
 	use Attendee_Maker;
 	use With_Tickets_Commerce;
 	use Reservations_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	/**
 	 * @before

@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Seating;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Common\StellarWP\Assets\Assets as AssetsLibrary;
 use TEC\Tickets\Commerce\Module;
@@ -11,7 +11,7 @@ use Tribe__Tickets__Data_API as Data_API;
 
 class Assets_Test extends Controller_Test_Case {
 	use With_Uopz;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	protected string $controller_class = Assets::class;
 

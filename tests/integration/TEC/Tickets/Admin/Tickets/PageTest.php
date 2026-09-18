@@ -3,13 +3,13 @@
 namespace TEC\Tickets\Admin\Tickets;
 
 use TEC\Tickets\Commerce as TicketsCommerce;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Admin\Pages;
 
 class PageTest extends \Codeception\TestCase\WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Ticket_Maker;
 

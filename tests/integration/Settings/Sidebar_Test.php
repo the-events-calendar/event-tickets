@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets_Plus\Test\Integration\Settings;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\Admin\Settings_Sidebar;
 use Tribe__Settings_Tab;
@@ -13,7 +13,7 @@ use Tribe__Settings_Tab;
  * @package TEC\Tickets_Plus\Tests\Integration\Settings
  */
 class Sidebar_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	/**
 	 * Test that the sidebar renders correctly.

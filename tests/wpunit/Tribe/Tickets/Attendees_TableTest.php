@@ -2,7 +2,7 @@
 
 namespace Tribe\Tickets;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
@@ -14,7 +14,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
 	use Attendee_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	/**

@@ -4,14 +4,14 @@ namespace TEC\Tickets\Seating\Admin\Events;
 
 use Closure;
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
 
 class Controller_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	protected string $controller_class = Controller::class;

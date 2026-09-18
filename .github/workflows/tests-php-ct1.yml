@@ -23,12 +23,24 @@ jobs:
         id: php_check
         uses: ./.github/actions/check-php-changes
       # ------------------------------------------------------------------------------
+  wp-versions:
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    outputs:
+      versions: ${{ steps.matrix.outputs.versions }}
+    steps:
+      # ------------------------------------------------------------------------------
+      # Every PR runs the suites on the latest three WordPress X.Y releases.
+      # ------------------------------------------------------------------------------
+      - id: matrix
+        uses: the-events-calendar/actions/.github/actions/wp-test-matrix@main
   test:
-    needs: check
+    needs: [ check, wp-versions ]
     if: needs.check.outputs.run_tests
+    name: ${{ matrix.suite }} (WP ${{ matrix.wp }})
     strategy:
       fail-fast: false
       matrix:
+        wp: ${{ fromJSON(needs.wp-versions.outputs.versions) }}
         suite:
           - ct1_integration
           - slr_ecp_integration
@@ -168,7 +180,7 @@ jobs:
         run: |
           ${SLIC_BIN} up wordpress
           ${SLIC_BIN} wp core version
-          ${SLIC_BIN} wp core update --force --version=6.8
+          ${SLIC_BIN} wp core update --force --version=${{ matrix.wp }}
           ${SLIC_BIN} wp core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
@@ -187,6 +199,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: output ${{ matrix.suite }}
+          name: output ${{ matrix.suite }} wp-${{ matrix.wp }}
           path: tests/_output/
           retention-days: 7

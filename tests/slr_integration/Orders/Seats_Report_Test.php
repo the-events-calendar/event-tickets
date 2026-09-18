@@ -6,7 +6,7 @@ use Closure;
 use Generator;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use PHPUnit\Framework\Assert;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe\Tests\Traits\Service_Locator_Mocks;
@@ -21,7 +21,7 @@ class Seats_Report_Test extends WPTEstCase {
 	use Ticket_Maker;
 	use Service_Locator_Mocks;
 	use With_Uopz;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Order_Maker;
 
 	public function render_page_data_provider(): Generator {

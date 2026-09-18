@@ -4,12 +4,12 @@ namespace Tribe\Tickets;
 use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class Tickets_ViewTest extends WPTestCase {
 
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	public function setUp() {
 		// before
 		parent::setUp();

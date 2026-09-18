@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Modifiers\API;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Event_Automator\Tests\Traits\Create_Events;
 use Tribe\Tests\Traits\With_Uopz;
@@ -22,7 +22,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class Fees_Test extends Controller_Test_Case {
 	use With_Uopz;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Fee_Creator;
 	use Ticket_Maker;
 	use Create_Events;

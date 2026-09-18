@@ -19,7 +19,7 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_No_Object_Storage;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use WP_Post;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 
 class PayPal_Fees_Test extends Controller_Test_Case {
 
@@ -29,7 +29,7 @@ class PayPal_Fees_Test extends Controller_Test_Case {
 	use PayPal_REST_Override;
 	use Reservations_Maker;
 	use Series_Pass_Factory;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use With_No_Object_Storage;
 	use With_Tickets_Commerce;
