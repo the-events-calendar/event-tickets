@@ -23,12 +23,26 @@ jobs:
         id: php_check
         uses: ./.github/actions/check-php-changes
       # ------------------------------------------------------------------------------
+  wp-versions:
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    outputs:
+      versions: ${{ steps.matrix.outputs.versions }}
+    steps:
+      # ------------------------------------------------------------------------------
+      # Latest WordPress release only on feature PRs; latest three on the release sanity check PR.
+      # ------------------------------------------------------------------------------
+      - id: matrix
+        uses: the-events-calendar/actions/.github/actions/wp-test-matrix@main
+        with:
+          count: ${{ startsWith(github.head_ref, 'release/') && 3 || 1 }}
   test:
-    needs: check
+    needs: [ check, wp-versions ]
     if: needs.check.outputs.run_tests
+    name: ${{ matrix.suite }} (WP ${{ matrix.wp }})
     strategy:
       fail-fast: false
       matrix:
+        wp: ${{ fromJSON(needs.wp-versions.outputs.versions) }}
         suite:
           # - acceptance
           - functional
@@ -167,7 +181,7 @@ jobs:
         run: |
           ${SLIC_BIN} up wordpress
           ${SLIC_BIN} wp core version
-          ${SLIC_BIN} wp core update --force --version=6.8
+          ${SLIC_BIN} wp core update --force --version=${{ matrix.wp }}
           ${SLIC_BIN} wp core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
@@ -196,7 +210,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: output ${{ matrix.suite }}
+          name: output ${{ matrix.suite }} wp-${{ matrix.wp }}
           path: tests/_output/
           retention-days: 7
 
