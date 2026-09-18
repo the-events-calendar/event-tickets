@@ -3,7 +3,7 @@ on:
   pull_request:
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     outputs:
       run_tests: ${{ steps.php_check.outputs.php_files_changed }}
     steps:
@@ -33,7 +33,7 @@ jobs:
           - ft_smoketest
           - ft_integration
           - ft_ct1_migration
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       # ------------------------------------------------------------------------------
       # Checkout the repo
