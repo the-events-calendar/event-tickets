@@ -74,7 +74,7 @@ class Meta {
 	/**
 	 * Sanitizes a seat label before it is stored.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param mixed $seat_label The value to store as a seat label.
 	 *

@@ -85,7 +85,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 *
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 * @since TBD Gate an Occurrence request by its Event's status instead of the related post status filter.
-	 * @since TBD Reindexes the attendees so the response always encodes them as a JSON array.
+	 * @since 5.29.5 Reindexes the attendees so the response always encodes them as a JSON array.
 	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */

@@ -29,7 +29,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	/**
 	 * Registers the move attendees hooks.
 	 *
-	 * @since TBD Moved the dialog off `admin_init`, which fires before WordPress resolves the admin screen.
+	 * @since 5.29.5 Moved the dialog off `admin_init`, which fires before WordPress resolves the admin screen.
 	 */
 	public function setup() {
 		$this->ticket_history();
@@ -63,7 +63,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * finished. WordPress has resolved the screen by then, so calling `set_current_screen()` here
 	 * would re-enter this method until the request times out.
 	 *
-	 * @since TBD Moved off `admin_init` so the admin screen is resolved before the iframe renders.
+	 * @since 5.29.5 Moved off `admin_init` so the admin screen is resolved before the iframe renders.
 	 */
 	public function dialog() {
 		if ( ! $this->is_move_tickets_dialog() ) {
