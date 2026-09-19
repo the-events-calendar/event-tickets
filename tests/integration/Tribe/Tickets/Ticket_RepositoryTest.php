@@ -93,37 +93,103 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			tribe_tickets()->where( 'event', $post_1_id )->get_ids()
 		);
 	}
-	
+
 	/**
 	 * It should return empty if event ID is 0.
 	 *
 	 * @test
 	 */
 	public function should_return_empty_if_event_id_is_0(): void {
-		
+
 		$post_3_id   = static::factory()->post->create();
 		$post_4_id   = static::factory()->post->create();
 		$ticket_3_id = $this->create_tc_ticket( $post_3_id );
 		$ticket_4_id = $this->create_tc_ticket( $post_4_id );
-		
+
 		// Test for TicketsCommerce tickets.
 		$this->assertEmpty( tec_tc_tickets()->where( 'event', 0 )->get_ids() );
 		$this->assertEquals( 0, tec_tc_tickets()->where( 'event', 0 )->count() );
-		
+
 		// Test with an array of event IDs for TicketsCommeerce tickets.
 		$this->assertEmpty( tec_tc_tickets()->where( 'event', [ 0 ] )->get_ids() );
 		$this->assertEquals( 0, tec_tc_tickets()->where( 'event', [ 0 ] )->count() );
-		
+
 		$this->assertNotEmpty( tec_tc_tickets()->where( 'event', [ $post_3_id ] )->get_ids() );
 		$this->assertNotEmpty( tec_tc_tickets()->where( 'event', [ $post_4_id ] )->get_ids() );
 		$this->assertEquals( 1, tec_tc_tickets()->where( 'event', [ $post_3_id ] )->count() );
 		$this->assertEquals( 1, tec_tc_tickets()->where( 'event', [ $post_4_id ] )->count() );
-		
+
 		$this->assertEmpty( tribe_tickets()->where( 'event', 0 )->get_ids() );
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', 0 )->count() );
-		
+
 		// Test with an array of event IDs.
 		$this->assertEmpty( tribe_tickets()->where( 'event', [ 0 ] )->get_ids() );
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', [ 0 ] )->count() );
+	}
+
+	/**
+	 * It should delete meta using direct meta key.
+	 *
+	 * @test
+	 */
+	public function should_delete_meta_using_direct_meta_key(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id );
+
+		// Add custom meta to the ticket.
+		$meta_key = '_test_custom_meta';
+		update_post_meta( $ticket_id, $meta_key, 'test_value' );
+
+		// Verify meta exists.
+		$this->assertEquals( 'test_value', get_post_meta( $ticket_id, $meta_key, true ) );
+
+		// Delete meta using the repository.
+		$result = tribe_tickets()->delete_meta( $ticket_id, $meta_key );
+
+		$this->assertTrue( $result );
+		$this->assertEmpty( get_post_meta( $ticket_id, $meta_key, true ) );
+	}
+
+	/**
+	 * It should delete meta using field alias.
+	 *
+	 * @test
+	 */
+	public function should_delete_meta_using_field_alias(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id );
+
+		// Add thumbnail meta using the actual meta key.
+		$attachment_id = static::factory()->attachment->create();
+		update_post_meta( $ticket_id, '_thumbnail_id', $attachment_id );
+
+		// Verify meta exists.
+		$this->assertEquals( $attachment_id, get_post_meta( $ticket_id, '_thumbnail_id', true ) );
+
+		// Delete meta using the 'image' alias (maps to '_thumbnail_id').
+		$result = tribe_tickets()->delete_meta( $ticket_id, 'image' );
+
+		$this->assertTrue( $result );
+		$this->assertEmpty( get_post_meta( $ticket_id, '_thumbnail_id', true ) );
+	}
+
+	/**
+	 * It should return false when deleting non-existent meta.
+	 *
+	 * WordPress's delete_post_meta returns false when meta doesn't exist.
+	 *
+	 * @test
+	 */
+	public function should_return_false_when_deleting_non_existent_meta(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id );
+
+		// Verify meta doesn't exist.
+		$this->assertEmpty( get_post_meta( $ticket_id, '_non_existent_meta', true ) );
+
+		// Attempt to delete non-existent meta.
+		$result = tribe_tickets()->delete_meta( $ticket_id, '_non_existent_meta' );
+
+		$this->assertFalse( $result );
 	}
 }

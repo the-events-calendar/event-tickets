@@ -155,6 +155,17 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 				<input type="hidden" name="ticket_id" value="<?php echo absint( $this->ticket_id );?>" />
 				<div id="tribetickets" class="event-tickets-plus-fieldset-table tribe-tickets-plus-fieldset-page">
 					<?php
+					/**
+					 * Fires before the meta form fields in the attendee registration page.
+					 *
+					 * ET+ hooks into this to render IAC options above the ARF field builder.
+					 *
+					 * @since TBD
+					 *
+					 * @param int $ticket_id The ticket ID.
+					 * @param int $post_id   The post ID.
+					 */
+					do_action( 'tec_tickets_attendee_registration_before_meta_form_fields', $this->ticket_id, $this->post->ID );
 					$meta = Tribe__Tickets_Plus__Main::instance()->meta();
 					$meta->meta_content( $this->ticket_id );
 					?>
@@ -205,6 +216,19 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		$meta = Tribe__Tickets_Plus__Main::instance()->meta();
 		$meta->save_meta( $this->post->ID, $this->ticket, $data );
 
+		/**
+		 * Fires after saving the attendee registration data.
+		 *
+		 * ET+ hooks into this to save the IAC setting submitted with the form.
+		 *
+		 * @since TBD
+		 *
+		 * @param int                           $post_id The post ID.
+		 * @param Tribe__Tickets__Ticket_Object $ticket  The ticket object.
+		 * @param array                         $data    The submitted POST data.
+		 */
+		do_action( 'tec_tickets_attendee_registration_after_save', $this->post->ID, $this->ticket, $data );
+
 		wp_redirect( add_query_arg( 'success', 1, $this->url() ) );
 		die;
 	}
@@ -213,10 +237,18 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * URL to this standalone page
 	 *
 	 * @since 4.9
+	 * @since TBD Preserve the `tribe_events_modal` request var so the form action and
+	 *            post-save redirect keep rendering inside the block editor's modal iframe.
 	 *
 	 * @return string URL
 	 */
 	private function url() {
-		return admin_url( 'edit.php?post_type=' . $this->post->post_type . '&page=attendee-registration&ticket_id=' . $this->ticket_id );
+		$url = admin_url( 'edit.php?post_type=' . $this->post->post_type . '&page=attendee-registration&ticket_id=' . $this->ticket_id );
+
+		if ( tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
+			$url = add_query_arg( 'tribe_events_modal', 1, $url );
+		}
+
+		return $url;
 	}
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The main service provider for the Tickets updated and new code.
  *
@@ -13,6 +12,7 @@ use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use Tribe__Tickets__Main as Tickets_Plugin;
 use TEC\Tickets\REST\Controller as REST_Controller;
+use TEC\Tickets\Migrations\Controller as Migrations_Controller;
 
 /**
  * Class Provider for all the Tickets loading.
@@ -110,6 +110,9 @@ class Provider extends Service_Provider {
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
 
+		// Migrations.
+		$this->container->register( Migrations_Controller::class );
+
 		$this->has_registered = true;
 
 		return true;
@@ -136,7 +139,7 @@ class Provider extends Service_Provider {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container
+		// Allow Hooks to be removed, by having them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.hooks', $hooks );
 	}

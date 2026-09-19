@@ -11,7 +11,9 @@ $tickets_attendees = tribe( 'tickets.attendees' );
 
 $attendees_url = $tickets_attendees->get_report_link( get_post( $post_id ) );
 
-$total_capacity = (int) tribe_get_event_capacity( $post_id );
+$total_capacity = (int) tribe_get_event_capacity( $post_id, true );
+
+$has_ticket_attendees = Tribe__Tickets__Tickets_View::instance()->has_ticket_attendees( $post_id );
 
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
@@ -150,11 +152,13 @@ $admin_views = tribe( 'tickets.admin.views' );
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
 			<?php if ( ! empty( $tickets ) ) : ?>
-				<a
-					href="<?php echo esc_url( $attendees_url ); ?>"
-				>
-					<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
-				</a>
+				<?php if ( $has_ticket_attendees ) : ?>
+					<a
+						href="<?php echo esc_url( $attendees_url ); ?>"
+					>
+						<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
+					</a>
+				<?php endif; ?>
 
 				<?php
 				/**

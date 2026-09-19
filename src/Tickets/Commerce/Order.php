@@ -394,7 +394,7 @@ class Order extends Abstract_Order {
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
+		 * @see register_post_type
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -406,7 +406,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param Status\Status_Interface $status
+	 * @param Status\Status_Interface $status The order status object.
 	 *
 	 * @return string
 	 */
@@ -419,7 +419,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param Status\Status_Interface $status
+	 * @param Status\Status_Interface $status The order status object.
 	 *
 	 * @return string
 	 */
@@ -432,8 +432,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param string $flag   Which flag we are getting the meta key for.
-	 * @param string $status Which status ID we are getting the meta key for.
+	 * @param string                  $flag   Which flag we are getting the meta key for.
+	 * @param Status\Status_Interface $status Which status ID we are getting the meta key for.
 	 *
 	 * @return string
 	 */
@@ -609,12 +609,21 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 * @since 5.18.1 Now it will only create one order per cart hash. Every next time it will update the existing order.
+	 * @since TBD - Add parameter to specify the ticket type to filter the cart items.
+	 * @since TBD Resolves the cart repository by passing `$ticket_type` directly into
+	 *            `Cart::get_repository()`, so TC-RSVP orders read from `RSVP_Cart` instead of the
+	 *            generic cart.
+	 *
+	 * @param Gateway_Interface $gateway     The payment gateway.
+	 * @param array|null        $purchaser   The purchaser information.
+	 * @param string            $ticket_type The type of ticket to filter cart items.
 	 *
 	 * @return false|WP_Post
-	 * @throws \Tribe__Repository__Usage_Error
+	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 */
-	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
-		$cart = tribe( Cart::class );
+	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null, $ticket_type = 'ticket' ) {
+		$cart        = tribe( Cart::class );
+		$cart_reader = $cart->get_repository( $ticket_type );
 
 		// Prepare the items for the order.
 		$items = array_filter(
@@ -629,7 +638,12 @@ class Order extends Abstract_Order {
 					}
 
 					// Ensure we have the properties we need on the ticket object.
-					if ( ! isset( $ticket->price, $ticket->regular_price ) ) {
+					if ( ! isset( $ticket->price ) ) {
+						// A ticket must have a price, that price could bo `0`.
+						return null;
+					}
+					if ( ! empty( $ticket->price ) && ! isset( $ticket->regular_price ) ) {
+						// If the prices is not `0`, then the ticket must have a regular price.
 						return null;
 					}
 
@@ -649,12 +663,12 @@ class Order extends Abstract_Order {
 						'type'              => $item['type'] ?? 'ticket',
 					];
 				},
-				$cart->get_items_in_cart( true )
+				$cart_reader->get_items_in_cart( true, $ticket_type )
 			)
 		);
 
 		// Get the subtotal calculation from the cart.
-		$cart_subtotal = Value::create( $cart->get_cart_subtotal() );
+		$cart_subtotal = Value::create( $cart_reader->get_cart_subtotal() );
 
 		$original_cart_items = $items;
 
@@ -686,7 +700,7 @@ class Order extends Abstract_Order {
 		);
 
 		// Get the total calculation from the cart.
-		$cart_total = Value::create( $cart->get_cart_total() );
+		$cart_total = Value::create( $cart_reader->get_cart_total() );
 
 		/**
 		 * Filter the cart total before creating an order.
@@ -756,11 +770,11 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param Gateway_Interface $gateway
-	 * @param array             $args
+	 * @param Gateway_Interface $gateway The payment gateway.
+	 * @param array             $args    The order creation arguments.
 	 *
 	 * @return false|WP_Post
-	 * @throws \Tribe__Repository__Usage_Error
+	 * @throws \Tribe__Repository__Usage_Error When there is a repository usage error.
 	 *
 	 * @internal Use `upsert` instead.
 	 */
@@ -902,7 +916,8 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $items List of events form.
+	 * @param array       $items List of events form.
+	 * @param string|null $hash  The cart hash.
 	 *
 	 * @return string
 	 */
@@ -954,16 +969,17 @@ class Order extends Abstract_Order {
 	 * @param bool $redirect   Whether to really redirect or not.
 	 * @param int  $post_id    A post ID.
 	 *
-	 * @todo  Deprecate tpp_error
+	 * @todo Deprecate tpp_error
 	 *
-	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we only generate
+	 * @see \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @todo Determine if redirecting should be something relegated to some other method, and here we only generate
 	 *        generate the order/Attendees.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
 		if ( $redirect ) {
-			wp_redirect( esc_url_raw( $url ) );
+			wp_safe_redirect( esc_url_raw( $url ) );
+			die;
 		}
 		tribe_exit();
 	}

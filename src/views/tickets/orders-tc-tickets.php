@@ -16,7 +16,7 @@ $post      = get_post( $post_id );
 $post_type = get_post_type_object( $post->post_type );
 $user_id   = get_current_user_id();
 
-if ( ! $view->has_ticket_attendees( $post_id, $user_id ) ) {
+if ( ! $view->has_ticket_attendees( $post_id, $user_id ) && ! $view->has_rsvp_v2_attendees( $post_id, $user_id ) ) {
 	return;
 }
 

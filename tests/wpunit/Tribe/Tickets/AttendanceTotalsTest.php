@@ -26,8 +26,8 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->factory()->event = new Event();
 
-		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
-
+		// Ensure the user can create, update, delete tickets and attendees.
+		wp_set_current_user(static::factory()->user->create( [ 'role' => 'administrator' ] ));
 	}
 
 	public function tearDown() {

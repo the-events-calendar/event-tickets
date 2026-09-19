@@ -61,6 +61,14 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 		// Set up current user as admin.
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
 
+		// The TEC/ET onboarding "guided setup" activation redirect would otherwise exit() the test
+		// process (wp_safe_redirect + tribe_exit on tec_admin_headers_about_to_be_sent) on the first
+		// set_current_screen() call, killing Codeception mid-suite (exit 255, "COMMAND DID NOT FINISH
+		// PROPERLY."). Mock tribe_exit() so the redirect logic still runs but does not kill the process.
+		add_filter( 'tribe_exit', function () {
+			return '__return_true';
+		} );
+
 		// Prevent onboarding redirect hang (admin + set_current_screen triggers tec_admin_headers_about_to_be_sent which hangs in test env).
 		remove_all_actions( 'tec_admin_headers_about_to_be_sent' );
 
@@ -295,6 +303,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	public function after() {
 		global $current_screen;
 		remove_all_filters( 'tribe_admin_pages_current_page' );
+		remove_all_filters( 'tribe_exit' );
 		$_GET           = $this->get_vars;
 		$current_screen = $this->original_screen ?? null;
 	}

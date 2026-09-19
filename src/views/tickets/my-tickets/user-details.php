@@ -6,6 +6,7 @@
  *
  * @since 5.6.7
  * @since 5.9.1 Corrected template override filepath
+ * @since TBD Fixed the `mailto:` link escaping.
  *
  * @version 5.9.1
  *
@@ -15,12 +16,14 @@
  * @var int    $post_id   The ID of the post the tickets are for.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $purchaser_name  = $order && ! empty( $order['purchaser_name'] ) ? $order['purchaser_name'] : __( 'Unknown Name (invalid order)', 'event-tickets' );
 $purchaser_email = $order && ! empty( $order['purchaser_email'] ) ? $order['purchaser_email'] : __( 'Unknown Email (invalid order)', 'event-tickets' );
 $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purchase_time'] : null;
 
- ?>
- <div class="user-details">
+?>
+<div class="user-details">
 	<?php
 		printf(
 			// Translators: 1: order number, 2: count of attendees in the order, 3: ticket label (dynamically singular or plural), 4: purchaser name, 5: linked purchaser email, 6: date of purchase.
@@ -36,7 +39,7 @@ $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purcha
 				)
 			),
 			esc_attr( $purchaser_name ),
-			'<a href="mailto:' . esc_url( $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
+			'<a href="' . esc_url( 'mailto:' . $purchaser_email ) . '">' . esc_html( $purchaser_email ) . '</a>',
 			esc_html( $purchase_time ? date_i18n( tribe_get_date_format( true ), strtotime( $purchase_time ) ) : __( 'Unknown Time (invalid order)', 'event-tickets' ) )
 		);
 
@@ -57,5 +60,5 @@ $purchase_time   = $order && ! empty( $order['purchase_time'] ) ? $order['purcha
 		 * @param WP_Post $post_id   Post object that the tickets are tied to.
 		 */
 		do_action( 'tec_tickets_user_details_tickets', $attendees, $post_id );
-	?>
+		?>
 </div>

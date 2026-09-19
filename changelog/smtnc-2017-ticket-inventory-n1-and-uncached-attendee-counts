@@ -1,0 +1,4 @@
+Significance: patch
+Type: performance
+
+Cached the checked-in attendees count to avoid redundant lookups on admin and frontend screens.

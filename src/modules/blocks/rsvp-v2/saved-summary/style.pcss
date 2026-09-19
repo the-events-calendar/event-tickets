@@ -1,0 +1,23 @@
+.tribe-editor__rsvp-container--saved-summary {
+	border: 1px solid var(--tec-color-border-default, #d5d5d5);
+	border-radius: var(--tec-border-radius-default, 4px);
+	padding: var(--tec-spacer-5, 16px);
+}
+
+/* Remove the duplicate card border from the frontend mirror inner element.
+   The outer --saved-summary container provides the single unified card. */
+.tribe-editor__rsvp-container--saved-summary .tribe-tickets__rsvp {
+	border: none;
+	border-radius: 0;
+	padding: 0;
+}
+
+.tribe-editor__rsvp-saved-summary {
+	width: 100%;
+}
+
+.tribe-editor__rsvp-saved-summary__meta {
+	border-top: 1px solid var(--tec-color-border-secondary, #d5d5d5);
+	margin-top: 16px;
+	padding-top: 16px;
+}

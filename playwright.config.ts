@@ -1,14 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'node:path';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
+// Load .env.testing.slic (CI defaults) — process.env takes precedence for local overrides.
+require('dotenv').config({ path: path.resolve(__dirname, '.env.testing.slic') });
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+const baseURL = process.env.WP_URL || 'http://wordpress.test';
+
+// Skip destructive DB operations when running locally (not in CI).
+if (!process.env.CI) {
+	process.env.SKIP_DB_RESET = '1';
+}
+
 export default defineConfig({
 	testDir: './tests/end-to-end',
 	outputDir: './tests/_output/playwright',
@@ -27,9 +29,8 @@ export default defineConfig({
 	reporter: 'list',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
-		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: 'http://wordpress.test',
-
+		baseURL,
+		ignoreHTTPSErrors: baseURL.startsWith('https://'),
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
 	},

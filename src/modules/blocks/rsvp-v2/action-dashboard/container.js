@@ -1,0 +1,125 @@
+/**
+ * V2 RSVP Action Dashboard Container
+ *
+ * This container wraps the V1 action dashboard template but uses V2 thunks for API calls.
+ */
+
+/**
+ * External dependencies
+ */
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+
+/**
+ * WordPress dependencies
+ */
+import { select, dispatch as wpDispatch } from '@wordpress/data';
+
+/**
+ * Internal dependencies
+ */
+import RSVPActionDashboard from '../../rsvp/action-dashboard/template';
+import { actions, selectors, thunks } from '../../../data/blocks/rsvp-v2';
+import { withStore } from '@moderntribe/common/hoc';
+import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
+
+const getIsConfirmDisabled = ( state ) =>
+	! selectors.getRSVPHasChanges( state ) ||
+	selectors.getRSVPIsLoading( state ) ||
+	selectors.getRSVPHasDurationError( state );
+
+const onCancelClick = ( state, dispatch ) => () => {
+	dispatch(
+		actions.setRSVPTempDetails( {
+			tempCapacity: selectors.getRSVPCapacity( state ),
+			tempNotGoingResponses: selectors.getRSVPNotGoingResponses( state ),
+			tempStartDate: selectors.getRSVPStartDate( state ),
+			tempStartDateInput: selectors.getRSVPStartDateInput( state ),
+			tempStartDateMoment: selectors.getRSVPStartDateMoment( state ),
+			tempEndDate: selectors.getRSVPEndDate( state ),
+			tempEndDateInput: selectors.getRSVPEndDateInput( state ),
+			tempEndDateMoment: selectors.getRSVPEndDateMoment( state ),
+			tempStartTime: selectors.getRSVPStartTime( state ),
+			tempEndTime: selectors.getRSVPEndTime( state ),
+			tempStartTimeInput: selectors.getRSVPStartTimeInput( state ),
+			tempEndTimeInput: selectors.getRSVPEndTimeInput( state ),
+		} )
+	);
+	dispatch( actions.setRSVPHasChanges( false ) );
+	dispatch( actions.setRSVPIsAddEditOpen( false ) );
+	wpDispatch( 'core/block-editor' ).clearSelectedBlock();
+};
+
+const onConfirmClick = ( state, dispatch ) => () => {
+	const postId = select( 'core/editor' ).getCurrentPostId();
+
+	// The IAC admin modal (iac-admin.js) writes to the in-memory global store when in
+	// block editor context since the ticket may not yet exist. Read it here to include
+	// the selected IAC value in the REST call, then the thunk clears it after save.
+	let iac = selectors.getRSVPIAC( state );
+	const pendingAttendeeInfo = window.tribe_event_tickets_plus?.rsvp?.pendingAttendeeInfo?.[ postId ];
+
+	if ( pendingAttendeeInfo?.iac ) {
+		iac = pendingAttendeeInfo.iac;
+	}
+
+	const payload = {
+		capacity: selectors.getRSVPTempCapacity( state ),
+		notGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
+		startDate: selectors.getRSVPTempStartDate( state ),
+		startDateInput: selectors.getRSVPTempStartDateInput( state ),
+		startDateMoment: selectors.getRSVPTempStartDateMoment( state ),
+		endDate: selectors.getRSVPTempEndDate( state ),
+		endDateInput: selectors.getRSVPTempEndDateInput( state ),
+		endDateMoment: selectors.getRSVPTempEndDateMoment( state ),
+		startTime: selectors.getRSVPTempStartTime( state ),
+		endTime: selectors.getRSVPTempEndTime( state ),
+		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
+		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
+		iac,
+	};
+
+	if ( ! selectors.getRSVPCreated( state ) ) {
+		// Use V2 thunk to create RSVP.
+		dispatch(
+			thunks.createRSVP( {
+				...payload,
+				postId,
+			} )
+		);
+	} else {
+		// Use V2 thunk to update RSVP.
+		dispatch(
+			thunks.updateRSVP( {
+				...payload,
+				id: selectors.getRSVPId( state ),
+				postId,
+			} )
+		);
+	}
+};
+
+const mapStateToProps = ( state ) => ( {
+	created: selectors.getRSVPCreated( state ),
+	hasRecurrenceRules: hasRecurrenceRules( state ),
+	noTicketsOnRecurring: noTicketsOnRecurring(),
+	isCancelDisabled: selectors.getRSVPIsLoading( state ),
+	isConfirmDisabled: getIsConfirmDisabled( state ),
+	isLoading: selectors.getRSVPIsLoading( state ),
+	showCancel: selectors.getRSVPCreated( state ),
+	state,
+} );
+
+const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
+	const { state, ...restStateProps } = stateProps;
+	const { dispatch } = dispatchProps;
+
+	return {
+		...ownProps,
+		...restStateProps,
+		onCancelClick: onCancelClick( state, dispatch ),
+		onConfirmClick: onConfirmClick( state, dispatch, ownProps ),
+	};
+};
+
+export default compose( withStore(), connect( mapStateToProps, null, mergeProps ) )( RSVPActionDashboard );

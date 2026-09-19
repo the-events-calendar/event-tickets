@@ -25,7 +25,7 @@ const RSVPHeaderImage = ( { image, isSettingsLoading, onRemove, onSelect } ) => 
 		);
 
 	const imageUploadProps = {
-		title: __( 'Ticket Header Image', 'event-tickets' ),
+		title: __( 'RSVP Header Image', 'event-tickets' ),
 		description,
 		className: 'tribe-editor__rsvp__image-upload',
 		buttonDisabled: isSettingsLoading,

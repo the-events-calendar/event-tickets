@@ -2,10 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Emails\Order_Email_Sender_Registry;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\BackgroundJobs\SendTicketEmail;
-use function TEC\Common\StellarWP\Shepherd\shepherd;
 
 /**
  * Class Send_Email, normally triggered when an order is complete.
@@ -16,12 +15,42 @@ use function TEC\Common\StellarWP\Shepherd\shepherd;
  */
 class Send_Email extends Flag_Action_Abstract {
 	/**
+	 * Registry that resolves the correct email sender for the order type.
+	 *
+	 * @since TBD
+	 *
+	 * @var Order_Email_Sender_Registry
+	 */
+	private Order_Email_Sender_Registry $email_sender_registry;
+
+	/**
+	 * Send_Email constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Order_Email_Sender_Registry $email_sender_registry Registry of order email senders.
+	 */
+	public function __construct( Order_Email_Sender_Registry $email_sender_registry ) {
+		$this->email_sender_registry = $email_sender_registry;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @var array
 	 */
 	protected $flags = [
 		'send_email',
+	];
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @var array
+	 */
+	protected $order_contexts = [
+		Order_Context::TICKET,
+		Order_Context::RSVP_V2,
 	];
 
 	/**
@@ -37,25 +66,6 @@ class Send_Email extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
-
-		// temporary fix for manual attendees first email
-		// @todo backend review this logic
-		if ( ! empty( $order->gateway ) && 'manual' === $order->gateway && empty( $order->events_in_order ) ) {
-			$order->events_in_order[] = $order;
-		}
-
-
-		if ( empty( $order->events_in_order ) || ! is_array( $order->events_in_order ) ) {
-			return;
-		}
-
-		foreach ( $order->events_in_order as $event_id ) {
-			$event = get_post( $event_id );
-			if ( ! $event instanceof \WP_Post ) {
-				continue;
-			}
-
-			shepherd()->dispatch( new SendTicketEmail( $order->ID, $event->ID ) );
-		}
+		$this->email_sender_registry->send( $order );
 	}
 }

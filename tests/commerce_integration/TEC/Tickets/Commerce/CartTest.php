@@ -26,6 +26,46 @@ class CartTest extends WPTestCase {
 		$this->assertTrue( is_a( $repository, Cart_Interface::class ), $assertion_msg );
 	}
 
+	public function test_repository_defaults_ticket_type_to_ticket() {
+		$cart         = new Cart();
+		$seen_ticket_type = null;
+
+		add_filter(
+			'tec_tickets_commerce_cart_repository',
+			function ( $repository, $ticket_type ) use ( &$seen_ticket_type ) {
+				$seen_ticket_type = $ticket_type;
+
+				return $repository;
+			},
+			10,
+			2
+		);
+
+		$cart->get_repository();
+
+		$this->assertEquals( 'ticket', $seen_ticket_type, 'get_repository() should pass "ticket" as the default $ticket_type.' );
+	}
+
+	public function test_repository_passes_ticket_type_through_to_the_filter() {
+		$cart         = new Cart();
+		$seen_ticket_type = null;
+
+		add_filter(
+			'tec_tickets_commerce_cart_repository',
+			function ( $repository, $ticket_type ) use ( &$seen_ticket_type ) {
+				$seen_ticket_type = $ticket_type;
+
+				return $repository;
+			},
+			10,
+			2
+		);
+
+		$cart->get_repository( 'tc-rsvp' );
+
+		$this->assertEquals( 'tc-rsvp', $seen_ticket_type, 'get_repository() should pass its $ticket_type argument through to the filter.' );
+	}
+
 	public function test_does_not_process_empty_cart() {
 		$cart = new Cart();
 

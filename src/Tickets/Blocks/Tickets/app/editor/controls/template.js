@@ -30,6 +30,7 @@ const RadioInput = ( { provider, onProviderChange, ...additionalProps } ) => (
 		/>
 		<label className="tribe-editor__tickets-control__label" htmlFor={ provider.class }>
 			{ provider.name }
+			{ additionalProps.disabled && additionalProps.checked ? <span className="tec-tickets-provider-locked dashicons dashicons-lock"></span> : null }
 		</label>
 	</div>
 );
@@ -54,6 +55,7 @@ RadioInput.propTypes = {
  * @param {Function} props.onProviderChange     The function to call when the provider changes.
  * @param {Array}    props.providers            The available providers.
  * @param {string}   props.selectedProvider     The selected provider.
+ * @param {boolean}  props.hasTickets           Whether the event has tickets.
  *
  * @return {Array} The block controls.
  */
@@ -64,6 +66,7 @@ function getTicketsBlockControls( {
 	onProviderChange,
 	providers,
 	selectedProvider,
+	hasTickets,
 } ) {
 	const controls = [];
 	if ( hasMultipleProviders ) {
@@ -83,7 +86,7 @@ function getTicketsBlockControls( {
 								// eslint-disable-next-line no-undef
 								sprintf(
 									/* Translators: %s - Ticket plural label. */
-									__( 'Sell %s using', 'event-tickets' ),
+									__( 'Payment provider', 'event-tickets' ),
 									TICKET_LABELS.ticket.pluralLowercase
 								)
 							}
@@ -95,7 +98,7 @@ function getTicketsBlockControls( {
 								provider={ provider }
 								onProviderChange={ onProviderChange }
 								checked={ selectedProvider === provider.class }
-								disabled={ disabled }
+								disabled={ hasTickets || disabled }
 							/>
 						) ) }
 					</fieldset>
@@ -131,6 +134,7 @@ Controls.propTypes = {
 	onProviderChange: PropTypes.func,
 	providers: PropTypes.arrayOf( PropTypes.shape( { name: PropTypes.string, class: PropTypes.string } ) ),
 	selectedProvider: PropTypes.string,
+	hasTickets: PropTypes.bool,
 };
 
 export default Controls;

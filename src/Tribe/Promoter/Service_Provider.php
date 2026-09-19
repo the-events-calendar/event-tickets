@@ -1,4 +1,9 @@
 <?php
+/**
+ * Promoter Service Provider.
+ *
+ * @since 4.12.3
+ */
 
 namespace Tribe\Tickets\Promoter;
 
@@ -32,7 +37,8 @@ class Service_Provider extends Service_Provider_Contract {
 		$this->container->singleton( Factory::class, Factory::class, [ 'hook' ] );
 		$this->container->singleton( Dispatcher::class, Dispatcher::class, [ 'hook' ] );
 		$this->container->singleton( Commerce::class, Commerce::class, [ 'hook' ] );
-		$this->container->singleton( RSVP::class, RSVP::class, [ 'hook' ] );
+		// RSVP observer hooks are registered by TEC\Tickets\RSVP\V1\Controller.
+		$this->container->singleton( RSVP::class, RSVP::class );
 
 		$this->load();
 	}
@@ -49,7 +55,6 @@ class Service_Provider extends Service_Provider_Contract {
 		tribe( 'tickets.promoter.observer' );
 		tribe( Factory::class );
 		tribe( Dispatcher::class );
-		tribe( RSVP::class );
 		tribe( Commerce::class );
 
 		/**
