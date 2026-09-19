@@ -2112,7 +2112,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get RSVP and Ticket counts for an event if tickets are currently available.
 		 *
-		 * @param int $post_id ID of parent "event" post
+		 * @param int $post_id ID of parent "event" post.
 		 *
 		 * @return array
 		 */
