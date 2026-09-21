@@ -637,11 +637,12 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to update reservations on the Service.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5 Sanitized the request body, replaced the capability check with a nonce check and tied the token to the post.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
 	public function update_reservations() {
-		if ( ! $this->check_current_ajax_user_can( 'exist' ) ) {
+		if ( ! $this->check_ajax_nonce() ) {
 			return;
 		}
 
@@ -664,6 +665,7 @@ class Ajax extends Controller_Contract {
 		if ( ! (
 			$decoded
 			&& is_array( $decoded )
+			&& tribe_sanitize_deep( $decoded )
 			&& isset( $decoded['token'], $decoded['reservations'] )
 			&& is_string( $decoded['token'] )
 			&& is_array( $decoded['reservations'] )
@@ -680,6 +682,17 @@ class Ajax extends Controller_Contract {
 
 		$token             = $decoded['token'];
 		$json_reservations = $decoded['reservations'];
+
+		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid session token',
+				],
+				403
+			);
+
+			return;
+		}
 
 		$reservations = [];
 		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
@@ -700,6 +713,9 @@ class Ajax extends Controller_Contract {
 				if ( ! (
 					is_array( $reservation )
 					&& isset( $reservation['reservationId'], $reservation['seatTypeId'], $reservation['seatLabel'] )
+					&& is_string( $reservation['reservationId'] )
+					&& is_string( $reservation['seatTypeId'] )
+					&& is_string( $reservation['seatLabel'] )
 				) ) {
 					wp_send_json_error(
 						[
@@ -737,11 +753,12 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to remove reservations on the Service.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5 Replaced the capability check with a nonce check.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
 	public function clear_reservations(): void {
-		if ( ! $this->check_current_ajax_user_can( 'exist' ) ) {
+		if ( ! $this->check_ajax_nonce() ) {
 			return;
 		}
 
