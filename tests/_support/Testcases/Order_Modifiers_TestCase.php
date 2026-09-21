@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Test\Testcases;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifier_Admin_Handler;
 use TEC\Tickets\Commerce\Order_Modifiers\Modifiers\Modifier_Abstract;
 use TEC\Tickets\Commerce\Order_Modifiers\Table_Views\Order_Modifier_Table;
@@ -13,7 +13,7 @@ use Tribe\Tickets\Test\Traits\Order_Modifiers;
 abstract class Order_Modifiers_TestCase extends WPTestCase {
 	use Order_Modifiers;
 	use With_Uopz;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	/**
 	 * The type of order modifier being tested ($this->modifier_type).

@@ -6,7 +6,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\StellarWP\Uplink\Resources\License;
 use TEC\Tickets\Seating\Service\Service;
 use WP_Error;
@@ -15,7 +15,7 @@ class Health_Test extends Controller_Test_Case {
 	use WP_Send_Json_Mocks;
 	use With_Uopz;
 	use WP_Remote_Mocks;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	private ?int $user = null;
 

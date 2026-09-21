@@ -5,7 +5,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 use Closure;
 use Generator;
 use stdClass;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
@@ -23,7 +23,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Settings;
 
 class Emails_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Series_Pass_Factory;
 	use Order_Maker;

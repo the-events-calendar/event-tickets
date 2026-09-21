@@ -5,7 +5,7 @@ namespace Tribe\Admin;
 use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
@@ -22,7 +22,7 @@ use TEC\Tickets\Commerce\Admin_Tables\Orders as Orders_Table;
  */
 class OrderReportTest extends WPTestCase {
 
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 	use Ticket_Maker;
 	use Order_Maker;

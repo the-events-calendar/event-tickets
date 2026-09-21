@@ -5,7 +5,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Tests\Order_Modifiers_Integration\Checkout;
 
 use PHPUnit\Framework\Assert;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart as Commerce_Cart;
 use TEC\Tickets\Commerce\Order;
@@ -42,7 +42,7 @@ class Coupons_Test extends Controller_Test_Case {
 	use Order_Maker;
 	use Reservations_Maker;
 	use Series_Pass_Factory;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use Tribe_URL;
 	use Type;

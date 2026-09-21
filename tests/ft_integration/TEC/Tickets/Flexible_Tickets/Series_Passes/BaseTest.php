@@ -5,7 +5,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 use Closure;
 use Generator;
 use Stripe\SearchResult;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Editors\Block\Ajax;
@@ -21,7 +21,7 @@ use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Attendees as Attendees;
 
 class BaseTest extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 	use Series_Pass_Factory;
 	use With_Uopz;

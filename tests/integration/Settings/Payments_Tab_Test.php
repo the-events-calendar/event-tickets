@@ -4,7 +4,7 @@ namespace TEC\Tickets_Plus\Test\Integration\Settings;
 
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Codeception\TestCase\WPTestCase;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Main as Tickets_Main;
@@ -16,7 +16,7 @@ use Generator;
  * @package TEC\Tickets_Plus\Tests\Integration\Settings
  */
 class Payments_Tab_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	/**

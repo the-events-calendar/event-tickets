@@ -2,13 +2,13 @@
 
 namespace Tec\Tickets\Seating;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service_Status;
 
 class Settings_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	
 	protected string $controller_class = Settings::class;
 	

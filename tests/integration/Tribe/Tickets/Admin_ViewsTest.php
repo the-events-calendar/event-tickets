@@ -2,14 +2,14 @@
 
 namespace Tribe\Tickets;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Admin__Views as Admin_Views;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Events__Main as TEC;
 
 class Admin_ViewsTest extends \Codeception\TestCase\WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Ticket_Maker;
 
 	/**

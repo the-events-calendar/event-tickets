@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Square;
 
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Common\StellarWP\Assets\Assets as Stellar_Assets;
 use Tribe\Tests\Traits\With_Uopz;
@@ -11,7 +11,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Cart;
 
 class Assets_Test extends Controller_Test_Case {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	protected string $controller_class = Assets::class;

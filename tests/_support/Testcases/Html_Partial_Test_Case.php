@@ -7,7 +7,7 @@
 
 namespace Tribe\Tickets\Test\Testcases;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Test\Products\WPBrowser\Views\Legacy\PartialTestCase;
 
@@ -17,6 +17,6 @@ use Tribe\Test\Products\WPBrowser\Views\Legacy\PartialTestCase;
  * @package Tribe\Events\Virtual\Tests\Test_Cases
  */
 class Html_Partial_Test_Case extends PartialTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Post_Remapping;
 }

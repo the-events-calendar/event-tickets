@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Admin_Tables;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Order;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -16,7 +16,7 @@ use WP_Query;
 use Tribe__Date_Utils as Dates;
 
 class Orders_TableTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;

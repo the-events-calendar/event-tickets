@@ -9,7 +9,7 @@
 namespace TEC\Tickets\Admin\Help_Hub;
 
 use Codeception\TestCase\WPTestCase;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\Admin\Help_Hub\Hub;
 use TEC\Common\Configuration\Configuration;
 use Tribe\Tests\Traits\With_Uopz;
@@ -22,7 +22,7 @@ use Tribe__Template;
  * @package TEC\Tickets\Admin\Help_Hub
  */
 class Template_Test extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	/**
@@ -131,7 +131,7 @@ class Template_Test extends WPTestCase {
 		$this->hub->render();
 		$output = ob_get_clean();
 
-		$this->assertMatchesHtmlSnapshot( $output );
+		$this->assertMatchesHtmlSnapshot( $output, [ $this, 'normalize_attribute_quotes' ] );
 	}
 
 	/**
@@ -185,6 +185,23 @@ class Template_Test extends WPTestCase {
 		$this->hub->render();
 		$output = ob_get_clean();
 
-		$this->assertMatchesHtmlSnapshot( $output );
+		$this->assertMatchesHtmlSnapshot( $output, [ $this, 'normalize_attribute_quotes' ] );
+	}
+
+	/**
+	 * Snapshot data visitor: WordPress 7.1 switched `wp_admin_notice()` to double-quoted attributes,
+	 * so both sides are normalized before comparison to keep one snapshot valid across versions.
+	 *
+	 * @since TBD
+	 *
+	 * @param string      $current  The rendered output.
+	 * @param string|null $expected The stored snapshot.
+	 *
+	 * @return array{0: string, 1: string} The normalized current output and snapshot.
+	 */
+	public function normalize_attribute_quotes( string $current, ?string $expected ): array {
+		$normalize = static fn( string $html ): string => preg_replace( "/=\s*'([^']*)'/", '="$1"', $html );
+
+		return [ $normalize( $current ), $normalize( $expected ?? '' ) ];
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\QR;
 
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Common\QR\QR;
 use TEC\Common\QR\Controller;
 
@@ -14,7 +14,7 @@ use TEC\Common\QR\Controller;
  * @package TEC\Tickets\QR
  */
 class QR_Test extends \Codeception\TestCase\WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 
 	protected $uploads = [];
 

@@ -5,7 +5,7 @@ namespace Tribe\Tickets;
 use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Module;
@@ -19,7 +19,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Date_Utils as Date_Utils;
 
 class MetaboxTest extends WPTestCase {
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use RSVP_Ticket_Maker;
 	use Series_Pass_Factory;
 	use With_Uopz;

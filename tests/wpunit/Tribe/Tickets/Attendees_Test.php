@@ -6,7 +6,7 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use ReflectionObject;
-use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_WP_Version_Tolerant_Snapshots;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees as Attendees;
@@ -17,7 +17,7 @@ use Tribe\Tests\Traits\With_Uopz;
 class Attendees_Test extends WPTestCase {
 	use RSVP_Ticket_Maker;
 	use Attendee_Maker;
-	use SnapshotAssertions;
+	use With_WP_Version_Tolerant_Snapshots;
 	use With_Uopz;
 
 	/**
