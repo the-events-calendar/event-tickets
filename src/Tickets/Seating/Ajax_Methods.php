@@ -25,7 +25,7 @@ trait Ajax_Methods {
 	 * Callers reachable by anonymous visitors have nothing else to check, so this is the whole gate
 	 * for them; it says nothing about who is making the request.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @return bool Whether the nonce of the requested AJAX action is valid.
 	 */
@@ -48,7 +48,7 @@ trait Ajax_Methods {
 	 * Checks if the current user can perform the requested AJAX action.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Moved the nonce check to check_ajax_nonce().
+	 * @since 5.29.5 Moved the nonce check to check_ajax_nonce().
 	 *
 	 * @param string $capability         The capability to check.
 	 * @param mixed  ...$capability_args Optional arguments to pass to the capability check.

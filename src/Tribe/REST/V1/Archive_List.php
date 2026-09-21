@@ -2,7 +2,7 @@
 /**
  * Reindexing for the REST archive lists.
  *
- * @since TBD
+ * @since 5.29.5
  *
  * @package Tribe\Tickets
  */
@@ -12,7 +12,7 @@
 /**
  * Class Tribe__Tickets__REST__V1__Archive_List
  *
- * @since TBD
+ * @since 5.29.5
  */
 final class Tribe__Tickets__REST__V1__Archive_List {
 	/**
@@ -25,7 +25,7 @@ final class Tribe__Tickets__REST__V1__Archive_List {
 	 * No native types: the value is deliberately untyped so a non-array reaches the caller unchanged
 	 * instead of fataling, and `mixed` is not available on the PHP 7.4 this plugin still supports.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param mixed $items The archive list to reindex.
 	 *
