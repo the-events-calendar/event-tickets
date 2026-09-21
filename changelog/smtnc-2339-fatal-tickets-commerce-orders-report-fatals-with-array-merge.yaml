@@ -1,7 +1,8 @@
 significance: patch
 type: fix
 entry: Seeded the per-status totals row from fee and coupon items as well as
-  ticket items, to avoid a fatal error on the Tickets Commerce Orders report
-  when an order carried a fee or coupon for a ticket that was no longer part
-  of the event's sales data.
+  ticket items, and gave line items a generic label when their ticket no longer
+  exists, to avoid a fatal error and a PHP warning on the Tickets Commerce
+  Orders report when an order carried a fee or coupon for a ticket that was no
+  longer part of the event's sales data.
 timestamp: 2026-09-08T01:58:38.986Z
