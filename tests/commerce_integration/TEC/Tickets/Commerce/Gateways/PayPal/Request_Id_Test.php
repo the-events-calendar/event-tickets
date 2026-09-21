@@ -149,6 +149,27 @@ class Request_Id_Test extends WPTestCase {
 	}
 
 	/**
+	 * PayPal documents the idempotency header as 38 single-byte characters, and an over-long one is
+	 * refused rather than trimmed -- which would take idempotency off the very calls it protects, on
+	 * every endpoint this client sends the header to.
+	 */
+	public function test_every_key_fits_the_header_paypal_accepts(): void {
+		$this->drop_the_cart_cookie();
+
+		tribe( Client::class )->get_order( 'ORDERAAAAAAAAAAAA' );
+		tribe( Client::class )->capture_order( 'ORDERAAAAAAAAAAAA' );
+
+		// Both calls, because the length is a property of the key and not of one endpoint.
+		foreach ( array_keys( $this->seen ) as $index ) {
+			$this->assertLessThanOrEqual(
+				38,
+				strlen( $this->request_id( $index ) ),
+				'PayPal allows the idempotency header 38 single-byte characters.'
+			);
+		}
+	}
+
+	/**
 	 * Empties the cart hash, modelling the cart cookie not reaching the request.
 	 */
 	private function drop_the_cart_cookie(): void {

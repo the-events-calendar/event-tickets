@@ -15,6 +15,27 @@ use Tribe__Utils__Array as Arr;
  */
 class Client {
 	/**
+	 * How many characters PayPal allows the `PayPal-Request-Id` header to carry.
+	 *
+	 * PayPal documents the idempotency header as 38 single-byte characters and recommends a UUID
+	 * precisely because one fits. A longer value is not truncated, it is refused.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const REQUEST_ID_MAX_LENGTH = 38;
+
+	/**
+	 * The prefix every idempotency key this plugin issues carries.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const REQUEST_ID_PREFIX = 'tec-tc-';
+
+	/**
 	 * Debug ID from PayPal.
 	 *
 	 * @since 5.2.0
@@ -581,7 +602,13 @@ class Client {
 	 * @return string The idempotency key to send PayPal.
 	 */
 	private function get_request_id( string $operation, string $subject ): string {
-		return 'tec-tc-' . md5( $operation . '|' . $subject );
+		/*
+		 * The digest is cut to fit rather than the prefix dropped: what is left of an md5 still keeps
+		 * two orders from ever meeting on one key, while the prefix is what marks a key as issued here.
+		 */
+		$digest_length = self::REQUEST_ID_MAX_LENGTH - strlen( self::REQUEST_ID_PREFIX );
+
+		return self::REQUEST_ID_PREFIX . substr( md5( $operation . '|' . $subject ), 0, $digest_length );
 	}
 
 	/**

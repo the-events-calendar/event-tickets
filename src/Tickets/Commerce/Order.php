@@ -907,8 +907,12 @@ class Order extends Abstract_Order {
 		 * The save pins the lock id, so losing the lock to another request makes it match no rows. That
 		 * is not the same as the order having gone away, and creating a second order for it would give
 		 * one gateway order id two Tickets Commerce orders.
+		 *
+		 * An order deleted while this request held its lock matches no rows either, and neither does its
+		 * unlock. The order is looked for before refusing, so that case still falls through to the
+		 * replacement below rather than losing the sale to a lock nobody holds any more.
 		 */
-		if ( empty( $updated[ $existing_order_id ] ) && ! $held_until_now ) {
+		if ( empty( $updated[ $existing_order_id ] ) && ! $held_until_now && $this->order_exists( $existing_order_id ) ) {
 			return false;
 		}
 
@@ -1515,6 +1519,38 @@ class Order extends Abstract_Order {
 		}
 
 		return absint( hexdec( $matches['timestamp'] ) );
+	}
+
+	/**
+	 * Whether an order row is still there.
+	 *
+	 * Read from the table rather than through tec_tc_get_order(): the row may have been deleted since
+	 * this request read it, and a cached post object would still answer with the order that was.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return bool Whether the order still exists.
+	 */
+	private function order_exists( int $order_id ): bool {
+		try {
+			$found = DB::get_var(
+				DB::prepare(
+					'SELECT ID FROM %i WHERE ID = %d',
+					DB::prefix( 'posts' ),
+					$order_id
+				)
+			);
+		} catch ( DatabaseQueryException $e ) {
+			/*
+			 * Unknown, not gone. Answering that the order is still there keeps the refusal in place,
+			 * which is the recoverable side: a duplicate order for one gateway payment is not.
+			 */
+			return true;
+		}
+
+		return null !== $found;
 	}
 
 	/**

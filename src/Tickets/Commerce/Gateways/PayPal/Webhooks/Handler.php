@@ -153,7 +153,8 @@ class Handler {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @since TBD Reads the parent payment link from `href`, which is the key PayPal sends it under.
+	 * @since TBD Resolves the order from the event itself instead of following a `parent_payment` link,
+	 *        and answers a redelivery of a settled order as a success so PayPal stops retrying it.
 	 *
 	 * @param array $event The PayPal payment event object.
 	 *

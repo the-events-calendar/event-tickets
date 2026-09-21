@@ -24,6 +24,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use ReflectionProperty;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Clock_Mock;
@@ -272,6 +273,72 @@ class Order_Stale_Lock_Test extends WPTestCase {
 	}
 
 	/**
+	 * An upsert whose lock is taken over before it saves must give up, not create a replacement. Its
+	 * save pins the lock id, so it matches no rows -- and the order it could not write is the same one
+	 * the new holder is writing, so a second one would leave one gateway payment with two orders.
+	 */
+	public function test_an_upsert_that_loses_its_lock_creates_no_second_order(): void {
+		$order  = $this->make_pending_order();
+		$before = $this->count_orders();
+
+		$steal = function ( array $args ) use ( $order ): array {
+			$this->write_lock( $order->ID, $this->lock_id_aged( 0 ) );
+
+			return $args;
+		};
+
+		add_filter( 'tec_tickets_commerce_order_update_args', $steal );
+
+		$result = tribe( Order::class )->upsert( tribe( Gateway::class ), $this->upsert_args( $order->ID ) );
+
+		remove_filter( 'tec_tickets_commerce_order_update_args', $steal );
+
+		$this->assertFalse(
+			$result,
+			'An upsert that lost its lock must refuse rather than create a second order.'
+		);
+
+		$this->assertSame(
+			$before,
+			$this->count_orders(),
+			'The refused upsert must leave the orders it found behind it, and add none.'
+		);
+	}
+
+	/**
+	 * An order deleted while this request held its lock matches no rows on the save and none on the
+	 * unlock either, which reads exactly like a lost lock. It is not one: there is no other holder and
+	 * no order left to collide with, so the replacement this flow has always created must still happen.
+	 */
+	public function test_an_upsert_whose_order_is_deleted_creates_a_replacement(): void {
+		$order = $this->make_pending_order();
+
+		$delete = static function ( array $args ) use ( $order ): array {
+			wp_delete_post( $order->ID, true );
+
+			return $args;
+		};
+
+		add_filter( 'tec_tickets_commerce_order_update_args', $delete );
+
+		$result = tribe( Order::class )->upsert( tribe( Gateway::class ), $this->upsert_args( $order->ID ) );
+
+		remove_filter( 'tec_tickets_commerce_order_update_args', $delete );
+
+		$this->assertInstanceOf(
+			WP_Post::class,
+			$result,
+			'An order deleted mid-upsert must be replaced, not answered with a failure.'
+		);
+
+		$this->assertNotSame(
+			$order->ID,
+			$result->ID,
+			'The replacement must be a new order, the deleted one being gone.'
+		);
+	}
+
+	/**
 	 * An unlocked order is still locked the ordinary way.
 	 */
 	public function test_unlocked_order_is_locked_normally(): void {
@@ -291,6 +358,43 @@ class Order_Stale_Lock_Test extends WPTestCase {
 		$ticket = $this->create_tc_ticket( $post, 10 );
 
 		return $this->create_order( [ $ticket => 1 ], [ 'order_status' => Pending::SLUG ] );
+	}
+
+	/**
+	 * The arguments an upsert of an existing order carries, shaped like the ones create_from_cart()
+	 * builds, so the create() fallback has everything it needs when it is the answer.
+	 */
+	private function upsert_args( int $order_id ): array {
+		return [
+			'id'                   => $order_id,
+			'title'                => 'TEC-TC-T',
+			'total_value'          => 10,
+			'subtotal'             => 10,
+			'items'                => [],
+			'gateway'              => Gateway::get_key(),
+			'hash'                 => 'stale-lock-upsert',
+			'currency'             => 'USD',
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'stale-lock@test.com',
+		];
+	}
+
+	/**
+	 * Counts the orders in the table, past any cached query.
+	 */
+	private function count_orders(): int {
+		return absint(
+			DB::get_var(
+				DB::prepare(
+					'SELECT COUNT(ID) FROM %i WHERE post_type = %s',
+					DB::prefix( 'posts' ),
+					Order::POSTTYPE
+				)
+			)
+		);
 	}
 
 	/**
