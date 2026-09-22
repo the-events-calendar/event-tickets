@@ -15,6 +15,7 @@ use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
+use WP_Error;
 use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps;
@@ -687,6 +688,26 @@ class Ajax_Test extends Controller_Test_Case {
 		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-id-0' );
 		$sessions  = tribe( Sessions::class );
 		$this->given_a_started_session( 'some-token', $post_id );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'seat-type-id-0',
+					'seatLabel'  => 'seat-label-0-1',
+					'status'     => 'pending',
+				],
+				[
+					'id'         => 'reservation-id-2',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'seat-type-id-0',
+					'seatLabel'  => 'seat-label-0-2',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1', 'reservation-id-2' ]
+		);
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -944,8 +965,8 @@ class Ajax_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * The authenticated twin of this endpoint runs the decoded body through tribe_sanitize_deep();
-	 * this one is reachable by anonymous visitors and has to do the same.
+	 * The label is stored from the service's answer, not the browser's, but the service is still
+	 * another system: what comes back is sanitized like anything else written to attendee meta.
 	 *
 	 * @test
 	 * @covers Ajax::update_reservations
@@ -978,6 +999,19 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$faker      = Factory::create();
 		$seat_label = $faker->bothify( '?-##' );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'seat-type-id-0',
+					'seatLabel'  => $seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() ),
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
 
 		$_REQUEST['postId'] = $post_id;
 		$request_body       = wp_json_encode(
@@ -988,7 +1022,7 @@ class Ajax_Test extends Controller_Test_Case {
 						[
 							'reservationId' => 'reservation-id-1',
 							'seatTypeId'    => 'seat-type-id-0',
-							'seatLabel'     => $seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() ),
+							'seatLabel'     => $seat_label,
 						],
 					],
 				],
@@ -1088,6 +1122,19 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$sessions = tribe( Sessions::class );
 		$this->given_a_started_session( 'some-token', $post_id );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'vip',
+					'seatLabel'  => 'VIP A1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -1194,6 +1241,19 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$sessions = tribe( Sessions::class );
 		$this->given_a_started_session( 'some-token', $post_id );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -1234,6 +1294,199 @@ class Ajax_Test extends Controller_Test_Case {
 			],
 			$sessions->get_reservations_for_token( 'some-token' )
 		);
+	}
+
+	/**
+	 * Mocks the service answering a reservation lookup for the post.
+	 *
+	 * @param int                 $post_id  The post the reservations were made for.
+	 * @param array<array>|null   $items    What the service knows, or null to have the request fail.
+	 * @param array<string>       $ids      The ids the plugin is expected to ask about.
+	 */
+	private function given_the_service_describes( int $post_id, ?array $items, array $ids ): void {
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'post-uuid-' . $post_id );
+		$this->set_oauth_token( 'some-token' );
+
+		$this->mock_wp_remote(
+			'post',
+			tribe( Reservations::class )->get_lookup_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'post-uuid-' . $post_id,
+						'ids'     => $ids,
+					]
+				),
+			],
+			function () use ( $items ) {
+				if ( null === $items ) {
+					return new WP_Error( 'http_request_failed', 'Service unreachable' );
+				}
+
+				return [
+					'response' => [ 'code' => 200 ],
+					'body'     => wp_json_encode(
+						[
+							'success' => true,
+							'data'    => [ 'items' => $items ],
+						]
+					),
+				];
+			}
+		);
+	}
+
+	/**
+	 * Posts one reservation for the ticket and returns the session store, so the lookup tests share a shape.
+	 */
+	private function post_one_reservation( int $post_id, int $ticket_id, string $seat_type_id, string $seat_label ): Sessions {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->given_the_request_body_is_read_from( $request_body );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+		$this->given_a_started_session( 'some-token', $post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => $seat_type_id,
+							'seatLabel'     => $seat_label,
+						],
+					],
+				],
+			]
+		);
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		return tribe( Sessions::class );
+	}
+
+	/**
+	 * The label and seat type the browser posts are only what the visitor typed; the service is the
+	 * one party that knows which seat the reservation actually holds.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_stores_the_seat_the_service_reserved(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'VIP A1' );
+
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1 ), $wp_send_json_success->get_calls_as_string() );
+		$this->assertEquals(
+			[
+				$ticket_id => [
+					[
+						'reservation_id' => 'reservation-id-1',
+						'seat_type_id'   => 'general-admission',
+						'seat_label'     => 'A-1',
+					],
+				],
+			],
+			$sessions->get_reservations_for_token( 'some-token' )
+		);
+	}
+
+	/**
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_reservation_the_service_does_not_know(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes( $post_id, [], [ 'reservation-id-1' ] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * A real reservation made for one ticket cannot be filed under a cheaper one.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_reservation_held_for_another_ticket(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id + 1,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * Without the service there is nothing to check the browser's claim against, so nothing is stored.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_when_the_service_cannot_be_reached(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes( $post_id, null, [ 'reservation-id-1' ] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
 	}
 
 	/**
