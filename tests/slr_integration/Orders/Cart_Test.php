@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
+use Generator;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Commerce\Module;
@@ -107,6 +108,77 @@ class Cart_Test extends WPTestCase {
 
 		$this->assertEquals( $held, $data['tickets'][0]['quantity'] );
 		$this->assertEquals( [ 'seat-label-0-1', 'seat-label-0-2' ], $data['tickets'][0]['extra']['seats'] );
+	}
+
+	/**
+	 * Each case posts the same cart, three seats and a quantity of three, so the session alone decides
+	 * what comes back. The expected values sit side by side: nothing held means nothing measured, and
+	 * the cart is left as posted; a session holding fewer seats cuts quantity and labels together.
+	 */
+	public function seat_selection_cap_provider(): Generator {
+		yield 'no session leaves the cart as posted' => [
+			'seats_held'        => null,
+			'expected_quantity' => 3,
+			'expected_labels'   => [ 'seat-label-0-1', 'seat-label-0-2', 'seat-label-0-3' ],
+		];
+
+		yield 'session holding one seat cuts quantity and labels to one' => [
+			'seats_held'        => 1,
+			'expected_quantity' => 1,
+			'expected_labels'   => [ 'seat-label-0-1' ],
+		];
+
+		yield 'session holding all three seats leaves the cart as posted' => [
+			'seats_held'        => 3,
+			'expected_quantity' => 3,
+			'expected_labels'   => [ 'seat-label-0-1', 'seat-label-0-2', 'seat-label-0-3' ],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider seat_selection_cap_provider
+	 * @covers Cart::handle_seat_selection
+	 */
+	public function test_handle_seat_selection_caps_only_against_a_session( ?int $seats_held, int $expected_quantity, array $expected_labels ): void {
+		$post = self::factory()->post->create();
+		update_post_meta( $post, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		$ticket = $this->create_tc_ticket( $post, 10 );
+
+		if ( null !== $seats_held ) {
+			tribe( Session::class )->add_entry( $post, 'test-token' );
+			$this->given_a_started_session( 'test-token', $post );
+			tribe( Sessions_Table::class )->update_reservations(
+				'test-token',
+				$this->create_mock_reservations_data( [ $ticket ], $seats_held )
+			);
+		}
+
+		// The session is the yardstick, so state what it holds before measuring the cart against it.
+		$held = tribe( Sessions_Table::class )->get_reservations_for_token( 'test-token' );
+		if ( null === $seats_held ) {
+			$this->assertNull( tribe( Session::class )->get_session_token_object_id(), 'No session should resolve.' );
+			$this->assertEmpty( $held, 'No seats should be held.' );
+		} else {
+			$this->assertEquals( [ 'test-token', $post ], tribe( Session::class )->get_session_token_object_id() );
+			$this->assertCount( $seats_held, $held[ $ticket ], 'The session should hold the given seats for the ticket.' );
+		}
+
+		$data = tribe( Cart::class )->handle_seat_selection(
+			[
+				'tickets' => [
+					[
+						'ticket_id'   => $ticket,
+						'quantity'    => 3,
+						'seat_labels' => [ 'seat-label-0-1', 'seat-label-0-2', 'seat-label-0-3' ],
+					],
+				],
+			]
+		);
+
+		$this->assertEquals( $expected_quantity, $data['tickets'][0]['quantity'] );
+		$this->assertEquals( $expected_labels, $data['tickets'][0]['extra']['seats'] );
 	}
 
 	public function test_save_seat_data_for_attendee():void{
