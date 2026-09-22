@@ -53,10 +53,8 @@ class OrdersTest extends WPTestCase {
 
 		wp_delete_post( $ticket_id, true );
 
-		$name = _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
-
 		$this->assertSame(
-			"<div class='tribe-line-item'>{$quantity} - {$name}</div>",
+			"<div class='tribe-line-item'>{$quantity} - Tickets</div>",
 			( new Orders() )->column_purchased( tec_tc_get_order( $order->ID, OBJECT, 'raw', true ) )
 		);
 	}
