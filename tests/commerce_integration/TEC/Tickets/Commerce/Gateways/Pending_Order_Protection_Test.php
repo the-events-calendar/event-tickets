@@ -133,6 +133,27 @@ class Pending_Order_Protection_Test extends WPTestCase {
 	}
 
 	/**
+	 * A cart with no lifetime left must not keep a binding. set_transient() reads a lifetime of 0 as
+	 * "never expire", so storing one here would bring back the permanent row the lifetime fix removed.
+	 */
+	public function test_expired_cart_drops_its_pending_order_binding(): void {
+		$this->activate_cart_hash( self::VICTIM_HASH );
+		$this->store_pending_order( self::VICTIM_ORDER );
+
+		// An expiry at the epoch is in the past whenever the test runs.
+		add_filter( 'tec_tickets_commerce_cart_cookie_expiration', '__return_zero' );
+
+		$this->store_pending_order( self::ATTACKER_ORDER );
+
+		remove_filter( 'tec_tickets_commerce_cart_cookie_expiration', '__return_zero' );
+
+		$this->assertFalse(
+			get_transient( sprintf( 'tec_tickets_commerce_pending_order_%s', self::VICTIM_HASH ) ),
+			'An expired cart must neither keep its old binding nor be given a new one.'
+		);
+	}
+
+	/**
 	 * The legitimate buyer who created the order can edit it within their own session.
 	 *
 	 * @dataProvider gateway_endpoint_provider

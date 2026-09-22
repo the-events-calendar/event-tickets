@@ -453,6 +453,7 @@ class Client {
 	 * @link  https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
 	 *
 	 * @since 5.1.9
+	 * @since TBD Keys the PayPal idempotency header on the payload instead of the cart cookie.
 	 *
 	 * @param array<string,mixed>|array<array> $units              {
 	 *                                                             Purchase unit used to setup the order in PayPal.
@@ -472,7 +473,6 @@ class Client {
 	 * @type string                            $tax_id_type        (optional) Tax ID for this purchase Unit.
 	 *
 	 *                     }
-	 * @since TBD Keys the PayPal idempotency header on the payload instead of the cart cookie.
 	 *
 	 * @return array|null
 	 */

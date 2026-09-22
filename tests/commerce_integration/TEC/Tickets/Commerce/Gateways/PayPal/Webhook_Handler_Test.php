@@ -72,7 +72,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	public function test_completed_capture_event_completes_the_order(): void {
 		$order = $this->make_pending_paypal_order();
 
-		$this->stub_parent_payment_lookup();
+		$this->record_paypal_requests();
 
 		$transitions = [];
 		add_action(
@@ -120,7 +120,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	public function test_order_is_resolved_from_the_order_link_when_supplementary_data_is_absent(): void {
 		$order = $this->make_pending_paypal_order();
 
-		$this->stub_parent_payment_lookup();
+		$this->record_paypal_requests();
 
 		$event = $this->capture_completed_event();
 		unset( $event['resource']['supplementary_data'] );
@@ -154,7 +154,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	public function test_order_links_resolve_on_either_paypal_api_host( string $host ): void {
 		$order = $this->make_pending_paypal_order();
 
-		$this->stub_parent_payment_lookup();
+		$this->record_paypal_requests();
 
 		$event = $this->capture_completed_event();
 		unset( $event['resource']['supplementary_data'] );
@@ -195,9 +195,9 @@ class Webhook_Handler_Test extends WPTestCase {
 	 * @dataProvider non_order_link_provider
 	 */
 	public function test_links_that_do_not_address_an_order_are_not_read( string $href, string $message ): void {
-		$this->make_pending_paypal_order();
+		$order = $this->make_pending_paypal_order();
 
-		$this->stub_parent_payment_lookup();
+		$this->record_paypal_requests();
 
 		$event = $this->capture_completed_event();
 		unset( $event['resource']['supplementary_data'] );
@@ -209,7 +209,23 @@ class Webhook_Handler_Test extends WPTestCase {
 			],
 		];
 
-		$this->assertWPError( tribe( Handler::class )->process_event( $event ), $message );
+		$result = tribe( Handler::class )->process_event( $event );
+
+		/*
+		 * The code is what proves the link went unread. Read as an order id, the link's id matches no
+		 * order and fails with order-not-found instead, which is still a WP_Error.
+		 */
+		$this->assertWPError( $result, $message );
+		$this->assertSame( 'tec-tickets-commerce-paypal-webhook-unresolved-order', $result->get_error_code(), $message );
+		$this->assertSame( [], $this->requests, 'A link that does not address an order must not be followed.' );
+
+		clean_post_cache( $order->ID );
+
+		$this->assertSame(
+			tribe( Pending::class )->get_wp_slug(),
+			get_post_status( $order->ID ),
+			'An unresolved event must leave the order where it was.'
+		);
 	}
 
 	/**
@@ -239,7 +255,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	public function test_a_link_pointing_off_paypal_is_not_followed(): void {
 		$this->make_pending_paypal_order();
 
-		$this->stub_parent_payment_lookup();
+		$this->record_paypal_requests();
 
 		$event = $this->capture_completed_event();
 		unset( $event['resource']['supplementary_data'] );
@@ -267,7 +283,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	 * An event for a PayPal payment this site has no order for is refused rather than acted on.
 	 */
 	public function test_event_for_an_unknown_payment_is_refused(): void {
-		$this->stub_parent_payment_lookup( 'NOSUCHPAYPALORDER' );
+		$this->record_paypal_requests();
 
 		$this->assertWPError(
 			tribe( Handler::class )->process_event( $this->capture_completed_event() ),
@@ -281,7 +297,7 @@ class Webhook_Handler_Test extends WPTestCase {
 	public function test_replaying_the_event_does_not_re_complete_the_order(): void {
 		$order = $this->make_pending_paypal_order();
 
-		$this->stub_parent_payment_lookup();
+		$this->record_paypal_requests();
 
 		tribe( Handler::class )->process_event( $this->capture_completed_event() );
 		clean_post_cache( $order->ID );
@@ -316,25 +332,23 @@ class Webhook_Handler_Test extends WPTestCase {
 	}
 
 	/**
-	 * Stubs the follow-up call the handler makes to read the capture's parent payment.
-	 *
-	 * @param string $paypal_order_id The PayPal order id the lookup resolves to.
+	 * Records every PayPal API request the handler makes, so a test can assert it made none.
 	 */
-	private function stub_parent_payment_lookup( string $paypal_order_id = self::PAYPAL_ORDER ): void {
+	private function record_paypal_requests(): void {
 		// By reference, not $this: uopz runs the replacement in the stubbed class's scope.
 		$requests = &$this->requests;
 
 		$this->set_class_fn_return(
 			Client::class,
 			'request',
-			static function ( $method, $url ) use ( $paypal_order_id, &$requests ) {
+			static function ( $method, $url ) use ( &$requests ) {
 				$requests[] = [
 					'method' => $method,
 					'url'    => $url,
 				];
 
 				return [
-					'id'     => $paypal_order_id,
+					'id'     => self::PAYPAL_ORDER,
 					'status' => 'COMPLETED',
 				];
 			},

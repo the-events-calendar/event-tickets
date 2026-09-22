@@ -15,6 +15,8 @@ class REST extends \TEC\Common\Contracts\Service_Provider {
 	 * Registers the endpoint singletons.
 	 *
 	 * @since TBD Registers the webhook endpoint.
+	 *
+	 * @return void
 	 */
 	public function register() {
 		$this->container->singleton( REST\Webhook_Endpoint::class );
@@ -27,6 +29,8 @@ class REST extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 5.1.6
 	 * @since TBD Serves the webhook route, which onboarding already registers with PayPal.
+	 *
+	 * @return void
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST\Webhook_Endpoint::class )->register();

@@ -170,6 +170,54 @@ class Webhook_Endpoint_Test extends WPTestCase {
 	}
 
 	/**
+	 * A delivery for a PayPal order no local order carries will find nothing on any retry either, so it
+	 * has to be acknowledged rather than left for PayPal to redeliver.
+	 */
+	public function test_event_for_an_untracked_order_is_answered_as_success(): void {
+		$this->stub_verified_webhook();
+
+		$response = rest_do_request( $this->make_delivery() );
+
+		$this->assertSame(
+			'tec-tickets-commerce-paypal-webhook-order-not-found',
+			Arr::get( $response->get_data(), 'code' ),
+			'The delivery must reach the order lookup and find nothing.'
+		);
+
+		$this->assertSame(
+			200,
+			$response->get_status(),
+			'An event for an order this site does not track must be acknowledged, not retried forever.'
+		);
+	}
+
+	/**
+	 * A delivery that names no order cannot be resolved by redelivering the same payload, so it has to
+	 * be acknowledged rather than left for PayPal to retry.
+	 */
+	public function test_event_naming_no_order_is_answered_as_success(): void {
+		$this->make_pending_paypal_order();
+		$this->stub_verified_webhook();
+
+		$event = $this->capture_completed_event();
+		unset( $event['resource']['supplementary_data'], $event['resource']['links'] );
+
+		$response = rest_do_request( $this->make_delivery( $event ) );
+
+		$this->assertSame(
+			'tec-tickets-commerce-paypal-webhook-unresolved-order',
+			Arr::get( $response->get_data(), 'code' ),
+			'The delivery must fail to resolve an order.'
+		);
+
+		$this->assertSame(
+			200,
+			$response->get_status(),
+			'An event naming no order must be acknowledged, not retried forever.'
+		);
+	}
+
+	/**
 	 * A delivery whose signature does not verify must not disclose the merchant's webhook id, which is
 	 * one of the three inputs PayPal's signature binds.
 	 */
@@ -308,8 +356,10 @@ class Webhook_Endpoint_Test extends WPTestCase {
 
 	/**
 	 * A delivery shaped the way PayPal sends one: a JSON body plus the five signature headers.
+	 *
+	 * @param array|null $event The event to deliver; a completed capture of the test order when null.
 	 */
-	private function make_delivery(): WP_REST_Request {
+	private function make_delivery( ?array $event = null ): WP_REST_Request {
 		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/commerce/paypal/webhook' );
 
 		/*
@@ -325,7 +375,7 @@ class Webhook_Endpoint_Test extends WPTestCase {
 
 		$request->set_headers( rest_get_server()->get_headers( $server ) );
 
-		$request->set_body( wp_json_encode( $this->capture_completed_event() ) );
+		$request->set_body( wp_json_encode( $event ?? $this->capture_completed_event() ) );
 
 		return $request;
 	}

@@ -818,6 +818,7 @@ class Order extends Abstract_Order {
 	 * Filters the values and creates a new Order with Tickets Commerce or updates an existing one.
 	 *
 	 * @since 5.18.1
+	 * @since TBD Returns false instead of creating a second order when the lock was lost to another request.
 	 *
 	 * @param Gateway_Interface $gateway The gateway to use to create the order.
 	 * @param array             $args    The arguments to create the order.

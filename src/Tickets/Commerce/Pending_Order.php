@@ -71,7 +71,14 @@ final class Pending_Order {
 			 * of about 56 years: it outlived the cart it is keyed to, and every abandoned checkout left a
 			 * row behind that nothing ever cleared.
 			 */
-			$lifetime = max( MINUTE_IN_SECONDS, $this->cart->get_cart_expiration() - time() );
+			$lifetime = $this->cart->get_cart_expiration() - time();
+
+			// A lifetime of 0 would make set_transient() store the binding with no expiry at all.
+			if ( $lifetime <= 0 ) {
+				$this->clear();
+
+				return;
+			}
 
 			set_transient( $this->get_transient_name(), $gateway_order_id, $lifetime );
 		} catch ( RuntimeException $e ) {
