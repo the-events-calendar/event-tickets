@@ -637,6 +637,7 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to update reservations on the Service.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5 Sanitized the request body, replaced the capability check with a nonce check and tied the token to the post.
 	 * @since TBD Sanitized the request body, replaced the capability check with a nonce check, tied the token to the post, required a started session, and refused a ticket outside the post or a seat type the ticket does not carry.
 	 *
 	 * @return void The JSON response is sent to the client.
@@ -779,6 +780,7 @@ class Ajax extends Controller_Contract {
 	 * Handles the request to remove reservations on the Service.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5 Replaced the capability check with a nonce check.
 	 * @since TBD Replaced the capability check with a nonce check and refused a token the site never issued for the post the request names.
 	 *
 	 * @return void The JSON response is sent to the client.

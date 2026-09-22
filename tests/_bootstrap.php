@@ -73,6 +73,23 @@ function tec_tickets_tests_disable_gateway_id_generation() {
 	remove_filter( 'tec_tickets_commerce_order_create_args', 'tec_tickets_tests_add_manual_gateway_id' );
 }
 
+/**
+ * Clears the onboarding activation-redirect transients left behind by the test site installation.
+ *
+ * WPLoader activates TEC and ET when it installs WordPress, and both activation routines leave a
+ * short-lived transient behind. The guided-setup controllers consume it on the first admin screen
+ * loaded by an admin-capable user and answer with `wp_safe_redirect()` + `tribe_exit()`, which takes
+ * the whole suite runner down mid-run with no reported failure.
+ *
+ * @since TBD
+ *
+ * @return void
+ */
+function tec_tickets_tests_clear_activation_redirects() {
+	delete_transient( '_tribe_events_activation_redirect' );
+	delete_transient( '_tec_tickets_activation_redirect' );
+}
+
 function tec_tickets_tests_global_rest_route_registration_listener() {
 	uopz_set_return( 'register_rest_route', function( $route_namespace, $route, $args = array(), $override = false ) {
 		if ( isset( $args['schema'] ) && ! is_callable( $args['schema'] ) ) {

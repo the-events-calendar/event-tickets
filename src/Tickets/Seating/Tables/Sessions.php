@@ -166,7 +166,7 @@ class Sessions extends Table {
 	 * Seating service handed out from a string the request made up. An expired row does not count:
 	 * cleanup is scheduled, not immediate, so the timestamp is checked rather than the row's presence.
 	 *
-	 * @since TBD
+	 * @since 5.29.5
 	 *
 	 * @param string $token     The session token to look for.
 	 * @param int    $object_id The post ID the token should have been issued for.
@@ -250,6 +250,7 @@ class Sessions extends Table {
 	 * lifetime; starting the timer shortens it. Re-opening the seat selection starts the timer again,
 	 * and the `expiration >` guard is what stops that second start from extending a running hold.
 	 *
+	 * @since 5.29.5
 	 * @since TBD Marked the session as started, so an issued token can be told from a used one.
 	 *
 	 * @param string $token                The session token to start the timer for.

@@ -331,7 +331,7 @@ class Frontend extends Controller_Contract {
 	 * Returns the HTML content of the seat selection modal.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Recorded the issued token so the timer can verify it, and refused to render one that could not be recorded.
+	 * @since 5.29.5 Recorded the issued token so the timer can verify it, and refused to render one that could not be recorded.
 	 *
 	 * @param int $post_id The post ID of the post to purchase tickets for.
 	 * @param int $timeout The timeout in seconds.

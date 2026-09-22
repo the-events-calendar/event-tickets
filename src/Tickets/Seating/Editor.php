@@ -106,7 +106,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 * Registers the meta for the Tickets and the ticketable post types.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Registered the Attendee seat label meta.
+	 * @since 5.29.5 Registered the Attendee seat label meta.
 	 */
 	public function register_meta(): void {
 		/* Attendee post types vary by ticket provider, so this one is registered for all of them. */
