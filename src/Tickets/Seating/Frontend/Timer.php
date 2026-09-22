@@ -397,7 +397,7 @@ class Timer extends Controller_Contract {
 	 * Checks the AJAX request parameters and returns them if they are valid.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Refused a token the site never issued for the post the request names.
+	 * @since TBD Refuse a token the site never issued for the post the request names.
 	 *
 	 * @return array{0: string, 1: int}|false The token and post ID or `false` if a check failed.
 	 */
@@ -499,7 +499,7 @@ class Timer extends Controller_Contract {
 	 * frontend to update the timer with a synced value.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Stopped acting on a request that failed its own checks.
+	 * @since TBD Stop acting on a request that failed its own checks.
 	 *
 	 * @return void The AJAX response is sent back to the browser.
 	 */
@@ -678,7 +678,7 @@ class Timer extends Controller_Contract {
 	 * Handles the action from the backend signaling the user is checking out.
 	 *
 	 * @since 5.17.0
-	 * @since TBD Stopped acting on a request that failed its own checks.
+	 * @since TBD Stop acting on a request that failed its own checks.
 	 *
 	 * @return void  The AJAX response is sent back to the browser.
 	 */

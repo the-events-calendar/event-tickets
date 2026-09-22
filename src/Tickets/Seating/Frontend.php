@@ -174,7 +174,7 @@ class Frontend extends Controller_Contract {
 	 * Replace the Tickets' block with the one starting the seat selection flow.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Marked a response embedding a seat selection token as non-cacheable.
+	 * @since TBD Mark a response embedding a seat selection token as non-cacheable.
 	 *
 	 * @param string              $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.

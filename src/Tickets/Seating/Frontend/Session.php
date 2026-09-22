@@ -243,7 +243,7 @@ class Session {
 	 * Returns the token and object ID couple with the earliest expiration time from the cookie.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Skipped sessions whose timer was never started.
+	 * @since TBD Skip sessions whose timer was never started.
 	 *
 	 * @param array<string,string> $cookie_entries The entries from the cookie. A map from object ID to token.
 	 *

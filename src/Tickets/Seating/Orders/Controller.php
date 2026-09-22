@@ -684,7 +684,7 @@ class Controller extends Controller_Contract {
 	 * Updates an Attendee reservation from AJAX data.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Refused an attendee that does not belong to the post the capability was checked against.
+	 * @since TBD Refuse an attendee that does not belong to the post the capability was checked against.
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
