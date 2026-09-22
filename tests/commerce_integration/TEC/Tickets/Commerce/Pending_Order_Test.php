@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use Codeception\TestCase\WPTestCase;
+use Faker\Factory;
 use TEC\Common\Monolog\Logger;
 
 class Pending_Order_Test extends WPTestCase {
@@ -32,11 +33,15 @@ class Pending_Order_Test extends WPTestCase {
 	 * Builds a Pending_Order with a mocked Cart and Logger.
 	 *
 	 * @param string|false|null $cart_hash  The value returned by Cart::get_cart_hash().
-	 * @param int               $expiration The value returned by Cart::get_cart_expiration().
+	 * @param int|null          $expiration The timestamp returned by Cart::get_cart_expiration(); a time
+	 *                                      in the future when null.
 	 *
 	 * @return array{0: Pending_Order, 1: Logger} The instance and its logger mock.
 	 */
-	private function make_pending_order( $cart_hash = self::CART_HASH, int $expiration = HOUR_IN_SECONDS ): array {
+	private function make_pending_order( $cart_hash = self::CART_HASH, ?int $expiration = null ): array {
+		// A timestamp, like the real method: Pending_Order measures the lifetime left from the current time.
+		$expiration ??= Factory::create()->dateTimeBetween( '+1 minute', '+1 day' )->getTimestamp();
+
 		$cart = $this->createMock( Cart::class );
 		$cart->method( 'get_cart_hash' )->willReturn( $cart_hash );
 		$cart->method( 'get_cart_expiration' )->willReturn( $expiration );
