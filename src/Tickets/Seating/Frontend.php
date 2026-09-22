@@ -341,7 +341,7 @@ class Frontend extends Controller_Contract {
 	private function get_seat_selection_modal_content( int $post_id, int $timeout ): string {
 		/*
 		 * While the user might have 15 minutes to purchase tickets, that timer will not start on page load,
-		 * but when the user starts the interaction withe the seat selection modal.
+		 * but when the user starts the interaction with the seat selection modal.
 		 * For this reason the token request is made with a TTL of 4 times the timeout.
 		 */
 		$ephemeral_token_ttl = $timeout * 4;
