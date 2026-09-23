@@ -231,6 +231,7 @@ class Commit {
 			return $result->with_error( Payload::UPDATE, $ticket_id, $this->no_provider_message() );
 		}
 
+		$data                = $this->sanitize( $data );
 		$data['ticket_id']   = $ticket_id;
 		$data['ticket_type'] = $this->ticket_type( $data, get_post_meta( $ticket_id, '_type', true ) ?: 'default' );
 
@@ -270,6 +271,7 @@ class Commit {
 			return $result->with_error( Payload::CREATE, $position, $this->no_provider_message() );
 		}
 
+		$data = $this->sanitize( $data );
 		unset( $data['ticket_id'] );
 		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
 
@@ -365,6 +367,25 @@ class Commit {
 	private function fire_added( int $post_id, int $ticket_id, array $data ): void {
 		/** This action is documented in src/Tribe/Metabox.php */
 		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+	}
+
+	/**
+	 * Sanitizes an entry's data the way the request reaches the AJAX save today.
+	 *
+	 * The AJAX handler reads `data` through `tribe_get_request_var()`, which runs `tribe_sanitize_deep()`
+	 * over the whole array before `ticket_add()` sees it. The providers rely on that, so the deferred path
+	 * runs the same sanitizer over the same array: what a ticket stores does not depend on the path it took.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data The ticket data, as the editor sent it.
+	 *
+	 * @return array<string,mixed> The sanitized data.
+	 */
+	private function sanitize( array $data ): array {
+		tribe_sanitize_deep( $data );
+
+		return is_array( $data ) ? $data : [];
 	}
 
 	/**
