@@ -133,17 +133,6 @@ class Result {
 	}
 
 	/**
-	 * Whether any entry failed.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether there are errors.
-	 */
-	public function has_errors(): bool {
-		return [] !== $this->errors;
-	}
-
-	/**
 	 * Returns the result as the array the editors receive.
 	 *
 	 * @since TBD
