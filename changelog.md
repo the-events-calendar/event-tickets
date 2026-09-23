@@ -1,6 +1,6 @@
 # Changelog
 
-### [5.29.5.1] 2026-09-23
+### [5.29.5.1] 2026-09-24
 
 * Language - 0 new strings added, 39 updated, 0 fuzzied, and 0 obsoleted.
 * Security - Hardened the validation of the sort parameters used when ordering the tickets reports.
