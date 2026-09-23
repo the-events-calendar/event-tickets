@@ -55,6 +55,24 @@ describe( 'restBodyToTicketData', () => {
 		} );
 	} );
 
+	it( 'never writes through the prototype chain and never reads inherited mappings', () => {
+		const data = restBodyToTicketData( [
+			[ 'ticket[__proto__][polluted]', 'yes' ],
+			[ '__proto__[isAdmin]', 'true' ],
+			[ 'constructor', 'x' ],
+			[ 'ticket[constructor][prototype][evil]', '1' ],
+			[ 'hasOwnProperty', 'y' ],
+			[ 'name', 'Safe' ],
+		] );
+
+		expect( {}.polluted ).toBeUndefined();
+		expect( {}.isAdmin ).toBeUndefined();
+		expect( {}.evil ).toBeUndefined();
+		expect( data.ticket_name ).toBe( 'Safe' );
+		// A plain key that happens to be a method name is an own property on the data, nothing more.
+		expect( Object.keys( data ) ).toEqual( [ 'hasOwnProperty', 'ticket_name' ] );
+	} );
+
 	it( 'keeps list keys as arrays', () => {
 		expect( restBodyToTicketData( [ [ 'ticket[fees][selected_fees][]', '3' ], [ 'ticket[fees][selected_fees][]', '4' ] ] ) ).toEqual( {
 			'tribe-ticket': { fees: { selected_fees: [ '3', '4' ] } },
