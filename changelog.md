@@ -1,5 +1,11 @@
 # Changelog
 
+### [5.29.5.1] 2026-09-23
+
+* Language - 0 new strings added, 39 updated, 0 fuzzied, and 0 obsoleted.
+* Security - Hardened the validation of the sort parameters used when ordering the tickets reports.
+* Security - Tightened validation on assigned seating reservation and session handling. Props to "sequence_X0" for the report!
+
 ### [5.29.5] 2026-09-17
 
 * Fix - Dropped the cached calendar-view ticket data when tickets are sold and when the plugin updates, instead of rebuilding it mid-order, resolving an issue where sold-out events kept showing the remaining ticket count on calendar and list views.
