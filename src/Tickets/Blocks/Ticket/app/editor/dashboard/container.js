@@ -15,6 +15,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import Template from './template';
 import { actions, selectors } from '../../../../../../modules/data/blocks/ticket';
+import { usesDeferredSave } from '../../../../../../modules/data/blocks/ticket/deferred';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
@@ -32,7 +33,9 @@ const getIsConfirmDisabled = ( state, ownProps ) => {
 		selectors.isTicketDisabled( state, ownProps ) ||
 		selectors.getTicketHasDurationError( state, ownProps ) ||
 		! selectors.getTicketHasChanges( state, ownProps ) ||
-		! selectors.isTicketValid( state, ownProps );
+		! selectors.isTicketValid( state, ownProps ) ||
+		// A staged ticket travels with the post save, so nothing invalid may be staged: the sale price rule applies too.
+		( usesDeferredSave() && ! selectors.isTicketSalePriceValid( state, ownProps ) );
 
 	/**
 	 * Filters whether the confirm button should be disabled.

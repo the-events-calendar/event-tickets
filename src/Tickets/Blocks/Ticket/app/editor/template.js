@@ -9,6 +9,7 @@ import classNames from 'classnames';
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -27,8 +28,10 @@ class Ticket extends PureComponent {
 		isLoading: PropTypes.bool,
 		isModalShowing: PropTypes.bool,
 		isSelected: PropTypes.bool,
+		isStaged: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
 		removeTicketBlock: PropTypes.func,
+		saveError: PropTypes.string,
 		showTicket: PropTypes.bool,
 	};
 
@@ -43,7 +46,17 @@ class Ticket extends PureComponent {
 	}
 
 	render() {
-		const { clientId, hasTicketsPlus, isDisabled, isLoading, isSelected, isModalShowing, showTicket } = this.props;
+		const {
+			clientId,
+			hasTicketsPlus,
+			isDisabled,
+			isLoading,
+			isSelected,
+			isModalShowing,
+			isStaged,
+			saveError,
+			showTicket,
+		} = this.props;
 
 		/**
 		 * Filters the ticket `isSelected` property. The property comes fron the Block Editor,
@@ -84,9 +97,23 @@ class Ticket extends PureComponent {
 									false,
 									clientId
 								),
-							}
+							},
+							{ 'tribe-editor__ticket--staged': isStaged },
+							{ 'tribe-editor__ticket--save-error': !! saveError }
 						)}
 					>
+						{ ( isStaged || saveError ) && (
+							<div className="tribe-editor__ticket__deferred-status" role="status">
+								{ isStaged && (
+									<span className="tribe-editor__ticket__deferred-badge">
+										{ __( 'Not saved yet', 'event-tickets' ) }
+									</span>
+								) }
+								{ saveError && (
+									<span className="tribe-editor__ticket__deferred-error">{ saveError }</span>
+								) }
+							</div>
+						) }
 						<TicketContainer
 							clientId={clientId}
 							isSelected={filteredIsSelected}
