@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Tightened validation on assigned seating reservation and session handling. Props to "sequence_X0" for the report!
+timestamp: 2026-09-14T23:45:28.562Z

@@ -39,7 +39,7 @@ class Sessions extends Table {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '1.1.0';
+	const SCHEMA_VERSION = '1.2.0';
 
 	/**
 	 * The base table name, without the table prefix.
@@ -125,6 +125,7 @@ class Sessions extends Table {
 				$columns[] = ( new Integer_Column( 'expiration' ) )->set_length( 11 )->set_signed( false );
 				$columns[] = ( new Blob_Column( 'reservations' ) )->set_type( Column_Types::LONGBLOB );
 				$columns[] = ( new Boolean_Column( 'expiration_lock' ) )->set_default( false );
+				$columns[] = ( new Boolean_Column( 'timer_started' ) )->set_default( false );
 
 				return new Table_Schema( $table_name, $columns );
 			},
@@ -152,6 +153,7 @@ class Sessions extends Table {
 				`expiration` int(11) NOT NULL,
 				`reservations` longblob,
 				`expiration_lock` boolean DEFAULT 0,
+				`timer_started` boolean DEFAULT 0,
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
 		";
@@ -200,6 +202,48 @@ class Sessions extends Table {
 	}
 
 	/**
+	 * Whether a session row exists for a token and post, and its timer was started.
+	 *
+	 * The row is written when the seat selection modal renders, so its presence proves only that the
+	 * Seating service issued the token. Starting the timer is the visitor's first deliberate act, and
+	 * it is what shortens the row's expiration from the token's own lifetime to the seat timeout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token     The session token to look for.
+	 * @param int    $object_id The post ID the token should have been issued for.
+	 *
+	 * @return bool Whether a started session exists for that token and post.
+	 */
+	public function token_started_for_post( string $token, int $object_id ): bool {
+		try {
+			return tribe_is_truthy(
+				DB::get_var(
+					DB::prepare(
+						'SELECT 1 FROM %i WHERE token = %s AND object_id = %d AND expiration > %d AND timer_started = 1',
+						self::table_name(),
+						$token,
+						$object_id,
+						time()
+					)
+				)
+			);
+		} catch ( Exception $e ) {
+			$this->log_error(
+				'Failed to look up the started session token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
+	}
+
+	/**
 	 * Brings a session's expiration forward to the timer's, without ever pushing it back.
 	 *
 	 * The row is created when the Seating service issues the token, carrying the token's own longer
@@ -207,6 +251,7 @@ class Sessions extends Table {
 	 * and the `expiration >` guard is what stops that second start from extending a running hold.
 	 *
 	 * @since 5.29.5
+	 * @since TBD Marked the session as started, so an issued token can be told from a used one.
 	 *
 	 * @param string $token                The session token to start the timer for.
 	 * @param int    $object_id            The post ID the token was issued for.
@@ -218,7 +263,7 @@ class Sessions extends Table {
 		try {
 			return false !== DB::query(
 				DB::prepare(
-					'UPDATE %i SET expiration = %d WHERE token = %s AND object_id = %d AND expiration > %d',
+					'UPDATE %i SET expiration = %d, timer_started = 1 WHERE token = %s AND object_id = %d AND expiration > %d',
 					self::table_name(),
 					$expiration_timestamp,
 					$token,

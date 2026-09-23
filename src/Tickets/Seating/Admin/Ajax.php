@@ -638,6 +638,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Sanitized the request body, replaced the capability check with a nonce check and tied the token to the post.
+	 * @since TBD Require a started session, refuse a ticket outside the post, and store the seat the service holds for each reservation instead of the one the browser names.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -683,7 +684,7 @@ class Ajax extends Controller_Contract {
 		$token             = $decoded['token'];
 		$json_reservations = $decoded['reservations'];
 
-		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+		if ( ! $this->sessions->token_started_for_post( $token, $post_id ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Invalid session token',
@@ -694,7 +695,9 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$reservations = [];
+		$post_seat_types = $this->get_seat_types_by_ticket( $post_id );
+		$reservations    = [];
+
 		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
 			$reservations[ $ticket_id ] = [];
 
@@ -704,6 +707,19 @@ class Ajax extends Controller_Contract {
 						'error' => 'Reservation data is not in correct format',
 					],
 					400
+				);
+
+				return;
+			}
+
+			$ticket_seat_type = $post_seat_types[ $ticket_id ] ?? '';
+
+			if ( ! $ticket_seat_type ) {
+				wp_send_json_error(
+					[
+						'error' => 'Invalid reservation data',
+					],
+					403
 				);
 
 				return;
@@ -729,10 +745,23 @@ class Ajax extends Controller_Contract {
 
 				$reservations[ $ticket_id ][] = [
 					'reservation_id' => $reservation['reservationId'],
-					'seat_type_id'   => $reservation['seatTypeId'],
-					'seat_label'     => $reservation['seatLabel'],
+					'seat_type_id'   => $ticket_seat_type,
+					'seat_label'     => '',
 				];
 			}
+		}
+
+		$reservations = $this->describe_reservations_from_service( $post_id, $reservations );
+
+		if ( null === $reservations ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid reservation data',
+				],
+				403
+			);
+
+			return;
 		}
 
 		if ( ! ( $this->sessions->update_reservations( $token, $reservations ) ) ) {
@@ -754,6 +783,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Replaced the capability check with a nonce check.
+	 * @since TBD Refuse a token the site never issued for the post the request names.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -771,6 +801,17 @@ class Ajax extends Controller_Contract {
 					'error' => __( 'Invalid request parameters', 'event-tickets' ),
 				],
 				400
+			);
+
+			return;
+		}
+
+		if ( ! $this->sessions->token_exists_for_post( $token, $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid session token',
+				],
+				403
 			);
 
 			return;
@@ -1366,5 +1407,86 @@ class Ajax extends Controller_Contract {
 				'updatedAttendees' => $updated_attendees,
 			]
 		);
+	}
+
+	/**
+	 * Replaces the seat details the browser posted with the ones the service holds for each reservation.
+	 *
+	 * The browser is the visitor; the label and seat type it sends are whatever the visitor chose to send.
+	 * The service is the only party that knows which seat a reservation id points at, so its answer is what
+	 * gets stored. A reservation the service does not know, does not hold as pending, holds for another
+	 * ticket, or holds on a seat type the ticket does not carry fails the whole request: a hold cannot be
+	 * half right.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                     $post_id      The post the reservations are for.
+	 * @param array<int,array<array>> $reservations The reservations as posted, keyed by ticket ID, each carrying the
+	 *                                              ticket's own seat type as `seat_type_id`.
+	 *
+	 * @return array<int,array<array{reservation_id: string, seat_type_id: string, seat_label: string}>>|null The
+	 *                                              reservations as the service describes them, or `null` when any
+	 *                                              could not be verified.
+	 */
+	private function describe_reservations_from_service( int $post_id, array $reservations ): ?array {
+		$ids = [];
+		foreach ( $reservations as $ticket_reservations ) {
+			$ids[] = array_column( $ticket_reservations, 'reservation_id' );
+		}
+		$ids = array_merge( [], ...$ids );
+
+		if ( ! $ids ) {
+			return $reservations;
+		}
+
+		$known = $this->reservations->fetch( $post_id, $ids );
+
+		if ( null === $known ) {
+			return null;
+		}
+
+		foreach ( $reservations as $ticket_id => &$ticket_reservations ) {
+			foreach ( $ticket_reservations as &$reservation ) {
+				$held = $known[ $reservation['reservation_id'] ] ?? null;
+
+				if ( ! (
+					$held
+					&& 'pending' === ( $held['status'] ?? '' )
+					&& (int) $ticket_id === (int) ( $held['ticketId'] ?? 0 )
+					&& $reservation['seat_type_id'] === ( $held['seatTypeId'] ?? null )
+				) ) {
+					return null;
+				}
+
+				$reservation['seat_label'] = Meta::sanitize_seat_label( $held['seatLabel'] ?? '' );
+			}
+		}
+
+		return $reservations;
+	}
+
+	/**
+	 * Maps each of a post's seated ticket IDs to the seat type it carries.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post to collect the tickets of.
+	 *
+	 * @return array<int,string> A map from ticket ID to seat type, skipping tickets that have none.
+	 */
+	private function get_seat_types_by_ticket( int $post_id ): array {
+		$seat_types = [];
+
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$seat_type = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
+
+			if ( ! ( $seat_type && is_string( $seat_type ) ) ) {
+				continue;
+			}
+
+			$seat_types[ $ticket_id ] = $seat_type;
+		}
+
+		return $seat_types;
 	}
 }
