@@ -1,7 +1,0 @@
-significance: minor
-type: feat
-entry: "Added the Deferred Ticket Save controller and the switch that decides
-  which posts defer ticket writes to the post save: recurring events by default,
-  widened through the `tec_tickets_deferred_save_enabled` filter. Nothing
-  changes for ticket saves yet. [SOFT-4823]"
-timestamp: 2026-09-23T11:14:55.317Z
