@@ -17,6 +17,8 @@ import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
 import * as selectors from './selectors';
 import * as actions from './actions';
+import { usesDeferredSave } from '../../blocks/ticket/deferred';
+import { stageMove } from '../../blocks/ticket/deferred-sagas';
 
 export function createBody( params ) {
 	return Object.entries( params )
@@ -123,6 +125,17 @@ export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
 		yield put( {
 			type: types.MOVE_TICKET,
 		} );
+
+		// On a post that defers ticket saves the move is staged and happens with the post save.
+		if ( usesDeferredSave() ) {
+			yield call( stageMove, parseInt( ticket_type_id, 10 ), parseInt( target_post_id, 10 ) );
+			const data = { remove_ticket_type: parseInt( ticket_type_id, 10 ), staged: true };
+			yield put( {
+				type: types.MOVE_TICKET_SUCCESS,
+				data,
+			} );
+			return data;
+		}
 		const { data } = yield call( _fetch, {
 			action: 'move_ticket_type',
 			src_post_id,
