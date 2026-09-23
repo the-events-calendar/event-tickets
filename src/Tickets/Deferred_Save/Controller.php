@@ -21,18 +21,16 @@ use TEC\Tickets\Event;
  */
 class Controller extends Controller_Contract {
 	/**
-	 * Registers the feature.
+	 * Registers the save entry points.
 	 *
-	 * Nothing hooks into a request yet: the payload is read and committed by the
-	 * save entry points, which are added by SOFT-4824. The container already
-	 * holds this controller as a singleton once it is registered.
+	 * The container already holds this controller as a singleton once it is registered.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function do_register(): void {
-		// Nothing to hook yet.
+		$this->container->register( Classic_Save::class );
 	}
 
 	/**
@@ -43,7 +41,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		// Nothing to unhook yet.
+		$this->container->get( Classic_Save::class )->unregister();
 	}
 
 	/**
