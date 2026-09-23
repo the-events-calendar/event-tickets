@@ -303,7 +303,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 					return;
 				}
 				// Parse inertly: the markup is only read for its fields, so no script in it may run and no asset may load.
-				const doc = new DOMParser().parseFromString( response.data.ticket, 'text/html' );
+				const doc = new window.DOMParser().parseFromString( response.data.ticket, 'text/html' );
 				const fields = $( doc.querySelectorAll( 'input,textarea,select' ) )
 					.serializeArray()
 					.map( ( { name, value } ) => [ name, value ] );
