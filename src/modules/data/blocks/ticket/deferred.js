@@ -49,6 +49,13 @@ const KEY_MAP = {
 const DROPPED_KEYS = [ 'post_id', 'add_ticket_nonce', 'edit_ticket_nonce', 'remove_ticket_nonce' ];
 
 /**
+ * Path segments that would write through the prototype chain instead of onto the data.
+ */
+const FORBIDDEN_SEGMENTS = [ '__proto__', 'constructor', 'prototype' ];
+
+const hasOwn = ( target, key ) => Object.prototype.hasOwnProperty.call( target, key );
+
+/**
  * Splits a bracketed key into its path: `ticket[fees][selected_fees][]` → `[ 'ticket', 'fees', 'selected_fees', '' ]`.
  *
  * @param {string} key The key.
@@ -68,6 +75,10 @@ const pathOf = ( key ) => {
 };
 
 const setPath = ( target, path, value ) => {
+	if ( path.some( ( segment ) => FORBIDDEN_SEGMENTS.includes( segment ) ) ) {
+		return;
+	}
+
 	let cursor = target;
 
 	path.forEach( ( segment, index ) => {
@@ -84,12 +95,20 @@ const setPath = ( target, path, value ) => {
 		const next = path[ index + 1 ];
 
 		if ( '' === next ) {
-			cursor[ segment ] = Array.isArray( cursor[ segment ] ) ? cursor[ segment ] : [];
+			cursor[ segment ] =
+				hasOwn( cursor, segment ) && Array.isArray( cursor[ segment ] ) ? cursor[ segment ] : [];
 			cursor[ segment ].push( value );
 			return;
 		}
 
-		cursor[ segment ] = cursor[ segment ] && 'object' === typeof cursor[ segment ] ? cursor[ segment ] : {};
+		// Descend only through own plain objects, never through anything inherited.
+		cursor[ segment ] =
+			hasOwn( cursor, segment ) &&
+			cursor[ segment ] &&
+			'object' === typeof cursor[ segment ] &&
+			! Array.isArray( cursor[ segment ] )
+				? cursor[ segment ]
+				: {};
 		cursor = cursor[ segment ];
 	} );
 };
@@ -114,12 +133,16 @@ export const restBodyToTicketData = ( entries ) => {
 			return;
 		}
 
-		if ( KEY_MAP[ key ] ) {
+		if ( hasOwn( KEY_MAP, key ) ) {
 			data[ KEY_MAP[ key ] ] = value;
 			return;
 		}
 
 		const path = pathOf( key );
+
+		if ( path.some( ( segment ) => FORBIDDEN_SEGMENTS.includes( segment ) ) ) {
+			return;
+		}
 
 		if ( 'ticket' === path[ 0 ] && path.length > 1 ) {
 			path[ 0 ] = 'tribe-ticket';
