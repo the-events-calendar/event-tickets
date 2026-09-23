@@ -31,6 +31,7 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		$this->container->register( Classic_Save::class );
+		$this->container->register( Block_Save::class );
 	}
 
 	/**
@@ -42,6 +43,7 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		$this->container->get( Classic_Save::class )->unregister();
+		$this->container->get( Block_Save::class )->unregister();
 	}
 
 	/**
