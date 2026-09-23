@@ -34,6 +34,7 @@ class Controller extends Controller_Contract {
 		$this->container->register( Block_Save::class );
 		$this->container->register( Classic\Editor::class );
 		$this->container->register( Classic\Notices::class );
+		$this->container->register( Classic\Assets::class );
 	}
 
 	/**
@@ -48,6 +49,7 @@ class Controller extends Controller_Contract {
 		$this->container->get( Block_Save::class )->unregister();
 		$this->container->get( Classic\Editor::class )->unregister();
 		$this->container->get( Classic\Notices::class )->unregister();
+		$this->container->get( Classic\Assets::class )->unregister();
 	}
 
 	/**

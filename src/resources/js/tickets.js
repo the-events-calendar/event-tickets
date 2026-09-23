@@ -1,7 +1,7 @@
 /* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
  tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers */
 
-import { doAction } from '@wordpress/hooks';
+import { doAction, applyFilters } from '@wordpress/hooks';
 
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
@@ -746,6 +746,19 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
+		/**
+		 * Lets another script take over the save, e.g. to stage it with the post save instead.
+		 *
+		 * @since TBD
+		 *
+		 * @param {boolean} intercepted Whether the save was handled elsewhere. Default false.
+		 * @param {string}  action      The action, `save`.
+		 * @param {Object}  context     The event, the edit panel and the ticket type.
+		 */
+		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', { event: e, panel: $edit_panel, ticketType } ) ) {
+			return;
+		}
+
 		$tribe_tickets.trigger( 'pre-save-ticket.tribe', e );
 
 		const ticketID = $edit_panel.find( '#ticket_id' ).val();
@@ -798,6 +811,11 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 
 		const deleted_ticket_id = $( this ).attr( 'attr-ticket-id' );
 
+		/** This filter is documented in the save handler above. */
+		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'delete', { event, ticketId: deleted_ticket_id } ) ) {
+			return;
+		}
+
 		const params = {
 			action: 'tribe-ticket-delete',
 			post_id: $post_id.val(),
@@ -824,6 +842,11 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	$document.on( 'click', '.ticket_duplicate', function ( event ) {
 		// Prevent Form Submit on button click.
 		event.preventDefault();
+
+		/** This filter is documented in the save handler above. */
+		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { event, ticketId: $( this ).data( 'ticketId' ) } ) ) {
+			return;
+		}
 
 		// Where we clicked.
 		const $button = $( this );

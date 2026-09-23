@@ -1,0 +1,62 @@
+/**
+ * Markers and rows for ticket changes staged in the classic editor.
+ *
+ * @since TBD
+ */
+
+.tec-tickets-deferred-save-badge {
+	display: inline-block;
+	margin-left: 8px;
+	padding: 1px 8px;
+	border-radius: 10px;
+	background: #f0f0f1;
+	color: #1d2327;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 18px;
+	vertical-align: middle;
+
+	&--staged {
+		background: #fcf9e8;
+		color: #614200;
+	}
+
+	&--delete {
+		background: #fcf0f1;
+		color: #8a2424;
+	}
+
+	&--move {
+		background: #f0f6fc;
+		color: #0a4b78;
+	}
+
+	&__target {
+		font-weight: 400;
+		margin-left: 4px;
+	}
+
+	&__undo {
+		margin-left: 6px;
+		font-size: 11px;
+		text-decoration: underline;
+	}
+}
+
+.tec-tickets-deferred-save-row--delete {
+
+	td {
+		opacity: 0.6;
+		text-decoration: line-through;
+	}
+
+	.ticket_edit,
+	.ticket_name .tec-tickets-deferred-save-badge {
+		text-decoration: none;
+		opacity: 1;
+	}
+}
+
+.tec-tickets-deferred-save-row .button-link {
+	margin-right: 8px;
+}
