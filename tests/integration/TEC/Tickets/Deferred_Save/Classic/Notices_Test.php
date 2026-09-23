@@ -81,6 +81,28 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_never_names_a_post_the_payload_pointed_at_that_is_not_a_ticket_on_the_saved_post(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_id        = static::factory()->post->create();
+		$private_id     = static::factory()->post->create( [ 'post_status' => 'private', 'post_title' => 'Secret launch plan' ] );
+		$other_post_id  = static::factory()->post->create();
+		$foreign_ticket = $this->create_tc_ticket( $other_post_id, 10, [ 'ticket_name' => 'Foreign ticket name' ] );
+		$result         = ( new Result() )
+			->with_error( 'delete', $private_id, 'Ticket does not belong to this post.' )
+			->with_error( 'update', $foreign_ticket, 'Ticket does not belong to this post.' );
+
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+		$html = $this->render_admin_notices();
+
+		$this->assertStringNotContainsString( 'Secret launch plan', $html );
+		$this->assertStringNotContainsString( 'Foreign ticket name', $html );
+		$this->assertStringContainsString( 'Ticket ' . $private_id, $html );
+		$this->assertStringContainsString( 'Ticket ' . $foreign_ticket, $html );
+	}
+
+	/**
+	 * @test
+	 */
 	public function output_is_escaped(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id = static::factory()->post->create( [ 'post_title' => 'Post <script>alert(1)</script>' ] );
