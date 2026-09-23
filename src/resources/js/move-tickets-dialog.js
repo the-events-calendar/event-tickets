@@ -473,6 +473,19 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				return;
 			}
 
+			// On a post that defers ticket saves, the move is staged in the parent window and happens with the post save.
+			const deferredSave = top !== window && top.tribe && top.tribe.tickets ? top.tribe.tickets.deferredSave : null;
+			if ( deferredSave && deferredSave.isEnabled && deferredSave.isEnabled() ) {
+				const targetTitle = $post_choices.find( 'input:checked' ).parent().text().trim();
+				deferredSave.stageMove( tribe_move_tickets_data.ticket_type_id, target_post_id, targetTitle );
+				$stages.hide();
+				$back.hide();
+				$next.hide();
+				$processing.text( deferredSave.strings.moveStaged || '' ).show();
+				top.jQuery( '#ticket_form_cancel' ).trigger( 'click' );
+				return;
+			}
+
 			const request = {
 				action: 'move_ticket_type',
 				src_post_id: tribe_move_tickets_data.src_post_id,

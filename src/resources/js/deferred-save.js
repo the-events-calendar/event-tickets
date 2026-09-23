@@ -11,7 +11,7 @@
  */
 
 import { addFilter, addAction } from '@wordpress/hooks';
-import { createState, buildHiddenFields } from './deferred-save/utils';
+import { createState, buildHiddenFields, validateFields, duplicateFields } from './deferred-save/utils';
 
 const CONTAINER = '#tec-tickets-deferred-save';
 const NAMESPACE = 'tec/tickets/deferred-save';
@@ -37,6 +37,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 
 	obj.isEnabled = () => true;
 	obj.state = state;
+	obj.strings = strings;
 
 	/**
 	 * Reads the edit panel into a field set, adding what the AJAX save adds.
@@ -279,6 +280,37 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		render();
 	};
 
+	/**
+	 * Reads a saved ticket's form through the read-only edit request and stages a copy of it.
+	 *
+	 * @param {number} ticketId The saved ticket to copy.
+	 */
+	const stageDuplicateOfSaved = ( ticketId ) => {
+		$.post(
+			window.ajaxurl,
+			{
+				action: 'tribe-ticket-edit',
+				post_id: $( '#post_ID' ).val(),
+				ticket_id: ticketId,
+				nonce: window.TribeTickets.edit_ticket_nonce,
+				is_admin: true,
+			},
+			( response ) => {
+				if ( ! response || ! response.success || ! response.data || ! response.data.ticket ) {
+					return;
+				}
+				const $form = $( '<div>' ).html( response.data.ticket );
+				const fields = $form
+					.find( 'input,textarea,select' )
+					.serializeArray()
+					.map( ( { name, value } ) => [ name, value ] );
+				state.stageCreate( duplicateFields( fields ) );
+				render();
+			},
+			'json'
+		);
+	};
+
 	addFilter( 'tec.tickets.admin.ticket.intercepted', NAMESPACE, ( intercepted, action, context = {} ) => {
 		if ( 'save' === action ) {
 			ticketTypeBeingAdded = context.ticketType || ticketTypeBeingAdded;
@@ -294,8 +326,104 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			return true;
 		}
 
+		if ( 'duplicate' === action ) {
+			const ticketId = parseInt( context.ticketId, 10 );
+			if ( ticketId ) {
+				stageDuplicateOfSaved( ticketId );
+			}
+			return true;
+		}
+
 		return intercepted;
 	} );
+
+	$tickets().on( 'click', '.tec-tickets-deferred-save-row__duplicate', function () {
+		const position = parseInt( $( this ).closest( 'tr' ).attr( 'data-tec-deferred-save-position' ), 10 );
+		const staged = state.getCreate( position );
+		if ( staged ) {
+			state.stageCreate( duplicateFields( staged.fields ) );
+			render();
+		}
+	} );
+
+	/**
+	 * How many tickets a saved row says are sold, when its capacity and availability are numbers.
+	 *
+	 * @param {number} ticketId The ticket ID.
+	 *
+	 * @return {number|undefined} The sold count, or `undefined` when the row does not say.
+	 */
+	const soldFromRow = ( ticketId ) => {
+		const $row = $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` );
+		const capacity = parseInt( $row.find( '.ticket_capacity' ).text().replace( /[^\d]/g, '' ), 10 );
+		const available = parseInt( $row.find( '.ticket_available' ).text().replace( /[^\d]/g, '' ), 10 );
+
+		return Number.isNaN( capacity ) || Number.isNaN( available ) ? undefined : Math.max( 0, capacity - available );
+	};
+
+	const showValidationNotice = ( problems ) => {
+		$( '.tec-tickets-deferred-save-validation' ).remove();
+		const $notice = $(
+			'<div class="notice notice-error is-dismissible tec-tickets-deferred-save-validation" role="alert"><p></p><ul></ul></div>'
+		);
+		$notice.find( 'p' ).text( strings.invalidHeading || '' );
+		problems.forEach( ( { name, rules } ) => {
+			const reasons = rules.map( ( rule ) => ( strings.rules && strings.rules[ rule ] ) || rule ).join( ', ' );
+			$( '<li>' ).text( `${ name }: ${ reasons }` ).appendTo( $notice.find( 'ul' ) );
+		} );
+		$( '.wp-header-end' ).after( $notice );
+		window.scrollTo( { top: 0 } );
+	};
+
+	/**
+	 * Validates every staged create and update before the post form submits.
+	 *
+	 * @param {Event} event The submit event.
+	 *
+	 * @return {boolean} Whether the submit may continue.
+	 */
+	const validateBeforeSubmit = ( event ) => {
+		$( '.tec-tickets-deferred-save-row--invalid' ).removeClass( 'tec-tickets-deferred-save-row--invalid' );
+		const { create, update } = state.toPayload();
+		const problems = [];
+
+		create.forEach( ( { fields, summary }, position ) => {
+			const rules = validateFields( fields );
+			if ( rules.length ) {
+				problems.push( { name: summary.name || `#${ position + 1 }`, rules } );
+				$panelBase()
+					.find( `tr[data-tec-deferred-save-position="${ position }"]` )
+					.addClass( 'tec-tickets-deferred-save-row--invalid' );
+			}
+		} );
+
+		Object.entries( update ).forEach( ( [ ticketId, { fields, summary } ] ) => {
+			const rules = validateFields( fields, { sold: soldFromRow( ticketId ) } );
+			if ( rules.length ) {
+				problems.push( { name: summary.name || `#${ ticketId }`, rules } );
+				$panelBase()
+					.find( `tr[data-ticket-type-id="${ ticketId }"]` )
+					.addClass( 'tec-tickets-deferred-save-row--invalid' );
+			}
+		} );
+
+		if ( ! problems.length ) {
+			$( '.tec-tickets-deferred-save-validation' ).remove();
+			return true;
+		}
+
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		showValidationNotice( problems );
+		// WordPress disables the publish button and shows its spinner before the form submits; hand them back.
+		$( '#publish, #save-post' ).prop( 'disabled', false ).removeClass( 'disabled' );
+		$( '#publishing-action .spinner, #save-action .spinner' ).removeClass( 'is-active' );
+		$( '.tec-tickets-deferred-save-row--invalid' ).first().find( 'button' ).first().trigger( 'focus' );
+
+		return false;
+	};
+
+	$( '#post' ).on( 'submit.tecDeferredSaveValidation', validateBeforeSubmit );
 
 	// After every panel refresh: re-render the staged rows and markers, and lay staged values over an opened form.
 	addAction( 'tec.tickets.admin.panels.refreshed', NAMESPACE, ( { swapTo } ) => {

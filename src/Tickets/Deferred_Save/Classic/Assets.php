@@ -65,9 +65,18 @@ class Assets extends Controller_Contract {
 				'localize'     => [
 					'name' => 'tecTicketsDeferredSave',
 					'data' => fn() => [
-						'free'         => __( 'Free', 'event-tickets' ),
-						'unlimited'    => __( 'Unlimited', 'event-tickets' ),
-						'leaveMessage' => __( 'You have ticket changes that are not saved yet. Leave without saving them?', 'event-tickets' ),
+						'free'           => __( 'Free', 'event-tickets' ),
+						'unlimited'      => __( 'Unlimited', 'event-tickets' ),
+						'leaveMessage'   => __( 'You have ticket changes that are not saved yet. Leave without saving them?', 'event-tickets' ),
+						'invalidHeading' => __( 'Some staged tickets are not valid. Fix them before saving the post.', 'event-tickets' ),
+						'moveStaged'     => __( 'The move is staged and happens when you save the post. You may now close this window.', 'event-tickets' ),
+						'rules'          => [
+							'name'        => __( 'a name is required', 'event-tickets' ),
+							'price'       => __( 'the price must be a non-negative number', 'event-tickets' ),
+							'sale_price'  => __( 'the sale price must be a number below the price', 'event-tickets' ),
+							'sale_window' => __( 'the sale window must start before it ends', 'event-tickets' ),
+							'capacity'    => __( 'the capacity cannot be below the tickets already sold', 'event-tickets' ),
+						],
 					],
 				],
 			]
