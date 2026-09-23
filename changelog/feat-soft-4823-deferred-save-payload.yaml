@@ -1,0 +1,7 @@
+significance: minor
+type: feat
+entry: "Added the `tec_tickets` payload contract for deferred ticket save:
+  `update`, `create`, `delete` and `move` parts, parsed and normalized by
+  `TEC\\Tickets\\Deferred_Save\\Payload`. Ticket data is passed on untouched.
+  Nothing reads it from a request yet. [SOFT-4823]"
+timestamp: 2026-09-23T11:18:07.590Z
