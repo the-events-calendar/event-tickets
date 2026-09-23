@@ -10,13 +10,19 @@ import * as sagas from '../deferred-sagas';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
 
-jest.mock( '@wordpress/data', () => ( {
-	select: () => ( {
-		getCurrentPost: () => ( { id: 10, tec_tickets: { created: { 0: 501, 1: 502 }, errors: [] } } ),
-		isAutosavingPost: () => false,
-	} ),
-	dispatch: () => ( { editPost: () => {} } ),
-} ) );
+jest.mock( '@wordpress/data', () => {
+	// One record object, as core-data keeps one: the same `tec_tickets` reference comes back on every read.
+	const record = { id: 10, tec_tickets: { created: { 0: 501, 1: 502 }, errors: [] } };
+
+	return {
+		select: () => ( {
+			getCurrentPost: () => record,
+			isAutosavingPost: () => false,
+			getBlock: () => ( {} ),
+		} ),
+		dispatch: () => ( { editPost: () => {} } ),
+	};
+} );
 
 jest.mock( '@wordpress/hooks', () => ( {
 	doAction: jest.fn(),
@@ -132,6 +138,48 @@ describe( 'applySaveResponse', () => {
 
 	it( 'does nothing without a response field', () => {
 		const gen = sagas.applySaveResponse( undefined );
+		expect( gen.next().done ).toBe( true );
+	} );
+
+	it( 'never applies the same response object twice', () => {
+		const again = { created: { 0: 900 }, errors: [] };
+		const first = sagas.applySaveResponse( again, [ 'z' ] );
+		first.next(); // Starts applying: selects the client IDs.
+		const second = sagas.applySaveResponse( again, [ 'z' ] );
+		expect( second.next().done ).toBe( true );
+	} );
+
+	it( 'skips a created position whose block is gone', () => {
+		const gen = sagas.applySaveResponse( { created: { 0: 777 }, errors: [] }, [ 'gone' ] );
+		expect( gen.next().value ).toEqual( select( selectors.getTicketsAllClientIds ) );
+		expect( gen.next( [ 'other' ] ).value ).toEqual( select( selectors.getTicketsByClientId ) );
+		expect( gen.next( { other: { isStaged: false, hasBeenCreated: true, ticketId: 5 } } ).value ).toEqual( select( selectors.getStagedDeletes ) );
+		// No setTicketId for 'gone': straight to the wrap-up.
+		expect( gen.next( [] ).value ).toEqual( put( actions.clearStagedTickets() ) );
+	} );
+} );
+
+describe( 'dropStaged', () => {
+	it( 'forgets the body and rebuilds the payload', () => {
+		sagas.rememberBody( 'x', [ [ 'name', 'X' ] ] );
+		const gen = sagas.dropStaged( 'x' );
+		expect( gen.next().value ).toEqual( call( sagas.refreshPayload ) );
+		expect( gen.next().done ).toBe( true );
+	} );
+} );
+
+describe( 'applyLastSaveResponse', () => {
+	it( 'flags staged blocks when the record carries no fresh answer', () => {
+		// Apply the mocked record's response once, so the next post save finds it stale.
+		const { select: wpSelect } = require( '@wordpress/data' );
+		const warm = sagas.applySaveResponse( wpSelect( 'core/editor' ).getCurrentPost().tec_tickets, [] );
+		warm.next();
+		const gen = sagas.applyLastSaveResponse();
+		expect( gen.next().value ).toEqual( select( selectors.getTicketsAllClientIds ) );
+		expect( gen.next( [ 'a', 'b' ] ).value ).toEqual( select( selectors.getTicketsByClientId ) );
+		const next = gen.next( { a: { isStaged: true }, b: { isStaged: false } } ).value;
+		expect( next.PUT.action.type ).toBe( actions.setTicketSaveError( 'a', '' ).type );
+		expect( next.PUT.action.payload.clientId ).toBe( 'a' );
 		expect( gen.next().done ).toBe( true );
 	} );
 } );

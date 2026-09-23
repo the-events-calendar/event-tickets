@@ -1153,12 +1153,18 @@ export function* deleteTicket( action ) {
 			[ clientId ]
 		);
 
-		if ( hasBeenCreated ) {
-			// On a post that defers ticket saves the deletion is staged and happens with the post save.
-			if ( usesDeferredSave() ) {
+		// On a post that defers ticket saves the deletion is staged and happens with the post save; a staged
+		// ticket that was never saved just leaves the payload.
+		if ( usesDeferredSave() ) {
+			if ( hasBeenCreated ) {
 				yield call( deferredSagas.stageDelete, clientId, ticketId );
-				return;
+			} else {
+				yield call( deferredSagas.dropStaged, clientId );
 			}
+			return;
+		}
+
+		if ( hasBeenCreated ) {
 
 			const { remove_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 			const postId = yield call( [
