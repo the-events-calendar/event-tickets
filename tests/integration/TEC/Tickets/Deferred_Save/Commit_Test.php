@@ -559,6 +559,31 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function data_is_sanitized_as_the_request_helper_sanitizes_it_for_the_ajax_save(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		$data    = $this->ticket_data(
+			'<b>Bold</b> <script>alert(1)</script> name',
+			[
+				'ticket_description' => '<p>Kept</p><script>alert(2)</script>',
+				'ticket_sku'         => 'SKU <i>x</i>',
+			]
+		);
+		$expected = $data;
+		tribe_sanitize_deep( $expected );
+
+		$result = $this->commit()->run( [ 'create' => [ $data ] ], $post_id );
+
+		$ticket_id = $result->get_created()[0];
+		$this->assertSame( $expected['ticket_name'], get_post_field( 'post_title', $ticket_id, 'raw' ) );
+		$this->assertSame( $expected['ticket_description'], get_post_field( 'post_excerpt', $ticket_id, 'raw' ) );
+		$this->assertSame( $expected['ticket_sku'], get_post_meta( $ticket_id, '_sku', true ) );
+		$this->assertStringNotContainsString( '<', get_post_field( 'post_title', $ticket_id, 'raw' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function an_empty_payload_commits_nothing_and_a_malformed_one_reports_it(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
