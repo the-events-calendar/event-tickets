@@ -531,6 +531,34 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function an_exception_while_saving_one_entry_becomes_that_entrys_error(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		add_action(
+			'tec_tickets_ticket_pre_save',
+			static function ( int $saved_post_id, $ticket, array $data ) {
+				if ( 'Explodes' === ( $data['ticket_name'] ?? '' ) ) {
+					throw new \TypeError( 'Unsupported operand types: string - int' );
+				}
+			},
+			10,
+			3
+		);
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'Fine' ), $this->ticket_data( 'Explodes' ), $this->ticket_data( 'Also fine' ) ] ],
+			$post_id
+		);
+
+		$this->assertSame( [ 0, 2 ], array_keys( $result->get_created() ) );
+		$this->assertSame( [ 1 ], $this->error_keys( $result, 'create' ) );
+		$this->assertStringNotContainsString( 'Unsupported operand', $result->get_errors()[0]['message'], 'Internals stay out of the message shown to the editor.' );
+		$this->assertSame( [ 'Fine', 'Also fine' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function an_empty_payload_commits_nothing_and_a_malformed_one_reports_it(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
