@@ -23,6 +23,7 @@ use TEC\Common\StellarWP\Schema\Columns\Text_Column;
 use TEC\Common\StellarWP\Schema\Indexes\Unique_Key;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 use TEC\Common\StellarWP\Schema\Tables\Table_Schema;
+use TEC\Tickets\Commerce\Order_Items\Models\Order_Item;
 
 /**
  * Class Order_Items.
@@ -123,5 +124,18 @@ class Order_Items extends Table {
 				return new Table_Schema( $table_name, $columns, $indexes );
 			},
 		];
+	}
+
+	/**
+	 * Builds a model from a row, so the model and repository lookups return models.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $row The row, with values cast to their PHP types.
+	 *
+	 * @return Order_Item The model.
+	 */
+	public static function transform_from_array( array $row ): Order_Item {
+		return Order_Item::fromData( $row );
 	}
 }
