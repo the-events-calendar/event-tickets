@@ -18,11 +18,13 @@ use Tribe__Tickets__Tickets as Tickets;
  *
  * Runs the payload against the post being saved. The current user must be able to edit that
  * post, or the whole payload is rejected. Every `update`, `delete` and `move` entry must name a
- * ticket attached to that post, and every `delete` entry must pass the per-ticket delete
- * permission filter Event Tickets already exposes; a failed check rejects that entry only.
+ * ticket attached to that post, every `delete` entry must pass the per-ticket delete permission
+ * filter Event Tickets already exposes, and every `move` destination must be a post the current
+ * user can edit; a failed check rejects that entry only.
  *
- * `create` entries carry no ticket ID and pass through. Their `data` is not interpreted here:
- * the providers sanitize it when the ticket is saved, as they do today.
+ * `create` entries carry no ticket ID (the parser removes one found inside the data) and pass
+ * through. `data` is not interpreted here: the providers sanitize it when the ticket is saved,
+ * as they do today.
  *
  * @since TBD
  *
@@ -60,9 +62,23 @@ class Checks {
 			}
 		}
 
-		foreach ( array_keys( $payload->get_move() ) as $ticket_id ) {
+		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
 			if ( ! $this->ticket_belongs_to_post( $ticket_id, $post_id ) ) {
 				$payload = $payload->with_rejected( Payload::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				continue;
+			}
+
+			// Whether the destination can hold this ticket is the move's concern (SOFT-4825); that the user may edit it is ours.
+			if ( ! $this->current_user_can_edit( (int) Event::filter_event_id( $destination_id, 'deferred_save' ) ) ) {
+				$payload = $payload->with_rejected(
+					Payload::MOVE,
+					$ticket_id,
+					sprintf(
+						/* translators: %d: the destination post ID. */
+						__( 'You are not allowed to move tickets to post %d.', 'event-tickets' ),
+						$destination_id
+					)
+				);
 			}
 		}
 
@@ -144,11 +160,11 @@ class Checks {
 	private function get_ticket_on_post( int $ticket_id, int $post_id ): ?Ticket_Object {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( ! $provider instanceof Tickets ) {
+		// The provider is also found for its attendees and orders, and not every provider's `get_ticket()` checks the type.
+		if ( ! $provider instanceof Tickets || get_post_type( $ticket_id ) !== $provider->ticket_object ) {
 			return null;
 		}
 
-		// Providers return `null` for an ID that exists but is not one of their tickets, e.g. an attendee.
 		$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
 		if ( ! $ticket instanceof Ticket_Object ) {
