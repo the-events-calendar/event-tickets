@@ -62,6 +62,19 @@ export const forgetBody = ( clientId ) => {
  * @param {Object} payload The `tec_tickets` payload.
  */
 export const editPostPayload = ( payload ) => {
+	const isEmpty =
+		! payload.create.length &&
+		! Object.keys( payload.update ).length &&
+		! payload.delete.length &&
+		! Object.keys( payload.move ).length;
+
+	if ( isEmpty ) {
+		// Nothing staged: make the edit equal the saved record's field so core drops it and the post is clean.
+		const post = wpSelect( 'core/editor' ).getCurrentPost();
+		wpDispatch( 'core/editor' ).editPost( { tec_tickets: post ? post.tec_tickets : undefined } );
+		return;
+	}
+
 	wpDispatch( 'core/editor' ).editPost( { tec_tickets: payload } );
 };
 
@@ -154,7 +167,7 @@ export function* stageMove( ticketId, destinationId ) {
  */
 export function* hydrateTicket( clientId, ticketId ) {
 	forgetBody( clientId );
-	yield put( actions.fetchTicket( clientId ) );
+	yield put( actions.fetchTicket( clientId, ticketId ) );
 	doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticketId, {} );
 }
 
