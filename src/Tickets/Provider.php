@@ -110,6 +110,9 @@ class Provider extends Service_Provider {
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
 
+		// Deferred Ticket Save.
+		$this->container->register( Deferred_Save\Controller::class );
+
 		$this->has_registered = true;
 
 		return true;
