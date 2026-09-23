@@ -155,22 +155,58 @@ class Commit {
 		$result = new Result();
 
 		foreach ( $payload->get_update() as $ticket_id => $data ) {
-			$result = $this->update( $result, $post_id, $ticket_id, $data );
+			$result = $this->guarded( $result, Payload::UPDATE, $ticket_id, fn( Result $r ) => $this->update( $r, $post_id, $ticket_id, $data ) );
 		}
 
 		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
-			$result = $this->move( $result, $ticket_id, $destination_id );
+			$result = $this->guarded( $result, Payload::MOVE, $ticket_id, fn( Result $r ) => $this->move( $r, $ticket_id, $destination_id ) );
 		}
 
 		foreach ( $payload->get_create() as $position => $data ) {
-			$result = $this->create( $result, $post_id, $position, $data );
+			$result = $this->guarded( $result, Payload::CREATE, $position, fn( Result $r ) => $this->create( $r, $post_id, $position, $data ) );
 		}
 
 		foreach ( $payload->get_delete() as $ticket_id ) {
-			$result = $this->delete( $result, $post_id, $ticket_id );
+			$result = $this->guarded( $result, Payload::DELETE, $ticket_id, fn( Result $r ) => $this->delete( $r, $post_id, $ticket_id ) );
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Runs one entry's save so that an exception inside a provider becomes that entry's error.
+	 *
+	 * The post save must finish and the other entries must still be applied whatever one provider
+	 * does with one entry's data; the exception is logged for the developer, not shown to the editor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result                  $result The result so far.
+	 * @param string                  $part   The part the entry belongs to.
+	 * @param int                     $key    The entry's key.
+	 * @param callable(Result):Result $step   The save step.
+	 *
+	 * @return Result The result with the step, or its failure, folded in.
+	 */
+	private function guarded( Result $result, string $part, int $key, callable $step ): Result {
+		try {
+			return $step( $result );
+		} catch ( \Throwable $e ) {
+			do_action(
+				'tribe_log',
+				'error',
+				'Deferred ticket save: an entry could not be saved.',
+				[
+					'source'    => __CLASS__,
+					'part'      => $part,
+					'key'       => $key,
+					'exception' => get_class( $e ),
+					'message'   => $e->getMessage(),
+				]
+			);
+
+			return $result->with_error( $part, $key, $this->not_saved_message() );
+		}
 	}
 
 	/**
