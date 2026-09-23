@@ -132,7 +132,7 @@ class Reservations {
 	/**
 	 * Fetches, from the service, what the given reservations actually are.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @param int      $object_id The post the reservations were made for.
 	 * @param string[] $ids       The reservation IDs to look up.
@@ -228,7 +228,7 @@ class Reservations {
 	/**
 	 * Returns the URL to the endpoint to look up the reservations.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @return string The URL to the endpoint to look up the reservations.
 	 */

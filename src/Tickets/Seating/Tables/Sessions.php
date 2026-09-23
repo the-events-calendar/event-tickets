@@ -208,7 +208,7 @@ class Sessions extends Table {
 	 * Seating service issued the token. Starting the timer is the visitor's first deliberate act, and
 	 * it is what shortens the row's expiration from the token's own lifetime to the seat timeout.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @param string $token     The session token to look for.
 	 * @param int    $object_id The post ID the token should have been issued for.
@@ -251,7 +251,7 @@ class Sessions extends Table {
 	 * and the `expiration >` guard is what stops that second start from extending a running hold.
 	 *
 	 * @since 5.29.5
-	 * @since TBD Marked the session as started, so an issued token can be told from a used one.
+	 * @since 5.29.5.1 Marked the session as started, so an issued token can be told from a used one.
 	 *
 	 * @param string $token                The session token to start the timer for.
 	 * @param int    $object_id            The post ID the token was issued for.

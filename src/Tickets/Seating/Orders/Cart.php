@@ -76,7 +76,7 @@ class Cart {
 	 * Handles the seat selection for the cart.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
+	 * @since 5.29.5.1 Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *

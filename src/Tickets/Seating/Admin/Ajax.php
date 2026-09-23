@@ -638,7 +638,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Sanitized the request body, replaced the capability check with a nonce check and tied the token to the post.
-	 * @since TBD Require a started session, refuse a ticket outside the post, and store the seat the service holds for each reservation instead of the one the browser names.
+	 * @since 5.29.5.1 Require a started session, refuse a ticket outside the post, and store the seat the service holds for each reservation instead of the one the browser names.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -783,7 +783,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @since 5.16.0
 	 * @since 5.29.5 Replaced the capability check with a nonce check.
-	 * @since TBD Refuse a token the site never issued for the post the request names.
+	 * @since 5.29.5.1 Refuse a token the site never issued for the post the request names.
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
@@ -1418,7 +1418,7 @@ class Ajax extends Controller_Contract {
 	 * ticket, or holds on a seat type the ticket does not carry fails the whole request: a hold cannot be
 	 * half right.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @param int                     $post_id      The post the reservations are for.
 	 * @param array<int,array<array>> $reservations The reservations as posted, keyed by ticket ID, each carrying the
@@ -1468,7 +1468,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Maps each of a post's seated ticket IDs to the seat type it carries.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @param int $post_id The post to collect the tickets of.
 	 *
