@@ -158,7 +158,7 @@ class Cart {
 	 * Saves the seat data for the attendee.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Sanitized the seat label.
+	 * @since 5.29.5 Sanitized the seat label.
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.

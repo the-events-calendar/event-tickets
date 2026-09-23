@@ -431,7 +431,7 @@ class Timer extends Controller_Contract {
 	 * This request will create a new session in the database and will return the number of seconds left in the timer.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Rejected tokens the site never issued, before cancelling any previous session.
+	 * @since 5.29.5 Rejected tokens the site never issued, before cancelling any previous session.
 	 *
 	 * @return void
 	 */

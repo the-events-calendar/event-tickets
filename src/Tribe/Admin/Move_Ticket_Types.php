@@ -12,7 +12,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	/**
 	 * Registers the move ticket types hooks.
 	 *
-	 * @since TBD Moved the dialog off `admin_init`, which fires before WordPress resolves the admin screen.
+	 * @since 5.29.5 Moved the dialog off `admin_init`, which fires before WordPress resolves the admin screen.
 	 */
 	public function setup() {
 		add_action( 'current_screen', [ $this, 'dialog' ] );

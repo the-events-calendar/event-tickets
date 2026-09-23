@@ -40,6 +40,11 @@ function tec_tickets_tests_get_fake_merchant_data(): array {
 		'merchant_country'  => 'US',
 		'merchant_currency' => 'USD',
 		'whodat_signature'  => 'whodat-signature',
+		/**
+		 * Fixed, not relative: this function is re-called inside assertions. Far enough out that no
+		 * suite drifts into the token refresh window and starts making outbound requests.
+		 */
+		'expires_at'        => '2099-01-01T00:00:00Z',
 	];
 }
 
@@ -57,14 +62,20 @@ tribe_update_option( Webhooks::OPTION_WEBHOOK, $webhook );
 // Enable pretty permalinks.
 update_option( 'permalink_structure', '/%postname%/' );
 
-// When we have logs of level error, critical, warning, throw an exception.
-add_action( 'tribe_log', static function ( $level, $message, $context ) {
+/**
+ * When we have logs of level error, critical, warning, throw an exception. Kept in a global so that the
+ * tests asserting on failure paths can lift it by name: emptying $wp_filter['tribe_log'] instead risks
+ * being caught in WordPress's one-time hook snapshot, which would silently disarm this for a whole run.
+ */
+$GLOBALS['tec_tickets_square_log_guard'] = static function ( $level, $message, $context ) {
 	if ( ! in_array( $level, [ 'error', 'critical', 'warning' ], true ) ) {
 		return;
 	}
 
 	throw new RuntimeException( 'Triggered log: ' . $message . ' with context: ' . wp_json_encode( $context, JSON_SNAPSHOT_OPTIONS ) );
-} );
+};
+
+add_action( 'tribe_log', $GLOBALS['tec_tickets_square_log_guard'], 10, 3 );
 
 tec_tickets_tests_enable_gateway_id_generation();
 
