@@ -12,6 +12,7 @@ class Classic_Save_Test extends WPTestCase {
 	use With_Tickets_Commerce;
 
 	private array $deferred_posts = [];
+	private ?int $form_post_id    = null;
 
 	public function setUp(): void {
 		parent::setUp();
@@ -28,6 +29,7 @@ class Classic_Save_Test extends WPTestCase {
 	public function tearDown(): void {
 		$_POST                = [];
 		$this->deferred_posts = [];
+		$this->form_post_id   = null;
 		wp_set_current_user( 0 );
 		parent::tearDown();
 	}
@@ -39,6 +41,7 @@ class Classic_Save_Test extends WPTestCase {
 	protected function create_deferred_post(): int {
 		$post_id                = static::factory()->post->create();
 		$this->deferred_posts[] = $post_id;
+		$this->form_post_id     = $this->form_post_id ?? $post_id;
 
 		return $post_id;
 	}
@@ -60,6 +63,9 @@ class Classic_Save_Test extends WPTestCase {
 	 */
 	protected function post_payload( array $payload, bool $with_nonce = true ): void {
 		$post = [ 'tec_tickets' => $payload ];
+		if ( null !== $this->form_post_id ) {
+			$post['post_ID'] = $this->form_post_id;
+		}
 		if ( $with_nonce ) {
 			$post[ Classic_Save::NONCE_FIELD ] = wp_create_nonce( Classic_Save::NONCE_ACTION );
 		}
@@ -81,6 +87,47 @@ class Classic_Save_Test extends WPTestCase {
 		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
 
 		$this->assertSame( [ 'From the form' ], $this->ticket_names( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_applies_the_payload_only_to_the_post_the_form_is_for(): void {
+		$this->log_in_as_admin();
+		$post_id       = $this->create_deferred_post();
+		$other_post_id = $this->create_deferred_post();
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'For the form post' ) ] ] );
+		$_POST['post_ID'] = $post_id;
+
+		// Another ticketable post saved while the form post saves, as ECP does with a Series.
+		add_action(
+			'save_post',
+			static function ( int $saved_id ) use ( $post_id, $other_post_id ) {
+				if ( $saved_id === $post_id ) {
+					wp_update_post( [ 'ID' => $other_post_id, 'post_title' => 'Nested save' ] );
+				}
+			},
+			5
+		);
+
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
+
+		$this->assertSame( [ 'For the form post' ], $this->ticket_names( $post_id ) );
+		$this->assertSame( [], $this->ticket_names( $other_post_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_does_nothing_when_the_form_is_for_another_post(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Wrong post' ) ] ] );
+		$_POST['post_ID'] = $post_id + 1000;
+
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
+
+		$this->assertSame( [], $this->ticket_names( $post_id ) );
 	}
 
 	/**
@@ -158,6 +205,7 @@ class Classic_Save_Test extends WPTestCase {
 		$this->log_in_as_admin();
 		$post_id                = static::factory()->post->create( [ 'post_status' => 'auto-draft' ] );
 		$this->deferred_posts[] = $post_id;
+		$this->form_post_id     = $post_id;
 		$this->post_payload( [ 'create' => [ $this->ticket_data( 'First publish' ) ] ] );
 
 		wp_update_post( [ 'ID' => $post_id, 'post_status' => 'publish', 'post_title' => 'New post' ] );
@@ -173,6 +221,7 @@ class Classic_Save_Test extends WPTestCase {
 		// A page: the ticket order is saved by a hook attached per ticketable type at boot, which `post` is not.
 		$post_id                = static::factory()->post->create( [ 'post_type' => 'page' ] );
 		$this->deferred_posts[] = $post_id;
+		$this->form_post_id     = $post_id;
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
 		$this->post_payload( [ 'update' => [ $ticket_id => [ 'ticket_name' => 'Reordered' ] ] ] );
 		$_POST['tribe-tickets'] = [ 'list' => [ $ticket_id => [ 'order' => 4 ] ] ];
