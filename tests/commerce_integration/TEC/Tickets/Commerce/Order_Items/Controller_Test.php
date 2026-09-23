@@ -68,7 +68,7 @@ class Controller_Test extends Controller_Test_Case {
 	public function test_unregister_keeps_the_table_and_its_rows(): void {
 		$controller = $this->make_controller();
 		$controller->register();
-		Order_Items::insert( [ 'order_id' => 1, 'type' => 'ticket', 'name' => 'GA', 'currency' => 'USD', 'quantity' => 1, 'price' => 1050, 'sub_total' => 1050, 'created_at' => gmdate( 'Y-m-d H:i:s' ) ] );
+		Order_Items::insert( [ 'order_id' => 1, 'type' => 'ticket', 'ticket_id' => 0, 'modifier_id' => 0, 'purchase_rule_id' => 0, 'name' => 'GA', 'currency' => 'USD', 'quantity' => 1, 'price' => 1050, 'sub_total' => 1050, 'created_at' => gmdate( 'Y-m-d H:i:s' ) ] );
 
 		$controller->unregister();
 
