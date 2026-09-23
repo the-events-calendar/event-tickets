@@ -126,7 +126,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_post_that_does_not_use_deferred_save_is_untouched_and_gets_no_field(): void {
+	public function a_post_that_does_not_use_deferred_save_is_untouched_and_the_payload_is_answered_with_an_error(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 
@@ -136,7 +136,10 @@ class Block_Save_Test extends WPTestCase {
 		);
 
 		$this->assertSame( 200, $response->get_status() );
-		$this->assertArrayNotHasKey( 'tec_tickets', $response->get_data() );
+		$data = $response->get_data();
+		$this->assertSame( [], $data['tec_tickets']['created'] );
+		$this->assertCount( 1, $data['tec_tickets']['errors'] );
+		$this->assertNull( $data['tec_tickets']['errors'][0]['part'] );
 		$this->assertSame( [], $this->ticket_names( $post_id ) );
 	}
 
