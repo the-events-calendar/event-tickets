@@ -4,11 +4,13 @@ namespace TEC\Tickets\Deferred_Save;
 
 use Codeception\TestCase\WPTestCase;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 
 class Checks_Test extends WPTestCase {
 	use Ticket_Maker;
+	use RSVP_Ticket_Maker;
 	use Attendee_Maker;
 	use With_Tickets_Commerce;
 
@@ -20,32 +22,32 @@ class Checks_Test extends WPTestCase {
 	private int $second_foreign_ticket_id;
 
 	/**
-	 * @before
+	 * Fixtures are created from the test body, inside the per-test transaction. PHPUnit runs
+	 * before-hook methods ahead of `setUp()`, before the transaction starts, so rows created in
+	 * one are never rolled back and leak into later tests. Do not annotate this method as a hook.
 	 */
-	public function create_posts_and_tickets(): void {
-		$this->post_id           = static::factory()->post->create();
-		$this->other_post_id     = static::factory()->post->create();
-		$this->ticket_id         = $this->create_tc_ticket( $this->post_id, 10 );
-		$this->second_ticket_id  = $this->create_tc_ticket( $this->post_id, 20 );
-		$this->foreign_ticket_id = $this->create_tc_ticket( $this->other_post_id, 30 );
+	protected function given_two_posts_with_tickets(): void {
+		$this->post_id                  = static::factory()->post->create();
+		$this->other_post_id            = static::factory()->post->create();
+		$this->ticket_id                = $this->create_tc_ticket( $this->post_id, 10 );
+		$this->second_ticket_id         = $this->create_tc_ticket( $this->post_id, 20 );
+		$this->foreign_ticket_id        = $this->create_tc_ticket( $this->other_post_id, 30 );
 		$this->second_foreign_ticket_id = $this->create_tc_ticket( $this->other_post_id, 40 );
 	}
 
-	/**
-	 * @after
-	 */
-	public function reset_user(): void {
+	public function tearDown(): void {
 		wp_set_current_user( 0 );
+		parent::tearDown();
 	}
 
-	private function log_in_as( string $role ): int {
+	protected function log_in_as( string $role ): int {
 		$user_id = static::factory()->user->create( [ 'role' => $role ] );
 		wp_set_current_user( $user_id );
 
 		return $user_id;
 	}
 
-	private function error_keys( Payload $payload, string $part ): array {
+	protected function error_keys( Payload $payload, string $part ): array {
 		return array_values(
 			array_map(
 				static fn( array $error ) => $error['key'],
@@ -54,7 +56,7 @@ class Checks_Test extends WPTestCase {
 		);
 	}
 
-	private function run_checks( array $raw ): Payload {
+	protected function run_checks( array $raw ): Payload {
 		return tribe( Checks::class )->run( Payload::from_array( $raw ), $this->post_id );
 	}
 
@@ -62,6 +64,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function a_user_who_cannot_edit_the_post_gets_the_whole_payload_rejected(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'subscriber' );
 		$data = [ 'ticket_name' => 'x' ];
 
@@ -85,6 +88,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function a_logged_out_user_gets_the_whole_payload_rejected(): void {
+		$this->given_two_posts_with_tickets();
 		wp_set_current_user( 0 );
 
 		$checked = $this->run_checks( [ 'delete' => [ $this->ticket_id ] ] );
@@ -97,6 +101,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function an_editor_passes_the_post_level_check_and_owned_entries_survive(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$data = [ 'ticket_name' => 'x', 'custom_field' => 'rides along' ];
 
@@ -111,7 +116,7 @@ class Checks_Test extends WPTestCase {
 
 		$this->assertTrue( $checked->is_valid() );
 		$this->assertSame( [], $checked->get_errors() );
-		$this->assertSame( [ $this->ticket_id => $data ], $checked->get_update() );
+		$this->assertSame( [ $this->ticket_id => $data + [ 'ticket_id' => $this->ticket_id ] ], $checked->get_update() );
 		$this->assertSame( [ $data, $data ], $checked->get_create() );
 		$this->assertSame( [ $this->second_ticket_id ], $checked->get_delete() );
 		$this->assertSame( [ $this->ticket_id => $this->other_post_id ], $checked->get_move() );
@@ -121,6 +126,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function the_author_of_the_post_can_edit_it(): void {
+		$this->given_two_posts_with_tickets();
 		$author_id = $this->log_in_as( 'author' );
 		wp_update_post( [ 'ID' => $this->post_id, 'post_author' => $author_id ] );
 
@@ -134,6 +140,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function a_ticket_on_another_post_is_rejected_per_entry_and_siblings_survive(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$data = [ 'ticket_name' => 'x' ];
 
@@ -146,7 +153,7 @@ class Checks_Test extends WPTestCase {
 		);
 
 		$this->assertTrue( $checked->is_valid() );
-		$this->assertSame( [ $this->ticket_id => $data ], $checked->get_update() );
+		$this->assertSame( [ $this->ticket_id => $data + [ 'ticket_id' => $this->ticket_id ] ], $checked->get_update() );
 		$this->assertSame( [ $this->second_ticket_id ], $checked->get_delete() );
 		$this->assertSame( [ $this->ticket_id => $this->other_post_id ], $checked->get_move() );
 		$this->assertSame( [ $this->foreign_ticket_id ], $this->error_keys( $checked, 'update' ) );
@@ -159,6 +166,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function ids_that_are_not_tickets_are_rejected(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$attendee_id = $this->create_attendee_for_ticket( $this->ticket_id, $this->post_id );
 		$data        = [ 'ticket_name' => 'x' ];
@@ -175,7 +183,7 @@ class Checks_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertSame( [ $this->ticket_id => $data ], $checked->get_update() );
+		$this->assertSame( [ $this->ticket_id => $data + [ 'ticket_id' => $this->ticket_id ] ], $checked->get_update() );
 		$this->assertEqualSets(
 			[ $this->post_id, $this->other_post_id, $attendee_id, 999999999 ],
 			$this->error_keys( $checked, 'update' )
@@ -185,7 +193,61 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function an_rsvp_attendee_on_the_post_is_not_a_ticket(): void {
+		$this->given_two_posts_with_tickets();
+		$this->log_in_as( 'editor' );
+		$rsvp_ticket_id   = $this->create_rsvp_ticket( $this->post_id );
+		$rsvp_attendee_id = $this->create_attendee_for_ticket( $rsvp_ticket_id, $this->post_id );
+		$data             = [ 'ticket_name' => 'x' ];
+
+		$checked = $this->run_checks(
+			[
+				'update' => [ $rsvp_attendee_id => $data, $rsvp_ticket_id => $data ],
+				'delete' => [ $this->post_id ],
+				'move'   => [ $rsvp_attendee_id => $this->other_post_id ],
+			]
+		);
+
+		$this->assertSame( [ $rsvp_ticket_id => $data + [ 'ticket_id' => $rsvp_ticket_id ] ], $checked->get_update() );
+		$this->assertSame( [], $checked->get_delete() );
+		$this->assertSame( [], $checked->get_move() );
+		$this->assertSame( [ $rsvp_attendee_id ], $this->error_keys( $checked, 'update' ) );
+		$this->assertSame( [ $this->post_id ], $this->error_keys( $checked, 'delete' ) );
+		$this->assertSame( [ $rsvp_attendee_id ], $this->error_keys( $checked, 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_move_destination_the_user_cannot_edit_or_that_does_not_exist_is_rejected(): void {
+		$this->given_two_posts_with_tickets();
+		$author_id = $this->log_in_as( 'author' );
+		wp_update_post( [ 'ID' => $this->post_id, 'post_author' => $author_id ] );
+		$own_other_post_id = static::factory()->post->create( [ 'post_author' => $author_id ] );
+
+		$checked = $this->run_checks(
+			[
+				'move' => [
+					$this->ticket_id        => $this->other_post_id,
+					$this->second_ticket_id => $own_other_post_id,
+				],
+			]
+		);
+
+		$this->assertSame( [ $this->second_ticket_id => $own_other_post_id ], $checked->get_move() );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( $checked, 'move' ) );
+
+		$checked = $this->run_checks( [ 'move' => [ $this->ticket_id => 999999999 ] ] );
+
+		$this->assertSame( [], $checked->get_move() );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( $checked, 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function the_delete_filter_can_deny_one_ticket_and_leave_the_rest(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$denied = $this->ticket_id;
 		$seen   = [];
@@ -218,6 +280,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function the_delete_filter_is_not_asked_about_update_or_move_entries(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		add_filter( 'tribe_tickets_current_user_can_delete_ticket', '__return_false' );
 
@@ -235,6 +298,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function an_already_rejected_payload_comes_back_unchanged(): void {
+		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$payload = Payload::from_array( 'not an array' );
 
@@ -248,6 +312,7 @@ class Checks_Test extends WPTestCase {
 	 * @test
 	 */
 	public function an_empty_payload_passes_without_touching_the_user(): void {
+		$this->given_two_posts_with_tickets();
 		wp_set_current_user( 0 );
 
 		$checked = $this->run_checks( [] );
