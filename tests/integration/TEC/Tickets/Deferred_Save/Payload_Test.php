@@ -33,7 +33,7 @@ class Payload_Test extends WPTestCase {
 		$this->assertTrue( $payload->is_valid() );
 		$this->assertTrue( $payload->has_changes() );
 		$this->assertSame( [], $payload->get_errors() );
-		$this->assertSame( [ 123 => $update_data ], $payload->get_update() );
+		$this->assertSame( [ 123 => $update_data + [ 'ticket_id' => 123 ] ], $payload->get_update() );
 		$this->assertSame( [ 0 => $create_data, 1 => $create_data ], $payload->get_create() );
 		$this->assertSame( [ 456 ], $payload->get_delete() );
 		$this->assertSame( [ 789 => 42 ], $payload->get_move() );
@@ -54,8 +54,39 @@ class Payload_Test extends WPTestCase {
 
 		$payload = Payload::from_array( [ 'update' => [ 5 => $data ], 'create' => [ $data ] ] );
 
-		$this->assertSame( $data, $payload->get_update()[5] );
+		$this->assertSame( $data + [ 'ticket_id' => 5 ], $payload->get_update()[5] );
 		$this->assertSame( $data, $payload->get_create()[0] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function the_update_key_wins_over_a_ticket_id_inside_the_data(): void {
+		$payload = Payload::from_array(
+			[
+				'update' => [
+					123 => [ 'ticket_name' => 'smuggled', 'ticket_id' => 999 ],
+					124 => [ 'ticket_name' => 'plain' ],
+				],
+			]
+		);
+
+		$this->assertSame(
+			[
+				123 => [ 'ticket_name' => 'smuggled', 'ticket_id' => 123 ],
+				124 => [ 'ticket_name' => 'plain', 'ticket_id' => 124 ],
+			],
+			$payload->get_update()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_ticket_id_inside_create_data_is_dropped(): void {
+		$payload = Payload::from_array( [ 'create' => [ [ 'ticket_name' => 'new', 'ticket_id' => 123 ] ] ] );
+
+		$this->assertSame( [ [ 'ticket_name' => 'new' ] ], $payload->get_create() );
 	}
 
 	/**
@@ -152,7 +183,7 @@ class Payload_Test extends WPTestCase {
 		);
 
 		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [ 7 => $data ], $payload->get_update() );
+		$this->assertSame( [ 7 => $data + [ 'ticket_id' => 7 ] ], $payload->get_update() );
 		$this->assertSame( [ 8 ], $payload->get_delete() );
 		$this->assertSame( [ 11 => 2 ], $payload->get_move() );
 		$this->assertSame( [ 'abc', 0, -1 ], $this->error_keys( $payload, 'update' ) );
@@ -173,7 +204,7 @@ class Payload_Test extends WPTestCase {
 		);
 
 		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [ 2 => $data ], $payload->get_update() );
+		$this->assertSame( [ 2 => $data + [ 'ticket_id' => 2 ] ], $payload->get_update() );
 		$this->assertSame( [ 0 => $data, 2 => $data ], $payload->get_create() );
 		$this->assertSame( [ 1, 3 ], $this->error_keys( $payload, 'update' ) );
 		$this->assertSame( [ 1, 3 ], $this->error_keys( $payload, 'create' ) );
@@ -192,7 +223,7 @@ class Payload_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertSame( [ 123 => $data ], $payload->get_update() );
+		$this->assertSame( [ 123 => $data + [ 'ticket_id' => 123 ] ], $payload->get_update() );
 		$this->assertSame( [ 456 ], $payload->get_delete() );
 		$this->assertSame( [ 789 => 42 ], $payload->get_move() );
 	}
@@ -221,7 +252,7 @@ class Payload_Test extends WPTestCase {
 		);
 
 		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [ 1 => $data ], $payload->get_update() );
+		$this->assertSame( [ 1 => $data + [ 'ticket_id' => 1 ] ], $payload->get_update() );
 		$this->assertSame( [ 3 ], $payload->get_delete() );
 		$this->assertCount( 1, $payload->get_errors() );
 		$this->assertSame( 2, $payload->get_errors()[0]['key'] );
@@ -249,7 +280,7 @@ class Payload_Test extends WPTestCase {
 
 		$this->assertNotSame( $payload, $rejected );
 		$this->assertSame( [], $payload->get_errors(), 'The original payload is untouched.' );
-		$this->assertSame( [ 2 => $data ], $rejected->get_update() );
+		$this->assertSame( [ 2 => $data + [ 'ticket_id' => 2 ] ], $rejected->get_update() );
 		$this->assertSame( [ 0 => $data ], $rejected->get_create() );
 		$this->assertSame( [ 3 ], $rejected->get_delete() );
 		$this->assertSame( [ 6 => 9 ], $rejected->get_move() );
