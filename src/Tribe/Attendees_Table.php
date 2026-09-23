@@ -1042,7 +1042,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
-	 * @since TBD Only a sortable column and an `ASC`/`DESC` direction are read from the request.
+	 * @since 5.29.5.1 Only a sortable column and an `ASC`/`DESC` direction are read from the request.
 	 *
 	 * @return void
 	 */

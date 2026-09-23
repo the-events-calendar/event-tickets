@@ -584,7 +584,7 @@ class Order_Repository extends Tribe__Repository {
 	 * Handles the `order_by` clauses for events
 	 *
 	 * @since 5.5.0
-	 * @since TBD Directions other than `ASC` or `DESC` are replaced with `DESC`.
+	 * @since 5.29.5.1 Directions other than `ASC` or `DESC` are replaced with `DESC`.
 	 *
 	 * @param string $order_by The key used to order items.
 	 */

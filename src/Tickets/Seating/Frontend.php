@@ -108,7 +108,7 @@ class Frontend extends Controller_Contract {
 	/**
 	 * Marks a response that will render the seat selection modal as non-cacheable.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @return void
 	 */
@@ -127,7 +127,7 @@ class Frontend extends Controller_Contract {
 	 * can still embed a seat selection token — an archive showing full content, above all. This runs
 	 * before any output, which is the only point at which the response headers can still be set.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @return bool Whether the main query holds a post that would render seat selection.
 	 */
@@ -152,7 +152,7 @@ class Frontend extends Controller_Contract {
 	/**
 	 * Marks the current response as non-cacheable.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @return void
 	 */
@@ -174,7 +174,7 @@ class Frontend extends Controller_Contract {
 	 * Replace the Tickets' block with the one starting the seat selection flow.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Mark a response embedding a seat selection token as non-cacheable.
+	 * @since 5.29.5.1 Mark a response embedding a seat selection token as non-cacheable.
 	 *
 	 * @param string              $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.

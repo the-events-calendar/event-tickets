@@ -684,7 +684,7 @@ class Controller extends Controller_Contract {
 	 * Updates an Attendee reservation from AJAX data.
 	 *
 	 * @since 5.16.0
-	 * @since TBD Refuse an attendee that does not belong to the post the capability was checked against.
+	 * @since 5.29.5.1 Refuse an attendee that does not belong to the post the capability was checked against.
 	 *
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
@@ -869,7 +869,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether a ticket belongs to a given post.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @param int $ticket_id The ticket to check.
 	 * @param int $post_id   The post the ticket should belong to.
@@ -893,7 +893,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Whether an attendee is attached to a given post.
 	 *
-	 * @since TBD
+	 * @since 5.29.5.1
 	 *
 	 * @param int $attendee_id The attendee to check.
 	 * @param int $post_id     The post the attendee should belong to.
