@@ -22,7 +22,10 @@ namespace TEC\Tickets\Deferred_Save;
  *         move   => [ ticket ID => destination post ID ],
  *     ]
  *
- * `data` is the array Event Tickets accepts for a ticket save today and is passed on untouched.
+ * `data` is the array Event Tickets accepts for a ticket save today and is passed on untouched,
+ * with one exception: `ticket_id`. The ticket save reads the ticket to write from `data['ticket_id']`,
+ * so the entry's key overwrites it on `update` and it is removed from `create`. The key is the ID
+ * the checks verify; a different one inside the data must never reach the save.
  * An entry that does not match the contract is dropped and recorded as an error, keyed by ticket
  * ID for `update`, `delete` and `move` and by list position for `create`. A payload that is not an
  * array, or that carries an unknown part, is rejected as a whole.
@@ -333,6 +336,9 @@ class Payload {
 				continue;
 			}
 
+			// The key is the checked ticket ID; the save reads the ID from the data, so the key must win.
+			$data['ticket_id'] = $ticket_id;
+
 			$this->update[ $ticket_id ] = $data;
 		}
 	}
@@ -363,6 +369,9 @@ class Payload {
 				$this->reject( self::CREATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
 				continue;
 			}
+
+			// A new ticket has no ID; one inside the data would turn the create into an unchecked update.
+			unset( $data['ticket_id'] );
 
 			$this->create[ $position ] = $data;
 		}
