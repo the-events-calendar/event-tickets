@@ -63,6 +63,38 @@ class Commit {
 			return new Result( [], $payload->get_errors() );
 		}
 
+		$entries = count( $payload->get_update() ) + count( $payload->get_create() ) + count( $payload->get_delete() ) + count( $payload->get_move() );
+
+		/**
+		 * Filters how many entries one payload may carry.
+		 *
+		 * Every entry is at least one post write plus every listener on the ticket save actions, so a
+		 * payload is capped to keep one save from queueing thousands of writes.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $max_entries The maximum number of entries across all parts. Default 100.
+		 * @param int $post_id     The ID of the post being saved.
+		 */
+		$max_entries = (int) apply_filters( 'tec_tickets_deferred_save_max_entries', 100, $post_id );
+
+		if ( $entries > $max_entries ) {
+			return new Result(
+				[],
+				[
+					[
+						'part'    => null,
+						'key'     => null,
+						'message' => sprintf(
+							/* translators: %d: the maximum number of ticket changes in one save. */
+							__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
+							$max_entries
+						),
+					],
+				]
+			);
+		}
+
 		$checked = $this->checks->run( $payload, $post_id );
 		$result  = new Result( [], $checked->get_errors() );
 
@@ -77,8 +109,9 @@ class Commit {
 		 * post ID to `Payload`, redirecting entries to another post or splitting them across posts; positions
 		 * in `create` are kept, so the result still reports created IDs by the position the editor sent.
 		 *
-		 * The checks have already run against the post being saved. A callback that redirects entries to
-		 * another post is responsible for that post's permissions.
+		 * The checks have already run against the post being saved. A payload routed to any other post is
+		 * checked again against that post, so its user must be able to edit it and its `update`, `delete`
+		 * and `move` entries must name tickets on it.
 		 *
 		 * @since TBD
 		 *
@@ -93,7 +126,14 @@ class Commit {
 				continue;
 			}
 
-			$result = $result->merge( $this->replay( $route_payload, (int) $route_post_id ) );
+			$route_post_id = (int) $route_post_id;
+
+			if ( $route_post_id !== $post_id ) {
+				$route_payload = $this->checks->run( $route_payload, $route_post_id );
+				$result        = new Result( $result->get_created(), array_merge( $result->get_errors(), $route_payload->get_errors() ) );
+			}
+
+			$result = $result->merge( $this->replay( $route_payload, $route_post_id ) );
 		}
 
 		return $result;
@@ -149,11 +189,8 @@ class Commit {
 			return $result->with_error( Payload::UPDATE, $ticket_id, $this->no_provider_message() );
 		}
 
-		$data['ticket_id'] = $ticket_id;
-
-		if ( ! isset( $data['ticket_type'] ) ) {
-			$data['ticket_type'] = get_post_meta( $ticket_id, '_type', true ) ?: 'default';
-		}
+		$data['ticket_id']   = $ticket_id;
+		$data['ticket_type'] = $this->ticket_type( $data, get_post_meta( $ticket_id, '_type', true ) ?: 'default' );
 
 		if ( ! isset( $data['ticket_menu_order'] ) ) {
 			$data['ticket_menu_order'] = (int) get_post_field( 'menu_order', $ticket_id );
@@ -192,10 +229,7 @@ class Commit {
 		}
 
 		unset( $data['ticket_id'] );
-
-		if ( ! isset( $data['ticket_type'] ) ) {
-			$data['ticket_type'] = 'default';
-		}
+		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
 
 		$ticket_id = $provider->ticket_add( $post_id, $data );
 
@@ -258,6 +292,23 @@ class Commit {
 	private function fire_added( int $post_id, int $ticket_id, array $data ): void {
 		/** This action is documented in src/Tribe/Metabox.php */
 		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+	}
+
+	/**
+	 * Sanitizes the ticket type the entry names, as the classic AJAX save does, falling back when it names none.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data     The ticket data.
+	 * @param string              $fallback The type to use when the data names none.
+	 *
+	 * @return string The ticket type.
+	 */
+	private function ticket_type( array $data, string $fallback ): string {
+		$type = $data['ticket_type'] ?? '';
+		$type = is_scalar( $type ) ? sanitize_text_field( (string) $type ) : '';
+
+		return '' !== $type ? $type : $fallback;
 	}
 
 	/**

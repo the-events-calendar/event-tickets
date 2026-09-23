@@ -346,6 +346,75 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function the_ticket_type_is_sanitized_before_it_reaches_the_meta(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'create' => [
+					$this->ticket_data( 'Array type', [ 'ticket_type' => [ 'nested' => 'array' ] ] ),
+					$this->ticket_data( 'HTML type', [ 'ticket_type' => '<b>series_pass</b>' ] ),
+				],
+				'update' => [ $ticket_id => [ 'ticket_name' => 'Array type on update', 'ticket_type' => [ 'x' ] ] ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( 'default', get_post_meta( $result->get_created()[0], '_type', true ) );
+		$this->assertSame( 'series_pass', get_post_meta( $result->get_created()[1], '_type', true ) );
+		$this->assertSame( 'default', get_post_meta( $ticket_id, '_type', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_route_to_a_post_the_user_cannot_edit_is_rejected(): void {
+		$author_id = static::factory()->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $author_id );
+		$post_id       = static::factory()->post->create( [ 'post_author' => $author_id ] );
+		$other_post_id = static::factory()->post->create( [ 'post_author' => static::factory()->user->create( [ 'role' => 'editor' ] ) ] );
+		add_filter(
+			'tec_tickets_deferred_save_routes',
+			static function ( array $routes, int $routed_post_id, Payload $payload ) use ( $other_post_id ): array {
+				return [ $other_post_id => $payload ];
+			},
+			10,
+			3
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Routed away' ) ] ], $post_id );
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertCount( 1, $result->get_errors() );
+		$this->assertNull( $result->get_errors()[0]['part'] );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $other_post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_payload_with_too_many_entries_is_rejected_as_a_whole(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		add_filter( 'tec_tickets_deferred_save_max_entries', static fn() => 2 );
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'One' ), $this->ticket_data( 'Two' ), $this->ticket_data( 'Three' ) ] ],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertCount( 1, $result->get_errors() );
+		$this->assertNull( $result->get_errors()[0]['part'] );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function an_empty_payload_commits_nothing_and_a_malformed_one_reports_it(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
