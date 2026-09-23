@@ -121,7 +121,7 @@ class Notices extends Controller_Contract {
 		echo '</p><ul>';
 
 		foreach ( (array) $remembered['errors'] as $error ) {
-			echo '<li>' . esc_html( $this->describe( (array) $error ) ) . '</li>';
+			echo '<li>' . esc_html( $this->describe( (array) $error, (int) ( $remembered['post_id'] ?? 0 ) ) ) . '</li>';
 		}
 
 		echo '</ul></div>';
@@ -130,13 +130,18 @@ class Notices extends Controller_Contract {
 	/**
 	 * Turns an error into one line naming the ticket and what went wrong.
 	 *
+	 * A ticket is named only when it is a ticket on the saved post. The key of a rejected entry is
+	 * whatever the payload sent, so looking up any other post's title here would let a payload probe
+	 * titles the user may not be allowed to see.
+	 *
 	 * @since TBD
 	 *
-	 * @param array{part?: string|null, key?: int|string|null, message?: string} $error The error.
+	 * @param array{part?: string|null, key?: int|string|null, message?: string} $error   The error.
+	 * @param int                                                                $post_id The post that was saved.
 	 *
 	 * @return string The line.
 	 */
-	private function describe( array $error ): string {
+	private function describe( array $error, int $post_id ): string {
 		$message = (string) ( $error['message'] ?? '' );
 		$part    = $error['part'] ?? null;
 		$key     = $error['key'] ?? null;
@@ -150,7 +155,7 @@ class Notices extends Controller_Contract {
 			return sprintf( __( 'New ticket %1$d: %2$s', 'event-tickets' ), (int) $key + 1, $message );
 		}
 
-		$title = is_numeric( $key ) ? get_the_title( (int) $key ) : '';
+		$title = is_numeric( $key ) ? $this->ticket_name_on_post( (int) $key, $post_id ) : '';
 
 		if ( '' === $title ) {
 			/* translators: %1$s: the ticket ID, %2$s: the error. */
@@ -159,5 +164,31 @@ class Notices extends Controller_Contract {
 
 		/* translators: %1$s: the ticket name, %2$s: the error. */
 		return sprintf( __( '"%1$s": %2$s', 'event-tickets' ), $title, $message );
+	}
+
+	/**
+	 * The name of a ticket, when the ID is a ticket attached to the post; an empty string otherwise.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ID the payload named.
+	 * @param int $post_id   The post that was saved.
+	 *
+	 * @return string The ticket name, or an empty string.
+	 */
+	private function ticket_name_on_post( int $ticket_id, int $post_id ): string {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider instanceof \Tribe__Tickets__Tickets || get_post_type( $ticket_id ) !== $provider->ticket_object ) {
+			return '';
+		}
+
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+
+		if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object || (int) $ticket->get_event_id() !== $post_id ) {
+			return '';
+		}
+
+		return (string) $ticket->name;
 	}
 }
