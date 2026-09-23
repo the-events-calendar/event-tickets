@@ -474,7 +474,13 @@ var tribe_move_tickets = tribe_move_tickets || {};
 			}
 
 			// On a post that defers ticket saves, the move is staged in the parent window and happens with the post save.
-			const deferredSave = top !== window && top.tribe && top.tribe.tickets ? top.tribe.tickets.deferredSave : null;
+			let deferredSave = null;
+			try {
+				deferredSave = top !== window && top.tribe && top.tribe.tickets ? top.tribe.tickets.deferredSave : null;
+			} catch ( e ) {
+				// A cross-origin parent throws on access; the dialog then behaves as it does today.
+				deferredSave = null;
+			}
 			if ( deferredSave && deferredSave.isEnabled && deferredSave.isEnabled() ) {
 				const targetTitle = $post_choices.find( 'input:checked' ).parent().text().trim();
 				deferredSave.stageMove( tribe_move_tickets_data.ticket_type_id, target_post_id, targetTitle );
