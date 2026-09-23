@@ -246,7 +246,10 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} );
 
 		Object.entries( byName ).forEach( ( [ name, values ] ) => {
-			const $fields = $panel.find( `[name="${ name.replace( /"/g, '\\"' ) }"]` ).not( ':checkbox, :radio' );
+			const $fields = $panel
+				.find( '[name]' )
+				.filter( ( _, el ) => el.name === name )
+				.not( ':checkbox, :radio' );
 			if ( $fields.is( 'select[multiple]' ) ) {
 				$fields.val( values );
 			} else {
@@ -481,10 +484,24 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		render();
 	} );
 
-	// On submit: the staged entries carry everything; an open panel must not post its fields as top-level ones.
+	// On submit: the staged entries carry everything; an open edit panel must not post its fields as top-level ones.
+	// The settings panel is left alone: the post save reads its fields. A preview submits to a new tab, so the page
+	// stays open and everything is handed back right after the submit either way.
 	$( '#post' ).on( 'submit.tecDeferredSave', () => {
+		const isPreview = 'dopreview' === $( '#wp-preview' ).val();
 		$( window ).off( 'beforeunload.tecDeferredSave' );
-		$( '#tribe_panel_edit, #tribe_panel_settings' ).find( 'input,textarea,select' ).prop( 'disabled', true );
+
+		if ( isPreview ) {
+			setTimeout( bindUnload, 0 );
+			return;
+		}
+
+		const $inputs = $panelEdit().find( 'input,textarea,select' ).not( ':disabled' );
+		$inputs.prop( 'disabled', true );
+		setTimeout( () => {
+			$inputs.prop( 'disabled', false );
+			bindUnload();
+		}, 0 );
 	} );
 
 	obj.stageMove = ( ticketId, destinationId, destinationTitle ) => {
