@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
@@ -19,7 +20,8 @@ use Tribe__Tickets__Tickets as Tickets;
  * replays each part through the functions Event Tickets uses for ticket writes today, so every hook
  * that fires on a ticket save or delete today still fires, in the same order.
  *
- * Parts run in the order `update`, `create`, `delete`. One failing entry never stops the others.
+ * Parts run in the order `update`, `move`, `create`, `delete`, so a ticket both updated and moved is
+ * updated first. One failing entry never stops the others.
  *
  * @since TBD
  *
@@ -156,6 +158,10 @@ class Commit {
 			$result = $this->update( $result, $post_id, $ticket_id, $data );
 		}
 
+		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
+			$result = $this->move( $result, $ticket_id, $destination_id );
+		}
+
 		foreach ( $payload->get_create() as $position => $data ) {
 			$result = $this->create( $result, $post_id, $position, $data );
 		}
@@ -240,6 +246,37 @@ class Commit {
 		$this->fire_added( $post_id, (int) $ticket_id, $data );
 
 		return $result->with_created( $position, (int) $ticket_id );
+	}
+
+	/**
+	 * Moves a ticket to another post through the function "Move ticket type" uses today.
+	 *
+	 * The checks have already required the ticket to be on the post being saved and the destination to be
+	 * a post the user can edit. The function fires the actions that move the attendees and the stock along.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result $result         The result so far.
+	 * @param int    $ticket_id      The ticket to move.
+	 * @param int    $destination_id The post to move it to.
+	 *
+	 * @return Result The result with this entry folded in.
+	 */
+	private function move( Result $result, int $ticket_id, int $destination_id ): Result {
+		if ( ! Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $destination_id ) ) {
+			return $result->with_error(
+				Payload::MOVE,
+				$ticket_id,
+				sprintf(
+					/* translators: %1$d: the ticket ID, %2$d: the destination post ID. */
+					__( 'Ticket %1$d could not be moved to post %2$d.', 'event-tickets' ),
+					$ticket_id,
+					$destination_id
+				)
+			);
+		}
+
+		return $result;
 	}
 
 	/**

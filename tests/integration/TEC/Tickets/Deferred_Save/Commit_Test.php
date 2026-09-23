@@ -4,6 +4,7 @@ namespace TEC\Tickets\Deferred_Save;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -12,6 +13,7 @@ use Tribe__Tickets__RSVP as RSVP;
 class Commit_Test extends WPTestCase {
 	use Ticket_Maker;
 	use RSVP_Ticket_Maker;
+	use Attendee_Maker;
 	use With_Tickets_Commerce;
 
 	/**
@@ -33,6 +35,8 @@ class Commit_Test extends WPTestCase {
 		'tec_tickets_commerce_ticket_deleted',
 		'event_tickets_attendee_ticket_deleted',
 		'tribe_tickets_ticket_deleted',
+		'tribe_tickets_ticket_type_before_move',
+		'tribe_tickets_ticket_type_moved',
 	];
 
 	private array $recorded = [];
@@ -410,6 +414,118 @@ class Commit_Test extends WPTestCase {
 		$this->assertCount( 1, $result->get_errors() );
 		$this->assertNull( $result->get_errors()[0]['part'] );
 		$this->assertSame( [], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_move_lands_the_ticket_and_its_attendees_on_the_destination(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+		$attendee_id    = $this->create_attendee_for_ticket( $ticket_id, $post_id );
+		$fired          = [];
+		foreach ( [ 'tribe_tickets_ticket_type_before_move', 'tribe_tickets_ticket_type_moved' ] as $action ) {
+			add_action(
+				$action,
+				static function ( ...$args ) use ( $action, &$fired ) {
+					// The source post ID is read from post meta, so it arrives as a string, as it does today.
+					$fired[] = [ $action, array_map( 'intval', array_slice( $args, 0, 3 ) ) ];
+				},
+				10,
+				4
+			);
+		}
+
+		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $destination_id ] ], $post_id );
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+		$this->assertSame( (string) $destination_id, get_post_meta( $attendee_id, Module::ATTENDEE_EVENT_KEY, true ) );
+		$this->assertSame(
+			[
+				[ 'tribe_tickets_ticket_type_before_move', [ $ticket_id, $destination_id, get_current_user_id() ] ],
+				[ 'tribe_tickets_ticket_type_moved', [ $ticket_id, $destination_id, $post_id ] ],
+			],
+			$fired
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_ticket_that_is_updated_and_moved_is_updated_first_then_moved(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+
+		$result = $this->commit()->run(
+			[
+				'update' => [ $ticket_id => [ 'ticket_name' => 'Renamed then moved' ] ],
+				'move'   => [ $ticket_id => $destination_id ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( 'Renamed then moved', get_the_title( $ticket_id ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function a_refused_move_is_reported_and_the_rest_commits(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+
+		// The move function refuses a move to the post the ticket is already on.
+		$result = $this->commit()->run(
+			[
+				'move'   => [ $ticket_id => $post_id ],
+				'create' => [ $this->ticket_data( 'Still created' ) ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'move' ) );
+		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function parts_run_in_update_move_create_delete_order(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$to_update      = $this->create_tc_ticket( $post_id, 10 );
+		$to_move        = $this->create_tc_ticket( $post_id, 20 );
+		$to_delete      = $this->create_tc_ticket( $post_id, 30 );
+		$this->record_ticket_actions();
+
+		$result = $this->commit()->run(
+			[
+				'delete' => [ $to_delete ],
+				'create' => [ $this->ticket_data( 'New' ) ],
+				'move'   => [ $to_move => $destination_id ],
+				'update' => [ $to_update => [ 'ticket_name' => 'Updated' ] ],
+			],
+			$post_id
+		);
+
+		$this->assertSame( [], $result->get_errors() );
+		$milestones = array_values(
+			array_filter(
+				$this->recorded,
+				static fn( string $action ) => in_array( $action, [ 'tec_tickets_ticket_update', 'tribe_tickets_ticket_type_moved', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_deleted' ], true )
+			)
+		);
+		$this->assertSame( [ 'tec_tickets_ticket_update', 'tribe_tickets_ticket_type_moved', 'tec_tickets_ticket_add', 'tribe_tickets_ticket_deleted' ], $milestones );
 	}
 
 	/**
