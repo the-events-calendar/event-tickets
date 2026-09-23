@@ -11,7 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Items\Repositories;
 
 use InvalidArgumentException;
 use TEC\Common\Abstracts\Custom_Table_Repository;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Order_Items\Models\Order_Item;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 
@@ -109,19 +109,31 @@ class Order_Items extends Custom_Table_Repository {
 	/**
 	 * Updates rows in place, keeping their IDs.
 	 *
-	 * The table runs one query per row, inside a transaction of its own. Its `START TRANSACTION` implicitly commits
-	 * any transaction the caller has open, so do not call this inside one.
+	 * Runs one query per row and no transaction of its own, so a caller's transaction covers every update. A failed
+	 * query throws a DatabaseQueryException.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<int,array<string,mixed>> $rows The rows to update, each with its `id` and the columns to change.
+	 * @param array<int,array<string,mixed>> $rows The rows to update, each with its positive integer `id` and the columns to change.
 	 *
-	 * @return bool Whether every row was updated.
+	 * @return int The number of rows changed. Rows that are missing, or already hold the given values, are not counted.
 	 *
-	 * @throws DatabaseQueryException If an update fails.
+	 * @throws InvalidArgumentException If a row has no positive integer `id`; nothing is updated then.
 	 */
-	public function update_many( array $rows ): bool {
-		return Order_Items_Table::update_many( $rows );
+	public function update_rows( array $rows ): int {
+		foreach ( $rows as $index => $row ) {
+			if ( ! is_int( $row['id'] ?? null ) || $row['id'] < 1 ) {
+				throw new InvalidArgumentException( "Row {$index} has no positive integer ID." );
+			}
+		}
+
+		$changed = 0;
+
+		foreach ( $rows as $row ) {
+			$changed += DB::update( Order_Items_Table::table_name(), array_diff_key( $row, [ 'id' => true ] ), [ 'id' => $row['id'] ] );
+		}
+
+		return $changed;
 	}
 
 	/**
@@ -134,7 +146,7 @@ class Order_Items extends Custom_Table_Repository {
 	 * @return int The number of rows deleted.
 	 */
 	public function delete_by_order( int $order_id ): int {
-		return $this->delete_where( [ $order_id ], 'order_id' );
+		return $order_id > 0 ? Order_Items_Table::delete_many( [ $order_id ], 'order_id' ) : 0;
 	}
 
 	/**
@@ -142,32 +154,17 @@ class Order_Items extends Custom_Table_Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param int[] $ids The row IDs.
+	 * @param int[] $ids The row IDs. Anything but a positive integer, or integer string, is ignored.
 	 *
 	 * @return int The number of rows deleted.
 	 */
 	public function delete_many( array $ids ): int {
-		return $this->delete_where( $ids, Order_Items_Table::uid_column() );
-	}
-
-	/**
-	 * Deletes the rows whose column holds one of the values.
-	 *
-	 * @since TBD
-	 *
-	 * @param int[]  $values The column values.
-	 * @param string $column The column.
-	 *
-	 * @return int The number of rows deleted.
-	 */
-	private function delete_where( array $values, string $column ): int {
 		// The table interpolates non-numeric values into the query unescaped.
-		$values = array_filter( array_map( 'absint', $values ) );
+		$ids = array_filter(
+			$ids,
+			static fn( $id ) => false !== filter_var( $id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] )
+		);
 
-		if ( ! $values ) {
-			return 0;
-		}
-
-		return Order_Items_Table::delete_many( $values, $column );
+		return $ids ? Order_Items_Table::delete_many( $ids ) : 0;
 	}
 }

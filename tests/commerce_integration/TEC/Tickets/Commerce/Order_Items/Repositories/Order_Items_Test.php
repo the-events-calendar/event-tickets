@@ -12,7 +12,7 @@ use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 
 class Order_Items_Test extends WPTestCase {
 	/**
-	 * The table's update_many() opens its own transaction, which commits the test's: rows must be removed by hand.
+	 * Starting a transaction inside a test commits the test's own: rows must be removed by hand.
 	 *
 	 * @after
 	 */
@@ -20,22 +20,14 @@ class Order_Items_Test extends WPTestCase {
 		DB::query( DB::prepare( 'DELETE FROM %i', Order_Items_Table::table_name() ) );
 	}
 
-	public function test_insert_many_writes_every_row_in_one_query(): void {
+	public function test_insert_many_writes_every_row_in_one_query_and_none_without_rows(): void {
 		$rows    = array_map( fn( int $ticket_id ) => $this->row( 1, $ticket_id ), range( 1, 5 ) );
 		$queries = $this->count_queries_against_the_table();
 
-		$inserted = tribe( Order_Items::class )->insert_many( $rows );
-
-		$this->assertSame( count( $rows ), $inserted );
+		$this->assertSame( 0, tribe( Order_Items::class )->insert_many( [] ) );
+		$this->assertSame( count( $rows ), tribe( Order_Items::class )->insert_many( $rows ) );
 		$this->assertSame( [ 'INSERT' => 1 ], $queries() );
 		$this->assertSame( count( $rows ), Order_Items_Table::get_total_items() );
-	}
-
-	public function test_insert_many_runs_no_query_without_rows(): void {
-		$queries = $this->count_queries_against_the_table();
-
-		$this->assertSame( 0, tribe( Order_Items::class )->insert_many( [] ) );
-		$this->assertSame( [], $queries() );
 	}
 
 	public function test_get_by_order_returns_the_order_rows_in_insertion_order_in_one_query(): void {
@@ -55,19 +47,16 @@ class Order_Items_Test extends WPTestCase {
 		$this->assertSame( $ids, array_column( $rows, 'id' ) );
 	}
 
-	public function test_update_many_keeps_row_ids_and_changes_only_the_given_rows(): void {
+	public function test_update_rows_keeps_row_ids_and_changes_only_the_given_rows(): void {
 		$repository = tribe( Order_Items::class );
 		$repository->insert_many( [ $this->row( 1, 1 ), $this->row( 1, 2 ), $this->row( 1, 3 ) ] );
 		[ $first, $second, $third ] = $this->get_rows( 1 );
+		$changes                    = [
+			[ 'id' => $first['id'], 'quantity' => 4, 'item_key' => '2' ],
+			[ 'id' => $third['id'], 'quantity' => 5, 'item_key' => '0' ],
+		];
 
-		$updated = $repository->update_many(
-			[
-				[ 'id' => $first['id'], 'quantity' => 4, 'item_key' => '2' ],
-				[ 'id' => $third['id'], 'quantity' => 5, 'item_key' => '0' ],
-			]
-		);
-
-		$this->assertTrue( $updated );
+		$this->assertSame( count( $changes ), $repository->update_rows( $changes ) );
 		$this->assertSame(
 			[
 				array_merge( $first, [ 'quantity' => 4, 'item_key' => '2' ] ),
@@ -78,46 +67,79 @@ class Order_Items_Test extends WPTestCase {
 		);
 	}
 
-	public function test_delete_by_order_leaves_other_orders_rows(): void {
-		$repository = tribe( Order_Items::class );
-		$repository->insert_many( [ $this->row( 1, 1 ), $this->row( 1, 2 ), $this->row( 2, 1 ) ] );
-		$other_order = $this->get_rows( 2 );
-		$queries     = $this->count_queries_against_the_table();
-
-		$this->assertSame( 2, $repository->delete_by_order( 1 ) );
-		$this->assertSame( [ 'DELETE' => 1 ], $queries() );
-		$this->assertSame( [], $repository->get_by_order( 1 ) );
-		$this->assertSame( $other_order, $this->get_rows( 2 ) );
+	public function invalid_row_id_provider(): Generator {
+		yield 'no id' => [ [] ];
+		yield 'zero id' => [ [ 'id' => 0 ] ];
+		yield 'negative id' => [ [ 'id' => -1 ] ];
+		yield 'string id' => [ [ 'id' => '1' ] ];
 	}
 
-	public function test_delete_many_removes_only_the_given_rows(): void {
+	/**
+	 * @dataProvider invalid_row_id_provider
+	 */
+	public function test_update_rows_rejects_a_row_without_a_positive_id_and_updates_nothing( array $id ): void {
 		$repository = tribe( Order_Items::class );
-		$repository->insert_many( [ $this->row( 1, 1 ), $this->row( 1, 2 ), $this->row( 1, 3 ), $this->row( 2, 1 ) ] );
-		[ $first, $second, $third ] = $this->get_rows( 1 );
-		$other_order                = $this->get_rows( 2 );
-		$queries                    = $this->count_queries_against_the_table();
+		$repository->insert_many( [ $this->row( 1, 1 ) ] );
+		[ $stored ] = $this->get_rows( 1 );
 
-		$this->assertSame( 2, $repository->delete_many( [ $first['id'], $third['id'] ] ) );
-		$this->assertSame( [ 'DELETE' => 1 ], $queries() );
-		$this->assertSame( [ $second ], $this->get_rows( 1 ) );
-		$this->assertSame( $other_order, $this->get_rows( 2 ) );
+		try {
+			$repository->update_rows( [ [ 'id' => $stored['id'], 'quantity' => 4 ], array_merge( $id, [ 'quantity' => 5 ] ) ] );
+			$this->fail( 'A row without a positive integer ID was accepted.' );
+		} catch ( InvalidArgumentException $e ) {
+			$this->assertStringContainsString( 'Row 1', $e->getMessage() );
+		}
+
+		$this->assertSame( [ $stored ], $this->get_rows( 1 ) );
+	}
+
+	public function test_update_rows_is_rolled_back_with_the_callers_transaction(): void {
+		$repository = tribe( Order_Items::class );
+		$repository->insert_many( [ $this->row( 1, 1 ) ] );
+		$before = $this->get_rows( 1 );
+
+		// The suite bootstrap fakes transactions; this test needs real ones.
+		tec_tickets_tests_fake_transactions_disable();
+		try {
+			DB::beginTransaction();
+			$repository->update_rows( [ [ 'id' => $before[0]['id'], 'quantity' => 4 ] ] );
+			DB::rollback();
+		} finally {
+			tec_tickets_tests_fake_transactions_enable();
+		}
+
+		$this->assertSame( $before, $this->get_rows( 1 ) );
+	}
+
+	public function delete_provider(): Generator {
+		yield 'by order' => [ static fn( $repository ) => $repository->delete_by_order( 1 ), 3, [] ];
+		yield 'given rows' => [ static fn( $repository, $rows ) => $repository->delete_many( [ $rows[0]['id'], $rows[2]['id'] ] ), 2, [ 1 ] ];
+		yield 'negative order ID' => [ static fn( $repository ) => $repository->delete_by_order( -42 ), 0, [ 0, 1, 2 ] ];
+		yield 'non-positive row IDs' => [ static fn( $repository, $rows, $other ) => $repository->delete_many( [ - $other['id'], 0, 'abc' ] ), 0, [ 0, 1, 2 ] ];
+	}
+
+	/**
+	 * @dataProvider delete_provider
+	 */
+	public function test_delete_removes_only_the_targeted_rows_in_one_query( callable $delete, int $deleted, array $kept ): void {
+		$repository = tribe( Order_Items::class );
+		$repository->insert_many( [ $this->row( 1, 1 ), $this->row( 1, 2 ), $this->row( 1, 3 ), $this->row( 42, 1 ) ] );
+		$rows    = $this->get_rows( 1 );
+		$other   = $this->get_rows( 42 );
+		$queries = $this->count_queries_against_the_table();
+
+		$this->assertSame( $deleted, $delete( $repository, $rows, $other[0] ) );
+		$this->assertSame( $deleted ? [ 'DELETE' => 1 ] : [], $queries() );
+		$this->assertSame( array_values( array_intersect_key( $rows, array_flip( $kept ) ) ), $this->get_rows( 1 ) );
+		$this->assertSame( $other, $this->get_rows( 42 ) );
 	}
 
 	public function test_nullable_columns_negative_amounts_and_currency_round_trip(): void {
-		$nullable = [
-			'item_key',
-			'event_id',
-			'post_id',
-			'occurrence_id',
-			'event_title',
-			'event_start_date',
-			'event_start_date_utc',
-			'sku',
-			'ticket_type',
-			'regular_price',
-			'regular_sub_total',
-			'extra',
-		];
+		$nullable = [];
+		foreach ( Order_Items_Table::get_columns() as $column ) {
+			if ( $column->get_nullable() ) {
+				$nullable[] = $column->get_name();
+			}
+		}
 		$coupon   = array_merge(
 			$this->row( 1, 0 ),
 			array_fill_keys( $nullable, null ),
