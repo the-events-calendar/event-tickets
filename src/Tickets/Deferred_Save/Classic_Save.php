@@ -22,9 +22,10 @@ use WP_Post;
  * `Commit`. It runs after `Tribe__Tickets__Tickets_Handler::save_post()` (priority 10) so the ticket
  * order the form saved is what an update reads when it does not mention a menu order.
  *
- * It never runs on an autosave, a revision or during a REST request, and never without its own
- * nonce: the post form's nonce is bound to a post ID that ECP rewrites on a split save, so it cannot
- * be verified from here.
+ * It never runs on an autosave, a revision or during a REST request, never without its own nonce,
+ * and only for the post the form's `post_ID` names, so a second ticketable post saved during the same
+ * request never receives the payload. The post form's own nonce is bound to a post ID that ECP
+ * rewrites on a split save, so it cannot be verified from here; `post_ID` is rewritten with it.
  *
  * @since TBD
  *
@@ -138,6 +139,11 @@ class Classic_Save extends Controller_Contract {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- The nonce is verified right below.
 		if ( empty( $_POST['tec_tickets'] ) || ! isset( $_POST[ self::NONCE_FIELD ] ) ) {
+			return null;
+		}
+
+		// The payload belongs to the post the form is for. Another ticketable post saved during this request (ECP saves a Series with its event) must not get it.
+		if ( absint( $_POST['post_ID'] ?? 0 ) !== $post_id ) {
 			return null;
 		}
 
