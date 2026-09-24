@@ -193,7 +193,8 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	 * Marks saved rows that have a staged edit, deletion or move.
 	 */
 	const renderMarkers = () => {
-		$panelBase().find( '.tec-tickets-deferred-save-badge' ).remove();
+		// Only the markers put on saved rows; a staged row's own badge is part of its template.
+		$panelBase().find( '.tec-tickets-deferred-save-badge[data-tec-slot="marker"]' ).remove();
 		$panelBase()
 			.find( '[class*="tec-tickets-deferred-save-row--"]' )
 			.removeClass( ( _, classes ) =>

@@ -7,7 +7,7 @@ import $ from 'jquery';
 const rowTemplate = `
 <template id="tec-tickets-deferred-save-row">
 	<tr class="tec-tickets-deferred-save-row" data-tec-deferred-save-position="">
-		<td><span data-tec-slot="name"></span></td>
+		<td><span data-tec-slot="name"></span><span class="tec-tickets-deferred-save-badge">Not saved yet</span></td>
 		<td><span data-tec-slot="price"></span></td>
 		<td><span data-tec-slot="capacity"></span></td>
 		<td>
@@ -75,6 +75,7 @@ describe( 'deferred-save module', () => {
 			'General',
 		] );
 		expect( row.querySelector( '[data-tec-slot="price"]' ).textContent ).toBe( '12' );
+		expect( row.querySelector( '.tec-tickets-deferred-save-badge' ) ).not.toBeNull();
 
 		module.state.dropCreate( 0 );
 		module.render();
