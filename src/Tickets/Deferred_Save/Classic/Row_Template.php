@@ -27,12 +27,15 @@ class Row_Template {
 	 *
 	 * @since TBD
 	 *
+	 * @param int $post_id The ID of the post the metabox is for.
+	 *
 	 * @return string The HTML.
 	 */
-	public function render(): string {
+	public function render( int $post_id ): string {
 		return (string) tribe( 'tickets.admin.views' )->template(
 			'deferred-save/row',
 			[
+				'post_id'       => $post_id,
 				'not_saved_yet' => __( 'Not saved yet', 'event-tickets' ),
 				'will_delete'   => __( 'Will be deleted on save', 'event-tickets' ),
 				'will_move'     => __( 'Moves on save', 'event-tickets' ),
