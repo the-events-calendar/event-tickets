@@ -240,6 +240,32 @@ final class Writer {
 	}
 
 	/**
+	 * Deletes the rows of a permanently deleted order.
+	 *
+	 * A failure is logged, never thrown, so it cannot stop the order from being deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return void
+	 */
+	public function delete_order_rows( int $order_id ): void {
+		try {
+			$this->repository->delete_by_order( $order_id );
+		} catch ( Throwable $e ) {
+			$this->log(
+				Log::DEBUG,
+				'The order items could not be deleted from the table.',
+				[
+					'order_id' => $order_id,
+					'error'    => $e->getMessage(),
+				]
+			);
+		}
+	}
+
+	/**
 	 * Keeps the name and type of each ticket on the items of an order that stays in the order meta.
 	 *
 	 * Without a row to read them from, a ticket deleted later would leave the order screens only its ID. The
