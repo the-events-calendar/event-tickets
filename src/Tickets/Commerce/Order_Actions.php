@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use WP_Post;
 
 /**
  * Class Order_Actions.
@@ -28,7 +29,7 @@ class Order_Actions extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'updated_post_meta', [ $this, 'fire_order_updated' ] );
-		remove_action( 'before_delete_post', [ $this, 'fire_order_deleted' ] );
+		remove_action( 'deleted_post', [ $this, 'fire_order_deleted' ] );
 	}
 
 	/**
@@ -71,21 +72,23 @@ class Order_Actions extends Controller_Contract {
 	/**
 	 * Fires the order deleted action when an order is permanently deleted.
 	 *
-	 * Trashing an order does not delete it; emptying the trash does.
+	 * Trashing an order does not delete it; emptying the trash does. Hooked after the post row is gone, so listeners
+	 * never act on an order whose deletion then fails.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int     $post_id The post ID.
+	 * @param WP_Post $post    The deleted post.
 	 *
 	 * @return void
 	 */
-	public function fire_order_deleted( $post_id ): void {
-		if ( Order::POSTTYPE !== get_post_type( $post_id ) ) {
+	public function fire_order_deleted( $post_id, $post ): void {
+		if ( ! $post instanceof WP_Post || Order::POSTTYPE !== $post->post_type ) {
 			return;
 		}
 
 		/**
-		 * Fires before a Tickets Commerce order is permanently deleted, while the order post and its meta still exist.
+		 * Fires after a Tickets Commerce order has been permanently deleted.
 		 *
 		 * @since TBD
 		 *
@@ -103,6 +106,6 @@ class Order_Actions extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_action( 'updated_post_meta', [ $this, 'fire_order_updated' ], 10, 4 );
-		add_action( 'before_delete_post', [ $this, 'fire_order_deleted' ] );
+		add_action( 'deleted_post', [ $this, 'fire_order_deleted' ], 10, 2 );
 	}
 }

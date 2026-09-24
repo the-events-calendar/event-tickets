@@ -76,11 +76,14 @@ class Order_Actions_Test extends Controller_Test_Case {
 	public function test_order_deleted_fires_once_on_permanent_delete_only( bool $active ): void {
 		add_filter( 'tec_tickets_commerce_order_items_active', $active ? '__return_true' : '__return_false' );
 		$this->make_controller()->register();
-		$deleted = [];
+		$deleted     = [];
+		$still_in_db = [];
 		add_action(
 			'tec_tickets_commerce_order_deleted',
-			static function ( $order_id ) use ( &$deleted ) {
-				$deleted[] = $order_id;
+			static function ( $order_id ) use ( &$deleted, &$still_in_db ) {
+				global $wpdb;
+				$deleted[]     = $order_id;
+				$still_in_db[] = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE ID = %d", $order_id ) );
 			}
 		);
 		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
@@ -101,6 +104,7 @@ class Order_Actions_Test extends Controller_Test_Case {
 		wp_delete_post( $trashed );
 
 		$this->assertSame( [ $deleted_1, $trashed ], $deleted );
+		$this->assertSame( [ 0, 0 ], $still_in_db, 'The action fires only once the order post is really gone.' );
 		$this->assertNull( get_post( $trashed ) );
 	}
 
