@@ -1,0 +1,324 @@
+{
+	"cases": [
+		{
+			"name": "3 days before start across the spring change",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-03-15 10:00:00",
+			"event_end": "2027-03-15 12:00:00",
+			"expected": {
+				"start_local": "2027-03-12 10:00:00",
+				"start_utc": "2027-03-12 15:00:00",
+				"end_local": "2027-03-15 10:00:00",
+				"end_utc": "2027-03-15 14:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "3 days before start across the autumn change",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-11-08 10:00:00",
+			"event_end": "2027-11-08 12:00:00",
+			"expected": {
+				"start_local": "2027-11-05 10:00:00",
+				"start_utc": "2027-11-05 14:00:00",
+				"end_local": "2027-11-08 10:00:00",
+				"end_utc": "2027-11-08 15:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "3 days before start in a timezone without daylight saving",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/Sao_Paulo",
+			"event_start": "2027-03-15 10:00:00",
+			"event_end": "2027-03-15 12:00:00",
+			"expected": {
+				"start_local": "2027-03-12 10:00:00",
+				"start_utc": "2027-03-12 13:00:00",
+				"end_local": "2027-03-15 10:00:00",
+				"end_utc": "2027-03-15 13:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "3 days before start in a fixed UTC offset",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "+03:00",
+			"event_start": "2027-03-15 10:00:00",
+			"event_end": "2027-03-15 12:00:00",
+			"expected": {
+				"start_local": "2027-03-12 10:00:00",
+				"start_utc": "2027-03-12 07:00:00",
+				"end_local": "2027-03-15 10:00:00",
+				"end_utc": "2027-03-15 07:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "2 hours before start across the spring change",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 3600, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-03-14 03:30:00",
+			"event_end": "2027-03-14 05:30:00",
+			"expected": {
+				"start_local": "2027-03-14 00:30:00",
+				"start_utc": "2027-03-14 05:30:00",
+				"end_local": "2027-03-14 03:30:00",
+				"end_utc": "2027-03-14 07:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "30 minutes before end",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "relative", "value": 30, "unit": 60, "anchor": "end" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-10 21:00:00",
+			"expected": {
+				"start_local": null,
+				"start_utc": null,
+				"end_local": "2027-06-10 20:30:00",
+				"end_utc": "2027-06-11 00:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "1 week before end",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "relative", "value": 1, "unit": 604800, "anchor": "end" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-20 18:00:00",
+			"expected": {
+				"start_local": null,
+				"start_utc": null,
+				"end_local": "2027-06-13 18:00:00",
+				"end_utc": "2027-06-13 22:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "default start and default end",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-10 21:00:00",
+			"expected": {
+				"start_local": null,
+				"start_utc": null,
+				"end_local": "2027-06-10 19:00:00",
+				"end_utc": "2027-06-10 23:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "specific start and specific end",
+			"rule": {
+				"start": { "mode": "specific" },
+				"end": { "mode": "specific" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-10 21:00:00",
+			"expected": {
+				"start_local": null,
+				"start_utc": null,
+				"end_local": null,
+				"end_utc": null,
+				"valid": true
+			}
+		},
+		{
+			"name": "relative start and specific end",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "specific" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-10 21:00:00",
+			"expected": {
+				"start_local": "2027-06-08 19:00:00",
+				"start_utc": "2027-06-08 23:00:00",
+				"end_local": null,
+				"end_utc": null,
+				"valid": true
+			}
+		},
+		{
+			"name": "moved time falls in the spring gap",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-03-17 02:30:00",
+			"event_end": "2027-03-17 04:30:00",
+			"expected": {
+				"start_local": "2027-03-14 03:30:00",
+				"start_utc": "2027-03-14 07:30:00",
+				"end_local": "2027-03-17 02:30:00",
+				"end_utc": "2027-03-17 06:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "moved time falls in the autumn overlap",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-11-10 01:30:00",
+			"event_end": "2027-11-10 03:30:00",
+			"expected": {
+				"start_local": "2027-11-07 01:30:00",
+				"start_utc": "2027-11-07 05:30:00",
+				"end_local": "2027-11-10 01:30:00",
+				"end_utc": "2027-11-10 06:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "2 weeks before start in Europe/Berlin in summer",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 604800, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Europe/Berlin",
+			"event_start": "2027-07-15 20:00:00",
+			"event_end": "2027-07-15 23:00:00",
+			"expected": {
+				"start_local": "2027-07-01 20:00:00",
+				"start_utc": "2027-07-01 18:00:00",
+				"end_local": "2027-07-15 20:00:00",
+				"end_utc": "2027-07-15 18:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "start equal to end",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "relative", "value": 24, "unit": 3600, "anchor": "start" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-10 21:00:00",
+			"expected": {
+				"start_local": "2027-06-09 19:00:00",
+				"start_utc": "2027-06-09 23:00:00",
+				"end_local": "2027-06-09 19:00:00",
+				"end_utc": "2027-06-09 23:00:00",
+				"valid": false
+			}
+		},
+		{
+			"name": "start after end",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 3600, "anchor": "start" },
+				"end": { "mode": "relative", "value": 2, "unit": 3600, "anchor": "start" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-06-10 19:00:00",
+			"event_end": "2027-06-10 21:00:00",
+			"expected": {
+				"start_local": "2027-06-10 18:00:00",
+				"start_utc": "2027-06-10 22:00:00",
+				"end_local": "2027-06-10 17:00:00",
+				"end_utc": "2027-06-10 21:00:00",
+				"valid": false
+			}
+		}
+	],
+	"invalid_rules": [
+		{
+			"name": "unknown anchor",
+			"rule": {
+				"start": { "mode": "relative", "value": 2, "unit": 604800, "anchor": "middle" },
+				"end": { "mode": "default" }
+			},
+			"reason": "The anchor must be start or end."
+		},
+		{
+			"name": "unknown mode",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "after" }
+			},
+			"reason": "The mode must be default, relative or specific."
+		},
+		{
+			"name": "value 0",
+			"rule": {
+				"start": { "mode": "relative", "value": 0, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"reason": "The value must be an integer from 1 to 60."
+		},
+		{
+			"name": "value 61",
+			"rule": {
+				"start": { "mode": "relative", "value": 61, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"reason": "The value must be an integer from 1 to 60."
+		},
+		{
+			"name": "non-integer value",
+			"rule": {
+				"start": { "mode": "relative", "value": 2.5, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"reason": "The value must be an integer from 1 to 60."
+		},
+		{
+			"name": "unit of a month",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 2592000, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"reason": "The unit must be 60, 3600, 86400 or 604800 seconds."
+		},
+		{
+			"name": "relative end without a unit",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "relative", "value": 2, "anchor": "start" }
+			},
+			"reason": "A relative end needs a value, a unit and an anchor."
+		},
+		{
+			"name": "missing end",
+			"rule": {
+				"start": { "mode": "default" }
+			},
+			"reason": "Both start and end are required."
+		}
+	]
+}

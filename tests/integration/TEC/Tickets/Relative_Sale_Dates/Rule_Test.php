@@ -94,6 +94,17 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array<string,mixed>}>
+	 */
+	public function shared_invalid_rules_provider(): Generator {
+		$fixtures = json_decode( file_get_contents( codecept_data_dir( 'relative-sale-dates/sale-window-cases.json' ) ), true );
+
+		foreach ( $fixtures['invalid_rules'] as $case ) {
+			yield $case['name'] => [ $case['rule'] ];
+		}
+	}
+
+	/**
 	 * @test
 	 * @dataProvider valid_rules_provider
 	 */
@@ -106,6 +117,16 @@ class Rule_Test extends WPTestCase {
 	 * @dataProvider invalid_rules_provider
 	 */
 	public function should_reject_an_invalid_rule( array $data ): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Rule::from_array( $data );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider shared_invalid_rules_provider
+	 */
+	public function should_reject_the_shared_fixture_invalid_rule( array $data ): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Rule::from_array( $data );
