@@ -159,6 +159,18 @@ class Classic_Save extends Controller_Contract {
 		$raw = wp_unslash( $_POST['tec_tickets'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		return $this->commit->run( $raw, $post_id );
+		$result = $this->commit->run( $raw, $post_id );
+
+		/**
+		 * Fires after the ticket changes sent with a classic editor post save were committed.
+		 *
+		 * @since TBD
+		 *
+		 * @param Result $result  The commit result: created ticket IDs by position and one error per failed entry.
+		 * @param int    $post_id The ID of the post that was saved.
+		 */
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+
+		return $result;
 	}
 }
