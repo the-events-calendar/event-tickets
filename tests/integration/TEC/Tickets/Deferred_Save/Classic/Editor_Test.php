@@ -80,4 +80,26 @@ class Editor_Test extends WPTestCase {
 		$this->assertStringContainsString( 'data-tec-slot="price"', $html );
 		$this->assertStringContainsString( 'data-tec-slot="capacity"', $html );
 	}
+
+	/**
+	 * @test
+	 */
+	public function the_staged_row_and_table_mirror_the_saved_list_markup(): void {
+		$post_id                = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->deferred_posts[] = $post_id;
+
+		$html = $this->metabox_end_output( $post_id );
+
+		// The row carries the wrappers, labels and icon buttons a saved row has.
+		$this->assertStringContainsString( 'tribe-tickets__tickets-editor-ticket-name-title', $html );
+		$this->assertStringContainsString( 'class="tec-tickets-price amount" data-tec-slot="price"', $html );
+		$this->assertStringContainsString( 'class="ticket_edit_text" data-tec-slot="name"', $html );
+		$this->assertStringContainsString( 'class="ticket_delete_text" data-tec-slot="name"', $html );
+		$this->assertRegExp( '/<td class="ticket_price" data-label="[^"]+">/', $html );
+		// The table for a post with no tickets yet is the real list table, wrapper and header icon included.
+		$this->assertStringContainsString( '<div class="ticket_list_wrapper">', $html );
+		$this->assertStringContainsString( 'tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed', $html );
+		$this->assertStringContainsString( 'tec-tickets-icon__ticket-type', $html );
+		$this->assertStringContainsString( '<th class="ticket_price">', $html );
+	}
 }
