@@ -105,12 +105,11 @@ class Writer extends Controller_Contract {
 		}
 
 		try {
-			$currency   = get_post_meta( $order_id, Order::$currency_meta_key, true ) ?: Currency::get_currency_code();
-			$created_at = gmdate( 'Y-m-d H:i:s' );
-			$rows       = [];
+			$currency = get_post_meta( $order_id, Order::$currency_meta_key, true ) ?: Currency::get_currency_code();
+			$rows     = [];
 
 			foreach ( $items as $key => $item ) {
-				$rows[] = $this->mapper->to_row( $key, $item, $order_id, $currency ) + [ 'created_at' => $created_at ];
+				$rows[] = $this->mapper->to_row( $key, $item, $order_id, $currency );
 			}
 
 			// One INSERT is atomic on its own; opening a transaction here would commit a caller's, e.g. Square's duplicate-order check.
