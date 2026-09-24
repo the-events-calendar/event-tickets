@@ -70,6 +70,40 @@ class Order_Actions_Test extends Controller_Test_Case {
 		$this->assertSame( [], $this->calls );
 	}
 
+	/**
+	 * @dataProvider switch_provider
+	 */
+	public function test_order_deleted_fires_once_on_permanent_delete_only( bool $active ): void {
+		add_filter( 'tec_tickets_commerce_order_items_active', $active ? '__return_true' : '__return_false' );
+		$this->make_controller()->register();
+		$deleted = [];
+		add_action(
+			'tec_tickets_commerce_order_deleted',
+			static function ( $order_id ) use ( &$deleted ) {
+				$deleted[] = $order_id;
+			}
+		);
+		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$trashed   = $this->create_order( [ $ticket_id => 1 ] )->ID;
+		$deleted_1 = $this->create_order( [ $ticket_id => 1 ] )->ID;
+		$post_id   = static::factory()->post->create();
+
+		wp_trash_post( $trashed );
+		wp_untrash_post( $trashed );
+		wp_trash_post( $trashed );
+		wp_delete_post( $post_id, true );
+
+		$this->assertSame( [], $deleted, 'Trashing an order or deleting another post is not an order deletion.' );
+
+		wp_delete_post( $deleted_1, true );
+		// Emptying the trash deletes each trashed post this way.
+		wp_delete_post( $trashed );
+
+		$this->assertSame( [ $deleted_1, $trashed ], $deleted );
+		$this->assertNull( get_post( $trashed ) );
+	}
+
 	private function save_items( int $order_id, array $items ): void {
 		tec_tc_orders()->by_args( [ 'id' => $order_id, 'status' => 'any' ] )->set_args( [ 'items' => $items ] )->save();
 	}
