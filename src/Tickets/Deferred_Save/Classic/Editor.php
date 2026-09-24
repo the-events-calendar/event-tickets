@@ -92,7 +92,7 @@ class Editor extends Controller_Contract {
 			'<div id="tec-tickets-deferred-save" class="tec-tickets-deferred-save" data-post-id="%d" aria-live="polite"></div>',
 			$post_id
 		);
-		$html .= $this->row_template->render();
+		$html .= $this->row_template->render( $post_id );
 
 		// phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped -- The nonce field comes from WordPress, the container is built from an integer, and the admin view escapes its own output.
 		echo $html;
