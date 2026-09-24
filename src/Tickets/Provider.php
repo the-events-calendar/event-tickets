@@ -107,6 +107,9 @@ class Provider extends Service_Provider {
 		// Seating.
 		$this->container->register( Seating\Controller::class );
 
+		// Relative Sale Dates.
+		$this->container->register( Relative_Sale_Dates\Controller::class );
+
 		// Ticket Action hooks.
 		$this->container->register( Ticket_Actions::class );
 
