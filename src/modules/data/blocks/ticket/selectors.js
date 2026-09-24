@@ -28,6 +28,12 @@ export const getTicketsIsSettingsOpen = createSelector( [ getBlock ], ( block ) 
 
 export const getTicketsIsSettingsLoading = createSelector( [ getBlock ], ( block ) => block.isSettingsLoading );
 
+export const getStagedDeletes = createSelector( [ getBlock ], ( block ) => block.stagedDeletes || [] );
+
+export const getStagedMoves = createSelector( [ getBlock ], ( block ) => block.stagedMoves || {} );
+
+export const getStagedCreateOrder = createSelector( [ getBlock ], ( block ) => block.stagedCreateOrder || [] );
+
 export const getTicketsProvider = createSelector( [ getBlock ], ( block ) => block.provider );
 
 export const getTicketsSharedCapacity = createSelector( [ getBlock ], ( block ) => block.sharedCapacity );
@@ -159,6 +165,10 @@ export const getTicketIsModalOpen = createSelector( [ getTicket ], ( ticket ) =>
 export const getTicketHasBeenCreated = createSelector( [ getTicket ], ( ticket ) => ticket.hasBeenCreated );
 
 export const getTicketHasChanges = createSelector( [ getTicket ], ( ticket ) => ticket.hasChanges );
+
+export const getTicketIsStaged = createSelector( [ getTicket ], ( ticket ) => !! ticket.isStaged );
+
+export const getTicketSaveError = createSelector( [ getTicket ], ( ticket ) => ticket.saveError || '' );
 
 export const getTicketHasDurationError = createSelector( [ getTicket ], ( ticket ) => ticket.hasDurationError );
 

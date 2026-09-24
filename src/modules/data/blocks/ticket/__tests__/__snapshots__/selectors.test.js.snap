@@ -40,6 +40,9 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": "",
   "tickets": {
     "allClientIds": [
@@ -90,7 +93,9 @@ exports[`Ticket block selectors Block selectors getBlock 1`] = `
         "isLoading": false,
         "isModalOpen": false,
         "isSelected": false,
+        "isStaged": false,
         "provider": "",
+        "saveError": "",
         "sold": 0,
         "tempDetails": {
           "capacity": "",
@@ -304,7 +309,9 @@ exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -493,7 +500,9 @@ exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
       "isLoading": false,
       "isModalOpen": false,
       "isSelected": false,
+      "isStaged": false,
       "provider": "",
+      "saveError": "",
       "sold": 0,
       "tempDetails": {
         "capacity": "",
@@ -580,7 +589,9 @@ exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
     "isLoading": false,
     "isModalOpen": false,
     "isSelected": false,
+    "isStaged": false,
     "provider": "",
+    "saveError": "",
     "sold": 0,
     "tempDetails": {
       "capacity": "",
@@ -660,7 +671,9 @@ exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
     "isLoading": false,
     "isModalOpen": false,
     "isSelected": false,
+    "isStaged": false,
     "provider": "",
+    "saveError": "",
     "sold": 0,
     "tempDetails": {
       "capacity": "",
@@ -744,7 +757,9 @@ exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
     "isLoading": false,
     "isModalOpen": false,
     "isSelected": false,
+    "isStaged": false,
     "provider": "",
+    "saveError": "",
     "sold": 0,
     "tempDetails": {
       "capacity": "",
