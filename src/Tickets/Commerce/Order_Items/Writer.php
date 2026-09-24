@@ -245,7 +245,6 @@ final class Writer {
 			$stored  = [];
 			$updates = [];
 			$inserts = [];
-			$now     = gmdate( 'Y-m-d H:i:s' );
 
 			foreach ( $this->repository->get_by_order( $order_id ) as $model ) {
 				$row = $model->toArray();
@@ -258,7 +257,7 @@ final class Writer {
 				$current  = $stored[ $identity ] ?? null;
 
 				if ( null === $current ) {
-					$inserts[] = $row + [ 'created_at' => $now ];
+					$inserts[] = $row;
 					continue;
 				}
 
