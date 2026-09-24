@@ -38,6 +38,7 @@ final class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		$this->container->get( Ticket_Save::class )->unregister();
 	}
 
 	/**
@@ -76,5 +77,7 @@ final class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		$this->container->singleton( Rule_Store::class );
+		$this->container->register( Ticket_Save::class );
 	}
 }
