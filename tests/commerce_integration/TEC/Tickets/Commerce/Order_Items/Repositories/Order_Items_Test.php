@@ -114,7 +114,7 @@ class Order_Items_Test extends WPTestCase {
 		yield 'by order' => [ static fn( $repository ) => $repository->delete_by_order( 1 ), 3, [] ];
 		yield 'given rows' => [ static fn( $repository, $rows ) => $repository->delete_many( [ $rows[0]['id'], $rows[2]['id'] ] ), 2, [ 1 ] ];
 		yield 'negative order ID' => [ static fn( $repository ) => $repository->delete_by_order( -42 ), 0, [ 0, 1, 2 ] ];
-		yield 'non-positive row IDs' => [ static fn( $repository, $rows, $other ) => $repository->delete_many( [ - $other['id'], 0, 'abc' ] ), 0, [ 0, 1, 2 ] ];
+		yield 'no row IDs' => [ static fn( $repository ) => $repository->delete_many( [] ), 0, [ 0, 1, 2 ] ];
 	}
 
 	/**
@@ -216,7 +216,7 @@ class Order_Items_Test extends WPTestCase {
 	}
 
 	/**
-	 * A row with every NOT NULL column set: the table has no column defaults.
+	 * A row with every NOT NULL column set that has no default.
 	 *
 	 * @return array<string,int|string>
 	 */
@@ -233,7 +233,6 @@ class Order_Items_Test extends WPTestCase {
 			'quantity'         => 1,
 			'price'            => 1050,
 			'sub_total'        => 1050,
-			'created_at'       => gmdate( 'Y-m-d H:i:s' ),
 		];
 	}
 

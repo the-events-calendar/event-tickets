@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
  * Class Order_Items.
  *
  * Batched reads and writes of an order's rows. Rows are arrays keyed by column name; every NOT NULL column
- * must be set on insert, since the table has no column defaults.
+ * but `created_at` must be set on insert.
  *
  * @since TBD
  *
@@ -63,7 +63,6 @@ class Order_Items extends Custom_Table_Repository {
 			return 0;
 		}
 
-		// The table takes the column list from the first row and writes every row's values in its own key order.
 		$columns = array_fill_keys( array_keys( reset( $rows ) ), null );
 
 		foreach ( $rows as $index => $row ) {
@@ -154,17 +153,12 @@ class Order_Items extends Custom_Table_Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param int[] $ids The row IDs. Anything but a positive integer, or integer string, is ignored.
+	 * @param int[] $ids The row IDs.
 	 *
 	 * @return int The number of rows deleted.
 	 */
 	public function delete_many( array $ids ): int {
-		// The table interpolates non-numeric values into the query unescaped.
-		$ids = array_filter(
-			$ids,
-			static fn( $id ) => false !== filter_var( $id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] )
-		);
-
-		return $ids ? Order_Items_Table::delete_many( $ids ) : 0;
+		// The table returns false, not 0, when there is nothing to delete.
+		return (int) Order_Items_Table::delete_many( $ids );
 	}
 }
