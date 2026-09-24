@@ -275,7 +275,7 @@ class Order_Repository extends Tribe__Repository {
 	 * So we hijack the default create callback for this repository to allow for that behavior to exist.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Fires tec_tickets_commerce_order_created.
+	 * @since TBD Fires tec_tickets_commerce_order_created, and skips the order metas when the post was not inserted.
 	 *
 	 * @param array $postarr The post array that will be used for the creation.
 	 *
@@ -298,8 +298,8 @@ class Order_Repository extends Tribe__Repository {
 
 		$created = call_user_func( $callback, $postarr );
 
-		// Dont add in case we are dealing with a failed insertion.
-		if ( ! is_wp_error( $created ) ) {
+		// Dont add in case we are dealing with a failed insertion: wp_insert_post() returns 0, not a WP_Error, by default.
+		if ( ! is_wp_error( $created ) && $created ) {
 			foreach ( $events as $event_id ) {
 				add_post_meta( $created, Order::$events_in_order_meta_key, $event_id );
 			}

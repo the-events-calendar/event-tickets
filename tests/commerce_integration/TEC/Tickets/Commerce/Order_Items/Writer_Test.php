@@ -130,6 +130,27 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( '', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
 	}
 
+	public function test_nothing_fires_or_is_written_when_the_order_post_is_not_inserted(): void {
+		$this->register_controller( true );
+		$fired = 0;
+		add_action( 'tec_tickets_commerce_order_created', static function () use ( &$fired ) {
+			$fired++;
+		} );
+		// wp_insert_post() returns 0, not a WP_Error, when the insert is refused.
+		add_filter( 'wp_insert_post_empty_content', '__return_true' );
+
+		tec_tc_orders()->set_args(
+			[
+				'title'   => 'Refused',
+				'gateway' => 'manual',
+				'items'   => [ [ 'ticket_id' => 7, 'type' => 'ticket', 'quantity' => 1, 'price' => 10.0, 'sub_total' => 10.0 ] ],
+			]
+		)->create();
+
+		$this->assertSame( 0, $fired );
+		$this->assertSame( 0, Order_Items_Table::get_total_items() );
+	}
+
 	public function failed_write_provider(): Generator {
 		yield 'duplicate line' => [
 			function () {
