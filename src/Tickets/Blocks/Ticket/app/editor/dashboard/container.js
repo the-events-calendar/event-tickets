@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { dispatch as wpDispatch } from '@wordpress/data';
+import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
@@ -15,6 +15,7 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import Template from './template';
 import { actions, selectors } from '../../../../../../modules/data/blocks/ticket';
+import { usesDeferredSave } from '../../../../../../modules/data/blocks/ticket/deferred';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
@@ -27,12 +28,30 @@ import { withStore } from '@moderntribe/common/hoc';
  *
  * @return {boolean} Whether the confirm button should be disabled.
  */
+/**
+ * Whether the editor is saving the post right now (not an autosave).
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether a save is in flight.
+ */
+const isPostSaving = () => {
+	const editor = wpSelect( 'core/editor' );
+
+	return (
+		!! editor && 'function' === typeof editor.isSavingPost && editor.isSavingPost() && ! editor.isAutosavingPost()
+	);
+};
+
 const getIsConfirmDisabled = ( state, ownProps ) => {
 	const shouldConfirmBeDisabled =
 		selectors.isTicketDisabled( state, ownProps ) ||
 		selectors.getTicketHasDurationError( state, ownProps ) ||
 		! selectors.getTicketHasChanges( state, ownProps ) ||
-		! selectors.isTicketValid( state, ownProps );
+		! selectors.isTicketValid( state, ownProps ) ||
+		// A staged ticket travels with the post save, so nothing invalid may be staged: the sale price rule applies too,
+		// and nothing is staged while a save is in flight, so the answer always maps onto the payload that was sent.
+		( usesDeferredSave() && ( ! selectors.isTicketSalePriceValid( state, ownProps ) || isPostSaving() ) );
 
 	/**
 	 * Filters whether the confirm button should be disabled.
