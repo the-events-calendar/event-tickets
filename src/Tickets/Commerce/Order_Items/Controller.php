@@ -66,10 +66,12 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {}
+	public function unregister(): void {
+		$this->container->get( Writer::class )->unregister();
+	}
 
 	/**
-	 * Registers the table.
+	 * Registers the table and the writer.
 	 *
 	 * @since TBD
 	 *
@@ -86,6 +88,10 @@ class Controller extends Controller_Contract {
 					'query' => $e->getQuery(),
 				]
 			);
+
+			return;
 		}
+
+		$this->container->register( Writer::class );
 	}
 }
