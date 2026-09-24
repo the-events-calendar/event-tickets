@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Order_Items\Tables;
 use TEC\Common\StellarWP\Schema\Collections\Column_Collection;
 use TEC\Common\StellarWP\Schema\Collections\Index_Collection;
 use TEC\Common\StellarWP\Schema\Columns\Column_Types;
+use TEC\Common\StellarWP\Schema\Columns\Created_At;
 use TEC\Common\StellarWP\Schema\Columns\Datetime_Column;
 use TEC\Common\StellarWP\Schema\Columns\ID;
 use TEC\Common\StellarWP\Schema\Columns\Integer_Column;
@@ -93,11 +94,11 @@ class Order_Items extends Table {
 				 * as distinct in a unique key, so a nullable column would let the same ticket line be stored twice.
 				 */
 				$columns[] = new Referenced_ID( 'ticket_id' );
-				$columns[] = ( new Referenced_ID( 'modifier_id' ) )->set_is_index( false );
-				$columns[] = ( new Referenced_ID( 'purchase_rule_id' ) )->set_is_index( false );
+				$columns[] = new Referenced_ID( 'modifier_id' );
+				$columns[] = new Referenced_ID( 'purchase_rule_id' );
 				$columns[] = ( new Referenced_ID( 'event_id' ) )->set_nullable( true );
 				$columns[] = ( new Referenced_ID( 'post_id' ) )->set_nullable( true );
-				$columns[] = ( new Referenced_ID( 'occurrence_id' ) )->set_nullable( true )->set_is_index( false );
+				$columns[] = ( new Referenced_ID( 'occurrence_id' ) )->set_nullable( true );
 				$columns[] = ( new String_Column( 'event_title' ) )->set_length( 255 )->set_nullable( true );
 				// The column type defaults to timestamp, which would shift the stored value with the session time zone.
 				$columns[] = ( new Datetime_Column( 'event_start_date' ) )->set_type( Column_Types::DATETIME )->set_nullable( true );
@@ -112,8 +113,7 @@ class Order_Items extends Table {
 				$columns[] = new Integer_Column( 'sub_total' );
 				$columns[] = ( new Integer_Column( 'regular_sub_total' ) )->set_nullable( true );
 				$columns[] = ( new Text_Column( 'extra' ) )->set_type( Column_Types::MEDIUMTEXT )->set_php_type( PHP_Types::JSON )->set_nullable( true );
-				// No CURRENT_TIMESTAMP default: the library only allows it on timestamp columns, so writers stamp the time.
-				$columns[] = ( new Datetime_Column( 'created_at' ) )->set_type( Column_Types::DATETIME );
+				$columns[] = new Created_At( 'created_at' );
 
 				$indexes   = new Index_Collection();
 				$indexes[] = ( new Unique_Key( 'order_line_identity' ) )->set_columns( 'order_id', 'ticket_id', 'modifier_id', 'purchase_rule_id' );

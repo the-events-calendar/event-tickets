@@ -44,7 +44,7 @@ class Order_Items_Test extends WPTestCase {
 			'sub_total'             => [ 'bigint', 'NO', null ],
 			'regular_sub_total'     => [ 'bigint', 'YES', null ],
 			'extra'                 => [ 'mediumtext', 'YES', null ],
-			'created_at'            => [ 'datetime', 'NO', null ],
+			'created_at'            => [ 'timestamp', 'NO', 'CURRENT_TIMESTAMP' ],
 		];
 
 		$this->assertSame( $expected, $this->get_columns() );
@@ -56,8 +56,11 @@ class Order_Items_Test extends WPTestCase {
 			'PRIMARY'             => [ 'unique' => true, 'columns' => [ 'id' ] ],
 			'order_id'            => [ 'unique' => false, 'columns' => [ 'order_id' ] ],
 			'ticket_id'           => [ 'unique' => false, 'columns' => [ 'ticket_id' ] ],
+			'modifier_id'         => [ 'unique' => false, 'columns' => [ 'modifier_id' ] ],
+			'purchase_rule_id'    => [ 'unique' => false, 'columns' => [ 'purchase_rule_id' ] ],
 			'event_id'            => [ 'unique' => false, 'columns' => [ 'event_id' ] ],
 			'post_id'             => [ 'unique' => false, 'columns' => [ 'post_id' ] ],
+			'occurrence_id'       => [ 'unique' => false, 'columns' => [ 'occurrence_id' ] ],
 			'order_line_identity' => [ 'unique' => true, 'columns' => [ 'order_id', 'ticket_id', 'modifier_id', 'purchase_rule_id' ] ],
 		];
 
@@ -131,7 +134,6 @@ class Order_Items_Test extends WPTestCase {
 				'quantity'  => 1,
 				'price'     => 1050,
 				'sub_total' => 1050,
-				'created_at' => gmdate( 'Y-m-d H:i:s' ),
 			],
 			$overrides
 		);
