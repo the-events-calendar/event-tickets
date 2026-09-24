@@ -84,14 +84,16 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	};
 
 	const fillSlot = ( root, slot, text ) => {
-		const el = root.querySelector( `[data-tec-slot="${ slot }"]` );
-		if ( el ) {
+		root.querySelectorAll( `[data-tec-slot="${ slot }"]` ).forEach( ( el ) => {
 			el.textContent = text;
-		}
+		} );
 	};
 
 	/**
 	 * Finds, or creates from the template, the table body staged rows go into.
+	 *
+	 * The template is the real list table; it goes where the saved lists are printed, inside the
+	 * list container, and is marked so it can be removed once nothing is staged.
 	 *
 	 * @return {jQuery} The table body.
 	 */
@@ -108,7 +110,13 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			return $tbody;
 		}
 
-		$panelBase().append( table );
+		const wrapper = table.querySelector( '.ticket_list_wrapper' ) || table.querySelector( 'table' );
+		if ( wrapper ) {
+			wrapper.classList.add( 'tec-tickets-deferred-save-table' );
+		}
+
+		const $listContainer = $panelBase().find( '.ticket_list_container' ).first();
+		( $listContainer.length ? $listContainer : $panelBase() ).append( table );
 		$tbody = $panelBase().find( '.tec-tickets-deferred-save-table .tribe-tickets-editor-table-tickets-body' );
 
 		return $tbody;
@@ -357,9 +365,10 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	} );
 
 	// On submit: the staged entries carry everything; an open edit panel must not post its fields as top-level ones.
-	// The settings panel is left alone: the post save reads its fields. A preview submits to a new tab, so the page
-	// stays open and everything is handed back right after the submit either way.
-	$( '#post' ).on( 'submit.tecDeferredSave', () => {
+	// The settings panel is left alone: the post save reads its fields. The inputs are handed back right after the
+	// submit. The leave warning comes back only when the page stays: a preview submits to a new tab, and a later
+	// handler may cancel the submit.
+	$( '#post' ).on( 'submit.tecDeferredSave', ( event ) => {
 		const isPreview = 'dopreview' === $( '#wp-preview' ).val();
 		$( window ).off( 'beforeunload.tecDeferredSave' );
 
@@ -372,7 +381,9 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		$inputs.prop( 'disabled', true );
 		setTimeout( () => {
 			$inputs.prop( 'disabled', false );
-			bindUnload();
+			if ( event.isDefaultPrevented() ) {
+				bindUnload();
+			}
 		}, 0 );
 	} );
 
