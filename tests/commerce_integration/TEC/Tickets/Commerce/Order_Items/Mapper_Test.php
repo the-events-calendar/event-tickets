@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use Codeception\TestCase\WPTestCase;
 use Generator;
+use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -36,7 +37,6 @@ class Mapper_Test extends WPTestCase {
 		yield 'tickets only' => [ 'tickets', 'USD', 2 ];
 		yield 'sale price' => [ 'sale-price', 'USD', 2 ];
 		yield 'zero decimals' => [ 'jpy', 'JPY', 0 ];
-		yield 'three decimals' => [ 'three-decimals', 'USD', 3 ];
 		yield 'unknown key' => [ 'unknown-key', 'USD', 2 ];
 		yield 'integer key and look-alike string key' => [ 'mixed-keys', 'USD', 2 ];
 	}
@@ -45,7 +45,6 @@ class Mapper_Test extends WPTestCase {
 	 * @dataProvider fixtures_provider
 	 */
 	public function test_items_survive_the_round_trip( string $fixture, string $currency, int $precision ): void {
-		add_filter( 'tec_tickets_commerce_currency_precision', static fn() => $precision );
 		$items = $this->fixture( $fixture );
 
 		[ $rows, $rebuilt ] = $this->round_trip( $items, $currency );
@@ -94,17 +93,54 @@ class Mapper_Test extends WPTestCase {
 		$this->assertSame( get_post_meta( $event_id, '_EventStartDateUTC', true ), $rows[0]['event_start_date_utc'] );
 	}
 
-	public function test_precision_change_after_write_leaves_amounts_unchanged(): void {
+	public function test_usd_amounts_with_three_decimals_are_stored_in_cents_and_round_trip_exactly(): void {
+		// The site's decimals setting lets a USD order carry amounts USD itself cannot hold.
+		tribe_update_option( Settings::$option_currency_number_of_decimals, 3 );
+		$items = $this->fixture( 'three-decimals' );
+
+		[ $rows, $rebuilt ] = $this->round_trip( $items, 'USD' );
+
+		$this->assertSame( $items, $rebuilt );
+		$this->assertSame( (int) round( $items[0]['price'] * 100 ), $rows[0]['price'] );
+		$this->assertSame( (int) round( $items[0]['sub_total'] * 100 ), $rows[0]['sub_total'] );
+		$this->assertSame( $items[0]['price'], json_decode( $rows[0]['extra'], true )['raw']['price'] );
+	}
+
+	public function test_three_decimal_currency_is_stored_in_thousandths(): void {
+		add_filter(
+			'tec_tickets_commerce_default_currency_map',
+			static fn( $map ) => $map + [ 'KWD' => [ 'decimal_precision' => 3 ] ]
+		);
+		$items = $this->fixture( 'three-decimals' );
+
+		[ $rows, $rebuilt ] = $this->round_trip( $items, 'KWD' );
+
+		$this->assertSame( $items, $rebuilt );
+		$this->assertSame( (int) round( $items[0]['price'] * 1000 ), $rows[0]['price'] );
+		$this->assertSame( (int) round( $items[0]['sub_total'] * 1000 ), $rows[0]['sub_total'] );
+		$this->assertSame( [], json_decode( $rows[0]['extra'], true )['raw'] );
+	}
+
+	public function test_the_site_decimals_setting_does_not_change_stored_minor_units(): void {
 		$items  = $this->fixture( 'sale-price' );
 		$mapper = tribe( Mapper::class );
-		$write  = static fn() => 2;
-		add_filter( 'tec_tickets_commerce_currency_precision', $write );
-		$row = $mapper->to_row( 0, $items[0], 1, 'USD' );
-		remove_filter( 'tec_tickets_commerce_currency_precision', $write );
+		$stored = [];
 
-		add_filter( 'tec_tickets_commerce_currency_precision', static fn() => 0 );
+		foreach ( [ 0, 2, 3 ] as $decimals ) {
+			tribe_update_option( Settings::$option_currency_number_of_decimals, $decimals );
+			$row                 = $mapper->to_row( 0, $items[0], 1, 'USD' );
+			$stored[ $decimals ] = [ $row['price'], $row['regular_price'], $row['sub_total'], $row['regular_sub_total'] ];
 
-		$this->assertSame( (int) round( $items[0]['price'] * 10 ** $write() ), $row['price'] );
-		$this->assertSame( [ '0', $items[0] ], $mapper->to_item( $row ) );
+			$this->assertSame( [ '0', $items[0] ], $mapper->to_item( $row ) );
+		}
+
+		$cents = [
+			(int) round( $items[0]['price'] * 100 ),
+			(int) round( $items[0]['regular_price'] * 100 ),
+			(int) round( $items[0]['sub_total'] * 100 ),
+			(int) round( $items[0]['regular_sub_total'] * 100 ),
+		];
+
+		$this->assertSame( [ 0 => $cents, 2 => $cents, 3 => $cents ], $stored );
 	}
 }

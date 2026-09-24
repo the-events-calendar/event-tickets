@@ -18,6 +18,9 @@ use TEC\Tickets\Commerce\Utils\Currency;
  * The item read back from a row is identical (`===`) to the item written, key order and value types
  * included. Everything the columns cannot hold exactly lives in the row's `extra` JSON.
  *
+ * Money is stored in the minor units of the row's currency: the currency's own decimals, never the site's
+ * decimals setting, which only changes how prices are displayed.
+ *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Order_Items
@@ -76,13 +79,12 @@ class Mapper {
 	 * @return array<string,int|string|null> The row.
 	 */
 	public function to_row( $key, array $item, int $order_id, string $currency ): array {
-		$precision = (int) Currency::get_currency_precision( $currency );
+		$precision = $this->get_decimals( $currency );
 		$columns   = [];
 		$extra     = [
-			'precision' => $precision,
-			'keys'      => array_keys( $item ),
-			'values'    => [],
-			'raw'       => [],
+			'keys'   => array_keys( $item ),
+			'values' => [],
+			'raw'    => [],
 		];
 
 		foreach ( $item as $name => $value ) {
@@ -144,15 +146,15 @@ class Mapper {
 	 * @return array{0: string, 1: array} The item's key in the order's item list, and the item.
 	 */
 	public function to_item( array $row ): array {
-		$extra = is_string( $row['extra'] ) ? json_decode( $row['extra'], true ) : $row['extra'];
-		$item  = [];
+		$extra     = is_string( $row['extra'] ) ? json_decode( $row['extra'], true ) : $row['extra'];
+		$precision = $this->get_decimals( $row['currency'] );
+		$item      = [];
 
 		foreach ( $extra['keys'] as $name ) {
 			if ( array_key_exists( $name, $extra['raw'] ) ) {
 				$item[ $name ] = $extra['raw'][ $name ];
 			} elseif ( isset( self::FIELDS[ $name ] ) ) {
-				// The precision recorded at write time, so a later settings change does not rescale the order.
-				$item[ $name ] = $this->from_column( self::FIELDS[ $name ], $row[ $name ], $extra['precision'] );
+				$item[ $name ] = $this->from_column( self::FIELDS[ $name ], $row[ $name ], $precision );
 			} else {
 				$item[ $name ] = $extra['values'][ $name ];
 			}
@@ -162,13 +164,29 @@ class Mapper {
 	}
 
 	/**
+	 * Returns the number of decimals a currency defines, such as 2 for USD and 0 for JPY.
+	 *
+	 * Read from the currency map rather than Currency::get_currency_precision(), which applies the site's decimals
+	 * setting: a stored amount must mean the same thing whatever that setting is later changed to.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $currency The currency code.
+	 *
+	 * @return int The currency's decimals; 2, the most common, for a code the map does not define.
+	 */
+	private function get_decimals( string $currency ): int {
+		return (int) ( Currency::get_default_currency_map()[ $currency ]['decimal_precision'] ?? 2 );
+	}
+
+	/**
 	 * Converts an item value to its column value.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $kind      One of `int`, `money` or `string`.
 	 * @param mixed  $value     The item value.
-	 * @param int    $precision The currency precision.
+	 * @param int    $precision The currency's decimals.
 	 *
 	 * @return int|string|null The column value.
 	 */
@@ -195,7 +213,7 @@ class Mapper {
 	 *
 	 * @param string $kind      One of `int`, `money` or `string`.
 	 * @param mixed  $value     The column value, as stored or as read from the database.
-	 * @param int    $precision The currency precision.
+	 * @param int    $precision The currency's decimals.
 	 *
 	 * @return float|int|string|null The item value.
 	 */
