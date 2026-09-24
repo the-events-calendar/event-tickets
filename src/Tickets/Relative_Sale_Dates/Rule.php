@@ -183,6 +183,28 @@ final class Rule {
 	}
 
 	/**
+	 * Gets the start of the sales window.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The start, in canonical form.
+	 */
+	public function get_start(): array {
+		return $this->start;
+	}
+
+	/**
+	 * Gets the end of the sales window.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The end, in canonical form.
+	 */
+	public function get_end(): array {
+		return $this->end;
+	}
+
+	/**
 	 * Returns the rule's canonical JSON form.
 	 *
 	 * @since TBD
