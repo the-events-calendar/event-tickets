@@ -33,7 +33,7 @@ class Provider extends Service_Provider {
 	 * Register the provider singletons.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Registers the Order Items controller.
+	 * @since TBD Registers the Order Actions and Order Items controllers.
 	 */
 	public function register() {
 		$this->container->register( Payments_Tab::class );
@@ -108,6 +108,7 @@ class Provider extends Service_Provider {
 		// Commerce Tables Controller.
 		$this->container->register( Tables::class );
 
+		$this->container->register( Order_Actions::class );
 		$this->container->register( Order_Items\Controller::class );
 
 		$this->container->register_on_action(
