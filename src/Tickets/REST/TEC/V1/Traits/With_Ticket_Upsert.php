@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\REST\TEC\V1\Traits;
 
+use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use WP_REST_Response;
 
 /**
@@ -76,11 +77,14 @@ trait With_Ticket_Upsert {
 	 * This method will create a ticket if it doesn't exist, or update it if it does.
 	 *
 	 * @since 5.26.0
+	 * @since TBD Rejects ticket data that fails the `tec_tickets_ticket_data_validation` filter.
 	 *
 	 * @param array  $params    The parameters for the ticket.
 	 * @param string $operation The operation to perform: create or update.
 	 *
 	 * @return WP_REST_Response The response object.
+	 *
+	 * @throws InvalidRestArgumentException When the ticket data fails validation.
 	 */
 	public function upsert( array $params = [], string $operation = 'create' ): WP_REST_Response {
 		$post_params   = $params['post_params'] ?? [];
@@ -90,6 +94,13 @@ trait With_Ticket_Upsert {
 
 		$event = $ticket_params['event'];
 		unset( $ticket_params['event'] );
+
+		/** This filter is documented in src/Tribe/Metabox.php */
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $event, $ticket_params );
+
+		if ( is_wp_error( $valid ) ) {
+			throw InvalidRestArgumentException::create( $valid->get_error_message(), '', $valid->get_error_code(), $valid->get_error_message() );
+		}
 
 		$ticket_id = $tickets->ticket_add( $event, $ticket_params );
 
