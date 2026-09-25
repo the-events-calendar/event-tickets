@@ -6,6 +6,7 @@ use TEC\Common\Tests\Testcases\REST\TEC\V1\Post_Entity_REST_Test_Case;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Commerce\Ticket as Ticket_Model;
 use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
+use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Tickets as Tickets;
@@ -26,6 +27,13 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 	private ?Closure $ticket_data_rejection = null;
 
 	/**
+	 * The callback that records the parameters a ticket is saved with, while a test uses one.
+	 *
+	 * @var Closure|null
+	 */
+	private ?Closure $upsert_params_spy = null;
+
+	/**
 	 * This suite does not restore hooks between tests, so the rejection is removed here.
 	 *
 	 * @after
@@ -34,6 +42,18 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		if ( $this->ticket_data_rejection ) {
 			remove_filter( 'tec_tickets_ticket_data_validation', $this->ticket_data_rejection );
 			$this->ticket_data_rejection = null;
+		}
+	}
+
+	/**
+	 * This suite does not restore hooks between tests, so the spy is removed here.
+	 *
+	 * @after
+	 */
+	public function stop_spying_on_upsert_params(): void {
+		if ( $this->upsert_params_spy ) {
+			remove_filter( 'tec_tickets_rest_ticket_upsert_params', $this->upsert_params_spy, 20 );
+			$this->upsert_params_spy = null;
 		}
 	}
 
@@ -219,6 +239,51 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 
 		$this->assertSame( 'The ticket data is not valid.', $response['message'] );
 		$this->assertSame( $title, get_post( $entity_id )->post_title );
+	}
+
+	public function test_read_returns_the_stored_relative_sale_dates() {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		wp_set_current_user( 1 );
+		$ticket_id = $this->create_tc_ticket( self::factory()->post->create(), 10 );
+		$rule      = [
+			'start' => [
+				'mode'   => 'relative',
+				'value'  => 2,
+				'unit'   => WEEK_IN_SECONDS,
+				'anchor' => 'start',
+			],
+			'end'   => [ 'mode' => 'default' ],
+		];
+		tribe( Rule_Store::class )->save( $ticket_id, $rule );
+
+		$response = $this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $ticket_id ) );
+
+		$this->assertSame( $rule, $response['relative_sale_dates'] );
+	}
+
+	public function test_update_passes_relative_sale_dates_sent_as_null_to_the_ticket_save() {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		wp_set_current_user( 1 );
+		$ticket_id               = $this->create_tc_ticket( self::factory()->post->create(), 10 );
+		$ticket_params           = null;
+		$this->upsert_params_spy = static function ( array $upsert_params ) use ( &$ticket_params ): array {
+			$ticket_params = $upsert_params['ticket_params'];
+
+			return $upsert_params;
+		};
+		// After the rule is moved into the ticket parameters.
+		add_filter( 'tec_tickets_rest_ticket_upsert_params', $this->upsert_params_spy, 20 );
+
+		$this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $ticket_id ), 'PUT', 200, [ 'relative_sale_dates' => null ] );
+
+		// An empty rule is the one the ticket save removes.
+		$this->assertSame( '', $ticket_params['relative_sale_dates'] ?? 'missing' );
 	}
 
 	public function test_update_handles_save_failure() {

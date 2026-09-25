@@ -94,6 +94,92 @@
                     "example": "TICKET-123"
                 }
             }
+        },
+        {
+            "type": "object",
+            "properties": {
+                "relative_sale_dates": {
+                    "description": "The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule.",
+                    "nullable": true,
+                    "type": "object",
+                    "properties": {
+                        "start": {
+                            "description": "When sales start.",
+                            "type": "object",
+                            "properties": {
+                                "mode": {
+                                    "description": "How the end is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).",
+                                    "type": "string",
+                                    "enum": [
+                                        "default",
+                                        "relative",
+                                        "specific"
+                                    ],
+                                    "example": "relative"
+                                },
+                                "value": {
+                                    "description": "For a relative end, the number of units before the anchor, from 1 to 60.",
+                                    "type": "integer",
+                                    "maximum": 60,
+                                    "minimum": 1,
+                                    "example": 2
+                                },
+                                "unit": {
+                                    "description": "For a relative end, the unit in seconds: 60 (minutes), 3600 (hours), 86400 (days) or 604800 (weeks).",
+                                    "type": "integer",
+                                    "example": 604800
+                                },
+                                "anchor": {
+                                    "description": "For a relative end, the event date it is counted from.",
+                                    "type": "string",
+                                    "enum": [
+                                        "start",
+                                        "end"
+                                    ],
+                                    "example": "start"
+                                }
+                            }
+                        },
+                        "end": {
+                            "description": "When sales end.",
+                            "type": "object",
+                            "properties": {
+                                "mode": {
+                                    "description": "How the end is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).",
+                                    "type": "string",
+                                    "enum": [
+                                        "default",
+                                        "relative",
+                                        "specific"
+                                    ],
+                                    "example": "relative"
+                                },
+                                "value": {
+                                    "description": "For a relative end, the number of units before the anchor, from 1 to 60.",
+                                    "type": "integer",
+                                    "maximum": 60,
+                                    "minimum": 1,
+                                    "example": 2
+                                },
+                                "unit": {
+                                    "description": "For a relative end, the unit in seconds: 60 (minutes), 3600 (hours), 86400 (days) or 604800 (weeks).",
+                                    "type": "integer",
+                                    "example": 604800
+                                },
+                                "anchor": {
+                                    "description": "For a relative end, the event date it is counted from.",
+                                    "type": "string",
+                                    "enum": [
+                                        "start",
+                                        "end"
+                                    ],
+                                    "example": "start"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     ]
 }

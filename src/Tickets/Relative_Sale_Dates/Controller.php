@@ -40,6 +40,7 @@ final class Controller extends Controller_Contract {
 	public function unregister(): void {
 		$this->container->get( Ticket_Save::class )->unregister();
 		$this->container->get( Event_Listener::class )->unregister();
+		$this->container->get( Rest::class )->unregister();
 	}
 
 	/**
@@ -82,5 +83,6 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Ticket_Dates::class );
 		$this->container->register( Ticket_Save::class );
 		$this->container->register( Event_Listener::class );
+		$this->container->register( Rest::class );
 	}
 }
