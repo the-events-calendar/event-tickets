@@ -183,6 +183,23 @@ final class Rule {
 	}
 
 	/**
+	 * Builds a rule from what is stored for a ticket, which other top-level keys may share.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $stored The stored rules, keyed by their top-level key.
+	 *
+	 * @return self|null The rule, or `null` when there is no valid rule in the stored data.
+	 */
+	public static function from_stored( array $stored ): ?self {
+		try {
+			return self::from_array( $stored );
+		} catch ( InvalidArgumentException $e ) {
+			return null;
+		}
+	}
+
+	/**
 	 * Gets the start of the sales window.
 	 *
 	 * @since TBD
@@ -205,6 +222,20 @@ final class Rule {
 	}
 
 	/**
+	 * Returns the rule's canonical array form.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}} The rule.
+	 */
+	public function to_array(): array {
+		return [
+			'start' => $this->start,
+			'end'   => $this->end,
+		];
+	}
+
+	/**
 	 * Returns the rule's canonical JSON form.
 	 *
 	 * @since TBD
@@ -212,12 +243,7 @@ final class Rule {
 	 * @return string The rule, as JSON.
 	 */
 	public function to_json(): string {
-		$json = wp_json_encode(
-			[
-				'start' => $this->start,
-				'end'   => $this->end,
-			]
-		);
+		$json = wp_json_encode( $this->to_array() );
 
 		// Only strings and integers are ever encoded, so encoding cannot fail.
 		return is_string( $json ) ? $json : '';

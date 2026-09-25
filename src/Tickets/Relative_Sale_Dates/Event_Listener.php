@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use InvalidArgumentException;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Ticket;
@@ -162,7 +161,7 @@ final class Event_Listener extends Controller_Contract {
 	 * @return bool Whether the ticket's sale end date follows the event start.
 	 */
 	public function filter_end_date_follows_event_start( $follows, int $ticket_id ): bool {
-		return tribe_is_truthy( $follows ) && ! $this->get_rule( $ticket_id );
+		return tribe_is_truthy( $follows ) && ! Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 	}
 
 	/**
@@ -196,7 +195,7 @@ final class Event_Listener extends Controller_Contract {
 		unset( $this->moved_event_ids[ $post_id ] );
 
 		foreach ( $this->get_ruled_ticket_ids( $post_id ) as $ticket_id ) {
-			$rule = $this->get_rule( $ticket_id );
+			$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
 			if ( ! $rule ) {
 				continue;
@@ -246,22 +245,5 @@ final class Event_Listener extends Controller_Contract {
 				]
 			)
 		);
-	}
-
-	/**
-	 * Reads the stored sales window rule of a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return Rule|null The rule, or `null` when the ticket has no valid stored rule.
-	 */
-	private function get_rule( int $ticket_id ): ?Rule {
-		try {
-			return Rule::from_array( $this->rule_store->get( $ticket_id ) );
-		} catch ( InvalidArgumentException $e ) {
-			return null;
-		}
 	}
 }
