@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use Closure;
 use Generator;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -22,7 +21,7 @@ class Fallbacks_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function empty_table(): void {
-		DB::query( DB::prepare( 'DELETE FROM %i', Order_Items_Table::table_name() ) );
+		( new Order_Items_Table() )->empty_table();
 	}
 
 	public function name_provider(): Generator {
