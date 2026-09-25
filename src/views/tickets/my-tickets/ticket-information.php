@@ -24,7 +24,7 @@
 	}
 	?>
 	<?php $ticket_name = ! empty( $attendee['ticket_exists'] ) ? $attendee['ticket'] : ( $attendee['deleted_ticket_name'] ?? '' ); ?>
-	<?php if ( ! empty( $ticket_name ) ) : ?>
+	<?php if ( '' !== (string) $ticket_name ) : ?>
 		<span class="ticket-name"><?php echo esc_html( $ticket_name ); ?></span>
 	<?php endif; ?>
 	<?php if ( ! empty( $price ) ): ?>

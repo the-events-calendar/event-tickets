@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Tickets;
 
 class Attendees_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -201,6 +202,15 @@ class Attendees_Test extends WPTestCase {
 			},
 		];
 
+		yield 'ticket gone, bought as a ticket named 0' => [
+			static function ( int $ticket_id ): string {
+				wp_delete_post( $ticket_id, true );
+
+				return '0';
+			},
+			'0',
+		];
+
 		yield 'ticket gone, no name stored' => [
 			static function ( int $ticket_id, int $attendee_id ): string {
 				delete_post_meta( $attendee_id, Attendees::TICKET_NAME_META_KEY );
@@ -214,16 +224,16 @@ class Attendees_Test extends WPTestCase {
 	/**
 	 * @dataProvider my_tickets_provider
 	 */
-	public function test_my_tickets_shows_the_plain_ticket_name( Closure $arrange ): void {
+	public function test_my_tickets_shows_the_plain_ticket_name( Closure $arrange, string $ticket_name = '' ): void {
 		$post_id     = self::factory()->post->create( [ 'post_type' => 'page' ] );
-		$ticket_id   = $this->create_tc_ticket( $post_id, 10 );
+		$ticket_id   = $this->create_tc_ticket( $post_id, 10, '' === $ticket_name ? [] : [ 'ticket_name' => $ticket_name ] );
 		$bought_as   = get_post_field( 'post_title', $ticket_id );
 		$order       = $this->create_order( [ $ticket_id => 1 ] );
 		$attendee_id = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first_id();
 
 		$expected = $arrange( $ticket_id, $attendee_id, $bought_as );
 
-		$attendee = \Tribe__Tickets__Tickets::get_event_attendees( $post_id )[0];
+		$attendee = Tribe__Tickets__Tickets::get_event_attendees( $post_id )[0];
 		$html     = tribe( 'tickets.editor.template' )->template(
 			'tickets/my-tickets/ticket-information',
 			[
@@ -234,7 +244,7 @@ class Attendees_Test extends WPTestCase {
 		);
 
 		$this->assertStringNotContainsString( '(deleted)', $html );
-		if ( $expected ) {
+		if ( '' !== $expected ) {
 			$this->assertStringContainsString( '<span class="ticket-name">' . esc_html( $expected ) . '</span>', $html );
 		} else {
 			$this->assertStringNotContainsString( 'ticket-name', $html );
