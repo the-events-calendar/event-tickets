@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Corrected the RSVP block limited to specific RSVPs so that its closed or
+  not-yet-open message reflects only the included RSVPs, and no longer passes a
+  boolean where a list of tickets is expected.
+timestamp: 2026-09-25T13:41:39.736Z

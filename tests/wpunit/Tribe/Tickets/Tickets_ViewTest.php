@@ -5,11 +5,15 @@ use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe__Tickets__Editor__Template as Editor_Template;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class Tickets_ViewTest extends WPTestCase {
 
 	use SnapshotAssertions;
+	use RSVP_Ticket_Maker;
+
 	public function setUp() {
 		// before
 		parent::setUp();
@@ -791,5 +795,61 @@ class Tickets_ViewTest extends WPTestCase {
 		update_option( 'permalink_structure', false );
 		set_query_var( 'tribe-edit-orders', null );
 		set_query_var( 'p', null );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_render_rsvp_block_with_included_tickets_when_all_rsvps_are_past(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_past_rsvp_ticket( $post_id );
+
+		$html = $this->render_legacy_rsvp_block( $post_id, [ $ticket_id ] );
+
+		$this->assertStringContainsString( $this->get_rsvp_all_past_message(), $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_compute_rsvp_all_past_from_included_tickets_only(): void {
+		$post_id        = static::factory()->post->create();
+		$past_ticket_id = $this->create_past_rsvp_ticket( $post_id );
+		$this->create_rsvp_ticket( $post_id );
+
+		$html = $this->render_legacy_rsvp_block( $post_id, [ $past_ticket_id ] );
+
+		$this->assertStringContainsString( $this->get_rsvp_all_past_message(), $html );
+	}
+
+	private function create_past_rsvp_ticket( int $post_id ): int {
+		return $this->create_rsvp_ticket(
+			$post_id,
+			[
+				'meta_input' => [
+					'_ticket_start_date' => gmdate( 'Y-m-d H:i:s', strtotime( '-2 days' ) ),
+					'_ticket_end_date'   => gmdate( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+				],
+			]
+		);
+	}
+
+	/**
+	 * The v2 RSVP view renders nothing when no RSVP is active, so the "all past" state is only visible in the legacy view.
+	 */
+	private function render_legacy_rsvp_block( int $post_id, array $include_tickets ): string {
+		add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
+		$GLOBALS['post'] = get_post( $post_id );
+		// The template singleton keeps the previous render's context, which points at a rolled-back post.
+		tribe_singleton( 'tickets.editor.template', new Editor_Template() );
+
+		return Tickets_View::instance()->get_rsvp_block( $post_id, false, $include_tickets );
+	}
+
+	private function get_rsvp_all_past_message(): string {
+		return sprintf(
+			_x( '%s are no longer available', 'RSVP block inactive content in the past', 'event-tickets' ),
+			tribe_get_rsvp_label_plural( 'block_inactive_content_past' )
+		);
 	}
 }
