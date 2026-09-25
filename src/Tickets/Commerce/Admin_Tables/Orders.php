@@ -318,6 +318,7 @@ class Orders extends WP_List_Table {
 	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Line items whose ticket no longer exists fall back to a generic label.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -339,9 +340,12 @@ class Orders extends WP_List_Table {
 			}
 
 			$ticket   = Tickets::load_ticket_object( $cart_item['ticket_id'] );
-			$name     = esc_html( $ticket->name );
-			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output   .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
+			$quantity = absint( $cart_item['quantity'] );
+
+			/* An order keeps its items when the ticket behind them is deleted, so there may be no ticket to name. */
+			$name = $ticket ? $ticket->name : _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
+
+			$output .= sprintf( "<div class='tribe-line-item'>%1\$d - %2\$s</div>", $quantity, esc_html( $name ) );
 		}
 
 		return $output;
