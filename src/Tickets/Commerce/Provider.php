@@ -33,7 +33,7 @@ class Provider extends Service_Provider {
 	 * Register the provider singletons.
 	 *
 	 * @since 5.1.6
-	 * @since TBD Registers the Order Actions and Order Items controllers.
+	 * @since TBD Registers the Order Actions and Order Items controllers, and binds the order items fallbacks.
 	 */
 	public function register() {
 		$this->container->register( Payments_Tab::class );
@@ -83,6 +83,9 @@ class Provider extends Service_Provider {
 		$this->container->singleton( Promoter_Observer::class, new Promoter_Observer );
 
 		$this->container->singleton( Pending_Order::class );
+
+		// Old orders need the fallback names whether or not the Order Items controller is active.
+		$this->container->singleton( Order_Items\Fallbacks::class );
 
 		$this->container->register( Status\Status_Handler::class );
 		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
