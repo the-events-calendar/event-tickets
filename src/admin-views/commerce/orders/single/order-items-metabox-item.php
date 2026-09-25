@@ -5,13 +5,15 @@
  * @since 5.13.3
  * @since 5.29.3 Adjusted the attendee meta rendering.
  * @since 5.30.0 Added support for RSVP tickets.
+ * @since TBD Renders lines whose ticket no longer exists.
  *
- * @version 5.30.0
+ * @version TBD
  *
- * @var WP_Post                       $order    The current post object.
- * @var array                         $item     The current order item.
- * @var Tribe__Tickets__Ticket_Object $ticket   The ticket object.
- * @var array                         $attendee The attendee object.
+ * @var WP_Post                                $order          The current post object.
+ * @var array                                  $item           The current order item.
+ * @var Tribe__Tickets__Ticket_Object|null     $ticket         The ticket object, null when the ticket no longer exists.
+ * @var array{name: string, type: string}|null $missing_ticket The stored name and type, when the ticket no longer exists.
+ * @var array                                  $attendee       The attendee object.
  */
 
 use TEC\Tickets\Commerce\Order;
@@ -19,17 +21,20 @@ use TEC\Tickets\RSVP\V2\Constants;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( 'series_pass' === $ticket->type ) {
-	$ticket_type = esc_html__( 'Series Pass', 'event-tickets' );
-} elseif ( Constants::TC_RSVP_TYPE === $ticket->type ) {
-	$ticket_type = esc_html__( 'RSVP Ticket', 'event-tickets' );
+$ticket_name = $ticket ? $ticket->name : ( $missing_ticket['name'] ?? '' );
+$ticket_type = $ticket ? $ticket->type : ( $missing_ticket['type'] ?? '' );
+
+if ( 'series_pass' === $ticket_type ) {
+	$ticket_type_label = esc_html__( 'Series Pass', 'event-tickets' );
+} elseif ( Constants::TC_RSVP_TYPE === $ticket_type ) {
+	$ticket_type_label = esc_html__( 'RSVP Ticket', 'event-tickets' );
 } else {
-	$ticket_type = esc_html__( 'Standard Ticket', 'event-tickets' );
+	$ticket_type_label = esc_html__( 'Standard Ticket', 'event-tickets' );
 }
 ?>
 <tr class="tec-tickets-commerce-single-order--items--table--row">
-	<td><?php echo esc_html( $ticket->name ); ?></td>
-	<td class="tribe-desktop-only"><?php echo esc_html( $ticket_type ); ?></td>
+	<td><?php echo esc_html( $ticket_name ); ?></td>
+	<td class="tribe-desktop-only"><?php echo esc_html( $ticket_type_label ); ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--info-column"><?php /* @todo dpan: this is were Refunded would go */ ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--price-column">
 		<?php
