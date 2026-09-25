@@ -184,6 +184,8 @@ final class Event_Listener extends Controller_Contract {
 	/**
 	 * Resolves every ticket of the event that has a rule and reschedules its sales actions.
 	 *
+	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
+	 *
 	 * @since TBD
 	 *
 	 * @param int $post_id The event post ID.
@@ -201,6 +203,13 @@ final class Event_Listener extends Controller_Contract {
 			}
 
 			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
+
+			/*
+			 * A move can push a relative end past a specific one. The inverted window is kept, so the ticket is off
+			 * sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind.
+			 */
+			as_unschedule_action( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
+			as_unschedule_action( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
 			$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
 		}
 	}
