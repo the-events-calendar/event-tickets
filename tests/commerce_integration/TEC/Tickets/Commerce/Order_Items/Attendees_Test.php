@@ -194,6 +194,14 @@ class Attendees_Test extends WPTestCase {
 			},
 		];
 
+		yield 'ticket exists with an empty title' => [
+			static function ( int $ticket_id, int $attendee_id, string $bought_as ): string {
+				wp_update_post( [ 'ID' => $ticket_id, 'post_title' => '' ] );
+
+				return $bought_as;
+			},
+		];
+
 		yield 'ticket gone, name stored at purchase' => [
 			static function ( int $ticket_id, int $attendee_id, string $bought_as ): string {
 				wp_delete_post( $ticket_id, true );
