@@ -30,10 +30,10 @@ class Order_Items_Test extends WPTestCase {
 		$this->assertSame( count( $rows ), Order_Items_Table::get_total_items() );
 	}
 
-	public function test_get_by_order_returns_the_order_rows_in_insertion_order_in_one_query(): void {
+	public function test_get_by_order_returns_the_order_rows_by_position_then_id_in_one_query(): void {
 		$repository = tribe( Order_Items::class );
-		$repository->insert_many( [ $this->row( 1, 30 ), $this->row( 2, 30 ), $this->row( 1, 10 ) ] );
-		$repository->insert_many( [ $this->row( 1, 20 ) ] );
+		$repository->insert_many( [ $this->row( 1, 30, 2 ), $this->row( 2, 30, 0 ), $this->row( 1, 10, 0 ) ] );
+		$repository->insert_many( [ $this->row( 1, 20, 1 ), $this->row( 1, 40, 1 ) ] );
 		$queries = $this->count_queries_against_the_table();
 
 		$models = $repository->get_by_order( 1 );
@@ -41,10 +41,8 @@ class Order_Items_Test extends WPTestCase {
 		$this->assertSame( [ 'SELECT' => 1 ], $queries() );
 		$this->assertContainsOnlyInstancesOf( Order_Item::class, $models );
 		$rows = $this->get_rows( 1 );
-		$this->assertSame( [ 30, 10, 20 ], array_column( $rows, 'ticket_id' ) );
-		$ids = array_column( $rows, 'id' );
-		sort( $ids );
-		$this->assertSame( $ids, array_column( $rows, 'id' ) );
+		$this->assertSame( [ 10, 20, 40, 30 ], array_column( $rows, 'ticket_id' ) );
+		$this->assertSame( [ 0, 1, 1, 2 ], array_column( $rows, 'position' ) );
 	}
 
 	public function test_update_rows_keeps_row_ids_and_changes_only_the_given_rows(): void {
@@ -220,11 +218,12 @@ class Order_Items_Test extends WPTestCase {
 	 *
 	 * @return array<string,int|string>
 	 */
-	private function row( int $order_id, int $ticket_id ): array {
+	private function row( int $order_id, int $ticket_id, int $position = 0 ): array {
 		return [
 			'order_id'         => $order_id,
 			'type'             => 'ticket',
 			'item_key'         => "{$ticket_id}",
+			'position'         => $position,
 			'ticket_id'        => $ticket_id,
 			'modifier_id'      => 0,
 			'purchase_rule_id' => 0,
