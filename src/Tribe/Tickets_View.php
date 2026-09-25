@@ -1221,6 +1221,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Gets the RSVP block template "out of context" and makes it usable for Classic views.
 	 *
 	 * @since 4.12.3
+	 * @since TBD Filters `$include_tickets` without Event Tickets Plus and computes the active and all-past RSVP state from the included tickets only.
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
@@ -1270,15 +1271,20 @@ class Tribe__Tickets__Tickets_View {
 		// Load assets manually.
 		$blocks_rsvp->assets();
 
-		$tickets        = $blocks_rsvp->get_tickets( $post_id );
+		$tickets = $blocks_rsvp->get_tickets( $post_id );
+
+		if ( $include_tickets ) {
+			$include_tickets = array_map( 'absint', $include_tickets );
+			$tickets         = array_values(
+				array_filter(
+					$tickets,
+					static fn( $ticket ) => in_array( absint( $ticket->ID ), $include_tickets, true )
+				)
+			);
+		}
+
 		$active_tickets = $blocks_rsvp->get_active_tickets( $tickets );
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
-
-		if( class_exists( 'Tribe__Tickets_Plus__Main' ) && ! empty( $include_tickets ) ) {
-			$tickets        = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $tickets, $include_tickets );
-			$active_tickets = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $active_tickets, $include_tickets );
-			$past_tickets   = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $past_tickets, $include_tickets );
-		}
 
 		$args = [
 			'post_id'             => $post_id,
