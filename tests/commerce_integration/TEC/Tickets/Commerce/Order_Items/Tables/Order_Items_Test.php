@@ -13,7 +13,7 @@ class Order_Items_Test extends WPTestCase {
 	 * @after
 	 */
 	public function empty_table(): void {
-		DB::query( DB::prepare( 'DELETE FROM %i', Order_Items::table_name() ) );
+		( new Order_Items() )->empty_table();
 	}
 
 	public function test_columns_match_the_documented_schema(): void {
