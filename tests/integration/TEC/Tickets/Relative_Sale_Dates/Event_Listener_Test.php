@@ -142,6 +142,46 @@ class Event_Listener_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_leave_no_sales_action_scheduled_when_the_move_inverts_the_window(): void {
+		$event_start  = $this->get_future_event_start();
+		$event_id     = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$sales_start  = $event_start->modify( '-2 weeks' );
+		$specific_end = $event_start->modify( '-4 days' );
+		$ticket_id    = $this->create_tc_ticket(
+			$event_id,
+			1,
+			[
+				'ticket_start_date' => $sales_start->format( 'Y-m-d' ),
+				'ticket_start_time' => $sales_start->format( 'H:i:s' ),
+				'ticket_end_date'   => $specific_end->format( 'Y-m-d' ),
+				'ticket_end_time'   => $specific_end->format( 'H:i:s' ),
+			]
+		);
+		tribe( Rule_Store::class )->save(
+			$ticket_id,
+			[
+				'start' => $this->relative( 2, Rule::UNIT_WEEKS ),
+				'end'   => [ 'mode' => 'specific' ],
+			]
+		);
+		tribe( Ticket_Actions::class )->sync_ticket_dates_actions( $ticket_id );
+		$this->assertCount( 1, $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
+		$this->assertCount( 1, $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+		// A month later, two weeks before the event is past the specific end.
+		$moved = $event_start->modify( '+1 month' );
+
+		$this->send_classic_event_save( $event_id, $moved );
+
+		$moved_sales_start = $moved->modify( '-2 weeks' );
+		$this->assertSame( [ $moved_sales_start->format( 'Y-m-d' ), $moved_sales_start->format( 'H:i:s' ) ], $this->get_ticket_start( $ticket_id ) );
+		$this->assertSame( [ $specific_end->format( 'Y-m-d' ), $specific_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
+		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
+		$this->assertSame( [], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_the_legacy_end_date_sync_away_from_ruled_tickets_only(): void {
 		$event_start = $this->get_future_event_start();
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
