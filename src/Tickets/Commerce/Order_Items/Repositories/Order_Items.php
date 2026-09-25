@@ -77,13 +77,13 @@ class Order_Items extends Custom_Table_Repository {
 	}
 
 	/**
-	 * Returns an order's rows in insertion order.
+	 * Returns an order's rows in list order.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $order_id The order ID.
 	 *
-	 * @return Order_Item[] The rows, ordered by ID ascending.
+	 * @return Order_Item[] The rows, ordered by position, then ID, ascending.
 	 */
 	public function get_by_order( int $order_id ): array {
 		$where = [
@@ -101,6 +101,9 @@ class Order_Items extends Custom_Table_Repository {
 			$rows  = array_merge( $rows, $batch );
 			$full  = count( $batch ) === self::PAGE_SIZE;
 		} while ( $full );
+
+		// The table sorts by one column only; paging by the unique ID keeps pages stable, so the line order is applied here.
+		usort( $rows, static fn( Order_Item $a, Order_Item $b ) => [ $a->position, $a->id ] <=> [ $b->position, $b->id ] );
 
 		return $rows;
 	}
