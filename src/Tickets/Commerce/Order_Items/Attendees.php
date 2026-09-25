@@ -66,7 +66,7 @@ class Attendees extends Controller_Contract {
 	 */
 	public function add_ticket_name( $create_args, $order, $ticket ) {
 		// Other callbacks on this filter can hand back anything.
-		if ( ! is_array( $create_args ) || ! $ticket instanceof Ticket_Object || ! $ticket->name ) {
+		if ( ! is_array( $create_args ) || ! $ticket instanceof Ticket_Object || '' === (string) $ticket->name ) {
 			return $create_args;
 		}
 

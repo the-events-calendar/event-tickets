@@ -62,6 +62,16 @@ class Attendees_Test extends WPTestCase {
 		}
 	}
 
+	public function test_a_ticket_named_zero_is_stored(): void {
+		$post_id   = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => '0' ] );
+
+		$order    = $this->create_order( [ $ticket_id => 1 ] );
+		$attendee = tec_tc_attendees()->by( 'parent', $order->ID )->by( 'status', 'any' )->first();
+
+		$this->assertSame( '0', get_post_meta( $attendee->ID, Attendees::TICKET_NAME_META_KEY, true ) );
+	}
+
 	public function test_renaming_the_ticket_keeps_the_name_it_was_bought_under(): void {
 		$post_id    = self::factory()->post->create( [ 'post_type' => 'page' ] );
 		$ticket_id  = $this->create_tc_ticket( $post_id, 10 );
