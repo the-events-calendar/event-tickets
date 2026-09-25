@@ -23,7 +23,7 @@ use TEC\Tickets\Commerce\Ticket;
  */
 class Ticket_Line_Item extends Abstract_Line_Item_Type {
 	/**
-	 * Item keys stored in a column of the same name, and how their value is stored.
+	 * Item keys stored in a column, and how their value is stored.
 	 *
 	 * @since TBD
 	 *
@@ -79,7 +79,7 @@ class Ticket_Line_Item extends Abstract_Line_Item_Type {
 		$ticket    = $ticket_id ? $this->tickets->get_ticket( $ticket_id ) : null;
 
 		return [
-			'name'        => $ticket->name ?? '',
+			'name'        => $columns['name'] ?? ( $ticket->name ?? '' ),
 			'sku'         => $ticket ? ( $ticket->sku ?: null ) : null,
 			'ticket_type' => $ticket ? $ticket->type() : null,
 		];
