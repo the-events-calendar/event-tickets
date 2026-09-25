@@ -7,8 +7,9 @@
  * @since 5.6.7
  *
  * @since 5.9.1 Corrected template override filepath
+ * @since TBD Shows the name the ticket was bought under when the ticket no longer exists.
  *
- * @version 5.9.1
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets $provider The ticket provider.
  * @var array                   $attendee The attendee data.
@@ -22,8 +23,9 @@
 		$price = $provider->get_price_html( $attendee['product_id'], $attendee );
 	}
 	?>
-	<?php if ( ! empty( $attendee['ticket_exists'] ) ) : ?>
-		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
+	<?php $ticket_name = ! empty( $attendee['ticket_exists'] ) ? $attendee['ticket'] : ( $attendee['deleted_ticket_name'] ?? '' ); ?>
+	<?php if ( ! empty( $ticket_name ) ) : ?>
+		<span class="ticket-name"><?php echo esc_html( $ticket_name ); ?></span>
 	<?php endif; ?>
 	<?php if ( ! empty( $price ) ): ?>
 		- <span class="ticket-price"><?php echo $price; ?></span>
