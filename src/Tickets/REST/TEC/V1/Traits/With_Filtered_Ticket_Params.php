@@ -29,6 +29,7 @@ trait With_Filtered_Ticket_Params {
 	 *
 	 * @since 5.26.0
 	 * @since 5.29.3 Hardened sale price handling.
+	 * @since TBD Filters the result through `tec_tickets_rest_ticket_upsert_params`.
 	 *
 	 * @param array $params The params to filter.
 	 *
@@ -39,8 +40,9 @@ trait With_Filtered_Ticket_Params {
 	 * @throws InvalidRestArgumentException If the ticket price is not a number.
 	 */
 	public function filter_upsert_params( array $params ): array {
-		$ticket_post = ! empty( $params['id'] ) ? get_post( $params['id'] ) : new stdClass();
-		$ticket_data = ! empty( $params['id'] ) ? get_post_meta( $params['id'] ) : [];
+		$request_params = $params;
+		$ticket_post    = ! empty( $params['id'] ) ? get_post( $params['id'] ) : new stdClass();
+		$ticket_data    = ! empty( $params['id'] ) ? get_post_meta( $params['id'] ) : [];
 
 		$orm = $this->get_orm();
 
@@ -197,8 +199,21 @@ trait With_Filtered_Ticket_Params {
 		$post_params = $params;
 
 		$ticket_params = array_filter( $new_params, fn( $value ) => null !== $value );
+		$upsert_params = compact( 'post_params', 'ticket_params' );
 
-		return compact( 'post_params', 'ticket_params' );
+		/**
+		 * Filters the parameters a ticket create or update through the TEC REST API is saved with.
+		 *
+		 * The ticket parameters are passed to `ticket_add()`; the post parameters are saved through the ORM.
+		 *
+		 * @since TBD
+		 *
+		 * @param array{post_params: array<string,mixed>, ticket_params: array<string,mixed>} $upsert_params  The post and ticket parameters.
+		 * @param array<string,mixed>                                                          $request_params The request parameters they were built from.
+		 */
+		$filtered_upsert_params = apply_filters( 'tec_tickets_rest_ticket_upsert_params', $upsert_params, $request_params );
+
+		return is_array( $filtered_upsert_params ) ? $filtered_upsert_params : $upsert_params;
 	}
 
 	/**

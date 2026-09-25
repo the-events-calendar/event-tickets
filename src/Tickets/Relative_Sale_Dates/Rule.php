@@ -109,7 +109,7 @@ final class Rule {
 	 *
 	 * @var int
 	 */
-	private const MIN_VALUE = 1;
+	public const MIN_VALUE = 1;
 
 	/**
 	 * The highest number of units a relative end accepts.
@@ -118,7 +118,7 @@ final class Rule {
 	 *
 	 * @var int
 	 */
-	private const MAX_VALUE = 60;
+	public const MAX_VALUE = 60;
 
 	/**
 	 * The start of the sales window, in canonical form.
