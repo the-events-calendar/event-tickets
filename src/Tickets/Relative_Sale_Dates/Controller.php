@@ -41,6 +41,7 @@ final class Controller extends Controller_Contract {
 		$this->container->get( Ticket_Save::class )->unregister();
 		$this->container->get( Event_Listener::class )->unregister();
 		$this->container->get( Rest::class )->unregister();
+		$this->container->get( Classic_Panel_Data::class )->unregister();
 	}
 
 	/**
@@ -84,5 +85,6 @@ final class Controller extends Controller_Contract {
 		$this->container->register( Ticket_Save::class );
 		$this->container->register( Event_Listener::class );
 		$this->container->register( Rest::class );
+		$this->container->register( Classic_Panel_Data::class );
 	}
 }
