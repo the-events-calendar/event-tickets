@@ -31,8 +31,11 @@ use Tribe__Tickets__Tickets as Tickets;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Seating\Orders\Cart;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
+use WP_Query;
 
 class Frontend_Test extends Controller_Test_Case {
+	use Seating_Sessions;
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use Order_Maker;
@@ -124,6 +127,133 @@ class Frontend_Test extends Controller_Test_Case {
 				return true;
 			},
 		];
+	}
+
+	/**
+	 * The modal carries a token the Seating service issued for one visitor, so a cached copy of the
+	 * page hands that same token to everyone it is served to.
+	 *
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_prevent_caching_on_a_page_rendering_the_modal(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		$GLOBALS['post'] = $post_id;
+		$this->set_fn_return( 'is_singular', true );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->prevent_caching();
+
+		$this->assertTrue( $nocache_headers_sent );
+	}
+
+	/**
+	 * The tickets block renders from post content, so it embeds a token on responses that are not a
+	 * singular ticketable post at all — an archive showing full content, for one.
+	 *
+	 * @test
+	 * @covers Frontend::print_tickets_block
+	 */
+	public function test_prevent_caching_when_the_block_renders_off_a_singular_page(): void {
+		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, 100 );
+		$this->create_tc_ticket( $post_id, 20 );
+
+		/* The response is not a singular ticketable post, so the template_redirect guard does not fire. */
+		$this->set_fn_return( 'is_singular', false );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$this->given_the_seat_selection_block_was_rendered( $post_id, 'test-ephemeral-token' );
+
+		$this->assertTrue(
+			$nocache_headers_sent,
+			'A response embedding a seat selection token must not be cacheable.'
+		);
+	}
+
+	/**
+	 * An archive rendering full content embeds a token for every seated post it lists, and it is not
+	 * singular, so the response has to be recognised from the main query while headers can still be set.
+	 *
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_prevent_caching_on_an_archive_listing_a_seated_post(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$seated_post_id = static::factory()->post->create();
+		update_post_meta( $seated_post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $seated_post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		$this->set_fn_return( 'is_singular', false );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		global $wp_query;
+		$original_query = $wp_query;
+		$wp_query       = new WP_Query( [ 'post__in' => [ $seated_post_id ], 'post_type' => 'post' ] );
+
+		$this->make_controller()->prevent_caching();
+
+		/* Restore before asserting so a failure cannot leak the query into later tests. */
+		$wp_query = $original_query;
+
+		$this->assertTrue(
+			$nocache_headers_sent,
+			'An archive listing a seated post embeds a token and must not be cacheable.'
+		);
+	}
+
+	/**
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_does_not_prevent_caching_on_a_page_without_the_modal(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$post_id         = static::factory()->post->create();
+		$GLOBALS['post'] = $post_id;
+		$this->set_fn_return( 'is_singular', true );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->prevent_caching();
+
+		$this->assertFalse( $nocache_headers_sent );
 	}
 
 	/**
@@ -1050,7 +1180,7 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertNull( $session->get_session_token_object_id() );
 
 		$session->add_entry( $event_id, 'test-token-1' );
-		$sessions->insert_or_update( 'test-token-1', $event_id, time() + 100 );
+		$this->given_a_started_session( 'test-token-1', $event_id );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ $ticket_id ], 2 ) );
 
 		$this->assertEquals( [ 'test-token-1', $event_id ], $session->get_session_token_object_id() );
