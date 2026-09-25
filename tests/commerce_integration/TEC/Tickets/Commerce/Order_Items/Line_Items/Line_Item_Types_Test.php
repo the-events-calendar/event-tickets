@@ -1,14 +1,15 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Order_Items;
+namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
 
 use Codeception\TestCase\WPTestCase;
 use Generator;
+use stdClass;
 use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
-class Mapper_Test extends WPTestCase {
+class Line_Item_Types_Test extends WPTestCase {
 	use Ticket_Maker;
 
 	private $decimals;
@@ -33,17 +34,17 @@ class Mapper_Test extends WPTestCase {
 	}
 
 	private function round_trip( array $items, string $currency ): array {
-		$mapper = tribe( Mapper::class );
-		$rows   = [];
+		$types = tribe( Line_Item_Types::class );
+		$rows  = [];
 
 		foreach ( $items as $key => $item ) {
-			$rows[] = $mapper->to_row( $key, $item, 1, $currency );
+			$rows[] = $types->get_for_item( $item )->to_row( $key, $item, 1, $currency );
 		}
 
 		$rebuilt = [];
 
 		foreach ( $rows as $row ) {
-			[ $key, $item ]  = $mapper->to_item( $row );
+			[ $key, $item ]  = $types->get( $row['type'] )->from_row( $row );
 			$rebuilt[ $key ] = $item;
 		}
 
@@ -140,15 +141,15 @@ class Mapper_Test extends WPTestCase {
 
 	public function test_the_site_decimals_setting_does_not_change_stored_minor_units(): void {
 		$items  = $this->fixture( 'sale-price' );
-		$mapper = tribe( Mapper::class );
+		$ticket = tribe( Line_Item_Types::class )->get( 'ticket' );
 		$stored = [];
 
 		foreach ( [ 0, 2, 3 ] as $decimals ) {
 			tribe_update_option( Settings::$option_currency_number_of_decimals, $decimals );
-			$row                 = $mapper->to_row( 0, $items[0], 1, 'USD' );
+			$row                 = $ticket->to_row( 0, $items[0], 1, 'USD' );
 			$stored[ $decimals ] = [ $row['price'], $row['regular_price'], $row['sub_total'], $row['regular_sub_total'] ];
 
-			$this->assertSame( [ '0', $items[0] ], $mapper->to_item( $row ) );
+			$this->assertSame( [ '0', $items[0] ], $ticket->from_row( $row ) );
 		}
 
 		$cents = [
@@ -159,5 +160,60 @@ class Mapper_Test extends WPTestCase {
 		];
 
 		$this->assertSame( [ 0 => $cents, 2 => $cents, 3 => $cents ], $stored );
+	}
+
+	public function registered_types_provider(): Generator {
+		yield 'ticket' => [ 'ticket', Ticket_Line_Item::class ];
+		yield 'unregistered type' => [ 'membership', Generic_Line_Item::class ];
+		yield 'no type' => [ '', Generic_Line_Item::class ];
+	}
+
+	/**
+	 * @dataProvider registered_types_provider
+	 */
+	public function test_it_returns_the_class_registered_for_a_type( string $type, string $expected ): void {
+		$this->assertSame( $expected, get_class( tribe( Line_Item_Types::class )->get( $type ) ) );
+	}
+
+	public function test_item_without_a_string_type_gets_the_generic_class(): void {
+		$types = tribe( Line_Item_Types::class );
+
+		$this->assertInstanceOf( Generic_Line_Item::class, $types->get_for_item( [ 'ticket_id' => 1 ] ) );
+		$this->assertInstanceOf( Generic_Line_Item::class, $types->get_for_item( [ 'type' => null ] ) );
+		$this->assertInstanceOf( Ticket_Line_Item::class, $types->get_for_item( [ 'type' => 'ticket' ] ) );
+	}
+
+	public function test_a_filtered_type_gets_its_class(): void {
+		add_filter(
+			'tec_tickets_commerce_order_items_line_item_types',
+			static fn( $types ) => $types + [ 'membership' => Ticket_Line_Item::class ]
+		);
+
+		$this->assertSame( Ticket_Line_Item::class, get_class( tribe( Line_Item_Types::class )->get( 'membership' ) ) );
+	}
+
+	public function invalid_entries_provider(): Generator {
+		yield 'built-in type, not a line item type class' => [ 'ticket', stdClass::class, Ticket_Line_Item::class ];
+		yield 'built-in type, missing class' => [ 'ticket', 'Not_A_Class', Ticket_Line_Item::class ];
+		yield 'built-in type, an instance' => [ 'ticket', new stdClass(), Ticket_Line_Item::class ];
+		yield 'new type, not a line item type class' => [ 'membership', stdClass::class, Generic_Line_Item::class ];
+	}
+
+	/**
+	 * @dataProvider invalid_entries_provider
+	 */
+	public function test_an_invalid_filtered_entry_is_ignored( string $type, $entry, string $expected ): void {
+		add_filter(
+			'tec_tickets_commerce_order_items_line_item_types',
+			static fn( $types ) => array_merge( $types, [ $type => $entry ] )
+		);
+
+		$this->assertSame( $expected, get_class( tribe( Line_Item_Types::class )->get( $type ) ) );
+	}
+
+	public function test_a_filter_returning_no_list_keeps_the_built_in_types(): void {
+		add_filter( 'tec_tickets_commerce_order_items_line_item_types', '__return_null' );
+
+		$this->assertSame( Ticket_Line_Item::class, get_class( tribe( Line_Item_Types::class )->get( 'ticket' ) ) );
 	}
 }
