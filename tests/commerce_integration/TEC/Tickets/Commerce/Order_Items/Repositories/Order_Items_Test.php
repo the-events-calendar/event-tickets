@@ -17,7 +17,7 @@ class Order_Items_Test extends WPTestCase {
 	 * @after
 	 */
 	public function empty_table(): void {
-		DB::query( DB::prepare( 'DELETE FROM %i', Order_Items_Table::table_name() ) );
+		( new Order_Items_Table() )->empty_table();
 	}
 
 	public function test_insert_many_writes_every_row_in_one_query_and_none_without_rows(): void {
