@@ -88,6 +88,8 @@ class Order_Items extends Table {
 				$columns[] = new Referenced_ID( 'order_id' );
 				$columns[] = ( new String_Column( 'type' ) )->set_length( 50 );
 				$columns[] = ( new String_Column( 'item_key' ) )->set_length( 191 )->set_nullable( true );
+				// The line's 0-based place in the order's item list; row IDs do not keep it once a line is added to an existing order.
+				$columns[] = ( new Integer_Column( 'position' ) )->set_type( Column_Types::INT )->set_length( 11 )->set_signed( false );
 
 				/*
 				 * The line identity columns are NOT NULL and writers store 0 for "none": MySQL treats NULLs
