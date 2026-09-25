@@ -113,6 +113,11 @@ class Writer extends Controller_Contract {
 				$rows[] = $this->mapper->to_row( $key, $item, $order_id, $currency ) + [ 'position' => $position++ ];
 			}
 
+			/*
+			 * A new order owns no rows yet. Any found carry a recycled post ID, e.g. after the posts table was
+			 * truncated by `wp site empty`, and would otherwise be read back as this order's lines.
+			 */
+			$this->repository->delete_by_order( $order_id );
 			// One INSERT is atomic on its own; opening a transaction here would commit a caller's, e.g. Square's duplicate-order check.
 			$this->repository->insert_many( $rows );
 		} catch ( Throwable $e ) {
