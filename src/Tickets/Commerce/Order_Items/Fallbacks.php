@@ -141,7 +141,6 @@ class Fallbacks {
 				];
 			}
 		} catch ( Throwable $e ) {
-			// The line still shows, as "Ticket #ID".
 			$this->rows[ $order_id ] = [];
 		}
 
