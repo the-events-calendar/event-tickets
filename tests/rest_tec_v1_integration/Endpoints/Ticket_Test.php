@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Tickets as Tickets;
+use WP_Error;
 use WP_Post;
 use Closure;
 
@@ -16,6 +17,25 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 	use Ticket_Maker;
 
 	protected $endpoint_class = Ticket::class;
+
+	/**
+	 * The validation callback that rejects every ticket save, while a test uses one.
+	 *
+	 * @var Closure|null
+	 */
+	private ?Closure $ticket_data_rejection = null;
+
+	/**
+	 * This suite does not restore hooks between tests, so the rejection is removed here.
+	 *
+	 * @after
+	 */
+	public function stop_rejecting_ticket_data(): void {
+		if ( $this->ticket_data_rejection ) {
+			remove_filter( 'tec_tickets_ticket_data_validation', $this->ticket_data_rejection );
+			$this->ticket_data_rejection = null;
+		}
+	}
 
 
 	protected function create_test_data(): array {
@@ -166,6 +186,41 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		return $example;
 	}
 
+	public function test_create_rejects_ticket_data_that_fails_validation() {
+		if ( ! $this->is_creatable() ) {
+			return;
+		}
+
+		$example = $this->get_example_create_data();
+		unset( $example['id'] );
+		$this->reject_ticket_data();
+
+		wp_set_current_user( 1 );
+		$response = $this->assert_endpoint( $this->endpoint->get_base_path(), 'POST', 400, $example );
+
+		$this->assertSame( 'The ticket data is not valid.', $response['message'] );
+		$this->assertSame( [], $this->get_ticket_ids_of( $example['event'] ) );
+	}
+
+	public function test_update_rejects_ticket_data_that_fails_validation() {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		$example = $this->get_example_create_data();
+		unset( $example['id'] );
+
+		wp_set_current_user( 1 );
+		$entity_id = $this->endpoint->get_orm()->set_args( $example )->create()->ID;
+		$title     = get_post( $entity_id )->post_title;
+		$this->reject_ticket_data();
+
+		$response = $this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $entity_id ), 'PUT', 400, [ 'title' => "{$title} updated" ] );
+
+		$this->assertSame( 'The ticket data is not valid.', $response['message'] );
+		$this->assertSame( $title, get_post( $entity_id )->post_title );
+	}
+
 	public function test_update_handles_save_failure() {
 		if ( ! $this->is_updatable() ) {
 			return;
@@ -265,5 +320,32 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 		$json = str_replace( $tickets, '{TICKET_ID}', $json );
 
 		$this->assertMatchesJsonSnapshot( $json );
+	}
+
+	/**
+	 * Makes every ticket save fail validation until the test ends.
+	 *
+	 * @return void
+	 */
+	private function reject_ticket_data(): void {
+		$this->ticket_data_rejection = static fn() => new WP_Error( 'tec_tests_invalid_ticket_data', 'The ticket data is not valid.', [ 'status' => 400 ] );
+		add_filter( 'tec_tickets_ticket_data_validation', $this->ticket_data_rejection );
+	}
+
+	/**
+	 * @param int $post_id The ticketed post ID.
+	 *
+	 * @return int[] The IDs of the Tickets Commerce tickets of the post.
+	 */
+	private function get_ticket_ids_of( int $post_id ): array {
+		return get_posts(
+			[
+				'post_type'   => Ticket_Model::POSTTYPE,
+				'post_status' => 'any',
+				'fields'      => 'ids',
+				'meta_key'    => Ticket_Model::$event_relation_meta_key,
+				'meta_value'  => $post_id,
+			]
+		);
 	}
 }
