@@ -165,8 +165,11 @@ class Event_Listener_Test extends Controller_Test_Case {
 			]
 		);
 		tribe( Ticket_Actions::class )->sync_ticket_dates_actions( $ticket_id );
-		$this->assertCount( 1, $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
-		$this->assertCount( 1, $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+		// Two overlapping saves can leave a second pending action on each hook.
+		foreach ( [ Ticket_Actions::TICKET_START_SALES_HOOK, Ticket_Actions::TICKET_END_SALES_HOOK ] as $hook ) {
+			as_schedule_single_action( $specific_end->getTimestamp() - HOUR_IN_SECONDS, $hook, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
+			$this->assertCount( 2, $this->get_scheduled_timestamps( $hook, $ticket_id ) );
+		}
 		// A month later, two weeks before the event is past the specific end.
 		$moved = $event_start->modify( '+1 month' );
 
