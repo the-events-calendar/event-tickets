@@ -360,6 +360,25 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_reject_a_specific_date_the_datepicker_format_cannot_read(): void {
+		// 4 is the day-first `d/m/Y` datepicker format, and 31/02 is not a day it can turn into a date.
+		add_filter( 'tribe_datepicker_format_index', static fn() => 4 );
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$data     = [
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+			'ticket_start_date'   => '31/02/2027',
+			'ticket_start_time'   => '12:00:00',
+		];
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertWPError( $result );
+		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+	}
+
+	/**
 	 * @return Generator<string,array{0: string, 1: array<string,string>}>
 	 */
 	public function accepted_ticket_data_provider(): Generator {

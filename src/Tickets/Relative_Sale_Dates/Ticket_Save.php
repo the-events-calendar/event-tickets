@@ -339,7 +339,7 @@ final class Ticket_Save extends Controller_Contract {
 	 * @param string              $end      The end of the window, `start` or `end`.
 	 * @param DateTimeZone        $timezone The event timezone.
 	 *
-	 * @return DateTimeImmutable|null The submitted date, or `null` when none was submitted.
+	 * @return DateTimeImmutable|null The submitted date, or `null` when none was submitted or it cannot be read.
 	 */
 	private function get_submitted_date( array $data, string $end, DateTimeZone $timezone ): ?DateTimeImmutable {
 		$date = $data[ "ticket_{$end}_date" ] ?? '';
@@ -349,8 +349,15 @@ final class Ticket_Save extends Controller_Contract {
 			return null;
 		}
 
+		// A date the datepicker format cannot read comes back `false`, which `ticket_add()` would save as 1970.
+		$date = Dates::maybe_format_from_datepicker( $date );
+
+		if ( ! is_string( $date ) || '' === $date ) {
+			return null;
+		}
+
 		try {
-			return new DateTimeImmutable( trim( Dates::maybe_format_from_datepicker( $date ) . ' ' . ( is_string( $time ) ? $time : '' ) ), $timezone );
+			return new DateTimeImmutable( trim( $date . ' ' . ( is_string( $time ) ? $time : '' ) ), $timezone );
 		} catch ( Exception $e ) {
 			return null;
 		}
