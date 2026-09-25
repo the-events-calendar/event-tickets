@@ -60,7 +60,7 @@ class Attendee_Model extends Base {
 			$opt_out              = tribe_is_truthy( Arr::get( $post_meta, [ Attendee::$optout_meta_key, 0 ] ) );
 			$ticket_sent          = (int) Arr::get( $post_meta, [ Attendee::$ticket_sent_meta_key, 0 ] );
 			$bought_as            = Arr::get( $post_meta, [ Order_Items_Attendees::TICKET_NAME_META_KEY, 0 ] );
-			$deleted_ticket_title = $bought_as ?: Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
+			$deleted_ticket_title = '' !== (string) $bought_as ? $bought_as : Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
 			$full_name            = Arr::get( $post_meta, [ Attendee::$full_name_meta_key, 0 ] );
 			$email                = Arr::get( $post_meta, [ Attendee::$email_meta_key, 0 ] );
 			$price_paid           = Arr::get( $post_meta, [ Attendee::$price_paid_meta_key, 0 ] );
