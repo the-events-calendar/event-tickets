@@ -124,6 +124,15 @@ class Line_Item_Types_Test extends WPTestCase {
 		$this->assertSame( $items[0]['price'], json_decode( $rows[0]['extra'], true )['raw']['price'] );
 	}
 
+	public function test_a_value_longer_than_its_column_is_cut_to_fit_and_round_trips_whole(): void {
+		$item = array_merge( $this->fixture( 'tickets' )[0], [ 'type' => str_repeat( 'é', 60 ) ] );
+
+		[ $rows, $rebuilt ] = $this->round_trip( [ $item ], 'USD' );
+
+		$this->assertSame( str_repeat( 'é', 50 ), $rows[0]['type'] );
+		$this->assertSame( [ $item ], $rebuilt );
+	}
+
 	public function test_three_decimal_currency_is_stored_in_thousandths(): void {
 		add_filter(
 			'tec_tickets_commerce_default_currency_map',

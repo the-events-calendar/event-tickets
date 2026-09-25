@@ -53,6 +53,22 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	private array $decimals = [];
 
 	/**
+	 * The length of each string column. WordPress turns off MySQL's strict mode, so a longer value would be cut
+	 * silently on insert; cutting it here instead lets the full value round-trip through `raw`.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,int>
+	 */
+	private const LENGTHS = [
+		'type'        => 50,
+		'event_title' => 255,
+		'name'        => 255,
+		'sku'         => 255,
+		'ticket_type' => 50,
+	];
+
+	/**
 	 * Converts an order item to a table row.
 	 *
 	 * @since TBD
@@ -80,7 +96,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			}
 
 			$kind             = static::FIELDS[ $name ];
-			$columns[ $name ] = $this->to_column( $kind, $value, $precision );
+			$columns[ $name ] = $this->fit( $name, $this->to_column( $kind, $value, $precision ) );
 
 			// Values the column cannot hold exactly (a '0' string, an unrounded float) keep their original.
 			if ( $this->from_column( $kind, $columns[ $name ], $precision ) !== $value ) {
@@ -101,13 +117,13 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			'event_id'             => $event_id,
 			'post_id'              => $event_id,
 			'occurrence_id'        => null,
-			'event_title'          => $event_id ? ( get_post_field( 'post_title', $event_id ) ?: null ) : null,
+			'event_title'          => $this->fit( 'event_title', $event_id ? ( get_post_field( 'post_title', $event_id ) ?: null ) : null ),
 			'event_start_date'     => $event_id ? ( get_post_meta( $event_id, '_EventStartDate', true ) ?: null ) : null,
 			'event_start_date_utc' => $event_id ? ( get_post_meta( $event_id, '_EventStartDateUTC', true ) ?: null ) : null,
-			'name'                 => $details['name'],
+			'name'                 => $this->fit( 'name', $details['name'] ),
 			'currency'             => $currency,
-			'sku'                  => $details['sku'],
-			'ticket_type'          => $details['ticket_type'],
+			'sku'                  => $this->fit( 'sku', $details['sku'] ),
+			'ticket_type'          => $this->fit( 'ticket_type', $details['ticket_type'] ),
 			'quantity'             => $columns['quantity'] ?? 0,
 			'price'                => $columns['price'] ?? 0,
 			'regular_price'        => $columns['regular_price'] ?? null,
@@ -173,6 +189,20 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 */
 	private function get_decimals( string $currency ): int {
 		return $this->decimals[ $currency ] ??= (int) ( Currency::get_default_currency_map()[ $currency ]['decimal_precision'] ?? 2 );
+	}
+
+	/**
+	 * Cuts a string to the length of its column.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $column The column name.
+	 * @param mixed  $value  The column value.
+	 *
+	 * @return mixed The value, cut to fit when it is a string longer than the column.
+	 */
+	private function fit( string $column, $value ) {
+		return is_string( $value ) && isset( self::LENGTHS[ $column ] ) ? mb_substr( $value, 0, self::LENGTHS[ $column ] ) : $value;
 	}
 
 	/**
