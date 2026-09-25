@@ -30,7 +30,7 @@ final class Boundary implements JsonSerializable {
 	 *
 	 * @var int
 	 */
-	private const MIN_VALUE = 1;
+	public const MIN_VALUE = 1;
 
 	/**
 	 * The highest number of units a relative boundary accepts.
@@ -39,7 +39,7 @@ final class Boundary implements JsonSerializable {
 	 *
 	 * @var int
 	 */
-	private const MAX_VALUE = 60;
+	public const MAX_VALUE = 60;
 
 	/**
 	 * The `DateInterval` format of each unit a relative boundary accepts, keyed by the `Rule::UNIT_*` constants.
