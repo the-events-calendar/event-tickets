@@ -519,6 +519,67 @@ class Writer_Test extends Controller_Test_Case {
 		}
 	}
 
+	public function test_permanently_deleting_an_order_deletes_only_its_rows(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$deleted          = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] )->ID;
+		$kept             = $this->create_order( [ $ticket_ids[0] => 1 ] )->ID;
+		$kept_rows        = $this->get_rows( $kept );
+		$queries          = $this->count_queries_against_the_table();
+
+		wp_delete_post( $deleted, true );
+
+		$this->assertSame( [ 'DELETE' => 1 ], $queries() );
+		$this->assertSame( [], $this->get_rows( $deleted ) );
+		$this->assertSame( $kept_rows, $this->get_rows( $kept ) );
+	}
+
+	public function test_trashing_and_untrashing_an_order_keeps_its_rows(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order_id         = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] )->ID;
+		$rows             = $this->get_rows( $order_id );
+
+		wp_trash_post( $order_id );
+
+		$this->assertSame( $rows, $this->get_rows( $order_id ) );
+
+		wp_untrash_post( $order_id );
+
+		$this->assertSame( $rows, $this->get_rows( $order_id ) );
+	}
+
+	public function test_deleting_an_order_with_the_writer_off_keeps_its_rows(): void {
+		$controller       = $this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order_id         = $this->create_order( [ $ticket_ids[0] => 1 ] )->ID;
+		$rows             = $this->get_rows( $order_id );
+		$controller->unregister();
+
+		wp_delete_post( $order_id, true );
+
+		$this->assertSame( $rows, $this->get_rows( $order_id ) );
+	}
+
+	public function test_a_failed_delete_is_logged_and_the_order_deleted(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order_id         = $this->create_order( [ $ticket_ids[0] => 1 ] )->ID;
+		$this->set_class_fn_return(
+			Order_Items_Repository::class,
+			'delete_by_order',
+			static function () {
+				throw new RuntimeException( 'Query failed.' );
+			},
+			true
+		);
+
+		wp_delete_post( $order_id, true );
+
+		$this->assertNull( get_post( $order_id ) );
+		$this->assert_logged( 'debug', 'could not be deleted' );
+	}
+
 	/**
 	 * Creates a pending stored order of a VIP and a GA ticket, and the items of the same order with the VIP quantity changed,
 	 * the GA line gone and a new ticket line added.
@@ -589,9 +650,12 @@ class Writer_Test extends Controller_Test_Case {
 	/**
 	 * Registers the Order Items controller, which registers the writer while the switch is on.
 	 */
-	private function register_controller( bool $active ): void {
+	private function register_controller( bool $active ): Controller {
 		add_filter( 'tec_tickets_commerce_order_items_active', $active ? '__return_true' : '__return_false' );
-		$this->make_controller()->register();
+		$controller = $this->make_controller();
+		$controller->register();
+
+		return $controller;
 	}
 
 	/**
