@@ -10,6 +10,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Type;
 use Tribe\Tests\Traits\With_Uopz;
@@ -120,6 +121,56 @@ class Reader_Test extends Controller_Test_Case {
 			// serialize() is as strict as === on keys, key order and scalar types, but compares objects by state.
 			$this->assertSame( serialize( $expected->{$property} ?? null ), serialize( $actual->{$property} ?? null ), $property );
 		}
+	}
+
+	public function middle_insert_provider(): Generator {
+		yield 'ticket between two tickets' => [
+			function ( int $event_id, int $vip, int $ga ) {
+				$new   = $this->create_tc_ticket( $event_id, 30 );
+				$order = $this->create_order( [ $vip => 1, $ga => 2 ], [ 'order_status' => Pending::SLUG ] );
+				$items = array_values( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+
+				return [ $order->ID, [ $items[0], array_merge( $items[0], [ 'ticket_id' => $new ] ), $items[1] ], [ $vip, $new, $ga ] ];
+			},
+		];
+
+		yield 'ticket before a fee' => [
+			function ( int $event_id, int $vip, int $ga ) {
+				$this->create_fee_for_ticket( $vip, [ 'raw_amount' => 2.5 ] );
+				$order = $this->create_order( [ $vip => 1 ], [ 'order_status' => Pending::SLUG ] );
+				$items = array_values( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+
+				return [ $order->ID, [ $items[0], array_merge( $items[0], [ 'ticket_id' => $ga ] ), $items[1] ], [ $vip, $ga, $vip ] ];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider middle_insert_provider
+	 */
+	public function test_a_line_added_in_the_middle_of_an_order_loads_in_its_saved_place( Closure $make_order ): void {
+		$this->register_controller( true );
+		[ $event_id, [ $vip, $ga ] ]         = $this->make_tickets();
+		[ $order_id, $items, $ticket_order ] = $make_order->call( $this, $event_id, $vip, $ga );
+		tec_tc_orders()->by_args( [ 'id' => $order_id, 'status' => 'any' ] )->set_args( [ 'items' => $items ] )->save();
+		$read = null;
+		// Fees leave the items list after the reader runs, so the list is checked as the reader returns it.
+		add_filter(
+			'tec_tickets_commerce_order_model_items',
+			static function ( $items ) use ( &$read ) {
+				$read = $items;
+
+				return $items;
+			},
+			20
+		);
+
+		$this->load( $order_id );
+
+		$this->assertSame( '2', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		$this->assertSame( [ 0, 1, 2 ], array_keys( $read ) );
+		$this->assertEquals( $ticket_order, array_column( $read, 'ticket_id' ) );
+		$this->assertSame( serialize( get_post_meta( $order_id, Order::$items_meta_key, true ) ), serialize( $read ) );
 	}
 
 	public function test_an_old_order_loads_without_querying_the_table(): void {
