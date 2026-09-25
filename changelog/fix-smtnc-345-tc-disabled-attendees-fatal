@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Fix a fatal error on the Attendees screen when Tickets Commerce is disabled but Tickets Commerce records remain, by treating a disabled Tickets Commerce module as an inactive ticket provider [SMTNC-345]
