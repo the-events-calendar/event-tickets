@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items;
 
+use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
 use Throwable;
 use Tribe__Log as Log;
@@ -22,13 +23,13 @@ use Tribe__Log as Log;
  */
 final class Reader {
 	/**
-	 * The mapper that turns rows back into order items.
+	 * The line item types that turn rows back into order items.
 	 *
 	 * @since TBD
 	 *
-	 * @var Mapper
+	 * @var Line_Item_Types
 	 */
-	private Mapper $mapper;
+	private Line_Item_Types $types;
 
 	/**
 	 * The Order Items repository.
@@ -44,11 +45,11 @@ final class Reader {
 	 *
 	 * @since TBD
 	 *
-	 * @param Mapper      $mapper     The mapper that turns rows back into order items.
-	 * @param Order_Items $repository The Order Items repository.
+	 * @param Line_Item_Types $types      The line item types that turn rows back into order items.
+	 * @param Order_Items     $repository The Order Items repository.
 	 */
-	public function __construct( Mapper $mapper, Order_Items $repository ) {
-		$this->mapper     = $mapper;
+	public function __construct( Line_Item_Types $types, Order_Items $repository ) {
+		$this->types      = $types;
 		$this->repository = $repository;
 	}
 
@@ -75,7 +76,8 @@ final class Reader {
 
 		try {
 			foreach ( $this->repository->get_by_order( $post_id ) as $model ) {
-				[ $key, $item ] = $this->mapper->to_item( $model->toArray() );
+				$row            = $model->toArray();
+				[ $key, $item ] = $this->types->get( $row['type'] )->from_row( $row );
 
 				$list[ $key ] = $item;
 			}
