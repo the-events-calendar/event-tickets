@@ -131,6 +131,11 @@ class Order_Items extends Custom_Table_Repository {
 		$changed = 0;
 
 		foreach ( $rows as $row ) {
+			// DB::update() does not encode JSON columns the way insert_many() does, and would store an array as ''.
+			if ( is_array( $row['extra'] ?? null ) ) {
+				$row['extra'] = wp_json_encode( $row['extra'], JSON_PRESERVE_ZERO_FRACTION );
+			}
+
 			$changed += DB::update( Order_Items_Table::table_name(), array_diff_key( $row, [ 'id' => true ] ), [ 'id' => $row['id'] ] );
 		}
 

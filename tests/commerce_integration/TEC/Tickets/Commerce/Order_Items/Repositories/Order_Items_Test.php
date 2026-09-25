@@ -65,6 +65,16 @@ class Order_Items_Test extends WPTestCase {
 		);
 	}
 
+	public function test_update_rows_stores_an_array_extra_as_json_like_insert_many(): void {
+		$repository = tribe( Order_Items::class );
+		$repository->insert_many( [ array_merge( $this->row( 1, 1 ), [ 'extra' => [ 'keys' => [ 'a' ] ] ] ) ] );
+		[ $stored ] = $this->get_rows( 1 );
+
+		$repository->update_rows( [ [ 'id' => $stored['id'], 'extra' => [ 'keys' => [ 'b' ], 'values' => [ 'b' => 1.0 ] ] ] ] );
+
+		$this->assertSame( [ 'keys' => [ 'b' ], 'values' => [ 'b' => 1.0 ] ], $this->get_rows( 1 )[0]['extra'] );
+	}
+
 	public function invalid_row_id_provider(): Generator {
 		yield 'no id' => [ [] ];
 		yield 'zero id' => [ [ 'id' => 0 ] ];
