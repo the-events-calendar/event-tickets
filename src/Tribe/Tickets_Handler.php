@@ -330,6 +330,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * if it wasn't manually updated
 	 *
 	 * @since 4.6
+	 * @since TBD Skips tickets whose sale end date no longer follows the event start.
 	 *
 	 * @param int    $meta_id    MID
 	 * @param int    $object_id  Which Post we are dealing with
@@ -362,6 +363,19 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $tickets as $ticket ) {
 			// Skip tickets with manual updates to that meta
 			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+				continue;
+			}
+
+			/**
+			 * Filters whether a ticket's sale end date is moved to its event's new start date.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $follows   Whether the ticket's sale end date follows the event start. Default `true`.
+			 * @param int  $ticket_id The ticket post ID.
+			 * @param int  $event_id  The event post ID.
+			 */
+			if ( ! tribe_is_truthy( apply_filters( 'tec_tickets_ticket_end_date_follows_event_start', true, $ticket, $object_id ) ) ) {
 				continue;
 			}
 
