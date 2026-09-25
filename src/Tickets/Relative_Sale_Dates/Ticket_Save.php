@@ -52,6 +52,15 @@ final class Ticket_Save {
 	private Rule_Store $rule_store;
 
 	/**
+	 * The resolver and writer of the ticket dates.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Dates
+	 */
+	private Ticket_Dates $ticket_dates;
+
+	/**
 	 * The sales window resolver.
 	 *
 	 * @since TBD
@@ -65,12 +74,14 @@ final class Ticket_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store  $rule_store  The store of the ticket rules.
-	 * @param Sale_Window $sale_window The sales window resolver.
+	 * @param Rule_Store   $rule_store   The store of the ticket rules.
+	 * @param Sale_Window  $sale_window  The sales window resolver.
+	 * @param Ticket_Dates $ticket_dates The writer of the ticket dates.
 	 */
-	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window ) {
-		$this->rule_store  = $rule_store;
-		$this->sale_window = $sale_window;
+	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window, Ticket_Dates $ticket_dates ) {
+		$this->rule_store   = $rule_store;
+		$this->sale_window  = $sale_window;
+		$this->ticket_dates = $ticket_dates;
 	}
 
 	/**
@@ -168,23 +179,10 @@ final class Ticket_Save {
 			return;
 		}
 
-		$rule   = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
-		$window = $rule ? $this->sale_window->resolve_for_event( $rule, $post_id ) : null;
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
-		if ( ! $window ) {
-			return;
-		}
-
-		$start = $window->get_start();
-		if ( $start ) {
-			update_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, $start->format( Dates::DBDATEFORMAT ) );
-			update_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, $start->format( Dates::DBTIMEFORMAT ) );
-		}
-
-		$end = $window->get_end();
-		if ( $end ) {
-			update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end->format( Dates::DBDATEFORMAT ) );
-			update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end->format( Dates::DBTIMEFORMAT ) );
+		if ( $rule ) {
+			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
 		}
 	}
 
@@ -222,7 +220,7 @@ final class Ticket_Save {
 		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
 		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
 
-		if ( ! $event_dates ) {
+		if ( ! $event_dates || ! $window ) {
 			return $valid;
 		}
 
