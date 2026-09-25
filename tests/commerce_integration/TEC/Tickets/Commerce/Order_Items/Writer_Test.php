@@ -20,11 +20,13 @@ use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use WP_Post;
 
 class Writer_Test extends Controller_Test_Case {
+	use Fee_Creator;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;
@@ -367,6 +369,51 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( '2', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
 	}
 
+	public function test_a_line_added_in_the_middle_is_inserted_there_and_moves_the_lines_after_it(): void {
+		$this->register_controller( true );
+		[ , [ $vip, $ga ] ] = $this->make_tickets();
+		$this->create_fee_for_ticket( $vip, [ 'raw_amount' => 2.5 ] );
+		$order  = $this->create_order( [ $vip => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$items  = array_values( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+		$before = $this->get_rows( $order->ID );
+		$fee    = $this->identity( $items[1] );
+		$this->assertSame( [ "{$vip}:0:0", $fee ], array_keys( $before ) );
+		$queries = $this->count_queries_against_the_table();
+
+		$this->save_items( $order->ID, [ $items[0], array_merge( $items[0], [ 'ticket_id' => $ga ] ), $items[1] ] );
+
+		$this->assertSame( [ 'UPDATE' => 1, 'INSERT' => 1 ], array_diff_key( $queries(), [ 'SELECT' => true ] ) );
+		$after = $this->get_rows( $order->ID );
+		$this->assertSame( [ "{$vip}:0:0" => 0, "{$ga}:0:0" => 1, $fee => 2 ], $this->positions( $after ) );
+		$this->assertSame( $before[ "{$vip}:0:0" ], $after[ "{$vip}:0:0" ] );
+		$this->assertSame( $before[ $fee ]['id'], $after[ $fee ]['id'] );
+		$this->assert_rows_hold_the_items( $order->ID );
+	}
+
+	public function test_a_reorder_updates_only_the_moved_lines(): void {
+		$this->register_controller( true );
+		[ $event_id, [ $vip, $ga ] ] = $this->make_tickets();
+		$student                     = $this->create_tc_ticket( $event_id, 5 );
+		$order                       = $this->create_order( [ $vip => 1, $ga => 1, $student => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$items                       = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		[ $first, $second, $third ]  = array_keys( $items );
+		$before                      = $this->get_rows( $order->ID );
+		$queries                     = $this->count_queries_against_the_table();
+
+		// Keys stay with their items, so only the positions tell the new order.
+		do_action( 'tec_tickets_commerce_order_updated', $order->ID, [ $first => $items[ $first ], $third => $items[ $third ], $second => $items[ $second ] ] );
+
+		$this->assertSame( [ 'UPDATE' => 2 ], array_diff_key( $queries(), [ 'SELECT' => true ] ) );
+		$after = $this->get_rows( $order->ID );
+		$moved = array_keys( array_diff_assoc( $this->positions( $before ), $this->positions( $after ) ) );
+		$this->assertSame( [ $this->identity( $items[ $second ] ), $this->identity( $items[ $third ] ) ], $moved );
+		$this->assertSame( [ $this->identity( $items[ $first ] ), $this->identity( $items[ $third ] ), $this->identity( $items[ $second ] ) ], array_keys( $after ) );
+		$ids = array_column( $after, 'id', 'ticket_id' );
+		ksort( $ids );
+		$this->assertSame( array_column( $before, 'id', 'ticket_id' ), $ids );
+		$this->assertSame( $before[ $this->identity( $items[ $first ] ) ], $after[ $this->identity( $items[ $first ] ) ] );
+	}
+
 	public function test_an_update_of_an_order_stored_the_old_way_writes_nothing(): void {
 		[ , $ticket_ids ] = $this->make_tickets();
 		$order            = $this->create_order( [ $ticket_ids[0] => 1 ] );
@@ -510,6 +557,15 @@ class Writer_Test extends Controller_Test_Case {
 		}
 
 		return $rows;
+	}
+
+	/**
+	 * @param array<string,array<string,mixed>> $rows Rows keyed by line identity.
+	 *
+	 * @return array<string,int> The rows' positions, keyed by line identity.
+	 */
+	private function positions( array $rows ): array {
+		return array_map( static fn( array $row ) => $row['position'], $rows );
 	}
 
 	private function identity( array $line ): string {
