@@ -117,6 +117,119 @@ class AttendeesTest extends Controller_Test_Case {
 	}
 
 	/**
+	 * It should only blank the check-in column for the original Series Pass Attendee, not for its
+	 * per-Occurrence clone, which carries the real checkin status.
+	 *
+	 * @test
+	 */
+	public function should_only_blank_the_check_in_column_for_the_original_series_pass_attendee(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		// Create an Event part of the Series.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '-1 hour',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Clone the Attendee to the Occurrence directly, without going through the checkin flow.
+		$cloned_attendee_id = $controller->clone_attendee_to_event( $series_attendee_id, $event_id );
+		$this->assertNotFalse( $cloned_attendee_id, 'The Attendee should have been cloned to the Event.' );
+
+		$original_item = [
+			'attendee_id' => $series_attendee_id,
+			'ticket_type' => Series_Passes::TICKET_TYPE,
+		];
+		$clone_item    = [
+			'attendee_id' => $cloned_attendee_id,
+			'ticket_type' => Series_Passes::TICKET_TYPE,
+		];
+
+		$this->assertEquals(
+			'',
+			$controller->filter_attendees_table_column_check_in( '<span>Check In</span>', $original_item ),
+			'The check-in column should be blanked for the original Series-level Attendee.'
+		);
+		$this->assertEquals(
+			'<span>Check In</span>',
+			$controller->filter_attendees_table_column_check_in( '<span>Check In</span>', $clone_item ),
+			'The check-in column should render normally for the per-Occurrence clone Attendee, which carries the real checkin status.'
+		);
+	}
+
+	/**
+	 * It should only strip the check-in/uncheck-in row actions for the original Series Pass Attendee,
+	 * not for its per-Occurrence clone.
+	 *
+	 * @test
+	 */
+	public function should_only_strip_check_in_row_actions_for_the_original_series_pass_attendee(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		// Create an Event part of the Series.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '-1 hour',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Clone the Attendee to the Occurrence directly, without going through the checkin flow.
+		$cloned_attendee_id = $controller->clone_attendee_to_event( $series_attendee_id, $event_id );
+		$this->assertNotFalse( $cloned_attendee_id, 'The Attendee should have been cloned to the Event.' );
+
+		$row_actions = [
+			'<a class="tickets_checkin">Check In</a>',
+			'<a class="tickets_uncheckin">Undo Check In</a>',
+			'<a class="move-attendee">Move</a>',
+		];
+
+		$original_item = [ 'ticket_type' => Series_Passes::TICKET_TYPE ];
+		$clone_item    = [ 'ticket_type' => Series_Passes::TICKET_TYPE ];
+
+		$filtered_for_original = $controller->filter_attendees_row_actions(
+			$row_actions,
+			array_merge( $original_item, [ 'attendee_id' => $series_attendee_id ] )
+		);
+		$filtered_for_clone     = $controller->filter_attendees_row_actions(
+			$row_actions,
+			array_merge( $clone_item, [ 'attendee_id' => $cloned_attendee_id ] )
+		);
+
+		$this->assertCount(
+			1,
+			$filtered_for_original,
+			'The check-in/uncheck-in row actions should be stripped for the original Series-level Attendee.'
+		);
+		$this->assertCount(
+			3,
+			$filtered_for_clone,
+			'The check-in/uncheck-in row actions should remain for the per-Occurrence clone Attendee.'
+		);
+	}
+
+	/**
 	 * It should fail to check in pass Attendee from context of Event not part of Series
 	 *
 	 * @test
@@ -1270,6 +1383,72 @@ class AttendeesTest extends Controller_Test_Case {
 	}
 
 	/**
+	 * A check-in failure logged for one Occurrence (e.g. a duplicate check-in attempt) must stay local to
+	 * that Occurrence's clone Attendee, not be copied onto every other Occurrence's clone: it would read as
+	 * a failure that never happened there.
+	 *
+	 * @test
+	 */
+	public function should_not_sync_the_checkin_failure_log_to_other_occurrence_clones(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
+		// Create two Events part of the Series.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event #1',
+				'status'     => 'publish',
+				'start_date' => '+3 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event #2',
+				'status'     => 'publish',
+				'start_date' => '+27 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$controller = $this->make_controller();
+		$clone_1    = $controller->clone_attendee_to_event( $original, $event_1 );
+		$clone_2    = $controller->clone_attendee_to_event( $original, $event_2 );
+		$controller->register();
+
+		// A failed check-in against the 1st Occurrence's clone is logged as it would be by the Bulk Check-in
+		// endpoint (`Tribe\Tickets\Plus\REST\V1\Endpoints\Bulk_Checkin::log_failed_checkin()`).
+		add_post_meta(
+			$clone_1,
+			'_tec_tickets_checkin_log', // TEC\Tickets_Plus\Checkin\Constants::CHECKIN_LOGGING_META_KEY
+			[ 'reason' => 'DUPLICATE', 'event_id' => $event_1 ]
+		);
+
+		$this->assertNotEmpty(
+			get_post_meta( $clone_1, '_tec_tickets_checkin_log' ),
+			'The failure should be logged against the Occurrence clone it actually happened on.'
+		);
+		$this->assertEmpty(
+			get_post_meta( $original, '_tec_tickets_checkin_log' ),
+			'The failure log must not be copied onto the original Series-level Attendee.'
+		);
+		$this->assertEmpty(
+			get_post_meta( $clone_2, '_tec_tickets_checkin_log' ),
+			'The failure log must not be copied onto an unrelated Occurrence clone.'
+		);
+	}
+
+	/**
 	 * It should update original Attendee when cloned Attendee updated
 	 *
 	 * @test
@@ -2134,6 +2313,68 @@ class AttendeesTest extends Controller_Test_Case {
 		$clone_id = null;
 		$this->assertTrue( $commerce->checkin( $event_attendee_id, false, $single_event ) );
 		$this->assertNull( $clone_id );
+	}
+
+	/**
+	 * It should resolve the Attendee carrying the check-in status for an Event
+	 *
+	 * @test
+	 */
+	public function should_resolve_the_attendee_carrying_the_checkin_status_for_an_event(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create a Series Pass and, through a completed Order, an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_attendee_id = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$this->assertNotEmpty( $series_attendee_id );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+2 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create an Event that is not part of the Series, with a regular Attendee.
+		$other_event = tribe_events()->set_args(
+			[
+				'title'      => 'Event outside the Series',
+				'status'     => 'publish',
+				'start_date' => '+2 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$other_ticket_id = $this->create_tc_ticket( $other_event );
+		$this->create_order( [ $other_ticket_id => 1 ] );
+		$other_attendee_id = tribe_attendees()->where( 'event', $other_event )->first_id();
+		$this->assertNotEmpty( $other_attendee_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Not cloned yet: the Series Pass Attendee itself carries its, unchecked, status.
+		$this->assertEquals( $series_attendee_id, $controller->get_checkin_status_attendee_id( $series_attendee_id, $single_event ) );
+
+		$this->assertTrue( Module::get_instance()->checkin( $series_attendee_id, false, $single_event ) );
+		$clone_id = tribe_attendees()->where( 'meta_equals', Attendees::CLONE_META_KEY, $series_attendee_id )->first_id();
+		$this->assertNotEmpty( $clone_id );
+
+		// Checked in: the clone made for the Event carries the status, whichever of the two is asked about.
+		$this->assertEquals( $clone_id, $controller->get_checkin_status_attendee_id( $series_attendee_id, $single_event ) );
+		$this->assertEquals( $clone_id, $controller->get_checkin_status_attendee_id( $clone_id, $single_event ) );
+		// An Event outside the Series can have no clone.
+		$this->assertEquals( $series_attendee_id, $controller->get_checkin_status_attendee_id( $series_attendee_id, $other_event ) );
+		// A regular Attendee is never cloned.
+		$this->assertEquals( $other_attendee_id, $controller->get_checkin_status_attendee_id( $other_attendee_id, $other_event ) );
 	}
 
 	/**
