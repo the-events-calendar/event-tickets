@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use Closure;
 use Generator;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items;
 use Tribe\Tests\Traits\With_Uopz;
@@ -79,6 +78,6 @@ class Controller_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function empty_table(): void {
-		DB::query( DB::prepare( 'DELETE FROM %i', Order_Items::table_name() ) );
+		( new Order_Items() )->empty_table();
 	}
 }
