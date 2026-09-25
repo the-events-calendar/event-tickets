@@ -207,9 +207,10 @@ final class Event_Listener extends Controller_Contract {
 			/*
 			 * A move can push a relative end past a specific one. The inverted window is kept, so the ticket is off
 			 * sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind.
+			 * Every pending action goes, not only the next one: overlapping saves can leave two.
 			 */
-			as_unschedule_action( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
-			as_unschedule_action( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
+			as_unschedule_all_actions( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
+			as_unschedule_all_actions( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
 			$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
 		}
 	}
