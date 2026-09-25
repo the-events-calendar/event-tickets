@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use ArrayObject;
 use Closure;
+use DateTimeInterface;
+use Error;
 use Generator;
 use RuntimeException;
 use TEC\Common\StellarWP\DB\DB;
@@ -12,15 +14,19 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manual\Order as Manual_Order;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use WP_Post;
 
 class Writer_Test extends Controller_Test_Case {
+	use Fee_Creator;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;
@@ -301,6 +307,283 @@ class Writer_Test extends Controller_Test_Case {
 		foreach ( [ Order::$items_meta_key, Order::$events_in_order_meta_key, Order::$tickets_in_order_meta_key ] as $meta_key ) {
 			$this->assertEquals( get_post_meta( $off->ID, $meta_key ), get_post_meta( $on->ID, $meta_key ), $meta_key );
 		}
+	}
+
+	public function test_a_checkout_that_drops_a_middle_line_keeps_the_other_rows(): void {
+		$this->register_controller( true );
+		[ $event_id, [ $vip, $ga ] ] = $this->make_tickets();
+		add_filter(
+			'tec_tickets_commerce_create_order_from_cart_items',
+			static function ( $items ) use ( $vip ) {
+				// The fee filter renumbers the list the same way.
+				$items   = array_values( $items );
+				$items[] = array_merge( ( include codecept_data_dir( 'order-items/fee.php' ) )[1], [ 'id' => "fee_9687_{$vip}", 'ticket_id' => $vip ] );
+
+				return $items;
+			}
+		);
+		$cart = tribe( Cart::class );
+		$this->set_fn_return( 'wp_generate_password', 'abcdefghijklmnop' );
+		$cart->get_cart_hash( true );
+		$cart->get_repository()->upsert_item( $vip, 1 );
+		$cart->get_repository()->upsert_item( $ga, 2 );
+		$order  = $this->create_order_without_transitions();
+		$before = $this->get_rows( $order->ID );
+		$cart->get_repository()->remove_item( $ga );
+
+		$updated = $this->create_order_without_transitions();
+		$cart->clear_cart();
+
+		$this->assertSame( $order->ID, $updated->ID );
+		$after = $this->get_rows( $order->ID );
+		$this->assertSame( [ "{$vip}:0:0", "{$vip}:9687:0" ], array_keys( $after ) );
+		$this->assertSame( $before[ "{$vip}:0:0" ], $after[ "{$vip}:0:0" ] );
+		$this->assertSame( $before[ "{$vip}:9687:0" ]['id'], $after[ "{$vip}:9687:0" ]['id'] );
+		$this->assertSame( [ '2', '1' ], [ $before[ "{$vip}:9687:0" ]['item_key'], $after[ "{$vip}:9687:0" ]['item_key'] ] );
+		$this->assert_rows_hold_the_items( $order->ID );
+		$this->assertSame( '2', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+	}
+
+	public function test_an_update_syncs_rows_by_line_and_the_same_items_again_change_nothing(): void {
+		$this->register_controller( true );
+		[ $order_id, $before, $items ] = $this->make_order_and_new_items();
+		$queries                       = $this->count_queries_against_the_table();
+
+		$this->save_items( $order_id, $items );
+
+		$this->assertSame( [ 'DELETE' => 1, 'UPDATE' => 1, 'INSERT' => 1 ], array_diff_key( $queries(), [ 'SELECT' => true ] ) );
+		$after = $this->get_rows( $order_id );
+		$this->assertSame( array_keys( $after ), array_map( [ $this, 'identity' ], array_values( $items ) ) );
+		$vip = array_key_first( $before );
+		$this->assertSame( $before[ $vip ]['id'], $after[ $vip ]['id'] );
+		$this->assertSame( $before[ $vip ]['created_at'], $after[ $vip ]['created_at'] );
+		$this->assert_rows_hold_the_items( $order_id );
+		$this->assertSame( '2', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+
+		// WordPress fires no update for an unchanged meta value, so sync the same items directly.
+		$queries = $this->count_queries_against_the_table();
+		do_action( 'tec_tickets_commerce_order_updated', $order_id, $items );
+
+		$this->assertSame( [], array_diff_key( $queries(), [ 'SELECT' => true ] ) );
+		$this->assertSame( $after, $this->get_rows( $order_id ) );
+		$this->assertSame( '2', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+	}
+
+	public function test_a_line_added_in_the_middle_is_inserted_there_and_moves_the_lines_after_it(): void {
+		$this->register_controller( true );
+		[ , [ $vip, $ga ] ] = $this->make_tickets();
+		$this->create_fee_for_ticket( $vip, [ 'raw_amount' => 2.5 ] );
+		$order  = $this->create_order( [ $vip => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$items  = array_values( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+		$before = $this->get_rows( $order->ID );
+		$fee    = $this->identity( $items[1] );
+		$this->assertSame( [ "{$vip}:0:0", $fee ], array_keys( $before ) );
+		$queries = $this->count_queries_against_the_table();
+
+		$this->save_items( $order->ID, [ $items[0], array_merge( $items[0], [ 'ticket_id' => $ga ] ), $items[1] ] );
+
+		$this->assertSame( [ 'UPDATE' => 1, 'INSERT' => 1 ], array_diff_key( $queries(), [ 'SELECT' => true ] ) );
+		$after = $this->get_rows( $order->ID );
+		$this->assertSame( [ "{$vip}:0:0" => 0, "{$ga}:0:0" => 1, $fee => 2 ], $this->positions( $after ) );
+		$this->assertSame( $before[ "{$vip}:0:0" ], $after[ "{$vip}:0:0" ] );
+		$this->assertSame( $before[ $fee ]['id'], $after[ $fee ]['id'] );
+		$this->assert_rows_hold_the_items( $order->ID );
+	}
+
+	public function test_a_reorder_updates_only_the_moved_lines(): void {
+		$this->register_controller( true );
+		[ $event_id, [ $vip, $ga ] ] = $this->make_tickets();
+		$student                     = $this->create_tc_ticket( $event_id, 5 );
+		$order                       = $this->create_order( [ $vip => 1, $ga => 1, $student => 1 ], [ 'order_status' => Pending::SLUG ] );
+		$items                       = get_post_meta( $order->ID, Order::$items_meta_key, true );
+		[ $first, $second, $third ]  = array_keys( $items );
+		$before                      = $this->get_rows( $order->ID );
+		$queries                     = $this->count_queries_against_the_table();
+
+		// Keys stay with their items, so only the positions tell the new order.
+		do_action( 'tec_tickets_commerce_order_updated', $order->ID, [ $first => $items[ $first ], $third => $items[ $third ], $second => $items[ $second ] ] );
+
+		$this->assertSame( [ 'UPDATE' => 2 ], array_diff_key( $queries(), [ 'SELECT' => true ] ) );
+		$after = $this->get_rows( $order->ID );
+		$moved = array_keys( array_diff_assoc( $this->positions( $before ), $this->positions( $after ) ) );
+		$this->assertSame( [ $this->identity( $items[ $second ] ), $this->identity( $items[ $third ] ) ], $moved );
+		$this->assertSame( [ $this->identity( $items[ $first ] ), $this->identity( $items[ $third ] ), $this->identity( $items[ $second ] ) ], array_keys( $after ) );
+		$ids = array_column( $after, 'id', 'ticket_id' );
+		ksort( $ids );
+		$this->assertSame( array_column( $before, 'id', 'ticket_id' ), $ids );
+		$this->assertSame( $before[ $this->identity( $items[ $first ] ) ], $after[ $this->identity( $items[ $first ] ) ] );
+	}
+
+	public function test_an_update_of_an_order_stored_the_old_way_writes_nothing(): void {
+		[ , $ticket_ids ] = $this->make_tickets();
+		$order            = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		$this->register_controller( true );
+
+		$this->save_items( $order->ID, get_post_meta( $order->ID, Order::$items_meta_key, true ) + [ 5 => [ 'ticket_id' => $ticket_ids[1], 'type' => 'ticket', 'quantity' => 1 ] ] );
+
+		$this->assertSame( 0, Order_Items_Table::get_total_items() );
+		$this->assertSame( '', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
+	}
+
+	public function failed_sync_provider(): Generator {
+		foreach ( [ 'insert_many', 'update_rows', 'delete_many' ] as $method ) {
+			yield "{$method} fails" => [
+				function ( array $items ) use ( $method ) {
+					$this->set_class_fn_return(
+						Order_Items_Repository::class,
+						$method,
+						static function () {
+							throw new RuntimeException( 'Query failed.' );
+						},
+						true
+					);
+
+					return $items;
+				},
+			];
+		}
+
+		yield 'duplicate line' => [
+			function ( array $items ) {
+				$items[] = reset( $items );
+
+				return $items;
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider failed_sync_provider
+	 */
+	public function test_a_failed_sync_leaves_no_rows_and_the_order_reading_its_new_items( Closure $break_the_sync ): void {
+		$this->register_controller( true );
+		[ $order_id, , $items ] = $this->make_order_and_new_items();
+		$items                  = $break_the_sync->call( $this, $items );
+
+		$this->save_items( $order_id, $items );
+
+		$this->assertSame( 0, Order_Items_Table::get_total_items() );
+		$this->assertSame( '', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		$this->assertEquals( $items, tec_tc_get_order( $order_id )->items );
+		$this->assert_logged( 'debug', 'could not be synced' );
+	}
+
+	public function test_an_interrupted_sync_leaves_the_order_reading_its_new_items(): void {
+		$this->register_controller( true );
+		[ $order_id, $before, $items ] = $this->make_order_and_new_items();
+		// A fatal error here would stop PHP before the rows are cleaned up.
+		foreach ( [ 'get_by_order', 'delete_by_order' ] as $method ) {
+			$this->set_class_fn_return(
+				Order_Items_Repository::class,
+				$method,
+				static function () {
+					throw new Error( 'Crashed.' );
+				},
+				true
+			);
+		}
+
+		$this->save_items( $order_id, $items );
+
+		$this->assertSame( count( $before ), Order_Items_Table::get_total_items() );
+		$this->assertSame( '', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		$this->assertEquals( $items, tec_tc_get_order( $order_id )->items );
+	}
+
+	public function test_an_outer_transaction_rollback_undoes_the_item_change_and_the_sync(): void {
+		$this->register_controller( true );
+		[ $order_id, $before, $items ] = $this->make_order_and_new_items();
+		$old_items                     = get_post_meta( $order_id, Order::$items_meta_key, true );
+		$post_ids                      = array_merge( [ $order_id ], wp_list_pluck( $old_items, 'event_id' ), wp_list_pluck( array_merge( $old_items, $items ), 'ticket_id' ) );
+
+		tec_tickets_tests_fake_transactions_disable();
+
+		try {
+			DB::beginTransaction();
+			$this->save_items( $order_id, $items );
+			$this->assertNotSame( $before, $this->get_rows( $order_id ) );
+			DB::rollback();
+			wp_cache_flush();
+
+			$this->assertSame( $before, $this->get_rows( $order_id ) );
+			$this->assertSame( $old_items, get_post_meta( $order_id, Order::$items_meta_key, true ) );
+			$this->assertSame( '2', get_post_meta( $order_id, Writer::VERSION_META_KEY, true ) );
+		} finally {
+			tec_tickets_tests_fake_transactions_enable();
+			foreach ( array_unique( $post_ids ) as $post_id ) {
+				wp_delete_post( $post_id, true );
+			}
+			$this->empty_table();
+			// Beginning the outer transaction committed the test's own: persist the clean up.
+			DB::query( 'COMMIT' );
+		}
+	}
+
+	/**
+	 * Creates a pending stored order of a VIP and a GA ticket, and the items of the same order with the VIP quantity changed,
+	 * the GA line gone and a new ticket line added.
+	 *
+	 * @return array{0: int, 1: array<string,array<string,mixed>>, 2: array} The order ID, its rows and the new items.
+	 */
+	private function make_order_and_new_items(): array {
+		[ $event_id, [ $vip, $ga ] ] = $this->make_tickets();
+		$new_ticket                  = $this->create_tc_ticket( $event_id, 30 );
+		$order                       = $this->create_order( [ $vip => 1, $ga => 2 ], [ 'order_status' => Pending::SLUG ] );
+		$items                       = array_values( get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+		$this->assertEquals( [ $vip, $ga ], array_column( $items, 'ticket_id' ) );
+		$items[0] = array_merge( $items[0], [ 'quantity' => 3, 'sub_total' => 30.0, 'regular_sub_total' => 30.0 ] );
+		$items[1] = array_merge( $items[0], [ 'ticket_id' => $new_ticket, 'quantity' => 1, 'price' => 30.0, 'regular_price' => 30.0, 'sub_total' => 30.0, 'regular_sub_total' => 30.0 ] );
+
+		return [ $order->ID, $this->get_rows( $order->ID ), $items ];
+	}
+
+	private function save_items( int $order_id, array $items ): void {
+		tec_tc_orders()->by_args( [ 'id' => $order_id, 'status' => 'any' ] )->set_args( [ 'items' => $items ] )->save();
+	}
+
+	/**
+	 * @return array<string,array<string,mixed>> The order's rows keyed by line identity, with dates as strings.
+	 */
+	private function get_rows( int $order_id ): array {
+		$rows = [];
+
+		foreach ( tribe( Order_Items_Repository::class )->get_by_order( $order_id ) as $model ) {
+			$row = array_map(
+				static fn( $value ) => $value instanceof DateTimeInterface ? $value->format( 'Y-m-d H:i:s' ) : $value,
+				$model->toArray()
+			);
+
+			$rows[ $this->identity( $row ) ] = $row;
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * @param array<string,array<string,mixed>> $rows Rows keyed by line identity.
+	 *
+	 * @return array<string,int> The rows' positions, keyed by line identity.
+	 */
+	private function positions( array $rows ): array {
+		return array_map( static fn( array $row ) => $row['position'], $rows );
+	}
+
+	private function identity( array $line ): string {
+		return implode( ':', [ $line['ticket_id'], $line['modifier_id'] ?? $line['fee_id'] ?? 0, $line['purchase_rule_id'] ?? 0 ] );
+	}
+
+	private function assert_rows_hold_the_items( int $order_id ): void {
+		$rebuilt = [];
+
+		foreach ( tribe( Order_Items_Repository::class )->get_by_order( $order_id ) as $model ) {
+			$row             = $model->toArray();
+			[ $key, $item ]  = tribe( Line_Item_Types::class )->get( $row['type'] )->from_row( $row );
+			$rebuilt[ $key ] = $item;
+		}
+
+		$items = get_post_meta( $order_id, Order::$items_meta_key, true );
+		$this->assertEquals( $items, $rebuilt );
+		$this->assertSame( serialize( $items ), serialize( $rebuilt ) );
 	}
 
 	/**
