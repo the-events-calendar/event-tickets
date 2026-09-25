@@ -1,6 +1,6 @@
 <?php
 /**
- * Converts order items of an unregistered type, or with no type, to Order Items table rows and back.
+ * Converts purchase rule discount order items to Order Items table rows and back.
  *
  * @since TBD
  *
@@ -10,17 +10,15 @@
 namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
 
 /**
- * Class Generic_Line_Item.
+ * Class Discount_Line_Item.
  *
- * Such an item is stored like a ticket line, the shape every order item is built in, so it keeps the details
- * of the ticket it names. It also fills the columns any other type fills, and whatever else it holds round-trips
- * through `extra`.
+ * Event Tickets Plus adds these lines from its purchase rules; the rule's `data` may hold a DateTime.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Order_Items\Line_Items
  */
-class Generic_Line_Item extends Ticket_Line_Item {
+class Discount_Line_Item extends Abstract_Line_Item_Type {
 	/**
 	 * Item keys stored in a column, and how their value is stored.
 	 *
@@ -29,8 +27,6 @@ class Generic_Line_Item extends Ticket_Line_Item {
 	 * @var array<string,string>
 	 */
 	protected const FIELDS = parent::FIELDS + [
-		'fee_id'       => 'int',
-		'coupon_id'    => 'int',
 		'rule_id'      => 'int',
 		'display_name' => 'string',
 	];
@@ -43,19 +39,17 @@ class Generic_Line_Item extends Ticket_Line_Item {
 	 * @var array<string,string>
 	 */
 	protected const COLUMNS = parent::COLUMNS + [
-		'fee_id'    => 'modifier_id',
-		'coupon_id' => 'modifier_id',
-		'rule_id'   => 'purchase_rule_id',
+		'rule_id' => 'purchase_rule_id',
 	];
 
 	/**
-	 * Returns the item type this class converts: none, as it converts any unregistered type.
+	 * Returns the item type this class converts.
 	 *
 	 * @since TBD
 	 *
 	 * @return string The item type.
 	 */
 	public function get_type(): string {
-		return '';
+		return 'discount';
 	}
 }
