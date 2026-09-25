@@ -322,6 +322,20 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			],
 		];
 
+		yield 'specific start without a date' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+				'ticket_start_date'   => '',
+			],
+		];
+
+		yield 'specific end without a date' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'ticket_end_date'     => '',
+			],
+		];
+
 		yield 'specific start after the resolved end' => [
 			[
 				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),

@@ -185,7 +185,8 @@ final class Ticket_Save extends Controller_Contract {
 	/**
 	 * Rejects ticket data whose rule is invalid or whose sales window does not start before it ends.
 	 *
-	 * An end the rule leaves to the ticket, in `specific` mode, is judged with the date submitted for it.
+	 * An end the rule leaves to the ticket, in `specific` mode, is judged with the date submitted for it, and rejected
+	 * when none was.
 	 *
 	 * @since TBD
 	 *
@@ -217,10 +218,17 @@ final class Ticket_Save extends Controller_Contract {
 			return $valid;
 		}
 
-		$window   = $this->sale_window->resolve( $rule, ...$event_dates );
-		$timezone = $event_dates[0]->getTimezone();
-		$start    = Rule::MODE_SPECIFIC === $rule->get_start()['mode'] ? $this->get_submitted_date( $data, 'start', $timezone ) : $window->get_start();
-		$end      = Rule::MODE_SPECIFIC === $rule->get_end()['mode'] ? $this->get_submitted_date( $data, 'end', $timezone ) : $window->get_end();
+		$window         = $this->sale_window->resolve( $rule, ...$event_dates );
+		$timezone       = $event_dates[0]->getTimezone();
+		$specific_start = Rule::MODE_SPECIFIC === $rule->get_start()['mode'];
+		$specific_end   = Rule::MODE_SPECIFIC === $rule->get_end()['mode'];
+		$start          = $specific_start ? $this->get_submitted_date( $data, 'start', $timezone ) : $window->get_start();
+		$end            = $specific_end ? $this->get_submitted_date( $data, 'end', $timezone ) : $window->get_end();
+
+		// Without its date, `ticket_add()` would default a specific end and the window could not be checked.
+		if ( ( $specific_start && ! $start ) || ( $specific_end && ! $end ) ) {
+			return $this->get_invalid_window_error();
+		}
 
 		return ( new Resolved_Window( $start, $end ) )->is_valid() ? $valid : $this->get_invalid_window_error();
 	}
