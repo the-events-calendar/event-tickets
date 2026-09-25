@@ -139,6 +139,26 @@ class Line_Item_Types_Test extends WPTestCase {
 		$this->assertSame( [], json_decode( $rows[0]['extra'], true )['raw'] );
 	}
 
+	public function test_a_line_item_type_reads_the_currency_map_once_per_currency(): void {
+		$items  = $this->fixture( 'tickets' );
+		$ticket = tribe( Line_Item_Types::class )->get( 'ticket' );
+		$reads  = 0;
+		add_filter(
+			'tec_tickets_commerce_default_currency_map',
+			static function ( $map ) use ( &$reads ) {
+				++$reads;
+
+				return $map;
+			}
+		);
+
+		foreach ( [ 'USD', 'USD', 'JPY', 'JPY' ] as $currency ) {
+			$ticket->from_row( $ticket->to_row( 0, $items[0], 1, $currency ) );
+		}
+
+		$this->assertSame( 2, $reads );
+	}
+
 	public function test_the_site_decimals_setting_does_not_change_stored_minor_units(): void {
 		$items  = $this->fixture( 'sale-price' );
 		$ticket = tribe( Line_Item_Types::class )->get( 'ticket' );
