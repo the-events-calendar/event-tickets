@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Order_Items;
 
 use Generator;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Admin\Singular_Order_Page;
 use TEC\Tickets\Commerce\Module;
@@ -27,7 +26,7 @@ class Order_Items_Metabox_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function empty_table(): void {
-		DB::query( DB::prepare( 'DELETE FROM %i', Order_Items_Table::table_name() ) );
+		( new Order_Items_Table() )->empty_table();
 	}
 
 	public function order_provider(): Generator {
