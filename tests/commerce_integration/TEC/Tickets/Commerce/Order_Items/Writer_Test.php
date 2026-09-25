@@ -116,7 +116,9 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( [ 'INSERT' => 1 ], $queries() );
 		$rows = tribe( Order_Items_Repository::class )->get_by_order( $order->ID );
 		$this->assertCount( count( $given_items ), $rows );
-		$this->assertSame( array_map( 'strval', array_keys( $given_items ) ), array_column( array_map( static fn( $row ) => $row->toArray(), $rows ), 'item_key' ) );
+		$rows = array_map( static fn( $row ) => $row->toArray(), $rows );
+		$this->assertSame( array_map( 'strval', array_keys( $given_items ) ), array_column( $rows, 'item_key' ) );
+		$this->assertSame( range( 0, count( $given_items ) - 1 ), array_column( $rows, 'position' ) );
 		$this->assertSame( '2', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
 		$this->assertSame( $given_items, get_post_meta( $order->ID, Order::$items_meta_key, true ) );
 	}
