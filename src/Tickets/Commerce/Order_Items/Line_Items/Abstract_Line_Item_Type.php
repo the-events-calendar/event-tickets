@@ -41,6 +41,18 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	];
 
 	/**
+	 * The decimals of each currency read so far, keyed by currency code.
+	 *
+	 * Kept per instance, not statically, so a currency map filter added later in the request still applies to
+	 * currencies not read yet.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,int>
+	 */
+	private array $decimals = [];
+
+	/**
 	 * Converts an order item to a table row.
 	 *
 	 * @since TBD
@@ -160,7 +172,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 * @return int The currency's decimals; 2, the most common, for a code the map does not define.
 	 */
 	private function get_decimals( string $currency ): int {
-		return (int) ( Currency::get_default_currency_map()[ $currency ]['decimal_precision'] ?? 2 );
+		return $this->decimals[ $currency ] ??= (int) ( Currency::get_default_currency_map()[ $currency ]['decimal_precision'] ?? 2 );
 	}
 
 	/**
