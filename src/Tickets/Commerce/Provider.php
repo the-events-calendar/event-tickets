@@ -107,6 +107,9 @@ class Provider extends Service_Provider {
 		// Commerce Tables Controller.
 		$this->container->register( Tables::class );
 
+		// Registered outside the Order Items controller so the name is still stored when that feature is switched off.
+		$this->container->register( Order_Items\Attendees::class );
+
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
 			Custom_Tables\V1\Provider::class
