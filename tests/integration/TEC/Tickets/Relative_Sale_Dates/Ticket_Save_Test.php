@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use ActionScheduler_Action;
-use ActionScheduler_Store;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
@@ -13,10 +11,12 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\Ticket_Actions;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Ticket_Save_Test extends Controller_Test_Case {
+	use Relative_Sale_Dates_Maker;
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
 
@@ -480,21 +480,6 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @param int $value The number of units before the event start.
-	 * @param int $unit  The unit, one of the `Rule::UNIT_*` constants.
-	 *
-	 * @return array{mode: string, value: int, unit: int, anchor: string} A relative end of the window, anchored on the event start.
-	 */
-	private function relative( int $value, int $unit ): array {
-		return [
-			'mode'   => 'relative',
-			'value'  => $value,
-			'unit'   => $unit,
-			'anchor' => 'start',
-		];
-	}
-
-	/**
 	 * Sends a ticket save from the classic editor and returns its JSON response.
 	 *
 	 * @param int                 $event_id The event post ID.
@@ -546,69 +531,11 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * Creates an event lasting three hours.
-	 *
-	 * @param string $start    The event start, local `Y-m-d H:i:s`.
-	 * @param string $timezone The event timezone.
-	 *
-	 * @return int The event post ID.
-	 */
-	private function create_event( string $start, string $timezone = 'UTC' ): int {
-		return tribe_events()->set_args(
-			[
-				'title'      => 'Relative Sale Dates event',
-				'status'     => 'publish',
-				'start_date' => $start,
-				'timezone'   => $timezone,
-				'duration'   => 3 * HOUR_IN_SECONDS,
-			]
-		)->create()->ID;
-	}
-
-	/**
 	 * @param int $ticket_id The ticket post ID.
 	 *
 	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}|null The stored rule.
 	 */
 	private function get_stored_rule( int $ticket_id ): ?array {
 		return json_decode( get_post_meta( $ticket_id, Rule_Store::META_KEY, true ), true );
-	}
-
-	/**
-	 * @param string $hook      The sales action hook.
-	 * @param int    $ticket_id The ticket post ID.
-	 *
-	 * @return int[] The timestamps the pending actions of the ticket are scheduled at.
-	 */
-	private function get_scheduled_timestamps( string $hook, int $ticket_id ): array {
-		$actions = as_get_scheduled_actions(
-			[
-				'hook'   => $hook,
-				'args'   => [ $ticket_id ],
-				'group'  => Ticket_Actions::AS_TICKET_ACTIONS_GROUP,
-				'status' => ActionScheduler_Store::STATUS_PENDING,
-			],
-			OBJECT
-		);
-
-		return array_values( array_map( static fn( ActionScheduler_Action $action ): int => $action->get_schedule()->get_date()->getTimestamp(), $actions ) );
-	}
-
-	/**
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array{0: string, 1: string} The stored sales start date and time.
-	 */
-	private function get_ticket_start( int $ticket_id ): array {
-		return [ get_post_meta( $ticket_id, '_ticket_start_date', true ), get_post_meta( $ticket_id, '_ticket_start_time', true ) ];
-	}
-
-	/**
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array{0: string, 1: string} The stored sales end date and time.
-	 */
-	private function get_ticket_end( int $ticket_id ): array {
-		return [ get_post_meta( $ticket_id, '_ticket_end_date', true ), get_post_meta( $ticket_id, '_ticket_end_time', true ) ];
 	}
 }

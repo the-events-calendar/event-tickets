@@ -22,7 +22,6 @@ use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use Tribe__Timezones as Timezones;
 use WP_Error;
 
 /**
@@ -52,28 +51,28 @@ final class Ticket_Save extends Controller_Contract {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The sales window resolver.
+	 * The resolver and writer of the ticket dates.
 	 *
 	 * @since TBD
 	 *
-	 * @var Sale_Window
+	 * @var Ticket_Dates
 	 */
-	private Sale_Window $sale_window;
+	private Ticket_Dates $ticket_dates;
 
 	/**
 	 * Ticket_Save constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Container   $container   The DI container.
-	 * @param Rule_Store  $rule_store  The store of the ticket rules.
-	 * @param Sale_Window $sale_window The sales window resolver.
+	 * @param Container    $container    The DI container.
+	 * @param Rule_Store   $rule_store   The store of the ticket rules.
+	 * @param Ticket_Dates $ticket_dates The resolver and writer of the ticket dates.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store, Sale_Window $sale_window ) {
+	public function __construct( Container $container, Rule_Store $rule_store, Ticket_Dates $ticket_dates ) {
 		parent::__construct( $container );
 
-		$this->rule_store  = $rule_store;
-		$this->sale_window = $sale_window;
+		$this->rule_store   = $rule_store;
+		$this->ticket_dates = $ticket_dates;
 	}
 
 	/**
@@ -106,7 +105,7 @@ final class Ticket_Save extends Controller_Contract {
 		}
 
 		$rule   = $this->get_rule( $data );
-		$window = $rule ? $this->resolve( $post_id, $rule ) : null;
+		$window = $rule ? $this->ticket_dates->resolve( $post_id, $rule ) : null;
 
 		if ( ! $window ) {
 			return;
@@ -163,23 +162,7 @@ final class Ticket_Save extends Controller_Contract {
 			]
 		);
 
-		$window = $this->resolve( $post_id, $rule );
-
-		if ( ! $window ) {
-			return;
-		}
-
-		$start = $window->get_start();
-		if ( $start ) {
-			update_post_meta( $ticket_id, Ticket::START_DATE_META_KEY, $start->format( Dates::DBDATEFORMAT ) );
-			update_post_meta( $ticket_id, Ticket::START_TIME_META_KEY, $start->format( Dates::DBTIMEFORMAT ) );
-		}
-
-		$end = $window->get_end();
-		if ( $end ) {
-			update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end->format( Dates::DBDATEFORMAT ) );
-			update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end->format( Dates::DBTIMEFORMAT ) );
-		}
+		$this->ticket_dates->write( $ticket_id, $post_id, $rule );
 	}
 
 	/**
@@ -212,13 +195,13 @@ final class Ticket_Save extends Controller_Contract {
 			return $this->get_invalid_window_error();
 		}
 
-		$event_dates = $this->get_event_dates( $post_id );
+		$event_dates = $this->ticket_dates->get_event_dates( $post_id );
+		$window      = $this->ticket_dates->resolve( $post_id, $rule );
 
-		if ( ! $event_dates ) {
+		if ( ! $event_dates || ! $window ) {
 			return $valid;
 		}
 
-		$window         = $this->sale_window->resolve( $rule, ...$event_dates );
 		$timezone       = $event_dates[0]->getTimezone();
 		$specific_start = Rule::MODE_SPECIFIC === $rule->get_start()['mode'];
 		$specific_end   = Rule::MODE_SPECIFIC === $rule->get_end()['mode'];
@@ -286,48 +269,6 @@ final class Ticket_Save extends Controller_Contract {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Resolves a rule against the event's dates.
-	 *
-	 * @since TBD
-	 *
-	 * @param int  $post_id The event post ID.
-	 * @param Rule $rule    The sales window rule.
-	 *
-	 * @return Resolved_Window|null The resolved window, or `null` when the event has no valid dates.
-	 */
-	private function resolve( int $post_id, Rule $rule ): ?Resolved_Window {
-		$event_dates = $this->get_event_dates( $post_id );
-
-		return $event_dates ? $this->sale_window->resolve( $rule, ...$event_dates ) : null;
-	}
-
-	/**
-	 * Gets the event's start and end in the event timezone.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The event post ID.
-	 *
-	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
-	 */
-	private function get_event_dates( int $post_id ): ?array {
-		$start = get_post_meta( $post_id, '_EventStartDate', true );
-		$end   = get_post_meta( $post_id, '_EventEndDate', true );
-
-		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
-			return null;
-		}
-
-		$timezone = Timezones::build_timezone_object( get_post_meta( $post_id, '_EventTimezone', true ) ?: null );
-
-		try {
-			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
-		} catch ( Exception $e ) {
-			return null;
-		}
 	}
 
 	/**
