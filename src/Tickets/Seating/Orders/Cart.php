@@ -76,6 +76,7 @@ class Cart {
 	 * Handles the seat selection for the cart.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5.1 Cap each seated ticket's quantity, and its seat labels, at the number of seats the session holds.
 	 *
 	 * @param array $data The data to prepare for the cart.
 	 *
@@ -86,9 +87,21 @@ class Cart {
 			return $data;
 		}
 
+		[ $token ] = $this->get_session_token_object_id();
+
+		$held = $token ? $this->get_token_reservations( $token ) : null;
+
 		foreach ( $data['tickets'] as $key => $ticket_data ) {
 			if ( ! isset( $ticket_data['seat_labels'] ) ) {
 				continue;
+			}
+
+			$ticket_id  = $ticket_data['ticket_id'] ?? 0;
+			$seats_held = null === $held ? null : count( $held[ $ticket_id ] ?? [] );
+
+			if ( null !== $seats_held && isset( $ticket_data['quantity'] ) && $ticket_data['quantity'] > $seats_held ) {
+				$ticket_data['quantity']    = $seats_held;
+				$ticket_data['seat_labels'] = array_slice( (array) $ticket_data['seat_labels'], 0, $seats_held );
 			}
 
 			$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
@@ -158,6 +171,7 @@ class Cart {
 	 * Saves the seat data for the attendee.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5 Sanitized the seat label.
 	 *
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
@@ -172,7 +186,7 @@ class Cart {
 			$session_stack->next();
 			$reservation_id = $reservation_data['reservation_id'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, $reservation_id );
-			$seat_label = $reservation_data['seat_label'] ?? '';
+			$seat_label = Meta::sanitize_seat_label( $reservation_data['seat_label'] ?? '' );
 			update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seat_label );
 			$seat_type_id = $reservation_data['seat_type_id'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type_id );

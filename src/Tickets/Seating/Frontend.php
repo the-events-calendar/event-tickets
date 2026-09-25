@@ -18,10 +18,13 @@ use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
+use WP_Post;
+use WP_Query;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Main as Common;
 use TEC\Tickets\Commerce\Checkout;
@@ -98,12 +101,80 @@ class Frontend extends Controller_Contract {
 		remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
 
 		remove_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ] );
+
+		remove_action( 'template_redirect', [ $this, 'prevent_caching' ] );
+	}
+
+	/**
+	 * Marks a response that will render the seat selection modal as non-cacheable.
+	 *
+	 * @since 5.29.5.1
+	 *
+	 * @return void
+	 */
+	public function prevent_caching(): void {
+		if ( ! ( $this->should_enqueue_assets() || $this->queried_posts_include_seating() ) ) {
+			return;
+		}
+
+		$this->mark_response_non_cacheable();
+	}
+
+	/**
+	 * Whether any post in the main query has seating enabled.
+	 *
+	 * The tickets block renders from post content, so a response that is not a singular ticketable post
+	 * can still embed a seat selection token — an archive showing full content, above all. This runs
+	 * before any output, which is the only point at which the response headers can still be set.
+	 *
+	 * @since 5.29.5.1
+	 *
+	 * @return bool Whether the main query holds a post that would render seat selection.
+	 */
+	private function queried_posts_include_seating(): bool {
+		global $wp_query;
+
+		if ( ! ( $wp_query instanceof WP_Query && is_array( $wp_query->posts ) ) ) {
+			return false;
+		}
+
+		foreach ( $wp_query->posts as $queried_post ) {
+			$queried_post_id = $queried_post instanceof WP_Post ? $queried_post->ID : $queried_post;
+
+			if ( is_numeric( $queried_post_id ) && tec_tickets_seating_enabled( absint( $queried_post_id ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Marks the current response as non-cacheable.
+	 *
+	 * @since 5.29.5.1
+	 *
+	 * @return void
+	 */
+	private function mark_response_non_cacheable(): void {
+		/*
+		 * The modal embeds an ephemeral token the Seating service issued for one visitor. A stored copy
+		 * of the page hands that token to everyone served from cache for the length of the TTL, putting
+		 * them all in the same seat selection session. Reverse proxies and CDNs honour the response
+		 * headers, while the WordPress-side page caches read DONOTCACHEPAGE instead.
+		 */
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
+
+		nocache_headers();
 	}
 
 	/**
 	 * Replace the Tickets' block with the one starting the seat selection flow.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5.1 Mark a response embedding a seat selection token as non-cacheable.
 	 *
 	 * @param string              $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -177,14 +248,20 @@ class Frontend extends Controller_Contract {
 			. ' - '
 			. $currency->get_formatted_currency_with_symbol( max( $prices ), $post_id, $provider, false );
 
-		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
+		$timeout       = $this->container->get( Timer::class )->get_timeout( $post_id );
+		$modal_content = '';
+
+		if ( 0 !== $inventory ) {
+			$this->mark_response_non_cacheable();
+			$modal_content = $this->get_seat_selection_modal_content( $post_id, $timeout );
+		}
 
 		$html = $this->template->template(
 			'tickets-block',
 			[
 				'cost_range'    => $cost_range,
 				'inventory'     => $inventory,
-				'modal_content' => 0 === $inventory ? '' : $this->get_seat_selection_modal_content( $post_id, $timeout ),
+				'modal_content' => $modal_content,
 				'timeout'       => $timeout,
 			],
 			false
@@ -254,6 +331,7 @@ class Frontend extends Controller_Contract {
 	 * Returns the HTML content of the seat selection modal.
 	 *
 	 * @since 5.16.0
+	 * @since 5.29.5 Recorded the issued token so the timer can verify it, and refused to render one that could not be recorded.
 	 *
 	 * @param int $post_id The post ID of the post to purchase tickets for.
 	 * @param int $timeout The timeout in seconds.
@@ -263,14 +341,26 @@ class Frontend extends Controller_Contract {
 	private function get_seat_selection_modal_content( int $post_id, int $timeout ): string {
 		/*
 		 * While the user might have 15 minutes to purchase tickets, that timer will not start on page load,
-		 * but when the user starts the interaction withe the seat selection modal.
+		 * but when the user starts the interaction with the seat selection modal.
 		 * For this reason the token request is made with a TTL of 4 times the timeout.
 		 */
 		$ephemeral_token_ttl = $timeout * 4;
 
 		$ephemeral_token = $this->service->get_ephemeral_token( $ephemeral_token_ttl, 'visitor' );
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url      = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
+		$error           = $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '';
+
+		/*
+		 * Record the token the service just issued, so the timer can later tell it apart from a string
+		 * the visitor made up. Without that row the token is inert, so a failed write has to surface
+		 * here rather than as a rejected seat selection later.
+		 */
+		if ( $token && ! tribe( Sessions::class )->insert_or_update( $token, $post_id, time() + $ephemeral_token_ttl ) ) {
+			$token = '';
+			$error = __( 'Seat selection is unavailable right now. Please try again.', 'event-tickets' );
+		}
+
+		$iframe_url = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
 
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
@@ -283,7 +373,7 @@ class Frontend extends Controller_Contract {
 			[
 				'iframe_url'          => $iframe_url,
 				'token'               => $token,
-				'error'               => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
+				'error'               => $error,
 				'initial_total_text'  => _x( '0 Tickets', 'Seat selection modal initial total string', 'event-tickets' ),
 				'initial_total_price' => $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false ),
 				'post_id'             => $post_id,
@@ -313,6 +403,8 @@ class Frontend extends Controller_Contract {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
 		add_filter( 'tribe_tickets_block_ticket_html_attributes', [ $this, 'add_seat_selected_labels_per_ticket_attribute' ], 10, 2 );
+
+		add_action( 'template_redirect', [ $this, 'prevent_caching' ] );
 
 		// Register the front-end JS.
 		Asset::add(
@@ -445,6 +537,12 @@ class Frontend extends Controller_Contract {
 			'providerClass'             => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
 			'postId'                    => $post_id,
 			'ajaxUrl'                   => admin_url( 'admin-ajax.php' ),
+
+			/*
+			 * Seat selection is open to logged-out visitors, so this nonce ships in the page source
+			 * and WordPress computes the same value for every one of them. It is a request-origin
+			 * check only: the endpoints behind it must treat their input as public.
+			 */
 			'ajaxNonce'                 => wp_create_nonce( Ajax::NONCE_ACTION ),
 			'ACTION_POST_RESERVATIONS'  => Ajax::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,

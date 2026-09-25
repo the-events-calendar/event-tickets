@@ -666,6 +666,8 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				call( isTribeEventPostType ),
 			);
+			// Existing tickets do not default their end date to the event start;
+			// the saved end date is loaded via fetchTicket below.
 			expect( gen.next( true ).value ).toEqual(
 				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
@@ -977,6 +979,139 @@ describe( 'Ticket Block sagas', () => {
 				fork( sagas.saveTicketWithPostSave, CLIENT_ID ),
 			);
 			expect( gen.next( '' ).done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'syncTicketSaleEndWithEventStart', () => {
+		beforeEach( () => {
+			global.window = global.window || {};
+			window.tec = {
+				events: {
+					app: {
+						main: {
+							data: {
+								blocks: {
+									datetime: {
+										selectors: {
+											getStart: jest.fn(),
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			};
+		} );
+
+		afterEach( () => {
+			delete window.tec;
+		} );
+
+		it( 'should not sync a custom sale end date with the event start', () => {
+			const CLIENT_ID = 'modern-tribe';
+			const prevStartDate = 'November 20, 2018 12:30:00';
+			const tempEndMoment = { local: jest.fn(), isSame: jest.fn() };
+			const endMoment = { local: jest.fn() };
+			const prevEventStartMoment = { local: jest.fn() };
+
+			const gen = cloneableGenerator(
+				sagas.syncTicketSaleEndWithEventStart
+			)( prevStartDate, CLIENT_ID );
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { clientId: CLIENT_ID } ),
+			);
+			expect( gen.next( tempEndMoment ).value ).toEqual(
+				select( selectors.getTicketEndDateMoment, { clientId: CLIENT_ID } ),
+			);
+			expect( gen.next( endMoment ).value ).toEqual(
+				call( createDates, prevStartDate ),
+			);
+			expect( gen.next( { moment: prevEventStartMoment } ).value ).toEqual(
+				all( [
+					call( [ tempEndMoment, 'local' ] ),
+					call( [ endMoment, 'local' ] ),
+					call( [ prevEventStartMoment, 'local' ] ),
+				] ),
+			);
+			expect( gen.next().value ).toEqual(
+				call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' ),
+			);
+			expect( gen.next( true ).value ).toEqual(
+				call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' ),
+			);
+			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).done ).toEqual( true );
+		} );
+
+		it( 'should sync the sale end date with the event start when it follows the event', () => {
+			const CLIENT_ID = 'modern-tribe';
+			const prevStartDate = 'November 20, 2018 12:30:00';
+			const eventStart = 'November 25, 2018 12:30:00';
+			const tempEndMoment = { local: jest.fn(), isSame: jest.fn() };
+			const endMoment = { local: jest.fn() };
+			const prevEventStartMoment = { local: jest.fn() };
+			const endDateMoment = { local: jest.fn() };
+
+			const gen = cloneableGenerator(
+				sagas.syncTicketSaleEndWithEventStart
+			)( prevStartDate, CLIENT_ID );
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { clientId: CLIENT_ID } ),
+			);
+			expect( gen.next( tempEndMoment ).value ).toEqual(
+				select( selectors.getTicketEndDateMoment, { clientId: CLIENT_ID } ),
+			);
+			expect( gen.next( endMoment ).value ).toEqual(
+				call( createDates, prevStartDate ),
+			);
+			expect( gen.next( { moment: prevEventStartMoment } ).value ).toEqual(
+				all( [
+					call( [ tempEndMoment, 'local' ] ),
+					call( [ endMoment, 'local' ] ),
+					call( [ prevEventStartMoment, 'local' ] ),
+				] ),
+			);
+			expect( gen.next().value ).toEqual(
+				call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' ),
+			);
+			expect( gen.next( true ).value ).toEqual(
+				call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' ),
+			);
+			expect( gen.next( true ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+			);
+			expect( gen.next( eventStart ).value ).toEqual(
+				call( createDates, eventStart ),
+			);
+			expect(
+				gen.next( {
+					moment: endDateMoment,
+					date: '2018-11-25',
+					dateInput: 'November 25, 2018',
+					time: '12:30:00',
+					timeInput: '12:30 pm',
+				} ).value
+			).toEqual(
+				all( [
+					put( actions.setTicketTempEndDate( CLIENT_ID, '2018-11-25' ) ),
+					put( actions.setTicketTempEndDateInput( CLIENT_ID, 'November 25, 2018' ) ),
+					put( actions.setTicketTempEndDateMoment( CLIENT_ID, endDateMoment ) ),
+					put( actions.setTicketTempEndTime( CLIENT_ID, '12:30:00' ) ),
+					put( actions.setTicketTempEndTimeInput( CLIENT_ID, '12:30 pm' ) ),
+					put( actions.setTicketEndDate( CLIENT_ID, '2018-11-25' ) ),
+					put( actions.setTicketEndDateInput( CLIENT_ID, 'November 25, 2018' ) ),
+					put( actions.setTicketEndDateMoment( CLIENT_ID, endDateMoment ) ),
+					put( actions.setTicketEndTime( CLIENT_ID, '12:30:00' ) ),
+					put( actions.setTicketEndTimeInput( CLIENT_ID, '12:30 pm' ) ),
+					put( actions.setTicketHasChanges( CLIENT_ID, true ) ),
+					call( sagas.handleTicketDurationError, CLIENT_ID ),
+				] ),
+			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 

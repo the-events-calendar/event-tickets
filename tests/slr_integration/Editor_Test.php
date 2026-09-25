@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating;
 
 use Closure;
+use Faker\Factory;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
@@ -44,6 +45,31 @@ class Editor_Test extends Controller_Test_Case {
 	public function restore_pagenow(): void {
 		global $pagenow;
 		$pagenow = '';
+	}
+
+	/**
+	 * @test
+	 * @covers Editor::register_meta
+	 */
+	public function test_attendee_seat_label_meta_is_sanitized_on_write(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+		$controller->register_meta();
+
+		$faker      = Factory::create();
+		$seat_label = $faker->bothify( '?-##' );
+
+		$attendee_id = self::factory()->post->create();
+		update_post_meta(
+			$attendee_id,
+			Meta::META_KEY_ATTENDEE_SEAT_LABEL,
+			$seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() )
+		);
+
+		$this->assertEquals(
+			$seat_label,
+			get_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true )
+		);
 	}
 
 	public function asset_data_provider() {
