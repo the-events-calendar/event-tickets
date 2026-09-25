@@ -56,6 +56,7 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ) );
 		remove_filter( 'tec_tickets_rest_ticket_upsert_params', $this->container->callback( Rest::class, 'keep_stored_rules_in_tec_rest_api_update' ) );
 		remove_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
+		$this->container->get( Classic_Panel_Data::class )->unregister();
 	}
 
 	/**
@@ -127,5 +128,7 @@ final class Controller extends Controller_Contract {
 		add_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ), 10, 2 );
 		add_filter( 'tec_tickets_rest_ticket_upsert_params', $this->container->callback( Rest::class, 'keep_stored_rules_in_tec_rest_api_update' ), 10, 2 );
 		add_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
+
+		$this->container->register( Classic_Panel_Data::class );
 	}
 }
