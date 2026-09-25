@@ -135,7 +135,7 @@ class Writer extends Controller_Contract {
 
 	/**
 	 * Syncs the rows of an order stored in the table with its new items, matching lines by identity so kept lines
-	 * keep their row IDs.
+	 * keep their row IDs and take their new place in the list.
 	 *
 	 * Orders not stored in the table are left alone. The order is unmarked first and marked again only once every
 	 * statement succeeded, so a sync that fails or dies half way leaves it reading the new items from the order meta.
@@ -179,7 +179,7 @@ class Writer extends Controller_Contract {
 				unset( $stored[ $identity ] );
 
 				// serialize() is strict on key order and scalar types, and compares objects by class and state.
-				if ( $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )->from_row( $current ) ) !== serialize( [ (string) $key, $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+				if ( $current['position'] !== $row['position'] || $current['currency'] !== $row['currency'] || serialize( $this->types->get( $current['type'] )->from_row( $current ) ) !== serialize( [ (string) $key, $items[ $key ] ] ) ) { // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 					$updates[] = [ 'id' => $current['id'] ] + $row;
 				}
 			}
@@ -221,7 +221,7 @@ class Writer extends Controller_Contract {
 	}
 
 	/**
-	 * Maps an order's items to table rows, without `id` and `created_at`.
+	 * Maps an order's items to table rows, positioned in list order, without `id` and `created_at`.
 	 *
 	 * @since TBD
 	 *
