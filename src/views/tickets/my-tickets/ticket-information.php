@@ -26,7 +26,7 @@ use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 	}
 	?>
 	<?php $ticket_name = ! empty( $attendee['ticket_exists'] ) ? $attendee['ticket'] : ( $attendee['deleted_ticket_name'] ?? '' ); ?>
-	<?php if ( ! empty( $ticket_name ) && RSVP_V2_Constants::TC_RSVP_TYPE !== ( $attendee['ticket_type'] ?? '' ) ) : ?>
+	<?php if ( '' !== (string) $ticket_name && RSVP_V2_Constants::TC_RSVP_TYPE !== ( $attendee['ticket_type'] ?? '' ) ) : ?>
 		<span class="ticket-name"><?php echo esc_html( $ticket_name ); ?></span>
 	<?php endif; ?>
 	<?php
