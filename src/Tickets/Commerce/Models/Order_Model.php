@@ -28,6 +28,8 @@ class Order_Model extends Base {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD Filters the raw order items through `tec_tickets_commerce_order_model_items`.
 	 */
 	protected function build_properties( $filter ) {
 		try {
@@ -73,6 +75,17 @@ class Order_Model extends Base {
 			$latest_payload_hash_sent  = Arr::get( $post_meta, [ Order::LATEST_PAYLOAD_HASH_SENT_TO_GATEWAY_META_KEY, 0 ] );
 			$gateway_customer_id       = Arr::get( $post_meta, [ Order::GATEWAY_CUSTOMER_ID_META_KEY, 0 ] );
 			$gateway_order_version     = Arr::get( $post_meta, [ Order::GATEWAY_ORDER_VERSION_META_KEY, 0 ] );
+
+			/**
+			 * Filters the raw items of an order, as read from its meta, before the order properties are built from them.
+			 *
+			 * @since TBD
+			 *
+			 * @param mixed                  $items     The order items, as read from the order meta.
+			 * @param int                    $post_id   The order post ID.
+			 * @param array<string,string[]> $post_meta The order post meta, as returned by `get_post_meta()`.
+			 */
+			$items = apply_filters( 'tec_tickets_commerce_order_model_items', $items, $post_id, $post_meta );
 
 			$properties = [
 				'order_id'                  => $post_id,
