@@ -114,6 +114,39 @@ class Rule_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider valid_rules_provider
+	 */
+	public function should_return_a_valid_rule_as_its_canonical_array( array $data ): void {
+		$this->assertSame( $data, Rule::from_array( $data )->to_array() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_build_the_sales_window_rule_from_stored_data_it_shares(): void {
+		$rule = [
+			'start' => [ 'mode' => 'default' ],
+			'end'   => [
+				'mode'   => 'relative',
+				'value'  => 1,
+				'unit'   => Rule::UNIT_DAYS,
+				'anchor' => 'start',
+			],
+		];
+
+		$this->assertSame( $rule, Rule::from_stored( array_merge( [ 'sale_price' => [ 'start' => [ 'mode' => 'default' ] ] ], $rule ) )->to_array() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_build_no_rule_from_stored_data_without_a_valid_one(): void {
+		$this->assertNull( Rule::from_stored( [] ) );
+		$this->assertNull( Rule::from_stored( [ 'start' => [ 'mode' => 'default' ] ] ) );
+	}
+
+	/**
+	 * @test
 	 * @dataProvider invalid_rules_provider
 	 */
 	public function should_reject_an_invalid_rule( array $data ): void {

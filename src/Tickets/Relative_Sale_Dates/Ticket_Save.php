@@ -154,13 +154,7 @@ final class Ticket_Save extends Controller_Contract {
 			return;
 		}
 
-		$this->rule_store->save(
-			$ticket_id,
-			[
-				'start' => $rule->get_start(),
-				'end'   => $rule->get_end(),
-			]
-		);
+		$this->rule_store->save( $ticket_id, $rule->to_array() );
 
 		$this->ticket_dates->write( $ticket_id, $post_id, $rule );
 	}
