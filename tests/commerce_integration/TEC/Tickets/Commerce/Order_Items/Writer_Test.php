@@ -113,7 +113,7 @@ class Writer_Test extends Controller_Test_Case {
 		$order = $create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] );
 
 		$this->assertInstanceOf( WP_Post::class, $order );
-		$this->assertSame( [ 'INSERT' => 1 ], $queries() );
+		$this->assertSame( [ 'DELETE' => 1, 'INSERT' => 1 ], $queries() );
 		$rows = tribe( Order_Items_Repository::class )->get_by_order( $order->ID );
 		$this->assertCount( count( $given_items ), $rows );
 		$rows = array_map( static fn( $row ) => $row->toArray(), $rows );
@@ -121,6 +121,20 @@ class Writer_Test extends Controller_Test_Case {
 		$this->assertSame( range( 0, count( $given_items ) - 1 ), array_column( $rows, 'position' ) );
 		$this->assertSame( '2', get_post_meta( $order->ID, Writer::VERSION_META_KEY, true ) );
 		$this->assertSame( $given_items, get_post_meta( $order->ID, Order::$items_meta_key, true ) );
+	}
+
+	public function test_it_replaces_the_rows_left_under_a_recycled_order_id(): void {
+		$this->register_controller( true );
+		[ , $ticket_ids ] = $this->make_tickets();
+		$gone             = $this->create_order( [ $ticket_ids[0] => 1 ] );
+		// Truncating the posts table drops the post and keeps its rows, and the next post can take its ID.
+		DB::query( DB::prepare( 'DELETE FROM %i WHERE ID = %d', DB::prefix( 'posts' ), $gone->ID ) );
+		$items = get_post_meta( $this->create_order( [ $ticket_ids[1] => 2 ] )->ID, Order::$items_meta_key, true );
+
+		do_action( 'tec_tickets_commerce_order_created', $gone->ID, $items );
+
+		$rows = tribe( Order_Items_Repository::class )->get_by_order( $gone->ID );
+		$this->assertSame( [ $ticket_ids[1] ], array_map( static fn( $row ) => $row->toArray()['ticket_id'], $rows ) );
 	}
 
 	public function test_it_writes_nothing_for_an_order_without_items(): void {
