@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Order_Items;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
+use TEC\Tickets\Commerce\Order_Items\Line_Items\Line_Item_Types;
 use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items;
 use Throwable;
 
@@ -23,13 +24,13 @@ use Throwable;
  */
 class Reader extends Controller_Contract {
 	/**
-	 * The mapper that turns rows back into order items.
+	 * The line item types that turn rows back into order items.
 	 *
 	 * @since TBD
 	 *
-	 * @var Mapper
+	 * @var Line_Item_Types
 	 */
-	private Mapper $mapper;
+	private Line_Item_Types $types;
 
 	/**
 	 * The Order Items repository.
@@ -45,13 +46,13 @@ class Reader extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container   $container  The container.
-	 * @param Mapper      $mapper     The mapper that turns rows back into order items.
-	 * @param Order_Items $repository The Order Items repository.
+	 * @param Container       $container  The container.
+	 * @param Line_Item_Types $types      The line item types that turn rows back into order items.
+	 * @param Order_Items     $repository The Order Items repository.
 	 */
-	public function __construct( Container $container, Mapper $mapper, Order_Items $repository ) {
+	public function __construct( Container $container, Line_Item_Types $types, Order_Items $repository ) {
 		parent::__construct( $container );
-		$this->mapper     = $mapper;
+		$this->types      = $types;
 		$this->repository = $repository;
 	}
 
@@ -89,7 +90,8 @@ class Reader extends Controller_Contract {
 
 		try {
 			foreach ( $this->repository->get_by_order( $post_id ) as $model ) {
-				[ $key, $item ] = $this->mapper->to_item( $model->toArray() );
+				$row            = $model->toArray();
+				[ $key, $item ] = $this->types->get( $row['type'] )->from_row( $row );
 
 				$list[ $key ] = $item;
 			}
