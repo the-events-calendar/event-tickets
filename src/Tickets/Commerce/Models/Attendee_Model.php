@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Models;
 
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order_Items\Attendees as Order_Items_Attendees;
 use TEC\Tickets\Commerce\Status\Undefined;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Attendee;
@@ -25,6 +26,8 @@ use Tribe__Utils__Array as Arr;
 class Attendee_Model extends Base {
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD The ticket title falls back to the name stored at purchase; adds `deleted_ticket_name`.
 	 */
 	protected function build_properties( $filter ) {
 		try {
@@ -56,7 +59,8 @@ class Attendee_Model extends Base {
 			$security             = Arr::get( $post_meta, [ Attendee::$security_code_meta_key, 0 ] );
 			$opt_out              = tribe_is_truthy( Arr::get( $post_meta, [ Attendee::$optout_meta_key, 0 ] ) );
 			$ticket_sent          = (int) Arr::get( $post_meta, [ Attendee::$ticket_sent_meta_key, 0 ] );
-			$deleted_ticket_title = Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
+			$bought_as            = Arr::get( $post_meta, [ Order_Items_Attendees::TICKET_NAME_META_KEY, 0 ] );
+			$deleted_ticket_title = $bought_as ?: Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
 			$full_name            = Arr::get( $post_meta, [ Attendee::$full_name_meta_key, 0 ] );
 			$email                = Arr::get( $post_meta, [ Attendee::$email_meta_key, 0 ] );
 			$price_paid           = Arr::get( $post_meta, [ Attendee::$price_paid_meta_key, 0 ] );
@@ -105,6 +109,9 @@ class Attendee_Model extends Base {
 				'is_subscribed'   => $is_subscribed,
 				'is_purchaser'    => false,
 			];
+
+			// The gone ticket's name without the "(deleted)" wording, for customer-facing screens.
+			$properties['deleted_ticket_name'] = $is_product_deleted ? (string) $deleted_ticket_title : '';
 
 			// Certain properties are only available when the order is valid.
 			if ( $is_valid_order ) {
