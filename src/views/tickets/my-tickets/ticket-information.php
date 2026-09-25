@@ -7,8 +7,9 @@
  * @since 5.6.7
  *
  * @since 5.9.1 Corrected template override filepath
+ * @since TBD Shows the name the ticket was bought under when the ticket no longer exists.
  *
- * @version 5.9.1
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets $provider The ticket provider.
  * @var array                   $attendee The attendee data.
@@ -24,8 +25,9 @@ use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 		$price = $provider->get_price_html( $attendee['product_id'], $attendee );
 	}
 	?>
-	<?php if ( ! empty( $attendee['ticket_exists'] ) && RSVP_V2_Constants::TC_RSVP_TYPE !== ( $attendee['ticket_type'] ?? '' ) ) : ?>
-		<span class="ticket-name"><?php echo esc_html( $attendee['ticket'] ); ?></span>
+	<?php $ticket_name = ! empty( $attendee['ticket_exists'] ) ? $attendee['ticket'] : ( $attendee['deleted_ticket_name'] ?? '' ); ?>
+	<?php if ( ! empty( $ticket_name ) && RSVP_V2_Constants::TC_RSVP_TYPE !== ( $attendee['ticket_type'] ?? '' ) ) : ?>
+		<span class="ticket-name"><?php echo esc_html( $ticket_name ); ?></span>
 	<?php endif; ?>
 	<?php
 	/**
