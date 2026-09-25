@@ -35,7 +35,8 @@
         "stock": 100,
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
-        "capacity": 100
+        "capacity": 100,
+        "relative_sale_dates": null
     },
     {
         "id": {TICKET_ID},
@@ -73,7 +74,8 @@
         "stock": 100,
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
-        "capacity": 100
+        "capacity": 100,
+        "relative_sale_dates": null
     },
     {
         "id": {TICKET_ID},
@@ -111,7 +113,8 @@
         "stock": 100,
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
-        "capacity": 100
+        "capacity": 100,
+        "relative_sale_dates": null
     },
     {
         "code": "rest_forbidden",
@@ -156,7 +159,8 @@
         "stock": 100,
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
-        "capacity": 100
+        "capacity": 100,
+        "relative_sale_dates": null
     },
     {
         "id": {TICKET_ID},
@@ -194,6 +198,7 @@
         "stock": 100,
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
-        "capacity": 100
+        "capacity": 100,
+        "relative_sale_dates": null
     }
 ]

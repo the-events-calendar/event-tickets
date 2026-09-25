@@ -4,7 +4,10 @@ namespace Tribe\Tickets\Test\Traits;
 
 use ActionScheduler_Action;
 use ActionScheduler_Store;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Ticket_Actions;
+use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * Builds the events, rules and lookups the Relative Sale Dates tests share.
@@ -63,6 +66,48 @@ trait Relative_Sale_Dates_Maker {
 		);
 
 		return array_values( array_map( static fn( ActionScheduler_Action $action ): int => $action->get_schedule()->get_date()->getTimestamp(), $actions ) );
+	}
+
+	/**
+	 * Sends a ticket save the way the block editor does.
+	 *
+	 * @param string              $method       The HTTP method.
+	 * @param string              $route        The route, relative to the tickets namespace.
+	 * @param int                 $post_id      The ticketed post ID.
+	 * @param string              $nonce_action The nonce action the endpoint checks.
+	 * @param array<string,mixed> $overrides    The body params to replace, merged recursively.
+	 *
+	 * @return WP_REST_Response The response.
+	 */
+	protected function send_block_editor_ticket_save( string $method, string $route, int $post_id, string $nonce_action, array $overrides = [] ): WP_REST_Response {
+		$request = new WP_REST_Request( $method, '/' . tribe( 'tickets.rest-v1.main' )->get_events_route_namespace() . $route );
+		$request->set_body_params(
+			array_replace_recursive(
+				[
+					'post_id'          => $post_id,
+					$nonce_action      => wp_create_nonce( $nonce_action ),
+					'provider'         => Module::class,
+					'name'             => 'Block editor ticket',
+					'description'      => '',
+					'price'            => '10',
+					'show_description' => 'yes',
+					'start_date'       => '',
+					'start_time'       => '',
+					'end_date'         => '',
+					'end_time'         => '',
+					'sku'              => '',
+					'iac'              => 'none',
+					'menu_order'       => 0,
+					'ticket'           => [
+						'mode'     => 'own',
+						'capacity' => 50,
+					],
+				],
+				$overrides
+			)
+		);
+
+		return rest_do_request( $request );
 	}
 
 	/**

@@ -49,6 +49,7 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ) );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20 );
+		$this->container->get( Rest::class )->unregister();
 	}
 
 	/**
@@ -110,5 +111,7 @@ final class Controller extends Controller_Contract {
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
 		// After the rules are copied to the duplicates.
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20, 2 );
+
+		$this->container->register( Rest::class );
 	}
 }
