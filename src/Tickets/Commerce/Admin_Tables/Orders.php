@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Order_Items\Fallbacks;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use Tribe__Tickets__Tickets as Tickets;
@@ -317,6 +318,7 @@ class Orders extends WP_List_Table {
 	 * Handler for the purchased column.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Lines whose ticket no longer exists show the fallback name.
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -332,13 +334,13 @@ class Orders extends WP_List_Table {
 			return $output;
 		}
 
-		foreach ( $item->items as $cart_item ) {
+		foreach ( $item->items as $key => $cart_item ) {
 			if ( ! $this->is_ticket( $cart_item ) ) {
 				continue;
 			}
 
 			$ticket   = Tickets::load_ticket_object( $cart_item['ticket_id'] );
-			$name     = esc_html( $ticket->name );
+			$name     = esc_html( $ticket ? $ticket->name : tribe( Fallbacks::class )->get_missing_ticket( $item, $key, $cart_item )['name'] );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 			$output   .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
 		}
