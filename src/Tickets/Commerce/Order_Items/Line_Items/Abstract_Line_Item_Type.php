@@ -1,73 +1,47 @@
 <?php
 /**
- * Converts order items to order item table rows and back.
+ * The conversion rules every order line item type shares.
  *
  * @since TBD
  *
- * @package TEC\Tickets\Commerce\Order_Items
+ * @package TEC\Tickets\Commerce\Order_Items\Line_Items
  */
 
-namespace TEC\Tickets\Commerce\Order_Items;
+namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
 
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Currency;
 
 /**
- * Class Mapper.
+ * Class Abstract_Line_Item_Type.
  *
- * The item read back from a row is identical (`===`) to the item written, key order and value types
- * included. Everything the columns cannot hold exactly lives in the row's `extra` JSON.
+ * Everything the columns cannot hold exactly lives in the row's `extra` JSON.
  *
  * Money is stored in the minor units of the row's currency: the currency's own decimals, never the site's
  * decimals setting, which only changes how prices are displayed.
  *
  * @since TBD
  *
- * @package TEC\Tickets\Commerce\Order_Items
+ * @package TEC\Tickets\Commerce\Order_Items\Line_Items
  */
-class Mapper {
+abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	/**
-	 * Item keys stored in a column of the same name, and how their value is stored.
+	 * Item keys stored in a column of the same name, and how their value is stored: `int`, `money` or `string`.
 	 *
 	 * @since TBD
 	 *
 	 * @var array<string,string>
 	 */
-	private const FIELDS = [
-		'type'              => 'string',
-		'ticket_id'         => 'int',
-		'event_id'          => 'int',
-		'quantity'          => 'int',
-		'price'             => 'money',
-		'regular_price'     => 'money',
-		'sub_total'         => 'money',
-		'regular_sub_total' => 'money',
+	protected const FIELDS = [
+		'type'      => 'string',
+		'ticket_id' => 'int',
+		'event_id'  => 'int',
+		'quantity'  => 'int',
+		'price'     => 'money',
+		'sub_total' => 'money',
 	];
 
 	/**
-	 * The Tickets Commerce ticket handler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Ticket
-	 */
-	private Ticket $tickets;
-
-	/**
-	 * Mapper constructor.
-	 *
-	 * @since TBD
-	 *
-	 * @param Ticket $tickets The Tickets Commerce ticket handler.
-	 */
-	public function __construct( Ticket $tickets ) {
-		$this->tickets = $tickets;
-	}
-
-	/**
 	 * Converts an order item to a table row.
-	 *
-	 * The row keys are the table's column names; `id` and `created_at` are left to the writer.
 	 *
 	 * @since TBD
 	 *
@@ -88,12 +62,12 @@ class Mapper {
 		];
 
 		foreach ( $item as $name => $value ) {
-			if ( ! isset( self::FIELDS[ $name ] ) ) {
+			if ( ! isset( static::FIELDS[ $name ] ) ) {
 				$extra['values'][ $name ] = $value;
 				continue;
 			}
 
-			$kind             = self::FIELDS[ $name ];
+			$kind             = static::FIELDS[ $name ];
 			$columns[ $name ] = $this->to_column( $kind, $value, $precision );
 
 			// Values the column cannot hold exactly (a '0' string, an unrounded float) keep their original.
@@ -102,15 +76,14 @@ class Mapper {
 			}
 		}
 
-		$ticket_id = $columns['ticket_id'] ?? 0;
-		$event_id  = $columns['event_id'] ?? null;
-		$ticket    = $ticket_id ? $this->tickets->get_ticket( $ticket_id ) : null;
+		$event_id = $columns['event_id'] ?? null;
+		$details  = $this->get_details( $columns );
 
 		return [
 			'order_id'             => $order_id,
 			'type'                 => $columns['type'] ?? '',
 			'item_key'             => (string) $key,
-			'ticket_id'            => $ticket_id,
+			'ticket_id'            => $columns['ticket_id'] ?? 0,
 			'modifier_id'          => 0,
 			'purchase_rule_id'     => 0,
 			'event_id'             => $event_id,
@@ -119,10 +92,10 @@ class Mapper {
 			'event_title'          => $event_id ? ( get_post_field( 'post_title', $event_id ) ?: null ) : null,
 			'event_start_date'     => $event_id ? ( get_post_meta( $event_id, '_EventStartDate', true ) ?: null ) : null,
 			'event_start_date_utc' => $event_id ? ( get_post_meta( $event_id, '_EventStartDateUTC', true ) ?: null ) : null,
-			'name'                 => $ticket->name ?? '',
+			'name'                 => $details['name'],
 			'currency'             => $currency,
-			'sku'                  => $ticket ? ( $ticket->sku ?: null ) : null,
-			'ticket_type'          => $ticket ? $ticket->type() : null,
+			'sku'                  => $details['sku'],
+			'ticket_type'          => $details['ticket_type'],
 			'quantity'             => $columns['quantity'] ?? 0,
 			'price'                => $columns['price'] ?? 0,
 			'regular_price'        => $columns['regular_price'] ?? null,
@@ -136,8 +109,8 @@ class Mapper {
 	/**
 	 * Converts a table row back to the order item it was written from.
 	 *
-	 * The key is returned as stored; assigning it as an array key turns '1' back into 1 and leaves '01' a string,
-	 * which is the type it had.
+	 * Values kept in `extra` are read first, so a row reads back whole even when the type that wrote it maps
+	 * other fields to columns, as after the plugin registering that type is deactivated.
 	 *
 	 * @since TBD
 	 *
@@ -145,7 +118,7 @@ class Mapper {
 	 *
 	 * @return array{0: string, 1: array} The item's key in the order's item list, and the item.
 	 */
-	public function to_item( array $row ): array {
+	public function from_row( array $row ): array {
 		$extra     = is_string( $row['extra'] ) ? json_decode( $row['extra'], true ) : $row['extra'];
 		$precision = $this->get_decimals( $row['currency'] );
 		$item      = [];
@@ -153,15 +126,26 @@ class Mapper {
 		foreach ( $extra['keys'] as $name ) {
 			if ( array_key_exists( $name, $extra['raw'] ) ) {
 				$item[ $name ] = $extra['raw'][ $name ];
-			} elseif ( isset( self::FIELDS[ $name ] ) ) {
-				$item[ $name ] = $this->from_column( self::FIELDS[ $name ], $row[ $name ], $precision );
-			} else {
+			} elseif ( array_key_exists( $name, $extra['values'] ) ) {
 				$item[ $name ] = $extra['values'][ $name ];
+			} else {
+				$item[ $name ] = $this->from_column( static::FIELDS[ $name ], $row[ $name ], $precision );
 			}
 		}
 
 		return [ $row['item_key'], $item ];
 	}
+
+	/**
+	 * Returns the purchase-time details of the line: its name, SKU and ticket type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,int|string|null> $columns The item's column values, keyed by column name.
+	 *
+	 * @return array{name: string, sku: ?string, ticket_type: ?string} The line's details.
+	 */
+	abstract protected function get_details( array $columns ): array;
 
 	/**
 	 * Returns the number of decimals a currency defines, such as 2 for USD and 0 for JPY.
