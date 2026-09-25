@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Communications\Email;
+use TEC\Tickets\Commerce\Order_Items\Attendees as Order_Items_Attendees;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
@@ -924,17 +925,22 @@ class Attendee {
 	 * Returns the product title related to an attendee
 	 *
 	 * @since 5.2.0
+	 * @since TBD Returns the ticket's title while the ticket exists, then falls back to the name stored at purchase.
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return string
 	 */
 	public function get_product_title( \WP_Post $attendee ) {
-		$ticket = get_post( $attendee->ticket_id );
+		$ticket = $this->get_product( $attendee );
 
-		return ! empty( $ticket->post_title ) ?
-			esc_html( $this->post_title ) :
-			get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
+		if ( ! empty( $ticket->post_title ) ) {
+			return esc_html( $ticket->post_title );
+		}
+
+		$bought_as = get_post_meta( $attendee->ID, Order_Items_Attendees::TICKET_NAME_META_KEY, true );
+
+		return $bought_as ? esc_html( $bought_as ) : get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
 	}
 
 	/**
