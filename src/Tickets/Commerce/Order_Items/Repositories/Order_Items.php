@@ -95,7 +95,6 @@ class Order_Items extends Custom_Table_Repository {
 		$rows  = [];
 		$page  = 1;
 
-		// The table caps a page at 200 rows; an order rarely has more, so this is one query in practice.
 		do {
 			$batch = Order_Items_Table::paginate( $where, self::PAGE_SIZE, $page++ );
 			$rows  = array_merge( $rows, $batch );
@@ -161,7 +160,6 @@ class Order_Items extends Custom_Table_Repository {
 	 * @return int The number of rows deleted.
 	 */
 	public function delete_many( array $ids ): int {
-		// The table returns false, not 0, when there is nothing to delete.
 		return (int) Order_Items_Table::delete_many( $ids );
 	}
 }
