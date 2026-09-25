@@ -1419,6 +1419,7 @@ class Ajax extends Controller_Contract {
 	 * half right.
 	 *
 	 * @since 5.29.5.1
+	 * @since TBD Match each reservation the service holds to one posted reservation only.
 	 *
 	 * @param int                     $post_id      The post the reservations are for.
 	 * @param array<int,array<array>> $reservations The reservations as posted, keyed by ticket ID, each carrying the
@@ -1459,6 +1460,9 @@ class Ajax extends Controller_Contract {
 				}
 
 				$reservation['seat_label'] = Meta::sanitize_seat_label( $held['seatLabel'] ?? '' );
+
+				// A held seat backs one posted reservation; the cart counts entries, so a repeated id would buy the seat again.
+				unset( $known[ $reservation['reservation_id'] ] );
 			}
 		}
 
