@@ -64,7 +64,8 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -131,7 +132,8 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -198,7 +200,8 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "No Access",
@@ -265,7 +268,8 @@
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -332,7 +336,8 @@
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -399,7 +404,8 @@
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -466,7 +472,8 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -533,7 +540,8 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -600,7 +608,8 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     },
     {
         "description": "No Access",
@@ -667,7 +676,8 @@
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -734,7 +744,8 @@
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "No Access",
@@ -801,7 +812,8 @@
         },
         "supports_attendee_information": null,
         "attendees": [],
-        "rest_url": "No Access"
+        "rest_url": "No Access",
+        "relative_sale_dates": "No Access"
     },
     {
         "description": "Test TC ticket description for {EVENT_ID}",
@@ -868,6 +880,7 @@
         },
         "supports_attendee_information": false,
         "attendees": [],
-        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}"
+        "rest_url": "http:\/\/wordpress.test\/index.php?rest_route=\/tribe\/tickets\/v1\/events\/{TICKET_ID}",
+        "relative_sale_dates": null
     }
 ]
