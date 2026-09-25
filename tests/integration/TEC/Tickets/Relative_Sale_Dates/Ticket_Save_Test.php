@@ -7,7 +7,9 @@ use ActionScheduler_Store;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
+use RuntimeException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\Ticket_Actions;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -17,6 +19,13 @@ use Tribe__Tickets__Tickets as Tickets;
 class Ticket_Save_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
+
+	/**
+	 * The error shown for an invalid rule or a sales window that ends before it starts.
+	 *
+	 * @var string
+	 */
+	private const INVALID_WINDOW_MESSAGE = 'Ticket sales cannot end before they start. Please adjust the sales window.';
 
 	protected $controller_class = Ticket_Save::class;
 
@@ -292,6 +301,185 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * The event starts on 2027-06-24 at 19:00.
+	 *
+	 * @return Generator<string,array{0: array<string,string>}>
+	 */
+	public function invalid_sales_window_provider(): Generator {
+		yield 'invalid rule' => [
+			[ 'relative_sale_dates' => '{"start":{"mode":"relative","value":2,"unit":7,"anchor":"start"},"end":{"mode":"default"}}' ],
+		];
+
+		yield 'end before start' => [
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ) ],
+		];
+
+		yield 'specific end before the resolved start' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'ticket_end_date'     => '2027-06-01',
+				'ticket_end_time'     => '12:00:00',
+			],
+		];
+
+		yield 'specific start without a date' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+				'ticket_start_date'   => '',
+			],
+		];
+
+		yield 'specific end without a date' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'ticket_end_date'     => '',
+			],
+		];
+
+		yield 'specific start after the resolved end' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+				'ticket_start_date'   => '2027-06-24',
+				'ticket_start_time'   => '18:00:00',
+			],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider invalid_sales_window_provider
+	 */
+	public function should_reject_ticket_data_with_an_invalid_sales_window( array $data ): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertWPError( $result );
+		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+		$this->assertSame( 400, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_a_specific_date_the_datepicker_format_cannot_read(): void {
+		// 4 is the day-first `d/m/Y` datepicker format, and 31/02 is not a day it can turn into a date.
+		add_filter( 'tribe_datepicker_format_index', static fn() => 4 );
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$data     = [
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+			'ticket_start_date'   => '31/02/2027',
+			'ticket_start_time'   => '12:00:00',
+		];
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertWPError( $result );
+		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: array<string,string>}>
+	 */
+	public function accepted_ticket_data_provider(): Generator {
+		$end_before_start = wp_json_encode( [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] );
+
+		yield 'valid rule' => [
+			'tribe_events',
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ] ) ],
+		];
+
+		yield 'no rule' => [ 'tribe_events', [ 'ticket_name' => 'No rule' ] ];
+
+		yield 'ticket on a page' => [ 'page', [ 'relative_sale_dates' => $end_before_start ] ];
+
+		yield 'RSVP' => [
+			'tribe_events',
+			[
+				'relative_sale_dates' => $end_before_start,
+				'ticket_provider'     => 'Tribe__Tickets__RSVP',
+			],
+		];
+
+		yield 'Series Pass' => [
+			'tribe_events',
+			[
+				'relative_sale_dates' => $end_before_start,
+				'ticket_type'         => Series_Passes::TICKET_TYPE,
+			],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider accepted_ticket_data_provider
+	 */
+	public function should_accept_ticket_data_without_an_invalid_sales_window_to_apply( string $post_type, array $data ): void {
+		$post_id = 'tribe_events' === $post_type
+			? $this->create_event( '2027-06-24 19:00:00' )
+			: static::factory()->post->create( [ 'post_type' => $post_type ] );
+
+		$this->assertTrue( apply_filters( 'tec_tickets_ticket_data_validation', true, $post_id, $data ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_reject_through_the_classic_editor_a_window_that_ends_before_it_starts(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+
+		$response = $this->send_classic_ticket_add(
+			$event_id,
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ) ]
+		);
+
+		$this->assertSame(
+			[
+				'success' => false,
+				'data'    => [ 'message' => self::INVALID_WINDOW_MESSAGE ],
+			],
+			$response
+		);
+		$this->assertSame( [], tribe( Module::class )->get_tickets_ids( $event_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_change_a_ticket_the_classic_editor_saves_with_an_invalid_rule(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$name      = get_post( $ticket_id )->post_title;
+
+		$response = $this->send_classic_ticket_add(
+			$event_id,
+			[
+				'ticket_id'           => $ticket_id,
+				'ticket_name'         => "{$name} renamed",
+				'relative_sale_dates' => '{"start":{"mode":"relative","value":2,"unit":7,"anchor":"start"},"end":{"mode":"default"}}',
+			]
+		);
+
+		$this->assertFalse( $response['success'] );
+		$this->assertSame( $name, get_post( $ticket_id )->post_title );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_save_through_the_classic_editor_a_ticket_with_a_valid_rule(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$rule     = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+
+		$response = $this->send_classic_ticket_add( $event_id, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+
+		$this->assertTrue( $response['success'] );
+		$ticket_ids = tribe( Module::class )->get_tickets_ids( $event_id );
+		$this->assertCount( 1, $ticket_ids );
+		$this->assertSame( $rule, $this->get_stored_rule( reset( $ticket_ids ) ) );
+	}
+
+	/**
 	 * @param int $value The number of units before the event start.
 	 * @param int $unit  The unit, one of the `Rule::UNIT_*` constants.
 	 *
@@ -304,6 +492,57 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			'unit'   => $unit,
 			'anchor' => 'start',
 		];
+	}
+
+	/**
+	 * Sends a ticket save from the classic editor and returns its JSON response.
+	 *
+	 * @param int                 $event_id The event post ID.
+	 * @param array<string,int|string> $data     The ticket form data, merged over a Tickets Commerce ticket.
+	 *
+	 * @return array{success: bool, data: mixed} The decoded JSON response.
+	 */
+	private function send_classic_ticket_add( int $event_id, array $data ): array {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		// The classic editor posts its form as one URL-encoded string, which WordPress then slashes.
+		$_POST = wp_slash(
+			[
+				'post_id' => $event_id,
+				'nonce'   => wp_create_nonce( 'add_ticket_nonce' ),
+				'data'    => http_build_query(
+					array_merge(
+						[
+							'ticket_name'     => 'Classic editor ticket',
+							'ticket_price'    => '10',
+							'ticket_provider' => Module::class,
+							'tribe-ticket'    => [
+								'mode'     => 'own',
+								'capacity' => '50',
+							],
+						],
+						$data
+					)
+				),
+			]
+		);
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter(
+			'wp_die_ajax_handler',
+			static fn() => static function () {
+				throw new RuntimeException( 'The AJAX response was sent.' );
+			}
+		);
+
+		ob_start();
+		try {
+			tribe( 'tickets.metabox' )->ajax_ticket_add();
+		} catch ( RuntimeException $e ) {
+			// wp_send_json_*() ends the request through the die handler.
+		}
+
+		return json_decode( ob_get_clean(), true );
 	}
 
 	/**
