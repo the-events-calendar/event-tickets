@@ -11,6 +11,33 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class Mapper_Test extends WPTestCase {
 	use Ticket_Maker;
 
+	/**
+	 * The site's currency decimals setting before the test, or null when it is not set.
+	 *
+	 * @var mixed
+	 */
+	private $decimals;
+
+	public function setUp(): void {
+		parent::setUp();
+
+		$this->decimals = tribe_get_option( Settings::$option_currency_number_of_decimals, null );
+	}
+
+	/**
+	 * Restores the decimals setting before the parent rolls the database back: Tribe keeps options in memory, and a
+	 * restore after the rollback finds nothing to write, so it leaves the changed value in memory for later tests.
+	 */
+	public function tearDown(): void {
+		if ( null === $this->decimals ) {
+			tribe_remove_option( Settings::$option_currency_number_of_decimals );
+		} else {
+			tribe_update_option( Settings::$option_currency_number_of_decimals, $this->decimals );
+		}
+
+		parent::tearDown();
+	}
+
 	private function fixture( string $name ): array {
 		return include codecept_data_dir( "order-items/{$name}.php" );
 	}
