@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Payload\Rejections;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -57,24 +58,28 @@ class Checks {
 			return new Payload();
 		}
 
-		foreach ( array_keys( $payload->get_update() ) as $ticket_id ) {
+		$update = $payload->get_update();
+		$move   = $payload->get_move();
+		$delete = [];
+
+		foreach ( array_keys( $update ) as $ticket_id ) {
 			if ( ! $this->ticket_belongs_to_post( $ticket_id, $post_id ) ) {
-				$rejections->add( Payload::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
-				$payload = $payload->without( Payload::UPDATE, $ticket_id );
+				$rejections->add( Parser::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				unset( $update[ $ticket_id ] );
 			}
 		}
 
-		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
+		foreach ( $move as $ticket_id => $destination_id ) {
 			if ( ! $this->ticket_belongs_to_post( $ticket_id, $post_id ) ) {
-				$rejections->add( Payload::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
-				$payload = $payload->without( Payload::MOVE, $ticket_id );
+				$rejections->add( Parser::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				unset( $move[ $ticket_id ] );
 				continue;
 			}
 
 			// Whether the destination can hold this ticket is the move's concern (SOFT-4825); that the user may edit it is ours.
 			if ( ! $this->current_user_can_edit( (int) Event::filter_event_id( $destination_id, 'deferred_save' ) ) ) {
 				$rejections->add(
-					Payload::MOVE,
+					Parser::MOVE,
 					$ticket_id,
 					sprintf(
 						/* translators: %d: the destination post ID. */
@@ -82,7 +87,7 @@ class Checks {
 						$destination_id
 					)
 				);
-				$payload = $payload->without( Payload::MOVE, $ticket_id );
+				unset( $move[ $ticket_id ] );
 			}
 		}
 
@@ -90,14 +95,13 @@ class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$rejections->add( Payload::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
-				$payload = $payload->without( Payload::DELETE, $ticket_id );
+				$rejections->add( Parser::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
 				continue;
 			}
 
 			if ( ! $this->current_user_can_delete( $ticket ) ) {
 				$rejections->add(
-					Payload::DELETE,
+					Parser::DELETE,
 					$ticket_id,
 					sprintf(
 						/* translators: %d: the ticket ID. */
@@ -105,11 +109,13 @@ class Checks {
 						$ticket_id
 					)
 				);
-				$payload = $payload->without( Payload::DELETE, $ticket_id );
+				continue;
 			}
+
+			$delete[] = $ticket_id;
 		}
 
-		return $payload;
+		return new Payload( $update, $payload->get_create(), $delete, $move );
 	}
 
 	/**
