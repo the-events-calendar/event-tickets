@@ -5,308 +5,60 @@ namespace TEC\Tickets\Deferred_Save;
 use Codeception\TestCase\WPTestCase;
 
 class Payload_Test extends WPTestCase {
-	private function error_keys( Payload $payload, string $part ): array {
-		return array_values(
-			array_map(
-				static fn( array $error ) => $error['key'],
-				array_filter( $payload->get_errors(), static fn( array $error ) => $error['part'] === $part )
-			)
-		);
-	}
-
 	/**
 	 * @test
 	 */
-	public function it_should_parse_a_full_payload(): void {
-		$update_data = [ 'ticket_name' => 'Updated', 'ticket_price' => '10' ];
-		$create_data = [ 'ticket_name' => 'New', 'ticket_price' => '5' ];
+	public function it_should_hold_the_four_parts_it_was_built_with(): void {
+		$data    = [ 'ticket_name' => 'x' ];
+		$payload = new Payload( [ 1 => $data ], [ 0 => $data, 2 => $data ], [ 3 ], [ 4 => 9 ] );
 
-		$payload = Payload::from_array(
-			[
-				'update' => [ 123 => $update_data ],
-				'create' => [ $create_data, $create_data ],
-				'delete' => [ 456 ],
-				'move'   => [ 789 => 42 ],
-			]
-		);
-
-		$this->assertTrue( $payload->is_valid() );
 		$this->assertTrue( $payload->has_changes() );
-		$this->assertSame( [], $payload->get_errors() );
-		$this->assertSame( [ 123 => $update_data + [ 'ticket_id' => 123 ] ], $payload->get_update() );
-		$this->assertSame( [ 0 => $create_data, 1 => $create_data ], $payload->get_create() );
-		$this->assertSame( [ 456 ], $payload->get_delete() );
-		$this->assertSame( [ 789 => 42 ], $payload->get_move() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_pass_data_on_untouched(): void {
-		$data = [
-			'ticket_name'                  => 'With extras',
-			'ticket_sale_price'            => '3',
-			'tribe-ticket'                 => [ 'capacity' => '10', 'mode' => 'own' ],
-			'tribe-tickets-plus-iac'       => 'allowed',
-			'unknown_third_party_field'    => [ 'nested' => true ],
-			'ticket_fees'                  => [ 1, 2 ],
-		];
-
-		$payload = Payload::from_array( [ 'update' => [ 5 => $data ], 'create' => [ $data ] ] );
-
-		$this->assertSame( $data + [ 'ticket_id' => 5 ], $payload->get_update()[5] );
-		$this->assertSame( $data, $payload->get_create()[0] );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_let_the_update_key_win_over_a_ticket_id_inside_the_data(): void {
-		$payload = Payload::from_array(
-			[
-				'update' => [
-					123 => [ 'ticket_name' => 'smuggled', 'ticket_id' => 999 ],
-					124 => [ 'ticket_name' => 'plain' ],
-				],
-			]
-		);
-
-		$this->assertSame(
-			[
-				123 => [ 'ticket_name' => 'smuggled', 'ticket_id' => 123 ],
-				124 => [ 'ticket_name' => 'plain', 'ticket_id' => 124 ],
-			],
-			$payload->get_update()
-		);
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_drop_a_ticket_id_inside_create_data(): void {
-		$payload = Payload::from_array( [ 'create' => [ [ 'ticket_name' => 'new', 'ticket_id' => 123 ] ] ] );
-
-		$this->assertSame( [ [ 'ticket_name' => 'new' ] ], $payload->get_create() );
-	}
-
-	/**
-	 * @return array<string,array{0:mixed}>
-	 */
-	public function empty_payloads(): array {
-		return [
-			'missing'         => [ null ],
-			'empty array'     => [ [] ],
-			'all parts empty' => [ [ 'update' => [], 'create' => [], 'delete' => [], 'move' => [] ] ],
-		];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider empty_payloads
-	 */
-	public function it_should_treat_an_empty_or_missing_payload_as_valid_with_no_changes( $raw ): void {
-		$payload = Payload::from_array( $raw );
-
-		$this->assertTrue( $payload->is_valid() );
-		$this->assertFalse( $payload->has_changes() );
-		$this->assertSame( [], $payload->get_errors() );
-		$this->assertSame( [], $payload->get_update() );
-		$this->assertSame( [], $payload->get_create() );
-		$this->assertSame( [], $payload->get_delete() );
-		$this->assertSame( [], $payload->get_move() );
-	}
-
-	/**
-	 * @return array<string,array{0:mixed}>
-	 */
-	public function non_array_roots(): array {
-		return [
-			'string' => [ 'tec_tickets' ],
-			'number' => [ 12 ],
-			'bool'   => [ true ],
-			'object' => [ (object) [ 'update' => [] ] ],
-		];
-	}
-
-	/**
-	 * @test
-	 * @dataProvider non_array_roots
-	 */
-	public function it_should_reject_a_non_array_payload( $raw ): void {
-		$payload = Payload::from_array( $raw );
-
-		$this->assertFalse( $payload->is_valid() );
-		$this->assertFalse( $payload->has_changes() );
-		$this->assertCount( 1, $payload->get_errors() );
-		$this->assertNull( $payload->get_errors()[0]['part'] );
-		$this->assertNull( $payload->get_errors()[0]['key'] );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_reject_the_whole_payload_on_an_unknown_part(): void {
-		$payload = Payload::from_array( [ 'update' => [ 1 => [ 'ticket_name' => 'x' ] ], 'updates' => [] ] );
-
-		$this->assertFalse( $payload->is_valid() );
-		$this->assertFalse( $payload->has_changes() );
-		$this->assertSame( [], $payload->get_update() );
-		$this->assertCount( 1, $payload->get_errors() );
-		$this->assertSame( 'updates', $payload->get_errors()[0]['key'] );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_reject_a_part_that_is_not_an_array_and_keep_the_others(): void {
-		$payload = Payload::from_array( [ 'update' => 'nope', 'delete' => [ 3 ] ] );
-
-		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [], $payload->get_update() );
-		$this->assertSame( [ 3 ], $payload->get_delete() );
-		$this->assertCount( 1, $payload->get_errors() );
-		$this->assertSame( 'update', $payload->get_errors()[0]['part'] );
-		$this->assertNull( $payload->get_errors()[0]['key'] );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_reject_non_integer_ticket_ids_per_entry(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array(
-			[
-				'update' => [ 'abc' => $data, 0 => $data, -1 => $data, 7 => $data ],
-				'delete' => [ 'abc', 0, '', 8, 3.5 ],
-				'move'   => [ 'abc' => 1, 9 => 'xyz', 10 => 0, 11 => 2 ],
-			]
-		);
-
-		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [ 7 => $data + [ 'ticket_id' => 7 ] ], $payload->get_update() );
-		$this->assertSame( [ 8 ], $payload->get_delete() );
-		$this->assertSame( [ 11 => 2 ], $payload->get_move() );
-		$this->assertSame( [ 'abc', 0, -1 ], $this->error_keys( $payload, 'update' ) );
-		$this->assertSame( [ 'abc', 0, '', 3.5 ], $this->error_keys( $payload, 'delete' ) );
-		$this->assertSame( [ 'abc', 9, 10 ], $this->error_keys( $payload, 'move' ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_reject_data_that_is_not_an_array_per_entry(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array(
-			[
-				'update' => [ 1 => 'string', 2 => $data, 3 => null ],
-				'create' => [ $data, 'string', $data, 12 ],
-			]
-		);
-
-		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [ 2 => $data + [ 'ticket_id' => 2 ] ], $payload->get_update() );
+		$this->assertSame( [ 1 => $data ], $payload->get_update() );
 		$this->assertSame( [ 0 => $data, 2 => $data ], $payload->get_create() );
-		$this->assertSame( [ 1, 3 ], $this->error_keys( $payload, 'update' ) );
-		$this->assertSame( [ 1, 3 ], $this->error_keys( $payload, 'create' ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_normalise_digit_strings_to_integers(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array(
-			[
-				'update' => [ '123' => $data ],
-				'delete' => [ '456', '456' ],
-				'move'   => [ '789' => '42' ],
-			]
-		);
-
-		$this->assertSame( [ 123 => $data + [ 'ticket_id' => 123 ] ], $payload->get_update() );
-		$this->assertSame( [ 456 ], $payload->get_delete() );
-		$this->assertSame( [ 789 => 42 ], $payload->get_move() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_preserve_create_positions_and_require_non_negative_integers(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array( [ 'create' => [ 2 => $data, '5' => $data, 'a' => $data, -1 => $data ] ] );
-
-		$this->assertSame( [ 2 => $data, 5 => $data ], $payload->get_create() );
-		$this->assertSame( [ 'a', -1 ], $this->error_keys( $payload, 'create' ) );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_reject_both_entries_when_the_same_ticket_is_in_update_and_delete(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array(
-			[
-				'update' => [ 1 => $data, 2 => $data ],
-				'delete' => [ 2, 3 ],
-			]
-		);
-
-		$this->assertTrue( $payload->is_valid() );
-		$this->assertSame( [ 1 => $data + [ 'ticket_id' => 1 ] ], $payload->get_update() );
 		$this->assertSame( [ 3 ], $payload->get_delete() );
-		$this->assertCount( 1, $payload->get_errors() );
-		$this->assertSame( 2, $payload->get_errors()[0]['key'] );
+		$this->assertSame( [ 4 => 9 ], $payload->get_move() );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_return_a_new_payload_without_the_entry_from_with_rejected(): void {
-		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array(
-			[
-				'update' => [ 1 => $data, 2 => $data ],
-				'create' => [ $data, $data ],
-				'delete' => [ 3, 4 ],
-				'move'   => [ 5 => 9, 6 => 9 ],
-			]
-		);
-
-		$rejected = $payload
-			->with_rejected( 'update', 1, 'no' )
-			->with_rejected( 'create', 1, 'no' )
-			->with_rejected( 'delete', 4, 'no' )
-			->with_rejected( 'move', 5, 'no' );
-
-		$this->assertNotSame( $payload, $rejected );
-		$this->assertSame( [], $payload->get_errors(), 'The original payload is untouched.' );
-		$this->assertSame( [ 2 => $data + [ 'ticket_id' => 2 ] ], $rejected->get_update() );
-		$this->assertSame( [ 0 => $data ], $rejected->get_create() );
-		$this->assertSame( [ 3 ], $rejected->get_delete() );
-		$this->assertSame( [ 6 => 9 ], $rejected->get_move() );
-		$this->assertSame(
-			[
-				[ 'part' => 'update', 'key' => 1, 'message' => 'no' ],
-				[ 'part' => 'create', 'key' => 1, 'message' => 'no' ],
-				[ 'part' => 'delete', 'key' => 4, 'message' => 'no' ],
-				[ 'part' => 'move', 'key' => 5, 'message' => 'no' ],
-			],
-			$rejected->get_errors()
-		);
+	public function it_should_have_no_changes_when_every_part_is_empty(): void {
+		$this->assertFalse( ( new Payload() )->has_changes() );
+		$this->assertFalse( ( new Payload( [], [], [], [] ) )->has_changes() );
+		$this->assertTrue( ( new Payload( [], [], [ 3 ], [] ) )->has_changes() );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_empty_every_part_when_rejected_at_payload_level(): void {
+	public function it_should_return_a_copy_without_one_entry_and_leave_the_original_untouched(): void {
 		$data    = [ 'ticket_name' => 'x' ];
-		$payload = Payload::from_array( [ 'update' => [ 1 => $data ], 'delete' => [ 3 ] ] )
-			->with_rejected( null, null, 'You cannot edit this post.' );
+		$payload = new Payload( [ 1 => $data, 2 => $data ], [ 0 => $data, 1 => $data ], [ 3, 4 ], [ 5 => 9, 6 => 9 ] );
 
-		$this->assertFalse( $payload->is_valid() );
-		$this->assertFalse( $payload->has_changes() );
-		$this->assertSame( [], $payload->get_update() );
-		$this->assertSame( [], $payload->get_delete() );
-		$this->assertSame( [ [ 'part' => null, 'key' => null, 'message' => 'You cannot edit this post.' ] ], $payload->get_errors() );
+		$smaller = $payload
+			->without( Payload::UPDATE, 1 )
+			->without( Payload::CREATE, 1 )
+			->without( Payload::DELETE, 4 )
+			->without( Payload::MOVE, 5 );
+
+		$this->assertNotSame( $payload, $smaller );
+		$this->assertSame( [ 1 => $data, 2 => $data ], $payload->get_update(), 'The original payload is untouched.' );
+		$this->assertSame( [ 3, 4 ], $payload->get_delete() );
+		$this->assertSame( [ 2 => $data ], $smaller->get_update() );
+		$this->assertSame( [ 0 => $data ], $smaller->get_create() );
+		$this->assertSame( [ 3 ], $smaller->get_delete(), 'The delete list is reindexed.' );
+		$this->assertSame( [ 6 => 9 ], $smaller->get_move() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_ignore_a_key_that_is_not_in_the_part(): void {
+		$payload = new Payload( [ 1 => [ 'ticket_name' => 'x' ] ], [], [ 3 ], [] );
+
+		$same = $payload->without( Payload::UPDATE, 99 )->without( Payload::DELETE, 99 );
+
+		$this->assertSame( $payload->get_update(), $same->get_update() );
+		$this->assertSame( $payload->get_delete(), $same->get_delete() );
 	}
 }
