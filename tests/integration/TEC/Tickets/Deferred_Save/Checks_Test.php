@@ -64,10 +64,12 @@ class Checks_Test extends WPTestCase {
 	}
 
 	protected function run_checks( $raw ): Payload {
-		$this->rejections = new Rejections();
-		$payload          = ( new Parser() )->parse( $raw, $this->rejections );
+		$parsed  = ( new Parser() )->parse( $raw );
+		$checked = tribe( Checks::class )->run( $parsed->payload(), $this->post_id );
 
-		return tribe( Checks::class )->run( $payload, $this->post_id, $this->rejections );
+		$this->rejections = $parsed->rejections()->merge( $checked->rejections() );
+
+		return $checked->payload();
 	}
 
 	/**
