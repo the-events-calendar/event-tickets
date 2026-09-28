@@ -57,6 +57,8 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_rest_ticket_upsert_params', $this->container->callback( Rest::class, 'keep_stored_rules_in_tec_rest_api_update' ) );
 		remove_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
 		remove_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ) );
+		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Assets::class )->unregister();
 	}
 
 	/**
@@ -132,5 +134,8 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Classic_Panel_Data::class );
 
 		add_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ), 10, 3 );
+
+		$this->container->register( Editor::class );
+		$this->container->register( Assets::class );
 	}
 }
