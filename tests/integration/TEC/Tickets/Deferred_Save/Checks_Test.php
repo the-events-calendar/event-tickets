@@ -309,6 +309,44 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_ask_the_permissions_resolved_for_each_ticket(): void {
+		$this->given_two_posts_with_tickets();
+		$this->log_in_as( 'editor' );
+		$data     = [ 'ticket_name' => 'x' ];
+		$stricter = new class() extends \TEC\Tickets\Ticket_Permissions {
+			public function current_user_can_edit_ticket( \Tribe__Tickets__Ticket_Object $ticket ): bool {
+				return false;
+			}
+		};
+		$denied = [ $this->ticket_id, $this->second_ticket_id ];
+		add_filter(
+			'tec_tickets_ticket_permissions',
+			static function ( $default, \Tribe__Tickets__Ticket_Object $ticket ) use ( $stricter, $denied ) {
+				return in_array( $ticket->ID, $denied, true ) ? $stricter : $default;
+			},
+			10,
+			2
+		);
+
+		// The same ticket cannot be both updated and deleted, so the delete uses the second ticket.
+		$checked = $this->run_checks(
+			[
+				'update' => [ $this->ticket_id => $data ],
+				'delete' => [ $this->second_ticket_id ],
+				'move'   => [ $this->ticket_id => $this->other_post_id ],
+			]
+		);
+
+		$this->assertSame( [], $this->payload_level_rejections(), 'The post-level check still passes for an editor.' );
+		$this->assertFalse( $checked->has_changes() );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( 'update' ) );
+		$this->assertSame( [ $this->second_ticket_id ], $this->error_keys( 'delete' ), 'Delete builds on the edit answer.' );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_pass_an_empty_payload_without_touching_the_user(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( 0 );
