@@ -13,7 +13,7 @@ namespace TEC\Tickets\Deferred_Save;
  * Class Result.
  *
  * Holds the IDs of the tickets a commit created, keyed by the position their `create` entry had in
- * the payload, and one error per entry that did not go through, in the shape `Payload` records them:
+ * the payload, and one error per entry that did not go through, in the shape `Payload\Rejections` records them:
  * `[ 'part' => 'update', 'key' => 123, 'message' => '...' ]`.
  *
  * Instances are immutable; every mutator returns a copy.
@@ -77,7 +77,7 @@ class Result {
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null           $part    One of the `Payload::PARTS`, or `null` for the payload as a whole.
+	 * @param string|null           $part    One of the `Payload` part constants, or `null` for the payload as a whole.
 	 * @param int|string|float|null $key     The ticket ID or `create` position, or `null` for a part-level error.
 	 * @param string                $message What went wrong, ready to show to the user.
 	 *
