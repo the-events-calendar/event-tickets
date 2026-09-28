@@ -35,7 +35,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Checks {
+final class Checks {
 	/**
 	 * Loads tickets.
 	 *
