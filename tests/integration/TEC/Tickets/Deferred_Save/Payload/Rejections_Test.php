@@ -18,21 +18,33 @@ class Rejections_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_keep_every_rejection_in_the_order_it_was_added(): void {
-		$rejections = new Rejections();
+	public function it_should_return_a_copy_with_the_rejection_added_and_leave_the_original_untouched(): void {
+		$empty = new Rejections();
 
-		$rejections->add( 'update', 12, 'not yours' );
-		$rejections->add( 'create', 0, 'no provider' );
-		$rejections->add( null, null, 'too many' );
+		$one = $empty->with( 'update', 12, 'not yours' );
+		$two = $one->with( null, null, 'too many' );
 
-		$this->assertFalse( $rejections->is_empty() );
+		$this->assertTrue( $empty->is_empty(), 'The original is untouched.' );
+		$this->assertSame( [ [ 'part' => 'update', 'key' => 12, 'message' => 'not yours' ] ], $one->all() );
 		$this->assertSame(
 			[
 				[ 'part' => 'update', 'key' => 12, 'message' => 'not yours' ],
-				[ 'part' => 'create', 'key' => 0, 'message' => 'no provider' ],
 				[ 'part' => null, 'key' => null, 'message' => 'too many' ],
 			],
-			$rejections->all()
+			$two->all()
 		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_merge_another_set_after_its_own(): void {
+		$mine   = ( new Rejections() )->with( 'update', 1, 'a' );
+		$theirs = ( new Rejections() )->with( 'delete', 2, 'b' )->with( 'move', 3, 'c' );
+
+		$merged = $mine->merge( $theirs );
+
+		$this->assertCount( 1, $mine->all(), 'The original is untouched.' );
+		$this->assertSame( [ 1, 2, 3 ], array_column( $merged->all(), 'key' ) );
 	}
 }
