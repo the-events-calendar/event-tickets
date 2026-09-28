@@ -21,5 +21,5 @@ use InvalidArgumentException;
  *
  * @package TEC\Tickets\Deferred_Save\Payload
  */
-class Malformed_Exception extends InvalidArgumentException {
+final class Malformed_Exception extends InvalidArgumentException {
 }

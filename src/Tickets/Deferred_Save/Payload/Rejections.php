@@ -20,7 +20,7 @@ namespace TEC\Tickets\Deferred_Save\Payload;
  *
  * @package TEC\Tickets\Deferred_Save\Payload
  */
-class Rejections {
+final class Rejections {
 	/**
 	 * The rejections, in order.
 	 *
