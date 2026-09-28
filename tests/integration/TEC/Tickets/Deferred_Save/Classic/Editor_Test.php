@@ -16,14 +16,14 @@ class Editor_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_prints_nothing_without_a_post(): void {
+	public function it_should_print_nothing_without_a_post(): void {
 		$this->assertSame( '', $this->metabox_end_output( 0 ) );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_prints_the_nonce_the_container_and_the_templates(): void {
+	public function it_should_print_the_nonce_the_container_and_the_templates(): void {
 		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
@@ -46,7 +46,7 @@ class Editor_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_templates_carry_no_unescaped_placeholders(): void {
+	public function it_should_print_templates_without_unescaped_placeholders(): void {
 		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 
 		$html = $this->metabox_end_output( $post_id );
@@ -61,7 +61,7 @@ class Editor_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_staged_row_and_table_mirror_the_saved_list_markup(): void {
+	public function it_should_mirror_the_saved_list_markup_in_the_staged_row_and_table(): void {
 		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
 
 		$html = $this->metabox_end_output( $post_id );
