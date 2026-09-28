@@ -15,8 +15,8 @@ use TEC\Tickets\Deferred_Save\Payload;
  * Class Parser.
  *
  * Normalizes the raw array and keeps the entries that match the contract; every entry that does
- * not is dropped and recorded in the rejections. A value that is not an array, or that carries
- * an unknown part, cannot be a payload at all and throws instead.
+ * not is dropped and recorded in the outcome's rejections. A value that is not an array, or that
+ * carries an unknown part, cannot be a payload at all and throws instead.
  *
  * The parser makes no WordPress calls beyond translation.
  *
@@ -75,16 +75,15 @@ class Parser {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed      $raw        The raw value. `null` or an empty array means "no ticket changes".
-	 * @param Rejections $rejections Where the entries that do not match the contract are recorded.
+	 * @param mixed $raw The raw value. `null` or an empty array means "no ticket changes".
 	 *
-	 * @return Payload The accepted entries.
+	 * @return Outcome The accepted entries and the rejected ones.
 	 *
 	 * @throws Malformed_Exception When the value is not an array or carries an unknown part.
 	 */
-	public function parse( $raw, Rejections $rejections ): Payload {
+	public function parse( $raw ): Outcome {
 		if ( null === $raw || [] === $raw ) {
-			return new Payload();
+			return new Outcome( new Payload(), new Rejections() );
 		}
 
 		if ( ! is_array( $raw ) ) {
@@ -103,19 +102,21 @@ class Parser {
 			}
 		}
 
-		$update = $this->parse_update( $raw[ self::UPDATE ] ?? [], $rejections );
-		$create = $this->parse_create( $raw[ self::CREATE ] ?? [], $rejections );
-		$delete = $this->parse_delete( $raw[ self::DELETE ] ?? [], $rejections );
-		$move   = $this->parse_move( $raw[ self::MOVE ] ?? [], $rejections );
+		$rejections = new Rejections();
+
+		[ $update, $rejections ] = $this->parse_update( $raw[ self::UPDATE ] ?? [], $rejections );
+		[ $create, $rejections ] = $this->parse_create( $raw[ self::CREATE ] ?? [], $rejections );
+		[ $delete, $rejections ] = $this->parse_delete( $raw[ self::DELETE ] ?? [], $rejections );
+		[ $move, $rejections ]   = $this->parse_move( $raw[ self::MOVE ] ?? [], $rejections );
 
 		// The same ticket cannot be both updated and deleted; neither can be meant, so both go.
 		foreach ( array_intersect( array_keys( $update ), $delete ) as $ticket_id ) {
 			unset( $update[ $ticket_id ] );
-			$delete = array_values( array_diff( $delete, [ $ticket_id ] ) );
-			$rejections->add( self::UPDATE, $ticket_id, __( 'The same ticket cannot be both updated and deleted.', 'event-tickets' ) );
+			$delete     = array_values( array_diff( $delete, [ $ticket_id ] ) );
+			$rejections = $rejections->with( self::UPDATE, $ticket_id, __( 'The same ticket cannot be both updated and deleted.', 'event-tickets' ) );
 		}
 
-		return new Payload( $update, $create, $delete, $move );
+		return new Outcome( new Payload( $update, $create, $delete, $move ), $rejections );
 	}
 
 	/**
@@ -127,13 +128,13 @@ class Parser {
 	 * @since TBD
 	 *
 	 * @param mixed      $raw        The raw part.
-	 * @param Rejections $rejections Where rejected entries are recorded.
+	 * @param Rejections $rejections The rejections so far.
 	 *
-	 * @return array<int,array<string,mixed>> Ticket ID => data.
+	 * @return array{0: array<int,array<string,mixed>>, 1: Rejections} Ticket ID => data, and the rejections after this part.
 	 */
 	private function parse_update( $raw, Rejections $rejections ): array {
-		if ( ! $this->part_is_array( self::UPDATE, $raw, $rejections ) ) {
-			return [];
+		if ( ! is_array( $raw ) ) {
+			return [ [], $this->reject_part( self::UPDATE, $rejections ) ];
 		}
 
 		$update = [];
@@ -142,12 +143,12 @@ class Parser {
 			$ticket_id = $this->to_positive_int( $key );
 
 			if ( null === $ticket_id ) {
-				$rejections->add( self::UPDATE, $key, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::UPDATE, $key, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
 				continue;
 			}
 
 			if ( ! is_array( $data ) ) {
-				$rejections->add( self::UPDATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::UPDATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
 				continue;
 			}
 
@@ -155,7 +156,7 @@ class Parser {
 			$update[ $ticket_id ] = $data;
 		}
 
-		return $update;
+		return [ $update, $rejections ];
 	}
 
 	/**
@@ -167,13 +168,13 @@ class Parser {
 	 * @since TBD
 	 *
 	 * @param mixed      $raw        The raw part.
-	 * @param Rejections $rejections Where rejected entries are recorded.
+	 * @param Rejections $rejections The rejections so far.
 	 *
-	 * @return array<int,array<string,mixed>> Position => data.
+	 * @return array{0: array<int,array<string,mixed>>, 1: Rejections} Position => data, and the rejections after this part.
 	 */
 	private function parse_create( $raw, Rejections $rejections ): array {
-		if ( ! $this->part_is_array( self::CREATE, $raw, $rejections ) ) {
-			return [];
+		if ( ! is_array( $raw ) ) {
+			return [ [], $this->reject_part( self::CREATE, $rejections ) ];
 		}
 
 		$create = [];
@@ -182,12 +183,12 @@ class Parser {
 			$position = $this->to_non_negative_int( $key );
 
 			if ( null === $position ) {
-				$rejections->add( self::CREATE, $key, __( 'The position of a new ticket must be a non-negative integer.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::CREATE, $key, __( 'The position of a new ticket must be a non-negative integer.', 'event-tickets' ) );
 				continue;
 			}
 
 			if ( ! is_array( $data ) ) {
-				$rejections->add( self::CREATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::CREATE, $key, __( 'The ticket data must be an array.', 'event-tickets' ) );
 				continue;
 			}
 
@@ -195,7 +196,7 @@ class Parser {
 			$create[ $position ] = $data;
 		}
 
-		return $create;
+		return [ $create, $rejections ];
 	}
 
 	/**
@@ -204,13 +205,13 @@ class Parser {
 	 * @since TBD
 	 *
 	 * @param mixed      $raw        The raw part.
-	 * @param Rejections $rejections Where rejected entries are recorded.
+	 * @param Rejections $rejections The rejections so far.
 	 *
-	 * @return int[] The ticket IDs to delete, without duplicates.
+	 * @return array{0: int[], 1: Rejections} The ticket IDs to delete, without duplicates, and the rejections after this part.
 	 */
 	private function parse_delete( $raw, Rejections $rejections ): array {
-		if ( ! $this->part_is_array( self::DELETE, $raw, $rejections ) ) {
-			return [];
+		if ( ! is_array( $raw ) ) {
+			return [ [], $this->reject_part( self::DELETE, $rejections ) ];
 		}
 
 		$delete = [];
@@ -219,7 +220,7 @@ class Parser {
 			$ticket_id = $this->to_positive_int( $value );
 
 			if ( null === $ticket_id ) {
-				$rejections->add( self::DELETE, $value, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::DELETE, $value, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
 				continue;
 			}
 
@@ -228,7 +229,7 @@ class Parser {
 			}
 		}
 
-		return $delete;
+		return [ $delete, $rejections ];
 	}
 
 	/**
@@ -237,13 +238,13 @@ class Parser {
 	 * @since TBD
 	 *
 	 * @param mixed      $raw        The raw part.
-	 * @param Rejections $rejections Where rejected entries are recorded.
+	 * @param Rejections $rejections The rejections so far.
 	 *
-	 * @return array<int,int> Ticket ID => destination post ID.
+	 * @return array{0: array<int,int>, 1: Rejections} Ticket ID => destination post ID, and the rejections after this part.
 	 */
 	private function parse_move( $raw, Rejections $rejections ): array {
-		if ( ! $this->part_is_array( self::MOVE, $raw, $rejections ) ) {
-			return [];
+		if ( ! is_array( $raw ) ) {
+			return [ [], $this->reject_part( self::MOVE, $rejections ) ];
 		}
 
 		$move = [];
@@ -252,40 +253,35 @@ class Parser {
 			$ticket_id = $this->to_positive_int( $key );
 
 			if ( null === $ticket_id ) {
-				$rejections->add( self::MOVE, $key, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::MOVE, $key, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
 				continue;
 			}
 
 			$destination_id = $this->to_positive_int( $value );
 
 			if ( null === $destination_id ) {
-				$rejections->add( self::MOVE, $key, __( 'The destination post ID must be a positive integer.', 'event-tickets' ) );
+				$rejections = $rejections->with( self::MOVE, $key, __( 'The destination post ID must be a positive integer.', 'event-tickets' ) );
 				continue;
 			}
 
 			$move[ $ticket_id ] = $destination_id;
 		}
 
-		return $move;
+		return [ $move, $rejections ];
 	}
 
 	/**
-	 * Checks that a part is an array, recording a part-level rejection when it is not.
+	 * Records a part-level rejection for a part that is not an array.
 	 *
 	 * @since TBD
 	 *
 	 * @param string     $part       The part being parsed.
-	 * @param mixed      $raw        The raw part.
-	 * @param Rejections $rejections Where the rejection is recorded.
+	 * @param Rejections $rejections The rejections so far.
 	 *
-	 * @return bool Whether the part can be parsed.
+	 * @return Rejections The rejections with the part-level one added.
 	 */
-	private function part_is_array( string $part, $raw, Rejections $rejections ): bool {
-		if ( is_array( $raw ) ) {
-			return true;
-		}
-
-		$rejections->add(
+	private function reject_part( string $part, Rejections $rejections ): Rejections {
+		return $rejections->with(
 			$part,
 			null,
 			sprintf(
@@ -294,8 +290,6 @@ class Parser {
 				$part
 			)
 		);
-
-		return false;
 	}
 
 	/**
