@@ -9,6 +9,7 @@
  */
 import moment from 'moment';
 import { addAction } from '@wordpress/hooks';
+import { _n } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -44,6 +45,20 @@ const EVENT_FIELDS = '#EventStartDate, #EventStartTime, #EventEndDate, #EventEnd
 const RULE_FIELDS = [ 'start', 'end' ]
 	.flatMap( ( key ) => [ 'mode', 'value', 'unit', 'anchor' ].map( ( field ) => `#ticket_sales_${ key }_${ field }` ) )
 	.join( ', ' );
+
+/**
+ * The name of each unit for a number of it, keyed by the unit in seconds. The msgids match the template's.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, function( number ): string>}
+ */
+const UNIT_NAMES = {
+	60: ( number ) => _n( 'minute', 'minutes', number, 'event-tickets' ),
+	3600: ( number ) => _n( 'hour', 'hours', number, 'event-tickets' ),
+	86400: ( number ) => _n( 'day', 'days', number, 'event-tickets' ),
+	604800: ( number ) => _n( 'week', 'weeks', number, 'event-tickets' ),
+};
 
 /**
  * The fields of the dates typed for a specific start and end.
@@ -188,6 +203,34 @@ function parseRule( json ) {
 	} catch ( error ) {
 		return null;
 	}
+}
+
+/**
+ * Names the units of each relative end in the plural form of the number typed for it.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function updateUnitNames() {
+	[ 'start', 'end' ].forEach( ( key ) => {
+		const value = document.getElementById( `ticket_sales_${ key }_value` );
+		const unit = document.getElementById( `ticket_sales_${ key }_unit` );
+
+		if ( ! value || ! unit ) {
+			return;
+		}
+
+		const number = parseInt( value.value, 10 );
+
+		Array.from( unit.options ).forEach( ( option ) => {
+			const name = UNIT_NAMES[ option.value ];
+
+			if ( name ) {
+				option.textContent = name( Number.isNaN( number ) ? 2 : number );
+			}
+		} );
+	} );
 }
 
 /**
@@ -482,6 +525,7 @@ function onEventChange() {
  * @return {void}
  */
 function onPanelsRefreshed() {
+	updateUnitNames();
 	updateHelperText();
 	updateTicketsList();
 }
@@ -511,6 +555,7 @@ jQuery( document ).on( 'change', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, 
 
 	onWindowChange();
 } );
+jQuery( document ).on( 'change input', '#ticket_sales_start_value, #ticket_sales_end_value', updateUnitNames );
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', onPanelsRefreshed );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );
