@@ -115,6 +115,18 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_load_the_translations_of_the_classic_script(): void {
+		$this->make_controller()->register();
+		set_current_screen( 'tribe_events' );
+
+		do_action( 'admin_enqueue_scripts', 'post.php' );
+
+		$this->assertSame( 'event-tickets', wp_scripts()->registered[ Assets::CLASSIC_SCRIPT ]->textdomain ?? null );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_not_enqueue_the_classic_script_on_the_page_edit_screen(): void {
 		$this->make_controller()->register();
 		set_current_screen( 'page' );

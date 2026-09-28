@@ -50,11 +50,15 @@ $modes = [
 	],
 ];
 
-$units = [
-	Rule::UNIT_MINUTES => _x( 'minutes', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	Rule::UNIT_HOURS   => _x( 'hours', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	Rule::UNIT_DAYS    => _x( 'days', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	Rule::UNIT_WEEKS   => _x( 'weeks', 'Unit of a relative ticket sale date.', 'event-tickets' ),
+/*
+ * The unit names follow the number, as the script does when it changes; the msgids match the script's so one
+ * translation serves both.
+ */
+$get_units = static fn( int $value ): array => [
+	Rule::UNIT_MINUTES => _n( 'minute', 'minutes', $value, 'event-tickets' ),
+	Rule::UNIT_HOURS   => _n( 'hour', 'hours', $value, 'event-tickets' ),
+	Rule::UNIT_DAYS    => _n( 'day', 'days', $value, 'event-tickets' ),
+	Rule::UNIT_WEEKS   => _n( 'week', 'weeks', $value, 'event-tickets' ),
 ];
 
 $anchors = [
@@ -116,7 +120,7 @@ $labels = [
 				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_unit"
 				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['unit'] ); ?>"
 			>
-				<?php foreach ( $units as $unit => $unit_label ) : ?>
+				<?php foreach ( $get_units( $fields['value'] ) as $unit => $unit_label ) : ?>
 					<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $fields['unit'], $unit ); ?>><?php echo esc_html( $unit_label ); ?></option>
 				<?php endforeach; ?>
 			</select>
