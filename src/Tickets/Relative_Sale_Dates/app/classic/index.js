@@ -10,7 +10,10 @@
 import { writeRule } from './rule';
 
 /*
- * `tickets.js` fires `pre-save-ticket.tribe` on `#tribetickets` right before it serializes the ticket form; the panels
- * are replaced after every save, so the handler is delegated from the document.
+ * `tickets.js` fires `pre-save-ticket.tribe` on `#tribetickets` right before it serializes the ticket form. The handler
+ * is bound on that element rather than delegated from the document: Event Tickets Plus stops the event from bubbling,
+ * and the element itself is not replaced when the panels are.
  */
-jQuery( document ).on( 'pre-save-ticket.tribe', '#tribetickets', () => writeRule( document ) );
+jQuery( () => {
+	jQuery( '#tribetickets' ).on( 'pre-save-ticket.tribe', () => writeRule( document ) );
+} );
