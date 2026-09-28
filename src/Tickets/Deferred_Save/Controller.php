@@ -1,6 +1,6 @@
 <?php
 /**
- * Registers the Deferred Ticket Save feature and decides which posts use it.
+ * Registers the Deferred Ticket Save feature.
  *
  * @since TBD
  *
@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Deferred_Save;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Event;
 
 /**
  * Class Controller.
@@ -20,6 +19,49 @@ use TEC\Tickets\Event;
  * @package TEC\Tickets\Deferred_Save
  */
 class Controller extends Controller_Contract {
+	/**
+	 * The name of the constant, and of the environment variable, that switches the feature off.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const DISABLED = 'TEC_TICKETS_DEFERRED_SAVE_DISABLED';
+
+	/**
+	 * Whether the feature is active.
+	 *
+	 * Ticket changes are deferred to the post save on every ticketable post while the feature is
+	 * active. It is active unless the constant, the environment variable or the filter switch it off.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the feature is active.
+	 */
+	public function is_active(): bool {
+		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
+			// The constant to disable the feature is defined and it's truthy.
+			return false;
+		}
+
+		if ( getenv( self::DISABLED ) ) {
+			// The environment variable to disable the feature is truthy.
+			return false;
+		}
+
+		/**
+		 * Filters whether the Deferred Ticket Save feature is active.
+		 *
+		 * Note: this filter will only apply if the disable constant or env var
+		 * are not set or are set to falsy values.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $active Whether the feature is active. Defaults to `true`.
+		 */
+		return (bool) apply_filters( 'tec_tickets_deferred_save_active', true );
+	}
+
 	/**
 	 * Registers the feature.
 	 *
@@ -44,36 +86,5 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		// Nothing to unhook yet.
-	}
-
-	/**
-	 * Whether ticket changes for a post are deferred to the post save.
-	 *
-	 * By default only a recurring event defers ticket writes, and only while Events
-	 * Calendar Pro provides recurrence. Every other post keeps today's behavior.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The ID of the post being saved. An occurrence ID is normalized to its event.
-	 *
-	 * @return bool Whether the post uses deferred ticket save.
-	 */
-	public function uses_deferred_save( int $post_id ): bool {
-		$post_id = (int) Event::filter_event_id( $post_id, 'deferred_save' );
-
-		// The function is ECP's; it is false for any post that is not a `tribe_events` post, unknown IDs included.
-		$enabled = function_exists( 'tribe_is_recurring_event' ) && tribe_is_recurring_event( $post_id );
-
-		/**
-		 * Filters whether ticket changes for a post are deferred to the post save.
-		 *
-		 * Returning `false` for every post switches the Deferred Ticket Save feature off.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $enabled Whether the post uses deferred ticket save. By default only recurring events do.
-		 * @param int  $post_id The ID of the post being saved, normalized to the event post ID.
-		 */
-		return (bool) apply_filters( 'tec_tickets_deferred_save_enabled', $enabled, $post_id );
 	}
 }
