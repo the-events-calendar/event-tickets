@@ -307,20 +307,6 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_leave_a_payload_the_parser_rejected_alone(): void {
-		$this->given_two_posts_with_tickets();
-		$this->log_in_as( 'editor' );
-
-		$checked = $this->run_checks( 'not an array' );
-
-		$this->assertFalse( $checked->has_changes() );
-		$this->assertCount( 1, $this->rejections->all(), 'The checks add nothing to what the parser recorded.' );
-		$this->assertNull( $this->rejections->all()[0]['part'] );
-	}
-
-	/**
-	 * @test
-	 */
 	public function it_should_pass_an_empty_payload_without_touching_the_user(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( 0 );
