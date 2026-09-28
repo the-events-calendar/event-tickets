@@ -13,7 +13,7 @@ class Editor_Config_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_editor_config_carries_the_flag_and_keeps_the_existing_keys(): void {
+	public function it_should_add_the_flag_to_the_editor_config_and_keep_the_existing_keys(): void {
 		global $post;
 		$post = get_post( static::factory()->post->create( [ 'post_type' => 'page' ] ) );
 
