@@ -194,7 +194,7 @@ class Commit {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( ! $provider instanceof Tickets ) {
-			return $result->with_error( Payload::UPDATE, $ticket_id, $this->no_provider_message() );
+			return $result->with_error( Parser::UPDATE, $ticket_id, $this->no_provider_message() );
 		}
 
 		$data['ticket_id']   = $ticket_id;
@@ -207,7 +207,7 @@ class Commit {
 		$saved = $provider->ticket_add( $post_id, $data );
 
 		if ( ! $saved ) {
-			return $result->with_error( Payload::UPDATE, $ticket_id, $this->not_saved_message() );
+			return $result->with_error( Parser::UPDATE, $ticket_id, $this->not_saved_message() );
 		}
 
 		$this->fire_added( $post_id, $ticket_id, $data );
@@ -233,7 +233,7 @@ class Commit {
 			: Tickets::get_ticket_provider_instance( $data['ticket_provider'] );
 
 		if ( ! $provider instanceof Tickets ) {
-			return $result->with_error( Payload::CREATE, $position, $this->no_provider_message() );
+			return $result->with_error( Parser::CREATE, $position, $this->no_provider_message() );
 		}
 
 		unset( $data['ticket_id'] );
@@ -242,7 +242,7 @@ class Commit {
 		$ticket_id = $provider->ticket_add( $post_id, $data );
 
 		if ( empty( $ticket_id ) ) {
-			return $result->with_error( Payload::CREATE, $position, $this->not_saved_message() );
+			return $result->with_error( Parser::CREATE, $position, $this->not_saved_message() );
 		}
 
 		$this->fire_added( $post_id, (int) $ticket_id, $data );
@@ -265,12 +265,12 @@ class Commit {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( ! $provider instanceof Tickets ) {
-			return $result->with_error( Payload::DELETE, $ticket_id, $this->no_provider_message() );
+			return $result->with_error( Parser::DELETE, $ticket_id, $this->no_provider_message() );
 		}
 
 		if ( ! $provider->delete_ticket( $post_id, $ticket_id ) ) {
 			return $result->with_error(
-				Payload::DELETE,
+				Parser::DELETE,
 				$ticket_id,
 				sprintf(
 					/* translators: %d: the ticket ID. */
