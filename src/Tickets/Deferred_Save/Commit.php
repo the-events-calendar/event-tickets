@@ -73,17 +73,14 @@ class Commit {
 	 * @return Result The created ticket IDs by position and one error per entry that did not go through.
 	 */
 	public function run( $raw, int $post_id ): Result {
-		$rejections = new Rejections();
-
 		try {
-			$payload = $this->parser->parse( $raw, $rejections );
+			$parsed = $this->parser->parse( $raw );
 		} catch ( Malformed_Exception $e ) {
 			// Input that cannot be a payload is answered like any other whole-payload refusal.
-			$rejections->add( null, null, $e->getMessage() );
-
-			return new Result( [], $rejections->all() );
+			return new Result( [], ( new Rejections() )->with( null, null, $e->getMessage() )->all() );
 		}
 
+		$payload = $parsed->payload();
 		$entries = count( $payload->get_update() ) + count( $payload->get_create() ) + count( $payload->get_delete() ) + count( $payload->get_move() );
 
 		/**
@@ -100,23 +97,21 @@ class Commit {
 		$max_entries = (int) apply_filters( 'tec_tickets_deferred_save_max_entries', 100, $post_id );
 
 		if ( $entries > $max_entries ) {
-			$rejections->add(
-				null,
-				null,
-				sprintf(
-					/* translators: %d: the maximum number of ticket changes in one save. */
-					__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
-					$max_entries
-				)
+			$too_many = sprintf(
+				/* translators: %d: the maximum number of ticket changes in one save. */
+				__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
+				$max_entries
 			);
 
-			return new Result( [], $rejections->all() );
+			return new Result( [], $parsed->rejections()->with( null, null, $too_many )->all() );
 		}
 
-		$checked = $this->checks->run( $payload, $post_id, $rejections );
-		$result  = new Result( [], $rejections->all() );
+		$checked    = $this->checks->run( $payload, $post_id );
+		$rejections = $parsed->rejections()->merge( $checked->rejections() );
+		$result     = new Result( [], $rejections->all() );
+		$payload    = $checked->payload();
 
-		if ( ! $checked->has_changes() ) {
+		if ( ! $payload->has_changes() ) {
 			return $result;
 		}
 
@@ -137,7 +132,7 @@ class Commit {
 		 * @param int                $post_id The ID of the post being saved.
 		 * @param Payload            $payload The checked payload.
 		 */
-		$routes = apply_filters( 'tec_tickets_deferred_save_routes', [ $post_id => $checked ], $post_id, $checked );
+		$routes = apply_filters( 'tec_tickets_deferred_save_routes', [ $post_id => $payload ], $post_id, $payload );
 
 		foreach ( (array) $routes as $route_post_id => $route_payload ) {
 			if ( ! $route_payload instanceof Payload || ! is_numeric( $route_post_id ) ) {
@@ -147,9 +142,9 @@ class Commit {
 			$route_post_id = (int) $route_post_id;
 
 			if ( $route_post_id !== $post_id ) {
-				$route_rejections = new Rejections();
-				$route_payload    = $this->checks->run( $route_payload, $route_post_id, $route_rejections );
-				$result           = new Result( $result->get_created(), array_merge( $result->get_errors(), $route_rejections->all() ) );
+				$route         = $this->checks->run( $route_payload, $route_post_id );
+				$route_payload = $route->payload();
+				$result        = new Result( $result->get_created(), array_merge( $result->get_errors(), $route->rejections()->all() ) );
 			}
 
 			$result = $result->merge( $this->replay( $route_payload, $route_post_id ) );
