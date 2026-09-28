@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use TEC\Tickets\Deferred_Save\Payload\Rejections;
 use TEC\Tickets\Event;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
@@ -20,7 +21,8 @@ use Tribe__Tickets__Tickets as Tickets;
  * post, or the whole payload is rejected. Every `update`, `delete` and `move` entry must name a
  * ticket attached to that post, every `delete` entry must pass the per-ticket delete permission
  * filter Event Tickets already exposes, and every `move` destination must be a post the current
- * user can edit; a failed check rejects that entry only.
+ * user can edit; a failed check rejects that entry only. What was rejected, and why, is recorded
+ * in the rejections the caller passes in.
  *
  * `create` entries carry no ticket ID (the parser removes one found inside the data) and pass
  * through. `data` is not interpreted here: the providers sanitize it when the ticket is saved,
@@ -36,41 +38,42 @@ class Checks {
 	 *
 	 * @since TBD
 	 *
-	 * @param Payload $payload The parsed payload.
-	 * @param int     $post_id The ID of the post being saved. An occurrence ID is normalized to its event.
+	 * @param Payload    $payload    The parsed payload.
+	 * @param int        $post_id    The ID of the post being saved. An occurrence ID is normalized to its event.
+	 * @param Rejections $rejections Where the entries that fail a check are recorded.
 	 *
-	 * @return Payload A payload holding the entries that passed, with an error for each one that did not.
+	 * @return Payload A payload holding the entries that passed.
 	 */
-	public function run( Payload $payload, int $post_id ): Payload {
-		if ( ! $payload->is_valid() || ! $payload->has_changes() ) {
+	public function run( Payload $payload, int $post_id, Rejections $rejections ): Payload {
+		if ( ! $payload->has_changes() ) {
 			return $payload;
 		}
 
 		$post_id = (int) Event::filter_event_id( $post_id, 'deferred_save' );
 
 		if ( ! $this->current_user_can_edit( $post_id ) ) {
-			return $payload->with_rejected(
-				null,
-				null,
-				__( 'You are not allowed to edit the tickets of this post.', 'event-tickets' )
-			);
+			$rejections->add( null, null, __( 'You are not allowed to edit the tickets of this post.', 'event-tickets' ) );
+
+			return new Payload();
 		}
 
 		foreach ( array_keys( $payload->get_update() ) as $ticket_id ) {
 			if ( ! $this->ticket_belongs_to_post( $ticket_id, $post_id ) ) {
-				$payload = $payload->with_rejected( Payload::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections->add( Payload::UPDATE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$payload = $payload->without( Payload::UPDATE, $ticket_id );
 			}
 		}
 
 		foreach ( $payload->get_move() as $ticket_id => $destination_id ) {
 			if ( ! $this->ticket_belongs_to_post( $ticket_id, $post_id ) ) {
-				$payload = $payload->with_rejected( Payload::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections->add( Payload::MOVE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$payload = $payload->without( Payload::MOVE, $ticket_id );
 				continue;
 			}
 
 			// Whether the destination can hold this ticket is the move's concern (SOFT-4825); that the user may edit it is ours.
 			if ( ! $this->current_user_can_edit( (int) Event::filter_event_id( $destination_id, 'deferred_save' ) ) ) {
-				$payload = $payload->with_rejected(
+				$rejections->add(
 					Payload::MOVE,
 					$ticket_id,
 					sprintf(
@@ -79,6 +82,7 @@ class Checks {
 						$destination_id
 					)
 				);
+				$payload = $payload->without( Payload::MOVE, $ticket_id );
 			}
 		}
 
@@ -86,12 +90,13 @@ class Checks {
 			$ticket = $this->get_ticket_on_post( $ticket_id, $post_id );
 
 			if ( null === $ticket ) {
-				$payload = $payload->with_rejected( Payload::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$rejections->add( Payload::DELETE, $ticket_id, $this->not_on_post_message( $ticket_id ) );
+				$payload = $payload->without( Payload::DELETE, $ticket_id );
 				continue;
 			}
 
 			if ( ! $this->current_user_can_delete( $ticket ) ) {
-				$payload = $payload->with_rejected(
+				$rejections->add(
 					Payload::DELETE,
 					$ticket_id,
 					sprintf(
@@ -100,6 +105,7 @@ class Checks {
 						$ticket_id
 					)
 				);
+				$payload = $payload->without( Payload::DELETE, $ticket_id );
 			}
 		}
 
