@@ -11,11 +11,32 @@ class Controller_Test extends Controller_Test_Case {
 	protected string $controller_class = Controller::class;
 
 	/**
+	 * The value the disable environment variable had before the test, or `false` when it was unset.
+	 *
+	 * The framework restores the WordPress hooks after every test; the environment is ours to restore.
+	 *
+	 * @var string|false
+	 */
+	private $original_disabled_env = false;
+
+	/**
+	 * @before
+	 */
+	public function remember_the_environment(): void {
+		$this->original_disabled_env = getenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED' );
+	}
+
+	/**
 	 * @after
 	 */
-	public function reset_the_switches(): void {
-		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED' );
-		remove_all_filters( 'tec_tickets_deferred_save_active' );
+	public function restore_the_environment(): void {
+		if ( false === $this->original_disabled_env ) {
+			putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED' );
+
+			return;
+		}
+
+		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=' . $this->original_disabled_env );
 	}
 
 	/**
