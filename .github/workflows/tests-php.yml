@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: stellarwp/slic
-          ref: release/2.5.0
+          ref: main
           path: slic
           fetch-depth: 1
       # ------------------------------------------------------------------------------
