@@ -72,6 +72,21 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_name_each_unit_in_the_plural_form_of_the_number(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, Rule::UNIT_DAYS ), 'end' => $this->relative( 3, Rule::UNIT_HOURS ) ] );
+
+		$form = $this->render_ticket_form( $event_id, $ticket_id );
+
+		$this->assertSame( [ 'minute', 'hour', 'day', 'week' ], $this->get_option_labels( $form, 'ticket_sales_start_unit' ) );
+		$this->assertSame( [ 'minutes', 'hours', 'days', 'weeks' ], $this->get_option_labels( $form, 'ticket_sales_end_unit' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_leave_the_sales_window_options_out_of_the_submitted_fields(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
@@ -429,6 +444,22 @@ class Editor_Test extends Controller_Test_Case {
 		$this->assertInstanceOf( DOMElement::class, $option, "No option selected in {$id}." );
 
 		return $option->getAttribute( 'value' );
+	}
+
+	/**
+	 * @param DOMXPath $form The ticket form.
+	 * @param string   $id   The select id.
+	 *
+	 * @return string[] The labels of the select's options.
+	 */
+	private function get_option_labels( DOMXPath $form, string $id ): array {
+		$labels = [];
+
+		foreach ( $form->query( "//select[@id='{$id}']/option" ) as $option ) {
+			$labels[] = trim( $option->textContent );
+		}
+
+		return $labels;
 	}
 
 	/**
