@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use TEC\Tickets\Deferred_Save\Payload\Parser;
+use TEC\Tickets\Deferred_Save\Payload\Rejections;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
@@ -36,14 +38,25 @@ class Commit {
 	private Checks $checks;
 
 	/**
+	 * The parser that turns the raw request value into a payload.
+	 *
+	 * @since TBD
+	 *
+	 * @var Parser
+	 */
+	private Parser $parser;
+
+	/**
 	 * Commit constructor.
 	 *
 	 * @since TBD
 	 *
 	 * @param Checks $checks The checks a payload passes before anything is saved.
+	 * @param Parser $parser The parser that turns the raw request value into a payload.
 	 */
-	public function __construct( Checks $checks ) {
+	public function __construct( Checks $checks, Parser $parser ) {
 		$this->checks = $checks;
+		$this->parser = $parser;
 	}
 
 	/**
@@ -57,11 +70,8 @@ class Commit {
 	 * @return Result The created ticket IDs by position and one error per entry that did not go through.
 	 */
 	public function run( $raw, int $post_id ): Result {
-		$payload = Payload::from_array( $raw );
-
-		if ( ! $payload->is_valid() ) {
-			return new Result( [], $payload->get_errors() );
-		}
+		$rejections = new Rejections();
+		$payload    = $this->parser->parse( $raw, $rejections );
 
 		$entries = count( $payload->get_update() ) + count( $payload->get_create() ) + count( $payload->get_delete() ) + count( $payload->get_move() );
 
@@ -79,24 +89,21 @@ class Commit {
 		$max_entries = (int) apply_filters( 'tec_tickets_deferred_save_max_entries', 100, $post_id );
 
 		if ( $entries > $max_entries ) {
-			return new Result(
-				[],
-				[
-					[
-						'part'    => null,
-						'key'     => null,
-						'message' => sprintf(
-							/* translators: %d: the maximum number of ticket changes in one save. */
-							__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
-							$max_entries
-						),
-					],
-				]
+			$rejections->add(
+				null,
+				null,
+				sprintf(
+					/* translators: %d: the maximum number of ticket changes in one save. */
+					__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
+					$max_entries
+				)
 			);
+
+			return new Result( [], $rejections->all() );
 		}
 
-		$checked = $this->checks->run( $payload, $post_id );
-		$result  = new Result( [], $checked->get_errors() );
+		$checked = $this->checks->run( $payload, $post_id, $rejections );
+		$result  = new Result( [], $rejections->all() );
 
 		if ( ! $checked->has_changes() ) {
 			return $result;
@@ -129,8 +136,9 @@ class Commit {
 			$route_post_id = (int) $route_post_id;
 
 			if ( $route_post_id !== $post_id ) {
-				$route_payload = $this->checks->run( $route_payload, $route_post_id );
-				$result        = new Result( $result->get_created(), array_merge( $result->get_errors(), $route_payload->get_errors() ) );
+				$route_rejections = new Rejections();
+				$route_payload    = $this->checks->run( $route_payload, $route_post_id, $route_rejections );
+				$result           = new Result( $result->get_created(), array_merge( $result->get_errors(), $route_rejections->all() ) );
 			}
 
 			$result = $result->merge( $this->replay( $route_payload, $route_post_id ) );
