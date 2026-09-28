@@ -173,6 +173,63 @@ class Parser_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_reject_a_part_that_is_null_like_any_other_non_array(): void {
+		$payload = $this->parse( [ 'update' => null, 'delete' => [ 3 ] ] );
+
+		$this->assertSame( [], $payload->get_update() );
+		$this->assertSame( [ 3 ], $payload->get_delete() );
+		$this->assertCount( 1, $this->rejections->all() );
+		$this->assertSame( 'update', $this->rejections->all()[0]['part'] );
+		$this->assertNull( $this->rejections->all()[0]['key'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_first_of_two_keys_that_normalise_to_the_same_integer_and_reject_the_second(): void {
+		$first  = [ 'ticket_name' => 'first' ];
+		$second = [ 'ticket_name' => 'second' ];
+		$payload = $this->parse(
+			[
+				'update' => [ '07' => $first, 7 => $second ],
+				'create' => [ '01' => $first, 1 => $second ],
+				'move'   => [ '09' => 5, 9 => 6 ],
+			]
+		);
+
+		$this->assertSame( [ 7 => $first + [ 'ticket_id' => 7 ] ], $payload->get_update() );
+		$this->assertSame( [ 1 => $first ], $payload->get_create() );
+		$this->assertSame( [ 9 => 5 ], $payload->get_move() );
+		$this->assertSame( [ 7 ], $this->rejected_keys( 'update' ) );
+		$this->assertSame( [ 1 ], $this->rejected_keys( 'create' ) );
+		$this->assertSame( [ 9 ], $this->rejected_keys( 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_digit_strings_beyond_the_integer_range(): void {
+		$huge    = '99999999999999999999';
+		$data    = [ 'ticket_name' => 'x' ];
+		$payload = $this->parse(
+			[
+				'update' => [ $huge => $data ],
+				'create' => [ $huge => $data ],
+				'delete' => [ $huge ],
+				'move'   => [ $huge => 1, 2 => $huge ],
+			]
+		);
+
+		$this->assertFalse( $payload->has_changes() );
+		$this->assertSame( [ $huge ], $this->rejected_keys( 'update' ) );
+		$this->assertSame( [ $huge ], $this->rejected_keys( 'create' ) );
+		$this->assertSame( [ $huge ], $this->rejected_keys( 'delete' ) );
+		$this->assertSame( [ $huge, 2 ], $this->rejected_keys( 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_reject_non_integer_ticket_ids_per_entry(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = $this->parse(
