@@ -156,8 +156,9 @@ class Parser_Test extends WPTestCase {
 
 		$this->assertFalse( $payload->has_changes() );
 		$this->assertSame( [], $payload->get_update() );
-		$this->assertCount( 1, $this->rejections->all() );
-		$this->assertSame( 'updates', $this->payload_level_rejections()[0]['key'] );
+		$this->assertCount( 1, $this->payload_level_rejections() );
+		$this->assertNull( $this->payload_level_rejections()[0]['key'], 'A payload-level rejection points at no entry.' );
+		$this->assertStringContainsString( '"updates"', $this->payload_level_rejections()[0]['message'] );
 	}
 
 	/**
