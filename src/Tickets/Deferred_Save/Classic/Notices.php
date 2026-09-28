@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Deferred_Save\Classic;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Deferred_Save\Payload;
+use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Result;
 
 /**
@@ -150,7 +150,7 @@ class Notices extends Controller_Contract {
 			return $message;
 		}
 
-		if ( Payload::CREATE === $part ) {
+		if ( Parser::CREATE === $part ) {
 			/* translators: %1$d: the position of the new ticket in the list, %2$s: the error. */
 			return sprintf( __( 'New ticket %1$d: %2$s', 'event-tickets' ), (int) $key + 1, $message );
 		}
