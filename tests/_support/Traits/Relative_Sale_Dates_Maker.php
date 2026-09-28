@@ -6,6 +6,7 @@ use ActionScheduler_Action;
 use ActionScheduler_Store;
 use DateTimeImmutable;
 use TEC\Tickets\Commerce\Module;
+use RuntimeException;
 use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
 use TEC\Tickets\Ticket_Actions;
 use WP_REST_Request;
@@ -112,6 +113,42 @@ trait Relative_Sale_Dates_Maker {
 		);
 
 		return rest_do_request( $request );
+	}
+
+	/**
+	 * Sends a ticket save the way the classic editor does and returns its JSON response.
+	 *
+	 * @param int    $post_id The ticketed post ID.
+	 * @param string $data    The ticket form, URL-encoded as `tickets.js` serializes it.
+	 *
+	 * @return array{success: bool, data: mixed} The decoded JSON response.
+	 */
+	protected function send_classic_ticket_form( int $post_id, string $data ): array {
+		// WordPress slashes the request, the URL-encoded form string included.
+		$_POST = wp_slash(
+			[
+				'post_id' => $post_id,
+				'nonce'   => wp_create_nonce( 'add_ticket_nonce' ),
+				'data'    => $data,
+			]
+		);
+
+		add_filter( 'wp_doing_ajax', '__return_true' );
+		add_filter(
+			'wp_die_ajax_handler',
+			static fn() => static function () {
+				throw new RuntimeException( 'The AJAX response was sent.' );
+			}
+		);
+
+		ob_start();
+		try {
+			tribe( 'tickets.metabox' )->ajax_ticket_add();
+		} catch ( RuntimeException $e ) {
+			// wp_send_json_*() ends the request through the die handler.
+		}
+
+		return json_decode( ob_get_clean(), true );
 	}
 
 	/**
