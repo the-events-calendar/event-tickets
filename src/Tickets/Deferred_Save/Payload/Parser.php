@@ -59,7 +59,7 @@ class Parser {
 			if ( ! in_array( $part, self::PARTS, true ) ) {
 				$rejections->add(
 					null,
-					(string) $part,
+					null,
 					sprintf(
 						/* translators: %s: the unknown key. */
 						__( 'Unknown ticket changes part "%s".', 'event-tickets' ),
