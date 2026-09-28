@@ -128,6 +128,11 @@ $labels = [
 					<option value="<?php echo esc_attr( $anchor ); ?>" <?php selected( $fields['anchor'], $anchor ); ?>><?php echo esc_html( $anchor_label ); ?></option>
 				<?php endforeach; ?>
 			</select>
+			<span
+				class="tec-tickets-relative-sale-dates__helper"
+				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
+				aria-live="polite"
+			></span>
 		</div>
 		<div
 			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
