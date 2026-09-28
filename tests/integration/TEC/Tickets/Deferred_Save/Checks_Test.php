@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Deferred_Save;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Deferred_Save\Payload\Parser;
+use TEC\Tickets\Deferred_Save\Payload\Rejections;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -20,6 +22,7 @@ class Checks_Test extends WPTestCase {
 	private int $second_ticket_id;
 	private int $foreign_ticket_id;
 	private int $second_foreign_ticket_id;
+	private Rejections $rejections;
 
 	/**
 	 * Fixtures are created from the test body, inside the per-test transaction. PHPUnit runs
@@ -47,17 +50,24 @@ class Checks_Test extends WPTestCase {
 		return $user_id;
 	}
 
-	protected function error_keys( Payload $payload, string $part ): array {
+	protected function error_keys( string $part ): array {
 		return array_values(
 			array_map(
 				static fn( array $error ) => $error['key'],
-				array_filter( $payload->get_errors(), static fn( array $error ) => $error['part'] === $part )
+				array_filter( $this->rejections->all(), static fn( array $error ) => $error['part'] === $part )
 			)
 		);
 	}
 
-	protected function run_checks( array $raw ): Payload {
-		return tribe( Checks::class )->run( Payload::from_array( $raw ), $this->post_id );
+	protected function payload_level_rejections(): array {
+		return array_values( array_filter( $this->rejections->all(), static fn( array $error ) => null === $error['part'] ) );
+	}
+
+	protected function run_checks( $raw ): Payload {
+		$this->rejections = new Rejections();
+		$payload          = ( new Parser() )->parse( $raw, $this->rejections );
+
+		return tribe( Checks::class )->run( $payload, $this->post_id, $this->rejections );
 	}
 
 	/**
@@ -77,11 +87,11 @@ class Checks_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertFalse( $checked->is_valid() );
+		$this->assertCount( 1, $this->payload_level_rejections() );
 		$this->assertFalse( $checked->has_changes() );
-		$this->assertCount( 1, $checked->get_errors() );
-		$this->assertNull( $checked->get_errors()[0]['part'] );
-		$this->assertNull( $checked->get_errors()[0]['key'] );
+		$this->assertCount( 1, $this->rejections->all() );
+		$this->assertNull( $this->rejections->all()[0]['part'] );
+		$this->assertNull( $this->rejections->all()[0]['key'] );
 	}
 
 	/**
@@ -93,7 +103,7 @@ class Checks_Test extends WPTestCase {
 
 		$checked = $this->run_checks( [ 'delete' => [ $this->ticket_id ] ] );
 
-		$this->assertFalse( $checked->is_valid() );
+		$this->assertCount( 1, $this->payload_level_rejections() );
 		$this->assertSame( [], $checked->get_delete() );
 	}
 
@@ -114,8 +124,8 @@ class Checks_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertTrue( $checked->is_valid() );
-		$this->assertSame( [], $checked->get_errors() );
+		$this->assertSame( [], $this->payload_level_rejections() );
+		$this->assertSame( [], $this->rejections->all() );
 		$this->assertSame( [ $this->ticket_id => $data + [ 'ticket_id' => $this->ticket_id ] ], $checked->get_update() );
 		$this->assertSame( [ $data, $data ], $checked->get_create() );
 		$this->assertSame( [ $this->second_ticket_id ], $checked->get_delete() );
@@ -132,7 +142,7 @@ class Checks_Test extends WPTestCase {
 
 		$checked = $this->run_checks( [ 'delete' => [ $this->ticket_id ] ] );
 
-		$this->assertTrue( $checked->is_valid() );
+		$this->assertSame( [], $this->payload_level_rejections() );
 		$this->assertSame( [ $this->ticket_id ], $checked->get_delete() );
 	}
 
@@ -152,14 +162,14 @@ class Checks_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertTrue( $checked->is_valid() );
+		$this->assertSame( [], $this->payload_level_rejections() );
 		$this->assertSame( [ $this->ticket_id => $data + [ 'ticket_id' => $this->ticket_id ] ], $checked->get_update() );
 		$this->assertSame( [ $this->second_ticket_id ], $checked->get_delete() );
 		$this->assertSame( [ $this->ticket_id => $this->other_post_id ], $checked->get_move() );
-		$this->assertSame( [ $this->foreign_ticket_id ], $this->error_keys( $checked, 'update' ) );
-		$this->assertSame( [ $this->second_foreign_ticket_id ], $this->error_keys( $checked, 'delete' ) );
-		$this->assertSame( [ $this->foreign_ticket_id ], $this->error_keys( $checked, 'move' ) );
-		$this->assertNotEmpty( $checked->get_errors()[0]['message'] );
+		$this->assertSame( [ $this->foreign_ticket_id ], $this->error_keys( 'update' ) );
+		$this->assertSame( [ $this->second_foreign_ticket_id ], $this->error_keys( 'delete' ) );
+		$this->assertSame( [ $this->foreign_ticket_id ], $this->error_keys( 'move' ) );
+		$this->assertNotEmpty( $this->rejections->all()[0]['message'] );
 	}
 
 	/**
@@ -186,7 +196,7 @@ class Checks_Test extends WPTestCase {
 		$this->assertSame( [ $this->ticket_id => $data + [ 'ticket_id' => $this->ticket_id ] ], $checked->get_update() );
 		$this->assertEqualSets(
 			[ $this->post_id, $this->other_post_id, $attendee_id, 999999999 ],
-			$this->error_keys( $checked, 'update' )
+			$this->error_keys( 'update' )
 		);
 	}
 
@@ -211,9 +221,9 @@ class Checks_Test extends WPTestCase {
 		$this->assertSame( [ $rsvp_ticket_id => $data + [ 'ticket_id' => $rsvp_ticket_id ] ], $checked->get_update() );
 		$this->assertSame( [], $checked->get_delete() );
 		$this->assertSame( [], $checked->get_move() );
-		$this->assertSame( [ $rsvp_attendee_id ], $this->error_keys( $checked, 'update' ) );
-		$this->assertSame( [ $this->post_id ], $this->error_keys( $checked, 'delete' ) );
-		$this->assertSame( [ $rsvp_attendee_id ], $this->error_keys( $checked, 'move' ) );
+		$this->assertSame( [ $rsvp_attendee_id ], $this->error_keys( 'update' ) );
+		$this->assertSame( [ $this->post_id ], $this->error_keys( 'delete' ) );
+		$this->assertSame( [ $rsvp_attendee_id ], $this->error_keys( 'move' ) );
 	}
 
 	/**
@@ -235,12 +245,12 @@ class Checks_Test extends WPTestCase {
 		);
 
 		$this->assertSame( [ $this->second_ticket_id => $own_other_post_id ], $checked->get_move() );
-		$this->assertSame( [ $this->ticket_id ], $this->error_keys( $checked, 'move' ) );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( 'move' ) );
 
 		$checked = $this->run_checks( [ 'move' => [ $this->ticket_id => 999999999 ] ] );
 
 		$this->assertSame( [], $checked->get_move() );
-		$this->assertSame( [ $this->ticket_id ], $this->error_keys( $checked, 'move' ) );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( 'move' ) );
 	}
 
 	/**
@@ -266,7 +276,7 @@ class Checks_Test extends WPTestCase {
 		$checked = $this->run_checks( [ 'delete' => [ $this->ticket_id, $this->second_ticket_id ] ] );
 
 		$this->assertSame( [ $this->second_ticket_id ], $checked->get_delete() );
-		$this->assertSame( [ $this->ticket_id ], $this->error_keys( $checked, 'delete' ) );
+		$this->assertSame( [ $this->ticket_id ], $this->error_keys( 'delete' ) );
 		$this->assertSame(
 			[
 				[ $this->ticket_id, \TEC\Tickets\Commerce\Module::class ],
@@ -291,21 +301,21 @@ class Checks_Test extends WPTestCase {
 			]
 		);
 
-		$this->assertSame( [], $checked->get_errors() );
+		$this->assertSame( [], $this->rejections->all() );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_return_an_already_rejected_payload_unchanged(): void {
+	public function it_should_leave_a_payload_the_parser_rejected_alone(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
-		$payload = Payload::from_array( 'not an array' );
 
-		$checked = tribe( Checks::class )->run( $payload, $this->post_id );
+		$checked = $this->run_checks( 'not an array' );
 
-		$this->assertFalse( $checked->is_valid() );
-		$this->assertSame( $payload->get_errors(), $checked->get_errors() );
+		$this->assertFalse( $checked->has_changes() );
+		$this->assertCount( 1, $this->rejections->all(), 'The checks add nothing to what the parser recorded.' );
+		$this->assertNull( $this->rejections->all()[0]['part'] );
 	}
 
 	/**
@@ -317,8 +327,8 @@ class Checks_Test extends WPTestCase {
 
 		$checked = $this->run_checks( [] );
 
-		$this->assertTrue( $checked->is_valid() );
+		$this->assertSame( [], $this->payload_level_rejections() );
 		$this->assertFalse( $checked->has_changes() );
-		$this->assertSame( [], $checked->get_errors() );
+		$this->assertSame( [], $this->rejections->all() );
 	}
 }
