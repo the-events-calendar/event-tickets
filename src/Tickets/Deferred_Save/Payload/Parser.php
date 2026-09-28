@@ -90,16 +90,16 @@ class Parser {
 			throw new Malformed_Exception( __( 'The ticket changes must be an array.', 'event-tickets' ) );
 		}
 
-		foreach ( array_keys( $raw ) as $part ) {
-			if ( ! in_array( $part, self::PARTS, true ) ) {
-				throw new Malformed_Exception(
-					sprintf(
-						/* translators: %s: the unknown key. */
-						__( 'Unknown ticket changes part "%s".', 'event-tickets' ),
-						$part
-					)
-				);
-			}
+		$unknown = array_diff( array_keys( $raw ), self::PARTS );
+
+		if ( [] !== $unknown ) {
+			throw new Malformed_Exception(
+				sprintf(
+					/* translators: %s: the unknown key. */
+					__( 'Unknown ticket changes part "%s".', 'event-tickets' ),
+					reset( $unknown )
+				)
+			);
 		}
 
 		$rejections = new Rejections();
