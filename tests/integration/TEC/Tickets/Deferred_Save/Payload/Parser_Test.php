@@ -139,26 +139,35 @@ class Parser_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider non_array_roots
 	 */
-	public function it_should_reject_a_non_array_payload_as_a_whole( $raw ): void {
-		$payload = $this->parse( $raw );
+	public function it_should_throw_on_a_payload_that_is_not_an_array( $raw ): void {
+		$this->expectException( Malformed_Exception::class );
 
-		$this->assertFalse( $payload->has_changes() );
-		$this->assertCount( 1, $this->rejections->all() );
-		$this->assertNull( $this->rejections->all()[0]['part'] );
-		$this->assertNull( $this->rejections->all()[0]['key'] );
+		$this->parse( $raw );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_reject_the_whole_payload_on_an_unknown_part(): void {
-		$payload = $this->parse( [ 'update' => [ 1 => [ 'ticket_name' => 'x' ] ], 'updates' => [] ] );
+	public function it_should_throw_on_an_unknown_part_and_name_it(): void {
+		$this->expectException( Malformed_Exception::class );
+		$this->expectExceptionMessage( '"updates"' );
 
-		$this->assertFalse( $payload->has_changes() );
-		$this->assertSame( [], $payload->get_update() );
-		$this->assertCount( 1, $this->payload_level_rejections() );
-		$this->assertNull( $this->payload_level_rejections()[0]['key'], 'A payload-level rejection points at no entry.' );
-		$this->assertStringContainsString( '"updates"', $this->payload_level_rejections()[0]['message'] );
+		$this->parse( [ 'update' => [ 1 => [ 'ticket_name' => 'x' ] ], 'updates' => [] ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_record_nothing_before_throwing(): void {
+		try {
+			$this->parse( [ 'update' => 'nope', 'updates' => [] ] );
+		} catch ( Malformed_Exception $e ) {
+			$this->assertTrue( $this->rejections->is_empty(), 'Malformed input is refused as a whole, not entry by entry.' );
+
+			return;
+		}
+
+		$this->fail( 'A malformed payload must throw.' );
 	}
 
 	/**
