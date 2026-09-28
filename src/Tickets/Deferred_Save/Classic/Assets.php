@@ -10,14 +10,13 @@
 namespace TEC\Tickets\Deferred_Save\Classic;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Deferred_Save\Controller;
 use Tribe__Tickets__Main as Tickets_Main;
 
 /**
  * Class Assets.
  *
  * Registers the staging module and its styles in the admin group the tickets metabox uses, and
- * enqueues them only on the edit screen of a post that uses deferred save.
+ * enqueues them only on the edit screen of a ticketable post.
  *
  * @since TBD
  *
@@ -110,7 +109,7 @@ class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Whether the current admin screen edits a post that uses deferred save.
+	 * Whether the current admin screen edits a ticketable post.
 	 *
 	 * @since TBD
 	 *
@@ -127,6 +126,6 @@ class Assets extends Controller_Contract {
 			}
 		}
 
-		return $post_id > 0 && $this->container->get( Controller::class )->uses_deferred_save( $post_id );
+		return $post_id > 0 && in_array( get_post_type( $post_id ), Tickets_Main::instance()->post_types(), true );
 	}
 }

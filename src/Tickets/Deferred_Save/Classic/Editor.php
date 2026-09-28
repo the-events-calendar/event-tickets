@@ -12,15 +12,13 @@ namespace TEC\Tickets\Deferred_Save\Classic;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Deferred_Save\Classic_Save;
-use TEC\Tickets\Deferred_Save\Controller;
 
 /**
  * Class Editor.
  *
- * At the end of the tickets metabox, and only for a post that uses deferred save, prints the nonce
- * the classic entry point requires, the container the staging module writes its hidden fields into
- * (a sibling of the panels, so a panel refresh does not wipe it), and the row templates. On a post
- * that does not use deferred save nothing is printed, so the metabox is byte-identical to today.
+ * At the end of the tickets metabox prints the nonce the classic entry point requires, the container
+ * the staging module writes its hidden fields into (a sibling of the panels, so a panel refresh does
+ * not wipe it), and the row templates.
  *
  * @since TBD
  *
@@ -72,7 +70,7 @@ class Editor extends Controller_Contract {
 	}
 
 	/**
-	 * Prints the nonce, the container and the templates when the post uses deferred save.
+	 * Prints the nonce, the container and the templates.
 	 *
 	 * @since TBD
 	 *
@@ -83,7 +81,7 @@ class Editor extends Controller_Contract {
 	public function print_fields( $post_id ): void {
 		$post_id = (int) $post_id;
 
-		if ( ! $post_id || ! $this->container->get( Controller::class )->uses_deferred_save( $post_id ) ) {
+		if ( ! $post_id ) {
 			return;
 		}
 
