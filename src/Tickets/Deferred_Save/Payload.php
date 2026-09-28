@@ -20,49 +20,13 @@ namespace TEC\Tickets\Deferred_Save;
  *     move   => [ ticket ID => destination post ID ],
  *
  * Instances are immutable and hold what `Payload\Parser` accepted; what was rejected, and why,
- * lives in `Payload\Rejections`.
+ * lives in `Payload\Rejections`. The part names are `Parser`'s constants.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Deferred_Save
  */
 class Payload {
-	/**
-	 * The part holding ticket ID => data pairs for existing tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const UPDATE = 'update';
-
-	/**
-	 * The part holding position => data pairs for new tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const CREATE = 'create';
-
-	/**
-	 * The part holding the list of ticket IDs to delete.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const DELETE = 'delete';
-
-	/**
-	 * The part holding ticket ID => destination post ID pairs.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const MOVE = 'move';
-
 	/**
 	 * Ticket ID => data for existing tickets.
 	 *
@@ -127,32 +91,6 @@ class Payload {
 	 */
 	public function has_changes(): bool {
 		return [] !== $this->update || [] !== $this->create || [] !== $this->delete || [] !== $this->move;
-	}
-
-	/**
-	 * Returns a copy of this payload without one entry.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $part One of the part constants.
-	 * @param mixed  $key  The ticket ID (`update`, `delete`, `move`) or the position (`create`).
-	 *
-	 * @return self The new payload. This instance is not changed.
-	 */
-	public function without( string $part, $key ): self {
-		$payload = clone $this;
-
-		if ( self::DELETE === $part ) {
-			$payload->delete = array_values( array_diff( $payload->delete, [ $key ] ) );
-
-			return $payload;
-		}
-
-		if ( in_array( $part, [ self::UPDATE, self::CREATE, self::MOVE ], true ) ) {
-			unset( $payload->{$part}[ $key ] );
-		}
-
-		return $payload;
 	}
 
 	/**

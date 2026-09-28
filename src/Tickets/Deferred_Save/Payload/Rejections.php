@@ -35,7 +35,7 @@ class Rejections {
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null           $part    One of the `Payload` part constants, or `null` for the payload as a whole.
+	 * @param string|null           $part    One of the `Parser` part constants, or `null` for the payload as a whole.
 	 * @param int|string|float|null $key     The entry key, or `null` for a part or payload level rejection.
 	 * @param string                $message What was wrong, ready to show to the user.
 	 *
