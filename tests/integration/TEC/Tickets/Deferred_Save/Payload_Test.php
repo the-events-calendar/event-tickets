@@ -17,7 +17,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_parses_a_full_payload(): void {
+	public function it_should_parse_a_full_payload(): void {
 		$update_data = [ 'ticket_name' => 'Updated', 'ticket_price' => '10' ];
 		$create_data = [ 'ticket_name' => 'New', 'ticket_price' => '5' ];
 
@@ -42,7 +42,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_passes_data_on_untouched(): void {
+	public function it_should_pass_data_on_untouched(): void {
 		$data = [
 			'ticket_name'                  => 'With extras',
 			'ticket_sale_price'            => '3',
@@ -61,7 +61,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_update_key_wins_over_a_ticket_id_inside_the_data(): void {
+	public function it_should_let_the_update_key_win_over_a_ticket_id_inside_the_data(): void {
 		$payload = Payload::from_array(
 			[
 				'update' => [
@@ -83,7 +83,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_ticket_id_inside_create_data_is_dropped(): void {
+	public function it_should_drop_a_ticket_id_inside_create_data(): void {
 		$payload = Payload::from_array( [ 'create' => [ [ 'ticket_name' => 'new', 'ticket_id' => 123 ] ] ] );
 
 		$this->assertSame( [ [ 'ticket_name' => 'new' ] ], $payload->get_create() );
@@ -104,7 +104,7 @@ class Payload_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider empty_payloads
 	 */
-	public function an_empty_or_missing_payload_is_valid_and_has_no_changes( $raw ): void {
+	public function it_should_treat_an_empty_or_missing_payload_as_valid_with_no_changes( $raw ): void {
 		$payload = Payload::from_array( $raw );
 
 		$this->assertTrue( $payload->is_valid() );
@@ -132,7 +132,7 @@ class Payload_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider non_array_roots
 	 */
-	public function a_non_array_payload_is_rejected( $raw ): void {
+	public function it_should_reject_a_non_array_payload( $raw ): void {
 		$payload = Payload::from_array( $raw );
 
 		$this->assertFalse( $payload->is_valid() );
@@ -145,7 +145,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_unknown_part_rejects_the_whole_payload(): void {
+	public function it_should_reject_the_whole_payload_on_an_unknown_part(): void {
 		$payload = Payload::from_array( [ 'update' => [ 1 => [ 'ticket_name' => 'x' ] ], 'updates' => [] ] );
 
 		$this->assertFalse( $payload->is_valid() );
@@ -158,7 +158,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_part_that_is_not_an_array_is_rejected_and_the_others_survive(): void {
+	public function it_should_reject_a_part_that_is_not_an_array_and_keep_the_others(): void {
 		$payload = Payload::from_array( [ 'update' => 'nope', 'delete' => [ 3 ] ] );
 
 		$this->assertTrue( $payload->is_valid() );
@@ -172,7 +172,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function non_integer_ticket_ids_are_rejected_per_entry(): void {
+	public function it_should_reject_non_integer_ticket_ids_per_entry(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array(
 			[
@@ -194,7 +194,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function data_that_is_not_an_array_is_rejected_per_entry(): void {
+	public function it_should_reject_data_that_is_not_an_array_per_entry(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array(
 			[
@@ -213,7 +213,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function digit_strings_are_normalised_to_integers(): void {
+	public function it_should_normalise_digit_strings_to_integers(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array(
 			[
@@ -231,7 +231,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function create_positions_are_preserved_and_must_be_non_negative_integers(): void {
+	public function it_should_preserve_create_positions_and_require_non_negative_integers(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array( [ 'create' => [ 2 => $data, '5' => $data, 'a' => $data, -1 => $data ] ] );
 
@@ -242,7 +242,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_same_ticket_in_update_and_delete_rejects_both_entries(): void {
+	public function it_should_reject_both_entries_when_the_same_ticket_is_in_update_and_delete(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array(
 			[
@@ -261,7 +261,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function with_rejected_returns_a_new_payload_without_the_entry(): void {
+	public function it_should_return_a_new_payload_without_the_entry_from_with_rejected(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array(
 			[
@@ -298,7 +298,7 @@ class Payload_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function with_rejected_at_payload_level_empties_every_part(): void {
+	public function it_should_empty_every_part_when_rejected_at_payload_level(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = Payload::from_array( [ 'update' => [ 1 => $data ], 'delete' => [ 3 ] ] )
 			->with_rejected( null, null, 'You cannot edit this post.' );
