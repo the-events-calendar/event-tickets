@@ -24,7 +24,7 @@ use TEC\Tickets\Deferred_Save\Result;
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-class Notices extends Controller_Contract {
+final class Notices extends Controller_Contract {
 	/**
 	 * The transient key prefix; the user ID is appended.
 	 *

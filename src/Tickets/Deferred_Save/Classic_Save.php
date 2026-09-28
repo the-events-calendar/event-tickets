@@ -31,7 +31,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Classic_Save extends Controller_Contract {
+final class Classic_Save extends Controller_Contract {
 	/**
 	 * The nonce action.
 	 *

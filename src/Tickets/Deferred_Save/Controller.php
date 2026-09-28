@@ -18,7 +18,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Controller extends Controller_Contract {
+final class Controller extends Controller_Contract {
 	/**
 	 * The name of the constant, and of the environment variable, that switches the feature off.
 	 *
