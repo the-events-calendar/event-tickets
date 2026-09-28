@@ -97,7 +97,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_fires_the_same_actions_in_the_same_order_as_the_classic_ajax_save_and_delete(): void {
+	public function it_should_fire_the_same_actions_in_the_same_order_as_the_classic_ajax_save_and_delete(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		$metabox = tribe( 'tickets.metabox' );
@@ -174,7 +174,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_returns_created_ids_by_position_in_the_order_sent(): void {
+	public function it_should_return_created_ids_by_position_in_the_order_sent(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 
@@ -199,7 +199,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function one_failing_entry_does_not_stop_the_others(): void {
+	public function it_should_not_let_one_failing_entry_stop_the_others(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 
@@ -223,7 +223,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_create_without_a_provider_is_rejected(): void {
+	public function it_should_reject_a_create_without_a_provider(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		$data    = $this->ticket_data( 'No provider' );
@@ -239,7 +239,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_update_is_saved_through_the_tickets_own_provider_whatever_the_data_says(): void {
+	public function it_should_save_an_update_through_the_tickets_own_provider_whatever_the_data_says(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
@@ -257,7 +257,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_update_keeps_the_ticket_type_and_menu_order_it_does_not_mention(): void {
+	public function it_should_keep_the_ticket_type_and_menu_order_an_update_does_not_mention(): void {
 		$this->log_in_as_admin();
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
@@ -275,7 +275,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_delete_removes_the_ticket_and_tells_listeners(): void {
+	public function it_should_remove_the_ticket_on_delete_and_tell_listeners(): void {
 		$this->log_in_as_admin();
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
@@ -297,7 +297,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function errors_from_the_checks_and_from_the_replay_are_both_reported(): void {
+	public function it_should_report_errors_from_the_checks_and_from_the_replay(): void {
 		$this->log_in_as_admin();
 		$post_id       = static::factory()->post->create();
 		$other_post_id = static::factory()->post->create();
@@ -320,7 +320,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_routes_filter_can_send_entries_to_another_post(): void {
+	public function it_should_let_the_routes_filter_send_entries_to_another_post(): void {
 		$this->log_in_as_admin();
 		$post_id       = static::factory()->post->create();
 		$other_post_id = static::factory()->post->create();
@@ -350,7 +350,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_ticket_type_is_sanitized_before_it_reaches_the_meta(): void {
+	public function it_should_sanitize_the_ticket_type_before_it_reaches_the_meta(): void {
 		$this->log_in_as_admin();
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
@@ -375,7 +375,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_route_to_a_post_the_user_cannot_edit_is_rejected(): void {
+	public function it_should_reject_a_route_to_a_post_the_user_cannot_edit(): void {
 		$author_id = static::factory()->user->create( [ 'role' => 'author' ] );
 		wp_set_current_user( $author_id );
 		$post_id       = static::factory()->post->create( [ 'post_author' => $author_id ] );
@@ -400,7 +400,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_payload_with_too_many_entries_is_rejected_as_a_whole(): void {
+	public function it_should_reject_a_payload_with_too_many_entries_as_a_whole(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		add_filter( 'tec_tickets_deferred_save_max_entries', static fn() => 2 );
@@ -419,7 +419,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_move_lands_the_ticket_and_its_attendees_on_the_destination(): void {
+	public function it_should_move_the_ticket_and_its_attendees_to_the_destination(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
@@ -456,7 +456,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_ticket_that_is_updated_and_moved_is_updated_first_then_moved(): void {
+	public function it_should_update_a_ticket_before_moving_it(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
@@ -478,7 +478,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_refused_move_is_reported_and_the_rest_commits(): void {
+	public function it_should_report_a_refused_move_and_commit_the_rest(): void {
 		$this->log_in_as_admin();
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
@@ -499,7 +499,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function parts_run_in_update_move_create_delete_order(): void {
+	public function it_should_run_the_parts_in_update_move_create_delete_order(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
@@ -531,7 +531,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_exception_while_saving_one_entry_becomes_that_entrys_error(): void {
+	public function it_should_turn_an_exception_while_saving_one_entry_into_that_entrys_error(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		add_action(
@@ -559,7 +559,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function data_is_sanitized_as_the_request_helper_sanitizes_it_for_the_ajax_save(): void {
+	public function it_should_sanitize_data_as_the_request_helper_does_for_the_ajax_save(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 		$data    = $this->ticket_data(
@@ -584,7 +584,7 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_empty_payload_commits_nothing_and_a_malformed_one_reports_it(): void {
+	public function it_should_commit_nothing_for_an_empty_payload_and_report_a_malformed_one(): void {
 		$this->log_in_as_admin();
 		$post_id = static::factory()->post->create();
 

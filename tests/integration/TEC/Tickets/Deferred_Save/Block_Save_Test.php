@@ -55,7 +55,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_saves_the_payload_and_returns_created_ids_by_position(): void {
+	public function it_should_save_the_payload_and_return_created_ids_by_position(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 
@@ -80,7 +80,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_rejected_entry_is_reported_while_the_rest_saves(): void {
+	public function it_should_report_a_rejected_entry_while_the_rest_saves(): void {
 		$this->log_in_as_admin();
 		$post_id       = $this->create_deferred_post();
 		$other_post_id = static::factory()->post->create();
@@ -109,7 +109,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_non_ticketable_post_type_is_saved_without_a_field_and_without_tickets(): void {
+	public function it_should_save_a_non_ticketable_post_type_without_a_field_and_without_tickets(): void {
 		$this->log_in_as_admin();
 		$this->assertNotContains( 'attachment', Tickets_Main::instance()->post_types(), 'Attachments must not be ticketable here.' );
 		$attachment_id = static::factory()->attachment->create_object( 'image.jpg', 0, [ 'post_mime_type' => 'image/jpeg' ] );
@@ -127,7 +127,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_save_without_a_payload_gets_no_field(): void {
+	public function it_should_add_no_field_to_a_save_without_a_payload(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 
@@ -140,7 +140,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_autosave_commits_nothing(): void {
+	public function it_should_commit_nothing_on_an_autosave(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 
@@ -157,7 +157,7 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_ticket_is_attached_to_a_post_created_through_rest(): void {
+	public function it_should_attach_a_ticket_to_a_post_created_through_rest(): void {
 		$this->log_in_as_admin();
 
 		$response = $this->save_through_rest(
