@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
+use TEC\Tickets\Deferred_Save\Payload\Malformed_Exception;
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Payload\Rejections;
 use Tribe__Tickets__Main as Tickets_Main;
@@ -73,7 +74,15 @@ class Commit {
 	 */
 	public function run( $raw, int $post_id ): Result {
 		$rejections = new Rejections();
-		$payload    = $this->parser->parse( $raw, $rejections );
+
+		try {
+			$payload = $this->parser->parse( $raw, $rejections );
+		} catch ( Malformed_Exception $e ) {
+			// Input that cannot be a payload is answered like any other whole-payload refusal.
+			$rejections->add( null, null, $e->getMessage() );
+
+			return new Result( [], $rejections->all() );
+		}
 
 		$entries = count( $payload->get_update() ) + count( $payload->get_create() ) + count( $payload->get_delete() ) + count( $payload->get_move() );
 
