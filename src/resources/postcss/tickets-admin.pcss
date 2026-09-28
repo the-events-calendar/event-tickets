@@ -901,3 +901,15 @@ p.description {
 		color: #999;
 	}
 }
+
+.tec-tickets-relative-sale-dates select[aria-invalid="true"] {
+	border-color: var(--tec-error-border-color, #dc3232);
+}
+
+.tec-tickets-relative-sale-dates__error {
+	color: var(--tec-color-wp-error, #d63638);
+
+	&:empty {
+		display: none;
+	}
+}

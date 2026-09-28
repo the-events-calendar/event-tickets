@@ -82,6 +82,24 @@ function readTime( value ) {
 }
 
 /**
+ * Reads a date and time typed in the datepicker and timepicker formats.
+ *
+ * @since TBD
+ *
+ * @param {string} date   The date, in the datepicker format.
+ * @param {string} time   The time, as the timepicker shows it.
+ * @param {string} format The datepicker format, in PHP date format.
+ *
+ * @return {string|null} The date and time, `YYYY-MM-DD HH:mm:ss`, or `null` when either cannot be read.
+ */
+export function readDateTime( date, time, format ) {
+	const day = readDate( date, format );
+	const clock = readTime( time );
+
+	return day && clock ? `${ day } ${ clock }` : null;
+}
+
+/**
  * Reads the event start, end and timezone from the classic event fields.
  *
  * An all-day event takes the times the server saves for one, and a manual UTC offset takes the zone the server

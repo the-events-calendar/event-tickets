@@ -198,6 +198,7 @@ $labels = [
 	</div>
 </div>
 <?php endforeach; ?>
+<p class="tec-tickets-relative-sale-dates__error ticket_form_right" id="ticket_sales_window_error" role="alert"></p>
 <input
 	type="hidden"
 	name="<?php echo esc_attr( Ticket_Save::DATA_KEY ); ?>"
