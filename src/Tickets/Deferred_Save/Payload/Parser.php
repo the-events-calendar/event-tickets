@@ -104,10 +104,10 @@ class Parser {
 
 		$rejections = new Rejections();
 
-		[ $update, $rejections ] = $this->parse_update( $raw[ self::UPDATE ] ?? [], $rejections );
-		[ $create, $rejections ] = $this->parse_create( $raw[ self::CREATE ] ?? [], $rejections );
-		[ $delete, $rejections ] = $this->parse_delete( $raw[ self::DELETE ] ?? [], $rejections );
-		[ $move, $rejections ]   = $this->parse_move( $raw[ self::MOVE ] ?? [], $rejections );
+		[ $update, $rejections ] = $this->parse_update( $this->part( $raw, self::UPDATE ), $rejections );
+		[ $create, $rejections ] = $this->parse_create( $this->part( $raw, self::CREATE ), $rejections );
+		[ $delete, $rejections ] = $this->parse_delete( $this->part( $raw, self::DELETE ), $rejections );
+		[ $move, $rejections ]   = $this->parse_move( $this->part( $raw, self::MOVE ), $rejections );
 
 		// The same ticket cannot be both updated and deleted; neither can be meant, so both go.
 		foreach ( array_intersect( array_keys( $update ), $delete ) as $ticket_id ) {
@@ -117,6 +117,23 @@ class Parser {
 		}
 
 		return new Outcome( new Payload( $update, $create, $delete, $move ), $rejections );
+	}
+
+	/**
+	 * Returns a part as sent, or an empty array when the key is absent.
+	 *
+	 * Only an absent key means "no entries"; a key present with `null` is a part that is not an
+	 * array and is rejected as such by the part parser.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $raw  The raw payload.
+	 * @param string              $part The part name.
+	 *
+	 * @return mixed The raw part.
+	 */
+	private function part( array $raw, string $part ) {
+		return array_key_exists( $part, $raw ) ? $raw[ $part ] : [];
 	}
 
 	/**
@@ -144,6 +161,11 @@ class Parser {
 
 			if ( null === $ticket_id ) {
 				$rejections = $rejections->with( self::UPDATE, $key, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
+				continue;
+			}
+
+			if ( array_key_exists( $ticket_id, $update ) ) {
+				$rejections = $rejections->with( self::UPDATE, $key, $this->duplicate_ticket_message( $ticket_id ) );
 				continue;
 			}
 
@@ -184,6 +206,19 @@ class Parser {
 
 			if ( null === $position ) {
 				$rejections = $rejections->with( self::CREATE, $key, __( 'The position of a new ticket must be a non-negative integer.', 'event-tickets' ) );
+				continue;
+			}
+
+			if ( array_key_exists( $position, $create ) ) {
+				$rejections = $rejections->with(
+					self::CREATE,
+					$key,
+					sprintf(
+						/* translators: %d: the position of the new ticket in the list sent. */
+						__( 'Position %d appears more than once.', 'event-tickets' ),
+						$position
+					)
+				);
 				continue;
 			}
 
@@ -257,6 +292,11 @@ class Parser {
 				continue;
 			}
 
+			if ( array_key_exists( $ticket_id, $move ) ) {
+				$rejections = $rejections->with( self::MOVE, $key, $this->duplicate_ticket_message( $ticket_id ) );
+				continue;
+			}
+
 			$destination_id = $this->to_positive_int( $value );
 
 			if ( null === $destination_id ) {
@@ -268,6 +308,23 @@ class Parser {
 		}
 
 		return [ $move, $rejections ];
+	}
+
+	/**
+	 * The message for a ticket that appears more than once in a part.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return string The message.
+	 */
+	private function duplicate_ticket_message( int $ticket_id ): string {
+		return sprintf(
+			/* translators: %d: the ticket ID. */
+			__( 'Ticket %d appears more than once.', 'event-tickets' ),
+			$ticket_id
+		);
 	}
 
 	/**
@@ -314,17 +371,26 @@ class Parser {
 	 *
 	 * @param mixed $value The value to normalize.
 	 *
-	 * @return int|null The integer, or `null` when the value is not a non-negative integer.
+	 * @return int|null The integer, or `null` when the value is not a non-negative integer PHP can hold.
 	 */
 	private function to_non_negative_int( $value ): ?int {
 		if ( is_int( $value ) ) {
 			return $value >= 0 ? $value : null;
 		}
 
-		if ( is_string( $value ) && '' !== $value && ctype_digit( $value ) ) {
-			return (int) $value;
+		if ( ! is_string( $value ) || '' === $value || ! ctype_digit( $value ) ) {
+			return null;
 		}
 
-		return null;
+		$digits = ltrim( $value, '0' );
+
+		if ( '' === $digits ) {
+			return 0;
+		}
+
+		// A string beyond the integer range casts to PHP_INT_MAX, which no longer prints back as the digits sent.
+		$int = (int) $digits;
+
+		return (string) $int === $digits ? $int : null;
 	}
 }
