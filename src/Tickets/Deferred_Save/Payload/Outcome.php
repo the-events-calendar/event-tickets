@@ -21,7 +21,7 @@ use TEC\Tickets\Deferred_Save\Payload;
  *
  * @package TEC\Tickets\Deferred_Save\Payload
  */
-class Outcome {
+final class Outcome {
 	/**
 	 * The entries that survived.
 	 *

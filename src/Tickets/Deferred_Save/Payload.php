@@ -26,7 +26,7 @@ namespace TEC\Tickets\Deferred_Save;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Payload {
+final class Payload {
 	/**
 	 * Ticket ID => data for existing tickets.
 	 *
