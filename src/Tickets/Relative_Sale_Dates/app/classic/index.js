@@ -17,6 +17,7 @@ import { resolveSaleWindow } from '../sale-window';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
+import { getListText } from './tickets-list';
 import { getWindowError } from './window-check';
 
 const MODE_RELATIVE = 'relative';
@@ -81,6 +82,24 @@ function getEventDates( settings, dynamic ) {
 }
 
 /**
+ * Gets the translated day and month names TEC localizes, for `DateFormatter`.
+ *
+ * @since TBD
+ *
+ * @param {Object} dynamic The date formats and names TEC localizes for its own helper text.
+ *
+ * @return {Object} The names that were localized.
+ */
+function getDateSettings( dynamic ) {
+	// A name list left undefined would replace `DateFormatter`'s English default.
+	return Object.fromEntries(
+		[ 'days', 'daysShort', 'months', 'monthsShort' ]
+			.filter( ( name ) => Array.isArray( dynamic[ name ] ) )
+			.map( ( name ) => [ name, dynamic[ name ] ] )
+	);
+}
+
+/**
  * Writes, under each relative end of the sales window, the date it works out to for the event dates in the form.
  *
  * @since TBD
@@ -104,12 +123,7 @@ function updateHelperText() {
 		dateWithYear: dynamic.date_with_year,
 		dateNoYear: dynamic.date_no_year,
 		timeFormat: settings.timeFormat,
-		// A name list left undefined would replace `DateFormatter`'s English default.
-		dateSettings: Object.fromEntries(
-			[ 'days', 'daysShort', 'months', 'monthsShort' ]
-				.filter( ( name ) => Array.isArray( dynamic[ name ] ) )
-				.map( ( name ) => [ name, dynamic[ name ] ] )
-		),
+		dateSettings: getDateSettings( dynamic ),
 	};
 
 	[ 'start', 'end' ].forEach( ( key ) => {
@@ -121,6 +135,40 @@ function updateHelperText() {
 			isRelative && date && date.isValid()
 				? formatHelperText( settings.text[ key ], date, formats, moment().year() )
 				: '';
+	} );
+}
+
+/**
+ * Rewrites the sale dates of each listed ticket with a rule for the event dates in the form.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function updateTicketsList() {
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+	const rows = document.querySelectorAll( '[data-relative-sale-dates]' );
+
+	if ( ! settings || ! dynamic || ! rows.length ) {
+		return;
+	}
+
+	const eventDates = getEventDates( settings, dynamic );
+	const listSettings = { format: settings.listDateFormat, dateSettings: getDateSettings( dynamic ) };
+
+	rows.forEach( ( row ) => {
+		const rule = JSON.parse( row.dataset.relativeSaleDates );
+		const saleWindow = eventDates
+			? resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone )
+			: null;
+
+		row.textContent = getListText(
+			rule,
+			saleWindow,
+			{ start: row.dataset.saleStart, end: row.dataset.saleEnd || '' },
+			listSettings
+		);
 	} );
 }
 
@@ -237,6 +285,30 @@ function onWindowChange() {
 	updateHelperText();
 }
 
+/**
+ * Updates everything that follows the event dates once an event field changes.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function onEventChange() {
+	onWindowChange();
+	updateTicketsList();
+}
+
+/**
+ * Updates everything that follows the event dates once the editor replaces the panels.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function onPanelsRefreshed() {
+	updateHelperText();
+	updateTicketsList();
+}
+
 /*
  * `tickets.js` fires `pre-save-ticket.tribe` and `additionalValidation.tribe` on `#tribetickets` right before it
  * saves the ticket. The handlers are bound on that element rather than delegated from the document: Event Tickets Plus
@@ -246,11 +318,11 @@ jQuery( () => {
 	jQuery( '#tribetickets' )
 		.on( 'pre-save-ticket.tribe', () => writeRule( document ) )
 		.on( 'additionalValidation.tribe', validateSaleWindow );
-	updateHelperText();
+	onPanelsRefreshed();
 } );
 
-jQuery( document ).on( 'change', EVENT_FIELDS, onWindowChange );
+jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
 jQuery( document ).on( 'change input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, onWindowChange );
 
-addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', updateHelperText );
+addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', onPanelsRefreshed );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );

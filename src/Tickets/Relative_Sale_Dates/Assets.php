@@ -82,16 +82,19 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string}} The script data.
+	 * @return array{timeFormat: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		$time_format = get_option( 'time_format' );
+		// The tickets list formats its dates with this, not with the TEC formats the helper text uses.
+		$list_date_format = tribe_get_date_format( true );
 
 		return [
-			'timeFormat' => is_string( $time_format ) && '' !== $time_format ? $time_format : 'g:i a',
-			'timezones'  => $this->get_manual_offset_zones(),
-			'allDay'     => $this->get_all_day_times(),
-			'text'       => [
+			'timeFormat'     => is_string( $time_format ) && '' !== $time_format ? $time_format : 'g:i a',
+			'listDateFormat' => is_string( $list_date_format ) && '' !== $list_date_format ? $list_date_format : 'F j, Y',
+			'timezones'      => $this->get_manual_offset_zones(),
+			'allDay'         => $this->get_all_day_times(),
+			'text'           => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
 				'start'         => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.

@@ -12,9 +12,12 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use Tribe__Date_Utils as Dates;
 use Tribe__Template as Template;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Replaces the sale dates fields of the classic ticket form with the sales window options.
@@ -53,6 +56,29 @@ final class Editor extends Controller_Contract {
 	];
 
 	/**
+	 * The store of the ticket rules.
+	 *
+	 * @since TBD
+	 *
+	 * @var Rule_Store
+	 */
+	private Rule_Store $rule_store;
+
+	/**
+	 * Editor constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Container  $container  The DI container.
+	 * @param Rule_Store $rule_store The store of the ticket rules.
+	 */
+	public function __construct( Container $container, Rule_Store $rule_store ) {
+		parent::__construct( $container );
+
+		$this->rule_store = $rule_store;
+	}
+
+	/**
 	 * Unregisters the controller.
 	 *
 	 * @since TBD
@@ -61,6 +87,37 @@ final class Editor extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_sales_window_fields' ] );
+		remove_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', [ $this, 'filter_available_dates_context' ] );
+	}
+
+	/**
+	 * Adds to a ticket row of the tickets list the attributes the classic script rewrites its sale dates from.
+	 *
+	 * The attributes are set on every row, empty for a ticket without a rule: the template merges each row's context
+	 * into the values the next row inherits.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context  The context of the ticket row's sale dates template.
+	 * @param string              $file     The path of the template.
+	 * @param string[]            $name     The template name.
+	 * @param Template            $template The admin views template.
+	 *
+	 * @return array<string,mixed> The context, with `relative_sale_dates_attributes`.
+	 */
+	public function filter_available_dates_context( array $context, string $file, array $name, Template $template ): array {
+		$ticket = $context['ticket'] ?? null;
+		$rule   = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( $ticket->ID ) ) : null;
+
+		$context['relative_sale_dates_attributes'] = $rule
+			? [
+				'data-relative-sale-dates' => $rule->to_json(),
+				'data-sale-start'          => $this->get_sale_date( $ticket->start_date ),
+				'data-sale-end'            => $this->get_sale_date( $ticket->end_date ),
+			]
+			: [];
+
+		return $context;
 	}
 
 	/**
@@ -106,6 +163,7 @@ final class Editor extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_sales_window_fields' ], 10, 4 );
+		add_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', [ $this, 'filter_available_dates_context' ], 10, 4 );
 	}
 
 	/**
@@ -123,6 +181,19 @@ final class Editor extends Controller_Contract {
 			&& Module::class === ( $context['provider_class'] ?? '' )
 			&& isset( $context['modules'][ Module::class ] )
 			&& ! in_array( $context['ticket_type'] ?? 'default', [ 'rsvp', Series_Passes::TICKET_TYPE ], true );
+	}
+
+	/**
+	 * Gets a ticket sale date as the classic script reads it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $date The ticket sale date.
+	 *
+	 * @return string The date, `Y-m-d`, or an empty string when the ticket has none.
+	 */
+	private function get_sale_date( ?string $date ): string {
+		return $date ? Dates::date_only( $date, false, Dates::DBDATEFORMAT ) : '';
 	}
 
 	/**
