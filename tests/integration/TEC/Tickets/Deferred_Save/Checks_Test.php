@@ -63,7 +63,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_user_who_cannot_edit_the_post_gets_the_whole_payload_rejected(): void {
+	public function it_should_reject_the_whole_payload_for_a_user_who_cannot_edit_the_post(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'subscriber' );
 		$data = [ 'ticket_name' => 'x' ];
@@ -87,7 +87,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_logged_out_user_gets_the_whole_payload_rejected(): void {
+	public function it_should_reject_the_whole_payload_for_a_logged_out_user(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( 0 );
 
@@ -100,7 +100,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_editor_passes_the_post_level_check_and_owned_entries_survive(): void {
+	public function it_should_pass_an_editor_at_post_level_and_keep_the_owned_entries(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$data = [ 'ticket_name' => 'x', 'custom_field' => 'rides along' ];
@@ -125,7 +125,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_author_of_the_post_can_edit_it(): void {
+	public function it_should_let_the_author_of_the_post_edit_it(): void {
 		$this->given_two_posts_with_tickets();
 		$author_id = $this->log_in_as( 'author' );
 		wp_update_post( [ 'ID' => $this->post_id, 'post_author' => $author_id ] );
@@ -139,7 +139,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_ticket_on_another_post_is_rejected_per_entry_and_siblings_survive(): void {
+	public function it_should_reject_a_ticket_of_another_post_per_entry_and_keep_its_siblings(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$data = [ 'ticket_name' => 'x' ];
@@ -165,7 +165,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function ids_that_are_not_tickets_are_rejected(): void {
+	public function it_should_reject_ids_that_are_not_tickets(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$attendee_id = $this->create_attendee_for_ticket( $this->ticket_id, $this->post_id );
@@ -193,7 +193,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_rsvp_attendee_on_the_post_is_not_a_ticket(): void {
+	public function it_should_not_treat_an_rsvp_attendee_on_the_post_as_a_ticket(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $this->post_id );
@@ -219,7 +219,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_move_destination_the_user_cannot_edit_or_that_does_not_exist_is_rejected(): void {
+	public function it_should_reject_a_move_destination_the_user_cannot_edit_or_that_does_not_exist(): void {
 		$this->given_two_posts_with_tickets();
 		$author_id = $this->log_in_as( 'author' );
 		wp_update_post( [ 'ID' => $this->post_id, 'post_author' => $author_id ] );
@@ -246,7 +246,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_delete_filter_can_deny_one_ticket_and_leave_the_rest(): void {
+	public function it_should_let_the_delete_filter_deny_one_ticket_and_leave_the_rest(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$denied = $this->ticket_id;
@@ -279,7 +279,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_delete_filter_is_not_asked_about_update_or_move_entries(): void {
+	public function it_should_not_ask_the_delete_filter_about_update_or_move_entries(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		add_filter( 'tribe_tickets_current_user_can_delete_ticket', '__return_false' );
@@ -297,7 +297,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_already_rejected_payload_comes_back_unchanged(): void {
+	public function it_should_return_an_already_rejected_payload_unchanged(): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( 'editor' );
 		$payload = Payload::from_array( 'not an array' );
@@ -311,7 +311,7 @@ class Checks_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_empty_payload_passes_without_touching_the_user(): void {
+	public function it_should_pass_an_empty_payload_without_touching_the_user(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( 0 );
 
