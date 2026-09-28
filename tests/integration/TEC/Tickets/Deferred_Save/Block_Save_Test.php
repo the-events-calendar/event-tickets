@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Tickets__Main as Tickets_Main;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -13,22 +14,7 @@ class Block_Save_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
 
-	private array $deferred_posts = [];
-
-	public function setUp(): void {
-		parent::setUp();
-		add_filter(
-			'tec_tickets_deferred_save_enabled',
-			function ( bool $enabled, int $post_id ): bool {
-				return in_array( $post_id, $this->deferred_posts, true ) ? true : $enabled;
-			},
-			10,
-			2
-		);
-	}
-
 	public function tearDown(): void {
-		$this->deferred_posts = [];
 		wp_set_current_user( 0 );
 		parent::tearDown();
 	}
@@ -38,10 +24,7 @@ class Block_Save_Test extends WPTestCase {
 	}
 
 	protected function create_deferred_post(): int {
-		$post_id                = static::factory()->post->create( [ 'post_type' => 'page' ] );
-		$this->deferred_posts[] = $post_id;
-
-		return $post_id;
+		return static::factory()->post->create( [ 'post_type' => 'page' ] );
 	}
 
 	protected function ticket_data( string $name, array $overrides = [] ): array {
@@ -126,21 +109,19 @@ class Block_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_post_that_does_not_use_deferred_save_is_untouched_and_the_payload_is_answered_with_an_error(): void {
+	public function a_non_ticketable_post_type_is_saved_without_a_field_and_without_tickets(): void {
 		$this->log_in_as_admin();
-		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		$this->assertNotContains( 'attachment', Tickets_Main::instance()->post_types(), 'Attachments must not be ticketable here.' );
+		$attachment_id = static::factory()->attachment->create_object( 'image.jpg', 0, [ 'post_mime_type' => 'image/jpeg' ] );
 
 		$response = $this->save_through_rest(
-			"/wp/v2/pages/{$post_id}",
+			"/wp/v2/media/{$attachment_id}",
 			[ 'title' => 'Plain save', 'tec_tickets' => [ 'create' => [ $this->ticket_data( 'Should not exist' ) ] ] ]
 		);
 
 		$this->assertSame( 200, $response->get_status() );
-		$data = $response->get_data();
-		$this->assertSame( [], $data['tec_tickets']['created'] );
-		$this->assertCount( 1, $data['tec_tickets']['errors'] );
-		$this->assertNull( $data['tec_tickets']['errors'][0]['part'] );
-		$this->assertSame( [], $this->ticket_names( $post_id ) );
+		$this->assertArrayNotHasKey( 'tec_tickets', $response->get_data() );
+		$this->assertSame( [], $this->ticket_names( $attachment_id ) );
 	}
 
 	/**
@@ -178,7 +159,6 @@ class Block_Save_Test extends WPTestCase {
 	 */
 	public function a_ticket_is_attached_to_a_post_created_through_rest(): void {
 		$this->log_in_as_admin();
-		add_filter( 'tec_tickets_deferred_save_enabled', '__return_true' );
 
 		$response = $this->save_through_rest(
 			'/wp/v2/pages',

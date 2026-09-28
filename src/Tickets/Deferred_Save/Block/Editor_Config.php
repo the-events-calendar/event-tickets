@@ -1,6 +1,6 @@
 <?php
 /**
- * Tells the block editor whether the post it edits uses deferred save.
+ * Tells the block editor that ticket saves are deferred.
  *
  * @since TBD
  *
@@ -10,13 +10,13 @@
 namespace TEC\Tickets\Deferred_Save\Block;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Deferred_Save\Controller;
 
 /**
  * Class Editor_Config.
  *
  * Adds `usesDeferredSave` to the tickets editor configuration Event Tickets already prints for the
- * block editor, read in JavaScript as `globals.tickets().usesDeferredSave`.
+ * block editor, read in JavaScript as `globals.tickets().usesDeferredSave`. The key is only present
+ * while the feature is active, so its presence is the editor's signal that saves are deferred.
  *
  * @since TBD
  *
@@ -46,7 +46,7 @@ class Editor_Config extends Controller_Contract {
 	}
 
 	/**
-	 * Adds whether the post being edited uses deferred save.
+	 * Adds the deferred save flag.
 	 *
 	 * @since TBD
 	 *
@@ -55,10 +55,8 @@ class Editor_Config extends Controller_Contract {
 	 * @return array<string,mixed> The configuration with `usesDeferredSave`.
 	 */
 	public function add_flag( $localized ): array {
-		$post_id = (int) get_the_ID();
-
 		$localized                     = is_array( $localized ) ? $localized : [];
-		$localized['usesDeferredSave'] = $post_id > 0 && $this->container->get( Controller::class )->uses_deferred_save( $post_id );
+		$localized['usesDeferredSave'] = true;
 
 		return $localized;
 	}
