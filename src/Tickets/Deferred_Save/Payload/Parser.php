@@ -255,7 +255,12 @@ final class Parser {
 			$ticket_id = $this->to_positive_int( $value );
 
 			if ( null === $ticket_id ) {
-				$rejections = $rejections->with( self::DELETE, $value, __( 'The ticket ID must be a positive integer.', 'event-tickets' ) );
+				// The entry is a value, not an array key, so it can be anything the payload sent.
+				$rejections = $rejections->with(
+					self::DELETE,
+					is_scalar( $value ) && ! is_bool( $value ) ? $value : null,
+					__( 'The ticket ID must be a positive integer.', 'event-tickets' )
+				);
 				continue;
 			}
 
