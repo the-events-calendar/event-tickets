@@ -64,7 +64,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_saves_the_payload_when_a_deferred_post_is_saved(): void {
+	public function it_should_save_the_payload_when_the_post_is_saved(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 		$this->post_payload( [ 'create' => [ $this->ticket_data( 'From the form' ) ] ] );
@@ -77,7 +77,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_applies_the_payload_only_to_the_post_the_form_is_for(): void {
+	public function it_should_apply_the_payload_only_to_the_post_the_form_is_for(): void {
 		$this->log_in_as_admin();
 		$post_id       = $this->create_deferred_post();
 		$other_post_id = $this->create_deferred_post();
@@ -104,7 +104,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_does_nothing_when_the_form_is_for_another_post(): void {
+	public function it_should_do_nothing_when_the_form_is_for_another_post(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Wrong post' ) ] ] );
@@ -118,7 +118,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_does_nothing_without_a_valid_nonce(): void {
+	public function it_should_do_nothing_without_a_valid_nonce(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 
@@ -135,7 +135,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_does_nothing_on_an_autosave_or_a_revision(): void {
+	public function it_should_do_nothing_on_an_autosave_or_a_revision(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Autosaved' ) ] ] );
@@ -158,7 +158,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_saves_the_payload_for_any_ticketable_post_without_a_switch(): void {
+	public function it_should_save_the_payload_for_any_ticketable_post(): void {
 		$this->log_in_as_admin();
 		$post_id            = static::factory()->post->create();
 		$this->form_post_id = $post_id;
@@ -172,7 +172,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_does_nothing_during_a_rest_request(): void {
+	public function it_should_do_nothing_during_a_rest_request(): void {
 		$this->log_in_as_admin();
 		$post_id = $this->create_deferred_post();
 		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Via REST form body' ) ] ] );
@@ -187,7 +187,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_attaches_a_ticket_to_a_post_published_for_the_first_time(): void {
+	public function it_should_attach_a_ticket_to_a_post_published_for_the_first_time(): void {
 		$this->log_in_as_admin();
 		$post_id                = static::factory()->post->create( [ 'post_status' => 'auto-draft' ] );
 		$this->form_post_id     = $post_id;
@@ -201,7 +201,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_order_saved_by_the_form_survives_an_update_without_a_menu_order(): void {
+	public function it_should_keep_the_order_saved_by_the_form_on_an_update_without_a_menu_order(): void {
 		$this->log_in_as_admin();
 		// A page: the ticket order is saved by a hook attached per ticketable type at boot, which `post` is not.
 		$post_id                = static::factory()->post->create( [ 'post_type' => 'page' ] );
@@ -219,7 +219,7 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_nonce_field_renders_the_expected_input(): void {
+	public function it_should_render_the_expected_nonce_input(): void {
 		$html = Classic_Save::nonce_field();
 
 		$this->assertStringContainsString( 'name="' . Classic_Save::NONCE_FIELD . '"', $html );
