@@ -14,7 +14,7 @@ class Controller_Test extends Controller_Test_Case {
 	 * @after
 	 */
 	public function reset_the_switches(): void {
-		putenv( Controller::DISABLED );
+		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED' );
 		remove_all_filters( 'tec_tickets_deferred_save_active' );
 	}
 
@@ -29,7 +29,7 @@ class Controller_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function the_environment_variable_switches_it_off(): void {
-		putenv( Controller::DISABLED . '=1' );
+		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=1' );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
 	}

@@ -26,7 +26,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const DISABLED = 'TEC_TICKETS_DEFERRED_SAVE_DISABLED';
+	private const DISABLED = 'TEC_TICKETS_DEFERRED_SAVE_DISABLED';
 
 	/**
 	 * Whether the feature is active.
