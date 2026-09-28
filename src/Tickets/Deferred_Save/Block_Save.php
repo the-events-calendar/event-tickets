@@ -32,7 +32,7 @@ use WP_REST_Response;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Block_Save extends Controller_Contract {
+final class Block_Save extends Controller_Contract {
 	/**
 	 * The priority on `rest_after_insert_{type}`: after the Custom Tables v1 occurrence commit at 100.
 	 *
