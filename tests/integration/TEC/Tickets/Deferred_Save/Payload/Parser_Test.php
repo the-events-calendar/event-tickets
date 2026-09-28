@@ -9,9 +9,10 @@ class Parser_Test extends WPTestCase {
 	private Rejections $rejections;
 
 	protected function parse( $raw ): Payload {
-		$this->rejections = new Rejections();
+		$outcome          = ( new Parser() )->parse( $raw );
+		$this->rejections = $outcome->rejections();
 
-		return ( new Parser() )->parse( $raw, $this->rejections );
+		return $outcome->payload();
 	}
 
 	protected function rejected_keys( string $part ): array {
@@ -153,21 +154,6 @@ class Parser_Test extends WPTestCase {
 		$this->expectExceptionMessage( '"updates"' );
 
 		$this->parse( [ 'update' => [ 1 => [ 'ticket_name' => 'x' ] ], 'updates' => [] ] );
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_record_nothing_before_throwing(): void {
-		try {
-			$this->parse( [ 'update' => 'nope', 'updates' => [] ] );
-		} catch ( Malformed_Exception $e ) {
-			$this->assertTrue( $this->rejections->is_empty(), 'Malformed input is refused as a whole, not entry by entry.' );
-
-			return;
-		}
-
-		$this->fail( 'A malformed payload must throw.' );
 	}
 
 	/**
