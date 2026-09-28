@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Hardened the validation of assigned seating reservations.
+timestamp: 2026-09-25T15:24:49.902Z
