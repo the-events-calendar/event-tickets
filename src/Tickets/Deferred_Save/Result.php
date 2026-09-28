@@ -77,7 +77,7 @@ class Result {
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null           $part    One of the `Payload` part constants, or `null` for the payload as a whole.
+	 * @param string|null           $part    One of the `Payload\Parser` part constants, or `null` for the payload as a whole.
 	 * @param int|string|float|null $key     The ticket ID or `create` position, or `null` for a part-level error.
 	 * @param string                $message What went wrong, ready to show to the user.
 	 *
