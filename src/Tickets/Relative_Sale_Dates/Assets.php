@@ -156,16 +156,18 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, relativeValueOutOfRange: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
-			'timeFormat'   => $this->get_time_format(),
-			'dateWithYear' => $this->get_date_format( true ),
-			'dateNoYear'   => $this->get_date_format( false ),
-			'timezones'    => $this->get_manual_offset_zones(),
-			'allDay'       => $this->get_all_day_times(),
-			'text'         => [
+			'timeFormat'     => $this->get_time_format(),
+			'dateWithYear'   => $this->get_date_format( true ),
+			'dateNoYear'     => $this->get_date_format( false ),
+			// The tickets list always shows the year, so it takes the with-year format, never the no-year one.
+			'listDateFormat' => $this->get_date_format( true ),
+			'timezones'      => $this->get_manual_offset_zones(),
+			'allDay'         => $this->get_all_day_times(),
+			'text'           => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
 				'start'                   => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
