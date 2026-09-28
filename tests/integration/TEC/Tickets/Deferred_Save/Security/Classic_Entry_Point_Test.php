@@ -20,14 +20,8 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	use With_Tickets_Commerce;
 	use Deferred_Save_Attacks;
 
-	public function setUp(): void {
-		parent::setUp();
-		$this->enable_switch_filter();
-	}
-
 	public function tearDown(): void {
-		$_POST                = [];
-		$this->deferred_posts = [];
+		$_POST = [];
 		wp_set_current_user( 0 );
 		parent::tearDown();
 	}

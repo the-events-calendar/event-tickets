@@ -12,28 +12,12 @@ use Tribe__Tickets__Tickets as Tickets;
  * about the world changed. The suites differ only in how the payload reaches the server.
  */
 trait Deferred_Save_Attacks {
-	private array $deferred_posts = [];
 	private int $post_a;
 	private int $post_b;
 	private int $ticket_a;
 	private int $ticket_b;
 	private int $attendee_b;
 	private int $owner_id;
-
-	protected function defer( int $post_id ): void {
-		$this->deferred_posts[] = $post_id;
-	}
-
-	protected function enable_switch_filter(): void {
-		add_filter(
-			'tec_tickets_deferred_save_enabled',
-			function ( bool $enabled, int $post_id ): bool {
-				return in_array( $post_id, $this->deferred_posts, true ) ? true : $enabled;
-			},
-			10,
-			2
-		);
-	}
 
 	/**
 	 * Two posts, owned by an editor, each with a Tickets Commerce ticket; post B also has an attendee.
@@ -47,8 +31,6 @@ trait Deferred_Save_Attacks {
 		$this->ticket_a   = $this->create_tc_ticket( $this->post_a, 10, [ 'ticket_name' => 'Ticket on A' ] );
 		$this->ticket_b   = $this->create_tc_ticket( $this->post_b, 20, [ 'ticket_name' => 'Ticket on B' ] );
 		$this->attendee_b = $this->create_attendee_for_ticket( $this->ticket_b, $this->post_b );
-		$this->defer( $this->post_a );
-		$this->defer( $this->post_b );
 	}
 
 	protected function log_in_as( string $role, array $args = [] ): int {

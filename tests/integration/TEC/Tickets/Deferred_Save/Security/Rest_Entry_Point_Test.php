@@ -23,7 +23,6 @@ class Rest_Entry_Point_Test extends WPTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
-		$this->enable_switch_filter();
 		// The REST hooks are attached per ticketable type at boot; `post` becomes ticketable only in this suite.
 		$block_save = tribe( Block_Save::class );
 		add_action( 'rest_after_insert_post', [ $block_save, 'on_rest_after_insert' ], Block_Save::PRIORITY, 3 );
@@ -31,7 +30,6 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	}
 
 	public function tearDown(): void {
-		$this->deferred_posts = [];
 		wp_set_current_user( 0 );
 		parent::tearDown();
 	}
@@ -125,18 +123,18 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_payload_for_a_post_that_does_not_defer_is_refused_and_answered(): void {
+	public function a_payload_for_a_non_ticketable_post_type_is_never_read(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
-		$plain = static::factory()->post->create( [ 'post_author' => $this->owner_id ] );
+		$attachment_id = static::factory()->attachment->create_object( 'image.jpg', 0, [ 'post_author' => $this->owner_id, 'post_mime_type' => 'image/jpeg' ] );
 
-		$response = $this->save_through_rest( $plain, [ 'create' => [ $this->ticket_data( 'Should not exist' ) ] ] );
+		$request = new WP_REST_Request( 'POST', "/wp/v2/media/{$attachment_id}" );
+		$request->set_body_params( [ 'title' => 'Plain save', 'tec_tickets' => [ 'create' => [ $this->ticket_data( 'Should not exist' ) ] ] ] );
+		$response = rest_do_request( $request );
 
 		$this->assertSame( 200, $response->get_status() );
-		$this->assertSame( [], tribe_tickets()->where( 'event', $plain )->get_ids() );
-		$result = $this->result_of( $response );
-		$this->assertSame( [], $result['created'] );
-		$this->assertNull( $result['errors'][0]['part'] );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $attachment_id )->get_ids() );
+		$this->assertArrayNotHasKey( 'tec_tickets', $response->get_data() );
 	}
 
 	/**
