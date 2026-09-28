@@ -252,6 +252,16 @@ class Parser_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_reject_a_non_scalar_delete_entry_without_a_key(): void {
+		$payload = $this->parse( [ 'delete' => [ [ 1 ], true, (object) [], 8 ] ] );
+
+		$this->assertSame( [ 8 ], $payload->get_delete() );
+		$this->assertSame( [ null, null, null ], $this->rejected_keys( 'delete' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_reject_data_that_is_not_an_array_per_entry(): void {
 		$data    = [ 'ticket_name' => 'x' ];
 		$payload = $this->parse(
