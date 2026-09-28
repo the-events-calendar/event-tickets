@@ -24,7 +24,7 @@ use TEC\Tickets\Deferred_Save\Payload;
  *
  * @package TEC\Tickets\Deferred_Save\Payload
  */
-class Parser {
+final class Parser {
 	/**
 	 * The part holding ticket ID => data pairs for existing tickets.
 	 *
