@@ -59,7 +59,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider roles_that_cannot_edit_someone_elses_post
 	 */
-	public function a_user_who_cannot_edit_the_post_is_refused_by_rest_itself( string $role ): void {
+	public function it_should_let_rest_itself_refuse_a_user_who_cannot_edit_the_post( string $role ): void {
 		$this->given_two_posts_with_tickets();
 		if ( '' === $role ) {
 			wp_set_current_user( 0 );
@@ -77,7 +77,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_author_of_post_a_cannot_reach_post_b_through_any_part(): void {
+	public function it_should_not_let_an_author_of_post_a_reach_post_b_through_any_part(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		wp_update_post( [ 'ID' => $this->post_b, 'post_author' => static::factory()->user->create( [ 'role' => 'administrator' ] ) ] );
@@ -107,7 +107,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_payload_over_the_cap_changes_nothing(): void {
+	public function it_should_change_nothing_for_a_payload_over_the_cap(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		add_filter( 'tec_tickets_deferred_save_max_entries', static fn() => 3 );
@@ -123,7 +123,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_payload_for_a_non_ticketable_post_type_is_never_read(): void {
+	public function it_should_never_read_a_payload_for_a_non_ticketable_post_type(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		$attachment_id = static::factory()->attachment->create_object( 'image.jpg', 0, [ 'post_author' => $this->owner_id, 'post_mime_type' => 'image/jpeg' ] );
@@ -140,7 +140,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_autosave_never_commits(): void {
+	public function it_should_never_commit_on_an_autosave(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		$before = $this->snapshot();
@@ -158,7 +158,7 @@ class Rest_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function data_is_sanitized_exactly_as_the_ajax_save_sanitizes_it(): void {
+	public function it_should_sanitize_data_exactly_as_the_ajax_save_does(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$data = $this->ticket_data(

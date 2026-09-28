@@ -8,7 +8,7 @@ class Assets_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_script_and_style_are_registered(): void {
+	public function it_should_register_the_script_and_the_style(): void {
 		$this->assertTrue( wp_script_is( Assets::SCRIPT, 'registered' ) );
 		$this->assertTrue( wp_style_is( Assets::STYLE, 'registered' ) );
 		$this->assertContains( 'event-tickets-admin-js', wp_scripts()->registered[ Assets::SCRIPT ]->deps );
@@ -17,7 +17,7 @@ class Assets_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function they_enqueue_only_for_a_ticketable_post(): void {
+	public function it_should_enqueue_only_for_a_ticketable_post(): void {
 		global $post;
 		$assets = tribe( Assets::class );
 

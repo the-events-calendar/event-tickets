@@ -58,7 +58,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	 * @test
 	 * @dataProvider roles_that_cannot_edit_someone_elses_post
 	 */
-	public function a_user_who_cannot_edit_the_post_changes_nothing( string $role ): void {
+	public function it_should_change_nothing_for_a_user_who_cannot_edit_the_post( string $role ): void {
 		$this->given_two_posts_with_tickets();
 		$this->log_in_as( $role );
 		$before = $this->snapshot();
@@ -72,7 +72,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function without_a_valid_nonce_nothing_changes_and_nothing_is_reported(): void {
+	public function it_should_change_and_report_nothing_without_a_valid_nonce(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		$before = $this->snapshot();
@@ -87,7 +87,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_form_for_another_post_changes_nothing(): void {
+	public function it_should_change_nothing_for_a_form_for_another_post(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		$before = $this->snapshot();
@@ -101,7 +101,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function an_editor_of_post_a_cannot_reach_post_b_through_any_part(): void {
+	public function it_should_not_let_an_editor_of_post_a_reach_post_b_through_any_part(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		// The owner may edit both posts; make B someone else's so the move destination is refused too.
@@ -129,7 +129,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function a_payload_over_the_cap_changes_nothing(): void {
+	public function it_should_change_nothing_for_a_payload_over_the_cap(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( $this->owner_id );
 		add_filter( 'tec_tickets_deferred_save_max_entries', static fn() => 3 );
@@ -144,7 +144,7 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function data_is_sanitized_exactly_as_the_ajax_save_sanitizes_it(): void {
+	public function it_should_sanitize_data_exactly_as_the_ajax_save_does(): void {
 		$this->given_two_posts_with_tickets();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$data = $this->ticket_data(

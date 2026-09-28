@@ -27,7 +27,7 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_remembers_the_errors_for_the_user_and_shows_them_once_on_the_next_edit_screen(): void {
+	public function it_should_remember_the_errors_for_the_user_and_show_them_once_on_the_next_edit_screen(): void {
 		$user_id = static::factory()->user->create( [ 'role' => 'administrator' ] );
 		wp_set_current_user( $user_id );
 		$post_id   = static::factory()->post->create( [ 'post_title' => 'The saved post' ] );
@@ -52,7 +52,7 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_stores_nothing_for_a_result_without_errors(): void {
+	public function it_should_store_nothing_for_a_result_without_errors(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id = static::factory()->post->create();
 
@@ -64,7 +64,7 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function the_notice_belongs_to_the_user_who_saved(): void {
+	public function it_should_show_the_notice_only_to_the_user_who_saved(): void {
 		$saver  = static::factory()->user->create( [ 'role' => 'administrator' ] );
 		$other  = static::factory()->user->create( [ 'role' => 'administrator' ] );
 		$post_id = static::factory()->post->create();
@@ -81,7 +81,7 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_never_names_a_post_the_payload_pointed_at_that_is_not_a_ticket_on_the_saved_post(): void {
+	public function it_should_never_name_a_post_the_payload_pointed_at_that_is_not_a_ticket_on_the_saved_post(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id        = static::factory()->post->create();
 		$private_id     = static::factory()->post->create( [ 'post_status' => 'private', 'post_title' => 'Secret launch plan' ] );
@@ -103,7 +103,7 @@ class Notices_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function output_is_escaped(): void {
+	public function it_should_escape_the_output(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$post_id = static::factory()->post->create( [ 'post_title' => 'Post <script>alert(1)</script>' ] );
 
