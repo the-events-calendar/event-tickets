@@ -21,14 +21,14 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_is_active_by_default(): void {
+	public function it_should_be_active_by_default(): void {
 		$this->assertTrue( $this->make_controller()->is_active() );
 	}
 
 	/**
 	 * @test
 	 */
-	public function the_environment_variable_switches_it_off(): void {
+	public function it_should_be_switched_off_by_the_environment_variable(): void {
 		putenv( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED=1' );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
@@ -37,7 +37,7 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function the_filter_switches_it_off(): void {
+	public function it_should_be_switched_off_by_the_filter(): void {
 		add_filter( 'tec_tickets_deferred_save_active', '__return_false' );
 
 		$this->assertFalse( $this->make_controller()->is_active() );
@@ -46,7 +46,7 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
-	public function it_registers_nothing_when_switched_off(): void {
+	public function it_should_register_nothing_when_switched_off(): void {
 		add_filter( 'tec_tickets_deferred_save_active', '__return_false' );
 		$controller = $this->make_controller();
 
