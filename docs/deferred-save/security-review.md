@@ -43,7 +43,7 @@ tec_tickets = [
 
 | Guarantee | Tests |
 |---|---|
-| Payload contract, normalisation, key overrides `ticket_id` | `tests/integration/TEC/Tickets/Deferred_Save/Payload_Test.php` |
+| Payload contract, normalisation, key overrides `ticket_id` | `tests/integration/TEC/Tickets/Deferred_Save/Payload/Parser_Test.php`, `Payload_Test.php` |
 | Post capability, ownership per entry, delete filter, move destination | `Checks_Test.php` |
 | Entry cap, routed payloads re-checked, ticket type sanitized, guarded replay, sanitisation parity, provider from the ticket | `Commit_Test.php` |
 | Classic: nonce, `post_ID` binding, autosave, revision, REST request, any ticketable post, nested save | `Classic_Save_Test.php` |
