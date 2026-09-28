@@ -62,13 +62,27 @@ class Ticket_Data {
 	 * Load the ticket object.
 	 *
 	 * @since 5.24.0
+	 * @since TBD Returns `null` for an ID that is not a post of the provider's ticket type, such as an attendee.
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
 	 * @return Ticket_Object|null The ticket object.
 	 */
 	public function load_ticket_object( int $ticket_id ): ?Ticket_Object {
-		return Tickets::load_ticket_object( $ticket_id );
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		if ( ! $ticket instanceof Ticket_Object ) {
+			return null;
+		}
+
+		// A provider resolves its attendees and orders to their event too, and not every provider's `get_ticket()` checks the type.
+		$provider = $ticket->get_provider();
+
+		if ( ! $provider instanceof Tickets || get_post_type( $ticket_id ) !== $provider->ticket_object ) {
+			return null;
+		}
+
+		return $ticket;
 	}
 
 	/**
