@@ -11,25 +11,11 @@ class Classic_Save_Test extends WPTestCase {
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
 
-	private array $deferred_posts = [];
-	private ?int $form_post_id    = null;
-
-	public function setUp(): void {
-		parent::setUp();
-		add_filter(
-			'tec_tickets_deferred_save_enabled',
-			function ( bool $enabled, int $post_id ): bool {
-				return in_array( $post_id, $this->deferred_posts, true ) ? true : $enabled;
-			},
-			10,
-			2
-		);
-	}
+	private ?int $form_post_id = null;
 
 	public function tearDown(): void {
-		$_POST                = [];
-		$this->deferred_posts = [];
-		$this->form_post_id   = null;
+		$_POST              = [];
+		$this->form_post_id = null;
 		wp_set_current_user( 0 );
 		parent::tearDown();
 	}
@@ -39,9 +25,8 @@ class Classic_Save_Test extends WPTestCase {
 	}
 
 	protected function create_deferred_post(): int {
-		$post_id                = static::factory()->post->create();
-		$this->deferred_posts[] = $post_id;
-		$this->form_post_id     = $this->form_post_id ?? $post_id;
+		$post_id            = static::factory()->post->create();
+		$this->form_post_id = $this->form_post_id ?? $post_id;
 
 		return $post_id;
 	}
@@ -173,14 +158,15 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_does_nothing_for_a_post_that_does_not_use_deferred_save(): void {
+	public function it_saves_the_payload_for_any_ticketable_post_without_a_switch(): void {
 		$this->log_in_as_admin();
-		$post_id = static::factory()->post->create();
-		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Not deferred' ) ] ] );
+		$post_id            = static::factory()->post->create();
+		$this->form_post_id = $post_id;
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Deferred everywhere' ) ] ] );
 
 		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
 
-		$this->assertSame( [], $this->ticket_names( $post_id ) );
+		$this->assertSame( [ 'Deferred everywhere' ], $this->ticket_names( $post_id ) );
 	}
 
 	/**
@@ -204,7 +190,6 @@ class Classic_Save_Test extends WPTestCase {
 	public function it_attaches_a_ticket_to_a_post_published_for_the_first_time(): void {
 		$this->log_in_as_admin();
 		$post_id                = static::factory()->post->create( [ 'post_status' => 'auto-draft' ] );
-		$this->deferred_posts[] = $post_id;
 		$this->form_post_id     = $post_id;
 		$this->post_payload( [ 'create' => [ $this->ticket_data( 'First publish' ) ] ] );
 
@@ -220,7 +205,6 @@ class Classic_Save_Test extends WPTestCase {
 		$this->log_in_as_admin();
 		// A page: the ticket order is saved by a hook attached per ticketable type at boot, which `post` is not.
 		$post_id                = static::factory()->post->create( [ 'post_type' => 'page' ] );
-		$this->deferred_posts[] = $post_id;
 		$this->form_post_id     = $post_id;
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
 		$this->post_payload( [ 'update' => [ $ticket_id => [ 'ticket_name' => 'Reordered' ] ] ] );
