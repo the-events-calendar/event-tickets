@@ -22,8 +22,7 @@ use WP_REST_Response;
  * The block editor adds `tec_tickets` to the REST request that saves the post. This hooks the
  * `rest_after_insert_{type}` action of every ticketable post type, hands the payload to `Commit`
  * once the post and its meta are written, and adds the result to the response under `tec_tickets`
- * so the editor can match new tickets to their IDs and show errors on rejected ones. A payload sent to a
- * post that does not use deferred save is answered with a payload-level error rather than silence.
+ * so the editor can match new tickets to their IDs and show errors on rejected ones.
  *
  * Priority 200 runs after ECP's Custom Tables v1 commits a recurring event's occurrences at 100, so
  * callbacks on the routing filter see the post after a split. REST autosaves never fire
@@ -103,7 +102,7 @@ class Block_Save extends Controller_Contract {
 	}
 
 	/**
-	 * Commits the payload sent with the REST save, when there is one and the post uses deferred save.
+	 * Commits the payload sent with the REST save, when there is one.
 	 *
 	 * @since TBD
 	 *
@@ -119,22 +118,6 @@ class Block_Save extends Controller_Contract {
 		$raw = $request->get_param( 'tec_tickets' );
 
 		if ( null === $raw || $this->is_autosave( $request ) ) {
-			return null;
-		}
-
-		if ( ! $this->container->get( Controller::class )->uses_deferred_save( $post->ID ) ) {
-			// Answer anyway: the editor must never mistake a record without a fresh answer for a committed one.
-			$this->results[ $post->ID ] = new Result(
-				[],
-				[
-					[
-						'part'    => null,
-						'key'     => null,
-						'message' => __( 'This post does not defer ticket saves; the ticket changes were not applied.', 'event-tickets' ),
-					],
-				]
-			);
-
 			return null;
 		}
 
