@@ -30,7 +30,7 @@ use Tribe__Tickets__Tickets as Tickets;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Commit {
+final class Commit {
 	/**
 	 * The checks a payload passes before anything is saved.
 	 *

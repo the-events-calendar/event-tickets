@@ -22,7 +22,7 @@ namespace TEC\Tickets\Deferred_Save;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-class Result {
+final class Result {
 	/**
 	 * Position in the `create` part => the ID of the ticket created from it.
 	 *

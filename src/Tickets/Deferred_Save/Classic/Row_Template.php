@@ -21,7 +21,7 @@ namespace TEC\Tickets\Deferred_Save\Classic;
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-class Row_Template {
+final class Row_Template {
 	/**
 	 * Renders the templates.
 	 *
