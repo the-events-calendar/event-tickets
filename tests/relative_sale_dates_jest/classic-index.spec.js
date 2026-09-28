@@ -122,6 +122,17 @@ function isEndMarkedInvalid() {
 }
 
 /**
+ * @param {string} end The end of the window, `start` or `end`.
+ *
+ * @return {string} The name of the unit selected for that end.
+ */
+function getUnitLabel( end ) {
+	const unit = document.getElementById( `ticket_sales_${ end }_unit` );
+
+	return unit.options[ unit.selectedIndex ].textContent;
+}
+
+/**
  * @return {string} The sale dates the listed ticket shows.
  */
 function getListRowText() {
@@ -224,6 +235,25 @@ describe( 'classic editor script', () => {
 		await loadScript();
 
 		expect( getHelperText( 'start' ) ).toBe( '' );
+	} );
+
+	it( 'should name the unit in the plural form of the number', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'weeks' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hour' );
+	} );
+
+	it( 'should change the unit name when the number changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+		jQuery( '#ticket_sales_end_value' ).val( '3' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'week' );
+		expect( getUnitLabel( 'end' ) ).toBe( 'hours' );
 	} );
 
 	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {

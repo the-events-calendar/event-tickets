@@ -133,6 +133,10 @@ final class Assets extends Controller_Contract {
 					'name' => 'tec.tickets.relativeSaleDates.classicData',
 					'data' => fn(): array => $this->get_classic_script_data(),
 				],
+				'translations' => [
+					'domain' => 'event-tickets',
+					'path'   => Tickets_Plugin::instance()->plugin_path . 'lang',
+				],
 			]
 		);
 	}
