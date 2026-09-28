@@ -16,7 +16,7 @@ use TEC\Tickets\Deferred_Save\Payload;
  *
  * Normalizes the raw array and keeps the entries that match the contract; every entry that does
  * not is dropped and recorded in the rejections. A value that is not an array, or that carries
- * an unknown part, is rejected as a whole and yields an empty payload.
+ * an unknown part, cannot be a payload at all and throws instead.
  *
  * The parser makes no WordPress calls beyond translation.
  *
@@ -79,6 +79,8 @@ class Parser {
 	 * @param Rejections $rejections Where the entries that do not match the contract are recorded.
 	 *
 	 * @return Payload The accepted entries.
+	 *
+	 * @throws Malformed_Exception When the value is not an array or carries an unknown part.
 	 */
 	public function parse( $raw, Rejections $rejections ): Payload {
 		if ( null === $raw || [] === $raw ) {
@@ -86,24 +88,18 @@ class Parser {
 		}
 
 		if ( ! is_array( $raw ) ) {
-			$rejections->add( null, null, __( 'The ticket changes must be an array.', 'event-tickets' ) );
-
-			return new Payload();
+			throw new Malformed_Exception( __( 'The ticket changes must be an array.', 'event-tickets' ) );
 		}
 
 		foreach ( array_keys( $raw ) as $part ) {
 			if ( ! in_array( $part, self::PARTS, true ) ) {
-				$rejections->add(
-					null,
-					null,
+				throw new Malformed_Exception(
 					sprintf(
 						/* translators: %s: the unknown key. */
 						__( 'Unknown ticket changes part "%s".', 'event-tickets' ),
 						$part
 					)
 				);
-
-				return new Payload();
 			}
 		}
 
