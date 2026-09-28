@@ -22,7 +22,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  *
  * @package TEC\Tickets\Deferred_Save\Block
  */
-class Editor_Config extends Controller_Contract {
+final class Editor_Config extends Controller_Contract {
 	/**
 	 * Hooks the editor configuration.
 	 *

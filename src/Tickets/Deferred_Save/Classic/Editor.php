@@ -24,7 +24,7 @@ use TEC\Tickets\Deferred_Save\Classic_Save;
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-class Editor extends Controller_Contract {
+final class Editor extends Controller_Contract {
 	/**
 	 * The row templates.
 	 *
