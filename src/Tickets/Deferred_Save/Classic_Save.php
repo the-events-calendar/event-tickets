@@ -18,9 +18,9 @@ use WP_Post;
  * Class Classic_Save.
  *
  * The classic editor sends the payload as form fields inside the post form. This hooks the save of
- * every ticketable post type and, for a post that uses deferred save, hands `tec_tickets` to
- * `Commit`. It runs after `Tribe__Tickets__Tickets_Handler::save_post()` (priority 10) so the ticket
- * order the form saved is what an update reads when it does not mention a menu order.
+ * every ticketable post type and hands `tec_tickets` to `Commit`. It runs after
+ * `Tribe__Tickets__Tickets_Handler::save_post()` (priority 10) so the ticket order the form saved is
+ * what an update reads when it does not mention a menu order.
  *
  * It never runs on an autosave, a revision or during a REST request, never without its own nonce,
  * and only for the post the form's `post_ID` names, so a second ticketable post saved during the same
@@ -118,7 +118,7 @@ class Classic_Save extends Controller_Contract {
 	}
 
 	/**
-	 * Commits the payload sent with the post form, when there is one and the post uses deferred save.
+	 * Commits the payload sent with the post form, when there is one.
 	 *
 	 * @since TBD
 	 *
@@ -148,10 +148,6 @@ class Classic_Save extends Controller_Contract {
 		}
 
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ self::NONCE_FIELD ] ) ), self::NONCE_ACTION ) ) {
-			return null;
-		}
-
-		if ( ! $this->container->get( Controller::class )->uses_deferred_save( $post_id ) ) {
 			return null;
 		}
 
