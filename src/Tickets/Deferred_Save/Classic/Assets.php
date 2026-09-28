@@ -22,7 +22,7 @@ use Tribe__Tickets__Main as Tickets_Main;
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-class Assets extends Controller_Contract {
+final class Assets extends Controller_Contract {
 	/**
 	 * The script handle.
 	 *
