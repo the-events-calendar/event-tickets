@@ -179,6 +179,14 @@ defaultConfig.externals = [
 ];
 
 /**
+ * Entries that carry their own `node_modules` code instead of reading it from the shared `vendor` chunks.
+ * The `vendor` chunk is registered for the block editor only, with the block editor as its dependencies, so a
+ * classic-editor script cannot load it.
+ */
+const selfContainedEntries = [ 'RelativeSaleDates/classic' ];
+const isSharedChunk = ( chunk ) => ! selfContainedEntries.includes( chunk.name );
+
+/**
  * Finally the customizations are merged with the default WebPack configuration.
  */
 module.exports = {
@@ -203,13 +211,13 @@ module.exports = {
 						vendor: {
 							test: /[\\/]node_modules[\\/]/,
 							name: 'vendor',
-							chunks: 'all',
+							chunks: isSharedChunk,
 							priority: 10,
 						},
 						'vendor-babel-runtime': {
 							test: /[\\/]node_modules[\\/]@babel[\\/]/,
 							name: 'vendor-babel',
-							chunks: 'all',
+							chunks: isSharedChunk,
 							priority: 20,
 						},
 					},
