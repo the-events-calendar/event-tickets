@@ -12,6 +12,10 @@ use TEC\Tickets\Commerce\Gateways\Square\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\REST\Order_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Square\Syncs\Controller as Syncs_Controller;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Client;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Lock;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Policy;
+use TEC\Tickets\Commerce\Gateways\Square\Token\Refresh_Status;
 use TEC\Tickets\Commerce\Gateways\Square\Webhooks;
 
 /**
@@ -33,6 +37,11 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Gateway::class );
 		$this->container->singleton( Merchant::class );
 		$this->container->singleton( WhoDat::class );
+		$this->container->singleton( Refresh_Status::class );
+		$this->container->singleton( Refresh_Policy::class );
+		$this->container->singleton( Refresh_Lock::class );
+		$this->container->singleton( Refresh_Client::class );
+		$this->container->singleton( Token_Refresher::class );
 		$this->container->singleton( Order::class );
 		$this->container->singleton( Settings::class );
 

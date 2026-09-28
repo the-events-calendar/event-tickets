@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Seating\Admin;
 
+use Faker\Factory;
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
@@ -14,6 +15,7 @@ use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
+use WP_Error;
 use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps;
@@ -29,8 +31,10 @@ use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Common\StellarWP\Assets\Assets;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
 
 class Ajax_Test extends Controller_Test_Case {
+	use Seating_Sessions;
 	use SnapshotAssertions;
 	use With_Uopz;
 	use OAuth_Token;
@@ -258,6 +262,25 @@ class Ajax_Test extends Controller_Test_Case {
 			]
 		);
 		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
+	}
+
+	/**
+	 * Sets up the request body plumbing shared by the reservation authorization tests.
+	 *
+	 * @param string $body A reference filled in with the body each request should read.
+	 */
+	private function given_the_request_body_is_read_from( &$body ): void {
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file, ...$args ) use ( &$body ) {
+				if ( 'php://input' !== $file ) {
+					return file_get_contents( $file, ...$args );
+				}
+
+				return $body;
+			},
+			true
+		);
 	}
 
 	public function test_invalidate_maps_layouts_cache(): void {
@@ -661,8 +684,30 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 		$post_id   = self::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		/* The endpoint only accepts a reservation whose seat type is the one its ticket carries. */
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-id-0' );
 		$sessions  = tribe( Sessions::class );
-		$sessions->insert_or_update( 'some-token', $post_id, time() + 100 );
+		$this->given_a_started_session( 'some-token', $post_id );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'seat-type-id-0',
+					'seatLabel'  => 'seat-label-0-1',
+					'status'     => 'pending',
+				],
+				[
+					'id'         => 'reservation-id-2',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'seat-type-id-0',
+					'seatLabel'  => 'seat-label-0-2',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1', 'reservation-id-2' ]
+		);
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -793,7 +838,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$request_body       = wp_json_encode(
 			[
 				'token'        => 'some-token',
-				'reservations' => array_merge( $reservations_data, [ 'some-reservation' => 'not-an-array' ] ),
+				'reservations' => $reservations_data + [ 'some-reservation' => 'not-an-array' ],
 			]
 		);
 		$wp_send_json_error = $this->mock_wp_send_json_error();
@@ -815,17 +860,14 @@ class Ajax_Test extends Controller_Test_Case {
 		$request_body       = wp_json_encode(
 			[
 				'token'        => 'some-token',
-				'reservations' => array_merge(
-					$reservations_data,
-					[
+				'reservations' => [
+					$ticket_id => [
 						[
-							89 => [
-								'reservationId' => 'some-reservation-id',
-								'seatTypeId'    => 'some-seat-type-id',
-							],
+							'reservationId' => 'some-reservation-id',
+							'seatTypeId'    => 'seat-type-id-0',
 						],
-					]
-				),
+					],
+				],
 			]
 		);
 		$wp_send_json_error = $this->mock_wp_send_json_error();
@@ -842,8 +884,7 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 		$this->reset_wp_send_json_mocks();
 
-		// Update of reservations fails.
-		// Delete the token entry in the sessions table, failing the update.
+		// Without a session row the token is not one this site issued.
 		DB::query(
 			DB::prepare(
 				'DELETE FROM %i WHERE token = %s',
@@ -864,8 +905,8 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_error->was_called_times_with(
 				1,
-				[ 'error' => 'Failed to update the reservations' ],
-				500
+				[ 'error' => 'Invalid session token' ],
+				403
 			),
 			$wp_send_json_error->get_calls_as_string()
 		);
@@ -873,7 +914,7 @@ class Ajax_Test extends Controller_Test_Case {
 
 		// Update of reservations succeeds.
 		// Re-insert the token entry in the sessions table, making the update possible.
-		$sessions->insert_or_update( 'some-token', $post_id, time() + 100 );
+		$this->given_a_started_session( 'some-token', $post_id );
 		$wp_send_json_success = $this->mock_wp_send_json_success();
 		$request_body         = wp_json_encode(
 			[
@@ -906,15 +947,588 @@ class Ajax_Test extends Controller_Test_Case {
 			],
 			$sessions->get_reservations_for_token( 'some-token' )
 		);
+
+		// The token is valid but the session store refuses the write.
+		$this->set_class_fn_return( Sessions::class, 'update_reservations', false );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Failed to update the reservations' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+	}
+
+	/**
+	 * The label is stored from the service's answer, not the browser's, but the service is still
+	 * another system: what comes back is sanitized like anything else written to attendee meta.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_sanitizes_the_seat_label(): void {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file, ...$args ) use ( &$request_body ) {
+				if ( 'php://input' !== $file ) {
+					return file_get_contents( $file, ...$args );
+				}
+
+				return $request_body;
+			},
+			true
+		);
+
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		/* The endpoint only accepts a reservation whose seat type is the one its ticket carries. */
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'seat-type-id-0' );
+		$sessions  = tribe( Sessions::class );
+		/* The endpoint only accepts a token issued for this post and not yet expired, so both are set here. */
+		$this->given_a_started_session( 'some-token', $post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$faker      = Factory::create();
+		$seat_label = $faker->bothify( '?-##' );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'seat-type-id-0',
+					'seatLabel'  => $seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() ),
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => 'seat-type-id-0',
+							'seatLabel'     => $seat_label,
+						],
+					],
+				],
+			]
+		);
+
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->assertEquals(
+			[
+				$ticket_id => [
+					[
+						'reservation_id' => 'reservation-id-1',
+						'seat_type_id'   => 'seat-type-id-0',
+						'seat_label'     => $seat_label,
+					],
+				],
+			],
+			$sessions->get_reservations_for_token( 'some-token' )
+		);
+	}
+
+	/**
+	 * The ticket ID arrives as a key in the request body, so nothing but this check ties the
+	 * reservation to the post the token was issued for.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_ticket_from_another_post(): void {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->given_the_request_body_is_read_from( $request_body );
+
+		$post_id       = self::factory()->post->create();
+		$other_post_id = self::factory()->post->create();
+		$other_ticket  = $this->create_tc_ticket( $other_post_id, 23 );
+		update_post_meta( $other_ticket, Meta::META_KEY_SEAT_TYPE, 'seat-type-id-0' );
+
+		$sessions = tribe( Sessions::class );
+		$this->given_a_started_session( 'some-token', $post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$other_ticket => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => 'seat-type-id-0',
+							'seatLabel'     => 'A-1',
+						],
+					],
+				],
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Invalid reservation data' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * A seat type the ticket does not carry is how a cheap ticket ends up labelled as a VIP seat.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_seat_type_the_ticket_does_not_have(): void {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->given_the_request_body_is_read_from( $request_body );
+
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+
+		$sessions = tribe( Sessions::class );
+		$this->given_a_started_session( 'some-token', $post_id );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'vip',
+					'seatLabel'  => 'VIP A1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => 'vip',
+							'seatLabel'     => 'VIP A1',
+						],
+					],
+				],
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Invalid reservation data' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * The row is written when the modal renders, so mere existence proves the token was issued,
+	 * not that the visitor ever opened the timer behind it.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_token_whose_timer_never_started(): void {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->given_the_request_body_is_read_from( $request_body );
+
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+
+		$sessions = tribe( Sessions::class );
+		/* Render-time row only: the timer start action is deliberately not called. */
+		$sessions->insert_or_update( 'some-token', $post_id, strtotime( '2030-01-01 00:00:00' ) );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => 'general-admission',
+							'seatLabel'     => 'A-1',
+						],
+					],
+				],
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Invalid session token' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * The seat type the ticket does carry is the one case that has to keep working.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_accepts_the_tickets_own_seat_type(): void {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->given_the_request_body_is_read_from( $request_body );
+
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+
+		$sessions = tribe( Sessions::class );
+		$this->given_a_started_session( 'some-token', $post_id );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => 'general-admission',
+							'seatLabel'     => 'A-1',
+						],
+					],
+				],
+			]
+		);
+
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->assertEquals(
+			[
+				$ticket_id => [
+					[
+						'reservation_id' => 'reservation-id-1',
+						'seat_type_id'   => 'general-admission',
+						'seat_label'     => 'A-1',
+					],
+				],
+			],
+			$sessions->get_reservations_for_token( 'some-token' )
+		);
+	}
+
+	/**
+	 * Mocks the service answering a reservation lookup for the post.
+	 *
+	 * @param int                 $post_id  The post the reservations were made for.
+	 * @param array<array>|null   $items    What the service knows, or null to have the request fail.
+	 * @param array<string>       $ids      The ids the plugin is expected to ask about.
+	 */
+	private function given_the_service_describes( int $post_id, ?array $items, array $ids ): void {
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'post-uuid-' . $post_id );
+		$this->set_oauth_token( 'some-token' );
+
+		$this->mock_wp_remote(
+			'post',
+			tribe( Reservations::class )->get_lookup_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'post-uuid-' . $post_id,
+						'ids'     => $ids,
+					]
+				),
+			],
+			function () use ( $items ) {
+				if ( null === $items ) {
+					return new WP_Error( 'http_request_failed', 'Service unreachable' );
+				}
+
+				return [
+					'response' => [ 'code' => 200 ],
+					'body'     => wp_json_encode(
+						[
+							'success' => true,
+							'data'    => [ 'items' => $items ],
+						]
+					),
+				];
+			}
+		);
+	}
+
+	/**
+	 * Posts one reservation for the ticket and returns the session store, so the lookup tests share a shape.
+	 */
+	private function post_one_reservation( int $post_id, int $ticket_id, string $seat_type_id, string $seat_label ): Sessions {
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->given_the_request_body_is_read_from( $request_body );
+		update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, 'general-admission' );
+		$this->given_a_started_session( 'some-token', $post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => [
+					$ticket_id => [
+						[
+							'reservationId' => 'reservation-id-1',
+							'seatTypeId'    => $seat_type_id,
+							'seatLabel'     => $seat_label,
+						],
+					],
+				],
+			]
+		);
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		return tribe( Sessions::class );
+	}
+
+	/**
+	 * The label and seat type the browser posts are only what the visitor typed; the service is the
+	 * one party that knows which seat the reservation actually holds.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_stores_the_seat_the_service_reserved(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'VIP A1' );
+
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1 ), $wp_send_json_success->get_calls_as_string() );
+		$this->assertEquals(
+			[
+				$ticket_id => [
+					[
+						'reservation_id' => 'reservation-id-1',
+						'seat_type_id'   => 'general-admission',
+						'seat_label'     => 'A-1',
+					],
+				],
+			],
+			$sessions->get_reservations_for_token( 'some-token' )
+		);
+	}
+
+	/**
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_reservation_the_service_does_not_know(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes( $post_id, [], [ 'reservation-id-1' ] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * A real reservation made for one ticket cannot be filed under a cheaper one.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_a_reservation_held_for_another_ticket(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes(
+			$post_id,
+			[
+				[
+					'id'         => 'reservation-id-1',
+					'ticketId'   => $ticket_id + 1,
+					'seatTypeId' => 'general-admission',
+					'seatLabel'  => 'A-1',
+					'status'     => 'pending',
+				],
+			],
+			[ 'reservation-id-1' ]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * Without the service there is nothing to check the browser's claim against, so nothing is stored.
+	 *
+	 * @test
+	 * @covers Ajax::update_reservations
+	 */
+	public function test_update_reservations_refuses_when_the_service_cannot_be_reached(): void {
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$this->given_the_service_describes( $post_id, null, [ 'reservation-id-1' ] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		$sessions = $this->post_one_reservation( $post_id, $ticket_id, 'general-admission', 'A-1' );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1, [ 'error' => 'Invalid reservation data' ], 403 ),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+	}
+
+	/**
+	 * Clearing a session cancels its reservations, so a token naming someone else's post would
+	 * release seats the caller never held.
+	 *
+	 * @test
+	 * @covers Ajax::clear_reservations
+	 */
+	public function test_clear_reservations_refuses_a_token_issued_for_another_post(): void {
+		$this->set_up_ajax_request_context( 0 );
+
+		$token_post_id   = self::factory()->post->create();
+		$claimed_post_id = self::factory()->post->create();
+		$this->given_a_started_session( 'some-token', $token_post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $claimed_post_id;
+		$_REQUEST['token']  = 'some-token';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Invalid session token' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
 	}
 
 	public function test_clear_reservations(): void {
 		$this->set_up_ajax_request_context( 0 );
 		$sessions = tribe( Sessions::class );
-		$sessions->insert_or_update( 'some-token', self::factory()->post->create(), time() + 100 );
+		$post_id  = self::factory()->post->create();
+		$this->given_a_started_session( 'some-token', $post_id );
 		$reservations_data = $this->create_mock_reservations_data( [ 23 ], 2 );
 		$sessions->update_reservations( 'some-token', $reservations_data );
-		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'some-post-uuid' );
 		$this->set_oauth_token( 'some-token' );
 

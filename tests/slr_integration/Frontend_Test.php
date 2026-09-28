@@ -6,10 +6,13 @@ use Closure;
 use Generator;
 use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Seating\Frontend;
+use TEC\Tickets\Seating\Frontend\Session;
+use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Service;
@@ -28,8 +31,11 @@ use Tribe__Tickets__Tickets as Tickets;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Seating\Orders\Cart;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
+use WP_Query;
 
 class Frontend_Test extends Controller_Test_Case {
+	use Seating_Sessions;
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use Order_Maker;
@@ -121,6 +127,133 @@ class Frontend_Test extends Controller_Test_Case {
 				return true;
 			},
 		];
+	}
+
+	/**
+	 * The modal carries a token the Seating service issued for one visitor, so a cached copy of the
+	 * page hands that same token to everyone it is served to.
+	 *
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_prevent_caching_on_a_page_rendering_the_modal(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		$GLOBALS['post'] = $post_id;
+		$this->set_fn_return( 'is_singular', true );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->prevent_caching();
+
+		$this->assertTrue( $nocache_headers_sent );
+	}
+
+	/**
+	 * The tickets block renders from post content, so it embeds a token on responses that are not a
+	 * singular ticketable post at all — an archive showing full content, for one.
+	 *
+	 * @test
+	 * @covers Frontend::print_tickets_block
+	 */
+	public function test_prevent_caching_when_the_block_renders_off_a_singular_page(): void {
+		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, 100 );
+		$this->create_tc_ticket( $post_id, 20 );
+
+		/* The response is not a singular ticketable post, so the template_redirect guard does not fire. */
+		$this->set_fn_return( 'is_singular', false );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$this->given_the_seat_selection_block_was_rendered( $post_id, 'test-ephemeral-token' );
+
+		$this->assertTrue(
+			$nocache_headers_sent,
+			'A response embedding a seat selection token must not be cacheable.'
+		);
+	}
+
+	/**
+	 * An archive rendering full content embeds a token for every seated post it lists, and it is not
+	 * singular, so the response has to be recognised from the main query while headers can still be set.
+	 *
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_prevent_caching_on_an_archive_listing_a_seated_post(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$seated_post_id = static::factory()->post->create();
+		update_post_meta( $seated_post_id, Meta::META_KEY_ENABLED, '1' );
+		update_post_meta( $seated_post_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		$this->set_fn_return( 'is_singular', false );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		global $wp_query;
+		$original_query = $wp_query;
+		$wp_query       = new WP_Query( [ 'post__in' => [ $seated_post_id ], 'post_type' => 'post' ] );
+
+		$this->make_controller()->prevent_caching();
+
+		/* Restore before asserting so a failure cannot leak the query into later tests. */
+		$wp_query = $original_query;
+
+		$this->assertTrue(
+			$nocache_headers_sent,
+			'An archive listing a seated post embeds a token and must not be cacheable.'
+		);
+	}
+
+	/**
+	 * @test
+	 * @covers Frontend::prevent_caching
+	 */
+	public function test_does_not_prevent_caching_on_a_page_without_the_modal(): void {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'page', 'post' ] );
+		$post_id         = static::factory()->post->create();
+		$GLOBALS['post'] = $post_id;
+		$this->set_fn_return( 'is_singular', true );
+
+		$nocache_headers_sent = false;
+		$this->set_fn_return(
+			'nocache_headers',
+			function () use ( &$nocache_headers_sent ) {
+				$nocache_headers_sent = true;
+			},
+			true
+		);
+
+		$controller = $this->make_controller();
+		$controller->prevent_caching();
+
+		$this->assertFalse( $nocache_headers_sent );
 	}
 
 	/**
@@ -709,6 +842,140 @@ class Frontend_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * Renders the seat selection block the way a visitor's page load does, with the Seating service
+	 * stubbed to issue a known token.
+	 *
+	 * @param int    $post_id The post to render the block for.
+	 * @param string $token   The token the stubbed service issues.
+	 *
+	 * @return void
+	 */
+	private function given_the_seat_selection_block_was_rendered( int $post_id, string $token ): void {
+		$this->test_services->singleton(
+			Service::class,
+			function () use ( $token ) {
+				return $this->make(
+					Service::class,
+					[
+						'frontend_base_url'   => 'https://service.test.local',
+						'backend_base_url'    => 'https://service.test.local',
+						'get_ephemeral_token' => $token,
+						'get_post_uuid'       => 'test-post-uuid',
+					]
+				);
+			}
+		);
+
+		$this->make_controller()->register();
+
+		tribe( Tickets_View::class )->get_tickets_block( $post_id );
+	}
+
+	/**
+	 * The timer can only tell an issued token from an invented one because rendering records it.
+	 *
+	 * @test
+	 */
+	public function should_record_the_session_when_the_seat_selection_block_renders(): void {
+		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, 100 );
+		$this->create_tc_ticket( $post_id, 20 );
+
+		$sessions = tribe( Sessions::class );
+		$this->assertFalse(
+			$sessions->token_exists_for_post( 'test-ephemeral-token', $post_id ),
+			'Nothing should be recorded before the block renders.'
+		);
+
+		$this->given_the_seat_selection_block_was_rendered( $post_id, 'test-ephemeral-token' );
+
+		$this->assertTrue(
+			$sessions->token_exists_for_post( 'test-ephemeral-token', $post_id ),
+			'Rendering the block should record the token the service issued.'
+		);
+		$this->assertFalse(
+			$sessions->token_exists_for_post( 'test-ephemeral-token', $post_id + 1 ),
+			'The recorded token should belong to the post it was issued for.'
+		);
+	}
+
+	/**
+	 * The whole point of the feature: a visitor renders the block, the timer starts, and re-opening
+	 * the seat selection does not buy them more time.
+	 *
+	 * @test
+	 */
+	public function should_start_the_timer_for_a_rendered_token_without_extending_it(): void {
+		$post_id = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+		update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, 100 );
+		$this->create_tc_ticket( $post_id, 20 );
+
+		$this->given_the_seat_selection_block_was_rendered( $post_id, 'test-ephemeral-token' );
+
+		$sessions            = tribe( Sessions::class );
+		$timeout             = tribe( Timer::class )->get_timeout( $post_id );
+		$rendered_expiration = $this->get_stored_expiration( 'test-ephemeral-token' );
+
+		/* Rendering stores the token's own lifetime, which is longer than the timer's. */
+		$this->assertGreaterThan(
+			$timeout,
+			$sessions->get_seconds_left( 'test-ephemeral-token' ),
+			'Before the timer starts the row should carry the token lifetime, not the timer one.'
+		);
+
+		$_REQUEST['_ajaxNonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']      = 'test-ephemeral-token';
+		$_REQUEST['postId']     = $post_id;
+
+		$success = null;
+		$this->set_fn_return( 'wp_send_json_success', function ( $data = null ) use ( &$success ) {
+			$success = $data;
+		}, true );
+
+		tribe( Timer::class )->register();
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
+
+		$this->assertEquals( $timeout, $success['secondsLeft'] ?? null, 'Starting the timer should succeed.' );
+		$started_expiration = $this->get_stored_expiration( 'test-ephemeral-token' );
+		$this->assertLessThan(
+			$rendered_expiration,
+			$started_expiration,
+			'Starting the timer should bring the expiration down to the timer window.'
+		);
+
+		/* Re-open the seat selection five minutes in: without a guard this would buy more time. */
+		$this->freeze_time( Dates::immutable( '@' . ( $started_expiration - $timeout + 300 ) ) );
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
+
+		$this->assertEquals(
+			$started_expiration,
+			$this->get_stored_expiration( 'test-ephemeral-token' ),
+			'A second start must not extend a running hold.'
+		);
+	}
+
+	/**
+	 * Reads a session's stored expiration timestamp straight from the table.
+	 *
+	 * @param string $token The session token to read.
+	 *
+	 * @return int The stored expiration timestamp.
+	 */
+	private function get_stored_expiration( string $token ): int {
+		return absint(
+			DB::get_var(
+				DB::prepare(
+					'SELECT expiration FROM %i WHERE token = %s',
+					Sessions::table_name(),
+					$token
+				)
+			)
+		);
+	}
+
+	/**
 	 * it should_replace_ticket_block_when_seating_is_enabled
 	 *
 	 * @test
@@ -913,7 +1180,7 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertNull( $session->get_session_token_object_id() );
 
 		$session->add_entry( $event_id, 'test-token-1' );
-		$sessions->insert_or_update( 'test-token-1', $event_id, time() + 100 );
+		$this->given_a_started_session( 'test-token-1', $event_id );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ $ticket_id ], 2 ) );
 
 		$this->assertEquals( [ 'test-token-1', $event_id ], $session->get_session_token_object_id() );

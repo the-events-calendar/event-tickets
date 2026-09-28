@@ -8,8 +8,10 @@ use PHPUnit\Framework\Assert;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Abstract_Cart;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Order_Modifiers\Models\Coupon;
+use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Order_Modifiers\Repositories\Coupons as CouponsRepository;
 use TEC\Tickets\Commerce\Values\Currency_Value;
 use Tribe\Tests\Traits\With_Clock_Mock;
@@ -202,6 +204,54 @@ class Coupons_Test extends Controller_Test_Case {
 				];
 			},
 		];
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_payment_intent_valid_for_the_discounted_cart() {
+		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', false );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'should_show', true );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'is_active', true );
+		$this->set_class_fn_return( Abstract_Gateway::class, 'is_enabled', true );
+
+		$this->make_controller()->register();
+
+		$coupon = $this->create_coupon( [ 'raw_amount' => 15 ] );
+		$cart   = $this->set_up_cart_with_ticket();
+
+		$sent_body = [];
+		$this->set_class_fn_return(
+			Payment_Intent::class,
+			'update',
+			function ( $id, $body ) use ( &$sent_body ) {
+				$sent_body = $body;
+
+				return true;
+			},
+			true
+		);
+
+		$this->assert_endpoint(
+			'/coupons/apply',
+			'POST',
+			false,
+			[
+				'coupon'            => $coupon->slug,
+				'cart_hash'         => $cart->get_hash(),
+				'payment_intent_id' => 'pi_fake',
+			],
+			200
+		);
+
+		$this->assertNotEmpty( $sent_body, 'A Stripe checkout must push the new cart total to the Payment Intent.' );
+
+		$payment_intent = array_merge( [ 'id' => 'pi_fake' ], $sent_body );
+
+		$this->assertTrue(
+			Payment_Intent::is_valid_for_cart( $payment_intent, tribe( Cart::class ) ),
+			'The Payment Intent left by a coupon apply must still satisfy the checkout validation gate.'
+		);
 	}
 
 	protected function create_data() {

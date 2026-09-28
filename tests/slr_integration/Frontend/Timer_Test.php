@@ -23,7 +23,12 @@ use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Common\StellarWP\Assets\Assets;
+use Tribe\Tests\Traits\WP_Send_Json_Mocks;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
+
 class Timer_Test extends Controller_Test_Case {
+	use Seating_Sessions;
+	use WP_Send_Json_Mocks;
 	use SnapshotAssertions;
 	use With_Uopz;
 	use WP_Remote_Mocks;
@@ -134,7 +139,7 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
-		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
+		$this->given_a_started_session( 'test-token', $post_id );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		ob_start();
@@ -173,7 +178,7 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( $post_id, 'test-token' );
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
-		$sessions->insert_or_update( 'test-token', $post_id, time() + 100 );
+		$this->given_a_started_session( 'test-token', $post_id );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		$token = 'test-token';
@@ -368,12 +373,51 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
 		$this->assertEquals( 200, $wp_send_json_success_code );
-		$timeout = $timer->get_timeout( 23 );
-		$this->assertEquals( $timeout, $wp_send_json_success_data['secondsLeft'] );
+		$this->assertEqualsWithDelta( 100, $wp_send_json_success_data['secondsLeft'], 5 );
 		$this->assertEqualsWithDelta( time(), (int) $wp_send_json_success_data['timestamp'], 5 );
 	}
 
-	public function test_ajax_start_fails_if_session_upsert_fails(): void {
+	/**
+	 * A token the site never issued has no session row, so the timer must refuse to open one for it.
+	 */
+	public function test_ajax_start_rejects_a_token_the_site_never_issued(): void {
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'attacker-chosen-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		$wp_send_json_error_data = null;
+		$wp_send_json_error_code = null;
+		$this->set_fn_return( 'wp_send_json_error',
+			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
+				$wp_send_json_error_data = $data;
+				$wp_send_json_error_code = $code;
+			},
+			true );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
+
+		$this->assertEquals( 403, $wp_send_json_error_code );
+		$this->assertEquals( [ 'error' => 'Invalid session token' ], $wp_send_json_error_data );
+		$this->assertEquals(
+			0,
+			DB::get_var(
+				DB::prepare(
+					'SELECT COUNT(*) FROM %i WHERE token = %s',
+					Sessions::table_name(),
+					'attacker-chosen-token'
+				)
+			),
+			'No session row should have been created for an unissued token.'
+		);
+	}
+
+	public function test_ajax_start_fails_if_session_confirmation_fails(): void {
+		tribe( Sessions::class )->insert_or_update( 'test-token', 23, strtotime( '2100-01-01 00:00:00' ) );
+
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
 		$_REQUEST['token']       = 'test-token';
@@ -389,9 +433,43 @@ class Timer_Test extends Controller_Test_Case {
 				$wp_send_json_error_code = $code;
 			},
 			true );
-		// Mock the Sessions table dependency of the service to return `false` on the `insert_or_update` method.
+		// Mock the Sessions table dependency of the service to fail the token lookup.
 		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'insert_or_update' => false
+			'token_exists_for_post' => false
+		] ) );
+
+		$timer = $this->make_controller();
+		$timer->register();
+
+		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
+
+		$this->assertEquals( 403, $wp_send_json_error_code );
+		$this->assertEquals( [
+			'error' => 'Invalid session token',
+		], $wp_send_json_error_data );
+	}
+
+	public function test_ajax_start_fails_if_the_timer_cannot_be_started(): void {
+		// The token is valid; only the write fails.
+		tribe( Sessions::class )->insert_or_update( 'test-token', 23, strtotime( '2100-01-01 00:00:00' ) );
+
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = 23;
+		$this->set_oauth_token( 'auth-token' );
+
+		$wp_send_json_error_data = null;
+		$wp_send_json_error_code = null;
+		$this->set_fn_return( 'wp_send_json_error',
+			function ( $data, $code = 200 ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
+				$wp_send_json_error_data = $data;
+				$wp_send_json_error_code = $code;
+			},
+			true );
+
+		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
+			'token_exists_for_post' => true,
+			'start_timer'           => false,
 		] ) );
 
 		$timer = $this->make_controller();
@@ -400,9 +478,49 @@ class Timer_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Timer::ACTION_START );
 
 		$this->assertEquals( 500, $wp_send_json_error_code );
-		$this->assertEquals( [
-			'error' => 'Failed to start timer',
-		], $wp_send_json_error_data );
+		$this->assertEquals( [ 'error' => 'Failed to start timer' ], $wp_send_json_error_data );
+	}
+
+	/**
+	 * The token is the only thing these three actions key on otherwise, and it ships in the iframe
+	 * URL and the page DOM where a full-page cache can hand it to every visitor at once.
+	 *
+	 * @test
+	 * @dataProvider token_keyed_ajax_action_provider
+	 * @covers Timer::ajax_sync
+	 * @covers Timer::ajax_interrupt
+	 * @covers Timer::ajax_pause_to_checkout
+	 */
+	public function test_token_keyed_actions_refuse_a_token_issued_for_another_post( string $action ): void {
+		$token_post_id   = self::factory()->post->create();
+		$claimed_post_id = self::factory()->post->create();
+
+		$this->given_a_started_session( 'test-token', $token_post_id );
+
+		$this->make_controller()->register();
+
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
+		$_REQUEST['token']       = 'test-token';
+		$_REQUEST['postId']      = $claimed_post_id;
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . $action );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'Invalid session token' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+	}
+
+	public function token_keyed_ajax_action_provider(): \Generator {
+		yield 'sync' => [ Timer::ACTION_SYNC ];
+		yield 'interrupt' => [ Timer::ACTION_INTERRUPT_GET_DATA ];
+		yield 'pause to checkout' => [ Timer::ACTION_PAUSE_TO_CHECKOUT ];
 	}
 
 	public function test_ajax_sync_with_stock(): void {
@@ -956,7 +1074,7 @@ class Timer_Test extends Controller_Test_Case {
 		update_post_meta( $post_with_assigned_seating, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 		$session  = tribe( Session::class );
 		$sessions = tribe( Sessions::class );
-		$sessions->insert_or_update( 'test-token', $post_with_assigned_seating, time() + 100 );
+		$this->given_a_started_session( 'test-token', $post_with_assigned_seating );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 		$session->add_entry( $post_with_assigned_seating, 'test-token' );
 
@@ -1049,6 +1167,8 @@ class Timer_Test extends Controller_Test_Case {
 			'get_events_ticket_capacity_for_seating' => 2
 		] ) );
 		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
+			/* The double stands in for a started session the site issued for this post. */
+			'token_exists_for_post'          => true,
 			'set_token_expiration_timestamp' => false
 		] ) );
 
@@ -1092,6 +1212,8 @@ class Timer_Test extends Controller_Test_Case {
 		] ) );
 		$assert = $this;
 		$this->test_services->bind( Sessions::class, $this->makeEmpty( Sessions::class, [
+			/* The double stands in for a started session the site issued for this post. */
+			'token_exists_for_post'          => true,
 			'set_token_expiration_timestamp' => function ( string $token, int $timestamp, bool $lock ) use ( $grace_time, $assert ) {
 				$assert->assertEquals( $token, 'test-token' );
 				$assert->assertEqualsWithDelta( time() + $grace_time, $timestamp, 5);

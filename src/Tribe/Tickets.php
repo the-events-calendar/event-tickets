@@ -1987,13 +1987,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @static
 		 *
 		 * @param int $post_id ID of parent "event" post.
-		 * @return mixed
+		 * @return int
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
+			// Post ID is required.
+			if ( empty( $post_id ) ) {
+				return 0;
+			}
+
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees();
 
-			return $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
+			$found = $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
+
+			$cache[ $key ] = $found;
+
+			return $found;
 		}
 
 		// End Attendees.
@@ -4156,6 +4173,42 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Pass the control to the child object.
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
+
+			/*
+			 * The sale end date is added, not updated, on ticket creation, so the usual
+			 * manual-update flag does not fire. Flag explicitly supplied custom sale end
+			 * dates so later event start changes do not overwrite them.
+			 */
+			if (
+				! $update
+				&& ! empty( $ticket->ID )
+				&& ! empty( $data['ticket_end_date'] )
+				&& ! empty( $ticket->end_date )
+				&& ! $tickets_handler->has_manual_update( $ticket->ID, $tickets_handler->key_end_date )
+			) {
+				$event_start = get_post_meta( $post_id, '_EventStartDate', true );
+				$is_default  = false;
+
+				if ( $event_start ) {
+					$event_ts = strtotime( $event_start );
+
+					// Some providers normalize the ticket end date to a full datetime; rebuild it
+					// from the date part so the end time is not appended twice below.
+					$end_date_ts = strtotime( $ticket->end_date );
+					$end_date    = gmdate( Tribe__Date_Utils::DBDATEFORMAT, $end_date_ts );
+
+					if ( ! empty( $ticket->end_time ) ) {
+						$ticket_ts  = strtotime( $end_date . ' ' . $ticket->end_time );
+						$is_default = false !== $event_ts && false !== $end_date_ts && false !== $ticket_ts && $event_ts === $ticket_ts;
+					} else {
+						$is_default = false !== $event_ts && false !== $end_date_ts && $end_date === gmdate( Tribe__Date_Utils::DBDATEFORMAT, $event_ts );
+					}
+				}
+
+				if ( ! $is_default ) {
+					add_post_meta( $ticket->ID, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+				}
+			}
 
 			// Set the ticket type before the module saves the ticket.
 			$ticket_type = 'default';

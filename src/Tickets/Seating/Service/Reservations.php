@@ -130,6 +130,113 @@ class Reservations {
 	}
 
 	/**
+	 * Fetches, from the service, what the given reservations actually are.
+	 *
+	 * @since 5.29.5.1
+	 *
+	 * @param int      $object_id The post the reservations were made for.
+	 * @param string[] $ids       The reservation IDs to look up.
+	 *
+	 * @return array<string,array{id: string, ticketId: int, seatTypeId: string, seatLabel: string, status: string}>|null
+	 *                                A map from reservation ID to what the service holds for it, missing the IDs the
+	 *                                service does not know; `null` when the service could not be asked.
+	 */
+	public function fetch( int $object_id, array $ids ): ?array {
+		if ( empty( $ids ) ) {
+			return [];
+		}
+
+		$object_uuid = get_post_meta( $object_id, Meta::META_KEY_UUID, true );
+
+		if ( empty( $object_uuid ) ) {
+			return null;
+		}
+
+		$response = wp_remote_post(
+			$this->get_lookup_url(),
+			[
+				'headers' => [
+					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => wp_json_encode(
+					[
+						'eventId' => $object_uuid,
+						'ids'     => array_values( $ids ),
+					]
+				),
+			]
+		);
+
+		if ( is_wp_error( $response ) ) {
+			$this->log_error(
+				'Looking up the reservations.',
+				[
+					'source' => __METHOD__,
+					'code'   => $response->get_error_code(),
+					'error'  => $response->get_error_message(),
+				]
+			);
+
+			return null;
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+
+		if ( 200 !== $code ) {
+			$this->log_error(
+				'Looking up the reservations.',
+				[
+					'source' => __METHOD__,
+					'code'   => $code,
+				]
+			);
+
+			return null;
+		}
+
+		$decoded = json_decode( wp_remote_retrieve_body( $response ), true, 512 );
+
+		if ( ! (
+			$decoded
+			&& is_array( $decoded )
+			&& ! empty( $decoded['success'] )
+			&& isset( $decoded['data']['items'] )
+			&& is_array( $decoded['data']['items'] )
+		) ) {
+			$this->log_error(
+				'Looking up the reservations.',
+				[
+					'source' => __METHOD__,
+					'body'   => substr( wp_remote_retrieve_body( $response ), 0, 100 ),
+				]
+			);
+
+			return null;
+		}
+
+		$known = [];
+		foreach ( $decoded['data']['items'] as $item ) {
+			if ( is_array( $item ) && isset( $item['id'] ) && is_string( $item['id'] ) ) {
+				$known[ $item['id'] ] = $item;
+			}
+		}
+
+		return $known;
+	}
+
+	/**
+	 * Returns the URL to the endpoint to look up the reservations.
+	 *
+	 * @since 5.29.5.1
+	 *
+	 * @return string The URL to the endpoint to look up the reservations.
+	 */
+	public function get_lookup_url(): string {
+		return $this->service_fetch_url . '/lookup';
+	}
+
+	/**
 	 * Returns the URL to the endpoint to cancel the reservations.
 	 *
 	 * @since 5.16.0

@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Orders;
 
 use Closure;
+use Faker\Factory;
 use Generator;
 use PHPUnit\Framework\AssertionFailedError;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
@@ -41,8 +42,10 @@ use TEC\Tickets\Seating\Tables\Seat_Types;
 use TEC\Tickets\Seating\Tests\Integration\Truncates_Custom_Tables;
 use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Commerce\Reports\Attendance_Totals;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
 
 class Controller_Test extends Controller_Test_Case {
+	use Seating_Sessions;
 	use SnapshotAssertions;
 	use With_Uopz;
 	use Ticket_Maker;
@@ -173,7 +176,7 @@ class Controller_Test extends Controller_Test_Case {
 				$session->add_entry( $event_id, 'test-token' );
 				// Create a session in the database for user on the event.
 				$sessions = tribe( Sessions::class );
-				$sessions->insert_or_update( 'test-token', $event_id, time() + DAY_IN_SECONDS );
+				$this->given_a_started_session( 'test-token', $event_id );
 				$sessions->update_reservations(
 					'test-token',
 					$this->create_mock_reservations_data( [ $ticket_id ], 3 )
@@ -686,6 +689,179 @@ class Controller_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * A label already in the database predates any write-side sanitizer, and the list table echoes
+	 * whatever a column handler returns, so the escaping has to happen on the way out.
+	 *
+	 * @test
+	 * @covers Attendee::render_seat_column
+	 */
+	public function test_seat_column_escapes_the_stored_seat_label() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tribe_attendees()->by( 'event_id', $event_id )->first()->ID;
+
+		$faker      = Factory::create();
+		$seat_label = $faker->bothify( '?-##' );
+		$stored     = $seat_label . sprintf( '<img src=x onerror=%s>', $faker->word() );
+
+		/* Write the row directly: update_post_meta() would sanitize the value this test needs stored. */
+		global $wpdb;
+		$wpdb->insert(
+			$wpdb->postmeta,
+			[
+				'post_id'    => $attendee_id,
+				'meta_key'   => Meta::META_KEY_ATTENDEE_SEAT_LABEL,
+				'meta_value' => $stored,
+			]
+		);
+		wp_cache_delete( $attendee_id, 'post_meta' );
+
+		$this->make_controller()->register();
+
+		$rendered = tribe( Orders_Attendee::class )->render_seat_column(
+			'',
+			[
+				'attendee_id' => $attendee_id,
+				'product_id'  => $ticket_id,
+			],
+			'seat'
+		);
+
+		$this->assertEquals( esc_html( $stored ), $rendered );
+	}
+
+	/**
+	 * The CSV export reads its values through the same column filter as the list table, but strips
+	 * tags and decodes entities afterwards, so the label has to reach the file as plain text.
+	 *
+	 * @test
+	 * @covers Attendee::render_seat_column
+	 */
+	public function test_seat_column_export_is_not_html_encoded() {
+		$_GET['search'] = '';
+		$_GET['page']   = 'tickets-attendees';
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tribe_attendees()->by( 'event_id', $event_id )->first()->ID;
+
+		$faker = Factory::create();
+		/* An ampersand is the character esc_html() would change and the export has to give back. */
+		$seat_label = sprintf( '%s & %s', $faker->bothify( '?-##' ), $faker->bothify( '?-##' ) );
+		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seat_label );
+
+		$this->make_controller()->register();
+
+		/* get_hidden_columns() needs an admin screen this test has no reason to build. */
+		$this->set_fn_return( 'get_hidden_columns', [] );
+
+		$_GET['event_id'] = $event_id;
+		$attendees        = tribe( Attendees::class );
+		$attendees->screen_setup();
+		$rows = $attendees->generate_filtered_list( $event_id );
+
+		$seat_column = array_search( 'Seat', $rows[0], true );
+		$this->assertNotFalse( $seat_column, 'The export should carry a Seat column.' );
+		$this->assertEquals( $seat_label, $rows[1][ $seat_column ] );
+	}
+
+	/**
+	 * The all-events list passes event id 0, so there is no single event to check; the column should
+	 * follow whether any attendee actually has a seat to show.
+	 *
+	 * @test
+	 * @covers Attendee::add_attendee_seat_column
+	 */
+	public function test_seat_column_follows_whether_any_attendee_is_seated() {
+		$columns = [ 'ticket' => 'Ticket', 'status' => 'Status' ];
+
+		tribe_cache()->reset();
+		$this->assertArrayNotHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, 0 ),
+			'With no seated attendee the column has nothing to show.'
+		);
+
+		/* Tribe__Cache reads a stored `false` back as absent, so the negative answer needs checking. */
+		$this->assertTrue(
+			isset( tribe_cache()['tec_tickets_seating_site_has_seated_attendees'] ),
+			'The no-seating answer should be cached rather than re-queried on every call.'
+		);
+
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Seated event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+		/* A layout on the event is not a seated attendee: the column stays out until one exists. */
+		tribe_cache()->reset();
+		$this->assertArrayNotHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, 0 ),
+			'A configured layout alone should not bring the column back.'
+		);
+
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		$this->create_order( [ $ticket_id => 1 ] );
+		$attendee_id = tribe_attendees()->by( 'event_id', $event_id )->first()->ID;
+
+		/* Written empty on purpose: a seated attendee with no assigned seat still carries the key. */
+		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, '' );
+
+		tribe_cache()->reset();
+		$this->assertArrayHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, 0 ),
+			'A seated attendee, even an unassigned one, belongs in the column.'
+		);
+
+		$unseated_id = tribe_events()->set_args(
+			[
+				'title'      => 'Unseated event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		$this->assertArrayNotHasKey(
+			'seat',
+			tribe( Orders_Attendee::class )->add_attendee_seat_column( $columns, $unseated_id ),
+			'A single event with no layout should still be excluded.'
+		);
+	}
+
+	/**
 	 * @test
 	 * @covers Attendee::include_seat_info_in_email
 	 */
@@ -1142,6 +1318,135 @@ class Controller_Test extends Controller_Test_Case {
 			$wp_send_json_success->get_calls_as_string()
 		);
 		$this->reset_wp_send_json_mocks();
+	}
+
+	/**
+	 * The capability is checked against the post the request names, so without this an editor of one
+	 * event can rewrite the seats of attendees on every other one.
+	 *
+	 * @test
+	 * @covers Controller::update_reservation
+	 */
+	public function test_update_reservation_refuses_an_attendee_from_another_post(): void {
+		$editor = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $editor );
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+
+		$request_body = '';
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file ) use ( &$request_body ) {
+				if ( 'php://input' === $file ) {
+					return $request_body;
+				}
+
+				return file_get_contents( $file );
+			},
+			true
+		);
+
+		$edited_post_id = self::factory()->post->create();
+		$other_post_id  = self::factory()->post->create();
+		$other_ticket   = $this->create_tc_ticket( $other_post_id );
+		$this->create_order( [ $other_ticket => 1 ] );
+		[ $other_attendee ] = tribe_attendees()->by( 'event_id', $other_post_id )->get_ids();
+
+		update_post_meta( $other_attendee, Meta::META_KEY_SEAT_TYPE, 'original-seat-type' );
+		update_post_meta( $other_attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'original-label' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $edited_post_id;
+		$request_body       = wp_json_encode(
+			[
+				'attendeeId'    => $other_attendee,
+				'reservationId' => 'moved-reservation-id',
+				'seatTypeId'    => 'vip',
+				'seatLabel'     => 'VIP A1',
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'You do not have permission to perform this action.' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEquals( 'original-seat-type', get_post_meta( $other_attendee, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'original-label', get_post_meta( $other_attendee, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+	}
+
+	/**
+	 * move_tickets() only checks the target ticket exists, so an unbound ticketId reaches a ticket
+	 * on another event and moves the attendee onto it.
+	 *
+	 * @test
+	 * @covers Controller::update_reservation
+	 */
+	public function test_update_reservation_refuses_a_ticket_from_another_post(): void {
+		$editor = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $editor );
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+
+		$request_body = '';
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( $file ) use ( &$request_body ) {
+				if ( 'php://input' === $file ) {
+					return $request_body;
+				}
+
+				return file_get_contents( $file );
+			},
+			true
+		);
+
+		$edited_post_id = self::factory()->post->create();
+		$edited_ticket  = $this->create_tc_ticket( $edited_post_id );
+		$this->create_order( [ $edited_ticket => 1 ] );
+		[ $attendee ] = tribe_attendees()->by( 'event_id', $edited_post_id )->get_ids();
+
+		$other_post_id = self::factory()->post->create();
+		$other_ticket  = $this->create_tc_ticket( $other_post_id );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$_REQUEST['postId'] = $edited_post_id;
+		$request_body       = wp_json_encode(
+			[
+				'attendeeId'    => $attendee,
+				'ticketId'      => $other_ticket,
+				'reservationId' => 'some-reservation-id',
+				'seatTypeId'    => 'some-seat-type',
+				'seatLabel'     => 'A-1',
+			]
+		);
+
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with(
+				1,
+				[ 'error' => 'You do not have permission to perform this action.' ],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertEquals(
+			$edited_ticket,
+			absint( get_post_meta( $attendee, Module::ATTENDEE_PRODUCT_KEY, true ) ),
+			'the attendee must still be on its own event\'s ticket'
+		);
 	}
 
 	public function test_update_reservation(): void {

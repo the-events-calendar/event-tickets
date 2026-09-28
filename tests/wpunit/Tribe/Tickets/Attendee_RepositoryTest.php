@@ -36,6 +36,22 @@ class Attendee_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * It should not let an array-form `orderby` inject SQL through the order direction.
+	 *
+	 * @test
+	 */
+	public function should_not_allow_sql_injection_through_array_form_orderby(): void {
+		$repository = tribe_attendees();
+		$repository->by_args( [ 'orderby' => [ 'security_code' => 'DESC, (SELECT 1)' ] ] );
+		$repository->get_ids();
+
+		$sql = $repository->get_query()->request;
+
+		$this->assertStringNotContainsString( 'SELECT 1', $sql );
+		$this->assertRegExp( '/security_code DESC/', $sql );
+	}
+
+	/**
 	 * It should allow filtering attendees by event
 	 *
 	 * @test
