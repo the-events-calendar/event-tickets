@@ -14,9 +14,10 @@ import { addAction } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { resolveSaleWindow } from '../sale-window';
-import { readEventDates } from './event-dates';
+import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
+import { getWindowError } from './window-check';
 
 const MODE_RELATIVE = 'relative';
 
@@ -39,6 +40,15 @@ const EVENT_FIELDS = '#EventStartDate, #EventStartTime, #EventEndDate, #EventEnd
 const RULE_FIELDS = [ 'start', 'end' ]
 	.flatMap( ( key ) => [ 'mode', 'value', 'unit', 'anchor' ].map( ( field ) => `#ticket_sales_${ key }_${ field }` ) )
 	.join( ', ' );
+
+/**
+ * The fields of the dates typed for a specific start and end.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_end_date, #ticket_end_time';
 
 /**
  * Reads the event dates from the TEC event fields.
@@ -114,17 +124,133 @@ function updateHelperText() {
 	} );
 }
 
+/**
+ * Shows an error under the sales window and marks its end invalid, or clears both.
+ *
+ * The end is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the form
+ * again after the save click and strips that class from every field it does not flag itself.
+ *
+ * @since TBD
+ *
+ * @param {string} message The error, or an empty string to clear it.
+ *
+ * @return {void}
+ */
+function showWindowError( message ) {
+	const error = document.getElementById( 'ticket_sales_window_error' );
+	const endMode = document.getElementById( 'ticket_sales_end_mode' );
+
+	if ( ! error || ! endMode ) {
+		return;
+	}
+
+	error.textContent = message;
+
+	if ( '' === message ) {
+		endMode.removeAttribute( 'aria-invalid' );
+		endMode.removeAttribute( 'aria-describedby' );
+
+		return;
+	}
+
+	endMode.setAttribute( 'aria-invalid', 'true' );
+	endMode.setAttribute( 'aria-describedby', error.id );
+}
+
+/**
+ * Blocks the ticket save when the sales window does not start before it ends.
+ *
+ * `tickets.js` keeps only the last answer of the `additionalValidation.tribe` handlers, and Event Tickets Plus answers
+ * with the value it was passed. So an invalid window stops the handlers after this one, and a valid one keeps the
+ * answer of a handler before it.
+ *
+ * @since TBD
+ *
+ * @param {jQuery.Event} event The validation event.
+ * @param {boolean}      valid Whether the ticket is valid so far.
+ *
+ * @return {boolean} Whether the ticket can be saved.
+ */
+function validateSaleWindow( event, valid ) {
+	const answer = undefined === event.result ? valid : event.result;
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+
+	if ( ! settings || ! dynamic || ! document.getElementById( 'ticket_sales_window_error' ) ) {
+		return answer;
+	}
+
+	const eventDates = getEventDates( settings, dynamic );
+
+	// Without event dates the window cannot be judged here; the server still checks it.
+	if ( ! eventDates ) {
+		return answer;
+	}
+
+	const field = ( id ) => document.getElementById( id )?.value;
+	const error = getWindowError( readRule( document ), eventDates, {
+		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
+		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
+	} );
+
+	if ( ! error ) {
+		showWindowError( '' );
+
+		return answer;
+	}
+
+	showWindowError( settings.text.invalidWindow );
+	event.stopImmediatePropagation();
+
+	return false;
+}
+
+/**
+ * Shows the message of a ticket save the server rejected.
+ *
+ * @since TBD
+ *
+ * @param {Object} response The `tribe-ticket-add` response.
+ *
+ * @return {void}
+ */
+function showServerError( response ) {
+	const message = response?.data?.message;
+
+	if ( 'string' !== typeof message || '' === message ) {
+		return;
+	}
+
+	// The server escapes the message for HTML; the error element takes text.
+	showWindowError( new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent );
+}
+
+/**
+ * Updates the helper text and clears a sales window error once a field the window depends on changes.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function onWindowChange() {
+	showWindowError( '' );
+	updateHelperText();
+}
+
 /*
- * `tickets.js` fires `pre-save-ticket.tribe` on `#tribetickets` right before it serializes the ticket form. The handler
- * is bound on that element rather than delegated from the document: Event Tickets Plus stops the event from bubbling,
- * and the element itself is not replaced when the panels are.
+ * `tickets.js` fires `pre-save-ticket.tribe` and `additionalValidation.tribe` on `#tribetickets` right before it
+ * saves the ticket. The handlers are bound on that element rather than delegated from the document: Event Tickets Plus
+ * stops the save event from bubbling, and the element itself is not replaced when the panels are.
  */
 jQuery( () => {
-	jQuery( '#tribetickets' ).on( 'pre-save-ticket.tribe', () => writeRule( document ) );
+	jQuery( '#tribetickets' )
+		.on( 'pre-save-ticket.tribe', () => writeRule( document ) )
+		.on( 'additionalValidation.tribe', validateSaleWindow );
 	updateHelperText();
 } );
 
-jQuery( document ).on( 'change', EVENT_FIELDS, updateHelperText );
-jQuery( document ).on( 'change input', RULE_FIELDS, updateHelperText );
+jQuery( document ).on( 'change', EVENT_FIELDS, onWindowChange );
+jQuery( document ).on( 'change input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, onWindowChange );
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', updateHelperText );
+addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );

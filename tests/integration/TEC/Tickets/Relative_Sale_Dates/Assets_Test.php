@@ -146,6 +146,7 @@ class Assets_Test extends Controller_Test_Case {
 		$this->assertSame( 'H:i', $data['timeFormat'] );
 		$this->assertSame( 'Sales start %1$s at %2$s', $data['text']['start'] );
 		$this->assertSame( 'Sales end %1$s at %2$s', $data['text']['end'] );
+		$this->assertSame( 'Ticket sales cannot end before they start. Please adjust the sales window.', $data['text']['invalidWindow'] );
 	}
 
 	/**
@@ -210,7 +211,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * The data is read from the registered asset: the library prints each localized object once per request, so
 	 * printing the script would only show it to the first test.
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The localized data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string}} The localized data.
 	 */
 	private function get_localized_data(): array {
 		$this->make_controller()->register();
