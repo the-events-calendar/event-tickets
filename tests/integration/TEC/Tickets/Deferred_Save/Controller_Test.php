@@ -128,4 +128,28 @@ class Controller_Test extends Controller_Test_Case {
 			$this->assertFalse( has_filter( "rest_prepare_{$post_type}", $on_prepare ) );
 		}
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_hook_the_classic_editor_fields_and_notices_and_unhook_them_on_unregister(): void {
+		$controller = $this->make_controller();
+		$hooks      = [
+			[ 'tribe_tickets_metabox_end', $this->test_services->callback( Classic\Editor::class, 'print_fields' ) ],
+			[ 'tec_tickets_deferred_save_classic_committed', $this->test_services->callback( Classic\Notices::class, 'remember' ) ],
+			[ 'admin_notices', $this->test_services->callback( Classic\Notices::class, 'render' ) ],
+		];
+
+		$controller->register();
+
+		foreach ( $hooks as [ $hook, $callback ] ) {
+			$this->assertSame( 10, has_action( $hook, $callback ), $hook );
+		}
+
+		$controller->unregister();
+
+		foreach ( $hooks as [ $hook, $callback ] ) {
+			$this->assertFalse( has_action( $hook, $callback ), $hook );
+		}
+	}
 }

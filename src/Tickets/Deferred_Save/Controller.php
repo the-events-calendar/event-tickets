@@ -86,8 +86,12 @@ final class Controller extends Controller_Contract {
 			add_filter( "rest_prepare_{$post_type}", $this->container->callback( Block_Save::class, 'add_result_to_response' ), 10, 3 );
 		}
 
-		$this->container->register( Classic\Editor::class );
-		$this->container->register( Classic\Notices::class );
+		$this->container->singleton( Classic\Editor::class );
+		$this->container->singleton( Classic\Notices::class );
+
+		add_action( 'tribe_tickets_metabox_end', $this->container->callback( Classic\Editor::class, 'print_fields' ) );
+		add_action( 'tec_tickets_deferred_save_classic_committed', $this->container->callback( Classic\Notices::class, 'remember' ), 10, 2 );
+		add_action( 'admin_notices', $this->container->callback( Classic\Notices::class, 'render' ) );
 	}
 
 	/**
@@ -105,7 +109,8 @@ final class Controller extends Controller_Contract {
 			remove_filter( "rest_prepare_{$post_type}", $this->container->callback( Block_Save::class, 'add_result_to_response' ), 10 );
 		}
 
-		$this->container->get( Classic\Editor::class )->unregister();
-		$this->container->get( Classic\Notices::class )->unregister();
+		remove_action( 'tribe_tickets_metabox_end', $this->container->callback( Classic\Editor::class, 'print_fields' ) );
+		remove_action( 'tec_tickets_deferred_save_classic_committed', $this->container->callback( Classic\Notices::class, 'remember' ), 10 );
+		remove_action( 'admin_notices', $this->container->callback( Classic\Notices::class, 'render' ) );
 	}
 }
