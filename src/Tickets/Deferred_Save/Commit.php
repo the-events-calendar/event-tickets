@@ -23,8 +23,8 @@ use Tribe__Tickets__Tickets as Tickets;
  * replays each part through the functions Event Tickets uses for ticket writes today, so every hook
  * that fires on a ticket save or delete today still fires, in the same order.
  *
- * Parts run in the order `update`, `move`, `create`, `delete`, so a ticket both updated and moved is
- * updated first. One failing entry never stops the others.
+ * Parts run in the order `update`, `move`, `create`, `delete`; the parser refuses a ticket named in
+ * more than one of them. One failing entry never stops the others.
  *
  * @since TBD
  *
