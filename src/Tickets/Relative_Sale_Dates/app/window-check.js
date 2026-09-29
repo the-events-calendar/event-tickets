@@ -1,5 +1,5 @@
 /**
- * Checks the sales window of the classic ticket form the way the server checks it on save.
+ * Checks the sales window of a ticket form the way the server checks it on save.
  *
  * @since TBD
  */
@@ -7,9 +7,9 @@
 /**
  * Internal dependencies
  */
-import { MODE_SPECIFIC } from '../rule-constants';
-import { fromLocal, resolveSaleWindow } from '../sale-window';
-import { getSaleWindowError, SALES_END_BEFORE_START } from '../validation';
+import { MODE_SPECIFIC } from './rule-constants';
+import { fromLocal, resolveSaleWindow } from './sale-window';
+import { getSaleWindowError, SALES_END_BEFORE_START } from './validation';
 
 /**
  * Returns the error of a sales window, or `null` when it is valid.
@@ -21,10 +21,10 @@ import { getSaleWindowError, SALES_END_BEFORE_START } from '../validation';
  *
  * @since TBD
  *
- * @param {import( '../sale-window' ).SaleWindowRule} rule       The rule the form expresses.
- * @param {import( './event-dates' ).EventDates}      eventDates The event dates, as the server reads them.
- * @param {{start: string|null, end: string|null}}    formDates  The start and end dates the form sends,
- *                                                               `YYYY-MM-DD HH:mm:ss` in the event timezone.
+ * @param {import( './sale-window' ).SaleWindowRule}    rule       The rule the form expresses.
+ * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, as the server reads them.
+ * @param {{start: string|null, end: string|null}}      formDates  The start and end dates the form sends,
+ *                                                                 `YYYY-MM-DD HH:mm:ss` in the event timezone.
  *
  * @return {string|null} The message key of the error, or `null` when the window is valid.
  */
