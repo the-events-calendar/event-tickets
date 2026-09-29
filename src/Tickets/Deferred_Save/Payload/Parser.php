@@ -109,11 +109,20 @@ final class Parser {
 		[ $delete, $rejections ] = $this->parse_delete( $this->part( $raw, self::DELETE ), $rejections );
 		[ $move, $rejections ]   = $this->parse_move( $this->part( $raw, self::MOVE ), $rejections );
 
-		// The same ticket cannot be both updated and deleted; neither can be meant, so both go.
-		foreach ( array_intersect( array_keys( $update ), $delete ) as $ticket_id ) {
-			unset( $update[ $ticket_id ] );
+		// A ticket may be updated, moved or deleted, not more than one; which is meant cannot be told, so every entry goes.
+		$conflicts = array_unique(
+			array_merge(
+				array_intersect( array_keys( $update ), $delete ),
+				array_intersect( array_keys( $move ), $delete ),
+				array_intersect( array_keys( $update ), array_keys( $move ) )
+			)
+		);
+
+		foreach ( $conflicts as $ticket_id ) {
+			$part = array_key_exists( $ticket_id, $update ) ? self::UPDATE : self::MOVE;
+			unset( $update[ $ticket_id ], $move[ $ticket_id ] );
 			$delete     = array_values( array_diff( $delete, [ $ticket_id ] ) );
-			$rejections = $rejections->with( self::UPDATE, $ticket_id, __( 'The same ticket cannot be both updated and deleted.', 'event-tickets' ) );
+			$rejections = $rejections->with( $part, $ticket_id, __( 'The same ticket can only be updated, moved or deleted, not more than one of these at once.', 'event-tickets' ) );
 		}
 
 		return new Outcome( new Payload( $update, $create, $delete, $move ), $rejections );

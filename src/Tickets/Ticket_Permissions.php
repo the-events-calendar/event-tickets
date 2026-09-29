@@ -16,9 +16,10 @@ use WP_Post;
  * Class Ticket_Permissions.
  *
  * Answers whether a user may edit or delete a ticket. By default whoever may edit the ticket's
- * post may edit and delete its tickets, and each answer passes through its own filter. A
- * provider that needs more, such as WooCommerce requiring rights on the product, ships a subclass
- * and returns it from the `tec_tickets_ticket_permissions` filter for its tickets.
+ * post may edit its tickets, and delete those they may also delete as posts; each answer passes
+ * through its own filter, last. A provider that needs more, such as WooCommerce requiring rights on
+ * the product, ships a subclass overriding `can_edit_ticket()` and returns it from the
+ * `tec_tickets_ticket_permissions` filter for its tickets.
  *
  * @since TBD
  *
@@ -61,10 +62,12 @@ class Ticket_Permissions {
 	 *
 	 * @return bool Whether the user may edit the post's tickets.
 	 */
-	public function user_can_edit_tickets_of( int $post_id, ?int $user_id = null ): bool {
-		$user_id ??= get_current_user_id();
-		$post      = get_post( (int) Event::filter_event_id( $post_id, 'ticket_permissions' ) );
-		$can       = $post instanceof WP_Post && user_can( $user_id, 'edit_post', $post->ID );
+	final public function user_can_edit_tickets_of( int $post_id, ?int $user_id = null ): bool {
+		$user_id     ??= get_current_user_id();
+		$normalized_id = (int) Event::filter_event_id( $post_id, 'ticket_permissions' );
+		// `get_post()` answers 0 with the global post, which is not the post asked about.
+		$post = $normalized_id > 0 ? get_post( $normalized_id ) : null;
+		$can  = $post instanceof WP_Post && user_can( $user_id, 'edit_post', $post->ID );
 
 		/**
 		 * Filters whether a user may edit the tickets of a post.
@@ -88,7 +91,7 @@ class Ticket_Permissions {
 	 *
 	 * @return bool Whether the user may edit the ticket.
 	 */
-	public function user_can_edit_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
+	final public function user_can_edit_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
 		$user_id ??= get_current_user_id();
 
 		/**
@@ -96,24 +99,35 @@ class Ticket_Permissions {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool          $can     Whether the user may edit the ticket's post's tickets.
+		 * @param bool          $can     Whether the user may edit the ticket, as the permissions for it answered.
 		 * @param Ticket_Object $ticket  The ticket.
 		 * @param int           $user_id The ID of the user.
 		 */
-		return (bool) apply_filters(
-			'tec_tickets_user_can_edit_ticket',
-			$this->user_can_edit_tickets_of( (int) $ticket->get_event_id(), $user_id ),
-			$ticket,
-			$user_id
-		);
+		return (bool) apply_filters( 'tec_tickets_user_can_edit_ticket', $this->can_edit_ticket( $ticket, $user_id ), $ticket, $user_id );
+	}
+
+	/**
+	 * The rule for editing a ticket, before the filter: whether the user may edit the ticket's post.
+	 *
+	 * A provider whose tickets need more overrides this, so the filter still has the last word.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket  The ticket.
+	 * @param int           $user_id The ID of the user.
+	 *
+	 * @return bool Whether the user may edit the ticket.
+	 */
+	protected function can_edit_ticket( Ticket_Object $ticket, int $user_id ): bool {
+		return $this->user_can_edit_tickets_of( (int) $ticket->get_event_id(), $user_id );
 	}
 
 	/**
 	 * Whether a user may delete a ticket.
 	 *
-	 * Deleting requires editing, and then passes the per-ticket filter Event Tickets has exposed
-	 * since 4.6, so today's integrations keep their say. That filter takes no user: it assumes the
-	 * current one.
+	 * Deleting requires editing the ticket and `delete_post` on the ticket itself, the post being
+	 * deleted. The legacy `tribe_tickets_current_user_can_delete_ticket` filter is not asked: it takes
+	 * no user, so it cannot answer for a given one.
 	 *
 	 * @since TBD
 	 *
@@ -122,15 +136,14 @@ class Ticket_Permissions {
 	 *
 	 * @return bool Whether the user may delete the ticket.
 	 */
-	public function user_can_delete_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
+	final public function user_can_delete_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
 		$user_id ??= get_current_user_id();
 
 		if ( ! $this->user_can_edit_ticket( $ticket, $user_id ) ) {
 			return false;
 		}
 
-		/** This filter is documented in src/Tribe/Tickets.php */
-		$can = (bool) apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class );
+		$can = user_can( $user_id, 'delete_post', (int) $ticket->ID );
 
 		/**
 		 * Filters whether a user may delete a ticket they may edit.
