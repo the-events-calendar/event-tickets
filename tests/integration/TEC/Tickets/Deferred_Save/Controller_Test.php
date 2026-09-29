@@ -75,4 +75,20 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertFalse( $controller->is_registered() );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_hook_the_classic_save_and_unhook_it_on_unregister(): void {
+		$controller = $this->make_controller();
+		$callback   = $this->test_services->callback( Classic_Save::class, 'on_save_post' );
+
+		$controller->register();
+
+		$this->assertSame( 20, has_action( 'save_post', $callback ) );
+
+		$controller->unregister();
+
+		$this->assertFalse( has_action( 'save_post', $callback ) );
+	}
 }
