@@ -3,7 +3,9 @@
  *
  * @since TBD
  */
-const { createStore } = require( 'redux' );
+const { combineReducers, createStore } = require( 'redux' );
+const legacyTicketReducer = require( '@moderntribe/tickets/data/blocks/ticket/reducer' ).default;
+const legacyActions = require( '@moderntribe/tickets/data/blocks/ticket/actions' );
 const { UNIT_HOURS, UNIT_WEEKS } = require( '@tec/tickets/relative-sale-dates/rule-constants' );
 
 /**
@@ -48,15 +50,20 @@ function setBlockEditorData( overrides = {} ) {
 /**
  * Sets the event dates in the common store, with The Events Calendar's datetime selectors to read them.
  *
- * The selectors read the state the way The Events Calendar's do; its own are not installed here.
+ * The selectors read the state the way The Events Calendar's do; its own are not installed here. The store holds the
+ * legacy ticket state too, as the block editor's does.
  *
  * @param {Object} datetime The event `start`, `end`, `allDay` and `timeZone`.
  *
  * @return {Object} The common store, to change the event dates with `dispatch( { type: 'SET_DATETIME', datetime } )`.
  */
 function setEventState( datetime ) {
-	const reducer = ( state = { events: { blocks: { datetime } } }, action ) =>
-		'SET_DATETIME' === action.type ? { events: { blocks: { datetime: action.datetime } } } : state;
+	const events = ( state = { blocks: { datetime } }, action ) =>
+		'SET_DATETIME' === action.type ? { blocks: { datetime: action.datetime } } : state;
+	const reducer = combineReducers( {
+		events,
+		tickets: combineReducers( { blocks: combineReducers( { ticket: legacyTicketReducer } ) } ),
+	} );
 	const read = ( key ) => ( state ) => state.events.blocks.datetime[ key ];
 
 	window.__tribe_common_store__ = createStore( reducer );
@@ -85,6 +92,27 @@ function setEventState( datetime ) {
 }
 
 /**
+ * Registers a ticket block in the common store with the sale dates its form sends.
+ *
+ * @param {Object} store    The common store `setEventState()` returned.
+ * @param {string} clientId The client ID of the ticket block.
+ * @param {string} start    The sale start the form sends, `YYYY-MM-DD HH:mm:ss`.
+ * @param {string} end      The sale end the form sends, `YYYY-MM-DD HH:mm:ss`.
+ *
+ * @return {void}
+ */
+function setTicketFormDates( store, clientId, start, end ) {
+	const [ startDate, startTime ] = start.split( ' ' );
+	const [ endDate, endTime ] = end.split( ' ' );
+
+	store.dispatch( legacyActions.registerTicketBlock( clientId ) );
+	store.dispatch( legacyActions.setTicketTempStartDate( clientId, startDate ) );
+	store.dispatch( legacyActions.setTicketTempStartTime( clientId, startTime ) );
+	store.dispatch( legacyActions.setTicketTempEndDate( clientId, endDate ) );
+	store.dispatch( legacyActions.setTicketTempEndTime( clientId, endTime ) );
+}
+
+/**
  * Removes the globals the other helpers set.
  *
  * @return {void}
@@ -94,4 +122,4 @@ function clearBlockEditorGlobals() {
 	delete window.__tribe_common_store__;
 }
 
-module.exports = { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState };
+module.exports = { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState, setTicketFormDates };

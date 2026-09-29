@@ -18,12 +18,12 @@ import '../zone-data';
 import { createTypingTracker, getShownError } from '../live-error';
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
+import { getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from '../window-check';
 import { updateDateLimit } from './date-limits';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
 import { getListText } from './tickets-list';
-import { getOutOfRangeBoundary, getWindowError, RELATIVE_VALUE_OUT_OF_RANGE } from './window-check';
 
 /**
  * The TEC event fields the event dates are read from.

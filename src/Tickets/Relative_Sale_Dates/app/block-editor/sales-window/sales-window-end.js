@@ -80,6 +80,8 @@ function getUnitOptions( value ) {
  * @param {boolean}                          props.disabled      Whether the options are disabled.
  * @param {string}                           props.helperText    The date a relative end works out to, or an empty
  *                                                               string.
+ * @param {string}                           props.errorMessage  The sales window error this end is marked with, or an
+ *                                                               empty string.
  * @param {Function}                         props.onChange      Called with the changed values of the end.
  *
  * @return {Object} The end's options.
@@ -93,6 +95,7 @@ export default function SalesWindowEnd( {
 	picker,
 	disabled,
 	helperText,
+	errorMessage,
 	onChange,
 } ) {
 	return (
@@ -103,6 +106,15 @@ export default function SalesWindowEnd( {
 				disabled={ disabled }
 				label={ labels.mode }
 				labelPosition="side"
+				aria-invalid={ errorMessage ? true : undefined }
+				// The control points `aria-describedby` at its help, so the error goes there to be announced with it.
+				help={
+					errorMessage ? (
+						<span className="tribe-editor__ticket__duration-error" role="alert">
+							{ errorMessage }
+						</span>
+					) : undefined
+				}
 				value={ end.mode }
 				options={ modeOptions }
 				onChange={ ( mode ) => onChange( { mode } ) }

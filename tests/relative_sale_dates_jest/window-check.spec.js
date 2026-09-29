@@ -2,7 +2,7 @@ import {
 	getOutOfRangeBoundary,
 	getWindowError,
 	RELATIVE_VALUE_OUT_OF_RANGE,
-} from '@tec/tickets/relative-sale-dates/classic/window-check';
+} from '@tec/tickets/relative-sale-dates/window-check';
 import { SALES_END_BEFORE_START } from '@tec/tickets/relative-sale-dates/validation';
 
 const UNIT_WEEKS = 604800;
