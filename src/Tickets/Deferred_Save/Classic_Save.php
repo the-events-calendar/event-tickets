@@ -9,18 +9,16 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
-use TEC\Common\Contracts\Container;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Main as Tickets_Main;
 use WP_Post;
 
 /**
  * Class Classic_Save.
  *
- * The classic editor sends the payload as form fields inside the post form. This hooks the save of
- * every ticketable post type and hands `tec_tickets` to `Commit`. It runs after
- * `Tribe__Tickets__Tickets_Handler::save_post()` (priority 10) so the ticket order the form saved is
- * what an update reads when it does not mention a menu order.
+ * The classic editor sends the payload as form fields inside the post form. The `Controller` hooks
+ * this on `save_post` for every ticketable post type, and it hands `tec_tickets` to `Commit`. It runs
+ * after `Tribe__Tickets__Tickets_Handler::save_post()` (priority 10) so the ticket order the form saved
+ * is what an update reads when it does not mention a menu order.
  *
  * It never runs on an autosave, a revision or during a REST request, never without its own nonce,
  * and only for the post the form's `post_ID` names, so a second ticketable post saved during the same
@@ -31,7 +29,7 @@ use WP_Post;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-final class Classic_Save extends Controller_Contract {
+final class Classic_Save {
 	/**
 	 * The nonce action.
 	 *
@@ -73,37 +71,10 @@ final class Classic_Save extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container $container The container.
-	 * @param Commit    $commit    The handler that saves a payload.
+	 * @param Commit $commit The handler that saves a payload.
 	 */
-	public function __construct( Container $container, Commit $commit ) {
-		parent::__construct( $container );
+	public function __construct( Commit $commit ) {
 		$this->commit = $commit;
-	}
-
-	/**
-	 * Hooks the post save.
-	 *
-	 * The generic `save_post` is used, with the post type checked when it fires, so a post type made
-	 * ticketable after this registered is still covered.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_action( 'save_post', [ $this, 'on_save_post' ], self::PRIORITY, 2 );
-	}
-
-	/**
-	 * Unhooks the post save.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'save_post', [ $this, 'on_save_post' ], self::PRIORITY );
 	}
 
 	/**

@@ -63,28 +63,33 @@ final class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the save entry points.
+	 * Hooks the save entry points.
 	 *
-	 * The container already holds this controller as a singleton once it is registered.
+	 * The classic save hooks the generic `save_post`, with the post type checked when it fires, so a
+	 * post type made ticketable after this registered is still covered. It is bound as a singleton so
+	 * the container returns the same callback to `unregister()`.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function do_register(): void {
-		$this->container->register( Classic_Save::class );
+		$this->container->singleton( Classic_Save::class );
+
+		add_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY, 2 );
+
 		$this->container->register( Block_Save::class );
 	}
 
 	/**
-	 * Unregisters the feature.
+	 * Unhooks the save entry points.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->container->get( Classic_Save::class )->unregister();
+		remove_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY );
 		$this->container->get( Block_Save::class )->unregister();
 	}
 }

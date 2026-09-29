@@ -57,6 +57,76 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * It should only forward an advertised sort key and an `ASC`/`DESC` direction from the request.
+	 *
+	 * @test
+	 * @dataProvider request_sort_parameters_provider
+	 */
+	public function should_only_forward_advertised_sort_parameters( $request, $expected_orderby, $expected_order ) {
+		unset(
+			$_REQUEST['orderby'],
+			$_REQUEST['order'],
+			$_GET['orderby'],
+			$_GET['order'],
+			$_POST['orderby'],
+			$_POST['order']
+		);
+
+		foreach ( $request as $key => $value ) {
+			$_GET[ $key ]     = $value;
+			$_REQUEST[ $key ] = $value;
+		}
+
+		$captured = null;
+		$capture  = static function ( $args ) use ( &$captured ) {
+			$captured = $args;
+
+			return $args;
+		};
+
+		add_filter( 'tec_tickets_attendees_table_query_args', $capture, 10, 2 );
+		$sut = $this->make_instance();
+		$sut->prepare_items();
+		remove_filter( 'tec_tickets_attendees_table_query_args', $capture, 10 );
+
+		$this->assertSame( $expected_orderby, $captured['orderby'] ?? null );
+		$this->assertSame( $expected_order, $captured['order'] ?? null );
+	}
+
+	/**
+	 * Request sort parameters and the table arguments they should produce.
+	 *
+	 * @return \Generator
+	 */
+	public function request_sort_parameters_provider() {
+		yield 'advertised sort key' => [
+			[ 'orderby' => 'security_code' ],
+			'security_code',
+			'DESC',
+		];
+		yield 'array-form orderby' => [
+			[ 'orderby' => [ 'security_code' => 'DESC, (SELECT 1)' ] ],
+			null,
+			'DESC',
+		];
+		yield 'unknown sort key' => [
+			[ 'orderby' => 'post_password' ],
+			null,
+			'DESC',
+		];
+		yield 'injected direction' => [
+			[ 'order' => 'DESC, (SELECT 1)' ],
+			null,
+			'DESC',
+		];
+		yield 'lowercase direction' => [
+			[ 'order' => 'asc' ],
+			null,
+			'ASC',
+		];
+	}
+
+	/**
 	 * It should allow fetching ticket attendees by event.
 	 *
 	 * @todo @bordoni fix this particular test to be more consistent [TECENG-37]
