@@ -7,10 +7,11 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 use Generator;
+use RuntimeException;
 
 class Sale_Window_Test extends WPTestCase {
 	/**
-	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string, expected: array{start_local: ?string, start_utc: ?string, end_local: ?string, end_utc: ?string, valid: bool}}}>
+	 * @return Generator<string,array{0: array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}, timezone: string, event_start: string, event_end: string, expected: array{start_local: ?string, start_utc: ?string, end_local: ?string, end_utc: ?string, valid: ?bool}}}>
 	 */
 	public function fixtures_provider(): Generator {
 		$fixtures = json_decode( file_get_contents( codecept_data_dir( 'relative-sale-dates/sale-window-cases.json' ) ), true );
@@ -36,6 +37,11 @@ class Sale_Window_Test extends WPTestCase {
 		$this->assert_date( $expected['start_utc'], 'UTC', $window->get_start_utc() );
 		$this->assert_date( $expected['end_local'], $timezone->getName(), $window->get_end() );
 		$this->assert_date( $expected['end_utc'], 'UTC', $window->get_end_utc() );
+
+		if ( null === $expected['valid'] ) {
+			$this->expectException( RuntimeException::class );
+		}
+
 		$this->assertSame( $expected['valid'], $window->is_valid() );
 	}
 

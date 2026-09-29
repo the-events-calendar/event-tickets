@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use DateInterval;
 use InvalidArgumentException;
 use JsonSerializable;
 
@@ -39,6 +40,20 @@ final class Boundary implements JsonSerializable {
 	 * @var int
 	 */
 	private const MAX_VALUE = 60;
+
+	/**
+	 * The `DateInterval` format of each unit a relative boundary accepts, keyed by the `Rule::UNIT_*` constants.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,string>
+	 */
+	private const INTERVAL_FORMATS = [
+		Rule::UNIT_MINUTES => 'PT%dM',
+		Rule::UNIT_HOURS   => 'PT%dH',
+		Rule::UNIT_DAYS    => 'P%dD',
+		Rule::UNIT_WEEKS   => 'P%dW',
+	];
 
 	/**
 	 * The mode, one of the `Rule::MODE_*` constants.
@@ -109,7 +124,7 @@ final class Boundary implements JsonSerializable {
 		}
 
 		$unit = $data['unit'] ?? null;
-		if ( ! in_array( $unit, [ Rule::UNIT_MINUTES, Rule::UNIT_HOURS, Rule::UNIT_DAYS, Rule::UNIT_WEEKS ], true ) ) {
+		if ( ! is_int( $unit ) || ! isset( self::INTERVAL_FORMATS[ $unit ] ) ) {
 			throw new InvalidArgumentException( "The rule's {$key} has an unknown unit." );
 		}
 
@@ -122,13 +137,24 @@ final class Boundary implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the data to encode as the boundary's canonical JSON form, which holds only the keys its mode uses.
+	 * Returns the data to encode as the boundary's canonical JSON form.
 	 *
 	 * @since TBD
 	 *
 	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The boundary, in canonical form.
 	 */
 	public function jsonSerialize(): array {
+		return $this->to_array();
+	}
+
+	/**
+	 * Returns the boundary's canonical array form, which holds only the keys its mode uses.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The boundary, in canonical form.
+	 */
+	public function to_array(): array {
 		if ( Rule::MODE_RELATIVE !== $this->mode ) {
 			return [ 'mode' => $this->mode ];
 		}
@@ -139,6 +165,65 @@ final class Boundary implements JsonSerializable {
 			'unit'   => $this->unit,
 			'anchor' => $this->anchor,
 		];
+	}
+
+	/**
+	 * Gets the mode.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The mode, one of the `Rule::MODE_*` constants.
+	 */
+	public function get_mode(): string {
+		return $this->mode;
+	}
+
+	/**
+	 * Gets the number of units a relative boundary falls before its anchor.
+	 *
+	 * @since TBD
+	 *
+	 * @return int|null The value, or `null` when the boundary is not relative.
+	 */
+	public function get_value(): ?int {
+		return $this->value;
+	}
+
+	/**
+	 * Gets the unit of a relative boundary.
+	 *
+	 * @since TBD
+	 *
+	 * @return int|null The unit, one of the `Rule::UNIT_*` constants, or `null` when the boundary is not relative.
+	 */
+	public function get_unit(): ?int {
+		return $this->unit;
+	}
+
+	/**
+	 * Gets the event date a relative boundary is counted from.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null The anchor, one of the `Rule::ANCHOR_*` constants, or `null` when the boundary is not relative.
+	 */
+	public function get_anchor(): ?string {
+		return $this->anchor;
+	}
+
+	/**
+	 * Gets how far before its anchor a relative boundary falls.
+	 *
+	 * @since TBD
+	 *
+	 * @return DateInterval|null The interval, or `null` when the boundary is not relative.
+	 */
+	public function get_interval(): ?DateInterval {
+		if ( null === $this->value || null === $this->unit ) {
+			return null;
+		}
+
+		return new DateInterval( sprintf( self::INTERVAL_FORMATS[ $this->unit ], $this->value ) );
 	}
 
 	/**

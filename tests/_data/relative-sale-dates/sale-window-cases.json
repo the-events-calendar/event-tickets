@@ -78,8 +78,8 @@
 			"event_start": "2027-03-14 03:30:00",
 			"event_end": "2027-03-14 05:30:00",
 			"expected": {
-				"start_local": "2027-03-14 00:30:00",
-				"start_utc": "2027-03-14 05:30:00",
+				"start_local": "2027-03-14 01:30:00",
+				"start_utc": "2027-03-14 06:30:00",
 				"end_local": "2027-03-14 03:30:00",
 				"end_utc": "2027-03-14 07:30:00",
 				"valid": true
@@ -99,7 +99,7 @@
 				"start_utc": null,
 				"end_local": "2027-06-10 20:30:00",
 				"end_utc": "2027-06-11 00:30:00",
-				"valid": true
+				"valid": null
 			}
 		},
 		{
@@ -116,7 +116,7 @@
 				"start_utc": null,
 				"end_local": "2027-06-13 18:00:00",
 				"end_utc": "2027-06-13 22:00:00",
-				"valid": true
+				"valid": null
 			}
 		},
 		{
@@ -133,7 +133,7 @@
 				"start_utc": null,
 				"end_local": "2027-06-10 19:00:00",
 				"end_utc": "2027-06-10 23:00:00",
-				"valid": true
+				"valid": null
 			}
 		},
 		{
@@ -150,7 +150,7 @@
 				"start_utc": null,
 				"end_local": null,
 				"end_utc": null,
-				"valid": true
+				"valid": null
 			}
 		},
 		{
@@ -167,7 +167,7 @@
 				"start_utc": "2027-06-08 23:00:00",
 				"end_local": null,
 				"end_utc": null,
-				"valid": true
+				"valid": null
 			}
 		},
 		{
@@ -201,6 +201,74 @@
 				"start_utc": "2027-11-07 05:30:00",
 				"end_local": "2027-11-10 01:30:00",
 				"end_utc": "2027-11-10 06:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "8 hours before start across the autumn change east of UTC",
+			"rule": {
+				"start": { "mode": "relative", "value": 8, "unit": 3600, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Europe/Athens",
+			"event_start": "2026-10-25 08:00:00",
+			"event_end": "2026-10-25 10:00:00",
+			"expected": {
+				"start_local": "2026-10-25 00:00:00",
+				"start_utc": "2026-10-24 21:00:00",
+				"end_local": "2026-10-25 08:00:00",
+				"end_utc": "2026-10-25 06:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "8 hours before start across the spring change east of UTC",
+			"rule": {
+				"start": { "mode": "relative", "value": 8, "unit": 3600, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Europe/Athens",
+			"event_start": "2026-03-29 08:00:00",
+			"event_end": "2026-03-29 10:00:00",
+			"expected": {
+				"start_local": "2026-03-29 00:00:00",
+				"start_utc": "2026-03-28 22:00:00",
+				"end_local": "2026-03-29 08:00:00",
+				"end_utc": "2026-03-29 05:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "moved time falls in the autumn overlap east of UTC",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Europe/Athens",
+			"event_start": "2026-10-28 03:30:00",
+			"event_end": "2026-10-28 05:30:00",
+			"expected": {
+				"start_local": "2026-10-25 03:30:00",
+				"start_utc": "2026-10-25 00:30:00",
+				"end_local": "2026-10-28 03:30:00",
+				"end_utc": "2026-10-28 01:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "hours land in the autumn overlap east of UTC",
+			"rule": {
+				"start": { "mode": "relative", "value": 4, "unit": 3600, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Europe/Athens",
+			"event_start": "2026-10-25 07:30:00",
+			"event_end": "2026-10-25 09:30:00",
+			"expected": {
+				"start_local": "2026-10-25 03:30:00",
+				"start_utc": "2026-10-25 00:30:00",
+				"end_local": "2026-10-25 07:30:00",
+				"end_utc": "2026-10-25 05:30:00",
 				"valid": true
 			}
 		},
