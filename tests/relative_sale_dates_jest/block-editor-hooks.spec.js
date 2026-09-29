@@ -344,6 +344,41 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		} );
 	} );
 
+	describe( 'on tec.tickets.blocks.syncSaleEndWithEventStart', () => {
+		const followsEventStart = ( clientId, value = true ) =>
+			applyFilters( 'tec.tickets.blocks.syncSaleEndWithEventStart', value, clientId );
+
+		it( 'should keep a relative sale end off the event start', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, storedRule );
+
+			expect( followsEventStart( clientId ) ).toBe( false );
+		} );
+
+		it( 'should keep a specific sale end off the event start', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, { start: storedRule.start, end: { mode: 'specific' } } );
+
+			expect( followsEventStart( clientId ) ).toBe( false );
+		} );
+
+		it( 'should let a sale end that ends when the event starts follow it', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: { mode: 'default' } } );
+
+			expect( followsEventStart( clientId ) ).toBe( true );
+		} );
+
+		it( 'should let the sale end of a ticket without a rule follow the event start', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, null );
+
+			expect( followsEventStart( clientId ) ).toBe( true );
+			expect( followsEventStart( clientId, false ) ).toBe( false );
+			expect( followsEventStart( newClientId() ) ).toBe( true );
+		} );
+	} );
+
 	describe.each( [ 'tec.tickets.blocks.ticketCreated', 'tec.tickets.blocks.ticketUpdated' ] )( 'on %s', ( hook ) => {
 		it( 'should keep the draft rule as the saved one', () => {
 			const clientId = newClientId();
