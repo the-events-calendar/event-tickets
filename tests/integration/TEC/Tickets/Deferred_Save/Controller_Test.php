@@ -3,11 +3,14 @@
 namespace TEC\Tickets\Deferred_Save;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use Tribe\Tests\Traits\With_Uopz;
 
 /**
  * The feature is on for every ticketable post unless it is switched off as a whole.
  */
 class Controller_Test extends Controller_Test_Case {
+	use With_Uopz;
+
 	protected string $controller_class = Controller::class;
 
 	/**
@@ -44,6 +47,15 @@ class Controller_Test extends Controller_Test_Case {
 	 */
 	public function it_should_be_active_by_default(): void {
 		$this->assertTrue( $this->make_controller()->is_active() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_be_switched_off_by_the_constant(): void {
+		$this->set_const_value( 'TEC_TICKETS_DEFERRED_SAVE_DISABLED', true );
+
+		$this->assertFalse( $this->make_controller()->is_active() );
 	}
 
 	/**
