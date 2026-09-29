@@ -3,6 +3,9 @@
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use Codeception\TestCase\WPTestCase;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeZone;
 use Generator;
 use InvalidArgumentException;
 
@@ -72,7 +75,38 @@ class Boundary_Test extends WPTestCase {
 	 * @dataProvider valid_boundaries_provider
 	 */
 	public function should_keep_a_valid_boundary_in_canonical_form( array $data ): void {
-		$this->assertSame( $data, Boundary::from_array( $data )->jsonSerialize() );
+		$boundary = Boundary::from_array( $data );
+
+		$this->assertSame( $data, $boundary->to_array() );
+		$this->assertSame( $data, $boundary->jsonSerialize() );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider valid_boundaries_provider
+	 */
+	public function should_expose_its_parts_and_interval( array $data ): void {
+		$boundary = Boundary::from_array( $data );
+
+		$this->assertSame( $data['mode'], $boundary->get_mode() );
+		$this->assertSame( $data['value'] ?? null, $boundary->get_value() );
+		$this->assertSame( $data['unit'] ?? null, $boundary->get_unit() );
+		$this->assertSame( $data['anchor'] ?? null, $boundary->get_anchor() );
+
+		if ( ! isset( $data['value'], $data['unit'] ) ) {
+			$this->assertNull( $boundary->get_interval() );
+
+			return;
+		}
+
+		// UTC has no clock change, so the interval spans exactly its length in seconds.
+		$from = new DateTimeImmutable( '2027-06-10 00:00:00', new DateTimeZone( 'UTC' ) );
+
+		$this->assertInstanceOf( DateInterval::class, $boundary->get_interval() );
+		$this->assertSame(
+			$data['value'] * $data['unit'],
+			$from->getTimestamp() - $from->sub( $boundary->get_interval() )->getTimestamp()
+		);
 	}
 
 	/**
