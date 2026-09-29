@@ -90,6 +90,10 @@ customEntryPoints[ 'RelativeSaleDates/classic' ] = exposeEntry(
 	'tec.tickets.relativeSaleDates.classic',
 	__dirname + '/src/Tickets/Relative_Sale_Dates/app/classic/index.js'
 );
+customEntryPoints[ 'RelativeSaleDates/block-editor' ] = exposeEntry(
+	'tec.tickets.relativeSaleDates.blockEditor',
+	__dirname + '/src/Tickets/Relative_Sale_Dates/app/block-editor/index.js'
+);
 customEntryPoints[ 'Seating/utils' ] = exposeEntry(
 	'tec.tickets.seating.utils',
 	__dirname + '/src/Tickets/Seating/app/utils/index.js'
