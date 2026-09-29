@@ -456,11 +456,12 @@ class Commit_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_update_a_ticket_before_moving_it(): void {
+	public function it_should_refuse_updating_and_moving_the_same_ticket(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
 		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+		$title          = get_the_title( $ticket_id );
 
 		$result = $this->commit()->run(
 			[
@@ -470,9 +471,10 @@ class Commit_Test extends WPTestCase {
 			$post_id
 		);
 
-		$this->assertSame( [], $result->get_errors() );
-		$this->assertSame( 'Renamed then moved', get_the_title( $ticket_id ) );
-		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+		// One rejection names the ticket; both of its entries are dropped.
+		$this->assertSame( [ $ticket_id ], $this->error_keys( $result, 'update' ) );
+		$this->assertSame( $title, get_the_title( $ticket_id ) );
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $post_id )->get_ids() );
 	}
 
 	/**
