@@ -14,7 +14,7 @@ import {
 	TICKETS_COMMERCE_PROVIDER,
 } from './common-store-bridge';
 import { readEventDates } from './event-dates';
-import { MODE_RELATIVE } from '../rule-constants';
+import { MODE_DEFAULT, MODE_RELATIVE } from '../rule-constants';
 import { getFormRule, isSpecificWindow } from './rule';
 import { formatSaleDate, resolveTicketWindow } from './sale-dates';
 import SalesWindow from './sales-window';
@@ -198,4 +198,22 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 	const error = getTicketWindowError( rule, readEventDates(), getTicketFormDates( state, clientId ) );
 
 	return null !== error;
+}
+
+/**
+ * Stops the legacy sync from moving a ticket's sale end to the event start when its rule sets another end: a relative
+ * one, or the ticket's own specific date. An end of *When the event starts* follows the event start, as the server
+ * resolves it.
+ *
+ * @since TBD
+ *
+ * @param {boolean} followsEventStart Whether the sale end follows the event start.
+ * @param {string}  clientId          The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the sale end follows the event start.
+ */
+export function filterSyncSaleEndWithEventStart( followsEventStart, clientId ) {
+	const rule = select( STORE_NAME ).getDraftRule( clientId );
+
+	return rule && MODE_DEFAULT !== rule.end.mode ? false : followsEventStart;
 }
