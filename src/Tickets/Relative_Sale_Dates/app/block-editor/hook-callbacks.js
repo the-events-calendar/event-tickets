@@ -7,12 +7,13 @@ import { getSettings } from '@wordpress/date';
 /**
  * Internal dependencies
  */
-import { isTicketsCommerce, TICKETS_COMMERCE_PROVIDER } from './common-store-bridge';
+import { getTicketFormDates, isTicketsCommerce, TICKETS_COMMERCE_PROVIDER } from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { MODE_RELATIVE } from '../rule-constants';
 import { formatSaleDate, resolveTicketWindow } from './sale-dates';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
+import { getTicketWindowError } from './window-error';
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
@@ -155,4 +156,31 @@ export function filterSaleWindowDates( dates, clientId ) {
 	const format = ( date, ticketDate ) => ( date?.isValid() ? formatSaleDate( dateFormat, date ) : ticketDate );
 
 	return { fromDate: format( saleWindow.start, dates.fromDate ), toDate: format( saleWindow.end, dates.toDate ) };
+}
+
+/**
+ * Keeps a ticket from being created or updated while its sales window is invalid: it does not start before it ends, or
+ * a relative start or end has no number.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isDisabled        Whether the Create or Update button is disabled already.
+ * @param {Object}  state             The legacy ticket state.
+ * @param {Object}  ownProps          The props of the ticket block's dashboard.
+ * @param {string}  ownProps.clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the button is disabled.
+ */
+export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
+	if ( isDisabled || ! isTicketsCommerce( clientId ) ) {
+		return isDisabled;
+	}
+
+	const error = getTicketWindowError(
+		select( STORE_NAME ).getDraftRule( clientId ),
+		readEventDates(),
+		getTicketFormDates( state, clientId )
+	);
+
+	return null !== error;
 }

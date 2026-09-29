@@ -114,3 +114,41 @@ export function getEventDateFields() {
 		timeZone: selectors.getTimeZone( state ),
 	};
 }
+
+/**
+ * Reads the sale start and end a ticket's form sends, from the legacy ticket state.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD HH:mm:ss` in the event timezone, or
+ *                                                 `null` for one the form sends no date for.
+ */
+export function getTicketFormDates( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+	const join = ( date, time ) => ( date && time ? `${ date } ${ time }` : null );
+
+	return {
+		start: join(
+			selectors.getTicketTempStartDate( state, props ),
+			selectors.getTicketTempStartTime( state, props )
+		),
+		end: join( selectors.getTicketTempEndDate( state, props ), selectors.getTicketTempEndTime( state, props ) ),
+	};
+}
+
+/**
+ * Reads the sale start and end a ticket's form sends, from the common store.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, as `getTicketFormDates()` reads them.
+ */
+export function readTicketFormDates( clientId ) {
+	return getTicketFormDates( window.__tribe_common_store__.getState(), clientId );
+}

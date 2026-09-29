@@ -1,6 +1,6 @@
 /**
- * Hooks the Relative Sale Dates store into the Ticket block's fetch, save, cancel, request body, Sale Duration section and
- * header sale window.
+ * Hooks the Relative Sale Dates store into the Ticket block's fetch, save, cancel, request body, Sale Duration section,
+ * header sale window and Create or Update button.
  *
  * @since TBD
  */
@@ -14,6 +14,7 @@ import { addAction, addFilter } from '@wordpress/hooks';
  * Internal dependencies
  */
 import {
+	filterConfirmDisabled,
 	filterSaleWindowDates,
 	filterSetBodyDetails,
 	filterTicketDuration,
@@ -27,6 +28,7 @@ const namespace = 'tec.tickets.relative-sale-dates';
 addFilter( 'tec.tickets.blocks.setBodyDetails', namespace, filterSetBodyDetails );
 addFilter( 'tec.tickets.blocks.Ticket.Duration.renderPicker', namespace, filterTicketDuration );
 addFilter( 'tec.tickets.blocks.Ticket.SaleWindow.dates', namespace, filterSaleWindowDates );
+addFilter( 'tec.tickets.blocks.confirmButton.isDisabled', namespace, filterConfirmDisabled );
 addAction( 'tec.tickets.blocks.fetchTicket', namespace, loadTicketRule );
 addAction( 'tec.tickets.blocks.ticketCreated', namespace, saveTicketRule );
 addAction( 'tec.tickets.blocks.ticketUpdated', namespace, saveTicketRule );
