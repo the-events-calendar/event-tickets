@@ -14,6 +14,7 @@ import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } 
 import { getFormRule } from '../rule';
 import { getHelperText, resolveTicketWindow } from '../sale-dates';
 import { STORE_NAME } from '../store/constants';
+import { useTicketWindowError } from '../window-error';
 import SalesWindowEnd from './sales-window-end';
 import './style.pcss';
 
@@ -104,6 +105,7 @@ export default function SalesWindow( { clientId, picker } ) {
 	const formRule = getFormRule( rule );
 	const eventDates = useEventDates();
 	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
+	const error = useTicketWindowError( clientId, rule, eventDates );
 
 	useEffect( () => {
 		if ( undefined === rule ) {
@@ -113,6 +115,7 @@ export default function SalesWindow( { clientId, picker } ) {
 
 	const onChange = ( name, changes ) => {
 		setDraftRule( clientId, { ...formRule, [ name ]: { ...formRule[ name ], ...changes } } );
+		// The legacy dashboard re-checks its Create or Update button, which reads this draft, only on a legacy store change.
 		markTicketChanged( clientId );
 	};
 
@@ -128,6 +131,14 @@ export default function SalesWindow( { clientId, picker } ) {
 					picker={ picker }
 					helperText={
 						MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : ''
+					}
+					errorMessage={
+						'end' === name && error
+							? __(
+									'Ticket sales cannot end before they start. Please adjust the sales window.',
+									'event-tickets'
+							  )
+							: ''
 					}
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }
