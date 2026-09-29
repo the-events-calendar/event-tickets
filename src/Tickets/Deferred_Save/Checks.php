@@ -86,7 +86,7 @@ final class Checks {
 
 		$post_id = (int) Event::filter_event_id( $post_id, 'deferred_save' );
 
-		if ( ! $this->permissions->current_user_can_edit_tickets_of( $post_id ) ) {
+		if ( ! $this->permissions->user_can_edit_tickets_of( $post_id ) ) {
 			return new Outcome(
 				new Payload(),
 				$rejections->with( null, null, __( 'You are not allowed to edit the tickets of this post.', 'event-tickets' ) )
@@ -106,7 +106,7 @@ final class Checks {
 				continue;
 			}
 
-			if ( ! $this->permissions->for_ticket( $ticket )->current_user_can_edit_ticket( $ticket ) ) {
+			if ( ! $this->permissions->for_ticket( $ticket )->user_can_edit_ticket( $ticket ) ) {
 				$rejections = $rejections->with( Parser::UPDATE, $ticket_id, $this->cannot_edit_message( $ticket_id ) );
 				unset( $update[ $ticket_id ] );
 			}
@@ -121,14 +121,14 @@ final class Checks {
 				continue;
 			}
 
-			if ( ! $this->permissions->for_ticket( $ticket )->current_user_can_edit_ticket( $ticket ) ) {
+			if ( ! $this->permissions->for_ticket( $ticket )->user_can_edit_ticket( $ticket ) ) {
 				$rejections = $rejections->with( Parser::MOVE, $ticket_id, $this->cannot_edit_message( $ticket_id ) );
 				unset( $move[ $ticket_id ] );
 				continue;
 			}
 
 			// Whether the destination can hold this ticket is the move's concern (SOFT-4825); that the user may edit its tickets is ours.
-			if ( ! $this->permissions->current_user_can_edit_tickets_of( $destination_id ) ) {
+			if ( ! $this->permissions->user_can_edit_tickets_of( $destination_id ) ) {
 				$rejections = $rejections->with(
 					Parser::MOVE,
 					$ticket_id,
@@ -150,7 +150,7 @@ final class Checks {
 				continue;
 			}
 
-			if ( ! $this->permissions->for_ticket( $ticket )->current_user_can_delete_ticket( $ticket ) ) {
+			if ( ! $this->permissions->for_ticket( $ticket )->user_can_delete_ticket( $ticket ) ) {
 				$rejections = $rejections->with(
 					Parser::DELETE,
 					$ticket_id,
