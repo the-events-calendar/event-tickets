@@ -13,8 +13,10 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
+use Tribe\Tickets\Test\Traits\Seating_Sessions;
 
 class Session_Test extends \Codeception\TestCase\WPTestCase {
+	use Seating_Sessions;
 	use WP_Remote_Mocks;
 	use With_Uopz;
 	use OAuth_Token;
@@ -286,11 +288,13 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_pick_earliest_expiring_token_object_id(): void {
+		/* Distinct, ordered expirations off a fixed base: the assertions turn on which expires first. */
+		$base = strtotime( '2030-01-01 00:00:00' );
 		$session = tribe( Session::class );
 		$session->add_entry( 23, 'test-token-1' );
 		$sessions = tribe( Sessions::class );
 		// The session for object 23 will expire in 100 seconds.
-		$sessions->insert_or_update( 'test-token-1', 23, time() + 100 );
+		$this->given_a_started_session( 'test-token-1', 23, $base + 100 );
 		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		$this->assertEquals(
@@ -302,10 +306,10 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 89, 'test-token-2' );
 		$session->add_entry( 66, 'test-token-2' );
 		// The session for object 89 will expire in 30 seconds.
-		$sessions->insert_or_update( 'test-token-2', 89, time() + 30 );
+		$this->given_a_started_session( 'test-token-2', 89, $base + 30 );
 		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		// The session for object 66 will expire in 300 seconds.
-		$sessions->insert_or_update( 'test-token-3', 66, time() + 300 );
+		$this->given_a_started_session( 'test-token-3', 66, $base + 300 );
 		$sessions->update_reservations( 'test-token-3', $this->create_mock_reservations_data( [ 66 ], 2 ) );
 
 		$this->assertEquals(
@@ -314,7 +318,36 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		);
 	}
 
+	/**
+	 * Checkout reads the cookie, which the visitor writes; the table is what decides whether the
+	 * session behind it was ever started.
+	 *
+	 * @test
+	 * @covers Session::pick_earliest_expiring_token_object_id
+	 */
+	public function test_pick_earliest_expiring_token_object_id_skips_a_session_that_never_started(): void {
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
+
+		$expiration = strtotime( '2030-01-01 00:00:00' );
+
+		$session->add_entry( 23, 'test-token-1' );
+		/* Render-time row only: the timer start action is deliberately not called. */
+		$sessions->insert_or_update( 'test-token-1', 23, $expiration + HOUR_IN_SECONDS );
+
+		$this->assertNull( $session->pick_earliest_expiring_token_object_id( $session->get_entries() ) );
+
+		$sessions->start_timer( 'test-token-1', 23, $expiration );
+
+		$this->assertEquals(
+			[ 'test-token-1', 23 ],
+			$session->pick_earliest_expiring_token_object_id( $session->get_entries() )
+		);
+	}
+
 	public function test_get_session_token_object_id(): void {
+		/* Distinct, ordered expirations off a fixed base: the assertions turn on which expires first. */
+		$base = strtotime( '2030-01-01 00:00:00' );
 		$sessions = tribe( Sessions::class );
 
 		$session = tribe( Session::class );
@@ -323,21 +356,21 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$session->add_entry( 23, 'test-token-1' );
 		// The session for object 23 will expire in 100 seconds.
-		$sessions->insert_or_update( 'test-token-1', 23, time() + 100 );
+		$this->given_a_started_session( 'test-token-1', 23, $base + 100 );
 		$sessions->update_reservations( 'test-token-1', [ '1234567890', '0987654321' ] );
 
 		$this->assertEquals( [ 'test-token-1', 23 ], $session->get_session_token_object_id() );
 
 		// The session for object 89 will expire in 30 seconds.
 		$session->add_entry( 89, 'test-token-2' );
-		$sessions->insert_or_update( 'test-token-2', 89, time() + 30 );
+		$this->given_a_started_session( 'test-token-2', 89, $base + 30 );
 		$sessions->update_reservations( 'test-token-2', [ '1234567890', '0987654321' ] );
 
 		$this->assertEquals( [ 'test-token-2', 89 ], $session->get_session_token_object_id() );
 
 		// The session for object 66 will expire in 300 seconds.
 		$session->add_entry( 66, 'test-token-3' );
-		$sessions->insert_or_update( 'test-token-3', 66, time() + 300 );
+		$this->given_a_started_session( 'test-token-3', 66, $base + 300 );
 		$sessions->update_reservations( 'test-token-3', [ '1234567890', '0987654321' ] );
 
 		$this->assertEquals( [ 'test-token-2', 89 ], $session->get_session_token_object_id() );
@@ -484,7 +517,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session = tribe( Session::class );
 
 		$session->add_entry( $post_id, 'test-token-1' );
-		$sessions->insert_or_update( 'test-token-1', $post_id, time() + 100 );
+		$this->given_a_started_session( 'test-token-1', $post_id );
 
 		$mock_reservations_data = $this->create_mock_reservations_data( [ $ticket_1 ], 2 );
 		$sessions->update_reservations( 'test-token-1', $mock_reservations_data );

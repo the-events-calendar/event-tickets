@@ -39,6 +39,24 @@ class Order_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * It should not let an array-form `orderby` inject SQL through the order direction.
+	 *
+	 * @test
+	 */
+	public function should_not_allow_sql_injection_through_array_form_orderby() {
+		$order_repository = tribe( Order_Repository::class );
+		$order_repository->by_args( [ 'orderby' => [ 'total_value' => 'DESC, (SELECT 1)' ] ] );
+		$order_repository->get_ids();
+
+		$sql = $order_repository->get_query()->request;
+
+		codecept_debug( $sql );
+
+		$this->assertStringNotContainsString( 'SELECT 1', $sql );
+		$this->assertRegExp( '/sorted_by_.* DESC/', $sql );
+	}
+
+	/**
 	 * Prepare test data.
 	 *
 	 * @return array
