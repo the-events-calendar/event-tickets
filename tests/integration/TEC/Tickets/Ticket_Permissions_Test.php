@@ -69,25 +69,47 @@ class Ticket_Permissions_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_let_the_legacy_delete_filter_refuse_a_delete_but_not_an_edit(): void {
+	public function it_should_not_ask_the_legacy_delete_filter(): void {
+		$ticket = $this->ticket_on_a_post();
+		$this->log_in_as( 'administrator' );
+		add_filter( 'tribe_tickets_current_user_can_delete_ticket', '__return_false' );
+
+		$this->assertTrue( tribe( Ticket_Permissions::class )->user_can_delete_ticket( $ticket ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_require_delete_post_on_the_ticket_to_delete_it(): void {
+		$author_id   = static::factory()->user->create( [ 'role' => 'author' ] );
+		$post_id     = static::factory()->post->create( [ 'post_author' => $author_id ] );
+		$permissions = tribe( Ticket_Permissions::class );
+
+		$this->log_in_as( 'administrator' );
+		$admins_ticket = tribe( Ticket_Data::class )->load_ticket_object( $this->create_tc_ticket( $post_id, 10 ) );
+		wp_set_current_user( $author_id );
+		$authors_ticket = tribe( Ticket_Data::class )->load_ticket_object( $this->create_tc_ticket( $post_id, 20 ) );
+
+		$this->assertTrue( $permissions->user_can_edit_ticket( $admins_ticket ) );
+		$this->assertFalse( current_user_can( 'delete_post', $admins_ticket->ID ) );
+		$this->assertFalse( $permissions->user_can_delete_ticket( $admins_ticket ), 'An author cannot delete a ticket someone else created.' );
+		$this->assertTrue( $permissions->user_can_delete_ticket( $authors_ticket ), 'An author can delete a ticket they created.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_post_id_that_resolves_to_nothing(): void {
 		$ticket      = $this->ticket_on_a_post();
 		$permissions = tribe( Ticket_Permissions::class );
 		$this->log_in_as( 'administrator' );
-		$seen = [];
-		add_filter(
-			'tribe_tickets_current_user_can_delete_ticket',
-			static function ( bool $can, int $ticket_id, string $provider_class ) use ( &$seen ): bool {
-				$seen[] = [ $ticket_id, $provider_class ];
+		$GLOBALS['post'] = get_post( (int) $ticket->get_event_id() );
 
-				return false;
-			},
-			10,
-			3
-		);
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( 0 ), 'The global post does not answer for post 0.' );
 
-		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ) );
-		$this->assertFalse( $permissions->user_can_delete_ticket( $ticket ) );
-		$this->assertSame( [ [ $ticket->ID, $ticket->provider_class ] ], $seen );
+		add_filter( 'tec_tickets_filter_event_id', '__return_null' );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( (int) $ticket->get_event_id() ) );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket ) );
 	}
 
 	/**
@@ -101,7 +123,7 @@ class Ticket_Permissions_Test extends WPTestCase {
 		$this->assertSame( $permissions, $permissions->for_ticket( $ticket ), 'By default the base permissions answer.' );
 
 		$stricter = new class() extends Ticket_Permissions {
-			public function user_can_edit_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
+			protected function can_edit_ticket( Ticket_Object $ticket, int $user_id ): bool {
 				return false;
 			}
 		};
@@ -228,5 +250,30 @@ class Ticket_Permissions_Test extends WPTestCase {
 
 		$this->assertFalse( tribe( Ticket_Permissions::class )->user_can_delete_ticket( $ticket ) );
 		$this->assertFalse( $asked, 'The delete filter is not asked once editing is refused.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_let_the_edit_filter_change_a_providers_answer(): void {
+		$ticket   = $this->ticket_on_a_post();
+		$stricter = new class() extends Ticket_Permissions {
+			protected function can_edit_ticket( Ticket_Object $ticket, int $user_id ): bool {
+				return false;
+			}
+		};
+		$this->log_in_as( 'administrator' );
+		$seen = null;
+		add_filter(
+			'tec_tickets_user_can_edit_ticket',
+			static function ( bool $can ) use ( &$seen ): bool {
+				$seen = $can;
+
+				return true;
+			}
+		);
+
+		$this->assertTrue( $stricter->user_can_edit_ticket( $ticket ) );
+		$this->assertFalse( $seen, 'The filter sees the provider\'s refusal.' );
 	}
 }
