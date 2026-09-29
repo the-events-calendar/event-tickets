@@ -119,6 +119,10 @@ final class Checks {
 				continue;
 			}
 
+			// The destination is passed on in the form it is checked in.
+			$destination_id     = (int) Event::filter_event_id( $destination_id, 'deferred_save' );
+			$move[ $ticket_id ] = $destination_id;
+
 			// Whether the destination can hold this ticket is the move's concern (SOFT-4825); that the user may edit its tickets is ours.
 			if ( ! $this->permissions->user_can_edit_tickets_of( $destination_id ) ) {
 				$rejections = $rejections->with(

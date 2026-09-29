@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Deferred_Save\Classic;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Result;
 
@@ -19,12 +18,13 @@ use TEC\Tickets\Deferred_Save\Result;
  * A classic save reloads the page, so the commit result has to survive the redirect. It is kept in a
  * transient for the user who saved, for one minute, and rendered once on their next post edit screen.
  * Per user rather than per post, because Events Calendar Pro may redirect a split save to another post.
+ * The feature Controller hooks both steps.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-final class Notices extends Controller_Contract {
+final class Notices {
 	/**
 	 * The transient key prefix; the user ID is appended.
 	 *
@@ -33,30 +33,6 @@ final class Notices extends Controller_Contract {
 	 * @var string
 	 */
 	public const TRANSIENT_PREFIX = 'tec_tickets_deferred_save_result_';
-
-	/**
-	 * Hooks the commit and the admin notices.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_action( 'tec_tickets_deferred_save_classic_committed', [ $this, 'remember' ], 10, 2 );
-		add_action( 'admin_notices', [ $this, 'render' ] );
-	}
-
-	/**
-	 * Unhooks.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'tec_tickets_deferred_save_classic_committed', [ $this, 'remember' ], 10 );
-		remove_action( 'admin_notices', [ $this, 'render' ] );
-	}
 
 	/**
 	 * Keeps the errors of a commit for the current user until their next edit screen.
