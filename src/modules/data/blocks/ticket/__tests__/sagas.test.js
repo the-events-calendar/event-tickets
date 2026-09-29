@@ -1040,6 +1040,9 @@ describe( 'Ticket Block sagas', () => {
 				call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' ),
 			);
 			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
 			expect( gen.next( true ).done ).toEqual( true );
 		} );
 
@@ -1083,9 +1086,34 @@ describe( 'Ticket Block sagas', () => {
 			// The fallback never matched the invalid previous start, yet it still syncs.
 			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
 			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
+			expect( gen.next( true ).value ).toEqual(
 				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual( call( createDates, eventStart ) );
+		} );
+
+		it( 'should keep the sale end of a ticket the tec.tickets.blocks.syncSaleEndWithEventStart filter excludes', () => {
+			const CLIENT_ID = 'modern-tribe';
+			const prevStartDate = 'November 20, 2018 12:30:00';
+			const tempEndMoment = { local: jest.fn(), isSame: jest.fn() };
+			const endMoment = { local: jest.fn() };
+			const prevEventStartMoment = { local: jest.fn() };
+
+			const gen = cloneableGenerator( sagas.syncTicketSaleEndWithEventStart )( prevStartDate, CLIENT_ID );
+
+			gen.next();
+			gen.next( tempEndMoment );
+			gen.next( endMoment );
+			gen.next( { moment: prevEventStartMoment } );
+			gen.next();
+			gen.next( true );
+			expect( gen.next( true ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
+			expect( gen.next( false ).done ).toEqual( true );
 		} );
 
 		it( 'should sync the sale end date with the event start when it follows the event', () => {
@@ -1124,6 +1152,9 @@ describe( 'Ticket Block sagas', () => {
 				call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' ),
 			);
 			expect( gen.next( true ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				call( applyFilters, 'tec.tickets.blocks.syncSaleEndWithEventStart', true, CLIENT_ID )
+			);
 			expect( gen.next( true ).value ).toEqual(
 				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
 			);
