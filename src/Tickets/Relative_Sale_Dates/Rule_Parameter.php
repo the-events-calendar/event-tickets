@@ -41,8 +41,8 @@ final class Rule_Parameter extends Parameter {
 		$this->required             = false;
 		$this->nullable             = true;
 		$this->properties           = new PropertiesCollection();
-		$this->properties[]         = $this->get_end_parameter( 'start', fn() => __( 'When sales start.', 'event-tickets' ) );
-		$this->properties[]         = $this->get_end_parameter( 'end', fn() => __( 'When sales end.', 'event-tickets' ) );
+		$this->properties[]         = $this->get_boundary_parameter( 'start', fn() => __( 'When sales start.', 'event-tickets' ) );
+		$this->properties[]         = $this->get_boundary_parameter( 'end', fn() => __( 'When sales end.', 'event-tickets' ) );
 	}
 
 	/**
@@ -117,16 +117,16 @@ final class Rule_Parameter extends Parameter {
 	}
 
 	/**
-	 * Gets the documentation of one end of the window.
+	 * Gets the documentation of one boundary of the window.
 	 *
 	 * @since TBD
 	 *
-	 * @param string  $name                 The end, `start` or `end`.
-	 * @param Closure $description_provider The provider of the end's description.
+	 * @param string  $name                 The boundary, `start` or `end`.
+	 * @param Closure $description_provider The provider of the boundary's description.
 	 *
-	 * @return Entity The end's documentation.
+	 * @return Entity The boundary's documentation.
 	 */
-	private function get_end_parameter( string $name, Closure $description_provider ): Entity {
+	private function get_boundary_parameter( string $name, Closure $description_provider ): Entity {
 		$properties   = new PropertiesCollection();
 		$properties[] = (
 			new Text(

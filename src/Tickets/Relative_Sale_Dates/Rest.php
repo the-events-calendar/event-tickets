@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use InvalidArgumentException;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
@@ -219,15 +218,8 @@ final class Rest extends Controller_Contract {
 	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}}|null The rule, or `null` when the ticket has no valid rule.
 	 */
 	private function get_stored_rule( int $ticket_id ): ?array {
-		try {
-			$rule = Rule::from_array( $this->rule_store->get( $ticket_id ) );
-		} catch ( InvalidArgumentException $e ) {
-			return null;
-		}
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
-		return [
-			'start' => $rule->get_start(),
-			'end'   => $rule->get_end(),
-		];
+		return $rule ? $rule->to_array() : null;
 	}
 }
