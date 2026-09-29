@@ -822,6 +822,19 @@ class Tickets_ViewTest extends WPTestCase {
 		$this->assertStringContainsString( $this->get_rsvp_all_past_message(), $html );
 	}
 
+	/**
+	 * @test
+	 */
+	public function should_accept_comma_separated_string_of_included_tickets(): void {
+		$post_id        = static::factory()->post->create();
+		$past_ticket_id = $this->create_past_rsvp_ticket( $post_id );
+		$other_past_id  = $this->create_past_rsvp_ticket( $post_id );
+
+		$html = $this->render_legacy_rsvp_block( $post_id, "$past_ticket_id,$other_past_id" );
+
+		$this->assertStringContainsString( $this->get_rsvp_all_past_message(), $html );
+	}
+
 	private function create_past_rsvp_ticket( int $post_id ): int {
 		return $this->create_rsvp_ticket(
 			$post_id,
@@ -837,13 +850,22 @@ class Tickets_ViewTest extends WPTestCase {
 	/**
 	 * The v2 RSVP view renders nothing when no RSVP is active, so the "all past" state is only visible in the legacy view.
 	 */
-	private function render_legacy_rsvp_block( int $post_id, array $include_tickets ): string {
+	private function render_legacy_rsvp_block( int $post_id, $include_tickets ): string {
 		add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
+
+		$original_post     = $GLOBALS['post'] ?? null;
+		$original_template = tribe( 'tickets.editor.template' );
+
 		$GLOBALS['post'] = get_post( $post_id );
 		// The template singleton keeps the previous render's context, which points at a rolled-back post.
 		tribe_singleton( 'tickets.editor.template', new Editor_Template() );
 
-		return Tickets_View::instance()->get_rsvp_block( $post_id, false, $include_tickets );
+		try {
+			return Tickets_View::instance()->get_rsvp_block( $post_id, false, $include_tickets );
+		} finally {
+			tribe_singleton( 'tickets.editor.template', $original_template );
+			$GLOBALS['post'] = $original_post;
+		}
 	}
 
 	private function get_rsvp_all_past_message(): string {

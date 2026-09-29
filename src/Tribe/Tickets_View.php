@@ -1274,7 +1274,7 @@ class Tribe__Tickets__Tickets_View {
 		$tickets = $blocks_rsvp->get_tickets( $post_id );
 
 		if ( $include_tickets ) {
-			$include_tickets = array_map( 'absint', $include_tickets );
+			$include_tickets = wp_parse_id_list( $include_tickets );
 			$tickets         = array_values(
 				array_filter(
 					$tickets,
