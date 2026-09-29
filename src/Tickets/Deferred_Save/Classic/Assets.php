@@ -9,20 +9,20 @@
 
 namespace TEC\Tickets\Deferred_Save\Classic;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use Tribe__Tickets__Main as Tickets_Main;
 
 /**
  * Class Assets.
  *
  * Registers the staging module and its styles in the admin group the tickets metabox uses, and
- * enqueues them only on the edit screen of a ticketable post.
+ * enqueues them only on the edit screen of a ticketable post. The feature Controller calls
+ * `register()` and `unregister()`.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-final class Assets extends Controller_Contract {
+final class Assets {
 	/**
 	 * The script handle.
 	 *
@@ -48,7 +48,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	protected function do_register(): void {
+	public function register(): void {
 		$main = Tickets_Main::instance();
 
 		tec_asset(

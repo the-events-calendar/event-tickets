@@ -93,7 +93,8 @@ final class Controller extends Controller_Contract {
 		add_action( 'tec_tickets_deferred_save_classic_committed', $this->container->callback( Classic\Notices::class, 'remember' ), 10, 2 );
 		add_action( 'admin_notices', $this->container->callback( Classic\Notices::class, 'render' ) );
 
-		$this->container->register( Classic\Assets::class );
+		$this->container->singleton( Classic\Assets::class );
+		$this->container->get( Classic\Assets::class )->register();
 	}
 
 	/**
