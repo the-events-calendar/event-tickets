@@ -9,9 +9,6 @@
 
 namespace TEC\Tickets\Deferred_Save;
 
-use TEC\Common\Contracts\Container;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use Tribe__Tickets__Main as Tickets_Main;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -19,10 +16,11 @@ use WP_REST_Response;
 /**
  * Class Block_Save.
  *
- * The block editor adds `tec_tickets` to the REST request that saves the post. This hooks the
- * `rest_after_insert_{type}` action of every ticketable post type, hands the payload to `Commit`
- * once the post and its meta are written, and adds the result to the response under `tec_tickets`
- * so the editor can match new tickets to their IDs and show errors on rejected ones.
+ * The block editor adds `tec_tickets` to the REST request that saves the post. The feature
+ * Controller hooks this on `rest_after_insert_{type}` of every ticketable post type: it hands the
+ * payload to `Commit` once the post and its meta are written, and adds the result to the response
+ * under `tec_tickets` so the editor can match new tickets to their IDs and show errors on rejected
+ * ones.
  *
  * Priority 200 runs after ECP's Custom Tables v1 commits a recurring event's occurrences at 100, so
  * callbacks on the routing filter see the post after a split. REST autosaves never fire
@@ -32,7 +30,7 @@ use WP_REST_Response;
  *
  * @package TEC\Tickets\Deferred_Save
  */
-final class Block_Save extends Controller_Contract {
+final class Block_Save {
 	/**
 	 * The priority on `rest_after_insert_{type}`: after the Custom Tables v1 occurrence commit at 100.
 	 *
@@ -65,40 +63,10 @@ final class Block_Save extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container $container The container.
-	 * @param Commit    $commit    The handler that saves a payload.
+	 * @param Commit $commit The handler that saves a payload.
 	 */
-	public function __construct( Container $container, Commit $commit ) {
-		parent::__construct( $container );
+	public function __construct( Commit $commit ) {
 		$this->commit = $commit;
-	}
-
-	/**
-	 * Hooks the REST save and response of every ticketable post type.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		foreach ( Tickets_Main::instance()->post_types() as $post_type ) {
-			add_action( "rest_after_insert_{$post_type}", [ $this, 'on_rest_after_insert' ], self::PRIORITY, 3 );
-			add_filter( "rest_prepare_{$post_type}", [ $this, 'add_result_to_response' ], 10, 3 );
-		}
-	}
-
-	/**
-	 * Unhooks the REST save and response.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		foreach ( Tickets_Main::instance()->post_types() as $post_type ) {
-			remove_action( "rest_after_insert_{$post_type}", [ $this, 'on_rest_after_insert' ], self::PRIORITY );
-			remove_filter( "rest_prepare_{$post_type}", [ $this, 'add_result_to_response' ], 10 );
-		}
 	}
 
 	/**

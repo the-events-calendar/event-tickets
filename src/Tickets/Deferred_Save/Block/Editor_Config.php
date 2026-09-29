@@ -9,42 +9,19 @@
 
 namespace TEC\Tickets\Deferred_Save\Block;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-
 /**
  * Class Editor_Config.
  *
  * Adds `usesDeferredSave` to the tickets editor configuration Event Tickets already prints for the
- * block editor, read in JavaScript as `globals.tickets().usesDeferredSave`. The key is only present
- * while the feature is active, so its presence is the editor's signal that saves are deferred.
+ * block editor, read in JavaScript as `globals.tickets().usesDeferredSave`. The feature Controller
+ * hooks it only while the feature is active, so the key's presence is the editor's signal that saves
+ * are deferred.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Deferred_Save\Block
  */
-final class Editor_Config extends Controller_Contract {
-	/**
-	 * Hooks the editor configuration.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'add_flag' ] );
-	}
-
-	/**
-	 * Unhooks.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'add_flag' ] );
-	}
-
+final class Editor_Config {
 	/**
 	 * Adds the deferred save flag.
 	 *
