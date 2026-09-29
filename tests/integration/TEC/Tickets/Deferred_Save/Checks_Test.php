@@ -314,7 +314,7 @@ class Checks_Test extends WPTestCase {
 		$this->log_in_as( 'editor' );
 		$data     = [ 'ticket_name' => 'x' ];
 		$stricter = new class() extends \TEC\Tickets\Ticket_Permissions {
-			public function current_user_can_edit_ticket( \Tribe__Tickets__Ticket_Object $ticket ): bool {
+			public function user_can_edit_ticket( \Tribe__Tickets__Ticket_Object $ticket, ?int $user_id = null ): bool {
 				return false;
 			}
 		};
