@@ -16,8 +16,6 @@ import { getSaleWindowError } from './validation';
 
 const MODE_DEFAULT = 'default';
 const MODE_RELATIVE = 'relative';
-const UNIT_DAYS = 86400;
-const UNIT_WEEKS = 604800;
 const ANCHOR_START = 'start';
 const ANCHOR_END = 'end';
 
@@ -56,8 +54,8 @@ const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
  * @property {moment.Moment|null} end      The sales end in the event timezone, or `null` when the ticket keeps its own
  *                                         date.
  * @property {moment.Moment|null} endUtc   The sales end in UTC, or `null` as for `end`.
- * @property {boolean}            valid    Whether the sales start is before the sales end; `true` when either is
- *                                         `null`, since the window cannot be judged without both.
+ * @property {boolean|null}       valid    Whether the sales start is before the sales end, or `null` when either is
+ *                                         `null`: the window cannot be judged without both.
  */
 
 /**
@@ -91,7 +89,7 @@ export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 		startUtc: toUtc( start ),
 		end,
 		endUtc: toUtc( end ),
-		valid: null === getSaleWindowError( start, end ),
+		valid: start && end ? null === getSaleWindowError( start, end ) : null,
 	};
 }
 
@@ -111,40 +109,33 @@ function resolveRelative( end, anchors, timezone ) {
 		return null;
 	}
 
-	const anchor = anchors[ end.anchor ];
-
-	if ( UNIT_DAYS === end.unit || UNIT_WEEKS === end.unit ) {
-		const days = UNIT_WEEKS === end.unit ? end.value * 7 : end.value;
-
-		return daysBefore( anchor, days, timezone );
-	}
-
-	return inTimezone( moment.utc( anchor.valueOf() - end.value * end.unit * 1000 ), timezone );
+	return before( anchors[ end.anchor ], end.value * end.unit, timezone );
 }
 
 /**
- * Moves a date back by calendar days in the event timezone, keeping its wall-clock time.
+ * Moves a date back by an amount of wall-clock time in the event timezone, as the server does.
  *
- * The result is built fresh from the target date and the anchor's wall-clock time rather than with `subtract()`: when
- * the target wall-clock time does not exist, a subtracted moment keeps it and formats a local time that never happens,
- * while a fresh one is pushed forward by the size of the gap, as the server's date is.
+ * The amount comes off the wall-clock time, not off the instant, so a clock change in between does not shift the
+ * result: 8 hours before 08:00 is 00:00 even on a night an hour longer or shorter than usual. The result is then built
+ * fresh from that wall-clock time rather than with `subtract()`: a time skipped by a clock change is pushed forward by
+ * the size of the change, and a time that happens twice takes its first occurrence.
  *
  * @since TBD
  *
  * @param {moment.Moment} anchor   The date to move back, in the event timezone.
- * @param {number}        days     The number of calendar days to move back.
+ * @param {number}        seconds  The amount of wall-clock time to move back, in seconds.
  * @param {string}        timezone The event timezone.
  *
  * @return {moment.Moment} The moved date, in the event timezone.
  */
-function daysBefore( anchor, days, timezone ) {
-	// A date at midnight UTC has no clock change to trip over.
-	const targetDate = moment
-		.utc( anchor.format( DATE_FORMAT ), DATE_FORMAT, true )
-		.subtract( days, 'days' )
-		.format( DATE_FORMAT );
+function before( anchor, seconds, timezone ) {
+	// UTC has no clock change, so the subtraction moves the wall-clock time and nothing else.
+	const wallClock = moment
+		.utc( anchor.format( DATE_TIME_FORMAT ), DATE_TIME_FORMAT, true )
+		.subtract( seconds, 'seconds' )
+		.format( DATE_TIME_FORMAT );
 
-	return fromLocal( `${ targetDate } ${ anchor.format( TIME_FORMAT ) }`, timezone );
+	return fromLocal( wallClock, timezone );
 }
 
 /**
@@ -163,24 +154,6 @@ function fromLocal( dateTime, timezone ) {
 	}
 
 	return moment.tz( dateTime, DATE_TIME_FORMAT, true, timezone );
-}
-
-/**
- * Converts a date to the event timezone.
- *
- * @since TBD
- *
- * @param {moment.Moment} date     The date to convert.
- * @param {string}        timezone The event timezone.
- *
- * @return {moment.Moment} The same instant, in the event timezone.
- */
-function inTimezone( date, timezone ) {
-	if ( FIXED_OFFSET.test( timezone ) ) {
-		return date.clone().utcOffset( timezone );
-	}
-
-	return date.clone().tz( timezone );
 }
 
 /**
