@@ -38,17 +38,17 @@ class Ticket_Permissions_Test extends WPTestCase {
 		$ticket      = $this->ticket_on_a_post();
 
 		$this->log_in_as( 'administrator' );
-		$this->assertTrue( $permissions->current_user_can_edit_tickets_of( (int) $ticket->get_event_id() ) );
-		$this->assertTrue( $permissions->current_user_can_edit_ticket( $ticket ) );
-		$this->assertTrue( $permissions->current_user_can_delete_ticket( $ticket ) );
+		$this->assertTrue( $permissions->user_can_edit_tickets_of( (int) $ticket->get_event_id() ) );
+		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ) );
+		$this->assertTrue( $permissions->user_can_delete_ticket( $ticket ) );
 
 		$this->log_in_as( 'subscriber' );
-		$this->assertFalse( $permissions->current_user_can_edit_tickets_of( (int) $ticket->get_event_id() ) );
-		$this->assertFalse( $permissions->current_user_can_edit_ticket( $ticket ) );
-		$this->assertFalse( $permissions->current_user_can_delete_ticket( $ticket ) );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( (int) $ticket->get_event_id() ) );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket ) );
+		$this->assertFalse( $permissions->user_can_delete_ticket( $ticket ) );
 
 		wp_set_current_user( 0 );
-		$this->assertFalse( $permissions->current_user_can_edit_ticket( $ticket ) );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket ) );
 	}
 
 	/**
@@ -60,10 +60,10 @@ class Ticket_Permissions_Test extends WPTestCase {
 		$permissions = tribe( Ticket_Permissions::class );
 
 		wp_set_current_user( $author_id );
-		$this->assertTrue( $permissions->current_user_can_edit_ticket( $ticket ) );
+		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ) );
 
 		$this->log_in_as( 'author' );
-		$this->assertFalse( $permissions->current_user_can_edit_ticket( $ticket ), 'Another author cannot edit someone else\'s post.' );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket ), 'Another author cannot edit someone else\'s post.' );
 	}
 
 	/**
@@ -85,8 +85,8 @@ class Ticket_Permissions_Test extends WPTestCase {
 			3
 		);
 
-		$this->assertTrue( $permissions->current_user_can_edit_ticket( $ticket ) );
-		$this->assertFalse( $permissions->current_user_can_delete_ticket( $ticket ) );
+		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ) );
+		$this->assertFalse( $permissions->user_can_delete_ticket( $ticket ) );
 		$this->assertSame( [ [ $ticket->ID, $ticket->provider_class ] ], $seen );
 	}
 
@@ -101,7 +101,7 @@ class Ticket_Permissions_Test extends WPTestCase {
 		$this->assertSame( $permissions, $permissions->for_ticket( $ticket ), 'By default the base permissions answer.' );
 
 		$stricter = new class() extends Ticket_Permissions {
-			public function current_user_can_edit_ticket( Ticket_Object $ticket ): bool {
+			public function user_can_edit_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
 				return false;
 			}
 		};
@@ -115,9 +115,9 @@ class Ticket_Permissions_Test extends WPTestCase {
 		);
 
 		$this->assertSame( $stricter, $permissions->for_ticket( $ticket ) );
-		$this->assertFalse( $permissions->for_ticket( $ticket )->current_user_can_edit_ticket( $ticket ) );
-		$this->assertFalse( $permissions->for_ticket( $ticket )->current_user_can_delete_ticket( $ticket ), 'Delete builds on edit.' );
-		$this->assertTrue( $permissions->current_user_can_edit_ticket( $ticket ), 'The base answer is unchanged.' );
+		$this->assertFalse( $permissions->for_ticket( $ticket )->user_can_edit_ticket( $ticket ) );
+		$this->assertFalse( $permissions->for_ticket( $ticket )->user_can_delete_ticket( $ticket ), 'Delete builds on edit.' );
+		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ), 'The base answer is unchanged.' );
 	}
 
 	/**
@@ -129,5 +129,104 @@ class Ticket_Permissions_Test extends WPTestCase {
 		add_filter( 'tec_tickets_ticket_permissions', '__return_null' );
 
 		$this->assertSame( $permissions, $permissions->for_ticket( $ticket ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_answer_for_the_given_user_rather_than_the_current_one(): void {
+		$ticket      = $this->ticket_on_a_post();
+		$permissions = tribe( Ticket_Permissions::class );
+		$admin_id    = static::factory()->user->create( [ 'role' => 'administrator' ] );
+		$post_id     = (int) $ticket->get_event_id();
+
+		$subscriber_id = $this->log_in_as( 'subscriber' );
+		$this->assertTrue( $permissions->user_can_edit_tickets_of( $post_id, $admin_id ) );
+		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket, $admin_id ) );
+		$this->assertTrue( $permissions->user_can_delete_ticket( $ticket, $admin_id ) );
+
+		wp_set_current_user( $admin_id );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( $post_id, $subscriber_id ) );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket, $subscriber_id ) );
+		$this->assertFalse( $permissions->user_can_delete_ticket( $ticket, $subscriber_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_accept_edit_event_tickets_without_edit_post(): void {
+		$ticket  = $this->ticket_on_a_post();
+		$this->log_in_as( 'subscriber' );
+		wp_get_current_user()->add_cap( 'edit_event_tickets' );
+
+		$this->assertTrue( current_user_can( 'edit_event_tickets' ) ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
+		$this->assertFalse( tribe( Ticket_Permissions::class )->user_can_edit_ticket( $ticket ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_accept_edit_others_posts_without_edit_post(): void {
+		$author_id = static::factory()->user->create( [ 'role' => 'author' ] );
+		$ticket    = $this->ticket_on_a_post( $author_id );
+		add_role( 'others_drafts_editor', 'Others drafts editor', [ 'read' => true, 'edit_posts' => true, 'edit_others_posts' => true ] );
+		$this->log_in_as( 'others_drafts_editor' );
+
+		$this->assertTrue( current_user_can( 'edit_others_posts' ) );
+		$this->assertFalse( current_user_can( 'edit_post', (int) $ticket->get_event_id() ), 'The post is published; the role cannot edit published posts.' );
+		$this->assertFalse( tribe( Ticket_Permissions::class )->user_can_edit_ticket( $ticket ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_let_a_filter_refuse_each_answer(): void {
+		$ticket      = $this->ticket_on_a_post();
+		$permissions = tribe( Ticket_Permissions::class );
+		$admin_id    = $this->log_in_as( 'administrator' );
+		$post_id     = (int) $ticket->get_event_id();
+		$seen        = [];
+		$refuse      = static function ( string $filter ) use ( &$seen ) {
+			return static function ( bool $can, $subject, int $user_id ) use ( $filter, &$seen ): bool {
+				$seen[ $filter ] = [ $can, $subject, $user_id ];
+
+				return false;
+			};
+		};
+
+		add_filter( 'tec_tickets_user_can_delete_ticket', $refuse( 'delete' ), 10, 3 );
+		$this->assertTrue( $permissions->user_can_edit_ticket( $ticket ) );
+		$this->assertFalse( $permissions->user_can_delete_ticket( $ticket ) );
+		$this->assertSame( [ true, $ticket, $admin_id ], $seen['delete'] );
+
+		add_filter( 'tec_tickets_user_can_edit_ticket', $refuse( 'edit' ), 10, 3 );
+		$this->assertTrue( $permissions->user_can_edit_tickets_of( $post_id ) );
+		$this->assertFalse( $permissions->user_can_edit_ticket( $ticket ) );
+		$this->assertSame( [ true, $ticket, $admin_id ], $seen['edit'] );
+
+		add_filter( 'tec_tickets_user_can_edit_tickets_of', $refuse( 'post' ), 10, 3 );
+		$this->assertFalse( $permissions->user_can_edit_tickets_of( $post_id ) );
+		$this->assertSame( [ true, $post_id, $admin_id ], $seen['post'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_the_delete_when_the_edit_filter_refuses(): void {
+		$ticket = $this->ticket_on_a_post();
+		$this->log_in_as( 'administrator' );
+		$asked = false;
+		add_filter( 'tec_tickets_user_can_edit_ticket', '__return_false' );
+		add_filter(
+			'tec_tickets_user_can_delete_ticket',
+			static function ( bool $can ) use ( &$asked ): bool {
+				$asked = true;
+
+				return $can;
+			}
+		);
+
+		$this->assertFalse( tribe( Ticket_Permissions::class )->user_can_delete_ticket( $ticket ) );
+		$this->assertFalse( $asked, 'The delete filter is not asked once editing is refused.' );
 	}
 }
