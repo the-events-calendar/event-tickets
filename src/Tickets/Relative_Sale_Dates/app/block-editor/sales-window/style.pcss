@@ -1,8 +1,14 @@
 /*
+ * Every rule starts at `.editor-styles-wrapper`: the block editor copies
+ * a stylesheet into its canvas iframe only when one of its selectors
+ * names that class or `.wp-block`.
+ */
+
+/*
  * The options take the rest of the row beside their section label, as the other fields do, with each end's label
  * beside its mode select and the rest of the end under that select.
  */
-.tec-tickets-relative-sale-dates {
+.editor-styles-wrapper .tec-tickets-relative-sale-dates {
 	--tec-tickets-relative-sale-dates-label-width: 40px;
 	display: flex;
 	flex: 1;
@@ -11,7 +17,7 @@
 	min-width: 0;
 }
 
-.tec-tickets-relative-sale-dates__end {
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__end {
 	display: flex;
 	flex-direction: column;
 	gap: var(--tec-spacer-1);
@@ -42,7 +48,7 @@
 	}
 }
 
-.tec-tickets-relative-sale-dates__relative {
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__relative {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
@@ -53,9 +59,22 @@
 	}
 }
 
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__helper {
+	color: #757575;
+	flex-basis: 100%;
+	font-size: 12px;
+	margin: 0;
+}
+
 /* Each end shows only its own half of the picker it is handed. */
-.tec-tickets-relative-sale-dates__picker--start .tribe-editor__date-time-range-picker__end,
-.tec-tickets-relative-sale-dates__picker--end .tribe-editor__date-time-range-picker__start,
-.tec-tickets-relative-sale-dates__picker--end .tribe-editor__date-time-range-picker__separator--time-range {
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--start
+.tribe-editor__date-time-range-picker__end,
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--end
+.tribe-editor__date-time-range-picker__start,
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates__picker--end
+.tribe-editor__date-time-range-picker__separator--time-range {
 	display: none;
 }

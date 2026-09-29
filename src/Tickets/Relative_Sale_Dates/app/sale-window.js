@@ -7,6 +7,10 @@
 /**
  * External dependencies
  */
+/*
+ * `moment` carries no zone data of its own: both editors read the `moment.tz` WordPress's `wp-date` sets up, with the
+ * current zone data `zone-data` loads onto it.
+ */
 import moment from 'moment';
 
 /**

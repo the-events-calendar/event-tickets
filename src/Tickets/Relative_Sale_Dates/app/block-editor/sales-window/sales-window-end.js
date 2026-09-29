@@ -78,6 +78,8 @@ function getUnitOptions( value ) {
  * @param {{label: string, value: string}[]} props.anchorOptions The anchor options.
  * @param {Object}                           props.picker        The date and time range picker element.
  * @param {boolean}                          props.disabled      Whether the options are disabled.
+ * @param {string}                           props.helperText    The date a relative end works out to, or an empty
+ *                                                               string.
  * @param {Function}                         props.onChange      Called with the changed values of the end.
  *
  * @return {Object} The end's options.
@@ -90,6 +92,7 @@ export default function SalesWindowEnd( {
 	anchorOptions,
 	picker,
 	disabled,
+	helperText,
 	onChange,
 } ) {
 	return (
@@ -139,6 +142,9 @@ export default function SalesWindowEnd( {
 						options={ anchorOptions }
 						onChange={ ( anchor ) => onChange( { anchor } ) }
 					/>
+					<p className="tec-tickets-relative-sale-dates__helper" aria-live="polite">
+						{ helperText }
+					</p>
 				</div>
 			) }
 			{ MODE_SPECIFIC === end.mode &&
