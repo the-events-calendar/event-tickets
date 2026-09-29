@@ -20,16 +20,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Checks.
  *
- * Runs the payload against the post being saved. The current user must be able to edit that
- * post's tickets, or the whole payload is rejected. Every `update`, `delete` and `move` entry must
- * name a ticket attached to that post, loaded through `Ticket_Data`, and the ticket's own
- * `Ticket_Permissions` must allow the edit or the delete; every `move` destination must be a post
- * whose tickets the current user can edit. A failed check rejects that entry only. What was rejected, and why, comes back
- * in the outcome next to the entries that passed.
- *
- * `create` entries carry no ticket ID (the parser removes one found inside the data) and pass
- * through. `data` is not interpreted here: the providers sanitize it when the ticket is saved,
- * as they do today.
+ * Checks a parsed payload against the post being saved: who may act, and on which tickets. A
+ * failed check rejects its entry, or the whole payload when the user cannot edit the post.
  *
  * @since TBD
  *
