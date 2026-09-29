@@ -165,7 +165,8 @@ final class Assets extends Controller_Contract {
 			Tickets_Plugin::instance(),
 			self::BLOCK_EDITOR_SCRIPT,
 			'RelativeSaleDates/block-editor.js',
-			[ 'wp-data', 'wp-hooks' ],
+			// `wp-date` installs the zone data `moment` resolves the event dates with.
+			[ 'wp-data', 'wp-date', 'wp-hooks' ],
 			'enqueue_block_editor_assets',
 			[
 				'group_path'   => Tickets_Plugin::class . '-packages',
@@ -249,17 +250,24 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the data the Ticket block script reads the relative values it offers by default from.
+	 * Gets the data the Ticket block script reads its defaults, the event date settings and the helper text formats from.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}} The script data.
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
 	 */
 	private function get_block_editor_script_data(): array {
 		return [
-			'defaults' => [
+			'defaults'  => [
 				'start' => Editor::DEFAULT_RELATIVE_START,
 				'end'   => Editor::DEFAULT_RELATIVE_END,
+			],
+			'timezones' => $this->get_manual_offset_zones(),
+			'allDay'    => $this->get_all_day_times(),
+			'formats'   => [
+				'dateWithYear' => $this->get_date_format( true ),
+				'dateNoYear'   => $this->get_date_format( false ),
+				'time'         => $this->get_time_format(),
 			],
 		];
 	}
@@ -308,7 +316,7 @@ final class Assets extends Controller_Contract {
 	/**
 	 * Gets the TEC date format of a date in another year, or in the current one.
 	 *
-	 * The classic editor reads it from here rather than from `tribe_dynamic_help_text`, which leaves a blank setting blank.
+	 * Both editors read it from here; the classic editor's `tribe_dynamic_help_text` leaves a blank setting blank.
 	 *
 	 * @since TBD
 	 *
