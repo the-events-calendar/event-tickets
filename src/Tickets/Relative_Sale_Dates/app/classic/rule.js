@@ -4,10 +4,13 @@
  * @since TBD
  */
 
+/**
+ * Internal dependencies
+ */
+import { MODE_RELATIVE } from '../rule-constants';
+
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
-
-const MODE_RELATIVE = 'relative';
 
 /**
  * The id of the hidden field that carries the rule, as JSON, to the server.

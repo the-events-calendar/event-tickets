@@ -12,16 +12,9 @@ import moment from 'moment';
 /**
  * Internal dependencies
  */
+import { MAX_VALUE, MIN_VALUE, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
 import { fromLocal, resolveSaleWindow } from '../sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from '../validation';
-
-const MODE_DEFAULT = 'default';
-const MODE_SPECIFIC = 'specific';
-const MODE_RELATIVE = 'relative';
-
-// The range of numbers a relative boundary takes, as `Boundary::MIN_VALUE` and `Boundary::MAX_VALUE` set it.
-const MIN_VALUE = 1;
-const MAX_VALUE = 60;
 
 /**
  * The message key of a relative boundary whose number is out of range.

@@ -1,0 +1,25 @@
+.tec-tickets-relative-sale-dates {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+}
+
+.tec-tickets-relative-sale-dates__end {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.tec-tickets-relative-sale-dates__relative {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* Each end shows only its own half of the picker it is handed. */
+.tec-tickets-relative-sale-dates__picker--start .tribe-editor__date-time-range-picker__end,
+.tec-tickets-relative-sale-dates__picker--end .tribe-editor__date-time-range-picker__start,
+.tec-tickets-relative-sale-dates__picker--end .tribe-editor__date-time-range-picker__separator--time-range {
+	display: none;
+}
