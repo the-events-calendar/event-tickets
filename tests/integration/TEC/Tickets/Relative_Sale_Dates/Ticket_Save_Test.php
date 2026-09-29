@@ -469,6 +469,14 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				'ticket_start_time'   => '18:00:00',
 			],
 		];
+
+		yield 'default start submitted after the resolved end' => [
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_WEEKS ) ] ),
+				'ticket_start_date'   => '2027-06-22',
+				'ticket_start_time'   => '12:00:00',
+			],
+		];
 	}
 
 	/**
@@ -502,6 +510,68 @@ class Ticket_Save_Test extends Controller_Test_Case {
 
 		$this->assertWPError( $result );
 		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $result->get_error_message() );
+	}
+
+	/**
+	 * The rule ends the sales on 2027-06-17 at 19:00, a week before the event starts.
+	 *
+	 * @return Generator<string,array{0: string, 1: bool}>
+	 */
+	public function default_start_without_a_date_provider(): Generator {
+		yield 'published before the end' => [ '2027-06-16 10:00:00', true ];
+		// `ticket_add()` starts the sales at midnight of the day the event was published.
+		yield 'published on the day the sales end, after they end' => [ '2027-06-17 20:00:00', true ];
+		yield 'published after the end' => [ '2027-06-18 10:00:00', false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider default_start_without_a_date_provider
+	 */
+	public function should_judge_a_default_start_sent_without_a_date_by_the_event_post_date( string $post_date, bool $valid ): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		wp_update_post(
+			[
+				'ID'        => $event_id,
+				'post_date' => $post_date,
+			]
+		);
+		$data = [
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_WEEKS ) ] ),
+			'ticket_start_date'   => '',
+		];
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertSame( $valid, true === $result );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_judge_a_save_without_a_rule_by_the_stored_rule(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket(
+			$event_id,
+			1,
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'ticket_end_date'     => '2027-06-20',
+				'ticket_end_time'     => '12:00:00',
+			]
+		);
+		$data = [
+			'ticket_id'       => $ticket_id,
+			'ticket_end_date' => '2027-06-01',
+			'ticket_end_time' => '12:00:00',
+		];
+
+		$kept    = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+		$removed = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, array_merge( $data, [ 'relative_sale_dates' => '' ] ) );
+
+		$this->assertWPError( $kept );
+		$this->assertSame( self::INVALID_WINDOW_MESSAGE, $kept->get_error_message() );
+		$this->assertTrue( $removed );
 	}
 
 	/**
@@ -623,7 +693,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	/**
 	 * Sends a ticket save from the classic editor and returns its JSON response.
 	 *
-	 * @param int                 $event_id The event post ID.
+	 * @param int                      $event_id The event post ID.
 	 * @param array<string,int|string> $data     The ticket form data, merged over a Tickets Commerce ticket.
 	 *
 	 * @return array{success: bool, data: mixed} The decoded JSON response.

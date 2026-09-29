@@ -192,8 +192,10 @@ final class Ticket_Save {
 	/**
 	 * Rejects ticket data whose rule is invalid or whose sales window does not start before it ends.
 	 *
-	 * An end the rule leaves to the ticket, in `specific` mode, is judged with the date submitted for it, and rejected
-	 * when none was.
+	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A boundary the
+	 * rule leaves to the ticket is judged with the date `ticket_add()` stores for it: the submitted date, or for a
+	 * `default` start sent without one, the day the event was published. A `specific` boundary sent without its date is
+	 * rejected.
 	 *
 	 * @since TBD
 	 *
@@ -206,17 +208,22 @@ final class Ticket_Save {
 	public function validate_ticket_data( $valid, int $post_id, array $data ) {
 		if (
 			is_wp_error( $valid )
-			|| empty( $data[ self::DATA_KEY ] )
+			|| $this->removes_rule( $data )
 			|| Module::class !== ( $data['ticket_provider'] ?? Module::class )
 			|| ! $this->applies_to( $post_id, $data['ticket_type'] ?? 'default' )
 		) {
 			return $valid;
 		}
 
-		$rule = $this->parse_rule( $data[ self::DATA_KEY ] );
+		// The save would keep the stored rule, but the admin who sent this one expects it to apply.
+		if ( isset( $data[ self::DATA_KEY ] ) && ! $this->parse_rule( $data[ self::DATA_KEY ] ) ) {
+			return $this->get_invalid_window_error();
+		}
+
+		$rule = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
 
 		if ( ! $rule ) {
-			return $this->get_invalid_window_error();
+			return $valid;
 		}
 
 		$event_dates = $this->get_event_dates( $post_id );
@@ -225,15 +232,16 @@ final class Ticket_Save {
 			return $valid;
 		}
 
-		$window         = $this->sale_window->resolve( $rule, ...$event_dates );
-		$timezone       = $event_dates[0]->getTimezone();
-		$specific_start = Rule::MODE_SPECIFIC === $rule->get_start()['mode'];
-		$specific_end   = Rule::MODE_SPECIFIC === $rule->get_end()['mode'];
-		$start          = $specific_start ? $this->get_submitted_date( $data, 'start', $timezone ) : $window->get_start();
-		$end            = $specific_end ? $this->get_submitted_date( $data, 'end', $timezone ) : $window->get_end();
+		$window   = $this->sale_window->resolve( $rule, ...$event_dates );
+		$timezone = $event_dates[0]->getTimezone();
+		$start    = $window->get_start() ?? $this->get_submitted_date( $data, 'start', $timezone );
+		$end      = $window->get_end() ?? $this->get_submitted_date( $data, 'end', $timezone );
 
-		// Without its date, `ticket_add()` would default a specific end and the window could not be checked.
-		if ( ( $specific_start && ! $start ) || ( $specific_end && ! $end ) ) {
+		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() && empty( $data['ticket_start_date'] ) ) {
+			$start = $this->get_post_day( $post_id, $timezone );
+		}
+
+		if ( ! $start || ! $end ) {
 			return $this->get_invalid_window_error();
 		}
 
@@ -394,7 +402,23 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Gets the error that rejects a sales window that does not start before it ends.
+	 * Gets the day the event was published, which `ticket_add()` stores as the start of a ticket sent without one.
+	 *
+	 * @since TBD
+	 *
+	 * @param int          $post_id  The event post ID.
+	 * @param DateTimeZone $timezone The event timezone.
+	 *
+	 * @return DateTimeImmutable|null Midnight of the day the event was published, or `null` when its date cannot be read.
+	 */
+	private function get_post_day( int $post_id, DateTimeZone $timezone ): ?DateTimeImmutable {
+		$date = date_create_immutable( get_post_field( 'post_date', $post_id, 'raw' ), $timezone );
+
+		return $date ? $date->setTime( 0, 0 ) : null;
+	}
+
+	/**
+	 * Gets the error that rejects an invalid rule, or a sales window that does not start before it ends.
 	 *
 	 * @since TBD
 	 *
