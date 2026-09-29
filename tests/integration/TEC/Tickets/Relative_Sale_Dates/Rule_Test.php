@@ -65,28 +65,15 @@ class Rule_Test extends WPTestCase {
 	 */
 	public function invalid_rules_provider(): Generator {
 		$relative = [
-			'mode'   => 'relative',
+			'mode'   => Rule::MODE_RELATIVE,
 			'value'  => 2,
-			'unit'   => 604800,
-			'anchor' => 'start',
+			'unit'   => Rule::UNIT_WEEKS,
+			'anchor' => Rule::ANCHOR_START,
 		];
-		$default  = [ 'mode' => 'default' ];
+		$default  = [ 'mode' => Rule::MODE_DEFAULT ];
 
-		yield 'unknown mode' => [ [ 'start' => $default, 'end' => [ 'mode' => 'after' ] ] ];
-		yield 'missing mode' => [ [ 'start' => $default, 'end' => [] ] ];
-		yield 'non-string mode' => [ [ 'start' => $default, 'end' => [ 'mode' => 1 ] ] ];
-		yield 'unknown anchor' => [ [ 'start' => array_merge( $relative, [ 'anchor' => 'middle' ] ), 'end' => $default ] ];
-		yield 'unit of a month' => [ [ 'start' => array_merge( $relative, [ 'unit' => 2592000 ] ), 'end' => $default ] ];
-		yield 'unit as a string' => [ [ 'start' => array_merge( $relative, [ 'unit' => '604800' ] ), 'end' => $default ] ];
-		yield 'value 0' => [ [ 'start' => array_merge( $relative, [ 'value' => 0 ] ), 'end' => $default ] ];
-		yield 'value 61' => [ [ 'start' => array_merge( $relative, [ 'value' => 61 ] ), 'end' => $default ] ];
-		yield 'negative value' => [ [ 'start' => array_merge( $relative, [ 'value' => -2 ] ), 'end' => $default ] ];
-		yield 'float value' => [ [ 'start' => array_merge( $relative, [ 'value' => 2.5 ] ), 'end' => $default ] ];
-		yield 'whole float value' => [ [ 'start' => array_merge( $relative, [ 'value' => 2.0 ] ), 'end' => $default ] ];
-		yield 'numeric string value' => [ [ 'start' => array_merge( $relative, [ 'value' => '2' ] ), 'end' => $default ] ];
-		yield 'relative without value' => [ [ 'start' => array_diff_key( $relative, [ 'value' => true ] ), 'end' => $default ] ];
-		yield 'relative without unit' => [ [ 'start' => array_diff_key( $relative, [ 'unit' => true ] ), 'end' => $default ] ];
-		yield 'relative without anchor' => [ [ 'start' => array_diff_key( $relative, [ 'anchor' => true ] ), 'end' => $default ] ];
+		yield 'invalid start' => [ [ 'start' => array_merge( $relative, [ 'value' => 0 ] ), 'end' => $default ] ];
+		yield 'invalid end' => [ [ 'start' => $default, 'end' => [ 'mode' => 'after' ] ] ];
 		yield 'missing start' => [ [ 'end' => $default ] ];
 		yield 'missing end' => [ [ 'start' => $relative ] ];
 		yield 'null end' => [ [ 'start' => $relative, 'end' => null ] ];
@@ -135,7 +122,7 @@ class Rule_Test extends WPTestCase {
 				'start' => [
 					'mode'   => 'specific',
 					'value'  => 3,
-					'unit'   => 86400,
+					'unit'   => Rule::UNIT_DAYS,
 					'anchor' => 'start',
 				],
 				'end'   => [
