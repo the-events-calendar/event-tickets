@@ -130,13 +130,30 @@ final class Rule implements JsonSerializable {
 	}
 
 	/**
+	 * Builds a rule from what is stored for a ticket, which other top-level keys may share.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{start?: mixed, end?: mixed} $stored The stored rules, keyed by their top-level key.
+	 *
+	 * @return self|null The rule, or `null` when there is no valid rule in the stored data.
+	 */
+	public static function from_stored( array $stored ): ?self {
+		try {
+			return self::from_array( $stored );
+		} catch ( InvalidArgumentException $e ) {
+			return null;
+		}
+	}
+
+	/**
 	 * Gets the start of the sales window.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The start, in canonical form.
+	 * @return Boundary The start.
 	 */
-	public function get_start(): array {
+	public function get_start(): Boundary {
 		return $this->start;
 	}
 
@@ -145,10 +162,24 @@ final class Rule implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{mode: string, value?: int, unit?: int, anchor?: string} The end, in canonical form.
+	 * @return Boundary The end.
 	 */
-	public function get_end(): array {
+	public function get_end(): Boundary {
 		return $this->end;
+	}
+
+	/**
+	 * Returns the rule's canonical array form, for storage and for the editors.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}} The rule.
+	 */
+	public function to_array(): array {
+		return [
+			'start' => $this->start->to_array(),
+			'end'   => $this->end->to_array(),
+		];
 	}
 
 	/**
@@ -170,13 +201,10 @@ final class Rule implements JsonSerializable {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{start: Boundary, end: Boundary} The rule's boundaries.
+	 * @return array{start: array{mode: string, value?: int, unit?: int, anchor?: string}, end: array{mode: string, value?: int, unit?: int, anchor?: string}} The rule, in canonical form.
 	 */
 	public function jsonSerialize(): array {
-		return [
-			'start' => $this->start,
-			'end'   => $this->end,
-		];
+		return $this->to_array();
 	}
 
 	/**

@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -31,7 +32,7 @@ final class Sale_Window {
 	 * @since TBD
 	 *
 	 * @param Rule              $rule        The sales window rule.
-	 * @param DateTimeInterface $event_start The event start, in the event timezone.
+	 * @param DateTimeInterface $event_start The event start, in the event timezone. Build it with the event's named timezone, such as `Europe/Athens`, not a UTC offset or abbreviation parsed from a date string: only a named timezone knows its clock changes.
 	 * @param DateTimeInterface $event_end   The event end.
 	 *
 	 * @return Resolved_Window The resolved sales window.
@@ -43,64 +44,87 @@ final class Sale_Window {
 			Rule::ANCHOR_END   => $this->in_timezone( $event_end, $timezone ),
 		];
 
-		$start = $rule->get_start();
-		$end   = $rule->get_end();
-
 		return new Resolved_Window(
-			Rule::MODE_RELATIVE === $start['mode'] ? $this->resolve_relative( $start, $anchors ) : null,
-			Rule::MODE_DEFAULT === $end['mode'] ? $anchors[ Rule::ANCHOR_START ] : $this->resolve_relative( $end, $anchors )
+			$this->resolve_boundary( $rule->get_start(), $anchors, null ),
+			$this->resolve_boundary( $rule->get_end(), $anchors, $anchors[ Rule::ANCHOR_START ] )
 		);
 	}
 
 	/**
-	 * Resolves one end of the window, or returns `null` when the end is not relative.
+	 * Resolves one boundary of the window.
 	 *
 	 * @since TBD
 	 *
-	 * @param array{mode: string, value?: int, unit?: int, anchor?: string} $end     The end of the window.
-	 * @param array{start: DateTimeImmutable, end: DateTimeImmutable}       $anchors The event start and end, in the event timezone.
+	 * @param Boundary                                                $boundary     The boundary to resolve.
+	 * @param array{start: DateTimeImmutable, end: DateTimeImmutable} $anchors      The event start and end, in the event timezone.
+	 * @param DateTimeImmutable|null                                  $default_date The date a default boundary resolves to.
 	 *
-	 * @return DateTimeImmutable|null The resolved date in the event timezone, or `null` when the end is not relative.
+	 * @return DateTimeImmutable|null The resolved date in the event timezone, or `null` when the boundary has no date.
 	 */
-	private function resolve_relative( array $end, array $anchors ): ?DateTimeImmutable {
-		if ( Rule::MODE_RELATIVE !== $end['mode'] ) {
-			return null;
+	private function resolve_boundary( Boundary $boundary, array $anchors, ?DateTimeImmutable $default_date ): ?DateTimeImmutable {
+		if ( Rule::MODE_DEFAULT === $boundary->get_mode() ) {
+			return $default_date;
 		}
 
-		$anchor = $anchors[ $end['anchor'] ];
-
-		if ( Rule::UNIT_DAYS === $end['unit'] || Rule::UNIT_WEEKS === $end['unit'] ) {
-			$days = Rule::UNIT_WEEKS === $end['unit'] ? $end['value'] * 7 : $end['value'];
-
-			return $this->days_before( $anchor, $days );
+		if ( Rule::MODE_RELATIVE === $boundary->get_mode() ) {
+			return $this->before( $anchors[ $boundary->get_anchor() ], $boundary->get_interval() );
 		}
 
-		$timestamp = $anchor->getTimestamp() - $end['value'] * $end['unit'];
-
-		return ( new DateTimeImmutable( '@' . $timestamp ) )->setTimezone( $anchor->getTimezone() );
+		// A specific boundary keeps the ticket's own date.
+		return null;
 	}
 
 	/**
-	 * Moves a date back by calendar days in its own timezone, keeping its wall-clock time.
+	 * Moves a date back by an interval of wall-clock time, in its own timezone.
 	 *
-	 * The result is built fresh from the target date and the anchor's wall-clock time rather than with `sub()`: when the
-	 * target wall-clock time exists twice, `sub()` keeps the anchor's UTC offset and can land on the second occurrence,
-	 * while a fresh date always takes the first one, as the browser calculation does.
+	 * The interval comes off the wall-clock time, not off the instant, so a clock change in between does not shift the
+	 * result: 8 hours before 08:00 is 00:00 even on a night an hour longer or shorter than usual.
 	 *
 	 * @since TBD
 	 *
-	 * @param DateTimeImmutable $anchor The date to move back.
-	 * @param int               $days   The number of calendar days to move back.
+	 * @param DateTimeImmutable $anchor   The date to move back.
+	 * @param DateInterval      $interval How far to move it back.
 	 *
 	 * @return DateTimeImmutable The moved date, in the anchor's timezone.
 	 */
-	private function days_before( DateTimeImmutable $anchor, int $days ): DateTimeImmutable {
-		// A date at midnight UTC has no clock change to trip over.
-		$target_date = ( new DateTimeImmutable( $anchor->format( 'Y-m-d' ), new DateTimeZone( 'UTC' ) ) )
-			->modify( "-{$days} days" )
-			->format( 'Y-m-d' );
+	private function before( DateTimeImmutable $anchor, DateInterval $interval ): DateTimeImmutable {
+		// UTC has no clock change, so the interval moves the wall-clock time and nothing else.
+		$wall_clock = ( new DateTimeImmutable( $anchor->format( 'Y-m-d H:i:s' ), new DateTimeZone( 'UTC' ) ) )
+			->sub( $interval )
+			->format( 'Y-m-d H:i:s' );
 
-		return new DateTimeImmutable( $target_date . ' ' . $anchor->format( 'H:i:s' ), $anchor->getTimezone() );
+		return $this->at_wall_clock( $wall_clock, $anchor->getTimezone() );
+	}
+
+	/**
+	 * Returns the date a wall-clock time falls on in a timezone.
+	 *
+	 * A time skipped by a clock change moves forward by the size of the change. A time that happens twice takes its
+	 * first occurrence, as the editors' JavaScript does: PHP alone takes the first west of UTC and the second east of it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string       $wall_clock The wall-clock time, in `Y-m-d H:i:s` format.
+	 * @param DateTimeZone $timezone   The timezone.
+	 *
+	 * @return DateTimeImmutable The date, in the given timezone.
+	 */
+	private function at_wall_clock( string $wall_clock, DateTimeZone $timezone ): DateTimeImmutable {
+		$date        = new DateTimeImmutable( $wall_clock, $timezone );
+		$as_utc      = ( new DateTimeImmutable( $wall_clock, new DateTimeZone( 'UTC' ) ) )->getTimestamp();
+		$transitions = $timezone->getTransitions( $as_utc - DAY_IN_SECONDS, $as_utc + DAY_IN_SECONDS );
+
+		// A fixed offset has no transitions, and no time that happens twice.
+		foreach ( is_array( $transitions ) ? $transitions : [] as $transition ) {
+			// Not `setTimestamp()`: on PHP 7.4 it snaps back to the occurrence the date already holds.
+			$candidate = ( new DateTimeImmutable( '@' . ( $as_utc - $transition['offset'] ) ) )->setTimezone( $timezone );
+
+			if ( $candidate < $date && $candidate->format( 'Y-m-d H:i:s' ) === $wall_clock ) {
+				$date = $candidate;
+			}
+		}
+
+		return $date;
 	}
 
 	/**
