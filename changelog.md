@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.29.5.2] 2026-09-29
+
+* Security - Hardened the validation of assigned seating reservations.
+
 ### [5.29.5.1] 2026-09-24
 
 * Language - 0 new strings added, 39 updated, 0 fuzzied, and 0 obsoleted.

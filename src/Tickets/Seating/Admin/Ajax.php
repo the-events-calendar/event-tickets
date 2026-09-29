@@ -1419,7 +1419,7 @@ class Ajax extends Controller_Contract {
 	 * half right.
 	 *
 	 * @since 5.29.5.1
-	 * @since TBD Match each reservation the service holds to one posted reservation only.
+	 * @since 5.29.5.2 Match each reservation the service holds to one posted reservation only.
 	 *
 	 * @param int                     $post_id      The post the reservations are for.
 	 * @param array<int,array<array>> $reservations The reservations as posted, keyed by ticket ID, each carrying the

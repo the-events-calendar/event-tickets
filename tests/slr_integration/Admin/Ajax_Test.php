@@ -1065,7 +1065,7 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$post_id       = self::factory()->post->create();
 		$other_post_id = self::factory()->post->create();
-		$other_ticket = $this->create_tc_ticket( $other_post_id, 23 );
+		$other_ticket  = $this->create_tc_ticket( $other_post_id, 23 );
 		update_post_meta( $other_ticket, Meta::META_KEY_SEAT_TYPE, 'seat-type-id-0' );
 
 		$sessions = tribe( Sessions::class );
