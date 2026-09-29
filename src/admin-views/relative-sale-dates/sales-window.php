@@ -23,6 +23,7 @@
  * @var string                                                                                   $rule_json                    The stored rule as JSON, or an empty string when there is none.
  */
 
+use TEC\Tickets\Relative_Sale_Dates\Boundary;
 use TEC\Tickets\Relative_Sale_Dates\Rule;
 use TEC\Tickets\Relative_Sale_Dates\Ticket_Save;
 use Tribe__Date_Utils as Date_Utils;
@@ -104,8 +105,8 @@ $labels = [
 			<span><?php echo esc_html( $labels[ $sales_end ]['relative'] ); ?></span>
 			<input
 				type="number"
-				min="<?php echo esc_attr( Rule::MIN_VALUE ); ?>"
-				max="<?php echo esc_attr( Rule::MAX_VALUE ); ?>"
+				min="<?php echo esc_attr( Boundary::MIN_VALUE ); ?>"
+				max="<?php echo esc_attr( Boundary::MAX_VALUE ); ?>"
 				step="1"
 				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_value"
 				value="<?php echo esc_attr( $fields['value'] ); ?>"
