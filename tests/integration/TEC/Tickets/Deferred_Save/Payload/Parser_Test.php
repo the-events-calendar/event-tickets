@@ -323,4 +323,56 @@ class Parser_Test extends WPTestCase {
 		$this->assertCount( 1, $this->rejections->all() );
 		$this->assertSame( 2, $this->rejections->all()[0]['key'] );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_both_entries_when_the_same_ticket_is_in_move_and_delete(): void {
+		$payload = $this->parse(
+			[
+				'move'   => [ 1 => 10, 2 => 10 ],
+				'delete' => [ 2, 3 ],
+			]
+		);
+
+		$this->assertSame( [ 1 => 10 ], $payload->get_move() );
+		$this->assertSame( [ 3 ], $payload->get_delete() );
+		$this->assertCount( 1, $this->rejections->all() );
+		$this->assertSame( [ 2 ], $this->rejected_keys( 'move' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_both_entries_when_the_same_ticket_is_in_update_and_move(): void {
+		$data    = [ 'ticket_name' => 'x' ];
+		$payload = $this->parse(
+			[
+				'update' => [ 1 => $data, 2 => $data ],
+				'move'   => [ 2 => 10, 3 => 10 ],
+			]
+		);
+
+		$this->assertSame( [ 1 => $data + [ 'ticket_id' => 1 ] ], $payload->get_update() );
+		$this->assertSame( [ 3 => 10 ], $payload->get_move() );
+		$this->assertCount( 1, $this->rejections->all() );
+		$this->assertSame( [ 2 ], $this->rejected_keys( 'update' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_reject_every_entry_of_a_ticket_in_update_move_and_delete(): void {
+		$payload = $this->parse(
+			[
+				'update' => [ 2 => [ 'ticket_name' => 'x' ] ],
+				'move'   => [ 2 => 10 ],
+				'delete' => [ 2 ],
+			]
+		);
+
+		$this->assertFalse( $payload->has_changes() );
+		$this->assertCount( 1, $this->rejections->all() );
+		$this->assertSame( [ 2 ], $this->rejected_keys( 'update' ) );
+	}
 }

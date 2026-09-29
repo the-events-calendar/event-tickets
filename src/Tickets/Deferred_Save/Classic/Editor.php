@@ -9,22 +9,20 @@
 
 namespace TEC\Tickets\Deferred_Save\Classic;
 
-use TEC\Common\Contracts\Container;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Deferred_Save\Classic_Save;
 
 /**
  * Class Editor.
  *
- * At the end of the tickets metabox prints the nonce the classic entry point requires, the container
- * the staging module writes its hidden fields into (a sibling of the panels, so a panel refresh does
- * not wipe it), and the row templates.
+ * Hooked by the feature Controller at the end of the tickets metabox, prints the nonce the classic
+ * entry point requires, the container the staging module writes its hidden fields into (a sibling of
+ * the panels, so a panel refresh does not wipe it), and the row templates.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Deferred_Save\Classic
  */
-final class Editor extends Controller_Contract {
+final class Editor {
 	/**
 	 * The row templates.
 	 *
@@ -39,34 +37,10 @@ final class Editor extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container    $container    The container.
 	 * @param Row_Template $row_template The row templates.
 	 */
-	public function __construct( Container $container, Row_Template $row_template ) {
-		parent::__construct( $container );
+	public function __construct( Row_Template $row_template ) {
 		$this->row_template = $row_template;
-	}
-
-	/**
-	 * Hooks the end of the tickets metabox.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_action( 'tribe_tickets_metabox_end', [ $this, 'print_fields' ] );
-	}
-
-	/**
-	 * Unhooks the metabox.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'tribe_tickets_metabox_end', [ $this, 'print_fields' ] );
 	}
 
 	/**
