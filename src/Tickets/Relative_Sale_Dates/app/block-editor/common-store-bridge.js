@@ -47,3 +47,44 @@ export function isTicketsCommerce() {
 export function markTicketChanged( clientId ) {
 	window.__tribe_common_store__.dispatch( getTicketData().actions.setTicketHasChanges( clientId, true ) );
 }
+
+/**
+ * Subscribes to the common store, which holds the event dates The Events Calendar edits.
+ *
+ * @since TBD
+ *
+ * @param {Function} listener Called after every change to the store.
+ *
+ * @return {Function} The function that unsubscribes the listener.
+ */
+export function subscribeToCommonStore( listener ) {
+	return window.__tribe_common_store__.subscribe( listener );
+}
+
+/**
+ * Reads the event dates as The Events Calendar's block editor holds them.
+ *
+ * @since TBD
+ *
+ * @return {{start: string, end: string, allDay: boolean, timeZone: string}|null} The start and end,
+ *                                                                              `YYYY-MM-DD HH:mm:ss`, whether the
+ *                                                                              event lasts all day and its timezone,
+ *                                                                              or `null` without The Events
+ *                                                                              Calendar's datetime store.
+ */
+export function getEventDateFields() {
+	const selectors = window.tec?.events?.app?.main?.data?.blocks?.datetime?.selectors;
+
+	if ( ! selectors ) {
+		return null;
+	}
+
+	const state = window.__tribe_common_store__.getState();
+
+	return {
+		start: selectors.getStart( state ),
+		end: selectors.getEnd( state ),
+		allDay: Boolean( selectors.getAllDay( state ) ),
+		timeZone: selectors.getTimeZone( state ),
+	};
+}

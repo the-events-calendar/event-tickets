@@ -2,12 +2,15 @@
  * External dependencies
  */
 import { dispatch, select } from '@wordpress/data';
+import { getSettings } from '@wordpress/date';
 
 /**
  * Internal dependencies
  */
 import { isTicketsCommerce } from './common-store-bridge';
+import { readEventDates } from './event-dates';
 import { MODE_RELATIVE } from '../rule-constants';
+import { formatSaleDate, resolveTicketWindow } from './sale-dates';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
 
@@ -121,4 +124,29 @@ export function filterTicketDuration( picker, clientId ) {
 	}
 
 	return <SalesWindow clientId={ clientId } picker={ picker } />;
+}
+
+/**
+ * Shows the dates a ticket's rule works out to in the sale window of the ticket header.
+ *
+ * A start of `Now` or a specific date, and a specific end, keep the ticket's own date.
+ *
+ * @since TBD
+ *
+ * @param {{fromDate: string, toDate: string}} dates    The sale dates the header shows, in the site date format.
+ * @param {string}                             clientId The client ID of the ticket block.
+ *
+ * @return {{fromDate: string, toDate: string}} The sale dates to show.
+ */
+export function filterSaleWindowDates( dates, clientId ) {
+	const saleWindow = resolveTicketWindow( select( STORE_NAME ).getDraftRule( clientId ), readEventDates() );
+
+	if ( ! saleWindow ) {
+		return dates;
+	}
+
+	const { date: dateFormat } = getSettings().formats;
+	const format = ( date, ticketDate ) => ( date?.isValid() ? formatSaleDate( dateFormat, date ) : ticketDate );
+
+	return { fromDate: format( saleWindow.start, dates.fromDate ), toDate: format( saleWindow.end, dates.toDate ) };
 }

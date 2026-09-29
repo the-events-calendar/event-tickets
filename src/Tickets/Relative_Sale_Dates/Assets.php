@@ -101,7 +101,8 @@ final class Assets extends Controller_Contract {
 
 		Asset::add( self::BLOCK_EDITOR_SCRIPT, 'block-editor.js', Tickets_Plugin::VERSION )
 			->add_to_group_path( self::GROUP_PATH )
-			->set_dependencies( 'wp-data', 'wp-hooks' )
+			// `wp-date` installs the zone data `moment` resolves the event dates with.
+			->set_dependencies( 'wp-data', 'wp-date', 'wp-hooks' )
 			->set_condition( fn(): bool => $this->is_event_edit_screen() )
 			->add_localize_script( 'tec.tickets.relativeSaleDates.blockEditorData', fn(): array => $this->get_block_editor_script_data() )
 			// The library's `with_translations()` would look for the translations under common's path, not the plugin's.
@@ -124,13 +125,10 @@ final class Assets extends Controller_Contract {
 	 * @return array{timeFormat: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
-		$time_format = get_option( 'time_format' );
-		// The tickets list formats its dates with this, not with the TEC formats the helper text uses.
-		$list_date_format = tribe_get_date_format( true );
-
 		return [
-			'timeFormat'     => is_string( $time_format ) && '' !== $time_format ? $time_format : 'g:i a',
-			'listDateFormat' => is_string( $list_date_format ) && '' !== $list_date_format ? $list_date_format : 'F j, Y',
+			'timeFormat'     => $this->get_time_format(),
+			// The tickets list always shows the year, so it takes the with-year format, never the no-year one.
+			'listDateFormat' => $this->get_date_format( true ),
 			'timezones'      => $this->get_manual_offset_zones(),
 			'allDay'         => $this->get_all_day_times(),
 			'text'           => [
@@ -144,19 +142,58 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the data the Ticket block script reads the relative values it offers by default from.
+	 * Gets the data the Ticket block script reads its defaults, the event date settings and the helper text formats from.
 	 *
 	 * @since TBD
 	 *
-	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}} The script data.
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The script data.
 	 */
 	private function get_block_editor_script_data(): array {
 		return [
-			'defaults' => [
+			'defaults'  => [
 				'start' => Editor::DEFAULT_RELATIVE_START,
 				'end'   => Editor::DEFAULT_RELATIVE_END,
 			],
+			'timezones' => $this->get_manual_offset_zones(),
+			'allDay'    => $this->get_all_day_times(),
+			'formats'   => [
+				'dateWithYear' => $this->get_date_format( true ),
+				'dateNoYear'   => $this->get_date_format( false ),
+				'time'         => $this->get_time_format(),
+			],
 		];
+	}
+
+	/**
+	 * Gets the TEC date format of a date in another year, or in the current one.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $with_year Whether the format shows the year.
+	 *
+	 * @return string The date format, in PHP date format.
+	 */
+	private function get_date_format( bool $with_year ): string {
+		$format = tribe_get_date_format( $with_year );
+
+		if ( is_string( $format ) && '' !== $format ) {
+			return $format;
+		}
+
+		return $with_year ? 'F j, Y' : 'F j';
+	}
+
+	/**
+	 * Gets the site time format.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The time format, in PHP date format.
+	 */
+	private function get_time_format(): string {
+		$format = get_option( 'time_format' );
+
+		return is_string( $format ) && '' !== $format ? $format : 'g:i a';
 	}
 
 	/**

@@ -2,15 +2,17 @@
  * External dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useMemo } from '@wordpress/element';
 import { __, _x } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { markTicketChanged } from '../common-store-bridge';
+import { useEventDates } from '../event-dates';
 import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
 import { getFormRule } from '../rule';
+import { getHelperText, resolveTicketWindow } from '../sale-dates';
 import { STORE_NAME } from '../store/constants';
 import SalesWindowEnd from './sales-window-end';
 import './style.pcss';
@@ -100,6 +102,8 @@ export default function SalesWindow( { clientId, picker } ) {
 	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftRule( clientId ), [ clientId ] );
 	const { setDraftRule } = useDispatch( STORE_NAME );
 	const formRule = getFormRule( rule );
+	const eventDates = useEventDates();
+	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
 
 	useEffect( () => {
 		if ( undefined === rule ) {
@@ -122,6 +126,9 @@ export default function SalesWindow( { clientId, picker } ) {
 					name={ name }
 					end={ formRule[ name ] }
 					picker={ picker }
+					helperText={
+						MODE_RELATIVE === formRule[ name ].mode ? getHelperText( name, saleWindow?.[ name ] ) : ''
+					}
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }
 				/>
