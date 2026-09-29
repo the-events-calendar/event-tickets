@@ -103,4 +103,29 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertFalse( has_action( 'save_post', $callback ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_hook_the_block_save_for_every_ticketable_post_type_and_unhook_it_on_unregister(): void {
+		$controller = $this->make_controller();
+		$on_insert  = $this->test_services->callback( Block_Save::class, 'on_rest_after_insert' );
+		$on_prepare = $this->test_services->callback( Block_Save::class, 'add_result_to_response' );
+		$post_types = \Tribe__Tickets__Main::instance()->post_types();
+		$this->assertNotEmpty( $post_types );
+
+		$controller->register();
+
+		foreach ( $post_types as $post_type ) {
+			$this->assertSame( Block_Save::PRIORITY, has_action( "rest_after_insert_{$post_type}", $on_insert ) );
+			$this->assertSame( 10, has_filter( "rest_prepare_{$post_type}", $on_prepare ) );
+		}
+
+		$controller->unregister();
+
+		foreach ( $post_types as $post_type ) {
+			$this->assertFalse( has_action( "rest_after_insert_{$post_type}", $on_insert ) );
+			$this->assertFalse( has_filter( "rest_prepare_{$post_type}", $on_prepare ) );
+		}
+	}
 }
