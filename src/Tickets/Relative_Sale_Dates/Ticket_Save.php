@@ -24,7 +24,10 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Timezones as Timezones;
 
 /**
- * Applies the rule sent with a Tickets Commerce ticket on an event when the ticket is saved.
+ * Applies the rule of a Tickets Commerce ticket on an event when the ticket is saved.
+ *
+ * The rule sent with the ticket data replaces the stored one; a save that does not send the rule keeps the stored one
+ * and applies it again, and an empty rule removes it.
  *
  * @since TBD
  *
@@ -32,7 +35,7 @@ use Tribe__Timezones as Timezones;
  */
 final class Ticket_Save extends Controller_Contract {
 	/**
-	 * The ticket data key that carries the rule; its value is a JSON string or an array.
+	 * The ticket data key that carries the rule; its value is a JSON string, an array, or `null` or `''` to remove it.
 	 *
 	 * @since TBD
 	 *
@@ -102,7 +105,7 @@ final class Ticket_Save extends Controller_Contract {
 			return;
 		}
 
-		$rule   = $this->get_rule( $data );
+		$rule   = $this->get_rule( $ticket->ID ?? 0, $data );
 		$window = $rule ? $this->resolve( $post_id, $rule ) : null;
 
 		if ( ! $window ) {
@@ -126,7 +129,7 @@ final class Ticket_Save extends Controller_Contract {
 	 * Stores the rule, or removes it, and writes the resolved dates again once the ticket is saved.
 	 *
 	 * `ticket_add()` replaces an empty start or end date with a default after the provider has saved the ticket,
-	 * so the dates set before the save do not survive it when the rule resolves an end the data left empty.
+	 * so the dates set before the save do not survive it when the ticket data leaves the start or end empty.
 	 *
 	 * @since TBD
 	 *
@@ -139,16 +142,20 @@ final class Ticket_Save extends Controller_Contract {
 	public function save_rule( int $ticket_id, int $post_id, array $data ): void {
 		if (
 			Ticket::POSTTYPE !== get_post_type( $ticket_id )
-			|| ! $this->applies_to( $post_id, get_post_meta( $ticket_id, '_type', true ) ?: 'default' )
+			|| ! $this->applies_to( $post_id, get_post_meta( $ticket_id, Ticket::$type_meta_key, true ) ?: 'default' )
 		) {
 			return;
 		}
 
-		$rule = $this->get_rule( $data );
-
-		if ( ! $rule ) {
+		if ( $this->removes_rule( $data ) ) {
 			$this->rule_store->remove( $ticket_id, [ 'start', 'end' ] );
 
+			return;
+		}
+
+		$rule = $this->get_rule( $ticket_id, $data );
+
+		if ( ! $rule ) {
 			return;
 		}
 
@@ -207,23 +214,61 @@ final class Ticket_Save extends Controller_Contract {
 	}
 
 	/**
-	 * Reads the rule from the ticket data.
+	 * Returns whether the ticket data asks to remove the rule, sending it as `null` or `''`.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $data The ticket data.
 	 *
-	 * @return Rule|null The rule, or `null` when the data has no valid rule.
+	 * @return bool Whether the rule is to be removed.
 	 */
-	private function get_rule( array $data ): ?Rule {
-		$raw = $data[ self::DATA_KEY ] ?? null;
+	private function removes_rule( array $data ): bool {
+		return array_key_exists( self::DATA_KEY, $data ) && in_array( $data[ self::DATA_KEY ], [ null, '' ], true );
+	}
 
+	/**
+	 * Gets the rule to apply to the ticket: the one in the ticket data, or else the stored one.
+	 *
+	 * A save that does not know about rules, like a plugin calling `ticket_add()` or an update of the price only, does
+	 * not send one, and an invalid rule is not a request to remove the valid one already stored.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $ticket_id The ticket post ID, or `0` for a ticket not saved yet.
+	 * @param array<string,mixed> $data      The ticket data.
+	 *
+	 * @return Rule|null The rule, or `null` when the ticket data removes it or neither holds a valid one.
+	 */
+	private function get_rule( int $ticket_id, array $data ): ?Rule {
+		if ( $this->removes_rule( $data ) ) {
+			return null;
+		}
+
+		$rule = $this->parse_rule( $data[ self::DATA_KEY ] ?? null );
+
+		if ( $rule || ! $ticket_id ) {
+			return $rule;
+		}
+
+		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
+	}
+
+	/**
+	 * Builds a rule from the value the ticket data sends for it.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $raw The rule as sent, a JSON string or an array.
+	 *
+	 * @return Rule|null The rule, or `null` when nothing valid was sent.
+	 */
+	private function parse_rule( $raw ): ?Rule {
 		try {
 			if ( is_array( $raw ) ) {
 				return Rule::from_array( $raw );
 			}
 
-			if ( is_string( $raw ) && '' !== $raw ) {
+			if ( is_string( $raw ) ) {
 				return Rule::from_json( $raw );
 			}
 		} catch ( InvalidArgumentException $e ) {

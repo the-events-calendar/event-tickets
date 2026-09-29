@@ -48,16 +48,16 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 */
 	public function should_write_the_resolved_dates_in_the_event_timezone(): void {
 		/*
-		 * Two hours before 03:30 on the day New York springs forward is 00:30 local time. Reading the event start in
-		 * any other timezone would give 01:30.
+		 * Three days before 02:30 is 02:30 on the day New York springs forward, a time its clocks skip, so sales open
+		 * at 03:30. Reading the event start in a timezone without that clock change would give 02:30.
 		 */
-		$event_id = $this->create_event( '2027-03-14 03:30:00', 'America/New_York' );
-		$rule     = [ 'start' => $this->relative( 2, Rule::UNIT_HOURS ), 'end' => [ 'mode' => 'default' ] ];
+		$event_id = $this->create_event( '2027-03-17 02:30:00', 'America/New_York' );
+		$rule     = [ 'start' => $this->relative( 3, Rule::UNIT_DAYS ), 'end' => [ 'mode' => 'default' ] ];
 
 		$ticket_id = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
 
-		$this->assertSame( [ '2027-03-14', '00:30:00' ], $this->get_ticket_start( $ticket_id ) );
-		$this->assertSame( [ '2027-03-14', '03:30:00' ], $this->get_ticket_end( $ticket_id ) );
+		$this->assertSame( [ '2027-03-14', '03:30:00' ], $this->get_ticket_start( $ticket_id ) );
+		$this->assertSame( [ '2027-03-17', '02:30:00' ], $this->get_ticket_end( $ticket_id ) );
 	}
 
 	/**
@@ -236,17 +236,64 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @test
+	 * @return Generator<string,array{0: null|string}>
 	 */
-	public function should_remove_the_rule_when_the_ticket_is_saved_without_one(): void {
+	public function removed_rule_provider(): Generator {
+		yield 'null' => [ null ];
+		yield 'empty string' => [ '' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider removed_rule_provider
+	 */
+	public function should_remove_the_rule_when_the_ticket_is_saved_with_an_empty_one( ?string $removed ): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$rule      = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
 		$ticket_id = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
 		$this->assertSame( $rule, $this->get_stored_rule( $ticket_id ) );
 
-		$this->update_ticket( $ticket_id, [] );
+		$this->update_ticket( $ticket_id, [ 'relative_sale_dates' => $removed ] );
 
 		$this->assertSame( '', get_post_meta( $ticket_id, Rule_Store::META_KEY, true ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: array<string,string>}>
+	 */
+	public function rule_kept_provider(): Generator {
+		yield 'rule not sent' => [ [] ];
+		yield 'invalid rule sent' => [ [ 'relative_sale_dates' => '{"start":' ] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider rule_kept_provider
+	 */
+	public function should_keep_and_apply_the_stored_rule_when_the_ticket_is_saved_without_a_valid_one( array $rule_data ): void {
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$rule        = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ];
+		$ticket_id   = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+
+		$this->update_ticket(
+			$ticket_id,
+			array_merge(
+				[
+					'ticket_start_date' => '2027-01-02',
+					'ticket_start_time' => '08:00:00',
+					'ticket_end_date'   => '2027-03-01',
+					'ticket_end_time'   => '20:00:00',
+				],
+				$rule_data
+			)
+		);
+
+		$expected_start = $event_start->modify( '-2 weeks' );
+		$expected_end   = $event_start->modify( '-1 day' );
+		$this->assertSame( $rule, $this->get_stored_rule( $ticket_id ) );
+		$this->assertSame( [ $expected_start->format( 'Y-m-d' ), $expected_start->format( 'H:i:s' ) ], $this->get_ticket_start( $ticket_id ) );
+		$this->assertSame( [ $expected_end->format( 'Y-m-d' ), $expected_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
 	}
 
 	/**
@@ -295,7 +342,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @param int $value The number of units before the event start.
 	 * @param int $unit  The unit, one of the `Rule::UNIT_*` constants.
 	 *
-	 * @return array{mode: string, value: int, unit: int, anchor: string} A relative end of the window, anchored on the event start.
+	 * @return array{mode: string, value: int, unit: int, anchor: string} A relative edge of the window, anchored on the event start.
 	 */
 	private function relative( int $value, int $unit ): array {
 		return [
