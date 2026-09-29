@@ -1,9 +1,20 @@
+import React from 'react';
 import { applyFilters, doAction } from '@wordpress/hooks';
 import { dispatch, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
+import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
+import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import '@tec/tickets/relative-sale-dates/block-editor';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
+
+// `@wordpress/element` is not installed: the block editor provides it at runtime, as a re-export of React.
+jest.mock( '@wordpress/element', () => require( 'react' ) );
+
+// `@wordpress/components` is not installed: the block editor provides it at runtime.
+jest.mock( '@wordpress/components', () => ( {} ) );
+
+const TICKETS_COMMERCE = 'TEC\\Tickets\\Commerce\\Module';
 
 const BODY_FIELD = 'ticket[relative_sale_dates]';
 const UNIT_HOURS = 3600;
@@ -131,6 +142,46 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			doAction( 'tec.tickets.blocks.ticketCancelled', clientId );
 
 			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.Ticket.Duration.renderPicker', () => {
+		const Picker = () => null;
+
+		/**
+		 * Filters the Sale Duration picker of a ticket block for the given ticket provider.
+		 *
+		 * @param {string} provider The ticket provider the tickets block uses.
+		 * @param {string} clientId The client ID of the ticket block.
+		 *
+		 * @return {Object} What the Sale Duration section renders.
+		 */
+		function filterDuration( provider, clientId ) {
+			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+			window.__tribe_common_store__ = { getState: () => ( { tickets: { blocks: { ticket: { provider } } } } ) };
+
+			return applyFilters( 'tec.tickets.blocks.Ticket.Duration.renderPicker', <Picker />, clientId );
+		}
+
+		afterEach( () => {
+			delete window.tribe;
+			delete window.__tribe_common_store__;
+		} );
+
+		it( 'should render the sales window options of a Tickets Commerce ticket around the picker', () => {
+			const clientId = newClientId();
+
+			const rendered = filterDuration( TICKETS_COMMERCE, clientId );
+
+			expect( rendered.type ).toBe( SalesWindow );
+			expect( rendered.props.clientId ).toBe( clientId );
+			expect( rendered.props.picker.type ).toBe( Picker );
+		} );
+
+		it( 'should leave the picker alone for a ticket another provider sells', () => {
+			const rendered = filterDuration( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId() );
+
+			expect( rendered.type ).toBe( Picker );
 		} );
 	} );
 
