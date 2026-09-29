@@ -7,6 +7,7 @@ import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/select
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import '@tec/tickets/relative-sale-dates/block-editor/store';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
+import { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState } from './block-editor-event-state';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
 
@@ -54,13 +55,9 @@ const END_LABELS = {
 	anchor: 'What the sales end is measured from',
 };
 
-// The relative values the server localizes as the defaults of each end, as `Editor` defines them.
-const LOCALIZED_DEFAULTS = {
-	start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
-	end: { mode: 'relative', value: 1, unit: UNIT_HOURS, anchor: 'start' },
-};
-
 const Picker = () => null;
+
+let commonStore;
 
 let clientCount = 0;
 let root;
@@ -126,6 +123,29 @@ function change( type, label, value ) {
 }
 
 /**
+ * Returns the helper texts rendered.
+ *
+ * @return {string[]} The helper texts, one per end that shows one.
+ */
+function getHelperTexts() {
+	return root
+		.findAll( ( node ) => 'p' === node.type && 'tec-tickets-relative-sale-dates__helper' === node.props.className )
+		.map( ( node ) => node.props.children )
+		.filter( Boolean );
+}
+
+/**
+ * Returns what each helper text region rendered holds.
+ *
+ * @return {string[]} The content of each region, empty while it has no date.
+ */
+function getHelperRegions() {
+	return root
+		.findAll( ( node ) => 'p' === node.type && 'tec-tickets-relative-sale-dates__helper' === node.props.className )
+		.map( ( node ) => node.props.children || '' );
+}
+
+/**
  * Returns the class names of the pickers rendered.
  *
  * @return {string[]} The class names, one per picker.
@@ -137,14 +157,15 @@ function getPickerClassNames() {
 describe( 'the Ticket block sales window options', () => {
 	beforeEach( () => {
 		window.tribe = { tickets: { data: { blocks: { actions: legacyActions, selectors: legacySelectors } } } };
-		window.tec = { tickets: { relativeSaleDates: { blockEditorData: { defaults: LOCALIZED_DEFAULTS } } } };
-		window.__tribe_common_store__ = { dispatch: jest.fn(), getState: () => ( {} ) };
+		setBlockEditorData();
+		commonStore = setEventState( DEFAULT_EVENT );
+		jest.spyOn( commonStore, 'dispatch' );
 	} );
 
 	afterEach( () => {
+		jest.useRealTimers();
 		delete window.tribe;
-		delete window.tec;
-		delete window.__tribe_common_store__;
+		clearBlockEditorGlobals();
 	} );
 
 	describe( 'for a new ticket', () => {
@@ -362,5 +383,96 @@ describe( 'the Ticket block sales window options', () => {
 		change( SelectControl, START_LABELS.mode, 'relative' );
 
 		expect( findControl( TextControl, START_LABELS.value ).props.value ).toBe( 10 );
+	} );
+
+	describe( 'helper text', () => {
+		it( 'should tell when a relative start works out to, in the event timezone', () => {
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 6, 2040 at 7:00 pm' ] );
+		} );
+
+		it( 'should tell when a relative end works out to', () => {
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, END_LABELS.mode, 'relative' );
+
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales end October 20, 2040 at 6:00 pm' ] );
+		} );
+
+		it( 'should leave the year out of a date in the current year', () => {
+			jest.useFakeTimers( { now: new Date( '2040-03-01T12:00:00Z' ) } );
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 6 at 7:00 pm' ] );
+		} );
+
+		it( 'should work the date out again when the event date changes, without saving', () => {
+			renderSalesWindow( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			act( () => {
+				commonStore.dispatch( {
+					type: 'SET_DATETIME',
+					datetime: { ...DEFAULT_EVENT, start: '2040-11-10 19:00:00', end: '2040-11-10 22:30:00' },
+				} );
+			} );
+
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 27, 2040 at 7:00 pm' ] );
+		} );
+
+		it( 'should tell a date in the fixed offset the server resolves a manual UTC offset to', () => {
+			setBlockEditorData( { timezones: { 'UTC+3': '+03:00' } } );
+			commonStore = setEventState( { ...DEFAULT_EVENT, timeZone: 'UTC+3' } );
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start October 6, 2040 at 7:00 pm' ] );
+		} );
+
+		it( 'should take the current year in the event timezone', () => {
+			// Still 2040 in the browser's UTC, already 2041 on Kiritimati, 14 hours ahead.
+			jest.useFakeTimers( { now: new Date( '2040-12-31T12:00:00Z' ) } );
+			commonStore = setEventState( {
+				...DEFAULT_EVENT,
+				start: '2041-01-20 19:00:00',
+				end: '2041-01-20 22:00:00',
+				timeZone: 'Pacific/Kiritimati',
+			} );
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperTexts() ).toStrictEqual( [ 'Sales start January 6 at 7:00 pm' ] );
+		} );
+
+		it( 'should keep the helper region mounted, so screen readers announce the date when it appears', () => {
+			delete window.tec.events;
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperRegions() ).toStrictEqual( [ '' ] );
+		} );
+
+		it( 'should show no helper text for an end that is not relative', () => {
+			renderSalesWindow( newClientId() );
+
+			expect( getHelperTexts() ).toStrictEqual( [] );
+		} );
+
+		it( 'should show no helper text while the event dates cannot be read', () => {
+			delete window.tec.events;
+			renderSalesWindow( newClientId() );
+
+			change( SelectControl, START_LABELS.mode, 'relative' );
+
+			expect( getHelperTexts() ).toStrictEqual( [] );
+		} );
 	} );
 } );

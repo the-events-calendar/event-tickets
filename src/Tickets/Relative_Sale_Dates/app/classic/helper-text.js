@@ -4,6 +4,11 @@
  * @since TBD
  */
 
+/**
+ * Internal dependencies
+ */
+import { getHelperDateFormat } from '../helper-date-format';
+
 /** @typedef {import( 'moment' ).Moment} Moment */
 
 /**
@@ -33,7 +38,7 @@ export function formatHelperText( template, date, settings, currentYear ) {
 	const formatter = new window.DateFormatter( { dateSettings: settings.dateSettings } );
 	// `DateFormatter` reads a date in the browser's timezone, so it gets the event's wall-clock time.
 	const wallClock = new Date( date.year(), date.month(), date.date(), date.hours(), date.minutes(), date.seconds() );
-	const dateFormat = date.year() === currentYear ? settings.dateNoYear : settings.dateWithYear;
+	const dateFormat = getHelperDateFormat( date, settings, currentYear );
 
 	return template
 		.replace( '%1$s', formatter.formatDate( wallClock, dateFormat ) )
