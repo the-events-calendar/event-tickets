@@ -4,8 +4,10 @@
  * @since TBD
  */
 
-const MODE_DEFAULT = 'default';
-const MODE_RELATIVE = 'relative';
+/**
+ * Internal dependencies
+ */
+import { MODE_DEFAULT, MODE_RELATIVE } from '../rule-constants';
 
 /**
  * @typedef {Object} ListSettings
