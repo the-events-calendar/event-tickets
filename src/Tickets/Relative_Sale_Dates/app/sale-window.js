@@ -12,12 +12,8 @@ import moment from 'moment-timezone';
 /**
  * Internal dependencies
  */
+import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE } from './rule-constants';
 import { getSaleWindowError } from './validation';
-
-const MODE_DEFAULT = 'default';
-const MODE_RELATIVE = 'relative';
-const ANCHOR_START = 'start';
-const ANCHOR_END = 'end';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm:ss';

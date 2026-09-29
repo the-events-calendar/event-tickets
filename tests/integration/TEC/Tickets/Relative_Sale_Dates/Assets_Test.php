@@ -24,6 +24,7 @@ class Assets_Test extends Controller_Test_Case {
 	public function reset_screen(): void {
 		wp_dequeue_script( Assets::CLASSIC_SCRIPT );
 		wp_dequeue_script( Assets::BLOCK_EDITOR_SCRIPT );
+		wp_dequeue_style( Assets::BLOCK_EDITOR_STYLE );
 		set_current_screen( 'front' );
 	}
 
@@ -176,6 +177,42 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_load_the_translations_of_the_block_editor_script(): void {
+		$this->make_controller()->register();
+		set_current_screen( 'tribe_events' );
+
+		do_action( 'enqueue_block_editor_assets' );
+
+		$this->assertSame( 'event-tickets', wp_scripts()->registered[ Assets::BLOCK_EDITOR_SCRIPT ]->textdomain ?? null );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_enqueue_the_block_editor_style_on_the_event_edit_screen(): void {
+		$this->make_controller()->register();
+		set_current_screen( 'tribe_events' );
+
+		do_action( 'enqueue_block_editor_assets' );
+
+		$this->assertTrue( wp_style_is( Assets::BLOCK_EDITOR_STYLE, 'enqueued' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_enqueue_the_block_editor_style_on_the_page_edit_screen(): void {
+		$this->make_controller()->register();
+		set_current_screen( 'page' );
+
+		do_action( 'enqueue_block_editor_assets' );
+
+		$this->assertFalse( wp_style_is( Assets::BLOCK_EDITOR_STYLE, 'enqueued' ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_not_enqueue_the_block_editor_script_in_the_classic_editor(): void {
 		$this->make_controller()->register();
 		set_current_screen( 'tribe_events' );
@@ -183,6 +220,21 @@ class Assets_Test extends Controller_Test_Case {
 		do_action( 'admin_enqueue_scripts', 'post.php' );
 
 		$this->assertFalse( wp_script_is( Assets::BLOCK_EDITOR_SCRIPT, 'enqueued' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_relative_values_the_block_editor_offers_by_default(): void {
+		$data = $this->get_block_editor_localized_data();
+
+		$this->assertSame(
+			[
+				'start' => Editor::DEFAULT_RELATIVE_START,
+				'end'   => Editor::DEFAULT_RELATIVE_END,
+			],
+			$data['defaults']
+		);
 	}
 
 	/**
@@ -199,6 +251,22 @@ class Assets_Test extends Controller_Test_Case {
 		$asset    = Asset_Registry::init()->get( Assets::CLASSIC_SCRIPT );
 		$localized = array_column( $asset->get_custom_localize_scripts(), 1, 0 );
 		$localize  = $localized['tec.tickets.relativeSaleDates.classicData'] ?? null;
+		$this->assertIsCallable( $localize );
+
+		return json_decode( wp_json_encode( $localize( $asset ) ), true );
+	}
+
+	/**
+	 * Builds the data the Ticket block script is localized with, as the browser receives it.
+	 *
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}} The localized data.
+	 */
+	private function get_block_editor_localized_data(): array {
+		$this->make_controller()->register();
+
+		$asset     = Asset_Registry::init()->get( Assets::BLOCK_EDITOR_SCRIPT );
+		$localized = array_column( $asset->get_custom_localize_scripts(), 1, 0 );
+		$localize  = $localized['tec.tickets.relativeSaleDates.blockEditorData'] ?? null;
 		$this->assertIsCallable( $localize );
 
 		return json_decode( wp_json_encode( $localize( $asset ) ), true );

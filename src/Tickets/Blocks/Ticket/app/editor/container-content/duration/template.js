@@ -10,6 +10,7 @@ import classNames from 'classnames';
  */
 import { __ } from '@wordpress/i18n';
 import { Dashicon } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -34,7 +35,21 @@ const TicketDuration = ( { hasDurationError, ...props } ) => (
 			) }
 			tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 		/>
-		<DateTimeRangePicker className="tribe-editor__ticket__duration-picker" { ...props } />
+		{
+			/**
+			 * Filters what the Sale Duration section renders in place of its date and time range picker.
+			 *
+			 * @since TBD
+			 *
+			 * @param {Object} picker   The date and time range picker element.
+			 * @param {string} clientId The client ID of the ticket block.
+			 */
+			applyFilters(
+				'tec.tickets.blocks.Ticket.Duration.renderPicker',
+				<DateTimeRangePicker className="tribe-editor__ticket__duration-picker" { ...props } />,
+				props.clientId
+			)
+		}
 		{ hasDurationError && (
 			<span className="tribe-editor__ticket__duration-error">
 				{ __(
@@ -47,6 +62,7 @@ const TicketDuration = ( { hasDurationError, ...props } ) => (
 );
 
 TicketDuration.propTypes = {
+	clientId: PropTypes.string,
 	fromDate: PropTypes.instanceOf( Date ),
 	fromDateInput: PropTypes.string,
 	fromDateDisabled: PropTypes.bool,

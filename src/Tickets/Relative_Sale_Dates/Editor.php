@@ -30,11 +30,13 @@ final class Editor extends Controller_Contract {
 	/**
 	 * The relative start the form offers when the ticket has none: 2 weeks before the event starts.
 	 *
+	 * The Ticket block offers it too, from the data its script is localized with.
+	 *
 	 * @since TBD
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
-	private const DEFAULT_RELATIVE_START = [
+	public const DEFAULT_RELATIVE_START = [
 		'mode'   => Rule::MODE_RELATIVE,
 		'value'  => 2,
 		'unit'   => Rule::UNIT_WEEKS,
@@ -44,11 +46,13 @@ final class Editor extends Controller_Contract {
 	/**
 	 * The relative end the form offers when the ticket has none: 1 hour before the event starts.
 	 *
+	 * The Ticket block offers it too, from the data its script is localized with.
+	 *
 	 * @since TBD
 	 *
 	 * @var array{mode: string, value: int, unit: int, anchor: string}
 	 */
-	private const DEFAULT_RELATIVE_END = [
+	public const DEFAULT_RELATIVE_END = [
 		'mode'   => Rule::MODE_RELATIVE,
 		'value'  => 1,
 		'unit'   => Rule::UNIT_HOURS,

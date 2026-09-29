@@ -7,10 +7,9 @@
 /**
  * Internal dependencies
  */
+import { MODE_SPECIFIC } from '../rule-constants';
 import { fromLocal, resolveSaleWindow } from '../sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from '../validation';
-
-const MODE_SPECIFIC = 'specific';
 
 /**
  * Returns the error of a sales window, or `null` when it is valid.

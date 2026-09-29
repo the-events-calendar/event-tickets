@@ -14,14 +14,13 @@ import { _n } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { resolveSaleWindow } from '../sale-window';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
 import { getListText } from './tickets-list';
 import { getWindowError } from './window-check';
-
-const MODE_RELATIVE = 'relative';
 
 /**
  * The TEC event fields the event dates are read from.
@@ -51,10 +50,10 @@ const RULE_FIELDS = [ 'start', 'end' ]
  * @type {Object<string, function( number ): string>}
  */
 const UNIT_NAMES = {
-	60: ( number ) => _n( 'minute', 'minutes', number, 'event-tickets' ),
-	3600: ( number ) => _n( 'hour', 'hours', number, 'event-tickets' ),
-	86400: ( number ) => _n( 'day', 'days', number, 'event-tickets' ),
-	604800: ( number ) => _n( 'week', 'weeks', number, 'event-tickets' ),
+	[ UNIT_MINUTES ]: ( number ) => _n( 'minute', 'minutes', number, 'event-tickets' ),
+	[ UNIT_HOURS ]: ( number ) => _n( 'hour', 'hours', number, 'event-tickets' ),
+	[ UNIT_DAYS ]: ( number ) => _n( 'day', 'days', number, 'event-tickets' ),
+	[ UNIT_WEEKS ]: ( number ) => _n( 'week', 'weeks', number, 'event-tickets' ),
 };
 
 /**
