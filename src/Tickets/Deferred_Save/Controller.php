@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Deferred_Save;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use Tribe__Tickets__Main as Tickets_Main;
 
 /**
  * Class Controller.
@@ -63,31 +64,47 @@ final class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the save entry points.
+	 * Hooks the save entry points.
 	 *
-	 * The container already holds this controller as a singleton once it is registered.
+	 * The classic save hooks the generic `save_post`, with the post type checked when it fires, so a
+	 * post type made ticketable after this registered is still covered. It is bound as a singleton so
+	 * the container returns the same callback to `unregister()`.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	protected function do_register(): void {
-		$this->container->register( Classic_Save::class );
-		$this->container->register( Block_Save::class );
+		$this->container->singleton( Classic_Save::class );
+
+		add_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY, 2 );
+
+		$this->container->singleton( Block_Save::class );
+
+		foreach ( Tickets_Main::instance()->post_types() as $post_type ) {
+			add_action( "rest_after_insert_{$post_type}", $this->container->callback( Block_Save::class, 'on_rest_after_insert' ), Block_Save::PRIORITY, 3 );
+			add_filter( "rest_prepare_{$post_type}", $this->container->callback( Block_Save::class, 'add_result_to_response' ), 10, 3 );
+		}
+
 		$this->container->register( Classic\Editor::class );
 		$this->container->register( Classic\Notices::class );
 	}
 
 	/**
-	 * Unregisters the feature.
+	 * Unhooks the save entry points.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->container->get( Classic_Save::class )->unregister();
-		$this->container->get( Block_Save::class )->unregister();
+		remove_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY );
+
+		foreach ( Tickets_Main::instance()->post_types() as $post_type ) {
+			remove_action( "rest_after_insert_{$post_type}", $this->container->callback( Block_Save::class, 'on_rest_after_insert' ), Block_Save::PRIORITY );
+			remove_filter( "rest_prepare_{$post_type}", $this->container->callback( Block_Save::class, 'add_result_to_response' ), 10 );
+		}
+
 		$this->container->get( Classic\Editor::class )->unregister();
 		$this->container->get( Classic\Notices::class )->unregister();
 	}

@@ -331,6 +331,132 @@ class OrderReportTest extends WPTestCase {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
+	/**
+	 * It should only forward an advertised sort key and an `ASC`/`DESC` direction from the request.
+	 *
+	 * @test
+	 * @dataProvider request_sort_parameters_provider
+	 */
+	public function should_only_forward_advertised_sort_parameters( $request, $expected_orderby, $expected_order ) {
+		unset(
+			$_REQUEST['orderby'],
+			$_REQUEST['order'],
+			$_GET['orderby'],
+			$_GET['order'],
+			$_POST['orderby'],
+			$_POST['order']
+		);
+
+		foreach ( $request as $key => $value ) {
+			$_GET[ $key ] = $value;
+		}
+
+		$captured = null;
+		$capture  = static function ( $args ) use ( &$captured ) {
+			$captured = $args;
+
+			return $args;
+		};
+
+		add_filter( 'tec_tc_order_report_args', $capture );
+		$orders_table = tribe( Orders_Table::class );
+		$orders_table->prepare_items();
+		remove_filter( 'tec_tc_order_report_args', $capture );
+
+		$this->assertSame( $expected_orderby, $captured['orderby'] ?? null );
+		$this->assertSame( $expected_order, $captured['order'] ?? null );
+	}
+
+	/**
+	 * Request sort parameters and the report arguments they should produce.
+	 *
+	 * @return Generator
+	 */
+	public function request_sort_parameters_provider(): Generator {
+		yield 'advertised sort key' => [
+			[ 'orderby' => 'purchaser_email' ],
+			'purchaser_email',
+			null,
+		];
+		yield 'array-form orderby' => [
+			[ 'orderby' => [ 'total_value' => 'DESC, (SELECT 1)' ] ],
+			null,
+			null,
+		];
+		yield 'unknown sort key' => [
+			[ 'orderby' => 'post_password' ],
+			null,
+			null,
+		];
+		yield 'injected direction' => [
+			[ 'order' => 'DESC, (SELECT 1)' ],
+			null,
+			null,
+		];
+		yield 'lowercase direction' => [
+			[ 'order' => 'desc' ],
+			null,
+			'DESC',
+		];
+	}
+
+	/**
+	 * It should let an event author, without `edit_others_posts`, sort their own orders report.
+	 *
+	 * @test
+	 */
+	public function should_let_an_event_author_sort_their_own_orders_report() {
+		$author_id = static::factory()->user->create( [ 'role' => 'contributor' ] );
+
+		$event_id  = tribe_events()->set_args(
+			[
+				'title'      => 'Event with one order',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		$this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+		wp_update_post( [ 'ID' => $event_id, 'post_author' => $author_id ] );
+		wp_set_current_user( $author_id );
+
+		$this->assertFalse(
+			current_user_can( 'edit_others_posts' ),
+			'The scenario requires an author without the capability to edit others posts.'
+		);
+
+		$_GET['event_id'] = $event_id;
+		$_GET['orderby']  = 'total_value';
+		$_GET['order']    = 'ASC';
+
+		$captured     = null;
+		$capture_args = static function ( $args ) use ( &$captured ) {
+			$captured = $args;
+
+			return $args;
+		};
+
+		$sql         = '';
+		$capture_sql = static function ( $request ) use ( &$sql ) {
+			$sql = $request;
+
+			return $request;
+		};
+
+		add_filter( 'tec_tc_order_report_args', $capture_args );
+		add_filter( 'posts_request', $capture_sql );
+		tribe( Orders_Table::class )->prepare_items();
+		remove_filter( 'posts_request', $capture_sql );
+		remove_filter( 'tec_tc_order_report_args', $capture_args );
+
+		$this->assertTrue( tribe( Order_Report::class )->can_access_page( $event_id ) );
+		$this->assertSame( 'total_value', $captured['orderby'] );
+		$this->assertSame( 'ASC', $captured['order'] );
+		$this->assertStringContainsString( 'sorted_by__tec_tc_order_total_value ASC', $sql );
+	}
+
 	protected function set_sequential_menu_order_for_posts( int ...$post_ids ) {
 		foreach ( $post_ids as $index => $post_id ) {
 			wp_update_post(
