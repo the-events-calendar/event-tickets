@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use InvalidArgumentException;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Ticket;
@@ -205,8 +204,8 @@ final class Event_Listener extends Controller_Contract {
 			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
 
 			/*
-			 * A move can push a relative end past a specific one. The inverted window is kept, so the ticket is off
-			 * sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind.
+			 * A move can push a relative boundary past a specific one. The inverted window is kept, so the ticket is
+			 * off sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind.
 			 * Every pending action goes, not only the next one: overlapping saves can leave two.
 			 */
 			as_unschedule_all_actions( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
@@ -258,10 +257,6 @@ final class Event_Listener extends Controller_Contract {
 	 * @return Rule|null The rule, or `null` when the ticket has no valid stored rule.
 	 */
 	private function get_rule( int $ticket_id ): ?Rule {
-		try {
-			return Rule::from_array( $this->rule_store->get( $ticket_id ) );
-		} catch ( InvalidArgumentException $e ) {
-			return null;
-		}
+		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 	}
 }

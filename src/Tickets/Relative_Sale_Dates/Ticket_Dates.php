@@ -90,7 +90,7 @@ final class Ticket_Dates {
 	/**
 	 * Writes the dates a rule resolves to into the ticket's sale date fields.
 	 *
-	 * An end the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has.
+	 * A boundary the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has.
 	 *
 	 * @since TBD
 	 *
