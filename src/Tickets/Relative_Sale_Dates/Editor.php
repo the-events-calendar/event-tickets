@@ -89,8 +89,8 @@ final class Editor extends Controller_Contract {
 		$is_new = empty( $context['ticket'] );
 
 		$context['sales_window'] = [
-			'start' => $this->get_end_fields( $rule ? $rule->get_start() : null, $is_new, self::DEFAULT_RELATIVE_START ),
-			'end'   => $this->get_end_fields( $rule ? $rule->get_end() : null, $is_new, self::DEFAULT_RELATIVE_END ),
+			'start' => $this->get_boundary_fields( $rule ? $rule->get_start() : null, $is_new, self::DEFAULT_RELATIVE_START ),
+			'end'   => $this->get_boundary_fields( $rule ? $rule->get_end() : null, $is_new, self::DEFAULT_RELATIVE_END ),
 		];
 		$context['rule_json']    = $rule ? $rule->to_json() : '';
 
@@ -126,23 +126,27 @@ final class Editor extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the values the form shows for one end of the sales window.
+	 * Gets the values the form shows for one boundary of the sales window.
 	 *
 	 * A ticket saved without a rule has dates of its own, so it opens on them rather than on the defaults of a new ticket.
 	 *
 	 * @since TBD
 	 *
-	 * @param array{mode: string, value?: int, unit?: int, anchor?: string}|null $end              The end in the stored rule, or `null` when there is none.
-	 * @param bool                                                               $is_new           Whether the ticket is new.
-	 * @param array{mode: string, value: int, unit: int, anchor: string}         $default_relative The relative end offered when the rule has none.
+	 * @param Boundary|null                                              $boundary         The boundary in the stored rule, or `null` when there is none.
+	 * @param bool                                                       $is_new           Whether the ticket is new.
+	 * @param array{mode: string, value: int, unit: int, anchor: string} $default_relative The relative boundary offered when the rule has none.
 	 *
 	 * @return array{mode: string, value: int, unit: int, anchor: string} The mode, and the relative values the form offers.
 	 */
-	private function get_end_fields( ?array $end, bool $is_new, array $default_relative ): array {
-		if ( ! $end ) {
+	private function get_boundary_fields( ?Boundary $boundary, bool $is_new, array $default_relative ): array {
+		if ( ! $boundary ) {
 			return array_merge( $default_relative, [ 'mode' => $is_new ? Rule::MODE_DEFAULT : Rule::MODE_SPECIFIC ] );
 		}
 
-		return Rule::MODE_RELATIVE === $end['mode'] ? $end : array_merge( $default_relative, [ 'mode' => $end['mode'] ] );
+		if ( Rule::MODE_RELATIVE === $boundary->get_mode() ) {
+			return $boundary->to_array();
+		}
+
+		return array_merge( $default_relative, [ 'mode' => $boundary->get_mode() ] );
 	}
 }
