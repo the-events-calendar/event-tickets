@@ -15,10 +15,10 @@ use WP_Post;
 /**
  * Class Ticket_Permissions.
  *
- * Answers whether the current user may edit or delete a ticket. By default the answer is the one
- * Event Tickets has always given: whoever may edit the ticket's post may edit and delete its
- * tickets. A provider that needs more, such as WooCommerce requiring rights on the product, ships
- * a subclass and returns it from the `tec_tickets_ticket_permissions` filter for its tickets.
+ * Answers whether a user may edit or delete a ticket. By default whoever may edit the ticket's
+ * post may edit and delete its tickets, and each answer passes through its own filter. A
+ * provider that needs more, such as WooCommerce requiring rights on the product, ships a subclass
+ * and returns it from the `tec_tickets_ticket_permissions` filter for its tickets.
  *
  * @since TBD
  *
@@ -52,64 +52,95 @@ class Ticket_Permissions {
 	}
 
 	/**
-	 * Whether the current user may edit the tickets of a post.
-	 *
-	 * This is the rule `Tribe__Tickets__Metabox::has_permission()` applies to every ticket write,
-	 * without its nonce check: the `edit_event_tickets` capability, or the post type's
-	 * `edit_others_posts`, or `edit_post` on the post.
+	 * Whether a user may edit the tickets of a post: whether they may edit the post.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The ID of the post. An occurrence ID is normalized to its event.
+	 * @param int      $post_id The ID of the post. An occurrence ID is normalized to its event.
+	 * @param int|null $user_id The ID of the user; the current user when null.
 	 *
-	 * @return bool Whether the current user may edit the post's tickets.
+	 * @return bool Whether the user may edit the post's tickets.
 	 */
-	public function current_user_can_edit_tickets_of( int $post_id ): bool {
-		$post = get_post( (int) Event::filter_event_id( $post_id, 'ticket_permissions' ) );
+	public function user_can_edit_tickets_of( int $post_id, ?int $user_id = null ): bool {
+		$user_id ??= get_current_user_id();
+		$post      = get_post( (int) Event::filter_event_id( $post_id, 'ticket_permissions' ) );
+		$can       = $post instanceof WP_Post && user_can( $user_id, 'edit_post', $post->ID );
 
-		if ( ! $post instanceof WP_Post ) {
-			return false;
-		}
-
-		$post_type = get_post_type_object( $post->post_type );
-
-		// The capability is not registered by Event Tickets; it is kept for parity with today's rule, which lets a site grant it to a role.
-		return current_user_can( 'edit_event_tickets' ) // phpcs:ignore WordPress.WP.Capabilities.Unknown
-			|| ( $post_type && current_user_can( $post_type->cap->edit_others_posts ) )
-			|| current_user_can( 'edit_post', $post->ID );
+		/**
+		 * Filters whether a user may edit the tickets of a post.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $can     Whether the user may edit the post's tickets.
+		 * @param int  $post_id The ID of the post, as asked about.
+		 * @param int  $user_id The ID of the user.
+		 */
+		return (bool) apply_filters( 'tec_tickets_user_can_edit_tickets_of', $can, $post_id, $user_id );
 	}
 
 	/**
-	 * Whether the current user may edit a ticket.
+	 * Whether a user may edit a ticket.
 	 *
 	 * @since TBD
 	 *
-	 * @param Ticket_Object $ticket The ticket.
+	 * @param Ticket_Object $ticket  The ticket.
+	 * @param int|null      $user_id The ID of the user; the current user when null.
 	 *
-	 * @return bool Whether the current user may edit the ticket.
+	 * @return bool Whether the user may edit the ticket.
 	 */
-	public function current_user_can_edit_ticket( Ticket_Object $ticket ): bool {
-		return $this->current_user_can_edit_tickets_of( (int) $ticket->get_event_id() );
+	public function user_can_edit_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
+		$user_id ??= get_current_user_id();
+
+		/**
+		 * Filters whether a user may edit a ticket. A refusal also refuses deleting it.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool          $can     Whether the user may edit the ticket's post's tickets.
+		 * @param Ticket_Object $ticket  The ticket.
+		 * @param int           $user_id The ID of the user.
+		 */
+		return (bool) apply_filters(
+			'tec_tickets_user_can_edit_ticket',
+			$this->user_can_edit_tickets_of( (int) $ticket->get_event_id(), $user_id ),
+			$ticket,
+			$user_id
+		);
 	}
 
 	/**
-	 * Whether the current user may delete a ticket.
+	 * Whether a user may delete a ticket.
 	 *
 	 * Deleting requires editing, and then passes the per-ticket filter Event Tickets has exposed
-	 * since 4.6, so today's integrations keep their say.
+	 * since 4.6, so today's integrations keep their say. That filter takes no user: it assumes the
+	 * current one.
 	 *
 	 * @since TBD
 	 *
-	 * @param Ticket_Object $ticket The ticket.
+	 * @param Ticket_Object $ticket  The ticket.
+	 * @param int|null      $user_id The ID of the user; the current user when null.
 	 *
-	 * @return bool Whether the current user may delete the ticket.
+	 * @return bool Whether the user may delete the ticket.
 	 */
-	public function current_user_can_delete_ticket( Ticket_Object $ticket ): bool {
-		if ( ! $this->current_user_can_edit_ticket( $ticket ) ) {
+	public function user_can_delete_ticket( Ticket_Object $ticket, ?int $user_id = null ): bool {
+		$user_id ??= get_current_user_id();
+
+		if ( ! $this->user_can_edit_ticket( $ticket, $user_id ) ) {
 			return false;
 		}
 
 		/** This filter is documented in src/Tribe/Tickets.php */
-		return (bool) apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class );
+		$can = (bool) apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class );
+
+		/**
+		 * Filters whether a user may delete a ticket they may edit.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool          $can     Whether the user may delete the ticket.
+		 * @param Ticket_Object $ticket  The ticket.
+		 * @param int           $user_id The ID of the user.
+		 */
+		return (bool) apply_filters( 'tec_tickets_user_can_delete_ticket', $can, $ticket, $user_id );
 	}
 }
