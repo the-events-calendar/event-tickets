@@ -83,7 +83,7 @@ class Order_Actions_Test extends Controller_Test_Case {
 			static function ( $order_id ) use ( &$deleted, &$still_in_db ) {
 				global $wpdb;
 				$deleted[]     = $order_id;
-				$still_in_db[] = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE ID = %d", $order_id ) );
+				$still_in_db[] = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE ID = %d', $wpdb->posts, $order_id ) );
 			}
 		);
 		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
