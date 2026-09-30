@@ -95,6 +95,7 @@ class Tickets implements ArrayAccess {
 	 *
 	 * @since 5.26.1
 	 * @since 5.29.5 Dropped the models instead of rebuilding them, so a mid-order stock is never stored.
+	 * @since TBD Cleared the Event ticket list caches when called with an Event post too.
 	 *
 	 * @param int $post_id The post ID. It could be any post type, not just events.
 	 *
@@ -123,6 +124,10 @@ class Tickets implements ArrayAccess {
 		};
 
 		add_action( 'parse_query', $do_not_cache_results );
+
+		if ( $post->post_type === TEC::POSTTYPE ) {
+			self::clear_event_tickets_caches( $post_id );
+		}
 
 		if ( $post->post_type !== TEC::POSTTYPE ) {
 			// These are maps from the service slug to the post type, so we keep only the post type.
@@ -162,25 +167,9 @@ class Tickets implements ArrayAccess {
 			}
 			/** @var array<int> $connected_event_ids */
 			$connected_event_ids = array_merge( ...$connected_event_ids );
-			$tribe_cache         = tribe_cache();
-			$tickets_class       = Tickets_Tickets::class;
 
 			foreach ( $connected_event_ids as $connected_event_id ) {
-				// Reset the `Tribe__Tickets__Tickets::get_tickets` method cache to get the last version of them.
-				$provider = Tickets_Tickets::get_event_ticket_provider_object( $connected_event_id );
-
-				if ( $provider ) {
-					$tribe_cache[ Tickets_Tickets::get_tickets_cache_key( $provider->orm_provider, $connected_event_id ) ] = null;
-				}
-
-				/*
-				 * The model reads the aggregate list, not the per-provider one, and that list holds Ticket
-				 * objects carrying the stock they had when it was built.
-				 */
-				$all_tickets_cache_key                 = "{$tickets_class}::get_all_event_tickets-{$connected_event_id}";
-				$tribe_cache[ $all_tickets_cache_key ] = null;
-
-				tec_kv_cache()->delete( self::get_cache_key( $connected_event_id ) );
+				self::clear_event_tickets_caches( $connected_event_id );
 			}
 		}
 
@@ -694,5 +683,32 @@ class Tickets implements ArrayAccess {
 		);
 
 		tec_kv_cache()->set( self::get_cache_key( $this->post_id ), $packed, DAY_IN_SECONDS );
+	}
+
+	/**
+	 * Drops the request-scoped ticket lists and the model entry of an Event, so its next model reads fresh tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The Event post ID.
+	 *
+	 * @return void
+	 */
+	private static function clear_event_tickets_caches( int $event_id ): void {
+		$tribe_cache = tribe_cache();
+		$provider    = Tickets_Tickets::get_event_ticket_provider_object( $event_id );
+
+		if ( $provider ) {
+			$tribe_cache[ Tickets_Tickets::get_tickets_cache_key( $provider->orm_provider, $event_id ) ] = null;
+		}
+
+		/*
+		 * The model reads the aggregate list, not the per-provider one, and that list holds Ticket
+		 * objects carrying the stock they had when it was built.
+		 */
+		$tickets_class = Tickets_Tickets::class;
+		$tribe_cache[ "{$tickets_class}::get_all_event_tickets-{$event_id}" ] = null;
+
+		tec_kv_cache()->delete( self::get_cache_key( $event_id ) );
 	}
 }

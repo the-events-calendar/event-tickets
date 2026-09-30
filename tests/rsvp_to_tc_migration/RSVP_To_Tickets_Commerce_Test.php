@@ -1619,8 +1619,15 @@ class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 
 		$this->assertEquals( TC_Ticket::POSTTYPE, get_post_type( $tc_ticket_id ) );
 
-		$all_tc_meta = $this->get_comparable_meta( $tc_ticket_id );
-		$all_rsvp_meta = $this->get_comparable_meta( $v1_ticket_id );
+		/*
+		 * The manual-update flag records that a user saved a custom sale end date from the editor.
+		 * The migration carries it over when a V1 RSVP has it, but must not invent it for one that doesn't.
+		 */
+		$manual_updated_key = tribe( 'tickets.handler' )->key_manual_updated;
+		$all_tc_meta        = $this->get_comparable_meta( $tc_ticket_id, [ $manual_updated_key ] );
+		$all_rsvp_meta      = $this->get_comparable_meta( $v1_ticket_id );
+
+		$this->assertArrayNotHasKey( $manual_updated_key, $all_rsvp_meta );
 
 		$stock_and_capacity_keys = [
 			'_stock',
