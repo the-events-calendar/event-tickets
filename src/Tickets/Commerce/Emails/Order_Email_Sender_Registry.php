@@ -2,7 +2,7 @@
 /**
  * Resolves and delegates order email sending to the appropriate sender.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -14,7 +14,7 @@ use WP_Post;
 /**
  * Class Order_Email_Sender_Registry.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -26,7 +26,7 @@ class Order_Email_Sender_Registry {
 	 * Third-party code can register additional senders with:
 	 * `tribe()->tag( [ My_Sender::class ], self::CONTAINER_TAG );`
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Order_Email_Sender_Registry {
 	/**
 	 * The registered order email senders, in dispatch order.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var Order_Email_Sender_Interface[]
 	 */
@@ -44,7 +44,7 @@ class Order_Email_Sender_Registry {
 	/**
 	 * Order_Email_Sender_Registry constructor.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Order_Email_Sender_Interface[] $senders The order email senders to dispatch to.
 	 */
@@ -59,8 +59,8 @@ class Order_Email_Sender_Registry {
 	 * an order only ever needs one confirmation email, so this is intentionally first-match-wins
 	 * rather than a broadcast to every supporting sender.
 	 *
-	 * @since TBD
-	 * @since TBD Checks `tec_tickets_emails_is_enabled()` once here instead of in each sender.
+	 * @since 5.30.0
+	 * @since 5.30.0 Checks `tec_tickets_emails_is_enabled()` once here instead of in each sender.
 	 *
 	 * @param WP_Post $order The decorated order post object.
 	 *

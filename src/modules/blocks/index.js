@@ -19,7 +19,7 @@ import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-fi
 /**
  * Check if RSVP is disabled via editor config.
  *
- * @since TBD
+ * @since 5.30.0
  * @return {boolean} Whether RSVP is disabled.
  */
 const isRsvpDisabled = () =>
@@ -32,7 +32,7 @@ const isRsvpDisabled = () =>
  * that shows a migration-in-progress message.
  * When V2 is enabled, swaps V1 RSVP block with V2.
  *
- * @since TBD
+ * @since 5.30.0
  * @param {Object[]} blocks The blocks to be registered.
  * @return {Object[]} The filtered blocks.
  */

@@ -2,7 +2,7 @@
 /**
  * Block Editor delegate for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -17,7 +17,7 @@ use WP_Post;
  *
  * Handles Block Editor integration for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -25,7 +25,7 @@ class Block_Editor {
 	/**
 	 * Style handle for RSVP V2 editor canvas overrides (mirror affordances).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Block_Editor {
 	 * Register `register_block_type_args` filter so the canvas iframe (WP 6.3+)
 	 * also receives the shared frontend RSVP styles via the block's `editorStyle`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -46,7 +46,7 @@ class Block_Editor {
 	/**
 	 * Add V2 RSVP configuration to the block editor config.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $config The editor configuration.
 	 *
@@ -71,7 +71,7 @@ class Block_Editor {
 	 * Preloaded into the block editor so the RSVP block can render without
 	 * waiting for an async fetch on first paint.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,mixed>|null Formatted ticket entity or null when none exists.
 	 */
@@ -114,7 +114,7 @@ class Block_Editor {
 		 * has_attendee_info_fields, field_labels) into the server-preloaded
 		 * ticket data so the RSVP block renders correctly on first paint.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array<string,mixed> $initial_ticket The formatted ticket entity.
 		 * @param int                 $post_id        The current post ID.
@@ -130,7 +130,7 @@ class Block_Editor {
 	 * Note: this does NOT fire in the block editor admin (blocks render client-side there).
 	 * Editor assets are handled by `enqueue_rsvp_block_editor_styles` instead.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string|null         $pre_render   The pre-rendered content. Default null.
 	 * @param array<string,mixed> $parsed_block The parsed block data.
@@ -149,7 +149,7 @@ class Block_Editor {
 	 * Attach frontend RSVP styles to the tribe/rsvp block type so WordPress
 	 * automatically loads them inside the editor canvas iframe (WP 6.3+).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $args       Block registration arguments.
 	 * @param string              $block_type The block name.
@@ -182,7 +182,7 @@ class Block_Editor {
 	 * Called during `enqueue_block_editor_assets` and `enqueue_block_assets`.
 	 * Uses `get_current_screen()` so it works even when `get_post()` is not yet set.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool
 	 */
@@ -215,7 +215,7 @@ class Block_Editor {
 	 * Hooked to both `enqueue_block_editor_assets` (editor chrome + non-iframe WP < 6.3)
 	 * and `enqueue_block_assets` (editor canvas iframe WP 6.3+).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */

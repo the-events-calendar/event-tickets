@@ -816,7 +816,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Uses field aliases from the repository for consistency.
 	 *
 	 * @since 5.28.0 Created in the RSVP repository.
-	 * @since TBD    Moved from the RSVP repository to this repository.
+	 * @since 5.30.0    Moved from the RSVP repository to this repository.
 	 *
 	 * @param int    $ticket_id Ticket ID.
 	 * @param string $field     Field name (can be alias or meta key).

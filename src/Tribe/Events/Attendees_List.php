@@ -339,7 +339,7 @@ class Attendees_List {
 	 * add-on that provides this functionality (e.g. Event Tickets Plus) should hook into
 	 * this filter and decide for itself whether to enable it.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id   The post ID the RSVP belongs to.
 	 * @param int $ticket_id The RSVP ticket ID.
@@ -350,7 +350,7 @@ class Attendees_List {
 		/**
 		 * Filters whether to show the RSVP attendees list and public opt-in toggle.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param bool $show_attendees_list Whether to show the attendees list and opt-in toggle. Default false.
 		 * @param int  $post_id             The post ID the RSVP belongs to.

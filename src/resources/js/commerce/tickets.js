@@ -7,7 +7,7 @@ import { _x } from '@wordpress/i18n';
 /**
  * Makes sure we have all the required levels on the Tribe Object.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @type   {Object}
  */
@@ -17,7 +17,7 @@ window.tribe.tickets = window.tribe.tickets || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @type   {Object}
  */
@@ -26,7 +26,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @type   {Object}
  */
@@ -38,7 +38,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Pull the variables from the PHP backend.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @type {Object}
 	 */
@@ -47,7 +47,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Checkout Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @type {Object}
 	 */
@@ -70,7 +70,7 @@ tribe.tickets.commerce.tickets = {};
 	 * jQuery UI datepicker formats, indexed to match the format index stored by
 	 * `Tribe__Date_Utils::get_datepicker_format_index()`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @type {string[]}
 	 */
@@ -92,7 +92,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Starts the process to delete an RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Event} event The Click event from the remove button.
 	 */
@@ -134,7 +134,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Setup timepickers for RSVP metabox.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.setupTimepickers = () => {
 		const $rsvpMetabox = $( obj.selectors.rsvpMetabox );
@@ -153,7 +153,7 @@ tribe.tickets.commerce.tickets = {};
 	 * mirrors what `tickets.js` does for the Tickets metabox: picking an Open RSVP date
 	 * sets it as the minimum on Close RSVP, and jQuery UI moves Close forward to match.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.setupDatepickers = () => {
 		const $metabox = $( obj.selectors.rsvpMetabox );
@@ -208,7 +208,7 @@ tribe.tickets.commerce.tickets = {};
 	 * Without this the `validation.tribe` event fired by `validateBeforePostSave` has no
 	 * listener, so every constraint in the panel is silently ignored on save.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.setupValidation = () => {
 		const $metabox = $( obj.selectors.rsvpMetabox );
@@ -223,7 +223,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Show the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.loaderShow = function () {
 		const $loader = $( obj.selectors.rsvpMetabox ).find( obj.selectors.loader );
@@ -234,7 +234,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Hide the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.loaderHide = function () {
 		const $loader = $( obj.selectors.rsvpMetabox ).find( obj.selectors.loader );
@@ -245,7 +245,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Resets Classic Editor RSVP form fields to their default empty state.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.resetRsvpForm = () => {
 		const $panel = $( obj.selectors.rsvpPanel );
@@ -267,7 +267,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Handles the response from the ticket endpoint after RSVP deletion.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Object} data The response data from the server.
 	 */
@@ -307,7 +307,7 @@ tribe.tickets.commerce.tickets = {};
 		 * Fires after the RSVP has been removed from the Classic Editor metabox and the
 		 * form has been reset to its default empty state.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 */
 		doAction( 'tec.tickets.rsvp.classic.removed' );
 	};
@@ -315,7 +315,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Handles errors during the ticket remove process.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Error} error The error that occurred.
 	 */
@@ -326,7 +326,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Validates RSVP fields before the post form is submitted.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Event} event The submit event from the post form.
 	 */
@@ -353,7 +353,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.bindEvents = () => {
 		$( document ).on( 'click', obj.selectors.removeButton, obj.handleRemove );
@@ -363,7 +363,7 @@ tribe.tickets.commerce.tickets = {};
 	/**
 	 * When the page is ready.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	obj.ready = () => {
 		registerMiddlewares();

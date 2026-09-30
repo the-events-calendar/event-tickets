@@ -17,14 +17,14 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	/**
 	 * Deprecated hook method.
 	 *
-	 * @deprecated TBD Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
+	 * @deprecated 5.30.0 Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
 	public function hook() {
-		_deprecated_function( __METHOD__, 'TBD', 'TEC\\Tickets\\RSVP\\V1\\Controller' );
+		_deprecated_function( __METHOD__, '5.30.0', 'TEC\\Tickets\\RSVP\\V1\\Controller' );
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	/**
 	 * Get TC-RSVP tickets for the RSVP block when V2 is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID.
 	 *

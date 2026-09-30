@@ -2,7 +2,7 @@
 /**
  * Sends ticket confirmation emails for Commerce orders.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -17,7 +17,7 @@ use function TEC\Common\StellarWP\Shepherd\shepherd;
 /**
  * Class Ticket_Email_Sender.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */

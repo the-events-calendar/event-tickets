@@ -2,7 +2,7 @@
 /**
  * Swaps the Commerce cart repository for RSVP_Cart when building TC-RSVP orders.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Cart
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\RSVP\V2\Constants;
 /**
  * Class Repository_Filter.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Cart
  */
@@ -29,7 +29,7 @@ class Repository_Filter {
 	 * declared type, and a scalar/object type hint here would turn that into a fatal TypeError
 	 * instead of a recoverable value.
 	 *
-	 * @since TBD Reads `$ticket_type` from the filter argument instead of a global var.
+	 * @since 5.30.0 Reads `$ticket_type` from the filter argument instead of a global var.
 	 *
 	 * @param Cart_Interface $cart        The default cart repository.
 	 * @param string         $ticket_type The type of ticket the repository is being resolved for.

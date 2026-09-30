@@ -2,7 +2,7 @@
 /**
  * RSVP V1 Controller.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\V1;
@@ -17,7 +17,7 @@ use Tribe__Tickets__Repositories__Attendee__RSVP as RSVP_V1_Attendee_Repository;
  *
  * This controller registers all hooks for the current RSVP implementation.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Controller extends Controller_Contract {
 	use RSVP_Controller_Methods;
@@ -25,7 +25,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The action that will be fired after the successful registration of this controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */

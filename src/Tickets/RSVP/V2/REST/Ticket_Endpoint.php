@@ -2,7 +2,7 @@
 /**
  * RSVP V2: Ticket Endpoint.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\REST
  */
@@ -24,7 +24,7 @@ use WP_REST_Server;
 /**
  * Class Ticket_Endpoint.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\REST
  */
@@ -33,7 +33,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -78,7 +78,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Checks if the current user has the capability to edit the post and verifies the nonce.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The current REST request.
 	 *
@@ -118,7 +118,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates or updates a ticket for Tickets Commerce RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -171,7 +171,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for processing additional RSVP fields before saving ticket creation.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array $args           The arguments array being prepared for ticket creation.
 		 * @param array $request_params The original request parameters.
@@ -185,7 +185,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for additional processing after RSVP ticket is created.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param int   $rsvp_id        The created RSVP ID.
 		 * @param int   $post_id        The post ID.
@@ -205,7 +205,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request to update IAC and attendee meta fields for existing tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -259,7 +259,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for processing additional IAC and attendee meta fields before updating.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array $request_params The original request parameters.
 		 * @param int   $ticket_id      The ticket ID being updated.
@@ -270,7 +270,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for additional processing after IAC and attendee meta updates.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param int   $ticket_id      The ticket ID being updated.
 		 * @param int   $post_id        The post ID.
@@ -287,7 +287,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request to delete an RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -341,7 +341,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for processing before RSVP ticket deletion.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param int   $ticket_id      The ticket ID being deleted.
 		 * @param int   $post_id        The post ID.
@@ -356,7 +356,7 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			/**
 			 * Allow for additional processing after RSVP ticket deletion.
 			 *
-			 * @since TBD
+			 * @since 5.30.0
 			 *
 			 * @param int   $ticket_id      The deleted ticket ID.
 			 * @param int   $post_id        The post ID.

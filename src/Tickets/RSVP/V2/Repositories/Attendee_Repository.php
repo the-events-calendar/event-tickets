@@ -2,7 +2,7 @@
 /**
  * V2 Attendee Repository for TC-RSVP attendees.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
@@ -25,7 +25,7 @@ use Tribe__Tickets__Attendee_Repository as Base_Repository;
  * Extends the base repository and provides filters for RSVP-specific queries
  * including going/not-going status.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
@@ -35,7 +35,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -162,7 +162,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 *
 	 * The function will be called by the original constructor.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -187,7 +187,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * single `has_filter()`-guarded registration (see the constructor) covers every instance without
 	 * reading the scoping off any particular instance's `default_args`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $query_args The fully merged query arguments about to be used to build the query.
 	 *
@@ -211,7 +211,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Get attendees by email address for privacy operations.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $email    The email address to search for.
 	 * @param int    $page     The page number (1-indexed).
@@ -240,7 +240,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * Uses force delete (bypass trash) to ensure complete removal of personal data
 	 * as required for GDPR compliance.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID to delete.
 	 *
@@ -268,7 +268,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Get the ticket/product ID for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *
@@ -283,7 +283,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee post type.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string, string> The array of Attendee post types supported by this repository.
 	 */
@@ -294,7 +294,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee to Event relation meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee to Event relation meta keys supported by this repository.
 	 */
@@ -305,7 +305,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee to Ticket relation meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee to Ticket relation meta keys supported by this repository.
 	 */
@@ -316,7 +316,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee to Order relation meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee to Order relation meta keys supported by this repository.
 	 */
@@ -327,7 +327,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee purchaser name meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee purchaser name meta keys supported by this repository.
 	 */
@@ -338,7 +338,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee purchaser email meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee purchaser email meta keys supported by this repository.
 	 */
@@ -349,7 +349,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee holder name meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee holder name meta keys supported by this repository.
 	 */
@@ -360,7 +360,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee holder email meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee holder email meta keys supported by this repository.
 	 */
@@ -371,7 +371,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee security code meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee security code meta keys supported by this repository.
 	 */
@@ -382,7 +382,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee optout meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee optout meta keys supported by this repository.
 	 */
@@ -393,7 +393,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Attendee checked in meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Attendee checked in meta keys supported by this repository.
 	 */
@@ -404,7 +404,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to add a filter on the RSVP status using the correct meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $rsvp_status The RSVP status to filter by.
 	 *
@@ -421,7 +421,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	/**
 	 * Overrides the base repository method to add a filter on the RSVP status using the correct meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $rsvp_status The RSVP status to filter by.
 	 *
@@ -441,7 +441,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * Note the validation does not check whether the Order exists or the post type matches: this would make the check
 	 * too expensive. The method just check the ID is a positive integer.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|string|int[]|string[] $order_id The order ID(s) to check.
 	 *
@@ -462,7 +462,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * This method leverages the fact that Tickets Commerce uses the `post_parent` field to store the relationship
 	 * between an Attendee and the Order, not a meta value like other types of Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|int[]|string|string[] $order_id The Order ID(s) to filter by.
 	 *
@@ -484,7 +484,7 @@ class Attendee_Repository extends Base_Repository implements Attendee_Repository
 	 * This method leverages the fact that Tickets Commerce uses the `post_parent` field to store the relationship
 	 * between an Attendee and the Order, not a meta value like other types of Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|int[]|string|string[] $order_id The Order ID(s) to filter by.
 	 *

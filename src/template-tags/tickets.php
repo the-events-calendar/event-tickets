@@ -888,7 +888,7 @@ if ( ! function_exists( 'tec_tickets_has_meta_enabled' ) ) {
 	/**
 	 * Check if a ticket has meta (attendee information) collection enabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -898,7 +898,7 @@ if ( ! function_exists( 'tec_tickets_has_meta_enabled' ) ) {
 		/**
 		 * Filters if the ticket has meta or not.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param bool $has_meta  Whether the ticket has meta enabled.
 		 * @param int  $ticket_id The ticket ID.
@@ -1088,7 +1088,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 	 *
 	 * @since 4.11.3
 	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
-	 * @since TBD Added the `$tickets_only` parameter to allow excluding RSVP capacity from the total.
+	 * @since 5.30.0 Added the `$tickets_only` parameter to allow excluding RSVP capacity from the total.
 	 *
 	 * @param int|WP_Post $post          Post (event) we are trying to fetch capacity for.
 	 * @param bool        $tickets_only  Whether to exclude RSVP capacity and return ticket-only capacity.

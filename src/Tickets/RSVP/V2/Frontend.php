@@ -2,7 +2,7 @@
 /**
  * Frontend delegate for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -26,7 +26,7 @@ use WP_Post;
  *
  * Handles frontend rendering and assets for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -34,7 +34,7 @@ class Frontend {
 	/**
 	 * A reference to the Tickets Commerce module instance.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var Module
 	 */
@@ -43,7 +43,7 @@ class Frontend {
 	/**
 	 * Frontend constructor.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Module $module A reference to the Tickets Commerce module instance.
 	 */
@@ -57,7 +57,7 @@ class Frontend {
 	 * Hooks into `tec_tickets_front_end_rsvp_form_template_content` to render
 	 * the V2 commerce RSVP template instead of the generic RSVP block template.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string                  $content  The template content to be rendered.
 	 * @param array<string,mixed>     $args     The RSVP block arguments.
@@ -96,7 +96,7 @@ class Frontend {
 		/**
 		 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
 		 * @param int                           $event_id  The event post ID.
@@ -124,7 +124,7 @@ class Frontend {
 	 *
 	 * Assets are only enqueued when viewing a single post/event that has TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -151,7 +151,7 @@ class Frontend {
 	 * The original code hooks as part of the construction, to avoid having to update all the existing code
 	 * unhook the RSVP v1 hooks right after they are added.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Tickets_Handler $tickets_handler  The tickets handler instance.
 	 * @param string          $ticket_form_hook The ticket form hook.
@@ -243,7 +243,7 @@ class Frontend {
 	 * transition of the order. Changing a response afterwards never touches the order, so without this
 	 * the attendee is told nothing about the change.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $order       The decorated order the attendee belongs to.
 	 * @param int     $attendee_id The attendee whose response changed.
@@ -292,7 +292,7 @@ class Frontend {
 	 *
 	 * Hooked to `tec_tickets_my_tickets_ticket_information_after_ticket_name`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $attendee The attendee data.
 	 */
@@ -323,7 +323,7 @@ class Frontend {
 	 * Hooked to the template's `tribe_template_pre_html` filter so the alternate template
 	 * supports both echoed and non-echoed template rendering.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string|null         $html    The filtered template HTML, or null before rendering.
 	 * @param string              $file    The template file path.
@@ -352,7 +352,7 @@ class Frontend {
 	/**
 	 * Check if a post has TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID to check.
 	 *
@@ -367,7 +367,7 @@ class Frontend {
 	/**
 	 * Returns whether the RSVP form requires login.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the RSVP form requires login.
 	 */

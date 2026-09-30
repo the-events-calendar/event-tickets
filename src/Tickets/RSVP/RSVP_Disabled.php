@@ -2,7 +2,7 @@
 /**
  * Null-object implementation of RSVP when the feature is disabled.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP;
@@ -16,13 +16,13 @@ use Tribe__Tickets__RSVP;
  * to return empty/null/zero values, ensuring code that depends on RSVP
  * continues to work without exceptions when the feature is disabled.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function __construct() {
 		// Do not call parent::__construct() to avoid registering post types, etc.
@@ -31,7 +31,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns empty array - no tickets when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int    $post_id The post ID.
 	 * @param string $context Optional context.
@@ -45,7 +45,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns null - no ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $event_id  The event ID.
 	 * @param int $ticket_id The ticket ID.
@@ -59,7 +59,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns empty array - no attendees when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int         $post_id   The post ID.
 	 * @param string|null $post_type Optional post type.
@@ -73,7 +73,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns false - no attendee when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param mixed $attendee The attendee.
 	 * @param int   $post_id  Optional post ID.
@@ -87,7 +87,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns 0 - no going count when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -100,7 +100,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns 0 - no not going count when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -113,7 +113,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns 0 - no going count for user when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID.
 	 * @param int $user_id The user ID.
@@ -127,7 +127,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns 0 - no not going count for user when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID.
 	 * @param int $user_id The user ID.
@@ -141,7 +141,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns 0 - no total not going when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $event_id The event ID.
 	 *
@@ -154,7 +154,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns false - cannot save ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $post_id  The post ID.
 	 * @param mixed $ticket   The ticket.
@@ -169,7 +169,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns false - cannot delete ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $event_id  The event ID.
 	 * @param int $ticket_id The ticket ID.
@@ -183,7 +183,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns false - cannot check in when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int        $attendee_id The attendee ID.
 	 * @param mixed|null $qr          Optional QR data.
@@ -199,7 +199,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns false - cannot un-check in when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int  $attendee_id The attendee ID.
 	 * @param bool $app         Whether from app.
@@ -213,7 +213,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns null - no event for ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param mixed $ticket_product The ticket product.
 	 *
@@ -226,7 +226,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns empty array - no order data when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -239,7 +239,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns empty array - no messages when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array Empty array.
 	 */
@@ -250,7 +250,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Does nothing - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -261,7 +261,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Does nothing - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -272,7 +272,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Does nothing - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -283,7 +283,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Does nothing - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -294,7 +294,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Throws exception - cannot create attendees when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param mixed $ticket         The ticket.
 	 * @param array $attendee_data  Attendee data.
@@ -308,7 +308,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns empty array - no statuses by action when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $action The action.
 	 *
@@ -321,7 +321,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns false - not going option is disabled when RSVP is disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -334,7 +334,7 @@ class RSVP_Disabled extends Tribe__Tickets__RSVP {
 	/**
 	 * Returns empty array - no ticket IDs when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|WP_Post $post    The post.
 	 * @param string|null $context The context.

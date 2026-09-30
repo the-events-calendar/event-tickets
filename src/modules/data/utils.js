@@ -24,7 +24,7 @@ export const KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS = '_tribe_ticket_has_attendee_i
  * Normalize a title field from an API response.
  * Handles cases where the API returns an object with raw/rendered properties.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @param {string|Object|null|undefined} value The title value from the API.
  *
@@ -48,7 +48,7 @@ export const normalizeTitle = ( value ) => {
  * Handles cases where the API returns an object with raw/rendered properties.
  * Falls back to excerpt if description is empty.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @param {string|Object|null|undefined} value   The description value from the API.
  * @param {string}                       excerpt Optional excerpt to use as fallback.

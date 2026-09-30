@@ -793,8 +793,8 @@ class Tribe__Tickets__Tickets_View {
 	 * Counts the Amount of Tickets attendees.
 	 *
 	 * @since 4.10.8
-	 * @since TBD Added the `$context` parameter and arguments filtering.
-	 * @since TBD Excluded RSVP V2 (TC-RSVP) attendees, which share the Tickets Commerce
+	 * @since 5.30.0 Added the `$context` parameter and arguments filtering.
+	 * @since 5.30.0 Excluded RSVP V2 (TC-RSVP) attendees, which share the Tickets Commerce
 	 *        attendee/provider with regular tickets and were not caught by `provider__not_in`.
 	 *
 	 * @param int      $event_id The Event ID we're checking.
@@ -825,7 +825,7 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Filters the arguments used to count the Tickets attendees.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array $args    {
 		 *      List of arguments to filter attendees by.
@@ -881,7 +881,7 @@ class Tribe__Tickets__Tickets_View {
 	 * templates. This check lets the My Tickets page route them through the Tickets Commerce
 	 * templates that render the RSVP V2 UI.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int      $event_id The Event ID we're checking.
 	 * @param int|null $user_id  An Optional User ID.
@@ -1447,7 +1447,7 @@ class Tribe__Tickets__Tickets_View {
 			 * Allows customization of RSVP rendering, including V2 RSVP tickets which
 			 * render with their own specialized UI.
 			 *
-			 * @since TBD
+			 * @since 5.30.0
 			 *
 			 * @param string                           $content  The template content to be rendered.
 			 * @param array<string,mixed>              $args     The RSVP block arguments.

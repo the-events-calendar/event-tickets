@@ -375,7 +375,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 * Add the full set of parameters to the items in the cart.
 	 *
 	 * @since 5.21.0
-	 * @since TBD `type` is now only defaulted to `ticket` when missing, instead of being
+	 * @since 5.30.0 `type` is now only defaulted to `ticket` when missing, instead of being
 	 *            unconditionally overwritten, so non-ticket item types (e.g. TC-RSVP) survive.
 	 *
 	 * @param array $items The items in the cart.

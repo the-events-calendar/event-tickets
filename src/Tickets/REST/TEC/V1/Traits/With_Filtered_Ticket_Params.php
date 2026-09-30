@@ -202,7 +202,7 @@ trait With_Filtered_Ticket_Params {
 		/**
 		 * Filter the ticket params before they are returned.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array $ticket_params The filtered ticket params.
 		 * @param array $params        The original REST params.

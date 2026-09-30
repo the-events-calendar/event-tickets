@@ -3,9 +3,9 @@
  * Single order - Details metabox.
  *
  * @since 5.13.3
- * @since TBD Introduced actions before and after the order details metabox.
+ * @since 5.30.0 Introduced actions before and after the order details metabox.
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var WP_Post             $order             The current post object.
  * @var Singular_Order_Page $single_page       The orders table output.
@@ -31,7 +31,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 	/**
 	 * Fires before the order details metabox.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post             $order             The current post object.
 	 * @param Singular_Order_Page $single_page       The orders table output.
@@ -81,7 +81,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 	/**
 	 * Fires after the order details metabox.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post             $order             The current post object.
 	 * @param Singular_Order_Page $single_page       The orders table output.

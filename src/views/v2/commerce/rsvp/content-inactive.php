@@ -15,9 +15,9 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The RSVP ticket object.
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  */
 
 defined( 'ABSPATH' ) || die();

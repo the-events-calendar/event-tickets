@@ -2,7 +2,7 @@
 /**
  * V2 Attendance Totals class for RSVP.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -23,7 +23,7 @@ use WP_Post;
  *
  * Calculates attendance totals for RSVP tickets in V2 implementation.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -37,7 +37,7 @@ class Attendees {
 	 * This method filters a method managing its cache; for this reason this specific method is not caching
 	 * to avoid stale values that the original method might have cached.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param null|array<array<string,mixed>> $attendees     The attendee IDs, or null if not set.
 	 * @param int                             $post_id       The post ID, it could be the post ID of an Attendee, a
@@ -110,7 +110,7 @@ class Attendees {
 	/**
 	 * Filters the arguments used to count the Attendees in the Tickets View data link.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $args    The arguments used to count the attendees.
 	 * @param int                 $post_id The post ID the Attendees are being counted for.
@@ -147,7 +147,7 @@ class Attendees {
 	 * Both have to stamp the status, because the RSVP repository scopes every query to Attendees that
 	 * carry it and an Attendee without it cannot be looked up, and so cannot be edited.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param mixed $attendee The created Attendee post.
 	 * @param mixed $order    The Order that generated the Attendee.
@@ -197,7 +197,7 @@ class Attendees {
 	 * `tec_tickets` cache, so its Going attendees would be counted a second time under "Tickets".
 	 * The ticket type is the same in either case.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param mixed $should_count Whether the ticket should be factored into the sales counts.
 	 * @param mixed $ticket       The ticket being counted.
@@ -220,7 +220,7 @@ class Attendees {
 	 * A TC-RSVP ticket reports `tc-rsvp`, so without these entries the template falls back to printing
 	 * the raw type slug as the heading and renders no icon.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $context The Attendees page render context.
 	 *
@@ -252,7 +252,7 @@ class Attendees {
 	 *
 	 * Hooked to `tec_tickets_rsvp_get_attendees_by_user_id_pre`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param null|array<array<string,mixed>> $attendees Null by default.
 	 * @param int                             $user_id   The user ID.
@@ -307,7 +307,7 @@ class Attendees {
 	 * Hooked to `tribe_tickets_attendees_table_order_status`. All RSVP attendees have a
 	 * "Completed" order status, so the going/not-going answer is read from attendee meta.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string                     $label The order-status HTML built by the attendees table.
 	 * @param array<string,mixed>|object $item  The attendees-table row item.
@@ -344,7 +344,7 @@ class Attendees {
 	 *
 	 * Hooked to `tec_tickets_attendees_table_column_check_in`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string                     $content The check-in column HTML.
 	 * @param array<string,mixed>|object $item    The attendees-table row item.
@@ -364,7 +364,7 @@ class Attendees {
 	 *
 	 * Hooked to `event_tickets_attendees_table_row_actions`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<int|string,string>   $actions The row actions.
 	 * @param array<string,mixed>|object $item    The attendees-table row item.
@@ -394,7 +394,7 @@ class Attendees {
 	 * the attendee's order is composed exclusively of RSVP items and no other live attendee remains
 	 * on it.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The ID of the attendee being deleted.
 	 *
@@ -446,7 +446,7 @@ class Attendees {
 	/**
 	 * Resolves the RSVP "going" status for an attendees-table row.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed>|object $item The attendees-table row item.
 	 *

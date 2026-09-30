@@ -164,7 +164,7 @@ export const createRSVP = ( payload ) => async ( dispatch, getState ) => {
 		/**
 		 * Fires after an RSVP is created.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 * @param {Object}  payload  The RSVP payload.
 		 * @param {boolean} isCreate Whether the RSVP was created (true) or updated (false).
 		 */
@@ -261,7 +261,7 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
 		/**
 		 * Fires after an RSVP is updated.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 * @param {Object}  payload  The RSVP payload.
 		 * @param {boolean} isCreate Whether the RSVP was created (true) or updated (false).
 		 */
@@ -332,7 +332,7 @@ export const deleteRSVP = ( id ) => async ( dispatch ) => {
 		/**
 		 * Fires after an RSVP is deleted.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 * @param {number} id The RSVP ID.
 		 */
 		doAction( 'tec.tickets.blocks.rsvp.deleted', id );

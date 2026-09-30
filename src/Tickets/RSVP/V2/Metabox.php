@@ -2,7 +2,7 @@
 /**
  * V2 Metabox class for RSVP.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -27,7 +27,7 @@ use Tribe__Tickets__Ticket_Object;
  * Handles RSVP-specific metabox rendering and data for V2 implementation.
  * V2 RSVP uses TC (Tickets Commerce) infrastructure.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -35,7 +35,7 @@ class Metabox {
 	/**
 	 * Configures the RSVP metabox for the given post type.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string|null $post_type The post type to configure the metabox for.
 	 */
@@ -68,7 +68,7 @@ class Metabox {
 	 * Users who have manually reordered their metaboxes are unaffected: WordPress applies
 	 * their saved per-user order separately, which takes precedence over this default.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string|null $post_type The post type the metaboxes are being added for.
 	 *
@@ -114,7 +114,7 @@ class Metabox {
 	/**
 	 * Renders the RSVP metabox for the event editor in the admin area.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post|int $post_id The post ID or WP_Post object for the event.
 	 *
@@ -175,7 +175,7 @@ class Metabox {
 	 * Hooked to `tec_event_tickets_rsvp_form__start`. The response total includes both
 	 * "going" and "not going" attendees, matching the count shown on the attendees report.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|WP_Post $post_id     The event the RSVP is attached to.
 	 * @param string      $ticket_type The ticket type the form is being rendered for.
@@ -227,7 +227,7 @@ class Metabox {
 	/**
 	 * Adds the RSVP status to the single order details metabox.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $order The order post object.
 	 *
@@ -303,7 +303,7 @@ class Metabox {
 	/**
 	 * Get first ticket of type tc-rsvp
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID to get the ticket for.
 	 *

@@ -353,7 +353,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		/**
 		 * Filters the tickets that will be included in the tickets list meta for the Block Editor.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param Tribe__Tickets__Ticket_Object[] $tickets The array of ticket objects.
 		 * @param int                             $post_id The post ID.
@@ -524,7 +524,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 * Renders the New RSVP form in the metabox, as appropriate.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Added `$disabled` parameter to support rendering a disabled button.
+	 * @since 5.30.0 Added `$disabled` parameter to support rendering a disabled button.
 	 *
 	 * @param int  $post_id  The ID of the post the form is being rendered for.
 	 * @param bool $disabled Whether the RSVP form toggle should be disabled.

@@ -65,7 +65,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * Whether RSVP is disabled on this site, in which case neither V1 nor V2 ticket
 	 * should be imported.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool
 	 */
@@ -81,7 +81,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * `add_filter( 'tec_tickets_rsvp_version', fn(): string => get_option( 'test_rsvp_version', RSVP_Controller::VERSION_1 ) );`
 	 * then `update_option( 'test_rsvp_version', RSVP_Controller::VERSION_2 )` to force V2.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool
 	 */
@@ -122,7 +122,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Matches an existing post based on the record.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $record The record data.
 	 *
@@ -143,7 +143,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * V2: one RSVP per event - match if any TC-RSVP ticket exists for the event.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array   $record The record data.
 	 * @param WP_Post $event  The event post.
@@ -165,7 +165,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * V1: match by ticket_name + event (legacy).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array   $record The record data.
 	 * @param WP_Post $event  The event post.
@@ -204,7 +204,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Check if an event already has a V2 TC-RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $event The event post.
 	 *
@@ -217,7 +217,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Get a cached match result.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $cache_key Cache key.
 	 *
@@ -230,7 +230,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Cache a match result and return it.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $cache_key Cache key.
 	 * @param bool   $is_match  Match result.
@@ -259,7 +259,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Creates a new RSVP ticket post.
 	 *
-	 * @since TBD Added V2 handling via `is_rsvp_v2()` dispatcher.
+	 * @since 5.30.0 Added V2 handling via `is_rsvp_v2()` dispatcher.
 	 *
 	 * @param array $record The record data.
 	 *
@@ -292,7 +292,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Create via Commerce (V2).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array   $record The record data.
 	 * @param WP_Post $event  The event.
@@ -316,7 +316,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Create via legacy RSVP (V1).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array   $record The record data.
 	 * @param WP_Post $event  The event.
@@ -381,7 +381,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * Gets the ticket data from the record - dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $record The record data.
 	 *
@@ -396,7 +396,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * V2 data shape - Commerce TC-RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $record The record data.
 	 *
@@ -460,7 +460,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	/**
 	 * V1 data shape - legacy tribe_rsvp_tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $record The record data.
 	 *
@@ -574,7 +574,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * Hooked to `tribe_aggregator_record_activity_wakeup` by both the V1 and V2 RSVP controllers
 	 * via `RSVP_Controller_Methods::register_csv_importer_hooks()`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Tribe__Events__Aggregator__Record__Activity $activity The activity instance.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Modifies the settings for the RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2;
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Settings as Tickets_Settings;
 /**
  * Class Settings.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2;
  */
@@ -23,7 +23,7 @@ class Settings {
 	 * Filters the fields rendered in the Payments tab to replace the toggle to deactivate Tickets Commerce
 	 * with one that will not allow the user to do that.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $fields The fields to render in the tab.
 	 *

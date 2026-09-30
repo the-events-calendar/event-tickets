@@ -2,9 +2,9 @@
 /**
  * The template for the rsvp limit field.
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var string $rsvp_limit                      The ticket name.
  * @var string $rsvp_required_type_error_message The RSVP required type error message.

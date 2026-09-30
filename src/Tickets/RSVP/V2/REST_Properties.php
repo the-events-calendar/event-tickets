@@ -4,7 +4,7 @@
  *
  * Handles adding RSVP-specific properties to REST API responses and documentation.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -21,7 +21,7 @@ use WP_Post;
 /**
  * Class REST_Properties
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -29,7 +29,7 @@ class REST_Properties {
 	/**
 	 * Add the "show not going" property to ticket model properties for RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $properties Properties to add to the model.
 	 * @param WP_Post             $post       The ticket post object.
@@ -92,7 +92,7 @@ class REST_Properties {
 	/**
 	 * Add "show not going" to the list of REST properties for RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,bool> $properties The properties to expose in REST.
 	 *
@@ -108,7 +108,7 @@ class REST_Properties {
 	/**
 	 * Add "show_not_going" to REST API request body documentation for RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $documentation The Swagger documentation array.
 	 *
@@ -134,7 +134,7 @@ class REST_Properties {
 	/**
 	 * Add "show_not_going" to REST API response documentation for RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $documentation The Swagger documentation array.
 	 *

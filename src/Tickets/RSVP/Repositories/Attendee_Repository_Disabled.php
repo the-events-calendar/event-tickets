@@ -2,7 +2,7 @@
 /**
  * Null-object implementation of RSVP Attendee Repository.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\Repositories;
@@ -16,13 +16,13 @@ use Tribe__Repository;
  * This class extends the repository base class but overrides methods to return empty results,
  * ensuring code that depends on the repository continues to work without exceptions.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee_Repository_Interface {
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function __construct() {
 		// Do not call parent::__construct() to avoid side effects.
@@ -32,7 +32,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns empty collection - no attendees when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param bool $return_generator Whether to return a generator.
 	 * @param int  $batch_size       The batch size for generator.
@@ -46,7 +46,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns 0 - no attendees when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int Always 0.
 	 */
@@ -57,7 +57,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns 0 - no attendees when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int Always 0.
 	 */
@@ -68,7 +68,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns null - no attendee when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return null Always null.
 	 */
@@ -79,7 +79,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns null - no attendee when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return null Always null.
 	 */
@@ -90,7 +90,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns null - no attendee when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $id The attendee ID.
 	 *
@@ -103,7 +103,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns $this for method chaining - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $key   The filter key.
 	 * @param mixed  $value The filter value.
@@ -117,7 +117,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns $this for method chaining - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $key   The filter key.
 	 * @param mixed  $value The filter value.
@@ -131,7 +131,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Returns empty array - no attendees when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param bool $return_generator Whether to return a generator.
 	 * @param int  $batch_size       The batch size for generator.
@@ -145,7 +145,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Get attendees by email - returns empty when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $email    The email address to search for.
 	 * @param int    $page     The page number (1-indexed).
@@ -163,7 +163,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Delete an attendee - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID to delete.
 	 *
@@ -179,7 +179,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Get ticket ID - returns 0 when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *
@@ -192,7 +192,7 @@ class Attendee_Repository_Disabled extends Tribe__Repository implements Attendee
 	/**
 	 * Get field value: returns empty string when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int    $post_id The attendee post ID to return the field for.
 	 * @param string $field   The field to return the value for.

@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -19,7 +19,7 @@ use Tribe__Tickets__Main;
  *
  * Registers RSVP V2 assets including CSS and JavaScript.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -27,7 +27,7 @@ class Assets {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function register() {
 		/** @var Tribe__Tickets__Main $plugin */
@@ -140,7 +140,7 @@ class Assets {
 	 *
 	 * Limits `commerce/tickets.js` to ticket-enabled post edit screens only.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool
 	 */
@@ -157,7 +157,7 @@ class Assets {
 	/**
 	 * Whether to enqueue block editor RSVP canvas styles.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool
 	 */

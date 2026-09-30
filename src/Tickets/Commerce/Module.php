@@ -506,7 +506,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * order creation, cause the inventory to be decreased.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Attendees marked with a `ticket_type` of RSVP are excluded from inventory
+	 * @since 5.30.0 Attendees marked with a `ticket_type` of RSVP are excluded from inventory
 	 *            decrease based on their RSVP status.
 	 *
 	 * @param array $attendee The attendee. May include a `ticket_type` key.
@@ -877,7 +877,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * modal, supply it as `attendee_status`. Without this the update reports success while the answer
 	 * silently stays as it was.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int                 $attendee_id   The Attendee being updated.
 	 * @param array<string,mixed> $attendee_data The submitted Attendee data.
@@ -911,7 +911,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * carries a QR code, and it says the same thing whether the person is coming or not. This sends the
 	 * Going or Not Going email instead, chosen from the answer stored on the Attendee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The Attendee to email.
 	 *

@@ -170,7 +170,7 @@ class Ticket_Actions extends Controller_Contract {
 	 * `tec_tickets_ticket_upserted`. Without this hook the event cost meta
 	 * is not refreshed.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $post_id   The parent post ID.

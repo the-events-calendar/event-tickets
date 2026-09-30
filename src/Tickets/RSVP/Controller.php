@@ -2,7 +2,7 @@
 /**
  * Main RSVP Controller.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP;
@@ -18,13 +18,13 @@ use function TEC\Common\StellarWP\Migrations\migrations;
  * This controller decides whether to register V1 (full functionality)
  * or RSVP_Disabled (null-object) based on configuration.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Controller extends Controller_Contract {
 	/**
 	 * Constant name for disabling RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Name for version 1 of the RSVP implementation.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Name for version 2 of the RSVP implementation.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Controller extends Controller_Contract {
 	 * This method is called early, before the Tickets Commerce provider is registered, to allow the feature
 	 * to try and activate Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -73,7 +73,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Enables Tickets Commerce and ensures the checkout and success pages exist.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Always returns true to enable Tickets Commerce.
 	 */
@@ -91,7 +91,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Creates the Tickets Commerce checkout and success pages if they don't exist.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -103,7 +103,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Checks if RSVP functionality is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether RSVP is enabled.
 	 */
@@ -126,7 +126,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Filters whether RSVP functionality is enabled.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param bool $active Whether RSVP is active.
 		 */
@@ -136,7 +136,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -173,7 +173,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register null-object implementations for disabled RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -196,7 +196,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds the RSVP disabled flag to the Block Editor configuration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $config The editor configuration.
 	 *
@@ -218,7 +218,7 @@ class Controller extends Controller_Contract {
 	 * tooltip instead of hiding it outright. In every other case (migration completed, RSVP
 	 * permanently disabled, etc.) the button should be hidden entirely.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,bool> $enabled The enabled ticket forms.
 	 *
@@ -234,7 +234,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Checks whether the RSVP to Tickets Commerce migration is currently running or paused.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the migration is currently in progress.
 	 */
@@ -245,7 +245,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -274,7 +274,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Returns the filtered RSVP version to use.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string The filtered RSVP version to use.
 	 */
@@ -291,7 +291,7 @@ class Controller extends Controller_Contract {
 		 *
 		 * If the provided version is not one of the supported versions, the feature will be disabled.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param string $version The RSVP version to register.
 		 */
@@ -301,7 +301,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The option key used to store the RSVP version.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -314,7 +314,7 @@ class Controller extends Controller_Contract {
 	 * before/after hooks. On first load (no option set), live detection runs
 	 * once from the migration status and saves the result.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string The RSVP version based on the migration status.
 	 */
@@ -335,7 +335,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Detects the RSVP version from the migration status.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string The detected RSVP version.
 	 */
@@ -392,7 +392,7 @@ class Controller extends Controller_Contract {
 	 * ticket repositories are both out of reach. The post type is hard-coded for the same reason
 	 * (see `Tribe__Tickets__RSVP::$ticket_object`, mirrored in `Ticket_Cache_Controller`).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether at least one V1 RSVP ticket exists.
 	 */

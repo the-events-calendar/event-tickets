@@ -2,7 +2,7 @@
 /**
  * Attendee Repository interface.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\Contracts
  */
@@ -17,7 +17,7 @@ use WP_Post;
  * Defines the public API that RSVP attendee repositories must implement
  * to support GDPR privacy export and erasure operations among other operations.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\Contracts
  */
@@ -28,7 +28,7 @@ interface Attendee_Repository_Interface {
 	 * Returns WP_Post objects to maintain backward compatibility with
 	 * existing filter implementations that expect full post objects.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $email    The email address to search for.
 	 * @param int    $page     The page number (1-indexed).
@@ -47,7 +47,7 @@ interface Attendee_Repository_Interface {
 	 * Returns the event ID so the caller can invalidate the attendees cache.
 	 * This method will immediately delete the Attendee skipping trash.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID to delete.
 	 *
@@ -63,7 +63,7 @@ interface Attendee_Repository_Interface {
 	 *
 	 * Used by ET+ to retrieve custom meta fields configuration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *
@@ -76,7 +76,7 @@ interface Attendee_Repository_Interface {
 	 *
 	 * Useful for quick lookups when you only need one field value.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int    $post_id Post ID (ticket or attendee).
 	 * @param string $field   Field name (alias-aware, e.g., 'price', 'event_id', 'email').

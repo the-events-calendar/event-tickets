@@ -1402,7 +1402,7 @@ class Ticket extends Ticket_Data {
 	 * seat instead, mirroring the exclusion `Tribe__Tickets__Ticket_Object::inventory()` applies:
 	 * an attendee whose RSVP status meta exists with a falsy value ('no') does not hold a seat.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *

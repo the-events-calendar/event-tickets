@@ -31,7 +31,7 @@ use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 	/**
 	 * Fires after the ticket name in the My Tickets ticket information template.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $attendee The attendee data.
 	 */

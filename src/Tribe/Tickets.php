@@ -799,7 +799,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
 		 * @since 5.8.0 Added the `$context` parameter.
 		 * @since 5.29.0 Made $context explicitly nullable.
-		 * @since TBD Only cache the result when no context is passed, since a context changes which tickets are returned.
+		 * @since 5.30.0 Only cache the result when no context is passed, since a context changes which tickets are returned.
 		 *
 		 * @param int         $post_id ID of parent "event" post.
 		 * @param string|null $context The context of the request.
@@ -872,7 +872,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Centralizing the key format here keeps it in a single place, so cache invalidation never has
 		 * to reconstruct the string by hand and the key cannot silently drift out of sync.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param string $orm_provider The provider ORM slug (e.g. `tribe-commerce`, `rsvp`).
 		 * @param int    $post_id      The post (event) ID the tickets belong to.
@@ -1045,7 +1045,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Whether a specific attendee is valid toward inventory decrease or not.
 		 *
 		 * @since 4.7
-		 * @since TBD Attendees marked with a `ticket_type` of RSVP are excluded from inventory
+		 * @since 5.30.0 Attendees marked with a `ticket_type` of RSVP are excluded from inventory
 		 *            decrease based on their RSVP status.
 		 *
 		 * @param array $attendee The attendee data. May include a `ticket_type` key.
@@ -1353,7 +1353,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Trigger an action every time a new ticket instance has been created
 			 *
 			 * @since 4.9
-			 * @since TBD Added the `$ticket_form_hook` parameter.
+			 * @since 5.30.0 Added the `$ticket_form_hook` parameter.
 			 *
 			 * @param Tribe__Tickets__Tickets $ticket_handler The ticket handler instance.
 			 * @param string $ticket_form_hook The ticket form hook.

@@ -2,7 +2,7 @@
 /**
  * Is RSVP trait.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\V2\Traits;
@@ -12,13 +12,13 @@ use TEC\Tickets\RSVP\V2\Constants;
 /**
  * Trait Is_RSVP
  *
- * @since TBD
+ * @since 5.30.0
  */
 trait Is_RSVP {
 	/**
 	 * Determine if a thing is an RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $thing The thing to check.
 	 *
