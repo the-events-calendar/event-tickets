@@ -949,7 +949,7 @@ class Attendee {
 
 		$bought_as = get_post_meta( $attendee->ID, Order_Items_Attendees::TICKET_NAME_META_KEY, true );
 
-		return $bought_as ? esc_html( $bought_as ) : get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
+		return '' !== (string) $bought_as ? esc_html( $bought_as ) : get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
 	}
 
 	/**
