@@ -2,7 +2,7 @@
 /**
  * Tests for the Tribe__Tickets__Privacy class.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace Tribe\Tickets;
@@ -19,7 +19,7 @@ use WP_Post;
 /**
  * Class Privacy_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Privacy_Test extends WPTestCase {
 	use Attendee_Maker;

@@ -4,7 +4,7 @@
  *
  * This suite tests the migration of legacy V1 RSVPs to Tickets Commerce (V2).
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 use TEC\Common\StellarWP\DB\DB;

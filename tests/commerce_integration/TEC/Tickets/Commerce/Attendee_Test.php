@@ -16,7 +16,7 @@ class Attendee_Test extends WPTestCase {
 	 * Updating an attendee from the RSVP reservation page after the RSVP to Tickets
 	 * Commerce migration should not fatal while trying to resolve the Commerce Email class.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function test_maybe_send_tickets_after_status_change_does_not_fatal() {
 		$post      = self::factory()->post->create( [ 'post_type' => 'page' ] );

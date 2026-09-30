@@ -2,7 +2,7 @@
 /**
  * Tests for the Stripe Return Endpoint permission checks.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
@@ -18,7 +18,7 @@ use WP_REST_Request;
 /**
  * Class Return_Endpoint_Test.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint
  *

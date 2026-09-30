@@ -2,7 +2,7 @@
 /**
  * Tests for the Ticket_Repository_Disabled null-object class.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\Repositories;
@@ -12,7 +12,7 @@ use Codeception\TestCase\WPTestCase;
 /**
  * Class Ticket_Repository_Disabled_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Ticket_Repository_Disabled_Test extends WPTestCase {
 

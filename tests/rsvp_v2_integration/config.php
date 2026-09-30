@@ -2,7 +2,7 @@
 /**
  * Configuration file for RSVP V2 integration tests.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 putenv( 'TEC_DISABLE_LOGGING=1' );

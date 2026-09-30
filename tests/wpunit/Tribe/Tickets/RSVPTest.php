@@ -207,7 +207,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should reject a ticket generated directly for a private event's ticket, even when
 	 * the caller never checked the event's accessibility (e.g. a smuggled `product_id`).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_reject_generate_tickets_for_a_private_event() {
 		$private_post_id = $this->factory()->post->create( [ 'post_status' => 'private' ] );
@@ -227,7 +227,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should reject a ticket generated directly for a password-protected event's ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_reject_generate_tickets_for_a_password_protected_event() {
 		$pw_post_id = $this->factory()->post->create( [

@@ -2,7 +2,7 @@
 /**
  * Tests for the main RSVP Controller.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP;
@@ -15,7 +15,7 @@ use function TEC\Common\StellarWP\Migrations\migrations;
 /**
  * Class Controller_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Controller_Test extends Controller_Test_Case {
 	/**

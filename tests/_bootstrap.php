@@ -84,7 +84,7 @@ function tec_tickets_tests_disable_gateway_id_generation() {
  * loaded by an admin-capable user and answer with `wp_safe_redirect()` + `tribe_exit()`, which takes
  * the whole suite runner down mid-run with no reported failure.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @return void
  */

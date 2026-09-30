@@ -48,7 +48,7 @@ namespace Traits;
 /**
  * Trait With_No_Query_Commit.
  *
- * @since   TBD
+ * @since   5.30.0
  *
  * @package Traits;
  */

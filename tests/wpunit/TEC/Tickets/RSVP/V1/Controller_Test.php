@@ -2,7 +2,7 @@
 /**
  * Tests for the RSVP V1 Controller.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\V1;
@@ -13,7 +13,7 @@ use Tribe__Tickets__RSVP;
 /**
  * Class Controller_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Controller_Test extends Controller_Test_Case {
 

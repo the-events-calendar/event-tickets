@@ -15,7 +15,7 @@ use Codeception\TestCase\WPTestCase;
  * ever safe to construct with a real file reader from an in-progress import,
  * never lazily by the container.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class RSVP_Controller_Methods_Test extends WPTestCase {
 

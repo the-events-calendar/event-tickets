@@ -5,7 +5,7 @@
  * All ticket creation in this suite uses PRODUCTION code paths (via `ticket_add()`)
  * to ensure the test data matches real-world meta fields.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\Tests\RSVP_To_TC_Migration;
@@ -27,7 +27,7 @@ use TEC\Common\Exceptions\Not_Bound_Exception;
 /**
  * Class RSVP_To_Tickets_Commerce_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class RSVP_To_Tickets_Commerce_Test extends WPTestCase {
 	use Attendee_Maker;

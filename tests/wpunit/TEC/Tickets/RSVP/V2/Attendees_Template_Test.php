@@ -2,7 +2,7 @@
 /**
  * Tests for the RSVP V2 attendees template `is_going` guard.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\V2;
@@ -22,7 +22,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Attendees_Template_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Attendees_Template_Test extends WPTestCase {
 	use SnapshotAssertions;
@@ -47,7 +47,7 @@ class Attendees_Template_Test extends WPTestCase {
 	/**
 	 * Replaces post IDs with placeholders for stable snapshots.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $snapshot The snapshot HTML.
 	 * @param array  $ids      Map of placeholder name to post ID value.

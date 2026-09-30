@@ -6,7 +6,7 @@
  * this trait goes through the real provider `ticket_add()` → `save_ticket()` flow.
  * This ensures the created tickets have the exact same meta as real user-created tickets.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\Tests\Commerce\RSVP_To_TC_Migration;
@@ -25,7 +25,7 @@ trait Production_Ticket_Maker {
 	 * This goes through `RSVP::ticket_add()` → `RSVP::save_ticket()` → repository,
 	 * which is the same path used when a user creates an RSVP from the admin UI.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $post_id   The post/event ID.
 	 * @param array $overrides Data overrides.
@@ -65,7 +65,7 @@ trait Production_Ticket_Maker {
 	 * This goes through `Module::ticket_add()` → `Module::save_ticket()` → `Ticket::save()`,
 	 * which is the same path used when a user creates a TC ticket from the admin UI.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $post_id   The post/event ID.
 	 * @param int   $price     Ticket price.
@@ -110,7 +110,7 @@ trait Production_Ticket_Maker {
 	 * This creates a TC ticket with price=0 and type=tc-rsvp through the full
 	 * production flow, identical to what happens when a user creates a V2 RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $post_id   The post/event ID.
 	 * @param array $overrides Data overrides.

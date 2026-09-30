@@ -4,7 +4,7 @@
  *
  * This suite tests the V2 (TC-based) RSVP implementation.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 use TEC\Common\StellarWP\DB\DB;

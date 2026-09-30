@@ -2,7 +2,7 @@
 /**
  * Tests for the RSVP_Disabled null-object class.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP;
@@ -12,7 +12,7 @@ use Codeception\TestCase\WPTestCase;
 /**
  * Class RSVP_Disabled_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class RSVP_Disabled_Test extends WPTestCase {
 	/**

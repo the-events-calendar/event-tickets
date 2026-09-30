@@ -18,7 +18,7 @@ class RSVP_Importer_Test extends WPTestCase {
 	/**
 	 * @var callable|null Hook callback for `tec_tickets_rsvp_version` added in setUp().
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	private $version_filter;
 

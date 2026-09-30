@@ -2,7 +2,7 @@
 /**
  * Tests for the Migrations Controller.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\Tests\Integration\Migrations;
@@ -13,7 +13,7 @@ use TEC\Tickets\Migrations\Controller;
 /**
  * Class Controller_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Controller_Test extends Controller_Test_Case {
 	protected string $controller_class = Controller::class;

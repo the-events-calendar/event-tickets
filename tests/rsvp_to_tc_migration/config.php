@@ -2,7 +2,7 @@
 /**
  * Configuration file for RSVP to TC Migration tests.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 putenv( 'TEC_DISABLE_LOGGING=1' );

@@ -2,7 +2,7 @@
 /**
  * Tests for the V1 RSVP Attendee Repository's methods.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\V1;
@@ -17,7 +17,7 @@ use WP_Post;
 /**
  * Class Attendee_Repository_Test
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Attendee_Repository_Test extends WPTestCase {
 	use Attendee_Maker;

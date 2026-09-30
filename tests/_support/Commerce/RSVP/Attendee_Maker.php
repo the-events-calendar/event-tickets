@@ -23,7 +23,7 @@ trait Attendee_Maker {
 	/**
 	 * Generates an RSVP attendee for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $ticket_id The RSVP ticket ID.
 	 * @param int   $post_id   The post/event ID the ticket is attached to.
@@ -38,7 +38,7 @@ trait Attendee_Maker {
 	/**
 	 * Generates multiple RSVP attendees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $count     The number of attendees to create.
 	 * @param int   $ticket_id The RSVP ticket ID.
@@ -54,7 +54,7 @@ trait Attendee_Maker {
 	/**
 	 * Sets the optout option on an RSVP attendee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int  $attendee_id The attendee post ID.
 	 * @param bool $optout      Optional. Whether to opt out. Default true.
@@ -66,7 +66,7 @@ trait Attendee_Maker {
 	/**
 	 * Sets the optout option on multiple RSVP attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $attendees Array of attendee IDs or attendee data arrays.
 	 * @param bool  $optout    Optional. Whether to opt out. Default true.

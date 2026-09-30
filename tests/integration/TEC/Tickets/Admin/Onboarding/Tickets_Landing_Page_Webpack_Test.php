@@ -3,7 +3,7 @@
  * Tests for Tickets_Landing_Page webpack public path functionality.
  *
  * @package TEC\Tickets\Admin\Onboarding
- * @since   TBD
+ * @since   5.30.0
  */
 
 namespace TEC\Tickets\Admin\Onboarding;
@@ -19,7 +19,7 @@ use Tribe__Tickets__Main as Tickets;
  * These tests verify the integration between WordPress admin pages, asset enqueuing,
  * and webpack configuration.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	use With_Uopz;
@@ -50,7 +50,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 *
 	 * @before
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function before() {
 		$this->get_vars = $_GET;
@@ -79,7 +79,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * Test that inline script is registered with webpack public path.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_register_webpack_public_path_inline_script() {
 		// Simulate being on the landing page.
@@ -104,7 +104,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * Test that the webpack public path contains the build directory.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_include_build_directory_in_path() {
 		$_GET['page'] = Tickets_Landing_Page::get_page_slug();
@@ -125,7 +125,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * Test that the webpack public path is a valid URL.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_output_valid_url() {
 		$_GET['page'] = Tickets_Landing_Page::get_page_slug();
@@ -162,7 +162,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * not the full WordPress admin page detection system.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_respect_page_check() {
 		// This test verifies that the asset has a condition set.
@@ -186,7 +186,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * This simulates WordPress installations with non-standard directory structures.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_work_with_custom_wp_content_dir() {
 		$_GET['page'] = Tickets_Landing_Page::get_page_slug();
@@ -223,7 +223,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * Test that the URL uses the correct ET namespace.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_use_et_namespace() {
 		$_GET['page'] = Tickets_Landing_Page::get_page_slug();
@@ -242,7 +242,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * Test that the URL is properly escaped for JavaScript.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_escape_url_for_javascript() {
 		$_GET['page'] = Tickets_Landing_Page::get_page_slug();
@@ -270,7 +270,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 * Test that plugins_url generates correct URL for symlinked plugins.
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function it_should_handle_symlinked_plugin_directories() {
 		$_GET['page'] = Tickets_Landing_Page::get_page_slug();
@@ -298,7 +298,7 @@ class Tickets_Landing_Page_Webpack_Test extends WPTestCase {
 	 *
 	 * @after
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function after() {
 		global $current_screen;
