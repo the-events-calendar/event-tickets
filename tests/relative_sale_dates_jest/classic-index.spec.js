@@ -102,11 +102,12 @@ function renderPanel( { value, unit, anchor }, end = { mode: 'relative', value: 
 /**
  * Adds the sale price fields to the ticket edit panel, with the helper text that holds the sale length.
  *
- * @param {Object} start           The start: `mode`, and `value` and `unit` for a relative one.
- * @param {Object} end             The end: `mode`, and `value` and `unit` for a relative one.
- * @param {string} [startDate=''] The specific start date, in the datepicker format.
+ * @param {Object}  start           The start: `mode`, and `value` and `unit` for a relative one.
+ * @param {Object}  end             The end: `mode`, and `value` and `unit` for a relative one.
+ * @param {string}  [startDate='']  The specific start date, in the datepicker format.
+ * @param {boolean} [checked=true]  Whether the ticket has a sale price.
  */
-function appendSalePriceFields( start, end, startDate = '' ) {
+function appendSalePriceFields( start, end, startDate = '', checked = true ) {
 	const fields = ( key, { mode, value = 1, unit = UNIT_WEEKS } ) => `
 		<select id="ticket_sale_${ key }_mode"><option value="${ mode }" selected>mode</option></select>
 		<input type="number" id="ticket_sale_${ key }_value" value="${ value }" />
@@ -117,11 +118,13 @@ function appendSalePriceFields( start, end, startDate = '' ) {
 
 	document.getElementById( 'tribe_panel_edit' ).insertAdjacentHTML(
 		'beforeend',
-		`${ fields( 'start', start ) }
+		`<input type="checkbox" id="ticket_add_sale_price" ${ checked ? 'checked' : '' } />
+		${ fields( 'start', start ) }
 		<input id="ticket_sale_start_date" value="${ startDate }" />
 		${ fields( 'end', end ) }
 		<input id="ticket_sale_end_date" value="" />
-		<span id="ticket_sale_price_length"></span>`
+		<span id="ticket_sale_price_length"></span>
+		<p id="ticket_sale_price_error"></p>`
 	);
 }
 
@@ -133,6 +136,26 @@ function getSaleLengthText() {
 }
 
 const INVALID_WINDOW = 'Ticket sales cannot end before they start. Please adjust the sales window.';
+
+const SALE_PRICE_ENDS_BEFORE_START = 'The sale price cannot end before it starts. Please adjust the sale price window.';
+
+const SALE_PRICE_OUTSIDE_WINDOW = 'The sale price window falls outside the ticket sales window. Please adjust the dates.';
+
+/**
+ * @return {string} The error shown under the sale price window.
+ */
+function getSalePriceErrorText() {
+	return document.getElementById( 'ticket_sale_price_error' ).textContent;
+}
+
+/**
+ * @return {boolean} Whether the sale price end is marked invalid, and points at the error that says why.
+ */
+function isSaleEndMarkedInvalid() {
+	const endMode = document.getElementById( 'ticket_sale_end_mode' );
+
+	return 'true' === endMode.getAttribute( 'aria-invalid' ) && 'ticket_sale_price_error' === endMode.getAttribute( 'aria-describedby' );
+}
 
 /**
  * Asks for the extra validation `tickets.js` runs before it saves a ticket.
@@ -200,6 +223,8 @@ describe( 'classic editor script', () => {
 				start: 'Sales start %1$s at %2$s',
 				end: 'Sales end %1$s at %2$s',
 				invalidWindow: 'Ticket sales cannot end before they start. Please adjust the sales window.',
+				salePriceEndsBeforeStart: SALE_PRICE_ENDS_BEFORE_START,
+				salePriceOutsideWindow: SALE_PRICE_OUTSIDE_WINDOW,
 			},
 		};
 		window.tribe_dynamic_help_text = {
@@ -451,6 +476,93 @@ describe( 'classic editor script', () => {
 
 		expect( getWindowError() ).toBe( INVALID_WINDOW );
 		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should block the save of a sale price that ends before it starts', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+		expect( getSalePriceErrorText() ).toBe( SALE_PRICE_ENDS_BEFORE_START );
+		expect( isSaleEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should block the save of a sale price that starts before sales open', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 3 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+		expect( getSalePriceErrorText() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
+	} );
+
+	it( 'should let a valid sale price be saved', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+		expect( getSalePriceErrorText() ).toBe( '' );
+		expect( isSaleEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should leave a sale price that is not added unjudged', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 }, '', false );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+		expect( getSalePriceErrorText() ).toBe( '' );
+	} );
+
+	it( 'should judge the sales window before the sale price', async () => {
+		renderEventForm( { value: 1, unit: 3600, anchor: 'start' }, { mode: 'relative', value: 2, unit: 3600, anchor: 'start' } );
+		appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+		expect( getSalePriceErrorText() ).toBe( '' );
+	} );
+
+	it( 'should clear the sale price error once a sale price field changes', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+		await loadScript();
+		validateTicket();
+
+		jQuery( '#ticket_sale_end_value' ).val( '3' ).trigger( 'change' );
+
+		expect( getSalePriceErrorText() ).toBe( '' );
+		expect( isSaleEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should clear the sale price error once the sale price is removed', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 1 }, { mode: 'relative', value: 2 } );
+		await loadScript();
+		validateTicket();
+
+		jQuery( '#ticket_add_sale_price' ).prop( 'checked', false ).trigger( 'change' );
+
+		expect( getSalePriceErrorText() ).toBe( '' );
+		expect( isSaleEndMarkedInvalid() ).toBe( false );
+	} );
+
+	it( 'should show a sale price error the server rejected the save with under the sale price', async () => {
+		renderEventForm();
+		appendSalePriceFields( { mode: 'relative', value: 2 }, { mode: 'relative', value: 1 } );
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: SALE_PRICE_OUTSIDE_WINDOW },
+		} );
+
+		expect( getSalePriceErrorText() ).toBe( SALE_PRICE_OUTSIDE_WINDOW );
+		expect( isSaleEndMarkedInvalid() ).toBe( true );
+		expect( getWindowError() ).toBe( '' );
 	} );
 
 	it( 'should show another error the server rejected the save with without marking the sales window', async () => {

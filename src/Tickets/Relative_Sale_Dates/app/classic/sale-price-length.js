@@ -13,29 +13,12 @@ import { _n, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ANCHOR_START, MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
-import { DATE_FORMAT, resolveSaleWindow } from '../sale-window';
+import { MODE_NOW, MODE_SPECIFIC } from '../rule-constants';
+import { resolveSalePriceDates } from '../sale-price-window';
+import { DATE_FORMAT } from '../sale-window';
 
-/** @typedef {import( './sale-price-rule' ).SalePriceRule} SalePriceRule */
+/** @typedef {import( '../sale-price-window' ).SalePriceRule} SalePriceRule */
 /** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
-
-/**
- * Turns a sale price rule into a sales window rule the shared resolver works out, on the event start.
- *
- * A boundary that is not relative becomes a specific one, which the resolver leaves without a date.
- *
- * @since TBD
- *
- * @param {SalePriceRule} rule The sale price rule.
- *
- * @return {import( '../sale-window' ).SaleWindowRule} The rule the resolver takes.
- */
-function toSaleWindowRule( rule ) {
-	const toEnd = ( boundary ) =>
-		MODE_RELATIVE === boundary.mode ? { ...boundary, anchor: ANCHOR_START } : { mode: MODE_SPECIFIC };
-
-	return { start: toEnd( rule.start ), end: toEnd( rule.end ) };
-}
 
 /**
  * Gets the text that tells the admin how long the sale price lasts.
@@ -53,18 +36,13 @@ function toSaleWindowRule( rule ) {
  * @return {string} The text, or an empty string when the sale price does not end after the day it starts.
  */
 export function getSalePriceLengthText( rule, eventDates, formDates, today ) {
-	const resolved = resolveSaleWindow(
-		toSaleWindowRule( rule ),
-		eventDates.start,
-		eventDates.end,
-		eventDates.timezone
-	);
+	const resolved = resolveSalePriceDates( rule, eventDates );
 	const getDate = ( key ) => {
-		if ( resolved[ key ] ) {
-			return resolved[ key ].isValid() ? resolved[ key ].format( DATE_FORMAT ) : null;
+		if ( MODE_SPECIFIC === rule[ key ].mode ) {
+			return formDates[ key ];
 		}
 
-		return MODE_NOW === rule[ key ].mode ? today : formDates[ key ];
+		return MODE_NOW === rule[ key ].mode ? today : resolved[ key ];
 	};
 	const start = getDate( 'start' );
 	const end = getDate( 'end' );

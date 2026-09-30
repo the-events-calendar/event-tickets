@@ -9,20 +9,8 @@
  */
 import { MODE_RELATIVE } from '../rule-constants';
 
-/**
- * @typedef {Object} SalePriceBoundary
- *
- * @property {string} mode    One of `now`, `relative` or `specific`.
- * @property {number} [value] The number of units before the event starts, for a relative boundary.
- * @property {number} [unit]  The unit, in seconds: 86400 or 604800, for a relative boundary.
- */
-
-/**
- * @typedef {Object} SalePriceRule
- *
- * @property {SalePriceBoundary} start The start of the sale price window.
- * @property {SalePriceBoundary} end   The end of the sale price window.
- */
+/** @typedef {import( '../sale-price-window' ).SalePriceBoundary} SalePriceBoundary */
+/** @typedef {import( '../sale-price-window' ).SalePriceRule} SalePriceRule */
 
 /**
  * The id of the hidden field that carries the sale price rule, as JSON, to the server.

@@ -1,5 +1,6 @@
 /**
- * The modes, anchors, units and range of a sales window rule, as the server's `Rule` and `Boundary` define them.
+ * The modes, anchors, units and ranges of the sales window and sale price rules, as the server's `Rule`, `Boundary`,
+ * `Sale_Price_Rule` and `Sale_Price_Boundary` define them.
  *
  * @since TBD
  */
@@ -30,3 +31,6 @@ export const UNIT_WEEKS = WEEK_IN_SECONDS;
 
 export const MIN_VALUE = 1;
 export const MAX_VALUE = 60;
+
+// A sale price boundary takes fewer units, as the server's `Sale_Price_Boundary` defines it.
+export const SALE_PRICE_MAX_VALUE = 30;

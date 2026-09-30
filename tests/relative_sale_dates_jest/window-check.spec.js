@@ -1,4 +1,4 @@
-import { getWindowError } from '@tec/tickets/relative-sale-dates/window-check';
+import { getFormSalesWindow, getWindowError } from '@tec/tickets/relative-sale-dates/window-check';
 import { SALES_END_BEFORE_START } from '@tec/tickets/relative-sale-dates/validation';
 
 const UNIT_WEEKS = 604800;
@@ -30,5 +30,31 @@ describe( 'getWindowError', () => {
 		const rule = { start: { mode: 'specific' }, end: { mode: 'default' } };
 
 		expect( getWindowError( rule, EVENT_DATES, { start: null, end: null } ) ).toBe( SALES_END_BEFORE_START );
+	} );
+} );
+
+describe( 'getFormSalesWindow', () => {
+	const format = ( date ) => ( date ? date.format( 'YYYY-MM-DD HH:mm' ) : date );
+
+	it( 'should take a relative boundary from the rule and the other from the date the form sends', () => {
+		const rule = { start: { mode: 'default' }, end: { mode: 'relative', value: 1, unit: UNIT_WEEKS, anchor: 'start' } };
+		const window = getFormSalesWindow( rule, EVENT_DATES, { start: '2099-06-01 09:00:00', end: null } );
+
+		expect( { start: format( window.start ), end: format( window.end ) } ).toStrictEqual( {
+			start: '2099-06-01 09:00',
+			end: '2099-06-17 19:00',
+		} );
+	} );
+
+	it( 'should close a default end when the event starts', () => {
+		const rule = { start: { mode: 'default' }, end: { mode: 'default' } };
+
+		expect( format( getFormSalesWindow( rule, EVENT_DATES, { start: null, end: null } ).end ) ).toBe( '2099-06-24 19:00' );
+	} );
+
+	it( 'should leave a boundary without a date empty', () => {
+		const rule = { start: { mode: 'specific' }, end: { mode: 'default' } };
+
+		expect( getFormSalesWindow( rule, EVENT_DATES, { start: null, end: null } ).start ).toBeNull();
 	} );
 } );
