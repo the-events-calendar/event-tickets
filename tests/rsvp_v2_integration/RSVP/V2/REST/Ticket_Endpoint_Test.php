@@ -4,6 +4,7 @@ namespace TEC\Tickets\RSVP\V2\REST;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\RSVP\V2\Constants;
 use TEC\Tickets\RSVP\V2\Controller;
 use TEC\Tickets\Tests\Commerce\RSVP\V2\Ticket_Maker;
@@ -163,6 +164,33 @@ class Ticket_Endpoint_Test extends WPTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertTrue( $data['success'] );
 		$this->assertEquals( $rsvp_ticket_id, $data['ticket_id'] );
+	}
+
+	public function test_should_not_update_rsvp_ticket_of_another_post(): void {
+		$owner_id        = $this->create_admin_user();
+		$victim_post_id  = static::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $owner_id ] );
+		$victim_ticket   = $this->create_tc_rsvp_ticket( $victim_post_id );
+		$title_before    = get_post_field( 'post_title', $victim_ticket );
+		$capacity_before = tribe_tickets_get_capacity( $victim_ticket );
+
+		$author_id = static::factory()->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $author_id );
+		$own_post_id = static::factory()->post->create( [ 'post_status' => 'draft', 'post_author' => $author_id ] );
+
+		$this->register_endpoint();
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/ticket' );
+		$request->set_param( 'post_ID', $own_post_id );
+		$request->set_param( 'rsvp_id', $victim_ticket );
+		$request->set_param( 'rsvp_limit', 1 );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 404, $response->get_status() );
+		$this->assertEquals( $title_before, get_post_field( 'post_title', $victim_ticket ) );
+		$this->assertEquals( $capacity_before, tribe_tickets_get_capacity( $victim_ticket ) );
+		$this->assertEquals( $victim_post_id, (int) get_post_meta( $victim_ticket, Ticket::$event_relation_meta_key, true ) );
 	}
 
 	public function test_should_delete_rsvp_ticket(): void {

@@ -134,6 +134,21 @@ class Ticket_Endpoint extends Abstract_REST_Endpoint {
 			unset( $request_params['rsvp_limit'] );
 		}
 
+		// An update may only touch a ticket that belongs to the post the permission check ran against.
+		$rsvp_id = absint( Arr::get( $request_params, 'rsvp_id', 0 ) );
+		if (
+			$rsvp_id
+			&& (int) get_post_meta( $rsvp_id, Ticket::$event_relation_meta_key, true ) !== (int) Event::filter_event_id( Arr::get( $request_params, 'post_ID' ) )
+		) {
+			return new WP_REST_Response(
+				[
+					'success' => false,
+					'message' => __( 'Ticket not found or does not belong to this event.', 'event-tickets' ),
+				],
+				404
+			);
+		}
+
 		$args                                      = [];
 		$post_id                                   = Arr::get( $request_params, 'post_ID' );
 		$args['post_id']                           = Event::filter_event_id( $post_id );
