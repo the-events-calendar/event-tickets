@@ -172,6 +172,23 @@ function hasRsvpV2() {
 	return !! document.querySelector( rsvpV2EnableSelector )?.checked;
 }
 
+/**
+ * Whether the event has its own tickets, RSVPs, or a ticket being edited.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the event has its own tickets.
+ */
+function computeHasOwnTickets() {
+	// Run the DOM queries only if required.
+	return !! (
+		document.querySelectorAll( rsvpTicketsSelector ).length || // Has RSVP tickets or...
+		document.querySelectorAll( defaultTicketsSelector ).length || // ...has default tickets or...
+		document.querySelectorAll( ticketEditPanelActiveSelector ).length || // ...is editing a ticket or...
+		hasRsvpV2() // ...has an RSVP V2.
+	);
+}
+
 // Initialize the controls visibility based on the initial state.
 onReady( () => {
 	state.hasOwnTickets = state.hasOwnTickets || hasRsvpV2();
@@ -199,13 +216,7 @@ if ( ticketsMetaboxElement ) {
 	 * Also: detect when the user is editing or creating a ticket.
 	 */
 	const ticketsObserver = new MutationObserver( () => {
-		// Run the DOM queries only if required.
-		const hasOwnTickets =
-			document.querySelectorAll( rsvpTicketsSelector ).length || // Has RSVP tickets or...
-			document.querySelectorAll( defaultTicketsSelector ).length || // ...has default tickets or...
-			document.querySelectorAll( ticketEditPanelActiveSelector ).length || // ...is editing a ticket or...
-			hasRsvpV2(); // ...has an RSVP V2.
-		updateState( { hasOwnTickets } );
+		updateState( { hasOwnTickets: computeHasOwnTickets() } );
 	} );
 
 	ticketsObserver.observe( ticketsMetaboxElement, {
@@ -217,9 +228,5 @@ if ( ticketsMetaboxElement ) {
 
 // The RSVP V2 switch is toggled via jQuery, which does not fire native listeners or DOM mutations.
 jQuery( document ).on( 'change', rsvpV2EnableSelector, () => {
-	const hasOwnTickets =
-		document.querySelectorAll( rsvpTicketsSelector ).length ||
-		document.querySelectorAll( defaultTicketsSelector ).length ||
-		hasRsvpV2();
-	updateState( { hasOwnTickets: !! hasOwnTickets } );
+	updateState( { hasOwnTickets: computeHasOwnTickets() } );
 } );

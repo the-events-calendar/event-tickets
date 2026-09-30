@@ -1,6 +1,6 @@
 significance: patch
 type: fix
 entry: Disabled the RSVP form in the Classic Editor and the Community Events
-  submission form when the event is recurring, and prevent making an event with
+  submission form when the event is recurring, and prevented making an event with
   an RSVP recurring, matching how tickets behave.
 timestamp: 2026-09-30T02:29:21.848Z
