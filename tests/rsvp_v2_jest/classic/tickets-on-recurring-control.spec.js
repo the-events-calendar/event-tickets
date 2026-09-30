@@ -83,4 +83,17 @@ describe( 'Classic Editor tickets-on-recurring control and RSVP V2', () => {
 		$enable.prop( 'checked', false ).trigger( 'change' );
 		expect( addRecurrenceRow().style.display ).toBe( '' );
 	} );
+
+	it( 'keeps the recurrence controls hidden when the RSVP is disabled while a ticket is being edited', async () => {
+		setup( { rsvpEnabled: true } );
+		const editPanel = document.createElement( 'div' );
+		editPanel.id = 'tribe_panel_edit';
+		editPanel.setAttribute( 'aria-hidden', 'false' );
+
+		document.getElementById( 'tribetickets' ).appendChild( editPanel );
+		await flushMutations();
+		jQuery( '#tec_tickets_rsvp_enable' ).prop( 'checked', false ).trigger( 'change' );
+
+		expect( addRecurrenceRow().style.display ).toBe( 'none' );
+	} );
 } );
