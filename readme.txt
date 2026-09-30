@@ -1,9 +1,9 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
+Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.29.5.2
-Requires at least: 6.8
+Stable tag: 5.30.0
+Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -116,6 +116,13 @@ Still have a question? Shoot us an email at support@theeventscalendar.com.
 
 Event Tickets is translated into multiple languages, including German, Danish, and Dutch. Help localize Event Tickets even further by adding your locale – visit [translate.wordpress.org](https://evnt.is/1b5i).
 
+== All Time Contributors ==
+
+We want to thank the people that have contributed over the years !
+
+aguseo, bordoni, borkweb, brianjessee, camwynsp, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo,
+larodiel, leahkoerper, lucatume, neillmcshea, rafsuntaskin, redscar, sdokus, tribalmike, vicskf, zbtirrell
+
 == Installation ==
 
 1. From the dashboard of your site, navigate to Plugins --> Add New.
@@ -198,6 +205,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.30.0] 2026-09-30 =
+
+* Feature - Changed where RSVPs are stored to agree with Tickets. This will happen after you manually start a migration and only if you are using RSVPs already.
+* Language - 60 new strings added, 336 updated, 3 fuzzied, and 8 obsoleted.
+* Security - Tightened the permission checks when creating and updating tickets through the REST API.
+* Tweak - Added actions: `tec_tickets_commerce_cart_process`, `tec_tickets_rsvp_after_save`, `tec_tickets_rsvp_after_meta_update`, `tec_tickets_rsvp_before_delete`, `tec_tickets_rsvp_after_delete`, `tec_tickets_commerce_attendee_before_delete`, `tec_tickets_commerce_attendee_after_delete`, `tec_tickets_attendee_registration_before_meta_form_fields`, `tec_tickets_attendee_registration_after_save`, `tec_tickets_commerce_single_order_details_metabox_before`, `tec_tickets_commerce_single_order_details_metabox_after`, `tribe_events_rsvp_pre_edit`, `tec_event_tickets_rsvp_form__start`, `tec_event_tickets_rsvp_metabox_edit_main`, `tec_event_tickets_rsvp_post_options`, `tec_event_tickets_rsvp_bottom`, `tec_tickets_my_tickets_ticket_information_after_ticket_name`, `event_tickets_user_details_tickets`, `tec_tickets_user_details_tickets`
+* Tweak - Added filters: `tec_tickets_enabled_ticket_forms`, `tec_tickets_build_ticket_properties`, `tec_tickets_rest_ticket_upsert_params`, `tec_tickets_rsvp_enabled`, `tec_tickets_rsvp_version`, `tec_tickets_rsvp_v2_initial_ticket`, `tec_tickets_commerce_cart_add_full_item_params`, `tec_tickets_rsvp_v2_classic_save_data`, `tec_tickets_commerce_get_ticket_legacy`, `tec_tickets_rsvp_v2_cart_upsert_item_args`, `tec_tickets_rsvp_v2_render_step_template_args_pre_process`, `tec_tickets_rsvp_v2_render_step_template_args`, `tec_tickets_rsvp_v2_show_attendees_list_optout`, `tec_tickets_rsvp_process_ticket_fields`, `tec_tickets_rsvp_process_additional_fields`, `tec_tickets_editor_list_tickets`, `tec_tickets_rsvp_show_attendees_list`, `tec_tickets_rsvp_get_attendees_by_id_pre`, `tec_tickets_rsvp_get_attendees_by_user_id_pre`, `tribe_tickets_attendee_activity_log_data`, `tribe_tickets_has_meta_enabled`, `tribe_tickets_rsvp_form_email`, `tribe_tickets_rsvp_form_full_name`
+* Tweak - Changed views: `tickets/email`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/user-details`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `v2/commerce/rsvp`, `v2/commerce/rsvp/actions`, `v2/commerce/rsvp/actions/full`, `v2/commerce/rsvp/actions/rsvp`, `v2/commerce/rsvp/actions/rsvp/going`, `v2/commerce/rsvp/actions/rsvp/not-going`, `v2/commerce/rsvp/actions/success`, `v2/commerce/rsvp/actions/success/title`, `v2/commerce/rsvp/actions/success/toggle`, `v2/commerce/rsvp/actions/success/tooltip`, `v2/commerce/rsvp/ari`, `v2/commerce/rsvp/ari/form`, `v2/commerce/rsvp/ari/form/buttons`, `v2/commerce/rsvp/ari/form/error`, `v2/commerce/rsvp/ari/form/fields`, `v2/commerce/rsvp/ari/form/fields/email`, `v2/commerce/rsvp/ari/form/fields/meta`, `v2/commerce/rsvp/ari/form/fields/name`, `v2/commerce/rsvp/ari/form/guest-template`, `v2/commerce/rsvp/ari/form/guest`, `v2/commerce/rsvp/ari/form/template/fields`, `v2/commerce/rsvp/ari/form/template/title`, `v2/commerce/rsvp/ari/form/title`, `v2/commerce/rsvp/ari/sidebar`, `v2/commerce/rsvp/ari/sidebar/guest-list`, `v2/commerce/rsvp/ari/sidebar/guest-list/guest-template`, `v2/commerce/rsvp/ari/sidebar/guest-list/guest`, `v2/commerce/rsvp/ari/sidebar/quantity`, `v2/commerce/rsvp/ari/sidebar/quantity/input`, `v2/commerce/rsvp/ari/sidebar/quantity/minus`, `v2/commerce/rsvp/ari/sidebar/quantity/plus`, `v2/commerce/rsvp/ari/sidebar/title`, `v2/commerce/rsvp/attendees`, `v2/commerce/rsvp/attendees/attendee`, `v2/commerce/rsvp/attendees/attendee/name`, `v2/commerce/rsvp/attendees/attendee/rsvp`, `v2/commerce/rsvp/attendees/title`, `v2/commerce/rsvp/content-inactive`, `v2/commerce/rsvp/content`, `v2/commerce/rsvp/details`, `v2/commerce/rsvp/details/attendance`, `v2/commerce/rsvp/details/availability`, `v2/commerce/rsvp/details/availability/days-to-rsvp`, `v2/commerce/rsvp/details/availability/full`, `v2/commerce/rsvp/details/availability/remaining`, `v2/commerce/rsvp/details/availability/unlimited`, `v2/commerce/rsvp/details/description`, `v2/commerce/rsvp/details/title`, `v2/commerce/rsvp/form/buttons`, `v2/commerce/rsvp/form/fields`, `v2/commerce/rsvp/form/fields/cancel`, `v2/commerce/rsvp/form/fields/email`, `v2/commerce/rsvp/form/fields/name`, `v2/commerce/rsvp/form/fields/quantity`, `v2/commerce/rsvp/form/fields/submit`, `v2/commerce/rsvp/form/form`, `v2/commerce/rsvp/form/going/title`, `v2/commerce/rsvp/form/not-going/title`, `v2/commerce/rsvp/form/title`, `v2/commerce/rsvp/messages/error`, `v2/commerce/rsvp/messages/must-login`, `v2/commerce/rsvp/messages/success`, `v2/commerce/rsvp/messages/success/going`, `v2/commerce/rsvp/messages/success/not-going`, `v2/commerce/rsvp/my-tickets/ticket-status`, `v2/commerce/rsvp/my-tickets/user-details`, `v2/rsvp/actions/rsvp`, `v2/rsvp/actions/success`, `v2/rsvp/content`, `v2/rsvp/details/availability/remaining`, `v2/rsvp/messages/must-login`
+* Tweak - Removed filters: `tribe_rsvp_email_subject`, `tribe_rsvp_non_attendance_email_content`
 
 = [5.29.5.2] 2026-09-29 =
 
