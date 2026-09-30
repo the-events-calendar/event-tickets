@@ -64,6 +64,7 @@ final class Controller extends Controller_Contract {
 		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'save_rule' ) );
 		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'write_resolved_dates' ), 20 );
 		remove_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Sale_Price_Save::class, 'validate_ticket_data' ), 20 );
+		$this->container->get( Sale_Price_Editor::class )->unregister();
 		$this->container->get( Assets::class )->unregister();
 	}
 
@@ -157,6 +158,7 @@ final class Controller extends Controller_Contract {
 		// After the sales window validation, at 10: a sales window it rejects is not judged again.
 		add_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Sale_Price_Save::class, 'validate_ticket_data' ), 20, 3 );
 
+		$this->container->register( Sale_Price_Editor::class );
 		$this->container->register( Assets::class );
 	}
 }
