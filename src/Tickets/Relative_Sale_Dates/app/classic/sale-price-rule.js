@@ -1,5 +1,5 @@
 /**
- * Writes the sale price rule of the classic ticket form into the field the form submits.
+ * Reads the sale price rule of the classic ticket form, and writes it into the field the form submits.
  *
  * @since TBD
  */
@@ -62,6 +62,22 @@ function readBoundary( root, key ) {
 }
 
 /**
+ * Reads the sale price rule the sale price fields express.
+ *
+ * @since TBD
+ *
+ * @param {Document} root The document holding the form.
+ *
+ * @return {SalePriceRule} The rule.
+ */
+export function readSalePriceRule( root ) {
+	return {
+		start: readBoundary( root, 'start' ),
+		end: readBoundary( root, 'end' ),
+	};
+}
+
+/**
  * Writes the sale price rule the sale price fields express into the hidden field the form submits.
  *
  * Does nothing when the form has no sale price options, as on a ticket they do not apply to.
@@ -79,11 +95,5 @@ export function writeSalePriceRule( root ) {
 		return;
 	}
 
-	/** @type {SalePriceRule} */
-	const rule = {
-		start: readBoundary( root, 'start' ),
-		end: readBoundary( root, 'end' ),
-	};
-
-	ruleField.value = JSON.stringify( rule );
+	ruleField.value = JSON.stringify( readSalePriceRule( root ) );
 }

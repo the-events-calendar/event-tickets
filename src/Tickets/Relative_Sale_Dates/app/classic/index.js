@@ -15,12 +15,13 @@ import { _n } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
-import { resolveSaleWindow } from '../sale-window';
+import { DATE_FORMAT, resolveSaleWindow, toZone } from '../sale-window';
 import { getWindowError } from '../window-check';
-import { readDateTime, readEventDates } from './event-dates';
+import { readDate, readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
-import { writeSalePriceRule } from './sale-price-rule';
+import { getSalePriceLengthText } from './sale-price-length';
+import { readSalePriceRule, writeSalePriceRule } from './sale-price-rule';
 import { getListText } from './tickets-list';
 
 /**
@@ -75,6 +76,17 @@ const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_en
  * @type {string[]}
  */
 const RELATIVE_FIELD_PREFIXES = [ 'ticket_sales_start', 'ticket_sales_end', 'ticket_sale_start', 'ticket_sale_end' ];
+
+/**
+ * The sale price fields the sale length is read from.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+const SALE_PRICE_FIELDS = [ 'start', 'end' ]
+	.flatMap( ( key ) => [ 'mode', 'value', 'unit', 'date' ].map( ( field ) => `#ticket_sale_${ key }_${ field }` ) )
+	.join( ', ' );
 
 /**
  * Reads the event dates from the TEC event fields.
@@ -161,6 +173,40 @@ function updateHelperText() {
 				? formatHelperText( settings.text[ key ], date, formats, moment().year() )
 				: '';
 	} );
+}
+
+/**
+ * Writes, under the end of the sale price window, how long the sale price lasts for the event dates in the form.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function updateSaleLength() {
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+	const helper = document.getElementById( 'ticket_sale_price_length' );
+
+	if ( ! settings || ! dynamic || ! helper ) {
+		return;
+	}
+
+	const eventDates = getEventDates( settings, dynamic );
+
+	if ( ! eventDates ) {
+		helper.textContent = '';
+
+		return;
+	}
+
+	const formDate = ( id ) => readDate( document.getElementById( id )?.value, dynamic.datepicker_format );
+
+	helper.textContent = getSalePriceLengthText(
+		readSalePriceRule( document ),
+		eventDates,
+		{ start: formDate( 'ticket_sale_start_date' ), end: formDate( 'ticket_sale_end_date' ) },
+		toZone( moment(), eventDates.timezone ).format( DATE_FORMAT )
+	);
 }
 
 /**
@@ -357,6 +403,7 @@ function onWindowChange() {
  */
 function onEventChange() {
 	onWindowChange();
+	updateSaleLength();
 	updateTicketsList();
 }
 
@@ -370,6 +417,7 @@ function onEventChange() {
 function onPanelsRefreshed() {
 	updateUnitNames();
 	updateHelperText();
+	updateSaleLength();
 	updateTicketsList();
 }
 
@@ -390,6 +438,7 @@ jQuery( () => {
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
 jQuery( document ).on( 'change input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, onWindowChange );
+jQuery( document ).on( 'change input', SALE_PRICE_FIELDS, updateSaleLength );
 jQuery( document ).on(
 	'change input',
 	RELATIVE_FIELD_PREFIXES.map( ( prefix ) => `#${ prefix }_value` ).join( ', ' ),

@@ -177,6 +177,13 @@ $labels = [
 				/>
 				<?php endif; ?>
 			</div>
+			<?php if ( 'end' === $sale_end ) : ?>
+			<span
+				class="tec-tickets-relative-sale-dates__helper"
+				id="ticket_sale_price_length"
+				aria-live="polite"
+			></span>
+			<?php endif; ?>
 		</div>
 		<?php endforeach; ?>
 		<input

@@ -198,6 +198,22 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_hold_a_live_sale_length_under_the_sale_end_for_either_mode(): void {
+		$this->make_controller()->register();
+
+		$form = $this->render_ticket_form( $this->create_event( self::EVENT_START ) );
+
+		$helper = $this->get_element( $form, 'ticket_sale_price_length' );
+		$this->assertSame( 'polite', $helper->getAttribute( 'aria-live' ) );
+		$this->assertSame( '', trim( $helper->textContent ) );
+		// Only the sale price checkbox shows and hides it, whichever mode the end is in.
+		$this->assertSame( '#ticket_add_sale_price', $this->get_dependent( $helper )->getAttribute( 'data-depends' ) );
+		$this->assertSame( $helper->parentNode, $this->get_element( $form, 'ticket_sale_end_mode' )->parentNode );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_give_every_sale_price_input_its_own_accessible_name(): void {
 		$this->make_controller()->register();
 
