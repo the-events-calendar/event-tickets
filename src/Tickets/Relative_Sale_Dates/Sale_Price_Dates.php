@@ -70,7 +70,9 @@ final class Sale_Price_Dates {
 	public function write( int $ticket_id, int $post_id ): void {
 		$rule = Sale_Price_Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
-		if ( ! $rule || ! $this->has_sale_price( $ticket_id ) ) {
+		$dates = $rule && $this->has_sale_price( $ticket_id ) ? $this->resolve( $post_id, $rule ) : null;
+
+		if ( ! $dates ) {
 			return;
 		}
 

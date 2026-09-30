@@ -211,28 +211,56 @@ final class Ticket_Save {
 			return $this->get_invalid_window_error();
 		}
 
-		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
-		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
-
-		if ( ! $event_dates ) {
+		if ( ! $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data ) || ! $this->sale_window->get_event_dates( $post_id ) ) {
 			return $valid;
 		}
 
+		$window = $this->get_sales_window( $post_id, $data );
+
+		return $window && $window->is_valid() ? $valid : $this->get_invalid_window_error();
+	}
+
+	/**
+	 * Gets the sales window a save of the ticket data would store.
+	 *
+	 * The rule applied is the one sent, or else the one stored for the ticket. A boundary the rule leaves to the ticket
+	 * takes its submitted date, except a Now start submitted ahead of now, which the save moves to now. `ticket_add()`
+	 * fills an empty start with the day the event was published and an empty end with the event start; here the start
+	 * fallback applies only to a `default` start or a ticket without a rule, and the end fallback only to a ticket
+	 * without a rule, so a `specific` boundary sent without its date has none.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $post_id The ticket parent post ID.
+	 * @param array<string,mixed> $data    The ticket data about to be saved.
+	 *
+	 * @return Resolved_Window|null The sales window, or `null` when the event has no valid dates or a boundary has no date.
+	 */
+	public function get_sales_window( int $post_id, array $data ): ?Resolved_Window {
+		$event_dates = $this->sale_window->get_event_dates( $post_id );
+
+		if ( ! $event_dates ) {
+			return null;
+		}
+
+		$rule      = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
 		$timezone  = $event_dates[0]->getTimezone();
 		$submitted = $this->get_submitted_date( $data, 'start', $timezone );
-		$window    = $this->sale_window->resolve_for_event( $rule, $post_id, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' );
+		$window    = $rule ? $this->sale_window->resolve_for_event( $rule, $post_id, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' ) : null;
 		$start     = ( $window ? $window->get_start() : null ) ?? $submitted;
 		$end       = ( $window ? $window->get_end() : null ) ?? $this->get_submitted_date( $data, 'end', $timezone );
 
-		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() && empty( $data['ticket_start_date'] ) ) {
+		$default_start = $rule && Rule::MODE_DEFAULT === $rule->get_start()->get_mode();
+
+		if ( ! $start && empty( $data['ticket_start_date'] ) && ( ! $rule || $default_start ) ) {
 			$start = $this->get_post_day( $post_id, $timezone );
 		}
 
-		if ( ! $start || ! $end ) {
-			return $this->get_invalid_window_error();
+		if ( ! $end && empty( $data['ticket_end_date'] ) && ! $rule ) {
+			$end = $event_dates[0];
 		}
 
-		return ( new Resolved_Window( $start, $end ) )->is_valid() ? $valid : $this->get_invalid_window_error();
+		return $start && $end ? new Resolved_Window( $start, $end ) : null;
 	}
 
 	/**
