@@ -43,14 +43,11 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	/**
 	 * The decimals of each currency read so far, keyed by currency code.
 	 *
-	 * Kept per instance, not statically, so a currency map filter added later in the request still applies to
-	 * currencies not read yet.
-	 *
 	 * @since TBD
 	 *
 	 * @var array<string,int>
 	 */
-	private array $decimals = [];
+	private static array $decimals = [];
 
 	/**
 	 * The length of each string column. WordPress turns off MySQL's strict mode, so a longer value would be cut
@@ -80,8 +77,8 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @return array<string,int|string|null> The row.
 	 */
-	public function to_row( $key, array $item, int $order_id, string $currency ): array {
-		$precision = $this->get_decimals( $currency );
+	public static function to_row( $key, array $item, int $order_id, string $currency ): array {
+		$precision = static::get_decimals( $currency );
 		$columns   = [];
 		$extra     = [
 			'keys'   => array_keys( $item ),
@@ -96,16 +93,16 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			}
 
 			$kind             = static::FIELDS[ $name ];
-			$columns[ $name ] = $this->fit( $name, $this->to_column( $kind, $value, $precision ) );
+			$columns[ $name ] = static::fit( $name, static::to_column( $kind, $value, $precision ) );
 
 			// Values the column cannot hold exactly (a '0' string, an unrounded float) keep their original.
-			if ( $this->from_column( $kind, $columns[ $name ], $precision ) !== $value ) {
+			if ( static::from_column( $kind, $columns[ $name ], $precision ) !== $value ) {
 				$extra['raw'][ $name ] = $value;
 			}
 		}
 
 		$event_id = $columns['event_id'] ?? null;
-		$details  = $this->get_details( $columns );
+		$details  = static::get_details( $columns );
 
 		return [
 			'order_id'             => $order_id,
@@ -117,13 +114,13 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			'event_id'             => $event_id,
 			'post_id'              => $event_id,
 			'occurrence_id'        => null,
-			'event_title'          => $this->fit( 'event_title', $event_id ? ( get_post_field( 'post_title', $event_id ) ?: null ) : null ),
+			'event_title'          => static::fit( 'event_title', $event_id ? ( get_post_field( 'post_title', $event_id ) ?: null ) : null ),
 			'event_start_date'     => $event_id ? ( get_post_meta( $event_id, '_EventStartDate', true ) ?: null ) : null,
 			'event_start_date_utc' => $event_id ? ( get_post_meta( $event_id, '_EventStartDateUTC', true ) ?: null ) : null,
-			'name'                 => $this->fit( 'name', $details['name'] ),
+			'name'                 => static::fit( 'name', $details['name'] ),
 			'currency'             => $currency,
-			'sku'                  => $this->fit( 'sku', $details['sku'] ),
-			'ticket_type'          => $this->fit( 'ticket_type', $details['ticket_type'] ),
+			'sku'                  => static::fit( 'sku', $details['sku'] ),
+			'ticket_type'          => static::fit( 'ticket_type', $details['ticket_type'] ),
 			'quantity'             => $columns['quantity'] ?? 0,
 			'price'                => $columns['price'] ?? 0,
 			'regular_price'        => $columns['regular_price'] ?? null,
@@ -137,18 +134,15 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	/**
 	 * Converts a table row back to the order item it was written from.
 	 *
-	 * Values kept in `extra` are read first, so a row reads back whole even when the type that wrote it maps
-	 * other fields to columns, as after the plugin registering that type is deactivated.
-	 *
 	 * @since TBD
 	 *
 	 * @param array<string,int|string|array|null> $row The row, as built by to_row() or read from the database.
 	 *
 	 * @return array{0: string, 1: array} The item's key in the order's item list, and the item.
 	 */
-	public function from_row( array $row ): array {
+	public static function from_row( array $row ): array {
 		$extra     = is_string( $row['extra'] ) ? json_decode( $row['extra'], true ) : $row['extra'];
-		$precision = $this->get_decimals( $row['currency'] );
+		$precision = static::get_decimals( $row['currency'] );
 		$item      = [];
 
 		foreach ( $extra['keys'] as $name ) {
@@ -157,7 +151,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			} elseif ( array_key_exists( $name, $extra['values'] ) ) {
 				$item[ $name ] = $extra['values'][ $name ];
 			} else {
-				$item[ $name ] = $this->from_column( static::FIELDS[ $name ], $row[ $name ], $precision );
+				$item[ $name ] = static::from_column( static::FIELDS[ $name ], $row[ $name ], $precision );
 			}
 		}
 
@@ -173,7 +167,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @return array{name: string, sku: ?string, ticket_type: ?string} The line's details.
 	 */
-	abstract protected function get_details( array $columns ): array;
+	abstract protected static function get_details( array $columns ): array;
 
 	/**
 	 * Returns the number of decimals a currency defines, such as 2 for USD and 0 for JPY.
@@ -187,8 +181,8 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @return int The currency's decimals; 2, the most common, for a code the map does not define.
 	 */
-	private function get_decimals( string $currency ): int {
-		return $this->decimals[ $currency ] ??= (int) ( Currency::get_default_currency_map()[ $currency ]['decimal_precision'] ?? 2 );
+	private static function get_decimals( string $currency ): int {
+		return self::$decimals[ $currency ] ??= (int) ( Currency::get_default_currency_map()[ $currency ]['decimal_precision'] ?? 2 );
 	}
 
 	/**
@@ -201,7 +195,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @return mixed The value, cut to fit when it is a string longer than the column.
 	 */
-	private function fit( string $column, $value ) {
+	private static function fit( string $column, $value ) {
 		return is_string( $value ) && isset( self::LENGTHS[ $column ] ) ? mb_substr( $value, 0, self::LENGTHS[ $column ] ) : $value;
 	}
 
@@ -216,7 +210,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @return int|string|null The column value.
 	 */
-	private function to_column( string $kind, $value, int $precision ) {
+	private static function to_column( string $kind, $value, int $precision ) {
 		if ( null === $value ) {
 			return null;
 		}
@@ -243,7 +237,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 *
 	 * @return float|int|string|null The item value.
 	 */
-	private function from_column( string $kind, $value, int $precision ) {
+	private static function from_column( string $kind, $value, int $precision ) {
 		if ( null === $value ) {
 			return null;
 		}

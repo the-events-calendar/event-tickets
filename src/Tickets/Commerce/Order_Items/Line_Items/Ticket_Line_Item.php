@@ -35,37 +35,6 @@ class Ticket_Line_Item extends Abstract_Line_Item_Type {
 	];
 
 	/**
-	 * The Tickets Commerce ticket handler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Ticket
-	 */
-	private Ticket $tickets;
-
-	/**
-	 * Ticket_Line_Item constructor.
-	 *
-	 * @since TBD
-	 *
-	 * @param Ticket $tickets The Tickets Commerce ticket handler.
-	 */
-	public function __construct( Ticket $tickets ) {
-		$this->tickets = $tickets;
-	}
-
-	/**
-	 * Returns the item type this class converts.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The item type.
-	 */
-	public function get_type(): string {
-		return 'ticket';
-	}
-
-	/**
 	 * Returns the ticket's name, SKU and type at purchase time.
 	 *
 	 * @since TBD
@@ -74,9 +43,9 @@ class Ticket_Line_Item extends Abstract_Line_Item_Type {
 	 *
 	 * @return array{name: string, sku: ?string, ticket_type: ?string} The line's details.
 	 */
-	protected function get_details( array $columns ): array {
+	protected static function get_details( array $columns ): array {
 		$ticket_id = $columns['ticket_id'] ?? 0;
-		$ticket    = $ticket_id ? $this->tickets->get_ticket( $ticket_id ) : null;
+		$ticket    = $ticket_id ? tribe( Ticket::class )->get_ticket( $ticket_id ) : null;
 
 		return [
 			'name'        => $ticket->name ?? '',

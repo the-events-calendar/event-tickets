@@ -20,15 +20,6 @@ namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
  */
 interface Line_Item_Type {
 	/**
-	 * Returns the item `type` this class converts.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The item type, such as `ticket`.
-	 */
-	public function get_type(): string;
-
-	/**
 	 * Converts an order item to a table row.
 	 *
 	 * The row keys are the table's column names; `id` and `created_at` are left to the table.
@@ -42,7 +33,7 @@ interface Line_Item_Type {
 	 *
 	 * @return array<string,int|string|null> The row.
 	 */
-	public function to_row( $key, array $item, int $order_id, string $currency ): array;
+	public static function to_row( $key, array $item, int $order_id, string $currency ): array;
 
 	/**
 	 * Converts a table row back to the order item it was written from.
@@ -56,5 +47,5 @@ interface Line_Item_Type {
 	 *
 	 * @return array{0: string, 1: array} The item's key in the order's item list, and the item.
 	 */
-	public function from_row( array $row ): array;
+	public static function from_row( array $row ): array;
 }
