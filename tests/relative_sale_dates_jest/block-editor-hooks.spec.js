@@ -3,6 +3,7 @@ import { applyFilters, doAction } from '@wordpress/hooks';
 import { dispatch, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
+import SalePriceWindow from '@tec/tickets/relative-sale-dates/block-editor/sale-price-window';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import {
@@ -25,6 +26,7 @@ jest.mock( '@wordpress/components', () => ( {} ) );
 const TICKETS_COMMERCE = 'TEC\\Tickets\\Commerce\\Module';
 
 const BODY_FIELD = 'ticket[relative_sale_dates]';
+const SALE_PRICE_BODY_FIELD = 'ticket[sale_price][relative]';
 const UNIT_HOURS = 3600;
 const UNIT_DAYS = 86400;
 const UNIT_WEEKS = 604800;
@@ -40,6 +42,11 @@ const editedRule = {
 };
 
 const relative = ( value, unit ) => ( { mode: 'relative', value, unit, anchor: 'start' } );
+
+const storedSalePriceRule = {
+	start: { mode: 'now' },
+	end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+};
 
 let clientCount = 0;
 
@@ -86,6 +93,36 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			expect( select( STORE_NAME ).getSavedRule( clientId ) ).toBeNull();
 			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toBeNull();
+		} );
+
+		it( 'should load the sale price rule of the fetched ticket', () => {
+			const clientId = newClientId();
+			const ticket = { id: 23, sale_price_data: { enabled: true, relative: storedSalePriceRule } };
+
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, ticket, {} );
+
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toStrictEqual( storedSalePriceRule );
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toStrictEqual( storedSalePriceRule );
+		} );
+
+		it( 'should load a fetched sale price without a rule as having none', () => {
+			const clientId = newClientId();
+			const ticket = { id: 23, sale_price_data: { enabled: true, relative: null } };
+
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, ticket, {} );
+
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toBeNull();
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toBeNull();
+		} );
+
+		it( 'should know no sale price rule for a fetched ticket without a sale price', () => {
+			const clientId = newClientId();
+			const ticket = { id: 23, sale_price_data: { enabled: false, relative: null } };
+
+			doAction( 'tec.tickets.blocks.fetchTicket', clientId, ticket, {} );
+
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toBeUndefined();
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toBeUndefined();
 		} );
 	} );
 
@@ -173,6 +210,96 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				expect( JSON.parse( buildBody( clientId ).get( BODY_FIELD ) ) ).toStrictEqual( draft );
 			} );
 		} );
+
+		describe( 'with a sale price', () => {
+			/**
+			 * Checks or unchecks the sale price of a ticket block in the legacy store.
+			 *
+			 * @param {string}  clientId The client ID of the ticket block.
+			 * @param {boolean} checked  Whether the sale price is checked.
+			 *
+			 * @return {void}
+			 */
+			function setSalePriceChecked( clientId, checked ) {
+				window.__tribe_common_store__.dispatch( legacyActions.registerTicketBlock( clientId ) );
+				window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
+			}
+
+			beforeEach( () => {
+				window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+				setBlockEditorData();
+				setEventState( DEFAULT_EVENT );
+			} );
+
+			afterEach( () => {
+				delete window.tribe;
+				clearBlockEditorGlobals();
+			} );
+
+			it( 'should send the sale price draft as JSON, with the value and unit as integers', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, true );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, {
+					start: { mode: 'relative', value: '3', unit: String( UNIT_WEEKS ) },
+					end: { mode: 'relative', value: '10', unit: String( UNIT_DAYS ) },
+				} );
+
+				const sent = JSON.parse( buildBody( clientId ).get( SALE_PRICE_BODY_FIELD ) );
+
+				expect( sent ).toStrictEqual( {
+					start: { mode: 'relative', value: 3, unit: UNIT_WEEKS },
+					end: { mode: 'relative', value: 10, unit: UNIT_DAYS },
+				} );
+			} );
+
+			it( 'should send only the mode of a sale price boundary that is not relative', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, true );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, {
+					start: { mode: 'now', value: 2, unit: UNIT_WEEKS },
+					end: { mode: 'specific', value: 1, unit: UNIT_WEEKS },
+				} );
+
+				const sent = JSON.parse( buildBody( clientId ).get( SALE_PRICE_BODY_FIELD ) );
+
+				expect( sent ).toStrictEqual( { start: { mode: 'now' }, end: { mode: 'specific' } } );
+			} );
+
+			it( 'should send the sales window and sale price rules side by side', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, true );
+				dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, storedSalePriceRule );
+
+				const body = buildBody( clientId );
+
+				expect( JSON.parse( body.get( BODY_FIELD ) ) ).toStrictEqual( editedRule );
+				expect( JSON.parse( body.get( SALE_PRICE_BODY_FIELD ) ) ).toStrictEqual( storedSalePriceRule );
+			} );
+
+			it( 'should send no sale price rule while the sale price is unchecked', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, false );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, storedSalePriceRule );
+
+				expect( buildBody( clientId ).has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+			} );
+
+			it( 'should send no sale price rule for a sale price saved without one', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, true );
+				dispatch( STORE_NAME ).setSalePriceRule( clientId, null );
+
+				expect( buildBody( clientId ).has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+			} );
+
+			it( 'should send no sale price rule for a ticket the store knows no sale price rule of', () => {
+				const clientId = newClientId();
+				setSalePriceChecked( clientId, true );
+
+				expect( buildBody( clientId ).has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+			} );
+		} );
 	} );
 
 	describe( 'on tec.tickets.blocks.ticketCancelled', () => {
@@ -224,6 +351,52 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			const rendered = filterDuration( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId() );
 
 			expect( rendered.type ).toBe( Picker );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.Ticket.SalePrice.renderPickers', () => {
+		const Row = () => null;
+		const StartPicker = () => null;
+		const EndPicker = () => null;
+
+		/**
+		 * Filters the sale price dates row of a ticket block for the given ticket provider.
+		 *
+		 * @param {string} provider The ticket provider the tickets block uses.
+		 * @param {string} clientId The client ID of the ticket block.
+		 *
+		 * @return {Object} What the sale price section renders in place of its dates row.
+		 */
+		function filterSalePrice( provider, clientId ) {
+			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+			window.__tribe_common_store__ = { getState: () => ( { tickets: { blocks: { ticket: { provider } } } } ) };
+
+			return applyFilters( 'tec.tickets.blocks.Ticket.SalePrice.renderPickers', <Row />, clientId, {
+				start: <StartPicker />,
+				end: <EndPicker />,
+			} );
+		}
+
+		afterEach( () => {
+			delete window.tribe;
+			delete window.__tribe_common_store__;
+		} );
+
+		it( 'should render the sale price window options of a Tickets Commerce ticket with its pickers', () => {
+			const clientId = newClientId();
+
+			const rendered = filterSalePrice( TICKETS_COMMERCE, clientId );
+
+			expect( rendered.type ).toBe( SalePriceWindow );
+			expect( rendered.props.clientId ).toBe( clientId );
+			expect( rendered.props.pickers.start.type ).toBe( StartPicker );
+			expect( rendered.props.pickers.end.type ).toBe( EndPicker );
+		} );
+
+		it( 'should leave the dates row alone for a ticket another provider sells', () => {
+			const rendered = filterSalePrice( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId() );
+
+			expect( rendered.type ).toBe( Row );
 		} );
 	} );
 

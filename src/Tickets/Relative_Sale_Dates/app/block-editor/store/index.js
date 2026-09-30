@@ -1,5 +1,5 @@
 /**
- * The store of the sales window rule of each ticket in the block editor.
+ * The store of the sales window and sale price rules of each ticket in the block editor.
  *
  * @since TBD
  */

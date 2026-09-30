@@ -285,6 +285,21 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_localize_the_sale_price_window_the_block_editor_offers_by_default(): void {
+		$data = $this->get_block_editor_localized_data();
+
+		$this->assertSame(
+			[
+				'start' => Sale_Price_Editor::DEFAULT_START,
+				'end'   => Sale_Price_Editor::DEFAULT_END,
+			],
+			$data['salePriceDefaults'] ?? null
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_localize_the_event_date_settings_of_the_classic_script_to_the_block_editor(): void {
 		$this->make_controller()->register();
 
@@ -352,7 +367,7 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * Builds the data the Ticket block script is localized with, as the browser receives it.
 	 *
-	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data.
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}, salePriceDefaults: array{start: array{mode: string, value: int, unit: int}, end: array{mode: string, value: int, unit: int}}, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, formats: array{dateWithYear: string, dateNoYear: string, time: string}} The localized data.
 	 */
 	private function get_block_editor_localized_data(): array {
 		$this->make_controller()->register();

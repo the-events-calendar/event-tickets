@@ -122,4 +122,111 @@ describe( 'the Relative Sale Dates block editor store', () => {
 		expect( select( STORE_NAME ).getDraftRule( secondClientId ) ).toStrictEqual( savedRule );
 		expect( select( STORE_NAME ).getSavedRule( secondClientId ) ).toStrictEqual( savedRule );
 	} );
+
+	describe( 'with the sale price rule', () => {
+		const savedSalePriceRule = {
+			start: { mode: 'now' },
+			end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+		};
+
+		const editedSalePriceRule = {
+			start: { mode: 'relative', value: 3, unit: UNIT_WEEKS },
+			end: { mode: 'specific' },
+		};
+
+		it( 'should know nothing of the sale price of a ticket it was never given a sale price rule for', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, savedRule );
+
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toBeUndefined();
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toBeUndefined();
+		} );
+
+		it( 'should hold the sale price rule a ticket was loaded with as both saved and draft', () => {
+			const clientId = newClientId();
+
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, savedSalePriceRule );
+
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+		} );
+
+		it( 'should keep the sales window rule when the sale price rule is loaded', () => {
+			const clientId = newClientId();
+
+			dispatch( STORE_NAME ).setRule( clientId, savedRule );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, savedSalePriceRule );
+
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( savedRule );
+			expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( savedRule );
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+		} );
+
+		it( 'should keep the sale price rule when the sales window rule is loaded', () => {
+			const clientId = newClientId();
+
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, savedSalePriceRule );
+			dispatch( STORE_NAME ).setRule( clientId, savedRule );
+
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( savedRule );
+		} );
+
+		it( 'should change the sale price draft and leave its saved rule and the sales window alone', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, savedRule );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, savedSalePriceRule );
+
+			dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, editedSalePriceRule );
+
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toStrictEqual( editedSalePriceRule );
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( savedRule );
+		} );
+
+		it( 'should save both drafts of a ticket together', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, savedRule );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, savedSalePriceRule );
+			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, editedSalePriceRule );
+
+			dispatch( STORE_NAME ).saveDraftRule( clientId );
+
+			expect( select( STORE_NAME ).getSavedRule( clientId ) ).toStrictEqual( editedRule );
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toStrictEqual( editedSalePriceRule );
+		} );
+
+		it( 'should save the sale price draft of a new ticket that has no sales window rule', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, editedSalePriceRule );
+
+			dispatch( STORE_NAME ).saveDraftRule( clientId );
+
+			expect( select( STORE_NAME ).getSavedSalePriceRule( clientId ) ).toStrictEqual( editedSalePriceRule );
+		} );
+
+		it( 'should restore both saved rules into the drafts on cancel', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, savedRule );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, savedSalePriceRule );
+			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, editedSalePriceRule );
+
+			dispatch( STORE_NAME ).resetDraftRule( clientId );
+
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( savedRule );
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toStrictEqual( savedSalePriceRule );
+		} );
+
+		it( 'should discard the sale price draft of a ticket never saved with one on cancel', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, editedSalePriceRule );
+
+			dispatch( STORE_NAME ).resetDraftRule( clientId );
+
+			expect( select( STORE_NAME ).getDraftSalePriceRule( clientId ) ).toBeUndefined();
+		} );
+	} );
 } );
