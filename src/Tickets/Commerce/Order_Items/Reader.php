@@ -91,7 +91,7 @@ class Reader extends Controller_Contract {
 		try {
 			foreach ( $this->repository->get_by_order( $post_id ) as $model ) {
 				$row            = $model->toArray();
-				[ $key, $item ] = $this->types->get( $row['type'] )->from_row( $row );
+				[ $key, $item ] = $this->types->get( $row['type'] )::from_row( $row );
 
 				$list[ $key ] = $item;
 			}
