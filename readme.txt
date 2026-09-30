@@ -1,6 +1,6 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell
+Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.30.0
 Requires at least: 6.9
@@ -115,6 +115,13 @@ Still have a question? Shoot us an email at support@theeventscalendar.com.
 == Translate ==
 
 Event Tickets is translated into multiple languages, including German, Danish, and Dutch. Help localize Event Tickets even further by adding your locale – visit [translate.wordpress.org](https://evnt.is/1b5i).
+
+== All Time Contributors ==
+
+We want to thank the people that have contributed over the years !
+
+aguseo, bordoni, borkweb, brianjessee, camwynsp, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo,
+larodiel, leahkoerper, lucatume, neillmcshea, rafsuntaskin, redscar, sdokus, tribalmike, vicskf, zbtirrell
 
 == Installation ==
 
