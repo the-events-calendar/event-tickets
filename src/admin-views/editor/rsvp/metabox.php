@@ -16,6 +16,19 @@ $switch_classes = [
 ];
 ?>
 
+<?php
+// Shown, and the metabox below hidden, by the recurrence scripts while the event is recurring.
+?>
+<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning tec-tickets-rsvp__recurring-warning" style="display: none">
+	<span class="dashicons dashicons-lightbulb"></span>
+	<div class="ticket-editor-notice_warning--messages">
+		<p class="ticket-editor-notice_warning--message">
+			<?php echo esc_html__( 'RSVPs are not yet supported on recurring events.', 'event-tickets' ); ?>
+			<a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener"><?php echo esc_html__( 'See our future planned features.', 'event-tickets' ); ?></a>
+		</p>
+	</div>
+</div>
+
 <div id="tec_tickets_rsvp_metabox" class="eventtable tec-event-tickets-from__wrap tribe-common" aria-live="polite">
 	<?php
 		$admin_views->template( 'components/loader' );

@@ -147,7 +147,7 @@ const RSVP = ( {
 	};
 
 	if ( hasRecurrenceRules && noRsvpsOnRecurring ) {
-		return renderBlockNotSupported( clientId );
+		return renderBlockNotSupported();
 	}
 
 	return renderBlock();

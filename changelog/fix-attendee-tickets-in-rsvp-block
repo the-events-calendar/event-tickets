@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Prevents PDF and Wallet Tickets to be generated for Attendees that selected "Not Going" in an RSVP.

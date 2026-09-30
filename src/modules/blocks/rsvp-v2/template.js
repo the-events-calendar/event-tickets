@@ -155,7 +155,7 @@ const RSVPV2 = ( {
 	};
 
 	if ( hasRecurrenceRules && noRsvpsOnRecurring ) {
-		return renderBlockNotSupported( clientId );
+		return renderBlockNotSupported();
 	}
 
 	return renderBlock();
