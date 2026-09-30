@@ -2,7 +2,7 @@
 
 ### [5.30.0] 2026-09-30
 
-* Feature - RSVPs are now powered by Tickets Commerce, so each RSVP creates an order and RSVPs work with Individual Attendee Collection.
+* Feature - Changed where RSVPs are stored to agree with Tickets. This will happen after you manually start a migration and only if you are using RSVPs already.
 * Language - 60 new strings added, 336 updated, 3 fuzzied, and 8 obsoleted.
 * Security - Tightened the permission checks when creating and updating tickets through the REST API.
 * Tweak - Added actions: `tec_tickets_commerce_cart_process`, `tec_tickets_rsvp_after_save`, `tec_tickets_rsvp_after_meta_update`, `tec_tickets_rsvp_before_delete`, `tec_tickets_rsvp_after_delete`, `tec_tickets_commerce_attendee_before_delete`, `tec_tickets_commerce_attendee_after_delete`, `tec_tickets_attendee_registration_before_meta_form_fields`, `tec_tickets_attendee_registration_after_save`, `tec_tickets_commerce_single_order_details_metabox_before`, `tec_tickets_commerce_single_order_details_metabox_after`, `tribe_events_rsvp_pre_edit`, `tec_event_tickets_rsvp_form__start`, `tec_event_tickets_rsvp_metabox_edit_main`, `tec_event_tickets_rsvp_post_options`, `tec_event_tickets_rsvp_bottom`, `tec_tickets_my_tickets_ticket_information_after_ticket_name`, `event_tickets_user_details_tickets`, `tec_tickets_user_details_tickets`
