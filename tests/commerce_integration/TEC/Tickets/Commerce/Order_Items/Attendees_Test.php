@@ -241,6 +241,8 @@ class Attendees_Test extends WPTestCase {
 
 		$expected = $arrange( $ticket_id, $attendee_id, $bought_as );
 
+		$this->assertSame( esc_html( $expected ), tribe( Attendee::class )->get_product_title( get_post( $attendee_id ) ) );
+
 		$attendee = Tribe__Tickets__Tickets::get_event_attendees( $post_id )[0];
 		$html     = tribe( 'tickets.editor.template' )->template(
 			'tickets/my-tickets/ticket-information',
