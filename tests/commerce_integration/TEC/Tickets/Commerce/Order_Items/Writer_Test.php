@@ -574,7 +574,7 @@ class Writer_Test extends Controller_Test_Case {
 
 		foreach ( tribe( Order_Items_Repository::class )->get_by_order( $order_id ) as $model ) {
 			$row             = $model->toArray();
-			[ $key, $item ]  = tribe( Line_Item_Types::class )->get( $row['type'] )->from_row( $row );
+			[ $key, $item ]  = tribe( Line_Item_Types::class )->get( $row['type'] )::from_row( $row );
 			$rebuilt[ $key ] = $item;
 		}
 
