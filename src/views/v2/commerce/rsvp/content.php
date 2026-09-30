@@ -17,9 +17,9 @@
  * @since 4.12.3
  * @since 5.7.0 Add list of attendees that confirmed RSVP.
  * @since 5.20.0 Added waitlist entry point.
- * @since TBD Only render the attendees list when `tec_tickets_rsvp_show_attendees_list` allows it.
+ * @since 5.30.0 Only render the attendees list when `tec_tickets_rsvp_show_attendees_list` allows it.
  *
- * @version TBD
+ * @version 5.30.0
  */
 
 defined( 'ABSPATH' ) || die();

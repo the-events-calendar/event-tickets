@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce Tickets Repository.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Repositories
  */
@@ -117,7 +117,7 @@ class Tickets_Repository extends Tribe__Repository {
 		/**
 		 * Filters the query args for the tickets repository.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array<string,mixed> $args The query args for the tickets repository.
 		 * @param Tribe__Repository   $this This repository instance.

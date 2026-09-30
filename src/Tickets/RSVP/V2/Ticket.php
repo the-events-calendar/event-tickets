@@ -2,7 +2,7 @@
 /**
  * V2 Ticket helper class.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -19,7 +19,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * Provides RSVP-specific ticket operations for V2 implementation.
  * V2 RSVP uses TC (Tickets Commerce) infrastructure.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -27,7 +27,7 @@ class Ticket {
 	/**
 	 * Get the ticket type identifier for RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string The RSVP ticket type.
 	 */
@@ -38,7 +38,7 @@ class Ticket {
 	/**
 	 * Check if a ticket is an RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID to check.
 	 *
@@ -53,7 +53,7 @@ class Ticket {
 	/**
 	 * Set a ticket as an RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -69,7 +69,7 @@ class Ticket {
 	 * When multiple tickets exist for the same event, returns the most recently
 	 * created one so stale tickets left behind after a failed delete do not win.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The event post ID.
 	 *
@@ -97,7 +97,7 @@ class Ticket {
 	 * `post_excerpt` and a `_tribe_ticket_show_description` value of `yes`, so the
 	 * stale text would otherwise render on the front end.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param mixed $show      Whether the description should show.
 	 * @param mixed $ticket_id The ticket ID.

@@ -2,7 +2,7 @@
 /**
  * Contract for order email senders that handle the `send_email` flag action.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -14,7 +14,7 @@ use WP_Post;
 /**
  * Interface Order_Email_Sender_Interface.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -23,7 +23,7 @@ interface Order_Email_Sender_Interface {
 	/**
 	 * Determines whether this sender should handle the given order.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $order The decorated order post object.
 	 *
@@ -34,7 +34,7 @@ interface Order_Email_Sender_Interface {
 	/**
 	 * Sends the appropriate email(s) for the given order.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $order The decorated order post object.
 	 *

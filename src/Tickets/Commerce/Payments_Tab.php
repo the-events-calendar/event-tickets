@@ -537,7 +537,7 @@ class Payments_Tab extends Service_Provider {
 	 * Generate Checkout page with the shortcode if the page is non-existent.
 	 *
 	 * @since 5.2.1
-	 * @since TBD Added the `$force` parameter.
+	 * @since 5.30.0 Added the `$force` parameter.
 	 *
 	 * @param bool $force When false, the method trusts the option value to determine if the page exists.
 	 *                     When true, it checks the actual page pointed to by the option for the shortcode
@@ -577,7 +577,7 @@ class Payments_Tab extends Service_Provider {
 	 * Generate Order Success page with the shortcode if the page is non-existent.
 	 *
 	 * @since 5.2.1
-	 * @since TBD Added the `$force` parameter.
+	 * @since 5.30.0 Added the `$force` parameter.
 	 *
 	 * @param bool $force When false, the method trusts the option value to determine if the page exists.
 	 *                     When true, it checks the actual page pointed to by the option for the shortcode
@@ -674,7 +674,7 @@ class Payments_Tab extends Service_Provider {
 	/**
 	 * Clears the checkout or success page option when the corresponding page is permanently deleted.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The ID of the deleted post.
 	 */

@@ -160,7 +160,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 					 *
 					 * ET+ hooks into this to render IAC options above the ARF field builder.
 					 *
-					 * @since TBD
+					 * @since 5.30.0
 					 *
 					 * @param int $ticket_id The ticket ID.
 					 * @param int $post_id   The post ID.
@@ -221,7 +221,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		 *
 		 * ET+ hooks into this to save the IAC setting submitted with the form.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param int                           $post_id The post ID.
 		 * @param Tribe__Tickets__Ticket_Object $ticket  The ticket object.
@@ -237,7 +237,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * URL to this standalone page
 	 *
 	 * @since 4.9
-	 * @since TBD Preserve the `tribe_events_modal` request var so the form action and
+	 * @since 5.30.0 Preserve the `tribe_events_modal` request var so the form action and
 	 *            post-save redirect keep rendering inside the block editor's modal iframe.
 	 *
 	 * @return string URL

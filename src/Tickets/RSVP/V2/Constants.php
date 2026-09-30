@@ -2,7 +2,7 @@
 /**
  * Constants for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\RSVP\V2;
 /**
  * Class Constants
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -20,7 +20,7 @@ class Constants {
 	/**
 	 * The ticket type identifier for TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Constants {
 	/**
 	 * The key used to filter the repository query args to include or exclude TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Constants {
 	/**
 	 * The repository request context used when fetching tickets for the front-end ticket form.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Constants {
 	/**
 	 * Meta key for storing the "show not going" option.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Constants {
 	/**
 	 * RSVP status meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */

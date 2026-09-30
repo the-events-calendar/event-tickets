@@ -2,9 +2,9 @@
 /**
  * Template for RSVP responses information display in admin panel.
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var int    $post_id         The post ID of the event.
  * @var int    $rsvp_id         The RSVP ticket ID.

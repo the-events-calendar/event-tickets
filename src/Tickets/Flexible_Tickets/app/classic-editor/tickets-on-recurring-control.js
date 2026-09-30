@@ -164,7 +164,7 @@ function handleControls( newState ) {
 /**
  * Whether the RSVP V2 metabox has an RSVP enabled; V2 RSVPs are not listed in the tickets table.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @return {boolean} Whether the RSVP V2 metabox has an RSVP enabled.
  */
@@ -175,7 +175,7 @@ function hasRsvpV2() {
 /**
  * Whether the event has its own tickets, RSVPs, or a ticket being edited.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @return {boolean} Whether the event has its own tickets.
  */

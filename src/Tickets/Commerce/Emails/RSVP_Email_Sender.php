@@ -2,7 +2,7 @@
 /**
  * Sends RSVP confirmation emails for TC-RSVP orders.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -16,7 +16,7 @@ use WP_Post;
 /**
  * Class RSVP_Email_Sender.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -33,7 +33,7 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD Removed the `tec_tickets_emails_is_enabled()` check: `Order_Email_Sender_Registry::send()`
+	 * @since 5.30.0 Removed the `tec_tickets_emails_is_enabled()` check: `Order_Email_Sender_Registry::send()`
 	 *            now checks it once for every sender before dispatching.
 	 */
 	public function send( WP_Post $order ): void {
@@ -131,7 +131,7 @@ class RSVP_Email_Sender implements Order_Email_Sender_Interface {
 	 * attendee flipping their response on the My Tickets page — reach the same email, rather than
 	 * having to rebuild it and drift from this one.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<int,array<string,mixed>> $attendees The attendees to include in the email.
 	 * @param int                            $event_id  The event the RSVP belongs to.

@@ -4,7 +4,7 @@
  *
  * Handles saving RSVP-specific meta fields when tickets are saved via Tickets Commerce.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -16,7 +16,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Meta_Fields
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -24,7 +24,7 @@ class Meta_Fields {
 	/**
 	 * Save the "show not going" option for RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int           $post_id  The event/post ID.
 	 * @param Ticket_Object $ticket   The ticket object.
@@ -46,7 +46,7 @@ class Meta_Fields {
 	/**
 	 * Check if the ticket is an RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Ticket_Object $ticket   The ticket object.
 	 * @param array         $raw_data The raw ticket data.

@@ -2,9 +2,9 @@
 /**
  * Ticket editor panel template for classic editor.
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var Tribe__Tickets__Ticket_Object $tc_rsvp                          The TC RSVP object.
  * @var Tribe__Tickets__Tickets       $provider                         The provider instance.
@@ -45,7 +45,7 @@ defined( 'ABSPATH' ) || die();
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int Post ID
 	 * @param int Ticket ID
@@ -62,7 +62,7 @@ defined( 'ABSPATH' ) || die();
 				/**
 				 * Allows for the insertion of additional elements into the start of the main rsvp form.
 				 *
-				 * @since TBD
+				 * @since 5.30.0
 				 *
 				 * @param int      $post_id     The post ID of the post the ticket is attached to.
 				 * @param string   $ticket_type The type of ticket the form is being rendered for.
@@ -103,7 +103,7 @@ defined( 'ABSPATH' ) || die();
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
-				 * @since TBD
+				 * @since 5.30.0
 				 *
 				 * @param int Post ID
 				 * @param int Ticket ID
@@ -140,7 +140,7 @@ defined( 'ABSPATH' ) || die();
 				 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion
 				 * section
 				 *
-				 * @since TBD
+				 * @since 5.30.0
 				 *
 				 * @param int Post ID
 				 * @param int Ticket ID
@@ -164,7 +164,7 @@ defined( 'ABSPATH' ) || die();
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form bottom (buttons) section
 					 *
-					 * @since TBD
+					 * @since 5.30.0
 					 *
 					 * @param int Post ID
 					 * @param int Ticket ID

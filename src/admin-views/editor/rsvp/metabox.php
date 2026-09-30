@@ -6,7 +6,7 @@
  * @var int                           $post_id The ID of the post context of the metabox rendering
  * @var int                           $rsvp_id The ID of the RSVP ticket, if any.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 defined( 'ABSPATH' ) || die();

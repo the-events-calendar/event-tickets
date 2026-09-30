@@ -29,7 +29,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Flag actions that apply to all Tickets Commerce order types.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string[]
 	 */
@@ -47,7 +47,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Flag actions that apply only to standard ticket orders.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string[]
 	 */
@@ -72,7 +72,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * `$ticket_only_flag_actions`.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Merges the shared and ticket-only flag action lists, registers the order email
+	 * @since 5.30.0 Merges the shared and ticket-only flag action lists, registers the order email
 	 *            senders, and resolves each flag action via the container instead of `new`.
 	 *
 	 * @note Flag action classes are merged shared-first, ticket-only-second. That order carries no
@@ -99,7 +99,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Registers singleton bindings for all default flag action classes.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string[] $flag_actions The flag action classes to bind as singletons.
 	 */
@@ -112,8 +112,8 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Registers order email senders and the registry used by the `send_email` flag action.
 	 *
-	 * @since TBD
-	 * @since TBD Resolves `Order_Email_Sender_Registry`'s `$senders` lazily via `->when()->needs()->give()`
+	 * @since 5.30.0
+	 * @since 5.30.0 Resolves `Order_Email_Sender_Registry`'s `$senders` lazily via `->when()->needs()->give()`
 	 */
 	protected function register_order_email_senders(): void {
 		$this->container->singleton( RSVP_Email_Sender::class );
@@ -137,7 +137,7 @@ class Flag_Action_Handler extends \TEC\Common\Contracts\Service_Provider {
 					 * Prefer registering senders on the container tag
 					 * `Order_Email_Sender_Registry::CONTAINER_TAG` via `tribe()->tag()`.
 					 *
-					 * @since TBD
+					 * @since 5.30.0
 					 *
 					 * @param Order_Email_Sender_Interface[] $senders Registered senders.
 					 */

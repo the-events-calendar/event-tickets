@@ -2,7 +2,7 @@
 /**
  * V2 RSVP Controller - TC-based implementation.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -16,7 +16,7 @@ use Tribe__Template as Template;
 /**
  * Class Controller
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -26,7 +26,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * The action that will be fired after the successful registration of this controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -308,7 +308,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -484,7 +484,7 @@ class Controller extends Controller_Contract {
 	 * Filters the fields rendered in the Payments tab to replace the toggle to deactivate Tickets Commerce
 	 * with one that will not allow the user to do that.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $fields The fields to render in the tab.
 	 *
@@ -517,7 +517,7 @@ class Controller extends Controller_Contract {
 	 * Filters the enabled form toggles that would render in the default Tickets metabox to
 	 * remove the RSVP one.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,bool> $enabled A map from ticket types to their enabled status.
 	 *
@@ -532,7 +532,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Filters the list table data to remove the RSVP tickets from the list.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,array<Ticket_Object>> $ticket_types The ticket types and their tickets.
 	 *
@@ -550,7 +550,7 @@ class Controller extends Controller_Contract {
 	 * Hooks into `tec_tickets_front_end_rsvp_form_template_content` to render
 	 * the V2 commerce RSVP template instead of the generic RSVP block template.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string                  $content  The template content to be rendered.
 	 * @param array<string,mixed>     $args     The RSVP block arguments.
@@ -602,7 +602,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * Assets are only enqueued when viewing a single post/event that has TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -626,7 +626,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Check if a post has TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID to check.
 	 *
@@ -650,7 +650,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Hides the ticket header image option from the settings panel when the post has TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -674,7 +674,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Returns whether the RSVP form requires login.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the RSVP form requires login.
 	 */
@@ -687,7 +687,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Add V2 RSVP configuration to the block editor config.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $config The editor configuration.
 	 *
@@ -707,7 +707,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Filters the Tickets Commerce repository query args to exclude RSVP tickets from the list.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Repository_Interface $repository The repository instance, unused.
 	 * @param array<string,mixed>  $query_args The query args to be used to fetch the tickets.
@@ -751,7 +751,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Marks RSVP tickets as property tickets in the ticket detection logic in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param bool  $is_ticket Whether the thing is a ticket.
 	 * @param array $thing     The thing to check.
@@ -766,7 +766,7 @@ class Controller extends Controller_Contract {
 	 * Filter the arguments used to fetch Tickets Commerce tickets to remove the RSVP tickets
 	 * default exclusion if the request is for a specific ticket by ID.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $query_args The arguments used to fetch tickets.
 	 *
@@ -785,7 +785,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * Hooked to `tec_tickets_build_ticket_properties`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -803,7 +803,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * Unhooks `tec_tickets_build_ticket_properties`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */

@@ -2,7 +2,7 @@
 /**
  * Repository Filters delegate for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -16,7 +16,7 @@ use Tribe__Repository__Interface as Repository_Interface;
  *
  * Handles repository query filtering for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -24,7 +24,7 @@ class Repository_Filters {
 	/**
 	 * Filters the Tickets Commerce repository query args to exclude RSVP tickets from the list.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed>  $query_args The query args to be used to fetch the tickets.
 	 * @param Repository_Interface $repository The repository instance, unused.
@@ -63,7 +63,7 @@ class Repository_Filters {
 	/**
 	 * Marks RSVP tickets as proper tickets in the ticket detection logic in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param bool                $is_ticket Whether the thing is a ticket.
 	 * @param array<string,mixed> $thing     The thing to check.
@@ -79,7 +79,7 @@ class Repository_Filters {
 	 * default exclusion if the request is for a specific ticket by ID, for the RSVP type, or
 	 * for the front-end ticket form (which renders RSVP tickets through the RSVP block).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed>       $query_args The arguments used to fetch tickets.
 	 * @param mixed                     $query      The query object, unused.

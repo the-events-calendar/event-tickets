@@ -8,9 +8,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/commerce/rsvp/my-tickets/ticket-status.php
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var bool $attendee_is_going Whether the attendee is going.
  * @var bool $show_not_going    Whether the "Not going" option is available.

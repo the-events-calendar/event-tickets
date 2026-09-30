@@ -2,7 +2,7 @@
 /**
  * A cart that is agnostic to what types of items it contains.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 declare( strict_types=1 );
@@ -24,7 +24,7 @@ use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 /**
  * Class RSVP_Cart
  *
- * @since TBD
+ * @since 5.30.0
  */
 class RSVP_Cart extends Abstract_Cart {
 	/**
@@ -37,7 +37,7 @@ class RSVP_Cart extends Abstract_Cart {
 	 *
 	 * This method should include any persistence by the cart implementation.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array The items in the cart.
 	 */
@@ -58,7 +58,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Loads the items from the transient.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Sets the cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $hash The hash to set.
 	 */
@@ -90,7 +90,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Gets the cart items as plain items instead of objects.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array The items in the cart.
 	 */
@@ -104,7 +104,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Sets the cart items from a plain items array.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $items The items to set.
 	 */
@@ -122,7 +122,7 @@ class RSVP_Cart extends Abstract_Cart {
 	 * This method should include any persistence, request and redirection required
 	 * by the cart implementation.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the cart was saved.
 	 */
@@ -157,7 +157,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Generates and sets the cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the cart hash was generated and set.
 	 */
@@ -199,7 +199,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Whether a cart exists meeting the specified criteria.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $unused_criteria Unused extra criteria.
 	 *
@@ -217,7 +217,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Whether the cart contains items or not.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool|int The number of products in the cart (regardless of the products quantity) or `false`
 	 */
@@ -230,7 +230,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Whether an item is in the cart or not.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $item_id The item ID.
 	 *
@@ -243,7 +243,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Insert or update an item.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string|int $item_id    The item ID.
 	 * @param int        $quantity   The quantity of the item. If the item exists, this quantity will override
@@ -271,7 +271,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Adds a specified quantity of the item to the cart.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|string $item_id    The item ID.
 	 * @param int        $quantity   The quantity to add.
@@ -303,7 +303,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Update an item in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $item_id    The item ID.
 	 * @param int    $quantity   The quantity to update.
@@ -334,7 +334,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Removes an item from the cart.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int|string $item_id The item ID.
 	 */
@@ -346,7 +346,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Process the items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $data to be processed by the cart.
 	 *
@@ -383,7 +383,7 @@ class RSVP_Cart extends Abstract_Cart {
 		 *
 		 * This allows for further processing of data within the $data array.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param Cart_Interface $cart The cart object.
 		 * @param array          $data The data to be processed by the cart.
@@ -402,7 +402,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Add the full set of parameters to the items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $items The items in the cart.
 	 *
@@ -429,7 +429,7 @@ class RSVP_Cart extends Abstract_Cart {
 						 * If the item shouldn't be processed, `null` should be returned. Otherwise,
 						 * an array of the full item parameters should be returned.
 						 *
-						 * @since TBD
+						 * @since 5.30.0
 						 *
 						 * @param array|null $params The full item parameters for the cart.
 						 * @param array      $item   The item in the cart.
@@ -449,7 +449,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Add the ticket parameters to the item in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $item The item in the cart.
 	 *
@@ -481,7 +481,7 @@ class RSVP_Cart extends Abstract_Cart {
 	/**
 	 * Get items in the cart of a particular type.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $type  The type of item to get from the item array. Use 'all' to get all items.
 	 * @param ?array $items The items to filter. If omitted, items will be retrieved from the cart.

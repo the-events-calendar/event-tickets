@@ -4,7 +4,7 @@
  *
  * Migrates legacy RSVP tickets and attendees to the Tickets Commerce infrastructure.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\Migrations;
@@ -28,14 +28,14 @@ use Exception;
 /**
  * RSVP to Tickets Commerce Migration.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 
 	/**
 	 * Meta key to track migrated tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Meta key to mark orders created by this migration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Meta key to store original ticket meta values before overwriting.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Meta key to store original attendee post_name before overwriting.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Meta key to store original attendee post_title before overwriting.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get ticket meta keys to rename during migration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string, string> old_key => new_key pairs.
 	 */
@@ -93,7 +93,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the static ticket meta to add during migration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string, string|int> Meta key => value pairs.
 	 */
@@ -115,7 +115,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get ticket meta keys to delete during rollback.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string> Meta keys to delete.
 	 */
@@ -148,7 +148,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get attendee meta keys to rename during migration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string, string> old_key => new_key pairs.
 	 */
@@ -168,7 +168,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get attendee meta keys to delete during rollback.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string> Meta keys to delete.
 	 */
@@ -185,7 +185,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the migration label.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string The migration label.
 	 */
@@ -196,7 +196,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the migration description.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string The migration description.
 	 */
@@ -207,7 +207,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the total number of items to process.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Operation|null $operation The operation to get the total items for.
 	 *
@@ -228,7 +228,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the default batch size.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int The default batch size.
 	 */
@@ -239,7 +239,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Whether the migration is applicable.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the migration is applicable.
 	 */
@@ -250,7 +250,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Whether the migration has been completed.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the migration has been completed.
 	 */
@@ -261,7 +261,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Whether the migration has been rolled back.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return bool Whether the migration has been rolled back.
 	 */
@@ -274,7 +274,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * Disables RSVP while the migration is running.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $batch      The batch number.
 	 * @param int $batch_size The batch size.
@@ -295,7 +295,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * Sets the RSVP version to v2 when migration completes.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int  $batch        The batch number.
 	 * @param int  $batch_size   The batch size.
@@ -317,7 +317,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * Disables RSVP while the rollback is running.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $batch      The batch number.
 	 * @param int $batch_size The batch size.
@@ -338,7 +338,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	 *
 	 * Sets the RSVP version to v1 when rollback completes.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int  $batch        The batch number.
 	 * @param int  $batch_size   The batch size.
@@ -358,7 +358,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Run the migration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $batch      The batch number.
 	 * @param int $batch_size The batch size.
@@ -434,7 +434,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Roll back the migration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $batch      The batch number.
 	 * @param int $batch_size The batch size.
@@ -501,7 +501,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the migration tags.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string> The migration tags.
 	 */
@@ -512,7 +512,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the total count of V1 RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int The count.
 	 */
@@ -529,7 +529,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the count of unmigrated V1 RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int The count.
 	 */
@@ -550,7 +550,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the count of migrated tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int The count.
 	 */
@@ -571,7 +571,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get the count of skipped tickets that still have migration markers to clean up.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int The count.
 	 */
@@ -593,7 +593,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get unmigrated V1 RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $limit The number of tickets to retrieve.
 	 *
@@ -627,7 +627,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get migrated tickets for rollback.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $limit The number of tickets to retrieve.
 	 *
@@ -661,7 +661,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Migrate ticket meta from V1 to V2 format.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 * @param int $event_id  The event ID.
@@ -743,7 +743,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get attendees for a specific ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -778,7 +778,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Group attendees by their order hash.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post[] $attendees The attendees.
 	 *
@@ -807,7 +807,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Migrate a group of attendees (same order).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string    $order_hash The order hash.
 	 * @param WP_Post[] $attendees  The attendees in this order.
@@ -851,7 +851,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Create a Tickets Commerce order for migrated attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $order_hash The order hash.
 	 * @param int    $ticket_id  The ticket ID.
@@ -932,7 +932,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Migrate a single attendee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $attendee  The attendee post.
 	 * @param int     $order_id  The order ID.
@@ -980,7 +980,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Migrate attendee meta from V1 to V2 format.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee ID.
 	 * @param int $ticket_id   The ticket ID.
@@ -1009,7 +1009,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Get migrated attendees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -1044,7 +1044,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Rollback a single attendee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $attendee The attendee post.
 	 *
@@ -1075,7 +1075,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Rollback ticket meta to V1 format.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -1119,7 +1119,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Rollback attendee meta to V1 format.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee ID.
 	 *
@@ -1140,7 +1140,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Delete a migration-created order if it has no remaining attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $order_id The order ID.
 	 *
@@ -1172,7 +1172,7 @@ class RSVP_To_Tickets_Commerce extends Migration_Abstract {
 	/**
 	 * Rename a meta key using direct SQL for better performance.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int    $post_id The post ID.
 	 * @param string $old_key The old meta key.

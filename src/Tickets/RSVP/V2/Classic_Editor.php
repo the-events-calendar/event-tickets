@@ -2,7 +2,7 @@
 /**
  * Classic Editor delegate for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  */
@@ -19,7 +19,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * Handles Classic Editor integration for RSVP V2.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2
  *
@@ -31,7 +31,7 @@ class Classic_Editor {
 	 * Filters the enabled form toggles that would render in the default Tickets metabox to
 	 * remove the RSVP one.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,bool> $enabled A map from ticket types to their enabled status.
 	 *
@@ -46,7 +46,7 @@ class Classic_Editor {
 	/**
 	 * Filters the list table data to remove the RSVP tickets from the list.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,array<Ticket_Object>> $ticket_types The ticket types and their tickets.
 	 *
@@ -67,7 +67,7 @@ class Classic_Editor {
 	 * Hooked on the generic `save_post` action and guarded to only run for ticket-able
 	 * post types, so we register a single hook instead of one per post type.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $post_id The post ID being saved.
 	 *
@@ -96,7 +96,7 @@ class Classic_Editor {
 	/**
 	 * Processes TC-RSVP ticket data from metabox POST values.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int                 $post_id   The post ID being saved.
 	 * @param array<string,mixed> $post_data The unslashed $_POST data from the metabox.
@@ -118,7 +118,7 @@ class Classic_Editor {
 		/**
 		 * Filters the ticket data before saving TC-RSVP from the Classic Editor post save.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param Ticket_Add_Data $data      The serialized ticket data for ticket_add().
 		 * @param int             $post_id   The parent post ID.

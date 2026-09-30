@@ -2,7 +2,7 @@
 /**
  * Trait for getting single field values from repositories.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Repositories\Traits
  */
@@ -19,7 +19,7 @@ namespace TEC\Tickets\Repositories\Traits;
  * - Using class must have a get_update_fields_aliases() method that
  *   returns an array mapping field aliases to meta keys.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Repositories\Traits
  */
@@ -27,7 +27,7 @@ trait Get_Field {
 	/**
 	 * Get the aliases for the fields that can be updated via the repository.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array This repository update fields aliases map.
 	 */
@@ -38,7 +38,7 @@ trait Get_Field {
 	 *
 	 * Useful for quick lookups when you only need one field value.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int    $post_id Post ID (ticket or attendee).
 	 * @param string $field   Field name (alias-aware, e.g., 'price', 'event_id', 'email').

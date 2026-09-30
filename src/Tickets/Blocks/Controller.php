@@ -170,7 +170,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
 	 *
 	 * @since 5.8.0
-	 * @since TBD RSVP button is hidden when not applicable to the post (e.g. migration completed,
+	 * @since 5.30.0 RSVP button is hidden when not applicable to the post (e.g. migration completed,
 	 *            RSVP disabled, Series/recurring events); it is only rendered disabled, with a
 	 *            tooltip, while the RSVP to Tickets Commerce migration is actively in progress.
 	 *
@@ -188,7 +188,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		/**
 		 * Filters the default ticket forms enabled for all post types.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
 		 * @param int                $post_id The ID of the post being edited.

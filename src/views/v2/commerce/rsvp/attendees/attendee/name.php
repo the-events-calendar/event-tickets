@@ -16,9 +16,9 @@
  * @var int $attendee_id The attendee ID.
  *
  * @since 5.7.1
- * @since TBD Read the attendee name from the Tickets Commerce meta key used by RSVP V2, with fallbacks.
+ * @since 5.30.0 Read the attendee name from the Tickets Commerce meta key used by RSVP V2, with fallbacks.
  *
- * @version TBD
+ * @version 5.30.0
  */
 
 use TEC\Tickets\Commerce\Attendee;

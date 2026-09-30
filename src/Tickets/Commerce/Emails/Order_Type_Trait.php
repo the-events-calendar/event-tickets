@@ -2,7 +2,7 @@
 /**
  * Shared order-type helpers, used by order email senders and Flag Actions alike.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Trait Order_Type_Trait.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Emails
  */
@@ -24,7 +24,7 @@ trait Order_Type_Trait {
 	/**
 	 * Determines whether an order is composed exclusively of TC-RSVP items.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Post $order The decorated order post object.
 	 *

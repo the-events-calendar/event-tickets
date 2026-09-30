@@ -17,7 +17,7 @@
  *
  * @since 5.7.0
  *
- * @version TBD
+ * @version 5.30.0
  */
 
 defined( 'ABSPATH' ) || die();

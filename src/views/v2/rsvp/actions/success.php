@@ -13,9 +13,9 @@
  * @var bool $show_attendees_list Whether the opt-in toggle should be shown. Filterable via `tec_tickets_rsvp_show_attendees_list`.
  *
  * @since 4.12.3
- * @since TBD Only render the toggle when `tec_tickets_rsvp_show_attendees_list` allows it.
+ * @since 5.30.0 Only render the toggle when `tec_tickets_rsvp_show_attendees_list` allows it.
  *
- * @version TBD
+ * @version 5.30.0
  */
 
 ?>

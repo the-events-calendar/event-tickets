@@ -4,9 +4,9 @@
  *
  * @since 5.13.3
  * @since 5.29.3 Adjusted the attendee meta rendering.
- * @since TBD Added support for RSVP tickets.
+ * @since 5.30.0 Added support for RSVP tickets.
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.

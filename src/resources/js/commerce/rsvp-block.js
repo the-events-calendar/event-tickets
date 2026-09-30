@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @type {Object}
  */
@@ -12,7 +12,7 @@ window.tribe.tickets.rsvp = window.tribe.tickets.rsvp || {};
 /**
  * Configures RSVP block Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @type {Object}
  */
@@ -21,7 +21,7 @@ window.tribe.tickets.rsvp.block = {};
 /**
  * Initializes in a Strict env the code that manages the RSVP block.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @param {Object} $   jQuery
  * @param {Object} obj tribe.tickets.rsvp.block
@@ -33,7 +33,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @type {Object}
 	 */
@@ -51,7 +51,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Returns true when Individual Attendee Collection is active for this container.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @return {boolean}
@@ -64,7 +64,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Binds events for the going button.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @return {void}
@@ -95,7 +95,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Binds events for the not going button.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @return {void}
@@ -127,7 +127,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Binds events for the cancel button.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @return {void}
@@ -158,7 +158,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Handle the RSVP toggle for listing in public attendee list.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Event} event Input event
 	 */
@@ -188,7 +188,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Handle the RSVP form submission
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {event} e submission event
 	 */
@@ -217,7 +217,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Binds events for the RSVP form.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @return {void}
@@ -233,7 +233,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Binds events for the display in public attendee toggle.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @return {void}
@@ -247,7 +247,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Unbinds events.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param {jqXHR}  jqXHR    Request object
@@ -273,7 +273,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Binds events for container.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of object of the RSVP container.
 	 * @return {void}
@@ -291,7 +291,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Initialize RSVP events.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Event}  event      event object for 'afterSetup.tribeTicketsRsvp' event
 	 * @param {number} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
@@ -305,7 +305,7 @@ window.tribe.tickets.rsvp.block = {};
 	/**
 	 * Handles the initialization of the RSVP block events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return {void}
 	 */

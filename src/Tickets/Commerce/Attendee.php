@@ -930,7 +930,7 @@ class Attendee {
 	 * Returns the product title related to an attendee
 	 *
 	 * @since 5.2.0
-	 * @since TBD Return the ticket title instead of reading an undefined property on this class, and
+	 * @since 5.30.0 Return the ticket title instead of reading an undefined property on this class, and
 	 *        resolve the ticket from the attendee product instead of the unique ID.
 	 *
 	 * @param \WP_Post $attendee the attendee object.

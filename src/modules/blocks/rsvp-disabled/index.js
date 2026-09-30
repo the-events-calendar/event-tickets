@@ -21,7 +21,7 @@ import { KEY_TICKET_GOING_COUNT, KEY_TICKET_NOT_GOING_COUNT, KEY_TICKET_HEADER }
  * Uses the same block ID ('rsvp') so it replaces the active block
  * when RSVP is disabled during migration.
  *
- * @since TBD
+ * @since 5.30.0
  */
 export default {
 	id: 'rsvp',

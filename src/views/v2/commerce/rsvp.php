@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var Tribe__Tickets__Editor__Template   $this
  * @var Tribe__Tickets__Ticket_Object|null $rsvp          The rsvp object or null.

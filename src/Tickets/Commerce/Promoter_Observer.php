@@ -40,7 +40,7 @@ class Promoter_Observer {
 	 * Attach hooks for trigger messages.
 	 *
 	 * @since 5.3.2
-	 * @since TBD Watch the RSVP status meta, so an Attendee changing their going/not-going answer
+	 * @since 5.30.0 Watch the RSVP status meta, so an Attendee changing their going/not-going answer
 	 *            after the order is placed triggers too.
 	 */
 	public function hook() {
@@ -55,7 +55,7 @@ class Promoter_Observer {
 	 * Action fired when a TC attendee is created.
 	 *
 	 * @since 5.3.2
-	 * @since TBD Report TC-RSVP Attendees as an RSVP response rather than a purchase, so Promoter's
+	 * @since 5.30.0 Report TC-RSVP Attendees as an RSVP response rather than a purchase, so Promoter's
 	 *            RSVP triggers match. Previously every generated Attendee reported `ticket_purchased`.
 	 *
 	 * @param \WP_Post $attendee Attendee object.
@@ -69,7 +69,7 @@ class Promoter_Observer {
 	 * Tickets page or the Attendees screen. That answer never touches the order, so the
 	 * attendee-generated action cannot cover it.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int    $meta_id    ID of the updated metadata entry.
 	 * @param int    $object_id  The post ID the meta belongs to.
@@ -91,7 +91,7 @@ class Promoter_Observer {
 	 * one of them as a purchase would leave Promoter's RSVP triggers permanently unmatched. The
 	 * presence of the RSVP status meta is what separates the two throughout Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The ID of the Attendee.
 	 *

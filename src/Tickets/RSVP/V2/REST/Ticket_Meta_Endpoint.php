@@ -4,7 +4,7 @@
  *
  * Handles IAC (Individual Attendee Collection) and attendee meta field updates.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\REST
  */
@@ -23,7 +23,7 @@ use WP_REST_Server;
 /**
  * Class Ticket_Meta_Endpoint.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\REST
  */
@@ -32,7 +32,7 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function register(): void {
 		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -60,7 +60,7 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Checks if the current user has the capability to edit events and verifies the nonce.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The current REST request.
 	 *
@@ -99,7 +99,7 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request to update IAC and attendee meta fields for existing tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -148,7 +148,7 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for processing additional IAC and attendee meta fields before updating.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array $request_params The original request parameters.
 		 * @param int   $ticket_id      The ticket ID being updated.
@@ -159,7 +159,7 @@ class Ticket_Meta_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow for additional processing after IAC and attendee meta updates.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param int   $ticket_id      The ticket ID being updated.
 		 * @param int   $post_id        The post ID.

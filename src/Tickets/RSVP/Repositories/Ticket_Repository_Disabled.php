@@ -2,7 +2,7 @@
 /**
  * Null-object implementation of RSVP Ticket Repository.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\RSVP\Repositories;
@@ -15,13 +15,13 @@ use Tribe__Repository;
  * This class extends the repository base class but overrides methods to return empty results,
  * ensuring code that depends on the repository continues to work without exceptions.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Constructor - does not call parent to avoid side effects.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function __construct() {
 		// Do not call parent::__construct() to avoid side effects.
@@ -31,7 +31,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns empty collection - no tickets when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param bool $return_generator Whether to return a generator.
 	 * @param int  $batch_size       The batch size for generator.
@@ -45,7 +45,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns 0 - no tickets when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int Always 0.
 	 */
@@ -56,7 +56,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns 0 - no tickets when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return int Always 0.
 	 */
@@ -67,7 +67,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns null - no ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return null Always null.
 	 */
@@ -78,7 +78,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns null - no ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return null Always null.
 	 */
@@ -89,7 +89,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns null - no ticket when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $id The ticket ID.
 	 *
@@ -102,7 +102,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns $this for method chaining - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $key   The filter key.
 	 * @param mixed  $value The filter value.
@@ -116,7 +116,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns $this for method chaining - no-op when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $key   The filter key.
 	 * @param mixed  $value The filter value.
@@ -130,7 +130,7 @@ class Ticket_Repository_Disabled extends Tribe__Repository {
 	/**
 	 * Returns empty array - no tickets when disabled.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param bool $return_generator Whether to return a generator.
 	 * @param int  $batch_size       The batch size for generator.

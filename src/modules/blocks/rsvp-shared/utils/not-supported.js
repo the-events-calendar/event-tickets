@@ -17,7 +17,7 @@ import { Card, Notice } from '../../../elements';
  * Renders the not-supported message for RSVP on recurring events.
  *
  * @since 5.20.0
- * @since TBD Matches the disabled state of the Tickets block.
+ * @since 5.30.0 Matches the disabled state of the Tickets block.
  * @return {Node} The not-supported message.
  */
 export const renderBlockNotSupported = () => (

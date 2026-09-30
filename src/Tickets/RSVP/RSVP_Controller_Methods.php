@@ -2,7 +2,7 @@
 /**
  * Provides methods common to both the v1 and v2 controllers.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP;
  */
@@ -18,7 +18,7 @@ use Tribe__Tickets__RSVP;
 /**
  * Trait RSVP_Controller_Methods.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP;
  */
@@ -26,7 +26,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Stored callbacks for unregistration.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var array<string, callable>
 	 */
@@ -35,7 +35,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Registers the implementations common to both v1 and v2 controllers.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -62,7 +62,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Register CSV Importer hooks.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -78,7 +78,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Register RSVP class hooks.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Tribe__Tickets__RSVP $rsvp The RSVP instance.
 	 *
@@ -113,7 +113,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Register Promoter observer hooks.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -163,7 +163,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Register RSVP block hooks.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Blocks_RSVP $rsvp_block The RSVP block instance.
 	 *
@@ -183,7 +183,7 @@ trait RSVP_Controller_Methods {
 	/**
 	 * Unregisters the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */

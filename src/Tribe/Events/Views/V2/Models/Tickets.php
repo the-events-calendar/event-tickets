@@ -95,7 +95,7 @@ class Tickets implements ArrayAccess {
 	 *
 	 * @since 5.26.1
 	 * @since 5.29.5 Dropped the models instead of rebuilding them, so a mid-order stock is never stored.
-	 * @since TBD Cleared the Event ticket list caches when called with an Event post too.
+	 * @since 5.30.0 Cleared the Event ticket list caches when called with an Event post too.
 	 *
 	 * @param int $post_id The post ID. It could be any post type, not just events.
 	 *
@@ -688,7 +688,7 @@ class Tickets implements ArrayAccess {
 	/**
 	 * Drops the request-scoped ticket lists and the model entry of an Event, so its next model reads fresh tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $event_id The Event post ID.
 	 *

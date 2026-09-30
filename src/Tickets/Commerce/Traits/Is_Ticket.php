@@ -38,7 +38,7 @@ trait Is_Ticket {
 		 *
 		 * The return value will be cast to a boolean.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param bool                $is_ticket Whether the thing is a ticket.
 		 * @param array<string,mixed> $thing     The thing to check.

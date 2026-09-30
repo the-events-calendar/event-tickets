@@ -2,7 +2,7 @@
 /**
  * Main Migrations Controller.
  *
- * @since TBD
+ * @since 5.30.0
  */
 
 namespace TEC\Tickets\Migrations;
@@ -18,13 +18,13 @@ use function TEC\Common\StellarWP\Migrations\migrations;
 /**
  * Main controller for Migrations functionality.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Controller extends Controller_Contract {
 	/**
 	 * Registers the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -41,7 +41,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregisters the controller.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -56,7 +56,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Remove form element open and close actions for the migrations tab.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return void
 	 */
@@ -68,7 +68,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Registers the migrations tab.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $admin_page The admin page ID.
 	 *
@@ -126,7 +126,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds the migrations tab id to the list of tabs.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $tabs The list of tabs.
 	 *

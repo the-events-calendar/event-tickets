@@ -6,7 +6,7 @@
  *
  * @since 5.6.7
  * @since 5.9.1 Corrected template override filepath
- * @since TBD Fixed the `mailto:` link escaping.
+ * @since 5.30.0 Fixed the `mailto:` link escaping.
  *
  * @version 5.9.1
  *

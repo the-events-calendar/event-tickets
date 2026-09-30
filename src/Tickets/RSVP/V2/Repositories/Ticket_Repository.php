@@ -2,7 +2,7 @@
 /**
  * V2 Ticket Repository for TC-RSVP tickets.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Ticket_Repository as Base_Repository;
  * Extends the base repository and automatically filters to only return tickets
  * with ticket_type = 'tc-rsvp'.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Repositories
  */
@@ -32,7 +32,7 @@ class Ticket_Repository extends Base_Repository {
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Ticket_Repository extends Base_Repository {
 	/**
 	 * Override the default query args to only return TC-RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -88,7 +88,7 @@ class Ticket_Repository extends Base_Repository {
 	/**
 	 * Override the ticket types to return TC-RSVP tickets only.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of ticket types supported by this repository.
 	 */
@@ -99,7 +99,7 @@ class Ticket_Repository extends Base_Repository {
 	/**
 	 * Overrides the base repository method to return the Tickets Commerce Ticket to Event relation meta key.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array<string,string> The array of Ticket to Event relation meta keys supported by this repository.
 	 */
@@ -110,7 +110,7 @@ class Ticket_Repository extends Base_Repository {
 	/**
 	 * Get the event ID for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 *

@@ -154,7 +154,7 @@ export function* updateUneditableTickets() {
 	/**
 	 * Filters the list of tickets fetched from the REST API for the Tickets block.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Array} tickets Array of ticket objects from the API.
 	 */
@@ -211,7 +211,7 @@ export function* setTicketsInitialState( action ) {
 	/**
 	 * Filters the list of tickets loaded from post meta for the Tickets block.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param {Array} tickets Array of ticket objects from post meta.
 	 */
@@ -555,7 +555,7 @@ export function* fetchTicket( action ) {
 		/**
 		 * Filters whether a ticket should be removed from the Tickets block.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param {boolean} shouldRemove Whether the ticket should be removed.
 		 * @param {Object}  ticket       The ticket object from the API response.

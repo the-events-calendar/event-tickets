@@ -2,7 +2,7 @@
 /**
  * Trait With_Parent_Post_Edit_Check
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -22,7 +22,7 @@ use WP_REST_Request;
  * event it points at (its stock and capacity). Both create and update therefore additionally
  * require that the current user can edit that event. SVUL-133.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\REST\TEC\V1\Traits
  */
@@ -30,7 +30,7 @@ trait With_Parent_Post_Edit_Check {
 	/**
 	 * A ticket may only be created on an event the current user can edit.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -47,7 +47,7 @@ trait With_Parent_Post_Edit_Check {
 	/**
 	 * A ticket may only be updated by a user who can edit the event it belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -77,7 +77,7 @@ trait With_Parent_Post_Edit_Check {
 	/**
 	 * Whether the current user can edit the given parent event.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $event The event ID the ticket belongs to.
 	 *

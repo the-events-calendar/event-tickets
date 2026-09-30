@@ -2,9 +2,9 @@
 /**
  * The start and end dates field for the RSVP editor.
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var string                        $ticket_start_date            The start date of the ticket.
  * @var string                        $ticket_end_date              The end date of the ticket.

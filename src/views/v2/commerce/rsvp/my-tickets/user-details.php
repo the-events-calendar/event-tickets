@@ -9,9 +9,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/commerce/rsvp/my-tickets/user-details.php
  *
- * @since TBD
+ * @since 5.30.0
  *
- * @version TBD
+ * @version 5.30.0
  *
  * @var array $order     The order data.
  * @var array $attendees The attendees for the current order.

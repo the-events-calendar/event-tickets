@@ -2,7 +2,7 @@
 /**
  * RSVP V2: Order Endpoint.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\REST
  */
@@ -34,7 +34,7 @@ use WP_REST_Server;
 /**
  * Class Order_Endpoint.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\REST
  */
@@ -42,21 +42,21 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string
 	 */
 	protected string $path = '/rsvp/v2/order';
 
 	/**
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var Tickets_View
 	 */
 	protected Tickets_View $tickets_view;
 
 	/**
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var Module
 	 */
@@ -65,7 +65,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * RSVP blocks editor instance.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var RSVP_Block
 	 */
@@ -74,7 +74,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Tickets template renderer instance.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var Template
 	 */
@@ -83,7 +83,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Class constructor.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param RSVP_Block $block    The RSVP block instance.
 	 * @param Template   $template The template instance.
@@ -99,7 +99,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -127,7 +127,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles RSVP form step requests via REST API.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The REST API request object.
 	 *
@@ -166,7 +166,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle RSVP error rendering.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string|array $error_message The error message(s).
 	 *
@@ -188,7 +188,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle processing the RSVP step based on current arguments.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array           $args    {
 	 *     The list of step template arguments.
@@ -255,7 +255,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				 *
 				 * This allows Event Tickets Plus to inject attendee meta into the cart item.
 				 *
-				 * @since TBD
+				 * @since 5.30.0
 				 *
 				 * @param array           $extra_args     The extra arguments for the cart item.
 				 * @param int             $ticket_id      The ticket ID.
@@ -354,7 +354,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle RSVP processing for the RSVP forms.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int             $ticket_id The ticket ID.
 	 * @param WP_REST_Request $request   The REST API request object.
@@ -409,7 +409,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow filtering of the template arguments used prior to processing.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array           $args    {
 		 *     The list of step template arguments.
@@ -431,7 +431,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow filtering of the template arguments used.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param array $args {
 		 *     The list of step template arguments.
@@ -474,7 +474,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param bool $show_attendee_list_optout Whether to show attendees list opt-out.
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
@@ -501,7 +501,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Parse and validate attendee details from POST data.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_REST_Request $request The REST API request object.
 	 *
@@ -577,7 +577,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Parses the quantity of tickets requested for a product via the request.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int             $ticket_id The ticket ID.
 	 * @param WP_REST_Request $request   The REST API request object.
@@ -603,7 +603,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Converts a WP_Error to the expected result array format.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param WP_Error $error The WP_Error to convert.
 	 *

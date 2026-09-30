@@ -256,7 +256,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * performed independently and may result in partial success if some
 	 * updates fail.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array $attendee_ids Attendee IDs.
 	 * @param array $updates      Fields to update (e.g., ['attendee_status' => 'yes']).
@@ -280,7 +280,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * Get attendee counts grouped by RSVP status.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $event_id Event ID.
 	 *
@@ -321,7 +321,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * Get attendees by email address for privacy operations.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $email    The email address to search for.
 	 * @param int    $page     The page number (1-indexed).
@@ -351,7 +351,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * This method will immediately delete the Attendee skipping trash.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID to delete.
 	 *
@@ -373,7 +373,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * Get the ticket/product ID for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id The attendee post ID.
 	 *

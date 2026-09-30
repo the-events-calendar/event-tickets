@@ -78,7 +78,7 @@ class Ticket_Model extends Base {
 			/**
 			 * Filters the properties to add to a ticket model.
 			 *
-			 * @since TBD
+			 * @since 5.30.0
 			 *
 			 * @param array<string,mixed> $properties Properties to add to the model.
 			 * @param WP_Post             $post       The ticket post object.

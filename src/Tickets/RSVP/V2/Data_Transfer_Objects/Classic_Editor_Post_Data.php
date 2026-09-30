@@ -2,7 +2,7 @@
 /**
  * Data Transfer Object for Classic Editor RSVP metabox POST data.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Data_Transfer_Objects
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  * exposes them as typed properties. Serializes to the array shape expected
  * by ticket_add() via to_ticket_add_data().
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\RSVP\V2\Data_Transfer_Objects
  *
@@ -58,7 +58,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * The existing RSVP ticket ID, or null when creating a new one.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var positive-int|null
 	 */
@@ -67,7 +67,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * Attendee capacity limit, or null for unlimited.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var positive-int|null
 	 */
@@ -76,7 +76,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * Whether the "Not Going" option is shown to attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var bool
 	 */
@@ -85,7 +85,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * RSVP window open date (Y-m-d), or null if not set.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string|null
 	 */
@@ -94,7 +94,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * RSVP window open time (H:i:s), or null if not set.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string|null
 	 */
@@ -103,7 +103,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * RSVP window close date (Y-m-d), or null if not set.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string|null
 	 */
@@ -112,7 +112,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * RSVP window close time (H:i:s), or null if not set.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string|null
 	 */
@@ -124,7 +124,7 @@ class Classic_Editor_Post_Data {
 	 * All sanitization and type-coercion live here, keeping downstream
 	 * code free of raw-array access and string-to-type guessing.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array<string,mixed> $post_data The unslashed $_POST data from the metabox.
 	 * @phpstan-param Post_Data   $post_data
@@ -171,7 +171,7 @@ class Classic_Editor_Post_Data {
 	/**
 	 * Serializes the DTO into the array shape expected by ticket_add().
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return Ticket_Add_Data
 	 */

@@ -46,7 +46,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Which order types this flag action applies to.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var string[]
 	 */
@@ -108,7 +108,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Gets the order type contexts this flag action applies to.
 	 *
-	 * @since TBD Filters on a per-class tag (`get_order_context_filter_tag()`) instead of one name
+	 * @since 5.30.0 Filters on a per-class tag (`get_order_context_filter_tag()`) instead of one name
 	 *            shared by every subclass, so each flag action can be targeted individually.
 	 *
 	 * @return string[]
@@ -119,7 +119,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		/**
 		 * Allows modifications of which order types will trigger this action.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param string[] $contexts    Which order types will trigger this action.
 		 * @param static   $action_flag Instance of action flag we are triggering.
@@ -130,7 +130,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Builds the class-unique filter tag used by `get_order_contexts()`.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return string
 	 */
@@ -141,7 +141,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD Now also checks `is_correct_order_context()` so a flag action can be scoped to
+	 * @since 5.30.0 Now also checks `is_correct_order_context()` so a flag action can be scoped to
 	 *            RSVP-only or ticket-only orders.
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
@@ -179,7 +179,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Determines whether the order matches this action's registered order context(s).
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param \WP_Post $order The decorated order post object.
 	 *
@@ -206,7 +206,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD The post is now resolved to its decorated order via `tec_tc_get_order()` before
+	 * @since 5.30.0 The post is now resolved to its decorated order via `tec_tc_get_order()` before
 	 *            `should_trigger()` runs, so order-context checks can read `$order->items`.
 	 */
 	public function maybe_handle( Status_Interface $new_status, $old_status, $post ) {

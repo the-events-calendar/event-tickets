@@ -17,7 +17,7 @@ class Send_Email extends Flag_Action_Abstract {
 	/**
 	 * Registry that resolves the correct email sender for the order type.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @var Order_Email_Sender_Registry
 	 */
@@ -26,7 +26,7 @@ class Send_Email extends Flag_Action_Abstract {
 	/**
 	 * Send_Email constructor.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param Order_Email_Sender_Registry $email_sender_registry Registry of order email senders.
 	 */

@@ -243,10 +243,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Registers all actions/filters.
 	 *
-	 * @deprecated TBD Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
+	 * @deprecated 5.30.0 Hooks are now registered by TEC\Tickets\RSVP\V1\Controller.
 	 */
 	public function hooks() {
-		_deprecated_function( __METHOD__, 'TBD', 'TEC\\Tickets\\RSVP\\V1\\Controller::do_register()' );
+		_deprecated_function( __METHOD__, '5.30.0', 'TEC\\Tickets\\RSVP\\V1\\Controller::do_register()' );
 	}
 
 	/**
@@ -601,7 +601,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Hooks into the filter `tribe_tickets_rsvp_form_full_name` to add the user full name if user is logged in.
 	 *
-	 * @since TBD Moved is_user_logged_in() check from hooks() to this method.
+	 * @since 5.30.0 Moved is_user_logged_in() check from hooks() to this method.
 	 *
 	 * @param string $name The current name value.
 	 *
@@ -626,7 +626,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Hook into the filter `tribe_tickets_rsvp_form_email` to add the user default email.
 	 *
 	 * @since 4.7.1
-	 * @since TBD Moved is_user_logged_in() check from hooks() to this method.
+	 * @since 5.30.0 Moved is_user_logged_in() check from hooks() to this method.
 	 *
 	 * @param string $email The current email value.
 	 *
@@ -2062,7 +2062,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			/**
 			 * Filters a TC-RSVP ticket object to allow extensions to populate additional properties.
 			 *
-			 * @since TBD
+			 * @since 5.30.0
 			 *
 			 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
 			 * @param int                           $event_id  The event post ID.
@@ -2171,7 +2171,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the RSVP Attendees IDs before the default logic runs.
 		 * Non-null values returned by applied filters will be returned to the caller.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param null|array<array<string,mixed>> $attendees_by_id Null by default.
 		 * @param int                             $post_id         The post ID.
@@ -2280,7 +2280,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Allows implementations (e.g. RSVP V2) to provide the attendee data for TC-RSVP attendees,
 	 * which the RSVP V1 handler cannot build.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $user_id User ID.
 	 * @param int $post_id Post or Event ID.
@@ -2292,7 +2292,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the RSVP Attendees by user ID before the default logic runs.
 		 * Non-null values returned by applied filters will be returned to the caller.
 		 *
-		 * @since TBD
+		 * @since 5.30.0
 		 *
 		 * @param null|array<array<string,mixed>> $attendees Null by default.
 		 * @param int                             $user_id   The user ID.
@@ -2685,7 +2685,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * Overrides parent to use repository pattern for RSVP attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int $attendee_id Attendee post ID.
 	 */
@@ -2704,7 +2704,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * Overrides parent to use repository pattern for RSVP attendees.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param int   $attendee_id Attendee ID.
 	 * @param array $data        Data that needs to be logged.
