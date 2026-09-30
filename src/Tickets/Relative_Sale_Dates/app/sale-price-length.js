@@ -1,5 +1,5 @@
 /**
- * Writes how long the sale price of the classic ticket form lasts.
+ * Works out the text that tells the admin how long a sale price lasts, for the classic ticket form and the Ticket block.
  *
  * @since TBD
  */
@@ -7,24 +7,27 @@
 /**
  * External dependencies
  */
-import moment from 'moment-timezone';
+// Only UTC dates are read here, so `moment` needs no zone data of its own in either editor.
+import moment from 'moment';
 import { _n, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { MODE_NOW, MODE_SPECIFIC } from '../rule-constants';
-import { resolveSalePriceDates } from '../sale-price-window';
-import { DATE_FORMAT } from '../sale-window';
+import { MODE_NOW, MODE_SPECIFIC } from './rule-constants';
+import { isValidSalePriceRule, resolveSalePriceDates } from './sale-price-window';
+import { DATE_FORMAT } from './sale-window';
 
-/** @typedef {import( '../sale-price-window' ).SalePriceRule} SalePriceRule */
-/** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
+/** @typedef {import( './sale-price-window' ).SalePriceRule} SalePriceRule */
+/** @typedef {import( './server-event-dates' ).EventDates} EventDates */
 
 /**
  * Gets the text that tells the admin how long the sale price lasts.
  *
  * Each date is a day, as the server stores the sale price dates. A relative boundary takes the day it resolves to in
- * the event timezone, a *now* start today, and a specific boundary the day its date field holds.
+ * the event timezone, a *now* start today, and a specific boundary the day its date field holds. A rule the server
+ * would reject, such as one with a cleared number, has no length: `moment` subtracts a `NaN` amount as 0, so the
+ * boundary would otherwise count from the event start.
  *
  * @since TBD
  *
@@ -33,9 +36,14 @@ import { DATE_FORMAT } from '../sale-window';
  * @param {{start: ?string, end: ?string}} formDates  The specific dates the form holds, `YYYY-MM-DD`, or `null`.
  * @param {string}                         today      Today in the event timezone, `YYYY-MM-DD`.
  *
- * @return {string} The text, or an empty string when the sale price does not end after the day it starts.
+ * @return {string} The text, or an empty string when the rule is invalid, a boundary has no date, or the sale price
+ *                  does not end after the day it starts.
  */
 export function getSalePriceLengthText( rule, eventDates, formDates, today ) {
+	if ( ! isValidSalePriceRule( rule ) ) {
+		return '';
+	}
+
 	const resolved = resolveSalePriceDates( rule, eventDates );
 	const getDate = ( key ) => {
 		if ( MODE_SPECIFIC === rule[ key ].mode ) {

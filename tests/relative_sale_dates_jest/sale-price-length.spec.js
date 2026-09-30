@@ -1,4 +1,4 @@
-import { getSalePriceLengthText } from '@tec/tickets/relative-sale-dates/classic/sale-price-length';
+import { getSalePriceLengthText } from '@tec/tickets/relative-sale-dates/sale-price-length';
 
 const UNIT_DAYS = 86400;
 const UNIT_WEEKS = 604800;
@@ -63,9 +63,38 @@ describe( 'getSalePriceLengthText', () => {
 		expect( getSalePriceLengthText( rule, EVENT_DATES, NO_FORM_DATES, '2099-01-01' ) ).toBe( '' );
 	} );
 
+	it.each( [
+		[ 'a cleared number read as NaN', Number.NaN ],
+		[ 'a cleared number kept as an empty string', '' ],
+	] )( 'should leave out an end with %s rather than count it from the event start', ( label, value ) => {
+		// A NaN or empty end subtracts as 0, so it would fall on the event start and read as 2 weeks.
+		const rule = { start: relative( 2, UNIT_WEEKS ), end: relative( value, UNIT_WEEKS ) };
+
+		expect( getSalePriceLengthText( rule, EVENT_DATES, NO_FORM_DATES, '2099-01-01' ) ).toBe( '' );
+	} );
+
+	it( 'should leave out a relative number the server would reject', () => {
+		// Sale_Price_Boundary takes 1 to 30; the classic number field allows typing past its max.
+		const rule = { start: relative( 31, UNIT_DAYS ), end: relative( 1, UNIT_WEEKS ) };
+
+		expect( getSalePriceLengthText( rule, EVENT_DATES, NO_FORM_DATES, '2099-01-01' ) ).toBe( '' );
+	} );
+
 	it( 'should leave out a window that does not end after the day it starts', () => {
 		const rule = { start: relative( 1, UNIT_WEEKS ), end: relative( 1, UNIT_WEEKS ) };
 
 		expect( getSalePriceLengthText( rule, EVENT_DATES, NO_FORM_DATES, '2099-01-01' ) ).toBe( '' );
+	} );
+
+	it.each( [
+		[ 'a cleared number read as NaN', Number.NaN ],
+		[ 'a cleared number kept as an empty string', '' ],
+	] )( 'should leave out a start with %s rather than count it from the event start', ( label, value ) => {
+		// A NaN or empty start subtracts as 0, so it would fall on 2099-06-24 and read as 6 days to a specific end.
+		const rule = { start: relative( value, UNIT_WEEKS ), end: { mode: 'specific' } };
+
+		expect( getSalePriceLengthText( rule, EVENT_DATES, { start: null, end: '2099-06-30' }, '2099-01-01' ) ).toBe(
+			''
+		);
 	} );
 } );

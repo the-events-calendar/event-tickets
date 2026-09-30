@@ -164,6 +164,27 @@ export function getTicketFormDates( state, clientId ) {
 }
 
 /**
+ * Reads the specific sale price dates a ticket's form sends, from the common store.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {{start: string|null, end: string|null}} The start and end, `YYYY-MM-DD`, or `null` for one the form holds no
+ *                                                 date for.
+ */
+export function readTicketFormSalePriceDates( clientId ) {
+	const { selectors } = getTicketData();
+	const state = window.__tribe_common_store__.getState();
+	const props = { clientId };
+
+	return {
+		start: selectors.getTicketTempSaleStartDate( state, props ) || null,
+		end: selectors.getTicketTempSaleEndDate( state, props ) || null,
+	};
+}
+
+/**
  * Reads the sale start and end a ticket's form sends, from the common store.
  *
  * @since TBD
