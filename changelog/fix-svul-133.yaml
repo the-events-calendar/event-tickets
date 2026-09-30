@@ -1,5 +1,0 @@
-significance: patch
-type: security
-entry: Tightened the permission checks when creating and updating tickets
-  through the REST API.
-timestamp: 2026-09-30T13:08:02.599Z

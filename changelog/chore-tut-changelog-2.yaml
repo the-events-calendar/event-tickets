@@ -1,5 +1,0 @@
-significance: patch
-type: tweak
-entry: "Removed filters: `tribe_rsvp_email_subject`,
-  `tribe_rsvp_non_attendance_email_content`"
-timestamp: 2026-09-30T16:52:50.054Z
