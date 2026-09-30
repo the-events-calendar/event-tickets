@@ -111,7 +111,7 @@ class Writer extends Controller_Contract {
 			$position = 0;
 
 			foreach ( $items as $key => $item ) {
-				$rows[] = $this->types->get_for_item( $item )->to_row( $key, $item, $order_id, $currency ) + [ 'position' => $position++ ];
+				$rows[] = $this->types->get_for_item( $item )::to_row( $key, $item, $order_id, $currency ) + [ 'position' => $position++ ];
 			}
 
 			/*
