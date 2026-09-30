@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Fix saving an RSVP from the classic-editor metabox failing with a "must be a positive integer" REST error by sending the event ID as an integer instead of a string.
