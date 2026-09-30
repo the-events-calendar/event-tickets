@@ -36,7 +36,8 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -75,7 +76,8 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -114,7 +116,8 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -153,7 +156,8 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -192,7 +196,8 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "code": "rest_forbidden",
@@ -238,7 +243,8 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     },
     {
         "id": {TICKET_ID},
@@ -277,6 +283,7 @@
         "sold": 0,
         "sku": "TEST-TKT-{POST_ID}",
         "capacity": 100,
-        "relative_sale_dates": null
+        "relative_sale_dates": null,
+        "sale_price_relative": null
     }
 ]

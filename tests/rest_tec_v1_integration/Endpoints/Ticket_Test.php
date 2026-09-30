@@ -6,7 +6,10 @@ use TEC\Common\Tests\Testcases\REST\TEC\V1\Post_Entity_REST_Test_Case;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Commerce\Ticket as Ticket_Model;
 use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
+use TEC\Tickets\Relative_Sale_Dates\Rest as Relative_Sale_Dates_Rest;
 use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
+use TEC\Tickets\Relative_Sale_Dates\Sale_Price_Rule;
+use TEC\Tickets\Relative_Sale_Dates\Sale_Price_Save;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Tickets as Tickets;
@@ -364,6 +367,50 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 
 		// An empty rule is the one the ticket save removes.
 		$this->assertSame( '', $ticket_params['relative_sale_dates'] ?? 'missing' );
+	}
+
+	public function test_read_returns_the_stored_sale_price_rule() {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		wp_set_current_user( 1 );
+		$ticket_id = $this->create_tc_ticket( self::factory()->post->create(), 10 );
+		$rule      = [
+			'start' => [ 'mode' => Sale_Price_Rule::MODE_NOW ],
+			'end'   => [
+				'mode'  => 'relative',
+				'value' => 1,
+				'unit'  => WEEK_IN_SECONDS,
+			],
+		];
+		tribe( Rule_Store::class )->save( $ticket_id, [ Sale_Price_Rule::KEY => $rule ] );
+
+		$response = $this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $ticket_id ) );
+
+		$this->assertSame( $rule, $response[ Relative_Sale_Dates_Rest::SALE_PRICE_RULE_FIELD ] );
+	}
+
+	public function test_update_passes_a_sale_price_rule_sent_as_null_to_the_ticket_save() {
+		if ( ! $this->is_updatable() ) {
+			return;
+		}
+
+		wp_set_current_user( 1 );
+		$ticket_id               = $this->create_tc_ticket( self::factory()->post->create(), 10 );
+		$ticket_params           = null;
+		$this->upsert_params_spy = static function ( array $filtered_ticket_params ) use ( &$ticket_params ): array {
+			$ticket_params = $filtered_ticket_params;
+
+			return $filtered_ticket_params;
+		};
+		// After the rule is moved into the ticket parameters.
+		add_filter( 'tec_tickets_rest_ticket_upsert_params', $this->upsert_params_spy, 20 );
+
+		$this->assert_endpoint( sprintf( $this->endpoint->get_base_path(), $ticket_id ), 'PUT', 200, [ Relative_Sale_Dates_Rest::SALE_PRICE_RULE_FIELD => null ] );
+
+		// An empty rule is the one the ticket save removes.
+		$this->assertSame( '', $ticket_params[ Sale_Price_Save::DATA_KEY ] ?? 'missing' );
 	}
 
 	public function test_update_handles_save_failure() {

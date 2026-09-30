@@ -3,13 +3,16 @@
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
+use Generator;
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket as Ticket_Endpoint;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use WP_REST_Request;
 use WP_REST_Response;
 
 class Rest_Test extends Controller_Test_Case {
@@ -227,6 +230,207 @@ class Rest_Test extends Controller_Test_Case {
 
 		$this->assertArrayHasKey( 'relative_sale_dates', $data );
 		$this->assertNull( $data['relative_sale_dates'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_store_the_sale_price_rule_the_block_editor_sends(): void {
+		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$rule        = $this->get_sale_price_rule();
+
+		$response = $this->send_block_editor_ticket_save( 'POST', '/tickets', $event_id, 'add_ticket_nonce', $this->get_block_editor_sale_price( wp_json_encode( $rule ) ) );
+
+		$this->assertFalse( $response->is_error() );
+		$ticket_ids = tribe( Module::class )->get_tickets_ids( $event_id );
+		$ticket_id  = reset( $ticket_ids );
+		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id )[ Sale_Price_Rule::KEY ] );
+		$this->assertSame( $event_start->modify( '-14 days' )->format( 'Y-m-d' ), get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_remove_the_sale_price_rule_the_block_editor_sends_as_empty(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$this->send_block_editor_ticket_save( 'POST', '/tickets', $event_id, 'add_ticket_nonce', $this->get_block_editor_sale_price( wp_json_encode( $this->get_sale_price_rule() ) ) );
+		$ticket_ids = tribe( Module::class )->get_tickets_ids( $event_id );
+		$ticket_id  = reset( $ticket_ids );
+
+		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', $this->get_block_editor_sale_price( '' ) );
+
+		$this->assertFalse( $response->is_error() );
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: array{sale_price: array<string,string|bool>}}>
+	 */
+	public function unmapped_block_editor_sale_price_provider(): Generator {
+		yield 'a sale price rule sent with an RSVP' => [ 'tickets.rsvp', [ 'sale_price' => [ 'relative' => wp_json_encode( $this->get_sale_price_rule() ) ] ] ];
+		yield 'a sale price sent without a rule' => [
+			Module::class,
+			[
+				'sale_price' => [
+					'checked' => true,
+					'price'   => '10',
+				],
+			],
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider unmapped_block_editor_sale_price_provider
+	 */
+	public function should_leave_the_ticket_data_without_a_sale_price_rule_to_map( string $provider, array $ticket ): void {
+		$request = new WP_REST_Request( 'POST' );
+		$request->set_param( 'ticket', $ticket );
+
+		$ticket_data = apply_filters( 'tec_tickets_rest_single_ticket_add_data', [ 'ticket_name' => 'Block editor ticket' ], $request, tribe( $provider ) );
+
+		$this->assertArrayNotHasKey( Sale_Price_Save::DATA_KEY, $ticket_data );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_return_the_stored_sale_price_rule_in_the_block_editor_ticket_data(): void {
+		$ticket_id = $this->create_tc_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		$rule      = $this->get_sale_price_rule();
+		tribe( Rule_Store::class )->save( $ticket_id, [ Sale_Price_Rule::KEY => $rule ] );
+
+		$data = tribe( 'tickets.rest-v1.repository' )->get_ticket_data( $ticket_id );
+
+		$this->assertSame( $rule, $data['sale_price_data']['relative'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_return_null_in_the_block_editor_sale_price_data_of_a_ticket_without_a_sale_price_rule(): void {
+		$ticket_id = $this->create_tc_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+
+		$data = tribe( 'tickets.rest-v1.repository' )->get_ticket_data( $ticket_id );
+
+		$this->assertArrayHasKey( 'relative', $data['sale_price_data'] );
+		$this->assertNull( $data['sale_price_data']['relative'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_add_a_sale_price_rule_to_the_block_editor_data_of_an_rsvp(): void {
+		$rsvp_id = $this->create_ticket( 'tickets.rsvp', $this->create_event( '2027-06-24 19:00:00' ), 0 );
+
+		$data = tribe( 'tickets.rest-v1.repository' )->get_ticket_data( $rsvp_id );
+
+		$this->assertArrayNotHasKey( 'relative', $data['sale_price_data'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_store_and_return_the_sale_price_rule_sent_to_the_tec_rest_api(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$rule     = $this->get_sale_price_rule();
+
+		$response = $this->upsert_through_tec_rest_api( $this->get_tec_rest_api_sale_price( $event_id, $rule ) );
+
+		$ticket_id = $response->get_data()['id'];
+		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id )[ Sale_Price_Rule::KEY ] );
+		$this->assertSame( $rule, $response->get_data()[ Rest::SALE_PRICE_RULE_FIELD ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_sale_price_rule_when_a_tec_rest_api_update_leaves_it_out(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$rule      = $this->get_sale_price_rule();
+		$ticket_id = $this->upsert_through_tec_rest_api( $this->get_tec_rest_api_sale_price( $event_id, $rule ) )->get_data()['id'];
+
+		$this->upsert_through_tec_rest_api(
+			[
+				'id'    => $ticket_id,
+				'title' => 'TEC REST ticket, renamed',
+			],
+			'update'
+		);
+
+		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id )[ Sale_Price_Rule::KEY ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_remove_the_sale_price_rule_when_a_tec_rest_api_update_sends_null(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->upsert_through_tec_rest_api( $this->get_tec_rest_api_sale_price( $event_id, $this->get_sale_price_rule() ) )->get_data()['id'];
+
+		$this->upsert_through_tec_rest_api(
+			[
+				'id'                        => $ticket_id,
+				Rest::SALE_PRICE_RULE_FIELD => null,
+			],
+			'update'
+		);
+
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * @return array{start: array{mode: string, value: int, unit: int}, end: array{mode: string, value: int, unit: int}} The sale price rule "14 days to 7 days before the event start".
+	 */
+	private function get_sale_price_rule(): array {
+		return [
+			'start' => [
+				'mode'  => Rule::MODE_RELATIVE,
+				'value' => 14,
+				'unit'  => Rule::UNIT_DAYS,
+			],
+			'end'   => [
+				'mode'  => Rule::MODE_RELATIVE,
+				'value' => 7,
+				'unit'  => Rule::UNIT_DAYS,
+			],
+		];
+	}
+
+	/**
+	 * @param string $relative The sale price rule as the block editor sends it, as JSON, or `''` to remove it.
+	 *
+	 * @return array{price: string, ticket: array{sale_price: array{checked: bool, price: string, relative: string}}} The body of a ticket priced 20 with a sale price of 10.
+	 */
+	private function get_block_editor_sale_price( string $relative ): array {
+		return [
+			'price'  => '20',
+			'ticket' => [
+				'sale_price' => [
+					'checked'  => true,
+					'price'    => '10',
+					'relative' => $relative,
+				],
+			],
+		];
+	}
+
+	/**
+	 * @param int                                                                                                      $event_id The event post ID.
+	 * @param array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}} $rule     The sale price rule.
+	 *
+	 * @return array{event: int, title: string, price: int, sale_price: int, sale_price_relative: array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}} The parameters of a new ticket priced 20 with a sale price of 10.
+	 */
+	private function get_tec_rest_api_sale_price( int $event_id, array $rule ): array {
+		return [
+			'event'                     => $event_id,
+			'title'                     => 'TEC REST ticket',
+			'price'                     => 20,
+			'sale_price'                => 10,
+			Rest::SALE_PRICE_RULE_FIELD => $rule,
+		];
 	}
 
 	/**

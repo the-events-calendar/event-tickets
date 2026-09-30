@@ -1,6 +1,6 @@
 <?php
 /**
- * The sales window rule as a TEC REST API parameter.
+ * A relative sale dates rule as a TEC REST API parameter.
  *
  * @since TBD
  *
@@ -20,7 +20,7 @@ use TEC\Common\REST\TEC\V1\Parameter_Types\Integer;
 use TEC\Common\REST\TEC\V1\Parameter_Types\Text;
 
 /**
- * A nullable object parameter that keeps the rule as it was sent, for `Rule` to validate.
+ * A nullable object parameter that keeps a rule as it was sent, for `Rule` or `Sale_Price_Rule` to validate.
  *
  * An `Entity` would suit the documentation, but request body collections register an entity's leaf properties as
  * separate arguments, and its sanitizer does not accept `null`.
@@ -34,15 +34,67 @@ final class Rule_Parameter extends Parameter {
 	 * Rule_Parameter constructor.
 	 *
 	 * @since TBD
+	 *
+	 * @param string   $name                 The parameter name.
+	 * @param Closure  $description_provider The provider of the parameter description.
+	 * @param Entity[] $boundaries           The documentation of the rule's `start` and `end`.
 	 */
-	public function __construct() {
-		$this->name                 = Ticket_Save::DATA_KEY;
-		$this->description_provider = fn() => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule.', 'event-tickets' );
+	private function __construct( string $name, Closure $description_provider, array $boundaries ) {
+		$this->name                 = $name;
+		$this->description_provider = $description_provider;
 		$this->required             = false;
 		$this->nullable             = true;
 		$this->properties           = new PropertiesCollection();
-		$this->properties[]         = $this->get_boundary_parameter( 'start', fn() => __( 'When sales start.', 'event-tickets' ) );
-		$this->properties[]         = $this->get_boundary_parameter( 'end', fn() => __( 'When sales end.', 'event-tickets' ) );
+
+		foreach ( $boundaries as $boundary ) {
+			$this->properties[] = $boundary;
+		}
+	}
+
+	/**
+	 * Builds the parameter of the sales window rule.
+	 *
+	 * @since TBD
+	 *
+	 * @return self The `relative_sale_dates` parameter.
+	 */
+	public static function for_sales_window(): self {
+		return new self(
+			Ticket_Save::DATA_KEY,
+			fn() => __( 'The sales window relative to the event, or null when the ticket has fixed sale dates. Sending null removes the rule.', 'event-tickets' ),
+			[
+				self::get_boundary_parameter( 'start', fn() => __( 'When sales start.', 'event-tickets' ) ),
+				self::get_boundary_parameter( 'end', fn() => __( 'When sales end.', 'event-tickets' ) ),
+			]
+		);
+	}
+
+	/**
+	 * Builds the parameter of the sale price rule.
+	 *
+	 * @since TBD
+	 *
+	 * @return self The `sale_price_relative` parameter.
+	 */
+	public static function for_sale_price(): self {
+		return new self(
+			Rest::SALE_PRICE_RULE_FIELD,
+			fn() => __( 'The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule.', 'event-tickets' ),
+			[
+				self::get_sale_price_boundary_parameter(
+					'start',
+					fn() => __( 'When the sale price starts.', 'event-tickets' ),
+					fn() => __( 'How the start is set: `now` (as soon as ticket sales open), `relative` (before the event start) or `specific` (the date sent in `sale_price_start_date`).', 'event-tickets' ),
+					[ Sale_Price_Rule::MODE_NOW, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ]
+				),
+				self::get_sale_price_boundary_parameter(
+					'end',
+					fn() => __( 'When the sale price ends.', 'event-tickets' ),
+					fn() => __( 'How the end is set: `relative` (before the event start) or `specific` (the date sent in `sale_price_end_date`).', 'event-tickets' ),
+					[ Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ]
+				),
+			]
+		);
 	}
 
 	/**
@@ -126,7 +178,7 @@ final class Rule_Parameter extends Parameter {
 	 *
 	 * @return Entity The boundary's documentation.
 	 */
-	private function get_boundary_parameter( string $name, Closure $description_provider ): Entity {
+	private static function get_boundary_parameter( string $name, Closure $description_provider ): Entity {
 		$properties   = new PropertiesCollection();
 		$properties[] = (
 			new Text(
@@ -171,6 +223,50 @@ final class Rule_Parameter extends Parameter {
 				[ Rule::ANCHOR_START, Rule::ANCHOR_END ]
 			)
 		)->set_example( Rule::ANCHOR_START );
+
+		return new Entity( $name, $description_provider, $properties, false );
+	}
+
+	/**
+	 * Gets the documentation of one boundary of the sale price window.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $name                      The boundary, `start` or `end`.
+	 * @param Closure  $description_provider      The provider of the boundary's description.
+	 * @param Closure  $mode_description_provider The provider of the description of the boundary's modes.
+	 * @param string[] $modes                     The modes the boundary accepts.
+	 *
+	 * @return Entity The boundary's documentation.
+	 */
+	private static function get_sale_price_boundary_parameter( string $name, Closure $description_provider, Closure $mode_description_provider, array $modes ): Entity {
+		$properties   = new PropertiesCollection();
+		$properties[] = ( new Text( 'mode', $mode_description_provider, null, $modes ) )->set_example( Rule::MODE_RELATIVE );
+		$properties[] = (
+			new Integer(
+				'value',
+				fn() => sprintf(
+					// translators: 1) the lowest number of units, 2) the highest number of units.
+					__( 'For a relative boundary, the number of units before the event start, from %1$d to %2$d.', 'event-tickets' ),
+					Sale_Price_Boundary::MIN_VALUE,
+					Sale_Price_Boundary::MAX_VALUE
+				),
+				null,
+				Sale_Price_Boundary::MIN_VALUE,
+				Sale_Price_Boundary::MAX_VALUE
+			)
+		)->set_example( 2 );
+		$properties[] = (
+			new Integer(
+				'unit',
+				fn() => sprintf(
+					// translators: 1) a day and 2) a week, each in seconds.
+					__( 'For a relative boundary, the unit in seconds: %1$d (days) or %2$d (weeks).', 'event-tickets' ),
+					Rule::UNIT_DAYS,
+					Rule::UNIT_WEEKS
+				)
+			)
+		)->set_example( Rule::UNIT_WEEKS );
 
 		return new Entity( $name, $description_provider, $properties, false );
 	}
