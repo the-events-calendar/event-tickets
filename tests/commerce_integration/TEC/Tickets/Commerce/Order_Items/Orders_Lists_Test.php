@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Admin_Tables\Orders;
 use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Order_Items\Repositories\Order_Items as Order_Items_Repository;
 use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -42,11 +43,11 @@ class Orders_Lists_Test extends Controller_Test_Case {
 		yield 'event report, all tickets present, old order' => [ $purchased, false, false, '1 - General admission|2 - VIP' ];
 		yield 'event report, all tickets present, version 2 order' => [ $purchased, true, false, '1 - General admission|2 - VIP' ];
 		yield 'event report, deleted ticket, old order' => [ $purchased, false, true, '1 - General admission|2 - Ticket #{{ticket_id}} (no longer exists)' ];
-		yield 'event report, deleted ticket, version 2 order' => [ $purchased, true, true, '1 - General admission|2 - VIP (no longer exists)' ];
+		yield 'event report, deleted ticket, version 2 order' => [ $purchased, true, true, '1 - General admission|2 - Stored VIP (no longer exists)' ];
 		yield 'orders list, all tickets present, old order' => [ $items, false, false, '1 General admission|2 VIP' ];
 		yield 'orders list, all tickets present, version 2 order' => [ $items, true, false, '1 General admission|2 VIP' ];
 		yield 'orders list, deleted ticket, old order' => [ $items, false, true, '1 General admission|2 Tickets' ];
-		yield 'orders list, deleted ticket, version 2 order' => [ $items, true, true, '1 General admission|2 VIP (no longer exists)' ];
+		yield 'orders list, deleted ticket, version 2 order' => [ $items, true, true, '1 General admission|2 Stored VIP (no longer exists)' ];
 	}
 
 	/**
@@ -62,6 +63,18 @@ class Orders_Lists_Test extends Controller_Test_Case {
 			$this->register_controller();
 		}
 		$order = $this->create_order( [ $ticket_ids[0] => 1, $ticket_ids[1] => 2 ] );
+		if ( $version_2 ) {
+			// A stored name unlike the ticket's shows which of the two each list renders.
+			$repository = tribe( Order_Items_Repository::class );
+			$repository->update_rows(
+				[
+					[
+						'id'   => $repository->get_by_order( $order->ID )[1]->id,
+						'name' => 'Stored VIP',
+					],
+				]
+			);
+		}
 		if ( $delete_ticket ) {
 			tribe( Module::class )->delete_ticket( $event_id, $ticket_ids[1] );
 		}
