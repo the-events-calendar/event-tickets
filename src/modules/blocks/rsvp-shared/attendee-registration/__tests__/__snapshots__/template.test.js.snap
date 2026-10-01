@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RSVPAttendeeRegistration should render the attendee registration element 1`] = `
+<div
+  data-testid="ar-element"
+>
+  <span
+    data-testid="link-text"
+  >
+    + Add
+  </span>
+  <span
+    data-testid="helper-text"
+  />
+</div>
+`;
