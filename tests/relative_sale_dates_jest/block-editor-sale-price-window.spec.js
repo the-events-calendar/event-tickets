@@ -399,7 +399,8 @@ describe( 'the Ticket block sale price window options', () => {
 		expect( findControl( SelectControl, END_LABELS.mode ).props.hideLabelFromVision ).toBeUndefined();
 	} );
 
-	it( 'should show only the picker of a boundary set to a specific date, labelled for screen readers', () => {
+	// Common's DayPickerInput puts `inputProps` on its `<input>`; its own spec covers that, so this checks what ET hands it.
+	it( 'should show only the picker of a boundary set to a specific date, with its accessible name in inputProps', () => {
 		renderSalePriceWindow( newClientId() );
 
 		change( SelectControl, END_LABELS.mode, 'specific' );
