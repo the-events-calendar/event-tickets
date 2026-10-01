@@ -12,11 +12,12 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPCounters from '../counters/container';
+import RSVPCounters from '../../rsvp-shared/counters/container';
 import { NumericLabel, SplitContainer } from '../../../elements';
-import { SettingsActionButton, AttendeesActionButton } from '../action-buttons';
+import { AttendeesActionButton } from '../../rsvp-shared/action-buttons';
+import { SettingsActionButton } from '../action-buttons';
 
-import './style.pcss';
+import '../../rsvp-shared/container-header/style.pcss';
 
 const getCapacityLabel = ( capacity ) => {
 	// todo: should use _n to be translator friendly

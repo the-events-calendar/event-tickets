@@ -7,6 +7,7 @@ use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Spatie\Snapshots\MatchesSnapshots;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
+use Tribe\Tickets\Test\Traits\With_Snapshot_Post_Id_Replacement;
 use Tribe__Tickets__Editor__Template;
 
 /**
@@ -20,6 +21,7 @@ abstract class V2TestCase extends WPTestCase {
 	}
 
 	use With_Post_Remapping;
+	use With_Snapshot_Post_Id_Replacement;
 
 	/**
 	 * The path relative to the V2 views path.
@@ -35,6 +37,9 @@ abstract class V2TestCase extends WPTestCase {
 		parent::setUp();
 
 		$this->factory()->event = new Event();
+
+		// Prevent loader icon classes from leaking between partial tests.
+		tribe( 'tickets.editor.template' )->set( 'classes', [], false );
 	}
 
 	/**
