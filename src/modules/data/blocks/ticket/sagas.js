@@ -53,6 +53,8 @@ import {
 	isTribeEventPostType,
 } from '../../shared/sagas';
 import { isTicketEditableFromPost } from './utils';
+import { usesDeferredSave } from './deferred';
+import * as deferredSagas from './deferred-sagas';
 
 const { UNLIMITED, SHARED, TICKET_TYPES, PROVIDER_CLASS_TO_PROVIDER_MAPPING } =
 	constants;
@@ -418,7 +420,9 @@ export function* setTicketInitialState( action ) {
 	}
 
 	yield call( handleTicketDurationError, clientId );
-	yield fork( saveTicketWithPostSave, clientId );
+	if ( ! usesDeferredSave() ) {
+		yield fork( saveTicketWithPostSave, clientId );
+	}
 }
 
 export function* setBodyDetails( clientId ) {
@@ -754,6 +758,13 @@ export function* createNewTicket( action ) {
 
 	const { add_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 	const body = yield call( setBodyDetails, clientId );
+
+	// On a post that defers ticket saves the change is staged and travels with the post save.
+	if ( usesDeferredSave() ) {
+		yield call( deferredSagas.stageTicket, clientId, [ ...body.entries() ] );
+		return;
+	}
+
 	body.append( 'add_ticket_nonce', add_ticket_nonce );
 
 	try {
@@ -909,7 +920,9 @@ export function* createNewTicket( action ) {
 				ticketDetails
 			);
 
-			yield fork( saveTicketWithPostSave, clientId );
+			if ( ! usesDeferredSave() ) {
+				yield fork( saveTicketWithPostSave, clientId );
+			}
 		}
 	} catch ( e ) {
 		// eslint-disable-next-line no-console
@@ -928,6 +941,13 @@ export function* updateTicket( action ) {
 
 	const { edit_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 	const body = yield call( setBodyDetails, clientId );
+
+	// On a post that defers ticket saves the change is staged and travels with the post save.
+	if ( usesDeferredSave() ) {
+		yield call( deferredSagas.stageTicket, clientId, [ ...body.entries() ] );
+		return;
+	}
+
 	body.append( 'edit_ticket_nonce', edit_ticket_nonce );
 
 	const ticketId = yield select( selectors.getTicketId, props );
@@ -1174,7 +1194,19 @@ export function* deleteTicket( action ) {
 			[ clientId ]
 		);
 
+		// On a post that defers ticket saves the deletion is staged and happens with the post save; a staged
+		// ticket that was never saved just leaves the payload.
+		if ( usesDeferredSave() ) {
+			if ( hasBeenCreated ) {
+				yield call( deferredSagas.stageDelete, clientId, ticketId );
+			} else {
+				yield call( deferredSagas.dropStaged, clientId );
+			}
+			return;
+		}
+
 		if ( hasBeenCreated ) {
+
 			const { remove_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 			const postId = yield call( [
 				wpSelect( 'core/editor' ),
@@ -2067,4 +2099,5 @@ export default function* watchers() {
 	);
 
 	yield fork( handleEventStartDateChanges );
+	yield fork( deferredSagas.watchPostSaves );
 }
