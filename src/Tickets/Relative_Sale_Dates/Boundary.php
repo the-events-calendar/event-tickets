@@ -59,7 +59,9 @@ final class Boundary implements JsonSerializable {
 	private ?int $value;
 
 	/**
-	 * The unit, one of the `Rule::UNIT_*` constants, for a relative boundary.
+	 * The unit as its length in seconds, one of the `*_IN_SECONDS` constants from `MINUTE_IN_SECONDS` to `WEEK_IN_SECONDS`, for a relative boundary.
+	 *
+	 * It only identifies the unit: days and weeks are resolved as calendar days, never as a number of seconds.
 	 *
 	 * @since TBD
 	 *
@@ -108,7 +110,7 @@ final class Boundary implements JsonSerializable {
 		}
 
 		$unit = $data['unit'] ?? null;
-		if ( ! in_array( $unit, [ Rule::UNIT_MINUTES, Rule::UNIT_HOURS, Rule::UNIT_DAYS, Rule::UNIT_WEEKS ], true ) ) {
+		if ( ! in_array( $unit, [ MINUTE_IN_SECONDS, HOUR_IN_SECONDS, DAY_IN_SECONDS, WEEK_IN_SECONDS ], true ) ) {
 			throw new InvalidArgumentException( 'The boundary has an unknown unit.' );
 		}
 
@@ -147,7 +149,7 @@ final class Boundary implements JsonSerializable {
 	 *
 	 * @param string      $mode   The mode, one of the `Rule::MODE_*` constants.
 	 * @param int|null    $value  The number of units before the anchor, for a relative boundary.
-	 * @param int|null    $unit   The unit, one of the `Rule::UNIT_*` constants, for a relative boundary.
+	 * @param int|null    $unit   The unit, one of the `*_IN_SECONDS` constants from `MINUTE_IN_SECONDS` to `WEEK_IN_SECONDS`, for a relative boundary.
 	 * @param string|null $anchor The event date the boundary is counted from, for a relative boundary.
 	 */
 	private function __construct( string $mode, ?int $value = null, ?int $unit = null, ?string $anchor = null ) {

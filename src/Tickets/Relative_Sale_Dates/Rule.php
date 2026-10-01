@@ -50,42 +50,6 @@ final class Rule implements JsonSerializable {
 	public const MODE_SPECIFIC = 'specific';
 
 	/**
-	 * A minute, in seconds.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	public const UNIT_MINUTES = MINUTE_IN_SECONDS;
-
-	/**
-	 * An hour, in seconds.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	public const UNIT_HOURS = HOUR_IN_SECONDS;
-
-	/**
-	 * A day, in seconds. Identifies the unit only: days are resolved as calendar days.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	public const UNIT_DAYS = DAY_IN_SECONDS;
-
-	/**
-	 * A week, in seconds. Identifies the unit only: weeks are resolved as calendar days.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	public const UNIT_WEEKS = WEEK_IN_SECONDS;
-
-	/**
 	 * Measured from the event start.
 	 *
 	 * @since TBD

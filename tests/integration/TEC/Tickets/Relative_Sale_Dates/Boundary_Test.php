@@ -12,10 +12,10 @@ class Boundary_Test extends WPTestCase {
 	 */
 	public function valid_boundaries_provider(): Generator {
 		$units = [
-			'minutes' => Rule::UNIT_MINUTES,
-			'hours'   => Rule::UNIT_HOURS,
-			'days'    => Rule::UNIT_DAYS,
-			'weeks'   => Rule::UNIT_WEEKS,
+			'minutes' => MINUTE_IN_SECONDS,
+			'hours'   => HOUR_IN_SECONDS,
+			'days'    => DAY_IN_SECONDS,
+			'weeks'   => WEEK_IN_SECONDS,
 		];
 		// The lowest and highest value the product allows.
 		$values = [ 1, 60 ];
@@ -46,7 +46,7 @@ class Boundary_Test extends WPTestCase {
 		$relative = [
 			'mode'   => Rule::MODE_RELATIVE,
 			'value'  => 2,
-			'unit'   => Rule::UNIT_WEEKS,
+			'unit'   => WEEK_IN_SECONDS,
 			'anchor' => Rule::ANCHOR_START,
 		];
 
@@ -55,7 +55,7 @@ class Boundary_Test extends WPTestCase {
 		yield 'non-string mode' => [ [ 'mode' => 1 ] ];
 		yield 'unknown anchor' => [ array_merge( $relative, [ 'anchor' => 'middle' ] ) ];
 		yield 'unit of a month' => [ array_merge( $relative, [ 'unit' => MONTH_IN_SECONDS ] ) ];
-		yield 'unit as a string' => [ array_merge( $relative, [ 'unit' => sprintf( '%d', Rule::UNIT_WEEKS ) ] ) ];
+		yield 'unit as a string' => [ array_merge( $relative, [ 'unit' => sprintf( '%d', WEEK_IN_SECONDS ) ] ) ];
 		yield 'value 0' => [ array_merge( $relative, [ 'value' => 0 ] ) ];
 		yield 'value 61' => [ array_merge( $relative, [ 'value' => 61 ] ) ];
 		yield 'negative value' => [ array_merge( $relative, [ 'value' => -2 ] ) ];
@@ -92,7 +92,7 @@ class Boundary_Test extends WPTestCase {
 		$relative = [
 			'mode'   => Rule::MODE_RELATIVE,
 			'value'  => 2,
-			'unit'   => Rule::UNIT_HOURS,
+			'unit'   => HOUR_IN_SECONDS,
 			'anchor' => Rule::ANCHOR_END,
 		];
 
