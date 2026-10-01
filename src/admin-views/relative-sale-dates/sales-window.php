@@ -51,10 +51,10 @@ $modes = [
 ];
 
 $units = [
-	Rule::UNIT_MINUTES => _x( 'minutes', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	Rule::UNIT_HOURS   => _x( 'hours', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	Rule::UNIT_DAYS    => _x( 'days', 'Unit of a relative ticket sale date.', 'event-tickets' ),
-	Rule::UNIT_WEEKS   => _x( 'weeks', 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	MINUTE_IN_SECONDS => _x( 'minutes', 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	HOUR_IN_SECONDS   => _x( 'hours', 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	DAY_IN_SECONDS    => _x( 'days', 'Unit of a relative ticket sale date.', 'event-tickets' ),
+	WEEK_IN_SECONDS   => _x( 'weeks', 'Unit of a relative ticket sale date.', 'event-tickets' ),
 ];
 
 $anchors = [
