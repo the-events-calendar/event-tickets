@@ -86,6 +86,7 @@ class Writer extends Controller_Contract {
 	public function unregister(): void {
 		remove_action( 'tec_tickets_commerce_order_created', [ $this, 'write_created_order' ] );
 		remove_action( 'tec_tickets_commerce_order_updated', [ $this, 'sync_updated_order' ] );
+		remove_action( 'tec_tickets_commerce_order_deleted', [ $this, 'delete_order_rows' ] );
 	}
 
 	/**
@@ -209,6 +210,31 @@ class Writer extends Controller_Contract {
 	}
 
 	/**
+	 * Deletes the rows of a permanently deleted order.
+	 *
+	 * A failure is logged, never thrown, so it cannot stop the order from being deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id The order ID.
+	 *
+	 * @return void
+	 */
+	public function delete_order_rows( int $order_id ): void {
+		try {
+			$this->repository->delete_by_order( $order_id );
+		} catch ( Throwable $e ) {
+			$this->debug(
+				'The order items could not be deleted from the table.',
+				[
+					'order_id' => $order_id,
+					'error'    => $e->getMessage(),
+				]
+			);
+		}
+	}
+
+	/**
 	 * Hooks the writer.
 	 *
 	 * @since TBD
@@ -218,6 +244,7 @@ class Writer extends Controller_Contract {
 	protected function do_register(): void {
 		add_action( 'tec_tickets_commerce_order_created', [ $this, 'write_created_order' ], 10, 2 );
 		add_action( 'tec_tickets_commerce_order_updated', [ $this, 'sync_updated_order' ], 10, 2 );
+		add_action( 'tec_tickets_commerce_order_deleted', [ $this, 'delete_order_rows' ] );
 	}
 
 	/**
