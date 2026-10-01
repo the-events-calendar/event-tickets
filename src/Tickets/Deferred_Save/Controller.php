@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Deferred_Save;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use Tribe__Tickets__Main as Tickets_Main;
 
 /**
  * Class Controller.
@@ -77,6 +78,13 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Classic_Save::class );
 
 		add_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY, 2 );
+
+		$this->container->singleton( Block_Save::class );
+
+		foreach ( Tickets_Main::instance()->post_types() as $post_type ) {
+			add_action( "rest_after_insert_{$post_type}", $this->container->callback( Block_Save::class, 'on_rest_after_insert' ), Block_Save::PRIORITY, 3 );
+			add_filter( "rest_prepare_{$post_type}", $this->container->callback( Block_Save::class, 'add_result_to_response' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -88,5 +96,10 @@ final class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY );
+
+		foreach ( Tickets_Main::instance()->post_types() as $post_type ) {
+			remove_action( "rest_after_insert_{$post_type}", $this->container->callback( Block_Save::class, 'on_rest_after_insert' ), Block_Save::PRIORITY );
+			remove_filter( "rest_prepare_{$post_type}", $this->container->callback( Block_Save::class, 'add_result_to_response' ), 10 );
+		}
 	}
 }
