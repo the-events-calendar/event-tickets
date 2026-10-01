@@ -12,7 +12,7 @@ use TEC\Tickets\Ticket_Actions;
 trait Relative_Sale_Dates_Maker {
 	/**
 	 * @param int $value The number of units before the event start.
-	 * @param int $unit  The unit, one of the `Rule::UNIT_*` constants.
+	 * @param int $unit  The unit, one of the `*_IN_SECONDS` constants from `MINUTE_IN_SECONDS` to `WEEK_IN_SECONDS`.
 	 *
 	 * @return array{mode: string, value: int, unit: int, anchor: string} A relative edge of the window, anchored on the event start.
 	 */
