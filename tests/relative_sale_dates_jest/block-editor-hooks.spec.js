@@ -39,6 +39,8 @@ const editedRule = {
 	end: { mode: 'default' },
 };
 
+const relative = ( value, unit ) => ( { mode: 'relative', value, unit, anchor: 'start' } );
+
 let clientCount = 0;
 
 /**
@@ -138,6 +140,38 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			const body = buildBody( newClientId() );
 
 			expect( body.has( BODY_FIELD ) ).toBe( false );
+		} );
+
+		describe( 'with the event dates in the editor', () => {
+			beforeEach( () => {
+				window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+				setBlockEditorData();
+				setEventState( DEFAULT_EVENT );
+			} );
+
+			afterEach( () => {
+				delete window.tribe;
+				clearBlockEditorGlobals();
+			} );
+
+			it( 'should keep the stored rule, by sending none, while the draft ends before it starts', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setRule( clientId, storedRule );
+				dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) } );
+
+				const body = buildBody( clientId );
+
+				expect( body.has( BODY_FIELD ) ).toBe( false );
+				expect( body.get( 'ticket[start_date]' ) ).toBe( '2026-10-01' );
+			} );
+
+			it( 'should send a draft that starts before it ends', () => {
+				const clientId = newClientId();
+				const draft = { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) };
+				dispatch( STORE_NAME ).setDraftRule( clientId, draft );
+
+				expect( JSON.parse( buildBody( clientId ).get( BODY_FIELD ) ) ).toStrictEqual( draft );
+			} );
 		} );
 	} );
 
@@ -296,8 +330,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			return store.getState();
 		}
-
-		const relative = ( value, unit ) => ( { mode: 'relative', value, unit, anchor: 'start' } );
 
 		beforeEach( () => {
 			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
