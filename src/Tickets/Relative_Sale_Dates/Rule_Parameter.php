@@ -156,13 +156,13 @@ final class Rule_Parameter extends Parameter {
 				fn() => sprintf(
 					// translators: 1) a minute, 2) an hour, 3) a day and 4) a week, each in seconds.
 					__( 'For a relative end, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks).', 'event-tickets' ),
-					Rule::UNIT_MINUTES,
-					Rule::UNIT_HOURS,
-					Rule::UNIT_DAYS,
-					Rule::UNIT_WEEKS
+					MINUTE_IN_SECONDS,
+					HOUR_IN_SECONDS,
+					DAY_IN_SECONDS,
+					WEEK_IN_SECONDS
 				)
 			)
-		)->set_example( Rule::UNIT_WEEKS );
+		)->set_example( WEEK_IN_SECONDS );
 		$properties[] = (
 			new Text(
 				'anchor',
