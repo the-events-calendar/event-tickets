@@ -11,7 +11,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Test Application_Fee precision handling for Stripe API.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Application_Fee_Precision_Test extends WPTestCase {
 
@@ -20,7 +20,7 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	/**
 	 * Set up mocks before all tests.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function setUpMocks() {
 		// Mock the licensed plugin check to always return false (so fees are calculated).
@@ -33,7 +33,7 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	 * This test ensures application fees are calculated and formatted correctly using
 	 * the new Gateway_Value_Formatter with Stripe hooks.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return \Generator
 	 */
@@ -112,17 +112,17 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	 * This test ensures application fees use the new Gateway_Value_Formatter with Stripe hooks
 	 * to apply the correct precision formatting for each currency type.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 * @dataProvider stripe_application_fee_calculation_provider
 	 */
-	public function calculate_method_uses_stripe_formatting( 
-		$currency_code, 
-		$input_value, 
-		$expected_fee_integer, 
-		$expected_fee_precision, 
-		$description 
+	public function calculate_method_uses_stripe_formatting(
+		$currency_code,
+		$input_value,
+		$expected_fee_integer,
+		$expected_fee_precision,
+		$description
 	) {
 		// Set currency for this test.
 		tribe_update_option( Currency::$currency_code_option, $currency_code );
@@ -142,7 +142,7 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	/**
 	 * Test specific edge cases for application fee calculation with Stripe formatting.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -151,24 +151,24 @@ class Application_Fee_Precision_Test extends WPTestCase {
 		tribe_update_option( Currency::$currency_code_option, 'JPY' );
 		$value_1 = new Value( 1.0 );
 		$fee_1 = Application_Fee::calculate( $value_1 );
-		
+
 		// 2% of 1 = 0.02, but for JPY (Stripe format: 0 decimals), this should round to 0.
 		$this->assertEquals( 0, $fee_1->get_integer(), 'JPY 1 yen should have 0 fee (2% of 1 = 0.02, rounds to 0)' );
 		$this->assertEquals( 0, $fee_1->get_precision(), 'JPY fee should have precision 0 for Stripe' );
-		
+
 		// Test 2: USD with very small amount (1 cent).
 		tribe_update_option( Currency::$currency_code_option, 'USD' );
 		$value_2 = new Value( 0.01 );
 		$fee_2 = Application_Fee::calculate( $value_2 );
-		
+
 		// 2% of 0.01 = 0.0002, but for USD (Stripe format: 2 decimals), this should round to 0.
 		$this->assertEquals( 0, $fee_2->get_integer(), 'USD 1 cent should have 0 fee (2% of 0.01 = 0.0002, rounds to 0)' );
 		$this->assertEquals( 2, $fee_2->get_precision(), 'USD fee should have precision 2 for Stripe' );
-		
+
 		// Test 3: Large amount to ensure calculation works.
 		$value_3 = new Value( 1000.0 );
 		$fee_3 = Application_Fee::calculate( $value_3 );
-		
+
 		// 2% of 1000 = 20, for USD (Stripe format: 2 decimals), this should be 2000 cents.
 		$this->assertEquals( 2000, $fee_3->get_integer(), 'USD $1000 should have $20 fee (2000 cents)' );
 		$this->assertEquals( 2, $fee_3->get_precision(), 'USD fee should have precision 2 for Stripe' );
@@ -177,17 +177,17 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	/**
 	 * Test that licensed plugins return zero fee.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
 	public function calculate_method_returns_zero_for_licensed_plugins() {
 		// Mock the licensed plugin check to return true.
 		$this->set_class_fn_return( Settings::class, 'is_licensed_plugin', true );
-		
+
 		$value = new Value( 100.0 );
 		$fee = Application_Fee::calculate( $value );
-		
+
 		$this->assertEquals( 0, $fee->get_integer(), 'Licensed plugins should return zero fee' );
 		$this->assertEquals( 0, $fee->get_float(), 'Licensed plugins should return zero fee' );
 	}
@@ -195,7 +195,7 @@ class Application_Fee_Precision_Test extends WPTestCase {
 	/**
 	 * Test the specific bug that was fixed: JPY fee precision with Stripe formatting.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */

@@ -2,7 +2,7 @@
 /**
  * Tests for race condition prevention in ticket stock management.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Stock
  */
@@ -23,7 +23,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
  * Tests that the stock validation prevents overselling when multiple users
  * attempt to purchase the same limited-stock ticket simultaneously.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Stock
  */
