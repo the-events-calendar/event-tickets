@@ -1,12 +1,5 @@
 significance: patch
 type: fix
 entry: Prevented the Tickets metabox from losing fields in the Classic Editor
-  when the RSVP metabox is placed above it. The RSVP panel element IDs
-  `ticket_form`, `ticket_form_table`, `ticket_form_main`, `ticket_type`,
-  `tec_tickets_ticket_provider` and `rsvp_title_edit` were renamed to
-  `tec_tickets_rsvp_form`, `tec_tickets_rsvp_form_table`,
-  `tec_tickets_rsvp_form_main`, `tec_tickets_rsvp_ticket_type`,
-  `tec_tickets_rsvp_ticket_provider` and `tec_tickets_rsvp_title_edit` so they
-  no longer collide with the Tickets metabox. Custom CSS or JS targeting the old
-  RSVP IDs needs updating.
+  when the RSVP metabox is placed above it. 
 timestamp: 2026-10-01T16:55:02.747Z
