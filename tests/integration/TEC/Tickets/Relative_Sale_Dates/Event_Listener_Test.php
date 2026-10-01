@@ -367,8 +367,8 @@ class Event_Listener_Test extends Controller_Test_Case {
 			$ticket_id,
 			[
 				Sale_Price_Rule::KEY => [
-					'start' => [ 'mode' => Rule::MODE_RELATIVE, 'value' => $start_days, 'unit' => Rule::UNIT_DAYS ],
-					'end'   => [ 'mode' => Rule::MODE_RELATIVE, 'value' => $end_days, 'unit' => Rule::UNIT_DAYS ],
+					'start' => [ 'mode' => Rule::MODE_RELATIVE, 'value' => $start_days, 'unit' => DAY_IN_SECONDS ],
+					'end'   => [ 'mode' => Rule::MODE_RELATIVE, 'value' => $end_days, 'unit' => DAY_IN_SECONDS ],
 				],
 			]
 		);

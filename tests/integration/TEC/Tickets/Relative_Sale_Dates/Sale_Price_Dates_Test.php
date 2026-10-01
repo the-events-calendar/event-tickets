@@ -24,12 +24,12 @@ class Sale_Price_Dates_Test extends WPTestCase {
 		'start' => [
 			'mode'  => Rule::MODE_RELATIVE,
 			'value' => 2,
-			'unit'  => Rule::UNIT_WEEKS,
+			'unit'  => WEEK_IN_SECONDS,
 		],
 		'end'   => [
 			'mode'  => Rule::MODE_RELATIVE,
 			'value' => 1,
-			'unit'  => Rule::UNIT_WEEKS,
+			'unit'  => WEEK_IN_SECONDS,
 		],
 	];
 

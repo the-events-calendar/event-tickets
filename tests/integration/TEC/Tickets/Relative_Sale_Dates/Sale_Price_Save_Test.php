@@ -50,7 +50,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	public function should_store_the_rule_and_write_the_resolved_dates( callable $encode ): void {
 		$event_start = new DateTimeImmutable( self::EVENT_START );
 		$event_id    = $this->create_event( self::EVENT_START );
-		$rule        = $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) );
+		$rule        = $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
 
 		$ticket_id = $this->create_sale_price_ticket( $event_id, [ Sale_Price_Save::DATA_KEY => $encode( $rule ) ] );
 
@@ -67,7 +67,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	public function should_write_an_empty_start_for_a_now_start(): void {
 		$event_start = new DateTimeImmutable( self::EVENT_START );
 		$event_id    = $this->create_event( self::EVENT_START );
-		$rule        = $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) );
+		$rule        = $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
 
 		$ticket_id = $this->create_sale_price_ticket(
 			$event_id,
@@ -87,7 +87,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$event_start   = new DateTimeImmutable( self::EVENT_START );
 		$event_id      = $this->create_event( self::EVENT_START );
 		$submitted_end = $event_start->modify( '-3 days' )->format( 'Y-m-d' );
-		$rule          = $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), [ 'mode' => Rule::MODE_SPECIFIC ] );
+		$rule          = $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), [ 'mode' => Rule::MODE_SPECIFIC ] );
 
 		$ticket_id = $this->create_sale_price_ticket(
 			$event_id,
@@ -105,8 +105,8 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 */
 	public function should_store_the_sale_price_rule_next_to_the_sales_window_rule(): void {
 		$event_id          = $this->create_event( self::EVENT_START );
-		$sales_window_rule = [ 'start' => $this->relative( 3, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
-		$sale_price_rule   = $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) );
+		$sales_window_rule = [ 'start' => $this->relative( 3, WEEK_IN_SECONDS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price_rule   = $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
 
 		$ticket_id = $this->create_sale_price_ticket(
 			$event_id,
@@ -125,8 +125,8 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 */
 	public function should_keep_the_sale_price_rule_when_the_sales_window_rule_is_saved_or_removed(): void {
 		$event_id          = $this->create_event( self::EVENT_START );
-		$sale_price_rule   = $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) );
-		$sales_window_rule = [ 'start' => $this->relative( 3, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price_rule   = $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
+		$sales_window_rule = [ 'start' => $this->relative( 3, WEEK_IN_SECONDS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
 		$ticket_id         = $this->create_sale_price_ticket( $event_id, [ Sale_Price_Save::DATA_KEY => wp_json_encode( $sale_price_rule ) ] );
 
 		$this->update_sale_price_ticket( $ticket_id, [ Ticket_Save::DATA_KEY => wp_json_encode( $sales_window_rule ) ] );
@@ -152,12 +152,12 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 */
 	public function should_remove_only_the_sale_price_rule_sent_as_empty( ?string $removing_value ): void {
 		$event_id          = $this->create_event( self::EVENT_START );
-		$sales_window_rule = [ 'start' => $this->relative( 3, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sales_window_rule = [ 'start' => $this->relative( 3, WEEK_IN_SECONDS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
 		$ticket_id         = $this->create_sale_price_ticket(
 			$event_id,
 			[
 				Ticket_Save::DATA_KEY     => wp_json_encode( $sales_window_rule ),
-				Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ) ),
+				Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ),
 			]
 		);
 
@@ -180,7 +180,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	public function should_apply_the_stored_rule_again_when_the_ticket_data_leaves_it_out(): void {
 		$event_start = new DateTimeImmutable( self::EVENT_START );
 		$event_id    = $this->create_event( self::EVENT_START );
-		$rule        = $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) );
+		$rule        = $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) );
 		$ticket_id   = $this->create_sale_price_ticket( $event_id, [ Sale_Price_Save::DATA_KEY => wp_json_encode( $rule ) ] );
 
 		$this->update_sale_price_ticket(
@@ -213,8 +213,8 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 */
 	public function should_remove_only_the_sale_price_rule_when_the_sale_price_is_removed( array $data ): void {
 		$event_id          = $this->create_event( self::EVENT_START );
-		$sales_window_rule = [ 'start' => $this->relative( 3, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
-		$sale_price_rule   = wp_json_encode( $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ) );
+		$sales_window_rule = [ 'start' => $this->relative( 3, WEEK_IN_SECONDS ), 'end' => [ 'mode' => Rule::MODE_DEFAULT ] ];
+		$sale_price_rule   = wp_json_encode( $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) );
 		$ticket_id         = $this->create_sale_price_ticket(
 			$event_id,
 			[
@@ -255,7 +255,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 			$event_id,
 			[
 				Sale_Price_Save::DATA_KEY => wp_json_encode(
-					$this->get_rule( $this->sale_price_relative( $start_days, Rule::UNIT_DAYS ), $this->sale_price_relative( $end_days, Rule::UNIT_DAYS ) )
+					$this->get_rule( $this->sale_price_relative( $start_days, DAY_IN_SECONDS ), $this->sale_price_relative( $end_days, DAY_IN_SECONDS ) )
 				),
 			]
 		);
@@ -271,7 +271,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$event_id  = $this->create_event( $today->modify( '+10 days' )->format( 'Y-m-d 19:00:00' ) );
 		$ticket_id = $this->create_sale_price_ticket(
 			$event_id,
-			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, Rule::UNIT_DAYS ) ) ) ]
+			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $this->sale_price_relative( 1, DAY_IN_SECONDS ) ) ) ]
 		);
 
 		$this->assertTrue( $this->get_ticket( $event_id, $ticket_id )->on_sale );
@@ -320,7 +320,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 			array_merge(
 				$data,
 				[
-					Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ) ),
+					Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ),
 					'ticket_sale_start_date'  => '2027-01-04',
 					'ticket_sale_end_date'    => '2027-01-11',
 				]
@@ -369,7 +369,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 
 	/**
 	 * @param int $value The number of units before the event start.
-	 * @param int $unit  `Rule::UNIT_DAYS` or `Rule::UNIT_WEEKS`.
+	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
 	 *
 	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
 	 */
