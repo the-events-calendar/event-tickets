@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use InvalidArgumentException;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
@@ -92,6 +93,9 @@ final class Ticket_Save extends Controller_Contract {
 	/**
 	 * Sets the resolved dates on the ticket before the provider saves it, so it writes them with the ticket.
 	 *
+	 * A Now start puts the ticket on sale when it is saved, even when the ticket data carries a later start, which the
+	 * block editor sends for a ticket whose start was relative before.
+	 *
 	 * @since TBD
 	 *
 	 * @param int                 $post_id The ticket parent post ID.
@@ -113,6 +117,10 @@ final class Ticket_Save extends Controller_Contract {
 		}
 
 		$start = $window->get_start();
+		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() ) {
+			$start = $this->get_default_start( $post_id, $ticket );
+		}
+
 		if ( $start ) {
 			$ticket->start_date = $start->format( Dates::DBDATEFORMAT );
 			$ticket->start_time = $start->format( Dates::DBTIMEFORMAT );
@@ -148,7 +156,17 @@ final class Ticket_Save extends Controller_Contract {
 		}
 
 		if ( $this->removes_rule( $data ) ) {
+			$had_rule = null !== Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 			$this->rule_store->remove( $ticket_id, [ 'start', 'end' ] );
+
+			/*
+			 * The end the rule resolved was flagged as a manual one when the ticket was created, which stops it from
+			 * following the event start; without a submitted end, the save leaves it to the event start again.
+			 */
+			if ( $had_rule && empty( $data['ticket_end_date'] ) ) {
+				$tickets_handler = tribe( 'tickets.handler' );
+				delete_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+			}
 
 			return;
 		}
@@ -296,7 +314,7 @@ final class Ticket_Save extends Controller_Contract {
 			return null;
 		}
 
-		$timezone = Timezones::build_timezone_object( get_post_meta( $post_id, '_EventTimezone', true ) ?: null );
+		$timezone = $this->get_event_timezone( $post_id );
 
 		try {
 			$event_start = new DateTimeImmutable( $start, $timezone );
@@ -306,5 +324,48 @@ final class Ticket_Save extends Controller_Contract {
 		}
 
 		return $this->sale_window->resolve( $rule, $event_start, $event_end );
+	}
+
+	/**
+	 * Gets the start a Now boundary moves the ticket to: now, when the ticket data would start the sales later.
+	 *
+	 * A ticket already on sale keeps its start, so saving it again does not move the start forward.
+	 *
+	 * @since TBD
+	 *
+	 * @param int           $post_id The event post ID.
+	 * @param Ticket_Object $ticket  The ticket that is being saved.
+	 *
+	 * @return DateTimeImmutable|null Now, in the event timezone, or `null` to keep the start the ticket data carries.
+	 */
+	private function get_default_start( int $post_id, Ticket_Object $ticket ): ?DateTimeImmutable {
+		if ( empty( $ticket->start_date ) ) {
+			return null;
+		}
+
+		$timezone = $this->get_event_timezone( $post_id );
+
+		try {
+			$submitted = new DateTimeImmutable( trim( $ticket->start_date . ' ' . $ticket->start_time ), $timezone );
+		} catch ( Exception $e ) {
+			return null;
+		}
+
+		$now = new DateTimeImmutable( 'now', $timezone );
+
+		return $submitted > $now ? $now : null;
+	}
+
+	/**
+	 * Gets the timezone of an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The event post ID.
+	 *
+	 * @return DateTimeZone The event timezone, or the site one when the event has none.
+	 */
+	private function get_event_timezone( int $post_id ): DateTimeZone {
+		return Timezones::build_timezone_object( get_post_meta( $post_id, '_EventTimezone', true ) ?: null );
 	}
 }

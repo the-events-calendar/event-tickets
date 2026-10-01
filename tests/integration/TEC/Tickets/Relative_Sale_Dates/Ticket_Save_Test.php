@@ -10,12 +10,14 @@ use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\Ticket_Actions;
+use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Ticket_Save_Test extends Controller_Test_Case {
 	use Ticket_Maker;
+	use With_Clock_Mock;
 	use With_Tickets_Commerce;
 
 	protected $controller_class = Ticket_Save::class;
@@ -294,6 +296,83 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$this->assertSame( $rule, $this->get_stored_rule( $ticket_id ) );
 		$this->assertSame( [ $expected_start->format( 'Y-m-d' ), $expected_start->format( 'H:i:s' ) ], $this->get_ticket_start( $ticket_id ) );
 		$this->assertSame( [ $expected_end->format( 'Y-m-d' ), $expected_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_put_an_existing_ticket_on_sale_when_its_start_switches_to_now(): void {
+		$now = new DateTimeImmutable( '2027-01-10 12:00:00', new DateTimeZone( 'UTC' ) );
+		$this->freeze_time( $now );
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket(
+			$event_id,
+			1,
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ] ) ]
+		);
+		[ $future_date, $future_time ] = $this->get_ticket_start( $ticket_id );
+
+		// The block editor sends the start it loaded with the ticket, which the old rule had put in the future.
+		$this->update_ticket(
+			$ticket_id,
+			[
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] ),
+				'ticket_start_date'   => $future_date,
+				'ticket_start_time'   => $future_time,
+			]
+		);
+
+		$this->assertSame( [ $now->format( 'Y-m-d' ), $now->format( 'H:i:s' ) ], $this->get_ticket_start( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_start_of_a_now_ticket_already_on_sale_when_it_is_saved_again(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$rule      = [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ];
+		$ticket_id = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		$start     = $this->get_ticket_start( $ticket_id );
+
+		$this->update_ticket( $ticket_id, [ 'ticket_name' => 'Renamed' ] );
+
+		$this->assertSame( $start, $this->get_ticket_start( $ticket_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_let_the_end_follow_the_event_again_when_the_rule_is_removed_without_an_end_date(): void {
+		$event_id        = $this->create_event( '2027-06-24 19:00:00' );
+		$rule            = [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ];
+		$ticket_id       = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		$tickets_handler = tribe( 'tickets.handler' );
+		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+
+		$this->update_ticket(
+			$ticket_id,
+			[
+				'relative_sale_dates' => '',
+				'ticket_end_date'     => '',
+				'ticket_end_time'     => '',
+			]
+		);
+
+		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_end_marker_when_the_rule_is_removed_with_an_end_date(): void {
+		$event_id        = $this->create_event( '2027-06-24 19:00:00' );
+		$rule            = [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ];
+		$ticket_id       = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$this->update_ticket( $ticket_id, [ 'relative_sale_dates' => '' ] );
+
+		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
 	}
 
 	/**
