@@ -86,13 +86,12 @@ final class Sale_Price_Boundary implements JsonSerializable {
 	 * @since TBD
 	 *
 	 * @param array{mode?: mixed, value?: mixed, unit?: mixed, anchor?: mixed} $data The boundary, not yet validated.
-	 * @param string                                                           $key  The boundary's key in the rule, `start` or `end`, used in error messages.
 	 *
 	 * @return self The boundary.
 	 *
 	 * @throws InvalidArgumentException If the boundary is not valid.
 	 */
-	public static function from_array( array $data, string $key ): self {
+	public static function from_array( array $data ): self {
 		$mode = $data['mode'] ?? null;
 
 		if ( Sale_Price_Rule::MODE_NOW === $mode || Rule::MODE_SPECIFIC === $mode ) {
@@ -100,23 +99,23 @@ final class Sale_Price_Boundary implements JsonSerializable {
 		}
 
 		if ( Rule::MODE_RELATIVE !== $mode ) {
-			throw new InvalidArgumentException( "The sale price {$key} has an unknown mode." );
+			throw new InvalidArgumentException( 'The sale price boundary has an unknown mode.' );
 		}
 
 		if ( array_key_exists( 'anchor', $data ) ) {
-			throw new InvalidArgumentException( "The sale price {$key} is always counted from the event start and takes no anchor." );
+			throw new InvalidArgumentException( 'The sale price boundary is always counted from the event start and takes no anchor.' );
 		}
 
 		$value = $data['value'] ?? null;
 		if ( ! is_int( $value ) || $value < self::MIN_VALUE || $value > self::MAX_VALUE ) {
 			throw new InvalidArgumentException(
-				sprintf( 'The sale price %s value must be an integer from %d to %d.', $key, self::MIN_VALUE, self::MAX_VALUE )
+				sprintf( 'The sale price boundary value must be an integer from %d to %d.', self::MIN_VALUE, self::MAX_VALUE )
 			);
 		}
 
 		$unit = $data['unit'] ?? null;
 		if ( ! in_array( $unit, self::UNITS, true ) ) {
-			throw new InvalidArgumentException( "The sale price {$key} unit must be days or weeks." );
+			throw new InvalidArgumentException( 'The sale price boundary unit must be days or weeks.' );
 		}
 
 		return new self( $mode, $value, $unit );
@@ -176,7 +175,7 @@ final class Sale_Price_Boundary implements JsonSerializable {
 		}
 
 		// The sale price limits sit inside the sales window ones, so a valid sale price boundary always builds one.
-		return Boundary::from_array( array_merge( $this->to_array(), [ 'anchor' => Rule::ANCHOR_START ] ), Sale_Price_Rule::KEY );
+		return Boundary::from_array( array_merge( $this->to_array(), [ 'anchor' => Rule::ANCHOR_START ] ) );
 	}
 
 	/**

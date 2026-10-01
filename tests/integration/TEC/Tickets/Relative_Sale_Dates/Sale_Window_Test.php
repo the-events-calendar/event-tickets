@@ -128,7 +128,7 @@ class Sale_Window_Test extends WPTestCase {
 		$event_end   = $event_start->modify( '+2 hours' );
 
 		foreach ( [ Rule::MODE_DEFAULT, Rule::MODE_SPECIFIC ] as $mode ) {
-			$this->assertNull( tribe( Sale_Window::class )->resolve_relative( Boundary::from_array( [ 'mode' => $mode ], 'end' ), $event_start, $event_end ) );
+			$this->assertNull( tribe( Sale_Window::class )->resolve_relative( Boundary::from_array( [ 'mode' => $mode ] ), $event_start, $event_end ) );
 		}
 	}
 

@@ -58,7 +58,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 	 * @dataProvider valid_boundaries_provider
 	 */
 	public function should_return_a_valid_boundary_as_its_canonical_array( array $data ): void {
-		$this->assertSame( $data, Sale_Price_Boundary::from_array( $data, 'start' )->to_array() );
+		$this->assertSame( $data, Sale_Price_Boundary::from_array( $data )->to_array() );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 	 * @dataProvider valid_boundaries_provider
 	 */
 	public function should_encode_as_its_canonical_array( array $data ): void {
-		$this->assertSame( wp_json_encode( $data ), wp_json_encode( Sale_Price_Boundary::from_array( $data, 'end' ) ) );
+		$this->assertSame( wp_json_encode( $data ), wp_json_encode( Sale_Price_Boundary::from_array( $data ) ) );
 	}
 
 	/**
@@ -76,17 +76,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 	public function should_reject_an_invalid_boundary( array $data ): void {
 		$this->expectException( InvalidArgumentException::class );
 
-		Sale_Price_Boundary::from_array( $data, 'start' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_name_the_sale_price_end_it_rejects(): void {
-		$this->expectException( InvalidArgumentException::class );
-		$this->expectExceptionMessage( 'The sale price end' );
-
-		Sale_Price_Boundary::from_array( [ 'mode' => Rule::MODE_DEFAULT ], 'end' );
+		Sale_Price_Boundary::from_array( $data );
 	}
 
 	/**
@@ -99,8 +89,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 				'value'  => 3,
 				'unit'   => DAY_IN_SECONDS,
 				'anchor' => Rule::ANCHOR_START,
-			],
-			'start'
+			]
 		);
 
 		$this->assertSame( [ 'mode' => Rule::MODE_SPECIFIC ], $boundary->to_array() );
@@ -116,7 +105,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 			'unit'  => WEEK_IN_SECONDS,
 		];
 
-		$boundary = Sale_Price_Boundary::from_array( $data, 'end' )->to_boundary();
+		$boundary = Sale_Price_Boundary::from_array( $data )->to_boundary();
 
 		$this->assertInstanceOf( Boundary::class, $boundary );
 		$this->assertSame( array_merge( $data, [ 'anchor' => Rule::ANCHOR_START ] ), $boundary->to_array() );
@@ -135,6 +124,6 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 	 * @dataProvider modes_without_a_date_provider
 	 */
 	public function should_build_no_boundary_for_a_mode_without_a_relative_date( string $mode ): void {
-		$this->assertNull( Sale_Price_Boundary::from_array( [ 'mode' => $mode ], 'start' )->to_boundary() );
+		$this->assertNull( Sale_Price_Boundary::from_array( [ 'mode' => $mode ] )->to_boundary() );
 	}
 }

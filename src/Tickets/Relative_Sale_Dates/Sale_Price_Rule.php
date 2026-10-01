@@ -78,13 +78,13 @@ final class Sale_Price_Rule implements JsonSerializable {
 			}
 		}
 
-		$end = Sale_Price_Boundary::from_array( $data['end'], 'end' );
+		$end = Sale_Price_Boundary::from_array( $data['end'] );
 
 		if ( self::MODE_NOW === $end->get_mode() ) {
 			throw new InvalidArgumentException( 'The sale price end must be relative or specific.' );
 		}
 
-		return new self( Sale_Price_Boundary::from_array( $data['start'], 'start' ), $end );
+		return new self( Sale_Price_Boundary::from_array( $data['start'] ), $end );
 	}
 
 	/**
