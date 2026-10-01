@@ -478,14 +478,37 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				'ticket_start_time'   => '18:00:00',
 			],
 		];
+	}
 
-		yield 'default start submitted after the resolved end' => [
-			[
-				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_WEEKS ) ] ),
-				'ticket_start_date'   => '2027-06-22',
-				'ticket_start_time'   => '12:00:00',
-			],
+	/**
+	 * The rule ends the sales on 2027-06-17 at 19:00, a week before the event starts, and the Now start is sent as
+	 * 2027-06-22 at 12:00, after that end.
+	 *
+	 * @return Generator<string,array{0: string, 1: bool}>
+	 */
+	public function default_start_submitted_after_the_resolved_end_provider(): Generator {
+		// The save starts the sales now, before the end.
+		yield 'the submitted start is still ahead' => [ '2027-01-10 12:00:00', true ];
+		// The ticket is already on sale, so the save keeps the submitted start.
+		yield 'the submitted start has passed' => [ '2027-06-23 12:00:00', false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider default_start_submitted_after_the_resolved_end_provider
+	 */
+	public function should_judge_a_default_start_by_the_start_the_save_stores( string $now, bool $valid ): void {
+		$this->freeze_time( new DateTimeImmutable( $now, new DateTimeZone( 'UTC' ) ) );
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+		$data     = [
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_WEEKS ) ] ),
+			'ticket_start_date'   => '2027-06-22',
+			'ticket_start_time'   => '12:00:00',
 		];
+
+		$result = apply_filters( 'tec_tickets_ticket_data_validation', true, $event_id, $data );
+
+		$this->assertSame( $valid, true === $result );
 	}
 
 	/**
