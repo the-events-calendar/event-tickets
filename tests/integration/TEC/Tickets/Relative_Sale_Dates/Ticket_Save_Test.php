@@ -446,12 +446,12 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		];
 
 		yield 'end before start' => [
-			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ) ],
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ) ],
 		];
 
 		yield 'specific end before the resolved start' => [
 			[
-				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'specific' ] ] ),
 				'ticket_end_date'     => '2027-06-01',
 				'ticket_end_time'     => '12:00:00',
 			],
@@ -459,21 +459,21 @@ class Ticket_Save_Test extends Controller_Test_Case {
 
 		yield 'specific start without a date' => [
 			[
-				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ),
 				'ticket_start_date'   => '',
 			],
 		];
 
 		yield 'specific end without a date' => [
 			[
-				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'specific' ] ] ),
 				'ticket_end_date'     => '',
 			],
 		];
 
 		yield 'specific start after the resolved end' => [
 			[
-				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+				'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ),
 				'ticket_start_date'   => '2027-06-24',
 				'ticket_start_time'   => '18:00:00',
 			],
@@ -501,7 +501,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		$this->freeze_time( new DateTimeImmutable( $now, new DateTimeZone( 'UTC' ) ) );
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
 		$data     = [
-			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_WEEKS ) ] ),
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, WEEK_IN_SECONDS ) ] ),
 			'ticket_start_date'   => '2027-06-22',
 			'ticket_start_time'   => '12:00:00',
 		];
@@ -533,7 +533,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 		add_filter( 'tribe_datepicker_format_index', static fn() => 4 );
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
 		$data     = [
-			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ),
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'specific' ], 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ),
 			'ticket_start_date'   => '31/02/2027',
 			'ticket_start_time'   => '12:00:00',
 		];
@@ -569,7 +569,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			]
 		);
 		$data = [
-			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, Rule::UNIT_WEEKS ) ] ),
+			'relative_sale_dates' => wp_json_encode( [ 'start' => [ 'mode' => 'default' ], 'end' => $this->relative( 1, WEEK_IN_SECONDS ) ] ),
 			'ticket_start_date'   => '',
 		];
 
@@ -587,7 +587,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 			$event_id,
 			1,
 			[
-				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'specific' ] ] ),
+				'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'specific' ] ] ),
 				'ticket_end_date'     => '2027-06-20',
 				'ticket_end_time'     => '12:00:00',
 			]
@@ -610,11 +610,11 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 * @return Generator<string,array{0: string, 1: array<string,string>}>
 	 */
 	public function accepted_ticket_data_provider(): Generator {
-		$end_before_start = wp_json_encode( [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] );
+		$end_before_start = wp_json_encode( [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] );
 
 		yield 'valid rule' => [
 			'tribe_events',
-			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ] ) ],
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] ) ],
 		];
 
 		yield 'no rule' => [ 'tribe_events', [ 'ticket_name' => 'No rule' ] ];
@@ -658,7 +658,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 
 		$response = $this->send_classic_ticket_add(
 			$event_id,
-			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ] ) ]
+			[ 'relative_sale_dates' => wp_json_encode( [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ] ) ]
 		);
 
 		$this->assertSame(
@@ -697,7 +697,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	 */
 	public function should_save_through_the_classic_editor_a_ticket_with_a_valid_rule(): void {
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
-		$rule     = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule     = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 
 		$response = $this->send_classic_ticket_add( $event_id, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
 
