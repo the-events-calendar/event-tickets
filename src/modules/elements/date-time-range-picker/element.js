@@ -1,11 +1,11 @@
 /**
  * External dependencies
  */
-import React, { createRef, Component } from 'react';
-import PropTypes from 'prop-types';
-import { noop } from 'lodash';
 import classNames from 'classnames';
 import { formatDate, parse as parseDate } from 'date-fns';
+import { noop } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component, createRef } from 'react';
 
 /**
  * Internal dependencies
@@ -17,11 +17,13 @@ import './style.pcss';
 class DateTimeRangePicker extends Component {
 	static defaultProps = {
 		fromDateFormat: 'LL',
+		fromLabel: '',
 		onFromDateChange: noop,
 		onToDateChange: noop,
 		separatorDateTime: 'at',
 		separatorTimeRange: 'to',
 		toDateFormat: 'LL',
+		toLabel: '',
 	};
 
 	static propTypes = {
@@ -30,6 +32,7 @@ class DateTimeRangePicker extends Component {
 		fromDateInput: PropTypes.string,
 		fromDateDisabled: PropTypes.bool,
 		fromDateFormat: PropTypes.string,
+		fromLabel: PropTypes.string,
 		fromTime: PropTypes.string,
 		fromTimeDisabled: PropTypes.bool,
 		onFromDateChange: PropTypes.func,
@@ -49,6 +52,7 @@ class DateTimeRangePicker extends Component {
 		toDateInput: PropTypes.string,
 		toDateDisabled: PropTypes.bool,
 		toDateFormat: PropTypes.string,
+		toLabel: PropTypes.string,
 		toTime: PropTypes.string,
 		toTimeDisabled: PropTypes.bool,
 	};
@@ -179,40 +183,52 @@ class DateTimeRangePicker extends Component {
 	};
 
 	render() {
-		const { className, separatorDateTime, separatorTimeRange } = this.props;
+		const { className, fromLabel, separatorDateTime, separatorTimeRange, toLabel } = this.props;
 
 		return (
 			<div className={ classNames( 'tribe-editor__date-time-range-picker', className ) }>
 				<div className="tribe-editor__date-time-range-picker__start">
-					<DayPickerInput { ...this.getFromDayPickerInputProps() } />
-					<span
-						className={ classNames(
-							'tribe-editor__date-time-range-picker__separator',
-							'tribe-editor__date-time-range-picker__separator--date-time'
-						) }
-					>
-						{ separatorDateTime }
-					</span>
+					{ fromLabel && (
+						<span className="tribe-editor__date-time-range-picker__field-label">{ fromLabel }</span>
+					) }
+					<DayPickerInput {...this.getFromDayPickerInputProps()} />
+					{separatorDateTime && (
+						<span
+							className={ classNames(
+								'tribe-editor__date-time-range-picker__separator',
+								'tribe-editor__date-time-range-picker__separator--date-time'
+							) }
+						>
+							{ separatorDateTime }
+						</span>
+					)}
 					<TimePicker { ...this.getFromTimePickerProps() } />
 				</div>
 				<div className="tribe-editor__date-time-range-picker__end">
-					<span
-						className={ classNames(
-							'tribe-editor__date-time-range-picker__separator',
-							'tribe-editor__date-time-range-picker__separator--time-range'
-						) }
-					>
-						{ separatorTimeRange }
-					</span>
+					{separatorTimeRange && (
+						<span
+							className={ classNames(
+								'tribe-editor__date-time-range-picker__separator',
+								'tribe-editor__date-time-range-picker__separator--time-range'
+							) }
+						>
+							{ separatorTimeRange }
+						</span>
+					)}
+					{ toLabel && (
+						<span className="tribe-editor__date-time-range-picker__field-label">{ toLabel }</span>
+					) }
 					<DayPickerInput { ...this.getToDayPickerInputProps() } />
-					<span
-						className={ classNames(
-							'tribe-editor__date-time-range-picker__separator',
-							'tribe-editor__date-time-range-picker__separator--date-time'
-						) }
-					>
-						{ separatorDateTime }
-					</span>
+					{separatorDateTime && (
+						<span
+							className={ classNames(
+								'tribe-editor__date-time-range-picker__separator',
+								'tribe-editor__date-time-range-picker__separator--date-time'
+							) }
+						>
+							{ separatorDateTime }
+						</span>
+					)}
 					<TimePicker { ...this.getToTimePickerProps() } />
 				</div>
 			</div>

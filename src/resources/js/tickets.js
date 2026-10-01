@@ -26,7 +26,8 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	const recurrence_add_row_selector = '.recurrence-row.tribe-datetime-block:not(.tribe-recurrence-exclusion-row)';
 	const recurrence_not_supported_row_selector = '.recurrence-row.tribe-recurrence-not-supported';
 	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
-	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
+	const ticket_button_selectors =
+		'#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle, #tec_tickets_rsvp_metabox';
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
@@ -1026,7 +1027,10 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	$document.on( 'verify.dependency', function () {
-		if ( $( tickets_panel_table_selector ).is( ':visible' ) ) {
+		if (
+			$( tickets_panel_table_selector ).is( ':visible' ) ||
+			$( document.getElementById( 'tec_tickets_rsvp_enable' ) ).is( ':checked' )
+		) {
 			$document.trigger( 'tribe-tickets-active' );
 		} else {
 			$document.trigger( 'tribe-tickets-inactive' );

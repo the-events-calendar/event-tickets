@@ -2,7 +2,7 @@
 /**
  * Tests for the Free Gateway Order Endpoint.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free\REST
  */
@@ -18,7 +18,7 @@ use WP_REST_Request;
 /**
  * Class Order_EndpointTest.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free\REST
  */
