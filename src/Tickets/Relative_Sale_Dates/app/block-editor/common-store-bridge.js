@@ -49,6 +49,40 @@ export function markTicketChanged( clientId ) {
 }
 
 /**
+ * Clears the error the legacy ticket code keeps for a sales duration whose specific dates do not start before they end.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {void}
+ */
+export function clearTicketDurationError( clientId ) {
+	window.__tribe_common_store__.dispatch( getTicketData().actions.setTicketHasDurationError( clientId, false ) );
+}
+
+/**
+ * Returns whether the legacy checks would let a ticket be created or updated, leaving aside its sales duration error.
+ *
+ * @since TBD
+ *
+ * @param {Object} state    The legacy ticket state.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket passes every other legacy check.
+ */
+export function isTicketReadyBesidesDuration( state, clientId ) {
+	const { selectors } = getTicketData();
+	const props = { clientId };
+
+	return (
+		! selectors.isTicketDisabled( state, props ) &&
+		Boolean( selectors.getTicketHasChanges( state, props ) ) &&
+		selectors.isTicketValid( state, props )
+	);
+}
+
+/**
  * Subscribes to the common store, which holds the event dates The Events Calendar edits.
  *
  * @since TBD

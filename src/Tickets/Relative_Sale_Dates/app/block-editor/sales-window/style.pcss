@@ -29,6 +29,17 @@
 	margin: 0;
 }
 
+/* The select draws no border: the control's backdrop, its sibling, does. */
+.editor-styles-wrapper
+.tec-tickets-relative-sale-dates
+select[aria-invalid="true"] ~ .components-input-control__backdrop {
+	border-color: #cc1818;
+}
+
+.editor-styles-wrapper .tec-tickets-relative-sale-dates__error {
+	color: #cc1818;
+}
+
 /* Each end shows only its own half of the picker it is handed. */
 .editor-styles-wrapper
 .tec-tickets-relative-sale-dates__picker--start

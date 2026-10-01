@@ -94,7 +94,7 @@ export default function SalesWindowEnd( {
 				// The control points `aria-describedby` at its help, so the error goes there to be announced with it.
 				help={
 					errorMessage ? (
-						<span className="tribe-editor__ticket__duration-error" role="alert">
+						<span className="tec-tickets-relative-sale-dates__error" role="alert">
 							{ errorMessage }
 						</span>
 					) : undefined

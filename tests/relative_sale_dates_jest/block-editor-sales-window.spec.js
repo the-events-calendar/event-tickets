@@ -288,6 +288,26 @@ describe( 'the Ticket block sales window options', () => {
 		expect( window.__tribe_common_store__.dispatch ).toHaveBeenCalledWith( legacyActions.setTicketHasChanges( clientId, true ) );
 	} );
 
+	it( 'should clear the legacy duration error of the specific dates once an end no longer shows them', () => {
+		const clientId = newClientId();
+		renderSalesWindow( clientId );
+
+		change( SelectControl, END_LABELS.mode, 'relative' );
+
+		expect( window.__tribe_common_store__.dispatch ).toHaveBeenCalledWith( legacyActions.setTicketHasDurationError( clientId, false ) );
+	} );
+
+	it( 'should leave the legacy duration error to the legacy check while both ends are specific dates', () => {
+		const clientId = newClientId();
+		renderSalesWindow( clientId );
+		change( SelectControl, START_LABELS.mode, 'specific' );
+		window.__tribe_common_store__.dispatch.mockClear();
+
+		change( SelectControl, END_LABELS.mode, 'specific' );
+
+		expect( window.__tribe_common_store__.dispatch ).not.toHaveBeenCalledWith( legacyActions.setTicketHasDurationError( clientId, false ) );
+	} );
+
 	it( 'should take a relative number from 1 to 60', () => {
 		renderSalesWindow( newClientId() );
 		change( SelectControl, START_LABELS.mode, 'relative' );
@@ -432,6 +452,17 @@ describe( 'the Ticket block sales window options', () => {
 			expect( endMode.props.help.props.children ).toBe( ERROR );
 			expect( findError().props.children ).toBe( ERROR );
 			expect( endMode.props[ 'aria-invalid' ] ).toBe( true );
+		} );
+
+		it( 'should style the error as its own, not as the legacy duration error', () => {
+			renderTicket( newClientId() );
+			change( SelectControl, START_LABELS.mode, 'relative' );
+			change( SelectControl, START_LABELS.unit, String( UNIT_HOURS ) );
+			change( TextControl, START_LABELS.value, '1' );
+			change( SelectControl, END_LABELS.mode, 'relative' );
+			change( TextControl, END_LABELS.value, '2' );
+
+			expect( findError().props.className ).toBe( 'tec-tickets-relative-sale-dates__error' );
 		} );
 
 		it( 'should show no error for a window that starts before it ends', () => {
