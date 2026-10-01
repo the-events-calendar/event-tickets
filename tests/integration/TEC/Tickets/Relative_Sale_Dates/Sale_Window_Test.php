@@ -55,7 +55,7 @@ class Sale_Window_Test extends WPTestCase {
 				'end'   => [
 					'mode'   => 'relative',
 					'value'  => 1,
-					'unit'   => Rule::UNIT_HOURS,
+					'unit'   => HOUR_IN_SECONDS,
 					'anchor' => 'end',
 				],
 			]
