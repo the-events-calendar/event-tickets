@@ -9,7 +9,9 @@ import { getSettings } from '@wordpress/date';
  */
 import {
 	getTicketFormDates,
+	getTicketFormSalePriceDates,
 	isSalePriceChecked,
+	isSalePriceKept,
 	isTicketReadyBesidesDuration,
 	isTicketsCommerce,
 	readTicketFormDates,
@@ -18,6 +20,7 @@ import { readEventDates } from './event-dates';
 import { MODE_DEFAULT, MODE_RELATIVE } from '../rule-constants';
 import { getFormRule, isSpecificWindow } from './rule';
 import { formatSaleDate, resolveTicketWindow } from './sale-dates';
+import { getTicketSalePriceError } from './sale-price-error';
 import SalePriceWindow from './sale-price-window';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
@@ -244,7 +247,9 @@ export function filterSaleWindowDates( dates, clientId ) {
 
 /**
  * Keeps a ticket from being created or updated while its sales window is invalid: it does not start before it ends, or
- * a relative start or end has no number.
+ * a relative start or end has no number. A sale price the save keeps disables it too, as the server rejects the save,
+ * while its window does not end after the day it starts, starts outside the sales window, or has a relative number
+ * missing.
  *
  * The legacy sales duration error alone does not keep the button disabled once an end is relative or the default, since
  * the dates it checks are hidden then.
@@ -263,19 +268,36 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 		return isDisabled;
 	}
 
-	const rule = select( STORE_NAME ).getDraftRule( clientId );
+	const salesWindowRule = select( STORE_NAME ).getDraftRule( clientId );
 
 	// The legacy duration error judges the picker's dates, which mean nothing once an end is relative or the default.
 	const onlyDurationError =
-		! isSpecificWindow( getFormRule( rule ) ) && isTicketReadyBesidesDuration( state, clientId );
+		! isSpecificWindow( getFormRule( salesWindowRule ) ) && isTicketReadyBesidesDuration( state, clientId );
 
 	if ( isDisabled && ! onlyDurationError ) {
 		return true;
 	}
 
-	const error = getTicketWindowError( rule, readEventDates(), getTicketFormDates( state, clientId ) );
+	const eventDates = readEventDates();
+	const formDates = getTicketFormDates( state, clientId );
 
-	return null !== error;
+	if ( null !== getTicketWindowError( salesWindowRule, eventDates, formDates ) ) {
+		return true;
+	}
+
+	if ( ! isSalePriceKept( state, clientId ) ) {
+		return false;
+	}
+
+	const salePriceError = getTicketSalePriceError(
+		select( STORE_NAME ).getDraftSalePriceRule( clientId ),
+		salesWindowRule,
+		eventDates,
+		formDates,
+		getTicketFormSalePriceDates( state, clientId )
+	);
+
+	return null !== salePriceError;
 }
 
 /**

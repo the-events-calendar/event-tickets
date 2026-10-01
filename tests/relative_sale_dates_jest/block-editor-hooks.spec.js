@@ -582,6 +582,160 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
 		} );
+
+		describe( 'with a sale price', () => {
+			/*
+			 * Sales open 4 weeks before the event, on 2040-09-22, and close when it starts on 2040-10-20; 1 week before
+			 * the event is 2040-10-13, 2 weeks 2040-10-06 and 5 weeks 2040-09-15, and 2040-09-29 is a week into sales.
+			 * Without a sales window rule, the ticket's own dates hold: 2040-09-01 at 10:00 to the event start.
+			 */
+			const salesWindowRule = { start: relative( 4, UNIT_WEEKS ), end: { mode: 'default' } };
+			const TICKET_START = '2040-09-01 10:00:00';
+			const TICKET_END = '2040-10-20 19:00:00';
+			const salePriceBoundary = ( value, unit ) => ( { mode: 'relative', value, unit } );
+
+			/**
+			 * Builds the legacy ticket state of a ticket block with a sale price and the sale price dates its form holds.
+			 *
+			 * @param {string}      clientId The client ID of the ticket block.
+			 * @param {boolean}     checked  Whether the sale price is checked.
+			 * @param {string|null} start    The specific sale price start date, `YYYY-MM-DD`, or `null`.
+			 *
+			 * @return {Object} The legacy state.
+			 */
+			function salePriceState( clientId, checked, start = null ) {
+				const store = window.__tribe_common_store__;
+				legacyTicketState( clientId, TICKET_START, TICKET_END );
+				store.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
+				store.dispatch( legacyActions.setTicketTempSaleStartDate( clientId, start ?? '' ) );
+
+				return store.getState();
+			}
+
+			/**
+			 * Asks whether the Create or Update button of a ticket block with a sale price rule is disabled.
+			 *
+			 * @param {Object}      salePriceRule       The sale price draft rule.
+			 * @param {Object}      options             The sale price state.
+			 * @param {boolean}     options.checked     Whether the sale price is checked.
+			 * @param {string|null} options.start       The specific sale price start date the form holds.
+			 * @param {Object|null} options.windowRule  The sales window draft rule.
+			 *
+			 * @return {boolean} Whether the button is disabled.
+			 */
+			function isDisabledWith(
+				salePriceRule,
+				{ checked = true, start = null, windowRule = salesWindowRule } = {}
+			) {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setDraftRule( clientId, windowRule );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, salePriceRule );
+
+				return isConfirmDisabled( clientId, false, salePriceState( clientId, checked, start ) );
+			}
+
+			it( 'should leave the button alone for a sale price inside the sales window that ends after it starts', () => {
+				const rule = { start: salePriceBoundary( 2, UNIT_WEEKS ), end: salePriceBoundary( 1, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule ) ).toBe( false );
+			} );
+
+			it( 'should disable Create and Update while the sale price ends before it starts', () => {
+				const rule = { start: salePriceBoundary( 1, UNIT_WEEKS ), end: salePriceBoundary( 2, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule ) ).toBe( true );
+			} );
+
+			it( 'should disable Create and Update while a relative sale price start falls before the sales window', () => {
+				const rule = { start: salePriceBoundary( 5, UNIT_WEEKS ), end: salePriceBoundary( 1, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule ) ).toBe( true );
+			} );
+
+			it( 'should disable Create and Update while a specific sale price start falls before the sales window', () => {
+				const rule = { start: { mode: 'specific' }, end: salePriceBoundary( 1, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule, { start: '2040-09-01' } ) ).toBe( true );
+				expect( isDisabledWith( rule, { start: '2040-09-29' } ) ).toBe( false );
+			} );
+
+			it( 'should disable Create and Update while a sale price number is cleared', () => {
+				const rule = { start: salePriceBoundary( 2, UNIT_WEEKS ), end: salePriceBoundary( '', UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule ) ).toBe( true );
+			} );
+
+			it( 'should judge a Now start by the day sales open, never as outside the sales window', () => {
+				expect( isDisabledWith( { start: { mode: 'now' }, end: salePriceBoundary( 1, UNIT_WEEKS ) } ) ).toBe( false );
+				expect( isDisabledWith( { start: { mode: 'now' }, end: salePriceBoundary( 5, UNIT_WEEKS ) } ) ).toBe( true );
+			} );
+
+			it( 'should leave the button alone for a sale price the save drops for not being lower than the price', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setDraftRule( clientId, salesWindowRule );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, {
+					start: salePriceBoundary( 1, UNIT_WEEKS ),
+					end: salePriceBoundary( 2, UNIT_WEEKS ),
+				} );
+				const store = window.__tribe_common_store__;
+				salePriceState( clientId, true );
+				store.dispatch( legacyActions.setTicketTempPrice( clientId, '20.00' ) );
+
+				store.dispatch( legacyActions.setTempSalePrice( clientId, '20.00' ) );
+				expect( isConfirmDisabled( clientId, false, store.getState() ) ).toBe( false );
+
+				store.dispatch( legacyActions.setTempSalePrice( clientId, '15.00' ) );
+				expect( isConfirmDisabled( clientId, false, store.getState() ) ).toBe( true );
+			} );
+
+			it( 'should leave the button alone while the sale price is unchecked', () => {
+				const rule = { start: salePriceBoundary( 1, UNIT_WEEKS ), end: salePriceBoundary( 2, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule, { checked: false } ) ).toBe( false );
+			} );
+
+			it( 'should judge the sale price against the ticket\'s own dates without a sales window rule', () => {
+				const rule = { start: { mode: 'specific' }, end: salePriceBoundary( 1, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule, { windowRule: null, start: '2040-08-31' } ) ).toBe( true );
+				expect( isDisabledWith( rule, { windowRule: null, start: '2040-09-02' } ) ).toBe( false );
+			} );
+
+			it( 'should judge the sale price dates of the state the dashboard passes', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setDraftRule( clientId, salesWindowRule );
+				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, {
+					start: { mode: 'specific' },
+					end: salePriceBoundary( 1, UNIT_WEEKS ),
+				} );
+				const state = salePriceState( clientId, true, '2040-09-29' );
+
+				window.__tribe_common_store__.dispatch( legacyActions.setTicketTempSaleStartDate( clientId, '2040-09-01' ) );
+
+				expect( isConfirmDisabled( clientId, false, state ) ).toBe( false );
+			} );
+
+			it( 'should leave the button alone for a sale price saved without a rule, or not yet given one', () => {
+				expect( isDisabledWith( null ) ).toBe( false );
+				expect( isDisabledWith( undefined ) ).toBe( false );
+			} );
+
+			it( 'should leave the button alone for a sale price window of a ticket another provider sells', () => {
+				window.__tribe_common_store__.dispatch(
+					legacyActions.setTicketsProvider( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
+				);
+				const rule = { start: salePriceBoundary( 1, UNIT_WEEKS ), end: salePriceBoundary( 2, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule ) ).toBe( false );
+			} );
+
+			it( 'should leave the sale price unjudged while the event dates cannot be read', () => {
+				delete window.tec.events;
+				const rule = { start: salePriceBoundary( 1, UNIT_WEEKS ), end: salePriceBoundary( 2, UNIT_WEEKS ) };
+
+				expect( isDisabledWith( rule ) ).toBe( false );
+			} );
+		} );
 	} );
 
 	describe( 'on tec.tickets.blocks.syncSaleEndWithEventStart', () => {

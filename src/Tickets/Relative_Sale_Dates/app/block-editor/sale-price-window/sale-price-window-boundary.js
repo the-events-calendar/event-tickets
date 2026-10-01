@@ -62,6 +62,8 @@ function getUnitOptions( value ) {
  * @param {Object}                           props.picker       The boundary's date picker element.
  * @param {string}                           [props.helperText] How long the sale price lasts, for the boundary that
  *                                                              tells it; left out for the other.
+ * @param {string}                           props.errorMessage The sale price window error this boundary is marked
+ *                                                              with, or an empty string.
  * @param {Function}                         props.onChange     Called with the changed values of the boundary.
  *
  * @return {Object} The boundary's options.
@@ -73,6 +75,7 @@ export default function SalePriceWindowBoundary( {
 	modeOptions,
 	picker,
 	helperText,
+	errorMessage,
 	onChange,
 } ) {
 	return (
@@ -81,6 +84,15 @@ export default function SalePriceWindowBoundary( {
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
 				label={ labels.mode }
+				aria-invalid={ errorMessage ? true : undefined }
+				// The control points `aria-describedby` at its help, so the error goes there to be announced with it.
+				help={
+					errorMessage ? (
+						<span className="tribe-editor__ticket__sale-price__error-message" role="alert">
+							{ errorMessage }
+						</span>
+					) : undefined
+				}
 				value={ boundary.mode }
 				options={ modeOptions }
 				onChange={ ( mode ) => onChange( { mode } ) }

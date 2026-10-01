@@ -7,7 +7,13 @@ import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/select
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import '@tec/tickets/relative-sale-dates/block-editor/store';
 import SalePriceWindow from '@tec/tickets/relative-sale-dates/block-editor/sale-price-window';
-import { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState } from './block-editor-event-state';
+import {
+	DEFAULT_EVENT,
+	clearBlockEditorGlobals,
+	setBlockEditorData,
+	setEventState,
+	setTicketFormDates,
+} from './block-editor-event-state';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
 
@@ -22,14 +28,17 @@ jest.mock( '@wordpress/i18n', () => jest.requireActual( '@wordpress/i18n' ) );
  * props are enough to read and drive the options.
  */
 jest.mock( '@wordpress/components', () => ( {
-	SelectControl: ( { label, value, options, onChange } ) => (
-		<select aria-label={ label } value={ value } onChange={ ( event ) => onChange( event.target.value ) }>
-			{ options.map( ( option ) => (
-				<option key={ option.value } value={ option.value }>
-					{ option.label }
-				</option>
-			) ) }
-		</select>
+	SelectControl: ( { label, value, options, onChange, help } ) => (
+		<>
+			<select aria-label={ label } value={ value } onChange={ ( event ) => onChange( event.target.value ) }>
+				{ options.map( ( option ) => (
+					<option key={ option.value } value={ option.value }>
+						{ option.label }
+					</option>
+				) ) }
+			</select>
+			{ help }
+		</>
 	),
 	TextControl: ( { label, value, onChange, hideLabelFromVision, ...rest } ) => (
 		<input aria-label={ label } value={ value } onChange={ ( event ) => onChange( event.target.value ) } { ...rest } />
@@ -209,8 +218,28 @@ describe( 'the Ticket block sale price window options', () => {
 			} );
 		} );
 
-		it( 'should not mark the ticket as changed for its defaults', () => {
-			renderSalePriceWindow( newClientId() );
+		it( 'should mark the ticket as changed once its defaults are the draft, so Create or Update checks them', () => {
+			const clientId = newClientId();
+
+			renderSalePriceWindow( clientId );
+
+			// The checkbox that shows the options already marked the ticket as changed, before the defaults existed.
+			expect( window.__tribe_common_store__.dispatch ).toHaveBeenCalledWith(
+				legacyActions.setTicketHasChanges( clientId, true )
+			);
+		} );
+
+		it( 'should leave a sale price loaded with a rule, or without one, unmarked', () => {
+			const withRule = newClientId();
+			const withoutRule = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule( withRule, {
+				start: { mode: 'now' },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+			dispatch( STORE_NAME ).setSalePriceRule( withoutRule, null );
+
+			renderSalePriceWindow( withRule );
+			renderSalePriceWindow( withoutRule );
 
 			expect( window.__tribe_common_store__.dispatch ).not.toHaveBeenCalled();
 		} );
@@ -558,6 +587,192 @@ describe( 'the Ticket block sale price window options', () => {
 
 			expect( helper.props[ 'aria-live' ] ).toBe( 'polite' );
 			expect( findHelpers() ).toHaveLength( 1 );
+		} );
+	} );
+
+	describe( 'the sale price window errors under Sale Ends', () => {
+		/*
+		 * Sales open 4 weeks before the event, on 2040-09-22, and close when it starts on 2040-10-20; 1 week before
+		 * the event is 2040-10-13, 2 weeks 2040-10-06 and 5 weeks 2040-09-15.
+		 */
+		const salesWindowRule = {
+			start: { mode: 'relative', value: 4, unit: UNIT_WEEKS, anchor: 'start' },
+			end: { mode: 'default' },
+		};
+		const ENDS_BEFORE_START = 'The sale price cannot end before it starts. Please adjust the sale price window.';
+		const OUTSIDE_SALES_WINDOW =
+			'The sale price window falls outside the ticket sales window. Please adjust the dates.';
+
+		/**
+		 * Renders the sale price window options of a ticket block with its sale price checked, whose sales window opens
+		 * 4 weeks before the event, or on its own start date, 2040-09-01, without a sales window rule.
+		 *
+		 * @param {Object|null} salePriceRule The ticket's sale price rule.
+		 * @param {Object|null} windowRule    The ticket's sales window rule.
+		 *
+		 * @return {string} The client ID of the ticket block.
+		 */
+		function renderWithSalesWindow( salePriceRule, windowRule = salesWindowRule ) {
+			const clientId = newClientId();
+			setTicketFormDates( window.__tribe_common_store__, clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
+			// The options only render once the sale price is checked.
+			window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, true ) );
+			dispatch( STORE_NAME ).setDraftRule( clientId, windowRule );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, salePriceRule );
+			renderSalePriceWindow( clientId );
+
+			return clientId;
+		}
+
+		/**
+		 * Returns the error messages rendered.
+		 *
+		 * @return {string[]} The messages.
+		 */
+		function getErrors() {
+			return root
+				.findAll( ( node ) => 'span' === node.type && 'alert' === node.props.role )
+				.map( ( node ) => node.props.children );
+		}
+
+		it( 'should show the end-before-start message under Sale Ends and mark it invalid', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+			expect( getLengthText() ).toBe( '' );
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBe( true );
+			expect( findControl( SelectControl, START_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		it( 'should show the sales window message when the start falls before the sales window', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+		} );
+
+		it( 'should never show the sales window message for a Now start', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'now' },
+				end: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+		} );
+
+		it( 'should show no message for a valid sale price window', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+			expect( findControl( SelectControl, END_LABELS.mode ).props[ 'aria-invalid' ] ).toBeUndefined();
+		} );
+
+		it( 'should show only the sales window error while the sales window itself is invalid', () => {
+			renderWithSalesWindow(
+				{
+					start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+					end: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				},
+				{ start: { ...salesWindowRule.start, value: '' }, end: { mode: 'default' } }
+			);
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should show no message for a sale price the save drops for not being lower than the price', () => {
+			const clientId = renderWithSalesWindow( {
+				start: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+			} );
+
+			act( () => {
+				window.__tribe_common_store__.dispatch( legacyActions.setTicketTempPrice( clientId, '20.00' ) );
+				window.__tribe_common_store__.dispatch( legacyActions.setTempSalePrice( clientId, '25.00' ) );
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should show no message for a sale price saved without a rule', () => {
+			renderWithSalesWindow( null );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should check again when the admin changes an option', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			change( TextControl, END_LABELS.value, '3' );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+		} );
+
+		it( 'should check again when the sales window changes', () => {
+			const clientId = renderWithSalesWindow( {
+				start: { mode: 'relative', value: 5, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+
+			act( () => {
+				dispatch( STORE_NAME ).setDraftRule( clientId, {
+					...salesWindowRule,
+					start: { ...salesWindowRule.start, value: 6 },
+				} );
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should show the end-before-start message while a number is cleared', () => {
+			renderWithSalesWindow( {
+				start: { mode: 'relative', value: 2, unit: UNIT_WEEKS },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			change( TextControl, END_LABELS.value, '' );
+
+			expect( getErrors() ).toStrictEqual( [ ENDS_BEFORE_START ] );
+		} );
+
+		it( 'should judge the sale price against the ticket\'s own dates without a sales window rule', () => {
+			const clientId = renderWithSalesWindow(
+				{ start: { mode: 'specific' }, end: { mode: 'relative', value: 1, unit: UNIT_WEEKS } },
+				null
+			);
+
+			setFormSalePriceDates( clientId, '2040-08-31', null );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
+
+			setFormSalePriceDates( clientId, '2040-09-02', null );
+
+			expect( getErrors() ).toStrictEqual( [] );
+		} );
+
+		it( 'should check again when the admin picks a specific sale price start', () => {
+			const clientId = renderWithSalesWindow( {
+				start: { mode: 'specific' },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			expect( getErrors() ).toStrictEqual( [] );
+
+			setFormSalePriceDates( clientId, '2040-09-01', null );
+
+			expect( getErrors() ).toStrictEqual( [ OUTSIDE_SALES_WINDOW ] );
 		} );
 	} );
 
