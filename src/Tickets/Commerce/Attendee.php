@@ -943,7 +943,7 @@ class Attendee {
 		$ticket_id = ! empty( $attendee->product_id ) ? $attendee->product_id : get_post_meta( $attendee->ID, Module::ATTENDEE_PRODUCT_KEY, true );
 		$ticket    = $ticket_id ? get_post( $ticket_id ) : null;
 
-		if ( ! empty( $ticket->post_title ) ) {
+		if ( '' !== (string) ( $ticket->post_title ?? '' ) ) {
 			return esc_html( $ticket->post_title );
 		}
 
