@@ -91,8 +91,8 @@ function updateHelperText() {
 		? resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone )
 		: null;
 	const formats = {
-		dateWithYear: dynamic.date_with_year,
-		dateNoYear: dynamic.date_no_year,
+		dateWithYear: settings.dateWithYear,
+		dateNoYear: settings.dateNoYear,
 		timeFormat: settings.timeFormat,
 		// A name list left undefined would replace `DateFormatter`'s English default.
 		dateSettings: Object.fromEntries(
