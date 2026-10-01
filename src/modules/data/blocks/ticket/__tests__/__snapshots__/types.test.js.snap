@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Tickets block types CLEAR_STAGED_TICKETS 1`] = `"@@MT/TICKETS/CLEAR_STAGED_TICKETS"`;
+
 exports[`Tickets block types CREATE_NEW_TICKET 1`] = `"@@MT/TICKETS/CREATE_NEW_TICKET"`;
 
 exports[`Tickets block types DELETE_TICKET 1`] = `"@@MT/TICKETS/DELETE_TICKET"`;
@@ -29,6 +31,8 @@ exports[`Tickets block types REMOVE_TICKET_BLOCK 1`] = `"@@MT/TICKETS/REMOVE_TIC
 exports[`Tickets block types REMOVE_TICKET_BLOCKS 1`] = `"@@MT/TICKETS/REMOVE_TICKET_BLOCKS"`;
 
 exports[`Tickets block types RESET_TICKETS_BLOCK 1`] = `"@@MT/TICKETS/RESET_TICKETS_BLOCK"`;
+
+exports[`Tickets block types SET_STAGED_CREATE_ORDER 1`] = `"@@MT/TICKETS/SET_STAGED_CREATE_ORDER"`;
 
 exports[`Tickets block types SET_TICKET_ATTENDEE_INFO_FIELDS 1`] = `"@@MT/TICKETS/SET_TICKET_ATTENDEE_INFO_FIELDS"`;
 
@@ -76,6 +80,8 @@ exports[`Tickets block types SET_TICKET_IS_MODAL_OPEN 1`] = `"@@MT/TICKETS/SET_T
 
 exports[`Tickets block types SET_TICKET_IS_SELECTED 1`] = `"@@MT/TICKETS/SET_TICKET_IS_SELECTED"`;
 
+exports[`Tickets block types SET_TICKET_IS_STAGED 1`] = `"@@MT/TICKETS/SET_TICKET_IS_STAGED"`;
+
 exports[`Tickets block types SET_TICKET_ON_SALE 1`] = `"@@MT/TICKETS/SET_TICKET_ON_SALE"`;
 
 exports[`Tickets block types SET_TICKET_PRICE 1`] = `"@@MT/TICKETS/SET_TICKET_PRICE"`;
@@ -97,6 +103,8 @@ exports[`Tickets block types SET_TICKET_SALE_START_DATE 1`] = `"@@MT/TICKETS/SET
 exports[`Tickets block types SET_TICKET_SALE_START_DATE_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_SALE_START_DATE_INPUT"`;
 
 exports[`Tickets block types SET_TICKET_SALE_START_DATE_MOMENT 1`] = `"@@MT/TICKETS/SET_TICKET_SALE_START_DATE_MOMENT"`;
+
+exports[`Tickets block types SET_TICKET_SAVE_ERROR 1`] = `"@@MT/TICKETS/SET_TICKET_SAVE_ERROR"`;
 
 exports[`Tickets block types SET_TICKET_SKU 1`] = `"@@MT/TICKETS/SET_TICKET_SKU"`;
 
@@ -193,6 +201,10 @@ exports[`Tickets block types SET_TICKETS_TEMP_SHARED_CAPACITY 1`] = `"@@MT/TICKE
 exports[`Tickets block types SET_UNEDITABLE_TICKETS 1`] = `"@@MT/TICKETS/SET_UNEDITABLE_TICKETS"`;
 
 exports[`Tickets block types SET_UNEDITABLE_TICKETS_LOADING 1`] = `"@@MT/TICKETS/SET_UNEDITABLE_TICKETS_LOADING"`;
+
+exports[`Tickets block types STAGE_TICKET_DELETE 1`] = `"@@MT/TICKETS/STAGE_TICKET_DELETE"`;
+
+exports[`Tickets block types STAGE_TICKET_MOVE 1`] = `"@@MT/TICKETS/STAGE_TICKET_MOVE"`;
 
 exports[`Tickets block types UPDATE_TICKET 1`] = `"@@MT/TICKETS/UPDATE_TICKET"`;
 

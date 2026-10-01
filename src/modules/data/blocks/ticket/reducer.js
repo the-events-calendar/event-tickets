@@ -14,6 +14,9 @@ export const DEFAULT_STATE = {
 	sharedCapacity: '',
 	tempSharedCapacity: '',
 	tickets: tickets( undefined, {} ),
+	stagedDeletes: [],
+	stagedMoves: {},
+	stagedCreateOrder: [],
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -52,6 +55,30 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				tempSharedCapacity: action.payload.tempSharedCapacity,
+			};
+		case types.STAGE_TICKET_DELETE:
+			return {
+				...state,
+				stagedDeletes: state.stagedDeletes.includes( action.payload.ticketId )
+					? state.stagedDeletes
+					: [ ...state.stagedDeletes, action.payload.ticketId ],
+			};
+		case types.STAGE_TICKET_MOVE:
+			return {
+				...state,
+				stagedMoves: { ...state.stagedMoves, [ action.payload.ticketId ]: action.payload.destinationId },
+			};
+		case types.SET_STAGED_CREATE_ORDER:
+			return {
+				...state,
+				stagedCreateOrder: [ ...action.payload.clientIds ],
+			};
+		case types.CLEAR_STAGED_TICKETS:
+			return {
+				...state,
+				stagedDeletes: [],
+				stagedMoves: {},
+				stagedCreateOrder: [],
 			};
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
@@ -118,6 +145,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_HAS_CHANGES:
 		case types.SET_TICKET_HAS_DURATION_ERROR:
 		case types.SET_TICKET_IS_SELECTED:
+		case types.SET_TICKET_IS_STAGED:
+		case types.SET_TICKET_SAVE_ERROR:
 		case types.SET_TICKET_TYPE:
 		case types.SET_TICKET_TYPE_DESCRIPTION:
 		case types.SET_TICKET_TYPE_ICON_URL:

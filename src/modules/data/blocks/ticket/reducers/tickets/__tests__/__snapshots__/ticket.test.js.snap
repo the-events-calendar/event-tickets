@@ -45,7 +45,9 @@ exports[`Details reducer should set the available 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -123,7 +125,9 @@ exports[`Details reducer should set the currency position 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -201,7 +205,9 @@ exports[`Details reducer should set the currency symbol 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -279,7 +285,9 @@ exports[`Details reducer should set the has attendee info fields 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -357,7 +365,9 @@ exports[`Details reducer should set the has been created 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -435,7 +445,9 @@ exports[`Details reducer should set the has changes 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -513,7 +525,9 @@ exports[`Details reducer should set the has duration error 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -591,7 +605,9 @@ exports[`Details reducer should set the is loading 1`] = `
   "isLoading": true,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -669,7 +685,9 @@ exports[`Details reducer should set the is modal open 1`] = `
   "isLoading": false,
   "isModalOpen": true,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -747,7 +765,9 @@ exports[`Details reducer should set the is selected 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": true,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -825,7 +845,9 @@ exports[`Details reducer should set the provider 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "provider",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",
@@ -903,7 +925,9 @@ exports[`Details reducer should set the sold 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 20,
   "tempDetails": {
     "capacity": "",
@@ -981,7 +1005,9 @@ exports[`Details reducer should set the ticket id 1`] = `
   "isLoading": false,
   "isModalOpen": false,
   "isSelected": false,
+  "isStaged": false,
   "provider": "",
+  "saveError": "",
   "sold": 0,
   "tempDetails": {
     "capacity": "",

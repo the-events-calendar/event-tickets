@@ -62,7 +62,9 @@ exports[`Tickets reducer byClientId should register ticket block 1`] = `
     "isLoading": false,
     "isModalOpen": false,
     "isSelected": false,
+    "isStaged": false,
     "provider": "",
+    "saveError": "",
     "sold": 0,
     "tempDetails": {
       "capacity": "",

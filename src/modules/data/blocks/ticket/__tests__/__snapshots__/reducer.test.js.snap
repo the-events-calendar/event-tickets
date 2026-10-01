@@ -12,6 +12,9 @@ exports[`Reducer should set the is selected 1`] = `
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": "",
   "tickets": {
     "allClientIds": [],
@@ -32,6 +35,9 @@ exports[`Reducer should set the is settings loading 1`] = `
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": "",
   "tickets": {
     "allClientIds": [],
@@ -52,6 +58,9 @@ exports[`Reducer should set the is settings open 1`] = `
   "isSettingsOpen": true,
   "provider": "",
   "sharedCapacity": "",
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": "",
   "tickets": {
     "allClientIds": [],
@@ -72,6 +81,9 @@ exports[`Reducer should set the provider 1`] = `
   "isSettingsOpen": false,
   "provider": "provider",
   "sharedCapacity": "",
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": "",
   "tickets": {
     "allClientIds": [],
@@ -92,6 +104,9 @@ exports[`Reducer should set the shared capacity 1`] = `
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": 99,
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": "",
   "tickets": {
     "allClientIds": [],
@@ -112,6 +127,9 @@ exports[`Reducer should set the temp shared capacity 1`] = `
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
+  "stagedCreateOrder": [],
+  "stagedDeletes": [],
+  "stagedMoves": {},
   "tempSharedCapacity": 99,
   "tickets": {
     "allClientIds": [],

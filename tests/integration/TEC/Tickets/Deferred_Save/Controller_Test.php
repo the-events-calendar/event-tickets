@@ -165,4 +165,20 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( wp_script_is( Classic\Assets::SCRIPT, 'registered' ) );
 		$this->assertFalse( wp_style_is( Classic\Assets::STYLE, 'registered' ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_hook_the_block_editor_flag_and_unhook_it_on_unregister(): void {
+		$controller = $this->make_controller();
+		$callback   = $this->test_services->callback( Block\Editor_Config::class, 'add_flag' );
+
+		$controller->register();
+
+		$this->assertSame( 10, has_filter( 'tec_tickets_editor_configuration_localized_data', $callback ) );
+
+		$controller->unregister();
+
+		$this->assertFalse( has_filter( 'tec_tickets_editor_configuration_localized_data', $callback ) );
+	}
 }

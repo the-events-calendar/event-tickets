@@ -31,6 +31,8 @@ export const DEFAULT_STATE = {
 	hasChanges: false,
 	hasDurationError: false,
 	isSelected: false,
+	isStaged: false,
+	saveError: '',
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -158,6 +160,16 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				hasDurationError: action.payload.hasDurationError,
+			};
+		case types.SET_TICKET_IS_STAGED:
+			return {
+				...state,
+				isStaged: action.payload.isStaged,
+			};
+		case types.SET_TICKET_SAVE_ERROR:
+			return {
+				...state,
+				saveError: action.payload.saveError,
 			};
 		case types.SET_TICKET_IS_SELECTED:
 			return {

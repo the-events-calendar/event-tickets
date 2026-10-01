@@ -95,6 +95,10 @@ final class Controller extends Controller_Contract {
 
 		$this->container->singleton( Classic\Assets::class );
 		$this->container->get( Classic\Assets::class )->register();
+
+		$this->container->singleton( Block\Editor_Config::class );
+
+		add_filter( 'tec_tickets_editor_configuration_localized_data', $this->container->callback( Block\Editor_Config::class, 'add_flag' ) );
 	}
 
 	/**
@@ -117,5 +121,6 @@ final class Controller extends Controller_Contract {
 		remove_action( 'admin_notices', $this->container->callback( Classic\Notices::class, 'render' ) );
 
 		$this->container->get( Classic\Assets::class )->unregister();
+		remove_filter( 'tec_tickets_editor_configuration_localized_data', $this->container->callback( Block\Editor_Config::class, 'add_flag' ) );
 	}
 }
