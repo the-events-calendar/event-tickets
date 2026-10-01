@@ -26,7 +26,7 @@ class Rule_Store_Test extends WPTestCase {
 			'end'   => [
 				'mode'   => 'relative',
 				'value'  => 1,
-				'unit'   => Rule::UNIT_DAYS,
+				'unit'   => DAY_IN_SECONDS,
 				'anchor' => 'start',
 			],
 		];
