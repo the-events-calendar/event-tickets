@@ -28,7 +28,7 @@ class Classic_Panel_Data_Test extends Controller_Test_Case {
 	public function should_add_the_stored_rule_to_the_classic_ticket_panel_data(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		$rule      = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 		tribe( Rule_Store::class )->save( $ticket_id, $rule );
 
 		$data = ( new Ticket_Panel_Data( $event_id, $ticket_id ) )->to_array();
