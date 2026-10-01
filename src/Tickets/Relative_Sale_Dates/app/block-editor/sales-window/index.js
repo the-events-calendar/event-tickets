@@ -8,10 +8,10 @@ import { __, _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { markTicketChanged } from '../common-store-bridge';
+import { clearTicketDurationError, markTicketChanged } from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
 import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
-import { getFormRule } from '../rule';
+import { getFormRule, isSpecificWindow } from '../rule';
 import { getHelperText, resolveTicketWindow } from '../sale-dates';
 import { STORE_NAME } from '../store/constants';
 import { useTicketWindowError } from '../window-error';
@@ -114,7 +114,14 @@ export default function SalesWindow( { clientId, picker } ) {
 	}, [ clientId, rule, setDraftRule ] );
 
 	const onChange = ( name, changes ) => {
-		setDraftRule( clientId, { ...formRule, [ name ]: { ...formRule[ name ], ...changes } } );
+		const changed = { ...formRule, [ name ]: { ...formRule[ name ], ...changes } };
+		setDraftRule( clientId, changed );
+
+		// The legacy code re-checks the picker's dates only when they change, so its message would outlive the picker.
+		if ( ! isSpecificWindow( changed ) ) {
+			clearTicketDurationError( clientId );
+		}
+
 		// The legacy dashboard re-checks its Create or Update button, which reads this draft, only on a legacy store change.
 		markTicketChanged( clientId );
 	};
