@@ -7,7 +7,7 @@ use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 /**
  * Test the Card Element template rendering.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Card_Element_Template_Test extends TicketsCommerceSnapshotTestCase {
 

@@ -27,7 +27,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
  *
  * @covers \TEC\Tickets\Admin\Glance_Items
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Admin
  */

@@ -13,7 +13,7 @@ use Codeception\TestCase\WPTestCase;
 /**
  * Integration tests for Payment_Intent with Stripe-specific currency formatting.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Payment_Intent_Precision_Test extends WPTestCase {
 
@@ -22,7 +22,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Set up mocks before each test.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @before
 	 */
@@ -35,7 +35,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Data provider for Stripe zero-decimal currencies.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return Generator
 	 */
@@ -59,7 +59,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Data provider for Stripe special case currencies.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return Generator
 	 */
@@ -99,7 +99,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Data provider for standard two-decimal currencies.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return Generator
 	 */
@@ -122,7 +122,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that zero-decimal currencies are handled correctly by Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 * @dataProvider stripe_zero_decimal_currencies_provider
@@ -145,7 +145,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that special case currencies are handled correctly by Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 * @dataProvider stripe_special_case_currencies_provider
@@ -168,7 +168,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that standard two-decimal currencies are handled correctly by Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 * @dataProvider stripe_two_decimal_currencies_provider
@@ -191,7 +191,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that the Stripe hook system can be overridden via filters.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -224,7 +224,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that application fees are also formatted correctly for Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -247,7 +247,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that the integration works with real-world currency scenarios.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -277,7 +277,7 @@ class Payment_Intent_Precision_Test extends WPTestCase {
 	/**
 	 * Test that the integration handles edge cases properly.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
