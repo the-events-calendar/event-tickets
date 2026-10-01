@@ -88,7 +88,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, Rule::UNIT_DAYS ), 'end' => $this->relative( 3, Rule::UNIT_HOURS ) ] );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 1, DAY_IN_SECONDS ), 'end' => $this->relative( 3, HOUR_IN_SECONDS ) ] );
 
 		$form = $this->render_ticket_form( $event_id, $ticket_id );
 
