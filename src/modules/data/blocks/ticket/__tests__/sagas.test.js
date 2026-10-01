@@ -23,18 +23,21 @@ import * as selectors from '../selectors';
 import {
 	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
 } from '../reducers/header-image';
-import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp-shared/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import * as utils from '@moderntribe/tickets/data/utils';
-import { wpREST } from '@moderntribe/common/utils/api';
 import {
+	api,
 	moment as momentUtil,
 	time as timeUtil,
+	globals,
 } from '@moderntribe/common/utils';
+const { wpREST } = api;
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 import { plugins } from '@moderntribe/common/data';
 import {
 	isTribeEventPostType,
@@ -43,6 +46,8 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
+const { wpREST } = api;
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 
 jest.mock( '@moderntribe/common/utils/moment', () => ( {
 	toMoment: ( date ) => date,
@@ -638,7 +643,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, startMoment ),
 			);
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment ),
+				call( momentUtil.toDate, startMoment, datePickerFormat ),
 			);
 			expect( gen.next( startDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment ),
@@ -667,6 +672,38 @@ describe( 'Ticket Block sagas', () => {
 			// Existing tickets do not default their end date to the event start;
 			// the saved end date is loaded via fetchTicket below.
 			expect( gen.next( true ).value ).toEqual(
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+			);
+			expect( gen.next( eventStart ).value ).toEqual(
+				call( momentUtil.toMoment, eventStart ),
+			);
+			expect( gen.next( endMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, endMoment ),
+			);
+			expect( gen.next( endDate ).value ).toEqual(
+				call( momentUtil.toDate, endMoment, datePickerFormat ),
+			);
+			expect( gen.next( endDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, endMoment ),
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment ),
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				all( [
+					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
+					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
+					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
+					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
+					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
+					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
+					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
+				] ),
+			);
+			expect( gen.next().value ).toEqual(
 				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS ),
 			);
 			expect( gen.next( false ).value ).toEqual(
@@ -741,7 +778,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, startMoment ),
 			);
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment ),
+				call( momentUtil.toDate, startMoment, datePickerFormat ),
 			);
 			expect( gen.next( startDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment ),
@@ -777,7 +814,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, endMoment ),
 			);
 			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment ),
+				call( momentUtil.toDate, endMoment, datePickerFormat ),
 			);
 			expect( gen.next( endDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, endMoment ),
@@ -862,7 +899,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, startMoment ),
 			);
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment ),
+				call( momentUtil.toDate, startMoment, datePickerFormat ),
 			);
 			expect( gen.next( startDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, startMoment ),
@@ -898,7 +935,7 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseDate, endMoment ),
 			);
 			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment ),
+				call( momentUtil.toDate, endMoment, datePickerFormat ),
 			);
 			expect( gen.next( endDateInput ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, endMoment ),
@@ -1237,7 +1274,7 @@ describe( 'Ticket Block sagas', () => {
 			const startDate = momentUtil.toDatabaseDate( startMoment );
 
 			expect( gen.next( startDate ).value ).toEqual(
-				call( momentUtil.toDate, startMoment )
+				call( momentUtil.toDate, startMoment, datePickerFormat )
 			);
 
 			const startDateInput = momentUtil.toDate( startMoment );
@@ -1267,7 +1304,7 @@ describe( 'Ticket Block sagas', () => {
 			const endDate = momentUtil.toDatabaseDate( endMoment );
 
 			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment )
+				call( momentUtil.toDate, endMoment, datePickerFormat )
 			);
 
 			const endDateInput = momentUtil.toDate( endMoment );
@@ -1298,7 +1335,7 @@ describe( 'Ticket Block sagas', () => {
 			const endDate2 = momentUtil.toDatabaseDate( endMoment2 );
 
 			expect( gen.next( endDate2 ).value ).toEqual(
-				call( momentUtil.toDate, endMoment2 )
+				call( momentUtil.toDate, endMoment2, datePickerFormat )
 			);
 
 			const endDateInput2 = momentUtil.toDate( endMoment2 );

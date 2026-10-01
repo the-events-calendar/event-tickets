@@ -14,7 +14,8 @@ const defaultTicketsSelector = ticketTablesSelector + ' [data-ticket-type="defau
 const ticketsMetaboxId = 'tribetickets';
 const ticketWarningSelector = '.tec_ticket-panel__recurring-unsupported-warning';
 const ticketControlsSelector =
-	'#ticket_form_toggle, #rsvp_form_toggle, #settings_form_toggle, .tec_ticket-panel__helper_text__wrap';
+	'#ticket_form_toggle, #rsvp_form_toggle, #settings_form_toggle, .tec_ticket-panel__helper_text__wrap, #tec_tickets_rsvp_metabox';
+const rsvpV2EnableSelector = '#tec_tickets_rsvp_enable';
 const ticketEditPanelActiveSelector = '#tribe_panel_edit[aria-hidden="false"]';
 
 // Init the control state from the localized data.
@@ -160,8 +161,39 @@ function handleControls( newState ) {
 	hideTicketControls();
 }
 
+/**
+ * Whether the RSVP V2 metabox has an RSVP enabled; V2 RSVPs are not listed in the tickets table.
+ *
+ * @since 5.30.0
+ *
+ * @return {boolean} Whether the RSVP V2 metabox has an RSVP enabled.
+ */
+function hasRsvpV2() {
+	return !! document.querySelector( rsvpV2EnableSelector )?.checked;
+}
+
+/**
+ * Whether the event has its own tickets, RSVPs, or a ticket being edited.
+ *
+ * @since 5.30.0
+ *
+ * @return {boolean} Whether the event has its own tickets.
+ */
+function computeHasOwnTickets() {
+	// Run the DOM queries only if required.
+	return !! (
+		document.querySelectorAll( rsvpTicketsSelector ).length || // Has RSVP tickets or...
+		document.querySelectorAll( defaultTicketsSelector ).length || // ...has default tickets or...
+		document.querySelectorAll( ticketEditPanelActiveSelector ).length || // ...is editing a ticket or...
+		hasRsvpV2() // ...has an RSVP V2.
+	);
+}
+
 // Initialize the controls visibility based on the initial state.
-onReady( () => handleControls( state ) );
+onReady( () => {
+	state.hasOwnTickets = state.hasOwnTickets || hasRsvpV2();
+	handleControls( state );
+} );
 const recurrenceControlsElement = document.querySelector( recurrenceControls );
 
 if ( recurrenceControlsElement ) {
@@ -184,12 +216,7 @@ if ( ticketsMetaboxElement ) {
 	 * Also: detect when the user is editing or creating a ticket.
 	 */
 	const ticketsObserver = new MutationObserver( () => {
-		// Run the DOM queries only if required.
-		const hasOwnTickets =
-			document.querySelectorAll( rsvpTicketsSelector ).length || // Has RSVP tickets or...
-			document.querySelectorAll( defaultTicketsSelector ).length || // ...has default tickets or...
-			document.querySelectorAll( ticketEditPanelActiveSelector ).length; // ...is editing a ticket.
-		updateState( { hasOwnTickets } );
+		updateState( { hasOwnTickets: computeHasOwnTickets() } );
 	} );
 
 	ticketsObserver.observe( ticketsMetaboxElement, {
@@ -198,3 +225,8 @@ if ( ticketsMetaboxElement ) {
 		attributes: true,
 	} );
 }
+
+// The RSVP V2 switch is toggled via jQuery, which does not fire native listeners or DOM mutations.
+jQuery( document ).on( 'change', rsvpV2EnableSelector, () => {
+	updateState( { hasOwnTickets: computeHasOwnTickets() } );
+} );

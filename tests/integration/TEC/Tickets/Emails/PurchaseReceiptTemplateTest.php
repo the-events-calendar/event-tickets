@@ -13,7 +13,7 @@ use TEC\Tickets\Emails\Email\Purchase_Receipt;
  *
  * Simple integration tests to ensure fees and coupons appear in Purchase Receipt emails.
  *
- * @since   TBD
+ * @since   5.30.0
  *
  * @package TEC\Tickets\Emails
  */

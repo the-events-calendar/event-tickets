@@ -10,7 +10,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Test the Tickets Admin Upsell class.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Common\Admin
  */

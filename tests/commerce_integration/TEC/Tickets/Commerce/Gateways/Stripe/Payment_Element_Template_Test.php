@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 /**
  * Test the Payment Element template rendering.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Payment_Element_Template_Test extends TicketsCommerceSnapshotTestCase {
 
