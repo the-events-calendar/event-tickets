@@ -75,13 +75,13 @@ defined( 'ABSPATH' ) || die();
 				<input
 					type='hidden'
 					id='tec_tickets_rsvp_ticket_type'
-					name='ticket_type'
+					name='tec_tickets_rsvp_ticket_type'
 					value="<?php echo esc_attr( $ticket_type ); ?>"
 				/>
 
 				<input
 					type='hidden'
-					id='post_ID'
+					id='tec_tickets_rsvp_post_id'
 					name='post_ID'
 					value="<?php echo absint( $post_id ); ?>"
 				/>
@@ -97,7 +97,7 @@ defined( 'ABSPATH' ) || die();
 
 				<?php $this->template( 'editor/panel/fields/rsvp/dates' ); ?>
 
-				<input type="hidden" id="tec_tickets_rsvp_ticket_provider" name="ticket_provider" value="<?php echo esc_attr( $provider_class ); ?>"/>
+				<input type="hidden" id="tec_tickets_rsvp_ticket_provider" name="tec_tickets_rsvp_ticket_provider" value="<?php echo esc_attr( $provider_class ); ?>"/>
 
 				<?php
 				/**

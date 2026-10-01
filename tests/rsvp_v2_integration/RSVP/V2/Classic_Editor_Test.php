@@ -223,8 +223,8 @@ class Classic_Editor_Test extends WPTestCase {
 
 		$saved_post = $_POST;
 		$_POST      = [
-			'ticket_type'             => 'default',
-			'tec_tickets_rsvp_enable' => '1',
+			'tec_tickets_rsvp_ticket_type' => 'default',
+			'tec_tickets_rsvp_enable'      => '1',
 		];
 
 		tribe( Classic_Editor::class )->save_rsvp_on_post_save( $post_id );
@@ -232,6 +232,22 @@ class Classic_Editor_Test extends WPTestCase {
 		$_POST = $saved_post;
 
 		$this->assertFalse( $filter_called, 'Filter should not fire when ticket_type is not tc-rsvp' );
+	}
+
+	/**
+	 * The Tickets metabox posts its own `ticket_type`, and PHP keeps the last value of a repeated
+	 * field name. With the RSVP metabox above the Tickets one the Tickets value arrives last.
+	 */
+	public function test_save_rsvp_on_post_save_ignores_the_tickets_metabox_ticket_type(): void {
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+
+		$data = $this->capture_save_data( $post_id, [
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
+			'ticket_type'                  => 'default',
+			'tec_tickets_rsvp_enable'      => '1',
+		] );
+
+		$this->assertNotNull( $data, 'The RSVP should be saved regardless of the Tickets metabox ticket_type' );
 	}
 
 	public function test_save_rsvp_on_post_save_skips_without_rsvp_enable_flag(): void {
@@ -249,7 +265,7 @@ class Classic_Editor_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$saved_post = $_POST;
-		$_POST      = [ 'ticket_type' => Constants::TC_RSVP_TYPE ];
+		$_POST      = [ 'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE ];
 
 		tribe( Classic_Editor::class )->save_rsvp_on_post_save( $post_id );
 
@@ -262,7 +278,7 @@ class Classic_Editor_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$data = $this->capture_save_data( $post_id, [
-			'ticket_type'             => Constants::TC_RSVP_TYPE,
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
 			'tec_tickets_rsvp_enable' => '1',
 			'rsvp_limit'              => '50',
 		] );
@@ -276,7 +292,7 @@ class Classic_Editor_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$data = $this->capture_save_data( $post_id, [
-			'ticket_type'             => Constants::TC_RSVP_TYPE,
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
 			'tec_tickets_rsvp_enable' => '1',
 			'rsvp_limit'              => '',
 		] );
@@ -289,7 +305,7 @@ class Classic_Editor_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$data = $this->capture_save_data( $post_id, [
-			'ticket_type'             => Constants::TC_RSVP_TYPE,
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
 			'tec_tickets_rsvp_enable' => '1',
 			'show_not_going'          => '1',
 		] );
@@ -302,7 +318,7 @@ class Classic_Editor_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$data = $this->capture_save_data( $post_id, [
-			'ticket_type'             => Constants::TC_RSVP_TYPE,
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
 			'tec_tickets_rsvp_enable' => '1',
 		] );
 
@@ -314,7 +330,7 @@ class Classic_Editor_Test extends WPTestCase {
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 
 		$data = $this->capture_save_data( $post_id, [
-			'ticket_type'             => Constants::TC_RSVP_TYPE,
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
 			'tec_tickets_rsvp_enable' => '1',
 			'rsvp_start_date'         => '2026-01-01',
 			'rsvp_start_time'         => '08:00:00',
@@ -343,7 +359,7 @@ class Classic_Editor_Test extends WPTestCase {
 
 		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$this->capture_save_data( $post_id, [
-			'ticket_type'             => Constants::TC_RSVP_TYPE,
+			'tec_tickets_rsvp_ticket_type' => Constants::TC_RSVP_TYPE,
 			'tec_tickets_rsvp_enable' => '1',
 		] );
 
