@@ -203,7 +203,7 @@ class Editor_Test extends Controller_Test_Case {
 	public function should_hand_the_rule_and_the_stored_dates_to_the_tickets_list(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
-		$rule     = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule     = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 		$ruled    = $this->create_tc_ticket( $event_id, 1, [ 'relative_sale_dates' => wp_json_encode( $rule ) ] );
 		$plain    = $this->create_tc_ticket( $event_id );
 
