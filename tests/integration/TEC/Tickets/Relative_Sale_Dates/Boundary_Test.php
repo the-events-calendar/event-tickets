@@ -72,7 +72,7 @@ class Boundary_Test extends WPTestCase {
 	 * @dataProvider valid_boundaries_provider
 	 */
 	public function should_keep_a_valid_boundary_in_canonical_form( array $data ): void {
-		$this->assertSame( $data, Boundary::from_array( $data, 'start' )->jsonSerialize() );
+		$this->assertSame( $data, Boundary::from_array( $data )->jsonSerialize() );
 	}
 
 	/**
@@ -82,7 +82,7 @@ class Boundary_Test extends WPTestCase {
 	public function should_reject_an_invalid_boundary( array $data ): void {
 		$this->expectException( InvalidArgumentException::class );
 
-		Boundary::from_array( $data, 'start' );
+		Boundary::from_array( $data );
 	}
 
 	/**
@@ -96,19 +96,10 @@ class Boundary_Test extends WPTestCase {
 			'anchor' => Rule::ANCHOR_END,
 		];
 
-		$specific = Boundary::from_array( array_merge( $relative, [ 'mode' => Rule::MODE_SPECIFIC ] ), 'start' );
-		$extra    = Boundary::from_array( array_merge( $relative, [ 'extra' => 'dropped' ] ), 'end' );
+		$specific = Boundary::from_array( array_merge( $relative, [ 'mode' => Rule::MODE_SPECIFIC ] ) );
+		$extra    = Boundary::from_array( array_merge( $relative, [ 'extra' => 'dropped' ] ) );
 
 		$this->assertSame( [ 'mode' => Rule::MODE_SPECIFIC ], $specific->jsonSerialize() );
 		$this->assertSame( $relative, $extra->jsonSerialize() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_name_the_boundary_in_the_error(): void {
-		$this->expectExceptionMessage( "The rule's end has an unknown mode." );
-
-		Boundary::from_array( [ 'mode' => 'after' ], 'end' );
 	}
 }

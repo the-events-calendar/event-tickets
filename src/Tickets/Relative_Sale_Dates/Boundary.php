@@ -84,13 +84,12 @@ final class Boundary implements JsonSerializable {
 	 * @since TBD
 	 *
 	 * @param array{mode?: mixed, value?: mixed, unit?: mixed, anchor?: mixed} $data The boundary, not yet validated.
-	 * @param string                                                           $key  The boundary's key in the rule, `start` or `end`, used in error messages.
 	 *
 	 * @return self The boundary.
 	 *
 	 * @throws InvalidArgumentException If the boundary is not valid.
 	 */
-	public static function from_array( array $data, string $key ): self {
+	public static function from_array( array $data ): self {
 		$mode = $data['mode'] ?? null;
 
 		if ( Rule::MODE_DEFAULT === $mode || Rule::MODE_SPECIFIC === $mode ) {
@@ -98,24 +97,24 @@ final class Boundary implements JsonSerializable {
 		}
 
 		if ( Rule::MODE_RELATIVE !== $mode ) {
-			throw new InvalidArgumentException( "The rule's {$key} has an unknown mode." );
+			throw new InvalidArgumentException( 'The boundary has an unknown mode.' );
 		}
 
 		$value = $data['value'] ?? null;
 		if ( ! is_int( $value ) || $value < self::MIN_VALUE || $value > self::MAX_VALUE ) {
 			throw new InvalidArgumentException(
-				sprintf( "The rule's %s value must be an integer from %d to %d.", $key, self::MIN_VALUE, self::MAX_VALUE )
+				sprintf( 'The boundary value must be an integer from %d to %d.', self::MIN_VALUE, self::MAX_VALUE )
 			);
 		}
 
 		$unit = $data['unit'] ?? null;
 		if ( ! in_array( $unit, [ Rule::UNIT_MINUTES, Rule::UNIT_HOURS, Rule::UNIT_DAYS, Rule::UNIT_WEEKS ], true ) ) {
-			throw new InvalidArgumentException( "The rule's {$key} has an unknown unit." );
+			throw new InvalidArgumentException( 'The boundary has an unknown unit.' );
 		}
 
 		$anchor = $data['anchor'] ?? null;
 		if ( ! in_array( $anchor, [ Rule::ANCHOR_START, Rule::ANCHOR_END ], true ) ) {
-			throw new InvalidArgumentException( "The rule's {$key} has an unknown anchor." );
+			throw new InvalidArgumentException( 'The boundary has an unknown anchor.' );
 		}
 
 		return new self( $mode, $value, $unit, $anchor );
