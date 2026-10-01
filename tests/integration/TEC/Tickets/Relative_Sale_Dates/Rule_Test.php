@@ -12,10 +12,10 @@ class Rule_Test extends WPTestCase {
 	 */
 	public function valid_rules_provider(): Generator {
 		$units   = [
-			'minutes' => Rule::UNIT_MINUTES,
-			'hours'   => Rule::UNIT_HOURS,
-			'days'    => Rule::UNIT_DAYS,
-			'weeks'   => Rule::UNIT_WEEKS,
+			'minutes' => MINUTE_IN_SECONDS,
+			'hours'   => HOUR_IN_SECONDS,
+			'days'    => DAY_IN_SECONDS,
+			'weeks'   => WEEK_IN_SECONDS,
 		];
 		$anchors = [ Rule::ANCHOR_START, Rule::ANCHOR_END ];
 		// The lowest and highest value the product allows.
@@ -67,7 +67,7 @@ class Rule_Test extends WPTestCase {
 		$relative = [
 			'mode'   => Rule::MODE_RELATIVE,
 			'value'  => 2,
-			'unit'   => Rule::UNIT_WEEKS,
+			'unit'   => WEEK_IN_SECONDS,
 			'anchor' => Rule::ANCHOR_START,
 		];
 		$default  = [ 'mode' => Rule::MODE_DEFAULT ];
@@ -122,7 +122,7 @@ class Rule_Test extends WPTestCase {
 				'start' => [
 					'mode'   => 'specific',
 					'value'  => 3,
-					'unit'   => Rule::UNIT_DAYS,
+					'unit'   => DAY_IN_SECONDS,
 					'anchor' => 'start',
 				],
 				'end'   => [
