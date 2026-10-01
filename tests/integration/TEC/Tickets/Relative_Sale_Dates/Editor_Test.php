@@ -75,10 +75,10 @@ class Editor_Test extends Controller_Test_Case {
 			'start' => [
 				'mode'   => 'relative',
 				'value'  => 3,
-				'unit'   => Rule::UNIT_DAYS,
+				'unit'   => DAY_IN_SECONDS,
 				'anchor' => 'end',
 			],
-			'end'   => $this->relative( 1, Rule::UNIT_HOURS ),
+			'end'   => $this->relative( 1, HOUR_IN_SECONDS ),
 		];
 		tribe( Rule_Store::class )->save( $ticket_id, $rule );
 
@@ -86,11 +86,11 @@ class Editor_Test extends Controller_Test_Case {
 
 		$this->assertSame( 'relative', $this->get_selected_value( $form, 'ticket_sales_start_mode' ) );
 		$this->assertSame( '3', $this->get_element( $form, 'ticket_sales_start_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_DAYS, absint( $this->get_selected_value( $form, 'ticket_sales_start_unit' ) ) );
+		$this->assertSame( DAY_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sales_start_unit' ) ) );
 		$this->assertSame( 'end', $this->get_selected_value( $form, 'ticket_sales_start_anchor' ) );
 		$this->assertSame( 'relative', $this->get_selected_value( $form, 'ticket_sales_end_mode' ) );
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sales_end_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_HOURS, absint( $this->get_selected_value( $form, 'ticket_sales_end_unit' ) ) );
+		$this->assertSame( HOUR_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sales_end_unit' ) ) );
 		$this->assertSame( 'start', $this->get_selected_value( $form, 'ticket_sales_end_anchor' ) );
 		$this->assertSame( $rule, json_decode( $this->get_element( $form, 'ticket_relative_sale_dates' )->getAttribute( 'value' ), true ) );
 	}
@@ -138,10 +138,10 @@ class Editor_Test extends Controller_Test_Case {
 		$form = $this->render_ticket_form( $event_id );
 
 		$this->assertSame( '2', $this->get_element( $form, 'ticket_sales_start_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_WEEKS, absint( $this->get_selected_value( $form, 'ticket_sales_start_unit' ) ) );
+		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sales_start_unit' ) ) );
 		$this->assertSame( 'start', $this->get_selected_value( $form, 'ticket_sales_start_anchor' ) );
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sales_end_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_HOURS, absint( $this->get_selected_value( $form, 'ticket_sales_end_unit' ) ) );
+		$this->assertSame( HOUR_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sales_end_unit' ) ) );
 		$this->assertSame( 'start', $this->get_selected_value( $form, 'ticket_sales_end_anchor' ) );
 	}
 
@@ -285,7 +285,7 @@ class Editor_Test extends Controller_Test_Case {
 		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
 		$ticket_id   = $this->create_tc_ticket( $event_id );
-		$rule        = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 		$fields      = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
 
 		// The script writes the rule into the form's own field before `tickets.js` serializes the form.
@@ -308,7 +308,7 @@ class Editor_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		$rule      = [ 'start' => $this->relative( 3, Rule::UNIT_DAYS ), 'end' => $this->relative( 1, Rule::UNIT_HOURS ) ];
+		$rule      = [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => $this->relative( 1, HOUR_IN_SECONDS ) ];
 		tribe( Rule_Store::class )->save( $ticket_id, $rule );
 
 		$fields   = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
