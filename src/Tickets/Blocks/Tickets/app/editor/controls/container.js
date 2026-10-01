@@ -53,6 +53,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		message: messageElement,
 		providers: selectors.getTicketProviders(),
 		selectedProvider: selectors.getTicketsProvider( state ),
+		hasTickets: selectors.hasTickets( state ),
 	};
 
 	/**
