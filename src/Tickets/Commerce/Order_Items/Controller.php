@@ -68,10 +68,11 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		$this->container->get( Writer::class )->unregister();
+		$this->container->get( Reader::class )->unregister();
 	}
 
 	/**
-	 * Registers the table and the writer.
+	 * Registers the table, the writer and the reader.
 	 *
 	 * @since TBD
 	 *
@@ -93,5 +94,6 @@ class Controller extends Controller_Contract {
 		}
 
 		$this->container->register( Writer::class );
+		$this->container->register( Reader::class );
 	}
 }
