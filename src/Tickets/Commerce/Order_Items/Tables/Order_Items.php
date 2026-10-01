@@ -45,6 +45,23 @@ class Order_Items extends Table {
 	const SCHEMA_VERSION = '1.0.0';
 
 	/**
+	 * The length of each string column, in characters.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,int>
+	 */
+	public const STRING_LENGTHS = [
+		'type'        => 50,
+		'item_key'    => 191,
+		'event_title' => 255,
+		'name'        => 255,
+		'currency'    => 3,
+		'sku'         => 255,
+		'ticket_type' => 50,
+	];
+
+	/**
 	 * The base table name, without the table prefix.
 	 *
 	 * @since TBD
@@ -86,8 +103,8 @@ class Order_Items extends Table {
 				$columns   = new Column_Collection();
 				$columns[] = new ID( 'id' );
 				$columns[] = new Referenced_ID( 'order_id' );
-				$columns[] = ( new String_Column( 'type' ) )->set_length( 50 );
-				$columns[] = ( new String_Column( 'item_key' ) )->set_length( 191 )->set_nullable( true );
+				$columns[] = ( new String_Column( 'type' ) )->set_length( self::STRING_LENGTHS['type'] );
+				$columns[] = ( new String_Column( 'item_key' ) )->set_length( self::STRING_LENGTHS['item_key'] )->set_nullable( true );
 				// The line's 0-based place in the order's item list; row IDs do not keep it once a line is added to an existing order.
 				$columns[] = ( new Integer_Column( 'position' ) )->set_type( Column_Types::INT )->set_length( 11 )->set_signed( false );
 
@@ -101,14 +118,14 @@ class Order_Items extends Table {
 				$columns[] = ( new Referenced_ID( 'event_id' ) )->set_nullable( true );
 				$columns[] = ( new Referenced_ID( 'post_id' ) )->set_nullable( true );
 				$columns[] = ( new Referenced_ID( 'occurrence_id' ) )->set_nullable( true );
-				$columns[] = ( new String_Column( 'event_title' ) )->set_length( 255 )->set_nullable( true );
+				$columns[] = ( new String_Column( 'event_title' ) )->set_length( self::STRING_LENGTHS['event_title'] )->set_nullable( true );
 				// The column type defaults to timestamp, which would shift the stored value with the session time zone.
 				$columns[] = ( new Datetime_Column( 'event_start_date' ) )->set_type( Column_Types::DATETIME )->set_nullable( true );
 				$columns[] = ( new Datetime_Column( 'event_start_date_utc' ) )->set_type( Column_Types::DATETIME )->set_nullable( true );
-				$columns[] = ( new String_Column( 'name' ) )->set_length( 255 );
-				$columns[] = ( new String_Column( 'currency' ) )->set_length( 3 );
-				$columns[] = ( new String_Column( 'sku' ) )->set_length( 255 )->set_nullable( true );
-				$columns[] = ( new String_Column( 'ticket_type' ) )->set_length( 50 )->set_nullable( true );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( self::STRING_LENGTHS['name'] );
+				$columns[] = ( new String_Column( 'currency' ) )->set_length( self::STRING_LENGTHS['currency'] );
+				$columns[] = ( new String_Column( 'sku' ) )->set_length( self::STRING_LENGTHS['sku'] )->set_nullable( true );
+				$columns[] = ( new String_Column( 'ticket_type' ) )->set_length( self::STRING_LENGTHS['ticket_type'] )->set_nullable( true );
 				$columns[] = ( new Integer_Column( 'quantity' ) )->set_type( Column_Types::INT )->set_length( 11 );
 				$columns[] = new Integer_Column( 'price' );
 				$columns[] = ( new Integer_Column( 'regular_price' ) )->set_nullable( true );
