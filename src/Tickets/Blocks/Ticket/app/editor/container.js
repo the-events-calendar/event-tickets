@@ -29,6 +29,8 @@ const mapStateToProps = ( state, ownProps ) => {
 		modalTicketId: getModalTicketId( state ),
 		showTicket: getShowTicket( state, ownProps ),
 		ticketId: selectors.getTicketId( state, ownProps ),
+		isStaged: selectors.getTicketIsStaged( state, ownProps ),
+		saveError: selectors.getTicketSaveError( state, ownProps ),
 	};
 };
 
