@@ -81,6 +81,17 @@ class Rule_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array{start?: array<string,int|float|string>, end?: array<string,int|float|string>}}>
+	 */
+	public function shared_invalid_rules_provider(): Generator {
+		$fixtures = json_decode( file_get_contents( codecept_data_dir( 'relative-sale-dates/sale-window-cases.json' ) ), true );
+
+		foreach ( $fixtures['invalid_rules'] as $case ) {
+			yield $case['name'] => [ $case['rule'] ];
+		}
+	}
+
+	/**
 	 * @test
 	 * @dataProvider valid_rules_provider
 	 */
@@ -90,9 +101,52 @@ class Rule_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider valid_rules_provider
+	 */
+	public function should_return_a_valid_rule_as_its_canonical_array( array $data ): void {
+		$this->assertSame( $data, Rule::from_array( $data )->to_array() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_build_the_sales_window_rule_from_stored_data_it_shares(): void {
+		$rule = [
+			'start' => [ 'mode' => 'default' ],
+			'end'   => [
+				'mode'   => 'relative',
+				'value'  => 1,
+				'unit'   => DAY_IN_SECONDS,
+				'anchor' => 'start',
+			],
+		];
+
+		$this->assertSame( $rule, Rule::from_stored( array_merge( [ 'sale_price' => [ 'start' => [ 'mode' => 'default' ] ] ], $rule ) )->to_array() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_build_no_rule_from_stored_data_without_a_valid_one(): void {
+		$this->assertNull( Rule::from_stored( [] ) );
+		$this->assertNull( Rule::from_stored( [ 'start' => [ 'mode' => 'default' ] ] ) );
+	}
+
+	/**
+	 * @test
 	 * @dataProvider invalid_rules_provider
 	 */
 	public function should_reject_an_invalid_rule( array $data ): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Rule::from_array( $data );
+	}
+
+	/**
+	 * @test
+	 * @dataProvider shared_invalid_rules_provider
+	 */
+	public function should_reject_the_shared_fixture_invalid_rule( array $data ): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Rule::from_array( $data );
