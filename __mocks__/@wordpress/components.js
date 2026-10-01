@@ -16,3 +16,10 @@ export const Dropdown = () => <span>Dropdown</span>;
 export const Tooltip = () => <span>Tooltip</span>;
 export const PanelBody = ({ children }) => <span className="PanelBody">{ children }</span>;
 export const RadioControl = () => <input type="radio" value="" />;
+export const ToggleControl = ( { label, checked, help } ) => (
+	<span className="ToggleControl">
+		{ label }
+		{ !! checked }
+		{ help }
+	</span>
+);

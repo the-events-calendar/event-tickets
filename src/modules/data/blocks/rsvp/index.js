@@ -1,12 +1,10 @@
 /**
  * Internal dependencies
  */
-import * as types from './types';
-import * as actions from './actions';
-import * as selectors from './selectors';
-import * as thunks from './thunks';
+export { types, actions, selectors } from '../rsvp-shared';
 import reducer from './reducer';
 import sagas from './sagas';
+import * as thunks from './thunks';
 
 export default reducer;
-export { types, actions, sagas, selectors, thunks };
+export { sagas, thunks };

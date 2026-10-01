@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { types } from '../index';
+import * as types from '../../rsvp-shared/types';
 
 /**
  * Full payload from gutenberg media upload is not used,

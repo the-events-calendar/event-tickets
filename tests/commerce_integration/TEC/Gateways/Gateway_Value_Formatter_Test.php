@@ -12,14 +12,14 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Set up test environment before each test.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @before
 	 */
 	public function setUpTestEnvironment() {
 		// Store the original currency setting
 		$this->original_currency = tribe_get_option( Currency::$currency_code_option, 'USD' );
-		
+
 		// Ensure Stripe hooks are registered for tests
 		$this->register_stripe_hooks();
 	}
@@ -27,7 +27,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Register Stripe hooks for testing.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	private function register_stripe_hooks() {
 		// Manually register the Stripe currency precision filter for testing
@@ -38,7 +38,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	 * Filter Stripe currency precision based on Stripe's specific requirements.
 	 * This mirrors the logic from Stripe/Hooks.php for testing purposes.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param array  $currency_data The currency data from the map.
 	 * @param string $currency_code The currency code.
@@ -54,7 +54,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 
 		// Apply Stripe's currency precision rules.
 		$stripe_precision = $this->get_stripe_precision( $currency_code, $currency_data['decimal_precision'] ?? 2 );
-		
+
 		// Update the currency data with Stripe's precision.
 		$currency_data['decimal_precision'] = $stripe_precision;
 
@@ -65,7 +65,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	 * Get the appropriate precision for Stripe based on their currency requirements.
 	 * This mirrors the logic from Stripe/Hooks.php for testing purposes.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $currency_code The currency code.
 	 * @param int    $default_precision The default precision from currency data.
@@ -104,14 +104,14 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Clean up test environment after each test.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @after
 	 */
 	public function tearDownTestEnvironment() {
 		// Always restore the original currency setting
 		tribe_update_option( Currency::$currency_code_option, $this->original_currency );
-		
+
 		// Clean up any filters that might have been added
 		remove_all_filters( 'tec_tickets_commerce_gateway_value_formatter_stripe_currency_map' );
 	}
@@ -119,7 +119,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Test that Stripe formatter converts JPY display value to gateway format.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -157,7 +157,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Test that the formatter uses currency data and respects filters.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -211,7 +211,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Test that the formatter does NOT change currency codes.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
@@ -243,7 +243,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Data provider for testing Stripe currency formatting against the currency map.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @return array
 	 */
@@ -268,7 +268,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Get the expected Stripe precision for a currency using the actual hook system.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $currency_code The currency code.
 	 *
@@ -288,7 +288,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Get the expected Stripe string for a currency and value.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $currency_code The currency code.
 	 * @param float  $value The value.
@@ -297,21 +297,21 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	 */
 	private function get_expected_stripe_string( $currency_code, $value ) {
 		$precision = $this->get_expected_stripe_precision( $currency_code );
-		
+
 		// Set the currency context and create a temporary Value object
 		tribe_update_option( Currency::$currency_code_option, $currency_code );
-		
+
 		$temp_value = new Value( $value );
 		$temp_value->set_precision( $precision );
 		$temp_value->update();
-		
+
 		return $temp_value->get_string();
 	}
 
 	/**
 	 * Get the expected Stripe integer for a currency and value.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param string $currency_code The currency code.
 	 * @param float  $value The value.
@@ -320,14 +320,14 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	 */
 	private function get_expected_stripe_integer( $currency_code, $value ) {
 		$precision = $this->get_expected_stripe_precision( $currency_code );
-		
+
 		// Set the currency context and create a temporary Value object
 		tribe_update_option( Currency::$currency_code_option, $currency_code );
-		
+
 		$temp_value = new Value( $value );
 		$temp_value->set_precision( $precision );
 		$temp_value->update();
-		
+
 		return $temp_value->get_integer();
 	}
 
@@ -335,7 +335,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Test that Stripe formatter handles all currencies correctly based on the currency map.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @dataProvider stripe_currency_map_provider
 	 * @test
@@ -369,7 +369,7 @@ class Gateway_Value_Formatter_Test extends WPTestCase {
 	/**
 	 * Test that the filter system can override Stripe's built-in currency rules.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @test
 	 */
