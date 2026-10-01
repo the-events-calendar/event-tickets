@@ -389,12 +389,12 @@ class Rest_Test extends Controller_Test_Case {
 			'start' => [
 				'mode'  => Rule::MODE_RELATIVE,
 				'value' => 14,
-				'unit'  => Rule::UNIT_DAYS,
+				'unit'  => DAY_IN_SECONDS,
 			],
 			'end'   => [
 				'mode'  => Rule::MODE_RELATIVE,
 				'value' => 7,
-				'unit'  => Rule::UNIT_DAYS,
+				'unit'  => DAY_IN_SECONDS,
 			],
 		];
 	}

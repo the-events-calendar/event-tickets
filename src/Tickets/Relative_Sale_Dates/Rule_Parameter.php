@@ -262,11 +262,11 @@ final class Rule_Parameter extends Parameter {
 				fn() => sprintf(
 					// translators: 1) a day and 2) a week, each in seconds.
 					__( 'For a relative boundary, the unit in seconds: %1$d (days) or %2$d (weeks).', 'event-tickets' ),
-					Rule::UNIT_DAYS,
-					Rule::UNIT_WEEKS
+					DAY_IN_SECONDS,
+					WEEK_IN_SECONDS
 				)
 			)
-		)->set_example( Rule::UNIT_WEEKS );
+		)->set_example( WEEK_IN_SECONDS );
 
 		return new Entity( $name, $description_provider, $properties, false );
 	}
