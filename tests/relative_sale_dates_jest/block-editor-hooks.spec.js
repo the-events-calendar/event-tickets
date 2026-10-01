@@ -42,6 +42,7 @@ const editedRule = {
 };
 
 const relative = ( value, unit ) => ( { mode: 'relative', value, unit, anchor: 'start' } );
+const salePriceBoundary = ( value, unit ) => ( { mode: 'relative', value, unit } );
 
 const storedSalePriceRule = {
 	start: { mode: 'now' },
@@ -213,7 +214,8 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 
 		describe( 'with a sale price', () => {
 			/**
-			 * Checks or unchecks the sale price of a ticket block in the legacy store.
+			 * Checks or unchecks the sale price of a ticket block in the legacy store, whose form holds the dates the
+			 * editor always gives it: 2040-09-01 at 10:00 to the event start.
 			 *
 			 * @param {string}  clientId The client ID of the ticket block.
 			 * @param {boolean} checked  Whether the sale price is checked.
@@ -221,8 +223,9 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			 * @return {void}
 			 */
 			function setSalePriceChecked( clientId, checked ) {
-				window.__tribe_common_store__.dispatch( legacyActions.registerTicketBlock( clientId ) );
-				window.__tribe_common_store__.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
+				const store = window.__tribe_common_store__;
+				setTicketFormDates( store, clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' );
+				store.dispatch( legacyActions.setTempSalePriceChecked( clientId, checked ) );
 			}
 
 			beforeEach( () => {
@@ -268,12 +271,12 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			it( 'should send the sales window and sale price rules side by side', () => {
 				const clientId = newClientId();
 				setSalePriceChecked( clientId, true );
-				dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+				dispatch( STORE_NAME ).setDraftRule( clientId, storedRule );
 				dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, storedSalePriceRule );
 
 				const body = buildBody( clientId );
 
-				expect( JSON.parse( body.get( BODY_FIELD ) ) ).toStrictEqual( editedRule );
+				expect( JSON.parse( body.get( BODY_FIELD ) ) ).toStrictEqual( storedRule );
 				expect( JSON.parse( body.get( SALE_PRICE_BODY_FIELD ) ) ).toStrictEqual( storedSalePriceRule );
 			} );
 
@@ -291,6 +294,45 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				dispatch( STORE_NAME ).setSalePriceRule( clientId, null );
 
 				expect( buildBody( clientId ).has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+			} );
+
+			describe( 'a draft the server would reject', () => {
+				/**
+				 * Builds the body of a ticket with a checked sale price.
+				 *
+				 * @param {Object} salesWindowRule The sales window draft rule.
+				 * @param {Object} salePriceRule   The sale price draft rule.
+				 *
+				 * @return {FormData} The request body.
+				 */
+				function buildSalePriceBody( salesWindowRule, salePriceRule ) {
+					const clientId = newClientId();
+					setSalePriceChecked( clientId, true );
+					dispatch( STORE_NAME ).setDraftRule( clientId, salesWindowRule );
+					dispatch( STORE_NAME ).setDraftSalePriceRule( clientId, salePriceRule );
+
+					return buildBody( clientId );
+				}
+
+				it( 'should keep the stored sale price rule, by sending none, while the sale price ends before it starts', () => {
+					const body = buildSalePriceBody(
+						{ start: relative( 4, UNIT_WEEKS ), end: { mode: 'default' } },
+						{ start: salePriceBoundary( 1, UNIT_WEEKS ), end: salePriceBoundary( 2, UNIT_WEEKS ) }
+					);
+
+					expect( body.has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+					expect( body.has( BODY_FIELD ) ).toBe( true );
+				} );
+
+				it( 'should keep both stored rules, by sending neither, while the sales window ends before it starts', () => {
+					const body = buildSalePriceBody(
+						{ start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) },
+						storedSalePriceRule
+					);
+
+					expect( body.has( BODY_FIELD ) ).toBe( false );
+					expect( body.has( SALE_PRICE_BODY_FIELD ) ).toBe( false );
+				} );
 			} );
 
 			it( 'should send no sale price rule for a ticket the store knows no sale price rule of', () => {
@@ -592,8 +634,6 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			const salesWindowRule = { start: relative( 4, UNIT_WEEKS ), end: { mode: 'default' } };
 			const TICKET_START = '2040-09-01 10:00:00';
 			const TICKET_END = '2040-10-20 19:00:00';
-			const salePriceBoundary = ( value, unit ) => ( { mode: 'relative', value, unit } );
-
 			/**
 			 * Builds the legacy ticket state of a ticket block with a sale price and the sale price dates its form holds.
 			 *
