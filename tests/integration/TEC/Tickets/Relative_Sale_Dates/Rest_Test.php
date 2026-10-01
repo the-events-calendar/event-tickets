@@ -45,7 +45,7 @@ class Rest_Test extends Controller_Test_Case {
 	public function should_store_the_rule_the_block_editor_sends_with_a_new_ticket(): void {
 		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
-		$rule        = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 
 		$response = $this->send_block_editor_ticket_save( 'POST', '/tickets', $event_id, 'add_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
 
@@ -63,7 +63,7 @@ class Rest_Test extends Controller_Test_Case {
 	public function should_store_the_rule_the_block_editor_sends_with_a_ticket_update(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		$rule      = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ];
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ];
 
 		$response = $this->send_block_editor_ticket_save( 'PUT', "/tickets/{$ticket_id}", $event_id, 'edit_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
 
@@ -76,7 +76,7 @@ class Rest_Test extends Controller_Test_Case {
 	 */
 	public function should_reject_a_window_the_block_editor_sends_that_ends_before_it_starts(): void {
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
-		$rule     = [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ];
+		$rule     = [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ];
 
 		$response = $this->send_block_editor_ticket_save( 'POST', '/tickets', $event_id, 'add_ticket_nonce', [ 'ticket' => [ 'relative_sale_dates' => wp_json_encode( $rule ) ] ] );
 
@@ -91,7 +91,7 @@ class Rest_Test extends Controller_Test_Case {
 	public function should_ignore_the_rule_the_block_editor_sends_with_an_rsvp(): void {
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
 		// A window that ends before it starts would be rejected if the rule applied to the RSVP.
-		$rule = [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ];
+		$rule = [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ];
 
 		$response = $this->send_block_editor_ticket_save(
 			'POST',
@@ -116,7 +116,7 @@ class Rest_Test extends Controller_Test_Case {
 	public function should_store_and_return_the_rule_sent_to_the_tec_rest_api_with_a_new_ticket(): void {
 		$event_start = new DateTimeImmutable( '2027-06-24 19:00:00' );
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
-		$rule        = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule        = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 
 		$response = $this->upsert_through_tec_rest_api(
 			[
@@ -139,7 +139,7 @@ class Rest_Test extends Controller_Test_Case {
 	 */
 	public function should_keep_the_rule_when_a_tec_rest_api_update_leaves_it_out(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
-		$rule      = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 		$ticket_id = $this->upsert_through_tec_rest_api(
 			[
 				'event'               => $event_id,
@@ -170,7 +170,7 @@ class Rest_Test extends Controller_Test_Case {
 				'event'               => $event_id,
 				'title'               => 'TEC REST ticket',
 				'price'               => 10,
-				'relative_sale_dates' => [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ],
+				'relative_sale_dates' => [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ],
 			]
 		)->get_data()['id'];
 		$this->assertNotSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
@@ -198,7 +198,7 @@ class Rest_Test extends Controller_Test_Case {
 					'event'               => $event_id,
 					'title'               => 'TEC REST ticket',
 					'price'               => 10,
-					'relative_sale_dates' => [ 'start' => $this->relative( 1, Rule::UNIT_HOURS ), 'end' => $this->relative( 2, Rule::UNIT_HOURS ) ],
+					'relative_sale_dates' => [ 'start' => $this->relative( 1, HOUR_IN_SECONDS ), 'end' => $this->relative( 2, HOUR_IN_SECONDS ) ],
 				]
 			);
 			$this->fail( 'The ticket should have been rejected.' );
@@ -216,7 +216,7 @@ class Rest_Test extends Controller_Test_Case {
 	public function should_return_the_stored_rule_in_the_block_editor_ticket_data(): void {
 		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
 		$ticket_id = $this->create_tc_ticket( $event_id );
-		$rule      = [ 'start' => $this->relative( 2, Rule::UNIT_WEEKS ), 'end' => [ 'mode' => 'default' ] ];
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
 		tribe( Rule_Store::class )->save( $ticket_id, $rule );
 
 		$data = tribe( 'tickets.rest-v1.repository' )->get_ticket_data( $ticket_id );
