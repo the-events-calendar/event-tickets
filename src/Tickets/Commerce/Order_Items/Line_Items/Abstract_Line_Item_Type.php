@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Order_Items\Line_Items;
 
+use TEC\Tickets\Commerce\Order_Items\Tables\Order_Items as Order_Items_Table;
 use TEC\Tickets\Commerce\Utils\Currency;
 
 /**
@@ -48,22 +49,6 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 * @var array<string,int>
 	 */
 	private static array $decimals = [];
-
-	/**
-	 * The length of each string column. WordPress turns off MySQL's strict mode, so a longer value would be cut
-	 * silently on insert; cutting it here instead lets the full value round-trip through `raw`.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<string,int>
-	 */
-	private const LENGTHS = [
-		'type'        => 50,
-		'event_title' => 255,
-		'name'        => 255,
-		'sku'         => 255,
-		'ticket_type' => 50,
-	];
 
 	/**
 	 * Converts an order item to a table row.
@@ -188,6 +173,9 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	/**
 	 * Cuts a string to the length of its column.
 	 *
+	 * WordPress turns off MySQL's strict mode, so a longer value would be cut silently on insert; cutting it here
+	 * instead lets the full value round-trip through `raw`.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $column The column name.
@@ -196,7 +184,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 	 * @return mixed The value, cut to fit when it is a string longer than the column.
 	 */
 	private static function fit( string $column, $value ) {
-		return is_string( $value ) && isset( self::LENGTHS[ $column ] ) ? mb_substr( $value, 0, self::LENGTHS[ $column ] ) : $value;
+		return is_string( $value ) && isset( Order_Items_Table::STRING_LENGTHS[ $column ] ) ? mb_substr( $value, 0, Order_Items_Table::STRING_LENGTHS[ $column ] ) : $value;
 	}
 
 	/**
