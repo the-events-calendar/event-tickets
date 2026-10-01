@@ -133,8 +133,9 @@ final class Sale_Price_Save {
 	 *
 	 * The sale price rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A
 	 * specific boundary is judged with its submitted date, and a *now* start, or a specific one sent without a date, with
-	 * the day sales open. Dates are compared as days, as the on-sale check reads them. A ticket without a sale price rule
-	 * keeps today's behavior, and so does a sale price the save is about to drop.
+	 * the day sales open; a specific boundary sent with a date the datepicker format cannot read is rejected. Dates are
+	 * compared as days, as the on-sale check reads them. A ticket without a sale price rule keeps today's behavior, and so
+	 * does a sale price the save is about to drop.
 	 *
 	 * @since TBD
 	 *
@@ -161,8 +162,16 @@ final class Sale_Price_Save {
 			return $this->get_ends_before_start_error();
 		}
 
-		$rule         = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
-		$dates        = $rule ? $this->sale_price_window->resolve_for_event( $rule, $post_id ) : null;
+		$rule  = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
+		$dates = $rule ? $this->sale_price_window->resolve_for_event( $rule, $post_id ) : null;
+
+		// A specific boundary, resolved as `null`, keeps its submitted date: one it cannot read would be stored as 1970.
+		foreach ( [ 'start', 'end' ] as $key ) {
+			if ( $dates && null === $dates[ $key ] && $this->sends_an_unreadable_date( $data, $key ) ) {
+				return $this->get_ends_before_start_error();
+			}
+		}
+
 		$sales_window = $dates ? $this->ticket_save->get_sales_window( $post_id, $data ) : null;
 
 		// Without both ends of the sales window there is nothing to judge the sale price against.
@@ -303,6 +312,23 @@ final class Sale_Price_Save {
 		$timestamp = is_string( $formatted ) ? strtotime( $formatted ) : false;
 
 		return false === $timestamp ? '' : gmdate( Dates::DBDATEFORMAT, $timestamp );
+	}
+
+	/**
+	 * Returns whether the ticket data sends a sale price date for one end of the window that the datepicker format
+	 * cannot read.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data The ticket data.
+	 * @param string              $end  The end of the sale price window, `start` or `end`.
+	 *
+	 * @return bool Whether a date was sent and cannot be read.
+	 */
+	private function sends_an_unreadable_date( array $data, string $end ): bool {
+		$date = $data[ "ticket_sale_{$end}_date" ] ?? '';
+
+		return is_string( $date ) && '' !== $date && '' === $this->get_submitted_date( $data, $end );
 	}
 
 	/**

@@ -496,6 +496,68 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array<string,string>, 1: true|string}>
+	 */
+	public function unreadable_sale_price_dates_provider(): Generator {
+		$relative = static fn( int $days ): array => [
+			'mode'  => Rule::MODE_RELATIVE,
+			'value' => $days,
+			'unit'  => Rule::UNIT_DAYS,
+		];
+		$rule     = static fn( array $start, array $end ): string => wp_json_encode(
+			[
+				'start' => $start,
+				'end'   => $end,
+			]
+		);
+		// 31/02 is not a day the day-first datepicker format can turn into a date.
+		$unreadable = '31/02/2027';
+
+		yield 'a specific start' => [
+			[
+				Sale_Price_Save::DATA_KEY => $rule( [ 'mode' => Rule::MODE_SPECIFIC ], $relative( 3 ) ),
+				'ticket_sale_start_date'  => $unreadable,
+			],
+			self::ENDS_BEFORE_START_MESSAGE,
+		];
+		yield 'a specific end' => [
+			[
+				Sale_Price_Save::DATA_KEY => $rule( $relative( 14 ), [ 'mode' => Rule::MODE_SPECIFIC ] ),
+				'ticket_sale_end_date'    => $unreadable,
+			],
+			self::ENDS_BEFORE_START_MESSAGE,
+		];
+		yield 'a now start, which does not read the date' => [
+			[
+				Sale_Price_Save::DATA_KEY => $rule( [ 'mode' => Sale_Price_Rule::MODE_NOW ], $relative( 3 ) ),
+				'ticket_sale_start_date'  => $unreadable,
+			],
+			true,
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider unreadable_sale_price_dates_provider
+	 */
+	public function should_reject_a_specific_sale_price_date_the_datepicker_format_cannot_read( array $data, $expected ): void {
+		// 4 is the day-first `d/m/Y` datepicker format.
+		add_filter( 'tribe_datepicker_format_index', static fn() => 4 );
+
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $this->create_event( self::EVENT_START ), $this->get_ticket_data( $data ) );
+
+		if ( true === $expected ) {
+			$this->assertTrue( $valid );
+
+			return;
+		}
+
+		$this->assertWPError( $valid );
+		$this->assertSame( $expected, $valid->get_error_message() );
+		$this->assertSame( 400, $valid->get_error_data()['status'] );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_not_validate_the_sale_price_window_of_a_ticket_out_of_scope(): void {
