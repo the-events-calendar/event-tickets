@@ -2,7 +2,7 @@
 /**
  * Tests for the Stripe Return Endpoint permission checks.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
@@ -18,7 +18,7 @@ use WP_REST_Request;
 /**
  * Class Return_Endpoint_Test.
  *
- * @since TBD
+ * @since 5.30.0
  *
  * @covers \TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint
  *
@@ -178,6 +178,45 @@ class Return_Endpoint_Test extends WPTestCase {
 
 		if ( ! empty( $signup_data['stripe_user_id'] ) ) {
 			$this->assertNotEquals( 'acct_UNAUTHORIZED_ACCOUNT_ID', $signup_data['stripe_user_id'] );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_accept_user_zero_nonce_when_authenticated_admin_returns_from_stripe(): void {
+		$admin_id         = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		$original_user_id = get_current_user_id();
+
+		try {
+			// Signup generates the state nonce as user 0 before redirecting to Stripe.
+			$valid_nonce = $this->generate_valid_state_nonce();
+
+			// The admin's browser returns with WordPress auth cookies, so verification
+			// runs under the REST-authenticated admin user, not user 0.
+			wp_set_current_user( $admin_id );
+
+			$payload = $this->encode_payload( [
+				'stripe_user_id' => 'acct_LEGITIMATE',
+				'nonce'          => $valid_nonce,
+				'live'           => [
+					'access_token'    => 'sk_live_LEGITIMATE',
+					'publishable_key' => 'pk_live_LEGITIMATE',
+				],
+				'sandbox'        => [
+					'access_token'    => 'sk_test_LEGITIMATE',
+					'publishable_key' => 'pk_test_LEGITIMATE',
+				],
+			] );
+
+			$result = $this->call_has_permission( $payload );
+
+			$this->assertNotFalse(
+				$result,
+				'User-0 nonce from Signup should pass when the admin returns with auth cookies.'
+			);
+		} finally {
+			wp_set_current_user( $original_user_id );
 		}
 	}
 
