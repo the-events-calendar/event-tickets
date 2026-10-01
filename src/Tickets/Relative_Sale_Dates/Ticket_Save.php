@@ -193,9 +193,9 @@ final class Ticket_Save {
 	 * Rejects ticket data whose rule is invalid or whose sales window does not start before it ends.
 	 *
 	 * The rule judged is the one the save applies: the one sent, or else the one stored for the ticket. A boundary the
-	 * rule leaves to the ticket is judged with the date `ticket_add()` stores for it: the submitted date, or for a
-	 * `default` start sent without one, the day the event was published. A `specific` boundary sent without its date is
-	 * rejected.
+	 * rule leaves to the ticket is judged with the date the save stores for it: the submitted date, now for a `default`
+	 * start submitted ahead of now, or for a `default` start sent without one, the day the event was published. A
+	 * `specific` boundary sent without its date is rejected.
 	 *
 	 * @since TBD
 	 *
@@ -237,7 +237,14 @@ final class Ticket_Save {
 		$start    = $window->get_start() ?? $this->get_submitted_date( $data, 'start', $timezone );
 		$end      = $window->get_end() ?? $this->get_submitted_date( $data, 'end', $timezone );
 
-		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() && empty( $data['ticket_start_date'] ) ) {
+		$default_start = Rule::MODE_DEFAULT === $rule->get_start()->get_mode();
+
+		// The save moves a Now start the ticket data puts ahead to now, so that is the start to judge.
+		if ( $start && $default_start ) {
+			$start = min( $start, new DateTimeImmutable( 'now', $timezone ) );
+		}
+
+		if ( ! $start && $default_start && empty( $data['ticket_start_date'] ) ) {
 			$start = $this->get_post_day( $post_id, $timezone );
 		}
 
