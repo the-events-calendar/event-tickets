@@ -11,6 +11,24 @@ import { fromLocal, resolveSaleWindow } from '../sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from '../validation';
 
 const MODE_SPECIFIC = 'specific';
+const MODE_RELATIVE = 'relative';
+
+// The range of numbers a relative boundary takes, as `Boundary::MIN_VALUE` and `Boundary::MAX_VALUE` set it.
+const MIN_VALUE = 1;
+const MAX_VALUE = 60;
+
+/**
+ * Returns whether a relative boundary's number is one the server takes.
+ *
+ * @since TBD
+ *
+ * @param {number} value The number, `NaN` for a cleared field.
+ *
+ * @return {boolean} Whether the number is a whole number in the range.
+ */
+function isInRange( value ) {
+	return Number.isInteger( value ) && value >= MIN_VALUE && value <= MAX_VALUE;
+}
 
 /**
  * Returns the error of a sales window, or `null` when it is valid.
@@ -30,6 +48,13 @@ const MODE_SPECIFIC = 'specific';
  * @return {string|null} The message key of the error, or `null` when the window is valid.
  */
 export function getWindowError( rule, eventDates, formDates ) {
+	// The server rejects a rule with a number out of range with the same error, and the input's own range is not enforced.
+	const isOutOfRange = ( key ) => MODE_RELATIVE === rule[ key ].mode && ! isInRange( rule[ key ].value );
+
+	if ( isOutOfRange( 'start' ) || isOutOfRange( 'end' ) ) {
+		return SALES_END_BEFORE_START;
+	}
+
 	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
 	const dates = {};
 

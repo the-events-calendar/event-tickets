@@ -125,18 +125,19 @@ function updateHelperText() {
 }
 
 /**
- * Shows an error under the sales window and marks its end invalid, or clears both.
+ * Shows an error under the sales window, marking its end invalid when the error is about the window, or clears both.
  *
  * The end is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the form
  * again after the save click and strips that class from every field it does not flag itself.
  *
  * @since TBD
  *
- * @param {string} message The error, or an empty string to clear it.
+ * @param {string}  message        The error, or an empty string to clear it.
+ * @param {boolean} [markEnd=true] Whether the error is about the sales window, so its end is marked invalid.
  *
  * @return {void}
  */
-function showWindowError( message ) {
+function showWindowError( message, markEnd = true ) {
 	const error = document.getElementById( 'ticket_sales_window_error' );
 	const endMode = document.getElementById( 'ticket_sales_end_mode' );
 
@@ -146,7 +147,7 @@ function showWindowError( message ) {
 
 	error.textContent = message;
 
-	if ( '' === message ) {
+	if ( '' === message || ! markEnd ) {
 		endMode.removeAttribute( 'aria-invalid' );
 		endMode.removeAttribute( 'aria-describedby' );
 
@@ -187,7 +188,12 @@ function validateSaleWindow( event, valid ) {
 		return answer;
 	}
 
-	const field = ( id ) => document.getElementById( id )?.value;
+	// A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
+	const field = ( id ) => {
+		const input = document.getElementById( id );
+
+		return input && ! input.disabled ? input.value : undefined;
+	};
 	const error = getWindowError( readRule( document ), eventDates, {
 		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
 		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
@@ -222,7 +228,11 @@ function showServerError( response ) {
 	}
 
 	// The server escapes the message for HTML; the error element takes text.
-	showWindowError( new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent );
+	const text = new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent;
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+
+	// Only the sales window error is about the window; another reason is shown without marking the window invalid.
+	showWindowError( text, text === settings?.text?.invalidWindow );
 }
 
 /**
