@@ -34,7 +34,7 @@ final class Editor extends Controller_Contract {
 	private const DEFAULT_RELATIVE_START = [
 		'mode'   => Rule::MODE_RELATIVE,
 		'value'  => 2,
-		'unit'   => Rule::UNIT_WEEKS,
+		'unit'   => WEEK_IN_SECONDS,
 		'anchor' => Rule::ANCHOR_START,
 	];
 
@@ -48,7 +48,7 @@ final class Editor extends Controller_Contract {
 	private const DEFAULT_RELATIVE_END = [
 		'mode'   => Rule::MODE_RELATIVE,
 		'value'  => 1,
-		'unit'   => Rule::UNIT_HOURS,
+		'unit'   => HOUR_IN_SECONDS,
 		'anchor' => Rule::ANCHOR_START,
 	];
 
