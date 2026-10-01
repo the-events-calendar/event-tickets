@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Prevented the Tickets metabox from losing fields in the Classic Editor
+  when the RSVP metabox is placed above it. 
+timestamp: 2026-10-01T16:55:02.747Z
