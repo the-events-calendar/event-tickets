@@ -473,6 +473,9 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_sale_start_date.datepicker( 'option', 'maxDate', the_date );
 						break;
 				}
+
+				// jQuery UI fires `change` after a pick only when there is no `onSelect`, and other scripts listen for it.
+				$( this ).trigger( 'change' );
 			},
 		};
 

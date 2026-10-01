@@ -1,4 +1,4 @@
-import { readEventDates } from '@tec/tickets/relative-sale-dates/classic/event-dates';
+import { readDateTime, readEventDates } from '@tec/tickets/relative-sale-dates/classic/event-dates';
 
 global.DateFormatter = require( 'php-date-formatter' );
 
@@ -86,5 +86,15 @@ describe( 'readEventDates', () => {
 		expect( readEventDates( fields( { startTime: '' } ), settings() ) ).toBeNull();
 		expect( readEventDates( fields( { endTime: 'soon' } ), settings() ) ).toBeNull();
 		expect( readEventDates( fields( { startTime: '25:00' } ), settings() ) ).toBeNull();
+	} );
+} );
+
+describe( 'readDateTime', () => {
+	it.each( [ [ '' ], [ '  ' ] ] )( 'should read a date without a time as midnight, as the server saves it: "%s"', ( time ) => {
+		expect( readDateTime( '6/1/2099', time, 'n/j/Y' ) ).toBe( '2099-06-01 00:00:00' );
+	} );
+
+	it( 'should return null for a time it cannot read', () => {
+		expect( readDateTime( '6/1/2099', 'soon', 'n/j/Y' ) ).toBeNull();
 	} );
 } );

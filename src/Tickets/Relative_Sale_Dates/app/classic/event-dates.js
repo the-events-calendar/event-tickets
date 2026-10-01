@@ -85,6 +85,8 @@ function readTime( value ) {
 /**
  * Reads a date and time typed in the datepicker and timepicker formats.
  *
+ * A date sent without a time is midnight, as the server saves it.
+ *
  * @since TBD
  *
  * @param {string} date   The date, in the datepicker format.
@@ -95,7 +97,7 @@ function readTime( value ) {
  */
 export function readDateTime( date, time, format ) {
 	const day = readDate( date, format );
-	const clock = readTime( time );
+	const clock = '' === ( time || '' ).trim() ? '00:00:00' : readTime( time );
 
 	return day && clock ? `${ day } ${ clock }` : null;
 }
