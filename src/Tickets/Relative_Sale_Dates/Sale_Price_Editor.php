@@ -36,7 +36,7 @@ final class Sale_Price_Editor extends Controller_Contract {
 	private const DEFAULT_START = [
 		'mode'  => Sale_Price_Rule::MODE_NOW,
 		'value' => 2,
-		'unit'  => Rule::UNIT_WEEKS,
+		'unit'  => WEEK_IN_SECONDS,
 	];
 
 	/**
@@ -49,7 +49,7 @@ final class Sale_Price_Editor extends Controller_Contract {
 	private const DEFAULT_END = [
 		'mode'  => Rule::MODE_RELATIVE,
 		'value' => 1,
-		'unit'  => Rule::UNIT_WEEKS,
+		'unit'  => WEEK_IN_SECONDS,
 	];
 
 	/**

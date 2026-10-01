@@ -50,8 +50,8 @@ $modes = [
 
 // The msgids match the sales window template's and the script's, so one translation serves all of them.
 $get_units = static fn( int $value ): array => [
-	Rule::UNIT_DAYS  => _n( 'day', 'days', $value, 'event-tickets' ),
-	Rule::UNIT_WEEKS => _n( 'week', 'weeks', $value, 'event-tickets' ),
+	DAY_IN_SECONDS  => _n( 'day', 'days', $value, 'event-tickets' ),
+	WEEK_IN_SECONDS => _n( 'week', 'weeks', $value, 'event-tickets' ),
 ];
 
 $labels = [

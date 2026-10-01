@@ -50,17 +50,17 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
 		$ticket_id = $this->create_sale_price_ticket( $event_id );
-		$rule      = [ 'start' => $this->sale_price_relative( 10, Rule::UNIT_DAYS ), 'end' => $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ];
+		$rule      = [ 'start' => $this->sale_price_relative( 10, DAY_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ];
 		tribe( Rule_Store::class )->save( $ticket_id, [ Sale_Price_Rule::KEY => $rule ] );
 
 		$form = $this->render_ticket_form( $event_id, $ticket_id );
 
 		$this->assertSame( 'relative', $this->get_selected_value( $form, 'ticket_sale_start_mode' ) );
 		$this->assertSame( '10', $this->get_element( $form, 'ticket_sale_start_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_DAYS, absint( $this->get_selected_value( $form, 'ticket_sale_start_unit' ) ) );
+		$this->assertSame( DAY_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_start_unit' ) ) );
 		$this->assertSame( 'relative', $this->get_selected_value( $form, 'ticket_sale_end_mode' ) );
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sale_end_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_WEEKS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
+		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
 		$this->assertSame( $rule, json_decode( $this->get_element( $form, 'ticket_sale_price_relative' )->getAttribute( 'value' ), true ) );
 	}
 
@@ -77,10 +77,10 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 
 		$this->assertSame( 'now', $this->get_selected_value( $form, 'ticket_sale_start_mode' ) );
 		$this->assertSame( '2', $this->get_element( $form, 'ticket_sale_start_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_WEEKS, absint( $this->get_selected_value( $form, 'ticket_sale_start_unit' ) ) );
+		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_start_unit' ) ) );
 		$this->assertSame( 'specific', $this->get_selected_value( $form, 'ticket_sale_end_mode' ) );
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sale_end_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_WEEKS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
+		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
 	}
 
 	/**
@@ -93,10 +93,10 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 
 		$this->assertSame( 'now', $this->get_selected_value( $form, 'ticket_sale_start_mode' ) );
 		$this->assertSame( '2', $this->get_element( $form, 'ticket_sale_start_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_WEEKS, absint( $this->get_selected_value( $form, 'ticket_sale_start_unit' ) ) );
+		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_start_unit' ) ) );
 		$this->assertSame( 'relative', $this->get_selected_value( $form, 'ticket_sale_end_mode' ) );
 		$this->assertSame( '1', $this->get_element( $form, 'ticket_sale_end_value' )->getAttribute( 'value' ) );
-		$this->assertSame( Rule::UNIT_WEEKS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
+		$this->assertSame( WEEK_IN_SECONDS, absint( $this->get_selected_value( $form, 'ticket_sale_end_unit' ) ) );
 		$this->assertSame( '', $this->get_element( $form, 'ticket_sale_price_relative' )->getAttribute( 'value' ) );
 	}
 
@@ -156,7 +156,7 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 		$ticket_id = $this->create_sale_price_ticket( $event_id );
 		tribe( Rule_Store::class )->save(
 			$ticket_id,
-			[ Sale_Price_Rule::KEY => [ 'start' => $this->sale_price_relative( 3, Rule::UNIT_WEEKS ), 'end' => $this->sale_price_relative( 1, Rule::UNIT_DAYS ) ] ]
+			[ Sale_Price_Rule::KEY => [ 'start' => $this->sale_price_relative( 3, WEEK_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, DAY_IN_SECONDS ) ] ]
 		);
 
 		$form = $this->render_ticket_form( $event_id, $ticket_id );
@@ -294,7 +294,7 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 		$event_start = new DateTimeImmutable( self::EVENT_START );
 		$event_id    = $this->create_event( self::EVENT_START );
 		$ticket_id   = $this->create_sale_price_ticket( $event_id );
-		$rule        = [ 'start' => $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), 'end' => $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ];
+		$rule        = [ 'start' => $this->sale_price_relative( 2, WEEK_IN_SECONDS ), 'end' => $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ];
 		$fields      = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
 
 		// The script writes the rule into the form's own field before `tickets.js` serializes the form.
@@ -322,7 +322,7 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		$event_id  = $this->create_event( self::EVENT_START );
 		$ticket_id = $this->create_sale_price_ticket( $event_id );
-		$rule      = [ 'start' => [ 'mode' => 'now' ], 'end' => $this->sale_price_relative( 3, Rule::UNIT_DAYS ) ];
+		$rule      = [ 'start' => [ 'mode' => 'now' ], 'end' => $this->sale_price_relative( 3, DAY_IN_SECONDS ) ];
 		tribe( Rule_Store::class )->save( $ticket_id, [ Sale_Price_Rule::KEY => $rule ] );
 
 		$fields   = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
@@ -356,7 +356,7 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 
 	/**
 	 * @param int $value The number of units before the event start.
-	 * @param int $unit  `Rule::UNIT_DAYS` or `Rule::UNIT_WEEKS`.
+	 * @param int $unit  `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`.
 	 *
 	 * @return array{mode: string, value: int, unit: int} A relative boundary of the sale price window.
 	 */
