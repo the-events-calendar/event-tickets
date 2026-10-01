@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use Generator;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
@@ -81,9 +82,8 @@ class Order_Actions_Test extends Controller_Test_Case {
 		add_action(
 			'tec_tickets_commerce_order_deleted',
 			static function ( $order_id ) use ( &$deleted, &$still_in_db ) {
-				global $wpdb;
 				$deleted[]     = $order_id;
-				$still_in_db[] = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE ID = %d', $wpdb->posts, $order_id ) );
+				$still_in_db[] = (int) DB::get_var( DB::prepare( 'SELECT COUNT(*) FROM %i WHERE ID = %d', DB::prefix( 'posts' ), $order_id ) );
 			}
 		);
 		$event_id  = static::factory()->post->create( [ 'post_type' => 'page' ] );
