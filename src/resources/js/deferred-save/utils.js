@@ -281,3 +281,97 @@ export const buildHiddenFields = ( state ) => {
 
 	return fields;
 };
+
+const numberOrNull = ( value ) => {
+	const text = String( value ?? '' ).trim();
+
+	if ( '' === text ) {
+		return null;
+	}
+
+	const number = Number( text.replace( ',', '.' ) );
+
+	return Number.isFinite( number ) ? number : NaN;
+};
+
+const isOn = ( value ) =>
+	! [ '', '0', 'false', 'no', 'off' ].includes(
+		String( value ?? '' )
+			.trim()
+			.toLowerCase()
+	);
+
+/**
+ * Validates a staged field set with the rules the editors share.
+ *
+ * Rules: a name is present; the price, when given, is a non-negative number; when the sale price is
+ * on it is a number below the price; the sale window start is not after its end; and the capacity,
+ * when given and when the tickets sold are known, is not below them.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields  The field set.
+ * @param {{sold?: number}}      context What the page knows about the ticket.
+ *
+ * @return {Array<string>} The failing rules: `name`, `price`, `sale_price`, `sale_window`, `capacity`.
+ */
+export const validateFields = ( fields, context = {} ) => {
+	const errors = [];
+	const name = firstValue( fields, 'ticket_name' );
+	const price = numberOrNull( firstValue( fields, 'ticket_price' ) );
+	const capacity = numberOrNull( firstValue( fields, 'tribe-ticket[capacity]' ) );
+
+	if ( '' === name.trim() ) {
+		errors.push( 'name' );
+	}
+
+	if ( null !== price && ( Number.isNaN( price ) || price < 0 ) ) {
+		errors.push( 'price' );
+	}
+
+	if ( isOn( firstValue( fields, 'ticket_add_sale_price' ) ) ) {
+		const salePrice = numberOrNull( firstValue( fields, 'ticket_sale_price' ) );
+
+		if (
+			null === salePrice ||
+			Number.isNaN( salePrice ) ||
+			null === price ||
+			Number.isNaN( price ) ||
+			salePrice >= price
+		) {
+			errors.push( 'sale_price' );
+		}
+
+		const start = firstValue( fields, 'ticket_sale_start_date' );
+		const end = firstValue( fields, 'ticket_sale_end_date' );
+
+		if ( start && end && new Date( start ) > new Date( end ) ) {
+			errors.push( 'sale_window' );
+		}
+	}
+
+	if (
+		'number' === typeof context.sold &&
+		null !== capacity &&
+		! Number.isNaN( capacity ) &&
+		capacity < context.sold
+	) {
+		errors.push( 'capacity' );
+	}
+
+	return errors;
+};
+
+/**
+ * Copies a field set for a duplicate: the name gets " (copy)", the ID and SKU are dropped.
+ *
+ * @since TBD
+ *
+ * @param {Array<Array<string>>} fields The field set to copy.
+ *
+ * @return {Array<Array<string>>} The copy.
+ */
+export const duplicateFields = ( fields ) =>
+	fields
+		.filter( ( [ name ] ) => ! [ 'ticket_id', 'ticket_sku' ].includes( name ) )
+		.map( ( [ name, value ] ) => ( 'ticket_name' === name ? [ name, `${ value } (copy)` ] : [ name, value ] ) );
