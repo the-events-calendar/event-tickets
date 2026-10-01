@@ -273,17 +273,74 @@ describe( 'classic editor script', () => {
 		expect( isEndMarkedInvalid() ).toBe( false );
 	} );
 
-	it( 'should show the message of a save the server rejected', async () => {
+	it( 'should show the sales window error the server rejected the save with on the end of the window', async () => {
 		renderEventForm();
 		const hooks = await loadScript();
 
 		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
 			success: false,
-			data: { message: 'Sales can&#039;t end before they start.' },
+			data: { message: INVALID_WINDOW },
 		} );
 
-		expect( getWindowError() ).toBe( "Sales can't end before they start." );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
 		expect( isEndMarkedInvalid() ).toBe( true );
+	} );
+
+	it( 'should show another error the server rejected the save with without marking the sales window', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		hooks.doAction( 'tec.tickets.admin.ticketSaveFailed', {
+			success: false,
+			data: { message: 'The ticket can&#039;t be saved.' },
+		} );
+
+		expect( getWindowError() ).toBe( "The ticket can't be saved." );
+		expect( isEndMarkedInvalid() ).toBe( false );
+	} );
+
+	// The server's `Boundary` takes 1 to 60: these are just outside that range, and a cleared field.
+	it.each( [
+		[ 'start', '0' ],
+		[ 'start', '61' ],
+		[ 'start', '' ],
+		[ 'end', '0' ],
+		[ 'end', '61' ],
+	] )( 'should block the save of a relative %s number out of the range the server takes: "%s"', async ( end, value ) => {
+		renderEventForm();
+		await loadScript();
+		jQuery( `#ticket_sales_${ end }_value` ).val( value );
+
+		expect( validateTicket() ).toBe( false );
+		expect( getWindowError() ).toBe( INVALID_WINDOW );
+	} );
+
+	// The ends of the range the server takes, with an end an hour before the event and a start further back.
+	it.each( [ [ '1', 86400 ], [ '60', 86400 ] ] )( 'should let the save of a relative start of %s go through', async ( value, unit ) => {
+		renderEventForm( { value: Number( value ), unit, anchor: 'start' } );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+	} );
+
+	it( 'should block a specific start whose date fields are disabled, as the server gets no date for it', async () => {
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="specific" selected>Specific</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="6/1/2099" disabled /><input id="ticket_start_time" value="10:00" disabled />' );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( false );
+	} );
+
+	it( 'should judge a Now start without the date its hidden, disabled field holds', async () => {
+		// The end falls on 2099-06-24 at 18:00, an hour before the event; the date left in the hidden field is later.
+		renderEventForm();
+		jQuery( '#ticket_sales_start_mode' ).html( '<option value="default" selected>Now</option>' );
+		jQuery( '#tribe_panel_edit' ).append( '<input id="ticket_start_date" value="7/1/2099" disabled /><input id="ticket_start_time" value="10:00" disabled />' );
+		await loadScript();
+
+		expect( validateTicket() ).toBe( true );
+		expect( getWindowError() ).toBe( '' );
 	} );
 
 	it( 'should write the rule before the ticket is saved', async () => {
