@@ -82,16 +82,16 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
-		$time_format = get_option( 'time_format' );
-
 		return [
-			'timeFormat' => is_string( $time_format ) && '' !== $time_format ? $time_format : 'g:i a',
-			'timezones'  => $this->get_manual_offset_zones(),
-			'allDay'     => $this->get_all_day_times(),
-			'text'       => [
+			'timeFormat'   => $this->get_time_format(),
+			'dateWithYear' => $this->get_date_format( true ),
+			'dateNoYear'   => $this->get_date_format( false ),
+			'timezones'    => $this->get_manual_offset_zones(),
+			'allDay'       => $this->get_all_day_times(),
+			'text'         => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
 				'start' => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
@@ -139,6 +139,40 @@ final class Assets extends Controller_Contract {
 			'end'     => $end->format( 'H:i:s' ),
 			'endDays' => ( new DateTimeImmutable( $day ) )->diff( $end->setTime( 0, 0 ) )->days,
 		];
+	}
+
+	/**
+	 * Gets the TEC date format of a date in another year, or in the current one.
+	 *
+	 * The classic editor reads it from here rather than from `tribe_dynamic_help_text`, which leaves a blank setting blank.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $with_year Whether the format shows the year.
+	 *
+	 * @return string The date format, in PHP date format.
+	 */
+	private function get_date_format( bool $with_year ): string {
+		$format = tribe_get_date_format( $with_year );
+
+		if ( is_string( $format ) && '' !== $format ) {
+			return $format;
+		}
+
+		return $with_year ? 'F j, Y' : 'F j';
+	}
+
+	/**
+	 * Gets the TEC time format, which follows the site one unless the `tribe_time_format` filter changes it.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The time format, in PHP date format.
+	 */
+	private function get_time_format(): string {
+		$format = tribe_get_time_format();
+
+		return is_string( $format ) && '' !== $format ? $format : 'g:i a';
 	}
 
 	/**

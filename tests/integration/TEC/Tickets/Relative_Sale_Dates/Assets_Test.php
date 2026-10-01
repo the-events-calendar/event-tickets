@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Generator;
 use TEC\Common\StellarWP\Assets\Assets as Asset_Registry;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe__Timezones as Timezones;
@@ -91,12 +92,46 @@ class Assets_Test extends Controller_Test_Case {
 	 */
 	public function should_localize_the_time_format_and_the_helper_texts(): void {
 		update_option( 'time_format', 'H:i' );
+		// `tribe_get_time_format()` keeps the first option value it reads for the rest of the request.
+		tribe_unset_var( 'tribe_get_time_format' );
 
 		$data = $this->get_localized_data();
 
 		$this->assertSame( 'H:i', $data['timeFormat'] );
 		$this->assertSame( 'Sales start %1$s at %2$s', $data['text']['start'] );
 		$this->assertSame( 'Sales end %1$s at %2$s', $data['text']['end'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_localize_the_time_format_through_the_tec_time_format_filter(): void {
+		add_filter( 'tribe_time_format', static fn(): string => 'G\\hi' );
+
+		$this->assertSame( 'G\\hi', $this->get_localized_data()['timeFormat'] );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string, 1: string, 2: string, 3: string}>
+	 */
+	public function tec_date_formats_provider(): Generator {
+		yield 'set' => [ 'j/n/Y', 'j/n', 'j/n/Y', 'j/n' ];
+		// The block editor falls back to the same formats, so both editors show the same text.
+		yield 'blank' => [ '', '', 'F j, Y', 'F j' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider tec_date_formats_provider
+	 */
+	public function should_localize_the_tec_date_formats( string $with_year, string $no_year, string $expected_with_year, string $expected_no_year ): void {
+		tribe_update_option( 'dateWithYearFormat', $with_year );
+		tribe_update_option( 'dateWithoutYearFormat', $no_year );
+
+		$data = $this->get_localized_data();
+
+		$this->assertSame( $expected_with_year, $data['dateWithYear'] );
+		$this->assertSame( $expected_no_year, $data['dateNoYear'] );
 	}
 
 	/**
@@ -129,7 +164,7 @@ class Assets_Test extends Controller_Test_Case {
 	 * The data is read from the registered asset: the library prints each localized object once per request, so
 	 * printing the script would only show it to the first test.
 	 *
-	 * @return array{timeFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The localized data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string}} The localized data.
 	 */
 	private function get_localized_data(): array {
 		$this->make_controller()->register();

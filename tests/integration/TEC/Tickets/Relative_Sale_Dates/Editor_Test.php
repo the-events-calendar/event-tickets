@@ -160,6 +160,22 @@ class Editor_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_describe_each_relative_field_with_its_helper_text(): void {
+		$this->make_controller()->register();
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+
+		$form = $this->render_ticket_form( $event_id );
+
+		foreach ( [ 'start', 'end' ] as $end ) {
+			foreach ( [ 'value', 'unit', 'anchor' ] as $field ) {
+				$this->assertSame( "ticket_sales_{$end}_helper", $this->get_element( $form, "ticket_sales_{$end}_{$field}" )->getAttribute( 'aria-describedby' ) );
+			}
+		}
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_keep_what_other_code_renders_around_the_date_fields(): void {
 		$this->make_controller()->register();
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );

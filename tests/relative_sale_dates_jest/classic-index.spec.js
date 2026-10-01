@@ -95,6 +95,8 @@ describe( 'classic editor script', () => {
 		window.tec = { tickets: { relativeSaleDates: {} } };
 		window.tec.tickets.relativeSaleDates.classicData = {
 			timeFormat: 'g:i a',
+			dateWithYear: 'F j, Y',
+			dateNoYear: 'F j',
 			timezones: {},
 			allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
 			text: { start: 'Sales start %1$s at %2$s', end: 'Sales end %1$s at %2$s' },
@@ -117,6 +119,15 @@ describe( 'classic editor script', () => {
 
 		expect( getHelperText( 'start' ) ).toBe( 'Sales start June 10, 2099 at 7:00 pm' );
 		expect( getHelperText( 'end' ) ).toBe( 'Sales end June 24, 2099 at 6:00 pm' );
+	} );
+
+	it( 'should format the helper text with the localized TEC formats, as the block editor does', async () => {
+		window.tribe_dynamic_help_text.date_with_year = 'Y-m-d';
+		window.tec.tickets.relativeSaleDates.classicData.dateWithYear = 'j F Y';
+		renderEventForm();
+		await loadScript();
+
+		expect( getHelperText( 'start' ) ).toBe( 'Sales start 10 June 2099 at 7:00 pm' );
 	} );
 
 	it( 'should update the helper text when the event date changes', async () => {
