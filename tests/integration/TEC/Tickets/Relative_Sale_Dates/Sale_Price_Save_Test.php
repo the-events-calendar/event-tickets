@@ -358,7 +358,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$relative    = static fn( int $days ): array => [
 			'mode'  => Rule::MODE_RELATIVE,
 			'value' => $days,
-			'unit'  => Rule::UNIT_DAYS,
+			'unit'  => DAY_IN_SECONDS,
 		];
 		$now         = [ 'mode' => Sale_Price_Rule::MODE_NOW ];
 		$specific    = [ 'mode' => Rule::MODE_SPECIFIC ];
@@ -375,7 +375,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 					'start' => [
 						'mode'   => Rule::MODE_RELATIVE,
 						'value'  => 1,
-						'unit'   => Rule::UNIT_WEEKS,
+						'unit'   => WEEK_IN_SECONDS,
 						'anchor' => Rule::ANCHOR_START,
 					],
 					'end'   => [ 'mode' => Rule::MODE_DEFAULT ],
@@ -502,7 +502,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$relative = static fn( int $days ): array => [
 			'mode'  => Rule::MODE_RELATIVE,
 			'value' => $days,
-			'unit'  => Rule::UNIT_DAYS,
+			'unit'  => DAY_IN_SECONDS,
 		];
 		$rule     = static fn( array $start, array $end ): string => wp_json_encode(
 			[
@@ -563,7 +563,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	public function should_not_validate_the_sale_price_window_of_a_ticket_out_of_scope(): void {
 		$invalid = [
 			Sale_Price_Save::DATA_KEY => wp_json_encode(
-				$this->get_rule( $this->sale_price_relative( 7, Rule::UNIT_DAYS ), $this->sale_price_relative( 14, Rule::UNIT_DAYS ) )
+				$this->get_rule( $this->sale_price_relative( 7, DAY_IN_SECONDS ), $this->sale_price_relative( 14, DAY_IN_SECONDS ) )
 			),
 		];
 
@@ -586,7 +586,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$event_id    = $this->create_event( self::EVENT_START );
 		$ticket_id   = $this->create_sale_price_ticket(
 			$event_id,
-			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ) ) ]
+			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
 		);
 
 		$valid = apply_filters(
@@ -622,7 +622,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 							'mode'     => 'own',
 							'capacity' => '50',
 						],
-						Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 7, Rule::UNIT_DAYS ), $this->sale_price_relative( 14, Rule::UNIT_DAYS ) ) ),
+						Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 7, DAY_IN_SECONDS ), $this->sale_price_relative( 14, DAY_IN_SECONDS ) ) ),
 					]
 				)
 			)
@@ -646,7 +646,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$event_id    = $this->create_event( self::EVENT_START );
 		$ticket_id   = $this->create_sale_price_ticket(
 			$event_id,
-			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ) ) ]
+			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
 		);
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
@@ -680,7 +680,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 		$event_id    = $this->create_event( self::EVENT_START );
 		$ticket_id   = $this->create_sale_price_ticket(
 			$event_id,
-			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, Rule::UNIT_WEEKS ), $this->sale_price_relative( 1, Rule::UNIT_WEEKS ) ) ) ]
+			[ Sale_Price_Save::DATA_KEY => wp_json_encode( $this->get_rule( $this->sale_price_relative( 2, WEEK_IN_SECONDS ), $this->sale_price_relative( 1, WEEK_IN_SECONDS ) ) ) ]
 		);
 		$endpoint    = tribe( Ticket_Endpoint::class );
 
