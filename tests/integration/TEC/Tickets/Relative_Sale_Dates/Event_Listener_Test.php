@@ -162,7 +162,7 @@ class Event_Listener_Test extends Controller_Test_Case {
 		tribe( Rule_Store::class )->save(
 			$ticket_id,
 			[
-				'start' => $this->relative( 2, Rule::UNIT_WEEKS ),
+				'start' => $this->relative( 2, WEEK_IN_SECONDS ),
 				'end'   => [ 'mode' => 'specific' ],
 			]
 		);
@@ -212,11 +212,11 @@ class Event_Listener_Test extends Controller_Test_Case {
 	public function rule_end_mode_provider(): Generator {
 		// The classic editor stores this rule for a ticket made before the feature, the first time it saves it.
 		yield 'specific start and end' => [ [ 'mode' => 'specific' ], [ 'mode' => 'specific' ], true ];
-		yield 'relative start, specific end' => [ $this->relative( 2, Rule::UNIT_WEEKS ), [ 'mode' => 'specific' ], true ];
+		yield 'relative start, specific end' => [ $this->relative( 2, WEEK_IN_SECONDS ), [ 'mode' => 'specific' ], true ];
 		// The rule resolves that end to the event start itself.
 		yield 'default end' => [ [ 'mode' => 'specific' ], [ 'mode' => 'default' ], false ];
 		// The start is counted back from the event end, so an end moved to the event start could fall before it.
-		yield 'start anchored on the event end, specific end' => [ array_merge( $this->relative( 2, Rule::UNIT_HOURS ), [ 'anchor' => Rule::ANCHOR_END ] ), [ 'mode' => 'specific' ], false ];
+		yield 'start anchored on the event end, specific end' => [ array_merge( $this->relative( 2, HOUR_IN_SECONDS ), [ 'anchor' => Rule::ANCHOR_END ] ), [ 'mode' => 'specific' ], false ];
 	}
 
 	/**
@@ -320,8 +320,8 @@ class Event_Listener_Test extends Controller_Test_Case {
 		tribe( Rule_Store::class )->save(
 			$ticket_id,
 			[
-				'start' => $this->relative( 2, Rule::UNIT_WEEKS ),
-				'end'   => $this->relative( 1, Rule::UNIT_DAYS ),
+				'start' => $this->relative( 2, WEEK_IN_SECONDS ),
+				'end'   => $this->relative( 1, DAY_IN_SECONDS ),
 			]
 		);
 

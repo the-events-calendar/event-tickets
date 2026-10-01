@@ -21,7 +21,7 @@ class Ticket_Dates_Test extends WPTestCase {
 		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
 		$ticket_id   = $this->create_tc_ticket( $event_id );
 		$ticket_end  = $this->get_ticket_end( $ticket_id );
-		$rule        = Rule::from_array( [ 'start' => $this->relative( 3, Rule::UNIT_DAYS ), 'end' => [ 'mode' => 'specific' ] ] );
+		$rule        = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => [ 'mode' => 'specific' ] ] );
 
 		tribe( Ticket_Dates::class )->write( $ticket_id, $event_id, $rule );
 
@@ -38,7 +38,7 @@ class Ticket_Dates_Test extends WPTestCase {
 		$ticket_id    = $this->create_tc_ticket( $post_id );
 		$ticket_start = $this->get_ticket_start( $ticket_id );
 		$ticket_end   = $this->get_ticket_end( $ticket_id );
-		$rule         = Rule::from_array( [ 'start' => $this->relative( 3, Rule::UNIT_DAYS ), 'end' => $this->relative( 1, Rule::UNIT_DAYS ) ] );
+		$rule         = Rule::from_array( [ 'start' => $this->relative( 3, DAY_IN_SECONDS ), 'end' => $this->relative( 1, DAY_IN_SECONDS ) ] );
 
 		tribe( Ticket_Dates::class )->write( $ticket_id, $post_id, $rule );
 
