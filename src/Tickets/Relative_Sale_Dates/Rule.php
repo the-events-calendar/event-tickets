@@ -141,7 +141,7 @@ final class Rule implements JsonSerializable {
 			}
 		}
 
-		return new self( Boundary::from_array( $data['start'], 'start' ), Boundary::from_array( $data['end'], 'end' ) );
+		return new self( Boundary::from_array( $data['start'] ), Boundary::from_array( $data['end'] ) );
 	}
 
 	/**
