@@ -42,7 +42,7 @@ class Sale_Price_Window_Test extends WPTestCase {
 				'start' => [
 					'mode'  => Rule::MODE_RELATIVE,
 					'value' => 1,
-					'unit'  => Rule::UNIT_DAYS,
+					'unit'  => DAY_IN_SECONDS,
 				],
 				'end'   => [ 'mode' => Rule::MODE_SPECIFIC ],
 			]

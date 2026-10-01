@@ -48,7 +48,7 @@ final class Sale_Price_Boundary implements JsonSerializable {
 	 *
 	 * @var int[]
 	 */
-	private const UNITS = [ Rule::UNIT_DAYS, Rule::UNIT_WEEKS ];
+	private const UNITS = [ DAY_IN_SECONDS, WEEK_IN_SECONDS ];
 
 	/**
 	 * The mode, `Sale_Price_Rule::MODE_NOW`, `Rule::MODE_RELATIVE` or `Rule::MODE_SPECIFIC`.
@@ -69,7 +69,7 @@ final class Sale_Price_Boundary implements JsonSerializable {
 	private ?int $value;
 
 	/**
-	 * The unit, `Rule::UNIT_DAYS` or `Rule::UNIT_WEEKS`, for a relative boundary.
+	 * The unit, `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`, for a relative boundary.
 	 *
 	 * @since TBD
 	 *
@@ -186,7 +186,7 @@ final class Sale_Price_Boundary implements JsonSerializable {
 	 *
 	 * @param string   $mode  The mode, `Sale_Price_Rule::MODE_NOW`, `Rule::MODE_RELATIVE` or `Rule::MODE_SPECIFIC`.
 	 * @param int|null $value The number of units before the event start, for a relative boundary.
-	 * @param int|null $unit  The unit, `Rule::UNIT_DAYS` or `Rule::UNIT_WEEKS`, for a relative boundary.
+	 * @param int|null $unit  The unit, `DAY_IN_SECONDS` or `WEEK_IN_SECONDS`, for a relative boundary.
 	 */
 	private function __construct( string $mode, ?int $value = null, ?int $unit = null ) {
 		$this->mode  = $mode;

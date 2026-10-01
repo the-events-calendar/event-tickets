@@ -12,8 +12,8 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 	 */
 	public function valid_boundaries_provider(): Generator {
 		$units = [
-			'days'  => Rule::UNIT_DAYS,
-			'weeks' => Rule::UNIT_WEEKS,
+			'days'  => DAY_IN_SECONDS,
+			'weeks' => WEEK_IN_SECONDS,
 		];
 
 		yield 'now' => [ [ 'mode' => Sale_Price_Rule::MODE_NOW ] ];
@@ -39,16 +39,16 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 		$relative = [
 			'mode'  => Rule::MODE_RELATIVE,
 			'value' => 2,
-			'unit'  => Rule::UNIT_WEEKS,
+			'unit'  => WEEK_IN_SECONDS,
 		];
 
 		yield 'missing mode' => [ [] ];
 		yield 'default mode' => [ [ 'mode' => Rule::MODE_DEFAULT ] ];
 		yield 'value below the lowest' => [ array_merge( $relative, [ 'value' => Sale_Price_Boundary::MIN_VALUE - 1 ] ) ];
 		yield 'value above the highest' => [ array_merge( $relative, [ 'value' => Sale_Price_Boundary::MAX_VALUE + 1 ] ) ];
-		yield 'missing value' => [ [ 'mode' => Rule::MODE_RELATIVE, 'unit' => Rule::UNIT_DAYS ] ];
-		yield 'hours' => [ array_merge( $relative, [ 'unit' => Rule::UNIT_HOURS ] ) ];
-		yield 'unit sent as a string' => [ array_merge( $relative, [ 'unit' => sprintf( '%d', Rule::UNIT_DAYS ) ] ) ];
+		yield 'missing value' => [ [ 'mode' => Rule::MODE_RELATIVE, 'unit' => DAY_IN_SECONDS ] ];
+		yield 'hours' => [ array_merge( $relative, [ 'unit' => HOUR_IN_SECONDS ] ) ];
+		yield 'unit sent as a string' => [ array_merge( $relative, [ 'unit' => sprintf( '%d', DAY_IN_SECONDS ) ] ) ];
 		yield 'an anchor on the event end' => [ array_merge( $relative, [ 'anchor' => Rule::ANCHOR_END ] ) ];
 		yield 'a null anchor' => [ array_merge( $relative, [ 'anchor' => null ] ) ];
 	}
@@ -97,7 +97,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 			[
 				'mode'   => Rule::MODE_SPECIFIC,
 				'value'  => 3,
-				'unit'   => Rule::UNIT_DAYS,
+				'unit'   => DAY_IN_SECONDS,
 				'anchor' => Rule::ANCHOR_START,
 			],
 			'start'
@@ -113,7 +113,7 @@ class Sale_Price_Boundary_Test extends WPTestCase {
 		$data = [
 			'mode'  => Rule::MODE_RELATIVE,
 			'value' => Sale_Price_Boundary::MAX_VALUE,
-			'unit'  => Rule::UNIT_WEEKS,
+			'unit'  => WEEK_IN_SECONDS,
 		];
 
 		$boundary = Sale_Price_Boundary::from_array( $data, 'end' )->to_boundary();

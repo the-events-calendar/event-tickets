@@ -90,7 +90,7 @@ class Sale_Price_Rule_Test extends WPTestCase {
 			'end'   => [
 				'mode'  => Rule::MODE_RELATIVE,
 				'value' => 1,
-				'unit'  => Rule::UNIT_WEEKS,
+				'unit'  => WEEK_IN_SECONDS,
 			],
 		];
 		$sales_window_rule = [
