@@ -103,6 +103,7 @@ final class Event_Listener extends Controller_Contract {
 		remove_action( 'wp_after_insert_post', [ $this, 'resolve_saved_event' ] );
 		remove_action( 'tec_shutdown', [ $this, 'resolve_moved_events' ] );
 		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', [ $this, 'filter_end_date_follows_event_start' ] );
+		remove_action( 'tec_tickets_tickets_duplicated', [ $this, 'copy_rules_to_duplicates' ] );
 	}
 
 	/**
@@ -151,7 +152,11 @@ final class Event_Listener extends Controller_Contract {
 	}
 
 	/**
-	 * Returns whether a ticket's sale end date follows its event's start: never for a ticket that has a rule.
+	 * Returns whether a ticket's sale end date follows its event's start: not when the ticket's rule resolves the end.
+	 *
+	 * A rule whose end is a specific date leaves the end to the ticket, as a ticket without a rule does, and the classic
+	 * editor stores such a rule the first time it saves a ticket made before the feature. The end stays put when the
+	 * rule's start counts back from the event end, which could fall after an end moved to the event start.
 	 *
 	 * @since TBD
 	 *
@@ -161,7 +166,51 @@ final class Event_Listener extends Controller_Contract {
 	 * @return bool Whether the ticket's sale end date follows the event start.
 	 */
 	public function filter_end_date_follows_event_start( $follows, int $ticket_id ): bool {
-		return tribe_is_truthy( $follows ) && ! $this->get_rule( $ticket_id );
+		$rule = $this->get_rule( $ticket_id );
+
+		if ( ! $rule ) {
+			return tribe_is_truthy( $follows );
+		}
+
+		return tribe_is_truthy( $follows )
+			&& Rule::MODE_SPECIFIC === $rule->get_end()->get_mode()
+			&& Rule::ANCHOR_END !== $rule->get_start()->get_anchor();
+	}
+
+	/**
+	 * Copies the rules of the tickets duplicated to another event and resolves the duplicates against that event's dates.
+	 *
+	 * Cloning a ticket copies its dates only, so without its rules a duplicate would keep the original event's dates.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,int|false> $duplicated_ticket_ids The duplicated ticket IDs, keyed by the original ticket IDs; `false`
+	 *                                                    for a ticket that could not be cloned.
+	 * @param int                  $new_post_id           The post the tickets were duplicated to.
+	 *
+	 * @return void
+	 */
+	public function copy_rules_to_duplicates( $duplicated_ticket_ids, int $new_post_id ): void {
+		if ( ! is_array( $duplicated_ticket_ids ) ) {
+			return;
+		}
+
+		$copied = false;
+
+		foreach ( $duplicated_ticket_ids as $original_ticket_id => $duplicate_ticket_id ) {
+			$stored = $this->rule_store->get( absint( $original_ticket_id ) );
+
+			if ( ! $duplicate_ticket_id || ! $stored ) {
+				continue;
+			}
+
+			$this->rule_store->save( absint( $duplicate_ticket_id ), $stored );
+			$copied = true;
+		}
+
+		if ( $copied ) {
+			$this->resolve_event( $new_post_id );
+		}
 	}
 
 	/**
@@ -178,6 +227,7 @@ final class Event_Listener extends Controller_Contract {
 		add_action( 'wp_after_insert_post', [ $this, 'resolve_saved_event' ] );
 		add_action( 'tec_shutdown', [ $this, 'resolve_moved_events' ] );
 		add_filter( 'tec_tickets_ticket_end_date_follows_event_start', [ $this, 'filter_end_date_follows_event_start' ], 10, 2 );
+		add_action( 'tec_tickets_tickets_duplicated', [ $this, 'copy_rules_to_duplicates' ], 10, 2 );
 	}
 
 	/**
