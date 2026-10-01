@@ -47,6 +47,20 @@ export function getFormRule( rule ) {
 }
 
 /**
+ * Returns whether both ends of a rule are specific dates, the only window the Ticket block's date and time range picker
+ * holds whole.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule} rule The rule the options show.
+ *
+ * @return {boolean} Whether both ends are specific dates.
+ */
+export function isSpecificWindow( rule ) {
+	return MODE_SPECIFIC === rule.start.mode && MODE_SPECIFIC === rule.end.mode;
+}
+
+/**
  * Reads the relative number the admin typed as an integer from 1 to 60.
  *
  * A cleared field stays empty, so the admin can type a new number; the server rejects a rule saved with it.
