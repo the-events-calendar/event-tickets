@@ -13,6 +13,14 @@
  * @var  int    $post_id The ID of the post the tickets are for.
  */
 
+use TEC\Tickets\RSVP\V2\Constants;
+
+// Merge with any titles passed by the parent context (e.g. Event Tickets Plus), keeping
+// the default and RSVP ticket type titles available.
+$titles                              = (array) ( $titles ?? [] );
+$titles['default']                 ??= tec_tickets_get_default_ticket_type_label_lowercase( 'order list view' );
+$titles[ Constants::TC_RSVP_TYPE ] ??= tribe_get_rsvp_label_plural( 'order list view' );
+
 ?>
 <ul class="tribe-orders-list">
 	<input type="hidden" name="event_id" value="<?php echo absint( $post_id ); ?>">
@@ -41,6 +49,7 @@
 					'order'     => $order,
 					'attendees' => $attendees,
 					'order_id'  => $order_id,
+					'titles'    => $titles,
 				] );
 			?>
 		</li>
