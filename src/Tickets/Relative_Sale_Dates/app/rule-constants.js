@@ -12,8 +12,8 @@ export const ANCHOR_START = 'start';
 export const ANCHOR_END = 'end';
 
 /*
- * WordPress defines these in PHP only; `@wordpress/date` keeps its own copies private. The names match the PHP ones
- * `Rule` builds its units from.
+ * WordPress defines these in PHP only; `@wordpress/date` keeps its own copies private. The names match the PHP
+ * constants the server stores each unit as.
  */
 const MINUTE_IN_SECONDS = 60;
 const HOUR_IN_SECONDS = 60 * MINUTE_IN_SECONDS;
