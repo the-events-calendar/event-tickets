@@ -1,5 +1,9 @@
 # Changelog
 
+### [5.30.0.1] 2026-10-01
+
+* Fix - Prevented the Tickets metabox from losing fields in the Classic Editor when the RSVP metabox is placed above it.
+
 ### [5.30.0] 2026-09-30
 
 * Feature - Changed where RSVPs are stored to agree with Tickets. This will happen after you manually start a migration and only if you are using RSVPs already.
