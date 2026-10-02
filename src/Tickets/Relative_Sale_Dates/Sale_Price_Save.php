@@ -84,7 +84,7 @@ final class Sale_Price_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store       $rule_store       The store of the ticket rules.
+	 * @param Rule_Store        $rule_store        The store of the ticket rules.
 	 * @param Sale_Price_Dates  $sale_price_dates  The writer of the sale price dates.
 	 * @param Sale_Price_Window $sale_price_window The sale price window resolver.
 	 * @param Ticket_Save       $ticket_save       The ticket save, which knows the sales window a save stores.

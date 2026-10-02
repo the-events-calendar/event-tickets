@@ -61,6 +61,7 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
 		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'save_rule' ) );
 		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'write_resolved_dates' ), 20 );
+		remove_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Sale_Price_Save::class, 'validate_ticket_data' ), 20 );
 		$this->container->get( Assets::class )->unregister();
 	}
 
@@ -149,6 +150,8 @@ final class Controller extends Controller_Contract {
 		add_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'save_rule' ), 10, 3 );
 		// After the sale price rule is stored.
 		add_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'write_resolved_dates' ), 20, 2 );
+		// After the sales window validation, at 10: a sales window it rejects is not judged again.
+		add_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Sale_Price_Save::class, 'validate_ticket_data' ), 20, 3 );
 
 		$this->container->register( Assets::class );
 	}
