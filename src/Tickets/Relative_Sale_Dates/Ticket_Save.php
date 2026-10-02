@@ -21,7 +21,6 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use Tribe__Timezones as Timezones;
 use WP_Error;
 
 /**
@@ -230,31 +229,20 @@ final class Ticket_Save {
 			return $this->get_invalid_window_error();
 		}
 
-		$rule = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
-
-		if ( ! $rule ) {
-			return $valid;
-		}
-
-		$event_dates = $this->get_event_dates( $post_id );
+		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
+		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
 
 		if ( ! $event_dates ) {
 			return $valid;
 		}
 
-		$window   = $this->sale_window->resolve( $rule, ...$event_dates );
-		$timezone = $event_dates[0]->getTimezone();
-		$start    = $window->get_start() ?? $this->get_submitted_date( $data, 'start', $timezone );
-		$end      = $window->get_end() ?? $this->get_submitted_date( $data, 'end', $timezone );
+		$timezone  = $event_dates[0]->getTimezone();
+		$submitted = $this->get_submitted_date( $data, 'start', $timezone );
+		$window    = $this->sale_window->resolve_for_event( $rule, $post_id, $submitted ? $submitted->format( 'Y-m-d H:i:s' ) : '' );
+		$start     = ( $window ? $window->get_start() : null ) ?? $submitted;
+		$end       = ( $window ? $window->get_end() : null ) ?? $this->get_submitted_date( $data, 'end', $timezone );
 
-		$default_start = Rule::MODE_DEFAULT === $rule->get_start()->get_mode();
-
-		// The save moves a Now start the ticket data puts ahead to now, so that is the start to judge.
-		if ( $start && $default_start ) {
-			$start = min( $start, new DateTimeImmutable( 'now', $timezone ) );
-		}
-
-		if ( ! $start && $default_start && empty( $data['ticket_start_date'] ) ) {
+		if ( ! $start && Rule::MODE_DEFAULT === $rule->get_start()->get_mode() && empty( $data['ticket_start_date'] ) ) {
 			$start = $this->get_post_day( $post_id, $timezone );
 		}
 
@@ -360,32 +348,6 @@ final class Ticket_Save {
 	}
 
 	/**
-	 * Gets the event's start and end in the event timezone.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The event post ID.
-	 *
-	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
-	 */
-	private function get_event_dates( int $post_id ): ?array {
-		$start = get_post_meta( $post_id, '_EventStartDate', true );
-		$end   = get_post_meta( $post_id, '_EventEndDate', true );
-
-		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
-			return null;
-		}
-
-		$timezone = Timezones::build_timezone_object( get_post_meta( $post_id, '_EventTimezone', true ) ?: null );
-
-		try {
-			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
-		} catch ( Exception $e ) {
-			return null;
-		}
-	}
-
-	/**
 	 * Gets the date submitted for one end of the sales window, read the way `ticket_add()` reads it.
 	 *
 	 * @since TBD
@@ -448,5 +410,4 @@ final class Ticket_Save {
 			[ 'status' => 400 ]
 		);
 	}
-
 }
