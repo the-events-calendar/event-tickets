@@ -186,6 +186,7 @@ $labels = [
 			<?php endif; ?>
 		</div>
 		<?php endforeach; ?>
+		<p class="tec-tickets-relative-sale-dates__error ticket_sale_price-field" id="ticket_sale_price_error" role="alert"></p>
 		<input
 			type="hidden"
 			name="<?php echo esc_attr( Sale_Price_Save::DATA_KEY ); ?>"

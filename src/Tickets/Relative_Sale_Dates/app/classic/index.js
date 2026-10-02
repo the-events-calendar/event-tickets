@@ -15,8 +15,9 @@ import { _n } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
+import { getSalePriceError, SALE_PRICE_ENDS_BEFORE_START, SALE_PRICE_OUTSIDE_SALES_WINDOW } from '../sale-price-check';
 import { DATE_FORMAT, resolveSaleWindow, toZone } from '../sale-window';
-import { getWindowError } from '../window-check';
+import { getFormSalesWindow, getWindowError } from '../window-check';
 import { readDate, readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
@@ -86,7 +87,20 @@ const RELATIVE_FIELD_PREFIXES = [ 'ticket_sales_start', 'ticket_sales_end', 'tic
  */
 const SALE_PRICE_FIELDS = [ 'start', 'end' ]
 	.flatMap( ( key ) => [ 'mode', 'value', 'unit', 'date' ].map( ( field ) => `#ticket_sale_${ key }_${ field }` ) )
+	.concat( '#ticket_add_sale_price' )
 	.join( ', ' );
+
+/**
+ * The keys of the localized text of each sale price error.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, string>}
+ */
+const SALE_PRICE_MESSAGES = {
+	[ SALE_PRICE_ENDS_BEFORE_START ]: 'salePriceEndsBeforeStart',
+	[ SALE_PRICE_OUTSIDE_SALES_WINDOW ]: 'salePriceOutsideWindow',
+};
 
 /**
  * Reads the event dates from the TEC event fields.
@@ -134,6 +148,44 @@ function getDateSettings( dynamic ) {
 			.filter( ( name ) => Array.isArray( dynamic[ name ] ) )
 			.map( ( name ) => [ name, dynamic[ name ] ] )
 	);
+}
+
+/**
+ * Reads the sales start and end dates the form sends.
+ *
+ * @since TBD
+ *
+ * @param {Object} dynamic The date formats TEC localizes for its own helper text.
+ *
+ * @return {{start: string|null, end: string|null}} Each date, `YYYY-MM-DD HH:mm:ss`, or `null` when it cannot be read.
+ */
+function readFormSalesDates( dynamic ) {
+	// A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
+	const field = ( id ) => {
+		const input = document.getElementById( id );
+
+		return input && ! input.disabled ? input.value : undefined;
+	};
+
+	return {
+		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
+		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
+	};
+}
+
+/**
+ * Reads the specific sale price dates the form holds.
+ *
+ * @since TBD
+ *
+ * @param {Object} dynamic The date formats TEC localizes for its own helper text.
+ *
+ * @return {{start: string|null, end: string|null}} Each date, `YYYY-MM-DD`, or `null` when it cannot be read.
+ */
+function readFormSalePriceDates( dynamic ) {
+	const field = ( id ) => readDate( document.getElementById( id )?.value, dynamic.datepicker_format );
+
+	return { start: field( 'ticket_sale_start_date' ), end: field( 'ticket_sale_end_date' ) };
 }
 
 /**
@@ -199,12 +251,10 @@ function updateSaleLength() {
 		return;
 	}
 
-	const formDate = ( id ) => readDate( document.getElementById( id )?.value, dynamic.datepicker_format );
-
 	helper.textContent = getSalePriceLengthText(
 		readSalePriceRule( document ),
 		eventDates,
-		{ start: formDate( 'ticket_sale_start_date' ), end: formDate( 'ticket_sale_end_date' ) },
+		readFormSalePriceDates( dynamic ),
 		toZone( moment(), eventDates.timezone ).format( DATE_FORMAT )
 	);
 }
@@ -272,10 +322,42 @@ function updateTicketsList() {
 }
 
 /**
- * Shows an error under the sales window, marking its end invalid when the error is about the window, or clears both.
+ * Shows an error and marks the field it is about invalid, or clears both.
  *
- * The end is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the form
+ * The field is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the form
  * again after the save click and strips that class from every field it does not flag itself.
+ *
+ * @since TBD
+ *
+ * @param {string} errorId The id of the element that shows the error.
+ * @param {string} fieldId The id of the field the error is about.
+ * @param {string} message The error, or an empty string to clear it.
+ *
+ * @return {void}
+ */
+function showFieldError( errorId, fieldId, message ) {
+	const error = document.getElementById( errorId );
+	const field = document.getElementById( fieldId );
+
+	if ( ! error || ! field ) {
+		return;
+	}
+
+	error.textContent = message;
+
+	if ( '' === message ) {
+		field.removeAttribute( 'aria-invalid' );
+		field.removeAttribute( 'aria-describedby' );
+
+		return;
+	}
+
+	field.setAttribute( 'aria-invalid', 'true' );
+	field.setAttribute( 'aria-describedby', error.id );
+}
+
+/**
+ * Shows an error under the sales window, marking its end invalid when the error is about the window, or clears both.
  *
  * @since TBD
  *
@@ -285,24 +367,28 @@ function updateTicketsList() {
  * @return {void}
  */
 function showWindowError( message, markEnd = true ) {
-	const error = document.getElementById( 'ticket_sales_window_error' );
-	const endMode = document.getElementById( 'ticket_sales_end_mode' );
+	showFieldError( 'ticket_sales_window_error', 'ticket_sales_end_mode', markEnd ? message : '' );
 
-	if ( ! error || ! endMode ) {
-		return;
+	if ( ! markEnd ) {
+		const error = document.getElementById( 'ticket_sales_window_error' );
+
+		if ( error ) {
+			error.textContent = message;
+		}
 	}
+}
 
-	error.textContent = message;
-
-	if ( '' === message || ! markEnd ) {
-		endMode.removeAttribute( 'aria-invalid' );
-		endMode.removeAttribute( 'aria-describedby' );
-
-		return;
-	}
-
-	endMode.setAttribute( 'aria-invalid', 'true' );
-	endMode.setAttribute( 'aria-describedby', error.id );
+/**
+ * Shows an error under the sale price window and marks its end invalid, or clears both.
+ *
+ * @since TBD
+ *
+ * @param {string} message The error, or an empty string to clear it.
+ *
+ * @return {void}
+ */
+function showSalePriceError( message ) {
+	showFieldError( 'ticket_sale_price_error', 'ticket_sale_end_mode', message );
 }
 
 /**
@@ -335,16 +421,7 @@ function validateSaleWindow( event, valid ) {
 		return answer;
 	}
 
-	// A disabled field, like the date a Now start hides, is not sent, so the server does not judge it either.
-	const field = ( id ) => {
-		const input = document.getElementById( id );
-
-		return input && ! input.disabled ? input.value : undefined;
-	};
-	const error = getWindowError( readRule( document ), eventDates, {
-		start: readDateTime( field( 'ticket_start_date' ), field( 'ticket_start_time' ), dynamic.datepicker_format ),
-		end: readDateTime( field( 'ticket_end_date' ), field( 'ticket_end_time' ), dynamic.datepicker_format ),
-	} );
+	const error = getWindowError( readRule( document ), eventDates, readFormSalesDates( dynamic ) );
 
 	if ( ! error ) {
 		showWindowError( '' );
@@ -353,6 +430,70 @@ function validateSaleWindow( event, valid ) {
 	}
 
 	showWindowError( settings.text.invalidWindow );
+	event.stopImmediatePropagation();
+
+	return false;
+}
+
+/**
+ * Blocks the ticket save when the sale price window does not end after the day it starts, or starts outside the sales
+ * window, in the order the server checks them.
+ *
+ * It runs after the sales window check, which stops the handlers after it when the sales window itself is invalid, as
+ * the server judges the sales window first. A sale price that is not added is not judged, and its error is cleared.
+ * The server also skips a sale price that is not lower than the price; the sale price field's own validation already
+ * blocks that save. A sales start the form cannot read, such as a default start without a date, leaves the sale price
+ * unjudged here, as it leaves the sales window: the server still checks it.
+ *
+ * @since TBD
+ *
+ * @param {jQuery.Event} event The validation event.
+ * @param {boolean}      valid Whether the ticket is valid so far.
+ *
+ * @return {boolean} Whether the ticket can be saved.
+ */
+function validateSalePrice( event, valid ) {
+	const answer = undefined === event.result ? valid : event.result;
+	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const dynamic = window.tribe_dynamic_help_text;
+	const isAdded = Boolean( document.getElementById( 'ticket_add_sale_price' )?.checked );
+
+	if ( ! isAdded ) {
+		showSalePriceError( '' );
+
+		return answer;
+	}
+
+	if (
+		! settings ||
+		! dynamic ||
+		! document.getElementById( 'ticket_sale_price_error' ) ||
+		! document.getElementById( 'ticket_sales_start_mode' )
+	) {
+		return answer;
+	}
+
+	const eventDates = getEventDates( settings, dynamic );
+
+	// Without event dates the window cannot be judged here; the server still checks it.
+	if ( ! eventDates ) {
+		return answer;
+	}
+
+	const error = getSalePriceError(
+		readSalePriceRule( document ),
+		eventDates,
+		getFormSalesWindow( readRule( document ), eventDates, readFormSalesDates( dynamic ) ),
+		readFormSalePriceDates( dynamic )
+	);
+
+	if ( ! error ) {
+		showSalePriceError( '' );
+
+		return answer;
+	}
+
+	showSalePriceError( settings.text[ SALE_PRICE_MESSAGES[ error ] ] );
 	event.stopImmediatePropagation();
 
 	return false;
@@ -377,13 +518,22 @@ function showServerError( response ) {
 	// The server escapes the message for HTML; the error element takes text.
 	const text = new window.DOMParser().parseFromString( message, 'text/html' ).documentElement.textContent;
 	const settings = window.tec?.tickets?.relativeSaleDates?.classicData;
+	const salePriceTexts = Object.values( SALE_PRICE_MESSAGES ).map( ( key ) => settings?.text?.[ key ] );
+
+	// The server answers with the text only, so a sale price error is told apart by its text.
+	if ( salePriceTexts.includes( text ) ) {
+		showSalePriceError( text );
+
+		return;
+	}
 
 	// Only the sales window error is about the window; another reason is shown without marking the window invalid.
 	showWindowError( text, text === settings?.text?.invalidWindow );
 }
 
 /**
- * Updates the helper text and clears a sales window error once a field the window depends on changes.
+ * Updates the helper text and clears the window errors once a field the sales window depends on changes: the sale price
+ * window is judged against it.
  *
  * @since TBD
  *
@@ -391,7 +541,20 @@ function showServerError( response ) {
  */
 function onWindowChange() {
 	showWindowError( '' );
+	showSalePriceError( '' );
 	updateHelperText();
+}
+
+/**
+ * Updates the sale length and clears a sale price error once a sale price field changes.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function onSalePriceChange() {
+	showSalePriceError( '' );
+	updateSaleLength();
 }
 
 /**
@@ -432,13 +595,14 @@ jQuery( () => {
 			writeRule( document );
 			writeSalePriceRule( document );
 		} )
-		.on( 'additionalValidation.tribe', validateSaleWindow );
+		.on( 'additionalValidation.tribe', validateSaleWindow )
+		.on( 'additionalValidation.tribe', validateSalePrice );
 	onPanelsRefreshed();
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
 jQuery( document ).on( 'change input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, onWindowChange );
-jQuery( document ).on( 'change input', SALE_PRICE_FIELDS, updateSaleLength );
+jQuery( document ).on( 'change input', SALE_PRICE_FIELDS, onSalePriceChange );
 jQuery( document ).on(
 	'change input',
 	RELATIVE_FIELD_PREFIXES.map( ( prefix ) => `#${ prefix }_value` ).join( ', ' ),

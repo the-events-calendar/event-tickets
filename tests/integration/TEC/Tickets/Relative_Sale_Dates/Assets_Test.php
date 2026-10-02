@@ -140,6 +140,16 @@ class Assets_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_localize_the_sale_price_window_errors_the_server_answers_with(): void {
+		$data = $this->get_localized_data();
+
+		$this->assertSame( 'The sale price cannot end before it starts. Please adjust the sale price window.', $data['text']['salePriceEndsBeforeStart'] );
+		$this->assertSame( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', $data['text']['salePriceOutsideWindow'] );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_localize_the_date_format_of_the_tickets_list(): void {
 		tribe_update_option( 'dateWithYearFormat', 'd/m/Y' );
 

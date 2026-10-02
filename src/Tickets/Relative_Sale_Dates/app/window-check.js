@@ -11,6 +11,36 @@ import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from './rule-const
 import { fromLocal, resolveSaleWindow } from './sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from './validation';
 
+/** @typedef {import( 'moment' ).Moment} Moment */
+
+/**
+ * Gets the sales window a save of the form would store, as far as the form knows it.
+ *
+ * A boundary the rule resolves takes the date it resolves to; one it leaves to the ticket takes the date the form sends
+ * for it, or none.
+ *
+ * @since TBD
+ *
+ * @param {import( './sale-window' ).SaleWindowRule}    rule       The rule the form expresses.
+ * @param {import( './server-event-dates' ).EventDates} eventDates The event dates, as the server reads them.
+ * @param {{start: string|null, end: string|null}}      formDates  The start and end dates the form sends,
+ *                                                                 `YYYY-MM-DD HH:mm:ss` in the event timezone.
+ *
+ * @return {{start: Moment|null, end: Moment|null}} The sales window, in the event timezone.
+ */
+export function getFormSalesWindow( rule, eventDates, formDates ) {
+	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
+	const getDate = ( key ) => {
+		if ( resolved[ key ] ) {
+			return resolved[ key ];
+		}
+
+		return formDates[ key ] ? fromLocal( formDates[ key ], eventDates.timezone ) : null;
+	};
+
+	return { start: getDate( 'start' ), end: getDate( 'end' ) };
+}
+
 /**
  * Returns whether a relative boundary's number is one the server takes.
  *
@@ -49,25 +79,10 @@ export function getWindowError( rule, eventDates, formDates ) {
 		return SALES_END_BEFORE_START;
 	}
 
-	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
-	const dates = {};
+	const dates = getFormSalesWindow( rule, eventDates, formDates );
 
-	for ( const key of [ 'start', 'end' ] ) {
-		if ( resolved[ key ] ) {
-			dates[ key ] = resolved[ key ];
-			continue;
-		}
-
-		if ( ! formDates[ key ] ) {
-			if ( MODE_SPECIFIC === rule[ key ].mode ) {
-				return SALES_END_BEFORE_START;
-			}
-
-			dates[ key ] = null;
-			continue;
-		}
-
-		dates[ key ] = fromLocal( formDates[ key ], eventDates.timezone );
+	if ( [ 'start', 'end' ].some( ( key ) => ! dates[ key ] && MODE_SPECIFIC === rule[ key ].mode ) ) {
+		return SALES_END_BEFORE_START;
 	}
 
 	return getSaleWindowError( dates.start, dates.end );

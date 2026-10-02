@@ -122,7 +122,7 @@ final class Assets extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string}} The script data.
+	 * @return array{timeFormat: string, dateWithYear: string, dateNoYear: string, listDateFormat: string, timezones: array<string,string>, allDay: array{start: string, end: string, endDays: int}, text: array{start: string, end: string, invalidWindow: string, salePriceEndsBeforeStart: string, salePriceOutsideWindow: string}} The script data.
 	 */
 	private function get_classic_script_data(): array {
 		return [
@@ -135,10 +135,13 @@ final class Assets extends Controller_Contract {
 			'allDay'         => $this->get_all_day_times(),
 			'text'           => [
 				// Translators: %1$s is the date sales start on, %2$s the time.
-				'start'         => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
+				'start'                    => __( 'Sales start %1$s at %2$s', 'event-tickets' ),
 				// Translators: %1$s is the date sales end on, %2$s the time.
-				'end'           => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
-				'invalidWindow' => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+				'end'                      => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
+				'invalidWindow'            => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+				// The msgids match the errors `Sale_Price_Save` rejects a save with, so one translation serves both.
+				'salePriceEndsBeforeStart' => __( 'The sale price cannot end before it starts. Please adjust the sale price window.', 'event-tickets' ),
+				'salePriceOutsideWindow'   => __( 'The sale price window falls outside the ticket sales window. Please adjust the dates.', 'event-tickets' ),
 			],
 		];
 	}
