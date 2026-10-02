@@ -90,13 +90,16 @@ class Controller_Test extends Controller_Test_Case {
 		$controller->register();
 		$set_ticket_dates = $this->test_services->callback( Ticket_Save::class, 'set_ticket_dates' );
 		$save_rule        = $this->test_services->callback( Ticket_Save::class, 'save_rule' );
+		$write_dates      = $this->test_services->callback( Ticket_Save::class, 'write_resolved_dates' );
 
 		$this->assertSame( 10, has_action( 'tec_tickets_ticket_pre_save', $set_ticket_dates ) );
 		$this->assertSame( 10, has_action( 'tec_tickets_ticket_upserted', $save_rule ) );
+		$this->assertSame( 20, has_action( 'tec_tickets_ticket_upserted', $write_dates ) );
 
 		$controller->unregister();
 
 		$this->assertFalse( has_action( 'tec_tickets_ticket_pre_save', $set_ticket_dates ) );
 		$this->assertFalse( has_action( 'tec_tickets_ticket_upserted', $save_rule ) );
+		$this->assertFalse( has_action( 'tec_tickets_ticket_upserted', $write_dates ) );
 	}
 }
