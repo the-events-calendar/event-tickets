@@ -11,8 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -24,7 +22,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Sale_Price_Editor extends Controller_Contract {
+final class Sale_Price_Editor {
 	/**
 	 * The start the form offers when the ticket has no rule: now, with 2 weeks before the event starts as the relative
 	 * choice.
@@ -66,24 +64,10 @@ final class Sale_Price_Editor extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container  $container  The DI container.
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store ) {
-		parent::__construct( $container );
-
+	public function __construct( Rule_Store $rule_store ) {
 		$this->rule_store = $rule_store;
-	}
-
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', [ $this, 'render_sale_price_fields' ] );
 	}
 
 	/**
@@ -120,17 +104,6 @@ final class Sale_Price_Editor extends Controller_Contract {
 		$context['sale_price_rule_json'] = $rule ? $rule->to_json() : '';
 
 		return $template->template( 'relative-sale-dates/sale-price', $context, false );
-	}
-
-	/**
-	 * Registers the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', [ $this, 'render_sale_price_fields' ], 10, 4 );
 	}
 
 	/**

@@ -113,6 +113,7 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'sale price rule stored' => [ 'tec_tickets_commerce_after_save_ticket', Sale_Price_Save::class, 'save_rule', 10 ];
 		yield 'sale price dates written' => [ 'tec_tickets_commerce_after_save_ticket', Sale_Price_Save::class, 'write_resolved_dates', 20 ];
 		yield 'sale price data validated' => [ 'tec_tickets_ticket_data_validation', Sale_Price_Save::class, 'validate_ticket_data', 20 ];
+		yield 'sale price fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price', Sale_Price_Editor::class, 'render_sale_price_fields', 10 ];
 	}
 
 	/**

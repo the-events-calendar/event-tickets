@@ -310,7 +310,14 @@ class Editor_Test extends Controller_Test_Case {
 	 */
 	public function should_leave_the_ticket_form_unchanged( Closure $fixture ): void {
 		[ $post_id, $ticket_id, $ticket_type ] = $fixture();
-		$expected                              = $this->render_ticket_panel( $post_id, $ticket_id, $ticket_type );
+		// The sale price fields render in every classic form of an event already; this case is about the sales window.
+		add_filter(
+			'tribe_template_include_html:tickets/admin-views/commerce/metabox/sale-price',
+			$this->test_services->callback( Sale_Price_Editor::class, 'render_sale_price_fields' ),
+			10,
+			4
+		);
+		$expected = $this->render_ticket_panel( $post_id, $ticket_id, $ticket_type );
 
 		$this->make_controller()->register();
 

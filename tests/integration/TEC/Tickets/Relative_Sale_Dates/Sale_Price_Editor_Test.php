@@ -34,7 +34,7 @@ class Sale_Price_Editor_Test extends Controller_Test_Case {
 	 */
 	private const KEPT_INPUT_IDS = [ 'ticket_add_sale_price', 'ticket_sale_price', 'ticket_sale_start_date', 'ticket_sale_end_date' ];
 
-	protected $controller_class = Sale_Price_Editor::class;
+	protected $controller_class = Controller::class;
 
 	/**
 	 * @before
