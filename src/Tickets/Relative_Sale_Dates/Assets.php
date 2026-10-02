@@ -21,7 +21,7 @@ use Tribe__Timezones as Timezones;
 use WP_Screen;
 
 /**
- * Registers the script of the sales window options in the classic ticket editor.
+ * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block.
  *
  * @since TBD
  *
@@ -36,6 +36,15 @@ final class Assets extends Controller_Contract {
 	 * @var string
 	 */
 	public const CLASSIC_SCRIPT = 'tec-tickets-relative-sale-dates-classic';
+
+	/**
+	 * The handle of the Ticket block script.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const BLOCK_EDITOR_SCRIPT = 'tec-tickets-relative-sale-dates-block-editor';
 
 	/**
 	 * The group path of the Relative Sale Dates built scripts.
@@ -55,6 +64,7 @@ final class Assets extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		Asset_Registry::init()->remove( self::CLASSIC_SCRIPT );
+		Asset_Registry::init()->remove( self::BLOCK_EDITOR_SCRIPT );
 	}
 
 	/**
@@ -76,6 +86,13 @@ final class Assets extends Controller_Contract {
 			->call_after_enqueue( static fn(): bool => wp_set_script_translations( self::CLASSIC_SCRIPT, 'event-tickets', Tickets_Plugin::instance()->plugin_path . 'lang' ) )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->in_footer()
+			->register();
+
+		Asset::add( self::BLOCK_EDITOR_SCRIPT, 'block-editor.js', Tickets_Plugin::VERSION )
+			->add_to_group_path( self::GROUP_PATH )
+			->set_dependencies( 'wp-data', 'wp-hooks' )
+			->set_condition( fn(): bool => $this->is_event_edit_screen() )
+			->enqueue_on( 'enqueue_block_editor_assets' )
 			->register();
 	}
 
@@ -181,7 +198,7 @@ final class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Returns whether the current admin screen edits an event, where the classic ticket form can show.
+	 * Returns whether the current admin screen edits an event, where the classic ticket form or the Ticket block can show.
 	 *
 	 * @since TBD
 	 *
