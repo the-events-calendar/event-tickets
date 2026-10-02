@@ -1633,13 +1633,29 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 		);
 		const isEvent = yield call( isTribeEventPostType );
 
+		/**
+		 * Filters whether a ticket's sale end may follow the event start when the event start changes. Returning false
+		 * stops the sync; returning true does not force it.
+		 *
+		 * @since TBD
+		 * @param {boolean} followsEventStart Whether the sale end follows the event start.
+		 * @param {string}  clientId          The client ID of the ticket block.
+		 */
+		const followsEventStart = yield call(
+			applyFilters,
+			'tec.tickets.blocks.syncSaleEndWithEventStart',
+			true,
+			clientId
+		);
+
 		// This if statement may be redundant given the try-catch statement above.
 		// Only run this on events post type.
 		if (
 			isEvent &&
 			window.tec.events &&
 			isNotManuallyEdited &&
-			isSyncedToEventStart
+			isSyncedToEventStart &&
+			followsEventStart
 		) {
 			const eventStart = yield select(
 				window.tec.events.app.main.data.blocks.datetime.selectors
