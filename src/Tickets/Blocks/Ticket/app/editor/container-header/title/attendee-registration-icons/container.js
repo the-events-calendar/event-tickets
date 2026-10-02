@@ -4,6 +4,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -86,8 +87,25 @@ const mapStateToProps = ( state, ownProps ) => {
 	const dateFormat = momentUtil.toFormat( globals.dateSettings().formats.date );
 	const startDateMoment = selectors.getTicketTempStartDateMoment( state, ownProps );
 	const endDateMoment = selectors.getTicketTempEndDateMoment( state, ownProps );
-	const fromDate = startDateMoment && startDateMoment.format( dateFormat );
-	const toDate = endDateMoment && endDateMoment.format( dateFormat );
+
+	/**
+	 * Filters the sale dates the ticket header shows in its sale window tooltip.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} dates          The sale dates.
+	 * @param {string} dates.fromDate The date sales start, in the site date format.
+	 * @param {string} dates.toDate   The date sales end, in the site date format.
+	 * @param {string} clientId       The client ID of the ticket block.
+	 */
+	const { fromDate, toDate } = applyFilters(
+		'tec.tickets.blocks.Ticket.SaleWindow.dates',
+		{
+			fromDate: startDateMoment && startDateMoment.format( dateFormat ),
+			toDate: endDateMoment && endDateMoment.format( dateFormat ),
+		},
+		ownProps.clientId
+	);
 
 	const selectedBlock = select( 'core/block-editor' ).getSelectedBlock();
 
