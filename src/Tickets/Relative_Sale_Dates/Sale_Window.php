@@ -82,11 +82,7 @@ final class Sale_Window {
 	 * @return Resolved_Window The resolved sales window.
 	 */
 	public function resolve( Rule $rule, DateTimeInterface $event_start, DateTimeInterface $event_end ): Resolved_Window {
-		$timezone = $event_start->getTimezone();
-		$anchors  = [
-			Rule::ANCHOR_START => $this->in_timezone( $event_start, $timezone ),
-			Rule::ANCHOR_END   => $this->in_timezone( $event_end, $timezone ),
-		];
+		$anchors = $this->get_anchors( $event_start, $event_end );
 
 		return new Resolved_Window(
 			$this->resolve_boundary( $rule->get_start(), $anchors, null ),
@@ -121,6 +117,48 @@ final class Sale_Window {
 	}
 
 	/**
+	 * Resolves a relative boundary on its own, against an event's dates.
+	 *
+	 * The event timezone is the event start's timezone; the event end is converted to it.
+	 *
+	 * @since TBD
+	 *
+	 * @param Boundary          $boundary    The boundary to resolve.
+	 * @param DateTimeInterface $event_start The event start, in the event timezone, built with its named timezone as for `resolve()`.
+	 * @param DateTimeInterface $event_end   The event end.
+	 *
+	 * @return DateTimeImmutable|null The resolved date in the event timezone, or `null` when the boundary is not relative.
+	 */
+	public function resolve_relative( Boundary $boundary, DateTimeInterface $event_start, DateTimeInterface $event_end ): ?DateTimeImmutable {
+		if ( Rule::MODE_RELATIVE !== $boundary->get_mode() ) {
+			return null;
+		}
+
+		$anchors = $this->get_anchors( $event_start, $event_end );
+
+		return $this->before( $anchors[ $boundary->get_anchor() ], $boundary->get_interval() );
+	}
+
+	/**
+	 * Gets the event start and end, both in the event timezone.
+	 *
+	 * @since TBD
+	 *
+	 * @param DateTimeInterface $event_start The event start, in the event timezone.
+	 * @param DateTimeInterface $event_end   The event end.
+	 *
+	 * @return array{start: DateTimeImmutable, end: DateTimeImmutable} The event start and end, keyed by their anchor.
+	 */
+	private function get_anchors( DateTimeInterface $event_start, DateTimeInterface $event_end ): array {
+		$timezone = $event_start->getTimezone();
+
+		return [
+			Rule::ANCHOR_START => $this->in_timezone( $event_start, $timezone ),
+			Rule::ANCHOR_END   => $this->in_timezone( $event_end, $timezone ),
+		];
+	}
+
+	/**
 	 * Resolves one boundary of the window.
 	 *
 	 * @since TBD
@@ -136,12 +174,8 @@ final class Sale_Window {
 			return $default_date;
 		}
 
-		if ( Rule::MODE_RELATIVE === $boundary->get_mode() ) {
-			return $this->before( $anchors[ $boundary->get_anchor() ], $boundary->get_interval() );
-		}
-
-		// A specific boundary keeps the ticket's own date.
-		return null;
+		// Only a relative boundary has a date; a specific one keeps the ticket's own.
+		return $this->resolve_relative( $boundary, $anchors[ Rule::ANCHOR_START ], $anchors[ Rule::ANCHOR_END ] );
 	}
 
 	/**

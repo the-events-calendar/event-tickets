@@ -99,6 +99,41 @@ class Sale_Window_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider fixtures_provider
+	 */
+	public function should_resolve_each_relative_boundary_of_the_shared_fixture_case_on_its_own( array $case ): void {
+		$timezone    = new DateTimeZone( $case['timezone'] );
+		$event_start = new DateTimeImmutable( $case['event_start'], $timezone );
+		$event_end   = new DateTimeImmutable( $case['event_end'], $timezone );
+		$rule        = Rule::from_array( $case['rule'] );
+
+		foreach ( [ 'start' => $rule->get_start(), 'end' => $rule->get_end() ] as $key => $boundary ) {
+			if ( Rule::MODE_RELATIVE !== $boundary->get_mode() ) {
+				continue;
+			}
+
+			$this->assert_date(
+				$case['expected'][ "{$key}_local" ],
+				$timezone->getName(),
+				tribe( Sale_Window::class )->resolve_relative( $boundary, $event_start, $event_end )
+			);
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_resolve_no_date_for_a_boundary_that_is_not_relative(): void {
+		$event_start = new DateTimeImmutable( '2027-06-10 19:00:00', new DateTimeZone( 'America/New_York' ) );
+		$event_end   = $event_start->modify( '+2 hours' );
+
+		foreach ( [ Rule::MODE_DEFAULT, Rule::MODE_SPECIFIC ] as $mode ) {
+			$this->assertNull( tribe( Sale_Window::class )->resolve_relative( Boundary::from_array( [ 'mode' => $mode ] ), $event_start, $event_end ) );
+		}
+	}
+
+	/**
+	 * @test
 	 */
 	public function should_not_resolve_a_rule_for_a_post_without_event_dates(): void {
 		$rule = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
@@ -129,6 +164,21 @@ class Sale_Window_Test extends WPTestCase {
 		$window = tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id, $ticket_start );
 
 		$this->assert_date( $moved ? $now->format( 'Y-m-d H:i:s' ) : null, 'UTC', $window->get_start() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_resolve_an_event_from_the_metas_it_names_as_event_date_metas(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00', 'America/New_York' );
+		$rule     = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		$this->assertNotNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
+
+		foreach ( Sale_Window::EVENT_DATE_META_KEYS as $meta_key ) {
+			delete_post_meta( $event_id, $meta_key );
+		}
+
+		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
 	}
 
 	/**
@@ -170,20 +220,5 @@ class Sale_Window_Test extends WPTestCase {
 		$this->assertInstanceOf( DateTimeImmutable::class, $actual );
 		$this->assertSame( $expected, $actual->format( 'Y-m-d H:i:s' ) );
 		$this->assertSame( $timezone, $actual->getTimezone()->getName() );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_resolve_an_event_from_the_metas_it_names_as_event_date_metas(): void {
-		$event_id = $this->create_event( '2027-06-24 19:00:00', 'America/New_York' );
-		$rule     = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
-		$this->assertNotNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
-
-		foreach ( Sale_Window::EVENT_DATE_META_KEYS as $meta_key ) {
-			delete_post_meta( $event_id, $meta_key );
-		}
-
-		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
 	}
 }
