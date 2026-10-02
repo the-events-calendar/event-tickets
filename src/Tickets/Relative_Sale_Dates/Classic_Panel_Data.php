@@ -11,9 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
-
 /**
  * Adds the ticket's stored rule to the data the classic ticket edit panel is built from.
  *
@@ -21,7 +18,7 @@ use TEC\Common\lucatume\DI52\Container;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Classic_Panel_Data extends Controller_Contract {
+final class Classic_Panel_Data {
 	/**
 	 * The store of the ticket rules.
 	 *
@@ -36,24 +33,10 @@ final class Classic_Panel_Data extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container  $container  The DI container.
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store ) {
-		parent::__construct( $container );
-
+	public function __construct( Rule_Store $rule_store ) {
 		$this->rule_store = $rule_store;
-	}
-
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'add_rule_to_panel_data' ] );
 	}
 
 	/**
@@ -73,16 +56,5 @@ final class Classic_Panel_Data extends Controller_Contract {
 		$data[ Ticket_Save::DATA_KEY ] = $rule ? $rule->to_array() : null;
 
 		return $data;
-	}
-
-	/**
-	 * Registers the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'add_rule_to_panel_data' ], 10, 3 );
 	}
 }
