@@ -5,7 +5,7 @@
  * @var string                     $default_module_class      The default ticket provider class.
  */
 
- use TEC\Tickets\Admin\Provider_Lock;
+use TEC\Tickets\Admin\Provider_Lock;
 
 $current_post_id = get_the_ID();
 
