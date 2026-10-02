@@ -139,6 +139,7 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'rule param passed on as ticket data' => [ 'tec_tickets_rest_ticket_data_params', Rest::class, 'add_rule_to_ticket_data_params', 10 ];
 		yield 'rule added to the classic panel data' => [ 'tec_tickets_ticket_panel_data', Classic_Panel_Data::class, 'add_rule_to_panel_data', 10 ];
 		yield 'sales window fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', Editor::class, 'render_sales_window_fields', 10 ];
+		yield 'tickets list dates context filtered' => [ 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', Editor::class, 'filter_available_dates_context', 10 ];
 	}
 
 	/**
