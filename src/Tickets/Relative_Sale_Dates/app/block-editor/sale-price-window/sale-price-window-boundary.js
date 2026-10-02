@@ -54,17 +54,27 @@ function getUnitOptions( value ) {
  *
  * @since TBD
  *
- * @param {Object}                           props             The component props.
- * @param {string}                           props.name        The boundary, `start` or `end`.
- * @param {SalePriceBoundary}                props.boundary    The boundary's mode and relative values.
- * @param {SalePriceBoundaryLabels}          props.labels      The labels of the boundary's controls.
- * @param {{label: string, value: string}[]} props.modeOptions The mode options.
- * @param {Object}                           props.picker      The boundary's date picker element.
- * @param {Function}                         props.onChange    Called with the changed values of the boundary.
+ * @param {Object}                           props              The component props.
+ * @param {string}                           props.name         The boundary, `start` or `end`.
+ * @param {SalePriceBoundary}                props.boundary     The boundary's mode and relative values.
+ * @param {SalePriceBoundaryLabels}          props.labels       The labels of the boundary's controls.
+ * @param {{label: string, value: string}[]} props.modeOptions  The mode options.
+ * @param {Object}                           props.picker       The boundary's date picker element.
+ * @param {string}                           [props.helperText] How long the sale price lasts, for the boundary that
+ *                                                              tells it; left out for the other.
+ * @param {Function}                         props.onChange     Called with the changed values of the boundary.
  *
  * @return {Object} The boundary's options.
  */
-export default function SalePriceWindowBoundary( { name, boundary, labels, modeOptions, picker, onChange } ) {
+export default function SalePriceWindowBoundary( {
+	name,
+	boundary,
+	labels,
+	modeOptions,
+	picker,
+	helperText,
+	onChange,
+} ) {
 	return (
 		<div className={ `tec-tickets-relative-sale-dates__end tec-tickets-relative-sale-dates__end--${ name }` }>
 			<SelectControl
@@ -114,6 +124,11 @@ export default function SalePriceWindowBoundary( { name, boundary, labels, modeO
 						inputProps: { ...picker.props.inputProps, 'aria-label': labels.date },
 					} ) }
 				</div>
+			) }
+			{ undefined !== helperText && (
+				<p className="tec-tickets-relative-sale-dates__helper" aria-live="polite">
+					{ helperText }
+				</p>
 			) }
 		</div>
 	);

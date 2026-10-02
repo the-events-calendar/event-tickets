@@ -9,7 +9,9 @@ import { __, _x } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { markTicketChanged } from '../common-store-bridge';
+import { useEventDates } from '../event-dates';
 import { MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
+import { useSalePriceLengthText } from '../sale-price-length-text';
 import { getFormSalePriceRule } from '../sale-price-rule';
 import { STORE_NAME } from '../store/constants';
 import SalePriceWindowBoundary from './sale-price-window-boundary';
@@ -75,7 +77,8 @@ function getBoundarySettings() {
  * Renders the sale price window options of a ticket block in place of its sale dates row.
  *
  * A new sale price's defaults are kept as its draft at once, so the ticket is saved with them as the classic editor
- * saves its form; a sale price saved without a rule keeps no draft until the admin changes an option.
+ * saves its form; a sale price saved without a rule keeps no draft until the admin changes an option. How long the
+ * sale price lasts shows under *Sale Ends*.
  *
  * @since TBD
  *
@@ -89,6 +92,8 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftSalePriceRule( clientId ), [ clientId ] );
 	const { setDraftSalePriceRule } = useDispatch( STORE_NAME );
 	const formRule = getFormSalePriceRule( rule );
+	const eventDates = useEventDates();
+	const lengthText = useSalePriceLengthText( clientId, formRule, eventDates );
 
 	useEffect( () => {
 		if ( undefined === rule ) {
@@ -112,6 +117,7 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 					name={ name }
 					boundary={ formRule[ name ] }
 					picker={ pickers[ name ] }
+					helperText={ 'end' === name ? lengthText : undefined }
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }
 				/>

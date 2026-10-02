@@ -16,12 +16,12 @@ import { _n } from '@wordpress/i18n';
  */
 import { MODE_RELATIVE, UNIT_DAYS, UNIT_HOURS, UNIT_MINUTES, UNIT_WEEKS } from '../rule-constants';
 import { getSalePriceError, SALE_PRICE_ENDS_BEFORE_START, SALE_PRICE_OUTSIDE_SALES_WINDOW } from '../sale-price-check';
+import { getSalePriceLengthText } from '../sale-price-length';
 import { DATE_FORMAT, resolveSaleWindow, toZone } from '../sale-window';
 import { getFormSalesWindow, getWindowError } from '../window-check';
 import { readDate, readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
-import { getSalePriceLengthText } from './sale-price-length';
 import { readSalePriceRule, writeSalePriceRule } from './sale-price-rule';
 import { getListText } from './tickets-list';
 

@@ -123,6 +123,45 @@ function change( type, label, value ) {
 }
 
 /**
+ * Returns the helper text paragraphs rendered.
+ *
+ * @return {Object[]} The paragraphs' test instances.
+ */
+function findHelpers() {
+	return root.findAll(
+		( node ) => 'p' === node.type && 'tec-tickets-relative-sale-dates__helper' === node.props.className
+	);
+}
+
+/**
+ * Returns the sale price length the helper text under *Sale Ends* shows.
+ *
+ * @return {string|undefined} The helper text, or `undefined` when it is not rendered.
+ */
+function getLengthText() {
+	const [ helper ] = findHelpers();
+
+	return helper ? helper.props.children : undefined;
+}
+
+/**
+ * Registers the ticket block in the legacy store with the specific sale price dates its form holds.
+ *
+ * @param {string}      clientId The client ID of the ticket block.
+ * @param {string|null} start    The sale price start date, `YYYY-MM-DD`, or `null` for none.
+ * @param {string|null} end      The sale price end date, `YYYY-MM-DD`, or `null` for none.
+ *
+ * @return {void}
+ */
+function setFormSalePriceDates( clientId, start, end ) {
+	act( () => {
+		window.__tribe_common_store__.dispatch( legacyActions.registerTicketBlock( clientId ) );
+		window.__tribe_common_store__.dispatch( legacyActions.setTicketTempSaleStartDate( clientId, start ?? '' ) );
+		window.__tribe_common_store__.dispatch( legacyActions.setTicketTempSaleEndDate( clientId, end ?? '' ) );
+	} );
+}
+
+/**
  * Returns the values of the options of the select with the given label.
  *
  * @param {string} label The select label.
@@ -141,6 +180,7 @@ describe( 'the Ticket block sale price window options', () => {
 	} );
 
 	afterEach( () => {
+		jest.useRealTimers();
 		delete window.tribe;
 		clearBlockEditorGlobals();
 	} );
@@ -339,6 +379,186 @@ describe( 'the Ticket block sale price window options', () => {
 		expect( root.findAllByType( StartPicker ) ).toHaveLength( 0 );
 		expect( endPicker.props.value ).toBe( 'October 1, 2040' );
 		expect( endPicker.props.inputProps ).toStrictEqual( { disabled: false, 'aria-label': END_LABELS.date } );
+	} );
+
+	describe( 'the sale price length under Sale Ends', () => {
+		// The event starts on 2040-10-20 at 19:00 in São Paulo, so 1 week before it is 2040-10-13.
+
+		const relativeRule = ( start, end ) => ( {
+			start: { mode: 'relative', ...start },
+			end: { mode: 'relative', ...end },
+		} );
+
+		it( 'should count a whole number of weeks in weeks', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 3, unit: UNIT_WEEKS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+
+			renderSalePriceWindow( clientId );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 2 weeks' );
+		} );
+
+		it( 'should count any other length in days', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 10, unit: UNIT_DAYS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+
+			renderSalePriceWindow( clientId );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 3 days' );
+		} );
+
+		it( 'should count a Now start from today in the event timezone', () => {
+			// 02:00 in UTC on 2040-10-01 is still 2040-09-30 in São Paulo: 13 days before 2040-10-13, not 12.
+			jest.useFakeTimers( { now: new Date( '2040-10-01T02:00:00Z' ) } );
+
+			renderSalePriceWindow( newClientId() );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 13 days' );
+		} );
+
+		it( 'should count a specific boundary from the date the form holds for it', () => {
+			const clientId = newClientId();
+			setFormSalePriceDates( clientId, '2040-10-06', null );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, {
+				start: { mode: 'specific' },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+
+			renderSalePriceWindow( clientId );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 1 week' );
+		} );
+
+		it( 'should count again when the admin changes the date the form holds', () => {
+			const clientId = newClientId();
+			setFormSalePriceDates( clientId, '2040-10-06', null );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, {
+				start: { mode: 'specific' },
+				end: { mode: 'relative', value: 1, unit: UNIT_WEEKS },
+			} );
+			renderSalePriceWindow( clientId );
+
+			setFormSalePriceDates( clientId, '2040-10-11', null );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 2 days' );
+		} );
+
+		it( 'should count again when the admin changes the event date, without saving', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 10, unit: UNIT_DAYS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+			setFormSalePriceDates( clientId, null, '2040-10-30' );
+			renderSalePriceWindow( clientId );
+
+			change( SelectControl, END_LABELS.mode, 'specific' );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 20 days' );
+
+			act( () => {
+				window.__tribe_common_store__.dispatch( {
+					type: 'SET_DATETIME',
+					datetime: { ...DEFAULT_EVENT, start: '2040-10-27 19:00:00', end: '2040-10-27 22:30:00' },
+				} );
+			} );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 13 days' );
+		} );
+
+		it( 'should count again when the admin changes the rule', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 3, unit: UNIT_WEEKS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+			renderSalePriceWindow( clientId );
+
+			change( TextControl, START_LABELS.value, '4' );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 3 weeks' );
+		} );
+
+		it( 'should count again when the admin changes a unit', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 10, unit: UNIT_WEEKS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+			renderSalePriceWindow( clientId );
+
+			change( SelectControl, START_LABELS.unit, String( UNIT_DAYS ) );
+
+			expect( getLengthText() ).toBe( 'Tickets on sale for 3 days' );
+		} );
+
+		it( 'should leave the length out while the Sale Ends number is cleared, not count it from the event start', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 3, unit: UNIT_WEEKS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+			renderSalePriceWindow( clientId );
+
+			change( TextControl, END_LABELS.value, '' );
+
+			expect( getLengthText() ).toBe( '' );
+		} );
+
+		it( 'should leave the length out while the Sale Starts number is cleared, not count it from the event start', () => {
+			const clientId = newClientId();
+			// A start counted from the event start, 2040-10-20, would read as 10 days to this end.
+			setFormSalePriceDates( clientId, null, '2040-10-30' );
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, {
+				start: { mode: 'relative', value: 3, unit: UNIT_WEEKS },
+				end: { mode: 'specific' },
+			} );
+			renderSalePriceWindow( clientId );
+
+			change( TextControl, START_LABELS.value, '' );
+
+			expect( getLengthText() ).toBe( '' );
+		} );
+
+		it( 'should leave the length out while a specific boundary has no date', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule( clientId, null );
+
+			renderSalePriceWindow( clientId );
+
+			expect( getLengthText() ).toBe( '' );
+		} );
+
+		it( 'should leave the length out while the event dates cannot be read', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setSalePriceRule(
+				clientId,
+				relativeRule( { value: 3, unit: UNIT_WEEKS }, { value: 1, unit: UNIT_WEEKS } )
+			);
+			delete window.tec.events;
+
+			renderSalePriceWindow( clientId );
+
+			expect( getLengthText() ).toBe( '' );
+		} );
+
+		it( 'should announce the length politely under Sale Ends only', () => {
+			renderSalePriceWindow( newClientId() );
+
+			const [ endBoundary ] = root.findAll(
+				( node ) => 'div' === node.type && node.props.className?.includes( '__end--end' )
+			);
+			const [ helper ] = endBoundary.findAll( ( node ) => 'p' === node.type );
+
+			expect( helper.props[ 'aria-live' ] ).toBe( 'polite' );
+			expect( findHelpers() ).toHaveLength( 1 );
+		} );
 	} );
 
 	it( 'should keep the sale price draft apart from the sales window rule', () => {
