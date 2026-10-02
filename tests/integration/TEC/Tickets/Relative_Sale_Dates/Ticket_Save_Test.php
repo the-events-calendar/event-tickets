@@ -20,7 +20,7 @@ class Ticket_Save_Test extends Controller_Test_Case {
 	use With_Clock_Mock;
 	use With_Tickets_Commerce;
 
-	protected $controller_class = Ticket_Save::class;
+	protected $controller_class = Controller::class;
 
 	/**
 	 * @before
