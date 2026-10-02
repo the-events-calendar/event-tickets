@@ -13,7 +13,7 @@ class Classic_Panel_Data_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
 
-	protected $controller_class = Classic_Panel_Data::class;
+	protected $controller_class = Controller::class;
 
 	/**
 	 * @before
