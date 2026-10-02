@@ -111,10 +111,12 @@ $labels = [
 				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_value"
 				value="<?php echo esc_attr( $fields['value'] ); ?>"
 				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['value'] ); ?>"
+				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
 			/>
 			<select
 				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_unit"
 				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['unit'] ); ?>"
+				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
 			>
 				<?php foreach ( $units as $unit => $unit_label ) : ?>
 					<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $fields['unit'], $unit ); ?>><?php echo esc_html( $unit_label ); ?></option>
@@ -123,11 +125,17 @@ $labels = [
 			<select
 				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_anchor"
 				aria-label="<?php echo esc_attr( $labels[ $sales_end ]['anchor'] ); ?>"
+				aria-describedby="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
 			>
 				<?php foreach ( $anchors as $anchor => $anchor_label ) : ?>
 					<option value="<?php echo esc_attr( $anchor ); ?>" <?php selected( $fields['anchor'], $anchor ); ?>><?php echo esc_html( $anchor_label ); ?></option>
 				<?php endforeach; ?>
 			</select>
+			<span
+				class="tec-tickets-relative-sale-dates__helper"
+				id="ticket_sales_<?php echo esc_attr( $sales_end ); ?>_helper"
+				aria-live="polite"
+			></span>
 		</div>
 		<div
 			class="tribe-dependent tec-tickets-relative-sale-dates__specific"
