@@ -249,6 +249,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 * @dataProvider on_sale_days_provider
 	 */
 	public function should_put_the_ticket_on_sale_only_within_the_resolved_window( int $start_days, int $end_days, bool $on_sale ): void {
+		$this->set_site_timezone_to_utc();
 		$today     = new DateTimeImmutable( 'today', new DateTimeZone( 'UTC' ) );
 		$event_id  = $this->create_event( $today->modify( '+10 days' )->format( 'Y-m-d 19:00:00' ) );
 		$ticket_id = $this->create_sale_price_ticket(
@@ -267,6 +268,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_put_a_now_start_on_sale_until_the_resolved_end(): void {
+		$this->set_site_timezone_to_utc();
 		$today     = new DateTimeImmutable( 'today', new DateTimeZone( 'UTC' ) );
 		$event_id  = $this->create_event( $today->modify( '+10 days' )->format( 'Y-m-d 19:00:00' ) );
 		$ticket_id = $this->create_sale_price_ticket(
@@ -423,5 +425,18 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 */
 	private function get_ticket( int $event_id, int $ticket_id ): ?Ticket_Object {
 		return tribe( Module::class )->get_ticket( $event_id, $ticket_id );
+	}
+
+	/**
+	 * Makes the ticket read "today" in UTC, the timezone the test computes its dates in.
+	 *
+	 * The ticket checks its sale price window against "today" in the site timezone. A site with no timezone string falls
+	 * back to its UTC offset, and an offset of 0 resolves to Europe/London, which is an hour ahead of UTC in summer: the
+	 * ticket's "today" is then a day ahead of the test's from 23:00 UTC.
+	 *
+	 * @return void
+	 */
+	private function set_site_timezone_to_utc(): void {
+		update_option( 'timezone_string', 'UTC' );
 	}
 }
