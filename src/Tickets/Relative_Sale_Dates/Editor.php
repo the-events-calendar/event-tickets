@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Template as Template;
@@ -23,7 +22,7 @@ use Tribe__Template as Template;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Editor extends Controller_Contract {
+final class Editor {
 	/**
 	 * The relative start the form offers when the ticket has none: 2 weeks before the event starts.
 	 *
@@ -51,17 +50,6 @@ final class Editor extends Controller_Contract {
 		'unit'   => HOUR_IN_SECONDS,
 		'anchor' => Rule::ANCHOR_START,
 	];
-
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_sales_window_fields' ] );
-	}
 
 	/**
 	 * Renders the sales window options in place of the sale dates fields of a Tickets Commerce ticket on an event.
@@ -95,17 +83,6 @@ final class Editor extends Controller_Contract {
 		$context['rule_json']    = $rule ? $rule->to_json() : '';
 
 		return $template->template( 'relative-sale-dates/sales-window', $context, false );
-	}
-
-	/**
-	 * Registers the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_sales_window_fields' ], 10, 4 );
 	}
 
 	/**

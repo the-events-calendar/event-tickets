@@ -29,39 +29,13 @@ class Editor_Test extends Controller_Test_Case {
 	 */
 	private const DATE_INPUT_IDS = [ 'ticket_start_date', 'ticket_start_time', 'ticket_end_date', 'ticket_end_time' ];
 
-	protected $controller_class = Editor::class;
-
-	/**
-	 * The controller that hands the stored rule to the panel the form is rendered from.
-	 *
-	 * @var Classic_Panel_Data
-	 */
-	private Classic_Panel_Data $panel_data;
+	protected $controller_class = Controller::class;
 
 	/**
 	 * @before
 	 */
 	public function log_in_as_administrator(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
-	}
-
-	/**
-	 * Registers its own panel data controller: a test case that unregisters and registers the Relative Sale Dates
-	 * controller leaves the original one flagged as registered but unhooked.
-	 *
-	 * @before
-	 */
-	public function register_panel_data(): void {
-		$this->panel_data = new Classic_Panel_Data( tribe(), tribe( Rule_Store::class ) );
-		tribe()->setVar( Classic_Panel_Data::class . '_registered', false );
-		$this->panel_data->register();
-	}
-
-	/**
-	 * @after
-	 */
-	public function unregister_panel_data(): void {
-		$this->panel_data->unregister();
 	}
 
 	/**
