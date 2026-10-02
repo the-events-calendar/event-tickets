@@ -132,7 +132,7 @@ final class Event_Listener {
 	 * @return bool Whether the ticket's sale end date follows the event start.
 	 */
 	public function filter_end_date_follows_event_start( $follows, int $ticket_id ): bool {
-		$rule = $this->get_stored_rule( $ticket_id );
+		$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
 		return tribe_is_truthy( $follows ) && ( ! $rule || $rule->lets_end_follow_event_start() );
 	}
@@ -200,7 +200,7 @@ final class Event_Listener {
 		unset( $this->moved_event_ids[ $post_id ] );
 
 		foreach ( $this->rule_store->get_ticket_ids_for_event( $post_id ) as $ticket_id ) {
-			$rule = $this->get_stored_rule( $ticket_id );
+			$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
 			if ( ! $rule ) {
 				continue;
@@ -217,18 +217,5 @@ final class Event_Listener {
 			as_unschedule_all_actions( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
 			$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
 		}
-	}
-
-	/**
-	 * Reads the stored sales window rule of a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return Rule|null The rule, or `null` when the ticket has no valid stored rule.
-	 */
-	private function get_stored_rule( int $ticket_id ): ?Rule {
-		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 	}
 }

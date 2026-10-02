@@ -152,13 +152,7 @@ final class Ticket_Save {
 			return;
 		}
 
-		$this->rule_store->save(
-			$ticket_id,
-			[
-				'start' => $rule->get_start(),
-				'end'   => $rule->get_end(),
-			]
-		);
+		$this->rule_store->save( $ticket_id, $rule->to_array() );
 	}
 
 	/**
