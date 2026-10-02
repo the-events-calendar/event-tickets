@@ -86,6 +86,32 @@ final class Sale_Window {
 	}
 
 	/**
+	 * Gets the event's start and end in the event timezone.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
+	 */
+	public function get_event_dates( int $event_id ): ?array {
+		$start = get_post_meta( $event_id, '_EventStartDate', true );
+		$end   = get_post_meta( $event_id, '_EventEndDate', true );
+
+		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
+			return null;
+		}
+
+		$timezone = Timezones::build_timezone_object( get_post_meta( $event_id, '_EventTimezone', true ) ?: null );
+
+		try {
+			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
+		} catch ( Exception $e ) {
+			return null;
+		}
+	}
+
+	/**
 	 * Resolves one boundary of the window.
 	 *
 	 * @since TBD
@@ -176,31 +202,6 @@ final class Sale_Window {
 		return ( new DateTimeImmutable( '@' . $date->getTimestamp() ) )->setTimezone( $timezone );
 	}
 
-	/**
-	 * Gets the event's start and end in the event timezone.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $event_id The event post ID.
-	 *
-	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
-	 */
-	private function get_event_dates( int $event_id ): ?array {
-		$start = get_post_meta( $event_id, '_EventStartDate', true );
-		$end   = get_post_meta( $event_id, '_EventEndDate', true );
-
-		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
-			return null;
-		}
-
-		$timezone = Timezones::build_timezone_object( get_post_meta( $event_id, '_EventTimezone', true ) ?: null );
-
-		try {
-			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
-		} catch ( Exception $e ) {
-			return null;
-		}
-	}
 
 	/**
 	 * Gets the start a Now boundary moves the ticket to: now, when the ticket start is later.
