@@ -166,6 +166,20 @@ final class Sale_Price_Rule implements JsonSerializable {
 	}
 
 	/**
+	 * Returns the rule's canonical JSON form.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The rule, as JSON.
+	 */
+	public function to_json(): string {
+		$json = wp_json_encode( $this );
+
+		// Only strings and integers are ever encoded, so encoding cannot fail.
+		return is_string( $json ) ? $json : '';
+	}
+
+	/**
 	 * Returns the data to encode as the rule's canonical JSON form.
 	 *
 	 * @since TBD

@@ -43,6 +43,14 @@ class Sale_Price_Rule_Test extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider shared_valid_rules_provider
+	 */
+	public function should_return_its_canonical_json( array $data ): void {
+		$this->assertSame( wp_json_encode( $data ), Sale_Price_Rule::from_array( $data )->to_json() );
+	}
+
+	/**
+	 * @test
 	 * @dataProvider shared_invalid_rules_provider
 	 */
 	public function should_reject_the_shared_fixture_invalid_rule( array $data ): void {

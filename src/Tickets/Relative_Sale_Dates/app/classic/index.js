@@ -1,5 +1,5 @@
 /**
- * The sales window options of the classic ticket form.
+ * The sales window and sale price options of the classic ticket form.
  *
  * @since TBD
  */
@@ -20,6 +20,7 @@ import { getWindowError } from '../window-check';
 import { readDateTime, readEventDates } from './event-dates';
 import { formatHelperText } from './helper-text';
 import { readRule, writeRule } from './rule';
+import { writeSalePriceRule } from './sale-price-rule';
 import { getListText } from './tickets-list';
 
 /**
@@ -64,6 +65,16 @@ const UNIT_NAMES = {
  * @type {string}
  */
 const SPECIFIC_DATE_FIELDS = '#ticket_start_date, #ticket_start_time, #ticket_end_date, #ticket_end_time';
+
+/**
+ * The id prefixes of the relative fields whose unit names follow the number typed: the ends of the sales window, then
+ * the boundaries of the sale price window.
+ *
+ * @since TBD
+ *
+ * @type {string[]}
+ */
+const RELATIVE_FIELD_PREFIXES = [ 'ticket_sales_start', 'ticket_sales_end', 'ticket_sale_start', 'ticket_sale_end' ];
 
 /**
  * Reads the event dates from the TEC event fields.
@@ -160,9 +171,9 @@ function updateHelperText() {
  * @return {void}
  */
 function updateUnitNames() {
-	[ 'start', 'end' ].forEach( ( key ) => {
-		const value = document.getElementById( `ticket_sales_${ key }_value` );
-		const unit = document.getElementById( `ticket_sales_${ key }_unit` );
+	RELATIVE_FIELD_PREFIXES.forEach( ( prefix ) => {
+		const value = document.getElementById( `${ prefix }_value` );
+		const unit = document.getElementById( `${ prefix }_unit` );
 
 		if ( ! value || ! unit ) {
 			return;
@@ -369,14 +380,21 @@ function onPanelsRefreshed() {
  */
 jQuery( () => {
 	jQuery( '#tribetickets' )
-		.on( 'pre-save-ticket.tribe', () => writeRule( document ) )
+		.on( 'pre-save-ticket.tribe', () => {
+			writeRule( document );
+			writeSalePriceRule( document );
+		} )
 		.on( 'additionalValidation.tribe', validateSaleWindow );
 	onPanelsRefreshed();
 } );
 
 jQuery( document ).on( 'change', EVENT_FIELDS, onEventChange );
 jQuery( document ).on( 'change input', `${ RULE_FIELDS }, ${ SPECIFIC_DATE_FIELDS }`, onWindowChange );
-jQuery( document ).on( 'change input', '#ticket_sales_start_value, #ticket_sales_end_value', updateUnitNames );
+jQuery( document ).on(
+	'change input',
+	RELATIVE_FIELD_PREFIXES.map( ( prefix ) => `#${ prefix }_value` ).join( ', ' ),
+	updateUnitNames
+);
 
 addAction( 'tec.tickets.admin.panels.refreshed', 'tec.tickets.relativeSaleDates', onPanelsRefreshed );
 addAction( 'tec.tickets.admin.ticketSaveFailed', 'tec.tickets.relativeSaleDates', showServerError );
