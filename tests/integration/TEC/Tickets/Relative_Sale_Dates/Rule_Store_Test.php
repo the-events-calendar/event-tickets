@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use TEC\Tickets\Commerce\Ticket;
 use Codeception\TestCase\WPTestCase;
 
 class Rule_Store_Test extends WPTestCase {
@@ -121,5 +122,22 @@ class Rule_Store_Test extends WPTestCase {
 		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, false );
 
 		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_get_the_tickets_of_an_event_that_have_stored_rules(): void {
+		$event_id        = static::factory()->post->create();
+		$ruled_ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
+		$plain_ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
+		$other_ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
+		update_post_meta( $ruled_ticket_id, Ticket::$event_relation_meta_key, $event_id );
+		update_post_meta( $plain_ticket_id, Ticket::$event_relation_meta_key, $event_id );
+		update_post_meta( $other_ticket_id, Ticket::$event_relation_meta_key, static::factory()->post->create() );
+		tribe( Rule_Store::class )->save( $ruled_ticket_id, [ 'start' => [ 'mode' => 'default' ] ] );
+		tribe( Rule_Store::class )->save( $other_ticket_id, [ 'start' => [ 'mode' => 'default' ] ] );
+
+		$this->assertSame( [ $ruled_ticket_id ], tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
 	}
 }

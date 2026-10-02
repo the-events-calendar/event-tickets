@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 /**
@@ -69,6 +70,39 @@ final class Rule_Store {
 		$data = json_decode( $json, true );
 
 		return is_array( $data ) ? $data : [];
+	}
+
+	/**
+	 * Gets the Tickets Commerce tickets of an event that have stored rules.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return int[] The ticket post IDs.
+	 */
+	public function get_ticket_ids_for_event( int $event_id ): array {
+		return array_map(
+			'absint',
+			get_posts(
+				[
+					'post_type'      => Ticket::POSTTYPE,
+					'post_status'    => 'any',
+					'fields'         => 'ids',
+					'posts_per_page' => -1,
+					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Tickets are only related to their event through meta.
+						[
+							'key'   => Ticket::$event_relation_meta_key,
+							'value' => $event_id,
+						],
+						[
+							'key'     => self::META_KEY,
+							'compare' => 'EXISTS',
+						],
+					],
+				]
+			)
+		);
 	}
 
 	/**

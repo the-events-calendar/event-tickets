@@ -11,9 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
-use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Ticket_Actions;
 
 /**
@@ -26,16 +23,7 @@ use TEC\Tickets\Ticket_Actions;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Event_Listener extends Controller_Contract {
-	/**
-	 * The event metas a sales window is resolved from.
-	 *
-	 * @since TBD
-	 *
-	 * @var string[]
-	 */
-	private const EVENT_DATE_META_KEYS = [ '_EventStartDate', '_EventEndDate', '_EventTimezone' ];
-
+final class Event_Listener {
 	/**
 	 * The store of the ticket rules.
 	 *
@@ -77,33 +65,14 @@ final class Event_Listener extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container      $container      The DI container.
 	 * @param Rule_Store     $rule_store     The store of the ticket rules.
 	 * @param Ticket_Dates   $ticket_dates   The resolver and writer of the ticket dates.
 	 * @param Ticket_Actions $ticket_actions The scheduler of the sales actions.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions ) {
-		parent::__construct( $container );
-
+	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions ) {
 		$this->rule_store     = $rule_store;
 		$this->ticket_dates   = $ticket_dates;
 		$this->ticket_actions = $ticket_actions;
-	}
-
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'added_post_meta', [ $this, 'mark_moved_event' ] );
-		remove_action( 'updated_postmeta', [ $this, 'mark_moved_event' ] );
-		remove_action( 'wp_after_insert_post', [ $this, 'resolve_saved_event' ] );
-		remove_action( 'tec_shutdown', [ $this, 'resolve_moved_events' ] );
-		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', [ $this, 'filter_end_date_follows_event_start' ] );
-		remove_action( 'tec_tickets_tickets_duplicated', [ $this, 'copy_rules_to_duplicates' ] );
 	}
 
 	/**
@@ -118,13 +87,14 @@ final class Event_Listener extends Controller_Contract {
 	 * @return void
 	 */
 	public function mark_moved_event( int $meta_id, int $post_id, string $meta_key ): void {
-		if ( in_array( $meta_key, self::EVENT_DATE_META_KEYS, true ) && 'tribe_events' === get_post_type( $post_id ) ) {
+		if ( in_array( $meta_key, Sale_Window::EVENT_DATE_META_KEYS, true ) && 'tribe_events' === get_post_type( $post_id ) ) {
 			$this->moved_event_ids[ $post_id ] = true;
 		}
 	}
 
 	/**
-	 * Resolves the tickets of an event once its save, meta included, is done.
+	 * Rewrites the dates of the ruled tickets of an event, and reschedules their sales actions, once its save, meta
+	 * included, is done.
 	 *
 	 * @since TBD
 	 *
@@ -132,31 +102,27 @@ final class Event_Listener extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function resolve_saved_event( int $post_id ): void {
+	public function update_saved_event_tickets( int $post_id ): void {
 		if ( isset( $this->moved_event_ids[ $post_id ] ) ) {
-			$this->resolve_event( $post_id );
+			$this->update_ticket_dates( $post_id );
 		}
 	}
 
 	/**
-	 * Resolves the tickets of the events whose dates changed outside a post save.
+	 * Rewrites the dates of the ruled tickets of the events whose dates changed outside a post save.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	public function resolve_moved_events(): void {
+	public function update_moved_event_tickets(): void {
 		foreach ( array_keys( $this->moved_event_ids ) as $post_id ) {
-			$this->resolve_event( $post_id );
+			$this->update_ticket_dates( $post_id );
 		}
 	}
 
 	/**
 	 * Returns whether a ticket's sale end date follows its event's start: not when the ticket's rule resolves the end.
-	 *
-	 * A rule whose end is a specific date leaves the end to the ticket, as a ticket without a rule does, and the classic
-	 * editor stores such a rule the first time it saves a ticket made before the feature. The end stays put when the
-	 * rule's start counts back from the event end, which could fall after an end moved to the event start.
 	 *
 	 * @since TBD
 	 *
@@ -166,36 +132,25 @@ final class Event_Listener extends Controller_Contract {
 	 * @return bool Whether the ticket's sale end date follows the event start.
 	 */
 	public function filter_end_date_follows_event_start( $follows, int $ticket_id ): bool {
-		$rule = $this->get_rule( $ticket_id );
+		$rule = $this->get_stored_rule( $ticket_id );
 
-		if ( ! $rule ) {
-			return tribe_is_truthy( $follows );
-		}
-
-		return tribe_is_truthy( $follows )
-			&& Rule::MODE_SPECIFIC === $rule->get_end()->get_mode()
-			&& Rule::ANCHOR_END !== $rule->get_start()->get_anchor();
+		return tribe_is_truthy( $follows ) && ( ! $rule || $rule->lets_end_follow_event_start() );
 	}
 
 	/**
-	 * Copies the rules of the tickets duplicated to another event and resolves the duplicates against that event's dates.
-	 *
-	 * Cloning a ticket copies its dates only, so without its rules a duplicate would keep the original event's dates.
+	 * Copies the rules of the tickets duplicated to another event.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<int,int|false> $duplicated_ticket_ids The duplicated ticket IDs, keyed by the original ticket IDs; `false`
 	 *                                                    for a ticket that could not be cloned.
-	 * @param int                  $new_post_id           The post the tickets were duplicated to.
 	 *
 	 * @return void
 	 */
-	public function copy_rules_to_duplicates( $duplicated_ticket_ids, int $new_post_id ): void {
+	public function copy_rules_to_duplicates( $duplicated_ticket_ids ): void {
 		if ( ! is_array( $duplicated_ticket_ids ) ) {
 			return;
 		}
-
-		$copied = false;
 
 		foreach ( $duplicated_ticket_ids as $original_ticket_id => $duplicate_ticket_id ) {
 			$stored = $this->rule_store->get( absint( $original_ticket_id ) );
@@ -205,33 +160,33 @@ final class Event_Listener extends Controller_Contract {
 			}
 
 			$this->rule_store->save( absint( $duplicate_ticket_id ), $stored );
-			$copied = true;
-		}
-
-		if ( $copied ) {
-			$this->resolve_event( $new_post_id );
 		}
 	}
 
 	/**
-	 * Registers the controller.
+	 * Rewrites the dates of the tickets duplicated to another event against that event's dates.
+	 *
+	 * Cloning a ticket copies its dates only, so without this a duplicate would keep the original event's dates.
 	 *
 	 * @since TBD
 	 *
+	 * @param array<int,int|false> $duplicated_ticket_ids The duplicated ticket IDs, keyed by the original ticket IDs; `false`
+	 *                                                    for a ticket that could not be cloned.
+	 * @param int                  $new_post_id           The post the tickets were duplicated to.
+	 *
 	 * @return void
 	 */
-	protected function do_register(): void {
-		add_action( 'added_post_meta', [ $this, 'mark_moved_event' ], 10, 3 );
-		add_action( 'updated_postmeta', [ $this, 'mark_moved_event' ], 10, 3 );
-		// The latest hook that sees every event meta written by both the classic and the block editor.
-		add_action( 'wp_after_insert_post', [ $this, 'resolve_saved_event' ] );
-		add_action( 'tec_shutdown', [ $this, 'resolve_moved_events' ] );
-		add_filter( 'tec_tickets_ticket_end_date_follows_event_start', [ $this, 'filter_end_date_follows_event_start' ], 10, 2 );
-		add_action( 'tec_tickets_tickets_duplicated', [ $this, 'copy_rules_to_duplicates' ], 10, 2 );
+	public function update_duplicated_tickets( $duplicated_ticket_ids, int $new_post_id ): void {
+		$duplicate_ids = is_array( $duplicated_ticket_ids ) ? array_filter( array_map( 'absint', $duplicated_ticket_ids ) ) : [];
+
+		// Only when a duplicate got rules, as before: the event's other ruled tickets are already resolved.
+		if ( array_intersect( $duplicate_ids, $this->rule_store->get_ticket_ids_for_event( $new_post_id ) ) ) {
+			$this->update_ticket_dates( $new_post_id );
+		}
 	}
 
 	/**
-	 * Resolves every ticket of the event that has a rule and reschedules its sales actions.
+	 * Rewrites the resolved dates of an event's ruled tickets and reschedules their sales actions.
 	 *
 	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
 	 *
@@ -241,11 +196,11 @@ final class Event_Listener extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	private function resolve_event( int $post_id ): void {
+	private function update_ticket_dates( int $post_id ): void {
 		unset( $this->moved_event_ids[ $post_id ] );
 
-		foreach ( $this->get_ruled_ticket_ids( $post_id ) as $ticket_id ) {
-			$rule = $this->get_rule( $ticket_id );
+		foreach ( $this->rule_store->get_ticket_ids_for_event( $post_id ) as $ticket_id ) {
+			$rule = $this->get_stored_rule( $ticket_id );
 
 			if ( ! $rule ) {
 				continue;
@@ -265,39 +220,6 @@ final class Event_Listener extends Controller_Contract {
 	}
 
 	/**
-	 * Gets the Tickets Commerce tickets of an event that have a stored rule.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The event post ID.
-	 *
-	 * @return int[] The ticket post IDs.
-	 */
-	private function get_ruled_ticket_ids( int $post_id ): array {
-		return array_map(
-			'absint',
-			get_posts(
-				[
-					'post_type'      => Ticket::POSTTYPE,
-					'post_status'    => 'any',
-					'fields'         => 'ids',
-					'posts_per_page' => -1,
-					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Tickets are only related to their event through meta.
-						[
-							'key'   => Ticket::$event_relation_meta_key,
-							'value' => $post_id,
-						],
-						[
-							'key'     => Rule_Store::META_KEY,
-							'compare' => 'EXISTS',
-						],
-					],
-				]
-			)
-		);
-	}
-
-	/**
 	 * Reads the stored sales window rule of a ticket.
 	 *
 	 * @since TBD
@@ -306,7 +228,7 @@ final class Event_Listener extends Controller_Contract {
 	 *
 	 * @return Rule|null The rule, or `null` when the ticket has no valid stored rule.
 	 */
-	private function get_rule( int $ticket_id ): ?Rule {
+	private function get_stored_rule( int $ticket_id ): ?Rule {
 		return Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 	}
 }
