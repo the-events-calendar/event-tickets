@@ -748,6 +748,34 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().done ).toEqual( true );
 		} );
 
+		it( 'should end the sale a day after it starts when the event start is unset', () => {
+			const CLIENT_ID = 'modern-tribe';
+			const action = {
+				payload: {
+					get: ( key ) => ( key === 'ticketId' ? 0 : undefined ),
+					clientId: CLIENT_ID,
+				},
+			};
+			const fallbackMoment = startMoment.clone().add( 1, 'day' );
+
+			const gen = sagas.setTicketInitialState( action );
+			gen.next();
+			gen.next( publishDate );
+			gen.next( startMoment );
+			gen.next( startDate );
+			gen.next( startDateInput );
+			gen.next( startTime );
+			gen.next( startTime );
+			gen.next();
+			gen.next( true );
+			expect( gen.next( '' ).value ).toEqual(
+				call( momentUtil.toMoment, '' ),
+			);
+			expect( gen.next( momentUtil.toMoment( '' ) ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, fallbackMoment ),
+			);
+		} );
+
 		it( 'should set tickets initial state for new ticket', () => {
 			const TICKET_ID = 0;
 			const CLIENT_ID = 'modern-tribe';
@@ -2094,5 +2122,4 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
-	} );
-} );
+	} );} );

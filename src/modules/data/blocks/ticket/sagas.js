@@ -348,7 +348,18 @@ export function* setTicketInitialState( action ) {
 				window.tec.events.app.main.data.blocks.datetime.selectors
 					.getStart
 			);
-			const endMoment = yield call( momentUtil.toMoment, eventStart );
+			const eventStartMoment = yield call(
+				momentUtil.toMoment,
+				eventStart
+			);
+
+			/*
+			 * An event without saved dates has an empty start, which parses to an
+			 * invalid moment. Fall back to a one day sale window.
+			 */
+			const endMoment = eventStartMoment.isValid()
+				? eventStartMoment
+				: startMoment.clone().add( 1, 'day' );
 			const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 			const endDateInput = yield datePickerFormat
 				? call( momentUtil.toDate, endMoment, datePickerFormat )
