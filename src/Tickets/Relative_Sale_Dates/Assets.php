@@ -21,7 +21,8 @@ use Tribe__Timezones as Timezones;
 use WP_Screen;
 
 /**
- * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block.
+ * Registers the scripts of the sales window options in the classic ticket editor and in the Ticket block, and the
+ * Ticket block's style.
  *
  * @since TBD
  *
@@ -47,6 +48,15 @@ final class Assets extends Controller_Contract {
 	public const BLOCK_EDITOR_SCRIPT = 'tec-tickets-relative-sale-dates-block-editor';
 
 	/**
+	 * The handle of the Ticket block style.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const BLOCK_EDITOR_STYLE = 'tec-tickets-relative-sale-dates-block-editor-style';
+
+	/**
 	 * The group path of the Relative Sale Dates built scripts.
 	 *
 	 * @since TBD
@@ -65,6 +75,7 @@ final class Assets extends Controller_Contract {
 	public function unregister(): void {
 		Asset_Registry::init()->remove( self::CLASSIC_SCRIPT );
 		Asset_Registry::init()->remove( self::BLOCK_EDITOR_SCRIPT );
+		Asset_Registry::init()->remove( self::BLOCK_EDITOR_STYLE );
 	}
 
 	/**
@@ -92,6 +103,15 @@ final class Assets extends Controller_Contract {
 			->add_to_group_path( self::GROUP_PATH )
 			->set_dependencies( 'wp-data', 'wp-hooks' )
 			->set_condition( fn(): bool => $this->is_event_edit_screen() )
+			->add_localize_script( 'tec.tickets.relativeSaleDates.blockEditorData', fn(): array => $this->get_block_editor_script_data() )
+			// The library's `with_translations()` would look for the translations under common's path, not the plugin's.
+			->call_after_enqueue( static fn(): bool => wp_set_script_translations( self::BLOCK_EDITOR_SCRIPT, 'event-tickets', Tickets_Plugin::instance()->plugin_path . 'lang' ) )
+			->enqueue_on( 'enqueue_block_editor_assets' )
+			->register();
+
+		Asset::add( self::BLOCK_EDITOR_STYLE, 'style-block-editor.css', Tickets_Plugin::VERSION )
+			->add_to_group_path( self::GROUP_PATH )
+			->set_condition( fn(): bool => $this->is_event_edit_screen() )
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->register();
 	}
@@ -118,6 +138,22 @@ final class Assets extends Controller_Contract {
 				// Translators: %1$s is the date sales end on, %2$s the time.
 				'end'           => __( 'Sales end %1$s at %2$s', 'event-tickets' ),
 				'invalidWindow' => __( 'Ticket sales cannot end before they start. Please adjust the sales window.', 'event-tickets' ),
+			],
+		];
+	}
+
+	/**
+	 * Gets the data the Ticket block script reads the relative values it offers by default from.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{defaults: array{start: array{mode: string, value: int, unit: int, anchor: string}, end: array{mode: string, value: int, unit: int, anchor: string}}} The script data.
+	 */
+	private function get_block_editor_script_data(): array {
+		return [
+			'defaults' => [
+				'start' => Editor::DEFAULT_RELATIVE_START,
+				'end'   => Editor::DEFAULT_RELATIVE_END,
 			],
 		];
 	}

@@ -7,15 +7,9 @@
 /**
  * Internal dependencies
  */
+import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from '../rule-constants';
 import { fromLocal, resolveSaleWindow } from '../sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from '../validation';
-
-const MODE_SPECIFIC = 'specific';
-const MODE_RELATIVE = 'relative';
-
-// The range of numbers a relative boundary takes, as `Boundary::MIN_VALUE` and `Boundary::MAX_VALUE` set it.
-const MIN_VALUE = 1;
-const MAX_VALUE = 60;
 
 /**
  * Returns whether a relative boundary's number is one the server takes.
