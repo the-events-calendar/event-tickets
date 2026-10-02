@@ -33,15 +33,6 @@ final class Sale_Price_Dates {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The reader of the event dates.
-	 *
-	 * @since TBD
-	 *
-	 * @var Ticket_Dates
-	 */
-	private Ticket_Dates $ticket_dates;
-
-	/**
 	 * The sale price window resolver.
 	 *
 	 * @since TBD
@@ -56,12 +47,10 @@ final class Sale_Price_Dates {
 	 * @since TBD
 	 *
 	 * @param Rule_Store        $rule_store        The store of the ticket rules.
-	 * @param Ticket_Dates      $ticket_dates      The reader of the event dates.
 	 * @param Sale_Price_Window $sale_price_window The sale price window resolver.
 	 */
-	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Sale_Price_Window $sale_price_window ) {
+	public function __construct( Rule_Store $rule_store, Sale_Price_Window $sale_price_window ) {
 		$this->rule_store        = $rule_store;
-		$this->ticket_dates      = $ticket_dates;
 		$this->sale_price_window = $sale_price_window;
 	}
 
@@ -85,13 +74,12 @@ final class Sale_Price_Dates {
 			return;
 		}
 
-		$event_dates = $this->ticket_dates->get_event_dates( $post_id );
+		$dates = $this->sale_price_window->resolve_for_event( $rule, $post_id );
 
-		if ( ! $event_dates ) {
+		if ( ! $dates ) {
 			return;
 		}
 
-		$dates     = $this->sale_price_window->resolve( $rule, ...$event_dates );
 		$meta_keys = [
 			'start' => Ticket::$sale_price_start_date_key,
 			'end'   => Ticket::$sale_price_end_date_key,

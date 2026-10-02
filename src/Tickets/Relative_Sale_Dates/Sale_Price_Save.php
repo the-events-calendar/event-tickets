@@ -12,8 +12,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use InvalidArgumentException;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -29,7 +27,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Sale_Price_Save extends Controller_Contract {
+final class Sale_Price_Save {
 	/**
 	 * The ticket data key that carries the sale price rule; its value is a JSON string, an array, or `null` or `''` to
 	 * remove it.
@@ -50,7 +48,7 @@ final class Sale_Price_Save extends Controller_Contract {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The resolver and writer of the sale price dates.
+	 * The writer of the sale price dates.
 	 *
 	 * @since TBD
 	 *
@@ -63,30 +61,16 @@ final class Sale_Price_Save extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container        $container        The DI container.
 	 * @param Rule_Store       $rule_store       The store of the ticket rules.
-	 * @param Sale_Price_Dates $sale_price_dates The resolver and writer of the sale price dates.
+	 * @param Sale_Price_Dates $sale_price_dates The writer of the sale price dates.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store, Sale_Price_Dates $sale_price_dates ) {
-		parent::__construct( $container );
-
+	public function __construct( Rule_Store $rule_store, Sale_Price_Dates $sale_price_dates ) {
 		$this->rule_store       = $rule_store;
 		$this->sale_price_dates = $sale_price_dates;
 	}
 
 	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_rule' ] );
-	}
-
-	/**
-	 * Stores the sale price rule, or removes it, and writes the sale price dates it resolves to.
+	 * Stores the sale price rule, or removes it.
 	 *
 	 * @since TBD
 	 *
@@ -115,19 +99,27 @@ final class Sale_Price_Save extends Controller_Contract {
 		if ( $rule ) {
 			$this->rule_store->save( $ticket->ID, [ Sale_Price_Rule::KEY => $rule->to_array() ] );
 		}
-
-		$this->sale_price_dates->write( $ticket->ID, $post_id );
 	}
 
 	/**
-	 * Registers the controller.
+	 * Writes the sale price dates the stored rule resolves to once the ticket is saved.
 	 *
 	 * @since TBD
 	 *
+	 * @param int           $post_id The ticket parent post ID.
+	 * @param Ticket_Object $ticket  The ticket that was saved.
+	 *
 	 * @return void
 	 */
-	protected function do_register(): void {
-		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'save_rule' ], 10, 3 );
+	public function write_resolved_dates( int $post_id, Ticket_Object $ticket ): void {
+		if (
+			'tribe_events' !== get_post_type( $post_id )
+			|| Series_Passes::TICKET_TYPE === get_post_meta( $ticket->ID, Ticket::$type_meta_key, true )
+		) {
+			return;
+		}
+
+		$this->sale_price_dates->write( $ticket->ID, $post_id );
 	}
 
 	/**

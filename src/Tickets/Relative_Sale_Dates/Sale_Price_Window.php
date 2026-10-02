@@ -68,6 +68,22 @@ final class Sale_Price_Window {
 	}
 
 	/**
+	 * Resolves a sale price rule against the dates of an event, read in the event timezone.
+	 *
+	 * @since TBD
+	 *
+	 * @param Sale_Price_Rule $rule     The sale price rule.
+	 * @param int             $event_id The event post ID.
+	 *
+	 * @return array{start: ?string, end: ?string}|null The sale price dates, or `null` when the event has no valid dates.
+	 */
+	public function resolve_for_event( Sale_Price_Rule $rule, int $event_id ): ?array {
+		$event_dates = $this->sale_window->get_event_dates( $event_id );
+
+		return $event_dates ? $this->resolve( $rule, ...$event_dates ) : null;
+	}
+
+	/**
 	 * Resolves one boundary of the sale price window into a date.
 	 *
 	 * @since TBD

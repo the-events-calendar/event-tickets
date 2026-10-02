@@ -34,7 +34,7 @@ final class Event_Listener {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The resolver and writer of the ticket dates.
+	 * The writer of the ticket dates.
 	 *
 	 * @since TBD
 	 *
@@ -43,7 +43,7 @@ final class Event_Listener {
 	private Ticket_Dates $ticket_dates;
 
 	/**
-	 * The resolver and writer of the sale price dates.
+	 * The writer of the sale price dates.
 	 *
 	 * @since TBD
 	 *

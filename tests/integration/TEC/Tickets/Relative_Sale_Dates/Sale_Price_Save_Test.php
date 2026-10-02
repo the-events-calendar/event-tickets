@@ -26,7 +26,7 @@ class Sale_Price_Save_Test extends Controller_Test_Case {
 	 */
 	private const EVENT_START = '2027-06-24 19:00:00';
 
-	protected $controller_class = Sale_Price_Save::class;
+	protected $controller_class = Controller::class;
 
 	/**
 	 * @before

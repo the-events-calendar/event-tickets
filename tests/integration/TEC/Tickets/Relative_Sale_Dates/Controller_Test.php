@@ -108,6 +108,8 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'rule added to the classic panel data' => [ 'tec_tickets_ticket_panel_data', Classic_Panel_Data::class, 'add_rule_to_panel_data', 10 ];
 		yield 'sales window fields rendered' => [ 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', Editor::class, 'render_sales_window_fields', 10 ];
 		yield 'tickets list dates context filtered' => [ 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', Editor::class, 'filter_available_dates_context', 10 ];
+		yield 'sale price rule stored' => [ 'tec_tickets_commerce_after_save_ticket', Sale_Price_Save::class, 'save_rule', 10 ];
+		yield 'sale price dates written' => [ 'tec_tickets_commerce_after_save_ticket', Sale_Price_Save::class, 'write_resolved_dates', 20 ];
 	}
 
 	/**

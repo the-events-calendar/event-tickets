@@ -59,7 +59,8 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ) );
 		remove_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', $this->container->callback( Editor::class, 'render_sales_window_fields' ) );
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
-		$this->container->get( Sale_Price_Save::class )->unregister();
+		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'save_rule' ) );
+		remove_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'write_resolved_dates' ), 20 );
 		$this->container->get( Assets::class )->unregister();
 	}
 
@@ -142,7 +143,13 @@ final class Controller extends Controller_Contract {
 
 		add_filter( 'tribe_template_include_html:tickets/admin-views/editor/panel/fields/dates', $this->container->callback( Editor::class, 'render_sales_window_fields' ), 10, 4 );
 		add_filter( 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', $this->container->callback( Editor::class, 'filter_available_dates_context' ) );
-		$this->container->register( Sale_Price_Save::class );
+
+		$this->container->singleton( Sale_Price_Save::class );
+
+		add_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'save_rule' ), 10, 3 );
+		// After the sale price rule is stored.
+		add_action( 'tec_tickets_commerce_after_save_ticket', $this->container->callback( Sale_Price_Save::class, 'write_resolved_dates' ), 20, 2 );
+
 		$this->container->register( Assets::class );
 	}
 }
