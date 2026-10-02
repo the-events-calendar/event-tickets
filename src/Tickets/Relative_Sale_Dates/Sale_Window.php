@@ -15,9 +15,11 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
+use Tribe__Timezones as Timezones;
 
 /**
- * Turns a rule plus an event's start and end into the sales start and end.
+ * Turns a rule plus an event, or an event's start and end, into the sales start and end.
  *
  * @since TBD
  *
@@ -25,9 +27,42 @@ use DateTimeZone;
  */
 final class Sale_Window {
 	/**
+	 * Resolves a rule against the dates of an event, read in the event timezone.
+	 *
+	 * A Now start puts the ticket on sale: it moves a ticket start that is later than now to now, and leaves a start
+	 * that has already passed, or no start, to the ticket, so saving a ticket on sale again does not move its start.
+	 *
+	 * @since TBD
+	 *
+	 * @param Rule   $rule         The sales window rule.
+	 * @param int    $event_id     The event post ID.
+	 * @param string $ticket_start The start the ticket is saved with, as `Y-m-d H:i:s` in the event timezone, or `''`.
+	 *
+	 * @return Resolved_Window|null The resolved sales window, or `null` when the event has no valid dates.
+	 */
+	public function resolve_for_event( Rule $rule, int $event_id, string $ticket_start = '' ): ?Resolved_Window {
+		$event_dates = $this->get_event_dates( $event_id );
+
+		if ( ! $event_dates ) {
+			return null;
+		}
+
+		$window = $this->resolve( $rule, ...$event_dates );
+
+		if ( Rule::MODE_DEFAULT !== $rule->get_start()->get_mode() ) {
+			return $window;
+		}
+
+		$now_start = $this->get_now_start( $ticket_start, $event_dates[0]->getTimezone() );
+
+		return $now_start ? new Resolved_Window( $now_start, $window->get_end() ) : $window;
+	}
+
+	/**
 	 * Resolves a rule against an event's dates.
 	 *
-	 * The event timezone is the event start's timezone; the event end is converted to it.
+	 * For callers that already hold the dates, such as one date of a recurring event; `resolve_for_event()` reads them
+	 * from an event. The event timezone is the event start's timezone; the event end is converted to it.
 	 *
 	 * @since TBD
 	 *
@@ -150,5 +185,57 @@ final class Sale_Window {
 	 */
 	private function in_timezone( DateTimeInterface $date, DateTimeZone $timezone ): DateTimeImmutable {
 		return ( new DateTimeImmutable( '@' . $date->getTimestamp() ) )->setTimezone( $timezone );
+	}
+
+	/**
+	 * Gets the event's start and end in the event timezone.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The event post ID.
+	 *
+	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
+	 */
+	private function get_event_dates( int $event_id ): ?array {
+		$start = get_post_meta( $event_id, '_EventStartDate', true );
+		$end   = get_post_meta( $event_id, '_EventEndDate', true );
+
+		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
+			return null;
+		}
+
+		$timezone = Timezones::build_timezone_object( get_post_meta( $event_id, '_EventTimezone', true ) ?: null );
+
+		try {
+			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
+		} catch ( Exception $e ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the start a Now boundary moves the ticket to: now, when the ticket start is later.
+	 *
+	 * @since TBD
+	 *
+	 * @param string       $ticket_start The start the ticket is saved with, as `Y-m-d H:i:s` in the event timezone, or `''`.
+	 * @param DateTimeZone $timezone     The event timezone.
+	 *
+	 * @return DateTimeImmutable|null Now, in the event timezone, or `null` to leave the start to the ticket.
+	 */
+	private function get_now_start( string $ticket_start, DateTimeZone $timezone ): ?DateTimeImmutable {
+		if ( '' === $ticket_start ) {
+			return null;
+		}
+
+		try {
+			$start = new DateTimeImmutable( $ticket_start, $timezone );
+		} catch ( Exception $e ) {
+			return null;
+		}
+
+		$now = new DateTimeImmutable( 'now', $timezone );
+
+		return $start > $now ? $now : null;
 	}
 }
