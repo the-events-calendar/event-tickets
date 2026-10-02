@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import { resolveSaleWindow } from '@tec/tickets/relative-sale-dates/sale-window';
+import { resolveSaleWindow, toZone } from '@tec/tickets/relative-sale-dates/sale-window';
 import fixtures from '../_data/relative-sale-dates/sale-window-cases.json';
 
 const FORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -50,4 +50,23 @@ describe( 'resolveSaleWindow', () => {
 			expect( window.valid ).toBe( expected.valid );
 		}
 	);
+} );
+
+describe( 'toZone', () => {
+	// 03:30 UTC on 2099-06-24 is still 2099-06-23 west of UTC.
+	const INSTANT = moment.utc( '2099-06-24 03:30:00', FORMAT, true );
+
+	it( 'should give the wall-clock time of an instant in a named timezone', () => {
+		expect( toZone( INSTANT, 'America/New_York' ).format( FORMAT ) ).toBe( '2099-06-23 23:30:00' );
+	} );
+
+	it( 'should give the wall-clock time of an instant at a fixed offset', () => {
+		expect( toZone( INSTANT, '-05:00' ).format( FORMAT ) ).toBe( '2099-06-23 22:30:00' );
+	} );
+
+	it( 'should leave the instant it was given as it was', () => {
+		toZone( INSTANT, 'America/New_York' );
+
+		expect( INSTANT.format( FORMAT ) ).toBe( '2099-06-24 03:30:00' );
+	} );
 } );

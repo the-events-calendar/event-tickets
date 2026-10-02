@@ -19,7 +19,7 @@ import moment from 'moment';
 import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE } from './rule-constants';
 import { getSaleWindowError } from './validation';
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm:ss';
 const DATE_TIME_FORMAT = `${ DATE_FORMAT } ${ TIME_FORMAT }`;
 
@@ -154,6 +154,24 @@ export function fromLocal( dateTime, timezone ) {
 	}
 
 	return moment.tz( dateTime, DATE_TIME_FORMAT, true, timezone );
+}
+
+/**
+ * Gets the wall-clock time of an instant in the event timezone.
+ *
+ * @since TBD
+ *
+ * @param {moment.Moment} instant  The instant, which is left as it is.
+ * @param {string}        timezone The event timezone: an IANA name, or a fixed offset such as `+03:00`.
+ *
+ * @return {moment.Moment} The same instant, in the event timezone.
+ */
+export function toZone( instant, timezone ) {
+	if ( FIXED_OFFSET.test( timezone ) ) {
+		return instant.clone().utcOffset( timezone );
+	}
+
+	return instant.clone().tz( timezone );
 }
 
 /**

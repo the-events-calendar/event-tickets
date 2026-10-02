@@ -53,7 +53,7 @@ const TIME_FORMATS = [ 'h:mma', 'hh:mma', 'h:mm a', 'hh:mm a', 'H:mm', 'HH:mm', 
  *
  * @return {string|null} The date, `YYYY-MM-DD`, or `null` when it cannot be read.
  */
-function readDate( value, format ) {
+export function readDate( value, format ) {
 	const formatter = new window.DateFormatter();
 	const date = value ? formatter.parseDate( value, format ) : null;
 

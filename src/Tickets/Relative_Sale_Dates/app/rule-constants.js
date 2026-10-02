@@ -8,6 +8,9 @@ export const MODE_DEFAULT = 'default';
 export const MODE_RELATIVE = 'relative';
 export const MODE_SPECIFIC = 'specific';
 
+// Only the start of a sale price window takes it, as the server's `Sale_Price_Rule` defines it.
+export const MODE_NOW = 'now';
+
 export const ANCHOR_START = 'start';
 export const ANCHOR_END = 'end';
 
