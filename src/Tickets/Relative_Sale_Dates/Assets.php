@@ -72,6 +72,8 @@ final class Assets extends Controller_Contract {
 			->set_dependencies( 'jquery', 'event-tickets-admin-js', 'tribe-events-dynamic', 'tec-common-php-date-formatter' )
 			->set_condition( fn(): bool => $this->is_event_edit_screen() )
 			->add_localize_script( 'tec.tickets.relativeSaleDates.classicData', fn(): array => $this->get_classic_script_data() )
+			// The library's `with_translations()` would look for the translations under common's path, not the plugin's.
+			->call_after_enqueue( static fn(): bool => wp_set_script_translations( self::CLASSIC_SCRIPT, 'event-tickets', Tickets_Plugin::instance()->plugin_path . 'lang' ) )
 			->enqueue_on( 'admin_enqueue_scripts' )
 			->in_footer()
 			->register();
