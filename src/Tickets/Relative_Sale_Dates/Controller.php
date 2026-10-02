@@ -46,7 +46,13 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ) );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
 		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20 );
-		$this->container->get( Rest::class )->unregister();
+		remove_filter( 'tec_tickets_rest_single_ticket_add_data', $this->container->callback( Rest::class, 'map_block_editor_rule' ) );
+		remove_filter( 'tribe_tickets_rest_api_ticket_data', $this->container->callback( Rest::class, 'add_rule_to_block_editor_ticket_data' ) );
+		remove_filter( 'tec_rest_swagger_ticket_request_body_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		remove_filter( 'tec_rest_swagger_ticket_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		remove_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ) );
+		remove_filter( 'tec_tickets_rest_ticket_upsert_params', $this->container->callback( Rest::class, 'keep_stored_rules_in_tec_rest_api_update' ) );
+		remove_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
 	}
 
 	/**
@@ -108,6 +114,14 @@ final class Controller extends Controller_Contract {
 		// After the rules are copied to the duplicates.
 		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20, 2 );
 
-		$this->container->register( Rest::class );
+		$this->container->singleton( Rest::class );
+
+		add_filter( 'tec_tickets_rest_single_ticket_add_data', $this->container->callback( Rest::class, 'map_block_editor_rule' ), 10, 3 );
+		add_filter( 'tribe_tickets_rest_api_ticket_data', $this->container->callback( Rest::class, 'add_rule_to_block_editor_ticket_data' ) );
+		add_filter( 'tec_rest_swagger_ticket_request_body_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		add_filter( 'tec_rest_swagger_ticket_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
+		add_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ), 10, 2 );
+		add_filter( 'tec_tickets_rest_ticket_upsert_params', $this->container->callback( Rest::class, 'keep_stored_rules_in_tec_rest_api_update' ), 10, 2 );
+		add_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
 	}
 }

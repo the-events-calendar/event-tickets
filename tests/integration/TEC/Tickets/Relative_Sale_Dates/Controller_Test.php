@@ -96,6 +96,13 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'legacy end date sync filtered' => [ 'tec_tickets_ticket_end_date_follows_event_start', Event_Listener::class, 'filter_end_date_follows_event_start', 10 ];
 		yield 'rules copied to duplicates' => [ 'tec_tickets_tickets_duplicated', Event_Listener::class, 'copy_rules_to_duplicates', 10 ];
 		yield 'duplicated tickets updated' => [ 'tec_tickets_tickets_duplicated', Event_Listener::class, 'update_duplicated_tickets', 20 ];
+		yield 'block editor rule mapped' => [ 'tec_tickets_rest_single_ticket_add_data', Rest::class, 'map_block_editor_rule', 10 ];
+		yield 'rule added to the block editor ticket' => [ 'tribe_tickets_rest_api_ticket_data', Rest::class, 'add_rule_to_block_editor_ticket_data', 10 ];
+		yield 'rule added to the request body definition' => [ 'tec_rest_swagger_ticket_request_body_definition', Rest::class, 'add_rule_to_definition', 10 ];
+		yield 'rule added to the ticket definition' => [ 'tec_rest_swagger_ticket_definition', Rest::class, 'add_rule_to_definition', 10 ];
+		yield 'rule sent as null kept' => [ 'tec_rest_schema_filter', Rest::class, 'keep_a_rule_sent_as_null', 10 ];
+		yield 'stored rules kept in a TEC V1 update' => [ 'tec_tickets_rest_ticket_upsert_params', Rest::class, 'keep_stored_rules_in_tec_rest_api_update', 10 ];
+		yield 'rule added to the TEC V1 ticket' => [ 'tec_rest_v1_tec_tc_ticket_transform_entity', Rest::class, 'add_rule_to_tec_rest_api_ticket', 10 ];
 	}
 
 	/**

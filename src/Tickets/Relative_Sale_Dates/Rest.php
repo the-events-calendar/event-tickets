@@ -11,8 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Tickets as Tickets;
@@ -25,7 +23,7 @@ use WP_REST_Request;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Rest extends Controller_Contract {
+final class Rest {
 	/**
 	 * The store of the ticket rules.
 	 *
@@ -40,30 +38,10 @@ final class Rest extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container  $container  The DI container.
 	 * @param Rule_Store $rule_store The store of the ticket rules.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store ) {
-		parent::__construct( $container );
-
+	public function __construct( Rule_Store $rule_store ) {
 		$this->rule_store = $rule_store;
-	}
-
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tec_tickets_rest_single_ticket_add_data', [ $this, 'map_block_editor_rule' ] );
-		remove_filter( 'tribe_tickets_rest_api_ticket_data', [ $this, 'add_rule_to_block_editor_ticket_data' ] );
-		remove_filter( 'tec_rest_swagger_ticket_request_body_definition', [ $this, 'add_rule_to_definition' ] );
-		remove_filter( 'tec_rest_swagger_ticket_definition', [ $this, 'add_rule_to_definition' ] );
-		remove_filter( 'tec_rest_schema_filter', [ $this, 'keep_a_rule_sent_as_null' ] );
-		remove_filter( 'tec_tickets_rest_ticket_upsert_params', [ $this, 'map_tec_rest_api_rule' ] );
-		remove_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', [ $this, 'add_rule_to_tec_rest_api_ticket' ] );
 	}
 
 	/**
@@ -159,7 +137,7 @@ final class Rest extends Controller_Contract {
 	 *
 	 * @return array<string,mixed> The ticket parameters, with the stored rule when the request sent none.
 	 */
-	public function map_tec_rest_api_rule( array $ticket_params, array $params ): array {
+	public function keep_stored_rules_in_tec_rest_api_update( array $ticket_params, array $params ): array {
 		if ( array_key_exists( Ticket_Save::DATA_KEY, $ticket_params ) || empty( $params['id'] ) ) {
 			return $ticket_params;
 		}
@@ -186,23 +164,6 @@ final class Rest extends Controller_Contract {
 		$entity[ Ticket_Save::DATA_KEY ] = empty( $entity['id'] ) ? null : $this->get_stored_rule( absint( $entity['id'] ) );
 
 		return $entity;
-	}
-
-	/**
-	 * Registers the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tec_tickets_rest_single_ticket_add_data', [ $this, 'map_block_editor_rule' ], 10, 3 );
-		add_filter( 'tribe_tickets_rest_api_ticket_data', [ $this, 'add_rule_to_block_editor_ticket_data' ] );
-		add_filter( 'tec_rest_swagger_ticket_request_body_definition', [ $this, 'add_rule_to_definition' ] );
-		add_filter( 'tec_rest_swagger_ticket_definition', [ $this, 'add_rule_to_definition' ] );
-		add_filter( 'tec_rest_schema_filter', [ $this, 'keep_a_rule_sent_as_null' ], 10, 2 );
-		add_filter( 'tec_tickets_rest_ticket_upsert_params', [ $this, 'map_tec_rest_api_rule' ], 10, 2 );
-		add_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', [ $this, 'add_rule_to_tec_rest_api_ticket' ] );
 	}
 
 	/**
