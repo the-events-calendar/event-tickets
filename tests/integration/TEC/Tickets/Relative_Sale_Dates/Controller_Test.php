@@ -110,6 +110,7 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'tickets list dates context filtered' => [ 'tribe_template_context:tickets/admin-views/editor/list-row/available-dates', Editor::class, 'filter_available_dates_context', 10 ];
 		yield 'sale price rule stored' => [ 'tec_tickets_commerce_after_save_ticket', Sale_Price_Save::class, 'save_rule', 10 ];
 		yield 'sale price dates written' => [ 'tec_tickets_commerce_after_save_ticket', Sale_Price_Save::class, 'write_resolved_dates', 20 ];
+		yield 'sale price data validated' => [ 'tec_tickets_ticket_data_validation', Sale_Price_Save::class, 'validate_ticket_data', 20 ];
 	}
 
 	/**
