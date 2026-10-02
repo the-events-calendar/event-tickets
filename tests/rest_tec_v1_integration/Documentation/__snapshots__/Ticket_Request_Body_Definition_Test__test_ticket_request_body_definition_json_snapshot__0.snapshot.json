@@ -178,6 +178,68 @@
                             }
                         }
                     }
+                },
+                "sale_price_relative": {
+                    "description": "The sale price window relative to the event start, or null when the sale price has fixed dates. Sending null removes the rule.",
+                    "nullable": true,
+                    "type": "object",
+                    "properties": {
+                        "start": {
+                            "description": "When the sale price starts.",
+                            "type": "object",
+                            "properties": {
+                                "mode": {
+                                    "description": "How the start is set: `now` (as soon as ticket sales open), `relative` (before the event start) or `specific` (the date sent in `sale_price_start_date`).",
+                                    "type": "string",
+                                    "enum": [
+                                        "now",
+                                        "relative",
+                                        "specific"
+                                    ],
+                                    "example": "relative"
+                                },
+                                "value": {
+                                    "description": "For a relative boundary, the number of units before the event start, from 1 to 30.",
+                                    "type": "integer",
+                                    "maximum": 30,
+                                    "minimum": 1,
+                                    "example": 2
+                                },
+                                "unit": {
+                                    "description": "For a relative boundary, the unit in seconds: 86400 (days) or 604800 (weeks).",
+                                    "type": "integer",
+                                    "example": 604800
+                                }
+                            }
+                        },
+                        "end": {
+                            "description": "When the sale price ends.",
+                            "type": "object",
+                            "properties": {
+                                "mode": {
+                                    "description": "How the end is set: `relative` (before the event start) or `specific` (the date sent in `sale_price_end_date`).",
+                                    "type": "string",
+                                    "enum": [
+                                        "relative",
+                                        "specific"
+                                    ],
+                                    "example": "relative"
+                                },
+                                "value": {
+                                    "description": "For a relative boundary, the number of units before the event start, from 1 to 30.",
+                                    "type": "integer",
+                                    "maximum": 30,
+                                    "minimum": 1,
+                                    "example": 2
+                                },
+                                "unit": {
+                                    "description": "For a relative boundary, the unit in seconds: 86400 (days) or 604800 (weeks).",
+                                    "type": "integer",
+                                    "example": 604800
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
