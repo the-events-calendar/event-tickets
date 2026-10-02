@@ -55,7 +55,20 @@ function renderEventForm( start = { value: 2, unit: UNIT_WEEKS, anchor: 'start' 
 		<input id="EventEndTime" value="10:00pm" />
 		<input type="checkbox" id="allDayCheckbox" />
 		<select id="event-timezone"><option value="America/New_York" selected>New York</option></select>
+		${ renderListRow() }
 		${ renderPanel( start, end ) }`;
+}
+
+/**
+ * @return {string} The sale dates of a saved ticket that starts 2 weeks before the event and ends when it starts.
+ */
+function renderListRow() {
+	const rule = JSON.stringify( {
+		start: { mode: 'relative', value: 2, unit: UNIT_WEEKS, anchor: 'start' },
+		end: { mode: 'default' },
+	} ).replace( /"/g, '&quot;' );
+
+	return `<div id="list-row-dates" data-relative-sale-dates="${ rule }" data-sale-start="2099-06-10" data-sale-end="2099-06-24">stored</div>`;
 }
 
 /**
@@ -107,6 +120,13 @@ function isEndMarkedInvalid() {
 }
 
 /**
+ * @return {string} The sale dates the listed ticket shows.
+ */
+function getListRowText() {
+	return document.getElementById( 'list-row-dates' ).textContent;
+}
+
+/**
  * @return {string} The sales window error shown in the form.
  */
 function getWindowError() {
@@ -129,6 +149,7 @@ describe( 'classic editor script', () => {
 			timeFormat: 'g:i a',
 			dateWithYear: 'F j, Y',
 			dateNoYear: 'F j',
+			listDateFormat: 'F j, Y',
 			timezones: {},
 			allDay: { start: '00:00:00', end: '23:59:59', endDays: 0 },
 			text: {
@@ -200,6 +221,42 @@ describe( 'classic editor script', () => {
 		await loadScript();
 
 		expect( getHelperText( 'start' ) ).toBe( '' );
+	} );
+
+	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
+		renderEventForm();
+		await loadScript();
+
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should update the sale dates of a listed ticket when the event date changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#EventStartDate' ).val( '6/30/2099' ).trigger( 'change' );
+
+		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
+	} );
+
+	it( 'should keep the sale dates of a listed ticket when a field of the ticket form changes', async () => {
+		renderEventForm();
+		await loadScript();
+
+		jQuery( '#ticket_sales_start_value' ).val( '3' ).trigger( 'change' );
+
+		expect( getListRowText() ).toBe( 'June 10, 2099 - June 24, 2099' );
+	} );
+
+	it( 'should write the sale dates of a list the editor replaced', async () => {
+		renderEventForm();
+		const hooks = await loadScript();
+
+		jQuery( '#list-row-dates' ).replaceWith( renderListRow() );
+		jQuery( '#EventStartDate' ).val( '6/30/2099' );
+		hooks.doAction( 'tec.tickets.admin.panels.refreshed', {} );
+
+		expect( getListRowText() ).toBe( 'June 16, 2099 - June 30, 2099' );
 	} );
 
 	it( 'should block the save of a window that ends before it starts', async () => {
