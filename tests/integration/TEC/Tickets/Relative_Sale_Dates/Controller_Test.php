@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
 
@@ -83,23 +84,28 @@ class Controller_Test extends Controller_Test_Case {
 	}
 
 	/**
-	 * @test
+	 * @return Generator<string,array{0: string, 1: string, 2: string, 3: int}>
 	 */
-	public function should_hook_the_ticket_save_and_unhook_it_when_unregistered(): void {
+	public function hook_provider(): Generator {
+		yield 'ticket dates set before the save' => [ 'tec_tickets_ticket_pre_save', Ticket_Save::class, 'set_ticket_dates', 10 ];
+		yield 'rule stored after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'save_rule', 10 ];
+		yield 'resolved dates written after the save' => [ 'tec_tickets_ticket_upserted', Ticket_Save::class, 'write_resolved_dates', 20 ];
+		yield 'ticket data validated' => [ 'tec_tickets_ticket_data_validation', Ticket_Save::class, 'validate_ticket_data', 10 ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider hook_provider
+	 */
+	public function should_hook_the_service_and_unhook_it_when_unregistered( string $hook, string $service, string $method, int $priority ): void {
 		$controller = $this->make_controller();
 		$controller->register();
-		$set_ticket_dates = $this->test_services->callback( Ticket_Save::class, 'set_ticket_dates' );
-		$save_rule        = $this->test_services->callback( Ticket_Save::class, 'save_rule' );
-		$write_dates      = $this->test_services->callback( Ticket_Save::class, 'write_resolved_dates' );
+		$callback = $this->test_services->callback( $service, $method );
 
-		$this->assertSame( 10, has_action( 'tec_tickets_ticket_pre_save', $set_ticket_dates ) );
-		$this->assertSame( 10, has_action( 'tec_tickets_ticket_upserted', $save_rule ) );
-		$this->assertSame( 20, has_action( 'tec_tickets_ticket_upserted', $write_dates ) );
+		$this->assertSame( $priority, has_filter( $hook, $callback ) );
 
 		$controller->unregister();
 
-		$this->assertFalse( has_action( 'tec_tickets_ticket_pre_save', $set_ticket_dates ) );
-		$this->assertFalse( has_action( 'tec_tickets_ticket_upserted', $save_rule ) );
-		$this->assertFalse( has_action( 'tec_tickets_ticket_upserted', $write_dates ) );
+		$this->assertFalse( has_filter( $hook, $callback ) );
 	}
 }
