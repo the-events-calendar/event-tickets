@@ -52,7 +52,7 @@ final class Controller extends Controller_Contract {
 		remove_filter( 'tec_rest_swagger_ticket_definition', $this->container->callback( Rest::class, 'add_rule_to_definition' ) );
 		remove_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ) );
 		remove_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
-		$this->container->get( Classic_Panel_Data::class )->unregister();
+		remove_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ) );
 	}
 
 	/**
@@ -123,6 +123,8 @@ final class Controller extends Controller_Contract {
 		add_filter( 'tec_rest_schema_filter', $this->container->callback( Rest::class, 'keep_a_rule_sent_as_null' ), 10, 3 );
 		add_filter( 'tec_rest_v1_tec_tc_ticket_transform_entity', $this->container->callback( Rest::class, 'add_rule_to_tec_rest_api_ticket' ) );
 
-		$this->container->register( Classic_Panel_Data::class );
+		$this->container->singleton( Classic_Panel_Data::class );
+
+		add_filter( 'tec_tickets_ticket_panel_data', $this->container->callback( Classic_Panel_Data::class, 'add_rule_to_panel_data' ), 10, 3 );
 	}
 }
