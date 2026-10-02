@@ -27,6 +27,15 @@ use Tribe__Timezones as Timezones;
  */
 final class Sale_Window {
 	/**
+	 * The event metas the sales window is resolved from.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public const EVENT_DATE_META_KEYS = [ '_EventStartDate', '_EventEndDate', '_EventTimezone' ];
+
+	/**
 	 * Resolves a rule against the dates of an event, read in the event timezone.
 	 *
 	 * A Now start puts the ticket on sale: it moves a ticket start that is later than now to now, and leaves a start

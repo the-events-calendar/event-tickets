@@ -62,7 +62,7 @@ final class Ticket_Save {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The resolver and writer of the ticket dates.
+	 * The writer of the ticket dates.
 	 *
 	 * @since TBD
 	 *
@@ -230,7 +230,7 @@ final class Ticket_Save {
 		$rule        = $this->get_rule_to_apply( absint( $data['ticket_id'] ?? 0 ), $data );
 		$event_dates = $rule ? $this->sale_window->get_event_dates( $post_id ) : null;
 
-		if ( ! $event_dates || ! $window ) {
+		if ( ! $event_dates ) {
 			return $valid;
 		}
 

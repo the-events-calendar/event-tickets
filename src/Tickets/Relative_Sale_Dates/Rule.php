@@ -169,6 +169,21 @@ final class Rule implements JsonSerializable {
 	}
 
 	/**
+	 * Returns whether the ticket's sale end may follow the event start when the event moves.
+	 *
+	 * A specific end leaves the end to the ticket, as a ticket without a rule does, and the classic editor stores such a
+	 * rule the first time it saves a ticket made before the feature. The end stays put when the start counts back from
+	 * the event end, which could fall after an end moved to the event start.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the sale end may follow the event start.
+	 */
+	public function lets_end_follow_event_start(): bool {
+		return self::MODE_SPECIFIC === $this->end->get_mode() && self::ANCHOR_END !== $this->start->get_anchor();
+	}
+
+	/**
 	 * Returns the rule's canonical array form, for storage and for the editors.
 	 *
 	 * @since TBD
