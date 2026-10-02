@@ -4,7 +4,14 @@ import { dispatch, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
-import { DEFAULT_EVENT, clearBlockEditorGlobals, setBlockEditorData, setEventState } from './block-editor-event-state';
+import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
+import {
+	DEFAULT_EVENT,
+	clearBlockEditorGlobals,
+	setBlockEditorData,
+	setEventState,
+	setTicketFormDates,
+} from './block-editor-event-state';
 import '@tec/tickets/relative-sale-dates/block-editor';
 
 jest.mock( '@wordpress/data', () => require( './wordpress-data-registry' ) );
@@ -237,6 +244,138 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			delete window.tec.events;
 
 			expect( filterDates( clientId ) ).toStrictEqual( ticketDates );
+		} );
+	} );
+
+	describe( 'on tec.tickets.blocks.confirmButton.isDisabled', () => {
+		/**
+		 * Builds the legacy ticket state of a ticket block with the sale dates its form sends.
+		 *
+		 * @param {string} clientId The client ID of the ticket block.
+		 * @param {string} start    The sale start the form sends, `YYYY-MM-DD HH:mm:ss`.
+		 * @param {string} end      The sale end the form sends, `YYYY-MM-DD HH:mm:ss`.
+		 *
+		 * @return {Object} The legacy state.
+		 */
+		function legacyTicketState( clientId, start, end ) {
+			setTicketFormDates( window.__tribe_common_store__, clientId, start, end );
+
+			return window.__tribe_common_store__.getState();
+		}
+
+		/**
+		 * Asks whether the Create or Update button of a ticket block is disabled.
+		 *
+		 * @param {string}  clientId   The client ID of the ticket block.
+		 * @param {boolean} isDisabled Whether the legacy checks disable it.
+		 * @param {Object}  state      The legacy state.
+		 *
+		 * @return {boolean} Whether the button is disabled.
+		 */
+		function isConfirmDisabled( clientId, isDisabled, state = legacyTicketState( clientId, '2040-09-01 10:00:00', '2040-10-20 19:00:00' ) ) {
+			return applyFilters( 'tec.tickets.blocks.confirmButton.isDisabled', isDisabled, state, { clientId } );
+		}
+
+		/**
+		 * Builds the legacy state of a ticket block whose specific dates end before they start, so it has a duration
+		 * error. Every other legacy check passes unless `hasChanges` is false.
+		 *
+		 * @param {string}  clientId   The client ID of the ticket block.
+		 * @param {boolean} hasChanges Whether the ticket has changes to save.
+		 *
+		 * @return {Object} The legacy state.
+		 */
+		function durationErrorState( clientId, hasChanges = true ) {
+			const store = window.__tribe_common_store__;
+			legacyTicketState( clientId, '2040-10-21 10:00:00', '2040-10-20 19:00:00' );
+			store.dispatch( legacyActions.setTicketTempTitle( clientId, 'Ticket' ) );
+			store.dispatch( legacyActions.setTicketTempPrice( clientId, '10' ) );
+			store.dispatch( legacyActions.setTicketTempCapacityType( clientId, 'unlimited' ) );
+			store.dispatch( legacyActions.setTicketHasChanges( clientId, hasChanges ) );
+			store.dispatch( legacyActions.setTicketHasDurationError( clientId, true ) );
+
+			return store.getState();
+		}
+
+		const relative = ( value, unit ) => ( { mode: 'relative', value, unit, anchor: 'start' } );
+
+		beforeEach( () => {
+			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
+			setBlockEditorData();
+			setEventState( DEFAULT_EVENT ).dispatch( legacyActions.setTicketsProvider( TICKETS_COMMERCE ) );
+		} );
+
+		afterEach( () => {
+			delete window.tribe;
+			clearBlockEditorGlobals();
+		} );
+
+		it( 'should disable Create and Update while the window ends before it starts', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) } );
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( true );
+		} );
+
+		it( 'should leave the button alone for a window that starts before it ends', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
+			expect( isConfirmDisabled( clientId, true ) ).toBe( true );
+		} );
+
+		it( 'should disable Create and Update while a relative start or end has no number', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( '', UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( true );
+		} );
+
+		it( 'should judge a start of Now by the date the ticket sends', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: relative( 1, UNIT_HOURS ) } );
+			// Sales end at 18:00, an hour before the event; the ticket starts selling at 18:30.
+			const state = legacyTicketState( clientId, '2040-10-20 18:30:00', '2040-10-20 19:00:00' );
+
+			expect( isConfirmDisabled( clientId, false, state ) ).toBe( true );
+		} );
+
+		it( 'should judge a rule that hides the specific dates by the rule, not by their legacy duration error', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+
+			expect( isConfirmDisabled( clientId, true, durationErrorState( clientId ) ) ).toBe( false );
+		} );
+
+		it( 'should keep the button disabled for another reason the legacy checks give', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+
+			expect( isConfirmDisabled( clientId, true, durationErrorState( clientId, false ) ) ).toBe( true );
+		} );
+
+		it( 'should leave the button alone for a ticket another provider sells', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) } );
+			window.__tribe_common_store__.dispatch( legacyActions.setTicketsProvider( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
+		} );
+
+		it( 'should leave the button alone for a ticket without a rule', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, null );
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
+		} );
+
+		it( 'should leave the button alone while the event dates cannot be read', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 1, UNIT_HOURS ), end: relative( 2, UNIT_HOURS ) } );
+			delete window.tec.events;
+
+			expect( isConfirmDisabled( clientId, false ) ).toBe( false );
 		} );
 	} );
 

@@ -67,6 +67,8 @@ function getUnitOptions( value ) {
  * @param {Object}                           props.picker        The date and time range picker element.
  * @param {string}                           props.helperText    The date a relative end works out to, or an empty
  *                                                               string.
+ * @param {string}                           props.errorMessage  The sales window error this end is marked with, or an
+ *                                                               empty string.
  * @param {Function}                         props.onChange      Called with the changed values of the end.
  *
  * @return {Object} The end's options.
@@ -79,6 +81,7 @@ export default function SalesWindowEnd( {
 	anchorOptions,
 	picker,
 	helperText,
+	errorMessage,
 	onChange,
 } ) {
 	return (
@@ -87,6 +90,15 @@ export default function SalesWindowEnd( {
 				__next40pxDefaultSize
 				__nextHasNoMarginBottom
 				label={ labels.mode }
+				aria-invalid={ errorMessage ? true : undefined }
+				// The control points `aria-describedby` at its help, so the error goes there to be announced with it.
+				help={
+					errorMessage ? (
+						<span className="tec-tickets-relative-sale-dates__error" role="alert">
+							{ errorMessage }
+						</span>
+					) : undefined
+				}
 				value={ end.mode }
 				options={ modeOptions }
 				onChange={ ( mode ) => onChange( { mode } ) }
