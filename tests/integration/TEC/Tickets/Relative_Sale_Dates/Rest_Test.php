@@ -25,13 +25,6 @@ class Rest_Test extends Controller_Test_Case {
 	protected $controller_class = Controller::class;
 
 	/**
-	 * The sub-controllers the feature controller registers, lowered in the test container so they register again.
-	 *
-	 * @var string[]
-	 */
-	protected $sub_controller_classes = [ Ticket_Save::class, Event_Listener::class, Rest::class ];
-
-	/**
 	 * @before
 	 */
 	public function register_controller(): void {
