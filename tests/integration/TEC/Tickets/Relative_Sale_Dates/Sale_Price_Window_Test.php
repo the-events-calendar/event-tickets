@@ -55,4 +55,50 @@ class Sale_Price_Window_Test extends WPTestCase {
 
 		$this->assertSame( $event_start->modify( '-1 day' )->format( 'Y-m-d' ), $dates['start'] );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_resolve_a_rule_for_an_event_in_the_event_timezone(): void {
+		$rule        = Sale_Price_Rule::from_array(
+			[
+				'start' => [
+					'mode'  => Rule::MODE_RELATIVE,
+					'value' => 1,
+					'unit'  => DAY_IN_SECONDS,
+				],
+				'end'   => [ 'mode' => Rule::MODE_SPECIFIC ],
+			]
+		);
+		// 21:00 in New York is already the next day in UTC, so a date read in UTC would be a day late.
+		$event_start = new DateTimeImmutable( '2027-06-10 21:00:00', new DateTimeZone( 'America/New_York' ) );
+		$event_id    = tribe_events()->set_args(
+			[
+				'title'      => 'Relative Sale Dates event',
+				'status'     => 'publish',
+				'start_date' => $event_start->format( 'Y-m-d H:i:s' ),
+				'timezone'   => $event_start->getTimezone()->getName(),
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+
+		$dates = tribe( Sale_Price_Window::class )->resolve_for_event( $rule, $event_id );
+
+		$this->assertSame(
+			[
+				'start' => $event_start->modify( '-1 day' )->format( 'Y-m-d' ),
+				'end'   => null,
+			],
+			$dates
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_resolve_a_rule_for_a_post_without_event_dates(): void {
+		$rule = Sale_Price_Rule::from_array( [ 'start' => [ 'mode' => Sale_Price_Rule::MODE_NOW ], 'end' => [ 'mode' => Rule::MODE_SPECIFIC ] ] );
+
+		$this->assertNull( tribe( Sale_Price_Window::class )->resolve_for_event( $rule, static::factory()->post->create() ) );
+	}
 }

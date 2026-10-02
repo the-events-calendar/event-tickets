@@ -127,6 +127,35 @@ class Sale_Price_Rule_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 * @dataProvider shared_valid_rules_provider
+	 */
+	public function should_build_the_rule_from_its_json_form( array $data ): void {
+		$this->assertSame( $data, Sale_Price_Rule::from_json( wp_json_encode( $data ) )->to_array() );
+	}
+
+	/**
+	 * @return Generator<string,array{0: string}>
+	 */
+	public function invalid_json_provider(): Generator {
+		yield 'malformed' => [ '{"start":' ];
+		yield 'empty string' => [ '' ];
+		yield 'a scalar' => [ '"now"' ];
+		yield 'null' => [ 'null' ];
+		yield 'invalid rule' => [ '{"start":{"mode":"now"}}' ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider invalid_json_provider
+	 */
+	public function should_reject_invalid_json( string $json ): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Sale_Price_Rule::from_json( $json );
+	}
+
+	/**
 	 * Reads the fixtures shared by the sale price rule and resolver tests.
 	 *
 	 * @return array{cases: list<array{name: string, rule: array{start: array{mode: string, value?: int, unit?: int}, end: array{mode: string, value?: int, unit?: int}}}>, invalid_rules: list<array{name: string, rule: array{start?: mixed, end?: mixed}, reason: string}>}

@@ -34,13 +34,22 @@ final class Event_Listener {
 	private Rule_Store $rule_store;
 
 	/**
-	 * The resolver and writer of the ticket dates.
+	 * The writer of the ticket dates.
 	 *
 	 * @since TBD
 	 *
 	 * @var Ticket_Dates
 	 */
 	private Ticket_Dates $ticket_dates;
+
+	/**
+	 * The writer of the sale price dates.
+	 *
+	 * @since TBD
+	 *
+	 * @var Sale_Price_Dates
+	 */
+	private Sale_Price_Dates $sale_price_dates;
 
 	/**
 	 * The scheduler of the "sales started" and "sales ended" actions.
@@ -65,14 +74,16 @@ final class Event_Listener {
 	 *
 	 * @since TBD
 	 *
-	 * @param Rule_Store     $rule_store     The store of the ticket rules.
-	 * @param Ticket_Dates   $ticket_dates   The resolver and writer of the ticket dates.
-	 * @param Ticket_Actions $ticket_actions The scheduler of the sales actions.
+	 * @param Rule_Store       $rule_store       The store of the ticket rules.
+	 * @param Ticket_Dates     $ticket_dates     The writer of the ticket dates.
+	 * @param Ticket_Actions   $ticket_actions   The scheduler of the sales actions.
+	 * @param Sale_Price_Dates $sale_price_dates The writer of the sale price dates.
 	 */
-	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions ) {
-		$this->rule_store     = $rule_store;
-		$this->ticket_dates   = $ticket_dates;
-		$this->ticket_actions = $ticket_actions;
+	public function __construct( Rule_Store $rule_store, Ticket_Dates $ticket_dates, Ticket_Actions $ticket_actions, Sale_Price_Dates $sale_price_dates ) {
+		$this->rule_store       = $rule_store;
+		$this->ticket_dates     = $ticket_dates;
+		$this->ticket_actions   = $ticket_actions;
+		$this->sale_price_dates = $sale_price_dates;
 	}
 
 	/**
@@ -200,6 +211,8 @@ final class Event_Listener {
 		unset( $this->moved_event_ids[ $post_id ] );
 
 		foreach ( $this->rule_store->get_ticket_ids_for_event( $post_id ) as $ticket_id ) {
+			$this->sale_price_dates->write( $ticket_id, $post_id );
+
 			$rule = Rule::from_stored( $this->rule_store->get( $ticket_id ) );
 
 			if ( ! $rule ) {

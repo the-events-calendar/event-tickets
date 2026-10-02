@@ -88,6 +88,27 @@ final class Sale_Price_Rule implements JsonSerializable {
 	}
 
 	/**
+	 * Builds a rule from its JSON form.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $json The rule, as JSON.
+	 *
+	 * @return self The rule.
+	 *
+	 * @throws InvalidArgumentException If the JSON cannot be decoded or the rule is not valid.
+	 */
+	public static function from_json( string $json ): self {
+		$data = json_decode( $json, true );
+
+		if ( ! is_array( $data ) ) {
+			throw new InvalidArgumentException( 'The sale price rule is not a JSON object.' );
+		}
+
+		return self::from_array( $data );
+	}
+
+	/**
 	 * Builds a rule from what is stored for a ticket, where it sits under its own key next to the sales window rule.
 	 *
 	 * @since TBD
