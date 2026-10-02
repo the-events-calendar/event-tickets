@@ -11,6 +11,8 @@ import { __, _x } from '@wordpress/i18n';
 import { markTicketChanged } from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
 import { MODE_NOW, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
+import { SALE_PRICE_ENDS_BEFORE_START, SALE_PRICE_OUTSIDE_SALES_WINDOW } from '../../sale-price-check';
+import { useTicketSalePriceError } from '../sale-price-error';
 import { useSalePriceLengthText } from '../sale-price-length-text';
 import { getFormSalePriceRule } from '../sale-price-rule';
 import { STORE_NAME } from '../store/constants';
@@ -74,11 +76,41 @@ function getBoundarySettings() {
 }
 
 /**
+ * Gets the message of a sale price window error.
+ *
+ * The msgids are the ones the server rejects a save with, so one translation serves both.
+ *
+ * @since TBD
+ *
+ * @param {string|null} error The message key of the error, or `null`.
+ *
+ * @return {string} The message, or an empty string without an error.
+ */
+function getErrorMessage( error ) {
+	if ( SALE_PRICE_ENDS_BEFORE_START === error ) {
+		return __(
+			'The sale price cannot end before it starts. Please adjust the sale price window.',
+			'event-tickets'
+		);
+	}
+
+	if ( SALE_PRICE_OUTSIDE_SALES_WINDOW === error ) {
+		return __(
+			'The sale price window falls outside the ticket sales window. Please adjust the dates.',
+			'event-tickets'
+		);
+	}
+
+	return '';
+}
+
+/**
  * Renders the sale price window options of a ticket block in place of its sale dates row.
  *
  * A new sale price's defaults are kept as its draft at once, so the ticket is saved with them as the classic editor
- * saves its form; a sale price saved without a rule keeps no draft until the admin changes an option. How long the
- * sale price lasts shows under *Sale Ends*.
+ * saves its form, and Create or Update checks them; a sale price saved without a rule keeps no draft until the admin
+ * changes an option. How long the
+ * sale price lasts, or why the window cannot be saved, shows under *Sale Ends*.
  *
  * @since TBD
  *
@@ -90,14 +122,21 @@ function getBoundarySettings() {
  */
 export default function SalePriceWindow( { clientId, pickers } ) {
 	const rule = useSelect( ( select ) => select( STORE_NAME ).getDraftSalePriceRule( clientId ), [ clientId ] );
+	const salesWindowRule = useSelect( ( select ) => select( STORE_NAME ).getDraftRule( clientId ), [ clientId ] );
 	const { setDraftSalePriceRule } = useDispatch( STORE_NAME );
 	const formRule = getFormSalePriceRule( rule );
 	const eventDates = useEventDates();
 	const lengthText = useSalePriceLengthText( clientId, formRule, eventDates );
+	const errorMessage = getErrorMessage( useTicketSalePriceError( clientId, rule, salesWindowRule, eventDates ) );
 
 	useEffect( () => {
 		if ( undefined === rule ) {
 			setDraftSalePriceRule( clientId, getFormSalePriceRule( rule ) );
+			/*
+			 * Create or Update was checked when the sale price was checked, before these defaults existed, and is checked
+			 * again only on a legacy store change; the checkbox has marked the ticket as changed already.
+			 */
+			markTicketChanged( clientId );
 		}
 	}, [ clientId, rule, setDraftSalePriceRule ] );
 
@@ -118,6 +157,7 @@ export default function SalePriceWindow( { clientId, pickers } ) {
 					boundary={ formRule[ name ] }
 					picker={ pickers[ name ] }
 					helperText={ 'end' === name ? lengthText : undefined }
+					errorMessage={ 'end' === name ? errorMessage : '' }
 					onChange={ ( changes ) => onChange( name, changes ) }
 					{ ...settings[ name ] }
 				/>

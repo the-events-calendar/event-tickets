@@ -9,15 +9,19 @@ import { getSettings } from '@wordpress/date';
  */
 import {
 	getTicketFormDates,
+	getTicketFormSalePriceDates,
 	isSalePriceChecked,
+	isSalePriceKept,
 	isTicketReadyBesidesDuration,
 	isTicketsCommerce,
 	readTicketFormDates,
+	readTicketFormSalePriceDates,
 } from './common-store-bridge';
 import { readEventDates } from './event-dates';
 import { MODE_DEFAULT, MODE_RELATIVE } from '../rule-constants';
 import { getFormRule, isSpecificWindow } from './rule';
 import { formatSaleDate, resolveTicketWindow } from './sale-dates';
+import { getTicketSalePriceError } from './sale-price-error';
 import SalePriceWindow from './sale-price-window';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
@@ -67,6 +71,36 @@ function hasWindowError( rule, clientId ) {
 	const eventDates = readEventDates();
 
 	return Boolean( eventDates ) && null !== getTicketWindowError( rule, eventDates, readTicketFormDates( clientId ) );
+}
+
+/**
+ * Returns whether a ticket's sale price rule, as the request sends it, gives a sale price window the server rejects,
+ * judged against its draft sales window and the event dates in the editor.
+ *
+ * @since TBD
+ *
+ * @param {SalePriceRule}                 salePriceRule   The sale price rule the request sends.
+ * @param {SaleWindowRule|null|undefined} salesWindowRule The ticket's draft sales window rule.
+ * @param {string}                        clientId        The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the sale price window is invalid; `false` without the event dates to judge it by.
+ */
+function hasSalePriceError( salePriceRule, salesWindowRule, clientId ) {
+	const eventDates = readEventDates();
+
+	if ( ! eventDates ) {
+		return false;
+	}
+
+	const error = getTicketSalePriceError(
+		salePriceRule,
+		salesWindowRule,
+		eventDates,
+		readTicketFormDates( clientId ),
+		readTicketFormSalePriceDates( clientId )
+	);
+
+	return null !== error;
 }
 
 /**
@@ -145,7 +179,8 @@ export function resetTicketRule( clientId ) {
  * the ticket's other changes with it.
  *
  * The sale price rule is sent only with a checked sale price and a draft that is a rule: the server drops the rule
- * along with an unchecked sale price, and keeps the stored one otherwise.
+ * along with an unchecked sale price, and keeps the stored one otherwise. Like the sales window, a sale price draft the
+ * server would reject is not sent, and neither rule is while the sales window is invalid.
  *
  * @since TBD
  *
@@ -157,24 +192,33 @@ export function resetTicketRule( clientId ) {
 export function filterSetBodyDetails( body, clientId ) {
 	/** @type {SaleWindowRule|null|undefined} */
 	const rule = select( STORE_NAME ).getDraftRule( clientId );
+
+	// The sale price is not judged while the sales window is invalid, so it must not be sent either.
+	if ( undefined !== rule && hasWindowError( rule, clientId ) ) {
+		return body;
+	}
+
 	/** @type {SalePriceRule|null|undefined} */
 	const salePriceRule = select( STORE_NAME ).getDraftSalePriceRule( clientId );
 
-	if ( undefined !== rule && ! hasWindowError( rule, clientId ) ) {
+	if ( undefined !== rule ) {
 		const value = rule
 			? JSON.stringify( { start: toRequestEnd( rule.start ), end: toRequestEnd( rule.end ) } )
 			: '';
 		body.append( 'ticket[relative_sale_dates]', value );
 	}
 
-	if ( salePriceRule && isSalePriceChecked( clientId ) ) {
-		body.append(
-			'ticket[sale_price][relative]',
-			JSON.stringify( {
-				start: toRequestBoundary( salePriceRule.start ),
-				end: toRequestBoundary( salePriceRule.end ),
-			} )
-		);
+	if ( ! salePriceRule || ! isSalePriceChecked( clientId ) ) {
+		return body;
+	}
+
+	const requestSalePriceRule = {
+		start: toRequestBoundary( salePriceRule.start ),
+		end: toRequestBoundary( salePriceRule.end ),
+	};
+
+	if ( ! hasSalePriceError( requestSalePriceRule, rule, clientId ) ) {
+		body.append( 'ticket[sale_price][relative]', JSON.stringify( requestSalePriceRule ) );
 	}
 
 	return body;
@@ -244,7 +288,9 @@ export function filterSaleWindowDates( dates, clientId ) {
 
 /**
  * Keeps a ticket from being created or updated while its sales window is invalid: it does not start before it ends, or
- * a relative start or end has no number.
+ * a relative start or end has no number. A sale price the save keeps disables it too, as the server rejects the save,
+ * while its window does not end after the day it starts, starts outside the sales window, or has a relative number
+ * missing.
  *
  * The legacy sales duration error alone does not keep the button disabled once an end is relative or the default, since
  * the dates it checks are hidden then.
@@ -263,19 +309,36 @@ export function filterConfirmDisabled( isDisabled, state, { clientId } ) {
 		return isDisabled;
 	}
 
-	const rule = select( STORE_NAME ).getDraftRule( clientId );
+	const salesWindowRule = select( STORE_NAME ).getDraftRule( clientId );
 
 	// The legacy duration error judges the picker's dates, which mean nothing once an end is relative or the default.
 	const onlyDurationError =
-		! isSpecificWindow( getFormRule( rule ) ) && isTicketReadyBesidesDuration( state, clientId );
+		! isSpecificWindow( getFormRule( salesWindowRule ) ) && isTicketReadyBesidesDuration( state, clientId );
 
 	if ( isDisabled && ! onlyDurationError ) {
 		return true;
 	}
 
-	const error = getTicketWindowError( rule, readEventDates(), getTicketFormDates( state, clientId ) );
+	const eventDates = readEventDates();
+	const formDates = getTicketFormDates( state, clientId );
 
-	return null !== error;
+	if ( null !== getTicketWindowError( salesWindowRule, eventDates, formDates ) ) {
+		return true;
+	}
+
+	if ( ! isSalePriceKept( state, clientId ) ) {
+		return false;
+	}
+
+	const salePriceError = getTicketSalePriceError(
+		select( STORE_NAME ).getDraftSalePriceRule( clientId ),
+		salesWindowRule,
+		eventDates,
+		formDates,
+		getTicketFormSalePriceDates( state, clientId )
+	);
+
+	return null !== salePriceError;
 }
 
 /**
