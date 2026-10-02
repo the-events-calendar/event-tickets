@@ -79,4 +79,47 @@ class Rule_Store_Test extends WPTestCase {
 
 		$this->assertFalse( metadata_exists( 'post', $ticket_id, Rule_Store::META_KEY ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_release_the_end_marker_when_removing_the_sales_window_without_an_end(): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+
+		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, false );
+
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertFalse( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_end_marker_when_removing_the_sales_window_with_an_end(): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+
+		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, true );
+
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_keep_the_end_marker_of_a_ticket_without_a_sales_window(): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+
+		tribe( Rule_Store::class )->remove_sales_window( $ticket_id, false );
+
+		$this->assertTrue( $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
 }

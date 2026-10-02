@@ -71,16 +71,40 @@ final class Rule_Store {
 	 * @param int      $ticket_id The ticket post ID.
 	 * @param string[] $keys      The top-level keys to remove.
 	 *
-	 * @return void
+	 * @return bool Whether any of the keys was stored.
 	 */
-	public function remove( int $ticket_id, array $keys ): void {
+	public function remove( int $ticket_id, array $keys ): bool {
 		$stored = $this->get( $ticket_id );
 
 		if ( ! array_intersect_key( $stored, array_flip( $keys ) ) ) {
-			return;
+			return false;
 		}
 
 		$this->write( $ticket_id, array_diff_key( $stored, array_flip( $keys ) ) );
+
+		return true;
+	}
+
+	/**
+	 * Removes the sales window rule and gives the ticket end back to the event start.
+	 *
+	 * The end the rule resolved was flagged as a manual one when the ticket was saved, which stops it from following
+	 * the event start; unless the save keeps an end of its own, removing the rule removes that flag with it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param bool $keeps_end Whether the save that removes the rule sends an end date of its own.
+	 *
+	 * @return void
+	 */
+	public function remove_sales_window( int $ticket_id, bool $keeps_end ): void {
+		if ( ! $this->remove( $ticket_id, [ 'start', 'end' ] ) || $keeps_end ) {
+			return;
+		}
+
+		$tickets_handler = tribe( 'tickets.handler' );
+		delete_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
 	}
 
 	/**

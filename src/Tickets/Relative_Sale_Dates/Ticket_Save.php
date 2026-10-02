@@ -15,8 +15,6 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
 use InvalidArgumentException;
-use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
@@ -34,7 +32,7 @@ use Tribe__Timezones as Timezones;
  *
  * @package TEC\Tickets\Relative_Sale_Dates
  */
-final class Ticket_Save extends Controller_Contract {
+final class Ticket_Save {
 	/**
 	 * The ticket data key that carries the rule; its value is a JSON string, an array, or `null` or `''` to remove it.
 	 *
@@ -67,27 +65,12 @@ final class Ticket_Save extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container   $container   The DI container.
 	 * @param Rule_Store  $rule_store  The store of the ticket rules.
 	 * @param Sale_Window $sale_window The sales window resolver.
 	 */
-	public function __construct( Container $container, Rule_Store $rule_store, Sale_Window $sale_window ) {
-		parent::__construct( $container );
-
+	public function __construct( Rule_Store $rule_store, Sale_Window $sale_window ) {
 		$this->rule_store  = $rule_store;
 		$this->sale_window = $sale_window;
-	}
-
-	/**
-	 * Unregisters the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_action( 'tec_tickets_ticket_pre_save', [ $this, 'set_ticket_dates' ] );
-		remove_action( 'tec_tickets_ticket_upserted', [ $this, 'save_rule' ] );
 	}
 
 	/**
@@ -156,17 +139,7 @@ final class Ticket_Save extends Controller_Contract {
 		}
 
 		if ( $this->removes_rule( $data ) ) {
-			$had_rule = null !== Rule::from_stored( $this->rule_store->get( $ticket_id ) );
-			$this->rule_store->remove( $ticket_id, [ 'start', 'end' ] );
-
-			/*
-			 * The end the rule resolved was flagged as a manual one when the ticket was created, which stops it from
-			 * following the event start; without a submitted end, the save leaves it to the event start again.
-			 */
-			if ( $had_rule && empty( $data['ticket_end_date'] ) ) {
-				$tickets_handler = tribe( 'tickets.handler' );
-				delete_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
-			}
+			$this->rule_store->remove_sales_window( $ticket_id, ! empty( $data['ticket_end_date'] ) );
 
 			return;
 		}
@@ -202,19 +175,6 @@ final class Ticket_Save extends Controller_Contract {
 			update_post_meta( $ticket_id, Ticket::END_DATE_META_KEY, $end->format( Dates::DBDATEFORMAT ) );
 			update_post_meta( $ticket_id, Ticket::END_TIME_META_KEY, $end->format( Dates::DBTIMEFORMAT ) );
 		}
-	}
-
-	/**
-	 * Registers the controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_action( 'tec_tickets_ticket_pre_save', [ $this, 'set_ticket_dates' ], 10, 3 );
-		// Before Ticket_Actions schedules the sales actions from the ticket dates, at 1000.
-		add_action( 'tec_tickets_ticket_upserted', [ $this, 'save_rule' ], 10, 3 );
 	}
 
 	/**
