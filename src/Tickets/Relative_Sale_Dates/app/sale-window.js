@@ -148,7 +148,7 @@ function before( anchor, seconds, timezone ) {
  *
  * @return {moment.Moment} The date, in the event timezone.
  */
-function fromLocal( dateTime, timezone ) {
+export function fromLocal( dateTime, timezone ) {
 	if ( FIXED_OFFSET.test( timezone ) ) {
 		return moment.utc( dateTime, DATE_TIME_FORMAT, true ).utcOffset( timezone, true );
 	}

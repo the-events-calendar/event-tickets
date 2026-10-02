@@ -481,6 +481,9 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_sale_start_date.datepicker( 'option', 'maxDate', the_date );
 						break;
 				}
+
+				// jQuery UI fires `change` after a pick only when there is no `onSelect`, and other scripts listen for it.
+				$( this ).trigger( 'change' );
 			},
 		};
 
@@ -778,6 +781,15 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 			params,
 			function ( response ) {
 				if ( ! response.success ) {
+					/**
+					 * Fires when the server rejects a ticket save from the classic editor.
+					 *
+					 * @since TBD
+					 *
+					 * @param {Object} response The response, with the reason in `data.message` when the server gave one.
+					 */
+					doAction( 'tec.tickets.admin.ticketSaveFailed', response );
+
 					return;
 				}
 
