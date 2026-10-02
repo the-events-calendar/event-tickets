@@ -171,4 +171,19 @@ class Sale_Window_Test extends WPTestCase {
 		$this->assertSame( $expected, $actual->format( 'Y-m-d H:i:s' ) );
 		$this->assertSame( $timezone, $actual->getTimezone()->getName() );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_resolve_an_event_from_the_metas_it_names_as_event_date_metas(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00', 'America/New_York' );
+		$rule     = Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		$this->assertNotNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
+
+		foreach ( Sale_Window::EVENT_DATE_META_KEYS as $meta_key ) {
+			delete_post_meta( $event_id, $meta_key );
+		}
+
+		$this->assertNull( tribe( Sale_Window::class )->resolve_for_event( $rule, $event_id ) );
+	}
 }

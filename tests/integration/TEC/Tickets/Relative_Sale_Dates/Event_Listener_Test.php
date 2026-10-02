@@ -19,7 +19,7 @@ class Event_Listener_Test extends Controller_Test_Case {
 	use Ticket_Maker;
 	use With_Tickets_Commerce;
 
-	protected $controller_class = Event_Listener::class;
+	protected $controller_class = Controller::class;
 
 	/**
 	 * The registered meta keys before the test, restored after it: registering meta is global.

@@ -42,7 +42,13 @@ final class Controller extends Controller_Contract {
 		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'save_rule' ) );
 		remove_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20 );
 		remove_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ) );
-		$this->container->get( Event_Listener::class )->unregister();
+		remove_action( 'added_post_meta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ) );
+		remove_action( 'updated_postmeta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ) );
+		remove_action( 'wp_after_insert_post', $this->container->callback( Event_Listener::class, 'update_saved_event_tickets' ) );
+		remove_action( 'tec_shutdown', $this->container->callback( Event_Listener::class, 'update_moved_event_tickets' ) );
+		remove_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ) );
+		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
+		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20 );
 	}
 
 	/**
@@ -92,6 +98,17 @@ final class Controller extends Controller_Contract {
 		// After the rule is stored, and before Ticket_Actions schedules the sales actions from the ticket dates, at 1000.
 		add_action( 'tec_tickets_ticket_upserted', $this->container->callback( Ticket_Save::class, 'write_resolved_dates' ), 20, 2 );
 		add_filter( 'tec_tickets_ticket_data_validation', $this->container->callback( Ticket_Save::class, 'validate_ticket_data' ), 10, 3 );
-		$this->container->register( Event_Listener::class );
+
+		$this->container->singleton( Event_Listener::class );
+
+		add_action( 'added_post_meta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ), 10, 3 );
+		add_action( 'updated_postmeta', $this->container->callback( Event_Listener::class, 'mark_moved_event' ), 10, 3 );
+		// The latest hook that sees every event meta written by both the classic and the block editor.
+		add_action( 'wp_after_insert_post', $this->container->callback( Event_Listener::class, 'update_saved_event_tickets' ) );
+		add_action( 'tec_shutdown', $this->container->callback( Event_Listener::class, 'update_moved_event_tickets' ) );
+		add_filter( 'tec_tickets_ticket_end_date_follows_event_start', $this->container->callback( Event_Listener::class, 'filter_end_date_follows_event_start' ), 10, 2 );
+		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'copy_rules_to_duplicates' ) );
+		// After the rules are copied to the duplicates.
+		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Event_Listener::class, 'update_duplicated_tickets' ), 20, 2 );
 	}
 }

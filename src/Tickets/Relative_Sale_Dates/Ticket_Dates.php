@@ -1,6 +1,6 @@
 <?php
 /**
- * Resolves a ticket's rule against its event and writes the dates it resolves to.
+ * Writes the dates a ticket's rule resolves to.
  *
  * @since TBD
  *
@@ -11,14 +11,11 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use DateTimeImmutable;
-use Exception;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Date_Utils as Dates;
-use Tribe__Timezones as Timezones;
 
 /**
- * Reads an event's dates and writes a rule's resolved dates into the ticket date fields.
+ * Writes the dates a rule resolves to against its event into the ticket's date metas.
  *
  * @since TBD
  *
@@ -46,48 +43,6 @@ final class Ticket_Dates {
 	}
 
 	/**
-	 * Resolves a rule against the event's dates.
-	 *
-	 * @since TBD
-	 *
-	 * @param int  $post_id The event post ID.
-	 * @param Rule $rule    The sales window rule.
-	 *
-	 * @return Resolved_Window|null The resolved window, or `null` when the event has no valid dates.
-	 */
-	public function resolve( int $post_id, Rule $rule ): ?Resolved_Window {
-		$event_dates = $this->get_event_dates( $post_id );
-
-		return $event_dates ? $this->sale_window->resolve( $rule, ...$event_dates ) : null;
-	}
-
-	/**
-	 * Gets the event's start and end in the event timezone.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The event post ID.
-	 *
-	 * @return array{0: DateTimeImmutable, 1: DateTimeImmutable}|null The event start and end, or `null` when the event has no valid dates.
-	 */
-	public function get_event_dates( int $post_id ): ?array {
-		$start = get_post_meta( $post_id, '_EventStartDate', true );
-		$end   = get_post_meta( $post_id, '_EventEndDate', true );
-
-		if ( ! is_string( $start ) || '' === $start || ! is_string( $end ) || '' === $end ) {
-			return null;
-		}
-
-		$timezone = Timezones::build_timezone_object( get_post_meta( $post_id, '_EventTimezone', true ) ?: null );
-
-		try {
-			return [ new DateTimeImmutable( $start, $timezone ), new DateTimeImmutable( $end, $timezone ) ];
-		} catch ( Exception $e ) {
-			return null;
-		}
-	}
-
-	/**
 	 * Writes the dates a rule resolves to into the ticket's sale date fields.
 	 *
 	 * A boundary the rule does not resolve, `specific` or a `default` start, keeps the date the ticket has.
@@ -101,7 +56,7 @@ final class Ticket_Dates {
 	 * @return void
 	 */
 	public function write( int $ticket_id, int $post_id, Rule $rule ): void {
-		$window = $this->resolve( $post_id, $rule );
+		$window = $this->sale_window->resolve_for_event( $rule, $post_id );
 
 		if ( ! $window ) {
 			return;
