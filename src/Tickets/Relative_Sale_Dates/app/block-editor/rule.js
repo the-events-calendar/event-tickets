@@ -61,22 +61,24 @@ export function isSpecificWindow( rule ) {
 }
 
 /**
- * Reads the relative number the admin typed as an integer from 1 to 60.
+ * Reads the relative number the admin typed as an integer from `MIN_VALUE` to the rule's maximum.
  *
  * A cleared field stays empty, so the admin can type a new number; the server rejects a rule saved with it.
  *
  * @since TBD
  *
  * @param {string} typed The number as the field reports it.
+ * @param {number} max   The highest number the rule takes: `MAX_VALUE` for the sales window, `SALE_PRICE_MAX_VALUE` for
+ *                       the sale price window.
  *
- * @return {number|string} The number, within 1 to 60, or an empty string for a cleared field.
+ * @return {number|string} The number, from `MIN_VALUE` to the maximum, or an empty string for a cleared field.
  */
-export function toRelativeValue( typed ) {
+export function toRelativeValue( typed, max = MAX_VALUE ) {
 	const value = parseInt( typed, 10 );
 
 	if ( Number.isNaN( value ) ) {
 		return '';
 	}
 
-	return Math.min( MAX_VALUE, Math.max( MIN_VALUE, value ) );
+	return Math.min( max, Math.max( MIN_VALUE, value ) );
 }

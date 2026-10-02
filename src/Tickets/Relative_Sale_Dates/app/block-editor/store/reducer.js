@@ -1,11 +1,23 @@
 /** @typedef {import( '../../sale-window' ).SaleWindowRule} SaleWindowRule */
+/** @typedef {import( '../../sale-price-window' ).SalePriceRule} SalePriceRule */
+
+/**
+ * @typedef {Object} SalePriceRules
+ *
+ * @property {SalePriceRule|null|undefined} saved The sale price rule the ticket was loaded or last saved with: `null`
+ *                                                for a sale price saved without one, `undefined` when the ticket has
+ *                                                not been saved with one yet.
+ * @property {SalePriceRule|null|undefined} draft The sale price rule the ticket block is being edited to.
+ */
 
 /**
  * @typedef {Object} TicketRules
  *
- * @property {SaleWindowRule|null|undefined} saved The rule the ticket was loaded or last saved with: `null` when it has
- *                                                 none, `undefined` when the ticket has not been saved with one yet.
- * @property {SaleWindowRule|null|undefined} draft The rule the ticket block is being edited to.
+ * @property {SaleWindowRule|null|undefined} saved       The rule the ticket was loaded or last saved with: `null` when
+ *                                                       it has none, `undefined` when the ticket has not been saved
+ *                                                       with one yet.
+ * @property {SaleWindowRule|null|undefined} draft       The rule the ticket block is being edited to.
+ * @property {SalePriceRules}                [salePrice] The ticket's sale price rules, once the store is given one.
  */
 
 /**
@@ -28,7 +40,36 @@ function withRules( state, clientId, rules ) {
 }
 
 /**
+ * Returns a saved and draft pair with the draft kept as the saved value.
+ *
+ * @since TBD
+ *
+ * @param {TicketRules|SalePriceRules} rules The saved and draft pair.
+ *
+ * @return {TicketRules|SalePriceRules} The pair, saved.
+ */
+function withDraftSaved( rules ) {
+	return { ...rules, saved: rules.draft };
+}
+
+/**
+ * Returns a saved and draft pair with the draft restored to the saved value.
+ *
+ * @since TBD
+ *
+ * @param {TicketRules|SalePriceRules} rules The saved and draft pair.
+ *
+ * @return {TicketRules|SalePriceRules} The pair, reset.
+ */
+function withDraftReset( rules ) {
+	return { ...rules, draft: rules.saved };
+}
+
+/**
  * Reduces the Relative Sale Dates block editor store.
+ *
+ * A ticket is saved or cancelled whole, so saving or resetting its drafts acts on its sales window and sale price
+ * rules together.
  *
  * @since TBD
  *
@@ -42,21 +83,37 @@ export default function reducer( state = {}, action ) {
 
 	switch ( action.type ) {
 		case 'SET_RULE':
-			return withRules( state, action.clientId, { saved: action.rule, draft: action.rule } );
+			return withRules( state, action.clientId, { ...current, saved: action.rule, draft: action.rule } );
 		case 'SET_DRAFT_RULE':
 			return withRules( state, action.clientId, { ...current, draft: action.rule } );
+		case 'SET_SALE_PRICE_RULE':
+			return withRules( state, action.clientId, {
+				...current,
+				salePrice: { saved: action.rule, draft: action.rule },
+			} );
+		case 'SET_DRAFT_SALE_PRICE_RULE':
+			return withRules( state, action.clientId, {
+				...current,
+				salePrice: { ...current?.salePrice, draft: action.rule },
+			} );
 		case 'SAVE_DRAFT_RULE':
 			if ( ! current ) {
 				return state;
 			}
 
-			return withRules( state, action.clientId, { ...current, saved: current.draft } );
+			return withRules( state, action.clientId, {
+				...withDraftSaved( current ),
+				...( current.salePrice && { salePrice: withDraftSaved( current.salePrice ) } ),
+			} );
 		case 'RESET_DRAFT_RULE':
 			if ( ! current ) {
 				return state;
 			}
 
-			return withRules( state, action.clientId, { ...current, draft: current.saved } );
+			return withRules( state, action.clientId, {
+				...withDraftReset( current ),
+				...( current.salePrice && { salePrice: withDraftReset( current.salePrice ) } ),
+			} );
 		default:
 			return state;
 	}

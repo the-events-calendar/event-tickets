@@ -36,6 +36,21 @@ export function isTicketsCommerce() {
 }
 
 /**
+ * Returns whether a ticket's form has its sale price checked, which is when the form sends one.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the sale price is checked.
+ */
+export function isSalePriceChecked( clientId ) {
+	return Boolean(
+		getTicketData().selectors.getTempSalePriceChecked( window.__tribe_common_store__.getState(), { clientId } )
+	);
+}
+
+/**
  * Marks a ticket as changed, which enables its Create or Update button.
  *
  * @since TBD
