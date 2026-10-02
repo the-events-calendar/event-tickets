@@ -81,14 +81,11 @@ final class Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $context  The context of the ticket row's sale dates template.
-	 * @param string              $file     The path of the template.
-	 * @param string[]            $name     The template name.
-	 * @param Template            $template The admin views template.
+	 * @param array<string,mixed> $context The context of the ticket row's sale dates template.
 	 *
 	 * @return array<string,mixed> The context, with `relative_sale_dates_attributes`.
 	 */
-	public function filter_available_dates_context( array $context, string $file, array $name, Template $template ): array {
+	public function filter_available_dates_context( array $context ): array {
 		$ticket = $context['ticket'] ?? null;
 		$rule   = $ticket instanceof Ticket_Object ? Rule::from_stored( $this->rule_store->get( $ticket->ID ) ) : null;
 
