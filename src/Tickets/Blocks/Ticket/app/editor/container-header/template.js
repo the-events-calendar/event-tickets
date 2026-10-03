@@ -20,8 +20,8 @@ const TicketContainerHeader = ( { clientId, isSelected, isOnSale } ) => {
 		return null;
 	}
 
-	function OnSaleLabel( { isOnSale } ) {
-		if ( ! isOnSale ) {
+	function OnSaleLabel( { isOnSale: onSale } ) {
+		if ( ! onSale ) {
 			return null;
 		}
 
@@ -35,9 +35,9 @@ const TicketContainerHeader = ( { clientId, isSelected, isOnSale } ) => {
 	}
 
 	let detailsItems = [
-		<OnSaleLabel isOnSale={ isOnSale } />,
-		<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />,
-		<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />,
+		<OnSaleLabel key="on-sale-label" isOnSale={ isOnSale } />,
+		<TicketContainerHeaderTitle key="title" clientId={ clientId } isSelected={ isSelected } />,
+		<TicketContainerHeaderDescription key="description" clientId={ clientId } isSelected={ isSelected } />,
 	];
 
 	/**

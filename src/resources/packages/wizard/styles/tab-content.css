@@ -21,7 +21,6 @@
 }
 
 
-
 .tec-tickets-onboarding__tab-content.install-success {
 	align-items: center;
 	background-color: var(--tec-color-background);
@@ -30,13 +29,15 @@
 }
 
 @media (min-width: 500px) {
+
 	.tec-tickets-onboarding__tab-content {
-		max-width: min(100%, 100vw);
 		gap: var(--tec-spacer-2);
+		max-width: min(100%, 100vw);
 	}
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__tab-content {
 		max-width: 363px;
 	}

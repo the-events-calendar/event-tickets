@@ -29,7 +29,7 @@ const getAttendeeRegistrationUrl = ( state, ownProps ) => {
 const mapStateToProps = ( state, ownProps ) => {
 	const isCreated = selectors.getTicketHasBeenCreated( state, ownProps );
 
-	let mappedProps =  {
+	const mappedProps = {
 		attendeeRegistrationURL: getAttendeeRegistrationUrl( state, ownProps ),
 		hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 		isCreated,
@@ -46,14 +46,10 @@ const mapStateToProps = ( state, ownProps ) => {
 	 * @type {Object} context.state The current state.
 	 * @type {Object} context.ownProps The properties passed to the component.
 	 */
-	return applyFilters(
-		'tec.tickets.blocks.AttendeeRegistration.mappedProps',
-		mappedProps,
-		{
-			state,
-			ownProps,
-		}
-	);
+	return applyFilters( 'tec.tickets.blocks.AttendeeRegistration.mappedProps', mappedProps, {
+		state,
+		ownProps,
+	} );
 };
 
 const mapDispatchToProps = ( dispatch, ownProps ) => {
