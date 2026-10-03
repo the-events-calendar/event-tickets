@@ -1,0 +1,6 @@
+significance: patch
+type: tweak
+entry: Centered the labels of the secondary buttons in the ticket admin panels,
+  including the settings button icon, so they line up vertically within the
+  button.
+timestamp: 2026-10-02T22:49:17.498Z
