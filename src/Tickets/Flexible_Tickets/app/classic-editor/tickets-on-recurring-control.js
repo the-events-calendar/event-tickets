@@ -185,7 +185,8 @@ function computeHasOwnTickets() {
 		document.querySelectorAll( rsvpTicketsSelector ).length || // Has RSVP tickets or...
 		document.querySelectorAll( defaultTicketsSelector ).length || // ...has default tickets or...
 		document.querySelectorAll( ticketEditPanelActiveSelector ).length || // ...is editing a ticket or...
-		hasRsvpV2() // ...has an RSVP V2.
+		// ...has an RSVP V2.
+		hasRsvpV2()
 	);
 }
 

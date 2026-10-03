@@ -9,8 +9,8 @@ interface HandleConnectParams {
 	actionNonce: string;
 	wpNonce: string;
 	getSettings: () => any;
-	updateSettings: (settings: Record<string, any>) => void;
-	setConnectionStatus: (status: string) => void;
+	updateSettings: ( settings: Record< string, any > ) => void;
+	setConnectionStatus: ( status: string ) => void;
 	apiEndpoint: string;
 }
 
@@ -21,7 +21,7 @@ interface HandleConnectParams {
  *
  * @param {HandleConnectParams} params Parameters.
  */
-const handleConnect = async ({
+const handleConnect = async ( {
 	gateway,
 	currencyCode,
 	actionNonce,
@@ -30,43 +30,43 @@ const handleConnect = async ({
 	updateSettings,
 	setConnectionStatus,
 	apiEndpoint,
-}: HandleConnectParams): Promise<void> => {
-	setConnectionStatus('connecting');
+}: HandleConnectParams ): Promise< void > => {
+	setConnectionStatus( 'connecting' );
 
 	const connectSettings = {
-		gateway: gateway,
+		gateway,
 		currency: currencyCode,
 		action_nonce: actionNonce,
 	};
 
-	updateSettings(connectSettings);
+	updateSettings( connectSettings );
 
-	apiFetch.use(apiFetch.createNonceMiddleware(wpNonce));
+	apiFetch.use( apiFetch.createNonceMiddleware( wpNonce ) );
 
 	try {
-		const result = await apiFetch({
+		const result = await apiFetch( {
 			method: 'POST',
 			data: {
 				...getSettings(),
-				gateway: gateway,
+				gateway,
 				action: 'connect',
 			},
 			path: apiEndpoint,
-		});
+		} );
 
-		if (result && result.signup_url) {
+		if ( result && result.signup_url ) {
 			// Before redirecting, save that we've initiated connection
-			updateSettings({
+			updateSettings( {
 				connecting: true,
-				currentTab: 2
-			});
+				currentTab: 2,
+			} );
 			window.location.href = result.signup_url;
 		} else {
-			setConnectionStatus('failed');
+			setConnectionStatus( 'failed' );
 		}
-	} catch (error) {
-		console.error('Connection error:', error);
-		setConnectionStatus('failed');
+	} catch ( error ) {
+		console.error( 'Connection error:', error );
+		setConnectionStatus( 'failed' );
 	}
 };
 

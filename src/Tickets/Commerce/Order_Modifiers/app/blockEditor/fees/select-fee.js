@@ -12,9 +12,12 @@ import { __, _x } from '@wordpress/i18n';
 import { mapFeeToOption } from './map-fee-object';
 
 /**
+ * Select control to pick a fee from the available ones.
  *
- * @param {Fee[]}    feesAvailable
- * @param {Function} onChange
+ * @param {Object}        props               The component props.
+ * @param {Array<Object>} props.feesAvailable The available fees.
+ * @param {Function}      props.onConfirm     Called when the selection is confirmed.
+ * @param {Function}      props.onCancel      Called when the selection is canceled.
  */
 const SelectFee = ( { feesAvailable, onConfirm, onCancel } ) => {
 	// Set up options for the select control.

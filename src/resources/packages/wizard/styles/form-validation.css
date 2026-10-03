@@ -2,17 +2,15 @@
  * Required Fields
  * ----------------------------------------------------------------------------- */
 
- .tec-tickets-onboarding__form-field label:has( + :is(input, select, textarea):required ):after {
+.tec-tickets-onboarding__form-field label:has(+ :is(input, select, textarea):required)::after {
 	color: var(--tec-color-wp-error);
-	content: ' *';
- }
+	content: " *";
+}
 
 
- * Form Validation
 /* -----------------------------------------------------------------------------
  * Form Validation
  * ----------------------------------------------------------------------------- */
-
 .tec-tickets-onboarding__form-field.invalid input,
 .tec-tickets-onboarding__form-field.invalid select,
 .tec-tickets-onboarding__form-field.invalid textarea {

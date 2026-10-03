@@ -22,6 +22,15 @@ import {
 } from '../../../../../modules/data/utils';
 import Tickets from './container';
 
+function Edit( editProps ) {
+	const blockProps = useBlockProps();
+	return (
+		<div { ...blockProps }>
+			<Tickets { ...editProps } />
+		</div>
+	);
+}
+
 const block = {
 	icon: <TicketsIcon />,
 
@@ -48,14 +57,7 @@ const block = {
 		},
 	},
 
-	edit( editProps ) {
-		const blockProps = useBlockProps();
-		return (
-			<div { ...blockProps }>
-				<Tickets { ...editProps } />
-			</div>
-		);
-	},
+	edit: Edit,
 	save() {
 		const blockProps = useBlockProps.save();
 

@@ -16,6 +16,15 @@ const { InnerBlocks, useBlockProps } = wp.blockEditor;
 import { Tickets as TicketsIcon } from '../../../../../modules/icons';
 import Ticket from './container';
 
+function Edit( editProps ) {
+	const blockProps = useBlockProps();
+	return (
+		<div { ...blockProps }>
+			<Ticket { ...editProps } />
+		</div>
+	);
+}
+
 const block = {
 	icon: <TicketsIcon />,
 
@@ -30,14 +39,7 @@ const block = {
 		},
 	},
 
-	edit( editProps ) {
-		const blockProps = useBlockProps();
-		return (
-			<div { ...blockProps }>
-				<Ticket { ...editProps } />
-			</div>
-		);
-	},
+	edit: Edit,
 	save() {
 		const blockProps = useBlockProps.save();
 		return (

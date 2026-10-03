@@ -18,7 +18,6 @@ import RSVPAttendeeRegistration from '../../rsvp-shared/attendee-registration/co
 import './style.pcss';
 
 const AttendeeInformationWithModal = ( {
-	clientId,
 	fieldNames,
 	hasAttendeeInfoFields,
 	isModalOpen,

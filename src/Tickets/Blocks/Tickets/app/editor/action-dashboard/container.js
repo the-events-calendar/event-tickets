@@ -34,7 +34,6 @@ const mapStateToProps = ( state, ownProps ) => {
 		disableSettings: false,
 		clientId: ownProps.clientId,
 		onConfirmClick: () => {
-			// eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
 			const { getBlockCount } = select( 'core/block-editor' );
 			const { insertBlock } = dispatch( 'core/block-editor' );

@@ -17,7 +17,7 @@ const unknownError = _x( 'Unknown error', 'Error message', 'event-tickets' );
  *
  * @since 5.16.0
  *
- * @type {string: string}
+ * @type {Object<string, string>}
  */
 const errorCodeToMessageMap = {
 	BAD_SERVICE_RESPONSE: getLocalizedString( 'bad-service-response', 'service-errors' ),
