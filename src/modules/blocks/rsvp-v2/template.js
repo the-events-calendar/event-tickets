@@ -26,10 +26,7 @@ import { Card } from '../../elements';
 import MoveModal from '../../elements/move-modal';
 import '../rsvp-shared/style.pcss';
 import { RSVPControls } from '../rsvp-shared/utils/block-controls';
-import {
-	isRsvpOverlayClick,
-	useCloseOverlaysOnDeselect,
-} from '../rsvp-shared/utils/close-overlays';
+import { isRsvpOverlayClick, useCloseOverlaysOnDeselect } from '../rsvp-shared/utils/close-overlays';
 import { renderBlockNotSupported } from '../rsvp-shared/utils/not-supported';
 import RSVPContainer from './container-panel/container';
 import RSVPInactiveBlock from './inactive-block/container';
@@ -40,19 +37,20 @@ import { isSavedSummary } from './utils/block-state';
 /**
  * The V2 RSVP block template.
  *
- * @param {Object}   props                    The component properties.
- * @param {string}   props.clientId           The client ID of the block.
- * @param {boolean}  props.created            Whether the RSVP was created or not.
- * @param {boolean}  props.hasRecurrenceRules Whether the event has recurrence rules.
- * @param {Function} props.initializeRSVP     The function to initialize the RSVP.
- * @param {boolean}  props.isAddEditOpen      Whether the add/edit dashboard is open.
- * @param {boolean}  props.isLoading          Whether the RSVP is loading.
- * @param {boolean}  props.isModalShowing     Whether the move modal is showing.
- * @param {boolean}  props.isSelected         Whether the RSVP is selected.
- * @param {boolean}  props.noRsvpsOnRecurring Whether there are no RSVPs on recurring events.
- * @param {number}   props.rsvpId             The RSVP ID.
- * @param {Function} props.closeBlockOverlays Closes every open RSVP overlay.
+ * @param {Object}   props                              The component properties.
+ * @param {string}   props.clientId                     The client ID of the block.
+ * @param {boolean}  props.created                      Whether the RSVP was created or not.
+ * @param {boolean}  props.hasRecurrenceRules           Whether the event has recurrence rules.
+ * @param {Function} props.initializeRSVP               The function to initialize the RSVP.
+ * @param {boolean}  props.isAddEditOpen                Whether the add/edit dashboard is open.
+ * @param {boolean}  props.isLoading                    Whether the RSVP is loading.
+ * @param {boolean}  props.isModalShowing               Whether the move modal is showing.
+ * @param {boolean}  props.isSelected                   Whether the RSVP is selected.
+ * @param {boolean}  props.noRsvpsOnRecurring           Whether there are no RSVPs on recurring events.
+ * @param {number}   props.rsvpId                       The RSVP ID.
+ * @param {Function} props.closeBlockOverlays           Closes every open RSVP overlay.
  * @param {Function} props.closeBlockOverlaysOnDeselect Closes popovers when the block is deselected.
+ * @param {boolean}  props.isInitializing               Whether the RSVP is initializing.
  * @return {Node} The V2 RSVP block.
  */
 const RSVPV2 = ( {
@@ -94,7 +92,9 @@ const RSVPV2 = ( {
 	useCloseOverlaysOnDeselect( isSelected, closeBlockOverlaysOnDeselect );
 
 	useEffect( () => {
-		! rsvpId && initializeRSVP();
+		if ( ! rsvpId ) {
+			initializeRSVP();
+		}
 		document.addEventListener( 'click', handleOutsideBlockClick );
 
 		return () => document.removeEventListener( 'click', handleOutsideBlockClick );
@@ -133,19 +133,31 @@ const RSVPV2 = ( {
 			</>
 		);
 
+		let fallbackBlock;
+
+		if ( displayInactive ) {
+			fallbackBlock = <RSVPInactiveBlock />;
+		} else if ( savedSummary ) {
+			fallbackBlock = <div className={ blockClassName }>{ blockBody }</div>;
+		} else {
+			fallbackBlock = <Card className={ blockClassName }>{ blockBody }</Card>;
+		}
+
 		return (
 			<div ref={ rsvpBlockRef }>
 				{ injectedComponentsTicketsBeforeHeader }
 				{ displayInitializing ? (
-					<div className={ classNames( 'tribe-editor__rsvp', 'tribe-editor__rsvp-v2', 'tribe-editor__rsvp--loading' ) }>
+					<div
+						className={ classNames(
+							'tribe-editor__rsvp',
+							'tribe-editor__rsvp-v2',
+							'tribe-editor__rsvp--loading'
+						) }
+					>
 						<Spinner />
 					</div>
-				) : displayInactive ? (
-					<RSVPInactiveBlock />
-				) : savedSummary ? (
-					<div className={ blockClassName }>{ blockBody }</div>
 				) : (
-					<Card className={ blockClassName }>{ blockBody }</Card>
+					fallbackBlock
 				) }
 				{ isModalShowing && <MoveModal /> }
 				<RSVPControls />

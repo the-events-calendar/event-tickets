@@ -5,31 +5,31 @@
  */
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-dialog {
-	background-color: rgba(0, 0, 0, 0.5);
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 100000;
 	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	bottom: 0;
+	display: none;
 	justify-content: center;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 100000;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-dialog-content {
 	background-color: #fff;
 	border-radius: 4px;
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-	padding: 30px;
 	max-width: 500px;
-	width: 100%;
+	padding: 30px;
 	position: relative;
+	width: 100%;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-dialog-content h3 {
-	margin-top: 0;
 	font-size: 20px;
+	margin-top: 0;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-dialog-buttons {
@@ -47,7 +47,8 @@
 	border-color: #d63638;
 	color: #fff;
 
-	&:hover, &:focus {
+	&:hover,
+	&:focus {
 		background: #b32d2e;
 		border-color: #b32d2e;
 		color: #fff;
@@ -60,27 +61,28 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-disconnect-square-button.loading {
-	position: relative;
-	pointer-events: none;
 	opacity: 0.8;
+	pointer-events: none;
+	position: relative;
 
 	&::after {
-		content: "";
-		position: absolute;
-		width: 16px;
-		height: 16px;
-		top: 50%;
-		right: -30px;
-		margin-top: -11px;
-		margin-left: 8px;
-		border-radius: 50%;
-		border: 2px solid rgba(0, 0, 0, 0.3);
-		border-top-color: #d63638;
 		animation: spin 1s linear infinite;
+		border: 2px solid rgba(0, 0, 0, 0.3);
+		border-radius: 50%;
+		border-top-color: #d63638;
+		content: "";
+		height: 16px;
+		margin-left: 8px;
+		margin-top: -11px;
+		position: absolute;
+		right: -30px;
+		top: 50%;
+		width: 16px;
 	}
 }
 
 @keyframes spin {
+
 	to {
 		transform: rotate(360deg);
 	}

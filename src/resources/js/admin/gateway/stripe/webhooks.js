@@ -86,9 +86,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Initiate the process of validating a signing key
 	 *
 	 * @since 5.5.6
-	 * @param $field the key element
-	 * @param $icon  the icon element
-	 * @param $label the label element
+	 * @param {jQuery} $field The key element.
+	 * @param {jQuery} $icon  The icon element.
+	 * @param {jQuery} $label The label element.
 	 * @return {Promise<*>} result of the validation request
 	 */
 	obj.initiateValidation = async ( $field, $icon, $label ) => {
@@ -117,9 +117,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Check if current key has been verified
 	 *
 	 * @since 5.5.6
-	 * @param $field the key element
-	 * @param $icon  the icon element
-	 * @param $label the label element
+	 * @param {jQuery} $field The key element.
+	 * @param {jQuery} $icon  The icon element.
+	 * @param {jQuery} $label The label element.
 	 * @return {Promise<*>} result of the verification request
 	 */
 	obj.checkValidationSuccess = async ( $field, $icon, $label ) => {
@@ -148,21 +148,22 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * When the signing field changes.
 	 *
 	 * @since 5.3.0
-	 * @param event {Event}
-	 * @return {Promise<*>}
+	 * @param {Event} event The change event.
+	 * @return {Promise<*>} Result of the validation flow.
 	 */
 	// eslint-disable-next-line
 	obj.onSigningFieldChange = async ( event ) => {
 		const $field = $( event.target );
-		const $tooltip = $field.siblings( obj.selectors.tooltip );
-		const $statusIcon = $tooltip.find( obj.selectors.genericDashicon );
-		const $statusLabel = $tooltip.find( obj.selectors.statusLabel );
-		const $saveButton = $( obj.selectors.saveButton );
 
 		// Do not make any attempts when empty.
 		if ( $field.val().trim() === '' ) {
 			return;
 		}
+
+		const $tooltip = $field.siblings( obj.selectors.tooltip );
+		const $statusIcon = $tooltip.find( obj.selectors.genericDashicon );
+		const $statusLabel = $tooltip.find( obj.selectors.statusLabel );
+		const $saveButton = $( obj.selectors.saveButton );
 
 		$field.prop( 'disabled', true );
 		$saveButton.prop( 'disabled', true );

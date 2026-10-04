@@ -128,7 +128,7 @@ tribe.tickets.attendees = {};
 	 * Get context to send on the request.
 	 *
 	 * @since 5.10.0
-	 * @return {Object}
+	 * @return {Object} The context to send on the request.
 	 */
 	obj.getContext = function () {
 		const context = {};

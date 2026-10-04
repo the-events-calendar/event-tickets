@@ -16,9 +16,9 @@
 		}
 
 		// Simple iterator for reuse
-		const forEach = function ( array, callback, scope ) {
+		const forEach = function ( array, cb, scope ) {
 			for ( let i = 0, imax = array.length; i < imax; i++ ) {
-				callback.call( scope, i, array[ i ] ); // passes back stuff we need
+				cb.call( scope, i, array[ i ] ); // passes back stuff we need
 			}
 		};
 		// set ARIA role

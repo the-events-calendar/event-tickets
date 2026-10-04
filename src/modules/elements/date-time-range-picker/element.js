@@ -191,8 +191,8 @@ class DateTimeRangePicker extends Component {
 					{ fromLabel && (
 						<span className="tribe-editor__date-time-range-picker__field-label">{ fromLabel }</span>
 					) }
-					<DayPickerInput {...this.getFromDayPickerInputProps()} />
-					{separatorDateTime && (
+					<DayPickerInput { ...this.getFromDayPickerInputProps() } />
+					{ separatorDateTime && (
 						<span
 							className={ classNames(
 								'tribe-editor__date-time-range-picker__separator',
@@ -201,11 +201,11 @@ class DateTimeRangePicker extends Component {
 						>
 							{ separatorDateTime }
 						</span>
-					)}
+					) }
 					<TimePicker { ...this.getFromTimePickerProps() } />
 				</div>
 				<div className="tribe-editor__date-time-range-picker__end">
-					{separatorTimeRange && (
+					{ separatorTimeRange && (
 						<span
 							className={ classNames(
 								'tribe-editor__date-time-range-picker__separator',
@@ -214,12 +214,12 @@ class DateTimeRangePicker extends Component {
 						>
 							{ separatorTimeRange }
 						</span>
-					)}
+					) }
 					{ toLabel && (
 						<span className="tribe-editor__date-time-range-picker__field-label">{ toLabel }</span>
 					) }
 					<DayPickerInput { ...this.getToDayPickerInputProps() } />
-					{separatorDateTime && (
+					{ separatorDateTime && (
 						<span
 							className={ classNames(
 								'tribe-editor__date-time-range-picker__separator',
@@ -228,7 +228,7 @@ class DateTimeRangePicker extends Component {
 						>
 							{ separatorDateTime }
 						</span>
-					)}
+					) }
 					<TimePicker { ...this.getToTimePickerProps() } />
 				</div>
 			</div>
