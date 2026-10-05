@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import moment from 'moment';
 import { takeEvery, put, all, select, call, take, fork } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 
@@ -44,8 +45,6 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
-const { wpREST } = api;
-const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 
 jest.mock( '@moderntribe/common/utils/moment', () => ( {
 	toMoment: ( date ) => date,
@@ -666,41 +665,11 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				call( isTribeEventPostType ),
 			);
-			// Existing tickets do not default their end date to the event start;
-			// the saved end date is loaded via fetchTicket below.
+			/*
+			 * Existing tickets skip the end date default; fetchTicket loads
+			 * their saved end date.
+			 */
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
-			);
-			expect( gen.next( eventStart ).value ).toEqual(
-				call( momentUtil.toMoment, eventStart ),
-			);
-			expect( gen.next( endMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment ),
-			);
-			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment, datePickerFormat ),
-			);
-			expect( gen.next( endDateInput ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment ),
-			);
-			expect( gen.next( endTime ).value ).toEqual(
-				call( momentUtil.toTime, endMoment ),
-			);
-			expect( gen.next( endTime ).value ).toEqual(
-				all( [
-					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
-					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
-					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
-					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
-					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
-					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
-					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
-					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
-					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
-					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
-				] ),
-			);
-			expect( gen.next().value ).toEqual(
 				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS ),
 			);
 			expect( gen.next( false ).value ).toEqual(
@@ -746,6 +715,35 @@ describe( 'Ticket Block sagas', () => {
 				fork( sagas.saveTicketWithPostSave, CLIENT_ID ),
 			);
 			expect( clone2.next().done ).toEqual( true );
+		} );
+
+		it( 'should end the sale a day after it starts when the event start is unset', () => {
+			const CLIENT_ID = 'modern-tribe';
+			const action = {
+				payload: {
+					get: ( key ) => ( key === 'ticketId' ? 0 : undefined ),
+					clientId: CLIENT_ID,
+				},
+			};
+			const saleStartMoment = moment( publishDate );
+			const fallbackMoment = saleStartMoment.clone().add( 1, 'day' );
+
+			const gen = sagas.setTicketInitialState( action );
+			gen.next();
+			gen.next( publishDate );
+			gen.next( saleStartMoment );
+			gen.next( startDate );
+			gen.next( startDateInput );
+			gen.next( startTime );
+			gen.next( startTime );
+			gen.next();
+			gen.next( true );
+			expect( gen.next( '' ).value ).toEqual(
+				call( momentUtil.toMoment, '' ),
+			);
+			expect( gen.next( moment.invalid() ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, fallbackMoment ),
+			);
 		} );
 
 		it( 'should set tickets initial state for new ticket', () => {
@@ -2094,5 +2092,4 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
-	} );
-} );
+	} );} );
