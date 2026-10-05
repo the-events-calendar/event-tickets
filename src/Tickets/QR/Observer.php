@@ -165,8 +165,7 @@ class Observer {
 			return $checkin_arr;
 		}
 
-		// Capture the prior QR status before the check-in below sets it, so the admin
-		// notice can still distinguish a fresh check-in from a repeat one.
+		// Read before check_in() sets it, so the notice can tell a repeat from a first check-in.
 		$already_checked_in = (bool) get_post_meta( $ticket_id, '_tribe_qr_status', true );
 
 		// If the user is the site owner (or similar), Check in the user to the event.
@@ -210,8 +209,7 @@ class Observer {
 			return;
 		}
 
-		// This notice only reports the outcome of the authorized check-in redirect. Mirror
-		// the capability that authorized_check_in() requires so it cannot be driven directly.
+		// Match the check-in capability; this notice must never write state.
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return;
 		}
@@ -256,7 +254,6 @@ class Observer {
 			);
 			echo '</p></div>';
 
-			// Otherwise, report the check-in the authorized redirect already performed.
 		} else {
 
 			echo '<div class="updated"><p>';

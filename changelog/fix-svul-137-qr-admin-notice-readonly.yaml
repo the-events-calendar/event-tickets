@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Hardened the permission and state handling of QR code check-in notices.
+timestamp: 2026-10-05T14:44:49.422Z
