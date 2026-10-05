@@ -20,10 +20,11 @@ use WP_Post;
  * after `Tribe__Tickets__Tickets_Handler::save_post()` (priority 10) so the ticket order the form saved
  * is what an update reads when it does not mention a menu order.
  *
- * It never runs on an autosave, a revision or during a REST request, never without its own nonce,
- * and only for the post the form's `post_ID` names, so a second ticketable post saved during the same
- * request never receives the payload. The post form's own nonce is bound to a post ID that ECP
- * rewrites on a split save, so it cannot be verified from here; `post_ID` is rewritten with it.
+ * It never runs on an autosave, a revision, a preview or during a REST request, never without its own
+ * nonce, and only for the post the form's `post_ID` names, so a second ticketable post saved during the
+ * same request never receives the payload. The post form's own nonce is bound to a post ID that ECP
+ * rewrites on a split save, so it cannot be verified from here; `post_ID` is rewritten with it. It
+ * commits a post at most once per request, however many times the post is saved during it.
  *
  * @since TBD
  *
@@ -67,6 +68,15 @@ final class Classic_Save {
 	private Commit $commit;
 
 	/**
+	 * The posts committed during this request, by ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,true>
+	 */
+	private array $committed = [];
+
+	/**
 	 * Classic_Save constructor.
 	 *
 	 * @since TBD
@@ -89,6 +99,30 @@ final class Classic_Save {
 	}
 
 	/**
+	 * Refreshes the nonce field together with the post form's own nonces.
+	 *
+	 * Heartbeat refreshes the edit screen's nonces before they expire; the ones it refreshes are listed
+	 * under `wp-refresh-post-nonces.replace`, by field ID, and core's script writes each into its field.
+	 * Without this, a screen left open past the nonce lifetime would save the post and drop every staged
+	 * ticket change. Core adds `replace` only for a user who may edit the post.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $response The heartbeat response.
+	 *
+	 * @return array<string,mixed> The response, with this nonce when core refreshed the post's.
+	 */
+	public function refresh_nonce( $response ): array {
+		$response = (array) $response;
+
+		if ( isset( $response['wp-refresh-post-nonces']['replace'] ) && is_array( $response['wp-refresh-post-nonces']['replace'] ) ) {
+			$response['wp-refresh-post-nonces']['replace'][ self::NONCE_FIELD ] = wp_create_nonce( self::NONCE_ACTION );
+		}
+
+		return $response;
+	}
+
+	/**
 	 * Commits the payload sent with the post form, when there is one.
 	 *
 	 * @since TBD
@@ -100,7 +134,8 @@ final class Classic_Save {
 	 */
 	public function on_save_post( int $post_id, WP_Post $post ): ?Result {
 		if (
-			wp_is_post_autosave( $post )
+			isset( $this->committed[ $post_id ] )
+			|| wp_is_post_autosave( $post )
 			|| wp_is_post_revision( $post )
 			|| wp_is_rest_endpoint()
 			|| ! in_array( $post->post_type, Tickets_Main::instance()->post_types(), true )
@@ -110,6 +145,11 @@ final class Classic_Save {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- The nonce is verified right below.
 		if ( empty( $_POST['tec_tickets'] ) || ! isset( $_POST[ self::NONCE_FIELD ] ) ) {
+			return null;
+		}
+
+		// Previewing a draft saves the draft itself, and the page keeps its staged changes for the real save.
+		if ( isset( $_POST['wp-preview'] ) && 'dopreview' === $_POST['wp-preview'] ) {
 			return null;
 		}
 
@@ -125,6 +165,9 @@ final class Classic_Save {
 		// The payload is parsed by `Payload` and its ticket data is sanitized by the providers when they save it, as on the AJAX path.
 		$raw = wp_unslash( $_POST['tec_tickets'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		// The post may be saved again during this save (TEC does it when "Sticky in Month View" changes): commit once.
+		$this->committed[ $post_id ] = true;
 
 		return $this->commit->run( $raw, $post_id );
 	}
