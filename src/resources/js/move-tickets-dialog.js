@@ -483,10 +483,21 @@ var tribe_move_tickets = tribe_move_tickets || {};
 			}
 			if ( deferredSave && deferredSave.isEnabled && deferredSave.isEnabled() ) {
 				const targetTitle = $post_choices.find( 'input:checked' ).parent().text().trim();
-				deferredSave.stageMove( tribe_move_tickets_data.ticket_type_id, target_post_id, targetTitle );
+				const staged = deferredSave.stageMove(
+					tribe_move_tickets_data.ticket_type_id,
+					target_post_id,
+					targetTitle
+				);
 				$stages.hide();
 				$back.hide();
 				$next.hide();
+
+				// A ticket carries one staged change: the parent refuses a move while an edit of it is staged.
+				if ( false === staged ) {
+					$processing.text( deferredSave.strings.moveBlocked || '' ).show();
+					return;
+				}
+
 				$processing.text( deferredSave.strings.moveStaged || '' ).show();
 				top.jQuery( '#ticket_form_cancel' ).trigger( 'click' );
 				return;

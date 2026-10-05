@@ -116,6 +116,44 @@ describe( 'state', () => {
 	} );
 } );
 
+describe( 'one staged change per saved ticket', () => {
+	const fields = [ [ 'ticket_name', 'A' ] ];
+
+	it( 'refuses a move while an edit is staged', () => {
+		const state = createState();
+		state.stageUpdate( 12, fields );
+
+		expect( state.stageMove( 12, 99, 'Other' ) ).toBe( false );
+		expect( state.toPayload().move ).toEqual( {} );
+		expect( Object.keys( state.toPayload().update ) ).toEqual( [ '12' ] );
+	} );
+
+	it( 'refuses an edit while a move is staged', () => {
+		const state = createState();
+		state.stageMove( 12, 99, 'Other' );
+
+		expect( state.stageUpdate( 12, fields ) ).toBe( false );
+		expect( state.toPayload().update ).toEqual( {} );
+		expect( state.toPayload().move ).toEqual( { 12: 99 } );
+	} );
+
+	it( 'lets a delete replace a staged move', () => {
+		const state = createState();
+		state.stageMove( 12, 99, 'Other' );
+		state.stageDelete( 12 );
+
+		expect( state.toPayload().move ).toEqual( {} );
+		expect( state.toPayload().delete ).toEqual( [ 12 ] );
+	} );
+
+	it( 'accepts the change when nothing else is staged', () => {
+		const state = createState();
+
+		expect( state.stageUpdate( 12, fields ) ).toBe( true );
+		expect( state.stageMove( 13, 99, 'Other' ) ).toBe( true );
+	} );
+} );
+
 describe( 'buildHiddenFields', () => {
 	it( 'writes every part in the tec_tickets contract', () => {
 		const state = createState();
