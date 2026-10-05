@@ -20,23 +20,56 @@ const rowTemplate = `
 	<div class="ticket_list_wrapper"><table><tbody class="tribe-tickets-editor-table-tickets-body"></tbody></table></div>
 </template>`;
 
-const load = () => {
+const markerTemplate = `
+<template id="tec-tickets-deferred-save-marker">
+	<span class="tec-tickets-deferred-save-badge" data-tec-slot="marker">
+		<span data-tec-slot="marker-text-sr"></span><span data-tec-slot="marker-text"></span>
+		<span data-tec-slot="marker-target"></span>
+		<button type="button" class="button-link tec-tickets-deferred-save-badge__undo">Undo</button>
+	</span>
+	<span hidden data-tec-marker-text="staged">Not saved yet</span>
+	<span hidden data-tec-marker-text="delete">Will be deleted on save</span>
+	<span hidden data-tec-marker-text="move">Moves on save</span>
+</template>`;
+
+const savedRow = ( ticketId ) => `
+	<table><tbody><tr data-ticket-type-id="${ ticketId }">
+		<td><div class="tribe-tickets__tickets-editor-ticket-name-title">Saved</div></td>
+		<td>
+			<button type="button" class="ticket_edit_button">Edit</button>
+			<button type="button" class="ticket_duplicate">Duplicate</button>
+			<button type="button" class="ticket_delete" attr-ticket-id="${ ticketId }">Delete</button>
+		</td>
+	</tr></tbody></table>`;
+
+let loadedHooks = null;
+
+const load = ( { strings = {}, editPanel = '<input name="ticket_name" value="Draft">' } = {} ) => {
 	document.body.innerHTML = `
 		<form id="post">
 			<input id="wp-preview" value="">
+			<input name="post_title" value="Post">
 			<div id="event_tickets">
 				<div id="tribe_panel_base">
-					<div class="tribe_sectionheader ticket_list_container"><div class="ticket_table_intro"></div></div>
+					<div class="tribe_sectionheader ticket_list_container"><div class="ticket_table_intro"></div>${ savedRow( 12 ) }</div>
 					<div class="tribe-ticket-control-wrap"></div>
 				</div>
-				<div id="tribe_panel_edit"><input name="ticket_name" value="Draft"></div>
+				<div id="tribe_panel_edit">${ editPanel }</div>
 			</div>
 			<div id="tec-tickets-deferred-save"></div>
 			${ rowTemplate }
-		</form>`;
+			${ markerTemplate }
+		</form>
+		<div class="wp-header-end"></div>
+		<input type="submit" id="publish" disabled>`;
 	window.jQuery = $;
 	window.tribe = { tickets: {} };
-	jest.isolateModules( () => require( '../../deferred-save' ) );
+	window.tecTicketsDeferredSave = strings;
+	jest.isolateModules( () => {
+		// The module's own hooks instance, to fire the panel script's actions at it.
+		loadedHooks = require( '@wordpress/hooks' );
+		require( '../../deferred-save' );
+	} );
 	// jQuery runs the module's DOM-ready render on a timer; flush it so it does not land mid-test.
 	jest.runAllTimers();
 
@@ -112,5 +145,52 @@ describe( 'deferred-save module', () => {
 		document.getElementById( 'post' ).dispatchEvent( new window.Event( 'submit', { cancelable: true } ) );
 		jest.runAllTimers();
 		expect( hasLeaveWarning() ).toBe( true );
+	} );
+
+	it( 'gives a row its buttons back when its staged delete is undone', () => {
+		const module = load();
+		module.state.stageDelete( 12 );
+		module.render();
+		expect( $( 'tr[data-ticket-type-id="12"] .ticket_edit_button' ).prop( 'disabled' ) ).toBe( true );
+
+		$( 'tr[data-ticket-type-id="12"] .tec-tickets-deferred-save-badge__undo' ).trigger( 'click' );
+
+		expect( $( 'tr[data-ticket-type-id="12"] .ticket_edit_button' ).prop( 'disabled' ) ).toBe( false );
+		expect( $( 'tr[data-ticket-type-id="12"] .ticket_delete' ).prop( 'disabled' ) ).toBe( false );
+	} );
+
+	it( 'does not let a ticket with a staged move be edited, and says why', () => {
+		const module = load( { strings: { editBlocked: 'Undo the move to edit this ticket.' } } );
+		module.stageMove( 12, 99, 'Other event' );
+
+		const $edit = $( 'tr[data-ticket-type-id="12"] .ticket_edit_button' );
+		expect( $edit.prop( 'disabled' ) ).toBe( true );
+		expect( $edit.attr( 'title' ) ).toBe( 'Undo the move to edit this ticket.' );
+	} );
+
+	it( 'offers no move on a ticket with a staged edit, and says why', () => {
+		const module = load( {
+			strings: { moveBlocked: 'Save the post before moving this ticket.' },
+			editPanel: '<input id="ticket_id" name="ticket_id" value="12"><a class="tribe-ticket-move-link" href="#">Move</a>',
+		} );
+		module.state.stageUpdate( 12, [ [ 'ticket_name', 'Edited' ] ] );
+
+		loadedHooks.doAction( 'tec.tickets.admin.panels.refreshed', { swapTo: 'ticket' } );
+
+		expect( $( '.tribe-ticket-move-link' ).css( 'display' ) ).toBe( 'none' );
+		expect( $( '#tribe_panel_edit' ).text() ).toContain( 'Save the post before moving this ticket.' );
+	} );
+
+	it( 'refuses a submit that would carry more fields than the server reads', () => {
+		const module = load( { strings: { maxInputVars: 3, inputLimit: 'Too many fields.' } } );
+		module.state.stageCreate( [ [ 'ticket_name', 'A' ], [ 'ticket_price', '1' ], [ 'ticket_type', 'default' ] ] );
+		module.render();
+
+		const event = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( event );
+
+		expect( event.defaultPrevented ).toBe( true );
+		expect( $( '.tec-tickets-deferred-save-validation' ).text() ).toContain( 'Too many fields.' );
+		expect( $( '#publish' ).prop( 'disabled' ) ).toBe( false );
 	} );
 } );

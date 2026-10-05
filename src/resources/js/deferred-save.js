@@ -68,6 +68,44 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 
 	const ticketIdInPanel = () => parseInt( $panelEdit().find( '#ticket_id' ).val(), 10 ) || 0;
 
+	const maxInputVars = parseInt( strings.maxInputVars, 10 ) || 0;
+
+	/**
+	 * How many fields the post form submits, without the edit panel's, which are disabled on submit.
+	 *
+	 * @return {number} The count.
+	 */
+	const submittedFieldCount = () =>
+		$( '#post' )
+			.find( 'input,select,textarea' )
+			.not( $panelEdit().find( 'input,select,textarea' ) )
+			.serializeArray().length;
+
+	/**
+	 * Shows an error above the post form, in the style of `tribe.validation`.
+	 *
+	 * @param {string}        heading The message.
+	 * @param {Array<string>} items   Lines under it.
+	 */
+	const showNotice = ( heading, items = [] ) => {
+		$( '.tec-tickets-deferred-save-validation' ).remove();
+		const $notice = $(
+			'<div class="notice notice-error is-dismissible tec-tickets-deferred-save-validation" role="alert"><p></p><ul></ul></div>'
+		);
+		$notice.find( 'p' ).text( heading );
+		items.forEach( ( item ) => $( '<li>' ).text( item ).appendTo( $notice.find( 'ul' ) ) );
+		$( '.wp-header-end' ).after( $notice );
+		window.scrollTo( { top: 0 } );
+	};
+
+	/**
+	 * Hands back the publish buttons WordPress disables before the form submits.
+	 */
+	const handBackSubmit = () => {
+		$( '#publish, #save-post' ).prop( 'disabled', false ).removeClass( 'disabled' );
+		$( '#publishing-action .spinner, #save-action .spinner' ).removeClass( 'is-active' );
+	};
+
 	/**
 	 * Writes the staged state into the container as hidden inputs.
 	 */
@@ -190,9 +228,48 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	};
 
 	/**
+	 * Disables a saved row's buttons for a staged change, remembering which ones and their title.
+	 *
+	 * Only buttons that are enabled are touched, so a button something else disabled stays disabled.
+	 *
+	 * @param {jQuery} $buttons The buttons.
+	 * @param {string} reason   Why, shown as the title.
+	 */
+	const disableForStaging = ( $buttons, reason = '' ) => {
+		$buttons.filter( ':enabled' ).each( function () {
+			const $button = $( this );
+			$button.attr( 'data-tec-deferred-disabled', $button.attr( 'title' ) || '' ).prop( 'disabled', true );
+
+			if ( reason ) {
+				$button.attr( 'title', reason );
+			}
+		} );
+	};
+
+	/**
+	 * Gives back the buttons a staged change disabled.
+	 */
+	const restoreDisabledButtons = () => {
+		$panelBase()
+			.find( '[data-tec-deferred-disabled]' )
+			.each( function () {
+				const $button = $( this );
+				const title = $button.attr( 'data-tec-deferred-disabled' );
+				$button.prop( 'disabled', false ).removeAttr( 'data-tec-deferred-disabled' );
+
+				if ( title ) {
+					$button.attr( 'title', title );
+				} else {
+					$button.removeAttr( 'title' );
+				}
+			} );
+	};
+
+	/**
 	 * Marks saved rows that have a staged edit, deletion or move.
 	 */
 	const renderMarkers = () => {
+		restoreDisabledButtons();
 		// Only the markers put on saved rows; a staged row's own badge is part of its template.
 		$panelBase().find( '.tec-tickets-deferred-save-badge[data-tec-slot="marker"]' ).remove();
 		$panelBase()
@@ -209,12 +286,15 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		deleted.forEach( ( ticketId ) => {
 			const $row = $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` );
 			markRow( $row, 'delete', '', true );
-			$row.find( '.ticket_edit_button, .ticket_duplicate, .ticket_delete' ).prop( 'disabled', true );
+			disableForStaging( $row.find( '.ticket_edit_button, .ticket_duplicate, .ticket_delete' ) );
 		} );
 
 		Object.keys( move ).forEach( ( ticketId ) => {
 			const { destinationTitle } = state.getMove( parseInt( ticketId, 10 ) );
-			markRow( $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` ), 'move', destinationTitle, true );
+			const $row = $panelBase().find( `tr[data-ticket-type-id="${ ticketId }"]` );
+			markRow( $row, 'move', destinationTitle, true );
+			// One staged change per ticket: an edit waits until the move is undone.
+			disableForStaging( $row.find( '.ticket_edit_button' ), strings.editBlocked || '' );
 		} );
 	};
 
@@ -459,6 +539,11 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		const update = ticketId ? state.getUpdate( ticketId ) : null;
 		if ( update ) {
 			fillPanel( update.fields );
+			// One staged change per ticket: a move waits until the edit is saved with the post.
+			const $moveLink = $panelEdit().find( '.tribe-ticket-move-link' ).hide();
+			$( '<p class="tec-tickets-deferred-save-move-blocked">' )
+				.text( strings.moveBlocked || '' )
+				.insertAfter( $moveLink.length ? $moveLink.last() : $panelEdit().children().last() );
 		}
 	} );
 
@@ -499,6 +584,16 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	// handler may cancel the submit.
 	$( '#post' ).on( 'submit.tecDeferredSave', ( event ) => {
 		const isPreview = 'dopreview' === $( '#wp-preview' ).val();
+
+		// PHP drops the fields past `max_input_vars` without a word; a truncated entry would save half a ticket.
+		if ( ! isPreview && maxInputVars && submittedFieldCount() > maxInputVars ) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			showNotice( strings.inputLimit || '' );
+			handBackSubmit();
+			return;
+		}
+
 		$( window ).off( 'beforeunload.tecDeferredSave' );
 
 		if ( isPreview ) {
@@ -517,8 +612,14 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	} );
 
 	obj.stageMove = ( ticketId, destinationId, destinationTitle ) => {
-		state.stageMove( parseInt( ticketId, 10 ), parseInt( destinationId, 10 ), destinationTitle || '' );
+		const staged = state.stageMove(
+			parseInt( ticketId, 10 ),
+			parseInt( destinationId, 10 ),
+			destinationTitle || ''
+		);
 		render();
+
+		return staged;
 	};
 
 	obj.render = render;

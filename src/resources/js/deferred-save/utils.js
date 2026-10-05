@@ -129,13 +129,24 @@ export const createState = () => {
 		},
 
 		/**
-		 * Stages an edit of a saved ticket.
+		 * Stages an edit of a saved ticket, unless a move of it is staged.
+		 *
+		 * A saved ticket carries one staged change at most: the server drops every entry of a ticket named
+		 * in more than one of `update`, `move` and `delete`.
 		 *
 		 * @param {number}               ticketId The ticket ID.
 		 * @param {Array<Array<string>>} fields   The panel's field set.
+		 *
+		 * @return {boolean} Whether the edit was staged.
 		 */
 		stageUpdate( ticketId, fields ) {
+			if ( move[ ticketId ] ) {
+				return false;
+			}
+
 			update = { ...update, [ ticketId ]: entry( fields ) };
+
+			return true;
 		},
 
 		/**
@@ -150,13 +161,15 @@ export const createState = () => {
 		},
 
 		/**
-		 * Stages the deletion of a saved ticket, dropping any staged edit of it.
+		 * Stages the deletion of a saved ticket, replacing any staged edit or move of it.
 		 *
 		 * @param {number} ticketId The ticket ID.
 		 */
 		stageDelete( ticketId ) {
-			const { [ ticketId ]: _dropped, ...rest } = update;
-			update = rest;
+			const { [ ticketId ]: _droppedUpdate, ...restUpdate } = update;
+			const { [ ticketId ]: _droppedMove, ...restMove } = move;
+			update = restUpdate;
+			move = restMove;
 			if ( ! deleted.includes( ticketId ) ) {
 				deleted = [ ...deleted, ticketId ];
 			}
@@ -183,14 +196,22 @@ export const createState = () => {
 		},
 
 		/**
-		 * Stages a move of a saved ticket.
+		 * Stages a move of a saved ticket, unless an edit or a deletion of it is staged.
 		 *
 		 * @param {number} ticketId         The ticket ID.
 		 * @param {number} destinationId    The destination post ID.
 		 * @param {string} destinationTitle The destination title, for the row marker.
+		 *
+		 * @return {boolean} Whether the move was staged.
 		 */
 		stageMove( ticketId, destinationId, destinationTitle ) {
+			if ( update[ ticketId ] || deleted.includes( ticketId ) ) {
+				return false;
+			}
+
 			move = { ...move, [ ticketId ]: { destinationId, destinationTitle } };
+
+			return true;
 		},
 
 		/**
