@@ -420,7 +420,11 @@ export function* setTicketInitialState( action ) {
 	}
 
 	yield call( handleTicketDurationError, clientId );
-	if ( ! usesDeferredSave() ) {
+
+	// On a post that defers ticket saves the post save carries the changed tickets; a ticket moved in the block order is one.
+	if ( usesDeferredSave() ) {
+		yield call( deferredSagas.rememberPosition, clientId );
+	} else {
 		yield fork( saveTicketWithPostSave, clientId );
 	}
 }
