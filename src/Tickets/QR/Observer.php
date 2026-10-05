@@ -1,4 +1,9 @@
 <?php
+/**
+ * Handles QR code check-in links.
+ *
+ * @package TEC\Tickets\QR
+ */
 
 namespace TEC\Tickets\QR;
 
@@ -73,6 +78,8 @@ class Observer {
 		 */
 		$url = apply_filters( 'tec_tickets_qr_observer_handle_checkin_redirect', $url, $event_id, $ticket_id, $user_had_access );
 
+		// The URL is filterable and may be external, so wp_safe_redirect() would break extensions.
+		// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
 		wp_redirect( esc_url_raw( $url ) );
 		exit;
 	}
@@ -92,12 +99,10 @@ class Observer {
 	public function authorized_check_in( $event_id, $ticket_id, $security_code ): array {
 
 		if ( ! is_user_logged_in() || ! current_user_can( 'edit_posts' ) ) {
-			$checkin_arr = [
+			return [
 				'url'             => get_permalink( $event_id ),
 				'user_had_access' => false,
 			];
-
-			return $checkin_arr;
 		}
 
 		$post = get_post( $event_id );
@@ -157,12 +162,10 @@ class Observer {
 				admin_url( 'edit.php' )
 			);
 
-			$checkin_arr = [
+			return [
 				'url'             => $url,
 				'user_had_access' => true,
 			];
-
-			return $checkin_arr;
 		}
 
 		// Read before check_in() sets it, so the notice can tell a repeat from a first check-in.
@@ -184,12 +187,10 @@ class Observer {
 
 		$url = add_query_arg( $query_args, admin_url( 'edit.php' ) );
 
-		$checkin_arr = [
+		return [
 			'url'             => $url,
 			'user_had_access' => true,
 		];
-
-		return $checkin_arr;
 	}
 
 	/**
@@ -205,6 +206,8 @@ class Observer {
 			return;
 		}
 
+		// This read-only notice does not process the form, so no nonce applies.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		if ( empty( $_GET['qr_checked_in'] ) ) {
 			return;
 		}
@@ -221,6 +224,7 @@ class Observer {
 		$ticket_status      = get_post_status( $ticket_id );
 		$ticket_unique_id   = get_post_meta( $ticket_id, '_unique_id', true );
 		$ticket_id          = $ticket_unique_id === '' ? $ticket_id : $ticket_unique_id;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// If the attendee was deleted.
 		if ( false === $ticket_status || 'trash' === $ticket_status ) {
