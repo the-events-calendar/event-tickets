@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Kept an event's payment provider when its ticket settings are saved, and
+  left the provider selectable until the first ticket (not an RSVP) is created.
+timestamp: 2026-10-02T18:52:33.646Z
