@@ -81,6 +81,7 @@ class Observer {
 	 * Check if user is authorized to check in Ticket.
 	 *
 	 * @since 5.7.0
+	 * @since TBD Records the QR status here and passes an "already checked in" flag to the notice.
 	 *
 	 * @param int    $event_id      Event post ID.
 	 * @param int    $ticket_id     Ticket post ID.
@@ -164,18 +165,24 @@ class Observer {
 			return $checkin_arr;
 		}
 
+		// Read before check_in() sets it, so the notice can tell a repeat from a first check-in.
+		$already_checked_in = (bool) get_post_meta( $ticket_id, '_tribe_qr_status', true );
+
 		// If the user is the site owner (or similar), Check in the user to the event.
 		$this->check_in( $ticket_id );
 
-		$url = add_query_arg(
-			[
-				'post_type'     => $post->post_type,
-				'page'          => tribe( 'tickets.attendees' )->slug(),
-				'event_id'      => $event_id,
-				'qr_checked_in' => $ticket_id,
-			],
-			admin_url( 'edit.php' )
-		);
+		$query_args = [
+			'post_type'     => $post->post_type,
+			'page'          => tribe( 'tickets.attendees' )->slug(),
+			'event_id'      => $event_id,
+			'qr_checked_in' => $ticket_id,
+		];
+
+		if ( $already_checked_in ) {
+			$query_args['qr_already_checked_in'] = 1;
+		}
+
+		$url = add_query_arg( $query_args, admin_url( 'edit.php' ) );
 
 		$checkin_arr = [
 			'url'             => $url,
@@ -189,6 +196,7 @@ class Observer {
 	 * Show a notice so the user knows the ticket was checked in.
 	 *
 	 * @since 5.7.0
+	 * @since TBD Made read-only and gated behind `edit_posts`; the status write moved to the authorized check-in path.
 	 *
 	 * @return void
 	 */
@@ -201,13 +209,18 @@ class Observer {
 			return;
 		}
 
+		// Match the check-in capability; this notice must never write state.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
 		// Use Human-readable ID Where Available for QR Check in Message.
-		$ticket_id        = absint( $_GET['qr_checked_in'] );
-		$no_match         = isset( $_GET['no_security_code_match'] ) ? absint( $_GET['no_security_code_match'] ) : false;
-		$ticket_status    = get_post_status( $ticket_id );
-		$checked_status   = get_post_meta( $ticket_id, '_tribe_qr_status', true );
-		$ticket_unique_id = get_post_meta( $ticket_id, '_unique_id', true );
-		$ticket_id        = $ticket_unique_id === '' ? $ticket_id : $ticket_unique_id;
+		$ticket_id          = absint( $_GET['qr_checked_in'] );
+		$no_match           = isset( $_GET['no_security_code_match'] ) ? absint( $_GET['no_security_code_match'] ) : false;
+		$already_checked_in = ! empty( $_GET['qr_already_checked_in'] );
+		$ticket_status      = get_post_status( $ticket_id );
+		$ticket_unique_id   = get_post_meta( $ticket_id, '_unique_id', true );
+		$ticket_id          = $ticket_unique_id === '' ? $ticket_id : $ticket_unique_id;
 
 		// If the attendee was deleted.
 		if ( false === $ticket_status || 'trash' === $ticket_status ) {
@@ -231,7 +244,7 @@ class Observer {
 			echo '</p></div>';
 
 			// If status is QR then display already checked-in warning.
-		} elseif ( $checked_status ) {
+		} elseif ( $already_checked_in ) {
 
 			echo '<div class="error"><p>';
 			printf(
@@ -241,7 +254,6 @@ class Observer {
 			);
 			echo '</p></div>';
 
-			// Otherwise, just check-in like normal.
 		} else {
 
 			echo '<div class="updated"><p>';
@@ -251,9 +263,6 @@ class Observer {
 				esc_html( $ticket_id )
 			);
 			echo '</p></div>';
-
-			// Update the checked-in status when using the QR code here.
-			update_post_meta( absint( $_GET['qr_checked_in'] ), '_tribe_qr_status', 1 );
 		}
 	}
 
@@ -261,6 +270,7 @@ class Observer {
 	 * Checks the user in, for all the *Tickets modules running.
 	 *
 	 * @since 5.7.0
+	 * @since TBD Flags the check-in as a QR check-in so the QR status is recorded in this authorized path.
 	 *
 	 * @param string|int $ticket_id The ticket ID.
 	 *
@@ -276,7 +286,7 @@ class Observer {
 				continue;
 			}
 
-			$module_instance->checkin( $ticket_id, false );
+			$module_instance->checkin( $ticket_id, true );
 		}
 	}
 }

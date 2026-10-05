@@ -189,6 +189,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle processing the RSVP step based on current arguments.
 	 *
 	 * @since 5.30.0
+	 * @since TBD Refuses a cart whose total is greater than zero and guards a failed order creation.
 	 *
 	 * @param array           $args    {
 	 *     The list of step template arguments.
@@ -274,7 +275,21 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$cart->save();
 			}
 
+			if ( $cart->get_cart_total() > 0 ) {
+				return [
+					'success' => false,
+					'errors'  => [ _x( 'RSVP orders cannot contain paid tickets.', 'error message', 'event-tickets' ) ],
+				];
+			}
+
 			$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser, Constants::TC_RSVP_TYPE );
+
+			if ( empty( $order ) || ! is_object( $order ) ) {
+				return [
+					'success' => false,
+					'errors'  => [ _x( 'The RSVP order could not be created.', 'error message', 'event-tickets' ) ],
+				];
+			}
 
 			$created = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
@@ -355,6 +370,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle RSVP processing for the RSVP forms.
 	 *
 	 * @since 5.30.0
+	 * @since TBD Rejects tickets that are not RSVP tickets.
 	 *
 	 * @param int             $ticket_id The ticket ID.
 	 * @param WP_REST_Request $request   The REST API request object.
@@ -365,6 +381,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	public function render_rsvp_step( $ticket_id, $request, $step = null ) {
 		if ( 0 === $ticket_id ) {
 			return '';
+		}
+
+		if ( Constants::TC_RSVP_TYPE !== get_post_meta( $ticket_id, '_type', true ) ) {
+			return [
+				'success' => false,
+				'errors'  => [ _x( 'This ticket is not an RSVP.', 'error message', 'event-tickets' ) ],
+			];
 		}
 
 		$post_id = (int) get_post_meta( $ticket_id, Module::ATTENDEE_EVENT_KEY, true );

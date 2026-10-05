@@ -450,6 +450,7 @@ class RSVP_Cart extends Abstract_Cart {
 	 * Add the ticket parameters to the item in the cart.
 	 *
 	 * @since 5.30.0
+	 * @since TBD Drops items that are not RSVP tickets instead of relabeling them.
 	 *
 	 * @param array $item The item in the cart.
 	 *
@@ -459,6 +460,11 @@ class RSVP_Cart extends Abstract_Cart {
 		$ticket_id = $item['tc-rsvp_id'] ?? $item['ticket_id'] ?? null;
 
 		if ( ! $ticket_id ) {
+			return null;
+		}
+
+		// Drop non-RSVP items instead of relabeling a paid ticket as an RSVP.
+		if ( Constants::TC_RSVP_TYPE !== get_post_meta( $ticket_id, '_type', true ) ) {
 			return null;
 		}
 

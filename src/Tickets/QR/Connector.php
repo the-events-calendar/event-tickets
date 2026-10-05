@@ -256,10 +256,15 @@ class Connector {
 	 * Handles the regeneration of the QR Code API Hash via Admin AJAX request.
 	 *
 	 * @since 5.7.0
+	 * @since TBD Require the `manage_options` capability before regenerating the key, since the nonce alone is exposed to low-privileged users.
 	 *
 	 * @return void
 	 */
 	public function handle_ajax_generate_api_key(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Permission Error', 'event-tickets' ) );
+		}
+
 		$confirm = tribe_get_request_var( 'confirm', false );
 
 		if ( ! $confirm || ! wp_verify_nonce( $confirm, $this->get_nonce_key() ) ) {
@@ -267,7 +272,7 @@ class Connector {
 		}
 
 		$deleted_existing_hash = tribe( Settings::class )->delete_api_key();
-		if ( false === $deleted_existing_hash && current_user_can( 'manage_options' ) ) {
+		if ( false === $deleted_existing_hash ) {
 			wp_send_json_error( __( 'The QR API key could not be deleted, please try again.', 'event-tickets' ) );
 		}
 
