@@ -600,4 +600,76 @@ class Commit_Test extends WPTestCase {
 		$this->assertCount( 1, $bad->get_errors() );
 		$this->assertNull( $bad->get_errors()[0]['part'] );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_payload_over_the_cap_before_reading_its_entries(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		add_filter( 'tec_tickets_deferred_save_max_entries', static fn() => 2 );
+
+		// Entries the parser would reject one by one: the cap counts them too, so they cannot be used to make the parser work.
+		$result = $this->commit()->run( [ 'create' => [ 'not data', 'not data', 'not data' ] ], $post_id );
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertCount( 1, $result->get_errors() );
+		$this->assertNull( $result->get_errors()[0]['part'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_a_created_ticket_when_a_listener_throws_after_the_save(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		add_action(
+			'tribe_tickets_ticket_added',
+			static function () {
+				throw new \RuntimeException( 'A listener failed.' );
+			}
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Saved anyway' ) ] ], $post_id );
+
+		// The ticket exists: reporting it as not saved would make the editor create it again.
+		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
+		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ 'Saved anyway' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_stop_flagging_manual_updates_after_an_entry_throws(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		add_action(
+			'tec_tickets_ticket_pre_save',
+			static function () {
+				throw new \TypeError( 'Unsupported operand types: string - int' );
+			}
+		);
+
+		$this->commit()->run( [ 'create' => [ $this->ticket_data( 'Explodes' ) ] ], $post_id );
+
+		// `ticket_add()` turns the flag on and off around the save; an exception skipped the off.
+		$this->assertFalse( has_filter( 'updated_postmeta', [ tribe( 'tickets.handler' ), 'flag_manual_update' ] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_write_against_the_post_the_saved_id_normalises_to(): void {
+		$this->log_in_as_admin();
+		$post_id     = static::factory()->post->create();
+		$provisional = $post_id + 10000000;
+		// As ECP maps an occurrence's provisional ID to its post.
+		add_filter( 'tec_tickets_filter_event_id', static fn( $id ) => (int) $id === $provisional ? $post_id : $id );
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'On the real post' ) ] ], $provisional );
+
+		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
+		$this->assertSame( [ 'On the real post' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
+	}
 }
