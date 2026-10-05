@@ -672,4 +672,70 @@ class Commit_Test extends WPTestCase {
 		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
 		$this->assertSame( [ 'On the real post' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_ticket_saved_before_an_internal_listener_threw_as_created(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		// Fired inside `ticket_add()`, after the provider saved the ticket.
+		add_action(
+			'tec_tickets_ticket_add',
+			static function () {
+				throw new \RuntimeException( 'A listener inside ticket_add() failed.' );
+			}
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Saved before the throw' ) ] ], $post_id );
+
+		$ticket_ids = tribe_tickets()->where( 'event', $post_id )->get_ids();
+		$this->assertCount( 1, $ticket_ids );
+		// The ticket exists, so the editor must know its ID and never create it again; the error says what failed.
+		$this->assertSame( [ 0 => (int) $ticket_ids[0] ], $result->get_created() );
+		$this->assertSame( [ 0 ], $this->error_keys( $result, 'create' ) );
+		$this->assertFalse( has_filter( 'updated_postmeta', [ tribe( 'tickets.handler' ), 'flag_manual_update' ] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_delete_as_done_when_a_listener_throws_after_it(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		add_action(
+			'tribe_tickets_ticket_deleted',
+			static function () {
+				throw new \RuntimeException( 'A deleted listener failed.' );
+			}
+		);
+
+		$result = $this->commit()->run( [ 'delete' => [ $ticket_id ] ], $post_id );
+
+		$this->assertNull( get_post( $ticket_id ) );
+		$this->assertSame( [], $result->get_errors() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_move_as_done_when_a_listener_throws_after_it(): void {
+		$this->log_in_as_admin();
+		$post_id        = static::factory()->post->create();
+		$destination_id = static::factory()->post->create();
+		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+		add_action(
+			'tribe_tickets_ticket_type_moved',
+			static function () {
+				throw new \RuntimeException( 'A moved listener failed.' );
+			},
+			5
+		);
+
+		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $destination_id ] ], $post_id );
+
+		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+		$this->assertSame( [], $result->get_errors() );
+	}
 }

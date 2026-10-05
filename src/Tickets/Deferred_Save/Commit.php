@@ -210,18 +210,13 @@ final class Commit {
 		} catch ( \Throwable $e ) {
 			// `ticket_add()` turns the manual-update flag on around the save; the exception skipped turning it off.
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
-
-			do_action(
-				'tribe_log',
-				'error',
+			$this->log_failure(
 				'Deferred ticket save: an entry could not be saved.',
+				$e,
 				[
-					'source'    => __CLASS__,
-					'part'      => $part,
-					'key'       => $key,
-					'exception' => get_class( $e ),
-					'message'   => $e->getMessage(),
-				]
+					'part' => $part,
+					'key'  => $key,
+				] 
 			);
 
 			return $result->with_error( $part, $key, $this->not_saved_message() );
@@ -280,6 +275,8 @@ final class Commit {
 	 * @param array<string,mixed> $data     The ticket data, as the editor sent it.
 	 *
 	 * @return Result The result with this entry folded in.
+	 *
+	 * @throws \Throwable When the provider throws before the ticket is saved on the post; `guarded()` reports it.
 	 */
 	private function create( Result $result, int $post_id, int $position, array $data ): Result {
 		$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
@@ -294,7 +291,33 @@ final class Commit {
 		unset( $data['ticket_id'] );
 		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
 
-		$ticket_id = $provider->ticket_add( $post_id, $data );
+		// Which ticket post this save inserts, in case something after the insert throws.
+		$inserted = 0;
+		$record   = static function ( $id, $post, $update ) use ( $provider, &$inserted ): void {
+			if ( ! $update && $post instanceof \WP_Post && $provider->ticket_object === $post->post_type ) {
+				$inserted = (int) $id;
+			}
+		};
+		add_action( 'wp_insert_post', $record, 10, 3 );
+
+		try {
+			$ticket_id = $provider->ticket_add( $post_id, $data );
+		} catch ( \Throwable $e ) {
+			if ( ! $inserted || (int) get_post_meta( $inserted, $provider->get_event_key(), true ) !== $post_id ) {
+				throw $e;
+			}
+
+			// The ticket is saved on the post and something that runs after the save threw: report the ticket, so the
+			// editor never creates it again, and the error, so the admin knows the save did not finish cleanly.
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+			$this->log_failure( 'Deferred ticket save: a ticket was saved, then a listener failed.', $e, [ 'ticket_id' => $inserted ] );
+
+			return $result
+				->with_created( $position, $inserted )
+				->with_error( Parser::CREATE, $position, __( 'The ticket was saved, but something that runs after a ticket is saved failed.', 'event-tickets' ) );
+		} finally {
+			remove_action( 'wp_insert_post', $record, 10 );
+		}
 
 		if ( empty( $ticket_id ) ) {
 			return $result->with_error( Parser::CREATE, $position, $this->not_saved_message() );
@@ -318,9 +341,23 @@ final class Commit {
 	 * @param int    $destination_id The post to move it to.
 	 *
 	 * @return Result The result with this entry folded in.
+	 *
+	 * @throws \Throwable When the move throws before the ticket is on the destination; `guarded()` reports it.
 	 */
 	private function move( Result $result, int $ticket_id, int $destination_id ): Result {
-		if ( ! Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $destination_id ) ) {
+		try {
+			$moved = Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $destination_id );
+		} catch ( \Throwable $e ) {
+			// A listener on the moved action threw after the ticket was reassigned: the move happened.
+			if ( ! $this->is_on_post( $ticket_id, $destination_id ) ) {
+				throw $e;
+			}
+
+			$this->log_failure( 'Deferred ticket save: a ticket was moved, then a listener failed.', $e, [ 'ticket_id' => $ticket_id ] );
+			$moved = true;
+		}
+
+		if ( ! $moved ) {
 			return $result->with_error(
 				Parser::MOVE,
 				$ticket_id,
@@ -346,6 +383,8 @@ final class Commit {
 	 * @param int    $ticket_id The ticket to delete.
 	 *
 	 * @return Result The result with this entry folded in.
+	 *
+	 * @throws \Throwable When the provider throws before the ticket is deleted; `guarded()` reports it.
 	 */
 	private function delete( Result $result, int $post_id, int $ticket_id ): Result {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -354,7 +393,19 @@ final class Commit {
 			return $result->with_error( Parser::DELETE, $ticket_id, $this->no_provider_message() );
 		}
 
-		if ( ! $provider->delete_ticket( $post_id, $ticket_id ) ) {
+		try {
+			$deleted = $provider->delete_ticket( $post_id, $ticket_id );
+		} catch ( \Throwable $e ) {
+			// A listener threw after the ticket was deleted: the delete happened.
+			if ( get_post( $ticket_id ) instanceof \WP_Post && 'trash' !== get_post_status( $ticket_id ) ) {
+				throw $e;
+			}
+
+			$this->log_failure( 'Deferred ticket save: a ticket was deleted, then a listener failed.', $e, [ 'ticket_id' => $ticket_id ] );
+			$deleted = true;
+		}
+
+		if ( ! $deleted ) {
 			return $result->with_error(
 				Parser::DELETE,
 				$ticket_id,
@@ -366,8 +417,13 @@ final class Commit {
 			);
 		}
 
-		/** This action is documented in src/Tribe/Metabox.php */
-		do_action( 'tribe_tickets_ticket_deleted', $post_id );
+		try {
+			/** This action is documented in src/Tribe/Metabox.php */
+			do_action( 'tribe_tickets_ticket_deleted', $post_id );
+		} catch ( \Throwable $e ) {
+			// The ticket is deleted: reporting it as not deleted would be untrue.
+			$this->log_failure( 'Deferred ticket save: a listener failed after a ticket was deleted.', $e, [ 'ticket_id' => $ticket_id ] );
+		}
 
 		return $result;
 	}
@@ -389,18 +445,51 @@ final class Commit {
 			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
 		} catch ( \Throwable $e ) {
 			// The ticket is saved: reporting it as not saved would make the editor create it again.
-			do_action(
-				'tribe_log',
-				'error',
-				'Deferred ticket save: a listener failed after a ticket was saved.',
+			$this->log_failure( 'Deferred ticket save: a listener failed after a ticket was saved.', $e, [ 'ticket_id' => $ticket_id ] );
+		}
+	}
+
+	/**
+	 * Whether a ticket is attached to a post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket.
+	 * @param int $post_id   The post.
+	 *
+	 * @return bool Whether the ticket's provider records it on the post.
+	 */
+	private function is_on_post( int $ticket_id, int $post_id ): bool {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		return $provider instanceof Tickets && (int) get_post_meta( $ticket_id, $provider->get_event_key(), true ) === $post_id;
+	}
+
+	/**
+	 * Logs an exception caught while committing, for the developer; the editor is told in the result.
+	 *
+	 * @since TBD
+	 *
+	 * @param string              $what    What happened.
+	 * @param \Throwable          $e       The exception.
+	 * @param array<string,mixed> $context What it happened to.
+	 *
+	 * @return void
+	 */
+	private function log_failure( string $what, \Throwable $e, array $context ): void {
+		do_action(
+			'tribe_log',
+			'error',
+			$what,
+			array_merge(
+				[ 'source' => __CLASS__ ],
+				$context,
 				[
-					'source'    => __CLASS__,
-					'ticket_id' => $ticket_id,
 					'exception' => get_class( $e ),
 					'message'   => $e->getMessage(),
 				]
-			);
-		}
+			)
+		);
 	}
 
 	/**
