@@ -286,7 +286,12 @@ export function* setTicketInitialState( action ) {
 			 * An event without saved dates has an empty start, which parses to an
 			 * invalid moment. Fall back to a one day sale window.
 			 */
-			const endMoment = eventStartMoment.isValid() ? eventStartMoment : startMoment.clone().add( 1, 'day' );
+			const hasEventStart = eventStartMoment.isValid();
+			const endMoment = hasEventStart ? eventStartMoment : startMoment.clone().add( 1, 'day' );
+
+			if ( ! hasEventStart ) {
+				fallbackSaleEndClientIds.add( clientId );
+			}
 			const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 			const endDateInput = yield datePickerFormat
 				? call( momentUtil.toDate, endMoment, datePickerFormat )
@@ -1241,6 +1246,13 @@ export function* saveTicketWithPostSave( clientId ) {
 }
 
 /**
+ * Client IDs of tickets whose sale end is the automatic fallback, not an event start or an editor's choice.
+ *
+ * @type {Set<string>}
+ */
+const fallbackSaleEndClientIds = new Set();
+
+/**
  * Will sync all tickets
  *
  * @param {string} prevStartDate Previous start date before latest set date time changes
@@ -1281,12 +1293,23 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 
 		// If initial end and current end are the same, the RSVP has not been modified
 		const isNotManuallyEdited = yield call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' );
-		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
+		/*
+		 * A fallback sale end was never tied to the previous (invalid) event start,
+		 * so it is eligible for sync until the editor changes it.
+		 */
+		const isFallbackEnd = fallbackSaleEndClientIds.has( clientId );
+		const isSameAsPrevEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
+		const isSyncedToEventStart = isFallbackEnd || isSameAsPrevEventStart;
 		const isEvent = yield call( isTribeEventPostType );
 
 		// This if statement may be redundant given the try-catch statement above.
 		// Only run this on events post type.
+		if ( ! isNotManuallyEdited ) {
+			fallbackSaleEndClientIds.delete( clientId );
+		}
+
 		if ( isEvent && window.tec.events && isNotManuallyEdited && isSyncedToEventStart ) {
+			fallbackSaleEndClientIds.delete( clientId );
 			const eventStart = yield select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart );
 			const {
 				moment: endDateMoment,

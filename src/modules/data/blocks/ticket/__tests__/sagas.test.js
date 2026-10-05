@@ -718,7 +718,7 @@ describe( 'Ticket Block sagas', () => {
 		} );
 
 		it( 'should end the sale a day after it starts when the event start is unset', () => {
-			const CLIENT_ID = 'modern-tribe';
+			const CLIENT_ID = 'unset-event-start';
 			const action = {
 				payload: {
 					get: ( key ) => ( key === 'ticketId' ? 0 : undefined ),
@@ -1041,6 +1041,51 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
 			expect( gen.next( true ).done ).toEqual( true );
+		} );
+
+		it( 'should sync a fallback sale end date with the event start', () => {
+			const CLIENT_ID = 'fallback-sale-end';
+			const prevStartDate = '';
+			const eventStart = 'November 25, 2018 12:30:00';
+			const tempEndMoment = { local: jest.fn(), isSame: jest.fn() };
+			const endMoment = { local: jest.fn() };
+			const prevEventStartMoment = { local: jest.fn() };
+			const publishDate = 'November 10, 2018 12:30:00';
+			const startDate = '2018-11-10';
+			const startDateInput = 'November 10, 2018';
+			const startTime = '12:30:00';
+
+			const init = sagas.setTicketInitialState( {
+				payload: {
+					get: ( key ) => ( key === 'ticketId' ? 0 : undefined ),
+					clientId: CLIENT_ID,
+				},
+			} );
+			init.next();
+			init.next( publishDate );
+			init.next( moment( publishDate ) );
+			init.next( startDate );
+			init.next( startDateInput );
+			init.next( startTime );
+			init.next( startTime );
+			init.next();
+			init.next( true );
+			init.next( '' );
+			init.next( moment.invalid() );
+
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevStartDate, CLIENT_ID );
+			gen.next();
+			gen.next( tempEndMoment );
+			gen.next( endMoment );
+			gen.next( { moment: prevEventStartMoment } );
+			gen.next();
+			gen.next( true );
+			// The fallback never matched the invalid previous start, yet it still syncs.
+			expect( gen.next( false ).value ).toEqual( call( isTribeEventPostType ) );
+			expect( gen.next( true ).value ).toEqual(
+				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
+			);
+			expect( gen.next( eventStart ).value ).toEqual( call( createDates, eventStart ) );
 		} );
 
 		it( 'should sync the sale end date with the event start when it follows the event', () => {
