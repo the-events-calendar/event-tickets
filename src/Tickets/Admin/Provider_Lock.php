@@ -9,8 +9,7 @@
 
 namespace TEC\Tickets\Admin;
 
-use Tribe__Tickets__RSVP as Legacy_RSVP;
-use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 
 /**
  * Class Provider_Lock.
@@ -26,8 +25,7 @@ final class Provider_Lock {
 	 *
 	 * The provider is locked once the post has a ticket; RSVPs, both legacy and Tickets Commerce, do not count.
 	 *
-	 * Only ticket IDs are queried, never hydrated ticket objects, and the first provider with a ticket wins.
-	 * Tickets Commerce RSVPs are left out by the RSVP V2 repository filter on admin queries.
+	 * A single ticket ID is queried, never hydrated ticket objects, since one ticket is enough to lock.
 	 *
 	 * @since TBD
 	 *
@@ -36,16 +34,15 @@ final class Provider_Lock {
 	 * @return bool
 	 */
 	public function is_locked( int $post_id ): bool {
-		foreach ( array_keys( Tickets::modules() ) as $provider_class ) {
-			if ( Legacy_RSVP::class === $provider_class ) {
-				continue;
-			}
+		$ticket_post_types = array_values(
+			array_diff_key( tribe_tickets()->ticket_types(), [ 'rsvp' => true ] )
+		);
 
-			if ( $provider_class::get_instance()->get_tickets_ids( $post_id ) ) {
-				return true;
-			}
-		}
-
-		return false;
+		return (bool) tribe_tickets()
+			->where( 'event', $post_id )
+			->where( 'post_type', $ticket_post_types )
+			->where( 'meta_not_equals', '_type', RSVP_V2_Constants::TC_RSVP_TYPE )
+			->per_page( 1 )
+			->get_ids();
 	}
 }
