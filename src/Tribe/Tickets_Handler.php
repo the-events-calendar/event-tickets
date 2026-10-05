@@ -1602,7 +1602,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Saves the Ticket Editor settings form
 	 *
 	 * @since 4.6.2
-	 * @since TBD No longer clears the event's ticket provider when `default_provider` is not sent.
+	 * @since 5.30.0.2 No longer clears the event's ticket provider when `default_provider` is not sent.
 	 *
 	 * @param int   $post  Post that will be saved
 	 * @param array $data  Params that will be used to save

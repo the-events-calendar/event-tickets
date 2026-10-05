@@ -2,7 +2,7 @@
 /**
  * Decides whether an event's ticket provider can still be changed.
  *
- * @since TBD
+ * @since 5.30.0.2
  *
  * @package TEC\Tickets\Admin
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 /**
  * Class Provider_Lock.
  *
- * @since TBD
+ * @since 5.30.0.2
  *
  * @package TEC\Tickets\Admin
  */
@@ -27,7 +27,7 @@ final class Provider_Lock {
 	 *
 	 * A single ticket ID is queried, never hydrated ticket objects, since one ticket is enough to lock.
 	 *
-	 * @since TBD
+	 * @since 5.30.0.2
 	 *
 	 * @param int $post_id The ID of the post the tickets are attached to.
 	 *
