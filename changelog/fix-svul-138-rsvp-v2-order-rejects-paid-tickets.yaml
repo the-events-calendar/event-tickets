@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Strengthened validation of RSVP orders placed through the REST API.
+timestamp: 2026-10-05T14:45:36.259Z
