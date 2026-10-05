@@ -181,4 +181,32 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertFalse( has_filter( 'wp_refresh_nonces', $callback ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_hook_the_block_save_for_a_type_made_ticketable_after_it_registered(): void {
+		register_post_type( 'late_ticketable', [ 'public' => true, 'show_in_rest' => true ] );
+		$controller = $this->make_controller();
+		$on_insert  = $this->test_services->callback( Block_Save::class, 'on_rest_after_insert' );
+		$on_prepare = $this->test_services->callback( Block_Save::class, 'add_result_to_response' );
+		$controller->register();
+
+		// A theme or plugin makes the type ticketable after the controller registered; REST starts later.
+		$late = static fn( $types ) => array_merge( (array) $types, [ 'late_ticketable' ] );
+		add_filter( 'tribe_tickets_post_types', $late );
+		$this->assertSame( 10, has_action( 'rest_api_init', [ $controller, 'hook_rest_saves' ] ) );
+		$controller->hook_rest_saves();
+
+		$this->assertSame( Block_Save::PRIORITY, has_action( 'rest_after_insert_late_ticketable', $on_insert ) );
+		$this->assertSame( 10, has_filter( 'rest_prepare_late_ticketable', $on_prepare ) );
+
+		// The type stops being ticketable before unregistering: what was hooked is still unhooked.
+		remove_filter( 'tribe_tickets_post_types', $late );
+		$controller->unregister();
+
+		$this->assertFalse( has_action( 'rest_after_insert_late_ticketable', $on_insert ) );
+		$this->assertFalse( has_filter( 'rest_prepare_late_ticketable', $on_prepare ) );
+		$this->assertFalse( has_action( 'rest_api_init', [ $controller, 'hook_rest_saves' ] ) );
+	}
 }
