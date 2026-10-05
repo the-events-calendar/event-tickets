@@ -50,6 +50,18 @@ final class Classic_Save {
 	public const NONCE_FIELD = 'tec_tickets_nonce';
 
 	/**
+	 * The name of the form field the classic editor writes after every staged field.
+	 *
+	 * PHP drops the request fields past `max_input_vars` in the order they arrive, so a payload without
+	 * it lost some of its fields on the way and must not be applied.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const COMPLETE_FIELD = 'tec_tickets_complete';
+
+	/**
 	 * The priority on `save_post`: after the ticket order and settings save at 10.
 	 *
 	 * @since TBD
@@ -163,13 +175,17 @@ final class Classic_Save {
 		}
 
 		// The payload is parsed by `Payload` and its ticket data is sanitized by the providers when they save it, as on the AJAX path.
-		$raw = wp_unslash( $_POST['tec_tickets'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$raw      = wp_unslash( $_POST['tec_tickets'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$complete = isset( $_POST[ self::COMPLETE_FIELD ] );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// The post may be saved again during this save (TEC does it when "Sticky in Month View" changes): commit once.
 		$this->committed[ $post_id ] = true;
 
-		$result = $this->commit->run( $raw, $post_id );
+		// A partial `update` would save a ticket with half its fields: apply nothing, and say so.
+		$result = $complete
+			? $this->commit->run( $raw, $post_id )
+			: ( new Result() )->with_error( null, null, __( 'The ticket changes did not all reach the server, so none were saved. Stage fewer changes per save.', 'event-tickets' ) );
 
 		/**
 		 * Fires after the ticket changes sent with a classic editor post save were committed.

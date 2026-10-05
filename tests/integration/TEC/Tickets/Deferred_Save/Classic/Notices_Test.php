@@ -40,6 +40,8 @@ class Notices_Test extends WPTestCase {
 
 		$html = $this->render_admin_notices();
 		$this->assertStringContainsString( 'notice-error', $html );
+		// Rendered by the StellarWP AdminNotices library common loads, not by hand.
+		$this->assertRegExp( '/data-stellarwp-[\\w-]+-notice-id=/', $html );
 		$this->assertStringContainsString( 'Early bird', $html );
 		$this->assertStringContainsString( 'Ticket could not be saved.', $html );
 		$this->assertStringContainsString( 'The ticket provider is missing or not active.', $html );
