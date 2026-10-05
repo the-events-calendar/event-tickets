@@ -275,7 +275,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 				$cart->save();
 			}
 
-			// A free RSVP order must total zero; never run a priced cart through the free gateway.
 			if ( $cart->get_cart_total() > 0 ) {
 				return [
 					'success' => false,
@@ -384,8 +383,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return '';
 		}
 
-		// This endpoint is for RSVP tickets only. Reject any other ticket type (e.g. a paid
-		// Tickets Commerce ticket) so it cannot be pushed through the free RSVP order flow.
 		if ( Constants::TC_RSVP_TYPE !== get_post_meta( $ticket_id, '_type', true ) ) {
 			return [
 				'success' => false,

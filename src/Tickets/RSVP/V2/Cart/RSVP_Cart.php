@@ -463,8 +463,7 @@ class RSVP_Cart extends Abstract_Cart {
 			return null;
 		}
 
-		// Only RSVP tickets belong in the RSVP cart. Drop anything else rather than relabeling
-		// a paid ticket as an RSVP while keeping its price.
+		// Drop non-RSVP items instead of relabeling a paid ticket as an RSVP.
 		if ( Constants::TC_RSVP_TYPE !== get_post_meta( $ticket_id, '_type', true ) ) {
 			return null;
 		}
