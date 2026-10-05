@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Tightened the permission checks for regenerating the QR code API key.
+timestamp: 2026-10-05T14:44:30.883Z
