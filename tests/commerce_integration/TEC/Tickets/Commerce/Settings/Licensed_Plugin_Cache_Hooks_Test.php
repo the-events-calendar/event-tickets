@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Settings;
 /**
  * Tests license cache invalidation hooks.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Licensed_Plugin_Cache_Hooks_Test extends WPTestCase {
 

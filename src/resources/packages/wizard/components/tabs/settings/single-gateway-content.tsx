@@ -14,52 +14,51 @@ interface SingleGatewayContentProps {
 	connectionStatus: string;
 }
 
-const SingleGatewayContent: React.FC<SingleGatewayContentProps> = ({
-	singleGateway,
-	connectionStatus,
-}) => {
-	if (!singleGateway) {
+const SingleGatewayContent: React.FC< SingleGatewayContentProps > = ( { singleGateway } ) => {
+	if ( ! singleGateway ) {
 		return null;
 	}
 
 	// Gateway-specific content configuration
 	const gatewayContent = {
 		stripe: {
-			title: __('Stripe Payment Setup', 'event-tickets'),
-			description: __('Based on your country selection, Stripe is the recommended payment processor for online payments.', 'event-tickets'),
+			title: __( 'Stripe Payment Setup', 'event-tickets' ),
+			description: __(
+				'Based on your country selection, Stripe is the recommended payment processor for online payments.',
+				'event-tickets'
+			),
 			logo: <StripeLogo />,
-			connectText: __('Connect to Stripe', 'event-tickets'),
+			connectText: __( 'Connect to Stripe', 'event-tickets' ),
 		},
 		square: {
-			title: __('Square Payment Setup', 'event-tickets'),
-			description: __('Based on your country selection, Square is the recommended payment processor for your region.', 'event-tickets'),
+			title: __( 'Square Payment Setup', 'event-tickets' ),
+			description: __(
+				'Based on your country selection, Square is the recommended payment processor for your region.',
+				'event-tickets'
+			),
 			logo: <SquareLogo />,
-			connectText: __('Connect to Square', 'event-tickets'),
+			connectText: __( 'Connect to Square', 'event-tickets' ),
 		},
 		paypal: {
-			title: __('PayPal Payment Setup', 'event-tickets'),
-			description: __('Based on your country selection, PayPal is the recommended payment processor for your region.', 'event-tickets'),
+			title: __( 'PayPal Payment Setup', 'event-tickets' ),
+			description: __(
+				'Based on your country selection, PayPal is the recommended payment processor for your region.',
+				'event-tickets'
+			),
 			logo: <PayPalLogo />,
-			connectText: __('Connect to PayPal', 'event-tickets'),
+			connectText: __( 'Connect to PayPal', 'event-tickets' ),
 		},
 	};
 
-	const content = gatewayContent[singleGateway];
-	const isConnected = connectionStatus === 'connected';
+	const content = gatewayContent[ singleGateway ];
 
 	return (
 		<div className="tec-tickets-onboarding__single-gateway">
 			<div className="tec-tickets-onboarding__payment-gateway">
 				<div className="tec-tickets-onboarding__gateway-header">
-					{content.logo && (
-						<div className="tec-tickets-onboarding__gateway-logo">
-							{content.logo}
-						</div>
-					)}
+					{ content.logo && <div className="tec-tickets-onboarding__gateway-logo">{ content.logo }</div> }
 				</div>
-				<p className="tec-tickets-onboarding__gateway-description">
-					{content.description}
-				</p>
+				<p className="tec-tickets-onboarding__gateway-description">{ content.description }</p>
 			</div>
 		</div>
 	);

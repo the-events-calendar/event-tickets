@@ -1,5 +1,4 @@
-/* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout */
-
+/* global Stripe, tecTicketsCommerceGatewayStripeCheckout */
 /**
  * Path to this script in the global tribe Object.
  *
@@ -84,10 +83,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle displaying errors to the end user in the cardErrors field
 	 *
-	 * @param array        errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
-	 *                     messages.
-	 * @param errors
-	 * @param afterDisplay
+	 * @param {Array}    errors       An array of arrays. Each base array is keyed with the error code and contains a list of error
+	 *                                messages.
+	 * @param {Function} afterDisplay Callback run after the errors are displayed.
 	 */
 	obj.handleErrorDisplay = ( errors, afterDisplay = () => {} ) => {
 		errors.map( ( e ) => obj.showNotice( {}, '', e[ 1 ] ) );
@@ -100,10 +98,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param data
-	 * @param headers
+	 * @param {Object} data    Request body data.
+	 * @param {Object} headers Request headers.
 	 *
-	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
+	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}} Request arguments for Ky.
 	 */
 	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
@@ -136,7 +134,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} error
 	 *
-	 * @return {*}
+	 * @return {*} Ky stop signal.
 	 */
 	obj.onBeforeRetry = async ( error ) => {
 		console.log( error );
@@ -151,7 +149,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} error
 	 *
-	 * @return {*}
+	 * @return {*} Ky stop signal.
 	 */
 	obj.onBeforeError = async ( error ) => {
 		console.log( error );
@@ -162,7 +160,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Builds the wallets object to use when creating a Payment Element
 	 *
-	 * @return {{applePay: string, googlePay: string}}
+	 * @return {{applePay: string, googlePay: string}} Wallet availability settings.
 	 */
 	obj.getWallets = () => {
 		const settings = {
@@ -192,8 +190,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param         error.error
 	 * @param {Object} error       Which error we are dealing with.
+	 * @param {Object} error.error The error object, if any.
 	 */
 	obj.onCardChange = ( { error } ) => {
 		tribe.tickets.debug.log( 'stripe', 'cardChange', error );
@@ -208,7 +206,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Toggle the submit button enabled/disabled
 	 *
-	 * @param enable
+	 * @param {boolean} enable Whether the button should be enabled.
 	 */
 	obj.submitButton = ( enable ) => {
 		$( obj.selectors.submitButton ).prop( 'disabled', ! enable );
@@ -221,7 +219,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} result Result from the payment request.
 	 *
-	 * @return {boolean}
+	 * @return {Promise<boolean|undefined>} Result of handling the payment.
 	 */
 	obj.handleReceivePayment = async ( result ) => {
 		tribe.tickets.debug.log( 'stripe', 'handleReceivePayment', result );
@@ -241,7 +239,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
-	 * @return {boolean}
+	 * @return {Promise<boolean|undefined>} Result of handling the payment error.
 	 */
 	obj.handlePaymentError = async ( data ) => {
 		$( obj.selectors.cardErrors ).val( data.error.message );
@@ -249,7 +247,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		// If we have a payment intent, we need to update the order.
 		if ( data.error.payment_intent ) {
-			const response = await obj.handleUpdateOrder( data.error.payment_intent );
+			await obj.handleUpdateOrder( data.error.payment_intent );
 		}
 
 		return obj.handleErrorDisplay( [ [ data.error.code, data.error.message ] ], () => {
@@ -265,7 +263,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
-	 * @return {boolean}
+	 * @return {Promise<boolean|undefined>} Result of handling the payment success.
 	 */
 	obj.handlePaymentSuccess = async ( data ) => {
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentSuccess', data );
@@ -276,9 +274,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle payments in cases other than an automatic confirmation
 	 *
-	 * @param data
+	 * @param {Object} data Payment data.
 	 *
-	 * @return {Promise<boolean>}
+	 * @return {Promise<boolean>} Result of handling the delayed payment.
 	 */
 	obj.handlePaymentDelayed = async ( data ) => {
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentDelayed', data );
@@ -330,7 +328,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} paymentIntent Payment intent Object from Stripe.
 	 *
-	 * @return {Promise<*>}
+	 * @return {Promise<*>} Resolves with the order response.
 	 */
 	obj.handleUpdateOrder = async ( paymentIntent ) => {
 		const args = obj.getRequestArgs( {
@@ -357,7 +355,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {string} order The order object returned from the server.
 	 *
-	 * @return {Promise<*>}
+	 * @return {Promise<*>} Resolves with the payment confirmation result.
 	 */
 	obj.submitMultiPayment = async ( order ) => {
 		// Only if we don't have the address fields to collect.
@@ -401,7 +399,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param result
+	 * @param {Object} result Result from Stripe.
 	 */
 	obj.handleConfirmPayment = ( result ) => {
 		obj.submitButton( true );
@@ -421,7 +419,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @return {Promise<*>}
+	 * @return {Promise<*>} Resolves with the payment confirmation result.
 	 */
 	obj.submitCardPayment = async () => {
 		return obj.stripeLib
@@ -438,7 +436,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param result
+	 * @param {Object} result Result from Stripe.
 	 */
 	obj.handleConfirmCardPayment = ( result ) => {
 		obj.submitButton( true );
@@ -459,7 +457,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 * @since 5.26.7 Enhanced error handling for stock shortage errors.
 	 *
-	 * @return {Promise<*>}
+	 * @return {Promise<*>} Resolves with the order response.
 	 */
 	obj.handleCreateOrder = async () => {
 		const args = obj.getRequestArgs( {
@@ -540,7 +538,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Configure the CardElement with separate fields.
 	 *
-	 * @link https://stripe.com/docs/js/elements_object/create_element?type=cardNumber#elements_create-options
+	 * @see https://stripe.com/docs/js/elements_object/create_element?type=cardNumber#elements_create-options
 	 *
 	 * @since 5.3.0
 	 */
@@ -570,7 +568,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Configure the CardElement with compact fields.
 	 *
-	 * @link https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
+	 * @see https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
 	 *
 	 * @since 5.3.0
 	 * @since 5.13.4 Pulled out `options` variable to allow filtering using `tec_tickets_commerce_stripe_checkout_localized_data`.
@@ -592,7 +590,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Configure the PaymentElement with separate fields.
 	 *
-	 * @link https://stripe.com/docs/js/element/payment_element
+	 * @see https://stripe.com/docs/js/element/payment_element
 	 *
 	 * @since 5.3.0
 	 * @since 5.26.7 Updated render button selector to use the obj.selectors object.
@@ -728,7 +726,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since 5.3.0
 	 *
-	 * @return {Object}
+	 * @return {Object} Purchaser form data.
 	 */
 	obj.getPurchaserData = () =>
 		tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );

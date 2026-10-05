@@ -1,6 +1,6 @@
 {
 	"name": "event-tickets",
-	"version": "5.29.5",
+	"version": "5.30.0",
 	"repository": "git@github.com:the-events-calendar/event-tickets.git",
 	"_zipname": "event-tickets",
 	"_zipfoldername": "event-tickets",
@@ -119,6 +119,7 @@
 		"chrono-node": "^2.7.7",
 		"classnames": "^2.2.6",
 		"clipboard": "^2.0.10",
+		"date-fns": "^4.1.0",
 		"he": "^1.2.0",
 		"intro.js": "^3.4.0",
 		"jquery": "3.5.0",

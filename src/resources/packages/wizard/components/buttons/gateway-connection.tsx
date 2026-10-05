@@ -13,53 +13,47 @@ interface GatewayConnectionButtonProps {
 	hideStatus?: boolean;
 }
 
-const GatewayConnectionButton: React.FC<GatewayConnectionButtonProps> = ({
+const GatewayConnectionButton: React.FC< GatewayConnectionButtonProps > = ( {
 	connectionStatus,
-	gatewayType,
 	connectText,
 	onConnect,
 	onContinue,
 	hideStatus = false,
-}) => {
-	if (connectionStatus === 'connected') {
+} ) => {
+	if ( connectionStatus === 'connected' ) {
 		return (
 			<>
-				{!hideStatus && (
+				{ ! hideStatus && (
 					<div className="tec-tickets-onboarding__connection-status tec-tickets-onboarding__connection-status--connected">
-						<CheckIcon /> {__('Connected', 'event-tickets')}
+						<CheckIcon /> { __( 'Connected', 'event-tickets' ) }
 					</div>
-				)}
-				<Button
-					isPrimary
-					className="tec-tickets-onboarding__next-button"
-					onClick={onContinue}
-				>
-					{__('Continue', 'event-tickets')}
+				) }
+				<Button isPrimary className="tec-tickets-onboarding__next-button" onClick={ onContinue }>
+					{ __( 'Continue', 'event-tickets' ) }
 				</Button>
 			</>
 		);
 	}
 
-	if (connectionStatus === 'failed') {
+	if ( connectionStatus === 'failed' ) {
 		return (
 			<>
-				{!hideStatus && (
+				{ ! hideStatus && (
 					<div className="tec-tickets-onboarding__connection-error">
 						<ErrorIcon />
 						<span className="tec-tickets-onboarding__error-text">
-							{__('Connection failed. ', 'event-tickets')}
-							<a href="/wp-admin/admin.php?page=tec-tickets-help" className="tec-tickets-onboarding__support-link">
-								{__('Contact Support ↗', 'event-tickets')}
+							{ __( 'Connection failed.', 'event-tickets' ) }
+							<a
+								href="/wp-admin/admin.php?page=tec-tickets-help"
+								className="tec-tickets-onboarding__support-link"
+							>
+								{ __( 'Contact Support ↗', 'event-tickets' ) }
 							</a>
 						</span>
 					</div>
-				)}
-				<Button
-					isPrimary
-					className="tec-tickets-onboarding__try-again"
-					onClick={onConnect}
-				>
-					{__('Try again', 'event-tickets')}
+				) }
+				<Button isPrimary className="tec-tickets-onboarding__try-again" onClick={ onConnect }>
+					{ __( 'Try again', 'event-tickets' ) }
 				</Button>
 			</>
 		);
@@ -69,13 +63,10 @@ const GatewayConnectionButton: React.FC<GatewayConnectionButtonProps> = ({
 		<Button
 			isPrimary
 			className="tec-tickets-onboarding__connect-gateway tec-tickets-onboarding__next-button"
-			onClick={onConnect}
-			disabled={connectionStatus === 'connecting'}
+			onClick={ onConnect }
+			disabled={ connectionStatus === 'connecting' }
 		>
-			{connectionStatus === 'connecting'
-				? __('Connecting...', 'event-tickets')
-				: connectText
-			}
+			{ connectionStatus === 'connecting' ? __( 'Connecting...', 'event-tickets' ) : connectText }
 		</Button>
 	);
 };

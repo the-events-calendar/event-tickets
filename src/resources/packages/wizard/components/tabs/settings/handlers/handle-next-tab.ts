@@ -1,29 +1,28 @@
 import React from 'react';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Interface for HandleNextTabParams.
  */
 interface HandleNextTabParams {
 	currencyCode: string;
-	updateSettings: (settings: Record<string, any>) => void;
+	updateSettings: ( settings: Record< string, any > ) => void;
 	skipPaymentsTab: boolean;
 	moveToNextTab: () => void;
 	paymentOption: string;
 	paymentsTabExists: boolean;
 	paymentsTabAdded: boolean;
-	setPaymentsTabAdded: (value: boolean) => void;
-	addTab: (tab: {
+	setPaymentsTabAdded: ( value: boolean ) => void;
+	addTab: ( tab: {
 		id: string;
 		title: string;
-		content: React.ComponentType<{
+		content: React.ComponentType< {
 			moveToNextTab: () => void;
 			skipToNextTab: () => void;
-		}>;
-		ref: React.RefObject<any>;
+		} >;
+		ref: React.RefObject< any >;
 		priority: number;
 		isVisible: boolean;
-	}) => void;
+	} ) => void;
 	reorderTabs: () => void;
 	skipToNextTab: () => void;
 }
@@ -35,23 +34,11 @@ interface HandleNextTabParams {
  *
  * @param {HandleNextTabParams} params Parameters.
  */
-const handleNextTab = ({
-	currencyCode,
-	updateSettings,
-	skipPaymentsTab,
-	moveToNextTab,
-	paymentOption,
-	paymentsTabExists,
-	paymentsTabAdded,
-	setPaymentsTabAdded,
-	addTab,
-	reorderTabs,
-	skipToNextTab,
-}: HandleNextTabParams): void => {
+const handleNextTab = ( { currencyCode, updateSettings, moveToNextTab }: HandleNextTabParams ): void => {
 	// Save currency setting
-	updateSettings({
+	updateSettings( {
 		currency: currencyCode,
-	});
+	} );
 
 	moveToNextTab();
 };

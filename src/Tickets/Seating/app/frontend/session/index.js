@@ -337,7 +337,7 @@ async function fetchInterruptModalData() {
  *
  * @since 5.16.0
  *
- * @return {A11yDialog|null} Either the interrupt dialog element or `null` if it could not be found.
+ * @return {Promise<Object|null>} Either the interrupt dialog element or `null` if it could not be found.
  */
 async function getInterruptDialogElement() {
 	const firstTimerElement = getTimerElements()?.[ 0 ];

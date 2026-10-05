@@ -36,6 +36,7 @@ use TEC\Tickets\REST\TEC\V1\Traits\With_Tickets_ORM;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Filtered_Ticket_Params;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Ticket_Upsert;
 use TEC\Tickets\REST\TEC\V1\Traits\With_Parent_Post_Read_Check;
+use TEC\Tickets\REST\TEC\V1\Traits\With_Parent_Post_Edit_Check;
 use TEC\Tickets\REST\TEC\V1\Traits\With_TC_Provider;
 
 /**
@@ -51,6 +52,7 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 	use With_Filtered_Ticket_Params;
 	use With_Ticket_Upsert;
 	use With_Parent_Post_Read_Check;
+	use With_Parent_Post_Edit_Check;
 	use With_TC_Provider;
 
 	/**
@@ -269,6 +271,11 @@ class Tickets extends Post_Entity_Endpoint implements Readable_Endpoint, Creatab
 			'show_hidden',
 			fn() => __( 'Include tickets marked as hidden from view.', 'event-tickets' ),
 			false,
+		);
+
+		$collection[] = new Text(
+			'type',
+			fn() => __( 'Limit result set to tickets of a specific type.', 'event-tickets' ),
 		);
 
 		return $collection;

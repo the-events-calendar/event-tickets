@@ -7,14 +7,14 @@
 
 /* Import tickets commerce admin styles */
 @import "tickets-commerce/admin/_all.pcss";
-
-@import 'tickets-common.pcss';
+@import "tickets-common.pcss";
 
 .tribe-tickets-column-attendees-link {
 	display: inline-block;
 }
 
-#ticket_form {
+#ticket_form,
+#tec_tickets_rsvp_form {
 
 	input[type="radio"] {
 		margin-right: 5px;
@@ -337,7 +337,7 @@
 
 	&.tribe-button-icon-settings::before {
 		content: "\f111";
-		top: 0;
+		top: -2px;
 	}
 }
 
@@ -535,6 +535,27 @@
 		}
 	}
 
+	.tec-tickets-rsvp-field-row {
+
+		input,
+		textarea {
+			max-width: 100%;
+		}
+
+		@media (min-width: 782px) {
+			align-items: center;
+			display: flex;
+
+			.ticket_form_left {
+				flex: 0 0 132px;
+			}
+
+			.ticket_form_right {
+				margin-left: 0;
+			}
+		}
+	}
+
 	.input_block {
 		margin-top: 1em;
 	}
@@ -581,7 +602,7 @@
 
 	/* Date/Time fields */
 	.tribe-timepicker {
-		width: 6em;
+		width: 7em;
 	}
 }
 
@@ -598,13 +619,15 @@ h4.ticket_form_title {
 
 /* Ensure radios and checkboxes have some space to the right of them when inside a label */
 #ticket_form input[type="radio"],
-#ticket_form input[type="checkbox"] {
+#ticket_form input[type="checkbox"],
+#tec_tickets_rsvp_form input[type="radio"],
+#tec_tickets_rsvp_form input[type="checkbox"] {
 	margin-right: 0.4em;
 }
 
 .tribe_soft_note,
 p.description {
-	color: #a3a3a3;
+	color: var(--tec-admin-core-grey-50);
 	font-size: inherit;
 	font-style: normal;
 }
@@ -900,4 +923,9 @@ p.description {
 	.tec-tickets-price__regular-price {
 		color: #999;
 	}
+}
+
+.tec-tickets-provider-locked {
+	bottom: var(--tec-spacer-0);
+	position: relative;
 }

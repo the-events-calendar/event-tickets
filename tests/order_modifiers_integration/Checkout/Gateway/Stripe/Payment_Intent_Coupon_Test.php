@@ -19,7 +19,7 @@ use Tribe\Tests\Traits\With_Uopz;
  * Tests that Payment Intent creation correctly handles coupons by using the cart total
  * instead of recalculating from individual items.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Payment_Intent_Coupon_Test extends Order_Modifiers_TestCase {
 
