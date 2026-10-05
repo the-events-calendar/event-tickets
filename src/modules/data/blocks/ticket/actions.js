@@ -724,8 +724,16 @@ export const setStagedCreateOrder = ( clientIds ) => ( {
 	},
 } );
 
-export const clearStagedTickets = () => ( {
+/**
+ * Clears the staged deletes and moves: all of them, or only the ones a post save sent.
+ *
+ * @param {{deletes: Array<number>, moves: Array<number>}|null} sent The ticket IDs to clear, or `null` for all.
+ *
+ * @return {Object} The action.
+ */
+export const clearStagedTickets = ( sent = null ) => ( {
 	type: types.CLEAR_STAGED_TICKETS,
+	payload: { sent },
 } );
 
 export const setTicketId = ( clientId, ticketId ) => ( {

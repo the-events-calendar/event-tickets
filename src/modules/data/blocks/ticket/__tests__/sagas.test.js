@@ -46,8 +46,6 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
-const { wpREST } = api;
-const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 
 jest.mock( '@moderntribe/common/utils/moment', () => ( {
 	toMoment: ( date ) => date,
@@ -2126,6 +2124,22 @@ describe( 'Ticket Block sagas', () => {
 				call( deferredSagas.stageTicket, 'a', [ [ 'name', 'Staged' ], [ 'provider', 'rsvp' ] ] )
 			);
 			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'setTicketInitialState remembers the block position instead of re-saving the ticket on every post save', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.setTicketInitialState( {
+				payload: { clientId: 'a', get: ( key, fallback ) => fallback },
+			} );
+			const effects = [];
+			let step = gen.next();
+			while ( ! step.done ) {
+				effects.push( step.value );
+				step = gen.next();
+			}
+
+			expect( effects ).toContainEqual( call( deferredSagas.rememberPosition, 'a' ) );
+			expect( effects ).not.toContainEqual( fork( sagas.saveTicketWithPostSave, 'a' ) );
 		} );
 
 		it( 'deleteTicket stages the deletion of a saved ticket on a deferred post and sends no request', () => {

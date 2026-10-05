@@ -1,10 +1,16 @@
 /**
  * Internal dependencies
  */
-import { restBodyToTicketData, buildPayload } from '../deferred';
+import { restBodyToTicketData, buildPayload, reconcileSaveResponse } from '../deferred';
 import reducer, { DEFAULT_STATE } from '../reducer';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
+
+// The shared mock replaces one placeholder; these messages use two positional ones.
+jest.mock( '@wordpress/i18n', () => ( {
+	__: ( text ) => text,
+	sprintf: ( text, ...args ) => text.replace( /%(\d+)\$[ds]/g, ( match, position ) => String( args[ position - 1 ] ) ),
+} ) );
 
 describe( 'restBodyToTicketData', () => {
 	it( 'maps the REST body keys to the keys the ticket save accepts', () => {
@@ -103,12 +109,47 @@ describe( 'buildPayload', () => {
 		} );
 
 		expect( payload ).toEqual( {
-			create: [ { ticket_name: 'A' }, { ticket_name: 'C' } ],
-			update: { 12: { ticket_name: 'B' } },
+			create: [
+				{ ticket_show_description: 'yes', ticket_name: 'A' },
+				{ ticket_show_description: 'yes', ticket_name: 'C' },
+			],
+			update: { 12: { ticket_show_description: 'yes', ticket_name: 'B' } },
 			delete: [ 20 ],
 			move: { 21: 99 },
 		} );
 		expect( createOrder ).toEqual( [ 'a', 'c' ] );
+	} );
+
+	it( 'fills what the tickets REST endpoint defaults when the body leaves it out', () => {
+		const build = ( body ) =>
+			buildPayload( {
+				clientIds: [ 'a' ],
+				byClientId: { a: ticket( { isStaged: true } ) },
+				bodies: { a: body },
+				stagedDeletes: [],
+				stagedMoves: {},
+			} ).payload.create[ 0 ];
+
+		// The block never sends `show_description`; the endpoint stored 'yes', and a missing key makes `ticket_add()` store 'no'.
+		expect( build( [ [ 'name', 'A' ] ] ).ticket_show_description ).toBe( 'yes' );
+		expect( build( [ [ 'show_description', 'no' ] ] ).ticket_show_description ).toBe( 'no' );
+	} );
+
+	it( 'never names a ticket in two parts: a delete wins over a move and an edit, a move over an edit', () => {
+		const { payload } = buildPayload( {
+			clientIds: [ 'a', 'b' ],
+			byClientId: {
+				a: ticket( { ticketId: 12, hasBeenCreated: true, isStaged: true } ),
+				b: ticket( { ticketId: 13, hasBeenCreated: true, isStaged: true } ),
+			},
+			bodies: { a: [ [ 'name', 'A' ] ], b: [ [ 'name', 'B' ] ] },
+			stagedDeletes: [ 12, 14 ],
+			stagedMoves: { 13: 99, 14: 98 },
+		} );
+
+		expect( payload.update ).toEqual( {} );
+		expect( payload.delete ).toEqual( [ 12, 14 ] );
+		expect( payload.move ).toEqual( { 13: 99 } );
 	} );
 
 	it( 'is empty when nothing is staged', () => {
@@ -149,9 +190,130 @@ describe( 'staged state in the store', () => {
 		expect( selectors.getStagedCreateOrder( wrap( block ) ) ).toEqual( [] );
 	} );
 
+	it( 'settles only the deletes and moves a save sent', () => {
+		let block = reducer( withTicket, actions.stageTicketDelete( 12 ) );
+		block = reducer( block, actions.stageTicketDelete( 14 ) );
+		block = reducer( block, actions.stageTicketMove( 13, 99 ) );
+		block = reducer( block, actions.stageTicketMove( 15, 98 ) );
+
+		block = reducer( block, actions.clearStagedTickets( { deletes: [ 12 ], moves: [ 13 ] } ) );
+
+		expect( selectors.getStagedDeletes( wrap( block ) ) ).toEqual( [ 14 ] );
+		expect( selectors.getStagedMoves( wrap( block ) ) ).toEqual( { 15: 98 } );
+	} );
+
 	it( 'keeps the default state unchanged for existing tests', () => {
 		expect( DEFAULT_STATE.stagedDeletes ).toEqual( [] );
 		expect( DEFAULT_STATE.stagedMoves ).toEqual( {} );
 		expect( DEFAULT_STATE.stagedCreateOrder ).toEqual( [] );
+	} );
+} );
+
+describe( 'reconcileSaveResponse', () => {
+	const bodyA = [ [ 'name', 'A' ] ];
+	const bodyB = [ [ 'name', 'B' ] ];
+	const bodyU = [ [ 'name', 'U' ] ];
+	const sent = {
+		createOrder: [ 'a', 'b' ],
+		updates: { u: 30 },
+		bodies: { a: bodyA, b: bodyB, u: bodyU },
+		deletes: [ 40 ],
+		moves: { 50: 9 },
+	};
+	const live = { clientIds: [ 'a', 'b', 'u' ], bodies: { a: bodyA, b: bodyB, u: bodyU } };
+
+	it( 'settles what went through: created IDs by position, saved updates, deletes and moves', () => {
+		const outcome = reconcileSaveResponse( { response: { created: { 0: 101, 1: 102 }, errors: [] }, sent, live } );
+
+		expect( outcome.blocks ).toEqual( [
+			{ clientId: 'a', ticketId: 101, staged: false, error: '', hook: 'created' },
+			{ clientId: 'b', ticketId: 102, staged: false, error: '', hook: 'created' },
+			{ clientId: 'u', ticketId: 30, staged: false, error: '', hook: 'updated' },
+		] );
+		expect( outcome.deleted ).toEqual( [ 40 ] );
+		expect( outcome.settle ).toEqual( { deletes: [ 40 ], moves: [ 50 ] } );
+		expect( outcome.notices ).toEqual( [] );
+	} );
+
+	it( 'leaves a rejected entry staged with its message', () => {
+		const outcome = reconcileSaveResponse( {
+			response: {
+				created: { 0: 101 },
+				errors: [
+					{ part: 'create', key: 1, message: 'Bad provider' },
+					{ part: 'update', key: 30, message: 'Not yours' },
+				],
+			},
+			sent,
+			live,
+		} );
+
+		expect( outcome.blocks ).toEqual( [
+			{ clientId: 'a', ticketId: 101, staged: false, error: '', hook: 'created' },
+			{ clientId: 'b', staged: true, error: 'Bad provider', hook: null },
+			{ clientId: 'u', staged: true, error: 'Not yours', hook: null },
+		] );
+	} );
+
+	it( 'keeps everything staged and says why when the whole payload was refused', () => {
+		const outcome = reconcileSaveResponse( {
+			response: { created: {}, errors: [ { part: null, key: null, message: 'Too many ticket changes' } ] },
+			sent,
+			live,
+		} );
+
+		expect( outcome.blocks ).toEqual( [
+			{ clientId: 'a', staged: true, error: 'Too many ticket changes', hook: null },
+			{ clientId: 'b', staged: true, error: 'Too many ticket changes', hook: null },
+			{ clientId: 'u', staged: true, error: 'Too many ticket changes', hook: null },
+		] );
+		expect( outcome.deleted ).toEqual( [] );
+		expect( outcome.settle ).toEqual( { deletes: [], moves: [] } );
+		expect( outcome.notices ).toEqual( [ 'Too many ticket changes' ] );
+	} );
+
+	it( 'reports refused deletes and moves, whose blocks are gone, as notices', () => {
+		const outcome = reconcileSaveResponse( {
+			response: {
+				created: { 0: 101, 1: 102 },
+				errors: [
+					{ part: 'delete', key: 40, message: 'Not allowed' },
+					{ part: 'move', key: '50', message: 'Could not move' },
+				],
+			},
+			sent,
+			live,
+		} );
+
+		expect( outcome.deleted ).toEqual( [] );
+		expect( outcome.settle ).toEqual( { deletes: [ 40 ], moves: [ 50 ] } );
+		expect( outcome.notices ).toEqual( [ 'Ticket 40: Not allowed', 'Ticket 50: Could not move' ] );
+	} );
+
+	it( 'keeps a block staged when it was staged again after the request left', () => {
+		const newer = [ [ 'name', 'U2' ] ];
+		const outcome = reconcileSaveResponse( {
+			response: { created: { 0: 101, 1: 102 }, errors: [] },
+			sent,
+			live: { clientIds: [ 'a', 'b', 'u' ], bodies: { a: bodyA, b: [ [ 'name', 'B2' ] ], u: newer } },
+		} );
+
+		expect( outcome.blocks ).toEqual( [
+			{ clientId: 'a', ticketId: 101, staged: false, error: '', hook: 'created' },
+			{ clientId: 'b', ticketId: 102, staged: true, error: '', hook: 'created' },
+			{ clientId: 'u', ticketId: 30, staged: true, error: '', hook: 'updated' },
+		] );
+	} );
+
+	it( 'skips blocks removed since the request left and flags a create with no answer', () => {
+		const outcome = reconcileSaveResponse( {
+			response: { created: { 1: 102 }, errors: [] },
+			sent,
+			live: { clientIds: [ 'a' ], bodies: { a: bodyA } },
+		} );
+
+		expect( outcome.blocks ).toEqual( [
+			{ clientId: 'a', staged: true, error: 'The ticket changes were not saved with the post.', hook: null },
+		] );
 	} );
 } );

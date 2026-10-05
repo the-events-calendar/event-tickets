@@ -128,7 +128,16 @@ export function* moveTicket( { src_post_id, ticket_type_id, target_post_id } ) {
 
 		// On a post that defers ticket saves the move is staged and happens with the post save.
 		if ( usesDeferredSave() ) {
-			yield call( stageMove, parseInt( ticket_type_id, 10 ), parseInt( target_post_id, 10 ) );
+			const staged = yield call( stageMove, parseInt( ticket_type_id, 10 ), parseInt( target_post_id, 10 ) );
+
+			if ( ! staged ) {
+				yield put( {
+					type: types.MOVE_TICKET_ERROR,
+					error: 'staged-edit',
+				} );
+				return;
+			}
+
 			const data = { remove_ticket_type: parseInt( ticket_type_id, 10 ), staged: true };
 			yield put( {
 				type: types.MOVE_TICKET_SUCCESS,

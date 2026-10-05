@@ -73,13 +73,30 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				stagedCreateOrder: [ ...action.payload.clientIds ],
 			};
-		case types.CLEAR_STAGED_TICKETS:
+		case types.CLEAR_STAGED_TICKETS: {
+			const sent = action.payload && action.payload.sent;
+
+			if ( ! sent ) {
+				return {
+					...state,
+					stagedDeletes: [],
+					stagedMoves: {},
+					stagedCreateOrder: [],
+				};
+			}
+
+			const sentMoves = sent.moves.map( Number );
+
 			return {
 				...state,
-				stagedDeletes: [],
-				stagedMoves: {},
-				stagedCreateOrder: [],
+				stagedDeletes: state.stagedDeletes.filter( ( ticketId ) => ! sent.deletes.includes( ticketId ) ),
+				stagedMoves: Object.fromEntries(
+					Object.entries( state.stagedMoves ).filter(
+						( [ ticketId ] ) => ! sentMoves.includes( Number( ticketId ) )
+					)
+				),
 			};
+		}
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:

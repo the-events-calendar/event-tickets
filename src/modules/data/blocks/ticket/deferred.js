@@ -9,6 +9,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { __, sprintf } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { globals } from '@moderntribe/common/utils';
@@ -47,6 +52,14 @@ const KEY_MAP = {
 };
 
 const DROPPED_KEYS = [ 'post_id', 'add_ticket_nonce', 'edit_ticket_nonce', 'remove_ticket_nonce' ];
+
+/**
+ * What the tickets REST endpoint fills in when the body leaves it out (`Single_Ticket::ticket_args()`).
+ *
+ * `ticket_add()` reads a missing `ticket_show_description` as "no", so without this every ticket the block
+ * saves would hide its description.
+ */
+const REST_DEFAULTS = { ticket_show_description: 'yes' };
 
 /**
  * Path segments that would write through the prototype chain instead of onto the data.
@@ -173,6 +186,10 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 	const update = {};
 	const createOrder = [];
 
+	// The server drops every entry of a ticket named in more than one part: a delete wins over a move and an edit, a move over an edit.
+	const isDeleted = ( ticketId ) => stagedDeletes.includes( Number( ticketId ) );
+	const isMoved = ( ticketId ) => hasOwn( stagedMoves, ticketId );
+
 	clientIds.forEach( ( clientId ) => {
 		const ticket = byClientId[ clientId ];
 
@@ -180,10 +197,12 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			return;
 		}
 
-		const data = restBodyToTicketData( bodies[ clientId ] );
+		const data = { ...REST_DEFAULTS, ...restBodyToTicketData( bodies[ clientId ] ) };
 
 		if ( ticket.hasBeenCreated && ticket.ticketId ) {
-			update[ ticket.ticketId ] = data;
+			if ( ! isDeleted( ticket.ticketId ) && ! isMoved( ticket.ticketId ) ) {
+				update[ ticket.ticketId ] = data;
+			}
 			return;
 		}
 
@@ -196,8 +215,109 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			create,
 			update,
 			delete: [ ...stagedDeletes ],
-			move: { ...stagedMoves },
+			move: Object.fromEntries(
+				Object.entries( stagedMoves ).filter( ( [ ticketId ] ) => ! isDeleted( ticketId ) )
+			),
 		},
 		createOrder,
+	};
+};
+
+/**
+ * Works out what a post save's answer means for the staged changes that went out with it.
+ *
+ * Only what was sent is settled: a block staged again after the request left keeps its newer change, and
+ * deletes or moves staged meanwhile stay staged. A payload-level error (no part) means nothing was
+ * committed, so every sent change stays staged with the message. Refused deletes and moves have no block
+ * left to show their error on, so they become notices.
+ *
+ * @since TBD
+ *
+ * @param {Object} args          The inputs.
+ * @param {Object} args.response The `tec_tickets` field of the saved record: `created` by position and `errors`.
+ * @param {Object} args.sent     What the payload carried: `createOrder`, `updates` (client ID to ticket ID),
+ *                               the `bodies` it was built from, `deletes` and `moves`.
+ * @param {Object} args.live     The ticket blocks now: `clientIds` and the current `bodies`.
+ *
+ * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>}} What to do.
+ */
+export const reconcileSaveResponse = ( { response, sent, live } ) => {
+	const created = response.created || {};
+	const errors = Array.isArray( response.errors ) ? response.errors : [];
+	const errorFor = ( part, key ) => {
+		const error = errors.find( ( e ) => e && e.part === part && String( e.key ) === String( key ) );
+
+		return error ? String( error.message ?? '' ) : '';
+	};
+	const payloadError = errors.find( ( e ) => e && null === e.part );
+	const isLive = ( clientId ) => live.clientIds.includes( clientId );
+	const changedSince = ( clientId ) => live.bodies[ clientId ] !== sent.bodies[ clientId ];
+	const blocks = [];
+
+	if ( payloadError ) {
+		const message = String( payloadError.message ?? '' );
+
+		[ ...sent.createOrder, ...Object.keys( sent.updates ) ].filter( isLive ).forEach( ( clientId ) => {
+			blocks.push( { clientId, staged: true, error: message, hook: null } );
+		} );
+
+		return { blocks, deleted: [], settle: { deletes: [], moves: [] }, notices: [ message ] };
+	}
+
+	sent.createOrder.forEach( ( clientId, position ) => {
+		if ( ! isLive( clientId ) ) {
+			// The block is gone; a ticket created for it appears on the next load.
+			return;
+		}
+
+		const ticketId = parseInt( created[ position ], 10 );
+
+		if ( ticketId ) {
+			blocks.push( { clientId, ticketId, staged: changedSince( clientId ), error: '', hook: 'created' } );
+			return;
+		}
+
+		blocks.push( {
+			clientId,
+			staged: true,
+			error:
+				errorFor( 'create', position ) ||
+				__( 'The ticket changes were not saved with the post.', 'event-tickets' ),
+			hook: null,
+		} );
+	} );
+
+	Object.entries( sent.updates ).forEach( ( [ clientId, ticketId ] ) => {
+		if ( ! isLive( clientId ) ) {
+			return;
+		}
+
+		const error = errorFor( 'update', ticketId );
+
+		blocks.push(
+			error
+				? { clientId, staged: true, error, hook: null }
+				: { clientId, ticketId, staged: changedSince( clientId ), error: '', hook: 'updated' }
+		);
+	} );
+
+	const sentDeletes = sent.deletes.map( Number );
+	const sentMoves = Object.keys( sent.moves ).map( Number );
+	const refused = ( part, ticketId ) => {
+		const error = errorFor( part, ticketId );
+
+		/* translators: %1$d: the ticket ID, %2$s: the reason it was not saved. */
+		return error ? sprintf( __( 'Ticket %1$d: %2$s', 'event-tickets' ), ticketId, error ) : '';
+	};
+	const notices = [
+		...sentDeletes.map( ( id ) => refused( 'delete', id ) ),
+		...sentMoves.map( ( id ) => refused( 'move', id ) ),
+	].filter( Boolean );
+
+	return {
+		blocks,
+		deleted: sentDeletes.filter( ( id ) => ! errorFor( 'delete', id ) ),
+		settle: { deletes: sentDeletes, moves: sentMoves },
+		notices,
 	};
 };

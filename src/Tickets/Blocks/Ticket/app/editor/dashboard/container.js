@@ -66,7 +66,8 @@ const getIsConfirmDisabled = ( state, ownProps ) => {
 };
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {
-	if ( selectors.getTicketHasBeenCreated( state, ownProps ) ) {
+	// A staged ticket is kept like a saved one: Cancel drops the unconfirmed changes, not the ticket.
+	if ( selectors.getTicketHasBeenCreated( state, ownProps ) || selectors.getTicketIsStaged( state, ownProps ) ) {
 		dispatch(
 			actions.setTicketTempDetails( ownProps.clientId, {
 				title: selectors.getTicketTitle( state, ownProps ),

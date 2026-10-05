@@ -11,6 +11,9 @@ namespace TEC\Tickets\Deferred_Save\Classic;
 
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Result;
+use TEC\Tickets\Event;
+use TEC\Tickets\Ticket_Data;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Notices.
@@ -33,6 +36,26 @@ final class Notices {
 	 * @var string
 	 */
 	public const TRANSIENT_PREFIX = 'tec_tickets_deferred_save_result_';
+
+	/**
+	 * The domain's door to tickets, which the checks read them through too.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Data
+	 */
+	private Ticket_Data $ticket_data;
+
+	/**
+	 * Notices constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Data $ticket_data The domain's door to tickets.
+	 */
+	public function __construct( Ticket_Data $ticket_data ) {
+		$this->ticket_data = $ticket_data;
+	}
 
 	/**
 	 * Keeps the errors of a commit for the current user until their next edit screen.
@@ -153,15 +176,13 @@ final class Notices {
 	 * @return string The ticket name, or an empty string.
 	 */
 	private function ticket_name_on_post( int $ticket_id, int $post_id ): string {
-		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		// The rule `Checks` applies: a ticket of its provider's type, whose event is the saved post once both are normalised.
+		$ticket = $this->ticket_data->load_ticket_object( $ticket_id );
 
-		if ( ! $provider instanceof \Tribe__Tickets__Tickets || get_post_type( $ticket_id ) !== $provider->ticket_object ) {
-			return '';
-		}
-
-		$ticket = $provider->get_ticket( $post_id, $ticket_id );
-
-		if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object || (int) $ticket->get_event_id() !== $post_id ) {
+		if (
+			! $ticket instanceof Ticket_Object
+			|| (int) Event::filter_event_id( (int) $ticket->get_event_id(), 'deferred_save' ) !== (int) Event::filter_event_id( $post_id, 'deferred_save' )
+		) {
 			return '';
 		}
 

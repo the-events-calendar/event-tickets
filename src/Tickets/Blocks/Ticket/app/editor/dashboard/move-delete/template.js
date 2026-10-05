@@ -29,7 +29,7 @@ const MoveTicketButton = ( { onClick, isDisabled } ) => (
 	</Button>
 );
 
-const MoveDelete = ( { ticketIsSelected, moveTicket, removeTicket, isDisabled, clientId } ) => {
+const MoveDelete = ( { ticketIsSelected, moveTicket, removeTicket, isDisabled, isMoveBlocked, clientId } ) => {
 	if ( ! ticketIsSelected ) {
 		return null;
 	}
@@ -40,7 +40,16 @@ const MoveDelete = ( { ticketIsSelected, moveTicket, removeTicket, isDisabled, c
 			key: 'remove',
 		},
 		{
-			item: <MoveTicketButton onClick={ moveTicket } isDisabled={ isDisabled } />,
+			item: isMoveBlocked ? (
+				<span className="tribe-editor__ticket__move-blocked">
+					{ __(
+						'Save the post before moving this ticket: it has changes waiting to be saved.',
+						'event-tickets'
+					) }
+				</span>
+			) : (
+				<MoveTicketButton onClick={ moveTicket } isDisabled={ isDisabled } />
+			),
 			key: 'move',
 		},
 	];
@@ -68,6 +77,7 @@ MoveDelete.propTypes = {
 	moveTicket: PropTypes.func.isRequired,
 	removeTicket: PropTypes.func.isRequired,
 	isDisabled: PropTypes.bool.isRequired,
+	isMoveBlocked: PropTypes.bool,
 	ticketIsSelected: PropTypes.bool.isRequired,
 };
 

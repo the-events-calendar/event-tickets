@@ -6,16 +6,19 @@
  * save as the `tec_tickets` edit (the pattern Events Calendar Pro uses for its save option), and the
  * server's answer, created IDs by position and errors per entry, is applied back to the blocks.
  *
+ * Right before the save request leaves, the payload is rebuilt from the blocks that exist, in block
+ * order, and what it carries is recorded; the answer settles only that.
+ *
  * @since TBD
  */
 
 /**
  * External dependencies
  */
-import { eventChannel } from 'redux-saga';
-import { call, put, select, take } from 'redux-saga/effects';
+import { buffers, eventChannel } from 'redux-saga';
+import { call, fork, put, select, take } from 'redux-saga/effects';
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
-import { doAction, addAction, addFilter, removeAction } from '@wordpress/hooks';
+import { doAction, addAction, addFilter, removeAction, removeFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -23,7 +26,10 @@ import { __ } from '@wordpress/i18n';
  */
 import * as actions from './actions';
 import * as selectors from './selectors';
-import { buildPayload, usesDeferredSave } from './deferred';
+import { buildPayload, reconcileSaveResponse, usesDeferredSave } from './deferred';
+import { setBodyDetails } from './sagas';
+
+const NAMESPACE = 'tec/tickets/deferred-save';
 
 /**
  * The REST body entries per ticket block, kept out of the store because a `FormData` is not state.
@@ -33,12 +39,18 @@ import { buildPayload, usesDeferredSave } from './deferred';
 const bodies = {};
 
 /**
- * The create order the payload had when the last post save request started, captured on
- * `editor.preSavePost`. The response is mapped against this, never against the live order.
+ * The block index each ticket had when it was loaded or last saved, to tell a reordered ticket.
  *
- * @type {Array<string>|null}
+ * @type {Object<string, number>}
  */
-let sentCreateOrder = null;
+const positions = {};
+
+/**
+ * What the post save in flight carries, recorded on `editor.preSavePost`; `null` when it carries nothing.
+ *
+ * @type {Object|null}
+ */
+let sent = null;
 
 /**
  * The last response object applied. Core backfills a record's `tec_tickets` from the previous save
@@ -48,23 +60,9 @@ let sentCreateOrder = null;
  */
 let lastApplied = null;
 
-/**
- * The create order of the last payload built, mirrored outside the store for the pre-save capture.
- *
- * @type {Array<string>}
- */
-let lastBuiltCreateOrder = [];
+const hasOwn = ( target, key ) => Object.prototype.hasOwnProperty.call( target, key );
 
-/**
- * Remembers the create order the payload is being sent with.
- *
- * @since TBD
- *
- * @param {Array<string>} order The client IDs in `create` position order.
- */
-export const rememberSentCreateOrder = ( order ) => {
-	sentCreateOrder = [ ...order ];
-};
+const blockEditor = () => wpSelect( 'core/block-editor' );
 
 /**
  * Whether a ticket block still exists in the editor.
@@ -74,9 +72,83 @@ export const rememberSentCreateOrder = ( order ) => {
  * @return {boolean} Whether the block editor knows it.
  */
 const blockExists = ( clientId ) => {
-	const blockEditor = wpSelect( 'core/block-editor' );
+	const editor = blockEditor();
 
-	return ! blockEditor || 'function' !== typeof blockEditor.getBlock || !! blockEditor.getBlock( clientId );
+	return ! editor || 'function' !== typeof editor.getBlock || !! editor.getBlock( clientId );
+};
+
+/**
+ * The index of a ticket block among its siblings, or -1 when the editor cannot tell.
+ *
+ * @param {string} clientId The block.
+ *
+ * @return {number} The index.
+ */
+const blockIndex = ( clientId ) => {
+	const editor = blockEditor();
+
+	return editor && 'function' === typeof editor.getBlockIndex ? editor.getBlockIndex( clientId ) : -1;
+};
+
+/**
+ * The ticket blocks that still exist, in block order.
+ *
+ * @param {Array<string>} clientIds The ticket blocks the store knows.
+ *
+ * @return {Array<string>} The live ones, ordered.
+ */
+const liveClientIds = ( clientIds ) =>
+	clientIds
+		.filter( blockExists )
+		.map( ( clientId ) => [ clientId, blockIndex( clientId ) ] )
+		.sort( ( a, b ) => a[ 1 ] - b[ 1 ] )
+		.map( ( [ clientId ] ) => clientId );
+
+/**
+ * A body with its `menu_order` set to the block's index now, as the legacy save sent it.
+ *
+ * @param {Array<Array<string>>} entries The body.
+ * @param {number}               index   The block index, -1 when unknown.
+ *
+ * @return {Array<Array<string>>} The body.
+ */
+const withPosition = ( entries, index ) =>
+	index < 0
+		? entries
+		: entries.map( ( [ key, value ] ) => ( 'menu_order' === key ? [ key, String( index ) ] : [ key, value ] ) );
+
+const isEmptyPayload = ( payload ) =>
+	! payload.create.length &&
+	! Object.keys( payload.update ).length &&
+	! payload.delete.length &&
+	! Object.keys( payload.move ).length;
+
+/**
+ * Runs a lifecycle hook so that a listener that throws cannot stop the save being applied.
+ *
+ * @param {string} name The hook.
+ * @param {...*}   args Its arguments.
+ */
+const runHook = ( name, ...args ) => {
+	try {
+		doAction( name, ...args );
+	} catch ( error ) {
+		// eslint-disable-next-line no-console
+		console.error( error );
+	}
+};
+
+/**
+ * Shows an error in the editor's notices: the place for changes whose block is gone.
+ *
+ * @param {string} message The message.
+ */
+export const showNotice = ( message ) => {
+	const notices = wpDispatch( 'core/notices' );
+
+	if ( notices && 'function' === typeof notices.createErrorNotice ) {
+		notices.createErrorNotice( message, { isDismissible: true } );
+	}
 };
 
 /**
@@ -103,6 +175,17 @@ export const forgetBody = ( clientId ) => {
 };
 
 /**
+ * Remembers where a ticket block is, so a later move in the block order is saved.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The ticket block.
+ */
+export const rememberPosition = ( clientId ) => {
+	positions[ clientId ] = blockIndex( clientId );
+};
+
+/**
  * Hands the payload to the editor as an edit, which dirties the post and sends it with the save.
  *
  * @since TBD
@@ -110,13 +193,7 @@ export const forgetBody = ( clientId ) => {
  * @param {Object} payload The `tec_tickets` payload.
  */
 export const editPostPayload = ( payload ) => {
-	const isEmpty =
-		! payload.create.length &&
-		! Object.keys( payload.update ).length &&
-		! payload.delete.length &&
-		! Object.keys( payload.move ).length;
-
-	if ( isEmpty ) {
+	if ( isEmptyPayload( payload ) ) {
 		// Nothing staged: make the edit equal the saved record's field so core drops it and the post is clean.
 		const post = wpSelect( 'core/editor' ).getCurrentPost();
 		wpDispatch( 'core/editor' ).editPost( { tec_tickets: post ? post.tec_tickets : undefined } );
@@ -138,21 +215,46 @@ export const settlePayloadEdit = ( response ) => {
 };
 
 /**
- * Rebuilds the payload from the store and hands it to the editor.
+ * Builds the payload from the store and the blocks that exist now, in block order.
  *
  * @since TBD
+ *
+ * @return {Object} The payload, its create order, the live client IDs and the tickets they were read from.
  */
-export function* refreshPayload() {
+export function* buildLivePayload() {
 	const allClientIds = yield select( selectors.getTicketsAllClientIds );
 	const byClientId = yield select( selectors.getTicketsByClientId );
 	const stagedDeletes = yield select( selectors.getStagedDeletes );
 	const stagedMoves = yield select( selectors.getStagedMoves );
 	// A block removed through the editor's own toolbar leaves its store entry behind; it must not be saved.
-	const clientIds = allClientIds.filter( blockExists );
+	const clientIds = liveClientIds( allClientIds );
+	const positioned = {};
 
-	const { payload, createOrder } = buildPayload( { clientIds, byClientId, bodies, stagedDeletes, stagedMoves } );
+	clientIds.forEach( ( clientId ) => {
+		if ( bodies[ clientId ] ) {
+			positioned[ clientId ] = withPosition( bodies[ clientId ], blockIndex( clientId ) );
+		}
+	} );
 
-	lastBuiltCreateOrder = [ ...createOrder ];
+	const { payload, createOrder } = buildPayload( {
+		clientIds,
+		byClientId,
+		bodies: positioned,
+		stagedDeletes,
+		stagedMoves,
+	} );
+
+	return { payload, createOrder, clientIds, byClientId };
+}
+
+/**
+ * Rebuilds the payload from the store and hands it to the editor.
+ *
+ * @since TBD
+ */
+export function* refreshPayload() {
+	const { payload, createOrder } = yield call( buildLivePayload );
+
 	yield put( actions.setStagedCreateOrder( createOrder ) );
 	yield call( editPostPayload, payload );
 }
@@ -206,22 +308,145 @@ export function* dropStaged( clientId ) {
 }
 
 /**
- * Stages the move of a saved ticket.
+ * Stages the move of a saved ticket, unless an edit of it is staged.
+ *
+ * The server refuses a ticket named in both `update` and `move` and drops both, and moving removes the
+ * block, so the edit would be lost with no block left to say so. The edit is saved with the post first.
  *
  * @since TBD
  *
  * @param {number} ticketId      The saved ticket.
  * @param {number} destinationId The destination post.
+ *
+ * @return {boolean} Whether the move was staged.
  */
 export function* stageMove( ticketId, destinationId ) {
+	const clientIds = yield select( selectors.getTicketsAllClientIds );
+	const byClientId = yield select( selectors.getTicketsByClientId );
+	const hasStagedEdit = clientIds.some( ( clientId ) => {
+		const ticket = byClientId[ clientId ];
+
+		return ticket && ticket.isStaged && Number( ticket.ticketId ) === Number( ticketId );
+	} );
+
+	if ( hasStagedEdit ) {
+		showNotice(
+			__( 'This ticket has changes waiting for the post save. Save the post before moving it.', 'event-tickets' )
+		);
+
+		return false;
+	}
+
 	yield put( actions.stageTicketMove( ticketId, destinationId ) );
 	yield call( refreshPayload );
+
+	return true;
 }
 
 /**
- * Loads a created ticket's details from the server so the block shows what was saved.
+ * Stages the saved tickets whose changes the post save would otherwise drop.
  *
- * Kept as a call target so tests can assert it without running the fetch.
+ * Before deferred save every post save sent every saved ticket again, so a ticket moved in the block
+ * order, an end date moved with the event start, or an edit not confirmed yet was saved with the post.
+ * Here those tickets are staged right before the request leaves, when they pass the shared rules.
+ *
+ * @since TBD
+ */
+export function* stagePendingChanges() {
+	const allClientIds = yield select( selectors.getTicketsAllClientIds );
+	const byClientId = yield select( selectors.getTicketsByClientId );
+
+	for ( const clientId of liveClientIds( allClientIds ) ) {
+		const ticket = byClientId[ clientId ];
+
+		if ( ! ticket || ! ticket.hasBeenCreated || ticket.isStaged ) {
+			continue;
+		}
+
+		const moved = hasOwn( positions, clientId ) && positions[ clientId ] !== blockIndex( clientId );
+
+		if ( ! ticket.hasChanges && ! moved ) {
+			continue;
+		}
+
+		const isValid = yield select( selectors.isTicketValid, { clientId } );
+		const isSalePriceValid = yield select( selectors.isTicketSalePriceValid, { clientId } );
+
+		if ( ! isValid || ! isSalePriceValid ) {
+			continue;
+		}
+
+		const body = yield call( setBodyDetails, clientId );
+		yield call( stageTicket, clientId, [ ...body.entries() ] );
+	}
+}
+
+/**
+ * Builds the payload the save request carries and records what it carries.
+ *
+ * @since TBD
+ *
+ * @param {Object}   edits   The edits the editor is about to send.
+ * @param {Function} resolve Receives the edits to send instead.
+ */
+export function* prepareSave( edits, resolve ) {
+	let prepared = edits;
+
+	try {
+		yield call( stagePendingChanges );
+
+		const { payload, createOrder, clientIds, byClientId } = yield call( buildLivePayload );
+		// eslint-disable-next-line camelcase
+		const { tec_tickets: previous, ...rest } = edits;
+
+		if ( isEmptyPayload( payload ) ) {
+			sent = null;
+			prepared = rest;
+		} else {
+			const updates = {};
+
+			clientIds.forEach( ( clientId ) => {
+				const ticket = byClientId[ clientId ];
+
+				if ( ticket && ticket.isStaged && ticket.hasBeenCreated && hasOwn( payload.update, ticket.ticketId ) ) {
+					updates[ clientId ] = ticket.ticketId;
+				}
+			} );
+
+			sent = {
+				createOrder,
+				updates,
+				bodies: { ...bodies },
+				deletes: [ ...payload.delete ],
+				moves: { ...payload.move },
+			};
+			prepared = { ...rest, tec_tickets: payload };
+		}
+	} catch ( error ) {
+		// eslint-disable-next-line no-console
+		console.error( error );
+	} finally {
+		resolve( prepared );
+	}
+}
+
+/**
+ * Fires the lifecycle hook for a ticket with its details, as the REST save fired it.
+ *
+ * @since TBD
+ *
+ * @param {string} name     The hook.
+ * @param {string} clientId The ticket block.
+ * @param {number} ticketId The ticket.
+ */
+export function* announce( name, clientId, ticketId ) {
+	const details = yield select( selectors.getTicketDetails, { clientId } );
+
+	runHook( name, clientId, ticketId, details );
+}
+
+/**
+ * Loads a created ticket's details from the server and announces it.
  *
  * @since TBD
  *
@@ -229,127 +454,118 @@ export function* stageMove( ticketId, destinationId ) {
  * @param {number} ticketId The created ticket.
  */
 export function* hydrateTicket( clientId, ticketId ) {
-	forgetBody( clientId );
 	yield put( actions.fetchTicket( clientId, ticketId ) );
-	doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticketId, {} );
+	yield call( announce, 'tec.tickets.blocks.ticketCreated', clientId, ticketId );
 }
 
 /**
- * Applies the server's answer to the blocks after a post save.
+ * Applies the server's answer to what the save sent.
  *
  * @since TBD
  *
  * @param {{created: Object<number,number>, errors: Array}} response The saved record's `tec_tickets` field.
- * @param {Array<string>|null}                              order    The create order the payload was sent with; the store's when `null`.
+ * @param {Object}                                          sentNow  What the save carried, recorded on `editor.preSavePost`.
  */
-export function* applySaveResponse( response, order = null ) {
+export function* applySaveResponse( response, sentNow ) {
 	if ( ! response || 'object' !== typeof response || response === lastApplied ) {
 		return;
 	}
 
 	lastApplied = response;
 
-	const created = response.created || {};
-	const errors = Array.isArray( response.errors ) ? response.errors : [];
-	const createOrder = order || ( yield select( selectors.getStagedCreateOrder ) );
 	const clientIds = yield select( selectors.getTicketsAllClientIds );
-	const byClientId = yield select( selectors.getTicketsByClientId );
-	const stagedDeletes = yield select( selectors.getStagedDeletes );
+	const outcome = reconcileSaveResponse( { response, sent: sentNow, live: { clientIds, bodies } } );
 
-	const errorFor = ( part, key ) => {
-		const error = errors.find( ( e ) => e.part === part && String( e.key ) === String( key ) );
-
-		return error ? String( error.message ?? '' ) : null;
-	};
-
-	// New tickets, by the position their create entry had when the payload was sent.
-	for ( const [ position, clientId ] of createOrder.entries() ) {
-		const ticketId = created[ position ];
-
-		if ( ! clientIds.includes( clientId ) ) {
-			// The block is gone; the ticket exists on the server and appears on the next load.
-			continue;
+	for ( const block of outcome.blocks ) {
+		if ( 'created' === block.hook ) {
+			yield put( actions.setTicketId( block.clientId, block.ticketId ) );
+			yield put( actions.setTicketHasBeenCreated( block.clientId, true ) );
 		}
 
-		if ( ticketId ) {
-			yield put( actions.setTicketId( clientId, parseInt( ticketId, 10 ) ) );
-			yield put( actions.setTicketHasBeenCreated( clientId, true ) );
-			yield put( actions.setTicketIsStaged( clientId, false ) );
-			yield put( actions.setTicketSaveError( clientId, '' ) );
-			yield call( hydrateTicket, clientId, parseInt( ticketId, 10 ) );
-			continue;
-		}
+		yield put( actions.setTicketIsStaged( block.clientId, block.staged ) );
+		yield put( actions.setTicketSaveError( block.clientId, block.error ) );
 
-		const message = errorFor( 'create', position );
-
-		if ( message ) {
-			yield put( actions.setTicketSaveError( clientId, message ) );
+		if ( ! block.staged ) {
+			forgetBody( block.clientId );
 		}
 	}
 
-	// Saved tickets with a staged update.
-	for ( const clientId of clientIds ) {
-		const ticket = byClientId[ clientId ];
-
-		if ( ! ticket || ! ticket.isStaged || ! ticket.hasBeenCreated || createOrder.includes( clientId ) ) {
-			continue;
-		}
-
-		const message = errorFor( 'update', ticket.ticketId );
-
-		if ( message ) {
-			yield put( actions.setTicketSaveError( clientId, message ) );
-			continue;
-		}
-
-		forgetBody( clientId );
-		yield put( actions.setTicketIsStaged( clientId, false ) );
-		yield put( actions.setTicketSaveError( clientId, '' ) );
-		doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticket.ticketId, {} );
-	}
-
-	stagedDeletes.forEach( ( ticketId ) => {
-		if ( ! errorFor( 'delete', ticketId ) ) {
-			doAction( 'tec.tickets.blocks.ticketDeleted', null, ticketId );
-		}
-	} );
-
-	yield put( actions.clearStagedTickets() );
+	yield put( actions.clearStagedTickets( outcome.settle ) );
 	yield call( settlePayloadEdit, response );
 	yield call( refreshPayload );
+	clientIds.forEach( rememberPosition );
+
+	// Effects outside the store come last, once it is settled.
+	for ( const block of outcome.blocks ) {
+		if ( 'created' === block.hook ) {
+			yield call( hydrateTicket, block.clientId, block.ticketId );
+		} else if ( 'updated' === block.hook ) {
+			yield call( announce, 'tec.tickets.blocks.ticketUpdated', block.clientId, block.ticketId );
+		}
+	}
+
+	outcome.deleted.forEach( ( ticketId ) => runHook( 'tec.tickets.blocks.ticketDeleted', null, ticketId ) );
+	outcome.notices.forEach( showNotice );
 }
 
 /**
- * Applies the response of the post save that just finished, when the record carries one.
+ * Applies the answer of the post save that just finished.
  *
  * @since TBD
  */
 export function* applyLastSaveResponse() {
 	const post = wpSelect( 'core/editor' ).getCurrentPost();
 	const response = post ? post.tec_tickets : undefined;
-	const order = sentCreateOrder;
-	sentCreateOrder = null;
+	const sentNow = sent;
+	sent = null;
 
-	if ( response && 'object' === typeof response && response !== lastApplied ) {
-		yield call( applySaveResponse, response, order );
+	if ( ! sentNow ) {
+		// Nothing went out with this save; keep the editor's edit in step with what is staged.
+		yield call( refreshPayload );
 		return;
 	}
 
-	// A payload went out and no fresh answer came back: the server did not commit it. Say so on the staged blocks.
-	const clientIds = yield select( selectors.getTicketsAllClientIds );
-	const byClientId = yield select( selectors.getTicketsByClientId );
+	if ( response && 'object' === typeof response && response !== lastApplied ) {
+		yield call( applySaveResponse, response, sentNow );
+		return;
+	}
 
-	for ( const clientId of clientIds ) {
-		if ( byClientId[ clientId ] && byClientId[ clientId ].isStaged ) {
-			yield put(
-				actions.setTicketSaveError(
-					clientId,
-					__( 'The ticket changes were not saved with the post.', 'event-tickets' )
-				)
-			);
+	// A payload went out and no fresh answer came back: the server did not commit it. Say so on what was sent.
+	const message = __( 'The ticket changes were not saved with the post.', 'event-tickets' );
+	const clientIds = yield select( selectors.getTicketsAllClientIds );
+
+	for ( const clientId of [ ...sentNow.createOrder, ...Object.keys( sentNow.updates ) ] ) {
+		if ( clientIds.includes( clientId ) ) {
+			yield put( actions.setTicketSaveError( clientId, message ) );
 		}
 	}
+
+	if ( sentNow.deletes.length || Object.keys( sentNow.moves ).length ) {
+		showNotice( message );
+	}
 }
+
+/**
+ * A channel that emits, for every post save that is not an autosave or a preview, the edits about to be
+ * sent and the function that hands back the edits to send instead.
+ *
+ * The filter answers with a promise core awaits, so the payload is built from the store right before the
+ * request leaves. Buffered, so a second save never waits on a dropped event.
+ *
+ * @since TBD
+ *
+ * @return {Object} The redux-saga event channel.
+ */
+export const createPreSaveChannel = () =>
+	eventChannel( ( emitter ) => {
+		addFilter( 'editor.preSavePost', NAMESPACE, ( edits, options = {} ) =>
+			options.isAutosave || options.isPreview
+				? edits
+				: new Promise( ( resolve ) => emitter( { edits, resolve } ) )
+		);
+
+		return () => removeFilter( 'editor.preSavePost', NAMESPACE );
+	}, buffers.expanding() );
 
 /**
  * A channel that emits once for every successful post save, from the editor's `editor.savePost` action.
@@ -358,41 +574,37 @@ export function* applyLastSaveResponse() {
  *
  * @return {Object} The redux-saga event channel.
  */
-/**
- * Captures the create order the payload is sent with, right before the editor sends the save request.
- *
- * @since TBD
- */
-export const watchPreSave = () => {
-	addFilter( 'editor.preSavePost', 'tec/tickets/deferred-save', ( edits, options = {} ) => {
-		if (
-			! options.isAutosave &&
-			! options.isPreview &&
-			edits &&
-			edits.tec_tickets &&
-			Array.isArray( edits.tec_tickets.create )
-		) {
-			rememberSentCreateOrder( wpSelect( 'core/editor' ) ? lastBuiltCreateOrder : [] );
-		}
-
-		return edits;
-	} );
-};
-
 export const createPostSavedChannel = () =>
 	eventChannel( ( emitter ) => {
-		const namespace = 'tec/tickets/deferred-save';
-		addAction( 'editor.savePost', namespace, ( post, options = {} ) => {
+		addAction( 'editor.savePost', NAMESPACE, ( post, options = {} ) => {
 			if ( ! options.isAutosave && ! options.isPreview ) {
 				emitter( post || {} );
 			}
 		} );
 
-		return () => removeAction( 'editor.savePost', namespace );
-	} );
+		return () => removeAction( 'editor.savePost', NAMESPACE );
+	}, buffers.expanding() );
 
 /**
- * Applies the server's answer after every post save, while the post defers ticket saves.
+ * Prepares the payload of every post save.
+ *
+ * @since TBD
+ */
+export function* watchPreSaves() {
+	const channel = yield call( createPreSaveChannel );
+
+	try {
+		while ( true ) {
+			const { edits, resolve } = yield take( channel );
+			yield call( prepareSave, edits, resolve );
+		}
+	} finally {
+		channel.close();
+	}
+}
+
+/**
+ * Prepares and applies every post save while the post defers ticket saves.
  *
  * @since TBD
  */
@@ -401,13 +613,20 @@ export function* watchPostSaves() {
 		return;
 	}
 
-	watchPreSave();
+	yield fork( watchPreSaves );
 	const channel = yield call( createPostSavedChannel );
 
 	try {
 		while ( true ) {
 			yield take( channel );
-			yield call( applyLastSaveResponse );
+
+			try {
+				yield call( applyLastSaveResponse );
+			} catch ( error ) {
+				// One bad answer must not stop the next save from being applied.
+				// eslint-disable-next-line no-console
+				console.error( error );
+			}
 		}
 	} finally {
 		channel.close();
