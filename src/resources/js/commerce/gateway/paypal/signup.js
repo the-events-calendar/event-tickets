@@ -1,4 +1,4 @@
-/* global tribe, jQuery, tecTicketsCommerceGatewayPayPalSignup, ajaxurl */
+/* global tecTicketsCommerceGatewayPayPalSignup */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -138,11 +138,9 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param event {Event}
-	 *
 	 * @return {void}
 	 */
-	obj.onCountryChange = function ( event ) {
+	obj.onCountryChange = function () {
 		const $field = $( this );
 		const $container = $field.closest( obj.selectors.container );
 		const $button = $container.find( obj.selectors.button );
@@ -258,4 +256,5 @@ window.tribe.tickets.commerce.gateway.paypal.signup = {};
  *
  * @since 5.2.0
  */
-window.tecTicketsCommerceGatewayPayPalSignupCallback = window.tribe.tickets.commerce.gateway.paypal.signup.onboardedCallback;
+window.tecTicketsCommerceGatewayPayPalSignupCallback =
+	window.tribe.tickets.commerce.gateway.paypal.signup.onboardedCallback;

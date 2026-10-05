@@ -14,7 +14,7 @@ const WelcomeContent = ( { moveToNextTab } ) => {
 	const countries = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'countries' ) || {}, [] );
 	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
 
-	const [ originalValue, setOriginalValue ] = useState( optin );
+	const [ originalValue ] = useState( optin );
 	const [ optinValue, setOptinValue ] = useState( optin );
 	const [ selectedCountry, setCountry ] = useState( country );
 
@@ -24,20 +24,20 @@ const WelcomeContent = ( { moveToNextTab } ) => {
 
 	useEffect( () => {
 		const currentCountry = selectedCountry || country;
-		const hasStripe = countries[currentCountry]?.has_stripe || false;
+		const hasStripe = countries[ currentCountry ]?.has_stripe || false;
 
 		// Update settings store to carry available payment options forward.
 		// @TODO: Add Square when it's ready.
 		updateSettings( {
 			country: currentCountry,
-			paymentOption: hasStripe ? 'stripe' : ''
+			paymentOption: hasStripe ? 'stripe' : '',
 		} );
-	}, [selectedCountry, country, countries, updateSettings] );
+	}, [ selectedCountry, country, countries, updateSettings ] );
 
 	const tabSettings = {
 		optin: optinValue,
 		country: selectedCountry,
-		paymentOption: countries[selectedCountry]?.has_stripe ? 'stripe' : '',
+		paymentOption: countries[ selectedCountry ]?.has_stripe ? 'stripe' : '',
 		currentTab: 0,
 		begun: true,
 	};
@@ -78,10 +78,10 @@ const WelcomeContent = ( { moveToNextTab } ) => {
 							required
 						>
 							{ Object.entries( countries )
-								.map( ( [ code, country ] ) => ( {
+								.map( ( [ code, countryItem ] ) => ( {
 									code,
-									name: country.name,
-									continent: country.group,
+									name: countryItem.name,
+									continent: countryItem.group,
 								} ) )
 								.sort( ( a, b ) => a.name.localeCompare( b.name ) )
 								.map( ( { code, name } ) => (
@@ -98,8 +98,8 @@ const WelcomeContent = ( { moveToNextTab } ) => {
 						</span>
 					</BaseControl>
 				</div>
-					<SetupButton tabSettings={ tabSettings } moveToNextTab={ moveToNextTab } />
-					<ExitButton />
+				<SetupButton tabSettings={ tabSettings } moveToNextTab={ moveToNextTab } />
+				<ExitButton />
 
 				<div className="tec-tickets-onboarding__tab-footer">
 					{ ! originalValue && <OptInCheckbox initialOptin={ optin } onChange={ setOptinValue } /> }

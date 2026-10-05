@@ -13,7 +13,7 @@ interface PaymentRadioOptionsProps {
 		paypal: boolean;
 	};
 	paymentOption: string;
-	onPaymentOptionChange: (value: string) => void;
+	onPaymentOptionChange: ( value: string ) => void;
 }
 
 /**
@@ -25,20 +25,25 @@ interface PaymentRadioOptionsProps {
  *
  * @return {JSX.Element} The component.
  */
-const PaymentRadioOptions: React.FC<PaymentRadioOptionsProps> = ({
+const PaymentRadioOptions: React.FC< PaymentRadioOptionsProps > = ( {
 	paymentGateways,
 	paymentOption,
 	onPaymentOptionChange,
-}) => {
-	const handleChange = (value: string) => {
-		onPaymentOptionChange(value);
+} ) => {
+	const handleChange = ( value: string ) => {
+		onPaymentOptionChange( value );
 	};
 
 	return (
 		<fieldset className="components-radio-control tec-tickets-onboarding__payment-radios">
 			<legend className="screen-reader-text">{ __( 'Ticket Payments', 'event-tickets' ) }</legend>
 
-			<div className={`components-radio-control__option tec-tickets-onboarding__payment-option ${!paymentGateways.stripe ? 'disabled' : ''}`}>
+			<div
+				className={ `components-radio-control__option tec-tickets-onboarding__payment-option ${
+					! paymentGateways.stripe ? 'disabled' : ''
+				}` }
+			>
+				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control -- label wraps the input and is linked via htmlFor; text is in nested spans */ }
 				<label htmlFor="tec-tickets-payment-stripe">
 					<input
 						id="tec-tickets-payment-stripe"
@@ -46,9 +51,9 @@ const PaymentRadioOptions: React.FC<PaymentRadioOptionsProps> = ({
 						type="radio"
 						name="payment-option"
 						value="stripe"
-						checked={paymentOption === 'stripe'}
-						onChange={() => handleChange('stripe')}
-						disabled={!paymentGateways.stripe}
+						checked={ paymentOption === 'stripe' }
+						onChange={ () => handleChange( 'stripe' ) }
+						disabled={ ! paymentGateways.stripe }
 					/>
 					<span className="tec-tickets-onboarding__payment-option-content">
 						<span className="tec-tickets-onboarding__payment-option-label">
@@ -61,7 +66,12 @@ const PaymentRadioOptions: React.FC<PaymentRadioOptionsProps> = ({
 				</label>
 			</div>
 
-			<div className={`components-radio-control__option tec-tickets-onboarding__payment-option ${!paymentGateways.square ? 'disabled' : ''}`}>
+			<div
+				className={ `components-radio-control__option tec-tickets-onboarding__payment-option ${
+					! paymentGateways.square ? 'disabled' : ''
+				}` }
+			>
+				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control -- label wraps the input and is linked via htmlFor; text is in nested spans */ }
 				<label htmlFor="tec-tickets-payment-square">
 					<input
 						id="tec-tickets-payment-square"
@@ -69,9 +79,9 @@ const PaymentRadioOptions: React.FC<PaymentRadioOptionsProps> = ({
 						type="radio"
 						name="payment-option"
 						value="square"
-						checked={paymentOption === 'square'}
-						onChange={() => handleChange('square')}
-						disabled={!paymentGateways.square}
+						checked={ paymentOption === 'square' }
+						onChange={ () => handleChange( 'square' ) }
+						disabled={ ! paymentGateways.square }
 					/>
 					<span className="tec-tickets-onboarding__payment-option-content">
 						<span className="tec-tickets-onboarding__payment-option-label">

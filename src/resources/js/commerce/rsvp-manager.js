@@ -137,7 +137,7 @@ window.tribe.tickets.rsvp.manager = {};
 			url: TecRsvp.orderEndpoint,
 			method: 'POST',
 			headers: {
-				'X-WP-Nonce': TecRsvp.nonce
+				'X-WP-Nonce': TecRsvp.nonce,
 			},
 			beforeSend: obj.ajaxBeforeSend,
 			complete: obj.ajaxComplete,

@@ -10,8 +10,8 @@
  * - jQuery
  * - tribe_dropdowns.js
  *
- * @param $
  * @since 5.18.0
+ * @param {Function} $ The jQuery function.
  */
 
 ( function ( $ ) {
@@ -20,7 +20,7 @@
 	 * Ensures the dropdown is initialized only if it exists and hasn't already been initialized.
 	 *
 	 * @since 5.18.0
-	 * @return void
+	 * @return {void}
 	 */
 	const initFeesDropdown = () => {
 		const feesDropdown = document.querySelector( '#ticket_order_modifier_fees' );
