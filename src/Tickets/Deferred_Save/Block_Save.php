@@ -100,16 +100,19 @@ final class Block_Save {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_REST_Response $response The response.
-	 * @param WP_Post          $post     The post.
-	 * @param WP_REST_Request  $request  The request.
+	 * The filter runs on every read of every ticketable post type, so whatever an earlier callback hands on
+	 * that is not a response is passed on untouched.
 	 *
-	 * @return WP_REST_Response The response, with `tec_tickets` when this request committed a payload for the post.
+	 * @param WP_REST_Response|mixed $response The response.
+	 * @param WP_Post|mixed          $post     The post.
+	 * @param WP_REST_Request|mixed  $request  The request.
+	 *
+	 * @return WP_REST_Response|mixed The response, with `tec_tickets` when this request committed a payload for the post.
 	 */
-	public function add_result_to_response( WP_REST_Response $response, WP_Post $post, WP_REST_Request $request ): WP_REST_Response {
+	public function add_result_to_response( $response, $post, $request ) {
 		unset( $request );
 
-		if ( ! isset( $this->results[ $post->ID ] ) ) {
+		if ( ! $response instanceof WP_REST_Response || ! $post instanceof WP_Post || ! isset( $this->results[ $post->ID ] ) ) {
 			return $response;
 		}
 

@@ -165,4 +165,20 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertFalse( wp_script_is( Classic\Assets::SCRIPT, 'registered' ) );
 		$this->assertFalse( wp_style_is( Classic\Assets::STYLE, 'registered' ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_hook_the_nonce_refresh_after_core_and_unhook_it_on_unregister(): void {
+		$controller = $this->make_controller();
+		$callback   = $this->test_services->callback( Classic_Save::class, 'refresh_nonce' );
+
+		$controller->register();
+
+		$this->assertSame( 11, has_filter( 'wp_refresh_nonces', $callback ) );
+
+		$controller->unregister();
+
+		$this->assertFalse( has_filter( 'wp_refresh_nonces', $callback ) );
+	}
 }

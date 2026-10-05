@@ -170,4 +170,17 @@ class Block_Save_Test extends WPTestCase {
 		$this->assertSame( [ 'On a new post' ], $this->ticket_names( $new_post_id ) );
 		$this->assertSame( [ 0 ], array_keys( $response->get_data()['tec_tickets']['created'] ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_pass_on_a_prepared_answer_that_is_not_a_response(): void {
+		// The filter runs on every read of every ticketable type; an earlier callback may hand on anything.
+		$post_id = $this->create_deferred_post();
+		$error   = new \WP_Error( 'earlier_callback', 'Not a response' );
+
+		$answer = tribe( Block_Save::class )->add_result_to_response( $error, get_post( $post_id ), new WP_REST_Request() );
+
+		$this->assertSame( $error, $answer );
+	}
 }
