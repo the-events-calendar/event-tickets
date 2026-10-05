@@ -77,6 +77,8 @@ final class Controller extends Controller_Contract {
 		$this->container->singleton( Classic_Save::class );
 
 		add_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY, 2 );
+		// After core's `wp_refresh_post_nonces()` at 10, which decides whether the post's nonces are refreshed.
+		add_filter( 'wp_refresh_nonces', $this->container->callback( Classic_Save::class, 'refresh_nonce' ), 11 );
 	}
 
 	/**
@@ -88,5 +90,6 @@ final class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'save_post', $this->container->callback( Classic_Save::class, 'on_save_post' ), Classic_Save::PRIORITY );
+		remove_filter( 'wp_refresh_nonces', $this->container->callback( Classic_Save::class, 'refresh_nonce' ), 11 );
 	}
 }
