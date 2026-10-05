@@ -189,7 +189,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle processing the RSVP step based on current arguments.
 	 *
 	 * @since 5.30.0
-	 * @since TBD Refuses a cart whose total is greater than zero and guards a failed order creation.
+	 * @since 5.30.0.2 Refuses a cart whose total is greater than zero and guards a failed order creation.
 	 *
 	 * @param array           $args    {
 	 *     The list of step template arguments.
@@ -370,7 +370,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handle RSVP processing for the RSVP forms.
 	 *
 	 * @since 5.30.0
-	 * @since TBD Rejects tickets that are not RSVP tickets.
+	 * @since 5.30.0.2 Rejects tickets that are not RSVP tickets.
 	 *
 	 * @param int             $ticket_id The ticket ID.
 	 * @param WP_REST_Request $request   The REST API request object.

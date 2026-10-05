@@ -256,7 +256,7 @@ class Connector {
 	 * Handles the regeneration of the QR Code API Hash via Admin AJAX request.
 	 *
 	 * @since 5.7.0
-	 * @since TBD Require the `manage_options` capability before regenerating the key, since the nonce alone is exposed to low-privileged users.
+	 * @since 5.30.0.2 Require the `manage_options` capability before regenerating the key, since the nonce alone is exposed to low-privileged users.
 	 *
 	 * @return void
 	 */

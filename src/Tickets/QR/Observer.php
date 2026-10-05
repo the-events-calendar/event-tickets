@@ -88,7 +88,7 @@ class Observer {
 	 * Check if user is authorized to check in Ticket.
 	 *
 	 * @since 5.7.0
-	 * @since TBD Records the QR status here and passes an "already checked in" flag to the notice.
+	 * @since 5.30.0.2 Records the QR status here and passes an "already checked in" flag to the notice.
 	 *
 	 * @param int    $event_id      Event post ID.
 	 * @param int    $ticket_id     Ticket post ID.
@@ -197,7 +197,7 @@ class Observer {
 	 * Show a notice so the user knows the ticket was checked in.
 	 *
 	 * @since 5.7.0
-	 * @since TBD Made read-only and gated behind `edit_posts`; the status write moved to the authorized check-in path.
+	 * @since 5.30.0.2 Made read-only and gated behind `edit_posts`; the status write moved to the authorized check-in path.
 	 *
 	 * @return void
 	 */
@@ -274,7 +274,7 @@ class Observer {
 	 * Checks the user in, for all the *Tickets modules running.
 	 *
 	 * @since 5.7.0
-	 * @since TBD Flags the check-in as a QR check-in so the QR status is recorded in this authorized path.
+	 * @since 5.30.0.2 Flags the check-in as a QR check-in so the QR status is recorded in this authorized path.
 	 *
 	 * @param string|int $ticket_id The ticket ID.
 	 *

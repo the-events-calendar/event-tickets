@@ -450,7 +450,7 @@ class RSVP_Cart extends Abstract_Cart {
 	 * Add the ticket parameters to the item in the cart.
 	 *
 	 * @since 5.30.0
-	 * @since TBD Drops items that are not RSVP tickets instead of relabeling them.
+	 * @since 5.30.0.2 Drops items that are not RSVP tickets instead of relabeling them.
 	 *
 	 * @param array $item The item in the cart.
 	 *
