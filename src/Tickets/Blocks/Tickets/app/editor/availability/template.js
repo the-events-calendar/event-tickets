@@ -18,7 +18,7 @@ import { TICKET_LABELS } from '../../../../../../modules/data/blocks/ticket/cons
 import './style.pcss';
 
 /**
- * @todo: consider changing to _n for better translation compatibility
+ * @todo consider changing to _n for better translation compatibility
  */
 
 const Availability = ( { available, total } ) => {

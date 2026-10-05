@@ -45,8 +45,8 @@ const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerI
  *
  * @since 5.9.0
  *
- * @param dispatch The dispatch function.
- * @param ownProps The component's own props.
+ * @param {Function} dispatch The dispatch function.
+ * @param {Object}   ownProps The component's own props.
  *
  * @return {Function} The change event handler.
  */
@@ -72,8 +72,8 @@ const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInp
  *
  * @since 5.9.0
  *
- * @param state    The state.
- * @param ownProps The component's own props.
+ * @param {Object} state    The state.
+ * @param {Object} ownProps The component's own props.
  *
  * @return {Object} The component's props.
  */
