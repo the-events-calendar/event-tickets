@@ -3,6 +3,16 @@
 	"plugins": [ "stylelint-order" ],
 	"rules": {
 		"selector-class-pattern": null,
+		"selector-id-pattern": null,
+		"no-duplicate-selectors": null,
+		"no-empty-source": null,
+		"font-family-no-missing-generic-family-keyword": [ true, { "ignoreFontFamilies": [ "dashicons" ] } ],
+		"no-descending-specificity": null,
+		"scss/selector-no-redundant-nesting-selector": null,
+		"scss/at-rule-no-unknown": [ true, { "ignoreAtRules": [ "define-mixin", "svg-load" ] } ],
+		"selector-pseudo-class-no-unknown": [ true, { "ignorePseudoClasses": [ "placeholder" ] } ],
+		"@stylistic/max-line-length": [ 120, { "ignore": [ "comments" ], "ignorePattern": "/^\\s*(\\.|font-family)/" } ],
+		"scss/load-no-partial-leading-underscore": null,
 		"order/properties-alphabetical-order": true
 	}
 }

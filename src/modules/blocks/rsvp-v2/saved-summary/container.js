@@ -187,7 +187,7 @@ RSVPSavedSummary.propTypes = {
 
 const mapStateToProps = ( state, ownProps ) => {
 	const startDateMoment = selectors.getRSVPStartDateMoment( state );
-	const endDateMoment = selectors.getRSVPEndDateMoment(state);
+	const endDateMoment = selectors.getRSVPEndDateMoment( state );
 
 	return {
 		available: selectors.getRSVPAvailable( state ),

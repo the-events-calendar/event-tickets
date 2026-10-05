@@ -2,9 +2,9 @@ export const actions = {
 	/**
 	 * Set all the fees.
 	 *
-	 * @param {Fee[]} feesAvailable
-	 * @param {Fee[]} feesAutomatic
-	 * @return {{allFees, type: string}}
+	 * @param {Object[]} feesAvailable The available fees.
+	 * @param {Object[]} feesAutomatic The automatic fees.
+	 * @return {{allFees, type: string}} The action object.
 	 */
 	setAllFees( feesAvailable, feesAutomatic ) {
 		return {
@@ -17,9 +17,9 @@ export const actions = {
 	/**
 	 * Set the selected fees for a ticket.
 	 *
-	 * @param {string} clientId
-	 * @param {int[]}  feesSelected
-	 * @return {{feesSelected, clientId, type: string}}
+	 * @param {string}   clientId     The block client ID.
+	 * @param {number[]} feesSelected The IDs of the selected fees.
+	 * @return {{feesSelected, clientId, type: string}} The action object.
 	 */
 	setTicketFees( clientId, feesSelected ) {
 		return {
@@ -32,9 +32,9 @@ export const actions = {
 	/**
 	 * Add a fee to a ticket.
 	 *
-	 * @param {string} clientId
-	 * @param {int}    feeId
-	 * @return {{clientId, type: string, feeId}}
+	 * @param {string} clientId The block client ID.
+	 * @param {number} feeId    The fee ID.
+	 * @return {{clientId, type: string, feeId}} The action object.
 	 */
 	addFeeToTicket( clientId, feeId ) {
 		return {
@@ -47,9 +47,9 @@ export const actions = {
 	/**
 	 * Remove a fee from a ticket.
 	 *
-	 * @param {string} clientId
-	 * @param {int}    feeId
-	 * @return {{clientId, type: string, feeId}}
+	 * @param {string} clientId The block client ID.
+	 * @param {number} feeId    The fee ID.
+	 * @return {{clientId, type: string, feeId}} The action object.
 	 */
 	removeFeeFromTicket( clientId, feeId ) {
 		return {
@@ -62,8 +62,8 @@ export const actions = {
 	/**
 	 * Set the automatic fees.
 	 *
-	 * @param {Fee[]} feesAutomatic
-	 * @return {{feesAutomatic, type: string}}
+	 * @param {Object[]} feesAutomatic The automatic fees.
+	 * @return {{feesAutomatic, type: string}} The action object.
 	 */
 	setAutomaticFees( feesAutomatic ) {
 		return {
@@ -75,8 +75,8 @@ export const actions = {
 	/**
 	 * Set the available fees.
 	 *
-	 * @param {Fee[]} feesAvailable
-	 * @return {{feesAvailable, type: string}}
+	 * @param {Object[]} feesAvailable The available fees.
+	 * @return {{feesAvailable, type: string}} The action object.
 	 */
 	setAvailableFees( feesAvailable ) {
 		return {
@@ -88,7 +88,7 @@ export const actions = {
 	/**
 	 * Fetch the fees from the API.
 	 *
-	 * @return {{type: string}}
+	 * @return {{type: string}} The action object.
 	 */
 	fetchFeesFromAPI() {
 		return {
@@ -99,8 +99,8 @@ export const actions = {
 	/**
 	 * Set the selected fees for the post ID.
 	 *
-	 * @param {string} clientId
-	 * @return {{clientId, type: string}}
+	 * @param {string} clientId The block client ID.
+	 * @return {{clientId, type: string}} The action object.
 	 */
 	setFeesByPostId( clientId ) {
 		return {
@@ -112,9 +112,9 @@ export const actions = {
 	/**
 	 * Set the fees to be displayed.
 	 *
-	 * @param {string} clientId
-	 * @param {Fee[]}  fees
-	 * @return {{fees, clientId, type: string}}
+	 * @param {string}   clientId The block client ID.
+	 * @param {Object[]} fees     The fees.
+	 * @return {{fees, clientId, type: string}} The action object.
 	 */
 	setDisplayedFees( clientId, fees ) {
 		return {
@@ -127,9 +127,9 @@ export const actions = {
 	/**
 	 * Add a fee to the displayed fees.
 	 *
-	 * @param {string} clientId
-	 * @param {int}    feeId
-	 * @return {{clientId, feeId, type: string}}
+	 * @param {string} clientId The block client ID.
+	 * @param {number} feeId    The fee ID.
+	 * @return {{clientId, feeId, type: string}} The action object.
 	 */
 	addDisplayedFee( clientId, feeId ) {
 		return {

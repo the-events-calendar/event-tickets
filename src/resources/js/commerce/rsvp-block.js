@@ -54,7 +54,7 @@ window.tribe.tickets.rsvp.block = {};
 	 * @since 5.30.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
-	 * @return {boolean}
+	 * @return {boolean} Whether IAC is active.
 	 */
 	obj.hasIac = function ( $container ) {
 		const iac = $container.data( 'iac' );
@@ -71,7 +71,7 @@ window.tribe.tickets.rsvp.block = {};
 	 */
 	obj.bindGoing = function ( $container ) {
 		const rsvpId = $container.data( 'rsvp-id' );
-		let data = {
+		const data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			nonce: TecRsvp.nonces.rsvpHandle,
@@ -102,7 +102,7 @@ window.tribe.tickets.rsvp.block = {};
 	 */
 	obj.bindNotGoing = function ( $container ) {
 		const rsvpId = $container.data( 'rsvp-id' );
-		let data = {
+		const data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			nonce: TecRsvp.nonces.rsvpHandle,
@@ -116,7 +116,6 @@ window.tribe.tickets.rsvp.block = {};
 					data.going = 'not-going';
 				} else {
 					data.step = 'not-going';
-
 				}
 
 				tribe.tickets.rsvp.manager.request( data, $container );
@@ -249,12 +248,10 @@ window.tribe.tickets.rsvp.block = {};
 	 *
 	 * @since 5.30.0
 	 *
-	 * @param {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param {jqXHR}  jqXHR    Request object
-	 * @param {Object} settings Settings that this request was made with
+	 * @param {Event} event event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @return {void}
 	 */
-	obj.unbindEvents = function ( event, jqXHR, settings ) {
+	obj.unbindEvents = function ( event ) {
 		// eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		const $goingButton = $container.find( obj.selectors.goingButton );

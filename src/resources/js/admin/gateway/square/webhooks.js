@@ -21,7 +21,9 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
  *
  * @since 5.24.0
  *
+ * @param {Function} $        jQuery.
  * @param {Document} document The document object.
+ * @param {Object}   obj      The webhooks namespace object.
  * @return {void}
  */
 ( ( $, document, obj ) => {
@@ -56,7 +58,8 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 		testModeCheckbox: '#square-test-mode',
 		liveFields: '.square-live-field',
 		sandboxFields: '.square-sandbox-field',
-		fixWebhookButton: '.notice .button-primary[href*="admin.php?page=tec-tickets-settings&tab=payments&section=square"]',
+		fixWebhookButton:
+			'.notice .button-primary[href*="admin.php?page=tec-tickets-settings&tab=payments&section=square"]',
 	};
 
 	/**
@@ -86,7 +89,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 	 * @return {void}
 	 */
 	const initCopyButtons = () => {
-		$( selectors.copyButton ).each( function() {
+		$( selectors.copyButton ).each( function () {
 			const $button = $( this );
 			const targetId = $button.data( 'clipboard-target' );
 
@@ -95,7 +98,7 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 			}
 
 			// Add success handling to the Click
-			$button.on( 'click', function() {
+			$button.on( 'click', function () {
 				const $this = $( this );
 
 				// Store the original text of the button
@@ -276,11 +279,14 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 			success: ( response ) => {
 				if ( response.success ) {
 					// Show success notice and reload
-					$button.closest( '.notice' )
+					$button
+						.closest( '.notice' )
 						.removeClass( 'notice-error' )
 						.addClass( 'notice-success' )
 						.find( 'p:first' )
-						.html( '<strong>' + __( 'Square webhook registered successfully!', 'event-tickets' ) + '</strong>' );
+						.html(
+							'<strong>' + __( 'Square webhook registered successfully!', 'event-tickets' ) + '</strong>'
+						);
 
 					setTimeout( () => {
 						location.reload();
@@ -337,5 +343,4 @@ window.tec.tickets.commerce.square.webhooks = window.tec.tickets.commerce.square
 
 	// When the DOM is ready, initialize
 	$( init );
-
 } )( jQuery, document, window.tec.tickets.commerce.square.webhooks );
