@@ -227,6 +227,76 @@ class Classic_Save_Test extends WPTestCase {
 		$this->assertTrue( (bool) wp_verify_nonce( $this->extract_nonce( $html ), Classic_Save::NONCE_ACTION ) );
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_do_nothing_on_a_preview(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Previewed' ) ] ] );
+		// Previewing a draft saves the draft itself (`post_preview()` calls `edit_post()`), and the page keeps its staged changes.
+		$_POST['wp-preview'] = 'dopreview';
+
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Previewed' ] );
+
+		$this->assertSame( [], $this->ticket_names( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_commit_once_when_the_post_is_saved_again_during_its_save(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Only once' ) ] ] );
+		$resaved = false;
+
+		// As TEC does when "Sticky in Month View" changes: the post is saved again from inside its own `save_post`.
+		add_action(
+			'save_post',
+			static function ( int $saved_id ) use ( $post_id, &$resaved ) {
+				if ( $saved_id === $post_id && ! $resaved ) {
+					$resaved = true;
+					wp_update_post( [ 'ID' => $post_id, 'menu_order' => -1 ] );
+				}
+			},
+			15
+		);
+
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
+
+		$this->assertTrue( $resaved );
+		$this->assertSame( [ 'Only once' ], $this->ticket_names( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refresh_its_nonce_with_the_post_nonces(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+
+		// Core's `wp_refresh_post_nonces()` answers first and lists the field IDs whose nonces it refreshed.
+		$response = apply_filters( 'wp_refresh_nonces', [], [ 'wp-refresh-post-nonces' => [ 'post_id' => $post_id ] ], 'post' );
+
+		$replace = $response['wp-refresh-post-nonces']['replace'];
+		$this->assertArrayHasKey( '_wpnonce', $replace );
+		$this->assertTrue( (bool) wp_verify_nonce( $replace[ Classic_Save::NONCE_FIELD ], Classic_Save::NONCE_ACTION ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_refresh_its_nonce_when_core_refused_the_refresh(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'subscriber' ] ) );
+		$post_id = static::factory()->post->create();
+
+		// A user who may not edit the post: core answers without `replace`.
+		$response = apply_filters( 'wp_refresh_nonces', [], [ 'wp-refresh-post-nonces' => [ 'post_id' => $post_id ] ], 'post' );
+
+		$this->assertSame( [ 'check' => 1 ], $response['wp-refresh-post-nonces'] );
+	}
+
 	protected function extract_nonce( string $html ): string {
 		preg_match( '/value="([^"]+)"/', $html, $m );
 

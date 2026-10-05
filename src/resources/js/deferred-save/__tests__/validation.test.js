@@ -44,6 +44,31 @@ describe( 'validateFields', () => {
 		).toEqual( [] );
 	} );
 
+	it( 'reads the sale window in the site\'s date format', () => {
+		const window = ( start, end ) =>
+			fields( { ticket_add_sale_price: '1', ticket_sale_price: '5', ticket_sale_start_date: start, ticket_sale_end_date: end } );
+
+		// d/m/Y (format 4): 12 September to 5 October is a valid window; read as m/d/Y it would not be.
+		expect( validateFields( window( '12/09/2026', '05/10/2026' ), { dateFormat: 4 } ) ).toEqual( [] );
+		expect( validateFields( window( '05/10/2026', '12/09/2026' ), { dateFormat: 4 } ) ).toEqual( [ 'sale_window' ] );
+		// d.m.Y (format 11) and j-n-Y (format 7).
+		expect( validateFields( window( '12.09.2026', '05.10.2026' ), { dateFormat: 11 } ) ).toEqual( [] );
+		expect( validateFields( window( '5-10-2026', '12-9-2026' ), { dateFormat: 7 } ) ).toEqual( [ 'sale_window' ] );
+		// A date the format cannot read is left to the server, never reported as a bad window.
+		expect( validateFields( window( 'soon', '05/10/2026' ), { dateFormat: 4 } ) ).toEqual( [] );
+	} );
+
+	it( 'reads prices written with a thousands separator', () => {
+		expect( validateFields( fields( { ticket_price: '1,234.50' } ) ) ).toEqual( [] );
+		expect( validateFields( fields( { ticket_price: '1.234,50' } ) ) ).toEqual( [] );
+		expect(
+			validateFields( fields( { ticket_price: '1,234.50', ticket_add_sale_price: '1', ticket_sale_price: '999.99' } ) )
+		).toEqual( [] );
+		expect(
+			validateFields( fields( { ticket_price: '1.234,50', ticket_add_sale_price: '1', ticket_sale_price: '1.300,00' } ) )
+		).toEqual( [ 'sale_price' ] );
+	} );
+
 	it( 'requires the capacity not to fall below tickets sold, when sold is known', () => {
 		expect( validateFields( fields( { 'tribe-ticket[capacity]': '3' } ), { sold: 5 } ) ).toEqual( [ 'capacity' ] );
 		expect( validateFields( fields( { 'tribe-ticket[capacity]': '5' } ), { sold: 5 } ) ).toEqual( [] );

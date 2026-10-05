@@ -747,8 +747,12 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
+		$tribe_tickets.trigger( 'pre-save-ticket.tribe', e );
+
 		/**
 		 * Lets another script take over the save, e.g. to stage it with the post save instead.
+		 *
+		 * Asked after `pre-save-ticket.tribe`, so its listeners (Tickets Plus' Save as preset) run either way.
 		 *
 		 * @since TBD
 		 *
@@ -759,8 +763,6 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', { event: e, panel: $edit_panel, ticketType } ) ) {
 			return;
 		}
-
-		$tribe_tickets.trigger( 'pre-save-ticket.tribe', e );
 
 		const ticketID = $edit_panel.find( '#ticket_id' ).val();
 		const $editParent = $base_panel.find( `[data-ticket-type-id="${ ticketID }"]` );

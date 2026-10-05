@@ -129,13 +129,24 @@ export const createState = () => {
 		},
 
 		/**
-		 * Stages an edit of a saved ticket.
+		 * Stages an edit of a saved ticket, unless a move of it is staged.
+		 *
+		 * A saved ticket carries one staged change at most: the server drops every entry of a ticket named
+		 * in more than one of `update`, `move` and `delete`.
 		 *
 		 * @param {number}               ticketId The ticket ID.
 		 * @param {Array<Array<string>>} fields   The panel's field set.
+		 *
+		 * @return {boolean} Whether the edit was staged.
 		 */
 		stageUpdate( ticketId, fields ) {
+			if ( move[ ticketId ] ) {
+				return false;
+			}
+
 			update = { ...update, [ ticketId ]: entry( fields ) };
+
+			return true;
 		},
 
 		/**
@@ -150,13 +161,15 @@ export const createState = () => {
 		},
 
 		/**
-		 * Stages the deletion of a saved ticket, dropping any staged edit of it.
+		 * Stages the deletion of a saved ticket, replacing any staged edit or move of it.
 		 *
 		 * @param {number} ticketId The ticket ID.
 		 */
 		stageDelete( ticketId ) {
-			const { [ ticketId ]: _dropped, ...rest } = update;
-			update = rest;
+			const { [ ticketId ]: _droppedUpdate, ...restUpdate } = update;
+			const { [ ticketId ]: _droppedMove, ...restMove } = move;
+			update = restUpdate;
+			move = restMove;
 			if ( ! deleted.includes( ticketId ) ) {
 				deleted = [ ...deleted, ticketId ];
 			}
@@ -183,14 +196,22 @@ export const createState = () => {
 		},
 
 		/**
-		 * Stages a move of a saved ticket.
+		 * Stages a move of a saved ticket, unless an edit or a deletion of it is staged.
 		 *
 		 * @param {number} ticketId         The ticket ID.
 		 * @param {number} destinationId    The destination post ID.
 		 * @param {string} destinationTitle The destination title, for the row marker.
+		 *
+		 * @return {boolean} Whether the move was staged.
 		 */
 		stageMove( ticketId, destinationId, destinationTitle ) {
+			if ( update[ ticketId ] || deleted.includes( ticketId ) ) {
+				return false;
+			}
+
 			move = { ...move, [ ticketId ]: { destinationId, destinationTitle } };
+
+			return true;
 		},
 
 		/**
@@ -282,16 +303,67 @@ export const buildHiddenFields = ( state ) => {
 	return fields;
 };
 
+/**
+ * Reads a price the way the panel lets an admin type it: digits with an optional thousands separator and
+ * decimal separator, either of `.` and `,`. The last separator is the decimal one when one or two digits
+ * follow it; otherwise every separator groups thousands.
+ *
+ * @param {*} value The value.
+ *
+ * @return {number|null} The number, `NaN` when it is not a non-negative number, `null` when empty.
+ */
 const numberOrNull = ( value ) => {
-	const text = String( value ?? '' ).trim();
+	const text = String( value ?? '' ).replace( /\s/g, '' );
 
 	if ( '' === text ) {
 		return null;
 	}
 
-	const number = Number( text.replace( ',', '.' ) );
+	if ( ! /^[\d.,]*\d[\d.,]*$/.test( text ) ) {
+		return NaN;
+	}
 
-	return Number.isFinite( number ) ? number : NaN;
+	const last = Math.max( text.lastIndexOf( '.' ), text.lastIndexOf( ',' ) );
+	const decimals = last < 0 ? '' : text.slice( last + 1 );
+
+	if ( last >= 0 && decimals.length >= 1 && decimals.length <= 2 ) {
+		return Number( `${ text.slice( 0, last ).replace( /[.,]/g, '' ) || '0' }.${ decimals }` );
+	}
+
+	return Number( text.replace( /[.,]/g, '' ) );
+};
+
+/**
+ * Where the year, month and day sit in each datepicker format, by the index the site option stores
+ * (`Tribe__Date_Utils::datepicker_formats()`, the list `tickets.js` uses).
+ */
+const DATE_ORDERS = [ 'ymd', 'mdy', 'mdy', 'dmy', 'dmy', 'mdy', 'mdy', 'dmy', 'dmy', 'ymd', 'mdy', 'dmy' ];
+
+/**
+ * Reads a date typed in the site's datepicker format.
+ *
+ * @since TBD
+ *
+ * @param {string} value       The date.
+ * @param {number} formatIndex The datepicker format index.
+ *
+ * @return {Date|null} The date, or `null` when it cannot be read in that format.
+ */
+export const parseDatepickerDate = ( value, formatIndex ) => {
+	const order = DATE_ORDERS[ formatIndex ];
+	const parts = String( value ?? '' )
+		.trim()
+		.split( /[-/.]/ );
+
+	if ( ! order || 3 !== parts.length || parts.some( ( part ) => ! /^\d+$/.test( part ) ) ) {
+		return null;
+	}
+
+	const at = ( unit ) => parseInt( parts[ order.indexOf( unit ) ], 10 );
+	const [ year, month, day ] = [ at( 'y' ), at( 'm' ), at( 'd' ) ];
+	const date = new Date( year, month - 1, day );
+
+	return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
 };
 
 const isOn = ( value ) =>
@@ -310,8 +382,8 @@ const isOn = ( value ) =>
  *
  * @since TBD
  *
- * @param {Array<Array<string>>} fields  The field set.
- * @param {{sold?: number}}      context What the page knows about the ticket.
+ * @param {Array<Array<string>>}                 fields  The field set.
+ * @param {{sold?: number, dateFormat?: number}} context What the page knows: the tickets sold and the datepicker format index.
  *
  * @return {Array<string>} The failing rules: `name`, `price`, `sale_price`, `sale_window`, `capacity`.
  */
@@ -342,10 +414,12 @@ export const validateFields = ( fields, context = {} ) => {
 			errors.push( 'sale_price' );
 		}
 
-		const start = firstValue( fields, 'ticket_sale_start_date' );
-		const end = firstValue( fields, 'ticket_sale_end_date' );
+		const dateFormat = undefined === context.dateFormat ? 0 : context.dateFormat;
+		const start = parseDatepickerDate( firstValue( fields, 'ticket_sale_start_date' ), dateFormat );
+		const end = parseDatepickerDate( firstValue( fields, 'ticket_sale_end_date' ), dateFormat );
 
-		if ( start && end && new Date( start ) > new Date( end ) ) {
+		// A date the format cannot read is left to the server rather than reported as a bad window.
+		if ( start && end && start > end ) {
 			errors.push( 'sale_window' );
 		}
 	}
