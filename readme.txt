@@ -206,6 +206,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.30.0.2] 2026-10-05 =
+
+* Fix - Corrected the ticket sale duration date picker so it closes when clicking elsewhere in the editor, and gave new tickets a one day sale window when the event has no dates saved yet, instead of an invalid end date.
+* Fix - Kept an event's payment provider when its ticket settings are saved, and left the provider selectable until the first ticket (not an RSVP) is created.
+* Security - Hardened the permission and state handling of QR code check-in notices.
+* Security - Strengthened validation of RSVP orders placed through the REST API.
+* Security - Tightened the permission checks for regenerating the QR code API key.
+* Tweak - Centered the labels of the secondary buttons in the ticket admin panels, including the settings button icon, so they line up vertically within the button.
+
 = [5.30.0.1] 2026-10-01 =
 
 * Fix - Prevented the Tickets metabox from losing fields in the Classic Editor when the RSVP metabox is placed above it.

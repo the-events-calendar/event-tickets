@@ -1,6 +1,0 @@
-significance: patch
-type: fix
-entry: Corrected the ticket sale duration date picker so it closes when clicking
-  elsewhere in the editor, and gave new tickets a one day sale window when the
-  event has no dates saved yet, instead of an invalid end date.
-timestamp: 2026-10-02T22:37:48.004Z
