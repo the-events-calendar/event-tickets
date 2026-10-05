@@ -103,12 +103,47 @@ describe( 'buildPayload', () => {
 		} );
 
 		expect( payload ).toEqual( {
-			create: [ { ticket_name: 'A' }, { ticket_name: 'C' } ],
-			update: { 12: { ticket_name: 'B' } },
+			create: [
+				{ ticket_show_description: 'yes', ticket_name: 'A' },
+				{ ticket_show_description: 'yes', ticket_name: 'C' },
+			],
+			update: { 12: { ticket_show_description: 'yes', ticket_name: 'B' } },
 			delete: [ 20 ],
 			move: { 21: 99 },
 		} );
 		expect( createOrder ).toEqual( [ 'a', 'c' ] );
+	} );
+
+	it( 'fills what the tickets REST endpoint defaults when the body leaves it out', () => {
+		const build = ( body ) =>
+			buildPayload( {
+				clientIds: [ 'a' ],
+				byClientId: { a: ticket( { isStaged: true } ) },
+				bodies: { a: body },
+				stagedDeletes: [],
+				stagedMoves: {},
+			} ).payload.create[ 0 ];
+
+		// The block never sends `show_description`; the endpoint stored 'yes', and a missing key makes `ticket_add()` store 'no'.
+		expect( build( [ [ 'name', 'A' ] ] ).ticket_show_description ).toBe( 'yes' );
+		expect( build( [ [ 'show_description', 'no' ] ] ).ticket_show_description ).toBe( 'no' );
+	} );
+
+	it( 'never names a ticket in two parts: a delete wins over a move and an edit, a move over an edit', () => {
+		const { payload } = buildPayload( {
+			clientIds: [ 'a', 'b' ],
+			byClientId: {
+				a: ticket( { ticketId: 12, hasBeenCreated: true, isStaged: true } ),
+				b: ticket( { ticketId: 13, hasBeenCreated: true, isStaged: true } ),
+			},
+			bodies: { a: [ [ 'name', 'A' ] ], b: [ [ 'name', 'B' ] ] },
+			stagedDeletes: [ 12, 14 ],
+			stagedMoves: { 13: 99, 14: 98 },
+		} );
+
+		expect( payload.update ).toEqual( {} );
+		expect( payload.delete ).toEqual( [ 12, 14 ] );
+		expect( payload.move ).toEqual( { 13: 99 } );
 	} );
 
 	it( 'is empty when nothing is staged', () => {

@@ -49,6 +49,14 @@ const KEY_MAP = {
 const DROPPED_KEYS = [ 'post_id', 'add_ticket_nonce', 'edit_ticket_nonce', 'remove_ticket_nonce' ];
 
 /**
+ * What the tickets REST endpoint fills in when the body leaves it out (`Single_Ticket::ticket_args()`).
+ *
+ * `ticket_add()` reads a missing `ticket_show_description` as "no", so without this every ticket the block
+ * saves would hide its description.
+ */
+const REST_DEFAULTS = { ticket_show_description: 'yes' };
+
+/**
  * Path segments that would write through the prototype chain instead of onto the data.
  */
 const FORBIDDEN_SEGMENTS = [ '__proto__', 'constructor', 'prototype' ];
@@ -173,6 +181,10 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 	const update = {};
 	const createOrder = [];
 
+	// The server drops every entry of a ticket named in more than one part: a delete wins over a move and an edit, a move over an edit.
+	const isDeleted = ( ticketId ) => stagedDeletes.includes( Number( ticketId ) );
+	const isMoved = ( ticketId ) => hasOwn( stagedMoves, ticketId );
+
 	clientIds.forEach( ( clientId ) => {
 		const ticket = byClientId[ clientId ];
 
@@ -180,10 +192,12 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			return;
 		}
 
-		const data = restBodyToTicketData( bodies[ clientId ] );
+		const data = { ...REST_DEFAULTS, ...restBodyToTicketData( bodies[ clientId ] ) };
 
 		if ( ticket.hasBeenCreated && ticket.ticketId ) {
-			update[ ticket.ticketId ] = data;
+			if ( ! isDeleted( ticket.ticketId ) && ! isMoved( ticket.ticketId ) ) {
+				update[ ticket.ticketId ] = data;
+			}
 			return;
 		}
 
@@ -196,7 +210,9 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			create,
 			update,
 			delete: [ ...stagedDeletes ],
-			move: { ...stagedMoves },
+			move: Object.fromEntries(
+				Object.entries( stagedMoves ).filter( ( [ ticketId ] ) => ! isDeleted( ticketId ) )
+			),
 		},
 		createOrder,
 	};
