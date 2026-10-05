@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Deferred_Save\Classic;
 
+use TEC\Common\StellarWP\AdminNotices\AdminNotice;
+use TEC\Common\StellarWP\AdminNotices\AdminNotices;
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Result;
 use TEC\Tickets\Event;
@@ -107,23 +109,29 @@ final class Notices {
 
 		delete_transient( self::TRANSIENT_PREFIX . $user_id );
 
-		$post_title = get_the_title( (int) ( $remembered['post_id'] ?? 0 ) );
-
-		echo '<div class="notice notice-error is-dismissible tec-tickets-deferred-save-notice"><p>';
-		echo esc_html(
+		$post_id = (int) ( $remembered['post_id'] ?? 0 );
+		$content = '<p>' . esc_html(
 			sprintf(
 				/* translators: %s: the post title. */
 				__( 'Some ticket changes for "%s" were not saved. The post and the other tickets were saved; enter these changes again.', 'event-tickets' ),
-				$post_title
+				get_the_title( $post_id )
 			)
-		);
-		echo '</p><ul>';
+		) . '</p><ul>';
 
 		foreach ( (array) $remembered['errors'] as $error ) {
-			echo '<li>' . esc_html( $this->describe( (array) $error, (int) ( $remembered['post_id'] ?? 0 ) ) ) . '</li>';
+			$content .= '<li>' . esc_html( $this->describe( (array) $error, $post_id ) ) . '</li>';
 		}
 
-		echo '</ul></div>';
+		$content .= '</ul>';
+
+		// One notice per save, shown once: not dismissible, so no dismissal is stored for an ID that never returns.
+		$notice = ( new AdminNotice( 'tec-tickets-deferred-save-' . $user_id . '-' . md5( $content ), $content ) )
+			->urgency( 'error' )
+			->dismissible( false )
+			->autoParagraph( false )
+			->withWrapper();
+
+		AdminNotices::render( $notice );
 	}
 
 	/**
