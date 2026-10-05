@@ -1,13 +1,15 @@
 /**
  * External Dependencies
  */
-import { call } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
  */
 import * as types from '../types';
 import watchers, * as sagas from '../sagas';
+import * as deferred from '../../../blocks/ticket/deferred';
+import { stageMove } from '../../../blocks/ticket/deferred-sagas';
 
 jest.mock( '@wordpress/data', () => ( {
 	select() {
@@ -111,6 +113,33 @@ describe( 'Move Sagas', () => {
 		expect( gen.next().value ).toMatchSnapshot();
 		expect( gen.next( { post_type: 1, search_terms: '', ignore: 2 } ).value ).toMatchSnapshot();
 		expect( gen.next().done ).toBeTruthy();
+	} );
+
+	describe( 'moveTicket on a post that defers ticket saves', () => {
+		afterEach( () => {
+			jest.restoreAllMocks();
+		} );
+
+		it( 'stages the move and reports success', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.moveTicket( { src_post_id: 1, ticket_type_id: '12', target_post_id: '99' } );
+
+			expect( gen.next().value ).toEqual( put( { type: types.MOVE_TICKET } ) );
+			expect( gen.next().value ).toEqual( call( stageMove, 12, 99 ) );
+			expect( gen.next( true ).value ).toEqual(
+				put( { type: types.MOVE_TICKET_SUCCESS, data: { remove_ticket_type: 12, staged: true } } )
+			);
+		} );
+
+		it( 'reports an error and keeps the ticket when the move cannot be staged', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.moveTicket( { src_post_id: 1, ticket_type_id: '12', target_post_id: '99' } );
+
+			gen.next();
+			gen.next();
+			expect( gen.next( false ).value ).toEqual( put( { type: types.MOVE_TICKET_ERROR, error: 'staged-edit' } ) );
+			expect( gen.next().done ).toBe( true );
+		} );
 	} );
 
 	describe( 'onModalChange', () => {
