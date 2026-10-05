@@ -12,6 +12,7 @@ namespace TEC\Tickets\Deferred_Save;
 use TEC\Tickets\Deferred_Save\Payload\Malformed_Exception;
 use TEC\Tickets\Deferred_Save\Payload\Parser;
 use TEC\Tickets\Deferred_Save\Payload\Rejections;
+use TEC\Tickets\Event;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
 
@@ -73,15 +74,8 @@ final class Commit {
 	 * @return Result The created ticket IDs by position and one error per entry that did not go through.
 	 */
 	public function run( $raw, int $post_id ): Result {
-		try {
-			$parsed = $this->parser->parse( $raw );
-		} catch ( Malformed_Exception $e ) {
-			// Input that cannot be a payload is answered like any other whole-payload refusal.
-			return new Result( [], ( new Rejections() )->with( null, null, $e->getMessage() )->all() );
-		}
-
-		$payload = $parsed->payload();
-		$entries = count( $payload->get_update() ) + count( $payload->get_create() ) + count( $payload->get_delete() ) + count( $payload->get_move() );
+		// Write against the post the checks answer for: an occurrence's provisional ID becomes its post's, as on the AJAX path.
+		$post_id = (int) Event::filter_event_id( $post_id, 'deferred_save' );
 
 		/**
 		 * Filters how many entries one payload may carry.
@@ -96,15 +90,25 @@ final class Commit {
 		 */
 		$max_entries = (int) apply_filters( 'tec_tickets_deferred_save_max_entries', 100, $post_id );
 
-		if ( $entries > $max_entries ) {
+		// Counted before parsing, invalid entries included, so no payload makes the parser work through more than the cap.
+		if ( $this->count_raw_entries( $raw ) > $max_entries ) {
 			$too_many = sprintf(
 				/* translators: %d: the maximum number of ticket changes in one save. */
 				__( 'Too many ticket changes in one save; the limit is %d.', 'event-tickets' ),
 				$max_entries
 			);
 
-			return new Result( [], $parsed->rejections()->with( null, null, $too_many )->all() );
+			return new Result( [], ( new Rejections() )->with( null, null, $too_many )->all() );
 		}
+
+		try {
+			$parsed = $this->parser->parse( $raw );
+		} catch ( Malformed_Exception $e ) {
+			// Input that cannot be a payload is answered like any other whole-payload refusal.
+			return new Result( [], ( new Rejections() )->with( null, null, $e->getMessage() )->all() );
+		}
+
+		$payload = $parsed->payload();
 
 		$checked    = $this->checks->run( $payload, $post_id );
 		$rejections = $parsed->rejections()->merge( $checked->rejections() );
@@ -204,6 +208,9 @@ final class Commit {
 		try {
 			return $step( $result );
 		} catch ( \Throwable $e ) {
+			// `ticket_add()` turns the manual-update flag on around the save; the exception skipped turning it off.
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+
 			do_action(
 				'tribe_log',
 				'error',
@@ -377,8 +384,46 @@ final class Commit {
 	 * @return void
 	 */
 	private function fire_added( int $post_id, int $ticket_id, array $data ): void {
-		/** This action is documented in src/Tribe/Metabox.php */
-		do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+		try {
+			/** This action is documented in src/Tribe/Metabox.php */
+			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+		} catch ( \Throwable $e ) {
+			// The ticket is saved: reporting it as not saved would make the editor create it again.
+			do_action(
+				'tribe_log',
+				'error',
+				'Deferred ticket save: a listener failed after a ticket was saved.',
+				[
+					'source'    => __CLASS__,
+					'ticket_id' => $ticket_id,
+					'exception' => get_class( $e ),
+					'message'   => $e->getMessage(),
+				]
+			);
+		}
+	}
+
+	/**
+	 * Counts the entries of the known parts of a raw payload, valid or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $raw The raw `tec_tickets` value of the request.
+	 *
+	 * @return int The number of entries.
+	 */
+	private function count_raw_entries( $raw ): int {
+		if ( ! is_array( $raw ) ) {
+			return 0;
+		}
+
+		$entries = 0;
+
+		foreach ( [ Parser::UPDATE, Parser::CREATE, Parser::DELETE, Parser::MOVE ] as $part ) {
+			$entries += isset( $raw[ $part ] ) && is_array( $raw[ $part ] ) ? count( $raw[ $part ] ) : 0;
+		}
+
+		return $entries;
 	}
 
 	/**
