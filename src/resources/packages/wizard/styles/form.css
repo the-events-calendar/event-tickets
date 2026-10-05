@@ -17,7 +17,7 @@
 
 .tec-tickets-onboarding__checkbox--optin,
 .tec-tickets-onboarding__checkbox--events {
-    align-items: start;
+	align-items: start;
 	border: 1px solid var(--tec-scales-grey-200);
 	border-radius: var(--tec-admin-border-radius-1);
 	display: flex;
@@ -52,10 +52,10 @@
 	flex-direction: column;
 	gap: var(--tec-spacer-2);
 	margin: 0 auto;
+	max-width: 100%;
 	padding: var(--tec-spacer-5) var(--tec-spacer-7) var(--tec-spacer-7);
 	text-align: left;
 	width: 100%;
-	max-width: 100%;
 
 	.tec-tickets-onboarding__payment-gateway {
 		text-align: center;
@@ -106,24 +106,24 @@
 	font-weight: var(--tec-font-weight-regular);
 	letter-spacing: -0.28px;
 	line-height: var(--tec-line-height-2);
-	text-transform: none;
 	margin-bottom: 0;
 	margin-top: var(--tec-spacer-3);
+	text-transform: none;
 }
 
 .tec-tickets-onboarding__payment-option {
-	cursor:pointer;
-    pointer-events: auto;
+	cursor: pointer;
 	margin-bottom: var(--tec-spacer-3);
+	pointer-events: auto;
 
 	&.disabled {
 		cursor: not-allowed;
-		pointer-events: none;
 		opacity: 0.7;
+		pointer-events: none;
 
 		input {
-			cursor: not-allowed;
 			background-color: var(--tec-scales-grey-200);
+			cursor: not-allowed;
 		}
 	}
 
@@ -133,16 +133,16 @@
 }
 
 .tec-tickets-onboarding__payment-option-provider {
-	font-size: var(--tec-font-size-1);
 	color: var(--tec-wp-core-grey-50);
+	font-size: var(--tec-font-size-1);
 	margin-left: var(--tec-spacer-1);
 }
 
 .components-radio-control__option .components-radio-control__input[type="radio"] {
 	height: 24px;
-	width: 24px;
 	min-height: 24px;
 	min-width: 24px;
+	width: 24px;
 }
 
 .tec-tickets-onboarding__gateway-logo {
@@ -154,10 +154,10 @@
 }
 
 .tec-tickets-onboarding__tab-actions {
+	align-items: center;
 	display: flex;
 	flex-direction: column;
 	gap: var(--tec-spacer-2);
-	align-items: center;
 	margin-top: var(--tec-spacer-4);
 	text-align: center;
 }
@@ -168,8 +168,8 @@
 }
 
 .tec-tickets-onboarding__free-options-note {
-	font-size: var(--tec-font-size-1);
 	color: var(--tec-wp-core-grey-50);
+	font-size: var(--tec-font-size-1);
 }
 
 .tec-tickets-onboarding__form-wrapper label {
@@ -223,6 +223,6 @@
 }
 
 .tec-tickets-onboarding__warning-notice p {
-	margin: 0;
 	color: #72777c;
+	margin: 0;
 }

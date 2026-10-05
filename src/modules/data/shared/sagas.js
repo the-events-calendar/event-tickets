@@ -16,7 +16,6 @@ import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 /*
  * Determines if current post is a tribe event
- * @export
  * @returns {Boolean} bool
  */
 export function* isTribeEventPostType() {
@@ -91,7 +90,6 @@ export function createWPEditorNotSavingChannel() {
 /**
  * Create date objects used throughout sagas
  *
- * @export
  * @yield
  * @param {string} date datetime string
  * @return {Object} Object of dates/moments

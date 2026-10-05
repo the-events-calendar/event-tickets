@@ -11,6 +11,7 @@
 			margin-bottom: var(--tec-spacer-3);
 
 			.tribe-field-switch-inner-wrap {
+
 				.tribe-field-wrap {
 					display: flex;
 				}
@@ -27,6 +28,7 @@
 		}
 
 		#tec-field-tec_tickets_rsvp_enable {
+
 			.tribe-field-label {
 				font-weight: var(--tec-font-weight-bold);
 			}
@@ -47,6 +49,7 @@
 			}
 
 			.tec-tickets-rsvp-responses-info__count-link {
+
 				span {
 					font-weight: var(--tec-font-weight-bold);
 					margin-right: var(--tec-spacer-3);
@@ -159,60 +162,60 @@
 
 	/* Track */
 	input[type="checkbox"].tribe-common-switch__input + .tribe-common-switch__label {
-		display: inline-block;
-		vertical-align: top;
-		position: relative;
-		height: 21px;
-		width: 38px;
-		margin: 0;
-		cursor: pointer;
-		border: 1px solid var( --tec-color-button-secondary );
-		background: var( --tec-color-background );
+		background: var(--tec-color-background);
+		border: 1px solid var(--tec-color-button-secondary);
 		border-radius: 11px;
-		transition: background .3s, border-color .3s, box-shadow .2s;
+		cursor: pointer;
+		display: inline-block;
+		height: 21px;
+		margin: 0;
+		position: relative;
+		transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+		vertical-align: top;
+		width: 38px;
 	}
 
 	/* Knob */
 	input[type="checkbox"].tribe-common-switch__input + .tribe-common-switch__label::after {
-		content: '';
-		display: block;
-		position: absolute;
-		left: 2px;
-		top: 2px;
-		width: 15px;
-		height: 15px;
+		background: var(--tec-color-button-secondary);
 		border-radius: 50%;
-		background: var( --tec-color-button-secondary );
+		content: "";
+		display: block;
+		height: 15px;
+		left: 2px;
+		position: absolute;
+		top: 2px;
 		transform: translateX(0);
-		transition: transform .3s ease, opacity .2s;
+		transition: transform 0.3s ease, opacity 0.2s;
+		width: 15px;
 	}
 
 	/* Checked state */
 	input[type="checkbox"].tribe-common-switch__input:checked + .tribe-common-switch__label {
 		background: #2e709d;
 		border-color: #2e709d;
-		transition: background .6s cubic-bezier(.2, .85, .32, 1.2), border-color .6s cubic-bezier(.2, .85, .32, 1.2);
+		transition: background 0.6s cubic-bezier(0.2, 0.85, 0.32, 1.2), border-color 0.6s cubic-bezier(0.2, 0.85, 0.32, 1.2);
 	}
 
 	input[type="checkbox"].tribe-common-switch__input:checked + .tribe-common-switch__label::after {
-		background: var( --tec-color-background );
+		background: var(--tec-color-background);
 		transform: translateX(17px);
 	}
 
 	/* Disabled states */
 	input[type="checkbox"].tribe-common-switch__input:disabled + .tribe-common-switch__label {
-		background: #F6F8FF;
+		background: #f6f8ff;
 		cursor: not-allowed;
-		opacity: .9;
+		opacity: 0.9;
 	}
 
 	input[type="checkbox"].tribe-common-switch__input:disabled:checked + .tribe-common-switch__label {
-		background: #E1E6F9;
-		border-color: var( --tec-color-button-secondary );
+		background: #e1e6f9;
+		border-color: var(--tec-color-button-secondary);
 	}
 
 	input[type="checkbox"].tribe-common-switch__input:disabled:not(:checked) + .tribe-common-switch__label::after {
-		opacity: .6;
+		opacity: 0.6;
 	}
 
 	/* Hover & focus */
@@ -231,8 +234,8 @@
 	}
 
 	.tec-tickets-rsvp-buttons__remove-rsvp {
-		border: none;
 		background: none;
+		border: none;
 		color: var(--tec-color-icon-error);
 	}
 }
