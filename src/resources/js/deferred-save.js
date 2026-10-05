@@ -70,6 +70,9 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 
 	const maxInputVars = parseInt( strings.maxInputVars, 10 ) || 0;
 
+	// The site's datepicker format index: staged dates are typed in it.
+	const dateFormat = parseInt( strings.dateFormat, 10 ) || 0;
+
 	/**
 	 * How many fields the post form submits, without the edit panel's, which are disabled on submit.
 	 *
@@ -378,6 +381,17 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	 * @param {number} ticketId The saved ticket to copy.
 	 */
 	const stageDuplicateOfSaved = ( ticketId ) => {
+		// A staged edit is what the admin sees for this ticket: copy that, not what the server has.
+		const staged = state.getUpdate( ticketId );
+
+		if ( staged ) {
+			state.stageCreate( duplicateFields( staged.fields ) );
+			render();
+			return;
+		}
+
+		const failed = () => showNotice( strings.duplicateFailed || '' );
+
 		$.post(
 			window.ajaxurl,
 			{
@@ -389,6 +403,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 			},
 			( response ) => {
 				if ( ! response || ! response.success || ! response.data || ! response.data.ticket ) {
+					failed();
 					return;
 				}
 				// Parse inertly: the markup is only read for its fields, so no script in it may run and no asset may load.
@@ -400,7 +415,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 				render();
 			},
 			'json'
-		);
+		).fail( failed );
 	};
 
 	addFilter( 'tec.tickets.admin.ticket.intercepted', NAMESPACE, ( intercepted, action, context = {} ) => {
@@ -454,17 +469,16 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 	};
 
 	const showValidationNotice = ( problems ) => {
-		$( '.tec-tickets-deferred-save-validation' ).remove();
-		const $notice = $(
-			'<div class="notice notice-error is-dismissible tec-tickets-deferred-save-validation" role="alert"><p></p><ul></ul></div>'
+		showNotice(
+			strings.invalidHeading || '',
+			problems.map( ( { name, rules } ) => {
+				const reasons = rules
+					.map( ( rule ) => ( strings.rules && strings.rules[ rule ] ) || rule )
+					.join( ', ' );
+
+				return `${ name }: ${ reasons }`;
+			} )
 		);
-		$notice.find( 'p' ).text( strings.invalidHeading || '' );
-		problems.forEach( ( { name, rules } ) => {
-			const reasons = rules.map( ( rule ) => ( strings.rules && strings.rules[ rule ] ) || rule ).join( ', ' );
-			$( '<li>' ).text( `${ name }: ${ reasons }` ).appendTo( $notice.find( 'ul' ) );
-		} );
-		$( '.wp-header-end' ).after( $notice );
-		window.scrollTo( { top: 0 } );
 	};
 
 	/**
@@ -480,7 +494,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		const problems = [];
 
 		create.forEach( ( { fields, summary }, position ) => {
-			const rules = validateFields( fields );
+			const rules = validateFields( fields, { dateFormat } );
 			if ( rules.length ) {
 				problems.push( { name: summary.name || `#${ position + 1 }`, rules } );
 				$panelBase()
@@ -490,7 +504,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		} );
 
 		Object.entries( update ).forEach( ( [ ticketId, { fields, summary } ] ) => {
-			const rules = validateFields( fields, { sold: soldFromRow( ticketId ) } );
+			const rules = validateFields( fields, { sold: soldFromRow( ticketId ), dateFormat } );
 			if ( rules.length ) {
 				problems.push( { name: summary.name || `#${ ticketId }`, rules } );
 				$panelBase()

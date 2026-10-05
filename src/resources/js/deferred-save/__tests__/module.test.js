@@ -193,4 +193,28 @@ describe( 'deferred-save module', () => {
 		expect( $( '.tec-tickets-deferred-save-validation' ).text() ).toContain( 'Too many fields.' );
 		expect( $( '#publish' ).prop( 'disabled' ) ).toBe( false );
 	} );
+
+	it( 'duplicates a saved ticket with a staged edit from the edit, without asking the server', () => {
+		const module = load();
+		const post = jest.spyOn( $, 'post' );
+		module.state.stageUpdate( 12, [ [ 'ticket_name', 'Edited' ], [ 'ticket_id', '12' ] ] );
+
+		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { ticketId: 12 } );
+
+		expect( post ).not.toHaveBeenCalled();
+		expect( module.state.getCreate( 0 ).fields ).toEqual( [ [ 'ticket_name', 'Edited (copy)' ] ] );
+		post.mockRestore();
+	} );
+
+	it( 'says so when the saved ticket to duplicate cannot be read', () => {
+		load( { strings: { duplicateFailed: 'The ticket could not be copied.' } } );
+		window.ajaxurl = '/wp-admin/admin-ajax.php';
+		window.TribeTickets = { edit_ticket_nonce: 'n' };
+		const post = jest.spyOn( $, 'post' ).mockImplementation( () => ( { fail: ( callback ) => callback() } ) );
+
+		loadedHooks.applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { ticketId: 12 } );
+
+		expect( $( '.tec-tickets-deferred-save-validation' ).text() ).toContain( 'The ticket could not be copied.' );
+		post.mockRestore();
+	} );
 } );

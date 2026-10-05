@@ -38,7 +38,8 @@ class Assets_Test extends WPTestCase {
 		$data = tribe( Assets::class )->localized_data();
 
 		$this->assertSame( (int) ini_get( 'max_input_vars' ), $data['maxInputVars'] );
-		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked' ] as $key ) {
+		$this->assertSame( (int) \Tribe__Date_Utils::get_datepicker_format_index(), $data['dateFormat'] );
+		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked', 'duplicateFailed' ] as $key ) {
 			$this->assertIsString( $data[ $key ] );
 			$this->assertNotSame( '', $data[ $key ], $key );
 		}

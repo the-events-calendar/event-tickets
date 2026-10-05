@@ -303,16 +303,67 @@ export const buildHiddenFields = ( state ) => {
 	return fields;
 };
 
+/**
+ * Reads a price the way the panel lets an admin type it: digits with an optional thousands separator and
+ * decimal separator, either of `.` and `,`. The last separator is the decimal one when one or two digits
+ * follow it; otherwise every separator groups thousands.
+ *
+ * @param {*} value The value.
+ *
+ * @return {number|null} The number, `NaN` when it is not a non-negative number, `null` when empty.
+ */
 const numberOrNull = ( value ) => {
-	const text = String( value ?? '' ).trim();
+	const text = String( value ?? '' ).replace( /\s/g, '' );
 
 	if ( '' === text ) {
 		return null;
 	}
 
-	const number = Number( text.replace( ',', '.' ) );
+	if ( ! /^[\d.,]*\d[\d.,]*$/.test( text ) ) {
+		return NaN;
+	}
 
-	return Number.isFinite( number ) ? number : NaN;
+	const last = Math.max( text.lastIndexOf( '.' ), text.lastIndexOf( ',' ) );
+	const decimals = last < 0 ? '' : text.slice( last + 1 );
+
+	if ( last >= 0 && decimals.length >= 1 && decimals.length <= 2 ) {
+		return Number( `${ text.slice( 0, last ).replace( /[.,]/g, '' ) || '0' }.${ decimals }` );
+	}
+
+	return Number( text.replace( /[.,]/g, '' ) );
+};
+
+/**
+ * Where the year, month and day sit in each datepicker format, by the index the site option stores
+ * (`Tribe__Date_Utils::datepicker_formats()`, the list `tickets.js` uses).
+ */
+const DATE_ORDERS = [ 'ymd', 'mdy', 'mdy', 'dmy', 'dmy', 'mdy', 'mdy', 'dmy', 'dmy', 'ymd', 'mdy', 'dmy' ];
+
+/**
+ * Reads a date typed in the site's datepicker format.
+ *
+ * @since TBD
+ *
+ * @param {string} value       The date.
+ * @param {number} formatIndex The datepicker format index.
+ *
+ * @return {Date|null} The date, or `null` when it cannot be read in that format.
+ */
+export const parseDatepickerDate = ( value, formatIndex ) => {
+	const order = DATE_ORDERS[ formatIndex ];
+	const parts = String( value ?? '' )
+		.trim()
+		.split( /[-/.]/ );
+
+	if ( ! order || 3 !== parts.length || parts.some( ( part ) => ! /^\d+$/.test( part ) ) ) {
+		return null;
+	}
+
+	const at = ( unit ) => parseInt( parts[ order.indexOf( unit ) ], 10 );
+	const [ year, month, day ] = [ at( 'y' ), at( 'm' ), at( 'd' ) ];
+	const date = new Date( year, month - 1, day );
+
+	return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
 };
 
 const isOn = ( value ) =>
@@ -331,8 +382,8 @@ const isOn = ( value ) =>
  *
  * @since TBD
  *
- * @param {Array<Array<string>>} fields  The field set.
- * @param {{sold?: number}}      context What the page knows about the ticket.
+ * @param {Array<Array<string>>}                 fields  The field set.
+ * @param {{sold?: number, dateFormat?: number}} context What the page knows: the tickets sold and the datepicker format index.
  *
  * @return {Array<string>} The failing rules: `name`, `price`, `sale_price`, `sale_window`, `capacity`.
  */
@@ -363,10 +414,12 @@ export const validateFields = ( fields, context = {} ) => {
 			errors.push( 'sale_price' );
 		}
 
-		const start = firstValue( fields, 'ticket_sale_start_date' );
-		const end = firstValue( fields, 'ticket_sale_end_date' );
+		const dateFormat = undefined === context.dateFormat ? 0 : context.dateFormat;
+		const start = parseDatepickerDate( firstValue( fields, 'ticket_sale_start_date' ), dateFormat );
+		const end = parseDatepickerDate( firstValue( fields, 'ticket_sale_end_date' ), dateFormat );
 
-		if ( start && end && new Date( start ) > new Date( end ) ) {
+		// A date the format cannot read is left to the server rather than reported as a bad window.
+		if ( start && end && start > end ) {
 			errors.push( 'sale_window' );
 		}
 	}
