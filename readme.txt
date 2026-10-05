@@ -214,6 +214,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Security - Strengthened validation of RSVP orders placed through the REST API.
 * Security - Tightened the permission checks for regenerating the QR code API key.
 * Tweak - Centered the labels of the secondary buttons in the ticket admin panels, including the settings button icon, so they line up vertically within the button.
+* Language - 3 new strings added, 64 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.30.0.1] 2026-10-01 =
 
