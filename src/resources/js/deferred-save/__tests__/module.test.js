@@ -181,6 +181,18 @@ describe( 'deferred-save module', () => {
 		expect( $( '#tribe_panel_edit' ).text() ).toContain( 'Save the post before moving this ticket.' );
 	} );
 
+	it( 'counts the submit button the browser adds, which PHP counts too', () => {
+		// post_title, three staged fields and the completeness marker: five, and the publish button makes six.
+		const module = load( { strings: { maxInputVars: 5, inputLimit: 'Too many fields.' } } );
+		module.state.stageCreate( [ [ 'ticket_name', 'A' ], [ 'ticket_price', '1' ], [ 'ticket_type', 'default' ] ] );
+		module.render();
+
+		const event = new window.Event( 'submit', { cancelable: true } );
+		document.getElementById( 'post' ).dispatchEvent( event );
+
+		expect( event.defaultPrevented ).toBe( true );
+	} );
+
 	it( 'refuses a submit that would carry more fields than the server reads', () => {
 		const module = load( { strings: { maxInputVars: 3, inputLimit: 'Too many fields.' } } );
 		module.state.stageCreate( [ [ 'ticket_name', 'A' ], [ 'ticket_price', '1' ], [ 'ticket_type', 'default' ] ] );
