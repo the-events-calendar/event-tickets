@@ -30,4 +30,17 @@ class Assets_Test extends WPTestCase {
 		$post = null;
 		$this->assertFalse( $assets->should_enqueue() );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_tell_the_module_how_many_fields_the_server_reads_and_why_a_change_waits(): void {
+		$data = tribe( Assets::class )->localized_data();
+
+		$this->assertSame( (int) ini_get( 'max_input_vars' ), $data['maxInputVars'] );
+		foreach ( [ 'inputLimit', 'moveBlocked', 'editBlocked' ] as $key ) {
+			$this->assertIsString( $data[ $key ] );
+			$this->assertNotSame( '', $data[ $key ], $key );
+		}
+	}
 }
