@@ -1,6 +1,9 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Recurring_Tickets\Core_Controller as Recurring_Tickets_Core;
+use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Recurring_Tickets_Table;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID as Recurring_Ticket_ID;
 
 /**
  * Class Tribe__Tickets__Attendee_Repository
@@ -1679,6 +1682,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		 * Filter the post IDs to be used when fetching Attendees not related to a post.
 		 *
 		 * @since 5.8.0
+	 * @since TBD Matches the Attendees of recurring event tickets too.
 		 *
 		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
 		 *
@@ -1733,6 +1737,16 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			WHERE tickets.post_type IN ({$prepared_ticket_post_types})
 			AND COALESCE(type.meta_value, 'default') {$operator} ({$prepared_ticket_types})
 		)";
+
+		// A recurring event ticket is a row, not a post: its Attendees hold its table ticket ID.
+		if ( tribe()->getVar( Recurring_Tickets_Core::TABLE_READY ) ) {
+			$rows_table = Recurring_Tickets_Table::table_name();
+			$id_base    = Recurring_Ticket_ID::base();
+			$where      = "( {$where} OR {$alias}.meta_value IN (
+				SELECT recurring_rows.id + {$id_base} FROM {$rows_table} recurring_rows
+				WHERE recurring_rows.type {$operator} ({$prepared_ticket_types})
+			) )";
+		}
 
 		$this->join_clause( $join );
 		$this->where_clause( $where );
