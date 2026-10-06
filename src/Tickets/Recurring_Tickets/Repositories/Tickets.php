@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets\Repositories;
 
 use InvalidArgumentException;
 use TEC\Common\Abstracts\Custom_Table_Repository;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
 
@@ -32,6 +33,15 @@ final class Tickets extends Custom_Table_Repository {
 	 * @var int
 	 */
 	private const PAGE_SIZE = 200;
+
+	/**
+	 * The columns a single date may change: EngDoc section 2, per-date overrides.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const OVERRIDABLE = [ 'name', 'description', 'price', 'capacity', 'start_date', 'end_date', 'start_date_utc', 'end_date_utc', 'status' ];
 
 	/**
 	 * Returns the model class.
@@ -162,6 +172,48 @@ final class Tickets extends Custom_Table_Repository {
 	 */
 	public function delete_by_post( int $post_id ): int {
 		return $this->delete_by( 'post_id', $post_id );
+	}
+
+	/**
+	 * Changes columns of one row only, and records their names in the row's overrides so the sync never overwrites
+	 * them. The only writer of `overrides`.
+	 *
+	 * A capacity override also sets the stock to what is left to sell, none when unlimited.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $row_id The row ID.
+	 * @param array<string,mixed> $values The new values, keyed by column. Only name, description, price, capacity,
+	 *                                    the sale dates and status can be overridden.
+	 *
+	 * @return void
+	 *
+	 * @throws InvalidArgumentException If no value is given, a column cannot be overridden or the row does not exist;
+	 *                                  nothing is written then.
+	 */
+	public function override( int $row_id, array $values ): void {
+		$refused = array_diff( array_keys( $values ), self::OVERRIDABLE );
+
+		if ( ! $values || $refused ) {
+			throw new InvalidArgumentException( 'These columns cannot be overridden: ' . implode( ', ', $refused ?: [ '(none given)' ] ) . '.' );
+		}
+
+		$row = Tickets_Table::get_by_id( $row_id );
+
+		if ( ! $row instanceof Ticket ) {
+			throw new InvalidArgumentException( "Row {$row_id} does not exist." );
+		}
+
+		// ponytail: read then write, not atomic; wrap in a transaction when the per-date override UI calls it.
+		$overrides = array_values( array_unique( array_merge( (array) $row->overrides, array_keys( $values ) ) ) );
+		$update    = array_merge( $values, [ 'overrides' => wp_json_encode( $overrides ) ] );
+
+		if ( array_key_exists( 'capacity', $values ) ) {
+			$capacity        = (int) $values['capacity'];
+			$update['stock'] = -1 === $capacity ? null : max( 0, $capacity - (int) $row->sales );
+		}
+
+		DB::update( Tickets_Table::table_name(), $update, [ 'id' => $row_id ] );
 	}
 
 	/**

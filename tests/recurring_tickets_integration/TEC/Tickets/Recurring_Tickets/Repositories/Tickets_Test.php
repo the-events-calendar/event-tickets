@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Recurring_Tickets\Repositories;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use InvalidArgumentException;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
@@ -150,6 +151,133 @@ class Tickets_Test extends WPTestCase {
 		$this->assertSame( $relative, $stored['relative_date_settings'] );
 		$this->assertSame( [ 'iac' => 'required' ], $stored['iac_settings'] );
 		$this->assertNull( $stored['overrides'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_record_each_overridden_column_with_its_value(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row() ] );
+		$id = $this->only_row()['id'];
+
+		$repository->override( $id, [ 'price' => 1500 ] );
+
+		$row = $this->only_row();
+		$this->assertSame( 1500, $row['price'] );
+		$this->assertSame( [ 'price' ], $row['overrides'] );
+
+		$repository->override( $id, [ 'capacity' => 50 ] );
+
+		$row = $this->only_row();
+		$this->assertSame( 50, $row['capacity'] );
+		$this->assertSame( [ 'price', 'capacity' ], $row['overrides'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_a_column_overridden_twice_once(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row() ] );
+		$id = $this->only_row()['id'];
+
+		$repository->override( $id, [ 'price' => 1500, 'name' => 'Early bird' ] );
+		$repository->override( $id, [ 'price' => 1200 ] );
+
+		$row = $this->only_row();
+		$this->assertSame( 1200, $row['price'] );
+		$this->assertSame( [ 'price', 'name' ], $row['overrides'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_accept_the_sale_dates_description_and_status(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row() ] );
+		$values = [
+			'description'    => 'Only on this date',
+			'start_date'     => '2026-11-01 09:00:00',
+			'end_date'       => '2026-11-03 09:00:00',
+			'start_date_utc' => '2026-11-01 07:00:00',
+			'end_date_utc'   => '2026-11-03 07:00:00',
+			'status'         => 'draft',
+		];
+
+		$repository->override( $this->only_row()['id'], $values );
+
+		$row = $this->only_row();
+		$this->assertSame( array_keys( $values ), $row['overrides'] );
+		$this->assertSame( 'draft', $row['status'] );
+		$this->assertSame( '2026-11-01 09:00:00', $this->format_date( $row['start_date'] ) );
+	}
+
+	public function columns_that_cannot_be_overridden_provider(): Generator {
+		yield 'sales' => [ [ 'sales' => 5 ] ];
+		yield 'post' => [ [ 'post_id' => 99 ] ];
+		yield 'stock' => [ [ 'stock' => 1 ] ];
+		yield 'overrides itself' => [ [ 'overrides' => [ 'price' ] ] ];
+		yield 'unknown' => [ [ 'nope' => 1 ] ];
+		yield 'allowed with a refused one' => [ [ 'price' => 1500, 'sales' => 5 ] ];
+		yield 'nothing' => [ [] ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider columns_that_cannot_be_overridden_provider
+	 *
+	 * @param array<string,mixed> $values The values to override.
+	 */
+	public function it_should_refuse_a_column_that_cannot_be_overridden( array $values ): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row() ] );
+		$before = $this->only_row();
+
+		try {
+			$repository->override( $before['id'], $values );
+			$this->fail( 'The override should have been refused.' );
+		} catch ( InvalidArgumentException $e ) {
+			// Equal, not identical: dates come back as new DateTime objects.
+			$this->assertEquals( $before, $this->only_row() );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_row_that_does_not_exist(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		tribe( Tickets::class )->override( 999, [ 'price' => 1500 ] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_stock_consistent_when_capacity_is_overridden(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row( [ 'sales' => 3, 'stock' => 97 ] ) ] );
+		$id = $this->only_row()['id'];
+
+		$repository->override( $id, [ 'capacity' => 10 ] );
+		$this->assertSame( 7, $this->only_row()['stock'] );
+
+		$repository->override( $id, [ 'capacity' => 2 ] );
+		$this->assertSame( 0, $this->only_row()['stock'], 'Capacity below sales leaves nothing to sell.' );
+
+		$repository->override( $id, [ 'capacity' => -1 ] );
+		$this->assertNull( $this->only_row()['stock'], 'An unlimited row has no stock.' );
+	}
+
+	/**
+	 * @return array<string,mixed> The attributes of the one row in the table.
+	 */
+	private function only_row(): array {
+		$rows = $this->to_arrays( tribe( Tickets::class )->get_by_post( 20 ) );
+		$this->assertCount( 1, $rows );
+
+		return $rows[0];
 	}
 
 	/**
