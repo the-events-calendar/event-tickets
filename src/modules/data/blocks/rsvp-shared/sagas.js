@@ -17,7 +17,7 @@ import * as moveSelectors from '../../shared/move/selectors';
 import { isTribeEventPostType, createDates } from '../../shared/sagas';
 import { getRsvpDateFormat } from './utils/rsvp-date-format';
 
-import { api, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
+import { moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 
 /**
  * Creates dates like the shared createDates, but formats the input string with
@@ -41,7 +41,6 @@ export function* createRSVPDates( date ) {
 /**
  * Set details for current RSVP
  *
- * @export
  * @yield
  * @param {Object} action redux action
  */
@@ -85,7 +84,6 @@ export function* setRSVPDetails( action ) {
 /**
  * Set details for current temp RSVP
  *
- * @export
  * @yield
  * @param {Object} action redux action
  */
@@ -133,8 +131,7 @@ export function* setRSVPTempDetails( action ) {
 /**
  * Initializes RSVP that has not been created
  *
- * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
- * @export
+ * Optional functionality requires TEC to be enabled and post type to be event.
  * @yield
  */
 export function* initializeRSVP() {
@@ -203,9 +200,8 @@ export function* initializeRSVP() {
 /**
  * Will sync RSVP sale end to be the same as event start date and time, if field has not been manually edited
  *
- * @borrows TEC - Functionality requires TEC to be enabled
+ * Functionality requires TEC to be enabled.
  * @param {string} prevStartDate Previous start date before latest set date time changes
- * @export
  * @yield
  */
 export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
@@ -268,8 +264,7 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 /**
  * Listens for event start date and time changes after RSVP block is loaded.
  *
- * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
- * @export
+ * Functionality requires TEC to be enabled and post type to be event.
  * @yield
  */
 export function* handleEventStartDateChanges() {
@@ -378,7 +373,6 @@ export function* handleRSVPEndTimeInput( action ) {
 /**
  * Handles proper RSVP deletion and RSVP block removal upon moving RSVP
  *
- * @export
  * @yield
  */
 export function* handleRSVPMove() {
@@ -448,7 +442,6 @@ export function* handler( action ) {
 /**
  * Temporary bandaid until datepickers allow blank state
  *
- * @export
  * @yield
  */
 export function* setNonEventPostTypeEndDate() {

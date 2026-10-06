@@ -214,12 +214,10 @@ tribe.tickets.rsvp.block = {};
 	 * Unbinds events.
 	 *
 	 * @since 5.0.0
-	 * @param {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param {jqXHR}  jqXHR    Request object
-	 * @param {Object} settings Settings that this request was made with
+	 * @param {Event} event event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @return {void}
 	 */
-	obj.unbindEvents = function ( event, jqXHR, settings ) {
+	obj.unbindEvents = function ( event ) {
 		// eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		const $goingButton = $container.find( obj.selectors.goingButton );

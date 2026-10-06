@@ -79,7 +79,7 @@ function callNextHandler() {
 		return;
 	}
 
-	const [ action, handler, event ] = handlerQueue[ 0 ];
+	const [ , handler, event ] = handlerQueue[ 0 ];
 	const wrappedHandler = wrapHandlerForQueue( handler );
 
 	wrappedHandler( event.data.data );

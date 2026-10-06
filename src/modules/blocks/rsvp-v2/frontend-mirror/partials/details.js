@@ -33,10 +33,7 @@ const RSVPDetails = ( {
 			/>
 			{ showNotGoing && (
 				<div className="tribe-editor__rsvp-frontend-mirror__not-going-count tribe-common-b3--min-medium">
-					<span className="tribe-editor__rsvp-frontend-mirror__not-going-quantity">
-						{ notGoingCount }
-					</span>
-					{ ' ' }
+					<span className="tribe-editor__rsvp-frontend-mirror__not-going-quantity">{ notGoingCount }</span>{ ' ' }
 					{ __( 'Not going', 'event-tickets' ) }
 				</div>
 			) }

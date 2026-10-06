@@ -609,7 +609,7 @@ export const getNumericPrice = ( price, decimalPoint, decimalPlaces, thousandSep
 	if ( typeof price !== 'string' ) {
 		price = String( price );
 	}
-	
+
 	// Remove thousand separator.
 	let newValue = price.replace( new RegExp( '\\' + thousandSep, 'g' ), '' );
 

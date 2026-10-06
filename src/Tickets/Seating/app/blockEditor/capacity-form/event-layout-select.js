@@ -1,4 +1,4 @@
-import { LabeledItem, Select } from '@moderntribe/common/elements';
+import { Select } from '@moderntribe/common/elements';
 import PropTypes from 'prop-types';
 import { Fragment } from 'react';
 import { getLink, getLocalizedString } from '../../utils';

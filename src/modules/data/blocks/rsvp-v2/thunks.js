@@ -281,34 +281,36 @@ export const updateRSVP = ( payload ) => async ( dispatch, getState ) => {
  * @param {Object} overrides Optional field overrides for the payload.
  * @return {Function} Redux thunk function.
  */
-export const persistRSVP = ( overrides = {} ) => async ( dispatch, getState ) => {
-	const state = getState();
+export const persistRSVP =
+	( overrides = {} ) =>
+	async ( dispatch, getState ) => {
+		const state = getState();
 
-	if ( persistLocked || selectors.getRSVPIsLoading( state ) ) {
-		return;
-	}
-
-	if ( selectors.getRSVPHasDurationError( state ) ) {
-		return;
-	}
-
-	const payload = buildPersistPayload( state, overrides );
-
-	if ( selectors.getRSVPCreated( state ) ) {
-		if ( ! payload.id ) {
+		if ( persistLocked || selectors.getRSVPIsLoading( state ) ) {
 			return;
 		}
 
-		return dispatch( updateRSVP( payload ) );
-	}
+		if ( selectors.getRSVPHasDurationError( state ) ) {
+			return;
+		}
 
-	return dispatch(
-		createRSVP( {
-			...payload,
-			postId: select( 'core/editor' ).getCurrentPostId(),
-		} )
-	);
-};
+		const payload = buildPersistPayload( state, overrides );
+
+		if ( selectors.getRSVPCreated( state ) ) {
+			if ( ! payload.id ) {
+				return;
+			}
+
+			return dispatch( updateRSVP( payload ) );
+		}
+
+		return dispatch(
+			createRSVP( {
+				...payload,
+				postId: select( 'core/editor' ).getCurrentPostId(),
+			} )
+		);
+	};
 
 /**
  * Delete an RSVP using TEC REST V1 endpoint.
@@ -383,11 +385,7 @@ export const getRSVP = ( postId ) => async ( dispatch ) => {
 				console.error( 'Error fetching V2 RSVP ticket details:', fetchError );
 			}
 
-			hydrateRsvpAttendanceCounts(
-				dispatch,
-				actions,
-				getAttendanceCountsFromV2Ticket( countsTicket )
-			);
+			hydrateRsvpAttendanceCounts( dispatch, actions, getAttendanceCountsFromV2Ticket( countsTicket ) );
 		}
 	} catch ( error ) {
 		// eslint-disable-next-line no-console

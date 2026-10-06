@@ -78,13 +78,11 @@ export function* fetchPostTypes() {
 /**
  * Fetches filtered posts based on criteria
  *
- * @export
  * @yield
- * @param {*} {
- *              ignore,
- *              post_type,
- *              search_terms = '',
- *              }
+ * @param {Object} args              The search criteria.
+ * @param {Array}  args.ignore       Post IDs to ignore.
+ * @param {string} args.post_type    The post type to search.
+ * @param {string} args.search_terms The search terms.
  */
 export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 	try {
@@ -113,13 +111,11 @@ export function* fetchPostChoices( { ignore, post_type, search_terms = '' } ) {
 /**
  * Moves ticket/RSVP from one post to another
  *
- * @export
  * @yield
- * @param {*} {
- *              src_post_id,
- *              ticket_type_id,
- *              target_post_id,
- *              }
+ * @param {Object} args                The move arguments.
+ * @param {number} args.src_post_id    The source post ID.
+ * @param {number} args.ticket_type_id The ticket type ID.
+ * @param {number} args.target_post_id The target post ID.
  */
 /**
  * Whether the block being moved is a Ticket block, rather than an RSVP.
