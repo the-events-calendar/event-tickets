@@ -79,7 +79,6 @@ class SalePrice extends PureComponent {
 			currencySymbol,
 			currencyThousandsSep,
 			minDefaultPrice,
-			tempPrice,
 			toggleSalePrice,
 			salePriceChecked = false,
 			salePrice,
@@ -104,7 +103,7 @@ class SalePrice extends PureComponent {
 
 		/**
 		 * Handles the change of the sale price.
-		 * @param e The event.
+		 * @param {Object} e The event.
 		 */
 		const handleChange = ( e ) => {
 			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice ) {

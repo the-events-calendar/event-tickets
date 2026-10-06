@@ -24,11 +24,11 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-description {
+	box-sizing: border-box;
 	font-size: 13px;
 	font-weight: 400;
-	width: 100%;
 	padding: 0 var(--tec-spacer-7);
-	box-sizing: border-box;
+	width: 100%;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway {
@@ -134,6 +134,8 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-logo {
+	background-color: #f9f7f4;
+	border-left: 1px solid var(--tec-admin-core-grey-10);
 	display: none;
 	flex-basis: 290px;
 	font-size: 13px;
@@ -142,8 +144,6 @@
 	letter-spacing: 0.02em;
 	line-height: 16px;
 	padding: var(--tec-spacer-7);
-	border-left: 1px solid var(--tec-admin-core-grey-10);
-	background-color: #f9f7f4;
 
 	@media (--viewport-medium) {
 		display: flex;
@@ -173,9 +173,9 @@
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
 	font-size: 13px;
 	font-weight: 400;
+	line-height: 30px;
 	margin-bottom: 10px;
 	text-align: left;
-	line-height: 30px;
 
 	&:first-of-type {
 		margin-top: 0;
@@ -335,7 +335,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	&:focus,
 	&:hover {
 		background-color: var(--tec-color-button-primary-hover);
-		color: white;
+		color: #fff;
 	}
 
 	&:active {
@@ -350,7 +350,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-resync-button-icon {
 	margin-right: 8px;
 	position: relative;
-	stroke: white;
+	stroke: #fff;
 	top: 3px;
 	width: 16px;
 
@@ -443,8 +443,8 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-featured {
 	background-color: var(--tec-color-background);
-	padding: var(--tec-spacer-3);
 	font-size: var(--tec-font-size-2);
+	padding: var(--tec-spacer-3);
 
 	@media (--viewport-xsmall) {
 		padding: 0 var(--tec-spacer-7) 0 0;
@@ -641,8 +641,8 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-warning-message,
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-message {
-	display: flex;
 	align-items: center;
+	display: flex;
 	margin-bottom: 15px;
 	padding: 10px 12px;
 }
@@ -659,12 +659,12 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-connected-notice-message {
+	align-items: center;
 	background-color: #e5f5fa;
 	border-left: 4px solid #00a0d2;
 	display: flex;
-	align-items: center;
-	padding: 10px 12px;
 	font-size: 13px;
+	padding: 10px 12px;
 
 	.dashicons-info-outline {
 		color: #00a0d2;
@@ -673,7 +673,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	}
 
 	a {
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 }
@@ -686,10 +686,10 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	font-size: 16px;
 	font-weight: 600;
 	line-height: 18px;
+	margin-bottom: 10px;
 	padding: 15px 20px;
 	text-align: center;
 	text-decoration: none;
-	margin-bottom: 10px;
 
 	&:hover,
 	&:active,
@@ -705,15 +705,15 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice {
-	display: flex;
 	align-items: center;
+	display: flex;
 	font-size: 13px;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a {
 	color: #00a0d2;
-	text-decoration: underline;
 	font-weight: 500;
+	text-decoration: underline;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-sandbox-notice a:hover,

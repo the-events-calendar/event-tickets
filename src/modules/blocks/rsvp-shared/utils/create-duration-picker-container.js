@@ -15,10 +15,10 @@ import { getRsvpDateFormat } from '../../../data/blocks/rsvp-shared/utils/rsvp-d
 /**
  * Creates a duration picker container with optional autosave support.
  *
- * @param {Object}  options             Factory options.
- * @param {Object}  options.actions     RSVP action creators.
- * @param {Object}  options.selectors   RSVP selectors.
- * @param {boolean} options.autosave    Default autosave when the prop is not passed.
+ * @param {Object}   options            Factory options.
+ * @param {Object}   options.actions    RSVP action creators.
+ * @param {Object}   options.selectors  RSVP selectors.
+ * @param {boolean}  options.autosave   Default autosave when the prop is not passed.
  * @param {Function} options.onAutosave Called after a change when autosave is enabled.
  * @return {Function} Connected duration picker container component.
  */
@@ -120,8 +120,5 @@ export const createDurationPickerContainer = ( { actions, selectors, autosave = 
 		};
 	};
 
-	return compose(
-		withStore(),
-		connect( mapStateToProps, mapDispatchToProps, mergeProps )
-	)( DateTimeRangePicker );
+	return compose( withStore(), connect( mapStateToProps, mapDispatchToProps, mergeProps ) )( DateTimeRangePicker );
 };

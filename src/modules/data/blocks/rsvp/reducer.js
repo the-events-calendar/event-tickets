@@ -12,11 +12,13 @@ export const DEFAULT_STATE = {
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
+	if ( action.type === types.DELETE_RSVP ) {
+		return DEFAULT_STATE;
+	}
+
 	const nextState = sharedReducer( state, action );
 
 	switch ( action.type ) {
-		case types.DELETE_RSVP:
-			return DEFAULT_STATE;
 		case types.SET_RSVP_IAC:
 			return {
 				...nextState,

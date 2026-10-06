@@ -2,7 +2,7 @@ const tribe_tickets_tpp_admin = {
 	l10n: window.tribe_tickets_tpp_admin_strings || false,
 };
 
-( function ( $, my, strings ) {
+( function ( $, my ) {
 	'use strict';
 
 	my.checkmarkValidationMap = function () {
@@ -28,12 +28,13 @@ const tribe_tickets_tpp_admin = {
 	};
 
 	my.updatePayPalIpnStatus = function () {
-		const $find = $( '#paypal-ipn-config-status' );
 		const $dependsOn = $( '.ipn-required' );
 
 		if ( ! $dependsOn ) {
 			return;
 		}
+
+		const $find = $( '#paypal-ipn-config-status' );
 
 		const newStatus = _.reduce(
 			$dependsOn,
@@ -114,4 +115,4 @@ const tribe_tickets_tpp_admin = {
 		}
 		my.init();
 	} );
-} )( jQuery, tribe_tickets_tpp_admin, tribe_tickets_tpp_admin_strings );
+} )( jQuery, tribe_tickets_tpp_admin );

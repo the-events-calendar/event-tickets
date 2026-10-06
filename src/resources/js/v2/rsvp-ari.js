@@ -172,12 +172,13 @@ tribe.tickets.rsvp.ari = {};
 	 */
 	obj.canGoToGuest = function ( $container, guestNumber ) {
 		const currentGuest = obj.getCurrentGuest( $container );
-		const hasAriRequiredFields = obj.hasAriRequiredFields( $container );
 
 		// If the guest number is lower than the current guest, return true.
 		if ( guestNumber < currentGuest ) {
 			return true;
 		}
+
+		const hasAriRequiredFields = obj.hasAriRequiredFields( $container );
 
 		// They can only proceed to the next guest if there's required ARI fields.
 		if ( hasAriRequiredFields && 1 < guestNumber - currentGuest ) {
@@ -389,12 +390,13 @@ tribe.tickets.rsvp.ari = {};
 	 */
 	obj.removeGuest = function ( $container ) {
 		const totalGuests = obj.getTotalGuests( $container );
-		const currentGuest = obj.getCurrentGuest( $container );
 
 		// Bail if there's only one guest.
 		if ( totalGuests === 1 ) {
 			return;
 		}
+
+		const currentGuest = obj.getCurrentGuest( $container );
 
 		// Go to the previous guest if we're on the last one.
 		if ( totalGuests === currentGuest ) {
@@ -536,12 +538,10 @@ tribe.tickets.rsvp.ari = {};
 	 * Unbinds events.
 	 *
 	 * @since 5.0.0
-	 * @param {Event}          event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param {XMLHttpRequest} jqXHR    Request object
-	 * @param {Object}         settings Settings that this request was made with
+	 * @param {Event} event event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @return {void}
 	 */
-	obj.unbindEvents = function ( event, jqXHR, settings ) {
+	obj.unbindEvents = function ( event ) {
 		// eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		const $addGuestButton = $container.find( obj.selectors.addGuestButton );

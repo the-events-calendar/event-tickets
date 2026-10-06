@@ -14,15 +14,18 @@ export const getAttendanceCountsFromV2Ticket = ( ticket ) => {
 
 	const counts = {};
 
-	if ( ticket.going_count != null || ticket.sold != null ) {
+	if (
+		( ticket.going_count !== null && ticket.going_count !== undefined ) ||
+		( ticket.sold !== null && ticket.sold !== undefined )
+	) {
 		counts.goingCount = parseInt( ticket.going_count ?? ticket.sold ?? 0, 10 ) || 0;
 	}
 
-	if ( ticket.not_going_count != null ) {
+	if ( ticket.not_going_count !== null && ticket.not_going_count !== undefined ) {
 		counts.notGoingCount = parseInt( ticket.not_going_count, 10 ) || 0;
 	}
 
-	if ( ticket.stock != null && Number( ticket.stock ) >= 0 ) {
+	if ( ticket.stock !== null && ticket.stock !== undefined && Number( ticket.stock ) >= 0 ) {
 		counts.inventory = parseInt( ticket.stock, 10 );
 	}
 
@@ -32,12 +35,12 @@ export const getAttendanceCountsFromV2Ticket = ( ticket ) => {
 /**
  * Dispatches RSVP attendance count actions.
  *
- * @param {Function} dispatch Redux dispatch.
- * @param {Object}   actions  RSVP action creators.
- * @param {Object}   counts   Attendance count payload.
- * @param {number}   [counts.goingCount]    Number of going responses.
- * @param {number}   [counts.notGoingCount] Number of not-going responses.
- * @param {number|null} [counts.inventory] Remaining inventory from the API, when available.
+ * @param {Function}    dispatch               Redux dispatch.
+ * @param {Object}      actions                RSVP action creators.
+ * @param {Object}      counts                 Attendance count payload.
+ * @param {number}      [counts.goingCount]    Number of going responses.
+ * @param {number}      [counts.notGoingCount] Number of not-going responses.
+ * @param {number|null} [counts.inventory]     Remaining inventory from the API, when available.
  */
 export const hydrateRsvpAttendanceCounts = ( dispatch, actions, counts = {} ) => {
 	if ( counts.goingCount !== undefined ) {

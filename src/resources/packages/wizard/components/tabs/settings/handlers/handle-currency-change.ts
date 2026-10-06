@@ -4,18 +4,21 @@ import determineGatewayAvailability from './determine-gateway-availability';
  * Interface for HandleCurrencyChangeParams.
  */
 interface HandleCurrencyChangeParams {
-	e: React.ChangeEvent<HTMLSelectElement>;
-	setCurrency: (currency: string) => void;
-	setPaymentGateways: (gateways: any) => void;
+	e: React.ChangeEvent< HTMLSelectElement >;
+	setCurrency: ( currency: string ) => void;
+	setPaymentGateways: ( gateways: any ) => void;
 	paymentOption: string;
-	setPaymentOption: (option: string) => void;
-	countries: Record<string, {
-		currency: string;
-		has_paypal?: boolean;
-		has_square?: boolean;
-		has_stripe?: boolean;
-		name?: string;
-	}>;
+	setPaymentOption: ( option: string ) => void;
+	countries: Record<
+		string,
+		{
+			currency: string;
+			has_paypal?: boolean;
+			has_square?: boolean;
+			has_stripe?: boolean;
+			name?: string;
+		}
+	>;
 }
 
 /**
@@ -25,28 +28,28 @@ interface HandleCurrencyChangeParams {
  *
  * @param {HandleCurrencyChangeParams} params Parameters.
  */
-const handleCurrencyChange = ({
+const handleCurrencyChange = ( {
 	e,
 	setCurrency,
 	setPaymentGateways,
 	paymentOption,
 	setPaymentOption,
 	countries,
-}: HandleCurrencyChangeParams): void => {
+}: HandleCurrencyChangeParams ): void => {
 	const newCurrency = e.target.value;
-	setCurrency(newCurrency);
+	setCurrency( newCurrency );
 
 	// Determine gateway availability based on the new currency
-	const newGateways = determineGatewayAvailability(newCurrency, countries);
+	const newGateways = determineGatewayAvailability( newCurrency, countries );
 
-	setPaymentGateways(newGateways);
+	setPaymentGateways( newGateways );
 
 	// Reset payment option if current one is unavailable
-	const gatewayPriority = ['stripe', 'square', 'paypal'];
+	const gatewayPriority = [ 'stripe', 'square', 'paypal' ];
 
-	if (!paymentOption || (paymentOption && !newGateways[paymentOption])) {
-		const newPaymentOption = gatewayPriority.find(gateway => newGateways[gateway]) || '';
-		setPaymentOption(newPaymentOption);
+	if ( ! paymentOption || ( paymentOption && ! newGateways[ paymentOption ] ) ) {
+		const newPaymentOption = gatewayPriority.find( ( gateway ) => newGateways[ gateway ] ) || '';
+		setPaymentOption( newPaymentOption );
 	}
 };
 

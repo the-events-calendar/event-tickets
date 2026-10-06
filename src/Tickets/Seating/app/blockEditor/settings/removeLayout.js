@@ -54,7 +54,7 @@ const RemoveLayout = React.memo( ( { postId } ) => {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @return {Promise<boolean>}
+	 * @return {Promise<boolean>} Whether the layout was removed.
 	 */
 	async function removeLayout() {
 		const url = new URL( ajaxUrl );
@@ -71,7 +71,7 @@ const RemoveLayout = React.memo( ( { postId } ) => {
 	 *
 	 * @since 5.18.0
 	 *
-	 * @return {JSX.Element}
+	 * @return {JSX.Element} The modal content.
 	 */
 	function ModalContent() {
 		if ( isLoading ) {
@@ -119,6 +119,7 @@ const RemoveLayout = React.memo( ( { postId } ) => {
 
 	return (
 		<Fragment>
+			{ /* eslint-disable-next-line jsx-a11y/anchor-is-valid -- anchor styled and used as a button; a <button> would change the markup */ }
 			<a href="#" className="tec-tickets-seating__settings_layout--remove" onClick={ () => setIsOpen( true ) }>
 				{ __( 'Remove Seat Layout', 'event-tickets' ) }
 			</a>
