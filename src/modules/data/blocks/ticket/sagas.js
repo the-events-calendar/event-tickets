@@ -927,7 +927,6 @@ export function* deleteTicket( action ) {
 		}
 
 		if ( hasBeenCreated ) {
-
 			const { remove_ticket_nonce = '' } = restNonce(); // eslint-disable-line camelcase
 			const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
 
