@@ -36,7 +36,7 @@ final class Core_Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
 		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
-		remove_filter( 'get_post_metadata', [ $this->container->get( Meta_Shim::class ), 'read' ], 9 );
+		remove_filter( 'get_post_metadata', $this->container->callback( Meta_Shim::class, 'read' ), 9 );
 	}
 
 	/**
@@ -70,10 +70,9 @@ final class Core_Controller extends Controller_Contract {
 		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
 		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
 
-		wp_cache_add_non_persistent_groups( [ Rows::CACHE_GROUP ] );
 		$this->container->singleton( Rows::class );
 		$this->container->singleton( Meta_Shim::class );
 		// Before ECP's meta cache hydration at 10, which reads any ID above its own base as a date and queries for it.
-		add_filter( 'get_post_metadata', [ $this->container->get( Meta_Shim::class ), 'read' ], 9, 4 );
+		add_filter( 'get_post_metadata', $this->container->callback( Meta_Shim::class, 'read' ), 9, 4 );
 	}
 }

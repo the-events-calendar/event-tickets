@@ -130,7 +130,7 @@ final class Meta_Shim {
 		$handler   = tribe( 'tickets.handler' );
 
 		$meta = [
-			Commerce_Ticket::$price_meta_key               => Price::from_minor( (int) $row->price ),
+			Commerce_Ticket::$price_meta_key               => Price::to_decimal( (int) $row->price ),
 			$handler->key_capacity                         => (string) (int) $row->capacity,
 			Commerce_Ticket::$should_manage_stock_meta_key => $unlimited ? 'no' : 'yes',
 			// Tickets Commerce deletes stock and stock mode for an unlimited ticket.

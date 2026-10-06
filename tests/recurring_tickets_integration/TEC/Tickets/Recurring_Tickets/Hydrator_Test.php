@@ -229,7 +229,7 @@ class Hydrator_Test extends WPTestCase {
 		update_post_meta( $template, '_sale_price', '8' );
 		update_post_meta( $template, '_sale_price_start_date', gmdate( 'Y-m-d', strtotime( '-1 day' ) ) );
 		update_post_meta( $template, '_sale_price_end_date', gmdate( 'Y-m-d', strtotime( '+5 days' ) ) );
-		$id = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 1050 ] );
+		$id = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 10500 ] );
 
 		$ticket = tribe( Hydrator::class )->load( $id );
 
@@ -244,7 +244,7 @@ class Hydrator_Test extends WPTestCase {
 	public function it_should_sell_at_the_rows_price_when_the_template_is_not_on_sale(): void {
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket( $event, 20 );
-		$id       = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 1050 ] );
+		$id       = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 10500 ] );
 
 		$ticket = tribe( Hydrator::class )->load( $id );
 

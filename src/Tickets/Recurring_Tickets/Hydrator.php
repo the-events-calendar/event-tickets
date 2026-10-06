@@ -98,7 +98,7 @@ final class Hydrator {
 		// The meta shim reads the row again for the sale price below: it is the row in hand.
 		$this->rows->prime( $row );
 
-		$price     = Price::from_minor( (int) $row->price );
+		$price     = Price::to_decimal( (int) $row->price );
 		$unlimited = -1 === (int) $row->capacity;
 
 		$ticket = new Ticket_Object(
