@@ -9,6 +9,8 @@ use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Cache_Listener as Cache;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\RSVP\V2\Constants;
+use TEC\Tickets\Recurring_Tickets\Hydrator;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 // phpcs:disable StellarWP.Classes.ValidClassName.NotSnakeCase
 
@@ -627,10 +629,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Attempts to load the specified ticket type post object.
 		 *
+		 * @since TBD Loads a recurring event ticket from its row.
+		 *
 		 * @param int $ticket_id ID of ticket post.
 		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
 		public static function load_ticket_object( $ticket_id ) {
+			if ( Ticket_ID::is_table_ticket( $ticket_id ) ) {
+				return tribe( Hydrator::class )->load( (int) $ticket_id );
+			}
+
 			foreach ( self::modules() as $provider_class => $name ) {
 				$provider = static::get_ticket_provider_instance( $provider_class );
 
@@ -664,6 +672,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * This stub method should be treated as if it were an abstract method - ie, the
 		 * concrete class ought to provide the implementation.
 		 *
+		 * @since TBD A recurring event ticket answers the date it belongs to.
+		 *
 		 * @param object $ticket_product The ticket product.
 		 *
 		 * @return bool|WP_Post
@@ -671,6 +681,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_event_for_ticket( $ticket_product ) {
 			if ( is_object( $ticket_product ) && isset( $ticket_product->ID ) ) {
 				$ticket_product = $ticket_product->ID;
+			}
+
+			if ( Ticket_ID::is_table_ticket( $ticket_product ) ) {
+				$ticket = tribe( Hydrator::class )->load( (int) $ticket_product );
+
+				return $ticket ? ( get_post( $ticket->get_event_id() ) ?: false ) : false;
 			}
 
 			if ( null === get_post( $ticket_product ) ) {
