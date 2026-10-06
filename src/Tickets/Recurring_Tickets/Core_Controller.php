@@ -75,6 +75,7 @@ final class Core_Controller extends Controller_Contract {
 
 		$this->container->singleton( Rows::class );
 		$this->container->singleton( Meta_Shim::class );
+
 		/*
 		 * ECP reads any ID above its own base as a date. Its meta cache hydration at 10 queries for one, and its
 		 * update filter at 0 recurses forever on one that is not a date: the shim answers before both.
