@@ -20,7 +20,11 @@ const RSVPDisabledBlock = () => (
 				{ _x( 'RSVP is paused', 'RSVP disabled block title during migration', 'event-tickets' ) }
 			</h3>
 			<div className="tribe-editor__rsvp-disabled-text">
-				{ _x( 'RSVP editing is disabled while a migration is in progress.', 'RSVP disabled block description during migration', 'event-tickets' ) }
+				{ _x(
+					'RSVP editing is disabled while a migration is in progress.',
+					'RSVP disabled block description during migration',
+					'event-tickets'
+				) }
 			</div>
 			<a
 				className="tribe-editor__rsvp-disabled-text helper-link"

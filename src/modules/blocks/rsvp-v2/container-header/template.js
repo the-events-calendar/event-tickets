@@ -18,6 +18,7 @@ import { AttendeesActionButton } from '../../rsvp/action-buttons';
 import '../../rsvp/container-header/style.pcss';
 
 const getCapacityLabel = ( capacity ) => {
+	/* translators: %d: number of RSVPs remaining. */
 	const singular = __( '%d Remaining', 'event-tickets' );
 	const plural = singular;
 	const fallback = (

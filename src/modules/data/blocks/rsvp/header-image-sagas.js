@@ -3,7 +3,7 @@
 /**
  * External Dependencies
  */
-import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { select as wpSelect } from '@wordpress/data';
 import { put, call, takeEvery } from 'redux-saga/effects';
 
 /**
@@ -35,7 +35,7 @@ export function* fetchRSVPHeaderImage( action ) {
 	} catch ( e ) {
 		console.error( e );
 		/**
-		 * @todo: handle error scenario
+		 * @todo handle error scenario
 		 */
 	} finally {
 		yield put( actions.setRSVPIsSettingsLoading( false ) );
@@ -53,7 +53,7 @@ export function* updateRSVPHeaderImage( action ) {
 
 	try {
 		/**
-		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 * @todo until rsvp and tickets header image can be separated, they need to be linked
 		 */
 		yield put( actions.setRSVPIsSettingsLoading( true ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
@@ -80,18 +80,18 @@ export function* updateRSVPHeaderImage( action ) {
 				src: image.sizes.medium.url,
 			};
 			/**
-			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 * @todo until rsvp and tickets header image can be separated, they need to be linked
 			 */
 			yield put( actions.setRSVPHeaderImage( headerImage ) );
 			yield put( ticketActions.setTicketsHeaderImage( headerImage ) );
 		}
 	} catch ( e ) {
 		/**
-		 * @todo: handle error scenario
+		 * @todo handle error scenario
 		 */
 	} finally {
 		/**
-		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 * @todo until rsvp and tickets header image can be separated, they need to be linked
 		 */
 		yield put( actions.setRSVPIsSettingsLoading( false ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( false ) );
@@ -108,7 +108,7 @@ export function* deleteRSVPHeaderImage() {
 
 	try {
 		/**
-		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 * @todo until rsvp and tickets header image can be separated, they need to be linked
 		 */
 		yield put( actions.setRSVPIsSettingsLoading( true ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
@@ -130,18 +130,18 @@ export function* deleteRSVPHeaderImage() {
 
 		if ( response.ok ) {
 			/**
-			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 * @todo until rsvp and tickets header image can be separated, they need to be linked
 			 */
 			yield put( actions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) );
 			yield put( ticketActions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) );
 		}
 	} catch ( e ) {
 		/**
-		 * @todo: handle error scenario
+		 * @todo handle error scenario
 		 */
 	} finally {
 		/**
-		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 * @todo until rsvp and tickets header image can be separated, they need to be linked
 		 */
 		yield put( actions.setRSVPIsSettingsLoading( false ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( false ) );

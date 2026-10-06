@@ -26,7 +26,7 @@ const FinishButton = () => {
 			// Add the wpnonce to the apiFetch middleware so we don't have to mess with it.
 			apiFetch.use( apiFetch.createNonceMiddleware( wpNonce ) );
 
-			const result = await apiFetch( {
+			await apiFetch( {
 				method: 'POST',
 				data: {
 					finished: true,

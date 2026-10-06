@@ -58,12 +58,12 @@ export function modalActionListener() {
 export async function addNewLayout( event ) {
 	const mapSelect = document.getElementById( 'tec-tickets-seating__select-map' );
 	const mapId = mapSelect.selectedOptions[ 0 ].value;
-	const wrapper = document.querySelector( '.tec-tickets-seating__new-layout-wrapper' );
 
 	if ( ! mapId ) {
 		return;
 	}
 
+	const wrapper = document.querySelector( '.tec-tickets-seating__new-layout-wrapper' );
 	event.target.disabled = true;
 	wrapper.style.opacity = 0.5;
 

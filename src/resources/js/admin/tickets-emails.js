@@ -77,11 +77,8 @@ tribe.tickets.emails = {};
 	 * Binds events for the modal content container.
 	 *
 	 * @since 5.6.0
-	 * @param {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
-	 * @param {jqXHR}  jqXHR    Request object.
-	 * @param {Object} settings Settings that this request was made with.
 	 */
-	obj.bindModalEvents = ( event, jqXHR, settings ) => {
+	obj.bindModalEvents = () => {
 		// eslint-disable-line no-unused-vars
 	};
 
@@ -144,7 +141,7 @@ tribe.tickets.emails = {};
 	 * Get context to send on the request.
 	 *
 	 * @since 5.5.7
-	 * @return {Object}
+	 * @return {Object} The settings context.
 	 */
 	obj.getSettingsContext = function () {
 		const context = {};

@@ -17,7 +17,6 @@ import { createWPEditorSavingChannel } from '../../shared/sagas';
  * Allows the RSVP to be saved at the same time a post is being saved.
  * Avoids the user having to open up the RSVP block, and then click update again there, when changing the event start date.
  *
- * @export
  * @yield
  */
 export function* saveRSVPWithPostSave() {
