@@ -35,6 +35,7 @@ export const isNestedDatePickerInteraction = ( event ) => {
 		return true;
 	}
 
+	// eslint-disable-next-line @wordpress/no-global-active-element -- no node ref in this utility
 	const candidates = [ event?.target, event?.relatedTarget, document.activeElement ];
 
 	return candidates.some( isDatePickerNode );

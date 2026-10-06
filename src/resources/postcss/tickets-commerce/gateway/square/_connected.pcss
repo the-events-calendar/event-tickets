@@ -5,24 +5,25 @@
  */
 
 .tec-tickets__admin-settings-tickets-commerce-gateway--connected {
+
 	/* General connected container styles */
 	.tec-tickets__admin-settings-tickets-commerce-gateway-connected {
 		background-color: #fff;
 		border: 1px solid #dcdcde;
 		border-radius: 4px;
-		padding: 20px;
 		margin-bottom: 20px;
+		padding: 20px;
 	}
 
 	/* Row styling for two-column layout */
 	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
-		display: grid;
-		grid-template-columns: 120px 1fr;
-		gap: 15px;
 		align-items: baseline;
+		border-bottom: 1px solid #f0f0f1;
+		display: grid;
+		gap: 15px;
+		grid-template-columns: 120px 1fr;
 		margin-bottom: 15px;
 		padding-bottom: 15px;
-		border-bottom: 1px solid #f0f0f1;
 
 		&:last-child {
 			border-bottom: none;
@@ -40,8 +41,8 @@
 	/* Label styling */
 	.tec-tickets__admin-settings-tickets-commerce-gateway-connected-label {
 		color: #646970;
-		font-weight: 600;
 		font-size: 14px;
+		font-weight: 600;
 	}
 
 	/* Value styling */
@@ -58,8 +59,8 @@
 
 		/* Sub-text styling */
 		.tec-tickets__admin-settings-tickets-commerce-gateway-connected-subtext {
-			display: block;
 			color: #646970;
+			display: block;
 			font-size: 12px;
 			margin-top: 3px;
 		}
@@ -78,9 +79,10 @@
 
 	/* Responsive adjustments */
 	@media screen and (max-width: 782px) {
+
 		.tec-tickets__admin-settings-tickets-commerce-gateway-connected-row {
-			grid-template-columns: 1fr;
 			gap: 5px;
+			grid-template-columns: 1fr;
 		}
 	}
 }

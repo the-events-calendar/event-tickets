@@ -181,7 +181,6 @@ window.tribe.tickets.block = {
 	 * @param {Object} $form - The form we're updating.
 	 */
 	obj.updateFooterCount = function ( $form ) {
-		const $field = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterQuantity );
 		let footerCount = 0;
 		const $qtys = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
@@ -198,6 +197,7 @@ window.tribe.tickets.block = {
 			return;
 		}
 
+		const $field = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterQuantity );
 		$field.text( footerCount );
 	};
 
@@ -209,7 +209,6 @@ window.tribe.tickets.block = {
 	 * @param {Object} $form - The form we're updating.
 	 */
 	obj.updateFooterAmount = function ( $form ) {
-		const $field = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterAmount );
 		let footerAmount = 0;
 		const $qtys = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
@@ -227,6 +226,7 @@ window.tribe.tickets.block = {
 			return;
 		}
 
+		const $field = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterAmount );
 		$field.text( obj.numberFormat( footerAmount ) );
 	};
 
@@ -247,7 +247,7 @@ window.tribe.tickets.block = {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param {int}    id             - The id of the ticket/product.
+	 * @param {number} id             - The id of the ticket/product.
 	 * @param {Object} $modalCartItem - The cart item to update.
 	 * @param {Object} $blockCartItem - The optional ticket block cart item.
 	 *
@@ -271,7 +271,11 @@ window.tribe.tickets.block = {
 			item.$optOut = $( optoutSelector );
 			const $optoutInput = $( optoutSelector + '-modal' );
 
-			item.$optOut.length && item.$optOut.is( ':checked' ) ? $optoutInput.val( '1' ) : $optoutInput.val( '0' );
+			if ( item.$optOut.length && item.$optOut.is( ':checked' ) ) {
+				$optoutInput.val( '1' );
+			} else {
+				$optoutInput.val( '0' );
+			}
 		}
 
 		obj.updateTotal( item.qty, item.price, $modalCartItem );
@@ -563,10 +567,10 @@ window.tribe.tickets.block = {
 			}
 
 			// Get the tickets response with availability.
-			const tickets = response.data.tickets;
+			const availableTickets = response.data.tickets;
 
 			// Make DOM updates.
-			obj.updateAvailability( tickets );
+			obj.updateAvailability( availableTickets );
 		} );
 
 		// Repeat every 60 ( filterable via tribe_tickets_availability_check_interval ) seconds
@@ -584,17 +588,18 @@ window.tribe.tickets.block = {
 	 * @param {Object} $form - jQuery object that is the form we are checking.
 	 * @param {number} qty   - The quantity we desire.
 	 *
-	 * @return {integer} - The quantity, limited by existing shared cap tickets.
+	 * @return {number} - The quantity, limited by existing shared cap tickets.
 	 */
 	obj.checkSharedCapacity = function ( $form, qty ) {
 		let sharedCap = [];
 		let currentLoad = [];
 		const $sharedTickets = $form.find( obj.selector.item ).filter( '[data-has-shared-cap="true"]' );
-		const $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
 		if ( ! $sharedTickets.length ) {
 			return qty;
 		}
+
+		const $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
 		$sharedTickets.each( function () {
 			sharedCap.push( parseInt( $( this ).attr( 'data-shared-cap' ), 10 ) );
@@ -861,8 +866,7 @@ window.tribe.tickets.block = {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param {Array}  meta   - Data to fill the form in with.
-	 * @param {number} length - Starting pointer for partial fill-ins.
+	 * @param {Array} meta - Data to fill the form in with.
 	 */
 	obj.prefillModalMetaForm = function ( meta ) {
 		if ( undefined === meta || 0 >= meta.length ) {
@@ -1135,14 +1139,14 @@ window.tribe.tickets.block = {
 		$ticketRows.each( function () {
 			const data = {};
 			const $row = $( this );
-			const ticketId = $row.data( 'ticketId' );
-
 			const $fields = $row.find( obj.modalSelector.metaField );
 
 			// Skip tickets with no meta fields
 			if ( ! $fields.length ) {
 				return;
 			}
+
+			const ticketId = $row.data( 'ticketId' );
 
 			if ( ! tempMeta[ ticketId ] ) {
 				tempMeta[ ticketId ] = {};
@@ -1152,6 +1156,7 @@ window.tribe.tickets.block = {
 
 			$fields.each( function () {
 				const $field = $( this );
+				// eslint-disable-next-line @wordpress/no-unused-vars-before-return -- `value` is reassigned in a branch that follows the early return; moving the declaration needs a control-flow rewrite
 				let value = $field.val();
 				const isRadio = $field.is( ':radio' );
 				let name = $field.attr( 'name' );
@@ -1358,8 +1363,8 @@ window.tribe.tickets.block = {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param $input
-	 * @return {boolean}
+	 * @param {Object} $input jQuery object of the date picker field.
+	 * @return {boolean} Whether the date picker value is valid.
 	 */
 	obj.validateHorizontalDatePickerValue = function ( $input ) {
 		// We don't check if the field is value if no day, month or year has been chosen.
@@ -1368,9 +1373,9 @@ window.tribe.tickets.block = {
 		}
 
 		const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
-		const day = wrapper.find( obj.selector.horizontal_datepicker.day ); // eslint-disable-line es5/no-es6-methods,max-len
-		const month = wrapper.find( obj.selector.horizontal_datepicker.month ); // eslint-disable-line es5/no-es6-methods,max-len
-		const year = wrapper.find( obj.selector.horizontal_datepicker.year ); // eslint-disable-line es5/no-es6-methods,max-len
+		const day = wrapper.find( obj.selector.horizontal_datepicker.day );
+		const month = wrapper.find( obj.selector.horizontal_datepicker.month );
+		const year = wrapper.find( obj.selector.horizontal_datepicker.year );
 
 		let isValidDatePicker = true;
 
@@ -1607,13 +1612,9 @@ window.tribe.tickets.block = {
 	obj.document.on( 'click', obj.modalSelector.submit, function ( e ) {
 		e.preventDefault();
 
-		const $button = $( this );
-		const $form = $( obj.modalSelector.form );
 		const $metaForm = $( obj.modalSelector.metaForm );
 		const isValidForm = obj.validateForm( $metaForm );
 		const $errorNotice = $( obj.selector.validationNotice );
-		const buttonText = $button.attr( 'name' );
-		const provider = $form.data( 'provider' );
 
 		obj.loaderShow( obj.modalSelector.loader );
 
@@ -1632,6 +1633,11 @@ window.tribe.tickets.block = {
 		$errorNotice.hide();
 
 		obj.loaderShow( obj.modalSelector.loader );
+		const $button = $( this );
+		const $form = $( obj.modalSelector.form );
+		const buttonText = $button.attr( 'name' );
+		const provider = $form.data( 'provider' );
+
 		// default to checkout
 		let action = TribeTicketsURLs.checkout[ provider ];
 

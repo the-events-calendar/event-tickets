@@ -27,18 +27,10 @@ const OnboardingModal = ( { bootData } ) => {
 	}, [] ); // Empty dependency array ensures it runs only once.
 
 	// Select state
-	const finished = useSelect( ( select ) =>
-		select( SETTINGS_STORE_KEY ).getSetting( 'finished' )
-	);
-	const forceDisplay = useSelect( ( select ) =>
-		select( SETTINGS_STORE_KEY ).getSetting( 'forceDisplay' )
-	);
-	const begun = useSelect( ( select ) =>
-		select( SETTINGS_STORE_KEY ).getSetting( 'begun' )
-	);
-	const isOpen = useSelect( ( select ) =>
-		select( MODAL_STORE_KEY ).getIsOpen()
-	);
+	const finished = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'finished' ) );
+	const forceDisplay = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'forceDisplay' ) );
+	const begun = useSelect( ( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'begun' ) );
+	const isOpen = useSelect( ( select ) => select( MODAL_STORE_KEY ).getIsOpen() );
 
 	// Open modal conditionally after initialization. Prevents a second render.
 	useEffect( () => {

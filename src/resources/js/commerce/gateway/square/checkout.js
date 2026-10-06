@@ -1,4 +1,3 @@
-/* global tribe, jQuery, tecTicketsCommerceGatewaySquareCheckout */
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};
 window.tec.tickets.commerce = window.tec.tickets.commerce || {};
@@ -75,11 +74,11 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @since 5.24.0
 	 *
-	 * @param {Array} errors An array of arrays. Each base array is keyed with the error code and contains a list of error messages.
+	 * @param {Array}    errors       An array of arrays. Each base array is keyed with the error code and contains a list of error messages.
 	 * @param {Function} afterDisplay Callback to run after displaying errors.
 	 */
 	obj.handleErrorDisplay = ( errors, afterDisplay = () => {} ) => {
-		errors.map( e => obj.showNotice( {}, '', e[ 1 ] ) );
+		errors.map( ( e ) => obj.showNotice( {}, '', e[ 1 ] ) );
 
 		afterDisplay();
 	};
@@ -89,7 +88,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @since 5.24.0
 	 *
-	 * @param {Object} data The data to send in the request.
+	 * @param {Object} data    The data to send in the request.
 	 * @param {Object} headers The headers to send with the request.
 	 *
 	 * @return {Object} The request arguments.
@@ -97,22 +96,18 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
 			headers = {
-				'X-WP-Nonce': obj.data.nonce
+				'X-WP-Nonce': obj.data.nonce,
 			};
 		}
 
 		const args = {
-			headers: headers,
+			headers,
 			hooks: {
-				beforeRetry: [
-					obj.onBeforeRetry
-				],
-				beforeError: [
-					obj.onBeforeError
-				]
+				beforeRetry: [ obj.onBeforeRetry ],
+				beforeError: [ obj.onBeforeError ],
 			},
 			timeout: 30000,
-			throwHttpErrors: false
+			throwHttpErrors: false,
 		};
 
 		if ( data ) {
@@ -129,7 +124,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @param {Object} error
 	 *
-	 * @return {*}
+	 * @return {Object} The Ky stop signal.
 	 */
 	obj.onBeforeRetry = async ( error ) => {
 		console.log( error );
@@ -144,7 +139,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @param {Object} error
 	 *
-	 * @return {*}
+	 * @return {Object} The Ky stop signal.
 	 */
 	obj.onBeforeError = async ( error ) => {
 		console.log( error );
@@ -221,13 +216,13 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 			} else {
 				let errorMessage = 'Card tokenization failed.';
 				if ( response.errors ) {
-					errorMessage = response.errors.map( error => error.message ).join(', ');
+					errorMessage = response.errors.map( ( error ) => error.message ).join( ', ' );
 				}
-				obj.onPaymentError({ message: errorMessage });
+				obj.onPaymentError( { message: errorMessage } );
 				obj.loader.hide();
 			}
 		} catch ( e ) {
-			obj.onPaymentError({ message: e.message || 'An error occurred while processing the payment.' });
+			obj.onPaymentError( { message: e.message || 'An error occurred while processing the payment.' } );
 			obj.loader.hide();
 		}
 	};
@@ -259,7 +254,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 				window.location.href = orderResponse.redirect_url;
 			}
 		} catch ( e ) {
-			obj.onPaymentError({ message: e.message || 'An error occurred while processing the payment.' });
+			obj.onPaymentError( { message: e.message || 'An error occurred while processing the payment.' } );
 			obj.loader.hide();
 		}
 	};
@@ -269,6 +264,8 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @since 5.24.0
 	 * @since 5.25.1.1 Add force parameter to initialize Square.
+	 *
+	 * @param {boolean} force Whether to force a re-initialization.
 	 */
 	obj.initializeSquare = async ( force = false ) => {
 		try {
@@ -294,30 +291,30 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 			obj.initialized = true;
 
 			// Initialize Square.js
-			const payments = window.Square.payments(obj.data.applicationId, obj.data.locationId);
+			const payments = window.Square.payments( obj.data.applicationId, obj.data.locationId );
 
 			// Create a card payment element
-			obj.card = await payments.card(obj.data.squareCardOptions);
+			obj.card = await payments.card( obj.data.squareCardOptions );
 
 			// Mount the card element to the DOM
-			await obj.card.attach(obj.selectors.cardElement);
+			await obj.card.attach( obj.selectors.cardElement );
 
 			$( obj.selectors.squareCardForm ).show();
 			$( obj.selectors.submitButton ).show();
 
 			// When the form is submitted
-			$(obj.selectors.form).on('submit', (e) => {
+			$( obj.selectors.form ).on( 'submit', ( e ) => {
 				e.preventDefault();
 
 				// Show the loader
 				obj.loader.show();
 
 				// Create the payment with form data
-				obj.createPayment({});
-			});
-		} catch (e) {
-			console.error('Failed to initialize Square', e);
-			obj.onPaymentError({ message: 'Failed to initialize payment form.' });
+				obj.createPayment( {} );
+			} );
+		} catch ( e ) {
+			console.error( 'Failed to initialize Square', e );
+			obj.onPaymentError( { message: 'Failed to initialize payment form.' } );
 		}
 	};
 
@@ -326,9 +323,9 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 	 *
 	 * @since 5.24.0
 	 *
-	 * @param {Object} args The arguments for the notice.
-	 * @param {string} type The type of notice.
-	 * @param {string} message The message to display.
+	 * @param {Object} args          The arguments for the notice.
+	 * @param {string} type          The type of notice.
+	 * @param {string} message       The message to display.
 	 * @param {number} [delay=60000] The delay before the notice auto-dismisses.
 	 */
 	obj.showNotice = ( args, type, message, delay = 60000 ) => {
@@ -339,7 +336,7 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 		let noticeArgs = {
 			type: type || 'error',
 			message: message || '',
-			delay: delay,
+			delay,
 		};
 
 		noticeArgs = $.extend( noticeArgs, args );
@@ -449,5 +446,4 @@ window.tec.tickets.commerce.square.checkout = window.tec.tickets.commerce.square
 
 	// When the document is ready, initialize the checkout.
 	$( obj.ready );
-
 } )( jQuery, window.tec.tickets.commerce.square.checkout, tribe.ky );
