@@ -170,6 +170,9 @@ export const restBodyToTicketData = ( entries ) => {
 /**
  * Builds the `tec_tickets` payload from the store.
  *
+ * Each `create` entry carries its block's client ID as its key: a save whose answer never came is sent again
+ * with the same keys, and the server saves those entries over the tickets it created instead of creating them twice.
+ *
  * @since TBD
  *
  * @param {Object}                args               The inputs.
@@ -206,7 +209,7 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 			return;
 		}
 
-		create.push( data );
+		create.push( { ...data, tec_tickets_create_key: clientId } );
 		createOrder.push( clientId );
 	} );
 
@@ -230,8 +233,10 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
  * deletes or moves staged meanwhile stay staged. A payload-level error (no part) means nothing was
  * committed, so every sent change stays staged with the message. Refused deletes and moves have no block
  * left to show their error on, so they become notices, and their tickets, still on the post, come back as
- * blocks. A create that carries both an ID and an error was saved before something after the save failed:
- * the block gets the ID, so the next save sends an update instead of creating the ticket again.
+ * blocks. An error marked `applied` is not a refusal: the delete or move happened and something that runs
+ * after it failed, so it is a notice and no block comes back. A create that carries both an ID and an error
+ * was saved before something after the save failed: the block gets the ID, so the next save sends an update
+ * instead of creating the ticket again.
  *
  * @since TBD
  *
@@ -246,10 +251,17 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
 export const reconcileSaveResponse = ( { response, sent, live } ) => {
 	const created = response.created || {};
 	const errors = Array.isArray( response.errors ) ? response.errors : [];
+	const errorOf = ( part, key ) => errors.find( ( e ) => e && e.part === part && String( e.key ) === String( key ) );
 	const errorFor = ( part, key ) => {
-		const error = errors.find( ( e ) => e && e.part === part && String( e.key ) === String( key ) );
+		const error = errorOf( part, key );
 
 		return error ? String( error.message ?? '' ) : '';
+	};
+	// Refused: the ticket is still where it was. An `applied` error is a write that happened, not a refusal.
+	const isRefused = ( part, key ) => {
+		const error = errorOf( part, key );
+
+		return !! error && ! error.applied;
 	};
 	const payloadError = errors.find( ( e ) => e && null === e.part );
 	const isLive = ( clientId ) => live.clientIds.includes( clientId );
@@ -319,12 +331,12 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 
 	return {
 		blocks,
-		deleted: sentDeletes.filter( ( id ) => ! errorFor( 'delete', id ) ),
+		deleted: sentDeletes.filter( ( id ) => ! isRefused( 'delete', id ) ),
 		settle: { deletes: sentDeletes, moves: sentMoves },
 		notices,
 		restore: [
-			...sentDeletes.filter( ( id ) => errorFor( 'delete', id ) ),
-			...sentMoves.filter( ( id ) => errorFor( 'move', id ) ),
+			...sentDeletes.filter( ( id ) => isRefused( 'delete', id ) ),
+			...sentMoves.filter( ( id ) => isRefused( 'move', id ) ),
 		],
 	};
 };

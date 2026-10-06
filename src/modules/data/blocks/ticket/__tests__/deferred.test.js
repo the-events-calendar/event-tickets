@@ -109,9 +109,10 @@ describe( 'buildPayload', () => {
 		} );
 
 		expect( payload ).toEqual( {
+			// Each create carries its block's client ID as its key, so a save sent again never creates it twice.
 			create: [
-				{ ticket_show_description: 'yes', ticket_name: 'A' },
-				{ ticket_show_description: 'yes', ticket_name: 'C' },
+				{ ticket_show_description: 'yes', ticket_name: 'A', tec_tickets_create_key: 'a' },
+				{ ticket_show_description: 'yes', ticket_name: 'C', tec_tickets_create_key: 'c' },
 			],
 			update: { 12: { ticket_show_description: 'yes', ticket_name: 'B' } },
 			delete: [ 20 ],
@@ -290,6 +291,29 @@ describe( 'reconcileSaveResponse', () => {
 		expect( outcome.notices ).toEqual( [ 'Ticket 40: Not allowed', 'Ticket 50: Could not move' ] );
 		// Both tickets are still on the post: their blocks come back.
 		expect( outcome.restore ).toEqual( [ 40, 50 ] );
+	} );
+
+	it( 'says a delete or move happened when only what runs after it failed, and brings back no block', () => {
+		const outcome = reconcileSaveResponse( {
+			response: {
+				created: { 0: 101, 1: 102 },
+				errors: [
+					{ part: 'delete', key: 40, message: 'Deleted, then a listener failed', applied: true },
+					{ part: 'move', key: 50, message: 'Moved, then a listener failed', applied: true },
+				],
+			},
+			sent,
+			live,
+		} );
+
+		// The ticket is gone from this post either way: its block must not come back.
+		expect( outcome.restore ).toEqual( [] );
+		expect( outcome.deleted ).toEqual( [ 40 ] );
+		expect( outcome.settle ).toEqual( { deletes: [ 40 ], moves: [ 50 ] } );
+		expect( outcome.notices ).toEqual( [
+			'Ticket 40: Deleted, then a listener failed',
+			'Ticket 50: Moved, then a listener failed',
+		] );
 	} );
 
 	it( 'keeps a ticket saved before something after the save failed, with its ID and the error', () => {

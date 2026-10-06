@@ -241,9 +241,11 @@ export const settlePayloadEdit = ( response ) => {
  *
  * @since TBD
  *
+ * @param {Array<string>} excluded Ticket blocks to leave out, staged or not.
+ *
  * @return {Object} The payload, its create order, the live client IDs and the tickets they were read from.
  */
-export function* buildLivePayload() {
+export function* buildLivePayload( excluded = [] ) {
 	const allClientIds = yield select( selectors.getTicketsAllClientIds );
 	const byClientId = yield select( selectors.getTicketsByClientId );
 	const stagedDeletes = yield select( selectors.getStagedDeletes );
@@ -259,7 +261,7 @@ export function* buildLivePayload() {
 	} );
 
 	const { payload, createOrder } = buildPayload( {
-		clientIds,
+		clientIds: clientIds.filter( ( clientId ) => ! excluded.includes( clientId ) ),
 		byClientId,
 		bodies: positioned,
 		stagedDeletes,
@@ -350,10 +352,14 @@ export function* stageMove( ticketId, destinationId ) {
  * Here those tickets are staged right before the request leaves, when they pass the shared rules.
  *
  * @since TBD
+ *
+ * @return {Array<string>} The ticket blocks whose latest changes fail the rules: this save must leave them out,
+ *                         even one staged before, or it would send an older body and settle it as saved.
  */
 export function* stagePendingChanges() {
 	const allClientIds = yield select( selectors.getTicketsAllClientIds );
 	const byClientId = yield select( selectors.getTicketsByClientId );
+	const refused = [];
 
 	for ( const clientId of liveClientIds( allClientIds ) ) {
 		const ticket = byClientId[ clientId ];
@@ -383,12 +389,15 @@ export function* stagePendingChanges() {
 					__( 'Not saved with the post: fix the ticket and confirm it.', 'event-tickets' )
 				)
 			);
+			refused.push( clientId );
 			continue;
 		}
 
 		const body = yield call( setBodyDetails, clientId );
 		yield call( stageTicket, clientId, [ ...body.entries() ] );
 	}
+
+	return refused;
 }
 
 /**
@@ -405,9 +414,8 @@ export function* prepareSave( edits, resolve ) {
 	const { tec_tickets: previous, ...withoutPayload } = edits;
 
 	try {
-		yield call( stagePendingChanges );
-
-		const { payload, createOrder, clientIds, byClientId } = yield call( buildLivePayload );
+		const refused = yield call( stagePendingChanges );
+		const { payload, createOrder, clientIds, byClientId } = yield call( buildLivePayload, refused );
 
 		if ( isEmptyPayload( payload ) ) {
 			sent = null;
@@ -428,6 +436,12 @@ export function* prepareSave( edits, resolve ) {
 				sentPositions[ clientId ] = blockIndex( clientId );
 			} );
 
+			// The lifecycle hooks describe what was saved, not what the admin changed while the request was out.
+			const sentDetails = {};
+			[ ...createOrder, ...Object.keys( updates ) ].forEach( ( clientId ) => {
+				sentDetails[ clientId ] = byClientId[ clientId ] ? byClientId[ clientId ].details : undefined;
+			} );
+
 			sent = {
 				createOrder,
 				updates,
@@ -435,6 +449,7 @@ export function* prepareSave( edits, resolve ) {
 				deletes: [ ...payload.delete ],
 				moves: { ...payload.move },
 				positions: sentPositions,
+				details: sentDetails,
 			};
 			prepared = { ...withoutPayload, tec_tickets: payload };
 		}
@@ -463,11 +478,12 @@ export function* prepareSave( edits, resolve ) {
  * @param {string} name     The hook.
  * @param {string} clientId The ticket block.
  * @param {number} ticketId The ticket.
+ * @param {Object} details  The details the save sent; the store's when not given.
  */
-export function* announce( name, clientId, ticketId ) {
-	const details = yield select( selectors.getTicketDetails, { clientId } );
+export function* announce( name, clientId, ticketId, details = undefined ) {
+	const announced = details || ( yield select( selectors.getTicketDetails, { clientId } ) );
 
-	runHook( name, clientId, ticketId, details );
+	runHook( name, clientId, ticketId, announced );
 }
 
 /**
@@ -477,10 +493,11 @@ export function* announce( name, clientId, ticketId ) {
  *
  * @param {string} clientId The ticket block.
  * @param {number} ticketId The created ticket.
+ * @param {Object} details  The details the save sent.
  */
-export function* hydrateTicket( clientId, ticketId ) {
+export function* hydrateTicket( clientId, ticketId, details = undefined ) {
 	yield put( actions.fetchTicket( clientId, ticketId ) );
-	yield call( announce, 'tec.tickets.blocks.ticketCreated', clientId, ticketId );
+	yield call( announce, 'tec.tickets.blocks.ticketCreated', clientId, ticketId, details );
 }
 
 /**
@@ -528,17 +545,19 @@ export function* applySaveResponse( response, sentNow ) {
 
 	// Effects outside the store come last, once it is settled.
 	for ( const block of outcome.blocks ) {
+		const details = sentNow.details ? sentNow.details[ block.clientId ] : undefined;
+
 		if ( 'created' === block.hook ) {
 			const ticket = byClientId[ block.clientId ];
 
 			// Loading the saved ticket would overwrite what the admin changed since the request left.
 			if ( block.staged || ( ticket && ticket.hasChanges ) ) {
-				yield call( announce, 'tec.tickets.blocks.ticketCreated', block.clientId, block.ticketId );
+				yield call( announce, 'tec.tickets.blocks.ticketCreated', block.clientId, block.ticketId, details );
 			} else {
-				yield call( hydrateTicket, block.clientId, block.ticketId );
+				yield call( hydrateTicket, block.clientId, block.ticketId, details );
 			}
 		} else if ( 'updated' === block.hook ) {
-			yield call( announce, 'tec.tickets.blocks.ticketUpdated', block.clientId, block.ticketId );
+			yield call( announce, 'tec.tickets.blocks.ticketUpdated', block.clientId, block.ticketId, details );
 		}
 	}
 
