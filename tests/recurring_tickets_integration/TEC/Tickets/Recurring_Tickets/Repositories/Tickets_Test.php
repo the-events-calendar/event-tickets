@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets\Repositories;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use InvalidArgumentException;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Tickets_Table;
 
@@ -278,6 +279,55 @@ class Tickets_Test extends WPTestCase {
 		$this->assertCount( 1, $rows );
 
 		return $rows[0];
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_read_a_row_by_id_once(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row() ] );
+		$id      = $this->only_row()['id'];
+		$queries = 0;
+		add_filter(
+			'query',
+			static function ( string $query ) use ( &$queries ) {
+				$queries += false !== strpos( $query, Tickets_Table::table_name() ) ? 1 : 0;
+
+				return $query;
+			}
+		);
+
+		$repository->find( $id );
+		$repository->find( $id );
+
+		$this->assertSame( 1, $queries );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_find_a_row_inserted_after_it_was_read_as_missing(): void {
+		$repository = tribe( Tickets::class );
+		$next       = (int) DB::get_var( DB::prepare( 'SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s', Tickets_Table::table_name() ) );
+		$this->assertNull( $repository->find( $next ) );
+
+		$repository->insert_many( [ $this->row() ] );
+
+		$this->assertNotNull( $repository->find( $next ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_find_a_row_deleted_after_it_was_read(): void {
+		$repository = tribe( Tickets::class );
+		$repository->insert_many( [ $this->row( [ 'parent_id' => 7 ] ) ] );
+		$id = $this->only_row()['id'];
+
+		$repository->delete_by_template( 7 );
+
+		$this->assertNull( $repository->find( $id ) );
 	}
 
 	/**

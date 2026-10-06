@@ -34,13 +34,11 @@ final class Core_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$guard = $this->container->get( Occurrence_Guard::class );
-		remove_filter( Occurrence_Guard::FILTER, [ $guard, 'remember' ], 9 );
-		remove_filter( Occurrence_Guard::FILTER, [ $guard, 'restore' ], PHP_INT_MAX );
-		$shim = $this->container->get( Meta_Shim::class );
-		remove_filter( 'get_post_metadata', [ $shim, 'read' ], 9 );
+		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
+		remove_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
+		remove_filter( 'get_post_metadata', $this->container->callback( Meta_Shim::class, 'read' ), 9 );
 		foreach ( [ 'add', 'update', 'delete' ] as $write ) {
-			remove_filter( "{$write}_post_metadata", [ $shim, 'refuse_write' ], PHP_INT_MIN );
+			remove_filter( "{$write}_post_metadata", $this->container->callback( Meta_Shim::class, 'refuse_write' ), PHP_INT_MIN );
 		}
 	}
 
@@ -66,24 +64,24 @@ final class Core_Controller extends Controller_Contract {
 			return;
 		}
 
+		/*
+		 * Hooked through container callbacks: they resolve the current instance when called, and a second
+		 * registration, which binds the singleton again, still removes the hooks of the first.
+		 */
 		$this->container->singleton( Occurrence_Guard::class );
-		$guard = $this->container->get( Occurrence_Guard::class );
 		// Before ECP's callback at 10, and after every other one.
-		add_filter( Occurrence_Guard::FILTER, [ $guard, 'remember' ], 9 );
-		add_filter( Occurrence_Guard::FILTER, [ $guard, 'restore' ], PHP_INT_MAX );
+		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'remember' ), 9 );
+		add_filter( Occurrence_Guard::FILTER, $this->container->callback( Occurrence_Guard::class, 'restore' ), PHP_INT_MAX );
 
-		wp_cache_add_non_persistent_groups( [ Rows::CACHE_GROUP ] );
 		$this->container->singleton( Rows::class );
 		$this->container->singleton( Meta_Shim::class );
-		$shim = $this->container->get( Meta_Shim::class );
-
 		/*
 		 * ECP reads any ID above its own base as a date. Its meta cache hydration at 10 queries for one, and its
 		 * update filter at 0 recurses forever on one that is not a date: the shim answers before both.
 		 */
-		add_filter( 'get_post_metadata', [ $shim, 'read' ], 9, 4 );
+		add_filter( 'get_post_metadata', $this->container->callback( Meta_Shim::class, 'read' ), 9, 4 );
 		foreach ( [ 'add', 'update', 'delete' ] as $write ) {
-			add_filter( "{$write}_post_metadata", [ $shim, 'refuse_write' ], PHP_INT_MIN, 3 );
+			add_filter( "{$write}_post_metadata", $this->container->callback( Meta_Shim::class, 'refuse_write' ), PHP_INT_MIN, 3 );
 		}
 	}
 }
