@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use Generator;
 use TEC\Tickets\Deferred_Save\Classic\Notices;
 use TEC\Tickets\Deferred_Save\Classic_Save;
+use TEC\Tickets\Deferred_Save\Commit;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
@@ -85,6 +86,43 @@ class Classic_Entry_Point_Test extends WPTestCase {
 
 		$this->assert_world_unchanged( $before );
 		$this->assertSame( [], $this->remembered_errors() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_nothing_but_say_so_when_only_the_tickets_nonce_fails_on_the_admins_own_form(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$before = $this->snapshot();
+
+		// `nonce_life` filtered per action can expire the tickets nonce while the post form's own still verifies.
+		$this->submit_form(
+			$this->post_a,
+			[ 'create' => [ $this->ticket_data( 'Expired nonce' ) ] ],
+			[
+				Classic_Save::NONCE_FIELD => 'expired',
+				'_wpnonce'                => wp_create_nonce( 'update-post_' . $this->post_a ),
+			]
+		);
+
+		$this->assert_world_unchanged( $before );
+		$this->assertCount( 1, $this->remembered_errors(), 'The admin is told the ticket changes were not saved.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_let_a_create_key_reach_a_ticket_on_another_post(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		// The key an earlier save of post B left on its ticket, sent again in a create on post A.
+		update_post_meta( $this->ticket_b, '_tec_tickets_deferred_save_create_key', 'key-of-ticket-b' );
+		$before = $this->snapshot();
+
+		$this->submit_form( $this->post_a, [ 'create' => [ $this->ticket_data( 'Created on A', [ Commit::CREATE_KEY => 'key-of-ticket-b' ] ) ] ] );
+
+		$this->assert_b_untouched_and_a_created( $before );
 	}
 
 	/**
