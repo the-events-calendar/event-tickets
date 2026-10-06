@@ -67,6 +67,11 @@ class Increase_Stock extends Flag_Action_Abstract {
 
 			// A recurring event ticket goes back to its row, in one statement capped at capacity.
 			if ( Ticket_ID::is_table_ticket( $ticket->ID ) ) {
+				// Its sale was refused, so nothing was taken from the row.
+				if ( tribe( Stock::class )->was_refused( $post->ID, (int) $ticket->ID ) ) {
+					continue;
+				}
+
 				/** This action is documented in src/Tickets/Commerce/Flag_Actions/Increase_Stock.php */
 				do_action( 'tec_tickets_commerce_increase_ticket_stock', $ticket, $quantity );
 				tribe( Stock::class )->release( Ticket_ID::to_row_id( (int) $ticket->ID ), $quantity );

@@ -190,6 +190,9 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	 */
 	private function sell_from_row( Ticket_Object $ticket, int $quantity, \WP_Post $order ): void {
 		if ( ! tribe( Stock::class )->sell( Ticket_ID::to_row_id( (int) $ticket->ID ), $quantity ) ) {
+			// A refund or an attendee deletion must then give nothing back.
+			tribe( Stock::class )->record_refusal( $order->ID, (int) $ticket->ID );
+
 			do_action(
 				'tribe_log',
 				'warning',
