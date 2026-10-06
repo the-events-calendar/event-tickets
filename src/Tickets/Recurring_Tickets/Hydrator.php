@@ -70,7 +70,16 @@ final class Hydrator {
 	public function load( int $ticket_id ): ?Ticket_Object {
 		$row = $this->rows->find( Ticket_ID::to_row_id( $ticket_id ) );
 
-		return $row ? $this->hydrate( $row ) : null;
+		if ( ! $row ) {
+			return null;
+		}
+
+		$ticket = $this->hydrate( $row );
+
+		/** This filter is documented in src/Tickets/Commerce/Ticket.php */
+		$filtered = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $ticket, $ticket->get_event_id(), $ticket_id );
+
+		return $filtered instanceof Ticket_Object ? $filtered : $ticket;
 	}
 
 	/**
@@ -89,7 +98,7 @@ final class Hydrator {
 		// The meta shim reads the row again for the sale price below: it is the row in hand.
 		$this->rows->prime( $row );
 
-		$price     = Price::from_minor( (int) $row->price );
+		$price     = Price::to_decimal( (int) $row->price );
 		$unlimited = -1 === (int) $row->capacity;
 
 		$ticket = new Ticket_Object(
