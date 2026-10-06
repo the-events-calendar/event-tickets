@@ -20,8 +20,17 @@ class QR_TestCase extends WPTestCase {
 	 */
 	protected $implementation_backups = [];
 
+	/**
+	 * @var string|false TEC_TICKETS_COMMERCE as the suite left it before this test.
+	 */
+	private $original_tc_env;
+
 	function setUp() {
 		parent::setUp();
+
+		// Attendees here are Tickets Commerce records, so provider resolution requires TC enabled.
+		$this->original_tc_env = getenv( 'TEC_TICKETS_COMMERCE' );
+		putenv( 'TEC_TICKETS_COMMERCE=1' );
 
 		$this->factory()->attendee = new QR();
 
@@ -44,6 +53,13 @@ class QR_TestCase extends WPTestCase {
 		foreach ( $this->implementation_backups as $alias => $value ) {
 			tribe_singleton( $alias, $value );
 		}
+
+		if ( false === $this->original_tc_env ) {
+			putenv( 'TEC_TICKETS_COMMERCE' );
+		} else {
+			putenv( 'TEC_TICKETS_COMMERCE=' . $this->original_tc_env );
+		}
+
 		parent::tearDown();
 	}
 
