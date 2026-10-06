@@ -126,6 +126,63 @@ class Metabox_Test extends WPTestCase {
 	}
 
 	/**
+	 * Scripts resolve ticket form elements by ID, so a repeated ID makes the Tickets metabox
+	 * pick up the RSVP copy whenever the RSVP metabox sits above it in the Classic Editor.
+	 *
+	 * @test
+	 */
+	public function it_should_not_share_element_ids_with_the_tickets_metabox(): void {
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+
+		$rsvp_ids    = $this->collect_element_ids( tribe( Metabox::class )->render( $post_id ) );
+		// WordPress core renders `#post_ID` in the post form, so it counts as taken as well.
+		$tickets_ids   = $this->collect_element_ids( tribe( 'tickets.metabox' )->render( $post_id ) );
+		$tickets_ids[] = 'post_ID';
+
+		$this->assertNotEmpty( $rsvp_ids );
+		$this->assertNotEmpty( $tickets_ids );
+		$this->assertSame( [], array_values( array_intersect( $rsvp_ids, $tickets_ids ) ) );
+	}
+
+	/**
+	 * A repeated field name makes PHP keep only the last value, so whichever metabox renders
+	 * second would overwrite the other's `ticket_type` and `ticket_provider` on post save.
+	 *
+	 * @test
+	 */
+	public function it_should_not_share_field_names_with_the_tickets_metabox(): void {
+		$post_id = static::factory()->post->create( [ 'post_status' => 'publish' ] );
+
+		$rsvp_names    = $this->collect_field_names( tribe( Metabox::class )->render( $post_id ) );
+		$tickets_names = $this->collect_field_names( tribe( 'tickets.metabox' )->render( $post_id ) );
+
+		$this->assertNotEmpty( $rsvp_names );
+		$this->assertSame( [], array_values( array_intersect( $rsvp_names, $tickets_names ) ) );
+	}
+
+	/**
+	 * @param string $html The rendered HTML.
+	 *
+	 * @return string[] The field names found in the HTML.
+	 */
+	private function collect_field_names( string $html ): array {
+		preg_match_all( '/\sname\s*=\s*[\'"]([^\'"]+)[\'"]/', $html, $matches );
+
+		return array_unique( $matches[1] );
+	}
+
+	/**
+	 * @param string $html The rendered HTML.
+	 *
+	 * @return string[] The element IDs found in the HTML.
+	 */
+	private function collect_element_ids( string $html ): array {
+		preg_match_all( '/\sid\s*=\s*[\'"]([^\'"]+)[\'"]/', $html, $matches );
+
+		return array_unique( $matches[1] );
+	}
+
+	/**
 	 * The Open RSVP field constrains itself against Close RSVP; without the attribute the
 	 * panel saves an impossible window and the RSVP silently vanishes from the front end.
 	 *

@@ -80,6 +80,7 @@ export default class MoveModal extends PureComponent {
 				</label>
 				<Input id="search" type="text" onChange={ this.props.onSearchChange } value={ this.props.search } />
 
+				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control -- label heads a choice group, not a single control */ }
 				<label>{ __( 'Select the post you wish to move the ticket type to:', 'event-tickets' ) }</label>
 				{ this.renderPostTypes() }
 

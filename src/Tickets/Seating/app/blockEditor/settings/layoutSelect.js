@@ -12,10 +12,10 @@ import RemoveLayout from './removeLayout';
  * The layout select component.
  *
  * @since 5.16.0
- * @param         props.layouts
- * @param         props.currentLayout
  *
  * @param {Object} props               The component props.
+ * @param {Array}  props.layouts       The layouts.
+ * @param {number} props.currentLayout The current layout ID.
  */
 const LayoutSelect = ( { layouts, currentLayout } ) => {
 	/**
@@ -23,13 +23,13 @@ const LayoutSelect = ( { layouts, currentLayout } ) => {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @param {number} layoutId The layout ID.
-	 * @param {Array}  layouts  The layouts.
+	 * @param {number} layoutId   The layout ID.
+	 * @param {Array}  layoutList The layouts.
 	 *
-	 * @return {Object|null}
+	 * @return {Object|null} The matching layout option, or null.
 	 */
-	const getCurrentLayoutOption = ( layoutId, layouts ) => {
-		return layouts && layoutId ? layouts.find( ( layoutOption ) => layoutOption.value === layoutId ) : null;
+	const getCurrentLayoutOption = ( layoutId, layoutList ) => {
+		return layoutList && layoutId ? layoutList.find( ( layoutOption ) => layoutOption.value === layoutId ) : null;
 	};
 
 	/**
@@ -96,7 +96,7 @@ const LayoutSelect = ( { layouts, currentLayout } ) => {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @return {Promise<boolean>}
+	 * @return {Promise<boolean>} Whether the layout was saved.
 	 */
 	async function saveNewLayout() {
 		const url = new URL( ajaxUrl );
@@ -129,7 +129,7 @@ const LayoutSelect = ( { layouts, currentLayout } ) => {
 	 *
 	 * @since 5.16.0
 	 *
-	 * @return {JSX.Element|null}
+	 * @return {JSX.Element|null} The select element.
 	 */
 	function RenderSelect() {
 		if ( currentLayout === null || currentLayout.length === 0 || layouts.length === 0 ) {

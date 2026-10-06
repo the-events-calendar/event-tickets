@@ -1,4 +1,4 @@
-/* global tribe, jQuery, tecTicketsCommerceTickets, tribe_timepickers, tribe_l10n_datatables, wp */
+/* global tecTicketsCommerceTickets, tribe_timepickers */
 import { registerMiddlewares } from '@tec/common/tecApi';
 import apiFetch from '@wordpress/api-fetch';
 import { doAction } from '@wordpress/hooks';
@@ -100,7 +100,15 @@ tribe.tickets.commerce.tickets = {};
 		event.preventDefault();
 
 		// Show confirmation dialog.
-		if ( ! confirm( wp.i18n._x( 'Are you sure you want to remove this RSVP? This action cannot be undone.', 'Confirmation message for deleting RSVP in admin panel.', 'event-tickets' ) ) ) {
+		if (
+			! confirm(
+				wp.i18n._x(
+					'Are you sure you want to remove this RSVP? This action cannot be undone.',
+					'Confirmation message for deleting RSVP in admin panel.',
+					'event-tickets'
+				)
+			)
+		) {
 			return;
 		}
 
@@ -121,7 +129,7 @@ tribe.tickets.commerce.tickets = {};
 				obj.loaderHide();
 				obj.handleRemoveResponse( {} );
 			} )
-			.catch( error => {
+			.catch( ( error ) => {
 				obj.loaderHide();
 				if ( error && error.data ) {
 					obj.handleRemoveResponse( error.data );
@@ -271,10 +279,13 @@ tribe.tickets.commerce.tickets = {};
 	 *
 	 * @param {Object} data The response data from the server.
 	 */
-	obj.handleRemoveResponse = function( data ) {
+	obj.handleRemoveResponse = function ( data ) {
 		// TEC REST API returns empty response on success, or { error: ... } on failure.
 		if ( data && data.error ) {
-			const errorMessage = data.message || data.error || _x( 'Failed to remove RSVP.', 'RSVP deletion error message', 'event-tickets' );
+			const errorMessage =
+				data.message ||
+				data.error ||
+				_x( 'Failed to remove RSVP.', 'RSVP deletion error message', 'event-tickets' );
 			window.alert( errorMessage );
 			return;
 		}
@@ -316,10 +327,8 @@ tribe.tickets.commerce.tickets = {};
 	 * Handles errors during the ticket remove process.
 	 *
 	 * @since 5.30.0
-	 *
-	 * @param {Error} error The error that occurred.
 	 */
-	obj.handleApproveError = function( error ) {
+	obj.handleApproveError = function () {
 		// Error handling can be added here if needed.
 	};
 
