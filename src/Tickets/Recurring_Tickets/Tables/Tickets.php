@@ -99,7 +99,8 @@ final class Tickets extends Table {
 				// MySQL stores BOOLEAN as tinyint(1).
 				$columns[] = ( new Boolean_Column( 'show_description' ) )->set_default( 1 );
 				$columns[] = ( new String_Column( 'sku' ) )->set_length( 255 )->set_nullable( true );
-				// Minor units of the Tickets Commerce currency. A sale price stays on the template.
+				// Thousandths of the currency's unit, whatever the currency, so changing it never rescales a price.
+				// A sale price stays on the template.
 				$columns[] = ( new Integer_Column( 'price' ) )->set_signed( false );
 				// -1 is unlimited, as for ticket posts.
 				$columns[] = ( new Integer_Column( 'capacity' ) )->set_default( -1 );
