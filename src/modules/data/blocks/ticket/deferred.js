@@ -229,7 +229,9 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
  * Only what was sent is settled: a block staged again after the request left keeps its newer change, and
  * deletes or moves staged meanwhile stay staged. A payload-level error (no part) means nothing was
  * committed, so every sent change stays staged with the message. Refused deletes and moves have no block
- * left to show their error on, so they become notices.
+ * left to show their error on, so they become notices, and their tickets, still on the post, come back as
+ * blocks. A create that carries both an ID and an error was saved before something after the save failed:
+ * the block gets the ID, so the next save sends an update instead of creating the ticket again.
  *
  * @since TBD
  *
@@ -239,7 +241,7 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
  *                               the `bodies` it was built from, `deletes` and `moves`.
  * @param {Object} args.live     The ticket blocks now: `clientIds` and the current `bodies`.
  *
- * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>}} What to do.
+ * @return {{blocks: Array<Object>, deleted: Array<number>, settle: {deletes: Array<number>, moves: Array<number>}, notices: Array<string>, restore: Array<number>}} What to do.
  */
 export const reconcileSaveResponse = ( { response, sent, live } ) => {
 	const created = response.created || {};
@@ -261,7 +263,7 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 			blocks.push( { clientId, staged: true, error: message, hook: null } );
 		} );
 
-		return { blocks, deleted: [], settle: { deletes: [], moves: [] }, notices: [ message ] };
+		return { blocks, deleted: [], settle: { deletes: [], moves: [] }, notices: [ message ], restore: [] };
 	}
 
 	sent.createOrder.forEach( ( clientId, position ) => {
@@ -273,7 +275,8 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 		const ticketId = parseInt( created[ position ], 10 );
 
 		if ( ticketId ) {
-			blocks.push( { clientId, ticketId, staged: changedSince( clientId ), error: '', hook: 'created' } );
+			const error = errorFor( 'create', position );
+			blocks.push( { clientId, ticketId, staged: changedSince( clientId ) || !! error, error, hook: 'created' } );
 			return;
 		}
 
@@ -319,5 +322,9 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 		deleted: sentDeletes.filter( ( id ) => ! errorFor( 'delete', id ) ),
 		settle: { deletes: sentDeletes, moves: sentMoves },
 		notices,
+		restore: [
+			...sentDeletes.filter( ( id ) => errorFor( 'delete', id ) ),
+			...sentMoves.filter( ( id ) => errorFor( 'move', id ) ),
+		],
 	};
 };

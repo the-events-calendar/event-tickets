@@ -19,6 +19,7 @@ const mockEditor = {
 	record: { id: 10 },
 	editPost: jest.fn(),
 	createErrorNotice: jest.fn(),
+	insertBlock: jest.fn(),
 };
 
 jest.mock( '@wordpress/data', () => ( {
@@ -26,11 +27,17 @@ jest.mock( '@wordpress/data', () => ( {
 		getCurrentPost: () => mockEditor.record,
 		getBlock: ( clientId ) => ( mockEditor.order.includes( clientId ) ? {} : null ),
 		getBlockIndex: ( clientId ) => mockEditor.order.indexOf( clientId ),
+		getBlocksByName: ( name ) => ( 'tribe/tickets' === name ? [ 'tickets-parent' ] : [] ),
 	} ),
 	dispatch: () => ( {
 		editPost: mockEditor.editPost,
 		createErrorNotice: mockEditor.createErrorNotice,
+		insertBlock: mockEditor.insertBlock,
 	} ),
+} ) );
+
+jest.mock( '@wordpress/blocks', () => ( {
+	createBlock: ( name, attributes ) => ( { name, attributes } ),
 } ) );
 
 jest.mock( '@wordpress/hooks', () => ( {
@@ -61,6 +68,7 @@ const stateWith = ( tickets, blockLevel = {} ) => {
 		block = reducer( block, actions.setTicketHasBeenCreated( clientId, !! fields.hasBeenCreated ) );
 		block = reducer( block, actions.setTicketHasChanges( clientId, !! fields.hasChanges ) );
 		block = reducer( block, actions.setTicketId( clientId, fields.ticketId || 0 ) );
+		block = reducer( block, actions.setTicketHasDurationError( clientId, !! fields.hasDurationError ) );
 	} );
 
 	( blockLevel.deletes || [] ).forEach( ( id ) => ( block = reducer( block, actions.stageTicketDelete( id ) ) ) );
@@ -109,6 +117,7 @@ beforeEach( () => {
 	mockEditor.record = { id: 10 };
 	mockEditor.editPost.mockClear();
 	mockEditor.createErrorNotice.mockClear();
+	mockEditor.insertBlock.mockClear();
 	doAction.mockReset();
 	[ 'a', 'b', 'c', 'u', 'r' ].forEach( sagas.forgetBody );
 } );
@@ -163,7 +172,8 @@ describe( 'stagePendingChanges', () => {
 			select( selectors.isTicketValid, { clientId: 'c' } )
 		);
 		gen.next( true ); // sale price rule
-		expect( gen.next( true ).value ).toEqual( call( setBodyDetails, 'c' ) );
+		gen.next( true ); // duration
+		expect( gen.next( false ).value ).toEqual( call( setBodyDetails, 'c' ) );
 		const body = { entries: () => [ [ 'name', 'C' ] ][ Symbol.iterator ]() };
 		expect( gen.next( body ).value ).toEqual( call( sagas.stageTicket, 'c', [ [ 'name', 'C' ] ] ) );
 		expect( gen.next().done ).toBe( true );
@@ -182,7 +192,7 @@ describe( 'stagePendingChanges', () => {
 		);
 	} );
 
-	it( 'leaves alone an invalid ticket, an unchanged one and one already staged', () => {
+	it( 'leaves alone an unchanged ticket and a staged one, and flags one with invalid changes', () => {
 		mockEditor.order = [ 'a', 'b', 'c' ];
 		[ 'a', 'b', 'c' ].forEach( sagas.rememberPosition );
 		const gen = sagas.stagePendingChanges();
@@ -191,12 +201,14 @@ describe( 'stagePendingChanges', () => {
 		gen.next( [ 'a', 'b', 'c' ] );
 		const next = gen.next( {
 			a: { hasBeenCreated: true, isStaged: false, hasChanges: false, ticketId: 1 },
-			b: { hasBeenCreated: true, isStaged: true, hasChanges: true, ticketId: 2 },
+			b: { hasBeenCreated: true, isStaged: true, hasChanges: false, ticketId: 2 },
 			c: { hasBeenCreated: true, isStaged: false, hasChanges: true, ticketId: 3 },
 		} );
 		expect( next.value ).toEqual( select( selectors.isTicketValid, { clientId: 'c' } ) );
-		gen.next( false );
-		expect( gen.next( true ).done ).toBe( true );
+		gen.next( false ); // invalid
+		gen.next( true ); // sale price
+		expect( gen.next( false ).value.PUT.action.payload.clientId ).toBe( 'c' );
+		expect( gen.next().done ).toBe( true );
 	} );
 } );
 
@@ -338,5 +350,136 @@ describe( 'stageMove', () => {
 
 		expect( dispatched ).not.toContainEqual( actions.stageTicketMove( 12, 99 ) );
 		expect( mockEditor.createErrorNotice ).toHaveBeenCalledTimes( 1 );
+	} );
+} );
+
+describe( 'the review of the stacked PRs, second round', () => {
+	const save = ( state, response, moveDuringSave = null ) => {
+		prepare( state );
+		if ( moveDuringSave ) {
+			moveDuringSave();
+		}
+		mockEditor.record = { id: 10, tec_tickets: response };
+
+		return run( state, sagas.applyLastSaveResponse );
+	};
+
+	it( 'stages again a staged ticket whose fields changed since, such as a sale end moved with the event start', () => {
+		mockEditor.order = [ 'c' ];
+		const gen = sagas.stagePendingChanges();
+
+		gen.next();
+		gen.next( [ 'c' ] );
+		// Staged, not created yet, and changed since it was staged.
+		expect( gen.next( { c: { hasBeenCreated: false, isStaged: true, hasChanges: true, ticketId: 0 } } ).value ).toEqual(
+			select( selectors.isTicketValid, { clientId: 'c' } )
+		);
+		gen.next( true ); // sale price rule
+		gen.next( true ); // duration
+		expect( gen.next( false ).value ).toEqual( call( setBodyDetails, 'c' ) );
+	} );
+
+	it( 'never stages a ticket whose dates are invalid, and says it was not saved', () => {
+		mockEditor.order = [ 'c' ];
+		const gen = sagas.stagePendingChanges();
+
+		gen.next();
+		gen.next( [ 'c' ] );
+		gen.next( { c: { hasBeenCreated: true, isStaged: false, hasChanges: true, ticketId: 5 } } );
+		gen.next( true ); // valid
+		gen.next( true ); // sale price
+		const next = gen.next( true ); // has a duration error
+
+		expect( next.value.PUT.action.type ).toBe( actions.setTicketSaveError( 'c', '' ).type );
+		expect( next.value.PUT.action.payload.clientId ).toBe( 'c' );
+		expect( next.value.PUT.action.payload.saveError ).not.toBe( '' );
+		expect( gen.next().done ).toBe( true );
+	} );
+
+	it( 'sends no payload, keeps everything staged and says so when preparing the save fails', () => {
+		// The staged create of a block removed since; preparing throws on a store it cannot read.
+		const stale = { create: [ { ticket_name: 'Removed block' } ], update: {}, delete: [], move: {} };
+		let prepared = null;
+		jest.spyOn( console, 'error' ).mockImplementation( () => {} );
+		run( {}, sagas.prepareSave, { id: 10, tec_tickets: stale }, ( value ) => ( prepared = value ) );
+		console.error.mockRestore(); // eslint-disable-line no-console
+
+		expect( prepared ).toEqual( { id: 10 } );
+		expect( mockEditor.createErrorNotice ).toHaveBeenCalledTimes( 1 );
+	} );
+
+	it( 'does not let a listener of ticketStaged stop the staging', () => {
+		doAction.mockImplementation( () => {
+			throw new Error( 'A staged listener failed.' );
+		} );
+		jest.spyOn( console, 'error' ).mockImplementation( () => {} );
+		const gen = sagas.stageTicket( 'a', [ [ 'name', 'A' ] ] );
+		let step = gen.next();
+		while ( ! step.done ) {
+			step = gen.next();
+		}
+		console.error.mockRestore(); // eslint-disable-line no-console
+
+		expect( step.done ).toBe( true );
+	} );
+
+	it( 'records as saved the position a ticket was sent with, not one it was moved to while the save was out', () => {
+		mockEditor.order = [ 'a', 'b' ];
+		sagas.rememberPosition( 'a' );
+		sagas.rememberPosition( 'b' );
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ], [ 'menu_order', '0' ] ] );
+		const state = stateWith( {
+			a: { isStaged: true, hasBeenCreated: true, ticketId: 12 },
+			b: { hasBeenCreated: true, ticketId: 13 },
+		} );
+
+		save( state, { created: {}, errors: [] }, () => ( mockEditor.order = [ 'b', 'a' ] ) );
+
+		// The reorder made during the save is still unsaved: the next save carries it.
+		const gen = sagas.stagePendingChanges();
+		gen.next();
+		gen.next( [ 'a', 'b' ] );
+		expect( gen.next( { a: { hasBeenCreated: true, isStaged: false, hasChanges: false, ticketId: 12 }, b: { hasBeenCreated: true, isStaged: false, hasChanges: false, ticketId: 13 } } ).value ).toEqual(
+			select( selectors.isTicketValid, { clientId: 'b' } )
+		);
+	} );
+
+	it( 'does not reload a created ticket over changes made to it while the save was out', () => {
+		mockEditor.order = [ 'a' ];
+		sagas.rememberBody( 'a', [ [ 'name', 'A' ] ] );
+		const state = stateWith( { a: { isStaged: true } } );
+		prepare( state );
+		sagas.rememberBody( 'a', [ [ 'name', 'A, edited again' ] ] );
+		mockEditor.record = { id: 10, tec_tickets: { created: { 0: 101 }, errors: [] } };
+
+		const dispatched = run( state, sagas.applyLastSaveResponse );
+
+		expect( dispatched ).toContainEqual( actions.setTicketId( 'a', 101 ) );
+		expect( dispatched.filter( ( action ) => action.type === actions.fetchTicket( 'a', 101 ).type ) ).toEqual( [] );
+	} );
+
+	it( 'brings back the block of a ticket whose removal or move was refused', () => {
+		const state = stateWith( {}, { deletes: [ 40 ], moves: { 50: 9 } } );
+
+		save( state, {
+			created: {},
+			errors: [
+				{ part: 'delete', key: 40, message: 'Not allowed' },
+				{ part: 'move', key: 50, message: 'Could not move' },
+			],
+		} );
+
+		expect( mockEditor.insertBlock ).toHaveBeenCalledWith(
+			{ name: 'tribe/tickets-item', attributes: { hasBeenCreated: true, ticketId: 40 } },
+			undefined,
+			'tickets-parent',
+			false
+		);
+		expect( mockEditor.insertBlock ).toHaveBeenCalledWith(
+			{ name: 'tribe/tickets-item', attributes: { hasBeenCreated: true, ticketId: 50 } },
+			undefined,
+			'tickets-parent',
+			false
+		);
 	} );
 } );

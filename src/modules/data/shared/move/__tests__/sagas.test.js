@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import { call, put } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
@@ -10,6 +10,8 @@ import * as types from '../types';
 import watchers, * as sagas from '../sagas';
 import * as deferred from '../../../blocks/ticket/deferred';
 import { stageMove } from '../../../blocks/ticket/deferred-sagas';
+import * as ticketSelectors from '../../../blocks/ticket/selectors';
+import * as selectors from '../selectors';
 
 jest.mock( '@wordpress/data', () => ( {
 	select() {
@@ -115,17 +117,18 @@ describe( 'Move Sagas', () => {
 		expect( gen.next().done ).toBeTruthy();
 	} );
 
-	describe( 'moveTicket on a post that defers ticket saves', () => {
+	describe( 'moveTicket of a Ticket block or an RSVP, on a post that defers ticket saves', () => {
 		afterEach( () => {
 			jest.restoreAllMocks();
 		} );
 
-		it( 'stages the move and reports success', () => {
+		it( 'stages the move of a Ticket block and reports success', () => {
 			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
 			const gen = sagas.moveTicket( { src_post_id: 1, ticket_type_id: '12', target_post_id: '99' } );
 
 			expect( gen.next().value ).toEqual( put( { type: types.MOVE_TICKET } ) );
-			expect( gen.next().value ).toEqual( call( stageMove, 12, 99 ) );
+			expect( gen.next().value ).toEqual( call( sagas.isTicketBlockMove ) );
+			expect( gen.next( true ).value ).toEqual( call( stageMove, 12, 99 ) );
 			expect( gen.next( true ).value ).toEqual(
 				put( { type: types.MOVE_TICKET_SUCCESS, data: { remove_ticket_type: 12, staged: true } } )
 			);
@@ -137,8 +140,28 @@ describe( 'Move Sagas', () => {
 
 			gen.next();
 			gen.next();
+			gen.next( true );
 			expect( gen.next( false ).value ).toEqual( put( { type: types.MOVE_TICKET_ERROR, error: 'staged-edit' } ) );
 			expect( gen.next().done ).toBe( true );
+		} );
+
+		it( 'moves an RSVP at once, as its other changes are saved at once', () => {
+			jest.spyOn( deferred, 'usesDeferredSave' ).mockReturnValue( true );
+			const gen = sagas.moveTicket( { src_post_id: 1, ticket_type_id: '12', target_post_id: '99' } );
+
+			gen.next();
+			gen.next();
+			expect( gen.next( false ).value ).toEqual(
+				call( sagas._fetch, { action: 'move_ticket_type', src_post_id: 1, ticket_type_id: '12', target_post_id: '99' } )
+			);
+		} );
+
+		it( 'tells a Ticket block from an RSVP by the store the moved block is in', () => {
+			const gen = sagas.isTicketBlockMove();
+
+			expect( gen.next().value ).toEqual( select( selectors.getModalClientId ) );
+			expect( gen.next( 'a' ).value ).toEqual( select( ticketSelectors.getTicketsAllClientIds ) );
+			expect( gen.next( [ 'a', 'b' ] ) ).toEqual( { done: true, value: true } );
 		} );
 	} );
 

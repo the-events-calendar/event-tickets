@@ -300,6 +300,11 @@ export const buildHiddenFields = ( state ) => {
 		fields.push( [ `tec_tickets[move][${ ticketId }]`, String( destinationId ) ] );
 	} );
 
+	// Last: PHP drops the fields past `max_input_vars` in order, so the server applies nothing when this one is missing.
+	if ( fields.length ) {
+		fields.push( [ 'tec_tickets_complete', '1' ] );
+	}
+
 	return fields;
 };
 

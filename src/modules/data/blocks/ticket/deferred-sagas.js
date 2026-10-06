@@ -17,6 +17,7 @@
  */
 import { buffers, eventChannel } from 'redux-saga';
 import { call, fork, put, select, take } from 'redux-saga/effects';
+import { createBlock } from '@wordpress/blocks';
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { doAction, addAction, addFilter, removeAction, removeFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -152,6 +153,27 @@ export const showNotice = ( message ) => {
 };
 
 /**
+ * Puts back the block of a ticket whose removal or move the server refused: the ticket is still on the post.
+ *
+ * @param {number} ticketId The ticket.
+ */
+const restoreTicketBlock = ( ticketId ) => {
+	const editor = blockEditor();
+	const blocks = wpDispatch( 'core/block-editor' );
+	const [ parent ] =
+		editor && 'function' === typeof editor.getBlocksByName ? editor.getBlocksByName( 'tribe/tickets' ) : [];
+
+	if ( parent && blocks && 'function' === typeof blocks.insertBlock ) {
+		blocks.insertBlock(
+			createBlock( 'tribe/tickets-item', { hasBeenCreated: true, ticketId } ),
+			undefined,
+			parent,
+			false
+		);
+	}
+};
+
+/**
  * Remembers the body a ticket block would have sent, for the payload.
  *
  * @since TBD
@@ -278,7 +300,7 @@ export function* stageTicket( clientId, entries ) {
 	yield put( actions.setTicketHasChanges( clientId, false ) );
 	yield call( refreshPayload );
 
-	doAction( 'tec.tickets.blocks.ticketStaged', clientId );
+	runHook( 'tec.tickets.blocks.ticketStaged', clientId );
 }
 
 /**
@@ -359,11 +381,14 @@ export function* stagePendingChanges() {
 	for ( const clientId of liveClientIds( allClientIds ) ) {
 		const ticket = byClientId[ clientId ];
 
-		if ( ! ticket || ! ticket.hasBeenCreated || ticket.isStaged ) {
+		// A ticket never confirmed is not the post save's to send; a saved or a staged one is.
+		if ( ! ticket || ! ( ticket.hasBeenCreated || ticket.isStaged ) ) {
 			continue;
 		}
 
-		const moved = hasOwn( positions, clientId ) && positions[ clientId ] !== blockIndex( clientId );
+		// A staged body takes the block's position when the payload is built; an unstaged saved ticket needs staging.
+		const moved =
+			! ticket.isStaged && hasOwn( positions, clientId ) && positions[ clientId ] !== blockIndex( clientId );
 
 		if ( ! ticket.hasChanges && ! moved ) {
 			continue;
@@ -371,8 +396,16 @@ export function* stagePendingChanges() {
 
 		const isValid = yield select( selectors.isTicketValid, { clientId } );
 		const isSalePriceValid = yield select( selectors.isTicketSalePriceValid, { clientId } );
+		const hasDurationError = yield select( selectors.getTicketHasDurationError, { clientId } );
 
-		if ( ! isValid || ! isSalePriceValid ) {
+		// The rules the confirm button applies; a ticket that fails them is not saved, and the block says so.
+		if ( ! isValid || ! isSalePriceValid || hasDurationError ) {
+			yield put(
+				actions.setTicketSaveError(
+					clientId,
+					__( 'Not saved with the post: fix the ticket and confirm it.', 'event-tickets' )
+				)
+			);
 			continue;
 		}
 
@@ -391,17 +424,17 @@ export function* stagePendingChanges() {
  */
 export function* prepareSave( edits, resolve ) {
 	let prepared = edits;
+	// eslint-disable-next-line camelcase
+	const { tec_tickets: previous, ...withoutPayload } = edits;
 
 	try {
 		yield call( stagePendingChanges );
 
 		const { payload, createOrder, clientIds, byClientId } = yield call( buildLivePayload );
-		// eslint-disable-next-line camelcase
-		const { tec_tickets: previous, ...rest } = edits;
 
 		if ( isEmptyPayload( payload ) ) {
 			sent = null;
-			prepared = rest;
+			prepared = withoutPayload;
 		} else {
 			const updates = {};
 
@@ -413,18 +446,33 @@ export function* prepareSave( edits, resolve ) {
 				}
 			} );
 
+			const sentPositions = {};
+			clientIds.forEach( ( clientId ) => {
+				sentPositions[ clientId ] = blockIndex( clientId );
+			} );
+
 			sent = {
 				createOrder,
 				updates,
 				bodies: { ...bodies },
 				deletes: [ ...payload.delete ],
 				moves: { ...payload.move },
+				positions: sentPositions,
 			};
-			prepared = { ...rest, tec_tickets: payload };
+			prepared = { ...withoutPayload, tec_tickets: payload };
 		}
 	} catch ( error ) {
 		// eslint-disable-next-line no-console
 		console.error( error );
+		// Never the payload the edit held before: it may name blocks removed since. The changes stay staged.
+		sent = null;
+		prepared = withoutPayload;
+		showNotice(
+			__(
+				'The ticket changes could not be prepared, so they were not saved with the post. They are still staged: save the post again.',
+				'event-tickets'
+			)
+		);
 	} finally {
 		resolve( prepared );
 	}
@@ -474,6 +522,7 @@ export function* applySaveResponse( response, sentNow ) {
 	lastApplied = response;
 
 	const clientIds = yield select( selectors.getTicketsAllClientIds );
+	const byClientId = yield select( selectors.getTicketsByClientId );
 	const outcome = reconcileSaveResponse( { response, sent: sentNow, live: { clientIds, bodies } } );
 
 	for ( const block of outcome.blocks ) {
@@ -493,12 +542,24 @@ export function* applySaveResponse( response, sentNow ) {
 	yield put( actions.clearStagedTickets( outcome.settle ) );
 	yield call( settlePayloadEdit, response );
 	yield call( refreshPayload );
-	clientIds.forEach( rememberPosition );
+	// The position each committed ticket was sent with; one it was moved to since is still unsaved.
+	outcome.blocks.forEach( ( { clientId, hook } ) => {
+		if ( hook && sentNow.positions && hasOwn( sentNow.positions, clientId ) ) {
+			positions[ clientId ] = sentNow.positions[ clientId ];
+		}
+	} );
 
 	// Effects outside the store come last, once it is settled.
 	for ( const block of outcome.blocks ) {
 		if ( 'created' === block.hook ) {
-			yield call( hydrateTicket, block.clientId, block.ticketId );
+			const ticket = byClientId[ block.clientId ];
+
+			// Loading the saved ticket would overwrite what the admin changed since the request left.
+			if ( block.staged || ( ticket && ticket.hasChanges ) ) {
+				yield call( announce, 'tec.tickets.blocks.ticketCreated', block.clientId, block.ticketId );
+			} else {
+				yield call( hydrateTicket, block.clientId, block.ticketId );
+			}
 		} else if ( 'updated' === block.hook ) {
 			yield call( announce, 'tec.tickets.blocks.ticketUpdated', block.clientId, block.ticketId );
 		}
@@ -506,6 +567,7 @@ export function* applySaveResponse( response, sentNow ) {
 
 	outcome.deleted.forEach( ( ticketId ) => runHook( 'tec.tickets.blocks.ticketDeleted', null, ticketId ) );
 	outcome.notices.forEach( showNotice );
+	outcome.restore.forEach( restoreTicketBlock );
 }
 
 /**

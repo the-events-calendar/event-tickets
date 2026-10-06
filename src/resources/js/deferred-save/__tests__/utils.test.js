@@ -171,6 +171,8 @@ describe( 'buildHiddenFields', () => {
 			[ 'tec_tickets[update][7][tribe-ticket][fees][selected_fees][]', '3' ],
 			[ 'tec_tickets[delete][]', '8' ],
 			[ 'tec_tickets[move][9]', '42' ],
+			// Last, so the server can tell PHP dropped none of the fields before it.
+			[ 'tec_tickets_complete', '1' ],
 		] );
 	} );
 

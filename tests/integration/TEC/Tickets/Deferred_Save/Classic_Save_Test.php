@@ -46,8 +46,12 @@ class Classic_Save_Test extends WPTestCase {
 	/**
 	 * Sets the request the way WordPress hands it to `save_post`: slashed, as `wp_magic_quotes()` leaves `$_POST`.
 	 */
-	protected function post_payload( array $payload, bool $with_nonce = true ): void {
+	protected function post_payload( array $payload, bool $with_nonce = true, bool $complete = true ): void {
 		$post = [ 'tec_tickets' => $payload ];
+		if ( $complete ) {
+			// The classic editor writes it after every staged field.
+			$post[ Classic_Save::COMPLETE_FIELD ] = '1';
+		}
 		if ( null !== $this->form_post_id ) {
 			$post['post_ID'] = $this->form_post_id;
 		}
@@ -295,6 +299,31 @@ class Classic_Save_Test extends WPTestCase {
 		$response = apply_filters( 'wp_refresh_nonces', [], [ 'wp-refresh-post-nonces' => [ 'post_id' => $post_id ] ], 'post' );
 
 		$this->assertSame( [ 'check' => 1 ], $response['wp-refresh-post-nonces'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_and_report_a_payload_cut_short_by_the_server(): void {
+		$this->log_in_as_admin();
+		$post_id = $this->create_deferred_post();
+		// PHP dropped the fields past `max_input_vars`, the marker written after the last staged field with them.
+		$this->post_payload( [ 'create' => [ [ 'ticket_name' => 'Half a ticket' ] ] ], true, false );
+		$reported = [];
+		add_action(
+			'tec_tickets_deferred_save_classic_committed',
+			static function ( Result $result ) use ( &$reported ) {
+				$reported[] = $result;
+			}
+		);
+
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
+
+		$this->assertSame( [], $this->ticket_names( $post_id ) );
+		$this->assertCount( 1, $reported );
+		$this->assertSame( [], $reported[0]->get_created() );
+		$this->assertCount( 1, $reported[0]->get_errors() );
+		$this->assertNull( $reported[0]->get_errors()[0]['part'] );
 	}
 
 	protected function extract_nonce( string $html ): string {
