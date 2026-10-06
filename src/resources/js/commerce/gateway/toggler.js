@@ -90,7 +90,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 		 *
 		 * @since 5.3.0
 		 *
-		 * @return
+		 * @return {void}
 		 */
 		obj.init = () => {
 			obj.gateways = $( obj.selectors.gatewayDiv );
@@ -186,7 +186,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 		 *
 		 * @since 5.3.0
 		 *
-		 * @return string HTML for toggle.
+		 * @return {string} HTML for toggle.
 		 */
 		obj.getDefaultToggleHTML = () => {
 			return (
@@ -202,7 +202,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 		 *
 		 * @since 5.3.0
 		 *
-		 * @return string HTML for toggle.
+		 * @return {string} HTML for toggle.
 		 */
 		obj.getAdditionalToggleHTML = () => {
 			return (

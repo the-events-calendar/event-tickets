@@ -49,9 +49,7 @@ const RSVPCapacity = ( {
 					onChange={ onTempCapacityChange }
 					value={ tempCapacity }
 				/>
-				<span className="tribe-editor__rsvp-container-content__capacity-label-help">
-					{ helpText }
-				</span>
+				<span className="tribe-editor__rsvp-container-content__capacity-label-help">{ helpText }</span>
 			</div>
 		</div>
 	);

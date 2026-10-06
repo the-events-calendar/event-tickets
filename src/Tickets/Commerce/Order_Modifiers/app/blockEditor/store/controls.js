@@ -5,7 +5,7 @@ import { nonce, baseUrl } from '../../rest';
  *
  * @since 5.18.0
  *
- * @return {Promise<{feesAutomatic: (*|*[]), feesAvailable: (*|*[])}>}
+ * @return {Promise<{feesAutomatic: (*|*[]), feesAvailable: (*|*[])}>} The automatic and available fees.
  */
 export async function fetchFeesFromAPI() {
 	const url = new URL( `${ baseUrl }/fees` );

@@ -19,8 +19,9 @@ import { SettingsActionButton } from '../action-buttons';
 
 import '../../rsvp-shared/container-header/style.pcss';
 
+// todo: should use _n to be translator friendly
 const getCapacityLabel = ( capacity ) => {
-	// todo: should use _n to be translator friendly
+	/* translators: %d: number of RSVPs remaining. */
 	const singular = __( '%d Remaining', 'event-tickets' );
 	const plural = singular;
 	const fallback = (

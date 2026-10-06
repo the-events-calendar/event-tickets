@@ -158,7 +158,7 @@ export function showDiscordantProviderNotice( eventTitle, seriesTitle ) {
  *
  * @since 5.8.0
  *
- * @return {boolean}
+ * @return {boolean} Whether a series is selected.
  */
 export function hasSelectedSeries() {
 	const seriesSelect = document.getElementById( fieldSelector.substring( 1 ) );

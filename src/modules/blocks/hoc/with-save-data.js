@@ -1,5 +1,5 @@
 /**
- * @todo: This is just a holder for ET blocks until the block editor UX work.
+ * @todo This is just a holder for ET blocks until the block editor UX work.
  *        The `withSaveData()` HOC needs to be removed from common. Until the
  *        block editor UX work, this will live here.
  */
