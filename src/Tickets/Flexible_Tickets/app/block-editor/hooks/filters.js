@@ -50,8 +50,8 @@ addFilter( 'tec.tickets.blocks.editTicketFromPost', 'tec.tickets.flexibleTickets
  *
  * @param {Object} mappedProps                 The properties mapped from the state for the Ticket Type component.
  * @param {string} mappedProps.typeDescription The ticket type description.
- * @param         ticketDetails.ticketDetails
- * @param {Object} ticketDetails               The ticket details.
+ * @param {Object} root0                       The filter context.
+ * @param {Object} root0.ticketDetails         The ticket details.
  *
  * @return {Object} The modified properties mapped from the state for the Ticket Type component.
  */
@@ -115,10 +115,9 @@ function filterTicketsMappedProps( mappedProps, { ownProps: { isSelected } } ) {
 addFilter( 'tec.tickets.blocks.Tickets.mappedProps', 'tec.tickets.flexibleTickets', filterTicketsMappedProps );
 
 /**
+ * @param {Object}  mappedProps                    The properties mapped from the state.
  * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
  * @param {boolean} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
- * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
- * @param          mappedProps
  * @param {boolean} isSelected                     Whether or not the block is selected.
  * @return {boolean}  Flag indicating whether or not to display the warning.
  */
@@ -165,10 +164,10 @@ function filterTicketsContainerMappedProps( mappedProps, { ownProps: { isSelecte
 		mappedProps.Warning = SeriesPassNotice;
 	}
 
-	const hasRecurrenceRules = mappedProps.hasRecurrenceRules;
+	const hasRules = mappedProps.hasRecurrenceRules;
 
-	mappedProps.canCreateTickets = hasRecurrenceRules ? false : mappedProps.canCreateTickets;
-	mappedProps.showInactiveBlock = hasRecurrenceRules ? false : mappedProps.showInactiveBlock;
+	mappedProps.canCreateTickets = hasRules ? false : mappedProps.canCreateTickets;
+	mappedProps.showInactiveBlock = hasRules ? false : mappedProps.showInactiveBlock;
 
 	return mappedProps;
 }

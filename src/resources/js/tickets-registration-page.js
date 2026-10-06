@@ -55,8 +55,6 @@ window.tribe.tickets.registration = {};
 		},
 	};
 
-	const $tribeRegistration = $( obj.selector.container );
-
 	// Bail if there are no tickets on the current event/page/post
 	if ( ! $( obj.selector.eventContainer ).length ) {
 		return;
@@ -84,6 +82,8 @@ window.tribe.tickets.registration = {};
 		woo: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
 	};
 
+	const $tribeRegistration = $( obj.selector.container );
+
 	// Get the current provider & ID.
 	obj.provider = $tribeRegistration.data( 'provider' );
 	obj.providerId = obj.commerceSelector[ obj.provider ];
@@ -105,14 +105,14 @@ window.tribe.tickets.registration = {};
 		$ticketRows.each( function () {
 			const data = {};
 			const $row = $( this );
-			const ticketId = $row.data( 'ticketId' );
-
 			const $fields = $row.find( obj.selector.metaField );
 
 			// Skip tickets with no meta fields
 			if ( ! $fields.length ) {
 				return;
 			}
+
+			const ticketId = $row.data( 'ticketId' );
 
 			if ( ! tempMeta[ ticketId ] ) {
 				tempMeta[ ticketId ] = {};
@@ -122,6 +122,7 @@ window.tribe.tickets.registration = {};
 
 			$fields.each( function () {
 				const $field = $( this );
+				// eslint-disable-next-line @wordpress/no-unused-vars-before-return -- `value` is reassigned in a branch that follows the early return; moving the declaration needs a control-flow rewrite
 				let value = $field.val();
 				const isRadio = $field.is( ':radio' );
 				let name = $field.attr( 'name' );
@@ -352,7 +353,6 @@ window.tribe.tickets.registration = {};
 	 */
 	obj.updateFooterCount = function () {
 		const $form = $( obj.selector.miniCart );
-		const $field = $form.find( obj.selector.footerQuantity );
 		let footerCount = 0;
 		const $qtys = $form.find( obj.selector.itemQuantity );
 
@@ -366,6 +366,8 @@ window.tribe.tickets.registration = {};
 			return;
 		}
 
+		const $field = $form.find( obj.selector.footerQuantity );
+
 		$field.text( footerCount );
 	};
 
@@ -376,7 +378,6 @@ window.tribe.tickets.registration = {};
 	 */
 	obj.updateFooterAmount = function () {
 		const $form = $( obj.selector.miniCart );
-		const $field = $form.find( obj.selector.footerAmount );
 		let footerAmount = 0;
 		const $qtys = $form.find( obj.selector.itemQuantity );
 
@@ -392,6 +393,8 @@ window.tribe.tickets.registration = {};
 		if ( 0 > footerAmount ) {
 			return;
 		}
+
+		const $field = $form.find( obj.selector.footerAmount );
 
 		$field.text( obj.numberFormat( footerAmount ) );
 	};
@@ -541,9 +544,9 @@ window.tribe.tickets.registration = {};
 		// Validation for Tribe Horizontal Date Picker
 		if ( $input.hasClass( obj.selector.horizontal_datepicker.value.replace( /^\./, '' ) ) ) {
 			const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
-			const day = wrapper.find( obj.selector.horizontal_datepicker.day ); // eslint-disable-line es5/no-es6-methods,max-len
-			const month = wrapper.find( obj.selector.horizontal_datepicker.month ); // eslint-disable-line es5/no-es6-methods,max-len
-			const year = wrapper.find( obj.selector.horizontal_datepicker.year ); // eslint-disable-line es5/no-es6-methods,max-len
+			const day = wrapper.find( obj.selector.horizontal_datepicker.day );
+			const month = wrapper.find( obj.selector.horizontal_datepicker.month );
+			const year = wrapper.find( obj.selector.horizontal_datepicker.year );
 
 			[ day, month, year ].forEach( function ( el ) {
 				// Check if given value is a positive number, even if it's a string
