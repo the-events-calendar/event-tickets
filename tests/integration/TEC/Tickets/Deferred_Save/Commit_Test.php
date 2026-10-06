@@ -85,6 +85,30 @@ class Commit_Test extends WPTestCase {
 		return tribe( Commit::class );
 	}
 
+	/**
+	 * Each error as `[ part, key, applied ]`: `applied` says the write happened and something after it failed.
+	 */
+	protected function error_outcomes( Result $result ): array {
+		return array_map(
+			static fn( array $error ) => [ $error['part'], $error['key'], $error['applied'] ?? false ],
+			$result->get_errors()
+		);
+	}
+
+	protected function rsvp_ids_on( int $post_id ): array {
+		return array_map(
+			'intval',
+			get_posts(
+				[
+					'post_type'  => RSVP::get_instance()->ticket_object,
+					'meta_key'   => RSVP::get_instance()->get_event_key(),
+					'meta_value' => $post_id,
+					'fields'     => 'ids',
+				]
+			)
+		);
+	}
+
 	protected function error_keys( Result $result, string $part ): array {
 		return array_values(
 			array_map(
@@ -632,9 +656,9 @@ class Commit_Test extends WPTestCase {
 
 		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Saved anyway' ) ] ], $post_id );
 
-		// The ticket exists: reporting it as not saved would make the editor create it again.
+		// The ticket exists: reporting it as not saved would make the editor create it again; the error says the save did not finish.
 		$this->assertSame( [ 0 ], array_keys( $result->get_created() ) );
-		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ [ 'create', 0, true ] ], $this->error_outcomes( $result ) );
 		$this->assertSame( [ 'Saved anyway' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
 	}
 
@@ -693,14 +717,14 @@ class Commit_Test extends WPTestCase {
 		$this->assertCount( 1, $ticket_ids );
 		// The ticket exists, so the editor must know its ID and never create it again; the error says what failed.
 		$this->assertSame( [ 0 => (int) $ticket_ids[0] ], $result->get_created() );
-		$this->assertSame( [ 0 ], $this->error_keys( $result, 'create' ) );
+		$this->assertSame( [ [ 'create', 0, true ] ], $this->error_outcomes( $result ) );
 		$this->assertFalse( has_filter( 'updated_postmeta', [ tribe( 'tickets.handler' ), 'flag_manual_update' ] ) );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_report_a_delete_as_done_when_a_listener_throws_after_it(): void {
+	public function it_should_report_a_delete_as_applied_when_a_listener_throws_after_it(): void {
 		$this->log_in_as_admin();
 		$post_id   = static::factory()->post->create();
 		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
@@ -714,17 +738,20 @@ class Commit_Test extends WPTestCase {
 		$result = $this->commit()->run( [ 'delete' => [ $ticket_id ] ], $post_id );
 
 		$this->assertNull( get_post( $ticket_id ) );
-		$this->assertSame( [], $result->get_errors() );
+		// Deleted, so not refused: the editor must not bring the ticket back. Something after the delete failed, and the result says so.
+		$this->assertSame( [ [ 'delete', $ticket_id, true ] ], $this->error_outcomes( $result ) );
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_should_report_a_move_as_done_when_a_listener_throws_after_it(): void {
+	public function it_should_report_a_move_as_applied_when_a_listener_throws_after_it(): void {
 		$this->log_in_as_admin();
 		$post_id        = static::factory()->post->create();
 		$destination_id = static::factory()->post->create();
 		$ticket_id      = $this->create_tc_ticket( $post_id, 10 );
+		$attendee_id    = $this->create_attendee_for_ticket( $ticket_id, $post_id );
+		// Ahead of the listener that moves the attendees along.
 		add_action(
 			'tribe_tickets_ticket_type_moved',
 			static function () {
@@ -736,6 +763,126 @@ class Commit_Test extends WPTestCase {
 		$result = $this->commit()->run( [ 'move' => [ $ticket_id => $destination_id ] ], $post_id );
 
 		$this->assertSame( [ $ticket_id ], tribe_tickets()->where( 'event', $destination_id )->get_ids() );
+		// The ticket moved and its attendee did not: moved, so not refused, and not cleanly either.
+		$this->assertSame( (string) $post_id, get_post_meta( $attendee_id, Module::ATTENDEE_EVENT_KEY, true ) );
+		$this->assertSame( [ [ 'move', $ticket_id, true ] ], $this->error_outcomes( $result ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_an_update_as_applied_when_a_listener_throws_after_it(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		add_action(
+			'tribe_tickets_ticket_added',
+			static function () {
+				throw new \RuntimeException( 'A listener failed.' );
+			}
+		);
+
+		$result = $this->commit()->run( [ 'update' => [ $ticket_id => $this->ticket_data( 'Renamed anyway' ) ] ], $post_id );
+
+		$this->assertSame( 'Renamed anyway', get_the_title( $ticket_id ) );
+		$this->assertSame( [ [ 'update', $ticket_id, true ] ], $this->error_outcomes( $result ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_ticket_attached_before_an_earlier_listener_threw_as_created(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		// RSVP passes the ticket's post in `meta_input`: the ticket is on the post before any save listener runs.
+		add_action(
+			'save_post_' . RSVP::get_instance()->ticket_object,
+			static function () {
+				throw new \RuntimeException( 'An earlier save listener failed.' );
+			}
+		);
+
+		$result = $this->commit()->run(
+			[ 'create' => [ $this->ticket_data( 'RSVP on the post before the throw', [ 'ticket_provider' => RSVP::class ] ) ] ],
+			$post_id
+		);
+
+		$ticket_ids = $this->rsvp_ids_on( $post_id );
+		$this->assertCount( 1, $ticket_ids );
+		$this->assertSame( [ 0 => $ticket_ids[0] ], $result->get_created() );
+		$this->assertSame( [ [ 'create', 0, true ] ], $this->error_outcomes( $result ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_report_a_ticket_never_attached_to_the_post_as_not_saved(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		// Tickets Commerce relates the ticket to its post after the insert; failing before that leaves no ticket on the post.
+		add_action(
+			'save_post_' . \TEC\Tickets\Commerce\Ticket::POSTTYPE,
+			static function () {
+				throw new \RuntimeException( 'An earlier save listener failed.' );
+			}
+		);
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Never on the post' ) ] ], $post_id );
+
+		$this->assertSame( [], $result->get_created() );
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
+		$this->assertSame( [], tribe_tickets()->where( 'event', $post_id )->get_ids() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_save_a_create_sent_again_with_its_key_over_the_ticket_it_created(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		$key     = '3f2c1a9e-7b4d-4c1e-9a8f-0d6b5e4c3a21';
+		$first   = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'First try', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+
+		// The answer never reached the editor, which sends the create again, edited since.
+		$again = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Second try', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+
+		$ticket_ids = tribe_tickets()->where( 'event', $post_id )->get_ids();
+		$this->assertCount( 1, $ticket_ids );
+		$this->assertSame( $first->get_created(), $again->get_created() );
+		$this->assertSame( [], $again->get_errors() );
+		$this->assertSame( 'Second try', get_the_title( $ticket_ids[0] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_match_a_create_key_only_among_the_tickets_of_the_post(): void {
+		$this->log_in_as_admin();
+		$post_id  = static::factory()->post->create();
+		$other_id = static::factory()->post->create();
+		$key      = 'a-key-sent-for-another-post';
+		$this->commit()->run( [ 'create' => [ $this->ticket_data( 'On the other post', [ Commit::CREATE_KEY => $key ] ) ] ], $other_id );
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'On this post', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+
 		$this->assertSame( [], $result->get_errors() );
+		$this->assertSame( [ 'On this post' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
+		$this->assertSame( [ 'On the other post' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $other_id )->get_ids() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_check_a_create_sent_again_as_the_update_it_becomes(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		$key     = 'a-key-whose-ticket-is-locked';
+		$this->commit()->run( [ 'create' => [ $this->ticket_data( 'Locked', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+		add_filter( 'tec_tickets_user_can_edit_ticket', '__return_false' );
+
+		$result = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Changed anyway', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
+		$this->assertSame( [ 'Locked' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
 	}
 }

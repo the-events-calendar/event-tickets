@@ -77,6 +77,19 @@ describe( 'state', () => {
 		expect( state.toPayload().create.map( ( e ) => e.summary.name ) ).toEqual( [ 'A2', 'B' ] );
 	} );
 
+	it( 'keys every staged new ticket, and keeps the key when it is edited again', () => {
+		const state = createState();
+		state.stageCreate( fieldsA );
+		state.stageCreate( fieldsB );
+		const [ a, b ] = state.toPayload().create.map( ( e ) => e.key );
+
+		// What the server reads as a key, so a save sent again cannot create the ticket twice.
+		expect( a ).toMatch( /^[A-Za-z0-9-]{8,64}$/ );
+		expect( b ).not.toBe( a );
+		state.restageCreate( 0, [ [ 'ticket_name', 'A2' ], [ 'ticket_provider', 'P' ] ] );
+		expect( state.toPayload().create[ 0 ].key ).toBe( a );
+	} );
+
 	it( 'drops a staged ticket and renumbers the rest', () => {
 		const state = createState();
 		state.stageCreate( fieldsA );
@@ -166,6 +179,7 @@ describe( 'buildHiddenFields', () => {
 			[ 'tec_tickets[create][0][ticket_name]', 'New' ],
 			[ 'tec_tickets[create][0][tribe-ticket][capacity]', '5' ],
 			[ 'tec_tickets[create][0][ticket_provider]', 'P' ],
+			[ 'tec_tickets[create][0][tec_tickets_create_key]', state.toPayload().create[ 0 ].key ],
 			[ 'tec_tickets[update][7][ticket_id]', '7' ],
 			[ 'tec_tickets[update][7][ticket_name]', 'Renamed' ],
 			[ 'tec_tickets[update][7][tribe-ticket][fees][selected_fees][]', '3' ],
