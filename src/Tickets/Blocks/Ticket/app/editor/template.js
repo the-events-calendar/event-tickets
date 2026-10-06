@@ -74,22 +74,20 @@ class Ticket extends PureComponent {
 		 *
 		 * @since 5.24.1
 		 *
-		 * @return {JSX.Element}
+		 * @return {JSX.Element} The default ticket form.
 		 */
 		const defaultForm = () => {
-			return(
+			return (
 				<Fragment>
 					<article
-						className={classNames(
+						className={ classNames(
 							'tribe-editor__ticket',
 							{ 'tribe-editor__ticket--disabled': isDisabled },
 							{
-								'tribe-editor__ticket--selected':
-								filteredIsSelected,
+								'tribe-editor__ticket--selected': filteredIsSelected,
 							},
 							{
-								'tribe-editor__ticket--has-tickets-plus':
-								hasTicketsPlus,
+								'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus,
 							},
 							{
 								'tribe-editor__ticket--is-asc': applyFilters(
@@ -100,7 +98,7 @@ class Ticket extends PureComponent {
 							},
 							{ 'tribe-editor__ticket--staged': isStaged },
 							{ 'tribe-editor__ticket--save-error': !! saveError }
-						)}
+						) }
 					>
 						{ ( isStaged || saveError ) && (
 							<div className="tribe-editor__ticket__deferred-status" role="status">
@@ -114,17 +112,11 @@ class Ticket extends PureComponent {
 								) }
 							</div>
 						) }
-						<TicketContainer
-							clientId={clientId}
-							isSelected={filteredIsSelected}
-						/>
-						<TicketDashboard
-							clientId={clientId}
-							isSelected={filteredIsSelected}
-						/>
-						{isLoading && <Spinner />}
+						<TicketContainer clientId={ clientId } isSelected={ filteredIsSelected } />
+						<TicketDashboard clientId={ clientId } isSelected={ filteredIsSelected } />
+						{ isLoading && <Spinner /> }
 					</article>
-					{isModalShowing && <MoveModal />}
+					{ isModalShowing && <MoveModal /> }
 				</Fragment>
 			);
 		};
@@ -138,17 +130,9 @@ class Ticket extends PureComponent {
 		 *
 		 * @return {JSX.Element} The default ticket form JSX element.
 		 */
-		const ticketForm = applyFilters(
-			'tec.tickets.blocks.Ticket.form',
-			defaultForm,
-			this.props
-		);
+		const ticketForm = applyFilters( 'tec.tickets.blocks.Ticket.form', defaultForm, this.props );
 
-		return showTicket ?
-			<Fragment>
-				{ ticketForm && ticketForm() }
-			</Fragment>
-			: null;
+		return showTicket ? <Fragment>{ ticketForm && ticketForm() }</Fragment> : null;
 	}
 }
 

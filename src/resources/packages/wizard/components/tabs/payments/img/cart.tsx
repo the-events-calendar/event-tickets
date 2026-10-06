@@ -4,8 +4,8 @@ const TicketsIcon = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			width={33}
-			height={32}
+			width={ 33 }
+			height={ 32 }
 			fill="none"
 			className="tec-tickets-onboarding__content-header-icon"
 			role="presentation"

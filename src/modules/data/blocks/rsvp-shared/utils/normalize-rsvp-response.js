@@ -12,12 +12,12 @@ import * as utils from '../../../utils';
  * @return {number|string} Capacity value or empty string for unlimited.
  */
 export const resolveV2Capacity = ( rsvp ) => {
-	if ( rsvp.capacity != null && rsvp.capacity !== '' ) {
+	if ( rsvp.capacity !== null && rsvp.capacity !== undefined && rsvp.capacity !== '' ) {
 		const capacity = Number( rsvp.capacity );
 		return capacity >= 0 ? capacity : '';
 	}
 
-	if ( rsvp.stock != null && rsvp.stock !== '' ) {
+	if ( rsvp.stock !== null && rsvp.stock !== undefined && rsvp.stock !== '' ) {
 		const stock = Number( rsvp.stock );
 		return stock >= 0 ? stock : '';
 	}
@@ -28,14 +28,14 @@ export const resolveV2Capacity = ( rsvp ) => {
 /**
  * Builds RSVP details and temp details payloads from moment objects.
  *
- * @param {Object} params                    Normalization parameters.
- * @param {string} params.title              RSVP title.
- * @param {string} params.description        RSVP description.
- * @param {*}      params.capacity           RSVP capacity.
- * @param {*}      params.notGoingResponses   Whether not-going responses are enabled.
- * @param {*}      params.showAttendees      Whether the attendees list is shown on the event page.
- * @param {Object} params.startMoment        Start moment object.
- * @param {Object} params.endMoment          End moment object.
+ * @param {Object} params                   Normalization parameters.
+ * @param {string} params.title             RSVP title.
+ * @param {string} params.description       RSVP description.
+ * @param {*}      params.capacity          RSVP capacity.
+ * @param {*}      params.notGoingResponses Whether not-going responses are enabled.
+ * @param {*}      params.showAttendees     Whether the attendees list is shown on the event page.
+ * @param {Object} params.startMoment       Start moment object.
+ * @param {Object} params.endMoment         End moment object.
  * @return {Object} Normalized RSVP state payloads.
  */
 export const normalizeRSVPResponse = ( {
@@ -124,10 +124,10 @@ export const normalizeRSVPResponseFromV1Post = ( rsvp ) => {
 /**
  * Normalizes a V2 TEC REST ticket response.
  *
- * @param {Object} rsvp V2 ticket object.
- * @param {Object} options              Normalization options.
- * @param {string} options.title        Override title.
- * @param {string} options.description  Override description.
+ * @param {Object} rsvp                V2 ticket object.
+ * @param {Object} options             Normalization options.
+ * @param {string} options.title       Override title.
+ * @param {string} options.description Override description.
  * @return {Object} Normalized RSVP state.
  */
 export const normalizeRSVPResponseFromV2Ticket = ( rsvp, options = {} ) => {
@@ -135,8 +135,7 @@ export const normalizeRSVPResponseFromV2Ticket = ( rsvp, options = {} ) => {
 	const endMoment = momentUtil.toMoment( rsvp.end_date );
 	const capacity = resolveV2Capacity( rsvp );
 	const title = options.title ?? utils.normalizeTitle( rsvp.title );
-	const description =
-		options.description ?? utils.normalizeDescription( rsvp.description, rsvp.excerpt );
+	const description = options.description ?? utils.normalizeDescription( rsvp.description, rsvp.excerpt );
 
 	return {
 		id: rsvp.id,

@@ -15,7 +15,7 @@ interface PaymentSelectorProps {
 		paypal: boolean;
 	};
 	paymentOption: string;
-	onPaymentOptionChange: (value: string) => void;
+	onPaymentOptionChange: ( value: string ) => void;
 }
 
 /**
@@ -27,11 +27,11 @@ interface PaymentSelectorProps {
  *
  * @return {JSX.Element} The component.
  */
-const PaymentSelector: React.FC<PaymentSelectorProps> = ({
+const PaymentSelector: React.FC< PaymentSelectorProps > = ( {
 	paymentGateways,
 	paymentOption,
 	onPaymentOptionChange,
-}) => {
+} ) => {
 	return (
 		<BaseControl
 			__nextHasNoMarginBottom
@@ -40,26 +40,29 @@ const PaymentSelector: React.FC<PaymentSelectorProps> = ({
 			className="tec-tickets-onboarding__form-field tec-tickets-onboarding__payment-options"
 		>
 			<p className="tec-tickets-onboarding__subtitle">
-				{ __( 'Choose how you\'d like to accept payments:', 'event-tickets' ) }
+				{ __( "Choose how you'd like to accept payments:", 'event-tickets' ) }
 			</p>
 
 			<PaymentRadioOptions
-				paymentGateways={paymentGateways}
-				paymentOption={paymentOption}
-				onPaymentOptionChange={onPaymentOptionChange}
+				paymentGateways={ paymentGateways }
+				paymentOption={ paymentOption }
+				onPaymentOptionChange={ onPaymentOptionChange }
 			/>
 
 			<p className="tec-tickets-onboarding__free-options-note">
 				{ __( 'Free tickets and RSVP options are always available.', 'event-tickets' ) }
 			</p>
 
-			{!paymentGateways.square && (
+			{ ! paymentGateways.square && (
 				<div className="tec-tickets-onboarding__warning-notice">
 					<p>
-						{ __( 'Your selected currency does not support in-person payments with Square.', 'event-tickets' ) }
+						{ __(
+							'Your selected currency does not support in-person payments with Square.',
+							'event-tickets'
+						) }
 					</p>
 				</div>
-			)}
+			) }
 		</BaseControl>
 	);
 };

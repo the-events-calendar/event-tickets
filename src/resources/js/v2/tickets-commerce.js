@@ -197,7 +197,7 @@ window.tribe.tickets.commerce = {};
 	 *
 	 * @since 5.3.0
 	 * @param {jQuery} $container Container for the purchaser info fields.
-	 * @return {Object}
+	 * @return {Object} The purchaser name and email.
 	 */
 	obj.getPurchaserData = ( $container ) => {
 		const purchaser = {};
@@ -281,7 +281,7 @@ window.tribe.tickets.commerce = {};
 	 *
 	 * @since 5.21.0
 	 */
-	obj.bindAddCouponLink = function() {
+	obj.bindAddCouponLink = function () {
 		const hiddenName = obj.selectors.hiddenElement.className();
 		$document.on( 'click', obj.selectors.couponAddLink, function () {
 			$( obj.selectors.couponAddLink ).addClass( hiddenName );
@@ -321,7 +321,7 @@ window.tribe.tickets.commerce = {};
 	 *
 	 * @since 5.21.0
 	 */
-	obj.bindCouponApply = function() {
+	obj.bindCouponApply = function () {
 		let ajaxInProgress = false;
 
 		$document.on( 'click', obj.selectors.couponApplyButton, applyCoupon );
@@ -347,9 +347,6 @@ window.tribe.tickets.commerce = {};
 			const couponValue = $couponInput.val().trim();
 			const $errorMessage = $( obj.selectors.couponError );
 			const hiddenName = obj.selectors.hiddenElement.className();
-			const $inputContainer = $( obj.selectors.couponInputContainer );
-			const nonce = $( obj.selectors.nonce ).val();
-			const stripeIntentId = obj.getStripeIntentId();
 
 			// Hide the error message initially.
 			$errorMessage.addClass( hiddenName );
@@ -361,6 +358,10 @@ window.tribe.tickets.commerce = {};
 				$couponInput.addClass( obj.selectors.couponInputErrorClass );
 				return;
 			}
+
+			const $inputContainer = $( obj.selectors.couponInputContainer );
+			const nonce = $( obj.selectors.nonce ).val();
+			const stripeIntentId = obj.getStripeIntentId();
 
 			ajaxInProgress = true;
 			obj.loaderShow();
@@ -437,8 +438,6 @@ window.tribe.tickets.commerce = {};
 			const couponValue = $( obj.selectors.couponInput ).val().trim();
 			const $errorMessage = $( obj.selectors.couponError );
 			const hiddenName = obj.selectors.hiddenElement.className();
-			const nonce = $( obj.selectors.nonce ).val();
-			const paymentIntentId = obj.getStripeIntentId();
 
 			// Hide the error message initially.
 			$errorMessage.addClass( hiddenName );
@@ -448,6 +447,9 @@ window.tribe.tickets.commerce = {};
 				$errorMessage.text( tecTicketsCommerce.i18n.cantDetermineCoupon ).removeClass( hiddenName );
 				return;
 			}
+
+			const nonce = $( obj.selectors.nonce ).val();
+			const paymentIntentId = obj.getStripeIntentId();
 
 			ajaxInProgress = true;
 			obj.loaderShow();

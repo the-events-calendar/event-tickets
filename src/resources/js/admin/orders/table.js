@@ -108,12 +108,14 @@
 					const startDate = $( document.getElementById( 'EventStartDate' ) ).data( 'prevDate' );
 					// eslint-disable-next-line max-len
 					const dateDiff =
-						null == startDate ? 0 : dateDiffInDays( startDate, $endDate.datepicker( 'getDate' ) );
+						startDate === null || startDate === undefined
+							? 0
+							: dateDiffInDays( startDate, $endDate.datepicker( 'getDate' ) );
 					const endDate = new Date( date.setDate( date.getDate() + dateDiff ) );
 
 					$endDate
 						.datepicker( 'option', 'minDate', $startDate.datepicker( 'getDate' ) )
-						.datepicker( 'setDate', endDate ).datepicker_format;
+						.datepicker( 'setDate', endDate );
 				}
 
 				// fire the change and blur handlers on the field
