@@ -587,4 +587,21 @@ describe( 'the review of the stacked PRs, third round', () => {
 
 		expect( createdHook()[ 3 ].endDate ).toBe( '2027-10-06' );
 	} );
+
+	it( 'sends a ticket created but not finished as an update of that ticket, with every field it was staged with', () => {
+		ticket( 'a' );
+		live( sagas.stageTicket, 'a', [ [ 'name', 'Original' ], [ 'ticket[capacity]', '5' ] ] );
+		prepareLive();
+
+		// The server's answer when the provider failed once the ticket was on the post: its ID, and not saved.
+		answer( {
+			created: { 0: 101 },
+			errors: [ { part: 'create', key: 0, message: 'The ticket was created, but not all of its settings were saved.' } ],
+		} );
+
+		expect( ticketState( 'a' ).isStaged ).toBe( true );
+		const edits = prepareLive();
+		expect( edits.tec_tickets.create ).toEqual( [] );
+		expect( edits.tec_tickets.update[ 101 ][ 'tribe-ticket' ].capacity ).toBe( '5' );
+	} );
 } );
