@@ -289,7 +289,8 @@ class OrderReportTest extends WPTestCase {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		[ $post_id, $post_ids ] = $fixture();
-		$this->set_fn_return( 'wp_create_nonce', '0987654321' );
+		// No digits: the post IDs are replaced in the HTML below, and one must never match inside the nonce.
+		$this->set_fn_return( 'wp_create_nonce', 'abcdefabcd' );
 
 		$_GET['event_id'] = $post_id;
 		$_GET['search']   = '';
