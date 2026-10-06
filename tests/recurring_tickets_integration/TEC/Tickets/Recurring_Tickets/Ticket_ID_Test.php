@@ -57,11 +57,9 @@ class Ticket_ID_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_refuse_to_convert_the_base_to_a_row_id(): void {
-		// Row IDs start at 1, so the base itself names no row.
-		$this->expectException( InvalidArgumentException::class );
-
-		Ticket_ID::to_row_id( 1000000000 );
+	public function it_should_convert_the_base_to_row_zero_which_names_no_row(): void {
+		// The base is a table ticket ID, so loaders must not throw on it: it names row 0, and rows start at 1.
+		$this->assertSame( 0, Ticket_ID::to_row_id( 1000000000 ) );
 	}
 
 	/**
