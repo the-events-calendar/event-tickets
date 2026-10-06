@@ -3,15 +3,17 @@
  */
 import { runSaga } from 'redux-saga';
 import { call, select } from 'redux-saga/effects';
+import moment from 'moment';
 
 /**
  * Internal dependencies
  */
 import * as sagas from '../deferred-sagas';
-import { setBodyDetails } from '../sagas';
+import { setBodyDetails, setTicketDetails, setTicketTempDetails, syncTicketSaleEndWithEventStart } from '../sagas';
 import reducer, { DEFAULT_STATE } from '../reducer';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
+import * as types from '../types';
 
 // The editor stores the tests drive: which blocks exist, in which order, the saved record and the edits.
 const mockEditor = {
@@ -28,6 +30,7 @@ jest.mock( '@wordpress/data', () => ( {
 		getBlock: ( clientId ) => ( mockEditor.order.includes( clientId ) ? {} : null ),
 		getBlockIndex: ( clientId ) => mockEditor.order.indexOf( clientId ),
 		getBlocksByName: ( name ) => ( 'tribe/tickets' === name ? [ 'tickets-parent' ] : [] ),
+		getEditedPostAttribute: ( key ) => ( 'type' === key ? 'tribe_events' : undefined ),
 	} ),
 	dispatch: () => ( {
 		editPost: mockEditor.editPost,
@@ -135,8 +138,8 @@ describe( 'refreshPayload', () => {
 		expect( mockEditor.editPost ).toHaveBeenLastCalledWith( {
 			tec_tickets: {
 				create: [
-					{ ticket_show_description: 'yes', ticket_name: 'B', ticket_menu_order: '0' },
-					{ ticket_show_description: 'yes', ticket_name: 'A', ticket_menu_order: '1' },
+					{ ticket_show_description: 'yes', ticket_name: 'B', ticket_menu_order: '0', tec_tickets_create_key: 'b' },
+					{ ticket_show_description: 'yes', ticket_name: 'A', ticket_menu_order: '1', tec_tickets_create_key: 'a' },
 				],
 				update: {},
 				delete: [],
@@ -221,7 +224,9 @@ describe( 'prepareSave', () => {
 		const edits = prepare( stateWith( { a: { isStaged: true }, r: { isStaged: true } } ), { id: 10, content: 'x' } );
 
 		expect( edits.content ).toBe( 'x' );
-		expect( edits.tec_tickets.create ).toEqual( [ { ticket_show_description: 'yes', ticket_name: 'A' } ] );
+		expect( edits.tec_tickets.create ).toEqual( [
+			{ ticket_show_description: 'yes', ticket_name: 'A', tec_tickets_create_key: 'a' },
+		] );
 
 		const nothing = prepare( stateWith( {} ), { id: 10, tec_tickets: { create: [ {} ], update: {}, delete: [], move: {} } } );
 		expect( nothing ).toEqual( { id: 10 } );
@@ -481,5 +486,105 @@ describe( 'the review of the stacked PRs, second round', () => {
 			'tickets-parent',
 			false
 		);
+	} );
+} );
+
+describe( 'the review of the stacked PRs, third round', () => {
+	// The store as the editor runs it: every action goes through the reducer, the bulk details actions through their sagas.
+	let block;
+	const dispatch = ( action ) => {
+		block = reducer( block, action );
+		if ( types.SET_TICKET_DETAILS === action.type ) {
+			live( setTicketDetails, action );
+		}
+		if ( types.SET_TICKET_TEMP_DETAILS === action.type ) {
+			live( setTicketTempDetails, action );
+		}
+	};
+	const live = ( saga, ...args ) =>
+		runSaga( { dispatch, getState: () => ( { tickets: { blocks: { ticket: block } } } ) }, saga, ...args );
+	const prepareLive = () => {
+		let edits;
+		live( sagas.prepareSave, { id: 10 }, ( value ) => ( edits = value ) );
+
+		return edits;
+	};
+	const answer = ( response ) => {
+		mockEditor.record = { id: 10, tec_tickets: response };
+		live( sagas.applyLastSaveResponse );
+	};
+	const ticket = ( clientId, ticketId = 0 ) => {
+		dispatch( actions.registerTicketBlock( clientId ) );
+		dispatch( actions.setTicketHasBeenCreated( clientId, !! ticketId ) );
+		dispatch( actions.setTicketId( clientId, ticketId ) );
+		dispatch( actions.setTicketTempTitle( clientId, 'Original' ) );
+		dispatch( actions.setTicketTempPrice( clientId, '10' ) );
+		dispatch( actions.setTicketTempCapacityType( clientId, 'unlimited' ) );
+		mockEditor.order.push( clientId );
+		sagas.rememberPosition( clientId );
+	};
+	const ticketState = ( clientId ) => block.tickets.byClientId[ clientId ];
+	const createdHook = () => doAction.mock.calls.find( ( [ name ] ) => 'tec.tickets.blocks.ticketCreated' === name );
+
+	beforeEach( () => {
+		block = DEFAULT_STATE;
+	} );
+
+	it( 'leaves out of the save a staged ticket whose latest edit fails the rules, and keeps it staged with its error', () => {
+		ticket( 'a' );
+		ticket( 'b', 12 );
+		ticket( 'c', 13 );
+		[ 'a', 'b', 'c' ].forEach( ( clientId ) => live( sagas.stageTicket, clientId, [ [ 'name', 'Original' ] ] ) );
+		// The staged new ticket and one staged saved ticket are edited into dates that end before they start.
+		[ 'a', 'b' ].forEach( ( clientId ) => {
+			dispatch( actions.setTicketHasChanges( clientId, true ) );
+			dispatch( actions.setTicketHasDurationError( clientId, true ) );
+		} );
+
+		const edits = prepareLive();
+
+		expect( edits.tec_tickets.create ).toEqual( [] );
+		expect( Object.keys( edits.tec_tickets.update ) ).toEqual( [ '13' ] );
+
+		answer( { created: {}, errors: [] } );
+
+		// The answer settles only what went out: the left-out tickets keep their staging and the reason they were left out.
+		[ 'a', 'b' ].forEach( ( clientId ) => {
+			expect( ticketState( clientId ).isStaged ).toBe( true );
+			expect( ticketState( clientId ).saveError ).not.toBe( '' );
+		} );
+		expect( ticketState( 'c' ).isStaged ).toBe( false );
+	} );
+
+	it( 'announces a created ticket with the details it was sent with, not an edit confirmed while the save was out', () => {
+		ticket( 'a' );
+		live( sagas.stageTicket, 'a', [ [ 'name', 'Original' ] ] );
+		prepareLive();
+		dispatch( actions.setTicketTempTitle( 'a', 'Later edit' ) );
+		live( sagas.stageTicket, 'a', [ [ 'name', 'Later edit' ] ] );
+
+		answer( { created: { 0: 101 }, errors: [] } );
+
+		expect( createdHook()[ 3 ].title ).toBe( 'Original' );
+		// The later edit stays in the store, staged for the next save.
+		expect( ticketState( 'a' ).details.title ).toBe( 'Later edit' );
+	} );
+
+	it( 'announces a created ticket with the sale end it was sent with, not one moved with the event start meanwhile', () => {
+		const previousStart = '2027-10-06 10:00:00';
+		ticket( 'a' );
+		dispatch( actions.setTicketTempEndDateMoment( 'a', moment( previousStart ) ) );
+		dispatch( actions.setTicketTempEndDate( 'a', '2027-10-06' ) );
+		live( sagas.stageTicket, 'a', [ [ 'name', 'Original' ], [ 'end_date', '2027-10-06' ] ] );
+		prepareLive();
+		// The event start moves while the save is out; the sale end follows it, with no confirm.
+		window.tec = { events: { app: { main: { data: { blocks: { datetime: { selectors: { getStart: () => '2027-10-09 10:00:00' } } } } } } } };
+		live( syncTicketSaleEndWithEventStart, previousStart, 'a' );
+		delete window.tec;
+		expect( ticketState( 'a' ).details.endDate ).toBe( '2027-10-09' );
+
+		answer( { created: { 0: 101 }, errors: [] } );
+
+		expect( createdHook()[ 3 ].endDate ).toBe( '2027-10-06' );
 	} );
 } );
