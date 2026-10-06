@@ -670,38 +670,6 @@ describe( 'Ticket Block sagas', () => {
 			// Existing tickets do not default their end date to the event start;
 			// the saved end date is loaded via fetchTicket below.
 			expect( gen.next( true ).value ).toEqual(
-				select( window.tec.events.app.main.data.blocks.datetime.selectors.getStart ),
-			);
-			expect( gen.next( eventStart ).value ).toEqual(
-				call( momentUtil.toMoment, eventStart ),
-			);
-			expect( gen.next( endMoment ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, endMoment ),
-			);
-			expect( gen.next( endDate ).value ).toEqual(
-				call( momentUtil.toDate, endMoment, datePickerFormat ),
-			);
-			expect( gen.next( endDateInput ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, endMoment ),
-			);
-			expect( gen.next( endTime ).value ).toEqual(
-				call( momentUtil.toTime, endMoment ),
-			);
-			expect( gen.next( endTime ).value ).toEqual(
-				all( [
-					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
-					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
-					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
-					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
-					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
-					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
-					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
-					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
-					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
-					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
-				] ),
-			);
-			expect( gen.next().value ).toEqual(
 				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS ),
 			);
 			expect( gen.next( false ).value ).toEqual(
