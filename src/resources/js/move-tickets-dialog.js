@@ -483,7 +483,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				deferredSave = null;
 			}
 			if ( deferredSave && deferredSave.isEnabled && deferredSave.isEnabled() ) {
-				const targetTitle = $post_choices.find( 'input:checked' ).parent().text().trim();
+				// The post list is local to the choose-event stage, so it is found again here.
+				const targetTitle = $( '#choose-event .select-single-container input:checked' ).parent().text().trim();
 				const staged = deferredSave.stageMove(
 					tribe_move_tickets_data.ticket_type_id,
 					target_post_id,
