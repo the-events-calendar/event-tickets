@@ -6,9 +6,7 @@
  * @return {Object|null} Latest matching ticket or null.
  */
 export const selectLatestRsvpTicket = ( tickets, ticketType ) => {
-	const rsvpTickets = Array.isArray( tickets )
-		? tickets.filter( ( ticket ) => ticket.type === ticketType )
-		: [];
+	const rsvpTickets = Array.isArray( tickets ) ? tickets.filter( ( ticket ) => ticket.type === ticketType ) : [];
 
 	if ( ! rsvpTickets.length ) {
 		return null;

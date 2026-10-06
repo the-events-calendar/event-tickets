@@ -1,11 +1,11 @@
+// eslint-disable-next-line no-var -- window-level namespace shared across scripts
 var tribe_ticket_details = tribe_ticket_details || {};
 
 ( function ( $, obj ) {
 	'use strict';
 	const $document = $( document );
 
-	obj.init = function ( detailsElems ) {
-		// eslint-disable-line no-unused-vars
+	obj.init = function () {
 		obj.event_listeners();
 	};
 

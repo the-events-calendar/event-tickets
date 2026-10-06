@@ -9,7 +9,7 @@ import { doAction } from '@wordpress/hooks';
 import * as actions from '../rsvp-shared/actions';
 import * as utils from '../../utils';
 import { middlewares } from '@moderntribe/common/store';
-import { globals, time, moment as momentUtil } from '@moderntribe/common/utils';
+import { time, moment as momentUtil } from '@moderntribe/common/utils';
 import { normalizeRSVPResponseFromV1Post } from '../rsvp-shared/utils/normalize-rsvp-response';
 import { hydrateRsvpAttendanceCounts } from '../rsvp-shared/utils/hydrate-rsvp-attendance-counts';
 
@@ -18,18 +18,13 @@ const {
 } = middlewares;
 
 /**
- * @todo: until we can abstract out wpRequest() better, these should remain as a thunk
+ * @todo until we can abstract out wpRequest() better, these should remain as a thunk
  */
 const METHODS = {
 	DELETE: 'DELETE',
 	GET: 'GET',
 	POST: 'POST',
 	PUT: 'PUT',
-};
-
-const TEC_EEA_HEADER = {
-	'X-TEC-EEA':
-		'I understand that this endpoint is experimental and may change in a future release without maintaining backward compatibility. I also understand that I am using this endpoint at my own risk, while support is not provided for it.',
 };
 
 const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
@@ -143,41 +138,43 @@ const hydrateRSVPFromResponse = ( dispatch, normalized ) => {
 	dispatch( actions.setRSVPTempDetails( normalized.tempDetails ) );
 };
 
-export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
-	const path = `${ utils.RSVP_POST_TYPE }?per_page=100&page=${ page }&context=edit`;
+export const getRSVP =
+	( postId, page = 1 ) =>
+	( dispatch ) => {
+		const path = `${ utils.RSVP_POST_TYPE }?per_page=100&page=${ page }&context=edit`;
 
-	const options = {
-		path,
-		params: {
-			method: METHODS.GET,
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsLoading( true ) ),
-			success: ( { body, headers } ) => {
-				const filteredRSVPs = body.filter(
-					( rsvp ) => rsvp.meta[ utils.KEY_RSVP_FOR_EVENT ] == postId // eslint-disable-line eqeqeq
-				);
-				const totalPages = headers.get( 'x-wp-totalpages' );
-
-				if ( filteredRSVPs.length ) {
-					/**
-					 * @todo We are currently only fetching the first RSVP.
-					 *       If an event has more than 1 RSVP set up from
-					 *       the classic editor, only one will be displayed.
-					 *       The strategy to handle this is is being worked on.
-					 */
-					const normalized = normalizeRSVPResponseFromV1Post( filteredRSVPs[ 0 ] );
-					hydrateRSVPFromResponse( dispatch, normalized );
-					dispatch( actions.setRSVPIsLoading( false ) );
-				} else if ( page < totalPages ) {
-					dispatch( getRSVP( postId, page + 1 ) );
-				} else {
-					dispatch( actions.setRSVPIsLoading( false ) );
-				}
+		const options = {
+			path,
+			params: {
+				method: METHODS.GET,
 			},
-			error: () => dispatch( actions.setRSVPIsLoading( false ) ),
-		},
-	};
+			actions: {
+				start: () => dispatch( actions.setRSVPIsLoading( true ) ),
+				success: ( { body, headers } ) => {
+					const filteredRSVPs = body.filter(
+						( rsvp ) => rsvp.meta[ utils.KEY_RSVP_FOR_EVENT ] == postId // eslint-disable-line eqeqeq
+					);
+					const totalPages = headers.get( 'x-wp-totalpages' );
 
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
+					if ( filteredRSVPs.length ) {
+						/**
+						 * @todo We are currently only fetching the first RSVP.
+						 *       If an event has more than 1 RSVP set up from
+						 *       the classic editor, only one will be displayed.
+						 *       The strategy to handle this is is being worked on.
+						 */
+						const normalized = normalizeRSVPResponseFromV1Post( filteredRSVPs[ 0 ] );
+						hydrateRSVPFromResponse( dispatch, normalized );
+						dispatch( actions.setRSVPIsLoading( false ) );
+					} else if ( page < totalPages ) {
+						dispatch( getRSVP( postId, page + 1 ) );
+					} else {
+						dispatch( actions.setRSVPIsLoading( false ) );
+					}
+				},
+				error: () => dispatch( actions.setRSVPIsLoading( false ) ),
+			},
+		};
+
+		dispatch( wpRequestActions.wpRequest( options ) );
+	};

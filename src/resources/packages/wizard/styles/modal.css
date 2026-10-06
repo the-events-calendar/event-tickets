@@ -28,6 +28,7 @@
 }
 
 @media (min-width: 500px) {
+
 	.tec-onboarding__modal .components-modal__content {
 		padding: 0 var(--tec-spacer-3) var(--tec-spacer-7);
 	}

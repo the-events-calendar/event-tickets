@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, stellarwp, nexcess, bordoni, deblynprado, dpantazis, filipecouto, jehromegriffiths1, jentheo, larodiel, leahkoerper, sdokus, vicskf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.30.0
+Stable tag: 5.30.0.1
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.30.0.1] 2026-10-01 =
+
+* Fix - Prevented the Tickets metabox from losing fields in the Classic Editor when the RSVP metabox is placed above it.
 
 = [5.30.0] 2026-09-30 =
 
