@@ -316,9 +316,9 @@ describe( 'reconcileSaveResponse', () => {
 		] );
 	} );
 
-	it( 'keeps a ticket saved before something after the save failed, with its ID and the error', () => {
+	it( 'keeps a ticket whose save did not finish staged, with its ID and the error', () => {
 		const outcome = reconcileSaveResponse( {
-			response: { created: { 0: 101, 1: 102 }, errors: [ { part: 'create', key: 1, message: 'Saved, then a listener failed' } ] },
+			response: { created: { 0: 101, 1: 102 }, errors: [ { part: 'create', key: 1, message: 'Could not be saved' } ] },
 			sent,
 			live,
 		} );
@@ -328,9 +328,30 @@ describe( 'reconcileSaveResponse', () => {
 			clientId: 'b',
 			ticketId: 102,
 			staged: true,
-			error: 'Saved, then a listener failed',
+			error: 'Could not be saved',
 			hook: 'created',
 		} );
+	} );
+
+	it( 'settles a create or update that was saved when only what runs after it failed, and keeps the warning', () => {
+		const outcome = reconcileSaveResponse( {
+			response: {
+				created: { 0: 101, 1: 102 },
+				errors: [
+					{ part: 'create', key: 1, message: 'Saved, then a listener failed', applied: true },
+					{ part: 'update', key: 30, message: 'Saved, then a listener failed', applied: true },
+				],
+			},
+			sent,
+			live,
+		} );
+
+		// Saved: the hooks fire and nothing is sent again; the warning stays on the block.
+		expect( outcome.blocks ).toEqual( [
+			{ clientId: 'a', ticketId: 101, staged: false, error: '', hook: 'created' },
+			{ clientId: 'b', ticketId: 102, staged: false, error: 'Saved, then a listener failed', hook: 'created' },
+			{ clientId: 'u', ticketId: 30, staged: false, error: 'Saved, then a listener failed', hook: 'updated' },
+		] );
 	} );
 
 	it( 'keeps a block staged when it was staged again after the request left', () => {

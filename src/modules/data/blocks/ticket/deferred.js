@@ -233,10 +233,10 @@ export const buildPayload = ( { clientIds, byClientId, bodies, stagedDeletes, st
  * deletes or moves staged meanwhile stay staged. A payload-level error (no part) means nothing was
  * committed, so every sent change stays staged with the message. Refused deletes and moves have no block
  * left to show their error on, so they become notices, and their tickets, still on the post, come back as
- * blocks. An error marked `applied` is not a refusal: the delete or move happened and something that runs
- * after it failed, so it is a notice and no block comes back. A create that carries both an ID and an error
- * was saved before something after the save failed: the block gets the ID, so the next save sends an update
- * instead of creating the ticket again.
+ * blocks. An error marked `applied` is not a refusal: the change happened and something that runs after it
+ * failed, so it is settled like a save and the error stays as a warning; a delete or move becomes a notice
+ * and no block comes back. A create that carries both an ID and a refusal exists but did not finish saving:
+ * the block gets the ID, so the next save sends an update instead of creating the ticket again.
  *
  * @since TBD
  *
@@ -288,7 +288,8 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 
 		if ( ticketId ) {
 			const error = errorFor( 'create', position );
-			blocks.push( { clientId, ticketId, staged: changedSince( clientId ) || !! error, error, hook: 'created' } );
+			const staged = changedSince( clientId ) || isRefused( 'create', position );
+			blocks.push( { clientId, ticketId, staged, error, hook: 'created' } );
 			return;
 		}
 
@@ -310,9 +311,9 @@ export const reconcileSaveResponse = ( { response, sent, live } ) => {
 		const error = errorFor( 'update', ticketId );
 
 		blocks.push(
-			error
+			isRefused( 'update', ticketId )
 				? { clientId, staged: true, error, hook: null }
-				: { clientId, ticketId, staged: changedSince( clientId ), error: '', hook: 'updated' }
+				: { clientId, ticketId, staged: changedSince( clientId ), error, hook: 'updated' }
 		);
 	} );
 
