@@ -40,19 +40,13 @@ export const initTicketsBlockFilters = () => {
 	);
 
 	// Filter out tc-rsvp tickets from the initial tickets list loaded from post meta.
-	addFilter(
-		'tec.tickets.blocks.initialTickets',
-		'tec/rsvp-v2/exclude-from-initial-tickets',
-		( tickets ) =>
-			tickets.filter( ( ticket ) => ticket.type !== tcRsvpType )
+	addFilter( 'tec.tickets.blocks.initialTickets', 'tec/rsvp-v2/exclude-from-initial-tickets', ( tickets ) =>
+		tickets.filter( ( ticket ) => ticket.type !== tcRsvpType )
 	);
 
 	// Filter out tc-rsvp tickets from tickets fetched via REST API to prevent duplicate handling.
-	addFilter(
-		'tec.tickets.blocks.fetchedTickets',
-		'tec/rsvp-v2/exclude-from-fetched-tickets',
-		( tickets ) =>
-			tickets.filter( ( ticket ) => ticket.type !== tcRsvpType )
+	addFilter( 'tec.tickets.blocks.fetchedTickets', 'tec/rsvp-v2/exclude-from-fetched-tickets', ( tickets ) =>
+		tickets.filter( ( ticket ) => ticket.type !== tcRsvpType )
 	);
 };
 

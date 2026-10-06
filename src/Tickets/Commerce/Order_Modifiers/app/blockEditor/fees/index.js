@@ -35,10 +35,9 @@ const { storeName } = require( '../store' );
  * reloaded.
  *
  * @since 5.18.0
- * @param         props
- *
+ * @param {Object} props          The component properties.
  * @param {string} props.clientId The client ID of the ticket.
- * @return {JSX.Element}
+ * @return {JSX.Element} The fees section.
  * @class
  */
 function FeesSection( props ) {
@@ -164,6 +163,7 @@ function FeesSection( props ) {
 				{ hasAutomaticFees
 					? feesAutomatic.map( ( fee ) => (
 							<CheckboxFeeWithTooltip
+								key={ fee.id }
 								clientId={ clientId }
 								fee={ fee }
 								isChecked={ true }
@@ -177,6 +177,7 @@ function FeesSection( props ) {
 				{ hasDisplayedFees
 					? feesDisplayed.map( ( fee ) => (
 							<CheckboxFee
+								key={ fee.id }
 								isDisabled={ false }
 								onChange={ onSelectedFeesChange }
 								isChecked={ checkedFees[ fee.id ] }

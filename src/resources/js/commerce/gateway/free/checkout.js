@@ -1,5 +1,4 @@
-/* global tribe, jQuery, tecTicketsCommerceGatewayFreeCheckout */
-
+/* global tecTicketsCommerceGatewayFreeCheckout */
 /**
  * Path to this script in the global tribe Object.
  *
@@ -58,7 +57,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @param {Object} error
 	 *
-	 * @return {*}
+	 * @return {*} Ky stop signal.
 	 */
 	obj.onBeforeRetry = async ( error ) => {
 		console.log( error );
@@ -73,7 +72,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @param {Object} error
 	 *
-	 * @return {*}
+	 * @return {*} Ky stop signal.
 	 */
 	obj.onBeforeError = async ( error ) => {
 		console.log( error );
@@ -86,10 +85,10 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @since 5.10.0
 	 *
-	 * @param data
-	 * @param headers
+	 * @param {Object} data    Request body data.
+	 * @param {Object} headers Request headers.
 	 *
-	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
+	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}} Request arguments for Ky.
 	 */
 	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
@@ -154,7 +153,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Toggle the submit button enabled/disabled
 	 *
-	 * @param enable
+	 * @param {boolean} enable Whether the button should be enabled.
 	 */
 	obj.submitButton = ( enable ) => {
 		$( obj.selectors.submitButton ).prop( 'disabled', ! enable );
@@ -194,7 +193,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @since 5.10.0
 	 *
-	 * @return {Promise<*>}
+	 * @return {Promise<*>} Resolves with the order response.
 	 */
 	obj.handleCreateOrder = async () => {
 		const args = obj.getRequestArgs( {
@@ -218,7 +217,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	 *
 	 * @since 5.10.0
 	 *
-	 * @return {Object}
+	 * @return {Object} Purchaser form data.
 	 */
 	obj.getPurchaserData = () =>
 		tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );

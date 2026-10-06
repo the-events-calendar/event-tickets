@@ -23,6 +23,7 @@ const SeriesPassNotice = ( { seriesPassLink, seriesName } ) => {
 					<div
 						dangerouslySetInnerHTML={ {
 							__html: sprintf(
+								/* translators: %s: link to the Series admin. */
 								_x(
 									'Create and manage Series Passes from the %s Series admin.',
 									'The message displayed to a user editing an Event part of a Series with ' +

@@ -2,10 +2,7 @@
  * Internal dependencies
  */
 import { normalizeRSVPResponseFromV2Ticket } from './normalize-rsvp-response';
-import {
-	getAttendanceCountsFromV2Ticket,
-	hydrateRsvpAttendanceCounts,
-} from './hydrate-rsvp-attendance-counts';
+import { getAttendanceCountsFromV2Ticket, hydrateRsvpAttendanceCounts } from './hydrate-rsvp-attendance-counts';
 import { dispatchRsvpDetails, dispatchRsvpTempDetails } from './dispatch-rsvp-details';
 
 /**
