@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Tickets_Repository;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
@@ -180,6 +182,92 @@ class Meta_Shim_Test extends WPTestCase {
 		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 1500 ] );
 
 		$this->assertSame( '15.00', get_post_meta( $id, '_price', true ) );
+	}
+
+	public function write_provider(): Generator {
+		yield 'add' => [ static fn( int $id ) => add_post_meta( $id, '_price', '20' ), 'add' ];
+		yield 'update' => [ static fn( int $id ) => update_post_meta( $id, '_price', '20' ), 'update' ];
+		yield 'update a template key' => [ static fn( int $id ) => update_post_meta( $id, '_tribe_tickets_meta', [ 'x' ] ), 'update' ];
+		yield 'delete' => [ static fn( int $id ) => delete_post_meta( $id, '_price' ), 'delete' ];
+		yield 'the type a ticket object assigns' => [
+			static function ( int $id ) {
+				$ticket       = new \Tribe__Tickets__Ticket_Object( [ 'ID' => $id ] );
+				$ticket->type = 'default';
+
+				return null;
+			},
+			'update',
+		];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider write_provider
+	 */
+	public function it_should_write_nothing_and_log_the_key( callable $write, string $action ): void {
+		$id   = $this->insert_ticket_row( [ 'price' => 1050 ] );
+		$logs = [];
+		add_action(
+			'tribe_log',
+			static function ( $level, $message, $context = [] ) use ( &$logs ) {
+				$logs[] = [ $level, $message, $context ];
+			},
+			10,
+			3
+		);
+
+		// ECP's add filter reads any ID above its own base as a date and fails on one that is not; ET cannot stop a
+		// later callback. Until ECP leaves IDs it does not own alone, test the refusal without it.
+		$ecp_add = $this->detach_ecp_add_filter();
+
+		try {
+			$result = $write( $id );
+		} finally {
+			if ( $ecp_add ) {
+				add_filter( 'add_post_metadata', $ecp_add, 10, 5 );
+			}
+		}
+
+		$this->assertNotTrue( $result );
+		$this->assertSame( 0, (int) DB::get_var( DB::prepare( 'SELECT COUNT(*) FROM %i WHERE post_id = %d', DB::prefix( 'postmeta' ), $id ) ) );
+		$this->assertSame( '10.50', get_post_meta( $id, '_price', true ) );
+		$this->assertCount( 1, $logs );
+		[ $level, , $context ] = $logs[0];
+		$this->assertSame( 'debug', $level );
+		$this->assertSame( $action, $context['action'] );
+		$this->assertSame( $id, $context['ticket_id'] );
+		$this->assertNotEmpty( $context['caller'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_post_meta_writes_alone(): void {
+		$post = static::factory()->post->create();
+
+		$this->assertNotFalse( add_post_meta( $post, '_price', '5' ) );
+		$this->assertTrue( update_post_meta( $post, '_price', '6' ) );
+		$this->assertSame( '6', get_post_meta( $post, '_price', true ) );
+		$this->assertTrue( delete_post_meta( $post, '_price' ) );
+	}
+
+	/**
+	 * Removes ECP's add post meta filter.
+	 *
+	 * @return callable|null The filter removed, if there was one.
+	 */
+	private function detach_ecp_add_filter(): ?callable {
+		global $wp_filter;
+
+		foreach ( $wp_filter['add_post_metadata']->callbacks[10] ?? [] as $callback ) {
+			if ( is_array( $callback['function'] ) && 'add_post_metadata_filter' === $callback['function'][1] ) {
+				remove_filter( 'add_post_metadata', $callback['function'], 10 );
+
+				return $callback['function'];
+			}
+		}
+
+		return null;
 	}
 
 	/**

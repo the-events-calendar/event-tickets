@@ -37,7 +37,11 @@ final class Core_Controller extends Controller_Contract {
 		$guard = $this->container->get( Occurrence_Guard::class );
 		remove_filter( Occurrence_Guard::FILTER, [ $guard, 'remember' ], 9 );
 		remove_filter( Occurrence_Guard::FILTER, [ $guard, 'restore' ], PHP_INT_MAX );
-		remove_filter( 'get_post_metadata', [ $this->container->get( Meta_Shim::class ), 'read' ], 9 );
+		$shim = $this->container->get( Meta_Shim::class );
+		remove_filter( 'get_post_metadata', [ $shim, 'read' ], 9 );
+		foreach ( [ 'add', 'update', 'delete' ] as $write ) {
+			remove_filter( "{$write}_post_metadata", [ $shim, 'refuse_write' ], PHP_INT_MIN );
+		}
 	}
 
 	/**
@@ -71,7 +75,15 @@ final class Core_Controller extends Controller_Contract {
 		wp_cache_add_non_persistent_groups( [ Rows::CACHE_GROUP ] );
 		$this->container->singleton( Rows::class );
 		$this->container->singleton( Meta_Shim::class );
-		// Before ECP's meta cache hydration at 10, which reads any ID above its own base as a date and queries for it.
-		add_filter( 'get_post_metadata', [ $this->container->get( Meta_Shim::class ), 'read' ], 9, 4 );
+		$shim = $this->container->get( Meta_Shim::class );
+
+		/*
+		 * ECP reads any ID above its own base as a date. Its meta cache hydration at 10 queries for one, and its
+		 * update filter at 0 recurses forever on one that is not a date: the shim answers before both.
+		 */
+		add_filter( 'get_post_metadata', [ $shim, 'read' ], 9, 4 );
+		foreach ( [ 'add', 'update', 'delete' ] as $write ) {
+			add_filter( "{$write}_post_metadata", [ $shim, 'refuse_write' ], PHP_INT_MIN, 3 );
+		}
 	}
 }
