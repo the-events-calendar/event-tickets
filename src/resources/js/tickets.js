@@ -752,7 +752,13 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @param {string}  action      The action, `save`.
 		 * @param {Object}  context     The event, the edit panel and the ticket type.
 		 */
-		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', { event: e, panel: $edit_panel, ticketType } ) ) {
+		if (
+			applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'save', {
+				event: e,
+				panel: $edit_panel,
+				ticketType,
+			} )
+		) {
 			return;
 		}
 
@@ -807,7 +813,12 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		const deleted_ticket_id = $( this ).attr( 'attr-ticket-id' );
 
 		/** This filter is documented in the save handler above. */
-		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'delete', { event, ticketId: deleted_ticket_id } ) ) {
+		if (
+			applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'delete', {
+				event,
+				ticketId: deleted_ticket_id,
+			} )
+		) {
 			return;
 		}
 
@@ -839,7 +850,12 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		event.preventDefault();
 
 		/** This filter is documented in the save handler above. */
-		if ( applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', { event, ticketId: $( this ).data( 'ticketId' ) } ) ) {
+		if (
+			applyFilters( 'tec.tickets.admin.ticket.intercepted', false, 'duplicate', {
+				event,
+				ticketId: $( this ).data( 'ticketId' ),
+			} )
+		) {
 			return;
 		}
 
