@@ -27,14 +27,17 @@ class Classic_Entry_Point_Test extends WPTestCase {
 	}
 
 	/**
-	 * Submits the form for a post: the payload, the deferred save nonce and the post ID, slashed as WordPress does.
+	 * Submits the form for a post: the payload, the deferred save nonce, the completeness marker the classic editor
+	 * writes after the payload, and the post ID, slashed as WordPress does. With the marker, a refusal comes from the
+	 * check the test is about, never from an incomplete payload.
 	 */
 	protected function submit_form( int $post_id, array $payload, array $overrides = [] ): void {
 		$post = array_merge(
 			[
-				'tec_tickets'            => $payload,
-				'post_ID'                => $post_id,
-				Classic_Save::NONCE_FIELD => wp_create_nonce( Classic_Save::NONCE_ACTION ),
+				'tec_tickets'                => $payload,
+				'post_ID'                    => $post_id,
+				Classic_Save::NONCE_FIELD    => wp_create_nonce( Classic_Save::NONCE_ACTION ),
+				Classic_Save::COMPLETE_FIELD => '1',
 			],
 			$overrides
 		);
@@ -182,5 +185,20 @@ class Classic_Entry_Point_Test extends WPTestCase {
 		];
 		$this->assertSame( $stored( $ajax_id ), $stored( $deferred_id ) );
 		$this->assertStringNotContainsString( '<script>', $stored( $deferred_id )['title'] );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_change_nothing_for_a_payload_the_server_cut_short(): void {
+		$this->given_two_posts_with_tickets();
+		wp_set_current_user( $this->owner_id );
+		$before = $this->snapshot();
+
+		// PHP dropped the fields past `max_input_vars`, the marker written after the payload among them.
+		$this->submit_form( $this->post_a, [ 'update' => [ $this->ticket_a => [ 'ticket_name' => 'Half a ticket' ] ] ], [ Classic_Save::COMPLETE_FIELD => null ] );
+
+		$this->assert_world_unchanged( $before );
+		$this->assertCount( 1, $this->remembered_errors() );
 	}
 }
