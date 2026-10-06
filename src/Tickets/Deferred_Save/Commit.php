@@ -28,7 +28,8 @@ use Tribe__Tickets__Tickets as Tickets;
  * more than one of them. One failing entry never stops the others.
  *
  * A write that happened is never reported as refused: when something that runs after it throws, the
- * entry's error is marked `applied`. A `create` entry may carry a key; a save that never got its answer
+ * entry's error is marked `applied`. A ticket a provider created but did not finish is reported with its
+ * ID and an error that is not `applied`, so the editor saves it again as an update. A `create` entry may carry a key; a save that never got its answer
  * sends the entry again with the same key, and the ticket that key created is saved over, not created again.
  *
  * @since TBD
@@ -367,14 +368,15 @@ final class Commit {
 				throw $e;
 			}
 
-			// Report the ticket, so the editor never creates it again, and the error, so the admin knows the save did not finish.
+			// The provider never returned, so what it wrote is not known: report the ticket, so the editor never
+			// creates it again, and the entry as not saved, so the editor saves it again as an update of that ticket.
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
-			$this->log_failure( 'Deferred ticket save: a ticket was saved, then a listener failed.', $e, [ 'ticket_id' => $added[0] ] );
+			$this->log_failure( 'Deferred ticket save: a ticket was created, then its save failed before it finished.', $e, [ 'ticket_id' => $added[0] ] );
 			$this->remember_key( $added[0], $key );
 
 			return $result
 				->with_created( $position, $added[0] )
-				->with_error( Parser::CREATE, $position, $this->saved_listener_failed_message(), true );
+				->with_error( Parser::CREATE, $position, __( 'The ticket was created, but not all of its settings were saved.', 'event-tickets' ) );
 		}
 
 		if ( empty( $ticket_id ) ) {
