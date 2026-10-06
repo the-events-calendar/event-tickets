@@ -25,6 +25,15 @@ use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
  */
 final class Stock {
 	/**
+	 * The order meta that lists the table tickets whose sale the row refused, one value per ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const REFUSED_META_KEY = '_tec_tickets_recurring_refused_tickets';
+
+	/**
 	 * The rows.
 	 *
 	 * @since TBD
@@ -167,6 +176,37 @@ final class Stock {
 		$stock = DB::get_var( DB::prepare( 'SELECT stock FROM %i WHERE id = %d FOR UPDATE', Tickets::table_name(), $row_id ) );
 
 		return null === $stock ? null : (int) $stock;
+	}
+
+	/**
+	 * Records on an order that the sale of a table ticket was refused: nothing was taken from its row.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id  The order ID.
+	 * @param int $ticket_id The table ticket ID.
+	 *
+	 * @return void
+	 */
+	public function record_refusal( int $order_id, int $ticket_id ): void {
+		if ( ! $this->was_refused( $order_id, $ticket_id ) ) {
+			add_post_meta( $order_id, self::REFUSED_META_KEY, $ticket_id );
+		}
+	}
+
+	/**
+	 * Whether an order's sale of a table ticket was refused, so a refund or an attendee deletion has nothing to give
+	 * back to the row.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id  The order ID.
+	 * @param int $ticket_id The table ticket ID.
+	 *
+	 * @return bool Whether the sale was refused.
+	 */
+	public function was_refused( int $order_id, int $ticket_id ): bool {
+		return $order_id > 0 && in_array( (string) $ticket_id, (array) get_post_meta( $order_id, self::REFUSED_META_KEY, false ), true );
 	}
 
 	/**
