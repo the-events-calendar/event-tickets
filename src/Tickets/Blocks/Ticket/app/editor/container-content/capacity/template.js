@@ -11,7 +11,6 @@ import uniqid from 'uniqid';
  * Wordpress dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Dashicon } from '@wordpress/components';
 
 /**
  * Internal dependencies

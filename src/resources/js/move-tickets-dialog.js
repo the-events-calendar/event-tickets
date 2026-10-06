@@ -5,6 +5,7 @@
  * @member object tribe_move_tickets_data
  */
 
+// eslint-disable-next-line no-var -- window-level namespace shared across scripts
 var tribe_move_tickets = tribe_move_tickets || {};
 
 ( function ( $, obj ) {
@@ -45,7 +46,7 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Can be used to obtain the jQuery object representing the dialog's
 	 * #main element (useful for triggering/listening for dialog events).
 	 *
-	 * @return object
+	 * @return {Object} The jQuery object for the dialog main element.
 	 */
 	obj.get_main_element = function () {
 		return $main;
@@ -55,10 +56,10 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Hides the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
 	 *
-	 * @type function
+	 * @type {Function}
 	 *
-	 * @param $btn
-	 * @param stage
+	 * @param {jQuery} $btn  The button element.
+	 * @param {string} stage The stage ID.
 	 */
 	obj.hide_btn = hide_btn;
 
@@ -66,10 +67,10 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Disables the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
 	 *
-	 * @type function
+	 * @type {Function}
 	 *
-	 * @param $btn
-	 * @param stage
+	 * @param {jQuery} $btn  The button element.
+	 * @param {string} stage The stage ID.
 	 */
 	obj.disable_btn = disable_btn;
 
@@ -77,19 +78,19 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Enables the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
 	 *
-	 * @type function
+	 * @type {Function}
 	 *
-	 * @param $btn
-	 * @param stage
+	 * @param {jQuery} $btn  The button element.
+	 * @param {string} stage The stage ID.
 	 */
 	obj.enable_btn = enable_btn;
 
 	/**
 	 * Activates the specified stage element.
 	 *
-	 * @type function
+	 * @type {Function}
 	 *
-	 * @param $stage_element
+	 * @param {jQuery} $stage_element The stage element.
 	 */
 	obj.activate_stage = activate_stage;
 
@@ -170,12 +171,12 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Setup the "choose event" stage, where the user selects the target event.
 	 */
 	function choose_event_stage() {
-		let $choose_event = $( '#choose-event' ),
+		const $choose_event = $( '#choose-event' ),
 			$post_choices = $choose_event.find( '.select-single-container' ),
 			$post_type = $( '#post-type' ),
 			$search_terms = $( '#search-terms' ),
-			update_delay,
-			this_stage = 'choose-event',
+			this_stage = 'choose-event';
+		let update_delay,
 			populating = false;
 
 		$main.on( 'activate-choose-event.tribe', function () {
@@ -256,12 +257,12 @@ var tribe_move_tickets = tribe_move_tickets || {};
 					total_posts++;
 
 					$post_choices.append(
-						`<label> <input type="radio" value="${post_id}" name="post-choice">${title}</label>`
+						`<label> <input type="radio" value="${ post_id }" name="post-choice">${ title }</label>`
 					);
 				}
 
 				if ( ! total_posts ) {
-					$post_choices.append( `<label>${tribe_move_tickets_data.no_posts_found}</label>` );
+					$post_choices.append( `<label>${ tribe_move_tickets_data.no_posts_found }</label>` );
 				}
 
 				populating = false;
@@ -482,7 +483,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				deferredSave = null;
 			}
 			if ( deferredSave && deferredSave.isEnabled && deferredSave.isEnabled() ) {
-				const targetTitle = $post_choices.find( 'input:checked' ).parent().text().trim();
+				// The post list is local to the choose-event stage, so it is found again here.
+				const targetTitle = $( '#choose-event .select-single-container input:checked' ).parent().text().trim();
 				const staged = deferredSave.stageMove(
 					tribe_move_tickets_data.ticket_type_id,
 					target_post_id,
@@ -590,8 +592,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Hides the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
 	 *
-	 * @param $btn
-	 * @param stage
+	 * @param {jQuery} $btn  The button element.
+	 * @param {string} stage The stage ID.
 	 */
 	function hide_btn( $btn, stage ) {
 		if ( stage === current_stage_name ) {

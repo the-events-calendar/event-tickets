@@ -276,12 +276,10 @@ window.tribe.tickets.rsvp.tooltip = {};
 	 *
 	 * @since 5.30.0
 	 *
-	 * @param {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param {jqXHR}  jqXHR    Request object
-	 * @param {Object} settings Settings that this request was made with
+	 * @param {Event} event event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @return {void}
 	 */
-	obj.deinit = function ( event, jqXHR, settings ) {
+	obj.deinit = function ( event ) {
 		// eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		obj.deinitTooltips( $container );

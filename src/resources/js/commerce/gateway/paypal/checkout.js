@@ -1,4 +1,3 @@
-/* global tribe, jQuery, paypal, ajaxurl */
 /**
  * Path to this script in the global tribe Object.
  *
@@ -209,12 +208,12 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			},
 		} )
 			.then( ( response ) => response.json() )
-			.then( ( data ) => {
-				tribe.tickets.debug.log( data );
-				if ( data.success ) {
-					return obj.handleCreateOrderSuccess( $container, data );
+			.then( ( responseData ) => {
+				tribe.tickets.debug.log( responseData );
+				if ( responseData.success ) {
+					return obj.handleCreateOrderSuccess( $container, responseData );
 				}
-				return obj.handleCreateOrderFail( $container, data );
+				return obj.handleCreateOrderFail( $container, responseData );
 			} )
 			.catch( () => {
 				obj.handleCreateOrderError( $container );
@@ -230,7 +229,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} data       Data returning from our endpoint.
 	 *
-	 * @return {string}
+	 * @return {string} The created order ID.
 	 */
 	obj.handleCreateOrderSuccess = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderSuccess', arguments );
@@ -263,11 +262,10 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.29.4 Ends the payment with a message instead of returning silently.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
-	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
 	 *
 	 * @return {void}
 	 */
-	obj.handleCreateOrderError = function ( $container, error ) {
+	obj.handleCreateOrderError = function ( $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrderError', arguments );
 		obj.endPayment( $container, tecTicketsCommerceGatewayPayPalCheckout.requestFailedMessage );
 		obj.isGenericError = false;
@@ -300,11 +298,11 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			body: JSON.stringify( body ),
 		} )
 			.then( ( response ) => response.json() )
-			.then( ( data ) => {
-				if ( data.success ) {
-					return obj.handleApproveSuccess( data, actions, $container );
+			.then( ( responseData ) => {
+				if ( responseData.success ) {
+					return obj.handleApproveSuccess( responseData, actions, $container );
 				}
-				return obj.handleApproveFail( data, actions, $container );
+				return obj.handleApproveFail( responseData, actions, $container );
 			} )
 			.catch( ( error ) => obj.handleApproveError( error, $container ) );
 	};
@@ -340,18 +338,18 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			body: JSON.stringify( body ),
 		} )
 			.then( ( response ) => response.json() )
-			.then( ( data ) => {
-				if ( ! data.success ) {
-					return obj.handleApproveFail( data, actions, $container );
+			.then( ( responseData ) => {
+				if ( ! responseData.success ) {
+					return obj.handleApproveFail( responseData, actions, $container );
 				}
 
 				// The capture settled the order, so there is nothing left for the recheck to wait on
 				// and no second round trip to be blocked on.
-				if ( data.redirect_url ) {
-					return obj.handleApproveSuccess( data, actions, $container );
+				if ( responseData.redirect_url ) {
+					return obj.handleApproveSuccess( responseData, actions, $container );
 				}
 
-				return obj.handleCheckSuccess( data, actions, $container );
+				return obj.handleCheckSuccess( responseData, actions, $container );
 			} )
 			.catch( ( error ) => obj.handleApproveError( error, $container ) );
 	};
@@ -362,9 +360,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.1.9
 	 * @since 5.29.4 Ends the payment when the response carries no destination.
 	 *
-	 * @param         actions
-	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
+	 * @param {Object} actions    The PayPal actions object.
+	 * @param {jQuery} $container To which container this handling is for.
 	 *
 	 * @return {void}
 	 */
@@ -386,9 +384,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.1.9
 	 * @since 5.29.4 Stopped reading the error shape unguarded.
 	 *
-	 * @param         actions
-	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
+	 * @param {Object} actions    The PayPal actions object.
+	 * @param {jQuery} $container To which container this handling is for.
 	 *
 	 * @return {void}
 	 */
@@ -541,13 +539,13 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			body: JSON.stringify( data ),
 		} )
 			.then( ( response ) => response.json() )
-			.then( ( data ) => {
+			.then( ( responseData ) => {
 				$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-				tribe.tickets.debug.log( data );
-				if ( data.success ) {
-					return obj.handleCancelOrderSuccess( $container, data );
+				tribe.tickets.debug.log( responseData );
+				if ( responseData.success ) {
+					return obj.handleCancelOrderSuccess( $container, responseData );
 				}
-				return obj.handleCancelOrderFail( $container, data );
+				return obj.handleCancelOrderFail( $container, responseData );
 			} )
 			.catch( () => {
 				obj.handleCancelOrderError( $container );
@@ -557,9 +555,10 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @param $container
-	 * @param data
 	 * @since 5.2.0
+	 *
+	 * @param {jQuery} $container To which container this handling is for.
+	 * @param {Object} data       Data returning from our endpoint.
 	 *
 	 * @return {void}
 	 */
@@ -571,9 +570,10 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @param $container
-	 * @param data
 	 * @since 5.2.0
+	 *
+	 * @param {jQuery} $container To which container this handling is for.
+	 * @param {Object} data       Data returning from our endpoint.
 	 *
 	 * @return {void}
 	 */
@@ -584,8 +584,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @param $container
 	 * @since 5.2.0
+	 *
+	 * @param {jQuery} $container To which container this handling is for.
 	 *
 	 * @return {void}
 	 */
@@ -753,7 +754,6 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.1.10
 	 */
 	obj.bindScriptLoader = function () {
-		const $script = $( obj.selectors.checkoutScript );
 		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
 
 		// Check to see if PayPal gateway is present.
@@ -761,6 +761,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
 			return;
 		}
+
+		const $script = $( obj.selectors.checkoutScript );
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -779,7 +781,8 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		/**
 		 * Setup PayPal buttons when everything is loaded.
-		 * @param event
+		 *
+		 * @param {Event} event The window load event.
 		 */
 		window.onload = ( event ) => {
 			if ( typeof paypal === 'undefined' ) {
@@ -867,9 +870,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param {jQuery} $container
+	 * @param {jQuery} $container To which container this handling is for.
 	 *
-	 * @return {Object}
+	 * @return {Object} The extra card fields to pass to PayPal.
 	 */
 	obj.getExtraCardFields = ( $container ) => {
 		return {
@@ -937,7 +940,7 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			errorContent = $( '<div>' );
 
 			if ( Array.isArray( error.details ) ) {
-				error.details.map( ( item ) => {
+				error.details.forEach( ( item ) => {
 					const $item = $( '<p>' ).text( item.description );
 					errorContent.append( $item );
 				} );
@@ -979,18 +982,18 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 			body: JSON.stringify( body ),
 		} )
 			.then( ( response ) => response.json() )
-			.then( ( data ) => {
-				tribe.tickets.debug.log( data );
+			.then( ( responseData ) => {
+				tribe.tickets.debug.log( responseData );
 
-				if ( ! data.success ) {
-					return obj.handleHostedApproveFail( data, actions, $container );
+				if ( ! responseData.success ) {
+					return obj.handleHostedApproveFail( responseData, actions, $container );
 				}
 
-				if ( data.redirect_url ) {
-					return obj.handleApproveSuccess( data, actions, $container );
+				if ( responseData.redirect_url ) {
+					return obj.handleApproveSuccess( responseData, actions, $container );
 				}
 
-				return obj.handleCheckSuccess( data, actions, $container );
+				return obj.handleCheckSuccess( responseData, actions, $container );
 			} )
 			.catch( ( error ) => {
 				obj.handleHostedApproveError( error, $container );
@@ -1002,9 +1005,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param         actions
-	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
+	 * @param {Object} actions    The PayPal actions object.
+	 * @param {jQuery} $container To which container this handling is for.
 	 *
 	 * @return {void}
 	 */
@@ -1021,9 +1024,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.2.0
 	 * @since 5.29.4 Stopped reading the error shape unguarded.
 	 *
-	 * @param         actions
-	 * @param         $container
 	 * @param {Object} data       Data returning from our endpoint.
+	 * @param {Object} actions    The PayPal actions object.
+	 * @param {jQuery} $container To which container this handling is for.
 	 *
 	 * @return {void}
 	 */
@@ -1038,9 +1041,9 @@ window.tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.2.0
 	 * @since 5.29.4 Ends the payment with a message instead of only hiding the loader.
 	 *
-	 * @param         $container
-	 * @param {...any} rest
 	 * @param {Object} error      Which error the fetch() threw on requesting our endpoints.
+	 * @param {jQuery} $container To which container this handling is for.
+	 * @param {...any} rest       Any extra arguments passed by the caller.
 	 *
 	 * @return {void}
 	 */
