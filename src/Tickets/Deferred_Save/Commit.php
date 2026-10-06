@@ -48,11 +48,13 @@ final class Commit {
 	/**
 	 * The meta key that keeps, on a ticket a save created, the key its `create` entry carried.
 	 *
+	 * Public so that copying a ticket can leave it out: a copy is another ticket.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const CREATE_KEY_META = '_tec_tickets_deferred_save_create_key';
+	public const CREATE_KEY_META = '_tec_tickets_deferred_save_create_key';
 
 	/**
 	 * The checks a payload passes before anything is saved.
@@ -313,7 +315,8 @@ final class Commit {
 			return $result->with_error( Parser::CREATE, $position, $refusals[0]['message'] ?? $this->not_saved_message() );
 		}
 
-		return $this->update( $result, $post_id, $ticket_id, $data, Parser::CREATE, $position );
+		// Guarded here, so that a listener throwing during the update does not lose the ID the result now holds.
+		return $this->guarded( $result, Parser::CREATE, $position, fn( Result $r ) => $this->update( $r, $post_id, $ticket_id, $data, Parser::CREATE, $position ) );
 	}
 
 	/**

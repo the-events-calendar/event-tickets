@@ -885,4 +885,45 @@ class Commit_Test extends WPTestCase {
 		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
 		$this->assertSame( [ 'Locked' ], array_map( 'get_the_title', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_id_of_a_create_sent_again_when_its_update_throws(): void {
+		$this->log_in_as_admin();
+		$post_id = static::factory()->post->create();
+		$key     = 'a-key-whose-update-throws';
+		$first   = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'First try', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+		add_action(
+			'tec_tickets_ticket_update',
+			static function () {
+				throw new \RuntimeException( 'An update listener failed.' );
+			}
+		);
+
+		$again = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Second try', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+
+		// The ticket exists: without its ID the editor would keep treating it as a ticket to create.
+		$this->assertSame( $first->get_created(), $again->get_created() );
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $again ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_copy_the_create_key_to_a_duplicated_ticket(): void {
+		$this->log_in_as_admin();
+		$post_id     = static::factory()->post->create();
+		$key         = 'a-key-whose-ticket-is-copied';
+		$original_id = $this->commit()->run( [ 'create' => [ $this->ticket_data( 'Original', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id )->get_created()[0];
+		$copy_id     = tribe( Module::class )->duplicate_ticket( $post_id, $original_id );
+		$copy_title  = get_the_title( $copy_id );
+
+		$this->commit()->run( [ 'create' => [ $this->ticket_data( 'Sent again', [ Commit::CREATE_KEY => $key ] ) ] ], $post_id );
+
+		// A copy is another ticket: the key of the save that created the original must not find it.
+		$this->assertSame( '', get_post_meta( $copy_id, Commit::CREATE_KEY_META, true ) );
+		$this->assertSame( 'Sent again', get_the_title( $original_id ) );
+		$this->assertSame( $copy_title, get_the_title( $copy_id ) );
+	}
 }

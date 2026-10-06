@@ -115,4 +115,46 @@ class Notices_Test extends WPTestCase {
 		$this->assertStringNotContainsString( '<script>', $html );
 		$this->assertStringNotContainsString( '<img', $html );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_ask_to_enter_again_a_change_that_was_saved_before_a_listener_failed(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_id = static::factory()->post->create( [ 'post_title' => 'The saved post' ] );
+		$result  = ( new Result() )
+			->with_created( 0, 123 )
+			->with_error( 'create', 0, 'The ticket was saved, but something that runs after a ticket is saved failed.', true );
+
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+		$html = $this->render_admin_notices();
+
+		// Entering a saved ticket again would create it twice.
+		$this->assertStringNotContainsString( 'enter these changes again', $html );
+		$this->assertStringNotContainsString( 'were not saved', $html );
+		$this->assertStringContainsString( 'were saved, but', $html );
+		$this->assertStringContainsString( 'New ticket 1: The ticket was saved', $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_refused_and_saved_changes_under_their_own_headings(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_id = static::factory()->post->create( [ 'post_title' => 'The saved post' ] );
+		$result  = ( new Result() )
+			->with_error( 'create', 0, 'The ticket provider is missing or not active.' )
+			->with_error( 'create', 1, 'The ticket was saved, but something that runs after a ticket is saved failed.', true );
+
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+		$html = $this->render_admin_notices();
+
+		$refused = strpos( $html, 'enter these changes again' );
+		$saved   = strpos( $html, 'were saved, but' );
+		$this->assertNotFalse( $refused );
+		$this->assertNotFalse( $saved );
+		$this->assertRegExp( '/enter these changes again.*New ticket 1: The ticket provider/s', $html );
+		$this->assertRegExp( '/were saved, but.*New ticket 2: The ticket was saved/s', $html );
+		$this->assertStringNotContainsString( 'New ticket 2', substr( $html, $refused, $saved - $refused ) );
+	}
 }
