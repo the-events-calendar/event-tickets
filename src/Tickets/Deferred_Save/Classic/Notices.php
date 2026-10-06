@@ -110,28 +110,55 @@ final class Notices {
 		delete_transient( self::TRANSIENT_PREFIX . $user_id );
 
 		$post_id = (int) ( $remembered['post_id'] ?? 0 );
-		$content = '<p>' . esc_html(
-			sprintf(
-				/* translators: %s: the post title. */
-				__( 'Some ticket changes for "%s" were not saved. The post and the other tickets were saved; enter these changes again.', 'event-tickets' ),
-				get_the_title( $post_id )
-			)
-		) . '</p><ul>';
-
-		foreach ( (array) $remembered['errors'] as $error ) {
-			$content .= '<li>' . esc_html( $this->describe( (array) $error, $post_id ) ) . '</li>';
-		}
-
-		$content .= '</ul>';
+		$errors  = array_map( static fn( $error ) => (array) $error, (array) $remembered['errors'] );
+		// An `applied` error is a change that was saved before something after it failed: entering it again would repeat it.
+		$applied = array_filter( $errors, static fn( array $error ) => ! empty( $error['applied'] ) );
+		$refused = array_diff_key( $errors, $applied );
+		$content = $this->section(
+			/* translators: %s: the post title. */
+			__( 'Some ticket changes for "%s" were not saved. The post and the other tickets were saved; enter these changes again.', 'event-tickets' ),
+			$refused,
+			$post_id
+		) . $this->section(
+			/* translators: %s: the post title. */
+			__( 'Some ticket changes for "%s" were saved, but something that runs after them failed. There is no need to enter them again.', 'event-tickets' ),
+			$applied,
+			$post_id
+		);
 
 		// One notice per save, shown once: not dismissible, so no dismissal is stored for an ID that never returns.
 		$notice = ( new AdminNotice( 'tec-tickets-deferred-save-' . $user_id . '-' . md5( $content ), $content ) )
-			->urgency( 'error' )
+			->urgency( [] === $refused ? 'warning' : 'error' )
 			->dismissible( false )
 			->autoParagraph( false )
 			->withWrapper();
 
 		AdminNotices::render( $notice );
+	}
+
+	/**
+	 * A heading naming the saved post, and one line per error under it; nothing when there are no errors.
+	 *
+	 * @since TBD
+	 *
+	 * @param string       $heading The heading, with `%s` for the post title.
+	 * @param array<array> $errors  The errors.
+	 * @param int          $post_id The post that was saved.
+	 *
+	 * @return string The section's HTML, escaped.
+	 */
+	private function section( string $heading, array $errors, int $post_id ): string {
+		if ( [] === $errors ) {
+			return '';
+		}
+
+		$content = '<p>' . esc_html( sprintf( $heading, get_the_title( $post_id ) ) ) . '</p><ul>';
+
+		foreach ( $errors as $error ) {
+			$content .= '<li>' . esc_html( $this->describe( $error, $post_id ) ) . '</li>';
+		}
+
+		return $content . '</ul>';
 	}
 
 	/**

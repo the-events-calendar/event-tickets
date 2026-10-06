@@ -4025,6 +4025,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'_tribe_ticket_manual_updated',
 				'_wp_old_slug',
 				'total_sales',
+				// The key of the save that created the original: a copy is another ticket.
+				\TEC\Tickets\Deferred_Save\Commit::CREATE_KEY_META,
 			];
 			$ticket_meta = get_post_meta( $ticket->ID );
 
