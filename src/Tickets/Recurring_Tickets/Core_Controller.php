@@ -43,6 +43,7 @@ final class Core_Controller extends Controller_Contract {
 			remove_filter( "{$write}_post_metadata", [ $shim, 'refuse_write' ], PHP_INT_MIN );
 		}
 		remove_filter( 'tec_tickets_get_tickets', [ $this->container->get( Date_Tickets::class ), 'swap' ] );
+		remove_filter( 'tec_tickets_get_tickets', [ $this->container->get( Template_Guard::class ), 'drop_from_front_end' ], 20 );
 	}
 
 	/**
@@ -90,5 +91,7 @@ final class Core_Controller extends Controller_Contract {
 		$this->container->singleton( Template_Guard::class );
 		$this->container->singleton( Date_Tickets::class );
 		add_filter( 'tec_tickets_get_tickets', [ $this->container->get( Date_Tickets::class ), 'swap' ], 10, 2 );
+		// After the swap: a date's templates are already gone, any left are the event's own.
+		add_filter( 'tec_tickets_get_tickets', [ $this->container->get( Template_Guard::class ), 'drop_from_front_end' ], 20 );
 	}
 }

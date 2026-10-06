@@ -32,6 +32,8 @@ if ( empty( tribe()->getVar( 'ct1_fully_activated' ) ) ) {
 
 add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
 tribe()->register( Commerce_Provider::class );
+// Tickets Commerce registers its post types and statuses on `init`, which has run by now.
+tribe( Commerce_Provider::class )->run_init_hooks();
 tribe( Commerce_Module::class );
 
 // Disconnect Promoter to avoid license-related notices.

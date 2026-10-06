@@ -1,0 +1,112 @@
+<?php
+
+namespace TEC\Tickets\Recurring_Tickets;
+
+use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
+use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+
+/**
+ * A template is never listed for customers and never sold, with or without ECP.
+ */
+class Template_Guard_Test extends WPTestCase {
+	use Ticket_Rows;
+	use Ticket_Maker;
+
+	/**
+	 * @after
+	 */
+	public function clean_up(): void {
+		set_current_screen( 'front' );
+		( new Tickets() )->empty_table();
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_drop_templates_from_front_end_lists(): void {
+		[ $event, $template, $default ] = $this->create_event();
+		$date                           = $this->get_dates( $event )[0];
+		$this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'occurrence_id' => $date->occurrence_id, 'name' => 'Row' ] );
+
+		$this->assertSame( [ $default ], array_column( tribe( Module::class )->get_tickets( $event ), 'ID' ) );
+		$this->assertSame( [ 'Row', 'Default' ], array_column( tribe( Module::class )->get_tickets( $date->provisional_id ), 'name' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_templates_in_the_admin(): void {
+		[ $event, $template, $default ] = $this->create_event();
+		set_current_screen( 'edit-post' );
+
+		$this->assertSame( [ $template, $default ], array_column( tribe( Module::class )->get_tickets( $event ), 'ID' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_template_in_the_cart(): void {
+		[ $event, $template, $default ] = $this->create_event();
+
+		$this->assertSame( [ $default ], $this->add_to_cart( $event, [ $template, $default ] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_template_in_the_cart_when_ecp_provides_no_dates(): void {
+		[ $event, $template, $default ] = $this->create_event();
+		// As when ECP is deactivated: its custom tables never finish activating.
+		global $wp_actions;
+		$fired = $wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] ?? null;
+		unset( $wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] );
+
+		try {
+			$added = $this->add_to_cart( $event, [ $template, $default ] );
+			$names = array_column( tribe( Module::class )->get_tickets( $event ), 'ID' );
+		} finally {
+			if ( null !== $fired ) {
+				$wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] = $fired;
+			}
+		}
+
+		$this->assertSame( [ $default ], $added );
+		$this->assertSame( [ $default ], $names );
+	}
+
+	/**
+	 * Runs the tickets of an add-to-cart request through the cart's checks.
+	 *
+	 * @param int   $event      The event.
+	 * @param int[] $ticket_ids The tickets asked for, one of each.
+	 *
+	 * @return int[] The tickets the cart accepted.
+	 */
+	private function add_to_cart( int $event, array $ticket_ids ): array {
+		$data = tribe( Cart::class )->prepare_data(
+			[
+				'tribe_tickets_ar_data' => [
+					'tribe_tickets_post_id' => $event,
+					'tribe_tickets_tickets' => array_map( static fn( int $id ) => [ 'ticket_id' => $id, 'quantity' => 1 ], $ticket_ids ),
+				],
+			]
+		);
+
+		return array_values( array_map( 'intval', array_column( $data['tickets'] ?? [], 'ticket_id' ) ) );
+	}
+
+	/**
+	 * @return int[] The event, its template and its default ticket.
+	 */
+	private function create_event(): array {
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Template' ] );
+		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
+
+		return [ $event, $template, $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Default' ] ) ];
+	}
+}
