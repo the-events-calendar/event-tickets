@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets\Repositories;
 
 use InvalidArgumentException;
 use TEC\Common\Abstracts\Custom_Table_Repository;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Ticket_Cache_Controller;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
@@ -35,6 +36,16 @@ final class Tickets extends Custom_Table_Repository {
 	 * @var int
 	 */
 	private const PAGE_SIZE = 200;
+
+	/**
+	 * The cache group of rows read by ID. Not persistent: a row is read once per request and never served stale
+	 * from another one.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CACHE_GROUP = 'tec_tickets_recurring_rows';
 
 	/**
 	 * The columns a single date may change: EngDoc section 2, per-date overrides.
@@ -92,6 +103,63 @@ final class Tickets extends Custom_Table_Repository {
 		}
 
 		return (int) Tickets_Table::insert_many( array_values( $rows ) );
+	}
+
+	/**
+	 * Returns a row by ID, read once per request.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return Ticket|null The row, or null when there is none, or no table.
+	 */
+	public function find( int $row_id ): ?Ticket {
+		$cached = wp_cache_get( $row_id, self::CACHE_GROUP );
+
+		if ( false !== $cached ) {
+			return $cached instanceof Ticket ? $cached : null;
+		}
+
+		try {
+			$row = Tickets_Table::get_by_id( $row_id );
+		} catch ( DatabaseQueryException $e ) {
+			// No table, no rows.
+			$row = null;
+		}
+
+		$row = $row instanceof Ticket ? $row : null;
+		// A missing row is remembered too, as 0: deleted rows are read on every page that lists their attendees.
+		wp_cache_set( $row_id, $row ?? 0, self::CACHE_GROUP );
+
+		return $row;
+	}
+
+	/**
+	 * Remembers a row just read, so reading it again by ID runs no query.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row The row.
+	 *
+	 * @return void
+	 */
+	public function prime( Ticket $row ): void {
+		wp_cache_set( (int) $row->id, $row, self::CACHE_GROUP );
+	}
+
+	/**
+	 * Forgets a row after it was written: the row and every cache of its ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_id The row ID.
+	 *
+	 * @return void
+	 */
+	public function forget( int $row_id ): void {
+		wp_cache_delete( $row_id, self::CACHE_GROUP );
+		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
 	}
 
 	/**
@@ -200,7 +268,7 @@ final class Tickets extends Custom_Table_Repository {
 			throw new InvalidArgumentException( 'These columns cannot be overridden: ' . implode( ', ', $refused ?: [ '(none given)' ] ) . '.' );
 		}
 
-		$row = Tickets_Table::get_by_id( $row_id );
+		$row = $this->find( $row_id );
 
 		if ( ! $row instanceof Ticket ) {
 			throw new InvalidArgumentException( "Row {$row_id} does not exist." );
@@ -216,7 +284,7 @@ final class Tickets extends Custom_Table_Repository {
 		}
 
 		DB::update( Tickets_Table::table_name(), $update, [ 'id' => $row_id ] );
-		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
+		$this->forget( $row_id );
 	}
 
 	/**
@@ -259,6 +327,14 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return int The number of rows deleted.
 	 */
 	private function delete_by( string $column, int $value ): int {
-		return $value > 0 ? (int) Tickets_Table::delete_many( [ $value ], $column ) : 0;
+		if ( $value < 1 ) {
+			return 0;
+		}
+
+		$deleted = (int) Tickets_Table::delete_many( [ $value ], $column );
+		// Which rows went is not known without another query: forget every row read in this request.
+		wp_cache_flush_group( self::CACHE_GROUP );
+
+		return $deleted;
 	}
 }
