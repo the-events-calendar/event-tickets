@@ -92,18 +92,20 @@ final class Ticket_ID {
 	/**
 	 * Returns the row ID of a table ticket.
 	 *
+	 * The base itself is a table ticket ID and gives row 0, which never exists: it loads as a missing ticket.
+	 *
 	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return int The row ID.
 	 *
-	 * @throws InvalidArgumentException If the ID names no row: below the base, or the base itself.
+	 * @throws InvalidArgumentException If the ID is below the base, so not a table ticket ID.
 	 */
 	public static function to_row_id( int $ticket_id ): int {
 		$row_id = $ticket_id - self::base();
 
-		if ( $row_id < 1 ) {
+		if ( $row_id < 0 ) {
 			throw new InvalidArgumentException( "Ticket ID {$ticket_id} is not a table ticket ID." );
 		}
 
