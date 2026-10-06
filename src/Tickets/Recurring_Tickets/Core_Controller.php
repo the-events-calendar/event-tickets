@@ -32,10 +32,14 @@ final class Core_Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function unregister(): void {}
+	public function unregister(): void {
+		$guard = $this->container->get( Occurrence_Guard::class );
+		remove_filter( Occurrence_Guard::FILTER, [ $guard, 'remember' ], 9 );
+		remove_filter( Occurrence_Guard::FILTER, [ $guard, 'restore' ], PHP_INT_MAX );
+	}
 
 	/**
-	 * Registers the table.
+	 * Registers the table, then what needs it.
 	 *
 	 * @since TBD
 	 *
@@ -52,6 +56,14 @@ final class Core_Controller extends Controller_Contract {
 					'query' => $e->getQuery(),
 				]
 			);
+
+			return;
 		}
+
+		$this->container->singleton( Occurrence_Guard::class );
+		$guard = $this->container->get( Occurrence_Guard::class );
+		// Before ECP's callback at 10, and after every other one.
+		add_filter( Occurrence_Guard::FILTER, [ $guard, 'remember' ], 9 );
+		add_filter( Occurrence_Guard::FILTER, [ $guard, 'restore' ], PHP_INT_MAX );
 	}
 }
