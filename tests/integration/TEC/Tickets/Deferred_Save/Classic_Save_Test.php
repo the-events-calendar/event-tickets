@@ -326,6 +326,38 @@ class Classic_Save_Test extends WPTestCase {
 		$this->assertNull( $reported[0]->get_errors()[0]['part'] );
 	}
 
+	/**
+	 * @test
+	 */
+	public function it_should_report_ticket_changes_refused_for_an_expired_nonce_on_the_post_form_the_admin_sent(): void {
+		$this->log_in_as_admin();
+		$post_id  = $this->create_deferred_post();
+		$reported = [];
+		add_action(
+			'tec_tickets_deferred_save_classic_committed',
+			static function ( Result $result ) use ( &$reported ) {
+				$reported[] = $result;
+			}
+		);
+		$this->post_payload( [ 'create' => [ $this->ticket_data( 'Expired nonce' ) ] ], false );
+		$_POST[ Classic_Save::NONCE_FIELD ] = 'expired';
+
+		// Without the post form's own nonce the request may not be the admin's: nothing is applied, nothing is said.
+		$_POST['_wpnonce'] = 'not-a-nonce';
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved' ] );
+		$this->assertSame( [], $reported );
+
+		// `nonce_life` is filtered per action, so the tickets nonce can expire while the post form's still verifies.
+		$_POST['_wpnonce'] = wp_create_nonce( 'update-post_' . $post_id );
+		wp_update_post( [ 'ID' => $post_id, 'post_title' => 'Saved again' ] );
+
+		$this->assertSame( [], $this->ticket_names( $post_id ) );
+		$this->assertCount( 1, $reported );
+		$this->assertSame( [], $reported[0]->get_created() );
+		$this->assertCount( 1, $reported[0]->get_errors() );
+		$this->assertNull( $reported[0]->get_errors()[0]['part'] );
+	}
+
 	protected function extract_nonce( string $html ): string {
 		preg_match( '/value="([^"]+)"/', $html, $m );
 
