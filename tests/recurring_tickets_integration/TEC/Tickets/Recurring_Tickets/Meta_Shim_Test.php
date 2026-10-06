@@ -205,7 +205,7 @@ class Meta_Shim_Test extends WPTestCase {
 	 * @dataProvider write_provider
 	 */
 	public function it_should_write_nothing_and_log_the_key( callable $write, string $action ): void {
-		$id   = $this->insert_ticket_row( [ 'price' => 1050 ] );
+		$id   = $this->insert_ticket_row( [ 'price' => 10500 ] );
 		$logs = [];
 		add_action(
 			'tribe_log',
