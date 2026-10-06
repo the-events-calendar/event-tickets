@@ -715,9 +715,10 @@ class Commit_Test extends WPTestCase {
 
 		$ticket_ids = tribe_tickets()->where( 'event', $post_id )->get_ids();
 		$this->assertCount( 1, $ticket_ids );
-		// The ticket exists, so the editor must know its ID and never create it again; the error says what failed.
+		// The ticket exists, so the editor must know its ID and never create it again.
 		$this->assertSame( [ 0 => (int) $ticket_ids[0] ], $result->get_created() );
-		$this->assertSame( [ [ 'create', 0, true ] ], $this->error_outcomes( $result ) );
+		// `ticket_add()` never returned, so what it wrote is not known: not saved, and the editor sends it again as an update.
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
 		$this->assertFalse( has_filter( 'updated_postmeta', [ tribe( 'tickets.handler' ), 'flag_manual_update' ] ) );
 	}
 
@@ -810,7 +811,7 @@ class Commit_Test extends WPTestCase {
 		$ticket_ids = $this->rsvp_ids_on( $post_id );
 		$this->assertCount( 1, $ticket_ids );
 		$this->assertSame( [ 0 => $ticket_ids[0] ], $result->get_created() );
-		$this->assertSame( [ [ 'create', 0, true ] ], $this->error_outcomes( $result ) );
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
 	}
 
 	/**
@@ -925,5 +926,40 @@ class Commit_Test extends WPTestCase {
 		$this->assertSame( '', get_post_meta( $copy_id, Commit::CREATE_KEY_META, true ) );
 		$this->assertSame( 'Sent again', get_the_title( $original_id ) );
 		$this->assertSame( $copy_title, get_the_title( $copy_id ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_the_id_of_a_create_the_provider_did_not_finish_and_let_the_next_save_finish_it(): void {
+		$this->log_in_as_admin();
+		$post_id   = static::factory()->post->create();
+		$data      = $this->ticket_data( 'Unfinished', [ 'ticket_price' => '25', 'tribe-ticket' => [ 'mode' => 'own', 'capacity' => '5' ] ] );
+		$event_key = tribe( Module::class )->get_event_key();
+		// Tickets Commerce relates the ticket to its post before it writes the price and the capacity.
+		$throw = static function ( $meta_id, $object_id, $meta_key ) use ( $event_key ) {
+			if ( $event_key === $meta_key ) {
+				throw new \RuntimeException( 'A listener failed while the ticket was being saved.' );
+			}
+		};
+		add_action( 'added_post_meta', $throw, 10, 3 );
+
+		$result = $this->commit()->run( [ 'create' => [ $data ] ], $post_id );
+
+		$ticket_ids = array_map( 'intval', tribe_tickets()->where( 'event', $post_id )->get_ids() );
+		$this->assertCount( 1, $ticket_ids );
+		$this->assertNotSame( '25', get_post_meta( $ticket_ids[0], '_price', true ) );
+		// The ticket exists, so the editor gets its ID; its settings were not all written, so it is not reported as saved.
+		$this->assertSame( [ 0 => $ticket_ids[0] ], $result->get_created() );
+		$this->assertSame( [ [ 'create', 0, false ] ], $this->error_outcomes( $result ) );
+
+		// What the editor sends next: the same ticket, as an update.
+		remove_action( 'added_post_meta', $throw );
+		$repair = $this->commit()->run( [ 'update' => [ $ticket_ids[0] => $data ] ], $post_id );
+
+		$this->assertSame( [], $repair->get_errors() );
+		$this->assertSame( $ticket_ids, array_map( 'intval', tribe_tickets()->where( 'event', $post_id )->get_ids() ) );
+		$this->assertSame( '25', get_post_meta( $ticket_ids[0], '_price', true ) );
+		$this->assertSame( '5', get_post_meta( $ticket_ids[0], '_tribe_ticket_capacity', true ) );
 	}
 }

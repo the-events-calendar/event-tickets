@@ -80,6 +80,7 @@ final class Notices {
 			self::TRANSIENT_PREFIX . $user_id,
 			[
 				'post_id' => $post_id,
+				'created' => $result->get_created(),
 				'errors'  => $result->get_errors(),
 			],
 			MINUTE_IN_SECONDS
@@ -110,14 +111,38 @@ final class Notices {
 		delete_transient( self::TRANSIENT_PREFIX . $user_id );
 
 		$post_id = (int) ( $remembered['post_id'] ?? 0 );
+		$created = (array) ( $remembered['created'] ?? [] );
 		$errors  = array_map( static fn( $error ) => (array) $error, (array) $remembered['errors'] );
 		// An `applied` error is a change that was saved before something after it failed: entering it again would repeat it.
-		$applied = array_filter( $errors, static fn( array $error ) => ! empty( $error['applied'] ) );
-		$refused = array_diff_key( $errors, $applied );
+		$applied    = array_filter( $errors, static fn( array $error ) => ! empty( $error['applied'] ) );
+		$refused    = array_diff_key( $errors, $applied );
+		$unfinished = [];
+
+		foreach ( $refused as $index => $error ) {
+			$ticket_id = Parser::CREATE === ( $error['part'] ?? null ) ? (int) ( $created[ $error['key'] ?? '' ] ?? 0 ) : 0;
+
+			if ( $ticket_id ) {
+				// A create with an ID is a ticket on the post now: adding it again would make a second one, so it is named as the ticket it is.
+				$unfinished[ $index ] = array_merge(
+					$error,
+					[
+						'part' => Parser::UPDATE,
+						'key'  => $ticket_id,
+					]
+				);
+				unset( $refused[ $index ] );
+			}
+		}
+
 		$content = $this->section(
 			/* translators: %s: the post title. */
 			__( 'Some ticket changes for "%s" were not saved. The post and the other tickets were saved; enter these changes again.', 'event-tickets' ),
 			$refused,
+			$post_id
+		) . $this->section(
+			/* translators: %s: the post title. */
+			__( 'Some new tickets for "%s" were created, but not all of their settings were saved. Edit these tickets to finish them; do not add them again.', 'event-tickets' ),
+			$unfinished,
 			$post_id
 		) . $this->section(
 			/* translators: %s: the post title. */
@@ -128,7 +153,7 @@ final class Notices {
 
 		// One notice per save, shown once: not dismissible, so no dismissal is stored for an ID that never returns.
 		$notice = ( new AdminNotice( 'tec-tickets-deferred-save-' . $user_id . '-' . md5( $content ), $content ) )
-			->urgency( [] === $refused ? 'warning' : 'error' )
+			->urgency( [] === $refused && [] === $unfinished ? 'warning' : 'error' )
 			->dismissible( false )
 			->autoParagraph( false )
 			->withWrapper();
