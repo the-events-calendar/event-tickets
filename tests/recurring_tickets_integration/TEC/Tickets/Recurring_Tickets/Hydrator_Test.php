@@ -4,6 +4,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Tickets_Repository;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
@@ -37,7 +38,7 @@ class Hydrator_Test extends WPTestCase {
 				'description'      => 'Bring a mat.',
 				'show_description' => 0,
 				'sku'              => 'MORNING',
-				'price'            => 1050,
+				'price'            => 10500,
 				'capacity'         => 100,
 				'stock'            => 97,
 				'sales'            => 3,
@@ -89,6 +90,52 @@ class Hydrator_Test extends WPTestCase {
 	 */
 	public function it_should_load_nothing_for_a_table_ticket_id_without_a_row(): void {
 		$this->assertNull( tribe( Hydrator::class )->load( Ticket_ID::from_row_id( 999 ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_load_nothing_for_the_base_id(): void {
+		$this->assertNull( tribe( Hydrator::class )->load( Ticket_ID::base() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_store_prices_in_thousandths_whatever_the_currency(): void {
+		$id       = $this->insert_ticket_row( [ 'price' => 10000 ] );
+		$currency = Currency::get_currency_code();
+		tribe_update_option( Currency::$currency_code_option, 'JPY' );
+
+		try {
+			$price = tribe( Hydrator::class )->load( $id )->price;
+		} finally {
+			tribe_update_option( Currency::$currency_code_option, $currency );
+		}
+
+		// Ten of the currency's unit, as the template's decimal price says, not a thousand.
+		$this->assertSame( '10', $price );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_let_add_ons_extend_the_ticket_as_for_a_ticket_post(): void {
+		$id = $this->insert_ticket_row();
+		add_filter(
+			'tec_tickets_commerce_get_ticket_legacy',
+			static function ( $ticket, $event_id, $ticket_id ) use ( $id ) {
+				if ( $id === $ticket_id ) {
+					$ticket->iac = 'required';
+				}
+
+				return $ticket;
+			},
+			10,
+			3
+		);
+
+		$this->assertSame( 'required', tribe( Hydrator::class )->load( $id )->iac );
 	}
 
 	/**
@@ -165,7 +212,7 @@ class Hydrator_Test extends WPTestCase {
 		$id = $this->insert_ticket_row();
 		tribe( Hydrator::class )->load( $id );
 
-		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 1500 ] );
+		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 15000 ] );
 
 		$this->assertSame( '15.00', tribe( Hydrator::class )->load( $id )->price );
 	}
