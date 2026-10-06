@@ -24,10 +24,10 @@ import './style.pcss';
  *
  * @since 5.18.0
  *
- * @param {string} clientId       The client ID.
- * @param {bool}   hasTicketsPlus Whether the site has Tickets Plus.
- * @param {bool}   hasIacVars     Whether the site has IAC vars.
- * @return {*}
+ * @param {string}  clientId       The client ID.
+ * @param {boolean} hasTicketsPlus Whether the site has Tickets Plus.
+ * @param {boolean} hasIacVars     Whether the site has IAC vars.
+ * @return {Array} The ticket container items.
  */
 const getTicketContainerItems = ( clientId, hasTicketsPlus, hasIacVars ) => {
 	let items = [

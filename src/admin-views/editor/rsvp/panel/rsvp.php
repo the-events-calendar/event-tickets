@@ -53,9 +53,9 @@ defined( 'ABSPATH' ) || die();
 	do_action( 'tribe_events_rsvp_pre_edit', $post_id, $rsvp_id );
 	?>
 
-	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
-		<div id="ticket_form_table" class="eventtable ticket_form">
-			<section id="ticket_form_main" class="main"
+	<div id="tec_tickets_rsvp_form" class="ticket_form tribe_sectionheader tribe-validation">
+		<div id="tec_tickets_rsvp_form_table" class="eventtable ticket_form">
+			<section id="tec_tickets_rsvp_form_main" class="main"
 				data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 
 				<?php
@@ -74,14 +74,14 @@ defined( 'ABSPATH' ) || die();
 
 				<input
 					type='hidden'
-					id='ticket_type'
-					name='ticket_type'
+					id='tec_tickets_rsvp_ticket_type'
+					name='tec_tickets_rsvp_ticket_type'
 					value="<?php echo esc_attr( $ticket_type ); ?>"
 				/>
 
 				<input
 					type='hidden'
-					id='post_ID'
+					id='tec_tickets_rsvp_post_id'
 					name='post_ID'
 					value="<?php echo absint( $post_id ); ?>"
 				/>
@@ -97,7 +97,7 @@ defined( 'ABSPATH' ) || die();
 
 				<?php $this->template( 'editor/panel/fields/rsvp/dates' ); ?>
 
-				<input type="hidden" id="tec_tickets_ticket_provider" name="ticket_provider" value="<?php echo esc_attr( $provider_class ); ?>"/>
+				<input type="hidden" id="tec_tickets_rsvp_ticket_provider" name="tec_tickets_rsvp_ticket_provider" value="<?php echo esc_attr( $provider_class ); ?>"/>
 
 				<?php
 				/**
@@ -116,7 +116,7 @@ defined( 'ABSPATH' ) || die();
 				class="tec-tickets-rsvp-form__options"
 			>
 				<h4
-					id="rsvp_title_edit"
+					id="tec_tickets_rsvp_title_edit"
 					class="ticket_form_title"
 				>
 					<?php

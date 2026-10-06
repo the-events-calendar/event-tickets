@@ -12,10 +12,7 @@
 
 // Check if the public path was set by PHP (via admin_head hook).
 // Use our namespaced variable to avoid conflicts.
-if (
-	typeof window !== 'undefined' &&
-	typeof window.tecTicketsWebpackPublicPath !== 'undefined'
-) {
+if ( typeof window !== 'undefined' && typeof window.tecTicketsWebpackPublicPath !== 'undefined' ) {
 	// eslint-disable-next-line camelcase, no-undef
 	__webpack_public_path__ = window.tecTicketsWebpackPublicPath;
 }

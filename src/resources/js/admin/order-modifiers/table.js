@@ -4,7 +4,10 @@
  * @since 5.18.0
  */
 
-/* global wp */
+/**
+ * @param {jQuery} $             jQuery.
+ * @param {Object} tableSettings Table settings localized by PHP.
+ */
 ( function ( $, tableSettings ) {
 	$( document ).on( 'click', '.row-actions .delete a', ( e ) => {
 		let message;

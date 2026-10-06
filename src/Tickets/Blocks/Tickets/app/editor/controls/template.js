@@ -30,7 +30,9 @@ const RadioInput = ( { provider, onProviderChange, ...additionalProps } ) => (
 		/>
 		<label className="tribe-editor__tickets-control__label" htmlFor={ provider.class }>
 			{ provider.name }
-			{ additionalProps.disabled && additionalProps.checked ? <span className="tec-tickets-provider-locked dashicons dashicons-lock"></span> : null }
+			{ additionalProps.disabled && additionalProps.checked ? (
+				<span className="tec-tickets-provider-locked dashicons dashicons-lock"></span>
+			) : null }
 		</label>
 	</div>
 );
@@ -81,16 +83,7 @@ function getTicketsBlockControls( {
 			>
 				<PanelRow>
 					<fieldset className="tribe-editor__tickets-controls-provider">
-						<legend>
-							{
-								// eslint-disable-next-line no-undef
-								sprintf(
-									/* Translators: %s - Ticket plural label. */
-									__( 'Payment provider', 'event-tickets' ),
-									TICKET_LABELS.ticket.pluralLowercase
-								)
-							}
-						</legend>
+						<legend>{ __( 'Payment provider', 'event-tickets' ) }</legend>
 						{ message }
 						{ providers.map( ( provider, key ) => (
 							<RadioInput

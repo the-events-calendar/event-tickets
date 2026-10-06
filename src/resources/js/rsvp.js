@@ -62,7 +62,7 @@ const tribe_tickets_rsvp = {
 		my.quantity_changed( $( this ) );
 	};
 
-	my.event.handle_submission = function ( e ) {
+	my.event.handle_submission = function () {
 		const $form = $( this ).closest( 'form' );
 
 		const $rsvpMessages = $form.find( '.tribe-rsvp-messages, ' + '.tribe-rsvp-message-confirmation-error' );
@@ -74,7 +74,11 @@ const tribe_tickets_rsvp = {
 
 		// Show/Hide message about missing RSVP details (name, email, going/not) and/or missing ETP fields (if applicable).
 		if ( ! isRsvpInfoValid || ! isAttendeeMetaValid ) {
-			isRsvpInfoValid ? $rsvpMessages.hide() : $rsvpMessages.show();
+			if ( isRsvpInfoValid ) {
+				$rsvpMessages.hide();
+			} else {
+				$rsvpMessages.show();
+			}
 
 			if ( isAttendeeMetaValid ) {
 				$etpMetaMessages.hide();

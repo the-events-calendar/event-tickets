@@ -13,26 +13,26 @@ interface SuccessContentProps {
 	alreadyActivated?: boolean;
 }
 
-const SuccessContent = ( { onlyActivated = false, alreadyActivated = false }: SuccessContentProps ) => {
+const SuccessContent = ( { onlyActivated = false }: SuccessContentProps ) => {
 	const tecWizardCompleted = useSelect(
 		( select ) => select( SETTINGS_STORE_KEY ).getSetting( 'tec-wizard-completed' ) || false,
 		[]
 	);
 	const completeTab = useDispatch( SETTINGS_STORE_KEY ).completeTab;
 	const updateSettings = useDispatch( SETTINGS_STORE_KEY ).updateSettings;
-	const [isClicked, setClicked] = useState(false);
+	const [ isClicked, setClicked ] = useState( false );
 
-	useEffect(() => {
-		if (isClicked) {
+	useEffect( () => {
+		if ( isClicked ) {
 			// Mark the last tab as completed
-			completeTab(3);
+			completeTab( 3 );
 			// Update settings to mark wizard as finished
-			updateSettings({
+			updateSettings( {
 				finished: true,
-				begun: true
-			});
+				begun: true,
+			} );
 		}
-	}, [isClicked]);
+	}, [ isClicked ] );
 
 	return (
 		<>
@@ -59,8 +59,10 @@ const SuccessContent = ( { onlyActivated = false, alreadyActivated = false }: Su
 				<Button
 					variant="primary"
 					className="tec-tickets-onboarding__button tec-tickets-onboarding__button--next"
-					href={`/wp-admin/edit.php?post_type=tribe_events&page=${tecWizardCompleted ? 'tec-events-settings' : 'first-time-setup'}`}
-					onClick={() => setClicked(true)}
+					href={ `/wp-admin/edit.php?post_type=tribe_events&page=${
+						tecWizardCompleted ? 'tec-events-settings' : 'first-time-setup'
+					}` }
+					onClick={ () => setClicked( true ) }
 				>
 					{ tecWizardCompleted
 						? __( 'Go to The Events Calendar Settings', 'event-tickets' )

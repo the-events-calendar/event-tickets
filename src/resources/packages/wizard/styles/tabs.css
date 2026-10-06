@@ -11,11 +11,12 @@
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__tabs {
 		column-gap: 100px;
-		row-gap: calc(20vh - 100px);
 		grid-template-columns: none;
 		grid-template-rows: 84px auto;
+		row-gap: calc(20vh - 100px);
 	}
 }
 
@@ -35,6 +36,7 @@
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__tabs-header {
 		padding-bottom: var(--tec-spacer-3);
 	}
@@ -50,12 +52,14 @@
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__header-icon {
 		margin: 0 auto var(--tec-spacer-5);
 	}
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__tabs-header {
 		flex-flow: row nowrap;
 	}
@@ -104,6 +108,7 @@
 }
 
 @media (max-width: 1024px) {
+
 	.tec-tickets-onboarding__tabs-list {
 		grid-template-columns: repeat(5, var(--tec-spacer-tap-min-size));
 		max-width: calc(100vw - 64px);
@@ -126,6 +131,7 @@
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__tab {
 		color: var(--tec-wp-core-grey-50);
 		font-size: var(--tec-font-size-2);
@@ -166,6 +172,7 @@
 }
 
 @media (min-width: 1024px) {
+
 	.tec-tickets-onboarding__tab-button {
 		font-size: var(--tec-font-size-2);
 	}
@@ -188,7 +195,7 @@
 	}
 }
 
-.tec-tickets-onboarding__tab-title:before {
+.tec-tickets-onboarding__tab-title::before {
 	border: 1px solid var(--tec-wp-core-grey-50);
 	border-radius: var(--tec-admin-border-radius-round);
 	box-sizing: border-box;
@@ -203,13 +210,13 @@
 	width: 18px;
 }
 
-.tec-tickets-onboarding__tab--completed .tec-tickets-onboarding__tab-title:before {
+.tec-tickets-onboarding__tab--completed .tec-tickets-onboarding__tab-title::before {
 	background-color: var(--tec-wp-core-grey-50);
 	color: var(--tec-wp-core-grey-0);
 	content: "✓";
 }
 
-.tec-tickets-onboarding__tab--active .tec-tickets-onboarding__tab-title:before {
+.tec-tickets-onboarding__tab--active .tec-tickets-onboarding__tab-title::before {
 	background-color: #fff;
 	border: 1px solid #fff;
 	color: var(--tec-wp-core-blue-50);
@@ -217,7 +224,8 @@
 }
 
 @media (min-width: 1024px) {
-	.tec-tickets-onboarding__tab-title:before {
+
+	.tec-tickets-onboarding__tab-title::before {
 		margin-right: var(--tec-spacer-2);
 	}
 }
@@ -268,12 +276,14 @@
 }
 
 @media (min-width: 500px) {
+
 	.tec-tickets-onboarding__tab-footer {
 		margin-top: var(--tec-spacer-11);
 	}
 }
 
-@media(max-height: 900px) {
+@media (max-height: 900px) {
+
 	.tec-tickets-onboarding__tab-footer {
 		margin-top: 0;
 	}
@@ -296,7 +306,7 @@
 		gap: var(--tec-spacer-9);
 	}
 
-	@media (max-height:900px) {
+	@media (max-height: 900px) {
 		row-gap: 0;
 	}
 }
@@ -314,21 +324,24 @@
 }
 
 @media (min-width: 500px) {
+
 	.tec-tickets-onboarding__tab-hero {
 		margin: 0 auto var(--tec-spacer-8);
 	}
 }
 
 /* Remove the bottom margin on the hero when the height is too short */
-@media (max-height:900px) {
-    .tec-tickets-onboarding__tab-hero {
-       margin-bottom: 0;
-  }
+@media (max-height: 900px) {
+
+	.tec-tickets-onboarding__tab-hero {
+		margin-bottom: 0;
+	}
 }
 
 /* Bring the footer up when the height is too short */
-@media(max-height:900px) {
-  .tec-tickets-onboarding__tab-footer {
-    margin-top:0
-  }
+@media (max-height: 900px) {
+
+	.tec-tickets-onboarding__tab-footer {
+		margin-top: 0;
+	}
 }
