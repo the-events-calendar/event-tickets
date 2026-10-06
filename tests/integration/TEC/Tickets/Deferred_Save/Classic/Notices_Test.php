@@ -157,4 +157,27 @@ class Notices_Test extends WPTestCase {
 		$this->assertRegExp( '/were saved, but.*New ticket 2: The ticket was saved/s', $html );
 		$this->assertStringNotContainsString( 'New ticket 2', substr( $html, $refused, $saved - $refused ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_send_the_admin_to_a_ticket_created_but_not_finished_instead_of_asking_to_add_it_again(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_id   = static::factory()->post->create( [ 'post_title' => 'The saved post' ] );
+		$ticket_id = $this->create_tc_ticket( $post_id, 10, [ 'ticket_name' => 'Half saved' ] );
+		$result    = ( new Result() )
+			->with_created( 0, $ticket_id )
+			->with_error( 'create', 0, 'The ticket was created, but not all of its settings were saved.' )
+			->with_error( 'create', 1, 'The ticket provider is missing or not active.' );
+
+		do_action( 'tec_tickets_deferred_save_classic_committed', $result, $post_id );
+		$html = $this->render_admin_notices();
+
+		// The ticket exists: adding it again would make a second one, so the admin is sent to it, by its name.
+		$this->assertRegExp( '/not all of their settings were saved.*&quot;Half saved&quot;: The ticket was created/s', $html );
+		$this->assertRegExp( '/enter these changes again.*New ticket 2: The ticket provider/s', $html );
+		$this->assertStringNotContainsString( 'New ticket 1', $html );
+		$this->assertStringNotContainsString( 'no need to enter', $html );
+		$this->assertStringContainsString( 'notice-error', $html );
+	}
 }
