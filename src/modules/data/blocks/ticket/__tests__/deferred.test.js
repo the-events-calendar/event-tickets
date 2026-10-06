@@ -288,6 +288,25 @@ describe( 'reconcileSaveResponse', () => {
 		expect( outcome.deleted ).toEqual( [] );
 		expect( outcome.settle ).toEqual( { deletes: [ 40 ], moves: [ 50 ] } );
 		expect( outcome.notices ).toEqual( [ 'Ticket 40: Not allowed', 'Ticket 50: Could not move' ] );
+		// Both tickets are still on the post: their blocks come back.
+		expect( outcome.restore ).toEqual( [ 40, 50 ] );
+	} );
+
+	it( 'keeps a ticket saved before something after the save failed, with its ID and the error', () => {
+		const outcome = reconcileSaveResponse( {
+			response: { created: { 0: 101, 1: 102 }, errors: [ { part: 'create', key: 1, message: 'Saved, then a listener failed' } ] },
+			sent,
+			live,
+		} );
+
+		// The ticket exists: it gets its ID, so the next save sends an update and never creates it again.
+		expect( outcome.blocks[ 1 ] ).toEqual( {
+			clientId: 'b',
+			ticketId: 102,
+			staged: true,
+			error: 'Saved, then a listener failed',
+			hook: 'created',
+		} );
 	} );
 
 	it( 'keeps a block staged when it was staged again after the request left', () => {

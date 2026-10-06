@@ -82,7 +82,7 @@ const NAMESPACE = 'tec/tickets/deferred-save';
 		$( '#post' )
 			.find( 'input,select,textarea' )
 			.not( $panelEdit().find( 'input,select,textarea' ) )
-			.serializeArray().length;
+			.serializeArray().length + 1; // The submit button the browser sends, which `serializeArray()` leaves out.
 
 	/**
 	 * Shows an error above the post form, in the style of `tribe.validation`.
