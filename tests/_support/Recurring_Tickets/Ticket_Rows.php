@@ -64,7 +64,7 @@ trait Ticket_Rows {
 					'type'       => 'recurring',
 					'post_id'    => 1,
 					'name'       => 'General Admission',
-					'price'      => 1050,
+					'price'      => 10500,
 					'capacity'   => 100,
 					'stock'      => 100,
 					'sales'      => 0,

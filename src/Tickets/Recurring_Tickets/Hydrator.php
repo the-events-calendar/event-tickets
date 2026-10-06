@@ -57,6 +57,11 @@ final class Hydrator {
 		}
 
 		$ticket = $this->hydrate( $row );
+
+		/** This filter is documented in src/Tickets/Commerce/Ticket.php */
+		$filtered = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $ticket, $ticket->get_event_id(), $ticket_id );
+		$ticket   = $filtered instanceof Ticket_Object ? $filtered : $ticket;
+
 		wp_cache_set( $ticket_id, $ticket->to_array(), 'tec_tickets' );
 
 		return $ticket;
@@ -131,19 +136,19 @@ final class Hydrator {
 	}
 
 	/**
-	 * Converts minor units of the Tickets Commerce currency to the decimal string a ticket carries.
+	 * Converts a row's price, in thousandths of the currency's unit, to the decimal string a ticket carries.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $minor The amount in minor units.
+	 * @param int $thousandths The stored price.
 	 *
-	 * @return string The amount, e.g. `10.50`.
+	 * @return string The amount with the Tickets Commerce currency's own decimals, e.g. `10.50`.
 	 */
-	private function to_decimal( int $minor ): string {
+	private function to_decimal( int $thousandths ): string {
 		// The currency's own decimals, not the site's display setting, as Order Line Items stores money.
 		$decimals = (int) ( Currency::get_default_currency_map()[ Currency::get_currency_code() ]['decimal_precision'] ?? 2 );
 
-		return number_format( $minor / ( 10 ** $decimals ), $decimals, '.', '' );
+		return number_format( $thousandths / 1000, $decimals, '.', '' );
 	}
 
 	/**
