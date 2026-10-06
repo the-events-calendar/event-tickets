@@ -1,5 +1,3 @@
-/* global tribe, jQuery  */
-
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
 
@@ -36,7 +34,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	 *
 	 * @since 5.7.0
 	 *
-	 * @retun {void}
+	 * @return {void}
 	 */
 	obj.bind = () => {
 		$( document ).on( 'click', obj.selectors.trigger, obj.onTriggerClick );
@@ -45,8 +43,9 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Trigger Click Event for the QR Connector.
 	 *
-	 * @param event
 	 * @since 5.7.0
+	 *
+	 * @param {Event} event The click event.
 	 *
 	 * @return {void}
 	 */

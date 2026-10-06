@@ -30,7 +30,7 @@ export const selectors = {
 		const displayedFees = [];
 
 		selectedFees.forEach( ( feeId ) => {
-			const fee = availableFees.find( ( fee ) => fee.id === feeId );
+			const fee = availableFees.find( ( availableFee ) => availableFee.id === feeId );
 			if ( fee ) {
 				displayedFees.push( fee );
 			}

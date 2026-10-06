@@ -8,13 +8,16 @@ import { BaseControl } from '@wordpress/components';
  * @since 5.24.0
  */
 interface CurrencySelectorProps {
-	currencies: Record<string, {
-		symbol: string;
-		name: string;
-		code: string;
-	}>;
+	currencies: Record<
+		string,
+		{
+			symbol: string;
+			name: string;
+			code: string;
+		}
+	>;
 	currencyCode: string;
-	onCurrencyChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+	onCurrencyChange: ( e: React.ChangeEvent< HTMLSelectElement > ) => void;
 	hasCountryWithSingleGateway: boolean;
 }
 
@@ -27,12 +30,12 @@ interface CurrencySelectorProps {
  *
  * @return {JSX.Element} The component.
  */
-const CurrencySelector: React.FC<CurrencySelectorProps> = ({
+const CurrencySelector: React.FC< CurrencySelectorProps > = ( {
 	currencies,
 	currencyCode,
 	onCurrencyChange,
 	hasCountryWithSingleGateway,
-}) => {
+} ) => {
 	return (
 		<BaseControl
 			__nextHasNoMarginBottom
@@ -40,22 +43,18 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
 			label={ __( 'Currency', 'event-tickets' ) }
 			className="tec-tickets-onboarding__form-field"
 		>
-			<select
-				onChange={onCurrencyChange}
-				value={currencyCode}
-				required
-			>
+			<select onChange={ onCurrencyChange } value={ currencyCode } required>
 				{ Object.entries( currencies ).map( ( [ key, data ] ) => (
 					<option key={ key } value={ data.code }>
 						{ data.name } ({ data.code })
 					</option>
 				) ) }
 			</select>
-			{hasCountryWithSingleGateway && (
+			{ hasCountryWithSingleGateway && (
 				<p className="tec-tickets-onboarding__currency-notice">
-					{__('Currency selected based on your country.', 'event-tickets')}
+					{ __( 'Currency selected based on your country.', 'event-tickets' ) }
 				</p>
-			)}
+			) }
 			<span className="tec-tickets-onboarding__required-label">
 				{ __( 'Currency is required.', 'event-tickets' ) }
 			</span>

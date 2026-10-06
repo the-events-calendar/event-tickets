@@ -4,8 +4,8 @@ const EmailIcon = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			width={31}
-			height={30}
+			width={ 31 }
+			height={ 30 }
 			fill="none"
 			className="tec-tickets-onboarding__content-header-icon"
 			role="presentation"
