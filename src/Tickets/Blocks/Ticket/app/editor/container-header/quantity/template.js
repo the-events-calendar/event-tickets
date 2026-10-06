@@ -28,6 +28,7 @@ const TicketContainerHeaderDescription = ( {
 } ) => {
 	const total = isShared ? sharedCapacity : capacity;
 
+	/* translators: %d: number of tickets sold. */
 	const getLabel = () => sprintf( __( '%d sold', 'event-tickets' ), sold );
 
 	/* eslint-disable max-len */

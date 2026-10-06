@@ -49,8 +49,8 @@ function selectFromCommonStore( selector, ...args ) {
  *
  * @since 5.16.0
  *
- * @param {string}          clientId The client ID of Ticket block to set the capacity for.
- * @param {string|number}   capacity The capacity to set.
+ * @param {string}        clientId The client ID of Ticket block to set the capacity for.
+ * @param {string|number} capacity The capacity to set.
  */
 export function setTicketsSharedCapacityInCommonStore( clientId, capacity ) {
 	const value = String( capacity );
@@ -64,8 +64,8 @@ export function setTicketsSharedCapacityInCommonStore( clientId, capacity ) {
  *
  * @since 5.16.0
  *
- * @param {string}          clientId The client ID of the current ticket block.
- * @param {string|number}   capacity The capacity to set.
+ * @param {string}        clientId The client ID of the current ticket block.
+ * @param {string|number} capacity The capacity to set.
  */
 export function setCappedTicketCapacityInCommonStore( clientId, capacity ) {
 	const value = String( capacity );

@@ -23,7 +23,7 @@ import {
  * Filters the render function of the Capacity form to add the seating options.
  *
  * @param {function(): void} renderDefaultForm The render function of the Capacity form.k
- * @param {Object} props The props passed to the Capacity form.
+ * @param {Object}           props             The props passed to the Capacity form.
  *
  * @return {Function} The render function of the Capacity form with the seating options.
  */
@@ -131,8 +131,8 @@ addFilter(
  *
  * @since 5.24.1
  *
- * @param props {Object} The block props.
- * @return {boolean}
+ * @param {Object} props The block props.
+ * @return {boolean} Whether the form should be rendered.
  */
 function shouldRenderAssignedSeatingForm( props ) {
 	// When the provider does not support seating, we render the default form.
@@ -148,13 +148,14 @@ function shouldRenderAssignedSeatingForm( props ) {
 	const { clientId } = props;
 
 	const hasSeats = select( storeName ).isUsingAssignedSeating( clientId );
-	const isLayoutLocked = select( storeName ).isLayoutLocked( clientId );
-	const currentLayoutId = select( storeName ).getCurrentLayoutId();
 
 	// If not using assigned seating, don't show seating form
 	if ( ! hasSeats ) {
 		return false;
 	}
+
+	const isLayoutLocked = select( storeName ).isLayoutLocked( clientId );
+	const currentLayoutId = select( storeName ).getCurrentLayoutId();
 
 	// If we have tickets but no seating layout, don't show seating form
 	if ( isLayoutLocked && ! currentLayoutId ) {

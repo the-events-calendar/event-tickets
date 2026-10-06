@@ -1,4 +1,3 @@
-/* global wp */
 const { applyFilters } = wp.hooks;
 
 /**
@@ -139,7 +138,6 @@ tribe.tickets.block = {
 	 * @param {Object} $form The form we're updating.
 	 */
 	obj.updateFooterCount = function ( $form ) {
-		const $field = $form.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterQuantity );
 		const $quantities = $form.find( obj.selectors.item + ' ' + obj.selectors.itemQuantityInput );
 		let footerCount = 0;
 
@@ -163,6 +161,8 @@ tribe.tickets.block = {
 			return;
 		}
 
+		const $field = $form.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterQuantity );
+
 		$field.text( footerCount );
 	};
 
@@ -184,7 +184,6 @@ tribe.tickets.block = {
 	 * @param {Object} $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function ( $form ) {
-		const $field = $form.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterAmount );
 		const $quantities = $form.find( obj.selectors.item + ' ' + obj.selectors.itemQuantityInput );
 		const provider = obj.getTicketsBlockProvider( $form );
 		let footerAmount = 0;
@@ -208,6 +207,8 @@ tribe.tickets.block = {
 		if ( 0 > footerAmount ) {
 			return;
 		}
+
+		const $field = $form.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterAmount );
 
 		$field.text( tribe.tickets.utils.numberFormat( footerAmount, provider ) );
 	};
@@ -416,7 +417,6 @@ tribe.tickets.block = {
 		let sharedCap = [];
 		let currentLoad = [];
 		const $sharedTickets = $form.find( obj.selectors.item ).filter( '[data-has-shared-cap="true"]' );
-		const $sharedCapTickets = $sharedTickets.find( obj.selectors.itemQuantityInput );
 
 		if ( ! $sharedTickets.length ) {
 			return qty;
@@ -428,6 +428,8 @@ tribe.tickets.block = {
 		if ( undefined === activeTicketLimit || undefined === totalSharedCap ) {
 			return qty;
 		}
+
+		const $sharedCapTickets = $sharedTickets.find( obj.selectors.itemQuantityInput );
 
 		$sharedCapTickets.each( function () {
 			currentLoad.push( parseInt( $( this ).val(), 10 ) );
@@ -681,9 +683,9 @@ tribe.tickets.block = {
 			'aria-label',
 			isExpanded ? $trigger.data( 'label-expanded' ) : $trigger.data( 'label-collapsed' )
 		);
-		$trigger.find( '.tribe-tickets__tickets-item-details-summary-button-text' ).text(
-			isExpanded ? $trigger.data( 'text-expanded' ) : $trigger.data( 'text-collapsed' )
-		);
+		$trigger
+			.find( '.tribe-tickets__tickets-item-details-summary-button-text' )
+			.text( isExpanded ? $trigger.data( 'text-expanded' ) : $trigger.data( 'text-collapsed' ) );
 	};
 
 	/**

@@ -1,10 +1,11 @@
-/* global jQuery, AttendeesPointer, Attendees */
+/* global AttendeesPointer, Attendees */
+// eslint-disable-next-line no-var -- window-level namespace, read via top.tribe_event_tickets_attendees
 var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 
 ( function ( $, obj ) {
 	function init() {
 		if ( typeof AttendeesPointer !== 'undefined' && AttendeesPointer.length ) {
-			options = $.extend( AttendeesPointer.options, {
+			const options = $.extend( AttendeesPointer.options, {
 				close() {
 					$.post( Attendees.ajaxurl, {
 						pointer: AttendeesPointer.pointer_id,
@@ -30,7 +31,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				},
 			} );
 
-			const $pointer = $( AttendeesPointer.target ).pointer( options ).pointer( 'open' ).pointer( 'widget' );
+			$( AttendeesPointer.target ).pointer( options ).pointer( 'open' ).pointer( 'widget' );
 		}
 
 		$( 'input.print' ).on( 'click', function () {
@@ -53,13 +54,13 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		$( '.tribe-attendees-email' ).on( {
-			submit( event ) {
+			submit() {
 				$( '.tribe-attendees-email' ).hide();
 				$( document.getElementById( 'tribe-loading' ) ).show();
 			},
 		} );
 
-		$( 'span.trash a' ).on( 'click', function ( e ) {
+		$( 'span.trash a' ).on( 'click', function () {
 			const ticketType = $( this ).closest( 'tr' ).data( 'ticket-type' );
 			// Set the confirmation message to the default one.
 			let confirmationMessage = Attendees.confirmation_singular;
@@ -74,7 +75,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			return confirm( confirmationMessage );
 		} );
 
-		$( '.event-tickets__attendees-admin-form' ).on( 'submit', function ( e ) {
+		$( '.event-tickets__attendees-admin-form' ).on( 'submit', function () {
 			// If not the delete action, return.
 			if ( 'delete_attendee' !== $( '#bulk-action-selector-top' ).val() ) {
 				return;
@@ -108,20 +109,20 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		$( '.tickets_checkin' ).on( 'click', function ( e ) {
-			const obj = jQuery( this );
-			obj.prop( 'disabled', true );
-			obj.addClass( 'is-busy' );
+			const $btn = jQuery( this );
+			$btn.prop( 'disabled', true );
+			$btn.addClass( 'is-busy' );
 
 			const params = {
 				action: 'tribe-ticket-checkin',
-				provider: obj.attr( 'data-provider' ),
-				attendee_id: obj.attr( 'data-attendee-id' ),
+				provider: $btn.attr( 'data-provider' ),
+				attendee_id: $btn.attr( 'data-attendee-id' ),
 				nonce: Attendees.checkin_nonce,
 			};
 
 			// add event_ID information if available
-			if ( obj.attr( 'data-event-id' ) ) {
-				params.event_ID = obj.attr( 'data-event-id' );
+			if ( $btn.attr( 'data-event-id' ) ) {
+				params.event_ID = $btn.attr( 'data-event-id' );
 			}
 
 			$.post(
@@ -129,7 +130,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				params,
 				function ( response ) {
 					if ( response.success ) {
-						obj.closest( 'tr' ).addClass( 'tickets_checked' );
+						$btn.closest( 'tr' ).addClass( 'tickets_checked' );
 						const total_attendees = parseInt( $( '#percent_checkedin' ).data( 'total-attendees' ) );
 						const total_checked_in = parseInt( $( '#total_checkedin' ).text() ) + 1;
 						const percent_checked_in =
@@ -143,8 +144,8 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 						}
 					}
 
-					obj.prop( 'disabled', false );
-					obj.removeClass( 'is-busy' );
+					$btn.prop( 'disabled', false );
+					$btn.removeClass( 'is-busy' );
 				},
 				'json'
 			);
@@ -153,20 +154,20 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		$( '.tickets_uncheckin' ).on( 'click', function ( e ) {
-			const obj = jQuery( this );
-			obj.prop( 'disabled', true );
-			obj.addClass( 'is-busy' );
+			const $btn = jQuery( this );
+			$btn.prop( 'disabled', true );
+			$btn.addClass( 'is-busy' );
 
 			const params = {
 				action: 'tribe-ticket-uncheckin',
-				provider: obj.attr( 'data-provider' ),
-				attendee_id: obj.attr( 'data-attendee-id' ),
+				provider: $btn.attr( 'data-provider' ),
+				attendee_id: $btn.attr( 'data-attendee-id' ),
 				nonce: Attendees.uncheckin_nonce,
 			};
 
 			// Add event_ID information if available.
-			if ( obj.attr( 'data-event-id' ) ) {
-				params.event_ID = obj.attr( 'data-event-id' );
+			if ( $btn.attr( 'data-event-id' ) ) {
+				params.event_ID = $btn.attr( 'data-event-id' );
 			}
 
 			$.post(
@@ -174,7 +175,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				params,
 				function ( response ) {
 					if ( response.success ) {
-						obj.closest( 'tr' ).removeClass( 'tickets_checked' );
+						$btn.closest( 'tr' ).removeClass( 'tickets_checked' );
 						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) - 1 );
 
 						if ( response?.data?.reload ) {
@@ -182,8 +183,8 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 						}
 					}
 
-					obj.prop( 'disabled', false );
-					obj.removeClass( 'is-busy' );
+					$btn.prop( 'disabled', false );
+					$btn.removeClass( 'is-busy' );
 				},
 				'json'
 			);
@@ -261,8 +262,8 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		 * Triggers the creation of the move tickets dialog, passing the
 		 * provided ticket IDs across in the process.
 		 *
-		 * @param ticket_ids - A single ticket ID or an array of ticket IDs.
-		 * @param eventId    - The event ID to add to the modal URL.
+		 * @param {number|number[]} ticket_ids A single ticket ID or an array of ticket IDs.
+		 * @param {number|null}     eventId    The event ID to add to the modal URL.
 		 */
 		function create_move_ticket_modal( ticket_ids, eventId = null ) {
 			if ( ! $.isArray( ticket_ids ) ) {
@@ -308,7 +309,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 
 			$show_links.on( 'click', function ( event ) {
 				const $this = $( this );
-				const $hide_link = $this.siblings( '.hide-ticket-history' );
 				const ticket_id = parseInt( $this.data( 'ticket-id' ), 10 );
 				const check = $this.data( 'check' );
 
@@ -316,6 +316,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 					return;
 				}
 
+				const $hide_link = $this.siblings( '.hide-ticket-history' );
 				const $existing_row = $( document.getElementById( 'ticket-history-' + ticket_id ) );
 
 				// Reuse the existing history row, if it exists
@@ -363,7 +364,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				return false;
 			} );
 
-			$hide_links.on( 'click', function ( event ) {
+			$hide_links.on( 'click', function () {
 				const $this = $( this );
 				const $show_link = $this.siblings( '.ticket-history' );
 				const ticket_id = parseInt( $show_link.data( 'ticket-id' ), 10 );
@@ -379,7 +380,9 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 	 * Given a jQuery object representing a single row, returns a count of the
 	 * total number of columns (accounting for colspans).
 	 *
-	 * @param $row
+	 * @param {jQuery} $row The table row.
+	 *
+	 * @return {number} The total number of columns.
 	 */
 	obj.count_columns = function ( $row ) {
 		let count = 0;
@@ -401,7 +404,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 	/**
 	 * Given a list of ticket IDs, removes the matching rows from the attendee table.
 	 *
-	 * @param ticket_ids
+	 * @param {number[]} ticket_ids The ticket IDs whose rows should be removed.
 	 */
 	obj.remove_tickets = function ( ticket_ids ) {
 		$( '#the-list' )
@@ -426,50 +429,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				$this.remove();
 			} );
 	};
-
-	function tribe_is_email( emailAddress ) {
-		const pattern = new RegExp(
-			/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i
-		);
-		return pattern.test( emailAddress );
-	}
-
-	function tribe_validate_email() {
-		$( '#email_errors' ).removeClass( 'ui-state-error' ).addClass( 'ui-state-highlight' ).text( Attendees.sending );
-		const $address = $( '#email_to_address' ).val();
-		const $user = $( '#email_to_user' ).val();
-		let $email = false;
-
-		if ( $user > -1 ) {
-			$email = $user;
-		}
-
-		if ( $address.trim() !== '' && tribe_is_email( $address ) ) {
-			$email = $address;
-		}
-
-		if ( ! $email ) {
-			$( '#email_errors' )
-				.removeClass( 'ui-state-highlight' )
-				.addClass( 'ui-state-error' )
-				.text( Attendees.required );
-		}
-
-		return $email;
-	}
-
-	function tribe_array_filter( arr ) {
-		let retObj = {},
-			k;
-
-		for ( k in arr ) {
-			if ( arr[ k ] ) {
-				retObj[ k ] = arr[ k ];
-			}
-		}
-
-		return retObj;
-	}
 
 	$( init );
 } )( jQuery, tribe_event_tickets_attendees );

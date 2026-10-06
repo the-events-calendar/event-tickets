@@ -10,7 +10,7 @@ let timerId = null;
  *
  * @param {Function} dispatch  Redux dispatch.
  * @param {Object}   overrides Optional field overrides for the payload.
- * @param {number}   delay    Debounce delay in milliseconds.
+ * @param {number}   delay     Debounce delay in milliseconds.
  */
 export const schedulePersistRSVP = ( dispatch, overrides = {}, delay = 500 ) => {
 	clearTimeout( timerId );

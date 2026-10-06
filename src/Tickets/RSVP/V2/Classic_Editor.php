@@ -105,7 +105,7 @@ class Classic_Editor {
 	 * @return void
 	 */
 	private function process_rsvp_post_save( int $post_id, array $post_data ): void {
-		if ( empty( $post_data['ticket_type'] ) || Constants::TC_RSVP_TYPE !== $post_data['ticket_type'] ) {
+		if ( empty( $post_data['tec_tickets_rsvp_ticket_type'] ) || Constants::TC_RSVP_TYPE !== $post_data['tec_tickets_rsvp_ticket_type'] ) {
 			return;
 		}
 

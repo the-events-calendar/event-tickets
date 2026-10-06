@@ -22,8 +22,7 @@ import { initTicketsBlockFilters } from '../data/blocks/rsvp-v2/tickets-block-fi
  * @since 5.30.0
  * @return {boolean} Whether RSVP is disabled.
  */
-const isRsvpDisabled = () =>
-	Boolean( window.tribe_editor_config?.tickets?.rsvpDisabled );
+const isRsvpDisabled = () => Boolean( window.tribe_editor_config?.tickets?.rsvpDisabled );
 
 /**
  * Filter callback to handle RSVP block based on version state.

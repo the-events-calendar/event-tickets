@@ -47,7 +47,10 @@ export const getRSVPHasDurationError = createSelector( [ getRSVPBlock ], ( rsvp 
 
 export const getRSVPIAC = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.iac );
 
-export const getRSVPAttendeeInfoFieldNames = createSelector( [ getRSVPBlock ], ( rsvp ) => rsvp.attendeeInfoFieldNames );
+export const getRSVPAttendeeInfoFieldNames = createSelector(
+	[ getRSVPBlock ],
+	( rsvp ) => rsvp.attendeeInfoFieldNames
+);
 
 /**
  * ------------------------------------------------------------
@@ -69,7 +72,7 @@ export const getRSVPAvailable = createSelector(
 			return -1;
 		}
 
-		if ( inventory != null && inventory >= 0 ) {
+		if ( inventory !== null && inventory !== undefined && inventory >= 0 ) {
 			return inventory;
 		}
 

@@ -1,6 +1,4 @@
 /* Dispatch actions for the reducers to handle */
-import { API_ENDPOINT } from "./constants";
-import { apiFetch } from '@wordpress/data';
 
 export const TYPES = {
 	CREATE: 'CREATE',
@@ -14,60 +12,44 @@ export const TYPES = {
 	COMPLETE_TAB: 'COMPLETE_TAB',
 } as const;
 
-interface Settings {
-	[key: string]: any;
-}
-
-interface Setting {
-	[key: string]: any;
-}
-
-interface Action {
-	type: string;
-	settings?: Settings;
-	setting?: Setting;
-	payload?: any;
-	error?: any;
-}
-
-export function initializeSettings(settings) {
+export function initializeSettings( settings ) {
 	return {
 		type: TYPES.INITIALIZE,
-		settings
+		settings,
 	};
 }
 
-export function createSetting(setting) {
+export function createSetting( setting ) {
 	return {
 		type: TYPES.CREATE,
-		setting
+		setting,
 	};
 }
 
-export const updateSettings = settings => {
-    return{
-      type: TYPES.UPDATE,
-      settings,
-    };
+export const updateSettings = ( settings ) => {
+	return {
+		type: TYPES.UPDATE,
+		settings,
+	};
 };
 
-export const setSaving = (isSaving) => {
+export const setSaving = ( isSaving ) => {
 	return {
 		type: TYPES.IS_SAVING,
-		isSaving
+		isSaving,
 	};
 };
 
-export const skipTab = (tabId) => {
+export const skipTab = ( tabId ) => {
 	return {
 		type: TYPES.SKIP_TAB,
-		payload: tabId
+		payload: tabId,
 	};
-}
+};
 
-export const completeTab = (tabId) => {
+export const completeTab = ( tabId ) => {
 	return {
 		type: TYPES.COMPLETE_TAB,
-		payload: tabId
+		payload: tabId,
 	};
-}
+};
