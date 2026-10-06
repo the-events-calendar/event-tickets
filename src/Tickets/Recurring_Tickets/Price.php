@@ -14,8 +14,9 @@ use TEC\Tickets\Commerce\Utils\Currency;
 /**
  * Class Price.
  *
- * Rows hold prices in minor units of the Tickets Commerce currency, with the currency's own decimals rather than
- * the site's display setting, as Order Line Items stores money.
+ * Rows hold prices in thousandths of the currency's unit, whatever the currency, so a change of the Tickets Commerce
+ * currency never rescales them: they mean what the template's decimal price means. A ticket carries the amount with
+ * the currency's own decimals, not the site's display setting, as Order Line Items stores money.
  *
  * @since TBD
  *
@@ -23,17 +24,26 @@ use TEC\Tickets\Commerce\Utils\Currency;
  */
 final class Price {
 	/**
-	 * Converts minor units to the decimal string a ticket carries.
+	 * How many stored units make one of the currency's unit.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $minor The amount in minor units.
+	 * @var int
+	 */
+	public const SCALE = 1000;
+
+	/**
+	 * Converts a stored price to the decimal string a ticket carries.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $stored The price as stored, in thousandths of the currency's unit.
 	 *
 	 * @return string The amount, e.g. `10.50`.
 	 */
-	public static function from_minor( int $minor ): string {
+	public static function to_decimal( int $stored ): string {
 		$decimals = (int) ( Currency::get_default_currency_map()[ Currency::get_currency_code() ]['decimal_precision'] ?? 2 );
 
-		return number_format( $minor / ( 10 ** $decimals ), $decimals, '.', '' );
+		return number_format( $stored / self::SCALE, $decimals, '.', '' );
 	}
 }
