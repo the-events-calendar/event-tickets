@@ -70,6 +70,13 @@ export const summaryFromFields = ( fields ) => ( {
 const entry = ( fields ) => ( { fields, summary: summaryFromFields( fields ) } );
 
 /**
+ * A key for a staged new ticket: the server saves a create sent again with the same key over the ticket it made.
+ *
+ * @return {string} Letters, digits and a dash.
+ */
+const createKey = () => `${ Date.now().toString( 36 ) }-${ Math.random().toString( 36 ).slice( 2, 12 ) }`;
+
+/**
  * Creates the staged state.
  *
  * @since TBD
@@ -91,7 +98,7 @@ export const createState = () => {
 		 * @return {number} The position of the new entry.
 		 */
 		stageCreate( fields ) {
-			create.push( entry( fieldsWithoutTicketId( fields ) ) );
+			create.push( { ...entry( fieldsWithoutTicketId( fields ) ), key: createKey() } );
 
 			return create.length - 1;
 		},
@@ -104,7 +111,7 @@ export const createState = () => {
 		 */
 		restageCreate( position, fields ) {
 			if ( undefined !== create[ position ] ) {
-				create[ position ] = entry( fieldsWithoutTicketId( fields ) );
+				create[ position ] = { ...entry( fieldsWithoutTicketId( fields ) ), key: create[ position ].key };
 			}
 		},
 
@@ -280,10 +287,11 @@ export const buildHiddenFields = ( state ) => {
 	const payload = state.toPayload();
 	const fields = [];
 
-	payload.create.forEach( ( { fields: entryFields }, position ) => {
+	payload.create.forEach( ( { fields: entryFields, key }, position ) => {
 		entryFields.forEach( ( [ name, value ] ) => {
 			fields.push( [ `tec_tickets[create][${ position }]${ bracketName( name ) }`, String( value ) ] );
 		} );
+		fields.push( [ `tec_tickets[create][${ position }][tec_tickets_create_key]`, key ] );
 	} );
 
 	Object.entries( payload.update ).forEach( ( [ ticketId, { fields: entryFields } ] ) => {

@@ -27,11 +27,33 @@ use Tribe__Tickets__Tickets as Tickets;
  * Parts run in the order `update`, `move`, `create`, `delete`; the parser refuses a ticket named in
  * more than one of them. One failing entry never stops the others.
  *
+ * A write that happened is never reported as refused: when something that runs after it throws, the
+ * entry's error is marked `applied`. A `create` entry may carry a key; a save that never got its answer
+ * sends the entry again with the same key, and the ticket that key created is saved over, not created again.
+ *
  * @since TBD
  *
  * @package TEC\Tickets\Deferred_Save
  */
 final class Commit {
+	/**
+	 * The field of a `create` entry that names it across retries of the same save.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CREATE_KEY = 'tec_tickets_create_key';
+
+	/**
+	 * The meta key that keeps, on a ticket a save created, the key its `create` entry carried.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CREATE_KEY_META = '_tec_tickets_deferred_save_create_key';
+
 	/**
 	 * The checks a payload passes before anything is saved.
 	 *
@@ -235,14 +257,17 @@ final class Commit {
 	 * @param int                 $post_id   The post being saved.
 	 * @param int                 $ticket_id The ticket to save.
 	 * @param array<string,mixed> $data      The ticket data, as the editor sent it.
+	 * @param string              $part      The part the editor sent the entry in.
+	 * @param int|null            $key       The entry's key in that part; the ticket ID when `null`.
 	 *
 	 * @return Result The result with this entry folded in.
 	 */
-	private function update( Result $result, int $post_id, int $ticket_id, array $data ): Result {
+	private function update( Result $result, int $post_id, int $ticket_id, array $data, string $part = Parser::UPDATE, ?int $key = null ): Result {
+		$key    ??= $ticket_id;
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( ! $provider instanceof Tickets ) {
-			return $result->with_error( Parser::UPDATE, $ticket_id, $this->no_provider_message() );
+			return $result->with_error( $part, $key, $this->no_provider_message() );
 		}
 
 		$data                = $this->sanitize( $data );
@@ -256,12 +281,39 @@ final class Commit {
 		$saved = $provider->ticket_add( $post_id, $data );
 
 		if ( ! $saved ) {
-			return $result->with_error( Parser::UPDATE, $ticket_id, $this->not_saved_message() );
+			return $result->with_error( $part, $key, $this->not_saved_message() );
 		}
 
-		$this->fire_added( $post_id, $ticket_id, $data );
+		return $this->fire_added( $post_id, $ticket_id, $data )
+			? $result
+			: $result->with_error( $part, $key, $this->saved_listener_failed_message(), true );
+	}
 
-		return $result;
+	/**
+	 * Saves a `create` entry over the ticket an earlier try of the same save created, checked as the update it is.
+	 *
+	 * @since TBD
+	 *
+	 * @param Result              $result    The result so far.
+	 * @param int                 $post_id   The post being saved.
+	 * @param int                 $position  The position of the entry in the `create` part.
+	 * @param int                 $ticket_id The ticket the entry's key created.
+	 * @param array<string,mixed> $data      The ticket data, as the editor sent it.
+	 *
+	 * @return Result The result with this entry folded in, the ticket reported as created at its position.
+	 */
+	private function update_created( Result $result, int $post_id, int $position, int $ticket_id, array $data ): Result {
+		// The ticket exists whatever happens next: the editor must know its ID, or it sends the create once more.
+		$result  = $result->with_created( $position, $ticket_id );
+		$checked = $this->checks->run( new Payload( [ $ticket_id => $data ] ), $post_id );
+
+		if ( ! array_key_exists( $ticket_id, $checked->payload()->get_update() ) ) {
+			$refusals = $checked->rejections()->all();
+
+			return $result->with_error( Parser::CREATE, $position, $refusals[0]['message'] ?? $this->not_saved_message() );
+		}
+
+		return $this->update( $result, $post_id, $ticket_id, $data, Parser::CREATE, $position );
 	}
 
 	/**
@@ -276,7 +328,7 @@ final class Commit {
 	 *
 	 * @return Result The result with this entry folded in.
 	 *
-	 * @throws \Throwable When the provider throws before the ticket is saved on the post; `guarded()` reports it.
+	 * @throws \Throwable When the provider throws before the ticket is on the post; `guarded()` reports it.
 	 */
 	private function create( Result $result, int $post_id, int $position, array $data ): Result {
 		$provider = empty( $data['ticket_provider'] ) || ! is_string( $data['ticket_provider'] )
@@ -287,45 +339,52 @@ final class Commit {
 			return $result->with_error( Parser::CREATE, $position, $this->no_provider_message() );
 		}
 
+		$key = $this->create_key( $data );
+		unset( $data[ self::CREATE_KEY ] );
+		$created = '' === $key ? 0 : $this->find_created( $provider, $post_id, $key );
+
+		if ( $created ) {
+			// An earlier try of this save created the ticket and its answer never reached the editor.
+			return $this->update_created( $result, $post_id, $position, $created, $data );
+		}
+
 		$data = $this->sanitize( $data );
 		unset( $data['ticket_id'] );
 		$data['ticket_type'] = $this->ticket_type( $data, 'default' );
-
-		// Which ticket post this save inserts, in case something after the insert throws.
-		$inserted = 0;
-		$record   = static function ( $id, $post, $update ) use ( $provider, &$inserted ): void {
-			if ( ! $update && $post instanceof \WP_Post && $provider->ticket_object === $post->post_type ) {
-				$inserted = (int) $id;
-			}
-		};
-		add_action( 'wp_insert_post', $record, 10, 3 );
+		// What is on the post already, to tell the ticket this save adds if something throws once it is there.
+		$before = $this->attached_ids( $provider, $post_id );
 
 		try {
 			$ticket_id = $provider->ticket_add( $post_id, $data );
 		} catch ( \Throwable $e ) {
-			if ( ! $inserted || (int) get_post_meta( $inserted, $provider->get_event_key(), true ) !== $post_id ) {
+			// Whichever listener threw, and wherever the provider relates the ticket to the post, the ticket is there or not.
+			$added = array_values( array_diff( $this->attached_ids( $provider, $post_id ), $before ) );
+
+			if ( 1 !== count( $added ) ) {
 				throw $e;
 			}
 
-			// The ticket is saved on the post and something that runs after the save threw: report the ticket, so the
-			// editor never creates it again, and the error, so the admin knows the save did not finish cleanly.
+			// Report the ticket, so the editor never creates it again, and the error, so the admin knows the save did not finish.
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
-			$this->log_failure( 'Deferred ticket save: a ticket was saved, then a listener failed.', $e, [ 'ticket_id' => $inserted ] );
+			$this->log_failure( 'Deferred ticket save: a ticket was saved, then a listener failed.', $e, [ 'ticket_id' => $added[0] ] );
+			$this->remember_key( $added[0], $key );
 
 			return $result
-				->with_created( $position, $inserted )
-				->with_error( Parser::CREATE, $position, __( 'The ticket was saved, but something that runs after a ticket is saved failed.', 'event-tickets' ) );
-		} finally {
-			remove_action( 'wp_insert_post', $record, 10 );
+				->with_created( $position, $added[0] )
+				->with_error( Parser::CREATE, $position, $this->saved_listener_failed_message(), true );
 		}
 
 		if ( empty( $ticket_id ) ) {
 			return $result->with_error( Parser::CREATE, $position, $this->not_saved_message() );
 		}
 
-		$this->fire_added( $post_id, (int) $ticket_id, $data );
+		$ticket_id = (int) $ticket_id;
+		$this->remember_key( $ticket_id, $key );
+		$result = $result->with_created( $position, $ticket_id );
 
-		return $result->with_created( $position, (int) $ticket_id );
+		return $this->fire_added( $post_id, $ticket_id, $data )
+			? $result
+			: $result->with_error( Parser::CREATE, $position, $this->saved_listener_failed_message(), true );
 	}
 
 	/**
@@ -348,13 +407,20 @@ final class Commit {
 		try {
 			$moved = Tickets_Main::instance()->move_ticket_types()->move_ticket_type( $ticket_id, $destination_id );
 		} catch ( \Throwable $e ) {
-			// A listener on the moved action threw after the ticket was reassigned: the move happened.
+			// A listener on the moved action threw after the ticket was reassigned: the move happened, not all of it.
 			if ( ! $this->is_on_post( $ticket_id, $destination_id ) ) {
 				throw $e;
 			}
 
 			$this->log_failure( 'Deferred ticket save: a ticket was moved, then a listener failed.', $e, [ 'ticket_id' => $ticket_id ] );
-			$moved = true;
+
+			// The attendees are moved by a listener of that action, so they may still be here; the admin can move them from the attendee list.
+			return $result->with_error(
+				Parser::MOVE,
+				$ticket_id,
+				__( 'The ticket moved, but something that runs after a move failed, so its attendees may not have moved with it. Check the attendee list of this post.', 'event-tickets' ),
+				true
+			);
 		}
 
 		if ( ! $moved ) {
@@ -393,16 +459,19 @@ final class Commit {
 			return $result->with_error( Parser::DELETE, $ticket_id, $this->no_provider_message() );
 		}
 
+		$finished = true;
+
 		try {
 			$deleted = $provider->delete_ticket( $post_id, $ticket_id );
 		} catch ( \Throwable $e ) {
-			// A listener threw after the ticket was deleted: the delete happened.
+			// A listener threw after the ticket was deleted: the delete happened, not all of it.
 			if ( get_post( $ticket_id ) instanceof \WP_Post && 'trash' !== get_post_status( $ticket_id ) ) {
 				throw $e;
 			}
 
 			$this->log_failure( 'Deferred ticket save: a ticket was deleted, then a listener failed.', $e, [ 'ticket_id' => $ticket_id ] );
-			$deleted = true;
+			$deleted  = true;
+			$finished = false;
 		}
 
 		if ( ! $deleted ) {
@@ -423,9 +492,12 @@ final class Commit {
 		} catch ( \Throwable $e ) {
 			// The ticket is deleted: reporting it as not deleted would be untrue.
 			$this->log_failure( 'Deferred ticket save: a listener failed after a ticket was deleted.', $e, [ 'ticket_id' => $ticket_id ] );
+			$finished = false;
 		}
 
-		return $result;
+		return $finished
+			? $result
+			: $result->with_error( Parser::DELETE, $ticket_id, __( 'The ticket was deleted, but something that runs after a ticket is deleted failed.', 'event-tickets' ), true );
 	}
 
 	/**
@@ -437,15 +509,110 @@ final class Commit {
 	 * @param int                 $ticket_id The saved ticket.
 	 * @param array<string,mixed> $data      The data it was saved with.
 	 *
-	 * @return void
+	 * @return bool Whether every listener finished.
 	 */
-	private function fire_added( int $post_id, int $ticket_id, array $data ): void {
+	private function fire_added( int $post_id, int $ticket_id, array $data ): bool {
 		try {
 			/** This action is documented in src/Tribe/Metabox.php */
 			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
 		} catch ( \Throwable $e ) {
 			// The ticket is saved: reporting it as not saved would make the editor create it again.
 			$this->log_failure( 'Deferred ticket save: a listener failed after a ticket was saved.', $e, [ 'ticket_id' => $ticket_id ] );
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * The IDs of a provider's tickets on a post, read from where the provider records the relation.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets                         $provider   The provider.
+	 * @param int                             $post_id    The post.
+	 * @param array<int,array<string,string>> $meta_query More meta conditions the tickets must meet.
+	 *
+	 * @return int[] The ticket IDs.
+	 */
+	private function attached_ids( Tickets $provider, int $post_id, array $meta_query = [] ): array {
+		$ids = get_posts(
+			[
+				'post_type'      => $provider->ticket_object,
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'no_found_rows'  => true,
+				'meta_query'     => array_merge( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- The relation is only in meta.
+					[
+						[
+							'key'   => $provider->get_event_key(),
+							'value' => (string) $post_id,
+						],
+					],
+					$meta_query
+				),
+			]
+		);
+
+		return array_map( 'intval', $ids );
+	}
+
+	/**
+	 * The ticket on a post that a `create` entry with this key created, if any.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets $provider The provider the entry names.
+	 * @param int     $post_id  The post being saved.
+	 * @param string  $key      The entry's key.
+	 *
+	 * @return int The ticket ID, 0 when there is none.
+	 */
+	private function find_created( Tickets $provider, int $post_id, string $key ): int {
+		$ids = $this->attached_ids(
+			$provider,
+			$post_id,
+			[
+				[
+					'key'   => self::CREATE_KEY_META,
+					'value' => $key,
+				],
+			]
+		);
+
+		return $ids[0] ?? 0;
+	}
+
+	/**
+	 * Reads a `create` entry's key; anything that is not a short token of letters, digits and dashes is no key.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data The entry's data.
+	 *
+	 * @return string The key, empty when there is none.
+	 */
+	private function create_key( array $data ): string {
+		$key = $data[ self::CREATE_KEY ] ?? '';
+
+		return is_string( $key ) && preg_match( '/^[A-Za-z0-9-]{8,64}$/', $key ) ? $key : '';
+	}
+
+	/**
+	 * Keeps a `create` entry's key on the ticket it created.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id The created ticket.
+	 * @param string $key       The entry's key, empty when it carried none.
+	 *
+	 * @return void
+	 */
+	private function remember_key( int $ticket_id, string $key ): void {
+		if ( '' !== $key ) {
+			update_post_meta( $ticket_id, self::CREATE_KEY_META, $key );
 		}
 	}
 
@@ -560,6 +727,17 @@ final class Commit {
 	 */
 	private function no_provider_message(): string {
 		return __( 'The ticket provider is missing or not active.', 'event-tickets' );
+	}
+
+	/**
+	 * The message for a ticket saved before something that runs after the save failed.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The message.
+	 */
+	private function saved_listener_failed_message(): string {
+		return __( 'The ticket was saved, but something that runs after a ticket is saved failed.', 'event-tickets' );
 	}
 
 	/**
