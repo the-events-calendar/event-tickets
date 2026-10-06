@@ -37,15 +37,6 @@ final class Tickets extends Custom_Table_Repository {
 	 */
 	private const PAGE_SIZE = 200;
 
-	/**
-	 * The cache group of rows read by ID. Not persistent: a row is read once per request and never served stale
-	 * from another one.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const CACHE_GROUP = 'tec_tickets_recurring_rows';
 
 	/**
 	 * The columns a single date may change: EngDoc section 2, per-date overrides.
@@ -55,6 +46,18 @@ final class Tickets extends Custom_Table_Repository {
 	 * @var string[]
 	 */
 	private const OVERRIDABLE = [ 'name', 'description', 'price', 'capacity', 'start_date', 'end_date', 'start_date_utc', 'end_date_utc', 'status' ];
+
+	/**
+	 * The rows read in this request, by ID; null for an ID without a row.
+	 *
+	 * Held here, not in the object cache: a row is never served from another request, and clearing it never
+	 * depends on what the object cache supports. The repository is a singleton.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,Ticket|null>
+	 */
+	private array $found = [];
 
 	/**
 	 * Returns the model class.
@@ -102,7 +105,11 @@ final class Tickets extends Custom_Table_Repository {
 			$rows[ $index ] = array_replace( $columns, $defaults, $row );
 		}
 
-		return (int) Tickets_Table::insert_many( array_values( $rows ) );
+		$inserted = (int) Tickets_Table::insert_many( array_values( $rows ) );
+		// An ID read as missing may name one of these rows now.
+		$this->found = [];
+
+		return $inserted;
 	}
 
 	/**
@@ -115,10 +122,8 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return Ticket|null The row, or null when there is none, or no table.
 	 */
 	public function find( int $row_id ): ?Ticket {
-		$cached = wp_cache_get( $row_id, self::CACHE_GROUP );
-
-		if ( false !== $cached ) {
-			return $cached instanceof Ticket ? $cached : null;
+		if ( array_key_exists( $row_id, $this->found ) ) {
+			return $this->found[ $row_id ];
 		}
 
 		try {
@@ -128,11 +133,10 @@ final class Tickets extends Custom_Table_Repository {
 			$row = null;
 		}
 
-		$row = $row instanceof Ticket ? $row : null;
-		// A missing row is remembered too, as 0: deleted rows are read on every page that lists their attendees.
-		wp_cache_set( $row_id, $row ?? 0, self::CACHE_GROUP );
+		// A missing row is remembered too: deleted rows are read on every page that lists their attendees.
+		$this->found[ $row_id ] = $row instanceof Ticket ? $row : null;
 
-		return $row;
+		return $this->found[ $row_id ];
 	}
 
 	/**
@@ -145,7 +149,7 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function prime( Ticket $row ): void {
-		wp_cache_set( (int) $row->id, $row, self::CACHE_GROUP );
+		$this->found[ (int) $row->id ] = $row;
 	}
 
 	/**
@@ -158,7 +162,7 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return void
 	 */
 	public function forget( int $row_id ): void {
-		wp_cache_delete( $row_id, self::CACHE_GROUP );
+		unset( $this->found[ $row_id ] );
 		tribe( Ticket_Cache_Controller::class )->clean_ticket_cache( Ticket_ID::from_row_id( $row_id ) );
 	}
 
@@ -333,7 +337,7 @@ final class Tickets extends Custom_Table_Repository {
 
 		$deleted = (int) Tickets_Table::delete_many( [ $value ], $column );
 		// Which rows went is not known without another query: forget every row read in this request.
-		wp_cache_flush_group( self::CACHE_GROUP );
+		$this->found = [];
 
 		return $deleted;
 	}

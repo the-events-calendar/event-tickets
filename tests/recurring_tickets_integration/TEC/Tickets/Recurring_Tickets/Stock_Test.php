@@ -68,6 +68,30 @@ class Stock_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_refuse_to_sell_a_limited_row_without_stock(): void {
+		// Inconsistent data fails closed: only a capacity of -1 makes a row unlimited.
+		$row = $this->row( [ 'capacity' => 10, 'stock' => null, 'sales' => 0 ] );
+
+		$this->assertFalse( tribe( Stock::class )->sell( $row, 1 ) );
+
+		$this->assertSame( [ null, 0 ], $this->stock_and_sales( $row ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_an_unlimited_row_without_stock_when_tickets_return(): void {
+		$row = $this->row( [ 'capacity' => -1, 'stock' => 5, 'sales' => 4 ] );
+
+		tribe( Stock::class )->release( $row, 2 );
+		tribe( Stock::class )->add_stock( $row, 1 );
+
+		$this->assertSame( [ null, 2 ], $this->stock_and_sales( $row ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_return_tickets_without_going_past_capacity_or_below_zero_sales(): void {
 		$row = $this->row( [ 'capacity' => 10, 'stock' => 7, 'sales' => 3 ] );
 
