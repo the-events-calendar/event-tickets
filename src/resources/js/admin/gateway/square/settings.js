@@ -21,6 +21,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
  * @since 5.24.0
  *
  * @param {Document} document The document object.
+ * @param {Object}   obj      The Square namespace object.
  * @return {void}
  */
 ( ( document, obj ) => {
@@ -67,9 +68,9 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	 * @return {Object} The strings data object.
 	 */
 	const getStrings = () => {
-		const container = document.querySelector(selectors.container);
+		const container = document.querySelector( selectors.container );
 
-		if (!container) {
+		if ( ! container ) {
 			return {
 				...strings,
 				connectNonce: '',
@@ -100,11 +101,11 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		event.preventDefault();
 
 		const button = event.currentTarget;
-		const strings = getStrings();
+		const localStrings = getStrings();
 
 		// Show loading state
 		button.classList.add( 'loading' );
-		button.innerText = strings.connecting;
+		button.innerText = localStrings.connecting;
 
 		// Make AJAX request
 		fetch( ajaxurl, {
@@ -113,29 +114,29 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: new URLSearchParams({
+			body: new URLSearchParams( {
 				action: 'tec_tickets_commerce_square_connect',
 				_wpnonce: obj.localized.connectNonce,
-			}),
-		})
-		.then( response => response.json() )
-		.then( response => {
-			if ( response.success && response.data.url ) {
-				// Redirect to the Square authorization page
-				window.location.href = response.data.url;
-			} else {
+			} ),
+		} )
+			.then( ( response ) => response.json() )
+			.then( ( response ) => {
+				if ( response.success && response.data.url ) {
+					// Redirect to the Square authorization page
+					window.location.href = response.data.url;
+				} else {
+					// Show error message
+					alert( localStrings.connectError );
+					button.classList.remove( 'loading' );
+					button.innerText = localStrings.connect;
+				}
+			} )
+			.catch( () => {
 				// Show error message
-				alert( strings.connectError );
+				alert( localStrings.connectError );
 				button.classList.remove( 'loading' );
-				button.innerText = strings.connect;
-			}
-		})
-		.catch( () => {
-			// Show error message
-			alert( strings.connectError );
-			button.classList.remove( 'loading' );
-			button.innerText = strings.connect;
-		});
+				button.innerText = localStrings.connect;
+			} );
 	};
 
 	/**
@@ -150,11 +151,11 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 		event.preventDefault();
 
 		const button = event.currentTarget;
-		const strings = getStrings();
+		const localStrings = getStrings();
 
 		// Show loading state
 		button.classList.add( 'loading' );
-		button.innerText = strings.connecting;
+		button.innerText = localStrings.connecting;
 
 		// Get required scopes if available
 		const requiredScopes = button.dataset.requiredScopes || '';
@@ -166,30 +167,30 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: new URLSearchParams({
+			body: new URLSearchParams( {
 				action: 'tec_tickets_commerce_square_connect',
-				_wpnonce: strings.connectNonce,
+				_wpnonce: localStrings.connectNonce,
 				scopes: requiredScopes,
-			}),
-		})
-		.then( response => response.json() )
-		.then( response => {
-			if ( response.success && response.data.url ) {
-				// Redirect to the Square authorization page
-				window.location.href = response.data.url;
-			} else {
+			} ),
+		} )
+			.then( ( response ) => response.json() )
+			.then( ( response ) => {
+				if ( response.success && response.data.url ) {
+					// Redirect to the Square authorization page
+					window.location.href = response.data.url;
+				} else {
+					// Show error message
+					alert( localStrings.connectError );
+					button.classList.remove( 'loading' );
+					button.innerText = localStrings.reconnect;
+				}
+			} )
+			.catch( () => {
 				// Show error message
-				alert( strings.connectError );
+				alert( localStrings.connectError );
 				button.classList.remove( 'loading' );
-				button.innerText = strings.reconnect;
-			}
-		})
-		.catch( () => {
-			// Show error message
-			alert( strings.connectError );
-			button.classList.remove( 'loading' );
-			button.innerText = strings.reconnect;
-		});
+				button.innerText = localStrings.reconnect;
+			} );
 	};
 
 	/**
@@ -218,7 +219,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	 * @return {void}
 	 */
 	const processDisconnect = () => {
-		const strings = getStrings();
+		const localStrings = getStrings();
 		const disconnectButton = document.querySelector( selectors.disconnectButton );
 		const dialog = document.querySelector( selectors.disconnectDialog );
 
@@ -229,7 +230,7 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 
 		// Show loading state
 		disconnectButton.classList.add( 'loading' );
-		disconnectButton.innerText = strings.disconnecting;
+		disconnectButton.innerText = localStrings.disconnecting;
 		disconnectButton.disabled = true;
 
 		// Make AJAX request
@@ -239,31 +240,31 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: new URLSearchParams({
+			body: new URLSearchParams( {
 				action: 'tec_tickets_commerce_square_disconnect',
 				_wpnonce: disconnectButton.dataset.nonce,
-			}),
-		})
-		.then( response => response.json() )
-		.then( response => {
-			if ( response.success ) {
-				// Reload the page to show updated state
-				window.location.reload();
-			} else {
+			} ),
+		} )
+			.then( ( response ) => response.json() )
+			.then( ( response ) => {
+				if ( response.success ) {
+					// Reload the page to show updated state
+					window.location.reload();
+				} else {
+					// Show error message
+					alert( localStrings.disconnectError );
+					disconnectButton.classList.remove( 'loading' );
+					disconnectButton.innerText = localStrings.disconnect;
+					disconnectButton.disabled = false;
+				}
+			} )
+			.catch( () => {
 				// Show error message
-				alert( strings.disconnectError );
+				alert( localStrings.disconnectError );
 				disconnectButton.classList.remove( 'loading' );
-				disconnectButton.innerText = strings.disconnect;
+				disconnectButton.innerText = localStrings.disconnect;
 				disconnectButton.disabled = false;
-			}
-		})
-		.catch( () => {
-			// Show error message
-			alert( strings.disconnectError );
-			disconnectButton.classList.remove( 'loading' );
-			disconnectButton.innerText = strings.disconnect;
-			disconnectButton.disabled = false;
-		});
+			} );
 	};
 
 	/**
@@ -345,5 +346,4 @@ window.tec.tickets.commerce.square = window.tec.tickets.commerce.square || {};
 	} else {
 		document.addEventListener( 'DOMContentLoaded', init );
 	}
-
 } )( document, window.tec.tickets.commerce.square );

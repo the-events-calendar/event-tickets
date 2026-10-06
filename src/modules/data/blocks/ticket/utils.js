@@ -13,17 +13,17 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Get currency symbol by provider
  *
- * @param provider The tickets provider class
+ * @param {string} provider The tickets provider class
  */
 export const getProviderCurrency = ( provider ) => {
 	const tickets = ticketsConfig();
-	const providers = getTicketProviders();
 
 	// if we don't get the provider, return the default one
 	if ( '' === provider ) {
 		return tickets.default_currency;
 	}
 
+	const providers = getTicketProviders();
 	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency : tickets.default_currency;
 };
@@ -31,10 +31,9 @@ export const getProviderCurrency = ( provider ) => {
 /**
  * Get currency decimal point by provider
  *
- * @param provider The tickets provider class
+ * @param {string} provider The tickets provider class
  */
 export const getProviderCurrencyDecimalPoint = ( provider ) => {
-	const providers = getTicketProviders();
 	const defaultCurrencyDecimalPoint = '.';
 
 	// if we don't get the provider, return the default one
@@ -42,6 +41,7 @@ export const getProviderCurrencyDecimalPoint = ( provider ) => {
 		return defaultCurrencyDecimalPoint;
 	}
 
+	const providers = getTicketProviders();
 	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency_decimal_point : defaultCurrencyDecimalPoint;
 };
@@ -49,10 +49,9 @@ export const getProviderCurrencyDecimalPoint = ( provider ) => {
 /**
  * Get currency number of decimals by provider
  *
- * @param provider The tickets provider class
+ * @param {string} provider The tickets provider class
  */
 export const getProviderCurrencyNumberOfDecimals = ( provider ) => {
-	const providers = getTicketProviders();
 	const defaultCurrencyNumberOfDecimals = 2;
 
 	// if we don't get the provider, return the default one
@@ -60,6 +59,7 @@ export const getProviderCurrencyNumberOfDecimals = ( provider ) => {
 		return defaultCurrencyNumberOfDecimals;
 	}
 
+	const providers = getTicketProviders();
 	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency_number_of_decimals : defaultCurrencyNumberOfDecimals;
 };
@@ -67,10 +67,9 @@ export const getProviderCurrencyNumberOfDecimals = ( provider ) => {
 /**
  * Get currency thousands separator by provider
  *
- * @param provider The tickets provider class
+ * @param {string} provider The tickets provider class
  */
 export const getProviderCurrencyThousandsSep = ( provider ) => {
-	const providers = getTicketProviders();
 	const defaultCurrencyThousandsSep = ',';
 
 	// if we don't get the provider, return the default one
@@ -78,6 +77,7 @@ export const getProviderCurrencyThousandsSep = ( provider ) => {
 		return defaultCurrencyThousandsSep;
 	}
 
+	const providers = getTicketProviders();
 	const [ result ] = providers.filter( ( el ) => el.class === provider );
 	return result ? result.currency_thousands_sep : defaultCurrencyThousandsSep;
 };

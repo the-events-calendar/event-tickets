@@ -4,8 +4,8 @@ const TECInstallIcon = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			width={55}
-			height={55}
+			width={ 55 }
+			height={ 55 }
 			fill="none"
 			className="tec-tickets-onboarding__content-install-icon"
 			role="presentation"

@@ -16,7 +16,7 @@ const tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.9
 	 *
-	 * @param {obj} $button The dom object of the clicked button
+	 * @param {Object} $button The dom object of the clicked button
 	 */
 	my.tribe_rsvp_toggle_actions = function ( $button ) {
 		// Check if is the going or not going button
@@ -43,7 +43,7 @@ const tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.9
 	 *
-	 * @return void
+	 * @return {void}
 	 */
 	my.events.handle_rsvp_response = function () {
 		const $button = $( this );
@@ -87,7 +87,7 @@ const tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.9
 	 *
-	 * @param {event} e input event
+	 * @param {Event} e input event
 	 */
 	my.events.handle_quantity_change = function ( e ) {
 		e.preventDefault();
@@ -140,7 +140,7 @@ const tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.9
 	 *
-	 * @param {event} e input event
+	 * @param {Event} e input event
 	 */
 	my.events.handle_quantity_change_value = function ( e ) {
 		e.preventDefault();
@@ -169,7 +169,7 @@ const tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.10.4
 	 *
-	 * @param {event} e input event
+	 * @param {Event} e input event
 	 */
 	my.events.handle_input_focus = function ( e ) {
 		if ( ! my.state.submitActive ) {
@@ -182,11 +182,8 @@ const tribe_tickets_rsvp_block = {
 	 * Show the loader
 	 *
 	 * @since 4.9
-	 *
-	 * @param {obj} $ticket ticket object
 	 */
-	my.tribe_rsvp_loader_start = function ( $ticket ) {
-		// eslint-disable-line no-unused-vars
+	my.tribe_rsvp_loader_start = function () {
 		const loader_class = '.tribe-block__rsvp__loading';
 		const $loader = $( '.tribe-block__rsvp' ).find( loader_class );
 
@@ -197,11 +194,8 @@ const tribe_tickets_rsvp_block = {
 	 * Hide the loader
 	 *
 	 * @since 4.9
-	 *
-	 * @param {obj} $ticket ticket object
 	 */
-	my.tribe_rsvp_loader_end = function ( $ticket ) {
-		// eslint-disable-line no-unused-vars
+	my.tribe_rsvp_loader_end = function () {
 		const loader_class = '.tribe-block__rsvp__loading';
 		const $loader = $( '.tribe-block__rsvp' ).find( loader_class );
 
@@ -211,9 +205,9 @@ const tribe_tickets_rsvp_block = {
 	/**
 	 * Validates the RSVP form
 	 *
-	 * @param {obj} $form form object
+	 * @param {Object} $form form object
 	 *
-	 * @return {bool} is valid
+	 * @return {boolean} is valid
 	 */
 	my.validate_submission = function ( $form ) {
 		const $qty = $form.find( 'input.tribe-tickets-quantity' );
@@ -228,7 +222,7 @@ const tribe_tickets_rsvp_block = {
 	 *
 	 * @since 4.9
 	 *
-	 * @param {event} e submission event
+	 * @param {Event} e submission event
 	 */
 	my.events.handle_submission = function ( e ) {
 		e.preventDefault();
@@ -247,12 +241,16 @@ const tribe_tickets_rsvp_block = {
 
 		// Handle invalid form
 		if ( ! is_rsvp_valid || ! is_meta_valid ) {
-			is_rsvp_valid
-				? $form.find( '.tribe-block__rsvp__message__error' ).hide()
-				: $form.find( '.tribe-block__rsvp__message__error' ).show();
-			has_tickets_plus && is_meta_valid
-				? $form.find( '.tribe-event-tickets-meta-required-message' ).hide()
-				: $form.find( '.tribe-event-tickets-meta-required-message' ).show();
+			if ( is_rsvp_valid ) {
+				$form.find( '.tribe-block__rsvp__message__error' ).hide();
+			} else {
+				$form.find( '.tribe-block__rsvp__message__error' ).show();
+			}
+			if ( has_tickets_plus && is_meta_valid ) {
+				$form.find( '.tribe-event-tickets-meta-required-message' ).hide();
+			} else {
+				$form.find( '.tribe-event-tickets-meta-required-message' ).show();
+			}
 
 			$( 'html, body' ).animate(
 				{

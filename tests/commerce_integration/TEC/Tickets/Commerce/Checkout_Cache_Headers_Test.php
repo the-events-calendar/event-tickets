@@ -22,7 +22,7 @@ class Checkout_Cache_Headers_Test extends WPTestCase {
 	 * The checkout page must opt out of both caching layers, so neither a shared proxy nor a
 	 * WordPress page cache can hand one visitor's cart render to the next.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function test_checkout_page_opts_out_of_caching(): void {
 		// parse_request() only acts on the checkout page; force that gate open.
@@ -57,7 +57,7 @@ class Checkout_Cache_Headers_Test extends WPTestCase {
 	 * A page that is not the checkout must keep its default cacheability, so ordinary content is not
 	 * pushed out of the page cache.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function test_non_checkout_page_is_left_cacheable(): void {
 		$this->set_class_fn_return( Checkout::class, 'is_current_page', false );
@@ -71,7 +71,7 @@ class Checkout_Cache_Headers_Test extends WPTestCase {
 	/**
 	 * Runs a callback while watching for the no-cache headers being emitted.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 *
 	 * @param callable $callback The callback to run.
 	 *

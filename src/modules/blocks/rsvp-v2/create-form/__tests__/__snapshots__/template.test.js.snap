@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RSVPCreateForm should render Add RSVP title and form fields 1`] = `
+<div
+  className="tribe-editor__rsvp-v2-create-form"
+>
+  <h3
+    className="tribe-editor__rsvp-v2-create-form__title tribe-common-h3 tribe-common-h4--min-medium"
+  >
+    Add RSVP
+  </h3>
+  <div
+    data-testid="v2-capacity"
+  />
+  <div
+    data-testid="v2-duration"
+  />
+  <div
+    className="tribe-editor__rsvp-v2-attendee-registration-link"
+  >
+    <div
+      data-testid="attendee-link"
+    >
+      + Collect attendee information
+    </div>
+  </div>
+</div>
+`;

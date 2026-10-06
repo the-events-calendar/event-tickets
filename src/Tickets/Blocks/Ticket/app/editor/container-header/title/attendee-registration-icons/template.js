@@ -24,7 +24,8 @@ const AttendeeRegistrationIcons = ( {
 		return null;
 	}
 
-	const saleWindowText = sprintf( __( '%s - %s', 'event-tickets' ), fromDate, toDate );
+	/* translators: 1: sale window start date, 2: sale window end date. */
+	const saleWindowText = sprintf( __( '%s - %s', 'event-tickets' ), fromDate, toDate ); // eslint-disable-line @wordpress/valid-sprintf -- keep the released msgid
 
 	return (
 		<div className="tribe-editor__title__attendee-registration-icons">

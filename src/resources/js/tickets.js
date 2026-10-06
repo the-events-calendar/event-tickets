@@ -1,4 +1,4 @@
-/* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
+/* global tribe_event_tickets_plus,
  tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers */
 
 import { doAction } from '@wordpress/hooks';
@@ -20,15 +20,14 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	'use strict';
 
 	// base elements
-	const $document = $( document );
 	const $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 	const recurrence_row_selectors = '.recurrence-row';
 	const recurrence_add_row_selector = '.recurrence-row.tribe-datetime-block:not(.tribe-recurrence-exclusion-row)';
 	const recurrence_not_supported_row_selector = '.recurrence-row.tribe-recurrence-not-supported';
 	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
-	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
+	const ticket_button_selectors =
+		'#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle, #tec_tickets_rsvp_metabox';
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
-	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
 	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__recurring-unsupported-warning';
 	const ticket_provider_input_id = 'tec_tickets_ticket_provider';
@@ -54,7 +53,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	 * Replacement for jQuery $.isNumeric that was deprecated on version 5.7 of
 	 * WP.
 	 *
-	 * @param {string|int} number
+	 * @param {string|number} number The value to test.
 	 *
 	 * @return {boolean} If the passed variable is numeric.
 	 */
@@ -62,6 +61,8 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		return ! isNaN( parseFloat( number ) ) && isFinite( number );
 	};
 
+	const $document = $( document );
+	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	const $tickets_container = $( document.getElementById( 'event_tickets' ) );
 	const $post_id = $( document.getElementById( 'post_ID' ) );
 	const $publish = $( document.getElementById( 'publish' ) );
@@ -127,10 +128,11 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	 * ticketing provider. Defaults to RSVP if something fails
 	 *
 	 * @since 4.6
-	 * @param          force_rsvp
 	 * @since 5.19.1 Updated default provider handling.
-	 * @param {boolean} forceRsvp  Whether to force the default provider to RSVP.
-	 * @return void
+	 *
+	 * @param {boolean} force_rsvp Whether to force the default provider to RSVP.
+	 *
+	 * @return {void}
 	 */
 	function set_default_provider_radio( force_rsvp ) {
 		if ( 'undefined' === typeof force_rsvp ) {
@@ -166,7 +168,8 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	/**
 	 * If the user attempts to nav away without saving global stock setting
 	 * changes then try to bring this to their attention!
-	 * @param event
+	 *
+	 * @param {Event} event The beforeunload event.
 	 */
 	obj.beforeUnload = function ( event ) {
 		let returnValue = false;
@@ -235,11 +238,10 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 
 	/**
 	 * Switch from one panel to another
-	 * @param event  e      triggering event
-	 * @param object ($base_panel) $panel jQuery object containing the panel we
-	 *               want to switch to
-	 * @param panel
-	 * @return void
+	 *
+	 * @param {jQuery} panel jQuery object containing the panel we want to switch to.
+	 *
+	 * @return {void}
 	 */
 	obj.swapPanel = function ( panel ) {
 		// Reset the default provider again, if we're running this code after an update.
@@ -283,17 +285,17 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 
 	/**
 	 *
-	 * @param {string|null} data       The data to send to the server in URL-encoded format, or `null` if no data needs to be sent.
-	 * @param {string|null} swapTo     The panel to swap to after the request is done.
-	 * @param {string|null} ticketType The ticket type to fetch the panels for.
+	 * @param {string|null} data            The data to send to the server in URL-encoded format, or `null` if no data needs to be sent.
+	 * @param {string|null} swapTo          The panel to swap to after the request is done.
+	 * @param {string|null} panelTicketType The ticket type to fetch the panels for.
 	 */
-	obj.fetchPanels = function ( data, swapTo, ticketType ) {
-		ticketType = ticketType || 'default';
+	obj.fetchPanels = function ( data, swapTo, panelTicketType ) {
+		panelTicketType = panelTicketType || 'default';
 
 		if ( 'undefined' === typeof data || data === null ) {
-			data = { ticket_type: ticketType };
+			data = { ticket_type: panelTicketType };
 		} else {
-			data += '&ticket_type=' + ticketType;
+			data += '&ticket_type=' + panelTicketType;
 		}
 
 		const params = {
@@ -369,8 +371,8 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		 *
 		 * @since 5.27.0
 		 *
-		 * @param {Object} panels The panels object.
-		 * @param {string} swapTo The panel to swap to.
+		 * @param {Object} panels  The panels object.
+		 * @param {string} swapTo  The panel to swap to.
 		 * @param {jQuery} tickets The tickets jQuery object.
 		 */
 		doAction( 'tec.tickets.admin.panels.refreshed', { panels, swapTo, tickets: $tribe_tickets } );
@@ -382,13 +384,8 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		// date elements
-		const $event_pickers = $( document.getElementById( 'tribe-event-datepickers' ) );
 		const $ticket_start_date = $( document.getElementById( 'ticket_start_date' ) );
 		const $ticket_end_date = $( document.getElementById( 'ticket_end_date' ) );
-		const $ticket_start_time = $( document.getElementById( 'ticket_start_time' ) );
-		const $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
-		let startofweek = 0;
-		const ticketNameLabel = document.getElementById( 'ticket_name_label' );
 		const $ticket_sale_start_date = $( document.getElementById( 'ticket_sale_start_date' ) );
 		const $ticket_sale_end_date = $( document.getElementById( 'ticket_sale_end_date' ) );
 
@@ -411,10 +408,6 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		const datepicker_opts = window.tribe_datepicker_opts || {};
-
-		if ( $event_pickers.length ) {
-			startofweek = $event_pickers.data( 'startofweek' );
-		}
 
 		if ( 'undefined' !== typeof tribe_ticket_datepicker_format ) {
 			const indexDatepickerFormat = isNumeric( tribe_ticket_datepicker_format.datepicker_format_index )
@@ -604,7 +597,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	/**
 	 * When Hitting the Publish button we remove our beforeunload
 	 */
-	$publish.on( 'click', function ( event ) {
+	$publish.on( 'click', function () {
 		$( window ).off( 'beforeunload.tribe' );
 	} );
 
@@ -855,15 +848,15 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* Change global stock type if we've put a value in global_stock_cap */
-	$document.on( 'change', '.tribe-ticket-field-capacity', function ( e ) {
+	$document.on( 'change', '.tribe-ticket-field-capacity', function () {
 		const $this = $( this );
-		const $globalField = $this.parents( '.input_block' ).eq( 0 ).find( '.tribe-ticket-field-mode' );
 
 		// Bail if we have any value on Stock Cap
 		if ( ! $this.val() ) {
 			return;
 		}
 
+		const $globalField = $this.parents( '.input_block' ).eq( 0 ).find( '.tribe-ticket-field-mode' );
 		$globalField.val( 'capped' );
 	} );
 
@@ -936,7 +929,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	/**
 	 * Track changes to Capacity to avoid going over the max
 	 */
-	$document.on( 'change', '[name="tribe-ticket[capacity]"]', function ( event ) {
+	$document.on( 'change', '[name="tribe-ticket[capacity]"]', function () {
 		const $field = $( this );
 		const max = parseInt( $field.attr( 'max' ), 10 );
 		const value = parseInt( $field.val(), 10 );
@@ -950,7 +943,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		/**
 		 * Disable creating tickets/rsvps if recurrence rules are created.
 		 */
-		$document.on( 'tribe-recurrence-active', function ( event ) {
+		$document.on( 'tribe-recurrence-active', function () {
 			$( ticket_button_selectors ).hide();
 			$( tickets_panel_helper_text_selector ).hide();
 			$( tickets_panel_hidden_recurrence_warning ).show();
@@ -959,7 +952,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		/**
 		 * Enable creating tickets/rsvps if recurrence rules are removed.
 		 */
-		$document.on( 'tribe-recurrence-inactive', function ( event ) {
+		$document.on( 'tribe-recurrence-inactive', function () {
 			$( ticket_button_selectors ).show();
 			$( tickets_panel_helper_text_selector ).show();
 			$( tickets_panel_hidden_recurrence_warning ).hide();
@@ -968,7 +961,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		/**
 		 * Disable creating recurrence rules if tickets are created.
 		 */
-		$document.on( 'tribe-tickets-active', function ( event ) {
+		$document.on( 'tribe-tickets-active', function () {
 			$( recurrence_row_selectors ).hide();
 			$( recurrence_not_supported_row_selector ).css( 'visibility', 'visible' ).show();
 		} );
@@ -976,7 +969,7 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 		/**
 		 * Enable creating recurrence rules if tickets are removed.
 		 */
-		$document.on( 'tribe-tickets-inactive', function ( event ) {
+		$document.on( 'tribe-tickets-inactive', function () {
 			const hasRecurrenceRules = $( recurrence_rule_panel_selector ).find( '.tribe-recurrence-rule' ).length > 0;
 			if ( hasRecurrenceRules ) {
 				$( recurrence_row_selectors ).show();
@@ -1003,7 +996,10 @@ let ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	$document.on( 'verify.dependency', function () {
-		if ( $( tickets_panel_table_selector ).is( ':visible' ) ) {
+		if (
+			$( tickets_panel_table_selector ).is( ':visible' ) ||
+			$( document.getElementById( 'tec_tickets_rsvp_enable' ) ).is( ':checked' )
+		) {
 			$document.trigger( 'tribe-tickets-active' );
 		} else {
 			$document.trigger( 'tribe-tickets-inactive' );

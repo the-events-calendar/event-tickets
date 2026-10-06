@@ -289,7 +289,7 @@ class Uplink_Test extends Controller_Test_Case {
 	/**
 	 * Test customize_field_html method with seating service plugin and invalid license.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function test_customize_field_html_with_seating_service_invalid_license(): void {
 		/** @var Uplink $controller */
@@ -321,7 +321,7 @@ class Uplink_Test extends Controller_Test_Case {
 	/**
 	 * Test customize_field_html method with non-seating service plugin.
 	 *
-	 * @since TBD
+	 * @since 5.30.0
 	 */
 	public function test_customize_field_html_with_other_plugin(): void {
 		/** @var Uplink $controller */

@@ -13,7 +13,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Guards the shared capacity inventory calculation against the N+1 attendee fetch.
  *
- * @since TBD
+ * @since 5.30.0
  */
 class Shared_Capacity_Inventory_Performance_Test extends \Codeception\TestCase\WPTestCase {
 
