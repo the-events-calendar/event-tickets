@@ -4,6 +4,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Refunded;
@@ -128,6 +129,51 @@ class Stock_Flags_Test extends WPTestCase {
 
 		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ) );
 		$this->assertContains( $id, array_column( $logs, 'ticket_id' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_nothing_back_for_a_refused_sale_that_is_refunded(): void {
+		[ $id, $order ] = $this->create_refused_sale();
+
+		tribe( Order::class )->modify_status( $order->ID, Refunded::SLUG );
+
+		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ), 'The refused tickets were never taken from the row.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_nothing_back_when_an_attendee_of_a_refused_sale_is_deleted(): void {
+		[ $id, $order ] = $this->create_refused_sale();
+		$attendees      = tribe_attendees()->where( 'ticket', $id )->get_ids();
+		$this->assertNotEmpty( $attendees );
+
+		tribe( Attendee::class )->delete( $attendees[0] );
+
+		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ) );
+	}
+
+	/**
+	 * Creates an order whose sale the row refused: another buyer took a ticket after its stock check.
+	 *
+	 * @return array{0: int, 1: \WP_Post} The table ticket ID and the order.
+	 */
+	private function create_refused_sale(): array {
+		$id = $this->create_row( [ 'capacity' => 10, 'stock' => 2, 'sales' => 8 ] );
+		add_action(
+			'tec_tickets_commerce_order_status_flag_decrease_stock',
+			static function () use ( $id ) {
+				tribe( Stock::class )->sell( Ticket_ID::to_row_id( $id ), 1 );
+			},
+			9
+		);
+
+		$order = $this->create_row_order( [ $id => 2 ] );
+		$this->assertSame( [ 1, 9 ], $this->stock_and_sales( $id ) );
+
+		return [ $id, $order ];
 	}
 
 	/**
