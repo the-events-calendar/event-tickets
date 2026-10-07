@@ -908,6 +908,68 @@ class Order_Endpoint_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 * @see https://linear.app/nexcess/issue/SVUL-138
+	 */
+	public function it_should_not_create_an_order_for_a_paid_ticket(): void {
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 25, [ 'tribe-ticket' => [ 'capacity' => 10 ] ] );
+
+		$stock_before  = get_post_meta( $ticket_id, '_stock', true );
+		$orders_before = $this->tc_order_count();
+
+		$this->register_endpoint();
+
+		$request = new WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+		$request->set_param( 'ticket_id', $ticket_id );
+		$request->set_param( 'step', 'success' );
+		$request->set_param(
+			'tribe_tickets',
+			[
+				$ticket_id => [
+					'quantity'  => 1,
+					'attendees' => [
+						[
+							'email'        => 'attacker@example.test',
+							'full_name'    => 'Paid Attacker',
+							'order_status' => 'yes',
+							'optout'       => false,
+						],
+					],
+				],
+			]
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertSame(
+			$stock_before,
+			get_post_meta( $ticket_id, '_stock', true ),
+			'A paid ticket must not lose stock through the free RSVP order endpoint.'
+		);
+		$this->assertSame(
+			$orders_before,
+			$this->tc_order_count(),
+			'No order should be created when a paid ticket is sent to the RSVP order endpoint.'
+		);
+	}
+
+	private function tc_order_count(): int {
+		$query = new \WP_Query(
+			[
+				'post_type'      => 'tec_tc_order',
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'no_found_rows'  => false,
+			]
+		);
+
+		return (int) $query->found_posts;
+	}
+
+	/**
 	 * Here to implement the required abstract method, this method is a no-op since it will not be invoked.
 	 */
 	protected function avoid_query_commit_rollback_handler( string $query ): string {
