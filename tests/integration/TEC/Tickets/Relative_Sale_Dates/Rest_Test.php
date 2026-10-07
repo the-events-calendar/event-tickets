@@ -5,6 +5,7 @@ namespace TEC\Tickets\Relative_Sale_Dates;
 use DateTimeImmutable;
 use TEC\Common\REST\TEC\V1\Exceptions\InvalidRestArgumentException;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events\REST\TEC\V1\Endpoints\Event as Event_Endpoint;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket as Ticket_Endpoint;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -211,6 +212,57 @@ class Rest_Test extends Controller_Test_Case {
 
 		// An empty rule is the one the ticket save removes.
 		$this->assertSame( '', $params['ticket_params']['relative_sale_dates'] ?? 'missing' );
+	}
+
+	/**
+	 * Every TEC REST API endpoint runs the same request filter, and an event saves the keys it is sent as its meta.
+	 *
+	 * @test
+	 */
+	public function should_not_put_a_rule_sent_as_null_back_into_a_request_whose_schema_does_not_document_it(): void {
+		$event_id = $this->create_event( '2027-06-24 19:00:00' );
+
+		$request_data = tribe( Event_Endpoint::class )->update_schema()->filter_before_request(
+			[
+				'id'                  => $event_id,
+				'relative_sale_dates' => null,
+			]
+		);
+
+		$this->assertArrayNotHasKey( 'relative_sale_dates', $request_data );
+	}
+
+	/**
+	 * Only `null` removes the rule; an empty object is a rule without its start and end.
+	 *
+	 * @test
+	 */
+	public function should_reject_an_empty_rule_sent_to_the_tec_rest_api_and_keep_the_stored_one(): void {
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+		$ticket_id = $this->upsert_through_tec_rest_api(
+			[
+				'event'               => $event_id,
+				'title'               => 'TEC REST ticket',
+				'price'               => 10,
+				'relative_sale_dates' => $rule,
+			]
+		)->get_data()['id'];
+
+		try {
+			$this->upsert_through_tec_rest_api(
+				[
+					'id'                  => $ticket_id,
+					'relative_sale_dates' => [],
+				],
+				'update'
+			);
+			$this->fail( 'The empty rule should have been rejected.' );
+		} catch ( InvalidRestArgumentException $e ) {
+			$this->assertSame( 400, $e->to_wp_error()->get_error_data()['status'] );
+		}
+
+		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
 	}
 
 	/**

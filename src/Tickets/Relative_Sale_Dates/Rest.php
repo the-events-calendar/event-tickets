@@ -12,6 +12,8 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Common\REST\TEC\V1\Collections\PropertiesCollection;
+use TEC\Common\REST\TEC\V1\Contracts\OpenAPI_Schema;
+use TEC\Common\REST\TEC\V1\Parameter_Types\Definition_Parameter;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_REST_Request;
@@ -109,46 +111,27 @@ final class Rest {
 	/**
 	 * Keeps a rule sent as `null`, which the TEC REST API drops with every other `null` it is sent.
 	 *
+	 * Every TEC REST API endpoint runs this filter, so the rule is only put back for a request whose schema documents it:
+	 * an event, a venue or an organizer would save the key as post meta.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $filtered_data The request data the schema keeps.
 	 * @param array<string,mixed> $data          The request data as it was sent.
+	 * @param OpenAPI_Schema      $schema        The schema of the request.
 	 *
 	 * @return array<string,mixed> The kept data, with a rule sent as `null`.
 	 */
-	public function keep_a_rule_sent_as_null( array $filtered_data, array $data ): array {
-		if ( array_key_exists( Ticket_Save::DATA_KEY, $data ) && null === $data[ Ticket_Save::DATA_KEY ] ) {
+	public function keep_a_rule_sent_as_null( array $filtered_data, array $data, OpenAPI_Schema $schema ): array {
+		if (
+			array_key_exists( Ticket_Save::DATA_KEY, $data )
+			&& null === $data[ Ticket_Save::DATA_KEY ]
+			&& $this->documents_field( $schema, Ticket_Save::DATA_KEY )
+		) {
 			$filtered_data[ Ticket_Save::DATA_KEY ] = null;
 		}
 
 		return $filtered_data;
-	}
-
-	/**
-	 * Adds the stored rule to a TEC REST API update that leaves the rule out, so the update keeps it.
-	 *
-	 * The TEC REST API sends the rule it receives with the parameters `ticket_add()` saves; this fills in the stored rule
-	 * when the request had none.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $ticket_params The parameters `ticket_add()` saves the ticket with.
-	 * @param array<string,mixed> $params        The request parameters left for the ticket post.
-	 *
-	 * @return array<string,mixed> The ticket parameters, with the stored rule when the request sent none.
-	 */
-	public function keep_stored_rules_in_tec_rest_api_update( array $ticket_params, array $params ): array {
-		if ( array_key_exists( Ticket_Save::DATA_KEY, $ticket_params ) || empty( $params['id'] ) ) {
-			return $ticket_params;
-		}
-
-		$stored_rule = $this->get_stored_rule( absint( $params['id'] ) );
-
-		if ( $stored_rule ) {
-			$ticket_params[ Ticket_Save::DATA_KEY ] = $stored_rule;
-		}
-
-		return $ticket_params;
 	}
 
 	/**
@@ -164,6 +147,32 @@ final class Rest {
 		$entity[ Ticket_Save::DATA_KEY ] = empty( $entity['id'] ) ? null : $this->get_stored_rule( absint( $entity['id'] ) );
 
 		return $entity;
+	}
+
+	/**
+	 * Returns whether the request body of a schema documents a field, directly or through a definition.
+	 *
+	 * @since TBD
+	 *
+	 * @param OpenAPI_Schema $schema The schema of the request.
+	 * @param string         $field  The field name.
+	 *
+	 * @return bool Whether the request body documents the field.
+	 */
+	private function documents_field( OpenAPI_Schema $schema, string $field ): bool {
+		foreach ( $schema->get_request_body() ?? [] as $parameter ) {
+			$collections = $parameter instanceof Definition_Parameter ? $parameter->get_collections() : [ [ $parameter ] ];
+
+			foreach ( $collections as $collection ) {
+				foreach ( $collection as $property ) {
+					if ( $field === $property->get_name() ) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**

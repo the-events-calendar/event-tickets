@@ -101,7 +101,6 @@ class Controller_Test extends Controller_Test_Case {
 		yield 'rule added to the request body definition' => [ 'tec_rest_swagger_ticket_request_body_definition', Rest::class, 'add_rule_to_definition', 10 ];
 		yield 'rule added to the ticket definition' => [ 'tec_rest_swagger_ticket_definition', Rest::class, 'add_rule_to_definition', 10 ];
 		yield 'rule sent as null kept' => [ 'tec_rest_schema_filter', Rest::class, 'keep_a_rule_sent_as_null', 10 ];
-		yield 'stored rules kept in a TEC V1 update' => [ 'tec_tickets_rest_ticket_upsert_params', Rest::class, 'keep_stored_rules_in_tec_rest_api_update', 10 ];
 		yield 'rule added to the TEC V1 ticket' => [ 'tec_rest_v1_tec_tc_ticket_transform_entity', Rest::class, 'add_rule_to_tec_rest_api_ticket', 10 ];
 	}
 

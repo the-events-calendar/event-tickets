@@ -131,7 +131,7 @@ final class Rule_Parameter extends Parameter {
 		$properties[] = (
 			new Text(
 				'mode',
-				fn() => __( 'How the end is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' ),
+				fn() => __( 'How this end of the window is set: `default` (sales open at once, or close when the event starts), `relative` (before the event) or `specific` (the date sent with the ticket).', 'event-tickets' ),
 				null,
 				[ Rule::MODE_DEFAULT, Rule::MODE_RELATIVE, Rule::MODE_SPECIFIC ]
 			)
@@ -141,7 +141,7 @@ final class Rule_Parameter extends Parameter {
 				'value',
 				fn() => sprintf(
 					// translators: 1) the lowest number of units, 2) the highest number of units.
-					__( 'For a relative end, the number of units before the anchor, from %1$d to %2$d.', 'event-tickets' ),
+					__( 'For a relative boundary, the number of units before the anchor, from %1$d to %2$d.', 'event-tickets' ),
 					Boundary::MIN_VALUE,
 					Boundary::MAX_VALUE
 				),
@@ -155,7 +155,7 @@ final class Rule_Parameter extends Parameter {
 				'unit',
 				fn() => sprintf(
 					// translators: 1) a minute, 2) an hour, 3) a day and 4) a week, each in seconds.
-					__( 'For a relative end, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks).', 'event-tickets' ),
+					__( 'For a relative boundary, the unit in seconds: %1$d (minutes), %2$d (hours), %3$d (days) or %4$d (weeks).', 'event-tickets' ),
 					MINUTE_IN_SECONDS,
 					HOUR_IN_SECONDS,
 					DAY_IN_SECONDS,
@@ -166,7 +166,7 @@ final class Rule_Parameter extends Parameter {
 		$properties[] = (
 			new Text(
 				'anchor',
-				fn() => __( 'For a relative end, the event date it is counted from.', 'event-tickets' ),
+				fn() => __( 'For a relative boundary, the event date it is counted from.', 'event-tickets' ),
 				null,
 				[ Rule::ANCHOR_START, Rule::ANCHOR_END ]
 			)
