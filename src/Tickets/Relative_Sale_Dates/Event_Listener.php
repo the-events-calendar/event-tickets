@@ -16,8 +16,9 @@ use TEC\Tickets\Ticket_Actions;
 /**
  * Keeps the dates of the tickets that have a rule in step with their event.
  *
- * An event save writes its start, end and timezone one meta at a time, so the event is only marked here and its
- * tickets are resolved once, when the save is done.
+ * The Events Calendar saves an event's occurrences once per save, after the save has written every date meta, so the
+ * tickets are resolved then, once. With its custom tables turned off nothing saves occurrences, and the tickets keep
+ * their dates until they are saved again, as Series Passes do.
  *
  * @since TBD
  *
@@ -52,15 +53,6 @@ final class Event_Listener {
 	private Ticket_Actions $ticket_actions;
 
 	/**
-	 * The events whose dates changed in this request and whose tickets are not resolved yet, as keys.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<int,true>
-	 */
-	private array $moved_event_ids = [];
-
-	/**
 	 * Event_Listener constructor.
 	 *
 	 * @since TBD
@@ -76,48 +68,39 @@ final class Event_Listener {
 	}
 
 	/**
-	 * Marks an event whose start, end or timezone was written.
+	 * Rewrites the resolved dates of an event's ruled tickets and reschedules their sales actions, once the event's
+	 * occurrences are saved.
+	 *
+	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $meta_id  The meta ID.
-	 * @param int    $post_id  The post ID.
-	 * @param string $meta_key The meta key.
+	 * @param int $post_id The event post ID.
 	 *
 	 * @return void
 	 */
-	public function mark_moved_event( int $meta_id, int $post_id, string $meta_key ): void {
-		if ( in_array( $meta_key, Sale_Window::EVENT_DATE_META_KEYS, true ) && 'tribe_events' === get_post_type( $post_id ) ) {
-			$this->moved_event_ids[ $post_id ] = true;
-		}
-	}
+	public function update_ticket_dates( int $post_id ): void {
+		$ticket_ids = $this->rule_store->get_ticket_ids_for_event( $post_id );
+		// The query returns IDs only, which leaves the meta of each ticket to a query of its own.
+		update_meta_cache( 'post', $ticket_ids );
 
-	/**
-	 * Rewrites the dates of the ruled tickets of an event, and reschedules their sales actions, once its save, meta
-	 * included, is done.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The saved post ID.
-	 *
-	 * @return void
-	 */
-	public function update_saved_event_tickets( int $post_id ): void {
-		if ( isset( $this->moved_event_ids[ $post_id ] ) ) {
-			$this->update_ticket_dates( $post_id );
-		}
-	}
+		foreach ( $ticket_ids as $ticket_id ) {
+			$rule = $this->get_stored_rule( $ticket_id );
 
-	/**
-	 * Rewrites the dates of the ruled tickets of the events whose dates changed outside a post save.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function update_moved_event_tickets(): void {
-		foreach ( array_keys( $this->moved_event_ids ) as $post_id ) {
-			$this->update_ticket_dates( $post_id );
+			if ( ! $rule ) {
+				continue;
+			}
+
+			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
+
+			/*
+			 * A move can push a relative boundary past a specific one. The inverted window is kept, so the ticket is
+			 * off sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind.
+			 * Every pending action goes, not only the next one: overlapping saves can leave two.
+			 */
+			as_unschedule_all_actions( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
+			as_unschedule_all_actions( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
+			$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
 		}
 	}
 
@@ -182,40 +165,6 @@ final class Event_Listener {
 		// Only when a duplicate got rules, as before: the event's other ruled tickets are already resolved.
 		if ( array_intersect( $duplicate_ids, $this->rule_store->get_ticket_ids_for_event( $new_post_id ) ) ) {
 			$this->update_ticket_dates( $new_post_id );
-		}
-	}
-
-	/**
-	 * Rewrites the resolved dates of an event's ruled tickets and reschedules their sales actions.
-	 *
-	 * A window the move inverts keeps no sales action: the ticket is off sale until its dates are fixed.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The event post ID.
-	 *
-	 * @return void
-	 */
-	private function update_ticket_dates( int $post_id ): void {
-		unset( $this->moved_event_ids[ $post_id ] );
-
-		foreach ( $this->rule_store->get_ticket_ids_for_event( $post_id ) as $ticket_id ) {
-			$rule = $this->get_stored_rule( $ticket_id );
-
-			if ( ! $rule ) {
-				continue;
-			}
-
-			$this->ticket_dates->write( $ticket_id, $post_id, $rule );
-
-			/*
-			 * A move can push a relative boundary past a specific one. The inverted window is kept, so the ticket is
-			 * off sale, but Ticket_Actions skips it before unscheduling, which would leave the old sales actions behind.
-			 * Every pending action goes, not only the next one: overlapping saves can leave two.
-			 */
-			as_unschedule_all_actions( Ticket_Actions::TICKET_START_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
-			as_unschedule_all_actions( Ticket_Actions::TICKET_END_SALES_HOOK, [ $ticket_id ], Ticket_Actions::AS_TICKET_ACTIONS_GROUP );
-			$this->ticket_actions->sync_ticket_dates_actions( $ticket_id );
 		}
 	}
 

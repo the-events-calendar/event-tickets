@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Tickets\Commerce\Ticket;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 /**
@@ -84,24 +83,12 @@ final class Rule_Store {
 	public function get_ticket_ids_for_event( int $event_id ): array {
 		return array_map(
 			'absint',
-			get_posts(
-				[
-					'post_type'      => Ticket::POSTTYPE,
-					'post_status'    => 'any',
-					'fields'         => 'ids',
-					'posts_per_page' => -1,
-					'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Tickets are only related to their event through meta.
-						[
-							'key'   => Ticket::$event_relation_meta_key,
-							'value' => $event_id,
-						],
-						[
-							'key'     => self::META_KEY,
-							'compare' => 'EXISTS',
-						],
-					],
-				]
-			)
+			tec_tc_tickets()
+				->where( 'event', $event_id )
+				->where( 'meta_exists', self::META_KEY )
+				->where( 'post_status', 'any' )
+				->per_page( -1 )
+				->get_ids()
 		);
 	}
 
@@ -139,6 +126,43 @@ final class Rule_Store {
 		$this->write( $ticket_id, array_diff_key( $stored, array_flip( $keys ) ) );
 
 		return true;
+	}
+
+	/**
+	 * Saves the sales window rule, and keeps an end the rule now leaves to the ticket where it is.
+	 *
+	 * A relative or default end had its date written by the rule, so it carries no manual-update flag, and switching it
+	 * to a specific end on the same date writes no new end date that would add one. Without the flag, the next event
+	 * move would give that end the event start.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id The ticket post ID.
+	 * @param Rule $rule      The sales window rule.
+	 *
+	 * @return void
+	 */
+	public function save_sales_window( int $ticket_id, Rule $rule ): void {
+		$previous = Rule::from_stored( $this->get( $ticket_id ) );
+
+		$this->save(
+			$ticket_id,
+			[
+				'start' => $rule->get_start(),
+				'end'   => $rule->get_end(),
+			]
+		);
+
+		if (
+			! $previous
+			|| Rule::MODE_SPECIFIC === $previous->get_end()->get_mode()
+			|| Rule::MODE_SPECIFIC !== $rule->get_end()->get_mode()
+			|| $this->tickets_handler->has_manual_update( $ticket_id, $this->tickets_handler->key_end_date )
+		) {
+			return;
+		}
+
+		add_post_meta( $ticket_id, $this->tickets_handler->key_manual_updated, $this->tickets_handler->key_end_date );
 	}
 
 	/**

@@ -2,8 +2,9 @@
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
-use TEC\Tickets\Commerce\Ticket;
 use Codeception\TestCase\WPTestCase;
+use Generator;
+use TEC\Tickets\Commerce\Ticket;
 
 class Rule_Store_Test extends WPTestCase {
 	/**
@@ -125,6 +126,57 @@ class Rule_Store_Test extends WPTestCase {
 	}
 
 	/**
+	 * @return Generator<string,array{0: array{mode: string, value?: int, unit?: int, anchor?: string}|null, 1: array{mode: string, value?: int, unit?: int, anchor?: string}, 2: bool}>
+	 */
+	public function sales_window_end_switch_provider(): Generator {
+		$relative = [
+			'mode'   => 'relative',
+			'value'  => 1,
+			'unit'   => DAY_IN_SECONDS,
+			'anchor' => 'start',
+		];
+
+		yield 'relative end switched to specific' => [ $relative, [ 'mode' => 'specific' ], true ];
+		yield 'default end switched to specific' => [ [ 'mode' => 'default' ], [ 'mode' => 'specific' ], true ];
+		// The legacy save flags an end the admin types on a new ticket, when it is not the event start.
+		yield 'first rule with a specific end' => [ null, [ 'mode' => 'specific' ], false ];
+		yield 'specific end kept' => [ [ 'mode' => 'specific' ], [ 'mode' => 'specific' ], false ];
+		yield 'specific end switched to relative' => [ [ 'mode' => 'specific' ], $relative, false ];
+	}
+
+	/**
+	 * @test
+	 * @dataProvider sales_window_end_switch_provider
+	 */
+	public function should_flag_an_end_switched_to_specific_as_set_by_hand( ?array $previous_end, array $end, bool $flagged ): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		$start           = [ 'mode' => 'default' ];
+		if ( $previous_end ) {
+			tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $start, 'end' => $previous_end ] );
+		}
+
+		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => $start, 'end' => $end ] ) );
+
+		$this->assertSame( [ 'start' => $start, 'end' => $end ], tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertSame( $flagged, $tickets_handler->has_manual_update( $ticket_id, $tickets_handler->key_end_date ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_flag_an_end_already_set_by_hand_twice(): void {
+		$ticket_id       = static::factory()->post->create();
+		$tickets_handler = tribe( 'tickets.handler' );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'default' ] ] );
+		add_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+
+		tribe( Rule_Store::class )->save_sales_window( $ticket_id, Rule::from_array( [ 'start' => [ 'mode' => 'default' ], 'end' => [ 'mode' => 'specific' ] ] ) );
+
+		$this->assertSame( [ $tickets_handler->key_end_date ], get_post_meta( $ticket_id, $tickets_handler->key_manual_updated ) );
+	}
+
+	/**
 	 * @test
 	 */
 	public function should_get_the_tickets_of_an_event_that_have_stored_rules(): void {
@@ -132,12 +184,23 @@ class Rule_Store_Test extends WPTestCase {
 		$ruled_ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
 		$plain_ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
 		$other_ticket_id = static::factory()->post->create( [ 'post_type' => Ticket::POSTTYPE ] );
+		$draft_ticket_id = static::factory()->post->create(
+			[
+				'post_type'   => Ticket::POSTTYPE,
+				'post_status' => 'draft',
+			]
+		);
 		update_post_meta( $ruled_ticket_id, Ticket::$event_relation_meta_key, $event_id );
 		update_post_meta( $plain_ticket_id, Ticket::$event_relation_meta_key, $event_id );
+		update_post_meta( $draft_ticket_id, Ticket::$event_relation_meta_key, $event_id );
 		update_post_meta( $other_ticket_id, Ticket::$event_relation_meta_key, static::factory()->post->create() );
 		tribe( Rule_Store::class )->save( $ruled_ticket_id, [ 'start' => [ 'mode' => 'default' ] ] );
+		tribe( Rule_Store::class )->save( $draft_ticket_id, [ 'start' => [ 'mode' => 'default' ] ] );
 		tribe( Rule_Store::class )->save( $other_ticket_id, [ 'start' => [ 'mode' => 'default' ] ] );
 
-		$this->assertSame( [ $ruled_ticket_id ], tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id ) );
+		$ticket_ids = tribe( Rule_Store::class )->get_ticket_ids_for_event( $event_id );
+
+		sort( $ticket_ids );
+		$this->assertSame( [ $ruled_ticket_id, $draft_ticket_id ], $ticket_ids );
 	}
 }
