@@ -61,6 +61,7 @@ class Date_Tickets_Test extends WPTestCase {
 		[ $event, $dates, $templates ] = $this->create_event_with_templates();
 		$this->insert_ticket_row( [ 'parent_id' => $templates[0], 'post_id' => $event, 'occurrence_id' => $dates[0]->occurrence_id ] );
 		set_current_screen( 'edit-post' );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		$ids = array_column( tribe( Module::class )->get_tickets( $event ), 'ID' );
 

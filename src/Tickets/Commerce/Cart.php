@@ -10,6 +10,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use Tribe__Tickets_Plus__Meta__Storage as Meta_Storage;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 
 /**
  * Class Cart
@@ -701,6 +702,7 @@ class Cart {
 	 * Map the ticket data to a more usable format.
 	 *
 	 * @since 5.21.0
+	 * @since TBD Refuses the template of a recurring event ticket.
 	 *
 	 * @param array $ticket_data  Array of raw ticket data.
 	 * @param array $tickets_meta Array of ticket meta data.
@@ -734,6 +736,11 @@ class Cart {
 				// Normalize and validate the ticket ID.
 				$ticket['ticket_id'] = (int) $ticket['ticket_id'];
 				if ( true !== $handler->is_ticket_readable( $ticket['ticket_id'] ) ) {
+					return false;
+				}
+
+				// A recurring event ticket's template is never sold: each date sells its own.
+				if ( tribe( Template_Guard::class )->is_template( $ticket['ticket_id'] ) ) {
 					return false;
 				}
 
