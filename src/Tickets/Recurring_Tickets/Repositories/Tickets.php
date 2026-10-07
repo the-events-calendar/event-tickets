@@ -60,6 +60,15 @@ final class Tickets extends Custom_Table_Repository {
 	private array $found = [];
 
 	/**
+	 * The IDs of each date's rows read in this request, by occurrence ID; the rows themselves are in `$found`.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<int,int[]>
+	 */
+	private array $occurrence_rows = [];
+
+	/**
 	 * Returns the model class.
 	 *
 	 * @since TBD
@@ -106,8 +115,8 @@ final class Tickets extends Custom_Table_Repository {
 		}
 
 		$inserted = (int) Tickets_Table::insert_many( array_values( $rows ) );
-		// An ID read as missing may name one of these rows now.
-		$this->found = [];
+		// An ID read as missing may name one of these rows now, and a date may have more rows.
+		$this->forget_all();
 
 		return $inserted;
 	}
@@ -176,7 +185,14 @@ final class Tickets extends Custom_Table_Repository {
 	 * @return Ticket[] The rows, ordered by menu order, then ID.
 	 */
 	public function get_by_occurrence( int $occurrence_id ): array {
-		$rows = $this->get_by( 'occurrence_id', $occurrence_id );
+		// One query per date and request: the rows come back through find(), which a write makes read again.
+		if ( ! isset( $this->occurrence_rows[ $occurrence_id ] ) ) {
+			$read = $this->get_by( 'occurrence_id', $occurrence_id );
+			array_map( [ $this, 'prime' ], $read );
+			$this->occurrence_rows[ $occurrence_id ] = array_map( static fn( Ticket $row ) => (int) $row->id, $read );
+		}
+
+		$rows = array_values( array_filter( array_map( [ $this, 'find' ], $this->occurrence_rows[ $occurrence_id ] ) ) );
 
 		usort( $rows, static fn( Ticket $a, Ticket $b ) => [ $a->menu_order, $a->id ] <=> [ $b->menu_order, $b->id ] );
 
@@ -292,6 +308,18 @@ final class Tickets extends Custom_Table_Repository {
 	}
 
 	/**
+	 * Forgets every row and date read in this request.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function forget_all(): void {
+		$this->found           = [];
+		$this->occurrence_rows = [];
+	}
+
+	/**
 	 * Returns the rows whose column holds a value, paging by ID so every page is stable.
 	 *
 	 * @since TBD
@@ -337,7 +365,7 @@ final class Tickets extends Custom_Table_Repository {
 
 		$deleted = (int) Tickets_Table::delete_many( [ $value ], $column );
 		// Which rows went is not known without another query: forget every row read in this request.
-		$this->found = [];
+		$this->forget_all();
 
 		return $deleted;
 	}
