@@ -89,6 +89,48 @@ class Ticket_Type_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_leave_an_existing_standard_ticket_standard_when_it_is_saved_again(): void {
+		$event    = $this->create_recurring_event();
+		$standard = $this->create_tc_ticket( $event, 10 );
+		// A standard ticket made before the event recurred.
+		update_post_meta( $standard, '_type', 'default' );
+
+		tribe( Module::class )->ticket_add(
+			$event,
+			[
+				'ticket_id'    => $standard,
+				'ticket_name'  => 'Renamed',
+				'ticket_price' => 10,
+				'ticket_type'  => 'default',
+			]
+		);
+
+		$this->assertSame( 'default', get_post_meta( $standard, '_type', true ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_give_a_template_its_own_capacity_instead_of_a_shared_one(): void {
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket(
+			$event,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+					'event_capacity' => 100,
+					'capacity'       => 100,
+				],
+			]
+		);
+
+		$this->assertSame( \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE, get_post_meta( $template, \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true ), 'Each date sells its own capacity.' );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_leave_a_ticket_on_a_single_event_default(): void {
 		$event = tribe_events()->set_args(
 			[
