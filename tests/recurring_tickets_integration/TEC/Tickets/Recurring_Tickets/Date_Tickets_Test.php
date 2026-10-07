@@ -136,6 +136,11 @@ class Date_Tickets_Test extends WPTestCase {
 		}
 		$this->default_ticket = $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Default ticket' ] );
 
+		// Tickets are listed by menu order alone: give each its own, so tickets created in the same second keep an order.
+		foreach ( array_merge( $templates, [ $this->default_ticket ] ) as $menu_order => $ticket ) {
+			wp_update_post( [ 'ID' => $ticket, 'menu_order' => $menu_order ] );
+		}
+
 		return [ $event, $this->get_dates( $event ), $templates ];
 	}
 }
