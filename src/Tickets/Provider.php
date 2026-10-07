@@ -113,6 +113,9 @@ class Provider extends Service_Provider {
 		// Migrations.
 		$this->container->register( Migrations_Controller::class );
 
+		// Recurring Event Tickets, Core tier.
+		$this->container->register( Recurring_Tickets\Core_Controller::class );
+
 		$this->has_registered = true;
 
 		return true;
