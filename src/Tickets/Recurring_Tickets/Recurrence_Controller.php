@@ -92,7 +92,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ), 10, 2 );
 		// Before anything else reads the type of the ticket just saved.
-		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 2 );
+		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 5 );
 	}
 
 	/**
