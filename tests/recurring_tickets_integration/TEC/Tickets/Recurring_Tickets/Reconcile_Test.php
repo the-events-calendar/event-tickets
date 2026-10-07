@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Events\Custom_Tables\V1\Updates\Controller as Updates_Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Event_Factory;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
@@ -53,6 +54,7 @@ class Reconcile_Test extends WPTestCase {
 		$before    = $this->rows_by_day( $template );
 		$sold      = $before[ $this->day_after( 1 ) ];
 		$order     = $this->create_row_order( [ Ticket_ID::from_row_id( (int) $sold->id ) => 2 ] );
+		$pending   = $this->create_row_order( [ Ticket_ID::from_row_id( (int) $sold->id ) => 1 ], Pending::SLUG );
 		$attendees = $this->attendees_of( $order->ID );
 		$this->assertCount( 2, $attendees );
 
@@ -65,12 +67,16 @@ class Reconcile_Test extends WPTestCase {
 			$this->assertNotSame( (int) $before[ $day ]->occurrence_id, (int) $row->occurrence_id, "The row of {$day} points to the new date." );
 			$this->assertStringContainsString( '11:00:00', $this->datetime( $row->occurrence_start ) );
 		}
-		$this->assertSame( 2, (int) $after[ $this->day_after( 1 ) ]->sales );
+		// Two completed and one pending.
+		$this->assertSame( 3, (int) $after[ $this->day_after( 1 ) ]->sales );
 
 		$new_date = (int) tribe( \TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator::class )->provide_id( (int) $after[ $this->day_after( 1 ) ]->occurrence_id );
 		foreach ( $attendees as $attendee ) {
 			$this->assertSame( (string) $new_date, get_post_meta( $attendee, '_tec_tickets_commerce_event', true ) );
 			$this->assertSame( $this->datetime( $after[ $this->day_after( 1 ) ]->occurrence_start ), get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ) );
+		}
+		foreach ( [ $order->ID, $pending->ID ] as $order_id ) {
+			$this->assertSame( [ (string) $new_date ], get_post_meta( $order_id, '_tec_tc_order_events_in_order' ), 'An order, pending or not, follows its date.' );
 		}
 	}
 
@@ -87,7 +93,7 @@ class Reconcile_Test extends WPTestCase {
 		add_filter(
 			'update_post_metadata',
 			static function ( $check, $object_id, $meta_key ) use ( &$touched ) {
-				if ( '_tec_tickets_commerce_event' === $meta_key ) {
+				if ( in_array( $meta_key, [ '_tec_tickets_commerce_event', '_tec_tc_order_events_in_order' ], true ) ) {
 					$touched[] = (int) $object_id;
 				}
 
@@ -100,6 +106,7 @@ class Reconcile_Test extends WPTestCase {
 		$this->change_for_all_events( $event, $this->daily( '11:00:00' ) );
 
 		$this->assertNotContains( $bystander, $touched );
+		$this->assertNotContains( $order->ID, $touched );
 	}
 
 	/**
