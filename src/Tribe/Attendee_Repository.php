@@ -1682,7 +1682,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		 * Filter the post IDs to be used when fetching Attendees not related to a post.
 		 *
 		 * @since 5.8.0
-	 * @since TBD Matches the Attendees of recurring event tickets too.
 		 *
 		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
 		 *
@@ -1756,6 +1755,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters the Attendees by keeping only the ones for Tickets of a specific type.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Matches the Attendees of recurring event tickets too.
 	 *
 	 * @param string|string[] $ticket_type The type of Ticket to keep Attendees for.
 	 *
@@ -1769,6 +1769,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters the Attendees by keeping only the ones for Tickets that are not of a specific type.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Matches the Attendees of recurring event tickets too.
 	 *
 	 * @param string|string[] $ticket_type The type of Ticket to exclude Attendees for.
 	 *
