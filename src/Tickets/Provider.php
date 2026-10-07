@@ -115,6 +115,11 @@ class Provider extends Service_Provider {
 
 		// Recurring Event Tickets, Core tier.
 		$this->container->register( Recurring_Tickets\Core_Controller::class );
+		// Recurring Event Tickets, Recurrence tier: it needs ECP's custom tables.
+		$this->container->register_on_action(
+			'tec_events_pro_custom_tables_v1_fully_activated',
+			Recurring_Tickets\Recurrence_Controller::class
+		);
 
 		$this->has_registered = true;
 
