@@ -64,6 +64,18 @@ class Classic_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_not_offer_it_on_a_seated_event(): void {
+		$event = $this->create_recurring_event();
+		update_post_meta( $event, '_tec_slr_layout', 'some-layout' );
+
+		$this->assertStringNotContainsString( 'recurring_ticket_form_toggle', $this->new_ticket_buttons( $event ) );
+		$this->assertFalse( tribe( Classic::class )->offers_recurring_tickets( $event ) );
+		$this->assertTrue( tribe( Classic::class )->offers_recurring_tickets( $this->create_recurring_event() ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_not_offer_it_on_a_post_that_is_not_an_event(): void {
 		$this->assertStringNotContainsString( 'recurring_ticket_form_toggle', $this->new_ticket_buttons( static::factory()->post->create() ) );
 	}

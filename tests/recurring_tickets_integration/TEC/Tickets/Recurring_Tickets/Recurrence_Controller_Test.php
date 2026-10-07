@@ -69,6 +69,20 @@ class Recurrence_Controller_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function it_should_be_off_when_the_rows_table_could_not_be_created(): void {
+		$table_ready = tribe()->getVar( Core_Controller::TABLE_READY );
+		tribe()->setVar( Core_Controller::TABLE_READY, false );
+
+		try {
+			$this->assertFalse( $this->make_controller()->is_active() );
+		} finally {
+			tribe()->setVar( Core_Controller::TABLE_READY, $table_ready );
+		}
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_keep_the_core_tier_on_when_it_is_off(): void {
 		putenv( Recurrence_Controller::DISABLED . '=1' );
 

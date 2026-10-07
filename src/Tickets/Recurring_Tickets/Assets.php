@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Recurring_Tickets;
 
+use TEC\Tickets\Recurring_Tickets\Editor\Classic;
 use Tribe__Events__Main as TEC;
 
 /**
@@ -56,14 +57,17 @@ final class Assets {
 	}
 
 	/**
-	 * Whether the current screen edits an event in the block editor.
+	 * Whether the current screen edits, in the block editor, an event recurring event tickets are offered on.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the block editor is editing an event.
 	 */
 	public function is_editing_an_event_in_the_block_editor(): bool {
-		return tribe_context()->is_editing_post( TEC::POSTTYPE ) && tribe( 'editor' )->should_load_blocks();
+		return tribe_context()->is_editing_post( TEC::POSTTYPE )
+			&& tribe( 'editor' )->should_load_blocks()
+			// A seated event keeps the block's own rule for recurring events.
+			&& tribe( Classic::class )->offers_recurring_tickets( (int) get_the_ID() );
 	}
 
 	/**
