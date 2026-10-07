@@ -58,14 +58,14 @@ final class Recurrence_Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Whether the tier can run: the kill switch is not set and ECP fires the hooks it needs.
+	 * Whether the tier can run: the kill switch is not set, ECP fires the hooks it needs, and the rows table exists.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the tier can run.
 	 */
 	public function is_active(): bool {
-		return ! self::is_disabled() && self::ecp_has_hooks();
+		return ! self::is_disabled() && self::ecp_has_hooks() && (bool) $this->container->getVar( Core_Controller::TABLE_READY );
 	}
 
 	/**
@@ -95,7 +95,7 @@ final class Recurrence_Controller extends Controller_Contract {
 
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ), 10, 2 );
 		// Before anything else reads the type of the ticket just saved.
-		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 2 );
+		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 5 );
 
 		$this->container->singleton( Sync::class );
 
