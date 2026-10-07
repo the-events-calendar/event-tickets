@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Events__Main as TEC;
 
@@ -84,18 +85,23 @@ final class Ticket_Type {
 	}
 
 	/**
-	 * Sets the `recurring` type on a Tickets Commerce ticket just saved on a recurring event, or saved as a template.
+	 * Sets the `recurring` type on a Tickets Commerce ticket just created on a recurring event, or saved as a template.
 	 *
-	 * A ticket saved with another type than `default` keeps it, and so does one on an event with a seating layout.
+	 * A ticket saved with another type than `default` keeps it, and so does a standard ticket saved again: one made
+	 * before its event recurred stays a standard ticket. A ticket on an event with a seating layout stays a seated
+	 * ticket. A template's capacity is its own, for each date.
 	 *
 	 * @since TBD
 	 *
-	 * @param int           $post_id The ticket's post.
-	 * @param Ticket_Object $ticket  The ticket just saved.
+	 * @param int           $post_id  The ticket's post.
+	 * @param Ticket_Object $ticket   The ticket just saved.
+	 * @param array         $data     The saved data.
+	 * @param string        $provider The provider's class.
+	 * @param bool          $update   Whether the save updated an existing ticket.
 	 *
 	 * @return void
 	 */
-	public function assign( $post_id, $ticket ): void {
+	public function assign( $post_id, $ticket, $data = [], $provider = '', $update = false ): void {
 		$ticket_id = $ticket instanceof Ticket_Object ? (int) $ticket->ID : 0;
 
 		if ( ! $ticket_id || Commerce_Ticket::POSTTYPE !== get_post_type( $ticket_id ) ) {
@@ -104,14 +110,39 @@ final class Ticket_Type {
 
 		$was_template = isset( $this->templates[ $ticket_id ] );
 		unset( $this->templates[ $ticket_id ] );
+		$type = get_post_meta( $ticket_id, '_type', true );
 
-		if ( ! in_array( get_post_meta( $ticket_id, '_type', true ), [ '', 'default' ], true ) ) {
+		if ( Template_Guard::TICKET_TYPE === $type ) {
+			$this->own_capacity( $ticket_id );
+
+			return;
+		}
+
+		if ( ! in_array( $type, [ '', 'default' ], true ) ) {
 			return;
 		}
 
 		// A seated event's tickets stay seated tickets.
-		if ( $was_template || ( $this->is_recurring_event( (int) $post_id ) && ! $this->seating->has_layout( (int) $post_id ) ) ) {
+		if ( $was_template || ( ! $update && $this->is_recurring_event( (int) $post_id ) && ! $this->seating->has_layout( (int) $post_id ) ) ) {
 			update_post_meta( $ticket_id, '_type', Template_Guard::TICKET_TYPE );
+			$this->own_capacity( $ticket_id );
+		}
+	}
+
+	/**
+	 * Makes a template's shared or capped capacity its own: each date sells its own, and no pool spans dates.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The template.
+	 *
+	 * @return void
+	 */
+	private function own_capacity( int $ticket_id ): void {
+		$mode = get_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, true );
+
+		if ( in_array( $mode, [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ], true ) ) {
+			update_post_meta( $ticket_id, Global_Stock::TICKET_STOCK_MODE, Global_Stock::OWN_STOCK_MODE );
 		}
 	}
 

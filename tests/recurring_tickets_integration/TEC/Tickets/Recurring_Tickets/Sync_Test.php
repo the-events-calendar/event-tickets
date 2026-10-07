@@ -193,6 +193,56 @@ class Sync_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_skip_the_dates_of_an_event_without_recurring_event_tickets(): void {
+		$event   = $this->create_recurring_event();
+		$queries = [];
+		add_filter(
+			'query',
+			static function ( string $query ) use ( &$queries ) {
+				$queries[] = $query;
+
+				return $query;
+			}
+		);
+
+		tribe( Sync::class )->sync_event( $event );
+
+		$this->assertSame( [], array_filter( $queries, static fn( string $query ) => false !== strpos( $query, Occurrences::table_name() ) ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_take_the_rows_another_request_wrote_meanwhile(): void {
+		$event    = $this->create_recurring_event();
+		$template = $this->create_template( $event, 'General Admission', '10.50', 20 );
+		$first    = $this->rows_of( $template )[0];
+		tribe( Rows::class )->delete_ids( array_map( static fn( Ticket $row ) => (int) $row->id, $this->rows_of( $template ) ) );
+		$raced = false;
+		add_filter(
+			'query',
+			function ( string $query ) use ( &$raced, $template, $event, $first ) {
+				if ( ! $raced && 0 === strpos( $query, 'INSERT INTO `' . Tickets::table_name() . '`' ) ) {
+					$raced = true;
+					// Another request writes the first date's row between this Sync's read and its insert.
+					$this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'occurrence_id' => (int) $first->occurrence_id ] );
+				}
+
+				return $query;
+			}
+		);
+
+		tribe( Sync::class )->sync_event( $event );
+
+		$this->assertTrue( $raced );
+		$rows = $this->rows_of( $template );
+		$this->assertCount( 3, $rows );
+		$this->assertCount( 3, array_unique( array_map( static fn( Ticket $row ) => (int) $row->occurrence_id, $rows ) ) );
+	}
+
+	/**
 	 * Creates a template on an event, the way an editor does.
 	 *
 	 * @param int    $event    The event.
