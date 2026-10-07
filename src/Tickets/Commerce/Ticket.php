@@ -15,6 +15,7 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Ticket_Data;
+use TEC\Tickets\Recurring_Tickets\Commerce\Row_Post;
 use TEC\Tickets\Recurring_Tickets\Hydrator;
 use TEC\Tickets\Recurring_Tickets\Stock;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
@@ -1088,7 +1089,8 @@ class Ticket extends Ticket_Data {
 	 * @version 5.2.3
 	 */
 	public function get_price_value( $product, $force_regular = false ) {
-		$ticket = Models\Ticket_Model::from_post( $product );
+		// A recurring event ticket has no post: start from the in-memory one of its row.
+		$ticket = Models\Ticket_Model::from_post( Ticket_ID::is_table_ticket( $product ) ? tribe( Row_Post::class )->get( $product ) : $product );
 
 		if ( ! $ticket instanceof Models\Ticket_Model ) {
 			return;
