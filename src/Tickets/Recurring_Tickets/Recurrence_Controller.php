@@ -58,14 +58,14 @@ final class Recurrence_Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Whether the tier can run: the kill switch is not set and ECP fires the hooks it needs.
+	 * Whether the tier can run: the kill switch is not set, ECP fires the hooks it needs, and the rows table exists.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool Whether the tier can run.
 	 */
 	public function is_active(): bool {
-		return ! self::is_disabled() && self::ecp_has_hooks();
+		return ! self::is_disabled() && self::ecp_has_hooks() && (bool) $this->container->getVar( Core_Controller::TABLE_READY );
 	}
 
 	/**
