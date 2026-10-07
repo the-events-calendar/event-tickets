@@ -15,10 +15,13 @@ use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\Recurring_Tickets\Tasks\Sync_Task;
 use Tribe__Date_Utils as Dates;
 use Tribe__Events__Main as TEC;
 use Tribe__Events__Timezones as Timezones;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+
+use function TEC\Common\StellarWP\Shepherd\shepherd;
 
 /**
  * The only writer of rows. Running it again changes nothing.
@@ -36,6 +39,15 @@ final class Sync {
 	 * @var int
 	 */
 	private const CHUNK = 500;
+
+	/**
+	 * How many template-date pairs an event can have for Sync to write them in the request.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	public const INLINE_LIMIT = 1000;
 
 	/**
 	 * The rows repository.
@@ -75,6 +87,8 @@ final class Sync {
 	 * exists; a row whose date moved to another event is left alone. Refreshes the other rows from their template,
 	 * then inserts a row for every template and date without one.
 	 *
+	 * An event with more template-date pairs than the inline limit is synced by a background task instead.
+	 *
 	 * @since TBD
 	 *
 	 * @param int $post_id The event's post ID.
@@ -90,8 +104,57 @@ final class Sync {
 
 		$templates = $this->templates( $post_id );
 		$dates     = $this->dates( $post_id );
-		$rows      = $this->delete_stale( $this->rows->get_by_post( $post_id ), $templates, $dates );
-		$values    = [];
+
+		/**
+		 * Filters how many template-date pairs an event can have for its rows to be written in the request.
+		 *
+		 * Above it, a background task syncs the event.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $limit   The limit. Default 1,000.
+		 * @param int $post_id The event's post ID.
+		 */
+		$limit = (int) apply_filters( 'tec_tickets_recurring_tickets_sync_inline_limit', self::INLINE_LIMIT, $post_id );
+
+		if ( count( $templates ) * count( $dates ) > $limit ) {
+			shepherd()->dispatch( new Sync_Task( $post_id ) );
+
+			return;
+		}
+
+		$this->apply( $post_id, $templates, $dates );
+	}
+
+	/**
+	 * Brings an event's rows in line with its templates and dates in this request, whatever their number.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The event's post ID.
+	 *
+	 * @return void
+	 */
+	public function sync_event_inline( int $post_id ): void {
+		if ( TEC::POSTTYPE === get_post_type( $post_id ) ) {
+			$this->apply( $post_id, $this->templates( $post_id ), $this->dates( $post_id ) );
+		}
+	}
+
+	/**
+	 * Deletes, refreshes and inserts an event's rows.
+	 *
+	 * @since TBD
+	 *
+	 * @param int               $post_id   The event's post ID.
+	 * @param int[]             $templates The event's templates.
+	 * @param array<int,object> $dates     The event's dates, by occurrence ID.
+	 *
+	 * @return void
+	 */
+	private function apply( int $post_id, array $templates, array $dates ): void {
+		$rows   = $this->delete_stale( $this->rows->get_by_post( $post_id ), $templates, $dates );
+		$values = [];
 
 		foreach ( $templates as $template_id ) {
 			$values[ $template_id ] = $this->values( $template_id, $post_id );
