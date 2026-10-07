@@ -46,4 +46,17 @@ final class Price {
 
 		return number_format( $stored / self::SCALE, $decimals, '.', '' );
 	}
+
+	/**
+	 * Converts a price as Tickets Commerce stores it on a ticket to the thousandths a row stores.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $price The price, a number or a numeric string; anything else is 0.
+	 *
+	 * @return int The price in thousandths of the currency's unit.
+	 */
+	public static function from_decimal( $price ): int {
+		return is_numeric( $price ) ? (int) round( (float) $price * self::SCALE ) : 0;
+	}
 }
