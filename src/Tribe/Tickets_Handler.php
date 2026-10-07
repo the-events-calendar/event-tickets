@@ -1773,7 +1773,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 *                       the current ticket at all.
 	 */
 	public function is_ticket_readable( $ticket_id ) {
-		$ticket_post = get_post( $ticket_id );
+		// A recurring event ticket has no post: read the in-memory one of its row.
+		$ticket_post = \TEC\Tickets\Recurring_Tickets\Ticket_ID::is_table_ticket( $ticket_id )
+			? tribe( \TEC\Tickets\Recurring_Tickets\Commerce\Row_Post::class )->get( $ticket_id )
+			: get_post( $ticket_id );
 
 		if ( ! $ticket_post instanceof WP_Post ) {
 			return new WP_Error( 'ticket-not-found', 'ticket-not-found', [ 'status' => 404 ] );

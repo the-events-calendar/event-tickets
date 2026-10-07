@@ -414,8 +414,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @throws Tribe__REST__Exceptions__Exception If the post fetch or parsing fails.
 	 */
 	protected function add_ticket_post_data( &$data ) {
-		$ticket_id   = $data['id'];
-		$ticket_post = get_post( $ticket_id );
+		$ticket_id = $data['id'];
+		// A recurring event ticket has no post: read the in-memory one of its row.
+		$ticket_post = \TEC\Tickets\Recurring_Tickets\Ticket_ID::is_table_ticket( $ticket_id )
+			? tribe( \TEC\Tickets\Recurring_Tickets\Commerce\Row_Post::class )->get( $ticket_id )
+			: get_post( $ticket_id );
 		$ticket      = $this->get_ticket_object( $ticket_id );
 
 		if ( ! $ticket_post instanceof WP_Post || $ticket instanceof WP_Error ) {

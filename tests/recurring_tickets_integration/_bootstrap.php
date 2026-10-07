@@ -40,3 +40,6 @@ tribe( Commerce_Module::class );
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
 
 tec_tickets_tests_fake_transactions_enable();
+
+// The WordPress installer does not reset custom tables: start each run without rows a previous run committed.
+( new \TEC\Tickets\Recurring_Tickets\Tables\Tickets() )->empty_table();
