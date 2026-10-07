@@ -108,6 +108,12 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ) );
 		remove_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
 		remove_action( 'tec_events_custom_tables_v1_custom_tables_query_results', $this->container->callback( Views::class, 'prime_dates' ) );
+		remove_filter( 'tec_tickets_seating_enabled', $this->container->callback( Seating::class, 'filter_enabled' ) );
+		foreach ( [ 'add', 'update' ] as $write ) {
+			remove_filter( "{$write}_post_metadata", $this->container->callback( Seating::class, 'refuse_layout' ) );
+		}
+		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );
+		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Seating::class, 'forget_deleted' ), 5 );
 	}
 
 	/**
@@ -118,6 +124,7 @@ final class Recurrence_Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		$this->container->singleton( Seating::class );
 		$this->container->singleton( Ticket_Type::class );
 
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ), 10, 2 );
@@ -146,6 +153,14 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_views_v2_ticket_model_cache_id', $this->container->callback( Views::class, 'cache_id' ), 10, 2 );
 		add_action( 'tec_tickets_recurring_tickets_synced', $this->container->callback( Views::class, 'forget_dates' ) );
 		add_action( 'tec_events_custom_tables_v1_custom_tables_query_results', $this->container->callback( Views::class, 'prime_dates' ) );
+
+		add_filter( 'tec_tickets_seating_enabled', $this->container->callback( Seating::class, 'filter_enabled' ), 10, 2 );
+		foreach ( [ 'add', 'update' ] as $write ) {
+			add_filter( "{$write}_post_metadata", $this->container->callback( Seating::class, 'refuse_layout' ), 10, 3 );
+		}
+		// After the type is set, at 5, and before Sync, at 10.
+		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );
+		add_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Seating::class, 'forget_deleted' ), 5, 2 );
 
 		$this->container->make( Assets::class )->register();
 	}

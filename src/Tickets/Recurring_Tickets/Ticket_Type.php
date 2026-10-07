@@ -44,14 +44,25 @@ final class Ticket_Type {
 	private Template_Guard $guard;
 
 	/**
+	 * The rule between Seating and recurring event tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var Seating
+	 */
+	private Seating $seating;
+
+	/**
 	 * Ticket_Type constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Template_Guard $guard The template guard.
+	 * @param Template_Guard $guard   The template guard.
+	 * @param Seating        $seating The rule between Seating and recurring event tickets.
 	 */
-	public function __construct( Template_Guard $guard ) {
-		$this->guard = $guard;
+	public function __construct( Template_Guard $guard, Seating $seating ) {
+		$this->guard   = $guard;
+		$this->seating = $seating;
 	}
 
 	/**
@@ -75,7 +86,7 @@ final class Ticket_Type {
 	/**
 	 * Sets the `recurring` type on a Tickets Commerce ticket just saved on a recurring event, or saved as a template.
 	 *
-	 * A ticket saved with another type than `default` keeps it.
+	 * A ticket saved with another type than `default` keeps it, and so does one on an event with a seating layout.
 	 *
 	 * @since TBD
 	 *
@@ -98,7 +109,8 @@ final class Ticket_Type {
 			return;
 		}
 
-		if ( $was_template || $this->is_recurring_event( (int) $post_id ) ) {
+		// A seated event's tickets stay seated tickets.
+		if ( $was_template || ( $this->is_recurring_event( (int) $post_id ) && ! $this->seating->has_layout( (int) $post_id ) ) ) {
 			update_post_meta( $ticket_id, '_type', Template_Guard::TICKET_TYPE );
 		}
 	}
