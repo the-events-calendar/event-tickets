@@ -5,6 +5,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
@@ -12,6 +13,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * The list `get_tickets()` returns can be changed, fresh or cached, knowing which date was asked for.
  */
 class Get_Tickets_Filter_Test extends WPTestCase {
+	use Without_Recurrence_Tier;
 	use Ticket_Rows;
 	use Ticket_Maker;
 

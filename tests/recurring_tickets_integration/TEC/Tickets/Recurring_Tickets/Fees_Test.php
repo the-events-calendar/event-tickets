@@ -11,6 +11,7 @@ use TEC\Tickets\Commerce\Order_Modifiers\Custom_Tables\Order_Modifier_Relationsh
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
 use Tribe\Tickets\Test\Commerce\OrderModifiers\Fee_Creator;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
@@ -18,6 +19,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
  * A row carries the fees of its template; fees stay attached to the template.
  */
 class Fees_Test extends WPTestCase {
+	use Without_Recurrence_Tier;
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
