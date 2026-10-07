@@ -61,6 +61,7 @@ class Detach_Test extends WPTestCase {
 		foreach ( $attendees as $attendee ) {
 			$this->assertSame( (string) $ticket, get_post_meta( $attendee, '_tec_tickets_commerce_ticket', true ) );
 			$this->assertSame( (string) $single, get_post_meta( $attendee, '_tec_tickets_commerce_event', true ) );
+			$this->assertSame( '', get_post_meta( $attendee, '_tec_tickets_recurring_post_id', true ), 'No longer an attendee of a row.' );
 		}
 
 		$this->assertNull( tribe( Rows::class )->find( (int) $sold->id ) );
@@ -122,6 +123,7 @@ class Detach_Test extends WPTestCase {
 		foreach ( $attendees as $attendee ) {
 			$this->assertSame( (string) Ticket_ID::from_row_id( (int) $sold->id ), get_post_meta( $attendee, '_tec_tickets_commerce_ticket', true ) );
 			$this->assertSame( (string) $date_id, get_post_meta( $attendee, '_tec_tickets_commerce_event', true ) );
+			$this->assertSame( (string) $event, get_post_meta( $attendee, '_tec_tickets_recurring_post_id', true ), 'A stranded attendee keeps its event.' );
 		}
 		$this->assertCount( 4, tribe( Rows::class )->get_by_post( $event ) );
 	}

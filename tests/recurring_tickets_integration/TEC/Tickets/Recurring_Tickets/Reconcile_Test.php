@@ -73,6 +73,7 @@ class Reconcile_Test extends WPTestCase {
 		$new_date = (int) tribe( \TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator::class )->provide_id( (int) $after[ $this->day_after( 1 ) ]->occurrence_id );
 		foreach ( $attendees as $attendee ) {
 			$this->assertSame( (string) $new_date, get_post_meta( $attendee, '_tec_tickets_commerce_event', true ) );
+			$this->assertSame( $this->datetime( $after[ $this->day_after( 1 ) ]->occurrence_start ), get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ) );
 		}
 		foreach ( [ $order->ID, $pending->ID ] as $order_id ) {
 			$this->assertSame( [ (string) $new_date ], get_post_meta( $order_id, '_tec_tc_order_events_in_order' ), 'An order, pending or not, follows its date.' );
