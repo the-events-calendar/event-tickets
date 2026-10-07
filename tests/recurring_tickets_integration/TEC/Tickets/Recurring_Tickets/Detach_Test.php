@@ -67,6 +67,22 @@ class Detach_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_leave_the_attendees_of_other_tickets_alone(): void {
+		$other        = tribe_events()->set_args( [ 'title' => 'Other', 'status' => 'publish', 'start_date' => '+1 week 10:00:00', 'end_date' => '+1 week 12:00:00' ] )->create()->ID;
+		$other_ticket = $this->create_tc_ticket( $other, 5 );
+		$other_order  = $this->create_row_order( [ $other_ticket => 1 ] );
+		$bystander    = (int) get_posts( [ 'post_type' => 'tec_tc_attendee', 'post_parent' => $other_order->ID, 'post_status' => 'any', 'fields' => 'ids' ] )[0];
+		[ , $dates ] = $this->create_event_with_a_sale();
+
+		tribe( Events::class )->detach_occurrence_from_event( $dates[2] );
+
+		$this->assertSame( (string) $other_ticket, get_post_meta( $bystander, '_tec_tickets_commerce_ticket', true ) );
+		$this->assertSame( (string) $other, get_post_meta( $bystander, '_tec_tickets_commerce_event', true ) );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_strand_the_attendees_of_a_trashed_date(): void {
 		[ $event, $dates, $sold, $attendees ] = $this->create_event_with_a_sale();
 		$date_id                              = (int) tribe( ID_Generator::class )->provide_id( (int) $dates[2]->occurrence_id );

@@ -198,7 +198,7 @@ final class Detach {
 			update_post_meta( $ticket_id, Commerce_Ticket::$stock_meta_key, (int) $row->stock );
 		}
 
-		foreach ( tec_tc_attendees()->where( 'ticket', Ticket_ID::from_row_id( (int) $row->id ) )->get_ids() as $attendee_id ) {
+		foreach ( tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( (int) $row->id ) )->get_ids() as $attendee_id ) {
 			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_ticket', $ticket_id );
 			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $post_id );
 		}
