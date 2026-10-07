@@ -108,6 +108,30 @@ class Move_Test extends WPTestCase {
 
 		$history = wp_json_encode( Post_History::load( $attendee )->get_entries() );
 		$this->assertStringContainsString( 'General Admission', $history );
+
+		// Its order is the new date's too, so the event's Orders page still finds it.
+		$this->assertContains( (string) $dates[2]->provisional_id, get_post_meta( $order->ID, '_tec_tc_order_events_in_order' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_offer_no_template_of_a_recurring_event_without_ecp(): void {
+		global $wp_actions;
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 10 );
+		$fired    = $wp_actions['tec_events_pro_custom_tables_v1_fully_activated'];
+		// As when ECP is not active: its dates, and their ID generator, are not there.
+		unset( $wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] );
+
+		try {
+			$matches = $this->call( 'get_ticket_type_matches', [ $event, addslashes( Module::class ) ] );
+		} finally {
+			$wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] = $fired;
+		}
+
+		$this->assertSame( [], $matches );
+		$this->assertArrayNotHasKey( $template, $matches );
 	}
 
 	/**

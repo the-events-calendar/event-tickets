@@ -13,6 +13,7 @@ use DateTimeInterface;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
@@ -142,7 +143,7 @@ final class Reconcile {
 	}
 
 	/**
-	 * Moves the attendees of a gone date's rows to the new date.
+	 * Moves the attendees and the orders of a gone date's rows to the new date.
 	 *
 	 * @since TBD
 	 *
@@ -155,14 +156,26 @@ final class Reconcile {
 	 */
 	private function move_attendees( array $rows, int $from, int $old_date, int $new_date ): void {
 		foreach ( $this->row_ids_on( $rows, [ $from ] ) as $row_id ) {
-			$row = $this->rows->find( $row_id );
+			$row       = $this->rows->find( $row_id );
+			$ticket_id = Ticket_ID::from_row_id( $row_id );
 
-			foreach ( tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( $row_id ) )->get_ids() as $attendee_id ) {
+			foreach ( tec_tc_attendees()->where( 'ticket_id', $ticket_id )->get_ids() as $attendee_id ) {
 				update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $new_date, $old_date );
 
 				if ( $row instanceof Ticket ) {
-								$this->attendees->write( (int) $attendee_id, $row );
+					$this->attendees->write( (int) $attendee_id, $row );
 				}
+			}
+
+			// Pending orders too, which have no attendees yet.
+			$orders = tec_tc_orders()->by_args(
+				[
+					'tickets' => $ticket_id,
+					'status'  => 'any',
+				]
+			);
+			foreach ( $orders->get_ids() as $order_id ) {
+				update_post_meta( (int) $order_id, Order::$events_in_order_meta_key, $new_date, $old_date );
 			}
 		}
 	}
