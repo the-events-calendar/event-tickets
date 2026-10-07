@@ -5,6 +5,8 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
+use TEC\Tickets\RSVP\V2\Controller as RSVP_V2_Controller;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -107,6 +109,30 @@ class Template_Guard_Test extends WPTestCase {
 
 		$this->assertSame( [ $default ], $added );
 		$this->assertSame( [ $default ], $names );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_refuse_a_template_and_a_row_at_the_free_rsvp_order_endpoint(): void {
+		[ $event, $template ] = $this->create_event();
+		$row                  = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'occurrence_id' => $this->get_dates( $event )[0]->occurrence_id, 'capacity' => 10, 'stock' => 10 ] );
+		tribe( RSVP_V2_Controller::class )->register();
+		do_action( 'rest_api_init' );
+		$orders = static fn() => ( new \WP_Query( [ 'post_type' => 'tec_tc_order', 'post_status' => 'any', 'fields' => 'ids', 'posts_per_page' => -1 ] ) )->post_count;
+		$before = $orders();
+
+		foreach ( [ $template, $row ] as $ticket_id ) {
+			$request = new \WP_REST_Request( 'POST', '/tribe/tickets/v1/rsvp/v2/order' );
+			$request->set_param( 'ticket_id', $ticket_id );
+			$request->set_param( 'step', 'success' );
+			$request->set_param( 'tribe_tickets', [ $ticket_id => [ 'quantity' => 1, 'attendees' => [ [ 'email' => 'visitor@example.test', 'full_name' => 'Visitor', 'order_status' => 'yes', 'optout' => false ] ] ] ] );
+
+			rest_get_server()->dispatch( $request );
+		}
+
+		$this->assertSame( $before, $orders(), 'Neither a template nor a row may be ordered for free.' );
+		$this->assertSame( 10, (int) tribe( Rows::class )->find( Ticket_ID::to_row_id( $row ) )->stock );
 	}
 
 	/**
