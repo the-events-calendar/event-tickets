@@ -143,7 +143,7 @@ final class Reconcile {
 	 */
 	private function move_attendees( array $rows, int $from, int $old_date, int $new_date ): void {
 		foreach ( $this->row_ids_on( $rows, [ $from ] ) as $row_id ) {
-			foreach ( tec_tc_attendees()->where( 'ticket', Ticket_ID::from_row_id( $row_id ) )->get_ids() as $attendee_id ) {
+			foreach ( tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( $row_id ) )->get_ids() as $attendee_id ) {
 				update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $new_date, $old_date );
 			}
 		}
