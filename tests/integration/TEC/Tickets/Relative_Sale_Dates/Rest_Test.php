@@ -182,6 +182,40 @@ class Rest_Test extends Controller_Test_Case {
 	/**
 	 * @test
 	 */
+	public function should_return_the_stored_rule_when_the_tec_rest_api_reads_a_ticket(): void {
+		$ticket_id = $this->create_tc_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		$rule      = [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ];
+		tribe( Rule_Store::class )->save( $ticket_id, $rule );
+
+		$response = tribe( Ticket_Endpoint::class )->read( [ 'id' => $ticket_id ] );
+
+		$this->assertSame( $rule, $response->get_data()['relative_sale_dates'] );
+	}
+
+	/**
+	 * The request schema drops `null` values, so a rule sent as `null` must be put back to reach the ticket save.
+	 *
+	 * @test
+	 */
+	public function should_pass_a_rule_sent_as_null_to_the_tec_rest_api_through_to_the_ticket_save(): void {
+		$ticket_id = $this->create_tc_ticket( $this->create_event( '2027-06-24 19:00:00' ) );
+		$endpoint  = tribe( Ticket_Endpoint::class );
+
+		$request_data = $endpoint->update_schema()->filter_before_request(
+			[
+				'id'                  => $ticket_id,
+				'relative_sale_dates' => null,
+			]
+		);
+		$params       = $endpoint->filter_upsert_params( $request_data );
+
+		// An empty rule is the one the ticket save removes.
+		$this->assertSame( '', $params['ticket_params']['relative_sale_dates'] ?? 'missing' );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_reject_a_window_sent_to_the_tec_rest_api_that_ends_before_it_starts(): void {
 		$event_id = $this->create_event( '2027-06-24 19:00:00' );
 
