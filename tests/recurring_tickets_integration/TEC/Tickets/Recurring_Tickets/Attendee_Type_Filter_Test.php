@@ -6,12 +6,14 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Row_Orders;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use TEC\Tickets\Tests\Recurring_Tickets\Without_Recurrence_Tier;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 /**
  * Filtering attendees by ticket type finds the attendees of rows, whose tickets are not posts.
  */
 class Attendee_Type_Filter_Test extends WPTestCase {
+	use Without_Recurrence_Tier;
 	use Ticket_Rows;
 	use Ticket_Maker;
 	use Row_Orders;
