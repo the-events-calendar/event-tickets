@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use DateTimeZone;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
@@ -89,9 +90,15 @@ final class Sync {
 		}
 
 		$templates = $this->templates( $post_id );
-		$dates     = $this->dates( $post_id );
-		$rows      = $this->delete_stale( $this->rows->get_by_post( $post_id ), $templates, $dates );
-		$values    = [];
+
+		// Most events have no recurring event tickets: leave their dates alone.
+		if ( ! $templates && ! $this->rows->get_by_post( $post_id ) ) {
+			return;
+		}
+
+		$dates  = $this->dates( $post_id );
+		$rows   = $this->delete_stale( $this->rows->get_by_post( $post_id ), $templates, $dates );
+		$values = [];
 
 		foreach ( $templates as $template_id ) {
 			$values[ $template_id ] = $this->values( $template_id, $post_id );
@@ -289,7 +296,50 @@ final class Sync {
 		}
 
 		foreach ( array_chunk( $new, self::CHUNK ) as $chunk ) {
-			$this->rows->insert_many( $chunk );
+			try {
+				$this->rows->insert_many( $chunk );
+			} catch ( DatabaseQueryException $e ) {
+				// Another request synced the event meanwhile: insert what it did not.
+				$this->insert_still_missing( $post_id, $chunk );
+			}
+		}
+	}
+
+	/**
+	 * Inserts the rows of a failed insert that are still missing, once another request wrote some of them.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                                      $post_id The event's post ID.
+	 * @param array<int,array<string,int|string|null>> $chunk   The rows of the failed insert.
+	 *
+	 * @return void
+	 */
+	private function insert_still_missing( int $post_id, array $chunk ): void {
+		$have = [];
+		foreach ( $this->rows->get_by_post( $post_id ) as $row ) {
+			$have[ $row->parent_id . ':' . $row->occurrence_id ] = true;
+		}
+
+		$missing = array_values( array_filter( $chunk, static fn( array $row ) => ! isset( $have[ $row['parent_id'] . ':' . $row['occurrence_id'] ] ) ) );
+
+		if ( ! $missing ) {
+			return;
+		}
+
+		try {
+			$this->rows->insert_many( $missing );
+		} catch ( DatabaseQueryException $e ) {
+			// The next sync of the event writes them.
+			do_action(
+				'tribe_log',
+				'warning',
+				'Recurring event ticket rows could not be inserted.',
+				[
+					'post_id' => $post_id,
+					'error'   => $e->getMessage(),
+				]
+			);
 		}
 	}
 
