@@ -18,6 +18,8 @@ const MODE_DEFAULT = 'default';
 const MODE_RELATIVE = 'relative';
 const ANCHOR_START = 'start';
 const ANCHOR_END = 'end';
+const DAY_IN_SECONDS = 86400;
+const MINUTE_IN_MILLISECONDS = 60000;
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm:ss';
@@ -74,8 +76,8 @@ const FIXED_OFFSET = /^[+-]\d{2}:\d{2}$/;
  */
 export function resolveSaleWindow( rule, eventStart, eventEnd, timezone ) {
 	const anchors = {
-		[ ANCHOR_START ]: fromLocal( eventStart, timezone ),
-		[ ANCHOR_END ]: fromLocal( eventEnd, timezone ),
+		[ ANCHOR_START ]: fromEventLocal( eventStart, timezone ),
+		[ ANCHOR_END ]: fromEventLocal( eventEnd, timezone ),
 	};
 
 	const start = resolveRelative( rule.start, anchors, timezone );
@@ -109,7 +111,7 @@ function resolveRelative( end, anchors, timezone ) {
 		return null;
 	}
 
-	return before( anchors[ end.anchor ], end.value * end.unit, timezone );
+	return before( anchors[ end.anchor ], end.value, end.unit, timezone );
 }
 
 /**
@@ -120,22 +122,62 @@ function resolveRelative( end, anchors, timezone ) {
  * fresh from that wall-clock time rather than with `subtract()`: a time skipped by a clock change is pushed forward by
  * the size of the change, and a time that happens twice takes its first occurrence.
  *
+ * A number of minutes or hours that lands on a time skipped by a clock change comes off the instant instead, as the
+ * next valid time can fall on or after the anchor: 30 minutes before 03:15 would otherwise be 03:45.
+ *
  * @since TBD
  *
  * @param {moment.Moment} anchor   The date to move back, in the event timezone.
- * @param {number}        seconds  The amount of wall-clock time to move back, in seconds.
+ * @param {number}        value    The number of units to move back.
+ * @param {number}        unit     The unit, in seconds: 60, 3600, 86400 or 604800.
  * @param {string}        timezone The event timezone.
  *
  * @return {moment.Moment} The moved date, in the event timezone.
  */
-function before( anchor, seconds, timezone ) {
+function before( anchor, value, unit, timezone ) {
+	const seconds = value * unit;
 	// UTC has no clock change, so the subtraction moves the wall-clock time and nothing else.
 	const wallClock = moment
 		.utc( anchor.format( DATE_TIME_FORMAT ), DATE_TIME_FORMAT, true )
 		.subtract( seconds, 'seconds' )
 		.format( DATE_TIME_FORMAT );
+	const date = fromLocal( wallClock, timezone );
 
-	return fromLocal( wallClock, timezone );
+	// Days and weeks keep their wall-clock time: a skipped time a day or more back still lands well before the anchor.
+	if ( unit >= DAY_IN_SECONDS || date.format( DATE_TIME_FORMAT ) === wallClock ) {
+		return date;
+	}
+
+	return anchor.clone().subtract( seconds, 'seconds' );
+}
+
+/**
+ * Builds an event date from its wall-clock date and time, taking the occurrence the server takes.
+ *
+ * A time that happens twice is read as PHP reads it, with the offset in effect at that wall-clock time read as UTC:
+ * the second occurrence east of UTC and the first west of it. The Events Calendar stores the event's UTC dates the same
+ * way, so the window is judged against the event the server has.
+ *
+ * @since TBD
+ *
+ * @param {string} dateTime The date and time, `YYYY-MM-DD HH:mm:ss`.
+ * @param {string} timezone The event timezone.
+ *
+ * @return {moment.Moment} The date, in the event timezone.
+ */
+function fromEventLocal( dateTime, timezone ) {
+	const date = fromLocal( dateTime, timezone );
+	const zone = FIXED_OFFSET.test( timezone ) ? null : moment.tz.zone( timezone );
+
+	if ( ! zone ) {
+		return date;
+	}
+
+	const asUtc = moment.utc( dateTime, DATE_TIME_FORMAT, true ).valueOf();
+	const serverDate = moment.tz( asUtc + zone.utcOffset( asUtc ) * MINUTE_IN_MILLISECONDS, timezone );
+
+	// A time a clock change skips does not exist, so it keeps the date moment builds for it.
+	return serverDate.format( DATE_TIME_FORMAT ) === dateTime ? serverDate : date;
 }
 
 /**
