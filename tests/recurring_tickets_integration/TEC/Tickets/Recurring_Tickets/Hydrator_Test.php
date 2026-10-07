@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Tickets_Repository;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 use TEC\Tickets\Tests\Recurring_Tickets\Ticket_Rows;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
@@ -15,6 +16,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  */
 class Hydrator_Test extends WPTestCase {
 	use Ticket_Rows;
+	use Ticket_Maker;
 
 	/**
 	 * @after
@@ -215,6 +217,39 @@ class Hydrator_Test extends WPTestCase {
 		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 15000 ] );
 
 		$this->assertSame( '15.00', tribe( Hydrator::class )->load( $id )->price );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_at_the_templates_sale_price_inside_its_window(): void {
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 20 );
+		update_post_meta( $template, '_sale_price_checked', '1' );
+		update_post_meta( $template, '_sale_price', '8' );
+		update_post_meta( $template, '_sale_price_start_date', gmdate( 'Y-m-d', strtotime( '-1 day' ) ) );
+		update_post_meta( $template, '_sale_price_end_date', gmdate( 'Y-m-d', strtotime( '+5 days' ) ) );
+		$id = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 10500 ] );
+
+		$ticket = tribe( Hydrator::class )->load( $id );
+
+		$this->assertTrue( $ticket->on_sale );
+		$this->assertSame( '8.00', $ticket->price );
+		$this->assertSame( '10.50', $ticket->regular_price );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_sell_at_the_rows_price_when_the_template_is_not_on_sale(): void {
+		$event    = $this->create_recurring_event();
+		$template = $this->create_tc_ticket( $event, 20 );
+		$id       = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 10500 ] );
+
+		$ticket = tribe( Hydrator::class )->load( $id );
+
+		$this->assertFalse( $ticket->on_sale );
+		$this->assertSame( '10.50', $ticket->price );
 	}
 
 	/**
