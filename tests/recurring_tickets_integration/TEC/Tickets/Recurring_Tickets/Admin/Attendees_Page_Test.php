@@ -68,6 +68,7 @@ class Attendees_Page_Test extends WPTestCase {
 	public function clean_up(): void {
 		// Completing an order commits the test's database transaction.
 		( new Tickets() )->empty_table();
+		unset( $_GET['event_id'], $_GET[ Attendees_Page::DATE_FILTER ] );
 	}
 
 	/**
@@ -119,6 +120,50 @@ class Attendees_Page_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_show_each_attendees_date_in_a_column(): void {
+		$this->assertArrayHasKey( Attendees_Page::DATE_COLUMN, apply_filters( 'tribe_tickets_attendee_table_columns', [], $this->event ) );
+		$this->assertArrayNotHasKey( Attendees_Page::DATE_COLUMN, apply_filters( 'tribe_tickets_attendee_table_columns', [], static::factory()->post->create() ) );
+
+		$start = get_post_meta( $this->stranded, '_tec_tickets_recurring_occurrence_start', true );
+		$cell  = apply_filters( 'tribe_events_tickets_attendees_table_column', '', [ 'attendee_id' => $this->stranded ], Attendees_Page::DATE_COLUMN );
+		$this->assertSame( esc_html( tribe_format_date( $start, true ) ), $cell );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_offer_the_dates_its_attendees_hold_to_filter_by(): void {
+		$_GET['event_id'] = $this->event;
+
+		$nav    = apply_filters( 'tribe_events_tickets_attendees_table_nav', [ 'left' => [], 'right' => [] ], 'top' );
+		$select = implode( '', $nav['left'] );
+
+		foreach ( [ $this->kept, $this->stranded ] as $attendee ) {
+			$date = (int) get_post_meta( $attendee, '_tec_tickets_commerce_event', true );
+			$this->assertStringContainsString( 'value="' . $date . '"', $select, 'A removed date stays listed.' );
+			$this->assertStringContainsString( esc_html( tribe_format_date( get_post_meta( $attendee, '_tec_tickets_recurring_occurrence_start', true ), true ) ), $select );
+		}
+		$this->assertSame( [ 'left' => [], 'right' => [] ], apply_filters( 'tribe_events_tickets_attendees_table_nav', [ 'left' => [], 'right' => [] ], 'bottom' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_narrow_the_table_to_a_chosen_date(): void {
+		$_GET['event_id'] = $this->event;
+		$_GET[ Attendees_Page::DATE_FILTER ] = (string) get_post_meta( $this->stranded, '_tec_tickets_commerce_event', true );
+
+		$this->assertSame( [ $this->stranded ], $this->table_attendees() );
+
+		// A date the event's attendees do not hold changes nothing.
+		$_GET[ Attendees_Page::DATE_FILTER ] = (string) static::factory()->post->create();
+
+		$this->assertSame( [ $this->kept, $this->stranded ], $this->table_attendees() );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_clean_the_events_cached_attendees_with_its_dates(): void {
 		$date = (int) get_post_meta( $this->kept, '_tec_tickets_commerce_event', true );
 		tribe( 'post-transient' )->set( $this->event, Tickets_Tickets::ATTENDEES_CACHE, [ 'stale' ], HOUR_IN_SECONDS );
@@ -147,6 +192,22 @@ class Attendees_Page_Test extends WPTestCase {
 
 		$this->assertSame( [ $page ], apply_filters( 'tec_tickets_attendees_filter_by_event', [ $page ], tribe_attendees() ) );
 		$this->assertSame( $queries, $wpdb->num_queries );
+	}
+
+	/**
+	 * @return int[] The attendees the event's Attendees table lists, sorted.
+	 */
+	private function table_attendees(): array {
+		// An administrator's first admin screen redirects to TEC's first-time setup, and exits.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'editor' ] ) );
+		set_current_screen( 'tribe_events_page_tickets-attendees' );
+		$table = new \Tribe__Tickets__Attendees_Table();
+		$table->prepare_items();
+		set_current_screen( 'front' );
+		$ids = array_map( static fn( array $item ) => (int) $item['attendee_id'], $table->items );
+		sort( $ids );
+
+		return $ids;
 	}
 
 	/**
