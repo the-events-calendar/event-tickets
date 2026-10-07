@@ -162,6 +162,39 @@ class Attendees_Page_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_clean_the_events_cached_attendees_with_its_dates(): void {
+		$date = (int) get_post_meta( $this->kept, '_tec_tickets_commerce_event', true );
+		tribe( 'post-transient' )->set( $this->event, Tickets_Tickets::ATTENDEES_CACHE, [ 'stale' ], HOUR_IN_SECONDS );
+
+		// As a check-in or a status change of the date's attendee does.
+		tribe( 'post-transient' )->delete( $date, Tickets_Tickets::ATTENDEES_CACHE );
+
+		$this->assertFalse( tribe( 'post-transient' )->get( $this->event, Tickets_Tickets::ATTENDEES_CACHE ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_leave_a_lookup_by_no_event_alone(): void {
+		$this->assertSame( [ 0 ], apply_filters( 'tec_tickets_attendees_filter_by_event', [ 0 ], tribe_attendees() ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_not_query_for_a_post_that_is_not_an_event(): void {
+		global $wpdb;
+		$page = static::factory()->post->create( [ 'post_type' => 'page' ] );
+		get_post( $page );
+		$queries = $wpdb->num_queries;
+
+		$this->assertSame( [ $page ], apply_filters( 'tec_tickets_attendees_filter_by_event', [ $page ], tribe_attendees() ) );
+		$this->assertSame( $queries, $wpdb->num_queries );
+	}
+
+	/**
 	 * @return int[] The attendees the event's Attendees table lists, sorted.
 	 */
 	private function table_attendees(): array {
