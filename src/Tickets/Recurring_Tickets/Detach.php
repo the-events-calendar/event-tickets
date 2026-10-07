@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
+use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 
@@ -54,14 +55,25 @@ final class Detach {
 	private Rows $rows;
 
 	/**
+	 * What an attendee of a row keeps of its event and date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Attendees
+	 */
+	private Attendees $attendees;
+
+	/**
 	 * Detach constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows $rows The rows repository.
+	 * @param Rows      $rows      The rows repository.
+	 * @param Attendees $attendees What an attendee of a row keeps of its event and date.
 	 */
-	public function __construct( Rows $rows ) {
-		$this->rows = $rows;
+	public function __construct( Rows $rows, Attendees $attendees ) {
+		$this->rows      = $rows;
+		$this->attendees = $attendees;
 	}
 
 	/**
@@ -123,6 +135,19 @@ final class Detach {
 			$this->rows->delete_ids( array_map( static fn( Ticket $row ) => (int) $row->id, $fresh ) );
 
 			$this->rows->move( $row_ids, $to_id, $clone_id );
+
+			// A date trashed by itself moves to an event about to be trashed: its attendees stay with the recurring one.
+			if ( doing_action( 'trashed_post' ) ) {
+				continue;
+			}
+
+			foreach ( $row_ids as $row_id ) {
+				$row = $this->rows->find( $row_id );
+
+				foreach ( $row instanceof Ticket ? tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( $row_id ) )->get_ids() : [] as $attendee_id ) {
+					$this->attendees->write( (int) $attendee_id, $row );
+				}
+			}
 		}
 	}
 
@@ -201,6 +226,8 @@ final class Detach {
 		foreach ( tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( (int) $row->id ) )->get_ids() as $attendee_id ) {
 			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_ticket', $ticket_id );
 			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $post_id );
+			// An attendee of a real ticket now.
+			$this->attendees->forget( (int) $attendee_id );
 		}
 	}
 

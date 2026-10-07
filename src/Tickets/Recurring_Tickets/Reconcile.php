@@ -13,6 +13,7 @@ use DateTimeInterface;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
+use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 
@@ -37,14 +38,25 @@ final class Reconcile {
 	private Rows $rows;
 
 	/**
+	 * What an attendee of a row keeps of its event and date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Attendees
+	 */
+	private Attendees $attendees;
+
+	/**
 	 * Reconcile constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows $rows The rows repository.
+	 * @param Rows      $rows      The rows repository.
+	 * @param Attendees $attendees What an attendee of a row keeps of its event and date.
 	 */
-	public function __construct( Rows $rows ) {
-		$this->rows = $rows;
+	public function __construct( Rows $rows, Attendees $attendees ) {
+		$this->rows      = $rows;
+		$this->attendees = $attendees;
 	}
 
 	/**
@@ -143,8 +155,14 @@ final class Reconcile {
 	 */
 	private function move_attendees( array $rows, int $from, int $old_date, int $new_date ): void {
 		foreach ( $this->row_ids_on( $rows, [ $from ] ) as $row_id ) {
+			$row = $this->rows->find( $row_id );
+
 			foreach ( tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( $row_id ) )->get_ids() as $attendee_id ) {
 				update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $new_date, $old_date );
+
+				if ( $row instanceof Ticket ) {
+								$this->attendees->write( (int) $attendee_id, $row );
+				}
 			}
 		}
 	}

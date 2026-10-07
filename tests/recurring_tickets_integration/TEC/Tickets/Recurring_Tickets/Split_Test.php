@@ -67,6 +67,7 @@ class Split_Test extends WPTestCase {
 		$this->assertSame( [ $new, $clone, 2 ], [ (int) $row->post_id, (int) $row->parent_id, (int) $row->sales ] );
 		foreach ( $attendees as $attendee ) {
 			$this->assertSame( (string) Ticket_ID::from_row_id( (int) $sold->id ), get_post_meta( $attendee, '_tec_tickets_commerce_ticket', true ) );
+			$this->assertSame( (string) $new, get_post_meta( $attendee, '_tec_tickets_recurring_post_id', true ) );
 		}
 
 		// The new event's own save keeps them.
