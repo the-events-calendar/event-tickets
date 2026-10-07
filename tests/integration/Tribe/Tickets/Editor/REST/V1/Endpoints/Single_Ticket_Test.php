@@ -54,6 +54,27 @@ class Single_Ticket_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_pass_the_ticket_provider_to_the_validation(): void {
+		$validated = [];
+		add_filter(
+			'tec_tickets_ticket_data_validation',
+			static function ( $valid, int $post_id, array $data ) use ( &$validated ) {
+				$validated = $data;
+
+				return $valid;
+			},
+			5,
+			3
+		);
+
+		$this->send( 'POST', '/tickets', static::factory()->post->create(), 'add_ticket_nonce' );
+
+		$this->assertSame( Module::class, $validated['ticket_provider'] ?? null );
+	}
+
+	/**
 	 * Sends a ticket save the way the block editor does.
 	 *
 	 * @param string $method       The HTTP method.

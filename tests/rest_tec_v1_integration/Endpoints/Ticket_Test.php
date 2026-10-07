@@ -6,6 +6,7 @@ use TEC\Common\Tests\Testcases\REST\TEC\V1\Post_Entity_REST_Test_Case;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Commerce\Ticket as Ticket_Model;
 use TEC\Tickets\Commerce\Models\Ticket_Model as Model;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\REST\TEC\V1\Endpoints\Ticket;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Tickets as Tickets;
@@ -299,6 +300,32 @@ class Ticket_Test extends Post_Entity_REST_Test_Case {
 
 		$this->assertSame( 'The ticket data is not valid.', $response['message'] );
 		$this->assertSame( $title, get_post( $entity_id )->post_title );
+	}
+
+	public function test_create_passes_the_ticket_provider_to_the_validation() {
+		if ( ! $this->is_creatable() ) {
+			return;
+		}
+
+		$example = $this->get_example_create_data();
+		unset( $example['id'] );
+		$validated = [];
+		$spy       = static function ( $valid, int $post_id, array $data ) use ( &$validated ) {
+			$validated = $data;
+
+			return $valid;
+		};
+		add_filter( 'tec_tickets_ticket_data_validation', $spy, 10, 3 );
+
+		wp_set_current_user( 1 );
+		try {
+			$this->assert_endpoint( $this->endpoint->get_base_path(), 'POST', 201, $example );
+		} finally {
+			// This suite does not restore hooks between tests.
+			remove_filter( 'tec_tickets_ticket_data_validation', $spy );
+		}
+
+		$this->assertSame( Module::class, $validated['ticket_provider'] ?? null );
 	}
 
 	public function test_update_handles_save_failure() {

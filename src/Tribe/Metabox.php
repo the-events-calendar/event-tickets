@@ -372,7 +372,7 @@ class Tribe__Tickets__Metabox {
 		 *
 		 * @param true|WP_Error       $valid   `true`, or the error an earlier callback rejected the data with.
 		 * @param int                 $post_id The ticket parent post ID.
-		 * @param array<string,mixed> $data    The ticket data about to be saved.
+		 * @param array<string,mixed> $data    The ticket data about to be saved, with the class name of its provider in `ticket_provider`.
 		 */
 		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $post_id, $data );
 

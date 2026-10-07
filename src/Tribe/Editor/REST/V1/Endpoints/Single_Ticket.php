@@ -315,7 +315,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		}
 
 		/** This filter is documented in src/Tribe/Metabox.php */
-		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, absint( $post_id ), $ticket_data );
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, absint( $post_id ), array_merge( $ticket_data, [ 'ticket_provider' => $provider->class_name ] ) );
 
 		if ( is_wp_error( $valid ) ) {
 			return new WP_Error( $valid->get_error_code(), $valid->get_error_message(), [ 'status' => 400 ] );

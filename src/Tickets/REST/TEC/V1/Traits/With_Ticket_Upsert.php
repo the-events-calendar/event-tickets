@@ -96,7 +96,7 @@ trait With_Ticket_Upsert {
 		unset( $ticket_params['event'] );
 
 		/** This filter is documented in src/Tribe/Metabox.php */
-		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $event, $ticket_params );
+		$valid = apply_filters( 'tec_tickets_ticket_data_validation', true, $event, array_merge( $ticket_params, [ 'ticket_provider' => $tickets->class_name ] ) );
 
 		if ( is_wp_error( $valid ) ) {
 			throw InvalidRestArgumentException::create( $valid->get_error_message(), '', $valid->get_error_code(), $valid->get_error_message() );

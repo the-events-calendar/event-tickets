@@ -246,7 +246,7 @@ final class Ticket_Save {
 			$start = $this->get_post_day( $post_id, $timezone );
 		}
 
-		if ( ! $start || ! $end ) {
+		if ( ! ( $start && $end ) ) {
 			return $this->get_invalid_window_error();
 		}
 
