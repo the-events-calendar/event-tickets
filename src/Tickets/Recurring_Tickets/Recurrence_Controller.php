@@ -120,6 +120,7 @@ final class Recurrence_Controller extends Controller_Contract {
 		remove_action( Events::AFTER_DETACH_OCCURRENCE_ACTION, $this->container->callback( Detach::class, 'detach_rows' ) );
 		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', $this->container->callback( Admin\Move::class, 'allow_dates' ), 20 );
 		remove_action( 'tribe_tickets_ticket_moved', $this->container->callback( Admin\Move::class, 'follow' ), 20 );
+		remove_filter( 'tec_events_pro_custom_tables_v1_editor_dialog_data', $this->container->callback( Admin\Dialog_Warning::class, 'add_notice' ) );
 	}
 
 	/**
@@ -181,6 +182,9 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', $this->container->callback( Admin\Move::class, 'allow_dates' ), 20 );
 		// After Tickets Commerce moves the attendee, at 10.
 		add_action( 'tribe_tickets_ticket_moved', $this->container->callback( Admin\Move::class, 'follow' ), 20, 3 );
+
+		$this->container->singleton( Admin\Dialog_Warning::class );
+		add_filter( 'tec_events_pro_custom_tables_v1_editor_dialog_data', $this->container->callback( Admin\Dialog_Warning::class, 'add_notice' ), 10, 2 );
 
 		$this->container->make( Assets::class )->register();
 	}
