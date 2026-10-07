@@ -68,7 +68,7 @@ class Attendees_Page_Test extends WPTestCase {
 	public function clean_up(): void {
 		// Completing an order commits the test's database transaction.
 		( new Tickets() )->empty_table();
-		unset( $_GET['event_id'], $_GET[ Attendees_Page::DATE_FILTER ] );
+		unset( $_GET['event_id'], $_GET[ Date_Filter::NAME ] );
 	}
 
 	/**
@@ -151,12 +151,12 @@ class Attendees_Page_Test extends WPTestCase {
 	 */
 	public function it_should_narrow_the_table_to_a_chosen_date(): void {
 		$_GET['event_id'] = $this->event;
-		$_GET[ Attendees_Page::DATE_FILTER ] = (string) get_post_meta( $this->stranded, '_tec_tickets_commerce_event', true );
+		$_GET[ Date_Filter::NAME ] = (string) get_post_meta( $this->stranded, '_tec_tickets_commerce_event', true );
 
 		$this->assertSame( [ $this->stranded ], $this->table_attendees() );
 
 		// A date the event's attendees do not hold changes nothing.
-		$_GET[ Attendees_Page::DATE_FILTER ] = (string) static::factory()->post->create();
+		$_GET[ Date_Filter::NAME ] = (string) static::factory()->post->create();
 
 		$this->assertSame( [ $this->kept, $this->stranded ], $this->table_attendees() );
 	}

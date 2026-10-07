@@ -123,7 +123,15 @@ class Orders extends WP_List_Table {
 			'total'            => __( 'Total', 'event-tickets' ),
 		];
 
-		return $columns;
+		/**
+		 * Filters the columns of the Tickets Commerce orders table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,string> $columns The columns, as [ <slug> => <title> ].
+		 * @param int                  $post_id The post whose orders are listed, 0 if none.
+		 */
+		return (array) apply_filters( 'tec_tickets_commerce_reports_orders_table_columns', $columns, (int) tribe_get_request_var( 'event_id', tribe_get_request_var( 'post_id', 0 ) ) );
 	}
 
 	/**
@@ -257,7 +265,18 @@ class Orders extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default( $item, $column ) {
-		return empty( $item->$column ) ? '??' : $item->$column;
+		$value = empty( $item->$column ) ? '??' : $item->$column;
+
+		/**
+		 * Filters the value of a cell of the Tickets Commerce orders table without a column method of its own.
+		 *
+		 * @since TBD
+		 *
+		 * @param string  $value  The cell's value, as HTML.
+		 * @param WP_Post $item   The order.
+		 * @param string  $column The column.
+		 */
+		return apply_filters( 'tec_tickets_commerce_reports_orders_table_column', $value, $item, $column );
 	}
 
 	/**
@@ -545,6 +564,18 @@ class Orders extends WP_List_Table {
 				'href'   => true,
 				'rel'    => true,
 				'target' => true,
+			],
+			'label'  => [
+				'class' => true,
+				'for'   => true,
+			],
+			'select' => [
+				'id'   => true,
+				'name' => true,
+			],
+			'option' => [
+				'selected' => true,
+				'value'    => true,
 			],
 		];
 

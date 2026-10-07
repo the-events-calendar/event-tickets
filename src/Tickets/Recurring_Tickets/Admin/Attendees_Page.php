@@ -36,15 +36,6 @@ final class Attendees_Page {
 	public const DATE_COLUMN = 'tec_tickets_recurring_date';
 
 	/**
-	 * The request variable of the date the attendees table is narrowed to.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const DATE_FILTER = 'tec_tickets_recurring_date';
-
-	/**
 	 * The rows repository.
 	 *
 	 * @since TBD
@@ -63,14 +54,25 @@ final class Attendees_Page {
 	private array $dates = [];
 
 	/**
+	 * The select that narrows the table to one date.
+	 *
+	 * @since TBD
+	 *
+	 * @var Date_Filter
+	 */
+	private Date_Filter $date_filter;
+
+	/**
 	 * Attendees_Page constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Rows $rows The rows repository.
+	 * @param Rows        $rows        The rows repository.
+	 * @param Date_Filter $date_filter The select that narrows the table to one date.
 	 */
-	public function __construct( Rows $rows ) {
-		$this->rows = $rows;
+	public function __construct( Rows $rows, Date_Filter $date_filter ) {
+		$this->rows        = $rows;
+		$this->date_filter = $date_filter;
 	}
 
 	/**
@@ -163,7 +165,7 @@ final class Attendees_Page {
 	public function add_date_column( $columns, $event_id ): array {
 		$columns = (array) $columns;
 
-		if ( ! $this->dates( (int) $event_id ) ) {
+		if ( ! $this->held_dates( (int) $event_id ) ) {
 			return $columns;
 		}
 
@@ -209,25 +211,11 @@ final class Attendees_Page {
 	public function add_date_filter( $nav, $which ): array {
 		$nav      = (array) $nav;
 		$event_id = Event::filter_event_id( (int) tribe_get_request_var( 'event_id' ), 'attendees-table' );
-		$dates    = 'top' === $which ? $this->dates( (int) $event_id ) : [];
+		$dates    = 'top' === $which ? $this->held_dates( (int) $event_id ) : [];
 
-		if ( ! $dates ) {
-			return $nav;
+		if ( $dates ) {
+			$nav['left'][ Date_Filter::NAME ] = $this->date_filter->render( $dates );
 		}
-
-		$chosen  = $this->chosen_date( (int) $event_id );
-		$options = sprintf( '<option value="">%s</option>', esc_html__( 'All dates', 'event-tickets' ) );
-		foreach ( $dates as $date_id => $start ) {
-			$options .= sprintf( '<option value="%1$d"%2$s>%3$s</option>', $date_id, selected( $chosen, $date_id, false ), esc_html( tribe_format_date( $start, true ) ) );
-		}
-
-		$nav['left']['tec_tickets_recurring_date'] = sprintf(
-			'<label class="screen-reader-text" for="%1$s">%2$s</label><select name="%1$s" id="%1$s">%3$s</select><input type="submit" class="button action" value="%4$s">',
-			esc_attr( self::DATE_FILTER ),
-			esc_html__( 'Filter by date', 'event-tickets' ),
-			$options,
-			esc_attr__( 'Filter', 'event-tickets' )
-		);
 
 		return $nav;
 	}
@@ -244,7 +232,7 @@ final class Attendees_Page {
 	 */
 	public function narrow_to_date( $args, $event_id ): array {
 		$args   = (array) $args;
-		$chosen = $this->chosen_date( (int) $event_id );
+		$chosen = $this->date_filter->chosen( $this->held_dates( (int) $event_id ) );
 
 		if ( $chosen ) {
 			$args['by']                = (array) ( $args['by'] ?? [] );
@@ -252,21 +240,6 @@ final class Attendees_Page {
 		}
 
 		return $args;
-	}
-
-	/**
-	 * Returns the date the request narrows an event's attendees to, 0 if none or one its attendees do not hold.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $event_id The event.
-	 *
-	 * @return int The date's post ID.
-	 */
-	private function chosen_date( int $event_id ): int {
-		$date_id = absint( tribe_get_request_var( self::DATE_FILTER ) );
-
-		return isset( $this->dates( $event_id )[ $date_id ] ) ? $date_id : 0;
 	}
 
 	/**
@@ -278,7 +251,7 @@ final class Attendees_Page {
 	 *
 	 * @return array<int,string> The date's start, by its post ID.
 	 */
-	private function dates( int $event_id ): array {
+	public function held_dates( int $event_id ): array {
 		if ( $event_id <= 0 ) {
 			return [];
 		}
