@@ -1771,7 +1771,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
-				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
+				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && (
+					// A recurring event ticket has no post: its row's in-memory one tells.
+					\TEC\Tickets\Recurring_Tickets\Ticket_ID::is_table_ticket( $attendee_data['product_id'] )
+						? (bool) tribe( \TEC\Tickets\Recurring_Tickets\Commerce\Row_Post::class )->get( $attendee_data['product_id'] )
+						: get_post( $attendee_data['product_id'] )
+				);
 
 				// Set the ticket type from the ticket object, if possible.
 				$attendee_data['ticket_type'] = 'default';
