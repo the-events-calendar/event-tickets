@@ -78,6 +78,9 @@ final class Recurrence_Controller extends Controller_Contract {
 	public function unregister(): void {
 		remove_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ) );
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5 );
+		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Sync::class, 'sync_event' ), 20 );
+		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ) );
+		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ) );
 	}
 
 	/**
@@ -93,6 +96,13 @@ final class Recurrence_Controller extends Controller_Contract {
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Type::class, 'remember' ), 10, 2 );
 		// Before anything else reads the type of the ticket just saved.
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Ticket_Type::class, 'assign' ), 5, 2 );
+
+		$this->container->singleton( Sync::class );
+
+		// After ECP has pruned the dates it no longer generates, at 10.
+		add_action( 'tec_events_custom_tables_v1_after_save_occurrences', $this->container->callback( Sync::class, 'sync_event' ), 20 );
+		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Sync::class, 'sync_saved_ticket' ), 10, 2 );
+		add_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Sync::class, 'sync_deleted_ticket' ), 10, 2 );
 	}
 
 	/**
