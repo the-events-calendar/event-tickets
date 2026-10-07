@@ -61,6 +61,7 @@ class Date_Tickets_Test extends WPTestCase {
 		[ $event, $dates, $templates ] = $this->create_event_with_templates();
 		$this->insert_ticket_row( [ 'parent_id' => $templates[0], 'post_id' => $event, 'occurrence_id' => $dates[0]->occurrence_id ] );
 		set_current_screen( 'edit-post' );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		$ids = array_column( tribe( Module::class )->get_tickets( $event ), 'ID' );
 
@@ -88,8 +89,24 @@ class Date_Tickets_Test extends WPTestCase {
 		);
 
 		tribe( Module::class )->get_tickets( $dates[0]->provisional_id );
+		// A context skips the list cache of get_tickets(): the date's rows are still read once in the request.
+		tribe( Module::class )->get_tickets( $dates[0]->provisional_id, 'some-context' );
 
 		$this->assertSame( 1, $queries );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_list_a_dates_new_stock_after_a_sale_in_the_same_request(): void {
+		[ $event, $dates, $templates ] = $this->create_event_with_templates();
+		$id                            = $this->insert_ticket_row( [ 'parent_id' => $templates[0], 'post_id' => $event, 'occurrence_id' => $dates[0]->occurrence_id, 'capacity' => 10, 'stock' => 10 ] );
+		tribe( Module::class )->get_tickets( $dates[0]->provisional_id, 'some-context' );
+
+		tribe( Stock::class )->sell( Ticket_ID::to_row_id( $id ), 3 );
+
+		$listed = tribe( Module::class )->get_tickets( $dates[0]->provisional_id, 'some-context' );
+		$this->assertSame( 7, $listed[0]->stock() );
 	}
 
 	/**

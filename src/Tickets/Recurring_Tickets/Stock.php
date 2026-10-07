@@ -17,13 +17,23 @@ use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
  * Class Stock.
  *
  * Every change is one statement, so its check and its write cannot be separated by another buyer: a sale never takes
- * stock below zero. An unlimited row has no stock (NULL) and counts sales only.
+ * stock below zero. A row is unlimited when its capacity is -1: it has no stock (NULL) and counts sales only. A limited
+ * row without stock is inconsistent data, and refuses to sell.
  *
  * @since TBD
  *
  * @package TEC\Tickets\Recurring_Tickets
  */
 final class Stock {
+	/**
+	 * The order meta that lists the table tickets whose sale the row refused, one value per ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const REFUSED_META_KEY = '_tec_tickets_recurring_refused_tickets';
+
 	/**
 	 * The rows.
 	 *
@@ -61,7 +71,7 @@ final class Stock {
 
 		return $this->write(
 			$row_id,
-			'UPDATE %i SET sales = sales + %d, stock = IF( stock IS NULL, NULL, stock - %d ) WHERE id = %d AND ( stock IS NULL OR stock >= %d )',
+			'UPDATE %i SET sales = sales + %d, stock = IF( capacity = -1, NULL, stock - %d ) WHERE id = %d AND ( capacity = -1 OR stock >= %d )',
 			[ $quantity, $quantity, $row_id, $quantity ]
 		) > 0;
 	}
@@ -83,7 +93,7 @@ final class Stock {
 
 		$this->write(
 			$row_id,
-			'UPDATE %i SET stock = IF( stock IS NULL, NULL, LEAST( stock + %d, capacity ) ), sales = IF( sales >= %d, sales - %d, 0 ) WHERE id = %d',
+			'UPDATE %i SET stock = IF( capacity = -1, NULL, LEAST( COALESCE( stock, 0 ) + %d, capacity ) ), sales = IF( sales >= %d, sales - %d, 0 ) WHERE id = %d',
 			[ $quantity, $quantity, $quantity, $row_id ]
 		);
 	}
@@ -122,7 +132,8 @@ final class Stock {
 	}
 
 	/**
-	 * Raises a row's stock only, as `Commerce\Ticket::increase_ticket_stock_by()` does for a post. No stock stays none.
+	 * Raises a row's stock only, as `Commerce\Ticket::increase_ticket_stock_by()` does for a post. An unlimited row stays
+	 * without stock.
 	 *
 	 * @since TBD
 	 *
@@ -132,7 +143,7 @@ final class Stock {
 	 * @return bool Whether the row exists.
 	 */
 	public function add_stock( int $row_id, int $quantity ): bool {
-		$this->write( $row_id, 'UPDATE %i SET stock = IF( stock IS NULL, NULL, stock + %d ) WHERE id = %d', [ max( 0, $quantity ), $row_id ] );
+		$this->write( $row_id, 'UPDATE %i SET stock = IF( capacity = -1, NULL, COALESCE( stock, 0 ) + %d ) WHERE id = %d', [ max( 0, $quantity ), $row_id ] );
 
 		return null !== $this->rows->find( $row_id );
 	}
@@ -149,7 +160,7 @@ final class Stock {
 	 */
 	public function remove_stock( int $row_id, int $quantity ): bool {
 		$quantity = max( 0, $quantity );
-		$this->write( $row_id, 'UPDATE %i SET stock = IF( stock IS NULL, NULL, IF( stock >= %d, stock - %d, 0 ) ) WHERE id = %d', [ $quantity, $quantity, $row_id ] );
+		$this->write( $row_id, 'UPDATE %i SET stock = IF( capacity = -1, NULL, IF( stock >= %d, stock - %d, 0 ) ) WHERE id = %d', [ $quantity, $quantity, $row_id ] );
 
 		return null !== $this->rows->find( $row_id );
 	}
@@ -161,12 +172,43 @@ final class Stock {
 	 *
 	 * @param int $row_id The row ID.
 	 *
-	 * @return int|null The stock, or null when the row is unlimited or missing.
+	 * @return int|null The stock, or null when the row has none (unlimited) or is missing.
 	 */
 	public function lock( int $row_id ): ?int {
 		$stock = DB::get_var( DB::prepare( 'SELECT stock FROM %i WHERE id = %d FOR UPDATE', Tickets::table_name(), $row_id ) );
 
 		return null === $stock ? null : (int) $stock;
+	}
+
+	/**
+	 * Records on an order that the sale of a table ticket was refused: nothing was taken from its row.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id  The order ID.
+	 * @param int $ticket_id The table ticket ID.
+	 *
+	 * @return void
+	 */
+	public function record_refusal( int $order_id, int $ticket_id ): void {
+		if ( ! $this->was_refused( $order_id, $ticket_id ) ) {
+			add_post_meta( $order_id, self::REFUSED_META_KEY, $ticket_id );
+		}
+	}
+
+	/**
+	 * Whether an order's sale of a table ticket was refused, so a refund or an attendee deletion has nothing to give
+	 * back to the row.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_id  The order ID.
+	 * @param int $ticket_id The table ticket ID.
+	 *
+	 * @return bool Whether the sale was refused.
+	 */
+	public function was_refused( int $order_id, int $ticket_id ): bool {
+		return $order_id > 0 && in_array( (string) $ticket_id, (array) get_post_meta( $order_id, self::REFUSED_META_KEY, false ), true );
 	}
 
 	/**

@@ -49,16 +49,19 @@ final class Template_Guard {
 	/**
 	 * Drops templates from a ticket list built for customers.
 	 *
-	 * The admin and REST requests keep them: the editors read templates there. Selling one is refused by the cart.
+	 * Only someone who can edit the post, asking from the admin or over REST as the editors do, keeps them. Front-end
+	 * AJAX runs in the admin and the calendar views navigate over REST, so neither alone means an editor is asking.
+	 * Selling a template is refused by the cart either way.
 	 *
 	 * @since TBD
 	 *
 	 * @param Ticket_Object[] $tickets The tickets.
+	 * @param int|string      $post_id The post the tickets were asked for.
 	 *
-	 * @return Ticket_Object[] The tickets, without templates on the front end.
+	 * @return Ticket_Object[] The tickets, without templates unless an editor asks.
 	 */
-	public function drop_from_front_end( array $tickets ): array {
-		if ( is_admin() || wp_is_serving_rest_request() ) {
+	public function drop_from_front_end( array $tickets, $post_id = 0 ): array {
+		if ( ( is_admin() || wp_is_serving_rest_request() ) && current_user_can( 'edit_post', (int) $post_id ) ) {
 			return $tickets;
 		}
 

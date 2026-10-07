@@ -39,11 +39,42 @@ class Template_Guard_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function it_should_keep_templates_in_the_admin(): void {
+	public function it_should_keep_templates_in_the_admin_for_who_can_edit_the_event(): void {
 		[ $event, $template, $default ] = $this->create_event();
 		set_current_screen( 'edit-post' );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		$this->assertSame( [ $template, $default ], array_column( tribe( Module::class )->get_tickets( $event ), 'ID' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_drop_templates_from_an_admin_request_of_a_visitor(): void {
+		// A front-end AJAX request runs in the admin: is_admin() alone does not mean an editor is asking.
+		[ $event, $template, $default ] = $this->create_event();
+		set_current_screen( 'edit-post' );
+		wp_set_current_user( 0 );
+
+		$this->assertSame( [ $default ], array_column( tribe( Module::class )->get_tickets( $event ), 'ID' ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_keep_a_template_added_by_code_out_of_the_cart_items(): void {
+		[ $event, $template, $default ] = $this->create_event();
+		$cart = tribe( Cart::class );
+		$cart->add_ticket( $template, 1 );
+		$cart->add_ticket( $default, 1 );
+
+		try {
+			$items = $cart->get_repository()->get_items_in_cart( true );
+		} finally {
+			$cart->clear_cart();
+		}
+
+		$this->assertSame( [ $default ], array_values( array_map( 'intval', array_column( $items, 'ticket_id' ) ) ) );
 	}
 
 	/**
