@@ -5,6 +5,9 @@ namespace TEC\Tickets\Recurring_Tickets;
 use Codeception\TestCase\WPTestCase;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Updates\Events;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
@@ -63,6 +66,31 @@ class Detach_Test extends WPTestCase {
 
 		$this->assertNull( tribe( Rows::class )->find( (int) $sold->id ) );
 		$this->assertCount( 4, tribe( Rows::class )->get_by_post( $event ), 'The other dates keep their rows.' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_move_the_orders_of_a_detached_date_to_its_ticket(): void {
+		[ , $dates, $sold ] = $this->create_event_with_a_sale();
+		$row_ticket         = Ticket_ID::from_row_id( (int) $sold->id );
+		// A buyer's payment is still on its way.
+		$pending = $this->create_row_order( [ $row_ticket => 1 ], Pending::SLUG );
+
+		$single = (int) tribe( Events::class )->detach_occurrence_from_event( $dates[2] );
+		$ticket = (int) get_posts( [ 'post_type' => Ticket::POSTTYPE, 'fields' => 'ids', 'meta_key' => Ticket::$event_relation_meta_key, 'meta_value' => $single ] )[0];
+
+		$items = array_values( (array) get_post_meta( $pending->ID, Order::$items_meta_key, true ) );
+		$this->assertSame( [ $ticket, $single ], [ (int) $items[0]['ticket_id'], (int) $items[0]['event_id'] ] );
+		$this->assertContains( (string) $ticket, get_post_meta( $pending->ID, Order::$tickets_in_order_meta_key ) );
+		$this->assertNotContains( (string) $row_ticket, get_post_meta( $pending->ID, Order::$tickets_in_order_meta_key ) );
+		$this->assertContains( (string) $single, get_post_meta( $pending->ID, Order::$events_in_order_meta_key ) );
+
+		// The payment arrives.
+		tribe( Order::class )->modify_status( $pending->ID, Completed::SLUG );
+
+		$this->assertCount( 1, get_posts( [ 'post_type' => 'tec_tc_attendee', 'post_parent' => $pending->ID, 'post_status' => 'any', 'fields' => 'ids', 'meta_key' => '_tec_tickets_commerce_ticket', 'meta_value' => $ticket ] ) );
+		$this->assertSame( '7', get_post_meta( $ticket, '_stock', true ) );
 	}
 
 	/**
