@@ -14,6 +14,8 @@ use TEC\Tickets\Event;
 use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 use TEC\Tickets\Recurring_Tickets\Ticket_ID;
+use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Lists a recurring event's attendees of every date on the event, marks those whose date is gone, shows each one's
@@ -87,14 +89,23 @@ final class Attendees_Page {
 	 * @return int[] The post IDs, with the events' dates.
 	 */
 	public function filter_event_ids( $post_ids ): array {
-		$post_ids = array_values( array_filter( array_map( 'intval', (array) $post_ids ) ) );
+		$post_ids = (array) $post_ids;
 
-		if ( ! $post_ids ) {
+		// Without The Events Calendar there are no events, nor dates.
+		if ( ! class_exists( TEC::class ) ) {
 			return $post_ids;
 		}
 
+		// Only an event's attendees hold its dates.
+		$event_ids = array_values( array_filter( array_map( 'intval', $post_ids ), static fn( int $id ) => $id > 0 && TEC::POSTTYPE === get_post_type( $id ) ) );
+
+		if ( ! $event_ids ) {
+			return $post_ids;
+		}
+
+		// ponytail: scans the event meta of every recurring event ticket attendee; a lookup table when sites hold 100k+.
 		global $wpdb;
-		$placeholders = implode( ', ', array_fill( 0, count( $post_ids ), '%d' ) );
+		$placeholders = implode( ', ', array_fill( 0, count( $event_ids ), '%d' ) );
 		$date_ids     = DB::get_col(
 			DB::prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- One placeholder per ID.
@@ -102,11 +113,28 @@ final class Attendees_Page {
 				$wpdb->postmeta,
 				$wpdb->postmeta,
 				Attendees::POST_ID_META_KEY,
-				...$post_ids
+				...$event_ids
 			)
 		);
 
 		return array_values( array_unique( array_merge( $post_ids, array_map( 'intval', (array) $date_ids ) ) ) );
+	}
+
+	/**
+	 * Cleans an event's cached attendees with its date's, since the event's list holds the date's attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|mixed $post_id The post whose cached attendees were cleaned.
+	 *
+	 * @return void
+	 */
+	public function forget_event_cache( $post_id ): void {
+		$event_id = (int) Event::filter_event_id( (int) $post_id, 'recurring-tickets-attendees-cache' );
+
+		if ( $event_id > 0 && (int) $post_id !== $event_id ) {
+			tribe( 'post-transient' )->delete( $event_id, Tickets::ATTENDEES_CACHE );
+		}
 	}
 
 	/**
