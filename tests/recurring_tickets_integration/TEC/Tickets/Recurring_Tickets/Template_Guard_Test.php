@@ -163,7 +163,11 @@ class Template_Guard_Test extends WPTestCase {
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket( $event, 10, [ 'ticket_name' => 'Template' ] );
 		update_post_meta( $template, '_type', Template_Guard::TICKET_TYPE );
+		$default = $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Default' ] );
 
-		return [ $event, $template, $this->create_tc_ticket( $event, 5, [ 'ticket_name' => 'Default' ] ) ];
+		// Tickets are listed by menu order alone: give each its own, so tickets created in the same second keep an order.
+		wp_update_post( [ 'ID' => $default, 'menu_order' => 1 ] );
+
+		return [ $event, $template, $default ];
 	}
 }
