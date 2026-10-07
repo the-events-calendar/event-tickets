@@ -290,6 +290,23 @@
 			}
 		},
 		{
+			"name": "event starts in the autumn overlap east of UTC",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 3600, "anchor": "end" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Europe/Athens",
+			"event_start": "2026-10-25 03:30:00",
+			"event_end": "2026-10-25 04:45:00",
+			"expected": {
+				"start_local": "2026-10-25 03:45:00",
+				"start_utc": "2026-10-25 00:45:00",
+				"end_local": "2026-10-25 03:30:00",
+				"end_utc": "2026-10-25 01:30:00",
+				"valid": true
+			}
+		},
+		{
 			"name": "minutes before end land in the spring gap",
 			"rule": {
 				"start": { "mode": "default" },
