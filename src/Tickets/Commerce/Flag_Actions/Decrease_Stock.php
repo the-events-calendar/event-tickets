@@ -11,6 +11,8 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Traits\Is_Ticket;
 use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
+use TEC\Tickets\Recurring_Tickets\Stock;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Global_Stock as Global_Stock;
@@ -126,6 +128,13 @@ class Decrease_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
+			// A recurring event ticket sells from its row, in one statement that refuses to oversell.
+			if ( Ticket_ID::is_table_ticket( $ticket->ID ) ) {
+				$this->sell_from_row( $ticket, $quantity, $post );
+
+				continue;
+			}
+
 			// Get the original stock of the ticket.
 			$original_stock = $ticket->stock();
 			$global_stock   = new Global_Stock( $ticket->get_event_id() );
@@ -162,6 +171,45 @@ class Decrease_Stock extends Flag_Action_Abstract {
 			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $quantity );
 
 			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $stock );
+		}
+	}
+
+	/**
+	 * Sells a recurring event ticket from its row.
+	 *
+	 * When the last tickets were sold between the checkout check and this status, nothing changes: the row is never
+	 * oversold, and the order is logged for the site owner.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket   The ticket.
+	 * @param int           $quantity The quantity sold.
+	 * @param \WP_Post      $order    The order.
+	 *
+	 * @return void
+	 */
+	private function sell_from_row( Ticket_Object $ticket, int $quantity, \WP_Post $order ): void {
+		if ( ! tribe( Stock::class )->sell( Ticket_ID::to_row_id( (int) $ticket->ID ), $quantity ) ) {
+			// A refund or an attendee deletion must then give nothing back.
+			tribe( Stock::class )->record_refusal( $order->ID, (int) $ticket->ID );
+
+			do_action(
+				'tribe_log',
+				'warning',
+				'A recurring event ticket sold out between the checkout check and the order; its stock was not changed.',
+				[
+					'order_id'  => $order->ID,
+					'ticket_id' => (int) $ticket->ID,
+					'quantity'  => $quantity,
+				]
+			);
+
+			return;
+		}
+
+		if ( $ticket->manage_stock() ) {
+			/** This action is documented in src/Tickets/Commerce/Flag_Actions/Decrease_Stock.php */
+			do_action( 'tec_tickets_commerce_decrease_ticket_stock', $ticket, $quantity );
 		}
 	}
 }
