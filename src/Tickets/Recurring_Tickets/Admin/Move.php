@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets\Admin;
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Recurring_Tickets\Commerce\Attendees;
 use TEC\Tickets\Recurring_Tickets\Hydrator;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
@@ -115,10 +116,19 @@ final class Move {
 
 		$row = $this->rows->find( Ticket_ID::to_row_id( (int) $to_ticket ) );
 
-		if ( $row instanceof Ticket ) {
-			// Its date, whichever ID the move named it by: the event's own one stands for its first date.
-			update_post_meta( $attendee_id, '_tec_tickets_commerce_event', $this->hydrator->event_id( $row ) );
-			$this->attendees->write( $attendee_id, $row );
+		if ( ! $row instanceof Ticket ) {
+			return;
+		}
+
+		// Its date, whichever ID the move named it by: the event's own one stands for its first date.
+		$date_id = $this->hydrator->event_id( $row );
+		update_post_meta( $attendee_id, '_tec_tickets_commerce_event', $date_id );
+		$this->attendees->write( $attendee_id, $row );
+
+		// Its order is the new date's too: a gone date no longer finds it.
+		$order_id = (int) wp_get_post_parent_id( $attendee_id );
+		if ( $order_id && ! in_array( (string) $date_id, (array) get_post_meta( $order_id, Order::$events_in_order_meta_key, false ), true ) ) {
+			add_post_meta( $order_id, Order::$events_in_order_meta_key, $date_id );
 		}
 	}
 
@@ -141,7 +151,10 @@ final class Move {
 			return $tickets;
 		}
 
-		$first = Occurrence::where( 'post_id', $post_id )->order_by( 'start_date', 'ASC' )->first();
+		// Without ECP, there are no dates to sell its templates.
+		$first = did_action( 'tec_events_pro_custom_tables_v1_fully_activated' )
+			? Occurrence::where( 'post_id', $post_id )->order_by( 'start_date', 'ASC' )->first()
+			: null;
 
 		if ( ! $first ) {
 			return array_values( array_diff_key( $tickets, $templates ) );
