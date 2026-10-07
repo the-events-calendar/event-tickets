@@ -4,6 +4,8 @@ namespace TEC\Tickets\Recurring_Tickets;
 
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Tickets\Recurring_Tickets\Tables\Tickets;
 
 /**
@@ -58,5 +60,17 @@ class Core_Controller_Test extends Controller_Test_Case {
 		$controller->unregister();
 
 		$this->assertSame( 1, Tickets::get_total_items() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_tell_ecp_a_table_ticket_id_is_not_a_date(): void {
+		$this->make_controller()->register();
+		$provisional = tribe( Provisional_Post::class );
+
+		$this->assertFalse( $provisional->is_provisional_post_id( Ticket_ID::from_row_id( 5 ) ) );
+		$this->assertFalse( $provisional->is_provisional_post_id( (string) Ticket_ID::base() ) );
+		$this->assertTrue( $provisional->is_provisional_post_id( tribe( ID_Generator::class )->current() + 1 ), 'A date is still a date.' );
 	}
 }

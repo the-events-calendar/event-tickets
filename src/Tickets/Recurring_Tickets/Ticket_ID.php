@@ -71,6 +71,22 @@ final class Ticket_ID {
 	}
 
 	/**
+	 * Tells ECP a table ticket ID is not the provisional ID of a date.
+	 *
+	 * Both live above ECP's provisional base; without this, ECP looks a ticket ID up as a date.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool       $is_provisional Whether ECP reads the ID as a date's provisional ID.
+	 * @param int|string $post_id        The ID.
+	 *
+	 * @return bool Whether ECP should read the ID as a date's provisional ID.
+	 */
+	public static function filter_provisional_post_id( $is_provisional, $post_id ): bool {
+		return $is_provisional && ! self::is_table_ticket( $post_id );
+	}
+
+	/**
 	 * Returns the ticket ID of a row.
 	 *
 	 * @since TBD
