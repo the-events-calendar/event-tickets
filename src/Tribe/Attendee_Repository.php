@@ -1,6 +1,9 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Recurring_Tickets\Core_Controller as Recurring_Tickets_Core;
+use TEC\Tickets\Recurring_Tickets\Tables\Tickets as Recurring_Tickets_Table;
+use TEC\Tickets\Recurring_Tickets\Ticket_ID as Recurring_Ticket_ID;
 
 /**
  * Class Tribe__Tickets__Attendee_Repository
@@ -1734,6 +1737,16 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			AND COALESCE(type.meta_value, 'default') {$operator} ({$prepared_ticket_types})
 		)";
 
+		// A recurring event ticket is a row, not a post: its Attendees hold its table ticket ID.
+		if ( tribe()->getVar( Recurring_Tickets_Core::TABLE_READY ) ) {
+			$rows_table = Recurring_Tickets_Table::table_name();
+			$id_base    = Recurring_Ticket_ID::base();
+			$where      = "( {$where} OR {$alias}.meta_value IN (
+				SELECT recurring_rows.id + {$id_base} FROM {$rows_table} recurring_rows
+				WHERE recurring_rows.type {$operator} ({$prepared_ticket_types})
+			) )";
+		}
+
 		$this->join_clause( $join );
 		$this->where_clause( $where );
 	}
@@ -1742,6 +1755,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters the Attendees by keeping only the ones for Tickets of a specific type.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Matches the Attendees of recurring event tickets too.
 	 *
 	 * @param string|string[] $ticket_type The type of Ticket to keep Attendees for.
 	 *
@@ -1755,6 +1769,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters the Attendees by keeping only the ones for Tickets that are not of a specific type.
 	 *
 	 * @since 5.8.2
+	 * @since TBD Matches the Attendees of recurring event tickets too.
 	 *
 	 * @param string|string[] $ticket_type The type of Ticket to exclude Attendees for.
 	 *
