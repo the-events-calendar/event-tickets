@@ -16,6 +16,11 @@ $plugins_dir = dirname( __DIR__, 3 );
 Autoload::addNamespace( 'Tribe\Events\Test', $plugins_dir . '/the-events-calendar/tests/_support' );
 Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $plugins_dir . '/events-pro/tests/_support' );
 
+// Every recurring event sits in a Series: make Series ticketable, so Series Passes sell next to recurring event tickets.
+$ticketable_post_types   = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+$ticketable_post_types[] = \TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type::POSTTYPE;
+tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable_post_types ) ) );
+
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );
