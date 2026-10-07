@@ -83,7 +83,8 @@ final class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		$this->container->singleton( Rule_Store::class );
+		// The tickets handler is bound only by name: autowiring its class would build a second one, which hooks again.
+		$this->container->singleton( Rule_Store::class, static fn() => new Rule_Store( tribe( 'tickets.handler' ) ) );
 		$this->container->singleton( Ticket_Save::class );
 
 		add_action( 'tec_tickets_ticket_pre_save', $this->container->callback( Ticket_Save::class, 'set_ticket_dates' ), 10, 3 );

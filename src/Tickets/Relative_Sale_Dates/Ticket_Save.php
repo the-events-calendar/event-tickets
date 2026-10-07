@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe__Date_Utils as Dates;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
@@ -37,6 +38,15 @@ final class Ticket_Save {
 	 * @var string
 	 */
 	public const DATA_KEY = 'relative_sale_dates';
+
+	/**
+	 * The ticket types relative sale dates never apply to: Series Passes, and RSVPs stored as Tickets Commerce tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	public const EXCLUDED_TICKET_TYPES = [ Series_Passes::TICKET_TYPE, RSVP_V2_Constants::TC_RSVP_TYPE ];
 
 	/**
 	 * The store of the ticket rules.
@@ -192,10 +202,10 @@ final class Ticket_Save {
 	 * @param int    $post_id     The ticket parent post ID.
 	 * @param string $ticket_type The ticket type.
 	 *
-	 * @return bool Whether the ticket is an event ticket that is not a Series Pass.
+	 * @return bool Whether the ticket is an event ticket of a type the rule applies to.
 	 */
 	private function applies_to( int $post_id, string $ticket_type ): bool {
-		return 'tribe_events' === get_post_type( $post_id ) && Series_Passes::TICKET_TYPE !== $ticket_type;
+		return 'tribe_events' === get_post_type( $post_id ) && ! in_array( $ticket_type, self::EXCLUDED_TICKET_TYPES, true );
 	}
 
 	/**

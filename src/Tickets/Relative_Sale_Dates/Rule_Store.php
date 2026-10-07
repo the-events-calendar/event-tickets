@@ -11,6 +11,8 @@ declare( strict_types=1 );
 
 namespace TEC\Tickets\Relative_Sale_Dates;
 
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+
 /**
  * Keeps the ticket's rules in one JSON meta, writing only the keys it is given so one rule never drops another.
  *
@@ -27,6 +29,26 @@ final class Rule_Store {
 	 * @var string
 	 */
 	public const META_KEY = '_tec_tickets_relative_sale_dates';
+
+	/**
+	 * The tickets handler, which owns the flag that keeps a ticket end from following the event start.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tickets_Handler
+	 */
+	private Tickets_Handler $tickets_handler;
+
+	/**
+	 * Rule_Store constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tickets_Handler $tickets_handler The tickets handler.
+	 */
+	public function __construct( Tickets_Handler $tickets_handler ) {
+		$this->tickets_handler = $tickets_handler;
+	}
 
 	/**
 	 * Gets everything stored for a ticket.
@@ -103,8 +125,7 @@ final class Rule_Store {
 			return;
 		}
 
-		$tickets_handler = tribe( 'tickets.handler' );
-		delete_post_meta( $ticket_id, $tickets_handler->key_manual_updated, $tickets_handler->key_end_date );
+		delete_post_meta( $ticket_id, $this->tickets_handler->key_manual_updated, $this->tickets_handler->key_end_date );
 	}
 
 	/**

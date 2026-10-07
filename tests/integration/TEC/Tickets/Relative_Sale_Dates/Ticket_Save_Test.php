@@ -9,6 +9,7 @@ use DateTimeZone;
 use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use TEC\Tickets\Ticket_Actions;
 use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -210,6 +211,14 @@ class Ticket_Save_Test extends Controller_Test_Case {
 				$test->create_event( '2027-06-24 19:00:00' ),
 				1,
 				array_merge( $data, [ 'ticket_type' => Series_Passes::TICKET_TYPE ] )
+			),
+		];
+
+		yield 'RSVP V2 on an event' => [
+			static fn( self $test, array $data ): int => $test->create_tc_ticket(
+				$test->create_event( '2027-06-24 19:00:00' ),
+				0,
+				array_merge( $data, [ 'ticket_type' => RSVP_V2_Constants::TC_RSVP_TYPE ] )
 			),
 		];
 	}
