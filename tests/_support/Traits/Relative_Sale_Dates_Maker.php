@@ -4,10 +4,14 @@ namespace Tribe\Tickets\Test\Traits;
 
 use ActionScheduler_Action;
 use ActionScheduler_Store;
+use DateTimeImmutable;
+use TEC\Tickets\Relative_Sale_Dates\Rule_Store;
 use TEC\Tickets\Ticket_Actions;
 
 /**
  * Builds the events, rules and lookups the Relative Sale Dates tests share.
+ *
+ * `create_ruled_ticket()` needs the Tickets Commerce `Ticket_Maker` trait in the test case as well.
  */
 trait Relative_Sale_Dates_Maker {
 	/**
@@ -81,5 +85,55 @@ trait Relative_Sale_Dates_Maker {
 	 */
 	protected function get_ticket_end( int $ticket_id ): array {
 		return [ get_post_meta( $ticket_id, '_ticket_end_date', true ), get_post_meta( $ticket_id, '_ticket_end_time', true ) ];
+	}
+
+	/**
+	 * Asserts a ticket's dates and sales actions follow the rule "2 weeks before the start to 1 day before the start".
+	 *
+	 * @param DateTimeImmutable $event_start The event start the ticket should be resolved from, in the event timezone.
+	 * @param int               $ticket_id   The ticket post ID.
+	 *
+	 * @return void
+	 */
+	protected function assert_resolved_from( DateTimeImmutable $event_start, int $ticket_id ): void {
+		$sales_start = $event_start->modify( '-2 weeks' );
+		$sales_end   = $event_start->modify( '-1 day' );
+		// Ticket_Actions schedules each action 30 minutes ahead of the date it announces.
+		$lead_time = 30 * MINUTE_IN_SECONDS;
+
+		$this->assertSame( [ $sales_start->format( 'Y-m-d' ), $sales_start->format( 'H:i:s' ) ], $this->get_ticket_start( $ticket_id ) );
+		$this->assertSame( [ $sales_end->format( 'Y-m-d' ), $sales_end->format( 'H:i:s' ) ], $this->get_ticket_end( $ticket_id ) );
+		$this->assertSame( [ $sales_start->getTimestamp() - $lead_time ], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_START_SALES_HOOK, $ticket_id ) );
+		$this->assertSame( [ $sales_end->getTimestamp() - $lead_time ], $this->get_scheduled_timestamps( Ticket_Actions::TICKET_END_SALES_HOOK, $ticket_id ) );
+	}
+
+	/**
+	 * Creates a Tickets Commerce ticket and stores the rule "2 weeks before the start to 1 day before the start" on it.
+	 *
+	 * @param int                   $event_id  The event post ID.
+	 * @param array<string,string>  $overrides The ticket data to override.
+	 *
+	 * @return int The ticket post ID.
+	 */
+	protected function create_ruled_ticket( int $event_id, array $overrides = [] ): int {
+		$ticket_id = $this->create_tc_ticket( $event_id, 1, $overrides );
+		tribe( Rule_Store::class )->save(
+			$ticket_id,
+			[
+				'start' => $this->relative( 2, WEEK_IN_SECONDS ),
+				'end'   => $this->relative( 1, DAY_IN_SECONDS ),
+			]
+		);
+
+		return $ticket_id;
+	}
+
+	/**
+	 * Ticket_Actions schedules nothing for a sales window that has already ended, so the events are a year away.
+	 *
+	 * @return DateTimeImmutable An event start at 19:00 UTC, a year from now.
+	 */
+	protected function get_future_event_start(): DateTimeImmutable {
+		return new DateTimeImmutable( ( new DateTimeImmutable( '+1 year' ) )->format( 'Y-m-d 19:00:00' ) );
 	}
 }
