@@ -1,6 +1,6 @@
 <?php
 /**
- * Moves rows with the dates ECP moves to another event.
+ * Moves rows with the dates ECP moves to another event, and turns a detached date's rows into tickets.
  *
  * @since TBD
  *
@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
 
@@ -33,6 +34,15 @@ final class Detach {
 	 * @var array<string,array<int,int>>
 	 */
 	private array $clones = [];
+
+	/**
+	 * The dates each transfer of this request moved, by original and copy event.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,int[]>
+	 */
+	private array $moved = [];
 
 	/**
 	 * The rows repository.
@@ -89,6 +99,8 @@ final class Detach {
 		$to_id          = (int) $to_id;
 		$occurrence_ids = array_map( 'intval', (array) $occurrence_ids );
 
+		$this->moved[ $this->pair( $from_id, $to_id ) ] = $occurrence_ids;
+
 		$by_template = [];
 		foreach ( $this->rows->get_by_post( $from_id ) as $row ) {
 			if ( in_array( (int) $row->occurrence_id, $occurrence_ids, true ) ) {
@@ -111,6 +123,84 @@ final class Detach {
 			$this->rows->delete_ids( array_map( static fn( Ticket $row ) => (int) $row->id, $fresh ) );
 
 			$this->rows->move( $row_ids, $to_id, $clone_id );
+		}
+	}
+
+	/**
+	 * Turns the rows of a date detached into a single event into that event's tickets, or deletes them with a trashed date.
+	 *
+	 * "This event" makes the date a single event, which sells real tickets: each row's clone of its template gets the
+	 * row's values and attendees, and the row goes. Trashing one date detaches it, then trashes the single event: the
+	 * rows go and their attendees keep the row's ticket ID and the date's ID, stranded.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $occurrence       The detached date; ECP may name another date of the new event, so the moved
+	 *                                 dates come from the transfer that came first.
+	 * @param int    $new_post_id      The single event.
+	 * @param int    $original_post_id The recurring event.
+	 *
+	 * @return void
+	 */
+	public function detach_rows( $occurrence, $new_post_id, $original_post_id ): void {
+		$new_post_id    = (int) $new_post_id;
+		$occurrence_ids = $this->moved[ $this->pair( (int) $original_post_id, $new_post_id ) ] ?? [ (int) ( $occurrence->occurrence_id ?? 0 ) ];
+		$rows           = array_filter(
+			$this->rows->get_by_post( $new_post_id ),
+			static fn( Ticket $row ) => in_array( (int) $row->occurrence_id, $occurrence_ids, true )
+		);
+
+		if ( ! doing_action( 'trashed_post' ) ) {
+			foreach ( $rows as $row ) {
+				$this->become_ticket( $row, $new_post_id );
+			}
+		}
+
+		$this->rows->delete_ids( array_map( static fn( Ticket $row ) => (int) $row->id, $rows ) );
+	}
+
+	/**
+	 * Gives a row's clone of its template the row's values, and the row's attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket $row     The row.
+	 * @param int    $post_id The single event.
+	 *
+	 * @return void
+	 */
+	private function become_ticket( Ticket $row, int $post_id ): void {
+		$ticket_id = (int) $row->parent_id;
+
+		if ( Commerce_Ticket::POSTTYPE !== get_post_type( $ticket_id ) ) {
+			return;
+		}
+
+		$capacity  = (int) $row->capacity;
+		$unlimited = -1 === $capacity;
+
+		wp_update_post(
+			[
+				'ID'           => $ticket_id,
+				'post_title'   => (string) $row->name,
+				'post_excerpt' => (string) $row->description,
+			]
+		);
+		update_post_meta( $ticket_id, '_type', 'default' );
+		update_post_meta( $ticket_id, Commerce_Ticket::$price_meta_key, Price::to_decimal( (int) $row->price ) );
+		update_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_capacity, $capacity );
+		update_post_meta( $ticket_id, Commerce_Ticket::$should_manage_stock_meta_key, $unlimited ? 'no' : 'yes' );
+		update_post_meta( $ticket_id, Commerce_Ticket::$sales_meta_key, (int) $row->sales );
+
+		if ( $unlimited ) {
+			delete_post_meta( $ticket_id, Commerce_Ticket::$stock_meta_key );
+		} else {
+			update_post_meta( $ticket_id, Commerce_Ticket::$stock_meta_key, (int) $row->stock );
+		}
+
+		foreach ( tec_tc_attendees()->where( 'ticket', Ticket_ID::from_row_id( (int) $row->id ) )->get_ids() as $attendee_id ) {
+			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_ticket', $ticket_id );
+			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $post_id );
 		}
 	}
 
