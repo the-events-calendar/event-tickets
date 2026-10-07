@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Recurring_Tickets;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
 use TEC\Tickets\Recurring_Tickets\Models\Ticket;
 use TEC\Tickets\Recurring_Tickets\Repositories\Tickets as Rows;
@@ -201,6 +202,64 @@ final class Detach {
 		foreach ( tec_tc_attendees()->where( 'ticket_id', Ticket_ID::from_row_id( (int) $row->id ) )->get_ids() as $attendee_id ) {
 			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_ticket', $ticket_id );
 			update_post_meta( (int) $attendee_id, '_tec_tickets_commerce_event', $post_id );
+		}
+
+		$this->move_orders( Ticket_ID::from_row_id( (int) $row->id ), $ticket_id, $post_id );
+	}
+
+	/**
+	 * Moves the order lines of a row to the ticket it became, so an order completed or refunded later finds it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $row_ticket_id The row's ticket ID.
+	 * @param int $ticket_id     The ticket it became.
+	 * @param int $post_id       The single event.
+	 *
+	 * @return void
+	 */
+	private function move_orders( int $row_ticket_id, int $ticket_id, int $post_id ): void {
+		$orders = get_posts(
+			[
+				'post_type'      => Order::POSTTYPE,
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- The index orders keep of their tickets.
+				'meta_key'       => Order::$tickets_in_order_meta_key,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- As above.
+				'meta_value'     => $row_ticket_id,
+			]
+		);
+
+		foreach ( $orders as $order_id ) {
+			$items  = (array) get_post_meta( $order_id, Order::$items_meta_key, true );
+			$moved  = [];
+			$events = [];
+
+			foreach ( $items as $key => $item ) {
+				if ( is_array( $item ) && (int) ( $item['ticket_id'] ?? 0 ) === $row_ticket_id ) {
+					$item['ticket_id'] = $ticket_id;
+					$item['event_id']  = $post_id;
+					$key               = (int) $key === $row_ticket_id ? $ticket_id : $key;
+				}
+
+				$moved[ $key ] = $item;
+				$events[]      = (int) ( $item['event_id'] ?? 0 );
+			}
+
+			update_post_meta( $order_id, Order::$items_meta_key, $moved );
+			delete_post_meta( $order_id, Order::$tickets_in_order_meta_key, $row_ticket_id );
+			add_post_meta( $order_id, Order::$tickets_in_order_meta_key, $ticket_id );
+
+			// The events the order holds are its lines' events.
+			delete_post_meta( $order_id, Order::$events_in_order_meta_key );
+			foreach ( array_unique( array_filter( $events ) ) as $event_id ) {
+				add_post_meta( $order_id, Order::$events_in_order_meta_key, $event_id );
+			}
+
+			clean_post_cache( $order_id );
 		}
 	}
 
