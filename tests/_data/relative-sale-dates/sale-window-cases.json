@@ -290,6 +290,108 @@
 			}
 		},
 		{
+			"name": "minutes before end land in the spring gap",
+			"rule": {
+				"start": { "mode": "default" },
+				"end": { "mode": "relative", "value": 30, "unit": 60, "anchor": "end" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-03-14 01:00:00",
+			"event_end": "2027-03-14 03:15:00",
+			"expected": {
+				"start_local": null,
+				"start_utc": null,
+				"end_local": "2027-03-14 01:45:00",
+				"end_utc": "2027-03-14 06:45:00",
+				"valid": null
+			}
+		},
+		{
+			"name": "hours before start land in the spring gap",
+			"rule": {
+				"start": { "mode": "relative", "value": 1, "unit": 3600, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "America/New_York",
+			"event_start": "2027-03-14 03:30:00",
+			"event_end": "2027-03-14 05:30:00",
+			"expected": {
+				"start_local": "2027-03-14 01:30:00",
+				"start_utc": "2027-03-14 06:30:00",
+				"end_local": "2027-03-14 03:30:00",
+				"end_utc": "2027-03-14 07:30:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "minutes before start land in a half-hour spring gap",
+			"rule": {
+				"start": { "mode": "relative", "value": 15, "unit": 60, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Australia/Lord_Howe",
+			"event_start": "2026-10-04 02:40:00",
+			"event_end": "2026-10-04 04:40:00",
+			"expected": {
+				"start_local": "2026-10-04 01:55:00",
+				"start_utc": "2026-10-03 15:25:00",
+				"end_local": "2026-10-04 02:40:00",
+				"end_utc": "2026-10-03 15:40:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "3 days before start across the spring change south of the equator",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Australia/Sydney",
+			"event_start": "2026-10-07 10:00:00",
+			"event_end": "2026-10-07 12:00:00",
+			"expected": {
+				"start_local": "2026-10-04 10:00:00",
+				"start_utc": "2026-10-03 23:00:00",
+				"end_local": "2026-10-07 10:00:00",
+				"end_utc": "2026-10-06 23:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "3 days before start in a negative fixed UTC offset",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "-05:00",
+			"event_start": "2027-03-15 10:00:00",
+			"event_end": "2027-03-15 12:00:00",
+			"expected": {
+				"start_local": "2027-03-12 10:00:00",
+				"start_utc": "2027-03-12 15:00:00",
+				"end_local": "2027-03-15 10:00:00",
+				"end_utc": "2027-03-15 15:00:00",
+				"valid": true
+			}
+		},
+		{
+			"name": "3 days before start in a half-hour timezone",
+			"rule": {
+				"start": { "mode": "relative", "value": 3, "unit": 86400, "anchor": "start" },
+				"end": { "mode": "default" }
+			},
+			"timezone": "Asia/Kolkata",
+			"event_start": "2027-03-15 10:00:00",
+			"event_end": "2027-03-15 12:00:00",
+			"expected": {
+				"start_local": "2027-03-12 10:00:00",
+				"start_utc": "2027-03-12 04:30:00",
+				"end_local": "2027-03-15 10:00:00",
+				"end_utc": "2027-03-15 04:30:00",
+				"valid": true
+			}
+		},
+		{
 			"name": "start equal to end",
 			"rule": {
 				"start": { "mode": "relative", "value": 1, "unit": 86400, "anchor": "start" },

@@ -180,28 +180,6 @@ final class Boundary implements JsonSerializable {
 	}
 
 	/**
-	 * Gets the number of units a relative boundary falls before its anchor.
-	 *
-	 * @since TBD
-	 *
-	 * @return int|null The value, or `null` when the boundary is not relative.
-	 */
-	public function get_value(): ?int {
-		return $this->value;
-	}
-
-	/**
-	 * Gets the unit of a relative boundary.
-	 *
-	 * @since TBD
-	 *
-	 * @return int|null The unit, one of the `*_IN_SECONDS` constants from `MINUTE_IN_SECONDS` to `WEEK_IN_SECONDS`, or `null` when the boundary is not relative.
-	 */
-	public function get_unit(): ?int {
-		return $this->unit;
-	}
-
-	/**
 	 * Gets the event date a relative boundary is counted from.
 	 *
 	 * @since TBD

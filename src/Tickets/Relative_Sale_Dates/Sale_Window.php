@@ -80,6 +80,9 @@ final class Sale_Window {
 	 * The interval comes off the wall-clock time, not off the instant, so a clock change in between does not shift the
 	 * result: 8 hours before 08:00 is 00:00 even on a night an hour longer or shorter than usual.
 	 *
+	 * A number of minutes or hours that lands on a time skipped by a clock change comes off the instant instead, as the
+	 * next valid time can fall on or after the anchor: 30 minutes before 03:15 would otherwise be 03:45.
+	 *
 	 * @since TBD
 	 *
 	 * @param DateTimeImmutable $anchor   The date to move back.
@@ -92,8 +95,16 @@ final class Sale_Window {
 		$wall_clock = ( new DateTimeImmutable( $anchor->format( 'Y-m-d H:i:s' ), new DateTimeZone( 'UTC' ) ) )
 			->sub( $interval )
 			->format( 'Y-m-d H:i:s' );
+		$date       = $this->at_wall_clock( $wall_clock, $anchor->getTimezone() );
 
-		return $this->at_wall_clock( $wall_clock, $anchor->getTimezone() );
+		// Days and weeks keep their wall-clock time: a skipped time a day or more back still lands well before the anchor.
+		if ( $interval->d || $date->format( 'Y-m-d H:i:s' ) === $wall_clock ) {
+			return $date;
+		}
+
+		$seconds = ( new DateTimeImmutable( '@0' ) )->add( $interval )->getTimestamp();
+
+		return ( new DateTimeImmutable( '@' . ( $anchor->getTimestamp() - $seconds ) ) )->setTimezone( $anchor->getTimezone() );
 	}
 
 	/**

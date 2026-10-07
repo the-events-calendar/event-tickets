@@ -59,7 +59,9 @@ final class Controller extends Controller_Contract {
 		/**
 		 * Filters whether the Relative Sale Dates feature is active.
 		 *
-		 * Only applies when neither the disabling constant nor the environment variable is set.
+		 * Only applies when neither the disabling constant nor the environment variable is set. It is read while the
+		 * plugins load, so add it from a plugin or a must-use plugin: one added in a theme's `functions.php` comes too
+		 * late and is ignored.
 		 *
 		 * @since TBD
 		 *
