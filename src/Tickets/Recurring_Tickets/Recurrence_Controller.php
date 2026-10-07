@@ -114,6 +114,8 @@ final class Recurrence_Controller extends Controller_Contract {
 		}
 		remove_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );
 		remove_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Seating::class, 'forget_deleted' ), 5 );
+		remove_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Detach::class, 'remember_clones' ) );
+		remove_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ) );
 	}
 
 	/**
@@ -161,6 +163,11 @@ final class Recurrence_Controller extends Controller_Contract {
 		// After the type is set, at 5, and before Sync, at 10.
 		add_action( 'tribe_tickets_ticket_add', $this->container->callback( Seating::class, 'forget' ), 6 );
 		add_action( 'tec_tickets_commerce_ticket_deleted', $this->container->callback( Seating::class, 'forget_deleted' ), 5, 2 );
+
+		$this->container->singleton( Detach::class );
+
+		add_action( 'tec_tickets_tickets_duplicated', $this->container->callback( Detach::class, 'remember_clones' ), 10, 3 );
+		add_action( Events::AFTER_TRANSFER_OCCURRENCES_ACTION, $this->container->callback( Detach::class, 'move_rows' ), 10, 3 );
 
 		$this->container->make( Assets::class )->register();
 	}
