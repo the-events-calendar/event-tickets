@@ -162,6 +162,16 @@ final class Sync {
 		}
 
 		$this->insert_missing( $post_id, $values, $dates, $rows );
+
+		/**
+		 * Fires after Sync brought an event's rows in line with its templates and dates.
+		 *
+		 * @since TBD
+		 *
+		 * @param int   $post_id        The event's post ID.
+		 * @param int[] $occurrence_ids The IDs of the event's dates.
+		 */
+		do_action( 'tec_tickets_recurring_tickets_synced', $post_id, array_map( 'intval', array_keys( $dates ) ) );
 	}
 
 	/**
