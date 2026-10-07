@@ -76,6 +76,34 @@ class Reconcile_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_touch_only_the_attendees_of_the_repointed_rows(): void {
+		$other     = tribe_events()->set_args( [ 'title' => 'Other', 'status' => 'publish', 'start_date' => '+1 week 10:00:00', 'end_date' => '+1 week 12:00:00' ] )->create()->ID;
+		$order     = $this->create_row_order( [ $this->create_tc_ticket( $other, 5 ) => 1 ] );
+		$bystander = $this->attendees_of( $order->ID )[0];
+		$event     = $this->create_event( $this->daily( '10:00:00' ) );
+		$this->create_tc_ticket( $event, 10 );
+		$touched = [];
+		add_filter(
+			'update_post_metadata',
+			static function ( $check, $object_id, $meta_key ) use ( &$touched ) {
+				if ( '_tec_tickets_commerce_event' === $meta_key ) {
+					$touched[] = (int) $object_id;
+				}
+
+				return $check;
+			},
+			10,
+			3
+		);
+
+		$this->change_for_all_events( $event, $this->daily( '11:00:00' ) );
+
+		$this->assertNotContains( $bystander, $touched );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_not_guess_on_a_day_with_two_dates(): void {
 		$event    = $this->create_event( $this->daily( '10:00:00' )->with_date_recurrence( $this->day, false, '15:00:00', '16:00:00' ) );
 		$template = $this->create_tc_ticket( $event, 10 );
