@@ -60,6 +60,7 @@ final class Core_Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_attendees_filter_by_event', $this->container->callback( Admin\Attendees_Page::class, 'filter_event_ids' ) );
 		remove_action( 'event_tickets_attendees_table_ticket_column', $this->container->callback( Admin\Attendees_Page::class, 'mark_stranded' ) );
 		remove_action( 'tec_tickets_my_tickets_ticket_information_after_ticket_name', $this->container->callback( Admin\Attendees_Page::class, 'show_date' ) );
+		remove_action( 'tribe_delete_post_meta_transient_' . \Tribe__Tickets__Tickets::ATTENDEES_CACHE, $this->container->callback( Admin\Attendees_Page::class, 'forget_event_cache' ) );
 	}
 
 	/**
@@ -123,5 +124,6 @@ final class Core_Controller extends Controller_Contract {
 		add_filter( 'tec_tickets_attendees_filter_by_event', $this->container->callback( Admin\Attendees_Page::class, 'filter_event_ids' ) );
 		add_action( 'event_tickets_attendees_table_ticket_column', $this->container->callback( Admin\Attendees_Page::class, 'mark_stranded' ) );
 		add_action( 'tec_tickets_my_tickets_ticket_information_after_ticket_name', $this->container->callback( Admin\Attendees_Page::class, 'show_date' ) );
+		add_action( 'tribe_delete_post_meta_transient_' . \Tribe__Tickets__Tickets::ATTENDEES_CACHE, $this->container->callback( Admin\Attendees_Page::class, 'forget_event_cache' ) );
 	}
 }
