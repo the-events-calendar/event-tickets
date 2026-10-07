@@ -11,6 +11,7 @@ namespace TEC\Tickets\Recurring_Tickets\Editor;
 
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Recurring_Tickets\Template_Guard;
+use TEC\Tickets\Seating\Meta as Seating_Meta;
 use Tribe__Events__Main as TEC;
 use Tribe__Template as Template;
 use Tribe__Tickets__Tickets as Tickets;
@@ -57,11 +58,26 @@ final class Classic {
 	public function render_button( $post_id ): void {
 		$post_id = (int) $post_id;
 
-		if ( TEC::POSTTYPE !== get_post_type( $post_id ) ) {
+		if ( ! $this->offers_recurring_tickets( $post_id ) ) {
 			return;
 		}
 
 		tribe( 'tickets.admin.views' )->template( 'recurring-tickets/form-toggle', [ 'hidden' => ! tribe_is_recurring_event( $post_id ) ] );
+	}
+
+	/**
+	 * Whether the editors offer recurring event tickets on a post: an event without a seating layout.
+	 *
+	 * Seating keeps its own rule for recurring events, as for Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post.
+	 *
+	 * @return bool Whether recurring event tickets are offered.
+	 */
+	public function offers_recurring_tickets( int $post_id ): bool {
+		return TEC::POSTTYPE === get_post_type( $post_id ) && '' === (string) get_post_meta( $post_id, Seating_Meta::META_KEY_LAYOUT_ID, true );
 	}
 
 	/**
