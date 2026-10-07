@@ -222,9 +222,12 @@ final class Orders_Page {
 
 		$dates = $this->attendees_page->held_dates( $event_id );
 		foreach ( $this->rows->get_by_post( $event_id ) as $row ) {
-			$start = $row->occurrence_start instanceof DateTimeInterface ? $row->occurrence_start->format( 'Y-m-d H:i:s' ) : (string) $row->occurrence_start;
+			$date_id = $this->hydrator->event_id( $row );
 
-			$dates[ $this->hydrator->event_id( $row ) ] = $start;
+			// Without ECP, a row names its event: not a date of it.
+			if ( $date_id !== $event_id ) {
+				$dates[ $date_id ] = $row->occurrence_start instanceof DateTimeInterface ? $row->occurrence_start->format( 'Y-m-d H:i:s' ) : (string) $row->occurrence_start;
+			}
 		}
 		asort( $dates );
 

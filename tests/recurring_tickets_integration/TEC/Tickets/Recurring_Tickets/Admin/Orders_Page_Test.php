@@ -129,6 +129,27 @@ class Orders_Page_Test extends WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_not_offer_the_event_as_its_own_date_without_ecp(): void {
+		global $wp_actions;
+		$this->open_the_events_page();
+		$fired = $wp_actions['tec_events_pro_custom_tables_v1_fully_activated'];
+		// As when ECP is not active: a row then names its event, not its date.
+		unset( $wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] );
+
+		try {
+			ob_start();
+			( new Orders_Table() )->extra_tablenav( 'top' );
+			$nav = (string) ob_get_clean();
+		} finally {
+			$wp_actions['tec_events_pro_custom_tables_v1_fully_activated'] = $fired;
+		}
+
+		$this->assertStringNotContainsString( 'value="' . $this->event . '"', $nav );
+	}
+
+	/**
 	 * Opens the event's Orders page; the test case's set up, which runs after the fixture, empties `$_GET`.
 	 *
 	 * @return void
