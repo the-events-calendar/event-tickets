@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+use TEC\Tickets\Recurring_Tickets\Template_Guard;
 
 /**
  * Class Agnostic_Cart
@@ -471,6 +472,7 @@ class Agnostic_Cart extends Abstract_Cart {
 	 * Add the ticket parameters to the item in the cart.
 	 *
 	 * @since 5.21.0
+	 * @since TBD Leaves out the template of a recurring event ticket.
 	 *
 	 * @param array $item The item in the cart.
 	 *
@@ -480,6 +482,11 @@ class Agnostic_Cart extends Abstract_Cart {
 		// Try to get the ticket object, and if it's not valid, remove it from the cart.
 		$item['obj'] = Tickets::load_ticket_object( $item['ticket_id'] );
 		if ( ! $item['obj'] instanceof Ticket_Object ) {
+			return null;
+		}
+
+		// A recurring event ticket's template is never sold, however it reached the cart.
+		if ( tribe( Template_Guard::class )->is_template( (int) $item['ticket_id'] ) ) {
 			return null;
 		}
 

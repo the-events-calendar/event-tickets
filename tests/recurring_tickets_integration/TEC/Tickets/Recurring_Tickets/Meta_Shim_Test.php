@@ -35,7 +35,7 @@ class Meta_Shim_Test extends WPTestCase {
 				'post_id'          => $event,
 				'occurrence_id'    => $date->occurrence_id,
 				'sku'              => 'ROW-SKU',
-				'price'            => 1050,
+				'price'            => 10500,
 				'capacity'         => 100,
 				'stock'            => 97,
 				'sales'            => 3,
@@ -122,7 +122,7 @@ class Meta_Shim_Test extends WPTestCase {
 		$event    = $this->create_recurring_event();
 		$template = $this->create_tc_ticket( $event, 20 );
 		update_post_meta( $template, '_tribe_tickets_meta', [ 'from' => 'template' ] );
-		$id = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 1050 ] );
+		$id = $this->insert_ticket_row( [ 'parent_id' => $template, 'post_id' => $event, 'price' => 10500 ] );
 
 		$all = get_post_meta( $id );
 
@@ -176,10 +176,10 @@ class Meta_Shim_Test extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_answer_an_override_on_the_next_read(): void {
-		$id = $this->insert_ticket_row( [ 'price' => 1050 ] );
+		$id = $this->insert_ticket_row( [ 'price' => 10500 ] );
 		get_post_meta( $id, '_price', true );
 
-		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 1500 ] );
+		tribe( Tickets_Repository::class )->override( Ticket_ID::to_row_id( $id ), [ 'price' => 15000 ] );
 
 		$this->assertSame( '15.00', get_post_meta( $id, '_price', true ) );
 	}
@@ -205,7 +205,7 @@ class Meta_Shim_Test extends WPTestCase {
 	 * @dataProvider write_provider
 	 */
 	public function it_should_write_nothing_and_log_the_key( callable $write, string $action ): void {
-		$id   = $this->insert_ticket_row( [ 'price' => 1050 ] );
+		$id   = $this->insert_ticket_row( [ 'price' => 10500 ] );
 		$logs = [];
 		add_action(
 			'tribe_log',
