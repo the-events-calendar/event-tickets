@@ -86,6 +86,10 @@ customEntryPoints[ 'FlexibleTickets/classic-editor' ] = exposeEntry(
 	'tec.tickets.flexibleTickets.classicEditor',
 	__dirname + '/src/Tickets/Flexible_Tickets/app/classic-editor/index.js'
 );
+customEntryPoints[ 'RecurringTickets/classic-editor' ] = exposeEntry(
+	'tec.tickets.recurringTickets.classicEditor',
+	__dirname + '/src/Tickets/Recurring_Tickets/app/classic-editor/index.js'
+);
 customEntryPoints[ 'Seating/utils' ] = exposeEntry(
 	'tec.tickets.seating.utils',
 	__dirname + '/src/Tickets/Seating/app/utils/index.js'
