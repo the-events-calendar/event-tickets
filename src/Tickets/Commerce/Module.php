@@ -652,6 +652,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @since 5.1.9
 	 *
 	 * @since 5.5.10 Adjust the method to handle both Ticket and Attendee post type deletion separately.
+	 * @since TBD    Reject deletions when the ticket or attendee does not belong to the given event.
 	 *
 	 * @param int|WP_Post|null $event_id  The event ID.
 	 * @param int|WP_Post|null $ticket_id The ticket ID.
@@ -668,6 +669,19 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		if ( ! $ticket_post instanceof WP_Post ) {
 			return false;
+		}
+
+		// Refuse to delete a ticket or attendee that does not belong to the event the caller was
+		// authorized against; otherwise an edit-permission check on one post could be used to
+		// delete tickets or attendees from any other event.
+		$asserted_event_id = $event_id instanceof WP_Post ? $event_id->ID : (int) $event_id;
+
+		if ( $asserted_event_id ) {
+			$related_event_id = (int) get_post_meta( $ticket_id, Attendee::$event_relation_meta_key, true );
+
+			if ( $related_event_id !== $asserted_event_id ) {
+				return false;
+			}
 		}
 
 		$deleted = false;
