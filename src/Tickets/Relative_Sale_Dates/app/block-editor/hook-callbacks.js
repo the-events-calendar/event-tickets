@@ -89,6 +89,9 @@ export function loadTicketRule( clientId, ticket ) {
 /**
  * Keeps the rule a ticket was just created or updated with as its saved rule.
  *
+ * Only the rule the request carried counts: a draft held back from it was never stored, so Cancel still goes back to
+ * the rule the ticket has.
+ *
  * @since TBD
  *
  * @param {string} clientId The client ID of the ticket block.
@@ -96,7 +99,7 @@ export function loadTicketRule( clientId, ticket ) {
  * @return {void}
  */
 export function saveTicketRule( clientId ) {
-	dispatch( STORE_NAME ).saveDraftRule( clientId );
+	dispatch( STORE_NAME ).saveSentRule( clientId );
 }
 
 /**
@@ -131,12 +134,19 @@ export function filterSetBodyDetails( body, clientId ) {
 	/** @type {SaleWindowRule|null|undefined} */
 	const rule = select( STORE_NAME ).getDraftRule( clientId );
 
-	if ( undefined === rule || hasWindowError( rule, clientId ) ) {
+	if ( undefined === rule ) {
+		return body;
+	}
+
+	if ( hasWindowError( rule, clientId ) ) {
+		dispatch( STORE_NAME ).setSentRule( clientId, undefined );
+
 		return body;
 	}
 
 	const value = rule ? JSON.stringify( { start: toRequestEnd( rule.start ), end: toRequestEnd( rule.end ) } ) : '';
 	body.append( 'ticket[relative_sale_dates]', value );
+	dispatch( STORE_NAME ).setSentRule( clientId, rule );
 
 	return body;
 }
