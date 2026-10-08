@@ -148,6 +148,56 @@ class Event_Listener_Test extends WPTestCase {
 	/**
 	 * @test
 	 */
+	public function should_move_the_resolved_dates_when_the_event_start_meta_is_updated_directly(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$ticket_id   = $this->create_ruled_ticket( $event_id );
+		$moved       = $event_start->modify( '+3 days' );
+
+		// The Events Calendar builds the occurrences from the UTC dates, so a third party moving an event writes both.
+		update_post_meta( $event_id, '_EventStartDate', $moved->format( 'Y-m-d H:i:s' ) );
+		update_post_meta( $event_id, '_EventEndDate', $moved->modify( '+3 hours' )->format( 'Y-m-d H:i:s' ) );
+		update_post_meta( $event_id, '_EventStartDateUTC', $moved->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ) );
+		update_post_meta( $event_id, '_EventEndDateUTC', $moved->modify( '+3 hours' )->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ) );
+		tribe( Updates_Controller::class )->commit_updates();
+
+		$this->assert_resolved_from( $moved, $ticket_id );
+	}
+
+	/**
+	 * Rescheduling cancels and fires sales actions other plugins listen to, such as the waitlist and Square syncs.
+	 *
+	 * @test
+	 */
+	public function should_not_reschedule_the_tickets_when_an_event_update_changes_no_date(): void {
+		$event_start = $this->get_future_event_start();
+		$event_id    = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
+		$this->create_ruled_ticket( $event_id );
+		$moved = $event_start->modify( '+3 days' );
+		$this->send_classic_event_save( $event_id, $moved );
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$resynced = [];
+		add_action(
+			'tec_tickets_ticket_dates_updated',
+			static function ( int $id ) use ( &$resynced ): void {
+				$resynced[] = $id;
+			}
+		);
+
+		$this->send_classic_event_save( $event_id, $moved );
+		$request = new WP_REST_Request( 'PUT', "/wp/v2/tribe_events/{$event_id}" );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body( wp_json_encode( [ 'title' => 'Renamed event' ] ) );
+		$this->assertSame( 200, rest_do_request( $request )->get_status() );
+		tribe_events()->where( 'id', $event_id )->set( 'title', 'Renamed again' )->save();
+		tribe( Updates_Controller::class )->commit_updates();
+
+		$this->assertSame( [], $resynced );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_leave_no_sales_action_scheduled_when_the_move_inverts_the_window(): void {
 		$event_start  = $this->get_future_event_start();
 		$event_id     = $this->create_event( $event_start->format( 'Y-m-d H:i:s' ) );
