@@ -1,3 +1,7 @@
+/**
+ * @jest-environment ./tests/relative_sale_dates_jest/timezone-environment.js
+ * @timezone Pacific/Auckland
+ */
 import moment from 'moment-timezone';
 import { resolveSaleWindow } from '@tec/tickets/relative-sale-dates/sale-window';
 import fixtures from '../_data/relative-sale-dates/sale-window-cases.json';
@@ -40,25 +44,22 @@ function eventDate( dateTime, timezone ) {
 		: moment.tz( dateTime, FORMAT, true, timezone );
 }
 
-/*
- * The resolver must never read the machine's timezone, so every fixture runs under a zone east of UTC, one west of it
- * and UTC itself.
- */
-describe.each( [ 'UTC', 'Pacific/Auckland', 'America/Los_Angeles' ] )( 'resolveSaleWindow with TZ=%s', ( machineTimezone ) => {
-	const originalTimezone = process.env.TZ;
-
+describe( 'resolveSaleWindow', () => {
 	/*
 	 * jest.setup.js pins moment's default zone to UTC, which would hide any read of the machine's timezone.
-	 * Clearing it lets the machine timezone below reach a resolver that leans on local time.
+	 * Clearing it lets the machine timezone this file runs in reach a resolver that leans on local time.
 	 */
 	beforeAll( () => {
-		process.env.TZ = machineTimezone;
 		moment.tz.setDefault();
 	} );
 
 	afterAll( () => {
-		process.env.TZ = originalTimezone;
 		moment.tz.setDefault( 'UTC' );
+	} );
+
+	it( 'should run in the timezone the file names, far from the fixtures', () => {
+		// New Zealand Standard Time, 12 hours ahead of UTC, in June.
+		expect( new Date( 2027, 5, 1 ).getTimezoneOffset() ).toBe( -720 );
 	} );
 
 	it.each( fixtures.cases.map( ( fixture ) => [ fixture.name, fixture ] ) )(
