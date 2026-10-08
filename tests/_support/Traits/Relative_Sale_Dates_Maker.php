@@ -118,18 +118,20 @@ trait Relative_Sale_Dates_Maker {
 	/**
 	 * Sends a ticket save the way the classic editor does and returns its JSON response.
 	 *
-	 * @param int    $post_id The ticketed post ID.
-	 * @param string $data    The ticket form, URL-encoded as `tickets.js` serializes it.
+	 * @param int    $post_id  The ticketed post ID.
+	 * @param string $data     The ticket form, URL-encoded as `tickets.js` serializes it.
+	 * @param bool   $is_admin Whether the form is the one in wp-admin, or a front-end one such as Community Events'.
 	 *
 	 * @return array{success: bool, data: mixed} The decoded JSON response.
 	 */
-	protected function send_classic_ticket_form( int $post_id, string $data ): array {
+	protected function send_classic_ticket_form( int $post_id, string $data, bool $is_admin = true ): array {
 		// WordPress slashes the request, the URL-encoded form string included.
 		$_POST = wp_slash(
 			[
-				'post_id' => $post_id,
-				'nonce'   => wp_create_nonce( 'add_ticket_nonce' ),
-				'data'    => $data,
+				'post_id'  => $post_id,
+				'nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
+				'data'     => $data,
+				'is_admin' => $is_admin ? 'true' : 'false',
 			]
 		);
 

@@ -11,6 +11,7 @@ use Generator;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\RSVP\V2\Constants as RSVP_V2_Constants;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Relative_Sale_Dates_Maker;
@@ -32,10 +33,21 @@ class Editor_Test extends Controller_Test_Case {
 	protected $controller_class = Controller::class;
 
 	/**
+	 * The classic ticket form is the one on the event edit screen in wp-admin.
+	 *
 	 * @before
 	 */
-	public function log_in_as_administrator(): void {
+	public function edit_the_event_in_wp_admin(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		set_current_screen( 'tribe_events' );
+	}
+
+	/**
+	 * @after
+	 */
+	public function leave_wp_admin(): void {
+		set_current_screen( 'front' );
+		$_POST = [];
 	}
 
 	/**
@@ -236,6 +248,24 @@ class Editor_Test extends Controller_Test_Case {
 				return [ $this->create_event( '2027-06-24 19:00:00' ), null, Series_Passes::TICKET_TYPE ];
 			},
 		];
+
+		yield 'RSVP V2 ticket on an event' => [
+			function (): array {
+				$event_id = $this->create_event( '2027-06-24 19:00:00' );
+
+				return [ $event_id, $this->create_tc_ticket( $event_id, 0, [ 'ticket_type' => RSVP_V2_Constants::TC_RSVP_TYPE ] ), null ];
+			},
+		];
+
+		yield 'ticket in a front-end form, such as Community Events\'' => [
+			function (): array {
+				$event_id = $this->create_event( '2027-06-24 19:00:00' );
+				// What `tickets.js` sends outside wp-admin.
+				$_POST['is_admin'] = 'false';
+
+				return [ $event_id, $this->create_tc_ticket( $event_id ), null ];
+			},
+		];
 	}
 
 	/**
@@ -290,6 +320,28 @@ class Editor_Test extends Controller_Test_Case {
 
 		$this->assertTrue( $response['success'] );
 		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
+	}
+
+	/**
+	 * A front-end form has no sales window options, so the dates it sends are the ones the person set.
+	 *
+	 * @test
+	 */
+	public function should_drop_the_stored_rule_when_a_front_end_form_saves_the_ticket(): void {
+		$this->make_controller()->register();
+		$event_id  = $this->create_event( '2027-06-24 19:00:00' );
+		$ticket_id = $this->create_tc_ticket( $event_id );
+		tribe( Rule_Store::class )->save( $ticket_id, [ 'start' => $this->relative( 2, WEEK_IN_SECONDS ), 'end' => [ 'mode' => 'default' ] ] );
+		$_POST['is_admin'] = 'false';
+		$fields            = $this->serialize_form( $this->render_ticket_form( $event_id, $ticket_id ) );
+		$fields[]          = [ 'ticket_start_date', '2027-05-01' ];
+		$fields[]          = [ 'ticket_start_time', '10:00:00' ];
+
+		$response = $this->send_classic_ticket_form( $event_id, $this->to_query_string( $fields ), false );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( [], tribe( Rule_Store::class )->get( $ticket_id ) );
+		$this->assertSame( [ '2027-05-01', '10:00:00' ], $this->get_ticket_start( $ticket_id ) );
 	}
 
 	/**
