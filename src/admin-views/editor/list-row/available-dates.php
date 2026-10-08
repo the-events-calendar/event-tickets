@@ -11,6 +11,8 @@
  * @var array<string,string>          $relative_sale_dates_attributes The attributes of a ticket with a relative sales window.
  */
 
+defined( 'ABSPATH' ) || die();
+
 if ( empty( $ticket->start_date ) ) {
 	return;
 }
@@ -38,9 +40,6 @@ if ( ! empty( $ticket->end_date ) ) {
 }
 
 ?>
-<div
-	<?php tribe_classes( $classes ); ?>
-	<?php tribe_attributes( $relative_sale_dates_attributes ?? [] ); ?>
->
+<div <?php tec_classes( $classes ); ?><?php tribe_attributes( $relative_sale_dates_attributes ?? [] ); ?>>
 	<?php echo $date_string; ?>
 </div>
