@@ -58,8 +58,7 @@ class Module_Delete_Ticket_Ownership_Test extends WPTestCase {
 		$ticket_id   = $this->create_tc_ticket( $owner_event );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $owner_event );
 
-		// The bulk attendee-delete path (Attendees_Table) passes a null event and relies on the
-		// attendee's own relation; this must keep working.
+		// A null event is the bulk attendee-delete path (Attendees_Table); it must keep working.
 		$deleted = $this->module()->delete_ticket( null, $attendee_id );
 
 		$this->assertTrue( $deleted, 'Deleting an attendee with no asserted event must succeed.' );

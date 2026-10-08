@@ -671,17 +671,15 @@ class Module extends \Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		// Refuse to delete a ticket or attendee that does not belong to the event the caller was
-		// authorized against; otherwise an edit-permission check on one post could be used to
-		// delete tickets or attendees from any other event.
+		/*
+		 * A ticket or attendee may only be deleted through the post it belongs to; otherwise an
+		 * edit-permission check on the caller's own post could delete tickets from another one.
+		 */
 		$asserted_event_id = $event_id instanceof WP_Post ? $event_id->ID : (int) $event_id;
+		$related_event_id  = (int) get_post_meta( $ticket_id, Attendee::$event_relation_meta_key, true );
 
-		if ( $asserted_event_id ) {
-			$related_event_id = (int) get_post_meta( $ticket_id, Attendee::$event_relation_meta_key, true );
-
-			if ( $related_event_id !== $asserted_event_id ) {
-				return false;
-			}
+		if ( $asserted_event_id && $related_event_id !== $asserted_event_id ) {
+			return false;
 		}
 
 		$deleted = false;
