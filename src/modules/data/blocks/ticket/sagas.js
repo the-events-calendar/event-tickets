@@ -719,11 +719,13 @@ export function* createNewTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId` and `ticketDetails` parameters were added.
+			 * @since TBD The `ticket` parameter was added.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
+			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
 			 */
-			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails );
+			doAction( 'tec.tickets.blocks.ticketCreated', clientId, ticket.id, ticketDetails, ticket );
 
 			yield fork( saveTicketWithPostSave, clientId );
 		}
@@ -816,11 +818,13 @@ export function* updateTicket( action ) {
 			 *
 			 * @since 5.16.0
 			 * @since 5.20.0 The `ticketId and `ticketDetails` parameters were added
+			 * @since TBD The `ticket` parameter was added.
 			 * @param {string} clientId      The ticket's client ID.
 			 * @param {number} ticketId      The ticket's ID.
 			 * @param {Object} ticketDetails The ticket details.
+			 * @param {Object} ticket        The ticket, as the tickets REST API answered the save.
 			 */
-			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails );
+			doAction( 'tec.tickets.blocks.ticketUpdated', clientId, ticketId, ticketDetails, ticket );
 		}
 	} catch ( e ) {
 		// eslint-disable-next-line no-console

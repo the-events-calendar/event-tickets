@@ -199,6 +199,30 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 				expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( storedRule );
 			} );
 
+			// The server rejects such a rule whatever the event dates, so it is held back even without them.
+			it( 'should keep the stored rule, by sending none, while a number is cleared and the event dates cannot be read', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setRule( clientId, storedRule );
+				dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( '', UNIT_WEEKS ), end: { mode: 'default' } } );
+				delete window.tec.events;
+
+				expect( buildBody( clientId ).has( BODY_FIELD ) ).toBe( false );
+			} );
+
+			it( 'should restore on Cancel the rule the server kept after a later request failed', () => {
+				const clientId = newClientId();
+				dispatch( STORE_NAME ).setRule( clientId, storedRule );
+				dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+				buildBody( clientId );
+				dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 4, UNIT_DAYS ), end: { mode: 'default' } } );
+				buildBody( clientId );
+				doAction( 'tec.tickets.blocks.ticketUpdated', clientId, 23, {}, { id: 23, provider: 'tc', relative_sale_dates: editedRule } );
+
+				doAction( 'tec.tickets.blocks.ticketCancelled', clientId );
+
+				expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( editedRule );
+			} );
+
 			it( 'should send a draft that starts before it ends', () => {
 				const clientId = newClientId();
 				const draft = { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) };
@@ -538,6 +562,32 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			buildBody( clientId );
 
 			doAction( hook, clientId, 23, {} );
+
+			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
+		} );
+
+		it( 'should keep as saved the rule the server answered with, not the one a later request carried', () => {
+			const clientId = newClientId();
+			const laterRule = { start: relative( 4, UNIT_DAYS ), end: { mode: 'default' } };
+			dispatch( STORE_NAME ).setRule( clientId, storedRule );
+			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			buildBody( clientId );
+			dispatch( STORE_NAME ).setDraftRule( clientId, laterRule );
+			buildBody( clientId );
+
+			doAction( hook, clientId, 23, {}, { id: 23, provider: 'tc', relative_sale_dates: editedRule } );
+
+			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
+			expect( select( STORE_NAME ).getDraftRule( clientId ) ).toStrictEqual( laterRule );
+		} );
+
+		it( 'should keep the sent rule as saved for an answer without the rule', () => {
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setRule( clientId, storedRule );
+			dispatch( STORE_NAME ).setDraftRule( clientId, editedRule );
+			buildBody( clientId );
+
+			doAction( hook, clientId, 23, {}, { id: 23, provider: 'tc' } );
 
 			expect( getSavedRule( clientId ) ).toStrictEqual( editedRule );
 		} );

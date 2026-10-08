@@ -63,6 +63,9 @@ class Rest_Test extends Controller_Test_Case {
 
 		$this->assertFalse( $response->is_error() );
 		$this->assertSame( $rule, tribe( Rule_Store::class )->get( $ticket_id ) );
+		// The Ticket block keeps as saved the rule a save answers with.
+		$this->assertSame( $rule, $response->get_data()['relative_sale_dates'] );
+		$this->assertSame( 'tc', $response->get_data()['provider'] );
 	}
 
 	/**

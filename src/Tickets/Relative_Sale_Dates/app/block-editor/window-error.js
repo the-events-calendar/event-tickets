@@ -19,6 +19,22 @@ import { readTicketFormDates, subscribeToCommonStore } from './common-store-brid
 /** @typedef {import( '../server-event-dates' ).EventDates} EventDates */
 
 /**
+ * Returns a rule with its relative numbers as the ticket request sends them: integers, or `NaN` for a cleared one.
+ *
+ * @since TBD
+ *
+ * @param {SaleWindowRule} rule The ticket's draft rule, whose numbers can be strings.
+ *
+ * @return {SaleWindowRule} The rule, with integer numbers.
+ */
+function withSentNumbers( rule ) {
+	return {
+		start: { ...rule.start, value: parseInt( rule.start?.value, 10 ) },
+		end: { ...rule.end, value: parseInt( rule.end?.value, 10 ) },
+	};
+}
+
+/**
  * Returns the error of a ticket's sales window, or `null` when it is valid or cannot be judged.
  *
  * A relative start or end whose number the admin cleared is an error too, as one out of range: the server rejects a rule
@@ -26,9 +42,10 @@ import { readTicketFormDates, subscribeToCommonStore } from './common-store-brid
  *
  * @since TBD
  *
- * @param {SaleWindowRule|null|undefined}          rule       The ticket's draft rule.
- * @param {EventDates|null}                        eventDates The event dates, or `null` when they cannot be read.
- * @param {{start: string|null, end: string|null}} formDates  The start and end dates the ticket form sends.
+ * @param {SaleWindowRule|null|undefined}               rule       The ticket's draft rule.
+ * @param {EventDates|null}                             eventDates The event dates, or `null` when they cannot be read.
+ * @param {{start: string|null, end: string|null}|null} formDates  The start and end dates the ticket form sends, or
+ *                                                                 `null` without the event dates.
  *
  * @return {string|null} The message key of the error, or `null`; without the event dates, only a relative number out
  *                       of range is judged.
@@ -40,7 +57,7 @@ export function getTicketWindowError( rule, eventDates, formDates ) {
 
 	// The server rejects a relative boundary without a whole number before it reads any date.
 	if ( ! eventDates ) {
-		return getOutOfRangeBoundary( rule ) ? RELATIVE_VALUE_OUT_OF_RANGE : null;
+		return getOutOfRangeBoundary( withSentNumbers( rule ) ) ? RELATIVE_VALUE_OUT_OF_RANGE : null;
 	}
 
 	return getWindowError( rule, eventDates, formDates );

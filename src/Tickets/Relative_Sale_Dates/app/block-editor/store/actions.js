@@ -57,6 +57,22 @@ export function saveSentRule( clientId ) {
 }
 
 /**
+ * Keeps as a ticket's saved rule the one the server answered a save with.
+ *
+ * Saves can overlap, and the rule the latest request carried is not the one an earlier answer confirms.
+ *
+ * @since TBD
+ *
+ * @param {string}              clientId The client ID of the ticket block.
+ * @param {SaleWindowRule|null} rule     The rule the server stored, or `null` for none.
+ *
+ * @return {{type: string, clientId: string, rule: SaleWindowRule|null}} The action.
+ */
+export function saveConfirmedRule( clientId, rule ) {
+	return { type: 'SAVE_CONFIRMED_RULE', clientId, rule };
+}
+
+/**
  * Discards the draft, restoring the saved rule.
  *
  * @since TBD
