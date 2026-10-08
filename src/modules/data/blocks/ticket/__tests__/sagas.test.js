@@ -1499,6 +1499,46 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	describe( 'getTicketSaleDates', () => {
+		/**
+		 * Runs a saga that only yields call effects, answering each with what its function returns.
+		 *
+		 * @param {Generator} gen The saga.
+		 *
+		 * @return {*} What the saga returns.
+		 */
+		const runCalls = ( gen ) => {
+			let step = gen.next();
+			while ( ! step.done ) {
+				const { context, fn, args } = step.value.CALL;
+				step = gen.next( fn.apply( context, args ) );
+			}
+
+			return step.value;
+		};
+
+		it( 'should map the sale dates a ticket was stored with', () => {
+			const dates = runCalls(
+				sagas.getTicketSaleDates( { available_from: '2040-09-10 19:00:00', available_until: '2040-10-19 18:00:00' } ),
+			);
+
+			expect( dates ).toMatchObject( {
+				startDate: '2040-09-10',
+				startTime: '19:00:00',
+				endDate: '2040-10-19',
+				endTime: '18:00:00',
+			} );
+		} );
+
+		it( 'should map the dates a ticket sale price was stored with', () => {
+			const dates = runCalls(
+				sagas.getTicketSalePriceDates( { sale_price_data: { start_date: '2040-09-01', end_date: '2040-09-30' } } ),
+			);
+
+			expect( dates ).toMatchObject( { saleStartDate: '2040-09-01', saleEndDate: '2040-09-30' } );
+		} );
+	} );
+
 	describe( 'createNewTicket', () => {
 		it( 'should create a new ticket', () => {
 			const action = {
@@ -1565,30 +1605,44 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( gen.next( 0 ).value ).toEqual(
+				call( sagas.getTicketSaleDates, response.data ),
+			);
+
+			const saleDates = {
+				startDate: '2018-01-01',
+				startDateInput: 'January 1, 2018',
+				startDateMoment: undefined,
+				endDate: '2018-01-02',
+				endDateInput: 'January 2, 2018',
+				endDateMoment: undefined,
+				startTime: '10:00:00',
+				endTime: '12:00:00',
+				startTimeInput: '10:00 am',
+				endTimeInput: '12:00 pm',
+			};
+
+			expect( gen.next( saleDates ).value ).toEqual(
+				call( sagas.getTicketSalePriceDates, response.data ),
+			);
+
+			const salePriceDates = {
+				saleStartDate: '',
+				saleStartDateInput: '',
+				saleStartDateMoment: undefined,
+				saleEndDate: '',
+				saleEndDateInput: '',
+				saleEndDateMoment: undefined,
+			};
+
+			expect( gen.next( salePriceDates ).value ).toEqual(
 				all( [
 					select( selectors.getTicketTempTitle, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempDescription, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempPrice, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempSku, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempIACSetting, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartDateMoment, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndDateMoment, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartTime, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndTime, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempStartTimeInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempEndTimeInput, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempCapacityType, { clientId: action.payload.clientId } ),
 					select( selectors.getTicketTempCapacity, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleStartDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleStartDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleStartDateMoment, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleEndDate, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleEndDateInput, { clientId: action.payload.clientId } ),
-					select( selectors.getTicketTempSaleEndDateMoment, { clientId: action.payload.clientId } ),
 				] ),
 			);
 
@@ -1598,26 +1652,12 @@ describe( 'Ticket Block sagas', () => {
 				price: 10,
 				sku: 'sku',
 				iac: undefined,
-				startDate: '2018-01-01',
-				startDateInput: undefined,
-				startDateMoment: undefined,
-				endDate: '2018-01-02',
-				endDateInput: undefined,
-				endDateMoment: undefined,
-				startTime: '10:00',
-				endTime: '12:00',
-				startTimeInput: undefined,
-				endTimeInput: undefined,
+				...saleDates,
 				capacityType: 'unlimited',
 				capacity: 100,
 				salePriceChecked: true,
 				salePrice: '15',
-				saleStartDate: undefined,
-				saleStartDateInput: undefined,
-				saleStartDateMoment: undefined,
-				saleEndDate: undefined,
-				saleEndDateInput: undefined,
-				saleEndDateMoment: undefined,
+				...salePriceDates,
 			};
 
 			expect( gen.next( [
@@ -1626,29 +1666,12 @@ describe( 'Ticket Block sagas', () => {
 				10,
 				'sku',
 				undefined,
-				'2018-01-01',
-				undefined,
-				undefined,
-				'2018-01-02',
-				undefined,
-				undefined,
-				'10:00',
-				'12:00',
-				undefined,
-				undefined,
 				'unlimited',
 				100,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
 			] ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( action.payload.clientId, ticketDetails ) ),
-					put( actions.setTempSalePriceChecked( action.payload.clientId, true ) ),
-					put( actions.setTempSalePrice( action.payload.clientId, '15' ) ),
+					put( actions.setTicketTempDetails( action.payload.clientId, ticketDetails ) ),
 					put( actions.setTicketId( action.payload.clientId, 123 ) ),
 					put( actions.setTicketHasBeenCreated( action.payload.clientId, true ) ),
 					put( actions.setTicketAvailable( action.payload.clientId, 100 ) ),
