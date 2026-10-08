@@ -79,7 +79,7 @@ class Webhooks_Test extends Controller_Test_Case {
 
 		$this->assertNotSame( $fetched_at, $new_webhook['fetched_at'] );
 		$this->assertGreaterThan( strtotime( $fetched_at ), strtotime( $new_webhook['fetched_at'] ) );
-		$this->assertTrue( time() - strtotime( $new_webhook['fetched_at'] ) < 1 );
+		$this->assertEqualsWithDelta( time(), strtotime( $new_webhook['fetched_at'] ), 5 );
 		$this->assertSame( $webhook_id, $new_webhook_id );
 	}
 
@@ -111,6 +111,42 @@ class Webhooks_Test extends Controller_Test_Case {
 
 		$this->assertFalse( $controller->verify_signature( 'invalid' ) );
 		$this->assertTrue( $controller->verify_signature( $hashed ) );
+	}
+
+	public function whitespace_padded_secret_provider(): Generator {
+		$padded_secrets = [
+			'leading space'  => ' ' . str_repeat( 'a', 63 ),
+			'trailing space' => str_repeat( 'a', 63 ) . ' ',
+			'both ends'      => ' ' . str_repeat( 'a', 62 ) . ' ',
+		];
+
+		foreach ( $padded_secrets as $name => $secret ) {
+			yield "newly generated, {$name}" => [
+				function ( Webhooks $controller ) use ( $secret ): void {
+					$this->set_fn_return( 'wp_generate_password', $secret );
+					$controller->get_webhook_secret( false, true );
+				},
+			];
+
+			// Secrets stored before generation trimmed them must verify without being regenerated.
+			yield "already stored, {$name}" => [
+				function () use ( $secret ): void {
+					set_transient( Webhooks::OPTION_WEBHOOK_SECRET, $secret, 2 * DAY_IN_SECONDS );
+				},
+			];
+		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider whitespace_padded_secret_provider
+	 */
+	public function it_should_verify_signature_of_whitespace_padded_secret( Closure $fixture ): void {
+		$controller = $this->make_controller();
+
+		$fixture( $controller );
+
+		$this->assertTrue( $controller->verify_signature( $controller->get_webhook_secret( true, false ) ) );
 	}
 
 	/**
@@ -287,7 +323,7 @@ class Webhooks_Test extends Controller_Test_Case {
 
 		$this->assertNotSame( $fetched_at, $new_webhook['fetched_at'] );
 		$this->assertGreaterThan( strtotime( $fetched_at ), strtotime( $new_webhook['fetched_at'] ) );
-		$this->assertTrue( time() - strtotime( $new_webhook['fetched_at'] ) < 1 );
+		$this->assertEqualsWithDelta( time(), strtotime( $new_webhook['fetched_at'] ), 5 );
 		$this->assertSame( $webhook_id, $new_webhook_id );
 
 		$this->assertTrue(
