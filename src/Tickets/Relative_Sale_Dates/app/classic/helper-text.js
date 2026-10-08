@@ -31,11 +31,36 @@
  */
 export function formatHelperText( template, date, settings, currentYear ) {
 	const formatter = new window.DateFormatter( { dateSettings: settings.dateSettings } );
-	// `DateFormatter` reads a date in the browser's timezone, so it gets the event's wall-clock time.
-	const wallClock = new Date( date.year(), date.month(), date.date(), date.hours(), date.minutes(), date.seconds() );
+	const wallClock = toWallClockDate( date );
 	const dateFormat = date.year() === currentYear ? settings.dateNoYear : settings.dateWithYear;
 
 	return template
 		.replace( '%1$s', formatter.formatDate( wallClock, dateFormat ) )
 		.replace( '%2$s', formatter.formatDate( wallClock, settings.timeFormat ) );
+}
+
+/**
+ * Builds the `Date` `DateFormatter` reads the event's wall-clock time from.
+ *
+ * `DateFormatter` reads a date through its local getters. A `Date` built from the wall-clock time in the browser's own
+ * timezone moves a time that timezone's clocks skip, so the date is built in UTC, which skips none, and its local
+ * getters read the UTC ones.
+ *
+ * @since TBD
+ *
+ * @param {Moment} date The date, in the event timezone.
+ *
+ * @return {Date} A date whose local getters give the event's wall-clock date and time.
+ */
+function toWallClockDate( date ) {
+	const wallClock = new Date(
+		Date.UTC( date.year(), date.month(), date.date(), date.hours(), date.minutes(), date.seconds() )
+	);
+
+	[ 'FullYear', 'Month', 'Date', 'Day', 'Hours', 'Minutes', 'Seconds', 'Milliseconds' ].forEach( ( part ) => {
+		wallClock[ `get${ part }` ] = () => wallClock[ `getUTC${ part }` ]();
+	} );
+	wallClock.getTimezoneOffset = () => -date.utcOffset();
+
+	return wallClock;
 }

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment ./tests/relative_sale_dates_jest/timezone-environment.js
+ * @timezone America/New_York
+ */
 import moment from 'moment-timezone';
 import { formatHelperText } from '@tec/tickets/relative-sale-dates/classic/helper-text';
 
@@ -39,6 +43,15 @@ describe( 'formatHelperText', () => {
 
 		expect( formatHelperText( 'Sales start %1$s at %2$s', date, settings, 2027 ) ).toBe(
 			'Sales start 10/06 at 19:00'
+		);
+	} );
+
+	it( "should show an event time that the browser's own clocks skip", () => {
+		// This file runs in New York, which skips from 02:00 to 03:00 that night; London does not.
+		const date = moment.tz( '2027-03-14 02:30:00', 'Europe/London' );
+
+		expect( formatHelperText( 'Sales start %1$s at %2$s', date, SETTINGS, 2027 ) ).toBe(
+			'Sales start March 14 at 2:30 am'
 		);
 	} );
 } );
