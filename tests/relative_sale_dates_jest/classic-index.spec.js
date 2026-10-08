@@ -2,6 +2,9 @@ import { TYPING_SETTLE_DELAY } from '@tec/tickets/relative-sale-dates/live-error
 
 global.DateFormatter = require( 'php-date-formatter' );
 
+// The real package, not the shared mock, so a test can hand it the translations the template uses.
+jest.unmock( '@wordpress/i18n' );
+
 const UNIT_DAYS = 86400;
 const UNIT_WEEKS = 604800;
 
@@ -28,14 +31,19 @@ function renderMetabox() {
 /**
  * Loads the classic editor script and waits for its DOM-ready callbacks to run.
  *
+ * @param {Object|null} localeData The `event-tickets` translations to load the script with, or `null` for none.
+ *
  * @return {Promise<Object>} Resolves, once the script is set up, to the hooks module the script was loaded with.
  */
-async function loadScript() {
+async function loadScript( localeData = null ) {
 	let hooks;
 
 	jest.isolateModules( () => {
 		// WordPress's `wp-date` sets up `moment.tz` before the script loads.
 		require( 'moment-timezone' );
+		if ( localeData ) {
+			require( '@wordpress/i18n' ).setLocaleData( localeData, 'event-tickets' );
+		}
 		require( '@tec/tickets/relative-sale-dates/classic/index' );
 		hooks = require( '@wordpress/hooks' );
 	} );
@@ -299,6 +307,18 @@ describe( 'classic editor script', () => {
 
 		expect( getUnitLabel( 'start' ) ).toBe( 'week' );
 		expect( getUnitLabel( 'end' ) ).toBe( 'hours' );
+	} );
+
+	it( 'should name the unit with the translation the template uses', async () => {
+		renderEventForm();
+		await loadScript( {
+			'': { domain: 'event-tickets', plural_forms: 'nplurals=2; plural=(n != 1);' },
+			'Unit of a relative ticket sale date.\u0004week': [ 'semana', 'semanas' ],
+		} );
+
+		jQuery( '#ticket_sales_start_value' ).val( '1' ).trigger( 'input' );
+
+		expect( getUnitLabel( 'start' ) ).toBe( 'semana' );
 	} );
 
 	it( 'should write the sale dates of a listed ticket from the event dates in the form', async () => {
