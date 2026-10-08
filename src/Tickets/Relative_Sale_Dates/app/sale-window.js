@@ -9,9 +9,8 @@
  */
 /*
  * `moment` carries no zone data of its own: the classic editor script loads `moment-timezone` with its full data, and
- * the block editor has the copy WordPress's `wp-date` loads. That copy is only as current as the WordPress release: a
- * zone whose rules changed since, such as Africa/Cairo's 2023 return to daylight saving time, can preview another
- * hour than the server stores. The preview is only a hint; the server resolves the dates the ticket is saved with.
+ * the block editor has the copy WordPress's `wp-date` loads, onto which the Ticket block script loads current zone data
+ * (`block-editor/zone-data`), so both resolve dates as the server does.
  */
 import moment from 'moment';
 

@@ -165,7 +165,7 @@ final class Assets extends Controller_Contract {
 			Tickets_Plugin::instance(),
 			self::BLOCK_EDITOR_SCRIPT,
 			'RelativeSaleDates/block-editor.js',
-			// `wp-date` installs the zone data `moment` resolves the event dates with.
+			// `wp-date` sets up the `moment.tz` the script loads current zone data onto.
 			[ 'wp-data', 'wp-date', 'wp-hooks' ],
 			'enqueue_block_editor_assets',
 			[

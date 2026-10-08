@@ -5,5 +5,7 @@
  * @since TBD
  */
 
+// First, so every date the script resolves reads current zone data.
+import './zone-data';
 import './store';
 import './filters';
