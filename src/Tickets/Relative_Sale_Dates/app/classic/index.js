@@ -125,6 +125,46 @@ function updateHelperText() {
 }
 
 /**
+ * Removes an id from a field's `aria-describedby`, keeping every other description, such as its helper text.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement} field The field.
+ * @param {string}      id    The id to remove.
+ *
+ * @return {void}
+ */
+function removeDescription( field, id ) {
+	const ids = ( field.getAttribute( 'aria-describedby' ) || '' )
+		.split( /\s+/ )
+		.filter( ( token ) => token && token !== id );
+
+	if ( ids.length ) {
+		field.setAttribute( 'aria-describedby', ids.join( ' ' ) );
+	} else {
+		field.removeAttribute( 'aria-describedby' );
+	}
+}
+
+/**
+ * Adds an id to a field's `aria-describedby`, ahead of its other descriptions so the error is read first.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement} field The field.
+ * @param {string}      id    The id to add.
+ *
+ * @return {void}
+ */
+function addDescription( field, id ) {
+	removeDescription( field, id );
+	field.setAttribute(
+		'aria-describedby',
+		[ id, field.getAttribute( 'aria-describedby' ) ].filter( Boolean ).join( ' ' )
+	);
+}
+
+/**
  * Shows an error under the sales window, marking the field it is about invalid, or clears both.
  *
  * The field is marked with `aria-invalid` rather than common's `tribe-validation-error` class: common validates the
@@ -146,9 +186,9 @@ function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
 	}
 
 	error.textContent = message;
-	document.querySelectorAll( `[aria-describedby="${ error.id }"]` ).forEach( ( marked ) => {
+	document.querySelectorAll( `[aria-describedby~="${ error.id }"]` ).forEach( ( marked ) => {
 		marked.removeAttribute( 'aria-invalid' );
-		marked.removeAttribute( 'aria-describedby' );
+		removeDescription( marked, error.id );
 	} );
 
 	const field = '' === message || ! fieldId ? null : document.getElementById( fieldId );
@@ -158,7 +198,7 @@ function showWindowError( message, fieldId = 'ticket_sales_end_mode' ) {
 	}
 
 	field.setAttribute( 'aria-invalid', 'true' );
-	field.setAttribute( 'aria-describedby', error.id );
+	addDescription( field, error.id );
 
 	return field;
 }

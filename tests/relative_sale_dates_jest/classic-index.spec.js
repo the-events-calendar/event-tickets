@@ -275,6 +275,24 @@ describe( 'classic editor script', () => {
 		expect( getWindowError() ).toBe( '' );
 	} );
 
+	it( 'should keep the helper description of a number it marks, and restore it once the number is fixed', async () => {
+		renderEventForm( { value: 0, unit: UNIT_WEEKS, anchor: 'start' } );
+		const startValue = document.getElementById( 'ticket_sales_start_value' );
+		startValue.setAttribute( 'aria-describedby', 'ticket_sales_start_helper' );
+		await loadScript();
+
+		validateTicket();
+
+		expect( startValue.getAttribute( 'aria-describedby' ).split( ' ' ) ).toEqual(
+			expect.arrayContaining( [ 'ticket_sales_start_helper', 'ticket_sales_window_error' ] )
+		);
+
+		startValue.value = '2';
+		jQuery( startValue ).trigger( 'input' );
+
+		expect( startValue.getAttribute( 'aria-describedby' ) ).toBe( 'ticket_sales_start_helper' );
+	} );
+
 	it( 'should let a valid window be saved', async () => {
 		renderEventForm();
 		await loadScript();
