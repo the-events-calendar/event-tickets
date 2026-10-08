@@ -316,6 +316,40 @@ class Rest_Test extends Controller_Test_Case {
 	}
 
 	/**
+	 * @test
+	 * @dataProvider definition_filter_provider
+	 */
+	public function should_document_the_sales_window_rule_in_the_tec_rest_api_definitions( string $filter ): void {
+		$property = $this->get_documented_properties( $filter )['relative_sale_dates'] ?? null;
+
+		$this->assertIsArray( $property );
+		$this->assertSame( 'object', $property['type'] );
+		$this->assertSame( [ 'start', 'end' ], array_keys( $property['properties'] ) );
+		$this->assertSame( [ 'default', 'relative', 'specific' ], $property['properties']['start']['properties']['mode']['enum'] );
+	}
+
+	/**
+	 * @return array<string,array{0: string}> The TEC REST API ticket definition filters.
+	 */
+	public function definition_filter_provider(): array {
+		return [
+			'request body definition' => [ 'tec_rest_swagger_ticket_request_body_definition' ],
+			'ticket definition'       => [ 'tec_rest_swagger_ticket_definition' ],
+		];
+	}
+
+	/**
+	 * @param string $filter The definition filter.
+	 *
+	 * @return array<string,array{type: string, properties?: array<string,array<string,mixed>>}> The properties the feature adds to the definition, by name.
+	 */
+	private function get_documented_properties( string $filter ): array {
+		$definition = json_decode( wp_json_encode( apply_filters( $filter, [] ) ), true );
+
+		return array_merge( [], ...array_column( $definition['allOf'] ?? [], 'properties' ) );
+	}
+
+	/**
 	 * Creates or updates a ticket the way the TEC REST API endpoint does, from its already sanitized parameters.
 	 *
 	 * The endpoint's routes are only registered when Tickets Commerce is on as the plugin loads, which this suite
