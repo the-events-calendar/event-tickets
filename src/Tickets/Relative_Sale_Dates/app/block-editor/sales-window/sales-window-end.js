@@ -3,7 +3,7 @@
  */
 import { SelectControl, TextControl } from '@wordpress/components';
 import { cloneElement } from '@wordpress/element';
-import { _n } from '@wordpress/i18n';
+import { _nx } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -43,12 +43,24 @@ import { toRelativeValue } from '../rule';
 function getUnitOptions( value ) {
 	const count = parseInt( value, 10 );
 
-	// The msgids match the classic editor's, so one translation serves both.
+	// The msgids and context match the classic editor's, so one translation serves both.
 	return [
-		{ value: String( UNIT_MINUTES ), label: _n( 'minute', 'minutes', count, 'event-tickets' ) },
-		{ value: String( UNIT_HOURS ), label: _n( 'hour', 'hours', count, 'event-tickets' ) },
-		{ value: String( UNIT_DAYS ), label: _n( 'day', 'days', count, 'event-tickets' ) },
-		{ value: String( UNIT_WEEKS ), label: _n( 'week', 'weeks', count, 'event-tickets' ) },
+		{
+			value: String( UNIT_MINUTES ),
+			label: _nx( 'minute', 'minutes', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+		},
+		{
+			value: String( UNIT_HOURS ),
+			label: _nx( 'hour', 'hours', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+		},
+		{
+			value: String( UNIT_DAYS ),
+			label: _nx( 'day', 'days', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+		},
+		{
+			value: String( UNIT_WEEKS ),
+			label: _nx( 'week', 'weeks', count, 'Unit of a relative ticket sale date.', 'event-tickets' ),
+		},
 	];
 }
 

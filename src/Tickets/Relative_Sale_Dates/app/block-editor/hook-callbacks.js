@@ -6,23 +6,13 @@ import { dispatch, select } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { isTicketsCommerce } from './common-store-bridge';
+import { isTicketsCommerce, TICKETS_COMMERCE_PROVIDER } from './common-store-bridge';
 import { MODE_RELATIVE } from '../rule-constants';
 import SalesWindow from './sales-window';
 import { STORE_NAME } from './store/constants';
 
 /** @typedef {import( '../sale-window' ).SaleWindowEnd} SaleWindowEnd */
 /** @typedef {import( '../sale-window' ).SaleWindowRule} SaleWindowRule */
-
-/**
- * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, the only provider the rule applies
- * to.
- *
- * @since TBD
- *
- * @type {string}
- */
-const TICKETS_COMMERCE_PROVIDER = 'tc';
 
 /**
  * Builds the form of one end of the window the server accepts.
@@ -132,7 +122,7 @@ export function filterSetBodyDetails( body, clientId ) {
  * @return {Object} The sales window options, or the picker for a ticket another provider sells.
  */
 export function filterTicketDuration( picker, clientId ) {
-	if ( ! isTicketsCommerce() ) {
+	if ( ! isTicketsCommerce( clientId ) ) {
 		return picker;
 	}
 

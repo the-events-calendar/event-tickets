@@ -168,16 +168,18 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 		const Picker = () => null;
 
 		/**
-		 * Filters the Sale Duration picker of a ticket block for the given ticket provider.
+		 * Filters the Sale Duration picker of a ticket block for the given providers.
 		 *
-		 * @param {string} provider The ticket provider the tickets block uses.
-		 * @param {string} clientId The client ID of the ticket block.
+		 * @param {string} provider       The ticket provider the tickets block uses.
+		 * @param {string} clientId       The client ID of the ticket block.
+		 * @param {string} ticketProvider The provider slug the ticket keeps once fetched, or an empty string for a new one.
 		 *
 		 * @return {Object} What the Sale Duration section renders.
 		 */
-		function filterDuration( provider, clientId ) {
+		function filterDuration( provider, clientId, ticketProvider = '' ) {
+			const tickets = { allClientIds: [ clientId ], byClientId: { [ clientId ]: { provider: ticketProvider } } };
 			window.tribe = { tickets: { data: { blocks: { selectors: legacySelectors } } } };
-			window.__tribe_common_store__ = { getState: () => ( { tickets: { blocks: { ticket: { provider } } } } ) };
+			window.__tribe_common_store__ = { getState: () => ( { tickets: { blocks: { ticket: { provider, tickets } } } } ) };
 
 			return applyFilters( 'tec.tickets.blocks.Ticket.Duration.renderPicker', <Picker />, clientId );
 		}
@@ -201,6 +203,19 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			const rendered = filterDuration( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId() );
 
 			expect( rendered.type ).toBe( Picker );
+		} );
+
+		// The server judges a ticket by its own provider, which an event's older ticket may not share with the block.
+		it( 'should leave the picker alone for an older ticket another provider sells under a Tickets Commerce block', () => {
+			const rendered = filterDuration( TICKETS_COMMERCE, newClientId(), 'woo' );
+
+			expect( rendered.type ).toBe( Picker );
+		} );
+
+		it( 'should render the sales window options of an older Tickets Commerce ticket under another provider', () => {
+			const rendered = filterDuration( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', newClientId(), 'tc' );
+
+			expect( rendered.type ).toBe( SalesWindow );
 		} );
 	} );
 
