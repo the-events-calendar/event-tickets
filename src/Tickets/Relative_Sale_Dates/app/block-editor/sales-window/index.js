@@ -2,13 +2,18 @@
  * External dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useMemo } from '@wordpress/element';
+import { useEffect, useMemo, useSyncExternalStore } from '@wordpress/element';
 import { __, _x } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { clearTicketDurationError, markTicketChanged } from '../common-store-bridge';
+import {
+	clearTicketDurationError,
+	hasTicketDurationError,
+	markTicketChanged,
+	subscribeToCommonStore,
+} from '../common-store-bridge';
 import { useEventDates } from '../event-dates';
 import { ANCHOR_END, ANCHOR_START, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from '../../rule-constants';
 import { getFormRule, isSpecificWindow } from '../rule';
@@ -106,6 +111,8 @@ export default function SalesWindow( { clientId, picker } ) {
 	const eventDates = useEventDates();
 	const saleWindow = useMemo( () => resolveTicketWindow( getFormRule( rule ), eventDates ), [ rule, eventDates ] );
 	const error = useTicketWindowError( clientId, rule, eventDates );
+	const isSpecific = isSpecificWindow( formRule );
+	const hasDurationError = useSyncExternalStore( subscribeToCommonStore, () => hasTicketDurationError( clientId ) );
 
 	useEffect( () => {
 		if ( undefined === rule ) {
@@ -113,14 +120,16 @@ export default function SalesWindow( { clientId, picker } ) {
 		}
 	}, [ clientId, rule, setDraftRule ] );
 
+	// The legacy code checks the picker's dates again on every picker edit, though they are hidden unless both are specific.
+	useEffect( () => {
+		if ( hasDurationError && ! isSpecific ) {
+			clearTicketDurationError( clientId );
+		}
+	}, [ clientId, hasDurationError, isSpecific ] );
+
 	const onChange = ( name, changes ) => {
 		const changed = { ...formRule, [ name ]: { ...formRule[ name ], ...changes } };
 		setDraftRule( clientId, changed );
-
-		// The legacy code re-checks the picker's dates only when they change, so its message would outlive the picker.
-		if ( ! isSpecificWindow( changed ) ) {
-			clearTicketDurationError( clientId );
-		}
 
 		// The legacy dashboard re-checks its Create or Update button, which reads this draft, only on a legacy store change.
 		markTicketChanged( clientId );

@@ -12,8 +12,6 @@ import { useSyncExternalStore } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { MODE_RELATIVE } from '../rule-constants';
-import { SALES_END_BEFORE_START } from '../validation';
 import { getWindowError } from '../window-check';
 import { readTicketFormDates, subscribeToCommonStore } from './common-store-bridge';
 
@@ -23,8 +21,8 @@ import { readTicketFormDates, subscribeToCommonStore } from './common-store-brid
 /**
  * Returns the error of a ticket's sales window, or `null` when it is valid or cannot be judged.
  *
- * A relative start or end whose number the admin cleared is an error too: the server rejects a rule without an integer
- * there.
+ * A relative start or end whose number the admin cleared is an error too, as one out of range: the server rejects a rule
+ * without an integer there.
  *
  * @since TBD
  *
@@ -37,12 +35,6 @@ import { readTicketFormDates, subscribeToCommonStore } from './common-store-brid
 export function getTicketWindowError( rule, eventDates, formDates ) {
 	if ( ! rule || ! eventDates ) {
 		return null;
-	}
-
-	const hasEmptyNumber = [ rule.start, rule.end ].some( ( end ) => MODE_RELATIVE === end.mode && '' === end.value );
-
-	if ( hasEmptyNumber ) {
-		return SALES_END_BEFORE_START;
 	}
 
 	return getWindowError( rule, eventDates, formDates );

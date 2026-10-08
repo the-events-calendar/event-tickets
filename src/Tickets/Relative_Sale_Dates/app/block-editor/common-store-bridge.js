@@ -88,6 +88,21 @@ export function clearTicketDurationError( clientId ) {
 }
 
 /**
+ * Returns whether the legacy ticket code holds a sales duration error for a ticket.
+ *
+ * @since TBD
+ *
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket has the error.
+ */
+export function hasTicketDurationError( clientId ) {
+	return Boolean(
+		getTicketData().selectors.getTicketHasDurationError( window.__tribe_common_store__.getState(), { clientId } )
+	);
+}
+
+/**
  * Returns whether the legacy checks would let a ticket be created or updated, leaving aside its sales duration error.
  *
  * @since TBD

@@ -5,10 +5,15 @@
  */
 
 /**
+ * External dependencies
+ */
+import moment from 'moment';
+
+/**
  * Internal dependencies
  */
-import { MAX_VALUE, MIN_VALUE, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
-import { fromLocal, resolveSaleWindow } from './sale-window';
+import { MAX_VALUE, MIN_VALUE, MODE_DEFAULT, MODE_RELATIVE, MODE_SPECIFIC } from './rule-constants';
+import { fromEventLocal, resolveSaleWindow } from './sale-window';
 import { getSaleWindowError, SALES_END_BEFORE_START } from './validation';
 
 /**
@@ -53,9 +58,10 @@ export function getOutOfRangeBoundary( rule ) {
  * Returns the error of a sales window, or `null` when it is valid.
  *
  * A boundary the rule resolves takes the date it resolves to. One it leaves to the ticket, a specific boundary or a
- * default start, takes the date the form sends for it, as the server does; a specific boundary without a date is
- * rejected. A default start sent without a date is left unjudged: the server judges it by the day the event was
- * published, which the form does not know.
+ * default start, takes the date the form sends for it, read as the server reads it; a specific boundary without a date
+ * is rejected. A default start the form dates later than now takes now, as the server sells it from now on, and one
+ * already past keeps its date. A default start sent without a date is left unjudged: the server judges it by the day
+ * the event was published, which the form does not know.
  *
  * @since TBD
  *
@@ -74,6 +80,7 @@ export function getWindowError( rule, eventDates, formDates ) {
 	}
 
 	const resolved = resolveSaleWindow( rule, eventDates.start, eventDates.end, eventDates.timezone );
+	const now = moment();
 	const dates = {};
 
 	for ( const key of [ 'start', 'end' ] ) {
@@ -91,7 +98,8 @@ export function getWindowError( rule, eventDates, formDates ) {
 			continue;
 		}
 
-		dates[ key ] = fromLocal( formDates[ key ], eventDates.timezone );
+		const date = fromEventLocal( formDates[ key ], eventDates.timezone );
+		dates[ key ] = MODE_DEFAULT === rule[ key ].mode && date.isAfter( now ) ? now : date;
 	}
 
 	return getSaleWindowError( dates.start, dates.end );

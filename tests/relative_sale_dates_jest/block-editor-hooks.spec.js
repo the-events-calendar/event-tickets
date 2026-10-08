@@ -1,5 +1,5 @@
 import React from 'react';
-import { applyFilters, doAction } from '@wordpress/hooks';
+import { addFilter, applyFilters, doAction, filters, removeFilter } from '@wordpress/hooks';
 import { dispatch, getStoreState, select } from '@wordpress/data';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
 import SalesWindow from '@tec/tickets/relative-sale-dates/block-editor/sales-window';
@@ -366,13 +366,31 @@ describe( 'the Relative Sale Dates block editor hooks', () => {
 			expect( isConfirmDisabled( clientId, false ) ).toBe( true );
 		} );
 
-		it( 'should judge a start of Now by the date the ticket sends', () => {
+		// The server sells a start of Now from now on when the ticket dates it later, as a ticket switched from a specific date.
+		it( 'should judge a start of Now that the ticket dates later than now as now', () => {
 			const clientId = newClientId();
 			dispatch( STORE_NAME ).setDraftRule( clientId, { start: { mode: 'default' }, end: relative( 1, UNIT_HOURS ) } );
-			// Sales end at 18:00, an hour before the event; the ticket starts selling at 18:30.
+			// Sales end at 18:00, an hour before the event; the hidden start, 18:30, is later than that but not than now.
 			const state = legacyTicketState( clientId, '2040-10-20 18:30:00', '2040-10-20 19:00:00' );
 
-			expect( isConfirmDisabled( clientId, false, state ) ).toBe( true );
+			expect( isConfirmDisabled( clientId, false, state ) ).toBe( false );
+		} );
+
+		it( 'should run ahead of the filters of other extensions, so it never enables a button one of them disabled', () => {
+			const hook = 'tec.tickets.blocks.confirmButton.isDisabled';
+			const namespace = 'tec.tickets.relative-sale-dates';
+			const { callback, priority } = filters[ hook ].handlers.find( ( handler ) => namespace === handler.namespace );
+			// As Seating does for a seated ticket without a seat type, from a script that registers its filter first.
+			removeFilter( hook, namespace );
+			addFilter( hook, 'tests/seating', () => true );
+			addFilter( hook, namespace, callback, priority );
+			const clientId = newClientId();
+			dispatch( STORE_NAME ).setDraftRule( clientId, { start: relative( 2, UNIT_WEEKS ), end: relative( 1, UNIT_HOURS ) } );
+
+			const isDisabled = isConfirmDisabled( clientId, false, durationErrorState( clientId ) );
+			removeFilter( hook, 'tests/seating' );
+
+			expect( isDisabled ).toBe( true );
 		} );
 
 		it( 'should judge a rule that hides the specific dates by the rule, not by their legacy duration error', () => {

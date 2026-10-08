@@ -289,24 +289,62 @@ describe( 'the Ticket block sales window options', () => {
 		expect( window.__tribe_common_store__.dispatch ).toHaveBeenCalledWith( legacyActions.setTicketHasChanges( clientId, true ) );
 	} );
 
-	it( 'should clear the legacy duration error of the specific dates once an end no longer shows them', () => {
-		const clientId = newClientId();
-		renderSalesWindow( clientId );
+	describe( 'with the legacy duration error', () => {
+		/**
+		 * Sets the legacy sales duration error of a ticket, as the legacy picker check does.
+		 *
+		 * @param {string}  clientId The client ID of the ticket block.
+		 * @param {boolean} hasError Whether the ticket has the error.
+		 *
+		 * @return {void}
+		 */
+		const setDurationError = ( clientId, hasError ) =>
+			act( () => {
+				commonStore.dispatch( legacyActions.setTicketHasDurationError( clientId, hasError ) );
+			} );
 
-		change( SelectControl, END_LABELS.mode, 'relative' );
+		const hasDurationError = ( clientId ) =>
+			legacySelectors.getTicketHasDurationError( commonStore.getState(), { clientId } );
 
-		expect( window.__tribe_common_store__.dispatch ).toHaveBeenCalledWith( legacyActions.setTicketHasDurationError( clientId, false ) );
-	} );
+		/**
+		 * Renders the options of a ticket block the legacy store knows, with the legacy duration error set.
+		 *
+		 * @return {string} The client ID of the ticket block.
+		 */
+		const renderWithDurationError = () => {
+			const clientId = newClientId();
+			commonStore.dispatch( legacyActions.registerTicketBlock( clientId ) );
+			renderSalesWindow( clientId );
+			change( SelectControl, START_LABELS.mode, 'specific' );
+			change( SelectControl, END_LABELS.mode, 'specific' );
+			setDurationError( clientId, true );
 
-	it( 'should leave the legacy duration error to the legacy check while both ends are specific dates', () => {
-		const clientId = newClientId();
-		renderSalesWindow( clientId );
-		change( SelectControl, START_LABELS.mode, 'specific' );
-		window.__tribe_common_store__.dispatch.mockClear();
+			return clientId;
+		};
 
-		change( SelectControl, END_LABELS.mode, 'specific' );
+		it( 'should leave it to the legacy check while both ends are specific dates', () => {
+			const clientId = renderWithDurationError();
 
-		expect( window.__tribe_common_store__.dispatch ).not.toHaveBeenCalledWith( legacyActions.setTicketHasDurationError( clientId, false ) );
+			expect( hasDurationError( clientId ) ).toBe( true );
+		} );
+
+		it( 'should clear it once an end no longer shows the specific dates', () => {
+			const clientId = renderWithDurationError();
+
+			change( SelectControl, END_LABELS.mode, 'relative' );
+
+			expect( hasDurationError( clientId ) ).toBe( false );
+		} );
+
+		// The legacy check runs again on every picker edit, against the dates the relative end hides.
+		it( 'should clear it again when a picker edit brings it back while an end is not a specific date', () => {
+			const clientId = renderWithDurationError();
+			change( SelectControl, END_LABELS.mode, 'relative' );
+
+			setDurationError( clientId, true );
+
+			expect( hasDurationError( clientId ) ).toBe( false );
+		} );
 	} );
 
 	it( 'should take a relative number from 1 to 60', () => {
