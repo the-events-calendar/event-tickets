@@ -110,16 +110,20 @@ final class Parser {
 		[ $move, $rejections ]   = $this->parse_move( $this->part( $raw, self::MOVE ), $rejections );
 
 		// A ticket may be updated, moved or deleted, not more than one; which is meant cannot be told, so every entry goes.
-		$conflicts = array_unique(
+		// The IDs come from the raw parts, so a malformed entry still takes its competing entries with it.
+		$named_update = $this->named_ticket_ids( $this->part( $raw, self::UPDATE ), true );
+		$named_move   = $this->named_ticket_ids( $this->part( $raw, self::MOVE ), true );
+		$named_delete = $this->named_ticket_ids( $this->part( $raw, self::DELETE ), false );
+		$conflicts    = array_unique(
 			array_merge(
-				array_intersect( array_keys( $update ), $delete ),
-				array_intersect( array_keys( $move ), $delete ),
-				array_intersect( array_keys( $update ), array_keys( $move ) )
+				array_intersect( $named_update, $named_delete ),
+				array_intersect( $named_move, $named_delete ),
+				array_intersect( $named_update, $named_move )
 			)
 		);
 
 		foreach ( $conflicts as $ticket_id ) {
-			$part = array_key_exists( $ticket_id, $update ) ? self::UPDATE : self::MOVE;
+			$part = in_array( $ticket_id, $named_update, true ) ? self::UPDATE : self::MOVE;
 			unset( $update[ $ticket_id ], $move[ $ticket_id ] );
 			$delete     = array_values( array_diff( $delete, [ $ticket_id ] ) );
 			$rejections = $rejections->with( $part, $ticket_id, __( 'The same ticket can only be updated, moved or deleted, not more than one of these at once.', 'event-tickets' ) );
@@ -143,6 +147,24 @@ final class Parser {
 	 */
 	private function part( array $raw, string $part ) {
 		return array_key_exists( $part, $raw ) ? $raw[ $part ] : [];
+	}
+
+	/**
+	 * Returns the positive ticket IDs a raw part names, whether or not their entries are valid.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $raw     The raw part.
+	 * @param bool  $by_keys Whether the part names tickets by its keys, as `update` and `move` do, or by its values, as `delete` does.
+	 *
+	 * @return int[] The ticket IDs.
+	 */
+	private function named_ticket_ids( $raw, bool $by_keys ): array {
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+
+		return array_values( array_filter( array_map( [ $this, 'to_positive_int' ], $by_keys ? array_keys( $raw ) : $raw ) ) );
 	}
 
 	/**
