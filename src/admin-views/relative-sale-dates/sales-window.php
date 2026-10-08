@@ -28,6 +28,8 @@ use TEC\Tickets\Relative_Sale_Dates\Rule;
 use TEC\Tickets\Relative_Sale_Dates\Ticket_Save;
 use Tribe__Date_Utils as Date_Utils;
 
+defined( 'ABSPATH' ) || die();
+
 $datepicker_format = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
 //phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 $default_start_date = Date_Utils::build_date_object( 'now' )->format( $datepicker_format );

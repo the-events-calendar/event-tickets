@@ -12,9 +12,7 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets as Asset_Registry;
-use TEC\Common\StellarWP\Assets\Config;
 use Tribe__Tickets__Main as Tickets_Plugin;
 use WP_Screen;
 
@@ -36,15 +34,6 @@ final class Assets extends Controller_Contract {
 	public const CLASSIC_SCRIPT = 'tec-tickets-relative-sale-dates-classic';
 
 	/**
-	 * The group path of the Relative Sale Dates built scripts.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const GROUP_PATH = 'tec-tickets-relative-sale-dates';
-
-	/**
 	 * Unregisters the controller.
 	 *
 	 * @since TBD
@@ -63,15 +52,32 @@ final class Assets extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		Config::add_group_path( self::GROUP_PATH, Tickets_Plugin::instance()->plugin_path . 'build/', 'RelativeSaleDates/' );
+		tec_asset(
+			Tickets_Plugin::instance(),
+			self::CLASSIC_SCRIPT,
+			'RelativeSaleDates/classic.js',
+			[ 'jquery' ],
+			'admin_enqueue_scripts',
+			[
+				'group_path'   => Tickets_Plugin::class . '-packages',
+				'conditionals' => fn(): bool => $this->is_classic_event_edit_screen(),
+				'in_footer'    => true,
+			]
+		);
+	}
 
-		Asset::add( self::CLASSIC_SCRIPT, 'classic.js', Tickets_Plugin::VERSION )
-			->add_to_group_path( self::GROUP_PATH )
-			->set_dependencies( 'jquery' )
-			->set_condition( fn(): bool => $this->is_event_edit_screen() )
-			->enqueue_on( 'admin_enqueue_scripts' )
-			->in_footer()
-			->register();
+	/**
+	 * Returns whether the current admin screen edits an event in the classic editor, where the classic ticket form shows
+	 * the sales window options: only for Tickets Commerce tickets, so only with Tickets Commerce on.
+	 *
+	 * The script bundles its own copy of moment-timezone, which would replace the one the block editor's dates rely on.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the current screen is the classic event edit screen, with Tickets Commerce on.
+	 */
+	private function is_classic_event_edit_screen(): bool {
+		return $this->is_event_edit_screen() && ! get_current_screen()->is_block_editor() && tec_tickets_commerce_is_enabled();
 	}
 
 	/**

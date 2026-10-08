@@ -12,7 +12,6 @@ declare( strict_types=1 );
 namespace TEC\Tickets\Relative_Sale_Dates;
 
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe__Template as Template;
 
 /**
@@ -92,14 +91,17 @@ final class Editor {
 	 *
 	 * @param array<string,mixed> $context The ticket panel data.
 	 *
-	 * @return bool Whether the panel is for a Tickets Commerce ticket, not an RSVP or a Series Pass, on an event.
+	 * @return bool Whether the panel is the wp-admin one for a Tickets Commerce ticket, not an RSVP or a Series Pass, on an
+	 *              event.
 	 */
 	private function applies_to( array $context ): bool {
 		// An event defaults to the Tickets Commerce provider even when Tickets Commerce is not active.
 		return 'tribe_events' === get_post_type( $context['post_id'] ?? 0 )
 			&& Module::class === ( $context['provider_class'] ?? '' )
 			&& isset( $context['modules'][ Module::class ] )
-			&& ! in_array( $context['ticket_type'] ?? 'default', [ 'rsvp', Series_Passes::TICKET_TYPE ], true );
+			&& ! in_array( $context['ticket_type'] ?? 'default', array_merge( [ 'rsvp' ], Ticket_Save::EXCLUDED_TICKET_TYPES ), true )
+			// A front-end form, such as Community Events', does not load the script that writes the rule.
+			&& tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
 	}
 
 	/**
