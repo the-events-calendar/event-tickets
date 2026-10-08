@@ -140,6 +140,11 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 			}
 		}
 
+		// Serialized together, so an object shared by two fields is still one object once read back.
+		if ( isset( $extra['serialized'] ) ) {
+			$extra['serialized'] = maybe_serialize( $extra['serialized'] );
+		}
+
 		// Encoded here because the schema library's encoder would turn 10.0 into 10.
 		$row['extra'] = wp_json_encode( $extra, JSON_PRESERVE_ZERO_FRACTION );
 
@@ -159,12 +164,15 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 		$extra     = is_string( $row['extra'] ) ? json_decode( $row['extra'], true ) : $row['extra'];
 		$precision = static::get_decimals( $row['currency'] );
 		$item      = [];
+		$objects   = isset( $extra['serialized'] )
+			? unserialize( $extra['serialized'], [ 'allowed_classes' => self::SERIALIZABLE_CLASSES ] ) // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
+			: [];
 
 		foreach ( $extra['keys'] as $name ) {
 			if ( array_key_exists( $name, $extra['raw'] ) ) {
 				$item[ $name ] = $extra['raw'][ $name ];
-			} elseif ( isset( $extra['serialized'][ $name ] ) ) {
-				$item[ $name ] = unserialize( $extra['serialized'][ $name ], [ 'allowed_classes' => self::SERIALIZABLE_CLASSES ] ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
+			} elseif ( array_key_exists( $name, $objects ) ) {
+				$item[ $name ] = $objects[ $name ];
 			} elseif ( array_key_exists( $name, $extra['values'] ) ) {
 				$item[ $name ] = $extra['values'][ $name ];
 			} else {
@@ -297,7 +305,7 @@ abstract class Abstract_Line_Item_Type implements Line_Item_Type {
 		}
 
 		static::assert_serializable( $name, $value );
-		$extra['serialized'][ $name ] = serialize( $value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+		$extra['serialized'][ $name ] = $value;
 	}
 
 	/**

@@ -328,11 +328,24 @@ class Line_Item_Types_Test extends WPTestCase {
 
 		tribe( Line_Item_Types::class )->get_for_item( $item )::to_row( 0, $item, 1, 'USD' );
 	}
+
+	public function test_an_object_shared_by_two_fields_is_still_shared_after_the_round_trip(): void {
+		$item                = $this->fixture( 'tickets' )[0];
+		$shared              = (object) [ 'seat' => 'A1' ];
+		$item['first']       = $shared;
+		$item['second']      = $shared;
+
+		[ , $rebuilt ] = $this->round_trip( [ $item ], 'USD' );
+
+		$this->assert_identical( [ $item ], $rebuilt );
+	}
+
 	public function registered_types_provider(): Generator {
 		yield 'ticket' => [ 'ticket', Ticket_Line_Item::class ];
 		yield 'fee' => [ 'fee', Fee_Line_Item::class ];
 		yield 'coupon' => [ 'coupon', Coupon_Line_Item::class ];
 		yield 'discount' => [ 'discount', Discount_Line_Item::class ];
+		yield 'tc-rsvp' => [ 'tc-rsvp', Ticket_Line_Item::class ];
 	}
 
 	/**
