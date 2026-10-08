@@ -7,7 +7,23 @@
  * @since TBD
  */
 
+/**
+ * The provider class the tickets block holds when it sells its tickets through Tickets Commerce.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
 const TICKETS_COMMERCE = 'TEC\\Tickets\\Commerce\\Module';
+
+/**
+ * The provider slug the block editor tickets REST API gives a Tickets Commerce ticket, which a fetched ticket keeps.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const TICKETS_COMMERCE_PROVIDER = 'tc';
 
 /**
  * Returns the legacy ticket actions and selectors.
@@ -21,18 +37,28 @@ function getTicketData() {
 }
 
 /**
- * Returns whether the tickets block sells its tickets through Tickets Commerce, the only provider the rule applies to.
+ * Returns whether a ticket is sold through Tickets Commerce, the only provider the rule applies to.
  *
- * The admin can change the provider while editing, so it is read from the store rather than from localized data.
+ * A ticket fetched from the server keeps its own provider, which an event's older tickets may not share with the tickets
+ * block; the server judges the ticket by it. A new ticket has none yet and is created with the block's, which the admin
+ * can change while editing, so both are read from the store rather than from localized data.
  *
  * @since TBD
  *
- * @return {boolean} Whether the provider is Tickets Commerce.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {boolean} Whether the ticket is sold through Tickets Commerce.
  */
-export function isTicketsCommerce() {
-	return (
-		TICKETS_COMMERCE === getTicketData().selectors.getTicketsProvider( window.__tribe_common_store__.getState() )
-	);
+export function isTicketsCommerce( clientId ) {
+	const { selectors } = getTicketData();
+	const state = window.__tribe_common_store__.getState();
+	const ticketProvider = selectors.getTicketProvider( state, { clientId } );
+
+	if ( ticketProvider ) {
+		return TICKETS_COMMERCE_PROVIDER === ticketProvider;
+	}
+
+	return TICKETS_COMMERCE === selectors.getTicketsProvider( state );
 }
 
 /**

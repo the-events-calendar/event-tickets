@@ -2,6 +2,7 @@ import React from 'react';
 import { act } from 'react-test-renderer';
 import { dispatch, select } from '@wordpress/data';
 import { SelectControl, TextControl } from '@wordpress/components';
+import { resetLocaleData, setLocaleData } from '@wordpress/i18n';
 import * as legacyActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import * as legacySelectors from '@moderntribe/tickets/data/blocks/ticket/selectors';
 import { STORE_NAME } from '@tec/tickets/relative-sale-dates/block-editor/store/constants';
@@ -287,6 +288,23 @@ describe( 'the Ticket block sales window options', () => {
 		change( TextControl, END_LABELS.value, '5' );
 
 		expect( unitLabels() ).toStrictEqual( [ 'minutes', 'hours', 'days', 'weeks' ] );
+	} );
+
+	it( 'should name the units with the translation the classic editor uses', () => {
+		setLocaleData(
+			{
+				'': { domain: 'event-tickets', plural_forms: 'nplurals=2; plural=(n != 1);' },
+				'Unit of a relative ticket sale date.\u0004week': [ 'semana', 'semanas' ],
+			},
+			'event-tickets'
+		);
+		renderSalesWindow( newClientId() );
+		change( SelectControl, END_LABELS.mode, 'relative' );
+
+		const unitLabels = findControl( SelectControl, END_LABELS.unit ).props.options.map( ( { label } ) => label );
+		resetLocaleData( undefined, 'event-tickets' );
+
+		expect( unitLabels ).toContain( 'semana' );
 	} );
 
 	it( 'should keep the relative number, unit and anchor the admin picks in the draft', () => {
