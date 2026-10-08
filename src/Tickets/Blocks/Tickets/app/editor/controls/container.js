@@ -17,7 +17,7 @@ import { __, sprintf } from '@wordpress/i18n';
 
 const { TICKET_LABELS } = constants;
 
-const mapStateToProps = ( state, ownProps ) => {
+export const mapStateToProps = ( state, ownProps ) => {
 	const isRecurring = hasRecurrenceRules( state );
 	// eslint-disable-next-line no-undef
 	const message = sprintf(
@@ -53,7 +53,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		message: messageElement,
 		providers: selectors.getTicketProviders(),
 		selectedProvider: selectors.getTicketsProvider( state ),
-		hasTickets: selectors.hasTickets( state ),
+		hasTickets: selectors.hasCreatedTickets( state ),
 	};
 
 	/**
